@@ -11,11 +11,11 @@ use df\core;
 class Promise implements IPromise {
 
     protected $_state = null;
+    protected $_progressCurrent = 0;
+    protected $_progressTotal;
     protected $_result;
 
-    protected $_onFulfill;
-    protected $_onReject;
-    protected $_onProgress;
+    protected $_eventHandlers = [];
 
     protected $_canceller;
     protected $_cancelRequests = 0;
@@ -78,6 +78,7 @@ class Promise implements IPromise {
 
 
 
+// Routing
     public function then($onFulfill, $onReject=null) {
         $output = new static();
         $output->onFulfill($onFulfill)->onReject($onReject);
@@ -134,36 +135,128 @@ class Promise implements IPromise {
 
 
 
+// Event handlers
+    public function on($name, $callback) {
+        $name = lcfirst($name);
+        $this->_eventHandlers[$name] = Callback::factory($callback);
+        return $this;
+    }
+ 
+    public function hasEventHandler($name) {
+        $name = lcfirst($name);
+        return isset($this->_eventHandlers[$name]);
+    }
+
+    public function getEventHandler($name) {
+        $name = lcfirst($name);
+
+        if($this->hasEventHandler($name)) {
+            return $this->_eventHandlers[$name];
+        }
+    }
+
+    public function removeEventHandler($name) {
+        $name = lcfirst($name);
+        unset($this->_eventHandlers[$name]);
+        return $this;
+    }
+
+    public function __call($method, array $args) {
+        if(substr($method, 0, 2) != 'on') {
+            throw new BadMethodCallException('Method '.$method.' does not exist');
+        }
+
+        return $this->on(substr($method, 2), array_shift($args));
+    }
+
 
     public function onFulfill($onFulfill) {
-        $this->_onFulfill = Callback::factory($onFulfill);
-        return $this;
+        return $this->on('fulfill', $onFulfill);
     }
 
     public function getFulfillCallback() {
-        return $this->_onFulfill;
+        return $this->getEventHandler('fulfill');
     }
 
     public function onReject($onReject) {
-        $this->_onReject = Callback::factory($onReject);
-        return $this;
+        return $this->on('reject', $onReject);
     }
 
     public function getRejectCallback() {
-        return $this->_onReject;
+        return $this->getEventHandler('reject');
     }
 
     public function onProgress($progress) {
-        $this->_onProgress = Callback::factory($progress);
+        $this->on('progress', $progress);
+
+        if($this->_state !== null
+        && $this->_state !== IPromise::CANCELLED
+        && $this->_progressCurrent) {
+            $this->emitThis(
+                'progress', 
+                $this->_progressCurrent, 
+                $this->_progressTotal
+            );
+        }
+
         return $this;
     }
 
     public function getProgressCallback() {
-        return $this->_onProgress;
+        return $this->getEventHandler('progress');
     }
 
 
+// Event broadcasting
+    public function emit($name, $value=null) {
+        if($this->_parent) {
+            $this->_parent->emit($name, $value);
+            return $this;
+        }
 
+        return $this->emitThis($name, $value);
+    }
+
+    public function emitThis($name, $value=null) {
+        $name = lcfirst($name);
+        $args = array_slice(func_get_args(), 1);
+        $args = array_pad($args, 5, null);
+
+        if($this->hasEventHandler($name)) {
+            $this->_eventHandlers[$name]->invokeArgs($args);
+        }
+
+        return $this;
+    }
+
+    public function setProgress($progress, $total=null) {
+        if($this->_parent) {
+            $this->_parent->setProgress($progress, $total);
+            return $this;
+        }
+
+        return $this->setProgressThis($progress, $total);
+    }
+
+    public function setProgressThis($progress, $total=null) {
+        $this->_progressCurrent = (float)$progress;
+
+        if($total !== null) {
+            $this->_progressTotal = (float)$total;
+        } else if($this->_progressCurrent > $this->_progressTotal
+               && $this->_progressTotal) {
+            $this->_progressTotal = $this->_progressCurrent;
+        }
+
+        return $this->emitThis(
+            'progress', 
+            $this->_progressCurrent, 
+            $this->_progressTotal
+        );    
+    }
+
+
+// Progress
     public function begin() {
         if($this->_parent) {
             $this->_parent->begin();
@@ -203,8 +296,11 @@ class Promise implements IPromise {
             return $this;
         }
 
-        $this->_state = IPromise::FULFILLED;
-        return $this->_invokeChildren($this->_onFulfill, $value);
+        return $this->_invokeChildren(
+            $this->getEventHandler('fulfill'), 
+            $value,
+            IPromise::FULFILLED
+        );
     }
 
     public function reject($reason=null) {
@@ -221,18 +317,27 @@ class Promise implements IPromise {
             return $this;
         }
 
-        $this->_state = IPromise::REJECTED;
-        return $this->_invokeChildren($this->_onReject, $reason);
+        return $this->_invokeChildren(
+            $this->getEventHandler('reject'), 
+            $reason,
+            IPromise::REJECTED
+        );
     }
 
-    protected function _invokeChildren(ICallback $callback=null, $value) {
+    protected function _invokeChildren(ICallback $callback=null, $value, $state) {
         if($callback) {
             try {
                 $value = $callback->invoke($value, $this);
+                $this->_state = $state;
             } catch(\Exception $e) {
                 $value = $e;
                 $this->_state = IPromise::REJECTED;
             }
+        }
+
+        if($this->_state === IPromise::REJECTED 
+        && !$value instanceof \Exception) {
+            $value = new RejectedPromiseException($value);
         }
 
         if($value === $this) {
@@ -264,23 +369,9 @@ class Promise implements IPromise {
         }
     }
 
-    public function notify($progress=null) {
-        if($this->_parent) {
-            $this->_parent->notify($progress);
-            return $this;
-        }
 
-        return $this->notifyThis($progress);
-    }
 
-    public function notifyThis($progress=null) {
-        if($this->_onProgress) {
-            $this->_onProgress->invoke($progress, $this);
-        }
-
-        return $this;
-    }
-
+// Cancel
     public function cancel() {
         if($this->_parent) {
             $this->_parent->cancel();
@@ -301,6 +392,7 @@ class Promise implements IPromise {
             }
 
             $this->_cancelChildren();
+            $this->emit('cancel');
         }
 
         return $this;
@@ -324,6 +416,7 @@ class Promise implements IPromise {
         }
 
         $this->_cancelChildren();
+        $this->emit('cancel');
 
         return $this;
     }
@@ -332,6 +425,26 @@ class Promise implements IPromise {
         foreach($this->_children as $child) {
             $child->_state = IPromise::CANCELLED;
             $child->_cancelChildren();
+        }
+    }
+
+
+// Sync
+    public function sync() {
+        if(!$this->hasBegun()) {
+            $this->begin();
+        }
+
+        while(!$this->_state) {
+            usleep(100000);
+        }
+
+        if($this->_state === IPromise::FULFILLED) {
+            return $this->_result;
+        } else if($this->_state === IPromise::REJECTED) {
+            throw $this->_result;
+        } else {
+            return null;
         }
     }
 }

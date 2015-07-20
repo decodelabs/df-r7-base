@@ -17,6 +17,8 @@ class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class BadMethodCallException extends \BadMethodCallException {}
 
+class RejectedPromiseException extends \Exception implements IException {}
+
 
 // Interfaces
 interface ICallback {
@@ -125,6 +127,11 @@ interface IPromise {
     public function otherwise($onReject);
     public function always($onComplete);
 
+    public function on($event, $callback);
+    public function hasEventHandler($name);
+    public function getEventHandler($name);
+    public function removeEventHandler($name);
+
     public function onFulfill($onFulfill);
     public function getFulfillCallback();
     public function onReject($onReject);
@@ -132,16 +139,22 @@ interface IPromise {
     public function onProgress($progress);
     public function getProgressCallback();
 
+    public function emit($event, $value=null);
+    public function emitThis($event, $value=null);
+    public function setProgress($progress, $total=null);
+    public function setProgressThis($progress, $total=null);
+
     public function begin();
     public function hasBegun();
     public function fulfill($value=null);
     public function fulfillThis($value=null);
     public function reject($reason=null);
     public function rejectThis($reason=null);
-    public function notify($progress=null);
-    public function notifyThis($progress=null);
+
     public function cancel();
     public function cancelThis();
     public function forceCancel();
     public function forceCancelThis();
+
+    public function sync();
 }
