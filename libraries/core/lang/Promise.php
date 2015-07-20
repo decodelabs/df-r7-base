@@ -36,6 +36,16 @@ class Promise implements IPromise {
             ->setCanceller($canceller);
     }
 
+    public static function fulfilled($value) {
+        return (new static())
+            ->fulfillThis($value);
+    }
+
+    public static function rejected($value) {
+        return (new static())
+            ->rejectThis($value);
+    }
+
     protected function __construct() {}
 
     public function setCanceller($canceller) {
@@ -303,6 +313,10 @@ class Promise implements IPromise {
         );
     }
 
+    public function isFulfilled() {
+        return $this->_state === IPromise::FULFILLED;
+    }
+
     public function reject($reason=null) {
         if($this->_parent) {
             $this->_parent->reject($reason);
@@ -324,11 +338,15 @@ class Promise implements IPromise {
         );
     }
 
+    public function isRejected() {
+        return $this->_state === IPromise::REJECTED;
+    }
+
     protected function _invokeChildren(ICallback $callback=null, $value, $state) {
         if($callback) {
             try {
                 $value = $callback->invoke($value, $this);
-                $this->_state = $state;
+                $this->_state = IPromise::FULFILLED;
             } catch(\Exception $e) {
                 $value = $e;
                 $this->_state = IPromise::REJECTED;
@@ -419,6 +437,10 @@ class Promise implements IPromise {
         $this->emit('cancel');
 
         return $this;
+    }
+
+    public function isCancelled() {
+        return $this->_state === IPromise::CANCELLED;
     }
 
     protected function _cancelChildren() {

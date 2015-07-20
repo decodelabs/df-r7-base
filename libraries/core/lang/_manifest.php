@@ -148,13 +148,16 @@ interface IPromise {
     public function hasBegun();
     public function fulfill($value=null);
     public function fulfillThis($value=null);
+    public function isFulfilled();
     public function reject($reason=null);
     public function rejectThis($reason=null);
+    public function isRejected();
 
     public function cancel();
     public function cancelThis();
     public function forceCancel();
     public function forceCancelThis();
+    public function isCancelled();
 
     public function sync();
 }
