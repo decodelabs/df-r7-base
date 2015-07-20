@@ -16,11 +16,31 @@ class Callback implements ICallback, core\IDumpable {
     protected $_extraArgs = [];
 
     public static function factory($callback, array $extraArgs=[]) {
-        if($callback instanceof ICallback || $callback === null) {
+        if($callback instanceof ICallback) {
+            if(!empty($extraArgs)) {
+                $callback->setExtraArgs($extraArgs);
+            }
+
+            return $callback;
+        }
+        
+        if($callback === null) {
             return $callback;
         }
 
         return new self($callback, $extraArgs);
+    }
+
+    public static function call($callback) {
+        return self::callArgs($callback, array_slice(func_get_args(), 1));
+    }
+
+    public static function callArgs($callback, array $args=[]) {
+        if($callback = self::factory($callback)) {
+            return $callback->invokeArgs($args);
+        }
+
+        return null;
     }
 
     protected function __construct($callback, array $extraArgs) {
@@ -101,6 +121,20 @@ class Callback implements ICallback, core\IDumpable {
             case ICallback::REFLECTION:
                 return $this->_callback->invokeArgs($this->_reflectionInstance, $args);
         }
+    }
+
+    public function getParameters() {
+        if($this->_mode === ICallback::REFLECTION) {
+            $reflection = $this->_callback;
+        } else if(is_array($this->_callback)) {
+            $reflection = new \ReflectionMethod($this->_callback[0], $this->_callback[1]);
+        } else if(is_object($this->_callback) && !$this->_callback instanceof \Closure) {
+            $reflection = new \ReflectionMethod($this->_callback, '__invoke');
+        } else {
+            $reflection = new \ReflectionFunction($this->_callback);
+        }
+
+        return $reflection->getParameters();
     }
 
 // Dump

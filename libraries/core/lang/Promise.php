@@ -9,45 +9,224 @@ use df;
 use df\core;
 
 class Promise implements IPromise {
-
-    protected $_state = null;
-    protected $_progressCurrent = 0;
-    protected $_progressTotal;
-    protected $_result;
-
+    
+    protected $_action;
+    protected $_errorHandlers = [];
     protected $_eventHandlers = [];
 
     protected $_canceller;
     protected $_cancelRequests = 0;
 
-    protected $_parent;
-    protected $_children = [];
+    protected $_progressCurrent = 0;
+    protected $_progressTotal;
 
+    protected $_result;
+    protected $_error;
+
+    protected $_hasBegun = false;
+    protected $_hasDelivered = false;
+    protected $_isCancelled = false;
+
+    protected $_parent;
+    protected $_dependants = [];
+
+
+// Factories
     public static function call($action, $canceller=null) {
-        return (new static())
-            ->onFulfill($action)
-            ->setCanceller($canceller)
-            ->begin();
+        return static::defer($action, $canceller)->begin();
     }
 
     public static function defer($action, $canceller=null) {
-        return (new static())
-            ->onFulfill($action)
-            ->setCanceller($canceller);
+        return new static($action, $canceller);
     }
 
     public static function fulfilled($value) {
-        return (new static())
-            ->fulfillThis($value);
+        return (new static())->deliver($value);
     }
 
     public static function rejected($value) {
-        return (new static())
-            ->rejectThis($value);
+        return (new static())->deliverError($value);
     }
 
-    protected function __construct() {}
 
+// Aggregate factories
+    public static function all($promises) {
+        return static::deferAll($promises)->begin();
+    }
+
+    public static function deferAll($promises) {
+        $results = [];
+
+        return static::deferEach($promises, function($value, $key) use(&$results) {
+            $results[$key] = $value;
+        }, function(\Exception $error, $key, IPromise $aggregate) {
+            $aggregate->deliverError($error);
+        })->then(function() use(&$results) {
+            return $results;
+        });
+    }
+
+    public static function some($count, $promises) {
+        return static::deferSome($count, $promises)->begin();
+    }
+
+    public static function deferSome($count, $promises) {
+        $results = [];
+        $rejections = [];
+
+        return static::deferEach($promises, function($value, $key, IPromise $aggregate) use(&$results, $count) {
+            if(!$aggregate->isPending()) {
+                return;
+            }
+
+            $results[$key] = $value;
+
+            if(count($results) >= $count) {
+                $aggregate->deliver(null);
+            }
+        }, function(\Exception $error, $key) use(&$rejections) {
+            $rejections[$key] = $error;
+        })->then(function() use(&$results, &$rejections, $count) {
+            if(count($results) < $count) {
+                throw new RuntimeException(
+                    'Not enough promises delivered a result'
+                );
+            }
+
+            return $results;
+        });
+    }
+
+    public static function any($promises) {
+        return static::deferAny($promises);
+    }
+
+    public static function deferAny($promises) {
+        return static::deferSome(1, $promises)
+            ->then(function($results) {
+                return array_shift($results);
+            });
+    }
+
+    public static function each($promises, $onFulfill=null, $onReject=null) {
+        return static::deferEach($promises, $onFulfill, $onReject)->begin();
+    }
+
+    public static function deferEach($promises, $onFulfill=null, $onReject=null) {
+        return static::defer(function(IPromise $aggregate) use($promises, $onFulfill, $onReject) {
+            $promises = core\collection\Util::ensureIterable($promises);
+            $onFulfill = Callback::factory($onFulfill);
+            $onReject = Callback::factory($onReject);
+
+            foreach($promises as $key => $promise) {
+                if(!$promise instanceof IPromise) {
+                    $promise = static::fulfilled($promise);
+                }
+
+                $promise->then(function($value, $promise) use($key, $aggregate, $onFulfill) {
+                    return Callback::callArgs($onFulfill, [$value, $key, $aggregate]);
+                }, function(\Exception $error, $promise) use($key, $aggregate, $onReject) {
+                    return Callback::callArgs($onReject, [$error, $key, $aggregate]);
+                })->sync();
+
+                if($aggregate->hasDelivered()) {
+                    return;
+                }
+            }
+
+            return;
+        });
+    }
+
+
+
+// Construct
+    public function __construct($action=null, $canceller=null) {
+        if($action !== null) {
+            $this->setAction($action);
+        }
+
+        if($canceller !== null) {
+            $this->setCanceller($canceller);
+        }
+    }
+
+// Action
+    public function setAction($action) {
+        $this->_action = Callback::factory($action);
+        return $this;
+    }
+
+    public function getAction() {
+        return $this->_action;
+    }
+
+    public function hasAction() {
+        return $this->_action !== null;
+    }
+
+    public function begin() {
+        if($this->_parent) {
+            $this->_parent->begin();
+            return $this;
+        }
+
+        return $this->beginThis();
+    }
+
+    public function beginThis() {
+        if($this->_hasBegun) {
+            throw new LogicException(
+                'Promise action has already begun'
+            );
+        }
+
+        if($this->_isCancelled) {
+            return $this;
+        }
+
+        if($this->_hasDelivered) {
+            throw new LogicException(
+                'Promise has already delivered'
+            );
+        }
+
+        $this->_hasBegun = true;
+
+        if($this->_action) {
+            $action = $this->_action;
+            $this->_action = null;
+
+            try {
+                $this->_result = $action->invokeArgs([$this]);
+            } catch(\Exception $e) {
+                $this->_error = $e;
+            }
+        }
+
+        return $this->_deliverDependants();
+    }
+
+    public function hasBegun() {
+        if($this->_parent) {
+            return $this->_parent->hasBegun();
+        }
+
+        return $this->hasBegunThis();
+    }
+
+    public function hasBegunThis() {
+        return $this->_hasBegun;
+    }
+
+    public function isPending() {
+        return $this->hasBegun() 
+            && !$this->isCancelled() 
+            && !$this->hasDelivered();
+    }
+
+
+// Canceller
     public function setCanceller($canceller) {
         $this->_canceller = Callback::factory($canceller);
         return $this;
@@ -57,10 +236,127 @@ class Promise implements IPromise {
         return $this->_canceller;
     }
 
-    public function getState() {
-        return $this->_state;
+    public function hasCanceller() {
+        return $this->_canceller !== null;
     }
 
+    public function cancel() {
+        if($this->_parent) {
+            $this->_parent->cancel();
+            return $this;
+        }
+
+        return $this->cancelThis();
+    }
+
+    public function cancelThis() {
+        $this->_cancelRequests++;
+
+        if($this->_cancelRequests >= count($this->_dependants)) {
+            $this->_isCancelled = true;
+
+            if($this->_canceller) {
+                $this->_canceller->invoke($this);
+            }
+
+            $this->_cancelDependants();
+            $this->emit('cancel');
+        }
+
+        return $this;
+    }
+
+    public function forceCancel() {
+         if($this->_parent) {
+            $this->_parent->cancel();
+            return $this;
+        }
+
+        return $this->forceCancelThis();
+    }
+
+    public function forceCancelThis() {
+        $this->_cancelRequests = count($this->_dependants);
+        $this->_isCancelled = true;
+
+        if($this->_canceller) {
+            $this->_canceller->invoke($this);
+        }
+
+        $this->_cancelDependants();
+        $this->emit('cancel');
+
+        return $this;
+    }
+
+    public function isCancelled() {
+        return $this->_isCancelled;
+    }
+
+    protected function _cancelDependants() {
+        foreach($this->_dependants as $dependant) {
+            $dependant->_isCancelled = true;
+            $dependant->_cancelDependants();
+        }
+    }
+
+
+// Error handlers
+    public function onError($callback) {
+        return $this->addErrorHandlers(func_get_args());
+    }
+
+    public function addErrorHandlers(array $handlers) {
+        foreach($handlers as $handler) {
+            $this->addErrorHandler($handler);
+        }
+
+        return $this;
+    }
+
+    public function addErrorHandler($callback) {
+        if(!$callback = Callback::factory($callback)) {
+            return $this;
+        }
+
+        $parameters = $callback->getParameters();
+        $type = null;
+
+        if(!isset($parameters[0])) {
+            $type = '';
+        } else {
+            try {
+                $class = $parameters[0]->getClass();
+            } catch(\Exception $e) {
+                $class = null;
+            }
+
+            if($class) {
+                $type = $class->getName();
+            } else if(!$parameters[0]->isArray()) {
+                $type = '';
+            }
+        }
+
+        if($type === null) {
+            throw new LogicException('Error handling must be able to accept an exception as its first argument');
+        }
+
+        $this->_errorHandlers[$type] = $callback;
+        return $this;
+    }
+
+    public function getErrorHandlers() {
+        return $this->_errorHandlers;
+    }
+
+    public function clearErrorHandlers() {
+        $this->_errorHandlers = [];
+        return $this;
+    }
+
+
+// Parent
     public function setParent(IPromise $promise=null) {
         $this->_parent = $promise;
         return $this;
@@ -68,6 +364,14 @@ class Promise implements IPromise {
 
     public function getParent() {
         return $this->_parent;
+    }
+
+    public function hasParent() {
+        return $this->_parent !== null;
+    }
+
+    public function getDependants() {
+        return $this->_dependants;
     }
 
     public function getRoot() {
@@ -87,65 +391,7 @@ class Promise implements IPromise {
     }
 
 
-
-// Routing
-    public function then($onFulfill, $onReject=null) {
-        $output = new static();
-        $output->onFulfill($onFulfill)->onReject($onReject);
-        $output->setParent($this);
-
-        if($this->_state === IPromise::CANCELLED) {
-            $output->_state = IPromise::CANCELLED;
-        }
-        
-        if(!$this->_state) {
-            $this->_children[] = $output;
-        } else {
-            $this->_invokeChild($output);
-        }
-
-        return $output;
-    }
-
-    public function also($onFulfill, $onReject=null) {
-        if($this->_parent) {
-            return $this->_parent->then($onFulfill, $onReject);
-        } else {
-            $output = (new static())
-                ->onFulfill($onFulfill)
-                ->onReject($onReject);
-
-            if($this->hasBegun()) {
-                $output->begin();
-            }
-
-            if($this->_state === IPromise::CANCELLED) {
-                $output->_state = IPromise::CANCELLED;
-            }
-            
-            return $output;
-        }
-    }
-
-    public function otherwise($onReject) {
-        return $this->then(null, $onReject);
-    }
-
-    public function always($onComplete) {
-        $onComplete = Callback::factory($onComplete);
-
-        return $this->then(function($value) use($onComplete) {
-            $onComplete($value, true, $this);
-            return $value;
-        }, function($reason) use($onComplete) {
-            $onComplete($reason, false, $this);
-            return $reason;
-        });
-    }
-
-
-
-// Event handlers
+// Events
     public function on($name, $callback) {
         $name = lcfirst($name);
         $this->_eventHandlers[$name] = Callback::factory($callback);
@@ -179,45 +425,6 @@ class Promise implements IPromise {
         return $this->on(substr($method, 2), array_shift($args));
     }
 
-
-    public function onFulfill($onFulfill) {
-        return $this->on('fulfill', $onFulfill);
-    }
-
-    public function getFulfillCallback() {
-        return $this->getEventHandler('fulfill');
-    }
-
-    public function onReject($onReject) {
-        return $this->on('reject', $onReject);
-    }
-
-    public function getRejectCallback() {
-        return $this->getEventHandler('reject');
-    }
-
-    public function onProgress($progress) {
-        $this->on('progress', $progress);
-
-        if($this->_state !== null
-        && $this->_state !== IPromise::CANCELLED
-        && $this->_progressCurrent) {
-            $this->emitThis(
-                'progress', 
-                $this->_progressCurrent, 
-                $this->_progressTotal
-            );
-        }
-
-        return $this;
-    }
-
-    public function getProgressCallback() {
-        return $this->getEventHandler('progress');
-    }
-
-
-// Event broadcasting
     public function emit($name, $value=null) {
         if($this->_parent) {
             $this->_parent->emit($name, $value);
@@ -229,16 +436,16 @@ class Promise implements IPromise {
 
     public function emitThis($name, $value=null) {
         $name = lcfirst($name);
-        $args = array_slice(func_get_args(), 1);
-        $args = array_pad($args, 5, null);
 
         if($this->hasEventHandler($name)) {
-            $this->_eventHandlers[$name]->invokeArgs($args);
+            $this->_eventHandlers[$name]->invokeArgs([$value, $this]);
         }
 
         return $this;
     }
 
+
+// Progress
     public function setProgress($progress, $total=null) {
         if($this->_parent) {
             $this->_parent->setProgress($progress, $total);
@@ -248,206 +455,225 @@ class Promise implements IPromise {
         return $this->setProgressThis($progress, $total);
     }
 
-    public function setProgressThis($progress, $total=null) {
-        $this->_progressCurrent = (float)$progress;
+    public function setProgressThis($current, $total=null) {
+        if($current !== null) {
+            $this->_progressCurrent = (float)$current;
+        }
 
         if($total !== null) {
             $this->_progressTotal = (float)$total;
-        } else if($this->_progressCurrent > $this->_progressTotal
-               && $this->_progressTotal) {
-            $this->_progressTotal = $this->_progressCurrent;
         }
 
-        return $this->emitThis(
-            'progress', 
-            $this->_progressCurrent, 
-            $this->_progressTotal
-        );    
+        return $this->emitThis('progress', [
+            'current' => $this->_progressCurrent,
+            'total' => $this->_progressTotal
+        ]);
+    }
+
+    public function onProgress($callback) {
+        $this->on('progress', $callback);
+
+        if($this->hasBegun()
+        && !$this->isCancelled()) {
+            $this->emitThis('progress', [
+                'current' => $this->_progressCurrent,
+                'total' => $this->_progressTotal
+            ]);
+        }
+
+        return $this;
+    }
+
+    public function getProgressCallback() {
+        return $this->getEventHandler('progress');
     }
 
 
-// Progress
-    public function begin() {
+// Chaining
+    public function then($action, $errorHandler=null) {
+        $output = (new static($action))
+            ->addErrorHandlers(array_slice(func_get_args(), 1))
+            ->setParent($this);
+
+        if($this->_isCancelled) {
+            $output->_isCancelled = true;
+        }
+
+        if(!$this->_hasDelivered) {
+            $this->_dependants[] = $output;
+        } else {
+            $this->_deliverDependant($output);
+        }
+
+        return $output;
+    }
+
+    public function also($action, $errorHandler=null) {
         if($this->_parent) {
-            $this->_parent->begin();
+            return $this->_parent->then($action)
+                ->addErrorHandlers(array_slice(func_get_args(), 1));
+        } else {
+            $output = (new static($action))
+                ->addErrorHandlers(array_slice(func_get_args(), 1));
+
+            if($this->_isCancelled) {
+                $output->_isCancelled = true;
+            }
+
+            if($this->hasBegun()) {
+                $output->begin();
+            }
+
+            return $output;
+        }
+    }
+
+    public function otherwise($errorHandler) {
+        $output = (new static())
+            ->addErrorHandlers(func_get_args())
+            ->setParent($this);
+
+        if($this->_isCancelled) {
+            $output->_isCancelled = true;
+        }
+
+        if(!$this->_hasDelivered) {
+            $this->_dependants[] = $output;
+        } else {
+            $this->_deliverDependant($output);
+        }
+
+        return $output;
+    }
+
+    public function always($action) {
+        if(!$action = Callback::factory($action)) {
             return $this;
         }
 
-        if($this->_state === IPromise::CANCELLED) {
-            return $this;
-        }
+        return $this->then(function($value) use($action) {
+            $action($value, true, $this);
+            return $value;
+        }, function(\Exception $reason) use($action) {
+            $action($reason, false, $this);
+            throw $reason;
+        });
+    }
 
-        if($this->_state !== null) {
+
+// Completion
+    public function deliver($value) {
+        if($this->_hasDelivered) {
             throw new LogicException(
-                'Promise action has already begun'
+                'Promise has already delivered'
             );
         }
 
-        $this->_state = IPromise::PENDING;
-        $this->fulfill($this);
-        return $this;
-    }
+        $this->_hasBegun = true;
+        $this->_result = $value;
 
-    public function hasBegun() {
-        return $this->_state !== null;
-    }
+        if($this->_action) {
+            $action = $this->_action;
+            $this->_action = null;
 
-    public function fulfill($value=null) {
-        if($this->_parent) {
-            $this->_parent->fulfill($value);
-            return $this;
-        }
-
-        return $this->fulfillThis($value);
-    }
-
-    public function fulfillThis($value=null) {
-        if($this->_state || $this->_result) {
-            return $this;
-        }
-
-        return $this->_invokeChildren(
-            $this->getEventHandler('fulfill'), 
-            $value,
-            IPromise::FULFILLED
-        );
-    }
-
-    public function isFulfilled() {
-        return $this->_state === IPromise::FULFILLED;
-    }
-
-    public function reject($reason=null) {
-        if($this->_parent) {
-            $this->_parent->reject($reason);
-            return $this;
-        }
-
-        return $this->rejectThis($reason);
-    }
-
-    public function rejectThis($reason=null) {
-        if($this->_state || $this->_result) {
-            return $this;
-        }
-
-        return $this->_invokeChildren(
-            $this->getEventHandler('reject'), 
-            $reason,
-            IPromise::REJECTED
-        );
-    }
-
-    public function isRejected() {
-        return $this->_state === IPromise::REJECTED;
-    }
-
-    protected function _invokeChildren(ICallback $callback=null, $value, $state) {
-        if($callback) {
             try {
-                $value = $callback->invoke($value, $this);
-                $this->_state = IPromise::FULFILLED;
+                $this->_result = $action->invokeArgs([$value, $this]);
             } catch(\Exception $e) {
-                $value = $e;
-                $this->_state = IPromise::REJECTED;
+                $this->_error = $e;
             }
         }
 
-        if($this->_state === IPromise::REJECTED 
-        && !$value instanceof \Exception) {
-            $value = new RejectedPromiseException($value);
+        return $this->_deliverDependants();
+    }
+
+    public function deliverError(\Exception $error) {
+        if($this->_hasDelivered) {
+            throw new LogicException(
+                'Promise has already delivered'
+            );
         }
 
-        if($value === $this) {
-            $value = null;
+        $this->_error = $error;
+        return $this->_deliverDependants();
+    }
+
+    protected function _deliverDependants() {
+        $this->_hasDelivered = true;
+        $maxErrorDepth = 10;
+        $errorDepth = 0;
+
+        while($this->_error) {
+            if($errorDepth++ >= $maxErrorDepth) {
+                break;
+            }
+
+            $error = $this->_error;
+            $this->_error = null;
+
+            foreach($this->_errorHandlers as $type => $callback) {
+                if(!$error instanceof $type && $type != '') {
+                    continue;
+                }
+
+                try {
+                    $this->_result = $callback->invokeArgs([$error, $this]);
+                    break 2;
+                } catch(\Exception $e) {
+                    $this->_error = $e;
+
+                    if($e === $error) {
+                        break 2;
+                    } else {
+                        continue 2;
+                    }
+                }
+            }
+
+            $this->_error = $error;
+            break;
         }
 
-        $this->_result = $value;
+        if($this->_result === $this) {
+            $this->_result = null;
+        }
 
-        while(!empty($this->_children)) {
-            $this->_invokeChild(array_shift($this->_children));
+        while(!empty($this->_dependants)) {
+            $this->_deliverDependant(array_shift($this->_dependants));
         }
 
         return $this;
     }
 
-    protected function _invokeChild(IPromise $child) {
+    protected function _deliverDependant(IPromise $dependant) {
         if($this->_result instanceof IPromise) {
-            $this->_result->then([$child, 'fulfill'], [$child, 'promise']);
+            $this->_result->then([$dependant, 'deliver'], [$dependant, 'deliverError']);
 
             if(!$this->_result->hasBegun()) {
                 $this->_result->begin();
             }
         } else {
-            if($this->_state === IPromise::FULFILLED) {
-                $child->fulfillThis($this->_result);
-            } else if($this->_state === IPromise::REJECTED) {
-                $child->rejectThis($this->_result);
+            if($this->_error) {
+                $dependant->deliverError($this->_error);
+            } else {
+                $dependant->deliver($this->_result);
             }
         }
     }
 
-
-
-// Cancel
-    public function cancel() {
-        if($this->_parent) {
-            $this->_parent->cancel();
-            return $this;
-        }
-
-        return $this->cancelThis();
+    public function hasDelivered() {
+        return $this->_hasDelivered;
     }
 
-    public function cancelThis() {
-        $this->_cancelRequests++;
-
-        if($this->_cancelRequests >= count($this->_children)) {
-            $this->_state = IPromise::CANCELLED;
-
-            if($this->_canceller) {
-                $this->_canceller->invoke($this);
-            }
-
-            $this->_cancelChildren();
-            $this->emit('cancel');
-        }
-
-        return $this;
+    public function hasError() {
+        return $this->_error !== null;
     }
 
-    public function forceCancel() {
-         if($this->_parent) {
-            $this->_parent->cancel();
-            return $this;
-        }
-
-        return $this->forceCancelThis();
+    public function isFulfilled() {
+        return $this->_hasDelivered && !$this->_error;
     }
 
-    public function forceCancelThis() {
-        $this->_cancelRequests = count($this->_children);
-        $this->_state = IPromise::CANCELLED;
-
-        if($this->_canceller) {
-            $this->_canceller->invoke($this);
-        }
-
-        $this->_cancelChildren();
-        $this->emit('cancel');
-
-        return $this;
-    }
-
-    public function isCancelled() {
-        return $this->_state === IPromise::CANCELLED;
-    }
-
-    protected function _cancelChildren() {
-        foreach($this->_children as $child) {
-            $child->_state = IPromise::CANCELLED;
-            $child->_cancelChildren();
-        }
+    public function isRejected() {
+        return $this->_hasDelivered && $this->_error;
     }
 
 
@@ -457,16 +683,19 @@ class Promise implements IPromise {
             $this->begin();
         }
 
-        while(!$this->_state) {
-            usleep(100000);
+        if(!$this->_hasDelivered) {
+            // TODO: loop while not delivered
+            core\stub($this);
         }
 
-        if($this->_state === IPromise::FULFILLED) {
-            return $this->_result;
-        } else if($this->_state === IPromise::REJECTED) {
-            throw $this->_result;
-        } else {
+        if($this->_isCancelled) {
             return null;
         }
+
+        if($this->_error) {
+            throw $this->_error;
+        }
+
+        return $this->_result;
     }
 }
