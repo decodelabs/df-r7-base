@@ -708,6 +708,11 @@ trait TScaffold_RecordListProvider {
         return $output;
     }
 
+    public function extendRecordListQuery($mode, opal\query\ISelectQuery $query) {
+        $this->_prepareRecordListQuery($query, $mode);
+        return $query;
+    }
+
     public function applyRecordQuerySearch(opal\query\ISelectQuery $query, $search, $mode) {
         $query->searchFor($search);
     }

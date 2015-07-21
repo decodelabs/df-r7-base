@@ -63,6 +63,7 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
 
 interface IRecordListProviderScaffold extends IRecordLoaderScaffold {
     public function getRecordListQuery($mode, array $fields=null);
+    public function extendRecordListQuery($mode, opal\query\ISelectQuery $query);
     public function applyRecordQuerySearch(opal\query\ISelectQuery $query, $search, $mode);
 
     public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null, $queryMode=null);
