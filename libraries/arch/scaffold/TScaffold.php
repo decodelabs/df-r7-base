@@ -847,6 +847,10 @@ trait TScaffold_SectionProvider {
 
                 $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
 
+                if(method_exists($this, '_prepareSection')) {
+                    $this->_prepareSection($record, $action);
+                }
+
                 $method = 'render'.ucfirst($action).'SectionBody';
 
                 if(method_exists($this, $method)) {

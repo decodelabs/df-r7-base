@@ -76,6 +76,7 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
             
             $output->addEntry(
                 (new arch\navigation\entry\Link($linkRequest, $title))
+                    ->setId($path)
                     ->setWeight(($i + 1) * 10)
             );
         }

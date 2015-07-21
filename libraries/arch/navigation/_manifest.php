@@ -32,6 +32,7 @@ interface IEntry extends core\IArrayInterchange {
 
 
 interface IEntryList extends core\IArrayInterchange, \Countable {
+    public function setEntries($entries);
     public function addEntries($entries);
     public function addEntry($entry);
     public function addLink($uri, $body, $icon=null);
@@ -41,6 +42,7 @@ interface IEntryList extends core\IArrayInterchange, \Countable {
     public function getEntryByIndex($index);
     public function getLastEntry();
     public function getEntries();
+    public function removeEntry($id);
     public function clearEntries();
 }
 
@@ -78,6 +80,14 @@ trait TEntryList {
         return (new self())->addEntries($entries);
     }
     
+    public function setEntries($entries) {
+        if(!is_array($entries)) {
+            $entries = func_get_args();
+        }
+
+        return $this->clearEntries()->addEntries($entries);
+    }
+
     public function addEntries($entries) {
         if(!is_array($entries)) {
             $entries = func_get_args();
@@ -183,6 +193,10 @@ trait TEntryList {
         });
     }
 
+    public function removeEntry($id) {
+        unset($this->_entries[$id]);
+        return $this;
+    }
 
     public function clearEntries() {
         $this->_entries = [];
