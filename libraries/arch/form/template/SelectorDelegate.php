@@ -343,6 +343,10 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         }
 
         $ol = $fa->addOverlay($fa->getLabelBody());
+        $this->_renderOverlaySelectorContent($ol, $selected);
+    }
+
+    protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol, $selected) {
         $fs = $ol->addFieldSet($this->_('Select'));
 
         if(!$this->values->search->hasValue() && $this->_defaultSearchString !== null) {
