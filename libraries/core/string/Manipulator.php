@@ -143,7 +143,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
 
         $string2->convertEncoding($string1->getEncoding());
 
-        return $string1->_value == $string2->_value;
+        return $string1->_value === $string2->_value;
     }
     
 
