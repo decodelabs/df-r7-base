@@ -567,9 +567,9 @@ class Mediator implements IMediator, core\IDumpable {
         $data = $response->getJsonContent();
 
         if($response->getHeaders()->getStatusCode() >= 500) {
-            throw new ApiImplementationError($data->error->toArray());
+            throw new ApiImplementationError('Request failed', $data->error->toArray());
         } else {
-            throw new ApiDataError($data->error->toArray());
+            throw new ApiDataError('Request failed', $data->error->toArray());
         }
     }
 
