@@ -69,6 +69,8 @@ interface IMediator extends spur\IHttpMediator {
     public function moveFile($bucket, $fromPath, $toPath, $acl=IAcl::PRIVATE_READ_WRITE);
     public function deleteFile($bucket, $path);
     public function deleteFolder($bucket, $path);
+
+    public function getBucketUrl($bucket, $path);
 }
 
 interface IUpload extends core\collection\IAttributeContainer {

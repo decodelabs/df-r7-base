@@ -255,6 +255,24 @@ class Mediator implements IMediator {
         ];
     }
 
+    public function getBucketUrl($bucket, $path) {
+        $path = (string)$path;
+        $url = self::ENDPOINT;
+        $path = ltrim($path, '/');
+
+        if($bucket !== null) {
+            if($this->_isDnsBucketName($bucket)) {
+                $url = $bucket.'.'.$url.'/'.$path;
+            } else {
+                $url = $url.'/'.$bucket.'/'.$path;
+            }
+        } else {
+            $url .= '/'.$path;
+        }
+
+        return link\http\Url::factory('//'.$url);
+    }
+
     public function createUrl($path) {
         $bucket = null;
 
