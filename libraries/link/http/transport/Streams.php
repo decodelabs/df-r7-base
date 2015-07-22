@@ -12,6 +12,7 @@ use df\link;
 class Streams implements link\http\ITransport {
     
     private $_headerStack = null;
+    private $_headers;
 
     public function promiseResponse(link\http\IRequest $request, link\http\IClient $client) {
         return core\lang\Promise::defer(function($promise) use($request, $client) {
@@ -48,10 +49,7 @@ class Streams implements link\http\ITransport {
         $stream = $this->_createStream($request, $promise);
 
         $response = new link\http\response\String(
-            $stream, null, 
-            link\http\response\HeaderCollection::fromResponseArray(
-                $this->_headerStack
-            )
+            $stream, null, $this->_headers
         );
 
         $this->_headerStack = null;
@@ -97,13 +95,13 @@ class Streams implements link\http\ITransport {
 
                     case STREAM_NOTIFY_REDIRECTED:
                         if($this->_headerStack) {
-                            $headers = link\http\response\HeaderCollection::fromResponseArray($this->_headerStack);
+                            $this->_headers = link\http\response\HeaderCollection::fromResponseArray($this->_headerStack);
                             $this->_headerStack = [];
                         } else {
-                            $headers = null;
+                            $this->_headers = null;
                         }
 
-                        $promise->emit('redirect', ['url' => $message, 'headers' => $headers]);
+                        $promise->emit('redirect', ['url' => $message, 'headers' => $this->_headers]);
                         break;
 
                     case STREAM_NOTIFY_PROGRESS:
@@ -119,6 +117,12 @@ class Streams implements link\http\ITransport {
         ]);
 
         $pointer = fopen($request->url, core\fs\Mode::READ_ONLY, null, $context);
+        $this->_headers = link\http\response\HeaderCollection::fromResponseArray($this->_headerStack);
+
+        if($this->_headers->get('transfer-encoding') == 'chunked') {
+            stream_filter_append($pointer, 'Streams_ChunkFilter', STREAM_FILTER_READ);
+        }
+
         return new core\io\Stream($pointer);
     }
 
@@ -128,7 +132,7 @@ class Streams implements link\http\ITransport {
                 'method' => strtoupper($request->getMethod()),
                 'header' => $request->headers->toString(),
                 'protocol_version' => $request->headers->getHttpVersion(),
-                'ignore_errors' => true,
+                //'ignore_errors' => true,
                 'follow_location' => 0,
                 'max_redirects' => 0
             ],
@@ -173,3 +177,55 @@ class Streams implements link\http\ITransport {
         return $output;
     }
 }
+
+
+class Streams_ChunkFilter extends \php_user_filter {
+    
+    protected $_remaining = 0;
+
+    function filter($in, $out, &$consumed, $closing) {
+        while($bucket = stream_bucket_make_writeable($in)) {
+            $outbuffer = '';
+            $offset = 0;
+
+            while($offset < $bucket->datalen) {
+                if($this->_remaining === 0) {
+                    $firstLine = strpos($bucket->data, "\r\n", $offset);
+                    $descriptor = substr($bucket->data, $offset, $firstLine - $offset);
+                    $length = current(explode(';', $descriptor, 2));
+                    $length = trim($length);
+
+                    if(!ctype_xdigit($length)) {
+                        return \PSFS_ERR_FATAL;
+                    }
+
+                    $this->_remaining = hexdec($length);
+                    $offset = $firstLine + 2;
+
+                    if($this->_remaining === 0) {
+                        break;
+                    }
+                }
+
+                $nibble = substr($bucket->data, $offset, $this->_remaining);
+                $size = strlen($nibble);
+                $offset += $size;
+
+                if($size === $this->_remaining) {
+                    $offset += 2;
+                }
+
+                $this->_remaining -= $size;
+                $outbuffer .= $nibble;
+            }
+
+            $consumed += $bucket->datalen;
+            $bucket->data = $outbuffer;
+            stream_bucket_append($out, $bucket);
+        }
+
+        return \PSFS_PASS_ON;
+    }
+}
+
+stream_filter_register('Streams_ChunkFilter', 'df\\link\\http\\transport\\Streams_ChunkFilter');
