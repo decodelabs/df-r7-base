@@ -165,8 +165,8 @@ interface IPromise {
     public function hasEventHandler($name);
     public function getEventHandler($name);
     public function removeEventHandler($name);
-    public function emit($event, $value=null);
-    public function emitThis($event, $value=null);
+    public function emit($event, array $values=null);
+    public function emitThis($event, array $values=null);
 
 // Progress
     public function setProgress($progress, $total=null);

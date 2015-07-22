@@ -250,6 +250,10 @@ class Promise implements IPromise {
     }
 
     public function cancelThis() {
+        if($this->_isCancelled || $this->_hasDelivered) {
+            return $this;
+        }
+        
         $this->_cancelRequests++;
 
         if($this->_cancelRequests >= count($this->_dependants)) {
@@ -425,20 +429,20 @@ class Promise implements IPromise {
         return $this->on(substr($method, 2), array_shift($args));
     }
 
-    public function emit($name, $value=null) {
+    public function emit($name, array $values=null) {
         if($this->_parent) {
-            $this->_parent->emit($name, $value);
+            $this->_parent->emit($name, $values);
             return $this;
         }
 
-        return $this->emitThis($name, $value);
+        return $this->emitThis($name, $values);
     }
 
-    public function emitThis($name, $value=null) {
+    public function emitThis($name, array $values=null) {
         $name = lcfirst($name);
 
         if($this->hasEventHandler($name)) {
-            $this->_eventHandlers[$name]->invokeArgs([$value, $this]);
+            $this->_eventHandlers[$name]->invokeArgs([$values, $this]);
         }
 
         return $this;
@@ -690,6 +694,10 @@ class Promise implements IPromise {
 
         if($this->_isCancelled) {
             return null;
+        }
+
+        if($this->_result instanceof IPromise) {
+            $this->_result = $this->_result->sync();
         }
 
         if($this->_error) {
