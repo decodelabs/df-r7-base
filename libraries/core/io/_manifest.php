@@ -31,6 +31,7 @@ interface IReader {
     public function readChunk($length);
     public function readLine();
     public function readChar();
+    public function writeTo(IWriter $writer);
 
     public function isReadingEnabled();
 }
@@ -76,6 +77,20 @@ trait TReader {
 
     public function readChar() {
         return $this->readChunk(1);
+    }
+
+    public function writeTo(IWriter $writer) {
+        if(!$this->isReadingEnabled()) {
+            throw new LogicException(
+                'Reading has been shut down'
+            );
+        }
+
+        while(false !== ($chunk = $this->_readChunk(1024))) {
+            $writer->write($chunk);
+        }
+
+        return $this;
     }
 
     public function isReadingEnabled() {
@@ -124,6 +139,7 @@ interface IWriter extends IChunkReceiver {
     public function write($data);
     public function writeLine($line='');
     public function writeBuffer(&$buffer, $length);
+    public function writeFrom(IReader $reader);
 
     public function isWritingEnabled();
 }
@@ -210,6 +226,20 @@ trait TWriter {
         $result = $this->writeChunk($buffer, $length);
         $buffer = substr($buffer, $result);
         return $result;
+    }
+
+    public function writeFrom(IReader $reader) {
+        if(!$this->isWritingEnabled()) {
+            throw new LogicException(
+                'Writing has already been shut down'
+            );
+        }
+
+        while(false !== ($chunk = $reader->readChunk(1024))) {
+            $this->write($chunk);
+        }
+
+        return $this;
     }
 
     public function isWritingEnabled() {

@@ -204,7 +204,15 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
         $this->lock(LOCK_EX);
         $this->truncate();
-        $this->write($data);
+
+        if(!$data instanceof core\io\IReader) {
+            $data = new MemoryFile((string)$data);
+        }
+
+        while(false !== ($chunk = $data->readChunk(1024))) {
+            $this->write($chunk);
+        }
+
         $this->unlock();
 
         if($closeAfter) {

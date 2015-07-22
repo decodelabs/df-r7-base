@@ -8,7 +8,7 @@ namespace df\core\io;
 use df;
 use df\core;
     
-class Stream implements IStreamChannel {
+class Stream implements IStreamChannel, core\IDumpable {
 
     use TReader;
     use TWriter;
@@ -138,5 +138,10 @@ class Stream implements IStreamChannel {
     public function close() {
         @fclose($this->_resource);
         return $this;
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return $this->_resource;
     }
 }
