@@ -166,6 +166,10 @@ class Client implements IClient {
 
 
     public function prepareRequest(IRequest $request) {
+        if(!$request->url->hasScheme()) {
+            $request->url->setScheme('http');
+        }
+
         if($this->_defaultOptions) {
             $options = $request->options;
             $request->options = clone $this->getDefaultOptions();
