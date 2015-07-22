@@ -8,7 +8,7 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-class Promise implements IPromise {
+class Promise implements IPromise, core\IDumpable {
     
     protected $_action;
     protected $_errorHandlers = [];
@@ -57,7 +57,7 @@ class Promise implements IPromise {
     public static function deferAll($promises) {
         $results = [];
 
-        return static::deferEach($promises, function($value, $key) use(&$results) {
+        return static::deferEach($promises, function($value, $key, $aggregate) use(&$results) {
             $results[$key] = $value;
         }, function(\Exception $error, $key, IPromise $aggregate) {
             $aggregate->deliverError($error);
@@ -705,5 +705,32 @@ class Promise implements IPromise {
         }
 
         return $this->_result;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        if($this->_error) {
+            return $this->_error;
+        } else if($this->_result) {
+            return $this->_result;
+        }
+
+        if($this->_isCancelled) {
+            return '** CANCELLED **';
+        }
+
+        $output = [];
+        $output[] = $this->_hasBegun ? 'Pending' : 'Idle';
+
+        if($this->_progressCurrent) {
+            if($this->_progressTotal) {
+                $output[] = intval($this->_progressCurrent / $this->_progressTotal * 100).'%';
+            } else  {
+                $output[] = $this->_progressCurrent.' completed';
+            }
+        }
+
+        return implode(', ', $output);
     }
 }

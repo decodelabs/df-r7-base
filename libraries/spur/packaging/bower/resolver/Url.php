@@ -30,7 +30,7 @@ class Url implements spur\packaging\bower\IResolver {
             $package->url, 
             $cachePath, 
             $package->cacheFileName
-        )->sync();
+        );
 
         if(!$response->isOk()) {
             throw new spur\packaging\bower\RuntimeException(

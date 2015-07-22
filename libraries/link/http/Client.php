@@ -30,13 +30,22 @@ class Client implements IClient {
     }
 
 
+
     public function get($url, $headers=null, $cookies=null) {
+        return $this->promise($url, $headers, $cookies)->sync();
+    }
+
+    public function promise($url, $headers=null, $cookies=null) {
         return $this->promiseResponse(
             $this->newRequest($url, 'get', $headers, $cookies)
         );
     }
 
     public function getFile($url, $destination, $fileName=null, $headers=null, $cookies=null) {
+        return $this->promiseFile($url, $destination, $fileName, $headers, $cookies)->sync();
+    }
+
+    public function promiseFile($url, $destination, $fileName=null, $headers=null, $cookies=null) {
         return $this->promiseResponse(
             $this->newRequest($url, 'get', $headers, $cookies)
                 ->withOptions(function($options) use($destination, $fileName) {
@@ -52,40 +61,67 @@ class Client implements IClient {
     }
 
     public function post($url, $data, $headers=null, $cookies=null) {
+        return $this->promisePost($url, $data, $headers, $cookies)->sync();
+    }
+
+    public function promisePost($url, $data, $headers=null, $cookies=null) {
         return $this->promiseResponse(
             $this->newRequest($url, 'post', $headers, $cookies, $data)
         );
     }
 
     public function put($url, $data, $headers=null, $cookies=null) {
+        return $this->promisePut($url, $data, $headers, $cookies)->sync();
+    }
+
+    public function promisePut($url, $data, $headers=null, $cookies=null) {
         return $this->promiseResponse(
             $this->newRequest($url, 'put', $headers, $cookies, $data)
         );
     }
 
     public function delete($url, $headers=null, $cookies=null) {
+        return $this->promiseDelete($url, $headers, $cookies)->sync();
+    }
+
+    public function promiseDelete($url, $headers=null, $cookies=null) {
         return $this->promiseResponse(
             $this->newRequest($url, 'delete', $headers, $cookies)
         );
     }
 
     public function head($url, $headers=null, $cookies=null) {
+        return $this->promiseHead($url, $headers, $cookies)->sync();
+    }
+
+    public function promiseHead($url, $headers=null, $cookies=null) {
         return $this->promiseResponse(
             $this->newRequest($url, 'head', $headers, $cookies)
         );
     }
 
     public function options($url, $headers=null, $cookies=null) {
+        return $this->promiseOptions($url, $headers, $cookies)->sync();
+    }
+
+    public function promiseOptions($url, $headers=null, $cookies=null) {
         return $this->promiseResponse(
             $this->newRequest($url, 'options', $headers, $cookies)
         );
     }
 
     public function patch($url, $data, $headers=null, $cookies=null) {
+        return $this->promisePatch($url, $data, $headers, $cookies)->sync();
+    }
+
+    public function promisePatch($url, $data, $headers=null, $cookies=null) {
         return $this->promiseResponse(
             $this->newRequest($url, 'patch', $headers, $cookies, $data)
         );
     }
+
+
+    
 
     public function newRequest($url, $method='get', $headers=null, $cookies=null, $body=null) {
         $request = link\http\request\Base::factory($url);
@@ -110,6 +146,12 @@ class Client implements IClient {
         }
 
         return $request;
+    }
+
+    
+
+    public function newPool() {
+        return new link\http\request\Pool($this);
     }
 
 

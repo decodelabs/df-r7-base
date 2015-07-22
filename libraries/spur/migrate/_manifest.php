@@ -30,5 +30,5 @@ interface IHandler {
     public function createRequest($method, $request, array $data=null, $responseFilePath=null);
     public function call(link\http\IRequest $request);
     public function callAsync(link\http\IRequest $request, $callback);
-    public function executeAsync();
+    public function sync();
 }

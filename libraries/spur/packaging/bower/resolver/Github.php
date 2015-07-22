@@ -47,7 +47,7 @@ class Github implements spur\packaging\bower\IResolver {
 
 
         $http = new link\http\Client();
-        $response = $http->getFile($url, $cachePath, $package->cacheFileName)->sync();
+        $response = $http->getFile($url, $cachePath, $package->cacheFileName);
 
         if(!$response->isOk()) {
             throw new spur\packaging\bower\RuntimeException(

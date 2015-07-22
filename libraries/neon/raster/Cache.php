@@ -47,7 +47,7 @@ class Cache extends core\cache\Base {
             if($isUrl) {
                 $http = new link\http\Client();
                 $file = core\fs\File::createTemp();
-                $response = $http->getFile($sourceFilePath, $file)->sync();
+                $response = $http->getFile($sourceFilePath, $file);
 
                 if(!$response->isOk()) {
                     throw new RuntimeException(

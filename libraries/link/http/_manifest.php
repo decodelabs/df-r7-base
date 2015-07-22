@@ -543,12 +543,11 @@ interface IUploadFile {
 
 
 // Client
-
-interface IClient {
+interface IRequestHandler {
     public function getTransport();
 
     public function get($url, $headers=null, $cookies=null);
-    public function getFile($url, $downloadFolder, $fileName=null, $headers=null, $cookies=null);
+    public function getFile($url, $destination, $fileName=null, $headers=null, $cookies=null);
     public function post($url, $data, $headers=null, $cookies=null);
     public function put($url, $data, $headers=null, $cookies=null);
     public function delete($url, $headers=null, $cookies=null);
@@ -557,9 +556,24 @@ interface IClient {
     public function patch($url, $data, $headers=null, $cookies=null);
 
     public function newRequest($url, $method='get', $headers=null, $cookies=null, $body=null);
+    public function promiseResponse(IRequest $request);
+}
+
+
+interface IClient extends IRequestHandler {
+    public function newPool();
+
+    public function promise($url, $headers=null, $cookies=null);
+    public function promiseFile($url, $destination, $fileName=null, $headers=null, $cookies=null);
+    public function promisePost($url, $data, $headers=null, $cookies=null);
+    public function promisePut($url, $data, $headers=null, $cookies=null);
+    public function promiseDelete($url, $headers=null, $cookies=null);
+    public function promiseHead($url, $headers=null, $cookies=null);
+    public function promiseOptions($url, $headers=null, $cookies=null);
+    public function promisePatch($url, $data, $headers=null, $cookies=null);
     
     public function sendRequest(IRequest $request);
-    public function promiseResponse(IRequest $request);
+    
     public function prepareRequest(IRequest $request);
     public function prepareResponse(IResponse $response, IRequest $request);
 
@@ -574,7 +588,15 @@ interface IClient {
     public static function getDefaultCaBundlePath();
 }
 
-interface IRequestPool {}
+interface IRequestPool extends IRequestHandler {
+    public function getClient();
+
+    public function setBatchSize($size);
+    public function getBatchSize();
+
+    public function sync();
+    public function cancel();
+}
 
 interface ITransport {
     public function promiseResponse(IRequest $request, IClient $client);

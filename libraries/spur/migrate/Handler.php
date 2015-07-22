@@ -17,7 +17,7 @@ class Handler implements IHandler {
     protected $_url;
     protected $_router;
     protected $_context;
-    protected $_httpClient;
+    protected $_httpPool;
 
     protected $_asyncBatchSize = 0;
     protected $_asyncBatchLimit = 10;
@@ -29,7 +29,7 @@ class Handler implements IHandler {
             $this->_context->application->getPassKey()
         ));
 
-        $this->_httpClient = new link\http\peer\Client();
+        $this->_httpPool = (new link\http\Client())->newPool();
         $this->_sayHello($url);
     }
 
@@ -50,7 +50,7 @@ class Handler implements IHandler {
         $url->path->push('~devtools/migrate/hello')->shouldAddTrailingSlash(false);
         $url->query->key = $this->_key;
 
-        $response = $this->_httpClient->get($url);
+        $response = $this->_httpPool->getClient()->get($url);
         $content = $response->getJsonContent();
 
         if(!$content->data->actions->contains('media')) {
@@ -117,7 +117,7 @@ class Handler implements IHandler {
     }
 
     public function call(link\http\IRequest $request) {
-        $response = $this->_httpClient->sendRequest($request);
+        $response = $this->_httpPool->getClient()->sendRequest($request);
 
         if($response->isError()) {
             $content = $response->getJsonContent();
@@ -128,23 +128,12 @@ class Handler implements IHandler {
     }
 
     public function callAsync(link\http\IRequest $request, $callback) {
-        $this->_httpClient->addRequest($request, $callback);
-        $this->_asyncBatchSize++;
-
-        if($this->_asyncBatchSize >= 10) {
-            $this->_asyncBatchSize = 0;
-            $this->_httpClient->run();
-        }
-
+        $this->_httpPool->promiseResponse($request)->then($callback);
         return $this;
     }
 
-    public function executeAsync() {
-        if($this->_asyncBatchSize) {
-            $this->_httpClient->run();
-            $this->_asyncBatchSize = 0;
-        }
-
+    public function sync() {
+        $this->_httpPool->sync();
         return $this;
     }
 }
