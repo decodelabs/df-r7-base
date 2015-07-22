@@ -388,7 +388,6 @@ class Mediator implements IMediator {
                 'Resource not found - '.$request->getUrl()
             );
         } else {
-            core\dump($response);
             return new RuntimeException(
                 'An unknown API error occurred'
             );
