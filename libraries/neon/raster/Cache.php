@@ -45,9 +45,9 @@ class Cache extends core\cache\Base {
 
         if(!$output = $this->getDirectFilePath($key)) {
             if($isUrl) {
-                $http = new link\http\peer\Client();
+                $http = new link\http\Client();
                 $file = core\fs\File::createTemp();
-                $response = $http->getFile($sourceFilePath, $file);
+                $response = $http->getFile($sourceFilePath, $file)->sync();
 
                 if(!$response->isOk()) {
                     throw new RuntimeException(

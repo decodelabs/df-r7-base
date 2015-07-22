@@ -84,13 +84,14 @@ class Client implements IClient, core\IDumpable {
         $callback = core\lang\Callback::factory($callback);
         $request = link\http\request\Base::factory($request);
         $headers = $request->getHeaders();
+        $request->options->sanitize();
 
         if(!$headers->has('user-agent')) {
             $headers->set('user-agent', static::USER_AGENT);
         }
         
         if($request->isSecure()) {
-            $scheme = $request->getSecureTransport();
+            $scheme = $request->options->getSecureTransport();
         } else {
             $scheme = 'tcp';
         }
@@ -134,7 +135,7 @@ class Client implements IClient, core\IDumpable {
 
     public function getFile($url, $file, $headers=null, $cookies=null) {
         $request = $this->prepareRequest($url, 'get', $headers, $cookies);
-        $request->setResponseFilePath($file);
+        $request->options->setDownloadFilePath($file);
         return $this->sendRequest($request);
     }
 
@@ -155,11 +156,11 @@ class Client implements IClient, core\IDumpable {
         $request->setMethod($method);
 
         if($headers) {
-            $request->getHeaders()->import(link\http\request\HeaderCollection::factory($headers));
+            $request->headers->import(link\http\request\HeaderCollection::factory($headers));
         }
 
         if($cookies) {
-            $request->getCookieData()->import($cookies);
+            $request->cookies->import($cookies);
         }
 
         return $request;
@@ -239,7 +240,7 @@ class Client implements IClient, core\IDumpable {
                 $session->setStore('length', (int)$headers->get('content-length'));
             }
 
-            if(($path = $request->getResponseFilePath()) 
+            if(($path = $request->options->getDownloadFilePath()) 
             && ($this->_saveIfNotOk || $headers->hasStatusCode(200))) {
                 if($path instanceof core\io\IChannel) {
                     $response->setContentFileStream($path);

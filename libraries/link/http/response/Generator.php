@@ -15,7 +15,8 @@ class Generator extends Base implements link\http\IGeneratorResponse {
     protected $_channel;
     protected $_manualChunk = false;
 
-    public function __construct($contentType, $sender) {
+    public function __construct($contentType, $sender, link\http\IResponseHeaderCollection $headers=null) {
+        parent::__construct($headers);
         $this->_sender = $sender;
 
         if($this->_sender instanceof core\io\IChunkSender) {
@@ -26,7 +27,7 @@ class Generator extends Base implements link\http\IGeneratorResponse {
             );
         }
 
-        $this->getHeaders()
+        $this->headers
             ->set('content-type', $contentType)
             ->set('transfer-encoding', 'chunked')
             ->setCacheAccess('no-cache')

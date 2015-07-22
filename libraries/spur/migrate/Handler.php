@@ -109,7 +109,7 @@ class Handler implements IHandler {
         }
 
         if($responseFilePath !== null) {
-            $request->setResponseFilePath($responseFilePath);
+            $request->options->setDownloadFilePath($responseFilePath);
         }
 
         $request->setMethod($method);

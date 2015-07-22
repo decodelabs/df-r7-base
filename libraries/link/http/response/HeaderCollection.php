@@ -122,6 +122,35 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         $cat = self::_getStatusCodeCategory($code);
         return $cat == 4 || $cat == 5;
     }
+
+
+    public static function fromResponseString($string, &$content=null) {
+        $parts = preg_split('|(?:\r?\n){2}|m', $string, 2);
+        $headers = array_shift($parts);
+        $content = array_shift($parts);
+        return self::fromResponseArray(explode("\n", $headers));
+    }
+
+    public static function fromResponseArray(array $lines) {
+        $output = new self();
+        $http = array_shift($lines);
+        
+        if(!preg_match("|^HTTP/([\d\.x]+) (\d+) ([^\r\n]+)|", $http, $matches)) {
+            throw new link\http\UnexpectedValueException(
+                'Headers do not appear to be valid HTTP format'
+            );
+        }
+        
+        $output->setHttpVersion($matches[1]);
+        $output->setStatusCode($matches[2]);
+        $output->setStatusMessage($matches[3]);
+        
+        foreach($lines as $line) {
+            $output->add(trim(strtok(trim($line), ':')), trim(strtok('')));
+        }
+
+        return $output;
+    }
     
     
     
@@ -367,7 +396,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
             return null;
         }
         
-        return substr($this->get('content-disposition'), 22, -1);
+        return trim(substr($this->get('content-disposition'), 21), '\'"');
     }
     
     

@@ -13,11 +13,12 @@ class File extends Base implements link\http\IFileResponse {
     
     protected $_file;
     
-    public function __construct($file, $checkPath=true) {
+    public function __construct($file, $checkPath=true, link\http\IResponseHeaderCollection $headers=null) {
+        parent::__construct($headers);
         $this->setFile($file, $checkPath);
         
         /*
-        $this->_headers
+        $this->headers
             ->setCacheAccess('public')
             ->setCacheExpiration(core\time\Duration::fromDays(1))
             //->shouldRevalidateCache(true)

@@ -13,28 +13,27 @@ use df\flex;
 class Base implements link\http\IRequest, core\IDumpable {
     
     use core\TStringProvider;
+    use core\lang\TChainable;
 
-    const GET     = 'GET';
-    const POST    = 'POST';
-    const PUT     = 'PUT';
-    const HEAD    = 'HEAD';
-    const DELETE  = 'DELETE';
-    const TRACE   = 'TRACE';
-    const OPTIONS = 'OPTIONS';
-    const CONNECT = 'CONNECT';
-    const MERGE   = 'MERGE';
+    const GET     = 'get';
+    const POST    = 'post';
+    const PUT     = 'put';
+    const HEAD    = 'head';
+    const DELETE  = 'delete';
+    const TRACE   = 'trace';
+    const OPTIONS = 'options';
+    const CONNECT = 'connect';
+    const MERGE   = 'merge';
     
-    protected $_method = self::GET;
-    protected $_url;
-    protected $_headers;
+    public $url;
+    public $method = self::GET;
+    public $headers;
+    public $cookies;
+    public $options;
+
     protected $_ip;
     protected $_postData;
     protected $_bodyData;
-    protected $_cookieData;
-    protected $_secureTransport = 'ssl';
-    protected $_environmentMode = false;
-
-    protected $_responseFilePath;
     
     public static function fromString($string) {
         $class = get_called_class();
@@ -88,33 +87,121 @@ class Base implements link\http\IRequest, core\IDumpable {
             $environmentMode = $url;
             $url = null;
         }
-        
-        if($url !== null) {
+
+        if($environmentMode) {
+            $this->_importEnvironment($url);
+        } else {
+            $this->headers = new HeaderCollection();
+
+            if($url === null) {
+                $url = 'localhost';
+            }
+
             $this->setUrl($url);
         }
-        
-        if($this->_environmentMode = $environmentMode) {
-            if(isset($_SERVER['REQUEST_METHOD'])) {
-                $this->setMethod($_SERVER['REQUEST_METHOD']);
-            } else {
-                $this->setMethod('GET');
+
+        if(!$this->cookies) {
+            $this->cookies = new core\collection\Tree();
+        }
+
+        $this->options = new Options();
+    }
+
+    protected function _importEnvironment($url) {
+        if(isset($_SERVER['REQUEST_METHOD'])) {
+            $this->setMethod($_SERVER['REQUEST_METHOD']);
+        } else {
+            $this->setMethod('get');
+        }
+
+        $this->headers = HeaderCollection::fromEnvironment();
+
+        if($this->headers->has('cookie')) {
+            $this->setCookieData($this->headers->get('cookie'));
+        }
+
+        if($url === null) {
+            $url = link\http\Url::fromEnvironment();
+        }
+
+        $this->setUrl($url);
+
+        $this->_ip = core\lang\Promise::defer(function($promise) {
+            $ips = '';
+                
+            if(isset($_SERVER['REMOTE_ADDR'])) {
+                $ips .= $_SERVER['REMOTE_ADDR'].',';
             }
+
+            if(isset($_SERVER['HTTP_CLIENT_IP'])) {
+                $ips .= $_SERVER['HTTP_CLIENT_IP'].',';
+            }
+
+            if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ips .= $_SERVER['HTTP_X_FORWARDED_FOR'];
+            }
+
+            $parts = explode(',', rtrim($ips, ','));
+
+            while(!empty($parts)) {
+                $ip = trim(array_shift($parts));
+
+                try {
+                    return new link\Ip($ip);
+                } catch(link\InvalidArgumentException $e) {
+                    if(empty($parts)) {
+                        return new link\Ip('0.0.0.0');
+                    }
+                }
+            }
+        });
+
+        if($this->method === 'post') {
+            $this->_postData = core\lang\Promise::defer(function($promise) {
+                $payload = file_get_contents('php://input');
+                $usePost = true;
+                $output = null;
+
+                switch(strtolower($this->headers->getBase('content-type'))) {
+                    case 'application/x-www-form-urlencoded':
+                        try {
+                            $output = core\collection\Tree::fromArrayDelimitedString($payload);
+                        } catch(\Exception $e) {
+                            $output = null;
+                        }
+
+                        break;
+
+                    case 'application/json':
+                        $usePost = false;
+                        $output = core\collection\Tree::factory(
+                            flex\json\Codec::decode($payload)
+                        );
+
+                        break;
+                }
+
+                if($usePost && $output && $output->isEmpty()) {
+                    $output = null;
+                }
+
+                if(empty($output) && !empty($_POST) && $usePost) {
+                    $output = new core\collection\Tree($_POST);
+                }
+
+                return $output;
+            });
         }
     }
     
     public function __clone() {
-        if($this->_url) {
-            $this->_url = clone $this->_url;
-        }
+        $this->url = clone $this->url;
         
         if($this->_postData) {
             $this->_postData = clone $this->_postData;
         }
         
-        if($this->_headers) {
-            $this->_headers = clone $this->_headers;
-        }
-
+        $this->headers = clone $this->headers;
         $this->_ip = null;
         
         return $this;
@@ -122,20 +209,8 @@ class Base implements link\http\IRequest, core\IDumpable {
     
     public function __get($member) {
         switch($member) {
-            case 'method':
-                return $this->getMethod();
-                
-            case 'url':
-                return $this->getUrl();
-                
-            case 'headers':
-                return $this->getHeaders();
-                
             case 'post':
                 return $this->getPostData();
-                
-            case 'cookies':
-                return $this->getCookieData();
                 
             case 'ip':
                 return $this->getIp();
@@ -144,39 +219,18 @@ class Base implements link\http\IRequest, core\IDumpable {
     
     public function __set($member, $value) {
         switch($member) {
-            case 'method':
-                return $this->setMethod($value);
-                
-            case 'url':
-                return $this->setUrl($value);
-                
-            case 'headers':
-                return $this->setHeaders($value);
-                
             case 'post':
                 return $this->setPostData($value);
-                
-            case 'cookies':
-                return $this->setCookieData($value);
                 
             case 'ip':
                 return $this->setIp($value);
         }
     }
     
-    public function shouldUseEnvironment($flag=null) {
-        if($flag !== null) {
-            $this->_environmentMode = (bool)$flag;
-            return $this;
-        }
-        
-        return $this->_environmentMode;
-    }
-    
     
 // Method
     public function setMethod($method) {
-        $method = strtoupper($method);
+        $method = strtolower($method);
         
         switch($method) {
             case self::POST:
@@ -188,7 +242,7 @@ class Base implements link\http\IRequest, core\IDumpable {
             case self::OPTIONS:
             case self::CONNECT:
             case self::MERGE:
-                $this->_method = $method;
+                $this->method = $method;
                 break;
                 
             default:
@@ -197,9 +251,9 @@ class Base implements link\http\IRequest, core\IDumpable {
                 );
         }
         
-        if($this->_method === self::POST && $this->_postData === null) {
+        if($this->method === self::POST && $this->_postData === null) {
             $this->setPostData(null);
-        } else if($this->_method !== self::POST) {
+        } else if($this->method !== self::POST) {
             $this->_postData = null;
         }
         
@@ -207,43 +261,43 @@ class Base implements link\http\IRequest, core\IDumpable {
     }
     
     public function getMethod() {
-        return $this->_method;
+        return $this->method;
     }
     
     public function isGet() {
-        return $this->_method === self::GET;
+        return $this->method === self::GET;
     }
     
     public function isPost() {
-        return $this->_method === self::POST;
+        return $this->method === self::POST;
     }
     
     public function isPut() {
-        return $this->_method === self::PUT;
+        return $this->method === self::PUT;
     }
     
     public function isHead() {
-        return $this->_method === self::HEAD;
+        return $this->method === self::HEAD;
     } 
     
     public function isDelete() {
-        return $this->_method === self::DELETE;
+        return $this->method === self::DELETE;
     }
     
     public function isTrace() {
-        return $this->_method === self::TRACE;
+        return $this->method === self::TRACE;
     }
     
     public function isOptions() {
-        return $this->_method === self::OPTIONS;
+        return $this->method === self::OPTIONS;
     }
     
     public function isConnect() {
-        return $this->_method === self::CONNECT;
+        return $this->method === self::CONNECT;
     }
     
     public function isMerge() {
-        return $this->_method === self::MERGE;
+        return $this->method === self::MERGE;
     }
     
     
@@ -253,79 +307,38 @@ class Base implements link\http\IRequest, core\IDumpable {
             $url = link\http\Url::factory($url);
         }
         
-        $this->_url = $url;
+        $this->url = $url;
         $this->_ip = null;
 
-        if($this->_headers) {
-            $this->_headers->remove('Host');
-        }
+        $this->headers->remove('Host');
 
         return $this;
     }
     
     public function getUrl() {
-        if(!$this->_url) {
-            $url = null;
-            
-            if($this->_environmentMode) {
-                if(isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) {
-                    $url = 'https';
-                } else {
-                    $url = 'http';
-                }
-                
-                if(isset($_SERVER['HTTP_HOST'])) {
-                    $url .= '://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'];
-                } else {
-                    $url .= '://'.gethostname();
-                }
-                
-                if(isset($_SERVER['REQUEST_URI'])) {
-                    $req = ltrim($_SERVER['REQUEST_URI'], '/');
-                } else if(isset($_SERVER['argv'][2])) {
-                    $req = $_SERVER['argv'][2];
-                } else {
-                    $req = '';
-                }
-
-                $req = explode('?', $req, 2);
-                $req[0] = urldecode($req[0]);
-                
-                $url .= '/'.implode('?', $req);
-            }
-            
-            $this->_url = new link\http\Url($url);
-        }
-        
-        return $this->_url;
+        return $this->url;
     }
-    
 
-// Security
     public function isSecure() {
         return $this->getUrl()->isSecure();
     }
 
-    public function setSecureTransport($transport) {
-        $transport = strtolower($transport);
 
-        switch($transport) {
-            case 'ssl':
-            case 'sslv2':
-            case 'sslv3':
-            case 'tls':
-                $this->_secureTransport = $transport;
-                break;
-
-            default:
-                $this->_secureTransport = 'tls';
-                break;
-        }
+// Options
+    public function setOptions(link\http\IRequestOptions $options) {
+        $this->options = $options;
+        return $this;
     }
 
-    public function getSecureTransport() {
-        return $this->_secureTransport;
+    public function getOptions() {
+        return $this->options;
     }
+
+    public function withOptions($callback) {
+        core\lang\Callback::callArgs($callback, [$this->options, $this]);
+        return $this;
+    }
+    
 
     
 // Headers
@@ -336,32 +349,25 @@ class Base implements link\http\IRequest, core\IDumpable {
             );
         }
 
-        $this->_headers = $headers;
+        $this->headers = $headers;
         return $this;
     }
     
     public function getHeaders() {
-        if(!$this->_headers) {
-            if($this->_environmentMode) {
-                $this->_headers = HeaderCollection::fromEnvironment();
-
-                if($this->_headers->has('cookie')) {
-                    $this->setCookieData($this->_headers->get('cookie'));
-                }
-            } else {
-                $this->_headers = new HeaderCollection();
-            }
-        }
-        
-        return $this->_headers;
+        return $this->headers;
     }
 
     public function hasHeaders() {
-        return $this->_headers && !$this->_headers->isEmpty();
+        return $this->headers && !$this->headers->isEmpty();
+    }
+
+    public function withHeaders($callback) {
+        core\lang\Callback::callArgs($callback, [$this->headers, $this]);
+        return $this;
     }
     
     public function isCachedByClient() {
-        switch($this->_method) {
+        switch($this->method) {
             case self::POST:
             case self::PUT:
             case self::DELETE:
@@ -370,23 +376,14 @@ class Base implements link\http\IRequest, core\IDumpable {
                 return false;
         }
         
-        if(!$this->_headers) {
-            if($this->_environmentMode) {
-                return isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])
-                    || isset($_SERVER['HTTP_IF_NONE_MATCH']);
-            }
-            
-            return false;
-        }
-        
-        return $this->_headers->has('if-modified-since')
-            || $this->_headers->has('if-none-match');
+        return $this->headers->has('if-modified-since')
+            || $this->headers->has('if-none-match');
     }
     
     
 // Post data
     public function setPostData($post) {
-        if($this->_method != 'POST') {
+        if($this->method !== 'post') {
             if($post !== null) {
                 throw new link\http\UnexpectedValueException(
                     'Post data can only be set when request method is POST'
@@ -406,44 +403,12 @@ class Base implements link\http\IRequest, core\IDumpable {
     }
     
     public function getPostData() {
-        if(!$this->_postData && $this->_method == 'POST') {
-            $postData = null;
-            
-            if($this->_environmentMode) {
-                $payload = file_get_contents('php://input');
-                $usePost = true;
+        if($this->_postData instanceof core\lang\IPromise) {
+            $this->_postData = $this->_postData->sync();
+        }
 
-                switch(strtolower($this->_headers->getBase('content-type'))) {
-                    case 'application/x-www-form-urlencoded':
-                        try {
-                            $this->_postData = core\collection\Tree::fromArrayDelimitedString($payload);
-                        } catch(\Exception $e) {
-                            $this->_postData = null;
-                        }
-
-                        break;
-
-                    case 'application/json':
-                        $usePost = false;
-                        $this->_postData = core\collection\Tree::factory(
-                            flex\json\Codec::decode($payload)
-                        );
-
-                        break;
-                }
-
-                if($usePost && $this->_postData && $this->_postData->isEmpty()) {
-                    $this->_postData = null;
-                }
-
-                if(empty($this->_postData) && !empty($_POST) && $usePost) {
-                    $this->_postData = new core\collection\Tree($_POST);
-                }
-            }
-            
-            if(!$this->_postData) {
-                $this->_postData = new core\collection\Tree(null);
-            }
+        if(!$this->_postData && $this->method === 'post') {
+            $this->_postData = new core\collection\Tree(null);
         }
         
         return $this->_postData;
@@ -492,7 +457,7 @@ class Base implements link\http\IRequest, core\IDumpable {
 // Cookies
     public function setCookieData($cookies) {
         if(empty($cookies)) {
-            $this->_cookieData = null;
+            $this->cookies = new core\collection\Tree();
         } else {
             if(is_string($cookies)) {
                 $cookies = core\collection\Tree::fromArrayDelimitedString(trim($cookies, ';'), ';');
@@ -500,44 +465,35 @@ class Base implements link\http\IRequest, core\IDumpable {
                 $cookies = new core\collection\Tree($cookies);
             }
             
-            $this->_cookieData = $cookies;
+            $this->cookies = $cookies;
         }
         
         return $this;
     }
     
-    public function getCookieData() {
-        if(!$this->_cookieData) {
-            $this->_cookieData = new core\collection\Tree();
-            $this->getHeaders();
-        }
-        
-        return $this->_cookieData;
+    public function getCookies() {
+        return $this->cookies;
     }
     
     public function hasCookieData() {
-        if($this->_environmentMode) {
-            $this->getHeaders();
-        }
-        
-        return $this->_cookieData !== null;
+        return !$this->cookies->isEmpty();
     }
 
     public function setCookie($key, $value) {
-        $this->getCookieData()->set($key, $value);
+        $this->cookies->set($key, $value);
         return $this;
     }
 
     public function getCookie($key, $default=null) {
-        return $this->getCookieData()->get($key, $default);
+        return $this->cookies->get($key, $default);
     }
 
     public function hasCookie($key) {
-        return $this->getCookieData()->has($key);
+        return $this->cookies->has($key);
     }
 
     public function removeCookie($key) {
-        $this->getCookieData()->remove($key);
+        $this->cookies->remove($key);
         return $this;
     }
     
@@ -554,40 +510,12 @@ class Base implements link\http\IRequest, core\IDumpable {
     }
     
     public function getIp() {
+        if($this->_ip instanceof core\lang\IPromise) {
+            $this->_ip = $this->_ip->sync();
+        }
+
         if($this->_ip === null) {
-            if($this->_environmentMode) {
-                $ips = '';
-                
-                if(isset($_SERVER['REMOTE_ADDR'])) {
-                    $ips .= $_SERVER['REMOTE_ADDR'].',';
-                }
-
-                if(isset($_SERVER['HTTP_CLIENT_IP'])) {
-                    $ips .= $_SERVER['HTTP_CLIENT_IP'].',';
-                }
-
-                if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                    $ips .= $_SERVER['HTTP_X_FORWARDED_FOR'];
-                }
-
-                $parts = explode(',', rtrim($ips, ','));
-
-                while(!empty($parts)) {
-                    $ip = trim(array_shift($parts));
-
-                    try {
-                        $this->_ip = new link\Ip($ip);
-                        break;
-                    } catch(link\InvalidArgumentException $e) {
-                        if(empty($parts)) {
-                            $this->_ip = new link\Ip('0.0.0.0');
-                            break;
-                        }
-                    }
-                }
-            } else {
-                $this->_ip = $this->_url->lookupIp();
-            }
+            $this->_ip = $this->url->lookupIp();
         }
         
         return $this->_ip;
@@ -598,21 +526,9 @@ class Base implements link\http\IRequest, core\IDumpable {
     }
     
     public function getSocketAddress() {
-        return (string)$this->getIp().':'.$this->_url->getPort();
+        return (string)$this->getIp().':'.$this->url->getPort();
     }
 
-
-
-// Response
-    public function setResponseFilePath($path) {
-        $this->_responseFilePath = $path;
-        return $this;
-    }
-
-    public function getResponseFilePath() {
-        return $this->_responseFilePath;
-    }
-    
     
 // Sending
     public function prepareHeaders() {
@@ -627,6 +543,10 @@ class Base implements link\http\IRequest, core\IDumpable {
         
         $headers = $this->getHeaders();
         $headers->set('host', $host);
+
+        if($url->hasCredentials() && !$this->options->hasCredentials()) {
+            $this->options->setCredentials($url->getUsername(), $url->getPassword());
+        }
         
         if($this->_postData && !$this->_postData->isEmpty()) {
             if(!$headers->has('content-type')) {
@@ -661,8 +581,8 @@ class Base implements link\http\IRequest, core\IDumpable {
             }
         }
         
-        if($this->_cookieData && !$this->_cookieData->isEmpty()) {
-            $headers->set('cookie', $this->_cookieData->toArrayDelimitedString(';'));
+        if(!$this->cookies->isEmpty()) {
+            $headers->set('cookie', $this->cookies->toArrayDelimitedString(';'));
         }
         
         return $this;
@@ -682,7 +602,7 @@ class Base implements link\http\IRequest, core\IDumpable {
         $this->prepareHeaders();
         
         $headers = $this->getHeaders();
-        $output = $this->getMethod().' '.$this->_url->getLocalString().' HTTP/'.$headers->getHttpVersion()."\r\n";
+        $output = strtoupper($this->method).' '.$this->url->getLocalString().' HTTP/'.$headers->getHttpVersion()."\r\n";
         $output .= $headers->toString($skipKeys);
         
         return $output;
@@ -692,8 +612,8 @@ class Base implements link\http\IRequest, core\IDumpable {
 // Dump
     public function getDumpProperties() {
         $output = [
-            'method' => $this->getMethod(),
-            'url' => $this->getUrl()
+            'method' => $this->method,
+            'url' => $this->url
         ];
         
         if($ip = $this->getIp()) {
@@ -702,7 +622,7 @@ class Base implements link\http\IRequest, core\IDumpable {
         
         $output['headers'] = $this->getHeaders();
         
-        if($this->_method == 'POST') {
+        if($this->method === 'POST') {
             $output['post'] = $this->getPostData();
         }
         
@@ -710,9 +630,11 @@ class Base implements link\http\IRequest, core\IDumpable {
             $output['body'] = $this->getBodyData();
         }
         
-        if($this->_cookieData && count($this->_cookieData)) {
-            $output['cookies'] = $this->_cookieData;
+        if(!$this->cookies->isEmpty()) {
+            $output['cookies'] = $this->cookies;
         }
+
+        $output['options'] = $this->options;
         
         return $output;
     }

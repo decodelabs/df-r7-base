@@ -559,7 +559,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     protected function _prepareRequest(link\http\IRequest $request) {
-        $request->setSecureTransport('tls');
+        $request->options->setSecureTransport('tls');
         $request->getHeaders()->set('Authorization', 'Bearer '.$this->_apiKey);
     }
 

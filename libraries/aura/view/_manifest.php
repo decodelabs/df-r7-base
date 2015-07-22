@@ -172,6 +172,7 @@ interface IResponseView extends IView, link\http\IStringResponse {}
 trait TResponseView {
 
     use link\http\TStringResponse;
+    use core\lang\TChainable;
 
     protected $_renderedContent = null;
 

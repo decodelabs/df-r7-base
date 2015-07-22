@@ -13,8 +13,10 @@ class String extends Base implements link\http\IStringResponse {
     
     protected $_content;
     
-    public function __construct($content=null, $contentType=null) {
-        if($contentType === null) {
+    public function __construct($content=null, $contentType=null, link\http\IResponseHeaderCollection $headers=null) {
+        parent::__construct($headers);
+        
+        if($contentType === null && (!$headers || $headers->has('content-type'))) {
             $contentType = 'text/plain';
         }
         
@@ -50,7 +52,11 @@ class String extends Base implements link\http\IStringResponse {
     }
     
     public function getContent() {
-        return $this->_content->getContents();
+        if($this->_content instanceof core\fs\IFile) {
+            return $this->_content->getContents();
+        } else {
+            return $this->_content->read();
+        }
     }
 
     public function setContentType($type) {

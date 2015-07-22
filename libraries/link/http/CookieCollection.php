@@ -19,16 +19,6 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
     protected $_set = [];
     protected $_remove = [];
     
-    public static function fromHeaders(core\collection\IHeaderMap $headers) {
-        $cookies = $headers->get('Set-Cookie');
-
-        if($cookies !== null && !is_array($cookies)) {
-            $cookies = [$cookies];
-        }
-
-        return new self($cookies);
-    }
-    
     public function __construct($input=null) {
         if($input !== null) {
             $this->import($input);
@@ -48,6 +38,14 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
     }
     
     public function import($input) {
+        if($input instanceof core\collection\IHeaderMap) {
+            $input = $input->get('Set-Cookie');
+
+            if($input !== null && !is_array($input)) {
+                $input = [$input];
+            }
+        }
+
         if($input instanceof ICookieCollection) {
             foreach($input->_set as $key => $cookie) {
                 $this->_set[$key] = clone $cookie;
@@ -184,6 +182,21 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
         }
         
         $headers->set('Set-Cookie', array_unique($cookies));
+        return $this;
+    }
+
+    public function sanitize(IRequest $request) {
+        foreach($this->_set as $cookie) {
+            if(!$cookie->getDomain()) {
+                $cookie->setDomain($request->url->getDomain());
+            }
+        }
+
+        foreach($this->_remove as $cookie) {
+            if(!$cookie->getDomain()) {
+                $cookie->setDomain($request->url->getDomain());
+            }
+        }
         
         return $this;
     }

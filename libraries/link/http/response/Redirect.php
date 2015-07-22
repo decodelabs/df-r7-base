@@ -13,8 +13,9 @@ class Redirect extends Base implements link\http\IRedirectResponse {
     
     protected $_url;
     
-    public function __construct($url) {
-        $this->getHeaders()->setStatusCode(302);
+    public function __construct($url, link\http\IResponseHeaderCollection $headers=null) {
+        parent::__construct($headers);
+        $this->headers->setStatusCode(302);
         $this->setUrl($url);
         $this->setContentType('text/html');
     }
@@ -27,7 +28,7 @@ class Redirect extends Base implements link\http\IRedirectResponse {
         }
         
         $this->_url = $url;
-        $this->_headers->set('location', $url);
+        $this->headers->set('location', $url);
         
         return $this;
     }
@@ -39,43 +40,43 @@ class Redirect extends Base implements link\http\IRedirectResponse {
     public function isPermanent($flag=null) {
         if($flag !== null) {
             if($flag) {
-                $this->_headers->setStatusCode(301);
+                $this->headers->setStatusCode(301);
             } else {
-                $this->_headers->setStatusCode(302);
+                $this->headers->setStatusCode(302);
             }
             
             return $this;
         }
         
-        return $this->_headers->getStatusCode() == 301;
+        return $this->headers->getStatusCode() == 301;
     }
     
     public function isTemporary($flag=null) {
         if($flag !== null) {
             if($flag) {
-                $this->_headers->setStatusCode(307);
+                $this->headers->setStatusCode(307);
             } else {
-                $this->_headers->setStatusCode(302);
+                $this->headers->setStatusCode(302);
             }
             
             return $this;
         }
         
-        return $this->_headers->getStatusCode() == 307;
+        return $this->headers->getStatusCode() == 307;
     }
     
     public function isAlternativeContent($flag=null) {
         if($flag !== null) {
             if($flag) {
-                $this->_headers->setStatusCode(303);
+                $this->headers->setStatusCode(303);
             } else {
-                $this->_headers->setStatusCode(302);
+                $this->headers->setStatusCode(302);
             }
             
             return $this;
         }
         
-        return $this->_headers->getStatusCode() == 303;
+        return $this->headers->getStatusCode() == 303;
     }
     
     public function getContent() {

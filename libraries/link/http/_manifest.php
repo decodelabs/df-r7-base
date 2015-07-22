@@ -27,7 +27,7 @@ interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core
 
 
 
-interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvider {
+interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvider, core\lang\IChainable {
     // Method
     public function setMethod($method);
     public function getMethod();
@@ -44,14 +44,16 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     // Url
     public function setUrl($url);
     public function getUrl();
-    
-    // Security
     public function isSecure();
-    public function setSecureTransport($transport);
-    public function getSecureTransport();
+
+    // Options
+    public function setOptions(IRequestOptions $options);
+    public function getOptions();
+    public function withOptions($callback);
     
     // Headers
     public function isCachedByClient();
+    public function withHeaders($callback);
     
     // Post
     public function setPostData($post);
@@ -67,7 +69,7 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     
     // Cookies
     public function setCookieData($cookies);
-    public function getCookieData();
+    public function getCookies();
     public function hasCookieData();
     public function setCookie($key, $value);
     public function getCookie($key, $default=null);
@@ -78,10 +80,68 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     public function setIp($ip);
     public function getIp();
     public function getSocketAddress();
+}
 
-    // Response
-    public function setResponseFilePath($path);
-    public function getResponseFilePath();
+
+interface IRequestOptions {
+    public function import(IRequestOptions $options);
+    public function sanitize();
+
+    // Secure transport
+    public function setSecureTransport($transport);
+    public function getSecureTransport();
+
+    // File path
+    public function setDownloadFolder($path);
+    public function getDownloadFolder();
+    public function setDownloadFileName($name);
+    public function getDownloadFileName();
+    public function setDownloadFilePath($path);
+    public function getDownloadFilePath();
+    public function setDownloadStream(core\io\IWriter $stream=null);
+    public function getDownloadStream();
+
+    // Redirects
+    public function setMaxRedirects($max);
+    public function getMaxRedirects();
+    public function shouldEnforceStrictRedirects($flag=null);
+    public function shouldHideRedirectReferrer($flag=null);
+
+    // Auth
+    public function setCredentials($username, $password, $type=null);
+    public function setUsername($username);
+    public function getUsername();
+    public function setPassword($password);
+    public function getPassword();
+    public function setAuthType($type);
+    public function getAuthType();
+    public function hasCredentials();
+
+    // Cert
+    public function setCertPath($path);
+    public function getCertPath();
+    public function setCertPassword($password);
+    public function getCertPassword();
+
+    // Cookies
+    public function setCookieJar(ICookieJar $cookieJar=null);
+    public function getCookieJar();
+
+    // SSL Key
+    public function setSslKeyPath($path);
+    public function getSslKeyPath();
+    public function setSslKeyPassword($password);
+    public function getSslKeyPassword();
+    public function shouldVerifySsl($flag=null);
+    public function shouldAllowSelfSigned($flag=null);
+    public function setCaBundlePath($path);
+    public function getCaBundlePath();
+
+    // Timeout
+    public function setTimeout($duration);
+    public function getTimeout();
+    public function setConnectTimeout($duration);
+    public function getConnectTimeout();
 }
 
 
@@ -113,8 +173,9 @@ interface IRequestHeaderCollection {
 
 
 
-interface IResponse extends core\collection\IHeaderMapProvider {
+interface IResponse extends core\collection\IHeaderMapProvider, core\lang\IChainable {
     // Headers
+    public function withHeaders($callback);
     public function getCookies();
     public function hasCookies();
     public function isOk();
@@ -220,6 +281,11 @@ trait TStringResponse {
 
     public function hasHeaders() {
         return $this->_headers && !$this->_headers->isEmpty();
+    }
+
+    public function withHeaders($callback) {
+        core\lang\Callback::callArgs($callback, [$this->headers, $this]);
+        return $this;
     }
 
     public function getCookies() {
@@ -393,16 +459,20 @@ interface ICacheControl extends core\IStringProvider {
 interface ICookie extends core\IStringProvider {
     public function setName($name);
     public function getName();
+    public function matchesName($name);
     public function setValue($value);
     public function getValue();
     public function setMaxAge($age=null);
     public function getMaxAge();
     public function setExpiryDate($date=null);
     public function getExpiryDate();
+    public function isExpired();
     public function setDomain($domain);
     public function getDomain();
+    public function matchesDomain($domain);
     public function setPath($path);
     public function getPath();
+    public function matchesPath($path);
     public function setBaseUrl(link\http\IUrl $url);
     public function isSecure($flag=null);
     public function isHttpOnly($flag=null);
@@ -411,7 +481,16 @@ interface ICookie extends core\IStringProvider {
 
 interface ICookieCollection extends core\IStringProvider {
     public function applyTo(IResponseHeaderCollection $headers);
+    public function sanitize(IRequest $request);
     public function getRemoved();
+}
+
+interface ICookieJar {
+    public function applyTo(IRequest $request);
+    public function import(IResponse $response);
+    public function set(ICookie $cookie);
+    public function clear($domain=null, $path=null);
+    public function clearSession();
 }
 
 
@@ -464,13 +543,39 @@ interface IUploadFile {
 
 
 // Client
+
 interface IClient {
+    public function getTransport();
+
     public function get($url, $headers=null, $cookies=null);
-    public function getFile($url, $file, $headers=null, $cookies=null);
+    public function getFile($url, $downloadFolder, $fileName=null, $headers=null, $cookies=null);
     public function post($url, $data, $headers=null, $cookies=null);
     public function put($url, $data, $headers=null, $cookies=null);
     public function delete($url, $headers=null, $cookies=null);
     public function head($url, $headers=null, $cookies=null);
+    public function options($url, $headers=null, $cookies=null);
+    public function patch($url, $data, $headers=null, $cookies=null);
 
-    public function prepareRequest($url, $method='get', $headers=null, $cookies=null);
+    public function newRequest($url, $method='get', $headers=null, $cookies=null, $body=null);
+    
+    public function sendRequest(IRequest $request);
+    public function promiseResponse(IRequest $request);
+    public function prepareRequest(IRequest $request);
+    public function prepareResponse(IResponse $response, IRequest $request);
+
+    public function getDefaultUserAgent();
+    public function setDefaultOptions(IRequestOptions $options=null);
+    public function getDefaultOptions();
+    public function hasDefaultOptions();
+
+    public function setDefaultCookieJar(ICookieJar $cookieJar=null);
+    public function getDefaultCookieJar();
+
+    public static function getDefaultCaBundlePath();
+}
+
+interface IRequestPool {}
+
+interface ITransport {
+    public function promiseResponse(IRequest $request, IClient $client);
 }

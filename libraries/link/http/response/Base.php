@@ -12,28 +12,20 @@ use df\flex;
 
 abstract class Base implements link\http\IResponse {
     
-    use core\collection\THeaderMapProvider;
+    use core\lang\TChainable;
 
-    protected $_cookies;
+    public $headers;
+    public $cookies;
     
     public static function fromString($string) {
         $content = null;
         $output = self::fromHeaderString($string, $content);
-        $headers = $output->getHeaders();
+        $headers = $output->headers;
         
         if($headers->has('transfer-encoding')) {
             switch(strtolower($headers->get('transfer-encoding'))) {
                 case 'chunked':
                     $content = self::decodeChunked($content);
-                    
-                    /*
-                    if(strlen($content)) {
-                        foreach(explode("\n", $content) as $line) {
-                            $headers->set(trim(strtok(trim($line), ':')), trim(strtok('')));
-                        }
-                    }
-                    */
-                    
                     break;
                     
                 case 'x-compress':
@@ -79,34 +71,13 @@ abstract class Base implements link\http\IResponse {
         }
         
         $output->_content = $content;
-        
         return $output;
     }
     
     public static function fromHeaderString($string, &$content=null) {
         $output = new String();
-        $parts = preg_split('|(?:\r?\n){2}|m', $string, 2);
-        
-        $headers = array_shift($parts);
-        $content = array_shift($parts);
-        
-        $lines = explode("\n", $headers);
-        $http = array_shift($lines);
-        $headers = $output->getHeaders()->clear();
-        
-        if(!preg_match("|^HTTP/([\d\.x]+) (\d+) ([^\r\n]+)|", $http, $matches)) {
-            throw new link\http\UnexpectedValueException(
-                'Headers do not appear to be valid HTTP format'
-            );
-        }
-        
-        $headers->setHttpVersion($matches[1]);
-        $headers->setStatusCode($matches[2]);
-        $headers->setStatusMessage($matches[3]);
-        
-        foreach($lines as $line) {
-            $headers->add(trim(strtok(trim($line), ':')), trim(strtok('')));
-        }
+        $output->headers = HeaderCollection::fromResponseString($string, $content);
+        $output->cookies->import($output->headers);
 
         return $output;
     }
@@ -136,7 +107,7 @@ abstract class Base implements link\http\IResponse {
     }
     
     public static function encodeChunked($content) {
-        $chunkSize = 16;
+        $chunkSize = 32;
         $output = '';
         
         while(isset($content{0})) {
@@ -184,6 +155,15 @@ abstract class Base implements link\http\IResponse {
     public static function encodeGzip($content) {
         core\stub();
     }
+
+    public function __construct(link\http\IResponseHeaderCollection $headers=null) {
+        if(!$headers) {
+            $headers = new HeaderCollection();
+        }
+
+        $this->headers = $headers;
+        $this->cookies = new link\http\CookieCollection($headers);
+    }
     
     public function setHeaders(core\collection\IHeaderMap $headers) {
         if(!$headers instanceof link\http\IResponseHeaderCollection) {
@@ -192,72 +172,49 @@ abstract class Base implements link\http\IResponse {
             );
         }
         
-        $this->_headers = $headers;
+        $this->headers = $headers;
         return $this;
+    }
+
+    public function hasHeaders() {
+        return !$this->headers->isEmpty();
     }
     
     public function getHeaders() {
-        if(!$this->_headers) {
-            $this->_headers = new HeaderCollection();
-        }
-        
-        return $this->_headers;
+        return $this->headers;
+    }
+
+    public function withHeaders($callback) {
+        core\lang\Callback::callArgs($callback, [$this->headers, $this]);
+        return $this;
     }
     
     public function getCookies() {
-        if(!$this->_cookies) {
-            if($this->_headers) {
-                $this->_cookies = link\http\CookieCollection::fromHeaders($this->_headers);
-            } else {
-                $this->_cookies = new link\http\CookieCollection();
-            }
-        }
-        
-        return $this->_cookies;
+        return $this->cookies;
     }
     
     public function hasCookies() {
-        return $this->_cookies && !$this->_cookies->isEmpty();
+        return !$this->cookies->isEmpty();
     }
     
     public function isOk() {
-        if(!$this->_headers) {
-            return true;
-        }
-
-        return $this->_headers->hasSuccessStatusCode();
+        return $this->headers->hasSuccessStatusCode();
     }
 
     public function isRedirect() {
-        if(!$this->_headers) {
-            return false;
-        }
-
-        return $this->_headers->hasRedirectStatusCode();
+        return $this->headers->hasRedirectStatusCode();
     }
 
     public function isForbidden() {
-        if(!$this->_headers) {
-            return false;
-        }
-
-        return $this->_headers->hasStatusCode(403);
+        return $this->headers->hasStatusCode(403);
     }
 
     public function isMissing() {
-        if(!$this->_headers) {
-            return false;
-        }
-
-        return $this->_headers->hasStatusCode(404);
+        return $this->headers->hasStatusCode(404);
     }
 
     public function isError() {
-        if(!$this->_headers) {
-            return false;
-        }
-
-        return $this->_headers->hasErrorStatusCode();
+        return $this->headers->hasErrorStatusCode();
     }
     
     public function getJsonContent() {
@@ -283,12 +240,12 @@ abstract class Base implements link\http\IResponse {
     public function getEncodedContent() {
         $content = $this->getContent();
         
-        if(!$this->_headers || empty($content)) {
+        if(empty($content)) {
             return $content;
         }
         
-        $contentEncoding = $this->_headers->get('content-encoding');
-        $transferEncoding = $this->_headers->get('transfer-encoding');
+        $contentEncoding = $this->headers->get('content-encoding');
+        $transferEncoding = $this->headers->get('transfer-encoding');
         
         if(!$contentEncoding && !$transferEncoding) {
             return $content;
@@ -362,20 +319,16 @@ abstract class Base implements link\http\IResponse {
             $contentType = 'text/plain';
         }
         
-        $this->getHeaders()->set('content-type', $contentType);
+        $this->headers->set('content-type', $contentType);
         return $this;
     }
     
     public function getContentType() {
-        if(!$this->_headers) {
-            return 'text/plain';
-        }
-        
-        return $this->_headers->get('content-type');
+        return $this->headers->get('content-type');
     }
     
     public function getContentLength() {
-        $headers = $this->getHeaders();
+        $headers = $this->headers;
         
         if(!$headers->has('content-length')) {
             $headers->set('content-length', strlen($this->getEncodedContent()));
@@ -385,25 +338,21 @@ abstract class Base implements link\http\IResponse {
     }
     
     public function getLastModified() {
-        if(!$this->_headers) {
-            return new core\time\Date();
+        if(!$this->headers->has('last-modified')) {
+            $this->headers->set('last-modified', new core\time\Date());
         }
         
-        if(!$this->_headers->has('last-modified')) {
-            $this->_headers->set('last-modified', new core\time\Date());
-        }
-        
-        return core\time\Date::factory($this->_headers->get('last-modified'));
+        return core\time\Date::factory($this->headers->get('last-modified'));
     }
 
 // Attachment
     public function setAttachmentFileName($fileName) {
-        $this->getHeaders()->setAttachmentFileName($fileName);
+        $this->headers->setAttachmentFileName($fileName);
         return $this;
     }
 
     public function getAttachmentFileName() {
-        return $this->getHeaders()->getAttachmentFileName();
+        return $this->headers->getAttachmentFileName();
     }
     
 // Strings
@@ -417,12 +366,12 @@ abstract class Base implements link\http\IResponse {
     public function getHeaderString(array $skipKeys=null) {
         $this->prepareHeaders();
         
-        return self::buildHeaderString($this->_headers);
+        return self::buildHeaderString($this->headers);
     }
 
     public function prepareHeaders() {
-        if($this->hasCookies()) {
-            $this->_cookies->applyTo($this->getHeaders());
+        if(!$this->cookies->isEmpty()) {
+            $this->cookies->applyTo($this->headers);
         }
 
         return $this;

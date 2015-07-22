@@ -22,7 +22,7 @@ class Cookie implements user\session\IPerpetuator {
         $httpRequest = df\Launchpad::$application->getHttpRequest();
         
         if($httpRequest->hasCookieData()) {
-            $cookies = $httpRequest->getCookieData();
+            $cookies = $httpRequest->cookies;
 
             if($cookies->has($this->_sessionCookieName)) {
                 try {
@@ -104,7 +104,7 @@ class Cookie implements user\session\IPerpetuator {
         $httpRequest = df\Launchpad::$application->getHttpRequest();
         
         if($httpRequest->hasCookieData()) {
-            $value = $httpRequest->getCookieData()->get($this->_rememberCookieName);
+            $value = $httpRequest->cookies->get($this->_rememberCookieName);
 
             if(!empty($value)) {
                 $key = new user\session\RecallKey(

@@ -45,7 +45,7 @@ class Url extends core\uri\Url implements IUrl {
                 $path->shouldAddTrailingSlash(true);
             }
             
-            $output = new self();
+            $output = new static();
             $output->_scheme = $scheme;
             $output->_domain = $domain;
             $output->_port = $port;
@@ -74,14 +74,41 @@ class Url extends core\uri\Url implements IUrl {
         $output->_directoryRequest = $routedRequest ? $routedRequest : $request;
         return $output;
     }
+
+    public static function fromEnvironment() {
+        if(isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) {
+            $url = 'https';
+        } else {
+            $url = 'http';
+        }
+        
+        if(isset($_SERVER['HTTP_HOST'])) {
+            $url .= '://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'];
+        } else {
+            $url .= '://'.gethostname();
+        }
+        
+        if(isset($_SERVER['REQUEST_URI'])) {
+            $req = ltrim($_SERVER['REQUEST_URI'], '/');
+        } else if(isset($_SERVER['argv'][2])) {
+            $req = $_SERVER['argv'][2];
+        } else {
+            $req = '';
+        }
+
+        $req = explode('?', $req, 2);
+        $req[0] = urldecode($req[0]);
+        
+        $url .= '/'.implode('?', $req);
+        return new static($url);
+    }
     
     public static function factory($url) {
         if($url instanceof IUrl) {
             return $url;
         }
         
-        $class = get_called_class();
-        return new $class($url);
+        return new static($url);
     }
     
     public function import($url='') {

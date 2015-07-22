@@ -91,36 +91,34 @@ class Client implements opal\search\IClient {
         $request->getUrl()->setQuery($uri->getQuery());
         $request->setMethod($method);
         $request->setBodyData($data);
+
+        $http = new link\http\Client();
+        $response = $http->sendRequest($request);
         
-        $response = null;
+        try {
+            $json = $response->getJsonContent();
+        } catch(\Exception $e) {
+            $message = $response->getContent();
+        }
         
-        new link\http\peer\Client($request, function($httpResponse) use (&$response) {
-            $message = null;
-            
-            try {
-                $response = $httpResponse->getJsonContent();
-            } catch(\Exception $e) {
-                $message = $httpResponse->getContent();
+        if(!$response->isOk()) {
+            if($message === null) {
+                $message = $json->get('error', $response->getHeaders()->getStatusMessage());
             }
             
-            if(!$httpResponse->isOk()) {
-                if($message === null) {
-                    $message = $response->get('error', $httpResponse->getHeaders()->getStatusMessage());
-                }
-                
-                throw new opal\search\RuntimeException(
-                    'Could not successfully contact elastic search server: '.$message
-                );
-            }
-        });
-        
-        if(isset($response->error)) {
             throw new opal\search\RuntimeException(
-                'Elastic response error: '.$response['error']
+                'Could not successfully contact elastic search server: '.$message
             );
         }
         
-        return $response;
+        
+        if(isset($json->error)) {
+            throw new opal\search\RuntimeException(
+                'Elastic response error: '.$json['error']
+            );
+        }
+        
+        return $json;
     }
 
     public function sendBulkRequest(array $data) {

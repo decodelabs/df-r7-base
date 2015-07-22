@@ -104,6 +104,14 @@ class Cookie implements ICookie {
     public function getName() {
         return $this->_name;
     }
+
+    public function matchesName($name) {
+        if($name === null) {
+            return true;
+        }
+
+        return $this->_name === $name;
+    }
     
     
     public function setValue($value) {
@@ -149,6 +157,14 @@ class Cookie implements ICookie {
     public function getExpiryDate() {
         return $this->_expiryDate;
     }
+
+    public function isExpired() {
+        if(!$this->_expiryDate) {
+            return false;
+        }
+
+        return $this->_expiryDate->isPast();
+    }
     
     
     public function setDomain($domain) {
@@ -160,6 +176,26 @@ class Cookie implements ICookie {
         return $this->_domain;
     }
     
+    public function matchesDomain($domain) {
+        if($domain === null) {
+            return true;
+        }
+
+        $current = ltrim($this->_domain, '.');
+
+        if(!$current || !strcasecmp($domain, $current)) {
+            return true;
+        }
+
+        if(filter_var($domain, \FILTER_VALIDATE_IP)) {
+            return false;
+        }
+
+        return (bool)preg_match(
+            '/\.'.preg_quote($current).'$/i',
+            $domain
+        );
+    }
     
     public function setPath($path) {
         $this->_path = $path;
@@ -168,6 +204,21 @@ class Cookie implements ICookie {
     
     public function getPath() {
         return $this->_path;
+    }
+
+    public function matchesPath($path) {
+        if($path === null) {
+            return true;
+        }
+
+        if(!strlen($this->_path)) {
+            return true;
+        }
+
+        $path = '/'.ltrim($path, '/');
+        $test = '/'.ltrim($this->_path, '/');
+
+        return 0 === stripos($path, $test);
     }
     
     public function setBaseUrl(IUrl $url) {

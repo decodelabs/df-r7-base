@@ -46,7 +46,7 @@ class Http implements arch\IDirectoryHelper {
                 return $this->_httpRequest->getPostData();
                 
             case 'cookies':
-                return $this->_httpRequest->getCookieData();
+                return $this->_httpRequest->cookies;
         }
         
         return null;
@@ -262,7 +262,7 @@ class Http implements arch\IDirectoryHelper {
     }
 
     public function getCookies() {
-        return $this->_httpRequest->getCookieData();
+        return $this->_httpRequest->cookies;
     }
 
     public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null) {

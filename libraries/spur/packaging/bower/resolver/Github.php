@@ -45,10 +45,9 @@ class Github implements spur\packaging\bower\IResolver {
             return true;
         }
 
-        $http = $this->_mediator->getHttpClient();
-        $request = new link\http\request\Base($url);
-        $request->setResponseFilePath($cachePath.'/'.$package->cacheFileName);
-        $response = $http->sendRequest($request);
+
+        $http = new link\http\Client();
+        $response = $http->getFile($url, $cachePath, $package->cacheFileName)->sync();
 
         if(!$response->isOk()) {
             throw new spur\packaging\bower\RuntimeException(
