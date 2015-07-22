@@ -178,7 +178,9 @@ trait TUrl_DomainContainer {
     }
     
     public function lookupIp() {
-        if(($ip = gethostbyname($this->_domain)) == $this->_domain) {
+        if(empty($this->_domain)) {
+            $ip = '127.0.0.1';
+        } else if(($ip = gethostbyname($this->_domain)) == $this->_domain) {
             throw new RuntimeException(
                 'Could not lookup IP for '.$this->_domain
             );
