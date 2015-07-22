@@ -565,11 +565,12 @@ class Mediator implements IMediator, core\IDumpable {
 
     protected function _extractResponseError(link\http\IResponse $response) {
         $data = $response->getJsonContent();
+        $message = $data->error->get('message', 'Request failed');
 
         if($response->getHeaders()->getStatusCode() >= 500) {
-            throw new ApiImplementationError('Request failed', $data->error->toArray());
+            throw new ApiImplementationError($message, $data->error->toArray());
         } else {
-            throw new ApiDataError('Request failed', $data->error->toArray());
+            throw new ApiDataError($message, $data->error->toArray());
         }
     }
 
