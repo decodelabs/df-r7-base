@@ -186,7 +186,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             return;
         }
 
-        $response = new link\http\response\String(
+        $response = new link\http\response\Stream(
             '<html><head><title>Forbidden</title></head><body>'.
             '<p>Sorry, this site is protected by IP range.</p><p>Your IP is: <strong>'.$ip.'</strong></p>',
             'text/html'
@@ -262,7 +262,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $baseUrl = (string)$baseUrl;
 
             if($this->isDevelopment()) {        
-                $response = new link\http\response\String(
+                $response = new link\http\response\Stream(
                     '<html><head><title>Bad request</title></head><body>'.
                     '<p>Sorry, you are not in the right place!</p>'.
                     '<p>Go here instead: <a href="'.$baseUrl.'">'.$baseUrl.'</a></p>',
@@ -405,7 +405,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         
         // Basic response
         if(!$response instanceof link\http\IResponse) {
-            $response = new link\http\response\String(
+            $response = new link\http\response\Stream(
                 (string)$response, 
                 core\fs\Type::extToMime(strtolower($this->_context->request->getType()))
             );

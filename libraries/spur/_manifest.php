@@ -38,7 +38,7 @@ class ApiImplementationError extends ApiError {}
 
 // Interfaces
 interface IHttpMediator {
-    public function setHttpClient(link\http\peer\IClient $client);
+    public function setHttpClient(link\http\IClient $client);
     public function getHttpClient();
 
     public function requestRaw($method, $path, array $data=[], array $headers=[]);
@@ -52,14 +52,14 @@ trait THttpMediator {
 
     protected $_httpClient;
 
-    public function setHttpClient(link\http\peer\IClient $client) {
+    public function setHttpClient(link\http\IClient $client) {
         $this->_httpClient = $client;
         return $this;
     }
 
     public function getHttpClient() {
         if(!$this->_httpClient) {
-            $this->_httpClient = new link\http\peer\Client();
+            $this->_httpClient = new link\http\Client();
         }
 
         return $this->_httpClient;
@@ -107,10 +107,7 @@ trait THttpMediator {
             $request = $new;
         }
 
-        $this->getHttpClient();
-
-        $this->_httpClient->setMaxRetries(0);
-        $response = $this->_httpClient->sendRequest($request);
+        $response = $this->getHttpClient()->sendRequest($request);
 
         if(!$this->_isResponseOk($response)) {
             $message = $this->_extractResponseError($response);

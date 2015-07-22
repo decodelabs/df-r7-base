@@ -478,11 +478,10 @@ class Mediator implements IMediator, \Serializable {
 
         $args['apikey'] = $this->_apiKey;
         $request->setBodyData(flex\json\Codec::encode($args));
+        $request->headers->set('content-type', 'application/json');
 
         if(!empty($headers)) {
-            $request->getHeaders()
-                ->set('content-type', 'application/json')
-                ->import($headers);
+            $request->headers->import($headers);
         }
 
         return $request;

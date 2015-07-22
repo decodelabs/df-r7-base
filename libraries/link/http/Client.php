@@ -182,6 +182,10 @@ class Client implements IClient {
             $request->headers->set('user-agent', $this->getDefaultUserAgent());
         }
 
+        if($request->method == 'post' && !$request->headers->has('content-type')) {
+            $request->headers->set('content-type', 'application/x-www-form-urlencoded');
+        }
+
         if(!$request->options->cookieJar) {
             $request->options->cookieJar = $this->getDefaultCookieJar();
         }
@@ -196,36 +200,45 @@ class Client implements IClient {
         $response->cookies->sanitize($request);
         $request->options->cookieJar->import($response);
 
-        if($response->isOk()) {
-            if($request->options->downloadStream) {
-                $response->getContentFileStream()->writeTo(
-                    $request->options->downloadStream
-                );
-            } else if($request->options->downloadFolder) {
-                $folder = $request->options->downloadFolder;
+        $target = null;
+        $close = false;
+        $isOk = $response->isOk();
 
-                if($folder instanceof core\fs\IFolder) {
-                    $folder = $folder->getPath();
-                }
+        if($isOk && $request->options->downloadStream) {
+            $target = $request->options->downloadStream;
+        } else if($isOk && $request->options->downloadFolder) {
+            $folder = $request->options->downloadFolder;
 
-                $path = rtrim($folder, '/').'/';
+            if($folder instanceof core\fs\IFolder) {
+                $folder = $folder->getPath();
+            }
 
-                if($request->options->downloadFileName) {
-                    $path .= $request->options->downloadFileName;
-                } else {
-                    if(!$fileName = $response->headers->getAttachmentFileName()) {
-                        if(!$fileName = $request->url->path->getFileName()) {
-                            $fileName = 'index';
-                        }
+            $path = rtrim($folder, '/').'/';
+
+            if($request->options->downloadFileName) {
+                $path .= $request->options->downloadFileName;
+            } else {
+                if(!$fileName = $response->headers->getAttachmentFileName()) {
+                    if(!$fileName = $request->url->path->getFileName()) {
+                        $fileName = 'index';
                     }
-
-                    $path .= $fileName;
                 }
 
-                $response->setContent(core\fs\File::create(
-                    $path,
-                    $response->getContentFileStream()
-                ));
+                $path .= $fileName;
+            }
+
+            $target = core\fs\File::factory($path, core\fs\Mode::WRITE_TRUNCATE);
+            $close = true;
+        } else if($response->getContentFileStream() instanceof core\io\IStreamChannel) {
+            $target = new core\fs\MemoryFile('', $response->getContentType());
+            $close = true;
+        }
+
+        if($target) {
+            $response->transferContentFileStream($target);
+
+            if($close) {
+                $target->close();
             }
         }
 

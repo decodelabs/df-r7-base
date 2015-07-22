@@ -75,7 +75,7 @@ abstract class Base implements link\http\IResponse {
     }
     
     public static function fromHeaderString($string, &$content=null) {
-        $output = new String();
+        $output = new Stream();
         $output->headers = HeaderCollection::fromResponseString($string, $content);
         $output->cookies->import($output->headers);
 
@@ -221,7 +221,7 @@ abstract class Base implements link\http\IResponse {
         $content = $this->getContent();
         
         if(!strlen($content)) {
-            throw new RuntimeException(
+            throw new link\http\RuntimeException(
                 'Empty json response'
             );
         }

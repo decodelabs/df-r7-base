@@ -21,8 +21,6 @@ class Mediator implements IMediator {
     protected $_useSsl = false;
 
     public function __construct($accessKey, $secretKey, $useSsl=false) {
-        //$this->getHttpClient(); // DELETE ME
-
         $this->setAccessKey($accessKey);
         $this->setSecretKey($secretKey);
         $this->shouldUseSsl((bool)$useSsl);
@@ -359,7 +357,7 @@ class Mediator implements IMediator {
         $request->prepareHeaders();
 
         $headers->set('Authorization', $this->_createSignature(
-            $request->getMethod()."\n".
+            strtoupper($request->getMethod())."\n".
             $headers->get('Content-Md5')."\n".
             $headers->get('Content-Type')."\n".
             $date.$amz."\n".
@@ -373,7 +371,8 @@ class Mediator implements IMediator {
         $content = $response->getContent();
         $xml = null;
 
-        if(strlen($content) && $response->getHeaders()->get('Content-Type') == 'application/xml') {
+        if(strlen($content) 
+        && substr($content, 0, 2) == '<?') {
             $xml = core\xml\Tree::fromXmlString($content);
         }
 
@@ -389,6 +388,7 @@ class Mediator implements IMediator {
                 'Resource not found - '.$request->getUrl()
             );
         } else {
+            core\dump($response);
             return new RuntimeException(
                 'An unknown API error occurred'
             );

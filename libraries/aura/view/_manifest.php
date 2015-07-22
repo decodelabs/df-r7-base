@@ -167,7 +167,7 @@ interface IView extends
 }
 
 
-interface IResponseView extends IView, link\http\IStringResponse {}
+interface IResponseView extends IView, link\http\IStreamResponse {}
 
 trait TResponseView {
 

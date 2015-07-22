@@ -48,7 +48,7 @@ class Streams implements link\http\ITransport {
         $this->_prepareRequest($request, $client);
         $stream = $this->_createStream($request, $promise);
 
-        $response = new link\http\response\String(
+        $response = new link\http\response\Stream(
             $stream, null, $this->_headers
         );
 
@@ -132,7 +132,7 @@ class Streams implements link\http\ITransport {
                 'method' => strtoupper($request->getMethod()),
                 'header' => $request->headers->toString(),
                 'protocol_version' => $request->headers->getHttpVersion(),
-                //'ignore_errors' => true,
+                'ignore_errors' => true,
                 'follow_location' => 0,
                 'max_redirects' => 0
             ],
@@ -148,8 +148,14 @@ class Streams implements link\http\ITransport {
 
         $body = $request->getBodyData();
 
+        if($body instanceof core\fs\IFile) {
+            $body = $body->getContents();
+        } else if($body instanceof core\io\IReader) {
+            $body = $body->read();
+        }
+
         if(strlen($body)) {
-            $output['http']['content'];
+            $output['http']['content'] = $body;
 
             if(!$request->headers->has('content-type')) {
                 $output['http']['header'] .= 'Content-Type:';

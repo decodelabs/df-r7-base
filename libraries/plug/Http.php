@@ -120,7 +120,11 @@ class Http implements arch\IDirectoryHelper {
     
 // Responses
     public function stringResponse($content, $contentType=null) {
-        return new link\http\response\String($content, $contentType);
+        return new link\http\response\Stream($content, $contentType);
+    }
+
+    public function streamResponse($content, $contentType=null) {
+        return new link\http\response\Stream($content, $contentType);
     }
 
     public function ajaxElementResponse(aura\view\IView $view) {
@@ -169,7 +173,7 @@ class Http implements arch\IDirectoryHelper {
     }
 
     public function jsonResponse(array $data) {
-        return $this->stringResponse(
+        return $this->streamResponse(
             $this->context->data->jsonEncode($data),
             'application/json'
         );

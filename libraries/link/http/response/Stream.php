@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\link;
 
-class String extends Base implements link\http\IStringResponse {
+class Stream extends Base implements link\http\IAdaptiveStreamResponse {
     
     protected $_content;
     
@@ -76,5 +76,28 @@ class String extends Base implements link\http\IStringResponse {
 
     public function getContentFileStream() {
         return $this->_content;
+    }
+
+    public function transferContentFileStream(core\io\IChannel $content) {
+        if($this->headers->has('content-length')) {
+            $length = $this->headers->get('content-length');
+            $chunkLength = 1024;
+
+            while($length > 0) {
+                $currentLength = $chunkLength;
+
+                if($currentLength > $length) {
+                    $currentLength = $length;
+                }
+
+                $content->write($this->_content->readChunk($currentLength));
+                $length -= $currentLength;
+            }
+        } else {
+            $this->_content->writeTo($content);
+        }
+
+        $this->_content = $content;
+        return $this;
     }
 }

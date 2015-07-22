@@ -204,8 +204,14 @@ interface IResponse extends core\collection\IHeaderMapProvider, core\lang\IChain
     public function getResponseString();
 }
 
-interface IStringResponse extends IResponse {
+interface IStreamResponse extends IResponse {
     public function setLastModified(core\time\IDate $date);
+    public function getContentFileStream();
+}
+
+interface IAdaptiveStreamResponse extends IStreamResponse {
+    public function setContentFileStream(core\io\IChannel $content);
+    public function transferContentFileStream(core\io\IChannel $content);
 }
 
 interface IFileResponse extends IResponse {

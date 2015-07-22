@@ -100,7 +100,7 @@ class Result implements IResult {
             $data['validation'] = $this->validator->data->toArrayDelimitedErrorSet();
         }
 
-        $response = new link\http\response\String(
+        $response = new link\http\response\Stream(
             flex\json\Codec::encode($data), 
             'application/json'
         );
