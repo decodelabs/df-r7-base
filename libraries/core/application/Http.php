@@ -354,12 +354,19 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         } catch(arch\RuntimeException $e) {
             // See if the url just needs a /
             $url = $this->_httpRequest->getUrl();
+            $testUrl = null;
 
             if(!$url->path->shouldAddTrailingSlash() && $url->path->getFilename() != 'index') {
-                $url = clone $url;
-                $url->path->shouldAddTrailingSlash(true);
+                $testUrl = clone $url;
+                $testUrl->path->shouldAddTrailingSlash(true);
+            } else if($url->path->shouldAddTrailingSlash()) {
+                $testUrl = clone $url;
+                $testUrl->path->shouldAddTrailingSlash(false);
+            }
+
+            if($testUrl) {
                 $context = clone $this->_context;
-                $context->location = $context->request = $this->_router->urlToRequest($url);
+                $context->location = $context->request = $this->_router->urlToRequest($testUrl);
                 
                 if($context->apex->actionExists($context->request)) {
                     return $context->http->redirect($context->request);
