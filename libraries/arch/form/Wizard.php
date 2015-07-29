@@ -112,12 +112,7 @@ abstract class Wizard extends Action {
 // Events
     final protected function _onPrevEvent() {
         $this->_onCurrentEvent();
-
-        if(!$this->isValid() || (!$prev = $this->_getPrevSection())) {
-            return;
-        }
-        
-        $this->_setSection($prev);
+        $this->_setSection($this->_getPrevSection());
     }
 
     final protected function _onCurrentEvent() {
