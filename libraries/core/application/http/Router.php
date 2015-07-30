@@ -48,6 +48,10 @@ class Router implements core\IRegistryObject {
             $this->_basePort = $url->getPort();
             $this->_useHttps = $url->isSecure();
             $this->_defaultRouteProtocol = $this->_useHttps ? 'https' : 'http';
+
+            if(strlen($last = array_pop($this->_basePath))) {
+                $this->_basePath[] = $last;
+            }
         } else {
             $config = core\application\http\Config::getInstance();
             $this->_basePath = explode('/', $config->getBaseUrl());
@@ -59,7 +63,6 @@ class Router implements core\IRegistryObject {
 
             $this->_defaultRouteProtocol = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
         }
-        
 
         if(!strlen($this->_basePort)) {
             $this->_basePort = null;
