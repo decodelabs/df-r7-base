@@ -178,6 +178,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
 
     protected function _renderInlineListDetails(aura\html\widget\FieldArea $fa) {
         $options = $this->_getOptionsList();
+        $selected = $this->_fetchSelectionList();
 
         $type = $this->_isForMany ? 'checkboxGroup' : 'selectList';
         $select = $this->html->{$type}(
@@ -192,32 +193,11 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
                 $this->html('div.body', $select),
                 $this->html->hidden($this->fieldName('_poke'), 1),
 
-                $this->html->buttonArea(
-                    $this->html->eventButton(
-                            $this->eventName('beginSelect'),
-                            $this->_('Search')
-                        )
-                        ->setIcon('search')
-                        ->setDisposition('positive')
-                        ->shouldValidate(false),
-
-                    $this->html->eventButton(
-                            $this->eventName('endSelect'),
-                            $this->_('Update')
-                        )
-                        ->setIcon('refresh')
-                        ->setDisposition('informative')
-                        ->shouldValidate(false),
-
-                    $this->html->eventButton(
-                            $this->eventName('clear'), 
-                            $this->_('Clear')
-                        )
-                        ->shouldValidate(false)
-                        ->setIcon('remove')
-                )
+                $ba = $this->html->buttonArea()
             ])
         );
+
+        $this->_renderDetailsButtonGroup($ba, $selected, true);
     }
 
     protected function _renderInlineTextDetails(aura\html\widget\FieldArea $fa) {
@@ -287,7 +267,6 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
                 );
             } else {
                 // No selection
-
                 $fa->push(
                     $this->html('em', $this->_('nothing selected'))
                 );
@@ -302,8 +281,26 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         $fa->push($this->html('</div>'));
     }
 
-    protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected) {
-        if(empty($selected)) {
+    protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected, $isList=false) {
+        if($isList) {
+            $ba->push(
+                $this->html->eventButton(
+                        $this->eventName('beginSelect'),
+                        $this->_('Search')
+                    )
+                    ->setIcon('search')
+                    ->setDisposition('positive')
+                    ->shouldValidate(false),
+
+                $this->html->eventButton(
+                        $this->eventName('endSelect'),
+                        $this->_('Update')
+                    )
+                    ->setIcon('refresh')
+                    ->setDisposition('informative')
+                    ->shouldValidate(false)
+            );
+        } else if(empty($selected)) {
             $ba->push(
                 $this->html->eventButton(
                         $this->eventName('beginSelect'),
@@ -321,8 +318,13 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
                     )
                     ->setIcon('select')
                     ->setDisposition('operative')
-                    ->shouldValidate(false),
+                    ->shouldValidate(false)
+            );
+        }
 
+
+        if(!empty($selected)) {
+            $ba->push(
                 $this->html->eventButton(
                         $this->eventName('clear'),
                         $this->_('Clear')
