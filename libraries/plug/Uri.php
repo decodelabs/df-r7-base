@@ -89,6 +89,10 @@ class Uri implements arch\IDirectoryHelper {
                     return $asRequest ?
                         $this->assetRequest($matches[3]) :
                         $this->asset($matches[3]);
+
+                case 'media':
+                    $uri = 'media/download/f'.$matches[3];
+                    break;
             }
         }
         
