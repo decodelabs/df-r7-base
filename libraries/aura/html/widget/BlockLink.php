@@ -43,7 +43,7 @@ class BlockLink extends Link {
             ];
         }
 
-        $body = [new aura\html\Element('header', [$icon, new aura\html\Element('span', $body, ['class' => 'body'])])];
+        $body = [new aura\html\Element('header', [$icon, $body])];
 
         if($this->_showDescription) {
             $body[] = new aura\html\Element('p', $description, ['class' => 'description']);
