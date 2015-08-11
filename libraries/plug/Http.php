@@ -37,10 +37,10 @@ class Http implements arch\IDirectoryHelper {
                 return $this->_httpRequest->getMethod();
                 
             case 'host':
-                return $this->_httpRequest->getUrl()->getDomain();
+                return $this->_httpRequest->url->getDomain();
                 
             case 'headers':
-                return $this->_httpRequest->getHeaders();
+                return $this->_httpRequest->headers;
                 
             case 'post':
                 return $this->_httpRequest->getPostData();
@@ -58,6 +58,9 @@ class Http implements arch\IDirectoryHelper {
             ->requestToUrl(arch\Request::factory($request));
     }
     
+    public function getRouter() {
+        return $this->context->application->getRouter();
+    }
     
     public function getRequest() {
         return $this->_httpRequest;
@@ -66,21 +69,25 @@ class Http implements arch\IDirectoryHelper {
     public function getMethod() {
         return $this->_httpRequest->getMethod();
     }
+
+    public function getUrl() {
+        return $this->_httpRequest->url;
+    }
     
     public function getHost() {
-        return $this->_httpRequest->getUrl()->getDomain();
+        return $this->_httpRequest->url->getDomain();
     }
     
     public function getHeaders() {
-        return $this->_httpRequest->getHeaders();
+        return $this->_httpRequest->headers;
     }
 
     public function getHeader($key) {
-        return $this->_httpRequest->getHeaders()->get($key);
+        return $this->_httpRequest->headers->get($key);
     }
 
     public function getReferrer() {
-        return $this->_httpRequest->getHeaders()->get('Referer');
+        return $this->_httpRequest->headers->get('Referer');
     }
     
     public function getPostData() {
@@ -88,7 +95,7 @@ class Http implements arch\IDirectoryHelper {
     }
 
     public function getUserAgent() {
-        return $this->_httpRequest->getHeaders()->get('User-Agent');
+        return $this->_httpRequest->headers->get('User-Agent');
     }
 
     public function getIp() {
@@ -113,7 +120,7 @@ class Http implements arch\IDirectoryHelper {
     }
 
     public function isAjaxRequest() {
-        return strtolower($this->_httpRequest->getHeaders()->get('x-requested-with')) == 'xmlhttprequest';
+        return strtolower($this->_httpRequest->headers->get('x-requested-with')) == 'xmlhttprequest';
     }
     
     
@@ -188,7 +195,7 @@ class Http implements arch\IDirectoryHelper {
 
         if($url->isJustFragment()) {
             $fragment = $url->getFragment();
-            $url = clone $this->_httpRequest->getUrl();
+            $url = clone $this->_httpRequest->url;
             $url->setFragment($fragment);
         }
 
