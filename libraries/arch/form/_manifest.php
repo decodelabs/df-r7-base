@@ -37,6 +37,7 @@ interface IStateController extends IStoreProvider {
     
     public function isNew($flag=null);
     public function reset();
+    public function isOperating();
 }
 
 interface IForm extends IStoreProvider, core\lang\IChainable {

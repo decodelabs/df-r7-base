@@ -151,6 +151,20 @@ class StateController implements IStateController, \Serializable {
         return $this;
     }
 
+    public function isOperating() {
+        if($this->isOperating) {
+            return true;
+        }
+
+        foreach($this->_delegates as $child) {
+            if($child->isOperating()) {
+                return true;
+            }
+        }        
+
+        return false;
+    }
+
 
 // Store
     public function setStore($key, $value) {

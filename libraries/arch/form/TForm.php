@@ -280,7 +280,16 @@ trait TForm {
     }
 
     protected function _onResetEvent() {
-        $this->_state->reset();
+        if($this instanceof IDelegate) {
+            $this->setComplete(false);
+        } else {
+            foreach($this->_delegates as $delegate) {
+                $delegate->setComplete(false);
+            }
+
+            $this->_state->reset();
+        }
+
         $this->_setDefaultValues();
     }
 

@@ -219,6 +219,8 @@ abstract class Action extends arch\Action implements IAction {
             ->setCacheAccess('no-cache')
             ->canStoreCache(false)
             ->shouldRevalidateCache(true);
+
+        $this->view->render();
         
         return $this->view;
     }
@@ -512,7 +514,7 @@ abstract class Action extends arch\Action implements IAction {
     protected function _afterDispatch($response) {
         if(!$this->_isComplete 
         && $this->_sessionNamespace
-        && $this->_state->isOperating) {
+        && $this->_state->isOperating()) {
             $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
             $session->set($this->_state->sessionId, $this->_state);
         }
