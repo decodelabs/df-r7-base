@@ -369,7 +369,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $context->location = $context->request = $this->_router->urlToRequest($testUrl);
                 
                 if($context->apex->actionExists($context->request)) {
-                    return $context->http->redirect($context->request);
+                    return $context->http->redirect($context->request)->isPermanent(true);
                 }
             }
 
