@@ -13,7 +13,6 @@ use df\arch;
 class BlockLink extends Link {
     
     const PRIMARY_TAG = 'a';
-    const WRAP_BODY = false;
 
     public function __construct(arch\IContext $context, $uri, $body=null, $description=null, $matchRequest=null) {
         parent::__construct($context, $uri, $body, $matchRequest);

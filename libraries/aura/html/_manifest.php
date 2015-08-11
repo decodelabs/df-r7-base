@@ -124,7 +124,7 @@ trait TElementContent {
                 continue;
             }
             
-            $stringValue = $this->_renderChild($value);
+            $stringValue = (string)$this->_renderChild($value);
             $isWidget = false;
             
             if($value instanceof aura\html\widget\IWidget
@@ -137,9 +137,10 @@ trait TElementContent {
                     $stringValue = "\n".$stringValue;
                 }
             }
-            
+
             if(($isWidget || $value instanceof IElementRepresentation)
-            && $lastElement instanceof IElementRepresentation) {
+            && $lastElement instanceof IElementRepresentation
+            && substr($stringValue, 0, 1) == '<') {
                 $stringValue = "\n".$stringValue;
             }
             

@@ -64,7 +64,7 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
             }
             
             if($entry instanceof ILinkWidget) {
-                $entry->getBodyWrapperTag()->setAttribute('itemprop', 'title');
+                //$entry->getBodyWrapperTag()->setAttribute('itemprop', 'title');
                 
                 $entry->setAttribute('itemprop', 'url')
                     ->setRenderTarget($renderTarget);

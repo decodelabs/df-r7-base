@@ -22,7 +22,6 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     use arch\navigation\TSharedLinkComponents;
        
     const PRIMARY_TAG = 'a';
-    const WRAP_BODY = true;
     const DEFAULT_ACTIVE_CLASS = 'active';
     
     protected $_rel = [];
@@ -31,9 +30,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     protected $_hrefLang;
     protected $_media;
     protected $_contentType;
-    protected $_bodyWrapper;
     protected $_activeClass;
-    protected $_shouldWrapBody = true;
     
     public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null) {
         $checkUriMatch = false;
@@ -86,10 +83,6 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
         
         $this->setBody($body);
-
-        if(static::WRAP_BODY) {
-            $this->_bodyWrapper = new aura\html\Tag('span', ['class' => 'body']);
-        }
     }
     
     protected function _render() {
@@ -218,10 +211,6 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             ];
         }
         
-        if(static::WRAP_BODY && $this->_shouldWrapBody) {
-            $body = $this->_bodyWrapper->renderWith($body);
-        }
-
         if($icon) {
             $tag->addClass('hasIcon');
         }
@@ -410,27 +399,6 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         return $this->_contentType;
     }
 
-
-// Body wrapper
-    public function getBodyWrapperTag() {
-        if(!static::WRAP_BODY) {
-            throw new LogicException(
-                'This type of link widget does not support body wrappers'
-            );
-        }
-
-        return $this->_bodyWrapper;
-    }
-
-    public function shouldWrapBody($flag=null) {
-        if($flag !== null) {
-            $this->_shouldWrapBody = (bool)$flag;
-            return $this;
-        }
-
-        return $this->_shouldWrapBody;
-    }
-    
     
 // Dump
     public function getDumpProperties() {
