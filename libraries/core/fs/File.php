@@ -349,9 +349,11 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         
         $this->_mode = Mode::factory($mode);
         
+        /*
         if($this->_mode->is(Mode::READ_ONLY) && !is_readable($this->_path)) {
             throw new RuntimeException('File '.$this->_path.' is not readable!');
         }
+        */
 
         if($this->_mode->canCreate() && !file_exists($this->_path)) {
             Dir::create(dirname($this->_path));
