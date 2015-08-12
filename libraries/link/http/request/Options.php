@@ -207,6 +207,7 @@ class Options implements link\http\IRequestOptions {
         switch($type) {
             case 'basic':
             case 'digest':
+            case 'ntlm':
                 $this->authType = $type;
                 break;
 

@@ -9,13 +9,13 @@ use df;
 use df\core;
 use df\link;
 
-class Streams implements link\http\ITransport {
+class Stream implements link\http\ITransport {
     
     private $_headerStack = null;
     private $_headers;
 
     public function promiseResponse(link\http\IRequest $request, link\http\IClient $client) {
-        return core\lang\Promise::defer(function($promise) use($request, $client) {
+        return core\lang\Promise::defer(function($input, $promise) use($request, $client) {
             $maxRedirects = null;
 
             while(true) {
@@ -146,13 +146,7 @@ class Streams implements link\http\ITransport {
             $output['http']['timeout'] = $request->options->timeout;
         }
 
-        $body = $request->getBodyData();
-
-        if($body instanceof core\fs\IFile) {
-            $body = $body->getContents();
-        } else if($body instanceof core\io\IReader) {
-            $body = $body->read();
-        }
+        $body = $request->getBodyDataString();
 
         if(strlen($body)) {
             $output['http']['content'] = $body;

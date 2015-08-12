@@ -126,7 +126,7 @@ class Base implements link\http\IRequest, core\IDumpable {
 
         $this->setUrl($url);
 
-        $this->_ip = core\lang\Promise::defer(function($promise) {
+        $this->_ip = core\lang\Promise::defer(function() {
             $ips = '';
                 
             if(isset($_SERVER['REMOTE_ADDR'])) {
@@ -157,8 +157,10 @@ class Base implements link\http\IRequest, core\IDumpable {
         });
 
         if($this->method === 'post') {
-            $this->_postData = core\lang\Promise::defer(function($promise) {
-                $payload = file_get_contents('php://input');
+            $this->_bodyData = new core\fs\File('php://input');
+
+            $this->_postData = core\lang\Promise::defer(function() {
+                $payload = $this->getBodyDataString();
                 $usePost = true;
                 $output = null;
 
@@ -262,6 +264,18 @@ class Base implements link\http\IRequest, core\IDumpable {
     
     public function getMethod() {
         return $this->method;
+    }
+
+    public function isMethod($method1) {
+        $methods = core\collection\Util::flattenArray(func_get_args());
+
+        foreach($methods as $method) {
+            if(strtolower($method) == $this->method) {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     public function isGet() {
@@ -432,6 +446,10 @@ class Base implements link\http\IRequest, core\IDumpable {
         } else if($body !== null) {
             $body = (string)$body;
         }
+
+        if(is_string($body)) {
+            $body = new core\fs\MemoryFile($body, $this->headers->get('content-type'));
+        }
         
         $this->_bodyData = $body;
         return $this;
@@ -444,6 +462,8 @@ class Base implements link\http\IRequest, core\IDumpable {
     public function getBodyDataString() {
         if($this->_bodyData instanceof core\fs\IFile) {
             return $this->_bodyData->getContents();
+        } else if($this->_bodyData instanceof core\io\IReader) {
+            return $this->_bodyData->read();
         } else {
             return (string)$this->_bodyData;
         }
@@ -561,7 +581,11 @@ class Base implements link\http\IRequest, core\IDumpable {
                         $postData = str_replace('%7E', '~', $postData);
                     }
 
-                    $this->_bodyData = $postData;
+                    $this->setBodyData($postData);
+                    break;
+
+                case 'application/json':
+                    $this->setBodyData(flex\json\Codec::encode($this->_postData));
                     break;
 
                 default:

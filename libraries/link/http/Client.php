@@ -26,116 +26,103 @@ class Client implements IClient {
     }
 
     protected function _getDefaultTransport() {
-        return new link\http\transport\Streams();
+        if(extension_loaded('curl')) {
+            return new link\http\transport\Curl();
+        }
+
+        return new link\http\transport\Stream();
     }
 
 
 
-    public function get($url, $headers=null, $cookies=null) {
-        return $this->promise($url, $headers, $cookies)->sync();
+    public function get($url, $callback=null) {
+        return $this->promise($url, $callback)->sync();
     }
 
-    public function promise($url, $headers=null, $cookies=null) {
+    public function promise($url, $callback=null) {
         return $this->promiseResponse(
-            $this->newRequest($url, 'get', $headers, $cookies)
+            $this->newGetRequest($url, $callback)
         );
     }
 
-    public function getFile($url, $destination, $fileName=null, $headers=null, $cookies=null) {
-        return $this->promiseFile($url, $destination, $fileName, $headers, $cookies)->sync();
+    public function getFile($url, $destination, $fileName=null, $callback=null) {
+        return $this->promiseFile($url, $destination, $fileName, $callback)->sync();
     }
 
-    public function promiseFile($url, $destination, $fileName=null, $headers=null, $cookies=null) {
+    public function promiseFile($url, $destination, $fileName=null, $callback=null) {
         return $this->promiseResponse(
-            $this->newRequest($url, 'get', $headers, $cookies)
-                ->withOptions(function($options) use($destination, $fileName) {
-                    if($destination instanceof core\io\IWriter) {
-                        $options->setDownloadStream($destination);
-                    } else {
-                        $options->setDownloadFolder($destination);
-                    }
-
-                    $options->setDownloadFileName($fileName);
-                })
+            $this->newGetFileRequest($url, $destination, $fileName, $callback)
         );
     }
 
-    public function post($url, $data, $headers=null, $cookies=null) {
-        return $this->promisePost($url, $data, $headers, $cookies)->sync();
+    public function post($url, $data, $callback=null) {
+        return $this->promisePost($url, $data, $callback)->sync();
     }
 
-    public function promisePost($url, $data, $headers=null, $cookies=null) {
+    public function promisePost($url, $data, $callback=null) {
         return $this->promiseResponse(
-            $this->newRequest($url, 'post', $headers, $cookies, $data)
+            $this->newPostRequest($url, $data, $callback)
         );
     }
 
-    public function put($url, $data, $headers=null, $cookies=null) {
-        return $this->promisePut($url, $data, $headers, $cookies)->sync();
+    public function put($url, $data, $callback=null) {
+        return $this->promisePut($url, $data, $callback)->sync();
     }
 
-    public function promisePut($url, $data, $headers=null, $cookies=null) {
+    public function promisePut($url, $data, $callback=null) {
         return $this->promiseResponse(
-            $this->newRequest($url, 'put', $headers, $cookies, $data)
+            $this->newPutRequest($url, $data, $callback)
         );
     }
 
-    public function delete($url, $headers=null, $cookies=null) {
-        return $this->promiseDelete($url, $headers, $cookies)->sync();
+    public function delete($url, $callback=null) {
+        return $this->promiseDelete($url, $callback)->sync();
     }
 
-    public function promiseDelete($url, $headers=null, $cookies=null) {
+    public function promiseDelete($url, $callback=null) {
         return $this->promiseResponse(
-            $this->newRequest($url, 'delete', $headers, $cookies)
+            $this->newDeleteRequest($url, $callback)
         );
     }
 
-    public function head($url, $headers=null, $cookies=null) {
-        return $this->promiseHead($url, $headers, $cookies)->sync();
+    public function head($url, $callback=null) {
+        return $this->promiseHead($url, $callback)->sync();
     }
 
-    public function promiseHead($url, $headers=null, $cookies=null) {
+    public function promiseHead($url, $callback=null) {
         return $this->promiseResponse(
-            $this->newRequest($url, 'head', $headers, $cookies)
+            $this->newHeadRequest($url, $callback)
         );
     }
 
-    public function options($url, $headers=null, $cookies=null) {
-        return $this->promiseOptions($url, $headers, $cookies)->sync();
+    public function options($url, $callback=null) {
+        return $this->promiseOptions($url, $callback)->sync();
     }
 
-    public function promiseOptions($url, $headers=null, $cookies=null) {
+    public function promiseOptions($url, $callback=null) {
         return $this->promiseResponse(
-            $this->newRequest($url, 'options', $headers, $cookies)
+            $this->newOptionsRequest($url, $callback)
         );
     }
 
-    public function patch($url, $data, $headers=null, $cookies=null) {
-        return $this->promisePatch($url, $data, $headers, $cookies)->sync();
+    public function patch($url, $data, $callback=null) {
+        return $this->promisePatch($url, $data, $callback)->sync();
     }
 
-    public function promisePatch($url, $data, $headers=null, $cookies=null) {
+    public function promisePatch($url, $data, $callback=null) {
         return $this->promiseResponse(
-            $this->newRequest($url, 'patch', $headers, $cookies, $data)
+            $this->newPatchRequest($url, $data, $callback)
         );
     }
 
 
     
 
-    public function newRequest($url, $method='get', $headers=null, $cookies=null, $body=null) {
+    public function newRequest($url, $method='get', $callback=null, $body=null) {
         $request = link\http\request\Base::factory($url);
         $request->setMethod($method);
 
-        if($headers) {
-            $request->headers->import(
-                link\http\request\HeaderCollection::factory($headers)
-            );
-        }
-
-        if($cookies) {
-            $request->cookies->import($cookies);
-        }
+        core\lang\Callback::callArgs($callback, [$request, $this]);
 
         if($body !== null) {
             if($method == 'post' && !is_scalar($body)) {
@@ -146,6 +133,47 @@ class Client implements IClient {
         }
 
         return $request;
+    }
+
+    public function newGetRequest($url, $callback=null) {
+        return $this->newRequest($url, 'get', $callback);
+    }
+
+    public function newGetFileRequest($url, $destination, $fileName=null, $callback=null) {
+        return $this->newRequest($url, 'get', $callback)
+            ->withOptions(function($options) use($destination, $fileName) {
+                if($destination instanceof core\io\IWriter) {
+                    $options->setDownloadStream($destination);
+                } else {
+                    $options->setDownloadFolder($destination);
+                }
+
+                $options->setDownloadFileName($fileName);
+            });
+    }
+
+    public function newPostRequest($url, $data, $callback=null) {
+        return $this->newRequest($url, 'post', $callback, $data);
+    }
+
+    public function newPutRequest($url, $data, $callback=null) {
+        return $this->newRequest($url, 'put', $callback, $data);
+    }
+
+    public function newDeleteRequest($url, $callback=null) {
+        return $this->newRequest($url, 'delete', $callback);
+    }
+
+    public function newHeadRequest($url, $callback=null) {
+        return $this->newRequest($url, 'head', $callback);
+    }
+
+    public function newOptionsRequest($url, $callback=null) {
+        return $this->newRequest($url, 'options', $callback);
+    }
+
+    public function newPatchRequest($url, $data, $callback=null) {
+        return $this->newRequest($url, 'patch', $callback, $data);
     }
 
     
