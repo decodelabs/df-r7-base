@@ -165,16 +165,16 @@ class Promise implements IPromise, core\IDumpable {
         return $this->_action !== null;
     }
 
-    public function begin() {
+    public function begin($value=null) {
         if($this->_parent) {
-            $this->_parent->begin();
+            $this->_parent->begin($value);
             return $this;
         }
 
-        return $this->beginThis();
+        return $this->beginThis($value);
     }
 
-    public function beginThis() {
+    public function beginThis($value=null) {
         if($this->_hasBegun) {
             throw new LogicException(
                 'Promise action has already begun'
@@ -198,13 +198,37 @@ class Promise implements IPromise, core\IDumpable {
             $this->_action = null;
 
             try {
-                $this->_result = $action->invokeArgs([$this]);
+                $value = $action->invokeArgs([$value, $this]);
             } catch(\Exception $e) {
-                $this->_error = $e;
+                return $this->deliverError($e);
             }
+
+            return $this->deliver($value);
+        } else {
+            return $this->deliver(null);
         }
 
-        return $this->_deliverDependants();
+    }
+
+    public function beginThisError(\Exception $e) {
+        if($this->_hasBegun) {
+            throw new LogicException(
+                'Promise action has already begun'
+            );
+        }
+
+        if($this->_isCancelled) {
+            return $this;
+        }
+
+        if($this->_hasDelivered) {
+            throw new LogicException(
+                'Promise has already delivered'
+            );
+        }
+
+        $this->_hasBegun = true;
+        return $this->deliverError($e);
     }
 
     public function hasBegun() {
@@ -575,17 +599,8 @@ class Promise implements IPromise, core\IDumpable {
 
         $this->_hasBegun = true;
         $this->_result = $value;
-
-        if($this->_action) {
-            $action = $this->_action;
-            $this->_action = null;
-
-            try {
-                $this->_result = $action->invokeArgs([$value, $this]);
-            } catch(\Exception $e) {
-                $this->_error = $e;
-            }
-        }
+        $this->_action = null;
+        $this->_error = null;
 
         return $this->_deliverDependants();
     }
@@ -596,8 +611,12 @@ class Promise implements IPromise, core\IDumpable {
                 'Promise has already delivered'
             );
         }
-
+        
+        $this->_hasBegun = true;
+        $this->_result = null;
+        $this->_action = null;
         $this->_error = $error;
+
         return $this->_deliverDependants();
     }
 
@@ -650,16 +669,16 @@ class Promise implements IPromise, core\IDumpable {
 
     protected function _deliverDependant(IPromise $dependant) {
         if($this->_result instanceof IPromise) {
-            $this->_result->then([$dependant, 'deliver'], [$dependant, 'deliverError']);
+            $this->_result->then([$dependant, 'beginThis'], [$dependant, 'beginThisError']);
 
             if(!$this->_result->hasBegun()) {
                 $this->_result->begin();
             }
         } else {
             if($this->_error) {
-                $dependant->deliverError($this->_error);
+                $dependant->beginThisError($this->_error);
             } else {
-                $dependant->deliver($this->_result);
+                $dependant->beginThis($this->_result);
             }
         }
     }
@@ -683,16 +702,7 @@ class Promise implements IPromise, core\IDumpable {
 
 // Sync
     public function sync() {
-        if(!$this->hasBegun()) {
-            $this->begin();
-        }
-
-        if(!$this->_hasDelivered) {
-            // TODO: loop while not delivered
-            core\stub($this);
-        }
-
-        if($this->_isCancelled) {
+        if(!$this->_runSync()) {
             return null;
         }
 
@@ -700,11 +710,36 @@ class Promise implements IPromise, core\IDumpable {
             $this->_result = $this->_result->sync();
         }
 
+        return $this->_result;
+    }
+
+    protected function _runSync() {
+        if($this->_isCancelled) {
+            return false;
+        }
+
+        if(!$this->hasBegun()) {
+            $this->begin();
+        }
+
+        if($this->_isCancelled) {
+            return false;
+        }
+
+        if(!$this->_hasDelivered) {
+            // TODO: loop while not delivered
+            core\stub($this);
+        }
+
         if($this->_error) {
             throw $this->_error;
         }
 
-        return $this->_result;
+        if($this->_isCancelled) {
+            return false;
+        }
+
+        return true;
     }
 
 

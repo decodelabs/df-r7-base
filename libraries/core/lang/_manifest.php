@@ -130,8 +130,9 @@ interface IPromise {
     public function setAction($action);
     public function getAction();
     public function hasAction();
-    public function begin();
-    public function beginThis();
+    public function begin($value=null);
+    public function beginThis($value=null);
+    public function beginThisError(\Exception $e);
     public function hasBegun();
     public function hasBegunThis();
     public function isPending();
