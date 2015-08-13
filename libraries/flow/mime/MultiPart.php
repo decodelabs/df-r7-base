@@ -20,12 +20,16 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
     public static function fromString($string) {
         $class = get_called_class();
-
+        
         $string = str_replace("\r", '', $string);
         list($headers, $body) = explode("\n\n", $string, 2);
 
         $headers = new core\collection\HeaderMap($headers);
         $contentType = $headers->get('content-type');
+        $encoding = $headers->get('content-transfer-encoding');
+
+        $headers->remove('content-type');
+        $headers->remove('content-transfer-encoding');
 
         if(substr($contentType, 0, 10) == 'multipart/') {
             $output = new $class($contentType, $headers);
@@ -35,7 +39,35 @@ class MultiPart implements IMultiPart, core\IDumpable {
             array_pop($parts);
 
             foreach($parts as $part) {
-                $output->addPart(self::fromString($part));
+                $output->addPart(self::_createPartFromString($part));
+            }
+        } else {
+            $output = new $class(IMultiPart::MIXED, $headers);
+            $output->addPart(new ContentPart($body, [
+                'content-type' => $contentType,
+                'content-transfer-encoding' => $encoding
+            ], true));
+        }
+        
+        return $output;
+    }
+
+    protected static function _createPartFromString($string) {
+        $string = str_replace("\r", '', $string);
+        list($headers, $body) = explode("\n\n", $string, 2);
+
+        $headers = new core\collection\HeaderMap($headers);
+        $contentType = $headers->get('content-type');
+
+        if(substr($contentType, 0, 10) == 'multipart/') {
+            $output = new self($contentType, $headers);
+            $boundary = $output->getBoundary();
+            $parts = explode("\n".'--'.$boundary, "\n".trim($body));
+            array_shift($parts);
+            array_pop($parts);
+
+            foreach($parts as $part) {
+                $output->addPart(self::_createPartFromString($part));
             }
         } else {
             $output = new ContentPart($body, $headers, true);

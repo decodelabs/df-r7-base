@@ -28,7 +28,7 @@ class ContentPart implements IContentPart, core\IDumpable {
         }
 
         if($decodeContent) {
-            $encoding = $headers->get('content-transfer-encoding');
+            $encoding = $this->_headers->get('content-transfer-encoding');
             
             switch($encoding) {
                 case core\string\IEncoding::A7BIT:
