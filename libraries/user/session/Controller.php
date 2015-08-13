@@ -41,6 +41,7 @@ class Controller implements IController {
     }
     
     public function getPerpetuator() {
+        $this->_open();
         return $this->_perpetuator;
     }
 
@@ -70,6 +71,7 @@ class Controller implements IController {
     }
     
     public function getBackend() {
+        $this->_open();
         return $this->_backend;
     }
 
@@ -80,6 +82,7 @@ class Controller implements IController {
 
 // Cache
     public function getCache() {
+        $this->_open();
         return $this->_cache;
     }
 
