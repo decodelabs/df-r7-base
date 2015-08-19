@@ -168,7 +168,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         $count = $this->_countTotalItems();
         $threshold = $this->_isForMany ? 20 : 70;
 
-        if($count <= $threshold) {
+        if($count > 0 && $count <= $threshold) {
             $this->_renderInlineListDetails($fa);
         } else {
             $this->_renderInlineTextDetails($fa);
