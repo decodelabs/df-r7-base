@@ -79,6 +79,8 @@ class Stream extends Base implements link\http\IAdaptiveStreamResponse {
     }
 
     public function transferContentFileStream(core\io\IChannel $content) {
+        $this->_content->seek(0);
+
         if($this->headers->has('content-length')) {
             $length = $this->headers->get('content-length');
             $chunkLength = 1024;
@@ -90,7 +92,11 @@ class Stream extends Base implements link\http\IAdaptiveStreamResponse {
                     $currentLength = $length;
                 }
 
-                $content->write($this->_content->readChunk($currentLength));
+                $chunk = $this->_content->readChunk($currentLength);
+
+                // TODO: check for mismatch length
+
+                $content->write($chunk);
                 $length -= $currentLength;
             }
         } else {
