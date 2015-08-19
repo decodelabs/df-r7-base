@@ -186,6 +186,13 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             return;
         }
 
+        $current = link\Ip::factory(gethostbyname(gethostname()));
+
+        if($current->toString() == $ip->toString()) {
+            $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
+            return;
+        }
+
         $response = new link\http\response\Stream(
             '<html><head><title>Forbidden</title></head><body>'.
             '<p>Sorry, this site is protected by IP range.</p><p>Your IP is: <strong>'.$ip.'</strong></p>',
