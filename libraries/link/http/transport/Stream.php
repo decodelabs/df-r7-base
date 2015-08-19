@@ -49,11 +49,16 @@ class Stream implements link\http\ITransport {
         $stream = $this->_createStream($request, $promise);
 
         $response = new link\http\response\Stream(
-            $stream, null, $this->_headers
+            null, null, $this->_headers
         );
 
+        $client->prepareResponse($response, $request);
         $this->_headerStack = null;
-        return $client->prepareResponse($response, $request);
+
+        $response->transferContentFileStream($stream);
+        $stream->close();
+
+        return $response;
     }
 
     protected function _prepareRequest(link\http\IRequest $request, link\http\IClient $client) {

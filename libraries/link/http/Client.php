@@ -257,17 +257,10 @@ class Client implements IClient {
 
             $target = core\fs\File::factory($path, core\fs\Mode::WRITE_TRUNCATE);
             $close = true;
-        } else if($response->getContentFileStream() instanceof core\io\IStreamChannel) {
-            $target = new core\fs\MemoryFile('', $response->getContentType());
-            $close = true;
         }
 
         if($target) {
-            $response->transferContentFileStream($target);
-
-            if($close) {
-                $target->close();
-            }
+            $response->setContentFileStream($target);
         }
 
         return $response;

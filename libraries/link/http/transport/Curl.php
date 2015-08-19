@@ -30,7 +30,7 @@ class Curl implements link\http\IAsyncTransport {
             curl_close($handle->resource);
             unset($handle->resource);
             
-            return $client->prepareResponse($handle->response, $request);
+            return $handle->response;
         });
     }
 
@@ -279,7 +279,7 @@ class Curl_Handle {
             $output[\CURLOPT_HTTPHEADER][] = 'Expect:';
         }
 
-        $output[\CURLOPT_HEADERFUNCTION] = function($resource, $header) {
+        $output[\CURLOPT_HEADERFUNCTION] = function($resource, $header) use($client) {
             $length = strlen($header);
             $header = trim($header);
 
@@ -290,6 +290,8 @@ class Curl_Handle {
                     null, null,
                     link\http\response\HeaderCollection::fromResponseArray($this->headers)
                 );
+
+                $client->prepareResponse($this->response, $this->request);
 
                 if($this->response->isRedirect()) {
                     $this->promise->emit('redirect', [

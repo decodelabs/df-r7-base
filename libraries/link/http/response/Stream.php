@@ -92,18 +92,17 @@ class Stream extends Base implements link\http\IAdaptiveStreamResponse {
                     $currentLength = $length;
                 }
 
-                $chunk = $this->_content->readChunk($currentLength);
+                $chunk = $content->readChunk($currentLength);
 
                 // TODO: check for mismatch length
 
-                $content->write($chunk);
+                $this->_content->write($chunk);
                 $length -= $currentLength;
             }
         } else {
-            $this->_content->writeTo($content);
+            $content->writeTo($this->_content);
         }
 
-        $this->_content = $content;
         return $this;
     }
 }
