@@ -203,6 +203,7 @@ trait TForm {
     }
 
 
+
 // Store
     public function setStore($key, $value) {
         $this->_state->setStore($key, $value);
@@ -241,6 +242,53 @@ trait TForm {
         }
         
         return true;
+    }
+
+    public function complete($success=true, $failure=null) {
+        if($this->isValid() || ($success && !is_callable($success))) {
+            $output = $default = null;
+            
+            if(is_string($success) || $success instanceof arch\IRequest) {
+                $default = $success;
+                $success = null;
+            } else if(is_callable($success)) {
+                $output = core\lang\Callback::call($success);
+
+                if(is_string($output) || $output instanceof arch\IRequest) {
+                    $default = $output;
+                    $output = null;
+                }
+            }
+
+            if($output === false) {
+                return;
+            } else if($output === true) {
+                $output = null;
+            }
+
+            $this->_isComplete = true;
+            $completeOutput = $this->_getCompleteRedirect($default);
+
+            if(!$output) {
+                $output = $completeOutput;
+            }
+
+            return $output;
+        } else {
+            return core\lang\Callback::call($failure);
+        }
+    }
+
+    protected function _getCompleteRedirect($default=null, $success=true) {
+        if($default === null) {
+            $default = $this->_getDefaultRedirect();
+        }
+
+        if($this->request->getType() == 'Html') {
+            return $this->http->defaultRedirect($default, $success);
+        } else if($default) {
+            return $this->http->redirect($default);
+        }
     }
     
     

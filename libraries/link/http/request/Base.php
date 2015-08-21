@@ -646,7 +646,7 @@ class Base implements link\http\IRequest, core\IDumpable {
         
         $output['headers'] = $this->getHeaders();
         
-        if($this->method === 'POST') {
+        if($this->method === 'post') {
             $output['post'] = $this->getPostData();
         }
         

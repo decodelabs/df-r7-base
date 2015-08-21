@@ -185,7 +185,7 @@ class Client implements IClient, core\IDumpable {
             $fileStream->seek(0);
             $session->setStore('isChunked', $request->getHeaders()->get('Transfer-Encoding') == 'chunked');
 
-            if($request->getMethod() == 'PUT') {
+            if($request->getMethod() == 'put') {
                 $session->setStore('writeListen', true);
                 return link\peer\IIoState::WRITE_LISTEN;
             }
@@ -253,7 +253,7 @@ class Client implements IClient, core\IDumpable {
             $session->setReadFileStream($response->getContentFileStream());
         }
 
-        if($request->getMethod() == 'HEAD') {
+        if($request->getMethod() == 'head') {
             return link\peer\IIoState::END;
         }
 

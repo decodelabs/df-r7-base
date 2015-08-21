@@ -195,7 +195,7 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
                     $list->addField($key);
                 }
             } else if(is_callable($value)) {
-                core\lang\Callback($value, $list, $key);
+                core\lang\Callback::call($value, $list, $key);
             }
         }
 

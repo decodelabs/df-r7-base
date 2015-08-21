@@ -75,21 +75,9 @@ class Delegate implements IDelegate {
         return $this;
     }
 
-    public function complete($defaultRedirect=null, $success=true) {
-        if($defaultRedirect === null) {
-            $defaultRedirect = $this->_getDefaultRedirect();
-        }
 
-        $this->_isComplete = true;
-        
-        if($this->request->getType() == 'Html') {
-            return $this->http->defaultRedirect($defaultRedirect, $success);
-        } else if($defaultRedirect) {
-            return $this->http->redirect($defaultRedirect);
-        }
-    }
-    
     public function setComplete($success=true) {
+        $this->_isComplete = true;
         $this->_onComplete($success);
 
         foreach($this->_delegates as $delegate) {
@@ -106,14 +94,15 @@ class Delegate implements IDelegate {
 
     protected function _onComplete($success) {}
 
+
     protected function _getDefaultRedirect() {
         return static::DEFAULT_REDIRECT;
     }
 
 
     protected function _onCancelEvent() {
-        $redirect = $this->_getDefaultRedirect();
-        return $this->complete($redirect, false);
+        $this->setComplete(false);
+        return $this->_getCompleteRedirect();
     }
 
 

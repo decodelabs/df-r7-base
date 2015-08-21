@@ -63,13 +63,13 @@ interface IActiveForm extends IForm {
 
     public function getAvailableEvents();
     public function getStateData();
-    public function complete($defaultRedirect=null, $success=true);
+    public function complete($success=true, $failure=null);
     public function isComplete();
 }
 
 
 interface IAction extends arch\IAction, IActiveForm {
-    
+    public function setComplete();
 }
 
 

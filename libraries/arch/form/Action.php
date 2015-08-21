@@ -117,7 +117,7 @@ abstract class Action extends arch\Action implements IAction {
         }
 
         if($this->_state->isNew()) {
-            $this->_state->isOperating = $this->http->getMethod() != 'GET';
+            $this->_state->isOperating = $this->http->getMethod() != 'get';
         } else {
             $this->_state->isOperating = true;
         }
@@ -418,22 +418,15 @@ abstract class Action extends arch\Action implements IAction {
         return $output;
     }
 
-    public function complete($defaultRedirect=null, $success=true) {
-        if($defaultRedirect === null) {
-            $defaultRedirect = $this->_getDefaultRedirect();
-        }
-        
+
+
+    public function setComplete() {
         $this->_isComplete = true;
-        
-        if($this->request->getType() == 'Html') {
-            return $this->http->defaultRedirect($defaultRedirect, $success);
-        } else if($defaultRedirect) {
-            return $this->http->redirect($defaultRedirect);
-        }
+        return $this;
     }
 
     protected function _finalizeCompletion($success=true) {
-        $this->_isComplete = true;
+        $this->setComplete();
         
         foreach($this->_delegates as $delegate) {
             $delegate->setComplete($success);
@@ -479,13 +472,8 @@ abstract class Action extends arch\Action implements IAction {
     
 // Events
     protected function _onCancelEvent() {
-        $redirect = $this->_getDefaultRedirect();
-
-        //if(!$redirect && in_array($this->request->getType(), ['Json', 'Ajax'])) {
-            //$redirect = $this->request;
-        //}
-
-        return $this->complete($redirect, false);
+        $this->setComplete();
+        return $this->_getCompleteRedirect();
     }
 
     protected function _getDefaultRedirect() {

@@ -104,19 +104,19 @@ class Http implements arch\IDirectoryHelper {
     
 
     public function isGetRequest() {
-        return $this->getMethod() == 'GET';
+        return $this->getMethod() == 'get';
     }
 
     public function isPostRequest() {
-        return $this->getMethod() == 'POST';
+        return $this->getMethod() == 'post';
     }
 
     public function isPutRequest() {
-        return $this->getMethod() == 'PUT';
+        return $this->getMethod() == 'put';
     }
 
     public function isDeleteRequest() {
-        return $this->getMethod() == 'DELETE';
+        return $this->getMethod() == 'delete';
     }
 
     public function isAjaxRequest() {
