@@ -65,12 +65,18 @@ class Bridge implements IBridge {
                 return $payload;
             })
             ->launch();
+
+        $output = $result->getOutput();
         
-        if($result->hasError()) {
-            throw new RuntimeException($result->getError());
+        if($result->hasError() && empty($output)) {
+            $error = $result->getError();
+
+            if(!preg_match('/deprecated/i', $error)) {
+                throw new RuntimeException($error);
+            }
         }
 
-        $output = flex\json\Codec::decode($result->getOutput());
+        $output = flex\json\Codec::decode($output);
         return $output['result'];
     }
 }
