@@ -10,13 +10,22 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class WidgetContentProvider extends aura\html\ElementContent implements aura\view\IContentProvider, aura\html\widget\IWidgetShortcutProvider {
+class WidgetContentProvider extends aura\html\ElementContent implements aura\view\ICollapsibleContentProvider, aura\html\widget\IWidgetShortcutProvider {
     
     use core\TContextAware;
     use aura\view\TDeferredRenderable;
     
     public function __construct(arch\IContext $context) {
         $this->context = $context;
+    }
+
+
+    public function collapse() {
+        $output = $this->render();
+        $this->clear();
+        $this->push($output);
+
+        return $this;
     }
     
     

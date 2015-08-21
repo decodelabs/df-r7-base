@@ -220,8 +220,10 @@ abstract class Action extends arch\Action implements IAction {
             ->canStoreCache(false)
             ->shouldRevalidateCache(true);
 
-        $this->view->render();
-        
+        if($this->content instanceof aura\view\ICollapsibleContentProvider) {
+            $this->content->collapse();
+        }
+
         return $this->view;
     }
 

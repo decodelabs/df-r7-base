@@ -139,6 +139,10 @@ interface IContentProvider extends
     arch\IProxyResponse 
     {}
 
+interface ICollapsibleContentProvider extends IContentProvider {
+    public function collapse();
+}
+
 interface IContentConsumer {
     public function setContentProvider(IContentProvider $provider);
     public function getContentProvider();
