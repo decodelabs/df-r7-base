@@ -78,7 +78,8 @@ class Unit extends axis\unit\table\Base {
         'NerdyBot',
         'Protocol Discovery',
         'spbot',
-        'Twitterbot'
+        'Twitterbot',
+        'Yandex'
     ];
 
     public function isBot($agent) {
