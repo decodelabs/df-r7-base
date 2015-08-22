@@ -80,6 +80,7 @@ class Unit extends axis\unit\table\Base {
         'msnbot',
         'NerdyBot',
         'Protocol Discovery',
+        'Slurp',
         'spbot',
         'Twitterbot',
         'Yandex'
