@@ -70,6 +70,7 @@ class Unit extends axis\unit\table\Base {
     protected $_botMatch = [
         'AddThis.com',
         'AhrefsBot',
+        'Baiduspider',
         'bingbot',
         'CRAZYWEBCRAWLER',
         'crawler',
