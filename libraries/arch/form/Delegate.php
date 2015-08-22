@@ -27,10 +27,10 @@ class Delegate implements IDelegate {
         $this->_delegateId = $id;
 
         $this->values = $state->getValues();
-        $this->_onConstruct();
+        $this->afterConstruct();
     }
 
-    protected function _onConstruct() {}
+    protected function afterConstruct() {}
     
     public function getDelegateId() {
         return $this->_delegateId;
@@ -42,12 +42,12 @@ class Delegate implements IDelegate {
     }
 
     final public function initialize() {
-        $this->_init();
-        $this->_setupDelegates();
+        $this->init();
+        $this->loadDelegates();
 
         if($this->_state->isNew()) {
             $this->_isNew = true;
-            $this->_setDefaultValues();
+            $this->setDefaultValues();
         }
         
         foreach($this->_delegates as $delegate) {
@@ -55,7 +55,7 @@ class Delegate implements IDelegate {
         }
         
         $this->_state->isNew(false);
-        $this->_onInitComplete();
+        $this->afterInit();
         return $this;
     }
 
@@ -95,12 +95,40 @@ class Delegate implements IDelegate {
     protected function _onComplete($success) {}
 
 
-    protected function _getDefaultRedirect() {
+    protected function getDefaultRedirect() {
         return static::DEFAULT_REDIRECT;
     }
 
 
-    protected function _onCancelEvent() {
+// State
+    public function reset() {
+        $this->_state->reset();
+
+        foreach($this->_delegates as $id => $delegate) {
+            $this->unloadDelegate($id);
+        }
+
+        $this->afterReset();
+
+        $this->loadDelegates();
+        $this->setDefaultValues();
+
+        foreach($this->_delegates as $id => $delegate) {
+            $delegate->initialize();
+        }
+
+        $this->_state->isNew(false);
+        $this->afterInit();
+
+        return $this;
+    }
+
+    protected function afterReset() {}
+
+
+
+// Events
+    protected function onCancelEvent() {
         $this->setComplete(false);
         return $this->_getCompleteRedirect();
     }

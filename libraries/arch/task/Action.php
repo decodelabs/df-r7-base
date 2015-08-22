@@ -23,10 +23,10 @@ abstract class Action extends arch\Action implements IAction {
 
     public function __construct(arch\IContext $context) {
         parent::__construct($context);
-        $this->_init();
+        $this->init();
     }
 
-    protected function _init() {}
+    protected function init() {}
 
 
 // Schedule

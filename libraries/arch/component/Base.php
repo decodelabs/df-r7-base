@@ -93,8 +93,8 @@ abstract class Base implements arch\IComponent {
 
         $this->_componentArgs = $args;
 
-        if(method_exists($this, '_init')) {
-            call_user_func_array([$this, '_init'], $args);
+        if(method_exists($this, 'init')) {
+            call_user_func_array([$this, 'init'], $args);
         }
     }
 

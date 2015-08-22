@@ -63,6 +63,8 @@ interface IActiveForm extends IForm {
 
     public function getAvailableEvents();
     public function getStateData();
+
+    public function reset();
     public function complete($success=true, $failure=null);
     public function isComplete();
 }
@@ -70,6 +72,14 @@ interface IActiveForm extends IForm {
 
 interface IAction extends arch\IAction, IActiveForm {
     public function setComplete();
+}
+
+interface IWizard extends IAction {
+    public function getCurrentSection();
+    public function setSection($section);
+    public function getPrevSection();
+    public function getNextSection();
+    public function getSectionData($section=null);
 }
 
 

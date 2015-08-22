@@ -19,8 +19,6 @@ trait TForm {
     use core\lang\TChainable;
     use aura\view\TCascadingHelperProvider;
     
-    //public $view;
-    //public $html;
     public $content;
     public $values;
     
@@ -28,10 +26,10 @@ trait TForm {
     protected $_state;
     protected $_delegates = [];
     
-    protected function _init() {}
-    protected function _setDefaultValues() {}
-    protected function _setupDelegates() {}
-    protected function _onInitComplete() {}
+    protected function init() {}
+    protected function setDefaultValues() {}
+    protected function loadDelegates() {}
+    protected function afterInit() {}
 
     public function getStateController() {
         return $this->_state;
@@ -229,7 +227,7 @@ trait TForm {
     }
     
     
-// Values
+// Delivery
     public function isValid() {
         if($this->_state && !$this->_state->values->isValid()) {
             return false;
@@ -281,7 +279,7 @@ trait TForm {
 
     protected function _getCompleteRedirect($default=null, $success=true) {
         if($default === null) {
-            $default = $this->_getDefaultRedirect();
+            $default = $this->getDefaultRedirect();
         }
 
         if($this->request->getType() == 'Html') {
@@ -312,10 +310,10 @@ trait TForm {
     
 // Events
     public function handleEvent($name, array $args=[]) {
-        $func = '_on'.ucfirst($name).'Event';
+        $func = 'on'.ucfirst($name).'Event';
         
         if(!method_exists($this, $func)) {
-            $func = '_onDefaultEvent';
+            $func = 'onDefaultEvent';
             
             if(!method_exists($this, $func)) {
                 throw new EventException(
@@ -327,19 +325,11 @@ trait TForm {
         return call_user_func_array([$this, $func], $args);
     }
 
-    protected function _onResetEvent() {
-        if($this instanceof IDelegate) {
-            $this->setComplete(false);
-        } else {
-            foreach($this->_delegates as $delegate) {
-                $delegate->setComplete(false);
-            }
-
-            $this->_state->reset();
-        }
-
-        $this->_setDefaultValues();
+    protected function onResetEvent() {
+        $this->reset();
     }
+
+    protected function onRefreshEvent() {}
 
     public function handleDelegateEvent($delegateId, $event, $args) {}
 
@@ -349,7 +339,7 @@ trait TForm {
         $ref = new \ReflectionClass($this);
 
         foreach($ref->getMethods() as $method) {
-            if(preg_match('/^\_on([A-Z\_][a-zA-Z0-9_]*)Event$/', $method->getName(), $matches)) {
+            if(preg_match('/^\on([A-Z\_][a-zA-Z0-9_]*)Event$/', $method->getName(), $matches)) {
                 $output[] = $this->eventName(lcfirst($matches[1]));
             }
         }
@@ -413,12 +403,11 @@ trait TForm_ModalDelegate {
 
     abstract protected function _getDefaultMode();
 
-
-    protected function _setMode($mode) {
+    protected function setMode($mode) {
         $this->_state->setStore('mode', $mode);
     }
 
-    protected function _getMode($default=null) {
+    protected function getMode($default=null) {
         if($default === null) {
             $default = $this->getDefaultMode();
         }
@@ -426,26 +415,26 @@ trait TForm_ModalDelegate {
         return $this->_state->getStore('mode', $default);
     }
 
-    protected function _switchMode($from, $to, $do=null) {
+    protected function switchMode($from, $to, $do=null) {
         if(!is_array($from)) {
             $from = [$from];
         }
 
-        $mode = $this->_getMode();
+        $mode = $this->getMode();
 
         if(!in_array($mode, $from)) {
             return;
         }
 
-        $this->_setMode($to);
+        $this->setMode($to);
 
         if($do) {
             core\lang\Callback::factory($do)->invoke($this, $from, $to);
         }
     }
 
-    protected function _renderModeUi(array $args) {
-        $mode = $this->_getMode();
+    protected function createModeUi(array $args) {
+        $mode = $this->getMode();
         $modes = $this->_getModeRenderers();
         $func = null;
 
@@ -686,12 +675,12 @@ trait TForm_ValueListSelectorDelegate {
     }
 
 // Events
-    protected function _onClearEvent() {
+    protected function onClearEvent() {
         unset($this->values->selected);
         return $this->http->redirect('#'.$this->elementId('selector'));
     }
 
-    protected function _onRemoveEvent($id) {
+    protected function onRemoveEvent($id) {
         unset($this->values->selected->{$id});
     }
 }
@@ -791,7 +780,7 @@ trait TForm_DependentDelegate {
         return $this;
     }
 
-    protected function _normalizeDependencyValues() {
+    private function _normalizeDependencyValues() {
         foreach($this->_dependencies as $name => $dep) {
             if($dep['normalized']) {
                 continue;

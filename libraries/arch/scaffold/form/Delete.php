@@ -19,15 +19,15 @@ class Delete extends arch\form\template\Delete {
         parent::__construct($scaffold->getContext());
     }
 
-    protected function _getDataId() {
+    protected function getInstanceId() {
         return $this->_scaffold->getRecordId();
     }
 
-    protected function _getItemName() {
+    protected function getItemName() {
         return $this->_scaffold->getRecordItemName();
     }
 
-    protected function _renderItemDetails($container) {
+    protected function createItemUi($container) {
         $container->push(
             $this->apex->component(ucfirst($this->_scaffold->getRecordKeyName()).'Details')
                 ->setRecord($this->_scaffold->getRecord())
@@ -40,7 +40,7 @@ class Delete extends arch\form\template\Delete {
         }
     }
 
-    protected function _deleteItem() {
+    protected function apply() {
         $flags = $this->_scaffold->getRecordDeleteFlags();
         $validator = $this->data->newValidator();
 

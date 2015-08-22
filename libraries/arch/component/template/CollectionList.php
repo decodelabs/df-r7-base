@@ -21,7 +21,7 @@ class CollectionList extends arch\component\Base implements aura\html\widget\IWi
     protected $_urlRedirect = null;
     protected $_viewArg;
 
-    protected function _init(array $fields=null, $collection=null) {
+    protected function init(array $fields=null, $collection=null) {
         if(static::DEFAULT_ERROR_MESSAGE !== null) {
             $this->_errorMessage = $this->_(static::DEFAULT_ERROR_MESSAGE);
         }

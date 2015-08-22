@@ -22,8 +22,8 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
     use arch\form\TForm_DependentDelegate;
 
     protected static $_defaultModes = [
-        'select' => '_renderOverlaySelector',
-        'details' => '_renderInlineDetails'
+        'select' => 'createOverlaySelectorUi',
+        'details' => 'createInlineDetailsUi'
     ];
 
     protected $_searchMessage = null;
@@ -144,10 +144,10 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         $fa->setId($this->elementId('selector'));
         $fa->isRequired($this->_isRequired);
         
-        $this->_renderModeUi([$fa]);
+        $this->createModeUi([$fa]);
     }
 
-    protected function _renderInlineDetails(aura\html\widget\FieldArea $fa) {
+    protected function createInlineDetailsUi(aura\html\widget\FieldArea $fa) {
         $fa->addClass('delegate-selector');
 
         if($this instanceof arch\form\IDependentDelegate) {
@@ -335,8 +335,8 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         }
     }
 
-    protected function _renderOverlaySelector(aura\html\widget\FieldArea $fa) {
-        $this->_renderInlineDetails($fa);
+    protected function createOverlaySelectorUi(aura\html\widget\FieldArea $fa) {
+        $this->createInlineDetailsUi($fa);
 
         $selected = $this->_fetchSelectionList();
 
@@ -345,15 +345,15 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         }
 
         $ol = $fa->addOverlay($fa->getLabelBody());
-        $this->_renderOverlaySelectorContent($ol, $selected);
+        $this->createOverlaySelectorUiContent($ol, $selected);
     }
 
-    protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol, $selected) {
+    protected function createOverlaySelectorUiContent(aura\html\widget\Overlay $ol, $selected) {
         $fs = $ol->addFieldSet($this->_('Select'));
 
         if(!$this->values->search->hasValue() && $this->_defaultSearchString !== null) {
             $this->values->search->setValue($this->_defaultSearchString);
-            $this->_onSearchEvent();
+            $this->onSearchEvent();
         }
 
         // Search
@@ -566,7 +566,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
 
 
 // Events
-    protected function _onSearchEvent() {
+    protected function onSearchEvent() {
         unset($this->values->searchResults);
 
         $this->data->newValidator()
@@ -584,11 +584,11 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
             ->getValue('search');
     }
 
-    protected function _onSelectEvent() {
+    protected function onSelectEvent() {
         unset($this->values->search, $this->values->searchResults);
     }
 
-    protected function _onSelectAllEvent() {
+    protected function onSelectAllEvent() {
         if(!$this->_isForMany) {
             return;
         }
@@ -596,17 +596,17 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         $this->setSelected($this->values->searchResults->toArray());
         unset($this->values->search, $this->values->searchResults);
 
-        $this->_onEndSelectEvent();
+        $this->onEndSelectEvent();
     }
 
-    protected function _onBeginSelectEvent() {
-        $this->_switchMode('details', 'select', function() {
+    protected function onBeginSelectEvent() {
+        $this->switchMode('details', 'select', function() {
             $this->_state->setStore('originalSelection', $this->getSelected());
         });
     }
 
-    protected function _onCancelSelectEvent() {
-        $this->_switchMode('select', 'details', function() {
+    protected function onCancelSelectEvent() {
+        $this->switchMode('select', 'details', function() {
             if($this->_state->hasStore('originalSelection')) {
                 $this->setSelected($this->_state->getStore('originalSelection'));
             }
@@ -615,15 +615,15 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         return $this->http->redirect('#'.$this->elementId('selector'));
     }
 
-    protected function _onEndSelectEvent() {
-        $this->_switchMode('select', 'details', function() {
+    protected function onEndSelectEvent() {
+        $this->switchMode('select', 'details', function() {
             $this->_state->removeStore('originalSelection');
         });
 
         return $this->http->redirect('#'.$this->elementId('selector'));
     }
 
-    protected function _onResetEvent() {
+    protected function onResetEvent() {
         if($this->_state->hasStore('originalSelection')) {
             $this->setSelected($this->_state->getStore('originalSelection'));
         }

@@ -39,13 +39,13 @@ abstract class Action extends arch\Action implements IAction {
             );
         }
 
-        $this->_onConstruct();
+        $this->afterConstruct();
     }
 
-    protected function _onConstruct() {}
+    protected function afterConstruct() {}
     
     final protected function _beforeDispatch() {
-        $response = $this->_init();
+        $response = $this->init();
         $request = $this->context->request;
         $id = null;
         
@@ -96,7 +96,7 @@ abstract class Action extends arch\Action implements IAction {
         }
         
         $this->values = $this->_state->values;
-        $response = $this->_onSessionReady();
+        $response = $this->initWithSession();
 
         if(!empty($response)) {
             $this->_initResponse = $response;
@@ -105,10 +105,10 @@ abstract class Action extends arch\Action implements IAction {
                 $this->_isNew = true;
             }
             
-            $this->_setupDelegates();
+            $this->loadDelegates();
 
             if($this->_isNew) {
-                $this->_setDefaultValues();
+                $this->setDefaultValues();
             }
             
             foreach($this->_delegates as $delegate) {
@@ -123,7 +123,7 @@ abstract class Action extends arch\Action implements IAction {
         }
         
         $this->_state->isNew(false);
-        $this->_onInitComplete();
+        $this->afterInit();
     }
 
     public function isNew() {
@@ -134,29 +134,29 @@ abstract class Action extends arch\Action implements IAction {
         return $this->_isComplete;
     }
 
-    protected function _createSessionId() {
+    private function _createSessionId() {
         return core\string\Generator::sessionId();
     }
     
-    protected function _createSessionNamespace() {
+    private function _createSessionNamespace() {
         $output = 'form://'.implode('/', $this->context->request->getLiteralPathArray());
 
         if(substr($output, -5) == '.ajax') {
             $output = substr($output, 0, -5);
         }
         
-        if(null !== ($dataId = $this->_getDataId())) {
+        if(null !== ($dataId = $this->getInstanceId())) {
             $output .= '#'.$dataId;
         }
         
         return $output;
     }
     
-    protected function _getDataId() {
+    protected function getInstanceId() {
         return null;
     }
     
-    protected function _onSessionReady() {}
+    protected function initWithSession() {}
 
     public function getStateController() {
         if(!$this->_state) {
@@ -182,8 +182,40 @@ abstract class Action extends arch\Action implements IAction {
 
 
 
+
+
+
+// State
+    public function reset() {
+        $this->_state->reset();
+
+        foreach($this->_delegates as $id => $delegate) {
+            $this->unloadDelegate($id);
+        }
+
+        $this->afterReset();
+
+        $this->initWithSession();
+        $this->loadDelegates();
+        $this->setDefaultValues();
+
+        foreach($this->_delegates as $id => $delegate) {
+            $delegate->initialize();
+        }
+
+        $this->_state->isNew(false);
+        $this->afterInit();
+
+        return $this;
+    }
+
+    protected function afterReset() {}
+
+
+
+
 // HTML Request
-    public function onHtmlGetRequest() {
+    public function handleHtmlGetRequest() {
         if($this->_initResponse) {
             return $this->_initResponse;
         }
@@ -207,11 +239,11 @@ abstract class Action extends arch\Action implements IAction {
             $delegate->setRenderContext($this->view, $this->content, $this->_isRenderingInline);
         }
         
-        if(method_exists($this, '_createUi')) {
-            $this->_createUi();
+        if(method_exists($this, 'createUi')) {
+            $this->createUi();
         } else if($this->context->application->isDevelopment()) {
             $this->content->push($this->html(
-                '<p>This form handler has no ui generator - you need to implement function _createUi() or override function onGetRequest()</p>'
+                '<p>This form handler has no ui generator - you need to implement function createUi() or override function handleGetRequest()</p>'
             ));
         }
         
@@ -227,7 +259,7 @@ abstract class Action extends arch\Action implements IAction {
         return $this->view;
     }
 
-    public function onHtmlPostRequest() {
+    public function handleHtmlPostRequest() {
         if($this->_initResponse) {
             return $this->_initResponse;
         }
@@ -244,11 +276,11 @@ abstract class Action extends arch\Action implements IAction {
 
 
 // JSON Request
-    public function onJsonGetRequest() {
+    public function handleJsonGetRequest() {
         return $this->_newJsonResponse($this->_getJsonResponseData());
     }
 
-    public function onJsonPostRequest() {
+    public function handleJsonPostRequest() {
         $response = $this->_runPostRequest();
         $data = $this->_getJsonResponseData();
 
@@ -298,7 +330,7 @@ abstract class Action extends arch\Action implements IAction {
 
 
 // AJAX Request
-    public function onAjaxGetRequest() {
+    public function handleAjaxGetRequest() {
         if($this->_initResponse) {
             $response = $this->_initResponse;
         } else {
@@ -308,7 +340,7 @@ abstract class Action extends arch\Action implements IAction {
         return $this->_newJsonResponse($this->_getAjaxResponseData($response, $response === null));
     }
 
-    public function onAjaxPostRequest() {
+    public function handleAjaxPostRequest() {
         if($this->_initResponse) {
             $response = $this->_initResponse;
         } else {
@@ -334,7 +366,7 @@ abstract class Action extends arch\Action implements IAction {
         }
 
         if($content === null && $loadUi) {
-            $content = $this->http->getAjaxViewContent($this->onHtmlGetRequest());
+            $content = $this->http->getAjaxViewContent($this->handleHtmlGetRequest());
         }
 
         return [
@@ -380,7 +412,7 @@ abstract class Action extends arch\Action implements IAction {
         $this->values->clear()->import($postData);
         
         if(empty($event)) {
-            $event = $this->_getDefaultEvent();
+            $event = $this->getDefaultEvent();
             
             if(empty($event)) {
                 $event = self::DEFAULT_EVENT;
@@ -412,12 +444,22 @@ abstract class Action extends arch\Action implements IAction {
         $output = $target->handleEvent($event, $args);
 
         if($target->isComplete()) {
-            $this->_finalizeCompletion();
+            // TODO: work out $success
+            $success = true;
+            $this->setComplete();
+        
+            foreach($this->_delegates as $delegate) {
+                $delegate->setComplete($success);
+            }
+
+            if($this->_sessionNamespace) {
+                $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
+                $session->remove($this->_state->sessionId);
+            }
         }
 
         return $output;
     }
-
 
 
     public function setComplete() {
@@ -425,19 +467,6 @@ abstract class Action extends arch\Action implements IAction {
         return $this;
     }
 
-    protected function _finalizeCompletion($success=true) {
-        $this->setComplete();
-        
-        foreach($this->_delegates as $delegate) {
-            $delegate->setComplete($success);
-        }
-
-        if($this->_sessionNamespace) {
-            $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
-            $session->remove($this->_state->sessionId);
-        }
-    }
-    
     public function getStateData() {
         $output = [
             'isValid' => $this->isValid(),
@@ -471,16 +500,16 @@ abstract class Action extends arch\Action implements IAction {
     
     
 // Events
-    protected function _onCancelEvent() {
+    protected function onCancelEvent() {
         $this->setComplete();
         return $this->_getCompleteRedirect();
     }
 
-    protected function _getDefaultRedirect() {
+    protected function getDefaultRedirect() {
         return static::DEFAULT_REDIRECT;
     }
 
-    protected function _getDefaultEvent() {
+    protected function getDefaultEvent() {
         return static::DEFAULT_EVENT;
     }
 
@@ -488,7 +517,7 @@ abstract class Action extends arch\Action implements IAction {
 // Action dispatch
     public function getActionMethodName() {
         $method = ucfirst(strtolower($this->context->application->getHttpRequest()->getMethod()));
-        $func = 'on'.$this->context->request->getType().$method.'Request';
+        $func = 'handle'.$this->context->request->getType().$method.'Request';
         
         if(!method_exists($this, $func)) {
             throw new RuntimeException(

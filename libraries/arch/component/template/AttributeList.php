@@ -17,7 +17,7 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
     protected $_fields = [];
     protected $_viewArg;
 
-    protected function _init(array $fields=null, $record=null) {
+    protected function init(array $fields=null, $record=null) {
         if($record) {
             $this->setRecord($record);
         }

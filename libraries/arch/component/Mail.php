@@ -40,8 +40,8 @@ abstract class Mail extends Base implements arch\IMailComponent {
         $this->setRenderTarget($view = $this->_loadView());
         $this->view = $view;
 
-        if(method_exists($this, '_init')) {
-            call_user_func_array([$this, '_init'], $args);
+        if(method_exists($this, 'init')) {
+            call_user_func_array([$this, 'init'], $args);
         }
     }
 

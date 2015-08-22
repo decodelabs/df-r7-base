@@ -10,25 +10,23 @@ use df\core;
 use df\arch;
 use df\aura;
 
-class Delete extends arch\form\Action {
+abstract class Delete extends arch\form\Action {
     
     const ITEM_NAME = 'item';
     const IS_PERMANENT = true;
     
     const DEFAULT_EVENT = 'delete';
     
-    protected function _getItemName() {
+    protected function getItemName() {
         return static::ITEM_NAME;
     }
 
-    protected function _createUi() {
-        $itemName = $this->_getItemName();
+    protected function createUi() {
+        $itemName = $this->getItemName();
         $form = $this->content->addForm();
         $fs = $form->addFieldSet($this->_('%n% information', ['%n%' => ucfirst($itemName)]));
         
-        $fs->push($this->html(
-            '<p>'.$this->_getMainMessage($itemName).'</p>'
-        ));
+        $fs->push($this->html('p', $this->getMainMessage()));
         
         if(static::IS_PERMANENT) {
             $fs->push(
@@ -38,72 +36,80 @@ class Delete extends arch\form\Action {
             );
         }
 
-        $this->_renderMessages($fs);
-
         if(!$this->isValid()) {
             $fs->push($this->html->fieldError($this->values));   
         }
 
-        $this->_renderItemDetails($fs);
+        $this->createItemUi($fs);
+
+
+        $mainButton = $this->html->eventButton(
+                $this->eventName('delete'),
+                $this->_('Delete')
+            )
+            ->setIcon('delete');
+
+        $cancelButton = $this->html->eventButton(
+                $this->eventName('cancel'),
+                $this->_('Cancel')
+            )
+            ->setIcon('cancel');
+
+        $this->customizeMainButton($mainButton);
+        $this->customizeCancelButton($cancelButton);
+
 
         $fs->addButtonArea()->push(
-            $this->html->eventButton(
-                    $this->eventName('delete'),
-                    $this->_getMainButtonText()
-                )
-                ->setIcon($this->_getMainButtonIcon()),
-                
-            $this->html->eventButton(
-                    $this->eventName('cancel'),
-                    $this->_('Cancel')
-                )
-                ->setIcon('cancel')
+            $mainButton, $cancelButton
         );
     }
     
-    protected function _getMainMessage($itemName) {
+    protected function getMainMessage() {
         return $this->_(
             'Are you sure you want to delete this %n%?',
-            ['%n%' => $itemName]
+            ['%n%' => $this->getItemName()]
         );
     }
 
-    protected function _getMainButtonText() {
-        return $this->_('Delete');
-    }
 
-    protected function _getMainButtonIcon() {
-        return 'delete';
-    }
-    
-    protected function _renderMessages(/*aura\html\widget\IContainerWidget*/ $container) {}
-    protected function _renderItemDetails(/*aura\html\widget\IContainerWidget*/ $container) {}
+    protected function createItemUi(/*aura\html\widget\IContainerWidget*/ $container) {}
+
+    protected function customizeMainButton($button) {}
+    protected function customizeCancelButton($button) {}
     
     
-    protected function _onDeleteEvent() {
-        $this->_validateItem();
+    protected function onDeleteEvent() {
+        $output = $this->apply();
         
         if($this->values->isValid()) {
-            $this->_deleteItem();
-            $itemName = $this->_getItemName();
+            if($message = $this->getFlashMessage()) {
+                $this->comms->flash(
+                    core\string\Manipulator::formatId($this->getItemName()).'.deleted', 
+                    $message, 
+                    'success'
+                );
+            }
             
-            $this->comms->flash(
-                core\string\Manipulator::formatId($itemName).'.deleted', 
-                $this->_(
-                    'The %n% has been successfully deleted', 
-                    ['%n%' => $itemName]
-                ), 
-                'success'
-            );
-            
-            return $this->_completeForm();
+            $complete = $this->finalize();
+
+            if($output !== null) {
+                return $output;
+            } else {
+                return $complete;
+            }
         }
     }
-    
-    protected function _validateItem() {}
-    protected function _deleteItem() {}
 
-    protected function _completeForm() {
+    abstract protected function apply();
+
+    protected function getFlashMessage() {
+        return $this->_(
+            'The %n% has been successfully deleted', 
+            ['%n%' => $this->getItemName()]
+        );
+    }
+
+    protected function finalize() {
         return $this->complete();
     }
 }

@@ -19,7 +19,7 @@ abstract class HeaderBar extends arch\component\Base
     protected $_backLinkRequest;
     protected $_icon;
 
-    protected function _init($record=null, $title=null, $subTitle=null) {
+    protected function init($record=null, $title=null, $subTitle=null) {
         $this->setRecord($record);
         $this->setTitle($title);
         $this->setSubTitle($subTitle);

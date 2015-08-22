@@ -32,7 +32,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
     protected $_matchRequest;
     protected $_record;
 
-    protected function _init($record=null, $name=null, $match=null) {
+    protected function init($record=null, $name=null, $match=null) {
         if($record) {
             $this->setRecord($record);
         }

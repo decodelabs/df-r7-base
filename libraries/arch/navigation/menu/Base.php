@@ -202,13 +202,13 @@ class Base implements IMenu, \Serializable, core\IDumpable {
     public function initDelegates() {
         if(!is_array($this->_delegates)) {
             $this->_delegates = [];
-            $this->_setupDelegates();
+            $this->loadDelegates();
         }
         
         return $this;
     }
     
-    protected function _setupDelegates() {}
+    protected function loadDelegates() {}
     
     public function addDelegate(IMenu $menu) {
         $this->initDelegates();

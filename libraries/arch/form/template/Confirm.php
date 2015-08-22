@@ -16,70 +16,69 @@ abstract class Confirm extends arch\form\Action {
     const DEFAULT_EVENT = 'confirm';
     const DISPOSITION = 'positive';
     
-    protected function _getItemName() {
+    protected function getItemName() {
         return static::ITEM_NAME;
     }
 
-    protected function _createUi() {
-        $itemName = $this->_getItemName();
+    protected function createUi() {
+        $itemName = $this->getItemName();
         $form = $this->content->addForm();
         $fs = $form->addFieldSet($this->_('%n% information', ['%n%' => ucfirst($itemName)]));
         
-        $fs->push($this->html(
-            '<p>'.$this->_getMainMessage($itemName).'</p>'
-        ));
-        
-        $this->_renderMessages($fs);
+        $fs->push($this->html('p', $this->getMainMessage()));
         
         if(!$this->isValid()) {
             $fs->push($this->html->fieldError($this->values));   
         }
 
-        $this->_renderItemDetails($fs);
-        
+        $this->createItemUi($fs);
+
+
+        $mainButton = $this->html->eventButton(
+                $this->eventName('confirm'),
+                $this->_('Confirm')
+            )
+            ->setIcon('accept')
+            ->setDisposition(static::DISPOSITION);
+
+        $cancelButton = $this->html->eventButton(
+                $this->eventName('cancel'),
+                $this->_('Cancel')
+            )
+            ->setIcon('cancel');
+
+        $this->customizeMainButton($mainButton);
+        $this->customizeCancelButton($cancelButton);
+
+
         $fs->addButtonArea()->push(
-            $this->html->eventButton(
-                    $this->eventName('confirm'),
-                    $this->_getMainButtonText()
-                )
-                ->setIcon($this->_getMainButtonIcon())
-                ->setDisposition(static::DISPOSITION),
-                
-            $this->html->eventButton(
-                    $this->eventName('cancel'),
-                    $this->_('Cancel')
-                )
-                ->setIcon('cancel')
+            $mainButton, $cancelButton
         );
     }
-    
-    protected function _getMainButtonText() {
-        return $this->_('Confirm');
-    }
 
-    protected function _getMainButtonIcon() {
-        return 'accept';
+    protected function getMainMessage() {
+        return $this->_('Are you sure?');
     }
     
-    protected function _renderMessages(/*aura\html\widget\IContainerWidget*/ $container) {}
-    protected function _renderItemDetails(/*aura\html\widget\IContainerWidget*/ $container) {}
+    protected function createItemUi(/*aura\html\widget\IContainerWidget*/ $container) {}
+
+    protected function customizeMainButton($button) {}
+    protected function customizeCancelButton($button) {}
     
     
-    protected function _onConfirmEvent() {
-        $this->_validateItem();
-        
+    protected function onConfirmEvent() {
+        $output = $this->apply();
+
         if($this->values->isValid()) {
-            $output = $this->_apply();
-            
-            if($message = $this->_getFlashMessage()) {
+            if($message = $this->getFlashMessage()) {
                 $this->comms->flash(
-                    core\string\Manipulator::formatId($this->_getItemName()).'.confirm', 
+                    core\string\Manipulator::formatId($this->getItemName()).'.confirm', 
                     $message, 
                     'success'
                 );
             }
             
-            $complete = $this->_completeForm();
+            $complete = $this->finalize();
 
             if($output !== null) {
                 return $output;
@@ -89,18 +88,13 @@ abstract class Confirm extends arch\form\Action {
         }
     }
 
-    protected function _getMainMessage($itemName) {
-        return $this->_('Are you sure?');
-    }
+    abstract protected function apply();
 
-    protected function _getFlashMessage() {
+    protected function getFlashMessage() {
         return $this->_('Action successfully completed');
     }
-    
-    protected function _validateItem() {}
-    abstract protected function _apply();
 
-    protected function _completeForm() {
+    protected function finalize() {
         return $this->complete();
     }
 }
