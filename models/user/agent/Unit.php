@@ -83,6 +83,7 @@ class Unit extends axis\unit\table\Base {
         'Slurp',
         'spbot',
         'Twitterbot',
+        'XoviBot',
         'Yandex'
     ];
 
