@@ -75,6 +75,7 @@ class Unit extends axis\unit\table\Base {
         'CRAZYWEBCRAWLER',
         'crawler',
         'Googlebot',
+        'HyperCrawl',
         'LinkedInBot',
         'MJ12bot',
         'msnbot',
