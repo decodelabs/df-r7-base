@@ -112,4 +112,91 @@ abstract class Action extends arch\Action implements IAction {
 
         return $output;
     }
+
+    protected function _askFor($label, Callable $validator, $default=null, $check=false) {
+        do {
+            $this->io->write('>> '.$label.': ');
+
+            if($default !== null) {
+                $this->io->write('['.$default.'] ');
+            }
+
+            $answer = trim($this->io->readLine());
+
+            if(!strlen($answer) && $default !== null) {
+                $answer = $default;
+            }
+
+            $valid = $validator($answer);
+
+            if($valid instanceof core\validate\IField) {
+                $valid = $valid->validator;
+            }
+
+            if($valid instanceof core\validate\IHandler) {
+                $key = current(array_keys($valid->getFields()));
+                $valid->validate([$key => $answer]);
+
+                foreach($valid->data->{$key}->getErrors() as $error) {
+                    $this->io->writeLine('!! '.$error);
+                }
+
+                $valid = $valid->isValid();
+            }
+
+            if($valid && $check) {
+                $this->io->write('>> Is this correct? '.$answer.' [Y/n] ');
+                $checkAnswer = trim($this->io->readLine());
+                $valid = $this->format->stringToBoolean($checkAnswer, true);
+            }
+        } while(!$valid);
+
+        return $answer;
+    }
+
+    protected function _askPassword($label, $repeat=false) {
+        do {
+            $this->io->write('>> '.$label.': ');
+            system('stty -echo');
+            $answer = trim($this->io->readLine());
+            system('stty echo');
+            $this->io->writeLine();
+
+            $validator = $this->data->newValidator()
+                ->addRequiredField('password');
+
+            $data = ['password' => $answer];
+
+            if($repeat) {
+                $this->io->write('>> Repeat '.lcfirst($label).': ');
+                system('stty -echo');
+                $repeatAnswer = trim($this->io->readLine());
+                system('stty echo');
+                $this->io->writeLine();
+                $validator->setMatchField('repeat');
+                $data['repeat'] = $repeatAnswer;
+            }
+            
+            $validator = $validator->validate($data);
+
+            $valid = $validator->isValid();
+            $answer = $validator['password'];
+
+            foreach($validator->data->password->getErrors() as $error) {
+                $this->io->writeLine('!! '.$error);
+            }
+            foreach($validator->data->repeat->getErrors() as $error) {
+                $this->io->writeLine('!! '.$error);
+            }
+        } while(!$valid);
+
+        return $answer;
+    }
+
+    protected function _askBoolean($label, $default=false) {
+        $default = (bool)$default;
+        $this->io->write('>> '.$label.' '.($default ? '[Y/n]' : '[y/N]').' ');
+        $answer = trim($this->io->readLine());
+        return $this->format->stringToBoolean($answer, $default);
+    }
 }
