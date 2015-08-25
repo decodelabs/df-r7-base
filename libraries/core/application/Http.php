@@ -240,7 +240,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 // Directory request
     protected function _prepareDirectoryRequest() {
-        $valid = true;
+        $pathValid = $valid = true;
         $redirectPath = '/';
         
         $path = null;
@@ -254,12 +254,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         if($url->hasPath()) {
             $path = clone $url->getPath();
         }
-        
+
         if(!$this->_router->mapPath($path)) {
-            $valid = false;
+            $pathValid = $valid = false;
         }
 
-        if($valid) {
+        if($pathValid) {
             $redirectPath = (string)$path;
         }
 
