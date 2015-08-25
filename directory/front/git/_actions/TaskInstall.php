@@ -108,9 +108,7 @@ class TaskInstall extends arch\task\Action {
         }
         
         if($this->_setGui === null) {
-            $this->io->write('>> Would you like to set default GUI config @1020p? [N/y] ');
-            $answer = trim($this->io->readLine());
-            $this->_setGui = $this->format->stringToBoolean($answer, false);
+            $this->_setGui = $this->_askBoolean('Would you like to set default GUI config @1020p?');
         }
 
         if($this->_setGui) {

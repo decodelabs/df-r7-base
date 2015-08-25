@@ -34,10 +34,7 @@ class TaskInit extends arch\task\Action {
         }
 
         if($repo->getConfig('gui.geometry') != self::GEOMETRY) {
-            $this->io->write('>> Would you like to set default GUI config @1020p? [N/y] ');
-            $answer = trim($this->io->readLine());
-
-            if($this->format->stringToBoolean($answer, false)) {
+            if($this->_askBoolean('Would you like to set default GUI config @1020p?')) {
                 $this->io->writeLine('Setting geometry to: '.self::GEOMETRY);
 
                 $repo->setConfig('gui.wmstate', 'zoomed');
