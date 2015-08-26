@@ -15,7 +15,7 @@ class Unit extends axis\unit\table\Base {
 
     const PURGE_THRESHOLD = '-1 month';
 
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addField('user', 'One', 'user/client');
         $schema->addIndexedField('key', 'Binary', 64);
         $schema->addField('date', 'Timestamp');

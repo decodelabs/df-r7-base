@@ -178,7 +178,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
         return static::IS_SHARED;
     }
     
-    protected function _onCreate(axis\schema\ISchema $schema) {}
+    protected function createSchema($schema) {}
 
     public function newPartial(array $values=null) {
         return parent::newPartial($values)->isBridge(true);

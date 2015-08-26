@@ -29,7 +29,7 @@ class Unit extends axis\unit\table\Base {
 
     protected $_defaultOrder = 'fullName';
 
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addField('id', 'AutoId', 8);
         $schema->addUniqueField('email', 'String', 255);
         $schema->addField('fullName', 'String', 255);

@@ -13,7 +13,7 @@ use df\arch;
 
 class Unit extends axis\unit\table\Base {
     
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addPrimaryField('token', 'String', 32);
         $schema->addField('expiryDate', 'DateTime');
         $schema->addField('request', 'String', 1024);

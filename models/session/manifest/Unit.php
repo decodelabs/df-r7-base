@@ -13,7 +13,7 @@ use df\user;
 
 class Unit extends axis\unit\table\Base {
 
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addPrimaryField('internalId', 'Binary', 20)
             ->isConstantLength(true);
         $schema->addUniqueField('externalId', 'Binary', 20)

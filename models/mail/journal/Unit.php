@@ -19,7 +19,7 @@ class Unit extends axis\unit\table\Base {
         'email' => 1
     ];
 
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('date', 'Timestamp');
 

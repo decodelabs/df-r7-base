@@ -18,7 +18,7 @@ class Unit extends axis\unit\table\Base {
 
     protected $_defaultOrder = 'startDate DESC';
 
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('request', 'String', 1024);
         $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode');

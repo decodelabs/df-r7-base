@@ -125,13 +125,13 @@ abstract class Base implements
         $version = $schema->getVersion();
         
         if($version === 0) {
-            $this->_onCreate($schema);
+            $this->createSchema($schema);
             $schema->iterateVersion();
         }
         
         while(true) {
             $version = $schema->getVersion();
-            $func = '_onUpdateVersion'.$version;
+            $func = 'updateSchema'.$version;
             
             if(!method_exists($this, $func)) {
                 break;
@@ -151,13 +151,13 @@ abstract class Base implements
         $version = $schema->getVersion();
 
         do {
-            $func = '_onUpdateVersion'.$version++;
+            $func = 'updateSchema'.$version++;
         } while(method_exists($this, $func));
 
         return $version -1;
     }
     
-    abstract protected function _onCreate(axis\schema\ISchema $schema);
+    abstract protected function createSchema($schema);
     
     public function validateUnitSchema(axis\schema\ISchema $schema) {
         $manager = $this->_model->getSchemaManager();

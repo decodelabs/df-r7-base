@@ -18,7 +18,7 @@ class Unit extends axis\unit\table\Base {
         'message' => 2
     ];
 
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addIndexedField('date', 'Timestamp');
 

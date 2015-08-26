@@ -69,7 +69,7 @@ class Unit extends axis\unit\table\Base {
         ]
     ];
 
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
 
         $schema->addField('name', 'String', 64);

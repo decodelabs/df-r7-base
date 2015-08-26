@@ -24,7 +24,7 @@ class Unit extends axis\unit\table\Base {
 
     protected $_defaultOrder = ['lastSeen DESC', 'seen DESC'];
 
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
 
         $schema->addField('type', 'String', 255)

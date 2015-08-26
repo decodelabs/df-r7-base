@@ -23,7 +23,7 @@ class Unit extends axis\unit\table\Base {
 
     protected $_defaultOrder = 'date DESC';
 
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('from', 'String', 128);
         $schema->addField('to', 'BigString', 'medium');

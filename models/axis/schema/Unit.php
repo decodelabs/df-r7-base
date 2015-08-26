@@ -12,7 +12,7 @@ use df\axis;
 
 class Unit extends axis\unit\table\Base {
     
-    protected function _onCreate(axis\schema\ISchema $schema) {
+    protected function createSchema($schema) {
         $schema->addPrimaryField('unitId', 'String', 255);
         $schema->addField('storeName', 'String', 128);
         $schema->addField('version', 'Integer', 2);
