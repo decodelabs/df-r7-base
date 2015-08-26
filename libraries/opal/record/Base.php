@@ -13,7 +13,7 @@ use df\mesh;
 
 class Base implements IRecord, \Serializable, core\IDumpable {
     
-    const BROADCAST_HOOK_EVENTS = false;
+    const BROADCAST_HOOK_EVENTS = null;
 
     use TRecordAdapterProvider;
     use TPrimaryKeySetProvider;
@@ -673,7 +673,13 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             call_user_func_array([$this, $func], [$taskSet, $task]);
         }
 
-        if(static::BROADCAST_HOOK_EVENTS && !$this->_bypassHooks) {
+        $broadcast = static::BROADCAST_HOOK_EVENTS;
+
+        if($broadcast === null) {
+            $broadcast = $this->_adapter->shouldRecordsBroadcastHookEvents();
+        }
+
+        if($broadcast && !$this->_bypassHooks) {
             $event = new mesh\event\Event(
                 $this,
                 $funcPrefix.$taskName, 
@@ -691,7 +697,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 call_user_func_array([$this, $func], [$taskSet, $task]);
             }
 
-            if(static::BROADCAST_HOOK_EVENTS && !$this->_bypassHooks) {
+            if($broadcast && !$this->_bypassHooks) {
                 $event->setAction($funcPrefix.'Save');
                 $meshManager->emitEventObject($event);
             }

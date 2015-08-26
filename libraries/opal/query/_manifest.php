@@ -685,7 +685,7 @@ interface IAdapter extends user\IAccessLock {
     
     public function newRecord(array $values=null);
     public function newPartial(array $values=null);
-    
+    public function shouldRecordsBroadcastHookEvents();
 }
 
 interface IIntegralAdapter extends IAdapter {

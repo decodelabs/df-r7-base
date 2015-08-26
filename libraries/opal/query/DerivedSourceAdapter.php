@@ -144,6 +144,10 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->newPartial($values);
     }
 
+    public function shouldRecordsBroadcastHookEvents() {
+        return $this->_adapter->shouldRecordsBroadcastHookEvents();
+    }
+
 
 // Access
     public function getAccessLockDomain() {

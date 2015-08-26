@@ -796,6 +796,10 @@ abstract class Adapter implements IAdapter {
         return new opal\record\Partial($this, $values);
     }
 
+    public function shouldRecordsBroadcastHookEvents() {
+        return true;
+    }
+
 
 // Access
     public function getAccessLockDomain() {

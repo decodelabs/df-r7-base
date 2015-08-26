@@ -72,6 +72,10 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
         return new opal\record\Partial($this, $values);
     }
 
+    public function shouldRecordsBroadcastHookEvents() {
+        return false;
+    }
+
 
     public function supportsQueryType($type) {
         switch($type) {

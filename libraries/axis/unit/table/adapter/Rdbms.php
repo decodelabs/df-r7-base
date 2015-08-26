@@ -186,7 +186,9 @@ class Rdbms implements
         return $this->_unit->newPartial($values);
     }
     
-    
+    public function shouldRecordsBroadcastHookEvents() {
+        return $this->_unit->shouldRecordsBroadcastHookEvents();
+    }
     
     
 // Create

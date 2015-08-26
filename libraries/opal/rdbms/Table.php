@@ -361,6 +361,10 @@ class Table implements ITable, core\IDumpable {
         return new opal\record\Partial($this, $values);
     }
 
+    public function shouldRecordsBroadcastHookEvents() {
+        return false;
+    }
+
 
 // Access
     public function getAccessLockDomain() {

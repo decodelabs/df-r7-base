@@ -25,6 +25,7 @@ abstract class Base implements
 
     const NAME_FIELD = null;
     const KEY_NAME = null;
+    const BROADCAST_HOOK_EVENTS = false;
     
     protected static $_defaultRecordClass = 'df\\opal\\record\\Base';
 
@@ -490,6 +491,10 @@ abstract class Base implements
 
     public function newPartial(array $values=null) {
         return new opal\record\Partial($this, $values);
+    }
+
+    public function shouldRecordsBroadcastHookEvents() {
+        return (bool)static::BROADCAST_HOOK_EVENTS;
     }
     
 
