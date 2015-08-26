@@ -24,9 +24,9 @@ class Tag implements ITag, core\IDumpable {
 
     private static $_inlineTags = [
         'a', 'br', 'bdo', 'abbr', 'blink', 'nextid', 'acronym', 'basefont',
-        'b', 'em', 'big', 'cite', 'small', 'spacer', 'listing',
-        'i', 'rp', 'del', 'code',          'strike', 'marquee',
-        'q', 'rt', 'ins', 'font',          'strong',
+        'b', 'em', 'big', 'cite', 'input', 'spacer', 'listing',
+        'i', 'rp', 'del', 'code', 'label', 'strike', 'marquee',
+        'q', 'rt', 'ins', 'font', 'small', 'strong',
         's', 'tt', 'sub', 'mark',
         'u', 'xm', 'sup', 'nobr',
                    'var', 'ruby',
@@ -95,6 +95,14 @@ class Tag implements ITag, core\IDumpable {
         return $this->_name;
     }
     
+    public function isInline() {
+        return in_array(strtolower($this->_name), self::$_inlineTags);
+    }
+
+    public function isBlock() {
+        return !in_array(strtolower($this->_name), self::$_inlineTags);
+    }
+
     
 // Render count
     public function getRenderCount() {
@@ -479,7 +487,7 @@ class Tag implements ITag, core\IDumpable {
         } else {
             $innerContent = null;
         }
-        
+
         $string = $this->open().$innerContent.$this->close();
         
         if($expanded) {

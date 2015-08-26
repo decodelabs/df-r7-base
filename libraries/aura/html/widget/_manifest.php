@@ -70,6 +70,8 @@ interface IWidget extends aura\view\IDeferredRenderable, aura\html\IElementRepre
     public function getWidgetName();
     public function getTag();
     public function esc($value);
+    public function isInline();
+    public function isBlock();
 }
 
 interface IWidgetProxy {

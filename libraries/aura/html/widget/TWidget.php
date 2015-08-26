@@ -32,6 +32,14 @@ trait TWidget {
         
         return $this->_primaryTag;
     }
+
+    public function isInline() {
+        return $this->getTag()->isInline();
+    }
+
+    public function isBlock() {
+        return $this->getTag()->isBlock();
+    }
     
     public function toString() {
         return (string)$this->render();
