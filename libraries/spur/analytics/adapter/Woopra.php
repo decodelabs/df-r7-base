@@ -12,6 +12,10 @@ use df\aura;
     
 class Woopra extends Base {
 
+    protected $_defaultUserAttributes = [
+        'email', 'fullName'
+    ];
+    
     public function apply(spur\analytics\IHandler $handler, aura\view\IHtmlView $view) {
         $view->linkJs('//static.woopra.com/js/woopra.v2.js');
         $attributes = $handler->getDefinedUserAttributes($this->getDefaultUserAttributes(), true);

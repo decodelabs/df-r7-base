@@ -18,11 +18,18 @@ class Config extends core\Config {
         $output = [];
 
         foreach(spur\analytics\adapter\Base::loadAll() as $name => $adapter) {
-            $output[lcfirst($name)] = [
+            $set = [
                 'enabled' => false,
-                'options' => $adapter->getOptions(),
-                'userAttributes' => $adapter->getDefaultUserAttributes()
+                'options' => $adapter->getOptions()
             ];
+
+            $attrs = $adapter->getDefaultUserAttributes();
+
+            if(!empty($attrs)) {
+                $set['userAttributes'] = $attrs;
+            }
+
+            $output[lcfirst($name)] = $set;
         }
 
         return $output;

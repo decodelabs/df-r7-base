@@ -16,6 +16,10 @@ class GoogleClassic extends Base {
         'trackingId' => null
     ];
 
+    protected $_defaultUserAttributes = [
+        'email', 'fullName'
+    ];
+
     public function apply(spur\analytics\IHandler $handler, aura\view\IHtmlView $view) {
         $attributes = $handler->getDefinedUserAttributes($this->getDefaultUserAttributes(), false);
         $events = $handler->getEvents();
