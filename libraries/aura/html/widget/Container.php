@@ -36,9 +36,9 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
             return '';
         }
 
-        $children = $this->_prepareChildren();
-
-        return $this->getTag()->renderWith($children, true);
+        return $this->getTag()->renderWith(
+            $this->_prepareChildren(), true
+        );
     }
 
     protected function _prepareChildren($callback=null) {
@@ -69,7 +69,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
 
         return $this->_children->render();
     }
-    
+
     public function import($input) {
         $this->_children->import($input);
         return $this;

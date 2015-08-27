@@ -153,9 +153,10 @@ trait TElementContent {
     protected function _renderChild($value) {
         if(is_callable($value) && is_object($value)) {
             $value = $value();
+            return $this->_renderChild($value);
         }
 
-        if(is_array($value)) {
+        if(is_array($value) || $value instanceof \Generator) {
             $output = '';
             
             foreach($value as $part) {
