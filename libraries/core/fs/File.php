@@ -244,6 +244,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
         $output = '';
         $this->lock(LOCK_SH);
+        $this->seek(0);
 
         while(!$this->eof()) {
             $output .= $this->readChunk(8192);
