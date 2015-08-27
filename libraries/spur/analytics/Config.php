@@ -16,13 +16,12 @@ class Config extends core\Config {
 
     public function getDefaultValues() {
         $output = [];
-        $defaultAttributes = ['email', 'fullName', 'isLoggedIn'];
 
         foreach(spur\analytics\adapter\Base::loadAll() as $name => $adapter) {
             $output[lcfirst($name)] = [
                 'enabled' => false,
                 'options' => $adapter->getOptions(),
-                'userAttributes' => $defaultAttributes
+                'userAttributes' => $adapter->getDefaultUserAttributes()
             ];
         }
 
