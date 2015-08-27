@@ -150,7 +150,7 @@ trait TElementContent {
         return rtrim($output);
     }
 
-    protected function _renderChild($value) {
+    protected function _renderChild(&$value) {
         if(is_callable($value) && is_object($value)) {
             $value = $value();
             return $this->_renderChild($value);
