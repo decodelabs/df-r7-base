@@ -19,6 +19,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
     protected $_mode;
     protected $_path;
     protected $_contentType = null;
+    protected $_isTemp = false;
 
 
 // Static
@@ -33,13 +34,16 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
             $mode = Mode::READ_WRITE;
         }
 
-        return new self(
+        $output = new self(
             tempnam(
                 sys_get_temp_dir(), 
                 df\Launchpad::$application->getUniquePrefix().'-'
             ), 
             $mode
         );
+
+        $output->_isTemp = true;
+        return $output;
     }
 
     public static function getContentsOf($path) {
@@ -130,6 +134,14 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
         if($mode !== null) {
             $this->open($mode);
+        }
+    }
+
+    public function __destruct() {
+        $this->close();
+
+        if($this->_isTemp) {
+            $this->unlink();
         }
     }
     
@@ -293,6 +305,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
         rename($this->_path, $destination);
         $this->_path = $destination;
+        $this->_isTemp = false;
 
         return $this;
     }
@@ -318,6 +331,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
         rename($this->_path, $destination);
         $this->_path = $destination;
+        $this->_isTemp = false;
 
         return $this;
     }
@@ -366,6 +380,10 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
     public function isOpen() {
         return $this->_fp !== null;
+    }
+
+    public function isTemp() {
+        return $this->_isTemp;
     }
 
     public function eof() {

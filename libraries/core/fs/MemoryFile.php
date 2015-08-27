@@ -223,6 +223,10 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         return $this->_isOpen;
     }
 
+    public function isTemp() {
+        return true;
+    }
+
     public function eof() {
         return $this->_pos >= strlen($this->_data);    
     }

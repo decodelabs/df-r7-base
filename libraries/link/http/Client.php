@@ -229,7 +229,7 @@ class Client implements IClient {
         $request->options->cookieJar->import($response);
 
         $target = null;
-        $close = false;
+        $stream = $response->getContentFileStream();
         $isOk = $response->isOk();
 
         if($isOk && $request->options->downloadStream) {
@@ -255,8 +255,12 @@ class Client implements IClient {
                 $path .= $fileName;
             }
 
-            $target = core\fs\File::factory($path, core\fs\Mode::WRITE_TRUNCATE);
-            $close = true;
+            $target = core\fs\File::factory($path, core\fs\Mode::READ_WRITE_TRUNCATE);
+        } else if($isOk 
+            && $stream instanceof core\fs\MemoryFile
+            && ($response->headers->get('content-length') > 1024 * 512
+             || $response->headers->get('transfer-encoding') == 'chunked')) {
+            $target = core\fs\File::createTemp();
         }
 
         if($target) {

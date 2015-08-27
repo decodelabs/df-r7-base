@@ -127,6 +127,7 @@ interface IFile extends INode, core\io\IChannel {
 
     public function open($mode=Mode::READ_WRITE);
     public function isOpen();
+    public function isTemp();
     public function eof();
     public function close();
 
