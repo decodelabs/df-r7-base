@@ -84,12 +84,7 @@ class Curl implements link\http\IAsyncTransport {
                         )
                     );
                 } else {
-                    $handle->promise->deliver(
-                        $client->prepareResponse(
-                            $handle->response, 
-                            $handle->request
-                        )
-                    );
+                    $handle->promise->deliver($handle->response);
                 }
 
                 curl_close($handle->resource);
