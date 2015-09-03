@@ -429,7 +429,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
        
         $response->onDispatchComplete();
 
-        if($this->_context->http->isAjaxRequest()) {
+        if($this->_context && $this->_context->http->isAjaxRequest()) {
             $response->headers->set('x-response-url', $this->_httpRequest->url);
         }
 
