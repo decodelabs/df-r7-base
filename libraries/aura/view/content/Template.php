@@ -18,7 +18,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     use aura\view\TCascadingHelperProvider;
     use aura\view\TSlotContainer;
     
-    public $slots;
+    public $slots = [];
 
     private $_path;
     private $_isRendering = false;
