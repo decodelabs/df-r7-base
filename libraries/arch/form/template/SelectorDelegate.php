@@ -344,6 +344,10 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
             $selected = array_shift($selected);
         }
 
+        if(empty($selected)) {
+            $selected = null;
+        }
+
         $ol = $fa->addOverlay($fa->getLabelBody());
         $this->createOverlaySelectorUiContent($ol, $selected);
     }
