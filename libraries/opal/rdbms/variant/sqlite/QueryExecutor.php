@@ -77,6 +77,11 @@ class QueryExecutor extends opal\rdbms\QueryExecutor {
         $this->_stmt->appendSql(' INTO '.$this->_adapter->quoteIdentifier($tableName));
         
         $fields = $bindValues = $this->_query->getFields();
+
+        foreach($fields as $i => $field) {
+            $fields[$i] = $this->_adapter->quoteIdentifier($field);
+        }
+
         $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES ');
         
         foreach($bindValues as &$field) {
