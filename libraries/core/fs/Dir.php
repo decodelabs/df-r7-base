@@ -212,7 +212,7 @@ class Dir implements IDirectory, core\IDumpable {
                 continue;
             }
 
-            if($item->isFile() || $item->isDir()) {
+            if($item->isFile() || $item->isLink() || $item->isDir()) {
                 return false;
             }
         }
@@ -375,7 +375,7 @@ class Dir implements IDirectory, core\IDumpable {
                 if($wrap) {
                     $output = new self($output);
                 }
-            } else if($item->isFile()) {
+            } else if($item->isFile() || $item->isLink()) {
                 if(!$files) {
                     continue;
                 }
@@ -502,7 +502,7 @@ class Dir implements IDirectory, core\IDumpable {
                 if($wrap) {
                     $output = new self($output);
                 }
-            } else if($item->isFile()) {
+            } else if($item->isFile() || $item->isLink()) {
                 if(!$files) {
                     continue;
                 }
