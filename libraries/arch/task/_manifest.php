@@ -23,6 +23,9 @@ interface IAction extends arch\IAction {
     public function extractCliArguments(core\cli\ICommand $command);
     public function runChild($request, $incLevel=true);
     public function runChildQuietly($request);
+
+    public function ensureEnvironmentMode($mode);
+    public function promptEnvironmentMode($mode, $default=false);
 }
 
 

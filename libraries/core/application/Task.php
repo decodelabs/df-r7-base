@@ -159,6 +159,12 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 
 // Handle response
     protected function _handleResponse($response) {
+        // Callback
+        if($response instanceof \Closure 
+        || $response instanceof core\lang\ICallback) {
+            $response = $response();
+        }
+
         // Forwarding
         if($response instanceof arch\IRequest) {
             core\deprecated($response, 'Request forwarding is no longer supported');

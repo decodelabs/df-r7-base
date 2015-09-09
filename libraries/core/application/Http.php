@@ -399,6 +399,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 // Normalize response
     protected function _normalizeResponse($response) {
+        // Callback
+        if($response instanceof \Closure 
+        || $response instanceof core\lang\ICallback) {
+            $response = $response();
+        }
+
         // Dereference proxy responses
         while($response instanceof arch\IProxyResponse) {
             $response = $response->toResponse();

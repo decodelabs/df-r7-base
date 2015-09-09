@@ -34,6 +34,7 @@ class TaskSpool extends arch\task\Action {
     public function execute() {
         $this->_timer = new core\time\Timer();
 
+
         // Test to see if spool has run recently
         $justRun = $this->data->task->log->select('id')
             ->where('request', '=', self::SELF_REQUEST)
@@ -136,6 +137,7 @@ class TaskSpool extends arch\task\Action {
 
     protected function _afterDispatch($output) {
         $this->_finalizeLog();
+        return $output;
     }
 
     public function handleException(\Exception $e) {

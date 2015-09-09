@@ -47,6 +47,11 @@ abstract class Base implements core\IApplication, core\IDumpable {
     public function getEnvironmentMode() {
         return df\Launchpad::getEnvironmentMode();
     }
+
+    public function hasEnvironmentMode($mode) {
+        $path = $this->getApplicationPath().'/entry/'.$this->getEnvironmentId().'.'.$mode.'.php';
+        return is_file($path);
+    }
     
     public function isDevelopment() {
         return df\Launchpad::isDevelopment();

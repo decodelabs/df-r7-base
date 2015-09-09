@@ -268,6 +268,7 @@ interface IApplication {
     // Environment
     public function getEnvironmentId();
     public function getEnvironmentMode();
+    public function hasEnvironmentMode($mode);
     public function isDevelopment();
     public function isTesting();
     public function isProduction();

@@ -113,6 +113,46 @@ abstract class Action extends arch\Action implements IAction {
         return $output;
     }
 
+
+
+// Environment
+    public function ensureEnvironmentMode($mode) {
+        $mode = core\EnvironmentMode::factory($mode)->getOption();
+        $current = $this->application->getEnvironmentMode();
+
+        if($mode == $current) {
+            return $this;
+        }
+
+        if(!$this->application->hasEnvironmentMode($mode)) {
+            $this->io->writeErrorLine('!! Unable to switch to '.$mode.' mode, entry is unavailable');
+            throw new arch\ForcedResponse(null);
+        }
+
+        throw new arch\ForcedResponse(function() use($mode) {
+            $this->task->shouldCaptureBackgroundTasks(true);
+            $this->task->launch($this->request, $this->io, $mode);
+        });
+    }
+
+    public function promptEnvironmentMode($mode, $default=false) {
+        $mode = core\EnvironmentMode::factory($mode)->getOption();
+        $current = $this->application->getEnvironmentMode();
+
+        if($mode == $current) {
+            return $this;
+        }
+
+        if(!$this->_askBoolean('Currently in '.$current.' mode - switch to '.$mode.'?', $default)) {
+            return $this;
+        }
+
+        return $this->ensureEnvironmentMode($mode);
+    }
+
+
+
+// Interaction
     protected function _askFor($label, Callable $validator, $default=null, $check=false) {
         do {
             $this->io->write('>> '.$label.': ');
