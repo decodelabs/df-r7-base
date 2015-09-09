@@ -164,7 +164,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
             return true;
         }
 
-        return file_exists($this->_path);
+        return file_exists($this->_path) || is_link($this->_path);
     }
 
 

@@ -386,7 +386,6 @@ class Dir implements IDirectory, core\IDumpable {
                     $output = new File($output);
                 }
             } else {
-                core\dump($item);
                 // link?
                 continue;
             }
