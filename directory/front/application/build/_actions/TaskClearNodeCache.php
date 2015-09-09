@@ -23,6 +23,12 @@ class TaskClearNodeCache extends arch\task\Action {
         try {   
             core\fs\Dir::delete($this->application->getLocalStoragePath().'/node-old');
         } catch(\Exception $e) {}
+
+        foreach($dir->getParent()->scanDirs() as $name => $dir) {
+            if(preg_match('/node\-[0-9]+/i', $name)) {
+                $dir->unlink();
+            }
+        }
         
         $this->io->writeLine(' done');
     }
