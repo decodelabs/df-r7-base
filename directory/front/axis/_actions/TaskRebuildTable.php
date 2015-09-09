@@ -98,12 +98,32 @@ class TaskRebuildTable extends arch\task\Action {
         $count = 0;
 
         $fields = $dbSchema->getFields();
+        $currentFields = $currentTable->getSchema()->getFields();
+        $generatorFields = [];
+
+        foreach($fields as $fieldName => $field) {
+            if(isset($currentFields[$fieldName])) {
+                continue;
+            }
+
+            $axisField = $axisSchema->getField($fieldName);
+
+            if($axisField instanceof opal\schema\IAutoGeneratorField) {
+                $generatorFields[$fieldName] = $axisField;
+            }
+        }
+
+
 
         foreach($currentTable->select()->isUnbuffered(true) as $row) {
             foreach($row as $key => $value) {
                 if(!isset($fields[$key])) {
                     unset($row[$key]);
                 }
+            }
+
+            foreach($generatorFields as $fieldName => $axisField) {
+                $row[$fieldName] = $axisField->generateInsertValue($row);
             }
 
             $insert->addRow($row);
