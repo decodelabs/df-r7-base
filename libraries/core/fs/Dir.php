@@ -385,6 +385,9 @@ class Dir implements IDirectory, core\IDumpable {
                 if($wrap) {
                     $output = new File($output);
                 }
+            } else {
+                // link?
+                continue;
             }
 
             $key = $item->getFilename();
