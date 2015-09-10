@@ -250,7 +250,9 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $action = static::DEFAULT_ACTION;
         }
         
-        $this->getPath()->setFileName(trim($action, '/'));
+        $action = trim($action, '/');
+        $action = core\string\Manipulator::formatActionSlug($action);
+        $this->getPath()->setFileName($action);
         return $this;
     }
     
