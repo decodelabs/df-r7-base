@@ -92,7 +92,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         $tag = $this->getTag();
         $url = $view->uri->__invoke($this->_uri);
 
-        if($url instanceof link\http\IUrl) {
+        if($url instanceof linkLib\http\IUrl) {
             $request = $url->getDirectoryRequest();
         } else {
             $request = null;
@@ -113,8 +113,11 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         if($this->_checkAccess && !$disabled) {
             $userManager = $context->user;
+            $isLoggedIn = $userManager->isLoggedIn();
 
-            if($request && !$userManager->canAccess($request, null, true)) {
+            if($request 
+            && ($isLoggedIn || $this->_hideIfInaccessible) 
+            && !$userManager->canAccess($request, null, true)) {
                 $disabled = true;
             }
             
