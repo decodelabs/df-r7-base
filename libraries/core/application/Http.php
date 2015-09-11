@@ -412,7 +412,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         // Forwarding
         if($response instanceof arch\IRequest) {
-            core\deprecated($response, 'Request forwarding is no longer supported');
+            $this->_context->throwError(500, 'Request forwarding is no longer supported');
         }
         
         // Empty response
