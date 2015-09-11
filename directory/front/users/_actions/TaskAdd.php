@@ -17,6 +17,11 @@ class TaskAdd extends arch\task\Action {
     protected $_auth;
 
     public function execute() {
+        if(!$this->data->user->client->countAll()) {
+            $this->data->user->installDefaultManifest();
+        }
+
+
         $this->_client = $this->data->newRecord('axis://user/Client', [
             'status' => 3
         ]);
