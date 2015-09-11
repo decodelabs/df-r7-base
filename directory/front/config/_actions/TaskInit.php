@@ -49,12 +49,14 @@ class TaskInit extends arch\task\Action {
         }
 
         $classCount = count($classes);
-        $this->io->writeLine("\n".'Found '.$classCount.' total');
+        $this->io->writeLine();
+        $this->io->write('Found '.$classCount);
 
         if(!$classCount) {
             return;
         }
 
+        $this->io->write(':');
 
         foreach($classes as $class => $isUnit) {
             if($isUnit) {
@@ -64,7 +66,9 @@ class TaskInit extends arch\task\Action {
                 $config = $class::getInstance();
             }
 
-            $this->io->writeLine('Init '.ucfirst($config->getConfigId()));
+            $this->io->write(' '.ucfirst($config->getConfigId()));
         }
+
+        $this->io->writeLine();
     }
 }
