@@ -22,6 +22,8 @@ class TaskGenerateEntries extends arch\task\Action {
         
         $appPath = df\Launchpad::$applicationPath;
         $environmentId = df\Launchpad::$environmentId;
+        
+        $this->runChild('application/generate-base-entry', false);
 
         if($buildId = $this->request->query['build']) {
             if(substr($buildId, -8) == '-testing') {
@@ -44,6 +46,5 @@ class TaskGenerateEntries extends arch\task\Action {
             }
         }
 
-        $this->runChild('application/generate-base-entry', false);
     }
 }

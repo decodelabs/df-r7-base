@@ -116,11 +116,12 @@ class TaskBuild extends arch\task\Action {
             $packages = $loader->getPackages();
             $appPackage = $packages['app'];
             unset($packages['app']);
-
+            
+            $this->io->write('Merging:');
 
             // Copy packages
             foreach(array_reverse($packages) as $package) {
-                $this->io->writeLine('Merging '.$package->name.' package');
+                $this->io->write(' '.$package->name);
 
                 if(is_dir($package->path.'/libraries')) {
                     core\fs\Dir::merge($package->path.'/libraries', $destinationPath);
@@ -150,7 +151,7 @@ class TaskBuild extends arch\task\Action {
 
 
             // Copy app folder
-            $this->io->writeLine('Merging app folder');
+            $this->io->writeLine(' app');
 
             foreach(scandir($appPackage->path) as $entry) {
                 if($entry == '.' 
