@@ -255,7 +255,7 @@ class Rdbms implements
         $manager = $model->getSchemaManager();
 
         $idList = $manager->fetchStoredUnitList();
-        $tableList = $this->getConnection()->getDatabase()->getTableList();
+        $tableList = $this->getStorageList();
         $update = [];
         $remove = [];
 

@@ -165,7 +165,13 @@ class Manager implements IManager {
     }
 
     public function fetchStoredUnitList() {
-        return $this->getSchemaUnit()->select('unitId')
+        $unit = $this->getSchemaUnit();
+
+        if(!$unit->storageExists()) {
+            return [];
+        }
+
+        return $unit->select('unitId')
             ->orderBy('unitId ASC')
             ->toList('unitId');
     }
