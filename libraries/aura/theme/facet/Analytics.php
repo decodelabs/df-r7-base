@@ -24,7 +24,8 @@ class Analytics extends Base {
     }
 
     public function afterHtmlViewRender(aura\view\IHtmlView $view) {
-        if($view->context->getRunMode() == 'Http') {
+        if($view->context->getRunMode() == 'Http'
+        && ($view->context->application->isProduction() || isset($view->context->request->query->forceAnalytics))) {
             $this->getHandler()->apply($view);
         }
     }

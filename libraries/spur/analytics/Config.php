@@ -12,7 +12,6 @@ use df\spur;
 class Config extends core\Config {
 
     const ID = 'Analytics';
-    const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
 
     public function getDefaultValues() {
         $output = [];
