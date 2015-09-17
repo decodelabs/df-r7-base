@@ -212,9 +212,16 @@ class Router implements core\IRegistryObject {
     }
 
     public function urlToRequest(link\http\IUrl $url) {
+        if(!$this->mapDomain($url->getDomain())) {
+            throw new core\RuntimeException('Unable to map url domain');
+        }
+
         $path = $url->getPath();
-        $this->mapPath($path);
-        $this->mapDomain($url->getDomain());
+        
+        if(!$this->mapPath($path)) {
+            throw new core\RuntimeException('Unable to map url path');
+        }
+
         $request = new arch\Request();
         $request->setPath($path);
         $this->mapArea($request);

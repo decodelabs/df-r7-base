@@ -214,6 +214,16 @@ class Http implements arch\IDirectoryHelper {
         } else if((!$success || ($success && !$request->getRedirectTo() && $default === null)) && ($redirect = $request->getRedirectFrom())) {
             return $this->redirect($redirect);
         }
+
+        if($default === null && ($referrer = $this->getReferrer())) {
+            try {
+                $default = $this->getRouter()->urlToRequest(link\http\Url::factory($referrer));
+
+                if($default->matches($request)) {
+                    $default = null;
+                }
+            } catch(core\IException $e) {}
+        }
             
         if($default === null) {
             $default = $request->getParent();
