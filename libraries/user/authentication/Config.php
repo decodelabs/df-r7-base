@@ -12,7 +12,6 @@ use df\user;
 class Config extends core\Config {
     
     const ID = 'Authentication';
-    const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
     
     public function getDefaultValues() {
         $output = [];
