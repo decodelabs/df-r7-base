@@ -41,11 +41,7 @@ class TaskAdd extends arch\task\Action {
         }, null, true);
 
         $this->_auth->identity = $this->_client['email'];
-
-        $this->_auth->password = $this->_askPassword('Password', function($answer) {
-            return $this->data->newValidator()
-                ->addRequiredField('password');
-        });
+        $this->_auth->password = $this->_askPassword('Password', true, true, true);
 
         $this->_client->fullName = $this->_askFor('Full name', function($answer) {
             return $this->data->newValidator()

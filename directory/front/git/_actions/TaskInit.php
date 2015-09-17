@@ -66,7 +66,5 @@ class TaskInit extends arch\task\Action {
             $this->io->writeLine('Pushing initial commit');
             $repo->pushUpstream();
         }
-
-        $this->io->writeLine('Done');
     }
 }

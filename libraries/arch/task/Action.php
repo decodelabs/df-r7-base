@@ -194,7 +194,7 @@ abstract class Action extends arch\Action implements IAction {
         return $answer;
     }
 
-    protected function _askPassword($label, $repeat=false) {
+    protected function _askPassword($label, $repeat=false, $required=true, $hash=false) {
         do {
             $this->io->write('>> '.$label.': ');
             system('stty -echo');
@@ -203,7 +203,8 @@ abstract class Action extends arch\Action implements IAction {
             $this->io->writeLine();
 
             $validator = $this->data->newValidator()
-                ->addRequiredField('password');
+                ->addField('password')
+                    ->isRequired((bool)$required);
 
             $data = ['password' => $answer];
 
@@ -220,7 +221,9 @@ abstract class Action extends arch\Action implements IAction {
             $validator = $validator->validate($data);
 
             $valid = $validator->isValid();
-            $answer = $validator['password'];
+            $answer = $hash ?
+                $validator['password'] :
+                $validator->data['password'];
 
             foreach($validator->data->password->getErrors() as $error) {
                 $this->io->writeLine('!! '.$error);

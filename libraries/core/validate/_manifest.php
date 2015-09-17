@@ -424,6 +424,11 @@ interface ICurrencyField extends IField, IRangeField {
     public function getCurrencyFieldName();
 }
 
+interface ICustomField extends IField {
+    public function setValidator(Callable $validator);
+    public function getValidator();
+}
+
 interface IDateField extends IField, IRangeField {
     public function shouldDefaultToNow($flag=null);
     public function mustBePast($flag=null);
