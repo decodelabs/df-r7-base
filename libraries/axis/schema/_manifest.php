@@ -523,6 +523,12 @@ trait TInverseRelationField {
             }
         }
 
+        if($targetField->getTargetField() != $this->_name) {
+            throw new RuntimeException(
+                'Inverse field '.$this->_targetField.' is pointing to '.$targetField->getTargetField().', not '.$this->_name.' field'
+            );
+        }
+
         return $targetField;
     }
 
