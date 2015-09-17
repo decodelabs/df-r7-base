@@ -96,3 +96,5 @@ interface IAdapter {
     public function getDefaultUserAttributes();
     public function getDefaultUserAttributeMap();
 }
+
+interface ILegacyAdapter extends IAdapter {}

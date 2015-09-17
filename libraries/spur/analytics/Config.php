@@ -17,6 +17,10 @@ class Config extends core\Config {
         $output = [];
 
         foreach(spur\analytics\adapter\Base::loadAll() as $name => $adapter) {
+            if($adapter instanceof ILegacyAdapter) {
+                continue;
+            }
+
             $set = [
                 'enabled' => false,
                 'options' => $adapter->getOptions()

@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\aura;
     
-class GoogleClassic extends Base {
+class GoogleClassic extends Base implements spur\analytics\ILegacyAdapter {
 
     protected $_options = [
         'trackingId' => null
