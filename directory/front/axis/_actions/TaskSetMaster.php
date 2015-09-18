@@ -15,7 +15,6 @@ use df\opal;
 class TaskSetMaster extends arch\task\Action {
     
     public function execute() {
-        $this->io->writeLine('Set master database connection...');
         $config = axis\Config::getInstance();
 
         if($config->values->connections->master['adapter'] !== 'Rdbms') {
@@ -29,7 +28,13 @@ class TaskSetMaster extends arch\task\Action {
             $current = null;
         }
 
-        if($current && $this->_askBoolean('Use current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true), true)) {
+        $check = $this->format->stringToBoolean($this->request->query['check'], true);
+
+        if($current && (!$check || $this->_askBoolean('Use current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true), true))) {
+            if(!$check) {
+                $this->io->writeLine('Sticking with current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true));
+            }
+            
             return;
         }
 
@@ -72,7 +77,7 @@ class TaskSetMaster extends arch\task\Action {
             }
 
             try {
-                $adapter = opal\rdbms\adapter\Base::factory($dsn);
+                $adapter = opal\rdbms\adapter\Base::factory($dsn, true);
             } catch(\Exception $e) {
                 $this->io->writeErrorLine('!! Unable to connect');
                 continue;

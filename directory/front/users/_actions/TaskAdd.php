@@ -103,20 +103,37 @@ class TaskAdd extends arch\task\Action {
         }, $this->i18n->timezones->suggestForCountry($this->_client['country']));
 
 
-        $groupIds = ['77abfc6a-bab7-c3fa-f701-e08615a46c35', '8d9bad9e-720e-c643-f701-b0733ea86c35'];
-        $groups = $this->data->user->group->fetch()
-            ->where('id', 'in', $groupIds)
-            ->toKeyArray('id');
+        $selectedGroups = isset($this->request->query->groups) ?
+            $this->request->query->groups->toArray() : null;
 
-        foreach($groupIds as $id) {
-            if(!isset($groups[$id])) {
-                continue;
+
+        if($selectedGroups) {
+            $groups = $this->data->user->group->fetch()
+                ->where('id', 'in', $selectedGroups)
+                ->orWhere('signifier', 'in', $selectedGroups)
+                ->toArray();
+
+            foreach($groups as $group) {
+                $this->_client->groups->add($group);
             }
+        } else {
+            $groupIds = ['77abfc6a-bab7-c3fa-f701-e08615a46c35', '8d9bad9e-720e-c643-f701-b0733ea86c35'];
 
-            if($this->_askBoolean('Add to '.$groups[$id]['name'].' group?')) {
-                $this->_client->groups->add($groups[$id]);
+            $groups = $this->data->user->group->fetch()
+                ->where('id', 'in', $groupIds)
+                ->toKeyArray('id');
+
+            foreach($groupIds as $id) {
+                if(!isset($groups[$id])) {
+                    continue;
+                }
+
+                if($this->_askBoolean('Add to '.$groups[$id]['name'].' group?')) {
+                    $this->_client->groups->add($groups[$id]);
+                }
             }
         }
+
 
         $this->_client->save();
         $this->_auth->user = $this->_client;
