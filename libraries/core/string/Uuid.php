@@ -137,6 +137,10 @@ class Uuid implements IUuid, core\IDumpable {
         
         return pack('H*', $string);
     }
+
+    public static function void() {
+        return new self('0000000000000000');
+    }
     
     public static function factory($uuid) {
         if($uuid instanceof IUuid) {

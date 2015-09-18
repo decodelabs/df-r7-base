@@ -107,7 +107,11 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
         }
 
         if($value !== null) {
-            $value = core\string\Uuid::factory($value);
+            try {
+                $value = core\string\Uuid::factory($value);
+            } catch(core\string\IException $e) {
+                $value = core\string\Uuid::void();
+            }
         }
 
         return $value;
