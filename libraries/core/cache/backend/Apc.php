@@ -258,6 +258,10 @@ class Apc implements core\cache\IBackend {
         $request->query->mode = $this->_isCli ? 'http' : 'cli';
         $request->query->{$method} = $arg;
 
-        arch\task\Manager::getInstance()->launchQuietly($request);
+        try {
+            arch\task\Manager::getInstance()->launchQuietly($request);
+        } catch(\Exception $e) {
+            core\log\Manager::getInstance()->logException($e);
+        }
     }
 }
