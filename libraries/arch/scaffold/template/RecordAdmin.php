@@ -103,16 +103,16 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         }
 
         if($query) {
-            $this->_prepareRecordListQuery($query, $queryMode);
+            $this->prepareRecordList($query, $queryMode);
         } else {
-            $query = $this->getRecordListQuery($queryMode);
+            $query = $this->queryRecordList($queryMode);
         }
 
         if(static::CAN_SEARCH) {
             $search = $this->request->getQueryTerm('search');
 
             if(strlen($search)) {
-                $this->applyRecordQuerySearch($query, $search, 'index');
+                $this->searchRecordList($query, $search);
             }
         }
 
@@ -154,7 +154,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         return $this->_handleClusterSelection();
     }
 
-    protected function _getDirectoryKeyName() {
+    public function getDirectoryKeyName() {
         return $this->getRecordKeyName();
     }
 }

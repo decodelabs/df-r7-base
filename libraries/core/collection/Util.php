@@ -18,7 +18,7 @@ class Util implements IUtil {
         $output = [];
         $sort = \SORT_STRING;
 
-        foreach($array as $value) {
+        foreach($array as $key => $value) {
             if(is_object($value)) {
                 $sort = \SORT_REGULAR;
             }
@@ -26,7 +26,11 @@ class Util implements IUtil {
             if(is_array($value)) {
                 $output = array_merge($output, self::flattenArray($value, $unique));
             } else if(!$removeNull || $value !== null) {
-                $output[] = $value;
+                if(is_string($key)) {
+                    $output[$key] = $value;
+                } else {
+                    $output[] = $value;
+                }
             }
         }
 

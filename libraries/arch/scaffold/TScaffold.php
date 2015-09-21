@@ -49,7 +49,7 @@ trait TScaffold_RecordLoader {
                 $this->_recordAdapter = $adapter;
                 return $adapter;
             }
-        } else if($this->_recordAdapter = $this->_generateRecordAdapter()) {
+        } else if($this->_recordAdapter = $this->generateRecordAdapter()) {
             return $this->_recordAdapter;
         }
 
@@ -58,7 +58,7 @@ trait TScaffold_RecordLoader {
         );
     }
 
-    protected function _generateRecordAdapter() {}
+    protected function generateRecordAdapter() {}
 
     public function isRecordAdapterClustered() {
         return (bool)@static::CLUSTER;
@@ -284,13 +284,23 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function getRecord() {
-        $this->_ensureRecord();
+        if($this->_record) {
+            return $this->_record;
+        }
+
+        $key = $this->context->request->query[$this->getRecordUrlKey()];
+        $this->_record = $this->loadRecord($key, $this->_recordAction);
+
+        if(!$this->_record) {
+            throw new RuntimeException('Unable to load scaffold record');
+        }
+
         return $this->_record;
     }
 
     public function getRecordId($record=null) {
         if(!$record) {
-            $record = $this->_ensureRecord();
+            $record = $this->getRecord();
         }
 
         if($record instanceof opal\record\IPrimaryKeySetProvider) {
@@ -303,13 +313,13 @@ trait TScaffold_RecordDataProvider {
 
     public function getRecordName($record=null) {
         if(!$record) {
-            $record = $this->_ensureRecord();
+            $record = $this->getRecord();
         }
 
         $key = $this->getRecordNameField();
 
-        if(method_exists($this, '_getRecordName')) {
-            $output = $this->_getRecordName($record);
+        if(method_exists($this, 'nameRecord')) {
+            $output = $this->nameRecord($record);
         } else {
             if(isset($record[$key])) {
                 $output = $record[$key];
@@ -353,19 +363,19 @@ trait TScaffold_RecordDataProvider {
 
     public function getRecordDescription($record=null) {
         if(!$record) {
-            $record = $this->_ensureRecord();
+            $record = $this->getRecord();
         }
         
-        return $this->html->toText($this->_describeRecord($record));
+        return $this->html->toText($this->describeRecord($record));
     }
 
-    protected function _describeRecord($record) {
+    protected function describeRecord($record) {
         return $this->getRecordName($record);
     }
 
     public function getRecordUrl($record=null) {
         if(!$record) {
-            $record = $this->_ensureRecord();
+            $record = $this->getRecord();
         }
 
         return $this->_getRecordActionRequest($record, static::DEFAULT_RECORD_ACTION);
@@ -374,35 +384,20 @@ trait TScaffold_RecordDataProvider {
     public function getRecordIcon($record=null) {
         if(!$record) {
             try {
-                $record = $this->_ensureRecord();
+                $record = $this->getRecord();
             } catch(\Exception $e) {
                 return $this->getDirectoryIcon();
             }
         }
 
-        if(method_exists($this, '_getRecordIcon')) {
-            return $this->_getRecordIcon($record);
+        if(method_exists($this, 'iconifyRecord')) {
+            return $this->iconifyRecord($record);
         } else {
             return $this->getDirectoryIcon();
         }
     }
 
-    protected function _ensureRecord() {
-        if($this->_record) {
-            return $this->_record;
-        }
-
-        $key = $this->context->request->query[$this->_getRecordUrlKey()];
-        $this->_record = $this->_loadRecord($key, $this->_recordAction);
-
-        if(!$this->_record) {
-            throw new RuntimeException('Unable to load scaffold record');
-        }
-
-        return $this->_record;
-    }
-
-    protected function _loadRecord($key, $action) {
+    protected function loadRecord($key, $action) {
         return $this->data->fetchForAction(
             $this->getRecordAdapter(), $key, $action
         );
@@ -434,12 +429,49 @@ trait TScaffold_RecordDataProvider {
         return $this->_recordNameKey;
     }
 
-    protected function _getRecordUrlKey() {
+    public function getRecordUrlKey() {
         if(@static::RECORD_URL_KEY) {
             return static::RECORD_URL_KEY;
         }
 
         return $this->getRecordKeyName();
+    }
+
+
+    protected function _countRecordRelations($record, $fields) {
+        $fields = core\collection\Util::flattenArray(func_get_args());
+
+        if($fields[0] instanceof opal\record\IRecord) {
+            $record = array_shift($fields);
+        } else  {
+            $record = $this->getRecord();
+        }
+
+        $query = $this->getRecordAdapter()->select('@primary');
+
+        foreach($fields as $field) {
+            try {
+                $query->countRelation($field);
+            } catch(opal\query\InvalidArgumentException $e) {}
+        }
+
+        $output = [];
+        $data = $query->where('@primary', '=', $record->getPrimaryKeySet())
+            ->toRow();
+
+        foreach($fields as $key => $field) {
+            if(!isset($data[$field])) {
+                continue;
+            }
+
+            if(!is_string($key)) {
+                $key = $field;
+            }
+
+            $output[$key] = $data[$field];
+        }
+
+        return $output;
     }
 
 
@@ -458,7 +490,7 @@ trait TScaffold_RecordDataProvider {
 
     protected function _getRecordActionRequest($record, $action, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]) {
         return $this->_getActionRequest($action, [
-            $this->_getRecordUrlKey() => $this->getRecordId($record)
+            $this->getRecordUrlKey() => $this->getRecordId($record)
         ], $redirFrom, $redirTo, $propagationFilter);
     }
 
@@ -702,22 +734,28 @@ trait TScaffold_RecordListProvider {
 
     protected $_recordListFields = [];
 
-    public function getRecordListQuery($mode, array $fields=null) {
+    public function queryRecordList($mode, array $fields=null) {
         $output = $this->getRecordAdapter()->select($fields);
-        $this->_prepareRecordListQuery($output, $mode);
+        $this->prepareRecordList($output, $mode);
         return $output;
     }
 
-    public function extendRecordListQuery($mode, opal\query\ISelectQuery $query) {
-        $this->_prepareRecordListQuery($query, $mode);
+    public function extendRecordList(opal\query\ISelectQuery $query, $mode) {
+        $this->prepareRecordList($query, $mode);
         return $query;
     }
 
-    public function applyRecordQuerySearch(opal\query\ISelectQuery $query, $search, $mode) {
+    protected function prepareRecordList($query, $mode) {}
+
+    public function applyRecordListSearch(opal\query\ISelectQuery $query, $search) {
+        $this->searchRecordList($query, $search);
+        return $query;
+    }
+
+    protected function searchRecordList($query, $search) {
         $query->searchFor($search);
     }
 
-    protected function _prepareRecordListQuery(opal\query\ISelectQuery $query, $mode) {}
 
     public function buildListComponent(array $args) {
         $fields = array_shift($args);
@@ -790,7 +828,7 @@ trait TScaffold_SectionProvider {
 
     protected function _getSections() {
         if($this->_sections === null) {
-            $this->_sections = $this->_generateSections();
+            $this->_sections = $this->generateSections();
 
             if(!is_array($this->_sections) || empty($this->_sections)) {
                 $this->_sections = ['details'];
@@ -829,7 +867,7 @@ trait TScaffold_SectionProvider {
         return $this->_sections;
     }
 
-    protected function _generateSections() {
+    protected function generateSections() {
         return ['details'];
     }
 
@@ -906,10 +944,10 @@ trait TScaffold_SectionProvider {
                     $this->getDirectoryTitle()
             )
             ->setIcon($this->getRecordIcon())
-            ->setBackLinkRequest($this->_getSectionHeaderBarBackLinkRequest());
+            ->setBackLinkRequest($this->getParentSectionRequest());
     }
 
-    protected function _getSectionHeaderBarBackLinkRequest() {
+    protected function getParentSectionRequest() {
         return $this->_getActionRequest('index');
     }
 
@@ -983,7 +1021,7 @@ trait TScaffold_SectionProvider {
     public function getSectionItemCounts() {
         if($this->_sectionItemCounts === null) {
             try {
-                $this->_sectionItemCounts = (array)$this->_fetchSectionItemCounts();
+                $this->_sectionItemCounts = (array)$this->countSectionItems($this->getRecord());
             } catch(\Exception $e) {
                 return [];
             }
@@ -992,8 +1030,10 @@ trait TScaffold_SectionProvider {
         return $this->_sectionItemCounts;
     }
 
-    protected function _fetchSectionItemCounts() {
-        return [];
+    protected function countSectionItems($record) {
+        $sections = $this->_getSections();
+        unset($sections['details']);
+        return $this->_countRecordRelations($record, array_keys($sections));
     }
 }
 

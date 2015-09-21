@@ -20,11 +20,11 @@ class Selector extends arch\form\template\SelectorDelegate {
     }
 
     protected function _getBaseQuery($fields=null) {
-        return $this->_scaffold->getRecordListQuery('selector', $fields);
+        return $this->_scaffold->queryRecordList('selector', $fields);
     }
 
     protected function _applyQuerySearch(opal\query\IQuery $query, $search) {
-        return $this->_scaffold->applyRecordQuerySearch($query, $search, 'selector');
+        return $this->_scaffold->applyRecordListSearch($query, $search);
     }
 
     protected function _renderCollectionList($result) {

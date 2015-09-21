@@ -134,7 +134,7 @@ abstract class Base implements IScaffold {
     public function onActionDispatch(arch\IAction $action) {}
 
     public function loadComponent($name, array $args=null) {
-        $keyName = $this->_getDirectoryKeyName();
+        $keyName = $this->getDirectoryKeyName();
         $origName = $name;
 
         if(substr($name, 0, strlen($keyName)) == ucfirst($keyName)) {
@@ -168,7 +168,7 @@ abstract class Base implements IScaffold {
     }
 
     public function loadFormDelegate($name, arch\form\IStateController $state, $id) {
-        $keyName = $this->_getDirectoryKeyName();
+        $keyName = $this->getDirectoryKeyName();
         $origName = $name;
 
         if(substr($name, 0, strlen($keyName)) == ucfirst($keyName)) {
@@ -213,7 +213,7 @@ abstract class Base implements IScaffold {
             return $this->_(static::DIRECTORY_TITLE);
         }
 
-        return $this->format->name($this->_getDirectoryKeyName());
+        return $this->format->name($this->getDirectoryKeyName());
     }
 
     public function getDirectoryIcon() {
@@ -221,7 +221,22 @@ abstract class Base implements IScaffold {
             return static::DIRECTORY_ICON;
         }
 
-        return $this->_getDirectoryKeyName();
+        return $this->getDirectoryKeyName();
+    }
+
+    public function getDirectoryKeyName() {
+        if($this->_directoryKeyName) {
+            return $this->_directoryKeyName;
+        }
+
+        if(static::DIRECTORY_KEY_NAME) {
+            $this->_directoryKeyName = static::DIRECTORY_KEY_NAME;
+        } else {
+            $parts = $this->context->location->getControllerParts();
+            $this->_directoryKeyName = array_pop($parts);
+        }
+
+        return $this->_directoryKeyName;
     }
 
 
@@ -322,21 +337,6 @@ abstract class Base implements IScaffold {
     }
 
 // Helpers
-    protected function _getDirectoryKeyName() {
-        if($this->_directoryKeyName) {
-            return $this->_directoryKeyName;
-        }
-
-        if(static::DIRECTORY_KEY_NAME) {
-            $this->_directoryKeyName = static::DIRECTORY_KEY_NAME;
-        } else {
-            $parts = $this->context->location->getControllerParts();
-            $this->_directoryKeyName = array_pop($parts);
-        }
-
-        return $this->_directoryKeyName;
-    }
-
     protected function _getActionRequest($action, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]) {
         $output = clone $this->context->location;
         $output->setAction($action);

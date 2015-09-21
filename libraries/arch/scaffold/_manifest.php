@@ -30,6 +30,7 @@ interface IScaffold extends core\IRegistryObject, arch\IOptionalDirectoryAccessL
 
     public function getDirectoryTitle();
     public function getDirectoryIcon();
+    public function getDirectoryKeyName();
 }
 
 interface IRecordLoaderScaffold extends IScaffold {
@@ -44,6 +45,7 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
     public function newRecord(array $values=null);
     public function getRecord();
     public function getRecordKeyName();
+    public function getRecordUrlKey();
     public function getRecordId($record=null);
     public function getRecordIdField();
     public function getRecordName($record=null);
@@ -62,9 +64,9 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
 }
 
 interface IRecordListProviderScaffold extends IRecordLoaderScaffold {
-    public function getRecordListQuery($mode, array $fields=null);
-    public function extendRecordListQuery($mode, opal\query\ISelectQuery $query);
-    public function applyRecordQuerySearch(opal\query\ISelectQuery $query, $search, $mode);
+    public function queryRecordList($mode, array $fields=null);
+    public function extendRecordList(opal\query\ISelectQuery $query, $mode);
+    public function applyRecordListSearch(opal\query\ISelectQuery $query, $search);
 
     public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null, $queryMode=null);
 }
