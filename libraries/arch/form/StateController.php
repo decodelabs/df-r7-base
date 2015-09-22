@@ -14,6 +14,7 @@ class StateController implements IStateController, \Serializable {
     public $sessionId;
     public $values;
     public $isOperating = false;
+    public $referrer;
 
     protected $_isNew = false;
     protected $_delegates = [];
@@ -42,6 +43,10 @@ class StateController implements IStateController, \Serializable {
         
         if($this->_isNew) {
             $output['nw'] = true;
+        }
+
+        if($this->referrer) {
+            $output['rf'] = $this->referrer;
         }
         
         if(!empty($this->_delegates)) {
@@ -81,6 +86,10 @@ class StateController implements IStateController, \Serializable {
         
         if(isset($values['nw'])) {
             $this->_isNew = true;
+        }
+
+        if(isset($values['rf'])) {
+            $this->referrer = $values['rf'];
         }
         
         if(isset($values['dl'])) {

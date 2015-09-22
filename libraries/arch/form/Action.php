@@ -117,11 +117,22 @@ abstract class Action extends arch\Action implements IAction {
         }
 
         if($this->_state->isNew()) {
+            if($referrer = $this->http->getReferrer()) {
+                try {
+                    $referrer = $this->http->getRouter()->urlToRequest(link\http\Url::factory($referrer));
+
+                    if($referrer->matches($this->request)) {
+                        $referrer = null;
+                    }
+                } catch(core\IException $e) {}
+            }
+
+            $this->_state->referrer = $referrer;
             $this->_state->isOperating = $this->http->getMethod() != 'get';
         } else {
             $this->_state->isOperating = true;
         }
-        
+
         $this->_state->isNew(false);
         $this->afterInit();
     }
@@ -502,7 +513,7 @@ abstract class Action extends arch\Action implements IAction {
 // Events
     protected function onCancelEvent() {
         $this->setComplete();
-        return $this->_getCompleteRedirect();
+        return $this->_getCompleteRedirect(null, false);
     }
 
     protected function getDefaultRedirect() {

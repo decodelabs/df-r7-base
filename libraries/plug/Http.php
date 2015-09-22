@@ -210,32 +210,57 @@ class Http implements arch\IDirectoryHelper {
         return new link\http\response\Redirect($url);
     }
     
-    public function defaultRedirect($default=null, $success=true) {
+    public function defaultRedirect($default=null, $success=true, $sectionReferrer=null) {
         $request = $this->context->request;
         
-        if($success && ($redirect = $request->getRedirectTo())) {
-            return $this->redirect($redirect);
-        } else if((!$success || ($success && !$request->getRedirectTo() && $default === null)) && ($redirect = $request->getRedirectFrom())) {
+        if($success) {
+            if(!$redirect = $request->getRedirectTo()) {
+                if($default !== null) {
+                    $redirect = $default;
+                } else {
+                    $redirect = $request->getRedirectFrom();
+                }
+            }
+
+            if($redirect) {
+                return $this->redirect($redirect);
+            }
+        }
+
+        if(!$success && ($redirect = $request->getRedirectFrom()) ){
             return $this->redirect($redirect);
         }
 
-        if($default === null && ($referrer = $this->getReferrer())) {
-            try {
-                $default = $this->getRouter()->urlToRequest(link\http\Url::factory($referrer));
+        if($default !== null) {
+            return $this->redirect($default);
+        }
 
-                if($default->matches($request)) {
-                    $default = null;
-                }
-            } catch(core\IException $e) {}
+        if($sectionReferrer !== null) {
+            if(substr($sectionReferrer, 0, 4) == 'http') {
+                $sectionReferrer = $this->localReferrerToRequest($sectionReferrer);
+            }
+
+            return $this->redirect($sectionReferrer);
+        }
+
+        if($referrer = $this->getReferrer()) {
+            $referrer = $this->localReferrerToRequest($referrer);
+
+            if(!$referrer->matches($request)) {
+                return $this->redirect($referrer);
+            }
         }
             
-        if($default === null) {
-            $default = $request->getParent();
-        }
-        
-        return $this->redirect($default);
+        return $this->redirect($request->getParent());
     }
 
+    public function localReferrerToRequest($url) {
+        try {
+            return $this->getRouter()->urlToRequest(link\http\Url::factory($referrer));
+        } catch(core\IException $e) {
+            return null;
+        }
+    }
 
 
 // Generator

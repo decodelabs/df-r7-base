@@ -283,7 +283,7 @@ trait TForm {
         }
 
         if($this->request->getType() == 'Html') {
-            return $this->http->defaultRedirect($default, $success);
+            return $this->http->defaultRedirect($default, $success, $this->_state->referrer);
         } else if($default) {
             return $this->http->redirect($default);
         }
