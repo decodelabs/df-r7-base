@@ -452,6 +452,8 @@ interface IEmailField extends IField, IUniqueCheckerField {}
 
 interface IEnumField extends IField, IOptionProviderField {}
 
+interface IEntityLocatorField extends IField {}
+
 interface IFloatField extends IField, IRangeField {}
 
 interface IIdListField extends IField {

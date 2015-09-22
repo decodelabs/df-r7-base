@@ -137,7 +137,7 @@ class Locator implements ILocator, core\IDumpable {
                             'type' => null,
                             'id' => null
                         ];
-                    } else if(ctype_alnum($char)) {
+                    } else if(ctype_alnum($char) || $char == '-') {
                         $part .= $char;
                     } else {
                         throw new InvalidArgumentException(
