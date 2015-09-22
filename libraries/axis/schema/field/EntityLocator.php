@@ -29,7 +29,10 @@ class EntityLocator extends Base implements
         $value = $this->sanitizeValue($value);
 
         if(empty($value)) {
-            return null;
+            return [
+                $this->_name.'_domain' => null,
+                $this->_name.'_id' => null
+            ];
         }
 
         return [
