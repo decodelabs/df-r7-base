@@ -134,6 +134,7 @@ interface ISelectionProviderDelegate extends IResultProviderDelegate {
 }
 
 interface ISelectorDelegate extends ISelectionProviderDelegate, IDependencyValueProvider {
+    public function getSourceEntityLocator();
     public function isSelected($id);
     public function setSelected($selected);
     public function getSelected();

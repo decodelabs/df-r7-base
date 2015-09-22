@@ -10,7 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
 use df\opal;
-    
+use df\mesh;
+
 abstract class SelectorDelegate extends arch\form\Delegate implements 
     arch\form\IInlineFieldRenderableModalSelectorDelegate,
     arch\form\IDependentDelegate {
@@ -135,6 +136,31 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         }
 
         return $output;
+    }
+
+
+    public function getSourceEntityLocator() {
+        $adapter = $this->_getBaseQuery()->getSource()->getAdapter();
+
+        if(!$adapter instanceof mesh\entity\ILocatorProvider) {
+            throw new mesh\entity\RuntimeException(
+                'Selector source is not an entity locator provider'
+            );
+        }
+
+        return $adapter->getEntityLocator();
+    }
+
+    public function getSelectionName() {
+        if($this->_isForMany) {
+            return null;
+        }
+
+        $list = $this->_fetchSelectionList();
+
+        if(!empty($list) && ($result = array_shift($list))) {
+            return $this->_getResultDisplayName($result);
+        }
     }
 
 
