@@ -337,7 +337,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         $values = [];
         $duplicates = [];
         
-        foreach($this->_query->getRow() as $field => $value) {
+        foreach($this->_query->getPreparedRow() as $field => $value) {
             $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
             $values[] = ':'.$field;
             $duplicates[] = $fieldString.'=VALUES('.$fieldString.')';
@@ -381,7 +381,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             $duplicates[] = $fieldString.'=VALUES('.$fieldString.')';
         }
         
-        foreach($this->_query->getRows() as $row) {
+        foreach($this->_query->getPreparedRows() as $row) {
             foreach($fieldList as $key) {
                 $value = null;
                 
@@ -424,7 +424,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $values = [];
         
-        foreach($this->_query->getValueMap() as $field => $value) {
+        foreach($this->_query->getPreparedValues() as $field => $value) {
             if($value instanceof opal\query\IExpression) {
                 $values[] = $this->_adapter->quoteIdentifier($field).' = '.$this->defineExpression($value);
             } else {

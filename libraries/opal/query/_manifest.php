@@ -552,12 +552,14 @@ interface IDataInsertQuery extends IWriteQuery, ILocationalQuery {
 interface IInsertQuery extends IDataInsertQuery {
     public function setRow($row);
     public function getRow();
+    public function getPreparedRow();
 }
 
 interface IBatchInsertQuery extends IDataInsertQuery {
     public function addRows($rows);
     public function addRow($row);
     public function getRows();
+    public function getPreparedRows();
     public function clearRows();
     public function getFields();
     public function getDereferencedFields();
@@ -580,7 +582,8 @@ interface IDataUpdateQuery extends IWriteQuery, ILocationalQuery {
     public function express($field, $element1);
     public function beginExpression($field, $element1);
     public function expressCorrelation($field, $targetField);
-    public function getValueMap();
+    public function getValues();
+    public function getPreparedValues();
 }
  
 interface IUpdateQuery extends 

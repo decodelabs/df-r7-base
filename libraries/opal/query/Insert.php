@@ -17,6 +17,7 @@ class Insert implements IInsertQuery, core\IDumpable {
     use TQuery_DataInsert;
 
     protected $_row;
+    protected $_preparedRow;
 
     public function __construct(ISourceManager $sourceManager, ISource $source, $row, $shouldReplace=false) {
         $this->_sourceManager = $sourceManager;
@@ -55,6 +56,7 @@ class Insert implements IInsertQuery, core\IDumpable {
             );
         }
         
+        $this->_preparedRow = null;
         $this->_row = $row;
         return $this;
     }
@@ -62,16 +64,25 @@ class Insert implements IInsertQuery, core\IDumpable {
     public function getRow() {
         return $this->_row;
     }
+
+    public function getPreparedRow() {
+        if(!$this->_preparedRow) {
+            $this->_preparedRow = $this->_deflateInsertValues($this->_row);
+        }
+
+        return $this->_preparedRow;
+    }
     
     
     public function execute() {
-        $this->_row = $this->_deflateInsertValues($this->_row);
-
         $output = $this->_sourceManager->executeQuery($this, function($adapter) {
             return $adapter->executeInsertQuery($this);
         });
         
-        return $this->_normalizeInsertId($output, $this->_row);
+        $output = $this->_normalizeInsertId($output, $this->_preparedRow);
+        $this->_preparedRow = null;
+        
+        return $output;
     }
 
     protected function _normalizeInsertId($originalId, array $row) {

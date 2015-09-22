@@ -316,7 +316,7 @@ abstract class Adapter implements IAdapter {
 // Update query
     public function executeUpdateQuery(opal\query\IUpdateQuery $query) {
         $this->ensureBind();
-        $row = $query->getValueMap();
+        $row = $query->getPreparedValues();
         $connection = $this->_connection->getResource();
         $location = $query->getLocation();
 

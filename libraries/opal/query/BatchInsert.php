@@ -17,6 +17,7 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
     use TQuery_DataInsert;    
     
     protected $_rows = [];
+    protected $_preparedRows = [];
     protected $_fields = [];
     protected $_dereferencedFields = null;
     protected $_flushThreshold = 500;
@@ -62,6 +63,7 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
         }
         
         $this->_rows[] = $row;
+        $this->_preparedRows = null;
         
         if($this->_flushThreshold > 0
         && count($this->_rows) >= $this->_flushThreshold) {
@@ -95,9 +97,23 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
     public function getRows() {
         return $this->_rows;
     }
+
+    public function getPreparedRows() {
+        if(!$this->_preparedRows) {
+            $fields = [];
+            $this->_preparedRows = $this->_deflateBatchInsertValues($this->_rows, $fields);
+            
+            if(!empty($fields)) {
+                $this->_dereferencedFields = array_fill_keys($fields, true);
+            }
+        }
+
+        return $this->_preparedRows;
+    }
     
     public function clearRows() {
         $this->_rows = [];
+        $this->_preparedRows = null;
         return $this;
     }
     
@@ -140,13 +156,6 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
 // Execute
     public function execute() {
         if(!empty($this->_rows)) {
-            $fields = [];
-            $this->_rows = $this->_deflateBatchInsertValues($this->_rows, $fields);
-            
-            if(!empty($fields)) {
-                $this->_dereferencedFields = array_fill_keys($fields, true);
-            }
-
             $this->_inserted += $this->_sourceManager->executeQuery($this, function($adapter) {
                 return (int)$adapter->executeBatchInsertQuery($this);
             });

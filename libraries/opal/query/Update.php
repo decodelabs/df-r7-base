@@ -19,7 +19,8 @@ class Update implements IUpdateQuery, core\IDumpable {
     use TQuery_Orderable;
     use TQuery_Limitable;
 
-    protected $_valueMap = [];
+    protected $_values = [];
+    protected $_preparedValues;
     
     public function __construct(ISourceManager $sourceManager, ISource $source, array $valueMap=null) {
         $this->_sourceManager = $sourceManager;
@@ -41,7 +42,9 @@ class Update implements IUpdateQuery, core\IDumpable {
             $values = [$key => $value];
         }
         
-        $this->_valueMap = array_merge($this->_valueMap, $values);
+        $this->_values = array_merge($this->_values, $values);
+        $this->_preparedValues = null;
+        return $this;
     }
     
     public function express($field, $var1) {
@@ -57,24 +60,33 @@ class Update implements IUpdateQuery, core\IDumpable {
     }
 
     
-    public function getValueMap() {
-        return $this->_valueMap;
+    public function getValues() {
+        return $this->_values;
     }
     
+    public function getPreparedValues() {
+        if(!$this->_preparedValues) {
+            $this->_preparedValues = $this->_deflateUpdateValues($this->_values);
+        }
+
+        return $this->_preparedValues;
+    }
     
     
 // Execute
     public function execute() {
         $adapter = $this->_source->getAdapter();
-        $this->_valueMap = $this->_deflateUpdateValues($this->_valueMap);
         
-        if(empty($this->_valueMap)) {
+        if(empty($this->_values)) {
             return 0;
         }
         
-        return $this->_sourceManager->executeQuery($this, function($adapter) {
+        $output = $this->_sourceManager->executeQuery($this, function($adapter) {
             return $adapter->executeUpdateQuery($this);
         });
+
+        $this->_preparedValues = null;
+        return $output;
     }
 
     protected function _deflateUpdateValues(array $values) {
@@ -128,7 +140,7 @@ class Update implements IUpdateQuery, core\IDumpable {
     public function getDumpProperties() {
         $output = [
             'source' => $this->_source->getAdapter(),
-            'valueMap' => $this->_valueMap
+            'values' => $this->_values
         ];
         
         if($this->hasWhereClauses()) {
