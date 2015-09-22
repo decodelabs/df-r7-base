@@ -106,7 +106,8 @@ class RelationManifest implements IRelationManifest, core\IDumpable {
                 }
             }
 
-            if($value instanceof opal\record\IPrimaryKeySetProvider) {
+            if($value instanceof opal\record\IPrimaryKeySetProvider
+            && !$value instanceof opal\record\IDataProvider) {
                 $value = $value->getPrimaryKeySet();
             }
 
