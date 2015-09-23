@@ -17,7 +17,6 @@ class TaskInstall extends arch\task\Action {
         'base' => 'git@github.com:decodelabs/df-r7-base.git',
         'interact' => 'git@github.com:decodelabs/df-r7-interact.git',
         'mailchimp' => 'git@github.com:decodelabs/df-r7-mailchimp.git',
-        'media' => 'git@github.com:decodelabs/df-r7-media.git',
         'nightfire' => 'git@github.com:decodelabs/df-r7-nightfire.git',
         'nightfireCore' => 'git@github.com:decodelabs/df-r7-nightfireCore.git',
         'postal' => 'git@github.com:decodelabs/df-r7-postal.git',
