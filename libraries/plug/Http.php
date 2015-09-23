@@ -254,7 +254,7 @@ class Http implements arch\IDirectoryHelper {
         return $this->redirect($request->getParent());
     }
 
-    public function localReferrerToRequest($url) {
+    public function localReferrerToRequest($referrer) {
         try {
             return $this->getRouter()->urlToRequest(link\http\Url::factory($referrer));
         } catch(core\IException $e) {
