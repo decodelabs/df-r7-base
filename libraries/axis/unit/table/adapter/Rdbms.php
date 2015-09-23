@@ -193,7 +193,7 @@ class Rdbms implements
     
 // Create
     public function ensureStorage() {
-        if(!$this->storageExists()) {
+        if($this->storageExists()) {
             return false;
         }
 

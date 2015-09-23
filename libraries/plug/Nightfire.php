@@ -110,7 +110,7 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
     }
 
     public function renderElement($slug) {
-        $body = $this->context->data->nightfire->element->select('body')
+        $body = $this->context->data->content->element->select('body')
             ->where('slug', '=', $slug)
             ->toValue('body');
 

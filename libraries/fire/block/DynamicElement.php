@@ -53,7 +53,7 @@ class DynamicElement extends Base {
 
     public function render() {
         $view = $this->getView();
-        $body = $view->context->data->nightfire->element->select('body')
+        $body = $view->context->data->content->element->select('body')
             ->where('slug', '=', $this->_slug)
             ->toValue('body');
 
