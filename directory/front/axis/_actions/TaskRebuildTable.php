@@ -14,6 +14,8 @@ use df\opal;
 
 class TaskRebuildTable extends arch\task\Action {
     
+    protected $_deleteOld = false;
+
     public function execute() {
         $this->task->shouldCaptureBackgroundTasks(true);
         $unitId = $this->request->query['unit'];
@@ -29,6 +31,8 @@ class TaskRebuildTable extends arch\task\Action {
         if(!$unit instanceof axis\IAdapterBasedStorageUnit) {
             $this->throwError(403, 'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!');
         }
+
+        $this->_deleteOld = isset($this->request->query->delete);
 
         $this->io->writeLine('Rebuilding unit '.$unit->getUnitId().' in global cluster');
         $adapter = $unit->getUnitAdapter();
@@ -134,7 +138,13 @@ class TaskRebuildTable extends arch\task\Action {
         $this->io->writeLine('Copied '.$count.' rows');
 
         $this->io->writeLine('Renaming tables');
-        $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
+
+        if($this->_deleteOld) {
+            $currentTable->drop();
+        } else {
+            $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
+        }
+        
         $newTable->rename($currentTableName);
     }
 }
