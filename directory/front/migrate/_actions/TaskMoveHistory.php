@@ -38,7 +38,8 @@ class TaskMoveHistory extends arch\task\Action {
         foreach($table->select() as $row) {
             $locator = new mesh\entity\Locator($row['entity_domain']);
             $locator->setId($row['entity_id']);
-            unset($row['id'], $row['entity_domain'], $row['entity_id']);
+            $row['user'] = $row['user_id'];
+            unset($row['id'], $row['entity_domain'], $row['entity_id'], $row['user_id']);
             $row['entity'] = $locator;
             $this->data->content->history->insert($row)->execute();
             $count++;
