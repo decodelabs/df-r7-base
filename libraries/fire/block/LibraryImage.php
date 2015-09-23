@@ -10,10 +10,6 @@ use df\core;
 use df\fire;
 use df\aura;
 
-if(!df\Launchpad::$loader || !df\Launchpad::$loader->hasPackage('nightfireCore')) {
-    return;
-}
-    
 class LibraryImage extends Base {
 
     protected static $_outputTypes = ['Html'];

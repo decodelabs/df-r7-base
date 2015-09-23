@@ -12,10 +12,6 @@ use df\arch;
 use df\aura;
 use df\fire;
 
-if(!df\Launchpad::$loader || !df\Launchpad::$loader->hasPackage('nightfireCore')) {
-    return;
-}
-    
 class LibraryImage extends Base {
 
     protected function loadDelegates() {
