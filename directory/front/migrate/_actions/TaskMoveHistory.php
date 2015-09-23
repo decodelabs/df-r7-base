@@ -10,6 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\axis;
+use df\mesh;
 
 class TaskMoveHistory extends arch\task\Action {
     
@@ -21,16 +22,29 @@ class TaskMoveHistory extends arch\task\Action {
             return;
         }
 
-        $this->io->write('Moving rows');
+        $connection = $nightfire->element->getUnitAdapter()->getConnection();
+        $table = $connection->getTable('nightfire_history');
+
+        if(!$table->exists()) {
+            $this->io->writeErrorLine('Original history table does not exist');
+            return;
+        }
+
         $this->data->content->history->destroyStorage();
         $count = 0;
 
-        foreach($nightfire->history->select() as $row) {
-            unset($row['id']);
+        $this->io->write('Moving rows');
+
+        foreach($table->select() as $row) {
+            $locator = new mesh\entity\Locator($row['entity_domain']);
+            $locator->setId($row['entity_id']);
+            unset($row['id'], $row['entity_domain'], $row['entity_id']);
+            $row['entity'] = $locator;
             $this->data->content->history->insert($row)->execute();
             $count++;
         }
 
         $this->io->writeLine(': '.$count.' moved');
+        $table->drop();
     }
 }

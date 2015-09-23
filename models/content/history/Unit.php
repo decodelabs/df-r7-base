@@ -10,6 +10,7 @@ use df\core;
 use df\apex;
 use df\axis;
 use df\opal;
+use df\mesh;
 
 class Unit extends axis\unit\table\Base {
     
@@ -70,21 +71,33 @@ class Unit extends axis\unit\table\Base {
 
     public function fetchFor($entityLocator) {
         return $this->fetch()
-            ->where('entity', '=', $entityLocator);
+            ->where('entity', '=', $this->_normalizeItemLocator($entityLocator));
     }
 
 
     public function countFor($entityLocator) {
         return $this->select()
-            ->where('entity', '=', $entityLocator)
+            ->where('entity', '=', $this->_normalizeItemLocator($entityLocator))
             ->count();
     }
 
     public function deleteFor($entityLocator) {
         $this->delete()
-            ->where('entity', '=', $entityLocator)
+            ->where('entity', '=', $this->_normalizeItemLocator($entityLocator))
             ->execute();
 
         return $this;
+    }
+
+    protected function _normalizeItemLocator($locator) {
+        $locator = mesh\entity\Locator::factory($locator);
+
+        if(!$locator->getId()) {
+            throw new mesh\entity\InvalidArgumentException(
+                'Locator does not have an id'
+            );
+        }
+
+        return $locator;
     }
 }
