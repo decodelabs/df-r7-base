@@ -1,0 +1,80 @@
+<?php 
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\plug;
+
+use df;
+use df\core;
+use df\plug;
+use df\arch;
+use df\link;
+    
+class Interact implements arch\IDirectoryHelper {
+
+    use arch\TDirectoryHelper;
+
+    const GRAVATAR_BASE = 'http://www.gravatar.com/avatar/';
+
+    public function getClientAvatarUrl($size=null) {
+        return $this->getAvatarUrl($this->context->user->client->getId(), $size);
+    }
+
+    public function getAvatarUrl($userId, $size=null) {
+        return $this->context->uri->__invoke('avatar/download?user='.$userId.'&size='.$size.'&c='.$this->context->data->interact->cache->getAvatarCacheTime());
+    }
+
+    public function getGravatarUrl($email, $size=null, $default='mm') {
+        $hash = md5(trim(strtolower($email)));
+        $output = new link\http\Url(self::GRAVATAR_BASE.$hash);
+
+        if($size !== null) {
+            $output->query->s = (int)$size;
+        }
+
+        if($url = $this->_getDefaultAvatarImageUrl()) {
+            if(substr($url->getDomain(), -4) == '.dev' || $url->hasCredentials()) {
+                $this->_defaultImageUrl = null;
+            } else {
+                if($size !== null) {
+                    $url = clone $url;
+                    $url->path->setFilename('default-'.$size);
+                }
+
+                $default = $url;
+            }
+        }
+
+        if($default !== null) {
+            $output->query->d = $default;
+        }
+
+        return $output;
+    }
+
+    private $_defaultImageUrl = false;
+
+    protected function _getDefaultAvatarImageUrl() {
+        if($this->_defaultImageUrl === false) {
+            $path = $this->context->data->interact->config->getDefaultAvatarPath();
+            $this->_defaultImageUrl = null;
+
+            if($path) {
+                $path = new core\uri\Path($path);
+                $this->_defaultImageUrl = $this->context->uri->__invoke('avatar/download?user=default&type='.$path->getExtension());
+
+                $config = core\application\http\Config::getInstance();
+
+                if($credentials = $config->getCredentials()) {
+                    $this->_defaultImageUrl->setCredentials(
+                        $credentials['username'],
+                        $credentials['password']
+                    );
+                }
+            }
+        }
+
+        return $this->_defaultImageUrl;
+    }
+}
