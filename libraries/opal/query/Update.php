@@ -22,12 +22,12 @@ class Update implements IUpdateQuery, core\IDumpable {
     protected $_values = [];
     protected $_preparedValues;
     
-    public function __construct(ISourceManager $sourceManager, ISource $source, array $valueMap=null) {
+    public function __construct(ISourceManager $sourceManager, ISource $source, array $values=null) {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
         
-        if($valueMap !== null) {
-            $this->set($valueMap);
+        if($values !== null) {
+            $this->set($values);
         }
     }
     
@@ -41,7 +41,7 @@ class Update implements IUpdateQuery, core\IDumpable {
         } else {
             $values = [$key => $value];
         }
-        
+
         $this->_values = array_merge($this->_values, $values);
         $this->_preparedValues = null;
         return $this;
@@ -76,8 +76,10 @@ class Update implements IUpdateQuery, core\IDumpable {
 // Execute
     public function execute() {
         $adapter = $this->_source->getAdapter();
+        $this->getPreparedValues();
         
-        if(empty($this->_values)) {
+        if(empty($this->_preparedValues)) {
+            $this->_preparedValues = null;
             return 0;
         }
         
