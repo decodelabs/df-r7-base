@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\models\interact\config;
+namespace df\apex\models\user\avatarConfig;
 
 use df;
 use df\core;
@@ -13,26 +13,21 @@ use df\user;
     
 class Unit extends axis\unit\config\Base {
 
-    const ID = 'Interact';
+    const ID = 'Avatars';
 
     public function getDefaultValues() {
         return [
-            'avatar' => [
-                'adapter' => 'gravatar',
-                'defaultImage' => null
-            ],
-            'comments' => [
-
-            ]
+            'adapter' => 'gravatar',
+            'defaultImage' => null
         ];
     }
 
     public function setDefaultAvatarPath($path) {
-        $this->values->avatar->defaultImage = $path;
+        $this->values->defaultImage = $path;
         return $this;
     }
 
     public function getDefaultAvatarPath() {
-        return $this->values->avatar['defaultImage'];
+        return $this->values['defaultImage'];
     }
 }

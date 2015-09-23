@@ -11,7 +11,7 @@ use df\plug;
 use df\arch;
 use df\link;
     
-class Interact implements arch\IDirectoryHelper {
+class Avatar implements arch\IDirectoryHelper {
 
     use arch\TDirectoryHelper;
 
@@ -22,7 +22,9 @@ class Interact implements arch\IDirectoryHelper {
     }
 
     public function getAvatarUrl($userId, $size=null) {
-        return $this->context->uri->__invoke('avatar/download?user='.$userId.'&size='.$size.'&c='.$this->context->data->interact->cache->getAvatarCacheTime());
+        return $this->context->uri->__invoke(
+            'avatar/download?user='.$userId.'&size='.$size.'&c='.$this->context->data->user->cache->getAvatarCacheTime()
+        );
     }
 
     public function getGravatarUrl($email, $size=null, $default='mm') {
@@ -57,7 +59,7 @@ class Interact implements arch\IDirectoryHelper {
 
     protected function _getDefaultAvatarImageUrl() {
         if($this->_defaultImageUrl === false) {
-            $path = $this->context->data->interact->config->getDefaultAvatarPath();
+            $path = $this->context->data->user->avatarConfig->getDefaultAvatarPath();
             $this->_defaultImageUrl = null;
 
             if($path) {
