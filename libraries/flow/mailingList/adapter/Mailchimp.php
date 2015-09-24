@@ -30,6 +30,10 @@ class Mailchimp extends Base {
         $this->_mediator = new spur\mail\mailchimp\Mediator($apiKey);
     }
 
+    public function getId() {
+        return $this->_mediator->getApiKey();
+    }
+
     public function canConnect() {
         try {
             $lists = $this->_mediator->fetchAllLists();
@@ -170,11 +174,35 @@ class Mailchimp extends Base {
         }
         
         $this->_mediator->ensureSubscription($listId, $email, $merges, $groups);
-        
-        $cache = flow\mailingList\Cache::getInstance();
-        $cache->clearSession();
-
         return $this;
+    }
+
+
+
+    public function fetchClientManifest(array $manifest) {
+        $output = [];
+
+        foreach($manifest as $listId => $list) {
+            if(!$memberData = $this->_getClientMemberData($listId)) {
+                continue;
+            }
+
+            $groupData = $memberData->getGroupSetData();
+
+            foreach($list['groups'] as $groupId => $group) {
+                $setId = $group['groupSet'];
+
+                if(!isset($groupData[$setId])) {
+                    continue;
+                }
+
+                if(in_array($group['name'], $groupData[$setId])) {
+                    $output[$listId][$groupId] = $group['name'];
+                }
+            }
+        }
+
+        return $output;
     }
 
 

@@ -51,6 +51,11 @@ interface IManager extends core\IManager {
     public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false);
     public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=false);
 
+    public function getClientSubscribedGroups();
+    public function getClientSubscribedGroupsFor($sourceId);
+    public function getClientSubscribedGroupsIn($sourceId, $listId);
+    public function getClientSubscribedPrimaryGroupsFor($sourceId);
+
 // Flash
     public function setFlashLimit($limit);
     public function getFlashLimit();

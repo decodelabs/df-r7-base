@@ -302,7 +302,7 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
-    public function getPrimaryGroupOptionsFor($sourceId, $nested=false) {
+    public function getPrimaryGroupOptionsFor($sourceId, $nested=false, $showSets=true) {
         if(!$source = $this->getListSource($sourceId)) {
             return [];
         }
@@ -311,7 +311,7 @@ class Manager implements IManager, core\IShutdownAware {
             return [];
         }
 
-        return $source->getGroupOptionsFor($listId, $nested);
+        return $source->getGroupOptionsFor($listId, $nested, $showSets);
     }
 
     public function getPrimaryGroupIdListFor($sourceId) {
@@ -344,7 +344,9 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
     public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId, array $groups=null, $replace=false)  {
-        $source = $this->getListSource($sourceId);
+        if(!$source = $this->getListSource($sourceId)) {
+            return $this;
+        }
 
         if(!$listId = $source->getPrimaryListId()) {
             throw new flow\mailingList\RuntimeException(
@@ -356,8 +358,10 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
     public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false)  {
-        $source = $this->getListSource($sourceId);
-        $source->subscribeUserToList($client, $listId, $groups, $replace);
+        if($source = $this->getListSource($sourceId)) {
+            $source->subscribeUserToList($client, $listId, $groups, $replace);
+        }
+
         return $this;
     }
 
@@ -378,6 +382,46 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
+
+    public function getClientSubscribedGroups() {
+        $output = [];
+
+        foreach($this->getListSources() as $sourceId => $source) {
+            foreach($source->getClientManifest() as $listId => $groups) {
+                $output[$sourceId.'/'.$listId] = $groups;
+            }
+        }
+
+        return $output;
+    }
+
+    public function getClientSubscribedGroupsFor($sourceId) {
+        if(!$source = $this->getListSource($sourceId)) {
+            return [];
+        }
+
+        return $source->getClientManifest();
+    }
+
+    public function getClientSubscribedGroupsIn($sourceId, $listId) {
+        if(!$source = $this->getListSource($sourceId)) {
+            return [];
+        }
+
+        return $source->getClientSubscribedGroupsIn($listId);
+    }
+
+    public function getClientSubscribedPrimaryGroupsFor($sourceId) {
+        if(!$source = $this->getListSource($sourceId)) {
+            return [];
+        }
+
+        if(!$listId = $source->getPrimaryListId()) {
+            return [];
+        }
+
+        return $source->getClientSubscribedGroupsIn($listId);
+    }
 
 
 

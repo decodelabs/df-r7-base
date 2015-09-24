@@ -13,6 +13,7 @@ use df\user;
 class Source implements ISource {
     
     protected $_id;
+    protected $_cid;
     protected $_adapter;
     protected $_primaryListId;
 
@@ -21,6 +22,7 @@ class Source implements ISource {
 
         $this->_id = $id;
         $this->_adapter = flow\mailingList\adapter\Base::factory($options);
+        $this->_cid = $id.'-'.$this->_adapter->getId();
         $this->_primaryListId = $options['primaryList'];
     }
 
@@ -40,10 +42,10 @@ class Source implements ISource {
     public function getManifest() {
         $cache = Cache::getInstance();
 
-        if(!$manifest = $cache->get('source:'.$this->_id)) {
+        if(!$manifest = $cache->get('source:'.$this->_cid)) {
             $manifest = $this->_adapter->fetchManifest();
             $manifest = $this->_normalizeManifest($manifest);
-            $cache->set('source:'.$this->_id, $manifest);
+            $cache->set('source:'.$this->_cid, $manifest);
         }
 
         return $manifest;
@@ -139,19 +141,25 @@ class Source implements ISource {
         return $output;
     }
 
-    public function getGroupOptions($nested=false) {
+    public function getGroupOptions($nested=false, $showSets=true) {
         $output = [];
         $manifest = $this->getManifest();
         $count = count($manifest);
 
         foreach($manifest as $listId => $list) {
             foreach($list['groups'] as $groupId => $group) {
-                $cat = $list['name'].(isset($list['groupSets'][$group['groupSet']]) ? ' / '.$list['groupSets'][$group['groupSet']] : null);
+                $cat = $list['name'];
+
+                if($showSets) {
+                    $cat .= isset($list['groupSets'][$group['groupSet']]) ? 
+                        ' / '.$list['groupSets'][$group['groupSet']] : null;
+                }
 
                 if($nested) {
                     $output[$cat][$listId.'/'.$groupId] = $group['name'];
                 } else {
-                    $output[$listId.'/'.$groupId] = $cat.' / '.$group['name'];
+                    $output[$listId.'/'.$groupId] = $showSets ?
+                        $cat.' / '.$group['name'] : $group['name'];
                 }
             }
         }
@@ -174,7 +182,7 @@ class Source implements ISource {
         return $output;
     }
 
-    public function getGroupOptionsFor($listId, $nested=false) {
+    public function getGroupOptionsFor($listId, $nested=false, $showSets=true) {
         $output = [];
         $manifest = $this->getManifest();
 
@@ -191,7 +199,8 @@ class Source implements ISource {
             if($nested) {
                 $output[$groupSet][$groupId] = $group['name'];
             } else {
-                $output[$groupId] = $groupSet.' / '.$group['name'];
+                $output[$groupId] = $showSets ? 
+                    $groupSet.' / '.$group['name'] : $group['name'];
             }
         }
 
@@ -219,6 +228,33 @@ class Source implements ISource {
         }
 
         $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace);
+
+        $cache = flow\mailingList\Cache::getInstance();
+        $cache->clearSession();
+
         return $this;
+    }
+
+
+
+    public function getClientManifest() {
+        $cache = Cache::getInstance();
+
+        if(!$manifest = $cache->getSession('client:'.$this->_cid)) {
+            $manifest = $this->_adapter->fetchClientManifest($this->getManifest());
+            $cache->setSession('client:'.$this->_cid, $manifest);
+        }
+
+        return $manifest;
+    }
+
+    public function getClientSubscribedGroupsIn($listId) {
+        $clientManifest = $this->getClientManifest();
+
+        if(isset($clientManifest[$listId])) {
+            return $clientManifest[$listId];
+        } else {
+            return [];
+        }
     }
 }
