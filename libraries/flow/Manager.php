@@ -240,7 +240,12 @@ class Manager implements IManager, core\IShutdownAware {
 
         $config = flow\mail\Config::getInstance();
         $options = $config->getListSource($id);
-        return new flow\mailingList\Source($id, $options);
+
+        try {
+            return new flow\mailingList\Source($id, $options);
+        } catch(flow\mailingList\IException $e) {
+            return null;
+        }
     }
 
     public function getListManifest() {
@@ -269,15 +274,15 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
-    public function getListAdapterOptionFields($adapter) {
-        return flow\mailingList\adapter\Base::getOptionFieldsFor($adapter);
+    public function getListAdapterSettingsFields($adapter) {
+        return flow\mailingList\adapter\Base::getSettingsFieldsFor($adapter);
     }
 
-    public function getAvailableLists() {
+    public function getListOptions() {
         $output = [];
 
         foreach($this->getListSources() as $sourceId => $source) {
-            foreach($source->getAvailableLists() as $listId => $name) {
+            foreach($source->getLists() as $listId => $name) {
                 $output[$sourceId.'/'.$listId] = $name;
             }
         }
@@ -285,16 +290,40 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
-    public function getAvailableGroupList() {
+    public function getListGroupOptions() {
         $output = [];
 
         foreach($this->getListSources() as $sourceId => $source) {
-            foreach($source->getAvailableGroupList() as $groupId => $name) {
+            foreach($source->getGroupOptions() as $groupId => $name) {
                 $output[$sourceId.'/'.$groupId] = $name;
             }
         }
 
         return $output;
+    }
+
+    public function getPrimaryGroupOptionsFor($sourceId, $nested=false) {
+        if(!$source = $this->getListSource($sourceId)) {
+            return [];
+        }
+
+        if(!$listId = $source->getPrimaryListId()) {
+            return [];
+        }
+
+        return $source->getGroupOptionsFor($listId, $nested);
+    }
+
+    public function getPrimaryGroupIdListFor($sourceId) {
+        if(!$source = $this->getListSource($sourceId)) {
+            return [];
+        }
+
+        if(!$listId = $source->getPrimaryListId()) {
+            return [];
+        }
+
+        return $source->getGroupIdListFor($listId);
     }
 
 

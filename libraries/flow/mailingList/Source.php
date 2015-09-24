@@ -117,7 +117,7 @@ class Source implements ISource {
 
 
 
-    public function getAvailableLists() {
+    public function getLists() {
         $output = [];
 
         foreach($this->getManifest() as $listId => $list) {
@@ -127,7 +127,7 @@ class Source implements ISource {
         return $output;
     }
 
-    public function getAvailableGroupSetList() {
+    public function getGroupSetOptions() {
         $output = [];
 
         foreach($this->getManifest() as $listId => $list) {
@@ -139,16 +139,74 @@ class Source implements ISource {
         return $output;
     }
 
-    public function getAvailableGroupList() {
+    public function getGroupOptions($nested=false) {
         $output = [];
+        $manifest = $this->getManifest();
+        $count = count($manifest);
 
-        foreach($this->getManifest() as $listId => $list) {
+        foreach($manifest as $listId => $list) {
             foreach($list['groups'] as $groupId => $group) {
-                $output[$listId.'/'.$groupId] = $list['name'].' / '.$group['name'];
+                $cat = $list['name'].(isset($list['groupSets'][$group['groupSet']]) ? ' / '.$list['groupSets'][$group['groupSet']] : null);
+
+                if($nested) {
+                    $output[$cat][$listId.'/'.$groupId] = $group['name'];
+                } else {
+                    $output[$listId.'/'.$groupId] = $cat.' / '.$group['name'];
+                }
             }
         }
 
         return $output;
+    }
+
+    public function getGroupSetOptionsFor($listId) {
+        $output = [];
+        $manifest = $this->getManifest();
+
+        if(!isset($manifest[$listId])) {
+            return $output;
+        }
+
+        foreach($manifest[$listId]['groupSets'] as $setId => $setName) {
+            $output[$setId] = $setName;
+        }
+
+        return $output;
+    }
+
+    public function getGroupOptionsFor($listId, $nested=false) {
+        $output = [];
+        $manifest = $this->getManifest();
+
+        if(!isset($manifest[$listId])) {
+            return $output;
+        }
+
+        $list = $manifest[$listId];
+
+        foreach($list['groups'] as $groupId => $group) {
+            $groupSet = isset($list['groupSets'][$group['groupSet']]) ?
+                $list['groupSets'][$group['groupSet']] : 'Default';
+
+            if($nested) {
+                $output[$groupSet][$groupId] = $group['name'];
+            } else {
+                $output[$groupId] = $groupSet.' / '.$group['name'];
+            }
+        }
+
+        return $output;
+    }
+
+    public function getGroupIdListFor($listId) {
+        $output = [];
+        $manifest = $this->getManifest();
+
+        if(!isset($manifest[$listId])) {
+            return $output;
+        }
+
+        return array_keys($manifest[$listId]['groups']);
     }
 
 

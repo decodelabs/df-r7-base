@@ -14,7 +14,7 @@ use df\link;
 
 class Mailchimp extends Base {
     
-    public static $optionFields = [
+    public static $settingsFields = [
         '*apiKey' => 'API key'
     ];
 

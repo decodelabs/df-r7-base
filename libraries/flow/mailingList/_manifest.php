@@ -26,15 +26,18 @@ interface ISource {
     public function getPrimaryListId();
     public function getPrimaryListManifest();
 
-    public function getAvailableLists();
-    public function getAvailableGroupSetList();
-    public function getAvailableGroupList();
+    public function getLists();
+    public function getGroupSetOptions();
+    public function getGroupOptions($nested=false);
+    public function getGroupSetOptionsFor($listId);
+    public function getGroupOptionsFor($listId, $nested=false);
+    public function getGroupIdListFor($listId);
 
     public function subscribeUserToList(user\IClientDataObject $client, $listId, array $groups=null, $replace=false);
 }
 
 interface IAdapter {
-    public static function getOptionFields();
+    public static function getSettingsFields();
     public function getName();
     public function canConnect();
     public function fetchManifest();

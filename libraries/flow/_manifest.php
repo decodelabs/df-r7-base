@@ -37,9 +37,12 @@ interface IManager extends core\IManager {
     public function getListSource($id);
     public function getListManifest();
     public function getAvailableListAdapters();
-    public function getListAdapterOptionFields($adapter);
-    public function getAvailableLists();
-    public function getAvailableGroupList();
+    public function getListAdapterSettingsFields($adapter);
+    public function getListOptions();
+    public function getListGroupOptions();
+
+    public function getPrimaryGroupOptionsFor($sourceId, $nested=false);
+    public function getPrimaryGroupIdListFor($sourceId);
 
     public function subscribeClientToPrimaryList($sourceId, array $groups=null, $replace=false);
     public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=false);

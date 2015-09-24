@@ -11,7 +11,7 @@ use df\flow;
 
 abstract class Base implements flow\mailingList\IAdapter {
     
-    public static $optionFields = [];
+    public static $settingsFields = [];
 
     public static function factory(core\collection\ITree $options) {
         if(!$name = $options['adapter']) {
@@ -31,7 +31,7 @@ abstract class Base implements flow\mailingList\IAdapter {
         return new $class($options);
     }
 
-    public static function getOptionFieldsFor($name) {
+    public static function getSettingsFieldsFor($name) {
         $class = 'df\\flow\\mailingList\\adapter\\'.ucfirst($name);
 
         if(!class_exists($class)) {
@@ -40,11 +40,11 @@ abstract class Base implements flow\mailingList\IAdapter {
             );
         }
 
-        return $class::getOptionFields();
+        return $class::getSettingsFields();
     }
 
-    public static function getOptionFields() {
-        return static::$optionFields;
+    public static function getSettingsFields() {
+        return static::$settingsFields;
     }
 
     protected function __construct(core\collection\ITree $options) {}
