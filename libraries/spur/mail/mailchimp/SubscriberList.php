@@ -47,8 +47,8 @@ class SubscriberList implements IList, core\IDumpable {
         $this->_longSubscribeUrl = $apiData['subscribe_url_long'];
         $this->_beamerAddress = $apiData['beamer_address'];
         $this->_visibility = $apiData['visibility'];
-        $this->_stats = $apiData['stats'];
-        $this->_modules = $apiData['modules'];
+        $this->_stats = $apiData->stats->toArray();
+        $this->_modules = $apiData->modules->toArray();
     }
 
     public function getMediator() {
