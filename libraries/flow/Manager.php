@@ -11,7 +11,7 @@ use df\flow;
 use df\user;
 use df\flex;
 use df\axis;
-    
+
 class Manager implements IManager, core\IShutdownAware {
 
     use core\TManager;
@@ -211,6 +211,144 @@ class Manager implements IManager, core\IShutdownAware {
 
         return $this;
     }
+
+
+
+## LISTS
+    public function getListSources() {
+        $config = flow\mail\Config::getInstance();
+        $output = [];
+
+        foreach($config->getListSources() as $id => $options) {
+            try {
+                $source = new flow\mailingList\Source($id, $options);
+            } catch(flow\mailingList\IException $e) {
+                core\log\Manager::getInstance()->logException($e);
+                continue;
+            }
+
+            $output[$source->getId()] = $source;
+        }
+        
+        return $output;
+    }
+
+    public function getListSource($id) {
+        if($id instanceof flow\mailingList\ISource) {
+            return $id;
+        }
+
+        $config = flow\mail\Config::getInstance();
+        $options = $config->getListSource($id);
+        return new flow\mailingList\Source($id, $options);
+    }
+
+    public function getListManifest() {
+        $output = [];
+
+        foreach($this->getListSources() as $sourceId => $source) {
+            foreach($source->getManifest() as $listId => $list) {
+                $output[$sourceId.'/'.$listId] = array_merge([
+                    'id' => $listId,
+                    'source' => $sourceId
+                ], $list);
+            }
+        }
+
+        return $output;
+    }
+
+    public function getAvailableListAdapters() {
+        $output = [];
+
+        foreach(df\Launchpad::$loader->lookupClassList('flow/mailingList/adapter') as $name => $class) {
+            $output[$name] = $name;
+        }
+
+        ksort($output);
+        return $output;
+    }
+
+    public function getListAdapterOptionFields($adapter) {
+        return flow\mailingList\adapter\Base::getOptionFieldsFor($adapter);
+    }
+
+    public function getAvailableLists() {
+        $output = [];
+
+        foreach($this->getListSources() as $sourceId => $source) {
+            foreach($source->getAvailableLists() as $listId => $name) {
+                $output[$sourceId.'/'.$listId] = $name;
+            }
+        }
+
+        return $output;
+    }
+
+    public function getAvailableGroupList() {
+        $output = [];
+
+        foreach($this->getListSources() as $sourceId => $source) {
+            foreach($source->getAvailableGroupList() as $groupId => $name) {
+                $output[$sourceId.'/'.$groupId] = $name;
+            }
+        }
+
+        return $output;
+    }
+
+
+
+    public function subscribeClientToPrimaryList($sourceId) {
+        $client = user\Manager::getInstance()->getClient();
+        return $this->subscribeUserToPrimaryList($client, $sourceId);
+    }
+
+    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=true)  {
+        $client = user\Manager::getInstance()->getClient();
+        return $this->subscribeUserToList($client, $sourceId, $listId, $groups, $replace);
+    }
+
+    public function subscribeClientToGroups(array $compoundGroupIds, $replace=true)  {
+        $client = user\Manager::getInstance()->getClient();
+        return $this->subscribeUserToGroups($client, $compoundGroupIds, $replace);
+    }
+
+    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId)  {
+        $source = $this->getListSource($sourceId);
+
+        if(!$listId = $source->getPrimaryListId()) {
+            throw new flow\mailingList\RuntimeException(
+                'No primary list has been set for mailing list source '.$source->getId()
+            );
+        }
+
+        return $this->subscribeUserToList($client, $source, $listId, null, false);
+    }
+
+    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=true)  {
+        $source = $this->getListSource($sourceId);
+        $source->subscribeUserToList($client, $listId, $groups, $replace);
+        return $this;
+    }
+
+    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=true)  {
+        $manifest = [];
+
+        foreach($compoundGroupIds as $id) {
+            list($sourceId, $listId, $groupId) = explode('/', $id);
+            $manifest[$sourceId][$listId][] = $groupId;
+        }
+
+        foreach($manifest as $sourceId => $lists) {
+            foreach($lists as $listId => $groups) {
+                $this->subscribeClientToList($client, $sourceId, $listId, $groups, $replace);
+            }
+        }
+
+        return $this;
+    }
+
 
 
 

@@ -104,9 +104,14 @@ class Mediator implements IMediator, \Serializable {
     public function ensureSubscription($listId, $emailAddress, array $merges=[], array $groups=[], $emailType='html', $sendWelcome=false) {
         $groupings = [];
 
-        foreach($groups as $group) {
+        foreach($groups as $key => $group) {
             if($group instanceof IGroup) {
                 $groupings[$group->getGroupSet()->getId()][] = $group->getPreparedName();
+                continue;
+            }
+
+            if(is_array($group)) {
+                $groupings[$key] = $group;
                 continue;
             }
 
@@ -260,8 +265,8 @@ class Mediator implements IMediator, \Serializable {
         $output = [];
 
         foreach($sets as $set) {
-            foreach($set->getGroups() as $group) {
-                $output[] = $group;
+            foreach($set->getGroups() as $id => $group) {
+                $output[$group->getCompoundId()] = $group;
             }
         }
 

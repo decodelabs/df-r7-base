@@ -23,6 +23,10 @@ class Comms implements core\ISharedHelper {
         $this->_manager = flow\Manager::getInstance();
     }
 
+    public function getManager() {
+        return $this->_manager;
+    }
+
 
 // Flash messages
     public function flash($id, $message=null, $type=null) {

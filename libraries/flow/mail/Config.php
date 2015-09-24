@@ -23,10 +23,18 @@ class Config extends core\Config {
             'adminAddresses' => [],
             'catchAllBCC' => [],
             'captureInTesting' => true,
-            'transports' => flow\mail\transport\Base::getAllDefaultConfigValues()
+            'transports' => flow\mail\transport\Base::getAllDefaultConfigValues(),
+            'listSources' => [
+                '!example' => [
+                    'adapter' => 'Mailchimp',
+                    'apiKey' => null
+                ]
+            ]
         ];
     }
 
+
+// Transport
     public function setDefaultTransport($name) {
         if(!flow\mail\transport\Base::isValidTransport($name)) {
             throw new InvalidArgumentException(
@@ -50,6 +58,8 @@ class Config extends core\Config {
         return $this->values->transports->{$name};
     }
 
+
+// Default addresses
     public function setDefaultAddress($address, $name=null) {
         $address = Address::factory($address, $name);
 
@@ -148,6 +158,14 @@ class Config extends core\Config {
         return $output;
     }
 
+    protected function _getDefaultAdminAddress() {
+        $name = halo\system\Base::getInstance()->getProcess()->getOwnerName();
+        $url = new link\http\Url(core\application\http\Config::getInstance()->getBaseUrl());
+        return $name.'@'.$url->getDomain();
+    }
+
+
+// Capture
     public function shouldCaptureInTesting($flag=null) {
         if($flag !== null) {
             $this->values->captureInTesting = (bool)$flag;
@@ -163,9 +181,22 @@ class Config extends core\Config {
     }
 
 
-    protected function _getDefaultAdminAddress() {
-        $name = halo\system\Base::getInstance()->getProcess()->getOwnerName();
-        $url = new link\http\Url(core\application\http\Config::getInstance()->getBaseUrl());
-        return $name.'@'.$url->getDomain();
+// Lists
+    public function getListSources() {
+        $output = [];
+
+        foreach($this->values->listSources as $key => $node) {
+            if(substr($key, 0, 1) == '!') {
+                continue;
+            }
+
+            $output[$key] = clone $node;
+        }
+
+        return $output;
+    }
+
+    public function getListSource($id) {
+        return clone $this->values->listSources->{$id};
     }
 }

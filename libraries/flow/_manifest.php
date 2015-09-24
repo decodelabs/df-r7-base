@@ -8,6 +8,7 @@ namespace df\flow;
 use df;
 use df\core;
 use df\flow;
+use df\user;
 
 
     
@@ -29,6 +30,23 @@ interface IManager extends core\IManager {
 // Notification
     public function newNotification($subject, $body, $to=null, $from=null, $forceSend=false);
     public function sendNotification(INotification $notification, $forceSend=false);
+
+
+// Lists
+    public function getListSources();
+    public function getListSource($id);
+    public function getListManifest();
+    public function getAvailableListAdapters();
+    public function getListAdapterOptionFields($adapter);
+    public function getAvailableLists();
+    public function getAvailableGroupList();
+
+    public function subscribeClientToPrimaryList($sourceId);
+    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=true);
+    public function subscribeClientToGroups(array $compoundGroupIds, $replace=true);
+    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId);
+    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=true);
+    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=true);
 
 // Flash
     public function setFlashLimit($limit);
