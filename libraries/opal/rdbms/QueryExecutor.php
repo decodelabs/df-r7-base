@@ -375,13 +375,15 @@ abstract class QueryExecutor implements IQueryExecutor {
         $fields = [];
         $fieldList = $this->_query->getDereferencedFields();
         $duplicates = [];
-        
+
         foreach($fieldList as $field) {
             $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
             $duplicates[] = $fieldString.'=VALUES('.$fieldString.')';
         }
-        
+
         foreach($this->_query->getPreparedRows() as $row) {
+            $current = [];
+
             foreach($fieldList as $key) {
                 $value = null;
                 
@@ -389,12 +391,12 @@ abstract class QueryExecutor implements IQueryExecutor {
                     $value = $row[$key];
                 }
                 
-                $row[$key] = ':'.$this->_stmt->autoBind($value);
+                $current[$key] = ':'.$this->_stmt->autoBind($value);
             }
             
-            $rows[] = '('.implode(',', $row).')';
+            $rows[] = '('.implode(',', $current).')';
         }
-        
+
         $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES '.implode(', ', $rows));
 
         if($this->_query->shouldReplace()) {

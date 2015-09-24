@@ -122,6 +122,8 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
     }
 
     public function getDereferencedFields() {
+        $this->getPreparedRows();
+
         if($this->_dereferencedFields === null) {
             return $this->getFields();
         }
