@@ -37,6 +37,10 @@ interface ISource {
 
     public function getClientManifest();
     public function getClientSubscribedGroupsIn($listId);
+
+    public function updateListUserDetails($oldEmail, user\IClientDataObject $client);
+
+    public function unsubscribeUserFromList(user\IClientDataObject $client, $listId);
 }
 
 interface IAdapter {
@@ -47,8 +51,9 @@ interface IAdapter {
     public function fetchManifest();
 
     public function subscribeUserToList(user\IClientDataObject $client, $listId, array $manifest, array $groups=null, $replace=false);
-
     public function fetchClientManifest(array $manifest);
+    public function updateListUserDetails($oldEmail, user\IClientDataObject $client, array $manifest);
+    public function unsubscribeUserFromList(user\IClientDataObject $client, $listId);
 }
 
 

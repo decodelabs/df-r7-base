@@ -177,6 +177,16 @@ class Mailchimp extends Base {
         return $this;
     }
 
+    public function unsubscribeUserFromList(user\IClientDataObject $client, $listId) {
+        $member = $this->_getMemberData($listId, $client->getEmail());
+
+        if($member) {
+            $member->delete();
+        }
+
+        return $this;
+    }
+
 
 
     public function fetchClientManifest(array $manifest) {
@@ -203,6 +213,32 @@ class Mailchimp extends Base {
         }
 
         return $output;
+    }
+
+
+    public function updateListUserDetails($oldEmail, user\IClientDataObject $client, array $manifest) {
+        foreach($manifest as $listId => $list) {
+            if(!$member = $this->_getMemberData($listId, $oldEmail)) {
+                continue;
+            }
+
+            if($oldEmail != $client->getEmail()) {
+                if($clashMember = $this->_getMemberData($listId, $client->getEmail())) {
+                    $clashMember->delete();
+                }
+
+                $member->setEmailAddress($client->getEmail());
+            }
+
+            $member->setName(
+                $client->getFirstName(),
+                $client->getSurname()
+            );
+
+            $member->save();
+        }
+
+        return $this;
     }
 
 

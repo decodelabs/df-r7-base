@@ -424,6 +424,48 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
 
+    public function updateListUserDetails($oldEmail, user\IClientDataObject $client) {
+        foreach($this->getListSources() as $source) {
+            $source->updateListUserDetails($oldEmail, $client);
+        }
+
+        return $this;
+    }
+
+
+
+    public function unsubscribeClientFromPrimaryList($sourceId) {
+        $client = user\Manager::getInstance()->getClient();
+        return $this->unsubscribeUserFromPrimaryList($client, $sourceId);
+    }
+
+    public function unsubscribeClientFromList($sourceId, $listId) {
+        $client = user\Manager::getInstance()->getClient();
+        return $this->unsubscribeUserFromList($client, $sourceId, $listId);
+    }
+
+    public function unsubscribeUserFromPrimaryList(user\IClientDataObject $client, $sourceId) {
+        if(!$source = $this->getListSource($sourceId)) {
+            return $this;
+        }
+
+        if(!$listId = $source->getPrimaryListId()) {
+            return $this;
+        }
+
+        return $this->unsubscribeUserFromList($client, $source, $listId);
+    }
+
+    public function unsubscribeUserFromList(user\IClientDataObject $client, $sourceId, $listId) {
+        if(!$source = $this->getListSource($sourceId)) {
+            return $this;
+        }
+
+        $source->unsubscribeUserFromList($client, $listId);
+        return $this;
+    }
+
+
 
 ## FLASH
 

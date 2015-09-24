@@ -257,4 +257,20 @@ class Source implements ISource {
             return [];
         }
     }
+
+
+    public function updateListUserDetails($oldEmail, user\IClientDataObject $client) {
+        $this->_adapter->updateListUserDetails($oldEmail, $client, $this->getManifest());
+        return $this;
+    }
+
+
+    public function unsubscribeUserFromList(user\IClientDataObject $client, $listId) {
+        $this->_adapter->unsubscribeUserFromList($client, $listId);
+
+        $cache = flow\mailingList\Cache::getInstance();
+        $cache->clearSession();
+
+        return $this;
+    }
 }
