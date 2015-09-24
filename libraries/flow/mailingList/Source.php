@@ -153,7 +153,7 @@ class Source implements ISource {
 
 
 
-    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $groups=null, $replace=true) {
+    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $groups=null, $replace=false) {
         $manifest = $this->getManifest();
 
         if(!isset($manifest[$listId])) {

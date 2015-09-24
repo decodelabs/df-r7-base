@@ -299,22 +299,22 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 
-    public function subscribeClientToPrimaryList($sourceId) {
+    public function subscribeClientToPrimaryList($sourceId, array $groups=null, $replace=false) {
         $client = user\Manager::getInstance()->getClient();
-        return $this->subscribeUserToPrimaryList($client, $sourceId);
+        return $this->subscribeUserToPrimaryList($client, $sourceId, $groups, $replace);
     }
 
-    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=true)  {
+    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=false)  {
         $client = user\Manager::getInstance()->getClient();
         return $this->subscribeUserToList($client, $sourceId, $listId, $groups, $replace);
     }
 
-    public function subscribeClientToGroups(array $compoundGroupIds, $replace=true)  {
+    public function subscribeClientToGroups(array $compoundGroupIds, $replace=false)  {
         $client = user\Manager::getInstance()->getClient();
         return $this->subscribeUserToGroups($client, $compoundGroupIds, $replace);
     }
 
-    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId)  {
+    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId, array $groups=null, $replace=false)  {
         $source = $this->getListSource($sourceId);
 
         if(!$listId = $source->getPrimaryListId()) {
@@ -323,16 +323,16 @@ class Manager implements IManager, core\IShutdownAware {
             );
         }
 
-        return $this->subscribeUserToList($client, $source, $listId, null, false);
+        return $this->subscribeUserToList($client, $source, $listId, $groups, $replace);
     }
 
-    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=true)  {
+    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false)  {
         $source = $this->getListSource($sourceId);
         $source->subscribeUserToList($client, $listId, $groups, $replace);
         return $this;
     }
 
-    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=true)  {
+    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=false)  {
         $manifest = [];
 
         foreach($compoundGroupIds as $id) {

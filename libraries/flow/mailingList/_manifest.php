@@ -30,7 +30,7 @@ interface ISource {
     public function getAvailableGroupSetList();
     public function getAvailableGroupList();
 
-    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $groups=null, $replace=true);
+    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $groups=null, $replace=false);
 }
 
 interface IAdapter {
@@ -39,7 +39,7 @@ interface IAdapter {
     public function canConnect();
     public function fetchManifest();
 
-    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $manifest, array $groups=null, $replace=true);
+    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $manifest, array $groups=null, $replace=false);
 }
 
 

@@ -41,12 +41,12 @@ interface IManager extends core\IManager {
     public function getAvailableLists();
     public function getAvailableGroupList();
 
-    public function subscribeClientToPrimaryList($sourceId);
-    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=true);
-    public function subscribeClientToGroups(array $compoundGroupIds, $replace=true);
-    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId);
-    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=true);
-    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=true);
+    public function subscribeClientToPrimaryList($sourceId, array $groups=null, $replace=false);
+    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=false);
+    public function subscribeClientToGroups(array $compoundGroupIds, $replace=false);
+    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId, array $groups=null, $replace=false);
+    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false);
+    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=false);
 
 // Flash
     public function setFlashLimit($limit);
