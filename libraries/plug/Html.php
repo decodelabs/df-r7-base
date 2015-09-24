@@ -171,6 +171,35 @@ class Html implements arch\IDirectoryHelper {
 
 
 
+
+    public function autoField($key, $name, core\collection\ITree $values=null) {
+        $isRequired = $isBoolean = false;
+
+        if(substr($key, 0, 1) == '*') {
+            $key = substr($key, 1);
+            $isRequired = true;
+        } else if(substr($key, 0, 1) == '?') {
+            $key = substr($key, 1);
+            $isBoolean = true;
+        }
+
+        $value = null;
+
+        if($values) {
+            $value = $values->{$key};
+        }
+
+        if($isBoolean) {
+            return $this->checkbox($key, $value, $name);
+        } else {
+            return $this->textbox($key, $value)
+                ->isRequired($isRequired)
+                ->setPlaceholder($name);
+        }
+    }
+
+
+
 // Compound widget shortcuts
     public function icon($name, $body=null) {
         if($this->view) {

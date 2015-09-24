@@ -24,8 +24,10 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function addField($name, $type=null);
     public function addRequiredField($name, $type=null);
+    public function addAutoField($key);
     public function newField($name, $type=null);
     public function newRequiredField($name, $type=null);
+    public function newAutoField($key);
     public function getTargetField();
     public function endField();
     public function hasField($name);

@@ -33,6 +33,11 @@ class Handler implements IHandler {
         return $this;
     }
 
+    public function addAutoField($key) {
+        $this->newAutoField($key);
+        return $this;
+    }
+
     public function newField($name, $type=null) {
         $this->endField();
         $field = core\validate\field\Base::factory($this, $type, $name);
@@ -46,6 +51,27 @@ class Handler implements IHandler {
 
     public function newRequiredField($name, $type=null) {
         return $this->newField($name, $type)->isRequired(true);
+    }
+
+    public function newAutoField($key) {
+        $isRequired = $isBoolean = false;
+
+        if(substr($key, 0, 1) == '*') {
+            $key = substr($key, 1);
+            $isRequired = true;
+        } else if(substr($key, 0, 1) == '?') {
+            $key = substr($key, 1);
+            $isBoolean = true;
+        }
+
+        if($isBoolean) {
+            $field = $this->newField($key, 'boolean');
+        } else {
+            $field = $this->newField($key, 'text');
+        }
+
+        $field->isRequired($isRequired);
+        return $field;
     }
 
     public function getTargetField() {
