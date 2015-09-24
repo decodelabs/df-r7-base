@@ -132,11 +132,7 @@ class Mailchimp extends Base {
             $groups = [];
         }
 
-        $availableGroups = [];
-
-        if(!empty($groups) || $memberGroupData) {
-            $availableGroups = $manifest['groups'];
-        }
+        $availableGroups = $manifest['groups'];
 
         if(!empty($groups)) {
             foreach($groups as $i => $groupId) {
@@ -172,7 +168,7 @@ class Mailchimp extends Base {
                 }
             }
         }
-        
+
         $this->_mediator->ensureSubscription($listId, $email, $merges, $groups);
         return $this;
     }
