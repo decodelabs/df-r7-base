@@ -117,7 +117,7 @@ class Source implements ISource {
 
 
 
-    public function getLists() {
+    public function getListOptions() {
         $output = [];
 
         foreach($this->getManifest() as $listId => $list) {

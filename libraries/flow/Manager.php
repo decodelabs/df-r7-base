@@ -282,7 +282,7 @@ class Manager implements IManager, core\IShutdownAware {
         $output = [];
 
         foreach($this->getListSources() as $sourceId => $source) {
-            foreach($source->getLists() as $listId => $name) {
+            foreach($source->getListOptions() as $listId => $name) {
                 $output[$sourceId.'/'.$listId] = $name;
             }
         }

@@ -26,7 +26,7 @@ interface ISource {
     public function getPrimaryListId();
     public function getPrimaryListManifest();
 
-    public function getLists();
+    public function getListOptions();
     public function getGroupSetOptions();
     public function getGroupOptions($nested=false);
     public function getGroupSetOptionsFor($listId);
