@@ -15,7 +15,6 @@ class TaskInstall extends arch\task\Action {
 
     protected static $_packages = [
         'base' => 'git@github.com:decodelabs/df-r7-base.git',
-        'mailchimp' => 'git@github.com:decodelabs/df-r7-mailchimp.git',
         'nightfire' => 'git@github.com:decodelabs/df-r7-nightfire.git',
         'postal' => 'git@github.com:decodelabs/df-r7-postal.git',
         'touchstone' => 'git@github.com:decodelabs/df-r7-touchstone.git',

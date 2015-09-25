@@ -14,6 +14,7 @@ use df\mesh;
 class TaskMoveElements extends arch\task\Action {
     
     public function execute() {
+        core\dump('This task is deprecated');
         $connection = $this->data->content->element->getUnitAdapter()->getConnection();
         $oldTable = $connection->getTable('nightfire_element');
 
