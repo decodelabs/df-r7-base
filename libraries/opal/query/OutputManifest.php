@@ -19,6 +19,7 @@ class OutputManifest implements IOutputManifest {
     protected $_privateFields = [];
     protected $_fieldProcessors = null;
     protected $_combines = [];
+    protected $_searchController = null;
     protected $_queryRequiresPartial = false;
     
     public function __construct(ISource $source, array $rows=null, $isNormalized=true) {
@@ -117,6 +118,10 @@ class OutputManifest implements IOutputManifest {
             $this->_combines[$field->getName()] = $field->getCombine();
         }
 
+        if($field instanceof ISearchController) {
+            $this->_searchController = $field;
+        }
+
         $this->_fieldProcessors = null;
         
         return $this;
@@ -188,6 +193,10 @@ class OutputManifest implements IOutputManifest {
 
     public function getCombines() {
         return $this->_combines;
+    }
+
+    public function getSearchController() {
+        return $this->_searchController;
     }
 
     public function queryRequiresPartial($flag=null) {

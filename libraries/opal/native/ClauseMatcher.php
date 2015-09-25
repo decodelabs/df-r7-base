@@ -149,7 +149,7 @@ class ClauseMatcher implements IClauseMatcher {
     }
 
 
-    public function testRow(array $row) {
+    public function testRow(array $row, array &$matchedFields=[]) {
         if(empty($this->_index)) {
             return true;
         }
@@ -159,7 +159,7 @@ class ClauseMatcher implements IClauseMatcher {
             
             foreach($set as $bundle) {
                 if($bundle instanceof IClauseMatcher) {
-                    $test &= $bundle->testRow($row);
+                    $test &= $bundle->testRow($row, $matchedFields);
                 } else {
                     if(isset($row[$bundle->fieldQualifiedName])) {
                         $value = $row[$bundle->fieldQualifiedName];
@@ -167,7 +167,10 @@ class ClauseMatcher implements IClauseMatcher {
                         $value = null;
                     }
 
-                    $test &= $this->compare($value, $bundle->operator, $bundle->compare);
+                    $fieldTest = $this->compare($value, $bundle->operator, $bundle->compare);
+                    $test &= $fieldTest;
+
+                    $matchedFields[$bundle->fieldQualifiedName] = $fieldTest;
                 }
             }
             
@@ -276,10 +279,10 @@ class ClauseMatcher implements IClauseMatcher {
                 return !core\string\Util::ends($compare, $value);
 
             case opal\query\clause\Clause::OP_MATCHES:
-                return core\string\Util::likeMatch($compare, '*'.$value.'*');
+                return core\string\Util::likeMatch('*'.$compare.'*', $value);
                 
             case opal\query\clause\Clause::OP_NOT_MATCHES:
-                return !core\string\Util::likeMatch($compare, '*'.$value.'*');
+                return !core\string\Util::likeMatch('*'.$compare.'*', $value);
             
             
             default:

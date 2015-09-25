@@ -1103,6 +1103,8 @@ interface IOutputManifest {
     public function getOutputFieldProcessors();
     public function getCombines();
 
+    public function getSearchController();
+
     public function queryRequiresPartial($flag=null);
     public function requiresPartial($forFetch=true);
 }

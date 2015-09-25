@@ -43,7 +43,7 @@ interface IArrayManipulator {
 }
 
 interface IClauseMatcher {
-    public function testRow(array $row);
+    public function testRow(array $row, array &$matchedFields);
     public function testRowMatch(array $row, array $joinRow);
 
     public static function compare($value, $operator, $compare);

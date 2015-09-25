@@ -406,10 +406,46 @@ class ArrayManipulator implements IArrayManipulator {
         
         if(!$clauseList->isEmpty()) {
             $clauseIndex = new ClauseMatcher($clauseList->toArray());
-            
+            $searchFields = null;
+
+            if($searchController = $this->_outputManifest->getSearchController()) {
+                $searchFields = [];
+                $searchAlias = $searchController->getAlias();
+                $maxWeight = 1;
+
+                foreach($searchController->getFields() as $fieldName => $field) {
+                    $searchFields[$fieldName] = $field['weight'];
+
+                    if($field['weight'] > $maxWeight) {
+                        $maxWeight = $field['weight'];
+                    }
+                }
+
+                $maxScore = count($searchController->getTerms()) * $maxWeight;
+            }
+
             foreach($this->_rows as $i => $row) {
-                if(!$clauseIndex->testRow($row)) {
+                $matchedFields = [];
+
+                if(!$clauseIndex->testRow($row, $matchedFields)) {
                     unset($this->_rows[$i]);
+                    continue;
+                }  
+
+                if($searchController) {
+                    $relevance = 0;
+
+                    foreach($matchedFields as $fieldName => $matched) {
+                        if(!$matched) {
+                            continue;
+                        }
+
+                        if(isset($searchFields[$fieldName])) {
+                            $relevance += $searchFields[$fieldName];
+                        }
+                    }
+
+                    $this->_rows[$i][$searchAlias] = min($relevance / $maxScore, 1);
                 }
             }
         }

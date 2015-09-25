@@ -327,7 +327,7 @@ abstract class Util implements IUtil {
     public static function begins($pattern, $string) {
         if(is_array($pattern)) {
             foreach($pattern as $part) {
-                if(self::contains($part, $string)) {
+                if(self::begins($part, $string)) {
                     return true;
                 }
             }
@@ -341,7 +341,7 @@ abstract class Util implements IUtil {
     public static function ends($pattern, $string) {
         if(is_array($pattern)) {
             foreach($pattern as $part) {
-                if(self::contains($part, $string)) {
+                if(self::ends($part, $string)) {
                     return true;
                 }
             }

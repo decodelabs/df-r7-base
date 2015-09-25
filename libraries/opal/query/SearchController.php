@@ -86,7 +86,17 @@ class SearchController implements ISearchController, core\IDumpable {
         }
 
         foreach($fields as $field => $set) {
+            if(is_int($field) && is_string($set)) {
+                $field = $set;
+                $set = 1;
+            }
+
             $field = $sourceManager->extrapolateIntrinsicField($source, $field);
+
+            if(!$field) {
+                continue;
+            }
+
             $key = $field->getQualifiedName();
 
             if(!is_array($set)) {
