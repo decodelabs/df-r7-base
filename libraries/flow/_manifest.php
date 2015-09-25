@@ -35,6 +35,7 @@ interface IManager extends core\IManager {
 // Lists
     public function getListSources();
     public function getListSource($id);
+    public function hasListSource($id);
     public function getListManifest();
     public function getAvailableListAdapters();
     public function getListAdapterSettingsFields($adapter);
@@ -55,6 +56,7 @@ interface IManager extends core\IManager {
     public function getClientSubscribedGroupsFor($sourceId);
     public function getClientSubscribedGroupsIn($sourceId, $listId);
     public function getClientSubscribedPrimaryGroupsFor($sourceId);
+    public function isClientSubscribed($sourceId, $listId=null, $groupId=null);
 
     public function updateListUserDetails($oldEmail, user\IClientDataObject $client);
 

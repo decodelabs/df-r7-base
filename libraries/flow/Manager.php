@@ -248,6 +248,13 @@ class Manager implements IManager, core\IShutdownAware {
         }
     }
 
+    public function hasListSource($id) {
+        $config = flow\mail\Config::getInstance();
+        $options = $config->getListSource($id);
+
+        return isset($option->adapter);
+    }
+
     public function getListManifest() {
         $output = [];
 
@@ -421,6 +428,32 @@ class Manager implements IManager, core\IShutdownAware {
         }
 
         return $source->getClientSubscribedGroupsIn($listId);
+    }
+
+    public function isClientSubscribed($sourceId, $listId=null, $groupId=null) {
+        if(!$source = $this->getListSource($sourceId)) {
+            return false;
+        }
+
+        if($listId === null) {
+            $listId = $source->getPrimaryListId();
+        }
+
+        if(!$listId) {
+            return false;
+        }
+
+        $manifest = $source->getClientManifest();
+
+        if(!isset($manifest[$listId])) {
+            return false;
+        }
+
+        if($groupId === null) {
+            return true;        
+        }
+        
+        return isset($manifest[$listId][$groupId]);
     }
 
 
