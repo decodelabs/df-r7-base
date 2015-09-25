@@ -592,14 +592,17 @@ class ArrayManipulator implements IArrayManipulator {
         
         $sortFields = [];
         $sortData = [];
+        $sortNullFields = [];
+        $sortNullData = [];
         
         foreach($orderDirectives as $directive) {
             if(!$directive instanceof opal\query\IOrderDirective) {
                 continue;
             }
-            
+
             $field = $directive->getField();
             $derefFields = $field->dereference();
+            $nullOrder = $directive->getNullOrder();
 
             foreach($derefFields as $innerField) {
                 $sortFieldName = $innerField->getQualifiedName();
@@ -613,6 +616,26 @@ class ArrayManipulator implements IArrayManipulator {
                 } else {
                     $sortFields[$sortFieldName] = SORT_ASC;
                 }
+
+                if($nullOrder !== 'ascending') {
+                    switch($nullOrder) {
+                        case 'first':
+                            $nullOrderDirection = SORT_DESC;
+                            break;
+
+                        case 'last':
+                            $nullOrderDirection = SORT_ASC;
+                            break;
+
+                        case 'descending':
+                            $nullOrderDirection = $directive->isDescending() ?
+                                SORT_DESC : SORT_ASC;
+                            break;
+                    }
+
+                    $sortNullFields[$sortFieldName] = $nullOrderDirection;
+                    $sortNullData[$sortFieldName] = [];
+                }
             }
         }
 
@@ -620,8 +643,14 @@ class ArrayManipulator implements IArrayManipulator {
             foreach($sortFields as $field => $direction) {
                 if(isset($row[$field])) {
                     $sortData[$field][] = &$row[$field];
+                    $isNull = $row[$field] === null;
                 } else {
                     $sortData[$field][] = null;
+                    $isNull = true;
+                }
+
+                if(isset($sortNullFields[$field])) {
+                    $sortNullData[$field][] = $isNull;
                 }
             }
         }
@@ -629,6 +658,11 @@ class ArrayManipulator implements IArrayManipulator {
         $args = [];
     
         foreach($sortFields as $field => $direction) {
+            if(isset($sortNullFields[$field])) {
+                $args[] = $sortNullData[$field];
+                $args[] = $sortNullFields[$field];
+            }
+
             $args[] = &$sortData[$field];
             $args[] = $direction;
         }
