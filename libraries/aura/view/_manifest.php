@@ -34,21 +34,21 @@ interface IRenderTargetProvider {
 
 
 trait TRenderTargetProvider {
-    
+
     protected $_renderTarget;
-    
+
     public function setRenderTarget(IRenderTarget $target=null) {
         $this->_renderTarget = $target;
         return $this;
     }
-    
+
     public function getRenderTarget() {
         if(!$this->_renderTarget) {
             throw new RuntimeException(
                 'No render target has been set'
             );
         }
-        
+
         return $this->_renderTarget;
     }
 
@@ -65,7 +65,7 @@ interface IDeferredRenderable extends IRenderable, IRenderTargetProvider, core\I
 
 
 trait TDeferredRenderable {
-    
+
     use TRenderTargetProvider;
 
     public function renderTo(IRenderTarget $target) {
@@ -134,9 +134,9 @@ trait TSlotContainer {
 
 
 
-interface IContentProvider extends 
-    IDeferredRenderable, 
-    arch\IProxyResponse 
+interface IContentProvider extends
+    IDeferredRenderable,
+    arch\IProxyResponse
     {}
 
 interface ICollapsibleContentProvider extends IContentProvider {
@@ -157,12 +157,12 @@ interface IViewRenderEventReceiver {
 }
 
 
-interface IView extends 
-    IContentConsumer, 
-    IRenderTarget, 
+interface IView extends
+    IContentConsumer,
+    IRenderTarget,
     ISlotProvider,
     \ArrayAccess,
-    core\IHelperProvider, 
+    core\IHelperProvider,
     core\string\IStringEscapeHandler,
     core\lang\IChainable
 {
@@ -193,7 +193,7 @@ trait TResponseView {
         if($this->_renderedContent === null) {
             $this->_renderedContent = $this->render();
         }
-        
+
         return $this->_renderedContent;
     }
 
@@ -216,19 +216,19 @@ interface IThemedView extends IView {
 }
 
 trait TThemedView {
-    
+
     protected $_theme;
-    
+
     public function setTheme($theme) {
         if($theme === null) {
             $this->_theme = null;
         } else {
             $this->_theme = aura\theme\Base::factory($theme);
         }
-        
+
         return $this;
     }
-    
+
     public function getTheme() {
         if($this->_theme === null) {
             $this->_theme = aura\theme\Base::factory($this->context);
@@ -250,26 +250,26 @@ interface ILayoutView extends IThemedView {
 }
 
 trait TLayoutView {
-    
+
     use TThemedView;
-    
+
     protected $_layout;
     protected $_useLayout = true;
-    
+
     public function shouldUseLayout($flag=null) {
         if($flag !== null) {
             $this->_useLayout = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_useLayout;
     }
-    
+
     public function setLayout($layout) {
         $this->_layout = ucfirst(core\string\Manipulator::formatId($layout));
         return $this;
     }
-    
+
     public function getLayout() {
         if($this->_layout === null) {
             if($this instanceof IThemedView) {
@@ -284,7 +284,7 @@ trait TLayoutView {
                 $this->_layout = static::DEFAULT_LAYOUT;
             }
         }
-        
+
         return $this->_layout;
     }
 }
@@ -299,7 +299,7 @@ interface INotificationProxyView extends IView, ILayoutView, flow\INotificationP
 interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getHtmlTag();
     public function getBodyTag();
-    
+
     // Title
     public function setTitle($title);
     public function getTitle();
@@ -310,11 +310,11 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getTitleSuffix();
     public function setFullTitle($title);
     public function getFullTitle();
-    
+
     // Base
     public function setBaseHref($url);
     public function getBaseHref();
-    
+
     // Meta
     public function setMeta($name, $value);
     public function getMeta($name);
@@ -325,17 +325,17 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getData($key);
     public function hasData($key);
     public function removeData($key);
-    
+
     // Keywords
     public function setKeywords($keywords);
-    public function addKeywords($keywords); 
+    public function addKeywords($keywords);
     public function getKeywords();
     public function hasKeywords();
     public function hasKeyword($keyword);
     public function removeKeyword($keyword);
     public function removeKeywords();
-    
-    
+
+
     // Robots
     public function canIndex($flag=null, $bot='robots');
     public function canFollow($flag=null, $bot='robots');
@@ -343,7 +343,7 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getRobots();
     public function hasRobots();
     public function removeRobots();
-    
+
     // Link
     public function addLink($id, $rel, $url, array $attributes=null);
     public function getLinks();
@@ -355,13 +355,13 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function setFaviconHref($url);
     public function getFaviconHref();
     public function linkFavicon($uri);
-    
+
     // CSS
     public function linkCss($uri, $weight=null, array $attributes=null, $condition=null);
     public function linkConditionalCss($condition, $uri, $weight=null, array $attributes=null);
     public function getCss();
     public function clearCss();
-    
+
     // Styles
     public function setStyles($styles);
     public function addStyles($styles);
@@ -372,20 +372,19 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getStyle($selector);
     public function removeStyle($selector);
     public function hasStyle($selector);
-    
+
     // Js
-    public function linkJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null);
-    public function linkConditionalJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null);
-    public function linkHeadJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null);
-    public function linkConditionalHeadJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null);
-    public function linkFootJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null);
-    public function linkConditionalFootJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null);
+    public function linkJs($uri, $weight=null, array $attributes=null, $condition=null);
+    public function linkConditionalJs($condition, $uri, $weight=null, array $attributes=null);
+    public function linkFootJs($uri, $weight=null, array $attributes=null, $condition=null);
+    public function linkConditionalFootJs($condition, $uri, $weight=null, array $attributes=null);
+    public function getJs();
     public function getHeadJs();
     public function getFootJs();
     public function clearJs();
     public function clearHeadJs();
     public function clearFootJs();
-    
+
     // Scripts
     public function addScript($id, $script, $condition=null);
     public function addHeadScript($id, $script, $condition=null);
@@ -396,8 +395,8 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function clearScripts();
     public function clearHeadScripts();
     public function clearFootScripts();
-    
-    
+
+
     // Rendering
     public function shouldRenderBase($flag=null);
 }
@@ -453,7 +452,7 @@ trait TCascadingHelperProvider {
 
         return call_user_func_array($output, $args);
     }
-    
+
     public function __get($key) {
         return $this->_getHelper($key);
     }
@@ -505,7 +504,7 @@ interface ITemplate extends IContentProvider, ISlotProvider, \ArrayAccess, IRend
 
     // Escaping
     public function esc($value, $default=null);
-    
+
     // Helpers
     public function __get($member);
 }

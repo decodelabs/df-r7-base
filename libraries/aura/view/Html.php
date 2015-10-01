@@ -12,54 +12,56 @@ use df\arch;
 use df\flow;
 
 class Html extends Base implements IHtmlView, core\IDumpable {
-    
+
     use TResponseView;
     use TLayoutView;
-    
+
     const DEFAULT_TITLE = '*untitled';
     const DEFAULT_LAYOUT = 'Default';
-    
+
     private static $_priorityMeta = ['x-ua-compatible', 'content-type'];
     private static $_httpMeta = [
         'allow', 'alternates', 'bulletin-date', 'bulletin-text', 'cache-control', 'content-base',
         'content-disposition', 'content-encoding', 'content-language', 'content-length', 'content-location',
-        'content-md5', 'content-range', 'content-script-type', 'content-style-type', 'content-type', 
+        'content-md5', 'content-range', 'content-script-type', 'content-style-type', 'content-type',
         'date', 'default-style', 'derived-from', 'etag', 'expires', 'ext-cache', 'instance-delegate',
-        'instance-key', 'imagetoolbar', 'last-modified', 'link', 'location', 'mime-version', 
-        'page-enter', 'page-exit', 'pics-label', 'pragma', 'public', 'range', 'refresh', 'server', 
-        'set-cookie', 'site-enter', 'site-exit', 'title', 'transfer-encoding', 'uri', 'vary', 'via', 
+        'instance-key', 'imagetoolbar', 'last-modified', 'link', 'location', 'mime-version',
+        'page-enter', 'page-exit', 'pics-label', 'pragma', 'public', 'range', 'refresh', 'server',
+        'set-cookie', 'site-enter', 'site-exit', 'title', 'transfer-encoding', 'uri', 'vary', 'via',
         'warning', 'window-target', 'x-ua-compatible'
-    ]; 
-    
+    ];
+
     protected $_title;
     protected $_titlePrefix;
     protected $_titleSuffix;
     protected $_baseHref;
-    
+
     protected $_meta = [];
     protected $_data = [];
-    
-    protected $_css;
+
+    protected $_css = [];
+    protected $_cssMaxWeight = 0;
     protected $_styles;
-    
-    protected $_headJs;
-    protected $_footJs;
+
+    protected $_js = [];
+    protected $_jsMaxWeight = 0;
+
     protected $_headScripts = [];
     protected $_footScripts = [];
-    
+
     protected $_links = [];
-    
+
     public $htmlTag;
     public $bodyTag;
-    
+
     protected $_shouldRenderBase = true;
-    
+
     public function __construct($type, arch\IContext $context) {
         parent::__construct($type, $context);
-        
+
         $this->htmlTag = new aura\html\Tag('html', ['lang' => 'en']);
         $this->bodyTag = new aura\html\Tag('body');
-        
+
         //$this->_baseHref = $this->uri->__invoke('/');
 
         $this
@@ -78,23 +80,23 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     public function getBodyTag() {
         return $this->bodyTag;
     }
-    
-    
+
+
 // Title
     public function setTitle($title) {
         $this->_title = (string)$title;
-        
+
         if(empty($this->_title)) {
             $this->_title = null;
         }
-        
+
         return $this;
     }
 
     public function getTitle() {
         return $this->_title;
     }
-    
+
     public function hasTitle() {
         return $this->_title !== null;
     }
@@ -111,16 +113,16 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     public function hasTitlePrefix() {
         return $this->_titlePrefix !== null;
     }
-    
+
     public function setTitleSuffix($suffix) {
         $this->_titleSuffix = $suffix;
         return $this;
     }
-    
+
     public function getTitleSuffix() {
         return $this->_titleSuffix;
     }
-    
+
     public function hasTitleSuffix() {
         return $this->_titleSuffix !== null;
     }
@@ -132,19 +134,19 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     public function getFullTitle() {
         return $this->_titlePrefix.$this->_title.$this->_titleSuffix;
     }
-    
-    
+
+
 // Base
     public function setBaseHref($url) {
         $this->_baseHref = $this->uri->__invoke($url);
         return $this;
     }
-    
+
     public function getBaseHref() {
         return $this->_baseHref;
     }
-    
-    
+
+
 // Meta
     public function setMeta($key, $value) {
         if($value === null) {
@@ -152,22 +154,22 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         } else {
             $this->_meta[$key] = (string)$value;
         }
-        
+
         return $this;
     }
-    
+
     public function getMeta($key) {
         if(isset($this->_meta[$key])) {
             return $this->_meta[$key];
         }
-        
+
         return null;
     }
-    
+
     public function hasMeta($key) {
         return isset($this->_meta[$key]);
     }
-    
+
     public function removeMeta($key) {
         unset($this->_meta[$key]);
         return $this;
@@ -181,98 +183,98 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         } else {
             $this->_data[$key] = (string)$value;
         }
-        
+
         return $this;
     }
-    
+
     public function getData($key) {
         if(isset($this->_data[$key])) {
             return $this->_data[$key];
         }
-        
+
         return null;
     }
-    
+
     public function hasData($key) {
         return isset($this->_data[$key]);
     }
-    
+
     public function removeData($key) {
         unset($this->_data[$key]);
         return $this;
     }
-    
-    
+
+
 // Keywords
     public function setKeywords($keywords) {
         $this->removeMeta('keywords');
         return $this->addKeywords($keywords);
     }
-    
+
     public function addKeywords($keywords) {
         if(!is_array($keywords)) {
             $keywords = explode(' ', $keywords);
         }
-        
+
         if(empty($keywords)) {
             return $this;
         }
-        
+
         if($this->hasMeta('keywords')) {
             $current = explode(' ', $this->getMeta('keywords'));
         } else {
             $current = [];
         }
-        
+
         return $this->setMeta('keywords', implode(' ', array_unique(array_merge($current, $keywords))));
     }
-     
+
     public function getKeywords() {
         return $this->getMeta('keywords');
     }
-    
+
     public function hasKeywords() {
         return $this->hasMeta('keywords');
     }
-    
+
     public function hasKeyword($keyword) {
         if(!$this->hasMeta('keywords')) {
             return false;
         }
-        
+
         return in_array($keyword, explode(' ', $this->getMeta('keywords')));
     }
-    
+
     public function removeKeyword($keyword) {
         if(!$this->hasMeta('keywords')) {
             return $this;
         }
-        
+
         $keywords = array_flip(explode(' ', $this->getMeta('keywords')));
         unset($keywords[$keyword]);
         return $this->setMeta('keywords', implode(' ', array_keys($keywords)));
     }
-    
+
     public function removeKeywords() {
         return $this->removeMeta('keywords');
     }
-    
-    
+
+
 // Robots
     public function canIndex($flag=null, $bot='robots') {
         if(is_string($flag)) {
             $bot = $flag;
             $flag = null;
         }
-        
+
         if($this->hasMeta($bot)) {
             $current = explode(',', $this->getMeta($bot));
         } else {
             $current = [];
         }
-        
+
         $current = array_flip($current);
-        
+
         if($flag !== null) {
             if(!(bool)$flag) {
                 unset($current['index']);
@@ -281,27 +283,27 @@ class Html extends Base implements IHtmlView, core\IDumpable {
                 unset($current['noindex']);
                 $current['index'] = null;
             }
-            
+
             return $this->setMeta($bot, implode(',', array_keys($current)));
         }
-        
+
         return !array_key_exists('noindex', $current);
     }
-    
+
     public function canFollow($flag=null, $bot='robots') {
         if(is_string($flag)) {
             $bot = $flag;
             $flag = null;
         }
-        
+
         if($this->hasMeta($bot)) {
             $current = explode(',', $this->getMeta($bot));
         } else {
             $current = [];
         }
-        
+
         $current = array_flip($current);
-        
+
         if($flag !== null) {
             if(!(bool)$flag) {
                 unset($current['follow']);
@@ -310,25 +312,25 @@ class Html extends Base implements IHtmlView, core\IDumpable {
                 unset($current['nofollow']);
                 $current['follow'] = null;
             }
-            
+
             return $this->setMeta($bot, implode(',', array_keys($current)));
         }
-        
+
         return !array_key_exists('nofollow', $current);
     }
-    
+
     public function setRobots($value) {
         return $this->setMeta('robots', $value);
     }
-    
+
     public function getRobots() {
         return $this->getMeta('robots');
     }
-    
+
     public function hasRobots() {
         return $this->hasMeta('robots');
     }
-    
+
     public function removeRobots() {
         return $this->removeMeta('robots');
     }
@@ -338,7 +340,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     public function addLink($id, $rel, $url, array $attr=null) {
         $attributes = [
             'rel' => $rel,
-            'href' => $this->_normalizeLinkUrl($url)
+            'href' => $this->uri($url)
         ];
 
         if($attr) {
@@ -370,56 +372,61 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     }
 
 
-    
+
 // Favicon
     public function setFaviconHref($url) {
         if(!isset($this->_links['favicon'])) {
             $this->addLink('favicon', 'shortcut icon', $url);
         } else {
-            $this->_links['favicon']->setAttribute('href', $this->_normalizeLinkUrl($url));
+            $this->_links['favicon']->setAttribute('href', $this->uri($url));
         }
 
         return $this;
     }
-    
+
     public function getFaviconHref() {
         if(isset($this->_links['favicon'])) {
             return $this->_links['favicon']->getAttribute('href');
         }
     }
-    
+
     public function linkFavicon($url) {
         return $this->addLink('favicon', 'shortcut icon', $url);
     }
-    
-    
-    
+
+
+
 // CSS
     public function linkCss($uri, $weight=null, array $attributes=null, $condition=null) {
-        if(!$this->_css) {
-            $this->_css = new \SplPriorityQueue();
-            $this->_css->maxWeight = 1;
-        }
+        $url = $this->uri($uri);
 
         if($weight === null) {
-            $weight = ++$this->_css->maxWeight;
-        } else if($weight > $this->_css->maxWeight) {
-            $this->_css->maxWeight = $weight;
+            $weight = ++$this->_cssMaxWeight;
+        } else if($weight > $this->_cssMaxWeight) {
+            $this->_cssMaxWeight = $weight;
         }
 
-        if(!$attributes) {
-            $attributes = [];
+        $entry = [
+            'weight' => $weight,
+            'url' => $url
+        ];
+
+        if($attributes !== null) {
+            $entry['attributes'] = $attributes;
         }
 
-        $attributes['href'] = $this->_normalizeLinkUrl($uri);
-        $attributes['rel'] = 'stylesheet';
-        $attributes['type'] = 'text/css';
-        
-        $this->_css->insert([
-            'tag' => new aura\html\Tag('link', $attributes),
-            'condition' => $condition
-        ], $weight);
-        
+        if($condition !== null) {
+            $entry['condition'] = $condition;
+        }
+
+        $url = (string)$url;
+
+        if(isset($this->_css[$url])) {
+            $this->_css[$url] = array_merge($this->_css[$url], $entry);
+        } else {
+            $this->_css[$url] = $entry;
+        }
+
         return $this;
     }
 
@@ -428,195 +435,186 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     }
 
     public function getCss() {
-        $output = [];
-        
-        if($this->_css) {
-            foreach(clone $this->_css as $tag) {
-                $output[] = $tag;
-            }
-        }
-        
-        return $output;
+        return $this->_css;
     }
-    
+
     public function clearCss() {
-        $this->_css = null;
+        $this->_css = [];
         return $this;
     }
-    
-    
+
+
 // Styles
     public function setStyles($styles) {
         $this->getStyles()->clear()->import($styles);
         return $this;
     }
-    
+
     public function addStyles($styles) {
         $this->getStyles()->import($styles);
         return $this;
     }
-    
+
     public function getStyles() {
         if(!$this->_styles) {
             $this->_styles = new aura\html\StyleBlock();
         }
-        
+
         return $this->_styles;
     }
-    
+
     public function hasStyles() {
         return $this->_styles !== null && !$this->_styles->isEmpty();
     }
-    
+
     public function removeStyles() {
         $this->_styles = null;
         return $this;
     }
-    
+
     public function setStyle($key, $value) {
         $this->getStyles()->set($key, $value);
         return $this;
     }
-    
+
     public function getStyle($key, $default=null) {
         if(!$this->_styles) {
             return $default;
         }
-        
+
         return $this->_styles->get($key, $default);
     }
-    
+
     public function removeStyle($key) {
         if($this->_styles) {
             $this->_styles->remove($key);
         }
-        
+
         return $this;
     }
-    
+
     public function hasStyle($key) {
         if(!$this->_styles) {
             return false;
         }
-        
+
         return $this->_styles->has($key);
     }
-    
-    
-    
+
+
+
 // Js
-    public function linkJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null) {
-        return $this->linkHeadJs($uri, $weight, $attributes, $fallbackScript, $condition);
+    public function linkJs($uri, $weight=null, array $attributes=null, $condition=null) {
+        return $this->_linkJs('head', $uri, $weight, $attributes, $condition);
     }
 
-    public function linkConditionalJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null) {
-        return $this->linkHeadJs($uri, $weight, $attributes, $fallbackScript, $condition);
+    public function linkConditionalJs($condition, $uri, $weight=null, array $attributes=null) {
+        return $this->_linkJs('head', $uri, $weight, $attributes, $condition);
     }
 
-    public function linkHeadJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null) {
-        if(!$this->_headJs) {
-            $this->_headJs = new \SplPriorityQueue();
-            $this->_headJs->maxWeight = 1;
-        }
+    public function linkFootJs($uri, $weight=null, array $attributes=null, $condition=null) {
+        return $this->_linkJs('foot', $uri, $weight, $attributes, $condition);
+    }
+
+    public function linkConditionalFootJs($condition, $uri, $weight=null, array $attributes=null) {
+        return $this->_linkJs('foot', $uri, $weight, $attributes, $condition);
+    }
+
+
+    protected function _linkJs($location, $uri, $weight=null, array $attributes=null, $condition=null) {
+        $url = $this->uri($uri);
 
         if($weight === null) {
-            $weight = ++$this->_headJs->maxWeight;
-        } else if($weight > $this->_headJs->maxWeight) {
-            $this->_headJs->maxWeight = $weight;
+            $weight = ++$this->_jsMaxWeight;
+        } else if($weight > $this->_jsMaxWeight) {
+            $this->_jsMaxWeight = $weight;
         }
 
-        $this->_headJs->insert($this->_createJsEntry($uri, $attributes, $fallbackScript, $condition), $weight);
-
-        return $this;
-    }
-
-    public function linkConditionalHeadJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null) {
-        return $this->linkHeadJs($uri, $weight, $attributes, $fallbackScript, $condition);
-    }
-
-    public function linkFootJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null) {
-        if(!$this->_footJs) {
-            $this->_footJs = new \SplPriorityQueue();
-            $this->_footJs->maxWeight = 1;
-        }
-
-        if($weight === null) {
-            $weight = ++$this->_footJs->maxWeight;
-        } else if($weight > $this->_footJs->maxWeight) {
-            $this->_footJs->maxWeight = $weight;
-        }
-
-        $this->_footJs->insert($this->_createJsEntry($uri, $attributes, $fallbackScript, $condition), $weight);
-        
-        return $this;
-    }
-
-    public function linkConditionalFootJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null) {
-        return $this->linkFootJs($uri, $weight, $attributes, $fallbackScript, $condition);
-    }
-    
-    protected function _createJsEntry($uri, array $attributes=null, $fallbackScript, $condition) {
-        if(!$attributes) {
-            $attributes = [];
-        }
-
-        $attributes['src'] = $this->_normalizeLinkUrl($uri);
-        $attributes['type'] = 'text/javascript';
-
-        return [
-            'tag' => new aura\html\Tag('script', $attributes),
-            'condition' => $condition,
-            'fallback' => $fallbackScript
+        $entry = [
+            'weight' => $weight,
+            'url' => $url,
+            'location' => $location
         ];
+
+        if($attributes !== null) {
+            $entry['attributes'] = $attributes;
+        }
+
+        if($condition !== null) {
+            $entry['condition'] = $condition;
+        }
+
+        $url = (string)$url;
+
+        if(isset($this->_js[$url])) {
+            $this->_js[$url] = array_merge($this->_js[$url], $entry);
+        } else {
+            $this->_js[$url] = $entry;
+        }
+
+        return $this;
     }
-    
+
+
     public function getJs() {
-        return array_merge(
-            $this->getHeadJs(),
-            $this->getFootJs()
-        );
+        return $this->_js;
     }
-    
+
     public function getHeadJs() {
         $output = [];
-        
-        if($this->_headJs) {
-            foreach(clone $this->_headJs as $tag) {
-                $output[] = $tag;
+
+        foreach($this->_js as $url => $entry) {
+            if($entry['location'] != 'head') {
+                continue;
             }
+
+            $output[$url] = $entry;
         }
-        
+
         return $output;
     }
 
     public function getFootJs() {
         $output = [];
-        
-        if($this->_footJs) {
-            foreach(clone $this->_footJs as $tag) {
-                $output[] = $tag;
+
+        foreach($this->_js as $url => $entry) {
+            if($entry['location'] != 'foot') {
+                continue;
             }
+
+            $output[$url] = $entry;
         }
-        
+
         return $output;
     }
 
 
     public function clearJs() {
-        return $this->clearHeadJs()->clearFootJs();
+        $this->_js = [];
+        return $this;
     }
 
     public function clearHeadJs() {
-        $this->_headJs = null;
+        foreach($this->_js as $url => $entry) {
+            if($entry['location'] == 'head') {
+                unset($this->_js[$url]);
+            }
+        }
+
         return $this;
     }
-    
+
     public function clearFootJs() {
-        $this->_footJs = null;
+        foreach($this->_js as $url => $entry) {
+            if($entry['location'] == 'foot') {
+                unset($this->_js[$url]);
+            }
+        }
+
         return $this;
     }
-    
-    
+
+
 // Scripts
     public function addScript($id, $script, $condition=null) {
         return $this->addHeadScript($id, $script, $condition);
@@ -639,7 +637,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
         return $this;
     }
-    
+
     public function removeScript($id) {
         return $this->removeHeadScript($id)->removeFootScript($id);
     }
@@ -667,7 +665,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         $this->_footScripts = [];
         return $this;
     }
-    
+
 // Content
     public function getContentType() {
         return 'text/html; charset=utf-8';
@@ -676,7 +674,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     protected function _normalizeSlotContent($content) {
         return $this->html->string($content);
     }
-    
+
 // Notification
     public function toNotification($to=null, $from=null) {
         $content = $this->render();
@@ -697,7 +695,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
             $this->_shouldRenderBase = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_shouldRenderBase;
     }
 
@@ -714,7 +712,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
         parent::_beforeRender();
     }
-    
+
     public function render() {
         $output = parent::render();
 
@@ -723,14 +721,13 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         }
 
         if($this->_shouldRenderBase) {
-            $output = 
+            $output =
                 '<!DOCTYPE html>'."\n".
                 $this->htmlTag->open()."\n".
                 $this->_renderHead()."\n".
                 $this->bodyTag->open()."\n".
                 $output."\n".
-                $this->_renderJsList($this->_footJs).
-                $this->_renderScriptList($this->_footScripts).
+                $this->_renderFoot().
                 $this->bodyTag->close()."\n".
                 $this->htmlTag->close();
         }
@@ -740,9 +737,8 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
     protected function _renderHead() {
         $output = '<head>'."\n";
-        
         $meta = $this->_meta;
-        
+
         // Priority meta
         foreach($meta as $key => $value) {
             if(in_array(strtolower($key), self::$_priorityMeta)) {
@@ -750,15 +746,15 @@ class Html extends Base implements IHtmlView, core\IDumpable {
                 unset($meta[$key]);
             }
         }
-        
+
         // Title
         $output .= '    <title>'.$this->esc($this->getFullTitle()).'</title>'."\n";
-        
+
         // Base
         if($this->_baseHref !== null) {
-            $output .= '    <base href="'.$this->esc($this->_baseHref).'" />'."\n"; 
+            $output .= '    <base href="'.$this->esc($this->_baseHref).'" />'."\n";
         }
-        
+
         // Links
         $fav = null;
 
@@ -779,7 +775,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         foreach($meta as $key => $value) {
             if($value !== null) {
                 $output .= '    '.$this->_metaToString($key, $value)."\n";
-            }    
+            }
         }
 
         if(!empty($this->_data)) {
@@ -791,59 +787,62 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
             $output .= '    <meta id="custom-view-data" '.implode(' ', $attr).' />'."\n";
         }
-        
+
         // Css
-        $output .= $this->_renderCssList($this->_css);
+        uasort($this->_css, [$this, '_sortEntries']);
+        $output .= $this->_renderCssList();
 
         // Style
         if($this->_styles) {
             $output .= '    '.str_replace("\n", "\n    ", $this->_styles->toString())."\n";
         }
-        
+
         // Js
-        $output .= $this->_renderJsList($this->_headJs);
+        uasort($this->_js, [$this, '_sortEntries']);
+        $output .= $this->_renderJsList('head');
 
         // Scripts
         $output .= $this->_renderScriptList($this->_headScripts);
-        
+
         $output .= '</head>'."\n";
         return $output;
     }
 
-    protected function _renderCssList($list) {
-        if(!$list) {
-            return null;
-        }
-
-        $output = '';
-
-        foreach(clone $list as $entry) {
-            $line = '    '.$entry['tag']->__toString()."\n";
-
-            if($entry['condition']) {
-                $line = $this->_addCondition($line, $entry['condition']);
-            }
-
-            $output = $line.$output;
-        }
-
-        return $output;
+    protected function _renderFoot() {
+        return $this->_renderJsList('foot').
+                $this->_renderScriptList($this->_footScripts);
     }
 
+    protected function _sortEntries($a, $b) {
+        $a = $a['weight'];
+        $b = $b['weight'];
 
-    protected function _renderJsList($list) {
-        if(!$list) {
+        if($a == $b) {
+            return 0;
+        }
+
+        return ($a < $b) ? -1 : 1;
+    }
+
+    protected function _renderCssList() {
+        if(empty($this->_css)) {
             return null;
         }
 
         $output = '';
 
-        foreach(clone $list as $entry) {
-            $line = '    '.$entry['tag']->open().$entry['tag']->close()."\n";
+        foreach($this->_css as $entry) {
+            $attributes = array_merge(
+                isset($entry['attributes']) ? $entry['attributes'] : [],
+                [
+                    'href' => $entry['url'],
+                    'rel' => 'stylesheet',
+                    'type' => 'text/css'
+                ]
+            );
 
-            if(isset($entry['fallback'])) {
-                $line .= $this->_renderScriptList([['script' => $entry['fallback']]]);
-            }
+            $tag = new aura\html\Tag('link', $attributes);
+            $line = '    '.$tag->__toString()."\n";
 
             if(isset($entry['condition'])) {
                 $line = $this->_addCondition($line, $entry['condition']);
@@ -855,11 +854,45 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         return $output;
     }
 
+
+    protected function _renderJsList($location) {
+        if(empty($this->_js)) {
+            return null;
+        }
+
+        $output = '';
+
+        foreach($this->_js as $url => $entry) {
+            if($entry['location'] != $location) {
+                continue;
+            }
+
+            $attributes = array_merge(
+                isset($entry['attributes']) ? $entry['attributes'] : [],
+                [
+                    'src' => $entry['url'],
+                    'type' => 'text/javascript'
+                ]
+            );
+
+            $tag = new aura\html\Tag('script', $attributes);
+            $line = '    '.$tag->open().$tag->close()."\n";
+
+            if(isset($entry['condition'])) {
+                $line = $this->_addCondition($line, $entry['condition']);
+            }
+
+            $output .= $line;
+        }
+
+        return $output;
+    }
+
     protected function _renderScriptList(array $scripts) {
         if(empty($scripts)) {
             return null;
         }
-        
+
         $output = '';
 
         foreach($scripts as $entry) {
@@ -891,9 +924,6 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         }
     }
 
-    protected function _normalizeLinkUrl($url) {
-        return $this->uri->__invoke($url);
-    }
 
 
 // Dump
@@ -925,7 +955,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         $output['meta'] = $this->_meta;
         $output['data'] = $this->_data;
 
-        if($this->_css) {
+        if(!empty($this->_css)) {
             $output['css'] = $this->_css;
         }
 
@@ -933,12 +963,8 @@ class Html extends Base implements IHtmlView, core\IDumpable {
             $output['styles'] = $this->_styles;
         }
 
-        if($this->_headJs) {
-            $output['headJs'] = $this->_headJs;
-        }
-
-        if($this->_footJs) {
-            $output['footJs'] = $this->_footJs;
+        if(!empty($this->_js)) {
+            $output['js'] = $this->_js;
         }
 
         if($this->_headScripts) {

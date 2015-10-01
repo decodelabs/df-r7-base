@@ -14,19 +14,14 @@ use df\fire;
 
 class Markdown extends Base {
 
-    private static $_mdeLinked = false;
-
     protected function setDefaultValues() {
         $this->values->body = $this->_block->getBody();
     }
 
     public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
-        if(!self::$_mdeLinked) {
-            $this->view
-                ->linkCss('asset://lib/simplemde/simplemde.min.css')
-                ->linkJs('asset://lib/simplemde/simplemde.min.js');
-            self::$_mdeLinked = true;
-        }
+        $this->view
+            ->linkCss('asset://lib/simplemde/simplemde.min.css')
+            ->linkJs('asset://lib/simplemde/simplemde.min.js');
 
         $fieldArea->push(
             $ta = $this->html->textarea(
