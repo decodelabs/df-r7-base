@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\fire;
 use df\aura;
-    
+
 class Markdown extends Base {
 
     protected static $_outputTypes = ['Html'];
@@ -20,7 +20,7 @@ class Markdown extends Base {
     public function getFormat() {
         return 'markup';
     }
-    
+
     public function setBody($body) {
         $this->_body = trim($body);
         return $this;
@@ -62,6 +62,7 @@ class Markdown extends Base {
 
     public function render() {
         $view = $this->getView();
+
         return $view->html('div.block', $view->html->markdown($this->_body))
             ->setDataAttribute('type', $this->getName());
     }
