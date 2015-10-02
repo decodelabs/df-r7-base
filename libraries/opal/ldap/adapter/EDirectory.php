@@ -8,13 +8,14 @@ namespace df\opal\ldap\adapter;
 use df;
 use df\core;
 use df\opal;
+use df\flex;
 
 class EDirectory extends opal\ldap\Adapter {
-    
+
     const BIND_REQUIRES_DN = true;
     const UID_ATTRIBUTE = 'uid';
-    
+
     protected function _flattenDn(opal\ldap\IDn $dn) {
-        return $dn->implode(',', core\string\ICase::LOWER);
+        return $dn->implode(',', flex\ICase::LOWER);
     }
 }

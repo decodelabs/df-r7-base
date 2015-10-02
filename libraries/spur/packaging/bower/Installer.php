@@ -11,7 +11,7 @@ use df\spur;
 use df\flex;
 
 class Installer implements IInstaller {
-    
+
     protected $_installDir;
     protected $_cachePath;
     protected $_lockFile;
@@ -138,7 +138,7 @@ class Installer implements IInstaller {
 
             if($installed = $this->getPackageInfo($depPackage->name)) {
                 try {
-                    $range = core\string\VersionRange::factory($depPackage->version);
+                    $range = flex\VersionRange::factory($depPackage->version);
                     if(!$range->contains($installed->version) && $installed->installName == $depPackage->installName) {
                         throw new RuntimeException(
                             'Unable to satisfy '.$package->name.' dependencies - version conflict for '.$package->name
@@ -146,7 +146,7 @@ class Installer implements IInstaller {
                     } else {
                         $depPackage = $installed;
                     }
-                } catch(core\string\RuntimeException $e) {
+                } catch(flex\RuntimeException $e) {
                     // never mind
                 }
             }
@@ -278,7 +278,7 @@ class Installer implements IInstaller {
 
         if(preg_match('/^([^\/\@#\:]+)\/([^\/\@#\:]+)$/', $package->source)) {
             $package->source = 'git://github.com/'.$package->source.'.git';
-        } 
+        }
 
 
         // Git
@@ -347,9 +347,9 @@ class Installer implements IInstaller {
             }
 
             try {
-                $package->version = core\string\VersionRange::factory($package->source);
+                $package->version = flex\VersionRange::factory($package->source);
                 $package->source = $package->name;
-            } catch(core\string\IException $e) {
+            } catch(flex\IException $e) {
                 $package->name = $package->source;
             }
 
@@ -443,7 +443,7 @@ class Installer implements IInstaller {
         $this->_filterFiles($destination);
 
         flex\json\Codec::encodeFile(
-            $destination.'/.bower.json', 
+            $destination.'/.bower.json',
             [
                 'name' => $package->name,
                 'url' => $package->url,
@@ -470,9 +470,9 @@ class Installer implements IInstaller {
         }
 
         $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(
-            $destination, 
-            \FilesystemIterator::KEY_AS_PATHNAME | 
-            \FilesystemIterator::CURRENT_AS_SELF | 
+            $destination,
+            \FilesystemIterator::KEY_AS_PATHNAME |
+            \FilesystemIterator::CURRENT_AS_SELF |
             \FilesystemIterator::SKIP_DOTS
         ), \RecursiveIteratorIterator::SELF_FIRST);
 
@@ -525,7 +525,7 @@ class Installer implements IInstaller {
                 }
             }
         }
-        
+
         return false;
     }
 }

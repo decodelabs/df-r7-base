@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,8 @@ namespace df\flow\mime;
 use df;
 use df\core;
 use df\flow;
-    
+use df\flex;
+
 class ContentPart implements IContentPart, core\IDumpable {
 
     use core\TStringProvider;
@@ -24,30 +25,30 @@ class ContentPart implements IContentPart, core\IDumpable {
         }
 
         if($headers === null || !$this->_headers->has('content-transfer-encoding')) {
-            $this->_headers->set('content-transfer-encoding', core\string\IEncoding::A7BIT);
+            $this->_headers->set('content-transfer-encoding', flex\IEncoding::A7BIT);
         }
 
         if($decodeContent) {
             $encoding = $this->_headers->get('content-transfer-encoding');
-            
+
             switch($encoding) {
-                case core\string\IEncoding::A7BIT:
-                case core\string\IEncoding::A8BIT:
+                case flex\IEncoding::A7BIT:
+                case flex\IEncoding::A8BIT:
                     $content = $this->_unchunk($content, IPart::LINE_LENGTH, IPart::LINE_END);
                     break;
 
-                case core\string\IEncoding::QP:
+                case flex\IEncoding::QP:
                     $content = quoted_printable_decode($content);
                     break;
 
-                case core\string\IEncoding::BASE64:
+                case flex\IEncoding::BASE64:
                     $content = base64_decode($this->_unchunk($content, IPart::LINE_LENGTH, IPart::LINE_END));
                     break;
 
-                case core\string\IEncoding::BINARY:
+                case flex\IEncoding::BINARY:
                     break;
-                    
-                default: 
+
+                default:
                     throw new InvalidArgumentException(
                         'Invalid encoding type: '.$encoding
                     );
@@ -107,14 +108,14 @@ class ContentPart implements IContentPart, core\IDumpable {
 
     public function setEncoding($encoding) {
         switch($encoding) {
-            case core\string\IEncoding::A8BIT:
-            case core\string\IEncoding::A7BIT:
-            case core\string\IEncoding::QP:
-            case core\string\IEncoding::BASE64:
-            case core\string\IEncoding::BINARY:
+            case flex\IEncoding::A8BIT:
+            case flex\IEncoding::A7BIT:
+            case flex\IEncoding::QP:
+            case flex\IEncoding::BASE64:
+            case flex\IEncoding::BINARY:
                 break;
-                
-            default: 
+
+            default:
                 throw new InvalidArgumentException(
                     'Invalid encoding type: '.$encoding
                 );
@@ -181,13 +182,13 @@ class ContentPart implements IContentPart, core\IDumpable {
     public function getDescription() {
         return $this->_headers->get('content-description');
     }
-    
+
 
     public function setContent($content) {
         if(is_resource($content)) {
             throw new RuntimeException(
                 'Resource streams are not currently supported in mime messages'
-            );    
+            );
         }
 
         $this->_content = $content;
@@ -210,17 +211,17 @@ class ContentPart implements IContentPart, core\IDumpable {
         $content = $this->getContentString();
 
         switch($this->getEncoding()) {
-            case core\string\IEncoding::A8BIT:
-            case core\string\IEncoding::A7BIT:
+            case flex\IEncoding::A8BIT:
+            case flex\IEncoding::A7BIT:
                 return wordwrap($content, IPart::LINE_LENGTH, IPart::LINE_END, 1);
 
-            case core\string\IEncoding::QP:
+            case flex\IEncoding::QP:
                 return quoted_printable_encode($content);
 
-            case core\string\IEncoding::BASE64:
+            case flex\IEncoding::BASE64:
                 return rtrim(chunk_split(base64_encode($content), IPart::LINE_LENGTH, IPart::LINE_END));
 
-            case core\string\IEncoding::BINARY:
+            case flex\IEncoding::BINARY:
             default:
                 return $content;
         }

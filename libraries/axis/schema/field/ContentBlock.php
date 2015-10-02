@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,8 @@ use df\core;
 use df\axis;
 use df\fire;
 use df\opal;
-    
+use df\flex;
+
 class ContentBlock extends Base {
 
     protected $_category;
@@ -58,13 +59,13 @@ class ContentBlock extends Base {
             if(empty($value)) {
                 $value = null;
             }
-            
+
             if($value !== null) {
                 return fire\block\Base::fromXmlString($value);
             }
         });
     }
-    
+
     public function deflateValue($value) {
         if($value instanceof fire\block\IBlock) {
             return $value->toXmlString(true);
@@ -86,7 +87,7 @@ class ContentBlock extends Base {
             'Content block value appears to be invalid'
         );
     }
-    
+
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($value === null) {
             if($this->isNullable()) {
@@ -97,7 +98,7 @@ class ContentBlock extends Base {
                 'Content block value cannot be null'
             );
         }
-        
+
         if(!$value instanceof fire\block\IBlock) {
             try {
                 $value = fire\block\Base::fromXml($value);
@@ -115,7 +116,7 @@ class ContentBlock extends Base {
 
         $value1 = $this->_extractFromLazyLoader($value1);
         $value2 = $this->_extractFromLazyLoader($value2);
-        
+
         if(!$value1 instanceof fire\block\IBlock
         || !$value2 instanceof fire\block\IBlock) {
             return false;
@@ -125,8 +126,8 @@ class ContentBlock extends Base {
             return false;
         }
 
-        return core\string\Manipulator::compare(
-            $value1->toXmlString(true), 
+        return flex\Text::compare(
+            $value1->toXmlString(true),
             $value2->toXmlString(true)
         );
     }

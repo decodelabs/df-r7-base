@@ -13,17 +13,17 @@ use df\opal;
 use df\flex;
 
 class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
-    
+
     use core\TSharedHelper;
     use opal\query\TQuery_EntryPoint;
-    
+
     protected $_clusterId;
-    
+
 // Validate
     public function newValidator() {
         return new core\validate\Handler();
     }
-    
+
     public function fetchForAction($source, $primary, $action=null, $chain=null) {
         $output = $this->_queryForAction($this->fetch()->from($source), $primary, $action, $chain);
         $this->_checkRecordAccess($output, $action);
@@ -66,7 +66,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
 
     public function _queryForAction(opal\query\IReadQuery $query, &$primary, &$action, $chain=null, $throw=true) {
         $name = $query->getSource()->getDisplayName();
-        
+
         if($primary === null) {
             if($throw) {
                 $this->context->throwError(404, 'Item not found - '.$name.'#NULL');
@@ -193,7 +193,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         if($actionName === null) {
             $actionName = 'access';
         }
-        
+
         $sourceManager = new opal\query\SourceManager();
         $source = $sourceManager->newSource($source, null);
         $adapter = $source->getAdapter();
@@ -223,8 +223,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         return $this->_clusterId == $offset;
     }
 
-    
-    
+
+
 // Model
     public function __get($member) {
         return $this->getModel($member);
@@ -233,7 +233,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     public function getModel($name, $clusterId=null) {
         return axis\Model::factory($name, $this->_normalizeClusterId($clusterId));
     }
-    
+
     public function getUnit($unitId, $clusterId=null) {
         return axis\Model::loadUnitFromId($unitId, $clusterId);
     }
@@ -285,7 +285,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
                 $output = $output->getPrimaryKeySet();
             }
 
-            if($output instanceof opal\record\IPrimaryKeySet 
+            if($output instanceof opal\record\IPrimaryKeySet
             && !$output->isNull()) {
                 $output = $output->getValue();
             }
@@ -298,7 +298,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         if(!isset($record[$field])) {
             return null;
         }
-        
+
         if($record instanceof opal\record\IRecord && !$allowFetch) {
             $output = $record->getRaw($field);
 
@@ -322,7 +322,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     }
 
     public function stringToBoolean($string) {
-        return core\string\Manipulator::stringToBoolean($string);
+        return flex\Text::stringToBoolean($string);
     }
 
 
@@ -357,7 +357,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         if($extraData === null) {
             $extraData = [];
         }
-        
+
         $data = $query->toArray();
 
         if($rowSanitizer) {
@@ -387,29 +387,29 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         if($salt === null) {
             $salt = $this->context->application->getPassKey();
         }
-        
-        return core\string\Util::passwordHash($message, $salt);
+
+        return core\crypt\Util::passwordHash($message, $salt);
     }
 
     public function hexHash($message, $salt=null) {
         return bin2hex($this->hash($message, $salt));
     }
-    
+
     public function encrypt($message, $password=null, $salt=null) {
         if($password === null) {
             $password = $this->context->application->getPassKey();
             $salt = $this->context->application->getUniquePrefix();
         }
-        
-        return core\string\Util::encrypt($message, $password, $salt);
+
+        return core\crypt\Util::encrypt($message, $password, $salt);
     }
-    
+
     public function decrypt($message, $password=null, $salt=null) {
         if($password === null) {
             $password = $this->context->application->getPassKey();
             $salt = $this->context->application->getUniquePrefix();
         }
-        
-        return core\string\Util::decrypt($message, $password, $salt);
+
+        return core\crypt\Util::decrypt($message, $password, $salt);
     }
 }

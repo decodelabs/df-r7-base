@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
 use df\flex;
-    
+
 abstract class Base implements IDaemon {
 
     use halo\event\TDispatcherProvider;
@@ -42,7 +42,7 @@ abstract class Base implements IDaemon {
         if($environmentMode === null) {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
-    
+
         if($user === null) {
             $user = core\Environment::getInstance()->getDaemonUser();
         }
@@ -60,10 +60,10 @@ abstract class Base implements IDaemon {
             } catch(InvalidArgumentException $e) {
                 continue;
             }
-            
+
             $output[$name] = $daemon;
         }
-        
+
         ksort($output);
         return $output;
     }
@@ -122,14 +122,14 @@ abstract class Base implements IDaemon {
         if($this->_isRunning || $this->_isStopping || $this->_isStopped) {
             throw new LogicException(
                 'Daemon '.$this->getName().' has already been run'
-            );  
+            );
         }
 
         gc_enable();
         $this->context = new core\SharedContext();
         $this->process = halo\process\Base::getCurrent();
 
-        $basePath = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.core\string\Manipulator::formatFileName($this->getName());
+        $basePath = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.flex\Text::formatFileName($this->getName());
         core\fs\Dir::create(dirname($basePath));
 
         $this->_startTime = time();
@@ -167,7 +167,7 @@ abstract class Base implements IDaemon {
 
         $this->getEventDispatcher();
         $this->process->setTitle(df\Launchpad::$application->getName().' - '.$this->getName());
-            
+
         $pidPath = $this->getPidFilePath();
 
         if($pidPath) {
@@ -239,7 +239,7 @@ abstract class Base implements IDaemon {
     protected function _setupDefaultEvents(halo\event\IDispatcher $dispatcher, $pauseEvents=false) {
         $dispatcher
             ->setCycleHandler(function() use($pauseEvents) {
-                if(!$this->_isRunning 
+                if(!$this->_isRunning
                 || ($pauseEvents && !$this->_isPaused)
                 || (!$pauseEvents && $this->_isPaused)
                 || $this->_isStopping
@@ -269,7 +269,7 @@ abstract class Base implements IDaemon {
     }
 
     public function getPidFilePath() {
-        return df\Launchpad::$application->getLocalStoragePath().'/daemons/'.core\string\Manipulator::formatFileName($this->getName()).'.pid';
+        return df\Launchpad::$application->getLocalStoragePath().'/daemons/'.flex\Text::formatFileName($this->getName()).'.pid';
     }
 
     protected function _setup() {}

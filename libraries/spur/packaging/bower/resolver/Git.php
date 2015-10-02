@@ -14,13 +14,13 @@ use df\flex;
 class Git implements spur\packaging\bower\IResolver {
 
     use spur\packaging\bower\TGitResolver;
-    
+
     const TAG_TIMEOUT = '5 hours';
 
     protected $_remote;
 
     public function __construct() {
-        
+
     }
 
     public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null) {
@@ -64,9 +64,9 @@ class Git implements spur\packaging\bower\IResolver {
 
         return $this->_findRequiredTag($tags, $package);
     }
-    
+
     protected function _fetchTags(spur\packaging\bower\IPackage $package, $cachePath) {
-        $path = dirname($cachePath).'/tags/git-'.core\string\Manipulator::formatFileName($package->url).'.json';
+        $path = dirname($cachePath).'/tags/git-'.flex\Text::formatFileName($package->url).'.json';
 
         if(!core\fs\File::isFileRecent($path, self::TAG_TIMEOUT)) {
             $tags = $this->_remote->getTags();
@@ -81,7 +81,7 @@ class Git implements spur\packaging\bower\IResolver {
             flex\json\Codec::encodeFile($path, $data);
             return $tags;
         }
-        
+
         $data = flex\json\Codec::decodeFileAsTree($path);
         $tags = [];
 

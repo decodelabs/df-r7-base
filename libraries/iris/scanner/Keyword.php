@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,8 @@ namespace df\iris\scanner;
 use df;
 use df\core;
 use df\iris;
-    
+use df\flex;
+
 class Keyword implements iris\IScanner, core\IDumpable {
 
     protected $_words = [];
@@ -94,7 +95,7 @@ class Keyword implements iris\IScanner, core\IDumpable {
     }
 
     public function check(iris\ILexer $lexer) {
-        return core\string\Util::isAlpha($lexer->char) || $lexer->char == '_';
+        return flex\Text::isAlpha($lexer->char) || $lexer->char == '_';
     }
 
     public function run(iris\ILexer $lexer) {

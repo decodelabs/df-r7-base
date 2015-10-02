@@ -10,49 +10,50 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\halo;
+use df\flex;
 
 class Base implements IView {
-    
+
     use core\TContextAware;
     use core\THelperProvider;
-    use core\string\THtmlStringEscapeHandler;
+    use flex\THtmlStringEscapeHandler;
     use core\TStringProvider;
     use core\TTranslator;
     use core\lang\TChainable;
     use TSlotContainer;
-    
+
     public $content;
     public $slots = [];
     protected $_slotCaptureKey = null;
-    
+
     public static function factory($type, arch\IContext $context) {
         $type = ucfirst($type);
         $class = 'df\\aura\\view\\'.$type;
-        
+
         if(!class_exists($class)) {
             $class = 'df\\aura\\view\\Generic';
         }
-        
+
         return new $class($type, $context);
     }
-    
+
     public function __construct($type, arch\IContext $context) {
         $this->_type = $type;
         $this->context = $context;
     }
-    
-    
+
+
 // Content
     public function getType() {
         return $this->_type;
     }
-    
+
     public function setContentProvider(IContentProvider $provider) {
         $this->content = $provider;
         $this->content->setRenderTarget($this);
         return $this;
     }
-    
+
     public function getContentProvider() {
         return $this->content;
     }
@@ -139,27 +140,27 @@ class Base implements IView {
         $this->setSlot($key, $value);
         return $this;
     }
-    
+
     public function offsetGet($key) {
         return $this->getSlot($key);
     }
-    
+
     public function offsetExists($key) {
         return $this->hasSlot($key);
     }
-    
+
     public function offsetUnset($key) {
         $this->removeSlot($key);
         return $this;
     }
 
-    
+
 
 // Render
     public function getView() {
         return $this;
     }
-    
+
     public function render() {
         $this->_beforeRender();
         $innerContent = null;
@@ -167,7 +168,7 @@ class Base implements IView {
         if($this->content) {
             $innerContent = $this->content->renderTo($this);
         }
-        
+
         $output = $innerContent = $this->_onContentRender($innerContent);
 
         if($this instanceof ILayoutView && $this->shouldUseLayout()) {
@@ -181,7 +182,7 @@ class Base implements IView {
 
         return $this->_afterRender($output);
     }
-    
+
     protected function _beforeRender() {
         if($this instanceof IThemedView) {
             $this->getTheme()->beforeViewRender($this);
@@ -212,7 +213,7 @@ class Base implements IView {
 
         return $content;
     }
-    
+
     private function _checkContentProvider() {
         if(!$this->content) {
             throw new RuntimeException(
@@ -221,14 +222,14 @@ class Base implements IView {
             );
         }
     }
-    
-    
+
+
 // Helpers
     protected function _loadHelper($name) {
         return $this->context->loadRootHelper($name, $this);
     }
-    
-    
+
+
     public function translate(array $args) {
         return $this->context->i18n->translate($args);
     }

@@ -10,68 +10,68 @@ use df\core;
 use df\user;
 use df\axis;
 use df\arch;
+use df\flex;
 use df\mesh;
 
 class Manager implements IManager, core\IDumpable {
-    
+
     use core\TManager;
-    
+
     const REGISTRY_PREFIX = 'manager://user';
     const USER_SESSION_BUCKET = 'user';
     const CLIENT_SESSION_KEY = 'Client';
-    
+
     public $session;
 
-    protected $_client;
     private $_accessLockCache = [];
-    
+
     protected function __construct() {
         $this->session = new user\session\Controller();
     }
-    
+
 // Client
     public function getClient() {
-        if(!$this->_client) {
+        if(!isset($this->client)) {
             $this->_loadClient();
         }
-        
-        return $this->_client;
+
+        return $this->client;
     }
 
     protected function _loadClient() {
         $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-        $this->_client = $bucket->get(self::CLIENT_SESSION_KEY);
+        $this->client = $bucket->get(self::CLIENT_SESSION_KEY);
         $regenKeyring = false;
         $isNew = false;
 
-        if($this->_client === null) {
-            $this->_client = Client::generateGuest($this);
+        if($this->client === null) {
+            $this->client = Client::generateGuest($this);
             $regenKeyring = true;
             $rethrowException = false;
             $isNew = true;
         } else {
             $cache = user\session\Cache::getInstance();
-            $regenKeyring = $cache->shouldRegenerateKeyring($this->_client->getKeyringTimestamp());
+            $regenKeyring = $cache->shouldRegenerateKeyring($this->client->getKeyringTimestamp());
             $rethrowException = false;
-            core\i18n\Manager::getInstance()->setLocale($this->_client->getLanguage().'_'.$this->_client->getCountry());
+            core\i18n\Manager::getInstance()->setLocale($this->client->getLanguage().'_'.$this->client->getCountry());
         }
 
-        if(!$this->_client->isLoggedIn() && $this->_recallIdentity($isNew)) {
+        if(!$this->client->isLoggedIn() && $this->_recallIdentity($isNew)) {
             $regenKeyring = false;
         }
 
         if($regenKeyring) {
             try {
-                if($this->_client->isLoggedIn()) {
+                if($this->client->isLoggedIn()) {
                     $this->refreshClientData();
                 } else {
-                    $this->_client->setKeyring(
-                        $this->getUserModel()->generateKeyring($this->_client)
+                    $this->client->setKeyring(
+                        $this->getUserModel()->generateKeyring($this->client)
                     );
 
-                    mesh\Manager::getInstance()->emitEvent($this->_client, 'initiate');
+                    mesh\Manager::getInstance()->emitEvent($this->client, 'initiate');
 
-                    $bucket->set(self::CLIENT_SESSION_KEY, $this->_client);
+                    $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
                 }
             } catch(\Exception $e) {
                 if($rethrowException) {
@@ -121,13 +121,13 @@ class Manager implements IManager, core\IDumpable {
     }
 
     public function clearClient() {
-        $this->_client = null;
+        unset($this->client);
         $this->_accessLockCache = [];
         return $this;
     }
 
     public function isA($signifier) {
-        return $this->getClient()->isA(func_get_args());
+        return $this->client->isA(func_get_args());
     }
 
     public function canAccess($lock, $action=null, $linkTo=false) {
@@ -135,7 +135,7 @@ class Manager implements IManager, core\IDumpable {
             $lock = $this->getAccessLock($lock);
         }
 
-        return $this->getClient()->canAccess($lock, $action, $linkTo);
+        return $this->client->canAccess($lock, $action, $linkTo);
     }
 
     public function getAccessLock($lock) {
@@ -177,7 +177,7 @@ class Manager implements IManager, core\IDumpable {
                 $lock = $lock->getActionLock($action);
             }
         }
-        
+
         $this->_accessLockCache[$lockId] = $lock;
 
         return $lock;
@@ -196,7 +196,7 @@ class Manager implements IManager, core\IDumpable {
 
         return $model;
     }
-    
+
     public function getSessionController() {
         return $this->session;
     }
@@ -217,57 +217,53 @@ class Manager implements IManager, core\IDumpable {
     }
 
     public function getClientOption($key, $default=null) {
-        $client = $this->getClient();
-        $this->_ensureClientOptions($client);
-        return $client->getOption($key, $default);
+        $this->_ensureClientOptions();
+        return $this->client->getOption($key, $default);
     }
 
     public function setClientOptions(array $options) {
-        $client = $this->getClient();
-        $this->_ensureClientOptions($client);
-        $this->getUserModel()->updateClientOptions($client->getId(), $options);
+        $this->_ensureClientOptions();
+        $this->getUserModel()->updateClientOptions($this->client->getId(), $options);
 
-        $options = array_merge($client->getOptions(), $options);
-        $client->importOptions($options);
+        $options = array_merge($this->client->getOptions(), $options);
+        $this->client->importOptions($options);
 
         $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-        $bucket->set(self::CLIENT_SESSION_KEY, $client);
-        
+        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
+
         return $this;
     }
 
     public function getClientOptions() {
-        $client = $this->getClient();
-        $this->_ensureClientOptions($client);
-        return $client->getOptions();
+        $this->_ensureClientOptions();
+        return $this->client->getOptions();
     }
 
-    private function _ensureClientOptions($client) {
-        if($client->hasOptions()) {
+    private function _ensureClientOptions() {
+        if($this->client->hasOptions()) {
             return;
         }
 
-        $options = $this->getUserModel()->fetchClientOptions($client->getId());
+        $options = $this->getUserModel()->fetchClientOptions($this->client->getId());
 
         if(!is_array($options)) {
             $options = [];
         }
 
-        $client->importOptions($options);
-        return $client;
+        $this->client->importOptions($options);
     }
 
-    
-    
-    
+
+
+
 // Authentication
     public function isLoggedIn() {
-        return $this->getClient()->isLoggedIn();
+        return $this->client->isLoggedIn();
     }
 
     public function loadAuthenticationAdapter($name) {
         $class = 'df\\user\\authentication\\adapter\\'.ucfirst($name);
-        
+
         if(!class_exists($class)) {
             throw new AuthenticationException(
                 'Authentication adapter '.$name.' could not be found'
@@ -279,7 +275,7 @@ class Manager implements IManager, core\IDumpable {
 
     public function authenticate(user\authentication\IRequest $request) {
         $timer = new core\time\Timer();
-        
+
         // Get adapter
         $name = $request->getAdapterName();
         $adapter = $this->loadAuthenticationAdapter($name);
@@ -291,16 +287,16 @@ class Manager implements IManager, core\IDumpable {
                 'Authentication adapter '.$name.' is not enabled'
             );
         }
-        
+
         $model = $this->getUserModel();
-        
+
         // Fetch user
         $result = new user\authentication\Result($name);
         $result->setIdentity($request->getIdentity());
-        
+
         // Authenticate
         $adapter->authenticate($request, $result);
-        
+
         if($result->isValid()) {
             $domainInfo = $result->getDomainInfo();
             $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
@@ -309,41 +305,40 @@ class Manager implements IManager, core\IDumpable {
             // Import user data
             $domainInfo->onAuthentication();
             $clientData = $domainInfo->getClientData();
-            
+
             if(!$clientData instanceof user\IClientDataObject) {
                 throw new AuthenticationException(
                     'Domain info could not provide a valid client data object'
                 );
             }
-            
-            $client = $this->getClient();
-            $client->import($clientData);
+
+            $this->client->import($clientData);
 
             // Set state
-            $client->setAuthenticationState(IState::CONFIRMED);
-            $client->setKeyring($model->generateKeyring($client));
-            
-            $clientData->onAuthentication($client);
-            
+            $this->client->setAuthenticationState(IState::CONFIRMED);
+            $this->client->setKeyring($model->generateKeyring($this->client));
+
+            $clientData->onAuthentication($this->client);
+
 
             // Remember me
             if($request->getAttribute('rememberMe')) {
-                $this->session->perpetuateRecall($client);
+                $this->session->perpetuateRecall($this->client);
             }
 
             // Options
-            $this->_ensureClientOptions($client);
+            $this->_ensureClientOptions();
 
             // Trigger hook
-            mesh\Manager::getInstance()->emitEvent($client, 'authenticate', [
-                'request' => $request, 
+            mesh\Manager::getInstance()->emitEvent($this->client, 'authenticate', [
+                'request' => $request,
                 'result' => $result
             ]);
 
             // Store session
-            $bucket->set(self::CLIENT_SESSION_KEY, $client);
+            $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
         }
-        
+
         return $result;
     }
 
@@ -357,95 +352,88 @@ class Manager implements IManager, core\IDumpable {
 
         $model = $this->getUserModel();
         $clientData = $model->getClientData($key->userId);
-        $this->_client = Client::factory($clientData);
+        $this->client = Client::factory($clientData);
 
         // Set state
-        $this->_client->setAuthenticationState(IState::BOUND);
-        $this->_client->setKeyring($model->generateKeyring($this->_client));
+        $this->client->setAuthenticationState(IState::BOUND);
+        $this->client->setKeyring($model->generateKeyring($this->client));
 
-        $clientData->onAuthentication($this->_client);
+        $clientData->onAuthentication($this->client);
 
 
         // Remember me
-        $this->session->perpetuateRecall($this->_client, $key);
+        $this->session->perpetuateRecall($this->client, $key);
 
         // Options
-        $this->_ensureClientOptions($this->_client);
+        $this->_ensureClientOptions();
 
         // Trigger hook
-        mesh\Manager::getInstance()->emitEvent($this->_client, 'recall', [
+        mesh\Manager::getInstance()->emitEvent($this->client, 'recall', [
             'key' => $key
         ]);
-        
+
         // Store session
-        $bucket->set(self::CLIENT_SESSION_KEY, $this->_client);
+        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
 
         return true;
     }
 
     public function refreshClientData() {
-        $client = $this->getClient();
-
         if($this->isLoggedIn()) {
             $model = $this->getUserModel();
-            $data = $model->getClientData($client->getId());
-            $client->import($data);
-            $this->_ensureClientOptions($client);
+            $data = $model->getClientData($this->client->getId());
+            $this->client->import($data);
+            $this->_ensureClientOptions();
         }
 
         $this->regenerateKeyring();
-
-        // Trigger hook
-        mesh\Manager::getInstance()->emitEvent($client, 'refresh');
+        mesh\Manager::getInstance()->emitEvent($this->client, 'refresh');
 
         // Save session
         $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-        $bucket->set(self::CLIENT_SESSION_KEY, $client);
+        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
 
         return $this;
     }
 
     public function importClientData(user\IClientDataObject $data) {
-        $client = $this->getClient();
-
-        if($client->getId() != $data->getId()) {
+        if($this->client->getId() != $data->getId()) {
             throw new AuthenticationException(
                 'Client data to import is not for the currently authenticated user'
             );
         }
 
-        $client->import($data);
-        $this->_ensureClientOptions($client);
+        $this->client->import($data);
+        $this->_ensureClientOptions();
 
         $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-        $bucket->set(self::CLIENT_SESSION_KEY, $client);
-        
+        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
+
         return $this;
     }
 
     public function getUserModel() {
         $model = axis\Model::factory('user');
-        
+
         if(!$model instanceof IUserModel) {
             throw new AuthenticationException(
                 'User model does not implement user\\IUserModel'
             );
         }
-        
+
         return $model;
     }
 
     public function logout() {
-        mesh\Manager::getInstance()->emitEvent($this->getClient(), 'logout');
+        mesh\Manager::getInstance()->emitEvent($this->client, 'logout');
         $this->session->destroy();
+        $this->clearClient();
         return $this;
     }
 
     public function regenerateKeyring() {
-        $client = $this->getClient();
-
-        $client->setKeyring(
-            $this->getUserModel()->generateKeyring($client)
+        $this->client->setKeyring(
+            $this->getUserModel()->generateKeyring($this->client)
         );
 
         return $this;
@@ -458,14 +446,14 @@ class Manager implements IManager, core\IDumpable {
 
         return $this;
     }
-    
 
-    
+
+
 // Passwords
     public function analyzePassword($password) {
-        return new core\string\PasswordAnalyzer($password, df\Launchpad::$application->getPassKey());
+        return new flex\PasswordAnalyzer($password, df\Launchpad::$application->getPassKey());
     }
-    
+
     public function __get($member) {
         switch($member) {
             case 'client':
@@ -475,11 +463,11 @@ class Manager implements IManager, core\IDumpable {
                 return $this->session;
         }
     }
-    
+
 // Dump
     public function getDumpProperties() {
         return [
-            'client' => $this->_client,
+            'client' => $this->client,
             'session' => $this->session
         ];
     }

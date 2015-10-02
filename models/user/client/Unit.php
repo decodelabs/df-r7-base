@@ -10,9 +10,10 @@ use df\core;
 use df\axis;
 use df\opal;
 use df\user;
+use df\flex;
 
 class Unit extends axis\unit\table\Base {
-    
+
     const NAME_FIELD = 'fullName';
 
     protected $_defaultSearchFields = [
@@ -39,20 +40,20 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('joinDate', 'Date');
         $schema->addIndexedField('loginDate', 'DateTime')
             ->isNullable(true);
-        
+
         $schema->addField('groups', 'ManyToMany', 'group', 'users')
             ->isDominant(true);
-            
+
         $schema->addField('authDomains', 'OneToMany', 'auth', 'user');
         $schema->addField('options', 'OneToMany', 'option', 'user');
         $schema->addIndexedField('status', 'Integer', 1)
             ->setDefaultValue(3);
-        
+
         $schema->addField('timezone', 'String', 32)
             ->setDefaultValue('UTC');
-        $schema->addField('country', 'KeyString', 2, core\string\ICase::UPPER)
+        $schema->addField('country', 'KeyString', 2, flex\ICase::UPPER)
             ->setDefaultValue('GB');
-        $schema->addField('language', 'KeyString', 2, core\string\ICase::LOWER)
+        $schema->addField('language', 'KeyString', 2, flex\ICase::LOWER)
             ->setDefaultValue('en');
     }
 
@@ -163,12 +164,12 @@ class Unit extends axis\unit\table\Base {
                         ));
                     }
                 })
-                
+
             // Language
             ->addRequiredField('language', 'text')
                 ->isOptional(true)
                 ->setSanitizer(function($value) {
-                    return strtolower($value);  
+                    return strtolower($value);
                 })
                 ->setCustomValidator(function($node, $value) {
                     if(!$this->context->i18n->languages->isValidId($value)) {

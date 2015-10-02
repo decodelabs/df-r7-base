@@ -11,7 +11,7 @@ use df\halo;
 use df\flex;
 
 class Remote implements IRemote {
-    
+
     protected $_daemon;
     protected $_process;
     protected $_statusData;
@@ -80,7 +80,7 @@ class Remote implements IRemote {
         $pid = null;
 
         if($daemon::REPORT_STATUS) {
-            $path = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.core\string\Manipulator::formatFileName($name).'.status';
+            $path = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.flex\Text::formatFileName($name).'.status';
 
             if(!is_file($path)) {
                 return $this;

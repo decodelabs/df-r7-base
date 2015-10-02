@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,8 @@ namespace df\opal\native;
 use df;
 use df\core;
 use df\opal;
-    
+use df\flex;
+
 class ClauseMatcher implements IClauseMatcher {
 
     protected $_index = [];
@@ -19,26 +20,26 @@ class ClauseMatcher implements IClauseMatcher {
         $this->_isFieldComparison = (bool)$isFieldComparison;
 
         $set = [];
-        
+
         foreach($clauses as $clause) {
             if($clause->isOr() && !empty($set)) {
                 $this->_index[] = $set;
                 $set = [];
             }
-            
+
             if($clause instanceof opal\query\IClauseList) {
                 $clause = new self($clause->toArray(), $this->_isFieldComparison);
-                
+
                 if(empty($clause->_index)) {
                     continue;
                 }
             } else {
                 $clause = $this->_prepareClauseBundle($clause);
             }
-            
+
             $set[] = $clause;
         }
-        
+
         if(!empty($set)) {
             $this->_index[] = $set;
         }
@@ -64,17 +65,17 @@ class ClauseMatcher implements IClauseMatcher {
             if($output->compare instanceof opal\query\IField) {
                 core\stub('Field comparison', $output);
             }
-            
+
             if($output->compare instanceof opal\query\ISelectQuery) {
                 $source = $output->compare->getSource();
-                
+
                 if(null === ($targetField = $source->getFirstOutputDataField())) {
                     throw new opal\query\ValueException(
                         'Clause subquery does not have a distinct return field'
                     );
                 }
-                
-                
+
+
                 switch($clause->getOperator()) {
                     case opal\query\clause\Clause::OP_EQ:
                     case opal\query\clause\Clause::OP_NEQ:
@@ -93,12 +94,12 @@ class ClauseMatcher implements IClauseMatcher {
                         $clause->setValue($output->compare->toValue($targetField->getName()));
                         $output->compare->limit($limit);
                         break;
-                        
+
                     case opal\query\clause\Clause::OP_IN:
                     case opal\query\clause\Clause::OP_NOT_IN:
                         $clause->setValue($output->compare->toList($targetField->getName()));
                         break;
-                        
+
                     case opal\query\clause\Clause::OP_GT:
                     case opal\query\clause\Clause::OP_GTE:
                         $source = $output->compare->getSource();
@@ -108,11 +109,11 @@ class ClauseMatcher implements IClauseMatcher {
                                 $source, 'MAX', $targetField, 'max'
                             )
                         );
-                        
+
                         $clause->setValue($output->compare->toValue('max'));
                         break;
-                        
-                    case opal\query\clause\Clause::OP_LT: 
+
+                    case opal\query\clause\Clause::OP_LT:
                     case opal\query\clause\Clause::OP_LTE:
                         $source = $output->compare->getSource();
 
@@ -121,18 +122,18 @@ class ClauseMatcher implements IClauseMatcher {
                                 $source, 'MIN', $targetField, 'min'
                             )
                         );
-                        
+
                         $clause->setValue($output->compare->toValue('min'));
                         break;
-                        
-                        
+
+
                     case opal\query\clause\Clause::OP_BETWEEN:
                     case opal\query\clause\Clause::OP_NOT_BETWEEN:
                         throw new OperatorException(
                             'Operator '.$operator.' is not valid for clause subqueries'
                         );
-                        
-                    
+
+
                     default:
                         throw new opal\query\OperatorException(
                             'Operator '.$operator.' is not recognized'
@@ -153,10 +154,10 @@ class ClauseMatcher implements IClauseMatcher {
         if(empty($this->_index)) {
             return true;
         }
-        
+
         foreach($this->_index as $set) {
             $test = true;
-            
+
             foreach($set as $bundle) {
                 if($bundle instanceof IClauseMatcher) {
                     $test &= $bundle->testRow($row, $matchedFields);
@@ -173,23 +174,23 @@ class ClauseMatcher implements IClauseMatcher {
                     $matchedFields[$bundle->fieldQualifiedName] = $fieldTest;
                 }
             }
-            
+
             if($test) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public function testRowMatch(array $row, array $joinRow) {
         if(empty($this->_index)) {
             return true;
         }
-        
+
         foreach($this->_index as $set) {
             $test = true;
-            
+
             foreach($set as $bundle) {
                 if($bundle instanceof IClauseMatcher) {
                     $test &= $bundle->testRowMatch($row, $joinRow);
@@ -200,7 +201,7 @@ class ClauseMatcher implements IClauseMatcher {
                     if(isset($joinRow[$bundle->fieldQualifiedName])) {
                         $value = $joinRow[$bundle->fieldQualifiedName];
                     }
-                    
+
                     if(isset($row[$bundle->valueQualifiedName])) {
                         $compare = $row[$bundle->valueQualifiedName];
                     }
@@ -208,12 +209,12 @@ class ClauseMatcher implements IClauseMatcher {
                     $test &= $this->compare($value, $bundle->operator, $compare);
                 }
             }
-            
+
             if($test) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -226,65 +227,65 @@ class ClauseMatcher implements IClauseMatcher {
                 } else {
                     return $value === $compare;
                 }
-                
+
             case opal\query\clause\Clause::OP_NEQ:
                 return $value != $compare;
-                
+
             case opal\query\clause\Clause::OP_GT:
                 return $value > $compare;
-                
+
             case opal\query\clause\Clause::OP_GTE:
                 return $value >= $compare;
-                
-            case opal\query\clause\Clause::OP_LT: 
+
+            case opal\query\clause\Clause::OP_LT:
                 return $value < $compare;
-                
+
             case opal\query\clause\Clause::OP_LTE:
                 return $value <= $compare;
-            
+
             case opal\query\clause\Clause::OP_IN:
                 return in_array($value, $compare);
-                
+
             case opal\query\clause\Clause::OP_NOT_IN:
                 return !in_array($value, $compare);
-            
+
             case opal\query\clause\Clause::OP_BETWEEN:
                 return $compare[0] <= $value && $value <= $compare[1];
-                
+
             case opal\query\clause\Clause::OP_NOT_BETWEEN:
                 return !($compare[0] <= $value && $value <= $compare[1]);
-            
+
             case opal\query\clause\Clause::OP_LIKE:
-                return core\string\Util::likeMatch($compare, $value);
-                
+                return flex\Matcher::isLike($compare, $value);
+
             case opal\query\clause\Clause::OP_NOT_LIKE:
-                return !core\string\Util::likeMatch($compare, $value);
-            
+                return !flex\Matcher::isLike($compare, $value);
+
             case opal\query\clause\Clause::OP_CONTAINS:
-                return core\string\Util::contains($compare, $value);
-                
+                return flex\Matcher::contains($compare, $value);
+
             case opal\query\clause\Clause::OP_NOT_CONTAINS:
-                return !core\string\Util::contains($compare, $value);
-            
+                return !flex\Matcher::contains($compare, $value);
+
             case opal\query\clause\Clause::OP_BEGINS:
-                return core\string\Util::begins($compare, $value);
-                
+                return flex\Matcher::begins($compare, $value);
+
             case opal\query\clause\Clause::OP_NOT_BEGINS:
-                return !core\string\Util::begins($compare, $value);
-            
+                return !flex\Matcher::begins($compare, $value);
+
             case opal\query\clause\Clause::OP_ENDS:
-                return core\string\Util::ends($compare, $value);
-                
+                return flex\Matcher::ends($compare, $value);
+
             case opal\query\clause\Clause::OP_NOT_ENDS:
-                return !core\string\Util::ends($compare, $value);
+                return !flex\Matcher::ends($compare, $value);
 
             case opal\query\clause\Clause::OP_MATCHES:
-                return core\string\Util::likeMatch('*'.$compare.'*', $value);
-                
+                return flex\Matcher::isLike('*'.$compare.'*', $value);
+
             case opal\query\clause\Clause::OP_NOT_MATCHES:
-                return !core\string\Util::likeMatch('*'.$compare.'*', $value);
-            
-            
+                return !flex\Matcher::isLike('*'.$compare.'*', $value);
+
+
             default:
                 throw new opal\query\OperatorException(
                     'Operator '.$operator.' is not recognized'

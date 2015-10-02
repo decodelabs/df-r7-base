@@ -7,23 +7,24 @@ namespace df\core\validate\field;
 
 use df;
 use df\core;
+use df\flex;
 
 class Password extends Base implements core\validate\IPasswordField {
-    
+
     use core\validate\TMinLengthField;
 
     const DEFAULT_MIN_LENGTH = 6;
-    
+
     protected $_matchField = null;
     protected $_minStrength = 18;
     protected $_checkStrength = true;
     protected $_shouldHash = true;
-    
+
     public function setMatchField($field) {
         $this->_matchField = $field;
         return $this;
     }
-    
+
     public function getMatchField() {
         return $this->_matchField;
     }
@@ -61,11 +62,11 @@ class Password extends Base implements core\validate\IPasswordField {
 
         $value = $node->getValue();
         $value = $this->_sanitizeValue($value);
-        
+
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
         }
-        
+
         $this->_validateMinLength($node, $value, $length);
 
         if($node->hasErrors()) {
@@ -75,29 +76,29 @@ class Password extends Base implements core\validate\IPasswordField {
         $value = $this->_applyCustomValidator($node, $value);
 
         if($this->_checkStrength && $this->_minStrength > 0) {
-            $analyzer = new core\string\PasswordAnalyzer($value, df\Launchpad::$application->getPassKey());
-            
+            $analyzer = new flex\PasswordAnalyzer($value, df\Launchpad::$application->getPassKey());
+
             if($analyzer->getStrength() < $this->_minStrength) {
                 $this->_applyMessage($node, 'strength', $this->validator->_(
                     'This password is not strong enough - consider using numbers, capitals and more characters'
                 ));
             }
         }
-        
-        
+
+
         if($this->_matchField) {
             $data = $this->validator->getCurrentData();
             $matchNode = $data->{$this->_matchField};
-            
+
             if($matchNode->getValue() != $value) {
                 $this->_applyMessage($matchNode, 'invalid', $this->validator->_(
                     'Your passwords do not match'
                 ));
             }
         }
-            
+
         if($this->_shouldHash) {
-            $value = core\string\Util::passwordHash($value, df\Launchpad::$application->getPassKey());
+            $value = core\crypt\Util::passwordHash($value, df\Launchpad::$application->getPassKey());
         }
 
         return $value;

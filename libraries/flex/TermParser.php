@@ -3,20 +3,27 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\string;
+namespace df\flex;
 
 use df;
 use df\core;
+use df\flex;
 
 class TermParser implements ITermParser {
-    
-    protected $_locale;
+
     protected static $_stopWords = [
         'and', 'the', 'if', 'of', 'in', 'to', 'is', 'or', 'it', 'its', 'on', 'an'
     ];
 
+    protected $_locale;
+    protected $_stemmer;
+
     public function __construct($locale=null) {
         $this->_locale = core\i18n\Locale::factory($locale);
+
+        try {
+            $this->_stemmer = flex\stemmer\Base::factory($this->_locale);
+        } catch(IException $e) {}
     }
 
     public function parse($phrase, $natural=false) {
@@ -85,8 +92,8 @@ class TermParser implements ITermParser {
     protected function _normalizeTerm($term, $natural=false) {
         $term = strtolower(str_replace(['.', '\''], '', $term));
 
-        if($stemmer = core\string\Util::loadStemmer($this->_locale)) {
-            $term = $stemmer->stemWord($term, $natural);
+        if($this->_stemmer) {
+            $term = $this->_stemmer->stemWord($term, $natural);
         }
 
         return $term;

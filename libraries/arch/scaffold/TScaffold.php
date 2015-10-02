@@ -12,6 +12,7 @@ use df\aura;
 use df\axis;
 use df\opal;
 use df\mesh;
+use df\flex;
 
 
 // Record loader
@@ -221,7 +222,7 @@ trait TScaffold_RecordLoader {
             $this->html->submitButton(null, $this->_('Select'))
                 ->setDisposition('positive')
         );
-        
+
         return $this->view;
     }
 
@@ -256,7 +257,7 @@ trait TScaffold_RecordLoader {
             return static::RECORD_ITEM_NAME;
         }
 
-        return strtolower(core\string\Manipulator::formatName($this->getRecordKeyName()));
+        return strtolower(flex\Text::formatName($this->getRecordKeyName()));
     }
 }
 
@@ -365,7 +366,7 @@ trait TScaffold_RecordDataProvider {
         if(!$record) {
             $record = $this->getRecord();
         }
-        
+
         return $this->html->toText($this->describeRecord($record));
     }
 
@@ -568,7 +569,7 @@ trait TScaffold_RecordDataProvider {
         $list->addField($fieldName, $label, function($item) use($mode, $fieldName) {
             if($mode == 'list') {
                 return $this->apex->component(
-                        ucfirst($this->getRecordKeyName().'Link'), 
+                        ucfirst($this->getRecordKeyName().'Link'),
                         $item
                     )
                     ->setMaxLength(50)
@@ -802,7 +803,7 @@ trait TScaffold_RecordListProvider {
                     ->setDisposition('positive'),
 
                 $this->html->link(
-                        $resetRequest, 
+                        $resetRequest,
                         $this->_('Reset')
                     )
                     ->setIcon('refresh')

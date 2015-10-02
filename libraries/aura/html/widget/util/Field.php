@@ -8,32 +8,33 @@ namespace df\aura\html\widget\util;
 use df;
 use df\core;
 use df\aura;
+use df\flex;
 
 class Field implements aura\html\widget\IField, core\IDumpable {
-    
+
     public $key;
     public $name;
     public $labels = [];
     public $renderer;
-    
+
     public function __construct($key, $name, $renderer=null) {
         $this->key = $key;
         $this->setName($name);
         $this->setRenderer($renderer);
     }
-    
-    
+
+
 // Key
     public function getKey() {
         return $this->key;
     }
-    
+
 // Name
     public function setName($name) {
         $this->name = $name;
         return $this;
     }
-    
+
     public function getName() {
         return $this->name;
     }
@@ -42,7 +43,7 @@ class Field implements aura\html\widget\IField, core\IDumpable {
 // Labels
     public function addLabel($key, $label=null) {
         if(empty($label)) {
-            $label = core\string\Manipulator::formatLabel($key);
+            $label = flex\Text::formatLabel($key);
         }
 
         $this->labels[$key] = $label;
@@ -61,48 +62,48 @@ class Field implements aura\html\widget\IField, core\IDumpable {
     public function getHeaderList() {
         return array_merge([$this->key => $this->name], $this->labels);
     }
-    
+
 // Renderer
     public function setRenderer($renderer=null) {
         if($renderer !== null) {
             $renderer = core\lang\Callback::factory($renderer);
         }
-        
+
         $this->renderer = $renderer;
         return $this;
     }
-    
+
     public function getRenderer() {
         return $this->renderer;
     }
-    
+
     public function render($data, aura\html\widget\IRendererContext $renderContext) {
         return $renderContext->renderCell($data, $this->renderer);
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         $output = [
             'key' => $this->key
         ];
-        
+
         $exp = false;
-        
+
         if($this->name != $this->key) {
             $output['name'] = $this->name;
             $exp = true;
         }
-        
+
         if(!$this->renderer instanceof \Closure) {
             $output['renderer'] = $this->renderer;
             $exp = true;
         }
-        
+
         if(!$exp) {
             return $this->key;
         }
-        
+
         return $output;
     }
 }

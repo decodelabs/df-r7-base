@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,8 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
-    
+use df\flex;
+
 class Slug extends Base implements axis\schema\IAutoUniqueField {
 
     use axis\schema\TAutoUniqueField;
@@ -23,9 +24,9 @@ class Slug extends Base implements axis\schema\IAutoUniqueField {
             }
 
             $this->_allowPathFormat = (bool)$flag;
-            return $this;    
-        }    
-        
+            return $this;
+        }
+
         return $this->_allowPathFormat;
     }
 
@@ -45,9 +46,9 @@ class Slug extends Base implements axis\schema\IAutoUniqueField {
         }
 
         if($this->_allowPathFormat) {
-            return core\string\Manipulator::formatPathSlug($value, '~');
+            return flex\Text::formatPathSlug($value, '~');
         } else {
-            return core\string\Manipulator::formatSlug($value);
+            return flex\Text::formatSlug($value);
         }
     }
 

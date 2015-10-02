@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\user;
 use df\opal;
+use df\flex;
 
 // Exceptions
 interface IException {}
@@ -16,7 +17,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
-// Interfaces    
+// Interfaces
 interface IController {
     public function isOpen();
     public function setPerpetuator(IPerpetuator $perpetuator);
@@ -44,7 +45,7 @@ interface IBucket extends core\IValueMap, \ArrayAccess {
     public function getSessionId();
     public function transitionSessionId();
     public function isSessionOpen();
-    
+
     public function acquire($key);
     public function release($key);
     public function update($key, \Closure $func);
@@ -52,7 +53,7 @@ interface IBucket extends core\IValueMap, \ArrayAccess {
     public function refreshAll();
     public function getUpdateTime($id);
     public function getTimeSinceLastUpdate($key);
-    
+
     public function getAllKeys();
     public function clear();
     public function clearForAll();
@@ -70,19 +71,19 @@ interface IBucket extends core\IValueMap, \ArrayAccess {
 interface IBackend {
     public function setLifeTime($lifeTime);
     public function getLifeTime();
-    
+
     public function insertDescriptor(IDescriptor $descriptor);
     public function fetchDescriptor($id, $transitionTime);
     public function touchSession(IDescriptor $descriptor);
     public function applyTransition(IDescriptor $descriptor);
     public function killSession(IDescriptor $descriptor);
     public function idExists($id);
-    
+
     public function getBucketKeys(IDescriptor $descriptor, $namespace);
     public function pruneBucket(IDescriptor $descriptor, $namespace, $age);
     public function clearBucket(IDescriptor $descriptor, $namespace);
     public function clearBucketForAll($namespace);
-    
+
     public function fetchNode(IBucket $bucket, $key);
     public function fetchLastUpdatedNode(IBucket $bucket);
     public function lockNode(IBucket $bucket, INode $node);
@@ -105,7 +106,7 @@ class RecallKey {
     public $key;
 
     public static function generate($userId) {
-        return new self($userId, core\string\Generator::sessionId());
+        return new self($userId, flex\Generator::sessionId());
     }
 
     public function __construct($userId, $key) {
@@ -122,33 +123,33 @@ class RecallKey {
 interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvider {
     public function isNew();
     public function hasJustStarted($flag=null);
-    
+
     public function setInternalId($id);
     public function getInternalId();
     public function getInternalIdHex();
     public function setExternalId($id);
     public function getExternalId();
     public function getExternalIdHex();
-    
+
     public function setTransitionId($id);
     public function getTransitionId();
     public function getTransitionIdHex();
     public function applyTransition($newExternalId);
-    
+
     public function setUserId($id);
     public function getUserId();
-    
+
     public function setStartTime($time);
     public function getStartTime();
-    
+
     public function setAccessTime($time);
     public function getAccessTime();
     public function isAccessOlderThan($seconds);
-    
+
     public function setTransitionTime($time);
     public function getTransitionTime();
     public function hasJustTransitioned($transitionLifeTime=10);
-    
+
     public function needsTouching($transitionLifeTime=10);
     public function touchInfo($transitionLifeTime=10);
 }
@@ -181,22 +182,22 @@ class Node implements INode {
         $output->value = null;
         $output->creationTime = null;
         $output->updateTime = time();
-        
-        
+
+
         if($res !== null) {
             if($res['value'] !== null) {
                 $output->value = unserialize($res['value']);
             }
-            
+
             if(!empty($res['creationTime'])) {
                 $output->creationTime = (int)$res['creationTime'];
             }
-            
+
             if(!empty($res['updateTime'])) {
                 $output->updateTime = (int)$res['updateTime'];
             }
         }
-            
+
         $output->isLocked = (bool)$locked;
         return $output;
     }

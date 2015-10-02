@@ -10,14 +10,15 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\user;
+use df\flex;
 
 
 trait TWidget {
 
     use core\lang\TChainable;
-    
+
     protected $_primaryTag;
-    
+
     public function getTag() {
         if(!$this->_primaryTag) {
             if(!static::PRIMARY_TAG) {
@@ -25,11 +26,11 @@ trait TWidget {
                     'Primary tag name has not been declared for '.$this->getWidgetName().' widget type'
                 );
             }
-            
+
             $this->_primaryTag = new aura\html\Tag(static::PRIMARY_TAG);
             $this->_primaryTag->setClasses([/*'widget', */'widget-'.lcfirst($this->getWidgetName())]);
         }
-        
+
         return $this->_primaryTag;
     }
 
@@ -40,11 +41,11 @@ trait TWidget {
     public function isBlock() {
         return $this->getTag()->isBlock();
     }
-    
+
     public function toString() {
         return (string)$this->render();
     }
-    
+
     protected function _getRenderTargetDisplayName() {
         if($this->_renderTarget) {
             return get_class($this->_renderTarget);
@@ -56,9 +57,9 @@ trait TWidget {
 
 
 trait TWidget_RendererProvider {
-    
+
     protected $_renderer;
-    
+
     public function setRenderer($renderer=null) {
         if($renderer !== null) {
             $renderer = core\lang\Callback::factory($renderer);
@@ -67,7 +68,7 @@ trait TWidget_RendererProvider {
         $this->_renderer = $renderer;
         return $this;
     }
-    
+
     public function getRenderer() {
         return $this->_renderer;
     }
@@ -75,22 +76,22 @@ trait TWidget_RendererProvider {
 
 
 trait TWidget_BodyContentAware {
-    
+
     protected $_body;
-    
+
     public function withBody() {
         return new aura\html\widget\util\ElementContentWrapper($this, $this->_body);
     }
-    
+
     public function setBody($body) {
         if(!$body instanceof aura\html\IElementContent) {
             $body = new aura\html\ElementContent($body);
         }
-        
+
         $this->_body = $body;
         return $this;
     }
-    
+
     public function getBody() {
         return $this->_body;
     }
@@ -114,15 +115,15 @@ trait TWidget_BodyContentAware {
 
 
 trait TWidget_Disableable {
-    
+
     protected $_isDisabled = false;
-    
+
     public function isDisabled($flag=null) {
         if($flag !== null) {
             $this->_isDisabled = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_isDisabled;
     }
 }
@@ -130,16 +131,16 @@ trait TWidget_Disableable {
 
 // Forms
 trait TWidget_FormData {
-    
+
     //const PRIMARY_TAG = 'input';
     //const ARRAY_INPUT = false;
-    
+
     protected $_name;
     protected $_value;
     protected $_targetFormId;
-    
+
     protected function _hasArrayInput() {
-        if($this instanceof IOptionalMultipleValueInputWidget) { 
+        if($this instanceof IOptionalMultipleValueInputWidget) {
             return $this->_allowMultiple;
         }
 
@@ -151,97 +152,97 @@ trait TWidget_FormData {
         if($this->_name == null) {
             return;
         }
-        
+
         $name = $this->_name;
-        
+
         if($this->_hasArrayInput() && substr($name, -2) != '[]') {
             $name .= '[]';
         }
-        
+
         $tag->setAttribute('name', $name);
-        
-        
+
+
         // Value
         if($includeValue) {
             $tag->setAttribute('value', $this->getValueString());
         }
-        
+
         if($this->_value->hasErrors()) {
             $this->getTag()->addClass('error');
         }
-        
-        
+
+
         // Target form
         if($this->_targetFormId) {
             $tag->setAttribute('form', $this->_targetFormId);
         }
     }
-    
-    
+
+
 // Name
     public function setName($name) {
         $this->_name = $name;
         return $this;
     }
-    
+
     public function getName() {
         return $this->_name;
     }
-    
-    
+
+
 // Value
     public function setValue($value) {
         if(!$value instanceof core\collection\IInputTree) {
             if($value instanceof core\IValueContainer) {
                 $value = $value->getValue();
             }
-            
+
             if($value !== null) {
                 if(is_array($value)) {
                     core\dump($this);
                 }
                 $value = (string)$value;
             }
-            
+
             $value = new core\collection\InputTree($value);
         }
-        
+
         $this->_normalizeValue($value);
         $this->_value = $value;
         return $this;
     }
 
     protected function _normalizeValue(core\collection\IInputTree $value) {}
-    
+
     public function getValue() {
         if(!$this->_value) {
             $this->_value = new core\collection\InputTree();
         }
-        
+
         return $this->_value;
     }
-    
+
     public function getValueString() {
         return $this->getValue()->getStringValue();
     }
-    
+
     public function replaceValue($value) {
         $this->getValue()->setValue($value);
         return $this;
     }
-    
-    
+
+
 // Target form
     public function setTargetFormId($id) {
         $this->_targetFormId = $id;
         return $this;
     }
-    
+
     public function getTargetFormId() {
         return $this->_targetFormId;
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         return [
@@ -255,37 +256,37 @@ trait TWidget_FormData {
 
 
 trait TWidget_Input {
-    
+
     use TWidget_Disableable;
-    
+
     protected $_isRequired = false;
     protected $_isReadOnly = false;
     protected $_tabIndex;
-    
+
     protected function _applyInputAttributes(aura\html\ITag $tag) {
         //$tag->addClass('widget-formInput');
-        
+
         // Required
         if($this->_isRequired) {
             $tag->setAttribute('required', 'required');
             //$tag->addClass('required');
         }
-        
-        
-        // Disabled 
+
+
+        // Disabled
         if($this->_isDisabled) {
             $tag->setAttribute('disabled', 'disabled');
             //$tag->addClass('disabled');
         }
-        
-        
+
+
         // Read only
         if($this->_isReadOnly) {
             $tag->setAttribute('readonly', 'readonly');
             //$tag->addClass('readOnly');
         }
-        
-        
+
+
         // Tab index
         if(is_numeric($this->_tabIndex)) {
             $tag->setAttribute('tabindex', (int)$this->_tabIndex);
@@ -293,33 +294,33 @@ trait TWidget_Input {
             $tag->setAttribute('tabindex', '-1');
         }
     }
-    
-    
+
+
     public function isRequired($flag=null) {
         if($flag !== null) {
             $this->_isRequired = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_isRequired;
     }
-    
-    
+
+
     public function isReadOnly($flag=null) {
         if($flag !== null) {
             $this->_isReadOnly = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_isReadOnly;
     }
-    
-    
+
+
     public function setTabIndex($index) {
         $this->_tabIndex = $index;
         return $this;
     }
-    
+
     public function getTabIndex() {
         return $this->_index;
     }
@@ -327,18 +328,18 @@ trait TWidget_Input {
 
 
 trait TWidget_TargetAware {
-    
+
     protected $_target;
-    
+
     public function setTarget($target) {
         $this->_target = $target;
         return $this;
     }
-    
+
     public function getTarget() {
         return $this->_target;
     }
-    
+
     protected function _applyTargetAwareAttributes(aura\html\ITag $tag) {
         if($this->_target !== null) {
             $tag->setAttribute('target', $this->_target);
@@ -348,18 +349,18 @@ trait TWidget_TargetAware {
 
 
 trait TWidget_FocusableInput {
-    
+
     protected $_shouldAutoFocus = false;
-    
+
     public function shouldAutoFocus($flag=null) {
         if($flag !== null) {
             $this->_shouldAutoFocus = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_shouldAutoFocus;
     }
-    
+
     protected function _applyFocusableInputAttributes(aura\html\ITag $tag) {
         if($this->_shouldAutoFocus) {
             $tag->setAttribute('autofocus', 'autofocus');
@@ -369,41 +370,41 @@ trait TWidget_FocusableInput {
 
 
 trait TWidget_VisualInput {
-    
+
     protected $_shouldValidate = true;
     protected $_shouldAutoComplete = null;
-    
+
     public function shouldValidate($flag=null) {
         if($flag !== null) {
             $this->_shouldValidate = (bool)$flag;
             return $this;
-        }    
-        
+        }
+
         return $this->_shouldValidate;
     }
-    
+
     public function shouldAutoComplete($flag=null) {
         if($flag !== null) {
             $this->_shouldAutoComplete = (bool)$flag;
             return $this;
         }
-        
+
         return (bool)$this->_shouldAutoComplete;
     }
-    
-    
+
+
     protected function _applyVisualInputAttributes(aura\html\ITag $tag) {
         if(!$this->_shouldValidate) {
             $tag->setAttribute('novalidate', true);
         }
-        
+
         if($this->_shouldAutoComplete !== null) {
             if($this->_shouldAutoComplete) {
                 $value = 'on';
             } else {
                 $value = 'off';
             }
-            
+
             $tag->setAttribute('autocomplete', $value);
         }
     }
@@ -412,18 +413,18 @@ trait TWidget_VisualInput {
 
 
 trait TWidget_OptionalMultipleValueInput {
-    
+
     protected $_allowMultiple = false;
-    
+
     public function allowMultiple($flag=null) {
         if($flag !== null) {
             $this->_allowMultiple = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_allowMultiple;
     }
-    
+
     protected function _applyOptionalMultipleValueInputAttributes(aura\html\ITag $tag) {
         if($this->_allowMultiple) {
             $tag->setAttribute('multiple', 'multiple');
@@ -433,18 +434,18 @@ trait TWidget_OptionalMultipleValueInput {
 
 
 trait TWidget_DataListEntry {
-    
+
     protected $_dataListId;
-    
+
     public function setDataListId($id) {
         $this->_dataListId = $id;
         return $this;
     }
-    
+
     public function getDataListId() {
         return $this->_dataListId;
     }
-    
+
     protected function _applyDataListEntryAttributes(aura\html\ITag $tag) {
         if($this->_dataListId !== null) {
             $tag->setAttribute('list', $this->_dataListId);
@@ -461,7 +462,7 @@ trait TWidget_PlaceholderProvider {
         $this->_placeholder = $placeholder;
         return $this;
     }
-    
+
     public function getPlaceholder() {
         return $this->_placeholder;
     }
@@ -475,19 +476,19 @@ trait TWidget_PlaceholderProvider {
 
 
 trait TWidget_TextEntry {
-    
+
     protected $_maxLength;
     protected $_spellCheck = null;
-    
+
     public function setMaxLength($length) {
         $this->_maxLength = $length;
         return $this;
     }
-    
+
     public function getMaxLength() {
         return $this->_maxLength;
     }
-    
+
     public function shouldSpellCheck($flag=null) {
         if($flag !== null) {
             $this->_spellCheck = (bool)$flag;
@@ -496,12 +497,12 @@ trait TWidget_TextEntry {
 
         return $this->_spellCheck;
     }
-    
+
     protected function _applyTextEntryAttributes(aura\html\ITag $tag) {
         if($this->_maxLength !== null) {
             $tag->setAttribute('maxlength', (int)$this->_maxLength);
         }
-        
+
         if($this->_placeholder !== null) {
             $tag->setAttribute('placeholder', $this->_placeholder);
         }
@@ -518,7 +519,7 @@ trait TWidget_RangeEntry {
     protected $_min;
     protected $_max;
     protected $_step;
-    
+
     public function setRange($min, $max, $step=null) {
         $this->setMin($min)->setMax($max);
 
@@ -534,12 +535,12 @@ trait TWidget_RangeEntry {
         $this->_min = $min;
         return $this;
     }
-    
+
     public function getMin() {
         return $this->_min;
     }
-    
-    
+
+
 // Max
     public function setMax($max) {
         $this->_max = $max;
@@ -549,28 +550,28 @@ trait TWidget_RangeEntry {
     public function getMax() {
         return $this->_max;
     }
-    
-    
+
+
 // Step
     public function setStep($step) {
         $this->_step = $step;
         return $this;
     }
-    
+
     public function getStep() {
         return $this->_step;
     }
-    
-    
+
+
     protected function _applyRangeEntryAttributes(aura\html\ITag $tag) {
         if($this->_min !== null) {
             $tag->setAttribute('min', $this->_min);
         }
-        
+
         if($this->_max !== null) {
             $tag->setAttribute('max', $this->_max);
         }
-        
+
         if($this->_step !== null) {
             $tag->setAttribute('step', $this->_step);
         }
@@ -579,26 +580,26 @@ trait TWidget_RangeEntry {
 
 
 trait TWidget_CheckInput {
-    
+
     protected $_isChecked = false;
-    
+
     public function isChecked($flag=null) {
         if($flag !== null) {
             if($flag instanceof core\collection\IInputTree) {
                 $this->getValue()->addErrors($flag->getErrors());
             }
-            
+
             if($flag instanceof core\IValueContainer) {
                 $flag = $flag->getValue() == $this->getValueString();
             }
-            
+
             $this->_isChecked = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_isChecked;
     }
-    
+
     protected function _applyCheckInputAttributes(aura\html\ITag $tag) {
         if($this->_isChecked) {
             $tag->setAttribute('checked', 'checked');
@@ -608,9 +609,9 @@ trait TWidget_CheckInput {
 
 
 trait TWidget_SelectionInput {
-    
+
     protected $_optionRenderer;
-    
+
     public function setOptionRenderer($renderer) {
         if($renderer !== null) {
             $renderer = core\lang\Callback::factory($renderer);
@@ -619,11 +620,11 @@ trait TWidget_SelectionInput {
         $this->_optionRenderer = $renderer;
         return $this;
     }
-    
+
     public function getOptionRenderer() {
         return $this->_optionRenderer;
     }
-    
+
     protected function _renderOption(aura\html\IElement $option, $value, $label) {
         if($this->_optionRenderer) {
             $this->_optionRenderer->invoke($option, $value, $label);
@@ -635,57 +636,57 @@ trait TWidget_SelectionInput {
 
 
 trait TWidget_UngroupedSelectionInput {
-    
+
     use TWidget_SelectionInput;
-    
+
     protected $_options = [];
-    
+
     public function setOptions($options, $labelsAsValues=false) {
         $this->_options = [];
         return $this->addOptions($options, $labelsAsValues);
     }
-    
+
     public function addOptions($options, $labelsAsValues=false) {
         if($options instanceof core\collection\ICollection) {
             $options = $options->toArray();
         }
-        
+
         if(is_array($options)) {
             foreach($options as $value => $label) {
                 if($labelsAsValues) {
                     $value = $label;
                 }
-                
+
                 $this->_options[$value] = $label;
             }
         }
-        
+
         return $this;
     }
-    
+
     public function getOptions() {
         return $this->_options;
     }
-    
+
     public function sortOptions($byLabel=false) {
         if($byLabel) {
             asort($this->_options);
         } else {
             ksort($this->_options);
         }
-        
+
         return $this;
     }
 }
 
 
 trait TWidget_GroupedSelectionInput {
-    
+
     use TWidget_SelectionInput;
-    
+
     protected $_groupOptions = [];
     protected $_groupNames = [];
-    
+
 // Options
     public function setOptions($options, $labelsAsValues=false) {
         $this->_groupOptions = [];
@@ -695,7 +696,7 @@ trait TWidget_GroupedSelectionInput {
     public function addOptions($options, $labelsAsValues=false) {
         foreach(core\collection\Util::ensureIterable($options) as $key => $set) {
             $this->addGroupOptions($key, $set, $labelsAsValues);
-            $this->setGroupName($key, core\string\Manipulator::formatLabel($key));
+            $this->setGroupName($key, flex\Text::formatLabel($key));
         }
 
         return $this;
@@ -719,32 +720,32 @@ trait TWidget_GroupedSelectionInput {
         unset($this->_groupOptions[$groupId]);
         return $this->addGroupOptions($groupId, $options, $labelsAsValues);
     }
-    
+
     public function addGroupOptions($groupId, $options, $labelsAsValues=false) {
         if(!isset($this->_groupOptions[$groupId])) {
             $this->_groupOptions[$groupId] = [];
             $this->_groupNames[$groupId] = $groupId;
         }
-        
+
         foreach(core\collection\Util::ensureIterable($options) as $value => $label) {
             if($labelsAsValues) {
                 $value = $label;
             }
-            
+
             $this->_groupOptions[$groupId][$value] = $label;
         }
-        
+
         return $this;
     }
-    
+
     public function getGroupOptions($groupId) {
         if(!isset($this->_groupOptions[$groupId])) {
             return [];
         }
-        
+
         return $this->_groupOptions[$groupId];
     }
-    
+
     public function sortGroupOptions($groupId, $byLabel=false) {
         if(isset($this->_groupOptions[$groupId])) {
             if($byLabel) {
@@ -753,46 +754,46 @@ trait TWidget_GroupedSelectionInput {
                 ksort($this->_groupOptions[$groupId]);
             }
         }
-        
+
         return $this;
     }
-    
-    
+
+
 // Groups
     public function addGroup($id, $name, $options=null, $labelsAsValues=false) {
         $this->setOptions($id, $options, $labelsAsValues);
         $this->setGroupName($id, $name);
-        
+
         return $this;
     }
-    
+
     public function getGroup($id) {
         if(isset($this->_groupOptions[$id])) {
             return $this->_groupOptions[$id];
         }
-        
+
         return [];
     }
-    
+
     public function removeGroup($id) {
         unset($this->_groupOptions[$id], $this->_groupNames[$id]);
         return $this;
     }
-    
+
     public function getGroups() {
         return $this->_groups;
     }
-    
+
     public function setGroupName($id, $name) {
         $this->_groupNames[$id] = $name;
         return $this;
     }
-    
+
     public function getGroupName($id) {
         if(isset($this->_groupNames[$id])) {
             return $this->_groupNames[$id];
         }
-        
+
         return $id;
     }
 }
@@ -800,7 +801,7 @@ trait TWidget_GroupedSelectionInput {
 
 
 trait TWidget_NavigationEntryController {
-    
+
     protected $_entries;
     protected $_context;
     protected $_renderIfEmpty = false;
@@ -827,7 +828,7 @@ trait TWidget_NavigationEntryController {
     public function addEntries($entries) {
         if(func_num_args() > 1) {
             $entries = func_get_args();
-        } else if((is_string($entries) && strlen($entries) > 1) 
+        } else if((is_string($entries) && strlen($entries) > 1)
         || $entries instanceof core\uri\IUrl) {
             try {
                 $entries = arch\navigation\menu\Base::factory($this->_context, $entries);
@@ -847,11 +848,11 @@ trait TWidget_NavigationEntryController {
         if(!is_array($entries)) {
             $entries = func_get_args();
         }
-        
+
         foreach($entries as $entry) {
             $this->addEntry($entry);
         }
-        
+
         return $this;
     }
 
@@ -877,7 +878,7 @@ trait TWidget_NavigationEntryController {
 
         return $this;
     }
-    
+
     public function addLink($link) {
         if(!$link instanceof ILinkWidget) {
             $link = Base::factory($this->_context, static::DEFAULT_LINK_WIDGET, func_get_args())->setRenderTarget($this->_renderTarget);
@@ -896,33 +897,33 @@ trait TWidget_NavigationEntryController {
         $this->_entries->push($link);
         return $this;
     }
-    
+
     public function addMenu($menu) {
         if(!$menu instanceof self) {
             $menu = Base::factory($this->_context, 'Menu', func_get_args())->setRenderTarget($this->_renderTarget);
         }
-        
+
         $this->_entries->push($menu);
         return $this;
     }
-    
+
     public function addSpacer() {
         if($this->_entries->getLast() instanceof ILinkWidget) {
             $this->_entries->push(new aura\html\ElementString('<span class="widget-spacer"></span>'));
         }
-        
+
         return $this;
     }
-    
+
     public function getEntries() {
         return $this->_entries;
     }
-    
+
     public function removeEntry($index) {
         $this->_entries->remove($index);
         return $this;
     }
-    
+
     public function clearEntries() {
         $this->_entries->clear();
         return $this;
@@ -1055,9 +1056,9 @@ trait TWidget_IconProvider {
 
 // Lists
 trait TWidget_DataDrivenList {
-    
+
     protected $_data;
-    
+
     public function setData($data) {
         if($data instanceof core\IArrayProvider
         && !$data instanceof core\collection\IMappedCollection) {
@@ -1067,13 +1068,13 @@ trait TWidget_DataDrivenList {
         $this->_data = $data;
         return $this;
     }
-    
+
     public function getData() {
         return $this->_data;
     }
-    
+
     protected function _isDataIterable() {
-        return is_array($this->_data) 
+        return is_array($this->_data)
             || $this->_data instanceof \Iterator
             || $this->_data instanceof \IteratorAggregate;
     }
@@ -1112,7 +1113,7 @@ trait TWidget_OrderedDataDrivenList {
     public function setData($data) {
         if($data instanceof core\collection\IPageable) {
             $paginator = $data->getPaginator();
-            
+
             if($paginator) {
                 $this->setStartIndex($paginator->getOffset());
             }
@@ -1137,10 +1138,10 @@ trait TWidget_RendererContextProvider {
 }
 
 trait TWidget_MappedList {
-    
+
     protected $_rowProcessor;
     protected $_fields = [];
-    
+
     public function setRowProcessor($processor=null) {
         if($processor !== null) {
             $processor = core\lang\Callback::factory($processor);
@@ -1158,7 +1159,7 @@ trait TWidget_MappedList {
         $this->_fields[$field->getId()] = $field;
         return $this;
     }
-    
+
     public function addField($key, $a=null, $b=null) {
         return $this->addFieldAtIndex(null, $key, $a, $b);
     }
@@ -1166,7 +1167,7 @@ trait TWidget_MappedList {
     public function addFieldAtIndex($index, $key, $a=null, $b=null) {
         $name = null;
         $renderer = null;
-        
+
         if(is_callable($a) && !is_string($a)) {
             $renderer = $a;
             $name = $b;
@@ -1176,16 +1177,16 @@ trait TWidget_MappedList {
         } else if(is_string($a) && $b === null) {
             $name = $a;
         }
-        
+
         if($name === null) {
-            $name = core\string\Manipulator::formatLabel($key);
+            $name = flex\Text::formatLabel($key);
         }
-        
+
         if($renderer === null) {
             $renderer = function($data, $renderContext) {
                 $key = $renderContext->getField();
                 $value = null;
-                
+
                 if(is_array($data)) {
                     if(isset($data[$key])) {
                         $value = $data[$key];
@@ -1205,7 +1206,7 @@ trait TWidget_MappedList {
                 return $value;
             };
         }
-        
+
         $field = new aura\html\widget\util\Field($key, $name, $renderer);
 
         if($index === null) {
@@ -1246,7 +1247,7 @@ trait TWidget_MappedList {
 
             $this->_fields = $fields;
         }
-        
+
         return $this;
     }
 
@@ -1254,12 +1255,12 @@ trait TWidget_MappedList {
         if($key instanceof IField) {
             $key = $key->getKey();
         }
-        
+
         unset($this->_fields[$key]);
-        
+
         return $this;
     }
-    
+
     public function getFields() {
         return $this->_fields;
     }
@@ -1267,15 +1268,15 @@ trait TWidget_MappedList {
     public function hasFields() {
         return !empty($this->_fields);
     }
-    
+
     protected function _generateDefaultFields() {
         foreach($this->_data as $key => $value) {
             $this->addField($key);
         }
-        
+
         $fields = $this->_fields;
         $this->_fields = [];
-        
+
         return $fields;
     }
 

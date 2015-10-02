@@ -3,13 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\string\stemmer;
+namespace df\flex\stemmer;
 
 use df;
 use df\core;
+use df\flex;
 
-class En implements core\string\IStemmer {
-    
+class En extends Base {
+
     private static $_regConsonant = '(?:[bcdfghjklmnpqrstvwxz]|(?<=[aeiou])y|^y)';
     private static $_regVowel = '(?:[aeiou]|(?<![aeiou])y)';
 
@@ -21,19 +22,19 @@ class En implements core\string\IStemmer {
         $phrase = preg_replace('/[&][a-z]+[;]/', '', strtolower($phrase));
         $phrase = str_replace(['-', '_'], ' ', $phrase);
         $phrase = str_replace(['.', '\''], '', $phrase);
-        
+
         $words = str_word_count(strip_tags($phrase), 1);
         $temp = array_values($words);
         $words = [];
-        
+
         foreach($temp as $key => $word) {
             if(!($word = $this->stemWord($word, $natural))) {
                 continue;
             }
-            
+
             $words[] = $word;
         }
-        
+
         return $words;
     }
 
@@ -44,24 +45,24 @@ class En implements core\string\IStemmer {
         }
 
         $natural = (bool)$natural;
-        
+
         $word = self::_step1($word, $natural);
         $word = self::_step2($word, $natural);
         $word = self::_step3($word, $natural);
         $word = self::_step4($word, $natural);
         $word = self::_step5($word, $natural);
-        
+
         return $word;
     }
 
     protected static function _step1($word, $natural) {
         $v = self::$_regVowel;
-        
+
         if(substr($word, -1) == 's') {
             self::_replace($word, 'sses', 'ss') ||
             self::_replace($word, 'ies', 'i');//   ||
             //self::_replace($word, 'ss', 'ss');
-            
+
             if(strlen($word) > 4 || preg_match("#$v+#", substr($word, 0, 1))) {
                 self::_replace($word, 's', '');
             }
@@ -85,37 +86,37 @@ class En implements core\string\IStemmer {
                 }
             }
         }
-        
+
         //if(strlen($word) > 4 && substr($word, -1) == 'y' && preg_match("#$v+#", substr($word, 0, -1))) {
             //self::_replace($word, 'y', 'i');
         //}
-        
+
         return $word;
     }
 
     protected static function _step2($word, $natural) {
         switch(substr($word, -2, 1)) {
             case 'a':
-                self::_replace($word, 'ational', 'ate', 0, !$natural) 
+                self::_replace($word, 'ational', 'ate', 0, !$natural)
                 || self::_replace($word, 'tional', 'tion', 0);
                 break;
-                
+
             case 'c':
                 self::_replace($word, 'enci', 'ence', 0, !$natural)
                 || self::_replace($word, 'anci', 'ance', 0, !$natural)
                 || self::_replace($word, 'enci', 'enc', 0, $natural)
                 || self::_replace($word, 'anci', 'anc', 0, $natural);
                 break;
-                
+
             case 'e':
-                self::_replace($word, 'izer', 'ize', 0) 
+                self::_replace($word, 'izer', 'ize', 0)
                 || self::_replace($word, 'iser', 'ise', 0);
                 break;
-                
+
             case 'g':
                 self::_replace($word, 'logi', 'log', 0);
                 break;
-                
+
             case 'l':
                 self::_replace($word, 'entli', 'ent', 0)
                 || self::_replace($word, 'ousli', 'ous', 0)
@@ -124,28 +125,28 @@ class En implements core\string\IStemmer {
                 || self::_replace($word, 'bli', 'bl', 0, $natural)
                 || self::_replace($word, 'eli', 'e', 0);
                 break;
-                
+
             case 'o':
-                self::_replace($word, 'ization', 'ize', 0, !$natural) 
-                || self::_replace($word, 'isation', 'ise', 0, !$natural) 
+                self::_replace($word, 'ization', 'ize', 0, !$natural)
+                || self::_replace($word, 'isation', 'ise', 0, !$natural)
                 || self::_replace($word, 'ation', 'ate', 0, !$natural)
-                || self::_replace($word, 'ization', 'iz', 0, $natural) 
-                || self::_replace($word, 'isation', 'is', 0, $natural) 
+                || self::_replace($word, 'ization', 'iz', 0, $natural)
+                || self::_replace($word, 'isation', 'is', 0, $natural)
                 || self::_replace($word, 'ation', 'at', 0, $natural);
                 break;
-                
+
             case 's':
-                self::_replace($word, 'iveness', 'ive', 0) 
-                || self::_replace($word, 'fulness', 'ful', 0) 
-                || self::_replace($word, 'ousness', 'ous', 0) 
+                self::_replace($word, 'iveness', 'ive', 0)
+                || self::_replace($word, 'fulness', 'ful', 0)
+                || self::_replace($word, 'ousness', 'ous', 0)
                 || self::_replace($word, 'alism', 'al', 0);
                 break;
-                
+
             case 't':
-                self::_replace($word, 'biliti', 'ble', 0, !$natural) 
-                || self::_replace($word, 'aliti', 'al', 0) 
+                self::_replace($word, 'biliti', 'ble', 0, !$natural)
+                || self::_replace($word, 'aliti', 'al', 0)
                 || self::_replace($word, 'iviti', 'ive', 0, !$natural)
-                || self::_replace($word, 'biliti', 'bl', 0, $natural) 
+                || self::_replace($word, 'biliti', 'bl', 0, $natural)
                 || self::_replace($word, 'iviti', 'iv', 0, $natural);
                 break;
         }
@@ -159,26 +160,26 @@ class En implements core\string\IStemmer {
                 || self::_replace($word, 'cial', 'ce', null, !$natural)
                 || self::_replace($word, 'cial', 'c', null, $natural);
                 break;
-                
+
             case 's':
                 self::_replace($word, 'ness', '', 0);
                 break;
-                
+
             case 't':
-                self::_replace($word, 'icate', 'ic', 0) 
+                self::_replace($word, 'icate', 'ic', 0)
                 || self::_replace($word, 'iciti', 'ic', 0);
                 break;
-                
+
             case 'u':
                 self::_replace($word, 'ful', '', 0);
                 break;
-                
+
             case 'v':
                 self::_replace($word, 'ative', '', 0);
                 break;
-                
+
             case 'z':
-                self::_replace($word, 'alize', 'al', 0) 
+                self::_replace($word, 'alize', 'al', 0)
                 || self::_replace($word, 'alise', 'al', 0);
                 break;
         }
@@ -193,32 +194,32 @@ class En implements core\string\IStemmer {
                     self::_replace($word, 'al', '', 1);
                 }
                 break;
-                
+
             case 'c':
-                self::_replace($word, 'ance', '', 1) 
+                self::_replace($word, 'ance', '', 1)
                 || self::_replace($word, 'ence', '', 1);
                 break;
-                
+
             case 'e':
                 self::_replace($word, 'er', '', 1);
                 break;
-                
+
             case 'i':
                 self::_replace($word, 'ic', '', 1);
                 break;
-                
+
             case 'l':
-                self::_replace($word, 'able', '', 1) 
+                self::_replace($word, 'able', '', 1)
                 || self::_replace($word, 'ible', '', 1);
                 break;
-                
+
             case 'n':
-                self::_replace($word, 'ant', '', 1) 
-                || self::_replace($word, 'ement', '', 1) 
-                || self::_replace($word, 'ment', '', 1) 
+                self::_replace($word, 'ant', '', 1)
+                || self::_replace($word, 'ement', '', 1)
+                || self::_replace($word, 'ment', '', 1)
                 || self::_replace($word, 'ent', '', 1);
                 break;
-                
+
             case 'o':
                 if(substr($word, -4) == 'tion' || substr($word, -4) == 'sion') {
                     self::_replace($word, 'ion', '', 1);
@@ -226,25 +227,25 @@ class En implements core\string\IStemmer {
                     self::_replace($word, 'ou', '', 1);
                 }
                 break;
-                
+
             case 's':
-                self::_replace($word, 'ism', '', 1) 
+                self::_replace($word, 'ism', '', 1)
                 || self::_replace($word, 'ise', '', 1);
                 break;
-                
+
             case 't':
-                self::_replace($word, 'ate', '', 1) 
+                self::_replace($word, 'ate', '', 1)
                 || self::_replace($word, 'iti', '', 1);
                 break;
-                
+
             case 'u':
                 self::_replace($word, 'ous', '', 1);
                 break;
-                
+
             case 'v':
                 self::_replace($word, 'ive', '', 1);
                 break;
-                
+
             case 'z':
                 self::_replace($word, 'ize', '', 1);
                 break;
@@ -258,7 +259,7 @@ class En implements core\string\IStemmer {
             || substr($word, -2, 1) == 'y') {
                 self::_replace($word, 'e', '');
             }
-            
+
             //if(self::_measure(substr($word, 0, -1)) > 1) {
                 //self::_replace($word, 'e', '');
             //} else if(self::_measure(substr($word, 0, -1)) == 1) {
@@ -267,11 +268,11 @@ class En implements core\string\IStemmer {
                 //}
             //}
         }
-        
+
         if(self::_measure($word) > 1 && self::_doubleConsonant($word) && substr($word, -1) == 'l') {
             $word = substr($word, 0, -1);
         }
-        
+
         return $word;
     }
 
@@ -281,17 +282,17 @@ class En implements core\string\IStemmer {
         }
 
         $len = 0 - strlen($check);
-        
+
         if(substr($str, $len) == $check) {
             $substr = substr($str, 0, $len);
-            
+
             if(is_null($m) || self::_measure($substr) > $m) {
                 $str = $substr.$repl;
             }
-            
+
             return true;
         }
-        
+
         return false;
     }
 
@@ -315,7 +316,7 @@ class En implements core\string\IStemmer {
     protected static function _cvc($str) {
         $c = self::$_regConsonant;
         $v = self::$_regVowel;
-        
+
         return preg_match("#($c$v$c)$#", $str, $matches)
             && strlen($matches[1]) == 3
             && $matches[1]{2} != 'w'

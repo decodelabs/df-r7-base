@@ -9,17 +9,18 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
+use df\flex;
 use df\link;
 
 abstract class Action extends arch\Action implements IAction {
-    
+
     use TForm;
 
     const SESSION_ID_KEY = 'fsid';
     const MAX_SESSIONS = 15;
     const SESSION_PRUNE_THRESHOLD = 5400; // 1.5 hrs
     const SESSION_AUTO_RESUME = true;
-    
+
     const DEFAULT_EVENT = 'save';
     const DEFAULT_REDIRECT = null;
     const FORCE_REDIRECT = false;
@@ -29,10 +30,10 @@ abstract class Action extends arch\Action implements IAction {
     private $_sessionNamespace;
     private $_initResponse;
 
-    
+
     public function __construct(arch\IContext $context) {
         parent::__construct($context);
-        
+
         if($this->context->getRunMode() !== 'Http') {
             throw new RuntimeException(
                 'Form actions can only be used in Http run mode'
@@ -43,23 +44,23 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     protected function afterConstruct() {}
-    
+
     final protected function _beforeDispatch() {
         $response = $this->init();
         $request = $this->context->request;
         $id = null;
-        
+
         if(!empty($response)) {
             return $response;
         }
-        
+
         $this->_sessionNamespace = $this->_createSessionNamespace();
         $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
-        
+
         if($request->hasQuery() && $request->getQuery()->has(static::SESSION_ID_KEY)) {
             $id = $request->getQuery()->get(static::SESSION_ID_KEY);
         }
-        
+
         if(!empty($id)) {
             $this->_state = $session->get($id);
         } else {
@@ -67,21 +68,21 @@ abstract class Action extends arch\Action implements IAction {
                 $this->_state = $session->getLastUpdated();
             } else {
                 $id = $this->_createSessionId();
-                
+
                 $request->getQuery()->set(
                     static::SESSION_ID_KEY, $id
                 );
             }
         }
-        
+
         if(!$this->_state) {
             if(empty($id)) {
                 $id = $this->_createSessionId();
             }
-            
+
             $this->_state = new StateController($id);
             $keys = $session->getAllKeys();
-            
+
             if(count($keys) > static::MAX_SESSIONS) {
                 $this->context->comms->flash(
                     'form.session.prune',
@@ -94,7 +95,7 @@ abstract class Action extends arch\Action implements IAction {
                 $session->remove(array_shift($keys));
             }
         }
-        
+
         $this->values = $this->_state->values;
         $response = $this->initWithSession();
 
@@ -104,13 +105,13 @@ abstract class Action extends arch\Action implements IAction {
             if($this->_state->isNew()) {
                 $this->_isNew = true;
             }
-            
+
             $this->loadDelegates();
 
             if($this->_isNew) {
                 $this->setDefaultValues();
             }
-            
+
             foreach($this->_delegates as $delegate) {
                 $delegate->initialize();
             }
@@ -146,27 +147,27 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     private function _createSessionId() {
-        return core\string\Generator::sessionId();
+        return flex\Generator::sessionId();
     }
-    
+
     private function _createSessionNamespace() {
         $output = 'form://'.implode('/', $this->context->request->getLiteralPathArray());
 
         if(substr($output, -5) == '.ajax') {
             $output = substr($output, 0, -5);
         }
-        
+
         if(null !== ($dataId = $this->getInstanceId())) {
             $output .= '#'.$dataId;
         }
-        
+
         return $output;
     }
-    
+
     protected function getInstanceId() {
         return null;
     }
-    
+
     protected function initWithSession() {}
 
     public function getStateController() {
@@ -175,14 +176,14 @@ abstract class Action extends arch\Action implements IAction {
                 'State controller is not available until the form has been dispatched'
             );
         }
-        
+
         return $this->_state;
     }
 
     public function dispatchToRenderInline(aura\view\IView $view) {
         $this->_beforeDispatch();
         $this->view = $view;
-        
+
         $this->_isRenderingInline = true;
         $method = $this->getActionMethodName();
         call_user_func_array([$this, $method], []);
@@ -245,11 +246,11 @@ abstract class Action extends arch\Action implements IAction {
         }
 
         $this->content->setRenderTarget($this->view);
-        
+
         foreach($this->_delegates as $delegate) {
             $delegate->setRenderContext($this->view, $this->content, $this->_isRenderingInline);
         }
-        
+
         if(method_exists($this, 'createUi')) {
             $this->createUi();
         } else if($this->context->application->isDevelopment()) {
@@ -257,7 +258,7 @@ abstract class Action extends arch\Action implements IAction {
                 '<p>This form handler has no ui generator - you need to implement function createUi() or override function handleGetRequest()</p>'
             ));
         }
-        
+
         $this->view->getHeaders()
             ->setCacheAccess('no-cache')
             ->canStoreCache(false)
@@ -280,7 +281,7 @@ abstract class Action extends arch\Action implements IAction {
         if(empty($response)) {
             $response = $this->http->redirect()->isAlternativeContent(true);
         }
-        
+
         return $response;
     }
 
@@ -391,8 +392,8 @@ abstract class Action extends arch\Action implements IAction {
         ];
     }
 
-    
-    
+
+
     private function _runPostRequest(core\collection\ITree $postData=null) {
         if($postData === null) {
             $httpRequest = $this->context->application->getHttpRequest();
@@ -416,49 +417,49 @@ abstract class Action extends arch\Action implements IAction {
                     $this->getDelegate($id)->values->clear()->import($delegateValues);
                 } catch(DelegateException $e) {}
             }
-            
+
             $postData->remove('_delegates');
         }
 
         $this->values->clear()->import($postData);
-        
+
         if(empty($event)) {
             $event = $this->getDefaultEvent();
-            
+
             if(empty($event)) {
                 $event = self::DEFAULT_EVENT;
             }
         }
-        
-        
+
+
         $parts = explode('(', $event, 2);
         $event = array_shift($parts);
         $args = substr(array_pop($parts), 0, -1);
-        
+
         if(!empty($args)) {
-            $args = core\string\Util::parseDelimited($args);
+            $args = flex\Delimited::parse($args);
         } else {
             $args = [];
         }
-        
+
         $targetId = explode('.', trim($event, '.'));
         $event = array_pop($targetId);
         $target = $this;
-        
+
         if(!empty($targetId)) {
             while(!empty($targetId)) {
                 $target->handleDelegateEvent(implode('.', $targetId), $event, $args);
                 $target = $target->getDelegate(array_shift($targetId));
             }
         }
-        
+
         $output = $target->handleEvent($event, $args);
 
         if($target->isComplete()) {
             // TODO: work out $success
             $success = true;
             $this->setComplete();
-        
+
             foreach($this->_delegates as $delegate) {
                 $delegate->setComplete($success);
             }
@@ -506,10 +507,10 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     public function elementId($name) {
-        return core\string\Manipulator::formatSlug($name);   
+        return flex\Text::formatSlug($name);
     }
-    
-    
+
+
 // Events
     protected function onCancelEvent() {
         $this->setComplete();
@@ -529,7 +530,7 @@ abstract class Action extends arch\Action implements IAction {
     public function getActionMethodName() {
         $method = ucfirst(strtolower($this->context->application->getHttpRequest()->getMethod()));
         $func = 'handle'.$this->context->request->getType().$method.'Request';
-        
+
         if(!method_exists($this, $func)) {
             throw new RuntimeException(
                 'Form action '.$this->context->request.' does not support '.
@@ -537,18 +538,18 @@ abstract class Action extends arch\Action implements IAction {
                 405
             );
         }
-        
+
         return $func;
     }
-    
+
     protected function _afterDispatch($response) {
-        if(!$this->_isComplete 
+        if(!$this->_isComplete
         && $this->_sessionNamespace
         && $this->_state->isOperating()) {
             $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
             $session->set($this->_state->sessionId, $this->_state);
         }
-        
+
         return $response;
     }
 }

@@ -8,9 +8,10 @@ namespace df\opal\ldap;
 use df;
 use df\core;
 use df\opal;
+use df\flex;
 
 class Rdn implements IRdn, core\IDumpable {
-    
+
     use core\collection\TAttributeContainer;
     use core\TStringProvider;
 
@@ -37,19 +38,19 @@ class Rdn implements IRdn, core\IDumpable {
     public function setAttribute($key, $value) {
         $key = trim($key);
         $value = trim($value);
-        
+
         if(is_numeric($key)) {
             throw new InvalidDnException(
                 'Malformed rdn key: '.$key
             );
         }
-        
+
         if(isset($this->_attributes[$key])) {
             throw new InvalidDnException(
                 'Duplicate multi key '.$key.' in dn'
             );
         }
-        
+
         $this->_attributes[$key] = $value;
         return $this;
     }
@@ -70,16 +71,16 @@ class Rdn implements IRdn, core\IDumpable {
         return $this->implode();
     }
 
-    public function implode($case=core\string\ICase::NONE) {
+    public function implode($case=flex\ICase::NONE) {
         $output = [];
 
         foreach($this->_attributes as $key => $value) {
             switch($case) {
-                case core\string\ICase::UPPER:
+                case flex\ICase::UPPER:
                     $key = strtoupper($key);
                     break;
 
-                case core\string\ICase::LOWER:
+                case flex\ICase::LOWER:
                     $key = strtolower($key);
                     break;
             }
@@ -93,7 +94,7 @@ class Rdn implements IRdn, core\IDumpable {
     }
 
     public function eq($rdn) {
-        return $this->implode(core\string\ICase::LOWER) == self::factory($rdn)->implode(core\string\ICase::LOWER);
+        return $this->implode(flex\ICase::LOWER) == self::factory($rdn)->implode(flex\ICase::LOWER);
     }
 
     public function count() {

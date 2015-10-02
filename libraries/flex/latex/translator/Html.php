@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,10 +10,10 @@ use df\core;
 use df\flex;
 use df\iris;
 use df\aura;
-    
+
 class Html extends iris\Translator {
 
-    use core\string\THtmlStringEscapeHandler;
+    use flex\THtmlStringEscapeHandler;
 
     public $document;
     public $lastNode;
@@ -32,7 +32,7 @@ class Html extends iris\Translator {
     }
 
     public static function createParser(iris\ILexer $lexer) {
-        return new flex\latex\Parser($lexer);   
+        return new flex\latex\Parser($lexer);
     }
 
     public function translate() {
@@ -157,7 +157,7 @@ class Html extends iris\Translator {
         $output = '';
         $this->_bibCount++;
 
-        $liTag = $this->tag('li#bibitem-'.core\string\Manipulator::formatId($block->getId()));
+        $liTag = $this->tag('li#bibitem-'.flex\Text::formatId($block->getId()));
 
         $output .= '    '.$liTag->open();
         $output .= $this->_translateContainerNode($block);
@@ -201,11 +201,11 @@ class Html extends iris\Translator {
             $captionTag = $this->tag('figcaption');
         }
 
-        $id = core\string\Manipulator::formatId($figure->getId());
+        $id = flex\Text::formatId($figure->getId());
         $src = $this->_dereferenceImage($id, $figure->getNumber());
 
         if(!$alt) {
-            $alt = core\string\Manipulator::formatLabel(
+            $alt = flex\Text::formatLabel(
                 core\uri\Path::extractRootFileName($src)
             );
         }
@@ -268,7 +268,7 @@ class Html extends iris\Translator {
             $tag = $this->tag('div.math.block');
 
             if($id = $math->getId()) {
-                $tag->setId('mathNode-'.core\string\Manipulator::formatId($id));
+                $tag->setId('mathNode-'.flex\Text::formatId($id));
             }
 
             $output .= "\n".$tag->open();
@@ -287,7 +287,7 @@ class Html extends iris\Translator {
 
             $output .= '\\]';
             $output .= $tag->close()."\n";
-        } 
+        }
 
         return $output;
     }
@@ -298,7 +298,7 @@ class Html extends iris\Translator {
         $output = '';
 
         if($id = $list->getId()) {
-            $id = core\string\Manipulator::formatId($id);
+            $id = flex\Text::formatId($id);
         }
 
         $tag = $this->tag('ol', ['id' => $id]);
@@ -321,7 +321,7 @@ class Html extends iris\Translator {
         $output = '';
 
         if($id = $list->getId()) {
-            $id = core\string\Manipulator::formatId($id);
+            $id = flex\Text::formatId($id);
         }
 
         $tag = $this->tag('ul', ['id' => $id]);
@@ -356,7 +356,7 @@ class Html extends iris\Translator {
     protected function _translateReference(flex\latex\map\Reference $ref) {
         $output = '';
         $id = $ref->getId();
-        $htmlId = core\string\Manipulator::formatId($id);
+        $htmlId = flex\Text::formatId($id);
 
         if(isset($this->_references[$id])) {
             $type = $this->_references[$id]['type'];
@@ -507,8 +507,8 @@ class Html extends iris\Translator {
 // Small
     protected function _translateSmallBlock(flex\latex\map\Block $block) {
         return (string)$this->element(
-            'small', 
-            $this->string($this->_translateContainerNode($block)), 
+            'small',
+            $this->string($this->_translateContainerNode($block)),
             ['class' => $block->getClasses()]
         );
     }
@@ -558,7 +558,7 @@ class Html extends iris\Translator {
         $tableTag = $this->tag('table');
 
         if($id = $table->getId()) {
-            $id = core\string\Manipulator::formatId($id);
+            $id = flex\Text::formatId($id);
             $tableTag->setId('table-'.$id);
         }
 
@@ -592,7 +592,7 @@ class Html extends iris\Translator {
             if($firstRow && $rowHead) {
                 $output .= '<thead>'."\n";
             }
-                
+
             $output .= $rowTag->open()."\n";
             $firstCell = true;
 
@@ -676,11 +676,11 @@ class Html extends iris\Translator {
             );
 
             $text = preg_replace_callback(
-                '/([^\s@\<\>\(\)\[\]\:\;]+@[^\s@\<\>\(\)\[\]\:\;\.]+\.[^\s@\<\>\(\)\[\]\:\;]+)/', 
+                '/([^\s@\<\>\(\)\[\]\:\;]+@[^\s@\<\>\(\)\[\]\:\;\.]+\.[^\s@\<\>\(\)\[\]\:\;]+)/',
                 function($matches) {
                     $email = htmlspecialchars(trim($matches[1], '. '));
                     return '<a href="mailto:'.$email.'">'.$email.'</a>';
-                }, 
+                },
                 $text
             );
         }
@@ -692,8 +692,8 @@ class Html extends iris\Translator {
 // Tiny
     protected function _translateTinyBlock(flex\latex\map\Block $block) {
         return (string)$this->element(
-                'small', 
-                $this->string($this->_translateContainerNode($block)), 
+                'small',
+                $this->string($this->_translateContainerNode($block)),
                 ['class' => $block->getClasses()]
             )
             ->addClass('tiny');

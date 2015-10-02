@@ -12,7 +12,7 @@ use df\arch;
 use df\flex;
 
 class Parser implements flex\IHtmlProducer {
-    
+
     use flex\TParser;
 
     const INLINE_MARKERS = '!"*_&[:<>`~\\';
@@ -72,7 +72,7 @@ class Parser implements flex\IHtmlProducer {
         '_' => '/^_((?:\\\\_|[^_]|__[^_]*__)+?)_(?!_)\b/us',
     ];
 
-    
+
 
     protected $_context;
     protected $_definitions = [];
@@ -91,7 +91,7 @@ class Parser implements flex\IHtmlProducer {
     public function toHtml() {
         $this->_context = arch\Context::getCurrent();
         $this->_definitions = [];
-        return $this->_handleLines(core\string\Util::splitLines($this->source));
+        return $this->_handleLines(flex\Delimited::splitLines($this->source));
     }
 
     protected function _scanLines($lines) {
@@ -131,7 +131,7 @@ class Parser implements flex\IHtmlProducer {
 
             $line = new Parser_Line([
                 'indent' => $indent,
-                'body' => $line, 
+                'body' => $line,
                 'text' => $indent > 0 ? substr($line, $indent) : $line
             ]);
 
@@ -791,8 +791,8 @@ class Parser implements flex\IHtmlProducer {
 
                 $unmarkedText = substr($text, 0, $inline->position);
                 $markup .= $this->_normalizeUnmarkedText($unmarkedText);
-                $markup .= isset($inline->markup) ? 
-                    $inline->markup : 
+                $markup .= isset($inline->markup) ?
+                    $inline->markup :
                     $this->_handleElement($inline->element);
 
                 $text = substr($text, $inline->position + $inline->extent);
@@ -819,8 +819,8 @@ class Parser implements flex\IHtmlProducer {
             }
 
             $markup .= "\n";
-            $markup .= isset($block->markup) ? 
-                $block->markup : 
+            $markup .= isset($block->markup) ?
+                $block->markup :
                 $this->_handleElement($block->element);
         }
 

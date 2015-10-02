@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,7 +7,8 @@ namespace df\core\xml;
 
 use df;
 use df\core;
-    
+use df\flex;
+
 class Tree implements ITree, core\IDumpable {
 
     use core\TStringProvider;
@@ -154,7 +155,7 @@ class Tree implements ITree, core\IDumpable {
     }
 
     public function getBooleanAttribute($name, $default=null) {
-        return core\string\Manipulator::stringToBoolean($this->getAttribute($name, $default), false);
+        return flex\Text::stringToBoolean($this->getAttribute($name, $default), false);
     }
 
     public function removeAttribute($key) {
@@ -183,13 +184,13 @@ class Tree implements ITree, core\IDumpable {
     }
 
     public function getInnerXml() {
-        $output = ''; 
+        $output = '';
 
-        foreach($this->_element->childNodes as $child) { 
+        foreach($this->_element->childNodes as $child) {
             $output .= $this->_element->ownerDocument->saveXML($child);
-        } 
+        }
 
-        return $output; 
+        return $output;
     }
 
     public function getComposedInnerXml() {
@@ -486,7 +487,7 @@ class Tree implements ITree, core\IDumpable {
         if(!preg_match('/^([\-]?)([0-9]*)[n]([+]([0-9]+))?$/i', str_replace(' ', '', $formula), $matches)) {
             throw new InvalidArgumentException(
                 $formula.' is not a valid nth-child formula'
-            );    
+            );
         }
 
         $mod = (int)$matches[2];
@@ -569,7 +570,7 @@ class Tree implements ITree, core\IDumpable {
         if($index == 0) {
             $newNode = $this->_element->insertBefore($newNode, $this->_element->firstChild);
         } else if($index >= $count) {
-            $newNode = $this->_element->appendChild($newNode);            
+            $newNode = $this->_element->appendChild($newNode);
         } else {
             foreach($this->_element->childNodes as $node) {
                 if(!$node->nodeType == \XML_ELEMENT_NODE) {
@@ -781,7 +782,7 @@ class Tree implements ITree, core\IDumpable {
 
 // Comments
     public function getPrecedingComment() {
-        if($this->_element->previousSibling 
+        if($this->_element->previousSibling
         && $this->_element->previousSibling->nodeType == \XML_COMMENT_NODE) {
             return trim($this->_element->previousSibling->data);
         }
@@ -875,7 +876,7 @@ class Tree implements ITree, core\IDumpable {
 
         return (bool)$this->_element->ownerDocument->xmlStandalone;
     }
-    
+
     public function normalizeDocument() {
         $this->_element->ownerDocument->normalizeDocument();
         return $this;

@@ -3,13 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\string;
+namespace df\flex;
 
 use df;
 use df\core;
+use df\flex;
 
 class VersionRange implements IVersionRange, core\IDumpable {
-    
+
     use core\TStringProvider;
 
     protected $_groups = [];
@@ -158,7 +159,7 @@ class VersionRange implements IVersionRange, core\IDumpable {
     }
 
     public function isSingleVersion() {
-        return count($this->_groups) == 1 
+        return count($this->_groups) == 1
             && count($this->_groups[0]) == 1
             && isset($this->_groups[0][0])
             && $this->_groups[0][0]->operator == '=';

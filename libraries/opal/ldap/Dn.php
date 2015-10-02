@@ -8,9 +8,10 @@ namespace df\opal\ldap;
 use df;
 use df\core;
 use df\opal;
+use df\flex;
 
 class Dn implements IDn, core\IDumpable {
-    
+
     use core\TStringProvider;
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_ProcessedIndexedValueMap;
@@ -19,7 +20,7 @@ class Dn implements IDn, core\IDumpable {
     use core\collection\TArrayCollection_ProcessedShiftable;
     use core\collection\TArrayCollection_IndexedMovable;
     use core\collection\TArrayCollection_Constructor;
-    
+
     public static function factory() {
         if(func_num_args()) {
             $dn = func_get_arg(0);
@@ -122,7 +123,7 @@ class Dn implements IDn, core\IDumpable {
                     break;
             }
         }
-        
+
         return new self($output);
     }
 
@@ -139,7 +140,7 @@ class Dn implements IDn, core\IDumpable {
     }
 
     public static function escapeValue($value) {
-        $value = core\string\Util::ascii32ToHex32(
+        $value = flex\Text::ascii32ToHex32(
             str_replace(
                 ['\\', ',', '+', '"', '<', '>', ';', '#', '='],
                 ['\\\\', '\,', '\+', '\"', '\<', '\>', '\;', '\#', '\='],
@@ -149,20 +150,20 @@ class Dn implements IDn, core\IDumpable {
 
         if(preg_match('/^(\s*)(.+?)(\s*)$/', $value, $matches)) {
             $value = $matches[2];
-            
+
             for($i = 0; $i < strlen($matches[1]); $i++) {
                 $value = '\20'.$value;
             }
-            
+
             for($i = 0; $i < strlen($matches[3]); $i++) {
                 $value .= '\20';
             }
         }
-        
+
         if($value === null) {
             $value = '\0';
         }
-        
+
         return $value;
     }
 
@@ -170,16 +171,16 @@ class Dn implements IDn, core\IDumpable {
         if(!is_array($values)) {
             $values = func_get_args();
         }
-        
+
         foreach($values as $i => $value) {
             $values[$i] = self::unescapeValue($value);
         }
-        
+
         return $values;
     }
 
     public static function unescapeValue($value) {
-        return core\string\Util::hex32ToAscii32(
+        return flex\Text::hex32ToAscii32(
             str_replace(
                 ['\\\\', '\,', '\+', '\"', '\<', '\>', '\;', '\#', '\='],
                 ['\\', ',', '+', '"', '<', '>', ';', '#', '='],
@@ -193,7 +194,7 @@ class Dn implements IDn, core\IDumpable {
         return $this->implode(',');
     }
 
-    public function implode($separator=',', $case=core\string\ICase::NONE) {
+    public function implode($separator=',', $case=flex\ICase::NONE) {
         $output = [];
 
         foreach($this->_collection as $rdn) {

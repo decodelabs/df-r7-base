@@ -13,7 +13,7 @@ use df\axis;
 use df\opal;
 
 class TaskRebuildTable extends arch\task\Action {
-    
+
     protected $_deleteOld = false;
 
     public function execute() {
@@ -64,7 +64,7 @@ class TaskRebuildTable extends arch\task\Action {
 
         $this->io->writeLine();
         $this->io->writeLine('Updating schema cache');
-        
+
         axis\schema\Cache::getInstance()->clearAll();
         axis\schema\Manager::getInstance()->store($unit, $schema);
 
@@ -144,7 +144,7 @@ class TaskRebuildTable extends arch\task\Action {
         } else {
             $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
         }
-        
+
         $newTable->rename($currentTableName);
     }
 }

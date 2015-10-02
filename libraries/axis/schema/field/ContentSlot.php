@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,8 @@ use df\core;
 use df\axis;
 use df\fire;
 use df\opal;
-    
+use df\flex;
+
 class ContentSlot extends Base {
 
     protected $_category;
@@ -84,7 +85,7 @@ class ContentSlot extends Base {
             if(empty($value)) {
                 $value = null;
             }
-            
+
             if($value !== null) {
                 return fire\slot\Content::fromXmlString($value);
             }
@@ -168,8 +169,8 @@ class ContentSlot extends Base {
             return false;
         }
 
-        return core\string\Manipulator::compare(
-            $value1->toXmlString(true), 
+        return flex\Text::compare(
+            $value1->toXmlString(true),
             $value2->toXmlString(true)
         );
     }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,11 +8,12 @@ namespace df\iris\scanner;
 use df;
 use df\core;
 use df\iris;
-    
+use df\flex;
+
 class String implements iris\IScanner {
 
     protected $_containers = [
-        '"' => 'derefString', 
+        '"' => 'derefString',
         "'" => 'string'
     ];
 
@@ -132,7 +133,7 @@ class String implements iris\IScanner {
     }
 
     public function initialize(iris\ILexer $lexer) {
-        
+
     }
 
     public function check(iris\ILexer $lexer) {
@@ -154,16 +155,16 @@ class String implements iris\IScanner {
 
             if($lexer->char == $this->_escapeSymbol) {
                 // Escape
-                $c = core\string\Util::mbOrd($this->_processEscape($lexer));
+                $c = flex\Text::mbOrd($this->_processEscape($lexer));
             } else if($lexer->char == '0' && strtolower($lexer->peek(1, 1)) == 'x') {
                 // Hex
                 $lexer->extract(2);
                 $string = $lexer->extractRegexRange('a-fA-F0-9');
 
-                $c = core\string\Manipulator::baseConvert($string, 16, 10);
+                $c = flex\Text::baseConvert($string, 16, 10);
             } else {
                 // Abstract
-                $c = core\string\Util::mbOrd($lexer->extractRegexRange('^'.$this->_charContainer));
+                $c = flex\Text::mbOrd($lexer->extractRegexRange('^'.$this->_charContainer));
             }
 
             if($lexer->char != $this->_charContainer) {

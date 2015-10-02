@@ -31,7 +31,7 @@ interface IStringValueProvider {
 }
 
 trait TStringProvider {
-    
+
     public function __toString() {
         try {
             return (string)$this->toString();
@@ -75,7 +75,7 @@ interface IExtendedArrayProvider extends IArrayProvider {
 }
 
 trait TExtendedArrayProvider {
-    
+
     public function toJsonString() {
         return df\flex\json\Codec::encode($this->toArray());
     }
@@ -118,7 +118,7 @@ trait TValueMap {
         foreach($fields as $toField => $fromField) {
             if(!is_string($toField)) {
                 $toField = $fromField;
-            } 
+            }
 
             if($source instanceof IExporterValueMap) {
                 $value = $source->export($fromField);
@@ -181,7 +181,7 @@ interface ILoader {
     public function loadClass($class);
     public function getClassSearchPaths($class);
     public function lookupClass($path);
-    
+
     public function findFile($path);
     public function getFileSearchPaths($path);
     public function lookupFileList($path, $extensions=null);
@@ -189,16 +189,16 @@ interface ILoader {
     public function lookupClassList($path, $test=true);
     public function lookupFolderList($path);
     public function lookupLibraryList();
-    
+
     public function registerLocation($name, $path);
     public function unregisterLocation($name);
     public function getLocations();
-    
+
     public function loadPackages(array $packages);
     public function getPackages();
     public function hasPackage($package);
     public function getPackage($package);
-    
+
     public function shutdown();
 }
 
@@ -209,43 +209,43 @@ interface IPackage {
 }
 
 class Package implements IPackage {
-    
+
     const PRIORITY = 20;
-    
+
     public static $dependencies = [];
 
     public $path;
     public $name;
     public $priority;
-    
+
     public static function factory($name) {
         $class = 'df\\apex\\packages\\'.$name.'\\Package';
-        
+
         if(!class_exists($class)) {
             throw new RuntimeException('Package '.$name.' could not be found');
         }
-        
+
         return new $class($name);
     }
-    
+
     public function __construct($name, $priority=null, $path=null) {
         if($path === null) {
             $ref = new \ReflectionObject($this);
             $path = dirname($ref->getFileName());
         }
-        
+
         if(df\Launchpad::IS_COMPILED) {
             $this->path = df\Launchpad::DF_PATH.'/apex/packages/'.$name;
         } else {
             $this->path = $path;
         }
-        
+
         $this->name = $name;
-        
+
         if($priority === null) {
             $priority = static::PRIORITY;
         }
-        
+
         $this->priority = $priority;
     }
 
@@ -259,12 +259,12 @@ interface IApplication {
     public static function getApplicationPath();
     public function getLocalStoragePath();
     public function getSharedStoragePath();
-    
+
     // Execute
     public function dispatch();
     public function shutdown();
     public function getDispatchException();
-    
+
     // Environment
     public function getEnvironmentId();
     public function getEnvironmentMode();
@@ -277,12 +277,12 @@ interface IApplication {
 
     // Debug
     public function renderDebugContext(core\debug\IContext $context);
-    
+
     // Members
     public function getName();
     public function getUniquePrefix();
     public function getPassKey();
-    
+
     // Cache
     public function setRegistryObject(IRegistryObject $object);
     public function getRegistryObject($key);
@@ -298,7 +298,7 @@ interface IRegistryObject {
 
 interface IShutdownAware {
     public function onApplicationShutdown();
-} 
+}
 
 interface IDispatchAware {
     public function onApplicationDispatch(df\arch\IAction $action);
@@ -310,15 +310,15 @@ interface IDispatchAware {
 interface IManager extends IRegistryObject {}
 
 trait TManager {
-    
+
     public static function getInstance() {
         $application = df\Launchpad::getApplication();
-        
+
         if(!$output = $application->getRegistryObject(static::REGISTRY_PREFIX)) {
             $output = static::_getDefaultInstance();
             static::setInstance($output);
         }
-        
+
         return $output;
     }
 
@@ -329,9 +329,9 @@ trait TManager {
     protected static function _getDefaultInstance() {
         return new self();
     }
-    
+
     protected function __construct() {}
-    
+
     public function getRegistryObjectKey() {
         return static::REGISTRY_PREFIX;
     }
@@ -349,7 +349,7 @@ interface IHelperProvider {
 }
 
 trait THelperProvider {
-    
+
     public function __get($key) {
         return $this->getHelper($key);
     }
@@ -365,14 +365,14 @@ trait THelperProvider {
 
         return call_user_func_array($helper, $args);
     }
-    
+
     public function getHelper($name, $returnNull=false) {
         $name = lcfirst($name);
 
         if(isset($this->{$name})) {
             return $this->{$name};
         }
-        
+
         $output = $this->_loadHelper($name);
 
         if(!$output && !$returnNull) {
@@ -385,14 +385,14 @@ trait THelperProvider {
 
         return $output;
     }
-    
+
     protected function _loadHelper($name) {
         return $this->_loadSharedHelper($name);
     }
 
     protected function _loadSharedHelper($name, $target=null) {
         $class = 'df\\plug\\'.ucfirst($name);
-            
+
         if(!class_exists($class)) {
             return null;
         }
@@ -446,8 +446,8 @@ interface IContext extends core\IHelperProvider, core\ITranslator {
     public function loadRootHelper($name);
     public function throwError($code=500, $message='', array $data=null);
     public function findFile($path);
-    
-    public function getLogManager();    
+
+    public function getLogManager();
     public function getI18nManager();
     public function getMeshManager();
     public function getSystemInfo();
@@ -489,15 +489,15 @@ trait TContext {
         } else {
             $this->_locale = core\i18n\Locale::factory($locale);
         }
-        
+
         return $this;
     }
-    
+
     public function getLocale() {
         if($this->_locale) {
             return $this->_locale;
         } else {
-            return core\i18n\Manager::getInstance()->getLocale(); 
+            return core\i18n\Manager::getInstance()->getLocale();
         }
     }
 
@@ -506,7 +506,7 @@ trait TContext {
     public function throwError($code=500, $message='', array $data=null) {
         throw new ContextException($message, (int)$code, $data);
     }
-    
+
     public function findFile($path) {
         return df\Launchpad::$loader->findFile($path);
     }
@@ -518,15 +518,15 @@ trait TContext {
     public function getI18nManager() {
         return core\i18n\Manager::getInstance();
     }
-    
+
     public function getMeshManager() {
         return df\mesh\Manager::getInstance();
     }
-    
+
     public function getSystemInfo() {
         return df\halo\system\Base::getInstance();
     }
-    
+
     public function getUserManager() {
         return df\user\Manager::getInstance();
     }
@@ -542,7 +542,7 @@ trait TContext {
                 'Config '.$path.' could not be found'
             );
         }
-        
+
         return $class::getInstance();
     }
 
@@ -552,7 +552,7 @@ trait TContext {
                 'Cache '.$path.' could not be found'
             );
         }
-        
+
         return $class::getInstance();
     }
 
@@ -560,29 +560,29 @@ trait TContext {
         switch($name) {
             case 'context':
                 return $this;
-            
+
             case 'application':
                 return $this->application;
-                
+
             case 'runMode':
                 return $this->application->getRunMode();
-                
+
             case 'locale':
                 return $this->getLocale();
-                
+
 
             case 'logs':
                 return core\log\Manager::getInstance();
-                
+
             case 'i18n':
                 return core\i18n\Manager::getInstance();
-                
+
             case 'mesh':
                 return df\mesh\Manager::getInstance();
-                
+
             case 'system':
                 return df\halo\system\Base::getInstance();
-                
+
             case 'user':
                 return df\user\Manager::getInstance();
 
@@ -632,9 +632,9 @@ interface IContextAware {
 }
 
 trait TContextAware {
-    
+
     public $context;
-    
+
     public function getContext() {
         return $this->context;
     }
@@ -647,16 +647,16 @@ trait TContextAware {
 
 
 trait TContextProxy {
-    
+
     use TContextAware;
     use core\TTranslator;
-    
+
     public function __call($method, $args) {
         if($this->context) {
             return call_user_func_array([$this->context, $method], $args);
         }
     }
-    
+
     public function __get($key) {
         if(isset($this->{$key})) {
             return $this->{$key};
@@ -712,7 +712,7 @@ function qDump() {
     }
 
     $count = func_num_args();
-    
+
     if($count > 1) {
         $args = func_get_args();
     } else if($count == 1) {
@@ -722,13 +722,13 @@ function qDump() {
     if($count) {
         echo '<pre>'.print_r($args, true).'</pre>';
     }
-    
+
     df\Launchpad::benchmark();
 }
 
 function stub() {
     return df\Launchpad::getDebugContext()->addStub(
-            func_get_args(), 
+            func_get_args(),
             core\debug\StackCall::factory(1),
             true
         )
@@ -737,7 +737,7 @@ function stub() {
 
 function stubQuiet() {
     return df\Launchpad::getDebugContext()->addStub(
-            func_get_args(), 
+            func_get_args(),
             core\debug\StackCall::factory(1),
             false
         );
@@ -745,7 +745,7 @@ function stubQuiet() {
 
 function dump($arg1) {
     return df\Launchpad::getDebugContext()->addDumpList(
-            func_get_args(), 
+            func_get_args(),
             core\debug\StackCall::factory(1),
             false,
             true
@@ -755,7 +755,7 @@ function dump($arg1) {
 
 function dumpQuiet($arg1) {
     return df\Launchpad::getDebugContext()->addDumpList(
-            func_get_args(), 
+            func_get_args(),
             core\debug\StackCall::factory(1),
             false,
             false
@@ -764,7 +764,7 @@ function dumpQuiet($arg1) {
 
 function dumpDeep($arg1) {
     return df\Launchpad::getDebugContext()->addDumpList(
-            func_get_args(), 
+            func_get_args(),
             core\debug\StackCall::factory(1),
             true,
             true
@@ -774,7 +774,7 @@ function dumpDeep($arg1) {
 
 function dumpDeepQuiet($arg1) {
     return df\Launchpad::getDebugContext()->addDumpList(
-            func_get_args(), 
+            func_get_args(),
             core\debug\StackCall::factory(1),
             true,
             false

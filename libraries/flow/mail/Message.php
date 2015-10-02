@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,8 @@ namespace df\flow\mail;
 use df;
 use df\core;
 use df\flow;
-    
+use df\flex;
+
 class Message extends flow\mime\MultiPart implements IMessage {
 
     protected $_from;
@@ -69,7 +70,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
                 }
             }
         }
-        
+
         return $output;
     }
 
@@ -97,7 +98,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
             if($prefix) {
                 $part = $prefix.','.$part;
             }
-            
+
             $address = Address::factory(trim($part));
             $output[$address->getAddress()] = $address;
             $prefix = null;
@@ -123,7 +124,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
         if($this->_bodyHtml === null) {
             $this->_bodyHtml = (new flow\mime\ContentPart($content))
                 ->setContentType('text/html')
-                ->setEncoding(core\string\IEncoding::QP);
+                ->setEncoding(flex\IEncoding::QP);
 
             $this->_altPart->addPart($this->_bodyHtml);
         } else {
@@ -145,7 +146,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
         if($this->_bodyText === null) {
             $this->_bodyText = (new flow\mime\ContentPart($content))
                 ->setContentType('text/plain')
-                ->setEncoding(core\string\IEncoding::QP);
+                ->setEncoding(flex\IEncoding::QP);
 
             $this->_altPart->prependPart($this->_bodyText);
         } else {

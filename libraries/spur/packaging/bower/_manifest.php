@@ -7,6 +7,7 @@ namespace df\spur\packaging\bower;
 
 use df;
 use df\core;
+use df\flex;
 use df\spur;
 
 // Exceptions
@@ -61,7 +62,7 @@ interface IResolver {
 trait TGitResolver {
 
     protected function _findRequiredTag(array $tags, IPackage $package) {
-        $range = core\string\VersionRange::factory($package->version);
+        $range = flex\VersionRange::factory($package->version);
         $singleVersion = $range->getSingleVersion();
 
         if(!$singleVersion || !$singleVersion->preRelease) {
@@ -91,7 +92,7 @@ trait TGitResolver {
                 return $tag;
             }
         }
-        
+
         return false;
     }
 

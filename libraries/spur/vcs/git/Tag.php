@@ -7,10 +7,11 @@ namespace df\spur\vcs\git;
 
 use df;
 use df\core;
+use df\flex;
 use df\spur;
 
 class Tag implements ITag, core\IDumpable {
-    
+
     protected $_name;
     protected $_version;
     protected $_commitId;
@@ -35,7 +36,7 @@ class Tag implements ITag, core\IDumpable {
             }
 
             try {
-                $this->_version = core\string\Version::factory($name);
+                $this->_version = flex\Version::factory($name);
             } catch(\Exception $e) {
                 $this->_version = false;
             }

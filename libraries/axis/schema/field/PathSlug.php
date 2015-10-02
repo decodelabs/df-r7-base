@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,9 +9,10 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
-    
-class PathSlug extends Base implements 
-    axis\schema\IAutoUniqueField, 
+use df\flex;
+
+class PathSlug extends Base implements
+    axis\schema\IAutoUniqueField,
     opal\schema\IMultiPrimitiveField,
     opal\schema\IQueryClauseRewriterField {
 
@@ -59,19 +60,19 @@ class PathSlug extends Base implements
             return null;
         }
 
-        $output = core\string\Manipulator::formatPathSlug($value);
+        $output = flex\Text::formatPathSlug($value);
 
         if($output == '/') {
             $output = '';
         }
-        
+
         return $output;
     }
 
     public function compareValues($value1, $value2) {
         return (string)$value1 === (string)$value2;
     }
-    
+
 
 // Rewriters
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\axis;
 use df\user;
-    
+
 class Unit extends axis\unit\table\Base {
 
     const PURGE_THRESHOLD = '-1 month';
@@ -28,7 +28,7 @@ class Unit extends axis\unit\table\Base {
 
         $this->newRecord([
                 'user' => $client->getId(),
-                'key' => core\string\Util::passwordHash($output->key, $passKey)
+                'key' => core\crypt\Util::passwordHash($output->key, $passKey)
             ])
             ->save();
 
@@ -40,7 +40,7 @@ class Unit extends axis\unit\table\Base {
 
         return (bool)$this->select()
             ->where('user', '=', $key->userId)
-            ->where('key', '=', core\string\Util::passwordHash($key->key, $passKey))
+            ->where('key', '=', core\crypt\Util::passwordHash($key->key, $passKey))
             ->count();
     }
 
@@ -49,7 +49,7 @@ class Unit extends axis\unit\table\Base {
 
         $this->delete()
             ->where('user', '=', $key->userId)
-            ->where('key', '=', core\string\Util::passwordHash($key->key, $passKey))
+            ->where('key', '=', core\crypt\Util::passwordHash($key->key, $passKey))
             ->execute();
 
         return $this;

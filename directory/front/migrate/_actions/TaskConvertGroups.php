@@ -10,9 +10,10 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\axis;
+use df\flex;
 
 class TaskConvertGroups extends arch\task\Action {
-    
+
     protected $_connection;
 
     protected $_groupMap = [];
@@ -91,7 +92,7 @@ class TaskConvertGroups extends arch\task\Action {
         $manifest = $unit->getDefaultManifest();
 
         foreach($manifest as $id => $row) {
-            $row['id'] = core\string\Uuid::factory($id);
+            $row['id'] = flex\Guid::factory($id);
             $roleIds = $row['roles'];
             unset($row['roles']);
 
@@ -99,8 +100,8 @@ class TaskConvertGroups extends arch\task\Action {
 
             foreach($roleIds as $roleId) {
                 $bridgeTable->insert([
-                    'group_id' => core\string\Uuid::factory($id),
-                    'role_id' => core\string\Uuid::factory($roleId)
+                    'group_id' => flex\Guid::factory($id),
+                    'role_id' => flex\Guid::factory($roleId)
                 ])->execute();
             }
         }
@@ -112,14 +113,14 @@ class TaskConvertGroups extends arch\task\Action {
         $manifest = $unit->getDefaultManifest();
 
         foreach($manifest as $id => $row) {
-            $row['id'] = core\string\Uuid::factory($id);
+            $row['id'] = flex\Guid::factory($id);
             $keys = $row['keys'];
             unset($row['keys']);
 
             $roleTable->insert($row)->execute();
 
             foreach($keys as $key) {
-                $key['id'] = core\string\Uuid::comb();
+                $key['id'] = flex\Guid::comb();
                 $key['role_id'] = $row['id'];
                 $keyTable->insert($key)->execute();
             }
@@ -136,10 +137,10 @@ class TaskConvertGroups extends arch\task\Action {
                 ->toValue('id');
 
             if($id) {
-                $this->_groupMap[$row['id']] = core\string\Uuid::factory($id);
+                $this->_groupMap[$row['id']] = flex\Guid::factory($id);
             } else {
                 $groupTable->insert([
-                    'id' => $id = core\string\Uuid::comb(),
+                    'id' => $id = flex\Guid::comb(),
                     'name' => $row['name']
                 ])->execute();
 
@@ -160,16 +161,16 @@ class TaskConvertGroups extends arch\task\Action {
                 ->toValue('id');
 
             if($id) {
-                $this->_roleMap[$row['id']] = core\string\Uuid::factory($id);
+                $this->_roleMap[$row['id']] = flex\Guid::factory($id);
             } else {
                 $roleTable->insert([
-                    'id' => $id = core\string\Uuid::comb(),
+                    'id' => $id = flex\Guid::comb(),
                     'name' => $row['name'],
                     'priority' => $row['priority']
                 ])->execute();
 
                 foreach($oldKeyTable->select()->where('role_id', '=', $row['id']) as $key) {
-                    $key['id'] = core\string\Uuid::comb();
+                    $key['id'] = flex\Guid::comb();
                     $key['role_id'] = $id;
                     $keyTable->insert($key)->execute();
                 }
@@ -232,7 +233,7 @@ class TaskConvertGroups extends arch\task\Action {
         $this->io->writeLine('Swapping tables');
 
         $swapTables = [
-            'user_group', 'user_role', 'user_key', 'user_client_groups', 
+            'user_group', 'user_role', 'user_key', 'user_client_groups',
             'user_groupBridge', 'user_group_roles', 'user_invite_groups'
         ];
 
@@ -250,10 +251,10 @@ class TaskConvertGroups extends arch\task\Action {
 
     protected function _clearSchemaCache() {
         $this->io->writeLine('Updating schema cache');
-        
+
         $clearTables = [
-            'user_client', 'user_group', 'user_role', 'user_key', 
-            'user_client_groups', 'user_groupBridge', 'user_group_roles', 
+            'user_client', 'user_group', 'user_role', 'user_key',
+            'user_client_groups', 'user_groupBridge', 'user_group_roles',
             'user_invite_groups'
         ];
 

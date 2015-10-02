@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,8 @@ namespace df\iris\source;
 use df;
 use df\core;
 use df\iris;
-    
+use df\flex;
+
 class String implements iris\ISource {
 
     protected $_string;
@@ -20,7 +21,7 @@ class String implements iris\ISource {
         }
 
         $this->_uri = iris\SourceUri::factory($uri);
-        $this->_string = new core\string\Manipulator($string, $encoding);
+        $this->_string = new flex\Text($string, $encoding);
     }
 
     public function getSourceUri() {

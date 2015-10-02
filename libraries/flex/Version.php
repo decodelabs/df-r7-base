@@ -3,13 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\string;
+namespace df\flex;
 
 use df;
 use df\core;
+use df\flex;
 
 class Version implements IVersion, core\IDumpable {
-    
+
     use core\TStringProvider;
 
     const REGEX = '/^(?<version>[0-9.x]+)(?<prerelease>-?[0-9a-zA-Z.]+)?(?<build>\+[0-9a-zA-Z.]+)?$/';

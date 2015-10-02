@@ -9,14 +9,15 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
+use df\flex;
 
 class Delegate implements IDelegate {
-    
+
     use core\TContextAware;
     use TForm;
 
     const DEFAULT_REDIRECT = null;
-    
+
     protected $_delegateId;
     private $_isNew = false;
     private $_isComplete = false;
@@ -31,7 +32,7 @@ class Delegate implements IDelegate {
     }
 
     protected function afterConstruct() {}
-    
+
     public function getDelegateId() {
         return $this->_delegateId;
     }
@@ -49,11 +50,11 @@ class Delegate implements IDelegate {
             $this->_isNew = true;
             $this->setDefaultValues();
         }
-        
+
         foreach($this->_delegates as $delegate) {
             $delegate->initialize();
         }
-        
+
         $this->_state->isNew(false);
         $this->afterInit();
         return $this;
@@ -62,16 +63,16 @@ class Delegate implements IDelegate {
     public function isNew() {
         return $this->_isNew;
     }
-    
+
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false) {
         $this->view = $view;
         $this->content = $content;
         $this->_isRenderingInline = $isRenderingInline;
-        
+
         foreach($this->_delegates as $delegate) {
             $delegate->setRenderContext($view, $content);
         }
-        
+
         return $this;
     }
 
@@ -83,7 +84,7 @@ class Delegate implements IDelegate {
         foreach($this->_delegates as $delegate) {
             $delegate->setComplete($success);
         }
-        
+
         $this->_state->reset();
         return $this;
     }
@@ -138,12 +139,12 @@ class Delegate implements IDelegate {
     public function fieldName($name) {
         $parts = explode('[', $name, 2);
         $parts[0] .= ']';
-        
+
         return '_delegates['.$this->_delegateId.']['.implode('[', $parts);
     }
 
     public function elementId($name) {
-        return core\string\Manipulator::formatSlug($this->getDelegateId().'-'.$name);   
+        return flex\Text::formatSlug($this->getDelegateId().'-'.$name);
     }
 
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,13 +7,14 @@ namespace df\core\cache\backend;
 
 use df;
 use df\core;
-    
+use df\flex;
+
 class LocalFile implements core\cache\IDirectFileBackend {
 
     use core\TValueMap;
 
     const PRUNE_LIFETIME = '1 month';
-    
+
     protected $_lifeTime;
     protected $_cache;
     protected $_dir;
@@ -72,14 +73,14 @@ class LocalFile implements core\cache\IDirectFileBackend {
     public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
-        
+
         if($cache->isCacheDistributed()) {
             $path = df\Launchpad::$application->getSharedStoragePath();
         } else {
             $path = df\Launchpad::$application->getLocalStoragePath();
         }
 
-        $path .= '/cache/'.core\string\Manipulator::formatFileName($cache->getCacheId());
+        $path .= '/cache/'.flex\Text::formatFileName($cache->getCacheId());
         $this->_dir = core\fs\Dir::create($path);
     }
 
@@ -130,7 +131,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
 
         return true;
     }
-    
+
     public function get($key, $default=null) {
         $key = $this->_normalizeKey($key);
         $file = $this->_dir->getFile('cache-'.$key);
@@ -144,7 +145,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
             $file->unlink();
             return $default;
         }
-        
+
         $output = $file->getContents();
 
         if($this->_serialize) {
@@ -158,7 +159,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
 
         return $output;
     }
-    
+
     public function has($key) {
         $key = $this->_normalizeKey($key);
         $file = $this->_dir->getFile('cache-'.$key);
@@ -175,14 +176,14 @@ class LocalFile implements core\cache\IDirectFileBackend {
 
         return true;
     }
-    
+
     public function remove($key) {
         $key = $this->_normalizeKey($key);
         $this->_dir->getFile('cache-'.$key)->unlink();
 
         return true;
     }
-    
+
     public function clear() {
         $this->_dir->emptyOut();
         return true;
@@ -278,6 +279,6 @@ class LocalFile implements core\cache\IDirectFileBackend {
     }
 
     protected static function _normalizeKey($key) {
-        return core\string\Manipulator::formatFileName($key);
+        return flex\Text::formatFileName($key);
     }
 }

@@ -7,9 +7,10 @@ namespace df\core\fs;
 
 use df;
 use df\core;
+use df\flex;
 
 class Dir implements IDirectory, core\IDumpable {
-    
+
     use TNode;
 
     protected $_path;
@@ -24,10 +25,10 @@ class Dir implements IDirectory, core\IDumpable {
         if(!df\Launchpad::$loader) {
             return $path;
         }
-        
+
         $locations = df\Launchpad::$loader->getLocations();
         $locations['app'] = df\Launchpad::$applicationPath;
-        
+
         foreach($locations as $key => $match) {
             if(substr($path, 0, $len = strlen($match)) == $match) {
                 $innerPath = substr(str_replace('\\', '/', $path), $len + 1);
@@ -42,18 +43,18 @@ class Dir implements IDirectory, core\IDumpable {
                 break;
             }
         }
-        
+
         return $path;
     }
-    
+
     public static function create($path, $perms=null) {
         return self::factory($path)->ensureExists($perms);
     }
 
     public static function createTemp() {
         return new self(
-            sys_get_temp_dir().'decode-framework/temp/'. 
-            core\string\Uuid::comb()
+            sys_get_temp_dir().'decode-framework/temp/'.
+            flex\Guid::comb()
         );
     }
 
@@ -63,7 +64,7 @@ class Dir implements IDirectory, core\IDumpable {
                 df\Launchpad::$application->getSharedStoragePath() :
                 df\Launchpad::$application->getLocalStoragePath();
 
-            $path .= '/upload/'.core\string\Uuid::v1();
+            $path .= '/upload/'.flex\Guid::uuid1();
         }
 
         return self::create($path);
@@ -79,7 +80,7 @@ class Dir implements IDirectory, core\IDumpable {
 
         foreach((new self($path))->scanDirs() as $name => $dir) {
             try {
-                $guid = core\string\Uuid::factory($name);
+                $guid = flex\Guid::factory($name);
             } catch(\Exception $e) {
                 continue;
             }
@@ -187,7 +188,7 @@ class Dir implements IDirectory, core\IDumpable {
             }
 
             umask($umask);
-            
+
             if($result) {
                 throw new \Exception(
                     'Directory is not writable'
@@ -481,11 +482,11 @@ class Dir implements IDirectory, core\IDumpable {
 
         $it = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator(
-                $this->_path, 
-                \FilesystemIterator::KEY_AS_PATHNAME | 
-                \FilesystemIterator::CURRENT_AS_SELF | 
+                $this->_path,
+                \FilesystemIterator::KEY_AS_PATHNAME |
+                \FilesystemIterator::CURRENT_AS_SELF |
                 \FilesystemIterator::SKIP_DOTS
-            ), 
+            ),
             $dirs ?
                 \RecursiveIteratorIterator::SELF_FIRST :
                 \RecursiveIteratorIterator::LEAVES_ONLY
@@ -614,7 +615,7 @@ class Dir implements IDirectory, core\IDumpable {
 
     public function copyTo($destination) {
         $destination = self::factory($destination);
-        
+
         if($destination->exists()) {
             throw new \Exception(
                 'Destination directory already exists '.$destination->getPath()
@@ -630,7 +631,7 @@ class Dir implements IDirectory, core\IDumpable {
                 'Source directory does not exist'
             );
         }
-        
+
         $destination = self::create($destination, $this->getPermissions());
 
         foreach($this->_scanRecursive(true, true) as $subPath => $item) {

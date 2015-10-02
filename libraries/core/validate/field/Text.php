@@ -8,9 +8,10 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 use df\opal;
+use df\flex;
 
 class Text extends Base implements core\validate\ITextField {
-    
+
     use core\validate\TStorageAwareField;
     use core\validate\TRecordManipulatorField;
     use opal\query\TFilterConsumer;
@@ -22,18 +23,18 @@ class Text extends Base implements core\validate\ITextField {
     protected $_minWordLength = null;
     protected $_maxWordLength = null;
     protected $_shouldTrim = true;
-  
+
 
 // Pattern
     public function setPattern($pattern) {
         if(empty($pattern)) {
             $pattern = null;
         }
-        
+
         $this->_pattern = $pattern;
         return $this;
     }
-    
+
     public function getPattern() {
         return $this->_pattern;
     }
@@ -52,11 +53,11 @@ class Text extends Base implements core\validate\ITextField {
                 $length = 0;
             }
         }
-        
+
         $this->_minWordLength = $length;
         return $this;
     }
-    
+
     public function getMinWordLength() {
         return $this->_minWordLength;
     }
@@ -92,8 +93,8 @@ class Text extends Base implements core\validate\ITextField {
 
         return $this->_shouldTrim;
     }
-    
-    
+
+
 // Validate
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
@@ -103,18 +104,18 @@ class Text extends Base implements core\validate\ITextField {
         }
 
         $value = $this->_sanitizeValue($value);
-        
-        
+
+
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
         }
-        
-        
+
+
         $this->_validateMinLength($node, $value, $length);
         $this->_validateMaxLength($node, $value, $length);
 
         if($this->_minWordLength !== null || $this->_maxWordLength !== null) {
-            $wordCount = core\string\Manipulator::countWords($value);
+            $wordCount = flex\Text::countWords($value);
 
             if($this->_minWordLength !== null && $wordCount < $this->_minWordLength) {
                 $this->_applyMessage($node, 'minWordLength', $this->validator->_(
@@ -138,14 +139,14 @@ class Text extends Base implements core\validate\ITextField {
                 ));
             }
         }
-        
+
         if($this->_pattern !== null && !filter_var(
-            $value, FILTER_VALIDATE_REGEXP, 
+            $value, FILTER_VALIDATE_REGEXP,
             ['options' => ['regexp' => $this->_pattern]]
         )) {
             $node->addError('pattern', $this->validator->_('The value entered is invalid'));
         }
-        
+
         $this->_validateUnique($node, $value);
         return $this->_finalize($node, $value);
     }

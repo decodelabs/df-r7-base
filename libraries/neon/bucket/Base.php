@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,8 @@ namespace df\neon\bucket;
 use df;
 use df\core;
 use df\neon;
-    
+use df\flex;
+
 class Base implements IBucket {
 
     use core\io\TAcceptTypeProcessor;
@@ -23,10 +24,10 @@ class Base implements IBucket {
             } catch(InvalidArgumentException $e) {
                 continue;
             }
-            
+
             $output[$context->getName()] = $context;
         }
-        
+
         ksort($output);
         return $output;
     }
@@ -46,14 +47,14 @@ class Base implements IBucket {
             return $name;
         }
 
-        $class = 'df\\neon\\bucket\\'.core\string\Manipulator::formatId($name);
+        $class = 'df\\neon\\bucket\\'.flex\Text::formatId($name);
 
         if(!class_exists($class)) {
             $class = __CLASS__;
         }
 
         return new $class();
-    }    
+    }
 
     public function __construct() {
         $this->setAcceptTypes($this->_acceptTypes);
@@ -65,7 +66,7 @@ class Base implements IBucket {
     }
 
     public function getDisplayName() {
-        return core\string\Manipulator::formatName($this->getName());
+        return flex\Text::formatName($this->getName());
     }
 
 

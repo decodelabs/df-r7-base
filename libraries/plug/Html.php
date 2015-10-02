@@ -14,12 +14,12 @@ use df\spur;
 use df\flow;
 
 class Html implements arch\IDirectoryHelper {
-    
+
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;
     use core\TTranslator;
-    use core\string\THtmlStringEscapeHandler;
-    
+    use flex\THtmlStringEscapeHandler;
+
     public function __call($member, $args) {
         $output = aura\html\widget\Base::factory($this->context, $member, $args);
 
@@ -141,7 +141,7 @@ class Html implements arch\IDirectoryHelper {
             return $string;
         }
 
-        $newString = core\string\Manipulator::shorten($string, $length);
+        $newString = flex\Text::shorten($string, $length);
         return $this->element('abbr', $newString)->setTitle($string);
     }
 
@@ -152,11 +152,11 @@ class Html implements arch\IDirectoryHelper {
     public function string($value) {
         return new aura\html\ElementString(implode('', func_get_args()));
     }
-    
+
     public function tag($name, array $attributes=[]) {
         return new aura\html\Tag($name, $attributes);
     }
-    
+
     public function element($name, $content=null, array $attributes=[]) {
         return new aura\html\Element($name, $content, $attributes);
     }
@@ -231,14 +231,14 @@ class Html implements arch\IDirectoryHelper {
         return $this->icon((bool)$value ? 'lock' : 'unlock', $body)
             ->addClass((bool)$value ? 'locked' : 'unlocked');
     }
-    
+
     public function basicLink($url, $body=null) {
         $url = $this->context->uri->__invoke($url);
 
         if(empty($body) && $body !== '0') {
             $body = $url;
         }
-        
+
         return $this->element('a', $body, ['href' => $url]);
     }
 
@@ -264,7 +264,7 @@ class Html implements arch\IDirectoryHelper {
         if(empty($address)) {
             return $body;
         }
-        
+
         return $this->plainMailLink($address, $body)
             ->setIcon('mail')
             ->setDisposition('external');
@@ -448,11 +448,11 @@ class Html implements arch\IDirectoryHelper {
         $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
-            $date->format('Y-m-d'), 
+            $date->format('Y-m-d'),
             $this->context->format->date($date, $size, $locale)
         );
     }
-    
+
     public function userDate($date, $size=core\time\Date::MEDIUM) {
         if($date === null) {
             return null;
@@ -461,11 +461,11 @@ class Html implements arch\IDirectoryHelper {
         $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
-            $date->format('Y-m-d'), 
+            $date->format('Y-m-d'),
             $this->context->format->userDate($date, $size)
         );
     }
-    
+
     public function dateTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
         if($date === null) {
             return null;
@@ -474,11 +474,11 @@ class Html implements arch\IDirectoryHelper {
         $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
-            $date->format(core\time\Date::W3C), 
+            $date->format(core\time\Date::W3C),
             $this->context->format->dateTime($date, $size, $locale)
         );
     }
-    
+
     public function userDateTime($date, $size=core\time\Date::MEDIUM) {
         if($date === null) {
             return null;
@@ -487,7 +487,7 @@ class Html implements arch\IDirectoryHelper {
         $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
-            $date->format(core\time\Date::W3C), 
+            $date->format(core\time\Date::W3C),
             $this->context->format->userDateTime($date, $size)
         );
     }
@@ -504,11 +504,11 @@ class Html implements arch\IDirectoryHelper {
         }
 
         return $this->_timeTag(
-            $date->format(core\time\Date::W3C), 
+            $date->format(core\time\Date::W3C),
             $this->context->format->customDate($date, $format, $userTime)
         );
     }
-    
+
     public function time($date, $format=null, $userTime=false) {
         if($date === null) {
             return null;
@@ -525,7 +525,7 @@ class Html implements arch\IDirectoryHelper {
         }
 
         return $this->_timeTag(
-            $date->format('H:m:s'), 
+            $date->format('H:m:s'),
             $this->context->format->time($date, $format, $userTime)
         );
     }
@@ -538,11 +538,11 @@ class Html implements arch\IDirectoryHelper {
         $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
-            $date->format('H:m:s'), 
+            $date->format('H:m:s'),
             $this->context->format->time($date, $size, $locale)
         );
     }
-    
+
     public function userTime($date, $size=core\time\Date::MEDIUM) {
         if($date === null) {
             return null;
@@ -551,12 +551,12 @@ class Html implements arch\IDirectoryHelper {
         $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
-            $date->format('H:m:s'), 
+            $date->format('H:m:s'),
             $this->context->format->userTime($date, $size)
         );
     }
-    
-    
+
+
     public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
         if($date === null) {
             return null;
@@ -565,21 +565,21 @@ class Html implements arch\IDirectoryHelper {
         $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
-                $date->format(core\time\Date::W3C), 
+                $date->format(core\time\Date::W3C),
                 $this->context->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
             )
             ->setTitle($this->context->format->dateTime($date));
     }
-    
+
     public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
         if($date === null) {
             return null;
         }
-        
+
         $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
-                $date->format(core\time\Date::W3C), 
+                $date->format(core\time\Date::W3C),
                 $this->context->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
             )
             ->setTitle($this->context->format->dateTime($date));
@@ -589,7 +589,7 @@ class Html implements arch\IDirectoryHelper {
         if($date === null) {
             return null;
         }
-        
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
@@ -618,7 +618,7 @@ class Html implements arch\IDirectoryHelper {
         }
 
         return $this->_timeTag(
-                $date->format(core\time\Date::W3C), 
+                $date->format(core\time\Date::W3C),
                 $output
             )
             ->setTitle($this->context->format->dateTime($date));
@@ -626,7 +626,7 @@ class Html implements arch\IDirectoryHelper {
 
     protected function _timeTag($w3cString, $formattedString) {
         return $this->element(
-            'time', 
+            'time',
             $formattedString,
             ['datetime' => $w3cString]
         );

@@ -11,6 +11,7 @@ use df\aura;
 use df\arch;
 use df\link;
 use df\flow;
+use df\flex;
 
 
 // Exceptions
@@ -163,7 +164,7 @@ interface IView extends
     ISlotProvider,
     \ArrayAccess,
     core\IHelperProvider,
-    core\string\IStringEscapeHandler,
+    flex\IStringEscapeHandler,
     core\lang\IChainable
 {
     public function getType();
@@ -266,7 +267,7 @@ trait TLayoutView {
     }
 
     public function setLayout($layout) {
-        $this->_layout = ucfirst(core\string\Manipulator::formatId($layout));
+        $this->_layout = ucfirst(flex\Text::formatId($layout));
         return $this;
     }
 

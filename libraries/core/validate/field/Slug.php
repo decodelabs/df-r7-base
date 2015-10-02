@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,6 +8,7 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 use df\opal;
+use df\flex;
 
 class Slug extends Base implements core\validate\ISlugField {
 
@@ -29,9 +30,9 @@ class Slug extends Base implements core\validate\ISlugField {
     public function allowPathFormat($flag=null) {
         if($flag !== null) {
             $this->_allowPathFormat = (bool)$flag;
-            return $this;    
-        }    
-        
+            return $this;
+        }
+
         return $this->_allowPathFormat;
     }
 
@@ -64,19 +65,19 @@ class Slug extends Base implements core\validate\ISlugField {
             $this->_defaultValueSanitizer = $sanitizer;
         }
 
-        return $this;    
+        return $this;
     }
-    
+
     public function getDefaultValueField() {
-        return $this->_defaultValueField;    
+        return $this->_defaultValueField;
     }
 
     public function shouldGenerateIfEmpty($flag=null) {
         if($flag !== null) {
             $this->_generateIfEmpty = (bool)$flag;
-            return $this;    
-        }   
-        
+            return $this;
+        }
+
         return $this->_generateIfEmpty;
     }
 
@@ -89,7 +90,7 @@ class Slug extends Base implements core\validate\ISlugField {
         return $this->_renameOnConflict;
     }
 
-    
+
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
@@ -116,8 +117,8 @@ class Slug extends Base implements core\validate\ISlugField {
                 'Root slug is not allowed here'
             ));
         }
-        
-        
+
+
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
         }
@@ -145,13 +146,13 @@ class Slug extends Base implements core\validate\ISlugField {
         }
 
         if(empty($value) && $this->_generateIfEmpty) {
-            $value = core\string\Generator::random();
+            $value = flex\Generator::random();
         }
 
         if($this->_allowPathFormat) {
-            $value = core\string\Manipulator::formatPathSlug($value, $this->_allowAreaMarker ? '~' : null);
+            $value = flex\Text::formatPathSlug($value, $this->_allowAreaMarker ? '~' : null);
         } else {
-            $value = core\string\Manipulator::formatSlug($value);
+            $value = flex\Text::formatSlug($value);
         }
 
         return $value;

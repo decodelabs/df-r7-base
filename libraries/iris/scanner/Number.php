@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,8 @@ namespace df\iris\scanner;
 use df;
 use df\core;
 use df\iris;
-    
+use df\flex;
+
 class Number implements iris\IScanner, core\IDumpable {
 
     protected $_allowHex = true;
@@ -70,8 +71,8 @@ class Number implements iris\IScanner, core\IDumpable {
     }
 
     public function check(iris\ILexer $lexer) {
-        return core\string\Util::isDigit($lexer->char)
-            || ($lexer->char == '.' && core\string\Util::isDigit($lexer->peek(1, 1)));
+        return flex\Text::isDigit($lexer->char)
+            || ($lexer->char == '.' && flex\Text::isDigit($lexer->peek(1, 1)));
     }
 
     public function run(iris\ILexer $lexer) {
@@ -90,8 +91,8 @@ class Number implements iris\IScanner, core\IDumpable {
                 $lexer->extract(2);
                 $string = $lexer->extractRegexRange('a-fA-F0-9');
 
-                return $lexer->newToken('literal/integer', core\string\Manipulator::baseConvert($string, 16, 10));
-            } else if(core\string\Util::isDigit($peek)) {
+                return $lexer->newToken('literal/integer', flex\Text::baseConvert($string, 16, 10));
+            } else if(flex\Text::isDigit($peek)) {
                 // Octal
                 if(!$this->_allowOctal) {
                     throw new iris\UnexpectedCharacterException(
@@ -103,7 +104,7 @@ class Number implements iris\IScanner, core\IDumpable {
                 $lexer->extract(1);
                 $string = $lexer->extractRegexRange('0-7');
 
-                return $lexer->newToken('literal/integer', core\string\Manipulator::baseConvert($string, 8, 10));
+                return $lexer->newToken('literal/integer', flex\Text::baseConvert($string, 8, 10));
             }
         }
 
@@ -116,7 +117,7 @@ class Number implements iris\IScanner, core\IDumpable {
             $whole = $lexer->extractNumeric();
         }
 
-        if($lexer->char == '.' && core\string\Util::isDigit($lexer->peek(1, 1))) {
+        if($lexer->char == '.' && flex\Text::isDigit($lexer->peek(1, 1))) {
             $lexer->extract();
             $fraction = $lexer->extractNumeric();
         }

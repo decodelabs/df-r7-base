@@ -9,9 +9,10 @@ use df;
 use df\core;
 use df\opal;
 use df\mesh;
+use df\flex;
 
 class SourceManager implements ISourceManager, core\IDumpable {
-    
+
     protected $_parent;
     protected $_aliases = [];
     protected $_sources = [];
@@ -19,11 +20,11 @@ class SourceManager implements ISourceManager, core\IDumpable {
     protected $_serverHashes = [];
     protected $_genCounter = 0;
     protected $_transaction;
-    
+
     public function __construct(ITransaction $transaction=null) {
         $this->_transaction = $transaction;
     }
-    
+
     public function getMeshManager() {
         return mesh\Manager::getInstance();
     }
@@ -58,17 +59,17 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
         return $this->_transaction;
     }
-    
+
 
 // Sources
     public function newSource($adapter, $alias, array $fields=null, $forWrite=false, $debug=false) {
         $adapter = $this->extrapolateSourceAdapter($adapter);
         $sourceId = $adapter->getQuerySourceId();
-        
+
         if($alias === null) {
             $alias = $this->generateAlias();
         }
-        
+
         if(isset($this->_sources[$alias])) {
             if($adapter->getQuerySourceId() == $this->_sources[$alias]->getAdapter()->getQuerySourceId()) {
                 $output = $this->_sources[$alias];
@@ -86,27 +87,27 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 'A source has already been defined with alias '.$alias
             );
         }
-        
+
         $source = new Source($adapter, $alias);
-        
+
         if(!isset($this->_aliases[$sourceId])) {
             $this->_aliases[$sourceId] = $alias;
         }
-        
+
         $hash = $source->getAdapterHash();
-        
+
         if(!isset($this->_adapterHashes[$hash])) {
             $this->_adapterHashes[$hash] = $alias;
         }
 
         $this->_serverHashes[$source->getAdapterServerHash()] = true;
-        
+
         $this->_sources[$alias] = $source;
-        
+
         if($this->_transaction) {
             $this->_transaction->registerAdapter($source->getAdapter(), $forWrite);
         }
-        
+
         if($fields !== null) {
             foreach($fields as $field) {
                 $this->extrapolateOutputField($source, $field);
@@ -115,23 +116,23 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
         return $source;
     }
-    
+
     public function removeSource($alias) {
         if(!isset($this->_sources[$alias])) {
             return $this;
         }
-        
+
         foreach($this->_aliases as $sourceId => $sourceAlias) {
             if($alias === $sourceAlias) {
                 unset($this->_aliases[$sourceAlias]);
                 break;
             }
         }
-        
+
         unset($this->_sources[$alias]);
         return $this;
     }
-    
+
     public function getSources() {
         return $this->_sources;
     }
@@ -145,7 +146,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
             return $this->_parent->getSourceByAlias($alias);
         }
     }
-    
+
     public function countSourceAdapters() {
         return count($this->_adapterHashes);
     }
@@ -153,8 +154,8 @@ class SourceManager implements ISourceManager, core\IDumpable {
     public function canQueryLocally() {
         return count($this->_serverHashes) == 1;
     }
-    
-    
+
+
 
 // Extrapolate
     public function extrapolateSourceAdapter($adapter) {
@@ -165,13 +166,13 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 $adapter = $this->_sources[$this->_aliases[$adapter]]->getAdapter();
             } else {
                 $entity = $this->getMeshManager()->fetchEntity($adapter);
-                
+
                 if(!$entity instanceof IAdapter) {
                     throw new InvalidArgumentException(
                         'Entity url '.$adapter.' does not reference a valid data source adapter'
                     );
                 }
-                
+
                 $adapter = $entity;
             }
         } else if(is_array($adapter)) {
@@ -181,19 +182,19 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 'Source is not a valid adapter'
             );
         }
-        
+
         return $adapter;
     }
-    
-    
+
+
     public function extrapolateOutputField(ISource $source, $name) {
         $fieldAlias = null;
-        
+
         if(preg_match('/(.+) as ([^ ]+)$/', $name, $matches)) {
             $name = $matches[1];
             $fieldAlias = $matches[2];
         }
-        
+
         return $this->_extrapolateField($source, $name, $fieldAlias, null, true, true, true, true);
     }
 
@@ -228,7 +229,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
     public function extrapolateField(ISource $source, $name) {
         return $this->_extrapolateField($source, $name);
     }
-    
+
     public function extrapolateIntrinsicField(ISource $source, $name, $checkAlias=null) {
         return $this->_extrapolateField($source, $name, null, $checkAlias, true, false, false);
     }
@@ -236,11 +237,11 @@ class SourceManager implements ISourceManager, core\IDumpable {
     public function extrapolateAggregateField(ISource $source, $name, $checkAlias=null) {
         return $this->_extrapolateField($source, $name, null, $checkAlias, false, false, true);
     }
-    
+
     public function extrapolateDataField(ISource $source, $name, $checkAlias=null) {
         return $this->_extrapolateField($source, $name, null, $checkAlias, true, false, true);
     }
-    
+
     protected function _extrapolateField(ISource $source, $name, $alias=null, $checkAlias=null, $allowIntrinsic=true, $allowWildcard=true, $allowAggregate=true, $isOutput=false) {
         if($name instanceof opal\query\IQuery) {
             if(!$allowIntrinsic) {
@@ -264,9 +265,9 @@ class SourceManager implements ISourceManager, core\IDumpable {
             $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
             return $field;
         }
-            
+
         $passedSourceAlias = $source->getAlias();
-            
+
         if(preg_match('/^([a-zA-Z_]+)\((distinct )?(.+)\)$/i', $name, $matches)) {
             // aggregate
             if(!$allowAggregate) {
@@ -281,11 +282,11 @@ class SourceManager implements ISourceManager, core\IDumpable {
                     );
                 }
             }
-            
+
             $type = $matches[1];
             $distinct = !empty($matches[2]);
             $targetField = $this->extrapolateField($source, $matches[3]);
-            
+
             if($checkAlias === true && $passedSourceAlias !== $targetField->getSourceAlias()) {
                 throw new InvalidArgumentException(
                     'Source alias "'.$sourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
@@ -295,24 +296,24 @@ class SourceManager implements ISourceManager, core\IDumpable {
                     'Local source reference "'.$checkAlias.'" found where a foreign source is expected'
                 );
             }
-            
-            
+
+
             $qName = $type.'('.$targetField->getQualifiedName().')';
-            
+
             if(!$isOutput && ($field = $source->getFieldByQualifiedName($qName))) {
                 $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
                 return $field;
             }
-            
+
             $field = new opal\query\field\Aggregate($source, $type, $targetField, $alias);
             $field->isDistinct($distinct);
-            
+
             if($isOutput) {
                 $source->addOutputField($field);
             } else {
                 $source->addPrivateField($field);
             }
-            
+
             return $field;
         } else if($name === null || substr($name, 0, 1) == '#') {
             // expression
@@ -324,7 +325,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 $source->addPrivateField($field);
             }
 
-            
+
             return $field;
         } else {
             $shouldCheck = true;
@@ -347,7 +348,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
             } else if($this->_parent) {
                 $source = $this->_parent->getSourceByAlias($sourceAlias);
             }
-            
+
             if(!$source) {
                 throw new InvalidArgumentException(
                     'Source alias "'.$sourceAlias.'" has not been defined'
@@ -363,7 +364,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                     'Local source reference "'.$checkAlias.'" found where a foreign source is expected'
                 );
             }
-            
+
             if(!$isOutput && ($field = $source->getFieldByQualifiedName($qName))) {
                 $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
                 return $field;
@@ -397,7 +398,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                         'Unexpected wildcard field reference "'.$qName.'"'
                     );
                 }
-                
+
                 $field = new opal\query\field\Wildcard($source);
             } else {
                 if(!$allowIntrinsic) {
@@ -405,8 +406,8 @@ class SourceManager implements ISourceManager, core\IDumpable {
                         'Unexpected intrinsic field reference "'.$qName.'"'
                     );
                 }
-                
-                
+
+
                 // If adapter supports virtuals, give it a chance to dereference it from the alias
                 $field = $source->extrapolateIntegralAdapterField($name, $alias);
 
@@ -414,11 +415,11 @@ class SourceManager implements ISourceManager, core\IDumpable {
                     if($alias === null) {
                         $alias = $name;
                     }
-                    
+
                     $field = new opal\query\field\Intrinsic($source, $name, $alias);
                 }
             }
-            
+
             if($field) {
                 if($isOutput) {
                     $source->addOutputField($field);
@@ -430,7 +431,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
             return $field;
         }
     }
-    
+
     protected function _findFieldByAlias($alias, ISource $source, $checkAlias=null, $sourceAlias=null) {
         if($sourceAlias !== null && isset($this->_sources[$sourceAlias])) {
             if($field = $this->_sources[$sourceAlias]->getFieldByAlias($alias)) {
@@ -454,7 +455,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 if($testSource !== $source) {
                     $keySources[] = $testSource;
                 }
-                
+
                 continue;
             }
 
@@ -470,7 +471,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -489,13 +490,13 @@ class SourceManager implements ISourceManager, core\IDumpable {
             );
         }
     }
-    
-    
+
+
     public function generateAlias() {
         do {
-            $alias = core\string\Manipulator::numericToAlpha($this->_genCounter++);
+            $alias = flex\Text::numericToAlpha($this->_genCounter++);
         } while(isset($this->_aliases[$alias]));
-        
+
         return $alias;
     }
 
@@ -507,7 +508,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -549,12 +550,12 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return $output;
     }
 
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         $output = [];
-        
+
         foreach($this->_sources as $alias => $source) {
             $output[] = new core\debug\dumper\Property($alias, $source->getAdapter());
         }
@@ -562,7 +563,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
         if($this->_parent) {
             $output[] = new core\debug\dumper\Property('parent', $this->_parent, 'private');
         }
-        
+
         return $output;
     }
 }

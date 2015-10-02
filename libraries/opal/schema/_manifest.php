@@ -8,6 +8,7 @@ namespace df\opal\schema;
 use df;
 use df\core;
 use df\opal;
+use df\flex;
 
 interface IFieldSize {
     const TINY = 'tiny';
@@ -63,13 +64,13 @@ interface ISchema extends IChangeTracker {
     public function setComment($comment);
     public function getComment();
     public function isAudited($flag=null);
-    
+
     public function setOptions(array $options);
     public function setOption($key, $value);
     public function getOption($key);
     public function getOptions();
     public function getOptionChanges();
-    
+
     public static function fromJson(ISchemaContext $schemaContext, $json);
     public function toJson();
     public function toStorageArray();
@@ -191,7 +192,7 @@ interface IField extends IChangeTracker {
 }
 
 
-interface ICharacterSetAwareField extends IField, core\string\ICharacterSetAware {}
+interface ICharacterSetAwareField extends IField, flex\ICharacterSetAware {}
 
 interface IBinaryCollationField extends IField {
     public function hasBinaryCollation($flag=null);
@@ -323,7 +324,7 @@ interface IIndex extends IChangeTracker {
     public function isUnique($flag=null);
     public function setComment($comment);
     public function getComment();
-    
+
     public function setFields($fields);
     public function addField(IField $field, $size=null, $isDescending=false);
     public function addFieldReference(IIndexFieldReference $reference);
@@ -354,14 +355,14 @@ interface IForeignKey extends IChangeTracker {
     public function getName();
     public function setTargetSchema($table);
     public function getTargetSchema();
-    
+
     public function addReference(IField $field, $targetFieldName);
     public function removeReference(IField $field, $targetFieldName);
     public function replaceField(IField $oldField, IField $newField, $markChange=true);
     public function hasField(IField $field);
     public function getReferences();
-    public function isVoid(); 
-    
+    public function isVoid();
+
     public function setUpdateAction($action);
     public function getUpdateAction();
     public function setDeleteAction($action);

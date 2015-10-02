@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,6 +8,7 @@ namespace df\iris;
 use df;
 use df\core;
 use df\iris;
+use df\flex;
 
 // Exceptions
 interface IException {}
@@ -16,21 +17,21 @@ class RuntimeException extends \RuntimeException implements IException {}
 class LogicException extends \LogicException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
-class UnexpectedValueException extends \UnexpectedValueException implements 
+class UnexpectedValueException extends \UnexpectedValueException implements
     ILocationProvider,
     IException,
     core\IDumpable {
 
     protected $_location;
-    
+
     public function __construct($message, ILocation $location=null) {
         parent::__construct($message);
-        
+
         if($location) {
             $this->_location = clone $location;
         }
     }
-    
+
     public function getLocation() {
         return $this->_location;
     }
@@ -42,21 +43,21 @@ class UnexpectedValueException extends \UnexpectedValueException implements
 
 class UnexpectedCharacterException extends UnexpectedValueException {}
 
-class UnexpectedTokenException extends \UnexpectedValueException implements 
+class UnexpectedTokenException extends \UnexpectedValueException implements
     ILocationProvider,
     IException,
     core\IDumpable {
 
     protected $_token;
-    
+
     public function __construct($message, IToken $token=null) {
         parent::__construct($message);
-        
+
         if($token) {
             $this->_token = clone $token;
         }
     }
-    
+
     public function getToken() {
         return $this->_token;
     }
@@ -70,10 +71,10 @@ class UnexpectedTokenException extends \UnexpectedValueException implements
     public function getDumpProperties() {
         return $this->_token;
     }
-}   
+}
 
 
-// Interfaces    
+// Interfaces
 interface ISourceUri extends core\uri\IUrl {}
 
 interface ISourceUriAware {
@@ -98,7 +99,7 @@ trait TSourceUriProvider {
     }
 }
 
-interface ISource extends ISourceUriAware, core\string\IEncodingAware {
+interface ISource extends ISourceUriAware, flex\IEncodingAware {
     public function substring($start, $length=1);
 }
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,8 @@ use df\core;
 use df\fire;
 use df\aura;
 use df\arch;
-    
+use df\flex;
+
 abstract class Base implements IBlock {
 
     use core\xml\TReaderInterchange;
@@ -54,13 +55,13 @@ abstract class Base implements IBlock {
     }
 
     public function getDisplayName() {
-        return core\string\Manipulator::formatName($this->getName());
+        return flex\Text::formatName($this->getName());
     }
 
     public function getVersion() {
         return static::VERSION;
     }
-    
+
     public function isNested($flag=null) {
         if($flag !== null) {
             $this->_isNested = (bool)$flag;
@@ -148,7 +149,7 @@ abstract class Base implements IBlock {
             $writer->setAttribute('nested', true);
         }
     }
-    
+
     protected function _endWriterBlockElement(core\xml\IWriter $writer) {
         // TODO: End any unclosed child elements
 

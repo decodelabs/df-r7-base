@@ -8,6 +8,7 @@ namespace df\aura\html;
 use df;
 use df\core;
 use df\aura;
+use df\flex;
 
 
 // Exceptions
@@ -31,7 +32,7 @@ interface ITagDataContainer extends core\collection\IAttributeContainer {
     public function hasDataAttribute($key);
     public function removeDataAttribute($key);
     public function getDataAttributes();
-    
+
     // Class attributes
     public function setClasses($classes);
     public function addClasses($classes);
@@ -41,7 +42,7 @@ interface ITagDataContainer extends core\collection\IAttributeContainer {
     public function removeClass($class);
     public function hasClass($class);
     public function countClasses();
-    
+
     // Direct attributes
     public function setId($id);
     public function getId();
@@ -49,7 +50,7 @@ interface ITagDataContainer extends core\collection\IAttributeContainer {
     public function setTitle($title);
     public function getTitle();
 
-    
+
     // Style
     public function setStyles($styles);
     public function addStyles($styles);
@@ -62,16 +63,16 @@ interface ITagDataContainer extends core\collection\IAttributeContainer {
 
 
 
-interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, core\string\IStringEscapeHandler, core\lang\IChainable {
+interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, flex\IStringEscapeHandler, core\lang\IChainable {
     // Name
     public function setName($name);
     public function getName();
     public function isInline();
     public function isBlock();
-    
+
     // Render count
     public function getRenderCount();
-    
+
     // Strings
     public function open();
     public function close();
@@ -95,14 +96,14 @@ interface IElementContent extends IElementRepresentation, core\lang\IChainable {
     public function esc($value);
 }
 
-interface IElementContentCollection extends 
+interface IElementContentCollection extends
     IElementContent,
     IWidgetFinder,
-    core\collection\IIndexedQueue, 
+    core\collection\IIndexedQueue,
     core\collection\IAggregateIteratorCollection {}
 
 trait TElementContent {
-    
+
     use core\TStringProvider;
     use core\lang\TChainable;
     use core\collection\TArrayCollection;
@@ -112,23 +113,23 @@ trait TElementContent {
     use core\collection\TArrayCollection_Sliceable;
     use core\collection\TArrayCollection_ProcessedShiftable;
     use core\collection\TArrayCollection_IndexedMovable;
-    
+
     public function toString() {
         return $this->getElementContentString();
     }
-    
+
     public function getElementContentString() {
         $output = '';
         $lastElement = null;
-        
+
         foreach($this->_collection as $value) {
             if(empty($value) && $value != '0') {
                 continue;
             }
-            
+
             $stringValue = (string)$this->_renderChild($value);
             $isBlock = false;
-            
+
             if($value instanceof aura\html\widget\IWidget
             || $value instanceof aura\html\widget\IWidgetProxy) {
                 $isBlock = $value->isBlock();
@@ -142,11 +143,11 @@ trait TElementContent {
             if($isBlock) {
                 $stringValue = $stringValue."\n";
             }
-            
+
             $output .= $stringValue;
             continue;
         }
-        
+
         return rtrim($output);
     }
 
@@ -158,14 +159,14 @@ trait TElementContent {
 
         if(is_array($value) || $value instanceof \Generator) {
             $output = '';
-            
+
             foreach($value as $part) {
                 $output .= $this->_renderChild($part);
             }
-            
+
             return $output;
         }
-        
+
         if($value instanceof aura\html\widget\IWidgetProxy) {
             $value = $value->toWidget();
         }
@@ -196,11 +197,11 @@ trait TElementContent {
         } else {
             $output = (string)$value;
         }
-        
+
         if(!$value instanceof IElementRepresentation) {
             $output = $this->esc($output);
         }
-        
+
         return $output;
     }
 
@@ -217,7 +218,7 @@ trait TElementContent {
 
         return $input;
     }
-    
+
     public function render() {
         return new ElementString($this->toString());
     }
@@ -242,7 +243,7 @@ trait TElementContent {
                 $output[] = $child;
             }
         }
-        
+
         return $output;
     }
 
@@ -276,7 +277,7 @@ trait TElementContent {
                 $output = array_merge($output, $child->findAllWidgetsOfType($type));
             }
         }
-        
+
         return $output;
     }
 
@@ -287,9 +288,9 @@ trait TElementContent {
 
 
 class ElementContent implements IElementContentCollection, core\IDumpable {
-    
+
     use TElementContent;
-    use core\string\THtmlStringEscapeHandler;
+    use flex\THtmlStringEscapeHandler;
 
     public static function normalize($content) {
         return (new self($content))->toString();
@@ -298,30 +299,30 @@ class ElementContent implements IElementContentCollection, core\IDumpable {
 
 
 class ElementString implements IElementRepresentation, core\IDumpable {
-    
+
     protected $_content;
-    
+
     public function __construct($content) {
         $this->_content = (string)$content;
     }
-    
+
     public function __toString() {
         return $this->_content;
     }
-    
+
     public function toString() {
         return $this->_content;
     }
-    
+
     public function render() {
         return $this;
     }
-    
+
     public function prepend($str) {
         $this->_content = $str.$this->_content;
         return $this;
     }
-    
+
     public function append($str) {
         $this->_content .= $str;
         return $this;
@@ -330,7 +331,7 @@ class ElementString implements IElementRepresentation, core\IDumpable {
     public function isEmpty() {
         return !strlen($this->_content);
     }
-    
+
     public function getDumpProperties() {
         return $this->_content;
     }

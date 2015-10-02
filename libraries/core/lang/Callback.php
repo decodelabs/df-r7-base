@@ -9,11 +9,32 @@ use df;
 use df\core;
 
 class Callback implements ICallback, core\IDumpable {
-    
+
     protected $_callback;
     protected $_reflectionInstance;
     protected $_mode;
     protected $_extraArgs = [];
+
+    public static function getCallableId(Callable $callable) {
+        $output = '';
+
+        if(is_array($callable)) {
+            @list($target, $name) = $callable;
+
+            if(is_object($target)) {
+                $target = get_class($target);
+            }
+
+            $output = $target.'::'.$name;
+        } else if($callable instanceof \Closure) {
+            $output = 'closure-'.spl_object_hash($callable);
+        } else if(is_object($callable)) {
+            $output = get_class($callable);
+        }
+
+        return $output;
+    }
+
 
     public static function factory($callback, array $extraArgs=[]) {
         if($callback instanceof ICallback) {
@@ -23,7 +44,7 @@ class Callback implements ICallback, core\IDumpable {
 
             return $callback;
         }
-        
+
         if($callback === null) {
             return $callback;
         }
@@ -45,7 +66,7 @@ class Callback implements ICallback, core\IDumpable {
 
     protected function __construct($callback, array $extraArgs) {
         $this->setExtraArgs($extraArgs);
-        
+
         if(is_callable($callback)) {
             $this->_mode = ICallback::DIRECT;
             $this->_callback = $callback;

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,18 +9,19 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
-    
+use df\flex;
+
 class KeyString extends String {
 
-    protected $_case = core\string\ICase::NONE;
+    protected $_case = flex\ICase::NONE;
 
-    protected function _init($length=16, $case=core\string\ICase::NONE) {
+    protected function _init($length=16, $case=flex\ICase::NONE) {
         $this->setLength($length);
         $this->setCase($case);
     }
 
     public function setCase($case) {
-        $case = core\string\Manipulator::normalizeCaseFlag($case);
+        $case = flex\Text::normalizeCaseFlag($case);
 
         if($case != $this->_case) {
             $this->_hasChanged = true;
@@ -37,8 +38,8 @@ class KeyString extends String {
 
 // Values
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if($this->_case != core\string\ICase::NONE && $value !== null) {
-            $value = core\string\Manipulator::applyCase($value, $this->_case, $this->_characterSet);
+        if($this->_case != flex\ICase::NONE && $value !== null) {
+            $value = flex\Text::applyCase($value, $this->_case, $this->_characterSet);
         }
 
         return $value;

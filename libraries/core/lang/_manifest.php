@@ -20,9 +20,11 @@ class BadMethodCallException extends \BadMethodCallException {}
 
 // Interfaces
 interface ICallback {
-    
+
     const DIRECT = 1;
     const REFLECTION = 2;
+
+    public static function getCallableId(Callable $callable);
 
     public function setExtraArgs(array $args);
     public function getExtraArgs();

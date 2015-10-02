@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,6 +8,7 @@ namespace df\neon\vector\svg;
 use df;
 use df\core;
 use df\neon;
+use df\flex;
 
 
 trait TAttributeModule {
@@ -302,17 +303,17 @@ trait TAttributeModule {
 
     public function getGraphicalAttributes() {
         $attr = [
-            'alignment-baseline', 'baseline-shift', 'clip', 'clip-path', 'clip-rule', 'color', 'color-interpolation', 
-            'color-interpolation-filters', 'color-profile', 'color-rendering', 'cursor', 'direction', 'display', 
-            'dominant-baseline', 'enable-background', 'externalResourcesRequired', 'fill', 'fill-opacity', 'fill-rule', 
-            'filter', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 
-            'font-style', 'font-variant', 'font-weight', 'glyph-orientation-horizontal', 'glyph-orientation-vertical', 
-            'image-rendering', 'kerning', 'letter-spacing', 'lighting-color', 'marker-end', 'marker-mid', 'marker-start', 
-            'mask', 'onactivate', 'onclick', 'onfocusin', 'onfocusout', 'onload', 'onmousedown', 'onmousemove', 
-            'onmouseout', 'onmouseover', 'onmouseup', 'opacity', 'overflow', 'pointer-events', 'requiredExtensions', 
-            'requiredFeatures', 'shape-rendering', 'stop-color', 'stop-opacity', 'stroke', 'stroke-dasharray', 
-            'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke-width', 
-            'style', 'systemLanguage', 'text-anchor', 'text-decoration', 'text-rendering', 'unicode-bidi', 'visibility', 
+            'alignment-baseline', 'baseline-shift', 'clip', 'clip-path', 'clip-rule', 'color', 'color-interpolation',
+            'color-interpolation-filters', 'color-profile', 'color-rendering', 'cursor', 'direction', 'display',
+            'dominant-baseline', 'enable-background', 'externalResourcesRequired', 'fill', 'fill-opacity', 'fill-rule',
+            'filter', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch',
+            'font-style', 'font-variant', 'font-weight', 'glyph-orientation-horizontal', 'glyph-orientation-vertical',
+            'image-rendering', 'kerning', 'letter-spacing', 'lighting-color', 'marker-end', 'marker-mid', 'marker-start',
+            'mask', 'onactivate', 'onclick', 'onfocusin', 'onfocusout', 'onload', 'onmousedown', 'onmousemove',
+            'onmouseout', 'onmouseover', 'onmouseup', 'opacity', 'overflow', 'pointer-events', 'requiredExtensions',
+            'requiredFeatures', 'shape-rendering', 'stop-color', 'stop-opacity', 'stroke', 'stroke-dasharray',
+            'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke-width',
+            'style', 'systemLanguage', 'text-anchor', 'text-decoration', 'text-rendering', 'unicode-bidi', 'visibility',
             'word-spacing', 'writing-mode'
         ];
 
@@ -525,7 +526,7 @@ trait TAttributeModule {
         }
 
         if(is_string($boolean)) {
-            $boolean = core\string\Manipulator::stringToBoolean($boolean);
+            $boolean = flex\Text::stringToBoolean($boolean);
         }
 
         return (bool)$boolean;
@@ -621,7 +622,7 @@ trait TAttributeModule_BaseProfile {
 
     public function setBaseProfile($profile) {
         return $this->_setAttribute(
-            'baseProfile', 
+            'baseProfile',
             $this->_normalizeIdentifier($profile)
         );
     }
@@ -639,12 +640,12 @@ trait TAttributeModule_BasicGraphics {
 
     public function setDisplay($display) {
         return $this->_setAttribute(
-            'display', 
+            'display',
             $this->_normalizeKeyword(
-                $display, 
+                $display,
                 [
-                    'block', 'compact', 'inherit', 'inline', 'inline-table', 'list-item', 
-                    'marker', 'none', 'run-in', 'table', 'table-caption', 'table-cell', 'table-column', 
+                    'block', 'compact', 'inherit', 'inline', 'inline-table', 'list-item',
+                    'marker', 'none', 'run-in', 'table', 'table-caption', 'table-cell', 'table-column',
                     'table-column-group', 'table-footer-group', 'table-header-group', 'table-row',
                     'table-row-group'
                 ],
@@ -710,7 +711,7 @@ trait TAttributeModule_BasicPaint {
                 'fill-rule'
             )
         );
-        
+
         return $this;
     }
 
@@ -757,7 +758,7 @@ trait TAttributeModule_BasicPaint {
         return $this->_setAttribute(
             'stroke-dashoffset',
             $this->_normalizeKeywordOrLength(
-                $offset, 
+                $offset,
                 ['inherit']
             )
         );
@@ -786,7 +787,7 @@ trait TAttributeModule_BasicPaint {
         return $this->_setAttribute(
             'stroke-linejoin',
             $this->_normalizeKeyword(
-                $lineJoin, 
+                $lineJoin,
                 ['bevel', 'inherit', 'miter', 'round'],
                 'stroke-linejoin'
             )
@@ -821,7 +822,7 @@ trait TAttributeModule_BasicPaint {
         return $this->_setAttribute(
             'stroke-width',
             $this->_normalizeKeywordOrLength(
-                $width, 
+                $width,
                 ['inherit']
             )
         );
@@ -855,7 +856,7 @@ trait TAttributeModule_Clip {
         return $this->_setAttribute(
             'clip-path',
             $this->_normalizeKeywordOrIdentifier(
-                $path, 
+                $path,
                 ['inherit', 'none']
             )
         );
@@ -988,8 +989,8 @@ trait TAttributeModule_Core {
         return $this->_setAttribute(
             'xml:space',
             $this->_normalizeKeyword(
-                $space, 
-                ['preserve', 'default'], 
+                $space,
+                ['preserve', 'default'],
                 'xml:space'
             )
         );
@@ -1011,8 +1012,8 @@ trait TAttributeModule_Cursor {
             $this->_normalizeKeywordOrIdentifier(
                 $cursor,
                 [
-                    'auto', 'crosshair', 'default', 'e-resize', 'help', 'inherit', 'move', 
-                    'n-resize', 'ne-resize', 'nw-resize', 'pointer', 's-resize', 'se-resize', 
+                    'auto', 'crosshair', 'default', 'e-resize', 'help', 'inherit', 'move',
+                    'n-resize', 'ne-resize', 'nw-resize', 'pointer', 's-resize', 'se-resize',
                     'sw-resize', 'text', 'w-resize', 'wait'
                 ]
             )
@@ -1154,7 +1155,7 @@ trait TAttributeModule_Filter {
         return $this->_setAttribute(
             'filter',
             $this->_normalizeKeywordOrIdentifier(
-                $filter, 
+                $filter,
                 ['inherit', 'none']
             )
         );
@@ -1247,7 +1248,7 @@ trait TAttributeModule_Font {
         return $this->_setAttribute(
             'font-size',
             $this->_normalizeKeywordOrLength(
-                $size, 
+                $size,
                 ['inherit']
             )
         );
@@ -1261,8 +1262,8 @@ trait TAttributeModule_Font {
         return $this->_setAttribute(
             'font-size-adjust',
             $this->_normalizeKeywordOrNumber(
-                $adjust, 
-                ['inherit'], 
+                $adjust,
+                ['inherit'],
                 'font-size-adjust'
             )
         );
@@ -1278,7 +1279,7 @@ trait TAttributeModule_Font {
             $this->_normalizeKeyword(
                 $stretch,
                 [
-                    'condensed', 'expanded', 'extra-condensed', 'extra-expanded', 'inherit', 'narrower', 
+                    'condensed', 'expanded', 'extra-condensed', 'extra-expanded', 'inherit', 'narrower',
                     'normal', 'semi-condensed', 'semi-expanded', 'ultra-condensed', 'ultra-expanded', 'wider'
                 ],
                 'font-stretch'
@@ -1641,7 +1642,7 @@ trait TAttributeModule_Marker {
         return $this->_setAttribute(
             'marker-start',
             $this->_normalizeKeywordOrIdentifier(
-                $start, 
+                $start,
                 ['inherit']
             )
         );
@@ -1655,7 +1656,7 @@ trait TAttributeModule_Marker {
         return $this->_setAttribute(
             'marker-mid',
             $this->_normalizeKeywordOrIdentifier(
-                $mid, 
+                $mid,
                 ['inherit']
             )
         );
@@ -1669,7 +1670,7 @@ trait TAttributeModule_Marker {
         return $this->_setAttribute(
             'marker-end',
             $this->_normalizeKeywordOrIdentifier(
-                $end, 
+                $end,
                 ['inherit']
             )
         );
@@ -1689,7 +1690,7 @@ trait TAttributeModule_Mask {
         return $this->_setAttribute(
             'mask',
             $this->_normalizeKeywordOrIdentifier(
-                $mask, 
+                $mask,
                 ['inherit']
             )
         );
@@ -1712,7 +1713,7 @@ trait TAttributeModule_Paint {
         return $this->_setAttribute(
             'color-profile',
             $this->_normalizeKeywordOrIdentifier(
-                $profile, 
+                $profile,
                 ['auto', 'inherit', 'sRGB']
             )
         );
@@ -2072,7 +2073,7 @@ trait TAttributeModule_TextContent {
             $this->_normalizeKeyword(
                 $baseline,
                 [
-                    'after-edge', 'alphabetic', 'auto', 'baseline', 'before-edge', 'central', 
+                    'after-edge', 'alphabetic', 'auto', 'baseline', 'before-edge', 'central',
                     'hanging', 'ideographic', 'inherit', 'mathematical', 'middle', 'text-after-edge', 'text-before-edge'
                 ],
                 'alignment-baseline'
@@ -2102,8 +2103,8 @@ trait TAttributeModule_TextContent {
         return $this->_setAttribute(
             'direction',
             $this->_normalizeKeyword(
-                $direction, 
-                ['inherit', 'ltr', 'rtl'], 
+                $direction,
+                ['inherit', 'ltr', 'rtl'],
                 'direction'
             )
         );
@@ -2119,7 +2120,7 @@ trait TAttributeModule_TextContent {
             $this->_normalizeKeyword(
                 $baseline,
                 [
-                    'alphabetic', 'auto', 'central', 'hanging', 'ideographic', 'inherit', 'mathematical', 
+                    'alphabetic', 'auto', 'central', 'hanging', 'ideographic', 'inherit', 'mathematical',
                     'middle', 'no-change', 'reset-size', 'text-after-edge', 'text-before-edge', 'use-script'
                 ],
                 'dominant-baseline'
@@ -2135,7 +2136,7 @@ trait TAttributeModule_TextContent {
         return $this->_setAttribute(
             'glyph-orientation-horizontal',
             $this->_normalizeKeywordOrAngle(
-                $orientation, 
+                $orientation,
                 ['inherit']
             )
         );
@@ -2149,7 +2150,7 @@ trait TAttributeModule_TextContent {
         return $this->_setAttribute(
             'glyph-orientation-vertical',
             $this->_normalizeKeywordOrAngle(
-                $orientation, 
+                $orientation,
                 ['inherit']
             )
         );
@@ -2163,7 +2164,7 @@ trait TAttributeModule_TextContent {
         return $this->_setAttribute(
             'kerning',
             $this->_normalizeKeywordOrLength(
-                $kerning, 
+                $kerning,
                 ['auto', 'inherit']
             )
         );
@@ -2177,7 +2178,7 @@ trait TAttributeModule_TextContent {
         return $this->_setAttribute(
             'letter-spacing',
             $this->_normalizeKeywordOrLength(
-                $spacing, 
+                $spacing,
                 ['inherit', 'normal']
             )
         );
@@ -2236,7 +2237,7 @@ trait TAttributeModule_TextContent {
         return $this->_setAttribute(
             'word-spacing',
             $this->_normalizeKeywordOrLength(
-                $spacing, 
+                $spacing,
                 ['inherit', 'normal']
             )
         );
@@ -2273,7 +2274,7 @@ trait TAttributeModule_Viewport {
         return $this->_setAttribute(
             'clip',
             $this->_normalizeKeywordOrIdentifier(
-                $clip, 
+                $clip,
                 ['auto', 'inherit']
             )
         );
@@ -2309,7 +2310,7 @@ trait TAttributeModule_ViewBox {
             'viewBox',
             $this->_normalizeIdentifier($viewBox)
         );
-    }    
+    }
 
     public function getViewBox() {
         return $this->_getAttribute('viewBox');
@@ -2325,8 +2326,8 @@ trait TAttributeModule_XLink {
         return $this->_setAttribute(
             'xlink:type',
             $this->_normalizeKeyword(
-                $type, 
-                ['simple'], 
+                $type,
+                ['simple'],
                 'xlink:type'
             )
         );

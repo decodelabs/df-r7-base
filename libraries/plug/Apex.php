@@ -10,15 +10,16 @@ use df\core;
 use df\plug;
 use df\arch;
 use df\aura;
+use df\flex;
 
 class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
-    
+
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;
 
     public function future($type) {
         $args = array_slice(func_get_args(), 1);
-        
+
         return function(core\IHelperProvider $target) use($type, $args) {
             return call_user_func_array([$target->apex, $type], $args);
         };
@@ -29,7 +30,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         $parts = explode('.', $path);
         $location = $this->context->extractDirectoryLocation($path);
         $view = $this->newView(array_pop($parts), $location);
-        
+
         $view->setContentProvider(
             aura\view\content\Template::loadDirectoryTemplate($view->getContext(), $path)
         );
@@ -37,10 +38,10 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         if($slots) {
             $view->addSlots($slots);
         }
-        
+
         return $view;
     }
-    
+
     public function newView($type, $request=null) {
         return aura\view\Base::factory($type, $this->context->spawnInstance($request));
     }
@@ -50,7 +51,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         $view->setContentProvider(new aura\view\content\WidgetContentProvider($view->getContext()));
         return $view;
     }
-    
+
     public function template($path, array $slots=null) {
         $location = $this->context->extractDirectoryLocation($path);
         $template = aura\view\content\Template::loadDirectoryTemplate(
@@ -125,7 +126,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
         return arch\Transformer::isActionDeliverable($context);
     }
-    
+
     public function getAction($request, $runMode=null) {
         $request = $this->context->uri->directoryRequest($request);
         $context = arch\Context::factory($request, $runMode);
@@ -147,7 +148,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
             $requestParts[] = substr($name, 4);
 
             array_walk($requestParts, function(&$value) {
-                $value = core\string\Manipulator::formatActionSlug($value);
+                $value = flex\Text::formatActionSlug($value);
             });
 
             $output[] = arch\Request::factory('~'.implode('/', $requestParts));
@@ -155,7 +156,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
         return $output;
     }
-    
+
     public function controllerExists($request, $runMode=null) {
         $request = $this->context->uri->directoryRequest($request);
 
@@ -171,13 +172,13 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
             arch\Context::factory($request)
         );
     }
-    
+
     public function component($path) {
         $output = arch\component\Base::factory(
             $this->context->spawnInstance(
                 $this->context->extractDirectoryLocation($path)
-            ), 
-            $path, 
+            ),
+            $path,
             array_slice(func_get_args(), 1)
         );
 
@@ -196,9 +197,9 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         }
 
         $output = arch\component\Base::themeFactory(
-            $this->context->spawnInstance(), 
-            $themeId, 
-            $path, 
+            $this->context->spawnInstance(),
+            $themeId,
+            $path,
             array_slice(func_get_args(), 1)
         );
 
@@ -219,7 +220,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
             $context = arch\Context::factory($request);
         }
-        
+
         return arch\scaffold\Base::factory($context);
     }
 
@@ -257,7 +258,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
                     $this->context->request
                 );
             }
-            
+
             $this->context->application->setRegistryObject($output);
         }
 

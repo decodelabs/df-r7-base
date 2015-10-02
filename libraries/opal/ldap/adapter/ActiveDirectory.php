@@ -8,28 +8,29 @@ namespace df\opal\ldap\adapter;
 use df;
 use df\core;
 use df\opal;
+use df\flex;
 
 class ActiveDirectory extends opal\ldap\Adapter {
-    
+
     const BIND_REQUIRES_DN = false;
     const UID_ATTRIBUTE = 'sAMAccountName';
     const ENTRY_DN_ATTRIBUTE = 'distinguishedName';
     const GLOBAL_ID_ATTRIBUTE = 'objectGUID';
 
     protected static $_metaFields = [
-        'objectClass', 'distinguishedName', 'whenCreated', 'whenChanged', 'uSNCreated', 
+        'objectClass', 'distinguishedName', 'whenCreated', 'whenChanged', 'uSNCreated',
         'uSNChanged', 'objectGUID', 'objectSid', 'objectCategory', 'dSCorePropagationData'
     ];
-    
+
     protected function _flattenDn(opal\ldap\IDn $dn) {
-        return $dn->implode(',', core\string\ICase::UPPER);
+        return $dn->implode(',', flex\ICase::UPPER);
     }
-    
+
     protected function _inflateDate($name, $date) {
         if($date == 0 || $date == null) {
             return null;
         }
-        
+
         if(false !== strpos($date, '.')) {
             $parts = explode('.', $date);
             return core\time\Date::factory(array_shift($parts));
@@ -39,11 +40,11 @@ class ActiveDirectory extends opal\ldap\Adapter {
             );
         }
     }
-    
+
     protected function _deflateDate($name, $date) {
         $date = core\time\Date::factory($date);
         $ts = $date->toTimestamp();
-        
+
         return bcmul(bcadd($ts, '11644473600'), '10000000', 0);
     }
 }

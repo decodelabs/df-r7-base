@@ -9,13 +9,14 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
+use df\flex;
 
 abstract class Confirm extends arch\form\Action {
-    
+
     const ITEM_NAME = 'item';
     const DEFAULT_EVENT = 'confirm';
     const DISPOSITION = 'positive';
-    
+
     protected function getItemName() {
         return static::ITEM_NAME;
     }
@@ -24,11 +25,11 @@ abstract class Confirm extends arch\form\Action {
         $itemName = $this->getItemName();
         $form = $this->content->addForm();
         $fs = $form->addFieldSet($this->_('%n% information', ['%n%' => ucfirst($itemName)]));
-        
+
         $fs->push($this->html('p', $this->getMainMessage()));
-        
+
         if(!$this->isValid()) {
-            $fs->push($this->html->fieldError($this->values));   
+            $fs->push($this->html->fieldError($this->values));
         }
 
         $this->createItemUi($fs);
@@ -59,25 +60,25 @@ abstract class Confirm extends arch\form\Action {
     protected function getMainMessage() {
         return $this->_('Are you sure?');
     }
-    
+
     protected function createItemUi(/*aura\html\widget\IContainerWidget*/ $container) {}
 
     protected function customizeMainButton($button) {}
     protected function customizeCancelButton($button) {}
-    
-    
+
+
     protected function onConfirmEvent() {
         $output = $this->apply();
 
         if($this->values->isValid()) {
             if($message = $this->getFlashMessage()) {
                 $this->comms->flash(
-                    core\string\Manipulator::formatId($this->getItemName()).'.confirm', 
-                    $message, 
+                    flex\Text::formatId($this->getItemName()).'.confirm',
+                    $message,
                     'success'
                 );
             }
-            
+
             $complete = $this->finalize();
 
             if($output !== null) {

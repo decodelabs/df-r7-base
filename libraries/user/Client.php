@@ -10,9 +10,10 @@ use df\core;
 use df\user;
 use df\link;
 use df\mesh;
+use df\flex;
 
 class Client implements IClient, \Serializable, mesh\entity\IEntity {
-    
+
     use TNameExtractor;
 
     protected $_id;
@@ -28,7 +29,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
     protected $_groupIds = [];
     protected $_signifiers = [];
     protected $_options = null;
-    
+
     protected $_authState = IState::GUEST;
     protected $_keyring = [];
     protected $_keyringTimestamp;
@@ -43,24 +44,24 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         switch((int)$state) {
             case IState::DEACTIVATED:
                 return 'Deactivated';
-                
+
             case IState::GUEST:
                 return 'Guest';
-                
+
             case IState::PENDING:
                 return 'Pending';
-                
+
             case IState::BOUND:
                 return 'Bound';
-                
+
             case IState::CONFIRMED:
                 return 'Confirmed';
-                
+
             default:
                 return null;
         }
     }
-    
+
     public static function factory(IClientDataObject $data) {
         $output = new self();
         $output->import($data);
@@ -79,7 +80,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         $output->_nickName = 'Guest';
         $output->_joinDate = null;
         $output->_loginDate = null;
-        
+
         $i18nManager = core\i18n\Manager::getInstance();
         $locale = $i18nManager->getLocale();
 
@@ -99,15 +100,15 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
                 $output->_timezone = $geoIp->timezone;
             }
         }
-        
+
         if($output->_country === null) {
             $output->_country = $locale->getRegion();
         }
-        
+
         if($output->_country === null) {
             $output->_country = $i18nManager->countries->suggestCountryForLanguage($output->_language);
         }
-        
+
         if($output->_timezone === null) {
             $output->_timezone = $i18nManager->timezones->suggestForCountry($output->_country);
         }
@@ -175,19 +176,19 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         $this->_keyring = $data['kr'];
         $this->_keyringTimestamp = $data['kt'];
     }
-    
+
     public function getId() {
         return $this->_id;
     }
-    
+
     public function getEmail() {
         return $this->_email;
     }
-    
+
     public function getFullName() {
         return $this->_fullName;
     }
-    
+
     public function getNickName() {
         return $this->_nickName;
     }
@@ -195,23 +196,23 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
     public function getStatus() {
         return $this->_authState;
     }
-    
+
     public function getJoinDate() {
         return $this->_joinDate;
     }
-    
+
     public function getLoginDate() {
         return $this->_loginDate;
     }
-    
+
     public function getLanguage() {
         return $this->_language;
     }
-    
+
     public function getCountry() {
         return $this->_country;
     }
-    
+
     public function getTimezone() {
         return $this->_timezone;
     }
@@ -223,8 +224,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
     public function getSignifiers() {
         return $this->_signifiers;
     }
-    
-    
+
+
     public function setAuthenticationState($state) {
         switch($state) {
             case IState::GUEST:
@@ -233,41 +234,41 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
             case IState::CONFIRMED:
                 $this->_authState = $state;
                 break;
-                
+
             default:
                 $this->_authState = IState::GUEST;
                 break;
         }
-        
+
         $this->_accessCache = [];
 
         return $this;
     }
-    
+
     public function getAuthenticationState() {
         return $this->_authState;
     }
-    
+
     public function isDeactivated() {
         return $this->_authState == IState::DEACTIVATED;
     }
-    
+
     public function isGuest() {
         return $this->_authState == IState::GUEST;
     }
-    
+
     public function isPending() {
         return $this->_authState == IState::PENDING;
     }
-    
+
     public function isLoggedIn() {
         return $this->_id !== null;
     }
-    
+
     public function isBound() {
         return $this->_authState == IState::BOUND;
     }
-    
+
     public function isConfirmed() {
         return $this->_authState >= IState::CONFIRMED;
     }
@@ -281,9 +282,9 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
         return false;
     }
-    
-    
-    
+
+
+
     public function import(IClientDataObject $clientData) {
         $this->_accessCache = [];
 
@@ -300,7 +301,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         $this->_groupIds = [];
 
         foreach($clientData->getGroupIds() as $groupId) {
-            $this->_groupIds[] = (string)core\string\Uuid::factory($groupId);
+            $this->_groupIds[] = (string)flex\Guid::factory($groupId);
         }
 
         $this->_signifiers = $clientData->getSignifiers();
@@ -319,7 +320,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
             }
         }
     }
-    
+
     public function setKeyring(array $keyring) {
         $this->_accessCache = [];
         $this->_keyring = $keyring;
@@ -327,7 +328,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
         return $this;
     }
-    
+
     public function getKeyring() {
         return $this->_keyring;
     }
@@ -335,8 +336,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
     public function getKeyringTimestamp() {
         return $this->_keyringTimestamp;
     }
-    
-    
+
+
     public function canAccess(IAccessLock $lock, $action=null, $linkTo=false) {
         $domain = $lock->getAccessLockDomain();
 
@@ -355,7 +356,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         }
 
         $output = null;
-        
+
         if(isset($this->_keyring[$domain])) {
             $output = $lock->lookupAccessKey($this->_keyring[$domain], $action);
 
@@ -369,10 +370,10 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         if(!$output && isset($this->_keyring['*']['*'])) {
             $output = $this->_keyring['*']['*'];
         }
-        
+
         if($output === null) {
             $default = $lock->getDefaultAccess($action);
-            
+
             if($default === true || $default === false) {
                 $output = $default;
             } else {
@@ -380,19 +381,19 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
                     case IState::DEACTIVATED:
                         $output = $this->isDeactivated();
                         break;
-                        
+
                     case IState::GUEST:
                         $output = $this->_authState >= IState::GUEST;
                         break;
-                        
+
                     case IState::PENDING:
                         $output = $this->isPending();
                         break;
-                        
+
                     case IState::BOUND:
                         $output = $this->isLoggedIn();
                         break;
-                        
+
                     case IState::CONFIRMED:
                         if($linkTo) {
                             $output = $this->isLoggedIn();
@@ -401,13 +402,13 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
                         }
 
                         break;
-                    
+
                     case IState::DEV:
                         $output = df\Launchpad::$application->isDevelopment()
                                && $this->_authState >= IState::GUEST
                                && $this->_authState != IState::PENDING;
                         break;
-                    
+
                     default:
                         $output = false;
                         break;
@@ -416,7 +417,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         }
 
         $this->_accessCache[$lockId] = $output;
-        
+
         return $output;
     }
 
@@ -427,7 +428,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
     }
 
     public function hasOption($key) {
-        return $this->_options !== null 
+        return $this->_options !== null
             && array_key_exists($key, $this->_options);
     }
 
@@ -473,7 +474,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
     public function offsetExists($key) {
         return in_array($key, [
-            'id', 'email', 'fullName', 'nickName', 'firstName', 'surname', 
+            'id', 'email', 'fullName', 'nickName', 'firstName', 'surname',
             'stats', 'joinDate', 'loginDate', 'language', 'country', 'timezone'
         ]);
     }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,8 @@ namespace df\iris;
 use df;
 use df\core;
 use df\iris;
-    
+use df\flex;
+
 class Lexer implements ILexer, core\IDumpable {
 
     use TLocationProvider;
@@ -129,7 +130,7 @@ class Lexer implements ILexer, core\IDumpable {
         if(empty($this->_scanners)) {
             throw new LogicException(
                 'Lexer has no scanners'
-            );  
+            );
         }
 
 
@@ -266,44 +267,44 @@ class Lexer implements ILexer, core\IDumpable {
     public function extractAlpha() {
         $output = '';
 
-        while(core\string\Util::isAlpha($this->char)) {
+        while(flex\Text::isAlpha($this->char)) {
             $output .= $this->char;
             $this->extract();
         }
-        
+
         return $output;
     }
 
     public function extractAlphanumeric() {
         $output = '';
 
-        while(core\string\Util::isAlphanumeric($this->char)) {
+        while(flex\Text::isAlphaNumeric($this->char)) {
             $output .= $this->char;
             $this->extract();
         }
-        
+
         return $output;
     }
 
     public function extractNumeric() {
         $output = '';
 
-        while(core\string\Util::isDigit($this->char)) {
+        while(flex\Text::isDigit($this->char)) {
             $output .= $this->char;
             $this->extract();
         }
-        
+
         return $output;
     }
 
     public function extractWhitespace() {
         $output = '';
 
-        while(core\string\Util::isWhitespace($this->char)) {
+        while(flex\Text::isWhitespace($this->char)) {
             $output .= $this->char;
             $this->extract();
         }
-        
+
         return $output;
     }
 
@@ -321,22 +322,22 @@ class Lexer implements ILexer, core\IDumpable {
 
     public function peekAlpha($offset=0, $length=1) {
         $output = $this->peek($offset, $length);
-        return core\string\Util::isAlpha($output) ? $output : null;
+        return flex\Text::isAlpha($output) ? $output : null;
     }
 
     public function peekAlphanumeric($offset=0, $length=1) {
         $output = $this->peek($offset, $length);
-        return core\string\Util::isAlphanumeric($output) ? $output : null;
+        return flex\Text::isAlphaNumeric($output) ? $output : null;
     }
 
     public function peekNumeric($offset=0, $length=1) {
         $output = $this->peek($offset, $length);
-        return core\string\Util::isDigit($output) ? $output : null;
+        return flex\Text::isDigit($output) ? $output : null;
     }
 
     public function peekWhitespace($offset=0, $length=1) {
         $output = $this->peek($offset, $length);
-        return core\string\Util::isWhitespace($output) ? $output : null;
+        return flex\Text::isWhitespace($output) ? $output : null;
     }
 
 

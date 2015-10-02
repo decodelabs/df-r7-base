@@ -11,12 +11,12 @@ use df\halo;
 use df\flex;
 
 class Daemon extends Base {
-    
+
     const RUN_MODE = 'Daemon';
-    
+
     public $io;
     protected $_statusData;
-    
+
 // Execute
     public function dispatch() {
         if(php_sapi_name() != 'cli') {
@@ -29,7 +29,7 @@ class Daemon extends Base {
         $env = core\Environment::getInstance();
 
         if(!$env->canUseDaemons() || !extension_loaded('pcntl')) {
-            $this->io->writeErrorLine('Daemons are not enabled in config');            
+            $this->io->writeErrorLine('Daemons are not enabled in config');
             return;
         }
 
@@ -157,8 +157,8 @@ class Daemon extends Base {
         }
 
         halo\process\Base::launchScript(
-            $path, 
-            ['daemon', $name, '__spawn'], 
+            $path,
+            ['daemon', $name, '__spawn'],
             new core\io\Multiplexer([$this->io])
         );
 
@@ -185,7 +185,7 @@ class Daemon extends Base {
 
     public function stop(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
         $name = $daemon->getName();
-        
+
         if(!$process) {
             $this->io->writeLine('Daemon '.$name.' is not running');
             return;
@@ -239,7 +239,7 @@ class Daemon extends Base {
                 $value = (new core\time\Date($value))->localeFormat();
             }
 
-            $this->io->writeLine(core\string\Manipulator::formatName($key).': '.$value);
+            $this->io->writeLine(flex\Text::formatName($key).': '.$value);
         }
     }
 
@@ -257,7 +257,7 @@ class Daemon extends Base {
                 // Has it got stuck?
                 $this->io->writeLine();
                 $this->io->write('Status is stale, restarting...');
-                
+
                 $process->kill();
                 $process = halo\daemon\Base::launch('TaskSpool');
             }

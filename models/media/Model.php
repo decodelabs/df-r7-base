@@ -10,9 +10,10 @@ use df\core;
 use df\apex;
 use df\axis;
 use df\neon;
+use df\flex;
 
 class Model extends axis\Model {
-    
+
 
 // IO
     public function publishFile($filePath, $bucket, $fileData=null, $publishIfMissing=false) {
@@ -61,7 +62,7 @@ class Model extends axis\Model {
 
                 if(!is_file($storeFilePath)) {
                     $mediaHandler->publishFile(
-                        $file['id'], 
+                        $file['id'],
                         null,
                         $file['#activeVersion'],
                         $filePath,
@@ -87,7 +88,7 @@ class Model extends axis\Model {
         }
 
         $fileData = $this->_normalizeFileData(
-            $filePath, 
+            $filePath,
             $fileData,
             $bucket['id'],
             $file ? $file['id'] : null,
@@ -127,7 +128,7 @@ class Model extends axis\Model {
 
         if(!$isMissing) {
             $mediaHandler->publishFile(
-                $file['id'], 
+                $file['id'],
                 $oldVersionId,
                 $version['id'],
                 $filePath,
@@ -152,7 +153,7 @@ class Model extends axis\Model {
         }
 
         $fileData = $this->_normalizeFileData(
-            $filePath, 
+            $filePath,
             $fileData,
             $file['#bucket'],
             $file['id'],
@@ -365,7 +366,7 @@ class Model extends axis\Model {
             return null;
         }
 
-        if($id instanceof core\string\IUuid) {
+        if($id instanceof flex\IGuid) {
             return (string)$id;
         }
 
@@ -374,7 +375,7 @@ class Model extends axis\Model {
         }
 
         if(strlen($id) != 36) {
-            $id = (string)core\string\Uuid::factory($id);
+            $id = (string)flex\Guid::factory($id);
         }
 
         return $id;

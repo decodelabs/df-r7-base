@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,8 @@ namespace df\arch\navigation\menu\source;
 use df;
 use df\core;
 use df\arch;
-    
+use df\flex;
+
 class Directory extends Base implements arch\navigation\menu\IListableSource {
 
     public function loadMenu(core\uri\Url $id) {
@@ -24,7 +25,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
         } else {
             $area = arch\Request::DEFAULT_AREA;
         }
-        
+
         $classBase = 'df\\apex\\directory\\'.$area;
         $sharedClassBase = 'df\\apex\\directory\\'.$area;
         $baseId = 'Directory://'.arch\Request::AREA_MARKER.$area;
@@ -128,9 +129,9 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
 
                 if(!isset($output[$idString])) {
                     $idObj = clone $idObj;
-                    
+
                     $output[$idString] = $menu = new arch\navigation\menu\Base(
-                        $this->context, 
+                        $this->context,
                         arch\navigation\menu\Base::normalizeId($idString)
                     );
                 }
@@ -170,7 +171,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
                 unset($set['__default']);
             } else {
                 $top = new arch\navigation\menu\Base(
-                    $this->context, 
+                    $this->context,
                     arch\navigation\menu\Base::normalizeId($id)
                 );
             }
@@ -207,7 +208,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
                     $list[] = arch\Request::AREA_MARKER.$item[1].'/'.$item[2];
                 }
             }
-            
+
             $cache->set($cacheId, $list);
         }
 
@@ -243,7 +244,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
             $area = ltrim(array_shift($parts), arch\Request::AREA_MARKER);
 
             if(!isset($output[$area])) {
-                $output[$area] = core\string\Manipulator::formatName($area);
+                $output[$area] = flex\Text::formatName($area);
             }
         }
 

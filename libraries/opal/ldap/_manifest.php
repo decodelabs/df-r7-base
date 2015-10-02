@@ -8,6 +8,7 @@ namespace df\opal\ldap;
 use df;
 use df\core;
 use df\opal;
+use df\flex;
 
 // Exceptions
 interface IException {}
@@ -115,7 +116,7 @@ interface IStatus {
 }
 
 interface IDn extends core\collection\IIndexedQueue, core\IStringProvider {
-    public function implode($separator=',', $case=core\string\ICase::NONE);
+    public function implode($separator=',', $case=flex\ICase::NONE);
     public function isChildOf($dn);
     public function getFirstEntry($key);
     public function getAllEntries($key);
@@ -124,7 +125,7 @@ interface IDn extends core\collection\IIndexedQueue, core\IStringProvider {
 
 
 interface IRdn extends \Countable, core\collection\IAttributeContainer, core\IStringProvider {
-    public function implode($case=core\string\ICase::NONE);
+    public function implode($case=flex\ICase::NONE);
     public function eq($rdn);
 }
 

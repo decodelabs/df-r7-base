@@ -9,11 +9,12 @@ use df;
 use df\core;
 use df\mint;
 use df\flow;
+use df\flex;
 
 class Format implements core\ISharedHelper {
-    
+
     use core\TSharedHelper;
-    
+
 // Numbers
     public function number($number, $round=null, $format=null, $locale=null) {
         if($number === null) {
@@ -32,7 +33,7 @@ class Format implements core\ISharedHelper {
             ->getModule('numbers', $locale)
             ->format($number, $format);
     }
-    
+
     public function percent($number, $total=100, $locale=null) {
         if($number === null) {
             return null;
@@ -103,7 +104,7 @@ class Format implements core\ISharedHelper {
             ->getModule('numbers', $locale)
             ->formatCurrencyRounded($number, $code);
     }
-    
+
     public function scientific($number, $locale=null) {
         if($number === null) {
             return null;
@@ -117,7 +118,7 @@ class Format implements core\ISharedHelper {
             ->getModule('numbers', $locale)
             ->formatScientific($number);
     }
-    
+
     public function spellout($number, $locale=null) {
         if($number === null) {
             return null;
@@ -131,7 +132,7 @@ class Format implements core\ISharedHelper {
             ->getModule('numbers', $locale)
             ->formatSpellout($number);
     }
-    
+
     public function ordinal($number, $locale=null) {
         if($number === null) {
             return null;
@@ -145,7 +146,7 @@ class Format implements core\ISharedHelper {
             ->getModule('numbers', $locale)
             ->formatOrdinal($number);
     }
-    
+
     public function duration($duration, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
         if($duration === null) {
             return null;
@@ -200,7 +201,7 @@ class Format implements core\ISharedHelper {
         return bin2hex($binary);
     }
 
-    
+
 // Date
     public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
         if($date === null) {
@@ -214,16 +215,16 @@ class Format implements core\ISharedHelper {
         return core\time\Date::factory($date)
             ->localeDateFormat($size, $locale);
     }
-    
+
     public function userDate($date, $size=core\time\Date::MEDIUM) {
         if($date === null) {
             return null;
         }
-        
+
         return core\time\Date::factory($date)
             ->userLocaleDateFormat($size);
     }
-    
+
     public function dateTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
         if($date === null) {
             return null;
@@ -232,16 +233,16 @@ class Format implements core\ISharedHelper {
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
-        
+
         return core\time\Date::factory($date)
             ->localeFormat($size, $locale);
     }
-    
+
     public function userDateTime($date, $size=core\time\Date::MEDIUM) {
         if($date === null) {
             return null;
         }
-        
+
         return core\time\Date::factory($date)
             ->userLocaleFormat($size);
     }
@@ -259,7 +260,7 @@ class Format implements core\ISharedHelper {
 
         return $date->format($format);
     }
-    
+
     public function time($date, $format=null, $userTime=false) {
         if($date === null) {
             return null;
@@ -286,16 +287,16 @@ class Format implements core\ISharedHelper {
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
-        
+
         return core\time\Date::factory($date)
             ->localeTimeFormat($size, $locale);
     }
-    
+
     public function userTime($date, $size=core\time\Date::MEDIUM) {
         if($date === null) {
             return null;
         }
-        
+
         return core\time\Date::factory($date)
             ->userLocaleTimeFormat($size);
     }
@@ -313,18 +314,18 @@ class Format implements core\ISharedHelper {
         if($locale === null) {
             $locale = true;
         }
-        
+
         return core\time\Date::factory($date)
             ->timeSince()
             ->setLocale($locale)
             ->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
-    
+
     public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
         if($date === null) {
             return null;
         }
-        
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
@@ -332,7 +333,7 @@ class Format implements core\ISharedHelper {
         if($locale === null) {
             $locale = true;
         }
-        
+
         return core\time\Date::factory($date)
             ->timeUntil()
             ->setLocale($locale)
@@ -343,7 +344,7 @@ class Format implements core\ISharedHelper {
         if($date === null) {
             return null;
         }
-        
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
@@ -371,47 +372,47 @@ class Format implements core\ISharedHelper {
             return $this->context->_('just now');
         }
     }
-    
-    
+
+
 // Strings
     public function name($name) {
-        return core\string\Manipulator::formatName($name);
+        return flex\Text::formatName($name);
     }
-    
+
     public function id($id) {
-        return core\string\Manipulator::formatId($id);
+        return flex\Text::formatId($id);
     }
 
     public function actionSlug($action) {
-        return core\string\Manipulator::formatActionSlug($action);
+        return flex\Text::formatActionSlug($action);
     }
-    
+
     public function slug($slug) {
-        return core\string\Manipulator::formatSlug($slug);
+        return flex\Text::formatSlug($slug);
     }
-    
+
     public function pathSlug($slug) {
-        return core\string\Manipulator::formatPathSlug($slug);
+        return flex\Text::formatPathSlug($slug);
     }
-    
+
     public function fileName($fileName) {
-        return core\string\Manipulator::formatFileName($fileName);
+        return flex\Text::formatFileName($fileName);
     }
-    
+
     public function numericToAlpha($number) {
-        return core\string\Manipulator::numericToAlpha($number);
+        return flex\Text::numericToAlpha($number);
     }
-    
+
     public function alphaToNumeric($alpha) {
-        return core\string\Manipulator::alphaToNumeric($alpha);
+        return flex\Text::alphaToNumeric($alpha);
     }
 
     public function shorten($string, $length=20, $right=false) {
-        return core\string\Manipulator::shorten($string, $length, $right);
+        return flex\Text::shorten($string, $length, $right);
     }
 
     public function stringToBoolean($string, $default=true) {
-        return core\string\Manipulator::stringToBoolean($string, $default);
+        return flex\Text::stringToBoolean($string, $default);
     }
 
 
@@ -430,7 +431,7 @@ class Format implements core\ISharedHelper {
         if(strlen($output) < 3) {
             $output = $fullName;
         }
-        
+
         return $output;
     }
 

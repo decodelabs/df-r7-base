@@ -9,23 +9,24 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
+use df\flex;
 
-class String extends Base implements 
-    axis\schema\ILengthRestrictedField, 
+class String extends Base implements
+    axis\schema\ILengthRestrictedField,
     opal\schema\ICharacterSetAwareField {
-    
+
     use axis\schema\TLengthRestrictedField;
     use opal\schema\TField_CharacterSetAware;
-    
+
     protected function _init($length=null) {
         $this->setLength($length);
     }
 
 
     public function compareValues($value1, $value2) {
-        return core\string\Manipulator::compare($value1, $value2);
+        return flex\Text::compare($value1, $value2);
     }
-    
+
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($value !== null) {
             $value = (string)$value;
@@ -33,11 +34,11 @@ class String extends Base implements
 
         return $value;
     }
-    
+
     public function getSearchFieldType() {
         return 'string';
     }
-    
+
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         if($this->_isConstantLength) {
@@ -45,15 +46,15 @@ class String extends Base implements
         } else {
             $output = new opal\schema\Primitive_Varchar($this, $this->_length);
         }
-        
+
         if($this->_characterSet !== null) {
             $output->setCharacterSet($this->_characterSet);
         }
-        
+
         return $output;
     }
-    
-    
+
+
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);

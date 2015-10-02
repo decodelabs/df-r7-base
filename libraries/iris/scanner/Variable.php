@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,8 @@ namespace df\iris\scanner;
 use df;
 use df\core;
 use df\iris;
-    
+use df\flex;
+
 class Variable implements iris\IScanner, core\IDumpable {
 
     protected $_markers = [];
@@ -78,7 +79,7 @@ class Variable implements iris\IScanner, core\IDumpable {
         }
 
         $peek = $lexer->peek(1, 1);
-        return core\string\Util::isAlpha($peek) || $peek == '_';
+        return flex\Text::isAlpha($peek) || $peek == '_';
     }
 
     public function run(iris\ILexer $lexer) {

@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 use df\mesh;
+use df\flex;
 
 // Interfaces
 interface ISqlVariantAware {
@@ -17,22 +18,22 @@ interface ISqlVariantAware {
 
 
 trait TSqlVariantAware {
-    
+
     protected $_sqlVariant;
-    
+
     public function getSqlVariant() {
         return $this->_sqlVariant;
     }
 }
 
 
-interface ISchema extends 
-    opal\schema\ISchema, 
-    opal\schema\IFieldProvider, 
-    opal\schema\IIndexProvider, 
+interface ISchema extends
+    opal\schema\ISchema,
+    opal\schema\IFieldProvider,
+    opal\schema\IIndexProvider,
     opal\schema\IIndexedFieldProvider,
-    opal\schema\IForeignKeyProvider, 
-    opal\schema\ITriggerProvider, 
+    opal\schema\IForeignKeyProvider,
+    opal\schema\ITriggerProvider,
     ISqlVariantAware,
     mesh\entity\IEntity {
     public function getAdapter();
@@ -73,7 +74,7 @@ interface IKeyBlockSizeAwareSchema extends ISchema {
 
 
 
-interface IField extends opal\schema\IField, ISqlVariantAware, core\IStringProvider, core\string\ICollationAware {
+interface IField extends opal\schema\IField, ISqlVariantAware, core\IStringProvider, flex\ICollationAware {
     public function setNullConflictClause($clause);
     public function getNullConflictClauseId();
     public function getNullConflictClauseName();
@@ -94,4 +95,4 @@ interface IIndex extends opal\schema\IIndex, ISqlVariantAware {
 }
 
 interface IForeignKey extends opal\schema\IForeignKey, ISqlVariantAware {}
-interface ITrigger extends opal\schema\ITrigger, ISqlVariantAware, core\string\ICharacterSetAware {}
+interface ITrigger extends opal\schema\ITrigger, ISqlVariantAware, flex\ICharacterSetAware {}

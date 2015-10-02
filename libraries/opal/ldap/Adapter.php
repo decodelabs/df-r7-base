@@ -9,9 +9,10 @@ use df;
 use df\core;
 use df\opal;
 use df\user;
+use df\flex;
 
 abstract class Adapter implements IAdapter {
-    
+
     use opal\query\TQuery_EntryPoint;
     use user\TAccessLock;
 
@@ -25,26 +26,26 @@ abstract class Adapter implements IAdapter {
         'supportedControl', 'supportedLDAPVersion', 'supportedLDAPPolicies',
         'supportedSASLMechanisms', 'supportedCapabilities'
     ];
-    
+
     protected static $_dateAttrs = [
         'whenCreated', 'whenChanged', 'badPasswordTime', 'lastLogoff', 'lastLogon',
         'pwdLastSet', 'accountExpires', 'lastLogonTimestamp', 'currentTime'
     ];
-    
+
     protected static $_booleanAttrs = [
         'isSynchronized', 'isGlobalCatalogReady'
     ];
-    
+
     protected static $_binaryAttrs = [
         'objectGUID', 'objectSid'
     ];
 
     protected static $_metaFields = [
         'structuralObjectClass', 'entryUUID', 'creatorsName', 'createTimestamp',
-        'entryCSN', 'modifiersName', 'modifyTimestamp', 'entryDN', 
+        'entryCSN', 'modifiersName', 'modifyTimestamp', 'entryDN',
         'subschemaSubentry', 'hasSubordinates'
     ];
-    
+
     protected $_connection;
     protected $_context;
     protected $_privilegedIdentity;
@@ -76,7 +77,7 @@ abstract class Adapter implements IAdapter {
     public static function getArrayAttributes() {
         return static::$_arrayAttrs;
     }
-    
+
     public static function getDateAttributes() {
         return static::$_dateAttrs;
     }
@@ -84,7 +85,7 @@ abstract class Adapter implements IAdapter {
     public static function getBooleanAttributes() {
         return static::$_booleanAttrs;
     }
-    
+
     public static function getBinaryAttributes() {
         return static::$_binaryAttrs;
     }
@@ -99,41 +100,41 @@ abstract class Adapter implements IAdapter {
     public function getConnection() {
         return $this->_connection;
     }
-    
+
     public function setContext($context) {
         $this->_context = Context::factory($context);
         return $this;
     }
-    
+
     public function getContext() {
         return $this->_context;
     }
-    
+
 
 // Identity
     public function setPrivilegedIdentity(IIdentity $identity=null) {
         $this->_privilegedIdentity = $identity;
         return $this;
     }
-    
+
     public function getPrivilegedIdentity() {
         return $this->_privilegedIdentity;
     }
-    
+
     public function isBound() {
         return $this->_boundIdentity !== null;
     }
-    
+
     public function getBoundIdentity() {
         return $this->_boundIdentity;
     }
-    
+
     public function bind(IIdentity $identity) {
         $this->_connection->bindIdentity($identity, $this->_context);
         $this->_boundIdentity = $identity;
         return $this;
     }
-    
+
     public function ensureBind() {
         if(!$this->isBound()) {
             if($this->_privilegedIdentity) {
@@ -194,18 +195,18 @@ abstract class Adapter implements IAdapter {
             case opal\query\IQueryTypes::BATCH_INSERT:
             case opal\query\IQueryTypes::REPLACE:
             case opal\query\IQueryTypes::BATCH_REPLACE:
-                
+
             case opal\query\IQueryTypes::CORRELATION:
 
             case opal\query\IQueryTypes::JOIN:
             case opal\query\IQueryTypes::JOIN_CONSTRAINT:
             case opal\query\IQueryTypes::REMOTE_JOIN:
-                
+
             case opal\query\IQueryTypes::SELECT_ATTACH:
             case opal\query\IQueryTypes::FETCH_ATTACH:
             */
                 return true;
-                
+
             default:
                 return false;
         }
@@ -223,7 +224,7 @@ abstract class Adapter implements IAdapter {
             //case opal\query\IQueryFeatures::TRANSACTION:
             case opal\query\IQueryFeatures::LOCATION:
                 return true;
-                
+
             default:
                 return false;
         }
@@ -252,12 +253,12 @@ abstract class Adapter implements IAdapter {
         $result = $this->_executeReadQueryRequest($query);
         return $this->_prepareReadQueryResponse($query, $result);
     }
-    
+
     public function countSelectQuery(opal\query\ISelectQuery $query) {
         $result = $this->_executeReadQueryRequest($query);
         return ldap_count_entries($this->_connection->getResource(), $result);
     }
-    
+
     public function executeUnionQuery(opal\query\IUnionQuery $query) {
         throw new QueryException(
             'LDAP does not support union queries'
@@ -274,13 +275,13 @@ abstract class Adapter implements IAdapter {
         $result = $this->_executeReadQueryRequest($query);
         return $this->_prepareReadQueryResponse($query, $result);
     }
-    
+
     public function countFetchQuery(opal\query\IFetchQuery $query) {
         $result = $this->_executeReadQueryRequest($query);
         return ldap_count_entries($this->_connection->getResource(), $result);
     }
-    
-    
+
+
 
 // Insert query
     public function executeInsertQuery(opal\query\IInsertQuery $query) {
@@ -307,12 +308,12 @@ abstract class Adapter implements IAdapter {
 
         return true;
     }
-    
+
 // Batch insert query
     public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query) {
         core\stub($query);
     }
-    
+
 // Update query
     public function executeUpdateQuery(opal\query\IUpdateQuery $query) {
         $this->ensureBind();
@@ -335,7 +336,7 @@ abstract class Adapter implements IAdapter {
 
         return $count;
     }
-    
+
 // Delete query
     public function executeDeleteQuery(opal\query\IDeleteQuery $query) {
         $this->ensureBind();
@@ -354,12 +355,12 @@ abstract class Adapter implements IAdapter {
             ldap_delete($connection, $dn);
         }
     }
-    
+
 // Remote data
     public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows) {
         core\stub($query);
     }
-    
+
     public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows) {
         core\stub($query);
     }
@@ -401,7 +402,7 @@ abstract class Adapter implements IAdapter {
         if($subNodeSearch) {
             $result = @ldap_search($connection, $baseDn, $filter, $attributes);
         } else if($readEntry) {
-            $result = @ldap_read($connection, $baseDn, $filter, $attributes);  
+            $result = @ldap_read($connection, $baseDn, $filter, $attributes);
         } else {
             $result = @ldap_list($connection, $baseDn, $filter, $attributes);
         }
@@ -411,7 +412,7 @@ abstract class Adapter implements IAdapter {
                 'Search failed: '.@ldap_error($connection)
             );
         }
-        
+
         return $result;
     }
 
@@ -437,7 +438,7 @@ abstract class Adapter implements IAdapter {
                 }
             }
         }
-        
+
         if($query->hasLimit()) {
             $limit = $query->getLimit();
         } else {
@@ -497,7 +498,7 @@ abstract class Adapter implements IAdapter {
                         $value = null;
                     }
                 } else if(in_array($key, static::$_binaryAttrs)) {
-                    $value = $this->_inflateBinaryAttribute($key, $value); 
+                    $value = $this->_inflateBinaryAttribute($key, $value);
                 } else if(in_array($key, static::$_booleanAttrs)) {
                     $value = $this->_inflateBooleanAttribute($key, $value);
                 }
@@ -608,15 +609,15 @@ abstract class Adapter implements IAdapter {
             case opal\query\clause\Clause::OP_EQ:
                 $output = '('.$field.'='.$this->_normalizeScalarClauseValue($field, $value).')';
                 break;
-                
+
             // > | >= | < | <=
             case opal\query\clause\Clause::OP_GT:
             case opal\query\clause\Clause::OP_GTE:
-            case opal\query\clause\Clause::OP_LT: 
+            case opal\query\clause\Clause::OP_LT:
             case opal\query\clause\Clause::OP_LTE:
                 $output = '('.$field.$operator.$this->_normalizeScalarClauseValue($field, $value).')';
                 break;
-                
+
             // <NOT> IN()
             case opal\query\clause\Clause::OP_NOT_IN:
                 $negate = true;
@@ -634,7 +635,7 @@ abstract class Adapter implements IAdapter {
 
                 $output = $this->_clauseListToString($tempList);
                 break;
-                
+
             // <NOT> BETWEEN()
             case opal\query\clause\Clause::OP_NOT_BETWEEN:
                 $negate = true;
@@ -655,14 +656,14 @@ abstract class Adapter implements IAdapter {
 
                 $output = $this->_clauseListToString($tempList);
                 break;
-                
+
             // <NOT> LIKE
             case opal\query\clause\Clause::OP_NOT_LIKE:
                 $negate = true;
             case opal\query\clause\Clause::OP_LIKE:
                 $output = '('.$field.'~='.$this->_normalizeScalarClauseValue($field, $value).')';
                 break;
-                
+
             // <NOT> CONTAINS
             case opal\query\clause\Clause::OP_NOT_CONTAINS:
             case opal\query\clause\Clause::OP_NOT_MATCHES:
@@ -671,21 +672,21 @@ abstract class Adapter implements IAdapter {
             case opal\query\clause\Clause::OP_MATCHES:
                 $output = '('.$field.'=*'.$this->_normalizeScalarClauseValue($field, $value).'*)';
                 break;
-            
+
             // <NOT> BEGINS
             case opal\query\clause\Clause::OP_NOT_BEGINS:
                 $negate = true;
             case opal\query\clause\Clause::OP_BEGINS:
                 $output = '('.$field.'='.$this->_normalizeScalarClauseValue($field, $value).'*)';
                 break;
-                
+
             // <NOT> ENDS
             case opal\query\clause\Clause::OP_NOT_ENDS:
                 $negate = true;
             case opal\query\clause\Clause::OP_ENDS:
                 $output = '('.$field.'=*'.$this->_normalizeScalarClauseValue($field, $value).')';
                 break;
-            
+
             default:
                 throw new opal\query\OperatorException(
                     'Operator '.$operator.' is not recognized'
@@ -738,33 +739,33 @@ abstract class Adapter implements IAdapter {
         if($date === null || $date == 0) {
             return null;
         }
-        
+
         return core\time\Date::factory($date);
     }
-    
+
     protected function _deflateDate($name, $date) {
         $date = core\time\Date::factory($date);
         return $date->toTimestamp();
     }
-    
+
     protected function _inflateBinaryAttribute($name, $value) {
         if(!strlen($value)) {
             return null;
         }
-        
+
         return bin2hex($value);
     }
-    
+
     protected function _deflateBinaryAttribute($name, $value) {
         if(!strlen($value)) {
             return null;
         }
-        
+
         return pack("H*", $value);
     }
 
     protected function _inflateBooleanAttribute($name, $value) {
-        return core\string\Manipulator::stringToBoolean($value);
+        return flex\Text::stringToBoolean($value);
     }
 
     protected function _deflateBooleanAttribute($name, $value) {
@@ -777,11 +778,11 @@ abstract class Adapter implements IAdapter {
     public function beginQueryTransaction() {
         return $this;
     }
-    
+
     public function commitQueryTransaction() {
         return $this;
     }
-    
+
     public function rollbackQueryTransaction() {
         return $this;
     }
@@ -825,23 +826,23 @@ abstract class Adapter implements IAdapter {
         foreach($values as $key => $value) {
             $values[$key] = $this->_escapeValue($value);
         }
-        
+
         return $values;
     }
-    
+
     protected function _escapeValue($value) {
         $value = str_replace(
             ['\\', '*', '(', ')'],
             ['\5c', '\2a', '\28', '\29'],
             $value
         );
-        
-        $value = core\string\Util::ascii32ToHex32($value);
-        
+
+        $value = flex\Text::ascii32ToHex32($value);
+
         if($value === null) {
             $value = '\0';
         }
-        
+
         return $value;
     }
 
@@ -852,7 +853,7 @@ abstract class Adapter implements IAdapter {
             foreach($baseDn->toArray() as $rdn) {
                 $dn->push($rdn);
             }
-        }        
+        }
 
         return $this->_flattenDn($dn);
     }

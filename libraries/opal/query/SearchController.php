@@ -8,15 +8,16 @@ namespace df\opal\query;
 use df;
 use df\core;
 use df\opal;
+use df\flex;
 
 class SearchController implements ISearchController, core\IDumpable {
-    
+
     const MAX_THRESHOLD_RATIO = 0.95;
 
     use opal\query\TField;
 
     protected $_phrase = null;
-    protected $_type = 'string';    
+    protected $_type = 'string';
     protected $_terms = null;
     protected $_fields = null;
     protected $_alias = 'relevance';
@@ -42,7 +43,7 @@ class SearchController implements ISearchController, core\IDumpable {
             $this->_phrase = ltrim($this->_phrase, '#');
             $this->_type = 'integer';
             $this->_terms = [];
-        } else if(core\string\Uuid::isValidString($this->_phrase)) {
+        } else if(flex\Guid::isValidString($this->_phrase)) {
             $this->_type = 'guid';
             $this->_terms = [];
         } else {
@@ -59,7 +60,7 @@ class SearchController implements ISearchController, core\IDumpable {
     }
 
     protected function _extractTerms($phrase) {
-        $parser = new core\string\TermParser();
+        $parser = new flex\TermParser();
         return $parser->parse($phrase, true);
     }
 
@@ -286,7 +287,7 @@ class SearchController implements ISearchController, core\IDumpable {
     public function getSourceAlias() {
         return $this->_query->getSourceAlias();
     }
-    
+
     public function getName() {
         return 'relevance';
     }

@@ -9,14 +9,15 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
+use df\flex;
 
 abstract class Delete extends arch\form\Action {
-    
+
     const ITEM_NAME = 'item';
     const IS_PERMANENT = true;
-    
+
     const DEFAULT_EVENT = 'delete';
-    
+
     protected function getItemName() {
         return static::ITEM_NAME;
     }
@@ -25,9 +26,9 @@ abstract class Delete extends arch\form\Action {
         $itemName = $this->getItemName();
         $form = $this->content->addForm();
         $fs = $form->addFieldSet($this->_('%n% information', ['%n%' => ucfirst($itemName)]));
-        
+
         $fs->push($this->html('p', $this->getMainMessage()));
-        
+
         if(static::IS_PERMANENT) {
             $fs->push(
                 $this->html->flashMessage(
@@ -37,7 +38,7 @@ abstract class Delete extends arch\form\Action {
         }
 
         if(!$this->isValid()) {
-            $fs->push($this->html->fieldError($this->values));   
+            $fs->push($this->html->fieldError($this->values));
         }
 
         $this->createItemUi($fs);
@@ -63,7 +64,7 @@ abstract class Delete extends arch\form\Action {
             $mainButton, $cancelButton
         );
     }
-    
+
     protected function getMainMessage() {
         return $this->_(
             'Are you sure you want to delete this %n%?',
@@ -76,20 +77,20 @@ abstract class Delete extends arch\form\Action {
 
     protected function customizeMainButton($button) {}
     protected function customizeCancelButton($button) {}
-    
-    
+
+
     protected function onDeleteEvent() {
         $output = $this->apply();
-        
+
         if($this->values->isValid()) {
             if($message = $this->getFlashMessage()) {
                 $this->comms->flash(
-                    core\string\Manipulator::formatId($this->getItemName()).'.deleted', 
-                    $message, 
+                    flex\Text::formatId($this->getItemName()).'.deleted',
+                    $message,
                     'success'
                 );
             }
-            
+
             $complete = $this->finalize();
 
             if($output !== null) {
@@ -104,7 +105,7 @@ abstract class Delete extends arch\form\Action {
 
     protected function getFlashMessage() {
         return $this->_(
-            'The %n% has been successfully deleted', 
+            'The %n% has been successfully deleted',
             ['%n%' => $this->getItemName()]
         );
     }
