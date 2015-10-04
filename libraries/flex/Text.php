@@ -152,6 +152,7 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     public static function normalizeCaseFlag($case) {
         if(is_string($case)) {
             switch(strtolower(self::formatId($case))) {
+                case 'words':
                 case 'upperwords':
                     $case = flex\ICase::UPPER_WORDS;
                     break;
