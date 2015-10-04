@@ -42,14 +42,20 @@ class Delimited implements IDelimited {
 
 // Parser
     public static function parse($input, $delimiter=',', $quoteMap='"\'', $terminator=null) {
+        $output = [];
+
+        foreach(self::iterate($input, $delimiter, $quoteMap, $terminator) as $row) {
+            $output[] = $row;
+        }
+
+        return $output;
+    }
+
+    public static function iterate($input, $delimiter=',', $quoteMap='"\'', $terminator=null) {
         $input = trim($input);
 
         if(!strlen($input)) {
-            if($terminator !== null) {
-                return [[]];
-            } else {
-                return [];
-            }
+            return;
         }
 
         if($terminator !== null) {
@@ -63,7 +69,6 @@ class Delimited implements IDelimited {
         $mode = 0;
         $cell = '';
         $quote = null;
-        $output = [];
 
         for($i = 0; $i < $length; $i++) {
             $char = $input{$i};
@@ -77,7 +82,7 @@ class Delimited implements IDelimited {
                         if($terminator !== null) {
                             $row[] = $cell;
                         } else {
-                            $output[] = $cell;
+                            yield $cell;
                         }
 
                         $cell = '';
@@ -93,11 +98,18 @@ class Delimited implements IDelimited {
 
                 // in cell
                 case 1:
-                    if($char == $delimiter) {
+                    if($terminator !== null && $char == $terminator) {
+                        $row[] = $cell;
+                        $cell = '';
+                        yield $row;
+                        $row = [];
+                        $mode = 0;
+                        break;
+                    } else if($char == $delimiter) {
                         if($terminator !== null) {
                             $row[] = $cell;
                         } else {
-                            $output[] = $cell;
+                            yield $cell;
                         }
 
                         $cell = '';
@@ -135,7 +147,7 @@ class Delimited implements IDelimited {
                     if($terminator !== null && $char == $terminator) {
                         $row[] = $cell;
                         $cell = '';
-                        $output[] = $row;
+                        yield $row;
                         $row = [];
                         $mode = 0;
                         break;
@@ -143,7 +155,7 @@ class Delimited implements IDelimited {
                         if($terminator !== null) {
                             $row[] = $cell;
                         } else {
-                            $output[] = $cell;
+                            yield $cell;
                         }
 
                         $cell = '';
@@ -156,8 +168,6 @@ class Delimited implements IDelimited {
                     );
             }
         }
-
-        return $output;
     }
 
     public static function implode(array $data, $delimiter=',', $quote='"', $terminator=null) {
