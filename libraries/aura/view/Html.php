@@ -848,7 +848,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
                 $line = $this->_addCondition($line, $entry['condition']);
             }
 
-            $output = $line.$output;
+            $output .= $line;
         }
 
         return $output;
