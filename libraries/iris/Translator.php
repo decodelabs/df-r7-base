@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\iris;
 use df;
 use df\core;
 use df\iris;
-    
+
 abstract class Translator implements ITranslator {
 
     public $unit;
@@ -18,7 +18,7 @@ abstract class Translator implements ITranslator {
             if(is_file($unit)) {
                 $unit = new iris\source\File($unit);
             } else {
-                $unit = new iris\source\String($unit);
+                $unit = new iris\source\Memory($unit);
             }
         }
 

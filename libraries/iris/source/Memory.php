@@ -10,7 +10,7 @@ use df\core;
 use df\iris;
 use df\flex;
 
-class String implements iris\ISource {
+class Memory implements iris\ISource {
 
     protected $_string;
     protected $_uri;

@@ -10,7 +10,7 @@ use df\core;
 use df\iris;
 use df\flex;
 
-class String implements iris\IScanner {
+class StringDef implements iris\IScanner {
 
     protected $_containers = [
         '"' => 'derefString',
