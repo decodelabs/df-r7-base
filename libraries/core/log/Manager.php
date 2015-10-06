@@ -12,7 +12,7 @@ use df\axis;
 class Manager implements IManager {
 
     use core\TManager;
-    
+
     const REGISTRY_PREFIX = 'manager://log';
 
     public function logAccessError($code=403, $request=null, $message=null) {
@@ -25,7 +25,7 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function logException(\Exception $exception, $request=null) {
+    public function logException(/*\Throwable*/ $exception, $request=null) {
         $this->_getModel()->logException($exception, $request);
         return $this;
     }

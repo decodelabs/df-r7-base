@@ -8,21 +8,21 @@ namespace df;
 use df;
 
 class Launchpad {
-    
+
     const CODENAME = 'hydrogen';
     const REV = 'r7';
     const DF_PATH = __DIR__;
-    
+
     const IN_PHAR = false;
     const IS_COMPILED = false;
     const COMPILE_TIMESTAMP = null;
-    
+
     public static $applicationName;
     public static $applicationPath;
-    
+
     public static $environmentId;
     public static $isTesting = true;
-    
+
     public static $uniquePrefix;
     public static $passKey;
     public static $isDistributed = false;
@@ -30,11 +30,11 @@ class Launchpad {
     public static $loader;
     public static $application;
     public static $debug;
-    
+
     public static $startTime;
 
     private static $_isShutdown = false;
-    
+
     public static function loadBaseClass($path) {
         if(self::IS_COMPILED) {
             $path = __DIR__.'/'.$path.'.php';
@@ -44,7 +44,7 @@ class Launchpad {
 
         require_once $path;
     }
-    
+
 // Run
     public static function run() {
         $parts = explode('/', str_replace('\\', '/', realpath($_SERVER['SCRIPT_FILENAME'])));
@@ -53,24 +53,24 @@ class Launchpad {
         if(substr($environmentId, -4) == '.php') {
             $environmentId = substr($environmentId, 0, -4);
         }
-        
+
         $envParts = explode('.', $environmentId, 2);
         $environmentId = array_shift($envParts);
         $isTesting = true;
-        
+
         if($environmentMode = array_shift($envParts)) {
             $isTesting = $environmentMode != 'production';
         }
-        
+
         if(array_pop($parts) != 'entry') {
             throw new \Exception(
                 'Entry point does not appear to be valid'
             );
         }
-        
+
         return self::runAs($environmentId, $isTesting, implode('/', $parts));
     }
-    
+
     public static function runAs($environmentId, $isTesting, $appPath) {
         if(self::$startTime) {
             return;
@@ -87,7 +87,7 @@ class Launchpad {
         date_default_timezone_set('UTC');
         mb_internal_encoding('UTF-8');
         chdir(self::$applicationPath.'/entry');
-        
+
         // Load core library
         self::loadBaseClass('core/_manifest');
 
@@ -101,7 +101,7 @@ class Launchpad {
         // Set error handlers
         set_error_handler(['df\\Launchpad', 'handleError']);
         set_exception_handler(['df\\Launchpad', 'handleException']);
-        
+
         if(isset($_SERVER['HTTP_HOST'])) {
             $appType = 'Http';
         } else {
@@ -121,9 +121,9 @@ class Launchpad {
             default:
                 $appType = 'Task';
         }
-        
 
-        
+
+
         // Load application / packages
         $class = 'df\\core\\application\\'.$appType;
         self::$application = new $class();
@@ -147,7 +147,7 @@ class Launchpad {
         self::$application->dispatch();
         self::shutdown();
     }
-    
+
     public static function getEnvironmentMode() {
         if(self::IS_COMPILED) {
             return self::$isTesting ? 'testing' : 'production';
@@ -159,79 +159,79 @@ class Launchpad {
     public static function isDevelopment() {
         return !self::IS_COMPILED;
     }
-    
+
     public static function isTesting() {
         return self::$isTesting || !self::IS_COMPILED;
     }
-    
+
     public static function isProduction() {
         return !self::$isTesting && self::IS_COMPILED;
     }
-    
-    
+
+
     public static function shutdown() {
         if(self::$_isShutdown) {
             return;
         }
-        
+
         self::$_isShutdown = true;
-        
+
         if(self::$application) {
             self::$application->shutdown();
             self::$application = null;
         }
-        
+
         if(self::$loader) {
             self::$loader->shutdown();
             self::$loader = null;
         }
-        
+
         exit;
     }
-    
-    
+
+
 
 // Errors
     public static function handleError($errorNumber, $errorMessage, $fileName, $lineNumber) {
         if(!$level = error_reporting()) {
             return;
         }
-        
+
         throw new \ErrorException($errorMessage, 0, $errorNumber, $fileName, $lineNumber);
     }
-    
-    public static function handleException(\Exception $e) {
+
+    public static function handleException(/*\Throwable*/ $e) {
         try {
             if(self::$application) {
                 try {
                     core\debug()
                         ->exception($e)
                         ->render();
-                        
+
                     self::shutdown();
                 } catch(\Exception $g) {}
             }
-            
+
             self::_fatalError($e->__toString());
         } catch(\Exception $f) {
             self::_fatalError($e->__toString()."\n\n\n".$f->__toString());
         }
     }
-    
+
     private static function _fatalError($message) {
         while(ob_get_level()) {
             ob_end_clean();
         }
-        
+
         if(isset($_SERVER['HTTP_HOST'])) {
             $message = '<pre>'.$message.'</pre>';
         }
-        
+
         echo $message;
         self::shutdown();
     }
-    
-    
+
+
 // Application
     public static function getApplication() {
         if(!self::$application) {
@@ -240,21 +240,21 @@ class Launchpad {
             if(!class_exists($class)) {
                 $class = '\\LogicException';
             }
-            
+
             throw new $class(
                 'No active application is available'
             );
         }
-        
+
         return self::$application;
     }
-    
-    
+
+
 // Paths
     public static function getApplicationPath() {
         return self::$applicationPath;
     }
-    
+
     public static function getBasePackagePath() {
         if(self::IS_COMPILED) {
             return self::DF_PATH;
@@ -262,47 +262,47 @@ class Launchpad {
             return self::DF_PATH.'/libraries';
         }
     }
-    
-    
+
+
 // Debug
     public static function setDebugContext(core\debug\IContext $context=null) {
         $output = self::$debug;
         self::$debug = $context;
-        
+
         return $output;
     }
-    
+
     public static function getDebugContext() {
         if(!self::$debug) {
             self::loadBaseClass('core/debug/Context');
             self::$debug = new core\debug\Context();
         }
-        
+
         return self::$debug;
     }
-    
+
 // Benchmark
     public static function benchmark() {
         echo '<pre>';
         echo "\n\n".self::getFormattedRunningTime()."\n";
-        
+
         $includes = get_included_files();
         echo count($includes).' files included'."\n\n";
         echo implode("\n", $includes);
         echo '</pre>'."\n\n";
-        
+
         self::shutdown();
     }
-    
+
     public static function getRunningTime() {
         return microtime(true) - self::$startTime;
     }
-    
+
     public static function getFormattedRunningTime($seconds=null) {
         if($seconds === null) {
             $seconds = self::getRunningTime();
         }
-        
+
         if($seconds > 60) {
             return number_format($seconds / 60, 0).':'.number_format($seconds % 60);
         } else if($seconds > 1) {

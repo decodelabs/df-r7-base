@@ -417,13 +417,13 @@ interface IHelper {}
 
 // Translator
 interface ITranslator {
-    public function _($phrase);
+    public function _($phrase='');
     public function translate(array $args);
 }
 
 trait TTranslator {
 
-    public function _($phrase) {
+    public function _($phrase='') {
         return $this->translate(func_get_args());
     }
 
