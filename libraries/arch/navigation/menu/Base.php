@@ -163,6 +163,8 @@ class Base implements IMenu, \Serializable, core\IDumpable {
 
         if(isset($data['context'])) {
             $this->context = $data['context'];
+        } else {
+            $this->context = arch\Context::getCurrent();
         }
     }
 

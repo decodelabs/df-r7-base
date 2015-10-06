@@ -13,7 +13,7 @@ class Menu extends arch\navigation\menu\Base {
 
     protected $_scaffold;
     protected $_name;
-    
+
     public function __construct(arch\scaffold\IScaffold $scaffold, $name, $id) {
         $this->_scaffold = $scaffold;
         $this->_name = $name;
