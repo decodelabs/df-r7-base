@@ -43,7 +43,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('purgeDate', 'DateTime')
             ->isNullable(true);
 
-        $schema->addField('notes', 'BigText', 'medium')
+        $schema->addField('notes', 'Text', 'medium')
             ->isNullable(true);
     }
 }

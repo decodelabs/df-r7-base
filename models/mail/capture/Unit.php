@@ -26,9 +26,9 @@ class Unit extends axis\unit\table\Base {
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('from', 'Text', 128);
-        $schema->addField('to', 'BigText', 'medium');
+        $schema->addField('to', 'Text', 'medium');
         $schema->addField('subject', 'Text', 255);
-        $schema->addField('body', 'BigText', 'huge');
+        $schema->addField('body', 'Text', 'huge');
         $schema->addField('isPrivate', 'Boolean');
 
         $schema->addField('date', 'Timestamp');

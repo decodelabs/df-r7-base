@@ -36,7 +36,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('code', 'Integer', 2);
         $schema->addField('request', 'Text', 255)
             ->isNullable(true);
-        $schema->addField('message', 'BigText', 'medium');
+        $schema->addField('message', 'Text', 'medium');
 
         $schema->addField('userAgent', 'One', 'user/agent')
             ->isNullable(true);

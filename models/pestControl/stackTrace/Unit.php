@@ -15,7 +15,7 @@ class Unit extends axis\unit\table\Base {
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addIndexedField('hash', 'Binary', 32);
-        $schema->addField('body', 'BigText', 'huge');
+        $schema->addField('body', 'Text', 'huge');
 
         $schema->addField('errorLogs', 'OneToMany', 'errorLog', 'stackTrace');
     }

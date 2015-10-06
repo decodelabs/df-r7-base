@@ -29,7 +29,7 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('action', 'Text', 32)
             ->setDefaultValue('update');
-        $schema->addField('description', 'BigText', 'large')
+        $schema->addField('description', 'Text', 'large')
             ->isNullable(true);
 
         $schema->addField('metadata', 'DataObject')

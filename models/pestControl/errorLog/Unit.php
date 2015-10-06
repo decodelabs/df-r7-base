@@ -26,12 +26,12 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('mode', 'Text', 16)
             ->isNullable(true);
-        $schema->addField('request', 'BigText', 'medium')
+        $schema->addField('request', 'Text', 'medium')
             ->isNullable(true);
         $schema->addField('referrer', 'Text', 255)
             ->isNullable(true);
 
-        $schema->addField('message', 'BigText', 'medium')
+        $schema->addField('message', 'Text', 'medium')
             ->isNullable(true);
 
         $schema->addField('userAgent', 'One', 'user/agent')

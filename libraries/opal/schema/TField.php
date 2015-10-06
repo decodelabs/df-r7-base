@@ -11,80 +11,80 @@ use df\opal;
 use df\mesh;
 
 trait TField {
-    
+
     protected $_name;
     protected $_isNullable = false;
     protected $_defaultValue;
     protected $_comment;
     protected $_hasChanged = false;
-    
+
     /*
     public function __construct($name, array $args=[]) {
         $this->_setName($name);
-        
+
         if(method_exists($this, '_init')) {
-            call_user_func_array([$this, '_init'], $args);    
+            call_user_func_array([$this, '_init'], $args);
         }
     }
     */
-    
+
     public function getFieldType() {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
-    
+
     public function _setName($name) {
         if($name != $this->_name) {
             $this->_hasChanged = true;
         }
-        
+
         $this->_name = $name;
         return $this;
     }
-    
+
     public function getName() {
         return $this->_name;
     }
-    
+
     public function setComment($comment) {
         if($comment != $this->_comment) {
             $this->_hasChanged = true;
         }
-        
+
         $this->_comment = $comment;
         return $this;
     }
-    
+
     public function getComment() {
         return $this->_comment;
     }
-    
+
     public function isNullable($flag=null) {
         if($flag !== null) {
             if((bool)$flag != $this->_isNullable) {
                 $this->_hasChanged = true;
             }
-            
+
             $this->_isNullable = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_isNullable;
     }
-    
+
     public function setDefaultValue($value) {
         if($value != $this->_defaultValue) {
             $this->_hasChanged = true;
         }
-        
+
         $this->_defaultValue = $value;
         return $this;
     }
-    
+
     public function getDefaultValue() {
         return $this->_defaultValue;
     }
-    
+
     public function hasChanged() {
         return $this->_hasChanged;
     }
@@ -93,46 +93,54 @@ trait TField {
         $this->_hasChanged = true;
         return $this;
     }
-    
+
     public function acceptChanges() {
         $this->_hasChanged = false;
         return $this;
     }
-    
-    
+
+
 // Ext. serialize
     public function toStorageArray() {
         return $this->_getGenericStorageArray();
     }
-    
+
     protected function _setGenericStorageArray(array $data) {
         $this->_name = $data['nam'];
-        $this->_isNullable = $data['nul'];
-        
+
+        if(isset($data['nul'])) {
+            $this->_isNullable = $data['nul'];
+        } else {
+            $this->_isNullable = false;
+        }
+
         if(isset($data['def'])) {
             $this->_defaultValue = $data['def'];
         }
-        
+
         if(isset($data['com'])) {
             $this->_comment = $data['com'];
         }
     }
-    
+
     protected function _getGenericStorageArray() {
         $output = [
             'typ' => $this->getFieldType(),
-            'nam' => $this->_name,
-            'nul' => $this->_isNullable
+            'nam' => $this->_name
         ];
-        
+
+        if($this->_isNullable) {
+            $output['nul'] = true;
+        }
+
         if($this->_defaultValue !== null) {
             $output['def'] = $this->_defaultValue;
         }
-        
+
         if($this->_comment !== null) {
             $output['com'] = $this->_comment;
         }
-        
+
         return $output;
     }
 }
@@ -143,23 +151,23 @@ trait TField {
 
 
 trait TField_CharacterSetAware {
-    
+
     protected $_characterSet;
-    
+
     public function setCharacterSet($charset) {
         if($charset != $this->_characterSet) {
             $this->_hasChanged = true;
         }
-        
+
         $this->_characterSet = $charset;
         return $this;
     }
-    
+
     public function getCharacterSet() {
         return $this->_characterSet;
     }
-    
-    
+
+
 // Ext serialize
     protected function _setCharacterSetStorageArray(array $data) {
         if(isset($data['chs'])) {
@@ -169,11 +177,11 @@ trait TField_CharacterSetAware {
 
     protected function _getCharacterSetStorageArray() {
         $output = [];
-        
+
         if($this->_characterSet !== null) {
             $output['chs'] = $this->_characterSet;
         }
-        
+
         return $output;
     }
 }
@@ -181,68 +189,86 @@ trait TField_CharacterSetAware {
 
 
 trait TField_BinaryCollationProvider {
-    
+
     protected $_binaryCollation = false;
-    
+
     public function hasBinaryCollation($flag=null) {
         if($flag !== null) {
             if((bool)$flag != $this->_binaryCollation) {
                 $this->_hasChanged = true;
             }
-            
+
             $this->_binaryCollation = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_binaryCollation;
     }
-    
+
 // Ext. serialize
     protected function _setBinaryCollationStorageArray(array $data) {
-        $this->_binaryCollation = $data['bic'];
+        if(isset($data['bic'])) {
+            $this->_binaryCollation = $data['bic'];
+        } else {
+            $this->_binaryCollation = false;
+        }
     }
 
     protected function _getBinaryCollationStorageArray() {
-        return ['bic' => $this->_binaryCollation];
+        $output = [];
+
+        if($this->_binaryCollation !== false) {
+            $output['bic'] = $this->_binaryCollation;
+        }
+
+        return $output;
     }
 }
 
 
 trait TField_LengthRestricted {
-    
+
     protected $_length;
-    
+
     public function setLength($length) {
         if($length === null) {
             $length = $this->_getDefaultLength($length);
         }
-        
+
         $this->_hasChanged = true;
-        
+
         if($length !== null) {
             $length = (int)$length;
         }
-        
+
         $this->_length = $length;
         return $this;
     }
-    
+
     public function getLength() {
         return $this->_length;
     }
-    
+
     protected function _getDefaultLength() {
         return null;
     }
-    
-    
+
+
 // Ext. serialize
     protected function _setLengthRestrictedStorageArray(array $data) {
-        $this->_length = $data['lnt'];
+        if(isset($data['lnt'])) {
+            $this->_length = $data['lnt'];
+        }
     }
 
     protected function _getLengthRestrictedStorageArray() {
-        return ['lnt' => $this->_length];
+        $output = [];
+
+        if($this->_length !== null) {
+            $output['lnt'] = $this->_length;
+        }
+
+        return $output;
     }
 }
 
@@ -264,22 +290,32 @@ trait TField_Signed {
             if((bool)$flag != $this->_isUnsigned) {
                 $this->_hasChanged = true;
             }
-            
+
             $this->_isUnsigned = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_isUnsigned;
     }
 
 
 // Ext. serialize
     protected function _setSignedStorageArray(array $data) {
-        $this->_isUnsigned = $data['uns'];
+        if(isset($data['uns'])) {
+            $this->_isUnsigned = $data['uns'];
+        } else {
+            $this->_isUnsigned = false;
+        }
     }
 
     protected function _getSignedStorageArray() {
-        return ['uns' => $this->_isUnsigned];
+        $output = [];
+
+        if($this->_isUnsigned !== false) {
+            $output['uns'] = $this->_isUnsigned;
+        }
+
+        return $output;
     }
 }
 
@@ -287,38 +323,48 @@ trait TField_Signed {
 trait TField_Zerofill {
 
     protected $_zerofill = false;
-    
+
     public function shouldZerofill($flag=null) {
         if($flag !== null) {
             if((bool)$flag != $this->_zerofill) {
                 $this->_hasChanged = true;
             }
-            
+
             $this->_zerofill = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_zerofill;
     }
 
 // Ext. serialize
     protected function _setZerofillStorageArray(array $data) {
-        $this->_zerofill = $data['zfl'];
+        if(isset($data['zfl'])) {
+            $this->_zerofill = $data['zfl'];
+        } else {
+            $this->_zerofill = false;
+        }
     }
 
     protected function _getZerofillStorageArray() {
-        return ['zfl' => $this->_zerofill];
+        $output = [];
+
+        if($this->_zerofill !== false) {
+            $output['zfl'] = $this->_zerofill;
+        }
+
+        return $output;
     }
 }
 
 
 trait TField_Numeric {
-    
+
     use TField_Signed;
     use TField_Zerofill;
-    
-    
-    
+
+
+
 // Ext. serialize
     protected function _setNumericStorageArray(array $data) {
         $this->_setSignedStorageArray($data);
@@ -336,12 +382,12 @@ trait TField_Numeric {
 
 
 trait TField_FloatingPointNumeric {
-    
+
     use TField_Numeric;
-    
+
     protected $_precision;
     protected $_scale;
-    
+
     public function setPrecision($precision) {
         if($precision !== null) {
             $precision = (int)$precision;
@@ -350,31 +396,31 @@ trait TField_FloatingPointNumeric {
         if($precision < 0) {
             $precision = 0;
         }
-        
+
         $this->_precision = $precision;
         $this->_hasChanged = true;
         return $this;
     }
-    
+
     public function getPrecision() {
         return $this->_precision;
     }
-    
+
     public function setScale($scale) {
         if($scale !== null) {
             $scale = (int)$scale;
         }
-        
+
         $this->_scale = $scale;
         $this->_hasChanged = true;
         return $this;
     }
-    
+
     public function getScale() {
         return $this->_scale;
     }
-    
-    
+
+
 // Ext. serialize
     protected function _setFloatingPointNumericStorageArray(array $data) {
         $this->_setNumericStorageArray($data);
@@ -396,89 +442,115 @@ trait TField_FloatingPointNumeric {
 
 
 trait TField_AutoIncrementable {
-    
+
     protected $_autoIncrement = false;
-    
+
     public function shouldAutoIncrement($flag=null) {
         if($flag !== null) {
             if((bool)$flag != $this->_autoIncrement) {
                 $this->_hasChanged = true;
             }
-            
+
             $this->_autoIncrement = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_autoIncrement;
     }
-    
-    
+
+
 // Ext. serialize
     protected function _setAutoIncrementStorageArray(array $data) {
-        $this->_autoIncrement = $data['aui'];
+        if(isset($data['aui'])) {
+            $this->_autoIncrement = $data['aui'];
+        } else {
+            $this->_autoIncrement = false;
+        }
     }
 
     protected function _getAutoIncrementStorageArray() {
-        return ['aui' => $this->_autoIncrement];
+        $output = [];
+
+        if($this->_autoIncrement !== false) {
+            $output['aui'] = $this->_autoIncrement;
+        }
+
+        return $output;
     }
 }
 
 
 
 trait TField_AutoTimestamp {
-    
+
     protected $_shouldTimestampOnUpdate = false;
     protected $_shouldTimestampAsDefault = true;
-    
+
     public function shouldTimestampOnUpdate($flag=null) {
         if($flag !== null) {
             if((bool)$flag != $this->_shouldTimestampOnUpdate) {
                 $this->_hasChanged = true;
             }
-            
+
             $this->_shouldTimestampOnUpdate = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_shouldTimestampOnUpdate;
     }
-    
+
     public function shouldTimestampAsDefault($flag=null) {
         if($flag !== null) {
             if((bool)$flag != $this->_shouldTimestampAsDefault) {
                 $this->_hasChanged = true;
             }
-            
+
             if($this->_shouldTimestampAsDefault = (bool)$flag) {
                 $this->setDefaultValue(null);
             }
-            
+
             return $this;
         }
-        
+
         return $this->_shouldTimestampAsDefault;
     }
-    
+
     public function setDefaultValue($value) {
         if($value !== null) {
             $this->_shouldTimestampAsDefault = false;
         }
-        
+
         return parent::setDefaultValue($value);
     }
-    
-    
+
+
 // Ext. serialize
     protected function _setAutoTimestampStorageArray(array $data) {
-        $this->_shouldTimestampOnUpdate = $data['toa'];
-        $this->_shouldTimestampAsDefault = $data['tad'];
+        if(isset($data['toa'])) {
+            $this->_shouldTimestampOnUpdate = $data['toa'];
+        } else {
+            $this->_shouldTimestampOnUpdate = false;
+        }
+
+        if(isset($data['tad'])) {
+            $this->_shouldTimestampAsDefault = $data['tad'];
+        } else {
+            $this->_shouldTimestampAsDefault = true;
+        }
     }
 
     protected function _getAutoTimestampStorageArray() {
-        return [
-            'toa' => $this->_shouldTimestampOnUpdate,
-            'tad' => $this->_shouldTimestampAsDefault
-        ];
+        $output = [];
+
+        if($this->_shouldTimestampOnUpdate !== false) {
+            $output['toa'] = $this->_shouldTimestampOnUpdate;
+        }
+
+        if($this->_shouldTimestampAsDefault !== true) {
+            $output['tad'] = $this->_shouldTimestampAsDefault;
+        }
+
+        return $output;
     }
 }
 
@@ -487,16 +559,16 @@ trait TField_AutoTimestamp {
 
 
 trait TField_OptionProvider {
-    
+
     protected $_options = [];
     protected $_enumType = null;
-    
+
     public function setOptions(array $options) {
         $this->_options = $options;
         $this->_hasChanged = true;
         return $this;
     }
-    
+
     public function getOptions() {
         if($this->_enumType) {
             return $this->getTypeHandler()->getOptions();
@@ -538,7 +610,7 @@ trait TField_OptionProvider {
         $this->_hasChanged = true;
         return $this;
     }
-    
+
     public function getTypeString() {
         return $this->_enumType;
     }
@@ -548,11 +620,13 @@ trait TField_OptionProvider {
             return mesh\Manager::getInstance()->fetchEntity($this->_enumType);
         }
     }
-    
-    
+
+
 // Ext. serialize
     protected function _setOptionStorageArray(array $data) {
-        $this->_options = (array)$data['opt'];
+        if(isset($data['opt'])) {
+            $this->_options = (array)$data['opt'];
+        }
 
         if(isset($data['ent'])) {
             $this->_enumType = $data['ent'];
@@ -560,10 +634,17 @@ trait TField_OptionProvider {
     }
 
     protected function _getOptionStorageArray() {
-        return [
-            'opt' => $this->_options,
-            'ent' => $this->_enumType
-        ];
+        $output = [];
+
+        if(!empty($this->_options)) {
+            $output['opt'] = $this->_options;
+        }
+
+        if($this->_enumType !== null) {
+            $output['ent'] = $this->_enumType;
+        }
+
+        return $output;
     }
 }
 
@@ -571,60 +652,60 @@ trait TField_OptionProvider {
 
 
 trait TField_BitSizeRestricted {
-    
+
     protected $_bitSize;
-    
+
     public function setBitSize($size) {
         $newSize = $this->_normalizeBits($size);
-        
+
         if($newSize != $this->_bitSize) {
             $this->_hasChanged = true;
         }
-        
+
         $this->_bitSize = $newSize;
         return $this;
     }
-    
+
     public function getBitSize() {
         return $this->_bitSize;
     }
-    
+
     protected function _normalizeBits($size) {
         if(is_string($size)) {
             switch(strtolower($size)) {
                 case opal\schema\IFieldSize::TINY:
                     $size = 1;
                     break;
-                    
+
                 case opal\schema\IFieldSize::SMALL:
                     $size = 8;
                     break;
-                    
+
                 case opal\schema\IFieldSize::MEDIUM:
                     $size = 16;
                     break;
-                    
+
                 case opal\schema\IFieldSize::LARGE:
                     $size = 32;
                     break;
-                    
+
                 case opal\schema\IFieldSize::HUGE:
                     $size = 64;
                     break;
-                    
+
                 default:
                     if(is_numeric($size)) {
                         $size = (int)$size;
                     } else{
                         $size = 16;
                     }
-                    
+
                     break;
             }
         }
-        
+
         $size = (int)$size;
-        
+
         if($size > 64) {
             throw new opal\schema\InvalidArgumentException(
                 'Maximum bit size is 64'
@@ -634,75 +715,83 @@ trait TField_BitSizeRestricted {
                 'Minimum bit size is 1'
             );
         }
-        
+
         return $size;
     }
 
 // Ext serialize
     protected function _setBitSizeRestrictedStorageArray(array $data) {
-        $this->_bitSize = $data['bit'];
+        if(isset($data['bit'])) {
+            $this->_bitSize = $data['bit'];
+        }
     }
 
     protected function _getBitSizeRestrictedStorageArray() {
-        return ['bit' => $this->_bitSize];
+        $output = [];
+
+        if($this->_bitSize !== null) {
+            $output['bit'] = $this->_bitSize;
+        }
+
+        return $output;
     }
 }
 
 trait TField_ByteSizeRestricted {
-    
+
     protected $_byteSize;
-    
+
     public function setByteSize($size) {
         $newSize = $this->_normalizeBytes($size);
-        
+
         if($newSize != $this->_byteSize) {
             $this->_hasChanged = true;
         }
-        
+
         $this->_byteSize = $newSize;
         return $this;
     }
-    
+
     public function getByteSize() {
         return $this->_byteSize;
     }
-    
+
     private function _normalizeBytes($size) {
         if(is_string($size)) {
             switch(strtolower($size)) {
                 case opal\schema\IFieldSize::TINY:
                     $size = 1;
                     break;
-                    
+
                 case opal\schema\IFieldSize::SMALL:
                     $size = 2;
                     break;
-                    
+
                 case opal\schema\IFieldSize::MEDIUM:
                     $size = 3;
                     break;
-                    
+
                 case opal\schema\IFieldSize::LARGE:
                     $size = 4;
                     break;
-                    
+
                 case opal\schema\IFieldSize::HUGE:
                     $size = 8;
                     break;
-                    
+
                 default:
                     if(is_numeric($size)) {
                         $size = (int)$size;
                     } else {
                         $size = 4;
                     }
-                    
+
                     break;
             }
         }
-        
+
         $size = (int)$size;
-        
+
         switch($size) {
             case 1:
             case 2:
@@ -710,7 +799,7 @@ trait TField_ByteSizeRestricted {
             case 4:
             case 8:
                 break;
-                
+
             default:
                 if($size < 8) {
                     $size = 8;
@@ -720,41 +809,49 @@ trait TField_ByteSizeRestricted {
                     );
                 }
         }
-        
+
         return $size;
     }
 
 // Ext. serialize
     protected function _setByteSizeRestrictedStorageArray(array $data) {
-        $this->_byteSize = $data['byt'];
+        if(isset($data['byt'])) {
+            $this->_byteSize = $data['byt'];
+        }
     }
 
     protected function _getByteSizeRestrictedStorageArray() {
-        return ['byt' => $this->_byteSize];
+        $output = [];
+
+        if($this->_byteSize !== null) {
+            $output['byt'] = $this->_byteSize;
+        }
+
+        return $output;
     }
 }
 
 
 trait TField_LargeByteSizeRestricted {
-    
+
     protected $_exponentSize;
-    
+
     public function setExponentSize($size) {
         $newSize = $this->_normalizeExponent($size);
-        
+
         if($newSize != $this->_exponentSize) {
             $this->_hasChanged = true;
         }
-        
+
         $this->_exponentSize = $newSize;
-        
+
         return $this;
     }
-    
+
     public function getExponentSize() {
         return $this->_exponentSize;
     }
-    
+
     protected function _normalizeExponent($size) {
         if(is_string($size)) {
             switch(strtolower($size)) {
@@ -762,39 +859,39 @@ trait TField_LargeByteSizeRestricted {
                 case opal\schema\IFieldSize::SMALL:
                     $size = 8;
                     break;
-                    
+
                 case opal\schema\IFieldSize::MEDIUM:
                     $size = 16;
                     break;
-                    
+
                 case opal\schema\IFieldSize::LARGE:
                     $size = 24;
                     break;
-                    
+
                 case opal\schema\IFieldSize::HUGE:
                     $size = 32;
                     break;
-                    
+
                 default:
                     if(is_numeric($size)) {
                         $size = (int)$size;
                     } else {
                         $size = 16;
                     }
-                    
+
                     break;
             }
         }
-        
+
         $size = (int)$size;
-        
+
         switch($size) {
             case 8:
             case 16:
             case 24:
             case 32:
                 break;
-                
+
             default:
                 if($size < 8) {
                     $size = 8;
@@ -810,38 +907,46 @@ trait TField_LargeByteSizeRestricted {
                     );
                 }
         }
-        
+
         return $size;
     }
 
 // Ext. serialize
     protected function _setLargeByteSizeRestrictedStorageArray(array $data) {
-        $this->_exponentSize = $data['lby'];
+        if(isset($data['lby'])) {
+            $this->_exponentSize = $data['lby'];
+        }
     }
 
     protected function _getLargeByteSizeRestrictedStorageArray() {
-        return ['lby' => $this->_exponentSize];
+        $output = [];
+
+        if($this->_exponentSize !== null) {
+            $output['lby'] = $this->_exponentSize;
+        }
+
+        return $output;
     }
 }
 
 
 
 trait TAutoGeneratorField {
-    
+
     protected $_autoGenerate = true;
-    
+
     public function shouldAutoGenerate($flag=null) {
         if($flag !== null) {
             $flag = (bool)$flag;
-            
+
             if($flag != $this->_autoGenerate) {
                 $this->_hasChanged = true;
             }
-            
+
             $this->_autoGenerate = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_autoGenerate;
     }
 }

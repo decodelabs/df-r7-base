@@ -31,7 +31,7 @@ class Unit extends axis\unit\table\Base {
             ->isNullable(true);
         $schema->addField('code', 'Text', 32)
             ->isNullable(true);
-        $schema->addField('message', 'BigText', 'medium');
+        $schema->addField('message', 'Text', 'medium');
 
         $schema->addField('file', 'Text', 255);
         $schema->addField('line', 'Integer', 4);

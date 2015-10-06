@@ -27,9 +27,9 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('runTime', 'Duration')
             ->isNullable(true);
 
-        $schema->addField('output', 'BigText', 'huge')
+        $schema->addField('output', 'Text', 'huge')
             ->isNullable(true);
-        $schema->addField('errorOutput', 'BigText', 'huge')
+        $schema->addField('errorOutput', 'Text', 'huge')
             ->isNullable(true);
     }
 }

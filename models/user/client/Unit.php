@@ -51,9 +51,9 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('timezone', 'Text', 32)
             ->setDefaultValue('UTC');
-        $schema->addField('country', 'KeyString', 2, flex\ICase::UPPER)
+        $schema->addField('country', 'Text', 2, flex\ICase::UPPER)
             ->setDefaultValue('GB');
-        $schema->addField('language', 'KeyString', 2, flex\ICase::LOWER)
+        $schema->addField('language', 'Text', 2, flex\ICase::LOWER)
             ->setDefaultValue('en');
     }
 

@@ -25,7 +25,7 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('referrer', 'Text', 255)
             ->isNullable(true);
-        $schema->addField('message', 'BigText', 'medium')
+        $schema->addField('message', 'Text', 'medium')
             ->isNullable(true);
 
         $schema->addField('userAgent', 'One', 'user/agent')
