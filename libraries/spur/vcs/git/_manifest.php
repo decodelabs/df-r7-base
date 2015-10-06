@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\halo;
-    
+
 
 // Exceptions
 interface IException {}
@@ -147,7 +147,7 @@ trait TRepository {
 
                     $arg .= escapeshellarg($value);
                 }
-                
+
                 $args[] = $arg;
             }
         }
@@ -165,9 +165,9 @@ trait TRepository {
         $output = rtrim($output);
 
         if($result->hasError()) {
-            if(!empty($output)) {
-                $output .= $result->getError();
-            } else {
+            //if(!empty($output)) {
+            //    $output .= $result->getError();
+            //} else {
                 $error = trim($result->getError());
 
                 if(substr($error, 0, 5) == 'Note:') {
@@ -175,7 +175,7 @@ trait TRepository {
                 } else {
                     throw new RuntimeException($error);
                 }
-            }
+            //}
         }
 
         return $output;

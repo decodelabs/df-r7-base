@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,8 @@ use df\core;
 use df\apex;
 use df\halo;
 use df\arch;
-    
+use df\spur;
+
 class TaskUpdate extends arch\task\Action {
 
     public function extractCliArguments(core\cli\ICommand $command) {
@@ -37,10 +38,15 @@ class TaskUpdate extends arch\task\Action {
             $this->io->writeLine('Pulling updates for package "'.$name.'"');
             $model = $this->data->getModel('package');
 
-            if(!$result = $model->pull($name)) {
-                $this->io->writeLine('!! Package "'.$name.'" repo could not be found !!');
-            } else {
-                $this->io->write($result."\n");
+            try {
+                if(!$result = $model->pull($name)) {
+                    $this->io->writeLine('!! Package "'.$name.'" repo could not be found !!');
+                } else {
+                    $this->io->writeLine($result);
+                }
+            } catch(spur\vcs\git\IException $e) {
+                $this->io->writeErrorLine($e->getMessage());
+                return;
             }
         }
 
