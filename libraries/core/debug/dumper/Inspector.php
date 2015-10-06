@@ -46,8 +46,8 @@ class Inspector implements IInspector {
             return new Number($object);
 
         } else if(is_resource($object)) {
-            df\Launchpad::loadBaseClass('core/debug/dumper/Resource');
-            return new Resource($object);
+            df\Launchpad::loadBaseClass('core/debug/dumper/NativeResource');
+            return new NativeResource($object);
 
         } else if(is_array($object)) {
             return $this->_dumpArray($object, $deep);
