@@ -45,7 +45,7 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function setDataMap(array $map=null);
     public function getDataMap();
     public function hasMappedField($name);
-    
+
     public function isValid();
     public function validate($data);
     public function applyTo(&$targetRecord, array $fields=null);
@@ -75,7 +75,7 @@ interface IField {
     public function getCustomValidator();
     public function setMessageGenerator($generator=null);
     public function getMessageGenerator();
-    
+
     public function validate(core\collection\IInputTree $node);
     public function applyValueTo(&$record, $value);
 }
@@ -104,24 +104,24 @@ trait TRangeField {
         if($min !== null) {
             $min = (float)$min;
         }
-        
+
         $this->_min = $min;
         return $this;
     }
-    
+
     public function getMin() {
         return $this->_min;
     }
-    
+
     public function setMax($max) {
         if($max !== null) {
             $max = (float)$max;
         }
-        
+
         $this->_max = $max;
         return $this;
     }
-    
+
     public function getMax() {
         return $this->_max;
     }
@@ -133,7 +133,7 @@ trait TRangeField {
                 ['%min%' => $this->_min]
             ));
         }
-        
+
         if($this->_max !== null && $value > $this->_max) {
             $this->_applyMessage($node, 'max', $this->validator->_(
                 'This field must not be more than %max%',
@@ -167,11 +167,11 @@ trait TMinLengthField {
                 $length = 0;
             }
         }
-        
+
         $this->_minLength = $length;
         return $this;
     }
-    
+
     public function getMinLength() {
         return $this->_minLength;
     }
@@ -268,7 +268,7 @@ interface IOptionProviderField extends IField {
 trait TOptionProviderField {
 
     protected $_options = null;
-    
+
     public function setOptions(array $options) {
         $this->_options = $options;
         return $this;
@@ -328,7 +328,7 @@ trait TRecordManipulatorField {
         if(!$record->isNew()) {
             $this->setRecordId($record->getPrimaryKeySet());
         }
-        
+
         return $this;
     }
 
@@ -456,7 +456,7 @@ interface IEnumField extends IField, IOptionProviderField {}
 
 interface IEntityLocatorField extends IField {}
 
-interface IFloatField extends IField, IRangeField {}
+interface IFloatingPointField extends IField, IRangeField {}
 
 interface IIdListField extends IField {
     public function shouldUseKeys($flag=null);
@@ -474,7 +474,7 @@ interface IPasswordField extends IField, IMinLengthField {
 
 interface ISetField extends IField {
     public function setOptions(array $options);
-    public function getOptions();    
+    public function getOptions();
 }
 
 interface ISlugField extends IField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
