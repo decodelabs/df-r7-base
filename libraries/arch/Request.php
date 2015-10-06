@@ -82,7 +82,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $first = $this->_path->get(0);
 
             if($first == '~') {
-                if($context = arch\Context::getCurrent()) {
+                if($context = arch\Context::getCurrent(true)) {
                     $this->setArea($context->request->getArea());
                 } else {
                     $this->setArea(static::DEFAULT_AREA);
