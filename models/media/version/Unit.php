@@ -12,7 +12,7 @@ use df\axis;
 use df\opal;
 
 class Unit extends axis\unit\table\Base {
-    
+
     const NAME_FIELD = 'fileName';
 
     protected $_defaultOrderableFields = [
@@ -31,9 +31,9 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('file', 'ManyToOne', 'file', 'versions');
         $schema->addField('isActive', 'Boolean');
 
-        $schema->addField('fileName', 'String', 1024);
+        $schema->addField('fileName', 'Text', 1024);
         $schema->addField('fileSize', 'Integer', 8);
-        $schema->addField('contentType', 'String', 128);
+        $schema->addField('contentType', 'Text', 128);
 
         $schema->addField('hash', 'Binary', 32);
         $schema->addField('owner', 'One', 'user/client')
@@ -43,7 +43,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('purgeDate', 'DateTime')
             ->isNullable(true);
 
-        $schema->addField('notes', 'BigString', 'medium')
+        $schema->addField('notes', 'BigText', 'medium')
             ->isNullable(true);
     }
 }

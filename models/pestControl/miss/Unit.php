@@ -12,7 +12,7 @@ use df\axis;
 use df\opal;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultSearchFields = [
         'mode' => 1,
         'request' => 4
@@ -27,9 +27,9 @@ class Unit extends axis\unit\table\Base {
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
 
-        $schema->addField('mode', 'String', 16)
+        $schema->addField('mode', 'Text', 16)
             ->setDefaultValue('http');
-        $schema->addField('request', 'String', 255);
+        $schema->addField('request', 'Text', 255);
 
         $schema->addField('seen', 'Integer', 4);
         $schema->addField('botsSeen', 'Integer', 4);

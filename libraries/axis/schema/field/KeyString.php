@@ -11,7 +11,7 @@ use df\axis;
 use df\opal;
 use df\flex;
 
-class KeyString extends String {
+class KeyString extends Text {
 
     protected $_case = flex\ICase::NONE;
 

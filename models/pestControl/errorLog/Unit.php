@@ -12,7 +12,7 @@ use df\axis;
 use df\arch;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultSearchFields = [
         'request' => 3,
         'message' => 2
@@ -24,14 +24,14 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('error', 'ManyToOne', 'error', 'errorLogs');
 
-        $schema->addField('mode', 'String', 16)
+        $schema->addField('mode', 'Text', 16)
             ->isNullable(true);
-        $schema->addField('request', 'BigString', 'medium')
+        $schema->addField('request', 'BigText', 'medium')
             ->isNullable(true);
-        $schema->addField('referrer', 'String', 255)
+        $schema->addField('referrer', 'Text', 255)
             ->isNullable(true);
 
-        $schema->addField('message', 'BigString', 'medium')
+        $schema->addField('message', 'BigText', 'medium')
             ->isNullable(true);
 
         $schema->addField('userAgent', 'One', 'user/agent')

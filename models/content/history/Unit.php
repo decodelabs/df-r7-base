@@ -13,7 +13,7 @@ use df\opal;
 use df\mesh;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultOrderableFields = [
         'user', 'date'
     ];
@@ -27,9 +27,9 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('user', 'One', 'user/client')
             ->isNullable(true);
 
-        $schema->addField('action', 'String', 32)
+        $schema->addField('action', 'Text', 32)
             ->setDefaultValue('update');
-        $schema->addField('description', 'BigString', 'large')
+        $schema->addField('description', 'BigText', 'large')
             ->isNullable(true);
 
         $schema->addField('metadata', 'DataObject')

@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultOrderableFields = [
         'name', 'signifier', 'priority'
     ];
@@ -72,8 +72,8 @@ class Unit extends axis\unit\table\Base {
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
 
-        $schema->addField('name', 'String', 64);
-        $schema->addField('signifier', 'String', 32)
+        $schema->addField('name', 'Text', 64);
+        $schema->addField('signifier', 'Text', 32)
             ->isNullable(true);
 
         $schema->addField('priority', 'Integer', 4)

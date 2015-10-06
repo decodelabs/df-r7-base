@@ -32,9 +32,9 @@ class Unit extends axis\unit\table\Base {
 
     protected function createSchema($schema) {
         $schema->addField('id', 'AutoId', 8);
-        $schema->addUniqueField('email', 'String', 255);
-        $schema->addField('fullName', 'String', 255);
-        $schema->addField('nickName', 'String', 128)
+        $schema->addUniqueField('email', 'Text', 255);
+        $schema->addField('fullName', 'Text', 255);
+        $schema->addField('nickName', 'Text', 128)
             ->isNullable(true);
 
         $schema->addField('joinDate', 'Date');
@@ -49,7 +49,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addIndexedField('status', 'Integer', 1)
             ->setDefaultValue(3);
 
-        $schema->addField('timezone', 'String', 32)
+        $schema->addField('timezone', 'Text', 32)
             ->setDefaultValue('UTC');
         $schema->addField('country', 'KeyString', 2, flex\ICase::UPPER)
             ->setDefaultValue('GB');

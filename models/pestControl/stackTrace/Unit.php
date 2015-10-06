@@ -11,11 +11,11 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addIndexedField('hash', 'Binary', 32);
-        $schema->addField('body', 'BigString', 'huge');
+        $schema->addField('body', 'BigText', 'huge');
 
         $schema->addField('errorLogs', 'OneToMany', 'errorLog', 'stackTrace');
     }
@@ -52,7 +52,7 @@ class Unit extends axis\unit\table\Base {
                 ])
                 ->save();
         }
-        
+
         return $output;
     }
 }

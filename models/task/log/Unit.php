@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultOrderableFields = [
         'request', 'environmentMode', 'startDate', 'runTime'
     ];
@@ -20,16 +20,16 @@ class Unit extends axis\unit\table\Base {
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
-        $schema->addField('request', 'String', 1024);
+        $schema->addField('request', 'Text', 1024);
         $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode');
 
         $schema->addField('startDate', 'Timestamp');
         $schema->addField('runTime', 'Duration')
             ->isNullable(true);
 
-        $schema->addField('output', 'BigString', 'huge')
+        $schema->addField('output', 'BigText', 'huge')
             ->isNullable(true);
-        $schema->addField('errorOutput', 'BigString', 'huge')
+        $schema->addField('errorOutput', 'BigText', 'huge')
             ->isNullable(true);
     }
 }

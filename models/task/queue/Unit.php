@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultOrderableFields = [
         'request', 'environmentMode', 'priority', 'queueDate', 'lockDate'
     ];
@@ -20,7 +20,7 @@ class Unit extends axis\unit\table\Base {
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
-        $schema->addField('request', 'String', 1024);
+        $schema->addField('request', 'Text', 1024);
         $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
             ->isNullable(true);
 

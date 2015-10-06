@@ -12,7 +12,7 @@ use df\axis;
 use df\opal;
 
 class Unit extends axis\unit\table\Base {
-    
+
     const NAME_FIELD = 'fileName';
 
     protected $_defaultSearchFields = [
@@ -41,7 +41,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('owner', 'One', 'user/client')
             ->isNullable(true);
 
-        $schema->addField('fileName', 'String', 1024);
+        $schema->addField('fileName', 'Text', 1024);
 
         $schema->addField('activeVersion', 'One', 'version');
         $schema->addField('versions', 'OneToMany', 'version', 'file');

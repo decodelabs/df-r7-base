@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -16,7 +16,7 @@ class Unit extends axis\unit\table\Base {
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('slug', 'Slug');
-        $schema->addField('name', 'String', 128);
+        $schema->addField('name', 'Text', 128);
         $schema->addField('creationDate', 'Timestamp');
         $schema->addField('lastEditDate', 'DateTime')
             ->isNullable(true);

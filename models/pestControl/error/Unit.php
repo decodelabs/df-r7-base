@@ -12,7 +12,7 @@ use df\axis;
 use df\opal;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultSearchFields = [
         'type' => 1,
         'message' => 4
@@ -27,13 +27,13 @@ class Unit extends axis\unit\table\Base {
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
 
-        $schema->addField('type', 'String', 255)
+        $schema->addField('type', 'Text', 255)
             ->isNullable(true);
-        $schema->addField('code', 'String', 32)
+        $schema->addField('code', 'Text', 32)
             ->isNullable(true);
-        $schema->addField('message', 'BigString', 'medium');
+        $schema->addField('message', 'BigText', 'medium');
 
-        $schema->addField('file', 'String', 255);
+        $schema->addField('file', 'Text', 255);
         $schema->addField('line', 'Integer', 4);
 
         $schema->addField('seen', 'Integer', 4);

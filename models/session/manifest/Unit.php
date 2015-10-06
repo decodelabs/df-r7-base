@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -26,6 +26,6 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('transitionTime', 'Integer', 8)
             ->isNullable(true);
         $schema->addIndexedField('accessTime', 'Integer', 8);
-        //$schema->addField('userId', 'String', 64)->isNullable(true);
+        //$schema->addField('userId', 'Text', 64)->isNullable(true);
     }
 }

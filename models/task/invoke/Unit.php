@@ -12,14 +12,14 @@ use df\axis;
 use df\arch;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected function createSchema($schema) {
-        $schema->addPrimaryField('token', 'String', 32);
+        $schema->addPrimaryField('token', 'Text', 32);
         $schema->addField('expiryDate', 'DateTime');
-        $schema->addField('request', 'String', 1024);
+        $schema->addField('request', 'Text', 1024);
         $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
             ->isNullable(true);
-        $schema->addField('invokeKey', 'String', 32)
+        $schema->addField('invokeKey', 'Text', 32)
             ->isNullable(true);
     }
 
@@ -37,7 +37,7 @@ class Unit extends axis\unit\table\Base {
 
             default:
                 $environmentMode = null;
-                break;                
+                break;
         }
 
         $invoke = $this->newRecord([

@@ -6,15 +6,15 @@ use df\core;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected function createSchema($schema) {
         $schema->addField('user', 'ManyToOne', 'client', 'authDomains');
-        $schema->addField('adapter', 'String', 32);
-        $schema->addField('identity', 'String', 255);
+        $schema->addField('adapter', 'Text', 32);
+        $schema->addField('identity', 'Text', 255);
         $schema->addField('password', 'Binary', 64)->isNullable(true);
         $schema->addField('bindDate', 'DateTime');
         $schema->addField('loginDate', 'DateTime')->isNullable(true);
-        
+
         $schema->addPrimaryIndex('primary', ['user', 'adapter', 'identity']);
         $schema->addIndex('identity');
     }

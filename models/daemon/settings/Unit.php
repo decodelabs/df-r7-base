@@ -11,14 +11,14 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected function createSchema($schema) {
-        $schema->addPrimaryField('name', 'String', 64);
+        $schema->addPrimaryField('name', 'Text', 64);
         $schema->addField('isEnabled', 'Boolean')
             ->setDefaultValue(true);
-        $schema->addField('user', 'String', 64)
+        $schema->addField('user', 'Text', 64)
             ->isNullable(true);
-        $schema->addField('group', 'String', 64)
+        $schema->addField('group', 'Text', 64)
             ->isNullable(true);
         $schema->addField('options', 'Json')
             ->isNullable(true);

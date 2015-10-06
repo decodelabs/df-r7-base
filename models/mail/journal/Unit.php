@@ -13,7 +13,7 @@ use df\opal;
 use df\flow;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultSearchFields = [
         'name' => 3,
         'email' => 1
@@ -23,13 +23,13 @@ class Unit extends axis\unit\table\Base {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('date', 'Timestamp');
 
-        $schema->addField('name', 'String', 128);
-        $schema->addField('objectId1', 'String', 64)
+        $schema->addField('name', 'Text', 128);
+        $schema->addField('objectId1', 'Text', 64)
             ->isNullable(true);
-        $schema->addField('objectId2', 'String', 64)
+        $schema->addField('objectId2', 'Text', 64)
             ->isNullable(true);
 
-        $schema->addField('email', 'String', 255);
+        $schema->addField('email', 'Text', 255);
         $schema->addField('user', 'One', 'user/client')
             ->isNullable(true);
 

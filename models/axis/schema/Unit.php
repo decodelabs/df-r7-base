@@ -11,10 +11,10 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected function createSchema($schema) {
-        $schema->addPrimaryField('unitId', 'String', 255);
-        $schema->addField('storeName', 'String', 128);
+        $schema->addPrimaryField('unitId', 'Text', 255);
+        $schema->addField('storeName', 'Text', 128);
         $schema->addField('version', 'Integer', 2);
         $schema->addField('schema', 'BigBinary', 16);
         $schema->addIndexedField('timestamp', 'Timestamp');

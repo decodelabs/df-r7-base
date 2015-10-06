@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultSearchFields = [
         'code' => [
             'operator' => '=',
@@ -31,12 +31,12 @@ class Unit extends axis\unit\table\Base {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addIndexedField('date', 'Timestamp');
 
-        $schema->addField('mode', 'String', 16)
+        $schema->addField('mode', 'Text', 16)
             ->isNullable(true);
         $schema->addField('code', 'Integer', 2);
-        $schema->addField('request', 'String', 255)
+        $schema->addField('request', 'Text', 255)
             ->isNullable(true);
-        $schema->addField('message', 'BigString', 'medium');
+        $schema->addField('message', 'BigText', 'medium');
 
         $schema->addField('userAgent', 'One', 'user/agent')
             ->isNullable(true);

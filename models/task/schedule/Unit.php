@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultOrderableFields = [
         'request', 'environmentMode', 'priority', 'creationDate', 'lastRun', 'isLive', 'isAuto'
     ];
@@ -20,7 +20,7 @@ class Unit extends axis\unit\table\Base {
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
-        $schema->addField('request', 'String', 1024);
+        $schema->addField('request', 'Text', 1024);
         $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
             ->isNullable(true);
 
@@ -30,15 +30,15 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('lastRun', 'DateTime')
             ->isNullable(true);
 
-        $schema->addField('minute', 'String', 128)
+        $schema->addField('minute', 'Text', 128)
             ->setDefaultValue('*');
-        $schema->addField('hour', 'String', 128)
+        $schema->addField('hour', 'Text', 128)
             ->setDefaultValue('*');
-        $schema->addField('day', 'String', 128)
+        $schema->addField('day', 'Text', 128)
             ->setDefaultValue('*');
-        $schema->addField('month', 'String', 128)
+        $schema->addField('month', 'Text', 128)
             ->setDefaultValue('*');
-        $schema->addField('weekday', 'String', 128)
+        $schema->addField('weekday', 'Text', 128)
             ->setDefaultValue('*');
 
         $schema->addField('isLive', 'Boolean')

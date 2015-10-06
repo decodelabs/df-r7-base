@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultOrderableFields = [
         'name', 'slug', 'creationDate'
     ];
@@ -20,7 +20,7 @@ class Unit extends axis\unit\table\Base {
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
-        $schema->addField('name', 'String', 128);
+        $schema->addField('name', 'Text', 128);
         $schema->addField('slug', 'Slug');
 
         $schema->addField('creationDate', 'Timestamp');

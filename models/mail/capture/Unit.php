@@ -11,7 +11,7 @@ use df\axis;
 use df\flow;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultSearchFields = [
         'subject' => 10,
         'body' => 1
@@ -25,10 +25,10 @@ class Unit extends axis\unit\table\Base {
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
-        $schema->addField('from', 'String', 128);
-        $schema->addField('to', 'BigString', 'medium');
-        $schema->addField('subject', 'String', 255);
-        $schema->addField('body', 'BigString', 'huge');
+        $schema->addField('from', 'Text', 128);
+        $schema->addField('to', 'BigText', 'medium');
+        $schema->addField('subject', 'Text', 255);
+        $schema->addField('body', 'BigText', 'huge');
         $schema->addField('isPrivate', 'Boolean');
 
         $schema->addField('date', 'Timestamp');

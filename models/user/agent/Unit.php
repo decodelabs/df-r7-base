@@ -11,10 +11,10 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
-        $schema->addUniqueField('body', 'String', 255);
+        $schema->addUniqueField('body', 'Text', 255);
         $schema->addField('isBot', 'Boolean');
     }
 

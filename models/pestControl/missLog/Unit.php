@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected $_defaultSearchFields = [
         'request' => 4,
         'message' => 1
@@ -23,9 +23,9 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('miss', 'ManyToOne', 'miss', 'missLogs');
 
-        $schema->addField('referrer', 'String', 255)
+        $schema->addField('referrer', 'Text', 255)
             ->isNullable(true);
-        $schema->addField('message', 'BigString', 'medium')
+        $schema->addField('message', 'BigText', 'medium')
             ->isNullable(true);
 
         $schema->addField('userAgent', 'One', 'user/agent')
