@@ -28,7 +28,7 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addIndexedField('queueDate', 'Timestamp');
 
-        $schema->addField('lockDate', 'DateTime')
+        $schema->addField('lockDate', 'Date:Time')
             ->isNullable(true);
         $schema->addField('lockId', 'Guid')
             ->isNullable(true);

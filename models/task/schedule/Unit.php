@@ -27,7 +27,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('priority', 'Enum', 'core/unit/Priority');
 
         $schema->addField('creationDate', 'Timestamp');
-        $schema->addField('lastRun', 'DateTime')
+        $schema->addField('lastRun', 'Date:Time')
             ->isNullable(true);
 
         $schema->addField('minute', 'Text', 128)

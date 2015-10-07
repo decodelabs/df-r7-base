@@ -18,7 +18,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('slug', 'Slug');
         $schema->addField('name', 'Text', 128);
         $schema->addField('creationDate', 'Timestamp');
-        $schema->addField('lastEditDate', 'DateTime')
+        $schema->addField('lastEditDate', 'Date:Time')
             ->isNullable(true);
 
         $schema->addField('owner', 'One', 'user/client');

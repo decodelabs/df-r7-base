@@ -15,7 +15,7 @@ class Unit extends axis\unit\table\Base {
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('token', 'Text', 32);
-        $schema->addField('expiryDate', 'DateTime');
+        $schema->addField('expiryDate', 'Date:Time');
         $schema->addField('request', 'Text', 1024);
         $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
             ->isNullable(true);

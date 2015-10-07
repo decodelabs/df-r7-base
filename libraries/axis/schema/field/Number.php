@@ -118,7 +118,7 @@ class Number extends Base implements
         if(isset($row[$key])) {
             $output = $row[$key];
         } else {
-            $output = $this->_defaultValue;
+            $output = null;//$this->_defaultValue;
         }
 
         return $this->sanitizeValue($output, $forRecord);

@@ -39,8 +39,8 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('owner', 'One', 'user/client')
             ->isNullable(true);
 
-        $schema->addField('creationDate', 'DateTime');
-        $schema->addField('purgeDate', 'DateTime')
+        $schema->addField('creationDate', 'Date:Time');
+        $schema->addField('purgeDate', 'Date:Time')
             ->isNullable(true);
 
         $schema->addField('notes', 'Text', 'medium')

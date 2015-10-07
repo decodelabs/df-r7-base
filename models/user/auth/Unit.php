@@ -12,8 +12,8 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('adapter', 'Text', 32);
         $schema->addField('identity', 'Text', 255);
         $schema->addField('password', 'Binary', 64)->isNullable(true);
-        $schema->addField('bindDate', 'DateTime');
-        $schema->addField('loginDate', 'DateTime')->isNullable(true);
+        $schema->addField('bindDate', 'Date:Time');
+        $schema->addField('loginDate', 'Date:Time')->isNullable(true);
 
         $schema->addPrimaryIndex('primary', ['user', 'adapter', 'identity']);
         $schema->addIndex('identity');

@@ -38,7 +38,7 @@ class Unit extends axis\unit\table\Base {
             ->isNullable(true);
 
         $schema->addField('joinDate', 'Date');
-        $schema->addIndexedField('loginDate', 'DateTime')
+        $schema->addIndexedField('loginDate', 'Date:Time')
             ->isNullable(true);
 
         $schema->addField('groups', 'ManyToMany', 'group', 'users')

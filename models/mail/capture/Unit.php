@@ -32,7 +32,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('isPrivate', 'Boolean');
 
         $schema->addField('date', 'Timestamp');
-        $schema->addField('readDate', 'DateTime')
+        $schema->addField('readDate', 'Date:Time')
             ->isNullable(true);
         $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
             ->setDefaultValue('development');

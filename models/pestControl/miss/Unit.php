@@ -34,9 +34,9 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('seen', 'Number', 4);
         $schema->addField('botsSeen', 'Number', 4);
         $schema->addField('firstSeen', 'Timestamp');
-        $schema->addField('lastSeen', 'DateTime');
+        $schema->addField('lastSeen', 'Date:Time');
 
-        $schema->addField('archiveDate', 'DateTime')
+        $schema->addField('archiveDate', 'Date:Time')
             ->isNullable(true);
 
         $schema->addField('missLogs', 'OneToMany', 'missLog', 'miss');
