@@ -17,20 +17,20 @@ use df\opal;
  * Should return a null primitive as key will always be on relation table
  */
 class Many extends Base implements axis\schema\IManyField {
-    
+
     use axis\schema\TRelationField;
     use axis\schema\TBridgedRelationField;
 
-    public function __construct(axis\schema\ISchema $schema, $type, $name, array $args=null) {
+    public function __construct(axis\schema\ISchema $schema, $type, $name, $args=null) {
         parent::__construct($schema, $type, $name, $args);
         $this->_bridgeUnitId = $this->_getBridgeUnitType().'('.$schema->getName().'.'.$this->_name.')';
     }
-    
+
     protected function _init($targetTableUnit) {
         $this->setTargetUnitId($targetTableUnit);
     }
-    
-    
+
+
     public function isDominant($flag=null) {
         return true;
     }
@@ -45,7 +45,7 @@ class Many extends Base implements axis\schema\IManyField {
 
         if($forRecord) {
             $output = $this->sanitizeValue(null, $forRecord);
-            
+
             if(is_array($value)) {
                 $output->populateList($value);
             }
@@ -55,11 +55,11 @@ class Many extends Base implements axis\schema\IManyField {
 
         return $output;
     }
-    
+
     public function deflateValue($value) {
         return null;
     }
-    
+
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($forRecord) {
             $output = new axis\unit\table\record\BridgedManyRelationValueContainer($this);
@@ -76,11 +76,11 @@ class Many extends Base implements axis\schema\IManyField {
             return $value;
         }
     }
-    
+
     public function generateInsertValue(array $row) {
         return null;
     }
-    
+
 // Clause
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
         $localRelationManifest = $this->getLocalRelationManifest();
@@ -91,7 +91,7 @@ class Many extends Base implements axis\schema\IManyField {
                 'You should probably use a fieldless join constraint instead'
             );
         }
-        
+
         $sourceManager = $parent->getSourceManager();
         $source = $field->getSource();
         $localUnit = $source->getAdapter();
@@ -100,7 +100,7 @@ class Many extends Base implements axis\schema\IManyField {
         $targetField = $sourceManager->extrapolateIntrinsicField($source, $source->getAlias().'.'.$localRelationManifest->getSingleFieldName());
 
         $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId);
-        
+
         $localFieldName = $this->getBridgeLocalFieldName();
         $targetFieldName = $this->getBridgeTargetFieldName();
 
@@ -109,14 +109,14 @@ class Many extends Base implements axis\schema\IManyField {
             ->from($bridgeUnit, $localFieldName.'Bridge');
 
         $mainOperator = 'in';
-        
+
         if(opal\query\clause\Clause::isNegatedOperator($operator)) {
             $mainOperator = '!in';
             $operator = opal\query\clause\Clause::negateOperator($operator);
         } else {
             $operator = opal\query\clause\Clause::normalizeOperator($operator);
         }
-        
+
         $targetRelationManifest = $this->getTargetRelationManifest();
         $targetPrimaryKeySet = $targetRelationManifest->toPrimaryKeySet();
 
@@ -129,9 +129,9 @@ class Many extends Base implements axis\schema\IManyField {
                         $query->orWhere($targetFieldName, '=', $targetPrimaryKeySet->duplicateWith($inVal));
                     }
                 }
-                
+
                 break;
-                
+
             default:
                 $query->where($targetFieldName, $operator, $targetPrimaryKeySet->duplicateWith($value));
                 break;
@@ -139,13 +139,13 @@ class Many extends Base implements axis\schema\IManyField {
 
         return opal\query\clause\Clause::factory(
             $parent,
-            $targetField, 
+            $targetField,
             $mainOperator,
             $query,
             $isOr
         );
     }
-    
+
 
 // Populate
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
@@ -176,13 +176,13 @@ class Many extends Base implements axis\schema\IManyField {
                     ->endJoin()
                 ->on($bridgeSourceAlias.'.'.$bridgeLocalFieldName, '=', $parentSourceAlias.'.@primary');
         }
-            
+
         $output->asMany($this->_name);
 
         return $output;
     }
 
-    
+
 // Validation
     public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
         $this->_sanitizeTargetUnitId($localUnit);
@@ -198,7 +198,7 @@ class Many extends Base implements axis\schema\IManyField {
 
         return $this;
     }
-    
+
     public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
@@ -206,19 +206,19 @@ class Many extends Base implements axis\schema\IManyField {
         $this->_validateDefaultValue($localUnit);
 
         $bridgeUnit = $this->_validateBridgeUnit($localUnit);
-        
+
         return $this;
     }
-    
-    
-    
+
+
+
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
         $this->_setRelationStorageArray($data);
         $this->_setBridgeRelationStorageArray($data);
     }
-    
+
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),

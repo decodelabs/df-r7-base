@@ -14,22 +14,49 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
 
     use opal\schema\TField;
 
-    public static function factory(axis\schema\ISchema $schema, $name, $type, array $args=null) {
-        $class = 'df\\axis\\schema\\field\\'.ucfirst($type);
+    public static function factory(axis\schema\ISchema $schema, $name, $type, $args=null) {
+        $parts = explode(':', $type);
+        $superType = array_shift($parts);
+        $class = 'df\\axis\\schema\\field\\'.ucfirst($superType);
 
         if(!class_exists($class)) {
             throw new axis\schema\FieldTypeNotFoundException(
-                'Field type '.$type.' could not be found'
+                'Field type '.$superType.' could not be found'
             );
         }
 
         return new $class($schema, $type, $name, $args);
     }
 
-    public function __construct(axis\schema\ISchema $schema, $type, $name, array $args=null) {
+    public function __construct(axis\schema\ISchema $schema, $type, $name, $args=null) {
         $this->_setName($name);
+        $hasInit = false;
 
-        if($args !== null && method_exists($this, '_init')) {
+        if($args === false) {
+            return;
+        }
+
+        $parts = explode(':', $type, 2);
+        $superType = array_shift($parts);
+
+        if(!is_array($args)) {
+            $args = [];
+        }
+
+        if($subType = array_shift($parts)) {
+            $method = '_initAs'.ucfirst($subType);
+
+            if(method_exists($this, $method)) {
+                $hasInit = true;
+                call_user_func_array([$this, $method], $args);
+            } else {
+                throw new axis\schema\FieldTypeNotFoundException(
+                    'Field type '.$superType.' does not support sub type '.$subType
+                );
+            }
+        }
+
+        if(!$hasInit && method_exists($this, '_init')) {
             call_user_func_array([$this, '_init'], $args);
         }
     }
@@ -138,7 +165,7 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
 
 // Ext. serialize
     public static function fromStorageArray(axis\schema\ISchema $schema, array $data) {
-        $output = self::factory($schema, $data['nam'], $data['typ'], null);
+        $output = self::factory($schema, $data['nam'], $data['typ'], false);
         $output->_importStorageArray($data);
 
         return $output;
@@ -175,16 +202,36 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
         $type = $this->getFieldTypeDisplayName();
         $output = $this->_name.' '.$type;
 
-        if($this instanceof opal\schema\ILengthRestrictedField) {
-            if(null !== ($length = $this->getLength())) {
-                $output .= '('.$length.')';
-            }
-        } else if($this instanceof opal\schema\IBitSizeRestrictedField) {
-            $output .= '('.$this->getBitSize().' bits)';
-        } else if($this instanceof opal\schema\IByteSizeRestrictedField) {
-            $output .= '('.$this->getByteSize().' bytes)';
-        } else if($this instanceof opal\schema\ILargeByteSizeRestrictedField) {
-            $output .= '(2 ^ '.$this->getExponentSize().' bytes)';
+        $args = [];
+
+        if($this instanceof opal\schema\ILengthRestrictedField
+        && (null !== ($length = $this->getLength()))) {
+            $args[] = $length;
+        }
+
+        if($this instanceof opal\schema\IFloatingPointNumericField
+        && (null !== ($precision = $this->getPrecision()))) {
+            $args[] = $precision;
+            $args[] = $this->getScale();
+        }
+
+        if($this instanceof opal\schema\IBitSizeRestrictedField
+        && (null !== ($size = $this->getBitSize()))) {
+            $args[] = $size.' bits';
+        }
+
+        if($this instanceof opal\schema\IByteSizeRestrictedField
+        && (null !== ($size = $this->getByteSize()))) {
+            $args[] = $size.' bytes';
+        }
+
+        if($this instanceof opal\schema\ILargeByteSizeRestrictedField
+        && (null !== ($size = $this->getExponentSize()))) {
+            $args[] = '2 ^ '.$size.' bytes';
+        }
+
+        if(!empty($args)) {
+            $output .= '('.implode(', ', $args).')';
         }
 
         if($this->_isNullable) {

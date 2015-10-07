@@ -15,15 +15,15 @@ class AutoId extends Base implements
     opal\schema\IAutoGeneratorField,
     axis\schema\IAutoPrimaryField,
     opal\schema\IAutoIncrementableField {
-        
+
     use opal\schema\TField_ByteSizeRestricted;
     use axis\schema\TAutoPrimaryField;
-    
+
     protected function _init($size=null) {
         $this->setByteSize($size);
     }
-    
-    
+
+
 // Auto inc
     public function shouldAutoGenerate($flag=null) {
         if($flag !== null) {
@@ -32,10 +32,10 @@ class AutoId extends Base implements
                     'AutoId field must auto increment'
                 );
             }
-            
+
             return $this;
         }
-        
+
         return true;
     }
 
@@ -46,7 +46,7 @@ class AutoId extends Base implements
                     'AutoId field must auto increment'
                 );
             }
-            
+
             return $this;
         }
 
@@ -60,7 +60,7 @@ class AutoId extends Base implements
                     'AutoId field must be unsigned'
                 );
             }
-            
+
             return $this;
         }
 
@@ -74,7 +74,7 @@ class AutoId extends Base implements
                     'AutoId field must be unsigned'
                 );
             }
-            
+
             return $this;
         }
 
@@ -88,14 +88,14 @@ class AutoId extends Base implements
                     'AutoId field must not zero-fill'
                 );
             }
-            
+
             return $this;
         }
 
         return false;
     }
 
-    
+
 
 // Values
     public function deflateValue($value) {
@@ -109,12 +109,12 @@ class AutoId extends Base implements
     public function getSearchFieldType() {
         return 'integer';
     }
-    
+
 // Primitive
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        $output = new Integer($schema, 'Integer', $this->_name, [$this->_byteSize]);
+        $output = new Number($schema, 'Number:Integer', $this->_name, [$this->_byteSize]);
         $output->isUnsigned(true);
-        
+
         return $output;
     }
 
@@ -122,11 +122,11 @@ class AutoId extends Base implements
         $output = new opal\schema\Primitive_Integer($this, $this->_byteSize);
         $output->isUnsigned(true);
         $output->shouldAutoIncrement(true);
-        
+
         return $output;
     }
-    
-    
+
+
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);

@@ -34,9 +34,9 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('message', 'Text', 'medium');
 
         $schema->addField('file', 'Text', 255);
-        $schema->addField('line', 'Integer', 4);
+        $schema->addField('line', 'Number', 4);
 
-        $schema->addField('seen', 'Integer', 4);
+        $schema->addField('seen', 'Number', 4);
         $schema->addField('firstSeen', 'Timestamp');
         $schema->addField('lastSeen', 'DateTime');
 

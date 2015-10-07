@@ -14,9 +14,9 @@ class FloatingPoint extends Base implements opal\schema\IFloatingPointNumericFie
 
     use opal\schema\TField_FloatingPointNumeric;
 
-    protected function _init($scale=null, $precision=null) {
-        $this->setScale($scale);
+    protected function _init($precision=null, $scale=null) {
         $this->setPrecision($precision);
+        $this->setScale($scale);
     }
 
 // Values

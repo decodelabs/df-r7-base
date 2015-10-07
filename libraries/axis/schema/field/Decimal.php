@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,12 +9,12 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
-    
+
 class Decimal extends Base implements opal\schema\IFloatingPointNumericField {
 
     use opal\schema\TField_FloatingPointNumeric;
 
-    protected function _init($scale=8, $precision=4) {
+    protected function _init($precision=8, $scale=4) {
         $this->setPrecision($precision);
         $this->setScale($scale);
     }
@@ -30,7 +30,7 @@ class Decimal extends Base implements opal\schema\IFloatingPointNumericField {
         if($this->_isUnsigned) {
             $output->isUnsigned(true);
         }
-        
+
         if($this->_zerofill) {
             $output->shouldZerofill(true);
         }

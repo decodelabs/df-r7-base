@@ -15,8 +15,8 @@ class Unit extends axis\unit\table\Base {
     protected function createSchema($schema) {
         $schema->addPrimaryField('unitId', 'Text', 255);
         $schema->addField('storeName', 'Text', 128);
-        $schema->addField('version', 'Integer', 2);
-        $schema->addField('schema', 'BigBinary', 16);
+        $schema->addField('version', 'Number', 2);
+        $schema->addField('schema', 'Binary', 'medium');
         $schema->addIndexedField('timestamp', 'Timestamp');
     }
 }

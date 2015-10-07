@@ -18,9 +18,9 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('key', 'Text', 255);
         $schema->addIndexedField('internalId', 'Binary', 20)
             ->isConstantLength(true);
-        $schema->addField('value', 'BigBinary', 'huge');
-        $schema->addField('creationTime', 'Integer', 8);
-        $schema->addField('updateTime', 'Integer', 8)
+        $schema->addField('value', 'Binary', 'huge');
+        $schema->addField('creationTime', 'Number', 8);
+        $schema->addField('updateTime', 'Number', 8)
             ->isNullable(true);
 
         $schema->addPrimaryIndex('primary', ['namespace', 'key', 'internalId']);

@@ -33,7 +33,7 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('mode', 'Text', 16)
             ->isNullable(true);
-        $schema->addField('code', 'Integer', 2);
+        $schema->addField('code', 'Number', 2);
         $schema->addField('request', 'Text', 255)
             ->isNullable(true);
         $schema->addField('message', 'Text', 'medium');

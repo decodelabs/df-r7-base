@@ -76,7 +76,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('signifier', 'Text', 32)
             ->isNullable(true);
 
-        $schema->addField('priority', 'Integer', 4)
+        $schema->addField('priority', 'Number', 4)
             ->setDefaultValue(50);
 
         $schema->addField('groups', 'ManyToMany', 'group', 'roles');

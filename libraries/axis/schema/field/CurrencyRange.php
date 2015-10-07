@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
-    
+
 class CurrencyRange extends Base implements opal\schema\IMultiPrimitiveField {
 
     protected $_requireLowPoint = true;
@@ -86,9 +86,9 @@ class CurrencyRange extends Base implements opal\schema\IMultiPrimitiveField {
 
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_MultiField($this, [
-            $this->_name.'_lo' => (new opal\schema\Primitive_Currency($this))
+            $this->_name.'_lo' => (new opal\schema\Primitive_Decimal($this, 24, 4))
                 ->isNullable($this->_isNullable || !$this->_requireLowPoint),
-            $this->_name.'_hi' => (new opal\schema\Primitive_Currency($this))
+            $this->_name.'_hi' => (new opal\schema\Primitive_Decimal($this, 24, 4))
                 ->isNullable($this->_isNullable || !$this->_requireHighPoint)
         ]);
     }

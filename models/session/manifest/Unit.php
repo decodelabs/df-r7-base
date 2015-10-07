@@ -22,10 +22,10 @@ class Unit extends axis\unit\table\Base {
             ->isConstantLength(true)
             ->isNullable(true);
 
-        $schema->addField('startTime', 'Integer');
-        $schema->addField('transitionTime', 'Integer', 8)
+        $schema->addField('startTime', 'Number');
+        $schema->addField('transitionTime', 'Number', 8)
             ->isNullable(true);
-        $schema->addIndexedField('accessTime', 'Integer', 8);
+        $schema->addIndexedField('accessTime', 'Number', 8);
         //$schema->addField('userId', 'Text', 64)->isNullable(true);
     }
 }

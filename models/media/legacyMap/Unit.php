@@ -11,9 +11,9 @@ use df\apex;
 use df\axis;
 
 class Unit extends axis\unit\table\Base {
-    
+
     protected function createSchema($schema) {
-        $schema->addField('old', 'Integer', 8);
+        $schema->addField('old', 'Number', 8);
         $schema->addField('new', 'Guid');
     }
 }

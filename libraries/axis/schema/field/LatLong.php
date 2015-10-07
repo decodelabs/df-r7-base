@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,12 +9,12 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
-    
+
 class LatLong extends Base {
 
     const PRECISION = 10;
     const SCALE = 6;
-    
+
 
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {

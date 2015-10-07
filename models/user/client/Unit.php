@@ -46,7 +46,7 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('authDomains', 'OneToMany', 'auth', 'user');
         $schema->addField('options', 'OneToMany', 'option', 'user');
-        $schema->addIndexedField('status', 'Integer', 1)
+        $schema->addIndexedField('status', 'Number', 1)
             ->setDefaultValue(3);
 
         $schema->addField('timezone', 'Text', 32)

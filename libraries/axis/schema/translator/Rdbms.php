@@ -11,14 +11,14 @@ use df\axis;
 use df\opal;
 
 class Rdbms extends Base {
-    
+
     protected $_rdbmsAdapter;
-    
+
     public function __construct(axis\ISchemaBasedStorageUnit $unit, opal\rdbms\IAdapter $rdbmsAdapter, axis\schema\ISchema $axisSchema, opal\schema\ISchema $targetSchema=null) {
         $this->_rdbmsAdapter = $rdbmsAdapter;
         parent::__construct($unit, $axisSchema);
     }
-    
+
     public function getRdbmsAdapter() {
         return $this->_rdbmsAdapter;
     }
@@ -26,7 +26,7 @@ class Rdbms extends Base {
     protected function _storageExists() {
         return $this->_rdbmsAdapter->tableExists($this->_unit->getStorageBackendName());
     }
-    
+
     protected function _getTargetSchema() {
         return $this->_rdbmsAdapter->getSchema($this->_unit->getStorageBackendName());
     }
@@ -34,15 +34,15 @@ class Rdbms extends Base {
     protected function _createTargetSchema() {
         return $this->_rdbmsAdapter->newSchema($this->_unit->getStorageBackendName());
     }
-    
-    
+
+
 // Binary
     protected function _createBinaryField(opal\schema\IPrimitive $primitive) {
         $field = $this->_targetSchema->createField($primitive->getName(), 'binary', $primitive->getLength());
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
-    
+
 // Bit
     protected function _createBitField(opal\schema\IPrimitive $primitive) {
         $field = $this->_targetSchema->createField($primitive->getName(), 'bit', $primitive->getBitSize());
@@ -58,31 +58,33 @@ class Rdbms extends Base {
             case 24: $type = 'mediumblob'; break;
             case 32: $type = 'longblob'; break;
         }
-            
+
         $field = $this->_targetSchema->createField($primitive->getName(), $type);
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
-    
+
 // Boolean
     protected function _createBooleanField(opal\schema\IPrimitive $primitive) {
         $field = $this->_targetSchema->createField($primitive->getName(), 'bool');
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
-    
+
 // Char
     protected function _createCharField(opal\schema\IPrimitive $primitive) {
         $field = $this->_targetSchema->createField($primitive->getName(), 'char', $primitive->getLength())
             ->setCharacterSet($primitive->getCharacterSet());
-            
+
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
 
 // Currency
     protected function _createCurrencyField(opal\schema\IPrimitive $primitive) {
-        $field = $this->_targetSchema->createField($primitive->getName(), 'decimal', 19, 4);
+        $field = $this->_targetSchema->createField($primitive->getName(), 'decimal', 19, 4)
+            ->isUnsigned($primitive->isUnsigned());
+
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
@@ -110,7 +112,10 @@ class Rdbms extends Base {
 
 // Decimal
     protected function _createDecimalField(opal\schema\IPrimitive $primitive) {
-        $field = $this->_targetSchema->createField($primitive->getName(), 'decimal', $primitive->getScale(), $primitive->getPrecision());
+        $field = $this->_targetSchema->createField($primitive->getName(), 'decimal', $primitive->getPrecision(), $primitive->getScale())
+            ->isUnsigned($primitive->isUnsigned())
+            ->shouldZerofill($primitive->shouldZerofill());
+
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
@@ -119,14 +124,17 @@ class Rdbms extends Base {
     protected function _createEnumField(opal\schema\IPrimitive $primitive) {
         $field = $this->_targetSchema->createField($primitive->getName(), 'enum', $primitive->getOptions())
             ->setCharacterSet($primitive->getCharacterSet());
-            
+
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
 
 // Float
     protected function _createFloatField(opal\schema\IPrimitive $primitive) {
-        $field = $this->_targetSchema->createField($primitive->getName(), 'double', $primitive->getScale(), $primitive->getPrecision());
+        $field = $this->_targetSchema->createField($primitive->getName(), 'double', $primitive->getPrecision(), $primitive->getScale())
+            ->isUnsigned($primitive->isUnsigned())
+            ->shouldZerofill($primitive->shouldZerofill());
+
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
@@ -137,7 +145,7 @@ class Rdbms extends Base {
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
-    
+
 // Integer
     protected function _createIntegerField(opal\schema\IPrimitive $primitive) {
         switch($primitive->getByteSize()) {
@@ -147,27 +155,27 @@ class Rdbms extends Base {
             case 4: $type = 'int'; break;
             case 8: $type = 'bigint'; break;
         }
-        
+
         $field = $this->_targetSchema->createField($primitive->getName(), $type)
             ->isUnsigned($primitive->isUnsigned())
             ->shouldZerofill($primitive->shouldZerofill())
             ->shouldAutoIncrement($primitive->shouldAutoIncrement());
-            
+
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
-    
+
 
 
 // Set
     protected function _createSetField(opal\schema\IPrimitive $primitive) {
         $field = $this->_targetSchema->createField($primitive->getName(), 'set', $primitive->getOptions())
             ->setCharacterSet($primitive->getCharacterSet());
-            
+
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
-    
+
 // Text
     protected function _createTextField(opal\schema\IPrimitive $primitive) {
         switch($primitive->getExponentSize()) {
@@ -176,10 +184,10 @@ class Rdbms extends Base {
             case 24: $type = 'mediumtext'; break;
             case 32: $type = 'longtext'; break;
         }
-        
+
         $field = $this->_targetSchema->createField($primitive->getName(), $type)
             ->setCharacterSet($primitive->getCharacterSet());
-            
+
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
@@ -196,13 +204,13 @@ class Rdbms extends Base {
         $field = $this->_targetSchema->createField($primitive->getName(), 'timestamp')
             ->shouldTimestampAsDefault($primitive->shouldTimestampAsDefault())
             ->shouldTimestampOnUpdate($primitive->shouldTimestampOnUpdate());
-            
+
         $this->_importBasePrimitiveOptions($field, $primitive);
-        
+
         if($primitive->shouldTimestampAsDefault()) {
             $field->setDefaultValue(null);
         }
-        
+
         return $field;
     }
 
@@ -212,41 +220,42 @@ class Rdbms extends Base {
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
-    
+
 // Varchar
     protected function _createVarcharField(opal\schema\IPrimitive $primitive) {
         $field = $this->_targetSchema->createField($primitive->getName(), 'varchar', $primitive->getLength())
             ->setCharacterSet($primitive->getCharacterSet());
-            
+
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
-    
+
 // Year
     protected function _createYearField(opal\schema\IPrimitive $primitive) {
         $field = $this->_targetSchema->createField($primitive->getName(), 'smallint');
+        $field->isUnsigned(true);
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
-    
-    
-    
+
+
+
 // Base options
     protected function _importBasePrimitiveOptions(opal\rdbms\schema\IField $field, opal\schema\IPrimitive $primitive) {
         $field->isNullable($primitive->isNullable())
             ->setDefaultValue($primitive->getDefaultValue())
             ->setComment($primitive->getComment());
     }
-    
-    
-    
-    
+
+
+
+
 // Indexes
     protected function _getIndexName(opal\schema\IIndex $axisIndex, $isPrimary, opal\schema\IPrimitive $primitive=null) {
         if($isPrimary && $this->_rdbmsAdapter->getServerType() == 'mysql') {
             return 'PRIMARY';
-        } 
-        
+        }
+
         return parent::_getIndexName($axisIndex, $isPrimary, $primitive);
     }
 }

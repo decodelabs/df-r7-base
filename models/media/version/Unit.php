@@ -24,7 +24,7 @@ class Unit extends axis\unit\table\Base {
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
 
-        $schema->addField('number', 'Integer', 4)
+        $schema->addField('number', 'Number', 4)
             ->isUnsigned(true)
             ->setDefaultValue(1);
 
@@ -32,7 +32,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('isActive', 'Boolean');
 
         $schema->addField('fileName', 'Text', 1024);
-        $schema->addField('fileSize', 'Integer', 8);
+        $schema->addField('fileSize', 'Number', 8);
         $schema->addField('contentType', 'Text', 128);
 
         $schema->addField('hash', 'Binary', 32);
