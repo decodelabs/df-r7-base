@@ -12,9 +12,11 @@ use df\arch;
 use df\spur;
 
 class TaskPurgeDependencies extends arch\task\Action {
-    
+
     public function execute() {
         $this->io->write('Purging theme dependencies...');
+
+        /*
         $installer = new spur\packaging\bower\Installer($this->io);
 
         $packages = $installer->getInstalledPackages();
@@ -29,5 +31,11 @@ class TaskPurgeDependencies extends arch\task\Action {
         }
 
         $this->io->writeLine();
+        */
+
+        $vendorPath = df\Launchpad::$application->getApplicationPath().'/assets/vendor/';
+        core\fs\Dir::delete($vendorPath);
+
+        $this->io->writeLine(' done');
     }
 }

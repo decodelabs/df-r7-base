@@ -11,7 +11,7 @@ use df\spur;
 use df\link;
 
 class FileSystem implements spur\packaging\bower\IResolver {
-    
+
     public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null) {
         if($currentVersion) {
             return false;
@@ -24,7 +24,11 @@ class FileSystem implements spur\packaging\bower\IResolver {
         $package->cacheFileName = $package->name.'-'.md5($package->url).$extension;
         $package->version = time();
 
-        core\fs\File::copy($package->url, $cachePath.'/'.$package->cacheFileName);
+        core\fs\File::copy($package->url, $cachePath.'/packages/'.$package->cacheFileName);
         return true;
+    }
+
+    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath) {
+        return 'latest';
     }
 }

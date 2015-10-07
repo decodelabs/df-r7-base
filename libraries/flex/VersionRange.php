@@ -171,6 +171,35 @@ class VersionRange implements IVersionRange, core\IDumpable {
         }
     }
 
+    public function getMinorGroupVersion() {
+        if(count($this->_groups) != 1) {
+            return null;
+        }
+
+        $count = count($this->_groups[0]);
+
+        if(($count > 2)
+        || ($count == 2 && ($this->_groups[0][0]->operator != '>=' || $this->_groups[0][1]->operator != '<'))
+        || ($count == 1 && ($this->_groups[0][0]->operator != '='))) {
+            return null;
+        }
+
+        $output = new Version(
+            $this->_groups[0][0]->major.'.'.
+            $this->_groups[0][0]->minor
+        );
+
+        if(!$output->major && $output->minor) {
+            return null;
+        }
+
+        if($this->contains($output)) {
+            return $output;
+        }
+
+        return null;
+    }
+
 
 // String
     public function toString() {

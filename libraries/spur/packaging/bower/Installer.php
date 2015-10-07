@@ -46,7 +46,7 @@ class Installer implements IInstaller {
             }
 
             if($this->_installPackage($package)) {
-                $packages[$package->installName] = $package;
+                $packages[$package->getKey()] = $package;
             }
         }
 
@@ -99,7 +99,7 @@ class Installer implements IInstaller {
         }
 
         try {
-            if($resolver->fetchPackage($package, $this->_cachePath.'/packages', $currentVersion)) {
+            if($resolver->fetchPackage($package, $this->_cachePath, $currentVersion)) {
                 if($this->_multiplexer) {
                     $this->_multiplexer->write(' => '.$package->version);
                 }
@@ -134,6 +134,13 @@ class Installer implements IInstaller {
 
         foreach($deps as $name => $version) {
             $depPackage = new Package($name, $version);
+
+            if($package->autoInstallName) {
+                $depPackage->installName = null;
+            }
+
+            $depPackage->isDependency = true;
+
             $this->_preparePackage($depPackage);
 
             if($installed = $this->getPackageInfo($depPackage->name)) {
@@ -373,6 +380,39 @@ class Installer implements IInstaller {
 
         if(!$package->resolver) {
             throw new RuntimeException('No valid resolver could be found for package: '.$package->name);
+        }
+
+        if(!$package->installName) {
+            $package->autoInstallName = true;
+
+            if(!$package->isDependency && ($package->version == '*' || $package->version == 'latest' || !strlen($package->version))) {
+                $package->installName = $package->name.'/latest';
+            } else {
+                try {
+                    $range = flex\VersionRange::factory($package->version);
+                    $version = $range->getMinorGroupVersion();
+                } catch(flex\IException $e) {
+                    $version = null;
+                }
+
+                if(!$version) {
+                    $resolver = $this->_getResolver($package->resolver);
+
+                    if(!strlen($package->version) || $package->version == 'latest') {
+                        $package->version = '*';
+                    }
+
+                    $version = $resolver->getTargetVersion(
+                        $package, $this->_cachePath
+                    );
+                }
+
+                if($version instanceof flex\IVersion) {
+                    $version = $version->major.'.'.$version->minor;
+                }
+
+                $package->installName = $package->name.'/'.$version;
+            }
         }
 
         if(!strlen($package->version) || $package->version == 'latest') {

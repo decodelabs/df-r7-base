@@ -8,16 +8,27 @@ namespace df\spur\packaging\bower;
 use df;
 use df\core;
 use df\spur;
+use df\aura;
 
 class Package implements IPackage {
-    
+
     public $name;
     public $source;
     public $version;
     public $installName;
+    public $autoInstallName = false;
+    public $isDependency = false;
     public $url;
     public $cacheFileName;
     public $resolver;
+
+    public static function fromThemeDependency(aura\theme\IDependency $dependency) {
+        $output = new self($dependency->id, $dependency->source);
+        $output->version = $dependency->version;
+        $output->installName = null;
+
+        return $output;
+    }
 
     public function __construct($name, $source) {
         $installName = $name;
@@ -39,6 +50,10 @@ class Package implements IPackage {
 
     public function getName() {
         return $this->name;
+    }
+
+    public function getKey() {
+        return $this->name.'#'.$this->version;
     }
 
     public function setVersion($version) {

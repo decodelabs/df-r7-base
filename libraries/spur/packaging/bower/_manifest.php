@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 use df\spur;
+use df\aura;
 
 // Exceptions
 interface IException {}
@@ -43,8 +44,10 @@ interface IInstaller {
 }
 
 interface IPackage {
+    public static function fromThemeDependency(aura\theme\IDependency $dependency);
     public function setName($name);
     public function getName();
+    public function getKey();
     public function setVersion($version);
     public function getVersion();
     public function setInstallName($name);
@@ -57,6 +60,7 @@ interface IPackage {
 
 interface IResolver {
     public function fetchPackage(IPackage $package, $cachePath, $currentVersion=null);
+    public function getTargetVersion(IPackage $package, $cachePath);
 }
 
 trait TGitResolver {

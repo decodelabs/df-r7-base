@@ -12,7 +12,7 @@ use df\arch;
 use df\aura;
 
 class DfKit implements arch\IDirectoryHelper {
-    
+
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;
 
@@ -37,7 +37,7 @@ class DfKit implements arch\IDirectoryHelper {
         if(!empty($current)) {
             $modules = array_unique(array_merge(explode(' ', $current), $modules));
         }
-        
+
         $this->view->bodyTag->setDataAttribute('require', implode(' ', $modules));
         return $this;
 

@@ -21,6 +21,7 @@ interface ITheme extends aura\view\IViewRenderEventReceiver, aura\view\ILayoutMa
     public function getApplicationImagePath();
     public function getApplicationColor();
     public function mapIcon($name);
+
     public function getDependencies();
 
     public function loadFacet($name);
@@ -31,3 +32,25 @@ interface ITheme extends aura\view\IViewRenderEventReceiver, aura\view\ILayoutMa
 }
 
 interface IFacet extends aura\view\IViewRenderEventReceiver {}
+
+
+interface IManager extends core\IManager {
+
+    public function ensureDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null);
+    public function installDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null);
+    public function installAllDependencies(core\io\IMultiplexer $io=null);
+    public function installDependencies(array $dependencies, core\io\IMultiplexer $io=null);
+
+    public function getPreparedDependencyDefinitions(ITheme $theme);
+}
+
+interface IDependency {
+    public function getId();
+    public function getVersion();
+    public function getSource();
+    public function getJs();
+    public function getCss();
+    public function getKey();
+    public function getPackage();
+    public function getInstallName();
+}

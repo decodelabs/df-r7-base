@@ -11,7 +11,7 @@ use df\spur;
 use df\link;
 
 class GitFileSystem implements spur\packaging\bower\IResolver {
-    
+
     use spur\packaging\bower\TGitResolver;
 
     protected $_repo;
@@ -39,13 +39,21 @@ class GitFileSystem implements spur\packaging\bower\IResolver {
 
         $package->cacheFileName = $package->name.'#'.$version;
 
-        if(!is_dir($cachePath.'/'.$package->cacheFileName)) {
-            $repo = $this->_repo->cloneTo($cachePath.'/'.$package->cacheFileName);
+        if(!is_dir($cachePath.'/packages/'.$package->cacheFileName)) {
+            $repo = $this->_repo->cloneTo($cachePath.'/packages/'.$package->cacheFileName);
             $repo->checkoutCommit($commitId);
         }
 
         $this->_repo = null;
         return true;
+    }
+
+    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath) {
+        if(!$tag = $this->_getRequiredTag($package)) {
+            return 'latest';
+        }
+
+        return $tag->getVersion();
     }
 
     protected function _getRequiredTag(spur\packaging\bower\IPackage $package) {

@@ -11,7 +11,7 @@ use df\spur;
 use df\link;
 
 class Url implements spur\packaging\bower\IResolver {
-    
+
     protected $_httpClient;
 
     public function __construct() {
@@ -27,8 +27,8 @@ class Url implements spur\packaging\bower\IResolver {
         $package->version = time();
 
         $response = $this->_httpClient->getFile(
-            $package->url, 
-            $cachePath, 
+            $package->url,
+            $cachePath.'/packages/',
             $package->cacheFileName
         );
 
@@ -39,5 +39,9 @@ class Url implements spur\packaging\bower\IResolver {
         }
 
         return true;
+    }
+
+    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath) {
+        return 'latest';
     }
 }

@@ -46,13 +46,21 @@ class Git implements spur\packaging\bower\IResolver {
 
         $package->cacheFileName = $package->name.'#'.$version;
 
-        if(!is_dir($cachePath.'/'.$package->cacheFileName)) {
-            $repo = $this->_remote->cloneTo($cachePath.'/'.$package->cacheFileName);
+        if(!is_dir($cachePath.'/packages/'.$package->cacheFileName)) {
+            $repo = $this->_remote->cloneTo($cachePath.'/packages/'.$package->cacheFileName);
             $repo->checkoutCommit($commitId);
         }
 
         $this->_remote = null;
         return true;
+    }
+
+    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath) {
+        if(!$tag = $this->_getRequiredTag($package, $cachePath)) {
+            return 'latest';
+        }
+
+        return $tag->getVersion();
     }
 
     protected function _getRequiredTag(spur\packaging\bower\IPackage $package, $cachePath) {
@@ -66,7 +74,7 @@ class Git implements spur\packaging\bower\IResolver {
     }
 
     protected function _fetchTags(spur\packaging\bower\IPackage $package, $cachePath) {
-        $path = dirname($cachePath).'/tags/git-'.flex\Text::formatFileName($package->url).'.json';
+        $path = $cachePath.'/tags/git-'.flex\Text::formatFileName($package->url).'.json';
 
         if(!core\fs\File::isFileRecent($path, self::TAG_TIMEOUT)) {
             $tags = $this->_remote->getTags();

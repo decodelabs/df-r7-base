@@ -12,7 +12,7 @@ use df\link;
 use df\flex;
 
 class Github implements spur\packaging\bower\IResolver {
-    
+
     use spur\packaging\bower\TGitResolver;
 
     const TAG_TIMEOUT = '5 hours';
@@ -38,16 +38,16 @@ class Github implements spur\packaging\bower\IResolver {
         if($currentVersion !== null && $currentVersion == $package->version) {
             return false;
         }
-        
+
         $package->cacheFileName = $package->name.'#'.$version.'.zip';
 
-        if(is_file($cachePath.'/'.$package->cacheFileName)) {
+        if(is_file($cachePath.'/packages/'.$package->cacheFileName)) {
             return true;
         }
 
 
         $http = $this->_mediator->getHttpClient();
-        $response = $http->getFile($url, $cachePath, $package->cacheFileName);
+        $response = $http->getFile($url, $cachePath.'/packages/', $package->cacheFileName);
 
         if(!$response->isOk()) {
             throw new spur\packaging\bower\RuntimeException(
@@ -56,6 +56,16 @@ class Github implements spur\packaging\bower\IResolver {
         }
 
         return true;
+    }
+
+    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath) {
+        $repoName = $this->_extractRepoName($package);
+
+        if(!$tag = $this->_getRequiredTag($package, $repoName, $cachePath)) {
+            return 'latest';
+        }
+
+        return $tag->getVersion();
     }
 
     protected function _extractRepoName(spur\packaging\bower\IPackage $package) {
@@ -77,7 +87,7 @@ class Github implements spur\packaging\bower\IResolver {
     }
 
     protected function _fetchTags(spur\packaging\bower\IPackage $package, $repoName, $cachePath) {
-        $path = dirname($cachePath).'/tags/github-'.str_replace('/', '-', $repoName).'.json';
+        $path = $cachePath.'/tags/github-'.str_replace('/', '-', $repoName).'.json';
 
         if(!core\fs\File::isFileRecent($path, self::TAG_TIMEOUT)) {
             $tags = $this->_mediator->getRepositoryTags($repoName);
@@ -92,7 +102,7 @@ class Github implements spur\packaging\bower\IResolver {
             flex\json\Codec::encodeFile($path, $data);
             return $tags;
         }
-        
+
         $data = flex\json\Codec::decodeFileAsTree($path);
         $tags = [];
 

@@ -14,7 +14,7 @@ use df\halo;
 class Bridge implements IBridge {
 
     protected $_nodePath;
-    
+
     public function __construct() {
         $this->_nodePath = df\Launchpad::$application->getLocalStoragePath().'/node';
     }
@@ -67,7 +67,7 @@ class Bridge implements IBridge {
             ->launch();
 
         $output = $result->getOutput();
-        
+
         if($result->hasError() && empty($output)) {
             $error = $result->getError();
 

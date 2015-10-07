@@ -13,7 +13,7 @@ use df\spur;
 use df\neon;
 
 class Base implements ITheme, core\IDumpable {
-    
+
     const APPLICATION_IMAGE = 'app.png';
     const APPLICATION_COLOR = 'white';
 
@@ -31,17 +31,17 @@ class Base implements ITheme, core\IDumpable {
             $config = Config::getInstance();
             $id = $config->getThemeIdFor($context->location->getArea());
         }
-        
+
         $id = lcfirst($id);
         $class = 'df\\apex\\themes\\'.$id.'\\Theme';
-        
+
         if(!class_exists($class)) {
             $class = __CLASS__;
         }
-        
+
         return new $class($id);
     }
-    
+
     protected function __construct($id) {
         $this->_id = $id;
 
@@ -57,7 +57,7 @@ class Base implements ITheme, core\IDumpable {
             $this->loadFacet($name);
         }
     }
-    
+
     public function getId() {
         return $this->_id;
     }
@@ -66,7 +66,7 @@ class Base implements ITheme, core\IDumpable {
 # Before render
     public function beforeViewRender(aura\view\IView $view) {
         $func = 'before'.$view->getType().'ViewRender';
-        
+
         if(method_exists($this, $func)) {
             $this->$func($view);
         }
@@ -79,6 +79,10 @@ class Base implements ITheme, core\IDumpable {
     }
 
     public function beforeHtmlViewRender(aura\view\IView $view) {
+        if(df\Launchpad::$application->isDevelopment()) {
+            Manager::getInstance()->ensureDependenciesFor($this);
+        }
+
         $this->applyDefaultIncludes($view);
         $this->applyDefaultBodyTagData($view);
         $this->applyDefaultMetaData($view);
@@ -91,7 +95,7 @@ class Base implements ITheme, core\IDumpable {
     public function applyDefaultBodyTagData(aura\view\IView $view) {
         $request = $view->context->request;
         $router = core\application\http\Router::getInstance();
-        
+
         $view
             ->setData('base', '/'.ltrim($router->getBaseUrl()->getPathString(), '/'))
             ->getBodyTag()
@@ -123,7 +127,7 @@ class Base implements ITheme, core\IDumpable {
 # On content render
     public function onViewContentRender(aura\view\IView $view, $content) {
         $func = 'on'.$view->getType().'ViewContentRender';
-        
+
         if(method_exists($this, $func)) {
             if(null !== ($newContent = $this->$func($view, $content))) {
                 $content = $newContent;
@@ -143,7 +147,7 @@ class Base implements ITheme, core\IDumpable {
 # On layout render
     public function onViewLayoutRender(aura\view\IView $view, $content) {
         $func = 'on'.$view->getType().'ViewLayoutRender';
-        
+
         if(method_exists($this, $func)) {
             if(null !== ($newContent = $this->$func($view, $content))) {
                 $content = $newContent;
@@ -164,7 +168,7 @@ class Base implements ITheme, core\IDumpable {
 # After render
     public function afterViewRender(aura\view\IView $view, $content) {
         $func = 'after'.$view->getType().'ViewRender';
-        
+
         if(method_exists($this, $func)) {
             if(null !== ($newContent = $this->$func($view, $content))) {
                 $content = $newContent;
@@ -184,7 +188,7 @@ class Base implements ITheme, core\IDumpable {
         $this->applyDefaultViewTitle($view);
         return $content;
     }
-    
+
     public function applyDefaultViewTitle(aura\view\IView $view) {
         if(!$view->hasTitle()) {
             $breadcrumbs = $view->getContext()->apex->breadcrumbs();
@@ -193,7 +197,7 @@ class Base implements ITheme, core\IDumpable {
             foreach($breadcrumbs->getEntries() as $entry) {
                 array_unshift($parts, $entry->getBody());
             }
-            
+
             if(!empty($parts)) {
                 $view->setTitle(implode(' < ', $parts));
             }
@@ -201,11 +205,11 @@ class Base implements ITheme, core\IDumpable {
 
         if(!$view->hasTitleSuffix()) {
             $suffix = df\Launchpad::$application->getName();
-            
+
             if($view->hasTitle()) {
                 $suffix = ' : '.$suffix;
             }
-            
+
             $view->setTitleSuffix($suffix);
         }
     }

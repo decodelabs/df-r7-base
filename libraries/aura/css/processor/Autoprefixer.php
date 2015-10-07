@@ -11,7 +11,7 @@ use df\aura;
 use df\spur;
 
 class Autoprefixer extends Base {
-    
+
     public function process($cssPath) {
         $bridge = new spur\node\Bridge();
 
@@ -45,8 +45,8 @@ var autoprefixer = require('autoprefixer-core');
 var postcss      = require('postcss');
 
 return postcss([ autoprefixer(data.settings) ]).process(data.css, {
-    from: data.path, 
-    to: data.path, 
+    from: data.path,
+    to: data.path,
     map: data.map
 }).css;
 js;
