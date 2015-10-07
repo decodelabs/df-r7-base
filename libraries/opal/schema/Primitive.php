@@ -95,7 +95,6 @@ class Primitive_Char extends Primitive implements
 
 
 
-class Primitive_Currency extends Primitive {}
 class Primitive_DataObject extends Primitive_Blob {}
 class Primitive_Date extends Primitive {}
 class Primitive_DateTime extends Primitive {}

@@ -80,15 +80,6 @@ class Rdbms extends Base {
         return $field;
     }
 
-// Currency
-    protected function _createCurrencyField(opal\schema\IPrimitive $primitive) {
-        $field = $this->_targetSchema->createField($primitive->getName(), 'decimal', 19, 4)
-            ->isUnsigned($primitive->isUnsigned());
-
-        $this->_importBasePrimitiveOptions($field, $primitive);
-        return $field;
-    }
-
 // Dataobject
     protected function _createDataObjectField(opal\schema\IPrimitive $primitive) {
         $field = $this->_targetSchema->createField($primitive->getName(), 'blob');
