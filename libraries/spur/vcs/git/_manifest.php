@@ -165,17 +165,17 @@ trait TRepository {
         $output = rtrim($output);
 
         if($result->hasError()) {
-            //if(!empty($output)) {
-            //    $output .= $result->getError();
-            //} else {
-                $error = trim($result->getError());
+            $error = trim($result->getError());
 
-                if(substr($error, 0, 5) == 'Note:') {
-                    $output .= "\n".$error;
-                } else {
-                    throw new RuntimeException($error);
-                }
-            //}
+            if(empty($output)) {
+                throw new RuntimeException($error);
+            }
+
+            if(strtolower(substr($error, 0, 5) == 'error:') {
+                throw new RuntimeException($error);
+            }
+
+            $output .= "\n".$error;
         }
 
         return $output;
