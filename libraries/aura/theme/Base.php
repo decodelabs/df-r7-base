@@ -100,8 +100,7 @@ class Base implements ITheme, core\IDumpable {
             ->setData('base', '/'.ltrim($router->getBaseUrl()->getPathString(), '/'))
             ->getBodyTag()
                 ->setDataAttribute('location', $request->getLiteralPathString())
-                ->setDataAttribute('layout', $view->getLayout())
-                ->setDataAttribute('theme', $this->getId());
+                ->setDataAttribute('layout', $view->getLayout());
 
         if(df\Launchpad::COMPILE_TIMESTAMP) {
             $view->setData('cts', df\Launchpad::COMPILE_TIMESTAMP);
