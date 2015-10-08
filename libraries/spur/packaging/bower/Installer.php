@@ -26,6 +26,10 @@ class Installer implements IInstaller {
         $this->setMultiplexer($io);
     }
 
+    public function getInstallPath() {
+        return $this->_installDir;
+    }
+
     public function setMultiplexer(core\io\IMultiplexer $io=null) {
         $this->_multiplexer = $io;
         return $this;
@@ -271,6 +275,18 @@ class Installer implements IInstaller {
         }
     }
 
+    public function getPackageJsonData($name) {
+        if($name instanceof IPackage) {
+            $name = $name->installName;
+        }
+
+        $file = $this->_installDir->getFile($name.'/package.json');
+
+        if($file->exists()) {
+            return flex\json\Codec::decodeFileAsTree($file);
+        }
+    }
+
 
 
 // Resolvers
@@ -367,6 +383,7 @@ class Installer implements IInstaller {
                     $registry = $registry->lookup($package->name);
                     $package->url = $registry['url'];
                     $package->name = $registry['name'];
+                    $package->isRegistry = true;
                 } catch(spur\ApiError $e) {
                     // never mind
                 }
@@ -384,6 +401,11 @@ class Installer implements IInstaller {
 
         if(!$package->installName) {
             $package->autoInstallName = true;
+            $resolver = $this->_getResolver($package->resolver);
+
+            if(!$package->isRegistry) {
+                $package->name = $resolver->resolvePackageName($package);
+            }
 
             if(!$package->isDependency && ($package->version == '*' || $package->version == 'latest' || !strlen($package->version))) {
                 $package->installName = $package->name.'/latest';
@@ -396,8 +418,6 @@ class Installer implements IInstaller {
                 }
 
                 if(!$version) {
-                    $resolver = $this->_getResolver($package->resolver);
-
                     if(!strlen($package->version) || $package->version == 'latest') {
                         $package->version = '*';
                     }

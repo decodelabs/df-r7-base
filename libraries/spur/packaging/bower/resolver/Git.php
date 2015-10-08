@@ -23,8 +23,14 @@ class Git implements spur\packaging\bower\IResolver {
 
     }
 
+    public function resolvePackageName(spur\packaging\bower\IPackage $package) {
+        $parts = explode('/', $package->url);
+        $name = array_pop($parts);
+        return substr($name, -4);
+    }
+
     public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null) {
-        $this->_remote = new spur\vcs\git\Remote($package->url);
+        $this->_getRemote($package);
 
         if($tag = $this->_getRequiredTag($package, $cachePath)) {
             $commitId = $tag->getCommitId();
@@ -53,6 +59,14 @@ class Git implements spur\packaging\bower\IResolver {
 
         $this->_remote = null;
         return true;
+    }
+
+    protected function _getRemote(spur\packaging\bower\IPackage $package) {
+        if(!$this->_remote) {
+            $this->_remote = new spur\vcs\git\Remote($package->url);
+        }
+
+        return $this->_remote;
     }
 
     public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath) {

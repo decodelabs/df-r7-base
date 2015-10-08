@@ -16,6 +16,20 @@ class Manager implements IManager {
 
     const REGISTRY_PREFIX = 'manager://theme';
 
+
+    public function getInstalledDependenciesFor(ITheme $theme) {
+        $this->ensureDependenciesFor($theme);
+        $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$theme->getId();
+        return unserialize(core\fs\File::getContentsOf($path));
+    }
+
+    protected function _storeManifest(ITheme $theme, array $dependencies) {
+        $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$theme->getId();
+        core\fs\File::create($path, serialize($dependencies));
+    }
+
+
+
     public function ensureDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null) {
         $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$theme->getId();
         $vendorPath = df\Launchpad::$application->getApplicationPath().'/assets/vendor/';
@@ -35,16 +49,10 @@ class Manager implements IManager {
         }
 
         if(file_exists($path) && is_dir($vendorPath)) {
-
             return $this;
         }
 
         return $this->installDependenciesFor($theme, $io);
-    }
-
-    protected function _storeManifest(ITheme $theme, array $dependencies) {
-        $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$theme->getId();
-        core\fs\File::create($path, serialize($dependencies));
     }
 
     public function installDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null) {
@@ -128,13 +136,36 @@ class Manager implements IManager {
         foreach($dependencies as $dependency) {
             $key = $dependency->getKey();
             $package = $packages[$key];
+            $installPath = $installer->getInstallPath().'/'.$package->installName;
 
             $dependency->installName = $package->installName;
-
             $data = $installer->getPackageBowerData($package);
+            $main = null;
 
             if(isset($data['main'])) {
-                $dependency->js[] = $data['main'];
+                $main = $data['main'];
+            } else {
+                $data = $installer->getPackageJsonData($package);
+
+                if(isset($data['main'])) {
+                    $main = $data['main'];
+                } else if(is_file($installPath.'/'.$dependency->id.'.js')) {
+                    $main = $dependency->id.'.js';
+                }
+            }
+
+            if(substr($main, -6) != 'min.js') {
+                $fileName = substr($main, 0, -3);
+
+                if(is_file($installPath.'/'.$fileName.'.min.js')) {
+                    $main = $fileName.'.min.js';
+                } else if(is_file($installPath.'/'.$fileName.'-min.js')) {
+                    $main = $fileName.'-min.js';
+                }
+            }
+
+            if($main !== null) {
+                array_unshift($dependency->js, $main);
                 $dependency->js = array_unique($dependency->js);
             }
         }

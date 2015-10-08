@@ -18,6 +18,7 @@ class Dependency implements IDependency {
     public $source;
     public $js = [];
     public $css = [];
+    public $shim;
     public $installName;
 
     public function __construct($id, $data) {
@@ -62,8 +63,8 @@ class Dependency implements IDependency {
         if(isset($data['js']) && !empty($data['js'])) {
             $this->js = $data['js'];
 
-            if(!is_array($js)) {
-                $this->js = [$js];
+            if(!is_array($this->js)) {
+                $this->js = [$this->js];
             }
         }
 
@@ -72,6 +73,14 @@ class Dependency implements IDependency {
 
             if(!is_array($css)) {
                 $this->css = [$css];
+            }
+        }
+
+        if(isset($data['shim'])) {
+            $this->shim = $data['shim'];
+
+            if(!is_array($this->shim)) {
+                $this->shim = ['exports' => $this->shim];
             }
         }
     }
@@ -94,6 +103,10 @@ class Dependency implements IDependency {
 
     public function getCss() {
         return $this->css;
+    }
+
+    public function getShim() {
+        return $this->shim;
     }
 
     public function getKey() {

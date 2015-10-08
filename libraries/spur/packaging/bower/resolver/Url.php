@@ -18,6 +18,15 @@ class Url implements spur\packaging\bower\IResolver {
         $this->_httpClient = new link\http\Client();
     }
 
+    public function resolvePackageName(spur\packaging\bower\IPackage $package) {
+        return $package->name;
+
+        /*
+        $url = link\http\Url::factory($package->url);
+        return $url->path->getFileName();
+        */
+    }
+
     public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null) {
         if($currentVersion) {
             return false;

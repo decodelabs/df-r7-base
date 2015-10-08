@@ -23,6 +23,12 @@ class Github implements spur\packaging\bower\IResolver {
         $this->_mediator = new spur\vcs\github\Mediator();
     }
 
+    public function resolvePackageName(spur\packaging\bower\IPackage $package) {
+        $repoName = $this->_extractRepoName($package);
+        $parts = explode('/', $repoName);
+        return array_pop($parts);
+    }
+
     public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null) {
         $repoName = $this->_extractRepoName($package);
 

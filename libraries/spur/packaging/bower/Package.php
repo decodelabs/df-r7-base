@@ -18,6 +18,7 @@ class Package implements IPackage {
     public $installName;
     public $autoInstallName = false;
     public $isDependency = false;
+    public $isRegistry = false;
     public $url;
     public $cacheFileName;
     public $resolver;

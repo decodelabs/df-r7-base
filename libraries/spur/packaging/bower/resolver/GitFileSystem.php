@@ -16,8 +16,15 @@ class GitFileSystem implements spur\packaging\bower\IResolver {
 
     protected $_repo;
 
+    public function resolvePackageName(spur\packaging\bower\IPackage $package) {
+        return $package->name;
+
+        //$this->_getRepo($package);
+        // TODO: extract name from origin
+    }
+
     public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null) {
-        $this->_repo = new spur\vcs\git\Repository($package->url);
+        $this->_getRepo($package);
 
         if($tag = $this->_getRequiredTag($package)) {
             $commitId = $tag->getCommitId();
@@ -46,6 +53,14 @@ class GitFileSystem implements spur\packaging\bower\IResolver {
 
         $this->_repo = null;
         return true;
+    }
+
+    protected function _getRepo(spur\packaging\bower\IPackage $package) {
+        if(!$this->_repo) {
+            $this->_repo = new spur\vcs\git\Repository($package->url);
+        }
+
+        return $this->_repo;
     }
 
     public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath) {

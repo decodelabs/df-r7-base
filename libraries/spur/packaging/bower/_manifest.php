@@ -31,6 +31,7 @@ interface IBridge {
 
 
 interface IInstaller {
+    public function getInstallPath();
     public function setMultiplexer(core\io\IMultiplexer $io=null);
     public function getMultiplexer();
     public function installPackages(array $packages);
@@ -39,6 +40,7 @@ interface IInstaller {
     public function getInstalledPackages();
     public function getPackageInfo($name);
     public function getPackageBowerData($name);
+    public function getPackageJsonData($name);
 
     public function tidyCache();
 }
@@ -59,6 +61,7 @@ interface IPackage {
 }
 
 interface IResolver {
+    public function resolvePackageName(IPackage $package);
     public function fetchPackage(IPackage $package, $cachePath, $currentVersion=null);
     public function getTargetVersion(IPackage $package, $cachePath);
 }
