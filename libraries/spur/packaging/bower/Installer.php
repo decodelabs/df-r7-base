@@ -144,12 +144,12 @@ class Installer implements IInstaller {
             }
 
             $depPackage->isDependency = true;
-
             $this->_preparePackage($depPackage);
 
-            if($installed = $this->getPackageInfo($depPackage->name)) {
+            if($installed = $this->getPackageInfo($depPackage)) {
                 try {
                     $range = flex\VersionRange::factory($depPackage->version);
+
                     if(!$range->contains($installed->version) && $installed->installName == $depPackage->installName) {
                         throw new RuntimeException(
                             'Unable to satisfy '.$package->name.' dependencies - version conflict for '.$package->name
@@ -209,8 +209,10 @@ class Installer implements IInstaller {
         $output = [];
 
         foreach($this->_installDir->scanDirs() as $dirName => $dir) {
-            if($package = $this->_getPackageInfo($dirName)) {
-                $output[(string)$dir] = $package;
+            foreach($dir->scanDirs() as $subDirName => $subDir) {
+                if($package = $this->_getPackageInfo($dirName.'/'.$subDirName)) {
+                    $output[(string)$subDir] = $package;
+                }
             }
         }
 
@@ -407,31 +409,65 @@ class Installer implements IInstaller {
                 $package->name = $resolver->resolvePackageName($package);
             }
 
-            if(!$package->isDependency && ($package->version == '*' || $package->version == 'latest' || !strlen($package->version))) {
-                $package->installName = $package->name.'/latest';
-            } else {
-                try {
-                    $range = flex\VersionRange::factory($package->version);
-                    $version = $range->getMinorGroupVersion();
-                } catch(flex\IException $e) {
-                    $version = null;
-                }
+            try {
+                $range = flex\VersionRange::factory($package->version);
+            } catch(flex\IException $e) {
+                $range = null;
+            }
 
-                if(!$version) {
-                    if(!strlen($package->version) || $package->version == 'latest') {
-                        $package->version = '*';
+            if($package->isDependency) {
+                $dir = $this->_installDir->getChild($package->name);
+
+                if($dir->exists()) {
+                    $versions = $dir->listDirNames();
+
+                    if(in_array('latest', $versions)) {
+                        $package->installName = $package->name.'/latest';
+                    } else {
+                        rsort($versions);
+
+                        foreach($versions as $versionStr) {
+                            try {
+                                $version = flex\Version::factory($versionStr);
+                            } catch(flex\IException $e) {
+                                continue;
+                            }
+
+                            if(!$range || $range->contains($version)) {
+                                $package->installName = $package->name.'/'.$versionStr;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(!$package->installName) {
+                if(!$package->isDependency && ($package->version == '*' || $package->version == 'latest' || !strlen($package->version))) {
+                    $package->installName = $package->name.'/latest';
+                } else {
+                    if($range) {
+                        $version = $range->getMinorGroupVersion();
+                    } else {
+                        $version = null;
                     }
 
-                    $version = $resolver->getTargetVersion(
-                        $package, $this->_cachePath
-                    );
-                }
+                    if(!$version) {
+                        if(!strlen($package->version) || $package->version == 'latest') {
+                            $package->version = '*';
+                        }
 
-                if($version instanceof flex\IVersion) {
-                    $version = $version->major.'.'.$version->minor;
-                }
+                        $version = $resolver->getTargetVersion(
+                            $package, $this->_cachePath
+                        );
+                    }
 
-                $package->installName = $package->name.'/'.$version;
+                    if($version instanceof flex\IVersion) {
+                        $version = $version->major.'.'.$version->minor;
+                    }
+
+                    $package->installName = $package->name.'/'.$version;
+                }
             }
         }
 
