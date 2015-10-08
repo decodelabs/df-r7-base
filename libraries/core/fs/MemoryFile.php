@@ -73,7 +73,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         return $output;
     }
 
-    
+
 
     public function getPath() {
         return null;
@@ -90,7 +90,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     public function getLastModified() {
         return time();
     }
-    
+
     public function getSize() {
         return strlen($this->_data);
     }
@@ -106,7 +106,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         if(!$this->_contentType) {
             $this->_contentType = 'application\octet-stream';
         }
-        
+
         return $this->_contentType;
     }
 
@@ -129,7 +129,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         $this->_data = $data;
         return $this;
     }
-    
+
     public function getContents() {
         return $this->_data;
     }
@@ -186,24 +186,24 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     public function open($mode=Mode::READ_WRITE) {
         if($this->_isOpen) {
             switch($this->_mode->getLabel()) {
-                case READ_ONLY:
-                case READ_WRITE:
+                case Mode::READ_ONLY:
+                case Mode::READ_WRITE:
                     $this->_pos = 0;
                     break;
-                    
-                case WRITE_TRUNCATE:
-                case READ_WRITE_TRUNCATE:
+
+                case Mode::WRITE_TRUNCATE:
+                case Mode::READ_WRITE_TRUNCATE:
                     $this->_data = '';
                     $this->_pos = 0;
                     break;
 
-                case WRITE_APPEND:
-                case READ_WRITE_APPEND:
+                case Mode::WRITE_APPEND:
+                case Mode::READ_WRITE_APPEND:
                     $this->_pos = strlen($this->_data);
                     break;
 
-                case WRITE_NEW:
-                case READ_WRITE_NEW:
+                case Mode::WRITE_NEW:
+                case Mode::READ_WRITE_NEW:
                     if(!empty($this->_data)) {
                         throw new RuntimeException('Memory file is not empty');
                     }
@@ -228,11 +228,11 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     }
 
     public function eof() {
-        return $this->_pos >= strlen($this->_data);    
+        return $this->_pos >= strlen($this->_data);
     }
-    
+
     public function close() {
-        return true;    
+        return true;
     }
 
 
@@ -240,7 +240,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     public function lock($type, $nonBlocking=false) {
         if(!$this->_isOpen) {
             throw new RuntimeException(
-                'Memory file is not open' 
+                'Memory file is not open'
             );
         }
 
@@ -251,7 +251,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     public function unlock() {
         if(!$this->_isOpen) {
             throw new RuntimeException(
-                'Memory file is not open' 
+                'Memory file is not open'
             );
         }
 
@@ -264,7 +264,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     public function seek($offset, $whence=\SEEK_SET) {
         if(!$this->_isOpen) {
             throw new RuntimeException(
-                'Memory file is not open' 
+                'Memory file is not open'
             );
         }
 
@@ -272,20 +272,20 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
             case \SEEK_SET:
                 $this->_pos = $offset;
                 break;
-                
+
             case \SEEK_CUR:
                 $this->_pos += $offset;
                 break;
-                
+
             case \SEEK_END:
                 $this->_pos = strlen($this->_data);
                 $this->_pos += $offset;
                 break;
-                
-            default: 
+
+            default:
                 break;
         }
-        
+
         return $this;
     }
 
@@ -308,26 +308,26 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         $this->_data = substr($this->_data, 0, $size);
         return $this;
     }
-    
+
 
 // Read
     protected function _readChunk($length) {
         if(!$this->_isOpen) {
             throw new RuntimeException(
-                'Memory file is not open' 
+                'Memory file is not open'
             );
         }
 
         $output = substr($this->_data, $this->_pos, $length);
         $this->_pos += $length;
-        
+
         return $output;
     }
 
     protected function _readLine() {
         if(!$this->_isOpen) {
             throw new RuntimeException(
-                'Memory file is not open' 
+                'Memory file is not open'
             );
         }
 
@@ -352,14 +352,14 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     protected function _writeChunk($data, $length) {
         if(!$this->_isOpen) {
             throw new RuntimeException(
-                'Memory file is not open' 
+                'Memory file is not open'
             );
         }
 
         $cPos = $this->_pos;
         $this->_data .= substr($data, 0, $length);
         $this->_pos = strlen($this->_data);
-        
+
         return $this->_pos - $cPos;
     }
 
