@@ -16,22 +16,59 @@ class Manager implements IManager {
 
     const REGISTRY_PREFIX = 'manager://theme';
 
+    protected static $_depCache = [];
+
+
+    public function getInstalledDependencyFor(ITheme $theme, $name) {
+        $deps = $this->getInstalledDependenciesFor($theme);
+
+        if(!isset($deps[$name])) {
+            throw new RuntimeException(
+                'Dependency '.$name.' is not in the dependency list'
+            );
+        }
+
+        return $deps[$name];
+    }
 
     public function getInstalledDependenciesFor(ITheme $theme) {
-        $this->ensureDependenciesFor($theme);
-        $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$theme->getId();
-        return unserialize(core\fs\File::getContentsOf($path));
+        $id = $theme->getId();
+
+        if(!isset(self::$_depCache[$id])) {
+            $this->ensureDependenciesFor($theme);
+            $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$id;
+            self::$_depCache[$id] = unserialize(core\fs\File::getContentsOf($path));
+        }
+
+        return self::$_depCache[$id];
     }
 
     protected function _storeManifest(ITheme $theme, array $dependencies) {
-        $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$theme->getId();
-        core\fs\File::create($path, serialize($dependencies));
+        $id = $theme->getId();
+        unset(self::$_depCache[$id]);
+
+        $output = [];
+
+        foreach($dependencies as $dependency) {
+            $output[$dependency->id] = $dependency;
+        }
+
+        self::$_depCache[$id] = $output;
+
+        $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$id;
+        core\fs\File::create($path, serialize($output));
     }
 
 
 
     public function ensureDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null) {
-        $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$theme->getId();
+        $id = $theme->getId();
+
+        if(isset(self::$_depCache[$id])) {
+            return $this;
+        }
+
+        $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$id;
         $vendorPath = df\Launchpad::$application->getApplicationPath().'/assets/vendor/';
 
         if(df\Launchpad::$application->isDevelopment()) {
@@ -44,6 +81,7 @@ class Manager implements IManager {
 
                 if($time < time() - (30 * 60 * 60)) {
                     core\fs\File::delete($path);
+                    unset(self::$_depCache[$id]);
                 }
             }
         }

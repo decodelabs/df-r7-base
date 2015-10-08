@@ -416,7 +416,7 @@ class Installer implements IInstaller {
             }
 
             if($package->isDependency) {
-                $dir = $this->_installDir->getChild($package->name);
+                $dir = $this->_installDir->getDir($package->name);
 
                 if($dir->exists()) {
                     $versions = $dir->listDirNames();

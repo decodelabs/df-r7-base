@@ -16,14 +16,20 @@ class DfKit implements arch\IDirectoryHelper {
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;
 
+    protected static $_isInit = false;
+
     protected function _init() {
         if(!$this->view) {
             throw new aura\view\RuntimeException('View is not available in plugin context');
         }
     }
 
-    public function init($requireJsUrl) {
-        $this->view->linkJs($requireJsUrl, 1, [
+    public function init() {
+        if(self::$_isInit) {
+            return $this;
+        }
+
+        $this->view->linkJs('dependency://requirejs', 1, [
             'data-main' => $this->view->uri('asset://lib/df-kit/require.js')
         ]);
 
@@ -31,6 +37,8 @@ class DfKit implements arch\IDirectoryHelper {
     }
 
     public function load($module) {
+        $this->init();
+
         $current = $this->view->bodyTag->getDataAttribute('require');
         $modules = core\collection\Util::flattenArray(func_get_args());
 
@@ -40,6 +48,5 @@ class DfKit implements arch\IDirectoryHelper {
 
         $this->view->bodyTag->setDataAttribute('require', implode(' ', $modules));
         return $this;
-
     }
 }

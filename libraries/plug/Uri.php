@@ -12,12 +12,12 @@ use df\arch;
 use df\link;
 
 class Uri implements arch\IDirectoryHelper {
-    
+
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;
 
     protected $_defaultTheme;
-    
+
     public function requestToUrl(arch\IRequest $request) {
         return core\application\http\Router::getInstance()
             ->requestToUrl($request);
@@ -33,13 +33,13 @@ class Uri implements arch\IDirectoryHelper {
                 $this->currentRequest($from, $to) :
                 $this->current($from, $to);
         }
-        
+
         if($uri instanceof arch\IRequest) {
             return $asRequest ?
                 $this->directoryRequest($uri, $from, $to) :
                 $this->directory($uri, $from, $to);
         }
-        
+
         if($uri instanceof core\uri\IUrl) {
             if($asRequest && $uri instanceof link\http\IUrl) {
                 if($t = $uri->getDirectoryRequest()) {
@@ -53,11 +53,11 @@ class Uri implements arch\IDirectoryHelper {
         if($uri === true) {
             $uri = clone $this->context->request;
         }
-        
+
         if($uri instanceof core\IStringProvider) {
             $uri = $uri->toString();
         }
-        
+
         if(!is_string($uri)) {
             throw new arch\InvalidArgumentException(
                 'Uri cannot be converted to a valid URL'
@@ -67,16 +67,16 @@ class Uri implements arch\IDirectoryHelper {
         if(substr($uri, 0, 2) == '//') {
             return new link\http\Url($uri);
         }
-        
+
         if(preg_match('/^([a-z]+)\:(\/\/)?(.*)/i', $uri, $matches)) {
             switch(strtolower($matches[1])) {
                 case 'http':
                 case 'https':
                     return new link\http\Url($uri);
-                    
+
                 case 'ftp':
                     return new link\ftp\Url($uri);
-                    
+
                 case 'mailto':
                     return new core\uri\MailtoUrl($uri);
 
@@ -84,6 +84,11 @@ class Uri implements arch\IDirectoryHelper {
                     return $asRequest ?
                         $this->themeAssetRequest($matches[3]) :
                         $this->themeAsset($matches[3]);
+
+                case 'dependency':
+                    return $asRequest ?
+                        $this->themeDependencyRequest($matches[3]) :
+                        $this->themeDependency($matches[3]);
 
                 case 'asset':
                     return $asRequest ?
@@ -95,12 +100,12 @@ class Uri implements arch\IDirectoryHelper {
                     break;
             }
         }
-        
+
         return $asRequest ?
             $this->directoryRequest($uri, $from, $to) :
             $this->directory($uri, $from, $to);
     }
-    
+
     public function current($from=null, $to=null) {
         return $this->directory($this->context->request, $from, $to);
     }
@@ -162,7 +167,7 @@ class Uri implements arch\IDirectoryHelper {
 
         return $this->requestToUrl($request);
     }
-    
+
     public function directory($request, $from=null, $to=null) {
         return $this->requestToUrl($this->directoryRequest($request, $from, $to));
     }
@@ -179,7 +184,7 @@ class Uri implements arch\IDirectoryHelper {
         } else {
             $request = clone $request;
         }
-        
+
         $this->_applyRequestRedirect($request, $from, $to);
         return $request;
     }
@@ -189,15 +194,15 @@ class Uri implements arch\IDirectoryHelper {
             if($from === true) {
                 $from = $this->context->request;
             }
-            
+
             $request->setRedirectFrom($this->directoryRequest($from));
         }
-        
+
         if($to !== null) {
             if($to === true) {
                 $to = $this->context->request;
             }
-            
+
             $request->setRedirectTo($this->directoryRequest($to));
         }
 
@@ -227,6 +232,54 @@ class Uri implements arch\IDirectoryHelper {
     }
 
     public function themeAssetRequest($path, $theme=null) {
+        $theme = $this->_normalizeTheme($theme);
+
+        $path = new core\uri\Url($path);
+        $request = new arch\Request('theme/download?cts&theme='.$theme);
+        $request->query->file = (string)$path->getPath();
+        $request->query->import($path->getQuery());
+
+        return $request;
+    }
+
+    public function themeDependency($name, $theme=null) {
+        return $this->directory($this->themeDependencyRequest($name, $theme));
+    }
+
+    public function themeDependencyRequest($name, $themeId=null) {
+        $name = rtrim($name, '/');
+        $themeId = $this->_normalizeTheme($themeId);
+        $theme = aura\theme\Base::factory($themeId);
+        $manager = aura\theme\Manager::getInstance();
+        $subPath = null;
+
+        if(false !== strpos($name, '/')) {
+            $parts = explode('/', $name);
+            $name = array_shift($parts);
+            $subPath = implode('/', $parts);
+        }
+
+        $dep = $manager->getInstalledDependencyFor($theme, $name);
+
+        if(!$subPath) {
+            if(isset($dep->js[0])) {
+                $subPath = $dep->js[0];
+            } else {
+                if(!df\Launchpad::$application->isProduction()) {
+                    throw new aura\theme\RuntimeException(
+                        'Dependency '.$name.' does not have a main file'
+                    );
+                }
+
+                $subPath = '--dependency-missing-'.$name;
+            }
+        }
+
+        $path = 'vendor/'.$dep->installName.'/'.$subPath;
+        return $this->assetRequest($path);
+    }
+
+    protected function _normalizeTheme($theme) {
         if($theme === null) {
             if($this->view) {
                 $theme = $this->view->getTheme()->getId();
@@ -240,12 +293,7 @@ class Uri implements arch\IDirectoryHelper {
             }
         }
 
-        $path = new core\uri\Url($path);
-        $request = new arch\Request('theme/download?cts&theme='.$theme);
-        $request->query->file = (string)$path->getPath();
-        $request->query->import($path->getQuery());
-
-        return $request;
+        return $theme;
     }
 
 
@@ -256,14 +304,14 @@ class Uri implements arch\IDirectoryHelper {
 
     public function backRequest($default=null, $success=true) {
         $request = $this->context->request;
-        
+
         if($success && ($redirect = $request->getRedirectTo())) {
             return $redirect;
         } else if((!$success || ($success && !$request->getRedirectTo()))
             && ($redirect = $request->getRedirectFrom())) {
             return $redirect;
         }
-            
+
         if($default === null) {
             $default = $request->getParent();
         } else if(!$default instanceof arch\IRequest) {
@@ -274,17 +322,17 @@ class Uri implements arch\IDirectoryHelper {
 
         return $default;
     }
-    
+
 
 // URLs
     public function mailto($url) {
         return core\uri\MailtoUrl::factory($url);
     }
-    
+
     public function http($url) {
         return link\http\Url::factory($url);
     }
-    
+
     public function ftp($url) {
         return link\ftp\Url::factory($url);
     }

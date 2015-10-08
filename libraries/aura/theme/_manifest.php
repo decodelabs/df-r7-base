@@ -11,6 +11,7 @@ use df\aura;
 
 // Exceptions
 interface IException {}
+class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
@@ -35,6 +36,7 @@ interface IFacet extends aura\view\IViewRenderEventReceiver {}
 
 
 interface IManager extends core\IManager {
+    public function getInstalledDependencyFor(ITheme $theme, $name);
     public function getInstalledDependenciesFor(ITheme $theme);
 
     public function ensureDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null);
