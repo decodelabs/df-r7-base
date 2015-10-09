@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\fire;
 use df\arch;
 use df\aura;
-    
+
 class Content implements IContent {
 
     use core\collection\TAttributeContainer;
@@ -56,7 +56,7 @@ class Content implements IContent {
             foreach($this->blocks as $block) {
                 $block->isNested($this->_isNested);
             }
-            
+
             return $this;
         }
 
@@ -179,10 +179,15 @@ class Content implements IContent {
         $this->setAttributes($reader->getAttributes());
 
         foreach($reader->block as $blockNode) {
-            $block = fire\block\Base::fromXmlElement($blockNode);
+            try {
+                $block = fire\block\Base::fromXmlElement($blockNode);
+            } catch(fire\block\IException $e) {
+                continue;
+            }
+
             $this->addBlock($block);
         }
-        
+
         return $this;
     }
 
