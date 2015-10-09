@@ -90,6 +90,14 @@ class Unit extends axis\unit\table\Base {
     }
 
     protected function _normalizeItemLocator($locator) {
+        if(is_array($locator)) {
+            foreach($locator as $i => $value) {
+                $locator[$i] = $this->_normalizeItemLocator($value);
+            }
+
+            return $locator;
+        }
+
         $locator = mesh\entity\Locator::factory($locator);
 
         if(!$locator->getId()) {
