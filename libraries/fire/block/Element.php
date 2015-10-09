@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\fire;
 use df\aura;
-    
-class DynamicElement extends Base {
+
+class Element extends Base {
 
     protected static $_outputTypes = ['Html'];
     protected static $_defaultCategories = [];
@@ -20,7 +20,7 @@ class DynamicElement extends Base {
     public function getFormat() {
         return 'structure';
     }
-    
+
     public function setSlug($slug) {
         $this->_slug = $slug;
         return $this;
@@ -53,10 +53,6 @@ class DynamicElement extends Base {
 
     public function render() {
         $view = $this->getView();
-        $body = $view->context->data->content->element->select('body')
-            ->where('slug', '=', $this->_slug)
-            ->toValue('body');
-
-        return $view->nightfire->renderSlot($body);
+        return $view->nightfire->renderElement($this->_slug);
     }
 }

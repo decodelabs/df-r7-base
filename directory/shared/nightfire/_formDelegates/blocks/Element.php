@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,8 +11,8 @@ use df\apex;
 use df\arch;
 use df\aura;
 use df\fire;
-    
-class DynamicElement extends Base {
+
+class Element extends Base {
 
     protected function loadDelegates() {
         $this->loadDelegate('element', '~/content/elements/ElementSelector')
@@ -21,7 +21,12 @@ class DynamicElement extends Base {
     }
 
     protected function setDefaultValues() {
-        $this->getDelegate('element')->setSelected($this->_block->getSlug());
+        $slug = $this->_block->getSlug();
+        $id = $this->data->content->element->select('id')
+            ->where('slug', '=', $slug)
+            ->toValue('id');
+
+        $this->getDelegate('element')->setSelected($id);
     }
 
     public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
@@ -31,7 +36,12 @@ class DynamicElement extends Base {
     }
 
     public function apply() {
-        $this->_block->setSlug($this->getDelegate('element')->apply());
+        $id = $this->getDelegate('element')->apply();
+        $slug = $this->data->content->element->select('slug')
+            ->where('id', '=', $id)
+            ->toValue('slug');
+
+        $this->_block->setSlug($slug);
         return $this->_block;
     }
 }
