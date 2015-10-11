@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\fire;
-    
+
 abstract class Base extends arch\form\Delegate implements fire\block\IFormDelegate {
 
     use arch\form\TForm_InlineFieldRenderableDelegate;

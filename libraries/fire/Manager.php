@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\fire;
 use df;
 use df\core;
 use df\fire;
-    
+
 class Manager implements IManager {
 
     use core\TManager;
@@ -153,6 +153,10 @@ class Manager implements IManager {
         $output = [];
 
         foreach($this->getAllBlocks() as $block) {
+            if($block->isHidden()) {
+                continue;
+            }
+
             $output[$block->getName()] = $block->getDisplayName();
         }
 
@@ -163,6 +167,10 @@ class Manager implements IManager {
         $output = [];
 
         foreach($this->getAllBlocks() as $block) {
+            if($block->isHidden()) {
+                continue;
+            }
+
             $output[$block->getFormat()][$block->getName()] = $block->getDisplayName();
         }
 
@@ -186,6 +194,10 @@ class Manager implements IManager {
         $output = [];
 
         foreach($this->_blocks as $name => $block) {
+            if($block->isHidden()) {
+                continue;
+            }
+
             if($block->canOutput($outputType)) {
                 $output[$name] = $block;
             }
@@ -221,7 +233,7 @@ class Manager implements IManager {
             }
 
             $output[$block->getName()] = $block;
-        }        
+        }
 
         return $output;
     }
@@ -230,6 +242,10 @@ class Manager implements IManager {
         $output = [];
 
         foreach($this->getCategoryBlocks($category, $outputType) as $block) {
+            if($block->isHidden()) {
+                continue;
+            }
+
             $output[$block->getName()] = $block->getDisplayName();
         }
 
@@ -242,6 +258,10 @@ class Manager implements IManager {
         $output = [];
 
         foreach($this->getCategoryBlocks($category, $outputType) as $block) {
+            if($block->isHidden()) {
+                continue;
+            }
+
             $output[$block->getFormat()][$block->getName()] = $block->getDisplayName();
         }
 

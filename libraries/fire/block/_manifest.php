@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -26,6 +26,7 @@ interface IBlock extends core\xml\IRootInterchange, aura\view\IDeferredRenderabl
     public function isNested($flag=null);
     public function getVersion();
     public function isEmpty();
+    public function isHidden();
     public function getTransitionValue();
     public function setTransitionValue($value);
 

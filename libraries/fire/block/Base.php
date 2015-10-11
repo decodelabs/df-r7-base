@@ -96,6 +96,10 @@ abstract class Base implements IBlock {
         return 'text';
     }
 
+    public function isHidden() {
+        return false;
+    }
+
     public function getFormDelegateName() {
         return $this->getName();
     }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,8 +11,8 @@ use df\apex;
 use df\fire;
 use df\arch;
 use df\aura;
-    
-class ContentSlot extends arch\form\Delegate implements 
+
+class ContentSlot extends arch\form\Delegate implements
     arch\form\ISelfContainedRenderableDelegate,
     arch\form\IResultProviderDelegate {
 
@@ -32,7 +32,7 @@ class ContentSlot extends arch\form\Delegate implements
 
     protected function init() {
         if(!$this->_slotDefinition) {
-            $this->_slotDefinition = fire\slot\Definition::createDefault();  
+            $this->_slotDefinition = fire\slot\Definition::createDefault();
         }
 
         if(empty($this->_blocks)) {
@@ -117,7 +117,7 @@ class ContentSlot extends arch\form\Delegate implements
 
             $this->_state->setStore('blockTypes', $types);
         }
-        
+
         return $this;
     }
 
@@ -174,7 +174,7 @@ class ContentSlot extends arch\form\Delegate implements
     public function renderContainerContent(aura\html\widget\IContainerWidget $container) {
         $available = $this->_getAvailableBlockTypes();
         $availableCount = $this->_state->getStore('availableBlockCount');
-        
+
         $blockCount = count($this->_blocks);
         $showRemove = $blockCount > 1;
         $counter = 1;
@@ -314,7 +314,7 @@ class ContentSlot extends arch\form\Delegate implements
                     ->initialize();
             }
         }
-        
+
         $this->_state->setStore('blockTypes', $types);
         return $this->http->redirect('#'.$this->elementId($delegateId));
     }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -12,8 +12,8 @@ use df\arch;
 use df\fire;
 use df\aura;
 
-class ContentBlock extends arch\form\Delegate implements 
-    arch\form\IInlineFieldRenderableDelegate, 
+class ContentBlock extends arch\form\Delegate implements
+    arch\form\IInlineFieldRenderableDelegate,
     arch\form\IResultProviderDelegate {
 
     use arch\form\TForm_InlineFieldRenderableDelegate;
@@ -202,7 +202,7 @@ class ContentBlock extends arch\form\Delegate implements
 
         if($oldBlock && $oldBlock !== $this->_block) {
             $this->_block->setTransitionValue($oldBlock->getTransitionValue());
-            
+
             $this->loadDelegate('block', '~/nightfire/#/blocks/'.$this->_block->getFormDelegateName())
                 ->setBlock($this->_block)
                 ->isRequired($this->_isRequired)

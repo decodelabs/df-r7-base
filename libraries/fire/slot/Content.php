@@ -182,7 +182,10 @@ class Content implements IContent {
             try {
                 $block = fire\block\Base::fromXmlElement($blockNode);
             } catch(fire\block\IException $e) {
-                continue;
+                $block = new fire\block\Error();
+                $block->setError($e);
+                $block->setType($blockNode['type']);
+                $block->setData($blockNode->getFirstCDataSection());
             }
 
             $this->addBlock($block);
