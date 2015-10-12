@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,18 +9,18 @@ use df;
 use df\core;
 use df\fire;
 use df\aura;
-    
+
 class VideoEmbed extends Base {
 
     protected static $_outputTypes = ['Html'];
-    protected static $_defaultCategories = [];
+    protected static $_defaultCategories = ['Description'];
 
     protected $_embedCode;
 
     public function getFormat() {
         return 'video';
     }
-    
+
     public function setEmbedCode($code) {
         $this->_embedCode = trim($code);
         return $this;
