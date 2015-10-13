@@ -13,7 +13,7 @@ use df\arch;
 use df\link;
 
 class Model extends axis\Model {
-    
+
     const PURGE_THRESHOLD = '2 months';
 
     public function logAccessError($code=403, $request=null, $message=null) {
@@ -57,7 +57,7 @@ class Model extends axis\Model {
             if($request instanceof link\http\IUrl) {
                 $router = core\application\http\Router::getInstance();
                 $request = new core\uri\Url($request->getLocalString());
-                $router->mapPath($request->path);
+                $router->getRootMap()->mapPath($request->path);
                 $request = ltrim((string)$request, '/');
 
                 if(!strlen($request)) {
@@ -73,8 +73,8 @@ class Model extends axis\Model {
         $user = null;
 
         try {
-            $user = $this->context->user->isLoggedIn() ? 
-                $this->context->user->client->getId() : 
+            $user = $this->context->user->isLoggedIn() ?
+                $this->context->user->client->getId() :
                 null;
         } catch(\Exception $e) {}
 

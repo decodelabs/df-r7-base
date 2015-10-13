@@ -12,20 +12,20 @@ use df\aura;
 use df\link;
 
 class Action implements IAction, core\IDumpable {
-    
+
     use core\TContextProxy;
     use TDirectoryAccessLock;
     use TResponseForcer;
-    
+
     const CHECK_ACCESS = null;
     const OPTIMIZE = false;
     const DEFAULT_ACCESS = null;
-    
+
     private $_shouldOptimize = null;
     private $_shouldCheckAccess = null;
     private $_defaultAccess = null;
     private $_callback;
-    
+
     public static function factory(IContext $context) {
         $class = self::getClassFor(
             $context->location,
@@ -50,24 +50,24 @@ class Action implements IAction, core\IDumpable {
                 404
             );
         }
-        
+
         return new $class($context);
     }
 
     public static function getClassFor(IRequest $request, $runMode='Http', &$isDefault=null) {
         $runMode = ucfirst($runMode);
         $path = $request->getController();
-        
+
         if(!empty($path)) {
             $parts = explode('/', $path);
         } else {
             $parts = [];
         }
-        
+
         $parts[] = '_actions';
         $parts[] = $runMode.ucfirst($request->getAction());
         $end = implode('\\', $parts);
-        
+
         $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
         $isDefault = false;
 
@@ -94,7 +94,7 @@ class Action implements IAction, core\IDumpable {
 
         return $class;
     }
-    
+
     public function __construct(IContext $context, $callback=null) {
         $this->context = $context;
         $this->setCallback($callback);
@@ -113,7 +113,7 @@ class Action implements IAction, core\IDumpable {
     public function getCallback() {
         return $this->_callback;
     }
-    
+
     public function getController() {
         return $this->controller;
     }
@@ -140,7 +140,7 @@ class Action implements IAction, core\IDumpable {
         if($this->_shouldCheckAccess !== null) {
             return (bool)$this->_shouldCheckAccess;
         }
-        
+
         if(is_bool(static::CHECK_ACCESS)) {
             return static::CHECK_ACCESS;
         }
@@ -170,19 +170,19 @@ class Action implements IAction, core\IDumpable {
     public function dispatch() {
         $output = null;
         $func = null;
-        
+
         if($this->shouldCheckAccess()) {
             $client = $this->context->user->getClient();
 
             if($client->isDeactivated()) {
                 $this->throwError(403, 'Client deactivated');
             }
-            
+
             if(!$client->canAccess($this)) {
                 $this->throwError(401, 'Insufficient permissions');
             }
         }
-        
+
         if(method_exists($this, '_beforeDispatch')) {
             try {
                 $output = $this->_beforeDispatch();
@@ -195,7 +195,7 @@ class Action implements IAction, core\IDumpable {
             $output = $this->_callback->invoke($this);
         } else {
             $func = $this->getActionMethodName();
-            
+
             if($output === null && $func) {
                 try {
                     $output = $this->$func();
@@ -205,7 +205,7 @@ class Action implements IAction, core\IDumpable {
                     $output = $this->handleException($e);
                 }
             }
-            
+
             if($func === null) {
                 throw new RuntimeException(
                     'No handler could be found for action: '.
@@ -214,7 +214,7 @@ class Action implements IAction, core\IDumpable {
                 );
             }
         }
-        
+
         if(method_exists($this, '_afterDispatch')) {
             try {
                 $output = $this->_afterDispatch($output);
@@ -222,7 +222,7 @@ class Action implements IAction, core\IDumpable {
                 $output = $e->getResponse();
             }
         }
-        
+
         return $output;
     }
 
@@ -235,11 +235,11 @@ class Action implements IAction, core\IDumpable {
         }
 
         $func = 'execute';
-        
+
         if(!method_exists($this, $func)) {
             $func = null;
         }
-        
+
         return $func;
     }
 
@@ -275,8 +275,8 @@ class Action implements IAction, core\IDumpable {
 
         $this->throwError(404, 'No ajax content found');
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         return [

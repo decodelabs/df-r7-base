@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\flow;
 use df\halo;
 use df\link;
-    
+
 class Config extends core\Config {
 
     const ID = 'mail';
@@ -160,7 +160,7 @@ class Config extends core\Config {
 
     protected function _getDefaultAdminAddress() {
         $name = halo\system\Base::getInstance()->getProcess()->getOwnerName();
-        $url = new link\http\Url(core\application\http\Config::getInstance()->getBaseUrl());
+        $url = new link\http\Url(core\application\http\Config::getInstance()->getRootUrl());
         return $name.'@'.$url->getDomain();
     }
 

@@ -10,7 +10,7 @@ use df\core;
 use df\link;
 
 class Augmentor implements link\http\IResponseAugmentor {
-    
+
     protected $_baseUrl;
 
     protected $_globalHeaders = [];
@@ -20,7 +20,7 @@ class Augmentor implements link\http\IResponseAugmentor {
     protected $_currentCookies;
 
     protected $_statusCode;
-    
+
     public function __construct(link\http\IUrl $baseUrl=null) {
         $this->setBaseUrl($baseUrl);
         $this->resetAll();
@@ -41,14 +41,14 @@ class Augmentor implements link\http\IResponseAugmentor {
         $this->resetCurrent();
         return $this;
     }
-    
+
     public function resetCurrent() {
         $this->_currentHeaders = $this->_globalHeaders;
         $this->_currentCookies = clone $this->_globalCookies;
         $this->_statusCode = null;
         return $this;
     }
-    
+
     public function apply(link\http\IResponse $response) {
         $headers = $response->getHeaders();
 
@@ -90,7 +90,7 @@ class Augmentor implements link\http\IResponseAugmentor {
     public function getStatusCode() {
         return $this->_statusCode;
     }
-    
+
 
 // Headers
     public function addHeaderForCurrentRequest($name, $value) {
@@ -137,36 +137,36 @@ class Augmentor implements link\http\IResponseAugmentor {
 
         return $output;
     }
-    
-    
-    
+
+
+
     public function setCookieForCurrentRequest(link\http\ICookie $cookie) {
         $this->_currentCookies->set($cookie);
         return $this;
     }
-    
+
     public function removeCookieForCurrentRequest($cookie) {
         $this->_currentCookies->remove($cookie);
         return $this;
     }
-    
-    
+
+
     public function setCookieForAnyRequest(link\http\ICookie $cookie) {
         $this->_globalCookies->set($cookie);
         $this->_currentCookies->set($cookie);
         return $this;
     }
-    
+
     public function removeCookieForAnyRequest($cookie) {
         $this->_globalCookies->remove($cookie);
         $this->_currentCookies->remove($cookie);
         return $this;
     }
-    
+
     public function getCookieCollectionForCurrentRequest() {
         return $this->_currentCookies;
     }
-    
+
     public function getCookieCollectionForAnyRequest() {
         return $this->_globalCookies;
     }

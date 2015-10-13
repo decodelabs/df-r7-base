@@ -17,8 +17,7 @@ class Config extends core\Config {
 
     public function getDefaultValues() {
         return [
-            'baseUrl' => $this->_generateBaseUrlList(),
-            'areaDomainMap' => [],
+            'baseUrl' => $this->_generateRootUrlList(),
             'sendFileHeader' => 'X-Sendfile',
             'secure' => false,
             'manualChunk' => false,
@@ -28,104 +27,133 @@ class Config extends core\Config {
     }
 
     // Base url
-    public function setBaseUrl($url, $environmentMode=null) {
+    public function setRootUrl($url, $environmentMode=null) {
         if($environmentMode === null) {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
 
-        if($url === null) {
-            $this->values->baseUrl->{$environmentMode} = null;
-        } else {
+        if($url !== null) {
             $url = link\http\Url::factory($url);
             $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
-            
-            $this->values->baseUrl->{$environmentMode} = $url->getDomain().$url->getPathString();
+            $domain = $url->getDomain();
+            $port = $url->getPort();
+
+            if(!empty($port) && $port != '80') {
+                $domain = $domain.':'.$port;
+            }
+
+            $url = $domain.$url->getPathString();
         }
-        
+
+        if(!count($this->values->baseUrl->{$environmentMode})) {
+            $this->values->baseUrl->{$environmentMode} = $url;
+        } else {
+            $this->values->baseUrl->{$environmentMode}->{'*'} = $url;
+        }
+
         return $this;
     }
-    
-    public function getBaseUrl($environmentMode=null) {
+
+    public function getRootUrl($environmentMode=null) {
         if(!isset($this->values->baseUrl)) {
-            $this->values->baseUrl = $this->_generateBaseUrlList();
+            $this->values->baseUrl = $this->_generateRootUrlList();
             $this->save();
         }
 
         if($environmentMode === null) {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
-        
-        if(!isset($this->values->baseUrl[$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
-            if(null !== ($baseUrl = $this->_generateBaseUrl())) {
-                $this->setBaseUrl($baseUrl)->save();
+
+        $output = null;
+
+        if(isset($this->values->baseUrl[$environmentMode])) {
+            $output = $this->values->baseUrl[$environmentMode];
+        } else if(isset($this->values->baseUrl->{$environmentMode}->{'*'})) {
+            $output = $this->values->baseUrl->{$environmentMode}['*'];
+        } else if(isset($this->values->baseUrl->{$environmentMode}->{'front'})) {
+            $output = $this->values->baseUrl->{$environmentMode}['front'];
+        }
+
+        if($output === null && isset($_SERVER['HTTP_HOST'])) {
+            if(null !== ($rootUrl = $this->_generateRootUrl())) {
+                $this->setRootUrl($rootUrl)->save();
             }
         }
-        
-        return trim($this->values->baseUrl[$environmentMode], '/');
+
+        return trim($output, '/');
     }
 
-    protected function _generateBaseUrlList() {
+    public function getBaseUrlMap($environmentMode=null) {
+        if($environmentMode === null) {
+            $environmentMode = df\Launchpad::getEnvironmentMode();
+        }
+
+        if(!isset($this->values->baseUrl->{$environmentMode}) && isset($_SERVER['HTTP_HOST'])) {
+            $this->values->baseUrl->{$environmentMode} = $this->_generateRootUrlList();
+            $this->save();
+        }
+
+        $node = $this->values->baseUrl->{$environmentMode};
+        $output = [];
+
+        if($node->hasValue()) {
+            $output['*'] = trim($node->getValue(), '/');
+        }
+
+        foreach($node as $key => $value) {
+            $output[$key] = trim($value, '/');
+        }
+
+        return $output;
+    }
+
+    protected function _generateRootUrlList() {
         if(!isset($_SERVER['HTTP_HOST'])) {
             return null;
         }
 
-        $baseUrl = $this->_generateBaseUrl();
+        $baseUrl = $this->_generateRootUrl();
         $envMode = df\Launchpad::getEnvironmentMode();
-        
+
         $output = [
             'development' => null,
             'testing' => null,
             'production' => null
         ];
-        
+
         $output[$envMode] = $baseUrl;
-        
+
         if(substr($baseUrl, 0, strlen($envMode) + 1) == $envMode.'.') {
             $baseUrl = substr($host, strlen($envMode) + 1);
         }
-        
+
         foreach($output as $key => $val) {
             if($val === null) {
                 $output[$key] = $key.'.'.$baseUrl;
             }
         }
-            
+
         return $output;
     }
-    
-    protected function _generateBaseUrl() {
+
+    protected function _generateRootUrl() {
         $baseUrl = null;
         $request = new link\http\request\Base(true);
         $host = $request->getUrl()->getDomain();
         $path = $request->getUrl()->getPathString();
-        
+
         $baseUrl = $host.'/'.trim(dirname($_SERVER['SCRIPT_NAME']), '/').'/';
         $currentUrl = $host.'/'.$path;
-        
+
         if(substr($currentUrl, 0, strlen($baseUrl)) != $baseUrl) {
             $parts = explode('/', $currentUrl);
             array_pop($parts);
             $baseUrl = implode('/', $parts).'/';
         }
-        
+
         return $baseUrl;
     }
 
-
-// Area domain map
-    public function setAreaDomainMap(array $map) {
-        $this->values->areaDomainMap = $map;
-        return $this;
-    }
-
-    public function getAreaDomainMap() {
-        if($this->values->areaDomainMap->isEmpty()) {
-            return [];
-        }
-
-        return $this->values->areaDomainMap->toArray();
-    }
-    
 
 // Send file header
     public function setSendFileHeader($header) {
