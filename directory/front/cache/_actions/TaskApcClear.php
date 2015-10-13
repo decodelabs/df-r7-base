@@ -12,7 +12,7 @@ use df\arch;
 use df\link;
 
 class TaskApcClear extends arch\task\Action {
-    
+
     use TApcClear;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
@@ -44,13 +44,18 @@ class TaskApcClear extends arch\task\Action {
 
         if($isHttp) {
             $config = $this->getConfig('core/application/http/Config');
-            $baseUrls = $config->values->baseUrl->toArray();
+            $baseUrls = [];
+
+            foreach(['development', 'testing', 'production'] as $mode) {
+                $baseUrls[$mode] = $config->getRootUrl($mode);
+            }
+
             $credentials = null;
 
             /*
             if(isset($baseUrls['production']) && substr($baseUrls['production'], 0, 11) != 'production.') {
                 $baseUrl = $baseUrls['production'];
-            } else 
+            } else
             */
             if(isset($baseUrls['testing']) && substr($baseUrls['testing'], 0, 8) != 'testing.') {
                 $baseUrl = $baseUrls['testing'];
