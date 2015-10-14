@@ -118,14 +118,14 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         try {
             $ip = $this->_httpRequest->getIp();
 
-            $this->_enforceCredentials($ip);
-            $this->_checkIpRanges($ip);
-
-
             $this->_prepareHttpRequest();
             $this->_handleDebugMode();
 
             $request = $this->_prepareDirectoryRequest();
+
+            $this->_enforceCredentials($ip);
+            $this->_checkIpRanges($ip);
+
             $response = $this->_dispatchRequest($request);
         } catch(arch\IForcedResponse $e) {
             $response = $e->getResponse();
