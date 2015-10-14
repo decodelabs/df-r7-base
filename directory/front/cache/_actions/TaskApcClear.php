@@ -47,7 +47,9 @@ class TaskApcClear extends arch\task\Action {
             $baseUrls = [];
 
             foreach(['development', 'testing', 'production'] as $mode) {
-                $baseUrls[$mode] = $config->getRootUrl($mode);
+                if(strlen($url = $config->getRootUrl($mode))) {
+                    $baseUrls[$mode] = $url;
+                }
             }
 
             $credentials = null;
