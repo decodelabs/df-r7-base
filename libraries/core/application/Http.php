@@ -246,7 +246,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $this->_router->setBase($map);
         }
 
-        if(!$map->mapPath($path)) {
+        if($map && !$map->mapPath($path)) {
             $pathValid = $valid = false;
         }
 
