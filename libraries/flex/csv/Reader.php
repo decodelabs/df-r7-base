@@ -10,7 +10,7 @@ use df\core;
 use df\flex;
 
 class Reader implements IReader {
-    
+
     const BUFFER_READ_SIZE = 1024;
     const BUFFER_THRESHOLD = 256;
 
@@ -192,6 +192,12 @@ class Reader implements IReader {
 
         if(empty($this->_currentRow)) {
             $this->_currentRow = null;
+        } else if(!empty($this->_fields)) {
+            foreach($this->_fields as $field) {
+                if(!array_key_exists($field, $this->_currentRow)) {
+                    $this->_currentRow[$field] = null;
+                }
+            }
         }
 
         return $this->_currentRow;
@@ -213,6 +219,10 @@ class Reader implements IReader {
         }
 
         if($this->_channel->eof()) {
+            if(strlen($this->_buffer) && substr($this->_buffer, -1) != "\n") {
+                $this->_buffer .= "\n";
+            }
+
             return false;
         }
 
