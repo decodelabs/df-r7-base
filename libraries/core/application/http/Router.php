@@ -54,6 +54,12 @@ class Router implements core\IRegistryObject {
         }
 
         foreach($map as $area => $domain) {
+            if($area === 'front') {
+                throw new core\RuntimeException(
+                    'Front area must be mapped to root url'
+                );
+            }
+
             $entry = new Router_Map($area, $domain);
 
             $this->_mapIn[$entry->getInDomain()] = $entry;

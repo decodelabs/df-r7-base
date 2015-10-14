@@ -325,12 +325,16 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 ob_end_clean();
             }
 
-            $this->_dispatchException = $e;
+            if($e instanceof arch\IForcedResponse) {
+                $response = $e->getResponse();
+            } else {
+                $this->_dispatchException = $e;
 
-            try {
-                $response = $this->_dispatchAction(new arch\Request('error/'));
-            } catch(\Exception $f) {
-                throw $e;
+                try {
+                    $response = $this->_dispatchAction(new arch\Request('error/'));
+                } catch(\Exception $f) {
+                    throw $e;
+                }
             }
         }
 

@@ -161,6 +161,7 @@ interface IPerpetuator {
 
     public function perpetuate(IController $controller, IDescriptor $descriptor);
     public function destroy(IController $controller);
+    public function handleDeadExternalId($externalId);
 
     public function perpetuateRecallKey(IController $controller, RecallKey $key);
     public function getRecallKey(IController $controller);

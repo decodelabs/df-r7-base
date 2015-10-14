@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\user;
 use df\halo;
-    
+
 class Shell implements user\session\IPerpetuator {
 
     protected $_userKey;
@@ -50,6 +50,8 @@ class Shell implements user\session\IPerpetuator {
 
         return $this;
     }
+
+    public function handleDeadExternalId($externalId) {}
 
     public function perpetuateRecallKey(user\session\IController $controller, user\session\RecallKey $key) {
         // How's this going to work?

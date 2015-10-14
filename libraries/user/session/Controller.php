@@ -199,6 +199,8 @@ class Controller implements IController {
             }
         }
 
+        $this->_perpetuator->handleDeadExternalId($externalId);
+
         if($descriptor === null) {
             return $this->_start();
         }
