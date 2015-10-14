@@ -503,7 +503,10 @@ interface ITextField extends IField, IUniqueCheckerField, IMinLengthField, IMaxL
     public function shouldTrim($flag=null);
 }
 
-interface IUrlField extends IField {}
+interface IUrlField extends IField {
+    public function allowInternal($flag=null);
+}
+
 interface IVideoEmbedField extends IField {}
 
 interface IWeightField extends IField, IStorageAwareField, IRecordManipulatorField {
