@@ -114,6 +114,13 @@ class Controller implements IController {
         return $this;
     }
 
+    public function setUserId($id) {
+        $this->_open();
+        $this->_descriptor->setUserId($id);
+        $this->_backend->applyTransition($this->_descriptor);
+        return $this;
+    }
+
     protected function _generateId() {
         do {
             $output = flex\Generator::sessionId(true);

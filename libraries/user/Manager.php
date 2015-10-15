@@ -317,6 +317,7 @@ class Manager implements IManager, core\IDumpable {
             // Set state
             $this->client->setAuthenticationState(IState::CONFIRMED);
             $this->client->setKeyring($model->generateKeyring($this->client));
+            $this->session->setUserId($clientData->getId());
 
             $clientData->onAuthentication($this->client);
 
@@ -357,6 +358,7 @@ class Manager implements IManager, core\IDumpable {
         // Set state
         $this->client->setAuthenticationState(IState::BOUND);
         $this->client->setKeyring($model->generateKeyring($this->client));
+        $this->session->setUserId($clientData->getId());
 
         $clientData->onAuthentication($this->client);
 

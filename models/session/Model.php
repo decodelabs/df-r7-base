@@ -20,15 +20,15 @@ class Model extends axis\Model implements user\session\IBackend {
         if($lifeTime instanceof core\time\IDuration) {
             $lifeTime = $lifeTime->getSeconds();
         }
-        
+
         $this->_lifeTime = (int)$lifeTime;
         return $this;
     }
-    
+
     public function getLifeTime() {
         return $this->_lifeTime;
     }
-    
+
 
 // Descriptor
     public function insertDescriptor(user\session\IDescriptor $descriptor) {
@@ -48,17 +48,17 @@ class Model extends axis\Model implements user\session\IBackend {
         if(!empty($output)) {
             $output = user\session\Descriptor::fromArray($output);
         }
-        
+
         return $output;
     }
 
     public function touchSession(user\session\IDescriptor $descriptor) {
         $values = $descriptor->touchInfo(user\session\Controller::TRANSITION_LIFETIME);
-        
+
         $this->manifest->update($values)
             ->where('internalId', '=', $descriptor->internalId)
             ->execute();
-        
+
         return $descriptor;
     }
 
@@ -67,21 +67,22 @@ class Model extends axis\Model implements user\session\IBackend {
                 'accessTime' => $descriptor->accessTime,
                 'externalId' => $descriptor->externalId,
                 'transitionId' => $descriptor->transitionId,
-                'transitionTime' => $descriptor->transitionTime
+                'transitionTime' => $descriptor->transitionTime,
+                'userId' => $descriptor->userId
             ])
             ->where('internalId', '=', $descriptor->internalId)
             ->execute();
-            
+
         return $descriptor;
     }
 
     public function killSession(user\session\IDescriptor $descriptor) {
         $id = $descriptor->internalId;
-        
+
         if(isset($this->_dataTransactions[$id])) {
             $this->_dataTransactions[$id]->commit();
         }
-        
+
         $this->manifest->delete()
             ->where('internalId', '=', $id)
             ->execute();
@@ -91,7 +92,7 @@ class Model extends axis\Model implements user\session\IBackend {
             ->execute();
 
         unset($this->_dataTransactions[$id]);
-        
+
         return $this;
     }
 
@@ -102,7 +103,7 @@ class Model extends axis\Model implements user\session\IBackend {
             ->orWhere('transitionId', '=', $id)
             ->toValue('count');
     }
-    
+
 
 // Bucket
     public function getBucketKeys(user\session\IDescriptor $descriptor, $bucket) {
@@ -128,7 +129,7 @@ class Model extends axis\Model implements user\session\IBackend {
             ->where('namespace', '=', $bucket)
             ->execute();
     }
-    
+
     public function clearBucketForAll($bucket) {
         $this->data->delete()
             ->where('namespace', '=', $bucket)
@@ -144,7 +145,7 @@ class Model extends axis\Model implements user\session\IBackend {
             ->where('namespace', '=', $bucket->getName())
             ->where('key', '=', $key)
             ->toRow();
-            
+
         return user\session\Node::create($key, $res);
     }
 
@@ -154,7 +155,7 @@ class Model extends axis\Model implements user\session\IBackend {
             ->where('namespace', '=', $bucket->getName())
             ->orderBy('updateTime DESC')
             ->toRow();
-            
+
         if($res) {
             return user\session\Node::create($res['key'], $res);
         } else {
@@ -165,7 +166,7 @@ class Model extends axis\Model implements user\session\IBackend {
     public function lockNode(user\session\IBucket $bucket, user\session\INode $node) {
         $this->_beginDataTransaction($bucket->getDescriptor());
         $node->isLocked = true;
-        
+
         return $node;
     }
 
@@ -173,7 +174,7 @@ class Model extends axis\Model implements user\session\IBackend {
         if($transaction = $this->_getDataTransaction($bucket->getDescriptor())) {
             $transaction->commit();
         }
-        
+
         return $node;
     }
 
@@ -183,7 +184,7 @@ class Model extends axis\Model implements user\session\IBackend {
         if($transaction = $this->_getDataTransaction($descriptor)) {
             if(empty($node->creationTime)) {
                 $node->creationTime = time();
-                
+
                 $transaction->insert([
                         'internalId' => $descriptor->internalId,
                         'namespace' => $bucket->getName(),
@@ -204,7 +205,7 @@ class Model extends axis\Model implements user\session\IBackend {
                     ->execute();
             }
         }
-        
+
         return $node;
     }
 
@@ -241,11 +242,11 @@ class Model extends axis\Model implements user\session\IBackend {
                 ->where('data.creationTime', '<', $time)
                 ->endClause()
             ->execute();
-        
+
         $this->manifest->delete()
             ->where('accessTime', '<', $time)
             ->execute();
-            
+
         return $this;
     }
 
@@ -273,24 +274,24 @@ class Model extends axis\Model implements user\session\IBackend {
 // Helpers
     protected function _getDataTransaction(user\session\IDescriptor $descriptor) {
         $id = $descriptor->internalId;
-        
+
         if(isset($this->_dataTransactions[$id])) {
             return $this->_dataTransactions[$id];
         }
-        
+
         return null;
     }
-    
+
     protected function _beginDataTransaction(user\session\IDescriptor $descriptor) {
         $id = $descriptor->internalId;
-        
+
         if(isset($this->_dataTransactions[$id])) {
             $output = $this->_dataTransactions[$id];
             $output->beginAgain();
         } else {
             $output = $this->_dataTransactions[$id] = $this->data->begin();
         }
-        
+
         return $output;
     }
 }
