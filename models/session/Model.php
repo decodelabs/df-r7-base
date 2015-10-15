@@ -41,7 +41,7 @@ class Model extends axis\Model implements user\session\IBackend {
             ->where('externalId', '=', $id)
             ->beginOrWhereClause()
                 ->where('transitionId', '=', $id)
-                ->where('transitionTime', '>=', $transitionTime)
+                //->where('transitionTime', '>=', $transitionTime)
                 ->endClause()
             ->toRow();
 

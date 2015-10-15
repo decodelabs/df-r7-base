@@ -15,7 +15,7 @@ class Controller implements IController {
 
     const GC_PROBABILITY = 3;
     const TRANSITION_PROBABILITY = 10;
-    const TRANSITION_LIFETIME = 10;
+    const TRANSITION_LIFETIME = 30;
     const TRANSITION_COOLOFF = 20;
 
     protected $_descriptor;
@@ -206,9 +206,8 @@ class Controller implements IController {
             }
         }
 
-        $this->_perpetuator->handleDeadExternalId($externalId);
-
         if($descriptor === null) {
+            $this->_perpetuator->handleDeadExternalId($externalId);
             return $this->_start();
         }
 
