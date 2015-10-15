@@ -12,8 +12,8 @@ use df\arch;
 use df\axis;
 
 class TaskFortify extends arch\task\Action {
-    
-    const SCHEDULE = '0 0 * * 1';
+
+    const SCHEDULE = '0 2 * * *';
     const SCHEDULE_AUTOMATIC = true;
 
     public function extractCliArguments(core\cli\ICommand $command) {
