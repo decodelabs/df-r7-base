@@ -121,7 +121,7 @@ class Config extends core\Config {
             'production' => null
         ];
 
-        $output[$envMode] = ['*' => $baseUrl];
+        $output[$envMode] = $baseUrl;
 
         if(substr($baseUrl, 0, strlen($envMode) + 1) == $envMode.'.') {
             $baseUrl = substr($host, strlen($envMode) + 1);
