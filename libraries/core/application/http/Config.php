@@ -89,7 +89,7 @@ class Config extends core\Config {
         }
 
         if(!isset($this->values->baseUrl->{$environmentMode}) && isset($_SERVER['HTTP_HOST'])) {
-            $this->values->baseUrl->{$environmentMode} = $this->_generateRootUrlList();
+            $this->values->baseUrl->{$environmentMode} = $this->_generateRootUrl();
             $this->save();
         }
 
@@ -121,7 +121,7 @@ class Config extends core\Config {
             'production' => null
         ];
 
-        $output[$envMode] = $baseUrl;
+        $output[$envMode] = ['*' => $baseUrl];
 
         if(substr($baseUrl, 0, strlen($envMode) + 1) == $envMode.'.') {
             $baseUrl = substr($host, strlen($envMode) + 1);
@@ -129,7 +129,7 @@ class Config extends core\Config {
 
         foreach($output as $key => $val) {
             if($val === null) {
-                $output[$key] = $key.'.'.$baseUrl;
+                $output[$key] = ['*' => $key.'.'.$baseUrl];
             }
         }
 
