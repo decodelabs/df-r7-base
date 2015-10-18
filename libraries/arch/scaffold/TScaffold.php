@@ -13,6 +13,7 @@ use df\axis;
 use df\opal;
 use df\mesh;
 use df\flex;
+use df\user;
 
 
 // Record loader
@@ -727,6 +728,10 @@ trait TScaffold_RecordDataProvider {
             $list->addField('address', function($item) {
                 if(!$addr = $item['address']) {
                     return;
+                }
+
+                if(!$addr instanceof user\IPostalAddress) {
+                    return $addr;
                 }
 
                 return $this->html(
