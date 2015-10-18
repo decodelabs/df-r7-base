@@ -722,6 +722,26 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
+    public function defineAddressField($list, $mode) {
+        if($mode == 'list') {
+            $list->addField('address', function($item) {
+                if(!$addr = $item['address']) {
+                    return;
+                }
+
+                return $this->html(
+                        'span',
+                        $addr['city'].', '.$addr['country'],
+                        ['title' => str_replace("\n", ', ', $addr->toString())]
+                    );
+            });
+        } else {
+            $list->addField('address', function($item) {
+                return $this->html->address($item['address']);
+            });
+        }
+    }
+
     public function defineActionsField($list, $mode) {
         $list->addField('actions', function($item) {
             return $this->getRecordOperativeLinks($item, 'list');
