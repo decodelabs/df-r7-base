@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 class Date extends Base implements core\validate\IDateField {
-    
+
     use core\validate\TRangeField;
 
     protected $_defaultToNow = false;
@@ -17,21 +17,21 @@ class Date extends Base implements core\validate\IDateField {
     protected $_mustBeFuture = false;
     protected $_expectedFormat = null;
     protected $_isLocal = false;
-    
+
     public function setMin($date) {
         if($date !== null) {
             $date = core\time\Date::factory($date);
         }
-        
+
         $this->_min = $date;
         return $this;
     }
-    
+
     public function setMax($date) {
         if($date !== null) {
             $date = core\time\Date::factory($date);
         }
-        
+
         $this->_max = $date;
         return $this;
     }
@@ -93,15 +93,15 @@ class Date extends Base implements core\validate\IDateField {
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
-        
-        if(!$length = $this->_checkRequired($node, $value)) {
-            if($this->_defaultToNow) {
-                $value = 'now';
-            } else {
-                return null;
-            }
+
+        if($this->_defaultToNow && !$value && !strlen($value)) {
+            $value = 'now';
         }
-        
+
+        if(!$length = $this->_checkRequired($node, $value)) {
+            return null;
+        }
+
         try {
             if($this->_expectedFormat) {
                 $date = core\time\Date::fromFormatString($value, $this->_expectedFormat, $this->_isLocal);
@@ -134,7 +134,7 @@ class Date extends Base implements core\validate\IDateField {
         }
 
         $value = $this->_applyCustomValidator($node, $date);
-        
+
         if($this->_shouldSanitize) {
             if($this->_expectedFormat) {
                 $node->setValue($value->format($this->_expectedFormat));
@@ -142,7 +142,7 @@ class Date extends Base implements core\validate\IDateField {
                 $node->setValue($value->format(core\time\Date::W3C));
             }
         }
-        
+
         return $value;
     }
 
@@ -153,7 +153,7 @@ class Date extends Base implements core\validate\IDateField {
                 ['%min%' => $this->_min->format('Y-m-d')]
             ));
         }
-        
+
         if($this->_max !== null && $date->gt($this->_max)) {
             $this->_applyMessage($node, 'max', $this->_(
                 'This field must be after %max%',
