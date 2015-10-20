@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -12,7 +12,7 @@ use df\aura;
 use df\opal;
 use df\mesh;
 
-abstract class SelectorDelegate extends arch\form\Delegate implements 
+abstract class SelectorDelegate extends arch\form\Delegate implements
     arch\form\IInlineFieldRenderableModalSelectorDelegate,
     arch\form\IDependentDelegate {
 
@@ -164,12 +164,22 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
     }
 
 
+// Form
+    protected function setDefaultValues() {
+        $parts = explode('.', $this->_delegateId);
+        $id = array_pop($parts);
+
+        if(isset($this->request->query->{$id})) {
+            $this->setSelected($this->request->query[$id]);
+        }
+    }
+
 
 // Render
     public function renderFieldAreaContent(aura\html\widget\FieldArea $fa) {
         $fa->setId($this->elementId('selector'));
         $fa->isRequired($this->_isRequired);
-        
+
         $this->createModeUi([$fa]);
     }
 
@@ -246,14 +256,14 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
                     $count--;
 
                     $displayList[] = $this->html(
-                        'strong', 
+                        'strong',
                         $this->_getResultDisplayName(array_shift($tempList))
                     );
                 }
 
                 if($count) {
                     $displayList[] = $this->html->_(
-                        'and <strong>%c%</strong> more selected', 
+                        'and <strong>%c%</strong> more selected',
                         ['%c%' => $count]
                     );
                 }
@@ -268,7 +278,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
 
                     $fa->push(
                         $this->html->hidden(
-                            $this->fieldName('selected['.$id.']'), 
+                            $this->fieldName('selected['.$id.']'),
                             $id
                         )
                     );
@@ -389,7 +399,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         // Search
         $fs->addFieldArea()->setDescription($this->_searchMessage)->push(
             $this->html->textbox(
-                    $this->fieldName('search'), 
+                    $this->fieldName('search'),
                     $this->values->search
                 )
                 ->setPlaceholder($this->_searchPlaceholder)
@@ -397,7 +407,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
                 ->setFormEvent($this->eventName('search')),
 
             $this->html->eventButton(
-                    $this->eventName('search'), 
+                    $this->eventName('search'),
                     $this->_('Search')
                 )
                 ->shouldValidate(false)
@@ -405,7 +415,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         );
 
 
-        
+
         // Show selected
         if(!$this->_isForMany) {
             $this->_renderOneSelected($fs, $selected);
@@ -423,14 +433,14 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
 
             $query = $this->_getQuery(null, $search);
             $query->paginate()->setDefaultLimit(50)->applyWith([]);
-            
+
             $fa = $fs->addFieldArea($this->_('Search results'));
             $collectionWidget = $this->_renderCollectionList($query);
 
             if($collectionWidget instanceof aura\html\widget\IWidgetProxy) {
                 $collectionWidget = $collectionWidget->toWidget();
             }
-            
+
             if($collectionWidget instanceof aura\html\widget\IMappedListWidget) {
                 // Collection list
                 if($search !== null) {
@@ -466,7 +476,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
                 }
             }
 
-            
+
 
             $fa->addEventButton(
                     $this->eventName('select'),
@@ -530,7 +540,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
 
                 $this->html->buttonArea(
                     $this->html->eventButton(
-                            $this->eventName('clear'), 
+                            $this->eventName('clear'),
                             $this->_('Remove')
                         )
                         ->shouldValidate(false)
@@ -555,12 +565,12 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
             $fa->push(
                 $this->html('div.widget-selection', [
                     $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
-                    
+
                     $this->html('div.body', $name),
 
                     $this->html->buttonArea(
                         $this->html->eventButton(
-                                $this->eventName('remove', $id), 
+                                $this->eventName('remove', $id),
                                 $this->_('Remove')
                             )
                             ->shouldValidate(false)
@@ -609,7 +619,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
 
                     return $value;
                 })
-                
+
             ->validate($this->values)
             ->getValue('search');
     }

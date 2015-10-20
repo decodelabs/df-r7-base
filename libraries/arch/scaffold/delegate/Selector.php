@@ -11,12 +11,22 @@ use df\arch;
 use df\opal;
 
 class Selector extends arch\form\template\SelectorDelegate {
-    
+
     protected $_scaffold;
 
     public function __construct(arch\scaffold\IScaffold $scaffold, arch\form\IStateController $state, $id) {
         $this->_scaffold = $scaffold;
         parent::__construct($scaffold->getContext(), $state, $id);
+    }
+
+    protected function setDefaultValues() {
+        $name = $this->_scaffold->getRecordKeyName();
+
+        if(isset($this->request->query->{$name})) {
+            $this->setSelected($this->request->query[$name]);
+        } else {
+            parent::setDefaultValues();
+        }
     }
 
     protected function _getBaseQuery($fields=null) {
