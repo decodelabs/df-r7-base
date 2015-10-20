@@ -33,6 +33,6 @@ trait TDaemonTask {
     }
 
     protected function _hasRestarted() {
-        return isset($this->request->query->_privileged);
+        return isset($this->request['_privileged']);
     }
 }

@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 
 class TaskScan extends arch\task\Action {
-    
+
     const SCHEDULE = '0 18 * * *';
     const SCHEDULE_AUTOMATIC = true;
 
@@ -25,7 +25,7 @@ class TaskScan extends arch\task\Action {
 
         $total = $scheduled = 0;
         $schedules = [];
-        $reset = isset($this->request->query->reset);
+        $reset = isset($this->request['reset']);
 
         // Filter to task list
         foreach($fileList as $key => $path) {
@@ -96,7 +96,7 @@ class TaskScan extends arch\task\Action {
             foreach($skipList as $task) {
                 unset($schedules[$task['request']]);
                 $skip++;
-            } 
+            }
 
             if($skip) {
                 $this->io->writeLine('Skipping '.$skip.' as they are manually scheduled');
@@ -152,7 +152,7 @@ class TaskScan extends arch\task\Action {
                 $spaced = true;
                 $this->io->writeLine();
             }
-            
+
             $this->io->writeLine('Scheduling '.$request.' at '.$set['schedule']);
             $schedule->save();
         }

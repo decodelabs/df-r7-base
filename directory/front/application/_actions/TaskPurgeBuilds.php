@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\halo;
-    
+
 class TaskPurgeBuilds extends arch\task\Action {
 
     const CONTINGENCY = 1;
@@ -25,7 +25,7 @@ class TaskPurgeBuilds extends arch\task\Action {
         $keepLast = true;
         $keepTesting = true;
 
-        if(isset($this->request->query->all)) {
+        if(isset($this->request['all'])) {
             $keepLast = false;
             $keepTesting = false;
             $contingency = 0;
@@ -53,7 +53,7 @@ class TaskPurgeBuilds extends arch\task\Action {
             }
         }
 
-        if(!isset($this->request->query->purgeTesting) && $keepTesting) {
+        if(!isset($this->request['purgeTesting']) && $keepTesting) {
             array_pop($testList);
         }
 

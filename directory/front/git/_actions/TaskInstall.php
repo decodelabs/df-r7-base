@@ -42,7 +42,7 @@ class TaskInstall extends arch\task\Action {
                 $this->request->query->name = array_shift($args);
             } else {
                 $name = array_shift($args);
-                
+
                 if(isset(self::$_packages[$name])) {
                     $this->request->query->name = $name;
                 } else {
@@ -59,14 +59,14 @@ class TaskInstall extends arch\task\Action {
 
         $this->_basePath = dirname(df\Launchpad::DF_PATH);
 
-        if(isset($this->request->query->all)) {
+        if(isset($this->request['all'])) {
             foreach(self::$_packages as $name => $url) {
                 $this->_cloneRepo($name, $url);
                 $this->io->writeLine();
             }
         } else {
-            $name = $this->request->query['name'];
-            $url = $this->request->query['url'];
+            $name = $this->request['name'];
+            $url = $this->request['url'];
 
             if(empty($url)) {
                 if(isset(self::$_packages[$name])) {
@@ -102,7 +102,7 @@ class TaskInstall extends arch\task\Action {
             $this->io->writeLine('Turning off file mode');
             $repo->setConfig('core.filemode', false);
         }
-        
+
         if($this->_setGui === null) {
             $this->_setGui = $this->_askBoolean('Would you like to set default GUI config @1020p?');
         }

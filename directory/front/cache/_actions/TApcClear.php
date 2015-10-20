@@ -11,16 +11,16 @@ use df\apex;
 use df\arch;
 
 trait TApcClear {
-    
+
     protected static $_apcu;
     protected static $_setKey;
 
     protected function _clearApc() {
-        $isPurge = isset($this->request->query->purge);
+        $isPurge = isset($this->request['purge']);
         $purgeType = null;
 
         if($isPurge) {
-            switch(strtolower($this->request->query['purge'])) {
+            switch(strtolower($this->request['purge'])) {
                 case 'all':
                     $purgeType = 'all';
                     break;
@@ -31,14 +31,14 @@ trait TApcClear {
             }
         }
 
-        if(!$isPurge && !($cacheId = $this->request->query['cacheId'])) {
+        if(!$isPurge && !($cacheId = $this->request['cacheId'])) {
             $this->throwError(500, 'Cache id not specified');
         }
 
         if(!$isPurge) {
             $prefix = $this->application->getUniquePrefix().'-'.$cacheId.':';
         }
-        
+
         self::$_apcu = version_compare(PHP_VERSION, '5.5.0') >= 0;
         $count = 0;
 
@@ -64,12 +64,12 @@ trait TApcClear {
                     apc_clear_cache('system');
                 }
             }
-        } else if(isset($this->request->query->remove)) {
-            $key = $this->request->query['remove'];
+        } else if(isset($this->request['remove'])) {
+            $key = $this->request['remove'];
             apc_delete($prefix.$key);
             $count++;
-        } else if(isset($this->request->query->clearBegins)) {
-            $key = $this->request->query['clearBegins'];
+        } else if(isset($this->request['clearBegins'])) {
+            $key = $this->request['clearBegins'];
 
             foreach($this->_getCacheList() as $set) {
                 if(0 === strpos($set[self::$_setKey], $prefix.$key)) {
@@ -77,8 +77,8 @@ trait TApcClear {
                     $count++;
                 }
             }
-        } else if(isset($this->request->query->clearMatches)) {
-            $regex = $this->request->query['clearMatches'];
+        } else if(isset($this->request['clearMatches'])) {
+            $regex = $this->request['clearMatches'];
             $prefixLength = strlen($this->_prefix);
 
             foreach($this->_getCacheList() as $set) {
@@ -111,7 +111,7 @@ trait TApcClear {
 
         if(isset($info['cache_list'])) {
             $output = $info['cache_list'];
-            
+
             if(isset($output[0])) {
                 self::$_setKey = isset($output[0]['key']) ? 'key' : 'info';
             }

@@ -62,7 +62,7 @@ class TaskMedia extends arch\task\Action {
                         } catch(\Exception $e) {
                             $message = null;
                         }
-                        
+
                         $this->io->writeLine($versionId.' - '.$version['fileName'].' **NOT FOUND'.($message ? ': '.$message : null).'**');
                     } else if($response->isForbidden()) {
                         $this->throwError(500, 'Migration key is invalid - check application pass keys match');
@@ -79,8 +79,8 @@ class TaskMedia extends arch\task\Action {
     }
 
     protected function _getUrl() {
-        if(isset($this->request->query->url)) {
-            $url = $this->request->query['url'];
+        if(isset($this->request['url'])) {
+            $url = $this->request['url'];
         } else {
             $this->io->write('>> Please enter the source root URL: ');
             $url = $this->io->readLine();

@@ -13,7 +13,7 @@ use df\axis;
 use df\opal;
 
 class TaskUpdate extends arch\task\Action {
-    
+
     protected $_schemaManager;
     protected $_clusterUnit;
 
@@ -37,7 +37,7 @@ class TaskUpdate extends arch\task\Action {
             return;
         }
 
-        if(!isset($this->request->query->noBackup)) {
+        if(!isset($this->request['noBackup'])) {
             $this->io->writeLine('Creating full backup...');
             $this->io->writeLine();
             $this->runChild('axis/backup');

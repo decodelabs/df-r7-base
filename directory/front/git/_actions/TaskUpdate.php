@@ -26,7 +26,7 @@ class TaskUpdate extends arch\task\Action {
         $names = $this->request->query->packages->toArray();
 
         if($this->request->query->has('package')) {
-            $names[] = $this->request->query['package'];
+            $names[] = $this->request['package'];
         }
 
         if(empty($names)) {

@@ -13,12 +13,12 @@ use df\axis;
 use df\opal;
 
 class TaskBackupTable extends arch\task\Action {
-    
+
     protected $_unit;
     protected $_adapter;
 
     public function execute() {
-        $unitId = $this->request->query['unit'];
+        $unitId = $this->request['unit'];
 
         if(!$this->_unit = axis\Model::loadUnitFromId($unitId)) {
             $this->throwError(404, 'Unit '.$unitId.' not found');
@@ -57,7 +57,7 @@ class TaskBackupTable extends arch\task\Action {
         $connection = $this->_adapter->getConnection();
         $currentTable = $this->_adapter->getQuerySourceAdapter();
         $dbSchema = $currentTable->getSchema();
-        
+
         $currentTableName = $dbSchema->getName();
         $dbSchema->setName($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
 

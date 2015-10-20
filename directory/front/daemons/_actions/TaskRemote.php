@@ -12,14 +12,14 @@ use df\arch;
 use df\halo;
 
 class TaskRemote extends arch\task\Action {
-    
+
     use TDaemonTask;
 
     public function execute() {
         $this->_ensurePrivileges();
 
-        $remote = halo\daemon\Remote::factory($this->request->query['daemon']);
+        $remote = halo\daemon\Remote::factory($this->request['daemon']);
         $remote->setMultiplexer($this->io);
-        $remote->sendCommand($this->request->query['command']);
+        $remote->sendCommand($this->request['command']);
     }
 }

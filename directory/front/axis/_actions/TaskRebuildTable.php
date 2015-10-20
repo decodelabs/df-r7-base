@@ -18,7 +18,7 @@ class TaskRebuildTable extends arch\task\Action {
 
     public function execute() {
         $this->task->shouldCaptureBackgroundTasks(true);
-        $unitId = $this->request->query['unit'];
+        $unitId = $this->request['unit'];
 
         if(!$unit = axis\Model::loadUnitFromId($unitId)) {
             $this->throwError(404, 'Unit '.$unitId.' not found');
@@ -32,7 +32,7 @@ class TaskRebuildTable extends arch\task\Action {
             $this->throwError(403, 'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!');
         }
 
-        $this->_deleteOld = isset($this->request->query->delete);
+        $this->_deleteOld = isset($this->request['delete']);
 
         $this->io->writeLine('Rebuilding unit '.$unit->getUnitId().' in global cluster');
         $adapter = $unit->getUnitAdapter();

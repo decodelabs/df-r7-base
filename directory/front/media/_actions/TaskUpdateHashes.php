@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\neon;
-    
+
 class TaskUpdateHashes extends arch\task\Action {
 
     public function execute() {
@@ -24,7 +24,7 @@ class TaskUpdateHashes extends arch\task\Action {
         $list = $this->data->media->version->fetch()
             ->populate('file');
 
-        if(!isset($this->request->query->all)) {
+        if(!isset($this->request['all'])) {
             $list->where('hash', '=', null);
         }
 
@@ -37,8 +37,8 @@ class TaskUpdateHashes extends arch\task\Action {
 
             $this->io->write(str_pad($version['fileName'].'... ', 50));
             $version->hash = $hash = $handler->hashFile(
-                $version['file']['id'], 
-                $version['id'], 
+                $version['file']['id'],
+                $version['id'],
                 (string)$version['id'] == (string)$version['file']['#activeVersion']
             );
 

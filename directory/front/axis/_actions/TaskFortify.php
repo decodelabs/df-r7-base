@@ -35,8 +35,8 @@ class TaskFortify extends arch\task\Action {
     }
 
     public function execute() {
-        if(isset($this->request->query->unit)) {
-            $this->_runRoutines($this->data->getUnit($this->request->query['unit']));
+        if(isset($this->request['unit'])) {
+            $this->_runRoutines($this->data->getUnit($this->request['unit']));
         } else {
             $probe = new axis\introspector\Probe();
             $units = $probe->probeStorageUnits();
@@ -53,10 +53,10 @@ class TaskFortify extends arch\task\Action {
     }
 
     protected function _runRoutines($unit) {
-        if(isset($this->request->query->routine)
-        && $unit->getUnitId() == $this->request->query['unit']) {
+        if(isset($this->request['routine'])
+        && $unit->getUnitId() == $this->request['unit']) {
             $this->_runRoutine($unit->getRoutine(
-                $this->request->query['routine']
+                $this->request['routine']
             ));
 
             return;

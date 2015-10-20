@@ -169,8 +169,8 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         $parts = explode('.', $this->_delegateId);
         $id = array_pop($parts);
 
-        if(isset($this->request->query->{$id})) {
-            $this->setSelected($this->request->query[$id]);
+        if(isset($this->request[$id])) {
+            $this->setSelected($this->request[$id]);
         }
     }
 

@@ -22,7 +22,7 @@ class Selector extends arch\form\template\SelectorDelegate {
     protected function setDefaultValues() {
         $name = $this->_scaffold->getRecordKeyName();
 
-        if(isset($this->request->query->{$name})) {
+        if(isset($this->request[$name])) {
             $this->setSelected($this->request->query[$name]);
         } else {
             parent::setDefaultValues();

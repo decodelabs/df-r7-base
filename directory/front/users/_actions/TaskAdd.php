@@ -12,7 +12,7 @@ use df\arch;
 use df\flow;
 
 class TaskAdd extends arch\task\Action {
-    
+
     protected $_client;
     protected $_auth;
 
@@ -76,7 +76,7 @@ class TaskAdd extends arch\task\Action {
             return $this->data->newValidator()
                 ->addRequiredField('language', 'text')
                     ->setSanitizer(function($value) {
-                        return strtolower($value);  
+                        return strtolower($value);
                     })
                     ->setCustomValidator(function($node, $value) {
                         if(!$this->i18n->languages->isValidId($value)) {
@@ -103,7 +103,7 @@ class TaskAdd extends arch\task\Action {
         }, $this->i18n->timezones->suggestForCountry($this->_client['country']));
 
 
-        $selectedGroups = isset($this->request->query->groups) ?
+        $selectedGroups = isset($this->request['groups']) ?
             $this->request->query->groups->toArray() : null;
 
 
@@ -142,5 +142,5 @@ class TaskAdd extends arch\task\Action {
         $this->io->writeLine('Done');
     }
 
-    
+
 }

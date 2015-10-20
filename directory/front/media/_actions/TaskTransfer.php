@@ -13,13 +13,13 @@ use df\neon;
 use df\link;
 
 class TaskTransfer extends arch\task\Action {
-    
+
     public function execute() {
         $handlerList = neon\mediaHandler\Base::getEnabledHandlerList();
         $from = neon\mediaHandler\Base::getInstance();
         unset($handlerList[$from->getName()]);
 
-        $to = ucfirst($this->request->query['to']);
+        $to = ucfirst($this->request['to']);
 
         if($to == $from->getName()) {
             $this->io->writeErrorLine('Target media handler \''.$to.'\' is already the default');
@@ -99,7 +99,7 @@ class TaskTransfer extends arch\task\Action {
             ->save();
 
 
-        if(isset($this->request->query->delete)) {
+        if(isset($this->request['delete'])) {
             $this->io->writeLine();
             $this->io->writeLine('Deleting files from source storage \''.$from->getDisplayName().'\'');
 

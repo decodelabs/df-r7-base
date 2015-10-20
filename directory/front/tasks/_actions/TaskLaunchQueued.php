@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 
 class TaskLaunchQueued extends arch\task\Action {
-    
+
     protected $_log;
     protected $_channel;
     protected $_entry;
@@ -25,7 +25,7 @@ class TaskLaunchQueued extends arch\task\Action {
     public function execute() {
         $this->_entry = $this->data->fetchForAction(
             'axis://task/Queue',
-            $this->request->query['id']
+            $this->request['id']
         );
 
         if(!$environmentMode = $this->_entry['environmentMode']) {

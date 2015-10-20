@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 
 class TaskPurge extends arch\task\Action {
-    
+
     public function execute() {
         $this->task->shouldCaptureBackgroundTasks(true);
 
@@ -21,7 +21,7 @@ class TaskPurge extends arch\task\Action {
         }
 
         $config = core\cache\Config::getInstance();
-        $isAll = isset($this->request->query->all);
+        $isAll = isset($this->request['all']);
 
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $this->io->writeLine($name);

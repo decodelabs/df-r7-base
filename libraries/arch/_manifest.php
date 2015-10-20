@@ -49,7 +49,7 @@ interface IResponseForcer {
 }
 
 trait TResponseForcer {
-    
+
     public function forceResponse($response) {
         throw new ForcedResponse($response);
     }
@@ -60,12 +60,12 @@ trait TResponseForcer {
 interface IAccess extends user\IState {}
 
 interface IContext extends core\IContext, IResponseForcer {
-    
+
     // Application
     public function spawnInstance($request=null, $copyRequest=false);
     public function getDispatchContext();
     public function isDispatchContext();
-    
+
     // Requests
     public function getRequest();
     public function getLocation();
@@ -123,7 +123,7 @@ interface IRouter {
 
 
 
-interface IRequest extends core\uri\IUrl, user\IAccessLock {
+interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
     // Area
     public function setArea($area);
     public function getArea();
@@ -131,7 +131,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     public static function getDefaultArea();
     public function isDefaultArea();
     public static function formatArea($area);
-    
+
     // Controller
     public function setController($controller);
     public function getController();
@@ -141,7 +141,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     public function isController($controller);
     public static function formatController($controller);
     public static function formatControllerParts(array $parts);
-    
+
     // Action
     public function setAction($action);
     public function getAction();
@@ -150,7 +150,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     public static function getDefaultAction();
     public function isDefaultAction();
     public static function formatAction($action);
-    
+
     // Type
     public function setType($type);
     public function getType();
@@ -158,7 +158,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     public static function getDefaultType();
     public function isDefaultType();
     public static function formatType($type);
-    
+
     public function getComponents();
     public function toSlug();
 
@@ -171,21 +171,21 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
 
     public function contains($request);
     public function containsPath($request);
-    
+
     public function isWithin($request);
     public function isPathWithin($request);
-    
+
     public function getLiteralPath();
     public function getLiteralPathArray();
     public function getLiteralPathString();
     public function getDirectoryLocation();
     public function getLibraryPath();
     public function toReadableString();
-    
+
     // Redirect
     public function encode();
     public static function decode($str);
-    
+
     public function setRedirect($from, $to=null);
     public function hasRedirectFrom();
     public function hasRedirectTo();
@@ -193,7 +193,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     public function getRedirectFrom();
     public function setRedirectTo($redir);
     public function getRedirectTo();
-    
+
     // Parent
     public function getParent();
     public function extractRelative($path);
@@ -259,12 +259,12 @@ interface ITransformer extends core\IContextAware {
     public function execute();
 }
 
-interface IComponent extends 
-    core\IContextAware, 
-    core\lang\IChainable, 
-    aura\view\IDeferredRenderable, 
-    user\IAccessLock, 
-    aura\view\ICascadingHelperProvider, 
+interface IComponent extends
+    core\IContextAware,
+    core\lang\IChainable,
+    aura\view\IDeferredRenderable,
+    user\IAccessLock,
+    aura\view\ICascadingHelperProvider,
     arch\IProxyResponse,
     aura\view\ISlotContainer,
     \ArrayAccess {
@@ -296,15 +296,15 @@ interface IMailComponent extends IComponent, flow\INotificationProxy {
 trait TDirectoryAccessLock {
 
     use user\TAccessLock;
-    
+
     public function getAccessLockDomain() {
         return 'directory';
     }
-    
+
     public function lookupAccessKey(array $keys, $action=null) {
         return $this->context->location->lookupAccessKey($keys, $action);
     }
-    
+
     public function getDefaultAccess($action=null) {
         return $this->_getClassDefaultAccess();
     }

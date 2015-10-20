@@ -13,7 +13,7 @@ use df\axis;
 use df\opal;
 
 class TaskSetMaster extends arch\task\Action {
-    
+
     public function execute() {
         $config = axis\Config::getInstance();
 
@@ -28,13 +28,13 @@ class TaskSetMaster extends arch\task\Action {
             $current = null;
         }
 
-        $check = $this->format->stringToBoolean($this->request->query['check'], true);
+        $check = $this->format->stringToBoolean($this->request['check'], true);
 
         if($current && (!$check || $this->_askBoolean('Use current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true), true))) {
             if(!$check) {
                 $this->io->writeLine('Sticking with current: '.opal\rdbms\Dsn::factory($current)->getDisplayString(true));
             }
-            
+
             return;
         }
 

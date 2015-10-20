@@ -404,6 +404,27 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
 
+
+// Query
+    public function offsetSet($key, $value) {
+        $this->query->{$key} = $value;
+        return $this;
+    }
+
+    public function offsetGet($key) {
+        return $this->query->offsetGet($key);
+    }
+
+    public function offsetExists($key) {
+        return $this->query->__isset($key);
+    }
+
+    public function offsetUnset($key) {
+        unset($this->query->{$key});
+        return $this;
+    }
+
+
 // Match
     public function eq($request) {
         return $this->_eq($request, true);

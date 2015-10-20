@@ -13,7 +13,7 @@ use df\axis;
 use df\opal;
 
 class TaskRestoreBackup extends arch\task\Action {
-    
+
     protected $_path;
     protected $_sqlite = [];
     protected $_schemas = [];
@@ -22,7 +22,7 @@ class TaskRestoreBackup extends arch\task\Action {
     protected $_rdbmsAdapters = [];
 
     public function execute() {
-        $fileName = basename($this->request->query['backup']);
+        $fileName = basename($this->request['backup']);
 
         if(!preg_match('/^axis\-[0-9]+\.tar$/i', $fileName)) {
             $this->io->writeErrorLine('Not an axis backup file');
@@ -35,7 +35,7 @@ class TaskRestoreBackup extends arch\task\Action {
             $this->io->writeErrorLine('Backup not found');
         }
 
-        if(!isset($this->request->query->noBackup)) {
+        if(!isset($this->request['noBackup'])) {
             $this->io->writeLine('Creating full backup...');
             $this->io->writeLine();
             $this->runChild('axis/backup');

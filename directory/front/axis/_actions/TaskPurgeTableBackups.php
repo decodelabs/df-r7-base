@@ -13,10 +13,10 @@ use df\axis;
 use df\opal;
 
 class TaskPurgeTableBackups extends arch\task\Action {
-    
+
     public function execute() {
-        $unitId = $this->request->query['unit'];
-        $allClusters = isset($this->request->query->allClusters);
+        $unitId = $this->request['unit'];
+        $allClusters = isset($this->request['allClusters']);
 
         if(!$unit = axis\Model::loadUnitFromId($unitId)) {
             $this->throwError(404, 'Unit '.$unitId.' not found');

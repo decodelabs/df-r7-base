@@ -11,7 +11,7 @@ use df\arch;
 use df\aura;
 
 abstract class Base implements IScaffold {
-    
+
     //use core\TContextProxy;
     use core\TContextAware;
     use aura\view\TCascadingHelperProvider;
@@ -38,11 +38,11 @@ abstract class Base implements IScaffold {
 
         $runMode = $context->getRunMode();
         $class = self::getClassFor($context->location, $runMode);
-        
+
         if(!$class) {
             throw new RuntimeException('Scaffold could not be found for '.$context->location);
         }
-        
+
         $output = new $class($context);
         $context->application->setRegistryObject($output);
 
@@ -61,7 +61,7 @@ abstract class Base implements IScaffold {
 
         return $class;
     }
-    
+
     protected function __construct(arch\IContext $context) {
         $this->context = $context;
         $this->view = aura\view\Base::factory($context->request->getType(), $this->context);
@@ -103,7 +103,7 @@ abstract class Base implements IScaffold {
     public function loadAction() {
         $action = $this->context->request->getAction();
         $method = lcfirst($action).$this->context->request->getType().'Action';
-        
+
         if(!method_exists($this, $method)) {
             $method = lcfirst($action).'Action';
 
@@ -146,7 +146,7 @@ abstract class Base implements IScaffold {
         if(method_exists($this, $method)) {
             return new arch\scaffold\component\Generic($this, $name, $args);
         }
-        
+
 
         $method = 'build'.$name.'Component';
 
@@ -176,13 +176,13 @@ abstract class Base implements IScaffold {
         }
 
         $method = 'build'.$name.'FormDelegate';
-        
+
         if(!method_exists($this, $method)) {
             throw new LogicException(
                 'Scaffold at '.$this->context->location.' cannot provide form delegate '.$origName
             );
         }
-        
+
         $output = $this->{$method}($state, $id);
 
         if(!$output instanceof arch\form\IDelegate) {

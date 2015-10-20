@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\halo;
-    
+
 class TaskBuild extends arch\task\Action {
 
     const PURGE_OLD_BUILDS = true;
@@ -34,7 +34,7 @@ class TaskBuild extends arch\task\Action {
             $this->request->query->dev = true;
         } else if($inspector['testing']) {
             $this->request->query->testing = true;
-        } 
+        }
     }
 
     public function execute() {
@@ -46,8 +46,8 @@ class TaskBuild extends arch\task\Action {
         // Prepare info
         $timestamp = date('YmdHis');
         $purgeOldBuilds = $this->request->query->get('purge', self::PURGE_OLD_BUILDS);
-        $isTesting = isset($this->request->query->testing);
-        $isDev = isset($this->request->query->dev);
+        $isTesting = isset($this->request['testing']);
+        $isDev = isset($this->request['dev']);
 
         if($isDev) {
             $this->io->writeLine('Builder is running in dev mode, no build folder will be created');
@@ -77,7 +77,7 @@ class TaskBuild extends arch\task\Action {
 
         // Clear config cache
         core\Config::clearLiveCache();
-        
+
 
         if(!$isDev) {
             $appPath = df\Launchpad::$applicationPath;
@@ -116,7 +116,7 @@ class TaskBuild extends arch\task\Action {
             $packages = $loader->getPackages();
             $appPackage = $packages['app'];
             unset($packages['app']);
-            
+
             $this->io->write('Merging:');
 
             // Copy packages
@@ -134,14 +134,14 @@ class TaskBuild extends arch\task\Action {
                 }
 
                 foreach(scandir($package->path) as $entry) {
-                    if($entry == '.' 
+                    if($entry == '.'
                     || $entry == '..'
                     || $entry == '.git'
                     || $entry == '.gitignore'
                     || $entry == 'libraries') {
                         continue;
                     }
-                    
+
                     if(is_dir($package->path.'/'.$entry)) {
                         core\fs\Dir::merge($package->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
                     }
@@ -154,7 +154,7 @@ class TaskBuild extends arch\task\Action {
             $this->io->writeLine(' app');
 
             foreach(scandir($appPackage->path) as $entry) {
-                if($entry == '.' 
+                if($entry == '.'
                 || $entry == '..'
                 || $entry == '.git'
                 || $entry == '.gitignore') {

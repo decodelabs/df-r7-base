@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,22 +10,22 @@ use df\core;
 use df\apex;
 use df\halo;
 use df\arch;
-    
+
 class TaskGenerateEntries extends arch\task\Action {
 
     public function execute() {
         $phpPath = core\Environment::getInstance()->getBinaryPath('php');
-        
+
         if($phpPath == 'php') {
             $phpPath = halo\system\Base::getInstance()->which('php');
         }
-        
+
         $appPath = df\Launchpad::$applicationPath;
         $environmentId = df\Launchpad::$environmentId;
-        
+
         $this->runChild('application/generate-base-entry', false);
 
-        if($buildId = $this->request->query['build']) {
+        if($buildId = $this->request['build']) {
             if(substr($buildId, -8) == '-testing') {
                 $this->io->writeLine('Generating testing entry points');
                 $modes = ['testing'];

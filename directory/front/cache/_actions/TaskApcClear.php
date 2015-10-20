@@ -33,7 +33,7 @@ class TaskApcClear extends arch\task\Action {
             $isCli = false;
         }
 
-        if(!isset($this->request->query->cacheId)) {
+        if(!isset($this->request['cacheId'])) {
             $this->request->query->purge = 'app';
         }
 
