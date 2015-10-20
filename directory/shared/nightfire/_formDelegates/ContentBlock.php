@@ -176,7 +176,7 @@ class ContentBlock extends arch\form\Delegate implements
 
 
         if($this->_block) {
-            $this->getDelegate('block')->renderFieldAreaContent($fa);
+            $this['block']->renderFieldAreaContent($fa);
         }
 
         $fa->push($this->html('</div>'));
@@ -189,7 +189,7 @@ class ContentBlock extends arch\form\Delegate implements
             $type = null;
         }
 
-        $this->getDelegate('block')->apply();
+        $this['block']->apply();
         $oldBlock = $this->_block;
 
         try {
@@ -224,7 +224,7 @@ class ContentBlock extends arch\form\Delegate implements
             return null;
         }
 
-        $delegate = $this->getDelegate('block');
+        $delegate = $this['block'];
         $delegate->apply();
 
         if(!$this->_isRequired && $this->_block->isEmpty()) {

@@ -32,15 +32,15 @@ interface IStoreProvider {
 interface IStateController extends IStoreProvider {
     public function getSessionId();
     public function getValues();
-    
+
     public function getDelegateState($id);
-    
+
     public function isNew($flag=null);
     public function reset();
     public function isOperating();
 }
 
-interface IForm extends IStoreProvider, core\lang\IChainable {
+interface IForm extends IStoreProvider, core\lang\IChainable, \ArrayAccess {
     public function isRenderingInline();
     public function getStateController();
     public function loadDelegate($id, $path);
@@ -147,7 +147,7 @@ interface IInlineFieldRenderableSelectorDelegate extends IInlineFieldRenderableD
 interface IInlineFieldRenderableModalSelectorDelegate extends IModalDelegate, IInlineFieldRenderableDelegate, ISelectorDelegate {}
 
 interface IAdapterDelegate extends IParentUiHandlerDelegate, IParentEventHandlerDelegate {
-    
+
 }
 
 

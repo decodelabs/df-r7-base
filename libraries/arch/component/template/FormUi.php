@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
-    
+
 abstract class FormUi extends arch\component\Base implements arch\form\IForm, aura\html\widget\IWidgetProxy {
 
     use core\lang\TChainable;

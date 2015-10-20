@@ -240,7 +240,7 @@ class ContentSlot extends arch\form\Delegate implements
                 $this->html('<br />')
             );
 
-            $delegate = $this->getDelegate($delegateId);
+            $delegate = $this[$delegateId];
             $delegate->renderFieldAreaContent($fa);
 
             $fa->push($this->html('</div>'));
@@ -289,7 +289,7 @@ class ContentSlot extends arch\form\Delegate implements
             return;
         }
 
-        $this->getDelegate($delegateId)->apply();
+        $this[$delegateId]->apply();
 
         try {
             $block = fire\block\Base::factory($type);
@@ -419,7 +419,7 @@ class ContentSlot extends arch\form\Delegate implements
         $isEmpty = true;
 
         foreach($this->_blocks as $delegateId => $block) {
-            $this->getDelegate($delegateId)->apply();
+            $this[$delegateId]->apply();
 
             if($isEmpty && !$block->isEmpty()) {
                 $isEmpty = false;
@@ -432,7 +432,7 @@ class ContentSlot extends arch\form\Delegate implements
             }
 
             $this->onSelectBlockTypeEvent($delegateId);
-            $this->getDelegate($delegateId)->apply();
+            $this[$delegateId]->apply();
         }
 
         $output = new fire\slot\Content($this->_slotDefinition->getId());

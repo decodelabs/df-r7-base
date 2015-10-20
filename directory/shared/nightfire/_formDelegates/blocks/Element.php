@@ -26,17 +26,17 @@ class Element extends Base {
             ->where('slug', '=', $slug)
             ->toValue('id');
 
-        $this->getDelegate('element')->setSelected($id);
+        $this['element']->setSelected($id);
     }
 
     public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
-        $this->getDelegate('element')->renderFieldAreaContent($fieldArea);
+        $this['element']->renderFieldAreaContent($fieldArea);
 
         return $this;
     }
 
     public function apply() {
-        $id = $this->getDelegate('element')->apply();
+        $id = $this['element']->apply();
         $slug = $this->data->content->element->select('slug')
             ->where('id', '=', $id)
             ->toValue('slug');

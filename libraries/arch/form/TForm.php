@@ -18,14 +18,14 @@ trait TForm {
 
     use core\lang\TChainable;
     use aura\view\TCascadingHelperProvider;
-    
+
     public $content;
     public $values;
-    
+
     protected $_isRenderingInline = false;
     protected $_state;
     protected $_delegates = [];
-    
+
     protected function init() {}
     protected function setDefaultValues() {}
     protected function loadDelegates() {}
@@ -34,7 +34,7 @@ trait TForm {
     public function getStateController() {
         return $this->_state;
     }
-    
+
 // Delegates
     public function loadDelegate($id, $name) {
         if(false !== strpos($id, '.')) {
@@ -47,13 +47,13 @@ trait TForm {
         $context = $this->context->spawnInstance($location);
         $path = $context->location->getController();
         $area = $context->location->getArea();
-        
+
         if(!empty($path)) {
             $parts = explode('/', $path);
         } else {
             $parts = [];
         }
-        
+
         $type = $context->getRunMode();
 
         $parts[] = '_formDelegates';
@@ -67,9 +67,9 @@ trait TForm {
         $parts[] = ucfirst($topName);
         $state = $this->_state->getDelegateState($id);
         $mainId = $this->_getDelegateIdPrefix().$id;
-        
+
         $class = 'df\\apex\\directory\\'.$area.'\\'.implode('\\', $parts);
-        
+
         if(!class_exists($class)) {
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
@@ -84,7 +84,7 @@ trait TForm {
                 );
             }
         }
-        
+
         return $this->_delegates[$id] = new $class($context, $state, $mainId);
     }
 
@@ -101,32 +101,32 @@ trait TForm {
             $this->_getDelegateIdPrefix().$id
         );
     }
-    
+
     public function getDelegate($id) {
         if(!is_array($id)) {
             $id = explode('.', trim($id, ' .'));
         }
-        
+
         if(empty($id)) {
             throw new DelegateException(
                 'Empty delegate id detected'
             );
         }
-        
+
         $top = array_shift($id);
-        
+
         if(!isset($this->_delegates[$top])) {
             throw new DelegateException(
                 'Delegate '.$top.' could not be found'
             );
         }
-        
+
         $output = $this->_delegates[$top];
-        
+
         if(!empty($id)) {
             $output = $output->getDelegate($id);
         }
-        
+
         return $output;
     }
 
@@ -134,19 +134,19 @@ trait TForm {
         if(!is_array($id)) {
             $id = explode('.', trim($id, ' .'));
         }
-        
+
         if(empty($id)) {
             return false;
         }
-        
+
         $top = array_shift($id);
-        
+
         if(!isset($this->_delegates[$top])) {
             return false;
         }
-        
+
         $delegate = $this->_delegates[$top];
-        
+
         if(!empty($id)) {
             return $delegate->hasDelegate($id);
         }
@@ -158,23 +158,23 @@ trait TForm {
         if(!is_array($id)) {
             $id = explode('.', trim($id, ' .'));
         }
-        
+
         if(empty($id)) {
             throw new DelegateException(
                 'Empty delegate id detected'
             );
         }
-        
+
         $top = array_shift($id);
-        
+
         if(!isset($this->_delegates[$top])) {
             throw new DelegateException(
                 'Delegate '.$top.' could not be found'
             );
         }
-        
+
         $delegate = $this->_delegates[$top];
-        
+
         if(!empty($id)) {
             $delegate->unloadDelegate($id);
             return $this;
@@ -182,22 +182,39 @@ trait TForm {
 
         $this->_state->clearDelegateState($top);
         unset($this->_delegates[$top]);
-        
+
         return $this;
     }
-    
-    
+
+
     protected function _getDelegateIdPrefix() {
         if($this instanceof IDelegate) {
             return $this->_delegateId.'.';
         }
-        
+
         return '';
     }
-    
+
 
     public function isRenderingInline() {
         return $this->_isRenderingInline;
+    }
+
+
+    public function offsetSet($id, $name) {
+        return $this->loadDelegate($id, $name);
+    }
+
+    public function offsetGet($id) {
+        return $this->getDelegate($id);
+    }
+
+    public function offsetExists($id) {
+        return $this->hasDelegate($id);
+    }
+
+    public function offsetUnset($id) {
+        return $this->unloadDelegate($id);
     }
 
 
@@ -225,27 +242,27 @@ trait TForm {
         $this->_state->clearStore();
         return $this;
     }
-    
-    
+
+
 // Delivery
     public function isValid() {
         if($this->_state && !$this->_state->values->isValid()) {
             return false;
         }
-        
+
         foreach($this->_delegates as $delegate) {
             if(!$delegate->isValid()) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     public function complete($success=true, $failure=null) {
         if($this->isValid() || ($success && !is_callable($success))) {
             $output = $default = null;
-            
+
             if(is_string($success) || $success instanceof arch\IRequest) {
                 $default = $success;
                 $success = null;
@@ -288,40 +305,40 @@ trait TForm {
             return $this->http->redirect($default);
         }
     }
-    
-    
+
+
 // Names
     public function eventName($name) {
         $args = array_slice(func_get_args(), 1);
         $output = $this->_getDelegateIdPrefix().$name;
-        
+
         if(!empty($args)) {
             foreach($args as $i => $arg) {
                 $args[$i] = '\''.addslashes($arg).'\'';
             }
-            
+
             $output .= '('.implode(',', $args).')';
         }
-        
+
         return $output;
     }
 
 
-    
+
 // Events
     public function handleEvent($name, array $args=[]) {
         $func = 'on'.ucfirst($name).'Event';
-        
+
         if(!method_exists($this, $func)) {
             $func = 'onDefaultEvent';
-            
+
             if(!method_exists($this, $func)) {
                 throw new EventException(
                     'Event '.$name.' does not have a handler'
                 );
             }
         }
-        
+
         return call_user_func_array([$this, $func], $args);
     }
 
@@ -532,7 +549,7 @@ trait TForm_RequirableDelegate {
 trait TForm_SelectorDelegate {
 
     use TForm_RequirableDelegate;
-    
+
     protected $_isForMany = true;
 
     public function isForOne($flag=null) {

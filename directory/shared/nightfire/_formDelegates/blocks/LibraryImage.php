@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -22,7 +22,7 @@ class LibraryImage extends Base {
     }
 
     protected function setDefaultValues() {
-        $this->getDelegate('image')->setSelected($this->_block->getImageId());
+        $this['image']->setSelected($this->_block->getImageId());
 
         if($this->_block->shouldStoreDimensions()) {
             $this->values->width = $this->_block->getWidth();
@@ -31,9 +31,7 @@ class LibraryImage extends Base {
     }
 
     public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
-        $fieldArea->addFieldArea($this->_('Library image'))->push(
-            $this->getDelegate('image')
-        );
+        $fieldArea->addFieldArea($this->_('Library image'))->push($this['image']);
 
         if($this->_block->shouldStoreDimensions()) {
             $fieldArea->push(
@@ -77,7 +75,7 @@ class LibraryImage extends Base {
         }
 
         $this->_block->setImageId($validator['image']);
-        
+
         return $this->_block;
     }
 }
