@@ -43,8 +43,9 @@ class TaskUpdate extends arch\task\Action {
                     $this->io->writeLine('!! Package "'.$name.'" repo could not be found !!');
                 } else {
                     $this->io->writeLine($result);
-                    $this->io->writeLine();
                 }
+
+                $this->io->writeLine();
             } catch(spur\vcs\git\IException $e) {
                 $this->io->writeErrorLine($e->getMessage());
                 return;

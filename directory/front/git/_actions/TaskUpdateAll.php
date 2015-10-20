@@ -31,6 +31,8 @@ class TaskUpdateAll extends arch\task\Action {
                 } else {
                     $this->io->writeLine($result);
                 }
+
+                $this->io->writeLine();
             } catch(spur\vcs\git\IException $e) {
                 $this->io->writeErrorLine($e->getMessage());
                 return;
