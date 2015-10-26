@@ -1,7 +1,7 @@
 <script>
 if(window.XMLHttpRequest) {
     var xhr = new XMLHttpRequest();
-     
+
     xhr.onerror = function() { console.log("[XHR] Fatal Error."); };
     xhr.onreadystatechange = function() {
         if(xhr.readyState > 2) {
@@ -14,7 +14,7 @@ if(window.XMLHttpRequest) {
         $('#continue').removeClass('disabled');
     };
 
-    xhr.open("GET", "<?php echo $this->uri('~/tasks/invoke.stream?token='.$this['token']); ?>", true);
+    xhr.open("GET", "<?php echo $this->uri('~/tasks/invoke.stream?token='.$token); ?>", true);
     xhr.send("Making request...");
 }
 </script>
