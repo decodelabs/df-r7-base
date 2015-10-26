@@ -118,9 +118,7 @@ class Router implements core\IRegistryObject {
 
     public function getBaseUrl() {
         if(!$this->_baseUrl) {
-            throw new core\RuntimeException(
-                'Base URL has not been defined yet'
-            );
+            $this->_applyDefaultBaseMap();
         }
 
         return $this->_baseUrl;
@@ -128,12 +126,14 @@ class Router implements core\IRegistryObject {
 
     public function getBaseMap() {
         if(!$this->_baseMap) {
-            throw new core\RuntimeException(
-                'Base map has not been defined yet'
-            );
+            $this->_applyDefaultBaseMap();
         }
 
         return $this->_baseMap;
+    }
+
+    protected function _applyDefaultBaseMap() {
+        $this->setBase($this->getRootMap());
     }
 
     public function getRootUrl() {
