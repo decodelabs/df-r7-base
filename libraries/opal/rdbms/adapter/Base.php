@@ -218,6 +218,10 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     }
 
     public function prepareValue($value, opal\rdbms\schema\IField $field=null) {
+        if(is_bool($value)) {
+            $value = (int)$value;
+        }
+
         if($field !== null) {
             if(false !== ($preppedValue = $this->_prepareKnownValue($value, $field))) {
                 return $preppedValue;
