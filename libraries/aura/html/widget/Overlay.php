@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,15 +9,16 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
-    
+
 class Overlay extends Container implements IWidgetShortcutProvider {
 
     const PRIMARY_TAG = 'div';
 
     protected $_titleBody;
     protected $_titleTagName = 'h3';
+    protected $_url;
 
-    public function __construct(arch\IContext $context, $title=null) {
+    public function __construct(arch\IContext $context, $title=null, $url=null) {
         parent::__construct($context);
 
         if($title instanceof aura\html\IElementContent) {
@@ -25,24 +26,46 @@ class Overlay extends Container implements IWidgetShortcutProvider {
         } else {
             $this->_titleBody = new aura\html\ElementContent($title);
         }
+
+        $this->setUrl($url);
     }
 
     protected function _render() {
         $tag = $this->getTag();
         $title = null;
-        $children = $this->_prepareChildren();
 
         if(!$this->_titleBody->isEmpty()) {
             $title = (new aura\html\Element($this->_titleTagName, $this->_titleBody))->render();
         }
 
+        $children = $this->_prepareChildren();
+
+        if($this->_url !== null) {
+            $children->prepend((new aura\html\Tag('iframe', [
+                'src' => $this->getView()->uri($this->_url),
+                'width' => '100%',
+                'frameborder' => '0'
+            ]))->render());
+        }
+
         return $tag->renderWith(
             (new aura\html\Tag('div', ['class' => 'container']))->renderWith([
-                $title, 
+                $title,
                 (new aura\html\Tag('div', ['class' => 'body']))->renderWith($children)
             ]),
             true
         );
+    }
+
+
+// Url
+    public function setUrl($url) {
+        $this->_url = $url;
+        return $this;
+    }
+
+    public function getUrl() {
+        return $this->_url;
     }
 
 
