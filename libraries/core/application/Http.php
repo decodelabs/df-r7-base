@@ -128,10 +128,8 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
             $response = $this->_dispatchRequest($request);
         } catch(arch\IForcedResponse $e) {
-            $response = $e->getResponse();
+            $response = $this->_normalizeResponse($e->getResponse());
         }
-
-        $response = $this->_normalizeResponse($response);
 
         if(df\Launchpad::$debug) {
             df\Launchpad::$debug->execute();
@@ -320,18 +318,20 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         try {
             $response = $this->_dispatchAction($request);
+            $response = $this->_normalizeResponse($response);
         } catch(\Exception $e) {
             while(ob_get_level()) {
                 ob_end_clean();
             }
 
             if($e instanceof arch\IForcedResponse) {
-                $response = $e->getResponse();
+                $response = $this->_normalizeResponse($e->getResponse());
             } else {
                 $this->_dispatchException = $e;
 
                 try {
                     $response = $this->_dispatchAction(new arch\Request('error/'));
+                    $response = $this->_normalizeResponse($response);
                 } catch(\Exception $f) {
                     throw $e;
                 }
