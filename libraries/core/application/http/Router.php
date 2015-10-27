@@ -153,6 +153,19 @@ class Router implements core\IRegistryObject {
     }
 
 
+    public function applyBaseMapToRelativeRequest(arch\IRequest $request) {
+        if(!$this->_baseMap) {
+            return $request;
+        }
+
+        if($this->_baseMap->isWild) {
+            $request->query->{$this->_baseMap->area} = $this->_baseMap->mappedKey;
+        }
+
+        return $request;
+    }
+
+
 
 // Routing
     public function countRoutes() {

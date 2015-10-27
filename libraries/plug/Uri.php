@@ -178,6 +178,8 @@ class Uri implements arch\IDirectoryHelper {
                 $request = clone $this->context->request;
             } else if(is_string($request) && preg_match('#^\.\.?/#', $request)) {
                 $request = $this->context->location->extractRelative($request);
+                $router = core\application\http\Router::getInstance();
+                $router->applyBaseMapToRelativeRequest($request);
             } else {
                 $request = arch\Request::factory($request);
             }
