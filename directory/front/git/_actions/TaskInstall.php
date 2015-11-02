@@ -36,7 +36,7 @@ class TaskInstall extends arch\task\Action {
 
         if(isset($args[0]) && $args[0] == 'all') {
             $this->request->query->all = true;
-        } else {
+        } else if(!empty($args)) {
             if(isset($args[1])) {
                 $this->request->query->url = array_shift($args);
                 $this->request->query->name = array_shift($args);
@@ -49,6 +49,10 @@ class TaskInstall extends arch\task\Action {
                     $this->request->query->url = $name;
                 }
             }
+        }
+
+        if($this->request->query->isEmpty()) {
+            $this->request->query->all = true;
         }
     }
 
