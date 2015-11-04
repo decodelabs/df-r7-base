@@ -16,7 +16,12 @@ class Autoprefixer extends Base {
         $bridge = new spur\node\Bridge();
 
         if(!$bridge->find('autoprefixer-core')) {
-            $bridge->npmInstall('autoprefixer-core');
+            try {
+                $bridge->npmInstall('autoprefixer-core');
+            } catch(\Exception $e) {
+                core\log\Manager::getInstance()->logException($e);
+                return;
+            }
         }
 
         if(!$bridge->find('postcss')) {
