@@ -14,7 +14,7 @@ use df\neon;
 
 class Base implements ITheme, core\IDumpable {
 
-    const APPLICATION_IMAGE = 'app.png';
+    const APPLICATION_IMAGE = null;//'app.png';
     const APPLICATION_COLOR = 'white';
 
     protected $_id;
