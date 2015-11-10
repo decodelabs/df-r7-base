@@ -44,7 +44,7 @@ class Router implements core\IRegistryObject {
         $config = core\application\http\Config::getInstance();
 
         if($rootUrl !== null) {
-            $map = ['*' => $rootUrl->getDomain().$rootUrl->getPathString()];
+            $map = ['*' => $rootUrl->getDomain().'/'.ltrim($rootUrl->getPathString())];
             $this->_useHttps = $rootUrl->isSecure();
             $this->_defaultRouteProtocol = $this->_useHttps ? 'https' : 'http';
         } else {

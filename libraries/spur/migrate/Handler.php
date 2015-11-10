@@ -12,7 +12,7 @@ use df\link;
 use df\arch;
 
 class Handler implements IHandler {
-    
+
     protected $_key;
     protected $_url;
     protected $_router;
@@ -55,8 +55,8 @@ class Handler implements IHandler {
 
         if(!$content->data->actions->contains('media')) {
             $this->_context->throwError(
-                403, 
-                'Target app does not support media migration', 
+                403,
+                'Target app does not support media migration',
                 $content->data->actions->toArray()
             );
         }
@@ -97,7 +97,7 @@ class Handler implements IHandler {
         }
 
         if($request instanceof arch\IRequest) {
-            $request = $this->_router->requestToUrl($request);   
+            $request = $this->_router->requestToUrl($request);
         }
 
         if(!$request instanceof link\http\IRequest) {
