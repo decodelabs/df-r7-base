@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\flex\csv;
 use df;
 use df\core;
 use df\flex;
-    
+
 class Builder implements IBuilder {
 
     protected $_fields = null;
@@ -135,10 +135,16 @@ class Builder implements IBuilder {
 
         foreach($this->_fields as $key => $label) {
             if(isset($row[$key])) {
-                $outRow[$key] = $row[$key];
+                $value = $row[$key];
             } else {
-                $outRow[$key] = null;
+                $value = null;
             }
+
+            if(is_bool($value)) {
+                $value = $value ? 'Yes' : 'No';
+            }
+
+            $outRow[$key] = $value;
         }
 
         if($this->_generator) {
