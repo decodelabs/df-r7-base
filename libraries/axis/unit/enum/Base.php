@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 
 abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
-    
+
     use axis\TUnit;
 
     private $_options = null;
@@ -51,6 +51,11 @@ abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
         return $this->_options;
     }
 
+    public function isOption($option) {
+        $option = core\lang\Enum::normalizeOption($option);
+        return in_array($option, $this->getOptions());
+    }
+
     public function getLabels() {
         $output = [];
 
@@ -69,7 +74,7 @@ abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
         if(!strlen($option)) {
             return null;
         }
-        
+
         return $this->factory($option)->getLabel();
     }
 }
@@ -125,6 +130,17 @@ class Base_Enum implements core\lang\IEnum {
     public static function getOptions() {
         if(isset($this)) {
             return $this->_options;
+        }
+
+        throw new core\lang\RuntimeException(
+            'Unit enum static calls are not accessible'
+        );
+    }
+
+    public static function isOption($option) {
+        if(isset($this)) {
+            $option = core\lang\Enum::normalizeOption($option);
+            return in_array($option, $this->_options);
         }
 
         throw new core\lang\RuntimeException(

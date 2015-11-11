@@ -62,7 +62,7 @@ abstract class Enum implements IEnum, core\IDumpable {
             self::$_options[$class] = self::$_labels[$class] = [];
 
             foreach($reflection->getConstants() as $name => $label) {
-                self::$_options[$class][] = lcfirst(str_replace(' ', '', ucwords(strtolower(str_replace('_', ' ', $name)))));
+                self::$_options[$class][] = self::normalizeOption($name);
 
                 if(!strlen($label)) {
                     $label = ucwords(strtolower(str_replace('_', ' ', $name)));
@@ -73,6 +73,16 @@ abstract class Enum implements IEnum, core\IDumpable {
         }
 
         return self::$_options[$class];
+    }
+
+    public static function isOption($option) {
+        $option = self::normalizeOption($option);
+        $options = self::getOptions();
+        return in_array($option, $options);
+    }
+
+    public static function normalizeOption($option) {
+        return lcfirst(str_replace(' ', '', ucwords(strtolower(str_replace(['_', '-'], ' ', $option)))));
     }
 
     public static function getLabels() {
@@ -102,7 +112,7 @@ abstract class Enum implements IEnum, core\IDumpable {
         if(!strlen($option)) {
             return null;
         }
-        
+
         return self::factory($option)->getLabel();
     }
 
