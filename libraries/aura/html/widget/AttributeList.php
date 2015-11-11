@@ -11,24 +11,35 @@ use df\aura;
 use df\arch;
 
 class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWidget, core\IDumpable {
-    
+
     const PRIMARY_TAG = 'div';
-    
+
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
     use TWidget_RendererProvider;
     use TWidget_RendererContextProvider;
 
+    protected $_skipEmptyRows = false;
+
     public function __construct(arch\IContext $context, $data=null, $renderer=null) {
         $this->setData($data);
         $this->setRenderer($renderer);
     }
-    
+
+    public function shouldSkipEmptyRows($flag=null) {
+        if($flag !== null) {
+            $this->_skipEmptyRows = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_skipEmptyRows;
+    }
+
     protected function _render() {
         $tag = $this->getTag();
         $tableTag = new aura\html\Tag('table');
         $rows = new aura\html\ElementContent();
-        
+
         $renderContext = $this->getRendererContext();
         $renderContext->reset();
         $even = true;
@@ -43,22 +54,22 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         } else {
             $data = $renderContext->prepareRow($this->_data);
             $fields = $this->_fields;
-            
+
             if(empty($fields)) {
                 if(!$this->_isDataIterable()) {
                     return '';
                 }
-                
+
                 $fields = $this->_generateDefaultFields();
             }
 
             $renderContext->iterate(null);
-            
+
             foreach($fields as $key => $field) {
                 $this->_renderRow($rows, $renderContext, $field, $key, $data, $even);
             }
         }
-        
+
         return $tag->renderWith($tableTag->renderWith($rows, true));
     }
 
@@ -71,6 +82,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
 
         $renderContext->iterate($key, $tdTag, $trTag, $thTag);
         $renderContext->iterateField($key, $tdTag, $trTag, $thTag);
+        $renderContext->shouldConvertNullToNa(!$this->_skipEmptyRows);
         $value = $renderContext->renderCell($data, $field->renderer);
 
         if($renderContext->divider !== null) {
@@ -86,7 +98,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
             if($renderContext->divider !== true) {
                 $rows->push((new aura\html\Element('tr.divider', [
                     new aura\html\Element(
-                        'td', 
+                        'td',
                         $renderContext->divider,
                         ['colspan' => 2]
                     )
@@ -96,14 +108,16 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
             $even = false;
         }
 
-        if($renderContext->shouldSkipRow()) {
+
+        if($renderContext->shouldSkipRow()
+        || ($this->_skipEmptyRows && empty($value) && $value != '0')) {
             return;
         }
 
         if($thTag->isEmpty()) {
             $thTag->push($field->getName());
         }
-        
+
         $row->push($thTag->render(), $tdTag->renderWith($value));
         $rows->push($trTag->renderWith($row, true));
     }
