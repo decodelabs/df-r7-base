@@ -93,6 +93,7 @@ class Date extends Base implements core\validate\IDateField {
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
+        $value = $this->_sanitizeValue($value);
 
         if($this->_defaultToNow && !$value && !strlen($value)) {
             $value = 'now';
