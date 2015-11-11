@@ -82,6 +82,7 @@ abstract class Enum implements IEnum, core\IDumpable {
     }
 
     public static function normalizeOption($option) {
+        $option = preg_replace('/([a-z])([A-Z])/u', '$1 $2', $option);
         return lcfirst(str_replace(' ', '', ucwords(strtolower(str_replace(['_', '-'], ' ', $option)))));
     }
 
