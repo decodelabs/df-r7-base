@@ -11,6 +11,7 @@ use df\apex;
 use df\axis;
 use df\neon;
 use df\flex;
+use df\opal;
 
 class Model extends axis\Model {
 
@@ -362,6 +363,10 @@ class Model extends axis\Model {
     }
 
     protected function _normalizeId($id) {
+        if((is_array($id) || $id instanceof opal\record\IRecord) && isset($id['id'])) {
+            $id = $id['id'];
+        }
+
         if($id === null) {
             return null;
         }
