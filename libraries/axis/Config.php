@@ -10,11 +10,11 @@ use df\core;
 use df\axis;
 
 class Config extends core\Config {
-    
+
     const ID = 'DataConnections';
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
     const DEFAULT_DSN = 'mysql://user:pass@localhost/database';
-    
+
     protected $_isSetup = null;
 
     public function getDefaultValues() {
@@ -31,8 +31,7 @@ class Config extends core\Config {
             'units' => [
                 'default' => 'master',
                 '@search' => 'search'
-            ],
-            'clusterUnit' => null
+            ]
         ];
     }
 
@@ -55,11 +54,11 @@ class Config extends core\Config {
 
         return $this->_isSetup;
     }
-    
+
     public function getAdapterIdFor(IUnit $unit) {
         return $this->getSettingsFor($unit)->get('adapter');
     }
-    
+
     public function getSettingsFor(IUnit $unit) {
         $connectionId = $this->getConnectionIdFor($unit);
 
@@ -75,29 +74,29 @@ class Config extends core\Config {
                 'dsn' => 'sqlite://default'
             ]);
         }
-        
+
         return $this->values->connections->{$connectionId};
     }
-    
+
     public function getConnectionIdFor(IUnit $unit) {
         $unitId = $unit->getUnitId();
 
         if(!isset($this->values->units[$unitId])) {
             $originalId = $unitId;
-            
+
             $parts = explode('/', $unitId);
             $unitId = array_shift($parts);
-            
+
             if(!isset($this->values->units[$unitId])) {
                 try {
                     $unitId = '@'.$unit->getUnitType();
                 } catch(\Exception $e) {
                     $unitId = null;
                 }
-                
+
                 if($unitId === null || !isset($this->values->units->{$unitId})) {
                     $unitId = 'default';
-                
+
                     if(!isset($this->values->units[$unitId])) {
                         throw new RuntimeException(
                             'There are no connections matching '.$originalId
@@ -106,7 +105,7 @@ class Config extends core\Config {
                 }
             }
         }
-        
+
         return (string)$this->values->units[$unitId];
     }
 
@@ -138,18 +137,5 @@ class Config extends core\Config {
         unset($output['default'], $output['@search']);
 
         return array_keys($output);
-    }
-
-    public function setClusterUnitId($unit) {
-        if($unit instanceof axis\IUnit) {
-            $unit = $unit->getUnitId();
-        }
-
-        $this->values->clusterUnit = (string)$unit;
-        return $this;
-    }
-
-    public function getClusterUnitId() {
-        return $this->values['clusterUnit'];
     }
 }

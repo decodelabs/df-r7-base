@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 
 class Manager implements IManager {
-    
+
     use core\TManager;
 
     const REGISTRY_PREFIX = 'manager://axis/schema';
@@ -30,12 +30,12 @@ class Manager implements IManager {
 
         if(!($transient && isset($this->_transient[$unit->getUnitId()]))) {
             $schema = $cache->get($globalUnitId);
-            
+
             if($schema !== null && !$schema instanceof ISchema) {
                 $schema = null;
                 $cache->clear();
             }
-            
+
             $setCache = false;
             $schemaJson = null;
 
@@ -56,14 +56,14 @@ class Manager implements IManager {
             $schema = $unit->buildInitialSchema();
             $unit->updateUnitSchema($schema);
             $setCache = false;
-            
+
             if(!$transient) {
                 $unit->validateUnitSchema($schema);
 
                 if(!$unit->storageExists()) {
                     $unit->createStorageFromSchema($schema);
                 }
-                
+
                 $schema->acceptChanges();
 
                 if($isStoreUnit) {
@@ -80,10 +80,10 @@ class Manager implements IManager {
             }
         }
 
-        if($setCache) {    
+        if($setCache) {
             $cache->set($globalUnitId, $schema);
         }
-        
+
         return $schema;
     }
 
@@ -91,13 +91,13 @@ class Manager implements IManager {
         $currentTimestamp = $this->getTimestampFor($unit);
         $schema->acceptChanges();
         $jsonData = $schema->toJson();
-        
+
         if($currentTimestamp === null) {
             $this->insert($unit, $jsonData, $schema->getVersion());
         } else {
             $this->update($unit, $jsonData, $schema->getVersion());
         }
-        
+
         $this->clearCache($unit);
         return $this;
     }
@@ -128,7 +128,7 @@ class Manager implements IManager {
             ])
             ->where('unitId', '=', $unit->getGlobalUnitId())
             ->execute();
-            
+
         return $this;
     }
 
@@ -138,11 +138,6 @@ class Manager implements IManager {
     }
 
     public function removeId($unitId) {
-        // Strip cluster id
-        $parts = explode('/', $unitId, 2);
-        $modelParts = explode(':', array_shift($parts));
-        $unitId = array_pop($modelParts).'/'.array_shift($parts);
-
         $this->getSchemaUnit()->delete()
             ->where('unitId', '=', $unitId)
             ->execute();
@@ -154,13 +149,13 @@ class Manager implements IManager {
 
     public function clearCache(axis\ISchemaBasedStorageUnit $unit=null) {
         $cache = Cache::getInstance();
-        
+
         if($unit) {
             $cache->remove($unit->getGlobalUnitId());
         } else {
             $cache->clear();
         }
-        
+
         return $this;
     }
 

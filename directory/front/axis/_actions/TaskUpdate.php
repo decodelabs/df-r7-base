@@ -15,7 +15,6 @@ use df\opal;
 class TaskUpdate extends arch\task\Action {
 
     protected $_schemaManager;
-    protected $_clusterUnit;
 
     public function execute() {
         $this->io->write('Probing units...');
@@ -46,12 +45,6 @@ class TaskUpdate extends arch\task\Action {
 
         $this->_schemaManager = axis\schema\Manager::getInstance();
 
-        try {
-            $this->_clusterUnit = axis\Model::loadClusterUnit();
-        } catch(axis\RuntimeException $e) {
-            $this->_clusterUnit = null;
-        }
-
         foreach($units as $inspector) {
             $this->_update($inspector);
         }
@@ -64,10 +57,6 @@ class TaskUpdate extends arch\task\Action {
     protected function _update($inspector) {
         $this->io->writeLine('Updating '.$inspector->getId().' schema from v'.$inspector->getSchemaVersion().' to v'.$inspector->getDefinedSchemaVersion());
         $unit = $inspector->getUnit();
-
-        if($unit->getClusterId()) {
-            $unit = axis\Model::loadUnitFromId($unit->getGlobalUnitId());
-        }
 
         $schema = $unit->getUnitSchema();
         $unit->updateUnitSchema($schema);
@@ -121,22 +110,6 @@ class TaskUpdate extends arch\task\Action {
             'unit' => $unit,
             'schema' => $schema
         ];
-
-        if($this->_clusterUnit) {
-            foreach($this->_clusterUnit->select('@primary as primary') as $row) {
-                $clusterId = $row['primary'];
-
-                foreach($store as $unitId => $set) {
-                    $clusterUnit = axis\Model::loadUnitFromId($unitId, $clusterId);
-
-                    if($clusterUnit->storageExists()) {
-                        $this->io->writeLine('Updating '.$inspector->getId().' on cluster '.$clusterId);
-                        $clusterUnit->updateStorageFromSchema($set['schema']);
-                    }
-                }
-            }
-        }
-
 
         foreach($store as $unitId => $set) {
             $this->_schemaManager->store($set['unit'], $set['schema']);

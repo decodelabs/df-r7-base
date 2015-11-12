@@ -16,16 +16,9 @@ class TaskPurgeTableBackups extends arch\task\Action {
 
     public function execute() {
         $unitId = $this->request['unit'];
-        $allClusters = isset($this->request['allClusters']);
 
         if(!$unit = axis\Model::loadUnitFromId($unitId)) {
             $this->throwError(404, 'Unit '.$unitId.' not found');
-        }
-
-        $isClusterUnit = (bool)$unit->getClusterId();
-
-        if($isClusterUnit && $allClusters) {
-            $unit = axis\Model::loadUnitFromId($unit->getGlobalUnitId());
         }
 
         if($unit->getUnitType() != 'table') {
@@ -36,11 +29,7 @@ class TaskPurgeTableBackups extends arch\task\Action {
             $this->throwError(403, 'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!');
         }
 
-        if($isClusterUnit) {
-            $this->io->writeLine('Purging backups for unit '.$unit->getUnitId().' in cluster: '.$unit->getClusterId());
-        } else {
-            $this->io->writeLine('Purging backups for unit '.$unit->getUnitId().' in global cluster');
-        }
+        $this->io->writeLine('Purging backups for unit '.$unit->getUnitId());
 
         $adapter = $unit->getUnitAdapter();
 
@@ -55,17 +44,6 @@ class TaskPurgeTableBackups extends arch\task\Action {
 
         $inspector = new axis\introspector\UnitInspector($unit);
         $this->{$func}($unit, $inspector->getBackups());
-
-        if($allClusters && ($clusterUnit = $this->data->getClusterUnit())) {
-            foreach($clusterUnit->select('@primary')->toList('@primary') as $clusterId) {
-                $this->io->writeLine();
-                $this->io->writeLine('Purging in cluster: '.$clusterId);
-
-                $unit = axis\Model::loadUnitFromId($unitId, $clusterId);
-                $inspector = new axis\introspector\UnitInspector($unit);
-                $this->{$func}($unit, $inspector->getBackups());
-            }
-        }
     }
 
     protected function _purgeRdbmsTable(axis\IStorageUnit $unit, array $backups) {

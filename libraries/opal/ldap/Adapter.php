@@ -178,10 +178,6 @@ abstract class Adapter implements IAdapter {
         return $this;
     }
 
-    public function getClusterId() {
-        return null;
-    }
-
     public function supportsQueryType($type) {
         switch($type) {
             case opal\query\IQueryTypes::SELECT:

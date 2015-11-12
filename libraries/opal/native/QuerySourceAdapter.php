@@ -11,24 +11,24 @@ use df\opal;
 use df\user;
 
 class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query\IEntryPoint {
-    
+
     use user\TAccessLock;
     use opal\query\TQuery_EntryPoint;
 
     protected $_dataSourceId;
     protected $_rows;
     protected $_primaryField;
-    
+
     public function __construct($dataSourceId, array $rows, $primaryField=null) {
         $this->_dataSourceId = $dataSourceId;
         $this->_rows = $rows;
         $this->_primaryField = $primaryField;
     }
-    
+
     public function getQuerySourceId() {
         return $this->_dataSourceId;
     }
-    
+
     public function getQuerySourceAdapterHash() {
         return md5($this->_dataSourceId);
     }
@@ -36,16 +36,12 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
     public function getQuerySourceAdapterServerHash() {
         return $this->getQuerySourceAdapterHash();
     }
-    
+
     public function getQuerySourceDisplayName() {
         return $this->_dataSourceId;
     }
 
     public function getDelegateQueryAdapter() {
-        return null;
-    }
-
-    public function getClusterId() {
         return null;
     }
 
@@ -81,17 +77,17 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
         switch($type) {
             case opal\query\IQueryTypes::SELECT:
             case opal\query\IQueryTypes::FETCH:
-                
+
             case opal\query\IQueryTypes::CORRELATION:
 
             case opal\query\IQueryTypes::JOIN:
             case opal\query\IQueryTypes::JOIN_CONSTRAINT:
             case opal\query\IQueryTypes::REMOTE_JOIN:
-                
+
             case opal\query\IQueryTypes::SELECT_ATTACH:
             case opal\query\IQueryTypes::FETCH_ATTACH:
                 return true;
-                
+
             default:
                 return false;
         }
@@ -107,7 +103,7 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
             case opal\query\IQueryFeatures::LIMIT:
             case opal\query\IQueryFeatures::OFFSET:
                 return true;
-                
+
             default:
                 return false;
         }
@@ -119,23 +115,23 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
 
     public function ensureStorageConsistency() {}
 
-    
+
     public function executeSelectQuery(opal\query\ISelectQuery $query) {
         $manipulator = new ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
         return $manipulator->applyReadQuery($query);
     }
-    
+
     public function countSelectQuery(opal\query\ISelectQuery $query) {
         $manipulator = new ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
         return $manipulator->applyReadQuery($query, true);
     }
-    
+
     public function executeUnionQuery(opal\query\IUnionQuery $query) {
         throw new opal\query\LogicException(
             'Native data adapter does not support union queries'
         );
     }
-    
+
     public function countUnionQuery(opal\query\IUnionQuery $query) {
         throw new opal\query\LogicException(
             'Native data adapter does not support union queries'
@@ -147,12 +143,12 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
         $manipulator = new ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
         return $manipulator->applyReadQuery($query);
     }
-    
+
     public function countFetchQuery(opal\query\IFetchQuery $query) {
         $manipulator = new ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
         return $manipulator->applyReadQuery($query, true);
     }
-    
+
     public function executeInsertQuery(opal\query\IInsertQuery $query) {}
     public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query) {}
     public function executeUpdateQuery(opal\query\IUpdateQuery $query) {}
@@ -161,16 +157,16 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
     public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows) {
         return $this->_fetchData($join);
     }
-    
+
     public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows) {
         $manipulator = new ArrayManipulator($attachment->getSource(), $this->_fetchData($attachment), true);
         return $manipulator->applyAttachmentDataQuery($attachment);
     }
-    
+
     protected function _fetchData(opal\query\IQuery $query) {
         $data = [];
         $sourceAlias = $query->getSource()->getAlias();
-        
+
         foreach($this->_rows as $origRow) {
             if($origRow instanceof opal\query\IDataRowProvider) {
                 $temp = $origRow->toDataRowArray();
@@ -179,26 +175,26 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
             } else {
                 $temp = $origRow;
             }
-            
+
             if(!is_array($temp)) {
                 throw new opal\query\UnexpectedValueException(
                     'Data source rows must be convertible to an array'
                 );
             }
-            
+
             $row = [];
-            
+
             foreach($temp as $key => $value) {
                 $row[$sourceAlias.'.'.$key] = $value;
             }
-            
+
             if(is_object($origRow)) {
                 $row[$sourceAlias.'.@object'] = $origRow;
             }
-            
+
             $data[] = $row;
         }
-        
+
         return $data;
     }
 

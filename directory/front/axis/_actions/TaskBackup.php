@@ -13,7 +13,7 @@ use df\axis;
 use df\opal;
 
 class TaskBackup extends arch\task\Action {
-    
+
     const SCHEDULE = '0 0 * * 1';
 
     protected $_unitAdapters = [];
@@ -23,8 +23,7 @@ class TaskBackup extends arch\task\Action {
     protected $_manifest = [
         'timestamp' => null,
         'master' => null,
-        'connections' => [],
-        'clusterUnit' => null
+        'connections' => []
     ];
 
     public function execute() {
@@ -41,29 +40,11 @@ class TaskBackup extends arch\task\Action {
         $this->_path = $this->application->getSharedStoragePath().'/backup/'.$backupId;
         core\fs\Dir::create($this->_path);
 
-        $this->io->writeLine('Backing up units on global cluster');
+        $this->io->writeLine('Backing up units');
         $this->io->writeLine();
 
         foreach($units as $inspector) {
             $this->_backupUnit($inspector);
-        }
-
-        $clusterUnit = $this->data->getClusterUnit();
-
-        if($clusterUnit) {
-            $this->_manifest['clusterUnit'] = $clusterUnit->getUnitId();
-
-            $this->io->writeLine();
-
-            foreach($clusterUnit->select('@primary') as $row) {
-                $key = implode('|', $row);
-                $this->io->writeLine('Backing up units on cluster: '.$key);
-                $this->io->writeLine();
-
-                foreach($units as $inspector) {
-                    $this->_backupUnit($inspector->getClusterVariant($key));
-                }
-            }
         }
 
         $this->io->writeLine();

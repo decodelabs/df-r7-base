@@ -11,7 +11,7 @@ use df\opal;
 use df\user;
 
 class DerivedSourceAdapter implements IDerivedSourceAdapter {
-    
+
     use user\TAccessLock;
 
     protected $_query;
@@ -50,11 +50,7 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->getDelegateQueryAdapter();
     }
 
-    public function getClusterId() {
-        return $this->_adapter->getClusterId();
-    }
 
-    
     public function supportsQueryType($type) {
         return $this->_adapter->supportsQueryType($type);
     }
@@ -63,7 +59,7 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->supportsQueryFeature($feature);
     }
 
-    
+
     public function handleQueryException(IQuery $query, \Exception $e) {
         return $this->_adapter->handleQueryException($query, $e);
     }
@@ -72,7 +68,7 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->ensureStorageConsistency();
     }
 
-    
+
     public function executeSelectQuery(ISelectQuery $query) {
         return $this->_adapter->executeSelectQuery($query);
     }
@@ -113,7 +109,7 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->executeDeleteQuery($query);
     }
 
-    
+
     public function fetchRemoteJoinData(IJoinQuery $join, array $rows) {
         return $this->_adapter->fetchRemoteJoinData($join, $rows);
     }
@@ -122,7 +118,7 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->fetchAttachmentData($attachment, $rows);
     }
 
-    
+
     public function beginQueryTransaction() {
         return $this->_adapter->beginQueryTransaction();
     }
@@ -135,7 +131,7 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->rollbackQueryTransaction();
     }
 
-    
+
     public function newRecord(array $values=null) {
         return $this->_adapter->newRecord($values);
     }

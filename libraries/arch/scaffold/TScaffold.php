@@ -21,14 +21,8 @@ trait TScaffold_RecordLoader {
 
     //const RECORD_KEY_NAME = null;
     //const RECORD_ITEM_NAME = null;
-    //const CLUSTER = false;
-    //const GLOBAL_CLUSTER = false;
-    //const CLUSTER_KEY = null;
 
     protected $_recordAdapter;
-    protected $_clusterRecord;
-    protected $_clusterId;
-    protected $_clusterKey;
 
     public function getRecordAdapter() {
         if($this->_recordAdapter) {
@@ -36,16 +30,7 @@ trait TScaffold_RecordLoader {
         }
 
         if(@static::RECORD_ADAPTER) {
-            $locator = static::RECORD_ADAPTER;
-
-            if($this->isRecordAdapterClustered()) {
-                $locator = new mesh\entity\Locator($locator);
-                $clusterId = $this->getClusterId();
-                $location = $clusterId.'/'.$locator->getLastNodeLocation();
-                $locator->setLastNodeLocation($location);
-            }
-
-            $adapter = $this->data->fetchEntity($locator);
+            $adapter = $this->data->fetchEntity(static::RECORD_ADAPTER);
 
             if($adapter instanceof axis\IUnit) {
                 $this->_recordAdapter = $adapter;
@@ -61,181 +46,6 @@ trait TScaffold_RecordLoader {
     }
 
     protected function generateRecordAdapter() {}
-
-    public function isRecordAdapterClustered() {
-        return (bool)@static::CLUSTER;
-    }
-
-    public function getClusterKey() {
-        if(@static::CLUSTER_KEY !== null) {
-            return static::CLUSTER_KEY;
-        }
-
-        if(!$this->_clusterKey) {
-            $unit = $this->data->getClusterUnit();
-            $this->_clusterKey = $unit->getUnitName();
-        }
-
-        return $this->_clusterKey;
-    }
-
-    public function getClusterRecord() {
-        if($this->_clusterRecord === null) {
-            $id = $this->request->query[$this->getClusterKey()];
-
-            if(empty($id)) {
-                if(@static::GLOBAL_CLUSTER) {
-                    $this->_clusterRecord = false;
-                } else {
-                    throw new RuntimeException(
-                        'Unable to extract cluster id from request with key: '.$this->getClusterKey()
-                    );
-                }
-            }
-
-            if($this->_clusterRecord !== false) {
-                $this->_clusterRecord = $this->data->fetchClusterRecord($id);
-            }
-        }
-
-        if($this->_clusterRecord === false) {
-            return null;
-        }
-
-        return $this->_clusterRecord;
-    }
-
-    public function getClusterId() {
-        if($this->_clusterId === null) {
-            if($record = $this->getClusterRecord()) {
-                $this->_clusterId = (string)$record->getPrimaryKeySet();
-            } else {
-                $this->_clusterId = false;
-            }
-        }
-
-        if($this->_clusterId === false) {
-            return null;
-        }
-
-        return $this->_clusterId;
-    }
-
-    protected function _renderClusterSelector() {
-        if(!$this->isRecordAdapterClustered() || !($unit = $this->data->getClusterUnit())) {
-            return;
-        }
-
-        if($unit instanceof axis\IClusterUnit) {
-            $list = $unit->getClusterOptionsList();
-        } else {
-            $list = $unit->select('@primary')
-                ->orderBy('@primary ASC')
-                ->toList('@primary', '@primary');
-        }
-
-        $form = $this->html->form()->setMethod('get');
-        $clusterName = $this->format->name($unit->getUnitName());
-        $clusterKey = $this->getClusterKey();
-
-        if(@static::GLOBAL_CLUSTER) {
-            $selector = $this->html->groupedSelectList($clusterKey, $this->request->query->{$clusterKey}, [
-                    'Global' => [
-                        '' => 'Global'
-                    ],
-                    $clusterName => $list
-                ])
-                ->isRequired(true);
-        } else {
-            $selector = $this->html->selectList($clusterKey, $this->request->query->{$clusterKey}, $list)
-                ->isRequired(true);
-        }
-
-        $form->addFieldArea($clusterName)->push(
-            $selector,
-
-            $this->html->submitButton(null, $this->_('Go'))
-                ->setDisposition('positive')
-        );
-
-        return $form;
-    }
-
-    protected function _handleClusterSelection() {
-        if(!$this->isRecordAdapterClustered() || @static::GLOBAL_CLUSTER || !($unit = $this->data->getClusterUnit())) {
-            return null;
-        }
-
-        $clusterKey = $this->getClusterKey();
-        $clusterId = $this->request->query[$clusterKey];
-
-        if(!empty($clusterId)) {
-            return null;
-        }
-
-        if($unit instanceof axis\IClusterUnit) {
-            $list = $unit->getClusterOptionsList();
-        } else {
-            $list = $unit->select('@primary')
-                ->orderBy('@primary ASC')
-                ->toList('@primary', '@primary');
-        }
-
-        if(count($list) == 1) {
-            $request = clone $this->request;
-            $request->query->{$clusterKey} = key($list);
-            return $this->http->redirect($request);
-        }
-
-        //$this->view = $this->apex->newWidgetView();
-        $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
-        $container = $this->view->content;
-        $clusterName = $this->format->name($unit->getUnitName());
-
-        $container->push(
-            (new arch\scaffold\component\HeaderBar($this, 'clusterSelector', []))
-                ->setTitle($this->getDirectoryTitle())
-        );
-
-        if(empty($list)) {
-            $container->addFlashMessage($this->_(
-                'There are currently no %n% group entries to select from',
-                ['%n%' => $clusterName]
-            ), 'warning');
-
-            return $this->view;
-        }
-
-        $form = $container->addForm()->setMethod('get');
-        $fs = $form->addFieldSet($this->_('Select %n%', ['%n%' => $clusterName]));
-
-        $fs->addFieldArea()->addFlashMessage($this->_(
-            'This data is split over multiple %n% groups, please select which you would like to view',
-            ['%n%' => $clusterName]
-        ));
-
-        $fs->addFieldArea($clusterName)->push(
-            $this->html->selectList($clusterKey, null, $list)
-                ->isRequired(true),
-
-            $this->_buildQueryPropagationInputs([$clusterKey]),
-
-            $this->html->submitButton(null, $this->_('Select'))
-                ->setDisposition('positive')
-        );
-
-        return $this->view;
-    }
-
-    public function getPropagatingQueryVars() {
-        $output = parent::getPropagatingQueryVars();
-
-        if($this->isRecordAdapterClustered()) {
-            $output[] = $this->getClusterKey();
-        }
-
-        return $output;
-    }
 
     public function getRecordKeyName() {
         if(@static::RECORD_KEY_NAME) {

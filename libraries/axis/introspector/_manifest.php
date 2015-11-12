@@ -26,7 +26,6 @@ interface IProbe {
 
 interface IUnitInspector {
     public function getUnit();
-    public function getClusterVariant($clusterId);
     public function getModel();
     public function getId();
     public function getGlobalId();

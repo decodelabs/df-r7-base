@@ -17,29 +17,16 @@ abstract class Model implements IModel, core\IDumpable {
     const REGISTRY_PREFIX = 'model://';
 
     private $_modelName;
-    private $_clusterId = null;
     private $_units = [];
 
-    public static function factory($name, $clusterId=null) {
+    public static function factory($name) {
         if($name instanceof IModel) {
             return $name;
         }
 
 
-        $parts = explode(':', $name, 2);
-        $name = lcfirst(array_pop($parts));
-
-        if(!empty($parts)) {
-            $clusterId = array_shift($parts);
-        }
-
-        $key = self::REGISTRY_PREFIX;
-
-        if($clusterId) {
-            $key .= $clusterId.'/';
-        }
-
-        $key .= $name;
+        $name = lcfirst($name);
+        $key = self::REGISTRY_PREFIX.$name;
         $application = df\Launchpad::getApplication();
 
         if($model = $application->getRegistryObject($key)) {
@@ -54,15 +41,13 @@ abstract class Model implements IModel, core\IDumpable {
             );
         }
 
-        $model = new $class($clusterId);
+        $model = new $class();
         $application->setRegistryObject($model);
 
         return $model;
     }
 
-    protected function __construct($clusterId=null) {
-        $this->_clusterId = $clusterId;
-    }
+    protected function __construct() {}
 
     public function getModelName() {
         if(!$this->_modelName) {
@@ -75,28 +60,11 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
     public function getModelId() {
-        $output = $this->getModelName();
-
-        if($this->_clusterId) {
-            $output = $this->_clusterId.':'.$output;
-        }
-
-        return $output;
-    }
-
-    public function getClusterId() {
-        return $this->_clusterId;
+        return $this->getModelName();
     }
 
     final public function getRegistryObjectKey() {
-        $key = self::REGISTRY_PREFIX;
-
-        if($this->_clusterId) {
-            $key .= $this->_clusterId.'/';
-        }
-
-        $key .= $this->getModelName();
-        return $key;
+        return self::REGISTRY_PREFIX.$this->getModelName();
     }
 
 
@@ -179,16 +147,10 @@ abstract class Model implements IModel, core\IDumpable {
         return $this->getUnit($member);
     }
 
-    public static function loadUnitFromId($id, $clusterId=null) {
+    public static function loadUnitFromId($id) {
         $parts = explode('/', $id, 2);
-        $nameParts = explode(':', array_shift($parts), 2);
-        $name = array_pop($nameParts);
 
-        if($clusterId === null && !empty($nameParts)) {
-            $clusterId = array_shift($nameParts);
-        }
-
-        return self::factory($name, $clusterId)
+        return self::factory(array_shift($parts))
             ->getUnit(array_shift($parts));
     }
 
@@ -226,77 +188,9 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
 
-// Clusters
-    public static function loadClusterUnit() {
-        $config = axis\Config::getInstance();
-        $unitId = $config->getClusterUnitId();
-
-        if(!$unitId) {
-            throw new RuntimeException(
-                'No cluster unit has been defined in config'
-            );
-        }
-
-        return self::loadUnitFromId($unitId);
-    }
-
-    public static function createCluster($clusterId) {
-        $config = axis\Config::getInstance();
-
-        foreach($config->getConnectionsOfType('Rdbms') as $set) {
-            try {
-                $dsn = opal\rdbms\Dsn::factory(@$set['dsn']);
-                $dsn->setDatabaseSuffix('_'.$clusterId);
-                $connection = opal\rdbms\adapter\Base::factory($dsn, true);
-                $connection->getDatabase()->truncate();
-            } catch(\Exception $e) {
-                continue;
-            }
-        }
-    }
-
-    public static function renameCluster($oldId, $newId) {
-        $config = axis\Config::getInstance();
-
-        foreach($config->getConnectionsOfType('Rdbms') as $set) {
-            try {
-                $dsn = opal\rdbms\Dsn::factory(@$set['dsn']);
-                $dsn->setDatabaseSuffix('_'.$oldId);
-                $connection = opal\rdbms\adapter\Base::factory($dsn, true);
-                $dsn = clone $dsn;
-                $dsn->setDatabaseSuffix('_'.$newId);
-                $connection->getDatabase()->rename($dsn->getDatabase());
-            } catch(\Exception $e) {
-                continue;
-            }
-        }
-    }
-
-    public static function dropCluster($clusterId) {
-        $config = axis\Config::getInstance();
-
-        foreach($config->getConnectionsOfType('Rdbms') as $set) {
-            try {
-                $dsn = opal\rdbms\Dsn::factory(@$set['dsn']);
-                $dsn->setDatabaseSuffix('_'.$clusterId);
-                $connection = opal\rdbms\adapter\Base::factory($dsn, false);
-                $connection->getDatabase()->drop();
-            } catch(\Exception $e) {
-                continue;
-            }
-        }
-    }
-
 // Mesh
     public function getEntityLocator() {
-        $output = 'axis://';
-
-        if($this->_clusterId) {
-            $output .= $this->_clusterId.'/';
-        }
-
-        $output .= $this->getModelName();
-        return new mesh\entity\Locator($output);
+        return new mesh\entity\Locator('axis://'.$this->getModelName());
     }
 
     public function fetchSubEntity(mesh\IManager $manager, array $node) {
@@ -322,7 +216,6 @@ abstract class Model implements IModel, core\IDumpable {
     public function getDumpProperties() {
         return [
             new core\debug\dumper\Property('name', $this->_modelName),
-            new core\debug\dumper\Property('cluster', $this->_clusterId),
             new core\debug\dumper\Property('units', $this->_units, 'private')
         ];
     }

@@ -49,16 +49,16 @@ interface IInitiator extends ITransactionAware {
     public function beginJoinConstraint(IQuery $parent, $type=IJoinQuery::INNER);
     public function beginAttach(IReadQuery $parent, array $fields=[], $isSelect=false);
     public static function beginAttachFromPopulate(IPopulateQuery $populate);
-    
+
     public function getFields();
     public function getFieldMap();
-    public function getData(); 
+    public function getData();
     public function getParentQuery();
     public function getJoinType();
 
     public function setApplicator(Callable $applicator=null);
     public function getApplicator();
-    
+
     public function from($sourceAdapter, $alias=null);
     public function fromUnion();
     public function fromSelect($field1=null);
@@ -108,7 +108,7 @@ interface IEntryPoint {
     public function batchReplace($rows=[]);
     public function update(array $valueMap=null);
     public function delete();
-    
+
     public function begin();
 }
 
@@ -122,7 +122,7 @@ interface IJoinClauseFactory extends IClauseFactory {
     public function orOn($localField, $operator, $foreignField);
     public function beginOnClause();
     public function beginOrOnClause();
-    
+
     public function addJoinClause(IJoinClauseProvider $clause=null);
     public function getJoinClauseList();
     public function hasJoinClauses();
@@ -147,7 +147,7 @@ interface IWhereClauseFactory extends IClauseFactory {
     public function orWhereCorrelation($field, $operator, $keyField);
     public function beginWhereClause();
     public function beginOrWhereClause();
-    
+
     public function addWhereClause(IWhereClauseProvider $clause=null);
     public function getWhereClauseList();
     public function hasWhereClauses();
@@ -160,7 +160,7 @@ interface IHavingClauseFactory extends IClauseFactory {
     public function orHaving($field, $operator, $value);
     public function beginHavingClause();
     public function beginOrHavingClause();
-    
+
     public function addHavingClause(IHavingClauseProvider $clause=null);
     public function getHavingClauseList();
     public function hasHavingClauses();
@@ -326,9 +326,9 @@ interface ILocationalQuery extends IQuery {
 }
 
 
-interface ICorrelationQuery extends 
-    IQuery, 
-    IParentQueryAware, 
+interface ICorrelationQuery extends
+    IQuery,
+    IParentQueryAware,
     INestedComponent,
     IJoinConstrainableQuery,
     IJoinClauseFactory,
@@ -337,7 +337,7 @@ interface ICorrelationQuery extends
     IOffsettableQuery {
     public function setApplicator(Callable $applicator=null);
     public function getApplicator();
-    public function getFieldAlias();    
+    public function getFieldAlias();
     public function endCorrelation($fieldAlias=null);
 
     public function getCorrelationSource();
@@ -345,17 +345,17 @@ interface ICorrelationQuery extends
 }
 
 
-interface IJoinQuery extends 
-    IQuery, 
-    IParentQueryAware, 
+interface IJoinQuery extends
+    IQuery,
+    IParentQueryAware,
     INestedComponent,
-    IJoinClauseFactory, 
+    IJoinClauseFactory,
     IWhereClauseFactory {
-    
+
     const INNER = 0;
     const LEFT = 1;
     const RIGHT = 2;
-    
+
     public function addOutputFields($fields);
     public function getType();
     public function isConstraint($flag=null);
@@ -364,8 +364,8 @@ interface IJoinQuery extends
 }
 
 
-interface IPopulateQuery extends 
-    IQuery, 
+interface IPopulateQuery extends
+    IQuery,
     IParentQueryAware,
     INestedComponent,
     IPopulatableQuery,
@@ -385,11 +385,11 @@ interface IPopulateQuery extends
 }
 
 
-interface ICombineQuery extends 
+interface ICombineQuery extends
     IQuery,
     IParentQueryAware,
     INestedComponent {
-    
+
     public function setFields($field1);
     public function addFields($field1);
     public function getFields();
@@ -403,21 +403,21 @@ interface ICombineQuery extends
 
     public function asOne($name);
     public function asCopy($name);
-    public function isCopy($flag=null); 
+    public function isCopy($flag=null);
 }
 
 
-interface IAttachQuery extends 
-    IQuery, 
-    IParentQueryAware, 
+interface IAttachQuery extends
+    IQuery,
+    IParentQueryAware,
     INestedComponent,
     IJoinClauseFactory {
-        
+
     const TYPE_ONE = 0;
     const TYPE_MANY = 1;
     const TYPE_LIST = 2;
     const TYPE_VALUE = 3;
-    
+
     public function isPopulate();
     public function getType();
     public function asOne($name);
@@ -457,30 +457,30 @@ interface IPageableQuery extends IReadQuery, core\collection\IPageable {
 /***********
  * Select
  */
-interface ISelectQuery extends 
-    IReadQuery, 
+interface ISelectQuery extends
+    IReadQuery,
     \Countable,
     IDerivableQuery,
     ILocationalQuery,
     IDistinctQuery,
     ICorrelatableQuery,
-    IJoinableQuery, 
-    IAttachableQuery, 
+    IJoinableQuery,
+    IAttachableQuery,
     IPopulatableQuery,
     ICombinableQuery,
     IPrerequisiteClauseQuery,
     ISearchableQuery,
-    IGroupableQuery, 
-    IHavingClauseQuery, 
-    IOrderableQuery, 
+    IGroupableQuery,
+    IHavingClauseQuery,
+    IOrderableQuery,
     ILimitableQuery,
     IOffsettableQuery,
     IPageableQuery {
     public function addOutputFields($fields);
     public function toList($field1, $field2=null);
     public function toValue($valField=null);
-}    
-    
+}
+
 interface ISelectAttachQuery extends ISelectQuery, IAttachQuery {
     public function asList($name, $field1, $field2=null);
     public function asValue($name, $field=null);
@@ -492,13 +492,13 @@ interface ISelectAttachQuery extends ISelectQuery, IAttachQuery {
 /***********
  * Union
  */
-interface IUnionQuery extends 
+interface IUnionQuery extends
     IReadQuery,
     \Countable,
     IDerivableQuery,
     IAttachableQuery,
     ICombinableQuery,
-    IOrderableQuery, 
+    IOrderableQuery,
     ILimitableQuery,
     IOffsettableQuery,
     IPageableQuery {
@@ -520,21 +520,21 @@ interface IUnionSelectQuery extends ISelectQuery {
 /***********
  * Fetch
  */
-interface IFetchQuery extends 
-    IReadQuery, 
+interface IFetchQuery extends
+    IReadQuery,
     \Countable,
     ILocationalQuery,
     ICorrelatableQuery,
     IJoinConstrainableQuery,
     IRelationAttachableQuery,
-    IPopulatableQuery, 
-    IPrerequisiteClauseQuery, 
+    IPopulatableQuery,
+    IPrerequisiteClauseQuery,
     ISearchableQuery,
-    IOrderableQuery, 
-    ILimitableQuery, 
+    IOrderableQuery,
+    ILimitableQuery,
     IOffsettableQuery,
     IPageableQuery {}
-    
+
 interface IFetchAttachQuery extends IFetchQuery, IAttachQuery {
     public function getListKeyField();
 }
@@ -563,11 +563,11 @@ interface IBatchInsertQuery extends IDataInsertQuery {
     public function clearRows();
     public function getFields();
     public function getDereferencedFields();
-    
+
     public function countPending();
     public function countInserted();
     public function countTotal();
-    
+
     public function setFlushThreshold($flush);
     public function getFlushThreshold();
 }
@@ -585,10 +585,10 @@ interface IDataUpdateQuery extends IWriteQuery, ILocationalQuery {
     public function getValues();
     public function getPreparedValues();
 }
- 
-interface IUpdateQuery extends 
-    IDataUpdateQuery, 
-    IPrerequisiteClauseQuery, 
+
+interface IUpdateQuery extends
+    IDataUpdateQuery,
+    IPrerequisiteClauseQuery,
     IOrderableQuery,
     ILimitableQuery {}
 
@@ -596,10 +596,10 @@ interface IUpdateQuery extends
 /***********
  * Delete
  */
-interface IDeleteQuery extends 
-    IWriteQuery, 
+interface IDeleteQuery extends
+    IWriteQuery,
     ILocationalQuery,
-    IPrerequisiteClauseQuery, 
+    IPrerequisiteClauseQuery,
     ILimitableQuery {}
 
 
@@ -617,7 +617,7 @@ interface IQueryTypes {
     const BATCH_REPLACE = 7;
     const UPDATE = 8;
     const DELETE = 9;
-    
+
     const CORRELATION = 101;
     const DERIVATION = 102;
 
@@ -627,7 +627,7 @@ interface IQueryTypes {
     const JOIN = 201;
     const JOIN_CONSTRAINT = 202;
     const REMOTE_JOIN = 211;
-    
+
     const SELECT_ATTACH = 301;
     const FETCH_ATTACH = 302;
     const REMOTE_ATTACH = 311;
@@ -645,29 +645,28 @@ interface IQueryFeatures {
     const VALUE_PROCESSOR = 101;
     const LOCATION = 201;
 }
- 
- 
+
+
 interface IAdapterAware {
     public function getAdapter();
     public function getAdapterHash();
     public function getAdapterServerHash();
 }
- 
- 
+
+
 interface IAdapter extends user\IAccessLock {
     public function getQuerySourceId();
     public function getQuerySourceAdapterHash();
     public function getQuerySourceAdapterServerHash();
     public function getQuerySourceDisplayName();
     public function getDelegateQueryAdapter();
-    public function getClusterId();
-    
+
     public function supportsQueryType($type);
     public function supportsQueryFeature($feature);
-    
+
     public function handleQueryException(IQuery $query, \Exception $e);
     public function ensureStorageConsistency();
-    
+
     public function executeSelectQuery(ISelectQuery $query);
     public function countSelectQuery(ISelectQuery $query);
     public function executeUnionQuery(IUnionQuery $query);
@@ -678,14 +677,14 @@ interface IAdapter extends user\IAccessLock {
     public function executeBatchInsertQuery(IBatchInsertQuery $query);
     public function executeUpdateQuery(IUpdateQuery $query);
     public function executeDeleteQuery(IDeleteQuery $query);
-    
+
     public function fetchRemoteJoinData(IJoinQuery $join, array $rows);
     public function fetchAttachmentData(IAttachQuery $attachment, array $rows);
-    
+
     public function beginQueryTransaction();
     public function commitQueryTransaction();
     public function rollbackQueryTransaction();
-    
+
     public function newRecord(array $values=null);
     public function newPartial(array $values=null);
     public function shouldRecordsBroadcastHookEvents();
@@ -727,9 +726,9 @@ interface ISource extends IAdapterAware {
     public function getDisplayName();
     public function isDerived();
     public function isPrimary($flag=null);
-    
+
     public function handleQueryException(IQuery $query, \Exception $e);
-    
+
     public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null);
     public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field=null);
 
@@ -748,7 +747,7 @@ interface ISource extends IAdapterAware {
 
     public function setKeyField(IField $field=null);
     public function getKeyField();
-    
+
     public function getOutputFields();
     public function getDereferencedOutputFields();
     public function getPrivateFields();
@@ -771,9 +770,9 @@ interface ISourceManager extends ITransactionAware {
     public function getSourceByAlias($alias);
     public function countSourceAdapters();
     public function canQueryLocally();
-    
+
     public function executeQuery(IQuery $query, Callable $executor);
-    
+
     public function extrapolateSourceAdapter($adapter);
     public function extrapolateOutputField(ISource $source, $name);
     public function realiasOutputField(ISource $parentSource, ISource $source, $name);
@@ -791,7 +790,7 @@ interface ITransaction extends IEntryPoint {
     public function commit();
     public function rollback();
     public function beginAgain();
-    
+
     public function registerAdapter(IAdapter $adapter);
 }
 
@@ -807,7 +806,7 @@ interface ITransactionAware {
 interface IField {
     public function getSource();
     public function getSourceAlias();
-    
+
     public function getName();
     public function getAlias();
     public function setAlias($alias);
@@ -924,7 +923,7 @@ interface IFieldValueProcessor {
     public function compareValues($value1, $value2);
     public function generateInsertValue(array $row);
     public function getSearchFieldType();
-    public function canReturnNull();    
+    public function canReturnNull();
 }
 
 
@@ -938,11 +937,11 @@ interface IClauseProvider {
     public function referencesSourceAliases(array $sourceAliases);
     public function getNonLocalFieldReferences();
 }
- 
+
 interface IJoinClauseProvider extends IClauseProvider {}
 interface IWhereClauseProvider extends IClauseProvider {}
 interface IHavingClauseProvider extends IClauseProvider {}
- 
+
 interface IClause extends IJoinClauseProvider, IWhereClauseProvider, IHavingClauseProvider {
     public function setField(IField $field);
     public function getField();
@@ -960,13 +959,13 @@ interface IClause extends IJoinClauseProvider, IWhereClauseProvider, IHavingClau
     public static function mapVirtualValueClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr);
 }
 
-interface IClauseList extends 
+interface IClauseList extends
     INestedComponent,
-    IJoinClauseProvider, 
-    IWhereClauseProvider, 
-    IHavingClauseProvider, 
-    \Countable, 
-    core\IArrayProvider, 
+    IJoinClauseProvider,
+    IWhereClauseProvider,
+    IHavingClauseProvider,
+    \Countable,
+    core\IArrayProvider,
     ISourceProvider {
 
     public function getParent();
@@ -1060,11 +1059,11 @@ interface IPaginator extends core\collection\IOrderablePaginator {
 interface IBatchIterator extends core\collection\ICollection, \IteratorAggregate {
     public function getResult();
     public function isForFetch($flag=null);
-    
+
     public function getPrimarySource();
     public function addSources(array $joinSources);
     public function getSources();
-    
+
     public function setPopulates(array $populates);
     public function getPopulates();
 
@@ -1073,13 +1072,13 @@ interface IBatchIterator extends core\collection\ICollection, \IteratorAggregate
 
     public function setCombines(array $combines);
     public function getCombines();
-    
+
     public function setListKeyField(IField $field=null);
     public function getListKeyField();
-    
+
     public function setListValueField(IField $field=null);
     public function getListValueField();
-    
+
     public function setBatchSize($size);
     public function getBatchSize();
 }
@@ -1088,18 +1087,18 @@ interface IOutputManifest {
     public function getPrimarySource();
     public function getSources();
     public function importSource(ISource $source, array $rows=null, $isNormalized=true);
-    
+
     public function addOutputField(IField $field);
     public function getOutputFields();
     public function getPrivateFields();
     public function getAllFields();
-    
+
     public function getWildcardMap();
-    
+
     public function getAggregateFields();
     public function getAggregateFieldAliases();
     public function hasAggregateFields();
-    
+
     public function getOutputFieldProcessors();
     public function getCombines();
 

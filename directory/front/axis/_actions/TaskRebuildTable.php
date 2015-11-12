@@ -34,7 +34,7 @@ class TaskRebuildTable extends arch\task\Action {
 
         $this->_deleteOld = isset($this->request['delete']);
 
-        $this->io->writeLine('Rebuilding unit '.$unit->getUnitId().' in global cluster');
+        $this->io->writeLine('Rebuilding unit '.$unit->getUnitId());
         $adapter = $unit->getUnitAdapter();
 
         $parts = explode('\\', get_class($adapter));
@@ -51,16 +51,6 @@ class TaskRebuildTable extends arch\task\Action {
         $unit->validateUnitSchema($schema);
 
         $this->{$func}($unit, $schema);
-
-        if($clusterUnit = $this->data->getClusterUnit()) {
-            foreach($clusterUnit->select('@primary')->toList('@primary') as $clusterId) {
-                $this->io->writeLine();
-                $this->io->writeLine('Rebuilding in cluster: '.$clusterId);
-
-                $unit = axis\Model::loadUnitFromId($unitId, $clusterId);
-                $this->{$func}($unit, $schema);
-            }
-        }
 
         $this->io->writeLine();
         $this->io->writeLine('Updating schema cache');

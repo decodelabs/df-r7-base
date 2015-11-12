@@ -27,10 +27,6 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     use arch\scaffold\TScaffold_RecordIndexHeaderBarProvider;
 
     const RECORD_ADAPTER = null;
-    const CLUSTER = false;
-    const GLOBAL_CLUSTER = false;
-    const CLUSTER_KEY = null;
-
     const RECORD_KEY_NAME = null;
     const RECORD_ITEM_NAME = null;
     const RECORD_URL_KEY = null;
@@ -89,14 +85,6 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
 
 // Components
-    public function renderIndexSelectorArea() {
-        return $this->_renderClusterSelector();
-    }
-
-    public function renderDetailsSelectorArea() {
-        return $this->_renderClusterSelector();
-    }
-
     public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
         if($queryMode === null) {
             $queryMode = $this->request->getAction();
@@ -125,7 +113,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         } else {
             $searchBar = null;
         }
-        
+
         $list = $this->apex->component(ucfirst($keyName).'List', $fields)
             ->setCollection($query);
 
@@ -144,16 +132,12 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         }
 
         return [
-            'searchBar' => $searchBar, 
+            'searchBar' => $searchBar,
             'collectionList' => $list
         ];
     }
 
 // Helpers
-    public function onActionDispatch(arch\IAction $action) {
-        return $this->_handleClusterSelection();
-    }
-
     public function getDirectoryKeyName() {
         return $this->getRecordKeyName();
     }

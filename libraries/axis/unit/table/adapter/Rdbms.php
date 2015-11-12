@@ -11,25 +11,23 @@ use df\axis;
 use df\opal;
 use df\user;
 
-class Rdbms implements 
-    axis\ISchemaProviderAdapter, 
+class Rdbms implements
+    axis\ISchemaProviderAdapter,
     axis\IConnectionProxyAdapter,
     axis\IIntrospectableAdapter,
     opal\query\IAdapter,
     core\IDumpable {
-    
+
     use user\TAccessLock;
-    
+
     protected $_connection;
-    protected $_querySourceAdapter;    
+    protected $_querySourceAdapter;
     protected $_unit;
-    protected $_clusterId;
-    
+
     public function __construct(axis\IAdapterBasedStorageUnit $unit) {
         $this->_unit = $unit;
-        $this->_clusterId = $unit->getModel()->getClusterId();
     }
-    
+
     public function getDisplayName() {
         return 'Rdbms';
     }
@@ -42,14 +40,9 @@ class Rdbms implements
         if(!$this->_connection) {
             $settings = $this->_unit->getUnitSettings();
             $dsn = opal\rdbms\Dsn::factory($settings['dsn']);
-
-            if($this->_clusterId) {
-                $dsn->setDatabaseSuffix('_'.$this->_clusterId);
-            }
-
             $this->_connection = opal\rdbms\adapter\Base::factory($dsn, true);
         }
-        
+
         return $this->_connection;
     }
 
@@ -66,16 +59,16 @@ class Rdbms implements
 
         return $output;
     }
-    
+
 // Query source
     public function getQuerySourceId() {
         return 'axis://Unit:"'.$this->_unit->getUnitId().'"';
     }
-    
+
     public function getQuerySourceDisplayName() {
         return $this->_unit->getUnitId();
     }
-    
+
     public function getQuerySourceAdapterHash() {
         return $this->getConnection()->getDsnHash();
     }
@@ -83,38 +76,34 @@ class Rdbms implements
     public function getQuerySourceAdapterServerHash() {
         return $this->getConnection()->getServerDsnHash();
     }
-    
+
     public function getQuerySourceAdapter() {
         if(!$this->_querySourceAdapter) {
             $this->_querySourceAdapter = $this->getConnection()->getTable($this->_unit->getStorageBackendName());
         }
-        
+
         return $this->_querySourceAdapter;
     }
-    
+
     public function getDelegateQueryAdapter() {
         return $this->getQuerySourceAdapter()->getDelegateQueryAdapter();
     }
 
-    public function getClusterId() {
-        return $this->_unit->getClusterId();
-    }
-    
     public function supportsQueryType($type) {
         return $this->getQuerySourceAdapter()->supportsQueryType($type);
     }
-    
+
     public function supportsQueryFeature($feature) {
         return $this->getQuerySourceAdapter()->supportsQueryFeature($feature);
     }
-    
-    
-    
+
+
+
 // Query proxy
     public function executeSelectQuery(opal\query\ISelectQuery $query) {
         return $this->getQuerySourceAdapter()->executeSelectQuery($query);
     }
-    
+
     public function countSelectQuery(opal\query\ISelectQuery $query) {
         return $this->getQuerySourceAdapter()->countSelectQuery($query);
     }
@@ -126,7 +115,7 @@ class Rdbms implements
     public function countUnionQuery(opal\query\IUnionQuery $query) {
         return $this->getQuerySourceAdapter()->countUnionQuery($query);
     }
-    
+
     public function executeFetchQuery(opal\query\IFetchQuery $query) {
         return $this->getQuerySourceAdapter()->executeFetchQuery($query);
     }
@@ -150,8 +139,8 @@ class Rdbms implements
     public function executeDeleteQuery(opal\query\IDeleteQuery $query) {
         return $this->getQuerySourceAdapter()->executeDeleteQuery($query);
     }
-    
-    
+
+
     public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows) {
         return $this->getQuerySourceAdapter()->fetchRemoteJoinData($join, $rows);
     }
@@ -160,8 +149,8 @@ class Rdbms implements
         return $this->getQuerySourceAdapter()->fetchAttachmentData($attachment, $rows);
     }
 
-    
-    
+
+
 
 // Transactions
     public function beginQueryTransaction() {
@@ -175,8 +164,8 @@ class Rdbms implements
     public function rollbackQueryTransaction() {
         return $this->getQuerySourceAdapter()->rollbackQueryTransaction();
     }
-    
-    
+
+
 // Record
     public function newRecord(array $values=null) {
         return $this->_unit->newRecord($values);
@@ -185,12 +174,12 @@ class Rdbms implements
     public function newPartial(array $values=null) {
         return $this->_unit->newPartial($values);
     }
-    
+
     public function shouldRecordsBroadcastHookEvents() {
         return $this->_unit->shouldRecordsBroadcastHookEvents();
     }
-    
-    
+
+
 // Create
     public function ensureStorage() {
         if($this->storageExists()) {
@@ -226,7 +215,7 @@ class Rdbms implements
 
         return $table;
     }
-    
+
     public function destroyStorage() {
         $this->getQuerySourceAdapter()->drop();
         return $this;
@@ -236,7 +225,7 @@ class Rdbms implements
         return $this->getQuerySourceAdapter()->exists();
     }
 
-    
+
 // Query exceptions
     public function handleQueryException(opal\query\IQuery $query, \Exception $e) {
         // Table not found
@@ -246,7 +235,7 @@ class Rdbms implements
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -282,7 +271,7 @@ class Rdbms implements
 
         if(!empty($remove)) {
             $manager->clearCache();
-            
+
             foreach($remove as $unitId) {
                 $manager->removeId($unitId);
             }
@@ -314,7 +303,7 @@ class Rdbms implements
 
         $table = $this->getConnection()->getTable($name);
         $stats = $table->getStats();
-        
+
         return new axis\introspector\StorageDescriber(
             $name,
             $this->getConnection()->getAdapterName(),
@@ -334,7 +323,7 @@ class Rdbms implements
         return $this;
     }
 
-    
+
 // Access
     public function getAccessLockDomain() {
         return $this->_unit->getAccessLockDomain();
@@ -352,12 +341,12 @@ class Rdbms implements
         return $this->_unit->getAccessLockId();
     }
 
-    
+
 // Dump
     public function getDumpProperties() {
         return [
             'name' => $this->getDisplayName(),
-            'unit' => $this->_unit->getUnitId() 
+            'unit' => $this->_unit->getUnitId()
         ];
     }
 }

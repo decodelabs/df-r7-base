@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\opal\query;
 use df;
 use df\core;
 use df\opal;
-    
+
 class Populate implements IPopulateQuery, core\IDumpable {
 
     use TQuery;
@@ -61,7 +61,7 @@ class Populate implements IPopulateQuery, core\IDumpable {
             );
         }
 
-        $adapter = $field->getTargetQueryAdapter($adapter->getClusterId());
+        $adapter = $field->getTargetQueryAdapter();
         $alias = uniqid('ppl_'.$intrinsicFieldName);
 
         if(empty($selectFields)) {
@@ -103,18 +103,18 @@ class Populate implements IPopulateQuery, core\IDumpable {
 
         if(!empty($this->_order)) {
             $order = [];
-            
+
             foreach($this->_order as $directive) {
                 $order[] = $directive->toString();
             }
-            
+
             $output['order'] = implode(', ', $order);
         }
-        
+
         if($this->_limit) {
             $output['limit'] = $this->_limit;
         }
-        
+
         if($this->_offset) {
             $output['offset'] = $this->_offset;
         }

@@ -25,8 +25,7 @@ interface IAccess extends user\IState {}
 interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject {
     public function getModelName();
     public function getModelId();
-    public function getClusterId();
-    
+
     public function getUnit($name);
     public static function getSchemaManager();
     public function unloadUnit(IUnit $unit);
@@ -51,7 +50,6 @@ interface IUnit extends mesh\entity\IEntity, user\IAccessLock, \Serializable {
     public function getGlobalUnitId();
     public function getUnitType();
     public function getModel();
-    public function getClusterId();
     public function getUnitSettings();
     public function getStorageBackendName();
 
@@ -67,7 +65,7 @@ trait TUnit {
     use user\TAccessLock;
 
     public static $actionAccess = [];
-    
+
     private $_unitName;
     private $_unitSettings;
 
@@ -96,14 +94,14 @@ trait TUnit {
             array_pop($parts);
             $this->_unitName = array_pop($parts);
         }
-        
+
         return $this->_unitName;
     }
-    
+
     public function getCanonicalUnitName() {
         return preg_replace('/[^a-zA-Z0-9_]/', '_', $this->getUnitName());
     }
-    
+
     public function getUnitId() {
         return $this->_model->getModelId().'/'.$this->getUnitName();
     }
@@ -125,15 +123,11 @@ trait TUnit {
         $settings = $this->getUnitSettings();
         return (bool)$settings['prefixNames'];
     }
-    
+
     public function getModel() {
         return $this->_model;
     }
 
-    public function getClusterId() {
-        return $this->_model->getClusterId();
-    }
-    
     public function getStorageBackendName() {
         return null;
     }
@@ -177,14 +171,9 @@ trait TUnit {
 
 // Mesh
     public function getEntityLocator() {
-        $output = 'axis://';
-
-        if($clusterId = $this->getClusterId()) {
-            $output .= $clusterId.'/';
-        }
-
-        $output .= $this->_model->getModelName().'/'.ucfirst($this->getUnitName());
-        return new mesh\entity\Locator($output);
+        return new mesh\entity\Locator(
+            'axis://'.$this->_model->getModelName().'/'.ucfirst($this->getUnitName())
+        );
     }
 
 
@@ -298,21 +287,21 @@ trait TAdapterBasedStorageUnit {
         $config = axis\Config::getInstance();
         $adapterId = $config->getAdapterIdFor($this);
         $unitType = $this->getUnitType();
-        
+
         if(empty($adapterId)) {
             throw new axis\RuntimeException(
                 'No adapter has been configured for '.ucfirst($this->getUnitType()).' unit type'
             );
         }
-        
+
         $class = 'df\\axis\\unit\\'.lcfirst($unitType).'\\adapter\\'.$adapterId;
-        
+
         if(!class_exists($class)) {
             throw new axis\RuntimeException(
                 ucfirst($this->getUnitType()).' unit adapter '.$adapterId.' could not be found'
             );
         }
-        
+
         $this->_adapter = new $class($this);
     }
 }
@@ -392,11 +381,6 @@ trait TSchemaBasedStorageUnit {
 
         return $this->_recordKeyName;
     }
-}
-
-
-interface IClusterUnit extends IStorageUnit {
-    public function getClusterOptionsList();
 }
 
 

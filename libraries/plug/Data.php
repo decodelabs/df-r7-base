@@ -12,12 +12,11 @@ use df\axis;
 use df\opal;
 use df\flex;
 
-class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
+class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
     use core\TSharedHelper;
     use opal\query\TQuery_EntryPoint;
 
-    protected $_clusterId;
 
 // Validate
     public function newValidator() {
@@ -149,19 +148,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         return $unit;
     }
 
-    public function getClusterUnit() {
-        try {
-            return axis\Model::loadClusterUnit();
-        } catch(axis\RuntimeException $e) {
-            return null;
-        }
-    }
-
-    public function fetchClusterRecord($clusterId) {
-        $unit = axis\Model::loadClusterUnit();
-        return $this->fetchForAction($unit, $clusterId);
-    }
-
     public function newRecord($source, array $values=null) {
         $adapter = $this->_sourceToAdapter($source);
         $output = $adapter->newRecord($values);
@@ -205,23 +191,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         return $this;
     }
 
-    public function offsetSet($offset, $value) {
-        throw new \Exception('Cannot set by array access on data plug');
-    }
-
-    public function offsetGet($offset) {
-        $this->_clusterId = $offset;
-        return $this;
-    }
-
-    public function offsetUnset($offset) {
-        $this->_clusterId = null;
-        return $this;
-    }
-
-    public function offsetExists($offset) {
-        return $this->_clusterId == $offset;
-    }
 
 
 
@@ -230,12 +199,12 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         return $this->getModel($member);
     }
 
-    public function getModel($name, $clusterId=null) {
-        return axis\Model::factory($name, $this->_normalizeClusterId($clusterId));
+    public function getModel($name) {
+        return axis\Model::factory($name);
     }
 
-    public function getUnit($unitId, $clusterId=null) {
-        return axis\Model::loadUnitFromId($unitId, $clusterId);
+    public function getUnit($unitId) {
+        return axis\Model::loadUnitFromId($unitId);
     }
 
     public function getSchema($unitId) {
@@ -244,15 +213,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
 
     public function getSchemaField($unitId, $field) {
         return $this->getSchema($unitId)->getField($field);
-    }
-
-    protected function _normalizeClusterId($clusterId) {
-        if($clusterId === null) {
-            $clusterId = $this->_clusterId;
-        }
-
-        $this->_clusterId = null;
-        return $clusterId;
     }
 
 

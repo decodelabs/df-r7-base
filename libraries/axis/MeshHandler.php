@@ -11,16 +11,10 @@ use df\axis;
 use df\mesh;
 
 class MeshHandler implements mesh\IEntityHandler {
-    
+
     public function fetchEntity(mesh\IManager $manager, array $node) {
         if($node['type'] == 'Model') {
-            $clusterId = null;
-
-            if(!empty($node['location'])) {
-                $clusterId = array_shift($node['location']);
-            }
-
-            return axis\Model::factory($node['id'], $clusterId);
+            return axis\Model::factory($node['id']);
         }
 
 
@@ -28,34 +22,28 @@ class MeshHandler implements mesh\IEntityHandler {
             switch($node['type']) {
                 case 'Unit':
                     return axis\Model::loadUnitFromId($node['id']);
-                    
+
                 case 'Schema':
                     $unit = axis\Model::loadUnitFromId($node['id']);
-                    
+
                     if(!$unit instanceof axis\ISchemaBasedStorageUnit) {
                         throw new axis\LogicException(
                             'Model unit '.$unit->getUnitName().' does not provide a schema'
                         );
                     }
-                    
+
                     return $unit->getUnitSchema();
             }
         }
-        
+
         $location = $node['location'];
-        $clusterId = null;
-
-        if(count($location) > 1) {
-            $clusterId = array_shift($location);
-        }
-
-        $model = axis\Model::factory(array_shift($location), $clusterId);
+        $model = axis\Model::factory(array_shift($location));
         $unit = $model->getUnit($node['type']);
-        
+
         if($node['id'] === null) {
             return $unit;
         }
-        
+
         return $unit->fetchByPrimary($node['id']);
     }
 }

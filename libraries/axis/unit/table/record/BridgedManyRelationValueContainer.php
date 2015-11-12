@@ -10,8 +10,8 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class BridgedManyRelationValueContainer implements 
-    opal\record\ITaskAwareValueContainer, 
+class BridgedManyRelationValueContainer implements
+    opal\record\ITaskAwareValueContainer,
     opal\record\IPreparedValueContainer,
     opal\record\IManyRelationValueContainer,
     opal\record\IIdProviderValueContainer,
@@ -24,13 +24,13 @@ class BridgedManyRelationValueContainer implements
     protected $_new = [];
     protected $_remove = [];
     protected $_removeAll = false;
-    
+
     protected $_localPrimaryKeySet;
     protected $_targetPrimaryKeySet;
     protected $_field;
 
     protected $_record = null;
-    
+
     public function __construct(axis\schema\IBridgedRelationField $field) {
         $this->_field = $field;
         $this->_localPrimaryKeySet = $field->getLocalRelationManifest()->toPrimaryKeySet();
@@ -40,25 +40,25 @@ class BridgedManyRelationValueContainer implements
     public function getOutputDescription() {
         return $this->countAll();
     }
-    
+
     public function isPrepared() {
         return $this->_record !== null;
     }
-    
+
     public function prepareValue(opal\record\IRecord $record, $fieldName) {
         $this->_record = $record;
         $this->_localPrimaryKeySet->updateWith($record);
 
         return $this;
     }
-    
+
     public function prepareToSetValue(opal\record\IRecord $record, $fieldName) {
         return $this->prepareValue($record, $fieldName);
     }
-    
+
     public function setValue($value) {
         $this->removeAll();
-        
+
         if(!is_array($value)) {
             $value = [$value];
         }
@@ -66,10 +66,10 @@ class BridgedManyRelationValueContainer implements
         foreach($value as $id) {
             $this->add($id);
         }
-        
+
         return $this;
     }
-    
+
     public function getValue($default=null) {
         return $this;
     }
@@ -81,15 +81,15 @@ class BridgedManyRelationValueContainer implements
     public function getStringValue($default='') {
         return $this->__toString();
     }
-    
+
     public function getValueForStorage() {
         return null;
     }
-    
+
     public function eq($value) {
         return false;
     }
-    
+
     public function duplicateForChangeList() {
         return $this;
     }
@@ -111,7 +111,7 @@ class BridgedManyRelationValueContainer implements
     public function toArray() {
         return array_merge($this->_current, $this->_new);
     }
-    
+
     public function count() {
         return count($this->toArray());
     }
@@ -119,41 +119,41 @@ class BridgedManyRelationValueContainer implements
     public function getIterator() {
         return new \ArrayIterator($this->toArray());
     }
-    
+
     public function getPopulated() {
         return $this->_current;
     }
 
-    
+
 // Key sets
     public function getLocalPrimaryKeySet() {
         return $this->_localPrimaryKeySet;
     }
-    
+
     public function getTargetPrimaryKeySet() {
         return $this->_targetPrimaryKeySet;
     }
-    
-    
+
+
 // Records
     public function add($record) {
         return $this->addList(func_get_args());
     }
-    
+
     public function addList(array $records) {
         $index = $this->_normalizeInputRecordList($records);
-        
+
         foreach($index as $id => $record) {
             $this->_new[$id] = $record;
         }
-        
+
         if($this->_record) {
             $this->_record->markAsChanged($this->_field->getName());
         }
-        
+
         return $this;
     }
-    
+
     public function populate($record) {
         return $this->populateList(func_get_args());
     }
@@ -165,11 +165,11 @@ class BridgedManyRelationValueContainer implements
 
         return $this;
     }
-    
+
     public function remove($record) {
         return $this->removeList(func_get_args());
     }
-    
+
     public function removeList(array $records) {
         $bridgeUnit = $this->getBridgeUnit();
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
@@ -188,7 +188,7 @@ class BridgedManyRelationValueContainer implements
                 $record = $this->_targetPrimaryKeySet->duplicateWith($record);
                 $id = opal\record\Base::extractRecordId($record);
             }
-            
+
             if(isset($this->_new[$id])) {
                 unset($this->_new[$id]);
             } else if(isset($this->_current[$id])) {
@@ -198,14 +198,14 @@ class BridgedManyRelationValueContainer implements
                 $this->_remove[$id] = $record;
             }
         }
-        
+
         if($this->_record) {
             $this->_record->markAsChanged($this->_field->getName());
         }
-        
+
         return $this;
     }
-    
+
     public function removeAll() {
         $this->_new = [];
         $this->_current = [];
@@ -219,11 +219,9 @@ class BridgedManyRelationValueContainer implements
         $lookupKeySets = [];
 
         $localUnit = $this->_record->getRecordAdapter();
-        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-
-        $bridgeUnit = $this->getBridgeUnit($clusterId);
+        $bridgeUnit = $this->getBridgeUnit();
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
-        
+
         foreach($records as $record) {
             if($record instanceof opal\record\IPartial && $record->isBridge()) {
                 $record->setRecordAdapter($bridgeUnit);
@@ -242,26 +240,26 @@ class BridgedManyRelationValueContainer implements
                 $id = opal\record\Base::extractRecordId($record);
                 $lookupKeySets[$id] = $record;
             }
-            
+
             if(!isset($this->_current[$id])) {
                 $index[(string)$id] = $record;
             }
         }
 
         if(!empty($lookupKeySets)) {
-            $targetUnit = $this->_getTargetUnit($clusterId);
+            $targetUnit = $this->getTargetUnit();
 
             $query = opal\query\Initiator::factory()
                 ->beginSelect($this->_targetPrimaryKeySet->getFieldNames())
                 ->from($targetUnit);
-            
+
             foreach($lookupKeySets as $keySet) {
                 $clause = $query->beginOrWhereClause();
-                
+
                 foreach($keySet->toArray() as $key => $value) {
                     $clause->where($key, '=', $value);
                 }
-                
+
                 $clause->endClause();
             }
 
@@ -272,21 +270,21 @@ class BridgedManyRelationValueContainer implements
                     unset($index[$id]);
                     continue;
                 }
-                
+
                 $keys = $keySet->toArray();
                 $found = false;
-                
+
                 foreach($res as $row) {
                     foreach($keys as $key => $value) {
                         if(!isset($row[$key]) || $row[$key] != $value) {
                             continue 2;
                         }
                     }
-                    
+
                     $found = true;
                     break;
                 }
-                
+
                 if(!$found) {
                     unset($index[$id]);
                 }
@@ -295,38 +293,14 @@ class BridgedManyRelationValueContainer implements
 
         return $index;
     }
-    
 
-    public function getBridgeUnit($clusterId=null) {
-        if($this->_record) {
-            $localUnit = $this->_record->getRecordAdapter();
 
-            if($clusterId === null && !$this->_field->isOnGlobalCluster()) {
-                $clusterId = $localUnit->getClusterId();
-            }
-        }
-        
-        return $this->_getBridgeUnit($clusterId);
+    public function getBridgeUnit() {
+        return axis\Model::loadUnitFromId($this->_field->getBridgeUnitId());
     }
 
-    protected function _getBridgeUnit($clusterId=null) {
-        return axis\Model::loadUnitFromId($this->_field->getBridgeUnitId(), $clusterId);
-    }
-
-    public function getTargetUnit($clusterId=null) {
-        if($this->_record) {
-            $localUnit = $this->_record->getRecordAdapter();
-
-            if($clusterId === null && !$this->_field->isOnGlobalCluster()) {
-                $clusterId = $localUnit->getClusterId();
-            }
-        }
-        
-        return $this->_getTargetUnit($clusterId);
-    }
-
-    protected function _getTargetUnit($clusterId=null) {
-        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId);
+    public function getTargetUnit() {
+        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId());
     }
 
     public function getBridgeLocalFieldName() {
@@ -345,7 +319,7 @@ class BridgedManyRelationValueContainer implements
         return $this->getBridgeUnit()->newRecord($values);
     }
 
-    
+
 // Query
     public function select($field1=null) {
         if(!$this->_record) {
@@ -353,14 +327,12 @@ class BridgedManyRelationValueContainer implements
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
-        
+
         $this->_localPrimaryKeySet->updateWith($this->_record);
 
         $localUnit = $this->_record->getRecordAdapter();
-        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        
-        $targetUnit = $this->_getTargetUnit($clusterId);
-        $bridgeUnit = $this->_getBridgeUnit($clusterId);
+        $targetUnit = $this->getTargetUnit();
+        $bridgeUnit = $this->getBridgeUnit();
 
         $targetSourceAlias = $targetUnit->getCanonicalUnitName();
 
@@ -376,7 +348,7 @@ class BridgedManyRelationValueContainer implements
         return opal\query\Initiator::factory()
             ->beginSelect(func_get_args())
             ->from($targetUnit, $targetSourceAlias)
-        
+
             // Join bridge table as constraint
             ->join($bridgeUnit->getBridgeFieldNames($localFieldName, [$bridgeTargetFieldName]))
                 ->from($bridgeUnit, $bridgeAlias)
@@ -399,12 +371,11 @@ class BridgedManyRelationValueContainer implements
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
-        
+
         $this->_localPrimaryKeySet->updateWith($this->_record);
 
         $localUnit = $this->_record->getRecordAdapter();
-        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        $bridgeUnit = $this->_getBridgeUnit($clusterId);
+        $bridgeUnit = $this->getBridgeUnit();
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeAlias = $bridgeLocalFieldName.'Bridge';
@@ -433,11 +404,9 @@ class BridgedManyRelationValueContainer implements
         $this->_localPrimaryKeySet->updateWith($this->_record);
 
         $localUnit = $this->_record->getRecordAdapter();
-        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        
-        $targetUnit = $this->_getTargetUnit($clusterId);
+        $targetUnit = $this->getTargetUnit();
         $localFieldName = $this->_field->getName();
-        
+
         return opal\query\Initiator::factory()
             ->beginSelect(func_get_args())
             ->from($targetUnit, $localFieldName)
@@ -446,8 +415,7 @@ class BridgedManyRelationValueContainer implements
 
     public function selectFromNewToBridge($field1=null) {
         $localUnit = $this->_record->getRecordAdapter();
-        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        $bridgeUnit = $this->_getBridgeUnit($clusterId);
+        $bridgeUnit = $this->getBridgeUnit();
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
@@ -471,7 +439,7 @@ class BridgedManyRelationValueContainer implements
     public function countAllDistinct() {
         return $this->selectDistinct()->count();
     }
-    
+
     public function countChanges() {
         $output = 0;
         $newKeys = $this->_getKeySets($this->_new);
@@ -506,12 +474,10 @@ class BridgedManyRelationValueContainer implements
         }
 
         $this->_localPrimaryKeySet->updateWith($this->_record);
-        
+
         $localUnit = $this->_record->getRecordAdapter();
-        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        
-        $targetUnit = $this->_getTargetUnit($clusterId);
-        $bridgeUnit = $this->_getBridgeUnit($clusterId);
+        $targetUnit = $this->getTargetUnit();
+        $bridgeUnit = $this->getBridgeUnit();
 
         $targetSourceAlias = $targetUnit->getCanonicalUnitName();
 
@@ -527,7 +493,7 @@ class BridgedManyRelationValueContainer implements
         return opal\query\Initiator::factory()
             ->beginFetch()
             ->from($targetUnit, $targetSourceAlias)
-        
+
             // Join bridge table as constraint
             ->joinConstraint()
                 ->from($bridgeUnit, $bridgeAlias)
@@ -546,14 +512,13 @@ class BridgedManyRelationValueContainer implements
         }
 
         $this->_localPrimaryKeySet->updateWith($this->_record);
-        
+
         $localUnit = $this->_record->getRecordAdapter();
-        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        $bridgeUnit = $this->_getBridgeUnit($clusterId);
+        $bridgeUnit = $this->getBridgeUnit();
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeAlias = $bridgeLocalFieldName.'Bridge';
-        
+
         return opal\query\Initiator::factory()
             ->beginFetch()
             ->from($bridgeUnit, $bridgeAlias)
@@ -580,7 +545,7 @@ class BridgedManyRelationValueContainer implements
 
     public function getRawId() {
         $output = [];
-        
+
         foreach($this->getRelatedPrimaryKeys() as $key) {
             if($key instanceof opal\record\IPrimaryKeySet) {
                 $output[] = $key->getValue();
@@ -611,23 +576,22 @@ class BridgedManyRelationValueContainer implements
 
         return $keys;
     }
-    
-    
-    
+
+
+
 // Tasks
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
-        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $this->_localPrimaryKeySet->updateWith($parentRecord);
 
-        $targetUnit = $this->_getTargetUnit($clusterId);
-        $bridgeUnit = $this->_getBridgeUnit($clusterId);
+        $targetUnit = $this->getTargetUnit();
+        $bridgeUnit = $this->getBridgeUnit();
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
 
         $removeAllTask = null;
-        
+
 
         // Save any changed populated records
         foreach($this->_current as $id => $record) {
@@ -635,9 +599,9 @@ class BridgedManyRelationValueContainer implements
                 $record->deploySaveTasks($taskSet);
             }
         }
-        
-        
-        
+
+
+
         // Remove all
         if($this->_removeAll && !$this->_localPrimaryKeySet->isNull()) {
             $removeAllTask = new opal\record\task\DeleteKey($bridgeUnit, [
@@ -660,7 +624,7 @@ class BridgedManyRelationValueContainer implements
                 $bridgeTask = $taskSet->insert($bridgeRecord)->ifNotExists(true);
             }
 
-            
+
             // Local ids
             $bridgeRecord->__set($bridgeLocalFieldName, $this->_localPrimaryKeySet);
 
@@ -669,7 +633,7 @@ class BridgedManyRelationValueContainer implements
                     new opal\record\task\dependency\UpdateBridge($bridgeLocalFieldName, $recordTask)
                 );
             }
-            
+
             // Target key set
             if($record instanceof opal\record\IPartial) {
                 $targetKeySet = $this->_targetPrimaryKeySet->duplicateWith($record->get($bridgeTargetFieldName));
@@ -685,22 +649,22 @@ class BridgedManyRelationValueContainer implements
                     $filterKeys[$bridgeTargetFieldName.'_'.$key][$id] = $value;
                 }
             }
-            
+
 
             // Target task
             $targetRecordTask = null;
-            
+
             if($record instanceof opal\record\IRecord) {
                 $targetRecordTask = $record->deploySaveTasks($taskSet);
             }
-            
+
             // Target ids
             $bridgeRecord->__set($bridgeTargetFieldName, $targetKeySet);
 
             if($targetRecordTask) {
                 $bridgeTask->addDependency(
                     new opal\record\task\dependency\UpdateBridge(
-                        $bridgeTargetFieldName, 
+                        $bridgeTargetFieldName,
                         $targetRecordTask
                     )
                 );
@@ -710,7 +674,7 @@ class BridgedManyRelationValueContainer implements
             if($record instanceof opal\record\IPartial) {
                 $bridgeRecord->import($record->getValuesForStorage());
             }
-            
+
 
             // Remove-all dependency
             if($removeAllTask) {
@@ -722,60 +686,58 @@ class BridgedManyRelationValueContainer implements
             $removeAllTask->setFilterKeys($filterKeys);
         }
 
-        
+
         // Delete relation tasks
         if(!$removeAllTask && !empty($this->_remove) && !$this->_localPrimaryKeySet->isNull()) {
             foreach($this->_remove as $id => $record) {
                 $bridgeData = [];
-            
+
                 foreach($this->_localPrimaryKeySet->toArray() as $key => $value) {
                     $bridgeData[$bridgeLocalFieldName.'_'.$key] = $value;
                 }
-                
+
                 if($record instanceof opal\record\IPrimaryKeySet) {
                     $targetKeySet = $record;
                 } else {
                     $targetKeySet = $this->_targetPrimaryKeySet->duplicateWith($record);
                 }
-                
+
                 foreach($targetKeySet->toArray() as $key => $value) {
                     $bridgeData[$bridgeTargetFieldName.'_'.$key] = $value;
                 }
-                
+
                 if(empty($bridgeData)) {
                     continue;
                 }
-                
+
                 $taskSet->addTask(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
             }
         }
 
         return $this;
     }
-    
+
     public function acceptSaveTaskChanges(opal\record\IRecord $record) {
         $this->_current = array_merge($this->_current, $this->_new);
         $this->_new = [];
         $this->_remove = [];
         $this->_removeAll = false;
-        
+
         return $this;
     }
-    
+
     public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         if(!$recordTask) {
             return $this;
         }
-            
+
         $localUnit = $parentRecord->getRecordAdapter();
-        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-            
         $this->_localPrimaryKeySet->updateWith($parentRecord);
-        $bridgeUnit = $this->_getBridgeUnit($clusterId);
+        $bridgeUnit = $this->getBridgeUnit();
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeData = [];
-            
+
         foreach($this->_localPrimaryKeySet->toArray() as $key => $value) {
             $bridgeData[$bridgeLocalFieldName.'_'.$key] = $value;
         }
@@ -783,18 +745,18 @@ class BridgedManyRelationValueContainer implements
         if(!empty($bridgeData)) {
             $taskSet->addTask(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
         }
-        
+
         return $this;
     }
-    
+
     public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
         $this->_new = array_merge($this->_current, $this->_new);
         $this->_current = [];
         $this->_remove = [];
-        
+
         return $this;
     }
-    
+
 
     public function populateInverse(array $inverse) {
         $this->_current = array_merge($this->_normalizeInputRecordList($inverse));
@@ -805,24 +767,24 @@ class BridgedManyRelationValueContainer implements
         return (string)count($this);
     }
 
-    
+
 // Dump
     public function getDumpValue() {
         if(empty($this->_current) && empty($this->_new) && empty($this->_remove)) {
             return implode(', ', $this->_localPrimaryKeySet->getFieldNames()).
             ' -> ['.implode(', ', $this->_targetPrimaryKeySet->getFieldNames()).']';
         }
-        
+
         $output = $this->_current;
-        
+
         foreach($this->_new as $id => $record) {
             $output['+ '.$id] = $record;
         }
-        
+
         foreach($this->_remove as $id => $record) {
             $output['- '.$id] = $record;
         }
-        
+
         return $output;
     }
 }

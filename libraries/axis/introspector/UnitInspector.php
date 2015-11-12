@@ -11,7 +11,7 @@ use df\axis;
 use df\opal;
 
 class UnitInspector implements IUnitInspector, core\IDumpable {
-        
+
     protected $_unit;
 
     public function __construct(axis\IUnit $unit) {
@@ -20,12 +20,6 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
 
     public function getUnit() {
         return $this->_unit;
-    }
-
-    public function getClusterVariant($clusterId) {
-        return new self(
-            axis\Model::loadUnitFromId($this->getGlobalId(), $clusterId)
-        );
     }
 
     public function getModel() {
@@ -68,7 +62,7 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
     public function getAdapter() {
         if($this->hasAdapter()) {
             return $this->_unit->getUnitAdapter();
-        } 
+        }
     }
 
     public function getQueryAdapter() {

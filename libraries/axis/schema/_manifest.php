@@ -239,7 +239,7 @@ trait TLengthRestrictedField {
 interface IRelationField extends IField, opal\schema\IRelationField, opal\schema\IQueryClauseRewriterField {
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
-    public function getTargetUnit($clusterId=null);
+    public function getTargetUnit();
 
     //public function shouldCascadeDelete($flag=null);
 }
@@ -248,7 +248,6 @@ interface IRelationField extends IField, opal\schema\IRelationField, opal\schema
 trait TRelationField {
 
     protected $_targetUnitId;
-    protected $_globalCluster = false;
     //protected $_deleteCascade = false;
 
     public function setTargetUnitId($targetUnit) {
@@ -270,28 +269,14 @@ trait TRelationField {
         return $this->_targetUnitId;
     }
 
-    public function getTargetUnit($clusterId=null) {
-        return axis\Model::loadUnitFromId($this->_targetUnitId, $clusterId);
+    public function getTargetUnit() {
+        return axis\Model::loadUnitFromId($this->_targetUnitId);
     }
 
-    public function getTargetQueryAdapter($clusterId=null) {
-        return axis\Model::loadUnitFromId($this->_targetUnitId, $clusterId);
+    public function getTargetQueryAdapter() {
+        return axis\Model::loadUnitFromId($this->_targetUnitId);
     }
 
-    public function isOnGlobalCluster($flag=null) {
-        if($flag !== null) {
-            $t = $this->_globalCluster;
-            $this->_globalCluster = (bool)$flag;
-
-            if($t != $this->_globalCluster) {
-                $this->_hasChanged = true;
-            }
-
-            return $this;
-        }
-
-        return $this->_globalCluster;
-    }
 
 /*
     public function shouldCascadeDelete($flag=null) {
@@ -451,12 +436,6 @@ trait TRelationField {
     protected function _setRelationStorageArray(array $data) {
         $this->_targetUnitId = $data['tui'];
 
-        if(isset($data['gcl'])) {
-            $this->_globalCluster = (bool)$data['gcl'];
-        } else {
-            $this->_globalCluster = false;
-        }
-
         /*
         if(isset($data['odc'])) {
             $this->_deleteCascade = (bool)$data['odc'];
@@ -469,7 +448,6 @@ trait TRelationField {
     protected function _getRelationStorageArray() {
         return [
             'tui' => $this->_targetUnitId,
-            'gcl' => $this->_globalCluster,
             //'odc' => $this->_deleteCascade
         ];
     }
@@ -571,7 +549,7 @@ interface IBridgedRelationField extends IRelationField, opal\schema\IBridgedRela
     public function setBridgeUnitId($id);
     public function getBridgeUnitId();
 
-    public function getBridgeUnit($clusterId=null);
+    public function getBridgeUnit();
     public function isDominant($flag=null);
 }
 
@@ -603,12 +581,12 @@ trait TBridgedRelationField {
         return $this->_bridgeUnitId;
     }
 
-    public function getBridgeUnit($clusterId=null) {
-        return axis\Model::loadUnitFromId($this->_bridgeUnitId, $clusterId);
+    public function getBridgeUnit() {
+        return axis\Model::loadUnitFromId($this->_bridgeUnitId);
     }
 
-    public function getBridgeQueryAdapter($clusterId=null) {
-        return axis\Model::loadUnitFromId($this->_bridgeUnitId, $clusterId);
+    public function getBridgeQueryAdapter() {
+        return axis\Model::loadUnitFromId($this->_bridgeUnitId);
     }
 
     public function getBridgeLocalFieldName() {

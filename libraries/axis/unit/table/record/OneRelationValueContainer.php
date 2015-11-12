@@ -10,45 +10,44 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class OneRelationValueContainer implements 
-    opal\record\ITaskAwareValueContainer, 
-    opal\record\IPreparedValueContainer, 
+class OneRelationValueContainer implements
+    opal\record\ITaskAwareValueContainer,
+    opal\record\IPreparedValueContainer,
     opal\record\IIdProviderValueContainer {
-        
+
     protected $_value;
     protected $_record = false;
     protected $_parentRecord;
     protected $_field;
-    
+
     public function __construct(axis\schema\IRelationField $field, opal\record\IRecord $parentRecord=null, $value=null) {
         $this->_field = $field;
         $this->_value = $field->getTargetRelationManifest()->toPrimaryKeySet();
 
         $this->setValue($value);
         $this->_applyInversePopulation($parentRecord);
-    } 
-    
+    }
+
     public function isPrepared() {
         return $this->_record !== false;
     }
-    
+
     public function prepareValue(opal\record\IRecord $record, $fieldName) {
         if($this->_value->isNull()) {
             return $this;
         }
 
         $localUnit = $record->getRecordAdapter();
-        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId);
+        $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId());
         $query = $targetUnit->fetch();
 
         foreach($this->_value->toArray() as $field => $value) {
             $query->where($field, '=', $value);
         }
-        
+
         $this->_record = $query->toRow();
         $this->_applyInversePopulation($record);
-        
+
         return $this;
     }
 
@@ -59,12 +58,12 @@ class OneRelationValueContainer implements
             $inverseValue->populateInverse($parentRecord);
         }
     }
-    
+
     public function prepareToSetValue(opal\record\IRecord $record, $fieldName) {
         $this->_parentRecord = $record;
         return $this;
     }
-    
+
     public function eq($value) {
         if($value instanceof self) {
             $value = $value->getPrimaryKeySet();
@@ -84,10 +83,10 @@ class OneRelationValueContainer implements
 
         return $this->_value->eq($value);
     }
-    
+
     public function setValue($value) {
         $record = false;
-        
+
         if($value instanceof self) {
             $record = $value->_record;
             $value = $value->getPrimaryKeySet();
@@ -109,10 +108,10 @@ class OneRelationValueContainer implements
             $this->_applyInversePopulation($this->_parentRecord);
             $this->_parentRecord = null;
         }
-        
+
         return $this;
     }
-    
+
     public function getValue($default=null) {
         if($this->_record !== false) {
             return $this->_record;
@@ -121,10 +120,10 @@ class OneRelationValueContainer implements
         if($this->_value && !$this->_value->isNull()) {
             return $this->_value->getValue();
         }
-        
+
         return $default;
     }
-    
+
     public function hasValue() {
         if($this->_record === null) {
             return false;
@@ -148,7 +147,7 @@ class OneRelationValueContainer implements
             return $this->_value;
         }
     }
-    
+
     public function getPrimaryKeySet() {
         return $this->_value;
     }
@@ -169,30 +168,18 @@ class OneRelationValueContainer implements
         return $this->_field->getTargetUnitId();
     }
 
-    public function getTargetUnit($clusterId=null) {
-        if($this->_record) {
-            $localUnit = $this->_record->getRecordAdapter();
-
-            if($clusterId === null && !$this->_field->isOnGlobalCluster()) {
-                $clusterId = $localUnit->getClusterId();
-            }
-        }
-        
-        return $this->_getTargetUnit($clusterId);
-    }
-
-    protected function _getTargetUnit($clusterId=null) {
-        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId);
+    public function getTargetUnit() {
+        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId());
     }
 
     public function newRecord(array $values=null) {
         return $this->getTargetUnit()->newRecord($values);
     }
-    
+
     public function duplicateForChangeList() {
         return new self($this->_field);
     }
-    
+
     public function populateInverse(opal\record\IRecord $record=null) {
         $this->_record = $record;
         return $this;
@@ -201,9 +188,9 @@ class OneRelationValueContainer implements
     public function __toString() {
         return (string)$this->getRawId();
     }
-    
-    
-    
+
+
+
 // Tasks
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
         if($this->_record instanceof opal\record\IRecord) {
@@ -219,35 +206,35 @@ class OneRelationValueContainer implements
                 );
             }
         }
-        
+
         return $this;
     }
-    
+
     public function acceptSaveTaskChanges(opal\record\IRecord $record) {
         return $this;
     }
-    
+
     public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
         //core\stub($taskSet, $record, $recordTask);
     }
-    
+
     public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
         return $this;
     }
-    
-    
+
+
 // Dump
     public function getDumpValue() {
         if($this->_record) {
             return $this->_record;
         }
-        
+
         /*
         if($this->_value->countFields() == 1) {
             return $this->_value->getFirstKeyValue();
         }
         */
-        
+
         return $this->_value;
     }
 
@@ -255,12 +242,12 @@ class OneRelationValueContainer implements
         if($this->_record) {
             return $this->_record;
         }
-        
+
         $output = $this->_field->getTargetUnitId().' : ';
-        
+
         if($this->_value->countFields() == 1) {
             $value = $this->_value->getFirstKeyValue();
-            
+
             if($value === null) {
                 $output .= 'null';
             } else {
@@ -268,23 +255,22 @@ class OneRelationValueContainer implements
             }
         } else {
             $t = [];
-            
+
             foreach($this->_value->toArray() as $key => $value) {
                 $valString = $key.'=';
-                
+
                 if($value === null) {
                     $valString .= 'null';
                 } else {
                     $valString .= $value;
                 }
-                
+
                 $t[] = $valString;
             }
-            
+
             $output .= implode(', ', $t);
         }
-        
+
         return $output;
     }
 }
-    
