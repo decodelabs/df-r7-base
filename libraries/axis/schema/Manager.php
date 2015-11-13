@@ -21,7 +21,7 @@ class Manager implements IManager {
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false) {
         $schema = null;
         $cache = Cache::getInstance();
-        $globalUnitId = $unit->getGlobalUnitId();
+        $globalUnitId = $unit->getUnitId();
         $isStoreUnit = $globalUnitId == 'axis/schema';
 
         if($isStoreUnit && $this->_storeSchema) {
@@ -104,13 +104,13 @@ class Manager implements IManager {
 
     public function getTimestampFor(axis\ISchemaBasedStorageUnit $unit) {
         return $this->getSchemaUnit()->select('timestamp')
-            ->where('unitId', '=', $unit->getGlobalUnitId())
+            ->where('unitId', '=', $unit->getUnitId())
             ->toValue('timestamp');
     }
 
     public function insert(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version) {
         $this->getSchemaUnit()->insert([
-                'unitId' => $unit->getGlobalUnitId(),
+                'unitId' => $unit->getUnitId(),
                 'storeName' => $unit->getStorageBackendName(),
                 'version' => $version,
                 'schema' => $jsonData
@@ -126,7 +126,7 @@ class Manager implements IManager {
                 'version' => $version,
                 'timestamp' => 'now'
             ])
-            ->where('unitId', '=', $unit->getGlobalUnitId())
+            ->where('unitId', '=', $unit->getUnitId())
             ->execute();
 
         return $this;
@@ -134,7 +134,7 @@ class Manager implements IManager {
 
 
     public function remove(axis\ISchemaBasedStorageUnit $unit) {
-        return $this->removeId($unit->getGlobalUnitId());
+        return $this->removeId($unit->getUnitId());
     }
 
     public function removeId($unitId) {
@@ -142,7 +142,8 @@ class Manager implements IManager {
             ->where('unitId', '=', $unitId)
             ->execute();
 
-        $this->clearCache(axis\Model::loadUnitFromId($unitId));
+        $cache = Cache::getInstance();
+        $cache->remove($unitId);
 
         return $this;
     }
@@ -151,7 +152,7 @@ class Manager implements IManager {
         $cache = Cache::getInstance();
 
         if($unit) {
-            $cache->remove($unit->getGlobalUnitId());
+            $cache->remove($unit->getUnitId());
         } else {
             $cache->clear();
         }

@@ -30,10 +30,6 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         return $this->_unit->getUnitId();
     }
 
-    public function getGlobalId() {
-        return $this->_unit->getGlobalUnitId();
-    }
-
     public function getCanonicalId() {
         return $this->_unit->getStorageBackendName();
     }

@@ -24,8 +24,6 @@ interface IAccess extends user\IState {}
 
 interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject {
     public function getModelName();
-    public function getModelId();
-
     public function getUnit($name);
     public static function getSchemaManager();
     public function unloadUnit(IUnit $unit);
@@ -47,7 +45,6 @@ interface IUnit extends mesh\entity\IEntity, user\IAccessLock, \Serializable {
     public function getUnitName();
     public function getCanonicalUnitName();
     public function getUnitId();
-    public function getGlobalUnitId();
     public function getUnitType();
     public function getModel();
     public function getUnitSettings();
@@ -103,10 +100,6 @@ trait TUnit {
     }
 
     public function getUnitId() {
-        return $this->_model->getModelId().'/'.$this->getUnitName();
-    }
-
-    public function getGlobalUnitId() {
         return $this->_model->getModelName().'/'.$this->getUnitName();
     }
 

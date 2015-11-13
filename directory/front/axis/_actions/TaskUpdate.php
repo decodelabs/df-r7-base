@@ -60,7 +60,7 @@ class TaskUpdate extends arch\task\Action {
 
         $schema = $unit->getUnitSchema();
         $unit->updateUnitSchema($schema);
-        $unitId = $unit->getGlobalUnitId();
+        $unitId = $unit->getUnitId();
         $store = [];
 
         if($schema->hasPrimaryIndexChanged()) {

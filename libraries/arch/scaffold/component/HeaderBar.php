@@ -11,7 +11,7 @@ use df\arch;
 use df\aura;
 
 class HeaderBar extends arch\component\template\HeaderBar {
-    
+
     protected $_scaffold;
     protected $_name;
 
@@ -72,7 +72,7 @@ class HeaderBar extends arch\component\template\HeaderBar {
         if($builder !== null) {
             $builder = core\lang\Callback::factory($builder);
         }
-        
+
         $this->_subOperativeLinkBuilder = $builder;
         return $this;
     }

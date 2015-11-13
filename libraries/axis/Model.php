@@ -59,10 +59,6 @@ abstract class Model implements IModel, core\IDumpable {
         return $this->_modelName;
     }
 
-    public function getModelId() {
-        return $this->getModelName();
-    }
-
     final public function getRegistryObjectKey() {
         return self::REGISTRY_PREFIX.$this->getModelName();
     }

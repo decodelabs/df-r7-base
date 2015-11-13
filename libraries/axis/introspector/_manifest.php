@@ -28,7 +28,6 @@ interface IUnitInspector {
     public function getUnit();
     public function getModel();
     public function getId();
-    public function getGlobalId();
     public function getCanonicalId();
     public function getType();
     public function isVirtual();
