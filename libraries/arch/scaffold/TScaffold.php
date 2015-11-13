@@ -428,6 +428,27 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
+    public function defineWebsiteField($list, $mode) {
+        $list->addField('website', function($item) use($mode) {
+            $url = $item['website'];
+
+            if($url === null) {
+                return $url;
+            }
+
+            if($mode == 'list') {
+                $url = $this->uri->__invoke($url);
+                $name = $url->getDomain();
+            } else {
+                $name = $url;
+            }
+
+            return $this->html->link($url, $name)
+                ->setIcon('link')
+                ->setTarget('_blank');
+        });
+    }
+
     public function defineUserField($list, $mode) {
         $list->addField('user', function($item) {
             return $this->apex->component('~admin/users/clients/UserLink', $item['user']);
