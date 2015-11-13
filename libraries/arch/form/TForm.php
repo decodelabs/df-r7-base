@@ -716,11 +716,12 @@ trait TForm_DependentDelegate {
         return $this->setDependency(uniqid(), $value, $message, $filter);
     }
 
-    public function setDependency($name, $value, $message=null, $filter=null) {
+    public function setDependency($name, $value, $message=null, $filter=null, $callback=null) {
         $this->_dependencies[$name] = [
             'value' => $value,
             'message' => $message,
             'filter' => $filter,
+            'callback' => $callback,
             'normalized' => false,
             'resolved' => null
         ];
@@ -787,7 +788,9 @@ trait TForm_DependentDelegate {
                 $clause = $query->beginWhereClause();
             }
 
-            core\lang\Callback::factory($dep['filter'])->invoke($clause, $dep['value'], $this);
+            core\lang\Callback::factory($dep['filter'])->invoke(
+                $clause, $dep['value'], $this
+            );
         }
 
         if($clause) {
@@ -820,9 +823,23 @@ trait TForm_DependentDelegate {
                 $isResolved = (bool)$value;
             }
 
+            if($dep['callback'] && $isResolved) {
+                @list($wasResolved, $lastValue) = $this->getStore('__dependency:'.$name);
+
+                if(!$wasResolved || $value != $lastValue) {
+                    core\lang\Callback::factory($dep['callback'])->invoke(
+                        $value, $this
+                    );
+                }
+            }
+
             $this->_dependencies[$name]['value'] = $value;
             $this->_dependencies[$name]['normalized'] = true;
             $this->_dependencies[$name]['resolved'] = $isResolved;
+
+            if($dep['callback']) {
+                $this->setStore('__dependency:'.$name, [$isResolved, $value]);
+            }
         }
     }
 }
