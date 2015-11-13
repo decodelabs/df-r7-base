@@ -824,9 +824,18 @@ trait TForm_DependentDelegate {
             }
 
             if($dep['callback'] && $isResolved) {
-                @list($wasResolved, $lastValue) = $this->getStore('__dependency:'.$name);
+                $doCallback = $hasChanged = false;
 
-                if(!$wasResolved || $value != $lastValue) {
+                if($this->hasStore('__dependency:'.$name)) {
+                    @list($wasResolved, $lastValue) = $this->getStore('__dependency:'.$name);
+                    $hasChanged = $value != $lastValue;
+
+                    if(!$wasResolved || $hasChanged) {
+                        $doCallback = true;
+                    }
+                }
+
+                if($doCallback) {
                     core\lang\Callback::factory($dep['callback'])->invoke(
                         $value, $this
                     );
