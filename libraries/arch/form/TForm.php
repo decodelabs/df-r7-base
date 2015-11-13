@@ -749,7 +749,7 @@ trait TForm_DependentDelegate {
     }
 
     public function getDependencyMessages() {
-        $this->_normalizeDependencyValues();
+        $this->normalizeDependencyValues();
         $output = [];
 
         foreach($this->_dependencies as $name => $dep) {
@@ -775,7 +775,7 @@ trait TForm_DependentDelegate {
             $clause->endClause();
         }
 
-        $this->_normalizeDependencyValues();
+        $this->normalizeDependencyValues();
         $filters = [];
         $clause = null;
 
@@ -800,7 +800,7 @@ trait TForm_DependentDelegate {
         return $this;
     }
 
-    private function _normalizeDependencyValues() {
+    public function normalizeDependencyValues() {
         foreach($this->_dependencies as $name => $dep) {
             if($dep['normalized']) {
                 continue;

@@ -164,4 +164,5 @@ interface IDependentDelegate extends opal\query\IFilterConsumer {
     public function removeDependency($name);
     public function getDependencies();
     public function getDependencyMessages();
+    public function normalizeDependencyValues();
 }

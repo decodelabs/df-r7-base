@@ -51,6 +51,10 @@ class Delegate implements IDelegate {
             $this->setDefaultValues();
         }
 
+        if($this instanceof IDependentDelegate) {
+            $this->normalizeDependencyValues();
+        }
+
         foreach($this->_delegates as $delegate) {
             $delegate->initialize();
         }
