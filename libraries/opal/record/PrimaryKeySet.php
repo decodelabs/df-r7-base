@@ -10,9 +10,9 @@ use df\core;
 use df\opal;
 
 class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
-    
+
     const COMBINE_SEPARATOR = '+';
-    
+
     protected $_keys = [];
 
     public static function fromEntityId($id) {
@@ -36,12 +36,12 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
 
         return new self(array_keys($values), $values);
     }
-    
+
     public function __construct(array $fields, $values=[]) {
         $this->_keys = array_fill_keys($fields, null);
         $this->updateWith($values);
     }
-    
+
     public function __clone() {
         foreach($this->_keys as $key => $value) {
             if($value instanceof self) {
@@ -53,15 +53,15 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
     public function getKeys() {
         return $this->_keys;
     }
-    
+
     public function __toString() {
         foreach($this->_keys as $key => $value) {
             return (string)$value;
         }
-        
+
         return '';
     }
-    
+
     public function toArray() {
         $output = [];
 
@@ -74,7 +74,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
                 $output[$key] = $value;
             }
         }
-        
+
         return $output;
     }
 
@@ -93,12 +93,12 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
 
         return $output;
     }
-    
+
     public function getIntrinsicFieldMap($fieldName=null) {
         if($fieldName === null) {
             return $this->toArray();
         }
-        
+
         $output = [];
 
         foreach($this->_keys as $key => $value) {
@@ -174,18 +174,18 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
                 $this->_keys[$field] = $value;
             }
         }
-        
+
         return $this;
     }
-    
+
     public function countFields() {
         return count($this->_keys);
     }
-    
+
     public function getFieldNames() {
         return array_keys($this->toArray());
     }
-    
+
     public function isNull() {
         foreach($this->_keys as $value) {
             if($value === null) {
@@ -196,25 +196,25 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public function getCombinedId() {
         $strings = [];
-        
+
         foreach($this->_keys as $key) {
             if($key instanceof IPrimaryKeySetProvider) {
                 $key = $key->getPrimaryKeySet();
             }
-            
+
             if($key instanceof self) {
                 $key = '['.$key->getCombinedId().']';
             }
-            
+
             $strings[] = (string)$key;
         }
-        
+
         return implode(self::COMBINE_SEPARATOR, $strings);
     }
 
@@ -226,13 +226,13 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
         }
 
         $output = new core\collection\Tree();
-        
+
         foreach($this->_keys as $key => $value) {
             if($value instanceof IPrimaryKeySetProvider) {
                 $returnFirst = false;
                 $value = $value->getPrimaryKeySet();
             }
-            
+
             if($value instanceof self) {
                 $returnFirst = false;
                 $value = '['.$value->getEntityId().']';
@@ -241,13 +241,13 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
             if($returnFirst) {
                 return (string)$value;
             }
-            
+
             $output->{$key} = (string)$value;
         }
 
         return 'keySet?'.$output->toArrayDelimitedString();
     }
-    
+
     public function getValue() {
         if(count($this->_keys) == 1) {
             return $this->getFirstKeyValue();
@@ -285,15 +285,27 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
         $output->updateWith($values);
         return $output;
     }
-    
+
     public function eq(IPrimaryKeySet $keySet) {
         foreach($this->_keys as $key => $value) {
-            if(!array_key_exists($key, $keySet->_keys)
-            || $keySet->_keys[$key] !== $value) {
+            if(!array_key_exists($key, $keySet->_keys)) {
                 return false;
             }
+
+            if($keySet->_keys[$key] === $value) {
+                continue;
+            }
+
+            if(($value instanceof core\IStringProvider || is_string($value)
+            && ($keySet->_keys[$key] instanceof core\IStringProvider || is_string($keySet->_keys[$key])))) {
+                if((string)$value === (string)$keySet->_keys[$key]) {
+                    continue;
+                }
+            }
+
+            return false;
         }
-        
+
         return true;
     }
 
@@ -318,8 +330,8 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
         unset($this->_keys[$key]);
         return $this;
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         return $this->_keys;
