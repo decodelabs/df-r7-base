@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
-    
-abstract class HeaderBar extends arch\component\Base 
+
+abstract class HeaderBar extends arch\component\Base
     /*implements aura\html\widget\IWidgetProxy*/ {
 
     protected $_record;
@@ -89,7 +89,7 @@ abstract class HeaderBar extends arch\component\Base
     }
 
 
-    
+
 // Render
     /*
     public function toWidget() {
@@ -128,6 +128,11 @@ abstract class HeaderBar extends arch\component\Base
             $output[] = $this->html('h3', $subTitle);
         }
 
+        // Selector area
+        if($selectorArea = $this->_renderSelectorArea()) {
+            $output[] = $this->html('div.widget-selectorArea', [$selectorArea]);
+        }
+
 
         // Primary
         $output[] = $primaryMenu = $this->html->menuBar()->addClass('primary');
@@ -139,15 +144,9 @@ abstract class HeaderBar extends arch\component\Base
         $this->_addTransitiveLinks($primaryMenu);
         $primaryMenu->addLink($this->html->backLink($this->_backLinkRequest));
 
-
         // Secondary
         $output[] = $secondaryMenu = $this->html->menuBar()->addClass('secondary');
         $this->_addSectionLinks($secondaryMenu);
-
-        // Selector area
-        if($selectorArea = $this->_renderSelectorArea()) {
-            $output[] = $this->html('div.widget-selectorArea', [$selectorArea]);
-        }
 
         return $this->html('header.widget-headerBar', $output);
     }
