@@ -155,7 +155,7 @@ class Format implements core\ISharedHelper {
         $duration = core\time\Duration::factory($duration);
 
         if($duration->isEmpty()) {
-            return null;
+            return '0';
         }
 
         if($locale === null) {
