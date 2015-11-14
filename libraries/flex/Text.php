@@ -30,12 +30,22 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
     public static function formatInitials($name) {
-        return self::factory($name)
+        $output = self::factory($name)
             ->replace(['-', '_'], ' ')
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
             ->wordsToUpper()
             ->regexReplace('/[^A-Z0-9]/', '')
             ->toString();
+
+        if(strlen($output) == 1) {
+            $chars = str_replace(['a', 'e', 'i', 'o', 'u'], '', $name);
+
+            if(isset($chars{1})) {
+                $output .= $chars{1};
+            }
+        }
+
+        return $output;
     }
 
     public static function formatLabel($label) {
