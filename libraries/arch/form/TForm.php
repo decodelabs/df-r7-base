@@ -833,6 +833,8 @@ trait TForm_DependentDelegate {
                     if(!$wasResolved || $hasChanged) {
                         $doCallback = true;
                     }
+                } else {
+                    $doCallback = true;
                 }
 
                 if($doCallback) {
