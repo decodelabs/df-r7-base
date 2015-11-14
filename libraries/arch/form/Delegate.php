@@ -42,6 +42,12 @@ class Delegate implements IDelegate {
         return array_pop($parts);
     }
 
+    final public function initialize() {
+        $this->beginInitialize();
+        $this->endInitialize();
+        return $this;
+    }
+
     final public function beginInitialize() {
         $this->init();
         $this->loadDelegates();
