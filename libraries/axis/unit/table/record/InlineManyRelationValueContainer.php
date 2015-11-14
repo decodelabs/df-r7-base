@@ -304,6 +304,23 @@ class InlineManyRelationValueContainer implements
         return $query;
     }
 
+    public function selectFromNew($field1=null) {
+        if(!$this->_record) {
+            throw new opal\record\ValuePreparationException(
+                'Cannot lookup relations, value container has not been prepared'
+            );
+        }
+
+        $localUnit = $this->_record->getRecordAdapter();
+        $targetUnit = $this->getTargetUnit();
+        $localFieldName = $this->_field->getName();
+
+        return opal\query\Initiator::factory()
+            ->beginSelect(func_get_args())
+            ->from($targetUnit, $localFieldName)
+            ->wherePrerequisite('@primary', 'in', $this->_getKeySets($this->_new));
+    }
+
     public function countAll() {
         return $this->select()->count();
     }
@@ -357,6 +374,26 @@ class InlineManyRelationValueContainer implements
         }
 
         return $output;
+    }
+
+    protected function _getKeySets(array $records) {
+        $keys = [];
+
+        foreach($records as $record) {
+            if($record instanceof opal\record\IPartial && $record->isBridge()) {
+                $ks = $this->_targetPrimaryKeySet->duplicateWith($record[$this->_field->getBridgeTargetFieldName()]);
+            } else if($record instanceof opal\record\IPrimaryKeySetProvider) {
+                $ks = $record->getPrimaryKeySet();
+            } else if($record instanceof opal\record\IPrimaryKeySet) {
+                $ks = $record;
+            } else {
+                $ks = $this->_targetPrimaryKeySet->duplicateWith($record);
+            }
+
+            $keys[(string)$ks] = $ks;
+        }
+
+        return $keys;
     }
 
 
