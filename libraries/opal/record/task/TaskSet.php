@@ -11,21 +11,21 @@ use df\opal;
 use df\mesh;
 
 class TaskSet implements ITaskSet {
-    
+
     protected $_tasks = [];
     protected $_transaction;
     protected $_isExecuting = false;
-    
+
     public function __construct() {
         $this->_transaction = new opal\query\Transaction();
     }
-    
-    
+
+
     public function getTransaction() {
         return $this->_transaction;
     }
-    
-    
+
+
     public function save(opal\record\IRecord $record) {
         if($record->isNew()) {
             return $this->insert($record);
@@ -35,11 +35,11 @@ class TaskSet implements ITaskSet {
             return null;
         }
     }
-    
+
     public function insert(opal\record\IRecord $record) {
         $task = new InsertRecord($record);
         $id = $task->getId();
-        
+
         if(isset($this->_tasks[$id])) {
             if($this->_tasks[$id] === false) {
                 unset($this->_tasks[$id]);
@@ -49,19 +49,19 @@ class TaskSet implements ITaskSet {
                         'Record '.$id.' has already been queued for a conflicting operation'
                     );
                 }
-                
+
                 return $this->_tasks[$id];
             }
         }
-        
+
         $this->addTask($task);
         return $task;
     }
-    
+
     public function replace(opal\record\IRecord $record) {
         $task = new ReplaceRecord($record);
         $id = $task->getId();
-        
+
         if(isset($this->_tasks[$id])) {
             if($this->_tasks[$id] === false) {
                 unset($this->_tasks[$id]);
@@ -71,19 +71,19 @@ class TaskSet implements ITaskSet {
                         'Record '.$id.' has already been queued for a conflicting operation'
                     );
                 }
-                
+
                 return $this->_tasks[$id];
             }
         }
-        
+
         $this->addTask($task);
         return $task;
     }
-    
+
     public function update(opal\record\IRecord $record) {
         $task = new UpdateRecord($record);
         $id = $task->getId();
-        
+
         if(isset($this->_tasks[$id])) {
             if($this->_tasks[$id] === false) {
                 unset($this->_tasks[$id]);
@@ -93,19 +93,19 @@ class TaskSet implements ITaskSet {
                         'Record '.$id.' has already been queued for a conflicting operation'
                     );
                 }
-                
+
                 return $this->_tasks[$id];
             }
         }
-        
+
         $this->addTask($task);
         return $task;
     }
-    
+
     public function delete(opal\record\IRecord $record) {
         $task = new DeleteRecord($record);
         $id = $task->getId();
-        
+
         if(isset($this->_tasks[$id])) {
             if($this->_tasks[$id] === false) {
                 unset($this->_tasks[$id]);
@@ -115,11 +115,11 @@ class TaskSet implements ITaskSet {
                         'Record '.$id.' has already been queued for a conflicting operation'
                     );
                 }
-                
+
                 return $this->_tasks[$id];
             }
         }
-        
+
         $this->addTask($task);
         return $task;
     }
@@ -164,16 +164,21 @@ class TaskSet implements ITaskSet {
 
     public function emitEventAfter(ITask $task, $entity, $action, array $data=null) {
         return $this->addGenericTask(function() use($entity, $action, $data) {
+                if($data === null) {
+                    $data = [];
+                }
+
+                $data['taskSet'] = $this;
                 mesh\Manager::getInstance()->emitEvent($entity, $action, $data);
             })
             ->addDependency($task);
     }
 
 
-    
+
     public function addTask(ITask $task) {
         $id = $task->getId();
-        
+
         if(isset($this->_tasks[$id])) {
             return $this;
 
@@ -183,7 +188,7 @@ class TaskSet implements ITaskSet {
             );
             */
         }
-        
+
         if($adapter = $task->getAdapter()) {
             $this->_transaction->registerAdapter($adapter);
         }
@@ -196,7 +201,7 @@ class TaskSet implements ITaskSet {
 
         return $this;
     }
-    
+
     public function hasTask($id) {
         if($id instanceof ITask) {
             $id = $id->getId();
@@ -221,7 +226,7 @@ class TaskSet implements ITaskSet {
         $id = $this->_getRecordId($record);
         return isset($this->_tasks[$id]);
     }
-    
+
     public function setRecordAsQueued(opal\record\IRecord $record) {
         $id = $this->_getRecordId($record);
 
@@ -231,12 +236,12 @@ class TaskSet implements ITaskSet {
 
         return $this;
     }
-    
+
     protected function _getRecordId(opal\record\IRecord $record) {
         return $record->getRecordAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
     }
-    
-    
+
+
     public function execute() {
         if($this->_isExecuting) {
             return $this;
@@ -244,29 +249,29 @@ class TaskSet implements ITaskSet {
 
         $this->_isExecuting = true;
         $this->_tasks = array_filter($this->_tasks);
-        
+
         foreach($this->_tasks as $task) {
             if($task instanceof IEventBroadcastingTask) {
                 $task->reportPreEvent($this);
             }
         }
-        
+
         $this->_sortTasks();
 
         try {
             while(!empty($this->_tasks)) {
                 $task = array_shift($this->_tasks);
-                
+
                 if(!$task) {
                     continue;
                 }
-                
+
                 $task->resolveDependencies($this);
 
                 if($task instanceof IEventBroadcastingTask) {
                     $task->reportExecuteEvent($this);
                 }
-                
+
                 $task->execute($this->_transaction);
 
                 if($task->applyResolutionToDependants()) {
@@ -281,7 +286,7 @@ class TaskSet implements ITaskSet {
             $this->_transaction->rollback();
             throw $e;
         }
-        
+
         $this->_transaction->commit();
         $this->_isExecuting = false;
 
