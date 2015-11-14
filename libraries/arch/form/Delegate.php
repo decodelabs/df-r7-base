@@ -42,7 +42,7 @@ class Delegate implements IDelegate {
         return array_pop($parts);
     }
 
-    final public function initialize() {
+    final public function beginInitialize() {
         $this->init();
         $this->loadDelegates();
 
@@ -51,16 +51,25 @@ class Delegate implements IDelegate {
             $this->setDefaultValues();
         }
 
+        foreach($this->_delegates as $delegate) {
+            $delegate->beginInitialize();
+        }
+
+        return $this;
+    }
+
+    final public function endInitialize() {
+        foreach($this->_delegates as $delegate) {
+            $delegate->endInitialize();
+        }
+
         if($this instanceof IDependentDelegate) {
             $this->normalizeDependencyValues();
         }
 
-        foreach($this->_delegates as $delegate) {
-            $delegate->initialize();
-        }
-
         $this->_state->isNew(false);
         $this->afterInit();
+
         return $this;
     }
 

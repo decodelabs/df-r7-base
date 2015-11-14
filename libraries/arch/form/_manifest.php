@@ -86,7 +86,8 @@ interface IWizard extends IAction {
 interface IDelegate extends IActiveForm, core\IContextAware {
     public function getDelegateId();
     public function getDelegateKey();
-    public function initialize();
+    public function beginInitialize();
+    public function endInitialize();
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false);
     public function setComplete($success=true);
 }

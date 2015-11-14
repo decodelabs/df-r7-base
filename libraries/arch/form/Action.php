@@ -113,7 +113,11 @@ abstract class Action extends arch\Action implements IAction {
             }
 
             foreach($this->_delegates as $delegate) {
-                $delegate->initialize();
+                $delegate->beginInitialize();
+            }
+
+            foreach($this->_delegates as $delegate) {
+                $delegate->endInitialize();
             }
         }
 
