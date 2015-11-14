@@ -397,7 +397,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         }
 
         // Search
-        $fs->addFieldArea()->setDescription($this->_searchMessage)->push(
+        $fs->addFieldArea()->setDescription($this->_searchMessage)->isStacked(true)->push(
             $this->html->textbox(
                     $this->fieldName('search'),
                     $this->values->search
@@ -434,7 +434,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
             $query = $this->_getQuery(null, $search);
             $query->paginate()->setDefaultLimit(50)->applyWith([]);
 
-            $fa = $fs->addFieldArea($this->_('Search results'));
+            $fa = $fs->addFieldArea($this->_('Search results'))->isStacked(true);
             $collectionWidget = $this->_renderCollectionList($query);
 
             if($collectionWidget instanceof aura\html\widget\IWidgetProxy) {
@@ -498,7 +498,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
 
 
         // Overlay buttons
-        $ba = $fs->addButtonArea()->push(
+        $ba = $fs->addButtonArea()->isStacked(true)->push(
             $this->html->eventButton(
                     $this->eventName('endSelect'),
                     $this->_('Done')
@@ -526,7 +526,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
             return;
         }
 
-        $fa = $fs->addFieldArea($this->_('Selected'));
+        $fa = $fs->addFieldArea($this->_('Selected'))->isStacked(true);
         $fa->addClass('delegate-selector');
 
         $id = $this->_getResultId($selected);
@@ -555,7 +555,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
             return;
         }
 
-        $fa = $fs->addFieldArea($this->_('Selected'));
+        $fa = $fs->addFieldArea($this->_('Selected'))->isStacked(true);
         $fa->addClass('delegate-selector');
 
         foreach($selected as $result) {
