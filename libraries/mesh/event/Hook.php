@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,18 +9,31 @@ use df;
 use df\core;
 use df\mesh;
 use df\axis;
-    
-abstract class Hook implements IHook {  
+
+abstract class Hook implements IHook {
 
     use core\TContextProxy;
 
+    protected static $_enabled = true;
     protected $_events = [];
 
     public static function getClassList() {
         return df\Launchpad::$loader->lookupClassList('apex/hooks/', true);
     }
 
+    public static function toggleEnabled($flag=null) {
+        if($flag === null) {
+            $flag = !self::$_enabled;
+        }
+
+        self::$_enabled = (bool)flag;
+    }
+
     public static function triggerEvent(IEvent $event, core\IContext $context=null) {
+        if(!self::$_enabled) {
+            return;
+        }
+
         $entityLocator = $event->getEntityLocator();
 
         if($context === null) {
@@ -38,7 +51,7 @@ abstract class Hook implements IHook {
             }
 
             $eventMap = self::_generateEventMap($context);
-            
+
             if(!isset($eventMap[$domain])) {
                 $emptySet[] = $domain;
                 $cache->set('__empty', $emptySet);
@@ -47,7 +60,7 @@ abstract class Hook implements IHook {
 
             $entitySet = $eventMap[$domain];
         }
-        
+
         $action = $event->getAction();
 
         if(!isset($entitySet[$action])) {
@@ -96,7 +109,7 @@ abstract class Hook implements IHook {
             }
 
             $hook = new $class($context);
-            
+
             foreach($hook->getEventMap() as $entityLocator => $entitySet) {
                 $entityLocator = mesh\entity\Locator::factory($entityLocator);
                 $domain = $entityLocator->getDomain();
