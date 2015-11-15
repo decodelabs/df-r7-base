@@ -26,7 +26,7 @@ abstract class Hook implements IHook {
             $flag = !self::$_enabled;
         }
 
-        self::$_enabled = (bool)flag;
+        self::$_enabled = (bool)$flag;
     }
 
     public static function triggerEvent(IEvent $event, core\IContext $context=null) {
