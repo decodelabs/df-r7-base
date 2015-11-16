@@ -53,6 +53,10 @@ class Color implements IColor, core\IDumpable {
     }
 
     public static function fromString($str) {
+        if(!strlen($str)) {
+            $str = 'black';
+        }
+
         if(isset(self::$_colorNames[strtolower($str)])) {
             return self::fromName($str);
         }
