@@ -445,7 +445,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
                 // Collection list
                 if($search !== null) {
                     $collectionWidget->addFieldAtIndex(0, 'relevance', function($record) {
-                        return $this->html->progressBar($record['relevance'] * 100);
+                        return $this->html->progressBar(@$record['relevance'] * 100);
                     });
                 }
 
