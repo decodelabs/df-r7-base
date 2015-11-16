@@ -11,7 +11,7 @@ use df\arch;
 use df\aura;
 
 class RecordLink extends arch\component\template\RecordLink {
-    
+
     protected $_scaffold;
 
     public function __construct(arch\scaffold\IRecordDataProviderScaffold $scaffold, array $args=null) {
@@ -41,5 +41,13 @@ class RecordLink extends arch\component\template\RecordLink {
 
     protected function _getRecordUrl($id) {
         return $this->_scaffold->getRecordUrl($this->_record);
+    }
+
+    protected function _decorateBody($body) {
+        return $body;
+    }
+
+    protected function _decorate($link) {
+        return $this->_scaffold->decorateRecordLink($link, $this->_record);
     }
 }

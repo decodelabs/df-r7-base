@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -151,7 +151,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
         $this->_matchRequest = $request;
         return $this;
     }
-    
+
     public function getMatchRequest() {
         return $this->_matchRequest;
     }
@@ -319,6 +319,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
             }
         }
 
+        $this->_decorate($output);
         return $output;
     }
 
@@ -337,6 +338,8 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
     protected function _decorateBody($name) {
         return $name;
     }
+
+    protected function _decorate($link) {}
 
     abstract protected function _getRecordUrl($id);
 }

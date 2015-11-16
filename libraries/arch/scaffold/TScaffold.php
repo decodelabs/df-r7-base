@@ -287,6 +287,11 @@ trait TScaffold_RecordDataProvider {
     }
 
 
+    public function decorateRecordLink($link, $record) {
+        return $link;
+    }
+
+
     public function canAddRecord() {
         return static::CAN_ADD_RECORD;
     }
