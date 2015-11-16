@@ -287,7 +287,7 @@ trait TScaffold_RecordDataProvider {
     }
 
 
-    public function decorateRecordLink($link, $record) {
+    public function decorateRecordLink($link, $component) {
         return $link;
     }
 
@@ -538,10 +538,9 @@ trait TScaffold_RecordDataProvider {
 
     public function defineColorField($list, $mode) {
         $list->addField('color', function($item, $context) {
-            $color = df\neon\Color::factory('black');
             return $this->html('span', $item['color'])
                 ->setStyle('background', $item['color'])
-                ->setStyle('color', $color->contrastAgainst($item['color'], 1))
+                ->setStyle('color', df\neon\Color::factory($item['color'])->getTextContrastColor())
                 ->setStyle('padding', '0 0.6em');
         });
     }

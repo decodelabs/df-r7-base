@@ -48,6 +48,6 @@ class RecordLink extends arch\component\template\RecordLink {
     }
 
     protected function _decorate($link) {
-        return $this->_scaffold->decorateRecordLink($link, $this->_record);
+        return $this->_scaffold->decorateRecordLink($link, $this);
     }
 }

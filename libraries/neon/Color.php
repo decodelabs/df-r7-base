@@ -835,6 +835,16 @@ class Color implements IColor, core\IDumpable {
         return $this->setHslLightness($delta1 + 0.5);
     }
 
+    public function getTextContrastColor() {
+        $this->setMode(IColor::HSL);
+
+        if($this->_c > 0.8) {
+            return self::factory('black');
+        } else {
+            return self::factory('white');
+        }
+    }
+
 
 
 
