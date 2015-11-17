@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 
 class RendererContext implements aura\html\widget\IRendererContext {
-    
+
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_Constructor;
     use core\collection\TArrayCollection_AssociativeValueMap;
@@ -52,7 +52,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
     public function getWidget() {
         return $this->_widget;
     }
-    
+
     public function getKey() {
         return $this->key;
     }
@@ -60,15 +60,15 @@ class RendererContext implements aura\html\widget\IRendererContext {
     public function getField() {
         return $this->field;
     }
-    
+
     public function getCounter() {
         return $this->counter;
     }
-    
+
     public function getCellTag() {
         return $this->cellTag;
     }
-    
+
     public function getRowTag() {
         return $this->rowTag;
     }
@@ -93,7 +93,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
     public function getDivider() {
         return $this->divider;
     }
-    
+
     public function prepareRow($row) {
         if($this->_rowProcessor) {
             $c = $this->_rowProcessor;
@@ -111,7 +111,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
 
         return $this->_nullToNa;
     }
-    
+
     public function reset() {
         $this->counter = 0;
         $this->clear();
@@ -121,7 +121,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
 
         return $this;
     }
-    
+
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
         $this->counter++;
         $this->clear();
@@ -137,7 +137,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
 
         return $this;
     }
-    
+
     public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
         $this->field = $field;
         $this->cellTag = $cellTag;
@@ -147,7 +147,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
         if($this->_skipCells) {
             $this->_skipCells--;
         }
-        
+
         return $this;
     }
 
@@ -173,7 +173,20 @@ class RendererContext implements aura\html\widget\IRendererContext {
         } else if($value instanceof aura\view\IRenderable) {
             $value = $value->renderTo($this->getView());
         }
-        
+
+        if($value instanceof \Generator) {
+            $gen = $value;
+            $value = null;
+
+            foreach($gen as $part) {
+                $value .= aura\html\ElementContent::normalize($part);
+            }
+
+            if($value !== null) {
+                $value = new aura\html\ElementString($value);
+            }
+        }
+
         if($this->_nullToNa && empty($value) && $value != '0') {
             $value = new aura\html\ElementString('<span class="na">n/a</span>');
         }
