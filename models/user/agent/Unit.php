@@ -12,6 +12,8 @@ use df\axis;
 
 class Unit extends axis\unit\table\Base {
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addUniqueField('body', 'Text', 255);

@@ -25,7 +25,7 @@ abstract class Base implements
 
     const NAME_FIELD = null;
     const KEY_NAME = null;
-    const BROADCAST_HOOK_EVENTS = false;
+    const BROADCAST_HOOK_EVENTS = true;
 
     protected static $_defaultRecordClass = 'df\\opal\\record\\Base';
 

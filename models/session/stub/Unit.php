@@ -13,6 +13,8 @@ use df\flex;
 
 class Unit extends axis\unit\table\Base {
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     protected function createSchema($schema) {
         $schema->addPrimaryField('key', 'Binary', 20);
         $schema->addField('sessionId', 'Binary', 20)

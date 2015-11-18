@@ -14,6 +14,7 @@ use df\user;
 class Unit extends axis\unit\table\Base {
 
     const PURGE_THRESHOLD = '-1 month';
+    const BROADCAST_HOOK_EVENTS = false;
 
     protected function createSchema($schema) {
         $schema->addField('user', 'One', 'user/client');

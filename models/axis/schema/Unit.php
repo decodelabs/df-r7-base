@@ -12,6 +12,8 @@ use df\axis;
 
 class Unit extends axis\unit\table\Base {
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     protected function createSchema($schema) {
         $schema->addPrimaryField('unitId', 'Text', 255);
         $schema->addField('storeName', 'Text', 128);

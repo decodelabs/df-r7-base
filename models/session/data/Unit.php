@@ -13,6 +13,8 @@ use df\user;
 
 class Unit extends axis\unit\table\Base {
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     protected function createSchema($schema) {
         $schema->addField('namespace', 'Text', 255);
         $schema->addField('key', 'Text', 255);

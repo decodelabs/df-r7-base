@@ -12,6 +12,8 @@ use df\opal;
 
 class Unit extends axis\unit\table\Base {
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     protected function createSchema($schema) {
         $schema->addField('user', 'ManyToOne', 'client', 'options');
         $schema->addField('key', 'Text', 255);

@@ -7,6 +7,8 @@ use df\axis;
 
 class Unit extends axis\unit\table\Base {
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     protected function createSchema($schema) {
         $schema->addField('user', 'ManyToOne', 'client', 'authDomains');
         $schema->addField('adapter', 'Text', 32);

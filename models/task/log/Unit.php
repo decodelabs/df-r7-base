@@ -12,6 +12,8 @@ use df\axis;
 
 class Unit extends axis\unit\table\Base {
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     protected $_defaultOrderableFields = [
         'request', 'environmentMode', 'startDate', 'runTime'
     ];

@@ -14,6 +14,8 @@ use df\flow;
 
 class Unit extends axis\unit\table\Base {
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     protected $_defaultSearchFields = [
         'name' => 3,
         'email' => 1

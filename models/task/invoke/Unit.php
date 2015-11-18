@@ -13,6 +13,8 @@ use df\arch;
 
 class Unit extends axis\unit\table\Base {
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     protected function createSchema($schema) {
         $schema->addPrimaryField('token', 'Text', 32);
         $schema->addField('expiryDate', 'Date:Time');

@@ -13,6 +13,8 @@ use df\user;
 
 class Unit extends axis\unit\table\Base {
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     protected function createSchema($schema) {
         $schema->addPrimaryField('internalId', 'Binary', 20)
             ->isConstantLength(true);
