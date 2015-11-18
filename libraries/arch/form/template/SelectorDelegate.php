@@ -171,6 +171,12 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
 
         if(isset($this->request[$id])) {
             $this->setSelected($this->request[$id]);
+        } else if($this->_isRequired) {
+            $r = $this->_getQuery(['@primary'])->limit(2)->toList('@primary');
+
+            if(count($r) == 1) {
+                $this->setSelected(array_shift($r));
+            }
         }
     }
 
