@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,15 +11,15 @@ use df\apex;
 use df\arch;
 use df\aura;
 use df\fire;
-    
+
 class VideoEmbed extends Base {
 
     protected function setDefaultValues() {
         $this->values->embed = $this->_block->getEmbedCode();
     }
 
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
-        $fieldArea->push(
+    public function renderFieldContent(aura\html\widget\Field $field) {
+        $field->push(
             $this->html->textarea(
                     $this->fieldName('embed'),
                     $this->values->embed

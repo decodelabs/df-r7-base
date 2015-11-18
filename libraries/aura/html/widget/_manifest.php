@@ -99,12 +99,12 @@ interface IFormOrientedWidget extends IWidget {}
 interface IFormDataWidget extends IFormOrientedWidget {
     public function setName($name);
     public function getName();
-    
+
     public function setValue($value);
     public function getValue();
     public function getValueString();
     public function replaceValue($value);
-    
+
     public function setTargetFormId($id);
     public function getTargetFormId();
 }
@@ -112,7 +112,7 @@ interface IFormDataWidget extends IFormOrientedWidget {
 interface IInputWidget extends IFormDataWidget, IDisableableWidget {
     public function isRequired($flag=null);
     public function isReadOnly($flag=null);
-    
+
     public function setTabIndex($index);
     public function getTabIndex();
 }
@@ -128,7 +128,7 @@ interface IVisualInputWidget extends IInputWidget, IFocusableInputWidget {
 
 interface IOptionalMultipleValueInputWidget extends IInputWidget {
     public function allowMultiple($flag=null);
-} 
+}
 
 interface IDataListEntryWidget extends IVisualInputWidget {
     public function setDataListId($id);
@@ -140,7 +140,7 @@ interface IDataEntryWidget extends IVisualInputWidget, IDataListEntryWidget {}
 interface ITextEntryWidget extends IVisualInputWidget {
     public function setMaxLength($length);
     public function getMaxLength();
-    
+
     public function setPlaceholder($placeholder);
     public function getPlaceholder();
 
@@ -152,10 +152,10 @@ interface IRangeEntryWidget extends IDataEntryWidget {
 
     public function setMin($min);
     public function getMin();
-    
+
     public function setMax($max);
     public function getMax();
-    
+
     public function setStep($max);
     public function getStep();
 }
@@ -190,7 +190,7 @@ interface IGroupedSelectionInputWidget extends ISelectionInputWidget {
     public function addGroupOptions($groupId, $options, $labelsAsValues=false);
     public function getGroupOptions($groupId);
     public function sortGroupOptions($groupId, $byLabel=false);
-    
+
     public function addGroup($id, $name, $options=null, $labelsAsValues=false);
     public function getGroup($id);
     public function removeGroup($id);
@@ -222,22 +222,22 @@ interface IIconProviderWidget {
 interface IFormWidget extends IFormOrientedWidget {
     public function setAction($action);
     public function getAction();
-    
+
     public function setMethod($method);
     public function getMethod();
-    
+
     public function setEncoding($encoding);
     public function getEncoding();
-    
+
     public function setName($name);
     public function getName();
-    
+
     public function setTarget($target);
     public function getTarget();
-    
+
     public function shouldAutoComplete($flag=null);
     public function shouldValidate($flag=null);
-    
+
     public function setAcceptCharset($charset);
     public function getAcceptCharset();
 }
@@ -246,10 +246,10 @@ interface IFieldSetWidget extends IFormOrientedWidget {
     public function withLegendBody();
     public function setLegendBody(aura\html\IElementContent $body);
     public function getLegendBody();
-    
+
     public function setName($name);
     public function getName();
-    
+
     public function setTargetFormId($id);
     public function getTargetFormId();
 }
@@ -262,7 +262,7 @@ interface IButtonWidget extends IInputWidget, IBodyContentAwareWidget, IDisposit
 interface ITextboxWidget extends ITextEntryWidget, IDataListEntryWidget {
     public function setPattern($pattern);
     public function getPattern();
-    
+
     public function setFormEvent($event);
     public function getFormEvent();
 }
@@ -270,13 +270,13 @@ interface ITextboxWidget extends ITextEntryWidget, IDataListEntryWidget {
 interface ITextareaWidget extends ITextEntryWidget {
     public function setColumns($columns);
     public function getColumns();
-    
+
     public function setRows($rows);
     public function getRows();
-    
+
     public function setDirectionInputName($name);
     public function getDirectionInputName();
-    
+
     public function setWrap($wrap);
     public function getWrap();
 }
@@ -296,7 +296,7 @@ interface ILabelWidget extends IFormOrientedWidget, IBodyContentAwareWidget {
     public function getInputId();
 }
 
-interface IFieldAreaWidget extends IFormOrientedWidget {
+interface IFieldWidget extends IFormOrientedWidget {
     public function withLabelBody();
     public function setLabelBody(aura\html\IElementContent $labelBody);
     public function getLabelBody();
@@ -306,7 +306,7 @@ interface IFieldAreaWidget extends IFormOrientedWidget {
 
 // Lists
 interface IListWidget extends IWidget {
-    
+
 }
 
 interface IDataDrivenListWidget extends IListWidget {
@@ -344,20 +344,20 @@ interface IMappedListWidget extends IListWidget {
 interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidget, IDispositionAwareWidget, arch\navigation\ILink {
     public function setTarget($target);
     public function getTarget();
-    
+
     public function setRelationship($rel);
     public function addRelationship($rel);
     public function getRelationship();
     public function removeRelationship($rel);
-    
+
     public function isActive($flag=null);
-    
+
     public function setHrefLanguage($language);
     public function getHrefLanguage();
-    
+
     public function setMedia($media);
     public function getMedia();
-    
+
     public function setContentType($type);
     public function getContentType();
 }
@@ -365,5 +365,5 @@ interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidg
 interface IDescriptionAwareLinkWidget extends ILinkWidget {
     public function setDescription($description);
     public function getDescription();
-    public function shouldShowDescription($flag=null);    
+    public function shouldShowDescription($flag=null);
 }

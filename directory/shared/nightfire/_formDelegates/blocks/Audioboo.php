@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,16 +11,16 @@ use df\apex;
 use df\arch;
 use df\aura;
 use df\fire;
-    
+
 class Audioboo extends Base {
 
     protected function setDefaultValues() {
         $this->values->booId = $this->_block->getBooId();
     }
 
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
-        $fieldArea->push(
-            $this->html->fieldArea($this->_('Audioboom URL or ID'))->push(
+    public function renderFieldContent(aura\html\widget\Field $field) {
+        $field->push(
+            $this->html->field($this->_('Audioboom URL or ID'))->push(
                 $this->html->textbox($this->fieldName('booId'), $this->values->booId)
                     ->isRequired($this->_isRequired)
             )

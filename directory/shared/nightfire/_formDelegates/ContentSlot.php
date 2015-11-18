@@ -189,7 +189,7 @@ class ContentSlot extends arch\form\Delegate implements
                 $topKey = $key;
             }
 
-            $fa = $container->addFieldArea($this->_($this->_blockLabel, ['%n%' => $key]))
+            $fa = $container->addField($this->_($this->_blockLabel, ['%n%' => $key]))
                 ->setId($this->elementId($delegateId));
             $fa->push($this->html('<div class="fire-block">'));
 
@@ -241,14 +241,14 @@ class ContentSlot extends arch\form\Delegate implements
             );
 
             $delegate = $this[$delegateId];
-            $delegate->renderFieldAreaContent($fa);
+            $delegate->renderFieldContent($fa);
 
             $fa->push($this->html('</div>'));
             $counter++;
         }
 
         if(!$this->_slotDefinition->hasBlockLimit() || $blockCount < $this->_slotDefinition->getMaxBlocks()) {
-            $container->addFieldArea($this->_($this->_blockLabel, ['%n%' => $topKey + 1]))
+            $container->addField($this->_($this->_blockLabel, ['%n%' => $topKey + 1]))
                 ->setId($this->elementId('add-selector'))
                 ->push(
                     $this->html->groupedSelectList(

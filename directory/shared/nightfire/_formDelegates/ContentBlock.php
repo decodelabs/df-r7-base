@@ -139,7 +139,7 @@ class ContentBlock extends arch\form\Delegate implements
         }
     }
 
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fa) {
+    public function renderFieldContent(aura\html\widget\Field $fa) {
         $fa->setId($this->elementId('block'));
         $fa->push($this->html('<div class="fire-block">'));
 
@@ -176,7 +176,7 @@ class ContentBlock extends arch\form\Delegate implements
 
 
         if($this->_block) {
-            $this['block']->renderFieldAreaContent($fa);
+            $this['block']->renderFieldContent($fa);
         }
 
         $fa->push($this->html('</div>'));

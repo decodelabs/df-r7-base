@@ -28,7 +28,7 @@ class Error extends Base {
         $this->_block->setData($this->getStore('data'));
     }
 
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
+    public function renderFieldContent(aura\html\widget\Field $field) {
         $output = $this->html->flashMessage($this->_(
             'Error loading block type: '.$this->getStore('type')
         ), 'error');
@@ -36,7 +36,7 @@ class Error extends Base {
         $output->setDescription($this->getStore('message'));
         $this->_block->setData($this->getStore('data'));
 
-        $fieldArea->push($output);
+        $field->push($output);
 
         return $this;
     }

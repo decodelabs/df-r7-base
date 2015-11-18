@@ -490,16 +490,16 @@ trait TForm_InlineFieldRenderableDelegate {
 
     use TForm_RenderableDelegate;
 
-    public function renderFieldArea($label=null) {
-        $this->renderFieldAreaContent(
-            $output = $this->html->fieldArea($label)
+    public function renderField($label=null) {
+        $this->renderFieldContent(
+            $output = $this->html->field($label)
         );
 
         return $output;
     }
 
-    public function renderInlineFieldAreaContent() {
-        return $this->renderFieldArea()->renderInputArea();
+    public function renderInlineFieldContent() {
+        return $this->renderField()->renderInputArea();
     }
 }
 

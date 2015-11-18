@@ -30,12 +30,12 @@ class LibraryImage extends Base {
         }
     }
 
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
-        $fieldArea->addFieldArea($this->_('Library image'))->push($this['image']);
+    public function renderFieldContent(aura\html\widget\Field $field) {
+        $field->addField($this->_('Library image'))->push($this['image']);
 
         if($this->_block->shouldStoreDimensions()) {
-            $fieldArea->push(
-                $this->html->fieldArea($this->_('Dimensions (optional)'))->push(
+            $field->push(
+                $this->html->field($this->_('Dimensions (optional)'))->push(
                     $this->html->numberTextbox($this->fieldName('width'), $this->values->width)
                         ->setRange(1, null, 1),
 

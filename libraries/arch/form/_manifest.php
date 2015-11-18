@@ -105,9 +105,9 @@ interface IRenderableDelegate {
 }
 
 interface IInlineFieldRenderableDelegate extends IRenderableDelegate {
-    public function renderFieldArea($label=null);
-    public function renderInlineFieldAreaContent();
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea);
+    public function renderField($label=null);
+    public function renderInlineFieldContent();
+    public function renderFieldContent(aura\html\widget\Field $field);
 }
 
 interface ISelfContainedRenderableDelegate extends IRenderableDelegate {

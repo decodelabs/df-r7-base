@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\aura;
 use df\fire;
-    
+
 class Heading extends Base {
 
     protected function setDefaultValues() {
@@ -19,9 +19,9 @@ class Heading extends Base {
         $this->values->level = $this->_block->getHeadingLevel();
     }
 
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
-        $fieldArea->push(
-            $this->html->fieldArea($this->_('Heading text'))->push(
+    public function renderFieldContent(aura\html\widget\Field $field) {
+        $field->push(
+            $this->html->field($this->_('Heading text'))->push(
                 $this->html->selectList($this->fieldName('level'), $this->values->level, [
                         1 => 'h1',
                         2 => 'h2',

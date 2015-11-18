@@ -29,8 +29,8 @@ class Element extends Base {
         $this['element']->setSelected($id);
     }
 
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
-        $this['element']->renderFieldAreaContent($fieldArea);
+    public function renderFieldContent(aura\html\widget\Field $field) {
+        $this['element']->renderFieldContent($field);
 
         return $this;
     }

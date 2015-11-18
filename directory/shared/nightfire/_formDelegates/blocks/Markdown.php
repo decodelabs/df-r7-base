@@ -18,12 +18,12 @@ class Markdown extends Base {
         $this->values->body = $this->_block->getBody();
     }
 
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea) {
+    public function renderFieldContent(aura\html\widget\Field $field) {
         $this->view
             ->linkCss('asset://lib/simplemde/simplemde.min.css')
             ->linkJs('asset://lib/simplemde/simplemde.min.js');
 
-        $fieldArea->push(
+        $field->push(
             $ta = $this->html->textarea(
                     $this->fieldName('body'),
                     $this->values->body

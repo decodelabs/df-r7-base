@@ -10,36 +10,36 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class FieldArea extends Container implements IFormOrientedWidget {
-    
+class Field extends Container implements IFormOrientedWidget {
+
     protected $_label;
     protected $_description;
     protected $_errorContainer;
     protected $_errorPosition = 'top';
     protected $_isRequired = false;
-    
+
     public function __construct(arch\IContext $context, $labelBody=null, $errorPosition=null) {
         parent::__construct($context);
-        
+
         $this->_label = new Label($context, $labelBody);
 
         if($errorPosition !== null) {
             $this->setErrorPosition($errorPosition);
         }
     }
-    
+
     public function setRenderTarget(aura\view\IRenderTarget $renderTarget=null) {
         $this->_label->setRenderTarget($renderTarget);
         return parent::setRenderTarget($renderTarget);
     }
-    
+
     protected function _render() {
         $tag = $this->getTag();
         $view = $this->getRenderTarget()->getView();
 
         $children = $this->_prepareChildren(function($child) {
             if($child instanceof arch\form\IInlineFieldRenderableDelegate) {
-                return $child->renderFieldAreaContent($this);
+                return $child->renderFieldContent($this);
             }
 
             return $child;
@@ -58,7 +58,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
         if($this->_errorContainer) {
             $errors = $this->_errorContainer->getErrors();
         }
-        
+
         $this->_walkChildren($this->_children->toArray(), $errors, $isRequired, $primaryWidget);
         $output = [];
 
@@ -71,15 +71,15 @@ class FieldArea extends Container implements IFormOrientedWidget {
                 $output[] = $fieldError->render();
             }
         }
-        
+
         if($primaryWidget instanceof IFocusableInputWidget) {
             $inputId = $primaryWidget->getId();
-            
+
             if($inputId === null) {
                 $inputId = 'formInput-'.md5(uniqid('formInput-', true));
                 $primaryWidget->setId($inputId);
             }
-            
+
             $this->_label->setInputId($inputId);
         }
 
@@ -97,8 +97,8 @@ class FieldArea extends Container implements IFormOrientedWidget {
         if($this->_description !== null) {
             $inputAreaBody = [
                 new aura\html\Element(
-                    'p', 
-                    [$view->html->icon('info'), ' ', $this->_description], 
+                    'p',
+                    [$view->html->icon('info'), ' ', $this->_description],
                     ['class' => 'description info']
                 ),
                 $children
@@ -110,11 +110,11 @@ class FieldArea extends Container implements IFormOrientedWidget {
         if($fieldError && $errorPosition == 'bottom') {
             $output[] = $fieldError->render();
         }
-        
+
         if($isRequired) {
             $tag->addClass('required');
         }
-        
+
         return $tag->renderWith($output, true);
     }
 
@@ -124,13 +124,13 @@ class FieldArea extends Container implements IFormOrientedWidget {
                 if(!$primaryWidget) {
                     $primaryWidget = $child;
                 }
-                
+
                 if(!$isRequired) {
                     $isRequired = $child->isRequired();
                 }
-                
+
                 $value = $child->getValue();
-                
+
                 if($value->hasErrors()) {
                     $errors = array_merge($errors, $value->getErrors());
                 }
@@ -147,7 +147,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
 
         $children = $this->_prepareChildren(function($child) {
             if($child instanceof arch\form\IInlineFieldRenderableDelegate) {
-                $child = $child->renderFieldAreaContent($this);
+                $child = $child->renderFieldContent($this);
             }
 
             return $child;
@@ -156,24 +156,24 @@ class FieldArea extends Container implements IFormOrientedWidget {
         if($this->_errorContainer) {
             $errors = $this->_errorContainer->getErrors();
         }
-        
+
         foreach($children as $child) {
             if($child instanceof IInputWidget) {
                 $value = $child->getValue();
-                
+
                 if($value->hasErrors()) {
                     $errors = array_merge($errors, $value->getErrors());
                 }
             }
         }
-        
+
         $inputAreaBody = $children;
 
         if($this->_description !== null) {
             $inputAreaBody = [
                 new aura\html\Element(
-                    'p', 
-                    [$view->html->icon('info'), ' ', $this->_description], 
+                    'p',
+                    [$view->html->icon('info'), ' ', $this->_description],
                     ['class' => 'description info']
                 ),
                 $children
@@ -182,18 +182,18 @@ class FieldArea extends Container implements IFormOrientedWidget {
 
         return (new aura\html\Element('div', $inputAreaBody, ['class' => 'widget-inputArea']))->render();
     }
-    
-    
+
+
 // Label body
     public function withLabelBody() {
         return new aura\html\widget\util\ElementContentWrapper($this, $this->_label->getBody());
     }
-    
+
     public function setLabelBody(aura\html\IElementContent $labelBody) {
         $this->_label->setBody();
         return $this;
     }
-    
+
     public function getLabelBody() {
         return $this->_label->getBody();
     }
@@ -271,8 +271,8 @@ class FieldArea extends Container implements IFormOrientedWidget {
 
         return $tag->hasClass('stacked');
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         return [
