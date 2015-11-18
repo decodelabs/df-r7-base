@@ -84,7 +84,7 @@ class Field extends Container implements IFormOrientedWidget {
         }
 
         if(!$isStacked || $this->_label->hasBody()) {
-            $labelContainer = new aura\html\Element('div.widget-labelArea', $this->_label);
+            $labelContainer = new aura\html\Element('div.w-labelArea', $this->_label);
             $output[] = $labelContainer;
         }
 
@@ -105,7 +105,7 @@ class Field extends Container implements IFormOrientedWidget {
             ];
         }
 
-        $output[] = new aura\html\Element('div.widget-inputArea', $inputAreaBody);
+        $output[] = new aura\html\Element('div.w-inputArea', $inputAreaBody);
 
         if($fieldError && $errorPosition == 'bottom') {
             $output[] = $fieldError->render();
@@ -180,7 +180,7 @@ class Field extends Container implements IFormOrientedWidget {
             ];
         }
 
-        return (new aura\html\Element('div', $inputAreaBody, ['class' => 'widget-inputArea']))->render();
+        return (new aura\html\Element('div', $inputAreaBody, ['class' => 'w-inputArea']))->render();
     }
 
 

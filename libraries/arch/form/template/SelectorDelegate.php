@@ -231,7 +231,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
             ->isRequired($this->_isRequired);
 
         $fa->push(
-            $this->html('div.widget-selection', [
+            $this->html('div.w-selection', [
                 $this->html('div.body', $select),
                 $this->html->hidden($this->fieldName('_poke'), 1),
 
@@ -243,7 +243,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
     }
 
     protected function _renderInlineTextDetails(aura\html\widget\Field $fa) {
-        $fa->push($this->html('<div class="widget-selection"><div class="body">'));
+        $fa->push($this->html('<div class="w-selection"><div class="body">'));
         $selected = $this->_fetchSelectionList();
 
         if($this->_isForMany) {
@@ -539,7 +539,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         $name = $this->_getResultDisplayName($selected);
 
         $fa->push(
-            $this->html('div.widget-selection', [
+            $this->html('div.w-selection', [
                 $this->html->hidden($this->fieldName('selected'), $id),
 
                 $this->html('div.body', $name),
@@ -569,7 +569,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
             $name = $this->_getResultDisplayName($result);
 
             $fa->push(
-                $this->html('div.widget-selection', [
+                $this->html('div.w-selection', [
                     $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
 
                     $this->html('div.body', $name),

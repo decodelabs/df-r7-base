@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 
 class PrioritySlider extends Base implements IInputWidget {
-    
+
     use TWidget_FormData;
     use TWidget_Input;
 
@@ -52,7 +52,7 @@ class PrioritySlider extends Base implements IInputWidget {
                 'max' => 4,
                 'step' => 1,
                 'required' => $this->_isRequired,
-                'class' => 'widget-rangeSlider'
+                'class' => 'w-rangeSlider'
             ]),
             ' ',
             new aura\html\Element('span', 'Critical')

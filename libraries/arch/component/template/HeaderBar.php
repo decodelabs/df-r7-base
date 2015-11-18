@@ -130,7 +130,7 @@ abstract class HeaderBar extends arch\component\Base
 
         // Selector area
         if($selectorArea = $this->_renderSelectorArea()) {
-            $output[] = $this->html('div.widget-selectorArea', [$selectorArea]);
+            $output[] = $this->html('div.w-selectorArea', [$selectorArea]);
         }
 
 
@@ -148,7 +148,7 @@ abstract class HeaderBar extends arch\component\Base
         $output[] = $secondaryMenu = $this->html->menuBar()->addClass('secondary');
         $this->_addSectionLinks($secondaryMenu);
 
-        return $this->html('header.widget-headerBar', $output);
+        return $this->html('header.w-headerBar', $output);
     }
 
 

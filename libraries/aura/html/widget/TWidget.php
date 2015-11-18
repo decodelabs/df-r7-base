@@ -28,7 +28,7 @@ trait TWidget {
             }
 
             $this->_primaryTag = new aura\html\Tag(static::PRIMARY_TAG);
-            $this->_primaryTag->setClasses([/*'widget', */'widget-'.lcfirst($this->getWidgetName())]);
+            $this->_primaryTag->setClasses(['w-'.lcfirst($this->getWidgetName())]);
         }
 
         return $this->_primaryTag;
@@ -264,7 +264,7 @@ trait TWidget_Input {
     protected $_tabIndex;
 
     protected function _applyInputAttributes(aura\html\ITag $tag) {
-        //$tag->addClass('widget-formInput');
+        $tag->addClass('w-input');
 
         // Required
         if($this->_isRequired) {
@@ -909,7 +909,7 @@ trait TWidget_NavigationEntryController {
 
     public function addSpacer() {
         if($this->_entries->getLast() instanceof ILinkWidget) {
-            $this->_entries->push(new aura\html\ElementString('<span class="widget-spacer"></span>'));
+            $this->_entries->push(new aura\html\ElementString('<span class="w-spacer"></span>'));
         }
 
         return $this;

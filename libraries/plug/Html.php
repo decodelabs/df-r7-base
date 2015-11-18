@@ -293,7 +293,7 @@ class Html implements arch\IDirectoryHelper {
 
         $isProduction = df\Launchpad::$application->isProduction();
 
-        $output = '<section class="widget-flashList">'."\n";
+        $output = '<section class="w-flashList">'."\n";
 
         foreach($manager->getConstantFlashes() as $message) {
             $message->isDisplayed(true);
