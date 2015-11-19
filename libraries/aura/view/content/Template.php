@@ -160,9 +160,9 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             throw new aura\view\RuntimeException('Rendering is already in progress');
         }
 
-        $target = $this->getRenderTarget();
+        $____target = $this->getRenderTarget();
         $this->_isRendering = true;
-        $this->view = $target->getView();
+        $this->view = $____target->getView();
 
 
         if($this->_isLayout && $this->_innerContent === null) {
