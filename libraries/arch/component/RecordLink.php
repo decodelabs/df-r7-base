@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\component\template;
+namespace df\arch\component;
 
 use df;
 use df\core;
@@ -12,7 +12,7 @@ use df\aura;
 use df\user;
 use df\opal;
 
-abstract class RecordLink extends arch\component\Base implements aura\html\widget\IWidgetProxy {
+abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy {
 
     use user\TAccessControlled;
 

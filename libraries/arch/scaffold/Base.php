@@ -246,7 +246,7 @@ abstract class Base implements IScaffold {
             $record = $this->getRecord();
         }
 
-        $output = new arch\component\template\AttributeList($this->context, [$fields, $record]);
+        $output = new arch\component\AttributeList($this->context, [$fields, $record]);
         $output->setViewArg(lcfirst($this->getRecordKeyName()));
         $output->setRenderTarget($this->view);
         $spacerIterator = 0;
@@ -300,7 +300,7 @@ abstract class Base implements IScaffold {
             array_unshift($fields, $nameKey);
         }
 
-        $output = new arch\component\template\CollectionList($this->context, [$fields, $collection]);
+        $output = new arch\component\CollectionList($this->context, [$fields, $collection]);
         $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
         $output->setRenderTarget($this->view);
 

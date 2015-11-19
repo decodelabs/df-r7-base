@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-class HeaderBar extends arch\component\template\HeaderBar {
+class HeaderBar extends arch\component\HeaderBar {
 
     protected $_scaffold;
     protected $_name;

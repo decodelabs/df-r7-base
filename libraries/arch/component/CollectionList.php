@@ -1,16 +1,16 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\component\template;
+namespace df\arch\component;
 
 use df;
 use df\core;
 use df\arch;
 use df\aura;
-    
-class CollectionList extends arch\component\Base implements aura\html\widget\IWidgetProxy {
+
+class CollectionList extends Base implements aura\html\widget\IWidgetProxy {
 
     const DEFAULT_ERROR_MESSAGE = null;
 
@@ -129,7 +129,7 @@ class CollectionList extends arch\component\Base implements aura\html\widget\IWi
     }
 
     public function isFieldVisible($key) {
-        return isset($this->_fields[$key]) 
+        return isset($this->_fields[$key])
             && $this->_fields[$key] !== false;
     }
 
@@ -175,7 +175,7 @@ class CollectionList extends arch\component\Base implements aura\html\widget\IWi
         $output = $this->view->html->collectionList($this->_collection);
         $context = $output->getRendererContext();
         $context->setComponent($this);
-        
+
 
         if($this->_errorMessage !== null) {
             $output->setErrorMessage($this->_errorMessage);

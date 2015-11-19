@@ -3,15 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\component\template;
+namespace df\arch\component;
 
 use df;
 use df\core;
 use df\arch;
 use df\aura;
 
-abstract class HeaderBar extends arch\component\Base
-    /*implements aura\html\widget\IWidgetProxy*/ {
+abstract class HeaderBar extends Base {
 
     protected $_record;
     protected $_title;

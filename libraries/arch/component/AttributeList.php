@@ -1,16 +1,16 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\component\template;
+namespace df\arch\component;
 
 use df;
 use df\core;
 use df\arch;
 use df\aura;
-    
-class AttributeList extends arch\component\Base implements aura\html\widget\IWidgetProxy {
+
+class AttributeList extends Base implements aura\html\widget\IWidgetProxy {
 
     protected $_record;
     protected $_renderIfEmpty = null;
@@ -116,7 +116,7 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
     }
 
     public function isFieldVisible($key) {
-        return isset($this->_fields[$key]) 
+        return isset($this->_fields[$key])
             && $this->_fields[$key] !== false;
     }
 

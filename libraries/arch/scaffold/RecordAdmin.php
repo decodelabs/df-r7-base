@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\scaffold\template;
+namespace df\arch\scaffold;
 
 use df;
 use df\core;
@@ -12,19 +12,19 @@ use df\aura;
 use df\opal;
 
 abstract class RecordAdmin extends arch\scaffold\Base implements
-    arch\scaffold\IRecordLoaderScaffold,
-    arch\scaffold\IRecordDataProviderScaffold,
-    arch\scaffold\IRecordListProviderScaffold,
-    arch\scaffold\ISectionProviderScaffold {
+    IRecordLoaderScaffold,
+    IRecordDataProviderScaffold,
+    IRecordListProviderScaffold,
+    ISectionProviderScaffold {
 
-    use arch\scaffold\TScaffold_RecordLoader;
-    use arch\scaffold\TScaffold_RecordDataProvider;
-    use arch\scaffold\TScaffold_RecordListProvider;
+    use TScaffold_RecordLoader;
+    use TScaffold_RecordDataProvider;
+    use TScaffold_RecordListProvider;
 
-    use arch\scaffold\TScaffold_SectionProvider;
+    use TScaffold_SectionProvider;
 
-    use arch\scaffold\TScaffold_IndexHeaderBarProvider;
-    use arch\scaffold\TScaffold_RecordIndexHeaderBarProvider;
+    use TScaffold_IndexHeaderBarProvider;
+    use TScaffold_RecordIndexHeaderBarProvider;
 
     const RECORD_ADAPTER = null;
     const RECORD_KEY_NAME = null;

@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-class RecordLink extends arch\component\template\RecordLink {
+class RecordLink extends arch\component\RecordLink {
 
     protected $_scaffold;
 
