@@ -3,24 +3,100 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\form;
+namespace df\arch\action;
 
 use df;
 use df\core;
 use df\arch;
+use df\user;
 use df\aura;
+use df\flow;
 use df\opal;
 
+
 // Exceptions
-interface IException extends arch\IException {}
-class LogicException extends \LogicException implements IException {}
+interface IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class LogicException extends \LogicException implements IException {}
+
+
 class DelegateException extends RuntimeException {}
 class EventException extends RuntimeException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
-// Interfaces
+
+##############################
+## MAIN
+##############################
+interface IAction extends core\IContextAware, user\IAccessLock, arch\IResponseForcer, arch\IOptionalDirectoryAccessLock {
+    public function setCallback($callback);
+    public function getCallback();
+    public function dispatch();
+    public function getController();
+    public function shouldOptimize($flag=null);
+    public function getActionMethodName();
+    public function handleException(\Exception $e);
+}
+
+
+
+##############################
+## TASKS
+##############################
+interface ITaskAction extends IAction {
+    public static function getSchedule();
+    public static function getScheduleEnvironmentMode();
+    public static function getSchedulePriority();
+    public static function shouldScheduleAutomatically();
+
+    public function extractCliArguments(core\cli\ICommand $command);
+    public function runChild($request, $incLevel=true);
+    public function runChildQuietly($request);
+
+    public function ensureEnvironmentMode($mode);
+    public function promptEnvironmentMode($mode, $default=false);
+}
+
+
+interface ITaskManager extends core\IManager {
+    public function launch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null, $user=null);
+    public function launchBackground($request, $environmentMode=null, $user=null);
+    public function launchQuietly($request);
+    public function invoke($request, core\io\IMultiplexer $io=null);
+    public function initiateStream($request, $environmentMode=null);
+    public function queue($request, $priority='medium', $environmentMode=null);
+    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null);
+    public function queueAndLaunchBackground($request, $environmentMode=null);
+    public function getSharedIo();
+    public function shouldCaptureBackgroundTasks($flag=null);
+}
+
+
+
+##############################
+## REST API
+##############################
+interface IRestApiAction extends IAction {
+    public function authorizeRequest();
+}
+
+interface IRestApiResult extends arch\IProxyResponse {
+    public function isValid();
+
+    public function setStatusCode($code);
+    public function getStatusCode();
+
+    public function setException(\Exception $e);
+    public function hasException();
+    public function getException();
+}
+
+
+
+##############################
+## FORMS
+##############################
 interface IStoreProvider {
     public function setStore($key, $value);
     public function hasStore($key);
@@ -29,7 +105,7 @@ interface IStoreProvider {
     public function clearStore();
 }
 
-interface IStateController extends IStoreProvider {
+interface IFormStateController extends IStoreProvider {
     public function getSessionId();
     public function getValues();
 
@@ -70,11 +146,11 @@ interface IActiveForm extends IForm {
 }
 
 
-interface IAction extends arch\IAction, IActiveForm {
+interface IFormAction extends IAction, IActiveForm {
     public function setComplete();
 }
 
-interface IWizard extends IAction {
+interface IWizard extends IFormAction {
     public function getCurrentSection();
     public function setSection($section);
     public function getPrevSection();
@@ -92,7 +168,6 @@ interface IDelegate extends IActiveForm, core\IContextAware {
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false);
     public function setComplete($success=true);
 }
-
 
 interface IModalDelegate {
     public function getAvailableModes();
@@ -147,11 +222,7 @@ interface ISelectorDelegate extends ISelectionProviderDelegate, IDependencyValue
 
 interface IInlineFieldRenderableSelectorDelegate extends IInlineFieldRenderableDelegate, ISelectorDelegate {}
 interface IInlineFieldRenderableModalSelectorDelegate extends IModalDelegate, IInlineFieldRenderableDelegate, ISelectorDelegate {}
-
-interface IAdapterDelegate extends IParentUiHandlerDelegate, IParentEventHandlerDelegate {
-
-}
-
+interface IAdapterDelegate extends IParentUiHandlerDelegate, IParentEventHandlerDelegate {}
 
 interface IDependencyValueProvider {
     public function getDependencyValue();

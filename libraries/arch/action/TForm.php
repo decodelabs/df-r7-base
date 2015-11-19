@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\form;
+namespace df\arch\action;
 
 use df;
 use df\core;
@@ -881,7 +881,7 @@ trait TForm_MediaBucketAwareSelector {
 
     protected function _setupBucket() {
         if(isset($this->_bucketData['context1'])
-        && $this->_bucketData['context1'] instanceof arch\form\ISelectorDelegate) {
+        && $this->_bucketData['context1'] instanceof arch\action\ISelectorDelegate) {
             if(!$this->_bucketData['context1']->hasSelection()) {
                 $this->_bucket = null;
                 $this->addDependency(
@@ -897,7 +897,7 @@ trait TForm_MediaBucketAwareSelector {
         }
 
         if(isset($this->_bucketData['context2'])
-        && $this->_bucketData['context2'] instanceof arch\form\ISelectorDelegate) {
+        && $this->_bucketData['context2'] instanceof arch\action\ISelectorDelegate) {
             if(!$this->_bucketData['context2']->hasSelection()) {
                 $this->_bucket = null;
                 $this->addDependency(

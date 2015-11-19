@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class TaskBuild extends arch\task\Action {
+class TaskBuild extends arch\action\Task {
 
     const PURGE_OLD_BUILDS = true;
 

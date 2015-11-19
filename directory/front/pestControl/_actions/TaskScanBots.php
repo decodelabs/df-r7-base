@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskScanBots extends arch\task\Action {
-    
+class TaskScanBots extends arch\action\Task {
+
     const SCHEDULE = '0 0 * * 1';
     const SCHEDULE_AUTOMATIC = true;
 

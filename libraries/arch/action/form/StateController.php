@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\form;
+namespace df\arch\action\form;
 
 use df;
 use df\core;
 use df\arch;
 
-class StateController implements IStateController, \Serializable {
-    
+class StateController implements arch\action\IFormStateController, \Serializable {
+
     public $sessionId;
     public $values;
     public $isOperating = false;
@@ -19,28 +19,28 @@ class StateController implements IStateController, \Serializable {
     protected $_isNew = false;
     protected $_delegates = [];
     protected $_store = [];
-    
+
     public function __construct($sessionId) {
         $this->sessionId = $sessionId;
         $this->values = new core\collection\InputTree();
         $this->_isNew = true;
     }
-    
+
     public function serialize() {
         return serialize($this->_getSerializeValues());
     }
-    
+
     protected function _getSerializeValues($withId=true) {
         $output = [];
-        
+
         if($withId) {
             $output['id'] = $this->sessionId;
         }
-        
+
         if(!$this->values->isEmpty()) {
             $output['vl'] = $this->values;
         }
-        
+
         if($this->_isNew) {
             $output['nw'] = true;
         }
@@ -48,42 +48,42 @@ class StateController implements IStateController, \Serializable {
         if($this->referrer) {
             $output['rf'] = $this->referrer;
         }
-        
+
         if(!empty($this->_delegates)) {
             $delegates = [];
-            
+
             foreach($this->_delegates as $key => $delegate) {
                 $delegates[$key] = $delegate->_getSerializeValues(false);
             }
-            
+
             $output['dl'] = $delegates;
         }
 
         if(!empty($this->_store)) {
             $output['st'] = $this->_store;
         }
-        
+
         return $output;
     }
-    
+
     public function unserialize($data) {
         if(is_array($values = unserialize($data))) {
             $this->_setUnserializedValues($values, $values['id']);
         }
-        
+
         return $this;
     }
-    
+
     protected function _setUnserializedValues(array $values, $id) {
         $this->_isNew = false;
         $this->sessionId = $id;
-        
+
         if(isset($values['vl'])) {
             $this->values = $values['vl'];
         } else if(!$this->values) {
             $this->values = new core\collection\InputTree();
         }
-        
+
         if(isset($values['nw'])) {
             $this->_isNew = true;
         }
@@ -91,12 +91,12 @@ class StateController implements IStateController, \Serializable {
         if(isset($values['rf'])) {
             $this->referrer = $values['rf'];
         }
-        
+
         if(isset($values['dl'])) {
             foreach($values['dl'] as $key => $delegateData) {
                 $delegate = new self($this->sessionId);
                 $delegate->_setUnserializedValues($delegateData, $id);
-                
+
                 $this->_delegates[$key] = $delegate;
             }
         }
@@ -105,21 +105,21 @@ class StateController implements IStateController, \Serializable {
             $this->_store = $values['st'];
         }
     }
-    
+
     public function getSessionId() {
         return $this->sessionId;
     }
-    
+
     public function getValues() {
         return $this->values;
     }
-    
-    
+
+
     public function getDelegateState($id) {
         if(!isset($this->_delegates[$id])) {
             $this->_delegates[$id] = new self($this->sessionId);
         }
-        
+
         return $this->_delegates[$id];
     }
 
@@ -132,29 +132,29 @@ class StateController implements IStateController, \Serializable {
         return $this;
     }
 
-    
+
     public function isNew($flag=null) {
         if($flag !== null) {
             $this->_isNew = (bool)$flag;
-            
+
             foreach($this->_delegates as $delegate) {
                 $delegate->isNew($flag);
             }
-            
+
             return $this;
         }
-        
+
         return (bool)$this->_isNew;
     }
-    
+
     public function reset() {
         $this->values->clear();
         $this->_isNew = true;
-        
+
         foreach($this->_delegates as $delegate) {
             $delegate->reset();
         }
-        
+
         $this->clearStore();
 
         return $this;
@@ -169,7 +169,7 @@ class StateController implements IStateController, \Serializable {
             if($child->isOperating()) {
                 return true;
             }
-        }        
+        }
 
         return false;
     }

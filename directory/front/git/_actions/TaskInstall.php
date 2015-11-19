@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\spur;
 
-class TaskInstall extends arch\task\Action {
+class TaskInstall extends arch\action\Task {
 
     protected static $_packages = [
         'base' => 'git@github.com:decodelabs/df-r7-base.git',

@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\axis;
 
-class TaskRebuildSchemas extends arch\task\Action {
+class TaskRebuildSchemas extends arch\action\Task {
 
     public function execute() {
         $list = $this->data->axis->schema->select('unitId')

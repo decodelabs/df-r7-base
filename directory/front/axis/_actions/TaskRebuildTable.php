@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskRebuildTable extends arch\task\Action {
+class TaskRebuildTable extends arch\action\Task {
 
     protected $_deleteOld = false;
 

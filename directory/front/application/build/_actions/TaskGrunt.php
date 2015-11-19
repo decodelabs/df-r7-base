@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\halo;
-    
-class TaskGrunt extends arch\task\Action {
+
+class TaskGrunt extends arch\action\Task {
 
     public function execute() {
         if(!core\fs\File::iFileExists($this->application->getApplicationPath().'/gruntfile.js')) {
@@ -19,7 +19,7 @@ class TaskGrunt extends arch\task\Action {
         }
 
         $this->io->writeLine('Calling grunt');
-        
+
         halo\process\launcher\Base::factory('grunt')
             ->setWorkingDirectory($this->application->getApplicationPath())
             ->setMultiplexer($this->io)

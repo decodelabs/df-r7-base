@@ -11,8 +11,8 @@ use df\apex;
 use df\arch;
 use df\link;
 
-class TaskDefault extends arch\Action {
-    
+class TaskDefault extends arch\action\Base {
+
     const CHECK_ACCESS = false;
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 
@@ -37,7 +37,7 @@ class TaskDefault extends arch\Action {
                 case 403:
                     $this->logs->logAccessError($code, $command, $exception->getMessage());
                     break;
-                        
+
                 case 404:
                     $this->logs->logNotFound($command, $exception->getMessage());
                     break;

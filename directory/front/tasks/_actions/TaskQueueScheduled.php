@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskQueueScheduled extends arch\task\Action {
-    
+class TaskQueueScheduled extends arch\action\Task {
+
     protected $_count = 0;
 
     public function execute() {
@@ -60,7 +60,7 @@ class TaskQueueScheduled extends arch\task\Action {
         $task->save();
 
         $queue = $this->data->newRecord(
-                'axis://task/Queue', 
+                'axis://task/Queue',
                 [
                     'request' => $task['request'],
                     'environmentMode' => $task['environmentMode'],

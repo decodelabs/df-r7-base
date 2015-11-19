@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPurgeAccessLogs extends arch\task\Action {
-    
+class TaskPurgeAccessLogs extends arch\action\Task {
+
     public function execute() {
         $accesses = $this->data->pestControl->accessLog->delete()
             ->where('isArchived', '=', false)

@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskSpool extends arch\task\Action {
-    
+class TaskSpool extends arch\action\Task {
+
     const SELF_REQUEST = 'tasks/spool';
     const COOLOFF = 20;
     const QUEUE_LIMIT = 10;

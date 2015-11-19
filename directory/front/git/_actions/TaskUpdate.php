@@ -12,7 +12,7 @@ use df\halo;
 use df\arch;
 use df\spur;
 
-class TaskUpdate extends arch\task\Action {
+class TaskUpdate extends arch\action\Task {
 
     public function extractCliArguments(core\cli\ICommand $command) {
         foreach($command->getArguments() as $arg) {

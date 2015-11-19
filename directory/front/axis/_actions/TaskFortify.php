@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\axis;
 
-class TaskFortify extends arch\task\Action {
+class TaskFortify extends arch\action\Task {
 
     const SCHEDULE = '0 2 * * *';
     const SCHEDULE_AUTOMATIC = true;

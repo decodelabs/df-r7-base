@@ -117,7 +117,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
             $runMode = $this->context->getRunMode();
         }
 
-        if(null !== arch\Action::getClassFor($request, $runMode)) {
+        if(null !== arch\action\Base::getClassFor($request, $runMode)) {
             return true;
         }
 
@@ -135,7 +135,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
     public function getAction($request, $runMode=null) {
         $request = $this->context->uri->directoryRequest($request);
         $context = arch\Context::factory($request, $runMode);
-        return arch\Action::factory($context);
+        return arch\action\Base::factory($context);
     }
 
     public function findActionsIn($request, $type=null) {
@@ -238,9 +238,9 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
         $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request);
-        $action = arch\form\Action::factory($context);
+        $action = arch\action\Form::factory($context);
 
-        if(!$action instanceof arch\form\IAction) {
+        if(!$action instanceof arch\action\IFormAction) {
             throw new arch\InvalidArgumentException(
                 'Action '.$request.' is not a form action!'
             );

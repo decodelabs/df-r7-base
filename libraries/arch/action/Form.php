@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\form;
+namespace df\arch\action;
 
 use df;
 use df\core;
@@ -12,7 +12,7 @@ use df\aura;
 use df\flex;
 use df\link;
 
-abstract class Action extends arch\Action implements IAction {
+abstract class Form extends Base implements IFormAction {
 
     use TForm;
 
@@ -80,7 +80,7 @@ abstract class Action extends arch\Action implements IAction {
                 $id = $this->_createSessionId();
             }
 
-            $this->_state = new StateController($id);
+            $this->_state = new arch\action\form\StateController($id);
             $keys = $session->getAllKeys();
 
             if(count($keys) > static::MAX_SESSIONS) {

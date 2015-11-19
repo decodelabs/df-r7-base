@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\form\template;
+namespace df\arch\action\form;
 
 use df;
 use df\core;
@@ -12,15 +12,15 @@ use df\aura;
 use df\opal;
 use df\mesh;
 
-abstract class SelectorDelegate extends arch\form\Delegate implements
-    arch\form\IInlineFieldRenderableModalSelectorDelegate,
-    arch\form\IDependentDelegate {
+abstract class SelectorDelegate extends Delegate implements
+    arch\action\IInlineFieldRenderableModalSelectorDelegate,
+    arch\action\IDependentDelegate {
 
-    use arch\form\TForm_ModalDelegate;
-    use arch\form\TForm_InlineFieldRenderableDelegate;
-    use arch\form\TForm_SelectorDelegate;
-    use arch\form\TForm_ValueListSelectorDelegate;
-    use arch\form\TForm_DependentDelegate;
+    use arch\action\TForm_ModalDelegate;
+    use arch\action\TForm_InlineFieldRenderableDelegate;
+    use arch\action\TForm_SelectorDelegate;
+    use arch\action\TForm_ValueListSelectorDelegate;
+    use arch\action\TForm_DependentDelegate;
 
     protected static $_defaultModes = [
         'select' => 'createOverlaySelectorUi',
@@ -192,7 +192,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
     protected function createInlineDetailsUi(aura\html\widget\Field $fa) {
         $fa->addClass('delegate-selector');
 
-        if($this instanceof arch\form\IDependentDelegate) {
+        if($this instanceof arch\action\IDependentDelegate) {
             $messages = $this->getDependencyMessages();
 
             if(!empty($messages)) {

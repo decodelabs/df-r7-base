@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskClearNodeCache extends arch\task\Action {
-    
+class TaskClearNodeCache extends arch\action\Task {
+
     public function execute() {
         $this->io->write('Clearing node cache...');
         $dir = new core\fs\Dir($this->application->getLocalStoragePath().'/node');

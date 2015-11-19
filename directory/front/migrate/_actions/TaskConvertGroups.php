@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\flex;
 
-class TaskConvertGroups extends arch\task\Action {
+class TaskConvertGroups extends arch\action\Task {
 
     protected $_connection;
 

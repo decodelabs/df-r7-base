@@ -352,7 +352,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $this->_context = arch\Context::factory(clone $request);
 
         try {
-            $action = arch\Action::factory(
+            $action = arch\action\Base::factory(
                 $this->_context,
                 arch\Controller::factory($this->_context)
             );

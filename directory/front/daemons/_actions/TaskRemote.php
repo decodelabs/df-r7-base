@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class TaskRemote extends arch\task\Action {
+class TaskRemote extends arch\action\Task {
 
     use TDaemonTask;
 

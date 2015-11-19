@@ -12,7 +12,7 @@ use df\arch;
 use df\spur;
 use df\aura;
 
-class TaskReinstallDependencies extends arch\task\Action {
+class TaskReinstallDependencies extends arch\action\Task {
 
     public function execute() {
         $this->runChild('./purge-dependencies', false);

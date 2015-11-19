@@ -244,15 +244,6 @@ interface IController extends core\IContextAware, IResponseForcer, IOptionalDire
 }
 
 
-interface IAction extends core\IContextAware, user\IAccessLock, IResponseForcer, IOptionalDirectoryAccessLock {
-    public function setCallback($callback);
-    public function getCallback();
-    public function dispatch();
-    public function getController();
-    public function shouldOptimize($flag=null);
-    public function getActionMethodName();
-    public function handleException(\Exception $e);
-}
 
 interface ITransformer extends core\IContextAware {
     public function canDeliver();

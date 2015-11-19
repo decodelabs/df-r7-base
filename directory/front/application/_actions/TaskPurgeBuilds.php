@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class TaskPurgeBuilds extends arch\task\Action {
+class TaskPurgeBuilds extends arch\action\Task {
 
     const CONTINGENCY = 1;
 

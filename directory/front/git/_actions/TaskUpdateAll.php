@@ -12,7 +12,7 @@ use df\halo;
 use df\arch;
 use df\spur;
 
-class TaskUpdateAll extends arch\task\Action {
+class TaskUpdateAll extends arch\action\Task {
 
     public function execute() {
         $this->io->writeLine('Finding all package repositories...');

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\halo;
 use df\arch;
-    
-class TaskRefreshAll extends arch\task\Action {
+
+class TaskRefreshAll extends arch\action\Task {
 
     public function execute() {
         $this->io->writeLine('Finding all package git repositories...');

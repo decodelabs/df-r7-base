@@ -12,7 +12,7 @@ use df\arch;
 use df\neon;
 use df\link;
 
-class TaskTransfer extends arch\task\Action {
+class TaskTransfer extends arch\action\Task {
 
     public function execute() {
         $handlerList = neon\mediaHandler\Base::getEnabledHandlerList();

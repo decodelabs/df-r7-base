@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch;
+namespace df\arch\action;
 
 use df;
 use df\core;
@@ -11,11 +11,11 @@ use df\arch;
 use df\aura;
 use df\link;
 
-class Action implements IAction, core\IDumpable {
+class Base implements IAction, core\IDumpable {
 
     use core\TContextProxy;
-    use TDirectoryAccessLock;
-    use TResponseForcer;
+    use arch\TDirectoryAccessLock;
+    use arch\TResponseForcer;
 
     const CHECK_ACCESS = null;
     const OPTIMIZE = false;
@@ -26,7 +26,7 @@ class Action implements IAction, core\IDumpable {
     private $_defaultAccess = null;
     private $_callback;
 
-    public static function factory(IContext $context) {
+    public static function factory(arch\IContext $context) {
         $class = self::getClassFor(
             $context->location,
             $context->getRunMode(),
@@ -54,7 +54,7 @@ class Action implements IAction, core\IDumpable {
         return new $class($context);
     }
 
-    public static function getClassFor(IRequest $request, $runMode='Http', &$isDefault=null) {
+    public static function getClassFor(arch\IRequest $request, $runMode='Http', &$isDefault=null) {
         $runMode = ucfirst($runMode);
         $path = $request->getController();
 
@@ -95,7 +95,7 @@ class Action implements IAction, core\IDumpable {
         return $class;
     }
 
-    public function __construct(IContext $context, $callback=null) {
+    public function __construct(arch\IContext $context, $callback=null) {
         $this->context = $context;
         $this->setCallback($callback);
     }
@@ -145,7 +145,7 @@ class Action implements IAction, core\IDumpable {
             return static::CHECK_ACCESS;
         }
 
-        if($this->_defaultAccess === IAccess::ALL) {
+        if($this->_defaultAccess === arch\IAccess::ALL) {
             return false;
         }
 
@@ -186,7 +186,7 @@ class Action implements IAction, core\IDumpable {
         if(method_exists($this, '_beforeDispatch')) {
             try {
                 $output = $this->_beforeDispatch();
-            } catch(IForcedResponse $e) {
+            } catch(arch\IForcedResponse $e) {
                 $output = $e->getResponse();
             }
         }
@@ -199,7 +199,7 @@ class Action implements IAction, core\IDumpable {
             if($output === null && $func) {
                 try {
                     $output = $this->$func();
-                } catch(IForcedResponse $e) {
+                } catch(arch\IForcedResponse $e) {
                     $output = $e->getResponse();
                 } catch(\Exception $e) {
                     $output = $this->handleException($e);
@@ -218,7 +218,7 @@ class Action implements IAction, core\IDumpable {
         if(method_exists($this, '_afterDispatch')) {
             try {
                 $output = $this->_afterDispatch($output);
-            } catch(IForcedResponse $e) {
+            } catch(arch\IForcedResponse $e) {
                 $output = $e->getResponse();
             }
         }

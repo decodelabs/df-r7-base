@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskBackup extends arch\task\Action {
+class TaskBackup extends arch\action\Task {
 
     const SCHEDULE = '0 0 * * 1';
 

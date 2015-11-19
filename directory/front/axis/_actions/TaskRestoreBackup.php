@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskRestoreBackup extends arch\task\Action {
+class TaskRestoreBackup extends arch\action\Task {
 
     protected $_path;
     protected $_sqlite = [];

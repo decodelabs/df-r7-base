@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class HttpApcClear extends arch\Action {
-    
+class HttpApcClear extends arch\action\Base {
+
     use TApcClear;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;

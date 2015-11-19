@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskPurgeTableBackups extends arch\task\Action {
+class TaskPurgeTableBackups extends arch\action\Task {
 
     public function execute() {
         $unitId = $this->request['unit'];

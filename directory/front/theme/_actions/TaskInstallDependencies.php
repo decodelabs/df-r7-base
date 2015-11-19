@@ -12,7 +12,7 @@ use df\arch;
 use df\aura;
 use df\spur;
 
-class TaskInstallDependencies extends arch\task\Action {
+class TaskInstallDependencies extends arch\action\Task {
 
     public function execute() {
         if(!is_dir($this->application->getLocalStoragePath().'/theme/dependencies/')) {

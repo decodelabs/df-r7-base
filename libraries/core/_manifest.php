@@ -301,7 +301,7 @@ interface IShutdownAware {
 }
 
 interface IDispatchAware {
-    public function onApplicationDispatch(df\arch\IAction $action);
+    public function onApplicationDispatch(df\arch\action\IAction $action);
 }
 
 
@@ -532,7 +532,7 @@ trait TContext {
     }
 
     public function getTaskManager() {
-        return df\arch\task\Manager::getInstance();
+        return df\arch\action\task\Manager::getInstance();
     }
 
 
@@ -587,7 +587,7 @@ trait TContext {
                 return df\user\Manager::getInstance();
 
             case 'task':
-                return df\arch\task\Manager::getInstance();
+                return df\arch\action\task\Manager::getInstance();
 
             default:
                 return $this->_loadSharedHelper($name, $target);

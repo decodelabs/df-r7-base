@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskPurgeSchemas extends arch\task\Action {
+class TaskPurgeSchemas extends arch\action\Task {
 
     public function execute() {
         $this->io->write('Purging schemas...');

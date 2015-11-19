@@ -3,15 +3,15 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\restApi;
+namespace df\arch\action;
 
 use df;
 use df\core;
 use df\arch;
 use df\link;
 
-abstract class Action extends arch\Action implements IAction {
-    
+abstract class RestApi extends Base implements IRestApiAction {
+
     const DEFAULT_ACCESS = arch\IAccess::ALL;
     const OPTIMIZE = true;
     const CHECK_ACCESS = false;
@@ -46,8 +46,8 @@ abstract class Action extends arch\Action implements IAction {
             return $response;
         }
 
-        if(!$response instanceof IResult) {
-            $response = new Result($response);
+        if(!$response instanceof IRestApiResult) {
+            $response = new arch\action\restApi\Result($response);
         }
 
         return $response;
@@ -62,7 +62,7 @@ abstract class Action extends arch\Action implements IAction {
             $data = $e->data;
         }
 
-        $result = new Result($data);
+        $result = new arch\action\restApi\Result($data);
         $result->setException($e);
 
         return $this->_handleResponse($result);

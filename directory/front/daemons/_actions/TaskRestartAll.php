@@ -11,8 +11,8 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class TaskRestartAll extends arch\task\Action {
-    
+class TaskRestartAll extends arch\action\Task {
+
     use TDaemonTask;
 
     public function execute() {

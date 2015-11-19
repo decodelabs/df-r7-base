@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPurgeLogs extends arch\task\Action {
-    
+class TaskPurgeLogs extends arch\action\Task {
+
     const SCHEDULE = '0 16 * * *';
     const SCHEDULE_AUTOMATIC = true;
 

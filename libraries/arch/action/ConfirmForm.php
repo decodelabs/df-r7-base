@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\form\template;
+namespace df\arch\action;
 
 use df;
 use df\core;
@@ -11,7 +11,7 @@ use df\arch;
 use df\aura;
 use df\flex;
 
-abstract class Confirm extends arch\form\Action {
+abstract class ConfirmForm extends Form {
 
     const ITEM_NAME = 'item';
     const DEFAULT_EVENT = 'confirm';

@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPrune extends arch\task\Action {
-    
+class TaskPrune extends arch\action\Task {
+
     const SCHEDULE = '0 23 */2 * *';
     const SCHEDULE_AUTOMATIC = true;
 

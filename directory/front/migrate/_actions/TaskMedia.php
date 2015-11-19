@@ -12,7 +12,7 @@ use df\arch;
 use df\link;
 use df\spur;
 
-class TaskMedia extends arch\task\Action {
+class TaskMedia extends arch\action\Task {
 
     protected $_migrator;
 

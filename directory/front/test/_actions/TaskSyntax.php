@@ -11,13 +11,13 @@ use df\apex;
 use df\arch;
 use df\flex;
 
-class TaskSyntax extends arch\task\Action {
-    
+class TaskSyntax extends arch\action\Task {
+
     public function execute() {
         $scanner = new flex\code\Scanner(null, [
             new flex\code\probe\Syntax()
         ]);
-        
+
         $scanner->addFrameworkPackageLocations();
         $this->io->write('Scanning packages:');
         $errors = [];

@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskBackupTable extends arch\task\Action {
+class TaskBackupTable extends arch\action\Task {
 
     protected $_unit;
     protected $_adapter;

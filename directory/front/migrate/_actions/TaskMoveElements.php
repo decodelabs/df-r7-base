@@ -11,8 +11,8 @@ use df\apex;
 use df\arch;
 use df\mesh;
 
-class TaskMoveElements extends arch\task\Action {
-    
+class TaskMoveElements extends arch\action\Task {
+
     public function execute() {
         core\dump('This task is deprecated');
         $connection = $this->data->content->element->getUnitAdapter()->getConnection();

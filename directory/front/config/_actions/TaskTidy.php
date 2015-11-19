@@ -11,8 +11,8 @@ use df\apex;
 use df\arch;
 use df\axis;
 
-class TaskTidy extends arch\task\Action {
-    
+class TaskTidy extends arch\action\Task {
+
     public function execute() {
         $this->throwError(500, 'This task doesn\'t work yet!');
 

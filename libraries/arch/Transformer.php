@@ -10,16 +10,16 @@ use df\core;
 use df\arch;
 
 abstract class Transformer implements ITransformer {
-    
+
     use core\TContextProxy;
 
     public static function loadAction(IContext $context) {
         $transformer = self::factory($context);
-        
+
         if($transformer) {
             $output = $transformer->execute();
 
-            if($output && !$output instanceof IAction) {
+            if($output && !$output instanceof arch\action\IAction) {
                 throw new RuntimeException(
                     'Transformer '.get_class($transformer).' returned an invalid action'
                 );
@@ -44,11 +44,11 @@ abstract class Transformer implements ITransformer {
     public static function factory(IContext $context) {
         $runMode = $context->getRunMode();
         $class = self::getClassFor($context->location, $runMode);
-        
+
         if(!$class) {
             return null;
         }
-        
+
         return new $class($context);
     }
 
@@ -87,7 +87,7 @@ abstract class Transformer implements ITransformer {
 
         return $class;
     }
-    
+
     protected function __construct(arch\IContext $context) {
         $this->context = $context;
     }

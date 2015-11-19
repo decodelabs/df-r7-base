@@ -11,7 +11,7 @@ use df\apex;
 use df\halo;
 use df\arch;
 
-class TaskRefresh extends arch\task\Action {
+class TaskRefresh extends arch\action\Task {
 
     public function extractCliArguments(core\cli\ICommand $command) {
         foreach($command->getArguments() as $arg) {

@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\neon;
 
-class TaskUpdateHashes extends arch\task\Action {
+class TaskUpdateHashes extends arch\action\Task {
 
     public function execute() {
         $handler = $this->data->media->getMediaHandler();

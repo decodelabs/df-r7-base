@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPurgeJournal extends arch\task\Action {
-    
+class TaskPurgeJournal extends arch\action\Task {
+
     const SCHEDULE = '0 3 * * *';
     const SCHEDULE_AUTOMATIC = true;
 

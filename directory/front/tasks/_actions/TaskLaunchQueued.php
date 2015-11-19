@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskLaunchQueued extends arch\task\Action {
+class TaskLaunchQueued extends arch\action\Task {
 
     protected $_log;
     protected $_channel;

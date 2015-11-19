@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-abstract class FormUi extends Base implements arch\form\IForm, aura\html\widget\IWidgetProxy {
+abstract class FormUi extends Base implements arch\action\IForm, aura\html\widget\IWidgetProxy {
 
     use core\lang\TChainable;
 
@@ -25,7 +25,7 @@ abstract class FormUi extends Base implements arch\form\IForm, aura\html\widget\
             $form = null;
         }
 
-        if(!$form instanceof arch\form\IForm) {
+        if(!$form instanceof arch\action\IForm) {
             throw new arch\InvalidArgumentException(
                 'First FormUI component argument must be its parent form'
             );

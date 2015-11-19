@@ -11,8 +11,8 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class TaskEnsureActivity extends arch\task\Action {
-    
+class TaskEnsureActivity extends arch\action\Task {
+
     use TDaemonTask;
 
     public function execute() {

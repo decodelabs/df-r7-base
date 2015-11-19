@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\halo;
 use df\arch;
-    
-class TaskFixUi extends arch\task\Action {
+
+class TaskFixUi extends arch\action\Task {
 
     const GEOMETRY = '1914x1036+5+23 450 300';
 

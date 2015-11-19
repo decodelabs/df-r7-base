@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPurge extends arch\task\Action {
+class TaskPurge extends arch\action\Task {
 
     public function execute() {
         $this->task->shouldCaptureBackgroundTasks(true);

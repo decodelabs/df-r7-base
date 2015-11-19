@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\form;
+namespace df\arch\action\form;
 
 use df;
 use df\core;
@@ -11,10 +11,10 @@ use df\arch;
 use df\aura;
 use df\flex;
 
-class Delegate implements IDelegate {
+class Delegate implements arch\action\IDelegate {
 
     use core\TContextAware;
-    use TForm;
+    use arch\action\TForm;
 
     const DEFAULT_REDIRECT = null;
 
@@ -22,7 +22,7 @@ class Delegate implements IDelegate {
     private $_isNew = false;
     private $_isComplete = false;
 
-    public function __construct(arch\IContext $context, IStateController $state, $id) {
+    public function __construct(arch\IContext $context, arch\action\IFormStateController $state, $id) {
         $this->context = $context;
         $this->_state = $state;
         $this->_delegateId = $id;

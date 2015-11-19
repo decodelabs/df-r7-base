@@ -3,15 +3,15 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\form;
+namespace df\arch\action;
 
 use df;
 use df\core;
 use df\arch;
 use df\aura;
 
-abstract class Wizard extends Action {
-    
+abstract class Wizard extends Form {
+
     const DEFAULT_EVENT = 'next';
 
     protected $_sections = [];
@@ -62,7 +62,7 @@ abstract class Wizard extends Action {
         }
     }
 
-    
+
 
     public function getPrevSection() {
         $current = $this->getCurrentSection();

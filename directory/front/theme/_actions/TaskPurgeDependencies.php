@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\spur;
 
-class TaskPurgeDependencies extends arch\task\Action {
+class TaskPurgeDependencies extends arch\action\Task {
 
     public function execute() {
         $this->io->write('Purging theme dependencies...');

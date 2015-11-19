@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\flow;
 
-class TaskAdd extends arch\task\Action {
+class TaskAdd extends arch\action\Task {
 
     protected $_client;
     protected $_auth;

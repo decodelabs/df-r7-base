@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 
-    
+
 class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, core\IDispatchAware {
 
     use arch\navigation\TEntryList;
@@ -20,7 +20,7 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
         return self::REGISTRY_KEY;
     }
 
-    public function onApplicationDispatch(arch\IAction $action) {
+    public function onApplicationDispatch(arch\action\IAction $action) {
         df\Launchpad::$application->removeRegistryObject(self::REGISTRY_KEY);
     }
 
@@ -39,41 +39,41 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
         if($request->isDefaultArea()) {
             array_shift($parts);
         }
-        
+
         $isDefaultAction = false;
-        
+
         if($request->isDefaultAction()) {
             array_pop($parts);
             $isDefaultAction = true;
         }
-        
+
         $count = count($parts);
-        
+
         foreach($parts as $i => $part) {
             if(!$isDefaultAction && $i == $count - 1) {
                 $path .= $part;
             } else {
                 $path .= $part.'/';
             }
-            
+
             $title = $part;
-            
+
             if($i == 0) {
                 $title = ltrim($title, $request::AREA_MARKER);
             }
-            
+
             $title = ucwords(
                 preg_replace('/([A-Z])/u', ' $1', str_replace(
                     ['-', '_'], ' ', $title
                 ))
             );
-            
+
             if($i == $count - 1) {
                 $linkRequest = $request;
             } else {
                 $linkRequest = $request::factory($path);
             }
-            
+
             $output->addEntry(
                 (new arch\navigation\entry\Link($linkRequest, $title))
                     ->setId($path)

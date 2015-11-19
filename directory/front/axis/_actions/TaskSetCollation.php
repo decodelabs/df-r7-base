@@ -11,8 +11,8 @@ use df\apex;
 use df\arch;
 use df\opal;
 
-class TaskSetCollation extends arch\task\Action {
-    
+class TaskSetCollation extends arch\action\Task {
+
     private static $_prefixes = [
         'legacy', 'r5', 'r7'
     ];
@@ -89,7 +89,7 @@ class TaskSetCollation extends arch\task\Action {
                 $table = $database->getTable($tableName);
                 $table->setCharacterSet($charset, $collation);
             }
-            
+
             $this->io->writeLine();
         }
 

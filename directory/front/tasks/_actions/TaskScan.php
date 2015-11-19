@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskScan extends arch\task\Action {
+class TaskScan extends arch\action\Task {
 
     const SCHEDULE = '0 18 * * *';
     const SCHEDULE_AUTOMATIC = true;
@@ -41,7 +41,7 @@ class TaskScan extends arch\task\Action {
             $class = 'df\\apex\\directory\\'.implode('\\', $keyParts).'\\'.$basename;
             $ref = new \ReflectionClass($class);
 
-            if(!$ref->implementsInterface('df\\arch\\task\\IAction')) {
+            if(!$ref->implementsInterface('df\\arch\\action\\ITaskAction')) {
                 continue;
             }
 

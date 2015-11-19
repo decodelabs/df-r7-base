@@ -3,15 +3,15 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\task;
+namespace df\arch\action\task;
 
 use df;
 use df\core;
 use df\arch;
 use df\halo;
 
-class Manager implements IManager {
-    
+class Manager implements arch\action\ITaskManager {
+
     use core\TManager;
 
     const REGISTRY_PREFIX = 'manager://task';
@@ -22,7 +22,7 @@ class Manager implements IManager {
         if($environmentMode === null) {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
-        
+
         $request = arch\Request::factory($request);
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
@@ -74,10 +74,10 @@ class Manager implements IManager {
     public function invoke($request, core\io\IMultiplexer $io=null) {
         $request = arch\Request::factory($request);
         $context = arch\Context::factory($request, 'Task', true);
-        $action = arch\Action::factory($context);
+        $action = arch\action\Base::factory($context);
 
-        if(!$action instanceof IAction) {
-            $context->throwError(500, 'Child action '.$request.' does not extend arch\\task\\Action');
+        if(!$action instanceof arch\action\ITaskAction) {
+            $context->throwError(500, 'Child action '.$request.' does not extend arch\\action\\Task');
         }
 
         if($io) {
@@ -91,10 +91,10 @@ class Manager implements IManager {
     public function initiateStream($request, $environmentMode=null) {
         $context = $this->_getActiveContext();
         $token = $context->data->task->invoke->prepareTask($request, $environmentMode);
-        
+
         return $context->http->redirect(
             $context->uri->directoryRequest(
-                '~/tasks/invoke?token='.$token, 
+                '~/tasks/invoke?token='.$token,
                 $context->uri->backRequest(null, true)
             )
         );

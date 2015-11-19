@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPurgeErrorLogs extends arch\task\Action {
-    
+class TaskPurgeErrorLogs extends arch\action\Task {
+
     public function execute() {
         $threshold = '-'.$this->data->pestControl->getPurgeThreshold();
 

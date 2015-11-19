@@ -11,11 +11,11 @@ use df\arch;
 use df\halo;
 
 class Environment extends Config {
-    
+
     const ID = 'environment';
     const STORE_IN_MEMORY = true;
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
-    
+
     public function getDefaultValues() {
         return [
             'binaryPaths' => [],
@@ -29,7 +29,7 @@ class Environment extends Config {
 
     protected function _sanitizeValuesOnCreate() {
         try {
-            arch\task\Manager::getInstance()->invoke('git/init-gitignore');
+            arch\action\task\Manager::getInstance()->invoke('git/init-gitignore');
         } catch(\Exception $e) {}
     }
 
@@ -43,14 +43,14 @@ class Environment extends Config {
     public function getBinaryPath($id) {
         return $this->values->binaryPaths->get($id, $id);
     }
-    
+
 // Load balancing
     public function isDistributed($flag=null) {
         if($flag !== null) {
             $this->values->distributed = (bool)$flag;
             return $this;
         }
-        
+
         return (bool)$this->values['distributed'];
     }
 

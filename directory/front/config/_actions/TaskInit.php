@@ -11,8 +11,8 @@ use df\apex;
 use df\arch;
 use df\axis;
 
-class TaskInit extends arch\task\Action {
-    
+class TaskInit extends arch\action\Task {
+
     public function extractCliArguments(core\cli\ICommand $command) {
         foreach($command->getArguments() as $arg) {
             if(!$arg->isOption()) {

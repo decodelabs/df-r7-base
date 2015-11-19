@@ -113,7 +113,7 @@ abstract class Base implements IScaffold {
                 if(method_exists($this, $method)) {
                     $action = $this->{$method}();
 
-                    if($action instanceof arch\IAction) {
+                    if($action instanceof arch\action\IAction) {
                         return $action;
                     }
                 }
@@ -131,7 +131,7 @@ abstract class Base implements IScaffold {
         return $this->_generateAction([$this, $method]);
     }
 
-    public function onActionDispatch(arch\IAction $action) {}
+    public function onActionDispatch(arch\action\IAction $action) {}
 
     public function loadComponent($name, array $args=null) {
         $keyName = $this->getDirectoryKeyName();
@@ -167,7 +167,7 @@ abstract class Base implements IScaffold {
         );
     }
 
-    public function loadFormDelegate($name, arch\form\IStateController $state, $id) {
+    public function loadFormDelegate($name, arch\action\IFormStateController $state, $id) {
         $keyName = $this->getDirectoryKeyName();
         $origName = $name;
 
@@ -185,7 +185,7 @@ abstract class Base implements IScaffold {
 
         $output = $this->{$method}($state, $id);
 
-        if(!$output instanceof arch\form\IDelegate) {
+        if(!$output instanceof arch\action\IDelegate) {
             throw new LogicException(
                 'Scaffold at '.$this->context->location.' attempted but failed to provide form delegate '.$origName
             );
@@ -376,7 +376,7 @@ abstract class Base implements IScaffold {
 
 
     protected function _generateAction($callback) {
-        return (new arch\Action($this->context, function($action) use($callback) {
+        return (new arch\action\Base($this->context, function($action) use($callback) {
                 if(null !== ($pre = $this->onActionDispatch($action))) {
                     return $pre;
                 }

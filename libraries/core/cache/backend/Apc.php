@@ -10,12 +10,12 @@ use df\core;
 use df\arch;
 
 class Apc implements core\cache\IBackend {
-    
+
     use core\TValueMap;
 
     protected static $_apcu = null;
     protected static $_setKey = null;
-    
+
     protected $_prefix;
     protected $_lifeTime;
     protected $_cache;
@@ -36,7 +36,7 @@ class Apc implements core\cache\IBackend {
         $request = new arch\Request('cache/apc-clear.json?purge=app');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
-        arch\task\Manager::getInstance()->launchBackground($request);
+        arch\action\task\Manager::getInstance()->launchBackground($request);
     }
 
     public static function purgeAll(core\collection\ITree $options) {
@@ -52,7 +52,7 @@ class Apc implements core\cache\IBackend {
         $request = new arch\Request('cache/apc-clear.json?purge=all');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
-        arch\task\Manager::getInstance()->launchBackground($request);
+        arch\action\task\Manager::getInstance()->launchBackground($request);
     }
 
     public static function prune(core\collection\ITree $options) {
@@ -80,7 +80,7 @@ class Apc implements core\cache\IBackend {
 
         return $output;
     }
-    
+
     public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
@@ -100,13 +100,13 @@ class Apc implements core\cache\IBackend {
         }
 
         $info = [
-            'totalEntries' => count($info['cache_list']), 
+            'totalEntries' => count($info['cache_list']),
             'entries' => $this->count(),
             'size' => $info['mem_size']
         ] + $info;
 
         unset($info['cache_list'], $info['deleted_list'], $info['slot_distribution'], $info['mem_size']);
-        
+
         return $info;
     }
 
@@ -114,38 +114,38 @@ class Apc implements core\cache\IBackend {
         $this->_lifeTime = $lifeTime;
         return $this;
     }
-    
+
     public function getLifeTime() {
         return $this->_lifeTime;
     }
-    
-    
+
+
     public function set($key, $value, $lifeTime=null) {
         if($lifeTime === null) {
             $lifeTime = $this->_lifeTime;
         }
 
         return @apc_store(
-            $this->_prefix.$key, 
-            [serialize($value), time()], 
+            $this->_prefix.$key,
+            [serialize($value), time()],
             $lifeTime
         );
     }
-    
+
     public function get($key, $default=null) {
         $val = apc_fetch($this->_prefix.$key);
-        
+
         if(is_array($val)) {
             return unserialize($val[0]);
         }
-        
+
         return $default;
     }
-    
+
     public function has($key) {
         return is_array(apc_fetch($this->_prefix.$key));
     }
-    
+
     public function remove($key) {
         $output = @apc_delete($this->_prefix.$key);
 
@@ -157,7 +157,7 @@ class Apc implements core\cache\IBackend {
 
         return $output;
     }
-    
+
     public function clear() {
         if(!($this->_isCli && !ini_get('apc.enable_cli'))) {
             foreach($this->_getCacheList() as $set) {
@@ -178,7 +178,7 @@ class Apc implements core\cache\IBackend {
                 @apc_delete($set[self::$_setKey]);
             }
         }
-        
+
         $this->_retrigger('clearBegins', $key);
         return $this;
     }
@@ -192,7 +192,7 @@ class Apc implements core\cache\IBackend {
                 @apc_delete($set[self::$_setKey]);
             }
         }
-        
+
         $this->_retrigger('clearMatches', $regex);
         return $this;
     }
@@ -221,14 +221,14 @@ class Apc implements core\cache\IBackend {
 
         return $output;
     }
-    
+
     public function getCreationTime($key) {
         $val = apc_fetch($this->_prefix.$key);
-        
+
         if(is_array($val)) {
             return $val[1];
         }
-        
+
         return null;
     }
 
@@ -243,7 +243,7 @@ class Apc implements core\cache\IBackend {
 
         if(isset($info['cache_list'])) {
             $output = $info['cache_list'];
-            
+
             if(isset($output[0])) {
                 self::$_setKey = isset($output[0]['key']) ? 'key' : 'info';
             }
@@ -259,7 +259,7 @@ class Apc implements core\cache\IBackend {
         $request->query->{$method} = $arg;
 
         try {
-            arch\task\Manager::getInstance()->launchQuietly($request);
+            arch\action\task\Manager::getInstance()->launchQuietly($request);
         } catch(\Exception $e) {
             core\log\Manager::getInstance()->logException($e);
         }

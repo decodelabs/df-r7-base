@@ -11,9 +11,9 @@ use df\arch;
 use df\halo;
 
 class Task extends Base implements core\IContextAware, arch\IRequestOrientedApplication {
-    
+
     const RUN_MODE = 'Task';
-    
+
     protected $_context;
     protected $_dispatchRequest;
     protected $_command;
@@ -36,7 +36,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
         return $this->_command;
     }
 
-    
+
 // Response
     public function setMultiplexer(core\io\Multiplexer $multiplexer) {
         $this->_multiplexer = $multiplexer;
@@ -50,8 +50,8 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 
         return $this->_multiplexer;
     }
-    
-    
+
+
 // Context
     public function getContext() {
         if(!$this->_context) {
@@ -59,16 +59,16 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
                 'A context is not available until the application has been dispatched'
             );
         }
-        
+
         return $this->_context;
     }
 
     public function hasContext() {
         return $this->_context !== null;
     }
-    
-    
-    
+
+
+
 // Execute
     public function dispatch() {
         arch\DirectoryAccessController::$defaultAccess = arch\IAccess::ALL;
@@ -82,7 +82,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 // Prepare command
     protected function _prepareRequest() {
         $args = null;
-        
+
         $command = core\cli\Command::fromArgv();
         $args = array_slice($command->getArguments(), 1);
         $request = array_shift($args);
@@ -123,7 +123,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
             }
 
             $this->_dispatchException = $e;
-            
+
             try {
                 $response = $this->_dispatchAction(new arch\Request('error/'));
             } catch(\Exception $f) {
@@ -140,9 +140,9 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
         $this->_context = arch\Context::factory(clone $request);
         $this->_context->request = $request;
 
-        $action = arch\Action::factory($this->_context);
+        $action = arch\action\Base::factory($this->_context);
 
-        if($command && ($action instanceof arch\task\IAction)) {
+        if($command && ($action instanceof arch\action\ITaskAction)) {
             $action->extractCliArguments($command);
         }
 
@@ -160,7 +160,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 // Handle response
     protected function _handleResponse($response) {
         // Callback
-        if($response instanceof \Closure 
+        if($response instanceof \Closure
         || $response instanceof core\lang\ICallback) {
             $response = $response();
         }
@@ -173,7 +173,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
         if($response === null) {
             $response = $this->_multiplexer;
         }
-        
+
         if(df\Launchpad::$debug) {
             df\Launchpad::$debug->execute();
         }

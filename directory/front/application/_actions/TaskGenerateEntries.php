@@ -11,7 +11,7 @@ use df\apex;
 use df\halo;
 use df\arch;
 
-class TaskGenerateEntries extends arch\task\Action {
+class TaskGenerateEntries extends arch\action\Task {
 
     public function execute() {
         $phpPath = core\Environment::getInstance()->getBinaryPath('php');

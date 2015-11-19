@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\link;
 
-class TaskApcClear extends arch\task\Action {
+class TaskApcClear extends arch\action\Task {
 
     use TApcClear;
 

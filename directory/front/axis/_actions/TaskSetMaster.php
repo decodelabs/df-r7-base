@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskSetMaster extends arch\task\Action {
+class TaskSetMaster extends arch\action\Task {
 
     public function execute() {
         $config = axis\Config::getInstance();

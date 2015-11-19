@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class HttpInvoke extends arch\Action {
+class HttpInvoke extends arch\action\Base {
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 

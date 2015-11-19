@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\halo;
 use df\arch;
-    
-class TaskGenerateBaseEntry extends arch\task\Action {
+
+class TaskGenerateBaseEntry extends arch\action\Task {
 
     public function execute() {
         $this->io->writeLine('Generating base entry point');
@@ -23,10 +23,10 @@ class TaskGenerateBaseEntry extends arch\task\Action {
         if($phpPath == 'php') {
             $phpPath = halo\system\Base::getInstance()->which('php');
         }
-        
+
 
         $file = core\fs\File::create(
-            $appPath.'/entry/'.$environmentId, 
+            $appPath.'/entry/'.$environmentId,
 
             '#!'.$phpPath."\n".
             '<?php'."\n\n".

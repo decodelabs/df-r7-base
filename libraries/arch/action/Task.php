@@ -1,16 +1,16 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\task;
+namespace df\arch\action;
 
 use df;
 use df\core;
 use df\arch;
 use df\halo;
-    
-abstract class Action extends arch\Action implements IAction {
+
+abstract class Task extends Base implements ITaskAction {
 
     const SCHEDULE = null;
     const SCHEDULE_ENVIRONMENT_MODE = null;
@@ -54,7 +54,7 @@ abstract class Action extends arch\Action implements IAction {
 
 
     public function extractCliArguments(core\cli\ICommand $command) {
-        // Do nothing        
+        // Do nothing
     }
 
 
@@ -70,10 +70,10 @@ abstract class Action extends arch\Action implements IAction {
     public function runChild($request, $incLevel=true) {
         $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request, true);
-        $action = arch\Action::factory($context);
+        $action = Base::factory($context);
 
         if(!$action instanceof self) {
-            $this->throwError(500, 'Child action '.$request.' does not extend arch\\task\\Action');
+            $this->throwError(500, 'Child action '.$request.' does not extend arch\\action\\Task');
         }
 
         $action->io = $this->io;
@@ -87,17 +87,17 @@ abstract class Action extends arch\Action implements IAction {
         if($incLevel) {
             $this->io->decrementLineLevel();
         }
-        
+
         return $output;
     }
 
     public function runChildQuietly($request) {
         $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request, true);
-        $action = arch\Action::factory($context);
+        $action = Base::factory($context);
 
         if(!$action instanceof self) {
-            $this->throwError(500, 'Child action '.$request.' does not extend arch\\task\\Action');
+            $this->throwError(500, 'Child action '.$request.' does not extend arch\\action\\Task');
         }
 
         $capture = $this->task->shouldCaptureBackgroundTasks();
@@ -217,7 +217,7 @@ abstract class Action extends arch\Action implements IAction {
                 $validator->setMatchField('repeat');
                 $data['repeat'] = $repeatAnswer;
             }
-            
+
             $validator = $validator->validate($data);
 
             $valid = $validator->isValid();

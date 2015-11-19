@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,8 +11,8 @@ use df\apex;
 use df\halo;
 use df\arch;
 use df\spur;
-    
-class TaskInit extends arch\task\Action {
+
+class TaskInit extends arch\action\Task {
 
     const GEOMETRY = '1914x1036+5+23 450 300';
 
@@ -39,7 +39,7 @@ class TaskInit extends arch\task\Action {
 
                 $repo->setConfig('gui.wmstate', 'zoomed');
                 $repo->setConfig('gui.geometry', self::GEOMETRY);
-            }        
+            }
         }
 
         $push = false;

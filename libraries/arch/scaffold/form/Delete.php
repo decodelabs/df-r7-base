@@ -10,8 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
 
-class Delete extends arch\form\template\Delete {
-    
+class Delete extends arch\action\DeleteForm {
+
     protected $_scaffold;
 
     public function __construct(arch\scaffold\IScaffold $scaffold) {

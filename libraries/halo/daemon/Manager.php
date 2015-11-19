@@ -11,7 +11,7 @@ use df\halo;
 use df\arch;
 
 class Manager implements IManager {
-    
+
     use core\TManager;
 
     const REGISTRY_PREFIX = 'manager://daemon';
@@ -47,7 +47,7 @@ class Manager implements IManager {
         if($launch) {
             core\fs\Dir::create(dirname($path));
             touch($path);
-            arch\task\Manager::getInstance()->launchBackground('daemons/ensure-activity');
+            arch\action\task\Manager::getInstance()->launchBackground('daemons/ensure-activity');
         }
 
         return $this;

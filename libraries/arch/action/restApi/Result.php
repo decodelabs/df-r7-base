@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\restApi;
+namespace df\arch\action\restApi;
 
 use df;
 use df\core;
@@ -11,8 +11,8 @@ use df\arch;
 use df\link;
 use df\flex;
 
-class Result implements IResult {
-    
+class Result implements arch\action\IRestApiResult {
+
     public $value;
     public $validator;
 
@@ -101,7 +101,7 @@ class Result implements IResult {
         }
 
         $response = new link\http\response\Stream(
-            flex\json\Codec::encode($data), 
+            flex\json\Codec::encode($data),
             'application/json'
         );
 

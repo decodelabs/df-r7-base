@@ -12,7 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskUpdate extends arch\task\Action {
+class TaskUpdate extends arch\action\Task {
 
     protected $_schemaManager;
 

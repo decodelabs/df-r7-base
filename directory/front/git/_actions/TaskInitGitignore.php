@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\halo;
 use df\arch;
-    
-class TaskInitGitignore extends arch\task\Action {
+
+class TaskInitGitignore extends arch\action\Task {
 
     public function execute() {
         $path = df\Launchpad::$applicationPath;
