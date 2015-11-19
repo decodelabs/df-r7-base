@@ -105,7 +105,7 @@ interface IStoreProvider {
     public function clearStore();
 }
 
-interface IFormStateController extends IStoreProvider {
+interface IFormState extends IStoreProvider {
     public function getSessionId();
     public function getValues();
 
@@ -118,7 +118,7 @@ interface IFormStateController extends IStoreProvider {
 
 interface IForm extends IStoreProvider, core\lang\IChainable, \ArrayAccess {
     public function isRenderingInline();
-    public function getStateController();
+    public function getState();
     public function loadDelegate($id, $path);
     public function directLoadDelegate($id, $class);
     public function getDelegate($id);

@@ -54,8 +54,8 @@ abstract class FormUi extends Base implements arch\action\IForm, aura\html\widge
         return $this->form->isRenderingInline();
     }
 
-    public function getStateController() {
-        return $this->form->getStateController();
+    public function getState() {
+        return $this->form->getState();
     }
 
     public function loadDelegate($id, $path) {

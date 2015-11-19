@@ -167,7 +167,7 @@ abstract class Base implements IScaffold {
         );
     }
 
-    public function loadFormDelegate($name, arch\action\IFormStateController $state, $id) {
+    public function loadFormDelegate($name, arch\action\IFormState $state, $id) {
         $keyName = $this->getDirectoryKeyName();
         $origName = $name;
 

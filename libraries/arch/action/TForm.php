@@ -31,7 +31,7 @@ trait TForm {
     protected function loadDelegates() {}
     protected function afterInit() {}
 
-    public function getStateController() {
+    public function getState() {
         return $this->_state;
     }
 

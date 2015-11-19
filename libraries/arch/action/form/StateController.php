@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 
-class StateController implements arch\action\IFormStateController, \Serializable {
+class State implements arch\action\IFormState, \Serializable {
 
     public $sessionId;
     public $values;

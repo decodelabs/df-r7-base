@@ -22,7 +22,7 @@ class Delegate implements arch\action\IDelegate {
     private $_isNew = false;
     private $_isComplete = false;
 
-    public function __construct(arch\IContext $context, arch\action\IFormStateController $state, $id) {
+    public function __construct(arch\IContext $context, arch\action\IFormState $state, $id) {
         $this->context = $context;
         $this->_state = $state;
         $this->_delegateId = $id;

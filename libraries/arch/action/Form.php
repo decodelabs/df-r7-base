@@ -80,7 +80,7 @@ abstract class Form extends Base implements IFormAction {
                 $id = $this->_createSessionId();
             }
 
-            $this->_state = new arch\action\form\StateController($id);
+            $this->_state = new arch\action\form\State($id);
             $keys = $session->getAllKeys();
 
             if(count($keys) > static::MAX_SESSIONS) {
@@ -174,7 +174,7 @@ abstract class Form extends Base implements IFormAction {
 
     protected function initWithSession() {}
 
-    public function getStateController() {
+    public function getState() {
         if(!$this->_state) {
             throw new RuntimeException(
                 'State controller is not available until the form has been dispatched'
