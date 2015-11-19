@@ -596,7 +596,7 @@ abstract class Base implements
         $query = $this->fetch();
         $primaryKeySet = null;
 
-        if(is_string($keys) && substr($keys, 0, 9) == 'keySet?') {
+        if(is_string($keys) && substr($keys, 0, 7) == 'keySet?') {
             $primaryKeySet = opal\record\PrimaryKeySet::fromEntityId($keys);
         } else if($keys instanceof opal\record\IPrimaryKeySet) {
             $primaryKeySet = $keys;

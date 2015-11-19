@@ -16,19 +16,21 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
     protected $_keys = [];
 
     public static function fromEntityId($id) {
-        if(substr($id, 0, 9) != 'keySet?') {
+        if(substr($id, 0, 7) != 'keySet?') {
             throw new InvalidArgumentException(
                 'Invalid entity id: '.$id
             );
         }
 
-        $id = substr($id, 9);
+        $id = substr($id, 7);
         $tree = core\collection\Tree::fromArrayDelimitedString($id);
         $values = [];
 
         foreach($tree as $key => $value) {
-            if(substr($value, 0, 10) == '[keySet?') {
-                $value = self::fromEntityId(substr($value, 1, -1));
+            $value = substr($value->getValue(), 1, -1);
+
+            if(substr($value, 0, 7) == 'keySet?') {
+                $value = self::fromEntityId();
             }
 
             $values[$key] = $value;

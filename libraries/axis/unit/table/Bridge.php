@@ -1,17 +1,20 @@
 <?php
-
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
 namespace df\axis\unit\table;
 
 use df\core;
 use df\axis;
+use df\mesh;
+use df\opal;
 
 class Bridge extends Base implements axis\IVirtualUnit {
 
     const IS_SHARED = false;
     const DOMINANT_UNIT = null;
     const DOMINANT_FIELD = null;
-
-    const BROADCAST_HOOK_EVENTS = false;
 
     private $_dominantUnitName;
     private $_dominantFieldName;
@@ -202,5 +205,35 @@ class Bridge extends Base implements axis\IVirtualUnit {
         }
 
         return $output;
+    }
+
+    public function shouldRecordsBroadcastHookEvents() {
+        if($this->_isVirtual) {
+            return false;
+        } else {
+            return (bool)static::BROADCAST_HOOK_EVENTS;
+        }
+    }
+
+    public function getSubEntityLocator(mesh\entity\IEntity $entity) {
+        if($entity instanceof opal\record\IPrimaryKeySetProvider) {
+            $output = 'axis://';
+
+            if($this->_isVirtual) {
+                $output .= 'Model:"'.$this->getModel()->getModelName().'"/Unit:"'.$this->getUnitName().'"/Record';
+            } else {
+                $output .= $this->getModel()->getModelName().'/'.ucfirst($this->getUnitName());
+            }
+
+            $output = new mesh\entity\Locator($output);
+            $id = $entity->getPrimaryKeySet()->getEntityId();
+            $output->setId($id);
+
+            return $output;
+        }
+
+        throw new mesh\entity\UnexpectedValueException(
+            'Unknown entity type'
+        );
     }
 }
