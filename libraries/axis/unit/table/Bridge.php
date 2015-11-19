@@ -6,15 +6,17 @@ use df\core;
 use df\axis;
 
 class Bridge extends Base implements axis\IVirtualUnit {
-    
+
     const IS_SHARED = false;
     const DOMINANT_UNIT = null;
     const DOMINANT_FIELD = null;
 
+    const BROADCAST_HOOK_EVENTS = false;
+
     private $_dominantUnitName;
     private $_dominantFieldName;
     private $_isVirtual = false;
-    
+
     public static function getBridgeClass($modelName, $id) {
         $class = 'df\\apex\\models\\'.$modelName.'\\'.$id.'\\Unit';
 
@@ -52,7 +54,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
 
             $class = self::getBridgeClass($modelName, $id);
         }
-        
+
         $output = new $class($model);
         $output->_dominantUnitName = $unitName;
         $output->_dominantFieldName = $fieldName;
@@ -75,7 +77,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
 
         parent::__construct($model, $unitName);
     }
-    
+
     public function getUnitName() {
         if($this->_isVirtual) {
             $class = get_class($this);
@@ -88,7 +90,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
                 $modelName = array_pop($parts);
                 $args[] = $modelName.'/'.$unitId;
             }
-            
+
             return 'table.Bridge('.implode(',', $args).')';
         } else {
             return parent::getUnitName();
@@ -117,7 +119,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
             return parent::getCanonicalUnitName();
         }
     }
-    
+
 
     public function buildInitialSchema() {
         if(!$this->_dominantUnitName) {
@@ -129,7 +131,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
         $dominantUnit = $this->_model->getUnit($this->_dominantUnitName);
         $dominantSchema = $dominantUnit->getTransientUnitSchema();
         $dominantField = $dominantSchema->getField($this->_dominantFieldName);
-        
+
         if(!$dominantField) {
             throw new axis\schema\FieldTypeNotFoundException(
                 'Target Many relation field '.$this->_dominantFieldName.' could not be found on unit '.$dominantUnit->getUnitId()
@@ -142,7 +144,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
         $schema = new axis\schema\Base($this, $this->getUnitName());
 
         $bridgePrimaryFields = [
-            $dominantName = $dominantSchema->getName(), 
+            $dominantName = $dominantSchema->getName(),
             $submissiveName = $dominantField->getBridgeTargetFieldName()
         ];
 
@@ -161,7 +163,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
     public function getDominantUnitName() {
         return $this->_dominantUnitName;
     }
-    
+
     public function getDominantFieldName() {
         return $this->_dominantFieldName;
     }
@@ -177,7 +179,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
     public function isVirtualUnitShared() {
         return static::IS_SHARED;
     }
-    
+
     protected function createSchema($schema) {}
 
     public function newPartial(array $values=null) {
@@ -195,7 +197,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
             if($aliasPrefix !== null) {
                 $name .= ' as '.$aliasPrefix.'.'.$name;
             }
-            
+
             $output[] = $name;
         }
 
