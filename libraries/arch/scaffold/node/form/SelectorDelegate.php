@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\scaffold\delegate;
+namespace df\arch\scaffold\node\form;
 
 use df;
 use df\core;
 use df\arch;
 use df\opal;
 
-class Selector extends arch\node\form\SelectorDelegate {
+class SelectorDelegate extends arch\node\form\SelectorDelegate {
 
     protected $_scaffold;
 

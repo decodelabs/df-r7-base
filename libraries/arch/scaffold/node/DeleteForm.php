@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\scaffold\form;
+namespace df\arch\scaffold\node;
 
 use df;
 use df\core;
 use df\arch;
 use df\aura;
 
-class Delete extends arch\node\DeleteForm {
+class DeleteForm extends arch\node\DeleteForm {
 
     protected $_scaffold;
 

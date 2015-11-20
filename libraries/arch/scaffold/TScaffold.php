@@ -319,7 +319,7 @@ trait TScaffold_RecordDataProvider {
         }
 
         $this->_recordAction = 'delete';
-        return new arch\scaffold\form\Delete($this);
+        return new arch\scaffold\node\DeleteForm($this);
     }
 
     public function getRecordDeleteFlags() {
@@ -676,7 +676,7 @@ trait TScaffold_RecordListProvider {
     }
 
     public function buildSelectorFormDelegate($state, $id) {
-        return new arch\scaffold\delegate\Selector($this, $state, $id);
+        return new arch\scaffold\node\form\SelectorDelegate($this, $state, $id);
     }
 }
 
