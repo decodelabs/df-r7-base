@@ -9,6 +9,6 @@ use df;
 use df\core;
 use df\arch;
 
-class StateController extends arch\action\form\State {
+class StateController extends arch\node\form\State {
 
 }

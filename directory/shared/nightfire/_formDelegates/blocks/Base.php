@@ -11,10 +11,10 @@ use df\apex;
 use df\arch;
 use df\fire;
 
-abstract class Base extends arch\action\form\Delegate implements fire\block\IFormDelegate {
+abstract class Base extends arch\node\form\Delegate implements fire\block\IFormDelegate {
 
-    use arch\action\TForm_InlineFieldRenderableDelegate;
-    use arch\action\TForm_RequirableDelegate;
+    use arch\node\TForm_InlineFieldRenderableDelegate;
+    use arch\node\TForm_RequirableDelegate;
 
     protected $_isNested = false;
     protected $_block;

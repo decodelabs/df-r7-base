@@ -383,8 +383,8 @@ class Format implements core\ISharedHelper {
         return flex\Text::formatId($id);
     }
 
-    public function actionSlug($action) {
-        return flex\Text::formatActionSlug($action);
+    public function nodeSlug($node) {
+        return flex\Text::formatNodeSlug($node);
     }
 
     public function slug($slug) {

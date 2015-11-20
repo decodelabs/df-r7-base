@@ -25,7 +25,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
     protected $_note;
     protected $_maxLength;
     protected $_missingMessage;
-    protected $_action;
+    protected $_node;
     protected $_redirectFrom;
     protected $_redirectTo;
     protected $_name;
@@ -156,9 +156,9 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
         return $this->_matchRequest;
     }
 
-// Action
-    public function setAction($action) {
-        switch($action) {
+// Node
+    public function setNode($node) {
+        switch($node) {
             case 'edit':
                 $this->setIcon('edit');
                 $this->setDisposition('operative');
@@ -188,12 +188,12 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
                 break;
         }
 
-        $this->_action = $action;
+        $this->_node = $node;
         return $this;
     }
 
-    public function getAction() {
-        return $this->_action;
+    public function getNode() {
+        return $this->_node;
     }
 
 
@@ -280,8 +280,8 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
 
             $url = $this->uri->__invoke($url, $this->_redirectFrom, $this->_redirectTo, true);
 
-            if($url instanceof arch\IRequest && $this->_action) {
-                $url->setAction($this->_action);
+            if($url instanceof arch\IRequest && $this->_node) {
+                $url->setNode($this->_node);
             }
         }
 
@@ -298,7 +298,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
         $name = $this->_decorateBody($name);
 
         $output = $this->html->link($url, $name, $this->_matchRequest)
-            //->shouldCheckAccess((bool)$this->_action)
+            //->shouldCheckAccess((bool)$this->_node)
             ->setIcon($this->_icon)
             ->setDisposition($this->_disposition)
             ->setNote($this->_note)
@@ -306,11 +306,11 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
             ->addAccessLocks($this->_accessLocks)
             ->isDisabled($this->_isDisabled);
 
-        if($this->_action && $this->_record instanceof user\IAccessLock) {
-            switch($this->_action) {
+        if($this->_node && $this->_record instanceof user\IAccessLock) {
+            switch($this->_node) {
                 case 'edit':
                 case 'delete':
-                    $output->addAccessLock($this->_record->getActionLock($this->_action));
+                    $output->addAccessLock($this->_record->getActionLock($this->_node));
                     break;
 
                 default:

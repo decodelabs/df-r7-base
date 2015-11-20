@@ -100,38 +100,38 @@ abstract class Base implements IScaffold {
 
 
 // Loaders
-    public function loadAction() {
-        $action = $this->context->request->getAction();
-        $method = lcfirst($action).$this->context->request->getType().'Action';
+    public function loadNode() {
+        $node = $this->context->request->getNode();
+        $method = lcfirst($node).$this->context->request->getType().'Node';
 
         if(!method_exists($this, $method)) {
-            $method = lcfirst($action).'Action';
+            $method = lcfirst($node).'Node';
 
             if(!method_exists($this, $method)) {
-                $method = 'build'.ucfirst($action).'DynamicAction';
+                $method = 'build'.ucfirst($node).'DynamicNode';
 
                 if(method_exists($this, $method)) {
-                    $action = $this->{$method}();
+                    $node = $this->{$method}();
 
-                    if($action instanceof arch\action\IAction) {
-                        return $action;
+                    if($node instanceof arch\node\INode) {
+                        return $node;
                     }
                 }
 
-                if($this instanceof ISectionProviderScaffold && ($action = $this->loadSectionAction())) {
-                    return $action;
+                if($this instanceof ISectionProviderScaffold && ($node = $this->loadSectionNode())) {
+                    return $node;
                 }
 
-                throw new ActionNotFoundException(
-                    'Scaffold at '.$this->context->location.' cannot provide action '.$action
+                throw new NodeNotFoundException(
+                    'Scaffold at '.$this->context->location.' cannot provide node '.$node
                 );
             }
         }
 
-        return $this->_generateAction([$this, $method]);
+        return $this->_generateNode([$this, $method]);
     }
 
-    public function onActionDispatch(arch\action\IAction $action) {}
+    public function onNodeDispatch(arch\node\INode $node) {}
 
     public function loadComponent($name, array $args=null) {
         $keyName = $this->getDirectoryKeyName();
@@ -167,7 +167,7 @@ abstract class Base implements IScaffold {
         );
     }
 
-    public function loadFormDelegate($name, arch\action\IFormState $state, $id) {
+    public function loadFormDelegate($name, arch\node\IFormState $state, $id) {
         $keyName = $this->getDirectoryKeyName();
         $origName = $name;
 
@@ -185,7 +185,7 @@ abstract class Base implements IScaffold {
 
         $output = $this->{$method}($state, $id);
 
-        if(!$output instanceof arch\action\IDelegate) {
+        if(!$output instanceof arch\node\IDelegate) {
             throw new LogicException(
                 'Scaffold at '.$this->context->location.' attempted but failed to provide form delegate '.$origName
             );
@@ -337,9 +337,9 @@ abstract class Base implements IScaffold {
     }
 
 // Helpers
-    protected function _getActionRequest($action, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]) {
+    protected function _getNodeRequest($node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]) {
         $output = clone $this->context->location;
-        $output->setAction($action);
+        $output->setNode($node);
         $outQuery = $output->query;
         $propagate = $this->getPropagatingQueryVars();
 
@@ -375,9 +375,9 @@ abstract class Base implements IScaffold {
     }
 
 
-    protected function _generateAction($callback) {
-        return (new arch\action\Base($this->context, function($action) use($callback) {
-                if(null !== ($pre = $this->onActionDispatch($action))) {
+    protected function _generateNode($callback) {
+        return (new arch\node\Base($this->context, function($node) use($callback) {
+                if(null !== ($pre = $this->onNodeDispatch($node))) {
                     return $pre;
                 }
 

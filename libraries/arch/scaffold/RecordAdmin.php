@@ -34,7 +34,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const RECORD_ID_FIELD = 'id';
     const RECORD_NAME_FIELD = null;
 
-    const DEFAULT_RECORD_ACTION = 'details';
+    const DEFAULT_RECORD_NODE = 'details';
 
     const CAN_ADD_RECORD = true;
     const CAN_EDIT_RECORD = true;
@@ -56,14 +56,14 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         }
     }
 
-// Actions
-    public function indexHtmlAction() {
-        return $this->buildListAction();
+// Nodes
+    public function indexHtmlNode() {
+        return $this->buildListNode();
     }
 
-    public function buildListAction(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
+    public function buildListNode(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
         if($queryMode === null) {
-            $queryMode = $this->request->getAction();
+            $queryMode = $this->request->getNode();
         }
 
         $this->view = $this->apex->newWidgetView();
@@ -87,7 +87,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 // Components
     public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
         if($queryMode === null) {
-            $queryMode = $this->request->getAction();
+            $queryMode = $this->request->getNode();
         }
 
         if($query) {

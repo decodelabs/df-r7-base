@@ -109,15 +109,15 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
     }
 
 
-// Actions
-    public function actionExists($request, $runMode=null) {
+// Nodes
+    public function nodeExists($request, $runMode=null) {
         $request = $this->context->uri->directoryRequest($request);
 
         if($runMode === null) {
             $runMode = $this->context->getRunMode();
         }
 
-        if(null !== arch\action\Base::getClassFor($request, $runMode)) {
+        if(null !== arch\node\Base::getClassFor($request, $runMode)) {
             return true;
         }
 
@@ -125,20 +125,20 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
         try {
             $scaffold = $this->scaffold($context);
-            $scaffold->loadAction();
+            $scaffold->loadNode();
             return true;
         } catch(arch\scaffold\IException $e) {}
 
-        return arch\Transformer::isActionDeliverable($context);
+        return arch\Transformer::isNodeDeliverable($context);
     }
 
-    public function getAction($request, $runMode=null) {
+    public function getNode($request, $runMode=null) {
         $request = $this->context->uri->directoryRequest($request);
         $context = arch\Context::factory($request, $runMode);
-        return arch\action\Base::factory($context);
+        return arch\node\Base::factory($context);
     }
 
-    public function findActionsIn($request, $type=null) {
+    public function findNodesIn($request, $type=null) {
         $request = $this->context->uri->directoryRequest($request);
 
         $path = $request->getLibraryPath().'/_actions';
@@ -153,7 +153,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
             $requestParts[] = substr($name, 4);
 
             array_walk($requestParts, function(&$value) {
-                $value = flex\Text::formatActionSlug($value);
+                $value = flex\Text::formatNodeSlug($value);
             });
 
             $output[] = arch\Request::factory('~'.implode('/', $requestParts));
@@ -238,15 +238,15 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
         $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request);
-        $action = arch\action\Form::factory($context);
+        $node = arch\node\Form::factory($context);
 
-        if(!$action instanceof arch\action\IFormAction) {
+        if(!$node instanceof arch\node\IFormNode) {
             throw new arch\InvalidArgumentException(
-                'Action '.$request.' is not a form action!'
+                'Node '.$request.' is not a form!'
             );
         }
 
-        return $action->dispatchToRenderInline($this->view);
+        return $node->dispatchToRenderInline($this->view);
     }
 
 // Navigation

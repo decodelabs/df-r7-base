@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-class Delete extends arch\action\DeleteForm {
+class Delete extends arch\node\DeleteForm {
 
     protected $_scaffold;
 

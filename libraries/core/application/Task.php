@@ -116,7 +116,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
         $this->_dispatchRequest = clone $request;
 
         try {
-            $response = $this->_dispatchAction($request, $command);
+            $response = $this->_dispatchNode($request, $command);
         } catch(\Exception $e) {
             while(ob_get_level()) {
                 ob_end_clean();
@@ -125,7 +125,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
             $this->_dispatchException = $e;
 
             try {
-                $response = $this->_dispatchAction(new arch\Request('error/'));
+                $response = $this->_dispatchNode(new arch\Request('error/'));
             } catch(\Exception $f) {
                 throw $e;
             }
@@ -135,25 +135,25 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
     }
 
 
-// Dispatch action
-    protected function _dispatchAction(arch\IRequest $request, core\cli\ICommand $command=null) {
+// Dispatch node
+    protected function _dispatchNode(arch\IRequest $request, core\cli\ICommand $command=null) {
         $this->_context = arch\Context::factory(clone $request);
         $this->_context->request = $request;
 
-        $action = arch\action\Base::factory($this->_context);
+        $node = arch\node\Base::factory($this->_context);
 
-        if($command && ($action instanceof arch\action\ITaskAction)) {
-            $action->extractCliArguments($command);
+        if($command && ($node instanceof arch\node\ITaskNode)) {
+            $node->extractCliArguments($command);
         }
 
 
         foreach($this->_registry as $object) {
             if($object instanceof core\IDispatchAware) {
-                $object->onApplicationDispatch($action);
+                $object->onApplicationDispatch($node);
             }
         }
 
-        return $action->dispatch();
+        return $node->dispatch();
     }
 
 

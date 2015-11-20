@@ -20,7 +20,7 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
         return self::REGISTRY_KEY;
     }
 
-    public function onApplicationDispatch(arch\action\IAction $action) {
+    public function onApplicationDispatch(arch\node\INode $node) {
         df\Launchpad::$application->removeRegistryObject(self::REGISTRY_KEY);
     }
 
@@ -40,17 +40,17 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
             array_shift($parts);
         }
 
-        $isDefaultAction = false;
+        $isDefaultNode = false;
 
-        if($request->isDefaultAction()) {
+        if($request->isDefaultNode()) {
             array_pop($parts);
-            $isDefaultAction = true;
+            $isDefaultNode = true;
         }
 
         $count = count($parts);
 
         foreach($parts as $i => $part) {
-            if(!$isDefaultAction && $i == $count - 1) {
+            if(!$isDefaultNode && $i == $count - 1) {
                 $path .= $part;
             } else {
                 $path .= $part.'/';

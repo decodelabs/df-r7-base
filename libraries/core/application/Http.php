@@ -317,7 +317,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $this->_dispatchRequest = clone $request;
 
         try {
-            $response = $this->_dispatchAction($request);
+            $response = $this->_dispatchNode($request);
             $response = $this->_normalizeResponse($response);
         } catch(\Exception $e) {
             while(ob_get_level()) {
@@ -330,7 +330,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $this->_dispatchException = $e;
 
                 try {
-                    $response = $this->_dispatchAction(new arch\Request('error/'));
+                    $response = $this->_dispatchNode(new arch\Request('error/'));
                     $response = $this->_normalizeResponse($response);
                 } catch(\Exception $f) {
                     throw $e;
@@ -342,8 +342,8 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Dispatch action
-    protected function _dispatchAction(arch\IRequest $request) {
+// Dispatch node
+    protected function _dispatchNode(arch\IRequest $request) {
         if($this->_responseAugmentor) {
             $this->_responseAugmentor->resetCurrent();
         }
@@ -352,7 +352,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $this->_context = arch\Context::factory(clone $request);
 
         try {
-            $action = arch\action\Base::factory(
+            $node = arch\node\Base::factory(
                 $this->_context,
                 arch\Controller::factory($this->_context)
             );
@@ -373,7 +373,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $context = clone $this->_context;
                 $context->location = $context->request = $this->_router->urlToRequest($testUrl);
 
-                if($context->apex->actionExists($context->request)) {
+                if($context->apex->nodeExists($context->request)) {
                     return $context->http->redirect($context->request)->isPermanent(true);
                 }
             }
@@ -383,15 +383,15 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         foreach($this->_registry as $object) {
             if($object instanceof core\IDispatchAware) {
-                $object->onApplicationDispatch($action);
+                $object->onApplicationDispatch($node);
             }
         }
 
-        if(!$action->shouldOptimize()) {
+        if(!$node->shouldOptimize()) {
             $this->_doTheDirtyWork();
         }
 
-        return $action->dispatch();
+        return $node->dispatch();
     }
 
 
@@ -417,7 +417,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         if($response === null && $this->isDevelopment()) {
             $this->_context->throwError(
                 500,
-                'No response was returned by action: '.$this->_context->request
+                'No response was returned by node: '.$this->_context->request
             );
         }
 

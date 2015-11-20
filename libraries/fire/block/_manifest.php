@@ -39,4 +39,4 @@ interface IBlock extends core\xml\IRootInterchange, aura\view\IDeferredRenderabl
 }
 
 
-interface IFormDelegate extends arch\action\IDelegate, arch\action\IInlineFieldRenderableDelegate, arch\action\IResultProviderDelegate {}
+interface IFormDelegate extends arch\node\IDelegate, arch\node\IInlineFieldRenderableDelegate, arch\node\IResultProviderDelegate {}

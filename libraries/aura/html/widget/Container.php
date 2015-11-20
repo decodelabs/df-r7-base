@@ -54,7 +54,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
                 $child->setRenderTarget($this->_renderTarget);
             }
 
-            if($child instanceof arch\action\ISelfContainedRenderableDelegate) {
+            if($child instanceof arch\node\ISelfContainedRenderableDelegate) {
                 $child = $child->renderContainerContent($this);
             }
 

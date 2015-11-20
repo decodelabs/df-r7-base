@@ -68,8 +68,8 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->toString();
     }
 
-    public static function formatActionSlug($action) {
-        return self::factory($action)
+    public static function formatNodeSlug($node) {
+        return self::factory($node)
             ->translitToAscii()
             ->regexReplace('/([^ ])([A-Z])/u', '$1-$2')
             ->toLower()

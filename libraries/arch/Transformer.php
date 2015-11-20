@@ -13,15 +13,15 @@ abstract class Transformer implements ITransformer {
 
     use core\TContextProxy;
 
-    public static function loadAction(IContext $context) {
+    public static function loadNode(IContext $context) {
         $transformer = self::factory($context);
 
         if($transformer) {
             $output = $transformer->execute();
 
-            if($output && !$output instanceof arch\action\IAction) {
+            if($output && !$output instanceof arch\node\INode) {
                 throw new RuntimeException(
-                    'Transformer '.get_class($transformer).' returned an invalid action'
+                    'Transformer '.get_class($transformer).' returned an invalid node'
                 );
             }
 
@@ -31,7 +31,7 @@ abstract class Transformer implements ITransformer {
         }
     }
 
-    public static function isActionDeliverable(IContext $context) {
+    public static function isNodeDeliverable(IContext $context) {
         $transformer = self::factory($context);
 
         if(!$transformer) {

@@ -326,9 +326,9 @@ class Html implements arch\IDirectoryHelper {
         return $output;
     }
 
-    public function defaultButtonGroup($mainAction=null, $mainActionText=null, $mainActionIcon=null) {
+    public function defaultButtonGroup($mainEvent=null, $mainEventText=null, $mainEventIcon=null) {
         return $this->buttonArea(
-            $this->saveEventButton($mainAction, $mainActionText, $mainActionIcon),
+            $this->saveEventButton($mainEvent, $mainEventText, $mainEventIcon),
 
             $this->buttonGroup(
                 $this->resetEventButton(),
@@ -337,13 +337,13 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function yesNoButtonGroup($mainAction=null) {
-        if(!$mainAction) {
-            $mainAction = 'submit';
+    public function yesNoButtonGroup($mainEvent=null) {
+        if(!$mainEvent) {
+            $mainEvent = 'submit';
         }
 
         return $this->buttonArea(
-            $this->eventButton($mainAction, $this->context->_('Yes'))
+            $this->eventButton($mainEvent, $this->context->_('Yes'))
                 ->setIcon('accept'),
 
             $this->eventButton('cancel', $this->context->_('No'))
@@ -352,13 +352,13 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function saveEventButton($action=null, $text=null, $icon=null, $disposition=null) {
-        if($action === false) {
+    public function saveEventButton($event=null, $text=null, $icon=null, $disposition=null) {
+        if($event === false) {
             return null;
         }
 
-        if(!$action) {
-            $action = 'save';
+        if(!$event) {
+            $event = 'save';
         }
 
         if($text === null) {
@@ -375,18 +375,18 @@ class Html implements arch\IDirectoryHelper {
             $disposition = null;
         }
 
-        return $this->eventButton($action, $text)
+        return $this->eventButton($event, $text)
             ->setIcon($icon)
             ->setDisposition($disposition);
     }
 
-    public function resetEventButton($action=null, $label=null, $icon=null, $disposition=null) {
-        if($action === false) {
+    public function resetEventButton($event=null, $label=null, $icon=null, $disposition=null) {
+        if($event === false) {
             return null;
         }
 
-        if(!$action) {
-            $action = 'reset';
+        if(!$event) {
+            $event = 'reset';
         }
 
         if($label === null) {
@@ -403,19 +403,19 @@ class Html implements arch\IDirectoryHelper {
             $disposition = null;
         }
 
-        return $this->eventButton($action, $label)
+        return $this->eventButton($event, $label)
             ->setIcon($icon)
             ->setDisposition($disposition)
             ->shouldValidate(false);
     }
 
-    public function cancelEventButton($action=null, $label=null, $icon=null, $disposition=null) {
-        if($action === false) {
+    public function cancelEventButton($event=null, $label=null, $icon=null, $disposition=null) {
+        if($event === false) {
             return null;
         }
 
-        if(!$action) {
-            $action = 'cancel';
+        if(!$event) {
+            $event = 'cancel';
         }
 
         if($label === null) {
@@ -432,7 +432,7 @@ class Html implements arch\IDirectoryHelper {
             $disposition = null;
         }
 
-        return $this->eventButton($action, $label)
+        return $this->eventButton($event, $label)
             ->setIcon($icon)
             ->setDisposition($disposition)
             ->shouldValidate(false);

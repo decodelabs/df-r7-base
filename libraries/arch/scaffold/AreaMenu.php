@@ -17,7 +17,7 @@ class AreaMenu extends Base {
 
     use TScaffold_IndexHeaderBarProvider;
 
-    public function indexHtmlAction() {
+    public function indexHtmlNode() {
         $view = $this->apex->newWidgetView();
 
         if(static::HEADER_BAR) {

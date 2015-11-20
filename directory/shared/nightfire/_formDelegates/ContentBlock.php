@@ -12,12 +12,12 @@ use df\arch;
 use df\fire;
 use df\aura;
 
-class ContentBlock extends arch\action\form\Delegate implements
-    arch\action\IInlineFieldRenderableDelegate,
-    arch\action\IResultProviderDelegate {
+class ContentBlock extends arch\node\form\Delegate implements
+    arch\node\IInlineFieldRenderableDelegate,
+    arch\node\IResultProviderDelegate {
 
-    use arch\action\TForm_InlineFieldRenderableDelegate;
-    use arch\action\TForm_RequirableDelegate;
+    use arch\node\TForm_InlineFieldRenderableDelegate;
+    use arch\node\TForm_RequirableDelegate;
 
     protected $_block;
     protected $_isNested = false;

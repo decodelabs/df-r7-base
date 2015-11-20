@@ -406,7 +406,7 @@ interface ISchemaProviderAdapter extends IAdapter {
     public function storageExists();
 }
 
-interface IAction {
+interface INode {
     public function validate();
     public function isValid();
 }

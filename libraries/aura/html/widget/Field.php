@@ -38,7 +38,7 @@ class Field extends Container implements IFormOrientedWidget {
         $view = $this->getRenderTarget()->getView();
 
         $children = $this->_prepareChildren(function($child) {
-            if($child instanceof arch\action\IInlineFieldRenderableDelegate) {
+            if($child instanceof arch\node\IInlineFieldRenderableDelegate) {
                 return $child->renderFieldContent($this);
             }
 
@@ -146,7 +146,7 @@ class Field extends Container implements IFormOrientedWidget {
         $isRequired = $this->_isRequired;
 
         $children = $this->_prepareChildren(function($child) {
-            if($child instanceof arch\action\IInlineFieldRenderableDelegate) {
+            if($child instanceof arch\node\IInlineFieldRenderableDelegate) {
                 $child = $child->renderFieldContent($this);
             }
 

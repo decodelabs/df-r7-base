@@ -13,11 +13,11 @@ use df\aura;
 use df\flex;
 
 class Http implements arch\IDirectoryHelper {
-    
+
     use arch\TDirectoryHelper;
 
     protected $_httpRequest;
-    
+
     protected function _init() {
         if(!$this->context->application instanceof core\application\Http) {
             throw new core\RuntimeException(
@@ -27,45 +27,45 @@ class Http implements arch\IDirectoryHelper {
 
         $this->_httpRequest = $this->context->application->getHttpRequest();
     }
-    
+
     public function __get($member) {
         switch($member) {
             case 'request':
                 return $this->_httpRequest;
-                
+
             case 'method':
                 return $this->_httpRequest->getMethod();
-                
+
             case 'host':
                 return $this->_httpRequest->url->getDomain();
-                
+
             case 'headers':
                 return $this->_httpRequest->headers;
-                
+
             case 'post':
                 return $this->_httpRequest->getPostData();
-                
+
             case 'cookies':
                 return $this->_httpRequest->cookies;
         }
-        
+
         return null;
     }
-    
-    
+
+
     public function directoryRequestToUrl($request) {
         return core\application\http\Router::getInstance()
             ->requestToUrl(arch\Request::factory($request));
     }
-    
+
     public function getRouter() {
         return $this->context->application->getRouter();
     }
-    
+
     public function getRequest() {
         return $this->_httpRequest;
     }
-    
+
     public function getMethod() {
         return $this->_httpRequest->getMethod();
     }
@@ -73,11 +73,11 @@ class Http implements arch\IDirectoryHelper {
     public function getUrl() {
         return $this->_httpRequest->url;
     }
-    
+
     public function getHost() {
         return $this->_httpRequest->url->getDomain();
     }
-    
+
     public function getHeaders() {
         return $this->_httpRequest->headers;
     }
@@ -89,7 +89,7 @@ class Http implements arch\IDirectoryHelper {
     public function getReferrer() {
         return $this->_httpRequest->headers->get('Referer');
     }
-    
+
     public function getPostData() {
         return $this->_httpRequest->getPostData();
     }
@@ -101,7 +101,7 @@ class Http implements arch\IDirectoryHelper {
     public function getIp() {
         return $this->_httpRequest->getIp();
     }
-    
+
 
     public function isGetRequest() {
         return $this->getMethod() == 'get';
@@ -122,9 +122,9 @@ class Http implements arch\IDirectoryHelper {
     public function isAjaxRequest() {
         return strtolower($this->_httpRequest->headers->get('x-requested-with')) == 'xmlhttprequest';
     }
-    
-    
-    
+
+
+
 // Responses
     public function stringResponse($content, $contentType=null) {
         return new link\http\response\Stream($content, $contentType);
@@ -149,7 +149,7 @@ class Http implements arch\IDirectoryHelper {
         return $this->stringResponse(
             $this->context->data->jsonEncode(array_merge(
                 [
-                    'action' => $this->context->request->getLiteralPathString(),
+                    'node' => $this->context->request->getLiteralPathString(),
                     'content' => $content
                 ],
                 $extraData
@@ -189,11 +189,11 @@ class Http implements arch\IDirectoryHelper {
             'application/json'
         );
     }
-    
+
     public function fileResponse($path, $checkPath=true) {
         return new link\http\response\File($path, $checkPath);
     }
-    
+
     public function redirect($request=null) {
         $url = $this->context->uri($request);
 
@@ -205,14 +205,14 @@ class Http implements arch\IDirectoryHelper {
 
         return new link\http\response\Redirect($url);
     }
-    
+
     public function redirectExternal($url) {
         return new link\http\response\Redirect($url);
     }
-    
+
     public function defaultRedirect($default=null, $success=true, $sectionReferrer=null) {
         $request = $this->context->request;
-        
+
         if($success) {
             if(!$redirect = $request->getRedirectTo()) {
                 if($default !== null) {
@@ -250,7 +250,7 @@ class Http implements arch\IDirectoryHelper {
                 return $this->redirect($referrer);
             }
         }
-            
+
         return $this->redirect($request->getParent());
     }
 
@@ -272,14 +272,14 @@ class Http implements arch\IDirectoryHelper {
         return $this->generator('text/csv', new flex\csv\Builder($generator))
             ->setAttachmentFileName($fileName);
     }
-    
-    
-    
+
+
+
 
 // Cookies
     public function setCookie($name, $value=null, $expiry=null, $httpOnly=null, $secure=null) {
         $augmentor = $this->context->application->getResponseAugmentor();
-        
+
         if($name instanceof link\http\ICookie) {
             $cookie = $name;
         } else {
@@ -297,16 +297,16 @@ class Http implements arch\IDirectoryHelper {
     public function hasCookie($name) {
         return $this->getCookies()->has($name);
     }
-    
+
     public function removeCookie($name) {
         $augmentor = $this->context->application->getResponseAugmentor();
-        
+
         if($name instanceof link\http\ICookie) {
             $cookie = $name;
         } else {
             $cookie = $augmentor->newCookie($name, 'deleted');
         }
-        
+
         $augmentor->removeCookieForAnyRequest($cookie);
         return $cookie;
     }
@@ -332,11 +332,11 @@ class Http implements arch\IDirectoryHelper {
     public static function statusCodeToString($code) {
         return link\http\response\HeaderCollection::statusCodeToString($code);
     }
-    
+
     public static function statusCodeToMessage($code) {
         return link\http\response\HeaderCollection::statusCodeToMessage($code);
     }
-    
+
     public static function isInformationStatusCode($code) {
         return link\http\response\HeaderCollection::isInformationStatusCode($code);
     }

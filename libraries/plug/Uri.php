@@ -123,8 +123,8 @@ class Uri implements arch\IDirectoryHelper {
                     $request->setController($value);
                     break;
 
-                case 'action':
-                    $request->setAction($value);
+                case 'node':
+                    $request->setNode($value);
                     break;
 
                 case 'type':

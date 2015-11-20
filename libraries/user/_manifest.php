@@ -54,7 +54,7 @@ interface IManager extends core\IManager {
     public function getClientOption($key, $default=null);
     public function setClientOptions(array $options);
     public function getClientOptions();
-    
+
     // Authentication
     public function isLoggedIn();
     public function loadAuthenticationAdapter($name);
@@ -121,7 +121,7 @@ interface IClient extends IClientDataObject {
     public function isBound();
     public function isConfirmed();
     public function isA($signifier);
-    
+
     public function import(IClientDataObject $clientData);
     public function setKeyring(array $keyring);
     public function getKeyring();
@@ -132,7 +132,7 @@ interface IClient extends IClientDataObject {
     public function getOption($key, $default=null);
     public function getOptions();
     public function importOptions(array $options);
-    
+
     public function canAccess(IAccessLock $lock, $action=null, $linkTo=false);
 }
 
@@ -147,8 +147,8 @@ interface IAccessLock {
 
 trait TAccessLock {
 
-    public function getActionLock($action) {
-        return new user\access\lock\Action($this, $action);
+    public function getActionLock($node) {
+        return new user\access\lock\Action($this, $node);
     }
 }
 
@@ -164,16 +164,16 @@ interface IAccessControlled {
 
 
 trait TAccessControlled {
-    
+
     protected $_checkAccess = false;
     protected $_accessLocks = [];
-    
+
     public function shouldCheckAccess($flag=null) {
         if($flag !== null) {
             $this->_checkAccess = (bool)$flag;
             return $this;
         }
-        
+
         return (bool)$this->_checkAccess;
     }
 
@@ -189,17 +189,17 @@ trait TAccessControlled {
 
         return $this;
     }
-    
+
     public function addAccessLock($lock) {
         $this->_accessLocks[] = $lock;
         $this->_checkAccess = true;
         return $this;
     }
-    
+
     public function getAccessLocks() {
         return $this->_accessLocks;
     }
-    
+
     public function clearAccessLocks() {
         $this->_accessLocks = [];
         return $this;
@@ -225,7 +225,7 @@ interface IPostalAddress extends core\IStringProvider, core\IArrayProvider {
 }
 
 trait TPostalAddress {
-    
+
     protected $_countryName;
 
     public function getMainStreetLine() {
@@ -250,7 +250,7 @@ trait TPostalAddress {
         $output = $this->getStreetLine1();
         $address2 = $this->getStreetLine2();
         $address3 = $this->getStreetLine3();
-        
+
         if(!empty($address2)) {
             $output .= ', '.$address2;
         }
@@ -258,7 +258,7 @@ trait TPostalAddress {
         if(!empty($address3)) {
             $output .= ', '.$address3;
         }
-        
+
         return $output;
     }
 

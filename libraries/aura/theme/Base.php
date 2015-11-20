@@ -26,6 +26,9 @@ class Base implements ITheme, core\IDumpable {
     public static function factory($id) {
         if($id instanceof ITheme) {
             return $id;
+        } else if(is_string($id) && substr($id, 0, 1) == '~') {
+            $config = Config::getInstance();
+            $id = $config->getThemeIdFor($id);
         } else if($id instanceof arch\IContext) {
             $context = $id;
             $config = Config::getInstance();

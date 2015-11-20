@@ -29,7 +29,7 @@ class Environment extends Config {
 
     protected function _sanitizeValuesOnCreate() {
         try {
-            arch\action\task\Manager::getInstance()->invoke('git/init-gitignore');
+            arch\node\task\Manager::getInstance()->invoke('git/init-gitignore');
         } catch(\Exception $e) {}
     }
 

@@ -440,8 +440,8 @@ interface IDateField extends IField, IRangeField {
 }
 
 interface IDelegateField extends IField {
-    public function fromForm(arch\action\IForm $form, $name=null);
-    public function setDelegate(arch\action\IDelegate $delegate);
+    public function fromForm(arch\node\IForm $form, $name=null);
+    public function setDelegate(arch\node\IDelegate $delegate);
     public function getDelegate();
 }
 

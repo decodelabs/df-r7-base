@@ -10,11 +10,11 @@ use df\core;
 use df\arch;
 use df\opal;
 
-class Selector extends arch\action\form\SelectorDelegate {
+class Selector extends arch\node\form\SelectorDelegate {
 
     protected $_scaffold;
 
-    public function __construct(arch\scaffold\IScaffold $scaffold, arch\action\IFormState $state, $id) {
+    public function __construct(arch\scaffold\IScaffold $scaffold, arch\node\IFormState $state, $id) {
         $this->_scaffold = $scaffold;
         parent::__construct($scaffold->getContext(), $state, $id);
     }

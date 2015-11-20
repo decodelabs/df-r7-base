@@ -36,7 +36,7 @@ class Apc implements core\cache\IBackend {
         $request = new arch\Request('cache/apc-clear.json?purge=app');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
-        arch\action\task\Manager::getInstance()->launchBackground($request);
+        arch\node\task\Manager::getInstance()->launchBackground($request);
     }
 
     public static function purgeAll(core\collection\ITree $options) {
@@ -52,7 +52,7 @@ class Apc implements core\cache\IBackend {
         $request = new arch\Request('cache/apc-clear.json?purge=all');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
-        arch\action\task\Manager::getInstance()->launchBackground($request);
+        arch\node\task\Manager::getInstance()->launchBackground($request);
     }
 
     public static function prune(core\collection\ITree $options) {
@@ -259,7 +259,7 @@ class Apc implements core\cache\IBackend {
         $request->query->{$method} = $arg;
 
         try {
-            arch\action\task\Manager::getInstance()->launchQuietly($request);
+            arch\node\task\Manager::getInstance()->launchQuietly($request);
         } catch(\Exception $e) {
             core\log\Manager::getInstance()->logException($e);
         }

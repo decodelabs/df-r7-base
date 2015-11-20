@@ -15,15 +15,15 @@ use df\opal;
 interface IException {}
 class LogicException extends \LogicException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
-class ActionNotFoundException extends RuntimeException {}
+class NodeNotFoundException extends RuntimeException {}
 
 
 // Interfaces
 interface IScaffold extends core\IRegistryObject, arch\IOptionalDirectoryAccessLock {
-    public function loadAction();
-    public function onActionDispatch(arch\action\IAction $action);
+    public function loadNode();
+    public function onNodeDispatch(arch\node\INode $node);
     public function loadComponent($name, array $args=null);
-    public function loadFormDelegate($name, arch\action\IFormState $state, $id);
+    public function loadFormDelegate($name, arch\node\IFormState $state, $id);
     public function loadMenu($name, $id);
 
     public function getPropagatingQueryVars();
@@ -70,7 +70,7 @@ interface IRecordListProviderScaffold extends IRecordLoaderScaffold {
 }
 
 interface ISectionProviderScaffold extends IScaffold {
-    public function loadSectionAction();
+    public function loadSectionNode();
     public function buildSection($name, $builder, $linkBuilder=null);
     public function getSectionItemCounts();
 }

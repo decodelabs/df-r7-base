@@ -12,12 +12,12 @@ use df\fire;
 use df\arch;
 use df\aura;
 
-class ContentSlot extends arch\action\form\Delegate implements
-    arch\action\ISelfContainedRenderableDelegate,
-    arch\action\IResultProviderDelegate {
+class ContentSlot extends arch\node\form\Delegate implements
+    arch\node\ISelfContainedRenderableDelegate,
+    arch\node\IResultProviderDelegate {
 
-    use arch\action\TForm_SelfContainedRenderableDelegate;
-    use arch\action\TForm_RequirableDelegate;
+    use arch\node\TForm_SelfContainedRenderableDelegate;
+    use arch\node\TForm_RequirableDelegate;
 
     protected $_slotDefinition;
     protected $_isNested = false;

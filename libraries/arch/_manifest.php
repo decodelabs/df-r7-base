@@ -142,14 +142,14 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
     public static function formatController($controller);
     public static function formatControllerParts(array $parts);
 
-    // Action
-    public function setAction($action);
-    public function getAction();
-    public function getRawAction();
-    public function isAction($action);
-    public static function getDefaultAction();
-    public function isDefaultAction();
-    public static function formatAction($action);
+    // Node
+    public function setNode($node);
+    public function getNode();
+    public function getRawNode();
+    public function isNode($node);
+    public static function getDefaultNode();
+    public function isDefaultNode();
+    public static function formatNode($node);
 
     // Type
     public function setType($type);

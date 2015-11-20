@@ -18,7 +18,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
     const AREA_MARKER = '~';
     const DEFAULT_AREA = 'front';
-    const DEFAULT_ACTION = 'index';
+    const DEFAULT_NODE = 'index';
     const DEFAULT_TYPE = 'html';
 
     const REDIRECT_FROM = 'rf';
@@ -245,55 +245,55 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return $parts;
     }
 
-// Action
-    public function setAction($action) {
-        if(!strlen($action)) {
-            $action = static::DEFAULT_ACTION;
+// Node
+    public function setNode($node) {
+        if(!strlen($node)) {
+            $node = static::DEFAULT_NODE;
         }
 
-        $action = trim($action, '/');
-        $action = flex\Text::formatActionSlug($action);
-        $this->getPath()->setFileName($action);
+        $node = trim($node, '/');
+        $node = flex\Text::formatNodeSlug($node);
+        $this->getPath()->setFileName($node);
         return $this;
     }
 
-    public function getAction() {
+    public function getNode() {
         if(!$this->_path || $this->_path->shouldAddTrailingSlash() || !strlen($fileName = $this->_path->getFileName())) {
-            return static::DEFAULT_ACTION;
+            return static::DEFAULT_NODE;
         }
 
-        return $this->formatAction($fileName);
+        return $this->formatNode($fileName);
     }
 
-    public function getRawAction() {
+    public function getRawNode() {
         if(!$this->_path || $this->_path->shouldAddTrailingSlash() || !strlen($fileName = $this->_path->getFileName())) {
-            return static::DEFAULT_ACTION;
+            return static::DEFAULT_NODE;
         }
 
         return $fileName;
     }
 
-    public function isAction($action) {
-        return $this->getAction() == $this->formatAction($action);
+    public function isNode($node) {
+        return $this->getNode() == $this->formatNode($node);
     }
 
-    public static function getDefaultAction() {
-        return static::DEFAULT_ACTION;
+    public static function getDefaultNode() {
+        return static::DEFAULT_NODE;
     }
 
-    public function isDefaultAction() {
-        return $this->getAction() == static::DEFAULT_ACTION;
+    public function isDefaultNode() {
+        return $this->getNode() == static::DEFAULT_NODE;
     }
 
-    public static function formatAction($action) {
-        if($action == '~') {
-            return $action;
+    public static function formatNode($node) {
+        if($node == '~') {
+            return $node;
         }
 
         return lcfirst(
             str_replace(' ', '', ucwords(
                 preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
-                    ['-', '.', '+'], ' ', $action
+                    ['-', '.', '+'], ' ', $node
                 ))
             ))
         );
@@ -311,7 +311,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
         if($path->shouldAddTrailingSlash()) {
             if($type !== null) {
-                $path->setFileName(static::DEFAULT_ACTION.'.'.$type);
+                $path->setFileName(static::DEFAULT_NODE.'.'.$type);
                 return $this;
             }
         } else {
@@ -352,14 +352,14 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
     public function getComponents() {
         $literal = $this->getLiteralPathArray();
-        $action = array_pop($literal);
+        $node = array_pop($literal);
 
         if($fileName = $this->_path->getFileName()) {
-            $action = $fileName;
+            $node = $fileName;
         }
 
         return [
-            'action' => $action,
+            'node' => $node,
             'extension' => $this->_path->getExtension(),
             'type' => $this->getType(),
             'area' => array_shift($literal),
@@ -384,14 +384,14 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return '/';
         }
 
-        $action = array_pop($parts);
+        $node = array_pop($parts);
 
-        if(false !== ($pos = strpos($action, '.'))) {
-            $action = substr($action, 0, $pos);
+        if(false !== ($pos = strpos($node, '.'))) {
+            $node = substr($node, 0, $pos);
         }
 
-        if(strlen($action)) {
-            $parts[] = $action;
+        if(strlen($node)) {
+            $parts[] = $node;
         }
 
         $output = implode('/', $parts);
@@ -583,7 +583,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         if($addTrailingSlash) {
-            $parts[] = static::DEFAULT_ACTION;//.'.'.static::DEFAULT_TYPE;
+            $parts[] = static::DEFAULT_NODE;//.'.'.static::DEFAULT_TYPE;
         }
 
         return $parts;
@@ -776,14 +776,14 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         $output->_query = null;
         $output->_fragment = null;
 
-        $isDefaultAction = $output->isDefaultAction();
+        $isDefaultNode = $output->isDefaultNode();
 
         if(!$output->_path->shouldAddTrailingSlash()) {
             $output->_path->pop();
             $output->_path->shouldAddTrailingSlash(true);
         }
 
-        if($isDefaultAction) {
+        if($isDefaultNode) {
             $output->_path->pop();
         }
 
@@ -873,11 +873,11 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
     public function lookupAccessKey(array $keys, $lockAction=null) {
         $parts = $this->getLiteralPathArray();
-        $action = array_pop($parts);
+        $node = array_pop($parts);
         $basePath = implode('/', $parts);
 
-        if(isset($keys[$basePath.'/'.$action])) {
-            return $keys[$basePath.'/'.$action];
+        if(isset($keys[$basePath.'/'.$node])) {
+            return $keys[$basePath.'/'.$node];
         } else if(isset($keys[$basePath.'/%'])) {
             return $keys[$basePath.'/%'];
         }
@@ -907,8 +907,8 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
         try {
             $context = arch\Context::factory($this);
-            $action = arch\action\Base::factory($context);
-            return $action->getDefaultAccess($lockAction);
+            $node = arch\node\Base::factory($context);
+            return $node->getDefaultAccess($lockAction);
         } catch(\Exception $e) {
             return false;
         }

@@ -79,7 +79,7 @@ trait TScaffold_RecordDataProvider {
     //const RECORD_NAME_FIELD = 'name';
     //const RECORD_URL_KEY = null;
     //const RECORD_ADAPTER = null;
-    //const DEFAULT_RECORD_ACTION = 'details';
+    //const DEFAULT_RECORD_NODE = 'details';
 
     //const CAN_ADD_RECORD = true;
     //const CAN_EDIT_RECORD = true;
@@ -190,7 +190,7 @@ trait TScaffold_RecordDataProvider {
             $record = $this->getRecord();
         }
 
-        return $this->_getRecordActionRequest($record, static::DEFAULT_RECORD_ACTION);
+        return $this->_getRecordNodeRequest($record, static::DEFAULT_RECORD_NODE);
     }
 
     public function getRecordIcon($record=null) {
@@ -305,15 +305,15 @@ trait TScaffold_RecordDataProvider {
     }
 
 
-    protected function _getRecordActionRequest($record, $action, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]) {
-        return $this->_getActionRequest($action, [
+    protected function _getRecordNodeRequest($record, $node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]) {
+        return $this->_getNodeRequest($node, [
             $this->getRecordUrlKey() => $this->getRecordId($record)
         ], $redirFrom, $redirTo, $propagationFilter);
     }
 
 
 
-    public function buildDeleteDynamicAction() {
+    public function buildDeleteDynamicNode() {
         if(!$this->canDeleteRecord()) {
             $this->context->throwError(403, 'Records cannot be deleted');
         }
@@ -355,7 +355,7 @@ trait TScaffold_RecordDataProvider {
         // Edit
         if($this->canEditRecord($record)) {
             $output[] = $this->html->link(
-                    $this->_getRecordActionRequest($record, 'edit', null, true),
+                    $this->_getRecordNodeRequest($record, 'edit', null, true),
                     $this->_('Edit '.$this->getRecordItemName())
                 )
                 ->setIcon('edit');
@@ -364,7 +364,7 @@ trait TScaffold_RecordDataProvider {
         // Delete
         if($this->canDeleteRecord($record)) {
             $output[] = $this->html->link(
-                    $this->_getRecordActionRequest(
+                    $this->_getRecordNodeRequest(
                         $record, 'delete', null, true,
                         $mode == 'sectionHeaderBar' ?
                             $this->context->location->getPath()->getDirname() : null
@@ -736,12 +736,12 @@ trait TScaffold_SectionProvider {
         return ['details'];
     }
 
-    public function loadSectionAction() {
-        $action = $this->context->request->getAction();
+    public function loadSectionNode() {
+        $node = $this->context->request->getNode();
         $sections = $this->_getSections();
 
-        if(isset($sections[$action])) {
-            return $this->_generateAction(function() use($action) {
+        if(isset($sections[$node])) {
+            return $this->_generateNode(function() use($node) {
                 $record = null;
 
                 if($this instanceof IRecordDataProviderScaffold) {
@@ -751,10 +751,10 @@ trait TScaffold_SectionProvider {
                 $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
 
                 if(method_exists($this, '_prepareSection')) {
-                    $this->_prepareSection($record, $action);
+                    $this->_prepareSection($record, $node);
                 }
 
-                $method = 'render'.ucfirst($action).'SectionBody';
+                $method = 'render'.ucfirst($node).'SectionBody';
 
                 if(method_exists($this, $method)) {
                     $body = $this->{$method}($record);
@@ -813,7 +813,7 @@ trait TScaffold_SectionProvider {
     }
 
     protected function getParentSectionRequest() {
-        return $this->_getActionRequest('index');
+        return $this->_getNodeRequest('index');
     }
 
     public function addSectionOperativeLinks($menu, $bar) {
@@ -823,8 +823,8 @@ trait TScaffold_SectionProvider {
     }
 
     public function addSectionSubOperativeLinks($menu, $bar) {
-        $action = $this->context->request->getAction();
-        $method = 'add'.ucfirst($action).'SectionSubOperativeLinks';
+        $node = $this->context->request->getNode();
+        $method = 'add'.ucfirst($node).'SectionSubOperativeLinks';
 
         if(method_exists($this, $method)) {
             $this->{$method}($menu, $bar);
@@ -840,8 +840,8 @@ trait TScaffold_SectionProvider {
     }
 
     public function addSectionTransitiveLinks($menu, $bar) {
-        $action = $this->context->request->getAction();
-        $method = 'add'.ucfirst($action).'SectionTransitiveLinks';
+        $node = $this->context->request->getNode();
+        $method = 'add'.ucfirst($node).'SectionTransitiveLinks';
 
         if(method_exists($this, $method)) {
             $this->{$method}($menu, $bar);
@@ -860,23 +860,23 @@ trait TScaffold_SectionProvider {
             } catch(\Exception $e) {}
         }
 
-        foreach($sections as $action => $set) {
+        foreach($sections as $node => $set) {
             $i++;
 
             if($record) {
-                $request = $this->_getRecordActionRequest($record, $action);
+                $request = $this->_getRecordNodeRequest($record, $node);
             } else {
-                $request = $this->_getActionRequest($action);
+                $request = $this->_getNodeRequest($node);
             }
 
             $link = $entryList->newLink($request, $set['name'])
-                ->setId($action)
+                ->setId($node)
                 ->setIcon($set['icon'])
-                ->setWeight($action == 'details' ? 1 : $i * 10)
+                ->setWeight($node == 'details' ? 1 : $i * 10)
                 ->setDisposition('informative');
 
-            if(isset($counts[$action])) {
-                $link->setNote($this->format->counterNote($counts[$action]));
+            if(isset($counts[$node])) {
+                $link->setNote($this->format->counterNote($counts[$node]));
             }
 
             $entryList->addEntry($link);
@@ -940,7 +940,7 @@ trait TScaffold_RecordIndexHeaderBarProvider {
 
             $menu->addLinks(
                 $bar->html->link(
-                        $bar->uri($this->_getActionRequest('add'), true),
+                        $bar->uri($this->_getNodeRequest('add'), true),
                         $this->_('Add '.$this->getRecordItemName())
                     )
                     ->setIcon('add')
