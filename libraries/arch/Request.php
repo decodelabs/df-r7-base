@@ -572,7 +572,12 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     public function getLiteralPathArray() {
         if($this->_path) {
             $parts = $this->_path->getRawCollection();
-            $addTrailingSlash = $this->_path->shouldAddTrailingSlash();
+
+            if(empty($parts)) {
+                $addTrailingSlash = true;
+            } else {
+                $addTrailingSlash = $this->_path->shouldAddTrailingSlash();
+            }
         } else {
             $parts = [];
             $addTrailingSlash = true;
