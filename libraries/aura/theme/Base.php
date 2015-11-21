@@ -276,13 +276,14 @@ class Base implements ITheme, core\IDumpable {
 
 
 // Facets
-    public function loadFacet($name) {
+    public function loadFacet($name, $callback=null) {
         $name = lcfirst($name);
 
         if(!isset($this->_facets[$name])) {
             $this->_facets[$name] = aura\theme\facet\Base::factory($name);
         }
 
+        core\lang\Callback::callArgs($callback, [$this->_facets[$name], $this]);
         return $this->_facets[$name];
     }
 

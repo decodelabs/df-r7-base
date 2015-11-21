@@ -15,7 +15,15 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
-interface ITheme extends aura\view\IViewRenderEventReceiver, aura\view\ILayoutMap {
+interface IFacetProvider {
+    public function loadFacet($name, $callback=null);
+    public function hasFacet($name);
+    public function getFacet($name);
+    public function removeFacet($name);
+    public function getFacets();
+}
+
+interface ITheme extends IFacetProvider, aura\view\IViewRenderEventReceiver, aura\view\ILayoutMap {
     public function getId();
 
     public function findAsset($path);
@@ -24,12 +32,6 @@ interface ITheme extends aura\view\IViewRenderEventReceiver, aura\view\ILayoutMa
     public function mapIcon($name);
 
     public function getDependencies();
-
-    public function loadFacet($name);
-    public function hasFacet($name);
-    public function getFacet($name);
-    public function removeFacet($name);
-    public function getFacets();
 }
 
 interface IFacet extends aura\view\IViewRenderEventReceiver {}

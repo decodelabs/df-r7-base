@@ -210,7 +210,7 @@ trait TResponseView {
 }
 
 
-interface IThemedView extends IView {
+interface IThemedView extends IView, aura\theme\IFacetProvider {
     public function setTheme($theme);
     public function getTheme();
     public function hasTheme();
@@ -240,6 +240,29 @@ trait TThemedView {
 
     public function hasTheme() {
         return $this->_theme !== null;
+    }
+
+
+    public function loadFacet($name, $callback=null) {
+        $this->getTheme()->loadFacet($name, $callback);
+        return $this;
+    }
+
+    public function hasFacet($name) {
+        return $this->getTheme()->hasFacet($name);
+    }
+
+    public function getFacet($name) {
+        return $this->getTheme()->getFacet($name);
+    }
+
+    public function removeFacet($name) {
+        $this->getTheme()->removeFacet($name);
+        return $this;
+    }
+
+    public function getFacets() {
+        return $this->getTheme()->getFacets();
     }
 }
 
