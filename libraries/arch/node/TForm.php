@@ -372,6 +372,21 @@ trait TForm {
 
 
 
+// Parent renderer
+trait TForm_ParentUiHandlerDelegate {
+
+    final public function renderUi() {
+        if($decorator = arch\decorator\Delegate::factory($this)) {
+            $decorator->renderUi();
+        } else {
+            $this->createUi();
+        }
+    }
+
+    abstract protected function createUi();
+}
+
+
 
 
 // Modal

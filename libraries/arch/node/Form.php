@@ -255,7 +255,9 @@ abstract class Form extends Base implements IFormNode {
             $delegate->setRenderContext($this->view, $this->content, $this->_isRenderingInline);
         }
 
-        if(method_exists($this, 'createUi')) {
+        if($decorator = arch\decorator\Form::factory($this)) {
+            $decorator->renderUi();
+        } else if(method_exists($this, 'createUi')) {
             $this->createUi();
         } else if($this->context->application->isDevelopment()) {
             $this->content->push($this->html(
