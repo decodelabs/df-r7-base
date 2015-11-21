@@ -52,7 +52,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
             foreach($baseDir->scanDirs() as $dirName => $dir) {
                 foreach($dir->scanFiles() as $fileName => $file) {
                     if($file->getLastModified() < $stamp) {
-                        $file->delete();
+                        $file->unlink();
                         $output++;
                     }
                 }
