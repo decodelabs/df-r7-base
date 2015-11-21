@@ -157,7 +157,12 @@ class Model extends axis\Model implements user\session\IBackend {
             ->toRow();
 
         if($res) {
-            return user\session\Node::create($res['key'], $res);
+            try {
+                return user\session\Node::create($res['key'], $res);
+            } catch(\Exception $e) {
+                $this->context->logs->logException($e);
+                return null;
+            }
         } else {
             return null;
         }
