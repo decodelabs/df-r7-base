@@ -27,8 +27,11 @@ class Manager implements IManager {
     }
 
     public function ensureActivity() {
+        $spoolOnly = false;
+
         if(!$this->isEnabled() || !df\Launchpad::$application->isProduction()) {
-            return $this;
+            $spoolOnly = true;
+            //return $this;
         }
 
         $path = df\Launchpad::$application->getLocalStoragePath().'/daemons/__activity';
@@ -47,7 +50,13 @@ class Manager implements IManager {
         if($launch) {
             core\fs\Dir::create(dirname($path));
             touch($path);
-            arch\node\task\Manager::getInstance()->launchBackground('daemons/ensure-activity');
+            $taskManager = arch\node\task\Manager::getInstance();
+
+            if($spoolOnly) {
+                $taskManager->launchBackground('tasks/spool');
+            } else {
+                $taskManager->launchBackground('daemons/ensure-activity');
+            }
         }
 
         return $this;
