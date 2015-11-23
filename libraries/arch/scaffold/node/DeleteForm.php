@@ -56,4 +56,10 @@ class DeleteForm extends arch\node\DeleteForm {
 
         $this->_scaffold->deleteRecord($this->_scaffold->getRecord(), $flags);
     }
+
+    protected function finalize() {
+        return $this->complete(function() {
+            return $this->uri->directoryRequest($this->_scaffold->getRecordBackLinkRequest());
+        });
+    }
 }

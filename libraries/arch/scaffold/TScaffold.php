@@ -312,6 +312,10 @@ trait TScaffold_RecordDataProvider {
     }
 
 
+    public function getRecordBackLinkRequest() {
+        return $this->uri->directoryRequest($this->getParentSectionRequest());
+    }
+
 
     public function buildDeleteDynamicNode() {
         if(!$this->canDeleteRecord()) {
@@ -365,9 +369,7 @@ trait TScaffold_RecordDataProvider {
         if($this->canDeleteRecord($record)) {
             $output[] = $this->html->link(
                     $this->_getRecordNodeRequest(
-                        $record, 'delete', null, true,
-                        $mode == 'sectionHeaderBar' ?
-                            $this->context->location->getPath()->getDirname() : null
+                        $record, 'delete', null, true
                     ),
                     $this->_('Delete '.$this->getRecordItemName())
                 )

@@ -59,6 +59,8 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
 
     public function getRecordDeleteFlags();
     public function deleteRecord(opal\record\IRecord $record, array $flags=[]);
+
+    public function getRecordBackLinkRequest();
 }
 
 interface IRecordListProviderScaffold extends IRecordLoaderScaffold {
