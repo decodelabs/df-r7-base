@@ -160,8 +160,15 @@ class Config extends core\Config {
 
     protected function _getDefaultAdminAddress() {
         $name = halo\system\Base::getInstance()->getProcess()->getOwnerName();
-        $url = new link\http\Url(core\application\http\Config::getInstance()->getRootUrl());
-        return $name.'@'.$url->getDomain();
+        $rootUrl = core\application\http\Config::getInstance()->getRootUrl();
+
+        if($rootUrl) {
+            $domain = (new link\http\Url($rootUrl))->getDomain();
+        } else {
+            $domain = gethostname();
+        }
+
+        return $name.'@'.$domain;
     }
 
 
