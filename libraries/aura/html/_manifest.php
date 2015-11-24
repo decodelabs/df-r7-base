@@ -148,7 +148,11 @@ trait TElementContent {
             continue;
         }
 
-        return rtrim($output);
+        if($output != ' ') {
+            $output = rtrim($output);
+        }
+
+        return $output;
     }
 
     protected function _renderChild(&$value) {
