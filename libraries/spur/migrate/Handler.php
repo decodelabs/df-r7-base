@@ -53,11 +53,11 @@ class Handler implements IHandler {
         $response = $this->_httpPool->getClient()->get($url);
         $content = $response->getJsonContent();
 
-        if(!$content->data->actions->contains('media')) {
+        if(!$content->data->nodes->contains('media')) {
             $this->_context->throwError(
                 403,
                 'Target app does not support media migration',
-                $content->data->actions->toArray()
+                $content->data->nodes->toArray()
             );
         }
 
