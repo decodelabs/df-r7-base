@@ -805,7 +805,6 @@ trait TWidget_GroupedSelectionInput {
 trait TWidget_NavigationEntryController {
 
     protected $_entries;
-    protected $_context;
     protected $_renderIfEmpty = false;
     protected $_showDescriptions = true;
 
