@@ -42,7 +42,7 @@ class Overlay extends Container implements IWidgetShortcutProvider {
 
         if($this->_url !== null) {
             $children->prepend((new aura\html\Tag('iframe', [
-                'src' => $this->getView()->uri($this->_url),
+                'src' => $this->_context->uri($this->_url),
                 'width' => '100%',
                 'frameborder' => '0'
             ]))->render());
@@ -99,8 +99,7 @@ class Overlay extends Container implements IWidgetShortcutProvider {
         return [
             'title' => $this->_titleBody,
             'children' => $this->_children,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

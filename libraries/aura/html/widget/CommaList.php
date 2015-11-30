@@ -11,16 +11,18 @@ use df\aura;
 use df\arch;
 
 class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget, core\IDumpable {
-    
+
     use TWidget_DataDrivenList;
     use TWidget_RendererProvider;
     use TWidget_RendererContextProvider;
-    
+
     const PRIMARY_TAG = 'span';
 
     protected $_limit = null;
 
     public function __construct(arch\IContext $context, $data, $renderer=null) {
+        parent::__construct($context);
+
         $this->setData($data);
         $this->setRenderer($renderer);
     }
@@ -39,13 +41,13 @@ class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget
     public function getLimit() {
         return $this->_limit;
     }
-    
+
     protected function _render() {
         $tag = $this->getTag();
         $children = new aura\html\ElementContent();
-        
+
         $data = $this->_data;
-        
+
         if(!$this->_isDataIterable() && $data !== null) {
             $data = [$data];
         }
@@ -53,7 +55,7 @@ class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget
         if(empty($data)) {
             return '';
         }
-        
+
         $renderContext = $this->getRendererContext();
         $renderContext->reset();
         $renderContext->shouldConvertNullToNa(false);
@@ -89,24 +91,22 @@ class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget
                 $children->push(', ');
             }
 
-            $context = $this->getView()->context;
-            $children->push(new aura\html\Element('em.inactive', $context->_('...and %c% more', ['%c%' => $more])));
+            $children->push(new aura\html\Element('em.inactive', $this->_context->_('...and %c% more', ['%c%' => $more])));
         }
-        
+
         if($children->isEmpty()) {
             return '';
         }
-        
+
         return $tag->renderWith($children, true);
     }
-    
+
 // Dump
     public function getDumpProperties() {
         return [
             'data' => count($this->_data).' rows',
             'renderer' => $this->_renderer,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

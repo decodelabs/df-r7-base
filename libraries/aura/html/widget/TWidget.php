@@ -18,6 +18,17 @@ trait TWidget {
     use core\lang\TChainable;
 
     protected $_primaryTag;
+    protected $_context;
+
+    public function setContext(arch\IContext $context) {
+        $this->_context = $context;
+        return $this;
+    }
+
+    public function getContext() {
+        return $this->_context;
+    }
+
 
     public function getTag() {
         if(!$this->_primaryTag) {
@@ -44,14 +55,6 @@ trait TWidget {
 
     public function toString() {
         return (string)$this->render();
-    }
-
-    protected function _getRenderTargetDisplayName() {
-        if($this->_renderTarget) {
-            return get_class($this->_renderTarget);
-        } else {
-            return null;
-        }
     }
 }
 
@@ -248,8 +251,7 @@ trait TWidget_FormData {
         return [
             'name' => $this->_name,
             'value' => $this->_value,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }
@@ -881,7 +883,7 @@ trait TWidget_NavigationEntryController {
 
     public function addLink($link) {
         if(!$link instanceof ILinkWidget) {
-            $link = Base::factory($this->_context, static::DEFAULT_LINK_WIDGET, func_get_args())->setRenderTarget($this->_renderTarget);
+            $link = Base::factory($this->_context, static::DEFAULT_LINK_WIDGET, func_get_args());
         }
 
         if(static::ENFORCE_DEFAULT_LINK_WIDGET) {
@@ -900,7 +902,7 @@ trait TWidget_NavigationEntryController {
 
     public function addMenu($menu) {
         if(!$menu instanceof self) {
-            $menu = Base::factory($this->_context, 'Menu', func_get_args())->setRenderTarget($this->_renderTarget);
+            $menu = Base::factory($this->_context, 'Menu', func_get_args());
         }
 
         $this->_entries->push($menu);
@@ -1048,7 +1050,7 @@ trait TWidget_IconProvider {
 
     protected function _generateIcon() {
         if($this->_icon) {
-            return $this->getRenderTarget()->getView()->html->icon($this->_icon);
+            return $this->_context->html->icon($this->_icon);
         }
     }
 }

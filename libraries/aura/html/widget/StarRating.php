@@ -11,23 +11,24 @@ use df\aura;
 use df\arch;
 
 class StarRating extends Base {
-    
+
     const PRIMARY_TAG = 'div';
 
     protected $_value;
     protected $_max = 5;
 
     public function __construct(arch\IContext $context, $value, $max=5) {
+        parent::__construct($context);
+
         $this->setMax($max);
         $this->setValue($value);
     }
 
     protected function _render() {
-        $view = $this->getRenderTarget();
         $tag = $this->getTag();
         $tag->setDataAttribute('value', $this->_value);
         $tag->setDataAttribute('max', $this->_max);
-        $tag->setTitle($view->format->number($this->_value));
+        $tag->setTitle($this->_context->format->number($this->_value));
 
         $stars = [];
 
@@ -40,7 +41,7 @@ class StarRating extends Base {
                 $class = 'star-empty';
             }
 
-            $stars[] = $view->html->icon($class);
+            $stars[] = $this->_context->html->icon($class);
         }
 
         return $tag->renderWith($stars);

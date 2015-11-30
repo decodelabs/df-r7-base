@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
-    
+
 class DataList extends Base implements IUngroupedOptionWidget, core\IDumpable {
 
     use TWidget_UngroupedSelectionInput;
@@ -19,6 +19,8 @@ class DataList extends Base implements IUngroupedOptionWidget, core\IDumpable {
     protected $_idDataAttribute = 'id';
 
     public function __construct(arch\IContext $context, $id, $options=null) {
+        parent::__construct($context);
+
         $this->setId($id);
 
         if($options !== null) {
@@ -64,8 +66,7 @@ class DataList extends Base implements IUngroupedOptionWidget, core\IDumpable {
         return [
             'id' => $this->getId(),
             'options' => $this->_options,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

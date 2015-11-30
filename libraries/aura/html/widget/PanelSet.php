@@ -16,11 +16,6 @@ class PanelSet extends Base {
 
     protected $_panels = [];
 
-    public function __construct(arch\IContext $context) {
-        $this->_context = $context;
-    }
-
-
     protected function _render() {
         if(empty($this->_panels)) {
             return '';

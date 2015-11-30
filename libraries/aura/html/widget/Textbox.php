@@ -30,6 +30,8 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     protected $_formEvent;
 
     public function __construct(arch\IContext $context, $name, $value=null) {
+        parent::__construct($context);
+
         $this->setName($name);
         $this->setValue($value);
 

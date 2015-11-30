@@ -11,19 +11,21 @@ use df\aura;
 use df\arch;
 
 class FieldError extends Base implements IFormOrientedWidget, core\collection\IErrorContainer, core\IDumpable {
-    
+
     protected $_errors = [];
-    
+
     public function __construct(arch\IContext $context, $errors=null) {
+        parent::__construct($context);
+
         if($errors !== null) {
             if($errors instanceof core\collection\IErrorContainer) {
                 $errors = $errors->getErrors();
             }
-            
+
             $this->addErrors($errors);
         }
     }
-    
+
     protected function _render() {
         if(empty($this->_errors)) {
             return '';
@@ -31,7 +33,7 @@ class FieldError extends Base implements IFormOrientedWidget, core\collection\IE
 
         $tag = $this->getTag();
         $output = new aura\html\ElementContent();
-        
+
         foreach($this->_errors as $code => $error) {
             $output->push(
                 new aura\html\Element(
@@ -40,73 +42,72 @@ class FieldError extends Base implements IFormOrientedWidget, core\collection\IE
                 )
             );
         }
-        
+
         return $tag->renderWith($output, true);
     }
-    
+
     public function isValid() {
         if($this->hasErrors()) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     public function setErrors(array $errors) {
         $this->_errors = [];
         return $this->addErrors($errors);
     }
-    
+
     public function addErrors(array $errors) {
         foreach($errors as $code => $message) {
             $this->addError($code, $message);
-        }    
-        
+        }
+
         return $this;
     }
-    
+
     public function addError($code, $message) {
         $this->_errors[$code] = $message;
         return $this;
     }
-    
+
     public function getErrors() {
         return $this->_errors;
     }
-    
+
     public function getError($code) {
         if(isset($this->_errors[$code])) {
             return $this->_errors[$code];
         }
-        
+
         return null;
     }
-    
+
     public function hasErrors() {
         return !empty($this->_errors);
     }
-    
+
     public function hasError($code) {
         return isset($this->_errors[$code]);
     }
-    
+
     public function clearErrors() {
         $this->_errors = [];
         return $this;
     }
-    
+
     public function clearError($code) {
         unset($this->_errors[$code]);
         return $this;
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         return [
             'errors' => $this->_errors,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

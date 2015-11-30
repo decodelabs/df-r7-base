@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 
 class CheckboxList extends Base implements core\IDumpable {
-    
+
     const PRIMARY_TAG = 'div';
 
     protected $_labelClass = null;
@@ -21,6 +21,8 @@ class CheckboxList extends Base implements core\IDumpable {
     protected $_context;
 
     public function __construct(arch\IContext $context, core\collection\IInputTree $values, array $options) {
+        parent::__construct($context);
+
         $this->setValues($values);
         $this->setOptions($options);
         $this->_context = $context;
@@ -85,8 +87,7 @@ class CheckboxList extends Base implements core\IDumpable {
                     $key, $this->_values->{$key}, $label
                 ])
                 ->shouldWrapBody($this->_shouldWrapBody)
-                ->setLabelClass($this->_labelClass)
-                ->setRenderTarget($this->getRenderTarget());
+                ->setLabelClass($this->_labelClass);
         }
 
         return $tag->renderWith($checkboxList);

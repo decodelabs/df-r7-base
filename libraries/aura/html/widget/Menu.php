@@ -11,15 +11,17 @@ use df\aura;
 use df\arch;
 
 class Menu extends Base implements core\IDumpable {
-    
+
     use TWidget_NavigationEntryController;
 
     const PRIMARY_TAG = 'nav';
     const DEFAULT_LINK_WIDGET = 'Link';
     const ENFORCE_DEFAULT_LINK_WIDGET = false;
-    
+
     public function __construct(arch\IContext $context, $input=null) {
-        $this->_entries = new aura\html\ElementContent(); 
+        parent::__construct($context);
+
+        $this->_entries = new aura\html\ElementContent();
         $this->_context = $context;
 
         if($input !== null) {
@@ -29,15 +31,9 @@ class Menu extends Base implements core\IDumpable {
 
     protected function _render() {
         $tag = $this->getTag()->shouldRenderIfEmpty($this->_renderIfEmpty);
-        
         $content = new aura\html\ElementContent();
-        $renderTarget = $this->getRenderTarget();
-        
-        foreach($this->_entries as $entry) {
-            if($entry instanceof aura\view\IDeferredRenderable) {
-                $entry->setRenderTarget($renderTarget);
-            }
 
+        foreach($this->_entries as $entry) {
             if($entry instanceof IDescriptionAwareLinkWidget) {
                 $entry->shouldShowDescription($this->_showDescriptions);
             }
@@ -68,18 +64,17 @@ class Menu extends Base implements core\IDumpable {
         }
 
         return $tag->renderWith(
-            (new aura\html\Tag('ul'))->shouldRenderIfEmpty($this->_renderIfEmpty)->renderWith($content), 
+            (new aura\html\Tag('ul'))->shouldRenderIfEmpty($this->_renderIfEmpty)->renderWith($content),
             true
         );
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         return [
             'entries' => $this->_entries,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

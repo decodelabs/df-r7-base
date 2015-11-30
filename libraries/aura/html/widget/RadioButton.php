@@ -26,6 +26,8 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
     protected $_labelClass = null;
 
     public function __construct(arch\IContext $context, $name, $isChecked=false, $body=null, $value='1') {
+        parent::__construct($context);
+
         $this->setName($name);
         $this->setValue($value);
         $this->isChecked($isChecked);

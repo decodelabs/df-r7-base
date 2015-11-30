@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,9 +9,9 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
-    
+
 class BlockLink extends Link {
-    
+
     const PRIMARY_TAG = 'a';
 
     public function __construct(arch\IContext $context, $uri, $body=null, $description=null, $matchRequest=null) {
@@ -26,11 +26,11 @@ class BlockLink extends Link {
         $body = $this->_body;
         $description = $this->_description;
         $iconName = $this->_icon;
-        
+
         $icon = $note = null;
 
         if($this->_icon) {
-            $icon = $this->_renderTarget->getView()->html->icon($this->_icon);
+            $icon = $this->_context->html->icon($this->_icon);
         }
 
         if($this->_note !== null) {

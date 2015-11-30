@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
-    
+
 class DurationUnit extends NumberTextbox {
 
     protected $_inputUnit = core\time\Duration::SECONDS;
@@ -31,7 +31,6 @@ class DurationUnit extends NumberTextbox {
     protected function _render() {
         $name = $this->getName();
         $unitName = $name.'[unit]';
-        $context = $this->getRenderTarget()->getContext();
         $selectValue = core\time\Duration::normalizeUnitId($this->_inputUnit);
 
         $output = parent::_render();
@@ -40,13 +39,12 @@ class DurationUnit extends NumberTextbox {
             $value = $this->getValue();
             $output = $output->render();
 
-            $output = new aura\html\ElementContent([$output, ' ', 
-                self::factory($context, 'SelectList', [
-                        $unitName, 
-                        $selectValue, 
-                        core\time\Duration::getUnitList($context->getLocale())
-                    ])
-                    ->setRenderTarget($this->getRenderTarget())
+            $output = new aura\html\ElementContent([$output, ' ',
+                self::factory($this->_context, 'SelectList', [
+                    $unitName,
+                    $selectValue,
+                    core\time\Duration::getUnitList($this->_context->getLocale())
+                ])
             ]);
         } else if($this->_inputUnit) {
             $unit = core\time\Duration::getUnitString($this->_inputUnit);
@@ -72,7 +70,7 @@ class DurationUnit extends NumberTextbox {
 
     public function setValue($value) {
         $innerValue = $value;
-        
+
         if($innerValue instanceof core\IValueContainer) {
             if($this->_unitSelectable && isset($innerValue->unit)) {
                 $this->_inputUnit = core\time\Duration::normalizeUnitId($innerValue['unit']);
@@ -84,7 +82,7 @@ class DurationUnit extends NumberTextbox {
         if(is_string($innerValue) && !strlen($innerValue)) {
             $innerValue = null;
         }
-        
+
         if($innerValue !== null) {
             $canOptimize = $this->_unitSelectable && $value instanceof core\IValueContainer;
             $innerValue = $this->_normalizeDurationString($innerValue, $this->_inputUnit, $canOptimize);
@@ -110,7 +108,7 @@ class DurationUnit extends NumberTextbox {
     public function setMin($min) {
         return parent::setMin($this->_normalizeDurationString($min, $this->_defaultInputUnit));
     }
-    
+
     public function setMax($max) {
         return parent::setMax($this->_normalizeDurationString($max, $this->_defaultInputUnit));
     }

@@ -168,10 +168,9 @@ class RendererContext implements aura\html\widget\IRendererContext {
             $value = $value->getOutputDescription();
         }
 
-        if($value instanceof aura\html\IRenderable) {
+        if($value instanceof aura\html\IRenderable
+        || $value instanceof aura\view\IDeferredRenderable) {
             $value = $value->render();
-        } else if($value instanceof aura\view\IRenderable) {
-            $value = $value->renderTo($this->getView());
         }
 
         if($value instanceof \Generator) {
@@ -192,7 +191,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
         }
 
         if($value instanceof core\time\IDate) {
-            $value = $this->getView()->html->userDate($value);
+            $value = $this->_widget->getContext()->html->userDate($value);
         }
 
         return $value;
@@ -214,19 +213,6 @@ class RendererContext implements aura\html\widget\IRendererContext {
 
     public function shouldSkipCells() {
         return $this->_skipCells;
-    }
-
-    public function setRenderTarget(aura\view\IRenderTarget $renderTarget=null) {
-        $this->_widget->setRenderTarget($renderTarget);
-        return $this;
-    }
-
-    public function getRenderTarget() {
-        return $this->_widget->getRenderTarget();
-    }
-
-    public function getView() {
-        return $this->_widget->getView();
     }
 
 

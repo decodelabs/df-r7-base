@@ -24,6 +24,7 @@ class Address extends Base implements core\IDumpable {
     protected $_shouldShowCountry = true;
 
     public function __construct(arch\IContext $context, $address=null) {
+        parent::__construct($context);
         $this->setAddress($address);
     }
 
@@ -58,7 +59,6 @@ class Address extends Base implements core\IDumpable {
 
         $tag = $this->getTag();
         $content = new aura\html\ElementContent();
-        $view = $this->getRenderTarget()->getView();
 
         $poBox = $this->_address->getPostOfficeBox();
         $streetAddress = $this->_address->getMainStreetLine();
@@ -135,7 +135,7 @@ class Address extends Base implements core\IDumpable {
             if($isShort) {
                 $country = $countryCode;
             } else {
-                $country = $view->i18n->countries->getName($countryCode);
+                $country = $this->_context->i18n->countries->getName($countryCode);
             }
 
             $content->push(new aura\html\Element(
@@ -172,8 +172,7 @@ class Address extends Base implements core\IDumpable {
         return [
             'mode' => $this->_mode,
             'address' => $this->_address,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

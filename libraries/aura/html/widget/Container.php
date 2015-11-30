@@ -18,6 +18,8 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
     protected $_context;
 
     public function __construct(arch\IContext $context, $input=null) {
+        parent::__construct($context);
+
         $this->_context = $context;
 
         if(func_num_args() > 2) {
@@ -50,10 +52,6 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         $this->_children->clear();
 
         foreach($children as $i => $child) {
-            if($child instanceof aura\view\IDeferredRenderable) {
-                $child->setRenderTarget($this->_renderTarget);
-            }
-
             if($child instanceof arch\node\ISelfContainedRenderableDelegate) {
                 $child = $child->renderContainerContent($this);
             }
@@ -274,10 +272,6 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
 
         $widget = call_user_func_array([$this->_context->html, $method], $args);
 
-        if($widget instanceof aura\view\IDeferredRenderable) {
-            $widget->setRenderTarget($this->_renderTarget);
-        }
-
         if($add) {
             $this->push($widget);
         }
@@ -290,8 +284,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
     public function getDumpProperties() {
         return [
             'children' => $this->_children,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

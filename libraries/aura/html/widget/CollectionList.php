@@ -11,26 +11,28 @@ use df\aura;
 use df\arch;
 
 class CollectionList extends Base implements IDataDrivenListWidget, IMappedListWidget, core\IDumpable {
-    
+
     const PRIMARY_TAG = 'div';
-    
+
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
     use TWidget_RendererContextProvider;
-    
+
     public $paginator;
-    
+
     protected $_errorMessage = 'No results to display';
     protected $_renderIfEmpty = true;
     protected $_showHeader = true;
-    
+
     public function __construct(arch\IContext $context, $data, core\collection\IPaginator $paginator=null) {
+        parent::__construct($context);
+
         $this->setData($data);
-        
+
         if($paginator === null && $data instanceof core\collection\IPageable) {
             $paginator = $data->getPaginator();
         }
-        
+
         if($paginator) {
             $this->paginator = self::factory($context, 'Paginator', [$paginator]);
         }
@@ -53,47 +55,45 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 
         return $this->_showHeader;
     }
-    
+
     protected function _render() {
         if(empty($this->_fields)) {
             throw new RuntimeException(
                 'Collection list widgets must have at least one field'
             );
         }
-        
+
         $tag = $this->getTag();
-        $view = $this->getView();
         $rows = new aura\html\ElementContent();
-        
+
         $renderContext = $this->getRendererContext();
         $renderContext->reset();
-        $context = $view->getContext();
         $empty = false;
-        
+
         if(!$this->_isDataIterable()) {
             $empty = true;
         }
-        
+
         $headRow = new aura\html\Element('tr');
         $orderData = null;
-        
+
         if($this->paginator) {
             $pageData = $this->paginator->getPageData();
-            
+
             if($pageData instanceof core\collection\IOrderablePaginator) {
                 $orderData = $pageData->getOrderDirectives();
                 $orderFields = $pageData->getOrderableFieldNames();
-                
+
                 if(empty($orderData) || empty($orderFields)) {
                     $orderData = null;
                 } else {
                     $keyMap = $pageData->getKeyMap();
-                    $request = clone $context->request;
+                    $request = clone $this->_context->request;
                     $query = $request->getQuery();
                 }
             }
         }
-        
+
         $colClasses = [];
 
         foreach($this->_fields as $fieldKey => $field) {
@@ -122,14 +122,14 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                                 $direction = 'ASC';
                                 break;
                         }
-                        
+
                         $isActive = false;
                     }
-                    
+
                     $query->__set($keyMap['order'], $key.' '.$direction);
-                    
+
                     $class = 'order '.strtolower(trim($direction, '!^*')).' null-'.$nullOrder;
-                    
+
                     if($isActive) {
                         $class .= ' active';
                     }
@@ -137,9 +137,9 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                     if(!empty($tagContent)) {
                         $tagContent[] = ' / ';
                     }
-                    
+
                     $tagContent[] = (new aura\html\Element('a', $label, [
-                            'href' => $view->uri->__invoke($request),
+                            'href' => $this->_context->uri->__invoke($request),
                             'class' => $class,
                             'rel' => 'nofollow'
                         ]))
@@ -163,7 +163,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         $query->__set($keyMap['order'], $key.' '.$direction);
 
                         $tagContent[] = (new aura\html\Element('a', $newOrder == 'ascending' ? '○' : '●', [
-                                'href' => $view->uri->__invoke($request),
+                                'href' => $this->_context->uri->__invoke($request),
                                 'class' => 'null-order null-'.$newOrder,
                                 'rel' => 'nofollow'
                             ]))
@@ -184,14 +184,14 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             $thTag = new aura\html\Element('th', $tagContent, ['class' => $colClasses[$fieldKey]]);
             $headRow->push($thTag->render());
         }
-        
+
         if($this->_showHeader) {
             $content = $headRow->render();
             $content->prepend("<table>\n<thead>\n")->append("\n</thead>\n\n<tbody>\n");
         } else {
             $content = new aura\html\ElementString("<table>\n<tbody>");
         }
-        
+
         if(!$empty) {
             $empty = $first = $even = true;
 
@@ -201,7 +201,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                 $rowTag = new aura\html\Element('tr');
                 $rowTag->addClass(($even = !$even) ? 'even' : 'odd');
                 $renderContext->iterate($j);
-                
+
                 foreach($this->_fields as $key => $field) {
                     $attr = null;
 
@@ -215,7 +215,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         $cellTag = new aura\html\Tag('td', $attr);
                         $renderContext->iterateField($key, $cellTag, $rowTag);
                         $value = $renderContext->renderCell($row, $field->renderer);
-                        
+
                         $rowTag->push($cellTag->renderWith($value));
                     }
                 }
@@ -233,7 +233,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                     if($renderContext->divider !== true) {
                         $content->append((new aura\html\Element('tr.divider', [
                             new aura\html\Element(
-                                'td', 
+                                'td',
                                 $renderContext->divider,
                                 ['colspan' => count($this->_fields)]
                             )
@@ -248,11 +248,11 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                 if($renderContext->shouldSkipRow()) {
                     continue;
                 }
-                
+
                 $content->append($rowTag->render(true));
             }
         }
-        
+
         if($empty) {
             $paginator = $this->paginator ? $this->paginator->getPageData() : null;
             $shouldRender = $this->_renderIfEmpty;
@@ -260,12 +260,11 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             $errorClass = 'error';
 
             if($paginator && $paginator->getOffset() > 0) {
-                $request = clone $context->request;
+                $request = clone $this->_context->request;
                 $request->query->{$paginator->getKeyMap()['page']} = 1;
 
-                $errorMessage = (new FlashMessage($context, $context->_('This list appears to have gone past the last page - go back to the start...'), 'warning'))
-                    ->setLink($request)
-                    ->setRenderTarget($view);
+                $errorMessage = (new FlashMessage($this->_context, $this->_context->_('This list appears to have gone past the last page - go back to the start...'), 'warning'))
+                    ->setLink($request);
             }
 
             if(!$shouldRender) {
@@ -276,39 +275,38 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             $errorTag->addClass('error');
             $content->append('<tr>'.$errorTag->render().'</tr>');
         }
-        
+
         $content->append("\n</tbody>\n</table>");
         $content = $tag->renderWith($content, true);
-        
+
         if($this->paginator) {
-            $paginatorString = $this->paginator->setRenderTarget($this->getRenderTarget())->toString();
+            $paginatorString = $this->paginator->toString();
             $content->prepend($paginatorString)->append($paginatorString);
         }
-        
+
         return $content;
     }
-    
 
-    
+
+
 // Error message
     public function setErrorMessage($message) {
         $this->_errorMessage = $message;
         return $this;
     }
-    
+
     public function getErrorMessage() {
         return $this->_errorMessage;
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         return [
             'data' => count($this->_data).' rows',
             'fields' => $this->_fields,
             'errorMessage' => $this->_errorMessage,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

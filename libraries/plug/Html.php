@@ -21,13 +21,7 @@ class Html implements arch\IDirectoryHelper {
     use flex\THtmlStringEscapeHandler;
 
     public function __call($member, $args) {
-        $output = aura\html\widget\Base::factory($this->context, $member, $args);
-
-        if($this->view) {
-            $output->setRenderTarget($this->view);
-        }
-
-        return $output;
+        return aura\html\widget\Base::factory($this->context, $member, $args);
     }
 
     public function __invoke($name, $content=null, array $attributes=[]) {

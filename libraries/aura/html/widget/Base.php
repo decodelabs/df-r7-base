@@ -13,7 +13,6 @@ use df\flex;
 
 abstract class Base implements IWidget {
 
-    use aura\view\TDeferredRenderable;
     use flex\THtmlStringEscapeHandler;
 
     use TWidget;
@@ -41,7 +40,9 @@ abstract class Base implements IWidget {
         return $output;
     }
 
-    public function __construct(arch\IContext $context) {}
+    public function __construct(arch\IContext $context) {
+        $this->setContext($context);
+    }
 
     public function getWidgetName() {
         if(empty($this->_widgetName)) {
@@ -53,12 +54,6 @@ abstract class Base implements IWidget {
     }
 
     public function render() {
-        if(!$this->_renderTarget) {
-            throw new aura\view\RuntimeException(
-                'No render target has been set'
-            );
-        }
-
         $output = $this->_render();
 
         if(!empty($output)) {
@@ -72,13 +67,10 @@ abstract class Base implements IWidget {
         } catch(\Exception $e) {
             core\debug()->exception($e);
 
-            $renderTarget = $this->getRenderTarget();
             $message = $this->esc('Error rendering widget '.$this->getWidgetName());
 
-            if($renderTarget) {
-                if(df\Launchpad::$application->isTesting()) {
-                    $message .= $this->esc(' - '.$e->getMessage()).'<br /><code>'.$this->esc($e->getFile().' : '.$e->getLine()).'</code>';
-                }
+            if(df\Launchpad::$application->isTesting()) {
+                $message .= $this->esc(' - '.$e->getMessage()).'<br /><code>'.$this->esc($e->getFile().' : '.$e->getLine()).'</code>';
             }
 
             return '<p class="error">'.$message.'</p>';

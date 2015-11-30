@@ -12,24 +12,26 @@ use df\arch;
 use df\neon;
 
 class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
-    
+
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_FocusableInput;
     use TWidget_VisualInput;
     use TWidget_DataListEntry;
-    
+
     const PRIMARY_TAG = 'input';
     const ARRAY_INPUT = false;
-    
+
     public function __construct(arch\IContext $context, $name, $value=null) {
+        parent::__construct($context);
+
         $this->setName($name);
         $this->setValue($value);
     }
 
     protected function _render() {
         $tag = $this->getTag();
-        
+
         $tag->setAttribute('type', 'color');
         $this->_applyFormDataAttributes($tag, false);
         $this->_applyInputAttributes($tag);
@@ -42,9 +44,9 @@ class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
         if(!empty($value)) {
             $value = neon\Color::factory($value)->toHexString();
         }
-        
+
         $tag->setAttribute('value', $value);
-        
+
         return $tag;
     }
 }

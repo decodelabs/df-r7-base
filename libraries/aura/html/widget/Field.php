@@ -28,14 +28,8 @@ class Field extends Container implements IFormOrientedWidget {
         }
     }
 
-    public function setRenderTarget(aura\view\IRenderTarget $renderTarget=null) {
-        $this->_label->setRenderTarget($renderTarget);
-        return parent::setRenderTarget($renderTarget);
-    }
-
     protected function _render() {
         $tag = $this->getTag();
-        $view = $this->getRenderTarget()->getView();
 
         $children = $this->_prepareChildren(function($child) {
             if($child instanceof arch\node\IInlineFieldRenderableDelegate) {
@@ -65,7 +59,6 @@ class Field extends Container implements IFormOrientedWidget {
         if(!empty($errors)) {
             $tag->addClass('error');
             $fieldError = new FieldError($this->_context, $errors);
-            $fieldError->setRenderTarget($this->getRenderTarget());
 
             if($errorPosition == 'top') {
                 $output[] = $fieldError->render();
@@ -98,7 +91,7 @@ class Field extends Container implements IFormOrientedWidget {
             $inputAreaBody = [
                 new aura\html\Element(
                     'p',
-                    [$view->html->icon('info'), ' ', $this->_description],
+                    [$this->_context->html->icon('info'), ' ', $this->_description],
                     ['class' => 'description info']
                 ),
                 $children
@@ -173,7 +166,7 @@ class Field extends Container implements IFormOrientedWidget {
             $inputAreaBody = [
                 new aura\html\Element(
                     'p',
-                    [$view->html->icon('info'), ' ', $this->_description],
+                    [$this->_context->html->icon('info'), ' ', $this->_description],
                     ['class' => 'description info']
                 ),
                 $children
@@ -279,8 +272,7 @@ class Field extends Container implements IFormOrientedWidget {
             'label' => $this->_label,
             'description' => $this->_description,
             'children' => $this->_children,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

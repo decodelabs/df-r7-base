@@ -41,12 +41,10 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
 
     protected function _render() {
         $children = $this->_prepareChildren();
-
-        $view = $this->getRenderTarget()->getView();
         $tag = $this->getTag();
 
         $tag->addAttributes([
-            'action' => $view->uri->__invoke($this->_action),
+            'action' => $this->_context->uri->__invoke($this->_action),
             'method' => $this->_method
         ]);
 
@@ -145,8 +143,7 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
             'encoding' => $this->_encoding,
             'name' => $this->_name,
             'children' => $this->_children,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

@@ -28,6 +28,8 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
     protected $_emptyLabel = null;
 
     public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
+        parent::__construct($context);
+
         $this->setName($name);
         $this->setValue($value);
 
@@ -164,8 +166,7 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
             'name' => $this->_name,
             'value' => $this->_value,
             'options' => $this->_options,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

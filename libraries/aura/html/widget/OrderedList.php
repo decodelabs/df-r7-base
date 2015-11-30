@@ -10,14 +10,14 @@ use df\aura;
 use df\arch;
 
 class OrderedList extends BulletList implements IOrderedDataDrivenListWidget {
-    
+
     use TWidget_OrderedDataDrivenList;
 
     const PRIMARY_TAG = 'ol';
 
     protected function _render() {
         $tag = $this->getTag();
-        
+
         if($this->_start) {
             $tag->setAttribute('start', $this->_start);
         }

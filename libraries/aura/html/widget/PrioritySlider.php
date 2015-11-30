@@ -18,6 +18,8 @@ class PrioritySlider extends Base implements IInputWidget {
     const PRIMARY_TAG = 'div';
 
     public function __construct(arch\IContext $context, $name, $value=null) {
+        parent::__construct($context);
+
         $this->setName($name);
         $this->setValue($value);
     }

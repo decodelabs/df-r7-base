@@ -20,6 +20,8 @@ class Label extends Base implements ILabelWidget, core\IDumpable {
     protected $_inputId;
 
     public function __construct(arch\IContext $context, $body, $inputId=null) {
+        parent::__construct($context);
+
         $this->setInputId($inputId);
         $this->setBody($body);
     }
@@ -63,8 +65,7 @@ class Label extends Base implements ILabelWidget, core\IDumpable {
         return [
             'for' => $this->_inputId,
             'body' => $this->_body,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

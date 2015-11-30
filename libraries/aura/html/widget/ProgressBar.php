@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
-   
+
 class ProgressBar extends Base {
 
     const PRIMARY_TAG = 'progress';
@@ -19,13 +19,14 @@ class ProgressBar extends Base {
     protected $_max;
 
     public function __construct(arch\IContext $context, $value, $max=100, $min=0) {
+        parent::__construct($context);
+
         $this->setValue($value);
         $this->setMax($max);
         $this->setMin($min);
     }
 
     protected function _render() {
-        $view = $this->getRenderTarget();
         $tag = $this->getTag();
 
         $tag->setAttribute('value', $this->_value);

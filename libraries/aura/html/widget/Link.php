@@ -33,6 +33,8 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     protected $_activeClass;
 
     public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null) {
+        parent::__construct($context);
+
         $checkUriMatch = false;
         $this->_checkAccess = null;
 
@@ -86,11 +88,8 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     }
 
     protected function _render() {
-        $view = $this->getRenderTarget()->getView();
-        $context = $view->getContext();
-
         $tag = $this->getTag();
-        $url = $view->uri->__invoke($this->_uri);
+        $url = $this->_context->uri->__invoke($this->_uri);
 
         if($url instanceof linkLib\http\IUrl) {
             $request = $url->getDirectoryRequest();
@@ -112,7 +111,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
 
         if($this->_checkAccess && !$disabled) {
-            $userManager = $context->user;
+            $userManager = $this->_context->user;
             $isLoggedIn = $userManager->isLoggedIn();
 
             if($request
@@ -145,14 +144,14 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         if(!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
-            $active = $matchRequest->eq($context->request);
+            $active = $matchRequest->eq($this->_context->request);
         }
 
         if(!$active && !empty($this->_altMatches)) {
             foreach($this->_altMatches as $match) {
                 $matchRequest = arch\Request::factory($match);
 
-                if($context->request->matches($matchRequest)) {
+                if($this->_context->request->matches($matchRequest)) {
                     $active = true;
                     break;
                 }
@@ -201,7 +200,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             if($url !== null) {
                 $body = clone $url;
             } else {
-                $body = $view->uri->__invoke($this->_uri);
+                $body = $this->_context->uri->__invoke($this->_uri);
             }
 
             $body = $body->toReadableString();
@@ -310,24 +309,17 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             return $this->_isComputedActive;
         }
 
-        try {
-            $view = $this->getRenderTarget()->getView();
-            $context = $view->getContext();
-        } catch(\Exception $e) {
-            return false;
-        }
-
         $active = $this->_isActive;
-        $request = $context->request;
+        $request = $this->_context->request;
 
         if(!$active && $this->_matchRequest) {
-            $matchRequest = $context->uri->directoryRequest($this->_matchRequest);
+            $matchRequest = $this->_context->uri->directoryRequest($this->_matchRequest);
             $active = $matchRequest->eq($request);
         }
 
         if(!$active && !empty($this->_altMatches)) {
             foreach($this->_altMatches as $match) {
-                $matchRequest = $context->uri->directoryRequest($match);
+                $matchRequest = $this->_context->uri->directoryRequest($match);
 
                 if($request->matches($matchRequest)) {
                     $active = true;
@@ -421,8 +413,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             'tag' => $this->getTag(),
             'body' => $this->_body,
             'description' => $this->_description,
-            'accessLocks' => $lockCount,
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'accessLocks' => $lockCount
         ];
     }
 }

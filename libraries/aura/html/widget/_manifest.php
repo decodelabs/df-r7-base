@@ -21,9 +21,9 @@ class WidgetNotFoundException extends \RuntimeException implements IException {}
 
 
 // Interfaces
-interface IElementContentWrapper extends aura\view\IDeferredRenderable, \ArrayAccess, \Countable {}
+interface IElementContentWrapper extends \ArrayAccess, \Countable {}
 
-interface IRendererContext extends core\collection\IMappedCollection, aura\view\IRenderTargetProvider {
+interface IRendererContext extends core\collection\IMappedCollection {
     public function setComponent(arch\IComponent $component);
     public function getComponent();
     public function getWidget();
@@ -66,7 +66,7 @@ interface IWidgetShortcutProvider {
 
 
 
-interface IWidget extends aura\view\IDeferredRenderable, aura\html\IElementRepresentation, aura\html\ITagDataContainer, core\lang\IChainable {
+interface IWidget extends aura\html\IElementRepresentation, aura\html\ITagDataContainer, core\lang\IChainable {
     public function getWidgetName();
     public function getTag();
     public function esc($value);

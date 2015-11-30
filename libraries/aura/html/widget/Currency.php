@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\mint;
-    
+
 class Currency extends NumberTextbox {
 
     protected $_inputCurrency = 'GBP';
@@ -30,7 +30,6 @@ class Currency extends NumberTextbox {
 
     protected function _render() {
         $currencyFieldName = $this->getName().'[currency]';
-        $context = $this->getRenderTarget()->getContext();
         $selectValue = mint\Currency::normalizeCode($this->_inputCurrency);
 
         $output = parent::_render();
@@ -38,20 +37,19 @@ class Currency extends NumberTextbox {
         if($this->_currencySelectable) {
             $value = $this->getValue();
             $output = $output->render();
-            $list = $context->i18n->numbers->getCurrencyList();
+            $list = $this->_context->i18n->numbers->getCurrencyList();
             $options = array_intersect_key($list, array_flip(mint\Currency::getRecognizedCodes()));
 
             $output = new aura\html\ElementContent([$output, ' ',
-                self::factory($context, 'SelectList', [
-                        $currencyFieldName,
-                        $selectValue,
-                        $options
-                    ])
-                    ->setRenderTarget($this->getRenderTarget())
+                self::factory($this->_context, 'SelectList', [
+                    $currencyFieldName,
+                    $selectValue,
+                    $options
+                ])
             ]);
         } else if($this->_showCurrency) {
-            $currency = $context->i18n->numbers->getCurrencyName($this->_inputCurrency);
-            $output = new aura\html\Element('label', [$output, ' ', 
+            $currency = $this->_context->i18n->numbers->getCurrencyName($this->_inputCurrency);
+            $output = new aura\html\Element('label', [$output, ' ',
                 new aura\html\Element('abbr', $this->_inputCurrency, ['title' => $currency]),
                 new aura\html\Element('input', null, [
                     'type' => 'hidden',

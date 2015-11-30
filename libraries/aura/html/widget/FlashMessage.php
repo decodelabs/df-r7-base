@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\flow;
-    
+
 class FlashMessage extends Base {
 
     const PRIMARY_TAG = 'div';
@@ -18,18 +18,19 @@ class FlashMessage extends Base {
     protected $_message;
 
     public function __construct(arch\IContext $context, $message, $type=null) {
+        parent::__construct($context);
+
         $this->setMessage($message, $type);
     }
 
 
     protected function _render() {
-        $view = $this->getRenderTarget()->getView();
         $tag = $this->getTag();
 
         $tag->addClass($this->_message->getType());
 
         $title = new aura\html\Element('p.message', [
-                $view->html->icon($this->_message->getType()), ' ',
+                $this->_context->html->icon($this->_message->getType()), ' ',
                 $this->_message->getMessage()
             ]);
 
@@ -43,7 +44,7 @@ class FlashMessage extends Base {
 
         if($link = $this->_message->getLink()) {
             $body = new aura\html\Element('a', $body, [
-                'href' => $view->uri->__invoke($link),
+                'href' => $this->_context->uri->__invoke($link),
                 'title' => $this->_message->getLinkText()
             ]);
         }

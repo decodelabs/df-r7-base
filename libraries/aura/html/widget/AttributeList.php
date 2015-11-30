@@ -22,6 +22,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
     protected $_skipEmptyRows = false;
 
     public function __construct(arch\IContext $context, $data=null, $renderer=null) {
+        parent::__construct($context);
         $this->setData($data);
         $this->setRenderer($renderer);
     }
@@ -127,8 +128,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         return [
             'data' => count($this->_data).' rows',
             'fields' => $this->_fields,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }

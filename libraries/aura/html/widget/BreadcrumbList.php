@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 
 class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
-    
+
     use TWidget_NavigationEntryController;
 
     const PRIMARY_TAG = 'nav';
@@ -19,10 +19,10 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
     const ENFORCE_DEFAULT_LINK_WIDGET = false;
 
     protected $_separator = '>';
-    
+
     public function __construct(arch\IContext $context, $input=null) {
-        $this->_entries = new aura\html\ElementContent(); 
-        $this->_context = $context;
+        parent::__construct($context);
+        $this->_entries = new aura\html\ElementContent();
 
         if($input === true || $input === 'sitemap') {
             $input = null;
@@ -44,10 +44,7 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
         }
 
         $tag = $this->getTag()->shouldRenderIfEmpty($this->_renderIfEmpty);
-        
         $content = new aura\html\ElementContent();
-        $renderTarget = $this->getRenderTarget();
-
 
         $content->push(
             $containerTag = new aura\html\Element('span', null, [
@@ -59,23 +56,17 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
         $count = count($this->_entries);
 
         foreach($this->_entries as $i => $entry) {
-            if($entry instanceof aura\view\IDeferredRenderable) {
-                $entry->setRenderTarget($renderTarget);
-            }
-            
             if($entry instanceof ILinkWidget) {
                 //$entry->getBodyWrapperTag()->setAttribute('itemprop', 'title');
-                
-                $entry->setAttribute('itemprop', 'url')
-                    ->setRenderTarget($renderTarget);
-                
+
+                $entry->setAttribute('itemprop', 'url');
                 $containerTag->push($entry->render());
-                
+
                 if($i < $count - 1) {
                     $oldContainerTag = $containerTag;
                     $oldContainerTag->push(
                         ' ', $this->_separator, ' ',
-                    
+
                         $containerTag = new aura\html\Element('span', null, [
                             'itemscope' => null,
                             'itemprop' => 'child',
@@ -90,7 +81,7 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
 
         return $this->getTag()->renderWith($content, true);
     }
-    
+
 
     public function setSeparator($separator) {
         $this->_separator = $separator;
@@ -101,18 +92,18 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
         return $this->_separator;
     }
 
-    
+
     public function generateFromRequest(arch\IRequest $request=null) {
         if($request === null) {
             $request = $this->_context->request;
         }
-        
+
         $entryList = arch\navigation\breadcrumbs\EntryList::generateFromRequest($request);
         $this->setEntries($entryList);
 
         return $this;
     }
-    
+
     public function addSitemapEntries() {
         $this->setEntries(
             $this->_context->apex->breadcrumbs()
@@ -120,15 +111,14 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
 
         return $this;
     }
-    
-    
-    
+
+
+
 // Dump
     public function getDumpProperties() {
         return [
             'entries' => $this->_entries,
-            'tag' => $this->getTag(),
-            'renderTarget' => $this->_getRenderTargetDisplayName()
+            'tag' => $this->getTag()
         ];
     }
 }
