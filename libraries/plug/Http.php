@@ -158,6 +158,19 @@ class Http implements arch\IDirectoryHelper {
         );
     }
 
+    public function ajaxReload(array $extraData=[]) {
+        return $this->stringResponse(
+            $this->context->data->jsonEncode(array_merge(
+                [
+                    'node' => $this->context->request->getLiteralPathString(),
+                    'reload' => true
+                ],
+                $extraData
+            )),
+            'application/json'
+        );
+    }
+
     public function getAjaxViewContent(aura\view\IView $view, $showFlashList=false) {
         switch($this->getHeader('x-ajax-request-source')) {
             case 'modal':

@@ -228,6 +228,27 @@ class Base implements INode, core\IDumpable {
 
     public function getDispatchMethodName() {
         $type = $this->context->location->getType();
+
+        if($this->getRunMode() == 'Http') {
+            $mode = ucfirst(strtolower($this->context->application->getHttpRequest()->getMethod()));
+        } else {
+            $mode = null;
+        }
+
+        if($mode) {
+            $func = 'execute'.$mode.'As'.$type;
+
+            if(method_exists($this, $func)) {
+                return $func;
+            }
+
+            $func = 'execute'.$mode;
+
+            if(method_exists($this, $func)) {
+                return $func;
+            }
+        }
+
         $func = 'executeAs'.$type;
 
         if(method_exists($this, $func)) {
@@ -236,11 +257,11 @@ class Base implements INode, core\IDumpable {
 
         $func = 'execute';
 
-        if(!method_exists($this, $func)) {
-            $func = null;
+        if(method_exists($this, $func)) {
+            return $func;
         }
 
-        return $func;
+        return null;
     }
 
     public function handleException(\Exception $e) {
@@ -252,7 +273,7 @@ class Base implements INode, core\IDumpable {
         switch($this->getRunMode()) {
             case 'Http':
                 if(method_exists($this, 'executeAsHtml')) {
-                    $this->request->setType('html');
+                    $this->request->setType(null);
                     $output = $this->executeAsHtml();
                 } else if(method_exists($this, 'execute')) {
                     $output = $this->execute();
