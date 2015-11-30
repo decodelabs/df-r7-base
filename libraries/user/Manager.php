@@ -13,7 +13,7 @@ use df\arch;
 use df\flex;
 use df\mesh;
 
-class Manager implements IManager, core\IDumpable {
+class Manager implements IManager, core\IShutdownAware, core\IDumpable {
 
     use core\TManager;
 
@@ -450,6 +450,33 @@ class Manager implements IManager, core\IDumpable {
     }
 
 
+// Helpers
+    public function getHelper($name) {
+        $name = lcfirst($name);
+
+        if(!isset($this->{$name})) {
+            $this->{$name} = user\helper\Base::factory($this, $name);
+        }
+
+        return $this->{$name};
+    }
+
+    public function onApplicationShutdown() {
+        $obj = new \ReflectionObject($this);
+        $props = $obj->getProperties(\ReflectionProperty::IS_PUBLIC);
+
+        foreach($props as $prop) {
+            $name = $prop->getName();
+            $value = $prop->getValue($this);
+
+            if(!$value instanceof core\IShutdownAware) {
+                continue;
+            }
+
+            $value->onApplicationShutdown();
+        }
+    }
+
 
 // Passwords
     public function analyzePassword($password) {
@@ -463,6 +490,9 @@ class Manager implements IManager, core\IDumpable {
 
             case 'session':
                 return $this->session;
+
+            default:
+                return $this->getHelper($member);
         }
     }
 

@@ -65,6 +65,9 @@ interface IManager extends core\IManager {
     public function regenerateKeyring();
     public function instigateGlobalKeyringRegeneration();
     public function logout();
+
+    // Helpers
+    public function getHelper($name);
 }
 
 interface IUserModel {
@@ -137,6 +140,76 @@ interface IClient extends IClientDataObject {
 }
 
 
+## Helpers
+interface IHelper {
+    public function getManager();
+    public function getHelperName();
+}
+
+interface ISessionBackedHelper extends IHelper, \ArrayAccess, core\IShutdownAware {
+
+}
+
+trait TSessionBackedHelper {
+
+    private $_sessionData = null;
+    private $_sessionDataNew = false;
+
+    public function offsetSet($key, $value) {
+        $this->_ensureSessionData();
+        $this->_sessionData[$key] = $value;
+        return $this;
+    }
+
+    public function offsetGet($key) {
+        $this->_ensureSessionData();
+
+        if(isset($this->_sessionData[$key])) {
+            return $this->_sessionData[$key];
+        }
+    }
+
+    public function offsetExists($key) {
+        $this->_ensureSessionData();
+        return isset($this->_sessionData[$key]);
+    }
+
+    public function offsetUnset($key) {
+        $this->_ensureSessionData();
+        unset($this->_sessionData[$key]);
+        return $this;
+    }
+
+
+    private function _ensureSessionData() {
+        if(isset($this->_sessionData)) {
+            return;
+        }
+
+        $manager = $this->manager;
+        $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
+        $this->_sessionData = $bucket->get($this->getHelperName());
+
+        if($this->_sessionData === null) {
+            $this->_sessionData = [];
+            $this->_sessionDataNew = true;
+        }
+    }
+
+    public function onApplicationShutdown() {
+        if($this->_sessionData === null || (empty($this->_sessionData) && $this->_sessionDataNew)) {
+            return;
+        }
+
+        $manager = $this->manager;
+        $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
+        $bucket->set($this->getHelperName(), $this->_sessionData);
+    }
+}
+
+
+
+## Access
 interface IAccessLock {
     public function getAccessLockDomain();
     public function lookupAccessKey(array $keys, $action=null);
