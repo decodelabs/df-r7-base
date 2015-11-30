@@ -147,7 +147,7 @@ interface IHelper {
 }
 
 interface ISessionBackedHelper extends IHelper, \ArrayAccess, core\IShutdownAware {
-
+    public function storeSessionData();
 }
 
 trait TSessionBackedHelper {
@@ -197,13 +197,22 @@ trait TSessionBackedHelper {
     }
 
     public function onApplicationShutdown() {
+        $this->storeSessionData();
+    }
+
+    public function storeSessionData() {
         if($this->_sessionData === null || (empty($this->_sessionData) && $this->_sessionDataNew)) {
             return;
         }
 
         $manager = $this->manager;
         $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
-        $bucket->set($this->getHelperName(), $this->_sessionData);
+
+        if(empty($this->_sessionData)) {
+            $bucket->remove($this->getHelperName());
+        } else {
+            $bucket->set($this->getHelperName(), $this->_sessionData);
+        }
     }
 }
 
