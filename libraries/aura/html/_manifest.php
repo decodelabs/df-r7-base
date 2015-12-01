@@ -148,10 +148,6 @@ trait TElementContent {
             continue;
         }
 
-        if($output != ' ') {
-            $output = rtrim($output);
-        }
-
         return $output;
     }
 
