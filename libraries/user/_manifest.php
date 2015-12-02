@@ -38,9 +38,16 @@ interface IManager extends core\IManager {
     // Client
     public function getClient();
     public function clearClient();
+    public function isLoggedIn();
+    public function refreshClientData();
+    public function importClientData(user\IClientDataObject $data);
+    public function regenerateKeyring();
+    public function instigateGlobalKeyringRegeneration();
+
     public function isA($signifier);
     public function canAccess($lock, $action=null, $linkTo=false);
     public function getAccessLock($lock);
+    public function clearAccessLockCache();
     public function analyzePassword($password);
 
     // Session
@@ -54,17 +61,6 @@ interface IManager extends core\IManager {
     public function getClientOption($key, $default=null);
     public function setClientOptions(array $options);
     public function getClientOptions();
-
-    // Authentication
-    public function isLoggedIn();
-    public function loadAuthenticationAdapter($name);
-    public function authenticate(user\authentication\IRequest $request);
-    public function authenticateRecallKey(user\session\RecallKey $key);
-    public function refreshClientData();
-    public function importClientData(user\IClientDataObject $data);
-    public function regenerateKeyring();
-    public function instigateGlobalKeyringRegeneration();
-    public function logout();
 
     // Helpers
     public function getHelper($name);

@@ -56,7 +56,7 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
             core\i18n\Manager::getInstance()->setLocale($this->client->getLanguage().'_'.$this->client->getCountry());
         }
 
-        if(!$this->client->isLoggedIn() && $this->_recallIdentity($isNew)) {
+        if(!$this->client->isLoggedIn() && $this->auth->recallIdentity($isNew)) {
             $regenKeyring = false;
         }
 
@@ -82,47 +82,65 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
         }
     }
 
-    private function _recallIdentity($isNew) {
-        if($key = $this->session->getPerpetuator()->getRecallKey($this->session)) {
-            if($this->authenticateRecallKey($key)) {
-                return true;
-            }
-        }
 
-        $canRecall = $this->session->getPerpetuator()->canRecallIdentity();
-
-        if($canRecall) {
-            $config = user\authentication\Config::getInstance();
-
-            foreach($config->getEnabledAdapters() as $name => $options) {
-                try {
-                    $adapter = $this->loadAuthenticationAdapter($name);
-                } catch(AuthenticationException $e) {
-                    continue;
-                }
-
-                if(!$adapter instanceof user\authentication\IIdentityRecallAdapter) {
-                    continue;
-                }
-
-                $request = $adapter->recallIdentity();
-
-                if(!$request instanceof user\authentication\IRequest) {
-                    continue;
-                }
-
-                if($this->authenticate($request)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 
     public function clearClient() {
         unset($this->client);
-        $this->_accessLockCache = [];
+        $this->clearAccessLockCache();
+        return $this;
+    }
+
+    public function isLoggedIn() {
+        return $this->client->isLoggedIn();
+    }
+
+    public function refreshClientData() {
+        if($this->isLoggedIn()) {
+            $model = $this->getUserModel();
+            $data = $model->getClientData($this->client->getId());
+            $this->client->import($data);
+            $this->_ensureClientOptions();
+        }
+
+        $this->regenerateKeyring();
+        mesh\Manager::getInstance()->emitEvent($this->client, 'refresh');
+
+        // Save session
+        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
+        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
+
+        return $this;
+    }
+
+    public function importClientData(user\IClientDataObject $data) {
+        if($this->client->getId() != $data->getId()) {
+            throw new AuthenticationException(
+                'Client data to import is not for the currently authenticated user'
+            );
+        }
+
+        $this->client->import($data);
+        $this->_ensureClientOptions();
+
+        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
+        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
+
+        return $this;
+    }
+
+    public function regenerateKeyring() {
+        $this->client->setKeyring(
+            $this->getUserModel()->generateKeyring($this->client)
+        );
+
+        return $this;
+    }
+
+
+    public function instigateGlobalKeyringRegeneration() {
+        $cache = user\session\Cache::getInstance();
+        $cache->setGlobalKeyringTimestamp();
+
         return $this;
     }
 
@@ -183,6 +201,11 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
         return $lock;
     }
 
+    public function clearAccessLockCache() {
+        $this->_accessLockCache = [];
+        return $this;
+    }
+
 
 // Session
     public function getSessionBackend() {
@@ -239,7 +262,7 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
         return $this->client->getOptions();
     }
 
-    private function _ensureClientOptions() {
+    public function _ensureClientOptions() {
         if($this->client->hasOptions()) {
             return;
         }
@@ -253,201 +276,6 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
         $this->client->importOptions($options);
     }
 
-
-
-
-// Authentication
-    public function isLoggedIn() {
-        return $this->client->isLoggedIn();
-    }
-
-    public function loadAuthenticationAdapter($name) {
-        $class = 'df\\user\\authentication\\adapter\\'.ucfirst($name);
-
-        if(!class_exists($class)) {
-            throw new AuthenticationException(
-                'Authentication adapter '.$name.' could not be found'
-            );
-        }
-
-        return new $class($this);
-    }
-
-    public function authenticate(user\authentication\IRequest $request) {
-        $timer = new core\time\Timer();
-
-        // Get adapter
-        $name = $request->getAdapterName();
-        $adapter = $this->loadAuthenticationAdapter($name);
-
-        $config = user\authentication\Config::getInstance();
-
-        if(!$config->isAdapterEnabled($name)) {
-            throw new AuthenticationException(
-                'Authentication adapter '.$name.' is not enabled'
-            );
-        }
-
-        $model = $this->getUserModel();
-
-        // Fetch user
-        $result = new user\authentication\Result($name);
-        $result->setIdentity($request->getIdentity());
-
-        // Authenticate
-        $adapter->authenticate($request, $result);
-
-        if($result->isValid()) {
-            $domainInfo = $result->getDomainInfo();
-            $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-            $this->_accessLockCache = [];
-
-            // Import user data
-            $domainInfo->onAuthentication();
-            $clientData = $domainInfo->getClientData();
-
-            if(!$clientData instanceof user\IClientDataObject) {
-                throw new AuthenticationException(
-                    'Domain info could not provide a valid client data object'
-                );
-            }
-
-            $this->client->import($clientData);
-
-            // Set state
-            $this->client->setAuthenticationState(IState::CONFIRMED);
-            $this->client->setKeyring($model->generateKeyring($this->client));
-            $this->session->setUserId($clientData->getId());
-
-            $clientData->onAuthentication($this->client);
-
-
-            // Remember me
-            if($request->getAttribute('rememberMe')) {
-                $this->session->perpetuateRecall($this->client);
-            }
-
-            // Options
-            $this->_ensureClientOptions();
-
-            // Trigger hook
-            mesh\Manager::getInstance()->emitEvent($this->client, 'authenticate', [
-                'request' => $request,
-                'result' => $result
-            ]);
-
-            // Store session
-            $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
-        }
-
-        return $result;
-    }
-
-    public function authenticateRecallKey(user\session\RecallKey $key) {
-        if(!$this->session->hasRecallKey($key)) {
-            return false;
-        }
-
-        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-        $this->_accessLockCache = [];
-
-        $model = $this->getUserModel();
-        $clientData = $model->getClientData($key->userId);
-        $this->client = Client::factory($clientData);
-
-        // Set state
-        $this->client->setAuthenticationState(IState::BOUND);
-        $this->client->setKeyring($model->generateKeyring($this->client));
-        $this->session->setUserId($clientData->getId());
-
-        $clientData->onAuthentication($this->client);
-
-
-        // Remember me
-        $this->session->perpetuateRecall($this->client, $key);
-
-        // Options
-        $this->_ensureClientOptions();
-
-        // Trigger hook
-        mesh\Manager::getInstance()->emitEvent($this->client, 'recall', [
-            'key' => $key
-        ]);
-
-        // Store session
-        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
-
-        return true;
-    }
-
-    public function refreshClientData() {
-        if($this->isLoggedIn()) {
-            $model = $this->getUserModel();
-            $data = $model->getClientData($this->client->getId());
-            $this->client->import($data);
-            $this->_ensureClientOptions();
-        }
-
-        $this->regenerateKeyring();
-        mesh\Manager::getInstance()->emitEvent($this->client, 'refresh');
-
-        // Save session
-        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
-
-        return $this;
-    }
-
-    public function importClientData(user\IClientDataObject $data) {
-        if($this->client->getId() != $data->getId()) {
-            throw new AuthenticationException(
-                'Client data to import is not for the currently authenticated user'
-            );
-        }
-
-        $this->client->import($data);
-        $this->_ensureClientOptions();
-
-        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
-
-        return $this;
-    }
-
-    public function getUserModel() {
-        $model = axis\Model::factory('user');
-
-        if(!$model instanceof IUserModel) {
-            throw new AuthenticationException(
-                'User model does not implement user\\IUserModel'
-            );
-        }
-
-        return $model;
-    }
-
-    public function logout() {
-        mesh\Manager::getInstance()->emitEvent($this->client, 'logout');
-        $this->session->destroy();
-        $this->clearClient();
-        return $this;
-    }
-
-    public function regenerateKeyring() {
-        $this->client->setKeyring(
-            $this->getUserModel()->generateKeyring($this->client)
-        );
-
-        return $this;
-    }
-
-
-    public function instigateGlobalKeyringRegeneration() {
-        $cache = user\session\Cache::getInstance();
-        $cache->setGlobalKeyringTimestamp();
-
-        return $this;
-    }
 
 
 // Helpers
@@ -475,6 +303,19 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
 
             $value->onApplicationShutdown();
         }
+    }
+
+
+    public function getUserModel() {
+        $model = axis\Model::factory('user');
+
+        if(!$model instanceof IUserModel) {
+            throw new AuthenticationException(
+                'User model does not implement user\\IUserModel'
+            );
+        }
+
+        return $model;
     }
 
 

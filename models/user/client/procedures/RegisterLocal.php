@@ -13,7 +13,7 @@ use df\user;
 use df\opal;
 
 class RegisterLocal extends axis\procedure\Record {
-    
+
     const CAN_CREATE = true;
 
     protected function _prepare() {
@@ -40,7 +40,7 @@ class RegisterLocal extends axis\procedure\Record {
             $this->record->joinDate = 'now';
 
             $this->validator->applyTo($this->record, [
-                'email', 'fullName', 'nickName', 
+                'email', 'fullName', 'nickName',
                 'timezone', 'country', 'language'
             ]);
 
@@ -76,11 +76,12 @@ class RegisterLocal extends axis\procedure\Record {
             }
 
             if($userConfig->shouldLoginOnRegistration()) {
-                $request = new user\authentication\Request('Local');
-                $request->setIdentity($auth['identity']);
-                $request->setCredential('password', $this->values['password']);
-                $request->setAttribute('rememberMe', (bool)true);
-                $this->user->authenticate($request);
+                $this->user->auth->bind(
+                    $this->user->auth->newRequest('Local')
+                        ->setIdentity($auth['identity'])
+                        ->setCredential('password', $this->values['password'])
+                        //->setAttribute('rememberMe', (bool)true)
+                );
             }
         }
     }
