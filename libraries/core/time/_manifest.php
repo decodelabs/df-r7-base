@@ -15,17 +15,41 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 // Interfaces
 interface IDate extends \Serializable, core\IStringProvider {
+
+    const SHORT = \IntlDateFormatter::SHORT;
+    const MEDIUM = \IntlDateFormatter::MEDIUM;
+    const LONG = \IntlDateFormatter::LONG;
+    const FULL = \IntlDateFormatter::FULL;
+
+    const ATOM = \DateTime::ATOM;
+    const COOKIE = \DateTime::COOKIE;
+    const ISO8601 = \DateTime::ISO8601;
+    const RFC822 = \DateTime::RFC822;
+    const RFC850 = \DateTime::RFC850;
+    const RFC1036 = \DateTime::RFC1036;
+    const RFC1123 = \DateTime::RFC1123;
+    const RFC2822 = \DateTime::RFC2822;
+    const RFC3339 = \DateTime::RFC3339;
+    const RSS = \DateTime::RSS;
+    const W3C = \DateTime::W3C;
+    const DB = 'Y-m-d H:i:s';
+    const DBDATE = 'Y-m-d';
+
     // Creation
     public static function fromLocaleString($string, $timezone=true, $size=self::SHORT, $locale=true);
     public static function factory($date, $timezone=null);
-    
+
+    // Time
+    public function enableTime();
+    public function disableTime();
+
     // Time zone
     public function toUserTimezone();
     public function toUtc();
     public function toTimezone($timezone);
     public function getTimezone();
     public function getTimezoneAbbreviation();
-    
+
     // Formatting
     public function toTimestamp();
     public function userLocaleFormat($size='long');
@@ -36,7 +60,7 @@ interface IDate extends \Serializable, core\IStringProvider {
     public function localeTimeFormat($size='long', $locale=true);
     public function userFormat($format='Y-m-d H:i:s T');
     public function format($format='Y-m-d H:i:s T');
-    
+
     // Comparison
     public function eq($date);
     public function is($date);
@@ -76,7 +100,7 @@ interface IDate extends \Serializable, core\IStringProvider {
     public function getMinute();
     public function isSecond($second);
     public function getSecond();
-    
+
     // Modification
     public function modify($string);
     public function modifyNew($string);
@@ -84,7 +108,7 @@ interface IDate extends \Serializable, core\IStringProvider {
     public function addNew($interval);
     public function subtract($interval);
     public function subtractNew($interval);
-    
+
     // Duration
     public function timeSince($date=null);
     public function timeUntil($date=null);
@@ -92,11 +116,11 @@ interface IDate extends \Serializable, core\IStringProvider {
 
 
 interface IDuration extends core\IStringProvider {
-    
+
 // Locale
     public function setLocale($locale);
     public function getLocale();
-    
+
 // Reference date
     public function toDate();
     public function invert();
@@ -114,61 +138,61 @@ interface IDuration extends core\IStringProvider {
     public function toUnit($unit);
     public static function normalizeUnitId($id);
     public static function getUnitString($unit, $plural=true, $locale=null);
-    
+
 // Microseconds
     public function setMicroseconds($us);
     public function getMicroseconds();
     public function addMicroseconds($us);
     public function subtractMicroseconds($us);
-    
+
 // Milliseconds
     public function setMilliseconds($ms);
     public function getMilliseconds();
     public function addMilliseconds($ms);
     public function subtractMilliseconds($ms);
-    
+
 // Seconds
     public function setSeconds($seconds);
     public function getSeconds();
     public function addSeconds($seconds);
     public function subtractSeconds($seconds);
-    
-    
+
+
 // Minutes
     public function setMinutes($minutes);
     public function getMinutes();
     public function addMinutes($minutes);
     public function subtractMinutes($minutes);
-    
-    
+
+
 // Hours
     public function setHours($hours);
     public function getHours();
     public function addHours($hours);
     public function subtractHours($hours);
-    
-    
+
+
 // Days
     public function setDays($days);
     public function getDays();
     public function addDays($days);
     public function subtractDays($days);
-    
-    
+
+
 // Weeks
     public function setWeeks($weeks);
     public function getWeeks();
     public function addWeeks($weeks);
     public function subtractWeeks($weeks);
-    
-    
+
+
 // Months
     public function setMonths($months);
     public function getMonths();
     public function addMonths($months);
     public function subtractMonths($months);
-    
-    
+
+
 // Years
     public function setYears($years);
     public function getYears();

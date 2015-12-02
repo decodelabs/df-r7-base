@@ -34,7 +34,7 @@ class Date extends Base implements axis\schema\IDateField {
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         if(isset($row[$key])) {
-            return core\time\Date::factory($row[$key]);
+            return core\time\Date::factory($row[$key], null, $this->_includeTime);
         } else {
             return null;
         }
@@ -65,7 +65,7 @@ class Date extends Base implements axis\schema\IDateField {
             }
         }
 
-        $value = core\time\Date::factory($value);
+        $value = core\time\Date::factory($value, null, $this->_includeTime);
         $value->toUtc();
 
         if(!$this->_includeTime) {
@@ -80,13 +80,8 @@ class Date extends Base implements axis\schema\IDateField {
             return $value1 === $value2;
         }
 
-        $value1 = core\time\Date::factory($value1);
-        $value2 = core\time\Date::factory($value2);
-
-        if(!$this->_includeTime) {
-            $value1->modify('00:00:00');
-            $value2->modify('00:00:00');
-        }
+        $value1 = core\time\Date::factory($value1, null, $this->_includeTime);
+        $value2 = core\time\Date::factory($value2, null, $this->_includeTime);
 
         return $value1->eq($value2);
     }
