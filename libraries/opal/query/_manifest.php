@@ -966,7 +966,8 @@ interface IClauseList extends
     IHavingClauseProvider,
     \Countable,
     core\IArrayProvider,
-    ISourceProvider {
+    ISourceProvider,
+    core\lang\IChainable {
 
     public function getParent();
     public function getQuery();
