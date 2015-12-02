@@ -463,7 +463,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
             case 'nickName': return $this->_nickName;
             case 'firstName': return $this->getFirstName();
             case 'surname': return $this->getSurname();
-            case 'stats': return $this->_authState;
+            case 'state': return $this->_authState;
             case 'joinDate': return $this->_joinDate;
             case 'loginDate': return $this->_loginDate;
             case 'language': return $this->_language;
@@ -475,7 +475,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
     public function offsetExists($key) {
         return in_array($key, [
             'id', 'email', 'fullName', 'nickName', 'firstName', 'surname',
-            'stats', 'joinDate', 'loginDate', 'language', 'country', 'timezone'
+            'state', 'joinDate', 'loginDate', 'language', 'country', 'timezone'
         ]);
     }
 
