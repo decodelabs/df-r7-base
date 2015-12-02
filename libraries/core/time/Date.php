@@ -303,7 +303,7 @@ class Date implements IDate, core\IDumpable {
 
     public function localeFormat($size=self::LONG, $locale=null) {
         if(!$this->_timeEnabled) {
-            return $This->localeDateFormat($size, $locale);
+            return $this->localeDateFormat($size, $locale);
         }
 
         $locale = (string)core\i18n\Locale::factory($locale);
