@@ -320,6 +320,18 @@ interface ILayoutMap {
 
 interface INotificationProxyView extends IView, ILayoutView, flow\INotificationProxy {}
 
+
+
+interface IAjaxView extends IResponseView {
+    public function setRedirect($request);
+    public function getRedirect();
+    public function shouldForceRedirect($flag=null);
+    public function isComplete($flag=null);
+    public function shouldReload($flag=null);
+}
+
+
+
 interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getHtmlTag();
     public function getBodyTag();
