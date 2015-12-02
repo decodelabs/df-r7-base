@@ -48,7 +48,6 @@ interface IManager extends core\IManager {
     public function canAccess($lock, $action=null, $linkTo=false);
     public function getAccessLock($lock);
     public function clearAccessLockCache();
-    public function analyzePassword($password);
 
     // Session
     public function getSessionBackend();

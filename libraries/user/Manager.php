@@ -319,11 +319,6 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
     }
 
 
-// Passwords
-    public function analyzePassword($password) {
-        return new flex\PasswordAnalyzer($password, df\Launchpad::$application->getPassKey());
-    }
-
     public function __get($member) {
         switch($member) {
             case 'client':

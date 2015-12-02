@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 
 class Update extends axis\procedure\Record {
-    
+
     protected function _getRecord() {
         $userManager = $this->user;
 
@@ -56,7 +56,7 @@ class Update extends axis\procedure\Record {
                     $validator->addField('currentPassword', 'text')
                         ->isRequired(true)
                         ->setCustomValidator(function($node, $value, $field) use ($auth) {
-                            $hash = $this->context->data->hash($value);
+                            $hash = $this->context->user->password->hash($value);
 
                             if($hash != $auth['password']) {
                                 $node->addError('incorrect', $this->context->_('This password is incorrect'));
@@ -74,7 +74,7 @@ class Update extends axis\procedure\Record {
 
         if($this->validate()) {
             $this->validator->applyTo($this->record, [
-                'email', 'fullName', 'nickName', 
+                'email', 'fullName', 'nickName',
                 'timezone', 'country', 'language'
             ]);
 
@@ -84,7 +84,7 @@ class Update extends axis\procedure\Record {
                 if($applyPassword) {
                     $auth->password = $this->validator['newPassword'];
                 }
-                
+
                 $auth->identity = $this->record['email'];
                 $auth->save();
             }

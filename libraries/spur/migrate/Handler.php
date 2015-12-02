@@ -25,9 +25,9 @@ class Handler implements IHandler {
     public function __construct($url) {
         $this->_context = new core\SharedContext();
 
-        $this->_key = bin2hex($this->_context->data->hash(
+        $this->_key = $this->_context->data->hexHash(
             $this->_context->application->getPassKey()
-        ));
+        );
 
         $this->_httpPool = (new link\http\Client())->newPool();
         $this->_sayHello($url);
