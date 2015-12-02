@@ -115,7 +115,7 @@ class Auth extends Base {
 
         $model = $manager->getUserModel();
         $clientData = $model->getClientData($key->userId);
-        $manager->client = Client::factory($clientData);
+        $manager->client = user\Client::factory($clientData);
 
         // Set state
         $manager->client->setAuthenticationState(user\IState::BOUND);
