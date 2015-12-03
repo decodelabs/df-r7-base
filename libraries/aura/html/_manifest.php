@@ -92,6 +92,8 @@ interface IWidgetFinder {
 
 
 interface IElementContent extends IElementRepresentation, core\lang\IChainable {
+    public function setParentRenderContext($parent);
+    public function getParentRenderContext();
     public function getElementContentString();
     public function esc($value);
 }
@@ -113,6 +115,17 @@ trait TElementContent {
     use core\collection\TArrayCollection_Sliceable;
     use core\collection\TArrayCollection_ProcessedShiftable;
     use core\collection\TArrayCollection_IndexedMovable;
+
+    protected $_parent;
+
+    public function setParentRenderContext($parent) {
+        $this->_parent = $parent;
+        return $this;
+    }
+
+    public function getParentRenderContext() {
+        return $this->_parent;
+    }
 
     public function toString() {
         return $this->getElementContentString();
@@ -153,7 +166,7 @@ trait TElementContent {
 
     protected function _renderChild(&$value) {
         if(is_callable($value) && is_object($value)) {
-            $value = $value($this);
+            $value = $value(isset($this->_parent) ? $this->_parent : $this);
             return $this->_renderChild($value);
         }
 
@@ -292,8 +305,16 @@ class ElementContent implements IElementContentCollection, core\IDumpable {
     use TElementContent;
     use flex\THtmlStringEscapeHandler;
 
-    public static function normalize($content) {
-        return (new self($content))->toString();
+    public static function normalize($content, $parent=null) {
+        return (new self($content, $parent))->toString();
+    }
+
+    public function __construct($content=null, $parent=null) {
+        $this->setParentRenderContext($parent);
+
+        if($content !== null) {
+            $this->import($content);
+        }
     }
 }
 

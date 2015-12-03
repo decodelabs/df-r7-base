@@ -27,7 +27,7 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
         if($legend instanceof aura\html\IElementContent) {
             $this->setLegendBody($legend);
         } else {
-            $this->_legendBody = new aura\html\ElementContent($legend);
+            $this->_legendBody = new aura\html\ElementContent($legend, $this);
         }
     }
 
@@ -75,6 +75,10 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
     }
 
     public function setLegendBody(aura\html\IElementContent $body) {
+        if(!$body->getParentRenderContext()) {
+            $body->setParentRenderContext($this);
+        }
+
         $this->_legendBody = $body;
         return $this;
     }

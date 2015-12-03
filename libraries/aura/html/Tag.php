@@ -467,7 +467,11 @@ class Tag implements ITag, core\IDumpable {
     public function renderWith($innerContent=null, $expanded=false) {
         if($this->_isClosable && (!empty($innerContent) || $innerContent == '0')) {
             if(!$innerContent instanceof IElementContent) {
-                $innerContent = new ElementContent($innerContent);
+                $innerContent = new ElementContent($innerContent, $this);
+            }
+
+            if(!$innerContent->getParentRenderContext()) {
+                $innerContent->setParentRenderContext($this);
             }
 
             if($innerContent instanceof IElement && $innerContent !== $this) {

@@ -88,7 +88,7 @@ trait TWidget_BodyContentAware {
 
     public function setBody($body) {
         if(!$body instanceof aura\html\IElementContent) {
-            $body = new aura\html\ElementContent($body);
+            $body = new aura\html\ElementContent($body, $this);
         }
 
         $this->_body = $body;

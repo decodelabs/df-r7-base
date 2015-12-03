@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\fire;
 use df\aura;
-    
+
 abstract class Base implements fire\ICategory {
 
     protected static $_requiredOutputTypes = ['html'];
@@ -125,6 +125,6 @@ abstract class Base implements fire\ICategory {
             $output[] = $this->renderBlock($block, $view);
         }
 
-        return new aura\html\ElementContent($output);
+        return new aura\html\ElementContent($output, $slot);
     }
 }

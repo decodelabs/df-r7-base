@@ -165,7 +165,7 @@ class Content implements IContent {
             $output[] = $block->renderTo($renderTarget);
         }
 
-        return new aura\html\ElementContent($output);
+        return new aura\html\ElementContent($output, $this);
     }
 
 // XML interchange
