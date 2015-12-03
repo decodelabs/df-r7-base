@@ -24,7 +24,7 @@ class Overlay extends Container implements IWidgetShortcutProvider {
         if($title instanceof aura\html\IElementContent) {
             $this->setTitleBody($title);
         } else {
-            $this->_titleBody = new aura\html\ElementContent($title, $this);
+            $this->_titleBody = new aura\html\ElementContent($title, $this->getTag());
         }
 
         $this->setUrl($url);
@@ -76,7 +76,7 @@ class Overlay extends Container implements IWidgetShortcutProvider {
 
     public function setTitleBody(aura\html\IElementContent $body) {
         if(!$body->getParentRenderContext()) {
-            $body->setParentRenderContext();
+            $body->setParentRenderContext($this->getTag());
         }
 
         $this->_titleBody = $body;

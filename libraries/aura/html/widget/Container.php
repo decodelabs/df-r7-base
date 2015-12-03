@@ -27,7 +27,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         }
 
         if(!$input instanceof aura\html\IElementContent) {
-            $input = new aura\html\ElementContent($input, $this);
+            $input = new aura\html\ElementContent($input, $this->getTag());
         }
 
         $this->_children = $input;
