@@ -175,17 +175,13 @@ interface IModalDelegate {
     public function getDefaultMode();
 }
 
-interface IRenderableDelegate {
-    public function isStacked($flag=null);
-}
-
-interface IInlineFieldRenderableDelegate extends IRenderableDelegate {
+interface IInlineFieldRenderableDelegate {
     public function renderField($label=null);
     public function renderInlineFieldContent();
     public function renderFieldContent(aura\html\widget\Field $field);
 }
 
-interface ISelfContainedRenderableDelegate extends IRenderableDelegate {
+interface ISelfContainedRenderableDelegate {
     public function renderFieldSet($legend=null);
     public function renderContainer();
     public function renderContainerContent(aura\html\widget\IContainerWidget $fieldSet);

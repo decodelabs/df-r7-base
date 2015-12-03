@@ -15,17 +15,11 @@ class Field extends Container implements IFormOrientedWidget {
     protected $_label;
     protected $_description;
     protected $_errorContainer;
-    protected $_errorPosition = 'top';
     protected $_isRequired = false;
 
-    public function __construct(arch\IContext $context, $labelBody=null, $errorPosition=null) {
-        parent::__construct($context);
-
+    public function __construct(arch\IContext $context, $labelBody=null, $input=null) {
+        parent::__construct($context, $input);
         $this->_label = new Label($context, $labelBody);
-
-        if($errorPosition !== null) {
-            $this->setErrorPosition($errorPosition);
-        }
     }
 
     protected function _render() {
@@ -42,12 +36,6 @@ class Field extends Container implements IFormOrientedWidget {
         $primaryWidget = $fieldError = null;
         $errors = [];
         $isRequired = $this->_isRequired;
-        $errorPosition = $this->_errorPosition;
-        $isStacked = $this->isStacked();
-
-        if($isStacked) {
-            $errorPosition = 'middle';
-        }
 
         if($this->_errorContainer) {
             $errors = $this->_errorContainer->getErrors();
@@ -59,10 +47,6 @@ class Field extends Container implements IFormOrientedWidget {
         if(!empty($errors)) {
             $tag->addClass('error');
             $fieldError = new FieldError($this->_context, $errors);
-
-            if($errorPosition == 'top') {
-                $output[] = $fieldError->render();
-            }
         }
 
         if($primaryWidget instanceof IFocusableInputWidget) {
@@ -76,12 +60,15 @@ class Field extends Container implements IFormOrientedWidget {
             $this->_label->setInputId($inputId);
         }
 
-        if(!$isStacked || $this->_label->hasBody()) {
-            $labelContainer = new aura\html\Element('div.w-labelArea', $this->_label);
-            $output[] = $labelContainer;
+        $labelContainer = new aura\html\Element('div.w-labelArea', $this->_label);
+        $output[] = $labelContainer;
+
+        if(!$this->_label->hasBody()) {
+            $labelContainer->addClass('empty');
         }
 
-        if($fieldError && $errorPosition == 'middle') {
+
+        if($fieldError) {
             $output[] = $fieldError->render();
         }
 
@@ -99,10 +86,6 @@ class Field extends Container implements IFormOrientedWidget {
         }
 
         $output[] = new aura\html\Element('div.w-inputArea', $inputAreaBody);
-
-        if($fieldError && $errorPosition == 'bottom') {
-            $output[] = $fieldError->render();
-        }
 
         if($isRequired) {
             $tag->addClass('required');
@@ -201,28 +184,6 @@ class Field extends Container implements IFormOrientedWidget {
         return $this->_errorContainer;
     }
 
-    public function setErrorPosition($position) {
-        $position = strtolower($position);
-
-        switch($position) {
-            case 'top':
-            case 'middle':
-            case 'bottom':
-                $this->_errorPosition = $position;
-                break;
-
-            default:
-                $this->_errorPosition = 'top';
-                break;
-        }
-
-        return $this;
-    }
-
-    public function getErrorPosition() {
-        return $this->_errorPosition;
-    }
-
 // Required
     public function isRequired($flag=null) {
         if($flag !== null) {
@@ -246,23 +207,6 @@ class Field extends Container implements IFormOrientedWidget {
 
     public function getDescription() {
         return $this->_description;
-    }
-
-// Stacked
-    public function isStacked($flag=null) {
-        $tag = $this->getTag();
-
-        if($flag !== null) {
-            if((bool)$flag) {
-                $tag->addClass('stacked');
-            } else {
-                $tag->removeClass('stacked');
-            }
-
-            return $this;
-        }
-
-        return $tag->hasClass('stacked');
     }
 
 

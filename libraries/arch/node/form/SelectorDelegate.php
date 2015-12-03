@@ -395,7 +395,7 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
     protected function createOverlaySelectorUiContent(aura\html\widget\Overlay $ol, $selected) {
-        $fs = $ol->addFieldSet($this->_('Select'));
+        $fs = $ol->addFieldSet($this->_('Select'))->addClass('stacked');
 
         if(!$this->values->search->hasValue() && $this->_defaultSearchString !== null) {
             $this->values->search->setValue($this->_defaultSearchString);
@@ -403,7 +403,9 @@ abstract class SelectorDelegate extends Delegate implements
         }
 
         // Search
-        $fs->addField()->setDescription($this->_searchMessage)->isStacked(true)->push(
+        $fs->addField()->setDescription(
+            $this->_searchMessage
+        )->push(
             $this->html->textbox(
                     $this->fieldName('search'),
                     $this->values->search
@@ -440,7 +442,7 @@ abstract class SelectorDelegate extends Delegate implements
             $query = $this->_getQuery(null, $search);
             $query->paginate()->setDefaultLimit(50)->applyWith([]);
 
-            $fa = $fs->addField($this->_('Search results'))->isStacked(true);
+            $fa = $fs->addField($this->_('Search results'));
             $collectionWidget = $this->_renderCollectionList($query);
 
             if($collectionWidget instanceof aura\html\widget\IWidgetProxy) {
@@ -504,7 +506,7 @@ abstract class SelectorDelegate extends Delegate implements
 
 
         // Overlay buttons
-        $ba = $fs->addButtonArea()->isStacked(true)->push(
+        $ba = $fs->addButtonArea()->push(
             $this->html->eventButton(
                     $this->eventName('endSelect'),
                     $this->_('Done')
@@ -532,7 +534,7 @@ abstract class SelectorDelegate extends Delegate implements
             return;
         }
 
-        $fa = $fs->addField($this->_('Selected'))->isStacked(true);
+        $fa = $fs->addField($this->_('Selected'));
         $fa->addClass('delegate-selector');
 
         $id = $this->_getResultId($selected);
@@ -561,7 +563,7 @@ abstract class SelectorDelegate extends Delegate implements
             return;
         }
 
-        $fa = $fs->addField($this->_('Selected'))->isStacked(true);
+        $fa = $fs->addField($this->_('Selected'));
         $fa->addClass('delegate-selector');
 
         foreach($selected as $result) {

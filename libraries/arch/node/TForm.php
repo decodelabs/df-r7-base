@@ -485,25 +485,8 @@ trait TForm_ModalDelegate {
 }
 
 
-// Renderable
-trait TForm_RenderableDelegate {
-
-    protected $_isStacked = false;
-
-    public function isStacked($flag=null) {
-        if($flag !== null) {
-            $this->_isStacked = (bool)$flag;
-            return $this;
-        }
-
-        return $this->_isStacked;
-    }
-}
-
 // Inline field renderable
 trait TForm_InlineFieldRenderableDelegate {
-
-    use TForm_RenderableDelegate;
 
     public function renderField($label=null) {
         $this->renderFieldContent(
@@ -522,8 +505,6 @@ trait TForm_InlineFieldRenderableDelegate {
 
 // Self contained renderable
 trait TForm_SelfContainedRenderableDelegate {
-
-    use TForm_RenderableDelegate;
 
     public function renderFieldSet($legend=null) {
         $this->renderContainerContent(
