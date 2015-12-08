@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,9 +11,9 @@ use df\plug;
 use df\arch;
 use df\aura;
 use df\fire;
-    
+
 class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper {
-    
+
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;
 
@@ -62,7 +62,7 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
         if($isNested === null) {
             $isNested = $slot->isNested();
         }
-        
+
         $slot->isNested((bool)$isNested);
 
         if($category = $this->_loadCategory($category)) {

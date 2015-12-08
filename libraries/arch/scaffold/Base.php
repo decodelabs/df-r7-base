@@ -273,20 +273,51 @@ abstract class Base implements IScaffold {
             if($enabled === true) {
                 $method1 = 'define'.ucfirst($field).'Field';
                 $method2 = 'override'.ucfirst($field).'Field';
+                $method = null;
 
                 if(method_exists($this, $method2)) {
-                    $output->setField($field, function($list, $key) use($method2, $field) {
-                        if(false === $this->{$method2}($list, 'details')) {
-                            $list->addField($key);
-                        }
-                    });
+                    $method = $method2;
                 } else if(method_exists($this, $method1)) {
-                    $output->setField($field, function($list, $key) use($method1, $field) {
-                        if(false === $this->{$method1}($list, 'details')) {
-                            $list->addField($key);
-                        }
-                    });
+                    $method = $method1;
                 }
+
+                $output->setField($field, function($list, $key) use($method, $field) {
+                    if($method) {
+                        $ops = $this->{$method}($list, 'details');
+                    } else {
+                        $ops = false;
+                    }
+
+                    if($ops === false) {
+                        $list->addField($key, function($data, $renderContext) {
+                            $key = $renderContext->getField();
+                            $value = null;
+
+                            if(is_array($data)) {
+                                if(isset($data[$key])) {
+                                    $value = $data[$key];
+                                } else {
+                                    $value = null;
+                                }
+                            } else if($data instanceof \ArrayAccess) {
+                                $value = $data[$key];
+                            } else if(is_object($data)) {
+                                if(method_exists($data, '__get')) {
+                                    $value = $data->__get($key);
+                                } else if(method_exists($data, 'get'.ucfirst($key))) {
+                                    $value = $data->{'get'.ucfirst($key)}();
+                                }
+                            }
+
+                            if($value instanceof aura\view\IDeferredRenderable
+                            && $this->view) {
+                                $value->setRenderTarget($this->view);
+                            }
+
+                            return $value;
+                        });
+                    }
+                });
             }
         }
 
