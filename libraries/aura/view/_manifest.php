@@ -123,6 +123,19 @@ trait TSlotContainer {
             $value = call_user_func_array($value, [$this]);
         }
 
+        if($value instanceof \Generator) {
+            $it = $value;
+            $value = [];
+
+            foreach($it as $key => $innerValue) {
+                $value[$key] = $innerValue;
+            }
+        }
+
+        if(is_array($value)) {
+            $value = implode($value);
+        }
+
         if($value instanceof IRenderable) {
             return $value->renderTo($this);
         } else if($value instanceof aura\html\IElementRepresentation) {
