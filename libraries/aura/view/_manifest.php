@@ -131,13 +131,13 @@ trait TSlotContainer {
         }
 
         if(is_array($value)) {
-            $value = implode($value);
+            $value = new aura\html\ElementContent($value);
         }
 
         if($value instanceof IRenderable) {
             return $value->renderTo($this);
         } else if($value instanceof aura\html\IElementRepresentation) {
-            return $value->toString();
+            return $value;
         } else {
             return $this->esc((string)$value);
         }
