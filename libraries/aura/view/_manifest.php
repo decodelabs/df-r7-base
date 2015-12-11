@@ -120,7 +120,10 @@ trait TSlotContainer {
         $value = $this->getSlot($key, $default);
 
         if(is_callable($value)) {
-            $value = call_user_func_array($value, [$this]);
+            $target = $this instanceof IDeferredRenderable ?
+                $this->getRenderTarget() : $this;
+
+            $value = call_user_func_array($value, [$target]);
         }
 
         if($value instanceof \Traversable) {
