@@ -123,13 +123,8 @@ trait TSlotContainer {
             $value = call_user_func_array($value, [$this]);
         }
 
-        if($value instanceof \Generator) {
-            $it = $value;
-            $value = [];
-
-            foreach($it as $key => $innerValue) {
-                $value[$key] = $innerValue;
-            }
+        if($value instanceof \Traversable) {
+            $value = iterator_to_array($value);
         }
 
         if(is_array($value)) {
