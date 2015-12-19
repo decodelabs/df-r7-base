@@ -83,6 +83,14 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
     }
 
 
+    public function storeClient() {
+        if(isset($this->client)) {
+            $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
+            $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
+        }
+
+        return $this;
+    }
 
     public function clearClient() {
         unset($this->client);
@@ -99,15 +107,16 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
             $model = $this->getUserModel();
             $data = $model->getClientData($this->client->getId());
             $this->client->import($data);
-            $this->_ensureClientOptions();
         }
 
         $this->regenerateKeyring();
         mesh\Manager::getInstance()->emitEvent($this->client, 'refresh');
 
-        // Save session
-        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
+        $this->storeClient();
+
+        if(isset($this->options)) {
+            $this->options->refresh();
+        }
 
         return $this;
     }
@@ -120,10 +129,11 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
         }
 
         $this->client->import($data);
-        $this->_ensureClientOptions();
+        $this->storeClient();
 
-        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
+        if(isset($manager->options)) {
+            $manager->options->refresh();
+        }
 
         return $this;
     }
@@ -231,51 +241,6 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
     public function getSessionStartTime() {
         return $this->session->getDescriptor()->startTime;
     }
-
-
-
-// Options
-    public function setClientOption($key, $value) {
-        return $this->setClientOptions([$key => $value]);
-    }
-
-    public function getClientOption($key, $default=null) {
-        $this->_ensureClientOptions();
-        return $this->client->getOption($key, $default);
-    }
-
-    public function setClientOptions(array $options) {
-        $this->_ensureClientOptions();
-        $this->getUserModel()->updateClientOptions($this->client->getId(), $options);
-
-        $options = array_merge($this->client->getOptions(), $options);
-        $this->client->importOptions($options);
-
-        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
-        $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
-
-        return $this;
-    }
-
-    public function getClientOptions() {
-        $this->_ensureClientOptions();
-        return $this->client->getOptions();
-    }
-
-    public function _ensureClientOptions() {
-        if($this->client->hasOptions()) {
-            return;
-        }
-
-        $options = $this->getUserModel()->fetchClientOptions($this->client->getId());
-
-        if(!is_array($options)) {
-            $options = [];
-        }
-
-        $this->client->importOptions($options);
-    }
-
 
 
 // Helpers

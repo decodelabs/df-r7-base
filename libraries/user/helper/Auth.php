@@ -88,7 +88,9 @@ class Auth extends Base {
             }
 
             // Options
-            $manager->_ensureClientOptions();
+            if(isset($manager->options)) {
+                $manager->options->refresh();
+            }
 
             // Trigger hook
             mesh\Manager::getInstance()->emitEvent($manager->client, 'authenticate', [
@@ -129,7 +131,9 @@ class Auth extends Base {
         $manager->session->perpetuateRecall($manager->client, $key);
 
         // Options
-        $manager->_ensureClientOptions();
+        if(isset($manager->options)) {
+            $manager->options->refresh();
+        }
 
         // Trigger hook
         mesh\Manager::getInstance()->emitEvent($manager->client, 'recall', [
@@ -187,6 +191,7 @@ class Auth extends Base {
         mesh\Manager::getInstance()->emitEvent($this->manager->client, 'logout');
         $this->manager->session->destroy();
         $this->manager->clearClient();
+
         return $this;
     }
 }

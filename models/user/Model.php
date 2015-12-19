@@ -11,7 +11,7 @@ use df\axis;
 use df\user;
 
 class Model extends axis\Model implements user\IUserModel {
-    
+
     public function getClientData($id) {
         return $this->client->fetchByPrimary($id);
     }
@@ -36,12 +36,12 @@ class Model extends axis\Model implements user\IUserModel {
             ->where('adapter', '=', $request->getAdapterName())
             ->toRow();
     }
-    
+
     public function generateKeyring(user\IClient $client) {
         if(!$id = $client->getId()) {
             return [];
         }
-        
+
         $groupBridge = $this->group->getBridgeUnit('roles');
         $clientBridge = $this->client->getBridgeUnit('groups');
 
@@ -67,7 +67,7 @@ class Model extends axis\Model implements user\IUserModel {
                 if(!isset($output[$key['domain']])) {
                     $output[$key['domain']] = [];
                 }
-                
+
                 $output[$key['domain']][$key['pattern']] = (bool)$key['allow'];
             }
         }
@@ -93,6 +93,15 @@ class Model extends axis\Model implements user\IUserModel {
         }
 
         $q->execute();
+        return $this;
+    }
+
+    public function removeClientOptions($id, $keys) {
+        $this->option->delete()
+            ->where('user', '=', $id)
+            ->where('key', 'in', $keys)
+            ->execute();
+
         return $this;
     }
 
@@ -125,7 +134,7 @@ class Model extends axis\Model implements user\IUserModel {
     public function installDefaultManifest() {
         $roleIds = $this->role->select('id', 'name')->toList('id', 'name');
         $groupIds = $this->group->select('id', 'name')->toList('id', 'name');
-        
+
         foreach($this->role->getDefaultManifest() as $id => $row) {
             if(isset($roleIds[$id])) {
                 continue;

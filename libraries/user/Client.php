@@ -28,7 +28,6 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
     protected $_groupIds = [];
     protected $_signifiers = [];
-    protected $_options = null;
 
     protected $_authState = IState::GUEST;
     protected $_keyring = [];
@@ -116,7 +115,6 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         $output->_authState = IState::GUEST;
         $output->_groupIds = [];
         $output->_signifiers = ['guest'];
-        $output->_options = [];
 
         return $output;
     }
@@ -134,7 +132,6 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
             'tz' => $this->_timezone,
             'gr' => $this->_groupIds,
             'si' => $this->_signifiers,
-            'op' => $this->_options,
             'as' => $this->_authState,
             'kr' => $this->_keyring,
             'kt' => $this->_keyringTimestamp
@@ -166,10 +163,6 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
         if(isset($data['si'])) {
             $this->_signifiers = (array)$data['si'];
-        }
-
-        if(isset($data['op'])) {
-            $this->_options = $data['op'];
         }
 
         $this->_authState = $data['as'];
@@ -305,7 +298,6 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         }
 
         $this->_signifiers = $clientData->getSignifiers();
-        $this->_options = null;
 
         if(df\Launchpad::$application instanceof core\application\Http) {
             $ip = df\Launchpad::$application->getHttpRequest()->getIp();
@@ -422,32 +414,6 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
     }
 
 
-// Options
-    public function hasOptions() {
-        return $this->_options !== null;
-    }
-
-    public function hasOption($key) {
-        return $this->_options !== null
-            && array_key_exists($key, $this->_options);
-    }
-
-    public function getOption($key, $default=null) {
-        if($this->hasOption($key)) {
-            return $this->_options[$key];
-        }
-
-        return $default;
-    }
-
-    public function getOptions() {
-        return $this->_options;
-    }
-
-    public function importOptions(array $options) {
-        $this->_options = $options;
-        return $this;
-    }
 
 
 // Array access

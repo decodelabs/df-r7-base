@@ -55,12 +55,6 @@ interface IManager extends core\IManager {
     public function getSessionNamespace($namespace);
     public function getSessionStartTime();
 
-    // Options
-    public function setClientOption($key, $value);
-    public function getClientOption($key, $default=null);
-    public function setClientOptions(array $options);
-    public function getClientOptions();
-
     // Helpers
     public function getHelper($name);
 }
@@ -73,6 +67,7 @@ interface IUserModel {
 
     public function fetchClientOptions($id);
     public function updateClientOptions($id, array $options);
+    public function removeClientOptions($id, $keys);
 }
 
 interface IClientDataObject extends \ArrayAccess {
@@ -125,12 +120,6 @@ interface IClient extends IClientDataObject {
     public function getKeyring();
     public function getKeyringTimestamp();
 
-    public function hasOptions();
-    public function hasOption($key);
-    public function getOption($key, $default=null);
-    public function getOptions();
-    public function importOptions(array $options);
-
     public function canAccess(IAccessLock $lock, $action=null, $linkTo=false);
 }
 
@@ -147,8 +136,8 @@ interface ISessionBackedHelper extends IHelper, \ArrayAccess, core\IShutdownAwar
 
 trait TSessionBackedHelper {
 
-    private $_sessionData = null;
-    private $_sessionDataNew = false;
+    protected $_sessionData = null;
+    protected $_sessionDataNew = false;
 
     public function offsetSet($key, $value) {
         $this->_ensureSessionData();
@@ -176,7 +165,7 @@ trait TSessionBackedHelper {
     }
 
 
-    private function _ensureSessionData() {
+    protected function _ensureSessionData() {
         if(isset($this->_sessionData)) {
             return;
         }
@@ -186,9 +175,20 @@ trait TSessionBackedHelper {
         $this->_sessionData = $bucket->get($this->getHelperName());
 
         if($this->_sessionData === null) {
-            $this->_sessionData = [];
+            $this->_sessionData = $this->_generateDefaultSessionData();
             $this->_sessionDataNew = true;
         }
+    }
+
+    protected function _generateDefaultSessionData() {
+        return [];
+    }
+
+    protected function _destroySessionData() {
+        $manager = $this->manager;
+        $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
+        $bucket->remove($this->getHelperName());
+        $this->_sessionData = null;
     }
 
     public function onApplicationShutdown() {
@@ -208,6 +208,11 @@ trait TSessionBackedHelper {
         } else {
             $bucket->set($this->getHelperName(), $this->_sessionData);
         }
+    }
+
+    public function getDumpProperties() {
+        $this->_ensureSessionData();
+        return $this->_sessionData;
     }
 }
 
