@@ -171,7 +171,8 @@ trait TRepository {
                 throw new RuntimeException($error);
             }
 
-            if(strtolower(substr($error, 0, 5)) == 'error:') {
+            if(strtolower(substr($error, 0, 5)) == 'error:'
+            || stristr($error, 'aborting')) {
                 throw new RuntimeException($error);
             }
 
