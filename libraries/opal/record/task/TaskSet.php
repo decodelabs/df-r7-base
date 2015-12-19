@@ -238,7 +238,7 @@ class TaskSet implements ITaskSet {
     }
 
     protected function _getRecordId(opal\record\IRecord $record) {
-        return $record->getRecordAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
+        return $record->getAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
     }
 
 

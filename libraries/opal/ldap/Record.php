@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 
 class Record extends opal\record\Base implements IRecord {
-    
+
     use core\collection\TAttributeContainer;
 
     public function getPrimaryKeySet() {
@@ -86,12 +86,12 @@ class Record extends opal\record\Base implements IRecord {
     }
 
     protected function _getEntryDnAttribute() {
-        $adapter = $this->getRecordAdapter();
+        $adapter = $this->getAdapter();
         return $adapter::ENTRY_DN_ATTRIBUTE;
     }
 
     protected function _getGlobalIdAttribute() {
-        $adapter = $this->getRecordAdapter();
+        $adapter = $this->getAdapter();
         return $adapter::GLOBAL_ID_ATTRIBUTE;
     }
 

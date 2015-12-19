@@ -183,7 +183,7 @@ class InlineManyRelationValueContainer implements
         }
 
         if(!empty($lookupKeySets)) {
-            $localUnit = $this->_record->getRecordAdapter();
+            $localUnit = $this->_record->getAdapter();
             $targetUnit = $this->getTargetUnit();
 
             $query = opal\query\Initiator::factory()
@@ -281,7 +281,7 @@ class InlineManyRelationValueContainer implements
             );
         }
 
-        $localUnit = $this->_record->getRecordAdapter();
+        $localUnit = $this->_record->getAdapter();
         $localSchema = $localUnit->getUnitSchema();
         $targetUnit = $this->getTargetUnit();
         $targetSourceAlias = $targetUnit->getCanonicalUnitName();
@@ -311,7 +311,7 @@ class InlineManyRelationValueContainer implements
             );
         }
 
-        $localUnit = $this->_record->getRecordAdapter();
+        $localUnit = $this->_record->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $localFieldName = $this->_field->getName();
 
@@ -336,7 +336,7 @@ class InlineManyRelationValueContainer implements
             );
         }
 
-        $localUnit = $this->_record->getRecordAdapter();
+        $localUnit = $this->_record->getAdapter();
         $localSchema = $localUnit->getUnitSchema();
         $targetUnit = $this->getTargetUnit();
         $targetSourceAlias = $targetUnit->getCanonicalUnitName();
@@ -399,7 +399,7 @@ class InlineManyRelationValueContainer implements
 
 // Tasks
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
-        $localUnit = $parentRecord->getRecordAdapter();
+        $localUnit = $parentRecord->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $targetField = $this->_field->getTargetField();
         $parentKeySet = $parentRecord->getPrimaryKeySet();
@@ -518,7 +518,7 @@ class InlineManyRelationValueContainer implements
     }
 
     public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
-        $localUnit = $parentRecord->getRecordAdapter();
+        $localUnit = $parentRecord->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $targetField = $this->_field->getTargetField();
         $targetSchema = $targetUnit->getUnitSchema();

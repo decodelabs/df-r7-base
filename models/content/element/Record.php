@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,9 +10,9 @@ use df\core;
 use df\apex;
 use df\opal;
 use df\axis;
-    
+
 class Record extends opal\record\Base {
-    
+
     protected function _onPreSave($taskSet, $task) {
         $this->_writeHistory($taskSet, $task);
     }
@@ -52,13 +52,13 @@ class Record extends opal\record\Base {
             $description = implode("\n", $lines);
         }
 
-        $this->getRecordAdapter()->context->data->content->history->createRecordEntry(
+        $this->getAdapter()->context->data->content->history->createRecordEntry(
             $this, $taskSet, $task, $description
         );
     }
 
     public function getSlotDefinition() {
-        return $this->getRecordAdapter()
+        return $this->getAdapter()
             ->getUnitSchema()
             ->getField('body')
             ->getSlotDefinition();

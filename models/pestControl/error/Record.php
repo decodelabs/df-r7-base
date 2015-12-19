@@ -12,13 +12,13 @@ use df\opal;
 use df\axis;
 
 class Record extends opal\record\Base {
-    
+
     protected function _onPreDelete($taskSet, $task) {
         $id = $this['id'];
 
         $deleteTask = $taskSet->addRawQuery(
             'deleteLogs:'.$id,
-            $this->getRecordAdapter()->getModel()->errorLog->delete()
+            $this->getAdapter()->getModel()->errorLog->delete()
                 ->where('error', '=', $id)
         );
 

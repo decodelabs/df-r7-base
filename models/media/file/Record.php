@@ -11,12 +11,12 @@ use df\axis;
 use df\opal;
 
 class Record extends opal\record\Base {
-    
+
     public function getDownloadUrl() {
-        return $this->getRecordAdapter()->getModel()->getDownloadUrl($this['id']);
+        return $this->getAdapter()->getModel()->getDownloadUrl($this['id']);
     }
 
     public function getImageUrl($transformation=null) {
-        return $this->getRecordAdapter()->getModel()->getImageUrl($this['id'], $transformation);
+        return $this->getAdapter()->getModel()->getImageUrl($this['id'], $transformation);
     }
 }

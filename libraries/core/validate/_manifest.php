@@ -292,7 +292,7 @@ trait TStorageAwareField {
 
     public function setStorageAdapter($adapter) {
         if($adapter instanceof opal\record\IRecordAdapterProvider) {
-            $adapter = $adapter->getRecordAdapter();
+            $adapter = $adapter->getAdapter();
         }
 
         if(!$adapter instanceof opal\query\IAdapter && $adapter !== null) {
@@ -323,7 +323,7 @@ trait TRecordManipulatorField {
     protected $_recordId;
 
     public function setRecord(opal\record\IRecord $record) {
-        $this->setStorageAdapter($record->getRecordAdapter());
+        $this->setStorageAdapter($record->getAdapter());
 
         if(!$record->isNew()) {
             $this->setRecordId($record->getPrimaryKeySet());

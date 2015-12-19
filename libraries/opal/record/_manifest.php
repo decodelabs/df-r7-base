@@ -21,14 +21,14 @@ class ValuePreparationException extends RuntimeException {}
 
 // Interfaces
 interface IRecordAdapterProvider {
-    public function getRecordAdapter();
+    public function getAdapter();
 }
 
 trait TRecordAdapterProvider {
 
     protected $_adapter;
 
-    public function getRecordAdapter() {
+    public function getAdapter() {
         return $this->_adapter;
     }
 }
@@ -71,7 +71,7 @@ trait TPrimaryKeySetProvider {
 }
 
 trait TAccessLockProvider {
-    
+
     public function getAccessLockDomain() {
         return $this->_adapter->getAccessLockDomain();
     }
@@ -92,7 +92,7 @@ trait TAccessLockProvider {
 
 interface IDataProvider extends core\collection\IMappedCollection, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
     public function getRaw($key);
-    
+
     public function getValuesForStorage();
 
     public function populateWithPreparedData(array $row);
@@ -103,7 +103,7 @@ interface IRecord extends IDataProvider, core\IExporterValueMap {
     public function isNew();
     public function makeNew(array $newValues=null);
     public function spawnNew(array $newValues=null);
-    
+
     public function hasChanged($field=null);
     public function hasAnyChanged($field1);
     public function clearChanges();
@@ -175,7 +175,7 @@ interface IManyRelationValueContainer extends IValueContainer {
     public function remove($record);
     public function removeList(array $records);
     public function removeAll();
-        
+
     public function select($field1=null);
     public function fetch();
 

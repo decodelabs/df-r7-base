@@ -218,7 +218,7 @@ class BridgedManyRelationValueContainer implements
         $index = [];
         $lookupKeySets = [];
 
-        $localUnit = $this->_record->getRecordAdapter();
+        $localUnit = $this->_record->getAdapter();
         $bridgeUnit = $this->getBridgeUnit();
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
 
@@ -330,7 +330,7 @@ class BridgedManyRelationValueContainer implements
 
         $this->_localPrimaryKeySet->updateWith($this->_record);
 
-        $localUnit = $this->_record->getRecordAdapter();
+        $localUnit = $this->_record->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $bridgeUnit = $this->getBridgeUnit();
 
@@ -374,7 +374,7 @@ class BridgedManyRelationValueContainer implements
 
         $this->_localPrimaryKeySet->updateWith($this->_record);
 
-        $localUnit = $this->_record->getRecordAdapter();
+        $localUnit = $this->_record->getAdapter();
         $bridgeUnit = $this->getBridgeUnit();
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
@@ -403,7 +403,7 @@ class BridgedManyRelationValueContainer implements
 
         $this->_localPrimaryKeySet->updateWith($this->_record);
 
-        $localUnit = $this->_record->getRecordAdapter();
+        $localUnit = $this->_record->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $localFieldName = $this->_field->getName();
 
@@ -414,7 +414,7 @@ class BridgedManyRelationValueContainer implements
     }
 
     public function selectFromNewToBridge($field1=null) {
-        $localUnit = $this->_record->getRecordAdapter();
+        $localUnit = $this->_record->getAdapter();
         $bridgeUnit = $this->getBridgeUnit();
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
@@ -475,7 +475,7 @@ class BridgedManyRelationValueContainer implements
 
         $this->_localPrimaryKeySet->updateWith($this->_record);
 
-        $localUnit = $this->_record->getRecordAdapter();
+        $localUnit = $this->_record->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $bridgeUnit = $this->getBridgeUnit();
 
@@ -513,7 +513,7 @@ class BridgedManyRelationValueContainer implements
 
         $this->_localPrimaryKeySet->updateWith($this->_record);
 
-        $localUnit = $this->_record->getRecordAdapter();
+        $localUnit = $this->_record->getAdapter();
         $bridgeUnit = $this->getBridgeUnit();
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
@@ -581,7 +581,7 @@ class BridgedManyRelationValueContainer implements
 
 // Tasks
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
-        $localUnit = $parentRecord->getRecordAdapter();
+        $localUnit = $parentRecord->getAdapter();
         $this->_localPrimaryKeySet->updateWith($parentRecord);
 
         $targetUnit = $this->getTargetUnit();
@@ -731,7 +731,7 @@ class BridgedManyRelationValueContainer implements
             return $this;
         }
 
-        $localUnit = $parentRecord->getRecordAdapter();
+        $localUnit = $parentRecord->getAdapter();
         $this->_localPrimaryKeySet->updateWith($parentRecord);
         $bridgeUnit = $this->getBridgeUnit();
 

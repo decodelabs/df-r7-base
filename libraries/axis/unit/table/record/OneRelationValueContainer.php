@@ -37,7 +37,7 @@ class OneRelationValueContainer implements
             return $this;
         }
 
-        $localUnit = $record->getRecordAdapter();
+        $localUnit = $record->getAdapter();
         $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId());
         $query = $targetUnit->fetch();
 

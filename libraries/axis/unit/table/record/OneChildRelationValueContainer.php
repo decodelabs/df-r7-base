@@ -40,7 +40,7 @@ class OneChildRelationValueContainer implements
     }
 
     public function prepareValue(opal\record\IRecord $record, $fieldName) {
-        $localUnit = $record->getRecordAdapter();
+        $localUnit = $record->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $query = $targetUnit->fetch();
 
@@ -155,7 +155,7 @@ class OneChildRelationValueContainer implements
             $targetField = $this->_field->getTargetField();
 
             if(!$record->isNew()) {
-                $localUnit = $record->getRecordAdapter();
+                $localUnit = $record->getAdapter();
                 $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId());
 
                 $query = $targetUnit->fetch();

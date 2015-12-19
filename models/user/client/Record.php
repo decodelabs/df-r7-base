@@ -12,13 +12,13 @@ use df\opal;
 use df\user;
 
 class Record extends opal\record\Base implements user\IActiveClientDataObject {
-    
+
     const BROADCAST_HOOK_EVENTS = true;
 
     use user\TNameExtractor;
 
     protected function _onPreUpdate($taskSet, $task) {
-        $unit = $this->getRecordAdapter();
+        $unit = $this->getAdapter();
 
         if(!$this['nickName']) {
             $parts = explode(' ', $this['fullName'], 2);
@@ -30,7 +30,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         }
 
         if($this->hasChanged('email')) {
-            $localTask = $taskSet->addRawQuery('updateLocalAdapter', 
+            $localTask = $taskSet->addRawQuery('updateLocalAdapter',
                 $unit->getModel()->auth->update([
                         'identity' => $this['email']
                     ])
@@ -51,7 +51,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
 
     protected function _onPreDelete($taskSet, $task) {
         $id = $this['id'];
-        $unit = $this->getRecordAdapter();
+        $unit = $this->getAdapter();
 
         $localTask = $taskSet->addRawQuery('deleteAuths',
             $unit->getModel()->auth->delete()
@@ -64,39 +64,39 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
     public function getId() {
         return $this['id'];
     }
-    
+
     public function getEmail() {
         return $this['email'];
     }
-    
+
     public function getFullName() {
         return $this['fullName'];
     }
-    
+
     public function getNickName() {
         return $this['nickName'];
     }
-    
+
     public function getStatus() {
         return $this['status'];
     }
-    
+
     public function getJoinDate() {
         return $this['joinDate'];
     }
-    
+
     public function getLoginDate() {
         return $this['loginDate'];
     }
-    
+
     public function getLanguage() {
         return $this['language'];
     }
-    
+
     public function getCountry() {
         return $this['country'];
     }
-    
+
     public function getTimezone() {
         return $this['timezone'];
     }
@@ -110,7 +110,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
             return [];
         }
 
-        $model = $this->getRecordAdapter()->getModel();
+        $model = $this->getAdapter()->getModel();
         $groupBridge = $model->group->getBridgeUnit('roles');
         $clientBridge = $model->client->getBridgeUnit('groups');
 
@@ -129,11 +129,11 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         $groupSigs = $this->groups->selectDistinct('signifier')
             ->where('signifier', '!=', null)
             ->toList('signifier');
-        
+
         return array_unique(array_merge($roleSigs, $groupSigs));
     }
-    
-    
+
+
     public function onAuthentication(user\IClient $client) {
         $this->loginDate = 'now';
         $this->country = $client->getCountry();
