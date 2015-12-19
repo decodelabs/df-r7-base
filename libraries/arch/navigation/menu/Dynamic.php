@@ -10,13 +10,13 @@ use df\core;
 use df\arch;
 
 class Dynamic extends Base {
-    
+
     use arch\navigation\TEntryGenerator;
 
     protected $_recordId;
     protected $_displayName;
     protected $_entries = [];
-    
+
 
     protected function _getStorageArray() {
         return array_merge(
@@ -41,16 +41,16 @@ class Dynamic extends Base {
         $this->_recordId = $id;
         return $this;
     }
-    
+
     public function getRecordId() {
         return $this->_recordId;
     }
-    
+
     public function setDisplayName($name) {
         $this->_displayName = $name;
         return $this;
     }
-    
+
     public function getDisplayName() {
         if($this->_displayName !== null) {
             return $this->_displayName;
@@ -58,20 +58,20 @@ class Dynamic extends Base {
             return parent::getDisplayName();
         }
     }
-    
+
     public function setEntries(array $entries) {
         $this->_entries = [];
         return $this->addEntries($entries);
     }
-    
+
     public function addEntries(array $entries) {
         foreach($entries as $entry) {
             $this->addEntry($entry);
         }
-        
+
         return $this;
     }
-    
+
     public function addEntry($entry) {
         if(!$entry instanceof arch\navigation\IEntry) {
             if(is_array($entry)) {
@@ -82,19 +82,19 @@ class Dynamic extends Base {
                 );
             }
         }
-        
+
         $this->_entries[] = $entry;
         return $this;
     }
-    
+
     public function getEntries() {
         return $this->_entries;
     }
 
-    protected function _createEntries(arch\navigation\IEntryList $entryList) {
+    protected function createEntries($entryList) {
         $entryList->addEntries($this->_entries);
     }
-    
+
 
 // Dump
     public function getDumpProperties() {

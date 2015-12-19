@@ -20,7 +20,7 @@ class Menu extends arch\navigation\menu\Base {
         parent::__construct($scaffold->getContext(), $id);
     }
 
-    protected function _createEntries(arch\navigation\IEntryList $entryList) {
+    protected function createEntries($entryList) {
         $method = 'generate'.ucfirst($this->_name).'Menu';
 
         if(method_exists($this->_scaffold, $method)) {

@@ -239,7 +239,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         }
 
         $entryList->registerMenu($this);
-        $this->_createEntries($entryList);
+        $this->createEntries($entryList);
 
         $config = Config::getInstance();
         $config->createEntries($this, $entryList);
@@ -256,7 +256,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $entryList;
     }
 
-    protected function _createEntries(arch\navigation\IEntryList $entryList) {}
+    protected function createEntries(/*arch\navigation\IEntryList*/ $entryList) {}
 
 
 // Dump
