@@ -55,7 +55,7 @@ abstract class Form extends Base implements IFormNode {
         }
 
         $this->_sessionNamespace = $this->_createSessionNamespace();
-        $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
+        $session = $this->context->getUserManager()->session->getBucket($this->_sessionNamespace);
 
         if($request->hasQuery() && $request->getQuery()->has(static::SESSION_ID_KEY)) {
             $id = $request->getQuery()->get(static::SESSION_ID_KEY);
@@ -471,7 +471,7 @@ abstract class Form extends Base implements IFormNode {
             }
 
             if($this->_sessionNamespace) {
-                $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
+                $session = $this->context->getUserManager()->session->getBucket($this->_sessionNamespace);
                 $session->remove($this->_state->sessionId);
             }
         }
@@ -552,7 +552,7 @@ abstract class Form extends Base implements IFormNode {
         if(!$this->_isComplete
         && $this->_sessionNamespace
         && $this->_state->isOperating()) {
-            $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
+            $session = $this->context->getUserManager()->session->getBucket($this->_sessionNamespace);
             $session->set($this->_state->sessionId, $this->_state);
         }
 

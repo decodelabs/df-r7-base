@@ -138,13 +138,13 @@ class Auth extends Base {
 
 
     public function recallIdentity($isNew) {
-        if($key = $this->manager->session->getPerpetuator()->getRecallKey($this->manager->session)) {
+        if($key = $this->manager->session->perpetuator->getRecallKey($this->manager->session)) {
             if($this->bindRecallKey($key)) {
                 return true;
             }
         }
 
-        $canRecall = $this->manager->session->getPerpetuator()->canRecallIdentity();
+        $canRecall = $this->manager->session->perpetuator->canRecallIdentity();
 
         if($canRecall) {
             $config = user\authentication\Config::getInstance();

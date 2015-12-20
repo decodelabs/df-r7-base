@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -51,7 +51,7 @@ class Manager implements IManager, core\IShutdownAware {
             $output = $transport->send($message);
         } catch(\Exception $e) {
             if($isDefault
-            && $name != 'Mail' 
+            && $name != 'Mail'
             && $name != 'Capture') {
                 $transport = flow\mail\transport\Base::factory('Mail');
                 $output = $transport->send($message);
@@ -149,8 +149,8 @@ class Manager implements IManager, core\IShutdownAware {
 
         if($notification->shouldFilterClient()) {
             unset($emails[$client->getEmail()]);
-        } else if(!$notification->hasRecipients() 
-                && !$notification->shouldSendToAdmin() 
+        } else if(!$notification->hasRecipients()
+                && !$notification->shouldSendToAdmin()
                 && $userManager->isLoggedIn()) {
             $isJustToAdmins = false;
             $emails = [$client->getEmail() => $client->getFullName()];
@@ -168,7 +168,7 @@ class Manager implements IManager, core\IShutdownAware {
         } else {
             $mail->setBodyHtml($notification->getBodyHtml());
         }
-        
+
         $mail->isPrivate($notification->isPrivate());
 
         if($notification->shouldJournal()) {
@@ -229,7 +229,7 @@ class Manager implements IManager, core\IShutdownAware {
 
             $output[$source->getId()] = $source;
         }
-        
+
         return $output;
     }
 
@@ -450,9 +450,9 @@ class Manager implements IManager, core\IShutdownAware {
         }
 
         if($groupId === null) {
-            return true;        
+            return true;
         }
-        
+
         return isset($manifest[$listId][$groupId]);
     }
 
@@ -558,7 +558,7 @@ class Manager implements IManager, core\IShutdownAware {
 
     protected function _loadFlashQueue() {
         if($this->_flashQueue === null) {
-            $session = user\Manager::getInstance()->getSessionNamespace(self::SESSION_NAMESPACE);
+            $session = user\Manager::getInstance()->session->getBucket(self::SESSION_NAMESPACE);
             $this->_flashQueue = $session->get(self::FLASH_SESSION_KEY);
 
             if(!$this->_flashQueue instanceof FlashQueue) {
@@ -572,9 +572,9 @@ class Manager implements IManager, core\IShutdownAware {
             return false;
         }
 
-        $session = user\Manager::getInstance()->getSessionNamespace(self::SESSION_NAMESPACE);
+        $session = user\Manager::getInstance()->session->getBucket(self::SESSION_NAMESPACE);
         $session->set(self::FLASH_SESSION_KEY, $this->_flashQueue);
-        
+
         return true;
     }
 
@@ -605,59 +605,59 @@ class Manager implements IManager, core\IShutdownAware {
         $this->_flashQueue->constant[$message->getId()] = $message;
         return $this;
     }
-    
+
     public function getConstantFlash($id) {
         $this->_loadFlashQueue();
 
         if(isset($this->_flashQueue->constant[$id])) {
             return $this->_flashQueue->constant[$id];
         }
-        
+
         return null;
     }
-    
+
     public function getConstantFlashes() {
         $this->_loadFlashQueue();
         return $this->_flashQueue->constant;
     }
-    
+
     public function removeConstantFlash($id) {
         $this->_loadFlashQueue();
         unset($this->_flashQueue->constant[$id]);
         return $this;
     }
-    
+
     public function clearConstantFlashes() {
         $this->_loadFlashQueue();
         $this->_flashQueue->constant = [];
         return $this;
     }
-    
+
 // Queued
     public function queueFlash(IFlashMessage $message, $instantIfSpace=false) {
         $this->_loadFlashQueue();
         $id = $message->getId();
 
         unset($this->_flashQueue->instant[$id], $this->_flashQueue->queued[$id]);
-        
+
         if($instantIfSpace && count($this->_flashQueue->instant) < $this->_flashQueue->limit) {
             $this->_flashQueue->instant[$id] = $message;
         } else {
             $this->_flashQueue->queued[$id] = $message;
         }
-        
+
         return $this;
     }
-    
+
     public function addInstantFlash(IFlashMessage $message) {
         return $this->queueFlash($message, true);
     }
-    
+
     public function getInstantFlashes() {
         $this->_loadFlashQueue();
         return $this->_flashQueue->instant;
     }
-    
+
     public function removeQueuedFlash($id) {
         $this->_loadFlashQueue();
 
@@ -665,7 +665,7 @@ class Manager implements IManager, core\IShutdownAware {
             $this->_flashQueue->constant[$id],
             $this->_flashQueue->instant[$id]
         );
-        
+
         return $this;
     }
 }

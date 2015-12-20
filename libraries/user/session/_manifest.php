@@ -19,17 +19,18 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 // Interfaces
 interface IController {
+
+    const GC_PROBABILITY = 3;
+    const TRANSITION_PROBABILITY = 10;
+    const TRANSITION_LIFETIME = 30;
+    const TRANSITION_COOLOFF = 20;
+
     public function isOpen();
-    public function setPerpetuator(IPerpetuator $perpetuator);
-    public function getPerpetuator();
-    public function setBackend(IBackend $backend);
-    public function getBackend();
-    public function getCache();
-    public function getDescriptor();
     public function getId();
     public function transitionId();
     public function getBucket($namespace);
     public function destroy();
+    public function getStartTime();
 
     public function hasRecallKey(RecallKey $key);
     public function perpetuateRecall(user\IClient $client, RecallKey $lastKey=null);

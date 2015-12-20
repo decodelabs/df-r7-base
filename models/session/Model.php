@@ -53,7 +53,7 @@ class Model extends axis\Model implements user\session\IBackend {
     }
 
     public function touchSession(user\session\IDescriptor $descriptor) {
-        $values = $descriptor->touchInfo(user\session\Controller::TRANSITION_LIFETIME);
+        $values = $descriptor->touchInfo(user\session\IController::TRANSITION_LIFETIME);
 
         $this->manifest->update($values)
             ->where('internalId', '=', $descriptor->internalId)

@@ -13,7 +13,7 @@ use df\arch;
 use df\flex;
 use df\mesh;
 
-class Manager implements IManager, core\IShutdownAware, core\IDumpable {
+class Manager implements IManager, core\IShutdownAware {
 
     use core\TManager;
     use mesh\event\TEmitter;
@@ -22,13 +22,7 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
     const USER_SESSION_BUCKET = 'user';
     const CLIENT_SESSION_KEY = 'Client';
 
-    public $session;
-
     private $_accessLockCache = [];
-
-    protected function __construct() {
-        $this->session = new user\session\Controller();
-    }
 
 // Client
     public function getClient() {
@@ -40,7 +34,7 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
     }
 
     protected function _loadClient() {
-        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
+        $bucket = $this->getHelper('session')->getBucket(self::USER_SESSION_BUCKET);
         $this->client = $bucket->get(self::CLIENT_SESSION_KEY);
         $regenKeyring = false;
         $isNew = false;
@@ -86,7 +80,7 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
 
     public function storeClient() {
         if(isset($this->client)) {
-            $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
+            $bucket = $this->getHelper('session')->getBucket(self::USER_SESSION_BUCKET);
             $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
         }
 
@@ -218,31 +212,6 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
     }
 
 
-// Session
-    public function getSessionBackend() {
-        $model = axis\Model::factory('session');
-
-        if(!$model instanceof user\session\IBackend) {
-            throw new LogicException(
-                'Session model does not implement user\\session\\IBackend'
-            );
-        }
-
-        return $model;
-    }
-
-    public function getSessionController() {
-        return $this->session;
-    }
-
-    public function getSessionNamespace($name) {
-        return $this->session->getBucket($name);
-    }
-
-    public function getSessionStartTime() {
-        return $this->session->getDescriptor()->startTime;
-    }
-
 
 // Helpers
     public function getHelper($name) {
@@ -272,9 +241,6 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
         switch($member) {
             case 'client':
                 return $this->getClient();
-
-            case 'session':
-                return $this->session;
 
             default:
                 return $this->getHelper($member);
@@ -318,13 +284,5 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
         }
 
         return $this;
-    }
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'client' => $this->client,
-            'session' => $this->session
-        ];
     }
 }

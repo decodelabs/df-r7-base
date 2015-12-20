@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\core\cache;
 use df;
 use df\core;
 use df\user;
-    
+
 class SessionExtended extends Base implements ISessionExtendedCache {
 
     const SESSION_LIFE_TIME = null;
@@ -24,7 +24,7 @@ class SessionExtended extends Base implements ISessionExtendedCache {
             $lifeTime = $this->getLifeTime();
         }
 
-        $this->_session = user\Manager::getInstance()->getSessionNamespace(
+        $this->_session = user\Manager::getInstance()->session->getBucket(
                 'cache://'.$this->getCacheId()
             )
             ->setLifeTime($lifeTime);

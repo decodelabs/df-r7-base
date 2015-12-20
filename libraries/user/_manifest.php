@@ -49,12 +49,6 @@ interface IManager extends core\IManager, mesh\event\IEmitter {
     public function getAccessLock($lock);
     public function clearAccessLockCache();
 
-    // Session
-    public function getSessionBackend();
-    public function getSessionController();
-    public function getSessionNamespace($namespace);
-    public function getSessionStartTime();
-
     // Helpers
     public function getHelper($name);
 }
