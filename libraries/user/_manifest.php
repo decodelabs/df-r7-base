@@ -34,7 +34,7 @@ interface IState {
 
 
 // Interfaces
-interface IManager extends core\IManager {
+interface IManager extends core\IManager, mesh\event\IEmitter {
     // Client
     public function getClient();
     public function clearClient();

@@ -8,7 +8,6 @@ namespace df\user\helper;
 use df;
 use df\core;
 use df\user;
-use df\mesh;
 
 class Auth extends Base {
 
@@ -87,13 +86,8 @@ class Auth extends Base {
                 $manager->session->perpetuateRecall($manager->client);
             }
 
-            // Options
-            if(isset($manager->options)) {
-                $manager->options->refresh();
-            }
-
             // Trigger hook
-            mesh\Manager::getInstance()->emitEvent($manager->client, 'authenticate', [
+            $manager->emitEvent($manager->client, 'authenticate', [
                 'request' => $request,
                 'result' => $result
             ]);
@@ -130,13 +124,8 @@ class Auth extends Base {
         // Remember me
         $manager->session->perpetuateRecall($manager->client, $key);
 
-        // Options
-        if(isset($manager->options)) {
-            $manager->options->refresh();
-        }
-
         // Trigger hook
-        mesh\Manager::getInstance()->emitEvent($manager->client, 'recall', [
+        $manager->emitEvent($manager->client, 'recall', [
             'key' => $key
         ]);
 
@@ -188,7 +177,7 @@ class Auth extends Base {
 
 
     public function unbind() {
-        mesh\Manager::getInstance()->emitEvent($this->manager->client, 'logout');
+        $this->manager->emitEvent($this->manager->client, 'logout');
         $this->manager->session->destroy();
         $this->manager->clearClient();
 

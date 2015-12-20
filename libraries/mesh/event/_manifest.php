@@ -44,6 +44,10 @@ interface IEvent extends core\collection\IMap {
     public function getAction();
 }
 
+interface IListener {
+    public function handleEvent(IEvent $event);
+}
+
 
 interface IHook extends core\IContextAware {
     public static function triggerEvent(IEvent $event);

@@ -16,6 +16,7 @@ use df\mesh;
 class Manager implements IManager, core\IShutdownAware, core\IDumpable {
 
     use core\TManager;
+    use mesh\event\TEmitter;
 
     const REGISTRY_PREFIX = 'manager://user';
     const USER_SESSION_BUCKET = 'user';
@@ -254,23 +255,6 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
         return $this->{$name};
     }
 
-    public function onApplicationShutdown() {
-        $obj = new \ReflectionObject($this);
-        $props = $obj->getProperties(\ReflectionProperty::IS_PUBLIC);
-
-        foreach($props as $prop) {
-            $name = $prop->getName();
-            $value = $prop->getValue($this);
-
-            if(!$value instanceof core\IShutdownAware) {
-                continue;
-            }
-
-            $value->onApplicationShutdown();
-        }
-    }
-
-
     public function getUserModel() {
         $model = axis\Model::factory('user');
 
@@ -295,6 +279,45 @@ class Manager implements IManager, core\IShutdownAware, core\IDumpable {
             default:
                 return $this->getHelper($member);
         }
+    }
+
+
+// Events
+    public function emitEventObject(mesh\event\IEvent $event) {
+        $obj = new \ReflectionObject($this);
+        $props = $obj->getProperties(\ReflectionProperty::IS_PUBLIC);
+
+        foreach($props as $prop) {
+            $name = $prop->getName();
+            $value = $prop->getValue($this);
+
+            if(!$value instanceof mesh\event\IListener) {
+                continue;
+            }
+
+            $value->handleEvent($event);
+        }
+
+        mesh\Manager::getInstance()->emitEventObject($event);
+        return $this;
+    }
+
+    public function onApplicationShutdown() {
+        $obj = new \ReflectionObject($this);
+        $props = $obj->getProperties(\ReflectionProperty::IS_PUBLIC);
+
+        foreach($props as $prop) {
+            $name = $prop->getName();
+            $value = $prop->getValue($this);
+
+            if(!$value instanceof core\IShutdownAware) {
+                continue;
+            }
+
+            $value->onApplicationShutdown();
+        }
+
+        return $this;
     }
 
 // Dump

@@ -8,8 +8,9 @@ namespace df\user\helper;
 use df;
 use df\core;
 use df\user;
+use df\mesh;
 
-class Options extends Base implements user\ISessionBackedHelper, core\IValueMap, core\IDumpable {
+class Options extends Base implements user\ISessionBackedHelper, core\IValueMap, mesh\event\IListener, core\IDumpable {
 
     use core\TValueMap;
     use user\TSessionBackedHelper;
@@ -105,5 +106,19 @@ class Options extends Base implements user\ISessionBackedHelper, core\IValueMap,
 
     public function offsetUnset($key) {
         return $this->remove($key);
+    }
+
+
+// Events
+    public function handleEvent(mesh\event\IEvent $event) {
+        switch($event->getAction()) {
+            case 'authenticate':
+            case 'recall':
+            case 'logout':
+                $this->refresh();
+                break;
+        }
+
+        return $this;
     }
 }
