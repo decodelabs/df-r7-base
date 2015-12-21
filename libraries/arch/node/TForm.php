@@ -846,11 +846,9 @@ trait TForm_DependentDelegate {
                     $doCallback = true;
                 }
 
-                if($doCallback) {
-                    core\lang\Callback::factory($dep['callback'])->invoke(
-                        $value, $this
-                    );
-                }
+                core\lang\Callback::factory($dep['callback'])->invoke(
+                    $value, $this, $doCallback
+                );
             }
 
             $this->_dependencies[$name]['value'] = $value;
