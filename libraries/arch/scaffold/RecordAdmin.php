@@ -61,19 +61,25 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         return $this->buildListNode();
     }
 
+    public function buildNode($content) {
+        $this->view = $this->apex->newWidgetView();
+
+        $this->view->content->push(
+            $this->apex->component('IndexHeaderBar'),
+            $content
+        );
+
+        return $this->view;
+    }
+
     public function buildListNode(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
         if($queryMode === null) {
             $queryMode = $this->request->getNode();
         }
 
-        $this->view = $this->apex->newWidgetView();
-
-        $this->view->content->push(
-            $this->apex->component('IndexHeaderBar'),
+        return $this->buildNode(
             $this->renderRecordList($query, $fields, $callback, $queryMode)
         );
-
-        return $this->view;
     }
 
     public function renderDetailsSectionBody($record) {
