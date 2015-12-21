@@ -42,6 +42,7 @@ interface IDate extends \Serializable, core\IStringProvider {
     // Time
     public function enableTime();
     public function disableTime();
+    public function hasTime();
 
     // Time zone
     public function toUserTimezone();

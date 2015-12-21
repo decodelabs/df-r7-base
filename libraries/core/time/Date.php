@@ -214,6 +214,10 @@ class Date implements IDate, core\IDumpable {
         return $this;
     }
 
+    public function hasTime() {
+        return $this->_timeEnabled;
+    }
+
 
 // Time zone
     public function toUserTimezone() {
