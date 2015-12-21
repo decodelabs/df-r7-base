@@ -59,6 +59,10 @@ class Translator implements ITranslator {
 
 
         if(!empty($replacements)) {
+            foreach($replacements as $key => $value) {
+                $replacements[$key] = (string)$value;
+            }
+
             $output = strtr($output, $replacements);
         }
 
