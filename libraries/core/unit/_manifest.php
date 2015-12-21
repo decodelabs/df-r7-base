@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -255,10 +255,15 @@ interface IResolution extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\
 
 ## ENUMS
 class Priority extends core\lang\Enum {
-    
+
     const TRIVIAL = null;
     const LOW = null;
     const MEDIUM = null;
     const HIGH = null;
     const CRITICAL = null;
+}
+
+class Gender extends core\lang\Enum {
+    const MALE = 'Male';
+    const FEMALE = 'Female';
 }
