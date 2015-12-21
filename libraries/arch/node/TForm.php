@@ -339,8 +339,11 @@ trait TForm {
             }
         }
 
+        $this->_beforeEvent($name);
         return call_user_func_array([$this, $func], $args);
     }
+
+    protected function _beforeEvent($event) {}
 
     protected function onResetEvent() {
         $this->reset();
@@ -708,8 +711,14 @@ trait TForm_DependentDelegate {
     protected $_dependencies = [];
     protected $_dependencyMessages = [];
 
-    public function addDependency($value, $message=null, $filter=null) {
-        return $this->setDependency(uniqid(), $value, $message, $filter);
+    public function addDependency($value, $message=null, $filter=null, $callback=null) {
+        if($value instanceof IDelegate) {
+            $name = $value->getDelegateKey();
+        } else {
+            $name = uniqid();
+        }
+
+        return $this->setDependency($name, $value, $message, $filter, $callback);
     }
 
     public function setDependency($name, $value, $message=null, $filter=null, $callback=null) {
@@ -758,6 +767,10 @@ trait TForm_DependentDelegate {
         }
 
         return $output;
+    }
+
+    protected function _beforeEvent($event) {
+        $this->normalizeDependencyValues();
     }
 
     public function applyFilters(opal\query\IQuery $query) {

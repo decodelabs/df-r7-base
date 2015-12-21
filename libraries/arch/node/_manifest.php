@@ -226,7 +226,7 @@ interface IDependencyValueProvider {
 }
 
 interface IDependentDelegate extends opal\query\IFilterConsumer {
-    public function addDependency($value, $message=null, $filter=null);
+    public function addDependency($value, $message=null, $filter=null, $callback=null);
     public function setDependency($name, $value, $message=null, $filter=null, $callback=null);
     public function hasDependency($name);
     public function getDependency($name);
