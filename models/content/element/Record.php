@@ -13,7 +13,7 @@ use df\axis;
 
 class Record extends opal\record\Base {
 
-    protected function _onPreSave($taskSet, $task) {
+    protected function onPreSave($taskSet, $task) {
         $this->_writeHistory($taskSet, $task);
     }
 

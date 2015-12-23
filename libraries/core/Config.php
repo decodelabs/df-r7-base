@@ -9,38 +9,38 @@ use df;
 use df\core;
 
 abstract class Config implements IConfig, core\IDumpable {
-    
+
     use core\TValueMap;
 
     const REGISTRY_PREFIX = 'config://';
-    
+
     const ID = null;
     const USE_ENVIRONMENT_ID_BY_DEFAULT = false;
     const STORE_IN_MEMORY = true;
-    
+
     public $values = [];
-    
+
     protected $_id;
     private $_filePath = null;
-    
+
 // Loading
     public static function getInstance() {
         if(!static::ID) {
             throw new LogicException('Invalid config id set for '.get_called_class());
         }
-        
+
         return static::_factory(static::ID);
     }
-    
+
     final protected static function _factory($id) {
         $handlerClass = get_called_class();
-        
+
         if(empty($id)) {
             throw new LogicException('Invalid config id passed for '.$handlerClass);
         }
-        
+
         $application = df\Launchpad::getApplication();
-        
+
         if($handlerClass::STORE_IN_MEMORY) {
             if(!$config = $application->getRegistryObject(self::REGISTRY_PREFIX.$id)) {
                 $application->setRegistryObject(
@@ -50,7 +50,7 @@ abstract class Config implements IConfig, core\IDumpable {
         } else {
             $config = new $handlerClass($id);
         }
-        
+
         return $config;
     }
 
@@ -61,50 +61,50 @@ abstract class Config implements IConfig, core\IDumpable {
             $application->removeRegistryObject($config);
         }
     }
-    
-    
+
+
 // Construct
     public function __construct($id) {
         $parts = explode('/', $id);
         $parts[] = ucfirst(array_pop($parts));
-        
+
         $this->_id = implode('/', $parts);
-        
+
         if(null === ($values = $this->_loadValues())) {
             $this->reset();
             $this->save();
         } else {
             $this->values = new core\collection\Tree($values);
         }
-        
+
         $this->_sanitizeValuesOnLoad();
     }
 
-    
+
 // Values
     final public function getConfigId() {
         return $this->_id;
     }
-    
+
     final public function getRegistryObjectKey() {
         return self::REGISTRY_PREFIX.$this->_id;
     }
-    
+
     final public function getConfigValues() {
         return $this->values->toArray();
     }
-    
+
     final public function save() {
         $this->_sanitizeValuesOnSave();
         $this->_saveValues();
-        $this->_onSave();
-        
+        $this->onSave();
+
         return $this;
     }
 
     public function reset() {
         $values = $this->getDefaultValues();
-            
+
         if(!is_array($values)) {
             throw new UnexpectedValueException(
                 'Default values must be an array'
@@ -158,17 +158,17 @@ abstract class Config implements IConfig, core\IDumpable {
     protected function _sanitizeValuesOnCreate() {
         return null;
     }
-    
+
     protected function _sanitizeValuesOnLoad() {
         return null;
     }
-    
+
     protected function _sanitizeValuesOnSave() {
         return null;
     }
 
-    protected function _onSave() {}
-    
+    protected function onSave() {}
+
 // IO
     private function _loadValues() {
         $parts = explode('/', $this->_id);
@@ -176,7 +176,7 @@ abstract class Config implements IConfig, core\IDumpable {
         $environmentId = df\Launchpad::$application->getEnvironmentId();
         $environmentMode = df\Launchpad::$application->getEnvironmentMode();
         $basePath = $this->_getBasePath();
-        
+
         if(!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
         }
@@ -205,14 +205,14 @@ abstract class Config implements IConfig, core\IDumpable {
                 break;
             }
         }
-        
+
         if($output !== null && !is_array($output)) {
             $output = [];
         }
-        
+
         return $output;
     }
-    
+
     private function _saveValues() {
         if($this->_filePath) {
             $savePath = $this->_filePath;
@@ -221,27 +221,27 @@ abstract class Config implements IConfig, core\IDumpable {
             $parts = explode('/', $this->_id);
             $name = array_pop($parts);
             $basePath = $this->_getBasePath();
-            
+
             if(!empty($parts)) {
                 $basePath .= '/'.implode('/', $parts);
             }
-            
+
             $corePath = $basePath.'/'.$name.'.php';
             $environmentPath = $basePath.'/'.$name.'#'.$environmentId.'.php';
             $isEnvironment = static::USE_ENVIRONMENT_ID_BY_DEFAULT || is_file($environmentPath);
-            
+
             if($isEnvironment) {
                 $savePath = $environmentPath;
             } else {
                 $savePath = $corePath;
             }
         }
-        
+
         $values = $this->values->toArray();
         $content = '<?php'."\n".'return '.core\collection\Util::exportArray($values).';';
         core\fs\File::create($savePath, $content);
     }
-    
+
     private function _getBasePath() {
         return df\Launchpad::$application->getApplicationPath().'/config';
     }
@@ -291,7 +291,7 @@ abstract class Config implements IConfig, core\IDumpable {
 
         return new core\collection\Tree($output, $value);
     }
-    
+
 
 // Dump
     public function getDumpProperties() {

@@ -13,7 +13,7 @@ use df\axis;
 
 class Record extends opal\record\Base {
 
-    protected function _onPreDelete($taskSet, $task) {
+    protected function onPreDelete($taskSet, $task) {
         $id = $this['id'];
 
         $deleteTask = $taskSet->addRawQuery(

@@ -98,7 +98,7 @@ class Delegate implements arch\node\IDelegate {
 
     public function setComplete($success=true) {
         $this->_isComplete = true;
-        $this->_onComplete($success);
+        $this->onComplete($success);
 
         foreach($this->_delegates as $delegate) {
             $delegate->setComplete($success);
@@ -112,7 +112,7 @@ class Delegate implements arch\node\IDelegate {
         return $this->_isComplete;
     }
 
-    protected function _onComplete($success) {}
+    protected function onComplete($success) {}
 
 
     protected function getDefaultRedirect() {

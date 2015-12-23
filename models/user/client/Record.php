@@ -17,7 +17,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
 
     use user\TNameExtractor;
 
-    protected function _onPreUpdate($taskSet, $task) {
+    protected function onPreUpdate($taskSet, $task) {
         $unit = $this->getAdapter();
 
         if(!$this['nickName']) {
@@ -49,7 +49,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         $regenTask->addDependency($task);
     }
 
-    protected function _onPreDelete($taskSet, $task) {
+    protected function onPreDelete($taskSet, $task) {
         $id = $this['id'];
         $unit = $this->getAdapter();
 

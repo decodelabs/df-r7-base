@@ -12,7 +12,7 @@ use df\opal;
 
 class Record extends opal\record\Base {
 
-    protected function _onPreSave($taskSet) {
+    protected function onPreSave($taskSet) {
         if((!$this['number'] || ($this->isNew() && !$this->hasChanged('number')))
         && ($fileId = $this['#file'])) {
             $this->number = $this->getAdapter()->select('MAX(number) as number')
