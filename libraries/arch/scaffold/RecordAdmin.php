@@ -26,19 +26,19 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     use TScaffold_IndexHeaderBarProvider;
     use TScaffold_RecordIndexHeaderBarProvider;
 
-    const RECORD_ADAPTER = null;
-    const RECORD_KEY_NAME = null;
-    const RECORD_ITEM_NAME = null;
-    const RECORD_URL_KEY = null;
+    const ADAPTER = null;
+    const KEY_NAME = null;
+    const ITEM_NAME = null;
+    const URL_KEY = null;
 
-    const RECORD_ID_FIELD = 'id';
-    const RECORD_NAME_FIELD = null;
+    const ID_FIELD = 'id';
+    const NAME_FIELD = null;
 
-    const DEFAULT_RECORD_NODE = 'details';
+    const DEFAULT_SECTION = 'details';
 
-    const CAN_ADD_RECORD = true;
-    const CAN_EDIT_RECORD = true;
-    const CAN_DELETE_RECORD = true;
+    const CAN_ADD = true;
+    const CAN_EDIT = true;
+    const CAN_DELETE = true;
 
     const CAN_SEARCH = true;
 

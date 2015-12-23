@@ -18,9 +18,8 @@ abstract class Base implements IScaffold {
     use arch\TDirectoryAccessLock;
     use arch\TOptionalDirectoryAccessLock;
 
-    const DIRECTORY_KEY_NAME = null;
-    const DIRECTORY_TITLE = null;
-    const DIRECTORY_ICON = null;
+    const TITLE = null;
+    const ICON = null;
 
     const CHECK_ACCESS = true;
     const DEFAULT_ACCESS = null;
@@ -209,29 +208,23 @@ abstract class Base implements IScaffold {
 
 // Directory
     public function getDirectoryTitle() {
-        if(static::DIRECTORY_TITLE) {
-            return $this->_(static::DIRECTORY_TITLE);
+        if(static::TITLE) {
+            return $this->_(static::TITLE);
         }
 
         return $this->format->name($this->getDirectoryKeyName());
     }
 
     public function getDirectoryIcon() {
-        if(static::DIRECTORY_ICON) {
-            return static::DIRECTORY_ICON;
+        if(static::ICON) {
+            return static::ICON;
         }
 
         return $this->getDirectoryKeyName();
     }
 
     public function getDirectoryKeyName() {
-        if($this->_directoryKeyName) {
-            return $this->_directoryKeyName;
-        }
-
-        if(static::DIRECTORY_KEY_NAME) {
-            $this->_directoryKeyName = static::DIRECTORY_KEY_NAME;
-        } else {
+        if($this->_directoryKeyName === null) {
             $parts = $this->context->location->getControllerParts();
             $this->_directoryKeyName = array_pop($parts);
         }

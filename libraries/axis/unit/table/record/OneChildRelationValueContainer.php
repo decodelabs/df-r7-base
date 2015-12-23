@@ -196,8 +196,40 @@ class OneChildRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
-        core\stub($taskSet, $record, $recordTask);
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
+        $localUnit = $parentRecord->getAdapter();
+        $targetUnit = $this->getTargetUnit();
+        $targetField = $this->_field->getTargetField();
+        $targetSchema = $targetUnit->getUnitSchema();
+        $parentKeySet = $parentRecord->getPrimaryKeySet();
+        $values = [];
+
+        foreach($parentKeySet->toArray() as $key => $value) {
+            $values[$targetField.'_'.$key] = $value;
+        }
+
+        $inverseKeySet = new opal\record\PrimaryKeySet(array_keys($values), $values);
+        $primaryIndex = $targetSchema->getPrimaryIndex();
+
+        if($primaryIndex->hasField($targetSchema->getField($targetField))) {
+            $targetRecordTask = new opal\record\task\DeleteKey(
+                $targetUnit, $values
+            );
+        } else {
+            $targetRecordTask = new opal\record\task\UpdateRaw(
+                $targetUnit, $inverseKeySet, $inverseKeySet->duplicateWith(null)->toArray()
+            );
+        }
+
+        if(!$taskSet->hasTask($targetRecordTask)) {
+            $taskSet->addTask($targetRecordTask);
+
+            if($recordTask) {
+                $recordTask->addDependency($targetRecordTask);
+            }
+        }
+
+        return $this;
     }
 
     public function acceptDeleteTaskChanges(opal\record\IRecord $record) {

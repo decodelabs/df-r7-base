@@ -19,8 +19,8 @@ use df\user;
 // Record loader
 trait TScaffold_RecordLoader {
 
-    //const RECORD_KEY_NAME = null;
-    //const RECORD_ITEM_NAME = null;
+    //const KEY_NAME = null;
+    //const ITEM_NAME = null;
 
     protected $_recordAdapter;
 
@@ -29,8 +29,8 @@ trait TScaffold_RecordLoader {
             return $this->_recordAdapter;
         }
 
-        if(@static::RECORD_ADAPTER) {
-            $adapter = $this->data->fetchEntity(static::RECORD_ADAPTER);
+        if(@static::ADAPTER) {
+            $adapter = $this->data->fetchEntity(static::ADAPTER);
 
             if($adapter instanceof axis\IUnit) {
                 $this->_recordAdapter = $adapter;
@@ -48,8 +48,8 @@ trait TScaffold_RecordLoader {
     protected function generateRecordAdapter() {}
 
     public function getRecordKeyName() {
-        if(@static::RECORD_KEY_NAME) {
-            return static::RECORD_KEY_NAME;
+        if(@static::KEY_NAME) {
+            return static::KEY_NAME;
         }
 
         $adapter = $this->getRecordAdapter();
@@ -64,8 +64,8 @@ trait TScaffold_RecordLoader {
     }
 
     public function getRecordItemName() {
-        if(@static::RECORD_ITEM_NAME) {
-            return static::RECORD_ITEM_NAME;
+        if(@static::ITEM_NAME) {
+            return static::ITEM_NAME;
         }
 
         return strtolower(flex\Text::formatName($this->getRecordKeyName()));
@@ -75,15 +75,15 @@ trait TScaffold_RecordLoader {
 // Record provider
 trait TScaffold_RecordDataProvider {
 
-    //const RECORD_ID_FIELD = 'id';
-    //const RECORD_NAME_FIELD = 'name';
-    //const RECORD_URL_KEY = null;
-    //const RECORD_ADAPTER = null;
-    //const DEFAULT_RECORD_NODE = 'details';
+    //const ID_FIELD = 'id';
+    //const NAME_FIELD = 'name';
+    //const URL_KEY = null;
+    //const ADAPTER = null;
+    //const DEFAULT_SECTION = 'details';
 
-    //const CAN_ADD_RECORD = true;
-    //const CAN_EDIT_RECORD = true;
-    //const CAN_DELETE_RECORD = true;
+    //const CAN_ADD = true;
+    //const CAN_EDIT = true;
+    //const CAN_DELETE = true;
 
     protected $_record;
     protected $_recordAction;
@@ -190,7 +190,7 @@ trait TScaffold_RecordDataProvider {
             $record = $this->getRecord();
         }
 
-        return $this->_getRecordNodeRequest($record, static::DEFAULT_RECORD_NODE);
+        return $this->_getRecordNodeRequest($record, static::DEFAULT_SECTION);
     }
 
     public function getRecordIcon($record=null) {
@@ -216,8 +216,8 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function getRecordIdField() {
-        if(@static::RECORD_ID_FIELD) {
-            return static::RECORD_ID_FIELD;
+        if(@static::ID_FIELD) {
+            return static::ID_FIELD;
         }
 
         return 'id';
@@ -225,8 +225,8 @@ trait TScaffold_RecordDataProvider {
 
     public function getRecordNameField() {
         if($this->_recordNameKey === null) {
-            if(@static::RECORD_NAME_FIELD) {
-                $this->_recordNameKey = static::RECORD_NAME_FIELD;
+            if(@static::NAME_FIELD) {
+                $this->_recordNameKey = static::NAME_FIELD;
             } else {
                 $adapter = $this->getRecordAdapter();
 
@@ -242,8 +242,8 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function getRecordUrlKey() {
-        if(@static::RECORD_URL_KEY) {
-            return static::RECORD_URL_KEY;
+        if(@static::URL_KEY) {
+            return static::URL_KEY;
         }
 
         return $this->getRecordKeyName();
@@ -293,15 +293,15 @@ trait TScaffold_RecordDataProvider {
 
 
     public function canAddRecord() {
-        return static::CAN_ADD_RECORD;
+        return static::CAN_ADD;
     }
 
     public function canEditRecord($record=null) {
-        return static::CAN_EDIT_RECORD;
+        return static::CAN_EDIT;
     }
 
     public function canDeleteRecord($record=null) {
-        return static::CAN_DELETE_RECORD;
+        return static::CAN_DELETE;
     }
 
 
