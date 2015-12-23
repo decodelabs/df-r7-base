@@ -20,8 +20,8 @@ class Text extends Base implements core\validate\ITextField {
     use core\validate\TMaxLengthField;
 
     protected $_pattern = null;
-    protected $_minWordLength = null;
-    protected $_maxWordLength = null;
+    protected $_minWords = null;
+    protected $_maxWords = null;
     protected $_shouldTrim = true;
 
 
@@ -41,7 +41,7 @@ class Text extends Base implements core\validate\ITextField {
 
 
 // Word length
-    public function setMinWordLength($length) {
+    public function setMinWords($length) {
         if($length !== null) {
             $length = (int)$length;
 
@@ -54,15 +54,15 @@ class Text extends Base implements core\validate\ITextField {
             }
         }
 
-        $this->_minWordLength = $length;
+        $this->_minWords = $length;
         return $this;
     }
 
-    public function getMinWordLength() {
-        return $this->_minWordLength;
+    public function getMinWords() {
+        return $this->_minWords;
     }
 
-    public function setMaxWordLength($length) {
+    public function setMaxWords($length) {
         if($length !== null) {
             $length = (int)$length;
 
@@ -75,12 +75,12 @@ class Text extends Base implements core\validate\ITextField {
             }
         }
 
-        $this->_maxWordLength = $length;
+        $this->_maxWords = $length;
         return $this;
     }
 
-    public function getMaxWordLength() {
-        return $this->_maxWordLength;
+    public function getMaxWords() {
+        return $this->_maxWords;
     }
 
 
@@ -114,28 +114,28 @@ class Text extends Base implements core\validate\ITextField {
         $this->_validateMinLength($node, $value, $length);
         $this->_validateMaxLength($node, $value, $length);
 
-        if($this->_minWordLength !== null || $this->_maxWordLength !== null) {
+        if($this->_minWords !== null || $this->_maxWords !== null) {
             $wordCount = flex\Text::countWords($value);
 
-            if($this->_minWordLength !== null && $wordCount < $this->_minWordLength) {
-                $this->_applyMessage($node, 'minWordLength', $this->validator->_(
+            if($this->_minWords !== null && $wordCount < $this->_minWords) {
+                $this->_applyMessage($node, 'minWords', $this->validator->_(
                     [
                         'n = 1' => 'This field must contain at least %min% word',
                         '*' => 'This field must contain at least %min% words'
                     ],
-                    ['%min%' => $this->_minWordLength],
-                    $this->_minWordLength
+                    ['%min%' => $this->_minWords],
+                    $this->_minWords
                 ));
             }
 
-            if($this->_maxWordLength !== null && $wordCount > $this->_maxWordLength) {
-                $this->_applyMessage($node, 'maxWordLength', $this->validator->_(
+            if($this->_maxWords !== null && $wordCount > $this->_maxWords) {
+                $this->_applyMessage($node, 'maxWords', $this->validator->_(
                     [
                         'n = 1' => 'This field must not me more than %max% word',
                         '*' => 'This field must not me more than %max% words'
                     ],
-                    ['%max%' => $this->_maxWordLength],
-                    $this->_maxWordLength
+                    ['%max%' => $this->_maxWords],
+                    $this->_maxWords
                 ));
             }
         }

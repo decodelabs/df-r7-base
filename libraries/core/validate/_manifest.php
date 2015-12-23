@@ -495,10 +495,10 @@ interface ITextField extends IField, IUniqueCheckerField, IMinLengthField, IMaxL
     public function setPattern($pattern);
     public function getPattern();
 
-    public function setMinWordLength($length);
-    public function getMinWordLength();
-    public function setMaxWordLength($length);
-    public function getMaxWordLength();
+    public function setMinWords($length);
+    public function getMinWords();
+    public function setMaxWords($length);
+    public function getMaxWords();
 
     public function shouldTrim($flag=null);
 }
