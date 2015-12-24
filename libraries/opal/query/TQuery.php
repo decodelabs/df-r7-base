@@ -593,8 +593,9 @@ trait TQuery_JoinProvider {
                 ->from($bridgeAdapter, $bridgeAlias)
                 ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
             */
-        } else if($field instanceof opal\schema\IManyRelationField) {
-            // Field is OneToMany
+        } else if($field instanceof opal\schema\IManyRelationField
+        || ($field instanceof opal\schema\IOneRelationField && $field instanceof opal\schema\INullPrimitiveField)) {
+            // Field is OneToMany || inverse One
             $targetAdapter = $field->getTargetQueryAdapter();
             $targetFieldName = $field->getTargetField();
 

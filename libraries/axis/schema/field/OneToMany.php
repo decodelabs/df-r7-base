@@ -16,7 +16,7 @@ use df\opal;
  * Key resides on Many side, null primitive
  */
 class OneToMany extends Base implements axis\schema\IOneToManyField {
-    
+
     use axis\schema\TRelationField;
     use axis\schema\TInverseRelationField;
     use axis\schema\TTargetPrimaryFieldAwareRelationField;
@@ -25,8 +25,8 @@ class OneToMany extends Base implements axis\schema\IOneToManyField {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
     }
-    
-    
+
+
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         $value = null;
@@ -47,11 +47,11 @@ class OneToMany extends Base implements axis\schema\IOneToManyField {
 
         return $output;
     }
-    
+
     public function deflateValue($value) {
         return null;
     }
-    
+
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($forRecord) {
             $output = new axis\unit\table\record\InlineManyRelationValueContainer($this);
@@ -68,16 +68,66 @@ class OneToMany extends Base implements axis\schema\IOneToManyField {
             return $value;
         }
     }
-    
+
     public function generateInsertValue(array $row) {
         return null;
     }
-    
-    
+
+
 // Clause
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
-        // TODO: rewrite virtual clause
-        core\stub($parent, $field, $operator, $value);
+        $localRelationManifest = $this->getLocalRelationManifest();
+
+        if(!$localRelationManifest->isSingleField()) {
+            throw new axis\schema\RuntimeException(
+                'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
+                'You should probably use a fieldless join constraint instead'
+            );
+        }
+
+        $sourceManager = $parent->getSourceManager();
+        $source = $field->getSource();
+
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
+        $targetField = $sourceManager->extrapolateIntrinsicField($source, $source->getAlias().'.'.$localRelationManifest->getSingleFieldName());
+
+        $mainOperator = 'in';
+
+        if(opal\query\clause\Clause::isNegatedOperator($operator)) {
+            $mainOperator = '!in';
+            $operator = opal\query\clause\Clause::negateOperator($operator);
+        } else {
+            $operator = opal\query\clause\Clause::normalizeOperator($operator);
+        }
+
+        $query = opal\query\Initiator::factory()
+            ->beginCorrelation($parent, $this->_targetField, 'id')
+            ->from($targetUnit, $this->_name);
+
+        if($value === null) {
+            $mainOperator = opal\query\clause\Clause::negateOperator($mainOperator);
+        } else {
+            $query->where('@primary', $operator, $value);
+        }
+
+        return opal\query\clause\Clause::factory(
+            $parent,
+            $targetField,
+            $mainOperator,
+            $query,
+            $isOr
+        );
+    }
+
+    protected $_localRelationManifest;
+
+    public function getLocalRelationManifest() {
+        if(!$this->_localRelationManifest) {
+            $schema = $this->getTargetUnit()->getTransientUnitSchema();
+            $this->_localRelationManifest = $schema->getField($this->_targetField)->getTargetRelationManifest();
+        }
+
+        return $this->_localRelationManifest;
     }
 
 // Populate
@@ -86,45 +136,45 @@ class OneToMany extends Base implements axis\schema\IOneToManyField {
 
         $parentSourceAlias = $populate->getParentSourceAlias();
         $targetSourceAlias = $populate->getSourceAlias();
-        
+
         $output->on($targetSourceAlias.'.'.$this->_targetField, '=', $parentSourceAlias.'.@primary');
         $output->asMany($this->_name);
 
         return $output;
     }
-    
+
 
 // Validate
     public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
         $this->_sanitizeTargetUnitId($localUnit);
-        
+
         return $this;
     }
-    
+
     public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
         // Local
         $localPrimaryIndex = $this->_validateLocalPrimaryIndex($localUnit, $localSchema);
-        
-        
+
+
         // Target
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
         $targetField = $this->_validateInverseRelationField($targetUnit, $targetSchema);
         $this->_validateDefaultValue($localUnit);
-        
+
         return $this;
     }
-    
-    
-    
+
+
+
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
         $this->_setRelationStorageArray($data);
         $this->_setInverseRelationStorageArray($data);
     }
-    
+
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),

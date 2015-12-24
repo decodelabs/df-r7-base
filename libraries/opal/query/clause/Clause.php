@@ -485,7 +485,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
             return opal\query\clause\Clause::factory($parent, $fieldList[0], $operator, $valueList[0], $isOr);
         }
 
-        core\dump($fieldList, $valueList);
+        core\dump($fieldList, $valueList, $value);
     }
 
     public static function mapVirtualValueClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr) {
