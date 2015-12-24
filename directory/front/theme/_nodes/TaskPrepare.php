@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\front\application\build\_nodes;
+namespace df\apex\directory\front\theme\_nodes;
 
 use df;
 use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPrepareTheme extends arch\node\Task {
+class TaskPrepare extends arch\node\Task implements arch\node\IBuildTaskNode {
 
     public function execute() {
         $this->io->write('Clearing sass cache...');

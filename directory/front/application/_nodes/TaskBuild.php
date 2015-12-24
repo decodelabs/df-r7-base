@@ -57,22 +57,7 @@ class TaskBuild extends arch\node\Task {
 
 
         // Run custom tasks
-        $custom = $this->apex->findNodesIn('./build/', 'Task');
-
-        if($this->apex->nodeExists('./build-custom')) {
-            $custom[] = $this->uri->directoryRequest('./build-custom');
-        }
-
-        if(!empty($custom)) {
-            $this->io->writeLine();
-            $this->io->writeLine('Running custom user build tasks...');
-
-            foreach($custom as $request) {
-                $this->runChild($request);
-            }
-
-            $this->io->writeLine();
-        }
+        $this->runChild('./build-custom', false);
 
 
         // Clear config cache

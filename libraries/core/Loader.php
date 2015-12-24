@@ -9,26 +9,26 @@ use df;
 use df\core;
 
 class Loader implements ILoader {
-    
+
     private static $_includeAttempts = 0;
     private static $_includeMisses = 0;
-    
+
     protected $_locations = [];
     protected $_packages = [];
 
     private $_isInit = false;
-    
-    
+
+
 // Stats
     public static function getTotalIncludeAttempts() {
         return self::$_includeAttempts;
     }
-    
+
     public static function getTotalIncludeMisses() {
         return self::$_includeMisses;
     }
-    
-    
+
+
 // Construct
     public function __construct(array $locations=[]) {
         $this->_locations = $locations;
@@ -37,59 +37,59 @@ class Loader implements ILoader {
         $this->_packages['base'] = new core\Package('base', 0, df\Launchpad::DF_PATH);
         $this->_packages['app'] = new core\Package('app', PHP_INT_MAX, df\Launchpad::$applicationPath);
     }
-    
+
 // Class loader
     public function loadClass($class) {
-        if(class_exists($class, false) 
+        if(class_exists($class, false)
         || interface_exists($class, false)
         || trait_exists($class, false)) {
             return true;
         }
-        
+
         $output = false;
-        
+
         if($paths = $this->getClassSearchPaths($class)) {
             $included = get_included_files();
-            
+
             foreach($paths as $path) {
                 self::$_includeAttempts++;
-                
+
                 if(file_exists($path) && !in_array($path, $included)) {
                     include_once $path;
-                    
-                    if(class_exists($class, false) 
+
+                    if(class_exists($class, false)
                     || interface_exists($class, false)
                     || trait_exists($class, false)) {
                         $output = $path;
                         break;
                     }
                 }
-                
+
                 self::$_includeMisses++;
             }
         }
-        
+
         return $output;
     }
-    
+
     public function getClassSearchPaths($class) {
         $parts = explode('\\', $class);
-        
+
         if(array_shift($parts) != 'df') {
             return false;
         }
-        
+
         if(!$library = array_shift($parts)) {
             return false;
         }
-        
+
         $fileName = array_pop($parts);
         $basePath = df\Launchpad::DF_PATH.'/'.$library;
-        
+
         if(!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
         }
-        
+
         $output = [$basePath.'/'.$fileName.'.php'];
 
         if(false !== ($pos = strpos($fileName, '_'))) {
@@ -98,7 +98,7 @@ class Loader implements ILoader {
         }
 
         $output[] = $basePath.'/_manifest.php';
-        
+
         return $output;
     }
 
@@ -112,27 +112,27 @@ class Loader implements ILoader {
 
         return $class;
     }
-    
-    
+
+
 // File finder
     public function findFile($path) {
         if(null === ($paths = $this->getFileSearchPaths($path))) {
             return null;
         }
-        
+
         foreach($paths as $path) {
             if(is_file($path)) {
                 return $path;
             }
         }
-        
+
         return null;
     }
-    
+
     public function getFileSearchPaths($path) {
         return [df\Launchpad::DF_PATH.'/'.$path];
     }
-    
+
     public function lookupFileList($path, $extensions=null) {
         if($extensions !== null && !is_array($extensions)) {
             $extensions = [$extensions];
@@ -142,59 +142,66 @@ class Loader implements ILoader {
             $extensions = null;
         }
 
-        $output = [];
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
-        
+        $index = [];
+
         foreach($paths as $path) {
             if(!is_dir($path)) {
                 continue;
             }
 
             $dir = new \DirectoryIterator($path);
-            
+
             foreach($dir as $item) {
                 if(!$item->isFile()) {
                     continue;
                 }
-                
+
                 $filePath = $item->getPathname();
                 $baseName = basename($filePath);
-                
+
                 if($extensions !== null) {
                     $parts = explode('.', $baseName);
                     $ext = array_pop($parts);
-                    
+
                     if(!in_array($ext, $extensions)) {
                         continue;
                     }
                 }
-                
-                $output[$baseName] = $filePath;
+
+                if(isset($index[$baseName])) {
+                    continue;
+                }
+
+                $index[$baseName] = true;
+                yield $baseName => $filePath;
             }
         }
-        
-        return $output;
     }
 
     public function lookupFileListRecursive($path, $extensions=null, $folderCheck=null) {
-        if($folderCheck && !core\lang\Callback($folderCheck, $path)) {
-            $output = [];
-        } else {
-            $output = $this->lookupFileList($path, $extensions);
+        if(!($folderCheck && !core\lang\Callback($folderCheck, $path))) {
+            foreach($this->lookupFileList($path, $extensions) as $key => $val) {
+                yield $key => $val;
+            }
         }
+
+        $index = [];
 
         foreach($this->lookupFolderList($path) as $dirName => $dirPath) {
             foreach($this->lookupFileListRecursive($path.'/'.$dirName, $extensions, $folderCheck) as $name => $filePath) {
-                $output[$dirName.'/'.$name] = $filePath;
+                if(isset($index[$name])) {
+                    continue;
+                }
+
+                $index[$name] = true;
+                yield $dirName.'/'.$name => $filePath;
             }
         }
-        
-        return $output;
     }
 
     public function lookupClassList($path, $test=true) {
         $path = trim($path, '/');
-        $output = [];
 
         foreach($this->lookupFileList($path, ['php']) as $fileName => $filePath) {
             $name = substr($fileName, 0, -4);
@@ -217,39 +224,42 @@ class Loader implements ILoader {
                 }
             }
 
-            $output[$name] = $class;
+            yield $name => $class;
         }
-
-        return $output;
     }
 
     public function lookupFolderList($path) {
-        $output = [];
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
 
         if(!$paths) {
-            return $output;
+            return;
         }
-        
+
+        $index = [];
+
         foreach($paths as $path) {
             if(!is_dir($path)) {
                 continue;
             }
 
             $dir = new \DirectoryIterator($path);
-            
+
             foreach($dir as $item) {
                 if(!$item->isDir() || $item->isDot()) {
                     continue;
                 }
-                
+
                 $filePath = $item->getPathname();
                 $baseName = basename($filePath);
-                $output[$baseName] = $filePath;
+
+                if(isset($index[$baseName])) {
+                    continue;
+                }
+
+                $index[$baseName] = true;
+                yield $baseName => $filePath;
             }
         }
-        
-        return $output;
     }
 
     public function lookupLibraryList() {
@@ -263,29 +273,29 @@ class Loader implements ILoader {
         sort($libList);
         return $libList;
     }
-    
-    
+
+
 // Locations
     public function registerLocations(array $locations) {
         $this->_locations = $locations + $this->_locations;
         return $this;
     }
-    
+
     public function registerLocation($name, $path) {
         $this->_locations = [$name => $path] + $this->_locations;
         return $this;
     }
-    
+
     public function unregisterLocation($name) {
         unset($this->_locations[$name]);
         return $this;
     }
-    
+
     public function getLocations() {
         return $this->_locations;
     }
-    
-    
+
+
 // Packages
     public function loadPackages(array $packages) {
         if($this->_isInit) {
@@ -324,25 +334,25 @@ class Loader implements ILoader {
             }
         }
     }
-    
+
     public function getPackages() {
         return $this->_packages;
     }
-    
+
     public function hasPackage($package) {
         return isset($this->_packages[$package]);
     }
-    
+
     public function getPackage($package) {
         if(isset($this->_packages[$package])) {
             return $this->_packages[$package];
         }
-        
+
         return null;
     }
-    
-    
-    
+
+
+
 // Shutdown
     public function shutdown() {
         // do nothing yet

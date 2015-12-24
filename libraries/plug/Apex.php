@@ -140,9 +140,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
     public function findNodesIn($request, $type=null) {
         $request = $this->context->uri->directoryRequest($request);
-
         $path = $request->getLibraryPath().'/_nodes';
-        $output = [];
 
         foreach(df\Launchpad::$loader->lookupClassList($path) as $name => $class) {
             if($type !== null && 0 !== stripos($name, $type)) {
@@ -156,10 +154,8 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
                 $value = flex\Text::formatNodeSlug($value);
             });
 
-            $output[] = arch\Request::factory('~'.implode('/', $requestParts));
+            yield arch\Request::factory('~'.implode('/', $requestParts));
         }
-
-        return $output;
     }
 
     public function controllerExists($request, $runMode=null) {

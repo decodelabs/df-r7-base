@@ -58,6 +58,8 @@ interface ITaskNode extends INode {
     public function promptEnvironmentMode($mode, $default=false);
 }
 
+interface IBuildTaskNode extends ITaskNode {}
+
 
 interface ITaskManager extends core\IManager {
     public function launch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null, $user=null);

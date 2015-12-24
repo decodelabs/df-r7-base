@@ -11,12 +11,11 @@ use df\apex;
 use df\axis;
 
 class Model extends axis\Model {
-    
+
     public function findIn($path) {
-        $classes = df\Launchpad::$loader->lookupClassList($path, ['php']);
         $output = [];
 
-        foreach($classes as $name => $class) {
+        foreach(df\Launchpad::$loader->lookupClassList($path, ['php']) as $name => $class) {
             if(!class_exists($class)) {
                 continue;
             }

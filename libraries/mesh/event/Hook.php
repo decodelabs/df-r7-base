@@ -18,7 +18,13 @@ abstract class Hook implements IHook {
     protected $_events = [];
 
     public static function getClassList() {
-        return df\Launchpad::$loader->lookupClassList('apex/hooks/', true);
+        $output = [];
+
+        foreach(df\Launchpad::$loader->lookupClassList('apex/hooks/', true) as $key => $val) {
+            $output[$key] = $val;
+        }
+
+        return $output;
     }
 
     public static function toggleEnabled($flag=null) {

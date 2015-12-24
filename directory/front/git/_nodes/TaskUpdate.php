@@ -54,7 +54,7 @@ class TaskUpdate extends arch\node\Task {
 
         if(is_dir($this->application->getLocalStoragePath().'/run')) {
             $this->runChild('application/build?testing=1', false);
-        } else if($this->apex->nodeExists('application/build-custom') && in_array('app', $names)) {
+        } else {
             $this->runChild('application/build-custom', false);
         }
     }

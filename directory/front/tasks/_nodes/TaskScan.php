@@ -32,7 +32,6 @@ class TaskScan extends arch\node\Task {
             $basename = substr(basename($path), 0, -4);
 
             if(substr($basename, 0, 4) != 'Task') {
-                unset($fileList[$key]);
                 continue;
             }
 
