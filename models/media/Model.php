@@ -39,6 +39,8 @@ class Model extends axis\Model {
         $mediaHandler = $this->getMediaHandler();
         $bucketHandler = $bucket->getHandler();
         $onePerUser = $bucketHandler->allowOnePerUser();
+        $isUserSpecific = $bucketHandler->isUserSpecific();
+        $owner = $fileData->get('owner');
 
         $hash = $isMissing ? $fileData->get('hash') : hash_file('crc32', $filePath, true);
         $fileSize = $isMissing ? $fileData->get('fileSize', 0) : filesize($filePath);
@@ -53,6 +55,9 @@ class Model extends axis\Model {
                     ->where('version.hash', '=', $hash)
                     ->where('version.fileSize', '=', $fileSize)
                     ->where('version.purgeDate', '=', null)
+                    ->chainIf($isUserSpecific && $owner !== null, function($clause) use($owner) {
+                        $clause->where('version.owner', '=', $owner);
+                    })
                     ->endCorrelation()
                 ->toRow();
         }
