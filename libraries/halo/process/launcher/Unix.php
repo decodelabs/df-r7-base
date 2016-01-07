@@ -18,25 +18,25 @@ class Unix extends Base {
         core\stub();
     }
     */
-    
+
     public function launch() {
         $command = $this->_prepareCommand();
-        
+
         $descriptors = [
-            0 => ['pipe', 'r'], 
-            1 => ['pipe', 'w'], 
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
             2 => ['pipe', 'w']
         ];
-        
-        $workingDirectory = $this->_workingDirectory !== null ? 
+
+        $workingDirectory = $this->_workingDirectory !== null ?
             realpath($this->_workingDirectory) : null;
-            
+
         $result = new halo\process\Result();
         $processHandle = proc_open($command, $descriptors, $pipes, $workingDirectory);
-        
+
         if(!is_resource($processHandle)) {
             return $result->registerFailure();
-        } 
+        }
 
         $outputBuffer = $errorBuffer = $input = false;
 
@@ -61,7 +61,7 @@ class Unix extends Base {
             if($this->_generator && !$generatorCalled) {
                 $input = $this->_generator->invoke();
                 $generatorCalled = true;
-            } else if($this->_multiplexer && $generatorCalled) {
+            } else if($this->_multiplexer && (!$this->_generator || $generatorCalled)) {
                 $input = $this->_multiplexer->readChunk($this->_readChunkSize);
             }
 
@@ -103,7 +103,7 @@ class Unix extends Base {
                 fclose($pipe);
             }
         }
-        
+
         proc_close($processHandle);
         $result->registerCompletion();
 
@@ -113,7 +113,7 @@ class Unix extends Base {
 
         return $result;
     }
-    
+
     public function launchBackground() {
         $command = $this->_prepareCommand();
         $activeCommand = /*'nohup '.*/$command.' > /dev/null 2>&1 & echo $!';
@@ -131,33 +131,33 @@ class Unix extends Base {
         }
 
         return new halo\process\Unix($pid, $command);
-    } 
-    
+    }
+
     public function launchManaged() {
         if(!extension_loaded('posix')) {
             throw new halo\process\RuntimeException(
                 'Managed processes require the currently unavailable posix extension'
             );
         }
-        
+
         if(!extension_loaded('pcntl')) {
             throw new halo\process\RuntimeException(
                 'Managed processes require the currently unavailable pcntl extension'
             );
         }
-        
+
         core\stub($this);
     }
-    
+
     protected function _prepareCommand() {
         $command = '';
-        
+
         if($this->_path) {
             $command .= rtrim($this->_path, '/\\').DIRECTORY_SEPARATOR;
         }
-        
+
         $command .= $this->_processName;
-        
+
         if(!empty($this->_args)) {
             $temp = [];
 
@@ -181,7 +181,7 @@ class Unix extends Base {
         if($this->_user) {
             $command = 'sudo -u '.$this->_user.' '.$command;
         }
-        
+
         return $command;
     }
 }
