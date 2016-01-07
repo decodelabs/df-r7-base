@@ -181,11 +181,20 @@ abstract class Task extends Base implements ITaskNode {
                     $this->io->writeLine('!! '.$error);
                 }
 
+                $answer = $valid[$key];
                 $valid = $valid->isValid();
             }
 
             if($valid && $check) {
-                $this->io->write('>> Is this correct? '.$answer.' [Y/n] ');
+                $answerString = $answer;
+
+                if($answerString instanceof core\time\IDate) {
+                    $answerString = $this->format->date($answerString);
+                } else {
+                    $answerString = (string)$answerString;
+                }
+
+                $this->io->write('>> Is this correct? '.$answerString.' [Y/n] ');
                 $checkAnswer = trim($this->io->readLine());
                 $valid = $this->format->stringToBoolean($checkAnswer, true);
             }
