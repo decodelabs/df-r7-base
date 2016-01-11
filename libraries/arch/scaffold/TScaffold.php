@@ -769,9 +769,16 @@ trait TScaffold_SectionProvider {
                     $body
                 );
 
+                $breadcrumbs = $this->apex->breadcrumbs();
+                $this->updateSectionBreadcrumbs($breadcrumbs);
+
                 return $this->view;
             });
         }
+    }
+
+    protected function updateSectionBreadcrumbs($breadcrumbs) {
+        $breadcrumbs->getEntryByIndex(-2)->setUri($this->uri->directoryRequest($this->getParentSectionRequest()));
     }
 
     public function buildSection($name, $builder, $linkBuilder=null) {
