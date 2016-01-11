@@ -32,17 +32,21 @@ trait TWidget {
 
     public function getTag() {
         if(!$this->_primaryTag) {
-            if(!static::PRIMARY_TAG) {
-                throw new Exception(
-                    'Primary tag name has not been declared for '.$this->getWidgetName().' widget type'
-                );
-            }
-
-            $this->_primaryTag = new aura\html\Tag(static::PRIMARY_TAG);
+            $this->_primaryTag = new aura\html\Tag($this->_getPrimaryTagType());
             $this->_primaryTag->setClasses(['w-'.lcfirst($this->getWidgetName())]);
         }
 
         return $this->_primaryTag;
+    }
+
+    protected function _getPrimaryTagType() {
+        if(!static::PRIMARY_TAG) {
+            throw new Exception(
+                'Primary tag name has not been declared for '.$this->getWidgetName().' widget type'
+            );
+        }
+
+        return static::PRIMARY_TAG;
     }
 
     public function isInline() {

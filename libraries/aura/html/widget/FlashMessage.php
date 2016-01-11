@@ -13,14 +13,21 @@ use df\flow;
 
 class FlashMessage extends Base {
 
-    const PRIMARY_TAG = 'div';
-
     protected $_message;
 
     public function __construct(arch\IContext $context, $message, $type=null) {
         parent::__construct($context);
 
         $this->setMessage($message, $type);
+    }
+
+
+    protected function _getPrimaryTagType() {
+        if($this->_message->getLink() !== null) {
+            return 'a';
+        } else {
+            return 'div';
+        }
     }
 
 
@@ -40,16 +47,14 @@ class FlashMessage extends Base {
             $description = null;
         }
 
-        $body = [$title, $description];
-
         if($link = $this->_message->getLink()) {
-            $body = new aura\html\Element('a', $body, [
+            $tag->addAttributes([
                 'href' => $this->_context->uri->__invoke($link),
                 'title' => $this->_message->getLinkText()
             ]);
         }
 
-        return $tag->renderWith($body);
+        return $tag->renderWith([$title, $description]);
     }
 
 
