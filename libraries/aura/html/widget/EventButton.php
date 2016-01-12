@@ -20,9 +20,14 @@ class EventButton extends Button {
     }
 
     protected function _render() {
+        $event = $this->getEvent();
+
         if($this->_body->isEmpty()) {
-            $this->_body->push(flex\Text::formatName($this->getEvent()));
+            $this->_body->push(flex\Text::formatName($event));
         }
+
+        $parts = explode('.', $event);
+        $this->addClass(array_pop($parts));
 
         return parent::_render();
     }
