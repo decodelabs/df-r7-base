@@ -36,10 +36,8 @@ class FlashMessage extends Base {
 
         $tag->addClass($this->_message->getType());
 
-        $title = new aura\html\Element('p.message', [
-                $this->_context->html->icon($this->_message->getType()), ' ',
-                $this->_message->getMessage()
-            ]);
+        $icon = $this->_context->html->icon($this->_message->getType());
+        $title = new aura\html\Element('p.message', $this->_message->getMessage());
 
         if($description = $this->_message->getDescription()) {
             $description = new aura\html\Element('p.description', $description);
@@ -54,7 +52,7 @@ class FlashMessage extends Base {
             ]);
         }
 
-        return $tag->renderWith([$title, $description]);
+        return $tag->renderWith([$icon, $title, $description]);
     }
 
 
