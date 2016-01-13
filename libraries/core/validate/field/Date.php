@@ -16,7 +16,7 @@ class Date extends Base implements core\validate\IDateField {
     protected $_mustBePast = false;
     protected $_mustBeFuture = false;
     protected $_expectedFormat = null;
-    protected $_isLocal = false;
+    protected $_timezone = false;
 
     public function setMin($date) {
         if($date !== null) {
@@ -82,13 +82,22 @@ class Date extends Base implements core\validate\IDateField {
         return $this->_expectedFormat;
     }
 
+    public function setTimezone($timezone) {
+        $this->_timezone = $timezone;
+        return $this;
+    }
+
+    public function getTimezone() {
+        return $this->_timezone;
+    }
+
     public function isLocal($flag=null) {
         if($flag !== null) {
-            $this->_isLocal = (bool)$flag;
+            $this->_timezone = (bool)$flag;
             return $this;
         }
 
-        return $this->_isLocal;
+        return (bool)$this->_timezone;
     }
 
     public function validate(core\collection\IInputTree $node) {
@@ -105,9 +114,9 @@ class Date extends Base implements core\validate\IDateField {
 
         try {
             if($this->_expectedFormat) {
-                $date = core\time\Date::fromFormatString($value, $this->_expectedFormat, $this->_isLocal);
+                $date = core\time\Date::fromFormatString($value, $this->_expectedFormat, $this->_timezone);
             } else {
-                $date = core\time\Date::factory($value, $this->_isLocal);
+                $date = core\time\Date::factory($value, $this->_timezone);
             }
         } catch(\Exception $e) {
             $this->_applyMessage($node, 'invalid', $this->validator->_(

@@ -19,6 +19,12 @@ class DateTimePicker extends DatePicker {
     protected $_timezone = null;
     protected $_showTimezone = true;
 
+
+    public function __construct(arch\IContext $context, $name, $value=null, $timezone=null) {
+        $this->_timezone = $timezone;
+        parent::__construct($context, $name, $value);
+    }
+
     protected function _getInputType() {
         if($this->_outputFormat != 'Y-m-d\TH:i') {
             return 'text';
@@ -56,20 +62,15 @@ class DateTimePicker extends DatePicker {
         return $this->_showTimezone;
     }
 
-    public function setTimezone($timezone) {
-        $this->_timezone = $timezone;
-        return $this;
-    }
-
     public function getTimezone() {
         return $this->_timezone;
     }
 
     protected function _stringToDate($date) {
         if($this->_outputFormat != 'Y-m-d\TH:i') {
-            $output = core\time\Date::fromFormatString((string)$date, $this->_outputFormat, true);
+            $output = core\time\Date::fromFormatString((string)$date, $this->_outputFormat, $this->_timezone !== null ? $this->_timezone : true);
         } else {
-            $output = core\time\Date::factory((string)$date, true);
+            $output = core\time\Date::factory((string)$date, $this->_timezone !== null ? $this->_timezone : true);
         }
 
         $output->toUtc();
@@ -77,7 +78,12 @@ class DateTimePicker extends DatePicker {
     }
 
     protected function _dateToString(core\time\IDate $date) {
-        $date->toUserTimezone();
+        if($this->_timezone !== null) {
+            $date->toTimezone($this->_timezone);
+        } else {
+            $date->toUserTimezone();
+        }
+
         return $date->format($this->_outputFormat);
     }
 }
