@@ -222,13 +222,25 @@ abstract class SelectorDelegate extends Delegate implements
         $options = $this->_getOptionsList();
         $selected = $this->_fetchSelectionList();
 
-        $type = $this->_isForMany ? 'checkboxGroup' : 'selectList';
-        $select = $this->html->{$type}(
-                $this->fieldName('selected'),
-                $this->values->selected,
-                $options
-            )
-            ->isRequired($this->_isRequired);
+        if($this->_isForMany) {
+            $select = $this->html('div.w-checkboxGroup', function() use($options) {
+                foreach($options as $key => $val) {
+                    yield $this->html->checkbox(
+                            $this->fieldName('selected['.$key.']'),
+                            $this->values->selected->{$key},
+                            $val,
+                            $key
+                        );
+                }
+            });
+        } else {
+            $select = $this->html->selectList(
+                    $this->fieldName('selected'),
+                    $this->values->selected,
+                    $options
+                )
+                ->isRequired($this->_isRequired);
+        }
 
         $fa->push(
             $this->html('div.w-selection', [
@@ -439,7 +451,14 @@ abstract class SelectorDelegate extends Delegate implements
                 $search = null;
             }
 
+            $keyList = [];
+
+            foreach($selected as $entry) {
+                $keyList[] = $this->_getResultId($entry);
+            }
+
             $query = $this->_getQuery(null, $search);
+            $query->wherePrerequisite('@primary', '!in', $keyList);
             $query->paginate()->setDefaultLimit(50)->applyWith([]);
 
             $fa = $fs->addField($this->_('Search results'));
@@ -641,7 +660,14 @@ abstract class SelectorDelegate extends Delegate implements
             return;
         }
 
-        $this->setSelected($this->values->searchResults->toArray());
+        $selected = $this->getSelected();
+        $query = $this->_getQuery(['@primary'], $this->values['search']);
+
+        foreach($query->toList('@primary') as $key) {
+            $selected[(string)$key] = (string)$key;
+        }
+
+        $this->setSelected($selected);
         unset($this->values->search, $this->values->searchResults);
 
         $this->onEndSelectEvent();
