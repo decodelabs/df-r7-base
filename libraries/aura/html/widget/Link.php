@@ -88,6 +88,10 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     }
 
     protected function _render() {
+        if($this->_uri === null && $this->_body->isEmpty()) {
+            return;
+        }
+
         $tag = $this->getTag();
         $url = $this->_context->uri->__invoke($this->_uri);
 
