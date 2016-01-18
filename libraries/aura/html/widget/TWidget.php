@@ -702,7 +702,13 @@ trait TWidget_GroupedSelectionInput {
     public function addOptions($options, $labelsAsValues=false) {
         foreach(core\collection\Util::ensureIterable($options) as $key => $set) {
             $this->addGroupOptions($key, $set, $labelsAsValues);
-            $this->setGroupName($key, flex\Text::formatLabel($key));
+            $label = $key;
+
+            if(preg_match('/^[a-z][a-zA-Z0-9]+$/', $key)) {
+                $label = flex\Text::formatLabel($key);
+            }
+
+            $this->setGroupName($key, $label);
         }
 
         return $this;
