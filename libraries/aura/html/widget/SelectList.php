@@ -86,9 +86,9 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
         }
 
         if(!$selectionFound && $this->_noSelectionLabel !== null) {
-            $optionList->unshift(new aura\html\Element('option', $this->_noSelectionLabel, ['value' => null, 'disabled' => true, 'selected' => true]));
+            $optionList->unshift(new aura\html\Element('option', $this->_noSelectionLabel, ['value' => '', 'disabled' => true, 'selected' => true]));
         } else if(!$this->isRequired() && !$tag->hasAttribute('multiple')) {
-            $optionList->unshift(new aura\html\Element('option', '', ['value' => null]));
+            $optionList->unshift(new aura\html\Element('option', $this->_noSelectionLabel !== '--' ? $this->_noSelectionLabel : '', ['value' => '']));
         }
 
         return $tag->renderWith($optionList, true);
