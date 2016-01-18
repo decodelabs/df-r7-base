@@ -221,6 +221,15 @@ class Html implements arch\IDirectoryHelper {
             ->addClass((bool)$value ? 'positive' : 'negative');
     }
 
+    public function yesNoIcon($value, $allowNull=true) {
+        if($value === null && $allowNull) {
+            return null;
+        }
+
+        return $this->icon($value ? 'accept' : 'deny', $value ? 'Yes' : 'No')
+            ->addClass((bool)$value ? 'positive' : 'negative');
+    }
+
     public function lockIcon($value, $body=null) {
         return $this->icon((bool)$value ? 'lock' : 'unlock', $body)
             ->addClass((bool)$value ? 'locked' : 'unlocked');
