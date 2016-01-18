@@ -7,9 +7,10 @@ namespace df\core\validate\field;
 
 use df;
 use df\core;
+use df\flex;
 
 class Boolean extends Base implements core\validate\IBooleanField {
-    
+
     protected $_isRequired = true;
 
     public function validate(core\collection\IInputTree $node) {
@@ -19,26 +20,13 @@ class Boolean extends Base implements core\validate\IBooleanField {
         if(!is_bool($value)) {
             if(!$length = strlen($value)) {
                 $value = null;
-                
+
                 if($this->_isRequired) {
                     $value = false;
                 }
             } else {
                 if(is_string($value)) {
-                    $value = strtolower($value);
-                    
-                    switch($value) {
-                        case 'false':
-                        case 'no':
-                        case 'n':
-                        case '0':
-                            $value = false;
-                            break;
-                            
-                        default:
-                            $value = true;
-                            break;
-                    }
+                    $value = flex\Text::stringToBoolean($value);
                 } else {
                     $value = (bool)$value;
                 }
