@@ -128,6 +128,7 @@ interface IForm extends IStoreProvider, core\lang\IChainable, \ArrayAccess {
     public function unloadDelegate($id);
 
     public function isValid();
+    public function countErrors();
     public function fieldName($name);
     public function eventName($name);
     public function elementId($name);

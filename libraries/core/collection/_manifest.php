@@ -26,14 +26,14 @@ interface ICollection extends \Countable, core\IArrayProvider {
 
 
 trait TExtractList {
-    
+
     public function extractList($count) {
         $output = [];
-        
+
         for($i = 0; $i < (int)$count; $i++) {
             $output[] = $this->extract();
         }
-        
+
         return $output;
     }
 }
@@ -44,19 +44,19 @@ interface IAggregateIteratorCollection extends \IteratorAggregate {
 }
 
 trait TValueMapArrayAccess {
-        
+
     public function offsetSet($index, $value) {
         return $this->set($index, $value);
     }
-    
+
     public function offsetGet($index) {
         return $this->get($index);
     }
-    
+
     public function offsetExists($index) {
         return $this->has($index);
     }
-    
+
     public function offsetUnset($index) {
         return $this->remove($index);
     }
@@ -95,7 +95,7 @@ interface ISeekable {
     public function getNext();
     public function getPrev();
     public function getLast();
-    
+
     public function seekFirst();
     public function seekNext();
     public function seekPrev();
@@ -354,6 +354,7 @@ trait THeaderMapProvider {
 // Error Container
 interface IErrorContainer {
     public function isValid();
+    public function countErrors();
     public function setErrors(array $errors);
     public function addErrors(array $errors);
     public function addError($code, $message);
@@ -366,56 +367,60 @@ interface IErrorContainer {
 }
 
 trait TErrorContainer {
-    
+
     protected $_errors = [];
-    
+
     public function isValid() {
         return $this->hasErrors();
     }
-    
+
+    public function countErrors() {
+        return count($this->_errors);
+    }
+
     public function setErrors(array $errors) {
         $this->_errors = [];
         return $this->addErrors($errors);
     }
-    
+
     public function addErrors(array $errors) {
         foreach($errors as $code => $message) {
             $this->addError($code, $message);
-        }    
-        
+        }
+
         return $this;
     }
-    
+
     public function addError($code, $message) {
         $this->_errors[$code] = $message;
         return $this;
     }
-    
+
     public function getErrors() {
         return $this->_errors;
     }
-    
+
     public function getError($code) {
         if(isset($this->_errors[$code])) {
             return $this->_errors[$code];
         }
-        
+
         return null;
     }
-    
+
     public function hasErrors() {
         return !empty($this->_errors);
     }
-    
+
     public function hasError($code) {
         return isset($this->_errors[$code]);
     }
-    
+
     public function clearErrors() {
         $this->_errors = [];
         return $this;
     }
-    
+
     public function clearError($code) {
         unset($this->_errors[$code]);
         return $this;
@@ -436,44 +441,44 @@ interface IAttributeContainer {
 }
 
 trait TAttributeContainer {
-    
+
     protected $_attributes = [];
-    
+
     public function setAttributes(array $attributes) {
         $this->_attributes = [];
         return $this->addAttributes($attributes);
     }
-    
+
     public function addAttributes(array $attributes) {
         foreach($attributes as $key => $value){
             $this->setAttribute($key, $value);
         }
-        
+
         return $this;
     }
-    
+
     public function getAttributes() {
         return $this->_attributes;
     }
-    
+
     public function setAttribute($key, $value) {
         $this->_attributes[$key] = $value;
         return $this;
     }
-    
+
     public function getAttribute($key, $default=null) {
         if(isset($this->_attributes[$key])) {
             return $this->_attributes[$key];
         }
-        
+
         return $default;
     }
-    
+
     public function removeAttribute($key) {
         unset($this->_attributes[$key]);
         return $this;
     }
-    
+
     public function hasAttribute($key) {
         return isset($this->_attributes[$key]);
     }
@@ -488,15 +493,15 @@ trait TAttributeContainerArrayAccessProxy {
     public function offsetSet($key, $value) {
         return $this->setAttribute($key, $value);
     }
-    
+
     public function offsetGet($key) {
         return $this->getAttribute($key);
     }
-    
+
     public function offsetExists($key) {
         return $this->hasAttribute($key);
     }
-    
+
     public function offsetUnset($key) {
         return $this->removeAttribute($key);
     }

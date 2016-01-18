@@ -259,6 +259,16 @@ trait TForm {
         return true;
     }
 
+    public function countErrors() {
+        $output = $this->values->countErrors();
+
+        foreach($this->_delegates as $delegate) {
+            $output += $delegate->countErrors();
+        }
+
+        return $output;
+    }
+
     public function complete($success=true, $failure=null) {
         if($this->isValid() || ($success && !is_callable($success))) {
             $output = $default = null;
