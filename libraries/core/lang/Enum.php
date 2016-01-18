@@ -26,6 +26,10 @@ abstract class Enum implements IEnum, core\IDumpable {
     }
 
     public static function normalize($value) {
+        if(!strlen($value)) {
+            return null;
+        }
+
         return self::factory($value)->getOption();
     }
 

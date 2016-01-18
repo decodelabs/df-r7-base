@@ -25,6 +25,10 @@ abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
     }
 
     public function normalize($value) {
+        if(!strlen($value)) {
+            return null;
+        }
+
         return $this->factory($value)->getOption();
     }
 
