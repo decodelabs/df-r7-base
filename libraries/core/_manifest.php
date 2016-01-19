@@ -38,6 +38,9 @@ trait TStringProvider {
         } catch(\Exception $e) {
             core\debug()->exception($e);
             return '';
+        } catch(\Error $e) {
+            core\debug()->exception($e);
+            return '';
         }
     }
 }
