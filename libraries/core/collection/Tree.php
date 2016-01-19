@@ -399,6 +399,8 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
             return (string)$this->toString();
         } catch(\Exception $e) {
             return (string)$this->_value;
+        } catch(\Error $e) {
+            return (string)$this->_value;
         }
     }
 

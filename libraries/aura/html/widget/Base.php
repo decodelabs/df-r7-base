@@ -65,16 +65,22 @@ abstract class Base implements IWidget {
         try {
             return (string)$this->render();
         } catch(\Exception $e) {
-            core\debug()->exception($e);
-
-            $message = $this->esc('Error rendering widget '.$this->getWidgetName());
-
-            if(df\Launchpad::$application->isTesting()) {
-                $message .= $this->esc(' - '.$e->getMessage()).'<br /><code>'.$this->esc($e->getFile().' : '.$e->getLine()).'</code>';
-            }
-
-            return '<p class="error">'.$message.'</p>';
+            return $this->_renderStringError($e);
+        } catch(\Error $e) {
+            return $this->_renderStringError($e);
         }
+    }
+
+    protected function _renderStringError($e) {
+        core\debug()->exception($e);
+
+        $message = $this->esc('Error rendering widget '.$this->getWidgetName());
+
+        if(df\Launchpad::$application->isTesting()) {
+            $message .= $this->esc(' - '.$e->getMessage()).'<br /><code>'.$this->esc($e->getFile().' : '.$e->getLine()).'</code>';
+        }
+
+        return '<p class="error">'.$message.'</p>';
     }
 
     abstract protected function _render();

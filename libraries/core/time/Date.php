@@ -284,6 +284,8 @@ class Date implements IDate, core\IDumpable {
             return $this->toString();
         } catch(\Exception $e) {
             return '0000-00-00';
+        } catch(\Error $e) {
+            return '0000-00-00';
         }
     }
 

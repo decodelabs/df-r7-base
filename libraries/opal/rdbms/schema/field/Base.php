@@ -203,6 +203,8 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
             return $this->toString();
         } catch(\Exception $e) {
             return $this->_name.' '.strtoupper($this->_type);
+        } catch(\Error $e) {
+            return $this->_name.' '.strtoupper($this->_type);
         }
     }
 

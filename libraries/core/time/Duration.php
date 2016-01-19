@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 class Duration implements IDuration, core\IDumpable {
-    
+
     const MICROSECONDS = -2;
     const MILLISECONDS = -1;
     const SECONDS = 1;
@@ -31,15 +31,15 @@ class Duration implements IDuration, core\IDumpable {
         self::MONTHS => 2635200, // 30.5 days :)
         self::YEARS => 31449600
     ];
-    
+
     protected $_seconds = 0;
     protected $_locale = null;
-    
+
     public static function factory($time) {
         if($time instanceof IDuration) {
             return $time;
         }
-        
+
         return new self($time);
     }
 
@@ -87,31 +87,31 @@ class Duration implements IDuration, core\IDumpable {
     public static function fromMilliseconds($milliseconds) {
         return (new self(0))->setMilliseconds($milliseconds);
     }
-    
+
     public static function fromSeconds($seconds) {
         return new self($seconds);
     }
-    
+
     public static function fromMinutes($minutes) {
         return (new self(0))->setMinutes($minutes);
     }
-    
+
     public static function fromHours($hours) {
         return (new self(0))->setHours($hours);
     }
-    
+
     public static function fromDays($days) {
         return (new self(0))->setDays($days);
     }
-    
+
     public static function fromWeeks($weeks) {
         return (new self(0))->setWeeks($weeks);
     }
-    
+
     public static function fromMonths($months) {
         return (new self(0))->setMonths($months);
     }
-    
+
     public static function fromYears($years) {
         return (new self(0))->setYears($years);
     }
@@ -129,7 +129,7 @@ class Duration implements IDuration, core\IDumpable {
             self::YEARS   => self::getUnitString(self::YEARS, 1, $locale),
         ];
     }
-    
+
     public function __construct($time=0) {
         if($time instanceof IDuration) {
             $time = $time->getSeconds();
@@ -140,10 +140,10 @@ class Duration implements IDuration, core\IDumpable {
         if(is_string($time)) {
             $time = $this->_parseTime($time);
         }
-        
+
         $this->setSeconds($time);
     }
-    
+
     protected function _parseTime($time) {
         if(is_numeric($time)) {
             if((float)$time == $time) {
@@ -216,12 +216,12 @@ class Duration implements IDuration, core\IDumpable {
 
         return $output;
     }
-    
-    
+
+
     public function toDate() {
         return new Date(time() + (int)$this->_seconds);
     }
-    
+
     public function invert() {
         $this->_seconds *= -1;
         return $this;
@@ -240,209 +240,209 @@ class Duration implements IDuration, core\IDumpable {
     public function gt($duration) {
         return $this->_seconds > self::factory($duration)->_seconds;
     }
-    
+
     public function gte($duration) {
         return $this->_seconds >= self::factory($duration)->_seconds;
     }
-    
+
     public function lt($duration) {
         return $this->_seconds < self::factory($duration)->_seconds;
     }
-    
+
     public function lte($duration) {
         return $this->_seconds <= self::factory($duration)->_seconds;
     }
-    
-    
+
+
 // Microseconds
     public function setMicroseconds($us) {
         $this->_seconds = $us * self::$_multipliers[self::MICROSECONDS];
         return $this;
     }
-    
+
     public function getMicroseconds() {
         return $this->_seconds / self::$_multipliers[self::MICROSECONDS];
     }
-    
+
     public function addMicroseconds($us) {
         $this->_seconds += $us * self::$_multipliers[self::MICROSECONDS];
         return $this;
     }
-    
+
     public function subtractMicroseconds($us) {
         $this->_seconds -= $us * self::$_multipliers[self::MICROSECONDS];
         return $this;
     }
-    
+
 
 // Milliseconds
     public function setMilliseconds($ms) {
         $this->_seconds = $ms * self::$_multipliers[self::MILLISECONDS];
         return $this;
     }
-    
+
     public function getMilliseconds() {
         return $this->_seconds / self::$_multipliers[self::MILLISECONDS];
     }
-    
+
     public function addMilliseconds($ms) {
         $this->_seconds += $ms * self::$_multipliers[self::MILLISECONDS];
         return $this;
     }
-    
+
     public function subtractMilliseconds($ms) {
         $this->_seconds -= $ms * self::$_multipliers[self::MILLISECONDS];
         return $this;
     }
-    
-    
+
+
 // Seconds
     public function setSeconds($seconds) {
         $this->_seconds = $seconds;
         return $this;
     }
-    
+
     public function getSeconds() {
         return $this->_seconds;
     }
-    
+
     public function addSeconds($seconds) {
         $this->_seconds += $seconds;
         return $this;
     }
-    
+
     public function subtractSeconds($seconds) {
         $this->_seconds -= $seconds;
         return $this;
     }
-    
-    
+
+
 // Minutes
     public function setMinutes($minutes) {
         $this->_seconds = $minutes * self::$_multipliers[self::MINUTES];
         return $this;
     }
-    
+
     public function getMinutes() {
         return $this->_seconds / self::$_multipliers[self::MINUTES];
     }
-    
+
     public function addMinutes($minutes) {
         $this->_seconds += $minutes * self::$_multipliers[self::MINUTES];
         return $this;
     }
-    
+
     public function subtractMinutes($minutes) {
         $this->_seconds -= $minutes * self::$_multipliers[self::MINUTES];
         return $this;
     }
-    
-    
+
+
 // Hours
     public function setHours($hours) {
         $this->_seconds = $hours * self::$_multipliers[self::HOURS];
         return $this;
     }
-    
+
     public function getHours() {
         return $this->_seconds / self::$_multipliers[self::HOURS];
     }
-    
+
     public function addHours($hours) {
         $this->_seconds += $hours * self::$_multipliers[self::HOURS];
         return $this;
     }
-    
+
     public function subtractHours($hours) {
         $this->_seconds -= $hours * self::$_multipliers[self::HOURS];
         return $this;
     }
-    
-    
+
+
 // Days
     public function setDays($days) {
         $this->_seconds = $days * self::$_multipliers[self::DAYS];
         return $this;
     }
-    
+
     public function getDays() {
         return $this->_seconds / self::$_multipliers[self::DAYS];
     }
-    
+
     public function addDays($days) {
         $this->_seconds += $days * self::$_multipliers[self::DAYS];
         return $this;
     }
-    
+
     public function subtractDays($days) {
         $this->_seconds -= $days * self::$_multipliers[self::DAYS];
         return $this;
     }
-    
-    
+
+
 // Weeks
     public function setWeeks($weeks) {
         $this->_seconds = $weeks * self::$_multipliers[self::WEEKS];
         return $this;
     }
-    
+
     public function getWeeks() {
         return $this->_seconds / self::$_multipliers[self::WEEKS];
     }
-    
+
     public function addWeeks($weeks) {
         $this->_seconds += $weeks * self::$_multipliers[self::WEEKS];
         return $this;
     }
-    
+
     public function subtractWeeks($weeks) {
         $this->_seconds -= $weeks * self::$_multipliers[self::WEEKS];
         return $this;
     }
-    
-    
+
+
 // Months
     public function setMonths($months) {
         $this->_seconds = $months * self::$_multipliers[self::MONTHS];
         return $this;
     }
-    
+
     public function getMonths() {
         return $this->_seconds / self::$_multipliers[self::MONTHS];
     }
-    
+
     public function addMonths($months) {
         $this->_seconds += $months * self::$_multipliers[self::MONTHS];
         return $this;
     }
-    
+
     public function subtractMonths($months) {
         $this->_seconds -= $months * self::$_multipliers[self::MONTHS];
         return $this;
     }
-    
-    
+
+
 // Years
     public function setYears($years) {
         $this->_seconds = $years * self::$_multipliers[self::YEARS];
         return $this;
     }
-    
+
     public function getYears() {
         return $this->_seconds / self::$_multipliers[self::YEARS];
     }
-    
+
     public function addYears($years) {
         $this->_seconds += $years * self::$_multipliers[self::YEARS];
         return $this;
     }
-    
+
     public function subtractYears($years) {
         $this->_seconds -= $years * self::$_multipliers[self::YEARS];
         return $this;
     }
-    
-    
+
+
 // Locale
     public function setLocale($locale) {
         if($locale === null) {
@@ -450,14 +450,14 @@ class Duration implements IDuration, core\IDumpable {
         } else {
             $this->_locale = core\i18n\Locale::factory($locale);
         }
-        
+
         return $this;
     }
-    
+
     public function getLocale() {
         return $this->_locale;
     }
-    
+
 // Format
     public static function normalizeUnitId($id) {
         if(is_string($id)) {
@@ -615,7 +615,7 @@ class Duration implements IDuration, core\IDumpable {
             if($isNegative) {
                 $value *= -1;
             }
-            
+
             $round = false;
 
             if($roundLastUnit === false) {
@@ -647,11 +647,13 @@ class Duration implements IDuration, core\IDumpable {
 
         return $output;
     }
-    
+
     public function __toString() {
         try {
             return (string)$this->toString();
         } catch(\Exception $e) {
+            return '';
+        } catch(\Error $e) {
             return '';
         }
     }
@@ -688,7 +690,7 @@ class Duration implements IDuration, core\IDumpable {
                 return $this->getYears();
         }
     }
-    
+
     private function _createOutputArray($seconds, $maxUnits, $maxUnit, $all=false) {
         if($maxUnits <= 0) {
             $maxUnits = 1;
@@ -725,7 +727,7 @@ class Duration implements IDuration, core\IDumpable {
 
         return $output;
     }
-    
+
     protected function _addUnitString(core\i18n\IManager $i18n, $number, $unit, $shortUnits=false) {
         switch($unit) {
             case self::MICROSECONDS:
@@ -734,13 +736,13 @@ class Duration implements IDuration, core\IDumpable {
                     ['%n%' => $number]
                 );
 
-            case self::MILLISECONDS: 
+            case self::MILLISECONDS:
                 return $i18n->_(
                     '%n% ms',
                     ['%n%' => $number]
                 );
 
-            case self::SECONDS: 
+            case self::SECONDS:
                 if($shortUnits) {
                     return $i18n->_(
                         '%n% sc',
@@ -756,8 +758,8 @@ class Duration implements IDuration, core\IDumpable {
                         $number
                     );
                 }
-                
-            case self::MINUTES: 
+
+            case self::MINUTES:
                 if($shortUnits) {
                     return $i18n->_(
                         '%n% mn',
@@ -773,8 +775,8 @@ class Duration implements IDuration, core\IDumpable {
                         $number
                     );
                 }
-                
-            case self::HOURS: 
+
+            case self::HOURS:
                 if($shortUnits) {
                     return $i18n->_(
                         '%n% hr',
@@ -790,8 +792,8 @@ class Duration implements IDuration, core\IDumpable {
                         $number
                     );
                 }
-                
-            case self::DAYS:  
+
+            case self::DAYS:
                 if($shortUnits) {
                     return $i18n->_(
                         '%n% dy',
@@ -807,8 +809,8 @@ class Duration implements IDuration, core\IDumpable {
                         $number
                     );
                 }
-                
-            case self::WEEKS:   
+
+            case self::WEEKS:
                 if($shortUnits) {
                     return $i18n->_(
                         '%n% wk',
@@ -824,8 +826,8 @@ class Duration implements IDuration, core\IDumpable {
                         $number
                     );
                 }
-                
-            case self::MONTHS:   
+
+            case self::MONTHS:
                 if($shortUnits) {
                     return $i18n->_(
                         '%n% mo',
@@ -841,8 +843,8 @@ class Duration implements IDuration, core\IDumpable {
                         $number
                     );
                 }
-                
-            case self::YEARS:   
+
+            case self::YEARS:
                 if($shortUnits) {
                     return $i18n->_(
                         '%n% yr',
@@ -858,8 +860,8 @@ class Duration implements IDuration, core\IDumpable {
                         $number
                     );
                 }
-                
-            default:            
+
+            default:
                 return $number;
         }
     }

@@ -113,6 +113,8 @@ class Ip implements IIp, core\IDumpable {
             return $this->toString();
         } catch(\Exception $e) {
             return '0.0.0.0';
+        } catch(\Error $e) {
+            return '0.0.0.0';
         }
     }
 

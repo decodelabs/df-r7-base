@@ -408,6 +408,8 @@ class Color implements IColor, core\IDumpable {
             return $this->toCssString();
         } catch(\Exception $e) {
             return '';
+        } catch(\Error $e) {
+            return '';
         }
     }
 
