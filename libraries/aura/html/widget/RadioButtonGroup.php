@@ -27,14 +27,14 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
     protected $_labelClass = null;
     protected $_emptyLabel = null;
 
-    public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
+    public function __construct(arch\IContext $context, $name, $value=null, $options=null, $labelsAsValues=false) {
         parent::__construct($context);
 
         $this->setName($name);
         $this->setValue($value);
 
         if($options !== null) {
-            $this->addOptions($options);
+            $this->addOptions($options, $labelsAsValues);
         }
     }
 
