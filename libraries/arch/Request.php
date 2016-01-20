@@ -451,7 +451,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
                     return false;
                 }
 
-                if(!isset($request->_query->{$key}) || $request->_query[$key] != $value) {
+                if(!isset($request->_query->{$key}) || $request->_query[$key] != $value->getValue()) {
                     return false;
                 }
             }
