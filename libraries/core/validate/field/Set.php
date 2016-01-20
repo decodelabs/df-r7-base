@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,7 +7,7 @@ namespace df\core\validate\field;
 
 use df;
 use df\core;
-    
+
 class Set extends Base implements core\validate\IEnumField {
 
     protected $_options = [];
@@ -65,7 +65,9 @@ class Set extends Base implements core\validate\IEnumField {
         if($count && $this->_requireGroup !== null) {
             $this->validator->setRequireGroupFulfilled($this->_requireGroup);
         }
-        
+
+        $hasOptions = !empty($this->_options);
+
         foreach($value as $key => $keyValue) {
             if(trim($keyValue) === '') {
                 $this->_applyMessage($node->{$key}, 'required', $this->validator->_(
@@ -75,7 +77,8 @@ class Set extends Base implements core\validate\IEnumField {
                 continue;
             }
 
-            if(!in_array($keyValue, $this->_options)) {
+
+            if($hasOptions && !in_array($keyValue, $this->_options)) {
                 $this->_applyMessage($node->{$key}, 'invalid', $this->validator->_(
                     'This is not a valid option'
                 ));
@@ -83,17 +86,17 @@ class Set extends Base implements core\validate\IEnumField {
         }
 
         $value = $this->_applyCustomValidator($node, $value);
-        
+
         return $value;
     }
-    
+
     public function applyValueTo(&$record, $value) {
         if(!is_array($record) && !$record instanceof \ArrayAccess) {
             throw new RuntimeException(
                 'Target record does not implement ArrayAccess'
             );
         }
-        
+
         if(!is_array($value)) {
             $value = [$value];
         }
@@ -101,7 +104,7 @@ class Set extends Base implements core\validate\IEnumField {
         if($this->_stringDelimiter !== null) {
             $value = implode($this->_stringDelimiter, $value);
         }
-        
+
         $record[$this->getRecordName()] = $value;
         return $this;
     }
