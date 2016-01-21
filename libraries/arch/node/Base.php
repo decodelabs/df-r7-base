@@ -277,6 +277,8 @@ class Base implements INode, core\IDumpable {
                     $output = $this->executeAsHtml();
                 } else if(method_exists($this, 'execute')) {
                     $output = $this->execute();
+                } else {
+                    $output = null;
                 }
 
                 if($output instanceof aura\view\IView) {
