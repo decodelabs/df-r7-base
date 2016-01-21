@@ -65,6 +65,10 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
 
             $output = new aura\html\Element('label.'.$widgetClass.'Label', $label);
 
+            if($this->_isDisabled) {
+                $output->addClass('disabled');
+            }
+
             if($this->_labelClass) {
                 $output->addClass($this->_labelClass);
             }
