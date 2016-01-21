@@ -36,9 +36,9 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
         $output = new self(
             tempnam(
-                sys_get_temp_dir(), 
+                sys_get_temp_dir(),
                 df\Launchpad::$application->getUniquePrefix().'-'
-            ), 
+            ),
             $mode
         );
 
@@ -89,7 +89,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         if(is_string($from) && is_dir($from)) {
             return Dir::factory($from)->moveTo($to);
         }
-        
+
         return self::factory($from)->moveTo($to);
     }
 
@@ -144,7 +144,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
             $this->unlink();
         }
     }
-    
+
 // Info
     public function getChannelId() {
         return $this->_path;
@@ -153,7 +153,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
     public function getPath() {
         return $this->_path;
     }
-    
+
     public function isOnDisk() {
         // check path
         return true;
@@ -188,7 +188,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         if(!$this->_contentType) {
             $this->_contentType = Type::fileToMime($this->_path);
         }
-        
+
         return $this->_contentType;
     }
 
@@ -210,7 +210,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         $closeAfter = false;
 
         if(!$this->_fp) {
-            $closeAfter = true;    
+            $closeAfter = true;
             $this->open(Mode::WRITE_TRUNCATE);
         }
 
@@ -233,7 +233,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
         return $this;
     }
-    
+
     public function getContents() {
         $closeAfter = false;
 
@@ -346,7 +346,13 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         $this->close();
 
         if($exists) {
-            unlink($this->_path);
+            try {
+                unlink($this->_path);
+            } catch(\Exception $e) {
+                if($this->exists()) {
+                    throw $e;
+                }
+            }
         }
 
         return $this;
@@ -362,12 +368,12 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
             if($this->_mode->is($mode)) {
                 return $this;
             }
-            
+
             $this->close();
         }
-        
+
         $this->_mode = Mode::factory($mode);
-        
+
         /*
         if($this->_mode->is(Mode::READ_ONLY) && !is_readable($this->_path)) {
             throw new RuntimeException('File '.$this->_path.' is not readable!');
@@ -377,9 +383,9 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         if($this->_mode->canCreate() && !file_exists($this->_path)) {
             Dir::create(dirname($this->_path));
         }
-        
+
         $this->_fp = fopen($this->_path, $this->_mode->getLabel());
-        
+
         return $this;
     }
 
@@ -404,7 +410,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
             @fclose($this->_fp);
             $this->_fp = null;
         }
-        
+
         return $this;
     }
 
@@ -422,7 +428,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         } else {
             return flock($this->_fp, $type);
         }
-        
+
         return $this;
     }
 
@@ -513,7 +519,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
                 'File is not open: '.$this->_fp
             );
         }
-        
+
         return fread($this->_fp, $length);
     }
 
@@ -535,7 +541,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         || $output === false) {
             return false;
         }
-        
+
         return $output;
     }
 
