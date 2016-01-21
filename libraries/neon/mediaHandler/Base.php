@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\neon;
 use df\opal;
-    
+
 abstract class Base implements IMediaHandler {
 
     const REGISTRY_PREFIX = 'manager://mediaHandler';
@@ -44,7 +44,7 @@ abstract class Base implements IMediaHandler {
     public static function getEnabledHandlerList() {
         $config = Config::getInstance();
         $output = [];
-        
+
         foreach($config->getEnabledHandlers() as $name) {
             $class = 'df\\neon\\mediaHandler\\'.ucfirst($name);
 
@@ -65,6 +65,10 @@ abstract class Base implements IMediaHandler {
 
     public function transferFile($fileId, $versionId, $isActive, $filePath, $fileName) {
         return $this->publishFile($fileId, null, $versionId, $filePath, $fileName);
+    }
+
+    public function getEmbedUrl($fileId) {
+        return $this->getDownloadUri($fileId);
     }
 
     public function getImageUrl($fileId, $transformation=null) {

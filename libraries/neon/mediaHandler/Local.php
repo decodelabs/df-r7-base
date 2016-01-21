@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\neon\mediaHandler;
 use df;
 use df\core;
 use df\neon;
-    
+
 class Local extends Base implements ILocalDataHandler {
 
     public static function getDisplayName() {
@@ -29,6 +29,10 @@ class Local extends Base implements ILocalDataHandler {
 
     public function getDownloadUrl($fileId) {
         return '/media/download?file='.$fileId;
+    }
+
+    public function getEmbedUrl($fileId) {
+        return '/media/download?file='.$fileId.'&embed';
     }
 
     public function getVersionDownloadUrl($fileId, $versionId, $isActive) {

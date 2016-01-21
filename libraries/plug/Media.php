@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -13,7 +13,7 @@ use df\fire;
 use df\axis;
 use df\neon;
 use df\link;
-    
+
 class Media implements arch\IDirectoryHelper {
 
     use arch\TDirectoryHelper;
@@ -33,6 +33,11 @@ class Media implements arch\IDirectoryHelper {
             ->setDirectoryRequest(null);
     }
 
+    public function getEmbedUrl($fileId) {
+        return $this->context->uri($this->_model->getEmbedUrl($fileId))
+            ->setDirectoryRequest(null);
+    }
+
     public function getVersionDownloadUrl($fileId, $versionId, $isActive) {
         return $this->context->uri($this->_model->getVersionDownloadUrl($fileId, $versionId, $isActive))
             ->setDirectoryRequest(null);
@@ -48,29 +53,32 @@ class Media implements arch\IDirectoryHelper {
             ->setDirectoryRequest(null);
     }
 
-    public function fetchAndServeDownload($fileId) {
+    public function fetchAndServeDownload($fileId, $embed=false) {
         return $this->_serveVersionDownload(
-            $this->_model->fetchActiveVersionForDownload($fileId)
+            $this->_model->fetchActiveVersionForDownload($fileId),
+            $embed
         );
     }
 
-    public function fetchAndServeVersionDownload($versionId) {
+    public function fetchAndServeVersionDownload($versionId, $embed=false) {
         return $this->_serveVersionDownload(
-            $this->_model->fetchVersionForDownload($versionId)
+            $this->_model->fetchVersionForDownload($versionId),
+            $embed
         );
     }
 
-    protected function _serveVersionDownload(array $version) {
+    protected function _serveVersionDownload(array $version, $embed=false) {
         return $this->serveDownload(
-            $version['fileId'], 
-            $version['id'], 
+            $version['fileId'],
+            $version['id'],
             $version['isActive'],
             $version['contentType'],
-            $version['fileName']
+            $version['fileName'],
+            $embed
         );
     }
 
-    public function serveDownload($fileId, $versionId, $isActive, $contentType, $fileName) {
+    public function serveDownload($fileId, $versionId, $isActive, $contentType, $fileName, $embed=false) {
         $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
         $isUrl = $filePath instanceof link\http\IUrl;
 
@@ -83,7 +91,11 @@ class Media implements arch\IDirectoryHelper {
 
             $output = $this->context->http->fileResponse($filePath)
                 ->setContentType($contentType)
-                ->setAttachmentFileName($fileName);
+                ;
+
+            if(!$embed) {
+                $output->setAttachmentFileName($fileName);
+            }
 
             $output->getHeaders()
                 ->set('Access-Control-Allow-Origin', '*')
@@ -91,7 +103,7 @@ class Media implements arch\IDirectoryHelper {
                 ->canStoreCache(true)
                 ->setCacheExpiration('+1 year');
         }
-        
+
         return $output;
     }
 
@@ -115,8 +127,8 @@ class Media implements arch\IDirectoryHelper {
         }
 
         return $this->serveImage(
-            $version['fileId'], 
-            $version['id'], 
+            $version['fileId'],
+            $version['id'],
             $version['isActive'],
             $version['contentType'],
             $transformation,
@@ -140,7 +152,7 @@ class Media implements arch\IDirectoryHelper {
                 ->canStoreCache(true)
                 ->setCacheExpiration('+1 year');
         }
-        
+
         return $output;
     }
 

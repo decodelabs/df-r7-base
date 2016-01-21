@@ -355,6 +355,10 @@ class Model extends axis\Model {
         return $this->getMediaHandler()->getDownloadUrl($this->_normalizeId($fileId));
     }
 
+    public function getEmbedUrl($fileId) {
+        return $this->getMediaHandler()->getEmbedUrl($this->_normalizeId($fileId));
+    }
+
     public function getVersionDownloadUrl($fileId, $versionId, $isActive) {
         return $this->getMediaHandler()->getVersionDownloadUrl($this->_normalizeId($fileId), $this->_normalizeId($versionId), $isActive);
     }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -14,7 +14,7 @@ interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 
 
-// Interfaces    
+// Interfaces
 interface IMediaHandler extends core\IManager {
     public function getName();
     public static function getDisplayName();
@@ -26,6 +26,7 @@ interface IMediaHandler extends core\IManager {
     public function deleteFile($fileId);
 
     public function getDownloadUrl($fileId);
+    public function getEmbedUrl($fileId);
     public function getVersionDownloadUrl($fileId, $versionId, $isActive);
     public function getImageUrl($fileId, $transformation=null);
     public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null);
