@@ -101,6 +101,7 @@ abstract class Base implements axis\schema\ITranslator {
             }
         }
 
+        $this->_unit->customizeTranslatedSchema($this->_targetSchema);
         return $this->_targetSchema;
     }
 

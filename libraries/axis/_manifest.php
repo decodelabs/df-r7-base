@@ -310,6 +310,7 @@ interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\
     public function ensureStorage();
     public function createStorageFromSchema(axis\schema\ISchema $schema);
     public function updateStorageFromSchema(axis\schema\ISchema $schema);
+    public function customizeTranslatedSchema(opal\schema\ISchema $schema);
 
     public function getDefinedUnitSchemaVersion();
 
@@ -373,6 +374,10 @@ trait TSchemaBasedStorageUnit {
         }
 
         return $this->_recordKeyName;
+    }
+
+    public function customizeTranslatedSchema(opal\schema\ISchema $schema) {
+        return $schema;
     }
 }
 
