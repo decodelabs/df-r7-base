@@ -63,20 +63,20 @@ class Type {
         'ustar' => 'application/x-ustar',
         'src' => 'application/x-wais-source',
         'xspf' => 'application/xspf+xml',
-    
-        
+
+
     // Archives
         'gtar' => 'application/x-gtar',
         'rar' => 'application/x-rar-compessed',
         'sit' => 'application/x-stuffit',
         'tar' => 'application/x-tar',
         'zip' => 'application/zip',
-    
+
     // Web scripts
         'atom' => 'application/atom+xml',
         'json' => 'application/json',
         'mathml' => 'application/mathml+xml',
-        'rdf' => 'application/rdf+xml', 
+        'rdf' => 'application/rdf+xml',
         'xhtml' => 'application/xhtml+xml',
         'xht' => 'application/xhtml+xml',
         'xslt' => 'application/xslt+xml',
@@ -85,7 +85,8 @@ class Type {
         'dtd' => 'application/xml-dtd',
         'map' => 'application/json',
         'sql' => 'application/x-sql',
-    
+        'htc' => 'text/x-component',
+
     // Office
         'doc' => 'application/msword',
         'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -99,7 +100,7 @@ class Type {
         'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
         'odt' => 'application/vnd.oasis.opendocument.text',
         'odg' => 'application/vnd.oasis.opendocument.graphics',
-    
+
     // Multimedia
         'anx' => 'application/annodex',
         'ogx' => 'application/ogg',
@@ -112,9 +113,9 @@ class Type {
         'dxr' => 'application/x-director',
         'dvi' => 'application/x-dvi',
         'spl' => 'application/x-futuresplash',
-        'vcd' => 'application/x-cdlink',    
+        'vcd' => 'application/x-cdlink',
         'swf' => 'application/x-shockwave-flash',
-    
+
 
     // Fonts
         'eot' => 'application/vnd.ms-fontobject',
@@ -152,11 +153,11 @@ class Type {
         'wax' => 'audio/x-ms-wax',
         'rm' => 'application/vnd.rn-realmedia',
         'wav' => 'audio/x-wav',
-    
+
     // Chemical
         'pdb' => 'chemical/x-pdb',
         'xyz' => 'chemical/x-xyz',
-    
+
     // Image
         'art' => 'image/x-jg',
         'arw' => 'image/sonyrawfile',
@@ -192,7 +193,7 @@ class Type {
         'xpm' => 'image/x-xpixmap',
         'xwd' => 'image/x-xwindowdump',
         'drw' => 'application/drafting',
-    
+
     // Model
         'igs' => 'model/iges',
         'iges' => 'model/iges',
@@ -201,7 +202,7 @@ class Type {
         'silo' => 'model/mesh',
         'wrl' => 'model/vrml',
         'vrml' => 'model/vrml',
-    
+
     // Text
         'ics' => 'text/calendar',
         'ifb' => 'text/calendar',
@@ -222,7 +223,7 @@ class Type {
         'etx' => 'text/x-setext',
         'sass' => 'text/x-sass',
         'scss' => 'text/x-scss',
-    
+
     // Video
         '3g2' => 'video/3ppg2',
         '3gp2' => 'video/3ppg2',
@@ -249,7 +250,7 @@ class Type {
 
     public static function extToMime($extension, $default='application/octet-stream') {
         $extension = strtolower($extension);
-        
+
         if(array_key_exists($extension, self::$types)) {
             return self::$types[$extension];
         } else {
@@ -259,11 +260,11 @@ class Type {
 
     public static function fileToMime($file) {
         $extension = pathinfo((string)$file, \PATHINFO_EXTENSION);
-        
+
         if(empty($extension)) {
-            return 'application/octet-stream';  
+            return 'application/octet-stream';
         }
-        
+
         return self::extToMime($extension);
     }
 
