@@ -27,7 +27,8 @@ class EventButton extends Button {
         }
 
         $parts = explode('.', $event);
-        $this->addClass(array_pop($parts));
+        $parts = explode('(', array_pop($parts));
+        $this->addClass(array_shift($parts));
 
         return parent::_render();
     }
