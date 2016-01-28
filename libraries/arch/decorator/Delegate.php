@@ -108,6 +108,10 @@ abstract class Delegate implements IDelegateDecorator {
         return $this->delegate->isValid();
     }
 
+    final public function countErrors() {
+        return $this->delegate->countErrors();
+    }
+
     final public function fieldName($name) {
         return $this->delegate->fieldName($name);
     }
