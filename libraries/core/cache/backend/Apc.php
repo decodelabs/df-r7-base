@@ -13,6 +13,7 @@ class Apc implements core\cache\IBackend {
 
     use core\TValueMap;
 
+    protected static $_ext = null;
     protected static $_apcu = null;
     protected static $_setKey = null;
 
@@ -21,14 +22,37 @@ class Apc implements core\cache\IBackend {
     protected $_cache;
     protected $_isCli = false;
 
+    protected static function _extensionLoaded() {
+        if(self::$_ext === null) {
+            if(extension_loaded('apc')) {
+                self::$_ext = 'apc';
+            } else if(extension_loaded('apcu')) {
+                self::$_ext = 'apcu';
+            } else {
+                self::$_ext = false;
+                return false;
+            }
+
+            if(self::$_apcu === null) {
+                self::$_apcu = version_compare(PHP_VERSION, '5.5.0') >= 0;
+            }
+        }
+
+        return (bool)self::$_ext;
+    }
+
     public static function purgeApp(core\collection\ITree $options) {
-        if(extension_loaded('apc') && !(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli'))) {
+        if(self::_extensionLoaded() && !(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli'))) {
             $prefix = df\Launchpad::$application->getUniquePrefix().'-';
             $list = self::_getCacheList();
 
             foreach($list as $set) {
                 if(0 === strpos($set[self::$_setKey], $prefix)) {
-                    @apc_delete($set[self::$_setKey]);
+                    if(self::$_ext == 'apcu') {
+                        @apcu_delete($set[self::$_setKey]);
+                    } else {
+                        @apc_delete($set[self::$_setKey]);
+                    }
                 }
             }
         }
@@ -40,8 +64,10 @@ class Apc implements core\cache\IBackend {
     }
 
     public static function purgeAll(core\collection\ITree $options) {
-        if(extension_loaded('apc')) {
-            if(self::$_apcu) {
+        if(self::_extensionLoaded()) {
+            if(self::$_ext == 'apcu') {
+                apcu_clear_cache();
+            } else if(self::$_apcu) {
                 apc_clear_cache();
             } else {
                 apc_clear_cache('user');
@@ -60,7 +86,7 @@ class Apc implements core\cache\IBackend {
     }
 
     public static function clearFor(core\collection\ITree $options, core\cache\ICache $cache) {
-        if(!extension_loaded('apc')) {
+        if(!self::_extensionLoaded()) {
             return;
         }
 
@@ -68,11 +94,7 @@ class Apc implements core\cache\IBackend {
     }
 
     public static function isLoadable() {
-        if(self::$_apcu === null) {
-            self::$_apcu = version_compare(PHP_VERSION, '5.5.0') >= 0;
-        }
-
-        if($output = extension_loaded('apc')) {
+        if($output = self::_extensionLoaded()) {
             if(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli')) {
                 $output = false;
             }
@@ -86,6 +108,11 @@ class Apc implements core\cache\IBackend {
         $this->_lifeTime = $lifeTime;
         $this->_prefix = df\Launchpad::$application->getUniquePrefix().'-'.$cache->getCacheId().':';
         $this->_isCli = php_sapi_name() == 'cli';
+        self::_extensionLoaded();
+
+        if(!self::$_ext) {
+            throw new core\cache\Exception('No apc extension');
+        }
     }
 
     public function getConnectionDescription() {
@@ -93,7 +120,9 @@ class Apc implements core\cache\IBackend {
     }
 
     public function getStats() {
-        if(self::$_apcu) {
+        if(self::$_ext == 'apcu') {
+            $info = apcu_cache_info();
+        } else if(self::$_apcu) {
             $info = apc_cache_info();
         } else {
             $info = apc_cache_info('user');
@@ -125,7 +154,7 @@ class Apc implements core\cache\IBackend {
             $lifeTime = $this->_lifeTime;
         }
 
-        return @apc_store(
+        return call_user_func(self::$_ext.'_store',
             $this->_prefix.$key,
             [serialize($value), time()],
             $lifeTime
@@ -133,7 +162,7 @@ class Apc implements core\cache\IBackend {
     }
 
     public function get($key, $default=null) {
-        $val = apc_fetch($this->_prefix.$key);
+        $val = call_user_func(self::$_ext.'_fetch', $this->_prefix.$key);
 
         if(is_array($val)) {
             return unserialize($val[0]);
@@ -143,11 +172,11 @@ class Apc implements core\cache\IBackend {
     }
 
     public function has($key) {
-        return is_array(apc_fetch($this->_prefix.$key));
+        return is_array(call_user_func(self::$_ext.'_fetch', $this->_prefix.$key));
     }
 
     public function remove($key) {
-        $output = @apc_delete($this->_prefix.$key);
+        $output = @call_user_func(self::$_ext.'_delete', $this->_prefix.$key);
 
         /*
         if($this->_isCli) {
@@ -162,7 +191,7 @@ class Apc implements core\cache\IBackend {
         if(!($this->_isCli && !ini_get('apc.enable_cli'))) {
             foreach($this->_getCacheList() as $set) {
                 if(0 === strpos($set[self::$_setKey], $this->_prefix)) {
-                    @apc_delete($set[self::$_setKey]);
+                    @call_user_func(self::$_ext.'_delete', $set[self::$_setKey]);
                 }
             }
         }
@@ -175,7 +204,7 @@ class Apc implements core\cache\IBackend {
 
         foreach($this->_getCacheList() as $set) {
             if(0 === strpos($set[self::$_setKey], $this->_prefix.$key)) {
-                @apc_delete($set[self::$_setKey]);
+                @call_user_func(self::$_ext.'_delete', $set[self::$_setKey]);
             }
         }
 
@@ -189,7 +218,7 @@ class Apc implements core\cache\IBackend {
         foreach($this->_getCacheList() as $set) {
             if(0 === strpos($set[self::$_setKey], $this->_prefix)
             && preg_match($regex, substr($set[self::$_setKey], $prefixLength))) {
-                @apc_delete($set[self::$_setKey]);
+                @call_user_func(self::$_ext.'_delete', $set[self::$_setKey]);
             }
         }
 
@@ -223,7 +252,7 @@ class Apc implements core\cache\IBackend {
     }
 
     public function getCreationTime($key) {
-        $val = apc_fetch($this->_prefix.$key);
+        $val = call_user_func(self::$_ext.'_fetch', $this->_prefix.$key);
 
         if(is_array($val)) {
             return $val[1];
@@ -233,7 +262,9 @@ class Apc implements core\cache\IBackend {
     }
 
     protected static function _getCacheList() {
-        if(self::$_apcu) {
+        if(self::$_ext === 'apcu') {
+            $info = apcu_cache_info();
+        } else if(self::$_apcu) {
             $info = apc_cache_info();
         } else {
             $info = apc_cache_info('user');
