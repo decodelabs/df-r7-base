@@ -100,6 +100,10 @@ abstract class Base implements IProcess {
             $binaryPath = halo\system\Base::getInstance()->which('php');
         }
 
+        if(!file_exists($binaryPath)) {
+            $binaryPath = 'php';
+        }
+
         $phpName = basename($binaryPath);
         $phpPath = null;
 
