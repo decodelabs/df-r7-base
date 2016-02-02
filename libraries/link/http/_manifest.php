@@ -41,7 +41,7 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     public function isOptions();
     public function isConnect();
     public function isMerge();
-    
+
     // Url
     public function setUrl($url);
     public function getUrl();
@@ -51,23 +51,23 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     public function setOptions(IRequestOptions $options);
     public function getOptions();
     public function withOptions($callback);
-    
+
     // Headers
     public function isCachedByClient();
     public function withHeaders($callback);
-    
+
     // Post
     public function setPostData($post);
     public function getPostData();
     public function getPostDataString();
     public function hasPostData();
-    
+
     // Body
     public function setBodyData($data);
     public function getBodyData();
     public function getBodyDataString();
     public function hasBodyData();
-    
+
     // Cookies
     public function setCookieData($cookies);
     public function getCookies();
@@ -76,7 +76,7 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     public function getCookie($key, $default=null);
     public function hasCookie($key);
     public function removeCookie($key);
-    
+
     // Ip
     public function setIp($ip);
     public function getIp();
@@ -147,20 +147,20 @@ interface IRequestOptions {
 
 
 trait THeaderCollection {
-    
+
     protected $_httpVersion = '1.1';
-        
+
     public function setHttpVersion($version) {
         if(!preg_match('|^\d\.\d$|', $version)) {
             throw new link\http\UnexpectedValueException(
                 $version.' is not a valid http version'
             );
         }
-        
+
         $this->_httpVersion = $version;
         return $this;
     }
-    
+
     public function getHttpVersion() {
         return $this->_httpVersion;
     }
@@ -184,20 +184,23 @@ interface IResponse extends core\collection\IHeaderMapProvider, core\lang\IChain
     public function isForbidden();
     public function isMissing();
     public function isError();
-    
+
     // Content
     public function getContent();
     public function getEncodedContent();
     public function getContentFileStream();
     public function onDispatchComplete();
-    
+
     // Info
     public function getContentType();
     public function setContentType($contentType);
     public function getContentLength();
     public function getLastModified();
-    
-    // Attachment
+
+    // Disposition
+    public function setFileName($fileName, $isAttachment=null);
+    public function getFileName();
+    public function isAttachment($flag=null);
     public function setAttachmentFileName($fileName);
     public function getAttachmentFileName();
 
@@ -268,10 +271,10 @@ trait TStringResponse {
                 ->canStoreCache(false)
                 ->shouldRevalidateCache(true);
         }
-        
+
         return $this->_headers;
     }
-    
+
     public function setHeaders(core\collection\IHeaderMap $headers) {
         $this->_headers = $headers;
         return $this;
@@ -299,28 +302,28 @@ trait TStringResponse {
         if(!$this->_cookies) {
             $this->_cookies = new CookieCollection();
         }
-        
+
         return $this->_cookies;
     }
-    
+
     public function hasCookies() {
         return $this->_cookies && !$this->_cookies->isEmpty();
     }
 
     public function getEncodedContent() {
         $content = $this->getContent();
-        
+
         if(!$this->_headers || empty($content)) {
             return $content;
         }
-        
+
         $contentEncoding = $this->_headers->get('content-encoding');
         $transferEncoding = $this->_headers->get('transfer-encoding');
-        
+
         if(!$contentEncoding && !$transferEncoding) {
             return $content;
         }
-        
+
         return link\http\response\Base::encodeContent(
             $content, $contentEncoding, $transferEncoding
         );
@@ -329,33 +332,52 @@ trait TStringResponse {
     public function getContentFileStream() {
         return new core\fs\MemoryFile($this->getContent(), $this->getContentType());
     }
-    
+
     public function getContentLength() {
         return strlen($this->getContent());
     }
-    
+
     public function setLastModified(core\time\IDate $date) {
         $this->getHeaders()->set('last-modified', $date);
         return $this;
     }
-    
+
     public function getLastModified() {
         if($this->_headers && $this->_headers->has('last-modified')) {
             return core\time\Date::factory($this->_headers->get('last-modified'));
         }
-        
+
         return new core\time\Date();
     }
-    
+
     public function getHeaderString(array $skipKeys=null) {
         $this->prepareHeaders();
         return link\http\response\Base::buildHeaderString($this->_headers);
     }
-    
+
     public function getResponseString() {
         $output = $this->getHeaderString()."\r\n\r\n";
         $output .= $this->getEncodedContent()."\r\n";
-                  
+
+        return $output;
+    }
+
+    public function setFileName($fileName, $isAttachment=null) {
+        $this->getHeaders()->setFileName($fileName, $isAttachment);
+        return $this;
+    }
+
+    public function getFileName() {
+        return $this->getHeaders()->getFileName();
+    }
+
+    public function isAttachment($flag=null) {
+        $output = $this->getHeaders()->isAttachment($flag);
+
+        if($flag !== null) {
+            return $this;
+        }
+
         return $output;
     }
 
@@ -393,13 +415,13 @@ interface IResponseAugmentor {
 
     // Cookies
     public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null);
-    
+
     public function setCookieForCurrentRequest(ICookie $cookie);
     public function removeCookieForCurrentRequest($cookie);
-    
+
     public function setCookieForAnyRequest(ICookie $cookie);
     public function removeCookieForAnyRequest($cookie);
-    
+
     public function getCookieCollectionForCurrentRequest();
     public function getCookieCollectionForAnyRequest();
 }
@@ -415,7 +437,7 @@ interface IResponseHeaderCollection {
     // Version
     public function setHttpVersion($version);
     public function getHttpVersion();
-    
+
     // Status
     public function setStatusCode($code);
     public function getStatusCode();
@@ -425,7 +447,7 @@ interface IResponseHeaderCollection {
     public function hasStatusCode($code);
     public function setStatusMessage($message);
     public function getStatusMessage();
-    
+
     // Cache
     public function getCacheControl();
     public function setCacheAccess($access='private');
@@ -438,11 +460,16 @@ interface IResponseHeaderCollection {
     public function getCacheExpiration();
     public function getCacheStartDate(link\http\IRequest $request);
     public function isCached(link\http\IRequest $request);
-    
-    // Send
-    public function send();
+
+    // Disposition
+    public function setFileName($fileName, $isAttachment=false);
+    public function getFileName();
+    public function isAttachment($flag=null);
     public function setAttachmentFileName($fileName);
     public function getAttachmentFileName();
+
+    // Send
+    public function send();
 }
 
 
@@ -587,9 +614,9 @@ interface IClient extends IRequestHandler {
     public function promiseHead($url, $callback=null);
     public function promiseOptions($url, $callback=null);
     public function promisePatch($url, $data, $callback=null);
-    
+
     public function sendRequest(IRequest $request);
-    
+
     public function prepareRequest(IRequest $request);
     public function prepareResponse(IResponse $response, IRequest $request);
 

@@ -91,11 +91,8 @@ class Media implements arch\IDirectoryHelper {
 
             $output = $this->context->http->fileResponse($filePath)
                 ->setContentType($contentType)
+                ->setFileName($fileName, !$embed)
                 ;
-
-            if(!$embed) {
-                $output->setAttachmentFileName($fileName);
-            }
 
             $output->getHeaders()
                 ->set('Access-Control-Allow-Origin', '*')

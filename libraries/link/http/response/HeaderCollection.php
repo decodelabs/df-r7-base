@@ -10,9 +10,9 @@ use df\core;
 use df\link;
 
 class HeaderCollection extends core\collection\HeaderMap implements link\http\IResponseHeaderCollection {
-    
+
     use link\http\THeaderCollection;
-    
+
     protected static $_messages = [
         // Informational 1xx
         100 => 'Continue',
@@ -66,10 +66,10 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         505 => 'HTTP Version Not Supported',
         509 => 'Bandwidth Limit Exceeded'
     ];
-    
+
     protected $_statusCode = 200;
     protected $_statusMessage = null;
-    
+
     public static function isValidStatusCode($code) {
         return isset(self::$_messages[$code]);
     }
@@ -81,7 +81,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
             return $code;
         }
     }
-    
+
     public static function statusCodeToMessage($code) {
         if(self::isValidStatusCode($code)) {
             return self::$_messages[$code];
@@ -89,7 +89,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
             return $code;
         }
     }
-    
+
     private static function _getStatusCodeCategory($code) {
         if(self::isValidStatusCode($code)) {
             return substr($code,0,1);
@@ -134,26 +134,26 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
     public static function fromResponseArray(array $lines) {
         $output = new self();
         $http = array_shift($lines);
-        
+
         if(!preg_match("|^HTTP/([\d\.x]+) (\d+) ([^\r\n]+)|", $http, $matches)) {
             throw new link\http\UnexpectedValueException(
                 'Headers do not appear to be valid HTTP format'
             );
         }
-        
+
         $output->setHttpVersion($matches[1]);
         $output->setStatusCode($matches[2]);
         $output->setStatusMessage($matches[3]);
-        
+
         foreach($lines as $line) {
             $output->add(trim(strtok(trim($line), ':')), trim(strtok('')));
         }
 
         return $output;
     }
-    
-    
-    
+
+
+
 // Status
     public function setStatusCode($code) {
         if(!self::isValidStatusCode($code)) {
@@ -161,70 +161,70 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
                 $code.' is not a valid http response code'
             );
         }
-        
+
         $this->_statusCode = (int)$code;
         return $this;
     }
-    
+
     public function getStatusCode() {
         return $this->_statusCode;
     }
-    
+
     public function hasErrorStatusCode() {
         return $this->_statusCode >= 400;
     }
-    
+
     public function hasSuccessStatusCode() {
         return $this->_statusCode < 300;
     }
-    
+
     public function hasRedirectStatusCode() {
         return $this->_statusCode >= 300 && $this->_statusCode < 400;
     }
-    
+
     public function hasStatusCode($code) {
         return in_array($this->_statusCode, func_get_args());
     }
-    
+
     public function setStatusMessage($message) {
         $this->_statusMessage = $message;
         return $this;
     }
-    
+
     public function getStatusMessage() {
         if($this->_statusMessage) {
             return $this->_statusMessage;
         }
-        
+
         if(isset(self::$_messages[$this->_statusCode])) {
             return self::$_messages[$this->_statusCode];
         }
-        
+
         return null;
     }
-    
-    
+
+
 // Cache
     public function getCacheControl() {
         $output = $this->get('cache-control');
-        
+
         if(!$output instanceof CacheControl) {
             $output = new CacheControl($output);
             $this->set('cache-control', $output);
         }
-        
+
         return $output;
     }
-    
+
     public function setCacheAccess($access='private') {
         if(is_string($access)) {
             $access = strtolower($access);
         } else if($access === true) {
             $access = 'public';
         }
-        
+
         $cacheControl = $this->getCacheControl();
-        
+
         switch($access) {
             case 'public':
             case 'private':
@@ -233,67 +233,67 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
                 $cacheControl->setAccess($access);
                 $this->remove('pragma');
                 break;
-                
+
             case 'no-cache':
                 $cacheControl->setAccess($access);
                 $this->set('pragma', 'no-cache');
                 break;
-                
+
             default:
                 break;
         }
-        
+
         return $this;
     }
-    
+
     public function getCacheAccess() {
         return $this->getCacheControl()->getAccess();
     }
-    
+
     public function canStoreCache($flag=null) {
         $cacheControl = $this->getCacheControl();
-        
+
         if($flag !== null) {
             $cacheControl->canStore((bool)$flag);
             return $this;
         }
-        
+
         return $cacheControl->canStore();
     }
-    
+
     public function canTransformCache($flag=null) {
         $cacheControl = $this->getCacheControl();
-        
+
         if($flag !== null) {
             $cacheControl->canTransform((bool)$flag);
             return $this;
         }
-        
+
         return $cacheControl->canTransform();
     }
-    
+
     public function shouldRevalidateCache($flag=null) {
         $cacheControl = $this->getCacheControl();
-        
+
         if($flag !== null) {
             $cacheControl->shouldRevalidate((bool)$flag);
             return $this;
         }
-        
+
         return $cacheControl->shouldRevalidate();
     }
-    
+
     public function shouldRevalidateProxyCache($flag=null) {
         $cacheControl = $this->getCacheControl();
-        
+
         if($flag !== null) {
             $cacheControl->shouldRevalidateProxy((bool)$flag);
             return $this;
         }
-        
+
         return $cacheControl->shouldRevalidateProxy();
     }
-    
+
     public function setCacheExpiration($duration=null) {
         $now = new core\time\Date();
 
@@ -311,20 +311,20 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         }
 
         $this->getCacheControl()->setExpiration($duration);
-        
+
         if($duration !== null) {
-            $this->set('expires', $then); 
+            $this->set('expires', $then);
         } else {
             $this->remove('expires');
         }
-        
+
         return $this;
     }
-    
+
     public function getCacheExpiration() {
         return $this->getCacheControl()->getExpiration();
     }
-    
+
     public function setSharedCacheExpiration($duration=null) {
         if(!is_int($duration) && $duration !== null) {
             $now = new core\time\Date();
@@ -339,71 +339,103 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         $this->getCacheControl()->setSharedExpiration($duration);
         return $this;
     }
-    
+
     public function getSharedCacheExpiration() {
         return $this->getCacheControl()->getSharedExpiration();
     }
-    
+
     public function getCacheStartDate(link\http\IRequest $request) {
         $headers = $request->getHeaders();
-        
+
         if(!$request->isPost() && $headers->has('if-modified-since')) {
             $parts = explode(';', $headers->get('if-modified-since'));
             return new core\time\Date(current($parts));
         }
-        
+
         return new core\time\Date();
     }
-    
+
     public function isCached(link\http\IRequest $request) {
         if(!$request->isCachedByClient()) {
             return false;
         }
-        
+
         if(!$lastModified = $this->get('last-modified')) {
             return false;
         }
-        
+
         $lastModified = core\time\Date::factory($lastModified)->toTimestamp();
-        return $this->getCacheStartDate($request)->toTimestamp() >= $lastModified; 
+        return $this->getCacheStartDate($request)->toTimestamp() >= $lastModified;
     }
-    
-    
-    
-// Send
-    public function send() {
-        header('HTTP/'.$this->getHttpVersion().' '.$this->getStatusCode().' '.$this->getStatusMessage());
-        
-        foreach($this->getLines() as $line) {
-            header($line, false);
-        }
-        
-        return $this;
-    }
-    
-    public function setAttachmentFileName($fileName) {
+
+
+// Disposition
+    public function setFileName($fileName, $isAttachment=null) {
         if($fileName === null) {
             $this->remove('content-disposition');
         } else {
-            $this->set('content-disposition', 'attachment; filename="'.$fileName.'"');
+            if($isAttachment === null) {
+                $isAttachment = $this->isAttachment();
+            }
+
+            $this->set('content-disposition', ($isAttachment ? 'attachment' : 'inline').'; filename="'.$fileName.'"');
         }
-        
+
         return $this;
     }
-    
-    public function getAttachmentFileName() {
+
+    public function getFileName() {
         if(!$this->has('content-disposition')) {
             return null;
         }
-        
-        return trim(substr($this->get('content-disposition'), 21), '\'"');
+
+        return $this->getNamedValue('content-disposition', 'filename');
     }
-    
-    
+
+    public function isAttachment($flag=null) {
+        if($flag !== null) {
+            if(!$flag) {
+                $this->set('content-disposition', 'inline');
+            } else {
+                if(null === ($fileName = $this->getFileName())) {
+                    $fileName = uniqid('download-');
+                }
+
+                $this->setFileName($fileName, true);
+            }
+
+            return $this;
+        }
+
+        return strtolower($this->getBase('content-disposition')) == 'attachment';
+    }
+
+    public function setAttachmentFileName($fileName) {
+        return $this->setFileName($fileName, true);
+    }
+
+    public function getAttachmentFileName() {
+        return $this->getFileName();
+    }
+
+
+
+
+// Send
+    public function send() {
+        header('HTTP/'.$this->getHttpVersion().' '.$this->getStatusCode().' '.$this->getStatusMessage());
+
+        foreach($this->getLines() as $line) {
+            header($line, false);
+        }
+
+        return $this;
+    }
+
     public function getDumpProperties() {
         $output = parent::getDumpProperties();
-        
-        array_unshift($output, 
+
+        array_unshift($output,
             new core\debug\dumper\Property(
                 'httpVersion', $this->_httpVersion, 'private'
             ),
@@ -411,7 +443,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
                 'statusCode', $this->_statusCode, 'private'
             )
         );
-        
+
         return $output;
     }
 }

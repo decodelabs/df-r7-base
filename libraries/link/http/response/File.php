@@ -34,7 +34,12 @@ class File extends Base implements link\http\IFileResponse {
         }
 
         $this->_file = $file;
-        $this->getHeaders()
+
+        if(!$this->headers->has('content-disposition')) {
+            $this->headers->setFileName(basename($this->_file->getPath()));
+        }
+
+        $this->headers
             ->set('content-type', $this->_file->getContentType())
             //->set('content-length', $this->_file->getSize())
             ->set('last-modified', core\time\Date::factory($this->_file->getLastModified()));
