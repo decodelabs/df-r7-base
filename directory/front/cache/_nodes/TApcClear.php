@@ -12,6 +12,7 @@ use df\arch;
 
 trait TApcClear {
 
+    protected static $_ext;
     protected static $_apcu;
     protected static $_setKey;
 
@@ -39,7 +40,17 @@ trait TApcClear {
             $prefix = $this->application->getUniquePrefix().'-'.$cacheId.':';
         }
 
-        self::$_apcu = version_compare(PHP_VERSION, '5.5.0') >= 0;
+        if(extension_loaded('apc')) {
+            self::$_ext = 'apc';
+        } else if(extension_loaded('apcu')) {
+            self::$_ext = 'apcu';
+        } else {
+            $this->io->writeLine('APC is not enabled');
+            return false;
+        }
+
+        self::$_apcu = extension_loaded('apcu');
+
         $count = 0;
 
         if($isPurge) {
@@ -51,13 +62,15 @@ trait TApcClear {
                 foreach($list as $set) {
                     if(0 === strpos($set[self::$_setKey], $prefix)) {
                         $count++;
-                        @apc_delete($set[self::$_setKey]);
+                        @call_user_func(self::$_ext.'_delete', $set[self::$_setKey]);
                     }
                 }
             } else {
                 $count = count($list);
 
-                if(self::$_apcu) {
+                if(self::$_ext == 'apcu') {
+                    apcu_clear_cache();
+                } else if(self::$_apcu) {
                     apc_clear_cache();
                 } else {
                     apc_clear_cache('user');
@@ -66,14 +79,14 @@ trait TApcClear {
             }
         } else if(isset($this->request['remove'])) {
             $key = $this->request['remove'];
-            apc_delete($prefix.$key);
+            call_user_func(self::$_ext.'_delete', $prefix.$key);
             $count++;
         } else if(isset($this->request['clearBegins'])) {
             $key = $this->request['clearBegins'];
 
             foreach($this->_getCacheList() as $set) {
                 if(0 === strpos($set[self::$_setKey], $prefix.$key)) {
-                    apc_delete($set[self::$_setKey]);
+                    call_user_func(self::$_ext.'_delete', $set[self::$_setKey]);
                     $count++;
                 }
             }
@@ -84,14 +97,14 @@ trait TApcClear {
             foreach($this->_getCacheList() as $set) {
                 if(0 === strpos($set[self::$_setKey], $prefix)
                 && preg_match($regex, substr($set[self::$_setKey], $prefixLength))) {
-                    apc_delete($set[self::$_setKey]);
+                    call_user_func(self::$_ext.'_delete', $set[self::$_setKey]);
                     $count++;
                 }
             }
         } else {
             foreach($this->_getCacheList() as $set) {
                 if(0 === strpos($set[self::$_setKey], $prefix)) {
-                    apc_delete($set[self::$_setKey]);
+                    call_user_func(self::$_ext.'_delete', $set[self::$_setKey]);
                     $count++;
                 }
             }
@@ -101,7 +114,9 @@ trait TApcClear {
     }
 
     protected function _getCacheList() {
-        if(self::$_apcu) {
+        if(self::$_ext === 'apcu') {
+            $info = apcu_cache_info();
+        } else if(self::$_apcu) {
             $info = apc_cache_info();
         } else {
             $info = apc_cache_info('user');
