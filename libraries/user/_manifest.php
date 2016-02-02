@@ -84,12 +84,19 @@ interface IClientDataObject extends \ArrayAccess {
 trait TNameExtractor {
 
     public function getFirstName() {
-        $parts = explode(' ', $this->getFullName(), 2);
-        return array_shift($parts);
+        $parts = preg_split('/\s+|\./', trim($this->getFullName()));
+        static $titles = ['mr', 'mrs', 'miss', 'ms', 'mx', 'master', 'maid', 'madam', 'dr'];
+
+        do {
+            $output = array_shift($parts);
+            $test = strtolower(str_replace([',', '.', '-'], '', $output));
+        } while(count($parts) > 1 && in_array($test, $titles));
+
+        return ucfirst($output);
     }
 
     public function getSurname() {
-        $parts = explode(' ', $this->getFullName(), 2);
+        $parts = explode(' ', $this->getFullName());
         return array_pop($parts);
     }
 }
