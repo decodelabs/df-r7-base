@@ -165,7 +165,11 @@ class Apc implements core\cache\IBackend {
         $val = call_user_func(self::$_ext.'_fetch', $this->_prefix.$key);
 
         if(is_array($val)) {
-            return unserialize($val[0]);
+            try {
+                return unserialize($val[0]);
+            } catch(\Exception $e) {
+                return $default;
+            }
         }
 
         return $default;

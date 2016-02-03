@@ -9,18 +9,18 @@ use df;
 use df\core;
 
 class Memcache implements core\cache\IBackend {
-    
+
     use core\TValueMap;
-    
+
     protected $_connection;
     protected $_prefix;
     protected $_lifeTime;
     protected $_cache;
-    
+
     public static function purgeApp(core\collection\ITree $options) {
         self::purgeAll($options);
     }
-    
+
     public static function purgeAll(core\collection\ITree $options) {
         if(!self::isLoadable()) {
             return;
@@ -40,13 +40,13 @@ class Memcache implements core\cache\IBackend {
 
     protected static function _loadConnection(core\collection\ITree $options) {
         $output = new \Memcache();
-        
+
         if($options->has('servers')) {
             $serverList = $options->servers;
         } else {
             $serverList = [$options];
         }
-        
+
         foreach($serverList as $serverOptions) {
             $output->addServer(
                 $serverOptions->get('host', '127.0.0.1'),
@@ -63,12 +63,12 @@ class Memcache implements core\cache\IBackend {
             (new self($cache, 0, $options))->clear();
         }
     }
-    
+
     public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
         $this->_prefix = df\Launchpad::$application->getUniquePrefix().'-'.$cache->getCacheId().':';
-        
+
         $this->_connection = self::_loadConnection($options);
     }
 
@@ -80,48 +80,52 @@ class Memcache implements core\cache\IBackend {
     public function getStats() {
         return $this->_connection->getStats();
     }
-    
+
     public function setLifeTime($lifeTime) {
         $this->_lifeTime = $lifeTime;
         return $this;
     }
-    
+
     public function getLifeTime() {
         return $this->_lifeTime;
     }
-    
-    
+
+
     public function set($key, $value, $lifeTime=null) {
         if($lifeTime === null) {
             $lifeTime = $this->_lifeTime;
         }
 
         return $this->_connection->set(
-            $this->_prefix.$key, 
-            [serialize($value), time()], 
+            $this->_prefix.$key,
+            [serialize($value), time()],
             0,
             $lifeTime
         );
     }
-    
+
     public function get($key, $default=null) {
         $val = $this->_connection->get($this->_prefix.$key);
-        
+
         if(is_array($val)) {
-            return unserialize($val[0]);
+            try {
+                return unserialize($val[0]);
+            } catch(\Exception $e) {
+                return $default;
+            }
         }
-        
+
         return $default;
     }
-    
+
     public function has($key) {
         return is_array($this->_connection->get($this->_prefix.$key));
     }
-    
+
     public function remove($key) {
         return $this->_connection->delete($this->_prefix.$key);
     }
-    
+
     public function clear() {
         foreach($this->getKeys() as $key) {
             $this->remove($key);
@@ -204,14 +208,14 @@ class Memcache implements core\cache\IBackend {
 
         return $output;
     }
-    
+
     public function getCreationTime($key) {
         $val = $this->_connection->get($this->_prefix.$key);
-        
+
         if(is_array($val)) {
             return $val[1];
         }
-        
+
         return null;
     }
 }
