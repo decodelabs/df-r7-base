@@ -103,6 +103,10 @@ abstract class Form implements IFormDecorator {
         return $this->form->isValid();
     }
 
+    final public function countErrors() {
+        return $this->form->countErrors();
+    }
+
     final public function fieldName($name) {
         return $this->form->fieldName($name);
     }
