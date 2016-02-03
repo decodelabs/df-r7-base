@@ -23,8 +23,6 @@ class Apc implements core\cache\IBackend {
     protected $_isCli = false;
 
     protected static function _extensionLoaded() {
-        return self::$_ext = false;
-
         if(self::$_ext === null) {
             if(extension_loaded('apc')) {
                 self::$_ext = 'apc';
