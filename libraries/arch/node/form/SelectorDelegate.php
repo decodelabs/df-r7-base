@@ -94,7 +94,7 @@ abstract class SelectorDelegate extends Delegate implements
         $selected = $this->getSelected();
 
         if(empty($selected)) {
-            return $selected;
+            return [];
         }
 
         if(!$this->_isForMany) {
@@ -453,8 +453,10 @@ abstract class SelectorDelegate extends Delegate implements
 
             $keyList = [];
 
-            foreach($selected as $entry) {
-                $keyList[] = $this->_getResultId($entry);
+            if(!empty($selected)) {
+                foreach($selected as $entry) {
+                    $keyList[] = $this->_getResultId($entry);
+                }
             }
 
             $query = $this->_getQuery(null, $search);
