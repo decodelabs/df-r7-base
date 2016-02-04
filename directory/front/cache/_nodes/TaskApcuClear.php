@@ -11,9 +11,9 @@ use df\apex;
 use df\arch;
 use df\link;
 
-class TaskApcClear extends arch\node\Task {
+class TaskApcuClear extends arch\node\Task {
 
-    use TApcClear;
+    use TApcuClear;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
     const OPTIMIZE = true;
@@ -37,9 +37,9 @@ class TaskApcClear extends arch\node\Task {
             $this->request->query->purge = 'app';
         }
 
-        if($isCli && extension_loaded('apc') && ini_get('apc.enable_cli')) {
-            $count = $this->_clearApc();
-            $this->io->writeLine('Cleared '.$count.' CLI APC entries');
+        if($isCli && extension_loaded('apcu') && ini_get('apc.enable_cli')) {
+            $count = $this->_clearApcu();
+            $this->io->writeLine('Cleared '.$count.' CLI APCU entries');
         }
 
         if($isHttp) {
@@ -69,7 +69,7 @@ class TaskApcClear extends arch\node\Task {
                 $this->throwError(500, 'Cannot find a suitable base url in config');
             }
 
-            $url = new link\http\Url('http://'.rtrim($baseUrl, '/').'/cache/apc-clear.json');
+            $url = new link\http\Url('http://'.rtrim($baseUrl, '/').'/cache/apcu-clear.json');
             $url->query->import($this->request->query);
 
             if($credentials !== null) {
@@ -89,12 +89,13 @@ class TaskApcClear extends arch\node\Task {
                 $cleared = @$json['cleared'];
 
                 if($cleared === null) {
-                    $this->io->writeLine('APC unable to pass IP check via '.@$json['addr']);
+                    $this->io->writeLine('APCU unable to pass IP check via '.@$json['addr']);
                 } else {
-                    $this->io->writeLine('Cleared '.$cleared.' HTTP APC entries via '.@$json['addr']);
+                    $this->io->writeLine('Cleared '.$cleared.' HTTP APCU entries via '.@$json['addr']);
                 }
             } else {
                 $this->io->writeErrorLine('Http call failed :(');
+                //$this->io->writeErrorLine($response->getContent());
             }
         }
     }

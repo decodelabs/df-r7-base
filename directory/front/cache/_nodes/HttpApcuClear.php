@@ -10,16 +10,16 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class HttpApcClear extends arch\node\Base {
+class HttpApcuClear extends arch\node\Base {
 
-    use TApcClear;
+    use TApcuClear;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
     const OPTIMIZE = true;
 
     public function executeAsJson() {
         if($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {
-            $cleared = $this->_clearApc();
+            $cleared = $this->_clearApcu();
         } else {
             //$this->throwError(403, 'This action can only be triggered from localhost');
             $cleared = null;
