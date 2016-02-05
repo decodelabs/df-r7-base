@@ -232,7 +232,7 @@ class Apcu implements core\cache\IBackend {
                     unset($set['key']);
 
                     $output[$i] = array_merge([
-                        'info' => $set['key']
+                        'info' => $key
                     ], $set);
                 }
             }
