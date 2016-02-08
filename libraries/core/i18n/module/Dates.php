@@ -372,7 +372,7 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
             $default = (string)$context->{'default'}['choice'];
 
             if($default != 'wide' && $default != 'abbreviated') {
-                continue;
+                return;
             }
 
             if($default == 'wide') {
