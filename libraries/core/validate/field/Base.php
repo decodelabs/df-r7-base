@@ -111,7 +111,13 @@ abstract class Base implements core\validate\IField {
 
         if($this->_toggleField) {
             if($field = $this->validator->getField($this->_toggleField)) {
+                $field = $this->validator->getField($this->_toggleField);
                 $toggle = $this->validator[$this->_toggleField];
+
+                if(!$field instanceof core\validate\IBooleanField) {
+                    $toggle = $toggle !== null;
+                }
+
 
                 if($toggle !== null) {
                     $toggle = (bool)$toggle;
