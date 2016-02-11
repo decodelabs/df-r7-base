@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 class IdList extends Base implements core\validate\IIdListField {
-    
+
     protected $_useKeys = false;
 
     public function shouldUseKeys($flag=null) {
@@ -53,28 +53,28 @@ class IdList extends Base implements core\validate\IIdListField {
         }
 
         $value = $node->toArray();
-        
+
         if($this->_useKeys) {
             $value = array_keys($value);
         }
-        
+
         $value = (array)$this->_sanitizeValue($value);
         $value = $this->_applyCustomValidator($node, $value);
-        
+
         return $value;
     }
-    
+
     public function applyValueTo(&$record, $value) {
         if(!is_array($record) && !$record instanceof \ArrayAccess) {
             throw new RuntimeException(
                 'Target record does not implement ArrayAccess'
             );
         }
-        
+
         if(!is_array($value)) {
             $value = [$value];
         }
-        
+
         $record[$this->getRecordName()] = $value;
         return $this;
     }
