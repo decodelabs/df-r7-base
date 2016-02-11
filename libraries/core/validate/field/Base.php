@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 abstract class Base implements core\validate\IField {
-    
+
     public $validator;
 
     protected $_name;
@@ -23,30 +23,30 @@ abstract class Base implements core\validate\IField {
     protected $_defaultValue;
     protected $_customValidator = null;
     protected $_messageGenerator = null;
-    
-    
+
+
     public static function factory(core\validate\IHandler $handler, $type, $name) {
         if($type === null) {
             $type = $name;
         }
-        
+
         $class = 'df\\core\\validate\\field\\'.ucfirst($type);
-        
+
         if(!class_exists($class)) {
             throw new core\validate\RuntimeException(
                 'Validator type '.ucfirst($type).' could not be found for field '.$name
             );
         }
-        
+
         return new $class($handler, $name);
     }
-    
-    
+
+
     public function __construct(core\validate\IHandler $handler, $name) {
         $this->validator = $handler;
         $this->_name = $name;
     }
-    
+
     public function getName() {
         return $this->_name;
     }
@@ -63,7 +63,7 @@ abstract class Base implements core\validate\IField {
             return $this->_name;
         }
     }
-    
+
 
 // Requirements
     public function isRequired($flag=null) {
@@ -71,7 +71,7 @@ abstract class Base implements core\validate\IField {
             $this->_isRequired = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_isRequired;
     }
 
@@ -92,7 +92,7 @@ abstract class Base implements core\validate\IField {
     public function getRequireGroup() {
         return $this->_requireGroup;
     }
-    
+
     public function setToggleField($name) {
         $this->_toggleField = $name;
         return $this;
@@ -111,27 +111,31 @@ abstract class Base implements core\validate\IField {
 
         if($this->_toggleField) {
             if($field = $this->validator->getField($this->_toggleField)) {
-                $toggle = (bool)$this->validator[$this->_toggleField];
+                $toggle = $this->validator[$this->_toggleField];
 
-                if($required) {
-                    if(!$toggle) {
-                        $node->setValue($value = null);
+                if($toggle !== null) {
+                    $toggle = (bool)$toggle;
+
+                    if($required) {
+                        if(!$toggle) {
+                            $node->setValue($value = null);
+                        }
+
+                        $required = $toggle;
+                    } else {
+                        if($toggle) {
+                            $node->setValue($value = null);
+                        }
+
+                        $required = !$toggle;
                     }
-
-                    $required = $toggle;
-                } else {
-                    if($toggle) {
-                        $node->setValue($value = null);
-                    }
-
-                    $required = !$toggle;
                 }
             }
         }
 
         if(!$length = mb_strlen($value)) {
             $value = null;
-            
+
             if($required) {
                 $this->_applyMessage($node, 'required', 'This field cannot be empty');
             }
@@ -142,7 +146,7 @@ abstract class Base implements core\validate\IField {
         } else if($this->_requireGroup !== null) {
             $this->validator->setRequireGroupFulfilled($this->_requireGroup);
         }
-        
+
         return $length;
     }
 
@@ -153,7 +157,7 @@ abstract class Base implements core\validate\IField {
             $this->_shouldSanitize = (bool)$flag;
             return $this;
         }
-       
+
         return $this->_shouldSanitize;
     }
 
@@ -165,7 +169,7 @@ abstract class Base implements core\validate\IField {
         $this->_sanitizer = $sanitizer;
         return $this;
     }
-    
+
     public function getSanitizer() {
         return $this->_sanitizer;
     }
@@ -194,8 +198,8 @@ abstract class Base implements core\validate\IField {
 
         return $value;
     }
-    
-    
+
+
 
 // Custom validator
     public function setCustomValidator($validator=null) {
@@ -206,7 +210,7 @@ abstract class Base implements core\validate\IField {
         $this->_customValidator = $validator;
         return $this;
     }
-    
+
     public function getCustomValidator() {
         return $this->_customValidator;
     }
@@ -215,7 +219,7 @@ abstract class Base implements core\validate\IField {
         if(!$node->hasErrors() && $this->_customValidator) {
             $this->_customValidator->invoke($node, $value, $this);
         }
-        
+
         return $value;
     }
 
@@ -247,7 +251,7 @@ abstract class Base implements core\validate\IField {
 
         $node->addError($code, $message);
     }
-    
+
 
 // Values
     public function applyValueTo(&$record, $value) {
@@ -256,23 +260,23 @@ abstract class Base implements core\validate\IField {
                 'Target record does not implement ArrayAccess'
             );
         }
-        
+
         $name = $this->getRecordName();
 
         //if($value !== null || !isset($record[$name])) {
             $record[$name] = $value;
         //}
-        
+
         return $this;
     }
 
     protected function _finalize(core\collection\IInputTree $node, $value) {
         $value = $this->_applyCustomValidator($node, $value);
-        
+
         if($this->_shouldSanitize) {
             $node->setValue($value);
         }
-        
+
         return $value;
     }
 }

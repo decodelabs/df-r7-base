@@ -14,6 +14,16 @@ class Boolean extends Base implements core\validate\IBooleanField {
     use core\validate\TRequiredValueField;
 
     protected $_isRequired = true;
+    protected $_forceAnswer = true;
+
+    public function shouldForceAnswer($flag=null) {
+        if($flag !== null) {
+            $this->_forceAnswer = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_forceAnswer;
+    }
 
     protected function _prepareRequiredValue($value) {
         return flex\Text::stringToBoolean($value);
@@ -27,7 +37,7 @@ class Boolean extends Base implements core\validate\IBooleanField {
             if(!$length = strlen($value)) {
                 $value = null;
 
-                if($this->_isRequired) {
+                if($this->_isRequired && $this->_forceAnswer) {
                     $value = false;
                 }
             } else {
@@ -37,6 +47,12 @@ class Boolean extends Base implements core\validate\IBooleanField {
                     $value = (bool)$value;
                 }
             }
+        }
+
+        if($this->_isRequired && $value === null) {
+            $this->_applyMessage($node, 'required', $this->validator->_(
+                'This field requires an answer'
+            ));
         }
 
         $this->_checkRequiredValue($node, $value);
