@@ -413,8 +413,56 @@ trait TUniqueCheckerField {
 
 
 
+// Required value
+interface IRequiredValueField extends IField {
+    public function setRequiredValue($value);
+    public function getRequiredValue();
+}
+
+trait TRequiredValueField {
+
+    protected $_requiredValue = null;
+
+    public function setRequiredValue($value) {
+        if($value !== null) {
+            $value = $this->_prepareRequiredValue($value);
+        }
+
+        $this->_requiredValue = $value;
+        return $this;
+    }
+
+    public function getRequiredValue() {
+        return $this->_requiredValue;
+    }
+
+    protected function _prepareRequiredValue($value) {
+        return $value;
+    }
+
+
+    protected function _checkRequiredValue(core\collection\IInputTree $node, $value) {
+        if($this->_requiredValue === null) {
+            return;
+        }
+
+        $test = $this->_prepareRequiredValue($value);
+        $isCorrect = $test === $this->_requiredValue;
+
+        if(!$isCorrect) {
+            $this->_applyMessage($node, 'incorrect',
+                is_bool($this->_requiredValue) ?
+                    $this->validator->_('You must complete this field') :
+                    $this->validator->_('Please enter the correct value')
+            );
+        }
+    }
+}
+
+
+
 // Actual
-interface IBooleanField extends IField {}
+interface IBooleanField extends IField, IRequiredValueField {}
 
 interface IColorField extends IField {}
 

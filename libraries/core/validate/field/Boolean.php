@@ -11,7 +11,13 @@ use df\flex;
 
 class Boolean extends Base implements core\validate\IBooleanField {
 
+    use core\validate\TRequiredValueField;
+
     protected $_isRequired = true;
+
+    protected function _prepareRequiredValue($value) {
+        return flex\Text::stringToBoolean($value);
+    }
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
@@ -33,6 +39,7 @@ class Boolean extends Base implements core\validate\IBooleanField {
             }
         }
 
+        $this->_checkRequiredValue($node, $value);
         return $this->_finalize($node, $value);
     }
 }
