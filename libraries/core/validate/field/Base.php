@@ -118,7 +118,6 @@ abstract class Base implements core\validate\IField {
                     $toggle = $toggle !== null;
                 }
 
-
                 if($toggle !== null) {
                     $toggle = (bool)$toggle;
 
@@ -135,6 +134,8 @@ abstract class Base implements core\validate\IField {
 
                         $required = !$toggle;
                     }
+                } else {
+                    $required = false;
                 }
             }
         }
