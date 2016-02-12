@@ -454,6 +454,10 @@ abstract class SelectorDelegate extends Delegate implements
             $keyList = [];
 
             if(!empty($selected)) {
+                if(!$this->_isForMany) {
+                    $selected = [$selected];
+                }
+
                 foreach($selected as $entry) {
                     $keyList[] = $this->_getResultId($entry);
                 }
