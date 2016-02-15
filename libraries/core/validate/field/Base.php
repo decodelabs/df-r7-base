@@ -107,6 +107,26 @@ abstract class Base implements core\validate\IField {
             $node->setValue($value);
         }
 
+        $required = $this->_isRequiredAfterToggle($node, $value);
+
+        if(!$length = mb_strlen($value)) {
+            $value = null;
+
+            if($required) {
+                $this->_applyMessage($node, 'required', 'This field cannot be empty');
+            }
+
+            if($this->_requireGroup !== null && !$this->validator->checkRequireGroup($this->_requireGroup)) {
+                $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
+            }
+        } else if($this->_requireGroup !== null) {
+            $this->validator->setRequireGroupFulfilled($this->_requireGroup);
+        }
+
+        return $length;
+    }
+
+    protected function _isRequiredAfterToggle(core\collection\IInputTree $node, &$value) {
         $required = $this->_isRequired;
 
         if($this->_toggleField) {
@@ -140,22 +160,9 @@ abstract class Base implements core\validate\IField {
             }
         }
 
-        if(!$length = mb_strlen($value)) {
-            $value = null;
-
-            if($required) {
-                $this->_applyMessage($node, 'required', 'This field cannot be empty');
-            }
-
-            if($this->_requireGroup !== null && !$this->validator->checkRequireGroup($this->_requireGroup)) {
-                $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
-            }
-        } else if($this->_requireGroup !== null) {
-            $this->validator->setRequireGroupFulfilled($this->_requireGroup);
-        }
-
-        return $length;
+        return $required;
     }
+
 
 
 // Sanitize

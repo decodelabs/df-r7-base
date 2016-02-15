@@ -441,13 +441,27 @@ trait TRequiredValueField {
     }
 
 
-    protected function _checkRequiredValue(core\collection\IInputTree $node, $value) {
-        if($this->_requiredValue === null) {
+    protected function _checkRequiredValue(core\collection\IInputTree $node, $value, $isRequired=null) {
+        if($isRequired === null) {
+            $isRequired = $this->_isRequiredAfterToggle($node, $value);
+        }
+
+        if($this->_requiredValue === null
+        || ($value === null && !$isRequired)) {
             return;
         }
 
         $test = $this->_prepareRequiredValue($value);
+
+        if($test === null && !$isRequired) {
+            return;
+        }
+
         $isCorrect = $test === $this->_requiredValue;
+
+        if(!$isCorrect && !$isRequired && $test === false) {
+            return;
+        }
 
         if(!$isCorrect) {
             $this->_applyMessage($node, 'incorrect',

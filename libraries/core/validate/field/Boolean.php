@@ -33,6 +33,8 @@ class Boolean extends Base implements core\validate\IBooleanField {
         $value = $node->getValue();
         $value = $this->_sanitizeValue($value);
 
+        $isRequired = $this->_isRequiredAfterToggle($node, $value);
+
         if(!is_bool($value)) {
             if(!$length = strlen($value)) {
                 $value = null;
@@ -49,13 +51,14 @@ class Boolean extends Base implements core\validate\IBooleanField {
             }
         }
 
-        if($this->_isRequired && $value === null) {
+        if($isRequired && $value === null) {
             $this->_applyMessage($node, 'required', $this->validator->_(
                 'This field requires an answer'
             ));
+        } else {
+            $this->_checkRequiredValue($node, $value, $isRequired);
         }
 
-        $this->_checkRequiredValue($node, $value);
         return $this->_finalize($node, $value);
     }
 }
