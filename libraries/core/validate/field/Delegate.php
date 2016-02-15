@@ -59,26 +59,13 @@ class Delegate extends Base implements core\validate\IDelegateField {
     }
 
     public function validate(core\collection\IInputTree $node) {
-        $isRequired = $this->_isRequired;
-        $clear = false;
+        $value = false;
 
-        if($this->_toggleField) {
-            if($field = $this->validator->getField($this->_toggleField)) {
-                $toggle = (bool)$this->validator[$this->_toggleField];
-
-                if($isRequired) {
-                    $this->isRequired($toggle);
-                } else {
-                    $this->isRequired(!$toggle);
-                }
-
-                $clear = !$this->_isRequired;
-            }
-        }
-
+        $reqVal = $this->_isRequired;
+        $this->isRequired($isRequired = $this->_isRequiredAfterToggle($node, $value));
+        $clear = $value === null;
 
         $value = $this->_delegate->apply();
-        $this->isRequired($isRequired);
 
         if($clear) {
             $value = null;
@@ -98,6 +85,8 @@ class Delegate extends Base implements core\validate\IDelegateField {
                 $this->validator->setRequireGroupFulfilled($this->_requireGroup);
             }
         }
+
+        $this->isRequired($reqVal);
 
         return $value;
     }
