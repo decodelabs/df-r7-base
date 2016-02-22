@@ -751,11 +751,6 @@ trait TScaffold_SectionProvider {
                 }
 
                 $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
-
-                if(method_exists($this, '_prepareSection')) {
-                    $this->_prepareSection($record, $node);
-                }
-
                 $method = 'render'.ucfirst($node).'SectionBody';
 
                 if(method_exists($this, $method)) {
@@ -770,14 +765,14 @@ trait TScaffold_SectionProvider {
                 );
 
                 $breadcrumbs = $this->apex->breadcrumbs();
-                $this->updateSectionBreadcrumbs($breadcrumbs);
+                $this->updateSectionBreadcrumbs($breadcrumbs, $record, $node);
 
                 return $this->view;
             });
         }
     }
 
-    protected function updateSectionBreadcrumbs($breadcrumbs) {
+    protected function updateSectionBreadcrumbs($breadcrumbs, $record, $node) {
         $breadcrumbs->getEntryByIndex(-2)->setUri($this->uri->directoryRequest($this->getParentSectionRequest()));
     }
 
