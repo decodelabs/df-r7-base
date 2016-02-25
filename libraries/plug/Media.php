@@ -29,26 +29,46 @@ class Media implements arch\IDirectoryHelper {
     }
 
     public function getDownloadUrl($fileId) {
+        if($fileId === null) {
+            return null;
+        }
+
         return $this->context->uri($this->_model->getDownloadUrl($fileId))
             ->setDirectoryRequest(null);
     }
 
     public function getEmbedUrl($fileId) {
+        if($fileId === null) {
+            return null;
+        }
+
         return $this->context->uri($this->_model->getEmbedUrl($fileId))
             ->setDirectoryRequest(null);
     }
 
     public function getVersionDownloadUrl($fileId, $versionId, $isActive) {
+        if($fileId === null) {
+            return null;
+        }
+
         return $this->context->uri($this->_model->getVersionDownloadUrl($fileId, $versionId, $isActive))
             ->setDirectoryRequest(null);
     }
 
     public function getImageUrl($fileId, $transformation=null) {
+        if($fileId === null) {
+            return null;
+        }
+
         return $this->context->uri($this->_model->getImageUrl($fileId, $transformation))
             ->setDirectoryRequest(null);
     }
 
     public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null) {
+        if($fileId === null) {
+            return null;
+        }
+
         return $this->context->uri($this->_model->getVersionImageUrl($fileId, $versionId, $isActive, $transformation))
             ->setDirectoryRequest(null);
     }
