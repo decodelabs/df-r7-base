@@ -152,7 +152,11 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         if($value === null) {
             unset($this->_meta[$key]);
         } else {
-            $this->_meta[$key] = (string)$value;
+            if(!is_array($value)) {
+                $value = (string)$value;
+            }
+
+            $this->_meta[$key] = $value;
         }
 
         return $this;
@@ -916,12 +920,22 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
     protected function _metaToString($key, $value) {
         if(in_array(strtolower($key), self::$_httpMeta)) {
-            return '<meta http-equiv="'.$this->esc($key).'" content="'.$this->esc($value).'" />';
+            $nameKey = 'http-equiv';
         } elseif(strpos($key, ':') !== false) {
-            return '<meta property="'.$this->esc($key).'" content="'.$this->esc($value).'" />';
+            $nameKey = 'property';
         } else {
-            return '<meta name="'.$this->esc($key).'" content="'.$this->esc($value).'" />';
+            $nameKey = 'name';
         }
+
+        $output = new aura\html\Tag('meta', [$nameKey => $key]);
+
+        if(is_array($value)) {
+            $output->setAttributes($value);
+        } else {
+            $output->setAttribute('content', $value);
+        }
+
+        return (string)$output;
     }
 
 
