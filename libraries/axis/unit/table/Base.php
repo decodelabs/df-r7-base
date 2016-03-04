@@ -26,8 +26,7 @@ abstract class Base implements
     const NAME_FIELD = null;
     const KEY_NAME = null;
     const BROADCAST_HOOK_EVENTS = true;
-
-    protected static $_defaultRecordClass = 'df\\opal\\record\\Base';
+    const DEFAULT_RECORD_CLASS = 'df\\opal\\record\\Base';
 
     protected $_defaultSearchFields = null;
     protected $_defaultOrderableFields = null;
@@ -478,8 +477,8 @@ abstract class Base implements
             $this->_recordClass = 'df\\apex\\models\\'.$this->_model->getModelName().'\\'.$this->getUnitName().'\\Record';
 
             if(!class_exists($this->_recordClass)) {
-                $this->_recordClass = static::$_defaultRecordClass;
-            } else if(!is_subclass_of($this->_recordClass, static::$_defaultRecordClass)) {
+                $this->_recordClass = static::DEFAULT_RECORD_CLASS;
+            } else if(!is_subclass_of($this->_recordClass, static::DEFAULT_RECORD_CLASS)) {
                 throw new axis\LogicException(
                     $this->_recordClass.' is not a valid record class for unit '.$this->getUnitId()
                 );

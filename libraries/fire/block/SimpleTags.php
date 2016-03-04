@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,18 +9,18 @@ use df;
 use df\core;
 use df\fire;
 use df\aura;
-    
+
 class SimpleTags extends Base {
 
-    protected static $_outputTypes = ['Html'];
-    protected static $_defaultCategories = ['Description'];
+    const OUTPUT_TYPES = ['Html'];
+    const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_body;
 
     public function getFormat() {
         return 'markup';
     }
-    
+
     public function setBody($body) {
         $this->_body = trim($body);
         return $this;

@@ -13,7 +13,7 @@ use df\spur;
 
 class TaskInstall extends arch\node\Task {
 
-    protected static $_packages = [
+    const PACKAGES = [
         'base' => 'git@github.com:decodelabs/df-r7-base.git',
         'nightfire' => 'git@github.com:decodelabs/df-r7-nightfire.git',
         'postal' => 'git@github.com:decodelabs/df-r7-postal.git',
@@ -43,7 +43,7 @@ class TaskInstall extends arch\node\Task {
             } else {
                 $name = array_shift($args);
 
-                if(isset(self::$_packages[$name])) {
+                if(isset(self::PACKAGES[$name])) {
                     $this->request->query->name = $name;
                 } else {
                     $this->request->query->url = $name;
@@ -64,7 +64,7 @@ class TaskInstall extends arch\node\Task {
         $this->_basePath = dirname(df\Launchpad::DF_PATH);
 
         if(isset($this->request['all'])) {
-            foreach(self::$_packages as $name => $url) {
+            foreach(self::PACKAGES as $name => $url) {
                 $this->_cloneRepo($name, $url);
                 $this->io->writeLine();
             }
@@ -73,8 +73,8 @@ class TaskInstall extends arch\node\Task {
             $url = $this->request['url'];
 
             if(empty($url)) {
-                if(isset(self::$_packages[$name])) {
-                    $url = self::$_packages[$name];
+                if(isset(self::PACKAGES[$name])) {
+                    $url = self::PACKAGES[$name];
                 } else {
                     $this->throwError(500, 'No valid repo URL specified');
                 }

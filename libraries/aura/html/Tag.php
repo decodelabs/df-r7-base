@@ -17,13 +17,13 @@ class Tag implements ITag, core\IDumpable {
     use core\TStringProvider;
     use flex\THtmlStringEscapeHandler;
 
-    private static $_closedTags = [
+    const CLOSED_TAGS = [
         'area', 'base', 'br', 'col', 'command', 'embed',
         'hr', 'img', 'input', 'keygen', 'link', 'meta',
         'param', 'source', 'wbr'
     ];
 
-    private static $_inlineTags = [
+    const INLINE_TAGS = [
         'a', 'br', 'bdo', 'abbr', 'blink', 'nextid', 'acronym', 'basefont',
         'b', 'em', 'big', 'cite', 'input', 'spacer', 'listing',
         'i', 'rp', 'del', 'code', 'label', 'strike', 'marquee',
@@ -35,7 +35,7 @@ class Tag implements ITag, core\IDumpable {
                           'time',
     ];
 
-    private static $_booleanAttributes = [
+    const BOOLEAN_ATTRIBUTES = [
         'spellcheck'
     ];
 
@@ -46,11 +46,11 @@ class Tag implements ITag, core\IDumpable {
     protected $_renderIfEmpty = true;
 
     public static function isClosableTagName($name) {
-        return in_array(strtolower($name), self::$_closedTags);
+        return in_array(strtolower($name), self::CLOSED_TAGS);
     }
 
     public static function isInlineTagName($name) {
-        return in_array(strtolower($name), self::$_inlineTags);
+        return in_array(strtolower($name), self::INLINE_TAGS);
     }
 
     public function __construct($name, array $attributes=null) {
@@ -87,7 +87,7 @@ class Tag implements ITag, core\IDumpable {
         }
 
         $this->_name = $name;
-        $this->_isClosable = !in_array($this->_name, self::$_closedTags);
+        $this->_isClosable = !in_array($this->_name, self::CLOSED_TAGS);
 
         return $this;
     }
@@ -97,11 +97,11 @@ class Tag implements ITag, core\IDumpable {
     }
 
     public function isInline() {
-        return in_array(strtolower($this->_name), self::$_inlineTags);
+        return in_array(strtolower($this->_name), self::INLINE_TAGS);
     }
 
     public function isBlock() {
-        return !in_array(strtolower($this->_name), self::$_inlineTags);
+        return !$this->isInline();
     }
 
 
@@ -420,7 +420,7 @@ class Tag implements ITag, core\IDumpable {
             if($value === null) {
                 $attributes[] = $key;
             } else if(is_bool($value)) {
-                if(substr($key, 0, 5) == 'data-' || in_array($key, self::$_booleanAttributes)) {
+                if(substr($key, 0, 5) == 'data-' || in_array($key, self::BOOLEAN_ATTRIBUTES)) {
                     $attributes[] = $key.'="'.($value ? 'true' : 'false').'"';
                 } else {
                     if($value) {

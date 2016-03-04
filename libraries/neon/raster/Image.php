@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\neon\raster;
 use df;
 use df\core;
 use df\neon;
-    
+
 class Image implements IImage {
 
     private static $_driverClass;
@@ -87,7 +87,7 @@ class Image implements IImage {
 
     public static function loadString($string) {
         $class = self::getDefaultDriverClass();
-        
+
         return new self((new $class())->loadString($string));
     }
 
@@ -96,8 +96,8 @@ class Image implements IImage {
         $output = new self(new $class());
 
         $output->_driver->loadCanvas(
-            $output->_normalizePixelSize($width), 
-            $output->_normalizePixelSize($height), 
+            $output->_normalizePixelSize($width),
+            $output->_normalizePixelSize($height),
             $output->_normalizeColor($color)
         );
 
@@ -114,7 +114,7 @@ class Image implements IImage {
     public function getDriver() {
         return $this->_driver;
     }
-    
+
 
 
 // Dimensions
@@ -404,10 +404,10 @@ class Image implements IImage {
 
     public function smooth($amount=50) {
         $this->_checkDriverForFilters();
-        
+
         $amount = $this->_normalizePercentage($amount);
         $this->_driver->smooth($amount);
-        
+
         return $this;
     }
 
@@ -455,7 +455,7 @@ class Image implements IImage {
 
             $size = $size->extractAbsolute($length, null, $vpWidth, $vpHeight);
         }
-        
+
         return $size->getPixels();
     }
 
@@ -554,15 +554,15 @@ class Image implements IImage {
 
 
 // Formats
-    protected static $_formats = [
+    const FORMATS = [
         'AAI' => 'AAI Dune image',
         'ART' => 'PFS: 1st Publisher Format originally used on the Macintosh (MacPaint?) and later used for PFS: 1st Publisher clip art.',
         'ARW' => 'Sony Digital Camera Alpha Raw Image Format',
         'AVI' => 'Microsoft Audio/Visual Interleaved',
         'AVS' => 'AVS X image',
-        'BMP' => 'Microsoft Windows bitmap version 4', 
+        'BMP' => 'Microsoft Windows bitmap version 4',
         'BMP3' => 'Microsoft Windows bitmap    version 3',
-        'BMP2' => 'Microsoft Windows bitmap version 2', 
+        'BMP2' => 'Microsoft Windows bitmap version 2',
         'CALS' => 'Continuous Acquisition and Life-cycle Support Type 1 image',
         'CGM' => 'Computer Graphics Metafile',
         'CIN' => 'Kodak Cineon Image Format',
@@ -696,7 +696,7 @@ class Image implements IImage {
     ];
 
 
-    protected static $_extensions = [
+    const EXTENSIONS = [
         'srf' => 'ARW',
         'sr2' => 'ARW',
         'cal' => 'CALS',
@@ -719,8 +719,8 @@ class Image implements IImage {
     }
 
     public static function getFormatFromExtension($extension) {
-        if(isset(self::$_formats[strtoupper($extension)])) {
-            return self::$_formats[strtoupper($extension)];
+        if(isset(self::FORMATS[strtoupper($extension)])) {
+            return self::FORMATS[strtoupper($extension)];
         }
 
         $extension = strtolower($extension);
@@ -735,12 +735,12 @@ class Image implements IImage {
     }
 
     public static function isFormatValid($format) {
-        return isset(self::$_formats[$format]);
+        return isset(self::FORMATS[$format]);
     }
 
     public static function getFormatDescriptionFor($format) {
-        if(isset(self::$_formats[$format])) {
-            return self::$_formats[$format];
+        if(isset(self::FORMATS[$format])) {
+            return self::FORMATS[$format];
         }
     }
 }

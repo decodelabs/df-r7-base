@@ -21,8 +21,8 @@ abstract class Base implements IBlock {
 
     const VERSION = 1;
 
-    protected static $_outputTypes = ['Html'];
-    protected static $_defaultCategories = [];
+    const OUTPUT_TYPES = ['Html'];
+    const DEFAULT_CATEGORIES = [];
 
     protected $_isNested = false;
 
@@ -73,11 +73,11 @@ abstract class Base implements IBlock {
 
 
     public static function getOutputTypes() {
-        return (array)static::$_outputTypes;
+        return (array)static::OUTPUT_TYPES;
     }
 
     public function canOutput($outputType) {
-        if(empty(static::$_outputTypes)) {
+        if(empty(static::OUTPUT_TYPES)) {
             return true;
         }
 
@@ -105,7 +105,7 @@ abstract class Base implements IBlock {
     }
 
     public static function getDefaultCategories() {
-        return (array)static::$_defaultCategories;
+        return (array)static::DEFAULT_CATEGORIES;
     }
 
     public function toString() {

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -15,10 +15,10 @@ class Parser implements flex\IInlineHtmlProducer {
 
     use flex\TParser;
 
-    protected static $_tagList = [
-        'a', 'abbr', 'b', 'br', 'cite', 'code', 'del', 'em', 
+    const TAG_LIST = [
+        'a', 'abbr', 'b', 'br', 'cite', 'code', 'del', 'em',
         //'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'i', 'img', 'ins', 'q', 'small', 'span', 'strong', 
+        'i', 'img', 'ins', 'q', 'small', 'span', 'strong',
         'sub', 'sup', 'time', 'var'
     ];
 
@@ -86,7 +86,7 @@ class Parser implements flex\IInlineHtmlProducer {
         }
 
         $text = str_replace("\n", '<br />'."\n", $text);
-        
+
         return $text;
     }
 
@@ -99,7 +99,7 @@ class Parser implements flex\IInlineHtmlProducer {
 
         $tags = [];
 
-        foreach(self::$_tagList as $tag) {
+        foreach(self::TAG_LIST as $tag) {
             $tags[] = '<'.$tag.'>';
         }
 
@@ -143,7 +143,7 @@ class Parser implements flex\IInlineHtmlProducer {
             $newName = null;
 
             $output = preg_replace_callback(
-                '/<'.$name.'([^>]*)\/?>/i', 
+                '/<'.$name.'([^>]*)\/?>/i',
                 function($matches) use($name, $callback, &$newName) {
                     $attributes = [];
 
@@ -152,7 +152,7 @@ class Parser implements flex\IInlineHtmlProducer {
                             $attributes[$key] = $attrMatches[2][$i];
                         }
                     }
-                    
+
                     $tag = $callback($attributes);
 
                     if(!$tag) {
@@ -174,7 +174,7 @@ class Parser implements flex\IInlineHtmlProducer {
                     }
 
                     return $tag->open();
-                }, 
+                },
                 $output
             );
 

@@ -12,8 +12,8 @@ use df\aura;
 
 class VideoEmbed extends Base {
 
-    protected static $_outputTypes = ['Html'];
-    protected static $_defaultCategories = ['Description'];
+    const OUTPUT_TYPES = ['Html'];
+    const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_embedCode;
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,14 +7,13 @@ namespace df\core\unit;
 
 use df;
 use df\core;
-    
+
 class Resolution implements IResolution {
 
     use TSingleValueUnit;
 
     const DEFAULT_UNIT = 'dpi';
-
-    private static $_units = ['dpi', 'dpcm', 'dppx'];
+    const UNITS = ['dpi', 'dpcm', 'dppx'];
 
     protected $_value;
     protected $_unit;

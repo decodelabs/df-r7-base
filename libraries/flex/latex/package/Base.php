@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,18 +9,18 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 abstract class Base extends iris\processor\Base implements flex\latex\IPackage {
 
-    protected static $_commands = [];
-    protected static $_environments = [];
+    const COMMANDS = [];
+    const ENVIRONMENTS = [];
 
     public static function getCommandList() {
-        return static::$_commands;
+        return static::COMMANDS;
     }
 
     public static function getEnvironmentList() {
-        return static::$_environments;
+        return static::ENVIRONMENTS;
     }
 
     public function getName() {

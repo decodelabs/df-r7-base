@@ -12,9 +12,9 @@ use df\aura;
 
 abstract class Base implements fire\ICategory {
 
-    protected static $_requiredOutputTypes = ['html'];
-    protected static $_defaultBlocks = ['RawHtml'];
-    protected static $_formatWeights = [
+    const REQUIRED_OUTPUT_TYPES = ['html'];
+    const DEFAULT_BLOCKS = ['RawHtml'];
+    const FORMAT_WEIGHTS = [
         'markup' => 100,
         'text' => 90,
         'structure' => 75,
@@ -49,11 +49,11 @@ abstract class Base implements fire\ICategory {
     }
 
     public static function getRequiredOutputTypes() {
-        return (array)static::$_requiredOutputTypes;
+        return (array)static::REQUIRED_OUTPUT_TYPES;
     }
 
     public static function getDefaultBlocks() {
-        return (array)static::$_defaultBlocks;
+        return (array)static::DEFAULT_BLOCKS;
     }
 
     public function getDefaultEditorBlockType() {
@@ -104,7 +104,7 @@ abstract class Base implements fire\ICategory {
     }
 
     public static function getFormatWeights() {
-        return static::$_formatWeights;
+        return static::FORMAT_WEIGHTS;
     }
 
     public function renderBlock(fire\block\IBlock $block, aura\view\IView $view) {

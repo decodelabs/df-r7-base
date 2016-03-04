@@ -13,8 +13,8 @@ use df\aura;
 
 class Error extends Base {
 
-    protected static $_outputTypes = [];
-    protected static $_defaultCategories = [];
+    const OUTPUT_TYPES = [];
+    const DEFAULT_CATEGORIES = [];
 
     protected $_error;
     protected $_type;

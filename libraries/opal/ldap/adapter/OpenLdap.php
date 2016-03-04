@@ -15,7 +15,7 @@ class OpenLdap extends opal\ldap\Adapter {
     const BIND_REQUIRES_DN = true;
     const UID_ATTRIBUTE = 'uid';
 
-    protected static $_metaFields = [
+    const META_FIELDS = [
         'objectClass', 'structuralObjectClass', 'entryUUID', 'creatorsName',
         'createTimestamp', 'entryCSN', 'modifiersName', 'modifyTimestamp', 'entryDN',
         'subschemaSubentry', 'hasSubordinates'

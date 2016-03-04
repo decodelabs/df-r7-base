@@ -9,8 +9,8 @@ use df;
 use df\core;
 
 class Location implements ILocation {
-    
-    protected static $_defaultBlacklist = ['.git'];
+
+    const DEFAULT_BLACKLIST = ['.git'];
 
     public $id;
     public $path;
@@ -29,20 +29,20 @@ class Location implements ILocation {
         $this->id = $id;
         return $this;
     }
-    
+
     public function getId() {
         return $this->id;
     }
-    
+
     public function setPath($path) {
         $this->path = (string)core\uri\FilePath::factory($path);
         return $this;
     }
-    
+
     public function getPath() {
         return $this->path;
     }
-    
+
     public function setBlackList(array $blackList) {
         foreach($blackList as $i => $path) {
             $blackList[$i] = trim($path, '/');
@@ -51,7 +51,7 @@ class Location implements ILocation {
         $this->blackList = $blackList;
         return $this;
     }
-    
+
     public function getBlackList() {
         return $this->blackList;
     }
@@ -75,20 +75,20 @@ class Location implements ILocation {
         } catch(\Exception $e) {
             return;
         }
-        
+
         foreach($dir as $item) {
             if($item->isDot()) {
                 continue;
             }
-            
+
             $pathName = $item->getPathname();
             $localPath = ltrim(substr($pathName, strlen($this->path)), '/');
-            
+
             if(in_array($localPath, $this->blackList)
-            || in_array($localPath, self::$_defaultBlacklist)) {
+            || in_array($localPath, self::DEFAULT_BLACKLIST)) {
                 continue;
             }
-            
+
             if($item->isFile()) {
                 foreach($scanner->getProbes() as $id => $probe) {
                     if(isset($this->probes[$id])) {

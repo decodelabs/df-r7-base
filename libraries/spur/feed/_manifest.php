@@ -24,7 +24,7 @@ interface INamespaces {
     const RSS_10 = 'http://purl.org/rss/1.0/';
 }
 
-interface ITypes {   
+interface ITypes {
     const ANY = 'any';
     const ATOM_03 = 'atom-03';
     const ATOM_10 = 'atom-10';
@@ -100,25 +100,25 @@ trait TStoreProvider {
     protected function _setStore($name, $value) {
         if(is_string($value)) {
             $value = trim(preg_replace('/[\s]{2,}/', ' ', $value));
-            
+
             if(!strlen($value)) {
                 $value = null;
             }
         }
-        
+
         $this->_store[$name] = $value;
-        
+
         return $this;
     }
-    
+
     protected function _getStore($name) {
         if(isset($this->_store[$name])) {
             return $this->_store[$name];
         }
-        
+
         return null;
     }
-    
+
     protected function _hasStore($name) {
         return array_key_exists($name, $this->_store);
     }
@@ -126,43 +126,43 @@ trait TStoreProvider {
     protected function _getDefaultValue($storeId) {
         if(!$this->_hasStore($storeId)) {
             $method = 'get'.ucfirst($storeId);
-            
+
             if(method_exists($this, '_'.$method)) {
                 $method = '_'.$method;
                 $value = $this->$method();
             } else {
                 $value = $this->__call($method);
             }
-            
+
             $this->_setStore($storeId, $value);
         }
-        
+
         return $this->_getStore($storeId);
     }
 
     public function __call($method, $args=[]) {
         $storeId = null;
-        
+
         if(substr($method, 0, 3) == 'get') {
             $storeId = lcfirst(substr($method, 3));
-            
+
             if($this->_hasStore($storeId)) {
                 return $this->_getStore($storeId);
             }
         }
-        
+
         foreach($this->_plugins as $plugin) {
             if(method_exists($plugin, $method)) {
                 $output = call_user_func_array([$plugin, $method], $args);
-                
+
                 if($storeId) {
                     $this->_setStore($storeId, $output);
                 }
-                
+
                 return $output;
             }
         }
-        
+
         return null;
     }
 }
@@ -195,23 +195,23 @@ trait TPluginProvider {
         $name = lcfirst($name);
         return isset($this->_plugins[$name]);
     }
-    
+
     public function getPlugin($name) {
         $name = lcfirst($name);
-        
+
         if(isset($this->_plugins[$name])) {
             return $this->_plugins[$name];
         }
-        
+
         return null;
     }
-    
+
     public function getFromPlugin($plugins, $var, $inValue=null) {
         $isArray = false;
-        
+
         if(is_array($inValue)) {
             $isArray = true;
-            
+
             if(!empty($inValue)) {
                 return $inValue;
             }
@@ -219,35 +219,35 @@ trait TPluginProvider {
             if(is_string($inValue) && !strlen($inValue)) {
                 $inValue = null;
             }
-                
+
             if($inValue !== null) {
                 return $inValue;
             }
         }
-        
+
         if(!is_array($plugins)) {
             $plugins = [$plugins];
         }
-        
+
         $method = 'get'.ucfirst($var);
-        
+
         foreach($plugins as $pluginName) {
             if(!$this->hasPlugin($pluginName)) {
                 continue;
             }
-            
+
             $plugin = $this->getPlugin($pluginName);
-            
+
             if(method_exists($plugin, $method)
             && ($val = $plugin->$method())) {
                 if($isArray && empty($val)) {
                     continue;
                 }
-                
+
                 return $val;
             }
         }
-        
+
         return $inValue;
     }
 }
@@ -272,11 +272,11 @@ trait TReader {
     public function getDomDocument() {
         return $this->_domDocument;
     }
-    
+
     public function getXPath() {
         return $this->_xPath;
     }
-    
+
     public function getType() {
         return $this->_type;
     }
@@ -285,21 +285,21 @@ trait TReader {
         $this->_xPathPrefix = $prefix;
         return $this;
     }
-    
+
     public function getXPathPrefix() {
         return $this->_xPathPrefix;
     }
 
     protected function _getXPathNamespaces() {
-        return static::$_xPathNamespaces;
+        return static::XPATH_NAMESPACES;
     }
 }
 
 
-interface IFeed extends 
-    \Iterator, 
-    \Countable, 
-    IAuthorProvider, 
+interface IFeed extends
+    \Iterator,
+    \Countable,
+    IAuthorProvider,
     IDescriptionProvider,
     ICategorized,
     ITimestamped {
@@ -313,7 +313,7 @@ interface IFeed extends
     public function getFeedLink();
     public function getLanguage();
     public function getCopyright();
-    
+
     public function getGenerator();
     public function getHubs();
     public function getEncoding();
@@ -361,8 +361,8 @@ trait TFeedReader {
     }
 }
 
-interface IEntry extends 
-    IAuthorProvider, 
+interface IEntry extends
+    IAuthorProvider,
     IDescriptionProvider,
     ICategorized,
     ITimestamped {
@@ -398,15 +398,15 @@ trait TEntryReader {
         $this->_domElement = $domElement;
         $this->_domDocument = $this->_domElement->ownerDocument;
         $this->_xPath = $xPath;
-        
+
         if($type === null) {
             $type = Base::detectFeedType($this->_domDocument);
         }
-        
+
         $this->_type = $type;
-        
+
         $ns = $this->_getXPathNamespaces();
-        
+
         if(is_array($ns) && count($ns)) {
             foreach($ns as $alias => $namespace) {
                 $this->_xPath->registerNamespace($alias, $namespace);
@@ -428,13 +428,13 @@ trait TEntryReader {
         if(method_exists($this, 'getLink')) {
             return $this->getLink(0);
         }
-        
+
         if(method_exists($this, 'getLinks')) {
             if(count($links = $this->getLinks())) {
                 return $links[0];
             }
         }
-        
+
         return null;
     }
 }

@@ -9,8 +9,8 @@ use df;
 use df\core;
 
 class Template implements ITemplate {
-    
-    protected static $_operators = [
+
+    const OPERATORS = [
         ''  => ['',  ',', false],
         '+' => ['',  ',', false],
         '#' => ['#', ',', false],
@@ -21,18 +21,18 @@ class Template implements ITemplate {
         '&' => ['&', '&', true]
     ];
 
-    protected static $_delimiters = [
+    const DELIMITERS = [
         ':', '/', '?', '#', '[', ']', '@', '!', '$',
         '&', '\'', '(', ')', '*', '+', ',', ';', '='
     ];
 
-    protected static $_encodedDelimiters = [
+    const ENCODED_DELIMITERS = [
         '%3A', '%2F', '%3F', '%23', '%5B', '%5D',
-        '%40', '%21', '%24', '%26', '%27', '%28', 
+        '%40', '%21', '%24', '%26', '%27', '%28',
         '%29', '%2A', '%2B', '%2C', '%3B', '%3D'
     ];
 
-    protected static $_rfc1738to3986 = ['+' => '%20', '%7e' => '~'];
+    const RFC_1738_TO_3986 = ['+' => '%20', '%7e' => '~'];
 
     protected $_template;
     protected $_values = [];
@@ -49,7 +49,7 @@ class Template implements ITemplate {
         $this->_values = $values;
 
         return preg_replace_callback(
-            '/\{([^\}]+)\}/', 
+            '/\{([^\}]+)\}/',
             [$this, '_handleMatch'],
             $this->_template
         );
@@ -57,9 +57,9 @@ class Template implements ITemplate {
 
     protected function _handleMatch(array $matches) {
         $expression = $this->_parseExpression($matches[1]);
-        list($prefix, $delimiter, $inQuery) = self::$_operators[$expression->operator];
+        list($prefix, $delimiter, $inQuery) = self::OPERATORS[$expression->operator];
         $output = [];
-        
+
         foreach($expression->specs as $spec) {
             if(!isset($this->_values[$spec->key])) {
                 continue;
@@ -95,7 +95,7 @@ class Template implements ITemplate {
                             if($isNested) {
                                 $subValue = strtr(
                                     http_build_query([$key => $subValue]),
-                                    self::$_rfc1738to3986
+                                    self::RFC_1738_TO_3986
                                 );
                             } else {
                                 $subValue = $key.'='.$subValue;
@@ -128,7 +128,7 @@ class Template implements ITemplate {
 
                 $expanded = rawurlencode($value);
 
-                if($expression->operator == '+' 
+                if($expression->operator == '+'
                 || $expression->operator == '#') {
                     $expanded = $this->_decodeReserved($expanded);
                 }
@@ -161,7 +161,7 @@ class Template implements ITemplate {
 
         $output = new Template_Expression();
 
-        if(isset(self::$_operators[$expression{0}])) {
+        if(isset(self::OPERATORS[$expression{0}])) {
             $output->operator = $expression{0};
             $expression = substr($expression, 1);
         }
@@ -187,7 +187,7 @@ class Template implements ITemplate {
     }
 
     protected function _decodeReserved($value)  {
-        return str_replace(self::$_encodedDelimiters, self::$_delimiters, $value);
+        return str_replace(self::ENCODED_DELIMITERS, self::DELIMITERS, $value);
     }
 }
 

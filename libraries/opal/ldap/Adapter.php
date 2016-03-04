@@ -21,26 +21,26 @@ abstract class Adapter implements IAdapter {
     const ENTRY_DN_ATTRIBUTE = 'entryDN';
     const GLOBAL_ID_ATTRIBUTE = 'entryUUID';
 
-    protected static $_arrayAttrs = [
+    const ARRAY_ATTRS = [
         'objectClass', 'memberOf', 'dSCorePropagationData', 'namingContexts',
         'supportedControl', 'supportedLDAPVersion', 'supportedLDAPPolicies',
         'supportedSASLMechanisms', 'supportedCapabilities'
     ];
 
-    protected static $_dateAttrs = [
+    const DATE_ATTRS = [
         'whenCreated', 'whenChanged', 'badPasswordTime', 'lastLogoff', 'lastLogon',
         'pwdLastSet', 'accountExpires', 'lastLogonTimestamp', 'currentTime'
     ];
 
-    protected static $_booleanAttrs = [
+    const BOOLEAN_ATTRS = [
         'isSynchronized', 'isGlobalCatalogReady'
     ];
 
-    protected static $_binaryAttrs = [
+    const BINARY_ATTRS = [
         'objectGUID', 'objectSid'
     ];
 
-    protected static $_metaFields = [
+    const META_FIELDS = [
         'structuralObjectClass', 'entryUUID', 'creatorsName', 'createTimestamp',
         'entryCSN', 'modifiersName', 'modifyTimestamp', 'entryDN',
         'subschemaSubentry', 'hasSubordinates'
@@ -75,19 +75,19 @@ abstract class Adapter implements IAdapter {
     }
 
     public static function getArrayAttributes() {
-        return static::$_arrayAttrs;
+        return static::ARRAY_ATTRS;
     }
 
     public static function getDateAttributes() {
-        return static::$_dateAttrs;
+        return static::DATE_ATTRS;
     }
 
     public static function getBooleanAttributes() {
-        return static::$_booleanAttrs;
+        return static::BOOLEAN_ATTRS;
     }
 
     public static function getBinaryAttributes() {
-        return static::$_binaryAttrs;
+        return static::BINARY_ATTRS;
     }
 
     protected function __construct(IConnection $connection, IContext $context, IIdentity $privilegedIdentity=null) {
@@ -457,7 +457,7 @@ abstract class Adapter implements IAdapter {
         }
 
         $isFetch = $query instanceof opal\query\IFetchQuery;
-        $metaFields = static::$_metaFields;
+        $metaFields = static::META_FIELDS;
         $output = [];
 
         for(
@@ -483,19 +483,19 @@ abstract class Adapter implements IAdapter {
                     $key = static::UID_ATTRIBUTE;
                 }
 
-                if(!in_array($key, static::$_arrayAttrs) && count($value) == 1) {
+                if(!in_array($key, static::ARRAY_ATTRS) && count($value) == 1) {
                     $value = array_shift($value);
                 }
 
-                if(in_array($key, static::$_dateAttrs)) {
+                if(in_array($key, static::DATE_ATTRS)) {
                     try {
                         $value = $this->_inflateDate($key, $value);
                     } catch(\Exception $e) {
                         $value = null;
                     }
-                } else if(in_array($key, static::$_binaryAttrs)) {
+                } else if(in_array($key, static::BINARY_ATTRS)) {
                     $value = $this->_inflateBinaryAttribute($key, $value);
-                } else if(in_array($key, static::$_booleanAttrs)) {
+                } else if(in_array($key, static::BOOLEAN_ATTRS)) {
                     $value = $this->_inflateBooleanAttribute($key, $value);
                 }
 
@@ -701,11 +701,11 @@ abstract class Adapter implements IAdapter {
     }
 
     protected function _normalizeScalarClauseValue($field, $value) {
-        if(in_array($field, self::$_dateAttrs)) {
+        if(in_array($field, self::DATE_ATTRS)) {
             $value = $this->_deflateDate($field, $value);
-        } else if(in_array($field, self::$_binaryAttrs)) {
+        } else if(in_array($field, self::BINARY_ATTRS)) {
             $value = $this->_deflateBinaryAttribute($field, $value);
-        } else if(in_array($field, self::$_booleanAttrs)) {
+        } else if(in_array($field, self::BOOLEAN_ATTRS)) {
             $value = $this->_deflateBooleanAttribute($field, $value);
         }
 

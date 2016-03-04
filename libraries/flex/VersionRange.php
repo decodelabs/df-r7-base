@@ -32,7 +32,7 @@ class VersionRange implements IVersionRange, core\IDumpable {
         while(!empty($parts)) {
             $part = array_shift($parts);
 
-            if(in_array($part, Version_Comparator::$operators)) {
+            if(in_array($part, Version_Comparator::OPERATORS)) {
                 $part .= array_shift($parts);
             }
 

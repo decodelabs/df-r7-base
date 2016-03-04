@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -14,8 +14,8 @@ use df\mint;
 
 class Handler implements IHandler {
 
-    private static $_availableUserAttributes = [
-        'id', 'email', 'fullName', 'nickName', 'joinDate', 'loginDate', 
+    const AVAILABLE_USER_ATTRIBUTES = [
+        'id', 'email', 'fullName', 'nickName', 'joinDate', 'loginDate',
         'isLoggedIn', 'status', 'country', 'language', 'timezone'
     ];
 
@@ -27,7 +27,7 @@ class Handler implements IHandler {
     protected $_adapters = [];
 
     public static function getAvailableUserAttributes() {
-        return self::$_availableUserAttributes;
+        return self::AVAILABLE_USER_ATTRIBUTES;
     }
 
     public static function factory() {
@@ -117,7 +117,7 @@ class Handler implements IHandler {
         $output = $includeCustom ? $this->_userAttributes : [];
 
         foreach($attributes as $attribute) {
-            if(!in_array($attribute, self::$_availableUserAttributes)) {
+            if(!in_array($attribute, self::AVAILABLE_USER_ATTRIBUTES)) {
                 continue;
             }
 
@@ -191,7 +191,7 @@ class Handler implements IHandler {
 
         return null;
     }
-    
+
     public function getUserAttributes() {
         return $this->_userAttributes;
     }

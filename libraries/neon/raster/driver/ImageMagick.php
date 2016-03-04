@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,15 +8,15 @@ namespace df\neon\raster\driver;
 use df;
 use df\core;
 use df\neon;
-    
+
 class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver {
 
-    protected static $_readFormats = [
+    const READ_FORMATS = [
         'AAI', 'ART', 'ARW', 'AVI', 'AVS', 'BMP', 'BMP2', 'BMP3', 'CALS', 'CGM', 'CIN', 'CMYK', 'CMYKA',
         'CR2', 'CRW', 'CUR', 'CUT', 'DCM', 'DCR', 'DCX', 'DIB', 'DJVU', 'DNG', 'DOT', 'DPX', 'EMF',
         'EPDF', 'EPI', 'EPS', 'EPS2', 'EPS3', 'EPSF', 'EPSI', 'EPT', 'EXR', 'FAX', 'FIG', 'FITS', 'FPX',
         'GIF', 'GPLT', 'GRAY', 'HDR', 'HPGL', 'HRZ', 'HTML', 'ICO', 'INLINE', 'JBIG', 'JNG', 'JP2', 'JPC',
-        'JPEG', 'MAN', 'MAT', 'MIFF', 'MONO', 'MNG', 'M2V', 'MPEG', 'MPC', 'MPR', 'MRW', 'MSL', 'MTV', 
+        'JPEG', 'MAN', 'MAT', 'MIFF', 'MONO', 'MNG', 'M2V', 'MPEG', 'MPC', 'MPR', 'MRW', 'MSL', 'MTV',
         'MVG', 'NEF', 'ORF', 'OTB', 'P7', 'PALM', 'CLIPBOARD', 'PBM', 'PCD', 'PCDS', 'PCX', 'PDB', 'PDF',
         'PEF', 'PFA', 'PFB', 'PFM', 'PFG', 'PICON', 'PICT', 'PIX', 'PNG', 'PNG8', 'PNG24', 'PNG32',
         'PNM', 'PPM', 'PS', 'PS2', 'PS3', 'PSB', 'PSD', 'PTIF', 'PWP', 'RAD', 'RAF', 'RGB', 'RGBA', 'RLA',
@@ -25,13 +25,13 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         'YCbCr', 'YCbCrA', 'YUV'
     ];
 
-    protected static $_writeFormats = [
-        'AAI', 'AVS', 'BMP', 'BMP2', 'BMP3', 'CIN', 'CMYK', 'CMYKA', 'DCX', 'DIB', 'DPX', 'EPDF', 'EPI', 
+    const WRITE_FORMATS = [
+        'AAI', 'AVS', 'BMP', 'BMP2', 'BMP3', 'CIN', 'CMYK', 'CMYKA', 'DCX', 'DIB', 'DPX', 'EPDF', 'EPI',
         'EPS', 'EPSF', 'EPSI', 'EPT', 'EXR', 'FAX', 'FITS', 'FPX', 'GIF', 'GRAY', 'HDR', 'HRZ', 'HTML',
         'INFO', 'JBIG', 'JNG', 'JP2', 'JPC', 'JPEG', 'MIFF', 'MONO', 'MNG', 'M2V', 'MPEG', 'MPC', 'MPR',
         'MSL', 'MTV', 'MVG', 'OTB', 'P7', 'PALM', 'PAM', 'CLIPBOARD', 'PBM', 'PCD', 'PCDS', 'PCL', 'PCX',
         'PDB', 'PDF', 'PFM', 'PGM', 'PICON', 'PICT', 'PNG', 'PNG8', 'PNG24', 'PNG32', 'PNM', 'PPM', 'PS',
-        'PS2', 'PS3', 'PSB', 'PSD', 'PTIF', 'RGB', 'RGBA', 'SGI', 'SHTML', 'SUN', 'SVG', 'TGA', 'TIFF', 
+        'PS2', 'PS3', 'PSB', 'PSD', 'PTIF', 'RGB', 'RGBA', 'SGI', 'SHTML', 'SUN', 'SVG', 'TGA', 'TIFF',
         'TXT', 'UYVY', 'VICAR', 'VIFF', 'WBMP', 'WEBP', 'X', 'XBM', 'XPM', 'XWD', 'YCbCr', 'YCbCrA', 'YUV'
     ];
 

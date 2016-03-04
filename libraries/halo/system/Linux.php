@@ -10,8 +10,8 @@ use df\core;
 use df\halo;
 
 class Linux extends Unix {
-    
-    private static $_distributions = [
+
+    const DISTRIBUTIONS = [
         'Debian' => ['/etc/debian_release', '/etc/debian_version'],
         'SuSE' => ['/etc/SuSE-release', '/etc/UnitedLinux-release'],
         'Mandrake' => '/etc/mandrake-release',
@@ -30,46 +30,46 @@ class Linux extends Unix {
         'HLFS' => '/etc/hlfs-release',
         'Synology' => '/etc/synoinfo.conf'
     ];
-    
+
     protected $_osDistribution;
-    
+
     public function getOSDistribution() {
         if($this->_osDistribution === null) {
             $this->_osDistribution = $this->_lookupOSDistribution();
         }
-        
+
         return $this->_osDistribution;
     }
-    
+
     private function _lookupOSDistribution() {
         $result = halo\process\Base::launch('lsb_release', '-a');
-        
+
         if($result->hasOutput()) {
             $lines = explode("\n", $result->getOutput());
-            
+
             foreach($lines as $line) {
                 $parts = explode(':', $line, 2);
                 $key = trim(array_shift($parts));
-                
+
                 if($key == 'Description') {
                     return trim(array_shift($parts));
                 }
             }
         }
-        
-        
-        foreach(self::$_distributions as $name => $files) {
+
+
+        foreach(self::DISTRIBUTIONS as $name => $files) {
             if(!is_array($files)) {
                 $files = [$files];
             }
-            
+
             foreach($files as $file) {
                 if(file_exists($file)) {
                     return $name;
                 }
             }
         }
-        
+
         return 'Unknown';
     }
 }

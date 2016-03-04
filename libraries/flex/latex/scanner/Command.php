@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,10 +9,10 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 class Command implements iris\IScanner {
 
-    protected static $_symbolCommands = [
+    const SYMBOL_COMMANDS = [
         '\\', '`', '\'', '^', '"', '~', '=', '.'
     ];
 
@@ -25,7 +25,7 @@ class Command implements iris\IScanner {
     }
 
     public function initialize(iris\ILexer $lexer) {
-        
+
     }
 
     public function check(iris\ILexer $lexer) {
@@ -35,7 +35,7 @@ class Command implements iris\IScanner {
     public function run(iris\ILexer $lexer) {
         $lexer->extract();
 
-        if(in_array($lexer->char, self::$_symbolCommands)) {
+        if(in_array($lexer->char, self::SYMBOL_COMMANDS)) {
             $command = $lexer->extract();
         } else if($lexer->char == '@' || $lexer->peekAlpha()) {
             $command = $lexer->extractRegexRange('a-zA-Z@');

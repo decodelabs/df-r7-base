@@ -11,8 +11,8 @@ use df\flex;
 
 class En extends Base {
 
-    private static $_regConsonant = '(?:[bcdfghjklmnpqrstvwxz]|(?<=[aeiou])y|^y)';
-    private static $_regVowel = '(?:[aeiou]|(?<![aeiou])y)';
+    const CONSONANTS = '(?:[bcdfghjklmnpqrstvwxz]|(?<=[aeiou])y|^y)';
+    const VOWELS = '(?:[aeiou]|(?<![aeiou])y)';
 
     public function stem($phrase, $natural=false) {
         return $this->split($phrase, $natural);
@@ -56,7 +56,7 @@ class En extends Base {
     }
 
     protected static function _step1($word, $natural) {
-        $v = self::$_regVowel;
+        $v = self::VOWELS;
 
         if(substr($word, -1) == 's') {
             self::_replace($word, 'sses', 'ss') ||
@@ -189,7 +189,7 @@ class En extends Base {
     protected static function _step4($word, $natural) {
         switch(substr($word, -2, 1)) {
             case 'a':
-                $v = self::$_regVowel;
+                $v = self::VOWELS;
                 if(!preg_match("#$v+#", substr($word, 0, -3))) {
                     self::_replace($word, 'al', '', 1);
                 }
@@ -297,8 +297,8 @@ class En extends Base {
     }
 
     protected static function _measure($str) {
-        $c = self::$_regConsonant;
-        $v = self::$_regVowel;
+        $c = self::CONSONANTS;
+        $v = self::VOWELS;
 
         $str = preg_replace("#^$c+#", '', $str);
         $str = preg_replace("#$v+$#", '', $str);
@@ -309,13 +309,13 @@ class En extends Base {
     }
 
     protected static function _doubleConsonant($str) {
-        $c = self::$_regConsonant;
+        $c = self::CONSONANTS;
         return preg_match("#$c{2}$#", $str, $matches) && $matches[0]{0} == $matches[0]{1};
     }
 
     protected static function _cvc($str) {
-        $c = self::$_regConsonant;
-        $v = self::$_regVowel;
+        $c = self::CONSONANTS;
+        $v = self::VOWELS;
 
         return preg_match("#($c$v$c)$#", $str, $matches)
             && strlen($matches[1]) == 3

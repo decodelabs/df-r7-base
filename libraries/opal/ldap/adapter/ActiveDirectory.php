@@ -17,7 +17,7 @@ class ActiveDirectory extends opal\ldap\Adapter {
     const ENTRY_DN_ATTRIBUTE = 'distinguishedName';
     const GLOBAL_ID_ATTRIBUTE = 'objectGUID';
 
-    protected static $_metaFields = [
+    const META_FIELDS = [
         'objectClass', 'distinguishedName', 'whenCreated', 'whenChanged', 'uSNCreated',
         'uSNChanged', 'objectGUID', 'objectSid', 'objectCategory', 'dSCorePropagationData'
     ];

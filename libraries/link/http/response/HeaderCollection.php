@@ -13,7 +13,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
 
     use link\http\THeaderCollection;
 
-    protected static $_messages = [
+    const MESSAGES = [
         // Informational 1xx
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -71,12 +71,12 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
     protected $_statusMessage = null;
 
     public static function isValidStatusCode($code) {
-        return isset(self::$_messages[$code]);
+        return isset(self::MESSAGES[$code]);
     }
 
     public static function statusCodeToString($code) {
         if(self::isValidStatusCode($code)) {
-            return $code.' '.self::$_messages[$code];
+            return $code.' '.self::MESSAGES[$code];
         } else {
             return $code;
         }
@@ -84,7 +84,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
 
     public static function statusCodeToMessage($code) {
         if(self::isValidStatusCode($code)) {
-            return self::$_messages[$code];
+            return self::MESSAGES[$code];
         } else {
             return $code;
         }
@@ -196,8 +196,8 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
             return $this->_statusMessage;
         }
 
-        if(isset(self::$_messages[$this->_statusCode])) {
-            return self::$_messages[$this->_statusCode];
+        if(isset(self::MESSAGES[$this->_statusCode])) {
+            return self::MESSAGES[$this->_statusCode];
         }
 
         return null;

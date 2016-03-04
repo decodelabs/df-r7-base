@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,15 +8,14 @@ namespace df\core\unit;
 use df;
 use df\core;
 use df\aura;
-    
+
 class DisplaySize implements IDisplaySize, core\IDumpable {
 
     use TSingleValueUnit;
 
     const DEFAULT_FONT_SIZE = '16px';
     const DEFAULT_UNIT = 'px';
-    
-    private static $_units = ['%', 'in', 'cm', 'mm', 'em', 'ex', 'pt', 'pc', 'px', 'ch', 'rem', 'vh', 'vw', 'vmin', 'vmax'];
+    const UNITS = ['%', 'in', 'cm', 'mm', 'em', 'ex', 'pt', 'pc', 'px', 'ch', 'rem', 'vh', 'vw', 'vmin', 'vmax'];
 
     protected $_value;
     protected $_unit;

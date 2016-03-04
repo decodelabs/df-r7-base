@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,12 +8,12 @@ namespace df\neon\raster;
 use df;
 use df\core;
 use df\neon;
-    
+
 class Transformation implements ITransformation {
 
     use core\TStringProvider;
 
-    protected static $_keys = [
+    const KEYS = [
         'resize' => 'rs',
         'crop' => 'cr',
         'cropZoom' => 'cz',
@@ -35,7 +35,7 @@ class Transformation implements ITransformation {
         'smooth' => 'sm'
     ];
 
-    protected static $_rescalable = [
+    const RESCALABLE = [
         'resize', 'cropZoom'
     ];
 
@@ -62,46 +62,46 @@ class Transformation implements ITransformation {
 
     protected function _parseString($string) {
         preg_match_all('/\[([^]]+)\]/', $string, $matches);
-        
+
         if(!isset($matches[1])) {
-            return false;    
+            return false;
         }
-        
-        $keys = array_flip(self::$_keys);
-        
+
+        $keys = array_flip(self::KEYS);
+
         foreach($matches[1] as $match) {
             $parts = explode(':', $match, 2);
             $key = strtolower(array_shift($parts));
             $argString = array_shift($parts);
-            
+
             if(!isset($keys[$key])) {
-                continue;    
+                continue;
             }
-            
+
             $method = $keys[$key];
             $args = [];
-            
+
             if(strlen($argString)) {
-                $args = explode('|', $argString);    
+                $args = explode('|', $argString);
             }
-            
+
             $this->_addTransformation($method, $args);
         }
     }
 
     public function toString() {
         $output = '';
-        
+
         foreach($this->_transformations as $callback) {
-            $output .= '['.self::$_keys[$callback[0]];
-            
+            $output .= '['.self::KEYS[$callback[0]];
+
             if(count($args = $callback[1])) {
-                $output .= ':'.implode('|', $args);    
+                $output .= ':'.implode('|', $args);
             }
-            
+
             $output .= ']';
         }
-        
+
         return $output;
     }
 
@@ -116,7 +116,7 @@ class Transformation implements ITransformation {
 
     public function rescale($scale) {
         foreach($this->_transformations as $key => $set) {
-            if(in_array($set[0], self::$_rescalable)) {
+            if(in_array($set[0], self::RESCALABLE)) {
                 if(isset($set[1][0])) {
                     $set[1][0] *= $scale;
                 }
@@ -227,7 +227,7 @@ class Transformation implements ITransformation {
 
 // Helpers
     protected function _addTransformation($method, array $args) {
-        $this->_transformations[] = [$method, $args];    
+        $this->_transformations[] = [$method, $args];
         return $this;
     }
 }

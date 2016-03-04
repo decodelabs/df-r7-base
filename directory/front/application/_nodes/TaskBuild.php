@@ -15,7 +15,7 @@ class TaskBuild extends arch\node\Task {
 
     const PURGE_OLD_BUILDS = true;
 
-    protected static $_appExport = [
+    const APP_EXPORT = [
         'libraries', 'assets', 'daemons', 'directory', 'hooks', 'models', 'themes', 'tests'
     ];
 
@@ -146,7 +146,7 @@ class TaskBuild extends arch\node\Task {
                     continue;
                 }
 
-                if(!in_array($entry, self::$_appExport)) {
+                if(!in_array($entry, self::APP_EXPORT)) {
                     continue;
                 }
 

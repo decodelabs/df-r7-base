@@ -14,8 +14,7 @@ class Version implements IVersion, core\IDumpable {
     use core\TStringProvider;
 
     const REGEX = '/^(?<version>[0-9.x]+)(?<prerelease>-?[0-9a-zA-Z.]+)?(?<build>\+[0-9a-zA-Z.]+)?$/';
-
-    protected static $_greek = ['pre-alpha', 'alpha', 'pre-beta', 'beta', 'pre-rc', 'rc'];
+    const GREEK = ['pre-alpha', 'alpha', 'pre-beta', 'beta', 'pre-rc', 'rc'];
 
     public $major = 0;
     public $minor = 0;
@@ -278,11 +277,11 @@ class Version implements IVersion, core\IDumpable {
             $right = $version->preRelease[$i];
 
             if($left != $right) {
-                if($leftGreek = in_array(strtolower($left), self::$_greek)) {
+                if($leftGreek = in_array(strtolower($left), self::GREEK)) {
                     $left = strtolower($left);
                 }
 
-                if($rightGreek = in_array(strtolower($right), self::$_greek)) {
+                if($rightGreek = in_array(strtolower($right), self::GREEK)) {
                     $right = strtolower($right);
                 }
 
@@ -291,8 +290,8 @@ class Version implements IVersion, core\IDumpable {
                 } else if($rightGreek && !$leftGreek) {
                     return true;
                 } else if($leftGreek && $rightGreek) {
-                    $leftScore = array_search($left, self::$_greek);
-                    $rightScore = array_search($right, self::$_greek);
+                    $leftScore = array_search($left, self::GREEK);
+                    $rightScore = array_search($right, self::GREEK);
 
                     if($leftScore > $rightScore) {
                         return false;
@@ -390,7 +389,7 @@ class Version implements IVersion, core\IDumpable {
 
 class Version_Comparator extends Version {
 
-    public static $operators = ['<', '>', '<=', '>=', '<>', '='];
+    const OPERATORS = ['<', '>', '<=', '>=', '<>', '='];
 
     public $operator;
 

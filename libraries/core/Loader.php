@@ -327,7 +327,7 @@ class Loader implements ILoader {
             $package = core\Package::factory($package);
             $this->_packages[$package->name] = $package;
 
-            $deps = $package::$dependencies;
+            $deps = $package::DEPENDENCIES;
 
             if(is_array($deps) && !empty($deps)) {
                 $this->_loadPackageList($deps);

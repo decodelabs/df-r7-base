@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,14 +7,13 @@ namespace df\core\unit;
 
 use df;
 use df\core;
-    
+
 class Angle implements IAngle, core\IDumpable {
 
     use TSingleValueUnit;
 
     const DEFAULT_UNIT = 'deg';
-
-    private static $_units = ['deg', 'rad', 'grad', 'turn'];
+    const UNITS = ['deg', 'rad', 'grad', 'turn'];
 
     protected $_value;
     protected $_unit;

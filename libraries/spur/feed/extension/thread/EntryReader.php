@@ -10,13 +10,13 @@ use df\core;
 use df\spur;
 
 class EntryReader implements spur\feed\IEntryReaderPlugin {
-    
+
     use spur\feed\TEntryReader;
-    
-    protected static $_xPathNamespaces = [
+
+    const XPATH_NAMESPACES = [
         'thread10' => 'http://purl.org/syndication/thread/1.0',
     ];
-        
+
     public function getCommentCount() {
         return $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/thread10:total)'

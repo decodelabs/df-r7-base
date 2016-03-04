@@ -10,27 +10,8 @@ use df\core;
 use df\opal;
 
 class Decoder implements IDecoder {
-    
-    protected static $_types = [
-        0 => IDataTypes::T_EXTENDED,
-        1 => IDataTypes::T_POINTER,
-        2 => IDataTypes::T_UTF8_STRING,
-        3 => IDataTypes::T_DOUBLE,
-        4 => IDataTypes::T_BYTES,
-        5 => IDataTypes::T_UINT16,
-        6 => IDataTypes::T_UINT32,
-        7 => IDataTypes::T_MAP,
-        8 => IDataTypes::T_INT32,
-        9 => IDataTypes::T_UINT64,
-        10 => IDataTypes::T_UINT128,
-        11 => IDataTypes::T_ARRAY,
-        12 => IDataTypes::T_CONTAINER,
-        13 => IDataTypes::T_END_MARKER,
-        14 => IDataTypes::T_BOOLEAN,
-        15 => IDataTypes::T_FLOAT
-    ];
 
-    protected static $_pointerValueOffset = [
+    const POINTER_VALUE_OFFSET = [
         1 => 0,
         2 => 2048,
         3 => 526336,
@@ -196,7 +177,7 @@ class Decoder implements IDecoder {
             (pack('C', $ctrlByte & 0x7)).$buffer;
 
         $unpacked = $this->_decodeUint32($packed);
-        $pointer = $unpacked + $this->_pointerBase + self::$_pointerValueOffset[$pointerSize];
+        $pointer = $unpacked + $this->_pointerBase + self::POINTER_VALUE_OFFSET[$pointerSize];
 
         return [$pointer, $offset];
     }

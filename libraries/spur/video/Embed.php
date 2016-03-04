@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,12 +10,12 @@ use df\core;
 use df\spur;
 use df\link;
 use df\aura;
-    
+
 class Embed implements IVideoEmbed {
 
     use core\TStringProvider;
 
-    protected static $_urlMap = [
+    const URL_MAP = [
         'youtube' => 'youtube',
         'youtu.be' => 'youtube',
         'vimeo' => 'vimeo'
@@ -112,7 +112,7 @@ class Embed implements IVideoEmbed {
         $this->_url = $url;
         $this->_provider = null;
 
-        foreach(self::$_urlMap as $search => $key) {
+        foreach(self::URL_MAP as $search => $key) {
             if(false !== stripos($this->_url, $search)) {
                 $this->_provider = $key;
                 break;
@@ -139,7 +139,7 @@ class Embed implements IVideoEmbed {
     public function getProvider() {
         return $this->_provider;
     }
- 
+
  // Width
     public function setWidth($width) {
         $this->_width = (int)$width;
@@ -306,7 +306,7 @@ class Embed implements IVideoEmbed {
                 core\stub($url);
             }
         }
-        
+
         $output = new link\http\Url('//www.youtube.com/embed/'.$id);
 
         if($this->_startTime !== null) {

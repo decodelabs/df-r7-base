@@ -10,8 +10,8 @@ use df\core;
 use df\flow;
 
 abstract class Base implements flow\mailingList\IAdapter {
-    
-    public static $settingsFields = [];
+
+    const SETTINGS_FIELDS = [];
 
     public static function factory(core\collection\ITree $options) {
         if(!$name = $options['adapter']) {
@@ -44,7 +44,7 @@ abstract class Base implements flow\mailingList\IAdapter {
     }
 
     public static function getSettingsFields() {
-        return static::$settingsFields;
+        return static::SETTINGS_FIELDS;
     }
 
     protected function __construct(core\collection\ITree $options) {}

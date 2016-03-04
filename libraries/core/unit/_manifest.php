@@ -37,7 +37,7 @@ trait TSingleValueUnit {
 
     use core\TStringProvider;
 
-    //private static $_units = [];
+    //const UNITS = [];
 
     public function __construct($value, $unit=null, $allowPlainNumbers=false) {
         $this->parse($value, $unit, $allowPlainNumbers);
@@ -82,11 +82,11 @@ trait TSingleValueUnit {
             $unit = static::DEFAULT_UNIT;
         }
 
-        if(!in_array($unit, self::$_units)) {
+        if(!in_array($unit, self::UNITS)) {
             $found = false;
 
             if(strlen($unit) == 1) {
-                foreach(self::$_units as $test) {
+                foreach(self::UNITS as $test) {
                     if($test{0} == $unit) {
                         $unit = $test;
                         $found = true;

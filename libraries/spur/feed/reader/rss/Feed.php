@@ -10,41 +10,41 @@ use df\core;
 use df\spur;
 
 class Feed extends spur\feed\reader\Feed {
-    
-    protected static $_defaultExtensions = [
+
+    const DEFAULT_EXTENSIONS = [
         'dublinCore', 'content', 'atom', 'wellFormedWeb', 'slash', 'thread'
     ];
 
     public function getTypeName() {
         switch($this->_type) {
-            case spur\feed\ITypes::RSS_09: 
+            case spur\feed\ITypes::RSS_09:
                 return 'RSS 0.9';
-                
-            case spur\feed\ITypes::RSS_091: 
+
+            case spur\feed\ITypes::RSS_091:
                 return 'RSS 0.91';
-                
-            case spur\feed\ITypes::RSS_091_NETSCAPE: 
+
+            case spur\feed\ITypes::RSS_091_NETSCAPE:
                 return 'RSS 0.91n';
-                
-            case spur\feed\ITypes::RSS_091_USERLAND: 
+
+            case spur\feed\ITypes::RSS_091_USERLAND:
                 return 'RSS 0.91u';
-                
-            case spur\feed\ITypes::RSS_092: 
+
+            case spur\feed\ITypes::RSS_092:
                 return 'RSS 0.92';
-                
-            case spur\feed\ITypes::RSS_093: 
+
+            case spur\feed\ITypes::RSS_093:
                 return 'RSS 0.93';
-                
-            case spur\feed\ITypes::RSS_094: 
+
+            case spur\feed\ITypes::RSS_094:
                 return 'RSS 0.94';
-                
-            case spur\feed\ITypes::RSS_10: 
+
+            case spur\feed\ITypes::RSS_10:
                 return 'RSS 1.0';
-                
-            case spur\feed\ITypes::RSS_20: 
+
+            case spur\feed\ITypes::RSS_20:
                 return 'RSS 2.0';
-                
-            case spur\feed\ITypes::RSS: 
+
+            case spur\feed\ITypes::RSS:
             default:
                 return 'RSS';
         }
@@ -59,13 +59,13 @@ class Feed extends spur\feed\reader\Feed {
             return '/rdf:RDF/rss:channel';
         }
     }
-    
+
     protected function _getEntryXPathPrefix($entryKey) {
         if($this->_type == spur\feed\ITypes::RSS_10
         || $this->_type == spur\feed\ITypes::RSS_09) {
             return '//rss:item['.($entryKey+1).']';
         }
-        
+
         return '//item['.($entryKey+1).']';
     }
 
@@ -76,7 +76,7 @@ class Feed extends spur\feed\reader\Feed {
                     'rdf' => spur\feed\INamespaces::RDF,
                     'rss' => spur\feed\INamespaces::RSS_10
                 ];
-                
+
             case spur\feed\ITypes::RSS_09:
                 return [
                     'rdf' => spur\feed\INamespaces::RDF,
@@ -93,14 +93,14 @@ class Feed extends spur\feed\reader\Feed {
 // Feed
     protected function _getId() {
         $id = null;
-        
+
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
             $id = $this->_xPath->evaluate('string(/rss/channel/guid)');
         }
 
         $id = $this->getFromPlugin(['dublinCore', 'atom'], 'id', $id);
-        
+
         if(!$id) {
             if($link = $this->getSourceLink()) {
                 $id = $link;
@@ -108,43 +108,43 @@ class Feed extends spur\feed\reader\Feed {
                 $id = $title;
             }
         }
-        
+
         return $id;
     }
 
     protected function _getAuthors() {
         $authors = [];
-        
+
         if($this->hasPlugin('dublinCore')) {
             foreach($this->getPlugin('dublinCore')->getAuthors() as $author) {
                 $authors[] = $author;
             }
         }
-        
+
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
             $list = $this->_xPath->query('//author');
         } else {
             $list = $this->_xPath->query('//rss:author');
         }
-        
+
         if($list->length) {
             foreach($list as $author) {
                 if(preg_match("/^(.*@[^ ]*).*(\((.*)\))?$/", trim($author->nodeValue), $matches)) {
                     $author = new spur\feed\Author($matches[1]);
-                    
+
                     if(isset($matches[3])) {
                         $author->setName($matches[3]);
                     }
-                    
+
                     $authors[] = $author;
                 }
             }
         }
-        
+
         return $this->getFromPlugin('atom', 'authors', $authors);
     }
-    
+
     protected function _getTitle() {
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
@@ -152,10 +152,10 @@ class Feed extends spur\feed\reader\Feed {
         } else {
             $title = $this->_xPath->evaluate('string(/rdf:RDF/rss:channel/rss:title)');
         }
-        
+
         return $this->getFromPlugin(['dublinCore', 'atom'], 'title', $title);
     }
-        
+
     protected function _getDescription() {
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
@@ -167,10 +167,10 @@ class Feed extends spur\feed\reader\Feed {
                 'string(/rdf:RDF/rss:channel/rss:description)'
             );
         }
-        
+
         return $this->getFromPlugin(['dublinCore', 'atom'], 'description', $description);
     }
-    
+
     protected function _getImage() {
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
@@ -180,14 +180,14 @@ class Feed extends spur\feed\reader\Feed {
             $list = $this->_xPath->query('/rdf:RDF/rss:channel/rss:image');
             $prefix = '/rdf:RDF/rss:channel/rss:image[1]';
         }
-        
+
         $image = null;
-        
+
         if($list->length) {
             $image = new spur\feed\Image(
                 $this->_xPath->evaluate('string('.$prefix.'/url)')
             );
-            
+
             $image->setLink(
                     $this->_xPath->evaluate('string('.$prefix.'/link)')
                 )
@@ -204,20 +204,20 @@ class Feed extends spur\feed\reader\Feed {
                     $this->_xPath->evaluate('string('.$prefix.'/description)')
                 );
         }
-        
+
         return $image;
     }
-    
+
     protected function _getCategories() {
         $categories = [];
-        
+
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
             $list = $this->_xPath->evaluate('/rss/channel//category');
         } else {
             $list = $this->_xPath->evaluate('/rdf:RDF/rss:channel//rss:category');
         }
-        
+
         if($list->length) {
             foreach($list as $category) {
                 $categories[] = new spur\feed\Category(
@@ -227,10 +227,10 @@ class Feed extends spur\feed\reader\Feed {
                 );
             }
         }
-        
+
         return $this->getFromPlugin(['dublinCore', 'atom'], 'categories', $categories);
     }
-    
+
     protected function _getSourceLink() {
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
@@ -238,73 +238,73 @@ class Feed extends spur\feed\reader\Feed {
         } else {
             $sourceLink = $this->_xPath->evaluate('string(/rdf:RDF/rss:channel/rss:link)');
         }
-        
+
         return $this->getFromPlugin('atom', 'sourceLink', $sourceLink);
     }
-    
+
     protected function _getFeedLink() {
         return $this->getFromPlugin('atom', 'feedLink');
     }
-    
+
     protected function _getLanguage() {
         $language = null;
-        
+
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
             $language = $this->_xPath->evaluate('string(/rss/channel/language)');
         }
-        
+
         $language = $this->getFromPlugin(['dublinCore', 'atom'], 'language', $language);
-        
+
         if(!$language) {
             $language = $this->_xPath->evaluate('string(//@xml:lang[1])');
         }
-        
+
         return $language;
     }
-    
+
     protected function _getCopyright() {
         $copyright = null;
-        
+
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
             $copyright = $this->_xPath->evaluate('string(/rss/channel/copyright)');
         }
-        
+
         return $this->getFromPlugin(['dublinCore', 'atom'], 'copyright', $copyright);
     }
-    
+
     protected function _getCreationDate() {
         return $this->getLastModifiedDate();
     }
-    
+
     protected function _getLastModifiedDate() {
         $date = null;
-        
+
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
             $modified = $this->_xPath->evaluate('string(/rss/channel/pubDate)');
-            
+
             if(!$modified) {
                 $modified = $this->_xPath->evaluate('string(/rss/channel/lastBuildDate)');
             }
-            
+
             if($modified) {
                 $date = core\time\Date::factory($modified);
             }
         }
-        
+
         return $this->getFromPlugin(['dublinCore', 'atom'], 'lastModifiedDate', $date);
     }
-    
+
     protected function _getGenerator() {
         $generator = null;
-        
+
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
             $generator = $this->_xPath->evaluate('string(/rss/channel/generator)');
         }
-        
+
         if(!$generator) {
             if($this->_type != spur\feed\ITypes::RSS_10
             && $this->_type != spur\feed\ITypes::RSS_09) {
@@ -313,14 +313,14 @@ class Feed extends spur\feed\reader\Feed {
                 $generator = $this->_xPath->evaluate('string(/rdf:RDF/rss:channel/atom:generator)');
             }
         }
-        
+
         return $this->getFromPlugin('atom', 'generator', $generator);
     }
-    
+
     protected function _getHubs() {
         return $this->getFromPlugin('atom', 'hubs', []);
     }
-    
+
     protected function _getEntryNodeList() {
         if($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {

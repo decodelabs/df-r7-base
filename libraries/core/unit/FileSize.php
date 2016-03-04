@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,14 +7,13 @@ namespace df\core\unit;
 
 use df;
 use df\core;
-    
+
 class FileSize implements IFileSize, core\IDumpable {
 
     use TSingleValueUnit;
 
     const DEFAULT_UNIT = 'b';
-
-    private static $_units = ['bit', 'b', 'kb', 'mb', 'gb', 'tb', 'pb'];
+    const UNITS = ['bit', 'b', 'kb', 'mb', 'gb', 'tb', 'pb'];
 
     protected $_value;
     protected $_unit;
@@ -183,10 +182,10 @@ class FileSize implements IFileSize, core\IDumpable {
             $value /= 8;
         }
 
-        $key = array_search($unit, self::$_units);
+        $key = array_search($unit, self::UNITS);
 
-        while($value > 1024 && isset(self::$_units[$key + 1])) {
-            $unit = self::$_units[++$key];
+        while($value > 1024 && isset(self::UNITS[$key + 1])) {
+            $unit = self::UNITS[++$key];
             $value /= 1024;
         }
 

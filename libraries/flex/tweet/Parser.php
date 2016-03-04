@@ -35,38 +35,30 @@ class Parser implements flex\IInlineHtmlProducer {
 
     const URL_BASE = 'http://twitter.com/';
     const URL_HASHTAG = 'http://twitter.com/search?q=%23';
-    
-    protected static $_urlRegex = null;
-    protected static $_replyUsernameRegex = null;
+
+    const URL_REGEX = '/(?:'.
+        '('.self::REGEX_URL_CHARS_BEFORE.')'.
+        '('.
+        '((?:https?:\\/\\/|www\\.)?)'.
+        '('.self::REGEX_URL_DOMAIN.')'.
+        '(\\/'.self::REGEX_URL_CHARS_PATH.'*'.
+        self::REGEX_URL_CHARS_PATH_END.'?)?'.
+        '(\\?'.self::REGEX_URL_CHARS_QUERY.'*'.
+        self::REGEX_URL_CHARS_QUERY_END.')?'.
+        ')'.
+        ')/iux';
+
+    const REPLY_USERNAME_REGEX = '/^('.self::REGEX_WHITESPACE.')*[@＠]([a-zA-Z0-9_]{1,20})/';
 
     public function __construct($source) {
         $this->source = $source;
-
-        if(self::$_urlRegex === null) {
-            self::$_urlRegex = 
-                '/(?:'.
-                '('.self::REGEX_URL_CHARS_BEFORE.')'.
-                '('.
-                '((?:https?:\\/\\/|www\\.)?)'.
-                '('.self::REGEX_URL_DOMAIN.')'.
-                '(\\/'.self::REGEX_URL_CHARS_PATH.'*'.
-                self::REGEX_URL_CHARS_PATH_END.'?)?'.
-                '(\\?'.self::REGEX_URL_CHARS_QUERY.'*'.
-                self::REGEX_URL_CHARS_QUERY_END.')?'.
-                ')'.
-                ')/iux';
-        }
-
-        if(self::$_replyUsernameRegex === null) {
-            self::$_replyUsernameRegex = '/^('.self::REGEX_WHITESPACE.')*[@＠]([a-zA-Z0-9_]{1,20})/';
-        }
     }
 
     public function toHtml() {
         $output = htmlspecialchars($this->source, \ENT_QUOTES, 'UTF-8', false);
 
         // Urls
-        $output = preg_replace_callback(self::$_urlRegex, function($matches) {
+        $output = preg_replace_callback(self::URL_REGEX, function($matches) {
             list($all, $before, $url, $protocol, $domain, $path, $query) = array_pad($matches, 7, '');
             $url = htmlspecialchars($url, \ENT_QUOTES, 'UTF-8', false);
 

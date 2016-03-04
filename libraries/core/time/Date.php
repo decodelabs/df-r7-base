@@ -11,7 +11,7 @@ use df\user;
 
 class Date implements IDate, core\IDumpable {
 
-    protected static $_months = [
+    const MONTHS = [
         'jan' => 1, 'january' => 1,
         'feb' => 2, 'february' => 2,
         'mar' => 3, 'march' => 3,
@@ -26,7 +26,7 @@ class Date implements IDate, core\IDumpable {
         'dec' => 12, 'december' => 12
     ];
 
-    protected static $_days = [
+    const DAYS = [
         'mon' => 1, 'monday' => 1,
         'tue' => 2, 'tuesday' => 2,
         'wed' => 3, 'wednesday' => 3,
@@ -536,13 +536,13 @@ class Date implements IDate, core\IDumpable {
         if(!is_numeric($month)) {
             $month = strtolower($month);
 
-            if(!isset(self::$_months[$month])) {
+            if(!isset(self::MONTHS[$month])) {
                 throw new InvalidArgumentException(
                     $month.' is not a valid month string'
                 );
             }
 
-            $month = self::$_months[$month];
+            $month = self::MONTHS[$month];
         }
 
         return $this->format('n') == $month;
@@ -593,13 +593,13 @@ class Date implements IDate, core\IDumpable {
         if(!is_numeric($day)) {
             $day = strtolower($day);
 
-            if(!isset(self::$_days[$day])) {
+            if(!isset(self::DAYS[$day])) {
                 throw new InvalidArgumentException(
                     $day.' is not a valid day string'
                 );
             }
 
-            $day = self::$_days[$day];
+            $day = self::DAYS[$day];
         }
 
         if($day == 0) {

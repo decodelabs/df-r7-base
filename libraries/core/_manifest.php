@@ -214,8 +214,7 @@ interface IPackage {
 class Package implements IPackage {
 
     const PRIORITY = 20;
-
-    public static $dependencies = [];
+    const DEPENDENCIES = [];
 
     public $path;
     public $name;

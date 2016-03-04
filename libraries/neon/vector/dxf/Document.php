@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class Document implements IDocument {
-    
+
     use TEntityCollection;
     use core\TStringProvider;
 
@@ -64,7 +64,7 @@ class Document implements IDocument {
     public function setHeader($key, $value) {
         $key = strtoupper(ltrim($key, '$'));
 
-        if(!isset(self::$_headerTypes[$key])) {
+        if(!isset(self::HEADER_TYPES[$key])) {
             throw new InvalidArgumentException(
                 'Header not recognised: '.$key
             );
@@ -75,7 +75,7 @@ class Document implements IDocument {
             return $this;
         }
 
-        $type = self::$_headerTypes[$key];
+        $type = self::HEADER_TYPES[$key];
 
         if(in_array($key, ['TDCREATE', 'TDUCREATE', 'TDUPDATE', 'TDUUPDATE'])) {
             $value = core\time\Date::factory($value);
@@ -88,7 +88,7 @@ class Document implements IDocument {
             || (300 <= $type && $type <= 309)
             || (1000 <= $type && $type <= 1009)) {
                 $value = (string)$value;
-            } else 
+            } else
             if((60 <= $type && $type <= 79)
             || (90 <= $type && $type <= 99)
             || (170 <= $type && $type <= 175)
@@ -98,15 +98,15 @@ class Document implements IDocument {
             || (400 <= $type && $type <= 409)
             || (1060 <= $type && $type <= 1071)) {
                 $value = (int)$value;
-            } else 
+            } else
             if((40 <= $type && $type <= 58)
             || (140 <= $type && $type <= 147)
             || (1010 <= $type && $type <= 1059)) {
                 $value = (float)$value;
-            } else 
+            } else
             if($type == 100 || $type == 102) {
                 $value = substr($value, 0, 255);
-            } else 
+            } else
             if($type == 105
             || (310 <= $type && $type <= 319)
             || (320 <= $type && $type <= 329)
@@ -229,7 +229,7 @@ class Document implements IDocument {
             if($table instanceof ITable) {
                 $this->addTable($table);
             }
-        } 
+        }
 
         return $this;
     }
@@ -397,18 +397,18 @@ class Document implements IDocument {
         } else if($value instanceof core\time\IDuration) {
             $value = $value->getDays();
         } else {
-            $value = sprintf(" %s\n%s\n", self::$_headerTypes[$key], $value);
+            $value = sprintf(" %s\n%s\n", self::HEADER_TYPES[$key], $value);
         }
 
         return self::_writeName($key).$value;
     }
 
 
-    
+
 
 
 // Data
-    protected static $_headerTypes = [
+    const HEADER_TYPES = [
         'ACADMAINTVER' => 70,
         'ACADVER' => 1,
         'ANGBASE' => 50,

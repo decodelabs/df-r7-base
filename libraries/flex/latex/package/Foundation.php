@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,40 +9,40 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 class Foundation extends Base {
 
-    protected static $_environments = [
-        'root', 'center', 'document', 'enumerate', 'equation', 'eqnarray', 'figure', 
+    const ENVIRONMENTS = [
+        'root', 'center', 'document', 'enumerate', 'equation', 'eqnarray', 'figure',
         'itemize', 'multline', 'table', 'tabular', 'thebibliography'
     ];
 
-    protected static $_commands = [
+    const COMMANDS = [
         '@', '\\', ',', ';', ':', '!', '-', '>', '<', '+', '|', '(', ')', '[', ']',
 
         'addcontentsline', 'addtocontents', 'addtocounter', 'address', 'addtolength', 'addvspace', 'alph',
-        'appendix', 'arabic', 'author', 'backslash', 'baselineskip', 'baselinestretch', 'bf', 
-        'bibitem', 'bigskipamount', 'bigskip', 'boldmath', 'cal', 'caption', 'cdots', 'centering', 'chapter', 
+        'appendix', 'arabic', 'author', 'backslash', 'baselineskip', 'baselinestretch', 'bf',
+        'bibitem', 'bigskipamount', 'bigskip', 'boldmath', 'cal', 'caption', 'cdots', 'centering', 'chapter',
         'circle', 'cite', 'cleardoublepage', 'clearpage', 'cline', 'closing', 'copyright', 'dashbox', 'date',
         'ddots', 'documentclass', 'dotfill', 'em', 'emph', 'ensuremath', 'fbox', 'flushbottom', 'fnsymbol',
         'footnote', 'footnotemark', 'footnotesize', 'footnotetext', 'frac', 'frame', 'framebox', 'frenchspacing',
-        'hline', 'hfill', 'hrulefill', 'hspace', 'huge', 'Huge', 'hyphenation', 'include', 'includeonly', 'indent', 
+        'hline', 'hfill', 'hrulefill', 'hspace', 'huge', 'Huge', 'hyphenation', 'include', 'includeonly', 'indent',
         'input', 'it', 'item', 'kill', 'label', 'large', 'Large', 'LARGE', 'LaTeX', 'LaTeXe', 'ldots', 'left',
-        'lefteqn', 'line', 'linebreak', 'linethickness', 'linewidth', 'listoffigures', 'listoftables', 
-        'location', 'makeatletter', 'makeatother', 'makebox', 'maketitle', 'markboth', 'markright', 'mathcal', 
-        'mathop', 'mbox', 'medskip', 'multicolumn', 'multiput', 'newcommand', 'newcounter', 'newenvironment', 
-        'newfont', 'newlength', 'newline', 'newpage', 'newsavebox', 'newtheorem', 'nocite', 'noindent', 
-        'nolinebreak', 'nonfrenchspacing', 'normalsize', 'nopagebreak', 'not', 'onecolumn', 'opening', 'oval', 
+        'lefteqn', 'line', 'linebreak', 'linethickness', 'linewidth', 'listoffigures', 'listoftables',
+        'location', 'makeatletter', 'makeatother', 'makebox', 'maketitle', 'markboth', 'markright', 'mathcal',
+        'mathop', 'mbox', 'medskip', 'multicolumn', 'multiput', 'newcommand', 'newcounter', 'newenvironment',
+        'newfont', 'newlength', 'newline', 'newpage', 'newsavebox', 'newtheorem', 'nocite', 'noindent',
+        'nolinebreak', 'nonfrenchspacing', 'normalsize', 'nopagebreak', 'not', 'onecolumn', 'opening', 'oval',
         'overbrace', 'overline', 'pagebreak', 'pagenumbering', 'pageref', 'pagestyle', 'par', 'paragraph', 'parbox',
         'parindent', 'parskip', 'part', 'protect', 'providecommand', 'put', 'raggedbottom', 'raggedleft',
         'raggedright', 'raisebox', 'ref', 'renewcommand', 'right', 'rm', 'roman', 'rule', 'savebox', 'sbox',
-        'sc', 'scriptsize', 'section', 'setcounter', 'setlength', 'settowidth', 'sf', 'shortstack', 
+        'sc', 'scriptsize', 'section', 'setcounter', 'setlength', 'settowidth', 'sf', 'shortstack',
         'signature', 'sl', 'slash', 'small', 'smallskip', 'sout', 'space', 'sqrt', 'stackrel', 'stepcounter',
         'subparagraph', 'subsection', 'subsubsection', 'tableofcontents', 'telephone', 'TeX', 'textbf',
-        'textit', 'textmd', 'textnormal', 'textrm', 'textsc', 'textsf', 'textsl', 'texttt', 'textup', 
+        'textit', 'textmd', 'textnormal', 'textrm', 'textsc', 'textsf', 'textsl', 'texttt', 'textup',
         'textwidth', 'textheight', 'thanks', 'thispagestyle', 'tiny', 'title', 'today', 'tt', 'twocolumn',
-        'typeout', 'typein', 'uline', 'underbrace', 'underline', 'unitlength', 'usebox', 'usecounter', 
-        'usepackage', 'uwave', 'value', 'vbox', 'vcenter', 'vdots', 'vector', 'verb', 'vfill', 'vline', 
+        'typeout', 'typein', 'uline', 'underbrace', 'underline', 'unitlength', 'usebox', 'usecounter',
+        'usepackage', 'uwave', 'value', 'vbox', 'vcenter', 'vdots', 'vector', 'verb', 'vfill', 'vline',
         'vphantom', 'vspace'
     ];
 
@@ -67,7 +67,7 @@ class Foundation extends Base {
                 );
             }
         }
-    }   
+    }
 
 
 // Center
@@ -124,7 +124,7 @@ class Foundation extends Base {
 
         $this->parser->extractMatch('command', null, 'end');
         $this->parser->parseCommand('end');
-        
+
         return $output;
     }
 
@@ -133,7 +133,7 @@ class Foundation extends Base {
 
         $this->parser->extractMatch('command', null, 'end');
         $this->parser->parseCommand('end');
-        
+
         return $output;
     }
 
@@ -152,9 +152,9 @@ class Foundation extends Base {
 
         $options = array_keys($this->parser->extractOptionList());
         $figure->setPlacement(array_shift($options));
-        
+
         $this->parser->parseStandardContent($figure);
-        
+
         return $figure;
     }
 
@@ -240,7 +240,7 @@ class Foundation extends Base {
 
         // Parse tabbing declaration
         $this->parser->extractValue('{');
-        
+
         while(!$this->parser->token->isValue('}')) {
             $token = $this->parser->extract();
             $col = new flex\latex\map\Column($token);
@@ -716,7 +716,7 @@ class Foundation extends Base {
 
 
 
-// Ragged 
+// Ragged
     public function command_raggedleft() {
         return $this->parser->skipCommand(false);
     }
@@ -788,7 +788,7 @@ class Foundation extends Base {
 
     public function command_subsection($isStar) {
         $this->parser->closeParagraph();
-        
+
         $section = new flex\latex\map\Block($this->parser->token);
         $section->setType('section');
         $section->setAttribute('level', 2);
@@ -810,7 +810,7 @@ class Foundation extends Base {
 
     public function command_subsubsection($isStar) {
         $this->parser->closeParagraph();
-        
+
         if($this->parser->container instanceof flex\latex\IGenericBlock
         && $this->parser->container->getType() == 'bibitem') {
             return $this->_bibitemSubsection();
@@ -908,7 +908,7 @@ class Foundation extends Base {
         $this->parser->extractValue('{');
         $block = new flex\latex\map\Block($this->parser->token);
         $this->parser->parseStandardContent($block, true, false);
-        
+
         $title = trim($block->reduceContents());
         $this->parser->document->setTitle($title);
         $this->parser->extractValue('}');

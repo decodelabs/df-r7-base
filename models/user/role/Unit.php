@@ -11,13 +11,7 @@ use df\axis;
 
 class Unit extends axis\unit\table\Base {
 
-    protected $_defaultOrderableFields = [
-        'name', 'signifier', 'priority'
-    ];
-
-    protected $_defaultOrder = ['priority DESC', 'name ASC'];
-
-    protected static $_defaultManifest = [
+    const DEFAULT_MANIFEST = [
         '30dc3f8f-ee05-c1e8-f701-c05c8cb96c35' => [
             'name' => 'Super user',
             'signifier' => 'developer',
@@ -69,6 +63,12 @@ class Unit extends axis\unit\table\Base {
         ]
     ];
 
+    protected $_defaultOrderableFields = [
+        'name', 'signifier', 'priority'
+    ];
+
+    protected $_defaultOrder = ['priority DESC', 'name ASC'];
+
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
 
@@ -84,6 +84,6 @@ class Unit extends axis\unit\table\Base {
     }
 
     public function getDefaultManifest() {
-        return self::$_defaultManifest;
+        return self::DEFAULT_MANIFEST;
     }
 }

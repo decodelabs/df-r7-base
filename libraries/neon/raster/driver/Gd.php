@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,14 +8,14 @@ namespace df\neon\raster\driver;
 use df;
 use df\core;
 use df\neon;
-    
+
 class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver {
 
-    protected static $_readFormats = [
+    const READ_FORMATS = [
         'GIF', 'JPEG', 'PNG', 'PNG8', 'PNG24', 'PNG32', 'WBMP', 'XBM', 'XPM'
     ];
 
-    protected static $_writeFormats = [
+    const WRITE_FORMATS = [
         'GIF', 'JPEG', 'PNG', 'PNG8', 'PNG24', 'PNG32', 'WBMP'
     ];
 
@@ -43,23 +43,23 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                 case 1: // gif
                     $this->_pointer = imageCreateFromGif($file);
                     break;
-                    
+
                 case 2: // jpg
                     $this->_pointer = imageCreateFromJpeg($file);
                     break;
-                    
+
                 case 3: // png
                     $this->_pointer = imageCreateFromPng($file);
                     break;
-                    
+
                 case 15: // wbmp
                     $this->_pointer = imageCreateFromWbmp($file);
                     break;
-                    
+
                 case 16: // xbm
                     $this->_pointer = imageCreateFromXbm($file);
                     break;
-                    
+
                 default:
                     $this->_pointer = imageCreateFromString(file_get_contents($file));
                     break;
@@ -141,21 +141,21 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                     imageTrueColorToPalette($this->_pointer, true, 256);
                     imageGif($this->_pointer);
                     break;
-                    
+
                 case 'JPEG':
                     imageJpeg($this->_pointer, null, $quality);
                     break;
-                    
+
                 case 'WBMP':
                     imageWbmp($this->_pointer);
                     break;
-                    
+
                 default:
                 case 'PNG':
                     //imageAlphaBlending($this->_pointer, false);
                     imageSaveAlpha($this->_pointer, true);
                     imagePng($this->_pointer);
-                    break;    
+                    break;
             }
         } catch(\Exception $e) {
             ob_clean();
@@ -172,11 +172,11 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         $img = imageCreateTrueColor($width, $height);
         $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
         imageColorTransparent($img, $background);
-        
+
         imageAlphaBlending($img, false);
         imageSaveAlpha($img, true);
         imageFilledRectangle($img, 0, 0, $width, $height, $background);
-        
+
         imageCopyResampled($img, $this->_pointer, 0, 0, 0, 0, $width, $height, $this->_width, $this->_height);
         imageDestroy($this->_pointer);
 
@@ -191,11 +191,11 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         $img = imageCreateTrueColor($width, $height);
         $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
         imageColorTransparent($img, $background);
-        
+
         imageAlphaBlending($img, false);
         imageSaveAlpha($img, true);
         imageFilledRectangle($img, 0, 0, $width, $height, $background);
-        
+
         imageCopy($img, $this->_pointer, 0, 0, $x, $y, $width, $height);
         imageDestroy($this->_pointer);
 
@@ -255,9 +255,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                 $tmp, $this->_pointer, $x, 0,
                 $this->_width - $x - 1, 0,
                 1, $this->_height
-            );    
-        }    
-        
+            );
+        }
+
         imageAlphaBlending($tmp, false);
         imageDestroy($this->_pointer);
 
@@ -268,15 +268,15 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
     public function flip() {
         $tmp = imageCreateTrueColor($this->_width, $this->_height);
         imageAlphaBlending($tmp, true);
-        
+
         for($y = 0; $y < $this->_height; $y++) {
             imageCopy(
                 $tmp, $this->_pointer, 0, $y,
                 0, $this->_height - $y - 1,
                 $this->_width, 1
-            );    
-        }    
-        
+            );
+        }
+
         imageAlphaBlending($tmp, false);
         imageDestroy($this->_pointer);
 
@@ -289,29 +289,29 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
     public function brightness($brightness) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
-        
+
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_BRIGHTNESS, $brightness);
-        }    
-        
+        }
+
         return $this;
     }
-    
+
     public function contrast($contrast) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
 
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_CONTRAST, $contrast * -1);
-        }    
-        
+        }
+
         return $this;
     }
-    
+
     public function greyscale() {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
-        
+
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_GRAYSCALE);
         } else {
@@ -319,105 +319,105 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                 $this->_pointer, $this->_pointer,
                 0, 0, 0, 0,
                 $this->_width, $this->_height, 0
-            ); 
-        }   
-        
+            );
+        }
+
         return $this;
     }
-    
+
     public function colorize(neon\IColor $color, $alpha) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
-        
+
         if(function_exists('imagefilter')) {
             imagefilter(
-                $this->_pointer, 
-                \IMG_FILTER_COLORIZE, 
-                $color->red * 255, 
-                $color->green * 255, 
-                $color->blue * 255, 
+                $this->_pointer,
+                \IMG_FILTER_COLORIZE,
+                $color->red * 255,
+                $color->green * 255,
+                $color->blue * 255,
                 $alpha / 100 * -127
             );
-        }    
-        
+        }
+
         return $this;
     }
-    
+
     public function invert() {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
-        
+
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_NEGATE);
-        }    
-        
-        return $this;     
+        }
+
+        return $this;
     }
-    
+
     public function detectEdges() {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
-        
+
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_EDGEDETECT);
-        }    
-        
-        return $this;     
+        }
+
+        return $this;
     }
-    
+
     public function emboss() {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
-        
+
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_EMBOSS);
-        }    
-        
-        return $this;   
+        }
+
+        return $this;
     }
-    
+
     public function blur() {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
-        
+
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_SELECTIVE_BLUR);
-        }    
-        
-        return $this;   
+        }
+
+        return $this;
     }
-    
+
     public function gaussianBlur() {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
-        
+
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_GAUSSIAN_BLUR);
-        }    
-        
-        return $this;   
+        }
+
+        return $this;
     }
-    
+
     public function removeMean() {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
-        
+
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_MEAN_REMOVAL);
-        }    
-        
-        return $this;   
+        }
+
+        return $this;
     }
-    
+
     public function smooth($amount) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
-        
+
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_SMOOTH, $amount);
-        }    
-        
-        return $this;   
+        }
+
+        return $this;
     }
 
 
@@ -427,32 +427,32 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
     /*
     public function rectangleFill($x, $y, $width, $height, $color, $alpha=1) {
         $color = neon\Color::factory($color);
-        
+
         imageFilledRectangle(
             $this->_pointer,
             (int)$x, (int)$y,
-            (int)($x + $width), (int)($y + $height), 
+            (int)($x + $width), (int)($y + $height),
             imageColorAllocateAlpha(
                 $this->_pointer,
                 $color->red,
                 $color->green,
                 $color->blue,
                 127 - ($alpha * 127)
-            ) 
-        ); 
-        
+            )
+        );
+
         return $this;
     }
-    
+
     public function gradientFill($orientation, $x, $y, $width, $height, array $colors) {
         $x = $this->_normalizePixelSize($x);
         $y = $this->_normalizePixelSize($y);
         $width = $this->_normalizePixelSize($width);
         $height = $this->_normalizePixelSize($height);
-        
+
         $flip = false;
         $rotate = false;
-                
+
         switch(strtolower($orientation)) {
             case 'right':
                 $flip = true;
@@ -468,33 +468,33 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                 $totalRows = $height;
                 break;
         }
-        
+
         $cols = $rotate ? $height : $width;
         $rangeList = [];
-        
+
         $colors = $this->_normalizeGradientColorSet($colors, $totalRows);
-        
+
         foreach($colors as $color) {
             $range = floor($totalRows * $color[1]);
-            
+
             if($flip) {
                 $range = $totalRows - $range;
             }
-            
+
             while(isset($rangeList["$range"])) {
                 $range += 0.0001;
             }
-            
+
             $rangeList["$range"] = $color[0];
         }
-        
+
         ksort($rangeList);
-        
+
         $startColor = $rangeList[0];
         unset($rangeList[0]);
         $start = 0;
-        
-        
+
+
         foreach($rangeList as $end => $endColor) {
             $test[] = [
                 'start' => $start,
@@ -502,7 +502,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                 'startColor' => $startColor,
                 'endColor' => $endColor
             ];
-            
+
             $rows = $end - $start;
 
             $stepColor = new neon\Color(
@@ -510,17 +510,17 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                 ($endColor->getGreen() - $startColor->getGreen()) / $rows,
                 ($endColor->getBlue() - $startColor->getBlue()) / $rows
             );
-            
-            
+
+
             $activeColor = clone $startColor;
             $alphaStep = ((127 * $endColor->getAlpha()) - (127 * $startColor->getAlpha())) / $rows;
             $activeAlpha = $startColor->getAlpha() * 127;
-            
-            
+
+
             for($j = 0; $j < $rows; $j++) {
                 $activeColor->add($stepColor);
                 $activeAlpha += $alphaStep;
-                
+
                 $colorAllocate = imageColorAllocateAlpha(
                     $this->_pointer,
                     round($activeColor->getRed() * 255),
@@ -528,11 +528,11 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                     round($activeColor->getBlue() * 255),
                     127 - $activeAlpha
                 );
-                
+
                 for($k = 0; $k < $cols; $k++) {
                     $currentX = $x + ($rotate ? $j : $k);
                     $currentY = $y + ($rotate ? $k : $j);
-                    
+
                     imageSetPixel(
                         $this->_pointer,
                         $currentX, $currentY,
@@ -540,17 +540,17 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                     );
                 }
             }
-            
+
             if($rotate) {
                 $x += $rows;
             } else {
                 $y += $rows;
             }
-            
+
             $start = $end;
             $startColor = $endColor;
         }
-        
+
         return $this;
     }
     */

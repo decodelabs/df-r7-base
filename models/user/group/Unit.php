@@ -11,13 +11,7 @@ use df\axis;
 
 class Unit extends axis\unit\table\Base {
 
-    protected $_defaultOrderableFields = [
-        'name', 'signifier'
-    ];
-
-    protected $_defaultOrder = 'name ASC';
-
-    protected static $_defaultManifest = [
+    const DEFAULT_MANIFEST = [
         '77abfc6a-bab7-c3fa-f701-e08615a46c35' => [
             'name' => 'Developers',
             'signifier' => 'developer',
@@ -35,6 +29,12 @@ class Unit extends axis\unit\table\Base {
         ]
     ];
 
+    protected $_defaultOrderableFields = [
+        'name', 'signifier'
+    ];
+
+    protected $_defaultOrder = 'name ASC';
+
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
 
@@ -48,6 +48,6 @@ class Unit extends axis\unit\table\Base {
     }
 
     public function getDefaultManifest() {
-        return self::$_defaultManifest;
+        return self::DEFAULT_MANIFEST;
     }
 }

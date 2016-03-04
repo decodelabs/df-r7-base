@@ -17,23 +17,23 @@ class Timezones extends Base implements ITimezonesModule {
         if($country === null) {
             $country = $this->_manager->getLocale()->getCountry();
         }
-        
+
         $country = strtoupper($country);
-        
-        if(isset(self::$_countries[$country])) {
-            return self::$_countries[$country];
+
+        if(isset(self::COUNTRIES[$country])) {
+            return self::COUNTRIES[$country];
         } else {
             return [];
         }
     }
-    
+
     public function suggestForCountry($country=null) {
         $list = $this->forCountry($country);
-        
+
         if(!empty($list)) {
             return array_shift($list);
         }
-        
+
         return 'UTC';
     }
 
@@ -50,23 +50,23 @@ class Timezones extends Base implements ITimezonesModule {
 
     private static function _createContinentList() {
         if(!count(self::$_continents)) {
-            foreach(self::$_countries as $country) {
+            foreach(self::COUNTRIES as $country) {
                 foreach($country as $tz) {
                     $a = explode('/', $tz, 2);
                     $cn = current($a);
                     self::$_continents[$cn][] = $tz;
                 }
-                
+
                 sort(self::$_continents[$cn]);
             }
-            
+
             ksort(self::$_continents);
         }
     }
-    
+
     public function getList(array $ids=null) {
         $output = [];
-        
+
         foreach($this->getContinentList() as $key => $val) {
             $output = array_merge($output, $val);
         }
@@ -74,46 +74,46 @@ class Timezones extends Base implements ITimezonesModule {
         if($ids !== null) {
             $output = array_intersect_key($output, array_flip(array_values($ids)));
         }
-        
+
         return $output;
     }
 
     public function getCodeList() {
         return array_keys($this->getList());
     }
-    
+
     public function getContinentList() {
         self::_createContinentList();
         return self::$_continents;
     }
 
     public function getCountryList() {
-        return self::$_countries;
+        return self::COUNTRIES;
     }
 
     public function getOffset($timezone) {
         if(is_string($timezone)) {
             $timezone = new \DateTimeZone($timezone);
         }
-        
+
         if(!$timezone instanceof \DateTimeZone) {
             throw new core\i18n\InvalidArgumentException('Invalid timezone specified!');
         }
-        
+
         $date = new \DateTime('now', $timezone);
         return $timezone->getOffset($date);
     }
-    
+
     public function isValidId($id) {
         try {
             return (bool)\timezone_open($id);
         } catch(\Exception $e) {
-            return false;    
+            return false;
         }
     }
 
     protected static $_continents = [];
-    protected static $_countries = [
+    const COUNTRIES = [
         'AD' => ['Europe/Andorra'],
         'AE' => ['Asia/Dubai'],
         'AF' => ['Asia/Kabul'],

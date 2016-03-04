@@ -10,7 +10,7 @@ use df\core;
 
 class Type {
 
-    protected static $types = [
+    const TYPES = [
         'ez' => 'application/andrew-inset',
         'hqx' => 'application/mac-binhex40',
         'cpt' => 'application/mac-compactpro',
@@ -251,8 +251,8 @@ class Type {
     public static function extToMime($extension, $default='application/octet-stream') {
         $extension = strtolower($extension);
 
-        if(array_key_exists($extension, self::$types)) {
-            return self::$types[$extension];
+        if(array_key_exists($extension, self::TYPES)) {
+            return self::TYPES[$extension];
         } else {
             return $default;
         }

@@ -19,8 +19,8 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     const DEFAULT_TITLE = '*untitled';
     const DEFAULT_LAYOUT = 'Default';
 
-    private static $_priorityMeta = ['x-ua-compatible', 'content-type'];
-    private static $_httpMeta = [
+    const META_PRIORITY = ['x-ua-compatible', 'content-type'];
+    const META_HTTP = [
         'allow', 'alternates', 'bulletin-date', 'bulletin-text', 'cache-control', 'content-base',
         'content-disposition', 'content-encoding', 'content-language', 'content-length', 'content-location',
         'content-md5', 'content-range', 'content-script-type', 'content-style-type', 'content-type',
@@ -745,7 +745,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
         // Priority meta
         foreach($meta as $key => $value) {
-            if(in_array(strtolower($key), self::$_priorityMeta)) {
+            if(in_array(strtolower($key), self::META_PRIORITY)) {
                 $output .= '    '.$this->_metaToString($key, $meta[$key])."\n";
                 unset($meta[$key]);
             }
@@ -919,7 +919,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     }
 
     protected function _metaToString($key, $value) {
-        if(in_array(strtolower($key), self::$_httpMeta)) {
+        if(in_array(strtolower($key), self::META_HTTP)) {
             $nameKey = 'http-equiv';
         } elseif(strpos($key, ':') !== false) {
             $nameKey = 'property';

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -12,8 +12,8 @@ use df\aura;
 
 class LibraryImage extends Base {
 
-    protected static $_outputTypes = ['Html'];
-    protected static $_defaultCategories = ['Description'];
+    const OUTPUT_TYPES = ['Html'];
+    const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_imageId;
     protected $_width;
@@ -86,7 +86,7 @@ class LibraryImage extends Base {
         } else {
             $this->_imageId = $reader->getAttribute('image');
         }
-        
+
         if($this->shouldStoreDimensions()) {
             $this->setWidth($reader->getAttribute('width'));
             $this->setHeight($reader->getAttribute('height'));

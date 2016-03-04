@@ -57,7 +57,7 @@ class Color implements IColor, core\IDumpable {
             $str = 'black';
         }
 
-        if(isset(self::$_colorNames[strtolower($str)])) {
+        if(isset(self::NAMES[strtolower($str)])) {
             return self::fromName($str);
         }
 
@@ -114,13 +114,13 @@ class Color implements IColor, core\IDumpable {
     public static function fromName($name) {
         $name = strtolower($name);
 
-        if(isset(self::$_colorNames[$name])) {
+        if(isset(self::NAMES[$name])) {
             return new self(
-                self::$_colorNames[$name][0] / 255,
-                self::$_colorNames[$name][1] / 255,
-                self::$_colorNames[$name][2] / 255,
-                isset(self::$_colorNames[$name][3]) ?
-                    self::$_colorNames[$name][3] : 1
+                self::NAMES[$name][0] / 255,
+                self::NAMES[$name][1] / 255,
+                self::NAMES[$name][2] / 255,
+                isset(self::NAMES[$name][3]) ?
+                    self::NAMES[$name][3] : 1
             );
         }
 
@@ -128,7 +128,7 @@ class Color implements IColor, core\IDumpable {
     }
 
     public static function isName($name) {
-        return isset(self::$_colorNames[strtolower($name)]);
+        return isset(self::NAMES[strtolower($name)]);
     }
 
     public static function fromHex($hex) {
@@ -855,7 +855,7 @@ class Color implements IColor, core\IDumpable {
 
 
 // Preset colors
-    protected static $_colorNames = [
+    const NAMES = [
         'aliceblue'             => [240, 248, 255],
         'antiquewhite'          => [250, 235, 215],
         'aqua'                  => [0,   255, 255],

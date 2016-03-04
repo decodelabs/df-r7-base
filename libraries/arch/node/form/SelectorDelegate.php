@@ -22,7 +22,7 @@ abstract class SelectorDelegate extends Delegate implements
     use arch\node\TForm_ValueListSelectorDelegate;
     use arch\node\TForm_DependentDelegate;
 
-    protected static $_defaultModes = [
+    const DEFAULT_MODES = [
         'select' => 'createOverlaySelectorUi',
         'details' => 'createInlineDetailsUi'
     ];

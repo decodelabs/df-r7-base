@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,14 +7,13 @@ namespace df\core\unit;
 
 use df;
 use df\core;
-        
+
 class Frequency implements IFrequency, core\IDumpable {
 
     use TSingleValueUnit;
 
     const DEFAULT_UNIT = 'khz';
-
-    private static $_units = ['hz', 'khz', 'mhz', 'ghz', 'bpm'];
+    const UNITS = ['hz', 'khz', 'mhz', 'ghz', 'bpm'];
 
     protected $_value;
     protected $_unit;
@@ -79,7 +78,7 @@ class Frequency implements IFrequency, core\IDumpable {
         if($outUnit === null) {
             $outUnit = self::DEFAULT_UNIT;
         }
-        
+
         if($inUnit == $outUnit) {
             return $value;
         }

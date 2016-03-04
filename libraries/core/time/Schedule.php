@@ -9,10 +9,10 @@ use df;
 use df\core;
 
 class Schedule implements ISchedule/*, core\IDumpable*/ {
-    
+
     use core\TStringProvider;
 
-    protected static $_ranges = [
+    const RANGES = [
         'minute' => [0, 59],
         'hour' => [0, 23],
         'day' => [1, 31],
@@ -20,12 +20,12 @@ class Schedule implements ISchedule/*, core\IDumpable*/ {
         'weekday' => [0, 6]
     ];
 
-    protected static $_options = [
+    const OPTIONS = [
         'month' => ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
         'weekday' => ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
     ];
 
-    protected static $_formatters = [
+    const FORMATTERS = [
         'minute' => 'i',
         'hour' => 'G',
         'day' => 'j',
@@ -138,20 +138,20 @@ class Schedule implements ISchedule/*, core\IDumpable*/ {
     }
 
     protected function _set($key, $value) {
-        $min = self::$_ranges[$key][0];
-        $max = self::$_ranges[$key][1];
-        $options = isset(self::$_options[$key]) ?
-            array_flip(self::$_options[$key]) : null;
+        $min = self::RANGES[$key][0];
+        $max = self::RANGES[$key][1];
+        $options = isset(self::OPTIONS[$key]) ?
+            array_flip(self::OPTIONS[$key]) : null;
 
         if(is_array($value)) {
             $value = array_values($value);
-            $string = null;            
+            $string = null;
         } else if(is_scalar($value)) {
             $string = (string)$value;
 
             $value = $this->_expandString(
                 $string, $min, $max, $options
-            );            
+            );
         } else {
             throw new InvalidArgumentException(
                 'Invalid schedule value'
@@ -185,7 +185,7 @@ class Schedule implements ISchedule/*, core\IDumpable*/ {
 
     protected function _expandString($string, $min, $max, array $options=null) {
         $value = [];
-        
+
         foreach(explode(',', $string) as $part) {
             if($part == '*') {
                 return null;
@@ -403,7 +403,7 @@ class Schedule implements ISchedule/*, core\IDumpable*/ {
     protected function _dayFits(IDate $time) {
         return (empty($this->_day) || in_array((int)$time->format('j'), $this->_day))
             && (empty($this->_weekday) || in_array((int)$time->format('w'), $this->_weekday));
-    }    
+    }
 
 
     public function toString() {

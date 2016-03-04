@@ -11,7 +11,7 @@ use df\flex;
 
 class TermParser implements ITermParser {
 
-    protected static $_stopWords = [
+    const STOP_WORDS = [
         'and', 'the', 'if', 'of', 'in', 'to', 'is', 'or', 'it', 'its', 'on', 'an'
     ];
 
@@ -68,7 +68,7 @@ class TermParser implements ITermParser {
             $temp = $terms;
 
             foreach($terms as $i => $term) {
-                if(in_array($term, self::$_stopWords)) {
+                if(in_array($term, self::STOP_WORDS)) {
                     unset($terms[$i]);
                 }
             }

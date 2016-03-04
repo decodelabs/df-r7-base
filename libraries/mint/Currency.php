@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,12 +8,12 @@ namespace df\mint;
 use df;
 use df\core;
 use df\mint;
-    
+
 class Currency implements ICurrency, core\IDumpable {
 
     use core\TStringProvider;
 
-    protected static $_currencies = [
+    const CURRENCIES = [
         '784' => 'AED',
         '971' => 'AFN',
         '008' => 'ALL',
@@ -153,21 +153,21 @@ class Currency implements ICurrency, core\IDumpable {
         '967' => 'ZMW'
     ];
 
-    protected static $_decimals = [
-        'BIF' => 0, 
-        'CLP' => 0, 
-        'DJF' => 0, 
-        'GNF' => 0, 
-        'JPY' => 0, 
-        'KMF' => 0, 
-        'KRW' => 0, 
-        'MGA' => 0, 
-        'PYG' => 0, 
-        'RWF' => 0, 
-        'VND' => 0, 
-        'VUV' => 0, 
-        'XAF' => 0, 
-        'XOF' => 0, 
+    const DECIMALS = [
+        'BIF' => 0,
+        'CLP' => 0,
+        'DJF' => 0,
+        'GNF' => 0,
+        'JPY' => 0,
+        'KMF' => 0,
+        'KRW' => 0,
+        'MGA' => 0,
+        'PYG' => 0,
+        'RWF' => 0,
+        'VND' => 0,
+        'VUV' => 0,
+        'XAF' => 0,
+        'XOF' => 0,
         'XPF' => 0
     ];
 
@@ -204,11 +204,11 @@ class Currency implements ICurrency, core\IDumpable {
     }
 
     public static function isRecognizedCode($code) {
-        return isset(self::$_currencies[$code]) || in_array($code, self::$_currencies);
+        return isset(self::CURRENCIES[$code]) || in_array($code, self::CURRENCIES);
     }
 
     public static function getRecognizedCodes() {
-        return self::$_currencies;
+        return self::CURRENCIES;
     }
 
     public function __construct($amount, $code) {
@@ -234,8 +234,8 @@ class Currency implements ICurrency, core\IDumpable {
     }
 
     public static function normalizeCode($code) {
-        if(isset(self::$_currencies[$code])) {
-            $code = self::$_currencies[$code];
+        if(isset(self::CURRENCIES[$code])) {
+            $code = self::CURRENCIES[$code];
         }
 
         return strtoupper($code);
@@ -267,8 +267,8 @@ class Currency implements ICurrency, core\IDumpable {
     }
 
     public function getDecimalPlaces() {
-        if(isset(self::$_decimals[$this->_code])) {
-            return self::$_decimals[$this->_code];
+        if(isset(self::DECIMALS[$this->_code])) {
+            return self::DECIMALS[$this->_code];
         }
 
         return 2;

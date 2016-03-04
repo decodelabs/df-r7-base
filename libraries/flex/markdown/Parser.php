@@ -19,7 +19,7 @@ class Parser implements flex\IHtmlProducer {
     const SPECIAL_CHARACTERS = '\\`*_{}[]()>#+-.!|';
     const ATTRIBUTE_REGEX = '[a-zA-Z_:][\w:.-]*(?:\s*=\s*(?:[^"\'=<>`\s]+|"[^"]*"|\'[^\']*\'))?';
 
-    protected static $_blockTypes = [
+    const BLOCK_TYPES = [
         '#' => ['Header'],
         '*' => ['Rule', 'List'],
         '+' => ['List'],
@@ -45,9 +45,9 @@ class Parser implements flex\IHtmlProducer {
         '~' => ['FencedCode']
     ];
 
-    protected static $_unmarkedBlockTypes = ['Code'];
+    const UNMARKED_BLOCK_TYPES = ['Code'];
 
-    protected static $_inlineTypes = [
+    const INLINE_TYPES = [
         '"' => ['SpecialCharacter'],
         '!' => ['Image'],
         '&' => ['SpecialCharacter'],
@@ -62,12 +62,12 @@ class Parser implements flex\IHtmlProducer {
         '\\' => ['EscapeSequence']
     ];
 
-    protected static $_strongRegex = [
+    const STRONG_REGEX = [
         '*' => '/^[*]{2}((?:\\\\\*|[^*]|[*][^*]*[*])+?)[*]{2}(?![*])/s',
         '_' => '/^__((?:\\\\_|[^_]|_[^_]*_)+?)__(?!_)/us',
     ];
 
-    protected static $_emRegex = [
+    const EM_REGEX = [
         '*' => '/^[*]((?:\\\\\*|[^*]|[*][*][^*]+?[*][*])+?)[*](?![*])/s',
         '_' => '/^_((?:\\\\_|[^_]|__[^_]*__)+?)_(?!_)\b/us',
     ];
@@ -156,10 +156,10 @@ class Parser implements flex\IHtmlProducer {
 
             // type
             $marker = substr($line->text, 0, 1);
-            $blockTypes = self::$_unmarkedBlockTypes;
+            $blockTypes = self::UNMARKED_BLOCK_TYPES;
 
-            if(isset(self::$_blockTypes[$marker])) {
-                $blockTypes = array_merge($blockTypes, self::$_blockTypes[$marker]);
+            if(isset(self::BLOCK_TYPES[$marker])) {
+                $blockTypes = array_merge($blockTypes, self::BLOCK_TYPES[$marker]);
             }
 
 
@@ -774,7 +774,7 @@ class Parser implements flex\IHtmlProducer {
                 'context' => $text
             ]);
 
-            foreach(self::$_inlineTypes[$marker] as $inlineType) {
+            foreach(self::INLINE_TYPES[$marker] as $inlineType) {
                 $inline = $this->{'_parse'.$inlineType}($excerpt);
 
                 if(!$inline) {
@@ -903,9 +903,9 @@ class Parser implements flex\IHtmlProducer {
         }
 
         if($excerpt->text{1} === $excerpt->marker
-        && preg_match(self::$_strongRegex[$excerpt->marker], $excerpt->text, $matches)) {
+        && preg_match(self::STRONG_REGEX[$excerpt->marker], $excerpt->text, $matches)) {
             $name = 'strong';
-        } else if(preg_match(self::$_emRegex[$excerpt->marker], $excerpt->text, $matches)) {
+        } else if(preg_match(self::EM_REGEX[$excerpt->marker], $excerpt->text, $matches)) {
             $name = 'em';
         } else {
             return;

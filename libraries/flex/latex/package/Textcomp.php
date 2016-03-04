@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,28 +9,28 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 class Textcomp extends Base implements flex\latex\IActivePackage {
 
     public static function getCommandList() {
         return array_merge(
-            self::$_special,
-            array_keys(self::$_characterMap),
-            array_keys(self::$_text)
+            self::SPECIAL,
+            array_keys(self::CHARACTER_MAP),
+            array_keys(self::TEXT)
         );
     }
 
     public function parseCommand($command) {
-        if(isset(self::$_characterMap[$command])) {
+        if(isset(self::CHARACTER_MAP[$command])) {
             $output = $this->extractCharacterSymbol($command);
-        } else if(isset(self::$_text[$command])) {
-            $output = self::$_text[$command];
+        } else if(isset(self::TEXT[$command])) {
+            $output = self::TEXT[$command];
 
             if($this->parser->token->getValue() == '{') {
                 $this->parser->extractValue('{');
                 $this->parser->extractValue('}');
             }
-        } else /*if(in_array($command, self::$_special))*/ {
+        } else /*if(in_array($command, self::SPECIAL))*/ {
             $output = $command;
         }
 
@@ -49,17 +49,17 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             $symbol = '"';
         }
 
-        if(isset(self::$_characterMap[$symbol][$letter])) {
-            $utf8 = self::$_characterMap[$symbol][$letter];
+        if(isset(self::CHARACTER_MAP[$symbol][$letter])) {
+            $utf8 = self::CHARACTER_MAP[$symbol][$letter];
         }
 
         $this->parser->extractValue('}');
         return $utf8;
     }
 
-    protected static $_special = ['$', '%', '_', '{', '}', '&', '#'];
+    const SPECIAL = ['$', '%', '_', '{', '}', '&', '#'];
 
-    protected static $_text = [
+    const TEXT = [
         'aa' => 'å',
         'AA' => 'Å',
         'ae' => 'æ',
@@ -88,21 +88,21 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
         'th' => 'þ',
         'TH' => 'Þ',
 
-        'guilsinglleft' => '‹',       
-        'guilsinglright' => '›',          
-        'guillemotleft' => '«',        
-        'guillemotright' => '»',          
-        'quotedblbase' => '„',        
+        'guilsinglleft' => '‹',
+        'guilsinglright' => '›',
+        'guillemotleft' => '«',
+        'guillemotright' => '»',
+        'quotedblbase' => '„',
         'quotesinglbase' => '‚',
         'textquotedbl' => '"',
 
-        'textasciiacute' => '´',          
-        'textasciibreve' => '˘',          
-        'textasciicaron' => 'ˇ',          
-        'textasciidieresis' => '¨',        
+        'textasciiacute' => '´',
+        'textasciibreve' => '˘',
+        'textasciicaron' => 'ˇ',
+        'textasciidieresis' => '¨',
         'textasciigrave' => '`',
         'textasciimacron' => '¯',
-        'textacutedbl' => '̋ ',        
+        'textacutedbl' => '̋ ',
         'textgravedbl' => '̏ ',
 
 
@@ -115,9 +115,9 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
         'textbigcircle' => '◯',
         'textbraceleft' => '{',
         'textbraceright' => '}',
-        'textbrokenbar' => '¦',       
+        'textbrokenbar' => '¦',
         'textbullet' => '•',
-        'textcircledP' => '℗',          
+        'textcircledP' => '℗',
         'textcopyright' => '©',
         'textdagger' => '†',
         'textdaggerdbl' => '‡',
@@ -153,7 +153,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
         'textreferencemark' => '※',
         'textregistered' => '®',
         'textsection' => '§',
-        'textservicemark' => '℠',       
+        'textservicemark' => '℠',
         'textsterling' => '£',
         'texttildelow' => '˷',
         'texttrademark' => '™',
@@ -161,7 +161,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
         'textvisiblespace' => '␣'
     ];
 
-    protected static $_characterMap = [
+    const CHARACTER_MAP = [
         '`' => [   // \`{o}   ò   grave accent
             'A' => 'À',
             'a' => 'à',
@@ -173,7 +173,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'o' => 'ò',
             'U' => 'Ù',
             'u' => 'ù'
-        ], 
+        ],
         '\'' => [   // \'{o}   ó   acute accent
             'A' => 'Á',
             'a' => 'á',
@@ -187,7 +187,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'u' => 'ú',
             'Y' => 'Ý',
             'y' => 'ý'
-        ], 
+        ],
         '^' => [   // \^{o}   ô   circumflex
             'A' => 'Â',
             'a' => 'â',
@@ -199,7 +199,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'o' => 'ô',
             'U' => 'Û',
             'u' => 'û'
-        ], 
+        ],
         '"' => [   // \"{o}   ö   umlaut, trema or dieresis
             'A' => 'Ä',
             'a' => 'ä',
@@ -212,7 +212,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'U' => 'Ü',
             'u' => 'ü',
             'y' => 'ÿ'
-        ], 
+        ],
         'H' => [], // \H{o}   ő   long Hungarian umlaut (double acute)
         '~' => [   // \~{o}   õ   tilde
             'A' => 'Ã',
@@ -221,7 +221,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'n' => 'ñ',
             'O' => 'Õ',
             'o' => 'õ'
-        ], 
+        ],
         'c' => [   // \c{c}   ç   cedilla
             'C' => 'Ç',
             'c' => 'ç',
@@ -236,7 +236,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'r' => 'ŗ',
             'S' => 'Ş',
 
-        ], 
+        ],
         'k' => [   // \k{a}   ą   ogonek
             'A' => 'Ą',
             'a' => 'ą',
@@ -246,7 +246,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'i' => 'į',
             'U' => 'Ų',
             'u' => 'ų'
-        ], 
+        ],
         '=' => [   // \={o}   ō   macron accent (a bar over the letter)
             'A' => 'Ā',
             'a' => 'ā',
@@ -258,7 +258,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'o' => 'ō',
             'U' => 'Ū',
             'u' => 'ū'
-        ], 
+        ],
         'b' => [], // \b{o}   o   bar under the letter
         '.' => [   // \.{o}   ȯ   dot over the letter
             'C' => 'Ċ',
@@ -269,14 +269,14 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'g' => 'ġ',
             'Z' => 'Ż',
             'z' => 'ż'
-        ], 
+        ],
         'd' => [], // \d{u}   ụ  dot under the letter
         'r' => [   // \r{a}   å   ring over the letter (for å there is also the special command \aa)
             'A' => 'Å',
             'a' => 'å',
             'U' => 'Ů',
             'u' => 'ů'
-        ], 
+        ],
         'u' => [   // \u{o}   ŏ   breve over the letter
             'A' => 'Ă',
             'a' => 'ă',
@@ -290,7 +290,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'o' => 'ŏ',
             'U' => 'Ŭ',
             'u' => 'ŭ'
-        ], 
+        ],
         'v' => [   // \v{s}   š   caron/hacek ("v") over the letter
             'C' => 'Č',
             'c' => 'č',
@@ -303,7 +303,7 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             'T' => 'Ť',
             'Z' => 'Ž',
             'z' => 'ž'
-        ], 
+        ],
         't' => [   // \t{oo}  o͡o "tie" (inverted u) over the two letters
             'oo' => 'o͡o'
         ]

@@ -20,7 +20,7 @@ class Duration implements IDuration, core\IDumpable {
     const MONTHS = 6;
     const YEARS = 7;
 
-    protected static $_multipliers = [
+    const MULTIPLIERS = [
         self::MICROSECONDS => 0.000001,
         self::MILLISECONDS => 0.001,
         self::SECONDS => 1,
@@ -165,7 +165,7 @@ class Duration implements IDuration, core\IDumpable {
             while(!empty($parts)) {
                 $value = array_pop($parts);
                 $value = $i == 1 ? (float)$value : (int)$value;
-                $seconds += $value * self::$_multipliers[$i++];
+                $seconds += $value * self::MULTIPLIERS[$i++];
             }
 
             return $seconds;
@@ -194,7 +194,7 @@ class Duration implements IDuration, core\IDumpable {
 
     protected function _extractInterval(\DateInterval $interval) {
         if($interval->days !== false && $interval->days !== -9999) {
-            return $interval->days * self::$_multipliers[self::DAYS];
+            return $interval->days * self::MULTIPLIERS[self::DAYS];
         }
 
         $parts = [
@@ -211,7 +211,7 @@ class Duration implements IDuration, core\IDumpable {
 
         for($i = self::YEARS; $i > 0; $i--) {
             $value = (int)array_shift($parts);
-            $output += $value * self::$_multipliers[$i];
+            $output += $value * self::MULTIPLIERS[$i];
         }
 
         return $output;
@@ -256,42 +256,42 @@ class Duration implements IDuration, core\IDumpable {
 
 // Microseconds
     public function setMicroseconds($us) {
-        $this->_seconds = $us * self::$_multipliers[self::MICROSECONDS];
+        $this->_seconds = $us * self::MULTIPLIERS[self::MICROSECONDS];
         return $this;
     }
 
     public function getMicroseconds() {
-        return $this->_seconds / self::$_multipliers[self::MICROSECONDS];
+        return $this->_seconds / self::MULTIPLIERS[self::MICROSECONDS];
     }
 
     public function addMicroseconds($us) {
-        $this->_seconds += $us * self::$_multipliers[self::MICROSECONDS];
+        $this->_seconds += $us * self::MULTIPLIERS[self::MICROSECONDS];
         return $this;
     }
 
     public function subtractMicroseconds($us) {
-        $this->_seconds -= $us * self::$_multipliers[self::MICROSECONDS];
+        $this->_seconds -= $us * self::MULTIPLIERS[self::MICROSECONDS];
         return $this;
     }
 
 
 // Milliseconds
     public function setMilliseconds($ms) {
-        $this->_seconds = $ms * self::$_multipliers[self::MILLISECONDS];
+        $this->_seconds = $ms * self::MULTIPLIERS[self::MILLISECONDS];
         return $this;
     }
 
     public function getMilliseconds() {
-        return $this->_seconds / self::$_multipliers[self::MILLISECONDS];
+        return $this->_seconds / self::MULTIPLIERS[self::MILLISECONDS];
     }
 
     public function addMilliseconds($ms) {
-        $this->_seconds += $ms * self::$_multipliers[self::MILLISECONDS];
+        $this->_seconds += $ms * self::MULTIPLIERS[self::MILLISECONDS];
         return $this;
     }
 
     public function subtractMilliseconds($ms) {
-        $this->_seconds -= $ms * self::$_multipliers[self::MILLISECONDS];
+        $this->_seconds -= $ms * self::MULTIPLIERS[self::MILLISECONDS];
         return $this;
     }
 
@@ -319,126 +319,126 @@ class Duration implements IDuration, core\IDumpable {
 
 // Minutes
     public function setMinutes($minutes) {
-        $this->_seconds = $minutes * self::$_multipliers[self::MINUTES];
+        $this->_seconds = $minutes * self::MULTIPLIERS[self::MINUTES];
         return $this;
     }
 
     public function getMinutes() {
-        return $this->_seconds / self::$_multipliers[self::MINUTES];
+        return $this->_seconds / self::MULTIPLIERS[self::MINUTES];
     }
 
     public function addMinutes($minutes) {
-        $this->_seconds += $minutes * self::$_multipliers[self::MINUTES];
+        $this->_seconds += $minutes * self::MULTIPLIERS[self::MINUTES];
         return $this;
     }
 
     public function subtractMinutes($minutes) {
-        $this->_seconds -= $minutes * self::$_multipliers[self::MINUTES];
+        $this->_seconds -= $minutes * self::MULTIPLIERS[self::MINUTES];
         return $this;
     }
 
 
 // Hours
     public function setHours($hours) {
-        $this->_seconds = $hours * self::$_multipliers[self::HOURS];
+        $this->_seconds = $hours * self::MULTIPLIERS[self::HOURS];
         return $this;
     }
 
     public function getHours() {
-        return $this->_seconds / self::$_multipliers[self::HOURS];
+        return $this->_seconds / self::MULTIPLIERS[self::HOURS];
     }
 
     public function addHours($hours) {
-        $this->_seconds += $hours * self::$_multipliers[self::HOURS];
+        $this->_seconds += $hours * self::MULTIPLIERS[self::HOURS];
         return $this;
     }
 
     public function subtractHours($hours) {
-        $this->_seconds -= $hours * self::$_multipliers[self::HOURS];
+        $this->_seconds -= $hours * self::MULTIPLIERS[self::HOURS];
         return $this;
     }
 
 
 // Days
     public function setDays($days) {
-        $this->_seconds = $days * self::$_multipliers[self::DAYS];
+        $this->_seconds = $days * self::MULTIPLIERS[self::DAYS];
         return $this;
     }
 
     public function getDays() {
-        return $this->_seconds / self::$_multipliers[self::DAYS];
+        return $this->_seconds / self::MULTIPLIERS[self::DAYS];
     }
 
     public function addDays($days) {
-        $this->_seconds += $days * self::$_multipliers[self::DAYS];
+        $this->_seconds += $days * self::MULTIPLIERS[self::DAYS];
         return $this;
     }
 
     public function subtractDays($days) {
-        $this->_seconds -= $days * self::$_multipliers[self::DAYS];
+        $this->_seconds -= $days * self::MULTIPLIERS[self::DAYS];
         return $this;
     }
 
 
 // Weeks
     public function setWeeks($weeks) {
-        $this->_seconds = $weeks * self::$_multipliers[self::WEEKS];
+        $this->_seconds = $weeks * self::MULTIPLIERS[self::WEEKS];
         return $this;
     }
 
     public function getWeeks() {
-        return $this->_seconds / self::$_multipliers[self::WEEKS];
+        return $this->_seconds / self::MULTIPLIERS[self::WEEKS];
     }
 
     public function addWeeks($weeks) {
-        $this->_seconds += $weeks * self::$_multipliers[self::WEEKS];
+        $this->_seconds += $weeks * self::MULTIPLIERS[self::WEEKS];
         return $this;
     }
 
     public function subtractWeeks($weeks) {
-        $this->_seconds -= $weeks * self::$_multipliers[self::WEEKS];
+        $this->_seconds -= $weeks * self::MULTIPLIERS[self::WEEKS];
         return $this;
     }
 
 
 // Months
     public function setMonths($months) {
-        $this->_seconds = $months * self::$_multipliers[self::MONTHS];
+        $this->_seconds = $months * self::MULTIPLIERS[self::MONTHS];
         return $this;
     }
 
     public function getMonths() {
-        return $this->_seconds / self::$_multipliers[self::MONTHS];
+        return $this->_seconds / self::MULTIPLIERS[self::MONTHS];
     }
 
     public function addMonths($months) {
-        $this->_seconds += $months * self::$_multipliers[self::MONTHS];
+        $this->_seconds += $months * self::MULTIPLIERS[self::MONTHS];
         return $this;
     }
 
     public function subtractMonths($months) {
-        $this->_seconds -= $months * self::$_multipliers[self::MONTHS];
+        $this->_seconds -= $months * self::MULTIPLIERS[self::MONTHS];
         return $this;
     }
 
 
 // Years
     public function setYears($years) {
-        $this->_seconds = $years * self::$_multipliers[self::YEARS];
+        $this->_seconds = $years * self::MULTIPLIERS[self::YEARS];
         return $this;
     }
 
     public function getYears() {
-        return $this->_seconds / self::$_multipliers[self::YEARS];
+        return $this->_seconds / self::MULTIPLIERS[self::YEARS];
     }
 
     public function addYears($years) {
-        $this->_seconds += $years * self::$_multipliers[self::YEARS];
+        $this->_seconds += $years * self::MULTIPLIERS[self::YEARS];
         return $this;
     }
 
     public function subtractYears($years) {
-        $this->_seconds -= $years * self::$_multipliers[self::YEARS];
+        $this->_seconds -= $years * self::MULTIPLIERS[self::YEARS];
         return $this;
     }
 
@@ -573,7 +573,7 @@ class Duration implements IDuration, core\IDumpable {
     }
 
     public function getUserString() {
-        if((int)$this->_seconds != $this->_seconds && abs($this->_seconds) <= self::$_multipliers[self::WEEKS]) {
+        if((int)$this->_seconds != $this->_seconds && abs($this->_seconds) <= self::MULTIPLIERS[self::WEEKS]) {
             return $this->getTimeFormatString();
         }
 
@@ -706,7 +706,7 @@ class Duration implements IDuration, core\IDumpable {
                 return $output;
             }
 
-            $multiplier = self::$_multipliers[$i];
+            $multiplier = self::MULTIPLIERS[$i];
 
             if($seconds < $multiplier) {
                 continue;

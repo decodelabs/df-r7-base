@@ -10,13 +10,13 @@ use df\core;
 use df\spur;
 
 class EntryReader implements spur\feed\IEntryReaderPlugin {
-    
+
     use spur\feed\TEntryReader;
-    
-    protected static $_xPathNamespaces = [
+
+    const XPATH_NAMESPACES = [
         'content' => 'http://purl.org/rss/1.0/modules/content/'
     ];
-        
+
     public function getContent() {
         return $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/content:encoded)'

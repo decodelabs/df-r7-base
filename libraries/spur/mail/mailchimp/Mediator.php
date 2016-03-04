@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,7 +11,7 @@ use df\spur;
 use df\flow;
 use df\link;
 use df\flex;
-    
+
 class Mediator implements IMediator, \Serializable {
 
     use spur\THttpMediator;
@@ -173,7 +173,7 @@ class Mediator implements IMediator, \Serializable {
         $emailAddress = flow\mail\Address::factory($emailAddress);
 
         $this->requestRaw('post', 'listUnsubscribe', [
-            'id' => $listId, 
+            'id' => $listId,
             'email_address' => $emailAddress,
             'delete_member' => true,
             'send_goodbye' => (bool)$sendGoodbye,
@@ -211,7 +211,7 @@ class Mediator implements IMediator, \Serializable {
         }
 
         $setId = $this->requestJson('post', 'listInterestGroupingAdd', [
-            'id' => $listId, 
+            'id' => $listId,
             'name' => $name,
             'type' => $type,
             'groups' => $groupNames
@@ -240,8 +240,8 @@ class Mediator implements IMediator, \Serializable {
 
     public function renameGroupSet($setId, $newName) {
         $this->requestRaw('post', 'listInterestGroupingUpdate', [
-            'grouping_id' => $setId, 
-            'name' => 'name', 
+            'grouping_id' => $setId,
+            'name' => 'name',
             'value' => $newName
         ]);
 
@@ -275,7 +275,7 @@ class Mediator implements IMediator, \Serializable {
 
     public function addGroup($listId, $groupSetId, $name) {
         $this->requestRaw('post', 'listInterestGroupAdd', [
-            'id' => $listId, 
+            'id' => $listId,
             'grouping_id' => $groupSetId,
             'group_name' => $name
         ]);
@@ -285,9 +285,9 @@ class Mediator implements IMediator, \Serializable {
 
     public function renameGroup($listId, $groupSetId, $groupId, $newName) {
         $this->requestRaw('post', 'listInterestGroupUpdate', [
-            'id' => $listId, 
-            'old_name' => $groupId, 
-            'new_name' => $newName, 
+            'id' => $listId,
+            'old_name' => $groupId,
+            'new_name' => $newName,
             'grouping_id' => $groupSetId
         ]);
 
@@ -296,8 +296,8 @@ class Mediator implements IMediator, \Serializable {
 
     public function deleteGroup($listId, $groupSetId, $groupId) {
         $this->requestRaw('post', 'listInterestGroupDel', [
-            'id' => $listId, 
-            'group_name' => $groupId, 
+            'id' => $listId,
+            'group_name' => $groupId,
             'grouping_id' => $groupSetId
         ]);
 
@@ -308,7 +308,7 @@ class Mediator implements IMediator, \Serializable {
 // Members
     public function fetchMember($listId, $emailAddress) {
         $json = $this->requestJson('post', 'listMemberInfo', [
-            'id' => $listId, 
+            'id' => $listId,
             'email_address' => $emailAddress
         ]);
 
@@ -323,7 +323,7 @@ class Mediator implements IMediator, \Serializable {
 
     public function fetchMemberSet($listId, array $emailAddresses) {
         $json = $this->requestJson('post', 'listMemberInfo', [
-            'id' => $listId, 
+            'id' => $listId,
             'email_address' => $emailAddresses
         ]);
 
@@ -337,7 +337,7 @@ class Mediator implements IMediator, \Serializable {
             $member = new Member($this, $listId, $memberData);
             $output[$member->getId()] = $member;
         }
-        
+
         return $output;
     }
 
@@ -346,7 +346,7 @@ class Mediator implements IMediator, \Serializable {
 
         $this->requestRaw('post', 'listUpdateMember', [
             'id' => $listId,
-            'email_address' => $memberId, 
+            'email_address' => $memberId,
             'merge_vars' => [
                 'EMAIL' => $newEmailAddress->getAddress()
             ]
@@ -358,7 +358,7 @@ class Mediator implements IMediator, \Serializable {
     public function updateMemberName($listId, $memberId, $firstName, $surname) {
         $this->requestRaw('post', 'listUpdateMember', [
             'id' => $listId,
-            'email_address' => $memberId, 
+            'email_address' => $memberId,
             'merge_vars' => [
                 'FNAME' => $firstName,
                 'LNAME' => $surname
@@ -380,7 +380,7 @@ class Mediator implements IMediator, \Serializable {
 
         $this->requestRaw('post', 'listUpdateMember', [
             'id' => $listId,
-            'email_address' => $memberId, 
+            'email_address' => $memberId,
             'merge_vars' => [],
             'email_type' => $type
         ]);
@@ -401,7 +401,7 @@ class Mediator implements IMediator, \Serializable {
 
         $args = [
             'id' => $listId,
-            'email_address' => $memberId, 
+            'email_address' => $memberId,
             'merge_vars' => $mergeData,
         ];
 
@@ -420,9 +420,9 @@ class Mediator implements IMediator, \Serializable {
 
     public function deleteMember($listId, $memberId, $sendGoodbye=false, $sendNotify=false) {
         $this->requestRaw('post', 'listUnsubscribe', [
-            'id' => $listId, 
-            'email_address' => $memberId, 
-            'delete_member' => true, 
+            'id' => $listId,
+            'email_address' => $memberId,
+            'delete_member' => true,
             'send_goodbye' => (bool)$sendGoodbye,
             'send_notify' => (bool)$sendNotify
         ]);
@@ -451,9 +451,9 @@ class Mediator implements IMediator, \Serializable {
         $sources = WebHook::normalizeSources($sources);
 
         $this->requestRaw('post', 'listWebhookAdd', [
-            'id' => $listId, 
-            'url' => $url, 
-            'actions' => $actions, 
+            'id' => $listId,
+            'url' => $url,
+            'actions' => $actions,
             'sources' => $sources
         ]);
 
@@ -466,7 +466,7 @@ class Mediator implements IMediator, \Serializable {
 
     public function deleteWebHook($listId, $url) {
         $this->requestRaw('post', 'listWebhookDel', [
-            'id' => $listId, 
+            'id' => $listId,
             'url' => $url]
         );
 
@@ -530,7 +530,7 @@ class Mediator implements IMediator, \Serializable {
     }
 
 /*
-    protected static $_functionMap = [
+    const FUNCTION_MAP = [
         'campaignUnschedule' => ['cid'],
         'campaignSchedule' => ['cid', 'schedule_time', 'schedule_time_b'],
         'campaignScheduleBatch' => ['cid', 'schedule_time', 'num_batches', 'stagger_mins'],

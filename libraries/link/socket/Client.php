@@ -10,27 +10,27 @@ use df\core;
 use df\link;
 
 abstract class Client extends Base implements IClientSocket, core\IDumpable {
-    
+
     use TIoSocket;
 
-    protected static $_defaultOptions = [
+    const DEFAULT_OPTIONS = [
         'connectionTimeout' => null
     ];
-    
+
     protected $_isConnected = false;
 
     public static function factory($address, $useStreams=false) {
         $address = link\socket\address\Base::factory($address);
-        
+
         if($address instanceof IClientSocket) {
             return $address;
         }
-        
-        if(!$useStreams 
+
+        if(!$useStreams
         && (!extension_loaded('sockets') || $address->getSecureTransport())) {
             $useStreams = true;
         }
-        
+
         $class = self::_getClass($address, $useStreams);
         return new $class($address);
     }
@@ -40,7 +40,7 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
         $protocol = ucfirst($address->getScheme());
         $nativeClass = 'df\\link\\socket\\native\\'.$protocol.'_Client';
         $streamsClass = 'df\\link\\socket\\streams\\'.$protocol.'_Client';
-        
+
         if(!$useStreams) {
             if(class_exists($nativeClass)) {
                 $class = $nativeClass;
@@ -54,7 +54,7 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
                 $class = $nativeClass;
             }
         }
-        
+
         if(!$class) {
             throw new RuntimeException(
                 'Protocol '.$address->getScheme().', whilst valid, does not yet have a client handler class'
@@ -63,27 +63,27 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
 
         return $class;
     }
-    
+
     protected static function _populateOptions() {
-        $output = array_merge(parent::_populateOptions(), self::$_defaultOptions);
-        
+        $output = array_merge(parent::_populateOptions(), self::DEFAULT_OPTIONS);
+
         if(!isset($output['connectionTimeout']) || $output['connectionTimeout'] === null) {
             $output['connectionTimeout'] = ini_get('default_socket_timeout');
         }
-        
+
         return $output;
     }
-    
+
 // Options
     public function setConnectionTimeout($timeout) {
         return $this->_setOption('connectionTimeout', $timeout);
     }
-    
+
     public function getConnectionTimeout() {
         return $this->_getOption('connectionTimeout');
     }
-    
-    
+
+
 // Operation
     public function isConnected() {
         return $this->_isConnected;
@@ -93,18 +93,18 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
         if($this->_isConnected) {
             return $this;
         }
-        
+
         $this->_socket = $this->_connectPeer();
         $this->_isConnected = true;
 
         $this->_setBlocking($this->_shouldBlock);
-        
+
         $this->_readingEnabled = true;
         $this->_writingEnabled = true;
-        
+
         return $this;
     }
-    
+
     abstract protected function _connectPeer();
 
 
@@ -118,8 +118,8 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
         $resources = $this->_connectPair();
         core\dump($resources);
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         if($this->_isConnected) {
@@ -130,12 +130,12 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
 
         $output .= ' (';
         $args = [];
-        
+
         if($this->_isConnected) {
             if($this->_readingEnabled) {
                 $args[] = 'r';
             }
-            
+
             if($this->_writingEnabled) {
                 $args[] = 'w';
             }
@@ -144,11 +144,11 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
         if(empty($args)) {
             $args[] = 'x';
         }
-        
+
         if($this->_isSecure) {
             array_unshift($args, 's');
         }
-        
+
         return $output.implode('/', $args).')';
     }
 }

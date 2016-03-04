@@ -13,13 +13,8 @@ use df\opal;
 
 class TaskSetCollation extends arch\node\Task {
 
-    private static $_prefixes = [
-        'legacy', 'r5', 'r7'
-    ];
-
-    private static $_blacklist = [
-        'legacy_duk_chrdata'
-    ];
+    const PREFIXES = ['legacy', 'r5', 'r7'];
+    const BLACKLIST = ['legacy_duk_chrdata'];
 
     public function extractCliArguments(core\cli\ICommand $command) {
         $args = $command->getArguments();
@@ -70,13 +65,13 @@ class TaskSetCollation extends arch\node\Task {
         }
 
         foreach($server->getDatabaseList() as $dbName) {
-            if(in_array($dbName, self::$_blacklist)) {
+            if(in_array($dbName, self::BLACKLIST)) {
                 continue;
             }
 
             $parts = explode('_', $dbName);
 
-            if(!in_array($parts[0], self::$_prefixes)) {
+            if(!in_array($parts[0], self::PREFIXES)) {
                 continue;
             }
 

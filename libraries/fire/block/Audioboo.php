@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -14,8 +14,8 @@ use df\link;
 
 class Audioboo extends Base {
 
-    protected static $_outputTypes = ['Html'];
-    protected static $_defaultCategories = [];
+    const OUTPUT_TYPES = ['Html'];
+    const DEFAULT_CATEGORIES = [];
 
     protected $_booId;
 
@@ -50,7 +50,7 @@ class Audioboo extends Base {
     public function readXml(core\xml\IReadable $reader) {
         $this->_validateXmlReader($reader);
         $this->_booId = $reader->getAttribute('booid');
-        
+
         return $this;
     }
 

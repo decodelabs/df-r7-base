@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,11 +10,11 @@ use df\core;
 use df\fire;
 use df\arch;
 use df\aura;
-    
+
 class Heading extends Base {
 
-    protected static $_outputTypes = ['Html'];
-    protected static $_defaultCategories = ['Description'];
+    const OUTPUT_TYPES = ['Html'];
+    const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_heading;
     protected $_level = 3;
@@ -71,13 +71,13 @@ class Heading extends Base {
         $this->_validateXmlReader($reader);
         $this->_heading = $reader->getFirstCDataSection();
         $this->_level = $reader->getAttribute('level');
-        
+
         return $this;
     }
 
     public function writeXml(core\xml\IWritable $writer) {
         $this->_startWriterBlockElement($writer);
-        
+
         $writer->setAttribute('level', $this->_level);
         $writer->writeCData($this->_heading);
 

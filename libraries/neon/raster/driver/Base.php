@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,11 +8,11 @@ namespace df\neon\raster\driver;
 use df;
 use df\core;
 use df\neon;
-    
+
 abstract class Base implements neon\raster\IDriver {
 
-    protected static $_readFormats = [];
-    protected static $_writeFormats = [];
+    const READ_FORMATS = [];
+    const WRITE_FORMATS = [];
 
     protected $_width;
     protected $_height;
@@ -21,11 +21,11 @@ abstract class Base implements neon\raster\IDriver {
     protected $_pointer;
 
     public static function canRead($format) {
-        return in_array($format, static::$_readFormats);
+        return in_array($format, static::READ_FORMATS);
     }
 
     public static function canWrite($format) {
-        return in_array($format, static::$_writeFormats);
+        return in_array($format, static::WRITE_FORMATS);
     }
 
 

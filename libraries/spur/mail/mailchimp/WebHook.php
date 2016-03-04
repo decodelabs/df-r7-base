@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,14 +8,14 @@ namespace df\spur\mail\mailchimp;
 use df;
 use df\core;
 use df\spur;
-    
+
 class WebHook implements IWebHook, core\IDumpable {
 
-    protected static $_availableActions = [
+    const AVAILABLE_ACTIONS = [
         'subscribe', 'unsubscribe', 'profile', 'cleaned', 'upemail', 'campaign'
     ];
 
-    protected static $_availableSources = [
+    const AVAILABLE_SOURCES = [
         'user', 'admin', 'api'
     ];
 
@@ -26,7 +26,7 @@ class WebHook implements IWebHook, core\IDumpable {
     protected $_mediator;
 
     public static function getAvailableActions() {
-        return self::$_availableActions;
+        return self::AVAILABLE_ACTIONS;
     }
 
     public static function normalizeActions(array $actions) {
@@ -47,7 +47,7 @@ class WebHook implements IWebHook, core\IDumpable {
                 $active = $value;
             }
 
-            if(!in_array($action, self::$_availableActions)) {
+            if(!in_array($action, self::AVAILABLE_ACTIONS)) {
                 throw new InvalidArgumentException(
                     $action.' is an invalid WebHook action'
                 );
@@ -56,7 +56,7 @@ class WebHook implements IWebHook, core\IDumpable {
             $output[$action] = $active;
         }
 
-        foreach(self::$_availableActions as $action) {
+        foreach(self::AVAILABLE_ACTIONS as $action) {
             if(!isset($output[$action])) {
                 $output[$action] = false;
             }
@@ -66,7 +66,7 @@ class WebHook implements IWebHook, core\IDumpable {
     }
 
     public static function getAvailableSources() {
-        return self::$_availableSources;
+        return self::AVAILABLE_SOURCES;
     }
 
     public static function normalizeSources(array $sources) {
@@ -87,7 +87,7 @@ class WebHook implements IWebHook, core\IDumpable {
                 $active = $value;
             }
 
-            if(!in_array($source, self::$_availableSources)) {
+            if(!in_array($source, self::AVAILABLE_SOURCES)) {
                 throw new InvalidArgumentException(
                     $source.' is an invalid WebHook source'
                 );
@@ -96,7 +96,7 @@ class WebHook implements IWebHook, core\IDumpable {
             $output[$source] = $active;
         }
 
-        foreach(self::$_availableSources as $source) {
+        foreach(self::AVAILABLE_SOURCES as $source) {
             if(!isset($output[$source])) {
                 $output[$source] = false;
             }

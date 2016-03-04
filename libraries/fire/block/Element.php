@@ -12,8 +12,8 @@ use df\aura;
 
 class Element extends Base {
 
-    protected static $_outputTypes = ['Html'];
-    protected static $_defaultCategories = [];
+    const OUTPUT_TYPES = ['Html'];
+    const DEFAULT_CATEGORIES = [];
 
     protected $_slug;
 

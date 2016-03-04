@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,12 +8,12 @@ namespace df\fire;
 use df;
 use df\core;
 use df\fire;
-    
+
 class Config extends core\Config {
 
     const ID = 'nightfire';
 
-    protected static $_staticLayouts = [
+    const STATIC_LAYOUTS = [
         'Default' => [
             'name' => 'Standard layout',
             'areas' => null,
@@ -56,16 +56,13 @@ class Config extends core\Config {
     public function getLayoutList($area=null) {
         $output = [];
 
-        foreach(self::$_staticLayouts as $id => $set) {
+        foreach(self::STATIC_LAYOUTS as $id => $set) {
             $output[$id] = $set['name'];
         }
 
         foreach($this->values->layouts as $id => $set) {
-            if(isset(self::$_staticLayouts[$id])) {
-                $output[$id] = isset(self::$_staticLayouts[$id]['name']) ?
-                    self::$_staticLayouts[$id]['name'] :
-                    $id;
-
+            if(isset(self::STATIC_LAYOUTS[$id])) {
+                $output[$id] = isset(self::STATIC_LAYOUTS[$id]['name']) ?? $id;
                 continue;
             }
 
@@ -87,9 +84,9 @@ class Config extends core\Config {
     public function getLayoutDefinition($id) {
         $data = $this->values->layouts->{$id};
 
-        if(isset(self::$_staticLayouts[$id])) {
+        if(isset(self::STATIC_LAYOUTS[$id])) {
             $output = $this->getStaticLayoutDefinition($id);
-            
+
             if(isset($data->name)) {
                 $output->setName($data['name']);
             }
@@ -103,7 +100,7 @@ class Config extends core\Config {
         }
 
         if($data->slots->isEmpty()) {
-            $data->slots = self::$_staticLayouts['Default']['slots'];
+            $data->slots = self::STATIC_LAYOUTS['Default']['slots'];
         }
 
         foreach($data->slots as $slotId => $slotData) {
@@ -119,15 +116,15 @@ class Config extends core\Config {
     }
 
     public function isStaticLayout($id) {
-        return isset(self::$_staticLayouts[$id]);
+        return isset(self::STATIC_LAYOUTS[$id]);
     }
 
     public function getStaticLayoutDefinition($id) {
-        if(!isset(self::$_staticLayouts[$id])) {
+        if(!isset(self::STATIC_LAYOUTS[$id])) {
             $id = 'Default';
         }
 
-        $data = new core\collection\Tree(self::$_staticLayouts[$id]);
+        $data = new core\collection\Tree(self::STATIC_LAYOUTS[$id]);
         $output = new fire\layout\Definition($id, $data->get('name', $id), true);
 
         foreach($data->slots as $slotId => $slotData) {
@@ -147,7 +144,7 @@ class Config extends core\Config {
 
         $ids = array_unique(
             array_merge(
-                array_keys(self::$_staticLayouts),
+                array_keys(self::STATIC_LAYOUTS),
                 $this->values->layouts->getKeys()
             )
         );
@@ -167,7 +164,7 @@ class Config extends core\Config {
     public function setLayoutDefinition(fire\layout\IDefinition $definition) {
         $id = $definition->getId();
 
-        if(isset(self::$_staticLayouts[$id])) {
+        if(isset(self::STATIC_LAYOUTS[$id])) {
             return $this->_setStaticLayoutDefinition($definition);
         }
 
@@ -198,7 +195,7 @@ class Config extends core\Config {
         $slots = [];
 
         foreach($definition->getSlots() as $slotId => $slot) {
-            if(isset(self::$_staticLayouts[$id]['slots'][$slotId])) {
+            if(isset(self::STATIC_LAYOUTS[$id]['slots'][$slotId])) {
                 //continue;
             }
 

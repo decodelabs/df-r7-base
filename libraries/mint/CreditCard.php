@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,10 +9,10 @@ use df;
 use df\core;
 use df\mint;
 use df\user;
-    
+
 class CreditCard implements ICreditCard, core\IDumpable {
 
-    protected static $_brands = [
+    const BRANDS = [
         'visa' => '/^4\d{12}(\d{3})?$/',
         'mastercard' => '/^(5[1-5]\d{4}|677189)\d{10}$/',
         'discover' => '/^(6011|65\d{2}|64[4-9]\d)\d{12}|(62\d{14})$/',
@@ -164,12 +164,12 @@ class CreditCard implements ICreditCard, core\IDumpable {
 
 // Brand
     public static function getSupportedBrands() {
-        return array_keys(self::$_brands);
+        return array_keys(self::BRANDS);
     }
 
     public function getBrand() {
         if($this->_brand === null) {
-            foreach(self::$_brands as $brand => $regex) {
+            foreach(self::BRANDS as $brand => $regex) {
                 if(preg_match($regex, $this->_number)) {
                     $this->_brand = $brand;
                     break;

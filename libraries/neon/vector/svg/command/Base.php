@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,12 +8,12 @@ namespace df\neon\vector\svg\command;
 use df;
 use df\core;
 use df\neon;
-    
+
 abstract class Base implements neon\vector\svg\ICommand {
 
     use core\TStringProvider;
 
-    private static $_commandKeys = [
+    const COMMAND_KEYS = [
         'm' => 'Move',
         'z' => 'ClosePath',
         'l' => 'Line',
@@ -71,9 +71,9 @@ abstract class Base implements neon\vector\svg\ICommand {
         $command = trim(str_replace(['-', ',', '  '], [' -', ' ', ' '], $command));
 
         if(in_array(
-            strtolower($command), 
+            strtolower($command),
             [
-                'arc', 'closepath', 'cubiccurve', 'horizontalline', 'line', 'move', 
+                'arc', 'closepath', 'cubiccurve', 'horizontalline', 'line', 'move',
                 'quadraticcurve', 'smoothcubiccurve', 'smoothquadraticcurve', 'verticalline'
             ]
         )) {
@@ -83,13 +83,13 @@ abstract class Base implements neon\vector\svg\ICommand {
             $key = strtolower($matches[1]);
             $isRelative = $key == $matches[1];
 
-            if(!isset(self::$_commandKeys[$key])) {
+            if(!isset(self::COMMAND_KEYS[$key])) {
                 throw new neon\vector\svg\InvalidArgumentException(
                     $matches[1].' is not a valid path command key'
                 );
             }
 
-            $command = self::$_commandKeys[$key];
+            $command = self::COMMAND_KEYS[$key];
             $args = isset($matches[2]) && $matches[1] !== '' ? explode(' ', trim($matches[2])) : [];
         } else {
             throw new neon\vector\svg\InvalidArgumentException(

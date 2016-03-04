@@ -414,8 +414,8 @@ trait TForm_ModalDelegate {
     protected function _getModeRenderers() {
         if(isset(static::$_modes) && !empty(static::$_modes)) {
             return static::$_modes;
-        } else if(isset(static::$_defaultModes)) {
-            return static::$_defaultModes;
+        } else if(defined('static::DEFAULT_MODES')) {
+            return static::DEFAULT_MODES;
         }
     }
 

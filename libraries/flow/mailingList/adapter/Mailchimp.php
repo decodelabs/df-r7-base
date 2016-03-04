@@ -13,10 +13,8 @@ use df\user;
 use df\link;
 
 class Mailchimp extends Base {
-    
-    public static $settingsFields = [
-        '*apiKey' => 'API key'
-    ];
+
+    const SETTINGS_FIELDS = ['*apiKey' => 'API key'];
 
     protected $_mediator;
 
