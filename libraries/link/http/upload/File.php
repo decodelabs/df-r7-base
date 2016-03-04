@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\link\http\upload;
 use df;
 use df\core;
 use df\link;
-    
+
 class File implements link\http\IUploadFile {
 
     protected $_fieldName;
@@ -34,8 +34,7 @@ class File implements link\http\IUploadFile {
         $fileName = $data['name'];
         $parts = pathinfo($fileName);
 
-        $this->_extension = isset($parts['extension']) ?
-            $parts['extension'] : null;
+        $this->_extension = $parts['extension'] ?? null;
 
         $this->_fileName = $this->_extension ?
             substr($fileName, 0, -strlen('.'.$this->_extension)) :
@@ -122,7 +121,7 @@ class File implements link\http\IUploadFile {
 
         return new core\fs\File($this->_destinationPath);
     }
-    
+
 
     public function isValid() {
         return $this->_isValid;
@@ -138,25 +137,25 @@ class File implements link\http\IUploadFile {
 
     public function getErrorString() {
         switch($this->getErrorCode()) {
-            case 0: 
+            case 0:
                 return 'Upload successful';
-                
+
             case 1:
-            case 2: 
+            case 2:
                 return 'Filesize limit exceeded';
-                
-            case 3: 
+
+            case 3:
                 return 'File only partially uploaded';
-                
-            case 4: 
+
+            case 4:
                 return 'No file uploaded';
-                
+
             case 5:
-            case 6: 
+            case 6:
                 return 'No temporary folder';
-                
-            case 7: 
-                return 'Failed to write file to disk';    
+
+            case 7:
+                return 'Failed to write file to disk';
         }
     }
 

@@ -89,7 +89,7 @@ trait TAutoIndexField {
 
 // Ext. serialize
     protected function _setAutoIndexStorageArray(array $data) {
-        $this->_autoIndex = isset($data['aui']) ? (bool)$data['aui'] : true;
+        $this->_autoIndex = (bool)($data['aui'] ?? true);
     }
 
     protected function _getAutoIndexStorageArray() {
@@ -126,7 +126,7 @@ trait TAutoUniqueField {
 
 // Ext. serialize
     protected function _setAutoUniqueStorageArray(array $data) {
-        $this->_autoUnique = isset($data['auu']) ? (bool)$data['auu'] : true;
+        $this->_autoUnique = (bool)($data['auu'] ?? true);
         $this->_setAutoIndexStorageArray($data);
     }
 
@@ -165,7 +165,7 @@ trait TAutoPrimaryField {
 
 // Ext. serialize
     protected function _setAutoPrimaryStorageArray(array $data) {
-        $this->_autoPrimary = isset($data['aup']) ? (bool)$data['aup'] : true;
+        $this->_autoPrimary = (bool)($data['aup'] ?? true);
         $this->_setAutoUniqueStorageArray($data);
     }
 

@@ -54,7 +54,7 @@ class Unit extends axis\unit\table\Base {
         }
 
         $history = $this->newRecord([
-            'user' => $userId ? $userId : $this->context->user->client->getId(),
+            'user' => $userId ?? $this->context->user->client->getId(),
             'description' => $description,
             'action' => $action
         ]);

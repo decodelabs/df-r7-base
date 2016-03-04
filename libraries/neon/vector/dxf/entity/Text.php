@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class Text implements neon\vector\dxf\ITextEntity {
-    
+
     use neon\vector\dxf\TEntity;
     use neon\vector\dxf\TDrawingEntity;
     use neon\vector\dxf\TTextProvider;
@@ -105,7 +105,7 @@ class Text implements neon\vector\dxf\ITextEntity {
         $output = sprintf(" 1\n%s\n", $this->_body);
         $output .= neon\vector\dxf\Document::_writePoint($this->_alignmentPoint1, 0);
         $output .= neon\vector\dxf\Document::_writePoint($this->_alignmentPoint2, 1);
-        $output .= sprintf(" 40\n%F\n", $this->_height ? $this->_height : 0);
+        $output .= sprintf(" 40\n%F\n", $this->_height ?? 0);
         $output .= sprintf(" 41\n%F\n", $this->_widthFactor);
         $output .= sprintf(" 50\n%F\n", $this->_rotation);
         $output .= sprintf(" 51\n%F\n", $this->_obliqueAngle);

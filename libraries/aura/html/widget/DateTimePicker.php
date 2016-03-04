@@ -68,9 +68,9 @@ class DateTimePicker extends DatePicker {
 
     protected function _stringToDate($date) {
         if($this->_outputFormat != 'Y-m-d\TH:i') {
-            $output = core\time\Date::fromFormatString((string)$date, $this->_outputFormat, $this->_timezone !== null ? $this->_timezone : true);
+            $output = core\time\Date::fromFormatString((string)$date, $this->_outputFormat, $this->_timezone ?? true);
         } else {
-            $output = core\time\Date::factory((string)$date, $this->_timezone !== null ? $this->_timezone : true);
+            $output = core\time\Date::factory((string)$date, $this->_timezone ?? true);
         }
 
         $output->toUtc();

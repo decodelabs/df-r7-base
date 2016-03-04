@@ -132,7 +132,7 @@ class SearchController implements ISearchController, core\IDumpable {
 
             $this->_fields[$key] = [
                 'field' => $field,
-                'weight' => isset($set['weight']) ? (int)$set['weight'] : 1,
+                'weight' => (int)($set['weight'] ?? 1),
                 'operator' => opal\query\clause\Clause::normalizeOperator($set['operator']),
                 'type' => $type
             ];

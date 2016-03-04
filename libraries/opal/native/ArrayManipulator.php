@@ -10,85 +10,85 @@ use df\core;
 use df\opal;
 
 class ArrayManipulator implements IArrayManipulator {
-    
+
     protected $_rows = [];
     protected $_isNormalized = false;
-    
+
     protected $_outputManifest;
-    
+
     public function __construct(opal\query\ISource $source, array $rows, $isNormalized=false, opal\query\IOutputManifest $outputManifest=null) {
         $this->setRows($rows, $isNormalized);
-        
+
         if(!$outputManifest) {
             $outputManifest = new opal\query\OutputManifest($source, /*$rows*/null, $isNormalized);
         } else {
             $outputManifest->importSource($source, $rows, $isNormalized);
         }
-        
+
         $this->_outputManifest = $outputManifest;
     }
-    
+
     public function setRows(array $rows, $isNormalized=true) {
         $this->_rows = $rows;
         $this->_isNormalized = $isNormalized;
-        
+
         return $this;
     }
-    
+
     public function getRows() {
         return $this->_rows;
     }
-    
+
     public function getOutputManifest() {
         return $this->_outputManifest;
     }
-    
+
     public function isEmpty() {
         return empty($this->_rows);
     }
-    
+
     public function applyReadQuery(opal\query\IQuery $query, $keyField=null, $valField=null, $forCount=false) {
         if(empty($this->_rows)) {
             if($forCount) {
                 $this->_rows = ['count' => 0];
             }
-            
+
             return $this->_rows;
         }
-        
+
         if($query instanceof opal\query\IJoinProviderQuery) {
             $this->applyJoins($query->getJoins());
         }
-        
+
         if($query instanceof opal\query\IWhereClauseQuery && $query->hasWhereClauses()) {
             $this->applyWhereClauseList($query->getWhereClauseList());
-            
+
             if(empty($this->_rows)) {
                 if($forCount) {
                     $this->_rows = ['count' => 0];
                 }
-                
+
                 return $this->_rows;
             }
         }
-        
+
         if($query instanceof opal\query\IReadQuery) {
             if($query instanceof opal\query\IGroupableQuery) {
                 $groups = $query->getGroupFields();
             } else {
                 $groups = [];
             }
-                
+
             $this->applyAggregatesAndGroups($groups);
-            
+
             if($query instanceof opal\query\IHavingClauseQuery && $query->hasHavingClauses()) {
                 $this->applyHavingClauseList($query->getHavingClauseList());
-                
+
                 if(empty($this->_rows)) {
                     if($forCount) {
                         $this->_rows = ['count' => 0];
                     }
-                    
+
                     return $this->_rows;
                 }
             }
@@ -105,31 +105,31 @@ class ArrayManipulator implements IArrayManipulator {
             if($query instanceof opal\query\IOrderableQuery) {
                 $this->applyOrderDirectives($query->getOrderDirectives());
             }
-            
+
             if($query instanceof opal\query\ILimitableQuery) {
                 $offset = null;
-                
+
                 if($query instanceof opal\query\IOffsettableQuery) {
                     $offset = $query->getOffset();
                 }
-                
+
                 $this->applyLimit($query->getLimit(), $offset);
             }
-            
+
             if($query instanceof opal\query\IAttachProviderQuery) {
                 $attachments = $query->getAttachments();
-                
+
                 if(!empty($attachments)) {
                     $output = new opal\query\BatchIterator(
-                        $this->_outputManifest->getPrimarySource(), 
-                        $this->_rows, 
+                        $this->_outputManifest->getPrimarySource(),
+                        $this->_rows,
                         $this->_outputManifest
                     );
-                    
+
                     $output->setAttachments($attachments)
                         ->setListKeyField($keyField)
                         ->setListValueField($valField);
-                        
+
                     return $output;
                 }
             }
@@ -154,57 +154,57 @@ class ArrayManipulator implements IArrayManipulator {
             if($forCount) {
                 $this->_rows = ['count' => 0];
             }
-            
+
             return $this->_rows;
         }
-        
+
         foreach($localJoins as $join) {
             $this->_outputManifest->importSource($join->getSource());
         }
-        
+
         $this->applyJoins($remoteJoins);
-        
+
         if($query instanceof opal\query\IWhereClauseQuery && $query->hasWhereClauses()) {
             $this->applyWhereClauseList($query->getWhereClauseList());
-            
+
             if(empty($this->_rows)) {
                 return $this->_rows;
             }
         }
-        
-        
+
+
         if($query instanceof opal\query\IReadQuery) {
             if($query instanceof opal\query\IGroupableQuery) {
                 $groups = $query->getGroupFields();
             } else {
                 $groups = [];
             }
-            
+
             $this->applyAggregatesAndGroups($groups);
-            
+
             if($query instanceof opal\query\IHavingClauseQuery && $query->hasHavingClauses()) {
                 $this->applyHavingClauseList($query->getHavingClauseList());
-                
+
                 if(empty($this->_rows)) {
                     return $this->_rows;
                 }
             }
         }
-        
+
         if($forCount) {
             $this->_rows = ['count' => count($this->_rows)];
         } else {
             if($query instanceof opal\query\IOrderableQuery) {
                 $this->applyOrderDirectives($query->getOrderDirectives());
             }
-            
+
             if($query instanceof opal\query\ILimitableQuery) {
                 $offset = null;
-                
+
                 if($query instanceof opal\query\IOffsettableQuery) {
                     $offset = $query->getOffset();
                 }
-                
+
                 $this->applyLimit($query->getLimit(), $offset);
             }
         }
@@ -223,12 +223,12 @@ class ArrayManipulator implements IArrayManipulator {
 
         if(!$clausesApplied && $query instanceof opal\query\IWhereClauseQuery && $query->hasWhereClauses()) {
             $this->applyWhereClauseList($query->getWhereClauseList());
-            
+
             if(empty($this->_rows)) {
                 return $this->_rows;
             }
         }
-        
+
         return $this->_rows;
     }
 
@@ -236,13 +236,13 @@ class ArrayManipulator implements IArrayManipulator {
         $this->applyPopulates($batchIterator->getPopulates());
         $this->applyAttachments($batchIterator->getAttachments());
         $this->applyCombines($batchIterator->getCombines());
-        
+
         $this->applyOutputFields(
-            $batchIterator->getListKeyField(), 
-            $batchIterator->getListValueField(), 
+            $batchIterator->getListKeyField(),
+            $batchIterator->getListValueField(),
             $batchIterator->isForFetch()
         );
-        
+
         return $this->_rows;
     }
 
@@ -253,27 +253,27 @@ class ArrayManipulator implements IArrayManipulator {
         $primarySourceId = $primarySource->getAdapter()->getQuerySourceId();
         $primarySourceAlias = $primarySource->getAlias();
         $sourceData = [];
-        
+
         if(!($isNormalized = $this->_isNormalized)) {
             $primaryData = $this->_rows;
             $this->normalizeRows();
         }
-        
-        
+
+
         foreach($joins as $sourceAlias => $join) {
             $source = $join->getSource();
             $adapter = $source->getAdapter();
-            
+
             if(!$isNormalized && $adapter->getQuerySourceId() == $primarySourceId) {
                 $sourceData = [];
-                
+
                 foreach($primaryData as $row) {
                     $current = [];
-                    
+
                     foreach($row as $key => $val) {
                         $current[$sourceAlias.'.'.$key] = $val;
                     }
-                    
+
                     $sourceData[] = $current;
                 }
             } else {
@@ -291,7 +291,7 @@ class ArrayManipulator implements IArrayManipulator {
             }
 
             $this->_outputManifest->importSource($source, $sourceData, true);
-            
+
             $rows = $this->_rows;
             $this->_rows = [];
 
@@ -323,38 +323,38 @@ class ArrayManipulator implements IArrayManipulator {
                             }
                         }
                     }
-                    
+
                     break;
-                    
+
                 case opal\query\IJoinQuery::LEFT:
                     foreach($rows as $row) {
                         $match = false;
-                        
+
                         foreach($sourceData as $joinRow) {
                             if($clauseIndex->testRowMatch($row, $joinRow)) {
                                 $this->_rows[] = array_merge($row, $joinRow);
                                 $match = true;
                             }
                         }
-                        
+
                         if(!$match) {
                             $this->_rows[] = $row;
                         }
                     }
-                    
+
                     break;
-                    
+
                 case opal\query\IJoinQuery::RIGHT:
                     foreach($sourceData as $joinRow) {
                         $match = false;
-                        
+
                         foreach($rows as $row) {
                             if($clauseIndex->testRowMatch($row, $joinRow)) {
                                 $this->_rows[] = array_merge($row, $joinRow);
                                 $match = true;
                             }
                         }
-                        
+
                         if(!$match) {
                             $this->_rows[] = $joinRow;
                         }
@@ -374,24 +374,24 @@ class ArrayManipulator implements IArrayManipulator {
             $this->_isNormalized = true;
             return $this;
         }
-        
+
         $sourceAlias = $this->_outputManifest->getPrimarySource()->getAlias();
-        
+
         $rows = $this->_rows;
         $this->_rows = [];
-        
+
         foreach($rows as $i => $row) {
             $current = [];
-            
+
             foreach($row as $key => $val) {
                 $current[$sourceAlias.'.'.$key] = $val;
             }
-            
+
             $this->_rows[$i] = $current;
         }
-        
+
         $this->_isNormalized = true;
-        
+
         return $this;
     }
 
@@ -401,9 +401,9 @@ class ArrayManipulator implements IArrayManipulator {
         if(empty($this->_rows)) {
             return $this;
         }
-        
+
         $this->normalizeRows();
-        
+
         if(!$clauseList->isEmpty()) {
             $clauseIndex = new ClauseMatcher($clauseList->toArray());
             $searchFields = null;
@@ -430,7 +430,7 @@ class ArrayManipulator implements IArrayManipulator {
                 if(!$clauseIndex->testRow($row, $matchedFields)) {
                     unset($this->_rows[$i]);
                     continue;
-                }  
+                }
 
                 if($searchController) {
                     $relevance = 0;
@@ -449,18 +449,18 @@ class ArrayManipulator implements IArrayManipulator {
                 }
             }
         }
-        
+
         return $this;
     }
-    
-    
-    
+
+
+
 // Groups
     public function applyAggregatesAndGroups(array $groupFields=[]) {
         if(empty($this->_rows) || (!$this->_outputManifest->hasAggregateFields() && empty($groupFields))) {
             return $this;
         }
-        
+
         $this->normalizeRows();
         $fields = $this->_outputManifest->getAllFields();
         $aggregateFields = $this->_outputManifest->getAggregateFields();
@@ -475,65 +475,65 @@ class ArrayManipulator implements IArrayManipulator {
         if(empty($aggregateFieldMap)) {
             return $this;
         }
-        
+
         // init aggregates
         foreach($this->_rows as &$row) {
             foreach($aggregateFields as $alias => $field) {
                 $qName = $aggregateFieldMap[$alias];
-                
+
                 if(isset($row[$qName])) {
                     $row[$qName] = $row[$qName];
                 } else {
                     $row[$qName] = null;
                 }
             }
-            
+
             unset($row);
         }
-        
-        
+
+
         // partition
         if(!empty($groupFields)) {
             $rowGroups = [];
             $delim = "\xFF";
-            
+
             foreach($this->_rows as $row) {
                 $compVal = '';
-                
+
                 foreach($groupFields as $groupField) {
                     $fieldName = $groupField->getQualifiedName();
-                    
+
                     if(isset($row[$fieldName])) {
                         $compVal .= $row[$fieldName];
                     }
-                    
+
                     $compVal .= $delim;
                 }
-                
+
                 $rowGroups[$compVal][] = $row;
             }
-            
+
             $rowGroups = array_values($rowGroups);
         } else {
             $rowGroups = [$this->_rows];
         }
-        
-        
+
+
         // re-list
         $this->_rows = [];
-        
+
         foreach($rowGroups as $group) {
             $row = $group[0];
-            
+
             if(!empty($aggregateFields)) {
                 $aggregateData = [];
-                
+
                 foreach($group as $groupRow) {
                     foreach($aggregateFieldMap as $alias => $qName) {
                         $aggregateData[$qName][] = $groupRow[$qName];
                     }
                 }
-                
+
                 foreach($aggregateFieldMap as $alias => $qName) {
                     $field = $fields[$alias];
 
@@ -546,24 +546,24 @@ class ArrayManipulator implements IArrayManipulator {
                     if($aggregateFields[$alias]->isDistinct()) {
                         $rowAggregateData = array_unique($rowAggregateData);
                     }
-                        
+
                     switch($field->getType()) {
                         case opal\query\field\Aggregate::TYPE_COUNT:
                             $row[$qName] = count($rowAggregateData);
                             break;
-                            
+
                         case opal\query\field\Aggregate::TYPE_SUM:
                             $row[$qName] = array_sum($rowAggregateData);
                             break;
-                        
+
                         case opal\query\field\Aggregate::TYPE_AVG:
                             $row[$qName] = array_sum($rowAggregateData) / count($rowAggregateData);
                             break;
-                            
+
                         case opal\query\field\Aggregate::TYPE_MIN:
                             $row[$qName] = min($rowAggregateData);
                             break;
-                            
+
                         case opal\query\field\Aggregate::TYPE_MAX:
                             $row[$qName] = max($rowAggregateData);
                             break;
@@ -587,50 +587,50 @@ class ArrayManipulator implements IArrayManipulator {
         if(empty($this->_rows)) {
             return $this;
         }
-        
+
         $this->normalizeRows();
-        
+
         if(!$clauseList->isEmpty()) {
             $clauseIndex = new ClauseMatcher($clauseList->toArray());
-            
+
             foreach($this->_rows as $i => $row) {
                 if(!$clauseIndex->testRow($row)) {
                     unset($this->_rows[$i]);
                 }
-                
+
                 unset($row);
             }
         }
-        
+
         return $this;
     }
-    
+
 
 // Distinct
     public function applyDistinct() {
         if(empty($this->_rows) || empty($orderDirectives)) {
             return $this;
         }
-        
+
         $this->normalizeRows();
 
         core\stub();
     }
 
-    
+
 // Order
     public function applyOrderDirectives(array $orderDirectives) {
         if(empty($this->_rows) || empty($orderDirectives)) {
             return $this;
         }
-        
+
         $this->normalizeRows();
-        
+
         $sortFields = [];
         $sortData = [];
         $sortNullFields = [];
         $sortNullData = [];
-        
+
         foreach($orderDirectives as $directive) {
             if(!$directive instanceof opal\query\IOrderDirective) {
                 continue;
@@ -642,11 +642,11 @@ class ArrayManipulator implements IArrayManipulator {
 
             foreach($derefFields as $innerField) {
                 $sortFieldName = $innerField->getQualifiedName();
-                
+
                 if(isset($sortFields[$sortFieldName])) {
                     continue;
                 }
-                
+
                 if($directive->isDescending()) {
                     $sortFields[$sortFieldName] = SORT_DESC;
                 } else {
@@ -690,9 +690,9 @@ class ArrayManipulator implements IArrayManipulator {
                 }
             }
         }
-        
+
         $args = [];
-    
+
         foreach($sortFields as $field => $direction) {
             if(isset($sortNullFields[$field])) {
                 $args[] = $sortNullData[$field];
@@ -702,10 +702,10 @@ class ArrayManipulator implements IArrayManipulator {
             $args[] = &$sortData[$field];
             $args[] = $direction;
         }
-        
+
         $args[] = &$this->_rows;
         call_user_func_array('array_multisort', $args);
-        
+
         return $this;
     }
 
@@ -715,13 +715,13 @@ class ArrayManipulator implements IArrayManipulator {
         if(empty($this->_rows)) {
             return $this;
         }
-        
+
         $this->normalizeRows();
         $this->_rows = array_slice($this->_rows, $offset, $limit);
-        
+
         return $this;
     }
-    
+
 
 // Populates
     public function applyPopulates(array $populates) {
@@ -751,14 +751,14 @@ class ArrayManipulator implements IArrayManipulator {
             foreach($populate->getPopulates() as $childPopulate) {
                 $attachment->addPopulate($childPopulate);
             }
-            
+
             $attachments[$populate->getFieldName()] = $attachment;
         }
 
         return $attachments;
     }
 
-    
+
 // Attachments
     public function applyAttachments(array $attachments) {
         if(empty($this->_rows) || empty($attachments)) {
@@ -766,7 +766,7 @@ class ArrayManipulator implements IArrayManipulator {
         }
 
         $this->normalizeRows();
-        
+
         foreach($attachments as $attachKey => $attachment) {
             $this->_outputManifest->addOutputField(
                 $attachmentQueryField = new opal\query\field\Attachment($attachKey, $attachment)
@@ -789,25 +789,25 @@ class ArrayManipulator implements IArrayManipulator {
             $clauseIndex = new ClauseMatcher($clauseList, true);
             $isFetchQuery = $attachment instanceof opal\query\IFetchQuery;
             $isValueAttachment = $attachment->getType() === 0 || $attachment->getType() === 3;
-            
-            
+
+
             // Get key / val fields
             $keyField = $valField = null;
-                
+
             if($attachment instanceof opal\query\ISelectAttachQuery) {
                 $keyField = $attachment->getListKeyField();
                 $valField = $attachment->getListValueField();
             }
-            
-            
+
+
             // Import sources to child manipulator
             if($attachment instanceof opal\query\IJoinProviderQuery) {
                 foreach($attachment->getJoins() as $join) {
                     $manipulator->getOutputManifest()->importSource($join->getSource());
                 }
             }
-            
-            
+
+
             // Prepare groups & having clauses
             if($isReadQuery = $attachment instanceof opal\query\IReadQuery) {
                 if($attachment instanceof opal\query\IGroupableQuery) {
@@ -815,64 +815,64 @@ class ArrayManipulator implements IArrayManipulator {
                 } else {
                     $groups = [];
                 }
-                
+
                 $havingClauseList = null;
-                
+
                 if($attachment instanceof opal\query\IHavingClauseQuery && $attachment->hasHavingClauses()) {
                     $havingClauseList = $attachment->getHavingClauseList();
                 }
             }
-            
-            
+
+
             // Prepare order directives
             $orderDirectives = $attachment instanceof opal\query\IOrderableQuery ?
                 $attachment->getOrderDirectives() : null;
-                
-                
+
+
             // Prepare limit & offset
             $limit = $offset = $canLimit = null;
-            
+
             if($attachment instanceof opal\query\ILimitableQuery) {
                 $limit = $attachment->getLimit();
-                
+
                 if($attachment instanceof opal\query\IOffsettableQuery) {
                     $offset = $attachment->getOffset();
                 }
-                
+
                 if($isValueAttachment) {
                     $limit = 1;
                 }
-                
+
                 $canLimit = $limit !== null || $offset !== null;
             }
-              
+
 
             $index = [];
             $dataSet = [];
 
-            
+
             // Iterate data
             foreach($this->_rows as $i => $row) {
-                
+
                 // Filter source data
                 if(empty($clauseList)) {
                     $attachData = $sourceData;
                 } else {
                     $attachData = [];
-                    
+
                     foreach($sourceData as $joinRow) {
                         if($clauseIndex->testRowMatch($row, $joinRow)) {
                             $attachData[] = $joinRow;
                         }
                     }
                 }
-                
+
                 $manipulator->setRows($attachData);
-                
+
                 // Groups, aggregates and having clauses
                 if($isReadQuery) {
                     $manipulator->applyAggregatesAndGroups($groups);
-                    
+
                     if($havingClauseList !== null) {
                         $manipulator->applyHavingClauseList($havingClauseList);
                     }
@@ -884,13 +884,13 @@ class ArrayManipulator implements IArrayManipulator {
                     $manipulator->applyDistinct();
                 }
 
-                
+
                 // Order directives
                 if(!empty($orderDirectives)) {
                     $manipulator->applyOrderDirectives($orderDirectives);
                 }
-                
-                
+
+
                 // Limit & offset
                 if($canLimit) {
                     $manipulator->applyLimit($limit, $offset);
@@ -927,10 +927,10 @@ class ArrayManipulator implements IArrayManipulator {
                 $manipulator->applyCombines($attachment->getCombines());
             }
 
-            
+
             $dataSet = $manipulator->getRows();
             $qName = $attachmentQueryField->getQualifiedName();
-            
+
 
             // Format and apply output
             foreach($this->_rows as $i => &$row) {
@@ -972,19 +972,19 @@ class ArrayManipulator implements IArrayManipulator {
         foreach($combines as $name => $combine) {
             $this->_outputManifest->addOutputField(new opal\query\field\Combine($name, $combine));
         }
-        
+
         return $this;
     }
-    
-    
+
+
 // Output
     public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false) {
         if(empty($this->_rows)) {
             return $this;
         }
-        
+
         $this->normalizeRows();
-    
+
         $temp = $this->_rows;
         $this->_rows = [];
 
@@ -1029,7 +1029,7 @@ class ArrayManipulator implements IArrayManipulator {
         $oldValField = $keyName = $valQName = null;
         $outputPrimaryKeySet = false;
         $keyNameList = null;
-        
+
         if($keyField) {
             $keyName = $keyField->getQualifiedName();
 
@@ -1045,7 +1045,7 @@ class ArrayManipulator implements IArrayManipulator {
                 }
             }
         }
-        
+
         if($valField) {
             if($valField instanceof opal\query\IVirtualField) {
                 $derefFields = $valField->dereference();
@@ -1085,7 +1085,7 @@ class ArrayManipulator implements IArrayManipulator {
         // Prepare object field
         $objectKey = $primarySource->getAlias().'.@object';
         $fetchObject = false;
-        
+
         if($forFetch) {
             $fetchObject = isset($temp[0][$objectKey]);
         }
@@ -1114,7 +1114,7 @@ class ArrayManipulator implements IArrayManipulator {
 
 
             // Single value output
-            if($valQName) { 
+            if($valQName) {
                 if(array_key_exists($valQName, $row)) {
                     $current = $row[$valQName];
                 } else if($outputPrimaryKeySet) {
@@ -1124,29 +1124,29 @@ class ArrayManipulator implements IArrayManipulator {
                         $innerQName = $outputField->getQualifiedName();
                         $innerName = $outputField->getName();
 
-                        $primaryValues[$innerName] = isset($row[$innerQName]) ? $row[$innerQName] : null;
+                        $primaryValues[$innerName] = $row[$innerQName] ?? null;
                     }
-                    
+
                     $current = new opal\record\PrimaryKeySet(array_keys($primaryValues), $primaryValues);
                 } else if(isset($row[$valName])) {
                     $current = $row[$valName];
                 } else {
                     $current = null;
                 }
-                
+
             // Entity object
-            } else if($fetchObject) { 
+            } else if($fetchObject) {
                 if(isset($row[$objectKey])) {
                     $current = $row[$objectKey];
                 } else {
                     $current = null;
                 }
-                
-                
+
+
             // Normal row
-            } else { 
+            } else {
                 $current = [];
-                
+
                 // Apply wildcards
                 if(!empty($wildcards)) {
                     $mergedMuteFields = [];
@@ -1159,7 +1159,7 @@ class ArrayManipulator implements IArrayManipulator {
                         if(isset($aggregateFields[$key])) {
                             continue;
                         }
-                        
+
                         $parts = explode('.', $key, 2);
                         $fieldName = array_pop($parts);
                         $s = array_shift($parts);
@@ -1191,8 +1191,8 @@ class ArrayManipulator implements IArrayManipulator {
                         $current[$fieldName] = $value;
                     }
                 }
-                
-                
+
+
                 // Add known fields
                 foreach($qNameMap as $alias => $qName) {
                     // Multi key set
@@ -1266,8 +1266,8 @@ class ArrayManipulator implements IArrayManipulator {
 
                     $current[$combineName] = $combineRow;
                 }
-                
-                
+
+
                 // Convert to record object
                 if($partial) {
                     $record = $partial;
@@ -1278,7 +1278,7 @@ class ArrayManipulator implements IArrayManipulator {
                 }
             }
 
-            
+
             // Add row to output
             $key = null;
 

@@ -772,8 +772,7 @@ trait TForm_DependentDelegate {
                 continue;
             }
 
-            $output[$name] = isset($dep['message']) ?
-                $dep['message'] : $this->_('Unresolved dependency: %n%', ['%n%' => $name]);
+            $output[$name] = $dep['message'] ?? $this->_('Unresolved dependency: %n%', ['%n%' => $name]);
         }
 
         return $output;

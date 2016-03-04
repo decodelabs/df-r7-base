@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 use df\mesh;
-    
+
 class EntityLocator extends Base implements
     opal\schema\IMultiPrimitiveField,
     opal\schema\IQueryClauseRewriterField {
@@ -21,7 +21,7 @@ class EntityLocator extends Base implements
             return null;
         }
 
-        $id = isset($row[$key.'_id']) ? $row[$key.'_id'] : null;
+        $id = $row[$key.'_id'] ?? null;
         return mesh\entity\Locator::domainFactory($row[$key.'_domain'], $id);
     }
 

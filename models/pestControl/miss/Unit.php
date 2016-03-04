@@ -50,7 +50,7 @@ class Unit extends axis\unit\table\Base {
 
 // IO
     public function logMiss($request, $isBot=false, $mode=null) {
-        $mode = $mode ? $mode : $this->context->getRunMode();
+        $mode = $mode ?? $this->context->getRunMode();
         $request = $this->_model->normalizeLogRequest($request, $mode);
 
         $this->update([

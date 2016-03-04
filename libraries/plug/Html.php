@@ -276,7 +276,7 @@ class Html implements arch\IDirectoryHelper {
     public function backLink($default=null, $success=true, $body=null) {
         return $this->link(
                 $this->context->uri->back($default, $success),
-                $body !== null ? $body : $this->context->_('Back')
+                $body ?? $this->context->_('Back')
             )
             ->setIcon('back');
     }

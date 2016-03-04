@@ -79,7 +79,7 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
                 $value = null;
             }
 
-            $inputTag->setAttribute('value', $value === null ? '' : $value);
+            $inputTag->setAttribute('value', $value ?? '');
             $inputId = null;
 
             if($id !== null) {

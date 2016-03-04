@@ -400,7 +400,7 @@ class Parser implements flex\IHtmlProducer {
             }
 
             $block->currentLi = null;
-            $text = isset($matches[1]) ? $matches[1] : '';
+            $text = $matches[1] ?? '';
 
             $block->element->content[] = new Parser_Element([
                 'name' => 'li',
@@ -558,7 +558,7 @@ class Parser implements flex\IHtmlProducer {
 
         $this->_definitions['Reference'][$id] = new Parser_Definition([
             'url' => $matches[2],
-            'title' => isset($matches[3]) ? $matches[3] : null
+            'title' => $matches[3] ?? null
         ]);
 
         $block->isHidden = true;
@@ -791,9 +791,7 @@ class Parser implements flex\IHtmlProducer {
 
                 $unmarkedText = substr($text, 0, $inline->position);
                 $markup .= $this->_normalizeUnmarkedText($unmarkedText);
-                $markup .= isset($inline->markup) ?
-                    $inline->markup :
-                    $this->_handleElement($inline->element);
+                $markup .= $inline->markup ?? $this->_handleElement($inline->element);
 
                 $text = substr($text, $inline->position + $inline->extent);
                 continue 2;
@@ -819,9 +817,7 @@ class Parser implements flex\IHtmlProducer {
             }
 
             $markup .= "\n";
-            $markup .= isset($block->markup) ?
-                $block->markup :
-                $this->_handleElement($block->element);
+            $markup .= $block->markup ?? $this->_handleElement($block->element);
         }
 
         $markup .= "\n";

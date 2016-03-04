@@ -523,7 +523,7 @@ class Mediator implements IMediator, \Serializable {
 
     protected function _extractResponseError(link\http\IResponse $response) {
         $data = flex\json\Codec::decode($response->getContent());
-        $error = isset($data['error']) ? $data['error'] : 'Undefined chimp calamity!';
+        $error = $data['error'] ?? 'Undefined chimp calamity!';
         //$code = $headers->get('X-Mailchimp-Api-Error-Code');
 
         return $error;

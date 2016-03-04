@@ -818,14 +818,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     }
 
     protected function _sortEntries($a, $b) {
-        $a = $a['weight'];
-        $b = $b['weight'];
-
-        if($a == $b) {
-            return 0;
-        }
-
-        return ($a < $b) ? -1 : 1;
+        return $a['weight'] <=> $b['weight'];
     }
 
     protected function _renderCssList() {
@@ -837,7 +830,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
         foreach($this->_css as $entry) {
             $attributes = array_merge(
-                isset($entry['attributes']) ? $entry['attributes'] : [],
+                $entry['attributes'] ?? [],
                 [
                     'href' => $entry['url'],
                     'rel' => 'stylesheet',
@@ -872,7 +865,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
             }
 
             $attributes = array_merge(
-                isset($entry['attributes']) ? $entry['attributes'] : [],
+                $entry['attributes'] ?? [],
                 [
                     'src' => $entry['url'],
                     'type' => 'text/javascript'

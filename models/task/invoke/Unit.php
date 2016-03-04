@@ -44,7 +44,7 @@ class Unit extends axis\unit\table\Base {
 
         $invoke = $this->newRecord([
                 'token' => $token,
-                'expiryDate' => $expiryDate ? $expiryDate : '+1 minute',
+                'expiryDate' => $expiryDate ?? '+1 minute',
                 'request' => array_pop($parts),
                 'environmentMode' => $environmentMode
             ])

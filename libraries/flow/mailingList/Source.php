@@ -11,7 +11,7 @@ use df\flow;
 use df\user;
 
 class Source implements ISource {
-    
+
     protected $_id;
     protected $_cid;
     protected $_adapter;
@@ -151,7 +151,7 @@ class Source implements ISource {
                 $cat = $list['name'];
 
                 if($showSets) {
-                    $cat .= isset($list['groupSets'][$group['groupSet']]) ? 
+                    $cat .= isset($list['groupSets'][$group['groupSet']]) ?
                         ' / '.$list['groupSets'][$group['groupSet']] : null;
                 }
 
@@ -193,13 +193,12 @@ class Source implements ISource {
         $list = $manifest[$listId];
 
         foreach($list['groups'] as $groupId => $group) {
-            $groupSet = isset($list['groupSets'][$group['groupSet']]) ?
-                $list['groupSets'][$group['groupSet']] : 'Default';
+            $groupSet = $list['groupSets'][$group['groupSet']] ?? 'Default';
 
             if($nested) {
                 $output[$groupSet][$groupId] = $group['name'];
             } else {
-                $output[$groupId] = $showSets ? 
+                $output[$groupId] = $showSets ?
                     $groupSet.' / '.$group['name'] : $group['name'];
             }
         }

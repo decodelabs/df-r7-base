@@ -528,7 +528,7 @@ abstract class Base implements
             foreach($extraFields as $extraField) {
                 $parts = explode(' as ', $extraField);
                 $fieldName = array_shift($parts);
-                $alias = isset($parts[0]) ? array_shift($parts) : $fieldName;
+                $alias = $parts[0] ?? $fieldName;
 
                 $fields[$fieldName] = $fieldName.' as '.$rName.'|'.$alias;
                 $combine[$fieldName] = $rName.'|'.$alias.' as '.$alias;

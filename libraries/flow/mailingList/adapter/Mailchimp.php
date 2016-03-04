@@ -244,7 +244,7 @@ class Mailchimp extends Base {
 
         if(null === ($member = $cache->getSession($sessionKey))) {
             $member = $this->_getMemberData($listId);
-            $cache->setSession($sessionKey, $member ? $member : false);
+            $cache->setSession($sessionKey, $member ?? false);
         }
 
         return $member;

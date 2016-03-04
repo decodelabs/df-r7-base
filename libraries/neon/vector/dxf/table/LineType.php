@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class LineType implements neon\vector\dxf\ILineTypeTable {
-    
+
     use neon\vector\dxf\TTable;
 
     protected $_description;
@@ -267,7 +267,7 @@ class LineType_Element implements neon\vector\dxf\ILineTypeTableElement {
 
         if($flags > 0) {
             $output .= sprintf(" 74\n%u\n", $flags);
-            $output .= sprintf(" 75\n%u\n", $this->_shape !== null ? $this->_shape : 0);
+            $output .= sprintf(" 75\n%u\n", $this->_shape ?? 0);
 
             if($this->_styleId !== null) {
                 $output .= sprintf(" 340\n%s\n", $this->_styleId);
@@ -297,5 +297,5 @@ class LineType_Element implements neon\vector\dxf\ILineTypeTableElement {
         }
 
         return $output;
-    }   
+    }
 }

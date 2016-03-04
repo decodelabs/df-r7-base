@@ -12,18 +12,18 @@ use df\link;
 use df\mesh;
 
 class Select extends Base {
-    
+
     const SIGNAL = 0;
     const SOCKET = 1;
     const STREAM = 2;
     const TIMER = 3;
-    
+
     const READ = IIoState::READ;
     const WRITE = IIoState::WRITE;
-    
+
     const RESOURCE = 0;
     const HANDLER = 1;
-    
+
     protected $_breakLoop = false;
     protected $_generateMaps = true;
 
@@ -40,7 +40,7 @@ class Select extends Base {
     public function listen() {
         $this->_breakLoop = false;
         $this->_isListening = true;
-        
+
         $baseTime = microtime(true);
         $times = [];
         $lastCycle = $baseTime;
@@ -53,9 +53,9 @@ class Select extends Base {
             if($this->_generateMaps) {
                 $this->_generateMaps();
             }
-            
+
             $hasHandler = false;
-            
+
 
             // Timers
             if(!empty($this->_timerBindings)) {
@@ -67,7 +67,7 @@ class Select extends Base {
                         continue;
                     }
 
-                    $dTime = isset($times[$id]) ? $times[$id] : $baseTime;
+                    $dTime = $times[$id] ?? $baseTime;
                     $diff = $time - $dTime;
 
                     if($diff > $binding->duration->getSeconds()) {
@@ -78,26 +78,26 @@ class Select extends Base {
             }
 
 
-            
+
             // Signals
             if(!empty($this->_signalBindings) && $this->_hasPcntl) {
                 $hasHandler = true;
                 pcntl_signal_dispatch();
             }
-            
+
             // Sockets
             if(!empty($this->_socketMap)) {
                 $hasHandler = true;
                 $read = $this->_socketMap[self::RESOURCE][self::READ];
                 $write = $this->_socketMap[self::RESOURCE][self::WRITE];
                 $e = null;
-                
+
                 try {
                     $res = socket_select($read, $write, $e, 0, 10000);
                 } catch(\Exception $e) {
                     $res = false;
                 }
-                
+
                 if($res === false) {
                     // TODO: deal with error
                 } else if($res > 0) {
@@ -106,30 +106,30 @@ class Select extends Base {
                             $binding->trigger($resource);
                         }
                     }
-                    
+
                     foreach($write as $resource) {
                         foreach($this->_socketMap[self::HANDLER][self::WRITE][(int)$resource] as $id => $binding) {
                             $binding->trigger($resource);
                         }
                     }
                 }
-                
+
                 // TODO: add timeout handler
             }
-            
+
             // Streams
             if(!empty($this->_streamMap)) {
                 $hasHandler = true;
                 $read = $this->_streamMap[self::RESOURCE][self::READ];
                 $write = $this->_streamMap[self::RESOURCE][self::WRITE];
                 $e = null;
-                
+
                 try {
                     $res = stream_select($read, $write, $e, 0, 10000);
                 } catch(\Exception $e) {
                     $res = false;
                 }
-                
+
                 if($res === false) {
                     // TODO: deal with error
                 } else if($res > 0) {
@@ -138,14 +138,14 @@ class Select extends Base {
                             $binding->trigger($resource);
                         }
                     }
-                    
+
                     foreach($write as $resource) {
                         foreach($this->_streamMap[self::HANDLER][self::WRITE][(int)$resource] as $id => $binding) {
                             $binding->trigger($resource);
                         }
                     }
                 }
-                
+
                 // TODO: add timeout handler
             }
 
@@ -169,20 +169,20 @@ class Select extends Base {
 
             usleep(30000);
         }
-        
+
         $this->_breakLoop = false;
         $this->_isListening = false;
-        
+
         $this->_stopSignalHandlers();
-        
+
         return $this;
     }
-    
+
     public function regenerateMaps() {
         $this->_generateMaps = true;
         return $this;
     }
-    
+
     private function _generateMaps() {
         $this->_socketMap = $this->_streamMap = [
             self::RESOURCE => [
@@ -197,7 +197,7 @@ class Select extends Base {
 
         $socketCount = $streamCount = 0;
 
-        
+
 
         // Sockets
         foreach($this->_socketBindings as $id => $binding) {
@@ -214,7 +214,7 @@ class Select extends Base {
                 $socketCount++;
             }
         }
-        
+
 
         // Streams
         foreach($this->_streamBindings as $id => $binding) {
@@ -247,22 +247,22 @@ class Select extends Base {
 
         $this->_generateMaps = false;
     }
-    
+
     public function stop() {
         if($this->_isListening) {
             $this->_breakLoop = true;
         }
-        
+
         return $this;
     }
-    
+
 
 
     public function freezeBinding(IBinding $binding) {
         $binding->isFrozen = true;
         return $this;
     }
-    
+
     public function unfreezeBinding(IBinding $binding) {
         $binding->isFrozen = false;
         return $this;
@@ -279,7 +279,7 @@ class Select extends Base {
         $this->regenerateMaps();
     }
 
-    
+
 
 // Streams
     protected function _registerStreamBinding(IStreamBinding $binding) {
@@ -289,7 +289,7 @@ class Select extends Base {
     protected function _unregisterStreamBinding(IStreamBinding $binding) {
         $this->regenerateMaps();
     }
-    
+
 
 // Signals
     protected function _startSignalHandlers() {

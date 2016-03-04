@@ -166,7 +166,7 @@ trait TElementContent {
 
     protected function _renderChild(&$value) {
         if(is_callable($value) && is_object($value)) {
-            $value = $value(isset($this->_parent) ? $this->_parent : $this);
+            $value = $value($this->_parent ?? $this);
             return $this->_renderChild($value);
         }
 

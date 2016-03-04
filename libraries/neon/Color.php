@@ -119,8 +119,7 @@ class Color implements IColor, core\IDumpable {
                 self::NAMES[$name][0] / 255,
                 self::NAMES[$name][1] / 255,
                 self::NAMES[$name][2] / 255,
-                isset(self::NAMES[$name][3]) ?
-                    self::NAMES[$name][3] : 1
+                self::NAMES[$name][3] ?? 1
             );
         }
 

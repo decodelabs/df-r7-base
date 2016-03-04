@@ -491,7 +491,7 @@ class Tree implements ITree, core\IDumpable {
         }
 
         $mod = (int)$matches[2];
-        $offset = isset($matches[4]) ? (int)$matches[4] : 0;
+        $offset = (int)($matches[4] ?? 0);
 
         if($matches[1] == '-') {
             $mod *= -1;

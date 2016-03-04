@@ -455,7 +455,7 @@ trait TQuery_Correlatable {
         }
 
         $source = $queryField->getSource();
-        $fieldAlias = $alias ? $alias : $fieldName;
+        $fieldAlias = $alias ?? $fieldName;
 
         if($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged

@@ -400,7 +400,7 @@ trait THelperProvider {
         }
 
         $context = $this;
-        $target = $target ? $target : $this;
+        $target = $target ?? $this;
 
         if(!$context instanceof IContext) {
             if(df\Launchpad::$application instanceof core\IContextAware) {

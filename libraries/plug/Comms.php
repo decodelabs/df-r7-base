@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,7 +11,7 @@ use df\plug;
 use df\flow;
 use df\arch;
 use df\aura;
-    
+
 class Comms implements core\ISharedHelper {
 
     use core\TSharedHelper;
@@ -76,9 +76,7 @@ class Comms implements core\ISharedHelper {
     public function flashSaveSuccess($itemName, $message=null) {
         return $this->flash(
             $this->context->format->id($itemName).'.save',
-            $message !== null ?
-                $message :
-                $this->context->_('The %i% was successfully saved', ['%i%' => $itemName]),
+            $message ?? $this->context->_('The %i% was successfully saved', ['%i%' => $itemName]),
             'success'
         );
     }
@@ -139,7 +137,7 @@ class Comms implements core\ISharedHelper {
 
         return $component;
     }
-    
+
 
     public function sendNotification(flow\INotification $notification) {
         $this->_manager->sendNotification($notification);

@@ -10,10 +10,10 @@ use df\core;
 use df\neon;
 
 class Style implements neon\vector\dxf\IStyleTable {
-    
+
     use neon\vector\dxf\TTable;
     use neon\vector\dxf\TTextProvider;
-    
+
     protected $_lastHeightUsed = 1;
     protected $_primaryFontFileName = 'ARIAL.TTF';
     protected $_bigFontFileName;
@@ -22,7 +22,7 @@ class Style implements neon\vector\dxf\IStyleTable {
         return 'STYLE';
     }
 
-    
+
 
     public function setLastHeightUsed($height) {
         if($height !== null) {
@@ -56,7 +56,7 @@ class Style implements neon\vector\dxf\IStyleTable {
     }
 
     public function toString() {
-        $output = sprintf(" 40\n%F\n", $this->_height ? $this->_height : 0);
+        $output = sprintf(" 40\n%F\n", $this->_height ?? 0);
         $output .= sprintf(" 41\n%F\n", $this->_widthFactor);
         $output .= sprintf(" 50\n%F\n", $this->_obliqueAngle);
 

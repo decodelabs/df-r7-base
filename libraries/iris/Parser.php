@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\iris;
 use df;
 use df\core;
 use df\iris;
-    
+
 abstract class Parser implements IParser, core\IDumpable {
 
     public $position = 0;
@@ -140,7 +140,7 @@ abstract class Parser implements IParser, core\IDumpable {
                 'Parser has already been started'
             );
         }
-        
+
         $this->_isStarted = true;
 
         foreach($this->_processors as $processor) {
@@ -316,7 +316,7 @@ abstract class Parser implements IParser, core\IDumpable {
         return $output;
     }
 
-    
+
 
     public function extractIfMatch($type, $subType=null, $value=null) {
         if($this->token->matches($type, $subType, $value)) {
@@ -359,7 +359,7 @@ abstract class Parser implements IParser, core\IDumpable {
         }
 
         $test = $this->_extractBuffer;
-        
+
         for($i = 0; $i < $count; $i++) {
             $testToken = array_pop($test);
 
@@ -392,9 +392,7 @@ abstract class Parser implements IParser, core\IDumpable {
             $this->_importTokens();
         }
 
-        $this->token = isset($this->_tokens[0]) ?
-            $this->_tokens[0] : 
-            null;
+        $this->token = $this->_tokens[0] ?? null;
 
         if($this->token && $this->token->matches('comment')) {
             $comment = $this->token;

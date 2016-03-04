@@ -103,7 +103,7 @@ class Url extends core\uri\Url implements IUrl {
             }
         }
 
-        $output->_directoryRequest = $routedRequest ? $routedRequest : $request;
+        $output->_directoryRequest = $routedRequest ?? $request;
         return $output;
     }
 
