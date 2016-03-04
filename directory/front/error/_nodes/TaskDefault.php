@@ -46,7 +46,7 @@ class TaskDefault extends arch\node\Base {
                     $this->logs->logException($exception, $command);
                     break;
             }
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             core\debug()->exception($e);
         }
 

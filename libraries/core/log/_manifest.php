@@ -19,7 +19,7 @@ interface IException {}
 interface IManager extends core\IManager {
     public function logAccessError($code=403, $request=null, $message=null);
     public function logNotFound($request=null, $message=null);
-    public function logException(/*\Throwable*/ $exception, $request=null);
+    public function logException(\Throwable $exception, $request=null);
 
     public function swallow($block);
 }
@@ -41,8 +41,8 @@ interface IEntryPoint {
     public function addDump($dumpObject, core\debug\IStackCall $stackCall, $deep=false, $critical=true);
     public function addDumpList(array $dumpObjects, core\debug\IStackCAll $stackCall, $deep=false, $critical=true);
 
-    public function exception(/*\Throwable*/ $exception);
-    public function addException(/*\Throwable*/ $exception);
+    public function exception(\Throwable $exception);
+    public function addException(\Throwable $exception);
 
     public function info($message);
     public function todo($message);
@@ -111,17 +111,11 @@ trait TEntryPoint {
 
 
 // Exception
-    public function exception(/*\Throwable*/ $exception) {
+    public function exception(\Throwable $exception) {
         return $this->addException($exception);
     }
 
-    public function addException(/*\Throwable*/ $exception) {
-        // Remove me
-        if(!$exception instanceof \Exception
-        && !$exception instanceof \Throwable) {
-            return $this;
-        }
-
+    public function addException(\Throwable $exception) {
         df\Launchpad::loadBaseClass('core/log/node/Exception');
         $this->addNode(new core\log\node\Exception($exception));
 

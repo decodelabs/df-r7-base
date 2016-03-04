@@ -117,7 +117,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 
         try {
             $response = $this->_dispatchNode($request, $command);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             while(ob_get_level()) {
                 ob_end_clean();
             }
@@ -126,7 +126,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 
             try {
                 $response = $this->_dispatchNode(new arch\Request('error/'));
-            } catch(\Exception $f) {
+            } catch(\Throwable $f) {
                 throw $e;
             }
         }

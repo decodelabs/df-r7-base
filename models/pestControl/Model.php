@@ -24,7 +24,7 @@ class Model extends axis\Model {
         return $this->missLog->logMiss($request, $message);
     }
 
-    public function logException(\Exception $exception, $request=null) {
+    public function logException(\Throwable $exception, $request=null) {
         return $this->errorLog->logException($exception, $request);
     }
 

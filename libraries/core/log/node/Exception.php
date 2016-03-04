@@ -13,7 +13,7 @@ class Exception implements core\log\IExceptionNode {
     protected $_stackCall;
     protected $_exception;
 
-    public function __construct(/*\Throwable*/ $exception) {
+    public function __construct(\Throwable $exception) {
         $this->_exception = $exception;
     }
 

@@ -25,7 +25,7 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function logException(/*\Throwable*/ $exception, $request=null) {
+    public function logException(\Throwable $exception, $request=null) {
         $this->_getModel()->logException($exception, $request);
         return $this;
     }

@@ -200,7 +200,7 @@ class Launchpad {
         throw new \ErrorException($errorMessage, 0, $errorNumber, $fileName, $lineNumber);
     }
 
-    public static function handleException(/*\Throwable*/ $e) {
+    public static function handleException(\Throwable $e) {
         try {
             if(self::$application) {
                 try {
@@ -209,11 +209,11 @@ class Launchpad {
                         ->render();
 
                     self::shutdown();
-                } catch(\Exception $g) {}
+                } catch(\Throwable $g) {}
             }
 
             self::_fatalError($e->__toString());
-        } catch(\Exception $f) {
+        } catch(\Throwable $f) {
             self::_fatalError($e->__toString()."\n\n\n".$f->__toString());
         }
     }

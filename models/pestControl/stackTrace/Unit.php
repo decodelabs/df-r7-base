@@ -20,7 +20,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('errorLogs', 'OneToMany', 'errorLog', 'stackTrace');
     }
 
-    public function logException(\Exception $e) {
+    public function logException(\Throwable $e) {
         $stackTrace = core\debug\StackTrace::fromException($e);
         return $this->logObject($stackTrace);
     }

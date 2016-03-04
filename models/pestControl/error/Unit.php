@@ -54,7 +54,7 @@ class Unit extends axis\unit\table\Base {
 
 
 // IO
-    public function logException(\Exception $e) {
+    public function logException(\Throwable $e) {
         return $this->logError(
             get_class($e),
             $e->getCode(),

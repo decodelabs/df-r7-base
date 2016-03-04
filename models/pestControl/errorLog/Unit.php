@@ -48,7 +48,7 @@ class Unit extends axis\unit\table\Base {
     }
 
 // IO
-    public function logException(\Exception $e, $request=null) {
+    public function logException(\Throwable $e, $request=null) {
         $error = $this->_model->error->logException($e);
         $mode = $this->context->getRunMode();
         $message = $e->getMessage();

@@ -319,7 +319,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         try {
             $response = $this->_dispatchNode($request);
             $response = $this->_normalizeResponse($response);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             while(ob_get_level()) {
                 ob_end_clean();
             }
@@ -332,7 +332,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 try {
                     $response = $this->_dispatchNode(new arch\Request('error/'));
                     $response = $this->_normalizeResponse($response);
-                } catch(\Exception $f) {
+                } catch(\Throwable $f) {
                     throw $e;
                 }
             }

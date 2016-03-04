@@ -9,44 +9,44 @@ use df;
 use df\core;
 
 class StackTrace implements IStackTrace, core\IDumpable {
-    
+
     use TLocationProvider;
-    
+
     protected $_calls = [];
 
-    public static function fromException(\Exception $e) {
+    public static function fromException(\Throwable $e) {
         return self::factory(0, $e->getTrace());
     }
-    
+
     public static function factory($rewind=0, array $data=null) {
-        if($data === null) { 
+        if($data === null) {
             $data = debug_backtrace();
         }
 
         $output = [];
-        
+
         while($rewind > 0) {
             $rewind--;
             array_shift($data);
         }
-        
+
         $last = array_shift($data);
         $last['fromFile'] = @$last['file'];
         $last['fromLine'] = @$last['line'];
-        
+
         foreach($data as $callData) {
             $callData['fromFile'] = @$callData['file'];
             $callData['fromLine'] = @$callData['line'];
             $callData['file'] = $last['fromFile'];
             $callData['line'] = $last['fromLine'];
-            
+
             $output[] = new StackCall($callData);
             $last = $callData;
         }
-        
+
         return new self($output);
     }
-    
+
     protected function __construct(array $calls=null) {
         if(!empty($calls)) {
             foreach($calls as $call) {
@@ -54,7 +54,7 @@ class StackTrace implements IStackTrace, core\IDumpable {
                     $this->_calls[] = $call;
                 }
             }
-            
+
             if(isset($this->_calls[0])) {
                 $this->_file = $this->_calls[0]->getFile();
                 $this->_line = $this->_calls[0]->getLine();
@@ -93,11 +93,11 @@ class StackTrace implements IStackTrace, core\IDumpable {
     public function getCalls() {
         return $this->_calls;
     }
-    
+
     public function getFirstCall() {
         return $this->_calls[0];
     }
-    
+
 // Debug node
     public function getNodeTitle() {
         return 'Stack Trace';
@@ -106,12 +106,12 @@ class StackTrace implements IStackTrace, core\IDumpable {
     public function getNodeType() {
         return 'stackTrace';
     }
-    
+
     public function isCritical() {
         return false;
     }
-    
-    
+
+
 // Helpers
     public function stripDebugEntries() {
         foreach($this->_calls as $call) {
@@ -122,22 +122,22 @@ class StackTrace implements IStackTrace, core\IDumpable {
                     array_shift($this->_calls);
                     continue 2;
             }
-            
+
             break;
         }
-        
+
         return $this;
     }
-    
-    
+
+
 // Dumpable
     public function getDumpProperties() {
         $output = [];
-        
+
         foreach($this->_calls as $call) {
             $output[] = new core\debug\dumper\Property(null, $call);
         }
-        
+
         return $output;
     }
 }
