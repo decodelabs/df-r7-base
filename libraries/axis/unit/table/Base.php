@@ -28,9 +28,9 @@ abstract class Base implements
     const BROADCAST_HOOK_EVENTS = true;
     const DEFAULT_RECORD_CLASS = 'df\\opal\\record\\Base';
 
-    protected $_defaultSearchFields = null;
-    protected $_defaultOrderableFields = null;
-    protected $_defaultOrder = null;
+    const ORDERABLE_FIELDS = null;
+    const DEFAULT_ORDER = null;
+    const SEARCH_FIELDS = null;
 
     private $_recordClass;
     private $_schema;
@@ -244,11 +244,11 @@ abstract class Base implements
 
     public function applyPagination(opal\query\IPaginator $paginator) {
         $schema = $this->getUnitSchema();
-        $default = $this->_defaultOrder;
+        $default = static::DEFAULT_ORDER;
         $fields = [];
 
-        if(!empty($this->_defaultOrderableFields)) {
-            $fields = $this->_defaultOrderableFields;
+        if(!empty(static::ORDERABLE_FIELDS)) {
+            $fields = static::ORDERABLE_FIELDS;
 
             if(!is_array($fields)) {
                 $fields = [(string)$fields];
@@ -388,18 +388,20 @@ abstract class Base implements
     }
 
     public function getDefaultSearchFields() {
-        $fields = $this->_defaultSearchFields;
+        static $fields;
 
-        if(empty($fields)) {
-            $schema = $this->getUnitSchema();
-            $nameField = $this->getRecordNameField();
-            $fields = [$nameField => 2];
+        if(!isset($fields)) {
+            $fields = static::SEARCH_FIELDS;
 
-            if($nameField != 'id' && $schema->hasField('id')) {
-                $fields['id'] = 10;
+            if(empty($fields)) {
+                $schema = $this->getUnitSchema();
+                $nameField = $this->getRecordNameField();
+                $fields = [$nameField => 2];
+
+                if($nameField != 'id' && $schema->hasField('id')) {
+                    $fields['id'] = 10;
+                }
             }
-
-            $this->_defaultSearchFields = $fields;
         }
 
         return $fields;

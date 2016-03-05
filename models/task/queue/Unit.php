@@ -14,11 +14,11 @@ class Unit extends axis\unit\table\Base {
 
     const BROADCAST_HOOK_EVENTS = false;
 
-    protected $_defaultOrderableFields = [
+    const ORDERABLE_FIELDS = [
         'request', 'environmentMode', 'priority', 'queueDate', 'lockDate'
     ];
 
-    protected $_defaultOrder = 'queueDate DESC';
+    const DEFAULT_ORDER = 'queueDate DESC';
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');

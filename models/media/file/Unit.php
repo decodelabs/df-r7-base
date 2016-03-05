@@ -15,17 +15,17 @@ class Unit extends axis\unit\table\Base {
 
     const NAME_FIELD = 'fileName';
 
-    protected $_defaultSearchFields = [
+    const SEARCH_FIELDS = [
         'slug' => 5,
         'fileName' => 4,
         'id' => 10
     ];
 
-    protected $_defaultOrderableFields = [
+    const ORDERABLE_FIELDS = [
         'slug', 'creationDate', 'fileName'
     ];
 
-    protected $_defaultOrder = 'slug ASC';
+    const DEFAULT_ORDER = 'slug ASC';
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');

@@ -13,16 +13,16 @@ use df\opal;
 
 class Unit extends axis\unit\table\Base {
 
-    protected $_defaultSearchFields = [
+    const SEARCH_FIELDS = [
         'mode' => 1,
         'request' => 4
     ];
 
-    protected $_defaultOrderableFields = [
+    const ORDERABLE_FIELDS = [
         'mode', 'request', 'seen', 'botsSeen', 'firstSeen', 'lastSeen'
     ];
 
-    protected $_defaultOrder = ['lastSeen DESC', 'seen DESC'];
+    const DEFAULT_ORDER = ['lastSeen DESC', 'seen DESC'];
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');

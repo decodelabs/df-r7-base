@@ -16,7 +16,7 @@ class Unit extends axis\unit\table\Base {
 
     const BROADCAST_HOOK_EVENTS = false;
 
-    protected $_defaultSearchFields = [
+    const SEARCH_FIELDS = [
         'name' => 3,
         'email' => 1
     ];

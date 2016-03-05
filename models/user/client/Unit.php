@@ -16,19 +16,19 @@ class Unit extends axis\unit\table\Base {
 
     const NAME_FIELD = 'fullName';
 
-    protected $_defaultSearchFields = [
+    const SEARCH_FIELDS = [
         'fullName' => 5,
         'nickName' => 3,
         'email' => 1,
         'id' => 10
     ];
 
-    protected $_defaultOrderableFields = [
+    const ORDERABLE_FIELDS = [
         'email', 'fullName', 'nickName', 'status', 'joinDate',
         'loginDate', 'timezone', 'country', 'language'
     ];
 
-    protected $_defaultOrder = 'fullName';
+    const DEFAULT_ORDER = 'fullName';
 
     protected function createSchema($schema) {
         $schema->addField('id', 'AutoId', 8);

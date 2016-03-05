@@ -29,11 +29,11 @@ class Unit extends axis\unit\table\Base {
         ]
     ];
 
-    protected $_defaultOrderableFields = [
+    const ORDERABLE_FIELDS = [
         'name', 'signifier'
     ];
 
-    protected $_defaultOrder = 'name ASC';
+    const DEFAULT_ORDER = 'name ASC';
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');

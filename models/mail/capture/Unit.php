@@ -12,16 +12,16 @@ use df\flow;
 
 class Unit extends axis\unit\table\Base {
 
-    protected $_defaultSearchFields = [
+    const SEARCH_FIELDS = [
         'subject' => 10,
         'body' => 1
     ];
 
-    protected $_defaultOrderableFields = [
+    const ORDERABLE_FIELDS = [
         'from', 'to', 'subject', 'date', 'isPrivate', 'environmentMode'
     ];
 
-    protected $_defaultOrder = 'date DESC';
+    const DEFAULT_ORDER = 'date DESC';
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');

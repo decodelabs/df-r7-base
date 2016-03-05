@@ -12,7 +12,7 @@ use df\axis;
 
 class Unit extends axis\unit\table\Base {
 
-    protected $_defaultSearchFields = [
+    const SEARCH_FIELDS = [
         'request' => 4,
         'message' => 1
     ];

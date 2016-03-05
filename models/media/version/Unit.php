@@ -15,11 +15,11 @@ class Unit extends axis\unit\table\Base {
 
     const NAME_FIELD = 'fileName';
 
-    protected $_defaultOrderableFields = [
+    const ORDERABLE_FIELDS = [
         'number', 'fileName', 'fileSize', 'contentType', 'hash', 'creationDate', 'purgeDate'
     ];
 
-    protected $_defaultOrder = 'creationDate DESC';
+    const DEFAULT_ORDER = 'creationDate DESC';
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');

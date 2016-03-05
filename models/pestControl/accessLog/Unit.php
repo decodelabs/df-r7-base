@@ -12,7 +12,7 @@ use df\axis;
 
 class Unit extends axis\unit\table\Base {
 
-    protected $_defaultSearchFields = [
+    const SEARCH_FIELDS = [
         'code' => [
             'operator' => '=',
             'weight' => 5
@@ -21,11 +21,11 @@ class Unit extends axis\unit\table\Base {
         'message' => 2
     ];
 
-    protected $_defaultOrderableFields = [
+    const ORDERABLE_FIELDS = [
         'date', 'mode', 'code', 'request', 'seen'
     ];
 
-    protected $_defaultOrder = 'date DESC';
+    const DEFAULT_ORDER = 'date DESC';
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
