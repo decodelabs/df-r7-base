@@ -13,8 +13,7 @@ use df\aura;
 abstract class Wizard extends Form {
 
     const DEFAULT_EVENT = 'next';
-
-    protected $_sections = [];
+    const SECTIONS = [];
 
     protected function createUi() {
         $section = $this->getCurrentSection();
@@ -30,7 +29,7 @@ abstract class Wizard extends Form {
     }
 
     public function getCurrentSection() {
-        if(empty($this->_sections)) {
+        if(empty(static::SECTIONS)) {
             throw new LogicException(
                 'No wizard sections have been defined'
             );
@@ -39,9 +38,7 @@ abstract class Wizard extends Form {
         $section = $this->getStore('section');
 
         if(!$section) {
-            reset($this->_sections);
-            $section = current($this->_sections);
-            $this->setSection($section);
+            $this->setSection(array_values(static::SECTIONS)[0]);
         }
 
         return $section;
@@ -68,7 +65,7 @@ abstract class Wizard extends Form {
         $current = $this->getCurrentSection();
         $last = null;
 
-        foreach($this->_sections as $section) {
+        foreach(static::SECTIONS as $section) {
             if($current == $section) {
                 return $last;
             }
@@ -83,7 +80,7 @@ abstract class Wizard extends Form {
         $current = $this->getCurrentSection();
         $found = false;
 
-        foreach($this->_sections as $section) {
+        foreach(static::SECTIONS as $section) {
             if($found) {
                 return $section;
             } else if($current == $section) {
@@ -98,7 +95,7 @@ abstract class Wizard extends Form {
         if($section === null) {
             $output = [];
 
-            foreach($this->_sections as $section) {
+            foreach(static::SECTIONS as $section) {
                 $output[$section] = $this->getStore('data.'.$section);
             }
 

@@ -85,9 +85,10 @@ trait TScaffold_RecordDataProvider {
     //const CAN_EDIT = true;
     //const CAN_DELETE = true;
 
+    //const DETAILS_FIELDS = [];
+
     protected $_record;
     protected $_recordAction;
-    protected $_recordDetailsFields = [];
 
     private $_recordNameKey;
 
@@ -346,7 +347,12 @@ trait TScaffold_RecordDataProvider {
             $fields = [];
         }
 
-        $fields = array_merge($this->_recordDetailsFields, $fields);
+        if(defined('static::DETAILS_FIELDS') && is_array(static::DETAILS_FIELDS)) {
+            $fields = array_merge(static::DETAILS_FIELDS, $fields);
+        } else if(defined('static::LIST_FIELDS') && is_array(static::LIST_FIELDS)) {
+            $fields = array_merge(static::LIST_FIELDS, $fields);
+        }
+
         $record = array_shift($args);
 
         return $this->generateAttributeList($fields, $record);
@@ -595,7 +601,7 @@ trait TScaffold_RecordDataProvider {
 // Record list provider
 trait TScaffold_RecordListProvider {
 
-    protected $_recordListFields = [];
+    // const LIST_FIELDS = [];
 
     public function queryRecordList($mode, array $fields=null) {
         $output = $this->getRecordAdapter()->select($fields);
@@ -631,7 +637,10 @@ trait TScaffold_RecordListProvider {
             $fields = [];
         }
 
-        $fields = array_merge($this->_recordListFields, $fields);
+        if(defined('static::LIST_FIELDS') && is_array(static::LIST_FIELDS)) {
+            $fields = array_merge(static::LIST_FIELDS, $fields);
+        }
+
         $hasActions = false;
 
         foreach($fields as $key => $val) {
@@ -689,23 +698,26 @@ trait TScaffold_RecordListProvider {
 
 trait TScaffold_SectionProvider {
 
-    protected $_sections = null;
-    private $_sectionsNormalized = false;
+    // const SECTIONS = [];
+
+    private $_sections = null;
     private $_sectionItemCounts = null;
 
     protected function _getSections() {
         if($this->_sections === null) {
-            $this->_sections = $this->generateSections();
-
-            if(!is_array($this->_sections) || empty($this->_sections)) {
-                $this->_sections = ['details'];
+            if(defined('static::SECTIONS') && !empty(static::SECTIONS)) {
+                $definition = static::SECTIONS;
+            } else {
+                $definition = $this->generateSections();
             }
-        }
 
-        if(!$this->_sectionsNormalized) {
+            if(!is_array($definition) || empty($definition)) {
+                $definition = ['details'];
+            }
+
             $sections = [];
 
-            foreach($this->_sections as $key => $value) {
+            foreach($definition as $key => $value) {
                 if(is_int($key) && is_string($value)) {
                     $key = $value;
                     $value = null;

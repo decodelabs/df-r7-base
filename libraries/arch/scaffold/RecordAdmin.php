@@ -42,19 +42,6 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
     const CAN_SEARCH = true;
 
-    protected function __construct(arch\IContext $context) {
-        parent::__construct($context);
-
-        if(empty($this->_recordDetailsFields)) {
-            $this->_recordDetailsFields = $this->_recordListFields;
-
-            foreach($this->_recordDetailsFields as $key => $value) {
-                if($key === 'actions' || $value === 'actions') {
-                    unset($this->_recordDetailsFields[$key]);
-                }
-            }
-        }
-    }
 
 // Nodes
     public function indexHtmlNode() {
