@@ -803,9 +803,9 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
 
 // Rewrite
-    public function rewriteQueryToPath($keys) {
+    public function rewriteQueryToPath(...$keys) {
         $optional = [];
-        $keys = $this->_normalizeKeys(func_get_args(), $optional);
+        $keys = $this->_normalizeKeys($keys, $optional);
         $path = $this->getPath();
         $query = $this->getQuery();
 
@@ -825,9 +825,9 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return $this;
     }
 
-    public function rewritePathToQuery($rootCount, $keys) {
+    public function rewritePathToQuery($rootCount, ...$keys) {
         $optional = [];
-        $keys = $this->_normalizeKeys(array_slice(func_get_args(), 1), $optional);
+        $keys = $this->_normalizeKeys($keys, $optional);
         $path = $this->getPath();
         $query = $this->getQuery();
         $parts = $path->slice((int)$rootCount);
@@ -843,7 +843,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return $this;
     }
 
-    protected function _normalizeKeys($keys, array &$optional) {
+    protected function _normalizeKeys(array $keys, array &$optional) {
         $output = [];
         $optional = [];
 

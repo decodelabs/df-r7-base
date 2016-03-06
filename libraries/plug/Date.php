@@ -10,7 +10,7 @@ use df\core;
 use df\mint;
 
 class Date implements core\ISharedHelper {
-    
+
     use core\TSharedHelper;
 
     public function __invoke($date, $timezone=null) {
@@ -18,7 +18,7 @@ class Date implements core\ISharedHelper {
     }
 
     public function __call($method, array $args) {
-        return call_user_func_array([$this->now(), $method], $args);
+        return $this->now()->{$method}(...$args);
     }
 
     public function now() {

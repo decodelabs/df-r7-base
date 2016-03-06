@@ -103,8 +103,8 @@ trait TExtendedArrayInterchange {
 interface IValueMap {
     public function set($key, $value);
     public function get($key, $default=null);
-    public function has($key);
-    public function remove($key);
+    public function has(...$keys);
+    public function remove(...$keys);
     public function importFrom(IValueMap $source, array $fields);
 }
 
@@ -365,7 +365,7 @@ trait THelperProvider {
             );
         }
 
-        return call_user_func_array($helper, $args);
+        return $helper(...$args);
     }
 
     public function getHelper($name, $returnNull=false) {
@@ -655,7 +655,7 @@ trait TContextProxy {
 
     public function __call($method, $args) {
         if($this->context) {
-            return call_user_func_array([$this->context, $method], $args);
+            return $this->context->{$method}(...$args);
         }
     }
 
@@ -708,17 +708,13 @@ if(!df\Launchpad::IS_COMPILED) {
 
 
 // Debug
-function qDump() {
+function qDump(...$args) {
     while(ob_get_level()) {
         ob_end_clean();
     }
 
-    $count = func_num_args();
-
-    if($count > 1) {
-        $args = func_get_args();
-    } else if($count == 1) {
-        $args = func_get_arg(0);
+    if(count($args) == 1) {
+        $args = array_shift($args);
     }
 
     if($count) {
@@ -728,26 +724,26 @@ function qDump() {
     df\Launchpad::benchmark();
 }
 
-function stub() {
+function stub(...$args) {
     return df\Launchpad::getDebugContext()->addStub(
-            func_get_args(),
+            $args,
             core\debug\StackCall::factory(1),
             true
         )
         ->render();
 }
 
-function stubQuiet() {
+function stubQuiet(...$args) {
     return df\Launchpad::getDebugContext()->addStub(
-            func_get_args(),
+            $args,
             core\debug\StackCall::factory(1),
             false
         );
 }
 
-function dump($arg1) {
+function dump(...$args) {
     return df\Launchpad::getDebugContext()->addDumpList(
-            func_get_args(),
+            $args,
             core\debug\StackCall::factory(1),
             false,
             true
@@ -755,18 +751,18 @@ function dump($arg1) {
         ->render();
 }
 
-function dumpQuiet($arg1) {
+function dumpQuiet(...$args) {
     return df\Launchpad::getDebugContext()->addDumpList(
-            func_get_args(),
+            $args,
             core\debug\StackCall::factory(1),
             false,
             false
         );
 }
 
-function dumpDeep($arg1) {
+function dumpDeep(...$args) {
     return df\Launchpad::getDebugContext()->addDumpList(
-            func_get_args(),
+            $args,
             core\debug\StackCall::factory(1),
             true,
             true
@@ -774,9 +770,9 @@ function dumpDeep($arg1) {
         ->render();
 }
 
-function dumpDeepQuiet($arg1) {
+function dumpDeepQuiet(...$args) {
     return df\Launchpad::getDebugContext()->addDumpList(
-            func_get_args(),
+            $args,
             core\debug\StackCall::factory(1),
             true,
             false

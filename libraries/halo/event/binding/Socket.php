@@ -11,7 +11,7 @@ use df\halo;
 use df\link;
 
 class Socket extends Base implements halo\event\ISocketBinding {
-    
+
     use halo\event\TTimeoutBinding;
     use halo\event\TIoBinding;
 
@@ -56,7 +56,7 @@ class Socket extends Base implements halo\event\ISocketBinding {
             return;
         }
 
-        $this->handler->invokeArgs([$this->socket, $this]);
+        $this->handler->invoke($this->socket, $this);
 
         if(!$this->isPersistent) {
             $this->dispatcher->removeSocketBinding($this);
@@ -71,7 +71,7 @@ class Socket extends Base implements halo\event\ISocketBinding {
         }
 
         if($this->timeoutHandler) {
-            $this->timeoutHandler->invokeArgs([$this->socket, $this]);
+            $this->timeoutHandler->invoke($this->socket, $this);
         }
 
         return $this;

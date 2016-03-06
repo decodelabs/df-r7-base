@@ -64,7 +64,7 @@ abstract class Base extends iris\processor\Base implements flex\latex\IPackage {
             );
         }
 
-        return call_user_func_array([$this, $func], $args);
+        return $this->{$func}(...$args);
     }
 
     public function parseEnvironment($name) {
@@ -76,7 +76,7 @@ abstract class Base extends iris\processor\Base implements flex\latex\IPackage {
             );
         }
 
-        return call_user_func_array([$this, $func], []);
+        return $this->{$func}();
     }
     */
 }

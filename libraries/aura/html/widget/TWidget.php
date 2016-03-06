@@ -827,39 +827,16 @@ trait TWidget_NavigationEntryController {
         return $this->_showDescriptions;
     }
 
-    public function setEntries($entries) {
+    public function setEntries(...$entries) {
         $this->_entries->clear();
-        return call_user_func_array([$this, 'addEntries'], func_get_args());
+        return $this->addEntries(...$entries);
     }
 
-    public function addLinks($entries) {
-        return call_user_func_array([$this, 'addEntries'], func_get_args());
+    public function addLinks(...$entries) {
+        return $this->addEntries(...$entries);
     }
 
-    public function addEntries($entries) {
-        if(func_num_args() > 1) {
-            $entries = func_get_args();
-        } else if((is_string($entries) && strlen($entries) > 1)
-        || $entries instanceof core\uri\IUrl) {
-            try {
-                $entries = arch\navigation\menu\Base::factory($this->_context, $entries);
-            } catch(arch\navigation\SourceNotFoundException $e) {
-                $entries = null;
-            }
-        }
-
-        if($entries instanceof arch\navigation\IEntryListGenerator) {
-            $entries = $entries->generateEntries();
-        }
-
-        if($entries instanceof arch\navigation\IEntryList) {
-            $entries = $entries->toArray();
-        }
-
-        if(!is_array($entries)) {
-            $entries = func_get_args();
-        }
-
+    public function addEntries(...$entries) {
         foreach($entries as $entry) {
             $this->addEntry($entry);
         }
@@ -868,13 +845,23 @@ trait TWidget_NavigationEntryController {
     }
 
     public function addEntry($entry) {
+        if($entry instanceof arch\navigation\IEntryListGenerator) {
+            $entry = $entry->generateEntries();
+        }
+
+        if($entry instanceof arch\navigation\IEntryList) {
+            return $this->addEntries(...$entry->toArray());
+        } else if(is_array($entry)) {
+            return $this->addEntries(...$entry);
+        }
+
+
         if($entry instanceof IWidgetProxy) {
             $entry = $entry->toWidget();
         }
 
-        if(is_array($entry)) {
-            return $this->addEntries($entry);
-        } else if($entry instanceof arch\navigation\entry\Void) {
+
+        if($entry instanceof arch\navigation\entry\Void) {
             return $this;
         } else if($entry instanceof ILinkWidget
         || $entry instanceof arch\navigation\entry\Link) {
@@ -883,8 +870,13 @@ trait TWidget_NavigationEntryController {
         || $entry instanceof arch\navigation\entry\Menu) {
             $this->addMenu($entry);
         } else if($entry instanceof arch\navigation\entry\Spacer
-        || (is_string($entry))) {
+        || (is_string($entry) && strlen($entry) == 1)) {
             $this->addSpacer();
+        } else if(is_string($entry) || $entry instanceof core\uri\IUrl) {
+            try {
+                $entry = arch\navigation\menu\Base::factory($this->_context, $entry);
+                return $this->addEntries($entry);
+            } catch(arch\navigation\SourceNotFoundException $e) {}
         }
 
         return $this;

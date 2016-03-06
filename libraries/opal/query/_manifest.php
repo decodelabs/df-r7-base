@@ -61,8 +61,8 @@ interface IInitiator extends ITransactionAware {
 
     public function from($sourceAdapter, $alias=null);
     public function fromUnion();
-    public function fromSelect($field1=null);
-    public function fromSelectDistinct($field1=null);
+    public function fromSelect(...$fields);
+    public function fromSelectDistinct(...$fields);
     public function into($sourceAdapter, $alias=null);
     public function in($sourceAdapter, $alias=null);
 }
@@ -96,11 +96,11 @@ interface INestedComponent {
 
 // Entry point
 interface IEntryPoint {
-    public function select($field1=null);
-    public function selectDistinct($field1=null);
+    public function select(...$fields);
+    public function selectDistinct(...$fields);
     public function countAll();
     public function countAllDistinct();
-    public function union();
+    public function union(...$fields);
     public function fetch();
     public function insert($values);
     public function batchInsert($rows=[]);
@@ -172,8 +172,8 @@ interface IHavingClauseFactory extends IClauseFactory {
 // Query
 interface IQuery extends ISourceProvider, ITransactionAware, user\IAccessLock, core\lang\IChainable {
     public function getQueryType();
-    public function importBlock($name);
-    public function importRelationBlock($relationField, $name);
+    public function importBlock($name, ...$args);
+    public function importRelationBlock($relationField, $name, ...$args);
 }
 
 interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
@@ -217,15 +217,15 @@ interface IJoinProviderQuery extends IQuery {
 }
 
 interface IJoinableQuery extends IJoinProviderQuery {
-    public function join($field1=null);
-    public function joinRelation($relationField, $field1=null);
-    public function beginJoinRelation($relationField, $field1=null);
-    public function leftJoin($field1=null);
-    public function leftJoinRelation($relationField, $field1=null);
-    public function beginLeftJoinRelation($relationField, $field1=null);
-    public function rightJoin($field1=null);
-    public function rightJoinRelation($relationField, $field1=null);
-    public function beginRightJoinRelation($relationField, $field1=null);
+    public function join(...$fields);
+    public function joinRelation($relationField, ...$fields);
+    public function beginJoinRelation($relationField, ...$fields);
+    public function leftJoin(...$fields);
+    public function leftJoinRelation($relationField, ...$fields);
+    public function beginLeftJoinRelation($relationField, ...$fields);
+    public function rightJoin(...$fields);
+    public function rightJoinRelation($relationField, ...$fields);
+    public function beginRightJoinRelation($relationField, ...$fields);
     public function addJoin(IJoinQuery $join);
 }
 
@@ -249,22 +249,22 @@ interface IAttachProviderQuery extends IReadQuery {
 }
 
 interface IRelationAttachableQuery extends IAttachProviderQuery {
-    public function attachRelation($relationField);
-    public function selectAttachRelation($relationField);
+    public function attachRelation($relationField, ...$fields);
+    public function selectAttachRelation($relationField, ...$fields);
     public function fetchAttachRelation($relationField);
 }
 
 interface IAttachableQuery extends IRelationAttachableQuery {
-    public function attach();
-    public function selectAttach();
+    public function attach(...$fields);
+    public function selectAttach(...$fields);
     public function fetchAttach();
 }
 
 interface IPopulatableQuery extends IQuery {
-    public function populate($field1);
-    public function populateSelect($populateField, $targetField1=null);
+    public function populate(...$fields);
+    public function populateSelect($populateField, ...$fields);
     public function populateSome($field);
-    public function populateSelectSome($populateField, $targetField1=null);
+    public function populateSelectSome($populateField, ...$fields);
     public function addPopulate(IPopulateQuery $populate);
     public function getPopulate($fieldName);
     public function getPopulates();
@@ -272,7 +272,7 @@ interface IPopulatableQuery extends IQuery {
 }
 
 interface ICombinableQuery extends IQuery {
-    public function combine($field1);
+    public function combine(...$fields);
     public function addCombine($name, ICombineQuery $combine);
     public function getCombines();
     public function clearCombines();
@@ -291,13 +291,13 @@ interface ISearchableQuery extends IReadQuery {
 }
 
 interface IGroupableQuery extends IReadQuery {
-    public function groupBy($field1);
+    public function groupBy(...$fields);
     public function getGroupFields();
     public function clearGroupFields();
 }
 
 interface IOrderableQuery extends IQuery {
-    public function orderBy($field1);
+    public function orderBy(...$fields);
     public function setOrderDirectives(array $directives);
     public function getOrderDirectives();
     public function hasOrderDirectives();
@@ -356,7 +356,7 @@ interface IJoinQuery extends
     const LEFT = 1;
     const RIGHT = 2;
 
-    public function addOutputFields($fields);
+    public function addOutputFields(string ...$fields);
     public function getType();
     public function isConstraint($flag=null);
     public function endJoin();
@@ -390,13 +390,13 @@ interface ICombineQuery extends
     IParentQueryAware,
     INestedComponent {
 
-    public function setFields($field1);
-    public function addFields($field1);
+    public function setFields(...$fields);
+    public function addFields(...$fields);
     public function getFields();
     public function removeField($name);
     public function clearFields();
 
-    public function nullOn($field);
+    public function nullOn(...$fields);
     public function getNullFields();
     public function removeNullField($field);
     public function clearNullFields();
@@ -476,7 +476,7 @@ interface ISelectQuery extends
     ILimitableQuery,
     IOffsettableQuery,
     IPageableQuery {
-    public function addOutputFields($fields);
+    public function addOutputFields(string ...$fields);
     public function toList($field1, $field2=null);
     public function toValue($valField=null);
 }
@@ -502,8 +502,8 @@ interface IUnionQuery extends
     ILimitableQuery,
     IOffsettableQuery,
     IPageableQuery {
-    public function with($field1=null);
-    public function withAll($field1=null);
+    public function with(...$fields);
+    public function withAll(...$fields);
     public function addQuery(IUnionSelectQuery $query);
     public function getQueries();
 }
@@ -512,8 +512,8 @@ interface IUnionSelectQuery extends ISelectQuery {
     public function isUnionDistinct($flag=null);
 
     public function endSelect();
-    public function with($field1=null);
-    public function withAll($field1=null);
+    public function with(...$fields);
+    public function withAll(...$fields);
 }
 
 
@@ -579,8 +579,8 @@ interface IBatchInsertQuery extends IDataInsertQuery {
  */
 interface IDataUpdateQuery extends IWriteQuery, ILocationalQuery {
     public function set($field, $value=null);
-    public function express($field, $element1);
-    public function beginExpression($field, $element1);
+    public function express($field, ...$elements);
+    public function beginExpression($field, ...$elements);
     public function expressCorrelation($field, $targetField);
     public function getValues();
     public function getPreparedValues();
@@ -995,9 +995,9 @@ interface IExpression {
     public function getElements();
 
     public function op($operator);
-    public function group($element1);
-    public function express($element1);
-    public function beginExpression($element1);
+    public function group(...$elements);
+    public function express(...$elements);
+    public function beginExpression(...$elements);
     public function correlate($targetField);
     public function isExpectingValue();
     public function addExpression(IExpression $expression);
@@ -1037,12 +1037,12 @@ interface ISearchController extends IField {
 
 // Paginator
 interface IPaginator extends core\collection\IOrderablePaginator {
-    public function setOrderableFields($field1);
-    public function addOrderableFields($field1);
+    public function setOrderableFields(...$fields);
+    public function addOrderableFields(...$fields);
     public function getOrderableFields();
     //public function getOrderableFieldNames();
 
-    public function setDefaultOrder($field1);
+    public function setDefaultOrder(...$fields);
     public function getOrderDirectives();
     public function getOrderString();
     public function getFirstOrderDirective();

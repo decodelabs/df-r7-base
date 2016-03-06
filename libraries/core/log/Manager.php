@@ -36,12 +36,9 @@ class Manager implements IManager {
 
 
 
-    public function swallow($block) {
-        $args = func_get_args();
-        array_shift($args);
-
+    public function swallow($block, ...$args) {
         try {
-            core\lang\CallbackArgs($block, $args);
+            core\lang\Callback($block, ...$args);
             return true;
         } catch(\Exception $e) {
             $this->logException($e);

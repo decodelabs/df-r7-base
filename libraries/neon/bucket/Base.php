@@ -57,7 +57,7 @@ class Base implements IBucket {
     }
 
     public function __construct() {
-        $this->setAcceptTypes($this->_acceptTypes);
+        $this->setAcceptTypes(...$this->_acceptTypes);
     }
 
     public function getName() {

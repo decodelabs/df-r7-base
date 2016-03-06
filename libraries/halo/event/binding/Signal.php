@@ -10,7 +10,7 @@ use df\core;
 use df\halo;
 
 class Signal extends Base implements halo\event\ISignalBinding {
-    
+
     public $signals = [];
 
     public function __construct(halo\event\IDispatcher $dispatcher, $id, $isPersistent, array $signals, $callback) {
@@ -44,7 +44,7 @@ class Signal extends Base implements halo\event\ISignalBinding {
             return;
         }
 
-        $this->handler->invokeArgs([$this->signals[$number], $this]);
+        $this->handler->invoke($this->signals[$number], $this);
 
         if(!$this->isPersistent) {
             $this->dispatcher->removeSignalBinding($this);

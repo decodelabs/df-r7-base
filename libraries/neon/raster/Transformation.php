@@ -50,8 +50,8 @@ class Transformation implements ITransformation {
         return new self($transformation);
     }
 
-    public function __construct() {
-        foreach(func_get_args() as $arg) {
+    public function __construct(...$args) {
+        foreach($args as $arg) {
             if($arg instanceof IImage) {
                 $this->setImage($arg);
             } else if(is_string($arg)) {
@@ -141,7 +141,7 @@ class Transformation implements ITransformation {
 
         foreach($this->_transformations as $callback) {
             if(method_exists($this->_image, $callback[0])) {
-                call_user_func_array([$this->_image, $callback[0]], $callback[1]);
+                $this->_image->{$callback[0]}(...$callback[1]);
             }
         }
 
@@ -151,82 +151,82 @@ class Transformation implements ITransformation {
 
 // Manipulations
     public function resize($width, $height=null, $mode=IDimension::FIT) {
-        return $this->_addTransformation('resize', func_get_args());
+        return $this->_addTransformation('resize', [$width, $height, $mode]);
     }
 
     public function crop($x, $y, $width, $height) {
-        return $this->_addTransformation('crop', func_get_args());
+        return $this->_addTransformation('crop', [$x, $y, $width, $height]);
     }
 
     public function cropZoom($width, $height) {
-        return $this->_addTransformation('cropZoom', func_get_args());
+        return $this->_addTransformation('cropZoom', [$width, $height]);
     }
 
     public function frame($width, $height=null, $color=null) {
-        return $this->_addTransformation('frame', func_get_args());
+        return $this->_addTransformation('frame', [$width, $height, $color]);
     }
 
     public function rotate($angle, $background=null) {
-        return $this->_addTransformation('rotate', func_get_args());
+        return $this->_addTransformation('rotate', [$angle, $background]);
     }
 
     public function mirror() {
-        return $this->_addTransformation('mirror', func_get_args());
+        return $this->_addTransformation('mirror');
     }
 
     public function flip() {
-        return $this->_addTransformation('flip', func_get_args());
+        return $this->_addTransformation('flip');
     }
 
 
 // Filters
     public function brightness($brightness) {
-        return $this->_addTransformation('brightness', func_get_args());
+        return $this->_addTransformation('brightness', [$brightness]);
     }
 
     public function contrast($contrast) {
-        return $this->_addTransformation('contrast', func_get_args());
+        return $this->_addTransformation('contrast', [$contrast]);
     }
 
     public function greyscale() {
-        return $this->_addTransformation('greyscale', func_get_args());
+        return $this->_addTransformation('greyscale');
     }
 
     public function colorize($color, $alpha=100) {
-        return $this->_addTransformation('colorize', func_get_args());
+        return $this->_addTransformation('colorize', [$color, $alpha]);
     }
 
     public function invert() {
-        return $this->_addTransformation('invert', func_get_args());
+        return $this->_addTransformation('invert');
     }
 
     public function detectEdges() {
-        return $this->_addTransformation('detectEdges', func_get_args());
+        return $this->_addTransformation('detectEdges');
     }
 
     public function emboss() {
-        return $this->_addTransformation('emboss', func_get_args());
+        return $this->_addTransformation('emboss');
     }
 
     public function blur() {
-        return $this->_addTransformation('blur', func_get_args());
+        return $this->_addTransformation('blur');
     }
 
     public function gaussianBlur() {
-        return $this->_addTransformation('gaussianBlur', func_get_args());
+        return $this->_addTransformation('gaussianBlur');
     }
 
     public function removeMean() {
-        return $this->_addTransformation('removeMean', func_get_args());
+        return $this->_addTransformation('removeMean');
     }
 
     public function smooth($amount=50) {
-        return $this->_addTransformation('smooth', func_get_args());
+        return $this->_addTransformation('smooth', [$smooth]);
     }
 
 
 // Helpers
-    protected function _addTransformation($method, array $args) {
+    protected function _addTransformation($method, array $args=[]) {
         $this->_transformations[] = [$method, $args];
         return $this;
     }

@@ -17,20 +17,11 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
     protected $_children;
     protected $_context;
 
-    public function __construct(arch\IContext $context, $input=null) {
+    public function __construct(arch\IContext $context, ...$input) {
         parent::__construct($context);
 
         $this->_context = $context;
-
-        if(func_num_args() > 2) {
-            $input = array_slice(func_get_args(), 1);
-        }
-
-        if(!$input instanceof aura\html\IElementContent) {
-            $input = new aura\html\ElementContent($input, $this->getTag());
-        }
-
-        $this->_children = $input;
+        $this->_children = new aura\html\ElementContent($input, $this->getTag());
     }
 
     protected function _render() {
@@ -68,8 +59,8 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         return $this->_children->render();
     }
 
-    public function import($input) {
-        $this->_children->import($input);
+    public function import(...$input) {
+        $this->_children->import(...$input);
         return $this;
     }
 
@@ -105,12 +96,12 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         return $this->_children->get($index, $default);
     }
 
-    public function has($index) {
-        return $this->_children->has($index);
+    public function has(...$indexes) {
+        return $this->_children->has(...$indexes);
     }
 
-    public function remove($index) {
-        $this->_children->remove($index);
+    public function remove(...$indexes) {
+        $this->_children->remove(...$indexes);
         return $this;
     }
 
@@ -170,8 +161,8 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         return $this->_children->extractList($count);
     }
 
-    public function insert($value) {
-        $this->_children->insert($value);
+    public function insert(...$values) {
+        $this->_children->insert(...$values);
         return $this;
     }
 
@@ -179,8 +170,8 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         return $this->_children->pop();
     }
 
-    public function push($value) {
-        call_user_func_array([$this->_children, 'push'], func_get_args());
+    public function push(...$values) {
+        $this->_children->push(...$values);
         return $this;
     }
 
@@ -188,8 +179,8 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         return $this->_children->shift();
     }
 
-    public function unshift($value) {
-        call_user_func_array([$this->_children, 'unshift'], func_get_args());
+    public function unshift(...$values) {
+        $this->_children->unshift(...$values);
         return $this;
     }
 
@@ -270,7 +261,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
             $method = '__invoke';
         }
 
-        $widget = call_user_func_array([$this->_context->html, $method], $args);
+        $widget = $this->_context->html->{$method}(...$args);
 
         if($add) {
             $this->push($widget);

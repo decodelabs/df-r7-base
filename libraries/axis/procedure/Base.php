@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 
 abstract class Base implements IProcedure {
-    
+
     use core\TContextProxy;
 
     public $values;
@@ -78,12 +78,10 @@ abstract class Base implements IProcedure {
         return $this->validator->getDataMap();
     }
 
-    public function execute() {
+    public function execute(...$args) {
         if(!$this->_isPrepared) {
             $this->prepare();
         }
-
-        $args = func_get_args();
 
         if(!method_exists($this, '_execute')) {
             throw new LogicException(
@@ -91,8 +89,7 @@ abstract class Base implements IProcedure {
             );
         }
 
-        call_user_func_array([$this, '_execute'], $args);
-
+        $this->_execute(...$args);
         return $this->isValid();
     }
 
@@ -109,6 +106,7 @@ abstract class Base implements IProcedure {
         $this->_prepareValidator();
         $this->_prepare();
         $this->_isPrepared = true;
+        return $this;
     }
 
     protected function _prepare() {}

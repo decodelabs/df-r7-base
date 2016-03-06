@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\neon\vector\svg;
 use df;
 use df\core;
 use df\neon;
-    
+
 
 
 // Base
@@ -19,7 +19,7 @@ class Shape implements core\IDumpable {
     use TAttributeModule;
     use TAttributeModule_Shape;
 
-    public static function factory($name, $arg1) {
+    public static function factory($name, ...$args) {
         $name = ucfirst($name);
 
         if($name == 'Rect') {
@@ -34,9 +34,7 @@ class Shape implements core\IDumpable {
             );
         }
 
-        $args = array_slice(func_get_args(), 1);
         $ref = new \ReflectionClass($class);
-
         return $ref->newInstanceArgs($args);
     }
 

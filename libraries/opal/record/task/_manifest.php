@@ -25,8 +25,8 @@ interface ITaskSet {
     public function delete(opal\record\IRecord $record);
 
     public function addRawQuery($id, opal\query\IWriteQuery $query);
-    public function addGenericTask($a, $b=null, $c=null);
-    public function after(ITask $task, $a, $b=null, $c=null);
+    public function addGenericTask(...$args);
+    public function after(ITask $task, ...$args);
     public function emitEventAfter(ITask $task, $entity, $action, array $data=null);
 
     public function addTask(ITask $task);

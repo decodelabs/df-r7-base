@@ -94,7 +94,7 @@ abstract class Base implements arch\IComponent {
         $this->_componentArgs = $args;
 
         if(method_exists($this, 'init')) {
-            call_user_func_array([$this, 'init'], $args);
+            $this->init(...$args);
         }
     }
 
@@ -119,7 +119,7 @@ abstract class Base implements arch\IComponent {
             );
         }
 
-        $output = call_user_func_array([$this, '_execute'], $this->_componentArgs);
+        $output = $this->_execute(...$this->_componentArgs);
 
         if($output instanceof aura\view\IDeferredRenderable) {
             $output->setRenderTarget($this->_renderTarget);
@@ -141,7 +141,7 @@ abstract class Base implements arch\IComponent {
             );
         }
 
-        $output = call_user_func_array([$this, '_execute'], $this->_componentArgs);
+        $output = $this->_execute(...$this->_componentArgs);
 
         if($this->view && $output instanceof aura\view\IDeferredRenderable) {
             $output->setRenderTarget($this->getRenderTarget());

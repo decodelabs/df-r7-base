@@ -31,7 +31,7 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     // Method
     public function setMethod($method);
     public function getMethod();
-    public function isMethod($method1);
+    public function isMethod(...$methods);
     public function isGet();
     public function isPost();
     public function isPut();
@@ -294,7 +294,7 @@ trait TStringResponse {
     }
 
     public function withHeaders($callback) {
-        core\lang\Callback::callArgs($callback, [$this->headers, $this]);
+        core\lang\Callback::call($callback, $this->headers, $this);
         return $this;
     }
 
@@ -444,7 +444,7 @@ interface IResponseHeaderCollection {
     public function hasErrorStatusCode();
     public function hasSuccessStatusCode();
     public function hasRedirectStatusCode();
-    public function hasStatusCode($code);
+    public function hasStatusCode(...$codes);
     public function setStatusMessage($message);
     public function getStatusMessage();
 

@@ -182,8 +182,8 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $this->_statusCode >= 300 && $this->_statusCode < 400;
     }
 
-    public function hasStatusCode($code) {
-        return in_array($this->_statusCode, func_get_args());
+    public function hasStatusCode(...$codes) {
+        return in_array($this->_statusCode, $codes);
     }
 
     public function setStatusMessage($message) {

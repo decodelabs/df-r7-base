@@ -44,7 +44,7 @@ interface IManager extends core\IManager, mesh\event\IEmitter {
     public function regenerateKeyring();
     public function instigateGlobalKeyringRegeneration();
 
-    public function isA($signifier);
+    public function isA(...$signifiers);
     public function canAccess($lock, $action=null, $linkTo=false);
     public function getAccessLock($lock);
     public function clearAccessLockCache();
@@ -114,7 +114,7 @@ interface IClient extends IClientDataObject {
     public function isLoggedIn();
     public function isBound();
     public function isConfirmed();
-    public function isA($signifier);
+    public function isA(...$signifiers);
 
     public function import(IClientDataObject $clientData);
     public function setKeyring(array $keyring);

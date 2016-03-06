@@ -58,17 +58,17 @@ interface IDocument extends IEntityCollection, core\IStringProvider {
 
 
 interface IAppClass extends core\IStringProvider {
-    const NO_OPERATIONS = 0; // = No operations allowed (0) 
-    const ERASE = 1; // = Erase allowed (0x1) 
-    const TRANSFORM = 2; // = Transform allowed (0x2) 
-    const COLOR_CHANGE = 4; // = Color change allowed (0x4) 
-    const LAYER_CHANGE = 8; // = Layer change allowed (0x8) 
+    const NO_OPERATIONS = 0; // = No operations allowed (0)
+    const ERASE = 1; // = Erase allowed (0x1)
+    const TRANSFORM = 2; // = Transform allowed (0x2)
+    const COLOR_CHANGE = 4; // = Color change allowed (0x4)
+    const LAYER_CHANGE = 8; // = Layer change allowed (0x8)
     const LINETYPE_CHANGE = 16; // = Linetype change allowed (0x10)
-    const LINETYPE_SCALE_CHANGE = 32; // = Linetype scale change allowed (0x20) 
+    const LINETYPE_SCALE_CHANGE = 32; // = Linetype scale change allowed (0x20)
     const VISIBILITY_CHANGE = 64; // = Visibility change allowed (0x40)
-    const NO_CLONING = 127; // = All operations except cloning allowed (0x7F) 
+    const NO_CLONING = 127; // = All operations except cloning allowed (0x7F)
     const CLONING = 128; // = Cloning allowed (0x80)
-    const ALL_OPERATIONS = 255; // = All operations allowed (0xFF) 
+    const ALL_OPERATIONS = 255; // = All operations allowed (0xFF)
     const FORMAT_PROXY = 32768; // = R13 format proxy (0x8000)
 
     public function setDxfName($name);
@@ -257,8 +257,8 @@ trait TTable {
         }
 
         $output .= sprintf(
-            " 2\n%s\n 70\n%s\n", 
-            $this->_name, 
+            " 2\n%s\n 70\n%s\n",
+            $this->_name,
             $this->_flags
         );
 
@@ -345,7 +345,7 @@ interface IViewControlTable extends ITable {
     const BACK_CLIPPING = 4; // = back clipping on
     const UCS_FOLLOW = 8; // = UCS Follow mode on
     const FRONT_CLIP_NOT_AT_EYE = 16; // = Front clip not at eye
-    
+
     public function setCenterPoint($vector);
     public function getCenterPoint();
     public function setTargetPoint($vector);
@@ -384,7 +384,7 @@ trait TViewControlTable {
         return $this;
     }
 
-    public function getCenterPoint() {        
+    public function getCenterPoint() {
         return $this->_centerPoint;
     }
 
@@ -601,7 +601,7 @@ interface IEntityCollection {
     public function newArc($centerPoint, $radius=null, $startAngle=null, $endAngle=null);
     public function newCircle($centerPoint, $radius=null);
     public function newLine($startPoint, $endPoint);
-    public function newPolyLine($vertices=null);
+    public function newPolyLine(...$points);
     public function newSolid($point1, $point2=null, $point3=null, $point4=null);
     public function newText($body, $point);
 }
@@ -674,12 +674,8 @@ trait TEntityCollection {
         return $output;
     }
 
-    public function newPolyLine($vertices=null) {
-        if(func_num_args() > 1) {
-            $vertices = func_get_args();
-        }
-
-        $this->addEntity($output = new neon\vector\dxf\entity\PolyLine($vertices));
+    public function newPolyLine(...$points) {
+        $this->addEntity($output = new neon\vector\dxf\entity\PolyLine($points));
         return $output;
     }
 
@@ -976,23 +972,23 @@ interface IPolyLineEntity extends IEntity, IDrawingEntity {
 }
 
 interface ISolidEntity extends IEntity, IDrawingEntity {
-    public function setPoints($point1, $point2=null, $point3=null, $point4=null);
+    public function setPoints($point1, $point2, $point3, $point4);
     public function getPoints();
-    
+
 }
 
 interface ITextEntity extends IEntity, IDrawingEntity, ITextProvider {
-    
+
     const H_LEFT = 0; // = Left;
-    const H_CENTER = 1; // = Center; 
+    const H_CENTER = 1; // = Center;
     const H_RIGHT = 2; // = Right
     const H_ALIGNED = 3; // = Aligned (if vertical alignment = 0)
     const H_MIDDLE = 4; // = Middle (if vertical alignment = 0)
     const H_FIT = 5; // = Fit (if vertical alignment = 0)
 
-    const V_BASELINE = 0; // = Baseline; 
-    const V_BOTTOM = 1; // = Bottom; 
-    const V_MIDDLE = 2; // = Middle; 
+    const V_BASELINE = 0; // = Baseline;
+    const V_BOTTOM = 1; // = Bottom;
+    const V_MIDDLE = 2; // = Middle;
     const V_TOP = 3; // = Top
 
     public function setBody($body);

@@ -449,13 +449,13 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
 
 // Styles
-    public function setStyles($styles) {
-        $this->getStyles()->clear()->import($styles);
+    public function setStyles(...$styles) {
+        $this->getStyles()->clear()->import(...$styles);
         return $this;
     }
 
-    public function addStyles($styles) {
-        $this->getStyles()->import($styles);
+    public function addStyles(...$styles) {
+        $this->getStyles()->import(...$styles);
         return $this;
     }
 
@@ -489,20 +489,20 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         return $this->_styles->get($key, $default);
     }
 
-    public function removeStyle($key) {
+    public function removeStyle(...$keys) {
         if($this->_styles) {
-            $this->_styles->remove($key);
+            $this->_styles->remove(...$keys);
         }
 
         return $this;
     }
 
-    public function hasStyle($key) {
+    public function hasStyle(...$keys) {
         if(!$this->_styles) {
             return false;
         }
 
-        return $this->_styles->has($key);
+        return $this->_styles->has(...$keys);
     }
 
 

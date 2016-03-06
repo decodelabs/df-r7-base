@@ -152,25 +152,17 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
 // Changes
-    public function hasChanged($field=null) {
-        if($field !== null) {
-            return array_key_exists($field, $this->_changes);
+    public function hasChanged(...$fields) {
+        if(empty($fields)) {
+            return !empty($this->_changes);
         }
 
-        return !empty($this->_changes);
-    }
-
-    public function hasAnyChanged($fields) {
-        if(!is_array($fields)) {
-            $fields = func_get_args();
-        }
-
-        foreach($fields as $field) {
+        foreach(core\collection\Util::leaves($fields) as $field) {
             if(empty($field)) {
                 continue;
             }
 
-            if($this->hasChanged($field)) {
+            if(array_key_exists($field, $this->_changes)) {
                 return true;
             }
         }
@@ -493,44 +485,39 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
 // Collection
-    public function import($row) {
-        if($row instanceof opal\query\IDataRowProvider) {
-            $row = $row->toDataRowArray();
-        } else if($row instanceof core\IArrayProvider) {
-            $row = $row->toArray();
-        }
-
-        if(!is_array($row)) {
-            throw new InvalidArgumentException(
-                'Could not import to record - input data cannot be converted to an array'
-            );
-        }
-
-
-        /*
-        // Sanitize values from adapter
-        $temp = $row;
-
-        foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter, array_keys($row)) as $name => $field) {
-            if(isset($temp[$name])) {
-                $value = $temp[$name];
-            } else {
-                $value = null;
+    public function import(...$input) {
+        foreach($input as $row) {
+            if($row instanceof opal\query\IDataRowProvider) {
+                $row = $row->toDataRowArray();
             }
 
-            $row[$name] = $field->sanitizeValue($value, $this);
-        }
+            if(!core\collection\Util::isIterable($row)) {
+                continue;
+            }
 
+            /*
+            // Sanitize values from adapter
+            $temp = $row;
 
-        // Sanitize values from extension
-        foreach($row as $key => $value) {
-            $this->_changes[$key] = $this->_sanitizeValue($key, $value);
-        }
-        */
+            foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter, array_keys($row)) as $name => $field) {
+                if(isset($temp[$name])) {
+                    $value = $temp[$name];
+                } else {
+                    $value = null;
+                }
 
+                $row[$name] = $field->sanitizeValue($value, $this);
+            }
 
-        foreach($row as $key => $value) {
-            $this->offsetSet($key, $value);
+            // Sanitize values from extension
+            foreach($row as $key => $value) {
+                $this->_changes[$key] = $this->_sanitizeValue($key, $value);
+            }
+            */
+
+            foreach($row as $key => $value) {
+                $this->offsetSet($key, $value);
+            }
         }
 
         return $this;
@@ -670,7 +657,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $func = 'on'.$funcPrefix.$taskName;
 
         if(method_exists($this, $func)) {
-            call_user_func_array([$this, $func], [$taskSet, $task]);
+            $this->{$func}($taskSet, $task);
         }
 
         $broadcast = static::BROADCAST_HOOK_EVENTS;
@@ -694,7 +681,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             $func = 'on'.$funcPrefix.'Save';
 
             if(method_exists($this, $func)) {
-                call_user_func_array([$this, $func], [$taskSet, $task]);
+                $this->{$func}($taskSet, $task);
             }
 
             if($broadcast && !$this->_bypassHooks) {
@@ -838,12 +825,22 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function has($key) {
-        return $this->offsetExists($key);
+    public function has(...$keys) {
+        foreach($keys as $key) {
+            if($this->offsetExists($key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public function remove($key) {
-        return $this->offsetUnset($key);
+    public function remove(...$keys) {
+        foreach($keys as $key) {
+            $this->offsetUnset($key);
+        }
+
+        return $this;
     }
 
     public function offsetSet($key, $value) {

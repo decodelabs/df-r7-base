@@ -76,8 +76,8 @@ class Unit extends axis\unit\table\Base {
             ->toRow();
     }
 
-    public function selectActive() {
-        return $this->select(func_get_args())
+    public function selectActive(...$fields) {
+        return $this->select(...$fields)
             ->leftJoin(
                     'id as versionId', 'fileName', 'fileSize', 'number as versionNumber', 'contentType'
                 )

@@ -266,8 +266,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         return $this->_authState >= IState::CONFIRMED;
     }
 
-    public function isA($signifier) {
-        foreach(core\collection\Util::flattenArray(func_get_args()) as $signifier) {
+    public function isA(...$signifiers) {
+        foreach($signifiers as $signifier) {
             if(in_array($signifier, $this->_signifiers)) {
                 return true;
             }

@@ -109,13 +109,13 @@ class Config extends core\Config {
         return (string)$this->values->units[$unitId];
     }
 
-    public function getConnectionsOfType($adapters) {
+    public function getConnectionsOfType(...$adapters) {
         if($this->values->connections->isEmpty()) {
             return [];
         }
 
         $output = [];
-        $adapters = core\collection\Util::flattenArray(func_get_args());
+        $adapters = core\collection\Util::flatten($adapters);
 
         foreach($this->values->connections as $id => $set) {
             if(!isset($set->adapter) || !in_array($set['adapter'], $adapters)) {

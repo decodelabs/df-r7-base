@@ -111,8 +111,8 @@ abstract class Form implements IFormDecorator {
         return $this->form->fieldName($name);
     }
 
-    final public function eventName($name) {
-        return call_user_func_array([$this->form, 'eventName'], func_get_args());
+    final public function eventName($name, ...$args) {
+        return $this->form->eventName($name, ...$args);
     }
 
     final public function elementId($name) {

@@ -10,91 +10,87 @@ use df\core;
 use df\arch;
 
 abstract class Base implements arch\navigation\IEntry {
-    
+
     protected $_id;
     protected $_weight = 0;
-    
+
     public static function fromArray(array $entry) {
         $type = 'Void';
-        
+
         if(isset($entry['type'])) {
             $type = $entry['type'];
         }
-        
+
         if(!$class = self::_getEntryClass($type)) {
             throw new arch\navigation\EntryTypeNotFoundException(
                 'Entry type '.$type.' could not be found'
             );
         }
-        
+
         if(!isset($entry['id'])) {
             $entry['id'] = null;
         }
-        
+
         if(!isset($entry['weight'])) {
             $entry['weight'] = 0;
         }
-        
+
         return $class::_fromArray($entry);
     }
-    
+
     protected static function _fromArray(array $entry) {
         $class = get_called_class();
         return (new $class())->setId($id)->setWeight($weight);
     }
-    
-    
-    public static function factory($type) {
-        return self::factoryArgs($type, array_slice(func_get_args(), 1));
-    }
-    
-    public static function factoryArgs($type, array $args) {
+
+
+    public static function factory($type, ...$args) {
         if(!$class = self::_getEntryClass($type)) {
             throw new arch\navigation\EntryTypeNotFoundException(
                 'Entry type '.$type.' could not be found'
             );
         }
-        
+
         return (new \ReflectionClass($class))->newInstanceArgs($args);
     }
-    
-    
+
+
     protected static function _getEntryClass($type) {
         $class = 'df\\arch\\navigation\\entry\\'.ucfirst($type);
-        
+
         if(!class_exists($class)) {
             return null;
         }
-        
+
         return $class;
     }
-    
-    
+
+
     public function __construct() {}
-    
+
     public function getType() {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
-    
+
     public function setId($id) {
         if(empty($id)) {
             $id = null;
         }
-        
+
         $this->_id = $id;
         return $this;
     }
-    
+
     public function getId() {
         return $this->_id;
     }
-    
+
     public function setWeight($weight) {
         $this->_weight = (float)$weight;
         return $this;
     }
-    
+
     public function getWeight() {
         return $this->_weight;
     }

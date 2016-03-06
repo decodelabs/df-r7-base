@@ -18,14 +18,14 @@ class Menu extends Base implements core\IDumpable {
     const DEFAULT_LINK_WIDGET = 'Link';
     const ENFORCE_DEFAULT_LINK_WIDGET = false;
 
-    public function __construct(arch\IContext $context, $input=null) {
+    public function __construct(arch\IContext $context, ...$entries) {
         parent::__construct($context);
 
         $this->_entries = new aura\html\ElementContent();
         $this->_context = $context;
 
-        if($input !== null) {
-            $this->addEntries($input);
+        if(!empty($entries)) {
+            $this->addEntries($entries);
         }
     }
 

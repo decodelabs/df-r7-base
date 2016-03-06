@@ -10,9 +10,9 @@ use df\core;
 use df\opal;
 
 class Initiator implements IInitiator {
-    
+
     use TQuery_TransactionAware;
-    
+
     protected $_mode = null;
     protected $_fieldMap = [];
     protected $_data = null;
@@ -22,7 +22,7 @@ class Initiator implements IInitiator {
     protected $_union = null;
     protected $_isUnionDistinct = false;
     protected $_applicator;
-    
+
     public static function modeIdToName($id) {
         switch($id) {
             case IQueryTypes::SELECT: return 'SELECT';
@@ -36,11 +36,11 @@ class Initiator implements IInitiator {
 
             case IQueryTypes::CORRELATION: return 'CORRELATION';
             case IQueryTypes::POPULATE: return 'POPULATE';
-            
+
             case IQueryTypes::JOIN: return 'JOIN';
             case IQueryTypes::JOIN_CONSTRAINT: return 'JOIN_CONSTRAINT';
             case IQueryTypes::REMOTE_JOIN: return 'REMOTE_JOIN';
-            
+
             case IQueryTypes::SELECT_ATTACH: return 'SELECT_ATTACH';
             case IQueryTypes::FETCH_ATTACH: return 'FETCH_ATTACH';
             case IQueryTypes::REMOTE_ATTACH: return 'REMOVE_ATTACH';
@@ -48,11 +48,11 @@ class Initiator implements IInitiator {
             default: return '*uninitialized*';
         }
     }
-    
+
     public static function factory() {
         return new self();
     }
-    
+
     public function setApplicator(Callable $applicator=null) {
         $this->_applicator = $applicator;
         return $this;
@@ -62,11 +62,11 @@ class Initiator implements IInitiator {
         return $this->_applicator;
     }
 
-    
+
 // Select
     public function beginSelect(array $fields=[], $distinct=false) {
         $this->_setMode(IQueryTypes::SELECT);
-        $fields = core\collection\Util::flattenArray($fields, false);
+        $fields = core\collection\Util::flatten($fields, false);
 
         if(empty($fields) || (count($fields) == 1 && $fields[0] === null)) {
             $fields = ['*'];
@@ -74,7 +74,7 @@ class Initiator implements IInitiator {
 
         $this->_fieldMap = $fields;
         $this->_distinct = (bool)$distinct;
-        
+
         return $this;
     }
 
@@ -92,75 +92,75 @@ class Initiator implements IInitiator {
         $this->_isUnionDistinct = (bool)$unionDistinct;
         return $this;
     }
-    
-    
+
+
 // Fetch
     public function beginFetch() {
         $this->_setMode(IQueryTypes::FETCH);
         $this->_fieldMap = ['*' => null];
-        
+
         return $this;
     }
-    
-    
+
+
 // Insert
     public function beginInsert($row) {
         $this->_setMode(IQueryTypes::INSERT);
         $this->_fieldMap = ['*' => null];
         $this->_data = $row;
-        
+
         return $this;
     }
-    
-    
+
+
 // Batch insert
     public function beginBatchInsert($rows=[]) {
         $this->_setMode(IQueryTypes::BATCH_INSERT);
         $this->_fieldMap = ['*' => null];
         $this->_data = $rows;
-        
+
         return $this;
     }
-    
-    
+
+
 // Replace
     public function beginReplace($row) {
         $this->_setMode(IQueryTypes::REPLACE);
         $this->_fieldMap = ['*' => null];
         $this->_data = $row;
-        
+
         return $this;
     }
-    
+
 // Batch replace
     public function beginBatchReplace($rows=[]) {
         $this->_setMode(IQueryTypes::BATCH_REPLACE);
         $this->_fieldMap = ['*' => null];
         $this->_data = $rows;
-        
+
         return $this;
     }
-    
+
 // Update
     public function beginUpdate(array $valueMap=null) {
         $this->_setMode(IQueryTypes::UPDATE);
         $this->_data = $valueMap;
-        
+
         if(is_array($valueMap)) {
             $this->_fieldMap = $valueMap;
         }
-        
+
         return $this;
     }
-    
+
 // Delete
     public function beginDelete() {
         $this->_setMode(IQueryTypes::DELETE);
         $this->_fieldMap = ['*' => null];
-        
+
         return $this;
     }
-    
+
 
 
 
@@ -178,11 +178,11 @@ class Initiator implements IInitiator {
     public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null) {
         $this->_setMode(IQueryTypes::POPULATE);
         $this->_parentQuery = $parent;
-        $fields = core\collection\Util::flattenArray($fields);
+        $fields = core\collection\Util::flatten($fields);
         $isAll = false;
 
         if($selectFields) {
-            $selectFields = core\collection\Util::flattenArray($selectFields);
+            $selectFields = core\collection\Util::flatten($selectFields);
         }
 
         switch($type) {
@@ -239,7 +239,7 @@ class Initiator implements IInitiator {
     public function beginAttachRelation(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null) {
         $this->_setMode(IQueryTypes::POPULATE);
         $this->_parentQuery = $parent;
-        $fields = core\collection\Util::flattenArray($fields);
+        $fields = core\collection\Util::flatten($fields);
         $isAll = false;
 
         switch($type) {
@@ -267,7 +267,7 @@ class Initiator implements IInitiator {
         if(!$populate = $parent->getPopulate($field)) {
             $populate = new Populate($parent, $field, $type, $selectFields);
         }
-        
+
         $populate->setNestedParent($parent);
         return $populate;
     }
@@ -278,64 +278,64 @@ class Initiator implements IInitiator {
     public function beginCombine(ICombinableQuery $parent, array $fields) {
         $this->_setMode(IQueryTypes::COMBINE);
         $this->_parentQuery = $parent;
-        $fields = core\collection\Util::flattenArray($fields);
+        $fields = core\collection\Util::flatten($fields);
 
         return new Combine($parent, $fields);
     }
 
-    
-    
+
+
 // Join
     public function beginJoin(IQuery $parent, array $fields=[], $type=IJoinQuery::INNER) {
         $this->_setMode(IQueryTypes::JOIN);
         $this->_parentQuery = $parent;
-        $fields = core\collection\Util::flattenArray($fields);
+        $fields = core\collection\Util::flatten($fields);
 
         if(empty($fields)) {
             $fields = ['*'];
         }
-        
+
         switch($type) {
             case IJoinQuery::INNER:
             case IJoinQuery::LEFT:
             case IJoinQuery::RIGHT:
                 $this->_joinType = $type;
                 break;
-                
+
             default:
                 throw new InvalidArgumentException(
                     $type.' is not a valid join type'
                 );
         }
-        
+
         if(isset($fields[0]) && is_array($fields[0])) {
             $fields = $fields[0];
         }
-        
+
         foreach($fields as $field) {
             $this->_fieldMap[$field] = null;
         }
-        
+
         return $this;
     }
-    
+
     public function beginJoinConstraint(IQuery $parent, $type=IJoinQuery::INNER) {
         $this->_setMode(IQueryTypes::JOIN_CONSTRAINT);
         $this->_parentQuery = $parent;
-        
+
         switch($type) {
             case IJoinQuery::INNER:
             case IJoinQuery::LEFT:
             case IJoinQuery::RIGHT:
                 $this->_joinType = $type;
                 break;
-                
+
             default:
                 throw new InvalidArgumentException(
                     $type.' is not a valid join type'
                 );
         }
-        
+
         return $this;
     }
 
@@ -343,12 +343,12 @@ class Initiator implements IInitiator {
 // Attach
     public function beginAttach(IReadQuery $parent, array $fields=[], $isSelect=false) {
         $this->_parentQuery = $parent;
-        $fields = core\collection\Util::flattenArray($fields, false);
-        
+        $fields = core\collection\Util::flatten($fields, false);
+
         if(isset($fields[0]) && is_array($fields[0])) {
             $fields = $fields[0];
         }
-        
+
         if(!$isSelect) {
             $this->_setMode(IQueryTypes::FETCH_ATTACH);
             $this->_fieldMap = ['*' => null];
@@ -361,7 +361,7 @@ class Initiator implements IInitiator {
                 $this->_fieldMap = $fields;
             }
         }
-        
+
         return $this;
     }
 
@@ -370,8 +370,8 @@ class Initiator implements IInitiator {
             Select_Attach::fromPopulate($populate) :
             Fetch_Attach::fromPopulate($populate);
     }
-    
-    
+
+
 // Query data
     public function getFields() {
         switch($this->_mode) {
@@ -383,19 +383,19 @@ class Initiator implements IInitiator {
 
         return array_keys($this->_fieldMap);
     }
-    
+
     public function getFieldMap() {
         return $this->_fieldMap;
     }
-    
+
     public function getData() {
         return $this->_data;
     }
-    
+
     public function getParentQuery() {
         return $this->_parentQuery;
     }
-    
+
     public function getJoinType() {
         return $this->_joinType;
     }
@@ -409,8 +409,8 @@ class Initiator implements IInitiator {
 
         $this->_mode = $mode;
     }
-    
-    
+
+
 // Transmutation
     public function from($sourceAdapter, $alias=null) {
         foreach($this->_fieldMap as $key => $field) {
@@ -424,7 +424,7 @@ class Initiator implements IInitiator {
                 $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $source = $sourceManager->newSource($sourceAdapter, $alias, $this->getFields());
                 $source->isPrimary(true);
-                
+
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
@@ -433,7 +433,7 @@ class Initiator implements IInitiator {
                 }
 
                 return (new Select($sourceManager, $source))->isDistinct((bool)$this->_distinct);
-                
+
             case IQueryTypes::UNION:
                 $sourceManager = $this->_union->getSourceManager();
                 $source = $sourceManager->newSource($sourceAdapter, $alias, $this->getFields(), false, true);
@@ -454,30 +454,30 @@ class Initiator implements IInitiator {
                 $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $source = $sourceManager->newSource($sourceAdapter, $alias, ['*']);
                 $source->isPrimary(true);
-                
+
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support FETCH queries'
                     );
                 }
-                
+
                 return new Fetch($sourceManager, $source);
-                
+
             case IQueryTypes::DELETE:
                 $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
                 $source->isPrimary(true);
-                
+
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support DELETE queries'
                     );
                 }
-                
-                return new Delete($sourceManager, $source);    
-                
+
+                return new Delete($sourceManager, $source);
+
             case IQueryTypes::CORRELATION:
                 $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $sourceManager->setParentSourceManager($this->_parentQuery->getSourceManager());
@@ -488,7 +488,7 @@ class Initiator implements IInitiator {
                     $fieldName = explode(' as ', $fieldName);
                     $fieldName = array_shift($fieldName).' as '.$fieldAlias;
                 }
-                
+
                 $source = $sourceManager->newSource($sourceAdapter, $alias, [$fieldName]);
 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
@@ -520,13 +520,13 @@ class Initiator implements IInitiator {
 
 
                 $fields = null;
-                
+
                 if($this->_mode === IQueryTypes::JOIN) {
                     $fields = $this->getFields();
                 }
-                
+
                 $source = $sourceManager->newSource($sourceAdapter, $alias, $fields);
-                
+
                 if($source->getAdapterHash() == $this->_parentQuery->getSource()->getAdapterHash()) {
                     if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                         throw new LogicException(
@@ -542,12 +542,12 @@ class Initiator implements IInitiator {
                         );
                     }
                 }
-                
+
                 return new Join(
                     $this->_parentQuery, $source, $this->_joinType,
                     $this->_mode === IQueryTypes::JOIN_CONSTRAINT
                 );
-                
+
             case IQueryTypes::SELECT_ATTACH:
             case IQueryTypes::FETCH_ATTACH:
                 if($alias === null) {
@@ -555,7 +555,7 @@ class Initiator implements IInitiator {
                         'Attachment sources must be aliased'
                     );
                 }
-                
+
                 $fields = $this->getFields();
 
                 $sourceManager = new opal\query\SourceManager($this->_transaction);
@@ -563,7 +563,7 @@ class Initiator implements IInitiator {
 
                 $source = $sourceManager->newSource($sourceAdapter, $alias, $fields);
                 $source->isPrimary(true);
-                
+
                 if($source->getAdapterHash() == $this->_parentQuery->getSource()->getAdapterHash()) {
                     if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                         throw new LogicException(
@@ -579,20 +579,20 @@ class Initiator implements IInitiator {
                         );
                     }
                 }
-                
+
                 if($this->_mode == IQueryTypes::FETCH_ATTACH) {
                     return new Fetch_Attach($this->_parentQuery, $sourceManager, $source);
                 } else {
                     return (new Select_Attach($this->_parentQuery, $sourceManager, $source))
                         ->isDistinct((bool)$this->_distinct);
                 }
-                
-                
+
+
             case null;
                 throw new LogicException(
                     'Query initiator mode has not been set'
                 );
-                
+
             default:
                 throw new LogicException(
                     'Query initiator mode '.self::modeIdToName($this->_mode).' is not compatible with \'from\' syntax'
@@ -605,51 +605,51 @@ class Initiator implements IInitiator {
             ->setDerivationParentInitiator($this);
     }
 
-    public function fromSelect($field1=null) {
-        return self::factory()->beginSelect(func_get_args(), false)
+    public function fromSelect(...$fields) {
+        return self::factory()->beginSelect($fields, false)
             ->setDerivationParentInitiator($this);
     }
 
-    public function fromSelectDistinct($field1=null) {
-        return self::factory()->beginSelect(func_get_args(), true)
+    public function fromSelectDistinct(...$fields) {
+        return self::factory()->beginSelect($fields, true)
             ->setDerivationParentInitiator($this);
     }
 
     public function into($sourceAdapter, $alias=null) {
         $sourceManager = new SourceManager($this->_transaction);
-        
+
         switch($this->_mode) {
             case IQueryTypes::INSERT:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
                 $source->isPrimary(true);
-                
+
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support INSERT'
                     );
                 }
-                
-                return new Insert($sourceManager, $source, $this->_data); 
-                
+
+                return new Insert($sourceManager, $source, $this->_data);
+
             case IQueryTypes::BATCH_INSERT:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
                 $source->isPrimary(true);
-                
+
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support batch INSERT queries'
                     );
                 }
-                
+
                 return new BatchInsert($sourceManager, $source, $this->_data);
-                
+
             case null;
                 throw new LogicException(
                     'Query initiator mode has not been set'
                 );
-                
+
             default:
                 throw new LogicException(
                     'Query initiator mode '.self::modeIdToName($this->_mode).' is not compatible with \'into\' syntax'
@@ -659,52 +659,52 @@ class Initiator implements IInitiator {
 
     public function in($sourceAdapter, $alias=null) {
         $sourceManager = new opal\query\SourceManager($this->_transaction);
-        
+
         switch($this->_mode) {
             case IQueryTypes::REPLACE:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
                 $source->isPrimary(true);
-                
+
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support REPLACE queries'
                     );
                 }
-                
+
                 return new Insert($sourceManager, $source, $this->_data, true);
-                
+
             case IQueryTypes::BATCH_REPLACE:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
                 $source->isPrimary(true);
-                
+
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support batch REPLACE queries'
                     );
                 }
-                
+
                 return new BatchInsert($sourceManager, $source, $this->_data, true);
-                
+
             case IQueryTypes::UPDATE:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
                 $source->isPrimary(true);
-                
+
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support UPDATE queries'
                     );
                 }
-                
+
                 return new Update($sourceManager, $source, $this->_data);
-            
+
             case null;
                 throw new LogicException(
                     'Query initiator mode has not been set'
                 );
-                
+
             default:
                 throw new LogicException(
                     'Query initiator mode '.self::modeIdToName($this->_mode).' is not compatible with \'in\' syntax'

@@ -10,13 +10,13 @@ use df\core;
 use df\aura;
 
 abstract class Base implements aura\css\IProcessor {
-    
+
     public $settings;
 
     public static function factory($name, $settings=null) {
         if($name instanceof aura\css\IProcessor) {
             if($settings) {
-                $name->import($settings);
+                $name->settings->import($settings);
             }
 
             return $name;

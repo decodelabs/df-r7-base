@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 
 abstract class Base implements IRoutine {
-    
+
     use core\TContextProxy;
 
     public $io;
@@ -73,9 +73,8 @@ abstract class Base implements IRoutine {
         return $this->io;
     }
 
-    public function execute() {
+    public function execute(...$args) {
         $this->getMultiplexer();
-        $args = func_get_args();
 
         if(!method_exists($this, '_execute')) {
             throw new LogicException(
@@ -83,7 +82,7 @@ abstract class Base implements IRoutine {
             );
         }
 
-        call_user_func_array([$this, '_execute'], $args);
+        $this->_execute(...$args);
         return $this;
     }
 }

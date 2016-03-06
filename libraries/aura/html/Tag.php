@@ -72,7 +72,7 @@ class Tag implements ITag, core\IDumpable {
             if(false !== strpos($id, '.')) {
                 $classes = explode('.', $id);
                 $id = array_shift($classes);
-                $this->addClasses($classes);
+                $this->addClasses(...$classes);
             }
 
             if(!empty($id)) {
@@ -83,7 +83,7 @@ class Tag implements ITag, core\IDumpable {
         if(false !== strpos($name, '.')) {
             $classes = explode('.', $name);
             $name = array_shift($classes);
-            $this->addClasses($classes);
+            $this->addClasses(...$classes);
         }
 
         $this->_name = $name;
@@ -274,12 +274,12 @@ class Tag implements ITag, core\IDumpable {
 
 
 // Classes
-    public function setClasses($classes) {
+    public function setClasses(...$classes) {
         $this->_classes = array_unique($this->_normalizeClassList($classes));
         return $this;
     }
 
-    public function addClasses($classes) {
+    public function addClasses(...$classes) {
         $this->_classes = array_unique(array_merge(
             $this->_classes, $this->_normalizeClassList($classes)
         ));
@@ -291,17 +291,17 @@ class Tag implements ITag, core\IDumpable {
         return $this->_classes;
     }
 
-    public function setClass($class) {
-        return $this->setClasses($class);
+    public function setClass(...$classes) {
+        return $this->setClasses(...$classes);
     }
 
-    public function addClass($class) {
-        return $this->addClasses($class);
+    public function addClass(...$classes) {
+        return $this->addClasses(...$classes);
     }
 
-    public function removeClass($class) {
+    public function removeClass(...$classes) {
         foreach($this->_classes as $i => $value) {
-            if($class == $value) {
+            if(in_array($value, $classes)) {
                 unset($this->_classes[$i]);
                 break;
             }
@@ -310,8 +310,14 @@ class Tag implements ITag, core\IDumpable {
         return $this;
     }
 
-    public function hasClass($class) {
-        return in_array($class, $this->_classes);
+    public function hasClass(...$classes) {
+        foreach($classes as $class) {
+            if(in_array($class, $this->_classes)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function countClasses() {
@@ -323,16 +329,19 @@ class Tag implements ITag, core\IDumpable {
             return [];
         }
 
-        if(!is_array($classes)) {
-            $classes = explode(' ', $classes);
-        }
+        $output = [];
 
-        foreach($classes as &$class) {
+        foreach(core\collection\Util::leaves($classes) as $class) {
             $class = $this->esc($class);
-        }
-        unset($class);
 
-        return $classes;
+            if(false !== strpos($class, ' ')) {
+                array_push($output, ...explode(' ', $class));
+            } else {
+                $output[] = $class;
+            }
+        }
+
+        return $output;
     }
 
 
@@ -379,13 +388,13 @@ class Tag implements ITag, core\IDumpable {
 
 
 // Style
-    public function setStyles($styles) {
-        $this->getAttribute('style')->clear()->import($styles);
+    public function setStyles(...$styles) {
+        $this->getAttribute('style')->clear()->import(...$styles);
         return $this;
     }
 
-    public function addStyles($styles) {
-        $this->getAttribute('style')->import($styles);
+    public function addStyles(...$styles) {
+        $this->getAttribute('style')->import(...$styles);
         return $this;
     }
 
@@ -402,13 +411,13 @@ class Tag implements ITag, core\IDumpable {
         return $this->getAttribute('style')->get($key, $default);
     }
 
-    public function removeStyle($key) {
-        $this->getAttribute('style')->remove($key);
+    public function removeStyle(...$keys) {
+        $this->getAttribute('style')->remove(...$keys);
         return $this;
     }
 
-    public function hasStyle($key) {
-        return $this->getAttribute('style')->has($key);
+    public function hasStyle(...$keys) {
+        return $this->getAttribute('style')->has(...$keys);
     }
 
 

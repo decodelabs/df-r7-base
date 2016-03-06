@@ -87,11 +87,7 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy {
         return $this->_fields;
     }
 
-    public function hide($keys) {
-        if(!is_array($keys)) {
-            $keys = func_get_args();
-        }
-
+    public function hideField(...$keys) {
         foreach($keys as $key) {
             if(isset($this->_fields[$key])) {
                 $this->_fields[$key] = false;
@@ -101,11 +97,7 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy {
         return $this;
     }
 
-    public function showField($keys) {
-        if(!is_array($keys)) {
-            $keys = func_get_args();
-        }
-
+    public function showField(...$keys) {
         foreach($keys as $key) {
             if(isset($this->_fields[$key]) && $this->_fields[$key] == false) {
                 $this->_fields[$key] = true;

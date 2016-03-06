@@ -318,8 +318,7 @@ trait TForm {
 
 
 // Names
-    public function eventName($name) {
-        $args = array_slice(func_get_args(), 1);
+    public function eventName($name, ...$args) {
         $output = $this->_getDelegateIdPrefix().$name;
 
         if(!empty($args)) {
@@ -350,7 +349,7 @@ trait TForm {
         }
 
         $this->_beforeEvent($name);
-        return call_user_func_array([$this, $func], $args);
+        return $this->{$func}(...$args);
     }
 
     protected function _beforeEvent($event) {}
@@ -493,7 +492,7 @@ trait TForm_ModalDelegate {
             );
         }
 
-        return call_user_func_array([$this, $func], $args);
+        return $this->{$func}(...$args);
     }
 }
 
@@ -834,7 +833,7 @@ trait TForm_DependentDelegate {
                 $value = $value->getValue();
                 $isResolved = $value !== null;
             } else if(is_callable($value)) {
-                $value = call_user_func_array($value, [$this]);
+                $value = $value($this);
             }
 
             if($isResolved === null) {

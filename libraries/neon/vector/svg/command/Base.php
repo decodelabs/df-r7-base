@@ -63,7 +63,7 @@ abstract class Base implements neon\vector\svg\ICommand {
         return $commands;
     }
 
-    public static function factory($command) {
+    public static function factory($command, ...$args) {
         if($command instanceof ICommand) {
             return $command;
         }
@@ -78,7 +78,6 @@ abstract class Base implements neon\vector\svg\ICommand {
             ]
         )) {
             $command = ucfirst($command);
-            $args = array_slice(func_get_args(), 1);
         } else if(preg_match('/^([a-zA-Z])([^a-zA-Z]+)?/', $command, $matches)) {
             $key = strtolower($matches[1]);
             $isRelative = $key == $matches[1];

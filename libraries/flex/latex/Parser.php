@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 class Parser extends iris\Parser {
 
     public $document;
@@ -72,7 +72,7 @@ class Parser extends iris\Parser {
                     if($token->value == 'end') {
                         if($expectBraceEnd) {
                             throw new iris\UnexpectedTokenException(
-                                'Expecting brace end, not environment end', 
+                                'Expecting brace end, not environment end',
                                 $token
                             );
                         }
@@ -85,7 +85,7 @@ class Parser extends iris\Parser {
                 case 'keySymbol':
                     if($token->isValue($expectEnd)) {
                         throw new iris\UnexpectedTokenException(
-                            'Wasn\'t expecting a brace end here..', 
+                            'Wasn\'t expecting a brace end here..',
                             $token
                         );
                     }
@@ -140,7 +140,7 @@ class Parser extends iris\Parser {
             if($first && $this->token->isAfterWhitespace()) {
                 $last = $this->getLastToken();
 
-                if($last 
+                if($last
                 && ($last->matches('keySymbol', null, '}') || $last->matches('keySymbol', null, '$'))
                 && strlen($this->token->getWhitespaceAfterLastNewLine())) {
                     $textNode->appendText(' ');
@@ -228,7 +228,7 @@ class Parser extends iris\Parser {
             }
         }
 
-        if($this->container instanceof IParagraph 
+        if($this->container instanceof IParagraph
         && $this->token->countNewLines() >= 2) {
             $this->popContainer();
         }
@@ -246,8 +246,8 @@ class Parser extends iris\Parser {
         $output = $this->extractWord()->value;
 
         while(
-            //!$this->token->isAfterWhitespace() 
-        //&& 
+            //!$this->token->isAfterWhitespace()
+        //&&
         $this->token->is('word', 'symbol')
         && !$this->token->isValue('}')) {
             $output .= $this->extract()->value;
@@ -258,7 +258,7 @@ class Parser extends iris\Parser {
 
     public function writeToTextNode($text) {
         $pop = false;
-        
+
         if(!$this->container) {
             $pop = true;
             $this->pushContainer(new flex\latex\map\Paragraph($this->token));
@@ -365,7 +365,7 @@ class Parser extends iris\Parser {
                     $this->extractValue('$');
                 }
             }
-        } 
+        }
 
         if($doMath) {
             // Math
@@ -403,7 +403,7 @@ class Parser extends iris\Parser {
                         $this->extract();
                         continue;
                     }
-                    
+
                     break;
                 }
             }
@@ -423,7 +423,7 @@ class Parser extends iris\Parser {
         $object->setBlockType($blockType);
         $object->setNumber(++$this->_mathCounter);
 
-        // Put on containerStack to give label command a target  
+        // Put on containerStack to give label command a target
         $this->_containerStack[] = $object;
 
         while(true) {
@@ -455,7 +455,7 @@ class Parser extends iris\Parser {
         return $object;
     }
 
- 
+
 // Commands
     public function registerCommand($name, IPackage $package) {
         $this->_commands[$name] = $package;
@@ -532,13 +532,13 @@ class Parser extends iris\Parser {
                 );
             }
 
-            return call_user_func_array([$package, $func], $args);
+            return $package->{$func}(...$args);
         }
     }
 
     public function extractMacroFromCommand() {
         $value = $this->parseCommand($this->extract()->value);
-        
+
         if(!$value instanceof IMacro) {
             throw new UnexpectedValueException(
                 'Expecting macro'
@@ -550,7 +550,7 @@ class Parser extends iris\Parser {
 
     public function skipCommand($requireBlock=true) {
         $this->extractOptionList();
-        
+
         if(($requireBlock && $this->extractValue('{'))
         || $this->extractIfValue('{')) {
             $level = 1;
@@ -588,7 +588,7 @@ class Parser extends iris\Parser {
 
                     if($this->extractIfValue('=')) {
                         $value = $this->extractWord()->value;
-                    } 
+                    }
                 }
 
                 $options[$option] = $value;
@@ -633,7 +633,7 @@ class Parser extends iris\Parser {
             );
         }
 
-        $output = call_user_func_array([$package, $func], []);
+        $output = $package->{$func}();
         $this->environment = $lastEnv;
 
         return $output;
@@ -695,7 +695,7 @@ class Parser extends iris\Parser {
                 'environments' => count($this->_environments),
                 'token' => $this->token,
                 'document' => $this->document
-            ], 
+            ],
             parent::getDumpProperties(),
             [
                 'container' => $this->container

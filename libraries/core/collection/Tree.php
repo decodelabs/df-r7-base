@@ -49,26 +49,32 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         $this->setValue($value);
 
         if($input !== null) {
-            $this->import($input, $extractArray);
+            $this->_import([$input], $extractArray);
         }
     }
 
 
-    public function import($input, $extractArray=true) {
-        if($input instanceof ITree) {
-            return $this->importTree($input);
-        }
+    public function import(...$input) {
+        return $this->_import($input);
+    }
 
-        if($extractArray && $input instanceof core\IArrayProvider) {
-            $input = $input->toArray();
-        }
-
-        if(is_array($input)) {
-            foreach($input as $key => $value) {
-                $this->__set($key, $value, $extractArray);
+    protected function _import(array $input, $extractArray=true) {
+        foreach($input as $data) {
+            if($data instanceof ITree) {
+                return $this->importTree($data);
             }
-        } else {
-            $this->setValue($input);
+
+            if($extractArray && $data instanceof core\IArrayProvider) {
+                $data = $data->toArray();
+            }
+
+            if(is_array($data)) {
+                foreach($data as $key => $value) {
+                    $this->__set($key, $value, $extractArray);
+                }
+            } else {
+                $this->setValue($data);
+            }
         }
 
         return $this;
@@ -268,17 +274,19 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return $this->_collection[$key]->getValue($default);
     }
 
-    public function has($key) {
-        return array_key_exists($key, $this->_collection)
-            && $this->_collection[$key]->hasValue();
+    public function has(...$keys) {
+        foreach($keys as $key) {
+            if(array_key_exists($key, $this->_collection)
+            && $this->_collection[$key]->hasValue()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public function hasKey($key) {
-        return array_key_exists($key, $this->_collection);
-    }
-
-    public function hasAnyKey($key1) {
-        foreach(func_get_args() as $key) {
+    public function hasKey(...$keys) {
+        foreach($keys as $key) {
             if(array_key_exists($key, $this->_collection)) {
                 return true;
             }
@@ -287,8 +295,11 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return false;
     }
 
-    public function remove($key) {
-        unset($this->_collection[$key]);
+    public function remove(...$keys) {
+        foreach($keys as $key) {
+            unset($this->_collection[$key]);
+        }
+
         return $this;
     }
 
@@ -311,27 +322,22 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return $this->shift();
     }
 
-    public function insert($value) {
-        $class = get_class($this);
-
-        foreach(func_get_args() as $arg) {
-            $this->_collection[] = new $class($arg);
-        }
-
-        return $this;
+    public function insert(...$values) {
+        return $this->push(...$values);
     }
 
     public function pop() {
         return array_pop($this->_collection);
     }
 
-    public function push($value) {
+    public function push(...$values) {
         $class = get_class($this);
 
-        foreach(func_get_args() as $arg) {
-            $this->_collection[] = new $class($arg);
-        }
+        array_walk($values, function(&$value) use($class) {
+            $value = new $class($value);
+        });
 
+        array_push($this->_collection, ...$values);
         return $this;
     }
 
@@ -339,13 +345,14 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return array_shift($this->_collection);
     }
 
-    public function unshift($value) {
+    public function unshift(...$values) {
         $class = get_class($this);
 
-        for($i = func_num_args() - 1; $i >= 0; $i--) {
-            array_unshift($this->_collection, new $class(func_get_arg($i)) );
-        }
+        array_walk($values, function(&$value) use($class) {
+            $value = new $class($value);
+        });
 
+        array_unshift($this->_collection, ...$values);
         return $this;
     }
 

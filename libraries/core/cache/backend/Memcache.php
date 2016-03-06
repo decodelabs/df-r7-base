@@ -118,12 +118,22 @@ class Memcache implements core\cache\IBackend {
         return $default;
     }
 
-    public function has($key) {
-        return is_array($this->_connection->get($this->_prefix.$key));
+    public function has(...$keys) {
+        foreach($keys as $key) {
+            if(is_array($this->_connection->get($this->_prefix.$key))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public function remove($key) {
-        return $this->_connection->delete($this->_prefix.$key);
+    public function remove(...$keys) {
+        foreach($keys as $key) {
+            $this->_connection->delete($this->_prefix.$key);
+        }
+
+        return true;
     }
 
     public function clear() {

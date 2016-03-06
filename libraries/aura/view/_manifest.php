@@ -123,7 +123,7 @@ trait TSlotContainer {
             $target = $this instanceof IDeferredRenderable ?
                 $this->getRenderTarget() : $this;
 
-            $value = call_user_func_array($value, [$target]);
+            $value = $value($target);
         }
 
         if($value instanceof \Traversable) {
@@ -410,15 +410,15 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function clearCss();
 
     // Styles
-    public function setStyles($styles);
-    public function addStyles($styles);
+    public function setStyles(...$styles);
+    public function addStyles(...$styles);
     public function getStyles();
     public function hasStyles();
     public function removeStyles();
     public function setStyle($selector, $styles);
     public function getStyle($selector);
-    public function removeStyle($selector);
-    public function hasStyle($selector);
+    public function removeStyle(...$selectors);
+    public function hasStyle(...$selectors);
 
     // Js
     public function linkJs($uri, $weight=null, array $attributes=null, $condition=null);
@@ -497,7 +497,7 @@ trait TCascadingHelperProvider {
             );
         }
 
-        return call_user_func_array($output, $args);
+        return $output(...$args);
     }
 
     public function __get($key) {

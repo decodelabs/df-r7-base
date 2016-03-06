@@ -136,14 +136,12 @@ class BridgedManyRelationValueContainer implements
 
 
 // Records
-    public function add($record) {
-        return $this->addList(func_get_args());
+    public function add(...$records) {
+        return $this->addList($records);
     }
 
     public function addList(array $records) {
-        $index = $this->_normalizeInputRecordList($records);
-
-        foreach($index as $id => $record) {
+        foreach($this->_normalizeInputRecordList($records) as $id => $record) {
             $this->_new[$id] = $record;
         }
 
@@ -154,8 +152,8 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
 
-    public function populate($record) {
-        return $this->populateList(func_get_args());
+    public function populate(...$records) {
+        return $this->populateList($records);
     }
 
     public function populateList(array $records) {
@@ -166,8 +164,8 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
 
-    public function remove($record) {
-        return $this->removeList(func_get_args());
+    public function remove(...$records) {
+        return $this->removeList($records);
     }
 
     public function removeList(array $records) {
@@ -321,7 +319,7 @@ class BridgedManyRelationValueContainer implements
 
 
 // Query
-    public function select($field1=null) {
+    public function select(...$fields) {
         if(!$this->_record) {
             throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
@@ -346,7 +344,7 @@ class BridgedManyRelationValueContainer implements
         }
 
         return opal\query\Initiator::factory()
-            ->beginSelect(func_get_args())
+            ->beginSelect($fields)
             ->from($targetUnit, $targetSourceAlias)
 
             // Join bridge table as constraint
@@ -359,13 +357,11 @@ class BridgedManyRelationValueContainer implements
             ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryKeySet);
     }
 
-    public function selectDistinct($field1=null) {
-        $query = call_user_func_array([$this, 'select'], func_get_args());
-        $query->isDistinct(true);
-        return $query;
+    public function selectDistinct(...$fields) {
+        return $this->select(...$fields)->isDistinct(true);
     }
 
-    public function selectFromBridge($field1=null) {
+    public function selectFromBridge(...$fields) {
         if(!$this->_record) {
             throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
@@ -381,20 +377,18 @@ class BridgedManyRelationValueContainer implements
         $bridgeAlias = $bridgeLocalFieldName.'Bridge';
 
         return opal\query\Initiator::factory()
-            ->beginSelect(func_get_args())
+            ->beginSelect($fields)
             ->from($bridgeUnit, $bridgeAlias)
 
             // Add local primary key(s) as prerequisite
             ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryKeySet);
     }
 
-    public function selectDistinctFromBridge($field1=null) {
-        $query = call_user_func_array([$this, 'selectFromBridge'], func_get_args());
-        $query->isDistinct(true);
-        return $query;
+    public function selectDistinctFromBridge(...$fields) {
+        return $this->selectFromBridge(...$fields)->isDistinct(true);
     }
 
-    public function selectFromNew($field1=null) {
+    public function selectFromNew(...$fields) {
         if(!$this->_record) {
             throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
@@ -408,12 +402,12 @@ class BridgedManyRelationValueContainer implements
         $localFieldName = $this->_field->getName();
 
         return opal\query\Initiator::factory()
-            ->beginSelect(func_get_args())
+            ->beginSelect($fields)
             ->from($targetUnit, $localFieldName)
             ->wherePrerequisite('@primary', 'in', $this->_getKeySets($this->_new));
     }
 
-    public function selectFromNewToBridge($field1=null) {
+    public function selectFromNewToBridge(...$fields) {
         $localUnit = $this->_record->getAdapter();
         $bridgeUnit = $this->getBridgeUnit();
 
@@ -425,7 +419,7 @@ class BridgedManyRelationValueContainer implements
             $bridgeAlias = $bridgeLocalFieldName.'Bridge';
         }
 
-        return $this->selectFromNew(func_get_args())
+        return $this->selectFromNew(...$fields)
             ->whereCorrelation('@primary', '!in', $bridgeTargetFieldName)
                 ->from($bridgeUnit, $bridgeAlias)
                 ->where($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryKeySet)

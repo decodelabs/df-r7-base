@@ -11,7 +11,7 @@ use df\arch;
 use df\aura;
 
 class Generic extends arch\component\Base {
-    
+
     protected $_scaffold;
     protected $_name;
 
@@ -29,6 +29,6 @@ class Generic extends arch\component\Base {
             $args = [];
         }
 
-        return call_user_func_array([$this->_scaffold, $method], $args);
+        return $this->_scaffold->{$method}(...$args);
     }
 }

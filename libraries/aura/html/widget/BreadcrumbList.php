@@ -20,21 +20,12 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
 
     protected $_separator = '>';
 
-    public function __construct(arch\IContext $context, $input=null) {
+    public function __construct(arch\IContext $context, ...$entries) {
         parent::__construct($context);
         $this->_entries = new aura\html\ElementContent();
 
-        if($input === true || $input === 'sitemap') {
-            $input = null;
-            $this->addSitemapEntries();
-        } else if(is_string($input) || $input instanceof arch\IRequest) {
-            $request = arch\Request::factory($input);
-            $input = null;
-            $this->generateFromRequest($request);
-        }
-
-        if($input !== null) {
-            $this->addEntries($input);
+        if(!empty($entries)) {
+            $this->addEntries(...$entries);
         }
     }
 

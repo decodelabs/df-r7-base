@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 
 class Select implements ISelectQuery, core\IDumpable {
-            
+
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Derivable;
@@ -32,40 +32,36 @@ class Select implements ISelectQuery, core\IDumpable {
     use TQuery_Pageable;
     use TQuery_Read;
     use TQuery_SelectSourceDataFetcher;
-    
+
     public function __construct(ISourceManager $sourceManager, ISource $source) {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
     }
-    
+
     public function getQueryType() {
         return IQueryTypes::SELECT;
     }
-    
-    
-// Sources    
-    public function addOutputFields($fields) {
-        if(!is_array($fields)) {
-            $fields = func_get_args();
-        }
-        
+
+
+// Sources
+    public function addOutputFields(string ...$fields) {
         foreach($fields as $field) {
             $this->_sourceManager->extrapolateOutputField($this->_source, $field);
         }
-        
+
         return $this;
     }
-    
-    
 
-    
+
+
+
 // Output
     public function count() {
         return $this->_sourceManager->executeQuery($this, function($adapter) {
             return (int)$adapter->countSelectQuery($this);
         });
     }
-    
+
     public function toList($valField1, $valField2=null) {
         if($valField2 !== null) {
             $keyField = $valField1;
@@ -74,29 +70,29 @@ class Select implements ISelectQuery, core\IDumpable {
             $keyField = null;
             $valField = $valField1;
         }
-        
+
         $data = $this->_fetchSourceData($keyField, $valField);
-        
+
         if($data instanceof core\IArrayProvider) {
             $data = $data->toArray();
         }
-        
+
         if(!is_array($data)) {
             throw new UnexpectedValueException(
                 'Source did not return a result that could be converted to an array'
             );
         }
-        
+
         return $data;
     }
-    
+
     public function toValue($valField=null) {
         if($valField !== null) {
             $valField = $this->_sourceManager->extrapolateDataField($this->_source, $valField);
             $data = $this->toRow();
-            
+
             $key = $valField->getAlias();
-            
+
             if(isset($data[$key])) {
                 return $data[$key];
             } else {
@@ -106,20 +102,20 @@ class Select implements ISelectQuery, core\IDumpable {
             if(null !== ($data = $this->toRow())) {
                 return array_shift($data);
             }
-            
+
             return null;
         }
     }
-    
-    
-    
+
+
+
 // Dump
     public function getDumpProperties() {
         $output = [
             'sources' => $this->_sourceManager,
             'fields' => $this->_source
         ];
-        
+
         if(!empty($this->_populates)) {
             $output['populates'] = $this->_populates;
         }
@@ -131,11 +127,11 @@ class Select implements ISelectQuery, core\IDumpable {
         if(!empty($this->_joins)) {
             $output['join'] = $this->_joins;
         }
-        
+
         if(!empty($this->_attachments)) {
             $output['attach'] = $this->_attachments;
         }
-        
+
         if($this->hasWhereClauses()) {
             $output['where'] = $this->getWhereClauseList();
         }
@@ -143,33 +139,33 @@ class Select implements ISelectQuery, core\IDumpable {
         if($this->_searchController) {
             $output['search'] = $this->_searchController;
         }
-        
+
         if(!empty($this->_group)) {
             $output['group'] = $this->_groups;
         }
-        
+
         if($this->hasHavingClauses()) {
             $output['having'] = $this->_havingClauseList;
         }
-        
+
         if(!empty($this->_order)) {
             $order = [];
-            
+
             foreach($this->_order as $directive) {
                 $order[] = $directive->toString();
             }
-            
+
             $output['order'] = implode(', ', $order);
         }
-        
+
         if($this->_limit) {
             $output['limit'] = $this->_limit;
         }
-        
+
         if($this->_offset) {
             $output['offset'] = $this->_offset;
         }
-        
+
         return $output;
     }
 }
@@ -177,21 +173,21 @@ class Select implements ISelectQuery, core\IDumpable {
 
 ## ATTACH
 class Select_Attach extends Select implements ISelectAttachQuery {
-    
+
     use TQuery_Attachment;
     use TQuery_AttachmentListExtension;
     use TQuery_AttachmentValueExtension;
     use TQuery_ParentAwareJoinClauseFactory;
-    
+
     public function __construct(IQuery $parent, ISourceManager $sourceManager, ISource $source) {
         $this->_parent = $parent;
         parent::__construct($sourceManager, $source);
     }
-    
+
     public function getQueryType() {
         return IQueryTypes::SELECT_ATTACH;
     }
-    
+
 // Dump
     public function getDumpProperties() {
         return array_merge([
@@ -206,7 +202,7 @@ class Select_Attach extends Select implements ISelectAttachQuery {
 
 ## UNION
 class Select_Union extends Select implements IUnionSelectQuery {
-    
+
     protected $_union;
     protected $_isUnionDistinct = true;
 
@@ -229,17 +225,17 @@ class Select_Union extends Select implements IUnionSelectQuery {
         return $this->_union;
     }
 
-    public function with($field1=null) {
+    public function with(...$fields) {
         $this->endSelect();
 
         return Initiator::factory()
-            ->beginUnionSelect($this->_union, func_get_args(), true);
+            ->beginUnionSelect($this->_union, $fields, true);
     }
 
-    public function withAll($field1=null) {
+    public function withAll(...$fields) {
         $this->endSelect();
 
         return Initiator::factory()
-            ->beginUnionSelect($this->_union, func_get_args(), false);
+            ->beginUnionSelect($this->_union, $fields, false);
     }
 }

@@ -68,7 +68,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             $this->shouldHideIfInaccessible($link->shouldHideIfInaccessible());
             $checkUriMatch = $link->shouldCheckMatch();
 
-            $this->addAltMatches($link->getAltMatches());
+            $this->addAltMatches(...$link->getAltMatches());
 
             if($link->shouldOpenInNewWindow()) {
                 $this->getTag()->setAttribute('target', '_blank');
@@ -226,16 +226,12 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
 
 // Relationship
-    public function setRelationship($rel) {
+    public function setRelationship(...$rel) {
         $this->_rel = [];
-        return $this->addRelationship($rel);
+        return $this->addRelationship(...$rel);
     }
 
-    public function addRelationship($rel) {
-        if(!is_array($rel)) {
-            $rel = func_get_args();
-        }
-
+    public function addRelationship(...$rel) {
         foreach($rel as $val) {
             $val = strtolower($val);
             $parts = explode(' ', $val);
@@ -269,11 +265,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         return array_keys($this->_rel);
     }
 
-    public function removeRelationship($rel) {
-        if(!is_array($rel)) {
-            $rel = func_get_args();
-        }
-
+    public function removeRelationship(...$rel) {
         foreach($rel as $val) {
             $val = strtolower($val);
             $parts = explode(' ', $val);

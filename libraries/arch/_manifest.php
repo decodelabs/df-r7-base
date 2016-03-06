@@ -200,8 +200,8 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
 
 
     // Rewrite
-    public function rewriteQueryToPath($keys);
-    public function rewritePathToQuery($rootCount, $keys);
+    public function rewriteQueryToPath(...$keys);
+    public function rewritePathToQuery($rootCount, ...$keys);
 }
 
 interface IProxyResponse {

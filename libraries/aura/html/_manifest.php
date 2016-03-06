@@ -34,13 +34,13 @@ interface ITagDataContainer extends core\collection\IAttributeContainer {
     public function getDataAttributes();
 
     // Class attributes
-    public function setClasses($classes);
-    public function addClasses($classes);
+    public function setClasses(...$classes);
+    public function addClasses(...$classes);
     public function getClasses();
-    public function setClass($class);
-    public function addClass($class);
-    public function removeClass($class);
-    public function hasClass($class);
+    public function setClass(...$classes);
+    public function addClass(...$classes);
+    public function removeClass(...$classes);
+    public function hasClass(...$classes);
     public function countClasses();
 
     // Direct attributes
@@ -52,13 +52,13 @@ interface ITagDataContainer extends core\collection\IAttributeContainer {
 
 
     // Style
-    public function setStyles($styles);
-    public function addStyles($styles);
+    public function setStyles(...$styles);
+    public function addStyles(...$styles);
     public function getStyles();
     public function setStyle($key, $value);
     public function getStyle($key, $default=null);
-    public function removeStyle($key);
-    public function hasStyle($key);
+    public function removeStyle(...$keys);
+    public function hasStyle(...$keys);
 }
 
 
@@ -117,6 +117,14 @@ trait TElementContent {
     use core\collection\TArrayCollection_IndexedMovable;
 
     protected $_parent;
+
+    public function import(...$input) {
+        foreach(core\collection\Util::leaves($input, true) as $value) {
+            $this->_collection[] = $value;
+        }
+
+        return $this;
+    }
 
     public function setParentRenderContext($parent) {
         $this->_parent = $parent;

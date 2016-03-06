@@ -9,13 +9,13 @@ use df;
 use df\core;
 
 class PageableQueue implements IIndexedQueue, IAggregateIteratorCollection, IPaginator, core\IDumpable {
-    
+
     use TArrayCollection_Queue;
     use TPaginator;
 
-    public function __construct($input=null, $limit=null, $offset=null, $total=null) {
+    public function __construct(array $input=null, $limit=null, $offset=null, $total=null) {
         if($input !== null) {
-            $this->import($input);
+            $this->import(...$input);
         }
 
         $this->setLimit($limit);

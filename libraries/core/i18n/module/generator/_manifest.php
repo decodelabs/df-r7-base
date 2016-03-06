@@ -22,13 +22,13 @@ interface IGenerator {
     public function getCldrPath();
     public function setSavePath($path);
     public function getSavePath();
-    
-    public function setModules($modules);
-    public function addModules($modules);
+
+    public function setModules(...$modules);
+    public function addModules(...$modules);
     public function addModule($module);
-    public function removeModule($module);
+    public function removeModule(...$modules);
     public function getModules();
     public function clearModules();
-    
+
     public function generate();
 }

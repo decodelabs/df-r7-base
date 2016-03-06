@@ -16,7 +16,7 @@ class TypeRef implements ITypeRef, \Serializable, core\IDumpable {
 
     public static function __callStatic($method, array $args) {
         if(method_exists(__CLASS__, '__'.$method)) {
-            return call_user_func_array([__CLASS__, '__'.$method], $args); 
+            return call_user_func_array([__CLASS__, '__'.$method], $args);
         }
 
         throw new BadMethodCallException(
@@ -71,11 +71,7 @@ class TypeRef implements ITypeRef, \Serializable, core\IDumpable {
         $this->_reflection = new \ReflectionClass($this->_class);
     }
 
-    public function newInstance() {
-        return $this->_reflection->newInstanceArgs(func_get_args());
-    }
-
-    public function newInstanceArgs(array $args) {
+    public function newInstance(...$args) {
         return $this->_reflection->newInstanceArgs($args);
     }
 

@@ -111,9 +111,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
             ->setCollection($query);
 
         if($callback) {
-            core\lang\Callback::factory($callback)->invokeArgs([
-                $list, $searchBar
-            ]);
+            core\lang\Callback::call($callback, $list, $searchBar);
         }
 
         if($query->hasSearch()) {

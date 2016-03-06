@@ -23,7 +23,7 @@ interface IRoutine extends core\IContextAware {
     public function getName();
     public function setMultiplexer(core\io\IMultiplexer $multiplexer);
     public function getMultiplexer();
-    public function execute();
+    public function execute(...$args);
 }
 
 interface IConsistencyRoutine extends IRoutine {

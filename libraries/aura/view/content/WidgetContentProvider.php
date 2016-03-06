@@ -11,10 +11,10 @@ use df\aura;
 use df\arch;
 
 class WidgetContentProvider extends aura\html\ElementContent implements aura\view\ICollapsibleContentProvider, aura\html\widget\IWidgetShortcutProvider {
-    
+
     use core\TContextAware;
     use aura\view\TDeferredRenderable;
-    
+
     public function __construct(arch\IContext $context) {
         $this->context = $context;
     }
@@ -27,18 +27,18 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
 
         return $this;
     }
-    
-    
+
+
 // Renderable
     public function getView() {
         return $this->getRenderTarget()->getView();
     }
-    
+
     public function toResponse() {
         return $this->getView();
     }
-    
-    
+
+
 // Widget shortcuts
     public function __call($method, array $args) {
         if(substr($method, 0, 3) == 'add') {
@@ -48,7 +48,7 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
                 $method = '__invoke';
             }
 
-            $widget = call_user_func_array([$this->context->html, $method], $args);
+            $widget = $this->context->html->{$method}(...$args);
 
             if($widget instanceof aura\view\IDeferredRenderable) {
                 $widget->setRenderTarget($this->_renderTarget);

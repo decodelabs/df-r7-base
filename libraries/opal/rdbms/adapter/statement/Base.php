@@ -262,7 +262,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
 
 
 // Result
-    public function import($value) {
+    public function import(...$values) {
         throw new core\collection\RuntimeException('This collection is read only');
     }
 

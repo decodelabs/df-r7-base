@@ -283,7 +283,7 @@ class Base implements ITheme, core\IDumpable {
             $this->_facets[$name] = aura\theme\facet\Base::factory($name);
         }
 
-        core\lang\Callback::callArgs($callback, [$this->_facets[$name], $this]);
+        core\lang\Callback::call($callback, $this->_facets[$name], $this);
         return $this->_facets[$name];
     }
 

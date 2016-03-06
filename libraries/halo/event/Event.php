@@ -12,7 +12,7 @@ use df\link;
 use df\mesh;
 
 class Event extends Base implements core\IDumpable {
-    
+
     protected $_base;
     protected $_cycleHandlerEvent;
 
@@ -97,7 +97,7 @@ class Event extends Base implements core\IDumpable {
         $this->_registerCycleHandler();
 
         if($this->_cycleHandler) {
-            if(false === $this->_cycleHandler->invokeArgs([$this])) {
+            if(false === $this->_cycleHandler->invoke($this)) {
                 $this->stop();
                 return;
             }
@@ -282,28 +282,28 @@ class Event extends Base implements core\IDumpable {
             case IIoState::READ:
                 $flags = \Event::READ;
                 break;
-                
+
             case IIoState::WRITE:
                 $flags = \Event::WRITE;
                 break;
-                
+
             default:
                 throw new InvalidArgumentException(
                     'Unknown event type: '.$type
                 );
         }
-        
+
         if($binding->isPersistent) {
             $flags |= \Event::PERSIST;
         }
-        
+
         return $flags;
     }
 
     protected function _getTimeoutDuration(IBinding $binding) {
         if($binding instanceof IIoBinding) {
-            return $binding->timeoutDuration ? 
-                $binding->timeoutDuration->getMilliseconds() : 
+            return $binding->timeoutDuration ?
+                $binding->timeoutDuration->getMilliseconds() :
                 null;
         } else {
             return null;

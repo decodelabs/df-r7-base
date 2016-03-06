@@ -48,11 +48,7 @@ class Builder implements IBuilder {
     }
 
     public function setGenerator($generator=null) {
-        if($generator !== null) {
-            $generator = core\lang\Callback::factory($generator);
-        }
-
-        $this->_generator = $generator;
+        $this->_generator = core\lang\Callback::factory($generator);
         return $this;
     }
 
@@ -66,7 +62,7 @@ class Builder implements IBuilder {
 
     public function sendChunks() {
         if($this->_generator) {
-            $this->_generator->invokeArgs([$this]);
+            $this->_generator->invoke($this);
         } else if(!empty($this->_fields)) {
             if($this->_writeFields && !$this->_fieldsWritten) {
                 $this->_writeRow($this->_fields);

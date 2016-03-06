@@ -86,8 +86,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             if($type == 'enum' || $type == 'set') {
                 $field = $schema->addField($row['Field'], $type, $args);
             } else {
-                array_unshift($args, $row['Field'], $type);
-                $field = call_user_func_array([$schema, 'addField'], $args);
+                $field = $schema->addField($row['Field'], $type, ...$args);
             }
 
             if(isset($matches[5])) {

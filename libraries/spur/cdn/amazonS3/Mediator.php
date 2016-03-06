@@ -13,7 +13,7 @@ use df\link;
 class Mediator implements IMediator {
 
     use spur\THttpMediator;
-    
+
     const ENDPOINT = 's3.amazonaws.com';
 
     protected $_accessKey;
@@ -312,7 +312,7 @@ class Mediator implements IMediator {
         $resource = $url->query['_resource'];
         unset($url->query->_resource);
 
-        if($url->query->hasAnyKey('acl', 'location', 'torrent', 'website', 'logging')) {
+        if($url->query->hasKey('acl', 'location', 'torrent', 'website', 'logging')) {
             $qString = $url->getQueryString();
 
             if(!empty($qString)) {
@@ -371,7 +371,7 @@ class Mediator implements IMediator {
         $content = $response->getContent();
         $xml = null;
 
-        if(strlen($content) 
+        if(strlen($content)
         && substr($content, 0, 2) == '<?') {
             $xml = core\xml\Tree::fromXmlString($content);
         }

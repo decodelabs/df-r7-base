@@ -10,7 +10,7 @@ use df\core;
 use df\link;
 
 class Client implements IClient {
-    
+
     const VERSION = '0.5';
 
     protected $_defaultOptions;
@@ -116,13 +116,13 @@ class Client implements IClient {
     }
 
 
-    
+
 
     public function newRequest($url, $method='get', $callback=null, $body=null) {
         $request = link\http\request\Base::factory($url);
         $request->setMethod($method);
 
-        core\lang\Callback::callArgs($callback, [$request, $this]);
+        core\lang\Callback::call($callback, $request, $this);
 
         if($body !== null) {
             if($method == 'post' && !is_scalar($body)) {
@@ -176,7 +176,7 @@ class Client implements IClient {
         return $this->newRequest($url, 'patch', $callback, $data);
     }
 
-    
+
 
     public function newPool() {
         return new link\http\request\Pool($this);
@@ -256,7 +256,7 @@ class Client implements IClient {
             }
 
             $target = core\fs\File::factory($path, core\fs\Mode::READ_WRITE_TRUNCATE);
-        } else if($isOk 
+        } else if($isOk
             && $stream instanceof core\fs\MemoryFile
             && ($response->headers->get('content-length') > 1024 * 512
              || $response->headers->get('transfer-encoding') == 'chunked')) {

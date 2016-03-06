@@ -748,28 +748,9 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
 
 
 // ICollection
-    public function import($input) {
-        if(!is_string($input)) {
-            if($input instanceof self) {
-                $this->_value = $input->_value;
-                $this->_encoding = $input->_encoding;
-                return $this;
-            }
-
-            if($input instanceof core\IArrayProvider) {
-                $input = $input->toArray();
-            }
-
-            if(!is_array($input)) {
-                return $this;
-            }
-
-            $input = implode('', $input);
-        }
-
-
-        $this->_value = (string)$input;
-        $this->_encoding = mb_detect_encoding($input.'a');
+    public function import(...$input) {
+        $this->_value = implode($input);
+        $this->_encoding = mb_detect_encoding($this->_value.'a');
 
         return $this;
     }
@@ -861,14 +842,24 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return mb_substr($this->_value, $index, 1);
     }
 
-    public function has($index) {
+    public function has(...$indexes) {
         $length = mb_strlen($this->_value);
 
-        return $index < $length && $index >= -$length;
+        foreach($indexes as $index) {
+            if($index < $length && $index >= -$length) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public function remove($index) {
-        return $this->set($index, '');
+    public function remove(...$indexes) {
+        foreach($indexes as $index) {
+            $this->set($index, '');
+        }
+
+        return $this;
     }
 
 
@@ -922,8 +913,8 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $this->_pos;
     }
 
-    public function insert($value) {
-        return $this->push($value);
+    public function insert(...$values) {
+        return $this->push(...$values);
     }
 
     public function extract() {
@@ -936,11 +927,8 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $output;
     }
 
-    public function push($value) {
-        for($i = 0; $i < func_num_args(); $i++) {
-            $this->_value .= func_get_arg($i);
-        }
-
+    public function push(...$values) {
+        $this->_value .= implode($values);
         return $this;
     }
 
@@ -950,11 +938,8 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $output;
     }
 
-    public function unshift($value) {
-        for($i = func_num_args() - 1; $i >= 0; $i--) {
-            $this->_value = func_get_arg($i).$this->_value;
-        }
-
+    public function unshift(...$values) {
+        $this->_value = implode($value).$this->_value;
         return $this;
     }
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,24 +10,24 @@ use df\core;
 use df\axis;
 use df\mesh;
 
-    
+
 trait TBroadcastEvents {
 
     public function set($key, $value, $lifeTime=null) {
         $this->context->mesh->emitEvent($this, 'set', [
-            'value' => $value, 
+            'value' => $value,
             'lifeTime' => $lifeTime
         ]);
 
         return parent::set($key, $value, $lifeTime);
     }
-    
-    public function remove($key) {
+
+    public function remove(...$keys) {
         $this->context->mesh->emitEvent($this, 'remove', [
-            'key' => $key
+            'keys' => $keys
         ]);
 
-        return parent::remove($key);
+        return parent::remove(...$keys);
     }
 
     public function clear() {
@@ -35,7 +35,7 @@ trait TBroadcastEvents {
 
         return parent::clear();
     }
-    
+
     public function clearBegins($key) {
         $this->context->mesh->emitEvent($this, 'clearBegins', [
             'key' => $key
@@ -58,7 +58,7 @@ trait TBroadcastEvents_Session {
 
     public function setSession($key, $value) {
         $this->context->mesh->emitEvent($this, 'setSession', [
-            'key' => $key, 
+            'key' => $key,
             'value' => $value
         ]);
 

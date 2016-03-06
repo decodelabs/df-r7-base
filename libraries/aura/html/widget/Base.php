@@ -187,13 +187,13 @@ abstract class Base implements IWidget {
 
 
 // Classes
-    public function setClasses($classes) {
-        $this->getTag()->setClasses($classes);
+    public function setClasses(...$classes) {
+        $this->getTag()->setClasses(...$classes);
         return $this;
     }
 
-    public function addClasses($classes) {
-        $this->getTag()->addClasses($classes);
+    public function addClasses(...$classes) {
+        $this->getTag()->addClasses(...$classes);
         return $this;
     }
 
@@ -201,23 +201,23 @@ abstract class Base implements IWidget {
         return $this->getTag()->getClasses();
     }
 
-    public function setClass($class) {
-        $this->getTag()->setClass($class);
+    public function setClass(...$classes) {
+        $this->getTag()->setClass(...$classes);
         return $this;
     }
 
-    public function addClass($class) {
-        $this->getTag()->addClass($class);
+    public function addClass(...$classes) {
+        $this->getTag()->addClass(...$classes);
         return $this;
     }
 
-    public function removeClass($class) {
-        $this->getTag()->addClass($class);
+    public function removeClass(...$classes) {
+        $this->getTag()->addClass(...$classes);
         return $this;
     }
 
-    public function hasClass($class) {
-        return $this->getTag()->hasClass($class);
+    public function hasClass(...$classes) {
+        return $this->getTag()->hasClass(...$classes);
     }
 
     public function countClasses() {
@@ -226,13 +226,13 @@ abstract class Base implements IWidget {
 
 
 // Style
-    public function setStyles($styles) {
-        $this->getTag()->setStyles($styles);
+    public function setStyles(...$styles) {
+        $this->getTag()->setStyles(...$styles);
         return $this;
     }
 
-    public function addStyles($styles) {
-        $this->getTag()->addStyles($styles);
+    public function addStyles(...$styles) {
+        $this->getTag()->addStyles(...$styles);
         return $this;
     }
 
@@ -249,12 +249,12 @@ abstract class Base implements IWidget {
         return $this->getTag()->getStyle($key, $default);
     }
 
-    public function removeStyle($key) {
-        $this->getTag()->removeStyle($key);
+    public function removeStyle(...$keys) {
+        $this->getTag()->removeStyle(...$keys);
         return $this;
     }
 
-    public function hasStyle($key) {
-        return $this->getTag()->hasStyle($key);
+    public function hasStyle(...$keys) {
+        return $this->getTag()->hasStyle(...$keys);
     }
 }

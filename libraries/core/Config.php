@@ -130,12 +130,22 @@ abstract class Config implements IConfig, core\IDumpable {
         return $default;
     }
 
-    public function has($key) {
-        return isset($this->values[$key]);
+    public function has(...$keys) {
+        foreach($keys as $key) {
+            if(isset($this->values[$key])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public function remove($key) {
-        unset($this->values[$key]);
+    public function remove(...$keys) {
+        foreach($keys as $key) {
+            unset($this->values[$key]);
+        }
+
+        return $this;
     }
 
     public function offsetSet($key, $value) {

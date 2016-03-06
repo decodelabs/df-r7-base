@@ -82,8 +82,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
                     flex\Delimited::parse($matches[5], ',', '\'')
                     : [];
 
-                array_unshift($args, $matches[1], $matches[2]);
-                $field = call_user_func_array([$schema, 'addField'], $args);
+                $field = $schema->addField($matches[1], $matches[2], ...$args);
 
                 if(preg_match('/ NOT NULL( ON CONFLICT (ROLLBACK|ABORT|FAIL|IGNORE|REPLACE))?/i', $def, $matches)) {
                     $field->isNullable(false);

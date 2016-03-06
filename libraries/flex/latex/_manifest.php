@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
@@ -18,8 +18,8 @@ class UnexpectedValueException extends iris\UnexpectedValueException implements 
 
 // Interfaces
 interface INodeClassProvider {
-    public function setClasses($classes);
-    public function addClasses($classes);
+    public function setClasses(...$classes);
+    public function addClasses(...$classes);
     public function addClass($class);
     public function getClasses();
     public function hasClasses();
@@ -32,21 +32,13 @@ trait TNodeClassProvider {
 
     protected $_classes = [];
 
-    public function setClasses($classes) {
-        if(!is_array($classes)) {
-            $classes = func_get_args();
-        }
-
+    public function setClasses(...$classes) {
         $this->_classes = [];
-        return $this->addClasses($classes);
+        return $this->addClasses(...$classes);
     }
 
-    public function addClasses($classes) {
-        if(!is_array($classes)) {
-            $classes = func_get_args();
-        }
-
-        foreach($classes as $class) {
+    public function addClasses(...$classes) {
+        foreach(core\collection\Util::leaves($classes) as $class) {
             $this->addClass($class);
         }
 
@@ -85,7 +77,7 @@ interface IContainerNode extends iris\map\INode, core\collection\IQueue, \Iterat
 trait TContainerNode {
 
     use core\collection\TArrayCollection_Queue;
-    use TNodeClassProvider;  
+    use TNodeClassProvider;
 
     public function getReferenceMap() {
         $output = [];
@@ -101,7 +93,7 @@ trait TContainerNode {
         }
 
         return $output;
-    }  
+    }
 
     public function reduceContents() {
         $output = '';

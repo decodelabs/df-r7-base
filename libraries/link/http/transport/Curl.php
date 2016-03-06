@@ -29,7 +29,7 @@ class Curl implements link\http\IAsyncTransport {
 
             curl_close($handle->resource);
             unset($handle->resource);
-            
+
             return $handle->response;
         });
     }
@@ -290,9 +290,9 @@ class Curl_Handle {
 
                 if($this->response->isRedirect()) {
                     $this->promise->emit('redirect', [
-                        'url' => $this->response->headers->get('location'), 
+                        'url' => $this->response->headers->get('location'),
                         'header' => $this->response->headers
-                    ]);  
+                    ]);
                 }
 
                 $this->headers = null;
@@ -305,9 +305,7 @@ class Curl_Handle {
         if(!$this->request->isMethod('head')) {
             // Progress
             $output[\CURLOPT_NOPROGRESS] = false;
-            $output[\CURLOPT_PROGRESSFUNCTION] = function() use($promise) {
-                $args = func_get_args();
-
+            $output[\CURLOPT_PROGRESSFUNCTION] = function(...$args) use($promise) {
                 if(is_resource($args[0])) {
                     array_shift($args);
                 }

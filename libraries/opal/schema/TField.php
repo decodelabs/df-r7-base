@@ -23,7 +23,7 @@ trait TField {
         $this->_setName($name);
 
         if(method_exists($this, '_init')) {
-            call_user_func_array([$this, '_init'], $args);
+            $this->_init(...$args);
         }
     }
     */

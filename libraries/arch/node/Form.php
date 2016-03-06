@@ -190,7 +190,7 @@ abstract class Form extends Base implements IFormNode {
 
         $this->_isRenderingInline = true;
         $method = $this->getDispatchMethodName();
-        call_user_func_array([$this, $method], []);
+        $this->{$method}();
         $this->_isRenderingInline = false;
 
         return $this->content;

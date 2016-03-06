@@ -10,7 +10,7 @@ use df\core;
 use df\halo;
 
 class Stream extends Base implements halo\event\IStreamBinding {
-    
+
     use halo\event\TTimeoutBinding;
     use halo\event\TIoBinding;
 
@@ -49,7 +49,7 @@ class Stream extends Base implements halo\event\IStreamBinding {
             return;
         }
 
-        $this->handler->invokeArgs([$this->stream, $this]);
+        $this->handler->invoke($this->stream, $this);
 
         if(!$this->isPersistent) {
             $this->dispatcher->removeStreamBinding($this);
@@ -64,7 +64,7 @@ class Stream extends Base implements halo\event\IStreamBinding {
         }
 
         if($this->timeoutHandler) {
-            $this->timeoutHandler->invokeArgs([$this->stream, $this]);
+            $this->timeoutHandler->invoke($this->stream, $this);
         }
 
         return $this;

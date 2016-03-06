@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 class Handler implements IHandler {
-    
+
     use core\TTranslator;
     use core\lang\TChainable;
 
@@ -42,7 +42,7 @@ class Handler implements IHandler {
         $this->endField();
         $field = core\validate\field\Base::factory($this, $type, $name);
         $field->shouldSanitize($this->_shouldSanitizeAll);
-        
+
         $this->_fields[$field->getName()] = $field;
         $this->_targetField = $field;
 
@@ -82,7 +82,7 @@ class Handler implements IHandler {
         $this->_targetField = null;
         return $this;
     }
-    
+
     public function __call($method, array $args) {
         if(!$this->_targetField) {
             throw new RuntimeException(
@@ -96,7 +96,7 @@ class Handler implements IHandler {
             );
         }
 
-        $output = call_user_func_array([$this->_targetField, $method], $args);
+        $output = $this->_targetField->{$method}(...$args);
 
         if($output === $this->_targetField) {
             return $this;
@@ -114,11 +114,11 @@ class Handler implements IHandler {
             return $this->_fields[$name];
         }
     }
-    
+
     public function getFields() {
         return $this->_fields;
     }
-    
+
     public function removeField($name) {
         unset($this->_fields[$name]);
         return $this;
@@ -129,10 +129,10 @@ class Handler implements IHandler {
             $this->_shouldSanitizeAll = (bool)$flag;
             return $this;
         }
-       
+
         return $this->_shouldSanitizeAll;
     }
-    
+
     public function isValid() {
         if($this->_isValid === null) {
             return true;
@@ -166,7 +166,7 @@ class Handler implements IHandler {
 
         return false;
     }
-    
+
 
 // Map
     public function setDataMap(array $map=null) {
@@ -233,17 +233,17 @@ class Handler implements IHandler {
                 'This validator has not been run yet'
             );
         }
-        
+
         return $this->_values;
     }
-    
+
     public function getValue($name) {
         if($this->_isValid === null) {
             throw new RuntimeException(
                 'This validator has not been run yet'
             );
         }
-        
+
         if(isset($this->_values[$name])) {
             return $this->_values[$name];
         }
@@ -286,7 +286,7 @@ class Handler implements IHandler {
     public function offsetUnset($offset) {
         throw new BadMethodCallException('Validator values cannot be set via array access');
     }
-    
+
 
 
 // Validate
@@ -301,7 +301,7 @@ class Handler implements IHandler {
         $this->_values = [];
         $this->_requireGroups = [];
         $this->data = $data;
-        
+
         $map = $this->_getActiveDataMap();
 
         foreach($map as $fieldName => $dataName) {
@@ -317,7 +317,7 @@ class Handler implements IHandler {
 
             $node = $data->{$dataName};
             $this->_values[$fieldName] = $field->validate($node);
-            
+
             if(!$node->isValid()) {
                 $this->_isValid = false;
             }
@@ -342,11 +342,11 @@ class Handler implements IHandler {
 
         return $this;
     }
-    
+
     public function getCurrentData() {
         return $this->data;
     }
-    
+
     public function applyTo(&$record, array $fields=null) {
         if(!is_array($record) && !$record instanceof \ArrayAccess) {
             throw new RuntimeException(
@@ -373,10 +373,10 @@ class Handler implements IHandler {
                 $this->_fields[$key]->applyValueTo($record, $this->_values[$key]);
             }
         }
-        
+
         return $this;
     }
-    
+
     public function translate(array $args) {
         return core\i18n\Manager::getInstance()->translate($args);
     }

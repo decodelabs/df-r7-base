@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -15,25 +15,25 @@ interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class RecursionException extends RuntimeException {}
 class EntryTypeNotFoundException extends RuntimeException {}
-class SourceNotFoundException extends RuntimeException {}    
+class SourceNotFoundException extends RuntimeException {}
 
 
 
 // Interfaces
 interface IEntry extends core\IArrayInterchange {
     public function getType();
-    
+
     public function setId($id);
     public function getId();
-    
+
     public function setWeight($weight);
     public function getWeight();
 }
 
 
 interface IEntryList extends core\IArrayInterchange, \Countable {
-    public function setEntries($entries);
-    public function addEntries($entries);
+    public function setEntries(...$entries);
+    public function addEntries(...$entries);
     public function addEntry($entry);
     public function addLink($uri, $body, $icon=null);
     public function addSpacer();
@@ -55,8 +55,9 @@ trait TEntryGenerator {
 
     public function __call($method, $args) {
         $prefix = substr($method, 0, 3);
+
         if($prefix == 'new' || $prefix == 'add') {
-            $output = arch\navigation\entry\Base::factoryArgs(substr($method, 3), $args);
+            $output = arch\navigation\entry\Base::factory(substr($method, 3), ...$args);
 
             if($prefix == 'add') {
                 $this->addEntry($output);
@@ -64,7 +65,7 @@ trait TEntryGenerator {
 
             return $output;
         }
-        
+
         throw new \BadMethodCallException('Method '.$method.' does not exist');
     }
 }
@@ -77,29 +78,21 @@ trait TEntryList {
     protected $_isSorted = false;
 
     public static function fromArray(array $entries) {
-        return (new self())->addEntries($entries);
-    }
-    
-    public function setEntries($entries) {
-        if(!is_array($entries)) {
-            $entries = func_get_args();
-        }
-
-        return $this->clearEntries()->addEntries($entries);
+        return (new self())->addEntries(...$entries);
     }
 
-    public function addEntries($entries) {
-        if(!is_array($entries)) {
-            $entries = func_get_args();
-        }
-        
+    public function setEntries(...$entries) {
+        return $this->clearEntries()->addEntries(...$entries);
+    }
+
+    public function addEntries(...$entries) {
         foreach($entries as $entry) {
             $this->addEntry($entry);
         }
-        
+
         return $this;
     }
-    
+
     public function addEntry($entry) {
         if(!$entry instanceof IEntry) {
             if(is_array($entry)) {
@@ -110,7 +103,7 @@ trait TEntryList {
                 );
             }
         }
-        
+
         if($entry->getWeight() == 0) {
             $entry->setWeight(count($this->_entries) + 1);
         }
@@ -138,12 +131,12 @@ trait TEntryList {
         $this->addEntry($entry);
         return $entry;
     }
-    
+
     public function getEntry($id) {
         if(isset($this->_entries[$id])) {
             return $this->_entries[$id];
         }
-        
+
         return null;
     }
 
@@ -177,7 +170,7 @@ trait TEntryList {
         $t = $this->_entries;
         return array_pop($t);
     }
-    
+
     public function getEntries() {
         if(!$this->_isSorted) {
             $this->_sortEntries();
@@ -249,7 +242,7 @@ interface ILink extends user\IAccessControlled {
     public function getDisposition();
 
 // Alt matches
-    public function addAltMatches($matches);
+    public function addAltMatches(...$matches);
     public function addAltMatch($match);
     public function getAltMatches();
     public function clearAltMatches();
@@ -270,25 +263,25 @@ trait TSharedLinkComponents {
 // Uri
     public function setUri($uri, $setAsMatchRequest=false) {
         $this->_uri = $uri;
-        
+
         if($setAsMatchRequest) {
             $this->setMatchRequest($uri);
         }
-        
+
         return $this;
     }
-    
+
     public function getUri() {
         return $this->_uri;
     }
-    
-    
+
+
 // Match request
     public function setMatchRequest($request) {
         $this->_matchRequest = $request;
         return $this;
     }
-    
+
     public function getMatchRequest() {
         return $this->_matchRequest;
     }
@@ -347,34 +340,30 @@ trait TSharedLinkComponents {
             $this->_hideIfInaccessible = (bool)$flag;
             return $this;
         }
-        
+
         return $this->_hideIfInaccessible;
     }
 
 
 // Alt matches
-    public function addAltMatches($matches) {
-        if(!is_array($matches)) {
-            $matches = func_get_args();
-        }
-        
+    public function addAltMatches(...$matches) {
         foreach($matches as $match) {
             $this->addAltMatch($match);
         }
-        
+
         return $this;
     }
-    
+
     public function addAltMatch($match) {
         $match = trim($match);
-        
+
         if(strlen($match)) {
             $this->_altMatches[] = $match;
         }
-        
+
         return $this;
     }
-    
+
     public function getAltMatches() {
         return $this->_altMatches;
     }
@@ -393,7 +382,7 @@ trait TSharedLinkComponents {
             ->setDescription($data['description'])
             ->shouldShowDescription((bool)$data->get('showDescription', true))
             ->shouldHideIfInaccessible((bool)$data->get('hideIfInaccessible', false))
-            ->addAltMatches($data->altMatches->toArray())
+            ->addAltMatches(...$data->altMatches->toArray())
             ->addAccessLocks($data->accessLocks->toArray())
             ->shouldCheckAccess((bool)$data->get('checkAccess', true));
     }

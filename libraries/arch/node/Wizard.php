@@ -122,6 +122,10 @@ abstract class Wizard extends Form {
             $data = $this->values->toArray();
         } else {
             $data = $this->{$func}();
+
+            if($data === null) {
+                $data = $this->values->toArray();
+            }
         }
 
         if($data instanceof core\validate\IHandler) {

@@ -67,8 +67,8 @@ class Reader implements IReader {
 
 
 // Fields
-    public function setFields($field1) {
-        $fields = core\collection\Util::flattenArray(func_get_args());
+    public function setFields(...$fields) {
+        $fields = core\collection\Util::flatten($fields, true, true);
 
         if(empty($fields)) {
             $fields = null;

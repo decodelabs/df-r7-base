@@ -151,7 +151,7 @@ trait TQuery {
     }
 
 
-    public function importBlock($name) {
+    public function importBlock($name, ...$args) {
         if(preg_match('/(.+)\.(.+)$/', $name, $matches)) {
             $source = $this->getSourceManager()->getSourceByAlias($matches[1]);
 
@@ -174,11 +174,11 @@ trait TQuery {
             );
         }
 
-        $adapter->applyQueryBlock($this, $name, array_slice(func_get_args(), 1));
+        $adapter->applyQueryBlock($this, $name, $args);
         return $this;
     }
 
-    public function importRelationBlock($relationField, $name) {
+    public function importRelationBlock($relationField, $name, ...$args) {
         $field = $this->_lookupRelationField($relationField, $queryField);
 
         if(preg_match('/(.+)\.(.+)$/', $name, $matches)) {
@@ -202,7 +202,7 @@ trait TQuery {
             );
         }
 
-        $adapter->applyRelationQueryBlock($this, $queryField, $name, array_slice(func_get_args(), 1));
+        $adapter->applyRelationQueryBlock($this, $queryField, $name, $args);
         return $this;
     }
 
@@ -619,44 +619,44 @@ trait TQuery_Joinable {
     use TQuery_JoinProvider;
 
 // Inner
-    public function join($field1=null) {
-        return $this->_newQuery()->beginJoin($this, func_get_args(), IJoinQuery::INNER);
+    public function join(...$fields) {
+        return $this->_newQuery()->beginJoin($this, $fields, IJoinQuery::INNER);
     }
 
-    public function joinRelation($relationField, $field1=null) {
-        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::INNER)->endJoin();
+    public function joinRelation($relationField, ...$fields) {
+        return $this->_beginJoinRelation($relationField, $fields, IJoinQuery::INNER)->endJoin();
     }
 
-    public function beginJoinRelation($relationField, $field1=null) {
-        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::INNER);
+    public function beginJoinRelation($relationField, ...$fields) {
+        return $this->_beginJoinRelation($relationField, $fields, IJoinQuery::INNER);
     }
 
 
 // Left
-    public function leftJoin($field1=null) {
-        return $this->_newQuery()->beginJoin($this, func_get_args(), IJoinQuery::LEFT);
+    public function leftJoin(...$fields) {
+        return $this->_newQuery()->beginJoin($this, $fields, IJoinQuery::LEFT);
     }
 
-    public function leftJoinRelation($relationField, $field1=null) {
-        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::LEFT)->endJoin();
+    public function leftJoinRelation($relationField, ...$fields) {
+        return $this->_beginJoinRelation($relationField, $fields, IJoinQuery::LEFT)->endJoin();
     }
 
-    public function beginLeftJoinRelation($relationField, $field1=null) {
-        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::LEFT);
+    public function beginLeftJoinRelation($relationField, ...$fields) {
+        return $this->_beginJoinRelation($relationField, $fields, IJoinQuery::LEFT);
     }
 
 
 // Right
-    public function rightJoin($field1=null) {
-        return $this->_newQuery()->beginJoin($this, func_get_args(), IJoinQuery::RIGHT);
+    public function rightJoin(...$fields) {
+        return $this->_newQuery()->beginJoin($this, $fields, IJoinQuery::RIGHT);
     }
 
-    public function rightJoinRelation($relationField, $field1=null) {
-        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::RIGHT)->endJoin();
+    public function rightJoinRelation($relationField, ...$fields) {
+        return $this->_beginJoinRelation($relationField, $fields, IJoinQuery::RIGHT)->endJoin();
     }
 
-    public function beginRightJoinRelation($relationField, $field1=null) {
-        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::RIGHT);
+    public function beginRightJoinRelation($relationField, ...$fields) {
+        return $this->_beginJoinRelation($relationField, $fields, IJoinQuery::RIGHT);
     }
 
 
@@ -847,14 +847,12 @@ trait TQuery_Populatable {
 
     protected $_populates = [];
 
-    public function populate($field1) {
-        return $this->_newQuery()->beginPopulate($this, func_get_args(), IPopulateQuery::TYPE_ALL)->endPopulate();
+    public function populate(...$fields) {
+        return $this->_newQuery()->beginPopulate($this, $fields, IPopulateQuery::TYPE_ALL)->endPopulate();
     }
 
-    public function populateSelect($populateField, $targetField1=null) {
-        $fields = func_get_args();
-
-        return $this->_newQuery()->beginPopulate($this, [array_shift($fields)], IPopulateQuery::TYPE_ALL, $fields)
+    public function populateSelect($populateField, ...$fields) {
+        return $this->_newQuery()->beginPopulate($this, [$populateField], IPopulateQuery::TYPE_ALL, $fields)
             ->isSelect(true)
             ->endPopulate();
     }
@@ -863,10 +861,8 @@ trait TQuery_Populatable {
         return $this->_newQuery()->beginPopulate($this, [$field], IPopulateQuery::TYPE_SOME);
     }
 
-    public function populateSelectSome($populateField, $targetField1=null) {
-        $fields = func_get_args();
-
-        return $this->_newQuery()->beginPopulate($this, [array_shift($fields)], IPopulateQuery::TYPE_SOME, $fields)
+    public function populateSelectSome($populateField, ...$fields) {
+        return $this->_newQuery()->beginPopulate($this, [$populateField], IPopulateQuery::TYPE_SOME, $fields)
             ->isSelect(true);
     }
 
@@ -960,8 +956,8 @@ trait TQuery_Combinable {
 
     protected $_combines = [];
 
-    public function combine($field1) {
-        return $this->_newQuery()->beginCombine($this, func_get_args());
+    public function combine(...$fields) {
+        return $this->_newQuery()->beginCombine($this, $fields);
     }
 
     public function addCombine($name, ICombineQuery $combine) {
@@ -997,17 +993,16 @@ trait TQuery_Combine {
         return IQueryTypes::COMBINE;
     }
 
-    public function setFields($fields) {
-        return $this->clearFields()->addFields(core\collection\Util::flattenArray(func_get_args()));
+    public function setFields(...$fields) {
+        return $this->clearFields()->addFields(...$fields);
     }
 
-    public function addFields($fields) {
-        $fields = core\collection\Util::flattenArray(func_get_args());
+    public function addFields(...$fields) {
         $sourceManager = $this->getSourceManager();
         $parentSource = $this->_parent->getSource();
         $source = $this->getSource();
 
-        foreach($fields as $fieldName) {
+        foreach(core\collection\Util::leaves($fields) as $fieldName) {
             $field = $sourceManager->realiasOutputField($parentSource, $source, $fieldName);
             $this->_fields[$field->getAlias()] = $field;
         }
@@ -1034,10 +1029,8 @@ trait TQuery_Combine {
     }
 
 
-    public function nullOn($field) {
-        $fields = core\collection\Util::flattenArray(func_get_args());
-
-        foreach($fields as $field) {
+    public function nullOn(...$fields) {
+        foreach(core\collection\Util::leaves($fields) as $field) {
             if(!isset($this->_fields[$field])) {
                 throw new InvalidArgumentException(
                     'Combine field '.$field.' has not been defined'
@@ -1138,14 +1131,12 @@ trait TQuery_RelationAttachable {
 
     use TQuery_AttachBase;
 
-    public function attachRelation($relationField) {
-        $fields = func_get_args();
-        return $this->_attachRelation(array_shift($fields), $fields, !empty($fields) || $this instanceof ISelectQuery);
+    public function attachRelation($relationField, ...$fields) {
+        return $this->_attachRelation($relationField, $fields, !empty($fields) || $this instanceof ISelectQuery);
     }
 
-    public function selectAttachRelation($relationField) {
-        $fields = func_get_args();
-        return $this->_attachRelation(array_shift($fields), $fields, true);
+    public function selectAttachRelation($relationField, ...$fields) {
+        return $this->_attachRelation($relationField, $fields, true);
     }
 
     public function fetchAttachRelation($relationField) {
@@ -1173,13 +1164,12 @@ trait TQuery_Attachable {
 
     use TQuery_RelationAttachable;
 
-    public function attach() {
-        $fields = func_get_args();
+    public function attach(...$fields) {
         return $this->_newQuery()->beginAttach($this, $fields, !empty($fields) || $this instanceof ISelectQuery);
     }
 
-    public function selectAttach() {
-        return $this->_newQuery()->beginAttach($this, func_get_args(), true);
+    public function selectAttach(...$fields) {
+        return $this->_newQuery()->beginAttach($this, $fields, true);
     }
 
     public function fetchAttach() {
@@ -1625,10 +1615,10 @@ trait TQuery_Groupable {
 
     protected $_groups = [];
 
-    public function groupBy($field1) {
+    public function groupBy(...$fields) {
         $source = $this->getSource();
 
-        foreach(func_get_args() as $field) {
+        foreach($groups as $field) {
             $this->_groups[] = $this->getSourceManager()->extrapolateIntrinsicField($source, $field);
         }
 
@@ -1735,10 +1725,10 @@ trait TQuery_Orderable {
 
     protected $_order = [];
 
-    public function orderBy($field1) {
+    public function orderBy(...$fields) {
         $source = $this->getSource();
 
-        foreach(func_get_args() as $field) {
+        foreach($fields as $field) {
             if($field instanceof IField) {
                 $field = $field->getQualifiedName();
             }
@@ -2102,9 +2092,9 @@ trait TQuery_DataInsert {
  */
 trait TQuery_EntryPoint {
 
-    public function select($field1=null) {
+    public function select(...$fields) {
         $output = Initiator::factory()
-            ->beginSelect(func_get_args());
+            ->beginSelect($fields);
 
         if($this instanceof IAdapter) {
             $output = $output->from($this);
@@ -2113,9 +2103,9 @@ trait TQuery_EntryPoint {
         return $output;
     }
 
-    public function selectDistinct($field1=null) {
+    public function selectDistinct(...$fields) {
         $output = Initiator::factory()
-            ->beginSelect(func_get_args(), true);
+            ->beginSelect($fields, true);
 
         if($this instanceof IAdapter) {
             $output = $output->from($this);
@@ -2144,10 +2134,10 @@ trait TQuery_EntryPoint {
         return $this->selectDistinct()->count();
     }
 
-    public function union() {
+    public function union(...$fields) {
         $output = Initiator::factory()
             ->beginUnion()
-            ->with(func_get_args());
+            ->with($fields);
 
         if($this instanceof IAdapter) {
             $output = $output->from($this);

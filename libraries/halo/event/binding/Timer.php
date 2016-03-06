@@ -10,7 +10,7 @@ use df\core;
 use df\halo;
 
 class Timer extends Base implements halo\event\ITimerBinding {
-    
+
     public $duration;
 
     public function __construct(halo\event\IDispatcher $dispatcher, $id, $isPersistent, $duration, $callback) {
@@ -36,8 +36,8 @@ class Timer extends Base implements halo\event\ITimerBinding {
         if($this->isFrozen) {
             return $this;
         }
-        
-        $this->handler->invokeArgs([$this]);
+
+        $this->handler->invoke($this);
 
         if(!$this->isPersistent) {
             $this->dispatcher->removeTimer($this);

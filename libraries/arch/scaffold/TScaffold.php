@@ -251,15 +251,8 @@ trait TScaffold_RecordDataProvider {
     }
 
 
-    protected function _countRecordRelations($record, $fields) {
-        $fields = core\collection\Util::flattenArray(func_get_args());
-
-        if($fields[0] instanceof opal\record\IRecord) {
-            $record = array_shift($fields);
-        } else  {
-            $record = $this->getRecord();
-        }
-
+    protected function _countRecordRelations(opal\record\IRecord $record, ...$fields) {
+        $fields = core\collection\Util::flatten($fields);
         $query = $this->getRecordAdapter()->select('@primary');
 
         foreach($fields as $field) {
@@ -808,7 +801,7 @@ trait TScaffold_SectionProvider {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
-        $body = core\lang\CallbackArgs($builder, $args);
+        $body = core\lang\Callback($builder, ...$args);
         $this->view->content->push($hb, $body);
 
         return $this->view;
@@ -941,7 +934,7 @@ trait TScaffold_IndexHeaderBarProvider {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
-        $body = core\lang\CallbackArgs($builder, $args);
+        $body = core\lang\Callback($builder, ...$args);
         $this->view->content->push($hb, $body);
 
         return $this->view;

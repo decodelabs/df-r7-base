@@ -12,7 +12,7 @@ use df\user;
 use df\mesh;
 
 class Partial implements IPartial, core\IDumpable {
-    
+
     use TRecordAdapterProvider;
     use TPrimaryKeySetProvider;
     use TAccessLockProvider;
@@ -24,11 +24,11 @@ class Partial implements IPartial, core\IDumpable {
 
     public function __construct(opal\query\IAdapter $adapter=null, $row=null, array $fields=null) {
         $this->_adapter = $adapter;
-        
-        if(!empty($fields)) { 
+
+        if(!empty($fields)) {
             $this->_collection = array_fill_keys($fields, null);
         }
-                
+
         if($row !== null) {
             $this->import($row);
         }
@@ -56,20 +56,20 @@ class Partial implements IPartial, core\IDumpable {
 
     protected function _buildPrimaryKeySet(array $fields, $includeChanges=true) {
         $values = [];
-        
+
         foreach($fields as $field) {
             if(isset($this->_collection[$field])) {
                 $values[$field] = $this->_collection[$field];
             } else {
                 $values[$field] = null;
             }
-            
+
             if($values[$field] instanceof IValueContainer) {
                 $values[$field] = $values[$field]->getValueForStorage();
             }
         }
-        
-        return new PrimaryKeySet($fields, $values); 
+
+        return new PrimaryKeySet($fields, $values);
     }
 
     public function getValuesForStorage() {
@@ -89,46 +89,42 @@ class Partial implements IPartial, core\IDumpable {
 
         return $this;
     }
-    
+
     public function populateWithRawData($row) {
         return $this->import($row);
     }
 
 
 // Collection
-    public function import($row) {
-        if($row instanceof opal\query\IDataRowProvider) {
-            $row = $row->toDataRowArray();
-        } else if($row instanceof core\IArrayProvider) {
-            $row = $row->toArray();
-        }
-        
-        if(!is_array($row)) {
-            throw new InvalidArgumentException(
-                'Could not import to partial - input data cannot be converted to an array'
-            );
-        }
-        
-        
-        // Sanitize values from adapter
-        $temp = $row;
-
-        foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter, array_keys($row)) as $name => $field) {
-            if(isset($temp[$name])) {
-                $value = $temp[$name];
-            } else {
-                $value = null;
+    public function import(...$input) {
+        foreach($input as $row) {
+            if($row instanceof opal\query\IDataRowProvider) {
+                $row = $row->toDataRowArray();
             }
 
-            $row[$name] = $field->sanitizeValue($value);
+            if(!core\collection\Util::isIterable($row)) {
+                continue;
+            }
+
+            // Sanitize values from adapter
+            $temp = $row;
+
+            foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter, array_keys($row)) as $name => $field) {
+                if(isset($temp[$name])) {
+                    $value = $temp[$name];
+                } else {
+                    $value = null;
+                }
+
+                $row[$name] = $field->sanitizeValue($value);
+            }
+
+            // Sanitize values from extension
+            foreach($row as $key => $value) {
+                $this->_collection[$key] = $value;
+            }
         }
-        
-        
-        // Sanitize values from extension
-        foreach($row as $key => $value) {
-            $this->_collection[$key] = $value;
-        }
-        
+
         return $this;
     }
 
@@ -154,7 +150,7 @@ class Partial implements IPartial, core\IDumpable {
 
         $output = $this->_adapter->getEntityLocator();
         $output->addNode(null, 'Record', $id);
-        
+
         return $output;
     }
 

@@ -149,8 +149,8 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
-    public function isA($signifier) {
-        return $this->client->isA(func_get_args());
+    public function isA(...$signifiers) {
+        return $this->client->isA(...$signifiers);
     }
 
     public function canAccess($lock, $action=null, $linkTo=false) {

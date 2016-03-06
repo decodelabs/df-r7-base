@@ -11,31 +11,31 @@ use df\link;
 
 
 trait TUrl_TransientScheme {
-    
+
     protected $_scheme;
-    
+
     public function setScheme($scheme) {
         if(!empty($scheme)) {
             $this->_scheme = (string)$scheme;
         } else {
             $this->_scheme = null;
         }
-        
+
         return $this;
     }
-    
+
     public function getScheme() {
         return $this->_scheme;
     }
-    
+
     public function hasScheme() {
         return $this->_scheme !== null;
     }
-    
+
     protected function _resetScheme() {
         $this->_scheme = null;
     }
-    
+
     protected function _getSchemeString() {
         if($this->_scheme !== null) {
             return $this->_scheme.'://';
@@ -47,105 +47,97 @@ trait TUrl_TransientScheme {
 
 // Credentials
 trait TUrl_UsernameContainer {
-     
+
      protected $_username;
-     
+
      public function setUsername($username) {
         if(strlen($username)) {
-            $this->_username = (string)$username;   
+            $this->_username = (string)$username;
         } else {
             $this->_username = null;
         }
-        
+
         return $this;
     }
-    
+
     public function getUsername() {
         return $this->_username;
     }
-    
-    public function hasUsername($usernames=false) {
-        if($usernames === false) {
+
+    public function hasUsername(...$usernames) {
+        if(empty($usernames)) {
             return $this->_username !== null;
         }
-        
-        if(!is_array($usernames)) {
-            $usernames = func_get_args();
-        }
-        
+
         return in_array($this->_username, $usernames, true);
     }
-    
+
     protected function _resetUsername() {
         $this->_username = null;
     }
 }
 
 trait TUrl_PasswordContainer {
-    
+
     protected $_password;
-    
+
     public function setPassword($password) {
         if($password !== null) {
             $this->_password = (string)$password;
         } else {
             $this->_password = null;
         }
-        
+
         return $this;
     }
-    
+
     public function getPassword() {
         return $this->_password;
     }
-    
-    public function hasPassword($passwords=false) {
-        if($passwords === false) {
+
+    public function hasPassword(...$passwords) {
+        if(empty($passwords)) {
             return $this->_password !== null;
         }
-        
-        if(!is_array($passwords)) {
-            $passwords = func_get_args();
-        }
-        
+
         return in_array($this->_password, $passwords, true);
     }
-    
+
     protected function _resetPassword() {
         $this->_password = null;
     }
 }
 
 trait TUrl_CredentialContainer {
-    
+
     use TUrl_UsernameContainer;
     use TUrl_PasswordContainer;
-    
+
     public function setCredentials($username, $password) {
         return $this->setUsername($username)
             ->setPassword($password);
     }
-    
+
     public function hasCredentials() {
         return $this->_username !== null || $this->_password !== null;
     }
-    
+
     protected function _resetCredentials() {
         $this->_resetUsername();
         $this->_resetPassword();
     }
-    
+
     protected function _getCredentialString() {
         if($this->_username === null && $this->_password === null) {
             return null;
         }
-        
+
         $output = $this->_username;
 
         if($this->_password !== null) {
             $output .= ':'.$this->_password;
         }
-        
+
         return $output.'@';
     }
 }
@@ -153,14 +145,14 @@ trait TUrl_CredentialContainer {
 
 // Domain
 trait TUrl_DomainContainer {
-    
+
     protected $_domain;
-    
+
     public function setDomain($domain) {
         $this->_domain = (string)$domain;
         return $this;
     }
-    
+
     public function getDomain() {
         return $this->_domain;
     }
@@ -168,15 +160,15 @@ trait TUrl_DomainContainer {
     public function hasDomain() {
         return $this->_domain !== null;
     }
-    
+
     public function isAbsolute() {
         return (bool)strlen($this->_domain);
     }
-    
+
     protected function _resetDomain() {
         $this->_domain = null;
     }
-    
+
     public function lookupIp() {
         if(empty($this->_domain)) {
             $ip = '127.0.0.1';
@@ -184,8 +176,8 @@ trait TUrl_DomainContainer {
             throw new RuntimeException(
                 'Could not lookup IP for '.$this->_domain
             );
-        }        
-        
+        }
+
         return new link\Ip($ip);
     }
 }
@@ -193,33 +185,33 @@ trait TUrl_DomainContainer {
 
 // Ip
 trait TUrl_IpContainer {
-    
+
     protected $_ip;
-    
+
     public function setIp($ip) {
         if($ip !== null) {
-            $ip = link\Ip::factory($ip); 
+            $ip = link\Ip::factory($ip);
         }
-        
+
         $this->_ip = $ip;
         return $this;
     }
-    
+
     public function getIp() {
         if(!$this->_ip) {
             $this->_ip = link\Ip::getV4Loopback();
         }
-        
+
         return $this->_ip;
     }
-    
+
     protected function _resetIp() {
         $this->_ip = null;
     }
-    
+
     protected function _getIpString() {
         $ip = $this->getIp();
-        
+
         if($ip->isStandardV4()) {
             return $ip->getV4String();
         } else {
@@ -231,45 +223,41 @@ trait TUrl_IpContainer {
 
 // Port
 trait TUrl_PortContainer {
-    
+
     protected $_port;
-    
+
     public function setPort($port) {
         if(!empty($port)) {
             $this->_port = (int)$port;
         } else {
             $this->_port = null;
         }
-        
+
         return $this;
     }
-    
+
     public function getPort() {
         return $this->_port;
     }
-    
-    public function hasPort($ports=false) {
-        if($ports === false) {
+
+    public function hasPort(...$ports) {
+        if(empty($ports)) {
             return $this->_port !== null;
         }
-        
-        if(!is_array($ports)) {
-            $ports = func_get_args();
-        }
-        
+
         return in_array($this->_port, $ports, true);
     }
-    
+
     protected function _resetPort() {
         $this->_port = null;
     }
-    
+
     protected function _getPortString($skip=null) {
         if($this->_port !== null && $this->_port !== $skip) {
             return ':'.$this->_port;
         }
     }
-    
+
     public function getHostString() {
         return $this->getDomain().$this->_getPortString();
     }
@@ -278,27 +266,27 @@ trait TUrl_PortContainer {
 
 // Path
 trait TUrl_PathContainer {
-    
+
     protected $_path;
-    
+
     public function setPath($path) {
         if(empty($path)) {
             $this->_path = null;
         } else {
             $this->_path = Path::factory($path);
         }
-            
+
         return $this;
     }
-    
+
     public function getPath() {
         if(!$this->_path) {
             $this->_path = new Path();
         }
-        
+
         return $this->_path;
     }
-    
+
     public function getPathString() {
         if($this->_path) {
             return $this->_path->toUrlEncodedString();
@@ -306,29 +294,29 @@ trait TUrl_PathContainer {
             return '/';
         }
     }
-    
+
     public function hasPath() {
         return $this->_path !== null;
     }
-    
+
     protected function _clonePath() {
         if($this->_path) {
             $this->_path = clone $this->_path;
         }
     }
-    
+
     protected function _resetPath() {
         $this->_path = null;
     }
-    
+
     protected function _getPathString($absolute=false) {
         if($this->_path !== null) {
             $output = $this->_path->toUrlEncodedString();
-            
+
             if($absolute) {
                 $output = '/'.ltrim($output, '/.');
             }
-            
+
             return $output;
         } else if($absolute) {
             return '/';
@@ -339,10 +327,10 @@ trait TUrl_PathContainer {
 
 // Query
 trait TUrl_QueryContainer {
-    
+
     protected $_query;
     protected $_rfc3986QueryEncode = false;
-    
+
     public function setQuery($query) {
         if(empty($query)) {
             $this->_query = null;
@@ -352,10 +340,10 @@ trait TUrl_QueryContainer {
             } else if(!$query instanceof core\collection\ITree) {
                 $query = new core\collection\Tree($query);
             }
-            
+
             $this->_query = $query;
         }
-        
+
         return $this;
     }
 
@@ -382,15 +370,15 @@ trait TUrl_QueryContainer {
 
         return $this;
     }
-    
+
     public function getQuery() {
         if(!$this->_query) {
             $this->_query = new core\collection\Tree();
         }
-        
+
         return $this->_query;
     }
-    
+
     public function getQueryString() {
         if($this->_query) {
             $output = $this->_query->toArrayDelimitedString();
@@ -422,11 +410,11 @@ trait TUrl_QueryContainer {
 
         return $output;
     }
-    
+
     public function hasQuery() {
         return $this->_query !== null;
     }
-    
+
     public function shouldEncodeQueryAsRfc3986($flag=null) {
         if($flag !== null) {
             $this->_rfc3986QueryEncode = (bool)$flag;
@@ -441,15 +429,15 @@ trait TUrl_QueryContainer {
             $this->_query = clone $this->_query;
         }
     }
-    
+
     protected function _resetQuery() {
         $this->_query = null;
     }
-    
+
     protected function _getQueryString() {
         if($this->_query !== null) {
             $queryString = $this->getQueryString();
-            
+
             if(!empty($queryString)) {
                 return '?'.$queryString;
             }
@@ -461,9 +449,9 @@ trait TUrl_QueryContainer {
 
 // Fragment
 trait TUrl_FragmentContainer {
-    
+
     protected $_fragment;
-    
+
     public function getFragment() {
         return $this->_fragment;
     }
@@ -476,29 +464,25 @@ trait TUrl_FragmentContainer {
         $this->_fragment = $fragment;
         return $this;
     }
-    
-    public function hasFragment($fragments=false) {
-        if($fragments === false) {
+
+    public function hasFragment(...$fragments) {
+        if(empty($fragments)) {
             return $this->_fragment !== null;
         }
-        
-        if(!is_array($fragments)) {
-            $fragments = func_get_args();
-        }
-        
+
         return in_array($this->_fragments, $fragments, true);
     }
-    
+
     public function isJustFragment() {
         return ($this->_path === null || ($this->_path->isEmpty() && !$this->_path->shouldAddTrailingSlash()))
             && ($this->_query === null || $this->_query->isEmpty())
             && $this->_fragment !== null;
     }
-    
+
     protected function _resetFragment() {
         $this->_fragment = null;
     }
-    
+
     protected function _getFragmentString() {
         if($this->_fragment !== null) {
             return '#'.$this->_fragment;

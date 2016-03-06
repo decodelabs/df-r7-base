@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 class Promise implements IPromise, core\IDumpable {
-    
+
     protected $_action;
     protected $_errorHandlers = [];
     protected $_eventHandlers = [];
@@ -124,9 +124,9 @@ class Promise implements IPromise, core\IDumpable {
                 }
 
                 $promise->then(function($value, $promise) use($key, $aggregate, $onFulfill) {
-                    return Callback::callArgs($onFulfill, [$value, $key, $aggregate]);
+                    return Callback::call($onFulfill, $value, $key, $aggregate);
                 }, function(\Exception $error, $promise) use($key, $aggregate, $onReject) {
-                    return Callback::callArgs($onReject, [$error, $key, $aggregate]);
+                    return Callback::call($onReject, $error, $key, $aggregate);
                 })->sync();
 
                 if($aggregate->hasDelivered()) {
@@ -198,7 +198,7 @@ class Promise implements IPromise, core\IDumpable {
             $this->_action = null;
 
             try {
-                $value = $action->invokeArgs([$value, $this]);
+                $value = $action->invoke($value, $this);
             } catch(\Exception $e) {
                 return $this->deliverError($e);
             }
@@ -244,8 +244,8 @@ class Promise implements IPromise, core\IDumpable {
     }
 
     public function isPending() {
-        return $this->hasBegun() 
-            && !$this->isCancelled() 
+        return $this->hasBegun()
+            && !$this->isCancelled()
             && !$this->hasDelivered();
     }
 
@@ -277,7 +277,7 @@ class Promise implements IPromise, core\IDumpable {
         if($this->_isCancelled || $this->_hasDelivered) {
             return $this;
         }
-        
+
         $this->_cancelRequests++;
 
         if($this->_cancelRequests >= count($this->_dependants)) {
@@ -330,8 +330,8 @@ class Promise implements IPromise, core\IDumpable {
 
 
 // Error handlers
-    public function onError($callback) {
-        return $this->addErrorHandlers(func_get_args());
+    public function onError(...$callbacks) {
+        return $this->addErrorHandlers($callbacks);
     }
 
     public function addErrorHandlers(array $handlers) {
@@ -425,7 +425,7 @@ class Promise implements IPromise, core\IDumpable {
         $this->_eventHandlers[$name] = Callback::factory($callback);
         return $this;
     }
- 
+
     public function hasEventHandler($name) {
         $name = lcfirst($name);
         return isset($this->_eventHandlers[$name]);
@@ -466,7 +466,7 @@ class Promise implements IPromise, core\IDumpable {
         $name = lcfirst($name);
 
         if($this->hasEventHandler($name)) {
-            $this->_eventHandlers[$name]->invokeArgs([$values, $this]);
+            $this->_eventHandlers[$name]->invoke($values, $this);
         }
 
         return $this;
@@ -518,9 +518,9 @@ class Promise implements IPromise, core\IDumpable {
 
 
 // Chaining
-    public function then($action, $errorHandler=null) {
+    public function then($action, ...$errorHandlers) {
         $output = (new static($action))
-            ->addErrorHandlers(array_slice(func_get_args(), 1))
+            ->addErrorHandlers($errorHandlers)
             ->setParent($this);
 
         if($this->_isCancelled) {
@@ -536,13 +536,13 @@ class Promise implements IPromise, core\IDumpable {
         return $output;
     }
 
-    public function also($action, $errorHandler=null) {
+    public function also($action, ...$errorHandlers) {
         if($this->_parent) {
             return $this->_parent->then($action)
-                ->addErrorHandlers(array_slice(func_get_args(), 1));
+                ->addErrorHandlers($errorHandlers);
         } else {
             $output = (new static($action))
-                ->addErrorHandlers(array_slice(func_get_args(), 1));
+                ->addErrorHandlers($errorHandlers);
 
             if($this->_isCancelled) {
                 $output->_isCancelled = true;
@@ -556,9 +556,9 @@ class Promise implements IPromise, core\IDumpable {
         }
     }
 
-    public function otherwise($errorHandler) {
+    public function otherwise(...$errorHandlers) {
         $output = (new static())
-            ->addErrorHandlers(func_get_args())
+            ->addErrorHandlers($errorHandlers)
             ->setParent($this);
 
         if($this->_isCancelled) {
@@ -611,7 +611,7 @@ class Promise implements IPromise, core\IDumpable {
                 'Promise has already delivered'
             );
         }
-        
+
         $this->_hasBegun = true;
         $this->_result = null;
         $this->_action = null;
@@ -639,7 +639,7 @@ class Promise implements IPromise, core\IDumpable {
                 }
 
                 try {
-                    $this->_result = $callback->invokeArgs([$error, $this]);
+                    $this->_result = $callback->invoke($error, $this);
                     break 2;
                 } catch(\Exception $e) {
                     $this->_error = $e;

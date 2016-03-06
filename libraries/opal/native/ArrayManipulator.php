@@ -704,7 +704,7 @@ class ArrayManipulator implements IArrayManipulator {
         }
 
         $args[] = &$this->_rows;
-        call_user_func_array('array_multisort', $args);
+        array_multisort(...$args);
 
         return $this;
     }

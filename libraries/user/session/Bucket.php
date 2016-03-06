@@ -246,29 +246,37 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         return null;
     }
 
-    public function has($key) {
-        $key = (string)$key;
+    public function has(...$keys) {
+        foreach($keys as $key) {
+            $key = (string)$key;
 
-        if(isset($this->_nodes[$key])) {
-            return true;
-        }
-
-        return $this->_controller->backend->hasNode($this, $key);
-    }
-
-    public function remove($key) {
-        $key = (string)$key;
-
-        if(isset($this->_nodes[$key])) {
-            if($this->_nodes[$key]->isLocked) {
-                $this->release($key);
+            if(isset($this->_nodes[$key])) {
+                return true;
             }
 
-            unset($this->_nodes[$key]);
+            if($this->_controller->backend->hasNode($this, $key)) {
+                return true;
+            }
         }
 
-        $this->_controller->backend->removeNode($this, $key);
-        $this->_controller->cache->removeNode($this, $key);
+        return false;
+    }
+
+    public function remove(...$keys) {
+        foreach($keys as $key) {
+            $key = (string)$key;
+
+            if(isset($this->_nodes[$key])) {
+                if($this->_nodes[$key]->isLocked) {
+                    $this->release($key);
+                }
+
+                unset($this->_nodes[$key]);
+            }
+
+            $this->_controller->backend->removeNode($this, $key);
+            $this->_controller->cache->removeNode($this, $key);
+        }
 
         return $this;
     }

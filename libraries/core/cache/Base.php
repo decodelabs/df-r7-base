@@ -9,34 +9,34 @@ use df;
 use df\core;
 
 abstract class Base implements ICache {
-    
+
     use core\TValueMap;
-    
+
     const REGISTRY_PREFIX = 'cache://';
     const CACHE_ID = null;
-    
+
     const IS_DISTRIBUTED = true;
     const MUST_BE_LOCAL = false;
     const DEFAULT_LIFETIME = 1800;
 
     const USE_DIRECT_FILE_BACKEND = false;
-    
+
     private static $_cacheIds = [];
-    
+
     private $_backend;
-    
+
     public static function getInstance() {
         $application = df\Launchpad::getApplication();
-        
+
         $class = get_called_class();
         $id = self::REGISTRY_PREFIX.$class::getCacheId();
-        
+
         if(!$cache = $application->getRegistryObject($id)) {
             $application->setRegistryObject(
                 $cache = new $class($application)
             );
         }
-        
+
         return $cache;
     }
 
@@ -45,7 +45,7 @@ abstract class Base implements ICache {
         if(function_exists('opcache_reset')) {
             opcache_reset();
         }
-        
+
         $config = Config::getInstance();
 
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
@@ -66,8 +66,8 @@ abstract class Base implements ICache {
             $class::purgeAll($options);
         }
     }
-    
-    
+
+
 // Construct
     protected function __construct() {
         $this->_backend = $this->_loadBackend();
@@ -102,21 +102,21 @@ abstract class Base implements ICache {
         } else {
             $output = self::backendFactory($this, $backendName, $options);
         }
-        
+
         return $output;
     }
 
     public static function backendFactory(ICache $cache, $name, core\collection\ITree $options, $lifeTime=0) {
         $class = 'df\\core\\cache\\backend\\'.$name;
-        
+
         if(isset($options->lifeTime)) {
             $lifeTime = (int)$options['lifeTime'];
         }
-        
+
         if($lifeTime < 1) {
             $lifeTime = $cache->getDefaultLifeTime();
         }
-        
+
         return new $class($cache, $lifeTime, $options);
     }
 
@@ -133,8 +133,8 @@ abstract class Base implements ICache {
                 self::$_cacheIds[$class] = implode('/', $parts);
             }
         }
-        
-        return self::$_cacheIds[$class]; 
+
+        return self::$_cacheIds[$class];
     }
 
     public function getCacheBackend() {
@@ -144,19 +144,19 @@ abstract class Base implements ICache {
     public function getCacheStats() {
         return $this->_backend->getStats();
     }
-    
+
     final public function getRegistryObjectKey() {
         return self::REGISTRY_PREFIX.static::getCacheId();
     }
-    
+
     public function getLifeTime() {
         return $this->_backend->getLifeTime();
     }
-    
+
     public function getDefaultLifeTime() {
         return static::DEFAULT_LIFETIME;
     }
-    
+
     public function isCacheDistributed() {
         return static::IS_DISTRIBUTED && df\Launchpad::$application->isDistributed();
     }
@@ -164,8 +164,8 @@ abstract class Base implements ICache {
     public function mustCacheBeLocal() {
         return !static::IS_DISTRIBUTED && static::MUST_BE_LOCAL;
     }
-    
-    
+
+
 // Access
     public function set($key, $value, $lifeTime=null) {
         if($lifeTime !== null) {
@@ -179,20 +179,20 @@ abstract class Base implements ICache {
         $this->_backend->set($key, $value, $lifeTime);
         return $this;
     }
-    
+
     public function get($key, $default=null) {
         return $this->_backend->get($key, $default);
     }
-    
-    public function has($key) {
-        return $this->_backend->has($key);
+
+    public function has(...$keys) {
+        return $this->_backend->has(...$keys);
     }
-    
-    public function remove($key) {
-        $this->_backend->remove($key);
+
+    public function remove(...$keys) {
+        $this->_backend->remove(...$keys);
         return $this;
     }
-    
+
     public function clear() {
         $this->_backend->clear();
         return $this;
@@ -200,7 +200,7 @@ abstract class Base implements ICache {
 
     public function clearAll() {
         $config = Config::getInstance();
-        
+
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
             $class::clearFor($options, $this);
@@ -226,24 +226,24 @@ abstract class Base implements ICache {
     public function getKeys() {
         return $this->_backend->getKeys();
     }
-    
+
     public function offsetSet($key, $value) {
         return $this->set($key, $value);
     }
-    
+
     public function offsetGet($key) {
         return $this->get($key);
     }
-    
+
     public function offsetExists($key) {
         return $this->has($key);
     }
-    
+
     public function offsetUnset($key) {
         return $this->remove($key);
     }
-    
-    
+
+
     public function getCreationTime($key) {
         return $this->_backend->getCreationTime($key);
     }

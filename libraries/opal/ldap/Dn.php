@@ -127,11 +127,7 @@ class Dn implements IDn, core\IDumpable {
         return new self($output);
     }
 
-    public static function escapeValues($values) {
-        if(!is_array($values)) {
-            $values = func_get_args();
-        }
-
+    public static function escapeValues(...$values) {
         foreach($values as $i => $value) {
             $values[$i] = self::escapeValue($value);
         }
@@ -167,11 +163,7 @@ class Dn implements IDn, core\IDumpable {
         return $value;
     }
 
-    public static function unescapeValues($values) {
-        if(!is_array($values)) {
-            $values = func_get_args();
-        }
-
+    public static function unescapeValues(...$values) {
         foreach($values as $i => $value) {
             $values[$i] = self::unescapeValue($value);
         }

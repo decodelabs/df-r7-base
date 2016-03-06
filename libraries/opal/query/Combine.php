@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 
 class Combine implements ICombineQuery {
-    
+
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Combine;
@@ -20,10 +20,10 @@ class Combine implements ICombineQuery {
         $this->_sourceManager = $parent->getSourceManager();
 
         $this->_source = $this->_sourceManager->newSource(
-            $parent->getSource()->getAdapter(), 
+            $parent->getSource()->getAdapter(),
             $parent->getSourceAlias().'_combine'.count($parent->getCombines())
         );
 
-        $this->addFields($fields);
+        $this->addFields(...array_values($fields));
     }
 }

@@ -54,19 +54,29 @@ class Options extends Base implements user\ISessionBackedHelper, core\IValueMap,
         }
     }
 
-    public function has($key) {
+    public function has(...$keys) {
         $this->_ensureSessionData();
-        return isset($this->_sessionData[$key]);
+
+        foreach($keys as $key) {
+            if(isset($this->_sessionData[$key])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public function remove($key) {
+    public function remove(...$keys) {
         $this->_ensureSessionData();
-        unset($this->_sessionData[$key]);
+
+        foreach($keys as $key) {
+            unset($this->_sessionData[$key]);
+        }
 
         if($this->manager->isLoggedIn()) {
             $this->manager->getUserModel()->removeClientOptions(
                 $this->manager->client->getId(),
-                $key
+                $keys
             );
         }
 

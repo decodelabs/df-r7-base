@@ -46,19 +46,15 @@ class Callback implements ICallback, core\IDumpable {
         }
 
         if($callback === null) {
-            return $callback;
+            return null;
         }
 
         return new self($callback, $extraArgs);
     }
 
-    public static function call($callback) {
-        return self::callArgs($callback, array_slice(func_get_args(), 1));
-    }
-
-    public static function callArgs($callback, array $args=[]) {
+    public static function call($callback, ...$args) {
         if($callback = self::factory($callback)) {
-            return $callback->invokeArgs($args);
+            return $callback->invoke(...$args);
         }
 
         return null;
@@ -120,17 +116,11 @@ class Callback implements ICallback, core\IDumpable {
         return $this->_extraArgs;
     }
 
-    public function __invoke() {
-        $args = func_get_args();
-        return $this->invokeArgs($args);
+    public function __invoke(...$args) {
+        return $this->invoke(...$args);
     }
 
-    public function invoke() {
-        $args = func_get_args();
-        return $this->invokeArgs($args);
-    }
-
-    public function invokeArgs(array $args) {
+    public function invoke(...$args) {
         if(!empty($this->_extraArgs)) {
             $args = array_merge($args, $this->_extraArgs);
         }

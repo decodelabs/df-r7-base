@@ -18,9 +18,8 @@ class Tuple implements ITuple, core\IDumpable {
     use core\collection\TArrayCollection_Shiftable;
     use core\collection\TArrayCollection_IndexedMovable;
 
-    public function __construct($data=[]) {
-        $data = core\collection\Util::flattenArray(func_get_args(), false);
-        $this->import($data);
+    public function __construct(...$data) {
+        $this->import(...$data);
     }
 
     protected function _normalizeValue($value) {

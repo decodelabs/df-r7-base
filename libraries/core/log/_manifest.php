@@ -21,7 +21,7 @@ interface IManager extends core\IManager {
     public function logNotFound($request=null, $message=null);
     public function logException(\Throwable $exception, $request=null);
 
-    public function swallow($block);
+    public function swallow($block, ...$args);
 }
 
 
@@ -34,10 +34,10 @@ interface IEntryPoint {
     public function addNode(INode $node);
     public function newGroup($title=null, $file=null, $line=null);
 
-    public function dump($arg1);
-    public function dumpDeep($arg1);
-    public function dumpQuiet($arg1);
-    public function dumpDeepQuiet($arg1);
+    public function dump(...$args);
+    public function dumpDeep(...$args);
+    public function dumpQuiet(...$args);
+    public function dumpDeepQuiet(...$args);
     public function addDump($dumpObject, core\debug\IStackCall $stackCall, $deep=false, $critical=true);
     public function addDumpList(array $dumpObjects, core\debug\IStackCAll $stackCall, $deep=false, $critical=true);
 
@@ -51,8 +51,8 @@ interface IEntryPoint {
     public function deprecated();
     public function addMessage($message, $type, core\debug\IStackCall $stackCall);
 
-    public function stub();
-    public function stubQuiet();
+    public function stub(...$args);
+    public function stubQuiet(...$args);
     public function addStub(array $dumpObjects, core\debug\IStackCall $stackCall, $critical=true);
 
     public function stackTrace($rewind=0);
@@ -67,20 +67,20 @@ trait TEntryPoint {
 
 
 // Dump
-    public function dump($arg1) {
-        return $this->addDumpList(func_get_args(), core\debug\StackCall::factory(1), false, true);
+    public function dump(...$args) {
+        return $this->addDumpList($args, core\debug\StackCall::factory(1), false, true);
     }
 
-    public function dumpDeep($arg1) {
-        return $this->addDumpList(func_get_args(), core\debug\StackCall::factory(1), true, true);
+    public function dumpDeep(...$args) {
+        return $this->addDumpList($args, core\debug\StackCall::factory(1), true, true);
     }
 
-    public function dumpQuiet($arg1) {
-        return $this->addDumpList(func_get_args(), core\debug\StackCall::factory(1), false, false);
+    public function dumpQuiet(...$args) {
+        return $this->addDumpList($args, core\debug\StackCall::factory(1), false, false);
     }
 
-    public function dumpDeepQuiet($arg1) {
-        return $this->addDumpList(func_get_args(), core\debug\StackCall::factory(1), true, false);
+    public function dumpDeepQuiet(...$args) {
+        return $this->addDumpList($args, core\debug\StackCall::factory(1), true, false);
     }
 
     public function addDump($dumpObject, core\debug\IStackCall $stackCall, $deep=false, $critical=true) {
@@ -159,12 +159,12 @@ trait TEntryPoint {
 
 
 // Stub
-    public function stub() {
-        return $this->addStub(func_get_args(), core\debug\StackCall::factory(1), true);
+    public function stub(...$args) {
+        return $this->addStub($args, core\debug\StackCall::factory(1), true);
     }
 
-    public function stubQuiet() {
-        return $this->addStub(func_get_args(), core\debug\StackCall::factory(1), false);
+    public function stubQuiet(...$args) {
+        return $this->addStub($args, core\debug\StackCall::factory(1), false);
     }
 
     public function addStub(array $dumpObjects, core\debug\IStackCall $stackCall, $critical=true) {

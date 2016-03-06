@@ -10,21 +10,24 @@ use df\core;
 use df\aura;
 
 class StyleCollection implements IStyleCollection, core\IDumpable {
-    
+
     use core\TStringProvider;
     use core\collection\TArrayCollection_Map;
     use core\collection\TArrayCollection_Constructor;
-    
-    public function import($input) {
-        if($input instanceof core\IArrayProvider) {
-            $input = $input->toArray();
-        }
-        
-        if(!is_array($input)) {
-            $input = [$input];
+
+    public function import(...$input) {
+        foreach($input as $data) {
+            if($data instanceof core\IArrayProvider) {
+                $data = $data->toArray();
+            }
+
+            if(!is_array($data)) {
+                $data = [$data];
+            }
+
+            $this->_importSet($data);
         }
 
-        $this->_importSet($input);
         return $this;
     }
 
@@ -42,7 +45,7 @@ class StyleCollection implements IStyleCollection, core\IDumpable {
                     }
 
                     $exp = explode(':', $part);
-                    
+
                     if(count($exp) == 2) {
                         $this->set(trim(array_shift($exp)), trim(array_shift($exp)));
                     }
@@ -54,17 +57,17 @@ class StyleCollection implements IStyleCollection, core\IDumpable {
             }
         }
     }
-    
+
     public function toString() {
         $output = [];
-        
+
         foreach($this->_collection as $key => $value) {
             $output[] = $key.': '.$value.';';
         }
-        
+
         return implode(' ', $output);
     }
-    
+
     public function getDumpProperties() {
         return $this->toString();
     }

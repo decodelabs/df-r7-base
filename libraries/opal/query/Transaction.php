@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 
 class Transaction implements ITransaction, core\IDumpable {
-    
+
     protected $_level = 1;
     protected $_adapters = [];
     protected $_source;
@@ -26,11 +26,11 @@ class Transaction implements ITransaction, core\IDumpable {
 
         $this->_source = $source;
     }
-    
-    public function select($field1=null) {
+
+    public function select(...$fields) {
         $output = Initiator::factory()
             ->setTransaction($this)
-            ->beginSelect(func_get_args());
+            ->beginSelect($fields);
 
         if($this->_source !== null) {
             $output = $output->from($this->_source);
@@ -39,10 +39,10 @@ class Transaction implements ITransaction, core\IDumpable {
         return $output;
     }
 
-    public function selectDistinct($field1=null) {
+    public function selectDistinct(...$fields) {
         $output = Initiator::factory()
             ->setTransaction($this)
-            ->beginSelect(func_get_args(), true);
+            ->beginSelect($fields, true);
 
         if($this->_source !== null) {
             $output = $output->from($this->_source);
@@ -71,11 +71,11 @@ class Transaction implements ITransaction, core\IDumpable {
         return $this->selectDistinct()->count();
     }
 
-    public function union() {
+    public function union(...$fields) {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginUnion()
-            ->with(func_get_args());
+            ->with($fields);
 
         if($this->_source !== null) {
             $output = $output->from($this->_source);
@@ -83,7 +83,7 @@ class Transaction implements ITransaction, core\IDumpable {
 
         return $output;
     }
-    
+
     public function fetch() {
         $output = Initiator::factory()
             ->setTransaction($this)
@@ -95,7 +95,7 @@ class Transaction implements ITransaction, core\IDumpable {
 
         return $output;
     }
-    
+
     public function insert($row) {
         $output = Initiator::factory()
             ->setTransaction($this)
@@ -107,7 +107,7 @@ class Transaction implements ITransaction, core\IDumpable {
 
         return $output;
     }
-    
+
     public function batchInsert($rows=[]) {
         $output = Initiator::factory()
             ->setTransaction($this)
@@ -119,7 +119,7 @@ class Transaction implements ITransaction, core\IDumpable {
 
         return $output;
     }
-    
+
     public function replace($row) {
         $output = Initiator::factory()
             ->setTransaction($this)
@@ -131,7 +131,7 @@ class Transaction implements ITransaction, core\IDumpable {
 
         return $output;
     }
-    
+
     public function batchReplace($rows=[]) {
         $output = Initiator::factory()
             ->setTransaction($this)
@@ -143,7 +143,7 @@ class Transaction implements ITransaction, core\IDumpable {
 
         return $output;
     }
-    
+
     public function update(array $valueMap=null) {
         $output = Initiator::factory()
             ->setTransaction($this)
@@ -155,7 +155,7 @@ class Transaction implements ITransaction, core\IDumpable {
 
         return $output;
     }
-    
+
     public function delete() {
         $output = Initiator::factory()
             ->setTransaction($this)
@@ -167,7 +167,7 @@ class Transaction implements ITransaction, core\IDumpable {
 
         return $output;
     }
-    
+
     public function begin() {
         if($this->_source !== null) {
             return new self($this->_source);
@@ -175,8 +175,8 @@ class Transaction implements ITransaction, core\IDumpable {
             return new self();
         }
     }
-    
-    
+
+
     public function commit() {
         if($this->_level == 1) {
             foreach($this->_adapters as $adapter) {
@@ -185,14 +185,14 @@ class Transaction implements ITransaction, core\IDumpable {
                 }
             }
         }
-        
+
         if($this->_level > 0) {
             $this->_level--;
         }
-        
+
         return $this;
     }
-    
+
     public function rollback() {
         if($this->_level == 1) {
             foreach($this->_adapters as $adapter) {
@@ -201,14 +201,14 @@ class Transaction implements ITransaction, core\IDumpable {
                 }
             }
         }
-        
+
         if($this->_level > 0) {
             $this->_level--;
         }
-        
+
         return $this;
     }
-    
+
     public function beginAgain() {
         if(!$this->_level) {
             foreach($this->_adapters as $adapter) {
@@ -217,26 +217,26 @@ class Transaction implements ITransaction, core\IDumpable {
                 }
             }
         }
-        
+
         $this->_level++;
-        
+
         return $this;
     }
-    
-    
+
+
 // Adapters
     public function registerAdapter(IAdapter $adapter, $forWrite=true) {
         $isCapable = $adapter->supportsQueryFeature(IQueryFeatures::TRANSACTION);
         $id = $adapter->getQuerySourceAdapterHash();
-        
+
         if(!isset($this->_adapters[$id])) {
             $this->_adapters[$id] = $adapter;
-            
+
             if($isCapable) {
                 $adapter->beginQueryTransaction();
             }
         }
-        
+
         /*
         if(!$isCapable && $forWrite) {
             throw new RuntimeException(
@@ -244,19 +244,19 @@ class Transaction implements ITransaction, core\IDumpable {
             );
         }
         */
-        
+
         return $this;
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         $adapters = [];
-        
+
         foreach($this->_adapters as $adapter) {
             $adapters[] = $adapter->getQuerySourceDisplayName();
         }
-        
+
         return [
             'level' => $this->_level,
             'adapters' => $adapters

@@ -29,18 +29,13 @@ interface ICallback {
     public function setExtraArgs(array $args);
     public function getExtraArgs();
 
-    public function invoke();
-    public function invokeArgs(array $args);
+    public function invoke(...$args);
 
     public function getParameters();
 }
 
-function Callback($callback) {
-    return Callback::factory($callback)->invokeArgs(array_slice(func_get_args(), 1));
-}
-
-function CallbackArgs($callback, array $args) {
-    return Callback::factory($callback)->invokeArgs($args);
+function Callback($callback, ...$args) {
+    return Callback::call($callback, ...$args);
 }
 
 interface IEnumFactory {
@@ -66,8 +61,7 @@ interface IStruct {
 
 
 interface ITypeRef {
-    public function newInstance();
-    public function newInstanceArgs(array $args);
+    public function newInstance(...$args);
     public function checkType($extends);
     public function getClass();
     public function getClassPath();
@@ -151,7 +145,7 @@ interface IPromise {
     public function isCancelled();
 
 // Error handlers
-    public function onError($callback);
+    public function onError(...$callbacks);
     public function addErrorHandlers(array $handlers);
     public function addErrorHandler($callback);
     public function getErrorHandlers();
@@ -179,9 +173,9 @@ interface IPromise {
     public function getProgressCallback();
 
 // Chaining
-    public function then($action, $errorHandler=null);
-    public function also($action, $errorHandler=null);
-    public function otherwise($errorHandler);
+    public function then($action, ...$errorHandlers);
+    public function also($action, ...$errorHandlers);
+    public function otherwise(...$errorHandlers);
     public function always($action);
 
 // Completion

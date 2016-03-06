@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -23,7 +23,7 @@ interface IReader extends core\IArrayProvider, \Iterator {
     public function setEnclosure($enclosure);
     public function getEnclosure();
 
-    public function setFields($field1);
+    public function setFields(...$fields);
     public function extractFields();
     public function getFields();
 

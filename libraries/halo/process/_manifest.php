@@ -20,11 +20,11 @@ interface IProcess {
     public static function getCurrentProcessId();
     public function getTitle();
     public function getProcessId();
-    
+
     public function isAlive();
     public function kill();
     public function sendSignal($signal);
-    
+
     public function isPrivileged();
 }
 
@@ -36,7 +36,7 @@ interface IManagedProcess extends IProcess {
     public function getPriority();
 
     public function setIdentity($uid, $gid);
-    
+
     public function setOwnerId($id);
     public function getOwnerId();
 
@@ -52,7 +52,7 @@ interface IManagedProcess extends IProcess {
     public function hasPidFile();
     public function setPidFilePath($path);
     public function getPidFilePath();
-    
+
     public function canFork();
     public function fork();
     public function delegate();
@@ -84,7 +84,7 @@ trait TPidFileProvider {
                 throw new RuntimeException(
                     'PID file '.basename($path).' already exists and is live with pid of '.$oldPid
                 );
-            }   
+            }
         }
 
 
@@ -119,7 +119,7 @@ interface ISignal {
 interface ILauncher {
     public function setProcessName($name);
     public function getProcessName();
-    public function setArgs($args);
+    public function setArgs(...$args);
     public function getArgs();
     public function setPath($path);
     public function getPath();
@@ -136,7 +136,7 @@ interface ILauncher {
     public function getMultiplexer();
     public function setGenerator($generator);
     public function getGenerator();
-    
+
     public function launch();
     public function launchBackground();
     public function launchManaged();
@@ -147,18 +147,18 @@ interface ILauncher {
 interface IResult {
     public function registerFailure();
     public function hasLaunched();
-    
+
     public function registerCompletion();
     public function hasCompleted();
-    
+
     public function getTimer();
-    
+
     public function setOutput($output);
     public function appendOutput($output);
     public function hasOutput();
     public function getOutput();
-    
-    
+
+
     public function setError($error);
     public function appendError($error);
     public function hasError();

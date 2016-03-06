@@ -160,26 +160,32 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $output;
     }
 
-    public function has($key) {
-        $key = $this->_normalizeKey($key);
-        $file = $this->_dir->getFile('cache-'.$key);
-        clearstatcache();
+    public function has(...$keys) {
+        foreach($keys as $key) {
+            $key = $this->_normalizeKey($key);
+            $file = $this->_dir->getFile('cache-'.$key);
+            clearstatcache();
 
-        if(!$file->exists()) {
-            return false;
+            if(!$file->exists()) {
+                continue;
+            }
+
+            if(!$file->isRecent($this->_lifeTime)) {
+                $file->unlink();
+                continue;
+            }
+
+            return true;
         }
 
-        if(!$file->isRecent($this->_lifeTime)) {
-            $file->unlink();
-            return false;
-        }
-
-        return true;
+        return false;
     }
 
-    public function remove($key) {
-        $key = $this->_normalizeKey($key);
-        $this->_dir->getFile('cache-'.$key)->unlink();
+    public function remove(...$keys) {
+        foreach($keys as $key) {
+            $key = $this->_normalizeKey($key);
+            $this->_dir->getFile('cache-'.$key)->unlink();
+        }
 
         return true;
     }

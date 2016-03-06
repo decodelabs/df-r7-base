@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\opal\query;
 use df;
 use df\core;
 use df\opal;
-    
+
 class Expression implements IExpression, core\IDumpable {
 
     protected $_field;
@@ -24,7 +24,7 @@ class Expression implements IExpression, core\IDumpable {
         $this->_field = $field;
 
         if(!empty($elements)) {
-            call_user_func_array([$this, 'express'], $elements);
+            $this->express(...$elements);
         }
     }
 
@@ -46,7 +46,7 @@ class Expression implements IExpression, core\IDumpable {
                 'Found operator when expecting reference or value'
             );
         }
-        
+
         switch($operator) {
             case IExpressionOperator::ADD:
             case IExpressionOperator::SUBTRACT:
@@ -67,12 +67,11 @@ class Expression implements IExpression, core\IDumpable {
         return $this;
     }
 
-    public function group($element1) {
-        return call_user_func_array([$this, 'beginExpression'], func_get_args())->endExpression();
+    public function group(...$elements) {
+        return $this->beginExpression($elements)->endExpression();
     }
 
-    public function express($element1) {
-        $elements = func_get_args();
+    public function express(...$elements) {
         $source = $this->_parentQuery->getSource();
         $sourceManager = $this->_parentQuery->getSourceManager();
 
@@ -132,8 +131,8 @@ class Expression implements IExpression, core\IDumpable {
         );
     }
 
-    public function beginExpression($element1) {
-        return new self($this->_parentQuery, $this->_field, func_get_args(), $this);
+    public function beginExpression(...$elements) {
+        return new self($this->_parentQuery, $this->_field, $elements, $this);
     }
 
     public function correlate($targetField) {

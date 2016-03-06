@@ -70,21 +70,12 @@ class SearchController implements ISearchController, core\IDumpable {
 
     public function setFields(array $fields) {
         $this->_fields = [];
-
-        if(!is_array($fields)) {
-            $fields = func_get_args();
-        }
-
         return $this->addFields($fields);
     }
 
     public function addFields(array $fields) {
         $source = $this->_query->getSource();
         $sourceManager = $this->_query->getSourceManager();
-
-        if(!is_array($fields)) {
-            $fields = func_get_args();
-        }
 
         foreach($fields as $field => $set) {
             if(is_int($field) && is_string($set)) {

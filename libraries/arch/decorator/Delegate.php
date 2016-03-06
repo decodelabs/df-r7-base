@@ -116,8 +116,8 @@ abstract class Delegate implements IDelegateDecorator {
         return $this->delegate->fieldName($name);
     }
 
-    final public function eventName($name) {
-        return call_user_func_array([$this->delegate, 'eventName'], func_get_args());
+    final public function eventName($name, ...$args) {
+        return $this->delegate->eventName($name, ...$args);
     }
 
     final public function elementId($name) {

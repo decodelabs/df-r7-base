@@ -131,14 +131,12 @@ class InlineManyRelationValueContainer implements
 
 
 // Records
-    public function add($record) {
-        return $this->addList(func_get_args());
+    public function add(...$records) {
+        return $this->addList($records);
     }
 
     public function addList(array $records) {
-        $index = $this->_normalizeInputRecordList($records);
-
-        foreach($index as $id => $record) {
+        foreach($this->_normalizeInputRecordList($records) as $id => $record) {
             $this->_new[$id] = $record;
         }
 
@@ -149,8 +147,8 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
 
-    public function populate($record) {
-        return $this->populateList(func_get_args());
+    public function populate(...$records) {
+        return $this->populateList($records);
     }
 
     public function populateList(array $records) {
@@ -231,8 +229,8 @@ class InlineManyRelationValueContainer implements
         return $index;
     }
 
-    public function remove($record) {
-        return $this->removeList(func_get_args());
+    public function remove(...$records) {
+        return $this->removeList($records);
     }
 
     public function removeList(array $records) {
@@ -274,7 +272,7 @@ class InlineManyRelationValueContainer implements
 
 
 // Query
-    public function select($field1=null) {
+    public function select(...$fields) {
         if(!$this->_record) {
             throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
@@ -288,7 +286,7 @@ class InlineManyRelationValueContainer implements
 
         // Init query
         $query = opal\query\Initiator::factory()
-            ->beginSelect(func_get_args())
+            ->beginSelect($fields)
             ->from($targetUnit, $targetSourceAlias);
 
 
@@ -298,13 +296,11 @@ class InlineManyRelationValueContainer implements
         return $query;
     }
 
-    public function selectDistinct($field1=null) {
-        $query = call_user_func_array([$this, 'select'], func_get_args());
-        $query->isDistinct(true);
-        return $query;
+    public function selectDistinct(...$fields) {
+        return $this->select(...$fields)->isDistinct(true);
     }
 
-    public function selectFromNew($field1=null) {
+    public function selectFromNew(...$fields) {
         if(!$this->_record) {
             throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
@@ -316,7 +312,7 @@ class InlineManyRelationValueContainer implements
         $localFieldName = $this->_field->getName();
 
         return opal\query\Initiator::factory()
-            ->beginSelect(func_get_args())
+            ->beginSelect($fields)
             ->from($targetUnit, $localFieldName)
             ->wherePrerequisite('@primary', 'in', $this->_getKeySets($this->_new));
     }

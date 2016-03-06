@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 
 class Union implements IUnionQuery {
-    
+
     use TQuery;
     use TQuery_Derivable;
     use TQuery_Attachable;
@@ -54,14 +54,14 @@ class Union implements IUnionQuery {
 
 
 
-    public function with($field1=null) {
+    public function with(...$fields) {
         return Initiator::factory()
-            ->beginUnionSelect($this, func_get_args(), true);
+            ->beginUnionSelect($this, $fields, true);
     }
 
-    public function withAll($field1=null) {
+    public function withAll(...$fields) {
         return Initiator::factory()
-            ->beginUnionSelect($this, func_get_args(), false);
+            ->beginUnionSelect($this, $fields, false);
     }
 
     public function addQuery(IUnionSelectQuery $query) {

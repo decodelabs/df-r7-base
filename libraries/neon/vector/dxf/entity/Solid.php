@@ -10,13 +10,13 @@ use df\core;
 use df\neon;
 
 class Solid implements neon\vector\dxf\ISolidEntity {
-    
+
     use neon\vector\dxf\TEntity;
     use neon\vector\dxf\TDrawingEntity;
 
     protected $_points = [];
 
-    public function __construct($point1, $point2=null, $point3=null, $point4=null) {
+    public function __construct($point1, $point2, $point3, $point4) {
         $this->setPoints($point1, $point2, $point3, $point4);
     }
 
@@ -24,15 +24,9 @@ class Solid implements neon\vector\dxf\ISolidEntity {
         return 'SOLID';
     }
 
-    public function setPoints($point1, $point2=null, $point3=null, $point4=null) {
-        if($point2 === null && is_array($point1)) {
-            $points = $point1;
-        } else {
-            $points = func_get_args();
-        }
-
+    public function setPoints($point1, $point2, $point3, $point4) {
         for($i = 0; $i < 4; $i++) {
-            $this->_points[] = core\math\Vector::factory(array_shift($points), 3);
+            $this->_points[] = core\math\Vector::factory(func_get_arg($i), 3);
         }
 
         return $this;
@@ -42,7 +36,7 @@ class Solid implements neon\vector\dxf\ISolidEntity {
         return $this->_points;
     }
 
-    
+
 
     public function toString() {
         $output = '';

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\iris;
 use df;
 use df\core;
 use df\iris;
-    
+
 class Token implements IToken, core\IDumpable {
 
     public $type;
@@ -94,12 +94,8 @@ class Token implements IToken, core\IDumpable {
             && $this->value = $token->value;
     }
 
-    public function is($ids) {
-        if(!is_array($ids)) {
-            $ids = func_get_args();
-        }
-        
-        foreach($ids as $id) {
+    public function is(...$ids) {
+        foreach(core\collection\Util::flatten($ids) as $id) {
             $type = $subType = $value = null;
             @list($type, $value) = explode('=', $id, 2);
             @list($type, $subType) = explode('/', $type, 2);
@@ -112,12 +108,8 @@ class Token implements IToken, core\IDumpable {
         return false;
     }
 
-    public function isValue($values) {
-        if(!is_array($values)) {
-            $values = func_get_args();
-        }
-        
-        foreach($values as $value) {
+    public function isValue(...$values) {
+        foreach(core\collection\Util::flatten($values) as $value) {
             if($value == $this->value) {
                 return true;
             }

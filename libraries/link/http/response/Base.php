@@ -185,7 +185,7 @@ abstract class Base implements link\http\IResponse {
     }
 
     public function withHeaders($callback) {
-        core\lang\Callback::callArgs($callback, [$this->headers, $this]);
+        core\lang\Callback::call($callback, $this->headers, $this);
         return $this;
     }
 

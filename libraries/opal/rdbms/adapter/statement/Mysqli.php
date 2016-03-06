@@ -10,32 +10,32 @@ use df\core;
 use df\opal;
 
 class Mysqli extends Base {
-        
+
     protected static $_timer;
     protected $_affectedRows = 0;
     protected $_result;
 
-        
+
 // Execute
     protected function _execute($forWrite=false) {
         $this->_affectedRows = 0;
         $connection = $this->_adapter->getConnection();
         $stmt = $connection->stmt_init();
-        
+
         $bindings = [];
         $sql = '';
         $length = strlen($this->_sql);
         $mode = 0;
         $var = '';
         $quoteChar = null;
-        
+
         for($i = 0; $i < $length + 1; $i++) {
             if(isset($this->_sql{$i})) {
                 $char = $this->_sql{$i};
             } else {
                 $char = '';
             }
-            
+
             switch($mode) {
                 case 0: // Root
                     if($char == ':') {
@@ -45,10 +45,10 @@ class Mysqli extends Base {
                         $quoteChar = $char;
                         $mode = 2;
                     }
-                    
+
                     $sql .= $char;
                     break;
-                    
+
                 case 1: // Var
                     if(!ctype_alnum($char) && $char != '_') {
                         if(array_key_exists($var, $this->_bindings)) {
@@ -57,50 +57,49 @@ class Mysqli extends Base {
                         } else {
                             $sql .= ':'.$var;
                         }
-                        
+
                         $sql .= $char;
                         $var = '';
                         $mode = 0;
                     } else {
                         $var .= $char;
                     }
-                    
+
                     break;
-                    
+
                 case 2: // Quote
                     if($char == $quoteChar) {
                         $mode = 0;
                     }
-                    
+
                     $sql .= $char;
                     break;
             }
         }
-        
+
         if(!$stmt->prepare($sql)) {
             throw opal\rdbms\variant\mysql\Server::getQueryException(
                 $this->_adapter,
-                mysqli_errno($connection), 
-                mysqli_error($connection), 
+                mysqli_errno($connection),
+                mysqli_error($connection),
                 [$sql, $this->_bindings]
             );
         }
-        
+
         if(!empty($bindings)) {
             $args = $this->_refBindings($bindings);
             $types = str_repeat('s', count($bindings));
-            
-            array_unshift($args, $types);
-            call_user_func_array([$stmt, 'bind_param'], $args);
+
+            $stmt->bind_param($types, ...$args);
         }
-        
+
         $stmt->execute();
-        
+
         if($num = mysqli_errno($connection)) {
             throw opal\rdbms\variant\mysql\Server::getQueryException(
-                $this->_adapter, 
-                $num, 
-                mysqli_error($connection), 
+                $this->_adapter,
+                $num,
+                mysqli_error($connection),
                 [$sql, $this->_bindings]
             );
         }
@@ -111,31 +110,31 @@ class Mysqli extends Base {
 
     protected function _refBindings(array &$bindings) {
         $refs = [];
-        
+
         foreach($bindings as $key => $value) {
             $bindings[$key] = $this->_adapter->normalizeValue($value);
             $refs[$key] = &$bindings[$key];
         }
-        
+
         return $refs;
     }
-    
-    
+
+
 // Result
     protected function _fetchRow() {
         if($this->_result) {
             return $this->_result->fetch_assoc();
         }
-        
+
         return null;
     }
-    
+
     public function free() {
         if($this->_result) {
             $this->_result->free();
             $this->_result = null;
         }
-        
+
         return $this;
     }
 

@@ -48,7 +48,7 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
 
             if(method_exists($this, $method)) {
                 $hasInit = true;
-                call_user_func_array([$this, $method], $args);
+                $this->{$method}(...$args);
             } else {
                 throw new axis\schema\FieldTypeNotFoundException(
                     'Field type '.$superType.' does not support sub type '.$subType
@@ -57,7 +57,7 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
         }
 
         if(!$hasInit && method_exists($this, '_init')) {
-            call_user_func_array([$this, '_init'], $args);
+            $this->_init(...$args);
         }
     }
 

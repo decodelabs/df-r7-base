@@ -129,20 +129,28 @@ class Apcu implements core\cache\IBackend {
         return $default;
     }
 
-    public function has($key) {
-        return is_array(apcu_fetch($this->_prefix.$key));
+    public function has(...$keys) {
+        foreach($keys as $key) {
+            if(is_array(apcu_fetch($this->_prefix.$key))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public function remove($key) {
-        $output = @apcu_delete($this->_prefix.$key);
+    public function remove(...$keys) {
+        foreach($keys as $key) {
+            $output = @apcu_delete($this->_prefix.$key);
 
-        /*
-        if($this->_isCli) {
-            $this->_retrigger('remove', $key);
+            /*
+            if($this->_isCli) {
+                $this->_retrigger('remove', $key);
+            }
+            */
         }
-        */
 
-        return $output;
+        return true;
     }
 
     public function clear() {

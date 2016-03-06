@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\opal\query;
 use df;
 use df\core;
 use df\opal;
-    
+
 class Correlation implements ICorrelationQuery, core\IDumpable {
 
     use TQuery;
@@ -56,11 +56,11 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
     public function getSourceManager() {
         return $this->_sourceManager;
     }
-    
+
     public function getSource() {
         return $this->_source;
     }
-    
+
     public function getSourceAlias() {
         return $this->_source->getAlias();
     }
@@ -144,7 +144,7 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
         if($this->_limit) {
             $output['limit'] = $this->_limit;
         }
-        
+
         if($this->_offset) {
             $output['offset'] = $this->_offset;
         }

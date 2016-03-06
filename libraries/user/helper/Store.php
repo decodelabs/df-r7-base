@@ -25,11 +25,21 @@ class Store extends Base implements user\ISessionBackedHelper {
         return $output;
     }
 
-    public function has($key) {
-        return $this->offsetExists($key);
+    public function has(...$keys) {
+        foreach($keys as $key) {
+            if($this->offsetExists($key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public function remove($key) {
-        return $this->offsetUnset($key);
+    public function remove(...$keys) {
+        foreach($keys as $key) {
+            $this->offsetUnset($key);
+        }
+
+        return $this;
     }
 }

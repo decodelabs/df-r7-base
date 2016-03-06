@@ -26,7 +26,7 @@ interface IProcedure extends core\IContextAware {
     public function setDataMap(array $map);
     public function getDataMap();
     public function prepare();
-    public function execute();
+    public function execute(...$args);
     public function isValid();
 }
 

@@ -81,12 +81,12 @@ interface ISchemaContext {}
 
 interface IFieldProvider extends ISchema {
     public function getField($name);
-    public function createField($name, $type);
-    public function addField($name, $type);
+    public function createField($name, $type, ...$args);
+    public function addField($name, $type, ...$args);
     public function addPreparedField(IField $field);
-    public function addFieldAfter($key, $name, $type);
+    public function addFieldAfter($key, $name, $type, ...$args);
     public function addPreparedFieldAfter($key, IField $field);
-    public function replaceField($name, $type);
+    public function replaceField($name, $type, ...$args);
     public function replacePreparedField(IField $field);
     public function removeField($name);
     public function renameField($oldName, $newName);
@@ -131,12 +131,12 @@ interface IIndexProvider extends ISchema {
 
 
 interface IIndexedFieldProvider extends IFieldProvider, IIndexProvider {
-    public function addPrimaryField($name, $type);
-    public function addPrimaryFieldAfter($key, $name, $type);
-    public function addIndexedField($name, $type);
-    public function addIndexedFieldAfter($key, $name, $type);
-    public function addUniqueField($name, $type);
-    public function addUniqueFieldAfter($key, $name, $type);
+    public function addPrimaryField($name, $type, ...$args);
+    public function addPrimaryFieldAfter($key, $name, $type, ...$args);
+    public function addIndexedField($name, $type, ...$args);
+    public function addIndexedFieldAfter($key, $name, $type, ...$args);
+    public function addUniqueField($name, $type, ...$args);
+    public function addUniqueFieldAfter($key, $name, $type, ...$args);
 }
 
 

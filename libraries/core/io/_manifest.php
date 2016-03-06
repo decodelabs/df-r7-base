@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -47,11 +47,11 @@ trait TReader {
         }
 
         $data = false;
-        
+
         while(false !== ($read = $this->_readChunk(1024))) {
             $data .= $read;
         }
-        
+
         return $data;
     }
 
@@ -61,7 +61,7 @@ trait TReader {
                 'Reading has been shut down'
             );
         }
-        
+
         return $this->_readChunk($length);
     }
 
@@ -118,7 +118,7 @@ trait TPeekReader {
                 'Reading has been shut down'
             );
         }
-        
+
         return $this->_peekChunk($length);
     }
 
@@ -176,32 +176,32 @@ trait TWriter {
                 'Writing has already been shut down'
             );
         }
-        
+
         if(!$length = strlen($data)) {
             return $this;
         }
-        
+
         for($written = 0; $written < $length; $written += $result) {
             if($this->_writeCallback) {
                 $this->_triggerWriteCallback();
             }
 
             $result = $this->_writeChunk(substr($data, $written), $length - $written);
-            
+
             if($result === false) {
                 throw new OverflowException(
                     'Unable to write to channel'
                 );
             }
         }
-        
+
         return $this;
     }
 
     public function writeLine($line='') {
         return $this->write($line."\n");
     }
-    
+
     public function writeChunk($data, $length=null) {
         if(!$this->isWritingEnabled()) {
             throw new LogicException(
@@ -218,7 +218,7 @@ trait TWriter {
         if($this->_writeCallback) {
             $this->_triggerWriteCallback();
         }
-        
+
         return $this->_writeChunk($data, $length);
     }
 
@@ -246,7 +246,7 @@ trait TWriter {
         return true;
     }
 
-    
+
     abstract protected function _writeChunk($data, $length);
 }
 
@@ -329,32 +329,25 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
 
 // Accept type
 interface IAcceptTypeProcessor {
-    public function setAcceptTypes($types=null);
-    public function addAcceptTypes($types);
+    public function setAcceptTypes(...$types);
+    public function addAcceptTypes(...$types);
     public function getAcceptTypes();
-    public function isTypeAccepted($type);
+    public function isTypeAccepted(...$types);
 }
 
 trait TAcceptTypeProcessor {
 
     protected $_acceptTypes = [];
 
-    public function setAcceptTypes($types=null) {
+    public function setAcceptTypes(...$types) {
         $this->_acceptTypes = [];
-
-        if($types === null) {
-            return $this;
-        }
-
-        return $this->addAcceptTypes(func_get_args());
+        return $this->addAcceptTypes(...$types);
     }
-        
-    public function addAcceptTypes($types) {   
-        $types = core\collection\Util::flattenArray(func_get_args());
 
+    public function addAcceptTypes(...$types) {
         foreach($types as $type) {
             $type = trim(strtolower($type));
-            
+
             if(!strlen($type)) {
                 continue;
             }
@@ -366,58 +359,60 @@ trait TAcceptTypeProcessor {
             if(false === strpos($type, '/')) {
                 $type .= '/*';
             }
-            
+
             if(!in_array($type, $this->_acceptTypes)) {
                 $this->_acceptTypes[] = $type;
             }
         }
-        
+
         return $this;
     }
-    
+
     public function getAcceptTypes() {
         return $this->_acceptTypes;
     }
 
-    public function isTypeAccepted($type) {
+    public function isTypeAccepted(...$types) {
         if(empty($this->_acceptTypes)) {
             return true;
         }
 
-        if(!strlen($type)) {
-            return false;
-        }
-
-        if($type{0} == '.') {
-            $type = core\fs\Type::extToMime(substr($type, 1));
-        }
-
-        @list($category, $name) = explode('/', $type, 2);
-
-        foreach($this->_acceptTypes as $accept) {
-            if($accept == '*') {
-                return true;
-            }
-
-            @list($acceptCategory, $acceptName) = explode('/', $accept, 2);
-
-            if($acceptCategory == '*') {
-                return true;
-            }
-
-            if($acceptCategory != $category) {
+        foreach($types as $type) {
+            if(!strlen($type)) {
                 continue;
             }
 
-            if($acceptName == '*') {
+            if($type{0} == '.') {
+                $type = core\fs\Type::extToMime(substr($type, 1));
+            }
+
+            @list($category, $name) = explode('/', $type, 2);
+
+            foreach($this->_acceptTypes as $accept) {
+                if($accept == '*') {
+                    return true;
+                }
+
+                @list($acceptCategory, $acceptName) = explode('/', $accept, 2);
+
+                if($acceptCategory == '*') {
+                    return true;
+                }
+
+                if($acceptCategory != $category) {
+                    continue;
+                }
+
+                if($acceptName == '*') {
+                    return true;
+                }
+
+                if($acceptName != $name) {
+                    continue;
+                }
+
                 return true;
             }
-
-            if($acceptName != $name) {
-                continue;
-            }
-
-            return true;
         }
 
         return false;

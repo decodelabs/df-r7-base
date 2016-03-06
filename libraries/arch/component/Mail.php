@@ -12,7 +12,7 @@ use df\aura;
 use df\flow;
 
 abstract class Mail extends Base implements arch\IMailComponent {
-    
+
     const DESCRIPTION = null;
     const IS_PRIVATE = false;
 
@@ -41,7 +41,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
         $this->view = $view;
 
         if(method_exists($this, 'init')) {
-            call_user_func_array([$this, 'init'], $args);
+            $this->init(...$args);
         }
     }
 
@@ -123,7 +123,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
         $this->view = $this->getRenderTarget()->getView();
 
         if(method_exists($this, '_prepare')) {
-            call_user_func_array([$this, '_prepare'], $this->_componentArgs);
+            $this->_prepare(...$this->_componentArgs);
         }
 
         return $this->_normalizeView($this->view);
@@ -133,7 +133,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
         $this->view = $this->getRenderTarget()->getView();
 
         if(method_exists($this, '_preparePreview')) {
-            call_user_func_array([$this, '_preparePreview'], $this->_componentArgs);
+            $this->_preparePreview(...$this->_componentArgs);
         }
 
         if(!$this->_defaultToAddress) {

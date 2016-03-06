@@ -157,7 +157,7 @@ class Select extends Base {
                 if($time - $lastCycle > 1) {
                     $lastCycle = $time;
 
-                    if(false === $this->_cycleHandler->invokeArgs([$this])) {
+                    if(false === $this->_cycleHandler->invoke($this)) {
                         $this->stop();
                     }
                 }

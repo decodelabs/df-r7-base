@@ -104,8 +104,7 @@ interface IRecord extends IDataProvider, core\IExporterValueMap {
     public function makeNew(array $newValues=null);
     public function spawnNew(array $newValues=null);
 
-    public function hasChanged($field=null);
-    public function hasAnyChanged($field1);
+    public function hasChanged(...$fields);
     public function clearChanges();
     public function countChanges();
     public function getChanges();
@@ -170,13 +169,13 @@ interface ITaskAwareValueContainer extends IValueContainer {
 
 
 interface IManyRelationValueContainer extends IValueContainer {
-    public function add($record);
+    public function add(...$records);
     public function addList(array $records);
-    public function remove($record);
+    public function remove(...$records);
     public function removeList(array $records);
     public function removeAll();
 
-    public function select($field1=null);
+    public function select(...$fields);
     public function fetch();
 
     //public function populateInverse(array $inverse);

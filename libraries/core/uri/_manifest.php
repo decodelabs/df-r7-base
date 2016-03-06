@@ -24,16 +24,16 @@ interface IPath extends core\IStringProvider, core\collection\IIndexedQueue {
     public function canonicalize();
     public function extractRelative($path);
     public function getRawCollection();
-    
+
     public function getDirname();
     public function setBaseName($baseName);
     public function getBaseName();
     public function setFileName($fileName);
     public function getFileName();
-    public function hasExtension($extensions=false);
+    public function hasExtension(...$extensions);
     public function setExtension($extension);
     public function getExtension();
-    
+
     public function toUrlEncodedString();
 }
 
@@ -50,13 +50,13 @@ interface ISecureSchemeContainer {
 interface IUsernameContainer {
     public function setUsername($username);
     public function getUsername();
-    public function hasUsername($usernames=false);
+    public function hasUsername(...$usernames);
 }
 
 interface ICredentialContainer extends IUsernameContainer {
     public function setPassword($password);
     public function getPassword();
-    public function hasPassword($passwords=false);
+    public function hasPassword(...$passwords);
     public function setCredentials($username, $password);
     public function hasCredentials();
 }
@@ -77,7 +77,7 @@ interface IIpContainer {
 interface IPortContainer {
     public function setPort($port);
     public function getPort();
-    public function hasPort($ports=false);
+    public function hasPort(...$ports);
 }
 
 interface IDomainPortContainer extends IDomainContainer, IPortContainer {}
@@ -93,7 +93,7 @@ interface IPathContainer {
 interface IFragmentContainer {
     public function getFragment();
     public function setFragment($fragment);
-    public function hasFragment($fragments=false);
+    public function hasFragment(...$fragments);
     public function isJustFragment();
 }
 
@@ -113,7 +113,7 @@ interface IQueryContainer {
 interface IUrl extends core\IStringProvider {
     public function import($url='');
     public function reset();
-    
+
     public function getScheme();
     public function toReadableString();
 }
@@ -130,8 +130,8 @@ interface IGenericUrl extends IUrl, ITransientSchemeUrl, IPathContainer, IQueryC
 interface IMailtoUrl extends IUrl, IUsernameContainer, IDomainContainer, IQueryContainer {
     public function setEmail($email);
     public function getEmail();
-    public function hasEmail($emails=false);
-    
+    public function hasEmail(...$emails);
+
     public function setSubject($subject);
     public function getSubject();
     public function hasSubject();

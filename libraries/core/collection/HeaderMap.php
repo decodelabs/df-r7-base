@@ -23,46 +23,48 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return new self($input);
     }
 
-    public function __construct($input=null) {
-        if($input !== null) {
-            $this->import($input);
+    public function __construct(...$input) {
+        if(!empty($input)) {
+            $this->import(...$input);
         }
     }
 
 // Collection
-    public function import($input) {
-        if($input instanceof core\IArrayProvider) {
-            $input = $input->toArray();
-        }
-
-        if(is_string($input)) {
-            $lines = explode("\n", str_replace("\r", '', $input));
-            $input = [];
-            $last = null;
-
-            foreach($lines as $line) {
-                if(isset($line{0}) && $line{0} == ' ') {
-                    $last .= "\r\n".$line;
-                    continue;
-                }
-
-                $parts = explode(':', $line, 2);
-                $key = trim(array_shift($parts));
-
-                if(empty($key)) {
-                    continue;
-                }
-
-                $value = trim(array_shift($parts));
-                $input[$key] = $value;
-                $last = &$input[$key];
+    public function import(...$input) {
+        foreach($input as $data) {
+            if($data instanceof core\IArrayProvider) {
+                $data = $data->toArray();
             }
-            unset($last);
-        }
 
-        if(is_array($input)) {
-            foreach($input as $key => $value) {
-                $this->set($key, $value);
+            if(is_string($data)) {
+                $lines = explode("\n", str_replace("\r", '', $data));
+                $data = [];
+                $last = null;
+
+                foreach($lines as $line) {
+                    if(isset($line{0}) && $line{0} == ' ') {
+                        $last .= "\r\n".$line;
+                        continue;
+                    }
+
+                    $parts = explode(':', $line, 2);
+                    $key = trim(array_shift($parts));
+
+                    if(empty($key)) {
+                        continue;
+                    }
+
+                    $value = trim(array_shift($parts));
+                    $data[$key] = $value;
+                    $last = &$data[$key];
+                }
+                unset($last);
+            }
+
+            if(is_array($data)) {
+                foreach($data as $key => $value) {
+                    $this->set($key, $value);
+                }
             }
         }
 
@@ -210,15 +212,23 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return (bool)preg_match('/\W*'.preg_quote($name).'="(.*)"/i', $value);
     }
 
-    public function has($key, $value=null) {
+    public function has(...$keys) {
+        foreach($keys as $key) {
+            $key = $this->normalizeKey($key);
+
+            if(isset($this->_collection[$key])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function hasValue($key, $value) {
         $key = $this->normalizeKey($key);
 
         if(!isset($this->_collection[$key])) {
             return false;
-        }
-
-        if($value === null) {
-            return true;
         }
 
         $comp = $this->_collection[$key];
@@ -240,8 +250,11 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return false;
     }
 
-    public function remove($key) {
-        unset($this->_collection[$this->normalizeKey($key)]);
+    public function remove(...$keys) {
+        foreach($keys as $key) {
+            unset($this->_collection[$this->normalizeKey($key)]);
+        }
+
         return $this;
     }
 

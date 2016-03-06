@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -23,7 +23,7 @@ interface IInterchange {
 }
 
 interface IReaderInterchange {
-    public static function fromXmlFile($xmlFile);    
+    public static function fromXmlFile($xmlFile);
     public static function fromXmlString($xmlString);
     public static function fromXmlElement(ITree $element);
 }
@@ -81,7 +81,7 @@ trait TWriterInterchange {
 }
 
 interface IRootInterchange extends IInterchange, IReaderInterchange, IWriterInterchange {
-    
+
 }
 
 interface IRootInterchangeProvider {
@@ -190,7 +190,7 @@ interface ITree extends IReadable, IWritable, core\collection\IAttributeContaine
     public function getById($id);
     public function getByType($type);
     public function getByAttribute($name, $value=null);
-    
+
     public function xPath($path);
     public function xPathFirst($path);
 
@@ -246,7 +246,7 @@ interface IWriter extends IWritable, core\collection\IAttributeContainer, core\I
     public function endProcessingInstruction();
 
     // Attributes
-    public function setRawAttributeNames($attr);
+    public function setRawAttributeNames(...$names);
     public function getRawAttributeNames();
 
     // Raw

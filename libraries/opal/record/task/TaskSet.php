@@ -131,12 +131,12 @@ class TaskSet implements ITaskSet {
         return $task;
     }
 
-    public function addGenericTask($a, $b=null, $c=null) {
+    public function addGenericTask(...$args) {
         $id = uniqid();
         $adapter = null;
         $callback = null;
 
-        foreach(func_get_args() as $arg) {
+        foreach($args as $arg) {
             if(is_string($arg)) {
                 $id = $arg;
             } else if($arg instanceof opal\query\IAdapter) {
@@ -158,8 +158,8 @@ class TaskSet implements ITaskSet {
         return $task;
     }
 
-    public function after(ITask $task, $a, $b=null, $c=null) {
-        return $this->addGenericTask($a, $b, $c)->addDependency($task);
+    public function after(ITask $task, ...$args) {
+        return $this->addGenericTask(...$args)->addDependency($task);
     }
 
     public function emitEventAfter(ITask $task, $entity, $action, array $data=null) {

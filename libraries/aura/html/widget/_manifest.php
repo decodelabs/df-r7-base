@@ -345,10 +345,10 @@ interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidg
     public function setTarget($target);
     public function getTarget();
 
-    public function setRelationship($rel);
-    public function addRelationship($rel);
+    public function setRelationship(...$rel);
+    public function addRelationship(...$rel);
     public function getRelationship();
-    public function removeRelationship($rel);
+    public function removeRelationship(...$rel);
 
     public function isActive($flag=null);
 

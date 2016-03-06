@@ -28,7 +28,7 @@ class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayA
 
     public function __construct(array $acceptTypes=null) {
         if($acceptTypes !== null) {
-            $this->setAcceptTypes($acceptTypes);
+            $this->setAcceptTypes(...$acceptTypes);
         }
     }
 

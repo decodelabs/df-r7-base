@@ -17,7 +17,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 // Interfaces
 interface ICollection extends \Countable, core\IArrayProvider {
-    public function import($input);
+    public function import(...$input);
     public function isEmpty();
     public function clear();
     public function extract();
@@ -198,7 +198,9 @@ interface IOrderablePaginator extends IPaginator {
 }
 
 
-
+interface IInsertableCollection extends ICollection {
+    public function insert(...$value);
+}
 
 // Access to values by iteration only
 interface IStreamCollection extends ICollection {
@@ -207,12 +209,11 @@ interface IStreamCollection extends ICollection {
 
 interface ISiftingCollection extends IStreamCollection {}
 
-interface IShiftableCollection extends ICollection {
-    public function insert($value);
+interface IShiftableCollection extends ICollection, IInsertableCollection {
     public function pop();
-    public function push($value);
+    public function push(...$values);
     public function shift();
-    public function unshift($value);
+    public function unshift(...$values);
 }
 
 interface IRandomAccessCollection extends IShiftableCollection, IMovable, core\IValueMap, \ArrayAccess {}
@@ -225,9 +226,7 @@ interface IIndexedCollection extends IRandomAccessCollection, ISeekable, ISlicea
     public function getIndex($value);
 }
 
-interface ISequentialCollection extends ICollection {
-    public function insert($value);
-}
+interface ISequentialCollection extends ICollection, IInsertableCollection {}
 
 // Strict associative indexes
 interface IMappedCollection extends ICollection, core\IValueMap, \ArrayAccess {}
@@ -258,16 +257,13 @@ interface IPriorityQueue extends IQueue, ISiftingCollection {
 interface IStack extends IIndexedCollection {}
 
 interface IMap extends IMappedCollection, ISeekable, ISortable, IMovable {}
-
-interface IHeap extends ISiftingCollection {
-    public function insert($value);
-}
+interface IHeap extends ISiftingCollection, IInsertableCollection {}
 
 
 interface ISet extends ICollection {
-    public function add($value);
-    public function has($value);
-    public function remove($value);
+    public function add(...$values);
+    public function has(...$values);
+    public function remove(...$values);
     public function replace($current, $new);
 }
 
@@ -281,8 +277,7 @@ interface ITree extends IRandomAccessCollection, IMappedContainerCollection, cor
     public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=');
     public function toArrayDelimitedSet($prefix=null);
     public function toUrlEncodedArrayDelimitedSet($prefix=null);
-    public function hasKey($key);
-    public function hasAnyKey($key1);
+    public function hasKey(...$keys);
     public function getKeys();
     public function clearKeys();
     public function getChildren();
@@ -298,6 +293,7 @@ interface IInputTree extends ITree, IErrorContainer {
 interface IHeaderMap extends IMappedCollection, core\IStringProvider, \Iterator {
     public function getBase($key, $default=null);
     public function append($key, $value);
+    public function hasValue($key, $value);
     public function setNamedValue($key, $name, $keyValue);
     public function getNamedValue($key, $name, $default=null);
     public function hasNamedValue($key, $name);
@@ -516,7 +512,8 @@ trait TArrayAccessedAttributeContainer {
 
 // Util
 interface IUtil {
-    public static function flattenArray($array, $unique=true, $removeNull=false);
+    public static function flatten($array, bool $unique=true, bool $removeNull=false);
+    public static function leaves($data, bool $removeNull=false);
     public static function isIterable($collection);
     public static function ensureIterable($collection);
 

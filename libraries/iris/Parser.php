@@ -183,13 +183,14 @@ abstract class Parser implements IParser, core\IDumpable {
         if($count == 1) {
             $this->position++;
             $output = array_shift($this->_tokens);
+            $this->_bufferTokens($output);
         } else {
             $output = array_slice($this->_tokens, 0, $count);
             $this->_tokens = array_slice($this->_tokens, $count);
             $this->position += $count;
+            $this->_bufferTokens(...$output);
         }
 
-        $this->_bufferTokens($output);
         $this->_setCurrentToken();
 
         return $output;
@@ -283,8 +284,7 @@ abstract class Parser implements IParser, core\IDumpable {
         return $output;
     }
 
-    public function extractSequence($ids) {
-        $sequence = func_get_args();
+    public function extractSequence(...$sequence) {
         $length = count($sequence);
         $test = array_slice($this->_tokens, 0, $length);
         $output = [];
@@ -426,15 +426,9 @@ abstract class Parser implements IParser, core\IDumpable {
         }
     }
 
-    protected function _bufferTokens($tokens) {
-        if(!is_array($tokens)) {
-            $tokens = func_get_args();
-        }
-
+    protected function _bufferTokens(...$tokens) {
         foreach($tokens as $token) {
-            if(is_array($token)) {
-                $this->_bufferTokens($token);
-            } else if($token instanceof IToken) {
+            if($token instanceof IToken) {
                 $this->_extractBuffer[] = $token;
             }
         }
@@ -469,8 +463,7 @@ abstract class Parser implements IParser, core\IDumpable {
         return $output;
     }
 
-    public function peekSequence($ids) {
-        $sequence = func_get_args();
+    public function peekSequence(...$sequence) {
         $length = count($sequence);
         $test = array_slice($this->_tokens, 0, $length);
         $output = [];

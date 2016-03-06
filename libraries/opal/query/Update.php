@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 
 class Update implements IUpdateQuery, core\IDumpable {
-    
+
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Locational;
@@ -21,20 +21,20 @@ class Update implements IUpdateQuery, core\IDumpable {
 
     protected $_values = [];
     protected $_preparedValues;
-    
+
     public function __construct(ISourceManager $sourceManager, ISource $source, array $values=null) {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
-        
+
         if($values !== null) {
             $this->set($values);
         }
     }
-    
+
     public function getQueryType() {
         return IQueryTypes::UPDATE;
     }
-    
+
     public function set($key, $value=null) {
         if(is_array($key)) {
             $values = $key;
@@ -46,24 +46,24 @@ class Update implements IUpdateQuery, core\IDumpable {
         $this->_preparedValues = null;
         return $this;
     }
-    
-    public function express($field, $var1) {
-        return call_user_func_array([$this, 'beginExpression'], func_get_args())->endExpression();
+
+    public function express($field, ...$elements) {
+        return $this->beginExpression($field, ...$elements)->endExpression();
     }
 
-    public function beginExpression($field, $var1) {
-        return new Expression($this, $field, array_slice(func_get_args(), 1));
+    public function beginExpression($field, ...$elements) {
+        return new Expression($this, $field, $elements);
     }
 
     public function expressCorrelation($field, $targetField) {
         core\stub($field, $targetField);
     }
 
-    
+
     public function getValues() {
         return $this->_values;
     }
-    
+
     public function getPreparedValues() {
         if(!$this->_preparedValues) {
             $this->_preparedValues = $this->_deflateUpdateValues($this->_values);
@@ -71,18 +71,18 @@ class Update implements IUpdateQuery, core\IDumpable {
 
         return $this->_preparedValues;
     }
-    
-    
+
+
 // Execute
     public function execute() {
         $adapter = $this->_source->getAdapter();
         $this->getPreparedValues();
-        
+
         if(empty($this->_preparedValues)) {
             $this->_preparedValues = null;
             return 0;
         }
-        
+
         $output = $this->_sourceManager->executeQuery($this, function($adapter) {
             return $adapter->executeUpdateQuery($this);
         });
@@ -99,7 +99,7 @@ class Update implements IUpdateQuery, core\IDumpable {
         }
 
         $schema = $adapter->getQueryAdapterSchema();
-        
+
         foreach($values as $name => $value) {
             if($value instanceof IExpression) {
                 continue;
@@ -108,23 +108,23 @@ class Update implements IUpdateQuery, core\IDumpable {
             if(!$field = $schema->getField($name)) {
                 continue;
             }
-            
+
             if($field instanceof opal\schema\INullPrimitiveField) {
                 unset($values[$name]);
                 continue;
             }
 
-            if($field instanceof opal\schema\IAutoTimestampField 
-            && ($value === null || $value === '') 
+            if($field instanceof opal\schema\IAutoTimestampField
+            && ($value === null || $value === '')
             && !$field->isNullable()) {
                 $value = new core\time\Date();
             }
-            
+
             $value = $field->deflateValue($field->sanitizeValue($value));
-            
+
             if(is_array($value)) {
                 unset($values[$name]);
-                
+
                 foreach($value as $key => $val) {
                     $values[$key] = $val;
                 }
@@ -132,37 +132,37 @@ class Update implements IUpdateQuery, core\IDumpable {
                 $values[$name] = $value;
             }
         }
-        
+
         return $values;
     }
-    
-    
-    
+
+
+
 // Dump
     public function getDumpProperties() {
         $output = [
             'source' => $this->_source->getAdapter(),
             'values' => $this->_values
         ];
-        
+
         if($this->hasWhereClauses()) {
             $output['where'] = $this->getWhereClauseList();
         }
-        
+
         if(!empty($this->_order)) {
             $order = [];
-            
+
             foreach($this->_order as $directive) {
                 $order[] = $directive->toString();
             }
-            
+
             $output['order'] = implode(', ', $order);
         }
-        
+
         if($this->_limit !== null) {
             $output['limit'] = $this->_limit;
         }
-        
+
         return $output;
     }
 }

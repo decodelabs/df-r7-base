@@ -17,11 +17,9 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;
 
-    public function future($type) {
-        $args = array_slice(func_get_args(), 1);
-
+    public function future($type, ...$args) {
         return function(core\IHelperProvider $target) use($type, $args) {
-            return call_user_func_array([$target->apex, $type], $args);
+            return $target->apex->{$type}(...$args);
         };
     }
 
@@ -174,13 +172,13 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         );
     }
 
-    public function component($path) {
+    public function component($path, ...$args) {
         $output = arch\component\Base::factory(
             $this->context->spawnInstance(
                 $this->context->extractDirectoryLocation($path)
             ),
             $path,
-            array_slice(func_get_args(), 1)
+            $args
         );
 
         if($this->view) {
@@ -190,7 +188,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         return $output;
     }
 
-    public function themeComponent($path) {
+    public function themeComponent($path, ...$args) {
         $themeId = $this->context->extractThemeId($path, true);
 
         if(!$themeId && $this->view) {
@@ -201,7 +199,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
             $this->context->spawnInstance(),
             $themeId,
             $path,
-            array_slice(func_get_args(), 1)
+            $args
         );
 
         if($this->view) {

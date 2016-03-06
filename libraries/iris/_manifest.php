@@ -219,8 +219,8 @@ interface IToken extends ILocationProxyProvider {
     public function countNewLines();
 
     public function eq(IToken $token);
-    public function is($compId);
-    public function isValue($value);
+    public function is(...$ids);
+    public function isValue(...$values);
     public function matches($type, $subType=null, $value=null);
 }
 
@@ -255,13 +255,13 @@ interface IParser {
     public function extractIf($ids, $limit=1);
     public function extractIfValue($values, $limit=1);
     public function extractIfMatch($type, $subType=null, $value=null);
-    public function extractSequence($ids);
+    public function extractSequence(...$sequence);
     public function extractStatementEnd();
     public function extractWord();
     public function rewind($count=1);
     public function getLastToken();
     public function peek($offset=1, $length=1);
-    public function peekSequence($ids);
+    public function peekSequence(...$sequence);
 }
 
 

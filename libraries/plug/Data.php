@@ -131,9 +131,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             ->getRoutine($name, $multiplexer);
     }
 
-    public function executeRoutine($unit, $name) {
-        $args = array_slice(func_get_args(), 1);
-        return call_user_func_array([$this->getRoutine($name), 'execute'], $args);
+    public function executeRoutine($unit, $name, ...$args) {
+        return $this->getRoutine($unit, $name)->execute(...$args);
     }
 
     protected function _normalizeUnit($unit) {

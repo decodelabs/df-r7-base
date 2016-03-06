@@ -12,32 +12,32 @@ use df\link;
 use df\mesh;
 
 class LibEvent extends Base implements core\IDumpable {
-    
+
     protected $_base;
     protected $_cycleHandlerEvent;
-    
+
     public function __construct() {
         $this->_base = event_base_new();
     }
-    
+
     public function getEventBase() {
         return $this->_base;
     }
-    
+
     public function listen() {
         $this->_isListening = true;
         event_base_loop($this->_base);
         $this->_isListening = false;
-        
+
         return $this;
     }
-    
+
     public function stop() {
         if($this->_isListening) {
             event_base_loopexit($this->_base);
             $this->_isListening = false;
         }
-        
+
         return $this;
     }
 
@@ -96,7 +96,7 @@ class LibEvent extends Base implements core\IDumpable {
         $this->_registerCycleHandler();
 
         if($this->_cycleHandler) {
-            if(false === $this->_cycleHandler->invokeArgs([$this])) {
+            if(false === $this->_cycleHandler->invoke($this)) {
                 $this->stop();
                 return;
             }
@@ -295,28 +295,28 @@ class LibEvent extends Base implements core\IDumpable {
             case IIoState::READ:
                 $flags = EV_READ;
                 break;
-                
+
             case IIoState::WRITE:
                 $flags = EV_WRITE;
                 break;
-                
+
             default:
                 throw new InvalidArgumentException(
                     'Unknown event type: '.$type
                 );
         }
-        
+
         if($binding->isPersistent) {
             $flags |= EV_PERSIST;
         }
-        
+
         return $flags;
     }
 
     protected function _getTimeoutDuration(IBinding $binding) {
         if($binding instanceof IIoBinding) {
-            return $binding->timeoutDuration ? 
-                $binding->timeoutDuration->getMilliseconds() : 
+            return $binding->timeoutDuration ?
+                $binding->timeoutDuration->getMilliseconds() :
                 -1;
         } else {
             return -1;

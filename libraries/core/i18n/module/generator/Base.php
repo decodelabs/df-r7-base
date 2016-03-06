@@ -58,25 +58,11 @@ class Base implements IGenerator {
     }
 
 
-    public function setModules($modules) {
-        if(!is_array($modules)) {
-            $modules = func_get_args();
-        }
-
-        $this->clearModules();
-
-        foreach($modules as $module) {
-            $this->addModule($module);
-        }
-
-        return $this;
+    public function setModules(...$modules) {
+        return $this->clearModules()->addModules(...$modules);
     }
 
-    public function addModules($modules) {
-        if(!is_array($modules)) {
-            $modules = func_get_args();
-        }
-
+    public function addModules(...$modules) {
         foreach($modules as $module) {
             $this->addModule($module);
         }
@@ -93,8 +79,11 @@ class Base implements IGenerator {
         return $this;
     }
 
-    public function removeModule($module) {
-        unset($this->_modules[$this->_normalizeModuleName($module)]);
+    public function removeModule(...$modules) {
+        foreach($modules as $module) {
+            unset($this->_modules[$this->_normalizeModuleName($module)]);
+        }
+
         return $this;
     }
 

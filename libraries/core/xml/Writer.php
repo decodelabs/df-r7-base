@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,7 +7,7 @@ namespace df\core\xml;
 
 use df;
 use df\core;
-    
+
 class Writer implements IWriter {
 
     const ELEMENT = 1;
@@ -23,7 +23,7 @@ class Writer implements IWriter {
     protected $_isMemory = true;
     protected $_headerWritten = false;
     protected $_dtdWritten = false;
-    protected $_rootWritten = false;    
+    protected $_rootWritten = false;
 
     protected $_elementContent = null;
     protected $_rawAttributeNames = [];
@@ -211,12 +211,8 @@ class Writer implements IWriter {
 
 
 // Attributes
-    public function setRawAttributeNames($attr) {
-        if(!is_array($attr)) {
-            $attr = func_get_args();
-        }
-
-        $this->_rawAttributeNames = $attr;
+    public function setRawAttributeNames(...$names) {
+        $this->_rawAttributeNames = $names;
         return $this;
     }
 
@@ -243,7 +239,7 @@ class Writer implements IWriter {
 
         $this->writeCData($content);
         $this->endElement();
-        
+
         return $this;
     }
 

@@ -143,8 +143,8 @@ class Html implements arch\IDirectoryHelper {
         return new aura\html\ElementString($this->context->i18n->translate($args));
     }
 
-    public function string($value) {
-        return new aura\html\ElementString(implode('', func_get_args()));
+    public function string(...$values) {
+        return new aura\html\ElementString(implode('', $values));
     }
 
     public function tag($name, array $attributes=[]) {

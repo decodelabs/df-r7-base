@@ -132,10 +132,10 @@ class VersionRange implements IVersionRange, core\IDumpable {
         return false;
     }
 
-    public function maxContained($version) {
+    public function maxContained(...$input) {
         $versions = [];
 
-        foreach(core\collection\Util::flattenArray(func_get_args()) as $version) {
+        foreach($input as $version) {
             $versions[] = Version::factory($version);
         }
 

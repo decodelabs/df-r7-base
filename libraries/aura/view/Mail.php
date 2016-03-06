@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -23,7 +23,7 @@ class Mail extends Base {
 
     public function __call($method, array $args) {
         if(method_exists($this->_message, $method)) {
-            $output = call_user_func_array([$this->_message, $method], $args);
+            $output = $this->_message->{$method}(...$args);
 
             if($output === $this->_message) {
                 return $this;

@@ -236,7 +236,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
 
     public function setValue($value) {
         if(is_array($value)) {
-            $value = core\collection\Util::flattenArray($value);
+            $value = core\collection\Util::flatten($value);
 
             switch($this->_operator) {
                 case self::OP_IN:
@@ -320,7 +320,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
                         $value = [(string)$value];
                     }
 
-                    $value = core\collection\Util::flattenArray($value);
+                    $value = core\collection\Util::flatten($value);
                     break;
 
                 case self::OP_BETWEEN:

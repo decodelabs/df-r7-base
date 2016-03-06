@@ -18,7 +18,7 @@ interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator 
     public function getDisplayName();
     public function getSource();
     public function getSourceId();
-    
+
     public function initDelegates();
     public function addDelegate(IMenu $menu);
     public function getDelegates();
@@ -59,7 +59,8 @@ trait TResponsiveSourceAdapter {
         }
 
         $output = new arch\navigation\menu\Dynamic($source->getContext(), (string)$id);
-        call_user_func_array([$this, $func], [$output, $source, $id]);
+        $this->{$func}($output, $source, $id);
+
         return $output;
     }
 }

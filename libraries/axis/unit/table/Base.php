@@ -278,7 +278,7 @@ abstract class Base implements
         }
 
         if(!empty($fields)) {
-            $paginator->addOrderableFields($fields);
+            $paginator->addOrderableFields(...$fields);
         }
 
         if($default !== null) {
@@ -436,7 +436,7 @@ abstract class Base implements
         }
 
         array_unshift($args, $query);
-        call_user_func_array([$this, $method], $args);
+        $this->{$method}(...$args);
         return $this;
     }
 
@@ -449,9 +449,7 @@ abstract class Base implements
             );
         }
 
-        array_shift($args);
-        array_unshift($args, $query, $relationField);
-        call_user_func_array([$this, $method], $args);
+        $this->{$method}($query, $relationField, ...$args);
         return $this;
     }
 
@@ -554,15 +552,15 @@ abstract class Base implements
 
 
 // Entry point
-    public function select($field1=null) {
+    public function select(...$fields) {
         return opal\query\Initiator::factory()
-            ->beginSelect(func_get_args())
+            ->beginSelect($fields)
             ->from($this, $this->getCanonicalUnitName());
     }
 
-    public function selectDistinct($field1=null) {
+    public function selectDistinct(...$fields) {
         return opal\query\Initiator::factory()
-            ->beginSelect(func_get_args(), true)
+            ->beginSelect($fields, true)
             ->from($this, $this->getCanonicalUnitName());
     }
 
@@ -574,10 +572,10 @@ abstract class Base implements
         return $this->selectDistinct()->count();
     }
 
-    public function union() {
+    public function union(...$fields) {
         return opal\query\Initiator::factory()
             ->beginUnion()
-            ->with(func_get_args())
+            ->with($fields)
             ->from($this);
     }
 
