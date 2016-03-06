@@ -1618,7 +1618,7 @@ trait TQuery_Groupable {
     public function groupBy(...$fields) {
         $source = $this->getSource();
 
-        foreach($groups as $field) {
+        foreach($fields as $field) {
             $this->_groups[] = $this->getSourceManager()->extrapolateIntrinsicField($source, $field);
         }
 
