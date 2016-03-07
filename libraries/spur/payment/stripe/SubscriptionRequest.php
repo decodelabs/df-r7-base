@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\mint;
-    
+
 class SubscriptionRequest implements ISubscriptionRequest, core\IDumpable {
 
     use TApiObjectRequest;
@@ -66,9 +66,9 @@ class SubscriptionRequest implements ISubscriptionRequest, core\IDumpable {
 
 
 // Prorate
-    public function shouldProrate($flag=null) {
+    public function shouldProrate(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldProrate = (bool)$flag;
+            $this->_shouldProrate = $flag;
             return $this;
         }
 

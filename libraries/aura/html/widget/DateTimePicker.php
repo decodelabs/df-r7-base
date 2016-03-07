@@ -53,9 +53,9 @@ class DateTimePicker extends DatePicker {
         return $output;
     }
 
-    public function shouldShowTimezone($flag=null) {
+    public function shouldShowTimezone(bool $flag=null) {
         if($flag !== null) {
-            $this->_showTimezone = (bool)$flag;
+            $this->_showTimezone = $flag;
             return $this;
         }
 

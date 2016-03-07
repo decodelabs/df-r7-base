@@ -44,9 +44,9 @@ class Delegate extends Base implements core\validate\IDelegateField {
         return $this->_delegate;
     }
 
-    public function isRequired($flag=null) {
+    public function isRequired(bool $flag=null) {
         if($flag !== null) {
-            $this->_isRequired = (bool)$flag;
+            $this->_isRequired = $flag;
 
             if($this->_delegate) {
                 $this->_delegate->isRequired($this->_isRequired);

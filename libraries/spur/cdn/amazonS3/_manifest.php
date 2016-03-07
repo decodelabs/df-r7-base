@@ -54,7 +54,7 @@ interface IMediator extends spur\IHttpMediator {
     public function getAccessKey();
     public function setSecretKey($key);
     public function getSecretKey();
-    public function shouldUseSsl($flag=null);
+    public function shouldUseSsl(bool $flag=null);
 
     public function createBucket($name, $acl=IAcl::PRIVATE_READ_WRITE, $location=null);
     public function deleteBucket($name);
@@ -81,7 +81,7 @@ interface IUpload extends core\collection\IAttributeContainer {
     public function getTargetFilePath();
     public function setFile(core\fs\IFile $file);
     public function getFile();
-    
+
     public function setAcl($acl);
     public function getAcl();
     public function setStorageClass($class);

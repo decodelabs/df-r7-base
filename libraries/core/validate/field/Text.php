@@ -85,9 +85,9 @@ class Text extends Base implements core\validate\ITextField {
 
 
 // Trim
-    public function shouldTrim($flag=null) {
+    public function shouldTrim(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldTrim = (bool)$flag;
+            $this->_shouldTrim = $flag;
             return $this;
         }
 

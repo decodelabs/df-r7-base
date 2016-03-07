@@ -10,7 +10,7 @@ use df\core;
 use df\link;
 
 class Config extends core\Config {
-    
+
     const ID = 'GeoIp';
 
     public function getDefaultValues() {
@@ -28,9 +28,9 @@ class Config extends core\Config {
         ];
     }
 
-    public function isEnabled($flag=null) {
+    public function isEnabled(bool $flag=null) {
         if($flag !== null) {
-            $this->values->enabled = (bool)$flag;
+            $this->values->enabled = $flag;
             return $this;
         }
 

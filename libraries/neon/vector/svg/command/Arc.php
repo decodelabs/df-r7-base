@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\neon\vector\svg\command;
 use df;
 use df\core;
 use df\neon;
-    
+
 class Arc extends Base implements neon\vector\svg\IArcCommand {
 
     protected $_xRadius;
@@ -64,18 +64,18 @@ class Arc extends Base implements neon\vector\svg\IArcCommand {
     }
 
 
-    public function isLargeArc($flag=null) {
+    public function isLargeArc(bool $flag=null) {
         if($flag !== null) {
-            $this->_largeArc = (bool)$flag;
+            $this->_largeArc = $flag;
             return $this;
         }
 
         return $this->_largeArc;
     }
 
-    public function isSweep($flag=null) {
+    public function isSweep(bool $flag=null) {
         if($flag !== null) {
-            $this->_sweep = (bool)$flag;
+            $this->_sweep = $flag;
             return $this;
         }
 

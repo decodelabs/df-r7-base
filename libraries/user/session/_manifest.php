@@ -123,7 +123,7 @@ class RecallKey {
 
 interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvider {
     public function isNew();
-    public function hasJustStarted($flag=null);
+    public function hasJustStarted(bool $flag=null);
 
     public function setInternalId($id);
     public function getInternalId();

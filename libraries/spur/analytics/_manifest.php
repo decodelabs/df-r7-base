@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\aura;
 use df\mint;
-    
+
 
 // Exceptions
 interface IException {}
@@ -30,7 +30,7 @@ interface IHandler {
 
     public function setUrl($url);
     public function getUrl();
-    public function setTitle($title);
+    public function setTitle(string $title=null);
     public function getTitle();
 
     public function setUserAttributes(array $attributes);

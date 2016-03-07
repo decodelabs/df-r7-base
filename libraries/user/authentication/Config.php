@@ -10,30 +10,30 @@ use df\core;
 use df\user;
 
 class Config extends core\Config {
-    
+
     const ID = 'Authentication';
-    
+
     public function getDefaultValues() {
         $output = [];
 
         foreach(df\Launchpad::$loader->lookupClassList('user/authentication/adapter') as $name => $class) {
             $output[$name] = $class::getDefaultConfigValues();
-            
+
             if(!isset($output[$name]['enabled'])) {
                 $output[$name]['enabled'] = false;
             }
         }
-            
+
         return $output;
     }
 
-    public function isAdapterEnabled($adapter, $flag=null) {
+    public function isAdapterEnabled($adapter, bool $flag=null) {
         if($adapter instanceof IAdapter) {
             $adapter = $adapter->getName();
         }
 
         if($flag !== null) {
-            $this->values->{$adapter}->enabled = (bool)$flag;
+            $this->values->{$adapter}->enabled = $flag;
             return $this;
         } else {
             return (bool)$this->values->{$adapter}['enabled'];

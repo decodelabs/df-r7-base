@@ -254,7 +254,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this;
     }
 
-    public function setSlot($key, $value) {
+    public function setSlot(string $key, $value) {
         if($this->view) {
             $this->view->setSlot($key, $value);
         } else {
@@ -264,7 +264,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this;
     }
 
-    public function hasSlot($key) {
+    public function hasSlot(string $key) {
         if($this->view && $this->view->hasSlot($key)) {
             return true;
         }
@@ -272,7 +272,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return isset($this->slots[$key]);
     }
 
-    public function slotExists($key) {
+    public function slotExists(string $key) {
         if($this->view && $this->view->slotExists($key)) {
             return true;
         }
@@ -284,7 +284,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return false;
     }
 
-    public function getSlot($key, $default=null) {
+    public function getSlot(string $key, $default=null) {
         if(isset($this->slots[$key])) {
             return $this->slots[$key];
         }
@@ -296,7 +296,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $default;
     }
 
-    public function removeSlot($key) {
+    public function removeSlot(string $key) {
         unset($this->slots[$key]);
 
         if($this->view) {

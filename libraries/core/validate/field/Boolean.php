@@ -16,9 +16,9 @@ class Boolean extends Base implements core\validate\IBooleanField {
     protected $_isRequired = true;
     protected $_forceAnswer = true;
 
-    public function shouldForceAnswer($flag=null) {
+    public function shouldForceAnswer(bool $flag=null) {
         if($flag !== null) {
-            $this->_forceAnswer = (bool)$flag;
+            $this->_forceAnswer = $flag;
             return $this;
         }
 

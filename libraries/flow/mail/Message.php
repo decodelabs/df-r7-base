@@ -211,9 +211,9 @@ class Message extends flow\mime\MultiPart implements IMessage {
 
 
 // Private
-    public function isPrivate($flag=null) {
+    public function isPrivate(bool $flag=null) {
         if($flag !== null) {
-            $this->_isPrivate = (bool)$flag;
+            $this->_isPrivate = $flag;
             return $this;
         }
 
@@ -490,7 +490,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
 
 
 // Journal
-    public function setJournalName($name) {
+    public function setJournalName(string $name=null) {
         $this->_journalName = $name;
         return $this;
     }
@@ -531,9 +531,9 @@ class Message extends flow\mime\MultiPart implements IMessage {
     }
 
 
-    public function shouldJournal($flag=null) {
+    public function shouldJournal(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldJournal = (bool)$flag;
+            $this->_shouldJournal = $flag;
             return $this;
         }
 

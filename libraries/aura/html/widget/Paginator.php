@@ -211,9 +211,9 @@ class Paginator extends Base implements core\IDumpable {
         return $this->_nextText;
     }
 
-    public function shouldRenderDetails($flag=null) {
+    public function shouldRenderDetails(bool $flag=null) {
         if($flag !== null) {
-            $this->_renderDetails = (bool)$flag;
+            $this->_renderDetails = $flag;
             return $this;
         }
 

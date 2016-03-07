@@ -31,7 +31,7 @@ class Many extends Base implements axis\schema\IManyField {
     }
 
 
-    public function isDominant($flag=null) {
+    public function isDominant(bool $flag=null) {
         return true;
     }
 

@@ -27,27 +27,27 @@ class Slug extends Base implements core\validate\ISlugField {
     protected $_generateIfEmpty = false;
     protected $_renameOnConflict = true;
 
-    public function allowPathFormat($flag=null) {
+    public function allowPathFormat(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowPathFormat = (bool)$flag;
+            $this->_allowPathFormat = $flag;
             return $this;
         }
 
         return $this->_allowPathFormat;
     }
 
-    public function allowAreaMarker($flag=null) {
+    public function allowAreaMarker(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowAreaMarker = (bool)$flag;
+            $this->_allowAreaMarker = $flag;
             return $this;
         }
 
         return $this->_allowAreaMarker;
     }
 
-    public function allowRoot($flag=null) {
+    public function allowRoot(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowRoot = (bool)$flag;
+            $this->_allowRoot = $flag;
             return $this;
         }
 
@@ -72,18 +72,18 @@ class Slug extends Base implements core\validate\ISlugField {
         return $this->_defaultValueField;
     }
 
-    public function shouldGenerateIfEmpty($flag=null) {
+    public function shouldGenerateIfEmpty(bool $flag=null) {
         if($flag !== null) {
-            $this->_generateIfEmpty = (bool)$flag;
+            $this->_generateIfEmpty = $flag;
             return $this;
         }
 
         return $this->_generateIfEmpty;
     }
 
-    public function shouldRenameOnConflict($flag=null) {
+    public function shouldRenameOnConflict(bool $flag=null) {
         if($flag !== null) {
-            $this->_renameOnConflict = (bool)$flag;
+            $this->_renameOnConflict = $flag;
             return $this;
         }
 

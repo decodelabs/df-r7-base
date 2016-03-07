@@ -38,7 +38,7 @@ interface IBuilder extends core\io\IChunkSender {
 
     public function setFields(array $fields);
     public function getFields();
-    public function shouldWriteFields($flag=null);
+    public function shouldWriteFields(bool $flag=null);
 
     public function addRow(array $row);
     public function getRows();

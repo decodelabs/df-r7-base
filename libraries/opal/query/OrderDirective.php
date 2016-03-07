@@ -10,23 +10,23 @@ use df\core;
 use df\opal;
 
 class OrderDirective implements IOrderDirective, core\IDumpable {
-    
+
     use core\TStringProvider;
 
     protected $_isDescending = false;
     protected $_nullOrder = 'ascending';
     protected $_field;
-    
+
     public function __construct(opal\query\IField $field, $direction=null) {
         $this->setField($field);
         $this->setDirection($direction);
     }
-    
+
     public function setField(opal\query\IField $field) {
         $this->_field = $field;
         return $this;
     }
-    
+
     public function getField() {
         return $this->_field;
     }
@@ -42,7 +42,7 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
             if($processor = $source->getFieldProcessor($this->_field)) {
                 return $processor->canReturnNull();
             }
-            
+
             return null;
         } else if($this->_field instanceof opal\query\ISearchController) {
             return false;
@@ -50,7 +50,7 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
             return null;
         }
     }
-    
+
     public function setDirection($direction) {
         if(is_string($direction)) {
             if(!ctype_alpha(substr($direction, -1))) {
@@ -65,7 +65,7 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
                 case 'd':
                     $direction = true;
                     break;
-                    
+
                 default:
                     $direction = false;
             }
@@ -84,7 +84,7 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
                     break;
             }
         }
-        
+
         $this->_isDescending = (bool)$direction;
         return $this;
     }
@@ -136,22 +136,22 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
 
         return $output;
     }
-    
-    public function isDescending($flag=null) {
+
+    public function isDescending(bool $flag=null) {
         if($flag !== null) {
-            $this->_isDescending = (bool)$flag;
+            $this->_isDescending = $flag;
             return $this;
         }
-        
+
         return $this->_isDescending;
     }
-    
-    public function isAscending($flag=null) {
+
+    public function isAscending(bool $flag=null) {
         if($flag !== null) {
-            $this->_isDescending = !(bool)$flag;
+            $this->_isDescending = !$flag;
             return $this;
         }
-        
+
         return !$this->_isDescending;
     }
 
@@ -163,11 +163,11 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
     public function getNullOrder() {
         return $this->_nullOrder;
     }
-    
+
     public function toString() {
         return $this->_field->getQualifiedName().' '.$this->getDirection();
     }
-    
+
 // Dump
     public function getDumpProperties() {
         return $this->toString();

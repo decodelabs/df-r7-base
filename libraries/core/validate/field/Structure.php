@@ -9,12 +9,12 @@ use df;
 use df\core;
 
 class Structure extends Base implements core\validate\IStructureField {
-    
+
     protected $_allowEmpty = false;
 
-    public function shouldAllowEmpty($flag=null) {
+    public function shouldAllowEmpty(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowEmpty = (bool)$flag;
+            $this->_allowEmpty = $flag;
             return $this;
         }
 
@@ -64,7 +64,7 @@ class Structure extends Base implements core\validate\IStructureField {
 
         $value = $this->_sanitizeValue($value);
         $value = $this->_applyCustomValidator($node, $value);
-        
+
         return $value;
     }
 }

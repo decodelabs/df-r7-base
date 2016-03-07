@@ -25,7 +25,7 @@ class AutoId extends Base implements
 
 
 // Auto inc
-    public function shouldAutoGenerate($flag=null) {
+    public function shouldAutoGenerate(bool $flag=null) {
         if($flag !== null) {
             if(!$flag) {
                 throw new opal\schema\LogicException(
@@ -39,7 +39,7 @@ class AutoId extends Base implements
         return true;
     }
 
-    public function shouldAutoIncrement($flag=null) {
+    public function shouldAutoIncrement(bool $flag=null) {
         if($flag !== null) {
             if(!$flag) {
                 throw new opal\schema\LogicException(
@@ -53,7 +53,7 @@ class AutoId extends Base implements
         return true;
     }
 
-    public function isSigned($flag=null) {
+    public function isSigned(bool $flag=null) {
         if($flag !== null) {
             if($flag) {
                 throw new opal\schema\LogicException(
@@ -67,7 +67,7 @@ class AutoId extends Base implements
         return false;
     }
 
-    public function isUnsigned($flag=null) {
+    public function isUnsigned(bool $flag=null) {
         if($flag !== null) {
             if(!$flag) {
                 throw new opal\schema\LogicException(
@@ -81,7 +81,7 @@ class AutoId extends Base implements
         return true;
     }
 
-    public function shouldZerofill($flag=null) {
+    public function shouldZerofill(bool $flag=null) {
         if($flag !== null) {
             if($flag) {
                 throw new opal\schema\LogicException(

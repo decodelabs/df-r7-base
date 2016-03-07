@@ -211,9 +211,9 @@ class Select_Union extends Select implements IUnionSelectQuery {
         parent::__construct($union->getSourceManager(), $source);
     }
 
-    public function isUnionDistinct($flag=null) {
+    public function isUnionDistinct(bool $flag=null) {
         if($flag !== null) {
-            $this->_isUnionDistinct = (bool)$flag;
+            $this->_isUnionDistinct = $flag;
             return $this;
         }
 

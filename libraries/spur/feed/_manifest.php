@@ -492,7 +492,7 @@ interface IImage {
     public function setLink($link);
     public function getLink();
     public function hasLink();
-    public function setTitle($title);
+    public function setTitle(string $title=null);
     public function getTitle();
     public function hasTitle();
     public function setHeight($height);

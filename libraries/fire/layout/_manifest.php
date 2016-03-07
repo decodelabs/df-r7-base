@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\fire;
-    
+
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
@@ -50,8 +50,8 @@ interface IDefinition {
     public function addSlots(array $slots);
     public function addSlot(fire\slot\IDefinition $slot);
     public function getSlots();
-    public function getSlot($id);
-    public function removeSlot($id);
+    public function getSlot(string $id);
+    public function removeSlot(string $id);
     public function countSlots();
     public function setSlotOrder(array $ids);
 }
@@ -81,10 +81,10 @@ interface IContent extends core\collection\IAttributeContainer, core\xml\IRootIn
     public function setSlots(array $slots);
     public function addSlots(array $slots);
     public function setSlot(fire\slot\IContent $slot);
-    public function getSlot($id);
+    public function getSlot(string $id);
     public function getSlots();
-    public function hasSlot($id);
-    public function removeSlot($id);
+    public function hasSlot(string $id);
+    public function removeSlot(string $id);
     public function clearSlots();
     public function countSlots();
 }

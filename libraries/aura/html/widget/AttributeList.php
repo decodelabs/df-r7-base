@@ -27,9 +27,9 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         $this->setRenderer($renderer);
     }
 
-    public function shouldSkipEmptyRows($flag=null) {
+    public function shouldSkipEmptyRows(bool $flag=null) {
         if($flag !== null) {
-            $this->_skipEmptyRows = (bool)$flag;
+            $this->_skipEmptyRows = $flag;
             return $this;
         }
 

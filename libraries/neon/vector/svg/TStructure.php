@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -12,7 +12,7 @@ use df\neon;
 
 trait TStructure {
 
-}    
+}
 
 
 
@@ -22,7 +22,7 @@ trait TStructure_Description {
     protected $_title;
     protected $_description;
 
-    public function setTitle($title) {
+    public function setTitle(string $title=null) {
         $this->_title = $this->_normalizeText($title);
         return $this;
     }
@@ -173,7 +173,7 @@ trait TStructure_Container {
             $path = $child->toPath();
             $attributes = array_merge($attributes, $child->getGraphicalAttributes());
 
-            if($child instanceof ITransformAttributeModule 
+            if($child instanceof ITransformAttributeModule
             && null !== ($transform = $child->getTransform())) {
                 // TODO: apply transforms
 
@@ -191,7 +191,7 @@ trait TStructure_Container {
 
         $output->applyInputAttributes($attributes);
 
-        if($this instanceof ITransformAttributeModule 
+        if($this instanceof ITransformAttributeModule
         && null !== ($transform = $this->getTransform())) {
             // TODO: apply parent transforms
 
@@ -206,7 +206,7 @@ trait TStructure_Container {
 
     public function getDumpProperties() {
         $output = $this->_attributes;
-        
+
         if($this->_title) {
             $output['title'] = $this->_title;
         }

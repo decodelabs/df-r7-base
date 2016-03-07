@@ -63,9 +63,9 @@ class LibraryImage extends Base {
         return $this->_height;
     }
 
-    public function shouldStoreDimensions($flag=null) {
+    public function shouldStoreDimensions(bool $flag=null) {
         if($flag !== null) {
-            $this->_storeDimensions = (bool)$flag;
+            $this->_storeDimensions = $flag;
             return $this;
         }
 

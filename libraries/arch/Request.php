@@ -97,7 +97,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
 
 // Area
-    public function setArea($area) {
+    public function setArea(string $area) {
         $area = static::AREA_MARKER.trim($area, static::AREA_MARKER);
         $path = $this->getPath();
 
@@ -246,7 +246,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
 // Node
-    public function setNode($node) {
+    public function setNode(string $node=null) {
         if(!strlen($node)) {
             $node = static::DEFAULT_NODE;
         }
@@ -302,7 +302,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
 
 // Type
-    public function setType($type) {
+    public function setType(string $type=null) {
         if(empty($type)) {
             $type = null;
         }

@@ -43,9 +43,9 @@ class Mediator implements IMediator, \Serializable {
     }
 
 // Client
-    public function isSecure($flag=null) {
+    public function isSecure(bool $flag=null) {
         if($flag !== null) {
-            $this->_isSecure = (bool)$flag;
+            $this->_isSecure = $flag;
             return $this;
         }
 

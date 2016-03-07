@@ -27,12 +27,12 @@ abstract class Hook implements IHook {
         return $output;
     }
 
-    public static function toggleEnabled($flag=null) {
+    public static function toggleEnabled(bool $flag=null) {
         if($flag === null) {
             $flag = !self::$_enabled;
         }
 
-        self::$_enabled = (bool)$flag;
+        self::$_enabled = $flag;
     }
 
     public static function triggerEvent(IEvent $event, core\IContext $context=null) {

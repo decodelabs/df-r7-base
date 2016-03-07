@@ -22,9 +22,9 @@ trait TSchema {
 
 
 // Audit
-    public function isAudited($flag=null) {
+    public function isAudited(bool $flag=null) {
         if($flag !== null) {
-            $this->_isAudited = (bool)$flag;
+            $this->_isAudited = $flag;
             return $this;
         }
 

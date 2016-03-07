@@ -125,7 +125,7 @@ interface IRouter {
 
 interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
     // Area
-    public function setArea($area);
+    public function setArea(string $area);
     public function getArea();
     public function isArea($area);
     public static function getDefaultArea();
@@ -143,7 +143,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
     public static function formatControllerParts(array $parts);
 
     // Node
-    public function setNode($node);
+    public function setNode(string $node=null);
     public function getNode();
     public function getRawNode();
     public function isNode($node);
@@ -152,7 +152,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
     public static function formatNode($node);
 
     // Type
-    public function setType($type);
+    public function setType(string $type=null);
     public function getType();
     public function isType($type);
     public static function getDefaultType();
@@ -210,16 +210,16 @@ interface IProxyResponse {
 
 
 interface IOptionalDirectoryAccessLock {
-    public function shouldCheckAccess($flag=null);
+    public function shouldCheckAccess(bool $flag=null);
 }
 
 trait TOptionalDirectoryAccessLock {
 
     private $_shouldCheckAccess = null;
 
-    public function shouldCheckAccess($flag=null) {
+    public function shouldCheckAccess(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldCheckAccess = (bool)$flag;
+            $this->_shouldCheckAccess = $flag;
             return $this;
         }
 
@@ -265,15 +265,15 @@ interface IComponent extends
 interface IMailComponent extends IComponent, flow\INotificationProxy {
     public function getDescription();
     public function getTemplateType();
-    public function setDefaultToAddress($address, $name=null);
+    public function setDefaultToAddress($address, string $name=null);
     public function getDefaultToAddress();
-    public function setDefaultFromAddress($address, $name=null);
+    public function setDefaultFromAddress($address, string $name=null);
     public function getDefaultFromAddress();
-    public function shouldForceSend($flag=null);
+    public function shouldForceSend(bool $flag=null);
     public function renderPreview();
     public function toPreviewNotification($to=null, $from=null);
 
-    public function setJournalName($name);
+    public function setJournalName(string $name=null);
     public function getJournalName();
     public function getJournalDuration();
     public function setJournalObjectId1($id);

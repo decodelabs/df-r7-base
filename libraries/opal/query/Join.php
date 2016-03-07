@@ -70,9 +70,9 @@ class Join implements IJoinQuery, core\IDumpable {
         return $this->_type;
     }
 
-    public function isConstraint($flag=null) {
+    public function isConstraint(bool $flag=null) {
         if($flag !== null) {
-            $this->_isConstraint = (bool)$flag;
+            $this->_isConstraint = $flag;
             return $this;
         }
 

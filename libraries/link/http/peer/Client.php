@@ -11,10 +11,10 @@ use df\link;
 use df\halo;
 
 class Client implements IClient, core\IDumpable {
-    
+
     use link\peer\TPeer_Client;
     use halo\event\TDispatcherProvider;
-    
+
     const PROTOCOL_DISPOSITION = IClient::CLIENT_FIRST;
     const USER_AGENT = 'DF link HTTP client';
 
@@ -27,35 +27,35 @@ class Client implements IClient, core\IDumpable {
     public function __construct() {
         if(($num = func_num_args()) > 1) {
             $args = func_get_args();
-            
+
             if($num == 2) {
                 $requests = [$args];
             } else if($num == 1) {
                 $requests = $args[0];
             }
-            
+
             if(is_array($requests)) {
                 foreach($requests as $set) {
                     $request = array_shift($set);
                     $callback = array_shift($set);
-                    
+
                     if(!is_callable($callback)) {
                         throw new RuntimeException(
                             'Async request callback is not callable'
                         );
                     }
-                    
+
                     $this->addRequest($request, $callback);
                 }
-                
+
                 $this->run();
             }
         }
     }
 
-    public function shouldFollowRedirects($flag=null) {
+    public function shouldFollowRedirects(bool $flag=null) {
         if($flag !== null) {
-            $this->_followRedirects = (bool)$flag;
+            $this->_followRedirects = $flag;
             return $this;
         }
 
@@ -70,10 +70,10 @@ class Client implements IClient, core\IDumpable {
     public function getMaxRetries() {
         return $tis->_maxRetries;
     }
-    
-    public function shouldSaveIfNotOk($flag=null) {
+
+    public function shouldSaveIfNotOk(bool $flag=null) {
         if($flag !== null) {
-            $this->_saveIfNotOk = (bool)$flag;
+            $this->_saveIfNotOk = $flag;
             return $this;
         }
 
@@ -89,7 +89,7 @@ class Client implements IClient, core\IDumpable {
         if(!$headers->has('user-agent')) {
             $headers->set('user-agent', static::USER_AGENT);
         }
-        
+
         if($request->isSecure()) {
             $scheme = $request->options->getSecureTransport();
         } else {
@@ -100,17 +100,17 @@ class Client implements IClient, core\IDumpable {
             link\socket\Client::factory($scheme.'://'.$request->getSocketAddress())
                 ->setReceiveTimeout(100)
         );
-        
+
         $session->setRequest($request);
         $session->setCallback($callback);
         $session->setHeaderCallback($headerCallback);
-        
+
         $this->_registerSession($session);
-        
+
         if($this->isRunning()) {
             $this->_dispatchSession($session);
         }
-        
+
         return $this;
     }
 
@@ -165,9 +165,9 @@ class Client implements IClient, core\IDumpable {
 
         return $request;
     }
-    
+
     protected function _createInitialSessions() {}
-    
+
     protected function _handleWriteBuffer(link\peer\ISession $session) {
         if(!$fileStream = $session->getWriteFileStream()) {
             $request = $session->getRequest();
@@ -240,7 +240,7 @@ class Client implements IClient, core\IDumpable {
                 $session->setStore('length', (int)$headers->get('content-length'));
             }
 
-            if(($path = $request->options->getDownloadFilePath()) 
+            if(($path = $request->options->getDownloadFilePath())
             && ($this->_saveIfNotOk || $headers->hasStatusCode(200))) {
                 if($path instanceof core\io\IChannel) {
                     $response->setContentFileStream($path);
@@ -316,7 +316,7 @@ class Client implements IClient, core\IDumpable {
             if($this->_retries > $this->_maxRetries) {
                 throw new RuntimeException('No response was read from http connection after '.$this->_retries.' attempt(s)');
             }
-            
+
             $this->addRequest($request, $callback);
 
             return;
@@ -343,7 +343,7 @@ class Client implements IClient, core\IDumpable {
             $session->setStore('redirects', ++$redirCount);
             return;
         }
-        
+
         if($callback) {
             $callback($response, $this, $session);
         }

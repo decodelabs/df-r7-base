@@ -237,7 +237,7 @@ trait TAccessLock {
 
 
 interface IAccessControlled {
-    public function shouldCheckAccess($flag=null);
+    public function shouldCheckAccess(bool $flag=null);
     public function setAccessLocks(array $locks);
     public function addAccessLocks(array $locks);
     public function addAccessLock($lock);
@@ -251,9 +251,9 @@ trait TAccessControlled {
     protected $_checkAccess = false;
     protected $_accessLocks = [];
 
-    public function shouldCheckAccess($flag=null) {
+    public function shouldCheckAccess(bool $flag=null) {
         if($flag !== null) {
-            $this->_checkAccess = (bool)$flag;
+            $this->_checkAccess = $flag;
             return $this;
         }
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\mint;
-    
+
 class ChargeRequest implements IChargeRequest {
 
     use TApiObjectRequest;
@@ -75,9 +75,9 @@ class ChargeRequest implements IChargeRequest {
         return $this->_emailAddress;
     }
 
-    public function shouldCapture($flag=null) {
+    public function shouldCapture(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldCapture = (bool)$flag;
+            $this->_shouldCapture = $flag;
             return $this;
         }
 

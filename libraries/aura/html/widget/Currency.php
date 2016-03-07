@@ -70,9 +70,9 @@ class Currency extends NumberTextbox {
         return $this->_currencySelectable;
     }
 
-    public function shouldShowCurrency($flag=null) {
+    public function shouldShowCurrency(bool $flag=null) {
         if($flag !== null) {
-            $this->_showCurrency = (bool)$flag;
+            $this->_showCurrency = $flag;
             return $this;
         }
 

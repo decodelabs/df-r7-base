@@ -18,7 +18,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 interface ICommand extends core\collection\IQueue, core\collection\IRandomAccessCollection, core\IStringProvider {
     public function setExecutable($executable);
     public function getExecutable();
-    
+
     public function addArgument($argument);
     public function getArguments();
 }
@@ -31,7 +31,7 @@ interface IArgument extends core\IStringProvider {
     public function isShortOption();
     public function isOptionCluster();
     public function getClusterOptions();
-    
+
     public function getValue();
     public function hasValue();
 }
@@ -49,9 +49,9 @@ interface IRule {
     public function getName();
     public function getNames();
     public function getFlags();
-    public function requiresValue($flag=null);
-    public function canHaveValue($flag=null);
-    public function isRequired($flag=null);
+    public function requiresValue(bool $flag=null);
+    public function canHaveValue(bool $flag=null);
+    public function isRequired(bool $flag=null);
     public function setDefaultValue($value);
     public function getDefaultValue();
     public function setValueType($type);

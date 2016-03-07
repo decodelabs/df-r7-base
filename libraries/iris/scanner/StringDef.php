@@ -75,9 +75,9 @@ class StringDef implements iris\IScanner {
         return $this;
     }
 
-    public function allowChars($flag=null) {
+    public function allowChars(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowChars = (bool)$flag;
+            $this->_allowChars = $flag;
 
             if($this->_allowChars && $this->_charSymbol === null) {
                 $this->_charSymbol = '@';
@@ -123,9 +123,9 @@ class StringDef implements iris\IScanner {
         return $this->_escapeSymbol;
     }
 
-    public function shouldAlignMultiLine($flag=null) {
+    public function shouldAlignMultiLine(bool $flag=null) {
         if($flag !== null) {
-            $this->_alignMultiLine = (bool)$flag;
+            $this->_alignMultiLine = $flag;
             return $this;
         }
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 class Block extends iris\map\Node implements flex\latex\IGenericBlock, core\IDumpable {
 
     use flex\latex\TContainerNode;
@@ -20,9 +20,9 @@ class Block extends iris\map\Node implements flex\latex\IGenericBlock, core\IDum
     protected $_isInline = false;
     protected $_type;
 
-    public function isInline($flag=null) {
+    public function isInline(bool $flag=null) {
         if($flag !== null) {
-            $this->_isInline = (bool)$flag;
+            $this->_isInline = $flag;
             return $this;
         }
 

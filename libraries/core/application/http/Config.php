@@ -178,9 +178,9 @@ class Config extends core\Config {
 
 
 // Https
-    public function isSecure($flag=null) {
+    public function isSecure(bool $flag=null) {
         if($flag !== null) {
-            $this->values->secure = (bool)$flag;
+            $this->values->secure = $flag;
             return $this;
         }
 
@@ -188,9 +188,9 @@ class Config extends core\Config {
     }
 
 // Chunk
-    public function shouldChunkManually($flag=null) {
+    public function shouldChunkManually(bool $flag=null) {
         if($flag !== null) {
-            $this->values->manualChunk = (bool)$flag;
+            $this->values->manualChunk = $flag;
             return $this;
         }
 

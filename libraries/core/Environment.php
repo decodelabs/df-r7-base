@@ -45,9 +45,9 @@ class Environment extends Config {
     }
 
 // Load balancing
-    public function isDistributed($flag=null) {
+    public function isDistributed(bool $flag=null) {
         if($flag !== null) {
-            $this->values->distributed = (bool)$flag;
+            $this->values->distributed = $flag;
             return $this;
         }
 
@@ -65,9 +65,9 @@ class Environment extends Config {
 
 
 // Daemons
-    public function canUseDaemons($flag=null) {
+    public function canUseDaemons(bool $flag=null) {
         if($flag !== null) {
-            $this->values->daemonsEnabled = (bool)$flag;
+            $this->values->daemonsEnabled = $flag;
             return $this;
         }
 

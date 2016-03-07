@@ -65,9 +65,9 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this->_state->getStore('availableBlockTypes');
     }
 
-    public function isNested($flag=null) {
+    public function isNested(bool $flag=null) {
         if($flag !== null) {
-            $this->_isNested = (bool)$flag;
+            $this->_isNested = $flag;
             return $this;
         }
 
@@ -88,7 +88,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this->_block;
     }
 
-    public function setDefaultType($type) {
+    public function setDefaultType(string $type=null) {
         $this->_defaultType = $type;
         return $this;
     }

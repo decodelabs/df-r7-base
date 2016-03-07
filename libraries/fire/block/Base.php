@@ -62,9 +62,9 @@ abstract class Base implements IBlock {
         return static::VERSION;
     }
 
-    public function isNested($flag=null) {
+    public function isNested(bool $flag=null) {
         if($flag !== null) {
-            $this->_isNested = (bool)$flag;
+            $this->_isNested = $flag;
             return $this;
         }
 

@@ -75,20 +75,20 @@ class Base implements IView {
     }
 
 
-    public function setSlot($key, $value) {
+    public function setSlot(string $key, $value) {
         $this->slots[$key] = $value;
         return $this;
     }
 
-    public function hasSlot($key) {
+    public function hasSlot(string $key) {
         return isset($this->slots[$key]);
     }
 
-    public function slotExists($key) {
+    public function slotExists(string $key) {
         return array_key_exists($key, $this->slots);
     }
 
-    public function getSlot($key, $default=null) {
+    public function getSlot(string $key, $default=null) {
         if(isset($this->slots[$key])) {
             return $this->slots[$key];
         } else {
@@ -96,7 +96,7 @@ class Base implements IView {
         }
     }
 
-    public function removeSlot($key) {
+    public function removeSlot(string $key) {
         unset($this->_slots[$key]);
         return $this;
     }

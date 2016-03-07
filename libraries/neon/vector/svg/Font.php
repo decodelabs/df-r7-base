@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\neon\vector\svg;
 use df;
 use df\core;
 use df\neon;
-    
+
 
 // Font
 class Font implements IFont, core\IDumpable {
@@ -323,7 +323,7 @@ class Font_Face implements IFontFace, core\IDumpable {
         return $this->_setAttribute(
             'underline-position',
             $this->_normalizeLength($position)
-        );    
+        );
     }
 
     public function getUnderlinePosition() {
@@ -759,7 +759,7 @@ class Font_Glyph implements IFontGlyph, core\IDumpable {
                 $form,
                 ['initial', 'medial', 'terminal', 'isolated'],
                 'arabic-form'
-            )    
+            )
         );
     }
 
@@ -815,9 +815,9 @@ class Font_Glyph implements IFontGlyph, core\IDumpable {
         return $this->_getAttribute('unicode');
     }
 
-    public function isMissing($flag=null) {
+    public function isMissing(bool $flag=null) {
         if($flag !== null) {
-            $this->_isMissing = (bool)$flag;
+            $this->_isMissing = $flag;
             return $this;
         }
 

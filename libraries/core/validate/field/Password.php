@@ -38,18 +38,18 @@ class Password extends Base implements core\validate\IPasswordField {
         return $this->_minStrength;
     }
 
-    public function shouldCheckStrength($flag=null) {
+    public function shouldCheckStrength(bool $flag=null) {
         if($flag !== null) {
-            $this->_checkStrength = (bool)$flag;
+            $this->_checkStrength = $flag;
             return $this;
         }
 
         return $this->_checkStrength;
     }
 
-    public function shouldHash($flag=null) {
+    public function shouldHash(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldHash = (bool)$flag;
+            $this->_shouldHash = $flag;
             return $this;
         }
 

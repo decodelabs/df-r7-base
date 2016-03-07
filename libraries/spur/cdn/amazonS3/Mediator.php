@@ -46,9 +46,9 @@ class Mediator implements IMediator {
         return  $this->_secretKey;
     }
 
-    public function shouldUseSsl($flag=null) {
+    public function shouldUseSsl(bool $flag=null) {
         if($flag !== null) {
-            $this->_useSsl = (bool)$flag;
+            $this->_useSsl = $flag;
             return $this;
         }
 

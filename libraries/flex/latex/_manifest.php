@@ -163,7 +163,7 @@ interface IDocument extends IEnvironmentNode, IContainerNode {
     public function getPackages();
 
     // Top matter
-    public function setTitle($title);
+    public function setTitle(string $title=null);
     public function getTitle();
     public function setAuthor($author);
     public function getAuthor();
@@ -210,7 +210,7 @@ trait TReferable {
 }
 
 interface IGenericBlock extends IBlock, IListedNode, core\collection\IAttributeContainer, IReferable {
-    public function isInline($flag=null);
+    public function isInline(bool $flag=null);
     public function setType($type);
     public function getType();
 }
@@ -246,7 +246,7 @@ interface ITextNode extends iris\map\IAspect, INodeClassProvider {
 }
 
 interface IMathNode extends IReferable, IListedNode {
-    public function isInline($flag=null);
+    public function isInline(bool $flag=null);
     public function setBlockType($type);
     public function getBlockType();
 
@@ -303,8 +303,8 @@ interface IColumn extends iris\map\IAspect {
     public function getAlignment();
     public function setParagraphSizing($size);
     public function getParagraphSizing();
-    public function hasLeftBorder($flag=null);
-    public function hasRightBorder($flag=null);
+    public function hasLeftBorder(bool $flag=null);
+    public function hasRightBorder(bool $flag=null);
 }
 
 interface IStructure extends IEnvironmentNode, IContainerNode, IReferable, IListedNode {

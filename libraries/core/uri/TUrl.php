@@ -415,9 +415,9 @@ trait TUrl_QueryContainer {
         return $this->_query !== null;
     }
 
-    public function shouldEncodeQueryAsRfc3986($flag=null) {
+    public function shouldEncodeQueryAsRfc3986(bool $flag=null) {
         if($flag !== null) {
-            $this->_rfc3986QueryEncode = (bool)$flag;
+            $this->_rfc3986QueryEncode = $flag;
             return $this;
         }
 

@@ -34,7 +34,7 @@ interface INode extends core\IContextAware, user\IAccessLock, arch\IResponseForc
     public function getCallback();
     public function dispatch();
     public function getController();
-    public function shouldOptimize($flag=null);
+    public function shouldOptimize(bool $flag=null);
     public function getDispatchMethodName();
     public function handleException(\Exception $e);
 }
@@ -71,7 +71,7 @@ interface ITaskManager extends core\IManager {
     public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null);
     public function queueAndLaunchBackground($request, $environmentMode=null);
     public function getSharedIo();
-    public function shouldCaptureBackgroundTasks($flag=null);
+    public function shouldCaptureBackgroundTasks(bool $flag=null);
 }
 
 
@@ -113,7 +113,7 @@ interface IFormState extends IStoreProvider {
 
     public function getDelegateState($id);
 
-    public function isNew($flag=null);
+    public function isNew(bool $flag=null);
     public function reset();
     public function isOperating();
 }
@@ -191,7 +191,7 @@ interface ISelfContainedRenderableDelegate {
 }
 
 interface IRequirableDelegate {
-    public function isRequired($flag=null);
+    public function isRequired(bool $flag=null);
 }
 
 interface IParentEventHandlerDelegate extends IDelegate {
@@ -205,8 +205,8 @@ interface IParentUiHandlerDelegate extends IDelegate {
 interface IResultProviderDelegate extends IRequirableDelegate, IParentEventHandlerDelegate {}
 
 interface ISelectionProviderDelegate extends IResultProviderDelegate {
-    public function isForOne($flag=null);
-    public function isForMany($flag=null);
+    public function isForOne(bool $flag=null);
+    public function isForMany(bool $flag=null);
 }
 
 interface ISelectorDelegate extends ISelectionProviderDelegate, IDependencyValueProvider {

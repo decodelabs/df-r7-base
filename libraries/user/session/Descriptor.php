@@ -69,9 +69,9 @@ class Descriptor implements user\session\IDescriptor {
             && $this->transitionTime === null;
     }
 
-    public function hasJustStarted($flag=null) {
+    public function hasJustStarted(bool $flag=null) {
         if($flag !== null) {
-            $this->justStarted = (bool)$flag;
+            $this->justStarted = $flag;
             return $this;
         }
 

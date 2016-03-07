@@ -58,9 +58,9 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, core\ID
 
 
 // Validate
-    public function shouldValidate($flag=null) {
+    public function shouldValidate(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldValidate = (bool)$flag;
+            $this->_shouldValidate = $flag;
             return $this;
         }
 

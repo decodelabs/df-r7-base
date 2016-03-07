@@ -125,9 +125,9 @@ trait TWidget_Disableable {
 
     protected $_isDisabled = false;
 
-    public function isDisabled($flag=null) {
+    public function isDisabled(bool $flag=null) {
         if($flag !== null) {
-            $this->_isDisabled = (bool)$flag;
+            $this->_isDisabled = $flag;
             return $this;
         }
 
@@ -302,9 +302,9 @@ trait TWidget_Input {
     }
 
 
-    public function isRequired($flag=null) {
+    public function isRequired(bool $flag=null) {
         if($flag !== null) {
-            $this->_isRequired = (bool)$flag;
+            $this->_isRequired = $flag;
             return $this;
         }
 
@@ -312,9 +312,9 @@ trait TWidget_Input {
     }
 
 
-    public function isReadOnly($flag=null) {
+    public function isReadOnly(bool $flag=null) {
         if($flag !== null) {
-            $this->_isReadOnly = (bool)$flag;
+            $this->_isReadOnly = $flag;
             return $this;
         }
 
@@ -358,9 +358,9 @@ trait TWidget_FocusableInput {
 
     protected $_shouldAutoFocus = false;
 
-    public function shouldAutoFocus($flag=null) {
+    public function shouldAutoFocus(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldAutoFocus = (bool)$flag;
+            $this->_shouldAutoFocus = $flag;
             return $this;
         }
 
@@ -380,18 +380,18 @@ trait TWidget_VisualInput {
     protected $_shouldValidate = true;
     protected $_shouldAutoComplete = null;
 
-    public function shouldValidate($flag=null) {
+    public function shouldValidate(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldValidate = (bool)$flag;
+            $this->_shouldValidate = $flag;
             return $this;
         }
 
         return $this->_shouldValidate;
     }
 
-    public function shouldAutoComplete($flag=null) {
+    public function shouldAutoComplete(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldAutoComplete = (bool)$flag;
+            $this->_shouldAutoComplete = $flag;
             return $this;
         }
 
@@ -422,9 +422,9 @@ trait TWidget_OptionalMultipleValueInput {
 
     protected $_allowMultiple = false;
 
-    public function allowMultiple($flag=null) {
+    public function allowMultiple(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowMultiple = (bool)$flag;
+            $this->_allowMultiple = $flag;
             return $this;
         }
 
@@ -495,9 +495,9 @@ trait TWidget_TextEntry {
         return $this->_maxLength;
     }
 
-    public function shouldSpellCheck($flag=null) {
+    public function shouldSpellCheck(bool $flag=null) {
         if($flag !== null) {
-            $this->_spellCheck = (bool)$flag;
+            $this->_spellCheck = $flag;
             return $this;
         }
 
@@ -599,7 +599,7 @@ trait TWidget_CheckInput {
                 $flag = $flag->getValue() == $this->getValueString();
             }
 
-            $this->_isChecked = (bool)$flag;
+            $this->_isChecked = $flag;
             return $this;
         }
 
@@ -818,9 +818,9 @@ trait TWidget_NavigationEntryController {
     protected $_renderIfEmpty = false;
     protected $_showDescriptions = true;
 
-    public function shouldShowDescriptions($flag=null) {
+    public function shouldShowDescriptions(bool $flag=null) {
         if($flag !== null) {
-            $this->_showDescriptions = (bool)$flag;
+            $this->_showDescriptions = $flag;
             return $this;
         }
 
@@ -933,9 +933,9 @@ trait TWidget_NavigationEntryController {
     }
 
 
-    public function shouldRenderIfEmpty($flag=null) {
+    public function shouldRenderIfEmpty(bool $flag=null) {
         if($flag !== null) {
-            $this->_renderIfEmpty = (bool)$flag;
+            $this->_renderIfEmpty = $flag;
             return $this;
         }
 
@@ -998,7 +998,7 @@ trait TWidget_IconProvider {
 
     protected $_icon;
 
-    public function setIcon($icon) {
+    public function setIcon(string $icon=null) {
         $this->_icon = $icon;
 
         if($this instanceof IDispositionAwareWidget && $this->_disposition === null) {
@@ -1104,9 +1104,9 @@ trait TWidget_OrderedDataDrivenList {
         return $this->_startIndex;
     }
 
-    public function isReversed($flag=null) {
+    public function isReversed(bool $flag=null) {
         if($flag !== null) {
-            $this->_isReversed = (bool)$flag;
+            $this->_isReversed = $flag;
             return $this;
         }
 

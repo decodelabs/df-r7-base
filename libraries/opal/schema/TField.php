@@ -59,13 +59,13 @@ trait TField {
         return $this->_comment;
     }
 
-    public function isNullable($flag=null) {
+    public function isNullable(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_isNullable) {
+            if($flag != $this->_isNullable) {
                 $this->_hasChanged = true;
             }
 
-            $this->_isNullable = (bool)$flag;
+            $this->_isNullable = $flag;
             return $this;
         }
 
@@ -192,13 +192,13 @@ trait TField_BinaryCollationProvider {
 
     protected $_binaryCollation = false;
 
-    public function hasBinaryCollation($flag=null) {
+    public function hasBinaryCollation(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_binaryCollation) {
+            if($flag != $this->_binaryCollation) {
                 $this->_hasChanged = true;
             }
 
-            $this->_binaryCollation = (bool)$flag;
+            $this->_binaryCollation = $flag;
             return $this;
         }
 
@@ -277,7 +277,7 @@ trait TField_Signed {
 
     protected $_isUnsigned = false;
 
-    public function isSigned($flag=null) {
+    public function isSigned(bool $flag=null) {
         if($flag !== null) {
             return $this->isUnsigned(!$flag);
         }
@@ -285,13 +285,13 @@ trait TField_Signed {
         return !$this->_isUnsigned;
     }
 
-    public function isUnsigned($flag=null) {
+    public function isUnsigned(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_isUnsigned) {
+            if($flag != $this->_isUnsigned) {
                 $this->_hasChanged = true;
             }
 
-            $this->_isUnsigned = (bool)$flag;
+            $this->_isUnsigned = $flag;
             return $this;
         }
 
@@ -324,13 +324,13 @@ trait TField_Zerofill {
 
     protected $_zerofill = false;
 
-    public function shouldZerofill($flag=null) {
+    public function shouldZerofill(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_zerofill) {
+            if($flag != $this->_zerofill) {
                 $this->_hasChanged = true;
             }
 
-            $this->_zerofill = (bool)$flag;
+            $this->_zerofill = $flag;
             return $this;
         }
 
@@ -445,13 +445,13 @@ trait TField_AutoIncrementable {
 
     protected $_autoIncrement = false;
 
-    public function shouldAutoIncrement($flag=null) {
+    public function shouldAutoIncrement(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_autoIncrement) {
+            if($flag != $this->_autoIncrement) {
                 $this->_hasChanged = true;
             }
 
-            $this->_autoIncrement = (bool)$flag;
+            $this->_autoIncrement = $flag;
             return $this;
         }
 
@@ -486,26 +486,26 @@ trait TField_AutoTimestamp {
     protected $_shouldTimestampOnUpdate = false;
     protected $_shouldTimestampAsDefault = true;
 
-    public function shouldTimestampOnUpdate($flag=null) {
+    public function shouldTimestampOnUpdate(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_shouldTimestampOnUpdate) {
+            if($flag != $this->_shouldTimestampOnUpdate) {
                 $this->_hasChanged = true;
             }
 
-            $this->_shouldTimestampOnUpdate = (bool)$flag;
+            $this->_shouldTimestampOnUpdate = $flag;
             return $this;
         }
 
         return $this->_shouldTimestampOnUpdate;
     }
 
-    public function shouldTimestampAsDefault($flag=null) {
+    public function shouldTimestampAsDefault(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_shouldTimestampAsDefault) {
+            if($flag != $this->_shouldTimestampAsDefault) {
                 $this->_hasChanged = true;
             }
 
-            if($this->_shouldTimestampAsDefault = (bool)$flag) {
+            if($this->_shouldTimestampAsDefault = $flag) {
                 $this->setDefaultValue(null);
             }
 
@@ -935,15 +935,15 @@ trait TAutoGeneratorField {
 
     protected $_autoGenerate = true;
 
-    public function shouldAutoGenerate($flag=null) {
+    public function shouldAutoGenerate(bool $flag=null) {
         if($flag !== null) {
-            $flag = (bool)$flag;
+            $flag = $flag;
 
             if($flag != $this->_autoGenerate) {
                 $this->_hasChanged = true;
             }
 
-            $this->_autoGenerate = (bool)$flag;
+            $this->_autoGenerate = $flag;
             return $this;
         }
 

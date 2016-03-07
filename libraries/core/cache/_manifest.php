@@ -66,7 +66,7 @@ interface IBackend extends core\IValueMap, \Countable {
 }
 
 interface IDirectFileBackend extends IBackend {
-    public function shouldSerialize($flag=null);
+    public function shouldSerialize(bool $flag=null);
     public function getDirectFilePath($id);
     public function getDirectFileSize($id);
     public function getDirectFile($id);

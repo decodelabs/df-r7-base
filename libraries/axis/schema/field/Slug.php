@@ -17,13 +17,13 @@ class Slug extends Base implements axis\schema\IAutoUniqueField {
 
     protected $_allowPathFormat = false;
 
-    public function allowPathFormat($flag=null) {
+    public function allowPathFormat(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_allowPathFormat) {
+            if($flag != $this->_allowPathFormat) {
                 $this->_hasChanged = true;
             }
 
-            $this->_allowPathFormat = (bool)$flag;
+            $this->_allowPathFormat = $flag;
             return $this;
         }
 

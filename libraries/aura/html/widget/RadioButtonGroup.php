@@ -119,9 +119,9 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
         return $selectionFound = $value == $currValue;
     }
 
-    public function shouldWrapBody($flag=null) {
+    public function shouldWrapBody(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldWrapBody = (bool)$flag;
+            $this->_shouldWrapBody = $flag;
             return $this;
         }
 
@@ -137,7 +137,7 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
         return $this->_labelClass;
     }
 
-    public function isInline($flag=null) {
+    public function isInline(bool $flag=null) {
         if($flag !== null) {
             if($flag) {
                 $this->getTag()->addClass('inline');

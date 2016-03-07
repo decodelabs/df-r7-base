@@ -250,44 +250,44 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $this->getCacheControl()->getAccess();
     }
 
-    public function canStoreCache($flag=null) {
+    public function canStoreCache(bool $flag=null) {
         $cacheControl = $this->getCacheControl();
 
         if($flag !== null) {
-            $cacheControl->canStore((bool)$flag);
+            $cacheControl->canStore($flag);
             return $this;
         }
 
         return $cacheControl->canStore();
     }
 
-    public function canTransformCache($flag=null) {
+    public function canTransformCache(bool $flag=null) {
         $cacheControl = $this->getCacheControl();
 
         if($flag !== null) {
-            $cacheControl->canTransform((bool)$flag);
+            $cacheControl->canTransform($flag);
             return $this;
         }
 
         return $cacheControl->canTransform();
     }
 
-    public function shouldRevalidateCache($flag=null) {
+    public function shouldRevalidateCache(bool $flag=null) {
         $cacheControl = $this->getCacheControl();
 
         if($flag !== null) {
-            $cacheControl->shouldRevalidate((bool)$flag);
+            $cacheControl->shouldRevalidate($flag);
             return $this;
         }
 
         return $cacheControl->shouldRevalidate();
     }
 
-    public function shouldRevalidateProxyCache($flag=null) {
+    public function shouldRevalidateProxyCache(bool $flag=null) {
         $cacheControl = $this->getCacheControl();
 
         if($flag !== null) {
-            $cacheControl->shouldRevalidateProxy((bool)$flag);
+            $cacheControl->shouldRevalidateProxy($flag);
             return $this;
         }
 
@@ -392,7 +392,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $this->getNamedValue('content-disposition', 'filename');
     }
 
-    public function isAttachment($flag=null) {
+    public function isAttachment(bool $flag=null) {
         if($flag !== null) {
             if(!$flag) {
                 $this->set('content-disposition', 'inline');

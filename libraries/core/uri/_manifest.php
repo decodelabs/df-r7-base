@@ -18,9 +18,9 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 interface IPath extends core\IStringProvider, core\collection\IIndexedQueue {
     public function setSeparator($separator);
     public function getSeparator();
-    public function isAbsolute($flag=null);
-    public function shouldAddTrailingSlash($flag=null);
-    public function canAutoCanonicalize($flag=null);
+    public function isAbsolute(bool $flag=null);
+    public function shouldAddTrailingSlash(bool $flag=null);
+    public function canAutoCanonicalize(bool $flag=null);
     public function canonicalize();
     public function extractRelative($path);
     public function getRawCollection();
@@ -44,7 +44,7 @@ interface IFilePath extends IPath {
 
 
 interface ISecureSchemeContainer {
-    public function isSecure($flag=null);
+    public function isSecure(bool $flag=null);
 }
 
 interface IUsernameContainer {
@@ -104,7 +104,7 @@ interface IQueryContainer {
     public function getQueryString();
     public function getQueryTerm($key, $default=null);
     public function hasQuery();
-    public function shouldEncodeQueryAsRfc3986($flag=null);
+    public function shouldEncodeQueryAsRfc3986(bool $flag=null);
 }
 
 /*****************

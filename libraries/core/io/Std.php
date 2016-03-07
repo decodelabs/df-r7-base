@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,7 +7,7 @@ namespace df\core\io;
 
 use df;
 use df\core;
-    
+
 class Std implements IMultiplexReaderChannel {
 
     use TReader;
@@ -53,8 +53,8 @@ class Std implements IMultiplexReaderChannel {
 
 
     public function setReadBlocking($flag) {
-        stream_set_blocking(STDIN, (int)((bool)$flag));
-        $this->_readBlocking = (bool)$flag;
+        stream_set_blocking(STDIN, (int)($flag));
+        $this->_readBlocking = $flag;
         return $this;
     }
 
@@ -74,7 +74,7 @@ class Std implements IMultiplexReaderChannel {
         || $output === false) {
             return false;
         }
-        
+
         return $output;
     }
 
@@ -90,7 +90,7 @@ class Std implements IMultiplexReaderChannel {
         || $output === false) {
             return false;
         }
-        
+
         return $output;
     }
 

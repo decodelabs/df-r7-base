@@ -50,9 +50,9 @@ class BatchIterator implements IBatchIterator {
         return $this->_result;
     }
 
-    public function isForFetch($flag=null) {
+    public function isForFetch(bool $flag=null) {
         if($flag !== null) {
-            $this->_isForFetch = (bool)$flag;
+            $this->_isForFetch = $flag;
             return $this;
         }
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\link\http\response;
 use df;
 use df\core;
 use df\link;
-    
+
 class Generator extends Base implements link\http\IGeneratorResponse {
 
     protected $_sender;
@@ -36,9 +36,9 @@ class Generator extends Base implements link\http\IGeneratorResponse {
             ;
     }
 
-    public function shouldChunkManually($flag=null) {
+    public function shouldChunkManually(bool $flag=null) {
         if($flag !== null) {
-            $this->_manualChunk = (bool)$flag;
+            $this->_manualChunk = $flag;
             return $this;
         }
 

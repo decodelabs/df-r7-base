@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -29,9 +29,9 @@ class Notification extends Base implements INotificationProxyView {
         return $this->_subject;
     }
 
-    public function isPlainText($flag=null) {
+    public function isPlainText(bool $flag=null) {
         if($flag !== null) {
-            $this->_isPlainText = (bool)$flag;
+            $this->_isPlainText = $flag;
             return $this;
         }
 

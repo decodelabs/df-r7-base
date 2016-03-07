@@ -9,12 +9,12 @@ use df;
 use df\core;
 
 class TextList extends Base implements core\validate\ITextListField {
-    
+
     protected $_allowEmptyEntries = false;
 
-    public function shouldAllowEmptyEntries($flag=null) {
+    public function shouldAllowEmptyEntries(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowEmptyEntries = (bool)$flag;
+            $this->_allowEmptyEntries = $flag;
             return $this;
         }
 
@@ -51,7 +51,7 @@ class TextList extends Base implements core\validate\ITextListField {
                 $this->validator->setRequireGroupFulfilled($this->_requireGroup);
             }
         }
-        
+
         $value = $node->toArray();
         $value = (array)$this->_sanitizeValue($value);
 
@@ -66,21 +66,21 @@ class TextList extends Base implements core\validate\ITextListField {
         }
 
         $value = $this->_applyCustomValidator($node, $value);
-        
+
         return $value;
     }
-    
+
     public function applyValueTo(&$record, $value) {
         if(!is_array($record) && !$record instanceof \ArrayAccess) {
             throw new RuntimeException(
                 'Target record does not implement ArrayAccess'
             );
         }
-        
+
         if(!is_array($value)) {
             $value = [$value];
         }
-        
+
         $record[$this->getRecordName()] = $value;
         return $this;
     }

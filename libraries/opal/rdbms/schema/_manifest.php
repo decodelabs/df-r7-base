@@ -39,7 +39,7 @@ interface ISchema extends
     public function getAdapter();
     public function getTable();
     public function getSqlVariant();
-    public function isTemporary($flag=null);
+    public function isTemporary(bool $flag=null);
     public function normalize();
 }
 

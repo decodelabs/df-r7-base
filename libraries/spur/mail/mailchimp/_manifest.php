@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 
-    
+
 // Exceptions
 interface IException {}
 class BadMethodCallException extends \BadMethodCallException implements IException {}
@@ -19,7 +19,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 // Interfaces
 interface IMediator extends spur\IHttpMediator {
-    public function isSecure($flag=null);
+    public function isSecure(bool $flag=null);
 
 // Api key
     public function setApiKey($key);
@@ -179,7 +179,7 @@ interface IMember extends IApiRepresentation {
 
     public function setGroups(array $groups);
     public function addGroups(array $groups);
-    
+
     public function save();
     public function unsubscribe($sendGoodbye=false, $sendNotify=false);
     public function delete($sendGoodbye=false, $sendNotify=false);

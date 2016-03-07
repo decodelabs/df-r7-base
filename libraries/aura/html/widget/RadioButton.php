@@ -79,9 +79,9 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
         return $output;
     }
 
-    public function shouldWrapBody($flag=null) {
+    public function shouldWrapBody(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldWrapBody = (bool)$flag;
+            $this->_shouldWrapBody = $flag;
             return $this;
         }
 

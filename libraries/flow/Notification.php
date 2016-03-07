@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\flow;
 use df\user;
 use df\flex;
-    
+
 class Notification implements INotification {
 
     protected $_subject;
@@ -98,7 +98,7 @@ class Notification implements INotification {
             case INotification::SIMPLE_TAGS:
                 $parser = new flex\simpleTags\Parser($this->_body);
                 return $parser->toHtml();
-            
+
             case INotification::HTML:
                 return $this->_body;
         }
@@ -106,9 +106,9 @@ class Notification implements INotification {
 
 
 // To
-    public function shouldSendToAdmin($flag=null) {
+    public function shouldSendToAdmin(bool $flag=null) {
         if($flag !== null) {
-            $this->_toAdmin = (bool)$flag;
+            $this->_toAdmin = $flag;
             return $this;
         }
 
@@ -167,18 +167,18 @@ class Notification implements INotification {
         return !empty($this->_toEmails) || !empty($this->_toUsers);
     }
 
-    public function shouldFilterClient($flag=null) {
+    public function shouldFilterClient(bool $flag=null) {
         if($flag !== null) {
-            $this->_filterClient = (bool)$flag;
+            $this->_filterClient = $flag;
             return $this;
         }
 
         return $this->_filterClient;
     }
 
-    public function shouldForceSend($flag=null) {
+    public function shouldForceSend(bool $flag=null) {
         if($flag !== null) {
-            $this->_forceSend = (bool)$flag;
+            $this->_forceSend = $flag;
             return $this;
         }
 
@@ -195,7 +195,7 @@ class Notification implements INotification {
 
     public function getToEmails() {
         return $this->_toEmails;
-    }   
+    }
 
     public function removeToEmail($email) {
         $email = flow\mail\Address::factory($email);
@@ -259,9 +259,9 @@ class Notification implements INotification {
     }
 
 
-    public function isPrivate($flag=null) {
+    public function isPrivate(bool $flag=null) {
         if($flag !== null) {
-            $this->_isPrivate = (bool)$flag;
+            $this->_isPrivate = $flag;
             return $this;
         }
 
@@ -270,7 +270,7 @@ class Notification implements INotification {
 
 
 // Journal
-    public function setJournalName($name) {
+    public function setJournalName(string $name=null) {
         $this->_journalName = $name;
         return $this;
     }
@@ -311,9 +311,9 @@ class Notification implements INotification {
     }
 
 
-    public function shouldJournal($flag=null) {
+    public function shouldJournal(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldJournal = (bool)$flag;
+            $this->_shouldJournal = $flag;
             return $this;
         }
 

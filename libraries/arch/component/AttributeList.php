@@ -42,9 +42,9 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy {
     }
 
 // Error
-    public function shouldRenderIfEmpty($flag=null) {
+    public function shouldRenderIfEmpty(bool $flag=null) {
         if($flag !== null) {
-            $this->_renderIfEmpty = (bool)$flag;
+            $this->_renderIfEmpty = $flag;
             return $this;
         }
 

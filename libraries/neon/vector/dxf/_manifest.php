@@ -80,8 +80,8 @@ interface IAppClass extends core\IStringProvider {
     public function setProxyCapabilities($flag);
     public function getProxyCapabilities();
     public function hasProxyCapability($flag);
-    public function wasProxy($flag=null);
-    public function isEntity($flag=null);
+    public function wasProxy(bool $flag=null);
+    public function isEntity(bool $flag=null);
 }
 
 
@@ -103,12 +103,12 @@ interface ITable extends core\IStringProvider {
     public function getFlags();
     public function hasFlag($flag);
 
-    public function isFrozen($flag=null);
-    public function isFrozenInNew($flag=null);
-    public function isLocked($flag=null);
-    public function isXrefDependent($flag=null);
-    public function isXrefResolved($flag=null);
-    public function wasReferencedOnLastEdit($flag=null);
+    public function isFrozen(bool $flag=null);
+    public function isFrozenInNew(bool $flag=null);
+    public function isLocked(bool $flag=null);
+    public function isXrefDependent(bool $flag=null);
+    public function isXrefResolved(bool $flag=null);
+    public function wasReferencedOnLastEdit(bool $flag=null);
 }
 
 trait TTable {
@@ -164,9 +164,9 @@ trait TTable {
         return $this->_flags & $flag == $flag;
     }
 
-    public function isFrozen($flag=null) {
+    public function isFrozen(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_flags |= 1;
             } else {
                 $this->_flags &= ~1;
@@ -178,9 +178,9 @@ trait TTable {
         return $this->_flags & 1 == 1;
     }
 
-    public function isFrozenInNew($flag=null) {
+    public function isFrozenInNew(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_flags |= 2;
             } else {
                 $this->_flags &= ~2;
@@ -192,9 +192,9 @@ trait TTable {
         return $this->_flags & 2 == 2;
     }
 
-    public function isLocked($flag=null) {
+    public function isLocked(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_flags |= 4;
             } else {
                 $this->_flags &= ~4;
@@ -206,9 +206,9 @@ trait TTable {
         return $this->_flags & 4 == 4;
     }
 
-    public function isXrefDependent($flag=null) {
+    public function isXrefDependent(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_flags |= 16;
             } else {
                 $this->_flags &= ~16;
@@ -220,9 +220,9 @@ trait TTable {
         return $this->_flags & 16 == 16;
     }
 
-    public function isXrefResolved($flag=null) {
+    public function isXrefResolved(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->isXrefDependent(true);
                 $this->_flags |= 32;
             } else {
@@ -235,9 +235,9 @@ trait TTable {
         return $this->_flags & 32 == 32;
     }
 
-    public function wasReferencedOnLastEdit($flag=null) {
+    public function wasReferencedOnLastEdit(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_flags |= 64;
             } else {
                 $this->_flags &= ~64;
@@ -318,7 +318,7 @@ interface ILineTypeTableElement extends core\IStringProvider {
 
     public function setRotation($radians);
     public function getRotation();
-    public function isRotationAbsolute($flag=null);
+    public function isRotationAbsolute(bool $flag=null);
 
     public function setOffset($vector);
     public function getOffset();
@@ -483,7 +483,7 @@ interface IViewportTable extends ITable, IViewControlTable {
     public function getSnapSpacing();
     public function setSnapRotation($angle);
     public function getSnapRotation();
-    public function isSnapEnabled($flag=null);
+    public function isSnapEnabled(bool $flag=null);
     public function setSnapStyle($style);
     public function getSnapStyle();
     public function setSnapIsoPair($pair);
@@ -491,7 +491,7 @@ interface IViewportTable extends ITable, IViewControlTable {
 
     public function setGridSpacing($vector);
     public function getGridSpacing();
-    public function isGridEnabled($flag=null);
+    public function isGridEnabled(bool $flag=null);
 
     public function setHeight($height);
     public function getHeight();
@@ -513,8 +513,8 @@ interface ITextProvider {
     public function getWidthFactor();
     public function setObliqueAngle($angle);
     public function getObliqueAngle();
-    public function mirrorX($flag=null);
-    public function mirrorY($flag=null);
+    public function mirrorX(bool $flag=null);
+    public function mirrorY(bool $flag=null);
 }
 
 
@@ -565,18 +565,18 @@ trait TTextProvider {
         return $this->_obliqueAngle;
     }
 
-    public function mirrorX($flag=null) {
+    public function mirrorX(bool $flag=null) {
         if($flag !== null) {
-            $this->_mirrorX = (bool)$flag;
+            $this->_mirrorX = $flag;
             return $this;
         }
 
         return $this->_mirrorX;
     }
 
-    public function mirrorY($flag=null) {
+    public function mirrorY(bool $flag=null) {
         if($flag !== null) {
-            $this->_mirrorY = (bool)$flag;
+            $this->_mirrorY = $flag;
             return $this;
         }
 
@@ -699,8 +699,8 @@ interface IEntity extends core\IStringProvider {
     public function setSubclassMarker($marker);
     public function getSubclassMarker();
 
-    public function isVisible($flag=null);
-    public function isInPaperSpace($flag=null);
+    public function isVisible(bool $flag=null);
+    public function isInPaperSpace(bool $flag=null);
     public function setColor($color);
     public function getColor();
 
@@ -745,18 +745,18 @@ trait TEntity {
     }
 
 
-    public function isVisible($flag=null) {
+    public function isVisible(bool $flag=null) {
         if($flag !== null) {
-            $this->_isVisible = (bool)$flag;
+            $this->_isVisible = $flag;
             return $this;
         }
 
         return $this->_isVisible;
     }
 
-    public function isInPaperSpace($flag=null) {
+    public function isInPaperSpace(bool $flag=null) {
         if($flag !== null) {
-            $this->_isInPaperSpace = (bool)$flag;
+            $this->_isInPaperSpace = $flag;
             return $this;
         }
 
@@ -936,14 +936,14 @@ interface IPolyLineEntity extends IEntity, IDrawingEntity {
     public function setLineFlags($flags);
     public function getLineFlags();
     public function hasLineFlag($flag);
-    public function isClosed($flag=null);
-    public function hasCurveFitVertices($flag=null);
-    public function hasSplineFitVertices($flag=null);
-    public function is3dPolyLine($flag=null);
-    public function is3dPolygonMesh($flag=null);
-    public function isClosedPolygonMesh($flag=null);
-    public function isPolyFaceMesh($flag=null);
-    public function hasContinuousLineType($flag=null);
+    public function isClosed(bool $flag=null);
+    public function hasCurveFitVertices(bool $flag=null);
+    public function hasSplineFitVertices(bool $flag=null);
+    public function is3dPolyLine(bool $flag=null);
+    public function is3dPolygonMesh(bool $flag=null);
+    public function isClosedPolygonMesh(bool $flag=null);
+    public function isPolyFaceMesh(bool $flag=null);
+    public function hasContinuousLineType(bool $flag=null);
 
     public function setDefaultStartWidth($width);
     public function getDefaultStartWidth();
@@ -1030,13 +1030,13 @@ interface IVertexEntity extends IEntity {
     public function setFlags($flags);
     public function getFlags();
     public function hasFlag($flag);
-    public function isCurveFitting($flag=null);
-    public function hasCurveFitTangent($flag=null);
-    public function isSpline($flag=null);
-    public function isSplingControlPoint($flag=null);
-    public function isPolyLine3d($flag=null);
-    public function isPolygonMesh($flag=null);
-    public function isPolyFaceMesh($flag=null);
+    public function isCurveFitting(bool $flag=null);
+    public function hasCurveFitTangent(bool $flag=null);
+    public function isSpline(bool $flag=null);
+    public function isSplingControlPoint(bool $flag=null);
+    public function isPolyLine3d(bool $flag=null);
+    public function isPolygonMesh(bool $flag=null);
+    public function isPolyFaceMesh(bool $flag=null);
 
     public function setCurveFitTangentDirection($direction);
     public function getCurveFitTangentDirection();

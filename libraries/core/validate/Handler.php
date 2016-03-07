@@ -124,9 +124,9 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function shouldSanitizeAll($flag=null) {
+    public function shouldSanitizeAll(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldSanitizeAll = (bool)$flag;
+            $this->_shouldSanitizeAll = $flag;
             return $this;
         }
 

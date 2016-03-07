@@ -231,18 +231,18 @@ class Cookie implements ICookie {
     }
 
 
-    public function isSecure($flag=null) {
+    public function isSecure(bool $flag=null) {
         if($flag !== null) {
-            $this->_isSecure = (bool)$flag;
+            $this->_isSecure = $flag;
             return $this;
         }
 
         return $this->_isSecure;
     }
 
-    public function isHttpOnly($flag=null) {
+    public function isHttpOnly(bool $flag=null) {
         if($flag !== null) {
-            $this->_isHttpOnly = (bool)$flag;
+            $this->_isHttpOnly = $flag;
             return $this;
         }
 

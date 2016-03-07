@@ -367,9 +367,9 @@ trait TQuery_Locational {
         return $this->_location;
     }
 
-    public function shouldSearchChildLocations($flag=null) {
+    public function shouldSearchChildLocations(bool $flag=null) {
         if($flag !== null) {
-            $this->_searchChildLocations = (bool)$flag;
+            $this->_searchChildLocations = $flag;
             return $this;
         }
 
@@ -386,9 +386,9 @@ trait TQuery_Distinct {
 
     protected $_isDistinct = false;
 
-    public function isDistinct($flag=null) {
+    public function isDistinct(bool $flag=null) {
         if($flag !== null) {
-            $this->_isDistinct = (bool)$flag;
+            $this->_isDistinct = $flag;
             return $this;
         }
 
@@ -930,9 +930,9 @@ trait TQuery_Populate {
         return $this->_type;
     }
 
-    public function isSelect($flag=null) {
+    public function isSelect(bool $flag=null) {
         if($flag !== null) {
-            $this->_isSelect = (bool)$flag;
+            $this->_isSelect = $flag;
             return $this;
         }
 
@@ -1070,9 +1070,9 @@ trait TQuery_Combine {
         return $this->_parent;
     }
 
-    public function isCopy($flag=null) {
+    public function isCopy(bool $flag=null) {
         if($flag !== null) {
-            $this->_isCopy = (bool)$flag;
+            $this->_isCopy = $flag;
             return $this;
         }
 
@@ -1904,9 +1904,9 @@ trait TQuery_Read {
 
     protected $_isUnbuffered = false;
 
-    public function isUnbuffered($flag=null) {
+    public function isUnbuffered(bool $flag=null) {
         if($flag !== null) {
-            $this->_isUnbuffered = (bool)$flag;
+            $this->_isUnbuffered = $flag;
             return $this;
         }
 
@@ -2066,18 +2066,18 @@ trait TQuery_DataInsert {
     protected $_shouldReplace = false;
     protected $_ifNotExists = false;
 
-    public function shouldReplace($flag=null) {
+    public function shouldReplace(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldReplace = (bool)$flag;
+            $this->_shouldReplace = $flag;
             return $this;
         }
 
         return $this->_shouldReplace;
     }
 
-    public function ifNotExists($flag=null) {
+    public function ifNotExists(bool $flag=null) {
         if($flag !== null) {
-            $this->_ifNotExists = (bool)$flag;
+            $this->_ifNotExists = $flag;
             return $this;
         }
 

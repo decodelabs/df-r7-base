@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 
 class InsertRecord implements IInsertRecordTask {
-    
+
     use TTask;
     use TRecordTask;
 
@@ -20,23 +20,23 @@ class InsertRecord implements IInsertRecordTask {
         $this->_record = $record;
         $this->_setId(opal\record\Base::extractRecordId($record));
     }
-    
+
     public function getRecordTaskName() {
         return 'Insert';
     }
 
-    public function ifNotExists($flag=null) {
+    public function ifNotExists(bool $flag=null) {
         if($flag !== null) {
-            $this->_ifNotExists = (bool)$flag;
+            $this->_ifNotExists = $flag;
             return $this;
         }
 
         return $this->_ifNotExists;
     }
-    
+
     public function execute(opal\query\ITransaction $transaction) {
         $data = $this->_record->getValuesForStorage();
-        
+
         $query = $transaction->insert($data)
             ->into($this->getAdapter())
             ->ifNotExists((bool)$this->_ifNotExists);
@@ -44,12 +44,12 @@ class InsertRecord implements IInsertRecordTask {
         if($this->_record instanceof opal\record\ILocationalRecord) {
             $query->inside($this->_record->getQueryLocation());
         }
-            
+
         $id = $query->execute();
         $row = $query->getRow();
-        
+
         $this->_record->acceptChanges($id, $row);
-        
+
         return $this;
     }
 }

@@ -66,7 +66,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
     }
 
 // Icon
-    public function setIcon($icon) {
+    public function setIcon(string $icon=null) {
         $this->_icon = $icon;
         return $this;
     }
@@ -86,9 +86,9 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
     }
 
 // Nullable
-    public function isNullable($flag=null) {
+    public function isNullable(bool $flag=null) {
         if($flag !== null) {
-            $this->_isNullable = (bool)$flag;
+            $this->_isNullable = $flag;
             return $this;
         }
 
@@ -97,9 +97,9 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
 
 
 // Disabled
-    public function isDisabled($flag=null) {
+    public function isDisabled(bool $flag=null) {
         if($flag !== null) {
-            $this->_isDisabled = (bool)$flag;
+            $this->_isDisabled = $flag;
             return $this;
         }
 

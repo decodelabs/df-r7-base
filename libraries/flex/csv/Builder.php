@@ -97,9 +97,9 @@ class Builder implements IBuilder {
         return $this->_fields;
     }
 
-    public function shouldWriteFields($flag=null) {
+    public function shouldWriteFields(bool $flag=null) {
         if($flag !== null) {
-            $this->_writeFields = (bool)$flag;
+            $this->_writeFields = $flag;
             return $this;
         }
 

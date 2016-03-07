@@ -112,9 +112,9 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $this->_lifeTime;
     }
 
-    public function shouldSerialize($flag=null) {
+    public function shouldSerialize(bool $flag=null) {
         if($flag !== null) {
-            $this->_serialize = (bool)$flag;
+            $this->_serialize = $flag;
             return $this;
         }
 

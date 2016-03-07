@@ -281,9 +281,9 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
 
 // Active
-    public function isActive($flag=null) {
+    public function isActive(bool $flag=null) {
         if($flag !== null) {
-            $this->_isActive = (bool)$flag;
+            $this->_isActive = $flag;
             $this->_isComputedActive = null;
 
             return $this;
@@ -349,9 +349,9 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
 
 // Hiding
-    public function shouldHideIfInaccessible($flag=null) {
+    public function shouldHideIfInaccessible(bool $flag=null) {
         if($flag !== null) {
-            $this->_hideIfInaccessible = (bool)$flag;
+            $this->_hideIfInaccessible = $flag;
             return $this;
         }
 

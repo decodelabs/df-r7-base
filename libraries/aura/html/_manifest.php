@@ -46,8 +46,8 @@ interface ITagDataContainer extends core\collection\IAttributeContainer {
     // Direct attributes
     public function setId($id);
     public function getId();
-    public function isHidden($flag=null);
-    public function setTitle($title);
+    public function isHidden(bool $flag=null);
+    public function setTitle(string $title=null);
     public function getTitle();
 
 
@@ -77,7 +77,7 @@ interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, 
     public function open();
     public function close();
     public function renderWith($innerContent=null, $expanded=false);
-    public function shouldRenderIfEmpty($flag=null);
+    public function shouldRenderIfEmpty(bool $flag=null);
 }
 
 

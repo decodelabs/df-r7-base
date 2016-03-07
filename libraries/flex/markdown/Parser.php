@@ -79,9 +79,9 @@ class Parser implements flex\IHtmlProducer {
 
     protected $_escapeMarkup = false;
 
-    public function shouldEscapeMarkup($flag=null) {
+    public function shouldEscapeMarkup(bool $flag=null) {
         if($flag !== null) {
-            $this->_escapeMarkup = (bool)$flag;
+            $this->_escapeMarkup = $flag;
             return $this;
         }
 

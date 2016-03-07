@@ -50,9 +50,9 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this;
     }
 
-    public function isUnbuffered($flag=null) {
+    public function isUnbuffered(bool $flag=null) {
         if($flag !== null) {
-            $this->_isUnbuffered = (bool)$flag;
+            $this->_isUnbuffered = $flag;
             return $this;
         }
 

@@ -72,16 +72,16 @@ class ContentSlot extends arch\node\form\Delegate implements
         }
     }
 
-    public function isNested($flag=null) {
+    public function isNested(bool $flag=null) {
         if($flag !== null) {
-            $this->_isNested = (bool)$flag;
+            $this->_isNested = $flag;
             return $this;
         }
 
         return $this->_isNested;
     }
 
-    public function setDefaultBlockType($type) {
+    public function setDefaultBlockType(string $type=null) {
         $this->_defaultBlockType = $type;
         return $this;
     }
@@ -126,7 +126,7 @@ class ContentSlot extends arch\node\form\Delegate implements
     }
 
 // Block label
-    public function setBlockLabel($label) {
+    public function setBlockLabel(string $label=null) {
         $this->_blockLabel = $label;
         return $this;
     }

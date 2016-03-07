@@ -87,12 +87,12 @@ interface ISlotContainer {
     public function addSlots(array $slots);
     public function getSlots();
     public function clearSlots();
-    public function setSlot($key, $value);
-    public function hasSlot($key);
-    public function slotExists($key);
-    public function getSlot($key, $default=null);
-    public function renderSlot($key, $default=null);
-    public function removeSlot($key);
+    public function setSlot(string $key, $value);
+    public function hasSlot(string $key);
+    public function slotExists(string $key);
+    public function getSlot(string $key, $default=null);
+    public function renderSlot(string $key, $default=null);
+    public function removeSlot(string $key);
     public function esc($value);
 }
 
@@ -116,7 +116,7 @@ trait TSlotContainer {
         return $this;
     }
 
-    public function renderSlot($key, $default=null) {
+    public function renderSlot(string $key, $default=null) {
         $value = $this->getSlot($key, $default);
 
         if(is_callable($value)) {
@@ -279,7 +279,7 @@ trait TThemedView {
 
 
 interface ILayoutView extends IThemedView {
-    public function shouldUseLayout($flag=null);
+    public function shouldUseLayout(bool $flag=null);
     public function setLayout($layout);
     public function getLayout();
 }
@@ -291,9 +291,9 @@ trait TLayoutView {
     protected $_layout;
     protected $_useLayout = true;
 
-    public function shouldUseLayout($flag=null) {
+    public function shouldUseLayout(bool $flag=null) {
         if($flag !== null) {
-            $this->_useLayout = (bool)$flag;
+            $this->_useLayout = $flag;
             return $this;
         }
 
@@ -336,9 +336,9 @@ interface INotificationProxyView extends IView, ILayoutView, flow\INotificationP
 interface IAjaxView extends IResponseView {
     public function setRedirect($request);
     public function getRedirect();
-    public function shouldForceRedirect($flag=null);
-    public function isComplete($flag=null);
-    public function shouldReload($flag=null);
+    public function shouldForceRedirect(bool $flag=null);
+    public function isComplete(bool $flag=null);
+    public function shouldReload(bool $flag=null);
 }
 
 
@@ -348,7 +348,7 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getBodyTag();
 
     // Title
-    public function setTitle($title);
+    public function setTitle(string $title=null);
     public function getTitle();
     public function hasTitle();
     public function setTitlePrefix($prefix);
@@ -384,8 +384,8 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
 
 
     // Robots
-    public function canIndex($flag=null, $bot='robots');
-    public function canFollow($flag=null, $bot='robots');
+    public function canIndex(bool $flag=null, $bot='robots');
+    public function canFollow(bool $flag=null, $bot='robots');
     public function setRobots($value);
     public function getRobots();
     public function hasRobots();
@@ -445,7 +445,7 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
 
 
     // Rendering
-    public function shouldRenderBase($flag=null);
+    public function shouldRenderBase(bool $flag=null);
 }
 
 

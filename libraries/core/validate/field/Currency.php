@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 use df\mint;
-    
+
 class Currency extends Base implements core\validate\ICurrencyField {
 
     use core\validate\TRangeField;
@@ -30,9 +30,9 @@ class Currency extends Base implements core\validate\ICurrencyField {
         return $this->_currency;
     }
 
-    public function allowSelection($flag=null) {
+    public function allowSelection(bool $flag=null) {
         if($flag !== null) {
-            $this->_currencySelectable = (bool)$flag;
+            $this->_currencySelectable = $flag;
             return $this;
         }
 

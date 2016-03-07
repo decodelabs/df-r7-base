@@ -46,9 +46,9 @@ class CheckboxList extends Base implements core\IDumpable {
         return $this->_options;
     }
 
-    public function shouldWrapBody($flag=null) {
+    public function shouldWrapBody(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldWrapBody = (bool)$flag;
+            $this->_shouldWrapBody = $flag;
             return $this;
         }
 
@@ -64,7 +64,7 @@ class CheckboxList extends Base implements core\IDumpable {
         return $this->_labelClass;
     }
 
-    public function isInline($flag=null) {
+    public function isInline(bool $flag=null) {
         if($flag !== null) {
             if($flag) {
                 $this->getTag()->addClass('inline');

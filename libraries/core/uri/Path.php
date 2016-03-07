@@ -83,27 +83,27 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         return $this->_separator;
     }
 
-    public function isAbsolute($flag=null) {
+    public function isAbsolute(bool $flag=null) {
         if($flag !== null) {
-            $this->_isAbsolute = (bool)$flag;
+            $this->_isAbsolute = $flag;
             return $this;
         }
 
         return $this->_isAbsolute;
     }
 
-    public function shouldAddTrailingSlash($flag=null) {
+    public function shouldAddTrailingSlash(bool $flag=null) {
         if($flag !== null) {
-            $this->_addTrailingSlash = (bool)$flag;
+            $this->_addTrailingSlash = $flag;
             return $this;
         }
 
         return $this->_addTrailingSlash;
     }
 
-    public function canAutoCanonicalize($flag=null) {
+    public function canAutoCanonicalize(bool $flag=null) {
         if($flag !== null) {
-            $this->_autoCanonicalize = (bool)$flag;
+            $this->_autoCanonicalize = $flag;
             return $this;
         }
 

@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class PolyLine implements neon\vector\dxf\IPolyLineEntity {
-    
+
     use neon\vector\dxf\TEntity;
     use neon\vector\dxf\TDrawingEntity;
 
@@ -58,9 +58,9 @@ class PolyLine implements neon\vector\dxf\IPolyLineEntity {
         return $this->_lineFlags & $flag == $flag;
     }
 
-    public function isClosed($flag=null) {
+    public function isClosed(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 1;
             } else {
                 $this->_lineFlags &= ~1;
@@ -72,9 +72,9 @@ class PolyLine implements neon\vector\dxf\IPolyLineEntity {
         return $this->_lineFlags & 1 == 1;
     }
 
-    public function hasCurveFitVertices($flag=null) {
+    public function hasCurveFitVertices(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 2;
             } else {
                 $this->_lineFlags &= ~2;
@@ -86,9 +86,9 @@ class PolyLine implements neon\vector\dxf\IPolyLineEntity {
         return $this->_lineFlags & 2 == 2;
     }
 
-    public function hasSplineFitVertices($flag=null) {
+    public function hasSplineFitVertices(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 4;
             } else {
                 $this->_lineFlags &= ~4;
@@ -100,9 +100,9 @@ class PolyLine implements neon\vector\dxf\IPolyLineEntity {
         return $this->_lineFlags & 4 == 4;
     }
 
-    public function is3dPolyLine($flag=null) {
+    public function is3dPolyLine(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 8;
             } else {
                 $this->_lineFlags &= ~8;
@@ -114,9 +114,9 @@ class PolyLine implements neon\vector\dxf\IPolyLineEntity {
         return $this->_lineFlags & 8 == 8;
     }
 
-    public function is3dPolygonMesh($flag=null) {
+    public function is3dPolygonMesh(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 16;
             } else {
                 $this->_lineFlags &= ~16;
@@ -128,9 +128,9 @@ class PolyLine implements neon\vector\dxf\IPolyLineEntity {
         return $this->_lineFlags & 16 == 16;
     }
 
-    public function isClosedPolygonMesh($flag=null) {
+    public function isClosedPolygonMesh(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 32;
             } else {
                 $this->_lineFlags &= ~32;
@@ -142,9 +142,9 @@ class PolyLine implements neon\vector\dxf\IPolyLineEntity {
         return $this->_lineFlags & 32 == 32;
     }
 
-    public function isPolyFaceMesh($flag=null) {
+    public function isPolyFaceMesh(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 64;
             } else {
                 $this->_lineFlags &= ~64;
@@ -156,9 +156,9 @@ class PolyLine implements neon\vector\dxf\IPolyLineEntity {
         return $this->_lineFlags & 64 == 64;
     }
 
-    public function hasContinuousLineType($flag=null) {
+    public function hasContinuousLineType(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 64;
             } else {
                 $this->_lineFlags &= ~64;
@@ -248,7 +248,7 @@ class PolyLine implements neon\vector\dxf\IPolyLineEntity {
     public function addVertices(array $vertices) {
         foreach($vertices as $vertex) {
             if(!$vertex instanceof neon\vector\dxf\IVertexEntity) {
-                $vertex = new Vertex($vertex);    
+                $vertex = new Vertex($vertex);
             }
 
             $this->addVertex($vertex);

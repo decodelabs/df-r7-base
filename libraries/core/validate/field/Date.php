@@ -36,18 +36,18 @@ class Date extends Base implements core\validate\IDateField {
         return $this;
     }
 
-    public function shouldDefaultToNow($flag=null) {
+    public function shouldDefaultToNow(bool $flag=null) {
         if($flag !== null) {
-            $this->_defaultToNow = (bool)$flag;
+            $this->_defaultToNow = $flag;
             return $this;
         }
 
         return $this->_defaultToNow;
     }
 
-    public function mustBePast($flag=null) {
+    public function mustBePast(bool $flag=null) {
         if($flag !== null) {
-            $this->_mustBePast = (bool)$flag;
+            $this->_mustBePast = $flag;
 
             if($this->_mustBePast) {
                 $this->_mustBeFuture = false;
@@ -59,9 +59,9 @@ class Date extends Base implements core\validate\IDateField {
         return $this->_mustBePast;
     }
 
-    public function mustBeFuture($flag=null) {
+    public function mustBeFuture(bool $flag=null) {
         if($flag !== null) {
-            $this->_mustBeFuture = (bool)$flag;
+            $this->_mustBeFuture = $flag;
 
             if($this->_mustBeFuture) {
                 $this->_mustBePast = false;
@@ -91,9 +91,9 @@ class Date extends Base implements core\validate\IDateField {
         return $this->_timezone;
     }
 
-    public function isLocal($flag=null) {
+    public function isLocal(bool $flag=null) {
         if($flag !== null) {
-            $this->_timezone = (bool)$flag;
+            $this->_timezone = $flag;
             return $this;
         }
 

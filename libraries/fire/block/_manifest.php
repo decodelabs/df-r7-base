@@ -23,7 +23,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 interface IBlock extends core\xml\IRootInterchange, aura\view\IDeferredRenderable {
     public function getName();
     public function getDisplayName();
-    public function isNested($flag=null);
+    public function isNested(bool $flag=null);
     public function getVersion();
     public function isEmpty();
     public function isHidden();

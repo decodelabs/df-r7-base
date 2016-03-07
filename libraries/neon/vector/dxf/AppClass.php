@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class AppClass implements IAppClass {
-    
+
     use core\TStringProvider;
 
     protected $_dxfName;
@@ -66,18 +66,18 @@ class AppClass implements IAppClass {
         return $this->_proxyCapabilities & $flag == $flag;
     }
 
-    public function wasProxy($flag=null) {
+    public function wasProxy(bool $flag=null) {
         if($flag !== null) {
-            $this->_wasProxy = (bool)$flag;
+            $this->_wasProxy = $flag;
             return $this;
         }
 
         return $this->_wasProxy;
     }
 
-    public function isEntity($flag=null) {
+    public function isEntity(bool $flag=null) {
         if($flag !== null) {
-            $this->_isEntity = (bool)$flag;
+            $this->_isEntity = $flag;
             return $this;
         }
 
@@ -86,9 +86,9 @@ class AppClass implements IAppClass {
 
     public function toString() {
         return sprintf(
-            " 0\nCLASS\n 1\n%s\n 2\n%s\n 3\n%s\n 90\n%u\n 280\n%u\n 281\n%u\n", 
-            $this->_dxfName, 
-            $this->_className, 
+            " 0\nCLASS\n 1\n%s\n 2\n%s\n 3\n%s\n 90\n%u\n 280\n%u\n 281\n%u\n",
+            $this->_dxfName,
+            $this->_className,
             $this->_appName,
             $this->_proxyCapabilities,
             $this->_wasProxy,

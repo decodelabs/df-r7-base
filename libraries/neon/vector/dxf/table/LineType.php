@@ -226,9 +226,9 @@ class LineType_Element implements neon\vector\dxf\ILineTypeTableElement {
         return $this->_rotation;
     }
 
-    public function isRotationAbsolute($flag=null) {
+    public function isRotationAbsolute(bool $flag=null) {
         if($flag !== null) {
-            $this->_isRotationAbsolute = (bool)$flag;
+            $this->_isRotationAbsolute = $flag;
             return $this;
         }
 

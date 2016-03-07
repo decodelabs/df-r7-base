@@ -43,9 +43,9 @@ class Address extends Base implements core\IDumpable {
         return $this->_address;
     }
 
-    public function shouldShowCountry($flag=null) {
+    public function shouldShowCountry(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldShowCountry = (bool)$flag;
+            $this->_shouldShowCountry = $flag;
             return $this;
         }
 

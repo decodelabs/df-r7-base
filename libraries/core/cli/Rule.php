@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 class Rule implements IRule {
-    
+
     protected $_defaultName;
     protected $_names = [];
     protected $_valueRequired = false;
@@ -61,11 +61,11 @@ class Rule implements IRule {
 
         return $output;
     }
-    
 
-    public function requiresValue($flag=null) {
+
+    public function requiresValue(bool $flag=null) {
         if($flag !== null) {
-            $this->_valueRequired = (bool)$flag;
+            $this->_valueRequired = $flag;
 
             if($this->_valueRequired) {
                 $this->_canHaveValue = true;
@@ -77,9 +77,9 @@ class Rule implements IRule {
         return $this->_valueRequired;
     }
 
-    public function canHaveValue($flag=null) {
+    public function canHaveValue(bool $flag=null) {
         if($flag !== null) {
-            $this->_canHaveValue = (bool)$flag;
+            $this->_canHaveValue = $flag;
 
             if(!$this->_canHaveValue) {
                 $this->_valueRequired = false;
@@ -91,9 +91,9 @@ class Rule implements IRule {
         return $this->_canHaveValue;
     }
 
-    public function isRequired($flag=null) {
+    public function isRequired(bool $flag=null) {
         if($flag !== null) {
-            $this->_isRequired = (bool)$flag;
+            $this->_isRequired = $flag;
             return $this;
         }
 

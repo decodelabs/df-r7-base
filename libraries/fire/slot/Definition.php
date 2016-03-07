@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\fire;
 use df\aura;
 use df\arch;
-    
+
 class Definition implements IDefinition {
 
     protected $_id;
@@ -95,7 +95,7 @@ class Definition implements IDefinition {
     }
 
     public function _setStatic($flag=true) {
-        $this->_isStatic = (bool)$flag;
+        $this->_isStatic = $flag;
         return $this;
     }
 
@@ -106,7 +106,7 @@ class Definition implements IDefinition {
     }
 
     public function _setLayoutChild($flag=true) {
-        $this->_isLayoutChild = (bool)$flag;
+        $this->_isLayoutChild = $flag;
         return $this;
     }
 

@@ -28,9 +28,9 @@ abstract class Base extends arch\node\form\Delegate implements fire\block\IFormD
         return $this->_block;
     }
 
-    public function isNested($flag=null) {
+    public function isNested(bool $flag=null) {
         if($flag !== null) {
-            $this->_isNested = (bool)$flag;
+            $this->_isNested = $flag;
             return $this;
         }
 

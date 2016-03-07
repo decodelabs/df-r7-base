@@ -159,9 +159,9 @@ class Manager implements arch\node\ITaskManager {
     }
 
 
-    public function shouldCaptureBackgroundTasks($flag=null) {
+    public function shouldCaptureBackgroundTasks(bool $flag=null) {
         if($flag !== null) {
-            $this->_captureBackground = (bool)$flag;
+            $this->_captureBackground = $flag;
             return $this;
         }
 

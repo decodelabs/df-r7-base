@@ -10,7 +10,7 @@ use df\core;
 use df\link;
 
 class Options implements link\http\IRequestOptions {
-    
+
     public $downloadFolder;
     public $downloadFileName;
     public $downloadStream;
@@ -133,7 +133,7 @@ class Options implements link\http\IRequestOptions {
         $this->downloadStream = $stream;
         return $this;
     }
-    
+
     public function getDownloadStream() {
         return $this->downloadStream;
     }
@@ -154,18 +154,18 @@ class Options implements link\http\IRequestOptions {
         return $this->maxRedirects;
     }
 
-    public function shouldEnforceStrictRedirects($flag=null) {
+    public function shouldEnforceStrictRedirects(bool $flag=null) {
         if($flag !== null) {
-            $this->strictRedirects = (bool)$flag;
+            $this->strictRedirects = $flag;
             return $this;
         }
 
         return (bool)$this->strictRedirects;
     }
 
-    public function shouldHideRedirectReferrer($flag=null) {
+    public function shouldHideRedirectReferrer(bool $flag=null) {
         if($flag !== null) {
-            $this->hideRedirectReferrer = (bool)$flag;
+            $this->hideRedirectReferrer = $flag;
             return $this;
         }
 
@@ -302,18 +302,18 @@ class Options implements link\http\IRequestOptions {
         return $this->sslKeyPassword;
     }
 
-    public function shouldVerifySsl($flag=null) {
+    public function shouldVerifySsl(bool $flag=null) {
         if($flag !== null) {
-            $this->verifySsl = (bool)$flag;
+            $this->verifySsl = $flag;
             return $this;
         }
 
         return (bool)$this->verifySsl;
     }
 
-    public function shouldAllowSelfSigned($flag=null) {
+    public function shouldAllowSelfSigned(bool $flag=null) {
         if($flag !== null) {
-            $this->allowSelfSigned = (bool)$flag;
+            $this->allowSelfSigned = $flag;
             return $this;
         }
 

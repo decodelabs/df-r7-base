@@ -88,7 +88,7 @@ interface IBodyContentAwareWidget extends IWidget {
 
 
 interface IDisableableWidget {
-    public function isDisabled($flag=null);
+    public function isDisabled(bool $flag=null);
 }
 
 interface IContainerWidget extends IWidget, core\collection\IIndexedQueue, aura\html\IWidgetFinder {}
@@ -110,24 +110,24 @@ interface IFormDataWidget extends IFormOrientedWidget {
 }
 
 interface IInputWidget extends IFormDataWidget, IDisableableWidget {
-    public function isRequired($flag=null);
-    public function isReadOnly($flag=null);
+    public function isRequired(bool $flag=null);
+    public function isReadOnly(bool $flag=null);
 
     public function setTabIndex($index);
     public function getTabIndex();
 }
 
 interface IFocusableInputWidget extends IInputWidget {
-    public function shouldAutoFocus($flag=null);
+    public function shouldAutoFocus(bool $flag=null);
 }
 
 interface IVisualInputWidget extends IInputWidget, IFocusableInputWidget {
-    public function shouldValidate($flag=null);
-    public function shouldAutoComplete($flag=null);
+    public function shouldValidate(bool $flag=null);
+    public function shouldAutoComplete(bool $flag=null);
 }
 
 interface IOptionalMultipleValueInputWidget extends IInputWidget {
-    public function allowMultiple($flag=null);
+    public function allowMultiple(bool $flag=null);
 }
 
 interface IDataListEntryWidget extends IVisualInputWidget {
@@ -144,7 +144,7 @@ interface ITextEntryWidget extends IVisualInputWidget {
     public function setPlaceholder($placeholder);
     public function getPlaceholder();
 
-    public function shouldSpellCheck($flag=null);
+    public function shouldSpellCheck(bool $flag=null);
 }
 
 interface IRangeEntryWidget extends IDataEntryWidget {
@@ -206,7 +206,7 @@ interface IDispositionAwareWidget {
 
 
 interface IIconProviderWidget {
-    public function setIcon($icon);
+    public function setIcon(string $icon=null);
     public function getIcon();
 }
 
@@ -235,8 +235,8 @@ interface IFormWidget extends IFormOrientedWidget {
     public function setTarget($target);
     public function getTarget();
 
-    public function shouldAutoComplete($flag=null);
-    public function shouldValidate($flag=null);
+    public function shouldAutoComplete(bool $flag=null);
+    public function shouldValidate(bool $flag=null);
 
     public function setAcceptCharset($charset);
     public function getAcceptCharset();
@@ -256,7 +256,7 @@ interface IFieldSetWidget extends IFormOrientedWidget {
 
 
 interface IButtonWidget extends IInputWidget, IBodyContentAwareWidget, IDispositionAwareWidget {
-    public function shouldValidate($flag=null);
+    public function shouldValidate(bool $flag=null);
 }
 
 interface ITextboxWidget extends ITextEntryWidget, IDataListEntryWidget {
@@ -317,7 +317,7 @@ interface IDataDrivenListWidget extends IListWidget {
 interface IOrderedDataDrivenListWidget extends IDataDrivenListWidget {
     public function setStartIndex($start);
     public function getStartIndex();
-    public function isReversed($flag=null);
+    public function isReversed(bool $flag=null);
 }
 
 interface ILinearListWidget extends IListWidget {
@@ -350,7 +350,7 @@ interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidg
     public function getRelationship();
     public function removeRelationship(...$rel);
 
-    public function isActive($flag=null);
+    public function isActive(bool $flag=null);
 
     public function setHrefLanguage($language);
     public function getHrefLanguage();
@@ -365,5 +365,5 @@ interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidg
 interface IDescriptionAwareLinkWidget extends ILinkWidget {
     public function setDescription($description);
     public function getDescription();
-    public function shouldShowDescription($flag=null);
+    public function shouldShowDescription(bool $flag=null);
 }

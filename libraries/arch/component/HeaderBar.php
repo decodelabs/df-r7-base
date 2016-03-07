@@ -37,7 +37,7 @@ abstract class HeaderBar extends Base {
 
 
 // Title
-    public function setTitle($title) {
+    public function setTitle(string $title=null) {
         if(empty($title)) {
             $title = null;
         }
@@ -52,7 +52,7 @@ abstract class HeaderBar extends Base {
 
 
 // Sub title
-    public function setSubTitle($subTitle) {
+    public function setSubTitle(string $subTitle=null) {
         if(empty($subTitle)) {
             $subTitle = null;
         }
@@ -78,7 +78,7 @@ abstract class HeaderBar extends Base {
 
 
 // Icon
-    public function setIcon($icon) {
+    public function setIcon(string $icon=null) {
         $this->_icon = $icon;
         return $this;
     }

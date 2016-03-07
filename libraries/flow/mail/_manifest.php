@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\flow\mail;
 use df;
 use df\core;
 use df\flow;
-    
+
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
@@ -36,7 +36,7 @@ interface IMessage extends flow\mime\IMultiPart {
     public function addFileAttachment($path, $fileName=null, $contentType=null);
     public function addStringAttachment($string, $fileName, $contentType=null);
 
-    public function isPrivate($flag=null);
+    public function isPrivate(bool $flag=null);
 
     public function setFromAddress($address, $name=null);
     public function getFromAddress();
@@ -70,7 +70,7 @@ interface IMessage extends flow\mime\IMultiPart {
     public function setReturnPath($address=null);
     public function getReturnPath();
 
-    public function setJournalName($name);
+    public function setJournalName(string $name=null);
     public function getJournalName();
     public function setJournalDuration(core\time\IDuration $duration=null);
     public function getJournalDuration();
@@ -78,7 +78,7 @@ interface IMessage extends flow\mime\IMultiPart {
     public function getJournalObjectId1();
     public function setJournalObjectId2($id);
     public function getJournalObjectId2();
-    public function shouldJournal($flag=null);
+    public function shouldJournal(bool $flag=null);
 
     public function send(ITransport $transport=null);
 }

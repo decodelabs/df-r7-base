@@ -63,7 +63,7 @@ interface ISchema extends IChangeTracker {
     public function getName();
     public function setComment($comment);
     public function getComment();
-    public function isAudited($flag=null);
+    public function isAudited(bool $flag=null);
 
     public function setOptions(array $options);
     public function setOption($key, $value);
@@ -185,7 +185,7 @@ interface IField extends IChangeTracker {
     public function getName();
     public function setComment($comment);
     public function getComment();
-    public function isNullable($flag=null);
+    public function isNullable(bool $flag=null);
     public function setDefaultValue($default);
     public function getDefaultValue();
     public function toStorageArray();
@@ -195,7 +195,7 @@ interface IField extends IChangeTracker {
 interface ICharacterSetAwareField extends IField, flex\ICharacterSetAware {}
 
 interface IBinaryCollationField extends IField {
-    public function hasBinaryCollation($flag=null);
+    public function hasBinaryCollation(bool $flag=null);
 }
 
 interface ILengthRestrictedField extends IField {
@@ -219,12 +219,12 @@ interface ILargeByteSizeRestrictedField extends IField {
 }
 
 interface ISignedField extends IField {
-    public function isSigned($flag=null);
-    public function isUnsigned($flag=null);
+    public function isSigned(bool $flag=null);
+    public function isUnsigned(bool $flag=null);
 }
 
 interface IZerofillField extends IField {
-    public function shouldZerofill($flag=null);
+    public function shouldZerofill(bool $flag=null);
 }
 
 interface INumericField extends ISignedField, IZerofillField {}
@@ -238,12 +238,12 @@ interface IFloatingPointNumericField extends INumericField {
 
 
 interface IAutoIncrementableField extends INumericField {
-    public function shouldAutoIncrement($flag=null);
+    public function shouldAutoIncrement(bool $flag=null);
 }
 
 interface IAutoTimestampField extends IField {
-    public function shouldTimestampOnUpdate($flag=null);
-    public function shouldTimestampAsDefault($flag=null);
+    public function shouldTimestampOnUpdate(bool $flag=null);
+    public function shouldTimestampAsDefault(bool $flag=null);
 }
 
 interface IOptionProviderField extends IField {
@@ -256,7 +256,7 @@ interface IOptionProviderField extends IField {
 
 
 interface IAutoGeneratorField extends IField {
-    public function shouldAutoGenerate($flag=null);
+    public function shouldAutoGenerate(bool $flag=null);
 }
 
 
@@ -320,7 +320,7 @@ interface IMultiFieldPrimitive extends IPrimitive {
 interface IIndex extends IChangeTracker {
     public function _setName($name);
     public function getName();
-    public function isUnique($flag=null);
+    public function isUnique(bool $flag=null);
     public function setComment($comment);
     public function getComment();
 
@@ -344,7 +344,7 @@ interface IIndexFieldReference {
     public function isMultiField();
     public function setSize($size);
     public function getSize();
-    public function isDescending($flag=null);
+    public function isDescending(bool $flag=null);
     public function toStorageArray();
 }
 

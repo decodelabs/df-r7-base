@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\mint;
-    
+
 
 // Exceptions
 interface IException {}
@@ -154,7 +154,7 @@ interface IChargeRequest extends IApiObjectRequest {
     public function getDescription();
     public function setEmailAddress($email);
     public function getEmailAddress();
-    public function shouldCapture($flag=null);
+    public function shouldCapture(bool $flag=null);
     public function setApplicationFee($amount);
     public function getApplicationFee();
 }
@@ -322,7 +322,7 @@ interface ISubscriptionRequest extends IApiObjectRequest {
     public function setCouponCode($code);
     public function getCouponCode();
 
-    public function shouldProrate($flag=null);
+    public function shouldProrate(bool $flag=null);
 
     public function setTrialEndDate($date);
     public function getTrialEndDate();

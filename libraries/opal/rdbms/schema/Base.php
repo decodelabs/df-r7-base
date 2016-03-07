@@ -11,47 +11,47 @@ use df\opal;
 use df\mesh;
 
 abstract class Base implements ISchema, core\IDumpable {
-    
+
     use opal\schema\TSchema;
     use opal\schema\TSchema_FieldProvider;
     use opal\schema\TSchema_IndexProvider;
     use opal\schema\TSchema_IndexedFieldProvider;
     use opal\schema\TSchema_ForeignKeyProvider;
     use opal\schema\TSchema_TriggerProvider;
-    
+
     protected $_adapter;
-    
+
     protected $_options = [
         'name' => null,
         'comment' => null,
         'isTemporary' => false
     ];
-    
+
     public function __construct(opal\rdbms\IAdapter $adapter, $name) {
         $this->_adapter = $adapter;
         $this->setName($name);
     }
-    
+
     public function getAdapter() {
         return $this->_adapter;
     }
-    
+
     public function getTable() {
         return $this->_adapter->getTable($this->getName());
     }
-    
+
     public function getSqlVariant() {
         return $this->_adapter->getServerType();
     }
-    
-    public function isTemporary($flag=null) {
+
+    public function isTemporary(bool $flag=null) {
         if($flag !== null) {
-            return $this->setOption('isTemporary', (bool)$flag);
+            return $this->setOption('isTemporary', $flag);
         }
-        
+
         return (bool)$this->getOption('isTemporary');
     }
-    
+
     public function normalize() {
         foreach($this->getFieldsToRemove() as $field) {
             foreach($this->_foreignKeys as $name => $key) {
@@ -63,11 +63,11 @@ abstract class Base implements ISchema, core\IDumpable {
                 }
             }
         }
-        
+
         return $this;
     }
-    
-    
+
+
 // Changes
     public function hasChanged() {
         return $this->_hasOptionChanges()
@@ -87,48 +87,48 @@ abstract class Base implements ISchema, core\IDumpable {
         $this->_acceptIndexChanges();
         $this->_acceptForeignKeyChanges();
         $this->_acceptTriggerChanges();
-        
+
         return $this;
     }
-    
-    
-    
+
+
+
 // Creators
     public function _createField($name, $type, array $args) {
         return opal\rdbms\schema\field\Base::factory(
             $this, $type, $name, $args
         );
     }
-    
+
     public function _createFieldFromStorageArray(array $data) {
         core\stub($data);
     }
-    
+
     public function _createIndex($name, $fields=null) {
         return new opal\rdbms\schema\constraint\Index($this, $name, $fields);
     }
-    
+
     public function _createIndexFromStorageArray(array $data) {
         core\stub($data);
     }
-        
+
     public function _createForeignKey($name, $targetSchema) {
         return new opal\rdbms\schema\constraint\ForeignKey($this, $name, $targetSchema);
     }
-    
+
     public function _createForeignKeyFromStorageArray(array $data) {
         core\stub($data);
     }
-    
+
     public function _createTrigger($name, $event, $timing, $statement) {
         return new opal\rdbms\schema\constraint\Trigger($this, $name, $event, $timing, $statement);
     }
-    
+
     public function _createTriggerFromStorageArray(array $data) {
         core\stub($data);
     }
-    
-    
+
+
 // Ext. serialize
     public static function fromJson(opal\schema\ISchemaContext $schemaContext, $json) {
         if(!$data = json_decode($json, true)) {
@@ -136,7 +136,7 @@ abstract class Base implements ISchema, core\IDumpable {
                 'Invalid json schema representation'
             );
         }
-        
+
         core\dump($data);
     }
 

@@ -83,13 +83,12 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
 
 // Title
-    public function setTitle($title) {
-        $this->_title = (string)$title;
-
-        if(empty($this->_title)) {
-            $this->_title = null;
+    public function setTitle(string $title=null) {
+        if(empty($title)) {
+            $title = null;
         }
 
+        $this->_title = $title;
         return $this;
     }
 
@@ -265,7 +264,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
 
 // Robots
-    public function canIndex($flag=null, $bot='robots') {
+    public function canIndex(bool $flag=null, $bot='robots') {
         if(is_string($flag)) {
             $bot = $flag;
             $flag = null;
@@ -280,7 +279,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         $current = array_flip($current);
 
         if($flag !== null) {
-            if(!(bool)$flag) {
+            if(!$flag) {
                 unset($current['index']);
                 $current['noindex'] = null;
             } else {
@@ -294,7 +293,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         return !array_key_exists('noindex', $current);
     }
 
-    public function canFollow($flag=null, $bot='robots') {
+    public function canFollow(bool $flag=null, $bot='robots') {
         if(is_string($flag)) {
             $bot = $flag;
             $flag = null;
@@ -309,7 +308,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         $current = array_flip($current);
 
         if($flag !== null) {
-            if(!(bool)$flag) {
+            if(!$flag) {
                 unset($current['follow']);
                 $current['nofollow'] = null;
             } else {
@@ -694,9 +693,9 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     }
 
 // Rendering
-    public function shouldRenderBase($flag=null) {
+    public function shouldRenderBase(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldRenderBase = (bool)$flag;
+            $this->_shouldRenderBase = $flag;
             return $this;
         }
 

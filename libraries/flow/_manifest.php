@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,7 +11,7 @@ use df\flow;
 use df\user;
 
 
-    
+
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
@@ -81,7 +81,7 @@ interface IManager extends core\IManager {
     public function getConstantFlashes();
     public function removeConstantFlash($id);
     public function clearConstantFlashes();
-    
+
     public function queueFlash(IFlashMessage $message, $instantIfSpace=false);
     public function addInstantFlash(IFlashMessage $message);
     public function getInstantFlashes();
@@ -96,18 +96,18 @@ interface IFlashMessage {
     const ERROR = 'error';
     const WARNING = 'warning';
     const DEBUG = 'debug';
-    
+
     public function getId();
     public function setType($type);
     public function getType();
     public function isDebug();
 
-    public function isDisplayed($flag=null);
+    public function isDisplayed(bool $flag=null);
     public function setMessage($message);
     public function getMessage();
     public function setDescription($description);
     public function getDescription();
-    
+
     public function setLink($link, $text=null);
     public function getLink();
     public function setLinkText($text);
@@ -175,19 +175,19 @@ interface INotification {
     public function getBodyType();
     public function getBodyHtml();
 
-    public function shouldSendToAdmin($flag=null);
+    public function shouldSendToAdmin(bool $flag=null);
     public function setTo($to);
     public function addTo($to);
     public function clearTo();
     public function hasRecipients();
-    public function shouldFilterClient($flag=null);
-    public function shouldForceSend($flag=null);
+    public function shouldFilterClient(bool $flag=null);
+    public function shouldForceSend(bool $flag=null);
 
     public function addToEmail($email, $name=null);
     public function getToEmails();
     public function removeToEmail($email);
     public function clearToEmails();
-    
+
     public function addToUser($id);
     public function getToUsers();
     public function getToUserIds();
@@ -197,9 +197,9 @@ interface INotification {
     public function setFromEmail($email=null, $name=null);
     public function getFromEmail();
 
-    public function isPrivate($flag=null);
+    public function isPrivate(bool $flag=null);
 
-    public function setJournalName($name);
+    public function setJournalName(string $name=null);
     public function getJournalName();
     public function setJournalDuration(core\time\IDuration $duration=null);
     public function getJournalDuration();
@@ -207,7 +207,7 @@ interface INotification {
     public function getJournalObjectId1();
     public function setJournalObjectId2($id);
     public function getJournalObjectId2();
-    public function shouldJournal($flag=null);
+    public function shouldJournal(bool $flag=null);
 }
 
 interface INotificationProxy {

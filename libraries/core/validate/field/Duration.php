@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,7 +7,7 @@ namespace df\core\validate\field;
 
 use df;
 use df\core;
-    
+
 class Duration extends Base implements core\validate\IDurationField {
 
     use core\validate\TRangeField;
@@ -28,9 +28,9 @@ class Duration extends Base implements core\validate\IDurationField {
         return $this->_inputUnit;
     }
 
-    public function shouldAllowUnitSelection($flag=null) {
+    public function shouldAllowUnitSelection(bool $flag=null) {
         if($flag !== null) {
-            $this->_unitSelectable = (bool)$flag;
+            $this->_unitSelectable = $flag;
             return $this;
         }
 
@@ -97,7 +97,7 @@ class Duration extends Base implements core\validate\IDurationField {
                 ));
             }
         }
-        
+
         if($this->_max !== null) {
             $max = core\time\Duration::factory($this->_max);
 

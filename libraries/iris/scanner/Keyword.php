@@ -69,9 +69,9 @@ class Keyword implements iris\IScanner, core\IDumpable {
         return $this;
     }
 
-    public function isCaseSensitive($flag=null) {
+    public function isCaseSensitive(bool $flag=null) {
         if($flag !== null) {
-            $this->_isCaseSensitive = (bool)$flag;
+            $this->_isCaseSensitive = $flag;
             return $this;
         }
 

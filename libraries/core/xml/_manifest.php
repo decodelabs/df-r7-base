@@ -199,7 +199,7 @@ interface ITree extends IReadable, IWritable, core\collection\IAttributeContaine
     public function getXmlVersion();
     public function setDocumentEncoding($encoding);
     public function getDocumentEncoding();
-    public function isDocumentStandalone($flag=null);
+    public function isDocumentStandalone(bool $flag=null);
     public function normalizeDocument();
 
     // Conversion

@@ -355,7 +355,7 @@ abstract class Base implements link\http\IResponse {
         return $this->headers->getFileName();
     }
 
-    public function isAttachment($flag=null) {
+    public function isAttachment(bool $flag=null) {
         $output = $this->headers->isAttachment($flag);
 
         if($flag !== null) {

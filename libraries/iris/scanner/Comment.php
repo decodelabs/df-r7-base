@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\iris\scanner;
 use df;
 use df\core;
 use df\iris;
-    
+
 class Comment implements iris\IScanner {
 
     protected $_markers = [
@@ -72,7 +72,7 @@ class Comment implements iris\IScanner {
 
     public function allowNesting($flag) {
         if($flag !== null) {
-            $this->_allowNesting = (bool)$flag;
+            $this->_allowNesting = $flag;
             return $this;
         }
 

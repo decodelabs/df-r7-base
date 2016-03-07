@@ -16,9 +16,9 @@ class UrlTextbox extends Textbox {
 
     protected $_allowInternal = false;
 
-    public function allowInternal($flag=null) {
+    public function allowInternal(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowInternal = (bool)$flag;
+            $this->_allowInternal = $flag;
             return $this;
         }
 

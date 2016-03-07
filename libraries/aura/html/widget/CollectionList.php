@@ -38,18 +38,18 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
     }
 
-    public function shouldRenderIfEmpty($flag=null) {
+    public function shouldRenderIfEmpty(bool $flag=null) {
         if($flag !== null) {
-            $this->_renderIfEmpty = (bool)$flag;
+            $this->_renderIfEmpty = $flag;
             return $this;
         }
 
         return $this->_renderIfEmpty;
     }
 
-    public function shouldShowHeader($flag=null) {
+    public function shouldShowHeader(bool $flag=null) {
         if($flag !== null) {
-            $this->_showHeader = (bool)$flag;
+            $this->_showHeader = $flag;
             return $this;
         }
 
@@ -290,7 +290,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 
 
 // Error message
-    public function setErrorMessage($message) {
+    public function setErrorMessage(string $message=null) {
         $this->_errorMessage = $message;
         return $this;
     }

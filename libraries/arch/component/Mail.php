@@ -55,9 +55,9 @@ abstract class Mail extends Base implements arch\IMailComponent {
         }
     }
 
-    public function isPrivate($flag=null) {
+    public function isPrivate(bool $flag=null) {
         if($flag !== null) {
-            $this->_isPrivate = (bool)$flag;
+            $this->_isPrivate = $flag;
             return $this;
         }
 
@@ -78,9 +78,9 @@ abstract class Mail extends Base implements arch\IMailComponent {
         return $this->_templateType;
     }
 
-    public function shouldForceSend($flag=null) {
+    public function shouldForceSend(bool $flag=null) {
         if($flag !== null) {
-            $this->_forceSend = (bool)$flag;
+            $this->_forceSend = $flag;
             return $this;
         }
 
@@ -88,7 +88,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
     }
 
 // Default addresses
-    public function setDefaultToAddress($address, $name=null) {
+    public function setDefaultToAddress($address, string $name=null) {
         if($address !== null) {
             $address = flow\mail\Address::factory($address, $name);
         }
@@ -101,7 +101,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
         return $this->_defaultToAddress;
     }
 
-    public function setDefaultFromAddress($address, $name=null) {
+    public function setDefaultFromAddress($address, string $name=null) {
         if($address !== null) {
             $address = flow\mail\Address::factory($address, $name);
         }
@@ -204,7 +204,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
 
 
 // Journal
-    public function setJournalName($name) {
+    public function setJournalName(string $name=null) {
         $this->_journalName = $name;
         return $this;
     }

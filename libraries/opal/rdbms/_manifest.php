@@ -28,14 +28,14 @@ class ViewSupportException extends FeatureSupportException {}
 class TriggerSupportException extends FeatureSupportException {}
 
 class SQLError extends RuntimeException implements core\IDumpable {
-    
+
     protected $_sql;
-    
+
     public function __construct($message, $code=0, $sql=null) {
         parent::__construct($message, $code);
         $this->_sql = $sql;
     }
-    
+
     public function getDumpProperties() {
         return ['SQL' => $this->_sql];
     }
@@ -51,17 +51,17 @@ class DatabaseNotFoundException extends QueryException {}
 class DatabaseConflictException extends QueryException {}
 
 class TableQueryException extends QueryException {
-    
+
     public $database;
     public $table;
-    
+
     public function __construct($message, $code=0, $sql=null, $database=null, $table=null) {
         parent::__construct($message, $code, $sql);
-        
+
         $this->database = $database;
         $this->table = $table;
     }
-    
+
     public function getDumpProperties() {
         return [
             'database' => $this->database,
@@ -137,23 +137,23 @@ interface IAdapter extends mesh\entity\IParentEntity {
     public function getServerVersion();
     public function supports($feature);
     public function getEncoding();
-    
+
 // Transaction
     public function begin();
     public function commit();
     public function rollback();
     public function isTransactionOpen();
-    
+
 // Lock
     public function lockTable($table);
     public function unlockTable($table);
-    
+
 // Query
     public function prepare($sql);
     public function executeSql($sql, $forWrite=false);
     public function getLastInsertId();
     public function countAffectedRows();
-    
+
 // Sanitize
     public function quoteIdentifier($identifier);
     public function quoteValue($value);
@@ -163,8 +163,8 @@ interface IAdapter extends mesh\entity\IParentEntity {
     public function quoteFieldAliasReference($alias);
     public function prepareValue($value, opal\rdbms\schema\IField $field=null);
     public function normalizeValue($value);
-    
-    
+
+
 // Introspection
     public function getServer();
     public function getDatabaseList();
@@ -177,7 +177,7 @@ interface IAdapter extends mesh\entity\IParentEntity {
     public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);
     public function getSchema($name);
     public function newSchema($name);
-}   
+}
 
 
 interface IStatement extends core\collection\IQueue, core\collection\IStreamCollection {
@@ -187,22 +187,22 @@ interface IStatement extends core\collection\IQueue, core\collection\IStreamColl
     public function appendSql($sql);
     public function getSql();
     public function reset();
-    public function isUnbuffered($flag=null);
-    
+    public function isUnbuffered(bool $flag=null);
+
     public function generateUniqueKey();
     public function setKeyIndex($index);
     public function getKeyIndex();
-    
+
     public function autoBind($value);
     public function bind($key, $value);
     public function bindLob($key, $value);
     public function getBindings();
     public function importBindings(IStatement $statement);
-    
+
     public function executeRaw();
     public function executeRead();
     public function executeWrite();
-    
+
     public function free();
 }
 
@@ -240,7 +240,7 @@ interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IE
     public function getSchema();
     public function getStats();
     public function getDatabaseName();
-    
+
     public function exists();
     public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);
     public function alter(opal\rdbms\schema\ISchema $schema);

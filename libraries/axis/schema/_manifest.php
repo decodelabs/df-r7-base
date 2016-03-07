@@ -65,16 +65,16 @@ interface IField extends opal\schema\IField, opal\query\IFieldValueProcessor {
 
 
 interface IAutoIndexField extends IField {
-    public function shouldBeIndexed($flag=null);
+    public function shouldBeIndexed(bool $flag=null);
 }
 
 trait TAutoIndexField {
 
     protected $_autoIndex = true;
 
-    public function shouldBeIndexed($flag=null) {
+    public function shouldBeIndexed(bool $flag=null) {
         if($flag !== null) {
-            $flag = (bool)$flag;
+            $flag = $flag;
 
             if($flag !== $this->_autoIndex) {
                 $this->_hasChanged = true;
@@ -100,7 +100,7 @@ trait TAutoIndexField {
 }
 
 interface IAutoUniqueField extends IAutoIndexField {
-    public function shouldBeUnique($flag=null);
+    public function shouldBeUnique(bool $flag=null);
 }
 
 trait TAutoUniqueField {
@@ -109,9 +109,9 @@ trait TAutoUniqueField {
 
     protected $_autoUnique = true;
 
-    public function shouldBeUnique($flag=null) {
+    public function shouldBeUnique(bool $flag=null) {
         if($flag !== null) {
-            $flag = (bool)$flag;
+            $flag = $flag;
 
             if($flag !== $this->_autoUnique) {
                 $this->_hasChanged = true;
@@ -139,7 +139,7 @@ trait TAutoUniqueField {
 }
 
 interface IAutoPrimaryField extends IAutoUniqueField {
-    public function shouldBePrimary($flag=null);
+    public function shouldBePrimary(bool $flag=null);
 }
 
 trait TAutoPrimaryField {
@@ -148,9 +148,9 @@ trait TAutoPrimaryField {
 
     protected $_autoPrimary = true;
 
-    public function shouldBePrimary($flag=null) {
+    public function shouldBePrimary(bool $flag=null) {
         if($flag !== null) {
-            $flag = (bool)$flag;
+            $flag = $flag;
 
             if($flag !== $this->_autoPrimary) {
                 $this->_hasChanged = true;
@@ -181,7 +181,7 @@ trait TAutoPrimaryField {
 interface IDateField extends IField {}
 
 interface ILengthRestrictedField extends IField, opal\schema\ILengthRestrictedField {
-    public function isConstantLength($flag=null);
+    public function isConstantLength(bool $flag=null);
 }
 
 
@@ -191,9 +191,9 @@ trait TLengthRestrictedField {
 
     protected $_isConstantLength = false;
 
-    public function isConstantLength($flag=null) {
+    public function isConstantLength(bool $flag=null) {
         if($flag !== null) {
-            $flag = (bool)$flag;
+            $flag = $flag;
 
             if($flag !== $this->_isConstantLength) {
                 $this->_hasChanged = true;
@@ -241,7 +241,7 @@ interface IRelationField extends IField, opal\schema\IRelationField, opal\schema
     public function getTargetUnitId();
     public function getTargetUnit();
 
-    //public function shouldCascadeDelete($flag=null);
+    //public function shouldCascadeDelete(bool $flag=null);
 }
 
 
@@ -279,10 +279,10 @@ trait TRelationField {
 
 
 /*
-    public function shouldCascadeDelete($flag=null) {
+    public function shouldCascadeDelete(bool $flag=null) {
         if($flag !== null) {
             $t = $this->_deleteCascade;
-            $this->_deleteCascade = (bool)$flag;
+            $this->_deleteCascade = $flag;
 
             if($t != $this->_deleteCascade) {
                 $this->_hasChanged = true;
@@ -550,7 +550,7 @@ interface IBridgedRelationField extends IRelationField, opal\schema\IBridgedRela
     public function getBridgeUnitId();
 
     public function getBridgeUnit();
-    public function isDominant($flag=null);
+    public function isDominant(bool $flag=null);
 }
 
 

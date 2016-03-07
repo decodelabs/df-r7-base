@@ -541,9 +541,9 @@ trait TForm_RequirableDelegate {
 
     protected $_isRequired = false;
 
-    public function isRequired($flag=null) {
+    public function isRequired(bool $flag=null) {
         if($flag !== null) {
-            $this->_isRequired = (bool)$flag;
+            $this->_isRequired = $flag;
             return $this;
         }
 
@@ -560,18 +560,18 @@ trait TForm_SelectorDelegate {
 
     protected $_isForMany = true;
 
-    public function isForOne($flag=null) {
+    public function isForOne(bool $flag=null) {
         if($flag !== null) {
-            $this->_isForMany = !(bool)$flag;
+            $this->_isForMany = !$flag;
             return $this;
         }
 
         return !$this->_isForMany;
     }
 
-    public function isForMany($flag=null) {
+    public function isForMany(bool $flag=null) {
         if($flag !== null) {
-            $this->_isForMany = (bool)$flag;
+            $this->_isForMany = $flag;
             return $this;
         }
 

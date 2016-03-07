@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\fire;
 use df\aura;
-    
+
 
 // Exceptions
 interface IException {}
@@ -50,8 +50,8 @@ interface IContent extends core\collection\IAttributeContainer, core\xml\IRootIn
     public function getId();
     public function isPrimary();
 
-    public function isNested($flag=null);
-    public function hasChanged($flag=null);
+    public function isNested(bool $flag=null);
+    public function hasChanged(bool $flag=null);
 
     public function setBlocks(array $blocks);
     public function addBlocks(array $blocks);

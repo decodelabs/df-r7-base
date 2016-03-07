@@ -66,18 +66,18 @@ abstract class Base implements core\validate\IField {
 
 
 // Requirements
-    public function isRequired($flag=null) {
+    public function isRequired(bool $flag=null) {
         if($flag !== null) {
-            $this->_isRequired = (bool)$flag;
+            $this->_isRequired = $flag;
             return $this;
         }
 
         return $this->_isRequired;
     }
 
-    public function isOptional($flag=null) {
+    public function isOptional(bool $flag=null) {
         if($flag !== null) {
-            $this->_isOptional = (bool)$flag;
+            $this->_isOptional = $flag;
             return $this;
         }
 
@@ -166,9 +166,9 @@ abstract class Base implements core\validate\IField {
 
 
 // Sanitize
-    public function shouldSanitize($flag=null) {
+    public function shouldSanitize(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldSanitize = (bool)$flag;
+            $this->_shouldSanitize = $flag;
             return $this;
         }
 

@@ -118,9 +118,9 @@ class Base implements INode, core\IDumpable {
         return $this->controller;
     }
 
-    public function shouldOptimize($flag=null) {
+    public function shouldOptimize(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldOptimize = (bool)$flag;
+            $this->_shouldOptimize = $flag;
             return $this;
         }
 
@@ -131,9 +131,9 @@ class Base implements INode, core\IDumpable {
         return (bool)static::OPTIMIZE;
     }
 
-    public function shouldCheckAccess($flag=null) {
+    public function shouldCheckAccess(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldCheckAccess = (bool)$flag;
+            $this->_shouldCheckAccess = $flag;
             return $this;
         }
 

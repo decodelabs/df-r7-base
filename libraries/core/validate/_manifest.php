@@ -38,7 +38,7 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function getValue($name);
     public function setValue($name, $value);
     public function isEmpty();
-    public function shouldSanitizeAll($flag=null);
+    public function shouldSanitizeAll(bool $flag=null);
     public function setRequireGroupFulfilled($name);
     public function setRequireGroupUnfulfilled($name, $field);
     public function checkRequireGroup($name);
@@ -58,14 +58,14 @@ interface IField {
     public function setRecordName($name);
     public function getRecordName();
 
-    public function isRequired($flag=null);
-    public function isOptional($flag=null);
+    public function isRequired(bool $flag=null);
+    public function isOptional(bool $flag=null);
     public function setRequireGroup($name);
     public function getRequireGroup();
     public function setToggleField($name);
     public function getToggleField();
 
-    public function shouldSanitize($flag=null);
+    public function shouldSanitize(bool $flag=null);
     public function setSanitizer($sanitizer);
     public function getSanitizer();
     public function setDefaultValue($value);
@@ -483,7 +483,7 @@ interface IColorField extends IField {}
 interface ICurrencyField extends IField, IRangeField {
     public function setCurrency($unit);
     public function getCurrency();
-    public function allowSelection($flag=null);
+    public function allowSelection(bool $flag=null);
     public function setCurrencyFieldName($name);
     public function getCurrencyFieldName();
 }
@@ -494,9 +494,9 @@ interface ICustomField extends IField {
 }
 
 interface IDateField extends IField, IRangeField {
-    public function shouldDefaultToNow($flag=null);
-    public function mustBePast($flag=null);
-    public function mustBeFuture($flag=null);
+    public function shouldDefaultToNow(bool $flag=null);
+    public function mustBePast(bool $flag=null);
+    public function mustBeFuture(bool $flag=null);
     public function setExpectedFormat($format);
     public function getExpectedFormat();
 }
@@ -520,8 +520,10 @@ interface IEntityLocatorField extends IField {}
 
 interface IFloatingPointField extends IField, IRangeField {}
 
+interface IGuidField extends IField {}
+
 interface IIdListField extends IField {
-    public function shouldUseKeys($flag=null);
+    public function shouldUseKeys(bool $flag=null);
 }
 
 interface ITextListField extends IField {}
@@ -531,7 +533,7 @@ interface IIntegerField extends IField, IRangeField {}
 interface IPasswordField extends IField, IMinLengthField {
     public function setMinStrength($strength);
     public function getMinStrength();
-    public function shouldCheckStrength($flag=null);
+    public function shouldCheckStrength(bool $flag=null);
 }
 
 interface ISetField extends IField {
@@ -540,17 +542,17 @@ interface ISetField extends IField {
 }
 
 interface ISlugField extends IField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
-    public function allowPathFormat($flag=null);
-    public function allowAreaMarker($flag=null);
-    public function allowRoot($flag=null);
+    public function allowPathFormat(bool $flag=null);
+    public function allowAreaMarker(bool $flag=null);
+    public function allowRoot(bool $flag=null);
     public function setDefaultValueField($field, $sanitizer=null);
     public function getDefaultValueField();
-    public function shouldGenerateIfEmpty($flag=null);
-    public function shouldRenameOnConflict($flag=null);
+    public function shouldGenerateIfEmpty(bool $flag=null);
+    public function shouldRenameOnConflict(bool $flag=null);
 }
 
 interface IStructureField extends IField {
-    public function shouldAllowEmpty($flag=null);
+    public function shouldAllowEmpty(bool $flag=null);
 }
 
 interface ITextField extends IField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
@@ -562,11 +564,11 @@ interface ITextField extends IField, IUniqueCheckerField, IMinLengthField, IMaxL
     public function setMaxWords($length);
     public function getMaxWords();
 
-    public function shouldTrim($flag=null);
+    public function shouldTrim(bool $flag=null);
 }
 
 interface IUrlField extends IField {
-    public function allowInternal($flag=null);
+    public function allowInternal(bool $flag=null);
 }
 
 interface IVideoEmbedField extends IField {}

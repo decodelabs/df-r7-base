@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -28,7 +28,7 @@ interface IVideoEmbed extends aura\html\IElementRepresentation {
     public function setHeight($height);
     public function getHeight();
     public function setDimensions($width, $height=null);
-    public function shouldAllowFullScreen($flag=null);
+    public function shouldAllowFullScreen(bool $flag=null);
 
     public function setStartTime($seconds);
     public function getStartTime();
@@ -37,5 +37,5 @@ interface IVideoEmbed extends aura\html\IElementRepresentation {
     public function setDuration($seconds);
     public function getDuration();
 
-    public function shouldAutoPlay($flag=null);
+    public function shouldAutoPlay(bool $flag=null);
 }

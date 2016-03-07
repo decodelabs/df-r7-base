@@ -105,8 +105,8 @@ interface IRequestOptions {
     // Redirects
     public function setMaxRedirects($max);
     public function getMaxRedirects();
-    public function shouldEnforceStrictRedirects($flag=null);
-    public function shouldHideRedirectReferrer($flag=null);
+    public function shouldEnforceStrictRedirects(bool $flag=null);
+    public function shouldHideRedirectReferrer(bool $flag=null);
 
     // Auth
     public function setCredentials($username, $password, $type=null);
@@ -133,8 +133,8 @@ interface IRequestOptions {
     public function getSslKeyPath();
     public function setSslKeyPassword($password);
     public function getSslKeyPassword();
-    public function shouldVerifySsl($flag=null);
-    public function shouldAllowSelfSigned($flag=null);
+    public function shouldVerifySsl(bool $flag=null);
+    public function shouldAllowSelfSigned(bool $flag=null);
     public function setCaBundlePath($path);
     public function getCaBundlePath();
 
@@ -200,7 +200,7 @@ interface IResponse extends core\collection\IHeaderMapProvider, core\lang\IChain
     // Disposition
     public function setFileName($fileName, $isAttachment=null);
     public function getFileName();
-    public function isAttachment($flag=null);
+    public function isAttachment(bool $flag=null);
     public function setAttachmentFileName($fileName);
     public function getAttachmentFileName();
 
@@ -227,9 +227,9 @@ interface IFileResponse extends IResponse {
 interface IRedirectResponse extends IResponse {
     public function setUrl($url);
     public function getUrl();
-    public function isPermanent($flag=null);
-    public function isTemporary($flag=null);
-    public function isAlternativeContent($flag=null);
+    public function isPermanent(bool $flag=null);
+    public function isTemporary(bool $flag=null);
+    public function isAlternativeContent(bool $flag=null);
 }
 
 interface IGeneratorResponse extends IResponse, core\io\IChunkReceiver {
@@ -371,7 +371,7 @@ trait TStringResponse {
         return $this->getHeaders()->getFileName();
     }
 
-    public function isAttachment($flag=null) {
+    public function isAttachment(bool $flag=null) {
         $output = $this->getHeaders()->isAttachment($flag);
 
         if($flag !== null) {
@@ -452,10 +452,10 @@ interface IResponseHeaderCollection {
     public function getCacheControl();
     public function setCacheAccess($access='private');
     public function getCacheAccess();
-    public function canStoreCache($flag=null);
-    public function canTransformCache($flag=null);
-    public function shouldRevalidateCache($flag=null);
-    public function shouldRevalidateProxyCache($flag=null);
+    public function canStoreCache(bool $flag=null);
+    public function canTransformCache(bool $flag=null);
+    public function shouldRevalidateCache(bool $flag=null);
+    public function shouldRevalidateProxyCache(bool $flag=null);
     public function setCacheExpiration($duration=null);
     public function getCacheExpiration();
     public function getCacheStartDate(link\http\IRequest $request);
@@ -464,7 +464,7 @@ interface IResponseHeaderCollection {
     // Disposition
     public function setFileName($fileName, $isAttachment=false);
     public function getFileName();
-    public function isAttachment($flag=null);
+    public function isAttachment(bool $flag=null);
     public function setAttachmentFileName($fileName);
     public function getAttachmentFileName();
 
@@ -476,10 +476,10 @@ interface IResponseHeaderCollection {
 interface ICacheControl extends core\IStringProvider {
     public function setAccess($access);
     public function getAccess();
-    public function canStore($flag=null);
-    public function canTransform($flag=null);
-    public function shouldRevalidate($flag=null);
-    public function shouldRevalidateProxy($flag=null);
+    public function canStore(bool $flag=null);
+    public function canTransform(bool $flag=null);
+    public function shouldRevalidate(bool $flag=null);
+    public function shouldRevalidateProxy(bool $flag=null);
     public function setExpiration($duration=null);
     public function getExpiration();
     public function setSharedExpiration($duration=null);
@@ -508,8 +508,8 @@ interface ICookie extends core\IStringProvider {
     public function getPath();
     public function matchesPath($path);
     public function setBaseUrl(link\http\IUrl $url);
-    public function isSecure($flag=null);
-    public function isHttpOnly($flag=null);
+    public function isSecure(bool $flag=null);
+    public function isHttpOnly(bool $flag=null);
     public function toInvalidateString();
 }
 

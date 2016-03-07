@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,7 +7,7 @@ namespace df\core\io;
 
 use df;
 use df\core;
-    
+
 class Stream implements IStreamChannel, core\IDumpable {
 
     use TReader;
@@ -81,7 +81,7 @@ class Stream implements IStreamChannel, core\IDumpable {
         || $output === false) {
             return false;
         }
-        
+
         return $output;
     }
 
@@ -97,7 +97,7 @@ class Stream implements IStreamChannel, core\IDumpable {
         || $output === false) {
             return false;
         }
-        
+
         return $output;
     }
 
@@ -122,7 +122,7 @@ class Stream implements IStreamChannel, core\IDumpable {
     }
 
     public function setBlocking($flag) {
-        stream_set_blocking($this->_resource, (int)((bool)$flag));
+        stream_set_blocking($this->_resource, (int)($flag));
         return $this;
     }
 

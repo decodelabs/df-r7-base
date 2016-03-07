@@ -39,9 +39,9 @@ class Partial implements IPartial, core\IDumpable {
         return $this;
     }
 
-    public function isBridge($flag=null) {
+    public function isBridge(bool $flag=null) {
         if($flag !== null) {
-            $this->_isBridge = (bool)$flag;
+            $this->_isBridge = $flag;
             return $this;
         }
 

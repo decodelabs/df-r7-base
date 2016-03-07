@@ -191,9 +191,9 @@ class Embed implements IVideoEmbed {
     }
 
 // Full screen
-    public function shouldAllowFullScreen($flag=null) {
+    public function shouldAllowFullScreen(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowFullScreen = (bool)$flag;
+            $this->_allowFullScreen = $flag;
             return $this;
         }
 
@@ -250,9 +250,9 @@ class Embed implements IVideoEmbed {
 
 
 // Auto play
-    public function shouldAutoPlay($flag=null) {
+    public function shouldAutoPlay(bool $flag=null) {
         if($flag !== null) {
-            $this->_autoPlay = (bool)$flag;
+            $this->_autoPlay = $flag;
             return $this;
         }
 

@@ -103,9 +103,9 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $row;
     }
 
-    public function shouldConvertNullToNa($flag=null) {
+    public function shouldConvertNullToNa(bool $flag=null) {
         if($flag !== null) {
-            $this->_nullToNa = (bool)$flag;
+            $this->_nullToNa = $flag;
             return $this;
         }
 

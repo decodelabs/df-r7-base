@@ -173,9 +173,9 @@ class Config extends core\Config {
 
 
 // Capture
-    public function shouldCaptureInTesting($flag=null) {
+    public function shouldCaptureInTesting(bool $flag=null) {
         if($flag !== null) {
-            $this->values->captureInTesting = (bool)$flag;
+            $this->values->captureInTesting = $flag;
             return $this;
         }
 

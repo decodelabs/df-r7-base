@@ -53,18 +53,18 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         return $this->_clauses;
     }
 
-    public function isOr($flag=null) {
+    public function isOr(bool $flag=null) {
         if($flag !== null) {
-            $this->_isOr = (bool)$flag;
+            $this->_isOr = $flag;
             return $this;
         }
 
         return $this->_isOr;
     }
 
-    public function isAnd($flag=null) {
+    public function isAnd(bool $flag=null) {
         if($flag !== null) {
-            $this->_isOr = !(bool)$flag;
+            $this->_isOr = !$flag;
             return $this;
         }
 

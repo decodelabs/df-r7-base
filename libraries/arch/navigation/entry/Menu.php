@@ -10,14 +10,14 @@ use df\core;
 use df\arch;
 
 class Menu extends Base {
-    
+
     protected $_delegate;
     protected $_text;
     protected $_icon;
-    
+
     protected static function _fromArray(array $entry) {
         $tree = new core\collection\Tree($entry);
-        
+
         return (new self(
                 $tree['delegate'],
                 $tree['text'],
@@ -26,13 +26,13 @@ class Menu extends Base {
             ->setId($tree['id'])
             ->setWeight($tree['weight']);
     }
-    
+
     public function __construct($delegate, $text, $icon=null) {
         $this->setDelegate($delegate);
         $this->setText($text);
         $this->setIcon($icon);
     }
-    
+
     public function toArray() {
         return [
             'type' => 'Menu',
@@ -43,38 +43,38 @@ class Menu extends Base {
             'icon' => $this->_icon
         ];
     }
-    
+
     public function getId() {
         if($this->_id === null) {
             return $this->_id = 'menu-'.md5((string)$this->getDelegate());
         }
-        
+
         return parent::getId();
     }
-    
+
     public function setDelegate($delegate) {
         $this->_delegate = (string)arch\navigation\menu\Base::normalizeId($delegate);
         return $this;
     }
-    
+
     public function getDelegate() {
         return $this->_delegate;
     }
-    
+
     public function setText($text) {
         $this->_text = $text;
         return $this;
     }
-    
+
     public function getText() {
         return $this->_text;
     }
-    
-    public function setIcon($icon) {
+
+    public function setIcon(string $icon=null) {
         $this->_icon = $icon;
         return $this;
     }
-    
+
     public function getIcon() {
         return $this->_icon;
     }

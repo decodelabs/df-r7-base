@@ -74,9 +74,9 @@ abstract class Server extends Base implements IServerSocket {
 
 
 // Options
-    public function shouldReuseAddress($flag=null) {
+    public function shouldReuseAddress(bool $flag=null) {
         if($flag === null) {
-            return $this->_getOption('reuseAddress', (bool)$flag);
+            return $this->_getOption('reuseAddress', $flag);
         }
 
         if($this->_isBound) {
@@ -122,9 +122,9 @@ abstract class Server extends Base implements IServerSocket {
         return $this->_isListening;
     }
 
-    public function shouldBlock($flag=null) {
+    public function shouldBlock(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldBlock = (bool)$flag;
+            $this->_shouldBlock = $flag;
             return $this;
         }
 

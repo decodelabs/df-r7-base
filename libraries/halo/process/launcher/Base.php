@@ -88,7 +88,7 @@ abstract class Base implements halo\process\ILauncher {
         core\stub();
     }
 
-    public function setTitle($title) {
+    public function setTitle(string $title=null) {
         $this->_title = $title;
         return $this;
     }

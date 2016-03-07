@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class Viewport implements neon\vector\dxf\IViewportTable {
-    
+
     use neon\vector\dxf\TTable;
     use neon\vector\dxf\TViewControlTable;
 
@@ -100,9 +100,9 @@ class Viewport implements neon\vector\dxf\IViewportTable {
         return $this->_snapRotation;
     }
 
-    public function isSnapEnabled($flag=null) {
+    public function isSnapEnabled(bool $flag=null) {
         if($flag !== null) {
-            $this->_snapEnabled = (bool)$flag;
+            $this->_snapEnabled = $flag;
             return $this;
         }
 
@@ -141,9 +141,9 @@ class Viewport implements neon\vector\dxf\IViewportTable {
         return $this->_gridSpacing;
     }
 
-    public function isGridEnabled($flag=null) {
+    public function isGridEnabled(bool $flag=null) {
         if($flag !== null) {
-            $this->_gridEnabled = (bool)$flag;
+            $this->_gridEnabled = $flag;
             return $this;
         }
 

@@ -30,7 +30,7 @@ interface IProcess {
 
 
 interface IManagedProcess extends IProcess {
-    public function setTitle($title);
+    public function setTitle(string $title=null);
     public function getParentProcessId();
     public function setPriority($priority);
     public function getPriority();
@@ -126,7 +126,7 @@ interface ILauncher {
     public function setUser($user);
     public function getUser();
     public function isPrivileged();
-    public function setTitle($title);
+    public function setTitle(string $title=null);
     public function getTitle();
     public function setPriority($priority);
     public function getPriority();

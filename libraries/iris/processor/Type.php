@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\iris\processor;
 use df;
 use df\core;
 use df\iris;
-    
+
 class Type extends Base {
 
     const CONTEXT_CLASS = 'C';
@@ -35,9 +35,9 @@ class Type extends Base {
         return $this->_regex;
     }
 
-    public function shouldAllowContext($flag=null) {
+    public function shouldAllowContext(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowContext = (bool)$flag;
+            $this->_allowContext = $flag;
             return $this;
         }
 

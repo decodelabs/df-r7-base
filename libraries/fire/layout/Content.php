@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\fire;
 use df\arch;
 use df\aura;
-    
+
 class Content implements IContent {
 
     use core\collection\TAttributeContainer;
@@ -37,7 +37,7 @@ class Content implements IContent {
 // Slots
     public function setSlots(array $slots) {
         $this->_slots = [];
-        return $this->addSlots($slots);        
+        return $this->addSlots($slots);
     }
 
     public function addSlots(array $slots) {
@@ -63,7 +63,7 @@ class Content implements IContent {
         return $this;
     }
 
-    public function getSlot($id) {
+    public function getSlot(string $id) {
         if(isset($this->_slots[$id])) {
             return $this->_slots[$id];
         }
@@ -73,15 +73,11 @@ class Content implements IContent {
         return $this->_slots;
     }
 
-    public function hasSlot($id) {
+    public function hasSlot(string $id) {
         return isset($this->_slots[$id]);
     }
 
-    public function removeSlot($id) {
-        if($id instanceof fire\slot\IContent) {
-            $id = $id->getId();
-        }
-
+    public function removeSlot(string $id) {
         unset($this->_slots[$id]);
         return $this;
     }
@@ -110,7 +106,7 @@ class Content implements IContent {
             $slot->readXml($slotNode);
             $this->setSlot($slot);
         }
-        
+
         return $this;
     }
 

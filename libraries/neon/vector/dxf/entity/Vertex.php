@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class Vertex implements neon\vector\dxf\IVertexEntity {
-    
+
     use neon\vector\dxf\TEntity;
 
     protected $_point;
@@ -80,9 +80,9 @@ class Vertex implements neon\vector\dxf\IVertexEntity {
         return $this->_flags & $flag == $flag;
     }
 
-    public function isCurveFitting($flag=null) {
+    public function isCurveFitting(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 1;
             } else {
                 $this->_lineFlags &= ~1;
@@ -94,9 +94,9 @@ class Vertex implements neon\vector\dxf\IVertexEntity {
         return $this->_lineFlags & 1 == 1;
     }
 
-    public function hasCurveFitTangent($flag=null) {
+    public function hasCurveFitTangent(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 2;
             } else {
                 $this->_lineFlags &= ~2;
@@ -108,9 +108,9 @@ class Vertex implements neon\vector\dxf\IVertexEntity {
         return $this->_lineFlags & 2 == 2;
     }
 
-    public function isSpline($flag=null) {
+    public function isSpline(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 8;
             } else {
                 $this->_lineFlags &= ~8;
@@ -122,9 +122,9 @@ class Vertex implements neon\vector\dxf\IVertexEntity {
         return $this->_lineFlags & 8 == 8;
     }
 
-    public function isSplingControlPoint($flag=null) {
+    public function isSplingControlPoint(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 16;
             } else {
                 $this->_lineFlags &= ~16;
@@ -136,9 +136,9 @@ class Vertex implements neon\vector\dxf\IVertexEntity {
         return $this->_lineFlags & 16 == 16;
     }
 
-    public function isPolyLine3d($flag=null) {
+    public function isPolyLine3d(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 32;
             } else {
                 $this->_lineFlags &= ~32;
@@ -150,9 +150,9 @@ class Vertex implements neon\vector\dxf\IVertexEntity {
         return $this->_lineFlags & 32 == 32;
     }
 
-    public function isPolygonMesh($flag=null) {
+    public function isPolygonMesh(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 64;
             } else {
                 $this->_lineFlags &= ~64;
@@ -164,9 +164,9 @@ class Vertex implements neon\vector\dxf\IVertexEntity {
         return $this->_lineFlags & 64 == 64;
     }
 
-    public function isPolyFaceMesh($flag=null) {
+    public function isPolyFaceMesh(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag) {
+            if($flag) {
                 $this->_lineFlags |= 128;
             } else {
                 $this->_lineFlags &= ~128;

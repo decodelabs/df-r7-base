@@ -182,7 +182,7 @@ interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
     public function getRawResult();
     public function getOutputManifest();
     public function getOutputFields();
-    public function isUnbuffered($flag=null);
+    public function isUnbuffered(bool $flag=null);
 }
 
 interface IWriteQuery extends IQuery {
@@ -190,7 +190,7 @@ interface IWriteQuery extends IQuery {
 }
 
 interface IDistinctQuery extends IQuery {
-    public function isDistinct($flag=null);
+    public function isDistinct(bool $flag=null);
 }
 
 interface IDerivableQuery extends IQuery {
@@ -322,7 +322,7 @@ interface IOffsettableQuery extends IQuery {
 interface ILocationalQuery extends IQuery {
     public function inside($location, $searchChildLocations=false);
     public function getLocation();
-    public function shouldSearchChildLocations($flag=null);
+    public function shouldSearchChildLocations(bool $flag=null);
 }
 
 
@@ -358,7 +358,7 @@ interface IJoinQuery extends
 
     public function addOutputFields(string ...$fields);
     public function getType();
-    public function isConstraint($flag=null);
+    public function isConstraint(bool $flag=null);
     public function endJoin();
     public function referencesSourceAliases(array $sourceAliases);
 }
@@ -380,7 +380,7 @@ interface IPopulateQuery extends
 
     public function getField();
     public function getFieldName();
-    public function isSelect($flag=null);
+    public function isSelect(bool $flag=null);
     public function endPopulate();
 }
 
@@ -403,7 +403,7 @@ interface ICombineQuery extends
 
     public function asOne($name);
     public function asCopy($name);
-    public function isCopy($flag=null);
+    public function isCopy(bool $flag=null);
 }
 
 
@@ -433,8 +433,8 @@ interface IOrderDirective extends core\IStringProvider {
     public function setDirection($direction);
     public function getDirection();
     public function getReversedDirection();
-    public function isDescending($flag=null);
-    public function isAscending($flag=null);
+    public function isDescending(bool $flag=null);
+    public function isAscending(bool $flag=null);
     public function setNullOrder($order);
     public function getNullOrder();
 }
@@ -509,7 +509,7 @@ interface IUnionQuery extends
 }
 
 interface IUnionSelectQuery extends ISelectQuery {
-    public function isUnionDistinct($flag=null);
+    public function isUnionDistinct(bool $flag=null);
 
     public function endSelect();
     public function with(...$fields);
@@ -544,8 +544,8 @@ interface IFetchAttachQuery extends IFetchQuery, IAttachQuery {
  * Insert
  */
 interface IDataInsertQuery extends IWriteQuery, ILocationalQuery {
-    public function shouldReplace($flag=null);
-    public function ifNotExists($flag=null);
+    public function shouldReplace(bool $flag=null);
+    public function ifNotExists(bool $flag=null);
 }
 
 
@@ -725,7 +725,7 @@ interface ISource extends IAdapterAware {
     public function getHash();
     public function getDisplayName();
     public function isDerived();
-    public function isPrimary($flag=null);
+    public function isPrimary(bool $flag=null);
 
     public function handleQueryException(IQuery $query, \Exception $e);
 
@@ -824,7 +824,7 @@ interface IField {
     public function shouldBeProcessed();
     public function rewriteAsDerived(ISource $source);
 
-    public function isFromWildcard($flag=null);
+    public function isFromWildcard(bool $flag=null);
 }
 
 trait TField {
@@ -859,9 +859,9 @@ trait TField {
         return true;
     }
 
-    public function isFromWildcard($flag=null) {
+    public function isFromWildcard(bool $flag=null) {
         if($flag !== null) {
-            $this->_isFromWildcard = (bool)$flag;
+            $this->_isFromWildcard = $flag;
             return $this;
         }
 
@@ -887,7 +887,7 @@ interface IAggregateField extends IField {
     public function getTypeName();
     public function getTargetField();
     public function normalizeOutputValue($value);
-    public function isDistinct($flag=null);
+    public function isDistinct(bool $flag=null);
 }
 
 interface IExpressionField extends IField {
@@ -932,8 +932,8 @@ interface IFieldValueProcessor {
 
 // Clauses
 interface IClauseProvider {
-    public function isOr($flag=null);
-    public function isAnd($flag=null);
+    public function isOr(bool $flag=null);
+    public function isAnd(bool $flag=null);
     public function referencesSourceAliases(array $sourceAliases);
     public function getNonLocalFieldReferences();
 }
@@ -1059,7 +1059,7 @@ interface IPaginator extends core\collection\IOrderablePaginator {
 // Results
 interface IBatchIterator extends core\collection\ICollection, \IteratorAggregate {
     public function getResult();
-    public function isForFetch($flag=null);
+    public function isForFetch(bool $flag=null);
 
     public function getPrimarySource();
     public function addSources(array $joinSources);
@@ -1105,7 +1105,7 @@ interface IOutputManifest {
 
     public function getSearchController();
 
-    public function queryRequiresPartial($flag=null);
+    public function queryRequiresPartial(bool $flag=null);
     public function requiresPartial($forFetch=true);
 }
 

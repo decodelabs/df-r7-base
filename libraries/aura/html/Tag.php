@@ -364,7 +364,7 @@ class Tag implements ITag, core\IDumpable {
         return $this->getAttribute('id');
     }
 
-    public function isHidden($flag=null) {
+    public function isHidden(bool $flag=null) {
         if($flag !== null) {
             if($flag) {
                 $this->setAttribute('hidden', true);
@@ -378,7 +378,7 @@ class Tag implements ITag, core\IDumpable {
         return $this->hasAttribute('hidden');
     }
 
-    public function setTitle($title) {
+    public function setTitle(string $title=null) {
         return $this->setAttribute('title', $title);
     }
 
@@ -519,9 +519,9 @@ class Tag implements ITag, core\IDumpable {
         return (string)$this->open();
     }
 
-    public function shouldRenderIfEmpty($flag=null) {
+    public function shouldRenderIfEmpty(bool $flag=null) {
         if($flag !== null) {
-            $this->_renderIfEmpty = (bool)$flag;
+            $this->_renderIfEmpty = $flag;
             return $this;
         }
 

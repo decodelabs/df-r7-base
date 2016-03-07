@@ -29,36 +29,36 @@ class Number implements iris\IScanner, core\IDumpable {
         return 50;
     }
 
-    public function shouldAllowHex($flag=null) {
+    public function shouldAllowHex(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowHex = (bool)$flag;
+            $this->_allowHex = $flag;
             return $this;
         }
 
         return $this->_allowHex;
     }
 
-    public function shouldAllowOctal($flag=null) {
+    public function shouldAllowOctal(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowOctal = (bool)$flag;
+            $this->_allowOctal = $flag;
             return $this;
         }
 
         return $this->_allowOctal;
     }
 
-    public function shouldAllowENotation($flag=null) {
+    public function shouldAllowENotation(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowENotation = (bool)$flag;
+            $this->_allowENotation = $flag;
             return $this;
         }
 
         return $this->_allowENotation;
     }
 
-    public function shouldAllowSuffixes($flag=null) {
+    public function shouldAllowSuffixes(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowSuffixes = (bool)$flag;
+            $this->_allowSuffixes = $flag;
             return $this;
         }
 

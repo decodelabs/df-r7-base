@@ -10,7 +10,7 @@ use df\core;
 use df\halo;
 
 class UnixManaged extends Unix implements IManagedProcess {
-    
+
     use TPidFileProvider;
 
     protected $_parentProcessId;
@@ -29,7 +29,7 @@ class UnixManaged extends Unix implements IManagedProcess {
                 $this->_parentProcessId = posix_getppid();
             } else {
                 exec('ps -o ppid --no-heading --pid '.escapeshellarg($this->_processId), $output);
-                
+
                 if(isset($output[0])) {
                     $this->_parentProcessId = (int)$output[0];
                 } else {
@@ -39,28 +39,28 @@ class UnixManaged extends Unix implements IManagedProcess {
                 }
             }
         }
-        
+
         return $this->_parentProcessId;
     }
 
 // Title
-    public function setTitle($title) {
+    public function setTitle(string $title=null) {
         $this->_title = $title;
 
-        if(extension_loaded('proctitle')) {
+        if($title && extension_loaded('proctitle')) {
             setproctitle($title);
         }
 
         return $this;
     }
-    
+
 // Priority
     public function setPriority($priority) {
         if(extension_loaded('pcntl')) {
             @pcntl_setpriority($priority, $this->_processId);
         }
     }
-    
+
     public function getPriority() {
         if(extension_loaded('pcntl')) {
             return (int)@pcntl_getpriority($this->_processId);
@@ -68,7 +68,7 @@ class UnixManaged extends Unix implements IManagedProcess {
 
         return 0;
     }
-    
+
 
 // Identity
     public function setIdentity($uid, $gid) {
@@ -137,7 +137,7 @@ class UnixManaged extends Unix implements IManagedProcess {
             );
         }
 
-        return $this;            
+        return $this;
     }
 
     public function getOwnerId() {
@@ -145,7 +145,7 @@ class UnixManaged extends Unix implements IManagedProcess {
             return posix_geteuid();
         } else {
             exec('ps -o euid --no-heading --pid '.escapeshellarg($this->_processId), $output);
-            
+
             if(isset($output[0])) {
                 return (int)trim($output[0]);
             } else {
@@ -159,14 +159,14 @@ class UnixManaged extends Unix implements IManagedProcess {
     public function setOwnerName($name) {
         return $this->setOwnerId(halo\system\Base::getInstance()->userNameToUserId($name));
     }
-    
+
     public function getOwnerName() {
         if(extension_loaded('posix')) {
             $output = posix_getpwuid($this->getOwnerId());
             return $output['name'];
         } else {
             exec('getent passwd '.escapeshellarg($this->getOwnerId()), $output);
-            
+
             if(isset($output[0])) {
                 $parts = explode(':', $output[0]);
                 return array_shift($parts);
@@ -205,13 +205,13 @@ class UnixManaged extends Unix implements IManagedProcess {
 
         return $this;
     }
-    
+
     public function getGroupId() {
         if(extension_loaded('posix')) {
             return posix_getegid();
         } else {
             exec('ps -o egid --no-heading --pid '.escapeshellarg($this->_processId), $output);
-            
+
             if(isset($output[0])) {
                 return (int)trim($output[0]);
             } else {
@@ -225,14 +225,14 @@ class UnixManaged extends Unix implements IManagedProcess {
     public function setGroupName($name) {
         return $this->setGroupId(halo\system\Base::getInstance()->groupNameToGroupId($name));
     }
-    
+
     public function getGroupName() {
         if(extension_loaded('posix')) {
             $output = posix_getgrgid($this->getGroupId());
             return $output['name'];
         } else {
             exec('getent group '.escapeshellarg($this->getGroupId()), $output);
-            
+
             if(isset($output[0])) {
                 $parts = explode(':', $output[0]);
                 return array_shift($parts);
@@ -243,14 +243,14 @@ class UnixManaged extends Unix implements IManagedProcess {
             }
         }
     }
-    
-    
+
+
 
 // Fork
     public function canFork() {
         return extension_loaded('pcntl');
     }
-    
+
     public function fork() {
         if(!$this->canFork()) {
             throw new RuntimeException(
@@ -276,7 +276,7 @@ class UnixManaged extends Unix implements IManagedProcess {
             return null;
         }
     }
-    
+
     public function delegate() {
         core\stub();
     }

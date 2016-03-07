@@ -12,9 +12,9 @@ class IdList extends Base implements core\validate\IIdListField {
 
     protected $_useKeys = false;
 
-    public function shouldUseKeys($flag=null) {
+    public function shouldUseKeys(bool $flag=null) {
         if($flag !== null) {
-            $this->_useKeys = (bool)$flag;
+            $this->_useKeys = $flag;
             return $this;
         }
 

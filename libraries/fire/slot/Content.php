@@ -49,9 +49,9 @@ class Content implements IContent {
     }
 
 // Nesting
-    public function isNested($flag=null) {
+    public function isNested(bool $flag=null) {
         if($flag !== null) {
-            $this->_isNested = (bool)$flag;
+            $this->_isNested = $flag;
 
             foreach($this->blocks as $block) {
                 $block->isNested($this->_isNested);
@@ -64,9 +64,9 @@ class Content implements IContent {
     }
 
 // Changes
-    public function hasChanged($flag=null) {
+    public function hasChanged(bool $flag=null) {
         if($flag !== null) {
-            $this->_hasChanged = (bool)$flag;
+            $this->_hasChanged = $flag;
             return $this;
         }
 

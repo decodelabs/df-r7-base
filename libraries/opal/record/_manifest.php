@@ -121,7 +121,7 @@ interface IRecord extends IDataProvider, core\IExporterValueMap {
     public function forceSet($key, $value);
     public function acceptChanges($insertId=null, array $insertData=null);
     public function markAsChanged($field);
-    public function shouldBypassHooks($flag=null);
+    public function shouldBypassHooks(bool $flag=null);
 
     public function save(opal\record\task\ITaskSet $taskSet=null);
     public function delete(opal\record\task\ITaskSet $taskSet=null);
@@ -138,7 +138,7 @@ interface ILocationalRecord extends IRecord {
 
 interface IPartial extends IDataProvider {
     public function setRecordAdapter(opal\query\IAdapter $adapter);
-    public function isBridge($flag=null);
+    public function isBridge(bool $flag=null);
 }
 
 

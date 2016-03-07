@@ -116,18 +116,18 @@ abstract class Base implements neon\vector\svg\ICommand {
     }
 
 
-    public function isRelative($flag=null) {
+    public function isRelative(bool $flag=null) {
         if($flag !== null) {
-            $this->_isRelative = (bool)$flag;
+            $this->_isRelative = $flag;
             return $this;
         }
 
         return $this->_isRelative;
     }
 
-    public function isAbsolute($flag=null) {
+    public function isAbsolute(bool $flag=null) {
         if($flag !== null) {
-            $this->_isRelative = !(bool)$flag;
+            $this->_isRelative = !$flag;
             return $this;
         }
 

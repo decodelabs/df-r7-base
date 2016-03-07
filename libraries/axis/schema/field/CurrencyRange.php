@@ -20,9 +20,9 @@ class CurrencyRange extends Base implements opal\schema\IMultiPrimitiveField {
         $this->requireHighPoint($requireHighPoint);
     }
 
-    public function requireLowPoint($flag=null) {
+    public function requireLowPoint(bool $flag=null) {
         if($flag !== null) {
-            $flag = (bool)$flag;
+            $flag = $flag;
 
             if($flag != $this->_requireLowPoint) {
                 $this->_hasChanged = true;
@@ -35,9 +35,9 @@ class CurrencyRange extends Base implements opal\schema\IMultiPrimitiveField {
         return $this->_requireLowPoint;
     }
 
-    public function requireHighPoint($flag=null) {
+    public function requireHighPoint(bool $flag=null) {
         if($flag !== null) {
-            $flag = (bool)$flag;
+            $flag = $flag;
 
             if($flag != $this->_requireHighPoint) {
                 $this->_hasChanged = true;

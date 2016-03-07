@@ -299,7 +299,7 @@ trait TRecordTask {
 }
 
 interface IInsertRecordTask extends IRecordTask, IInsertTask {
-    public function ifNotExists($flag=null);
+    public function ifNotExists(bool $flag=null);
 }
 
 interface IReplaceRecordTask extends IRecordTask, IReplaceTask {}

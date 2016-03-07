@@ -87,9 +87,9 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
         $children->push($dtTag->render(), $ddTag->renderWith($value));
     }
 
-    public function shouldRenderIfEmpty($flag=null) {
+    public function shouldRenderIfEmpty(bool $flag=null) {
         if($flag !== null) {
-            $this->_renderIfEmpty = (bool)$flag;
+            $this->_renderIfEmpty = $flag;
             return $this;
         }
 

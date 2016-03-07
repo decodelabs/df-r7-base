@@ -10,28 +10,28 @@ use df\core;
 use df\halo;
 
 class WindowsManaged extends Windows implements IManagedProcess {
-    
+
     use TPidFileProvider;
 
     protected $_parentProcessId;
-    
+
     public function getParentProcessId() {
         if($this->_parentProcessId === null) {
             $wmi = $this->_getWmi();
             $procs = $wmi->ExecQuery('SELECT * FROM Win32_Process WHERE ProcessId=\''.$this->getProcessId().'\'');
-            
+
             foreach($procs as $process) {
                 $this->_parentProcessId = $process->ParentProcessId;
                 break;
             }
         }
-        
+
         return $this->_parentProcessId;
     }
-    
+
 
 // Title
-    public function setTitle($title) {
+    public function setTitle(string $title=null) {
         $this->_title = $title;
         return $this;
     }
@@ -40,11 +40,11 @@ class WindowsManaged extends Windows implements IManagedProcess {
     public function setPriority($priority) {
         core\stub();
     }
-    
+
     public function getPriority() {
         core\stub();
     }
-    
+
 
 // Identity
     public function setIdentity($uid, $gid) {
@@ -55,20 +55,20 @@ class WindowsManaged extends Windows implements IManagedProcess {
     public function setOwnerId($id) {
         core\stub($id);
     }
-    
+
     public function getOwnerId() {
         $wmi = $this->_getWmi();
         $procs = $wmi->ExecQuery('SELECT * FROM Win32_Process WHERE ProcessId=\''.$this->getProcessId().'\'');
-        
+
         foreach($procs as $process) {
             $owner = new \Variant(null);
             $process->GetOwner($owner);
             return (string)$owner;
         }
-        
+
         return null;
     }
-    
+
     public function setOwnerName($name) {
         core\stub($name);
     }
@@ -94,19 +94,19 @@ class WindowsManaged extends Windows implements IManagedProcess {
     public function getGroupName() {
         core\stub();
     }
-    
+
 
 // Fork
     public function canFork() {
         return false;
     }
-    
+
     public function fork() {
         throw new RuntimeException(
             'PHP on windows is currently not able to fork processes'
         );
     }
-    
+
     public function delegate() {
         core\stub();
     }

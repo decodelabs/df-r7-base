@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 class Column extends iris\map\Node implements flex\latex\IColumn, core\IDumpable {
 
     protected $_alignment;
@@ -35,7 +35,7 @@ class Column extends iris\map\Node implements flex\latex\IColumn, core\IDumpable
         return $this->_paragraphSizing;
     }
 
-    public function hasLeftBorder($flag=null) {
+    public function hasLeftBorder(bool $flag=null) {
         if($flag !== null) {
             if($flag) {
                 $this->_leftBorder = (int)$flag;
@@ -49,7 +49,7 @@ class Column extends iris\map\Node implements flex\latex\IColumn, core\IDumpable
         return $this->_leftBorder;
     }
 
-    public function hasRightBorder($flag=null) {
+    public function hasRightBorder(bool $flag=null) {
         if($flag !== null) {
             if($flag) {
                 $this->_rightBorder = (int)$flag;

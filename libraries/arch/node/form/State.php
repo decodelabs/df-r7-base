@@ -133,9 +133,9 @@ class State implements arch\node\IFormState, \Serializable {
     }
 
 
-    public function isNew($flag=null) {
+    public function isNew(bool $flag=null) {
         if($flag !== null) {
-            $this->_isNew = (bool)$flag;
+            $this->_isNew = $flag;
 
             foreach($this->_delegates as $delegate) {
                 $delegate->isNew($flag);

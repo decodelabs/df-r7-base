@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\fire;
-    
+
 class Definition implements IDefinition, core\IDumpable {
 
     protected $_id;
@@ -59,7 +59,7 @@ class Definition implements IDefinition, core\IDumpable {
     }
 
     public function _setStatic($flag=true) {
-        $this->_isStatic = (bool)$flag;
+        $this->_isStatic = $flag;
         return $this;
     }
 
@@ -121,7 +121,7 @@ class Definition implements IDefinition, core\IDumpable {
         return $this->_slots;
     }
 
-    public function getSlot($id) {
+    public function getSlot(string $id) {
         if(isset($this->_slots[$id])) {
             return $this->_slots[$id];
         }
@@ -129,11 +129,7 @@ class Definition implements IDefinition, core\IDumpable {
         return null;
     }
 
-    public function removeSlot($id) {
-        if($id instanceof fire\slot\IDefinition) {
-            $id = $id->getId();
-        }
-
+    public function removeSlot(string $id) {
         unset($this->_slots[$id]);
         return $this;
     }

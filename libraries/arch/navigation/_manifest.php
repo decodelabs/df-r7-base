@@ -222,7 +222,7 @@ interface ILink extends user\IAccessControlled {
     public function getMatchRequest();
 
 // Icon
-    public function setIcon($icon);
+    public function setIcon(string $icon=null);
     public function getIcon();
 
 // Note
@@ -232,10 +232,10 @@ interface ILink extends user\IAccessControlled {
 // Description
     public function setDescription($description);
     public function getDescription();
-    public function shouldShowDescription($flag=null);
+    public function shouldShowDescription(bool $flag=null);
 
 // Visibility
-    public function shouldHideIfInaccessible($flag=null);
+    public function shouldHideIfInaccessible(bool $flag=null);
 
 // Disposition
     public function setDisposition($disposition);
@@ -324,9 +324,9 @@ trait TSharedLinkComponents {
         return $this->_description;
     }
 
-    public function shouldShowDescription($flag=null) {
+    public function shouldShowDescription(bool $flag=null) {
         if($flag !== null) {
-            $this->_showDescription = (bool)$flag;
+            $this->_showDescription = $flag;
             return $this;
         }
 
@@ -335,9 +335,9 @@ trait TSharedLinkComponents {
 
 
 // Visibility
-    public function shouldHideIfInaccessible($flag=null) {
+    public function shouldHideIfInaccessible(bool $flag=null) {
         if($flag !== null) {
-            $this->_hideIfInaccessible = (bool)$flag;
+            $this->_hideIfInaccessible = $flag;
             return $this;
         }
 

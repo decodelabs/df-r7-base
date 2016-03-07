@@ -33,9 +33,9 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
         $this->setOptions($options, $labelsAsValues);
     }
 
-    public function shouldMarkSelected($flag=null) {
+    public function shouldMarkSelected(bool $flag=null) {
         if($flag !== null) {
-            $this->_markSelected = (bool)$flag;
+            $this->_markSelected = $flag;
             return $this;
         }
 

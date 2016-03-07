@@ -18,13 +18,13 @@ class Date extends Base implements axis\schema\IDateField {
         $this->shouldIncludeTime(true);
     }
 
-    public function shouldIncludeTime($flag=null) {
+    public function shouldIncludeTime(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_includeTime) {
+            if($flag != $this->_includeTime) {
                 $this->_hasChanged = true;
             }
 
-            $this->_includeTime = (bool)$flag;
+            $this->_includeTime = $flag;
             return $this;
         }
 

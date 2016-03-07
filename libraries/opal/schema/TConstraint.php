@@ -104,13 +104,13 @@ trait TConstraint_Index {
         $this->setFields($fields);
     }
 
-    public function isUnique($flag=null) {
+    public function isUnique(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_isUnique) {
+            if($flag != $this->_isUnique) {
                 $this->_hasChanged = true;
             }
 
-            $this->_isUnique = (bool)$flag;
+            $this->_isUnique = $flag;
             return $this;
         }
 

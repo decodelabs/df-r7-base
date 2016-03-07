@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\spur\analytics;
 use df;
 use df\core;
 use df\spur;
-    
+
 class Config extends core\Config {
 
     const ID = 'Analytics';
@@ -90,10 +90,10 @@ class Config extends core\Config {
         return $this->values->{$name};
     }
 
-    public function isAdapterEnabled($name, $flag=null) {
+    public function isAdapterEnabled($name, bool $flag=null) {
         if($flag !== null) {
             if(isset($this->values->{$name})) {
-                $this->values->{$name}->enabled = (bool)$flag;
+                $this->values->{$name}->enabled = $flag;
             }
 
             return $this;

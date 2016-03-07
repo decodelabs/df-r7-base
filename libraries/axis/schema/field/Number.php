@@ -85,13 +85,13 @@ class Number extends Base implements
     }
 
 
-    public function isFixedPoint($flag=null) {
+    public function isFixedPoint(bool $flag=null) {
         if($flag !== null) {
-            if((bool)$flag != $this->_isFixedPoint) {
+            if($flag != $this->_isFixedPoint) {
                 $this->_hasChanged = true;
             }
 
-            $this->_isFixedPoint = (bool)$flag;
+            $this->_isFixedPoint = $flag;
             return $this;
         }
 

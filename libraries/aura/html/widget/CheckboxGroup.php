@@ -17,9 +17,9 @@ class CheckboxGroup extends RadioButtonGroup implements IMultipleSelectionInputW
 
     protected $_allRequired = false;
 
-    public function isAllRequired($flag=null) {
+    public function isAllRequired(bool $flag=null) {
         if($flag !== null) {
-            $this->_allRequired = (bool)$flag;
+            $this->_allRequired = $flag;
 
             if($this->_allRequired) {
                 $this->_isRequired = true;

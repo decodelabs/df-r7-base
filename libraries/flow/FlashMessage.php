@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flow;
 use df\user;
-    
+
 class FlashMessage implements IFlashMessage, \Serializable {
 
     protected $_id;
@@ -108,7 +108,7 @@ class FlashMessage implements IFlashMessage, \Serializable {
             case IFlashMessage::DEBUG:
                 break;
 
-            default: 
+            default:
                 $type = IFlashMessage::INFO;
                 break;
         }
@@ -126,48 +126,48 @@ class FlashMessage implements IFlashMessage, \Serializable {
     }
 
 
-    public function isDisplayed($flag=null) {
+    public function isDisplayed(bool $flag=null) {
         if($flag !== null) {
-            $this->_isDisplayed = (bool)$flag;
+            $this->_isDisplayed = $flag;
             return $this;
         }
-        
+
         return $this->_isDisplayed;
     }
-    
+
     public function canDisplayAgain() {
         return $this->_displayCount > 0;
     }
-    
+
     public function resetDisplayState() {
         $this->_isDisplayed = false;
         $this->_displayCount--;
         return $this;
     }
-    
+
     public function setDisplayCount($count) {
         $this->_displayCount = (int)$count;
         return $this;
     }
-    
+
     public function getDisplayCount() {
         return $this->_displayCount;
     }
-    
+
     public function setMessage($message) {
         $this->_message = trim((string)$message);
         return $this;
     }
-    
+
     public function getMessage() {
         return $this->_message;
     }
-    
+
     public function setDescription($description) {
         $this->_description = trim((string)$description);
         return $this;
     }
-    
+
     public function getDescription() {
         return $this->_description;
     }
@@ -178,28 +178,28 @@ class FlashMessage implements IFlashMessage, \Serializable {
         } else {
             $this->_link = $link;
         }
-        
+
         $this->_linkText = $text;
         return $this;
     }
-    
+
     public function getLink() {
         return $this->_link;
     }
-    
+
     public function setLinkText($text) {
         $this->_linkText = $text;
         return $this;
     }
-    
+
     public function getLinkText() {
         return $this->_linkText;
     }
-    
+
     public function hasLink() {
         return $this->_link !== null;
     }
-    
+
     public function clearLink() {
         $this->_link = null;
         $this->_linkText = null;

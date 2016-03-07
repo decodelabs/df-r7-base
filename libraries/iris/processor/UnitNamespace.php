@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\iris\processor;
 use df;
 use df\core;
 use df\iris;
-    
+
 class UnitNamespace extends Base {
 
     protected $_keyword = 'namespace';
@@ -80,18 +80,18 @@ class UnitNamespace extends Base {
         return $this->_aliasKeyword;
     }
 
-    public function shouldAllowTypeAliases($flag=null) {
+    public function shouldAllowTypeAliases(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowTypeAliases = (bool)$flag;
+            $this->_allowTypeAliases = $flag;
             return $this;
         }
 
         return $this->_allowTypeAliases;
     }
 
-    public function shouldAllowRoot($flag=null) {
+    public function shouldAllowRoot(bool $flag=null) {
         if($flag !== null) {
-            $this->_allowRoot = (bool)$flag;
+            $this->_allowRoot = $flag;
             return $this;
         }
 
@@ -168,7 +168,7 @@ class UnitNamespace extends Base {
             $this->parser->extract();
             $output->push($this->extractNameComponent());
         }
-        
+
         return $output;
     }
 
@@ -187,7 +187,7 @@ class UnitNamespace extends Base {
             } else {
                 $output->push($name);
             }
-            
+
             $this->parser->extract();
         }
 

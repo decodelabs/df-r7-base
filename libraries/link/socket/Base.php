@@ -164,9 +164,9 @@ abstract class Base implements ISocket {
         return $this->_writingEnabled;
     }
 
-    public function shouldBlock($flag=null) {
+    public function shouldBlock(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldBlock = (bool)$flag;
+            $this->_shouldBlock = $flag;
 
             if($this->_socket) {
                 $this->_setBlocking($this->_shouldBlock);

@@ -185,9 +185,9 @@ class Field extends Container implements IFormOrientedWidget {
     }
 
 // Required
-    public function isRequired($flag=null) {
+    public function isRequired(bool $flag=null) {
         if($flag !== null) {
-            $this->_isRequired = (bool)$flag;
+            $this->_isRequired = $flag;
             return $this;
         }
 

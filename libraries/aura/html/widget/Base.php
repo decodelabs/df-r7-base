@@ -97,7 +97,7 @@ abstract class Base implements IWidget {
         return $this->getTag()->getId();
     }
 
-    public function isHidden($flag=null) {
+    public function isHidden(bool $flag=null) {
         if($flag !== null) {
             $this->getTag()->isHidden($flag);
             return $this;
@@ -106,7 +106,7 @@ abstract class Base implements IWidget {
         return $this->getTag()->isHidden();
     }
 
-    public function setTitle($title) {
+    public function setTitle(string $title=null) {
         $this->getTag()->setTitle($title);
         return $this;
     }

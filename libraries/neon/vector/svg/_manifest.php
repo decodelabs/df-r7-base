@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -445,7 +445,7 @@ interface IZoomAndPanAttributeModule {
 
 // Description
 interface IDescriptionProvider {
-    public function setTitle($title);
+    public function setTitle(string $title=null);
     public function getTitle();
     public function setDescription($description);
     public function getDescription();
@@ -455,7 +455,7 @@ interface IDescriptionProvider {
 // MetaData
 interface IMetaDataProvider {
     public function setMetaData($metaData);
-    public function getMetaData();        
+    public function getMetaData();
 }
 
 
@@ -473,7 +473,7 @@ interface IContainer extends IDescriptionProvider {
 
 // Structure
 interface IStructure extends
-    IElement, 
+    IElement,
     IClipAttributeModule,
     IConditionalAttributeModule,
     IContainerAttributeModule,
@@ -508,16 +508,16 @@ interface IDefinitionProvider {
     public function clearDefinitions();
 }
 
-interface IDefinitionsContainer extends 
+interface IDefinitionsContainer extends
     IDefinitionProvider,
     IContainer,
     IStructure,
-    IMetaDataProvider 
+    IMetaDataProvider
     {}
 
 
 // Document
-interface IDocument extends 
+interface IDocument extends
     core\xml\IRootInterchange,
     IElement,
     IContainer,
@@ -537,27 +537,27 @@ interface IDocument extends
     public function setContentScriptType($type);
     public function getContentScriptType();
     public function setContentStyleType($type);
-    public function getContentStyleType();    
+    public function getContentStyleType();
 
     public function setVersion($version);
-    public function getVersion();    
+    public function getVersion();
 
     public function rasterize();
 }
 
 
-interface IGroup extends 
+interface IGroup extends
     IElement,
-    IContainer, 
+    IContainer,
     IStructure,
     IDefinitionProvider,
     IMetaDataProvider,
-    IPathProvider 
+    IPathProvider
     {}
 
 
 // Shapes
-interface IShape extends 
+interface IShape extends
     IElement,
     IStructure,
     IDescriptionProvider,
@@ -609,19 +609,19 @@ trait TFontFaceContainer {
 interface IFont extends
     IElement,
     IStructure,
-    IDescriptionProvider, 
+    IDescriptionProvider,
     IMetaDataProvider,
     IFontDefinitionAttributeModule,
     IFontFaceContainer
     {
     public function setMissingGlyph(IFontGlyph $glyph=null);
-    public function getMissingGlyph();    
+    public function getMissingGlyph();
     public function setGlyphs(array $glyphs);
     public function addGlyphs(array $glyphs);
     public function addGlyph(IFontGlyph $glyph);
     public function getGlyphs();
     public function removeGlyph(IFontGlyph $glyph);
-    public function clearGlyphs();    
+    public function clearGlyphs();
 }
 
 
@@ -700,10 +700,10 @@ interface IFontFaceSource extends
     {
     public function setUri($string);
     public function setUriElement(IFontFaceUri $uri);
-    public function getUri();    
+    public function getUri();
     public function setName($name);
     public function setNameElement(IFontFaceName $name);
-    public function getName();    
+    public function getName();
 }
 
 interface IFontFaceUri extends
@@ -713,7 +713,7 @@ interface IFontFaceUri extends
     {
     public function setFormat($string);
     public function setFormatElement(IFontFaceFormat $format=null);
-    public function getFormat();        
+    public function getFormat();
 }
 
 interface IFontFaceFormat extends
@@ -721,7 +721,7 @@ interface IFontFaceFormat extends
     ICoreAttributeModule
     {
     public function setString($string);
-    public function getString();        
+    public function getString();
 }
 
 
@@ -730,7 +730,7 @@ interface IFontFaceName extends
     ICoreAttributeModule
     {
     public function setName($name);
-    public function getName();        
+    public function getName();
 }
 
 interface IFontGlyph extends
@@ -758,7 +758,7 @@ interface IFontGlyph extends
     IViewportAttributeModule
     {
     public function setArabicForm($form);
-    public function getArabicForm();    
+    public function getArabicForm();
     public function setGlyphName($name);
     public function getGlyphName();
     public function setLanguage($language);
@@ -767,21 +767,21 @@ interface IFontGlyph extends
     public function getOrientation();
     public function setUnicode($unicode);
     public function getUnicode();
-    public function isMissing($flag=null);
+    public function isMissing(bool $flag=null);
 }
 
 
 
 // Filters
 interface IFilter extends IElement {
-    
+
 }
 
 
 // Commands
 interface ICommand extends core\IStringProvider {
-    public function isRelative($flag=null);
-    public function isAbsolute($flag=null);
+    public function isRelative(bool $flag=null);
+    public function isAbsolute(bool $flag=null);
 }
 
 interface IXPositionAwareCommand extends ICommand {
@@ -835,8 +835,8 @@ interface IRotationAwareCommand extends ICommand {
 
 
 interface IArcCommand extends ICommand, IRadiusAwareCommand, IRotationAwareCommand, IPositionAwareCommand {
-    public function isLargeArc($flag=null);
-    public function isSweep($flag=null);
+    public function isLargeArc(bool $flag=null);
+    public function isSweep(bool $flag=null);
 }
 
 interface IClosePathCommand extends ICommand {}

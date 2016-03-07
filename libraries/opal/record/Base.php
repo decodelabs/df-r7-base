@@ -474,9 +474,9 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
 
-    public function shouldBypassHooks($flag=null) {
+    public function shouldBypassHooks(bool $flag=null) {
         if($flag !== null) {
-            $this->_bypassHooks = (bool)$flag;
+            $this->_bypassHooks = $flag;
             return $this;
         }
 

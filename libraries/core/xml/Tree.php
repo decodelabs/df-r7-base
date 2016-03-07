@@ -868,9 +868,9 @@ class Tree implements ITree, core\IDumpable {
         return $this->_element->ownerDocument->xmlEncoding;
     }
 
-    public function isDocumentStandalone($flag=null) {
+    public function isDocumentStandalone(bool $flag=null) {
         if($flag !== null) {
-            $this->_element->ownerDocument->xmlStandalone = (bool)$flag;
+            $this->_element->ownerDocument->xmlStandalone = $flag;
             return $this;
         }
 

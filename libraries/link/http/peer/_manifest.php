@@ -19,10 +19,10 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 // Interfaces
 interface IClient extends link\peer\IClient {
-    public function shouldFollowRedirects($flag=null);
+    public function shouldFollowRedirects(bool $flag=null);
     public function setMaxRetries($retries);
     public function getMaxRetries();
-    public function shouldSaveIfNotOk($flag=null);
+    public function shouldSaveIfNotOk(bool $flag=null);
 
     public function addRequest($request, $callback, $headerCallback=null);
     public function sendRequest($request, $headerCallback=null);

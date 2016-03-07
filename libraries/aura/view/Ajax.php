@@ -28,27 +28,27 @@ class Ajax extends Base implements IAjaxView {
         return $this->_redirect;
     }
 
-    public function shouldForceRedirect($flag=null) {
+    public function shouldForceRedirect(bool $flag=null) {
         if($flag !== null) {
-            $this->_forceRedirect = (bool)$flag;
+            $this->_forceRedirect = $flag;
             return $this;
         }
 
         return $this->_forceRedirect;
     }
 
-    public function isComplete($flag=null) {
+    public function isComplete(bool $flag=null) {
         if($flag !== null) {
-            $this->_isComplete = (bool)$flag;
+            $this->_isComplete = $flag;
             return $this;
         }
 
         return $this->_isComplete;
     }
 
-    public function shouldReload($flag=null) {
+    public function shouldReload(bool $flag=null) {
         if($flag !== null) {
-            $this->_shouldReload = (bool)$flag;
+            $this->_shouldReload = $flag;
             return $this;
         }
 

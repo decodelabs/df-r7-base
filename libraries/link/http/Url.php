@@ -298,7 +298,7 @@ class Url extends core\uri\Url implements IUrl {
         return $this;
     }
 
-    public function isSecure($flag=null) {
+    public function isSecure(bool $flag=null) {
         if($flag !== null) {
             if($flag) {
                 $this->_scheme = 'https';
