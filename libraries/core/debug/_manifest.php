@@ -22,14 +22,14 @@ interface ILocationProvider {
 }
 
 trait TLocationProvider {
-    
+
     protected $_file;
     protected $_line;
-    
+
     public function getFile() {
         return $this->_file;
     }
-    
+
     public function getLine() {
         return $this->_line;
     }
@@ -46,6 +46,9 @@ interface IStackTrace extends core\log\INode, core\IArrayProvider {
     public function getCalls();
     public function toJsonArray();
     public function toJson();
+
+    public function setMessage(string $message=null);
+    public function getMessage();
 }
 
 interface IStackCall extends ILocationProvider, core\IArrayProvider {
@@ -59,24 +62,24 @@ interface IStackCall extends ILocationProvider, core\IArrayProvider {
     public function hasArgs();
     public function countArgs();
     public function getArgString();
-    
+
     public function getType();
     public function getTypeString();
     public function isStatic();
     public function isObject();
     public function isNamespaceFunction();
     public function isGlobalFunction();
-    
+
     public function getNamespace();
     public function hasNamespace();
-    
+
     public function getClass();
     public function hasClass();
     public function getClassName();
-    
+
     public function getFunctionName();
     public function getSignature($argString=false);
-    
+
     public function getCallingFile();
     public function getCallingLine();
 

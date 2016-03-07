@@ -55,7 +55,7 @@ interface IEntryPoint {
     public function stubQuiet(...$args);
     public function addStub(array $dumpObjects, core\debug\IStackCall $stackCall, $critical=true);
 
-    public function stackTrace($rewind=0);
+    public function stackTrace(string $message=null, int $rewind=0);
 }
 
 trait TEntryPoint {
@@ -181,11 +181,15 @@ trait TEntryPoint {
         return $this;
     }
 
-    public function stackTrace($rewind=0) {
+    public function stackTrace(string $message=null, int $rewind=0) {
         df\Launchpad::loadBaseClass('core/debug/StackTrace');
         df\Launchpad::loadBaseClass('core/debug/StackCall');
 
-        $this->addNode(core\debug\StackTrace::factory($rewind + 1));
+        $this->addNode(
+            core\debug\StackTrace::factory($rewind + 1)
+                ->setMessage($message)
+        );
+
         return $this;
     }
 }

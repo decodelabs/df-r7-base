@@ -26,22 +26,22 @@ use df\core;
     <body>
         <div id="page-header">
             <h1 id="page-logo">DF <?php echo df\Launchpad::REV.' '.ucfirst(df\Launchpad::CODENAME); ?></h1>
-            
+
             <ul id="page-stats">
               <?php foreach($this->_stats as $key => $stat) { ?>
                 <li><?php echo $this->esc($key); ?>: <strong><?php echo $this->esc($stat); ?></strong></li>
               <?php } ?>
             </ul>
         </div>
-        
+
         <div id="page-toggleButtons">
             <?php
             $counts = $this->_context->getNodeCounts();
             $includes = $this->_getNormalizedIncludeList();
-            
-            foreach($counts as $key => $value) { 
+
+            foreach($counts as $key => $value) {
             ?>
-            <a class="node-<?php echo $this->esc($key); ?> <?php echo $value ? 'on' : 'empty'; ?>" 
+            <a class="node-<?php echo $this->esc($key); ?> <?php echo $value ? 'on' : 'empty'; ?>"
                 data-node="<?php echo $this->esc($key); ?>">
                 <?php echo $this->esc(ucfirst($key)); ?> <sup><?php echo $value; ?></sup>
             </a>
@@ -50,22 +50,22 @@ use df\core;
                 Includes <sup><?php echo count($includes); ?></sup>
             </a>
         </div>
-        
+
         <?php
         $nodeRender = function($stack, $nodeRender) {
             foreach($stack as $key => $node) {
                 $hasChildren = $node instanceof core\log\IGroupNode && $node->hasChildren();
                 $hasBody = $node instanceof core\log\IExceptionNode
                         || $node instanceof core\log\IDumpNode
-                        || $node instanceof core\log\IStackTrace;
+                        || $node instanceof core\debug\IStackTrace;
         ?>
         <div class="nodeBlock node-<?php echo $this->esc($node->getNodeType()); ?><?php if($hasBody || $hasChildren) { echo ' collapsible'; } ?>">
             <header class="nodeHeader">
                 <h3 class="nodeTitle"><?php echo $this->esc($node->getNodeTitle()); ?></h3>
-                
+
                 <div class="description">
                     <?php echo $this->_getNodeDescription($node); ?>
-                    
+
                     <?php if($location = $this->_getNodeLocation($node)) { ?>
                     <div class="location">
                         <?php echo $location; ?>
@@ -73,7 +73,7 @@ use df\core;
                     <?php } ?>
                 </div>
             </header>
-            
+
             <?php if($hasBody || $hasChildren) { ?>
             <div class="nodeBody">
                 <?php if($hasBody) { ?>
@@ -87,31 +87,31 @@ use df\core;
         </div>
         <?php }
         };
-        
+
         $nodeRender($this->_context->getChildren(), $nodeRender);
         ?>
-        
+
         <div class="nodeBlock node-stackTrace">
             <header class="nodeHeader">
                 <h3 class="nodeTitle">Stack Trace</h3>
             </header>
-            
+
             <div class="nodeBody">
                 <div class="nodeContent">
                     <?php echo $this->_renderStackTrace($this->_context->getStackTrace()); ?>
                 </div>
             </div>
         </div>
-        
+
         <div class="nodeBlock node-includes">
             <header class="nodeHeader">
                 <h3 class="nodeTitle">Includes</h3>
-                
+
                 <div class="description">
                     Included <?php echo count($includes); ?> files
                 </div>
             </header>
-            
+
             <div class="nodeBody">
                 <div class="nodeContent"><?php echo implode("\n", $includes); ?></div>
             </div>

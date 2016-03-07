@@ -713,7 +713,7 @@ function qDump(...$args) {
         ob_end_clean();
     }
 
-    if(count($args) == 1) {
+    if(($count = count($args)) == 1) {
         $args = array_shift($args);
     }
 

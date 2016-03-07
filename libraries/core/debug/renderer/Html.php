@@ -70,7 +70,7 @@ class Html extends Base {
                 return $this->esc($node->getMessage());
 
             case 'stackTrace':
-                return null;
+                return $this->esc($node->getMessage());
         }
     }
 

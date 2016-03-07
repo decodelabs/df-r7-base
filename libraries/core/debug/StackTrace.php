@@ -12,10 +12,12 @@ class StackTrace implements IStackTrace, core\IDumpable {
 
     use TLocationProvider;
 
+    protected $_message;
     protected $_calls = [];
 
     public static function fromException(\Throwable $e) {
-        return self::factory(0, $e->getTrace());
+        return self::factory(0, $e->getTrace())
+            ->setMessage($e->getMessage());
     }
 
     public static function factory($rewind=0, array $data=null) {
@@ -64,6 +66,15 @@ class StackTrace implements IStackTrace, core\IDumpable {
                 $this->_line = $data[1]['line'];
             }
         }
+    }
+
+    public function setMessage(string $message=null) {
+        $this->_message = $message;
+        return $this;
+    }
+
+    public function getMessage() {
+        return $this->_message;
     }
 
     public function toArray() {
