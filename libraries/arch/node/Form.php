@@ -460,6 +460,7 @@ abstract class Form extends Base implements IFormNode {
         }
 
         $output = $target->handleEvent($event, $args);
+        $this->triggerPostEvent($target, $event, $args);
 
         if($target->isComplete()) {
             // TODO: work out $success

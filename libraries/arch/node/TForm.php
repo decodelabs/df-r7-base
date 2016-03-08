@@ -362,6 +362,20 @@ trait TForm {
 
     public function handleDelegateEvent($delegateId, $event, $args) {}
 
+    public function triggerPostEvent(IActiveForm $target, string $event, array $args) {
+        if($this !== $target) {
+            $this->handlePostEvent($target, $event, $args);
+        }
+
+        foreach($this->_delegates as $id => $delegate) {
+            $delegate->triggerPostEvent($target, $event, $args);
+        }
+
+        return $this;
+    }
+
+    public function handlePostEvent(IActiveForm $target, string $event, array $args) {}
+
 
     public function getAvailableEvents() {
         $output = [];
