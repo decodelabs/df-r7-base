@@ -37,7 +37,7 @@ abstract class HeaderBar extends Base {
 
 
 // Title
-    public function setTitle(string $title=null) {
+    public function setTitle($title) {
         if(empty($title)) {
             $title = null;
         }
