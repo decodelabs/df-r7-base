@@ -22,12 +22,12 @@ interface IArrayManipulator {
     public function getRows();
     public function getOutputManifest();
     public function isEmpty();
-    
+
     public function applyReadQuery(opal\query\IQuery $query, $keyField=null, $valField=null);
     public function applyRemoteJoinQuery(opal\query\IQuery $query, array $localJoins, array $remoteJoins);
     public function applyAttachmentDataQuery(opal\query\IAttachQuery $query);
     public function applyBatchIteratorExpansion(opal\query\IBatchIterator $batchIterator, $batchNumber);
-    
+
     public function normalizeRows();
     public function applyJoins(array $joins);
     public function applyWhereClauseList(opal\query\IWhereClauseList $clauseList);
@@ -39,7 +39,7 @@ interface IArrayManipulator {
     public function applyPopulates(array $populates);
     public function applyAttachments(array $attachments);
     public function applyCombines(array $combines);
-    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false);
+    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, array $nestFields=null, $forFetch=false);
 }
 
 interface IClauseMatcher {

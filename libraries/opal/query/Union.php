@@ -16,6 +16,7 @@ class Union implements IUnionQuery {
     use TQuery_Attachable;
     use TQuery_Combinable;
     use TQuery_Orderable;
+    use TQuery_Nestable;
     use TQuery_Limitable;
     use TQuery_Offsettable;
     use TQuery_Pageable;

@@ -140,7 +140,7 @@ class ArrayManipulator implements IArrayManipulator {
 
             /*
             $this->applyOutputFields(
-                $keyField, $valField,
+                $keyField, $valField, $query->getNestFields(),
                 $query instanceof opal\query\IFetchQuery
             );
             */
@@ -237,9 +237,12 @@ class ArrayManipulator implements IArrayManipulator {
         $this->applyAttachments($batchIterator->getAttachments());
         $this->applyCombines($batchIterator->getCombines());
 
+        //core\dump($batchIterator->getNestFields());
+
         $this->applyOutputFields(
             $batchIterator->getListKeyField(),
             $batchIterator->getListValueField(),
+            $batchIterator->getNestFields(),
             $batchIterator->isForFetch()
         );
 
@@ -927,6 +930,12 @@ class ArrayManipulator implements IArrayManipulator {
                 $manipulator->applyCombines($attachment->getCombines());
             }
 
+            $nestFields = null;
+
+            if($attachment instanceof opal\query\INestableQuery) {
+                $nestFields = $attachment->getNestFields();
+            }
+
 
             $dataSet = $manipulator->getRows();
             $qName = $attachmentQueryField->getQualifiedName();
@@ -944,7 +953,7 @@ class ArrayManipulator implements IArrayManipulator {
 
                 $attachData = $manipulator
                     ->setRows($attachData)
-                    ->applyOutputFields($keyField, $valField, $isFetchQuery)
+                    ->applyOutputFields($keyField, $valField, $nestFields, $isFetchQuery)
                     ->getRows();
 
                 if($isValueAttachment) {
@@ -978,7 +987,7 @@ class ArrayManipulator implements IArrayManipulator {
 
 
 // Output
-    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false) {
+    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, array $nestFields=null, $forFetch=false) {
         if(empty($this->_rows)) {
             return $this;
         }
@@ -1077,6 +1086,19 @@ class ArrayManipulator implements IArrayManipulator {
             } else {
                 $valQName = $valField->getQualifiedName();
                 $valName = $valField->getName();
+            }
+
+            $nestFields = null;
+        } else {
+            if(empty($nestFields)) {
+                $nestFields = null;
+            } else {
+                $tempFields = $nestFields;
+                $nestFields = [];
+
+                foreach($tempFields as $field) {
+                    $nestFields[$field->getQualifiedName()] = $field;
+                }
             }
         }
 
@@ -1301,11 +1323,35 @@ class ArrayManipulator implements IArrayManipulator {
                 }
             }
 
-            if($key) {
-                if(!is_scalar($key)) {
-                    $key = (string)$key;
+            if($key !== null && !is_scalar($key)) {
+                $key = (string)$key;
+            }
+
+            if($nestFields) {
+                $nestValues = [];
+
+                foreach($nestFields as $nestQName => $nestField) {
+                    if(isset($row[$nestQName])) {
+                        $nestValues[$nestQName] = $row[$nestQName];
+                    } else if(isset($row[$t = $nestField->getAlias()])) {
+                        $nestValues[$nestQName] = $row[$t];
+                    } else {
+                        $nestValues[$nestQName] = null;
+                    }
                 }
 
+                if($key) {
+                    $current = [$key => $current];
+                } else {
+                    $current = [$current];
+                }
+
+                while(!empty($nestValues)) {
+                    $current = [array_pop($nestValues) => $current];
+                }
+
+                $this->_rows = array_merge_recursive($this->_rows, $current);
+            } else if($key) {
                 $this->_rows[$key] = $current;
             } else {
                 $this->_rows[] = $current;

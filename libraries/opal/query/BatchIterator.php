@@ -22,11 +22,15 @@ class BatchIterator implements IBatchIterator {
 
     protected $_keyField;
     protected $_valField;
+    protected $_nestFields = [];
+
     protected $_batchData = [];
     protected $_batchSize = self::DEFAULT_BATCH_SIZE;
     protected $_batchNumber = 0;
     protected $_result;
     protected $_arrayManipulator;
+
+    protected $_currentKey = null;
 
     public function __construct(ISource $source, $result, IOutputManifest $outputManifest=null) {
         $this->_batchSize = static::DEFAULT_BATCH_SIZE;
@@ -125,6 +129,15 @@ class BatchIterator implements IBatchIterator {
         return $this->_valField;
     }
 
+    public function setNestFields(IField ...$fields) {
+        $this->_nestFields = $fields;
+        return $this;
+    }
+
+    public function getNestFields() {
+        return $this->_nestFields;
+    }
+
 
 
 
@@ -163,9 +176,13 @@ class BatchIterator implements IBatchIterator {
             }
         }
 
-        $key = key($this->_batchData);
-        $output = $this->_batchData[$key];
-        unset($this->_batchData[$key]);
+        $this->_currentKey = key($this->_batchData);
+        $output = $this->_batchData[$this->_currentKey];
+        unset($this->_batchData[$this->_currentKey]);
+
+        if($this->_currentKey === '') {
+            $this->_currentKey = null;
+        }
 
         return $output;
     }
@@ -177,24 +194,15 @@ class BatchIterator implements IBatchIterator {
             $batchSize = self::DEFAULT_BATCH_SIZE;
         }
 
-
-        /*
-        $total = $this->_result->count();
-
-        if(!$total) {
-            return;
-        }
-
-        if($total < $batchSize * 1.5) {
-            $batchSize = $total;
-        }
-        */
-
         $batch = [];
+        $allInOne = !empty($this->_nestFields);
 
         while(!$this->_isResultEmpty() && $batchSize > 0) {
             $batch[] = $this->_extractResult();
-            $batchSize--;
+
+            if(!$allInOne) {
+                $batchSize--;
+            }
         }
 
         $this->_arrayManipulator->setRows($batch);
@@ -217,9 +225,10 @@ class BatchIterator implements IBatchIterator {
 
     public function toArray() {
         $output = [];
+        $useKey = $this->_keyField || !empty($this->_nestFields);
 
         while(!$this->isEmpty()) {
-            if($this->_keyField) {
+            if($useKey) {
                 if(empty($this->_batchData)) {
                     $this->_fetchBatch();
                 }
@@ -235,7 +244,23 @@ class BatchIterator implements IBatchIterator {
     }
 
 // Iterator
-    public function getIterator() {
-        return new core\collection\ReductiveIndexIterator($this);
+    public function current() {
+        return $this->extract();
+    }
+
+    public function next() {
+        $this->_currentKey = null;
+    }
+
+    public function key() {
+        return $this->_currentKey;
+    }
+
+    public function valid() {
+        return !$this->isEmpty();
+    }
+
+    public function rewind() {
+
     }
 }

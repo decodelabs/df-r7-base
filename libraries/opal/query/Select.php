@@ -27,6 +27,7 @@ class Select implements ISelectQuery, core\IDumpable {
     use TQuery_Groupable;
     use TQuery_HavingClauseFactory;
     use TQuery_Orderable;
+    use TQuery_Nestable;
     use TQuery_Limitable;
     use TQuery_Offsettable;
     use TQuery_Pageable;
@@ -156,6 +157,10 @@ class Select implements ISelectQuery, core\IDumpable {
             }
 
             $output['order'] = implode(', ', $order);
+        }
+
+        if(!empty($this->_nest)) {
+            $output['nest'] = $this->_nest;
         }
 
         if($this->_limit) {

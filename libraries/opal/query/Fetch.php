@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 
 class Fetch implements IFetchQuery, core\IDumpable {
-    
+
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Locational;
@@ -21,23 +21,24 @@ class Fetch implements IFetchQuery, core\IDumpable {
     use TQuery_WhereClauseFactory;
     use TQuery_Searchable;
     use TQuery_Orderable;
+    use TQuery_Nestable;
     use TQuery_Limitable;
     use TQuery_Offsettable;
     use TQuery_Populatable;
     use TQuery_Pageable;
     use TQuery_Read;
-    
+
     public function __construct(ISourceManager $sourceManager, ISource $source) {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
     }
-    
+
     public function getQueryType() {
         return IQueryTypes::FETCH;
     }
 
-    
-    
+
+
 // Output
     public function count() {
         return $this->_sourceManager->executeQuery($this, function($adapter) {
@@ -49,7 +50,7 @@ class Fetch implements IFetchQuery, core\IDumpable {
         if($keyField !== null) {
             $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);
         }
-        
+
         $output = $this->_sourceManager->executeQuery($this, function($adapter) {
             return $adapter->executeFetchQuery($this);
         });
@@ -66,7 +67,7 @@ class Fetch implements IFetchQuery, core\IDumpable {
 
         return $output;
     }
-    
+
 // Dump
     public function getDumpProperties() {
         $output = [
@@ -77,11 +78,11 @@ class Fetch implements IFetchQuery, core\IDumpable {
         if(!empty($this->_populates)) {
             $output['populates'] = $this->_populates;
         }
-        
+
         if(!empty($this->_joins)) {
             $output['joins'] = $this->_joins;
         }
-        
+
         if($this->hasWhereClauses()) {
             $output['where'] = $this->getWhereClauseList();
         }
@@ -89,42 +90,46 @@ class Fetch implements IFetchQuery, core\IDumpable {
         if($this->_searchController) {
             $output['search'] = $this->_searchController;
         }
-        
+
         if(!empty($this->_order)) {
             $order = [];
-            
+
             foreach($this->_order as $directive) {
                 $order[] = $directive->toString();
             }
-            
+
             $output['order'] = implode(', ', $order);
         }
-        
+
+        if(!empty($this->_nest)) {
+            $output['nest'] = $this->_nest;
+        }
+
         if($this->_limit) {
             $output['limit'] = $this->_limit;
         }
-        
+
         if($this->_offset) {
             $output['offset'] = $this->_offset;
         }
-        
+
         return $output;
     }
 }
 
 
 class Fetch_Attach extends Fetch implements IFetchAttachQuery {
-    
+
     use TQuery_Attachment;
     use TQuery_ParentAwareJoinClauseFactory;
-    
+
     public function __construct(IQuery $parent, ISourceManager $sourceManager, ISource $source) {
         $this->_parent = $parent;
         parent::__construct($sourceManager, $source);
-        
+
         $this->_joinClauseList = new opal\query\clause\JoinList($this);
     }
-    
+
     public function getQueryType() {
         return IQueryTypes::FETCH_ATTACH;
     }
@@ -139,4 +144,4 @@ class Fetch_Attach extends Fetch implements IFetchAttachQuery {
             'on' => $this->_joinClauseList,
         ], parent::getDumpProperties());
     }
-} 
+}

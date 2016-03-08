@@ -1785,6 +1785,50 @@ trait TQuery_Orderable {
 
 
 
+/**************************
+ * Order
+ */
+trait TQuery_Nestable {
+
+    protected $_nest = [];
+
+    public function nestOn(...$fields) {
+        $source = $this->getSource();
+
+        foreach($fields as $field) {
+            if($field instanceof IField) {
+                $field = $field->getQualifiedName();
+            }
+
+            $this->_nest[] = $this->getSourceManager()->extrapolateField($source, $field);
+        }
+
+        return $this;
+    }
+
+    public function setNestFields(array $directives) {
+        $this->_nest = $directives;
+        return $this;
+    }
+
+    public function getNestFields() {
+        return $this->_nest;
+    }
+
+    public function hasNestFields() {
+        return !empty($this->_nest);
+    }
+
+    public function clearNestFields() {
+        $this->_nest = [];
+        return $this;
+    }
+}
+
+
+
+
+
 /*************************
  * Limit
  */
@@ -2004,6 +2048,10 @@ trait TQuery_Read {
 
         if($this instanceof ICombinableQuery) {
             $output->setCombines($this->getCombines());
+        }
+
+        if($this instanceof INestableQuery) {
+            $output->setNestFields(...$this->getNestFields());
         }
 
         return $output;

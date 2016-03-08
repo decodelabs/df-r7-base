@@ -305,6 +305,14 @@ interface IOrderableQuery extends IQuery {
     public function isPrimaryOrderSource($sourceAlias=null);
 }
 
+interface INestableQuery extends IQuery {
+    public function nestOn(...$fields);
+    public function setNestFields(array $fields);
+    public function getNestFields();
+    public function hasNestFields();
+    public function clearNestFields();
+}
+
 interface ILimitableQuery extends IQuery {
     public function limit($limit);
     public function getLimit();
@@ -473,6 +481,7 @@ interface ISelectQuery extends
     IGroupableQuery,
     IHavingClauseQuery,
     IOrderableQuery,
+    INestableQuery,
     ILimitableQuery,
     IOffsettableQuery,
     IPageableQuery {
@@ -499,6 +508,7 @@ interface IUnionQuery extends
     IAttachableQuery,
     ICombinableQuery,
     IOrderableQuery,
+    INestableQuery,
     ILimitableQuery,
     IOffsettableQuery,
     IPageableQuery {
@@ -531,6 +541,7 @@ interface IFetchQuery extends
     IPrerequisiteClauseQuery,
     ISearchableQuery,
     IOrderableQuery,
+    INestableQuery,
     ILimitableQuery,
     IOffsettableQuery,
     IPageableQuery {}
@@ -1057,7 +1068,7 @@ interface IPaginator extends core\collection\IOrderablePaginator {
 
 
 // Results
-interface IBatchIterator extends core\collection\ICollection, \IteratorAggregate {
+interface IBatchIterator extends core\collection\ICollection, \Iterator {
     public function getResult();
     public function isForFetch(bool $flag=null);
 
@@ -1079,6 +1090,9 @@ interface IBatchIterator extends core\collection\ICollection, \IteratorAggregate
 
     public function setListValueField(IField $field=null);
     public function getListValueField();
+
+    public function setNestFields(IField ...$fields);
+    public function getNestFields();
 
     public function setBatchSize($size);
     public function getBatchSize();
@@ -1102,6 +1116,8 @@ interface IOutputManifest {
 
     public function getOutputFieldProcessors();
     public function getCombines();
+
+
 
     public function getSearchController();
 
