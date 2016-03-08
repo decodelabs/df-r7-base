@@ -60,6 +60,32 @@ class Tree implements ITree, core\IDumpable {
         return $element;
     }
 
+    public static function fromHtmlFile($file) {
+        try {
+            $document = self::_newDOMDocument();
+            $document->loadHtmlFile($file);
+        } catch(\Exception $e) {
+            throw new RuntimeException(
+                'HTML file '.$file.' could not be loaded: '.$e->getMessage()
+            );
+        }
+
+        return self::fromDOMDocument($document);
+    }
+
+    public static function fromHtmlString($htmlString) {
+        try {
+            $document = self::_newDOMDocument();
+            $document->loadHTML($htmlString);
+        } catch(\Exception $e) {
+            throw new RuntimeException(
+                'HTML string could not be loaded: '.$e->getMessage()
+            );
+        }
+
+        return self::fromDOMDocument($document);
+    }
+
     public static function fromDOMDocument($document) {
         if(!$document instanceof \DOMDocument) {
             throw new InvalidArgumentException(
