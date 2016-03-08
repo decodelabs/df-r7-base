@@ -102,7 +102,7 @@ class Tree implements ITree, core\IDumpable {
             $newNode->setAttributeNode($attrNode);
         }
 
-        $this->_element->ownerDocument->replaceChild($newNode, $this->_element);
+        $this->_element->parentNode->replaceChild($newNode, $this->_element);
         $this->_element = $newNode;
 
         return $this;
