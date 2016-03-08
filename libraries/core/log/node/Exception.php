@@ -8,6 +8,8 @@ namespace df\core\log\node;
 use df;
 use df\core;
 
+df\Launchpad::loadBaseClass('core/debug/dumper/Inspector');
+
 class Exception implements core\log\IExceptionNode {
 
     protected $_stackCall;
@@ -76,4 +78,8 @@ class Exception implements core\log\IExceptionNode {
         return $this->_stackCall;
     }
 
+    public function inspect() {
+        $inspector = new core\debug\dumper\Inspector();
+        return $inspector->inspect($this->_exception, false);
+    }
 }

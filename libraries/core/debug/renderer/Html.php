@@ -79,10 +79,7 @@ class Html extends Base {
     protected function _getNodeBody(core\log\INode $node) {
         switch($node->getNodeType()) {
             case 'dump':
-                $object = &$node->getObject();
-                $inspector = new core\debug\dumper\Inspector();
-                $data = $inspector->inspect($object, $node->isDeep());
-                return '<span class="dump-body">'.$this->_renderDumpData($inspector, $data).'</span>';
+                return '<span class="dump-body">'.$this->_renderDumpData($node->inspect()).'</span>';
 
             case 'exception':
                 $lastException = $exception = $node->getException();
@@ -109,7 +106,7 @@ class Html extends Base {
                     $data = $inspector->inspectObjectProperties($exception);
 
                     $output .= '<div class="exception-data dump-body">'.
-                        $this->_renderDumpData($inspector, $data).
+                        $this->_renderDumpData($data).
                     '</div>';
                 }
 
@@ -121,7 +118,9 @@ class Html extends Base {
         }
     }
 
-    protected function _renderDumpData(core\debug\dumper\Inspector $inspector, core\debug\dumper\INode $data) {
+    protected function _renderDumpData(core\debug\dumper\INode $data) {
+        $inspector = $data->getInspector();
+
         // Immutable
         if($data instanceof core\debug\dumper\Immutable) {
             return '<span class="dump-'.$data->getType().'">'.$data->toString().'</span>';
@@ -217,14 +216,14 @@ class Html extends Base {
 
                         if($hasName) {
                             $propString .= $this->_renderDumpData(
-                                $inspector, new core\debug\dumper\Text($property->getName())
+                                new core\debug\dumper\Text($inspector, $property->getName())
                             ).'] =&gt; ';
                         }
                     }
 
                     $propString .= str_replace(
                         "\n", "\n    ",
-                        $this->_renderDumpData($inspector, $property->inspectValue($inspector, $property->isDeep()))
+                        $this->_renderDumpData($property->inspectValue($inspector, $property->isDeep()))
                     );
 
                     if(!$singleEntry) {

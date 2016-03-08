@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\core\log\writer;
 use df;
 use df\core;
 use df\link;
-    
+
 class ChromePhp implements core\log\IWriter {
 
     use core\log\TWriter;
@@ -52,7 +52,7 @@ class ChromePhp implements core\log\IWriter {
     public function writeContextNode(core\log\IHandler $handler, core\debug\IContext $node) {
         $this->_addRow($node, $this->_getRequest(), 'group');
         $renderer = new core\debug\renderer\PlainText($handler);
-        
+
         $this->_addRow(
             null,
             $renderer->renderStats(),
@@ -69,11 +69,8 @@ class ChromePhp implements core\log\IWriter {
     }
 
     public function writeDumpNode(core\log\IHandler $handler, core\log\IDumpNode $node) {
-        $inspector = new core\debug\dumper\Inspector();
-        $data = $inspector->inspect($node->getObject(), $node->isDeep());
-
         return $this->_addRow(
-            $node, $data->getDataValue($inspector)
+            $node, $node->inspect()->getDataValue()
         );
     }
 
@@ -83,18 +80,18 @@ class ChromePhp implements core\log\IWriter {
         if($code = $node->getCode()) {
             $message .= ' '.$code;
         }
-        
+
         $message .= ': '.$node->getMessage();
         $this->_addRow($node, $message, 'groupCollapsed');
 
         $this->_addRow(
-            $node, 
+            $node,
             [
                 'message' => $node->getMessage(),
                 'code' => $node->getCode(),
                 'class' => $node->getExceptionClass(),
                 'trace' => $this->_convertStackTrace($node->getStackTrace())
-            ], 
+            ],
             'error'
         );
 
@@ -142,7 +139,7 @@ class ChromePhp implements core\log\IWriter {
 
     public function writeStackTraceNode(core\log\IHandler $handler, core\debug\IStackTrace $node) {
         return $this->_addRow(
-            $node, 
+            $node,
             $this->_convertStackTrace($node)
         );
     }

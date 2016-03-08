@@ -11,11 +11,13 @@ use df\core;
 class NativeResource implements IResourceNode {
 
     use core\TStringProvider;
+    use TNode;
 
     protected $_type;
     protected $_name;
 
-    public function __construct($resource) {
+    public function __construct(IInspector $inspector, $resource) {
+        $this->_inspector = $inspector;
         $type = get_resource_type($resource);
 
         if($type == 'stream') {
@@ -40,7 +42,7 @@ class NativeResource implements IResourceNode {
         return $this->_name;
     }
 
-    public function getDataValue(IInspector $inspector) {
+    public function getDataValue() {
         return $this->toString();
     }
 

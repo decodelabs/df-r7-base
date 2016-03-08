@@ -205,6 +205,10 @@ interface INode extends ILocationProvider {
     public function isCritical();
 }
 
+interface IInspectableNode {
+    public function inspect();
+}
+
 interface IGroupNode extends INode, IEntryPoint, core\IArrayProvider {
     public function setNodeTitle($title);
     public function addChild(INode $node);
@@ -225,12 +229,12 @@ interface IMessageNode extends INode, IMessageProvider {
     public function getType();
 }
 
-interface IDumpNode extends INode {
-    public function &getObject();
+interface IDumpNode extends INode, IInspectableNode {
+    public function getObject();
     public function isDeep();
 }
 
-interface IExceptionNode extends INode {
+interface IExceptionNode extends INode, IInspectableNode {
     public function getException();
     public function getExceptionClass();
     public function getCode();

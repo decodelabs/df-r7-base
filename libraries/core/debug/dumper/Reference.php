@@ -9,17 +9,19 @@ use df;
 use df\core;
 
 class Reference implements IReferenceNode {
-    
+
     use core\TStringProvider;
-    
+    use TNode;
+
     protected $_type;
     protected $_dumpId;
-    
-    public function __construct($type, $dumpId) {
+
+    public function __construct(IInspector $inspector, $type, $dumpId) {
+        $this->_inspector = $inspector;
         $this->_type = $type;
         $this->_dumpId = $dumpId;
     }
-    
+
     public function getType() {
         return $this->_type;
     }
@@ -27,15 +29,15 @@ class Reference implements IReferenceNode {
     public function isArray() {
         return $this->_type == 'array';
     }
-    
+
     public function getDumpId() {
         return $this->_dumpId;
     }
 
-    public function getDataValue(IInspector $inspector) {
+    public function getDataValue() {
         return $this->toString();
     }
-    
+
     public function toString() {
         return $this->_type.'(&'.$this->_dumpId.')';
     }

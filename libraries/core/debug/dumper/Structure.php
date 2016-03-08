@@ -9,56 +9,56 @@ use df;
 use df\core;
 
 class Structure implements IStructureNode {
-    
+
     use core\TStringProvider;
-    
+    use TNode;
+
     protected $_type;
     protected $_dumpId;
     protected $_properties;
-    protected $_inspector;
-    
+
     public function __construct(Inspector $inspector, $type, $dumpId, array $properties) {
+        $this->_inspector = $inspector;
         $this->_type = $type;
         $this->_dumpId = $dumpId;
         $this->_properties = array_values($properties);
-        $this->_inspector = $inspector;
     }
-    
+
     public function isArray() {
         return $this->_type === null;
     }
-    
+
     public function getType() {
         return $this->_type;
     }
-    
+
     public function getDumpId() {
         return $this->_dumpId;
     }
-    
+
     public function getProperties() {
         return $this->_properties;
     }
-    
+
     public function toString() {
         $output = $this->_type;
-        
+
         if($output === null) {
             $output = 'array';
         }
-        
+
         $output .= '(';
-        
+
         if(!empty($this->_properties)) {
             $output .= "\n".$this->_renderBody()."\n";
         }
-        
+
         $output .= ')';
-        
+
         return $output;
     }
 
-    public function getDataValue(IInspector $inspector) {
+    public function getDataValue() {
         $output = [];
 
         if($this->_type) {
@@ -75,29 +75,29 @@ class Structure implements IStructureNode {
             }
 
             $value = $property->getValue();
-            $output[$name] = $inspector->inspect($value)->getDataValue($inspector);
+            $output[$name] = $this->_inspector->inspect($value)->getDataValue();
             unset($value);
         }
 
         return $output;
     }
-    
+
     private function _renderBody() {
         $indent = '   ';
         $output = [];
-        
+
         foreach($this->_properties as $property) {
             $dump = $property->inspectValue($this->_inspector);
             $line = $indent;
-            
+
             if($property->hasName()) {
                 $line .= '['.$property->getName().'] => ';
             }
-            
+
             $line .= rtrim(str_replace("\n", "\n".$indent, $dump->toString()));
             $output[] = $line;
         }
-        
+
         return implode(",\n", $output);
     }
 }

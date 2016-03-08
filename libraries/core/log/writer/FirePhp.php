@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -25,10 +25,10 @@ class FirePhp implements core\log\IWriter {
     protected $_buffer = [];
 
     public static function isAvailable(link\http\IRequestHeaderCollection $headers) {
-        if(preg_match_all('/\sFirePHP\/([\.\d]*)\s?/si', $headers->get('user-agent'), $matches) 
+        if(preg_match_all('/\sFirePHP\/([\.\d]*)\s?/si', $headers->get('user-agent'), $matches)
         && version_compare($matches[1][0],'0.0.6','>=')) {
             return true;
-        } else if(preg_match_all('/^([\.\d]*)$/si', $headers->get('X-FirePHP-Version'), $matches) 
+        } else if(preg_match_all('/^([\.\d]*)$/si', $headers->get('X-FirePHP-Version'), $matches)
         && version_compare($matches[1][0],'0.0.6','>=')) {
             return true;
         }
@@ -74,7 +74,7 @@ class FirePhp implements core\log\IWriter {
 
         $stats = $renderer->getStats();
         $this->_addRow('GROUP_START', 'Stats - '.$stats['Time'], null, null, null, ['Collapsed' => 'true']);
-        
+
         foreach($stats as $key => $value) {
             $this->_addRow('INFO', $key, $value);
         }
@@ -90,13 +90,10 @@ class FirePhp implements core\log\IWriter {
     }
 
     public function writeDumpNode(core\log\IHandler $handler, core\log\IDumpNode $node) {
-        $inspector = new core\debug\dumper\Inspector();
-        $data = $inspector->inspect($node->getObject(), $node->isDeep());
-
         return $this->_addRow(
-            'DUMP', 
-            $node->getNodeTitle(), 
-            $this->_convertDumperNode($inspector, $data)
+            'DUMP',
+            $node->getNodeTitle(),
+            $this->_convertDumperNode($node->inspect())
         );
     }
 
@@ -182,11 +179,11 @@ class FirePhp implements core\log\IWriter {
 
     public function writeStubNode(core\log\IHandler $handler, core\log\IStubNode $node) {
         $this->_addRow(
-            'GROUP_START', 
-            'STUB: '.$node->getMessage(), 
-            null, 
-            $node->getFile(), 
-            $node->getLine(), 
+            'GROUP_START',
+            'STUB: '.$node->getMessage(),
+            null,
+            $node->getFile(),
+            $node->getLine(),
             ['Color' => 'red']
         );
 
@@ -223,7 +220,7 @@ class FirePhp implements core\log\IWriter {
                 } else {
                     $chunkData = strlen($part).'|'.$part.'|';
                 }
-                
+
                 $this->_buffer['X-Wf-1-1-1-'.++self::$_messageIndex] = $chunkData;
             }
         }
@@ -231,7 +228,7 @@ class FirePhp implements core\log\IWriter {
         return $this;
     }
 
-    protected function _convertDumperNode(core\debug\dumper\IInspector $inspector, core\debug\dumper\INode $data) {
+    protected function _convertDumperNode(core\debug\dumper\INode $data) {
         if($data instanceof core\debug\dumper\IStructureNode) {
             $output = [];
 
@@ -249,15 +246,15 @@ class FirePhp implements core\log\IWriter {
 
                     $name = $property->getVisibilityString().':'.$name;
                 }
-                
+
                 $value = $property->getValue();
-                $output[$name] = $this->_convertDumperNode($inspector, $inspector->inspect($value));
+                $output[$name] = $this->_convertDumperNode($node->getInspector()->inspect($value));
                 unset($value);
             }
 
             return $output;
         } else {
-            return $data->getDataValue($inspector);
+            return $data->getDataValue();
         }
     }
 }

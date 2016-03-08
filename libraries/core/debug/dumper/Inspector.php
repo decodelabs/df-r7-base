@@ -28,26 +28,26 @@ class Inspector implements IInspector {
         return self::$_instanceCount;
     }
 
-    public function inspect(&$object, $deep=false) {
+    public function inspect($object, $deep=false) {
         if(is_null($object)) {
             df\Launchpad::loadBaseClass('core/debug/dumper/Immutable');
-            return new Immutable(null);
+            return new Immutable($this, null);
 
         } else if(is_bool($object)) {
             df\Launchpad::loadBaseClass('core/debug/dumper/Immutable');
-            return new Immutable($object);
+            return new Immutable($this, $object);
 
         } else if(is_string($object)) {
             df\Launchpad::loadBaseClass('core/debug/dumper/Text');
-            return new Text($object);
+            return new Text($this, $object);
 
         } else if(is_numeric($object)) {
             df\Launchpad::loadBaseClass('core/debug/dumper/Number');
-            return new Number($object);
+            return new Number($this, $object);
 
         } else if(is_resource($object)) {
             df\Launchpad::loadBaseClass('core/debug/dumper/NativeResource');
-            return new NativeResource($object);
+            return new NativeResource($this, $object);
 
         } else if(is_array($object)) {
             return $this->_dumpArray($object, $deep);
@@ -55,7 +55,7 @@ class Inspector implements IInspector {
             return $this->_dumpObject($object, $deep);
         } else {
             df\Launchpad::loadBaseClass('core/debug/dumper/Text');
-            return new Text((string)$object);
+            return new Text($this, (string)$object);
             //throw new core\debug\RuntimeException('Unknown data type');
         }
     }
@@ -71,7 +71,7 @@ class Inspector implements IInspector {
             $this->_arrayRefHits[$dumpId]++;
 
             df\Launchpad::loadBaseClass('core/debug/dumper/Reference');
-            return new Reference(null, $dumpId);
+            return new Reference($this, null, $dumpId);
         }
 
         df\Launchpad::loadBaseClass('core/debug/dumper/Structure');
@@ -138,7 +138,7 @@ class Inspector implements IInspector {
             $this->_objectHashHits[$dumpId]++;
 
             df\Launchpad::loadBaseClass('core/debug/dumper/Reference');
-            return new Reference(get_class($object), $dumpId);
+            return new Reference($this, get_class($object), $dumpId);
         }
 
         df\Launchpad::loadBaseClass('core/debug/dumper/Structure');

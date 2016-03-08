@@ -9,34 +9,36 @@ use df;
 use df\core;
 
 class Number implements INumberNode {
-    
+
     use core\TStringProvider;
-    
+    use TNode;
+
     protected $_number;
-    
-    public function __construct($number) {
+
+    public function __construct(IInspector $inspector, $number) {
+        $this->_inspector = $inspector;
         $this->_number = $number;
     }
-    
+
     public function getValue() {
         return $this->_number;
     }
-    
+
     public function isFloat() {
         return is_float($this->_number);
     }
-    
-    public function getDataValue(IInspector $inspector) {
+
+    public function getDataValue() {
         return $this->_number;
     }
 
     public function toString() {
         $output = (string)$this->_number;
-        
+
         if(is_float($this->_number)) {
             $output .= 'f';
         }
-        
+
         return $output;
     }
 }

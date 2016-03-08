@@ -11,10 +11,12 @@ use df\core;
 class Text implements IStringNode {
 
     use core\TStringProvider;
+    use TNode;
 
     protected $_string;
 
-    public function __construct($string) {
+    public function __construct(IInspector $inspector, $string) {
+        $this->_inspector = $inspector;
         $this->_string = $string;
     }
 
@@ -22,7 +24,7 @@ class Text implements IStringNode {
         return $this->_string;
     }
 
-    public function getDataValue(IInspector $inspector) {
+    public function getDataValue() {
         return $this->_string;
     }
 

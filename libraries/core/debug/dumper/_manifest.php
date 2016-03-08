@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -16,7 +16,7 @@ interface IException {}
 // Interfaces
 interface IInspector {
     public static function getInstanceCount();
-    public function inspect(&$object, $deep=false);
+    public function inspect($object, $deep=false);
     public function countArrayRefHits($dumpId);
     public function inspectObjectProperties($object, $deep=false);
     public function countObjectHashHits($dumpId);
@@ -24,8 +24,19 @@ interface IInspector {
 
 
 interface INode extends core\IStringProvider {
-    public function getDataValue(IInspector $inspector);
+    public function getDataValue();
+    public function getInspector();
 }
+
+
+trait TNode {
+    protected $_inspector;
+
+    public function getInspector() {
+        return $this->_inspector;
+    }
+}
+
 
 interface IImmutableNode extends INode {
     public function isNull();
@@ -71,18 +82,18 @@ interface IProperty {
     public function setName($name);
     public function hasName();
     public function getName();
-    
+
     public function setValue($value);
     public function getValue();
     public function inspectValue(IInspector $inspector);
-    
+
     public function setVisibility($visibility);
     public function getVisibility();
     public function getVisibilityString();
     public function isPublic();
     public function isProtected();
     public function isPrivate();
-    
+
     public function isDeep();
     public function canInline();
 }
