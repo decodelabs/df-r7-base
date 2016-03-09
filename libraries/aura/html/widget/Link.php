@@ -112,6 +112,11 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         if($this->_checkAccess === null) {
             $this->_checkAccess = (bool)$request;
+
+            // Tidy this up :)
+            if($this->_checkAccess && $this->_context->location->isArea('mail')) {
+                $this->_checkAccess = false;
+            }
         }
 
         if($this->_checkAccess && !$disabled) {
