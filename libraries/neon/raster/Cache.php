@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\neon;
 use df\link;
-    
+
 class Cache extends core\cache\Base {
 
     const USE_DIRECT_FILE_BACKEND = true;
@@ -73,6 +73,30 @@ class Cache extends core\cache\Base {
                 $file->unlink();
             }
         }
+
+        return $output;
+    }
+
+    public static function createKey($sourceFilePath, $transformation=null) {
+        if($sourceFilePath instanceof link\http\IUrl) {
+            $path = (string)$sourceFilePath->getPath();
+            $key = basename(dirname($path)).'_'.basename($path).'-'.md5($sourceFilePath.':'.$transformation);
+        } else {
+            $keyPath = core\fs\Dir::stripPathLocation($sourceFilePath);
+            $key = basename(dirname($keyPath)).'_'.basename($keyPath).'-'.md5($keyPath.':'.$transformation);
+        }
+
+        return $key;
+    }
+
+    public function getIconFilePath($absolutePath, int ...$sizes) {
+        $key = $this->createKey($absolutePath);
+
+        //if(!$output = $this->getDirectFilePath($key)) {
+            $ico = new neon\raster\Ico($absolutePath, 16, 32);
+            $this->set($key, $ico->generate(), self::DEFAULT_LIFETIME);
+            $output = $this->getDirectFilePath($key);
+        //}
 
         return $output;
     }

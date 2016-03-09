@@ -378,10 +378,13 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
 // Favicon
     public function setFaviconHref($url) {
+        $url = $this->uri($url);
+        $url->query->favicon = null;
+
         if(!isset($this->_links['favicon'])) {
             $this->addLink('favicon', 'shortcut icon', $url);
         } else {
-            $this->_links['favicon']->setAttribute('href', $this->uri($url));
+            $this->_links['favicon']->setAttribute('href', $url);
         }
 
         return $this;
@@ -394,7 +397,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     }
 
     public function linkFavicon($url) {
-        return $this->addLink('favicon', 'shortcut icon', $url);
+        return $this->setFaviconHref($url);
     }
 
 

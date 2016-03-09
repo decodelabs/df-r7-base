@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -145,4 +145,12 @@ interface ITransformation extends IImageManipulationController, IImageFilterCont
     public function rescale($scale);
 
     public function apply();
+}
+
+
+
+interface IIcoGenerator {
+    public function addImage($file, int ...$sizes);
+    public function save($file);
+    public function generate();
 }
