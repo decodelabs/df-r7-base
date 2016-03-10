@@ -408,6 +408,14 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
             }
         }
 
+        if($output
+        && !isset($this->_keyring['*']['*'])
+        && !isset($this->_keyring[$domain]['*'])
+        && !empty($signifiers = $lock->getAccessSignifiers())
+        && !$this->isA(...$signifiers)) {
+            $output = false;
+        }
+
         $this->_accessCache[$lockId] = $output;
 
         return $output;

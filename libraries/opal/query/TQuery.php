@@ -139,6 +139,10 @@ trait TQuery {
         return $this->getSource()->getAdapter()->getDefaultAccess($action);
     }
 
+    public function getAccessSignifiers(): array {
+        return $this->getSource()->getAdapter()->getAccessSignifiers();
+    }
+
     public function getAccessLockId() {
         return $this->getSource()->getAdapter()->getAccessLockId();
     }

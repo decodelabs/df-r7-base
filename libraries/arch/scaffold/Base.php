@@ -407,6 +407,7 @@ abstract class Base implements IScaffold {
 
                 return core\lang\Callback::factory($callback)->invoke();
             }))
-            ->setDefaultAccess($this->getDefaultAccess());
+            ->setDefaultAccess($this->getDefaultAccess())
+            ->setAccessSignifiers(...$this->getAccessSignifiers());
     }
 }

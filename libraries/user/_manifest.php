@@ -224,6 +224,7 @@ interface IAccessLock {
     public function getAccessLockDomain();
     public function lookupAccessKey(array $keys, $action=null);
     public function getDefaultAccess($action=null);
+    public function getAccessSignifiers(): array;
     public function getActionLock($action);
     public function getAccessLockId();
 }
@@ -232,6 +233,10 @@ trait TAccessLock {
 
     public function getActionLock($node) {
         return new user\access\lock\Action($this, $node);
+    }
+
+    public function getAccessSignifiers(): array {
+        return [];
     }
 }
 

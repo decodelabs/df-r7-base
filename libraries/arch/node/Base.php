@@ -20,10 +20,12 @@ class Base implements INode, core\IDumpable {
     const CHECK_ACCESS = null;
     const OPTIMIZE = false;
     const DEFAULT_ACCESS = null;
+    const ACCESS_SIGNIFIERS = null;
 
     private $_shouldOptimize = null;
     private $_shouldCheckAccess = null;
     private $_defaultAccess = null;
+    private $_accessSignifiers = null;
     private $_callback;
 
     public static function factory(arch\IContext $context) {
@@ -163,6 +165,25 @@ class Base implements INode, core\IDumpable {
         }
 
         return $this->_getClassDefaultAccess();
+    }
+
+    public function setAccessSignifiers(string ...$signifiers) {
+        if(empty($signifiers)) {
+            $signifiers = null;
+        }
+
+        $this->_accessSignifiers = $signifiers;
+        return $this;
+    }
+
+    public function getAccessSignifiers(): array {
+        if($this->_accessSignifiers !== null) {
+            return $this->_accessSignifiers;
+        } else if(is_array(static::ACCESS_SIGNIFIERS)) {
+            return static::ACCESS_SIGNIFIERS;
+        } else {
+            return [];
+        }
     }
 
 

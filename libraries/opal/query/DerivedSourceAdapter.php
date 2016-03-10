@@ -158,6 +158,10 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->getDefaultAccess($action);
     }
 
+    public function getAccessSignifiers(): array {
+        return $this->_adapter->getAccessSignifiers();
+    }
+
     public function getAccessLockId() {
         return $this->_adapter->getAccessLockId();
     }

@@ -15,10 +15,12 @@ class Partial implements IPartial, core\IDumpable {
 
     use TRecordAdapterProvider;
     use TPrimaryKeySetProvider;
-    use TAccessLockProvider;
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_AssociativeValueMap;
-    use user\TAccessLock;
+
+    use TAccessLockProvider, user\TAccessLock {
+        TAccessLockProvider::getAccessSignifiers insteadof user\TAccessLock;
+    }
 
     protected $_isBridge = false;
 

@@ -17,10 +17,12 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
     use TRecordAdapterProvider;
     use TPrimaryKeySetProvider;
-    use TAccessLockProvider;
     use core\TValueMap;
     use core\collection\TExtractList;
-    use user\TAccessLock;
+
+    use TAccessLockProvider, user\TAccessLock {
+        TAccessLockProvider::getAccessSignifiers insteadof user\TAccessLock;
+    }
 
     protected $_values = [];
     protected $_changes = [];

@@ -26,6 +26,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
     protected $_scheme = 'directory';
     protected $_defaultAccess = null;
+    protected $_accessSignifiers = null;
 
     public static function factory($url) {
         if($url instanceof IRequest) {
@@ -916,6 +917,29 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return $node->getDefaultAccess($lockAction);
         } catch(\Exception $e) {
             return false;
+        }
+    }
+
+    public function setAccessSignifiers(string ...$signifiers) {
+        if(empty($signifiers)) {
+            $signifiers = null;
+        }
+
+        $this->_accessSignifiers = $signifiers;
+        return $this;
+    }
+
+    public function getAccessSignifiers(): array {
+        if($this->_accessSignifiers !== null) {
+            return $this->_accessSignifiers;
+        }
+
+        try {
+            $context = arch\Context::factory($this);
+            $node = arch\node\Base::factory($context);
+            return $node->getAccessSignifiers();
+        } catch(\Exception $e) {
+            return [];
         }
     }
 

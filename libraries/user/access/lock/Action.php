@@ -48,6 +48,10 @@ class Action implements user\IAccessLock {
         return $this->_parentLock->getDefaultAccess($action);
     }
 
+    public function getAccessSignifiers(): array {
+        return $this->_parentLock->getAccessSignifiers();
+    }
+
     public function getActionLock($action) {
         $output = clone $this;
         $output->_action = $action;

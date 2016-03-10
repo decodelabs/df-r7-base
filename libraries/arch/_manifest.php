@@ -288,6 +288,9 @@ trait TDirectoryAccessLock {
 
     use user\TAccessLock;
 
+    //const DEFAULT_ACCESS = null;
+    //const ACCESS_SIGNIFIERS = null;
+
     public function getAccessLockDomain() {
         return 'directory';
     }
@@ -306,11 +309,20 @@ trait TDirectoryAccessLock {
             return arch\IAccess::ALL;
         }
 
-        if(static::DEFAULT_ACCESS !== null) {
+        if(defined('static::DEFAULT_ACCESS') && static::DEFAULT_ACCESS !== null) {
             return static::DEFAULT_ACCESS;
         }
 
         return DirectoryAccessController::$defaultAccess;
+    }
+
+    public function getAccessSignifiers(): array {
+        if(defined('static::ACCESS_SIGNIFIERS')
+        && is_array(static::ACCESS_SIGNIFIERS)) {
+            return static::ACCESS_SIGNIFIERS;
+        }
+
+        return [];
     }
 
     public function getAccessLockId() {
