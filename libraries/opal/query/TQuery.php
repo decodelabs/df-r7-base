@@ -1919,11 +1919,11 @@ trait TQuery_Pageable {
     protected $_paginator;
 
     public function paginate() {
-        if($this->_paginator) {
-            return $this->_paginator;
+        if(!$this->_paginator) {
+            $this->_paginator = new Paginator($this);
         }
 
-        return new Paginator($this);
+        return $this->_paginator;
     }
 
     public function paginateWith($data) {

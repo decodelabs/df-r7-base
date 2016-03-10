@@ -113,6 +113,10 @@ class Fetch implements IFetchQuery, core\IDumpable {
             $output['offset'] = $this->_offset;
         }
 
+        if($this->_paginator) {
+            $output['paginator'] = $this->_paginator;
+        }
+
         return $output;
     }
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,11 +8,11 @@ namespace df\opal\query\field;
 use df;
 use df\core;
 use df\opal;
-    
+
 class Correlation implements opal\query\ICorrelationField, core\IDumpable {
 
     use opal\query\TField;
-    
+
     protected $_query;
 
     public function __construct(opal\query\ICorrelationQuery $query) {
@@ -73,8 +73,7 @@ class Correlation implements opal\query\ICorrelationField, core\IDumpable {
         core\stub($source);
     }
 
-// Dump
-    public function getDumpProperties() {
+    public function toString() {
         return [$this->getAlias() => $this->_query];
     }
 }

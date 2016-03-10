@@ -814,7 +814,7 @@ interface ITransactionAware {
 
 
 // Fields
-interface IField {
+interface IField extends core\IStringProvider {
     public function getSource();
     public function getSourceAlias();
 
@@ -839,6 +839,8 @@ interface IField {
 }
 
 trait TField {
+
+    use core\TStringProvider;
 
     protected $_logicalAlias;
     protected $_overrideField;
@@ -877,6 +879,10 @@ trait TField {
         }
 
         return $this->_isFromWildcard;
+    }
+
+    public function getDumpProperties() {
+        return $this->getString();
     }
 }
 

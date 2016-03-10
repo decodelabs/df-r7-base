@@ -171,6 +171,10 @@ class Select implements ISelectQuery, core\IDumpable {
             $output['offset'] = $this->_offset;
         }
 
+        if($this->_paginator) {
+            $output['paginator'] = $this->_paginator;
+        }
+
         return $output;
     }
 }

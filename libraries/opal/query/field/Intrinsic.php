@@ -10,36 +10,36 @@ use df\core;
 use df\opal;
 
 class Intrinsic implements opal\query\IIntrinsicField, core\IDumpable {
-    
+
     use opal\query\TField;
-    
+
     protected $_name;
     protected $_alias;
     protected $_source;
-    
+
     public function __construct(opal\query\ISource $source, $name, $alias=null) {
         $this->_source = $source;
         $this->_name = $name;
-        
+
         if($alias === null) {
             $alias = $name;
         }
-        
+
         $this->_alias = $alias;
     }
-    
+
     public function getSource() {
         return $this->_source;
     }
-    
+
     public function getSourceAlias() {
         return $this->_source->getAlias();
     }
-    
+
     public function getQualifiedName() {
         return $this->getSourceAlias().'.'.$this->_name;
     }
-    
+
     public function getName() {
         return $this->_name;
     }
@@ -48,15 +48,15 @@ class Intrinsic implements opal\query\IIntrinsicField, core\IDumpable {
         $this->_alias = $alias;
         return $this;
     }
-    
+
     public function getAlias() {
         return $this->_alias;
     }
-    
+
     public function hasDiscreetAlias() {
         return $this->_alias !== $this->_name;
     }
-    
+
     public function dereference() {
         return [$this];
     }
@@ -68,11 +68,10 @@ class Intrinsic implements opal\query\IIntrinsicField, core\IDumpable {
     public function rewriteAsDerived(opal\query\ISource $source) {
         return new self($source, $this->_source->getAlias().'.'.$this->_name, $this->_source->getAlias().'.'.$this->_alias);
     }
-    
-// Dump
-    public function getDumpProperties() {
+
+    public function toString() {
         $output = $this->getQualifiedName();
-        
+
         if($this->hasDiscreetAlias()) {
             $output .= ' as '.$this->getAlias();
         }

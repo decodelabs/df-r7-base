@@ -10,57 +10,57 @@ use df\core;
 use df\opal;
 
 class Virtual implements opal\query\IVirtualField, core\IDumpable {
-    
+
     use opal\query\TField;
-    
+
     protected $_name;
     protected $_alias;
     protected $_targetFields = [];
     protected $_source;
     protected $_targetSourceAlias;
-    
+
     public function __construct(opal\query\ISource $source, $name, $alias=null, array $targetFields=[]) {
         $this->_source = $source;
         $this->_name = $name;
-        
+
         if($alias === null) {
             $alias = $name;
         }
-        
+
         $this->_alias = $alias;
         $this->_targetFields = $targetFields;
     }
-    
-    
+
+
     public function getSource() {
         return $this->_source;
     }
-    
+
     public function getSourceAlias() {
         return $this->_source->getAlias();
     }
-    
+
     public function getQualifiedName() {
         return $this->getSourceAlias().'.'.$this->getName();
     }
-    
+
     public function getName() {
         return $this->_name;
     }
-    
+
     public function setAlias($alias) {
         $this->_alias = $alias;
         return $this;
     }
-    
+
     public function getAlias() {
         return $this->_alias;
     }
-    
+
     public function hasDiscreetAlias() {
         return $this->getAlias() !== $this->getName();
     }
-    
+
     public function setTargetSourceAlias($alias) {
         $this->_targetSourceAlias = $alias;
         return $this;
@@ -74,7 +74,7 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
     public function getTargetFields() {
         return $this->_targetFields;
     }
-    
+
     public function dereference() {
         $output = [];
 
@@ -102,11 +102,10 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
 
         return new self($source, $this->_name, $this->_source->getAlias().'.'.$this->_alias, $targetFields);
     }
-    
-// Dump
-    public function getDumpProperties() {
+
+    public function toString() {
         $output = $this->getQualifiedName();
-        
+
         if($this->hasDiscreetAlias()) {
             $output .= ' as '.$this->getAlias();
         }

@@ -189,8 +189,7 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
         core\stub($source);
     }
 
-// Dump
-    public function getDumpProperties() {
+    public function toString() {
         $output = $this->getQualifiedName();
 
         if($this->hasDiscreetAlias()) {

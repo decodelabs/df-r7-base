@@ -10,32 +10,32 @@ use df\core;
 use df\opal;
 
 class Wildcard implements opal\query\IWildcardField, core\IDumpable {
-    
+
     use opal\query\TField;
-    
+
     protected $_source;
     protected $_muteFields = [];
-    
+
     public function __construct(opal\query\ISource $source) {
         $this->_source = $source;
     }
-    
+
     public function getSource() {
         return $this->_source;
     }
-    
+
     public function getSourceAlias() {
         return $this->_source->getAlias();
     }
-    
+
     public function getQualifiedName() {
         return $this->getSourceAlias().'.*';
     }
-    
+
     public function getName() {
         return '*';
     }
-    
+
     public function setAlias($alias) {
         core\stub($alias);
         return $this;
@@ -44,15 +44,15 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
     public function getAlias() {
         return '*';
     }
-    
+
     public function hasDiscreetAlias() {
         return false;
     }
-    
+
     public function dereference() {
         return [$this];
     }
-    
+
     public function isOutputField() {
         return true;
     }
@@ -76,9 +76,8 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
         return $this->_muteFields;
     }
 
-    
-// Dump
-    public function getDumpProperties() {
+
+    public function toString() {
         $output = $this->getQualifiedName();
         $mute = [];
 

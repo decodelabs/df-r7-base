@@ -10,33 +10,33 @@ use df\core;
 use df\opal;
 
 class Attachment implements opal\query\IAttachmentField, core\IDumpable {
-    
+
     use opal\query\TField;
-    
+
     protected $_name;
     protected $_attachment;
-    
+
     public function __construct($name, opal\query\IAttachQuery $attachment) {
         $this->_name = $name;
         $this->_attachment = $attachment;
     }
-    
+
     public function getSource() {
         return $this->_attachment->getSource();
     }
-    
+
     public function getSourceAlias() {
         return $this->_attachment->getSourceAlias();
     }
-    
+
     public function getName() {
         return $this->_name;
     }
-    
+
     public function getQualifiedName() {
         return $this->_attachment->getParentQuery()->getSourceAlias().'.'.$this->_name;
     }
-    
+
     public function setAlias($alias) {
         $this->_name = $alias;
         return $this;
@@ -45,11 +45,11 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
     public function getAlias() {
         return $this->_name;
     }
-    
+
     public function hasDiscreetAlias() {
         return false;
     }
-    
+
     public function dereference() {
         return [$this];
     }
@@ -73,9 +73,8 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
     public function rewriteAsDerived(opal\query\ISource $source) {
         core\stub($source);
     }
-    
-// Dump
-    public function getDumpProperties() {
+
+    public function toString() {
         return 'attach('.$this->getQualifiedName().')';
     }
 }

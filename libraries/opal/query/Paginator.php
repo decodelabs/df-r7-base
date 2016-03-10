@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-class Paginator implements IPaginator {
+class Paginator implements IPaginator, core\IDumpable {
 
     use core\collection\TPaginator;
 
@@ -280,5 +280,30 @@ class Paginator implements IPaginator {
         }
 
         return $this->_total;
+    }
+
+
+
+// Dump
+    public function getDumpProperties() {
+        $output = [];
+
+        if(!empty($this->_orderableFields)) {
+            $output['orderableFields'] = implode(', ', $this->_orderableFields);
+        }
+
+        if(!empty($this->_order)) {
+            $output['defaultOrder'] = implode(', ', $this->_order);
+        }
+
+        if($this->_limit) {
+            $output['defaultLimit'] = $this->_limit;
+        }
+
+        if($this->_offset) {
+            $output['defaultOffset'] = $this->_offset;
+        }
+
+        return $output;
     }
 }

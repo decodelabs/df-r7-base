@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-class Expression implements opal\query\IExpressionField {
-    
+class Expression implements opal\query\IExpressionField, core\IDumpable {
+
     use opal\query\TField;
 
     protected $_expression;
@@ -31,7 +31,7 @@ class Expression implements opal\query\IExpressionField {
     public function getSource() {
         return $this->_source;
     }
-    
+
     public function getSourceAlias() {
         return $this->_source->getAlias();
     }
@@ -44,7 +44,7 @@ class Expression implements opal\query\IExpressionField {
     public function getAltSourceAlias() {
         return $this->_altSourceAlias;
     }
-    
+
     public function getExpression() {
         return $this->_expression;
     }
@@ -92,5 +92,9 @@ class Expression implements opal\query\IExpressionField {
 
     public function rewriteAsDerived(opal\query\ISource $source) {
         core\stub($source);
+    }
+
+    public function toString() {
+        return 'expression('.$this->getName().')';
     }
 }
