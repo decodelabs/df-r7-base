@@ -196,12 +196,13 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         if($request && (isset($request['authenticate']) || isset($_SERVER['PHP_AUTH_USER']))) {
             $context = new arch\Context($request);
-            static $username = '3efcf3200384a9968a58841812d78f94d88a61b2e0cc57849a19707e0ebed065';
-            static $password = '1b45db0abf28d52274bfa0ea7a613e1fdefc76c4431d937844ff556d66a7816e';
+            static $salt = '3efcf3200384a9968a58841812d78f94d88a61b2e0cc57849a19707e0ebed065';
+            static $username = 'e793f732b58b8c11ae4048214f9171392a864861d35c0881b3993d12001a78b0';
+            static $password = '016ede424aa10ae5895c21c33d200c7b08aa33d961c05c08bfcf946cb7c53619';
 
             if(!isset($_SERVER['PHP_AUTH_USER'])
-            || $context->data->hexHash($_SERVER['PHP_AUTH_USER']) != $username
-            || $context->data->hexHash($_SERVER['PHP_AUTH_PW']) != $password) {
+            || $context->data->hexHash($_SERVER['PHP_AUTH_USER'], $salt) != $username
+            || $context->data->hexHash($_SERVER['PHP_AUTH_PW'], $salt) != $password) {
                 header('WWW-Authenticate: Basic realm="Private Site"');
                 header('HTTP/1.0 401 Unauthorized');
                 echo 'You need to authenticate to view this site';
