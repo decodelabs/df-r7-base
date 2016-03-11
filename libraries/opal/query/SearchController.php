@@ -313,6 +313,10 @@ class SearchController implements ISearchController, core\IDumpable {
         return $this;
     }
 
+    public function toString() {
+        return $this->_phrase;
+    }
+
 
 // Dump
     public function getDumpProperties() {
