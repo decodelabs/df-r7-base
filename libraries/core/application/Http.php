@@ -183,15 +183,15 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         if($ip->isLoopback()) {
-            //$augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
-            //return;
+            $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
+            return;
         }
 
         $current = link\Ip::factory(gethostbyname(gethostname()));
 
         if($current->toString() == $ip->toString()) {
-            //$augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
-            //return;
+            $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
+            return;
         }
 
         if($request && (isset($request['authenticate']) || isset($_SERVER['PHP_AUTH_USER']))) {
