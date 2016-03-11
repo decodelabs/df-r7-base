@@ -17,6 +17,8 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
 
     use user\TNameExtractor;
 
+    protected $_groupsChanged = false;
+
     protected function onPreUpdate($taskSet, $task) {
         $unit = $this->getAdapter();
 
@@ -41,12 +43,19 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
             $localTask->addDependency($task);
         }
 
-        $regenTask = $taskSet->addGenericTask($unit, 'regenKeyring', function($task, $transaction) {
-            $task->getAdapter()->context->user->refreshClientData();
-            $task->getAdapter()->context->user->instigateGlobalKeyringRegeneration();
-        });
+        $this->_groupsChanged = $this->hasChanged('groups');
+    }
 
-        $regenTask->addDependency($task);
+    protected function onUpdate($taskSet, $task) {
+        if($this->_groupsChanged) {
+            $regenTask = $taskSet->addGenericTask($this->getAdapter(), 'regenKeyring', function($task, $transaction) {
+                $task->getAdapter()->context->user->refreshClientData();
+                $task->getAdapter()->context->user->instigateGlobalKeyringRegeneration();
+            });
+
+            $regenTask->addDependency($task);
+            $this->_groupsChanged = false;
+        }
     }
 
     protected function onPreDelete($taskSet, $task) {
