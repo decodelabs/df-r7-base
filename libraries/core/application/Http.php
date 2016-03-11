@@ -124,7 +124,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $request = $this->_prepareDirectoryRequest();
 
             $this->_enforceCredentials($ip);
-            $this->_checkIpRanges($ip);
+            $this->_checkIpRanges($ip, $request);
 
             $response = $this->_dispatchRequest($request);
         } catch(arch\IForcedResponse $e) {
@@ -159,9 +159,14 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
 // IP check
-    protected function _checkIpRanges(link\IIp $ip) {
+    protected function _checkIpRanges(link\IIp $ip, arch\IRequest $request=null) {
         $config = core\application\http\Config::getInstance();
-        $ranges = $config->getIpRanges();
+
+        if($request) {
+            $ranges = $config->getIpRangesForArea($request->getArea());
+        } else {
+            $ranges = $config->getIpRanges();
+        }
 
         if(empty($ranges)) {
             return;
@@ -178,8 +183,8 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         if($ip->isLoopback()) {
-            $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
-            return;
+            //$augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
+            //return;
         }
 
         $current = link\Ip::factory(gethostbyname(gethostname()));

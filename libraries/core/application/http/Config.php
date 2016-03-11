@@ -22,6 +22,7 @@ class Config extends core\Config {
             'secure' => false,
             'manualChunk' => false,
             'ipRanges' => null,
+            'ipRangeAreas' => null,
             'credentials' => []
         ];
     }
@@ -217,6 +218,16 @@ class Config extends core\Config {
         }
 
         return $output;
+    }
+
+    public function getIpRangesForArea($area) {
+        if(isset($this->values->ipRangeAreas)
+        && !$this->values->ipRangeAreas->isEmpty()
+        && !$this->values->ipRangeAreas->contains($area)) {
+            return [];
+        } else {
+            return $this->getIpRanges();
+        }
     }
 
 
