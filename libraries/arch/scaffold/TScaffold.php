@@ -595,6 +595,7 @@ trait TScaffold_RecordDataProvider {
 trait TScaffold_RecordListProvider {
 
     // const LIST_FIELDS = [];
+    // const SEARCH_FIELDS = [];
 
     public function queryRecordList($mode, array $fields=null) {
         $output = $this->getRecordAdapter()->select($fields);
@@ -619,7 +620,15 @@ trait TScaffold_RecordListProvider {
     }
 
     protected function searchRecordList($query, $search) {
-        $query->searchFor($search);
+        if(defined('static::SEARCH_FIELDS')
+        && is_array(static::SEARCH_FIELDS)
+        && !empty(static::SEARCH_FIELDS)) {
+            $fields = static::SEARCH_FIELDS;
+        } else {
+            $fields = null;
+        }
+
+        $query->searchFor($search, $fields);
     }
 
 
