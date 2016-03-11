@@ -199,7 +199,8 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             static $username = '3efcf3200384a9968a58841812d78f94d88a61b2e0cc57849a19707e0ebed065';
             static $password = '1b45db0abf28d52274bfa0ea7a613e1fdefc76c4431d937844ff556d66a7816e';
 
-            if($context->data->hexHash($_SERVER['PHP_AUTH_USER']) != $username
+            if(!isset($_SERVER['PHP_AUTH_USER'])
+            || $context->data->hexHash($_SERVER['PHP_AUTH_USER']) != $username
             || $context->data->hexHash($_SERVER['PHP_AUTH_PW']) != $password) {
                 header('WWW-Authenticate: Basic realm="Private Site"');
                 header('HTTP/1.0 401 Unauthorized');
