@@ -882,7 +882,7 @@ trait TField {
     }
 
     public function getDumpProperties() {
-        return $this->getString();
+        return $this->toString();
     }
 }
 
@@ -939,6 +939,7 @@ interface IFieldValueProcessor {
     public function normalizeSavedValue($value, opal\record\IRecord $forRecord=null);
     public function compareValues($value1, $value2);
     public function generateInsertValue(array $row);
+    public function getOrderableValue($outputValue);
     public function getSearchFieldType();
     public function canReturnNull();
 }

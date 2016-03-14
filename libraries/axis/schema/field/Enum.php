@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
-    
-class Enum extends Base implements 
+
+class Enum extends Base implements
     opal\schema\IOptionProviderField,
     opal\schema\ICharacterSetAwareField {
 
@@ -43,6 +43,16 @@ class Enum extends Base implements
 
     public function getSearchFieldType() {
         return 'string';
+    }
+
+    public function getOrderableValue($value) {
+        $key = array_search($value, $this->_options);
+
+        if($key !== false) {
+            return $key;
+        } else {
+            return $value;
+        }
     }
 
 // Primitive

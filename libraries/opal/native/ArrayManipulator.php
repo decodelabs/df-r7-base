@@ -633,6 +633,7 @@ class ArrayManipulator implements IArrayManipulator {
         $sortData = [];
         $sortNullFields = [];
         $sortNullData = [];
+        $fieldProcessors = [];
 
         foreach($orderDirectives as $directive) {
             if(!$directive instanceof opal\query\IOrderDirective) {
@@ -675,18 +676,37 @@ class ArrayManipulator implements IArrayManipulator {
                     $sortNullFields[$sortFieldName] = $nullOrderDirection;
                     $sortNullData[$sortFieldName] = [];
                 }
+
+
+                $source = $innerField->getSource();
+                $adapter = $source->getAdapter();
+                $fieldNames = [];
+
+                foreach(opal\schema\Introspector::getFieldProcessors($adapter, [$innerField->getName()]) as $name => $processor) {
+                    if(!$processor instanceof opal\query\IFieldValueProcessor) {
+                        continue;
+                    }
+
+                    $fieldProcessors[$sortFieldName] = $processor;
+                }
             }
         }
 
         foreach($this->_rows as &$row) {
             foreach($sortFields as $field => $direction) {
                 if(isset($row[$field])) {
-                    $sortData[$field][] = &$row[$field];
+                    $value = $row[$field];
                     $isNull = $row[$field] === null;
                 } else {
-                    $sortData[$field][] = null;
+                    $value = null;
                     $isNull = true;
                 }
+
+                if(isset($fieldProcessors[$field])) {
+                    $value = $fieldProcessors[$field]->getOrderableValue($value);
+                }
+
+                $sortData[$field][] = $value;
 
                 if(isset($sortNullFields[$field])) {
                     $sortNullData[$field][] = $isNull;

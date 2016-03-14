@@ -136,6 +136,10 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
         return null;
     }
 
+    public function getOrderableValue($outputValue) {
+        return $outputValue;
+    }
+
     public function canReturnNull() {
         return $this->isNullable();
     }
