@@ -94,6 +94,7 @@ class TaskRebuildTable extends arch\node\Task {
         $fields = $dbSchema->getFields();
         $currentFields = $currentTable->getSchema()->getFields();
         $generatorFields = [];
+        $nonNullFields = [];
 
         foreach($fields as $fieldName => $field) {
             if(isset($currentFields[$fieldName])) {
@@ -105,6 +106,10 @@ class TaskRebuildTable extends arch\node\Task {
             if($axisField instanceof opal\schema\IAutoGeneratorField) {
                 $generatorFields[$fieldName] = $axisField;
             }
+
+            if(!$field->isNullable()) {
+                $nonNullFields[$fieldName] = $field;
+            }
         }
 
 
@@ -113,6 +118,10 @@ class TaskRebuildTable extends arch\node\Task {
             foreach($row as $key => $value) {
                 if(!isset($fields[$key])) {
                     unset($row[$key]);
+                }
+
+                if($value === null && isset($nonNullFields[$key])) {
+                    $row[$key] = $value = $nonNullFields[$key]->getDefaultNonNullValue();
                 }
             }
 

@@ -8,10 +8,13 @@ namespace df\opal\schema;
 use df;
 use df\core;
 use df\opal;
+use df\flex;
 
 abstract class Primitive implements IPrimitive {
 
     use TField;
+
+    const DEFAULT_VALUE = '';
 
     private $_type;
 
@@ -30,6 +33,10 @@ abstract class Primitive implements IPrimitive {
         }
 
         return $this->_type;
+    }
+
+    public function getDefaultNonNullValue() {
+        return static::DEFAULT_VALUE;
     }
 }
 
@@ -55,6 +62,8 @@ class Primitive_Binary extends Primitive implements ILengthRestrictedField {
 class Primitive_Bit extends Primitive implements IBitSizeRestrictedField {
 
     use TField_BitSizeRestricted;
+
+    const DEFAULT_VALUE = 0;
 
     public function __construct(IField $field, $size) {
         parent::__construct($field);
@@ -96,8 +105,24 @@ class Primitive_Char extends Primitive implements
 
 
 class Primitive_DataObject extends Primitive_Blob {}
-class Primitive_Date extends Primitive {}
-class Primitive_DateTime extends Primitive {}
+
+class Primitive_Date extends Primitive {
+
+    const DEFAULT_VALUE = 'now';
+
+    public function getDefaultNonNullValue() {
+        return new core\time\Date();
+    }
+}
+
+class Primitive_DateTime extends Primitive {
+
+    const DEFAULT_VALUE = 'now';
+
+    public function getDefaultNonNullValue() {
+        return new core\time\Date();
+    }
+}
 
 
 
@@ -119,6 +144,8 @@ class Primitive_Enum extends Primitive implements
 class Primitive_Float extends Primitive implements IFloatingPointNumericField {
 
     use TField_FloatingPointNumeric;
+
+    const DEFAULT_VALUE = 0;
 
     public function __construct(IField $field, $precision, $scale) {
         parent::__construct($field);
@@ -194,6 +221,10 @@ class Primitive_Guid extends Primitive {
                 return 'Comb';
         }
     }
+
+    public function getDefaultNonNullValue() {
+        return flex\Guid::comb();
+    }
 }
 
 
@@ -205,6 +236,8 @@ class Primitive_Integer extends Primitive implements
     use TField_ByteSizeRestricted;
     use TField_Numeric;
     use TField_AutoIncrementable;
+
+    const DEFAULT_VALUE = 0;
 
     public function __construct(IField $field, $size=null) {
         parent::__construct($field);
@@ -261,17 +294,29 @@ class Primitive_Text extends Primitive implements
 
 
 
-class Primitive_Time extends Primitive {}
+class Primitive_Time extends Primitive {
+    const DEFAULT_VALUE = 0;
+}
 
 
 
 class Primitive_Timestamp extends Primitive implements IAutoTimestampField {
 
     use TField_AutoTimestamp;
+
+    public function getDefaultNonNullValue() {
+        return new core\time\Date();
+    }
 }
 
 
 
 class Primitive_Varbinary extends Primitive_Binary {}
 class Primitive_Varchar extends Primitive_Char {}
-class Primitive_Year extends Primitive {}
+
+class Primitive_Year extends Primitive {
+
+    public function getDefaultNonNullValue() {
+        return date('Y');
+    }
+}

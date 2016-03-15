@@ -306,6 +306,7 @@ interface IBridgedRelationField extends IRelationField, ITargetPrimaryFieldAware
 
 interface IPrimitive extends IField {
     public function getType();
+    public function getDefaultNonNullValue();
 }
 
 interface IMultiFieldPrimitive extends IPrimitive {
