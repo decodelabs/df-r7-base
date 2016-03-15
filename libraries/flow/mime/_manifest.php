@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\flow\mime;
 use df;
 use df\core;
 use df\flow;
-    
+
 
 // Exceptions
 interface IException {}
@@ -72,6 +72,7 @@ interface IMultiPart extends IPart, \Countable, \RecursiveIterator {
     public function addPart(IPart $part);
     public function prependPart(IPart $part);
     public function getParts();
+    public function getPart($index);
     public function clearParts();
     public function isEmpty();
 

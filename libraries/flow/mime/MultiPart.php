@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\flow\mime;
 use df;
 use df\core;
 use df\flow;
-    
+
 class MultiPart implements IMultiPart, core\IDumpable {
 
     use core\TStringProvider;
@@ -20,7 +20,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
     public static function fromString($string) {
         $class = get_called_class();
-        
+
         $string = str_replace("\r", '', $string);
         list($headers, $body) = explode("\n\n", $string, 2);
 
@@ -48,7 +48,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
                 'content-transfer-encoding' => $encoding
             ], true));
         }
-        
+
         return $output;
     }
 
@@ -72,7 +72,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
         } else {
             $output = new ContentPart($body, $headers, true);
         }
-        
+
         return $output;
     }
 
@@ -151,7 +151,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
         return $this;
     }
-    
+
     public function addPart(IPart $part) {
         $this->_parts[] = $part;
         return $this;
@@ -164,6 +164,12 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
     public function getParts() {
         return $this->_parts;
+    }
+
+    public function getPart($index) {
+        if(isset($this->_parts[(int)$index])) {
+            return $this->_parts[(int)$index];
+        }
     }
 
     public function clearParts() {
@@ -252,19 +258,19 @@ class MultiPart implements IMultiPart, core\IDumpable {
     public function rewind() {
         reset($this->_parts);
     }
-    
+
     public function current() {
         return current($this->_parts);
     }
-    
+
     public function key() {
         return key($this->_parts);
     }
-    
+
     public function next() {
         next($this->_parts);
     }
-    
+
     public function valid() {
         return ($this->current() !== false);
     }
