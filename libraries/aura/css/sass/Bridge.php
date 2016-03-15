@@ -14,7 +14,20 @@ use df\halo;
 use df\flex;
 
 class Bridge implements IBridge {
-    
+
+    const DEFAULT_PROCESSOR_OPTIONS = [
+        'autoprefixer' => [
+            'browsers' => [
+                'last 2 versions',
+                'safari 6',
+                'ie 9',
+                'opera 12.1',
+                'last 3 ios versions',
+                'android 4'
+            ]
+        ]
+    ];
+
     public $context;
 
     protected $_fileName;
@@ -137,6 +150,8 @@ class Bridge implements IBridge {
         if(is_file($jsonPath)) {
             $manifest[md5($jsonPath)] = $jsonPath;
             $options = flex\json\Codec::decode(file_get_contents($this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type.'.json'));
+        } else {
+            $options = self::DEFAULT_PROCESSOR_OPTIONS;
         }
 
         $path = halo\system\Base::getInstance()->which('sass');
@@ -170,7 +185,7 @@ class Bridge implements IBridge {
                 '--compass',
                 '--style='.$outputType,
                 '--sourcemap=file',
-                $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type, 
+                $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type,
                 $this->_workDir.'/'.$this->_key.'.css'
             ])
             ->setWorkingDirectory($this->_workDir)
@@ -212,8 +227,8 @@ class Bridge implements IBridge {
 
             foreach($manifest as $fileKey => $filePath) {
                 $content = str_replace(
-                    'file://'.$this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$this->_type, 
-                    'file://'.$filePath, 
+                    'file://'.$this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$this->_type,
+                    'file://'.$filePath,
                     $content
                 );
             }
@@ -343,7 +358,7 @@ class Bridge implements IBridge {
                 if(!$output) {
                     $output = df\Launchpad::$loader->findFile('apex/themes/shared/assets/'.$path);
                 }
-                
+
                 if($output) {
                     return $output;
                 }
