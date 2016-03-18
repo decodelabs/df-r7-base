@@ -178,13 +178,13 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         foreach($ranges as $range) {
             if($range->check($ip)) {
                 $augmentor->setHeaderForAnyRequest('x-allow-ip-range', (string)$range);
-                //return;
+                return;
             }
         }
 
         if($ip->isLoopback()) {
             $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
-            //return;
+            return;
         }
 
         $current = link\Ip::factory(gethostbyname(gethostname()));
