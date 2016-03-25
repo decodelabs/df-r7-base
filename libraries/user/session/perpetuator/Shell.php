@@ -37,7 +37,7 @@ class Shell implements user\session\IPerpetuator {
 
     public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor) {
         $cache = Shell_Cache::getInstance();
-        $cache->set($this->_userKey, $descriptor->getExternalId());
+        $cache->set($this->_userKey, $descriptor->getPublicKey());
 
         return $this;
     }
@@ -51,7 +51,7 @@ class Shell implements user\session\IPerpetuator {
         return $this;
     }
 
-    public function handleDeadExternalId($externalId) {}
+    public function handleDeadPublicKey($publicKey) {}
 
     public function perpetuateRecallKey(user\session\IController $controller, user\session\RecallKey $key) {
         // How's this going to work?

@@ -50,12 +50,12 @@ class Session extends Base implements user\session\IController {
                 break;
         }
 
-        $externalId = $this->perpetuator->getInputId();
+        $publicKey = $this->perpetuator->getInputId();
 
-        if(empty($externalId)) {
+        if(empty($publicKey)) {
             $this->descriptor = $this->_start();
         } else {
-            $this->descriptor = $this->_resume($externalId);
+            $this->descriptor = $this->_resume($publicKey);
         }
 
         $this->perpetuator->perpetuate($this, $this->descriptor);
@@ -67,7 +67,7 @@ class Session extends Base implements user\session\IController {
 
         if(!$this->descriptor->hasJustTransitioned(120)
         || ((mt_rand() % 100) < self::TRANSITION_PROBABILITY)) {
-            $this->transitionId();
+            $this->transition();
         }
 
         if($this->descriptor->needsTouching(self::TRANSITION_LIFETIME)) {
@@ -79,9 +79,9 @@ class Session extends Base implements user\session\IController {
 
     protected function _start() {
         $time = time();
-        $externalId = $this->_generateId();
+        $publicKey = $this->_generateId();
 
-        $descriptor = new user\session\Descriptor($externalId, $externalId);
+        $descriptor = new user\session\Descriptor($publicKey, $publicKey);
         $descriptor->setStartTime($time);
         $descriptor->setAccessTime($time);
 
@@ -93,12 +93,12 @@ class Session extends Base implements user\session\IController {
         return $descriptor;
     }
 
-    protected function _resume($externalId) {
-        $descriptor = $this->cache->fetchDescriptor($externalId);
+    protected function _resume($publicKey) {
+        $descriptor = $this->cache->fetchDescriptor($publicKey);
 
         if(!$descriptor) {
             $descriptor = $this->backend->fetchDescriptor(
-                $externalId, time() - self::TRANSITION_LIFETIME
+                $publicKey, time() - self::TRANSITION_LIFETIME
             );
 
             if($descriptor) {
@@ -107,12 +107,12 @@ class Session extends Base implements user\session\IController {
         }
 
         if($descriptor === null) {
-            $this->perpetuator->handleDeadExternalId($externalId);
+            $this->perpetuator->handleDeadPublicKey($publicKey);
             return $this->_start();
         }
 
         if(!$descriptor->hasJustTransitioned(self::TRANSITION_LIFETIME)) {
-            $descriptor->transitionId = null;
+            $descriptor->transitionKey = null;
         }
 
         // TODO: check accessTime is within perpetuator life time
@@ -127,10 +127,10 @@ class Session extends Base implements user\session\IController {
     }
 
     public function getId() {
-        return $this->descriptor->getExternalId();
+        return $this->descriptor->getPublicKey();
     }
 
-    public function transitionId() {
+    public function transition() {
         if($this->descriptor->hasJustStarted()
         || $this->descriptor->hasJustTransitioned(self::TRANSITION_COOLOFF)) {
             return $this;

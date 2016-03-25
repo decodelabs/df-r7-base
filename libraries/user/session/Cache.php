@@ -10,50 +10,50 @@ use df\core;
 use df\user;
 
 class Cache extends core\cache\Base implements ICache {
-    
+
     const CACHE_ID = 'session';
-    
+
     public function insertDescriptor(IDescriptor $descriptor) {
-        $id = 'd:'.$descriptor->getExternalIdHex();
-        
+        $id = 'd:'.$descriptor->getPublicKeyHex();
+
         $justStarted = $descriptor->justStarted;
         $descriptor->justStarted = false;
-        
+
         $this->set($id, $descriptor);
-        
+
         $descriptor->justStarted = $justStarted;
         return $descriptor;
     }
-    
-    public function fetchDescriptor($externalId) {
-        return $this->get('d:'.bin2hex($externalId));
+
+    public function fetchDescriptor($publicKey) {
+        return $this->get('d:'.bin2hex($publicKey));
     }
-    
+
     public function removeDescriptor(IDescriptor $descriptor) {
-        $id = 'd:'.$descriptor->getExternalIdHex();
+        $id = 'd:'.$descriptor->getPublicKeyHex();
         $this->remove($id);
     }
-    
-    
+
+
     public function fetchNode(IBucket $bucket, $key) {
-        $id = 'i:'.$bucket->getDescriptor()->getInternalIdHex().'/'.$bucket->getName().'#'.$key;
+        $id = 'i:'.$bucket->getDescriptor()->getIdHex().'/'.$bucket->getName().'#'.$key;
         return $this->get($id);
     }
-    
+
     public function insertNode(IBucket $bucket, INode $node) {
-        $id = 'i:'.$bucket->getDescriptor()->getInternalIdHex().'/'.$bucket->getName().'#'.$node->key;
-        
+        $id = 'i:'.$bucket->getDescriptor()->getIdHex().'/'.$bucket->getName().'#'.$node->key;
+
         $isLocked = $node->isLocked;
         $node->isLocked = false;
-        
+
         $this->set($id, $node);
-        
+
         $node->isLocked = $isLocked;
         return $node;
     }
-    
+
     public function removeNode(IBucket $bucket, $key) {
-        $id = 'i:'.$bucket->getDescriptor()->getInternalIdHex().'/'.$bucket->getName().'#'.$key;
+        $id = 'i:'.$bucket->getDescriptor()->getIdHex().'/'.$bucket->getName().'#'.$key;
         $this->remove($id);
     }
 

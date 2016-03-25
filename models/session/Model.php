@@ -13,7 +13,7 @@ use df\user;
 class Model extends axis\Model implements user\session\IBackend {
 
     protected $_lifeTime = 86400; // 24 hours
-    protected $_dataTransactions = [];
+    protected $_nodeTransactions = [];
 
 // Life time
     public function setLifeTime($lifeTime) {
@@ -32,15 +32,15 @@ class Model extends axis\Model implements user\session\IBackend {
 
 // Descriptor
     public function insertDescriptor(user\session\IDescriptor $descriptor) {
-        $this->manifest->insert($descriptor)->execute();
+        $this->descriptor->insert($descriptor)->execute();
         return $descriptor;
     }
 
     public function fetchDescriptor($id, $transitionTime) {
-        $output = $this->manifest->select()
-            ->where('externalId', '=', $id)
+        $output = $this->descriptor->select()
+            ->where('publicKey', '=', $id)
             ->beginOrWhereClause()
-                ->where('transitionId', '=', $id)
+                ->where('transitionKey', '=', $id)
                 //->where('transitionTime', '>=', $transitionTime)
                 ->endClause()
             ->toRow();
@@ -55,84 +55,84 @@ class Model extends axis\Model implements user\session\IBackend {
     public function touchSession(user\session\IDescriptor $descriptor) {
         $values = $descriptor->touchInfo(user\session\IController::TRANSITION_LIFETIME);
 
-        $this->manifest->update($values)
-            ->where('internalId', '=', $descriptor->internalId)
+        $this->descriptor->update($values)
+            ->where('id', '=', $descriptor->id)
             ->execute();
 
         return $descriptor;
     }
 
     public function applyTransition(user\session\IDescriptor $descriptor) {
-        $this->manifest->update([
+        $this->descriptor->update([
                 'accessTime' => $descriptor->accessTime,
-                'externalId' => $descriptor->externalId,
-                'transitionId' => $descriptor->transitionId,
+                'publicKey' => $descriptor->publicKey,
+                'transitionKey' => $descriptor->transitionKey,
                 'transitionTime' => $descriptor->transitionTime,
-                'userId' => $descriptor->userId
+                'user' => $descriptor->userId
             ])
-            ->where('internalId', '=', $descriptor->internalId)
+            ->where('id', '=', $descriptor->id)
             ->execute();
 
         return $descriptor;
     }
 
     public function killSession(user\session\IDescriptor $descriptor) {
-        $id = $descriptor->internalId;
+        $id = $descriptor->id;
 
-        if(isset($this->_dataTransactions[$id])) {
-            $this->_dataTransactions[$id]->commit();
+        if(isset($this->_nodeTransactions[$id])) {
+            $this->_nodeTransactions[$id]->commit();
         }
 
-        $this->manifest->delete()
-            ->where('internalId', '=', $id)
+        $this->descriptor->delete()
+            ->where('id', '=', $id)
             ->execute();
 
-        $this->data->delete()
-            ->where('internalId', '=', $id)
+        $this->node->delete()
+            ->where('descriptor', '=', $id)
             ->execute();
 
-        unset($this->_dataTransactions[$id]);
+        unset($this->_nodeTransactions[$id]);
 
         return $this;
     }
 
     public function idExists($id) {
-        return (bool)$this->manifest->select('COUNT(*) as count')
-            ->where('internalId', '=', $id)
-            ->orWhere('externalId', '=', $id)
-            ->orWhere('transitionId', '=', $id)
+        return (bool)$this->descriptor->select('COUNT(*) as count')
+            ->where('id', '=', $id)
+            ->orWhere('publicKey', '=', $id)
+            ->orWhere('transitionKey', '=', $id)
             ->toValue('count');
     }
 
 
 // Bucket
     public function getBucketKeys(user\session\IDescriptor $descriptor, $bucket) {
-        return $this->data->select('key')
-            ->where('internalId', '=', $descriptor->internalId)
-            ->where('namespace', '=', $bucket)
+        return $this->node->select('key')
+            ->where('descriptor', '=', $descriptor->id)
+            ->where('bucket', '=', $bucket)
             ->orderBy('updateTime')
             ->toList('key');
     }
 
     public function pruneBucket(user\session\IDescriptor $descriptor, $bucket, $age) {
-        $this->data->delete()
-            ->where('internalId', '=', $descriptor->internalId)
-            ->where('namespace', '=', $bucket)
+        $this->node->delete()
+            ->where('descriptor', '=', $descriptor->id)
+            ->where('bucket', '=', $bucket)
             ->where('updateTime', '<', time() - $age)
             ->where('updateTime', '!=', null)
             ->execute();
     }
 
     public function clearBucket(user\session\IDescriptor $descriptor, $bucket) {
-        $this->data->delete()
-            ->where('internalId', '=', $descriptor->internalId)
-            ->where('namespace', '=', $bucket)
+        $this->node->delete()
+            ->where('descriptor', '=', $descriptor->id)
+            ->where('bucket', '=', $bucket)
             ->execute();
     }
 
     public function clearBucketForAll($bucket) {
-        $this->data->delete()
-            ->where('namespace', '=', $bucket)
+        $this->node->delete()
+            ->where('bucket', '=', $bucket)
             ->execute();
     }
 
@@ -140,9 +140,9 @@ class Model extends axis\Model implements user\session\IBackend {
 
 // Nodes
     public function fetchNode(user\session\IBucket $bucket, $key) {
-        $res = $this->data->select()
-            ->where('internalId', '=', $bucket->getDescriptor()->internalId)
-            ->where('namespace', '=', $bucket->getName())
+        $res = $this->node->select()
+            ->where('descriptor', '=', $bucket->getDescriptor()->id)
+            ->where('bucket', '=', $bucket->getName())
             ->where('key', '=', $key)
             ->toRow();
 
@@ -150,9 +150,9 @@ class Model extends axis\Model implements user\session\IBackend {
     }
 
     public function fetchLastUpdatedNode(user\session\IBucket $bucket) {
-        $res = $this->data->select()
-            ->where('internalId', '=', $bucket->getDescriptor()->internalId)
-            ->where('namespace', '=', $bucket->getName())
+        $res = $this->node->select()
+            ->where('descriptor', '=', $bucket->getDescriptor()->id)
+            ->where('bucket', '=', $bucket->getName())
             ->orderBy('updateTime DESC')
             ->toRow();
 
@@ -169,14 +169,14 @@ class Model extends axis\Model implements user\session\IBackend {
     }
 
     public function lockNode(user\session\IBucket $bucket, user\session\INode $node) {
-        $this->_beginDataTransaction($bucket->getDescriptor());
+        $this->_beginNodeTransaction($bucket->getDescriptor());
         $node->isLocked = true;
 
         return $node;
     }
 
     public function unlockNode(user\session\IBucket $bucket, user\session\INode $node) {
-        if($transaction = $this->_getDataTransaction($bucket->getDescriptor())) {
+        if($transaction = $this->_getNodeTransaction($bucket->getDescriptor())) {
             $transaction->commit();
         }
 
@@ -186,13 +186,13 @@ class Model extends axis\Model implements user\session\IBackend {
     public function updateNode(user\session\IBucket $bucket, user\session\INode $node) {
         $descriptor = $bucket->getDescriptor();
 
-        if($transaction = $this->_getDataTransaction($descriptor)) {
+        if($transaction = $this->_getNodeTransaction($descriptor)) {
             if(empty($node->creationTime)) {
                 $node->creationTime = time();
 
                 $transaction->insert([
-                        'internalId' => $descriptor->internalId,
-                        'namespace' => $bucket->getName(),
+                        'descriptor' => $descriptor->id,
+                        'bucket' => $bucket->getName(),
                         'key' => $node->key,
                         'value' => serialize($node->value),
                         'creationTime' => $node->creationTime,
@@ -204,8 +204,8 @@ class Model extends axis\Model implements user\session\IBackend {
                         'value' => serialize($node->value),
                         'updateTime' => $node->updateTime
                     ])
-                    ->where('internalId', '=', $descriptor->internalId)
-                    ->where('namespace', '=', $bucket->getName())
+                    ->where('descriptor', '=', $descriptor->id)
+                    ->where('bucket', '=', $bucket->getName())
                     ->where('key', '=', $node->key)
                     ->execute();
             }
@@ -215,17 +215,17 @@ class Model extends axis\Model implements user\session\IBackend {
     }
 
     public function removeNode(user\session\IBucket $bucket, $key) {
-        $this->data->delete()
-            ->where('internalId', '=', $bucket->getDescriptor()->internalId)
-            ->where('namespace', '=', $bucket->getName())
+        $this->node->delete()
+            ->where('descriptor', '=', $bucket->getDescriptor()->id)
+            ->where('bucket', '=', $bucket->getName())
             ->where('key', '=', $key)
             ->execute();
     }
 
     public function hasNode(user\session\IBucket $bucket, $key) {
-        return (bool)$this->data->select('count(*) as count')
-            ->where('internalId', '=', $bucket->getDescriptor()->internalId)
-            ->where('namespace', '=', $bucket->getName())
+        return (bool)$this->node->select('count(*) as count')
+            ->where('descriptor', '=', $bucket->getDescriptor()->id)
+            ->where('bucket', '=', $bucket->getName())
             ->where('key', '=', $key)
             ->toValue('count');
     }
@@ -233,22 +233,22 @@ class Model extends axis\Model implements user\session\IBackend {
     public function collectGarbage() {
         $time = time() - $this->_lifeTime;
 
-        $this->data->delete()
-            ->whereCorrelation('internalId', 'in', 'internalId')
-                ->from($this->manifest, 'manifest')
-                ->where('manifest.accessTime', '<', $time)
+        $this->node->delete()
+            ->whereCorrelation('descriptor', 'in', 'id')
+                ->from($this->descriptor, 'descriptor')
+                ->where('descriptor.accessTime', '<', $time)
                 ->endCorrelation()
             ->beginOrWhereClause()
-                ->where('data.updateTime', '!=', null)
-                ->where('data.updateTime', '<', $time)
+                ->where('node.updateTime', '!=', null)
+                ->where('node.updateTime', '<', $time)
                 ->endClause()
             ->beginOrWhereClause()
-                ->where('data.updateTime', '=', null)
-                ->where('data.creationTime', '<', $time)
+                ->where('node.updateTime', '=', null)
+                ->where('node.creationTime', '<', $time)
                 ->endClause()
             ->execute();
 
-        $this->manifest->delete()
+        $this->descriptor->delete()
             ->where('accessTime', '<', $time)
             ->execute();
 
@@ -277,24 +277,24 @@ class Model extends axis\Model implements user\session\IBackend {
 
 
 // Helpers
-    protected function _getDataTransaction(user\session\IDescriptor $descriptor) {
-        $id = $descriptor->internalId;
+    protected function _getNodeTransaction(user\session\IDescriptor $descriptor) {
+        $id = $descriptor->id;
 
-        if(isset($this->_dataTransactions[$id])) {
-            return $this->_dataTransactions[$id];
+        if(isset($this->_nodeTransactions[$id])) {
+            return $this->_nodeTransactions[$id];
         }
 
         return null;
     }
 
-    protected function _beginDataTransaction(user\session\IDescriptor $descriptor) {
-        $id = $descriptor->internalId;
+    protected function _beginNodeTransaction(user\session\IDescriptor $descriptor) {
+        $id = $descriptor->id;
 
-        if(isset($this->_dataTransactions[$id])) {
-            $output = $this->_dataTransactions[$id];
+        if(isset($this->_nodeTransactions[$id])) {
+            $output = $this->_nodeTransactions[$id];
             $output->beginAgain();
         } else {
-            $output = $this->_dataTransactions[$id] = $this->data->begin();
+            $output = $this->_nodeTransactions[$id] = $this->node->begin();
         }
 
         return $output;

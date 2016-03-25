@@ -56,7 +56,7 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor) {
-        $outputId = $descriptor->getExternalIdHex();
+        $outputId = $descriptor->getPublicKeyHex();
 
         if($outputId != $this->_inputId) {
             $this->_setSessionCookie($outputId);
@@ -96,7 +96,7 @@ class Cookie implements user\session\IPerpetuator {
         return $this;
     }
 
-    public function handleDeadExternalId($externalId) {
+    public function handleDeadPublicKey($publicKey) {
         $cookies = df\Launchpad::$application->getHttpRequest()->cookies;
         $isRoot = df\Launchpad::$application->getRouter()->isBaseRoot();
 
@@ -202,12 +202,12 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     protected function _consumeJoinKey($key) {
-        $output = axis\Model::loadUnitFromId('session/manifest')->select('externalId')
-            ->whereCorrelation('internalId', '=', 'sessionId')
+        $output = axis\Model::loadUnitFromId('session/descriptor')->select('publicKey')
+            ->whereCorrelation('id', '=', 'sessionId')
                 ->from('axis://session/Stub', 'stub')
                 ->where('key', '=', $key)
                 ->endCorrelation()
-            ->toValue('externalId');
+            ->toValue('publicKey');
 
         if($output !== null) {
             axis\Model::loadUnitFromId('session/stub')->delete()

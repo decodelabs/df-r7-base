@@ -58,7 +58,7 @@ class Bucket implements user\session\IBucket, core\IDumpable {
     }
 
     public function transitionSessionId() {
-        $this->_controller->transitionId();
+        $this->_controller->transition();
         return $this;
     }
 

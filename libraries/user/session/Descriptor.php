@@ -11,9 +11,9 @@ use df\user;
 
 class Descriptor implements user\session\IDescriptor {
 
-    public $internalId;
-    public $externalId;
-    public $transitionId;
+    public $id;
+    public $publicKey;
+    public $transitionKey;
     public $userId;
     public $startTime;
     public $accessTime;
@@ -25,16 +25,16 @@ class Descriptor implements user\session\IDescriptor {
 
         foreach($values as $key => $value) {
             switch($key) {
-                case 'internalId':
-                    $output->setInternalId($value);
+                case 'id':
+                    $output->setId($value);
                     break;
 
-                case 'externalId':
-                    $output->setExternalId($value);
+                case 'publicKey':
+                    $output->setPublicKey($value);
                     break;
 
-                case 'transitionId':
-                    $output->setTransitionId($value);
+                case 'transitionKey':
+                    $output->setTransitionKey($value);
                     break;
 
                 case 'user':
@@ -59,9 +59,9 @@ class Descriptor implements user\session\IDescriptor {
         return $output;
     }
 
-    public function __construct($internalId, $externalId) {
-        $this->setInternalId($internalId);
-        $this->setExternalId($externalId);
+    public function __construct($id, $publicKey) {
+        $this->setId($id);
+        $this->setPublicKey($publicKey);
     }
 
     public function isNew() {
@@ -78,53 +78,53 @@ class Descriptor implements user\session\IDescriptor {
         return $this->justStarted;
     }
 
-    public function setInternalId($id) {
-        $this->internalId = $id;
+    public function setId($id) {
+        $this->id = $id;
         return $this;
     }
 
-    public function getInternalId() {
-        return $this->internalId;
+    public function getId() {
+        return $this->id;
     }
 
-    public function getInternalIdHex() {
-        return bin2hex($this->internalId);
+    public function getIdHex() {
+        return bin2hex($this->id);
     }
 
-    public function setExternalId($id) {
-        $this->externalId = $id;
+    public function setPublicKey($id) {
+        $this->publicKey = $id;
         return $this;
     }
 
-    public function getExternalId() {
-        return $this->externalId;
+    public function getPublicKey() {
+        return $this->publicKey;
     }
 
-    public function getExternalIdHex() {
-        return bin2hex($this->externalId);
+    public function getPublicKeyHex() {
+        return bin2hex($this->publicKey);
     }
 
-    public function setTransitionId($id) {
+    public function setTransitionKey($id) {
         if(empty($id)) {
             $id = null;
         }
 
-        $this->transitionId = $id;
+        $this->transitionKey = $id;
         return $this;
     }
 
-    public function getTransitionId() {
-        return $this->transitionId;
+    public function getTransitionKey() {
+        return $this->transitionKey;
     }
 
-    public function getTransitionIdHex() {
-        return $this->bin2hex($this->transitionId);
+    public function getTransitionKeyHex() {
+        return $this->bin2hex($this->transitionKey);
     }
 
-    public function applyTransition($newExternalId) {
-        $this->setTransitionId($this->externalId);
+    public function applyTransition($newPublicKey) {
+        $this->setTransitionKey($this->publicKey);
         $this->transitionTime = $this->accessTime = time();
-        return $this->setExternalId($newExternalId);
+        return $this->setPublicKey($newPublicKey);
     }
 
     public function hasJustTransitioned($transitionLifeTime=10) {
@@ -156,18 +156,22 @@ class Descriptor implements user\session\IDescriptor {
         ];
 
         if($this->accessTime - $this->transitionTime >= $transitionLifeTime) {
-            $output['transitionId'] = $this->transitionId = null;
+            $output['transitionKey'] = $this->transitionKey = null;
         }
 
-        if(empty($output['transitionId'])) {
-            $output['transitionId'] = null;
+        if(empty($output['transitionKey'])) {
+            $output['transitionKey'] = null;
         }
 
         return $output;
     }
 
     public function setUserId($id) {
-        $this->userId = $id;
+        if(is_object($id)) {
+            $id = (string)$id;
+        }
+
+        $this->userId = $id ? (int)$id : null;
         return $this;
     }
 
@@ -180,6 +184,10 @@ class Descriptor implements user\session\IDescriptor {
 
     public function setStartTime($time) {
         if($time !== null) {
+            if($time instanceof core\time\IDate) {
+                $time = $time->toTimestamp();
+            }
+
             $time = (int)$time;
         }
 
@@ -193,6 +201,10 @@ class Descriptor implements user\session\IDescriptor {
 
     public function setAccessTime($time) {
         if($time !== null) {
+            if($time instanceof core\time\IDate) {
+                $time = $time->toTimestamp();
+            }
+
             $time = (int)$time;
         }
 
@@ -210,6 +222,10 @@ class Descriptor implements user\session\IDescriptor {
 
     public function setTransitionTime($time) {
         if($time !== null) {
+            if($time instanceof core\time\IDate) {
+                $time = $time->toTimestamp();
+            }
+
             $time = (int)$time;
         }
 
@@ -228,10 +244,10 @@ class Descriptor implements user\session\IDescriptor {
 
     public function toDataRowArray() {
         return [
-            'internalId' => $this->internalId,
-            'externalId' => $this->externalId,
-            'transitionId' => $this->transitionId,
-            'userId' => $this->userId,
+            'id' => $this->id,
+            'publicKey' => $this->publicKey,
+            'transitionKey' => $this->transitionKey,
+            'user' => $this->userId,
             'startTime' => $this->startTime,
             'accessTime' => $this->accessTime,
             'transitionTime' => $this->transitionTime

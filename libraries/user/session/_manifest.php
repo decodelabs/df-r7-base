@@ -27,7 +27,7 @@ interface IController {
 
     public function isOpen();
     public function getId();
-    public function transitionId();
+    public function transition();
     public function getBucket($namespace);
     public function destroy();
     public function getStartTime();
@@ -125,17 +125,17 @@ interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvide
     public function isNew();
     public function hasJustStarted(bool $flag=null);
 
-    public function setInternalId($id);
-    public function getInternalId();
-    public function getInternalIdHex();
-    public function setExternalId($id);
-    public function getExternalId();
-    public function getExternalIdHex();
+    public function setId($id);
+    public function getId();
+    public function getIdHex();
+    public function setPublicKey($key);
+    public function getPublicKey();
+    public function getPublicKeyHex();
 
-    public function setTransitionId($id);
-    public function getTransitionId();
-    public function getTransitionIdHex();
-    public function applyTransition($newExternalId);
+    public function setTransitionKey($key);
+    public function getTransitionKey();
+    public function getTransitionKeyHex();
+    public function applyTransition($newPublicKey);
 
     public function setUserId($id);
     public function getUserId();
@@ -162,7 +162,7 @@ interface IPerpetuator {
 
     public function perpetuate(IController $controller, IDescriptor $descriptor);
     public function destroy(IController $controller);
-    public function handleDeadExternalId($externalId);
+    public function handleDeadPublicKey($publicKey);
 
     public function perpetuateRecallKey(IController $controller, RecallKey $key);
     public function getRecallKey(IController $controller);
@@ -192,10 +192,18 @@ class Node implements INode {
             }
 
             if(!empty($res['creationTime'])) {
+                if($res['creationTime'] instanceof core\time\IDate) {
+                    $res['creationTime'] = $res['creationTime']->toTimestamp();
+                }
+
                 $output->creationTime = (int)$res['creationTime'];
             }
 
             if(!empty($res['updateTime'])) {
+                if($res['updateTime'] instanceof core\time\IDate) {
+                    $res['updateTime'] = $res['updateTime']->toTimestamp();
+                }
+
                 $output->updateTime = (int)$res['updateTime'];
             }
         }
@@ -208,7 +216,7 @@ class Node implements INode {
 
 interface ICache {
     public function insertDescriptor(IDescriptor $descriptor);
-    public function fetchDescriptor($externalId);
+    public function fetchDescriptor($publicKey);
     public function removeDescriptor(IDescriptor $descriptor);
 
     public function fetchNode(IBucket $bucket, $key);
