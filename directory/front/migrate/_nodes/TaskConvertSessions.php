@@ -13,6 +13,7 @@ use df\arch;
 class TaskConvertSessions extends arch\node\Task {
 
     public function execute() {
+        core\dump('This task is deprecated');
         $this->io->writeLine('Upgrading sessions');
         $model = $this->data->session;
         $connection = $model->descriptor->getUnitAdapter()->getConnection();
