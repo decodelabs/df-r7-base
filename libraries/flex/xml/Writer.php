@@ -405,6 +405,10 @@ class Writer implements IWriter {
             $this->_document->endDocument();
         }
 
+        if(!$this->_isMemory) {
+            $this->_document->flush();
+        }
+
         return $this;
     }
 
