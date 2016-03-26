@@ -8,6 +8,7 @@ namespace df\fire\block;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\arch;
 use df\aura;
 
@@ -63,11 +64,11 @@ class Error extends Base {
         return false;
     }
 
-    public function readXml(core\xml\IReadable $reader) {
+    public function readXml(flex\xml\IReadable $reader) {
         return $this;
     }
 
-    public function writeXml(core\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer) {
         throw new RuntimeException(
             'Error block type cannot be saved to xml'
         );

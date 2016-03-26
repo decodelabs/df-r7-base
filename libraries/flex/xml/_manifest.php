@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\xml;
+namespace df\flex\xml;
 
 use df;
 use df\core;
+use df\flex;
 
 // Exceptions
 interface IException {}
@@ -39,12 +40,12 @@ trait TReaderInterchange {
     }
 
     public static function fromXmlFile($xmlFile) {
-        $reader = core\xml\Tree::fromXmlFile($xmlFile);
+        $reader = Tree::fromXmlFile($xmlFile);
         return static::fromXmlElement($reader);
     }
 
     public static function fromXmlString($xmlString) {
-        $reader = core\xml\Tree::fromXmlString($xmlString);
+        $reader = Tree::fromXmlString($xmlString);
         return static::fromXmlElement($reader);
     }
 
@@ -64,7 +65,7 @@ interface IWriterInterchange {
 trait TWriterInterchange {
 
     public function toXmlString($embedded=false) {
-        $writer = core\xml\Writer::factory($this);
+        $writer = Writer::factory($this);
 
         if(!$embedded) {
             $writer->writeHeader();
@@ -77,7 +78,7 @@ trait TWriterInterchange {
         return $writer->toXmlString();
     }
 
-    protected function _writeXmlDtd(core\xml\IWritable $writer) {}
+    protected function _writeXmlDtd(IWritable $writer) {}
 }
 
 interface IRootInterchange extends IInterchange, IReaderInterchange, IWriterInterchange {

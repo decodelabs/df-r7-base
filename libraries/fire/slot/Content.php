@@ -8,14 +8,15 @@ namespace df\fire\slot;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\arch;
 use df\aura;
 
 class Content implements IContent {
 
     use core\collection\TAttributeContainer;
-    use core\xml\TReaderInterchange;
-    use core\xml\TWriterInterchange;
+    use flex\xml\TReaderInterchange;
+    use flex\xml\TWriterInterchange;
     use aura\view\TDeferredRenderable;
     use core\TStringProvider;
 
@@ -169,7 +170,7 @@ class Content implements IContent {
     }
 
 // XML interchange
-    public function readXml(core\xml\IReadable $reader) {
+    public function readXml(flex\xml\IReadable $reader) {
         if($reader->getTagName() != 'slot') {
             throw new UnexpectedValueException(
                 'Slot content object expected slot xml element - found '.$reader->getTagName()
@@ -194,7 +195,7 @@ class Content implements IContent {
         return $this;
     }
 
-    public function writeXml(core\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer) {
         $writer->startElement('slot');
         $writer->setAttributes($this->_attributes);
 

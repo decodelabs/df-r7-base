@@ -8,6 +8,7 @@ namespace df\neon\vector\svg;
 use df;
 use df\core;
 use df\neon;
+use df\flex;
 
 
 trait TStructure {
@@ -67,7 +68,7 @@ trait TStructure_Container {
 
     protected $_children = [];
 
-    public function readXml(core\xml\IReadable $reader) {
+    public function readXml(flex\xml\IReadable $reader) {
         foreach($reader->getChildren() as $child) {
             if($childObject = $this->_xmlToObject($child, $this)) {
                 $this->addChild($childObject);
@@ -77,7 +78,7 @@ trait TStructure_Container {
         return $this;
     }
 
-    public function writeXml(core\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer) {
         $document = $writer->getRootInterchange();
 
         $writer->startElement($this->getElementName());

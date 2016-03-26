@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\xml;
+namespace df\flex\xml;
 
 use df;
 use df\core;
+use df\flex;
 
 class Writer implements IWriter {
 

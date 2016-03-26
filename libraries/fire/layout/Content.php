@@ -8,14 +8,15 @@ namespace df\fire\layout;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\arch;
 use df\aura;
 
 class Content implements IContent {
 
     use core\collection\TAttributeContainer;
-    use core\xml\TReaderInterchange;
-    use core\xml\TWriterInterchange;
+    use flex\xml\TReaderInterchange;
+    use flex\xml\TWriterInterchange;
 
     protected $_slots = [];
 
@@ -92,7 +93,7 @@ class Content implements IContent {
     }
 
 // XML interchange
-    public function readXml(core\xml\IReadable $reader) {
+    public function readXml(flex\xml\IReadable $reader) {
         if($reader->getTagName() != 'layout') {
             throw new UnexpectedValueException(
                 'Layout content object expected layout xml element'
@@ -110,7 +111,7 @@ class Content implements IContent {
         return $this;
     }
 
-    public function writeXml(core\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer) {
         $writer->startElement('layout');
         $writer->setAttributes($this->_attributes);
 

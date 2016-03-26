@@ -44,7 +44,7 @@ interface IDefinition extends core\IArrayInterchange {
 }
 
 
-interface IContent extends core\collection\IAttributeContainer, core\xml\IRootInterchange, aura\view\IDeferredRenderable {
+interface IContent extends core\collection\IAttributeContainer, flex\xml\IRootInterchange, aura\view\IDeferredRenderable {
 
     public function setId($id);
     public function getId();

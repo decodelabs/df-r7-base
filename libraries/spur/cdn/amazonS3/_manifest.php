@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\link;
+use df\flex;
 
 // Exceptions
 interface IException {}
@@ -18,7 +19,7 @@ class ApiException extends spur\ApiError {
 
     public $apiCode;
 
-    public function __construct($apiCode, $message, $httpCode=500, core\xml\ITree $xml=null) {
+    public function __construct($apiCode, $message, $httpCode=500, flex\xml\ITree $xml=null) {
         $this->apiCode = $apiCode;
         parent::__construct($message, $xml, $httpCode);
     }

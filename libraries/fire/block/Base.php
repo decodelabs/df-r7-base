@@ -8,14 +8,14 @@ namespace df\fire\block;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\aura;
 use df\arch;
-use df\flex;
 
 abstract class Base implements IBlock {
 
-    use core\xml\TReaderInterchange;
-    use core\xml\TWriterInterchange;
+    use flex\xml\TReaderInterchange;
+    use flex\xml\TWriterInterchange;
     use aura\view\TDeferredRenderable;
     use core\TStringProvider;
 
@@ -26,7 +26,7 @@ abstract class Base implements IBlock {
 
     protected $_isNested = false;
 
-    public static function fromXmlElement(core\xml\ITree $element) {
+    public static function fromXmlElement(flex\xml\ITree $element) {
         $output = self::factory($element->getAttribute('type'));
         $output->readXml($element);
 
@@ -121,7 +121,7 @@ abstract class Base implements IBlock {
     }
 
 
-    protected function _validateXmlReader(core\xml\IReadable $reader) {
+    protected function _validateXmlReader(flex\xml\IReadable $reader) {
         if($reader->getTagName() != 'block') {
             throw new UnexpectedValueException(
                 'Block content object expected block xml element'
@@ -144,7 +144,7 @@ abstract class Base implements IBlock {
     }
 
 
-    protected function _startWriterBlockElement(core\xml\IWriter $writer) {
+    protected function _startWriterBlockElement(flex\xml\IWriter $writer) {
         $writer->startElement('block');
         $writer->setAttribute('version', $this->getVersion());
         $writer->setAttribute('type', $this->getName());
@@ -154,7 +154,7 @@ abstract class Base implements IBlock {
         }
     }
 
-    protected function _endWriterBlockElement(core\xml\IWriter $writer) {
+    protected function _endWriterBlockElement(flex\xml\IWriter $writer) {
         // TODO: End any unclosed child elements
 
         $writer->endElement();

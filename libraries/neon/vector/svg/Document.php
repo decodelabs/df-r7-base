@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,10 +8,11 @@ namespace df\neon\vector\svg;
 use df;
 use df\core;
 use df\neon;
-    
+use df\flex;
+
 class Document implements IDocument, core\IDumpable {
 
-    use core\xml\TWriterInterchange;
+    use flex\xml\TWriterInterchange;
     use TStructure_Container;
     use TStructure_MetaData;
     use TStructure_Definitions;
@@ -74,19 +75,19 @@ class Document implements IDocument, core\IDumpable {
     }
 
     public static function fromXmlFile($xmlFile) {
-        return self::_xmlToObject(core\xml\Tree::fromXmlFile($xmlFile));
+        return self::_xmlToObject(flex\xml\Tree::fromXmlFile($xmlFile));
     }
 
     public static function fromXmlString($xmlString) {
-        return self::_xmlToObject(core\xml\Tree::fromXmlString($xmlString));
+        return self::_xmlToObject(flex\xml\Tree::fromXmlString($xmlString));
     }
 
-    public static function fromXmlElement(core\xml\ITree $element) {
+    public static function fromXmlElement(flex\xml\ITree $element) {
         return self::_xmlToObject($element);
     }
 
 
-    protected function _writeXmlDtd(core\xml\IWritable $writer) {
+    protected function _writeXmlDtd(flex\xml\IWritable $writer) {
         $writer->writeDtd('svg', '-//W3C//DTD SVG 1.1//EN', 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd');
     }
 

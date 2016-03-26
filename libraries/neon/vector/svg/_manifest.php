@@ -8,6 +8,7 @@ namespace df\neon\vector\svg;
 use df;
 use df\core;
 use df\neon;
+use df\flex;
 
 // Exceptions
 interface IException {}
@@ -15,7 +16,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 // Interfaces
-interface IElement extends core\xml\IInterchange {
+interface IElement extends flex\xml\IInterchange {
     public function getName();
     public function getElementName();
     public function prepareAttributes(IDocument $document);
@@ -24,7 +25,7 @@ interface IElement extends core\xml\IInterchange {
 
 trait TCustomContainerElement {
 
-    public function readXml(core\xml\IReadable $reader) {
+    public function readXml(flex\xml\IReadable $reader) {
         foreach($reader->getChildren() as $child) {
             if($childObject = $this->_xmlToObject($child, $this)) {
                 throw new RuntimeException(
@@ -36,7 +37,7 @@ trait TCustomContainerElement {
         return $this;
     }
 
-    public function writeXml(core\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer) {
         $document = $writer->getRootInterchange();
         $writer->startElement($this->getElementName());
 
@@ -518,7 +519,7 @@ interface IDefinitionsContainer extends
 
 // Document
 interface IDocument extends
-    core\xml\IRootInterchange,
+    flex\xml\IRootInterchange,
     IElement,
     IContainer,
     IStructure,

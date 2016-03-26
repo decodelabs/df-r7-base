@@ -86,7 +86,7 @@ trait TAttributeModule {
         return $this;
     }
 
-    protected static function _xmlToObject(core\xml\IReadable $reader, IElement $parent=null) {
+    protected static function _xmlToObject(flex\xml\IReadable $reader, IElement $parent=null) {
         $output = null;
         $return = true;
         $attributes = $reader->getAttributes();

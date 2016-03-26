@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\link;
+use df\flex;
 
 class Mediator implements IMediator {
 
@@ -61,7 +62,7 @@ class Mediator implements IMediator {
         $request->getHeaders()->set('x-amz-acl', $acl);
 
         if($location !== null) {
-            $xml = new core\xml\Writer();
+            $xml = new flex\xml\Writer();
             $xml->startElement('CreateBucketConfiguration');
             $xml->writeElement('LocationConstraint', $location);
             $xml->endElement();
@@ -248,7 +249,7 @@ class Mediator implements IMediator {
 
     protected function _extractXml(link\http\IResponse $response) {
         return [
-            'xml' => core\xml\Tree::fromXmlString($response->getContent()),
+            'xml' => flex\xml\Tree::fromXmlString($response->getContent()),
             'http' => $response
         ];
     }
@@ -373,7 +374,7 @@ class Mediator implements IMediator {
 
         if(strlen($content)
         && substr($content, 0, 2) == '<?') {
-            $xml = core\xml\Tree::fromXmlString($content);
+            $xml = flex\xml\Tree::fromXmlString($content);
         }
 
         if($xml) {

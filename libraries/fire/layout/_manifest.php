@@ -10,6 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\fire;
+use df\flex;
 
 // Exceptions
 interface IException {}
@@ -74,7 +75,7 @@ interface IMapEntry {
     public function apply(aura\view\ILayoutView $view);
 }
 
-interface IContent extends core\collection\IAttributeContainer, core\xml\IRootInterchange {
+interface IContent extends core\collection\IAttributeContainer, flex\xml\IRootInterchange {
     public function setId($id);
     public function getId();
 

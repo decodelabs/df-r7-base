@@ -8,6 +8,7 @@ namespace df\fire\block;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\arch;
 use df\aura;
 use df\link;
@@ -47,14 +48,14 @@ class Audioboo extends Base {
         return empty($this->_booId);
     }
 
-    public function readXml(core\xml\IReadable $reader) {
+    public function readXml(flex\xml\IReadable $reader) {
         $this->_validateXmlReader($reader);
         $this->_booId = $reader->getAttribute('booid');
 
         return $this;
     }
 
-    public function writeXml(core\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer) {
         $this->_startWriterBlockElement($writer);
         $writer->setAttribute('booid', $this->_booId);
         $this->_endWriterBlockElement($writer);

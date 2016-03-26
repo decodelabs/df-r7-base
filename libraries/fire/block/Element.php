@@ -8,6 +8,7 @@ namespace df\fire\block;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\aura;
 
 class Element extends Base {
@@ -35,14 +36,14 @@ class Element extends Base {
         return !strlen($this->_slug);
     }
 
-    public function readXml(core\xml\IReadable $reader) {
+    public function readXml(flex\xml\IReadable $reader) {
         $this->_validateXmlReader($reader);
         $this->_slug = $reader->getAttribute('slug');
 
         return $this;
     }
 
-    public function writeXml(core\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer) {
         $this->_startWriterBlockElement($writer);
         $writer->setAttribute('slug', $this->_slug);
         $this->_endWriterBlockElement($writer);

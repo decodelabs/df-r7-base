@@ -8,6 +8,7 @@ namespace df\fire\block;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\arch;
 use df\aura;
 
@@ -67,7 +68,7 @@ class Heading extends Base {
         return $this;
     }
 
-    public function readXml(core\xml\IReadable $reader) {
+    public function readXml(flex\xml\IReadable $reader) {
         $this->_validateXmlReader($reader);
         $this->_heading = $reader->getFirstCDataSection();
         $this->_level = $reader->getAttribute('level');
@@ -75,7 +76,7 @@ class Heading extends Base {
         return $this;
     }
 
-    public function writeXml(core\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer) {
         $this->_startWriterBlockElement($writer);
 
         $writer->setAttribute('level', $this->_level);

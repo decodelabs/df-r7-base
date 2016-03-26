@@ -8,6 +8,7 @@ namespace df\fire\block;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\aura;
 use df\arch;
 
@@ -20,7 +21,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 
 // Interfaces
-interface IBlock extends core\xml\IRootInterchange, aura\view\IDeferredRenderable {
+interface IBlock extends flex\xml\IRootInterchange, aura\view\IDeferredRenderable {
     public function getName();
     public function getDisplayName();
     public function isNested(bool $flag=null);

@@ -8,6 +8,7 @@ namespace df\fire\block;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\arch;
 
 class RawHtml extends Base {
@@ -43,14 +44,14 @@ class RawHtml extends Base {
         return $this;
     }
 
-    public function readXml(core\xml\IReadable $reader) {
+    public function readXml(flex\xml\IReadable $reader) {
         $this->_validateXmlReader($reader);
 
         $this->_content = $reader->getFirstCDataSection();
         return $this;
     }
 
-    public function writeXml(core\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer) {
         $this->_startWriterBlockElement($writer);
         $writer->writeCData($this->_content);
         $this->_endWriterBlockElement($writer);

@@ -8,6 +8,7 @@ namespace df\fire\block;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\aura;
 
 class Markdown extends Base {
@@ -44,14 +45,14 @@ class Markdown extends Base {
         return $this;
     }
 
-    public function readXml(core\xml\IReadable $reader) {
+    public function readXml(flex\xml\IReadable $reader) {
         $this->_validateXmlReader($reader);
 
         $this->_body = $reader->getFirstCDataSection();
         return $this;
     }
 
-    public function writeXml(core\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer) {
         $this->_startWriterBlockElement($writer);
         $writer->writeCData($this->_body);
         $this->_endWriterBlockElement($writer);
