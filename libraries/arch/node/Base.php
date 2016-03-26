@@ -331,17 +331,7 @@ class Base implements INode, core\IDumpable {
             return;
         }
 
-        if($this->getDefaultAccess() !== arch\IAccess::ALL
-        || !method_exists($this, 'executeAsHtml')) {
-            return;
-        }
-
         $parts = explode('\\', get_class($this));
-
-        if(static::SITEMAP !== true
-        && $parts[3] != 'front') {
-            return;
-        }
 
         $name = array_pop($parts);
         $parts = array_slice($parts, 3, -1);
