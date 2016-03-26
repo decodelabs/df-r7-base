@@ -8,6 +8,7 @@ namespace df\fire\slot;
 use df;
 use df\core;
 use df\fire;
+use df\flex;
 use df\aura;
 
 
