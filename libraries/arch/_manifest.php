@@ -248,6 +248,8 @@ interface IController extends core\IContextAware, IResponseForcer, IOptionalDire
 interface ITransformer extends core\IContextAware {
     public function canDeliver();
     public function execute();
+
+    public function getSitemapEntries();
 }
 
 interface IComponent extends

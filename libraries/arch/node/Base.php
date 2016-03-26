@@ -17,10 +17,13 @@ class Base implements INode, core\IDumpable {
     use arch\TDirectoryAccessLock;
     use arch\TResponseForcer;
 
-    const CHECK_ACCESS = null;
     const OPTIMIZE = false;
+
     const DEFAULT_ACCESS = null;
+    const CHECK_ACCESS = null;
     const ACCESS_SIGNIFIERS = null;
+
+    const SITEMAP = false;
 
     private $_shouldOptimize = null;
     private $_shouldCheckAccess = null;
@@ -318,6 +321,37 @@ class Base implements INode, core\IDumpable {
         }
 
         $this->throwError(404, 'No ajax content found');
+    }
+
+
+
+// Sitemap
+    public function getSitemapEntries() {
+        if(!static::SITEMAP) {
+            return;
+        }
+
+        if($this->getDefaultAccess() !== arch\IAccess::ALL
+        || !method_exists($this, 'executeAsHtml')) {
+            return;
+        }
+
+        $parts = explode('\\', get_class($this));
+
+        if(static::SITEMAP !== true
+        && $parts[3] != 'front') {
+            return;
+        }
+
+        $name = array_pop($parts);
+        $parts = array_slice($parts, 3, -1);
+        $parts[] = $this->format->nodeSlug(substr($name, 4));
+
+        yield new arch\navigation\SitemapEntry(
+            $this->uri('~'.implode('/', $parts)),
+            null,
+            is_string(static::SITEMAP) ? static::SITEMAP : 'monthly'
+        );
     }
 
 

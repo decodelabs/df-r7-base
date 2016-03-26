@@ -95,4 +95,8 @@ abstract class Transformer implements ITransformer {
     public function canDeliver() {
         return false;
     }
+
+    public function getSitemapEntries() {
+        return [];
+    }
 }

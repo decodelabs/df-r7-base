@@ -401,3 +401,19 @@ trait TSharedLinkComponents {
         ];
     }
 }
+
+
+
+
+############
+## Sitemap
+interface ISitemapEntry {
+    public function setUrl(string $url);
+    public function getUrl();
+    public function setLastModifiedDate($date);
+    public function getLastModifiedDate();
+    public function setChangeFrequency($frequency);
+    public function getChangeFrequency();
+    public function setPriority($priority);
+    public function getPriority();
+}
