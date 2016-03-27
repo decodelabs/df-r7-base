@@ -23,9 +23,9 @@ class UpdateRecord extends mesh\job\Base implements IUpdateRecordTask {
         return 'Update';
     }
 
-    public function execute(opal\query\ITransaction $transaction) {
+    public function execute() {
         $data = $this->_record->getChangesForStorage();
-        $query = $transaction->update($data)->in($this->getAdapter());
+        $query = $this->getAdapter()->update($data);
         $keySet = $this->_record->getOriginalPrimaryKeySet();
 
         if($this->_record instanceof opal\record\ILocationalRecord) {

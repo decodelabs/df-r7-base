@@ -14,6 +14,10 @@ class Transaction implements ITransaction {
     protected $_adapters = [];
     protected $_isOpen = true;
 
+    public function __construct(bool $open=true) {
+        $this->_isOpen = $open;
+    }
+
     public function isOpen() {
         return $this->_isOpen;
     }

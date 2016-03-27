@@ -72,8 +72,8 @@ class DeleteKey extends mesh\job\Base implements IDeleteKeyTask {
         return $this->_filterKeys;
     }
 
-    public function execute(opal\query\ITransaction $transaction) {
-        $query = $transaction->delete()->from($this->_adapter);
+    public function execute() {
+        $query = $this->_adapter->delete();
 
         foreach($this->_keys as $key => $value) {
             $query->where($key, '=', $value);

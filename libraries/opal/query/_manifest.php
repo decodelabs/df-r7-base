@@ -30,7 +30,7 @@ interface IDataRowProvider {
 
 
 // Initiator
-interface IInitiator extends ITransactionAware {
+interface IInitiator extends mesh\job\ITransactionAware {
     public function beginSelect(array $fields=[], $distinct=false);
     public function beginUnion();
     public function beginUnionSelect(IUnionQuery $union, array $fields=[], $unionDistinct=true, $selectDistinct=false);
@@ -169,7 +169,7 @@ interface IHavingClauseFactory extends IClauseFactory {
 
 
 // Query
-interface IQuery extends ISourceProvider, ITransactionAware, user\IAccessLock, core\lang\IChainable {
+interface IQuery extends ISourceProvider, mesh\job\ITransactionAware, user\IAccessLock, core\lang\IChainable {
     public function getQueryType();
     public function importBlock($name, ...$args);
     public function importRelationBlock($relationField, $name, ...$args);
@@ -764,7 +764,7 @@ interface ISource extends IAdapterAware {
 
 
 // Manager
-interface ISourceManager extends ITransactionAware {
+interface ISourceManager extends mesh\job\ITransactionAware {
     public function getMeshManager();
 
     public function setParentSourceManager(ISourceManager $parent);
@@ -794,11 +794,6 @@ interface ISourceManager extends ITransactionAware {
 // Transaction
 interface ITransaction extends mesh\job\ITransaction, IEntryPoint {}
 
-
-interface ITransactionAware {
-    public function setTransaction(ITransaction $transaction=null);
-    public function getTransaction();
-}
 
 
 

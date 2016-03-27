@@ -40,7 +40,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
 
 // Transaction
-    public function setTransaction(ITransaction $transaction=null) {
+    public function setTransaction(mesh\job\ITransaction $transaction=null) {
         $this->_transaction = $transaction;
 
         if($this->_parent) {

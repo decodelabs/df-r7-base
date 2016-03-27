@@ -43,7 +43,7 @@ trait TQuery_TransactionAware {
 
     protected $_transaction;
 
-    public function setTransaction(ITransaction $transaction=null) {
+    public function setTransaction(mesh\job\ITransaction $transaction=null) {
         $this->_transaction = $transaction;
         return $this;
     }
@@ -211,7 +211,7 @@ trait TQuery {
     }
 
 
-    public function setTransaction(ITransaction $transaction=null) {
+    public function setTransaction(mesh\job\ITransaction $transaction=null) {
         $this->getSourceManager()->setTransaction($transaction);
         return $this;
     }

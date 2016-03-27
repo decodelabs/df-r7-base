@@ -23,13 +23,10 @@ class ReplaceRecord extends mesh\job\Base implements IReplaceRecordTask {
         return 'Replace';
     }
 
-    public function execute(opal\query\ITransaction $transaction) {
+    public function execute() {
         $data = $this->_record->getValuesForStorage();
 
-        $id = $transaction->replace($data)
-            ->in($this->getAdapter())
-            ->execute();
-
+        $id = $this->getAdapter()->replace($data)->execute();
         $this->_record->acceptChanges($id);
 
         return $this;

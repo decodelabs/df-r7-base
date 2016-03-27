@@ -34,11 +34,10 @@ class InsertRecord extends mesh\job\Base implements IInsertRecordTask {
         return $this->_ifNotExists;
     }
 
-    public function execute(opal\query\ITransaction $transaction) {
+    public function execute() {
         $data = $this->_record->getValuesForStorage();
 
-        $query = $transaction->insert($data)
-            ->into($this->getAdapter())
+        $query = $this->getAdapter()->insert($data)
             ->ifNotExists((bool)$this->_ifNotExists);
 
         if($this->_record instanceof opal\record\ILocationalRecord) {

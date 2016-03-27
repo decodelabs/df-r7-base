@@ -34,12 +34,12 @@ class UpdateRaw extends mesh\job\Base implements IUpdateTask {
         return $this->_values;
     }
 
-    public function execute(opal\query\ITransaction $transaction) {
+    public function execute() {
         if($this->_primaryKeySet->isNull()) {
             return $this;
         }
 
-        $query = $transaction->update($this->_values)->in($this->_adapter);
+        $query = $this->_adapter->update($this->_values);
 
         foreach($this->_primaryKeySet->toArray() as $field => $value) {
             $query->where($field, '=', $value);

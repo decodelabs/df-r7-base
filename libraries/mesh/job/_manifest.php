@@ -36,6 +36,11 @@ interface ITransactionAdapter extends ITransactionExecutor {
     public function getTransactionId();
 }
 
+interface ITransactionAware {
+    public function setTransaction(ITransaction $transaction=null);
+    public function getTransaction(); //: ?ITransaction;
+}
+
 interface IQueue {
     public function getTransaction(): ITransaction;
     public function registerAdapter(ITransactionAdapter $adapter);
@@ -45,6 +50,9 @@ interface IQueue {
     public function after(IJob $job, ...$args): IJob;
     public function emitAfter(IJob $job, $entity, $action, array $data=null): IJob;
     public function addJob(IJob $job);
+
+    public function ignoreObject($object);
+    public function isObjectIgnored($object): bool;
 */
     public function execute();
 }
@@ -68,9 +76,7 @@ interface IJob {
     public function hasSubordinates(): bool;
     public function resolveSubordinates();
 
-/*
     public function execute();
-*/
 }
 
 interface IJobAdapter extends ITransactionAdapter {

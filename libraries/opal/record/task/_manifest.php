@@ -83,8 +83,6 @@ trait TParentFieldAwareDependency {
 
 interface ITask extends mesh\job\IJob {
     public function addDependency($dependency);
-
-    public function execute(opal\query\ITransaction $transaction);
 }
 
 interface IEventBroadcastingTask extends ITask {

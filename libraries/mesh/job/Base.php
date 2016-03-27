@@ -104,4 +104,8 @@ class Base implements IJob {
 
         return $output;
     }
+
+
+// Runner
+    public function execute() {}
 }

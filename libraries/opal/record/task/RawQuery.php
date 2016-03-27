@@ -27,8 +27,7 @@ class RawQuery extends mesh\job\Base implements ITask {
         return $this->_query;
     }
 
-    public function execute(opal\query\ITransaction $transaction) {
-        $this->_query->setTransaction($transaction);
+    public function execute() {
         $this->_query->execute();
 
         return $this;

@@ -31,8 +31,8 @@ class Generic extends mesh\job\Base implements ITask {
         return $this->_callback;
     }
 
-    public function execute(opal\query\ITransaction $transaction) {
-        $this->_callback->invoke($this, $transaction);
+    public function execute() {
+        $this->_callback->invoke($this);
         return $this;
     }
 }

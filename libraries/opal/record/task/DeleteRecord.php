@@ -23,12 +23,12 @@ class DeleteRecord extends mesh\job\Base implements IDeleteRecordTask {
         return 'Delete';
     }
 
-    public function execute(opal\query\ITransaction $transaction) {
+    public function execute() {
         if($this->_record->isNew()) {
             return $this;
         }
 
-        $query = $transaction->delete()->from($this->getAdapter());
+        $query = $this->getAdapter()->delete();
         $keySet = $this->_record->getOriginalPrimaryKeySet();
 
         if($this->_record instanceof opal\record\ILocationalRecord) {
