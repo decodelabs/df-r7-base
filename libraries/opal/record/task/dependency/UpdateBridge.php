@@ -36,7 +36,7 @@ class UpdateBridge extends mesh\job\Dependency implements opal\record\task\IPare
         return $this;
     }
 
-    public function resolve(opal\record\task\ITaskSet $taskSet, mesh\job\IJob $dependentTask) {
+    public function resolve(mesh\job\IQueue $taskSet, mesh\job\IJob $dependentTask) {
         /*
          * Need to create a new Update task for record in dependentTask to fill in missing
          * id when this record is inserted, then save it to taskSet

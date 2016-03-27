@@ -572,7 +572,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
 // Storage
-    public function save(opal\record\task\ITaskSet $taskSet=null) {
+    public function save(mesh\job\IQueue $taskSet=null) {
         $execute = false;
 
         if($taskSet === null) {
@@ -589,7 +589,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function delete(opal\record\task\ITaskSet $taskSet=null) {
+    public function delete(mesh\job\IQueue $taskSet=null) {
         $execute = false;
 
         if($taskSet === null) {
@@ -606,7 +606,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet) {
+    public function deploySaveTasks(mesh\job\IQueue $taskSet) {
         $recordTask = null;
 
         if($taskSet->isRecordQueued($this)) {
@@ -628,7 +628,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $recordTask;
     }
 
-    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet) {
+    public function deployDeleteTasks(mesh\job\IQueue $taskSet) {
         $recordTask = null;
 
         if(!$this->isNew()) {
@@ -648,7 +648,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $recordTask;
     }
 
-    public function triggerTaskEvent(opal\record\task\ITaskSet $taskSet, opal\record\task\IRecordTask $task, $when) {
+    public function triggerTaskEvent(mesh\job\IQueue $taskSet, opal\record\task\IRecordTask $task, $when) {
         $taskName = $task->getRecordTaskName();
         $funcPrefix = null;
 

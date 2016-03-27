@@ -79,6 +79,12 @@ interface IJob {
     public function execute();
 }
 
+interface IEventBroadcastingJob extends mesh\job\IJob {
+    public function reportPreEvent(IQueue $queue);
+    public function reportExecuteEvent(IQueue $queue);
+    public function reportPostEvent(IQueue $queue);
+}
+
 interface IJobAdapter extends ITransactionAdapter {
     public function getJobAdapterId();
 }

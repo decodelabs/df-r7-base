@@ -38,7 +38,7 @@ interface IDependency extends mesh\job\IDependency {
     public function getRequiredTask();
     public function getRequiredTaskId();
     public function applyResolution(mesh\job\IJob $dependentTask);
-    public function resolve(ITaskSet $taskSet, mesh\job\IJob $dependentTask);
+    public function resolve(mesh\job\IQueue $taskSet, mesh\job\IJob $dependentTask);
 }
 
 trait TDependency {
@@ -57,7 +57,7 @@ trait TDependency {
         return $this;
     }
 
-    public function resolve(opal\record\task\ITaskSet $taskSet, mesh\job\IJob $dependentTask) {
+    public function resolve(mesh\job\IQueue $taskSet, mesh\job\IJob $dependentTask) {
         //core\stub($this->_requiredTask, $dependentTask, $taskSet);
     }
 }
@@ -74,15 +74,6 @@ trait TParentFieldAwareDependency {
         return $this->_parentFields;
     }
 }
-
-
-
-interface IEventBroadcastingTask extends mesh\job\IJob {
-    public function reportPreEvent(ITaskSet $taskSet);
-    public function reportExecuteEvent(ITaskSet $taskSet);
-    public function reportPostEvent(ITaskSet $taskSet);
-}
-
 
 
 interface IInsertTask extends mesh\job\IJob {}
@@ -109,7 +100,7 @@ interface IFilterKeyTask extends mesh\job\IJob {
 interface IDeleteKeyTask extends IDeleteTask, IKeyTask, IFilterKeyTask {}
 
 
-interface IRecordTask extends mesh\job\IJob, IEventBroadcastingTask {
+interface IRecordTask extends mesh\job\IJob, mesh\job\IEventBroadcastingJob {
 
     const EVENT_PRE = 'pre';
     const EVENT_EXECUTE = 'execute';
@@ -131,18 +122,18 @@ trait TRecordTask {
         return $this->_record->getAdapter();
     }
 
-    public function reportPreEvent(ITaskSet $taskSet) {
-        $this->_record->triggerTaskEvent($taskSet, $this, IRecordTask::EVENT_PRE);
+    public function reportPreEvent(mesh\job\IQueue $queue) {
+        $this->_record->triggerTaskEvent($queue, $this, IRecordTask::EVENT_PRE);
         return $this;
     }
 
-    public function reportExecuteEvent(ITaskSet $taskSet) {
-        $this->_record->triggerTaskEvent($taskSet, $this, IRecordTask::EVENT_EXECUTE);
+    public function reportExecuteEvent(mesh\job\IQueue $queue) {
+        $this->_record->triggerTaskEvent($queue, $this, IRecordTask::EVENT_EXECUTE);
         return $this;
     }
 
-    public function reportPostEvent(ITaskSet $taskSet) {
-        $this->_record->triggerTaskEvent($taskSet, $this, IRecordTask::EVENT_POST);
+    public function reportPostEvent(mesh\job\IQueue $queue) {
+        $this->_record->triggerTaskEvent($queue, $this, IRecordTask::EVENT_POST);
         return $this;
     }
 }

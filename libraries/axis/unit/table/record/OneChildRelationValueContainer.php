@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
+use df\mesh;
 
 class OneChildRelationValueContainer implements
     opal\record\ITaskAwareValueContainer,
@@ -145,7 +146,7 @@ class OneChildRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deploySaveTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
         if($this->_insertPrimaryKeySet) {
             if(!$this->_record instanceof opal\record\IRecord) {
                 $this->prepareValue($record, $fieldName);
@@ -196,7 +197,7 @@ class OneChildRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deployDeleteTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
         $localUnit = $parentRecord->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $targetField = $this->_field->getTargetField();

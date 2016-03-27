@@ -193,7 +193,7 @@ class OneRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deploySaveTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
         if($this->_record instanceof opal\record\IRecord) {
             $task = $this->_record->deploySaveTasks($taskSet);
 
@@ -215,7 +215,7 @@ class OneRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deployDeleteTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
         //core\stub($taskSet, $record, $recordTask);
     }
 

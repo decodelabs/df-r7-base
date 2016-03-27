@@ -140,7 +140,7 @@ class TaskSet extends mesh\job\Queue implements ITaskSet {
 
         $this->_jobs[$id] = $job;
 
-        if($this->_isExecuting && $job instanceof IEventBroadcastingTask) {
+        if($this->_isExecuting && $job instanceof mesh\job\IEventBroadcastingJob) {
             $job->reportPreEvent($this);
         }
 
@@ -184,57 +184,5 @@ class TaskSet extends mesh\job\Queue implements ITaskSet {
 
     protected function _getRecordId(opal\record\IRecord $record) {
         return $record->getAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
-    }
-
-    public function execute() {
-        if($this->_isExecuting) {
-            return $this;
-        }
-
-        $this->_isExecuting = true;
-        $this->_transaction->begin();
-        $this->_jobs = array_filter($this->_jobs);
-
-        foreach($this->_jobs as $job) {
-            if($job instanceof IEventBroadcastingTask) {
-                $job->reportPreEvent($this);
-            }
-        }
-
-        $this->_sortJobs();
-
-        try {
-            while(!empty($this->_jobs)) {
-                $job = array_shift($this->_jobs);
-
-                if(!$job) {
-                    continue;
-                }
-
-                $job->untangleDependencies($this);
-
-                if($job instanceof IEventBroadcastingTask) {
-                    $job->reportExecuteEvent($this);
-                }
-
-                $job->execute($this->_transaction);
-
-                if($job->resolveSubordinates()) {
-                    $this->_sortJobs();
-                }
-
-                if($job instanceof IEventBroadcastingTask) {
-                    $job->reportPostEvent($this);
-                }
-            }
-        } catch(\Exception $e) {
-            $this->_transaction->rollback();
-            throw $e;
-        }
-
-        $this->_transaction->commit();
-        $this->_isExecuting = false;
-
-        return $this;
     }
 }

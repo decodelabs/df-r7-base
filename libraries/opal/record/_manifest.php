@@ -127,11 +127,11 @@ interface IRecord extends IDataProvider, core\IExporterValueMap {
     public function markAsChanged($field);
     public function shouldBypassHooks(bool $flag=null);
 
-    public function save(opal\record\task\ITaskSet $taskSet=null);
-    public function delete(opal\record\task\ITaskSet $taskSet=null);
-    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet);
-    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet);
-    public function triggerTaskEvent(opal\record\task\ITaskSet $taskSet, opal\record\task\IRecordTask $task, $when);
+    public function save(mesh\job\IQueue $taskSet=null);
+    public function delete(mesh\job\IQueue $taskSet=null);
+    public function deploySaveTasks(mesh\job\IQueue $taskSet);
+    public function deployDeleteTasks(mesh\job\IQueue $taskSet);
+    public function triggerTaskEvent(mesh\job\IQueue $taskSet, opal\record\task\IRecordTask $task, $when);
 }
 
 interface ILocationalRecord extends IRecord {
@@ -165,9 +165,9 @@ interface IIdProviderValueContainer extends IValueContainer {
 }
 
 interface ITaskAwareValueContainer extends IValueContainer {
-    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, IRecord $record, $fieldName, mesh\job\IJob $task=null);
+    public function deploySaveTasks(mesh\job\IQueue $taskSet, IRecord $record, $fieldName, mesh\job\IJob $task=null);
     public function acceptSaveTaskChanges(opal\record\IRecord $record);
-    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, IRecord $record, $fieldName, mesh\job\IJob $task=null);
+    public function deployDeleteTasks(mesh\job\IQueue $taskSet, IRecord $record, $fieldName, mesh\job\IJob $task=null);
     public function acceptDeleteTaskChanges(opal\record\IRecord $record);
 }
 

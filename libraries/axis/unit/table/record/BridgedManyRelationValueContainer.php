@@ -575,7 +575,7 @@ class BridgedManyRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deploySaveTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
         $localUnit = $parentRecord->getAdapter();
         $this->_localPrimaryKeySet->updateWith($parentRecord);
 
@@ -721,7 +721,7 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deployDeleteTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
         if(!$recordTask) {
             return $this;
         }

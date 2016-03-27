@@ -44,7 +44,7 @@ class UpdateRawKeySet extends mesh\job\Dependency implements opal\record\task\IP
         return $this;
     }
 
-    public function resolve(opal\record\task\ITaskSet $taskSet, mesh\job\IJob $dependentTask) {
+    public function resolve(mesh\job\IQueue $taskSet, mesh\job\IJob $dependentTask) {
         core\stub($taskSet);
     }
 }

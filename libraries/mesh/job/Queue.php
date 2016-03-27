@@ -76,7 +76,55 @@ class Queue implements IQueue {
 
 // Runner
     public function execute() {
-        core\stub();
+        if($this->_isExecuting) {
+            return $this;
+        }
+
+        $this->_isExecuting = true;
+        $this->_transaction->begin();
+        $this->_jobs = array_filter($this->_jobs);
+
+        foreach($this->_jobs as $job) {
+            if($job instanceof mesh\job\IEventBroadcastingJob) {
+                $job->reportPreEvent($this);
+            }
+        }
+
+        $this->_sortJobs();
+
+        try {
+            while(!empty($this->_jobs)) {
+                $job = array_shift($this->_jobs);
+
+                if(!$job) {
+                    continue;
+                }
+
+                $job->untangleDependencies($this);
+
+                if($job instanceof mesh\job\IEventBroadcastingJob) {
+                    $job->reportExecuteEvent($this);
+                }
+
+                $job->execute();
+
+                if($job->resolveSubordinates()) {
+                    $this->_sortJobs();
+                }
+
+                if($job instanceof mesh\job\IEventBroadcastingJob) {
+                    $job->reportPostEvent($this);
+                }
+            }
+        } catch(\Exception $e) {
+            $this->_transaction->rollback();
+            throw $e;
+        }
+
+        $this->_transaction->commit();
+        $this->_isExecuting = false;
+
+        return $this;
     }
 
     protected function _sortJobs() {
