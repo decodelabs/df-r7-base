@@ -33,7 +33,7 @@ abstract class Base implements IJob {
 
 
 // Dependencies
-    public function addDependency($dependency) {
+    public function addDependency($dependency, IResolution $resolution=null) {
         if($dependency instanceof IJob) {
             $dependency = new df\opal\record\task\dependency\Generic($dependency);
         } else if(!$dependency instanceof IDependency) {

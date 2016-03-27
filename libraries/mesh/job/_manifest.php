@@ -61,11 +61,7 @@ interface IJob {
     public function getId(): string;
     public function getAdapter(); //: ?ITransactionAdapter;
 
-/*
-    public function after(IJob $job, IResolution $resolution=null);
-    public function addDependency(IDependency $dependency);
-*/
-    public function addDependency($dependency); // DELETE ME
+    public function addDependency($dependency, IResolution $resolution=null);
     public function countDependencies(): int;
     public function hasDependencies(): bool;
     public function untangleDependencies(IQueue $queue);
