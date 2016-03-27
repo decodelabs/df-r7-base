@@ -8,12 +8,13 @@ namespace df\opal\record\task\dependency;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
-class Generic implements opal\record\task\IDependency {
-    
+class Generic extends mesh\job\Dependency implements opal\record\task\IDependency {
+
     use opal\record\task\TDependency;
 
     public function __construct(opal\record\task\ITask $requiredTask) {
         $this->_requiredTask = $requiredTask;
     }
-} 
+}

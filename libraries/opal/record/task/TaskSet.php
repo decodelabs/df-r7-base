@@ -10,21 +10,11 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class TaskSet implements ITaskSet {
-
-    protected $_tasks = [];
-    protected $_transaction;
-    protected $_isExecuting = false;
+class TaskSet extends mesh\job\Queue implements ITaskSet {
 
     public function __construct() {
         $this->_transaction = new opal\query\Transaction();
     }
-
-
-    public function getTransaction() {
-        return $this->_transaction;
-    }
-
 
     public function save(opal\record\IRecord $record) {
         if($record->isNew()) {
@@ -37,98 +27,98 @@ class TaskSet implements ITaskSet {
     }
 
     public function insert(opal\record\IRecord $record) {
-        $task = new InsertRecord($record);
-        $id = $task->getId();
+        $job = new InsertRecord($record);
+        $id = $job->getId();
 
-        if(isset($this->_tasks[$id])) {
-            if($this->_tasks[$id] === false) {
-                unset($this->_tasks[$id]);
+        if(isset($this->_jobs[$id])) {
+            if($this->_jobs[$id] === false) {
+                unset($this->_jobs[$id]);
             } else {
-                if(!$this->_tasks[$id] instanceof IInsertRecordTask) {
+                if(!$this->_jobs[$id] instanceof IInsertRecordTask) {
                     throw new RuntimeException(
                         'Record '.$id.' has already been queued for a conflicting operation'
                     );
                 }
 
-                return $this->_tasks[$id];
+                return $this->_jobs[$id];
             }
         }
 
-        $this->addTask($task);
-        return $task;
+        $this->addTask($job);
+        return $job;
     }
 
     public function replace(opal\record\IRecord $record) {
-        $task = new ReplaceRecord($record);
-        $id = $task->getId();
+        $job = new ReplaceRecord($record);
+        $id = $job->getId();
 
-        if(isset($this->_tasks[$id])) {
-            if($this->_tasks[$id] === false) {
-                unset($this->_tasks[$id]);
+        if(isset($this->_jobs[$id])) {
+            if($this->_jobs[$id] === false) {
+                unset($this->_jobs[$id]);
             } else {
-                if(!$this->_tasks[$id] instanceof IReplaceRecordTask) {
+                if(!$this->_jobs[$id] instanceof IReplaceRecordTask) {
                     throw new RuntimeException(
                         'Record '.$id.' has already been queued for a conflicting operation'
                     );
                 }
 
-                return $this->_tasks[$id];
+                return $this->_jobs[$id];
             }
         }
 
-        $this->addTask($task);
-        return $task;
+        $this->addTask($job);
+        return $job;
     }
 
     public function update(opal\record\IRecord $record) {
-        $task = new UpdateRecord($record);
-        $id = $task->getId();
+        $job = new UpdateRecord($record);
+        $id = $job->getId();
 
-        if(isset($this->_tasks[$id])) {
-            if($this->_tasks[$id] === false) {
-                unset($this->_tasks[$id]);
+        if(isset($this->_jobs[$id])) {
+            if($this->_jobs[$id] === false) {
+                unset($this->_jobs[$id]);
             } else {
-                if(!$this->_tasks[$id] instanceof IUpdateRecordTask) {
+                if(!$this->_jobs[$id] instanceof IUpdateRecordTask) {
                     throw new RuntimeException(
                         'Record '.$id.' has already been queued for a conflicting operation'
                     );
                 }
 
-                return $this->_tasks[$id];
+                return $this->_jobs[$id];
             }
         }
 
-        $this->addTask($task);
-        return $task;
+        $this->addTask($job);
+        return $job;
     }
 
     public function delete(opal\record\IRecord $record) {
-        $task = new DeleteRecord($record);
-        $id = $task->getId();
+        $job = new DeleteRecord($record);
+        $id = $job->getId();
 
-        if(isset($this->_tasks[$id])) {
-            if($this->_tasks[$id] === false) {
-                unset($this->_tasks[$id]);
+        if(isset($this->_jobs[$id])) {
+            if($this->_jobs[$id] === false) {
+                unset($this->_jobs[$id]);
             } else {
-                if(!$this->_tasks[$id] instanceof IDeleteRecordTask) {
+                if(!$this->_jobs[$id] instanceof IDeleteRecordTask) {
                     throw new RuntimeException(
                         'Record '.$id.' has already been queued for a conflicting operation'
                     );
                 }
 
-                return $this->_tasks[$id];
+                return $this->_jobs[$id];
             }
         }
 
-        $this->addTask($task);
-        return $task;
+        $this->addTask($job);
+        return $job;
     }
 
     public function addRawQuery($id, opal\query\IWriteQuery $query) {
-        $task = new RawQuery($id, $query);
-        $this->addTask($task);
+        $job = new RawQuery($id, $query);
+        $this->addTask($job);
 
-        return $task;
+        return $job;
     }
 
     public function addGenericTask(...$args) {
@@ -148,38 +138,33 @@ class TaskSet implements ITaskSet {
 
         if($callback === null) {
             throw new InvalidArgumentException(
-                'Generic tasks must have a callback'
+                'Generic jobs must have a callback'
             );
         }
 
-        $task = new Generic($id, $callback, $adapter);
-        $this->addTask($task);
+        $job = new Generic($id, $callback, $adapter);
+        $this->addTask($job);
 
-        return $task;
+        return $job;
     }
 
-    public function after(ITask $task, ...$args) {
-        return $this->addGenericTask(...$args)->addDependency($task);
+    public function after(ITask $job, ...$args) {
+        return $this->addGenericTask(...$args)->addDependency($job);
     }
 
-    public function emitEventAfter(ITask $task, $entity, $action, array $data=null) {
-        return $this->addGenericTask(function() use($entity, $action, $data) {
-                if($data === null) {
-                    $data = [];
-                }
-
-                $data['taskSet'] = $this;
-                mesh\Manager::getInstance()->emitEvent($entity, $action, $data);
+    public function emitEventAfter(ITask $job, $entity, $action, array $data=null) {
+        return $this->addGenericTask(function() use($entity, $action, $data, $job) {
+                mesh\Manager::getInstance()->emitEvent($entity, $action, $data, $this, $job);
             })
-            ->addDependency($task);
+            ->addDependency($job);
     }
 
 
 
-    public function addTask(ITask $task) {
-        $id = $task->getId();
+    public function addTask(ITask $job) {
+        $id = $job->getId();
 
-        if(isset($this->_tasks[$id])) {
+        if(isset($this->_jobs[$id])) {
             return $this;
 
             /*
@@ -189,14 +174,14 @@ class TaskSet implements ITaskSet {
             */
         }
 
-        if($adapter = $task->getAdapter()) {
+        if($adapter = $job->getAdapter()) {
             $this->_transaction->registerAdapter($adapter);
         }
 
-        $this->_tasks[$id] = $task;
+        $this->_jobs[$id] = $job;
 
-        if($this->_isExecuting && $task instanceof IEventBroadcastingTask) {
-            $task->reportPreEvent($this);
+        if($this->_isExecuting && $job instanceof IEventBroadcastingTask) {
+            $job->reportPreEvent($this);
         }
 
         return $this;
@@ -207,7 +192,7 @@ class TaskSet implements ITaskSet {
             $id = $id->getId();
         }
 
-        return isset($this->_tasks[$id]);
+        return isset($this->_jobs[$id]);
     }
 
     public function getTask($id) {
@@ -217,21 +202,21 @@ class TaskSet implements ITaskSet {
             $id = $this->_getRecordId($id);
         }
 
-        if(isset($this->_tasks[$id])) {
-            return $this->_tasks[$id];
+        if(isset($this->_jobs[$id])) {
+            return $this->_jobs[$id];
         }
     }
 
     public function isRecordQueued(opal\record\IRecord $record) {
         $id = $this->_getRecordId($record);
-        return isset($this->_tasks[$id]);
+        return isset($this->_jobs[$id]);
     }
 
     public function setRecordAsQueued(opal\record\IRecord $record) {
         $id = $this->_getRecordId($record);
 
-        if(!isset($this->_tasks[$id])) {
-            $this->_tasks[$id] = false;
+        if(!isset($this->_jobs[$id])) {
+            $this->_jobs[$id] = false;
         }
 
         return $this;
@@ -241,45 +226,44 @@ class TaskSet implements ITaskSet {
         return $record->getAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
     }
 
-
     public function execute() {
         if($this->_isExecuting) {
             return $this;
         }
 
         $this->_isExecuting = true;
-        $this->_tasks = array_filter($this->_tasks);
+        $this->_jobs = array_filter($this->_jobs);
 
-        foreach($this->_tasks as $task) {
-            if($task instanceof IEventBroadcastingTask) {
-                $task->reportPreEvent($this);
+        foreach($this->_jobs as $job) {
+            if($job instanceof IEventBroadcastingTask) {
+                $job->reportPreEvent($this);
             }
         }
 
-        $this->_sortTasks();
+        $this->_sortJobs();
 
         try {
-            while(!empty($this->_tasks)) {
-                $task = array_shift($this->_tasks);
+            while(!empty($this->_jobs)) {
+                $job = array_shift($this->_jobs);
 
-                if(!$task) {
+                if(!$job) {
                     continue;
                 }
 
-                $task->resolveDependencies($this);
+                $job->untangleDependencies($this);
 
-                if($task instanceof IEventBroadcastingTask) {
-                    $task->reportExecuteEvent($this);
+                if($job instanceof IEventBroadcastingTask) {
+                    $job->reportExecuteEvent($this);
                 }
 
-                $task->execute($this->_transaction);
+                $job->execute($this->_transaction);
 
-                if($task->applyResolutionToDependants()) {
-                    $this->_sortTasks();
+                if($job->resolveSubordinates()) {
+                    $this->_sortJobs();
                 }
 
-                if($task instanceof IEventBroadcastingTask) {
-                    $task->reportPostEvent($this);
+                if($job instanceof IEventBroadcastingTask) {
+                    $job->reportPostEvent($this);
                 }
             }
         } catch(\Exception $e) {
@@ -291,14 +275,5 @@ class TaskSet implements ITaskSet {
         $this->_isExecuting = false;
 
         return $this;
-    }
-
-    protected function _sortTasks() {
-        uasort($this->_tasks, function($taskA, $taskB) {
-            $aCount = $taskA ? $taskA->countDependencies() : 0;
-            $bCount = $taskB ? $taskB->countDependencies() : 0;
-
-            return $aCount > $bCount;
-        });
     }
 }

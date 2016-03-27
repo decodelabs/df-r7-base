@@ -8,45 +8,45 @@ namespace df\opal\record\task;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
-class UpdateRaw implements IUpdateTask {
-    
-    use TTask;
-    use TAdapterAwareTask;
+class UpdateRaw extends mesh\job\Base implements IUpdateTask {
+
+    use mesh\job\TAdapterAwareJob;
 
     protected $_primaryKeySet;
     protected $_values;
-    
+
     public function __construct(opal\query\IAdapter $adapter, opal\record\IPrimaryKeySet $primaryKeySet, array $values) {
         $this->_primaryKeySet = $primaryKeySet;
         $this->_values = $values;
         $this->_adapter = $adapter;
-        
+
         $this->_setId(opal\record\Base::extractRecordId($primaryKeySet));
     }
-    
+
     public function setValues(array $values) {
         $this->_values = $values;
         return $this;
     }
-    
+
     public function getValues() {
         return $this->_values;
     }
-    
+
     public function execute(opal\query\ITransaction $transaction) {
         if($this->_primaryKeySet->isNull()) {
             return $this;
         }
-        
+
         $query = $transaction->update($this->_values)->in($this->_adapter);
-        
+
         foreach($this->_primaryKeySet->toArray() as $field => $value) {
             $query->where($field, '=', $value);
         }
-        
+
         $query->execute();
-        
+
         return $this;
     }
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\mesh\event;
 use df;
 use df\core;
 use df\mesh;
-    
+
 class Event implements IEvent {
 
     use core\collection\TArrayCollection_Map;
@@ -16,14 +16,18 @@ class Event implements IEvent {
     protected $_action;
     protected $_entityLocator;
     protected $_entity;
+    protected $_jobQueue;
+    protected $_job;
 
-    public function __construct($entity, $action, array $data=null) {
+    public function __construct($entity, $action, array $data=null, mesh\job\IQueue $jobQueue=null, mesh\job\IJob $job=null) {
         if(!$entity instanceof mesh\entity\ILocatorProvider) {
             $entity = mesh\entity\Locator::factory($entity);
         }
 
         $this->setEntity($entity);
         $this->setAction($action);
+        $this->setJobQueue($jobQueue);
+        $this->setJob($job);
 
         if($data !== null) {
             $this->import($data);
@@ -83,5 +87,25 @@ class Event implements IEvent {
 
     public function getAction() {
         return $this->_action;
+    }
+
+
+// Job
+    public function setJobQueue(mesh\job\IQueue $queue=null) {
+        $this->_jobQueue = $queue;
+        return $this;
+    }
+
+    public function getJobQueue() {
+        return $this->_jobQueue;
+    }
+
+    public function setJob(mesh\job\IJob $job=null) {
+        $this->_job = $job;
+        return $this;
+    }
+
+    public function getJob() {
+        return $this->_job;
     }
 }

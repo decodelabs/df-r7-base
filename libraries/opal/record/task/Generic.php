@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,12 +8,11 @@ namespace df\opal\record\task;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
-    
-class Generic implements IOptionalAdapterAwareTask {
+class Generic extends mesh\job\Base implements ITask {
 
-    use TTask;
-    use TAdapterAwareTask;
+    use mesh\job\TAdapterAwareJob;
 
     protected $_callback;
 

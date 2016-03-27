@@ -105,7 +105,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
         $this->_sources[$alias] = $source;
 
         if($this->_transaction) {
-            $this->_transaction->registerAdapter($source->getAdapter(), $forWrite);
+            $this->_transaction->registerAdapter($source->getAdapter());
         }
 
         if($fields !== null) {

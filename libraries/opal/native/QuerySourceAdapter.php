@@ -198,10 +198,17 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
         return $data;
     }
 
+    public function getTransactionId() {
+        return $this->getQuerySourceAdapterHash();
+    }
 
-    public function beginQueryTransaction() {}
-    public function commitQueryTransaction() {}
-    public function rollbackQueryTransaction() {}
+    public function getJobAdapterId() {
+        return $this->getQuerySourceId();
+    }
+
+    public function begin() {}
+    public function commit() {}
+    public function rollback() {}
 
 
     public function getAccessLockDomain() {

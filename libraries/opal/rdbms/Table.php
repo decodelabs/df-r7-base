@@ -335,15 +335,23 @@ class Table implements ITable, core\IDumpable {
 
 
 // Transaction
-    public function beginQueryTransaction() {
+    public function getTransactionId() {
+        return $this->getQuerySourceAdapterHash();
+    }
+
+    public function getJobAdapterId() {
+        return $this->getQuerySourceId();
+    }
+
+    public function begin() {
         return $this->_adapter->begin();
     }
 
-    public function commitQueryTransaction() {
+    public function commit() {
         return $this->_adapter->commit();
     }
 
-    public function rollbackQueryTransaction() {
+    public function rollback() {
         return $this->_adapter->rollback();
     }
 

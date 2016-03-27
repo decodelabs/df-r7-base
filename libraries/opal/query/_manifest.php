@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 use df\user;
+use df\mesh;
 
 // Exceptions
 interface IException {}
@@ -95,7 +96,7 @@ interface INestedComponent {
 
 
 // Entry point
-interface IEntryPoint {
+interface IEntryPoint extends mesh\job\ITransactionInitiator {
     public function select(...$fields);
     public function selectDistinct(...$fields);
     public function countAll();
@@ -108,8 +109,6 @@ interface IEntryPoint {
     public function batchReplace($rows=[]);
     public function update(array $valueMap=null);
     public function delete();
-
-    public function begin();
 }
 
 
@@ -665,7 +664,7 @@ interface IAdapterAware {
 }
 
 
-interface IAdapter extends user\IAccessLock {
+interface IAdapter extends user\IAccessLock, mesh\job\IJobAdapter {
     public function getQuerySourceId();
     public function getQuerySourceAdapterHash();
     public function getQuerySourceAdapterServerHash();
@@ -691,10 +690,6 @@ interface IAdapter extends user\IAccessLock {
 
     public function fetchRemoteJoinData(IJoinQuery $join, array $rows);
     public function fetchAttachmentData(IAttachQuery $attachment, array $rows);
-
-    public function beginQueryTransaction();
-    public function commitQueryTransaction();
-    public function rollbackQueryTransaction();
 
     public function newRecord(array $values=null);
     public function newPartial(array $values=null);
@@ -797,12 +792,7 @@ interface ISourceManager extends ITransactionAware {
 
 
 // Transaction
-interface ITransaction extends IEntryPoint {
-    public function commit();
-    public function rollback();
-
-    public function registerAdapter(IAdapter $adapter);
-}
+interface ITransaction extends mesh\job\ITransaction, IEntryPoint {}
 
 
 interface ITransactionAware {

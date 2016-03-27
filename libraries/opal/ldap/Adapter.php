@@ -771,15 +771,23 @@ abstract class Adapter implements IAdapter {
 
 
 // Transaction
-    public function beginQueryTransaction() {
+    public function getTransactionId() {
+        return $this->getQuerySourceAdapterHash();
+    }
+
+    public function getJobAdapterId() {
+        return $this->getQuerySourceId();
+    }
+
+    public function begin() {
         return $this;
     }
 
-    public function commitQueryTransaction() {
+    public function commit() {
         return $this;
     }
 
-    public function rollbackQueryTransaction() {
+    public function rollback() {
         return $this;
     }
 

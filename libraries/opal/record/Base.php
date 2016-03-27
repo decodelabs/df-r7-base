@@ -672,7 +672,9 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             $event = new mesh\event\Event(
                 $this,
                 $funcPrefix.$taskName,
-                ['taskSet' => $taskSet, 'task' => $task]
+                null,
+                $taskSet,
+                $task
             );
 
             $meshManager = mesh\Manager::getInstance();

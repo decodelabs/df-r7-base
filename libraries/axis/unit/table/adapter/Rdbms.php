@@ -153,16 +153,24 @@ class Rdbms implements
 
 
 // Transactions
-    public function beginQueryTransaction() {
-        return $this->getQuerySourceAdapter()->beginQueryTransaction();
+    public function getTransactionId() {
+        return $this->getQuerySourceAdapterHash();
     }
 
-    public function commitQueryTransaction() {
-        return $this->getQuerySourceAdapter()->commitQueryTransaction();
+    public function getJobAdapterId() {
+        return $this->getQuerySourceId();
     }
 
-    public function rollbackQueryTransaction() {
-        return $this->getQuerySourceAdapter()->rollbackQueryTransaction();
+    public function begin() {
+        return $this->getQuerySourceAdapter()->begin();
+    }
+
+    public function commit() {
+        return $this->getQuerySourceAdapter()->commit();
+    }
+
+    public function rollback() {
+        return $this->getQuerySourceAdapter()->rollback();
     }
 
 

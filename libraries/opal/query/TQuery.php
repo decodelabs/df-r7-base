@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 use df\user;
-
+use df\mesh;
 
 trait TQuery_AdapterAware {
 
@@ -2275,7 +2275,7 @@ trait TQuery_EntryPoint {
         return $output;
     }
 
-    public function begin() {
+    public function newTransaction(): mesh\job\ITransaction {
         if($this instanceof IAdapter) {
             return new Transaction($this);
         } else {

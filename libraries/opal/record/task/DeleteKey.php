@@ -8,22 +8,22 @@ namespace df\opal\record\task;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
-class DeleteKey implements IDeleteKeyTask {
-    
-    use TTask;
-    use TAdapterAwareTask;
+class DeleteKey extends mesh\job\Base implements IDeleteKeyTask {
+
+    use mesh\job\TAdapterAwareJob;
 
     protected $_keys = [];
     protected $_filterKeys = [];
-    
+
     public function __construct(opal\query\IAdapter $adapter, array $keys) {
         $this->_keys = $keys;
         $this->_adapter = $adapter;
-        
+
         $this->_setId(implode(opal\record\PrimaryKeySet::COMBINE_SEPARATOR, $keys));
     }
-    
+
 
 // Keys
     public function setKeys(array $keys) {
@@ -39,7 +39,7 @@ class DeleteKey implements IDeleteKeyTask {
         return $this;
     }
 
-    public function addKey($key, $value) { 
+    public function addKey($key, $value) {
         $this->_keys[$key] = $value;
         return $this;
     }
@@ -71,10 +71,10 @@ class DeleteKey implements IDeleteKeyTask {
     public function getFilterKeys() {
         return $this->_filterKeys;
     }
-    
+
     public function execute(opal\query\ITransaction $transaction) {
         $query = $transaction->delete()->from($this->_adapter);
-        
+
         foreach($this->_keys as $key => $value) {
             $query->where($key, '=', $value);
         }
@@ -84,7 +84,7 @@ class DeleteKey implements IDeleteKeyTask {
                 $query->where($key, '!=', $value);
             }
         }
-        
+
         $query->execute();
         return $this;
     }

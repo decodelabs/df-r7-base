@@ -8,10 +8,10 @@ namespace df\opal\record\task;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
-class UpdateRecord implements IUpdateRecordTask {
-    
-    use TTask;
+class UpdateRecord extends mesh\job\Base implements IUpdateRecordTask {
+
     use TRecordTask;
 
     public function __construct(opal\record\IRecord $record) {
@@ -22,7 +22,7 @@ class UpdateRecord implements IUpdateRecordTask {
     public function getRecordTaskName() {
         return 'Update';
     }
-    
+
     public function execute(opal\query\ITransaction $transaction) {
         $data = $this->_record->getChangesForStorage();
         $query = $transaction->update($data)->in($this->getAdapter());
@@ -38,20 +38,20 @@ class UpdateRecord implements IUpdateRecordTask {
             }
         } else {
             $order = false;
-            
+
             foreach($this->_record->getOriginalValuesForStorage() as $key => $value) {
                 if(!$order) {
                     $query->limit(1)->orderBy($key);
                     $order = true;
                 }
-                
+
                 $query->where($key, '=', $value);
             }
         }
-        
+
         $query->execute();
         $this->_record->acceptChanges();
-        
+
         return $this;
     }
 }

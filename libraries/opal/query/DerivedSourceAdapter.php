@@ -119,16 +119,24 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
     }
 
 
-    public function beginQueryTransaction() {
-        return $this->_adapter->beginQueryTransaction();
+    public function getTransactionId() {
+        return $this->getQuerySourceAdapterHash();
     }
 
-    public function commitQueryTransaction() {
-        return $this->_adapter->commitQueryTransaction();
+    public function getJobAdapterId() {
+        return $this->getQuerySourceId();
     }
 
-    public function rollbackQueryTransaction() {
-        return $this->_adapter->rollbackQueryTransaction();
+    public function begin() {
+        return $this->_adapter->begin();
+    }
+
+    public function commit() {
+        return $this->_adapter->commit();
+    }
+
+    public function rollback() {
+        return $this->_adapter->rollback();
     }
 
 

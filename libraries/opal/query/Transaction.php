@@ -8,10 +8,10 @@ namespace df\opal\query;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
-class Transaction implements ITransaction, core\IDumpable {
+class Transaction extends mesh\job\Transaction implements ITransaction, core\IDumpable {
 
-    protected $_adapters = [];
     protected $_source;
 
     public function __construct($source=false) {
@@ -167,58 +167,12 @@ class Transaction implements ITransaction, core\IDumpable {
         return $output;
     }
 
-    public function begin() {
+    public function newTransaction(): mesh\job\ITransaction {
         if($this->_source !== null) {
             return new self($this->_source);
         } else {
             return new self();
         }
-    }
-
-
-    public function commit() {
-        foreach($this->_adapters as $adapter) {
-            if($adapter->supportsQueryFeature(IQueryFeatures::TRANSACTION)) {
-                $adapter->commitQueryTransaction();
-            }
-        }
-
-        return $this;
-    }
-
-    public function rollback() {
-        foreach($this->_adapters as $adapter) {
-            if($adapter->supportsQueryFeature(IQueryFeatures::TRANSACTION)) {
-                $adapter->rollbackQueryTransaction();
-            }
-        }
-
-        return $this;
-    }
-
-
-// Adapters
-    public function registerAdapter(IAdapter $adapter, $forWrite=true) {
-        $isCapable = $adapter->supportsQueryFeature(IQueryFeatures::TRANSACTION);
-        $id = $adapter->getQuerySourceAdapterHash();
-
-        if(!isset($this->_adapters[$id])) {
-            $this->_adapters[$id] = $adapter;
-
-            if($isCapable) {
-                $adapter->beginQueryTransaction();
-            }
-        }
-
-        /*
-        if(!$isCapable && $forWrite) {
-            throw new RuntimeException(
-                'Adapter '.$adapter->getQuerySourceDisplayName().' is not capable of transactions'
-            );
-        }
-        */
-
-        return $this;
     }
 
 

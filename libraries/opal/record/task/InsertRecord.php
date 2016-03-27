@@ -8,10 +8,10 @@ namespace df\opal\record\task;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
-class InsertRecord implements IInsertRecordTask {
+class InsertRecord extends mesh\job\Base implements IInsertRecordTask {
 
-    use TTask;
     use TRecordTask;
 
     protected $_ifNotExists = false;

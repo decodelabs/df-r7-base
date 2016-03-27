@@ -8,6 +8,7 @@ namespace df\opal\record\task;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
 // Exceptions
 interface IException extends opal\record\IException {}
@@ -16,8 +17,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces
-interface ITaskSet {
-    public function getTransaction();
+interface ITaskSet extends mesh\job\IQueue {
     public function save(opal\record\IRecord $record);
     public function insert(opal\record\IRecord $record);
     public function replace(opal\record\IRecord $record);
@@ -34,12 +34,10 @@ interface ITaskSet {
     public function getTask($id);
     public function isRecordQueued(opal\record\IRecord $record);
     public function setRecordAsQueued(opal\record\IRecord $record);
-    public function execute();
 }
 
 
-interface IDependency {
-    public function getId();
+interface IDependency extends mesh\job\IDependency {
     public function getRequiredTask();
     public function getRequiredTaskId();
     public function applyResolution(ITask $dependentTask);
@@ -48,16 +46,7 @@ interface IDependency {
 
 trait TDependency {
 
-    protected $_idSalt;
     protected $_requiredTask;
-
-    public function getId() {
-        if($this->_idSalt === null) {
-            $this->_idSalt = uniqid('_');
-        }
-
-        return $this->_requiredTask->getId().'|'.$this->_idSalt;
-    }
 
     public function getRequiredTask() {
         return $this->_requiredTask;
@@ -92,137 +81,11 @@ trait TParentFieldAwareDependency {
 
 
 
-interface ITask {
-    public function getId();
-    public function getAdapter();
-
+interface ITask extends mesh\job\IJob {
     public function addDependency($dependency);
-    public function countDependencies();
-    public function hasDependencies();
-    public function resolveDependencies(ITaskSet $taskSet);
-    public function applyDependencyResolution(ITask $dependencyTask);
-
-    public function countDependants();
-    public function hasDependants();
-    public function applyResolutionToDependants();
 
     public function execute(opal\query\ITransaction $transaction);
 }
-
-
-
-trait TTask {
-
-    protected $_id;
-    protected $_dependencies = [];
-    protected $_dependants = [];
-
-    protected function _setId($id) {
-        $adapter = $this->getAdapter();
-
-        if($adapter) {
-            $prefix = $adapter->getQuerySourceId();
-        } else {
-            $prefix = uniqid();
-        }
-
-        $this->_id = $prefix.'#'.$id;
-    }
-
-    public function getId() {
-        return $this->_id;
-    }
-
-
-// Dependencies
-    public function addDependency($dependency) {
-        if($dependency instanceof opal\record\task\ITask) {
-            $dependency = new opal\record\task\dependency\Generic($dependency);
-        } else if(!$dependency instanceof opal\record\task\IDependency) {
-            throw new InvalidArgumentException('Invalid dependency');
-        }
-
-
-        $id = $dependency->getId();
-
-        if(isset($this->_dependencies[$id])) {
-            return $this;
-        }
-
-        $this->_dependencies[$id] = $dependency;
-        $dependency->getRequiredTask()->addDependant($this);
-
-        return $this;
-    }
-
-    public function countDependencies() {
-        return count($this->_dependencies);
-    }
-
-    public function hasDependencies() {
-        return !empty($this->_dependencies);
-    }
-
-    public function resolveDependencies(ITaskSet $taskSet) {
-        while(!empty($this->_dependencies)) {
-            $dependency = array_shift($this->_dependencies);
-            $dependency->resolve($taskSet, $this);
-        }
-
-        return $this;
-    }
-
-    public function applyDependencyResolution(ITask $dependencyTask) {
-        $taskId = $dependencyTask->getId();
-
-        foreach($this->_dependencies as $id => $dependency) {
-            if($taskId == $dependency->getRequiredTaskId()) {
-                $dependency->applyResolution($this);
-                unset($this->_dependencies[$id]);
-            }
-        }
-
-        return $this;
-    }
-
-
-// Dependants
-    public function addDependant(ITask $task) {
-        $this->_dependants[$task->getId()] = $task;
-        return $this;
-    }
-
-    public function countDependants() {
-        return count($this->_dependants);
-    }
-
-    public function hasDependants() {
-        return !empty($this->_dependants);
-    }
-
-    public function applyResolutionToDependants() {
-        $output = false;
-
-        while(!empty($this->_dependants)) {
-            $output = true;
-            $task = array_shift($this->_dependants);
-            $task->applyDependencyResolution($this);
-        }
-
-        return $output;
-    }
-}
-
-
-trait TAdapterAwareTask {
-
-    protected $_adapter;
-
-    public function getAdapter() {
-        return $this->_adapter;
-    }
-}
-
 
 interface IEventBroadcastingTask extends ITask {
     public function reportPreEvent(ITaskSet $taskSet);
@@ -230,10 +93,6 @@ interface IEventBroadcastingTask extends ITask {
     public function reportPostEvent(ITaskSet $taskSet);
 }
 
-
-interface IOptionalAdapterAwareTask extends ITask {
-    public function hasAdapter();
-}
 
 
 interface IInsertTask extends ITask {}

@@ -8,30 +8,30 @@ namespace df\opal\record\task;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
-class ReplaceRecord implements IReplaceRecordTask {
-    
-    use TTask;
+class ReplaceRecord extends mesh\job\Base implements IReplaceRecordTask {
+
     use TRecordTask;
 
     public function __construct(opal\record\IRecord $record) {
         $this->_record = $record;
         $this->_setId(opal\record\Base::extractRecordId($record));
     }
-    
+
     public function getRecordTaskName() {
         return 'Replace';
     }
-    
+
     public function execute(opal\query\ITransaction $transaction) {
         $data = $this->_record->getValuesForStorage();
-        
+
         $id = $transaction->replace($data)
             ->in($this->getAdapter())
             ->execute();
-            
+
         $this->_record->acceptChanges($id);
-        
+
         return $this;
     }
 }

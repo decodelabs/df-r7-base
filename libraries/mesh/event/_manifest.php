@@ -17,14 +17,14 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 // Interfaces
 interface IEmitter {
-    public function emitEvent($entity, $action, array $data=null);
+    public function emitEvent($entity, $action, array $data=null, mesh\job\IQueue $jobQueue=null, mesh\job\IJob $job=null);
     public function emitEventObject(IEvent $event);
 }
 
 trait TEmitter {
 
-    public function emitEvent($entity, $action, array $data=null) {
-        return $this->emitEventObject(new mesh\event\Event($entity, $action, $data));
+    public function emitEvent($entity, $action, array $data=null, mesh\job\IQueue $jobQueue=null, mesh\job\IJob $job=null) {
+        return $this->emitEventObject(new mesh\event\Event($entity, $action, $data, $jobQueue, $job));
     }
 }
 
@@ -42,6 +42,12 @@ interface IEvent extends core\collection\IMap {
     // Action
     public function setAction($action);
     public function getAction();
+
+    // Job
+    public function setJobQueue(mesh\job\IQueue $queue=null);
+    public function getJobQueue(); //: ?mesh\job\IQueue;
+    public function setJob(mesh\job\IJob $job=null);
+    public function getJob(); //: ?mesh\job\IJob;
 }
 
 interface IListener {

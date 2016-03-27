@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,10 +8,9 @@ namespace df\opal\record\task;
 use df;
 use df\core;
 use df\opal;
-    
-class RawQuery implements ITask {
+use df\mesh;
 
-    use TTask;
+class RawQuery extends mesh\job\Base implements ITask {
 
     protected $_query;
 
