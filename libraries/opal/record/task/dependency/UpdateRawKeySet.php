@@ -15,7 +15,7 @@ class UpdateRawKeySet extends mesh\job\Dependency implements opal\record\task\IP
     use opal\record\task\TDependency;
     use opal\record\task\TParentFieldAwareDependency;
 
-    public function __construct($parentFields, opal\record\task\ITask $requiredTask) {
+    public function __construct($parentFields, mesh\job\IJob $requiredTask) {
         if(!is_array($parentFields)) {
             $parentFields = [$parentFields => $parentFields];
         }
@@ -24,7 +24,7 @@ class UpdateRawKeySet extends mesh\job\Dependency implements opal\record\task\IP
         $this->_requiredTask = $requiredTask;
     }
 
-    public function applyResolution(opal\record\task\ITask $dependentTask) {
+    public function applyResolution(mesh\job\IJob $dependentTask) {
         if($dependentTask instanceof opal\record\task\UpdateRaw) {
             $keySet = $this->_requiredTask->getRecord()->getPrimaryKeySet();
 
@@ -44,7 +44,7 @@ class UpdateRawKeySet extends mesh\job\Dependency implements opal\record\task\IP
         return $this;
     }
 
-    public function resolve(opal\record\task\ITaskSet $taskSet, opal\record\task\ITask $dependentTask) {
+    public function resolve(opal\record\task\ITaskSet $taskSet, mesh\job\IJob $dependentTask) {
         core\stub($taskSet);
     }
 }

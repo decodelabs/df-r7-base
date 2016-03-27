@@ -14,7 +14,7 @@ class Generic extends mesh\job\Dependency implements opal\record\task\IDependenc
 
     use opal\record\task\TDependency;
 
-    public function __construct(opal\record\task\ITask $requiredTask) {
+    public function __construct(mesh\job\IJob $requiredTask) {
         $this->_requiredTask = $requiredTask;
     }
 }

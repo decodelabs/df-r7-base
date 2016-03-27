@@ -59,12 +59,11 @@ class Unit extends axis\unit\table\Base {
             'action' => $action
         ]);
 
-        $historyTask = $taskSet->addGenericTask('history', $this, function() use($history, $taskSet, $record) {
+        $taskSet->after($recordTask, 'history', $this, function() use($history, $taskSet, $record) {
             $history->entity = $record;
             $history->save($taskSet);
         });
 
-        $historyTask->addDependency($recordTask);
         return $this;
     }
 

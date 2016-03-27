@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
+use df\mesh;
 
 class OneRelationValueContainer implements
     opal\record\ITaskAwareValueContainer,
@@ -192,7 +193,7 @@ class OneRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
+    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
         if($this->_record instanceof opal\record\IRecord) {
             $task = $this->_record->deploySaveTasks($taskSet);
 
@@ -214,7 +215,7 @@ class OneRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
         //core\stub($taskSet, $record, $recordTask);
     }
 

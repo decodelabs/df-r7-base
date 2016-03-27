@@ -25,11 +25,8 @@ interface ITaskSet extends mesh\job\IQueue {
     public function delete(opal\record\IRecord $record);
 
     public function addRawQuery($id, opal\query\IWriteQuery $query);
-    public function addGenericTask(...$args);
-    public function after(ITask $task, ...$args);
-    public function emitEventAfter(ITask $task, $entity, $action, array $data=null);
 
-    public function addTask(ITask $task);
+    public function addTask(mesh\job\IJob $task);
     public function hasTask($id);
     public function getTask($id);
     public function isRecordQueued(opal\record\IRecord $record);
@@ -40,8 +37,8 @@ interface ITaskSet extends mesh\job\IQueue {
 interface IDependency extends mesh\job\IDependency {
     public function getRequiredTask();
     public function getRequiredTaskId();
-    public function applyResolution(ITask $dependentTask);
-    public function resolve(ITaskSet $taskSet, ITask $dependentTask);
+    public function applyResolution(mesh\job\IJob $dependentTask);
+    public function resolve(ITaskSet $taskSet, mesh\job\IJob $dependentTask);
 }
 
 trait TDependency {
@@ -56,11 +53,11 @@ trait TDependency {
         return $this->_requiredTask->getId();
     }
 
-    public function applyResolution(opal\record\task\ITask $dependentTask) {
+    public function applyResolution(mesh\job\IJob $dependentTask) {
         return $this;
     }
 
-    public function resolve(opal\record\task\ITaskSet $taskSet, opal\record\task\ITask $dependentTask) {
+    public function resolve(opal\record\task\ITaskSet $taskSet, mesh\job\IJob $dependentTask) {
         //core\stub($this->_requiredTask, $dependentTask, $taskSet);
     }
 }
@@ -80,12 +77,7 @@ trait TParentFieldAwareDependency {
 
 
 
-
-interface ITask extends mesh\job\IJob {
-    public function addDependency($dependency);
-}
-
-interface IEventBroadcastingTask extends ITask {
+interface IEventBroadcastingTask extends mesh\job\IJob {
     public function reportPreEvent(ITaskSet $taskSet);
     public function reportExecuteEvent(ITaskSet $taskSet);
     public function reportPostEvent(ITaskSet $taskSet);
@@ -93,21 +85,21 @@ interface IEventBroadcastingTask extends ITask {
 
 
 
-interface IInsertTask extends ITask {}
-interface IReplaceTask extends ITask {}
-interface IUpdateTask extends ITask {}
-interface IDeleteTask extends ITask {}
+interface IInsertTask extends mesh\job\IJob {}
+interface IReplaceTask extends mesh\job\IJob {}
+interface IUpdateTask extends mesh\job\IJob {}
+interface IDeleteTask extends mesh\job\IJob {}
 
 
 
-interface IKeyTask extends ITask {
+interface IKeyTask extends mesh\job\IJob {
     public function setKeys(array $keys);
     public function addKeys(array $keys);
     public function addKey($key, $value);
     public function getKeys();
 }
 
-interface IFilterKeyTask extends ITask {
+interface IFilterKeyTask extends mesh\job\IJob {
     public function setFilterKeys(array $keys);
     public function addFilterKeys(array $keys);
     public function addFilterKey($key, $value);
@@ -117,7 +109,7 @@ interface IFilterKeyTask extends ITask {
 interface IDeleteKeyTask extends IDeleteTask, IKeyTask, IFilterKeyTask {}
 
 
-interface IRecordTask extends ITask, IEventBroadcastingTask {
+interface IRecordTask extends mesh\job\IJob, IEventBroadcastingTask {
 
     const EVENT_PRE = 'pre';
     const EVENT_EXECUTE = 'execute';

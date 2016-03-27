@@ -48,12 +48,11 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
 
     protected function onUpdate($taskSet, $task) {
         if($this->_groupsChanged) {
-            $regenTask = $taskSet->addGenericTask('regenKeyring', function() {
+            $regenTask = $taskSet->after($task, 'regenKeyring', function() {
                 $this->getAdapter()->context->user->refreshClientData();
                 $this->getAdapter()->context->user->instigateGlobalKeyringRegeneration();
             });
 
-            $regenTask->addDependency($task);
             $this->_groupsChanged = false;
         }
     }

@@ -121,47 +121,7 @@ class TaskSet extends mesh\job\Queue implements ITaskSet {
         return $job;
     }
 
-    public function addGenericTask(...$args) {
-        $id = uniqid();
-        $adapter = null;
-        $callback = null;
-
-        foreach($args as $arg) {
-            if(is_string($arg)) {
-                $id = $arg;
-            } else if($arg instanceof opal\query\IAdapter) {
-                $adapter = $arg;
-            } else if(is_callable($arg)) {
-                $callback = $arg;
-            }
-        }
-
-        if($callback === null) {
-            throw new InvalidArgumentException(
-                'Generic jobs must have a callback'
-            );
-        }
-
-        $job = new Generic($id, $callback, $adapter);
-        $this->addTask($job);
-
-        return $job;
-    }
-
-    public function after(ITask $job, ...$args) {
-        return $this->addGenericTask(...$args)->addDependency($job);
-    }
-
-    public function emitEventAfter(ITask $job, $entity, $action, array $data=null) {
-        return $this->addGenericTask(function() use($entity, $action, $data, $job) {
-                mesh\Manager::getInstance()->emitEvent($entity, $action, $data, $this, $job);
-            })
-            ->addDependency($job);
-    }
-
-
-
-    public function addTask(ITask $job) {
+    public function addTask(mesh\job\IJob $job) {
         $id = $job->getId();
 
         if(isset($this->_jobs[$id])) {
@@ -232,6 +192,7 @@ class TaskSet extends mesh\job\Queue implements ITaskSet {
         }
 
         $this->_isExecuting = true;
+        $this->_transaction->begin();
         $this->_jobs = array_filter($this->_jobs);
 
         foreach($this->_jobs as $job) {

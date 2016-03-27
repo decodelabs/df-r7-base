@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class RawQuery extends mesh\job\Base implements ITask {
+class RawQuery extends mesh\job\Base {
 
     protected $_query;
 

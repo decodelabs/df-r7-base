@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
+use df\mesh;
 
 class BridgedManyRelationValueContainer implements
     opal\record\ITaskAwareValueContainer,
@@ -574,7 +575,7 @@ class BridgedManyRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
+    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
         $localUnit = $parentRecord->getAdapter();
         $this->_localPrimaryKeySet->updateWith($parentRecord);
 
@@ -720,7 +721,7 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
         if(!$recordTask) {
             return $this;
         }

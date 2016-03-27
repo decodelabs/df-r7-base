@@ -165,9 +165,9 @@ interface IIdProviderValueContainer extends IValueContainer {
 }
 
 interface ITaskAwareValueContainer extends IValueContainer {
-    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, IRecord $record, $fieldName, opal\record\task\ITask $task=null);
+    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, IRecord $record, $fieldName, mesh\job\IJob $task=null);
     public function acceptSaveTaskChanges(opal\record\IRecord $record);
-    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, IRecord $record, $fieldName, opal\record\task\ITask $task=null);
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, IRecord $record, $fieldName, mesh\job\IJob $task=null);
     public function acceptDeleteTaskChanges(opal\record\IRecord $record);
 }
 

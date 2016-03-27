@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\mesh;
 
-class Base implements IJob {
+abstract class Base implements IJob {
 
     protected $_id;
     protected $_dependencies = [];
@@ -30,8 +30,6 @@ class Base implements IJob {
     public function getId(): string {
         return $this->_id;
     }
-
-    public function getAdapter() {}
 
 
 // Dependencies
@@ -104,8 +102,4 @@ class Base implements IJob {
 
         return $output;
     }
-
-
-// Runner
-    public function execute() {}
 }

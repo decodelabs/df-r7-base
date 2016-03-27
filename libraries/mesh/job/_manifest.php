@@ -45,10 +45,10 @@ interface IQueue {
     public function getTransaction(): ITransaction;
     public function registerAdapter(ITransactionAdapter $adapter);
 
-/*
     public function asap(...$args): IJob;
     public function after(IJob $job, ...$args): IJob;
-    public function emitAfter(IJob $job, $entity, $action, array $data=null): IJob;
+    public function emitEventAfter(IJob $job, $entity, $action, array $data=null): IJob;
+/*
     public function addJob(IJob $job);
 
     public function ignoreObject($object);
