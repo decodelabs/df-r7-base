@@ -167,7 +167,7 @@ class Model extends axis\Model implements user\session\IBackend {
         if(empty($node->creationTime)) {
             $node->creationTime = time();
 
-            $this->node->insert([
+            $this->node->replace([
                     'descriptor' => $descriptor->id,
                     'bucket' => $bucket->getName(),
                     'key' => $node->key,
