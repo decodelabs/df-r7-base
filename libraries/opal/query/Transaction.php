@@ -11,7 +11,6 @@ use df\opal;
 
 class Transaction implements ITransaction, core\IDumpable {
 
-    protected $_level = 1;
     protected $_adapters = [];
     protected $_source;
 
@@ -178,47 +177,21 @@ class Transaction implements ITransaction, core\IDumpable {
 
 
     public function commit() {
-        if($this->_level == 1) {
-            foreach($this->_adapters as $adapter) {
-                if($adapter->supportsQueryFeature(IQueryFeatures::TRANSACTION)) {
-                    $adapter->commitQueryTransaction();
-                }
+        foreach($this->_adapters as $adapter) {
+            if($adapter->supportsQueryFeature(IQueryFeatures::TRANSACTION)) {
+                $adapter->commitQueryTransaction();
             }
-        }
-
-        if($this->_level > 0) {
-            $this->_level--;
         }
 
         return $this;
     }
 
     public function rollback() {
-        if($this->_level == 1) {
-            foreach($this->_adapters as $adapter) {
-                if($adapter->supportsQueryFeature(IQueryFeatures::TRANSACTION)) {
-                    $adapter->rollbackQueryTransaction();
-                }
+        foreach($this->_adapters as $adapter) {
+            if($adapter->supportsQueryFeature(IQueryFeatures::TRANSACTION)) {
+                $adapter->rollbackQueryTransaction();
             }
         }
-
-        if($this->_level > 0) {
-            $this->_level--;
-        }
-
-        return $this;
-    }
-
-    public function beginAgain() {
-        if(!$this->_level) {
-            foreach($this->_adapters as $adapter) {
-                if($adapter->supportsQueryFeature(IQueryFeatures::TRANSACTION)) {
-                    $adapter->beginQueryTransaction();
-                }
-            }
-        }
-
-        $this->_level++;
 
         return $this;
     }
@@ -257,9 +230,6 @@ class Transaction implements ITransaction, core\IDumpable {
             $adapters[] = $adapter->getQuerySourceDisplayName();
         }
 
-        return [
-            'level' => $this->_level,
-            'adapters' => $adapters
-        ];
+        return $adapters;
     }
 }

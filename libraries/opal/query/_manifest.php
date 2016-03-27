@@ -800,7 +800,6 @@ interface ISourceManager extends ITransactionAware {
 interface ITransaction extends IEntryPoint {
     public function commit();
     public function rollback();
-    public function beginAgain();
 
     public function registerAdapter(IAdapter $adapter);
 }
