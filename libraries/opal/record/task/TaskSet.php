@@ -148,7 +148,7 @@ class TaskSet extends mesh\job\Queue implements ITaskSet {
     }
 
     public function hasTask($id) {
-        if($id instanceof ITask) {
+        if($id instanceof mesh\job\IJob) {
             $id = $id->getId();
         }
 
@@ -156,7 +156,7 @@ class TaskSet extends mesh\job\Queue implements ITaskSet {
     }
 
     public function getTask($id) {
-        if($id instanceof ITask) {
+        if($id instanceof mesh\job\IJob) {
             $id = $id->getId();
         } else if($id instanceof opal\record\IRecord) {
             $id = $this->_getRecordId($id);
