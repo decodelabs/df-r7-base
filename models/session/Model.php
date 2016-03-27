@@ -13,7 +13,6 @@ use df\user;
 class Model extends axis\Model implements user\session\IBackend {
 
     protected $_lifeTime = 86400; // 24 hours
-    protected $_nodeTransactions = [];
 
 // Life time
     public function setLifeTime($lifeTime) {
@@ -79,10 +78,6 @@ class Model extends axis\Model implements user\session\IBackend {
     public function killSession(user\session\IDescriptor $descriptor) {
         $id = $descriptor->id;
 
-        if(isset($this->_nodeTransactions[$id])) {
-            $this->_nodeTransactions[$id]->commit();
-        }
-
         $this->descriptor->delete()
             ->where('id', '=', $id)
             ->execute();
@@ -90,8 +85,6 @@ class Model extends axis\Model implements user\session\IBackend {
         $this->node->delete()
             ->where('descriptor', '=', $id)
             ->execute();
-
-        unset($this->_nodeTransactions[$id]);
 
         return $this;
     }
@@ -168,47 +161,30 @@ class Model extends axis\Model implements user\session\IBackend {
         }
     }
 
-    public function lockNode(user\session\IBucket $bucket, user\session\INode $node) {
-        $this->_beginNodeTransaction($bucket->getDescriptor());
-        $node->isLocked = true;
-
-        return $node;
-    }
-
-    public function unlockNode(user\session\IBucket $bucket, user\session\INode $node) {
-        if($transaction = $this->_getNodeTransaction($bucket->getDescriptor())) {
-            $transaction->commit();
-        }
-
-        return $node;
-    }
-
     public function updateNode(user\session\IBucket $bucket, user\session\INode $node) {
         $descriptor = $bucket->getDescriptor();
 
-        if($transaction = $this->_getNodeTransaction($descriptor)) {
-            if(empty($node->creationTime)) {
-                $node->creationTime = time();
+        if(empty($node->creationTime)) {
+            $node->creationTime = time();
 
-                $transaction->insert([
-                        'descriptor' => $descriptor->id,
-                        'bucket' => $bucket->getName(),
-                        'key' => $node->key,
-                        'value' => serialize($node->value),
-                        'creationTime' => $node->creationTime,
-                        'updateTime' => $node->updateTime
-                    ])
-                    ->execute();
-            } else {
-                $transaction->update([
-                        'value' => serialize($node->value),
-                        'updateTime' => $node->updateTime
-                    ])
-                    ->where('descriptor', '=', $descriptor->id)
-                    ->where('bucket', '=', $bucket->getName())
-                    ->where('key', '=', $node->key)
-                    ->execute();
-            }
+            $this->node->insert([
+                    'descriptor' => $descriptor->id,
+                    'bucket' => $bucket->getName(),
+                    'key' => $node->key,
+                    'value' => serialize($node->value),
+                    'creationTime' => $node->creationTime,
+                    'updateTime' => $node->updateTime
+                ])
+                ->execute();
+        } else {
+            $this->node->update([
+                    'value' => serialize($node->value),
+                    'updateTime' => $node->updateTime
+                ])
+                ->where('descriptor', '=', $descriptor->id)
+                ->where('bucket', '=', $bucket->getName())
+                ->where('key', '=', $node->key)
+                ->execute();
         }
 
         return $node;
@@ -273,30 +249,5 @@ class Model extends axis\Model implements user\session\IBackend {
     public function purgeRecallKeys() {
         $this->recall->purge();
         return $this;
-    }
-
-
-// Helpers
-    protected function _getNodeTransaction(user\session\IDescriptor $descriptor) {
-        $id = $descriptor->id;
-
-        if(isset($this->_nodeTransactions[$id])) {
-            return $this->_nodeTransactions[$id];
-        }
-
-        return null;
-    }
-
-    protected function _beginNodeTransaction(user\session\IDescriptor $descriptor) {
-        $id = $descriptor->id;
-
-        if(isset($this->_nodeTransactions[$id])) {
-            $output = $this->_nodeTransactions[$id];
-            $output->beginAgain();
-        } else {
-            $output = $this->_nodeTransactions[$id] = $this->node->begin();
-        }
-
-        return $output;
     }
 }

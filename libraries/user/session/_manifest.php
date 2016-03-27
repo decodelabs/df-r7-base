@@ -44,12 +44,8 @@ interface IBucket extends core\IValueMap, \ArrayAccess {
 
     public function getDescriptor();
     public function getSessionId();
-    public function transitionSessionId();
     public function isSessionOpen();
 
-    public function acquire($key);
-    public function release($key);
-    public function update($key, \Closure $func);
     public function refresh($key);
     public function refreshAll();
     public function getUpdateTime($id);
@@ -87,8 +83,6 @@ interface IBackend {
 
     public function fetchNode(IBucket $bucket, $key);
     public function fetchLastUpdatedNode(IBucket $bucket);
-    public function lockNode(IBucket $bucket, INode $node);
-    public function unlockNode(IBucket $bucket, INode $node);
     public function updateNode(IBucket $bucket, INode $node);
     public function removeNode(IBucket $bucket, $key);
     public function hasNode(IBucket $bucket, $key);
@@ -176,7 +170,6 @@ class Node implements INode {
     public $value;
     public $creationTime;
     public $updateTime;
-    public $isLocked = false;
 
     public static function create($key, $res, $locked=false) {
         $output = new self();
@@ -208,7 +201,6 @@ class Node implements INode {
             }
         }
 
-        $output->isLocked = (bool)$locked;
         return $output;
     }
 }

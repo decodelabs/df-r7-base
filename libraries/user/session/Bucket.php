@@ -13,7 +13,6 @@ class Bucket implements user\session\IBucket, core\IDumpable {
 
     use core\TValueMap;
 
-
     protected $_name;
     protected $_nodes = [];
     protected $_controller;
@@ -57,67 +56,17 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         return $this->_controller->getId();
     }
 
-    public function transitionSessionId() {
-        $this->_controller->transition();
-        return $this;
-    }
-
     public function isSessionOpen() {
         return $this->_controller->isOpen();
     }
 
-
-
-    public function acquire($key) {
-        if(!isset($this->_nodes[$key])) {
-            $this->getNode($key);
-        }
-
-        $this->_controller->cache->removeNode($this, $key);
-
-        if(!$this->_nodes[$key]->isLocked) {
-            $this->_controller->backend->lockNode($this, $this->_nodes[$key]);
-        }
-
-        return $this;
-    }
-
-    public function release($key) {
-        if(isset($this->_nodes[$key]) && $this->_nodes[$key]->isLocked) {
-            $this->_controller->backend->unlockNode($this, $this->_nodes[$key]);
-            $this->_nodes[$key]->isLocked = false;
-        }
-
-        return $this;
-    }
-
-    public function update($key, \Closure $func) {
-        $this->acquire($key);
-        $node = $this->_nodes[$key];
-
-        $value = $func($node->value);
-        $this->set($key, $value);
-
-        return $this->release($key);
-    }
-
     public function refresh($key) {
-        if(isset($this->_nodes[$key]) && $this->_nodes[$key]->isLocked) {
-            // skip this
-        } else {
-            unset($this->_nodes[$key]);
-        }
-
+        unset($this->_nodes[$key]);
         return $this;
     }
 
     public function refreshAll() {
-        foreach($this->_nodes as $key => $node) {
-            if(!$node->isLocked) {
-                unset($this->_nodes[$key]);
-            }
-        }
-
+        $this->_nodes = [];
         return $this;
     }
 
@@ -203,24 +152,12 @@ class Bucket implements user\session\IBucket, core\IDumpable {
 
 
     public function set($key, $value) {
-        $key = (string)$key;
-        $atomicLock = false;
-
-        if(!isset($this->_nodes[$key]) || !$this->_nodes[$key]->isLocked) {
-            $atomicLock = true;
-            $this->acquire($key);
-        }
-
-        $node = $this->_nodes[$key];
+        $node = $this->getNode($key);
         $node->updateTime = time();
         $node->value = $value;
 
         $this->_controller->cache->insertNode($this, $node);
         $this->_controller->backend->updateNode($this, $node);
-
-        if($atomicLock) {
-            $this->release($key);
-        }
 
         return $this;
     }
@@ -265,15 +202,7 @@ class Bucket implements user\session\IBucket, core\IDumpable {
     public function remove(...$keys) {
         foreach($keys as $key) {
             $key = (string)$key;
-
-            if(isset($this->_nodes[$key])) {
-                if($this->_nodes[$key]->isLocked) {
-                    $this->release($key);
-                }
-
-                unset($this->_nodes[$key]);
-            }
-
+            unset($this->_nodes[$key]);
             $this->_controller->backend->removeNode($this, $key);
             $this->_controller->cache->removeNode($this, $key);
         }

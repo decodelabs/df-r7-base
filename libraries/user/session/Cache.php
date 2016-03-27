@@ -42,13 +42,7 @@ class Cache extends core\cache\Base implements ICache {
 
     public function insertNode(IBucket $bucket, INode $node) {
         $id = 'i:'.$bucket->getDescriptor()->getIdHex().'/'.$bucket->getName().'#'.$node->key;
-
-        $isLocked = $node->isLocked;
-        $node->isLocked = false;
-
         $this->set($id, $node);
-
-        $node->isLocked = $isLocked;
         return $node;
     }
 
