@@ -59,7 +59,7 @@ class Base implements IJob {
      public function untangleDependencies(IQueue $queue) {
         while(!empty($this->_dependencies)) {
             $dependency = array_shift($this->_dependencies);
-            $dependency->resolve($taskSet, $this);
+            $dependency->resolve($queue, $this);
         }
 
         return $this;
