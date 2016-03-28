@@ -113,14 +113,14 @@ trait TAdapterAwareJob {
 
 
 interface IDependency {
-/*
     public function getRequiredJob(): IJob;
     public function getRequiredJobId(): string;
+
     public function setResolution(IResolution $resolution=null);
     public function getResolution(); //: ?IResolution
+
     public function untangle(IQueue $queue, IJob $subordinate);
     public function resolve(IJob $subordinate);
-*/
 }
 
 interface IResolution {

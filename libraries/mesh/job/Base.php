@@ -24,7 +24,7 @@ abstract class Base implements IJob {
             $prefix = uniqid();
         }
 
-        $this->_id = get_class($this).':'.$prefix.'#'.$id;
+        $this->_id = get_class($this).'|'.$prefix.':'.$id;
     }
 
     public function getId(): string {
@@ -39,13 +39,13 @@ abstract class Base implements IJob {
 // Dependencies
     public function addDependency($dependency, IResolution $resolution=null) {
         if($dependency instanceof IJob) {
-            $dependency = new df\opal\record\task\dependency\Generic($dependency);
+            $dependency = new Dependency($dependency, $resolution);
         } else if(!$dependency instanceof IDependency) {
             throw new InvalidArgumentException('Invalid dependency');
         }
 
         $this->_dependencies[] = $dependency;
-        $dependency->getRequiredTask()->addSubordinate($this);
+        $dependency->getRequiredJob()->addSubordinate($this);
 
         return $this;
     }
@@ -61,7 +61,7 @@ abstract class Base implements IJob {
      public function untangleDependencies(IQueue $queue) {
         while(!empty($this->_dependencies)) {
             $dependency = array_shift($this->_dependencies);
-            $dependency->resolve($queue, $this);
+            $dependency->untangle($queue, $this);
         }
 
         return $this;
@@ -71,8 +71,8 @@ abstract class Base implements IJob {
         $jobId = $job->getId();
 
         foreach($this->_dependencies as $id => $dependency) {
-            if($jobId == $dependency->getRequiredTaskId()) {
-                $dependency->applyResolution($this);
+            if($jobId == $dependency->getRequiredJobId()) {
+                $dependency->resolve($this);
                 unset($this->_dependencies[$id]);
             }
         }

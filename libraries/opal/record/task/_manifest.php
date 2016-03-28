@@ -17,35 +17,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces
-interface IDependency extends mesh\job\IDependency {
-    public function getRequiredTask();
-    public function getRequiredTaskId();
-    public function applyResolution(mesh\job\IJob $dependentTask);
-    public function resolve(mesh\job\IQueue $taskSet, mesh\job\IJob $dependentTask);
-}
-
-trait TDependency {
-
-    protected $_requiredTask;
-
-    public function getRequiredTask() {
-        return $this->_requiredTask;
-    }
-
-    public function getRequiredTaskId() {
-        return $this->_requiredTask->getId();
-    }
-
-    public function applyResolution(mesh\job\IJob $dependentTask) {
-        return $this;
-    }
-
-    public function resolve(mesh\job\IQueue $taskSet, mesh\job\IJob $dependentTask) {
-        //core\stub($this->_requiredTask, $dependentTask, $taskSet);
-    }
-}
-
-interface IParentFieldAwareDependency extends IDependency {
+interface IParentFieldAwareDependency extends mesh\job\IDependency {
     public function getParentFields();
 }
 
@@ -57,7 +29,6 @@ trait TParentFieldAwareDependency {
         return $this->_parentFields;
     }
 }
-
 
 
 interface IKeyTask extends mesh\job\IJob {
