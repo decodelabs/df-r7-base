@@ -11,6 +11,7 @@ use df\arch as archLib;
 use df\axis;
 use df\opal;
 use df\flex;
+use df\mesh;
 
 class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
