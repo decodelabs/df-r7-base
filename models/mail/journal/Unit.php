@@ -71,7 +71,7 @@ class Unit extends axis\unit\table\Base {
             $emails[$row['email']] = $row['id'];
         }
 
-        $taskSet = $this->context->data->newRecordTaskSet();
+        $taskSet = $this->context->data->newJobQueue();
 
         foreach($emails as $address => $id) {
             $journal = $this->newRecord($baseData);

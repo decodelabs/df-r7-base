@@ -24,11 +24,15 @@ abstract class Base implements IJob {
             $prefix = uniqid();
         }
 
-        $this->_id = $prefix.'#'.$id;
+        $this->_id = get_class($this).':'.$prefix.'#'.$id;
     }
 
     public function getId(): string {
         return $this->_id;
+    }
+
+    public function getObjectId(): string {
+        return $this->getId();
     }
 
 

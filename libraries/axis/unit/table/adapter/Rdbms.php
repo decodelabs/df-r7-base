@@ -62,7 +62,7 @@ class Rdbms implements
 
 // Query source
     public function getQuerySourceId() {
-        return 'axis://Unit:"'.$this->_unit->getUnitId().'"';
+        return 'axis://'.$this->_unit->getModel()->getModelName().'/'.ucfirst($this->_unit->getUnitName());
     }
 
     public function getQuerySourceDisplayName() {

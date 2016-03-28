@@ -17,23 +17,6 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces
-interface ITaskSet extends mesh\job\IQueue {
-    public function save(opal\record\IRecord $record);
-    public function insert(opal\record\IRecord $record);
-    public function replace(opal\record\IRecord $record);
-    public function update(opal\record\IRecord $record);
-    public function delete(opal\record\IRecord $record);
-
-    public function addRawQuery($id, opal\query\IWriteQuery $query);
-
-    public function addTask(mesh\job\IJob $task);
-    public function hasTask($id);
-    public function getTask($id);
-    public function isRecordQueued(opal\record\IRecord $record);
-    public function setRecordAsQueued(opal\record\IRecord $record);
-}
-
-
 interface IDependency extends mesh\job\IDependency {
     public function getRequiredTask();
     public function getRequiredTaskId();
@@ -76,12 +59,6 @@ trait TParentFieldAwareDependency {
 }
 
 
-interface IInsertTask extends mesh\job\IJob {}
-interface IReplaceTask extends mesh\job\IJob {}
-interface IUpdateTask extends mesh\job\IJob {}
-interface IDeleteTask extends mesh\job\IJob {}
-
-
 
 interface IKeyTask extends mesh\job\IJob {
     public function setKeys(array $keys);
@@ -97,8 +74,6 @@ interface IFilterKeyTask extends mesh\job\IJob {
     public function getFilterKeys();
 }
 
-interface IDeleteKeyTask extends IDeleteTask, IKeyTask, IFilterKeyTask {}
-
 
 interface IRecordTask extends mesh\job\IJob, mesh\job\IEventBroadcastingJob {
 
@@ -107,12 +82,16 @@ interface IRecordTask extends mesh\job\IJob, mesh\job\IEventBroadcastingJob {
     const EVENT_POST = 'post';
 
     public function getRecord();
-    public function getRecordTaskName();
+    public function getRecordJobName();
 }
 
 trait TRecordTask {
 
     protected $_record;
+
+    public function getObjectId(): string {
+        return mesh\job\Queue::getObjectId($this->_record);
+    }
 
     public function getRecord() {
         return $this->_record;
@@ -123,25 +102,17 @@ trait TRecordTask {
     }
 
     public function reportPreEvent(mesh\job\IQueue $queue) {
-        $this->_record->triggerTaskEvent($queue, $this, IRecordTask::EVENT_PRE);
+        $this->_record->triggerJobEvent($queue, $this, IRecordTask::EVENT_PRE);
         return $this;
     }
 
     public function reportExecuteEvent(mesh\job\IQueue $queue) {
-        $this->_record->triggerTaskEvent($queue, $this, IRecordTask::EVENT_EXECUTE);
+        $this->_record->triggerJobEvent($queue, $this, IRecordTask::EVENT_EXECUTE);
         return $this;
     }
 
     public function reportPostEvent(mesh\job\IQueue $queue) {
-        $this->_record->triggerTaskEvent($queue, $this, IRecordTask::EVENT_POST);
+        $this->_record->triggerJobEvent($queue, $this, IRecordTask::EVENT_POST);
         return $this;
     }
 }
-
-interface IInsertRecordTask extends IRecordTask, IInsertTask {
-    public function ifNotExists(bool $flag=null);
-}
-
-interface IReplaceRecordTask extends IRecordTask, IReplaceTask {}
-interface IUpdateRecordTask extends IRecordTask, IUpdateTask {}
-interface IDeleteRecordTask extends IRecordTask, IDeleteTask {}

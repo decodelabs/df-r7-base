@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class UpdateRaw extends mesh\job\Base implements IUpdateTask {
+class UpdateRaw extends mesh\job\Base {
 
     use mesh\job\TAdapterAwareJob;
 

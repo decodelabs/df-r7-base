@@ -388,8 +388,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 $this->_values[$key] = $value = $insertData[$key];
             }
 
-            if($value instanceof ITaskAwareValueContainer) {
-                $value->acceptSaveTaskChanges($this);
+            if($value instanceof IJobAwareValueContainer) {
+                $value->acceptSaveJobChanges($this);
             }
         }
 
@@ -577,10 +577,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
         if($taskSet === null) {
             $execute = true;
-            $taskSet = new opal\record\task\TaskSet();
+            $taskSet = new mesh\job\Queue();
         }
 
-        $this->deploySaveTasks($taskSet);
+        $this->deploySaveJobs($taskSet);
 
         if($execute) {
             $taskSet->execute();
@@ -594,10 +594,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
         if($taskSet === null) {
             $execute = true;
-            $taskSet = new opal\record\task\TaskSet();
+            $taskSet = new mesh\job\Queue();
         }
 
-        $this->deployDeleteTasks($taskSet);
+        $this->deployDeleteJobs($taskSet);
 
         if($execute) {
             $taskSet->execute();
@@ -606,41 +606,52 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function deploySaveTasks(mesh\job\IQueue $taskSet) {
+    public function deploySaveJobs(mesh\job\IQueue $taskSet) {
         $recordTask = null;
 
-        if($taskSet->isRecordQueued($this)) {
-            return $recordTask;
+        if($taskSet->isDeployed($this)) {
+            return $taskSet->getLastJobUsing($this);
         }
 
         if($this->hasChanged() || $this->isNew()) {
-            $recordTask = $taskSet->save($this);
+            $recordTask = $taskSet->asap(
+                $this->isNew() ?
+                    new opal\record\task\InsertRecord($this) :
+                    new opal\record\task\UpdateRecord($this)
+            );
+
+            $ignored = false;
         } else {
-            $taskSet->setRecordAsQueued($this);
+            $taskSet->ignore($this);
+            $ignored = true;
         }
 
         foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
-            if($value instanceof ITaskAwareValueContainer) {
-                $value->deploySaveTasks($taskSet, $this, $key, $recordTask);
+            if($value instanceof IJobAwareValueContainer) {
+                $value->deploySaveJobs($taskSet, $this, $key, $recordTask);
             }
+        }
+
+        if($ignored) {
+            $taskSet->unignore($this);
         }
 
         return $recordTask;
     }
 
-    public function deployDeleteTasks(mesh\job\IQueue $taskSet) {
+    public function deployDeleteJobs(mesh\job\IQueue $taskSet) {
         $recordTask = null;
 
         if(!$this->isNew()) {
-            if($taskSet->isRecordQueued($this)) {
+            if($taskSet->hasJobUsing($this)) {
                 return $recordTask;
             }
 
-            $recordTask = $taskSet->delete($this);
+            $recordTask = $taskSet->asap(new opal\record\task\DeleteRecord($this));
 
             foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
-                if($value instanceof ITaskAwareValueContainer) {
-                    $value->deployDeleteTasks($taskSet, $this, $key, $recordTask);
+                if($value instanceof IJobAwareValueContainer) {
+                    $value->deployDeleteJobs($taskSet, $this, $key, $recordTask);
                 }
             }
         }
@@ -648,8 +659,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $recordTask;
     }
 
-    public function triggerTaskEvent(mesh\job\IQueue $taskSet, opal\record\task\IRecordTask $task, $when) {
-        $taskName = $task->getRecordTaskName();
+    public function triggerJobEvent(mesh\job\IQueue $taskSet, opal\record\task\IRecordTask $task, $when) {
+        $taskName = $task->getRecordJobName();
         $funcPrefix = null;
 
         if($when != opal\record\task\IRecordTask::EVENT_POST) {

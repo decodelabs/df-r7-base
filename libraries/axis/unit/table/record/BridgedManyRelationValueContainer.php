@@ -12,7 +12,7 @@ use df\opal;
 use df\mesh;
 
 class BridgedManyRelationValueContainer implements
-    opal\record\ITaskAwareValueContainer,
+    opal\record\IJobAwareValueContainer,
     opal\record\IPreparedValueContainer,
     opal\record\IManyRelationValueContainer,
     opal\record\IIdProviderValueContainer,
@@ -575,7 +575,7 @@ class BridgedManyRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deploySaveJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
         $localUnit = $parentRecord->getAdapter();
         $this->_localPrimaryKeySet->updateWith($parentRecord);
 
@@ -591,7 +591,7 @@ class BridgedManyRelationValueContainer implements
         // Save any changed populated records
         foreach($this->_current as $id => $record) {
             if($record instanceof opal\record\IRecord) {
-                $record->deploySaveTasks($taskSet);
+                $record->deploySaveJobs($taskSet);
             }
         }
 
@@ -603,7 +603,7 @@ class BridgedManyRelationValueContainer implements
                 $bridgeLocalFieldName => $this->_localPrimaryKeySet
             ]);
 
-            $taskSet->addTask($removeAllTask);
+            $taskSet->addJob($removeAllTask);
         }
 
         $filterKeys = [];
@@ -613,10 +613,16 @@ class BridgedManyRelationValueContainer implements
             // Build bridge
             if($record instanceof opal\record\IPartial && $record->isBridge()) {
                 $bridgeRecord = $bridgeUnit->newRecord($record->toArray());
-                $bridgeTask = $taskSet->replace($bridgeRecord);
+
+                $bridgeTask = $taskSet->asap(
+                    new opal\record\task\ReplaceRecord($bridgeRecord)
+                );
             } else {
                 $bridgeRecord = $bridgeUnit->newRecord();
-                $bridgeTask = $taskSet->insert($bridgeRecord)->ifNotExists(true);
+
+                $bridgeTask = $taskSet->asap(
+                    (new opal\record\task\InsertRecord($bridgeRecord))->ifNotExists(true)
+                );
             }
 
 
@@ -650,7 +656,7 @@ class BridgedManyRelationValueContainer implements
             $targetRecordTask = null;
 
             if($record instanceof opal\record\IRecord) {
-                $targetRecordTask = $record->deploySaveTasks($taskSet);
+                $targetRecordTask = $record->deploySaveJobs($taskSet);
             }
 
             // Target ids
@@ -705,14 +711,14 @@ class BridgedManyRelationValueContainer implements
                     continue;
                 }
 
-                $taskSet->addTask(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
+                $taskSet->addJob(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
             }
         }
 
         return $this;
     }
 
-    public function acceptSaveTaskChanges(opal\record\IRecord $record) {
+    public function acceptSaveJobChanges(opal\record\IRecord $record) {
         $this->_current = array_merge($this->_current, $this->_new);
         $this->_new = [];
         $this->_remove = [];
@@ -721,7 +727,7 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deployDeleteJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
         if(!$recordTask) {
             return $this;
         }
@@ -738,13 +744,13 @@ class BridgedManyRelationValueContainer implements
         }
 
         if(!empty($bridgeData)) {
-            $taskSet->addTask(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
+            $taskSet->addJob(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
         }
 
         return $this;
     }
 
-    public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
+    public function acceptDeleteJobChanges(opal\record\IRecord $record) {
         $this->_new = array_merge($this->_current, $this->_new);
         $this->_current = [];
         $this->_remove = [];

@@ -12,7 +12,7 @@ use df\opal;
 use df\mesh;
 
 class OneRelationValueContainer implements
-    opal\record\ITaskAwareValueContainer,
+    opal\record\IJobAwareValueContainer,
     opal\record\IPreparedValueContainer,
     opal\record\IIdProviderValueContainer {
 
@@ -193,12 +193,12 @@ class OneRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deploySaveJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
         if($this->_record instanceof opal\record\IRecord) {
-            $task = $this->_record->deploySaveTasks($taskSet);
+            $task = $this->_record->deploySaveJobs($taskSet);
 
             if(!$task && $this->_record->isNew()) {
-                $task = $taskSet->getTask($this->_record);
+                $task = $taskSet->getLastJobUsing($this->_record);
             }
 
             if($task && $recordTask && $this->_record->isNew()) {
@@ -211,15 +211,15 @@ class OneRelationValueContainer implements
         return $this;
     }
 
-    public function acceptSaveTaskChanges(opal\record\IRecord $record) {
+    public function acceptSaveJobChanges(opal\record\IRecord $record) {
         return $this;
     }
 
-    public function deployDeleteTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deployDeleteJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
         //core\stub($taskSet, $record, $recordTask);
     }
 
-    public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
+    public function acceptDeleteJobChanges(opal\record\IRecord $record) {
         return $this;
     }
 

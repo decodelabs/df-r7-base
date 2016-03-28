@@ -45,7 +45,7 @@ class UpdateBridge extends mesh\job\Dependency implements opal\record\task\IPare
         $record = $dependentTask->getRecord();
         $updateTask = new opal\record\task\UpdateRecord($record);
         $updateTask->addDependency($this);
-        $taskSet->addTask($updateTask);
+        $taskSet->addJob($updateTask);
 
         return $this;
     }

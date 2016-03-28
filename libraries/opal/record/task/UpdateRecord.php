@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class UpdateRecord extends mesh\job\Base implements IUpdateRecordTask {
+class UpdateRecord extends mesh\job\Base implements IRecordTask {
 
     use TRecordTask;
 
@@ -19,7 +19,7 @@ class UpdateRecord extends mesh\job\Base implements IUpdateRecordTask {
         $this->_setId(opal\record\Base::extractRecordId($record));
     }
 
-    public function getRecordTaskName() {
+    public function getRecordJobName() {
         return 'Update';
     }
 

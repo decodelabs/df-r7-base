@@ -169,7 +169,12 @@ interface IHavingClauseFactory extends IClauseFactory {
 
 
 // Query
-interface IQuery extends ISourceProvider, mesh\job\ITransactionAware, user\IAccessLock, core\lang\IChainable {
+interface IQuery extends
+    ISourceProvider,
+    mesh\job\ITransactionAdapterProvider,
+    mesh\job\ITransactionAware,
+    user\IAccessLock,
+    core\lang\IChainable {
     public function getQueryType();
     public function importBlock($name, ...$args);
     public function importRelationBlock($relationField, $name, ...$args);

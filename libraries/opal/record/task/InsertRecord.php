@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class InsertRecord extends mesh\job\Base implements IInsertRecordTask {
+class InsertRecord extends mesh\job\Base implements IRecordTask {
 
     use TRecordTask;
 
@@ -21,7 +21,7 @@ class InsertRecord extends mesh\job\Base implements IInsertRecordTask {
         $this->_setId(opal\record\Base::extractRecordId($record));
     }
 
-    public function getRecordTaskName() {
+    public function getRecordJobName() {
         return 'Insert';
     }
 

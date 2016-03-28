@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class ReplaceRecord extends mesh\job\Base implements IReplaceRecordTask {
+class ReplaceRecord extends mesh\job\Base implements IRecordTask {
 
     use TRecordTask;
 
@@ -19,7 +19,7 @@ class ReplaceRecord extends mesh\job\Base implements IReplaceRecordTask {
         $this->_setId(opal\record\Base::extractRecordId($record));
     }
 
-    public function getRecordTaskName() {
+    public function getRecordJobName() {
         return 'Replace';
     }
 

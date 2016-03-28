@@ -41,6 +41,10 @@ interface ITransactionAware {
     public function getTransaction(); //: ?ITransaction;
 }
 
+interface ITransactionAdapterProvider {
+    public function getTransactionAdapter();
+}
+
 interface IQueue {
     public function getTransaction(): ITransaction;
     public function registerAdapter(ITransactionAdapter $adapter);
@@ -48,17 +52,29 @@ interface IQueue {
     public function asap(...$args): IJob;
     public function after(IJob $job, ...$args): IJob;
     public function emitEventAfter(IJob $job, $entity, $action, array $data=null): IJob;
-/*
-    public function addJob(IJob $job);
 
-    public function ignoreObject($object);
-    public function isObjectIgnored($object): bool;
-*/
+    public function addJob(IJob $job);
+    public function hasJob($id): bool;
+    public function hasJobUsing($object): bool;
+    public function getJob($id);
+    public function getJobsUsing($object): array;
+    public function getLastJobUsing($object);
+
+    public function ignore($object);
+    public function unignore($object);
+    public function forget($object);
+    public function isIgnored($object): bool;
+
+    public function isDeployed($object): bool;
+
+    public static function getObjectId($object);
+
     public function execute();
 }
 
 interface IJob {
     public function getId(): string;
+    public function getObjectId(): string;
     public function getAdapter(); //: ?ITransactionAdapter;
 
     public function addDependency($dependency, IResolution $resolution=null);

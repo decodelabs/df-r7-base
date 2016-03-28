@@ -12,7 +12,7 @@ use df\opal;
 use df\mesh;
 
 class InlineManyRelationValueContainer implements
-    opal\record\ITaskAwareValueContainer,
+    opal\record\IJobAwareValueContainer,
     opal\record\IPreparedValueContainer,
     opal\record\IManyRelationValueContainer,
     opal\record\IIdProviderValueContainer,
@@ -395,7 +395,7 @@ class InlineManyRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deploySaveJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
         $localUnit = $parentRecord->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $targetField = $this->_field->getTargetField();
@@ -405,7 +405,7 @@ class InlineManyRelationValueContainer implements
         // Save any changed populated records
         foreach($this->_current as $id => $record) {
             if($record instanceof opal\record\IRecord) {
-                $record->deploySaveTasks($taskSet);
+                $record->deploySaveJobs($taskSet);
             }
         }
 
@@ -435,8 +435,10 @@ class InlineManyRelationValueContainer implements
             }
 
             if($record instanceof opal\record\IRecord) {
-                if(!$targetRecordTask = $record->deploySaveTasks($taskSet)) {
-                    $targetRecordTask = $taskSet->update($record);
+                if(!$targetRecordTask = $record->deploySaveJobs($taskSet)) {
+                    $targetRecordTask = $taskSet->asap(
+                        new opal\record\task\UpdateRecord($record)
+                    );
                 }
 
                 if($recordTask) {
@@ -459,7 +461,7 @@ class InlineManyRelationValueContainer implements
                     $targetUnit, $record, $values
                 );
 
-                $taskSet->addTask($targetRecordTask);
+                $taskSet->addJob($targetRecordTask);
 
                 if($recordTask) {
                     $targetRecordTask->addDependency(
@@ -491,13 +493,13 @@ class InlineManyRelationValueContainer implements
 
                 if($record instanceof opal\record\IRecord) {
                     $record->set($targetField, $nullKeySet);
-                    $record->deploySaveTasks($taskSet);
+                    $record->deploySaveJobs($taskSet);
                 } else {
                     $targetRecordTask = new opal\record\task\UpdateRaw(
                         $targetUnit, $record, $nullKeySet->toArray()
                     );
 
-                    $taskSet->addTask($targetRecordTask);
+                    $taskSet->addJob($targetRecordTask);
                 }
             }
         }
@@ -505,7 +507,7 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
 
-    public function acceptSaveTaskChanges(opal\record\IRecord $record) {
+    public function acceptSaveJobChanges(opal\record\IRecord $record) {
         $this->_current = array_merge($this->_current, $this->_new);
         $this->_new = [];
         $this->_remove = [];
@@ -514,7 +516,7 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deployDeleteJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
         $localUnit = $parentRecord->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $targetField = $this->_field->getTargetField();
@@ -539,8 +541,8 @@ class InlineManyRelationValueContainer implements
             );
         }
 
-        if(!$taskSet->hasTask($targetRecordTask)) {
-            $taskSet->addTask($targetRecordTask);
+        if(!$taskSet->hasJob($targetRecordTask)) {
+            $taskSet->addJob($targetRecordTask);
 
             if($recordTask) {
                 $recordTask->addDependency($targetRecordTask);
@@ -550,7 +552,7 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
 
-    public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
+    public function acceptDeleteJobChanges(opal\record\IRecord $record) {
         $this->_new = array_merge($this->_current, $this->_new);
         $this->_current = [];
         $this->_remove = [];

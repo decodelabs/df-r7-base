@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class DeleteKey extends mesh\job\Base implements IDeleteKeyTask {
+class DeleteKey extends mesh\job\Base implements IKeyTask, IFilterKeyTask {
 
     use mesh\job\TAdapterAwareJob;
 

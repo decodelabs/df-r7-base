@@ -169,7 +169,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     }
 
     public function newJobQueue() {
-        return new opal\record\task\TaskSet();
+        return new mesh\job\Queue();
     }
 
     public function checkAccess($source, $action=null) {

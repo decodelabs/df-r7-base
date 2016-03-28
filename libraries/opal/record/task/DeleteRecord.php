@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class DeleteRecord extends mesh\job\Base implements IDeleteRecordTask {
+class DeleteRecord extends mesh\job\Base implements IRecordTask {
 
     use TRecordTask;
 
@@ -19,7 +19,7 @@ class DeleteRecord extends mesh\job\Base implements IDeleteRecordTask {
         $this->_setId(opal\record\Base::extractRecordId($record));
     }
 
-    public function getRecordTaskName() {
+    public function getRecordJobName() {
         return 'Delete';
     }
 

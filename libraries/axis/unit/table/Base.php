@@ -200,7 +200,7 @@ abstract class Base implements
 
 // Query source
     public function getQuerySourceId() {
-        return $this->_adapter->getQuerySourceId();
+        return 'axis://'.$this->getModel()->getModelName().'/'.ucfirst($this->getUnitName());
     }
 
     public function getQuerySourceAdapterHash() {
@@ -677,6 +677,10 @@ abstract class Base implements
     public function fetchSubEntity(mesh\IManager $manager, array $node) {
         switch($node['type']) {
             case 'Record':
+                if($node['id'] == '*') {
+                    return $this->newRecord();
+                }
+
                 return $this->fetchByPrimary($node['id']);
 
             case 'Schema':
@@ -691,6 +695,11 @@ abstract class Base implements
             );
 
             $id = $entity->getPrimaryKeySet()->getEntityId();
+
+            if(empty($id)) {
+                $id = '*';
+            }
+
             $output->setId($id);
 
             return $output;

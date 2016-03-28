@@ -220,6 +220,10 @@ trait TQuery {
         return $this->getSourceManager()->getTransaction();
     }
 
+    public function getTransactionAdapter() {
+        return $this->getSource()->getAdapter();
+    }
+
     protected function _lookupRelationField(&$fieldName, &$queryField=null) {
         if($fieldName instanceof IField) {
             $fieldName = $fieldName->getQualifiedName();

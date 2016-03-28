@@ -12,6 +12,7 @@ use df\mesh;
 class Queue implements IQueue {
 
     protected $_jobs = [];
+    protected $_ignore = [];
     protected $_transaction;
     protected $_isExecuting = false;
 
@@ -29,6 +30,14 @@ class Queue implements IQueue {
         $this->_transaction->registerAdapter($adapter);
         return $this;
     }
+
+
+
+// DELETE ME
+    public function addRawQuery($id, opal\query\IWriteQuery $query) {
+        return $this->asap($id, $query);
+    }
+
 
 
 // Jobs
@@ -56,10 +65,14 @@ class Queue implements IQueue {
                 );
             }
 
+            if($adapter === null && $callback instanceof ITransactionAdapterProvider) {
+                $adapter = $callback->getTransactionAdapter();
+            }
+
             $job = new Generic($id, $callback, $adapter);
         }
 
-        $this->addTask($job);
+        $this->addJob($job);
         return $job;
     }
 
@@ -74,6 +87,161 @@ class Queue implements IQueue {
     }
 
 
+    public function addJob(IJob $job) {
+        $id = $job->getId();
+
+        if($adapter = $job->getAdapter()) {
+            $this->_transaction->registerAdapter($adapter);
+        }
+
+        $this->_jobs[] = $job;
+
+        if($this->_isExecuting && $job instanceof IEventBroadcastingJob) {
+            $job->reportPreEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function hasJob($id): bool {
+        if($id instanceof IJob) {
+            $id = $id->getId();
+        }
+
+        foreach($this->_jobs as $job) {
+            if($job->getId() == $id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function hasJobUsing($object): bool {
+        $id = $this->getObjectId($object);
+
+        foreach($this->_jobs as $job) {
+            if($job->getObjectId() == $id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getJob($id) {
+        if($id instanceof IJob) {
+            $id = $id->getId();
+        }
+
+        foreach($this->_jobs as $job) {
+            if($job->getId() == $id) {
+                return $job;
+            }
+        }
+    }
+
+    public function getJobsUsing($object): array {
+        $output = [];
+        $id = $this->getObjectId($object);
+
+        foreach($this->_jobs as $job) {
+            if($job->getObjectId() == $id) {
+                $output[] = $job;
+            }
+        }
+
+        return $output;
+    }
+
+    public function getLastJobUsing($object) {
+        $id = $this->getObjectId($object);
+
+        foreach(array_reverse($this->_jobs) as $job) {
+            if($job->getObjectId() == $id) {
+                return $job;
+            }
+        }
+    }
+
+
+
+// Objects
+    public function ignore($object) {
+        $id = $this->getObjectId($object);
+
+        if(isset($this->_ignore[$id])) {
+            $this->_ignore[$id]++;
+        } else {
+            $this->_ignore[$id] = 1;
+        }
+
+        return $this;
+    }
+
+    public function unignore($object) {
+        $id = $this->getObjectId($object);
+
+        if(isset($this->_ignore[$id]) && $this->_ignore[$id] > 1) {
+            $this->_ignore[$id]--;
+        } else {
+            unset($this->_ignore[$id]);
+        }
+
+        return $this;
+    }
+
+    public function forget($object) {
+        $id = $this->getObjectId($object);
+        unset($this->_ignore[$id]);
+        return $this;
+    }
+
+    public function isIgnored($object): bool {
+        $id = $this->getObjectId($object);
+        return isset($this->_ignore[$id]);
+    }
+
+
+    public function isDeployed($object): bool {
+        if($object instanceof IJob) {
+            return $this->hasJob($object);
+        }
+
+        $id = $this->getObjectId($object);
+
+        if(isset($this->_ignore[$id])) {
+            return true;
+        }
+
+        foreach($this->_jobs as $job) {
+            if($job->getObjectId() == $id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
+    public static function getObjectId($object): string {
+        if($object instanceof IJob) {
+            return $object->getObjectId();
+        }
+
+        if(is_scalar($object)) {
+            return (string)$object;
+        /*
+        } else if($object instanceof mesh\entity\ILocatorProvider) {
+            return (string)$object->getEntityLocator();
+        */
+        } else {
+            return spl_object_hash($object);
+        }
+    }
+
+
 // Runner
     public function execute() {
         if($this->_isExecuting) {
@@ -85,7 +253,7 @@ class Queue implements IQueue {
         $this->_jobs = array_filter($this->_jobs);
 
         foreach($this->_jobs as $job) {
-            if($job instanceof mesh\job\IEventBroadcastingJob) {
+            if($job instanceof IEventBroadcastingJob) {
                 $job->reportPreEvent($this);
             }
         }
@@ -102,7 +270,7 @@ class Queue implements IQueue {
 
                 $job->untangleDependencies($this);
 
-                if($job instanceof mesh\job\IEventBroadcastingJob) {
+                if($job instanceof IEventBroadcastingJob) {
                     $job->reportExecuteEvent($this);
                 }
 
@@ -112,7 +280,7 @@ class Queue implements IQueue {
                     $this->_sortJobs();
                 }
 
-                if($job instanceof mesh\job\IEventBroadcastingJob) {
+                if($job instanceof IEventBroadcastingJob) {
                     $job->reportPostEvent($this);
                 }
             }

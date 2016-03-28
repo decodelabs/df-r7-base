@@ -12,7 +12,7 @@ use df\opal;
 use df\mesh;
 
 class OneChildRelationValueContainer implements
-    opal\record\ITaskAwareValueContainer,
+    opal\record\IJobAwareValueContainer,
     opal\record\IPreparedValueContainer,
     opal\record\IIdProviderValueContainer {
 
@@ -146,7 +146,7 @@ class OneChildRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deploySaveJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
         if($this->_insertPrimaryKeySet) {
             if(!$this->_record instanceof opal\record\IRecord) {
                 $this->prepareValue($record, $fieldName);
@@ -171,7 +171,7 @@ class OneChildRelationValueContainer implements
             if(!$this->_record) {
                 $this->_insertPrimaryKeySet->updateWith(null);
             } else {
-                $task = $this->_record->deploySaveTasks($taskSet);
+                $task = $this->_record->deploySaveJobs($taskSet);
 
                 if($recordTask) {
                     $task->addDependency(
@@ -186,18 +186,23 @@ class OneChildRelationValueContainer implements
 
             if($originalRecord) {
                 $originalRecord->set($targetField, null);
-                $taskSet->save($originalRecord);
+
+                $taskSet->asap(
+                    $originalRecord->isNew() ?
+                        new opal\record\task\InsertRecord($originalRecord) :
+                        new opal\record\task\UpdateRecord($originalRecord)
+                );
             }
         }
 
         return $this;
     }
 
-    public function acceptSaveTaskChanges(opal\record\IRecord $record) {
+    public function acceptSaveJobChanges(opal\record\IRecord $record) {
         return $this;
     }
 
-    public function deployDeleteTasks(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deployDeleteJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
         $localUnit = $parentRecord->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $targetField = $this->_field->getTargetField();
@@ -222,8 +227,8 @@ class OneChildRelationValueContainer implements
             );
         }
 
-        if(!$taskSet->hasTask($targetRecordTask)) {
-            $taskSet->addTask($targetRecordTask);
+        if(!$taskSet->hasJob($targetRecordTask)) {
+            $taskSet->addJob($targetRecordTask);
 
             if($recordTask) {
                 $recordTask->addDependency($targetRecordTask);
@@ -233,7 +238,7 @@ class OneChildRelationValueContainer implements
         return $this;
     }
 
-    public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
+    public function acceptDeleteJobChanges(opal\record\IRecord $record) {
         return $this;
     }
 
