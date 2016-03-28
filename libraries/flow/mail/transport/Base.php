@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\flow\mail\transport;
 use df;
 use df\core;
 use df\flow;
-    
+
 abstract class Base implements flow\mail\ITransport {
 
     public static function getAllDefaultConfigValues() {
@@ -105,6 +105,30 @@ abstract class Base implements flow\mail\ITransport {
         }
 
         $message->prepareHeaders();
+        $headers = $message->getHeaders();
+
+        if(!$headers->has('message-id')) {
+            $domain = null;
+
+            if(isset($_SERVER['SERVER_NAME'])) {
+                $domain = $_SERVER['SERVER_NAME'];
+            } else {
+                $config = core\application\http\Config::getInstance();
+
+                if($url = $config->getRootUrl()) {
+                    $domain = df\link\http\Url::factory($url)->getDomain();
+                }
+            }
+
+            if($domain) {
+                $headers->set('message-id', sprintf(
+                    "<%s.%s@%s>",
+                    base_convert(microtime(), 10, 36),
+                    base_convert(bin2hex(openssl_random_pseudo_bytes(8)), 16, 36),
+                    $domain
+                ));
+            }
+        }
     }
 
     public function __construct(core\collection\ITree $settings=null) {}
