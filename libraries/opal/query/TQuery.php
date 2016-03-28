@@ -1971,6 +1971,10 @@ trait TQuery_Read {
         return $data;
     }
 
+    public function __invoke() {
+        return $this->toArray();
+    }
+
     public function toArray() {
         return $this->toKeyArray(null);
     }
@@ -2111,6 +2115,16 @@ trait TQuery_SelectSourceDataFetcher {
 
 
 /**************************
+ * Write
+ */
+trait TQuery_Write {
+    public function __invoke() {
+        return $this->execute();
+    }
+}
+
+
+ /**************************
  * Insert data
  */
 trait TQuery_DataInsert {

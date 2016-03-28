@@ -18,6 +18,7 @@ class Update implements IUpdateQuery, core\IDumpable {
     use TQuery_WhereClauseFactory;
     use TQuery_Orderable;
     use TQuery_Limitable;
+    use TQuery_Write;
 
     protected $_values = [];
     protected $_preparedValues;

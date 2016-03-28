@@ -176,6 +176,7 @@ interface IQuery extends ISourceProvider, mesh\job\ITransactionAware, user\IAcce
 }
 
 interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
+    public function __invoke();
     public function toKeyArray($keyField);
     public function toRow();
     public function getRawResult();
@@ -185,6 +186,7 @@ interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
 }
 
 interface IWriteQuery extends IQuery {
+    public function __invoke();
     public function execute();
 }
 

@@ -10,11 +10,12 @@ use df\core;
 use df\opal;
 
 class Insert implements IInsertQuery, core\IDumpable {
-    
+
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Locational;
     use TQuery_DataInsert;
+    use TQuery_Write;
 
     protected $_row;
     protected $_preparedRow;
@@ -23,10 +24,10 @@ class Insert implements IInsertQuery, core\IDumpable {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
         $this->_shouldReplace = (bool)$shouldReplace;
-        
+
         $this->setRow($row);
     }
-    
+
     public function getQueryType() {
         if($this->_shouldReplace) {
             return IQueryTypes::REPLACE;
@@ -49,18 +50,18 @@ class Insert implements IInsertQuery, core\IDumpable {
                 'Insert data must be convertible to an array'
             );
         }
-        
+
         if(empty($row)) {
             throw new InvalidArgumentException(
                 'Insert data must contain at least one field'
             );
         }
-        
+
         $this->_preparedRow = null;
         $this->_row = $row;
         return $this;
     }
-    
+
     public function getRow() {
         return $this->_row;
     }
@@ -72,16 +73,16 @@ class Insert implements IInsertQuery, core\IDumpable {
 
         return $this->_preparedRow;
     }
-    
-    
+
+
     public function execute() {
         $output = $this->_sourceManager->executeQuery($this, function($adapter) {
             return $adapter->executeInsertQuery($this);
         });
-        
+
         $output = $this->_normalizeInsertId($output, $this->_preparedRow);
         $this->_preparedRow = null;
-        
+
         return $output;
     }
 
@@ -103,8 +104,8 @@ class Insert implements IInsertQuery, core\IDumpable {
         $autoInc = false;
 
         foreach($fields as $name => $field) {
-            if($originalId 
-            && $field instanceof opal\schema\IAutoIncrementableField 
+            if($originalId
+            && $field instanceof opal\schema\IAutoIncrementableField
             && $field->shouldAutoIncrement()
             && !$autoInc) {
                 $values[$name] = $originalId;
@@ -135,26 +136,26 @@ class Insert implements IInsertQuery, core\IDumpable {
 
         $schema = $adapter->getQueryAdapterSchema();
         $values = [];
-        
+
         foreach($schema->getFields() as $name => $field) {
             if($field instanceof opal\schema\INullPrimitiveField) {
                 continue;
             }
-            
+
             if(!isset($row[$name])) {
                 $value = $field->generateInsertValue($row);
             } else {
                 $value = $field->sanitizeValue($row[$name]);
             }
 
-            if($field instanceof opal\schema\IAutoTimestampField 
-            && ($value === null || $value === '') 
+            if($field instanceof opal\schema\IAutoTimestampField
+            && ($value === null || $value === '')
             && $field->shouldTimestampAsDefault()) {
                 continue;
             }
-            
+
             $value = $field->deflateValue($value);
-        
+
             if(is_array($value)) {
                 foreach($value as $key => $val) {
                     $values[$key] = $val;
@@ -163,10 +164,10 @@ class Insert implements IInsertQuery, core\IDumpable {
                 $values[$name] = $value;
             }
         }
-        
+
         return $values;
     }
-    
+
 // Dump
     public function getDumpProperties() {
         return [

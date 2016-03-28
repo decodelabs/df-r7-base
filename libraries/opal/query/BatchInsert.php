@@ -10,12 +10,13 @@ use df\core;
 use df\opal;
 
 class BatchInsert implements IBatchInsertQuery, core\IDumpable {
-    
+
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Locational;
-    use TQuery_DataInsert;    
-    
+    use TQuery_DataInsert;
+    use TQuery_Write;
+
     protected $_rows = [];
     protected $_preparedRows = [];
     protected $_fields = [];
@@ -27,10 +28,10 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
         $this->_shouldReplace = (bool)$shouldReplace;
-        
+
         $this->addRows($rows);
     }
-    
+
     public function getQueryType() {
         if($this->_shouldReplace) {
             return IQueryTypes::BATCH_REPLACE;
@@ -38,7 +39,7 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
             return IQueryTypes::BATCH_INSERT;
         }
     }
-    
+
     public function addRows($rows) {
         if($rows instanceof core\IArrayProvider) {
             $rows = $rows->toArray();
@@ -47,32 +48,32 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
                 'Batch insert data must be convertible to an array'
             );
         }
-        
+
         foreach($rows as $row) {
             $this->addRow($row);
         }
-        
+
         return $this;
     }
-    
+
     public function addRow($row) {
         $row = $this->_normalizeRow($row);
-        
+
         foreach($row as $field => $value) {
             $this->_fields[$field] = true;
         }
-        
+
         $this->_rows[] = $row;
         $this->_preparedRows = null;
-        
+
         if($this->_flushThreshold > 0
         && count($this->_rows) >= $this->_flushThreshold) {
             $this->execute();
         }
-        
+
         return $this;
     }
-    
+
     protected function _normalizeRow($row) {
         if($row instanceof IDataRowProvider) {
             $row = $row->toDataRowArray();
@@ -83,17 +84,17 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
                 'Insert data must be convertible to an array'
             );
         }
-        
+
         if(empty($row)) {
             throw new InvalidArgumentException(
                 'Insert data must contain at least one field'
             );
         }
-       
+
         return $row;
     }
-    
-    
+
+
     public function getRows() {
         return $this->_rows;
     }
@@ -102,7 +103,7 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
         if(!$this->_preparedRows) {
             $fields = [];
             $this->_preparedRows = $this->_deflateBatchInsertValues($this->_rows, $fields);
-            
+
             if(!empty($fields)) {
                 $this->_dereferencedFields = array_fill_keys($fields, true);
             }
@@ -110,13 +111,13 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
 
         return $this->_preparedRows;
     }
-    
+
     public function clearRows() {
         $this->_rows = [];
         $this->_preparedRows = null;
         return $this;
     }
-    
+
     public function getFields() {
         return array_keys($this->_fields);
     }
@@ -130,27 +131,27 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
 
         return array_keys($this->_dereferencedFields);
     }
-    
 
-// Count    
+
+// Count
     public function countPending() {
         return count($this->_rows);
     }
-    
+
     public function countInserted() {
         return $this->_inserted;
     }
-    
+
     public function countTotal() {
         return $this->countPending() + $this->countInserted();
     }
-    
+
 // Flush threshold
     public function setFlushThreshold($flush) {
         $this->_flushThreshold = (int)$flush;
         return $this;
     }
-    
+
     public function getFlushThreshold() {
         return $this->_flushThreshold;
     }
@@ -162,7 +163,7 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
                 return (int)$adapter->executeBatchInsertQuery($this);
             });
         }
-        
+
         $this->clearRows();
         return $this->_inserted;
     }
@@ -178,29 +179,29 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
         $fields = $schema->getFields();
         $queryFields = [];
         $values = [];
-        
+
         foreach($rows as $row) {
             $rowValues = [];
-            
+
             foreach($fields as $name => $field) {
                 if($field instanceof opal\schema\INullPrimitiveField) {
                     continue;
                 }
-                
+
                 if(!isset($row[$name])) {
                     $value = $field->generateInsertValue($row);
                 } else {
                     $value = $field->sanitizeValue($row[$name]);
                 }
 
-                if($field instanceof opal\schema\IAutoTimestampField 
-                && ($value === null || $value === '') 
+                if($field instanceof opal\schema\IAutoTimestampField
+                && ($value === null || $value === '')
                 && $field->shouldTimestampAsDefault()) {
                     continue;
                 }
-                
+
                 $value = $field->deflateValue($value);
-            
+
                 if(is_array($value)) {
                     foreach($value as $key => $val) {
                         $rowValues[$key] = $val;
@@ -211,15 +212,15 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
                     $queryFields[$name] = true;
                 }
             }
-            
+
             $values[] = $rowValues;
         }
 
         $queryFields = array_keys($queryFields);
         return $values;
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         return [
