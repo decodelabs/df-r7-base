@@ -168,7 +168,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         return $source->getAdapter();
     }
 
-    public function newRecordTaskSet() {
+    public function newJobQueue() {
         return new opal\record\task\TaskSet();
     }
 
