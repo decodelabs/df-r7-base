@@ -34,7 +34,7 @@ class Queue implements IQueue {
 
 
 // DELETE ME
-    public function addRawQuery($id, opal\query\IWriteQuery $query) {
+    public function addRawQuery($id, $query) {
         return $this->asap($id, $query);
     }
 
