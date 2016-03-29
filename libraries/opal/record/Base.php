@@ -616,8 +616,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         if($this->hasChanged() || $this->isNew()) {
             $recordTask = $taskSet->asap(
                 $this->isNew() ?
-                    new opal\record\task\InsertRecord($this) :
-                    new opal\record\task\UpdateRecord($this)
+                    new opal\record\job\Insert($this) :
+                    new opal\record\job\Update($this)
             );
 
             $ignored = false;
@@ -647,7 +647,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 return $recordTask;
             }
 
-            $recordTask = $taskSet->asap(new opal\record\task\DeleteRecord($this));
+            $recordTask = $taskSet->asap(new opal\record\job\Delete($this));
 
             foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
                 if($value instanceof IJobAwareValueContainer) {
@@ -659,11 +659,11 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $recordTask;
     }
 
-    public function triggerJobEvent(mesh\job\IQueue $taskSet, opal\record\task\IRecordTask $task, $when) {
+    public function triggerJobEvent(mesh\job\IQueue $taskSet, IJob $task, $when) {
         $taskName = $task->getRecordJobName();
         $funcPrefix = null;
 
-        if($when != opal\record\task\IRecordTask::EVENT_POST) {
+        if($when != IJob::EVENT_POST) {
             $funcPrefix = ucfirst($when);
         }
 

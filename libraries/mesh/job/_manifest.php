@@ -80,6 +80,7 @@ interface IJob {
     public function addDependency($dependency, IResolution $resolution=null);
     public function countDependencies(): int;
     public function hasDependencies(): bool;
+    public function getDependencyScore(): float;
     public function untangleDependencies(IQueue $queue);
     public function resolveDependenciesOn(IJob $job);
 

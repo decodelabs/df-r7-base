@@ -3,16 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\record\task;
+namespace df\opal\record\job;
 
 use df;
 use df\core;
 use df\opal;
 use df\mesh;
 
-class InsertRecord extends mesh\job\Base implements IRecordTask {
+class Insert extends mesh\job\Base implements opal\record\IJob {
 
-    use TRecordTask;
+    use opal\record\TJob;
 
     protected $_ifNotExists = false;
 

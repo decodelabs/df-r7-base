@@ -16,6 +16,7 @@ class Dependency implements IDependency {
 
     public function __construct(IJob $requiredJob, IResolution $resolution=null) {
         $this->_requiredJob = $requiredJob;
+        $this->_resolution = $resolution;
     }
 
     public function getRequiredJob(): IJob {
@@ -45,7 +46,7 @@ class Dependency implements IDependency {
         return $this;
     }
 
-    public function resolve(IJob $dependentTask) {
+    public function resolve(IJob $subordinate) {
         if($this->_resolution) {
             $this->_resolution->resolve($subordinate, $this->_requiredJob);
         }

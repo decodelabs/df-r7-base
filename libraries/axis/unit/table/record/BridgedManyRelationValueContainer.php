@@ -599,7 +599,7 @@ class BridgedManyRelationValueContainer implements
 
         // Remove all
         if($this->_removeAll && !$this->_localPrimaryKeySet->isNull()) {
-            $removeAllTask = new opal\record\task\DeleteKey($bridgeUnit, [
+            $removeAllTask = new opal\query\job\DeleteKey($bridgeUnit, [
                 $bridgeLocalFieldName => $this->_localPrimaryKeySet
             ]);
 
@@ -615,13 +615,13 @@ class BridgedManyRelationValueContainer implements
                 $bridgeRecord = $bridgeUnit->newRecord($record->toArray());
 
                 $bridgeTask = $taskSet->asap(
-                    new opal\record\task\ReplaceRecord($bridgeRecord)
+                    new opal\record\job\Replace($bridgeRecord)
                 );
             } else {
                 $bridgeRecord = $bridgeUnit->newRecord();
 
                 $bridgeTask = $taskSet->asap(
-                    (new opal\record\task\InsertRecord($bridgeRecord))->ifNotExists(true)
+                    (new opal\record\job\Insert($bridgeRecord))->ifNotExists(true)
                 );
             }
 
@@ -631,7 +631,8 @@ class BridgedManyRelationValueContainer implements
 
             if($recordTask) {
                 $bridgeTask->addDependency(
-                    new opal\record\task\dependency\UpdateBridge($bridgeLocalFieldName, $recordTask)
+                    $recordTask,
+                    new opal\record\job\InsertResolution($bridgeLocalFieldName)
                 );
             }
 
@@ -664,10 +665,8 @@ class BridgedManyRelationValueContainer implements
 
             if($targetRecordTask) {
                 $bridgeTask->addDependency(
-                    new opal\record\task\dependency\UpdateBridge(
-                        $bridgeTargetFieldName,
-                        $targetRecordTask
-                    )
+                    $targetRecordTask,
+                    new opal\record\job\InsertResolution($bridgeTargetFieldName)
                 );
             }
 
@@ -711,7 +710,7 @@ class BridgedManyRelationValueContainer implements
                     continue;
                 }
 
-                $taskSet->addJob(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
+                $taskSet->addJob(new opal\query\job\DeleteKey($bridgeUnit, $bridgeData));
             }
         }
 
@@ -744,7 +743,7 @@ class BridgedManyRelationValueContainer implements
         }
 
         if(!empty($bridgeData)) {
-            $taskSet->addJob(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
+            $taskSet->addJob(new opal\query\job\DeleteKey($bridgeUnit, $bridgeData));
         }
 
         return $this;

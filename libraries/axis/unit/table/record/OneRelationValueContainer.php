@@ -178,7 +178,7 @@ class OneRelationValueContainer implements
     }
 
     public function duplicateForChangeList() {
-        return new self($this->_field);
+        return clone $this;
     }
 
     public function populateInverse(opal\record\IRecord $record=null) {
@@ -203,7 +203,8 @@ class OneRelationValueContainer implements
 
             if($task && $recordTask && $this->_record->isNew()) {
                 $recordTask->addDependency(
-                    new opal\record\task\dependency\UpdateKeySetField($fieldName, $task)
+                    $task,
+                    new opal\record\job\InsertResolution($fieldName)
                 );
             }
         }

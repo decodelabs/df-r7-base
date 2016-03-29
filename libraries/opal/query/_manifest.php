@@ -1188,3 +1188,22 @@ trait TFilterConsumer {
         return $this;
     }
 }
+
+
+
+
+###################
+## Jobs
+interface IKeyBasedJob extends mesh\job\IJob {
+    public function setKeys(array $keys);
+    public function addKeys(array $keys);
+    public function addKey($key, $value);
+    public function getKeys();
+}
+
+interface IFilterKeyBasedJob extends mesh\job\IJob {
+    public function setFilterKeys(array $keys);
+    public function addFilterKeys(array $keys);
+    public function addFilterKey($key, $value);
+    public function getFilterKeys();
+}

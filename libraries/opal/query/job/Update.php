@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\record\task;
+namespace df\opal\query\job;
 
 use df;
 use df\core;
 use df\opal;
 use df\mesh;
 
-class UpdateRaw extends mesh\job\Base {
+class Update extends mesh\job\Base {
 
     use mesh\job\TAdapterAwareJob;
 

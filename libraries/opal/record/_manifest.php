@@ -131,7 +131,7 @@ interface IRecord extends IDataProvider, core\IExporterValueMap {
     public function delete(mesh\job\IQueue $queue=null);
     public function deploySaveJobs(mesh\job\IQueue $queue);
     public function deployDeleteJobs(mesh\job\IQueue $queue);
-    public function triggerJobEvent(mesh\job\IQueue $queue, opal\record\task\IRecordTask $job, $when);
+    public function triggerJobEvent(mesh\job\IQueue $queue, opal\record\IJob $job, $when);
 }
 
 interface ILocationalRecord extends IRecord {
@@ -198,4 +198,52 @@ interface IPrimaryKeySet extends \ArrayAccess, core\IArrayProvider {
     public function getFirstKeyValue();
     public function duplicateWith($values);
     public function eq(IPrimaryKeySet $keySet);
+}
+
+
+
+###############
+## Jobs
+interface IJob extends mesh\job\IJob, mesh\job\IEventBroadcastingJob {
+
+    const EVENT_PRE = 'pre';
+    const EVENT_EXECUTE = 'execute';
+    const EVENT_POST = 'post';
+
+    public function getRecord();
+    public function getRecordJobName();
+}
+
+
+
+trait TJob {
+
+    protected $_record;
+
+    public function getObjectId(): string {
+        return mesh\job\Queue::getObjectId($this->_record);
+    }
+
+    public function getRecord() {
+        return $this->_record;
+    }
+
+    public function getAdapter() {
+        return $this->_record->getAdapter();
+    }
+
+    public function reportPreEvent(mesh\job\IQueue $queue) {
+        $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_PRE);
+        return $this;
+    }
+
+    public function reportExecuteEvent(mesh\job\IQueue $queue) {
+        $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_EXECUTE);
+        return $this;
+    }
+
+    public function reportPostEvent(mesh\job\IQueue $queue) {
+        $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_POST);
+        return $this;
+    }
 }

@@ -3,16 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\record\task;
+namespace df\opal\record\job;
 
 use df;
 use df\core;
 use df\opal;
 use df\mesh;
 
-class DeleteRecord extends mesh\job\Base implements IRecordTask {
+class Update extends mesh\job\Base implements opal\record\IJob {
 
-    use TRecordTask;
+    use opal\record\TJob;
 
     public function __construct(opal\record\IRecord $record) {
         $this->_record = $record;
@@ -20,15 +20,17 @@ class DeleteRecord extends mesh\job\Base implements IRecordTask {
     }
 
     public function getRecordJobName() {
-        return 'Delete';
+        return 'Update';
     }
 
     public function execute() {
-        if($this->_record->isNew()) {
+        $data = $this->_record->getChangesForStorage();
+
+        if(empty($data)) {
             return $this;
         }
 
-        $query = $this->getAdapter()->delete();
+        $query = $this->getAdapter()->update($data);
         $keySet = $this->_record->getOriginalPrimaryKeySet();
 
         if($this->_record instanceof opal\record\ILocationalRecord) {
@@ -53,7 +55,7 @@ class DeleteRecord extends mesh\job\Base implements IRecordTask {
         }
 
         $query->execute();
-        $this->_record->makeNew();
+        $this->_record->acceptChanges();
 
         return $this;
     }

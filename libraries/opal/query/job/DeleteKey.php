@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\record\task;
+namespace df\opal\query\job;
 
 use df;
 use df\core;
 use df\opal;
 use df\mesh;
 
-class DeleteKey extends mesh\job\Base implements IKeyTask, IFilterKeyTask {
+class DeleteKey extends mesh\job\Base implements opal\query\IKeyBasedJob, opal\query\IFilterKeyBasedJob {
 
     use mesh\job\TAdapterAwareJob;
 

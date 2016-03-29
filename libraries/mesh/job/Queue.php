@@ -77,7 +77,17 @@ class Queue implements IQueue {
     }
 
     public function after(IJob $job, ...$args): IJob {
-        return $this->asap(...$args)->addDependency($job);
+        $resolution = null;
+
+        foreach($args as $i => $arg) {
+            if($arg instanceof IResolution) {
+                $resolution = $arg;
+                unset($args[$i]);
+                break;
+            }
+        }
+
+        return $this->asap(...$args)->addDependency($job, $resolution);
     }
 
     public function emitEventAfter(IJob $job, $entity, $action, array $data=null): IJob {
@@ -296,11 +306,8 @@ class Queue implements IQueue {
     }
 
     protected function _sortJobs() {
-        uasort($this->_jobs, function($taskA, $taskB) {
-            $aCount = $taskA ? $taskA->countDependencies() : 0;
-            $bCount = $taskB ? $taskB->countDependencies() : 0;
-
-            return $aCount > $bCount;
+        uasort($this->_jobs, function($jobA, $jobB) {
+            return $jobA->getDependencyScore() > $jobB->getDependencyScore();
         });
     }
 }

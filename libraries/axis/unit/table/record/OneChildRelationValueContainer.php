@@ -174,10 +174,9 @@ class OneChildRelationValueContainer implements
                 $task = $this->_record->deploySaveJobs($taskSet);
 
                 if($recordTask) {
-                    $task->addDependency(
-                        new opal\record\task\dependency\UpdateKeySetField(
-                            $targetField, $recordTask
-                        )
+                    $recordTask->addDependency(
+                        $targetRecordTask,
+                        new opal\record\job\InsertResolution($targetField, true)
                     );
                 } else if(!$this->_insertPrimaryKeySet->isNull()) {
                     $this->_record->set($targetField, $this->_insertPrimaryKeySet);
@@ -189,8 +188,8 @@ class OneChildRelationValueContainer implements
 
                 $taskSet->asap(
                     $originalRecord->isNew() ?
-                        new opal\record\task\InsertRecord($originalRecord) :
-                        new opal\record\task\UpdateRecord($originalRecord)
+                        new opal\record\job\Insert($originalRecord) :
+                        new opal\record\job\Update($originalRecord)
                 );
             }
         }
@@ -218,11 +217,11 @@ class OneChildRelationValueContainer implements
         $primaryIndex = $targetSchema->getPrimaryIndex();
 
         if($primaryIndex->hasField($targetSchema->getField($targetField))) {
-            $targetRecordTask = new opal\record\task\DeleteKey(
+            $targetRecordTask = new opal\query\job\DeleteKey(
                 $targetUnit, $values
             );
         } else {
-            $targetRecordTask = new opal\record\task\UpdateRaw(
+            $targetRecordTask = new opal\query\job\Update(
                 $targetUnit, $inverseKeySet, $inverseKeySet->duplicateWith(null)->toArray()
             );
         }

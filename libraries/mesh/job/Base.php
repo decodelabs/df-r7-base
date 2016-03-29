@@ -58,7 +58,23 @@ abstract class Base implements IJob {
         return !empty($this->_dependencies);
     }
 
-     public function untangleDependencies(IQueue $queue) {
+    public function getDependencyScore(): float {
+        $output = 0;
+
+        foreach($this->_dependencies as $dependency) {
+            $output += 1;
+
+            if($dependency->getResolution()
+            || get_class($dependency) != 'df\\mesh\\job\\Dependency' // DELETE ME!!!!
+            ) {
+                $output += 0.001;
+            }
+        }
+
+        return $output;
+    }
+
+    public function untangleDependencies(IQueue $queue) {
         while(!empty($this->_dependencies)) {
             $dependency = array_shift($this->_dependencies);
             $dependency->untangle($queue, $this);
