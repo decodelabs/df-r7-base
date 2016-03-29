@@ -443,15 +443,18 @@ class Html implements arch\IDirectoryHelper {
 
 
 
-    public function unitLabel($value, $unit) {
+    public function number($value, $unit=null) {
         if($value === null) {
             return null;
         }
 
-        return $this->element('span.numeric', [
-            $this->element('span.value', $this->context->format->number($value)),
-            $this->element('span.unit', $unit)
-        ]);
+        return $this->element('span.numeric', function() use($value, $unit) {
+            yield $this->element('span.value', $this->context->format->number($value));
+
+            if($unit !== null) {
+                yield $this->element('span.unit', $unit);
+            }
+        });
     }
 
 
