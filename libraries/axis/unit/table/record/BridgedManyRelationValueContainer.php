@@ -575,7 +575,7 @@ class BridgedManyRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordJob=null) {
         $localUnit = $parentRecord->getAdapter();
         $this->_localPrimaryKeySet->updateWith($parentRecord);
 
@@ -585,13 +585,13 @@ class BridgedManyRelationValueContainer implements
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
 
-        $removeAllTask = null;
+        $removeAllJob = null;
 
 
         // Save any changed populated records
         foreach($this->_current as $id => $record) {
             if($record instanceof opal\record\IRecord) {
-                $record->deploySaveJobs($taskSet);
+                $record->deploySaveJobs($queue);
             }
         }
 
@@ -599,11 +599,11 @@ class BridgedManyRelationValueContainer implements
 
         // Remove all
         if($this->_removeAll && !$this->_localPrimaryKeySet->isNull()) {
-            $removeAllTask = new opal\query\job\DeleteKey($bridgeUnit, [
+            $removeAllJob = new opal\query\job\DeleteKey($bridgeUnit, [
                 $bridgeLocalFieldName => $this->_localPrimaryKeySet
             ]);
 
-            $taskSet->addJob($removeAllTask);
+            $queue->addJob($removeAllJob);
         }
 
         $filterKeys = [];
@@ -613,25 +613,19 @@ class BridgedManyRelationValueContainer implements
             // Build bridge
             if($record instanceof opal\record\IPartial && $record->isBridge()) {
                 $bridgeRecord = $bridgeUnit->newRecord($record->toArray());
-
-                $bridgeTask = $taskSet->asap(
-                    new opal\record\job\Replace($bridgeRecord)
-                );
+                $bridgeJob = $queue->replace($bridgeRecord);
             } else {
                 $bridgeRecord = $bridgeUnit->newRecord();
-
-                $bridgeTask = $taskSet->asap(
-                    (new opal\record\job\Insert($bridgeRecord))->ifNotExists(true)
-                );
+                $bridgeJob = $queue->insert($bridgeRecord)->ifNotExists(true);
             }
 
 
             // Local ids
             $bridgeRecord->__set($bridgeLocalFieldName, $this->_localPrimaryKeySet);
 
-            if($recordTask) {
-                $bridgeTask->addDependency(
-                    $recordTask,
+            if($recordJob) {
+                $bridgeJob->addDependency(
+                    $recordJob,
                     new opal\record\job\InsertResolution($bridgeLocalFieldName)
                 );
             }
@@ -646,7 +640,7 @@ class BridgedManyRelationValueContainer implements
             }
 
             // Filter remove all task
-            if($removeAllTask) {
+            if($removeAllJob) {
                 foreach($targetKeySet->toArray() as $key => $value) {
                     $filterKeys[$bridgeTargetFieldName.'_'.$key][$id] = $value;
                 }
@@ -654,18 +648,18 @@ class BridgedManyRelationValueContainer implements
 
 
             // Target task
-            $targetRecordTask = null;
+            $targetRecordJob = null;
 
             if($record instanceof opal\record\IRecord) {
-                $targetRecordTask = $record->deploySaveJobs($taskSet);
+                $targetRecordJob = $record->deploySaveJobs($queue);
             }
 
             // Target ids
             $bridgeRecord->__set($bridgeTargetFieldName, $targetKeySet);
 
-            if($targetRecordTask) {
-                $bridgeTask->addDependency(
-                    $targetRecordTask,
+            if($targetRecordJob) {
+                $bridgeJob->addDependency(
+                    $targetRecordJob,
                     new opal\record\job\InsertResolution($bridgeTargetFieldName)
                 );
             }
@@ -677,18 +671,18 @@ class BridgedManyRelationValueContainer implements
 
 
             // Remove-all dependency
-            if($removeAllTask) {
-                $bridgeTask->addDependency($removeAllTask);
+            if($removeAllJob) {
+                $bridgeJob->addDependency($removeAllJob);
             }
         }
 
-        if($removeAllTask && !empty($filterKeys)) {
-            $removeAllTask->setFilterKeys($filterKeys);
+        if($removeAllJob && !empty($filterKeys)) {
+            $removeAllJob->setFilterKeys($filterKeys);
         }
 
 
         // Delete relation tasks
-        if(!$removeAllTask && !empty($this->_remove) && !$this->_localPrimaryKeySet->isNull()) {
+        if(!$removeAllJob && !empty($this->_remove) && !$this->_localPrimaryKeySet->isNull()) {
             foreach($this->_remove as $id => $record) {
                 $bridgeData = [];
 
@@ -710,7 +704,7 @@ class BridgedManyRelationValueContainer implements
                     continue;
                 }
 
-                $taskSet->addJob(new opal\query\job\DeleteKey($bridgeUnit, $bridgeData));
+                $queue->addJob(new opal\query\job\DeleteKey($bridgeUnit, $bridgeData));
             }
         }
 
@@ -726,8 +720,8 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordTask=null) {
-        if(!$recordTask) {
+    public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordJob=null) {
+        if(!$recordJob) {
             return $this;
         }
 
@@ -743,7 +737,7 @@ class BridgedManyRelationValueContainer implements
         }
 
         if(!empty($bridgeData)) {
-            $taskSet->addJob(new opal\query\job\DeleteKey($bridgeUnit, $bridgeData));
+            $queue->addJob(new opal\query\job\DeleteKey($bridgeUnit, $bridgeData));
         }
 
         return $this;

@@ -38,10 +38,10 @@ class Unit extends axis\unit\table\Base {
     }
 
 
-    public function createRecordEntry(opal\record\IRecord $record, mesh\job\IQueue $taskSet, opal\record\IJob $recordTask, $description, $action=null, $userId=null) {
+    public function createRecordEntry(opal\record\IRecord $record, mesh\job\IQueue $queue, opal\record\IJob $recordJob, $description, $action=null, $userId=null) {
         if($action === null) {
-            if($recordTask instanceof opal\record\IJob) {
-                $action = lcfirst($recordTask->getRecordJobName());
+            if($recordJob instanceof opal\record\IJob) {
+                $action = lcfirst($recordJob->getRecordJobName());
             } else {
                 $action = 'update';
             }
@@ -53,9 +53,9 @@ class Unit extends axis\unit\table\Base {
             'action' => $action
         ]);
 
-        $taskSet->after($recordTask, 'history', $this, function() use($history, $taskSet, $record) {
+        $queue->after($recordJob, 'history', $this, function() use($history, $queue, $record) {
             $history->entity = $record;
-            $history->save($taskSet);
+            $history->save($queue);
         });
 
         return $this;

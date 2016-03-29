@@ -193,17 +193,17 @@ class OneRelationValueContainer implements
 
 
 // Tasks
-    public function deploySaveJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
+    public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob=null) {
         if($this->_record instanceof opal\record\IRecord) {
-            $task = $this->_record->deploySaveJobs($taskSet);
+            $job = $this->_record->deploySaveJobs($queue);
 
-            if(!$task && $this->_record->isNew()) {
-                $task = $taskSet->getLastJobUsing($this->_record);
+            if(!$job && $this->_record->isNew()) {
+                $job = $queue->getLastJobUsing($this->_record);
             }
 
-            if($task && $recordTask && $this->_record->isNew()) {
-                $recordTask->addDependency(
-                    $task,
+            if($job && $recordJob && $this->_record->isNew()) {
+                $recordJob->addDependency(
+                    $job,
                     new opal\record\job\InsertResolution($fieldName)
                 );
             }
@@ -216,8 +216,8 @@ class OneRelationValueContainer implements
         return $this;
     }
 
-    public function deployDeleteJobs(mesh\job\IQueue $taskSet, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordTask=null) {
-        //core\stub($taskSet, $record, $recordTask);
+    public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob=null) {
+        //core\stub($queue, $record, $recordJob);
     }
 
     public function acceptDeleteJobChanges(opal\record\IRecord $record) {

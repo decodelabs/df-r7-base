@@ -13,15 +13,13 @@ use df\axis;
 
 class Record extends opal\record\Base {
 
-    protected function onPreDelete($taskSet, $task) {
+    protected function onPreDelete($queue, $job) {
         $id = $this['id'];
 
-        $deleteTask = $taskSet->addRawQuery(
+        $job->addDependency($queue->asap(
             'deleteLogs:'.$id,
             $this->getAdapter()->getModel()->missLog->delete()
                 ->where('miss', '=', $id)
-        );
-
-        $task->addDependency($deleteTask);
+        ));
     }
 }

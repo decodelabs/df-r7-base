@@ -103,7 +103,7 @@ interface IDataProvider extends core\collection\IMappedCollection, user\IAccessL
     public function populateWithRawData($row);
 }
 
-interface IRecord extends IDataProvider, core\IExporterValueMap {
+interface IRecord extends IDataProvider, mesh\job\IJobProvider, core\IExporterValueMap {
     public function isNew();
     public function makeNew(array $newValues=null);
     public function spawnNew(array $newValues=null);

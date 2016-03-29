@@ -32,14 +32,6 @@ class Queue implements IQueue {
     }
 
 
-
-// DELETE ME
-    public function addRawQuery($id, $query) {
-        return $this->asap($id, $query);
-    }
-
-
-
 // Jobs
     public function asap(...$args): IJob {
         $id = uniqid();
@@ -95,6 +87,35 @@ class Queue implements IQueue {
             mesh\Manager::getInstance()->emitEvent($entity, $action, $data, $this, $job);
         });
     }
+
+
+
+    public function __call($method, $args) {
+        $provider = array_shift($args);
+
+        if(!$provider instanceof IJobProvider) {
+            throw new RuntimeException(
+                'Cannot prepare job, context is not an IJobProvider'
+            );
+        }
+
+        if(substr($method, -4) == 'Asap') {
+            return $this->prepareAsap($provider, substr($method, 0, -4), ...$args);
+        } else if(substr($method, -5) == 'After') {
+            return $this->prepareAfter($provider, substr($method, 0, -5), ...$args);
+        } else {
+            return $this->prepareAsap($provider, $method, ...$args);
+        }
+    }
+
+    public function prepareAsap(IJobProvider $provider, string $name, ...$args) {
+        return $this->asap($provider->prepareJob($name, ...$args));
+    }
+
+    public function prepareAfter(IJob $job, IJobProvider $provider, string $name, ...$args) {
+        return $this->after($job, $provider->prepareJob($name, ...$args));
+    }
+
 
 
     public function addJob(IJob $job) {

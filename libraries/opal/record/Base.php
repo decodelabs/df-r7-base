@@ -152,6 +152,33 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
 
+// Job
+    public function prepareJob(string $name, ...$args): mesh\job\IJob {
+        switch($name) {
+            case 'save':
+                return $this->isNew() ?
+                    new opal\record\job\Insert($this) :
+                    new opal\record\job\Update($this);
+
+            case 'insert':
+                return new opal\record\job\Insert($this);
+
+            case 'replace':
+                return new opal\record\job\Replace($this);
+
+            case 'update':
+                return new opal\record\job\Update($this);
+
+            case 'delete':
+                return new opal\record\job\Delete($this);
+        }
+
+        throw new RuntimeException(
+            'Records don\'t directly support "'.$name.'" jobs'
+        );
+    }
+
+
 
 // Changes
     public function hasChanged(...$fields) {
@@ -572,105 +599,100 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
 // Storage
-    public function save(mesh\job\IQueue $taskSet=null) {
+    public function save(mesh\job\IQueue $queue=null) {
         $execute = false;
 
-        if($taskSet === null) {
+        if($queue === null) {
             $execute = true;
-            $taskSet = new mesh\job\Queue();
+            $queue = new mesh\job\Queue();
         }
 
-        $this->deploySaveJobs($taskSet);
+        $this->deploySaveJobs($queue);
 
         if($execute) {
-            $taskSet->execute();
+            $queue->execute();
         }
 
         return $this;
     }
 
-    public function delete(mesh\job\IQueue $taskSet=null) {
+    public function delete(mesh\job\IQueue $queue=null) {
         $execute = false;
 
-        if($taskSet === null) {
+        if($queue === null) {
             $execute = true;
-            $taskSet = new mesh\job\Queue();
+            $queue = new mesh\job\Queue();
         }
 
-        $this->deployDeleteJobs($taskSet);
+        $this->deployDeleteJobs($queue);
 
         if($execute) {
-            $taskSet->execute();
+            $queue->execute();
         }
 
         return $this;
     }
 
-    public function deploySaveJobs(mesh\job\IQueue $taskSet) {
-        $recordTask = null;
+    public function deploySaveJobs(mesh\job\IQueue $queue) {
+        $recordJob = null;
 
-        if($taskSet->isDeployed($this)) {
-            return $taskSet->getLastJobUsing($this);
+        if($queue->isDeployed($this)) {
+            return $queue->getLastJobUsing($this);
         }
 
         if($this->hasChanged() || $this->isNew()) {
-            $recordTask = $taskSet->asap(
-                $this->isNew() ?
-                    new opal\record\job\Insert($this) :
-                    new opal\record\job\Update($this)
-            );
-
+            $recordJob = $queue->save($this);
             $ignored = false;
         } else {
-            $taskSet->ignore($this);
+            $queue->ignore($this);
             $ignored = true;
         }
 
         foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
             if($value instanceof IJobAwareValueContainer) {
-                $value->deploySaveJobs($taskSet, $this, $key, $recordTask);
+                $value->deploySaveJobs($queue, $this, $key, $recordJob);
             }
         }
 
         if($ignored) {
-            $taskSet->unignore($this);
+            $queue->unignore($this);
         }
 
-        return $recordTask;
+        return $recordJob;
     }
 
-    public function deployDeleteJobs(mesh\job\IQueue $taskSet) {
-        $recordTask = null;
+    public function deployDeleteJobs(mesh\job\IQueue $queue) {
+        $recordJob = null;
 
         if(!$this->isNew()) {
-            if($taskSet->hasJobUsing($this)) {
-                return $recordTask;
+            if($queue->hasJobUsing($this)) {
+                return $recordJob;
             }
 
-            $recordTask = $taskSet->asap(new opal\record\job\Delete($this));
+            $recordJob = $queue->delete($this);
 
             foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
                 if($value instanceof IJobAwareValueContainer) {
-                    $value->deployDeleteJobs($taskSet, $this, $key, $recordTask);
+                    $value->deployDeleteJobs($queue, $this, $key, $recordJob);
                 }
             }
         }
 
-        return $recordTask;
+        return $recordJob;
     }
 
-    public function triggerJobEvent(mesh\job\IQueue $taskSet, IJob $task, $when) {
-        $taskName = $task->getRecordJobName();
+    public function triggerJobEvent(mesh\job\IQueue $queue, IJob $job, $when) {
+        $jobName = $job->getRecordJobName();
         $funcPrefix = null;
 
         if($when != IJob::EVENT_POST) {
             $funcPrefix = ucfirst($when);
         }
 
-        $func = 'on'.$funcPrefix.$taskName;
+        $func = 'on'.$funcPrefix.$jobName;
 
         if(method_exists($this, $func)) {
-            $this->{$func}($taskSet, $task);
+            $this->{$func}($queue, $job);
         }
 
         $broadcast = static::BROADCAST_HOOK_EVENTS;
@@ -682,21 +704,21 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         if($broadcast && !$this->_bypassHooks) {
             $event = new mesh\event\Event(
                 $this,
-                $funcPrefix.$taskName,
+                $funcPrefix.$jobName,
                 null,
-                $taskSet,
-                $task
+                $queue,
+                $job
             );
 
             $meshManager = mesh\Manager::getInstance();
             $meshManager->emitEventObject($event);
         }
 
-        if(in_array($taskName, ['Insert', 'Update', 'Replace'])) {
+        if(in_array($jobName, ['Insert', 'Update', 'Replace'])) {
             $func = 'on'.$funcPrefix.'Save';
 
             if(method_exists($this, $func)) {
-                $this->{$func}($taskSet, $task);
+                $this->{$func}($queue, $job);
             }
 
             if($broadcast && !$this->_bypassHooks) {

@@ -19,7 +19,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
 
     protected $_groupsChanged = false;
 
-    protected function onPreUpdate($taskSet, $task) {
+    protected function onPreUpdate($queue, $job) {
         $unit = $this->getAdapter();
 
         if(!$this['nickName']) {
@@ -32,23 +32,21 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         }
 
         if($this->hasChanged('email')) {
-            $localTask = $taskSet->addRawQuery('updateLocalAdapter',
+            $queue->after($job, 'updateLocalAdapter',
                 $unit->getModel()->auth->update([
                         'identity' => $this['email']
                     ])
                     ->where('user', '=', $this['id'])
                     ->where('adapter', '=', 'Local')
             );
-
-            $localTask->addDependency($task);
         }
 
         $this->_groupsChanged = $this->hasChanged('groups');
     }
 
-    protected function onUpdate($taskSet, $task) {
+    protected function onUpdate($queue, $job) {
         if($this->_groupsChanged) {
-            $regenTask = $taskSet->after($task, 'regenKeyring', function() {
+            $regenJob = $queue->after($job, 'regenKeyring', function() {
                 $this->getAdapter()->context->user->refreshClientData();
                 $this->getAdapter()->context->user->instigateGlobalKeyringRegeneration();
             });
@@ -57,16 +55,14 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         }
     }
 
-    protected function onPreDelete($taskSet, $task) {
+    protected function onPreDelete($queue, $job) {
         $id = $this['id'];
         $unit = $this->getAdapter();
 
-        $localTask = $taskSet->addRawQuery('deleteAuths',
+        $queue->after($job, 'deleteAuths',
             $unit->getModel()->auth->delete()
                 ->where('user', '=', $id)
         );
-
-        $localTask->addDependency($task);
     }
 
     public function getId() {
