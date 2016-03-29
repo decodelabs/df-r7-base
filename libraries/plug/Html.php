@@ -442,6 +442,19 @@ class Html implements arch\IDirectoryHelper {
     }
 
 
+
+    public function unitLabel($value, $unit) {
+        if($value === null) {
+            return null;
+        }
+
+        return $this->element('span.numeric', [
+            $this->element('span.value', $this->context->format->number($value)),
+            $this->element('span.unit', $unit)
+        ]);
+    }
+
+
 // Date
     public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
         if($date === null) {
