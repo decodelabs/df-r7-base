@@ -59,7 +59,7 @@ class DeleteForm extends arch\node\DeleteForm {
 
     protected function finalize() {
         return $this->complete(function() {
-            return $this->uri->directoryRequest($this->_scaffold->getRecordBackLinkRequest());
+            //return $this->uri->directoryRequest($this->_scaffold->getRecordBackLinkRequest());
         });
     }
 }

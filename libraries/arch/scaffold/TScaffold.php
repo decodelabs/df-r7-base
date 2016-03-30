@@ -366,9 +366,16 @@ trait TScaffold_RecordDataProvider {
 
         // Delete
         if($this->canDeleteRecord($record)) {
+            static $redirTo;
+
+            if(!isset($isSection)) {
+                $redirTo = isset($this->request[$this->getRecordUrlKey()]) ?
+                    $this->getRecordBackLinkRequest() : null;
+            }
+
             $output[] = $this->html->link(
                     $this->_getRecordNodeRequest(
-                        $record, 'delete', null, true
+                        $record, 'delete', null, true, $redirTo
                     ),
                     $this->_('Delete '.$this->getRecordItemName())
                 )
