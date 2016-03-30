@@ -182,8 +182,14 @@ class State implements arch\node\IFormState, \Serializable {
         return $this;
     }
 
-    public function hasStore($key) {
-        return isset($this->_store[$key]);
+    public function hasStore(...$keys): bool {
+        foreach($keys as $key) {
+            if(isset($this->_store[$key])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getStore($key, $default=null) {
@@ -194,8 +200,11 @@ class State implements arch\node\IFormState, \Serializable {
         return $default;
     }
 
-    public function removeStore($key) {
-        unset($this->_store[$key]);
+    public function removeStore(...$keys) {
+        foreach($keys as $key) {
+            unset($this->_store[$key]);
+        }
+
         return $this;
     }
 

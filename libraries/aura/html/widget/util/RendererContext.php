@@ -222,8 +222,14 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this;
     }
 
-    public function hasStore($key) {
-        return isset($this->_store[$key]);
+    public function hasStore(...$keys): bool {
+        foreach($keys as $key) {
+            if(isset($this->_store[$key])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getStore($key, $default=null) {
@@ -234,8 +240,11 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $default;
     }
 
-    public function removeStore($key) {
-        unset($this->_store[$key]);
+    public function removeStore(...$keys) {
+        foreach($keys as $key) {
+            unset($this->_store[$key]);
+        }
+
         return $this;
     }
 }

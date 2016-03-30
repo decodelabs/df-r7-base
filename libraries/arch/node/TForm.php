@@ -225,16 +225,16 @@ trait TForm {
         return $this;
     }
 
-    public function hasStore($key) {
-        return $this->_state->hasStore($key);
+    public function hasStore(...$keys): bool {
+        return $this->_state->hasStore(...$keys);
     }
 
     public function getStore($key, $default=null) {
         return $this->_state->getStore($key, $default);
     }
 
-    public function removeStore($key) {
-        $this->_state->removeStore($key);
+    public function removeStore(...$keys) {
+        $this->_state->removeStore(...$keys);
         return $this;
     }
 

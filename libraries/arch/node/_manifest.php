@@ -104,9 +104,9 @@ interface IRestApiResult extends arch\IProxyResponse {
 ##############################
 interface IStoreProvider {
     public function setStore($key, $value);
-    public function hasStore($key);
+    public function hasStore(...$keys): bool;
     public function getStore($key, $default=null);
-    public function removeStore($key);
+    public function removeStore(...$keys);
     public function clearStore();
 }
 

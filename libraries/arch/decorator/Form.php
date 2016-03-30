@@ -125,16 +125,16 @@ abstract class Form implements IFormDecorator {
         return $this;
     }
 
-    final public function hasStore($key) {
-        return $this->form->hasStore($key);
+    final public function hasStore(...$keys): bool {
+        return $this->form->hasStore(...$keys);
     }
 
     final public function getStore($key, $default=null) {
         return $this->form->getStore($key, $default);
     }
 
-    final public function removeStore($key) {
-        $this->form->removeStore($key);
+    final public function removeStore(...$keys) {
+        $this->form->removeStore(...$keys);
         return $this;
     }
 

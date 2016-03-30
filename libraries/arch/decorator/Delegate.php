@@ -130,16 +130,16 @@ abstract class Delegate implements IDelegateDecorator {
         return $this;
     }
 
-    final public function hasStore($key) {
-        return $this->delegate->hasStore($key);
+    final public function hasStore(...$keys): bool {
+        return $this->delegate->hasStore(...$keys);
     }
 
     final public function getStore($key, $default=null) {
         return $this->delegate->getStore($key, $default);
     }
 
-    final public function removeStore($key) {
-        $this->delegate->removeStore($key);
+    final public function removeStore(...$keys) {
+        $this->delegate->removeStore(...$keys);
         return $this;
     }
 
