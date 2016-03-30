@@ -906,6 +906,10 @@ trait TScaffold_SectionProvider {
             try {
                 $this->_sectionItemCounts = (array)$this->countSectionItems($this->getRecord());
             } catch(\Exception $e) {
+                if($this->application->isDevelopment()) {
+                    throw $e;
+                }
+
                 return [];
             }
         }
