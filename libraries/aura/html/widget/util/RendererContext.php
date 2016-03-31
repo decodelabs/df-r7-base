@@ -186,11 +186,13 @@ class RendererContext implements aura\html\widget\IRendererContext {
             }
         }
 
-        if($this->_nullToNa && empty($value) && $value != '0') {
+        if(is_numeric($value)) {
+            $value = $this->_widget->getContext()->html->number($value);
+        } else if(is_bool($value)) {
+            $value = $this->_widget->getContext()->html->booleanIcon($value);
+        } else if($this->_nullToNa && empty($value) && $value != '0') {
             $value = new aura\html\ElementString('<span class="na">n/a</span>');
-        }
-
-        if($value instanceof core\time\IDate) {
+        } else if($value instanceof core\time\IDate) {
             $value = $this->_widget->getContext()->html->userDate($value);
         }
 
