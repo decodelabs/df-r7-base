@@ -105,7 +105,7 @@ interface IValueMap {
     public function get($key, $default=null);
     public function has(...$keys);
     public function remove(...$keys);
-    public function importFrom(IValueMap $source, array $fields);
+    public function importFrom($source, array $fields);
 }
 
 interface IExporterValueMap extends IValueMap {
@@ -114,7 +114,7 @@ interface IExporterValueMap extends IValueMap {
 
 trait TValueMap {
 
-    public function importFrom(IValueMap $source, array $fields) {
+    public function importFrom($source, array $fields) {
         $values = [];
         $shouldImport = $this instanceof core\collection\ICollection;
 
@@ -125,8 +125,12 @@ trait TValueMap {
 
             if($source instanceof IExporterValueMap) {
                 $value = $source->export($fromField);
-            } else {
+            } else if($source instanceof IValueMap) {
                 $value = $source->get($fromField);
+            } else if(is_array($source)) {
+                $value = $source[$fromField] ?? null;
+            } else {
+                core\stub($source);
             }
 
             if($shouldImport) {
