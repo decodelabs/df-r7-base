@@ -91,19 +91,37 @@ class Queue implements IQueue {
 
 
     public function __call($method, $args) {
-        $provider = array_shift($args);
+        if(substr($method, -5) == 'After') {
+            $job = array_shift($args);
 
-        if(!$provider instanceof IJobProvider) {
-            throw new RuntimeException(
-                'Cannot prepare job, context is not an IJobProvider'
-            );
-        }
+            if(!$job instanceof IJob) {
+                throw new RuntimeException(
+                    'Cannot prepare dependency, context is not an IJob'
+                );
+            }
 
-        if(substr($method, -4) == 'Asap') {
-            return $this->prepareAsap($provider, substr($method, 0, -4), ...$args);
-        } else if(substr($method, -5) == 'After') {
-            return $this->prepareAfter($provider, substr($method, 0, -5), ...$args);
+            $provider = array_shift($args);
+
+            if(!$provider instanceof IJobProvider) {
+                throw new RuntimeException(
+                    'Cannot prepare job, context is not an IJobProvider'
+                );
+            }
+
+            return $this->prepareAfter($job, $provider, substr($method, 0, -5), ...$args);
         } else {
+            if(substr($method, -4) == 'Asap') {
+                $method = substr($method, 0, -4);
+            }
+
+            $provider = array_shift($args);
+
+            if(!$provider instanceof IJobProvider) {
+                throw new RuntimeException(
+                    'Cannot prepare job, context is not an IJobProvider'
+                );
+            }
+
             return $this->prepareAsap($provider, $method, ...$args);
         }
     }
