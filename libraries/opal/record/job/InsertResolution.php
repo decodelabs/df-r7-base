@@ -15,6 +15,8 @@ class InsertResolution implements mesh\job\IResolution {
     protected $_targetField;
     protected $_isForeign = false;
 
+    protected $_queue;
+
     public function __construct(string $targetField, bool $isForeign=false) {
         $this->_targetField = $targetField;
         $this->_isForeign = $isForeign;
@@ -27,6 +29,8 @@ class InsertResolution implements mesh\job\IResolution {
          */
         $queue->after($dependency, new Update($subordinate->getRecord()), $this)
             ->addDependency($subordinate);
+
+        $this->_queue = $queue;
 
         return $this;
     }
@@ -43,6 +47,8 @@ class InsertResolution implements mesh\job\IResolution {
 
             if((string)$keySet != (string)$record->getRawId($this->_targetField)) {
                 $record->set($this->_targetField, $keySet);
+            } else {
+                $record->markAsChanged($this->_targetField);
             }
         }
 
