@@ -70,15 +70,15 @@ interface ITypeRef {
 
 // Chaining
 interface IChainable {
-    public function chain($callback);
+    public function chain($callback, ...$args);
     public function chainIf($test, $trueCallback, $falseCallback=null);
-    public function chainEach(array $list, $callback);
+    public function chainEach(array $list, $callback, ...$args);
 }
 
 trait TChainable {
 
-    public function chain($callback) {
-        Callback::factory($callback)->invoke($this);
+    public function chain($callback, ...$args) {
+        Callback::factory($callback)->invoke($this, ...$args);
         return $this;
     }
 
@@ -92,11 +92,11 @@ trait TChainable {
         return $this;
     }
 
-    public function chainEach(array $list, $callback) {
+    public function chainEach(array $list, $callback, ...$args) {
         $callback = Callback::factory($callback);
 
         foreach($list as $key => $value) {
-            $callback->invoke($this, $value, $key);
+            $callback->invoke($this, $value, $key, ...$args);
         }
 
         return $this;
