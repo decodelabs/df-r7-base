@@ -19,6 +19,8 @@ abstract class Mail extends Base implements arch\IMailComponent {
     const JOURNAL = true;
     const JOURNAL_WEEKS = 10; // weeks
 
+    const BCC = null;
+
     protected $_defaultFromAddress = null;
     protected $_defaultToAddress = null;
     protected $_journalName;
@@ -182,6 +184,10 @@ abstract class Mail extends Base implements arch\IMailComponent {
             $notification->setJournalDuration($this->getJournalDuration());
             $notification->setJournalObjectId1($this->getJournalObjectId1());
             $notification->setJournalObjectId2($this->getJournalObjectId2());
+        }
+
+        if(static::BCC) {
+            $notification->setBcc(static::BCC);
         }
 
         return $notification;

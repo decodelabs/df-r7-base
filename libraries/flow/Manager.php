@@ -209,6 +209,10 @@ class Manager implements IManager, core\IShutdownAware {
             }
         }
 
+        if($bcc = $notification->getBcc()) {
+            $mail->addBCCAddress($bcc);
+        }
+
         return $this;
     }
 

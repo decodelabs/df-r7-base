@@ -21,7 +21,6 @@ class Config extends core\Config {
             'defaultAddress' => $this->_getDefaultAdminAddress(),
             'defaultReturnPath' => null,
             'adminAddresses' => [],
-            'catchAllBCC' => [],
             'captureInTesting' => true,
             'transports' => flow\mail\transport\Base::getAllDefaultConfigValues(),
             'listSources' => [
@@ -124,35 +123,6 @@ class Config extends core\Config {
 
         if(empty($output)) {
             $output[] = Address::factory($this->getDefaultAddress());
-        }
-
-        return $output;
-    }
-
-    public function setCatchAllBCCAddresses(array $addresses) {
-        $values = [];
-
-        foreach($addresses as $i => $address) {
-            $address = Address::factory($address);
-
-            if($address->isValid()) {
-                $values[] = (string)$address;
-            }
-        }
-
-        $this->values['catchAllBCC'] = $values;
-        return $this;
-    }
-
-    public function getCatchAllBCCAddresses() {
-        $output = [];
-
-        if($this->values->catchAllBCC->hasValue()) {
-            $output[] = Address::factory($this->values->catchAllBCC->getValue());
-        } else if(!$this->values->catchAllBCC->isEmpty()) {
-            foreach($this->values->catchAllBCC as $address) {
-                $output[] = Address::factory($address->getValue());
-            }
         }
 
         return $output;

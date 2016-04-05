@@ -19,6 +19,7 @@ class Notification implements INotification {
     protected $_toEmails = [];
     protected $_toUsers = [];
     protected $_toAdmin = false;
+    protected $_bcc;
     protected $_from;
     protected $_filterClient = false;
     protected $_isPrivate = false;
@@ -240,6 +241,16 @@ class Notification implements INotification {
     public function clearToUsers() {
         $this->_toUsers = [];
         return $this;
+    }
+
+
+    public function setBcc($bcc) {
+        $this->_bcc = $bcc;
+        return $this;
+    }
+
+    public function getBcc() {
+        return $this->_bcc;
     }
 
 

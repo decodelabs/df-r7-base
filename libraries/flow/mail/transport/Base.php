@@ -92,18 +92,6 @@ abstract class Base implements flow\mail\ITransport {
             );
         }
 
-        if(!$message->isPrivate() && count($bcc = $config->getCatchAllBCCAddresses())) {
-            foreach($bcc as $address) {
-                $address = flow\mail\Address::factory($address);
-
-                if(!$message->hasToAddress($address)) {
-                    try {
-                        $message->addBCCAddress($address);
-                    } catch(\Exception $e) {}
-                }
-            }
-        }
-
         $message->prepareHeaders();
         $headers = $message->getHeaders();
 
