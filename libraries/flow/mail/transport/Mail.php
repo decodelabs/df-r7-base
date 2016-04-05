@@ -16,7 +16,7 @@ class Mail extends Base {
     }
 
     public function sendLegacy(flow\mail\ILegacyMessage $message) {
-        $this->_prepareMessage($message);
+        $this->_prepareLegacyMessage($message);
         $headers = $message->getHeaderString(['to', 'subject']);
         $to = $message->getHeaders()->get('to');
         $body = $message->getBodyString();

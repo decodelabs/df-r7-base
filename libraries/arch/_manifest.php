@@ -266,7 +266,6 @@ interface IComponent extends
 
 interface IMailComponent extends IComponent, flow\INotificationProxy {
     public function getDescription();
-    public function getTemplateType();
     public function setDefaultToAddress($address, string $name=null);
     public function getDefaultToAddress();
     public function setDefaultFromAddress($address, string $name=null);

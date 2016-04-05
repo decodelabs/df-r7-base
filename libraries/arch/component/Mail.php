@@ -21,7 +21,6 @@ abstract class Mail extends Base implements arch\IMailComponent {
 
     protected $_defaultFromAddress = null;
     protected $_defaultToAddress = null;
-    protected $_templateType;
     protected $_journalName;
     protected $_journalObjectId1;
     protected $_journalObjectId2;
@@ -46,13 +45,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
     }
 
     protected function _loadView() {
-        try {
-            $this->_templateType = 'html';
-            return $this->context->apex->view($this->getName().'.html');
-        } catch(\Exception $e) {
-            $this->_templateType = 'notification';
-            return $this->context->apex->view($this->getName().'.notification');
-        }
+        return $this->context->apex->view($this->getName().'.html');
     }
 
     public function isPrivate(bool $flag=null) {
@@ -72,10 +65,6 @@ abstract class Mail extends Base implements arch\IMailComponent {
         }
 
         return $output;
-    }
-
-    public function getTemplateType() {
-        return $this->_templateType;
     }
 
     public function shouldForceSend(bool $flag=null) {
@@ -144,15 +133,11 @@ abstract class Mail extends Base implements arch\IMailComponent {
     }
 
     protected function _normalizeView(aura\view\IView $view) {
-        switch($this->_templateType) {
-            case 'html':
-                $view->shouldRenderBase(false);
+        $view->shouldRenderBase(false);
 
-                if(!$view->hasTheme()) {
-                    $themeConfig = aura\theme\Config::getInstance();
-                    $view->setTheme($themeConfig->getThemeIdFor('front'));
-                }
-                break;
+        if(!$view->hasTheme()) {
+            $themeConfig = aura\theme\Config::getInstance();
+            $view->setTheme($themeConfig->getThemeIdFor('front'));
         }
 
         return $view;

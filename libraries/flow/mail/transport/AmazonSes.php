@@ -38,7 +38,7 @@ class AmazonSes extends Base {
     }
 
     public function sendLegacy(flow\mail\ILegacyMessage $message) {
-        $this->_prepareMessage($message);
+        $this->_prepareLegacyMessage($message);
 
         if(!$this->_mediator) {
             $config = flow\mail\Config::getInstance();

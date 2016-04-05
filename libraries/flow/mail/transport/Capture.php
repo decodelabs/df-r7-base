@@ -17,7 +17,7 @@ class Capture extends Base {
     }
 
     public function sendLegacy(flow\mail\ILegacyMessage $message) {
-        $this->_prepareMessage($message);
+        $this->_prepareLegacyMessage($message);
 
         $manager = flow\Manager::getInstance();
         $model = $manager->getMailModel();
