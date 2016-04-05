@@ -20,47 +20,22 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
     public static function fromString($string) {
         $class = get_called_class();
+        return self::_createPartFromString($string, $class);
+    }
+
+    protected static function _createPartFromString($string, $class=null) {
+        if($class === null) {
+            $class = __CLASS__;
+        }
 
         $string = str_replace("\r", '', $string);
         list($headers, $body) = explode("\n\n", $string, 2);
 
         $headers = new core\collection\HeaderMap($headers);
         $contentType = $headers->get('content-type');
-        $encoding = $headers->get('content-transfer-encoding');
-
-        $headers->remove('content-type');
-        $headers->remove('content-transfer-encoding');
 
         if(substr($contentType, 0, 10) == 'multipart/') {
             $output = new $class($contentType, $headers);
-            $boundary = $output->getBoundary();
-            $parts = explode("\n".'--'.$boundary, "\n".trim($body));
-            array_shift($parts);
-            array_pop($parts);
-
-            foreach($parts as $part) {
-                $output->addPart(self::_createPartFromString($part));
-            }
-        } else {
-            $output = new $class(IMultiPart::MIXED, $headers);
-            $output->addPart(new ContentPart($body, [
-                'content-type' => $contentType,
-                'content-transfer-encoding' => $encoding
-            ], true));
-        }
-
-        return $output;
-    }
-
-    protected static function _createPartFromString($string) {
-        $string = str_replace("\r", '', $string);
-        list($headers, $body) = explode("\n\n", $string, 2);
-
-        $headers = new core\collection\HeaderMap($headers);
-        $contentType = $headers->get('content-type');
-
-        if(substr($contentType, 0, 10) == 'multipart/') {
-            $output = new self($contentType, $headers);
             $boundary = $output->getBoundary();
             $parts = explode("\n".'--'.$boundary, "\n".trim($body));
             array_shift($parts);
@@ -81,8 +56,8 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
         $this->setContentType($type);
 
-        if(!$this->_headers->hasNamedValue('content-type', 'boundary')) {
-            $this->_headers->setNamedValue('content-type', 'boundary', '=_'.md5(microtime(true).self::$_boundaryCounter++));
+        if(!$this->_headers->hasDelimitedValue('content-type', 'boundary')) {
+            $this->_headers->setDelimitedValue('content-type', 'boundary', '=_'.md5(microtime(true).self::$_boundaryCounter++));
         }
     }
 
@@ -127,12 +102,12 @@ class MultiPart implements IMultiPart, core\IDumpable {
     }
 
     public function setBoundary($boundary) {
-        $this->_headers->setNamedValue('content-type', 'boundary', $boundary);
+        $this->_headers->setDelimitedValue('content-type', 'boundary', $boundary);
         return $this;
     }
 
     public function getBoundary() {
-        return $this->_headers->getNamedValue('content-type', 'boundary');
+        return $this->_headers->getDelimitedValue('content-type', 'boundary');
     }
 
     public function setParts(array $parts) {

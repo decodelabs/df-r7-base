@@ -160,56 +160,86 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return $default;
     }
 
+    public function setBase($key, $value) {
+        $parts = explode(';', $this->get($key, $default), 2);
+        $parts[0] = $value;
+
+        return $this->set($key, implode(';', $parts));
+    }
+
     public function getBase($key, $default=null) {
-        $parts = explode(';', $this->get($key, $default));
+        $parts = explode(';', $this->get($key, $default), 2);
         return array_shift($parts);
     }
 
-    public function setNamedValue($key, $name, $keyValue) {
+    public function setDelimited($key, $base, array $values) {
+        $value = $base.'; '.core\collection\Tree::factory($values)->toArrayDelimitedString(';');
+        return $this->set($key, $value);
+    }
+
+    public function getDelimited($key): ITree {
+        $value = $this->get($key);
+        return core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
+    }
+
+    public function setDelimitedValues($key, array $values) {
         $value = $this->get($key);
 
         if($value === null) {
             return $this;
         }
 
+        $parts = core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
+        $value = $parts['@value'];
+        $parts->remove('@value');
+        $parts->import($values);
 
-        $new = preg_replace('/'.preg_quote($name).'="(.*)"/i', $name.'="'.$keyValue.'"', $value);
-
-        if($new === $value) {
-            if(false === strpos($value, ';')) {
-                $value .= ';';
-            }
-
-            $value .= ' '.$name.'="'.$keyValue.'"';
-        } else {
-            $value = $new;
-        }
-
+        $value .= '; '.$parts->toArrayDelimitedString(';');
         return $this->set($key, $value);
     }
 
-    public function getNamedValue($key, $name, $default=null) {
+    public function getDelimitedValues($key): array {
+        $value = $this->get($key);
+        $parts = core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
+        $parts->remove('@value');
+        return $parts->toArray();
+    }
+
+    public function setDelimitedValue($key, $name, $keyValue) {
+        $value = $this->get($key);
+
+        if($value === null) {
+            return $this;
+        }
+
+        $parts = core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
+        $value = $parts['@value'];
+        $parts->remove('@value');
+        $parts->set($name, $keyValue);
+
+        $value .= '; '.$parts->toArrayDelimitedString(';');
+        return $this->set($key, $value);
+    }
+
+    public function getDelimitedValue($key, $name, $default=null) {
         $value = $this->get($key);
 
         if($value === null) {
             return $default;
         }
 
-        if(!preg_match('/\W*'.preg_quote($name).'="(.*)"/i', $value, $matches)) {
-            return $default;
-        }
-
-        return $matches[1];
+        $parts = core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
+        return $parts->get($name, $default);
     }
 
-    public function hasNamedValue($key, $name) {
+    public function hasDelimitedValue($key, $name) {
         $value = $this->get($key);
 
         if($value === null) {
             return false;
         }
 
-        return (bool)preg_match('/\W*'.preg_quote($name).'="(.*)"/i', $value);
+        return (bool)preg_match('/\;\W*'.preg_quote($name).'=/i', $value);
     }
 
     public function has(...$keys) {

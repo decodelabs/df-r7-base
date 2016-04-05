@@ -130,12 +130,12 @@ class ContentPart implements IContentPart, core\IDumpable {
     }
 
     public function setCharacterSet($charset) {
-        $this->_headers->setNamedValue('content-type', 'charset', $charset);
+        $this->_headers->setDelimitedValue('content-type', 'charset', $charset);
         return $this;
     }
 
     public function getCharacterSet() {
-        return $this->_headers->getNamedValue('content-type', 'charset', 'utf-8');
+        return $this->_headers->getDelimitedValue('content-type', 'charset', 'utf-8');
     }
 
 
@@ -171,7 +171,7 @@ class ContentPart implements IContentPart, core\IDumpable {
     }
 
     public function getFileName() {
-        return $this->_headers->getNamedValue('content-disposition', 'filename');
+        return $this->_headers->getDelimitedValue('content-disposition', 'filename');
     }
 
     public function setDescription($description) {

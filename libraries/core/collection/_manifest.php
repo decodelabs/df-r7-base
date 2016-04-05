@@ -291,12 +291,18 @@ interface IInputTree extends ITree, IErrorContainer {
 
 
 interface IHeaderMap extends IMappedCollection, core\IStringProvider, \Iterator {
-    public function getBase($key, $default=null);
     public function append($key, $value);
     public function hasValue($key, $value);
-    public function setNamedValue($key, $name, $keyValue);
-    public function getNamedValue($key, $name, $default=null);
-    public function hasNamedValue($key, $name);
+
+    public function setBase($key, $value);
+    public function getBase($key, $default=null);
+    public function setDelimited($key, $base, array $values);
+    public function getDelimited($key): ITree;
+    public function setDelimitedValues($key, array $values);
+    public function getDelimitedValues($key): array;
+    public function setDelimitedValue($key, $name, $keyValue);
+    public function getDelimitedValue($key, $name, $default=null);
+    public function hasDelimitedValue($key, $name);
     public static function normalizeKey($key);
     public function getLines(array $skipKeys=null);
 }

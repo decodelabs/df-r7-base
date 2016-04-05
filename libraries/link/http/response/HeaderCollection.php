@@ -389,7 +389,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
             return null;
         }
 
-        return $this->getNamedValue('content-disposition', 'filename');
+        return $this->getDelimitedValue('content-disposition', 'filename');
     }
 
     public function isAttachment(bool $flag=null) {
