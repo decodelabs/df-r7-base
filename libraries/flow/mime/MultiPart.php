@@ -63,7 +63,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
 
     public function isMultiPart() {
-        return ($this->count() > 1) || ($this->_parts[0]->isMultipart());
+        return ($this->count() > 1) || (isset($this->_parts[0]) && $this->_parts[0]->isMultipart());
     }
 
     public function setContentType($type) {
@@ -94,7 +94,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
     }
 
     public function getContentType() {
-        return trim(explode(';', $this->_headers->get('content-type'))[0]);
+        return $this->_headers->getBase('content-type');
     }
 
     public function getFullContentType() {

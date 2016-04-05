@@ -210,18 +210,18 @@ class ContentPart implements IContentPart, core\IDumpable {
     public function getEncodedContent() {
         $content = $this->getContentString();
 
-        switch($this->getEncoding()) {
-            case flex\IEncoding::A8BIT:
-            case flex\IEncoding::A7BIT:
+        switch(strtolower($this->getEncoding())) {
+            case strtolower(flex\IEncoding::A8BIT):
+            case strtolower(flex\IEncoding::A7BIT):
                 return wordwrap($content, IPart::LINE_LENGTH, IPart::LINE_END, 1);
 
-            case flex\IEncoding::QP:
+            case strtolower(flex\IEncoding::QP):
                 return quoted_printable_encode($content);
 
-            case flex\IEncoding::BASE64:
+            case strtolower(flex\IEncoding::BASE64):
                 return rtrim(chunk_split(base64_encode($content), IPart::LINE_LENGTH, IPart::LINE_END));
 
-            case flex\IEncoding::BINARY:
+            case strtolower(flex\IEncoding::BINARY):
             default:
                 return $content;
         }
@@ -263,7 +263,7 @@ class ContentPart implements IContentPart, core\IDumpable {
             $output[] = new core\debug\dumper\Property($key, $header, 'protected');
         }
 
-        if($type = $this->_headers->get('content-type')) {
+        if($type = $this->_headers->getBase('content-type')) {
             $parts = explode('/', $type);
 
             if($parts[0] == 'text' || $parts[0] == 'application') {
