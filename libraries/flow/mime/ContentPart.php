@@ -31,21 +31,21 @@ class ContentPart implements IContentPart, core\IDumpable {
         if($decodeContent) {
             $encoding = $this->_headers->get('content-transfer-encoding');
 
-            switch($encoding) {
-                case flex\IEncoding::A7BIT:
-                case flex\IEncoding::A8BIT:
+            switch(strtolower($encoding)) {
+                case strtolower(flex\IEncoding::A7BIT):
+                case strtolower(flex\IEncoding::A8BIT):
                     $content = $this->_unchunk($content, IPart::LINE_LENGTH, IPart::LINE_END);
                     break;
 
-                case flex\IEncoding::QP:
+                case strtolower(flex\IEncoding::QP):
                     $content = quoted_printable_decode($content);
                     break;
 
-                case flex\IEncoding::BASE64:
+                case strtolower(flex\IEncoding::BASE64):
                     $content = base64_decode($this->_unchunk($content, IPart::LINE_LENGTH, IPart::LINE_END));
                     break;
 
-                case flex\IEncoding::BINARY:
+                case strtolower(flex\IEncoding::BINARY):
                     break;
 
                 default:
@@ -263,7 +263,15 @@ class ContentPart implements IContentPart, core\IDumpable {
             $output[] = new core\debug\dumper\Property($key, $header, 'protected');
         }
 
-        $output[] = new core\debug\dumper\Property('content', $this->_content);
+        if($type = $this->_headers->get('content-type')) {
+            $parts = explode('/', $type);
+
+            if($parts[0] == 'text' || $parts[0] == 'application') {
+                $output[] = new core\debug\dumper\Property('content', $this->_content);
+            } else {
+                $output[] = new core\debug\dumper\Property('content', strlen($this->_content).' bytes', 'private');
+            }
+        }
 
         return $output;
     }
