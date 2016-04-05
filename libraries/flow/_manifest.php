@@ -196,8 +196,6 @@ interface INotification extends flow\mail\IJournalableMessage {
 
     public function setFromEmail($email=null, $name=null);
     public function getFromEmail();
-
-    public function isPrivate(bool $flag=null);
 }
 
 interface INotificationProxy {

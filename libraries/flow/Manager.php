@@ -169,8 +169,6 @@ class Manager implements IManager, core\IShutdownAware {
             $mail->setBodyHtml($notification->getBodyHtml());
         }
 
-        $mail->isPrivate($notification->isPrivate());
-
         if($notification->shouldJournal()) {
             $mail->shouldJournal(true);
             $mail->setJournalName($notification->getJournalName());

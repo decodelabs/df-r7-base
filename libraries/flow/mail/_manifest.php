@@ -56,8 +56,6 @@ interface ILegacyMessage extends flow\mime\IMultiPart, IJournalableMessage {
     public function addFileAttachment($path, $fileName=null, $contentType=null);
     public function addStringAttachment($string, $fileName, $contentType=null);
 
-    public function isPrivate(bool $flag=null);
-
     public function setFromAddress($address, $name=null);
     public function getFromAddress();
     public function isFromAddressSet();
@@ -113,6 +111,5 @@ interface IMailRecord {
     public function getSubject();
     public function getBodyString();
     public function getDate();
-    public function isPrivate();
     public function toMessage();
 }

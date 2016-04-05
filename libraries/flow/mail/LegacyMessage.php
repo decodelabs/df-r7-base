@@ -20,7 +20,6 @@ class LegacyMessage extends flow\mime\MultiPart implements ILegacyMessage {
     protected $_altPart;
     protected $_bodyText;
     protected $_bodyHtml;
-    protected $_isPrivate = false;
 
     protected $_journalName;
     protected $_journalDuration;
@@ -209,16 +208,6 @@ class LegacyMessage extends flow\mime\MultiPart implements ILegacyMessage {
         return $this;
     }
 
-
-// Private
-    public function isPrivate(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isPrivate = $flag;
-            return $this;
-        }
-
-        return (bool)$this->_isPrivate;
-    }
 
 // From
     public function setFromAddress($address, $name=null) {

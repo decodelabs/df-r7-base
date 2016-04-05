@@ -18,7 +18,7 @@ class Unit extends axis\unit\table\Base {
     ];
 
     const ORDERABLE_FIELDS = [
-        'from', 'to', 'subject', 'date', 'isPrivate', 'environmentMode'
+        'from', 'to', 'subject', 'date', 'environmentMode'
     ];
 
     const DEFAULT_ORDER = 'date DESC';
@@ -29,7 +29,6 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('to', 'Text', 'medium');
         $schema->addField('subject', 'Text', 255);
         $schema->addField('body', 'Text', 'huge');
-        $schema->addField('isPrivate', 'Boolean');
 
         $schema->addField('date', 'Timestamp');
         $schema->addField('readDate', 'Date:Time')
@@ -55,7 +54,6 @@ class Unit extends axis\unit\table\Base {
                 'to' => (string)$to,
                 'subject' => $headers->get('subject'),
                 'body' => (string)$message,
-                'isPrivate' => false,
                 'environmentMode' => $this->context->application->getEnvironmentMode()
             ])
             ->save();

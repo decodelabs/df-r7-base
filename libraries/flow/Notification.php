@@ -22,7 +22,6 @@ class Notification implements INotification {
     protected $_bcc;
     protected $_from;
     protected $_filterClient = false;
-    protected $_isPrivate = false;
     protected $_journalName;
     protected $_journalDuration;
     protected $_journalObjectId1;
@@ -269,15 +268,6 @@ class Notification implements INotification {
         return $this->_from;
     }
 
-
-    public function isPrivate(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isPrivate = $flag;
-            return $this;
-        }
-
-        return $this->_isPrivate;
-    }
 
 
 // Journal

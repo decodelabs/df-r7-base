@@ -153,7 +153,6 @@ class Comms implements core\ISharedHelper {
         $mail = new flow\mail\LegacyMessage();
         $mail->setSubject($notification->getSubject());
         $mail->setBodyHtml($notification->getBodyHtml());
-        $mail->isPrivate($notification->isPrivate());
 
         foreach($notification->getToEmails() as $email => $n) {
             $mail->addToAddress($email);

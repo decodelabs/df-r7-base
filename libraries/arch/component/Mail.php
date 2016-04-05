@@ -14,7 +14,6 @@ use df\flow;
 abstract class Mail extends Base implements arch\IMailComponent {
 
     const DESCRIPTION = null;
-    const IS_PRIVATE = false;
 
     const JOURNAL = true;
     const JOURNAL_WEEKS = 10; // weeks
@@ -26,7 +25,6 @@ abstract class Mail extends Base implements arch\IMailComponent {
     protected $_journalName;
     protected $_journalObjectId1;
     protected $_journalObjectId2;
-    protected $_isPrivate = false;
     protected $_forceSend = false;
 
     public function __construct(arch\IContext $context, array $args=null) {
@@ -36,7 +34,6 @@ abstract class Mail extends Base implements arch\IMailComponent {
             $args = [];
         }
 
-        $this->_isPrivate = static::IS_PRIVATE;
         $this->_componentArgs = $args;
         $this->setRenderTarget($view = $this->_loadView());
         $this->view = $view;
@@ -48,15 +45,6 @@ abstract class Mail extends Base implements arch\IMailComponent {
 
     protected function _loadView() {
         return $this->context->apex->view($this->getName().'.html');
-    }
-
-    public function isPrivate(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isPrivate = $flag;
-            return $this;
-        }
-
-        return $this->_isPrivate;
     }
 
     public function getDescription() {
@@ -172,10 +160,6 @@ abstract class Mail extends Base implements arch\IMailComponent {
 
         if($this->_forceSend) {
             $notification->shouldForceSend($this->_forceSend);
-        }
-
-        if($this->_isPrivate) {
-            $notification->isPrivate(true);
         }
 
         if($this->shouldJournal()) {

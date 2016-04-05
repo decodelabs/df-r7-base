@@ -37,10 +37,6 @@ class Record extends opal\record\Base implements flow\mail\IMailRecord {
         return $this['date'];
     }
 
-    public function isPrivate() {
-        return $this['isPrivate'];
-    }
-
     public function toMessage() {
         return flow\mail\LegacyMessage::fromString($this['body']);
     }
