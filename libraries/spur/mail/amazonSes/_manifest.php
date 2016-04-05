@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\flow;
-    
+
 
 // Exceptions
 interface IException {}
@@ -70,8 +70,8 @@ interface IMediator extends spur\IHttpMediator {
     public function getSendQuota();
     public function getSendStatistics();
 
-    public function sendMessage(flow\mail\IMessage $message);
-    public function sendRawMessage(flow\mail\IMessage $message);
+    public function sendMessage(flow\mail\ILegacyMessage $message);
+    public function sendRawMessage(flow\mail\ILegacyMessage $message);
 
     public function requestXml($method, array $data=[], array $headers=[]);
 }

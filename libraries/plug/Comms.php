@@ -150,7 +150,7 @@ class Comms implements core\ISharedHelper {
         $component = $this->getMailComponent($path, $args);
         $notification = $component->toNotification();
 
-        $mail = new flow\mail\Message();
+        $mail = new flow\mail\LegacyMessage();
         $mail->setSubject($notification->getSubject());
         $mail->setBodyHtml($notification->getBodyHtml());
         $mail->isPrivate($notification->isPrivate());

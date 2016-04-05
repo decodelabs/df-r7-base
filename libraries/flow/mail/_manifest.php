@@ -24,7 +24,27 @@ interface IAddress extends core\IStringProvider {
     public function isValid();
 }
 
-interface IMessage extends flow\mime\IMultiPart {
+interface IAddressList extends core\collection\IMappedCollection, core\IStringProvider {
+    public function toNameMap();
+    public function add($address, $name=null);
+}
+
+
+interface IJournalableMessage {
+    public function setJournalName(string $name=null);
+    public function getJournalName();
+    public function setJournalDuration(core\time\IDuration $duration=null);
+    public function getJournalDuration();
+    public function setJournalObjectId1($id);
+    public function getJournalObjectId1();
+    public function setJournalObjectId2($id);
+    public function getJournalObjectId2();
+    public function shouldJournal(bool $flag=null);
+}
+
+
+
+interface ILegacyMessage extends flow\mime\IMultiPart, IJournalableMessage {
     public function setSubject($subject);
     public function getSubject();
 
@@ -70,30 +90,20 @@ interface IMessage extends flow\mime\IMultiPart {
     public function setReturnPath($address=null);
     public function getReturnPath();
 
-    public function setJournalName(string $name=null);
-    public function getJournalName();
-    public function setJournalDuration(core\time\IDuration $duration=null);
-    public function getJournalDuration();
-    public function setJournalObjectId1($id);
-    public function getJournalObjectId1();
-    public function setJournalObjectId2($id);
-    public function getJournalObjectId2();
-    public function shouldJournal(bool $flag=null);
-
     public function send(ITransport $transport=null);
 }
 
 interface ITransport {
     public static function getName();
     public static function getDescription();
-    public function send(IMessage $message);
+    public function sendLegacy(ILegacyMessage $message);
 }
 
 
 
 interface IMailModel {
-    public function captureMail(IMessage $message);
-    public function journalMail(IMessage $message);
+    public function captureMail(flow\mime\IMultiPart $message);
+    public function journalMail(IJournalableMessage $message);
 }
 
 interface IMailRecord {

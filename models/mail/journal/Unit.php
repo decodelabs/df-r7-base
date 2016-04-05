@@ -41,7 +41,7 @@ class Unit extends axis\unit\table\Base {
             ->setDefaultValue('production');
     }
 
-    public function store(flow\mail\IMessage $message) {
+    public function store(flow\mail\IJournalableMessage $message) {
         if(!$message->shouldJournal()) {
             return;
         }

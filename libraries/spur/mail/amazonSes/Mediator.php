@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\flow;
 use df\link;
-    
+
 class Mediator implements IMediator {
 
     use spur\THttpMediator;
@@ -82,7 +82,7 @@ class Mediator implements IMediator {
 
     public function deleteVerifiedAddress($address) {
         $address = flow\mail\Address::factory($address);
-        
+
         $xml = $this->requestXml('delete', [
             'Action' => 'DeleteVerifiedEmailAddress',
             'EmailAddress' => $address->getAddress()
@@ -124,7 +124,7 @@ class Mediator implements IMediator {
     }
 
 
-    public function sendMessage(flow\mail\IMessage $message) {
+    public function sendMessage(flow\mail\ILegacyMessage $message) {
         $params = ['Action' => 'SendEmail'];
 
         $i = 1;
@@ -165,7 +165,7 @@ class Mediator implements IMediator {
         return (string)$xml->SendEmailResult->MessageId;
     }
 
-    public function sendRawMessage(flow\mail\IMessage $message) {
+    public function sendRawMessage(flow\mail\ILegacyMessage $message) {
         $xml = $this->requestXml('post', [
             'Action' => 'SendRawEmail',
             'RawMessage.Data' => (string)$message,

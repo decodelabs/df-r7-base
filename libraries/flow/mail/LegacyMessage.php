@@ -10,7 +10,7 @@ use df\core;
 use df\flow;
 use df\flex;
 
-class Message extends flow\mime\MultiPart implements IMessage {
+class LegacyMessage extends flow\mime\MultiPart implements ILegacyMessage {
 
     protected $_from;
     protected $_to = [];
@@ -544,7 +544,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
 
 // Send
     public function send(ITransport $transport=null) {
-        flow\Manager::getInstance()->sendMail($this, $transport);
+        flow\Manager::getInstance()->sendLegacyMail($this, $transport);
         return $this;
     }
 }

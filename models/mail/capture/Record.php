@@ -12,17 +12,17 @@ use df\opal;
 use df\flow;
 
 class Record extends opal\record\Base implements flow\mail\IMailRecord {
-    
+
     public function getId() {
         return $this['id'];
     }
-    
+
     public function getFromAddress() {
         return flow\mail\Address::factory($this['from']);
     }
 
     public function getToAddresses() {
-        return flow\mail\Message::parseAddressList($this['to']);
+        return flow\mail\AddressList::factory($this['to']);
     }
 
     public function getSubject() {
@@ -42,6 +42,6 @@ class Record extends opal\record\Base implements flow\mail\IMailRecord {
     }
 
     public function toMessage() {
-        return flow\mail\Message::fromString($this['body']);
+        return flow\mail\LegacyMessage::fromString($this['body']);
     }
 }

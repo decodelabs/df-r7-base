@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,16 +9,16 @@ use df;
 use df\core;
 use df\flow;
 use df\arch;
-    
+
 class Capture extends Base {
 
     public static function getDescription() {
         return 'Dummy transport stored in local database for testing purposes';
     }
 
-    public function send(flow\mail\IMessage $message) {
+    public function sendLegacy(flow\mail\ILegacyMessage $message) {
         $this->_prepareMessage($message);
-        
+
         $manager = flow\Manager::getInstance();
         $model = $manager->getMailModel();
 

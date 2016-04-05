@@ -22,8 +22,8 @@ class RuntimeException extends \RuntimeException implements IException {}
 interface IManager extends core\IManager {
 
 // Mail
-    public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
-    public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
+    public function sendLegacyMail(flow\mail\ILegacyMessage $message, flow\mail\ITransport $transport=null);
+    public function forceSendLegacyMail(flow\mail\ILegacyMessage $message, flow\mail\ITransport $transport=null);
     public function getDefaultMailTransportName($forceSend=false);
     public function getMailModel();
 
@@ -161,7 +161,7 @@ class FlashQueue implements \Serializable {
 }
 
 
-interface INotification {
+interface INotification extends flow\mail\IJournalableMessage {
 
     const TEXT = 'text';
     const SIMPLE_TAGS = 'simpleTags';
@@ -198,16 +198,6 @@ interface INotification {
     public function getFromEmail();
 
     public function isPrivate(bool $flag=null);
-
-    public function setJournalName(string $name=null);
-    public function getJournalName();
-    public function setJournalDuration(core\time\IDuration $duration=null);
-    public function getJournalDuration();
-    public function setJournalObjectId1($id);
-    public function getJournalObjectId1();
-    public function setJournalObjectId2($id);
-    public function getJournalObjectId2();
-    public function shouldJournal(bool $flag=null);
 }
 
 interface INotificationProxy {

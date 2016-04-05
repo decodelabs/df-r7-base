@@ -62,7 +62,7 @@ abstract class Base implements flow\mail\ITransport {
         return $output;
     }
 
-    protected function _prepareMessage(flow\mail\IMessage $message) {
+    protected function _prepareMessage(flow\mail\ILegacyMessage $message) {
         $config = flow\mail\Config::getInstance();
 
         if(!$isFromValid = $message->isFromAddressValid()) {

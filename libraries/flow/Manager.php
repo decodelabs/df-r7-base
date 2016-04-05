@@ -29,15 +29,15 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 ## Mail
-    public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null) {
-        return $this->_sendMail($message, $transport);
+    public function sendLegacyMail(flow\mail\ILegacyMessage $message, flow\mail\ITransport $transport=null) {
+        return $this->_sendLegacyMail($message, $transport);
     }
 
-    public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null) {
-        return $this->_sendMail($message, $transport, true);
+    public function forceSendLegacyMail(flow\mail\ILegacyMessage $message, flow\mail\ITransport $transport=null) {
+        return $this->_sendLegacyMail($message, $transport, true);
     }
 
-    protected function _sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null, $forceSend=false) {
+    protected function _sendLegacyMail(flow\mail\ILegacyMessage $message, flow\mail\ITransport $transport=null, $forceSend=false) {
         $isDefault = false;
         $name = null;
 
@@ -48,13 +48,13 @@ class Manager implements IManager, core\IShutdownAware {
         }
 
         try {
-            $output = $transport->send($message);
+            $output = $transport->sendLegacy($message);
         } catch(\Exception $e) {
             if($isDefault
             && $name != 'Mail'
             && $name != 'Capture') {
                 $transport = flow\mail\transport\Base::factory('Mail');
-                $output = $transport->send($message);
+                $output = $transport->sendLegacy($message);
             } else {
                 throw $e;
             }
@@ -160,7 +160,7 @@ class Manager implements IManager, core\IShutdownAware {
             return $this;
         }
 
-        $mail = new flow\mail\Message();
+        $mail = new flow\mail\LegacyMessage();
         $mail->setSubject($notification->getSubject());
 
         if($notification->getBodyType() == INotification::TEXT) {
@@ -193,18 +193,18 @@ class Manager implements IManager, core\IShutdownAware {
             }
 
             if($forceSend) {
-                $this->forceSendMail($mail);
+                $this->forceSendLegacyMail($mail);
             } else {
-                $this->sendMail($mail);
+                $this->sendLegacyMail($mail);
             }
         } else {
             foreach($emails as $address => $name) {
                 $activeMail = clone $mail;
                 $activeMail->addToAddress($address, $name);
                 if($forceSend) {
-                    $this->forceSendMail($activeMail);
+                    $this->forceSendLegacyMail($activeMail);
                 } else {
-                    $this->sendMail($activeMail);
+                    $this->sendLegacyMail($activeMail);
                 }
             }
         }

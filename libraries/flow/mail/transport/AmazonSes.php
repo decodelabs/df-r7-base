@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flow;
 use df\spur;
-    
+
 class AmazonSes extends Base {
 
     protected $_mediator;
@@ -37,9 +37,9 @@ class AmazonSes extends Base {
         return $this;
     }
 
-    public function send(flow\mail\IMessage $message) {
+    public function sendLegacy(flow\mail\ILegacyMessage $message) {
         $this->_prepareMessage($message);
-        
+
         if(!$this->_mediator) {
             $config = flow\mail\Config::getInstance();
             $settings = $config->getTransportSettings('AmazonSes');

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -61,7 +61,7 @@ class Smtp extends Base {
         return $this;
     }
 
-    public function send(flow\mail\IMessage $message) {
+    public function sendLegacy(flow\mail\ILegacyMessage $message) {
         if(!$this->_mediator) {
             $config = flow\mail\Config::getInstance();
             $settings = $config->getTransportSettings('Smtp');

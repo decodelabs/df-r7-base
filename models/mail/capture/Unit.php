@@ -38,28 +38,24 @@ class Unit extends axis\unit\table\Base {
             ->setDefaultValue('development');
     }
 
-    public function store(flow\mail\IMessage $message) {
-        $to = [];
+    public function store(flow\mime\IMultiPart $message) {
+        $headers = $message->getHeaders();
+        $to = new flow\mail\AddressList();
 
-        foreach($message->getToAddresses() as $address) {
-            $to[] = (string)$address;
-        }
+        $to->import(
+            $headers->get('to'),
+            $headers->get('cc'),
+            $headers->get('bcc')
+        );
 
-        foreach($message->getCCAddresses() as $address) {
-            $to[] = (string)$address;
-        }
-
-        foreach($message->getBCCAddresses() as $address) {
-            $to[] = (string)$address;
-        }
-
+        $from = flow\mail\Address::factory($headers->get('from'));
 
         return $this->newRecord([
-                'from' => (string)$message->getFromAddress(),
-                'to' => implode(',', array_unique($to)),
-                'subject' => $message->getSubject(),
+                'from' => (string)$from,
+                'to' => (string)$to,
+                'subject' => $headers->get('subject'),
                 'body' => (string)$message,
-                'isPrivate' => $message->isPrivate(),
+                'isPrivate' => false,
                 'environmentMode' => $this->context->application->getEnvironmentMode()
             ])
             ->save();

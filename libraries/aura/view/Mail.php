@@ -18,7 +18,7 @@ class Mail extends Base {
 
     public function __construct($type, arch\IContext $context) {
         parent::__construct($type, $context);
-        $this->_message = new flow\mail\Message();
+        $this->_message = new flow\mail\LegacyMessage();
     }
 
     public function __call($method, array $args) {
