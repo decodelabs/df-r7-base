@@ -88,6 +88,11 @@ class Comms implements core\ISharedHelper {
         return new flow\mail\Message($subject, $body, ...$to);
     }
 
+    public function newTextMail($subject, $body, ...$to): flow\mail\IMessage {
+        return $this->newMail($subject, null, ...$to)
+            ->setBodyText($body);
+    }
+
     public function newAdminMail($subject, $body, $forceSend=false) {
         return $this->newMail($subject, $body, true)
             ->shouldForceSend($forceSend);
@@ -99,7 +104,7 @@ class Comms implements core\ISharedHelper {
 
     public function sendAdminTextMail($subject, $body, $forceSend=false) {
         return $this->newAdminMail($subject, null, $forceSend)
-            ->setTextBody($body)
+            ->setBodyText($body)
             ->send();
     }
 
