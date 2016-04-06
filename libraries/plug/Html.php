@@ -453,7 +453,11 @@ class Html implements arch\IDirectoryHelper {
         }
 
         return $this->element('span.numeric', function() use($value, $unit) {
-            yield $this->element('span.value', $this->context->format->number($value));
+            if(is_string($value) && (string)((float)$value) === $value) {
+                $value = $this->context->format->number($value);
+            }
+
+            yield $this->element('span.value', $value);
 
             if($unit !== null) {
                 yield $this->element('span.unit', $unit);
