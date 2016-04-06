@@ -48,6 +48,10 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function toText($html) {
+        if(is_string($html)) {
+            $html = new aura\html\ElementString($html);
+        }
+
         $html = aura\html\ElementContent::normalize($html);
 
         if(!strlen($html)) {

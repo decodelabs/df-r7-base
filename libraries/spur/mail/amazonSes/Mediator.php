@@ -124,7 +124,62 @@ class Mediator implements IMediator {
     }
 
 
-    public function sendMessage(flow\mail\ILegacyMessage $message) {
+
+    public function sendMessage(flow\mail\IMessage $message, flow\mime\IMultiPart $mime) {
+        $params = ['Action' => 'SendEmail'];
+
+        $i = 1;
+        foreach($message->getToAddresses() as $address) {
+            $params['Destination.ToAddresses.member.'.$i] = (string)$address;
+            $i++;
+        }
+
+        $i = 1;
+        foreach($message->getCcAddresses() as $address) {
+            $params['Destination.CcAddresses.member.'.$i] = (string)$address;
+        }
+
+        $i = 1;
+        foreach($message->getBccAddresses() as $address) {
+            $params['Destination.BccAddresses.member.'.$i] = (string)$address;
+        }
+
+        if($address = $message->getReplyToAddress()) {
+            $params['ReplyToAddresses.member.1'] = (string)$address;
+        }
+
+        $params['Source'] = (string)$message->getFromAddress();
+
+        if(null !== ($subject = $message->getSubject())) {
+            $params['Message.Subject.Data'] = $subject;
+        }
+
+        if($bodyText = $message->getBodyText()) {
+            $params['Message.Body.Text.Data'] = $bodyText;
+        }
+
+        if($bodyHtml = $message->getBodyHtml()) {
+            $params['Message.Body.Html.Data'] = $bodyHtml;
+        }
+
+        $xml = $this->requestXml('post', $params);
+        return (string)$xml->SendEmailResult->MessageId;
+    }
+
+    public function sendRawMessage(flow\mail\IMessage $message, flow\mime\IMultiPart $mime) {
+        $xml = $this->requestXml('post', [
+            'Action' => 'SendRawEmail',
+            'RawMessage.Data' => base64_encode((string)$mime),
+            'Source' => $message->getFromAddress()->getAddress()
+        ]);
+
+        return (string)$xml->SendRawEmailResult->MessageId;
+    }
+
+
+
+
+    public function sendLegacyMessage(flow\mail\ILegacyMessage $message) {
         $params = ['Action' => 'SendEmail'];
 
         $i = 1;
@@ -165,7 +220,7 @@ class Mediator implements IMediator {
         return (string)$xml->SendEmailResult->MessageId;
     }
 
-    public function sendRawMessage(flow\mail\ILegacyMessage $message) {
+    public function sendRawLegacyMessage(flow\mail\ILegacyMessage $message) {
         $xml = $this->requestXml('post', [
             'Action' => 'SendRawEmail',
             'RawMessage.Data' => (string)$message,

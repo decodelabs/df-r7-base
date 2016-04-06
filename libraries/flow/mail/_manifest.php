@@ -44,6 +44,136 @@ interface IJournalableMessage {
 
 
 
+interface IMessage extends IJournalableMessage {
+    public function setSubject(string $subject);
+    public function getSubject(): string;
+
+    public function setFromAddress($address, $name=null);
+    public function getFromAddress();
+    public function hasFromAddress(): bool;
+    public function isFromAddressValid(): bool;
+
+    public function setReplyToAddress($address=null);
+    public function getReplyToAddress();
+
+    public function setReturnPath($address=null);
+    public function getReturnPath();
+
+    public function setRecipients(...$to);
+    public function addRecipients(...$to);
+    public function addRecipient($to, $name=null);
+    public function countRecipients(): int;
+    public function hasRecipients(): bool;
+    public function hasRecipient(...$to): bool;
+    public function removeRecipient(...$to);
+    public function clearRecipients();
+    public function shouldSendToAdmin(bool $flag=null);
+    public function shouldFilterClient(bool $flag=null);
+
+    public function setToUsers(...$ids);
+    public function addToUsers(...$ids);
+    public function addToUser($id);
+    public function getToUsers(): array;
+    public function countToUsers(): int;
+    public function hasToUsers(): bool;
+    public function hasToUser(...$ids): bool;
+    public function removeToUser(...$ids);
+    public function clearToUsers();
+
+    public function setToAddresses(...$addresses);
+    public function addToAddresses(...$addresses);
+    public function addToAddress($address, $name=null);
+    public function getToAddresses(): IAddressList;
+    public function countToAddresses(): int;
+    public function hasToAddresses(): bool;
+    public function hasToAddress(...$addresses): bool;
+    public function removeToAddress(...$addresses);
+    public function clearToAddresses();
+
+    public function setCcAddresses(...$addresses);
+    public function addCcAddresses(...$addresses);
+    public function addCcAddress($address, $name=null);
+    public function getCcAddresses(): IAddressList;
+    public function countCcAddresses(): int;
+    public function hasCcAddresses(): bool;
+    public function hasCcAddress(...$addresses): bool;
+    public function removeCcAddress(...$addresses);
+    public function clearCcAddresses();
+
+    public function setBccAddresses(...$addresses);
+    public function addBccAddresses(...$addresses);
+    public function addBccAddress($address, $name=null);
+    public function getBccAddresses(): IAddressList;
+    public function countBccAddresses(): int;
+    public function hasBccAddresses(): bool;
+    public function hasBccAddress(...$addresses): bool;
+    public function removeBccAddress(...$addresses);
+    public function clearBccAddresses();
+
+    public function setBodyHtml(string $body=null);
+    public function getBodyHtml();
+    public function setBodyText(string $body=null);
+    public function getBodyText();
+
+    public function attach(core\fs\IFile $file, string $contentId=null): IAttachment;
+    public function attachString($string, string $contentType=null, string $contentId=null);
+    public function addAttachment(IAttachment $attachment);
+    public function getAttachments(): array;
+    public function getAttachment(string $id);
+    public function hasAttachment(string ...$ids);
+    public function removeAttachment(string ...$ids);
+    public function clearAttachments();
+
+    public function send(ITransport $transport=null);
+    public function shouldForceSend(bool $flag=null);
+    public function forceSend();
+}
+
+interface IAttachment {
+    public function setFile(core\fs\IFile $file);
+    public function getFile(): core\fs\IFile;
+
+    public function setFileName(string $fileName=null);
+    public function getFileName();
+
+    public function getContentId(): string;
+    public function getContentType(): string;
+}
+
+
+interface ITransport {
+    public static function getName();
+    public static function getDescription();
+
+    public function send(IMessage $message, flow\mime\IMultiPart $mime);
+    public function sendLegacy(ILegacyMessage $message);
+}
+
+
+
+interface IMailModel {
+    public function captureMail(flow\mime\IMultiPart $message);
+    public function journalMail(IJournalableMessage $message);
+}
+
+interface IMailRecord {
+    public function getId();
+    public function getFromAddress();
+    public function getToAddresses();
+    public function getSubject();
+    public function getBodyString();
+    public function getDate();
+    public function toMessage();
+}
+
+
+
+
+
+
+
+
+
 interface ILegacyMessage extends flow\mime\IMultiPart, IJournalableMessage {
     public function setSubject($subject);
     public function getSubject();
@@ -89,27 +219,4 @@ interface ILegacyMessage extends flow\mime\IMultiPart, IJournalableMessage {
     public function getReturnPath();
 
     public function send(ITransport $transport=null);
-}
-
-interface ITransport {
-    public static function getName();
-    public static function getDescription();
-    public function sendLegacy(ILegacyMessage $message);
-}
-
-
-
-interface IMailModel {
-    public function captureMail(flow\mime\IMultiPart $message);
-    public function journalMail(IJournalableMessage $message);
-}
-
-interface IMailRecord {
-    public function getId();
-    public function getFromAddress();
-    public function getToAddresses();
-    public function getSubject();
-    public function getBodyString();
-    public function getDate();
-    public function toMessage();
 }

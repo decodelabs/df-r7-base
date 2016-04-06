@@ -82,6 +82,16 @@ class Comms implements core\ISharedHelper {
     }
 
 
+
+// Mail
+    public function newMail($subject, $body, ...$to): flow\mail\IMessage {
+        return new flow\mail\Message($subject, $body, ...$to);
+    }
+
+
+
+
+
 // Notifications
     public function notify($subject, $body, $to=null, $from=null, $forceSend=false) {
         return $this->sendNotification($this->newNotification($subject, $body, $to, $from));
@@ -142,22 +152,5 @@ class Comms implements core\ISharedHelper {
     public function sendNotification(flow\INotification $notification) {
         $this->_manager->sendNotification($notification);
         return $this;
-    }
-
-
-// Direct mail
-    public function componentMail($path, array $args=[]) {
-        $component = $this->getMailComponent($path, $args);
-        $notification = $component->toNotification();
-
-        $mail = new flow\mail\LegacyMessage();
-        $mail->setSubject($notification->getSubject());
-        $mail->setBodyHtml($notification->getBodyHtml());
-
-        foreach($notification->getToEmails() as $email => $n) {
-            $mail->addToAddress($email);
-        }
-
-        return $mail;
     }
 }

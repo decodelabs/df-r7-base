@@ -243,7 +243,6 @@ class ContentPart implements IContentPart, core\IDumpable {
         }
 
         $output = $this->_headers->toString($skipKeys);
-        $output = preg_replace('/\; ([a-z]+)\=/i', ";\r\n    ".'$1=', $output);
         return $output;
     }
 

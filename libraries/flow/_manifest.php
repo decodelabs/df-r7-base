@@ -22,8 +22,12 @@ class RuntimeException extends \RuntimeException implements IException {}
 interface IManager extends core\IManager {
 
 // Mail
+    public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
+    public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
+
     public function sendLegacyMail(flow\mail\ILegacyMessage $message, flow\mail\ITransport $transport=null);
     public function forceSendLegacyMail(flow\mail\ILegacyMessage $message, flow\mail\ITransport $transport=null);
+
     public function getDefaultMailTransportName($forceSend=false);
     public function getMailModel();
 

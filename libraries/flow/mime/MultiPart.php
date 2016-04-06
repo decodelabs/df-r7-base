@@ -57,7 +57,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
         $this->setContentType($type);
 
         if(!$this->_headers->hasDelimitedValue('content-type', 'boundary')) {
-            $this->_headers->setDelimitedValue('content-type', 'boundary', '=_'.md5(microtime(true).self::$_boundaryCounter++));
+            $this->_headers->setDelimitedValue('content-type', 'boundary', md5(microtime(true).self::$_boundaryCounter++));
         }
     }
 
@@ -185,7 +185,6 @@ class MultiPart implements IMultiPart, core\IDumpable {
         }
 
         $output = $headers->toString($skipKeys);
-        $output = preg_replace('/\; ([a-z]+)\=/i', ";\r\n    ".'$1=', $output);
         return $output;
     }
 
@@ -268,7 +267,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
         }
 
         foreach($this->_parts as $i => $part) {
-            $output[] = new core\debug\dumper\Property('part'.($i+1), $part);
+            $output[] = new core\debug\dumper\Property($i, $part);
         }
 
         return $output;

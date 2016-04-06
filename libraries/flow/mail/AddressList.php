@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flow;
 
-class AddressList implements IAddressList {
+class AddressList implements IAddressList, core\IDumpable {
 
     use core\TValueMap;
     use core\collection\TExtractList;
@@ -100,6 +100,10 @@ class AddressList implements IAddressList {
             return $this;
         }
 
+        if(!$address->getName() && isset($this->_addresses[$address->getAddress()])) {
+            $address->setName($this->_addresses[$address->getAddress()]->getName());
+        }
+
         $this->_addresses[$address->getAddress()] = $address;
         return $this;
     }
@@ -168,5 +172,11 @@ class AddressList implements IAddressList {
 
     public function offsetUnset($key) {
         return $this->remove($key);
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return array_values($this->_addresses);
     }
 }

@@ -61,6 +61,24 @@ class Smtp extends Base {
         return $this;
     }
 
+    public function send(flow\mail\IMessage $message, flow\mime\IMultiPart $mime) {
+        if(!$this->_mediator) {
+            $config = flow\mail\Config::getInstance();
+            $settings = $config->getTransportSettings('Smtp');
+            $this->__construct($settings);
+        }
+
+        $this->_mediator->reset();
+        $this->_mediator->setFromAddress($message->getFromAddress());
+
+        foreach($message->getToAddresses() as $address) {
+            $this->_mediator->sendRecipientAddress($address);
+        }
+
+        $this->_mediator->sendData($mime->toString());
+        return true;
+    }
+
     public function sendLegacy(flow\mail\ILegacyMessage $message) {
         if(!$this->_mediator) {
             $config = flow\mail\Config::getInstance();

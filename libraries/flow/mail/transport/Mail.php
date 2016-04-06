@@ -15,6 +15,20 @@ class Mail extends Base {
         return 'PHP native mail()';
     }
 
+    public function send(flow\mail\IMessage $message, flow\mime\IMultiPart $mime) {
+        $headers = $mime->getHeaders();
+        $headerString = $mime->getHeaderString(['to', 'subject']);
+        $to = $headers->get('to');
+        $body = $mime->getBodyString();
+        $additional = null;
+
+        if($returnPath = $headers->get('return-path')) {
+            $additional = '-f'.$returnPath;
+        }
+
+        return mail($to, $headers->get('subject'), $body, $headerString, $additional);
+    }
+
     public function sendLegacy(flow\mail\ILegacyMessage $message) {
         $this->_prepareLegacyMessage($message);
         $headers = $message->getHeaderString(['to', 'subject']);
