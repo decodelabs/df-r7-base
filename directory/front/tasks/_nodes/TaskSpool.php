@@ -147,6 +147,9 @@ class TaskSpool extends arch\node\Task {
         $this->_channel->writeError($exception);
         $this->_finalizeLog();
 
+        $this->logs->logException($e);
+
+        /*
         try {
             $this->comms->adminNotify(
                 'Task manager failure',
@@ -155,6 +158,7 @@ class TaskSpool extends arch\node\Task {
         } catch(\Exception $e) {
             // Never mind :)
         }
+        */
 
         parent::handleException($e);
     }
