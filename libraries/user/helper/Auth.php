@@ -71,6 +71,11 @@ class Auth extends Base {
                 );
             }
 
+            if($clientData->getStatus() !== user\IState::CONFIRMED) {
+                $result->setCode($result::NO_STATUS);
+                return $result;
+            }
+
             $manager->client->import($clientData);
 
             // Set state
@@ -111,6 +116,11 @@ class Auth extends Base {
 
         $model = $manager->getUserModel();
         $clientData = $model->getClientData($key->userId);
+
+        if($clientData->getStatus() !== user\IState::CONFIRMED) {
+            return false;
+        }
+
         $manager->client = user\Client::factory($clientData);
 
         // Set state
