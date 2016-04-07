@@ -128,4 +128,13 @@ abstract class Base extends aura\view\Mail implements IMail {
 
         return parent::getJournalDuration();
     }
+
+    public function shouldJournal(bool $flag=null) {
+        if($flag !== null) {
+            $this->_shouldJournal = $flag;
+            return $this;
+        }
+
+        return $this->_shouldJournal;
+    }
 }
