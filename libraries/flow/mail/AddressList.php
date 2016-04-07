@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flow;
 
-class AddressList implements IAddressList, core\IDumpable {
+class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
 
     use core\TValueMap;
     use core\collection\TExtractList;
@@ -27,6 +27,10 @@ class AddressList implements IAddressList, core\IDumpable {
 
     public function __construct(...$input) {
         $this->import(...$input);
+    }
+
+    public function getIterator() {
+        return new \ArrayIterator($this->_addresses);
     }
 
     public function import(...$args) {
