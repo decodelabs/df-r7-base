@@ -190,11 +190,11 @@ class Loader implements ILoader {
 
         foreach($this->lookupFolderList($path) as $dirName => $dirPath) {
             foreach($this->lookupFileListRecursive($path.'/'.$dirName, $extensions, $folderCheck) as $name => $filePath) {
-                if(isset($index[$name])) {
+                if(isset($index[$dirName.'/'.$name])) {
                     continue;
                 }
 
-                $index[$name] = true;
+                $index[$dirName.'/'.$name] = true;
                 yield $dirName.'/'.$name => $filePath;
             }
         }
