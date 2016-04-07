@@ -38,210 +38,221 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
     protected function _sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null, $forceSend=false) {
-        // Grabbing body ensures preparation
-        $bodyText = $message->getBodyText();
-        $bodyHtml = $message->getBodyHtml();
-
-        $userManager = user\Manager::getInstance();
-        $userModel = $userManager->getUserModel();
         $context = new core\SharedContext();
 
-        $message = clone $message;
-        $to = $message->getToAddresses();
-        $userList = $message->getToUsers();
-        $keys = [];
-        $isJustToAdmins = false;
-        $config = flow\mail\Config::getInstance();
+        try {
+            // Grabbing body ensures preparation
+            $bodyText = $message->getBodyText();
+            $bodyHtml = $message->getBodyHtml();
 
-        // Admins
-        if($message->shouldSendToAdmin()) {
-            $isJustToAdmins = $to->isEmpty();
+            $userManager = user\Manager::getInstance();
+            $userModel = $userManager->getUserModel();
 
-            foreach($config->getAdminAddresses() as $address) {
-                $to->add($address);
-            }
-        }
-
-        // Users
-        foreach($userList as $key => $user) {
+            $message = clone $message;
+            $to = $message->getToAddresses();
+            $userList = $message->getToUsers();
+            $keys = [];
             $isJustToAdmins = false;
+            $config = flow\mail\Config::getInstance();
 
-            if($user === null) {
-                $keys[] = $key;
-            } else {
-                $to->add($user['email'], $user['name']);
-            }
-        }
+            // Admins
+            if($message->shouldSendToAdmin()) {
+                $isJustToAdmins = $to->isEmpty();
 
-        // Clients
-        $clientList = $userModel->getClientDataList($keys, array_keys($to->toArray()));
-        $client = $userManager->client;
-
-        foreach($clientList as $user) {
-            $to->add($user->getEmail(), $user->getFullName());
-        }
-
-        if($message->shouldFilterClient()) {
-            $to->remove($client->getEmail());
-        }
-
-
-        if($to->isEmpty()) {
-            return $this;
-        }
-
-        $message->clearToUsers();
-
-        $isWin = (0 === strpos(PHP_OS, 'WIN'));
-
-        // From
-        if(!$from = $message->getFromAddress()) {
-            $from = flow\mail\Address::factory($config->getDefaultAddress());
-
-            if(!$from->getName()) {
-                $from->setName(df\Launchpad::$application->getName());
+                foreach($config->getAdminAddresses() as $address) {
+                    $to->add($address);
+                }
             }
 
-            $message->setFromAddress($from);
-        }
+            // Users
+            foreach($userList as $key => $user) {
+                $isJustToAdmins = false;
 
-        if(!$from->isValid()) {
-            $context->logs->logException(new RuntimeException(
-                'Invalid from address: '.$from
-            ));
-
-            return $this;
-        }
-
-        // Mime
-        $mime = new flow\mime\MultiPart(flow\mime\IMultiPart::RELATED, [
-            'MIME-Version' => '1.0',
-            'Date' => core\time\Date::factory('now')->format(core\time\IDate::RFC2822),
-            'Subject' => $message->getSubject(),
-            'From' => $isWin ? $from->getAddress() : $from->toString()
-        ]);
-
-        $headers = $mime->getHeaders();
-        $domain = null;
-
-        if(isset($_SERVER['SERVER_NAME'])) {
-            $domain = $_SERVER['SERVER_NAME'];
-        } else {
-            if($url = core\application\http\Config::getInstance()->getRootUrl()) {
-                $domain = df\link\http\Url::factory($url)->getDomain();
+                if($user === null) {
+                    $keys[] = $key;
+                } else {
+                    $to->add($user['email'], $user['name']);
+                }
             }
-        }
 
-        if($domain) {
-            $headers->set('Message-Id', sprintf(
-                "<%s.%s@%s>",
-                base_convert(microtime(), 10, 36),
-                base_convert(bin2hex(openssl_random_pseudo_bytes(8)), 16, 36),
-                $domain
-            ));
-        }
+            // Clients
+            $clientList = $userModel->getClientDataList($keys, array_keys($to->toArray()));
+            $client = $userManager->client;
 
-        if(!$returnPath = $message->getReturnPath()) {
-            $message->setReturnPath($config->getDefaultReturnPath());
-            $returnPath = $message->getReturnPath();
-        }
+            foreach($clientList as $user) {
+                $to->add($user->getEmail(), $user->getFullName());
+            }
 
-        if($returnPath) {
-            $headers->set('Return-Path', $returnPath->getAddress());
-        }
+            if($message->shouldFilterClient()) {
+                $to->remove($client->getEmail());
+            }
 
-        if($replyTo = $message->getReplyToAddress()) {
-            $headers->set('Reply-To', $replyTo->getAddress());
-        }
 
-        // To
-        $headers->set('to', (string)$to);
-
-        if($message->hasCcAddresses()) {
-            $headers->set('cc', (string)$message->getCcAddresses());
-        }
-
-        if($message->hasBccAddresses()) {
-            $headers->set('bcc', (string)$message->getBccAddresses());
-        }
-
-        // Body
-        if($bodyText === null) {
-            if($bodyHtml === null) {
+            if($to->isEmpty()) {
                 return $this;
             }
 
-            /*
-            // Turn this on when it works properly :)
-            $bodyText = $context->html->toText($bodyHtml);
-            $message->setBodyText($bodyText);
-            */
-        }
+            $message->clearToUsers();
 
-        $part = $mime->newMultiPart(flow\mime\IMultiPart::ALTERNATIVE);
+            $isWin = (0 === strpos(PHP_OS, 'WIN'));
 
-        if($bodyText !== null) {
-            $part->newContentPart($bodyText)
-                ->setContentType('text/plain')
-                ->setEncoding(flex\IEncoding::QP);
-        }
+            // From
+            if(!$from = $message->getFromAddress()) {
+                $from = flow\mail\Address::factory($config->getDefaultAddress());
 
-        if($bodyHtml !== null) {
-            $part->newContentPart($bodyHtml)
-                ->setContentType('text/html')
-                ->setEncoding(flex\IEncoding::QP);
-        }
+                if(!$from->getName()) {
+                    $from->setName(df\Launchpad::$application->getName());
+                }
 
+                $message->setFromAddress($from);
+            }
 
-        // Attachments
-        foreach($message->getAttachments() as $attachment) {
-            $mime->newContentPart($attachment->getFile())
-                ->setContentType($attachment->getContentType())
-                ->setDisposition('attachment')
-                ->setFileName($attachment->getFileName())
-                ->setEncoding('BASE64')
-                ->getHeaders()
-                    ->set('X-Attachment-Id', $attachment->getContentId())
-                    ->set('Content-Id', '<'.$attachment->getContentId().'>');
-        }
+            if(!$from->isValid()) {
+                $context->logs->logException(new RuntimeException(
+                    'Invalid from address: '.$from
+                ));
 
+                return $this;
+            }
 
-        // Send
-        if(!$forceSend && $message->shouldForceSend()) {
-            $forceSend = true;
-        }
+            // Mime
+            $mime = new flow\mime\MultiPart(flow\mime\IMultiPart::RELATED, [
+                'MIME-Version' => '1.0',
+                'Date' => core\time\Date::factory('now')->format(core\time\IDate::RFC2822),
+                'Subject' => $message->getSubject(),
+                'From' => $isWin ? $from->getAddress() : $from->toString()
+            ]);
 
-        $isDefault = false;
-        $transportName = null;
+            $headers = $mime->getHeaders();
+            $domain = null;
 
-        if($transport === null) {
-            $transportName = $this->getDefaultMailTransportName($forceSend);
-            $transport = flow\mail\transport\Base::factory($transportName);
-            $isDefault = true;
-        }
-
-        try {
-            $output = $transport->send($message, $mime);
-        } catch(\Exception $e) {
-            if($isDefault && $transportName !== 'Mail' && $transportName !== 'Capture') {
-                $context->logs->logException($e);
-                $transport = flow\mail\transport\Base::factory('Mail');
-                $output = $transport->send($message, $mime);
+            if(isset($_SERVER['SERVER_NAME'])) {
+                $domain = $_SERVER['SERVER_NAME'];
             } else {
-                throw $e;
+                if($url = core\application\http\Config::getInstance()->getRootUrl()) {
+                    $domain = df\link\http\Url::factory($url)->getDomain();
+                }
             }
-        }
 
-        if($message->shouldJournal()) {
+            if($domain) {
+                $headers->set('Message-Id', sprintf(
+                    "<%s.%s@%s>",
+                    base_convert(microtime(), 10, 36),
+                    base_convert(bin2hex(openssl_random_pseudo_bytes(8)), 16, 36),
+                    $domain
+                ));
+            }
+
+            if(!$returnPath = $message->getReturnPath()) {
+                $message->setReturnPath($config->getDefaultReturnPath());
+                $returnPath = $message->getReturnPath();
+            }
+
+            if($returnPath) {
+                $headers->set('Return-Path', $returnPath->getAddress());
+            }
+
+            if($replyTo = $message->getReplyToAddress()) {
+                $headers->set('Reply-To', $replyTo->getAddress());
+            }
+
+            // To
+            $headers->set('to', (string)$to);
+
+            if($message->hasCcAddresses()) {
+                $headers->set('cc', (string)$message->getCcAddresses());
+            }
+
+            if($message->hasBccAddresses()) {
+                $headers->set('bcc', (string)$message->getBccAddresses());
+            }
+
+            // Body
+            if($bodyText === null) {
+                if($bodyHtml === null) {
+                    return $this;
+                }
+
+                /*
+                // Turn this on when it works properly :)
+                $bodyText = $context->html->toText($bodyHtml);
+                $message->setBodyText($bodyText);
+                */
+            }
+
+            $part = $mime->newMultiPart(flow\mime\IMultiPart::ALTERNATIVE);
+
+            if($bodyText !== null) {
+                $part->newContentPart($bodyText)
+                    ->setContentType('text/plain')
+                    ->setEncoding(flex\IEncoding::QP);
+            }
+
+            if($bodyHtml !== null) {
+                $part->newContentPart($bodyHtml)
+                    ->setContentType('text/html')
+                    ->setEncoding(flex\IEncoding::QP);
+            }
+
+
+            // Attachments
+            foreach($message->getAttachments() as $attachment) {
+                $mime->newContentPart($attachment->getFile())
+                    ->setContentType($attachment->getContentType())
+                    ->setDisposition('attachment')
+                    ->setFileName($attachment->getFileName())
+                    ->setEncoding('BASE64')
+                    ->getHeaders()
+                        ->set('X-Attachment-Id', $attachment->getContentId())
+                        ->set('Content-Id', '<'.$attachment->getContentId().'>');
+            }
+
+
+            // Send
+            if(!$forceSend && $message->shouldForceSend()) {
+                $forceSend = true;
+            }
+
+            $isDefault = false;
+            $transportName = null;
+
+            if($transport === null) {
+                $transportName = $this->getDefaultMailTransportName($forceSend);
+                $transport = flow\mail\transport\Base::factory($transportName);
+                $isDefault = true;
+            }
+
             try {
-                $model = $this->getMailModel();
-                $model->journalMail($message);
+                $output = $transport->send($message, $mime);
             } catch(\Exception $e) {
+                if($isDefault && $transportName !== 'Mail' && $transportName !== 'Capture') {
+                    $context->logs->logException($e);
+                    $transport = flow\mail\transport\Base::factory('Mail');
+                    $output = $transport->send($message, $mime);
+                } else {
+                    throw $e;
+                }
+            }
+
+            if($message->shouldJournal()) {
+                try {
+                    $model = $this->getMailModel();
+                    $model->journalMail($message);
+                } catch(\Exception $e) {
+                    $context->logs->logException($e);
+                }
+            }
+
+            return $output;
+        } catch(\Exception $e) {
+            if($context->application->isDevelopment()) {
+                throw $e;
+            } else {
                 $context->logs->logException($e);
             }
         }
 
-        return $output;
+        return false;
     }
 
 
