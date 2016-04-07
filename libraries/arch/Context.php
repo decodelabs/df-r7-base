@@ -166,7 +166,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
             if(empty($rem)) {
                 $parts = [];
             } else {
-                $parts = explode('/', $rem);
+                $parts = explode('/', rtrim($rem, '/'));
             }
         } else {
             $parts = explode('/', $path);
