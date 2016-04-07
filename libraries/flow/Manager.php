@@ -235,7 +235,7 @@ class Manager implements IManager, core\IShutdownAware {
         if($message->shouldJournal()) {
             try {
                 $model = $this->getMailModel();
-                $model->journalMail($mime);
+                $model->journalMail($message);
             } catch(\Exception $e) {
                 $context->logs->logException($e);
             }
