@@ -18,9 +18,9 @@ abstract class Base implements arch\IComponent {
     use core\lang\TChainable;
     use user\TAccessLock;
     use core\TStringProvider;
-    use aura\view\TDeferredRenderable;
-    use aura\view\TCascadingHelperProvider;
-    use aura\view\TSlotContainer;
+    use aura\view\TView_DeferredRenderable;
+    use aura\view\TView_CascadingHelperProvider;
+    use aura\view\TView_SlotContainer;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 

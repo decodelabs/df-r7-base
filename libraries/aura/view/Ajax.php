@@ -12,7 +12,7 @@ use df\arch;
 
 class Ajax extends Base implements IAjaxView {
 
-    use TResponseView;
+    use TView_Response;
 
     protected $_redirect;
     protected $_forceRedirect = false;

@@ -14,7 +14,7 @@ abstract class Base implements IScaffold {
 
     //use core\TContextProxy;
     use core\TContextAware;
-    use aura\view\TCascadingHelperProvider;
+    use aura\view\TView_CascadingHelperProvider;
     use arch\TDirectoryAccessLock;
     use arch\TOptionalDirectoryAccessLock;
 

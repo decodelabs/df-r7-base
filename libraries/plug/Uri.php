@@ -14,7 +14,7 @@ use df\link;
 class Uri implements arch\IDirectoryHelper {
 
     use arch\TDirectoryHelper;
-    use aura\view\TViewAwareDirectoryHelper;
+    use aura\view\TView_DirectoryHelper;
 
     protected $_defaultTheme;
 

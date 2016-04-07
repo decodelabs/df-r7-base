@@ -14,8 +14,8 @@ abstract class Delegate implements IDelegateDecorator {
 
     use core\TContextAware;
     use core\lang\TChainable;
-    use aura\view\TDeferredRenderable;
-    use aura\view\TCascadingHelperProvider;
+    use aura\view\TView_DeferredRenderable;
+    use aura\view\TView_CascadingHelperProvider;
 
     public $values;
     public $content;

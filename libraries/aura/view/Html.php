@@ -13,8 +13,8 @@ use df\flow;
 
 class Html extends Base implements IHtmlView, core\IDumpable {
 
-    use TResponseView;
-    use TLayoutView;
+    use TView_Response;
+    use TView_Layout;
 
     const DEFAULT_TITLE = '*untitled';
     const DEFAULT_LAYOUT = 'Default';

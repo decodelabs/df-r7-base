@@ -15,7 +15,7 @@ use df\fire;
 class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper {
 
     use arch\TDirectoryHelper;
-    use aura\view\TViewAwareDirectoryHelper;
+    use aura\view\TView_DirectoryHelper;
 
     public function renderBlock($block, $category=null, $isNested=null) {
         if(empty($block)) {

@@ -15,7 +15,7 @@ use df\flex;
 class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
     use arch\TDirectoryHelper;
-    use aura\view\TViewAwareDirectoryHelper;
+    use aura\view\TView_DirectoryHelper;
 
     public function future($type, ...$args) {
         return function(core\IHelperProvider $target) use($type, $args) {
@@ -105,7 +105,6 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
         return aura\theme\Base::factory($id);
     }
-
 
 // Nodes
     public function nodeExists($request, $runMode=null) {

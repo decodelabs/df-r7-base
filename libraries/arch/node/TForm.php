@@ -17,7 +17,7 @@ use df\mesh;
 trait TForm {
 
     use core\lang\TChainable;
-    use aura\view\TCascadingHelperProvider;
+    use aura\view\TView_CascadingHelperProvider;
 
     public $content;
     public $values;

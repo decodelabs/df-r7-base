@@ -34,52 +34,14 @@ interface IRenderTargetProvider {
 }
 
 
-trait TRenderTargetProvider {
-
-    protected $_renderTarget;
-
-    public function setRenderTarget(IRenderTarget $target=null) {
-        $this->_renderTarget = $target;
-        return $this;
-    }
-
-    public function getRenderTarget() {
-        if(!$this->_renderTarget) {
-            throw new RuntimeException(
-                'No render target has been set'
-            );
-        }
-
-        return $this->_renderTarget;
-    }
-
-    public function getView() {
-        return $this->getRenderTarget()->getView();
-    }
-}
-
-
 interface IDeferredRenderable extends IRenderable, IRenderTargetProvider, core\IStringProvider {
     public function render();
-}
-
-
-
-trait TDeferredRenderable {
-
-    use TRenderTargetProvider;
-
-    public function renderTo(IRenderTarget $target) {
-        $this->setRenderTarget($target);
-        return $this->render();
-    }
 }
 
 
 interface IRenderTarget extends core\IContextAware {
     public function getView();
 }
-
 
 
 interface ISlotContainer {
@@ -90,6 +52,7 @@ interface ISlotContainer {
     public function setSlot(string $key, $value);
     public function hasSlot(string $key);
     public function slotExists(string $key);
+    public function checkSlots(string ...$key);
     public function getSlot(string $key, $default=null);
     public function renderSlot(string $key, $default=null);
     public function removeSlot(string $key);
@@ -101,49 +64,6 @@ interface ISlotProvider extends ISlotContainer {
     public function endSlotCapture();
     public function isCapturingSlot();
 }
-
-trait TSlotContainer {
-
-    public function setSlots(array $slots) {
-        return $this->clearSlots()->addSlots($slots);
-    }
-
-    public function addSlots(array $slots) {
-        foreach($slots as $key => $value) {
-            $this->setSlot($key, $value);
-        }
-
-        return $this;
-    }
-
-    public function renderSlot(string $key, $default=null) {
-        $value = $this->getSlot($key, $default);
-
-        if(is_callable($value)) {
-            $target = $this instanceof IDeferredRenderable ?
-                $this->getRenderTarget() : $this;
-
-            $value = $value($target);
-        }
-
-        if($value instanceof \Traversable) {
-            $value = iterator_to_array($value);
-        }
-
-        if(is_array($value)) {
-            $value = new aura\html\ElementContent($value);
-        }
-
-        if($value instanceof IRenderable) {
-            return $value->renderTo($this);
-        } else if($value instanceof aura\html\IElementRepresentation) {
-            return $value;
-        } else {
-            return $this->esc((string)$value);
-        }
-    }
-}
-
 
 
 interface IContentProvider extends
@@ -183,42 +103,24 @@ interface IView extends
 }
 
 
-interface IResponseView extends IView, link\http\IStreamResponse {}
+class Base implements IView {
 
-trait TResponseView {
+    use TView;
 
-    use link\http\TStringResponse;
-    use core\lang\TChainable;
+    public static function factory($type, arch\IContext $context) {
+        $type = ucfirst($type);
+        $class = 'df\\aura\\view\\'.$type;
 
-    protected $_renderedContent = null;
-
-    public function onDispatchComplete() {
-        if($this->_renderedContent === null) {
-            $this->_renderedContent = $this->render();
+        if(!class_exists($class)) {
+            $class = 'df\\aura\\view\\Generic';
         }
 
-        $this->prepareHeaders();
-        return $this;
-    }
-
-    public function getContent() {
-        if($this->_renderedContent === null) {
-            $this->_renderedContent = $this->render();
-        }
-
-        return $this->_renderedContent;
-    }
-
-    public function setContentType($type) {
-        throw new RuntimeException(
-            'View content type cannot be changed'
-        );
-    }
-
-    public function getContentType() {
-        return core\fs\Type::extToMime($this->_type);
+        return new $class($type, $context);
     }
 }
+
+
+interface IResponseView extends IView, link\http\IStreamResponse {}
 
 
 interface IThemedView extends IView, aura\theme\IFacetProvider {
@@ -227,103 +129,12 @@ interface IThemedView extends IView, aura\theme\IFacetProvider {
     public function hasTheme();
 }
 
-trait TThemedView {
-
-    protected $_theme;
-
-    public function setTheme($theme) {
-        if($theme === null) {
-            $this->_theme = null;
-        } else {
-            $this->_theme = aura\theme\Base::factory($theme);
-        }
-
-        return $this;
-    }
-
-    public function getTheme() {
-        if($this->_theme === null) {
-            $this->_theme = aura\theme\Base::factory($this->context);
-        }
-
-        return $this->_theme;
-    }
-
-    public function hasTheme() {
-        return $this->_theme !== null;
-    }
-
-
-    public function loadFacet($name, $callback=null) {
-        $this->getTheme()->loadFacet($name, $callback);
-        return $this;
-    }
-
-    public function hasFacet($name) {
-        return $this->getTheme()->hasFacet($name);
-    }
-
-    public function getFacet($name) {
-        return $this->getTheme()->getFacet($name);
-    }
-
-    public function removeFacet($name) {
-        $this->getTheme()->removeFacet($name);
-        return $this;
-    }
-
-    public function getFacets() {
-        return $this->getTheme()->getFacets();
-    }
-}
-
 
 interface ILayoutView extends IThemedView {
     public function shouldUseLayout(bool $flag=null);
     public function setLayout($layout);
     public function getLayout();
 }
-
-trait TLayoutView {
-
-    use TThemedView;
-
-    protected $_layout;
-    protected $_useLayout = true;
-
-    public function shouldUseLayout(bool $flag=null) {
-        if($flag !== null) {
-            $this->_useLayout = $flag;
-            return $this;
-        }
-
-        return $this->_useLayout;
-    }
-
-    public function setLayout($layout) {
-        $this->_layout = ucfirst(flex\Text::formatId($layout));
-        return $this;
-    }
-
-    public function getLayout() {
-        if($this->_layout === null) {
-            if($this instanceof IThemedView) {
-                $theme = $this->getTheme();
-
-                if($theme instanceof ILayoutMap) {
-                    $theme->mapLayout($this);
-                }
-            }
-
-            if($this->_layout === null) {
-                $this->_layout = static::DEFAULT_LAYOUT;
-            }
-        }
-
-        return $this->_layout;
-    }
-}
-
 
 interface ILayoutMap {
     public function mapLayout(ILayoutView $view);
@@ -453,95 +264,9 @@ interface IImplicitViewHelper extends arch\IDirectoryHelper {}
 interface IContextSensitiveHelper extends arch\IDirectoryHelper {}
 
 
-trait TViewAwareDirectoryHelper {
-
-    public $view;
-
-    protected function _handleHelperTarget($target) {
-        if($target instanceof IView) {
-            $this->view = $target;
-        } else if($target instanceof IRenderTargetProvider
-        || method_exists($target, 'getView')) {
-            $this->view = $target->getView();
-        } else if(isset($target->view)) {
-            $this->view = $target->view;
-        } else if($this instanceof IImplicitViewHelper) {
-            throw new RuntimeException(
-                'Cannot use implicit view helper from objects that do not provide a view'
-            );
-        }
-    }
-}
-
-
-
-
-
 interface ICascadingHelperProvider extends core\IContextAware, IRenderTargetProvider {
     public function __call($method, $args);
     public function __get($key);
-}
-
-trait TCascadingHelperProvider {
-
-    use core\TTranslator;
-
-    public $view;
-
-    public function __call($method, $args) {
-        $output = $this->_getHelper($method, true);
-
-        if(!is_callable($output)) {
-            throw new RuntimeException(
-                'Helper '.$method.' is not callable'
-            );
-        }
-
-        return $output(...$args);
-    }
-
-    public function __get($key) {
-        return $this->_getHelper($key);
-    }
-
-    private function _getHelper($key, $callable=false) {
-        if(!$this->view && method_exists($this, 'getView')) {
-            $this->view = $this->getView();
-        }
-
-        if(isset($this->{$key})) {
-            return $this->{$key};
-        }
-
-        $context = $this->getContext();
-
-        if($key == 'context') {
-            return $context;
-        }
-
-        if($this->view && ($output = $this->view->getHelper($key, true))) {
-            if($output instanceof IContextSensitiveHelper) {
-                // Inject current context into view helper
-                $output = clone $output;
-                $output->context = $context;
-            }
-        } else if($callable) {
-            return [$context, $key];
-        } else {
-            $output = $context->{$key};
-        }
-
-        $this->{$key} = $output;
-        return $output;
-    }
-
-    public function translate(array $args) {
-        if($this->view) {
-            return $this->view->i18n->translate($args);
-        } else {
-            return $this->getContext()->i18n->translate($args);
-        }
-    }
 }
 
 

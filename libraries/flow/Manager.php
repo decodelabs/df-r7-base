@@ -38,6 +38,10 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
     protected function _sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null, $forceSend=false) {
+        // Grabbing body ensures preparation
+        $bodyText = $message->getBodyText();
+        $bodyHtml = $message->getBodyHtml();
+
         $userManager = user\Manager::getInstance();
         $userModel = $userManager->getUserModel();
         $context = new core\SharedContext();
@@ -80,6 +84,7 @@ class Manager implements IManager, core\IShutdownAware {
         if($message->shouldFilterClient()) {
             $to->remove($client->getEmail());
         }
+
 
         if($to->isEmpty()) {
             return $this;
@@ -161,23 +166,25 @@ class Manager implements IManager, core\IShutdownAware {
         }
 
         // Body
-        $bodyText = $message->getBodyText();
-        $bodyHtml = $message->getBodyHtml();
-
         if($bodyText === null) {
             if($bodyHtml === null) {
                 return $this;
             }
 
+            /*
+            // Turn this on when it works properly :)
             $bodyText = $context->html->toText($bodyHtml);
             $message->setBodyText($bodyText);
+            */
         }
 
         $part = $mime->newMultiPart(flow\mime\IMultiPart::ALTERNATIVE);
 
-        $part->newContentPart($bodyText)
-            ->setContentType('text/plain')
-            ->setEncoding(flex\IEncoding::QP);
+        if($bodyText !== null) {
+            $part->newContentPart($bodyText)
+                ->setContentType('text/plain')
+                ->setEncoding(flex\IEncoding::QP);
+        }
 
         if($bodyHtml !== null) {
             $part->newContentPart($bodyHtml)

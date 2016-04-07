@@ -98,14 +98,52 @@ class Comms implements core\ISharedHelper {
             ->shouldForceSend($forceSend);
     }
 
+    public function newAdminTextMail($subject, $body, $forceSend=false) {
+        return $this->newTextMail($subject, $body, true)
+            ->shouldForceSend($forceSend);
+    }
+
     public function sendAdminMail($subject, $body, $forceSend=false) {
         return $this->newAdminMail($subject, $body, $forceSend)->send();
     }
 
     public function sendAdminTextMail($subject, $body, $forceSend=false) {
-        return $this->newAdminMail($subject, null, $forceSend)
-            ->setBodyText($body)
-            ->send();
+        return $this->newAdminTextMail($subject, $body, $forceSend)->send();
+    }
+
+
+
+    public function prepareMail($path, array $slots=null, $forceSend=false) {
+        if(!($context = $this->context) instanceof arch\IContext) {
+            $context = arch\Context::factory();
+        }
+
+        $output = arch\mail\Base::factory($context, $path)
+            ->shouldForceSend($forceSend);
+
+        if($slots) {
+            $output->setSlots($slots);
+        }
+
+        return $output;
+    }
+
+    public function prepareAdminMail($path, array $slots=null, $forceSend=false) {
+        return $this->prepareMail($path, $slots, $forceSend)->shouldSendToAdmin(true);
+    }
+
+    public function preparePreviewMail($path) {
+        $output = $this->prepareMail($path);
+        $output->preparePreview();
+        return $output;
+    }
+
+    public function sendPreparedMail($path, array $slots=null, $forceSend=false) {
+        return $this->prepareMail($path, $slots, $forceSend)->send();
+    }
+
+    public function sendPreparedAdminMail($path, array $slots=null, $forceSend=false) {
+        return $this->prepareAdminMail($path, $slots, $forceSend)->send();
     }
 
 
@@ -113,14 +151,6 @@ class Comms implements core\ISharedHelper {
 
 
 // Notifications
-    public function notify($subject, $body, $to=null, $from=null, $forceSend=false) {
-        return $this->sendNotification($this->newNotification($subject, $body, $to, $from));
-    }
-
-    public function newNotification($subject, $body, $to=null, $from=null, $forceSend=false) {
-        return $this->_manager->newNotification($subject, $body, $to, $from, $forceSend);
-    }
-
     public function componentNotify($path, array $args=[], $to=null, $from=null, $preview=false, $forceSend=false) {
         return $this->sendNotification($this->newComponentNotification($path, $args, $to, $from, $preview, $forceSend));
     }

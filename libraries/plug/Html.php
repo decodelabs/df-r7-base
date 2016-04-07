@@ -16,7 +16,7 @@ use df\flow;
 class Html implements arch\IDirectoryHelper {
 
     use arch\TDirectoryHelper;
-    use aura\view\TViewAwareDirectoryHelper;
+    use aura\view\TView_DirectoryHelper;
     use core\TTranslator;
     use flex\THtmlStringEscapeHandler;
 

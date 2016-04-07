@@ -17,7 +17,7 @@ class Content implements IContent {
     use core\collection\TAttributeContainer;
     use flex\xml\TReaderInterchange;
     use flex\xml\TWriterInterchange;
-    use aura\view\TDeferredRenderable;
+    use aura\view\TView_DeferredRenderable;
     use core\TStringProvider;
 
     public $blocks;

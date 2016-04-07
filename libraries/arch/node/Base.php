@@ -61,14 +61,7 @@ class Base implements INode, core\IDumpable {
 
     public static function getClassFor(arch\IRequest $request, $runMode='Http', &$isDefault=null) {
         $runMode = ucfirst($runMode);
-        $path = $request->getController();
-
-        if(!empty($path)) {
-            $parts = explode('/', $path);
-        } else {
-            $parts = [];
-        }
-
+        $parts = $request->getControllerParts();
         $parts[] = '_nodes';
         $parts[] = $runMode.ucfirst($request->getNode());
         $end = implode('\\', $parts);
