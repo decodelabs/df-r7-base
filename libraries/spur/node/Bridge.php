@@ -27,6 +27,7 @@ class Bridge implements IBridge {
         core\fs\Dir::create($this->_nodePath);
 
         $result = halo\process\Base::newLauncher('npm', [
+                '--loglevel=error',
                 'install',
                 $name
             ])
