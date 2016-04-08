@@ -32,8 +32,8 @@ class Message implements IMessage {
 
     protected $_journalName;
     protected $_journalDuration;
-    protected $_journalObjectId1;
-    protected $_journalObjectId2;
+    protected $_journalKey1;
+    protected $_journalKey2;
     protected $_shouldJournal = true;
     protected $_forceSend = false;
 
@@ -631,22 +631,22 @@ class Message implements IMessage {
         return core\time\Duration::fromWeeks(12);
     }
 
-    public function setJournalObjectId1($id) {
-        $this->_journalObjectId1 = $id;
+    public function setJournalKey1($key) {
+        $this->_journalKey1 = $key;
         return $this;
     }
 
-    public function getJournalObjectId1() {
-        return $this->_journalObjectId1;
+    public function getJournalKey1() {
+        return $this->_journalKey1;
     }
 
-    public function setJournalObjectId2($id) {
-        $this->_journalObjectId2 = $id;
+    public function setJournalKey2($key) {
+        $this->_journalKey2 = $key;
         return $this;
     }
 
-    public function getJournalObjectId2() {
-        return $this->_journalObjectId2;
+    public function getJournalKey2() {
+        return $this->_journalKey2;
     }
 
 

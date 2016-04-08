@@ -51,8 +51,8 @@ class Unit extends axis\unit\table\Base {
 
         $baseData = [
             'name' => $message->getJournalName(),
-            'objectId1' => $message->getJournalObjectId1(),
-            'objectId2' => $message->getJournalObjectId2(),
+            'objectId1' => $message->getJournalKey1(),
+            'objectId2' => $message->getJournalKey2(),
             'expireDate' => $expire,
             'environmentMode' => $this->context->application->getEnvironmentMode()
         ];

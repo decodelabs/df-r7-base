@@ -258,49 +258,6 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 
-    public function sendLegacyMail(flow\mail\ILegacyMessage $message, flow\mail\ITransport $transport=null) {
-        return $this->_sendLegacyMail($message, $transport);
-    }
-
-    public function forceSendLegacyMail(flow\mail\ILegacyMessage $message, flow\mail\ITransport $transport=null) {
-        return $this->_sendLegacyMail($message, $transport, true);
-    }
-
-    protected function _sendLegacyMail(flow\mail\ILegacyMessage $message, flow\mail\ITransport $transport=null, $forceSend=false) {
-        $isDefault = false;
-        $name = null;
-
-        if($transport === null) {
-            $name = $this->getDefaultMailTransportName($forceSend);
-            $transport = flow\mail\transport\Base::factory($name);
-            $isDefault = true;
-        }
-
-        try {
-            $output = $transport->sendLegacy($message);
-        } catch(\Exception $e) {
-            if($isDefault
-            && $name != 'Mail'
-            && $name != 'Capture') {
-                $transport = flow\mail\transport\Base::factory('Mail');
-                $output = $transport->sendLegacy($message);
-            } else {
-                throw $e;
-            }
-        }
-
-        if($message->shouldJournal()) {
-            try {
-                $model = $this->getMailModel();
-                $model->journalMail($message);
-            } catch(\Exception $e) {
-                core\log\Manager::getInstance()->logException($e);
-            }
-        }
-
-        return $output;
-    }
-
     public function getDefaultMailTransportName($forceSend=false) {
         if(df\Launchpad::$application->isDevelopment() && !$forceSend) {
             return 'Capture';

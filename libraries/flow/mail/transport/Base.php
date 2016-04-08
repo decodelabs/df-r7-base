@@ -62,63 +62,6 @@ abstract class Base implements flow\mail\ITransport {
         return $output;
     }
 
-    protected function _prepareLegacyMessage(flow\mail\ILegacyMessage $message) {
-        $config = flow\mail\Config::getInstance();
-
-        if(!$isFromValid = $message->isFromAddressValid()) {
-            if(!$message->isFromAddressSet()) {
-                $message->setFromAddress($config->getDefaultAddress());
-                $isFromValid = $message->isFromAddressValid();
-
-                if($isFromValid && !strlen($message->getFromAddress()->getName())) {
-                    $message->getFromAddress()->setName(df\Launchpad::$application->getName());
-                }
-            }
-
-            if(!$isFromValid) {
-                throw new flow\mail\RuntimeException(
-                    'The mail is missing a valid from address'
-                );
-            }
-        }
-
-        if(!$message->getReturnPath() && ($returnPath = $config->getDefaultReturnPath())) {
-            $message->setReturnPath($returnPath);
-        }
-
-        if(!$message->hasToAddresses()) {
-            throw new flow\mail\RuntimeException(
-                'The mail is missing a valid to address'
-            );
-        }
-
-        $message->prepareHeaders();
-        $headers = $message->getHeaders();
-
-        if(!$headers->has('message-id')) {
-            $domain = null;
-
-            if(isset($_SERVER['SERVER_NAME'])) {
-                $domain = $_SERVER['SERVER_NAME'];
-            } else {
-                $config = core\application\http\Config::getInstance();
-
-                if($url = $config->getRootUrl()) {
-                    $domain = df\link\http\Url::factory($url)->getDomain();
-                }
-            }
-
-            if($domain) {
-                $headers->set('message-id', sprintf(
-                    "<%s.%s@%s>",
-                    base_convert(microtime(), 10, 36),
-                    base_convert(bin2hex(openssl_random_pseudo_bytes(8)), 16, 36),
-                    $domain
-                ));
-            }
-        }
-    }
-
     public function __construct(core\collection\ITree $settings=null) {}
 
     public static function getName() {

@@ -38,6 +38,6 @@ class Record extends opal\record\Base implements flow\mail\IMailRecord {
     }
 
     public function toMessage() {
-        return flow\mail\LegacyMessage::fromString($this['body']);
+        return flow\mime\MultiPart::fromString($this['body']);
     }
 }

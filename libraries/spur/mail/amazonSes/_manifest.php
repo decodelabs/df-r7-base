@@ -73,8 +73,5 @@ interface IMediator extends spur\IHttpMediator {
     public function sendMessage(flow\mail\IMessage $message, flow\mime\IMultiPart $mime);
     public function sendRawMessage(flow\mail\IMessage $message, flow\mime\IMultiPart $mime);
 
-    public function sendLegacyMessage(flow\mail\ILegacyMessage $message);
-    public function sendRawLegacyMessage(flow\mail\ILegacyMessage $message);
-
     public function requestXml($method, array $data=[], array $headers=[]);
 }

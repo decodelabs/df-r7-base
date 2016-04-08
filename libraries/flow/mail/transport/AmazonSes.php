@@ -47,17 +47,4 @@ class AmazonSes extends Base {
         $this->_mediator->sendRawMessage($message, $mime);
         return true;
     }
-
-    public function sendLegacy(flow\mail\ILegacyMessage $message) {
-        $this->_prepareLegacyMessage($message);
-
-        if(!$this->_mediator) {
-            $config = flow\mail\Config::getInstance();
-            $settings = $config->getTransportSettings('AmazonSes');
-            $this->__construct($settings);
-        }
-
-        $this->_mediator->sendLegacyMessage($message);
-        return true;
-    }
 }

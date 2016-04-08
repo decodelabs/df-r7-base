@@ -28,19 +28,4 @@ class Capture extends Base {
 
         return $this;
     }
-
-    public function sendLegacy(flow\mail\ILegacyMessage $message) {
-        $this->_prepareLegacyMessage($message);
-
-        $manager = flow\Manager::getInstance();
-        $model = $manager->getMailModel();
-
-        $record = $model->captureMail($message);
-
-        $manager->flashNow('mail.capture', 'A new email has been received at the testing mail inbox', 'debug')
-            ->setDescription('Mail is stored locally when in development mode so you don\'t spam your test users')
-            ->setLink('~mail/capture/details?mail='.$record['id']);
-
-        return true;
-    }
 }

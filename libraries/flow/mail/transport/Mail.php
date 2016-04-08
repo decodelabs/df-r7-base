@@ -28,18 +28,4 @@ class Mail extends Base {
 
         return mail($to, $headers->get('subject'), $body, $headerString, $additional);
     }
-
-    public function sendLegacy(flow\mail\ILegacyMessage $message) {
-        $this->_prepareLegacyMessage($message);
-        $headers = $message->getHeaderString(['to', 'subject']);
-        $to = $message->getHeaders()->get('to');
-        $body = $message->getBodyString();
-        $additional = null;
-
-        if($returnPath = $message->getReturnPath()) {
-            $additional = '-f'.$returnPath->getAddress();
-        }
-
-        return mail($to, $message->getSubject(), $body, $headers, $additional);
-    }
 }

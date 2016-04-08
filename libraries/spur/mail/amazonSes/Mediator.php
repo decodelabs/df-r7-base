@@ -177,65 +177,12 @@ class Mediator implements IMediator {
     }
 
 
-
-
-    public function sendLegacyMessage(flow\mail\ILegacyMessage $message) {
-        $params = ['Action' => 'SendEmail'];
-
-        $i = 1;
-        foreach($message->getToAddresses() as $address) {
-            $params['Destination.ToAddresses.member.'.$i] = (string)$address;
-            $i++;
-        }
-
-        $i = 1;
-        foreach($message->getCCAddresses() as $address) {
-            $params['Destination.CcAddresses.member.'.$i] = (string)$address;
-        }
-
-        $i = 1;
-        foreach($message->getBccAddresses() as $address) {
-            $params['Destination.BccAddresses.member.'.$i] = (string)$address;
-        }
-
-        if($address = $message->getReplyToAddress()) {
-            $params['ReplyToAddresses.member.1'] = (string)$address;
-        }
-
-        $params['Source'] = (string)$message->getFromAddress();
-
-        if(null !== ($subject = $message->getSubject())) {
-            $params['Message.Subject.Data'] = $subject;
-        }
-
-        if($bodyText = $message->getBodyText()) {
-            $params['Message.Body.Text.Data'] = $bodyText->getContent();
-        }
-
-        if($bodyHtml = $message->getBodyHtml()) {
-            $params['Message.Body.Html.Data'] = $bodyHtml->getContent();
-        }
-
-        $xml = $this->requestXml('post', $params);
-        return (string)$xml->SendEmailResult->MessageId;
-    }
-
-    public function sendRawLegacyMessage(flow\mail\ILegacyMessage $message) {
-        $xml = $this->requestXml('post', [
-            'Action' => 'SendRawEmail',
-            'RawMessage.Data' => (string)$message,
-            'Source' => $message->getFromAddress()->getAddress()
-        ]);
-
-        return (string)$xml->SendRawEmailResult->MessageId;
-    }
-
     public function sendRawString($from, $string) {
         $from = flow\mail\Address::factory($from);
 
         $xml = $this->requestXml('post', [
             'Action' => 'SendRawEmail',
-            'RawMessage.Data' => (string)$string,
+            'RawMessage.Data' => base64_encode((string)$string),
             'Source' => $from->getAddress()
         ]);
 
