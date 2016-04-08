@@ -681,20 +681,6 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         return $this->html->string($content);
     }
 
-// Notification
-    public function toNotification($to=null, $from=null) {
-        $content = $this->render();
-        $subject = $this->getTitle();
-
-        if(empty($subject)) {
-            $subject = $this->_('Notification from %a%', ['%a%' => $this->context->application->getName()]);
-        }
-
-        $manager = flow\Manager::getInstance();
-        return $manager->newNotification($subject, $content, $to, $from)
-            ->setBodyType(flow\INotification::HTML);
-    }
-
 // Rendering
     public function shouldRenderBase(bool $flag=null) {
         if($flag !== null) {

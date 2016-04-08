@@ -103,7 +103,7 @@ abstract class Base extends aura\view\Mail implements IMail {
         $name = $this->getName();
 
         if(false !== strpos($name, '/')) {
-            $output .= '#';
+            $output = rtrim($output, '/').'/#';
         }
 
         $output .= '/'.$name;

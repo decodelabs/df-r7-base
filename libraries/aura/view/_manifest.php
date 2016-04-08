@@ -140,8 +140,6 @@ interface ILayoutMap {
     public function mapLayout(ILayoutView $view);
 }
 
-interface INotificationProxyView extends IView, ILayoutView, flow\INotificationProxy {}
-
 
 
 interface IAjaxView extends IResponseView {
@@ -154,7 +152,7 @@ interface IAjaxView extends IResponseView {
 
 
 
-interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
+interface IHtmlView extends IResponseView, ILayoutView {
     public function getHtmlTag();
     public function getBodyTag();
 

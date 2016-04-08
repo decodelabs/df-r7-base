@@ -31,10 +31,6 @@ interface IManager extends core\IManager {
     public function getDefaultMailTransportName($forceSend=false);
     public function getMailModel();
 
-// Notification
-    public function newNotification($subject, $body, $to=null, $from=null, $forceSend=false);
-    public function sendNotification(INotification $notification, $forceSend=false);
-
 
 // Lists
     public function getListSources();
@@ -162,46 +158,4 @@ class FlashQueue implements \Serializable {
             $this->instant = $data['i'];
         }
     }
-}
-
-
-interface INotification extends flow\mail\IJournalableMessage {
-
-    const TEXT = 'text';
-    const SIMPLE_TAGS = 'simpleTags';
-    const HTML = 'html';
-
-    public function setSubject($subject);
-    public function getSubject();
-    public function setBody($body);
-    public function getBody();
-    public function setBodyType($type);
-    public function getBodyType();
-    public function getBodyHtml();
-
-    public function shouldSendToAdmin(bool $flag=null);
-    public function setTo($to);
-    public function addTo($to);
-    public function clearTo();
-    public function hasRecipients();
-    public function shouldFilterClient(bool $flag=null);
-    public function shouldForceSend(bool $flag=null);
-
-    public function addToEmail($email, $name=null);
-    public function getToEmails();
-    public function removeToEmail($email);
-    public function clearToEmails();
-
-    public function addToUser($id);
-    public function getToUsers();
-    public function getToUserIds();
-    public function removeToUser($id);
-    public function clearToUsers();
-
-    public function setFromEmail($email=null, $name=null);
-    public function getFromEmail();
-}
-
-interface INotificationProxy {
-    public function toNotification($to=null, $from=null);
 }

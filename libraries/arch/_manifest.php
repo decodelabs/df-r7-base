@@ -264,26 +264,6 @@ interface IComponent extends
     public function getName();
 }
 
-interface IMailComponent extends IComponent, flow\INotificationProxy {
-    public function getDescription();
-    public function setDefaultToAddress($address, string $name=null);
-    public function getDefaultToAddress();
-    public function setDefaultFromAddress($address, string $name=null);
-    public function getDefaultFromAddress();
-    public function shouldForceSend(bool $flag=null);
-    public function renderPreview();
-    public function toPreviewNotification($to=null, $from=null);
-
-    public function setJournalName(string $name=null);
-    public function getJournalName();
-    public function getJournalDuration();
-    public function setJournalObjectId1($id);
-    public function getJournalObjectId1();
-    public function setJournalObjectId2($id);
-    public function getJournalObjectId2();
-    public function shouldJournal();
-}
-
 
 trait TDirectoryAccessLock {
 
