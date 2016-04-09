@@ -16,10 +16,6 @@ class TaskUpdateTaskTables extends arch\node\Task {
     public function execute() {
         $this->ensureDfSource();
 
-        if($this->application->getEnvironmentId() != 'btc') {
-            $this->runChild('git/update?package[]=app');
-        }
-
         $this->runChild('axis/rebuild-table?unit=task/invoke&delete=true');
         $this->runChild('axis/rebuild-table?unit=task/schedule&delete=true');
         $this->runChild('axis/rebuild-table?unit=task/queue&delete=true');
