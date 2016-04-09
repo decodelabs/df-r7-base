@@ -22,6 +22,8 @@ class TaskInit extends arch\node\Task {
     }
 
     public function execute() {
+        $this->ensureDfSource();
+
         if(!empty($this->request->query->environments)) {
             foreach($this->request->query->environments as $envNode) {
                 core\Config::clearLiveCache();
@@ -53,6 +55,7 @@ class TaskInit extends arch\node\Task {
         $this->io->write('Found '.$classCount);
 
         if(!$classCount) {
+            $this->io->writeLine();
             return;
         }
 

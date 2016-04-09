@@ -20,6 +20,7 @@ class Model extends axis\Model {
                 continue;
             }
 
+
             $ref = new \ReflectionClass($class);
 
             if($ref->implementsInterface('df\\core\\IConfig')) {
@@ -28,6 +29,10 @@ class Model extends axis\Model {
         }
 
         foreach(df\Launchpad::$loader->lookupFolderList($path) as $dirName => $dirPath) {
+            if($path == 'apex' && !in_array($dirName, ['libraries', 'directory', 'models', 'themes'])) {
+                continue;
+            }
+
             $output = array_merge($output, $this->findIn($path.'/'.$dirName));
         }
 

@@ -23,6 +23,7 @@ class TaskInit extends arch\node\Task {
         $this->runChild('config/init');
 
         $this->io->writeLine();
+        $this->io->writeLine();
         $this->runChild('git/init');
 
         $this->io->writeLine();
