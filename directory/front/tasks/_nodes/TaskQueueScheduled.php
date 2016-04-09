@@ -59,14 +59,10 @@ class TaskQueueScheduled extends arch\node\Task {
         $task->lastRun = 'now';
         $task->save();
 
-        $queue = $this->data->newRecord(
-                'axis://task/Queue',
-                [
-                    'request' => $task['request'],
-                    'environmentMode' => df\Launchpad::$environmentMode,
-                    'priority' => $task['priority']
-                ]
-            )
+        $queue = $this->data->newRecord('axis://task/Queue', [
+                'request' => $task['request'],
+                'priority' => $task['priority']
+            ])
             ->save();
     }
 }

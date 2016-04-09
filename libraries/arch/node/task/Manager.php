@@ -103,9 +103,9 @@ class Manager implements arch\node\ITaskManager {
 
     public function queue($request, $priority='medium') {
         $context = $this->_getActiveContext();
+
         $queue = $context->data->task->queue->newRecord([
                 'request' => $request,
-                'environmentMode' => df\Launchpad::$environmentMode,
                 'priority' => $priority
             ])
             ->save();

@@ -19,8 +19,6 @@ class Unit extends axis\unit\table\Base {
         $schema->addPrimaryField('token', 'Text', 32);
         $schema->addField('expiryDate', 'Date:Time');
         $schema->addField('request', 'Text', 1024);
-        $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
-            ->isNullable(true);
         $schema->addField('invokeKey', 'Text', 32)
             ->isNullable(true);
     }
@@ -33,8 +31,7 @@ class Unit extends axis\unit\table\Base {
         $invoke = $this->newRecord([
                 'token' => $token,
                 'expiryDate' => $expiryDate ?? '+1 minute',
-                'request' => array_pop($parts),
-                'environmentMode' => df\Launchpad::$environmentMode
+                'request' => array_pop($parts)
             ])
             ->save();
 

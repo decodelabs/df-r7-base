@@ -15,7 +15,7 @@ class Unit extends axis\unit\table\Base {
     const BROADCAST_HOOK_EVENTS = false;
 
     const ORDERABLE_FIELDS = [
-        'request', 'environmentMode', 'priority', 'creationDate', 'lastRun', 'isLive', 'isAuto'
+        'request', 'priority', 'creationDate', 'lastRun', 'isLive', 'isAuto'
     ];
 
     const DEFAULT_ORDER = ['lastRun DESC', 'request ASC'];
@@ -23,9 +23,6 @@ class Unit extends axis\unit\table\Base {
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('request', 'Text', 1024);
-        $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
-            ->isNullable(true);
-
         $schema->addField('priority', 'Enum', 'core/unit/Priority');
 
         $schema->addField('creationDate', 'Timestamp');
