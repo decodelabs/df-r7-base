@@ -115,6 +115,9 @@ abstract class Task extends Base implements ITaskNode {
             return $this;
         }
 
+        $this->io->writeLine('Switching to source mode...');
+        $this->io->writeLine();
+
         $user = $this->system->getProcess()->getOwnerName();
         $request = clone $this->request;
 
