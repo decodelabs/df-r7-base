@@ -59,7 +59,7 @@ class TaskApcuClear extends arch\node\Task {
                 );
             }
 
-            $this->io->writeLine($url);
+            //$this->io->writeLine($url);
 
             $http = new link\http\Client();
             $response = $http->get($url); // TODO use localhost ip?
