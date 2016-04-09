@@ -14,6 +14,8 @@ use df\arch;
 class TaskRefreshAll extends arch\node\Task {
 
     public function execute() {
+        $this->ensureDfSource();
+
         $this->io->writeLine('Finding all package git repositories...');
         $model = $this->data->getModel('package');
 

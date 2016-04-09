@@ -9,9 +9,9 @@ use df;
 use df\core;
 
 abstract class Base implements core\IApplication, core\IDumpable {
-    
+
     const RUN_MODE = null;
-    
+
     protected $_isRunning = false;
     protected $_registry = [];
     protected $_dispatchException;
@@ -19,11 +19,11 @@ abstract class Base implements core\IApplication, core\IDumpable {
     public static function getApplicationPath() {
         return df\Launchpad::$applicationPath;
     }
-    
+
     public function getLocalStoragePath() {
         return df\Launchpad::$applicationPath.'/data/local';
     }
-    
+
     public function getSharedStoragePath() {
         return df\Launchpad::$applicationPath.'/data/shared';
     }
@@ -31,11 +31,11 @@ abstract class Base implements core\IApplication, core\IDumpable {
     public function getName() {
         return df\Launchpad::$applicationName;
     }
-    
+
     public function getUniquePrefix() {
         return df\Launchpad::$uniquePrefix;
     }
-    
+
     public function getPassKey() {
         return df\Launchpad::$passKey;
     }
@@ -43,24 +43,19 @@ abstract class Base implements core\IApplication, core\IDumpable {
     public function getEnvironmentId() {
         return df\Launchpad::$environmentId;
     }
-    
+
     public function getEnvironmentMode() {
         return df\Launchpad::getEnvironmentMode();
     }
 
-    public function hasEnvironmentMode($mode) {
-        $path = $this->getApplicationPath().'/entry/'.$this->getEnvironmentId().'.'.$mode.'.php';
-        return is_file($path);
-    }
-    
     public function isDevelopment() {
         return df\Launchpad::isDevelopment();
     }
-    
+
     public function isTesting() {
         return df\Launchpad::isTesting();
     }
-    
+
     public function isProduction() {
         return df\Launchpad::isProduction();
     }
@@ -69,7 +64,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
         if(static::RUN_MODE !== null) {
             return static::RUN_MODE;
         }
-        
+
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
@@ -99,31 +94,31 @@ abstract class Base implements core\IApplication, core\IDumpable {
         echo (new core\debug\renderer\PlainText($context))->render();
 
         return $this;
-    }    
-    
+    }
+
 // Cache objects
     public function setRegistryObject(core\IRegistryObject $object) {
         $this->_registry[$object->getRegistryObjectKey()] = $object;
         return $this;
     }
-    
+
     public function getRegistryObject($key) {
         if(isset($this->_registry[$key])) {
             return $this->_registry[$key];
         }
-        
+
         return null;
     }
-    
+
     public function hasRegistryObject($key) {
         return isset($this->_registry[$key]);
     }
-    
+
     public function removeRegistryObject($key) {
         if($key instanceof core\IRegistryObject) {
             $key = $key->getRegistryObjectKey();
         }
-        
+
         unset($this->_registry[$key]);
         return $this;
     }
@@ -143,8 +138,8 @@ abstract class Base implements core\IApplication, core\IDumpable {
     public function getRegistryObjects() {
         return $this->_registry;
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         return [
@@ -156,4 +151,4 @@ abstract class Base implements core\IApplication, core\IDumpable {
             'registry' => count($this->_registry)
         ];
     }
-} 
+}

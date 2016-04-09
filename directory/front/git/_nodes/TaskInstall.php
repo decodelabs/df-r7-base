@@ -57,11 +57,9 @@ class TaskInstall extends arch\node\Task {
     }
 
     public function execute() {
-        if(df\Launchpad::IS_COMPILED) {
-            $this->throwError(500, 'Cannot execute git commands on compiled version of app');
-        }
+        $this->ensureDfSource();
 
-        $this->_basePath = dirname(df\Launchpad::DF_PATH);
+        $this->_basePath = dirname(df\Launchpad::$rootPath);
 
         if(isset($this->request['all'])) {
             foreach(self::PACKAGES as $name => $url) {

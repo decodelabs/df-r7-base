@@ -34,8 +34,7 @@ class HttpInvoke extends arch\node\Base {
 
             $this->task->launch(
                 $invoke['request'],
-                new core\io\Multiplexer(['generator' => $generator], 'httpPassthrough'),
-                $invoke['environmentMode']
+                new core\io\Multiplexer(['generator' => $generator], 'httpPassthrough')
             );
         });
     }

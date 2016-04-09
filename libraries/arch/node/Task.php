@@ -13,7 +13,6 @@ use df\halo;
 abstract class Task extends Base implements ITaskNode {
 
     const SCHEDULE = null;
-    const SCHEDULE_ENVIRONMENT_MODE = null;
     const SCHEDULE_PRIORITY = 'medium';
     const SCHEDULE_AUTOMATIC = false;
 
@@ -38,10 +37,6 @@ abstract class Task extends Base implements ITaskNode {
         }
 
         return $schedule;
-    }
-
-    public static function getScheduleEnvironmentMode() {
-        return static::SCHEDULE_ENVIRONMENT_MODE;
     }
 
     public static function getSchedulePriority() {
@@ -115,41 +110,19 @@ abstract class Task extends Base implements ITaskNode {
 
 
 
-// Environment
-    public function ensureEnvironmentMode($mode) {
-        $mode = core\EnvironmentMode::factory($mode)->getOption();
-        $current = $this->application->getEnvironmentMode();
-
-        if($mode == $current) {
+    public function ensureDfSource() {
+        if(!df\Launchpad::$isCompiled) {
             return $this;
         }
 
-        if(!$this->application->hasEnvironmentMode($mode)) {
-            $this->io->writeErrorLine('!! Unable to switch to '.$mode.' mode, entry is unavailable');
-            throw new arch\ForcedResponse(null);
-        }
+        $user = $this->system->getProcess()->getOwnerName();
+        $request = clone $this->request;
 
-        throw new arch\ForcedResponse(function() use($mode) {
+        throw new arch\ForcedResponse(function() use($user, $request) {
             $this->task->shouldCaptureBackgroundTasks(true);
-            $this->task->launch($this->request, $this->io, $mode);
+            $this->task->launch($request, $this->io, $user, true);
         });
     }
-
-    public function promptEnvironmentMode($mode, $default=false) {
-        $mode = core\EnvironmentMode::factory($mode)->getOption();
-        $current = $this->application->getEnvironmentMode();
-
-        if($mode == $current) {
-            return $this;
-        }
-
-        if(!$this->_askBoolean('Currently in '.$current.' mode - switch to '.$mode.'?', $default)) {
-            return $this;
-        }
-
-        return $this->ensureEnvironmentMode($mode);
-    }
-
 
 
 // Interaction

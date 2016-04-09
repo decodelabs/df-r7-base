@@ -10,71 +10,105 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\halo;
+use df\flex;
 
 class TaskPurgeBuilds extends arch\node\Task {
 
-    const CONTINGENCY = 1;
+    const BUILD_DURATION = '5 minutes';
+    const RUN_DURATION = '15 minutes';
 
     public function execute() {
-        $contingency = (int)$this->request->query->get('contingency', self::CONTINGENCY);
+        $this->ensureDfSource();
 
-        if($contingency < 0) {
-            $contingency = 0;
-        }
-
-        $keepLast = true;
-        $keepTesting = true;
-
-        if(isset($this->request['all'])) {
-            $keepLast = false;
-            $keepTesting = false;
-            $contingency = 0;
-        }
+        $this->io->write('Purging old build folders...');
 
         $appPath = df\Launchpad::$applicationPath;
-        $runDir = new core\fs\Dir($appPath.'/data/local/run');
+        $buildDir = new core\fs\Dir($appPath.'/data/local/build');
+        $all = isset($this->request['all']);
 
-        if(!$runDir->exists()) {
-            $this->io->writeLine('No builds to purge');
-            return;
-        }
+        if(!$buildDir->exists()) {
+            $this->io->writeLine(' 0 found');
+        } else {
+            $checkTime = $this->date('-'.self::BUILD_DURATION)->toTimestamp();
+            $del = 0;
+            $keep = 0;
 
-        $this->io->writeLine('Keeping '.$contingency.' build(s) as contingency');
+            foreach($buildDir->scanDirs() as $name => $dir) {
+                try {
+                    $guid = flex\Guid::factory($name);
+                } catch(\Exception $e) {
+                    $dir->unlink();
+                    $del++;
+                    continue;
+                }
 
-        $list = scandir($runDir->getPath());
-        sort($list);
-        $testList = [];
-        unset($list[0], $list[1]);
+                if($all || $guid->getTime() < $checkTime) {
+                    $dir->unlink();
+                    $del++;
+                } else {
+                    $keep++;
+                }
+            }
 
-        foreach($list as $i => $entry) {
-            if(substr($entry, -8) == '-testing') {
-                unset($list[$i]);
-                $testList[] = $entry;
+            if($keep) {
+                $this->io->write(' kept '.$keep.',');
+            }
+
+            $this->io->writeLine(' deleted '.$del);
+
+            if($buildDir->isEmpty()) {
+                $buildDir->unlink();
             }
         }
 
-        if(!isset($this->request['purgeTesting']) && $keepTesting) {
-            array_pop($testList);
-        }
 
-        if($keepLast) {
-            $contingency++;
-        }
 
-        for($i = 0; $i < $contingency; $i++) {
-            array_pop($list);
-        }
+        $this->io->write('Purging run folders...');
+        $runDir = new core\fs\Dir($appPath.'/data/local/run');
 
-        $list = array_merge($list, $testList);
+        if(!$runDir->exists()) {
+            $this->io->writeLine(' 0 found');
+        } else {
+            $checkTime = $this->date('-'.self::RUN_DURATION)->toTimestamp();
+            $del = 0;
+            $keep = 0;
+            $ids = [];
 
-        foreach($list as $entry) {
-            $this->io->writeLine('Deleting build '.$entry);
-            $runDir->getChild($entry)->unlink();
-        }
+            foreach($runDir->scanDirs() as $name => $dir) {
+                try {
+                    $guid = flex\Guid::factory($name);
+                } catch(\Exception $e) {
+                    $dir->unlink();
+                    $del++;
+                    continue;
+                }
 
-        if($runDir->isEmpty()) {
-            $this->io->writeLine('Deleting run folder');
-            $runDir->unlink();
+                if($all || $guid->getTime() < $checkTime) {
+                    $ids[] = $name;
+                } else {
+                    $keep++;
+                }
+            }
+
+            rsort($ids);
+
+            if(!$all) {
+                while($keep < 2) {
+                    array_shift($ids);
+                    $keep++;
+                }
+            }
+
+            foreach($ids as $name) {
+                $runDir->deleteChild($name);
+                $del++;
+            }
+
+            if($keep) {
+                $this->io->write(' kept '.$keep.',');
+            }
+
+            $this->io->writeLine(' deleted '.$del);
         }
     }
 }

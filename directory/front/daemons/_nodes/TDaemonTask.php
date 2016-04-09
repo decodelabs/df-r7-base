@@ -27,7 +27,7 @@ trait TDaemonTask {
             $this->io->writeLine('Restarting task '.$this->request->getPathString().' as root');
             $request = clone $this->request;
             $request->query->_privileged = true;
-            $this->task->launch($request, $this->io, null, 'root');
+            $this->task->launch($request, $this->io, 'root');
             $this->forceResponse('');
         }
     }

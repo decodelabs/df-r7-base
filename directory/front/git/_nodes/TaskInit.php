@@ -17,6 +17,8 @@ class TaskInit extends arch\node\Task {
     const GEOMETRY = '1914x1036+5+23 450 300';
 
     public function execute() {
+        $this->ensureDfSource();
+
         $path = df\Launchpad::$applicationPath;
         $this->runChild('git/init-gitignore');
 

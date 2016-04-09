@@ -26,7 +26,7 @@ class TaskSpool extends arch\node\Task {
 
         $this->_log = $this->data->task->log->newRecord([
                 'request' => self::SELF_REQUEST,
-                'environmentMode' => df\Launchpad::getEnvironmentMode()
+                'environmentMode' => df\Launchpad::$environmentMode
             ])
             ->save();
     }

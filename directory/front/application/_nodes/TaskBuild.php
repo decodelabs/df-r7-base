@@ -10,10 +10,9 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\halo;
+use df\flex;
 
 class TaskBuild extends arch\node\Task {
-
-    const PURGE_OLD_BUILDS = true;
 
     const APP_EXPORT = [
         'libraries', 'assets', 'daemons', 'directory', 'hooks', 'models', 'themes', 'tests'
@@ -21,8 +20,6 @@ class TaskBuild extends arch\node\Task {
 
     public function extractCliArguments(core\cli\ICommand $command) {
         $inspector = new core\cli\Inspector([
-            'purge|p=i' => 'Purge old builds',
-            'test|testing|t' => 'Build in testing mode only',
             'dev|development|d' => 'Build in development mode only'
         ], $command);
 
@@ -32,27 +29,19 @@ class TaskBuild extends arch\node\Task {
 
         if($inspector['dev']) {
             $this->request->query->dev = true;
-        } else if($inspector['testing']) {
-            $this->request->query->testing = true;
         }
     }
 
     public function execute() {
-        if(df\Launchpad::IS_COMPILED) {
-            $this->throwError(403, 'Cannot compile app from production environment - run from dev mode instead');
-        }
-
+        $this->ensureDfSource();
 
         // Prepare info
-        $timestamp = date('YmdHis');
-        $purgeOldBuilds = $this->request->query->get('purge', self::PURGE_OLD_BUILDS);
-        $isTesting = isset($this->request['testing']);
+        $buildId = (string)flex\Guid::uuid1();
         $isDev = isset($this->request['dev']);
 
         if($isDev) {
             $this->io->writeLine('Builder is running in dev mode, no build folder will be created');
-        } else if($isTesting) {
-            $this->io->writeLine('Builder is running in testing mode');
+            $this->io->writeLine();
         }
 
 
@@ -70,34 +59,24 @@ class TaskBuild extends arch\node\Task {
             $prefix = df\Launchpad::$uniquePrefix;
             $loader = df\Launchpad::$loader;
 
-            $runPath = $appPath.'/data/local/run';
-            $buildId = 'df-'.$timestamp;
+            $localPath = $appPath.'/data/local';
+            $runPath = $localPath.'/run';
 
-            if($isTesting) {
-                $buildId .= '-testing';
-            }
+            $destinationPath = $localPath.'/build/'.$buildId;
+            $destination = new core\fs\Dir($destinationPath);
 
-            $destinationPath = $runPath.'/'.$buildId;
-
-            if(is_dir($destinationPath)) {
+            if($destination->exists()) {
                 $this->throwError(500, 'Destination build directory already exists');
             }
 
             $umask = umask(0);
-            $dir = core\fs\Dir::create($destinationPath, 0777);
+            $destination->ensureExists(0777);
 
             $this->io->writeLine('Packaging files...');
             $this->io->incrementLineLevel();
 
-            // Generate Df.php
-            $this->io->writeLine('Generating Df.php');
 
-            $dfFile = file_get_contents(df\Launchpad::DF_PATH.'/Df.php');
-            $dfFile = str_replace('IS_COMPILED = false', 'IS_COMPILED = true', $dfFile);
-            $dfFile = str_replace('COMPILE_TIMESTAMP = null', 'COMPILE_TIMESTAMP = '.time(), $dfFile);
-
-            file_put_contents($destinationPath.'/Df.php', $dfFile);
-
+            // List packages
             $packages = $loader->getPackages();
             $appPackage = $packages['app'];
             unset($packages['app']);
@@ -107,29 +86,22 @@ class TaskBuild extends arch\node\Task {
             // Copy packages
             foreach(array_reverse($packages) as $package) {
                 $this->io->write(' '.$package->name);
+                $packageDir = new core\fs\Dir($package->path);
 
-                if(is_dir($package->path.'/libraries')) {
-                    core\fs\Dir::merge($package->path.'/libraries', $destinationPath);
+                if($libDir = $packageDir->getExistingDir('libraries')) {
+                    $libDir->mergeInto($destination);
                 }
 
-                $packageFile = new core\fs\File($package->path.'/Package.php');
-
-                if($packageFile->exists()) {
+                if($packageFile = $packageDir->getExistingFile('Package.php')) {
                     $packageFile->copyTo($destinationPath.'/apex/packages/'.$package->name.'/Package.php');
                 }
 
-                foreach(scandir($package->path) as $entry) {
-                    if($entry == '.'
-                    || $entry == '..'
-                    || $entry == '.git'
-                    || $entry == '.gitignore'
-                    || $entry == 'libraries') {
+                foreach($packageDir->scanDirs() as $name => $dir) {
+                    if($name == '.git' || $name == 'libraries') {
                         continue;
                     }
 
-                    if(is_dir($package->path.'/'.$entry)) {
-                        core\fs\Dir::merge($package->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
-                    }
+                    $dir->mergeInto($destinationPath.'/apex/'.$name);
                 }
             }
 
@@ -137,61 +109,57 @@ class TaskBuild extends arch\node\Task {
 
             // Copy app folder
             $this->io->writeLine(' app');
+            $appDir = new core\fs\Dir($appPackage->path);
 
-            foreach(scandir($appPackage->path) as $entry) {
-                if($entry == '.'
-                || $entry == '..'
-                || $entry == '.git'
-                || $entry == '.gitignore') {
+            foreach($appDir->scanDirs() as $name => $dir) {
+                if(!in_array($name, self::APP_EXPORT)) {
                     continue;
                 }
 
-                if(!in_array($entry, self::APP_EXPORT)) {
+                if($name == 'libraries') {
+                    $dir->mergeInto($destination);
                     continue;
-                }
-
-                if($entry == 'libraries') {
-                    core\fs\Dir::merge($appPackage->path.'/'.$entry, $destinationPath);
-                    continue;
-                }
-
-                if(is_dir($appPackage->path.'/'.$entry)) {
-                    core\fs\Dir::merge($appPackage->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
+                } else {
+                    $dir->mergeInto($destinationPath.'/apex/'.$name);
                 }
             }
 
-            // Generate entries
-            $this->runChild('./generate-entries?build='.$buildId, false);
+
+            // Switch active
+            $destination->moveTo($runPath, $buildId);
+
+            core\fs\File::create($runPath.'/Active.php',
+                '<?php'."\n".
+                'df\\Launchpad::$isCompiled = true;'."\n".
+                'df\\Launchpad::$compileTimestamp = '.time().';'."\n".
+                'df\\Launchpad::$rootPath = \''.$runPath.'/'.$buildId.'\';'."\n".
+                'df\\Launchpad::$environmentMode = \''.df\Launchpad::$environmentMode.'\';'
+            );
         }
 
         $this->io->decrementLineLevel();
+
+        // Generate entries
+        $this->runChild('./generate-entry', false);
 
         // Clear cache
         $this->io->writeLine();
         $this->io->writeLine('Purging cache backends...');
         $this->runChild('cache/purge');
 
-
         // Restart daemons
-        if(!$isTesting) {
-            $this->io->writeLine();
-            $this->runChild('daemons/restart-all', false);
-        }
-
+        $this->io->writeLine();
+        $this->runChild('daemons/restart-all', false);
 
         // Purge
-        if($purgeOldBuilds) {
-            $this->io->writeLine();
-            $this->io->writeLine('Purging old builds...');
-            $this->runChild('./purge-builds?'.(!$isTesting ? 'purgeTesting' : null));
-        }
-
+        $this->io->writeLine();
+        $this->io->decrementLineLevel();
+        $this->runChild('./purge-builds');
+        $this->io->incrementLineLevel();
 
         // Task spool
-        if(!$isTesting) {
-            $this->io->writeLine();
-            $this->io->writeLine('Running task spool...');
-            $this->runChild('tasks/spool');
-        }
+        $this->io->writeLine();
+        $this->io->writeLine('Running task spool...');
+        $this->runChild('tasks/spool');
     }
 }

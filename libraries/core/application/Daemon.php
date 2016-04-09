@@ -149,15 +149,10 @@ class Daemon extends Base {
             $this->io->write('...');
         }
 
-        $entryPath = df\Launchpad::$applicationPath.'/entry/'.df\Launchpad::$environmentId.'.';
-        $path = $entryPath.'production.php';
-
-        if(!file_exists($path)) {
-            $path = $entryPath.df\Launchpad::getEnvironmentMode().'.php';
-        }
+        $entryPath = df\Launchpad::$applicationPath.'/entry/'.df\Launchpad::$environmentId.'.php';
 
         halo\process\Base::launchScript(
-            $path,
+            $entryPath,
             ['daemon', $name, '__spawn'],
             new core\io\Multiplexer([$this->io])
         );

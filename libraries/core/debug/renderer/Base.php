@@ -89,7 +89,7 @@ abstract class Base implements core\debug\IRenderer {
             if(substr($path, 0, $len = strlen($match)) == $match) {
                 $innerPath = substr(str_replace('\\', '/', $path), $len + 1);
 
-                if(df\Launchpad::IS_COMPILED && $key == 'root') {
+                if(df\Launchpad::$isCompiled && $key == 'root') {
                     $parts = explode('/', $innerPath);
                     array_shift($parts);
                     $innerPath = implode('/', $parts);

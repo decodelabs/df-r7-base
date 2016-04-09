@@ -34,7 +34,7 @@ class Loader implements ILoader {
         $this->_locations = $locations;
         spl_autoload_register([$this, 'loadClass']);
 
-        $this->_packages['base'] = new core\Package('base', 0, df\Launchpad::DF_PATH);
+        $this->_packages['base'] = new core\Package('base', 0, df\Launchpad::$rootPath);
         $this->_packages['app'] = new core\Package('app', PHP_INT_MAX, df\Launchpad::$applicationPath);
     }
 
@@ -84,7 +84,7 @@ class Loader implements ILoader {
         }
 
         $fileName = array_pop($parts);
-        $basePath = df\Launchpad::DF_PATH.'/'.$library;
+        $basePath = df\Launchpad::$rootPath.'/'.$library;
 
         if(!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
@@ -130,7 +130,7 @@ class Loader implements ILoader {
     }
 
     public function getFileSearchPaths($path) {
-        return [df\Launchpad::DF_PATH.'/'.$path];
+        return [df\Launchpad::$rootPath.'/'.$path];
     }
 
     public function lookupFileList($path, $extensions=null) {

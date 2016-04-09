@@ -38,17 +38,13 @@ abstract class Base implements IDaemon {
     protected $_user;
     protected $_group;
 
-    public static function launch($name, $environmentMode=null, $user=null) {
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-
+    public static function launch($name, $user=null) {
         if($user === null) {
             $user = core\Environment::getInstance()->getDaemonUser();
         }
 
         $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
+        $path .= df\Launchpad::$environmentId.'.php';
 
         return halo\process\Base::launchScript($path, ['daemon', $name], $user);
     }

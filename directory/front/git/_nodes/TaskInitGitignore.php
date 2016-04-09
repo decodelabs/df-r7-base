@@ -14,6 +14,8 @@ use df\arch;
 class TaskInitGitignore extends arch\node\Task {
 
     public function execute() {
+        $this->ensureDfSource();
+
         $path = df\Launchpad::$applicationPath;
 
         if(!is_file($path.'/.gitignore')) {

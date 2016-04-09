@@ -157,9 +157,7 @@ class Remote implements IRemote {
                 );
         }
 
-        $environmentMode = df\Launchpad::getEnvironmentMode();
-        $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
+        $path = df\Launchpad::$applicationPath.'/entry/'.df\Launchpad::$environmentId.'.php';
 
         if($this->_multiplexer) {
             return halo\process\Base::launchScript($path, ['daemon', $this->_daemon->getName(), $command], $this->_multiplexer);

@@ -39,9 +39,8 @@ abstract class Config implements IConfig, core\IDumpable {
             throw new LogicException('Invalid config id passed for '.$handlerClass);
         }
 
-        $application = df\Launchpad::getApplication();
-
-        if($handlerClass::STORE_IN_MEMORY) {
+        if($handlerClass::STORE_IN_MEMORY
+        && $application = df\Launchpad::$application) {
             if(!$config = $application->getRegistryObject(self::REGISTRY_PREFIX.$id)) {
                 $application->setRegistryObject(
                     $config = new $handlerClass($id)
@@ -55,10 +54,10 @@ abstract class Config implements IConfig, core\IDumpable {
     }
 
     public static function clearLiveCache() {
-        $application = df\Launchpad::getApplication();
-
-        foreach($application->findRegistryObjects('config://') as $config) {
-            $application->removeRegistryObject($config);
+        if($application = df\Launchpad::$application) {
+            foreach($application->findRegistryObjects('config://') as $config) {
+                $application->removeRegistryObject($config);
+            }
         }
     }
 
@@ -183,8 +182,8 @@ abstract class Config implements IConfig, core\IDumpable {
     private function _loadValues() {
         $parts = explode('/', $this->_id);
         $name = array_pop($parts);
-        $environmentId = df\Launchpad::$application->getEnvironmentId();
-        $environmentMode = df\Launchpad::$application->getEnvironmentMode();
+        $environmentId = df\Launchpad::$environmentId;
+        $environmentMode = df\Launchpad::$environmentMode;
         $basePath = $this->_getBasePath();
 
         if(!empty($parts)) {
@@ -227,7 +226,7 @@ abstract class Config implements IConfig, core\IDumpable {
         if($this->_filePath) {
             $savePath = $this->_filePath;
         } else {
-            $environmentId = df\Launchpad::$application->getEnvironmentId();
+            $environmentId = df\Launchpad::getEnvironmentId();
             $parts = explode('/', $this->_id);
             $name = array_pop($parts);
             $basePath = $this->_getBasePath();
@@ -253,7 +252,7 @@ abstract class Config implements IConfig, core\IDumpable {
     }
 
     private function _getBasePath() {
-        return df\Launchpad::$application->getApplicationPath().'/config';
+        return df\Launchpad::getApplicationPath().'/config';
     }
 
 

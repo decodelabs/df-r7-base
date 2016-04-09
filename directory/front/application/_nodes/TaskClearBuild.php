@@ -13,12 +13,16 @@ use df\arch;
 class TaskClearBuild extends arch\node\Task {
 
     public function execute() {
+        $this->ensureDfSource();
+
         $appPath = $this->application->getApplicationPath();
         $envId = $this->application->getEnvironmentId();
 
-        $this->runChild('application/purge-builds?all', false);
+        core\fs\File::delete($appPath.'/data/local/run/Active.php');
 
-        $this->io->writeLine('Deleting testing and production entry files');
+        $this->runChild('application/purge-builds?all', false);
+        core\fs\Dir::delete($appPath.'/data/local/run/');
+
         core\fs\File::delete($appPath.'/entry/'.$envId.'.testing.php');
         core\fs\File::delete($appPath.'/entry/'.$envId.'.production.php');
     }

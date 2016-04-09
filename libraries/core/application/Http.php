@@ -249,7 +249,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 // Debug mode
     protected function _handleDebugMode() {
         if($this->_httpRequest->hasCookie('debug')) {
-            df\Launchpad::$isTesting = true;
+            df\Launchpad::$environmentMode = 'testing';
 
             flow\Manager::getInstance()->flashNow(
                     'global.debug',

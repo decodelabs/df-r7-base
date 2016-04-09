@@ -18,6 +18,7 @@ class Environment extends Config {
 
     public function getDefaultValues() {
         return [
+            'mode' => 'development',
             'binaryPaths' => [],
             'distributed' => false,
             'activeLocations' => [],
@@ -32,6 +33,18 @@ class Environment extends Config {
             arch\node\task\Manager::getInstance()->invoke('git/init-gitignore');
         } catch(\Exception $e) {}
     }
+
+
+// Mode
+    public function setMode($mode) {
+        $this->values->mode = EnvironmentMode::normalize($mode);
+        return $this;
+    }
+
+    public function getMode() {
+        return $this->values->get('mode', 'testing');
+    }
+
 
 
 // Vendor binary paths

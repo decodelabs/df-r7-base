@@ -18,47 +18,48 @@ class Manager implements arch\node\ITaskManager {
 
     protected $_captureBackground = false;
 
-    public function launch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null, $user=null) {
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-
+    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, $dfSource=false) {
         $request = arch\Request::factory($request);
         $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
+        $path .= df\Launchpad::$environmentId.'.php';
+        $args = ['task', $request];
+
+        if($dfSource) {
+            $args[] = '--df-source';
+        }
 
         if($this->_captureBackground && !$multiplexer) {
             $application = df\Launchpad::getApplication();
 
             if($application instanceof core\application\Task) {
                 $multiplexer = $application->getMultiplexer();
-                return halo\process\Base::launchScript($path, ['task', $request], $multiplexer, $user);
+                return halo\process\Base::launchScript($path, $args, $multiplexer, $user);
             }
         }
 
-        return halo\process\Base::launchScript($path, ['task', $request], $multiplexer, $user);
+        return halo\process\Base::launchScript($path, $args, $multiplexer, $user);
     }
 
-    public function launchBackground($request, $environmentMode=null, $user=null) {
+    public function launchBackground($request, $user=null, $dfSource=false) {
         $request = arch\Request::factory($request);
-
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-
         $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
+        $path .= df\Launchpad::$environmentId.'.php';
+        $args = ['task', $request];
+
+        if($dfSource) {
+            $args[] = '--df-source';
+        }
 
         if($this->_captureBackground) {
             $application = df\Launchpad::getApplication();
 
             if($application instanceof core\application\Task) {
                 $multiplexer = $application->getMultiplexer();
-                return halo\process\Base::launchScript($path, ['task', $request], $multiplexer, $user);
+                return halo\process\Base::launchScript($path, $args, $multiplexer, $user);
             }
         }
 
-        return halo\process\Base::launchBackgroundScript($path, ['task', $request], $user);
+        return halo\process\Base::launchBackgroundScript($path, $args, $user);
     }
 
     public function launchQuietly($request) {
@@ -88,9 +89,9 @@ class Manager implements arch\node\ITaskManager {
         return $node->io;
     }
 
-    public function initiateStream($request, $environmentMode=null) {
+    public function initiateStream($request) {
         $context = $this->_getActiveContext();
-        $token = $context->data->task->invoke->prepareTask($request, $environmentMode);
+        $token = $context->data->task->invoke->prepareTask($request);
 
         return $context->http->redirect(
             $context->uri->directoryRequest(
@@ -100,15 +101,11 @@ class Manager implements arch\node\ITaskManager {
         );
     }
 
-    public function queue($request, $priority='medium', $environmentMode=null) {
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-
+    public function queue($request, $priority='medium') {
         $context = $this->_getActiveContext();
         $queue = $context->data->task->queue->newRecord([
                 'request' => $request,
-                'environmentMode' => $environmentMode,
+                'environmentMode' => df\Launchpad::$environmentMode,
                 'priority' => $priority
             ])
             ->save();
@@ -116,14 +113,14 @@ class Manager implements arch\node\ITaskManager {
         return $queue['id'];
     }
 
-    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null) {
-        $id = $this->queue($request, 'medium', $environmentMode);
-        return self::launch('tasks/launch-queued?id='.$id, $multiplexer, $environmentMode);
+    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null) {
+        $id = $this->queue($request, 'medium');
+        return self::launch('tasks/launch-queued?id='.$id, $multiplexer);
     }
 
-    public function queueAndLaunchBackground($request, $environmentMode=null) {
-        $id = $this->queue($request, 'medium', $environmentMode);
-        return self::launchBackground('tasks/launch-queued?id='.$id, $environmentMode);
+    public function queueAndLaunchBackground($request) {
+        $id = $this->queue($request, 'medium');
+        return self::launchBackground('tasks/launch-queued?id='.$id);
     }
 
     public function getSharedIo() {

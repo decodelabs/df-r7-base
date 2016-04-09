@@ -13,15 +13,16 @@ class Launchpad {
     const REV = 'r7';
     const DF_PATH = __DIR__;
 
-    const IN_PHAR = false;
-    const IS_COMPILED = false;
-    const COMPILE_TIMESTAMP = null;
+    public static $isCompiled = false;
+    public static $compileTimestamp = null;
+
+    public static $rootPath = __DIR__;
 
     public static $applicationName;
     public static $applicationPath;
 
     public static $environmentId;
-    public static $isTesting = true;
+    public static $environmentMode = 'testing';
 
     public static $uniquePrefix;
     public static $passKey;
@@ -36,10 +37,10 @@ class Launchpad {
     private static $_isShutdown = false;
 
     public static function loadBaseClass($path) {
-        if(self::IS_COMPILED) {
-            $path = __DIR__.'/'.$path.'.php';
+        if(self::$isCompiled) {
+            $path = self::$rootPath.'/'.$path.'.php';
         } else {
-            $path = __DIR__.'/libraries/'.$path.'.php';
+            $path = self::$rootPath.'/libraries/'.$path.'.php';
         }
 
         require_once $path;
@@ -50,28 +51,23 @@ class Launchpad {
         $parts = explode('/', str_replace('\\', '/', realpath($_SERVER['SCRIPT_FILENAME'])));
         $environmentId = array_pop($parts);
 
-        if(substr($environmentId, -4) == '.php') {
-            $environmentId = substr($environmentId, 0, -4);
-        }
-
-        $envParts = explode('.', $environmentId, 2);
-        $environmentId = array_shift($envParts);
-        $isTesting = true;
-
-        if($environmentMode = array_shift($envParts)) {
-            $isTesting = $environmentMode != 'production';
-        }
-
         if(array_pop($parts) != 'entry') {
             throw new \Exception(
                 'Entry point does not appear to be valid'
             );
         }
 
-        return self::runAs($environmentId, $isTesting, implode('/', $parts));
+        if(substr($environmentId, -4) == '.php') {
+            $environmentId = substr($environmentId, 0, -4);
+        }
+
+        $envParts = explode('.', $environmentId, 2);
+        $environmentId = array_shift($envParts);
+
+        return self::runAs($environmentId, implode('/', $parts));
     }
 
-    public static function runAs($environmentId, $isTesting, $appPath) {
+    public static function runAs($environmentId, $appPath) {
         if(self::$startTime) {
             return;
         }
@@ -79,7 +75,6 @@ class Launchpad {
         self::$startTime = microtime(true);
         self::$applicationPath = $appPath;
         self::$environmentId = $environmentId;
-        self::$isTesting = (bool)$isTesting;
 
         // Set a few system defaults
         umask(0);
@@ -88,14 +83,21 @@ class Launchpad {
         mb_internal_encoding('UTF-8');
         chdir(self::$applicationPath.'/entry');
 
+        // Check for compiled version
+        $activePath = $appPath.'/data/local/run/Active.php';
+
+        if(file_exists($activePath) && (!$_SERVER['argc'] || !in_array('--df-source', $_SERVER['argv']))) {
+            require $activePath;
+        }
+
         // Load core library
         self::loadBaseClass('core/_manifest');
 
         // Register loader
-        if(self::IS_COMPILED) {
-            self::$loader = new core\Loader(['root' => dirname(self::DF_PATH)]);
+        if(self::$isCompiled) {
+            self::$loader = new core\Loader(['root' => dirname(self::$rootPath)]);
         } else {
-            self::$loader = new core\DevLoader(['root' => dirname(self::DF_PATH)]);
+            self::$loader = new core\DevLoader(['root' => dirname(self::$rootPath)]);
         }
 
         // Set error handlers
@@ -125,14 +127,19 @@ class Launchpad {
 
 
         // Load application / packages
-        $class = 'df\\core\\application\\'.$appType;
-        self::$application = new $class();
-        //self::benchmark();
-
         $envConfig = core\Environment::getInstance();
         self::$isDistributed = $envConfig->isDistributed();
 
-        if(!self::IS_COMPILED) {
+        if(!self::$isCompiled) {
+            self::$environmentMode = $envConfig->getMode();
+        }
+
+
+
+        $class = 'df\\core\\application\\'.$appType;
+        self::$application = new $class();
+
+        if(!self::$isCompiled) {
             self::$loader->registerLocations($envConfig->getActiveLocations());
         }
 
@@ -148,24 +155,25 @@ class Launchpad {
         self::shutdown();
     }
 
+    public static function getEnvironmentId() {
+        return self::$environmentId;
+    }
+
     public static function getEnvironmentMode() {
-        if(self::IS_COMPILED) {
-            return self::$isTesting ? 'testing' : 'production';
-        } else {
-            return 'development';
-        }
+        return self::$environmentMode;
     }
 
     public static function isDevelopment() {
-        return !self::IS_COMPILED;
+        return self::$environmentMode == 'development';
     }
 
     public static function isTesting() {
-        return self::$isTesting || !self::IS_COMPILED;
+        return self::$environmentMode == 'testing'
+            || self::$environmentMode == 'development';
     }
 
     public static function isProduction() {
-        return !self::$isTesting && self::IS_COMPILED;
+        return self::$environmentMode == 'production';
     }
 
 
@@ -256,10 +264,10 @@ class Launchpad {
     }
 
     public static function getBasePackagePath() {
-        if(self::IS_COMPILED) {
-            return self::DF_PATH;
+        if(self::$isCompiled) {
+            return self::$rootPath;
         } else {
-            return self::DF_PATH.'/libraries';
+            return self::$rootPath.'/libraries';
         }
     }
 

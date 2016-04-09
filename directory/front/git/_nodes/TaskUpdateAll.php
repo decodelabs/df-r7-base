@@ -15,6 +15,8 @@ use df\spur;
 class TaskUpdateAll extends arch\node\Task {
 
     public function execute() {
+        $this->ensureDfSource();
+
         $this->io->writeLine('Finding all package repositories...');
         $model = $this->data->getModel('package');
 
@@ -41,8 +43,10 @@ class TaskUpdateAll extends arch\node\Task {
 
         $this->io->writeLine('Done');
 
-        if(is_dir($this->application->getLocalStoragePath().'/run')) {
-            $this->runChild('application/build?testing=1', false);
+        if($this->application->isDevelopment()) {
+            $this->runChild('application/build?dev', false);
+        } else if($this->application->isTesting()) {
+            $this->runChild('application/build', false);
         }
     }
 }

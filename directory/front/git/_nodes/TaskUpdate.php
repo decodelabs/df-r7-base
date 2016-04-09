@@ -23,6 +23,8 @@ class TaskUpdate extends arch\node\Task {
     }
 
     public function execute() {
+        $this->ensureDfSource();
+
         $names = $this->request->query->packages->toArray();
 
         if($this->request->query->has('package')) {
@@ -52,10 +54,10 @@ class TaskUpdate extends arch\node\Task {
             }
         }
 
-        if(is_dir($this->application->getLocalStoragePath().'/run')) {
-            $this->runChild('application/build?testing=1', false);
-        } else {
-            $this->runChild('application/build-custom', false);
+        if($this->application->isDevelopment()) {
+            $this->runChild('application/build?dev', false);
+        } else if($this->application->isTesting()) {
+            $this->runChild('application/build', false);
         }
     }
 }

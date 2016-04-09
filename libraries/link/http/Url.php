@@ -90,8 +90,8 @@ class Url extends core\uri\Url implements IUrl {
                 $output->_query = $request->_query;
 
                 if(isset($output->_query->cts) && $output->_query->cts->getValue() == null) {
-                    if(df\Launchpad::COMPILE_TIMESTAMP) {
-                        $output->query->cts = df\Launchpad::COMPILE_TIMESTAMP;
+                    if(df\Launchpad::$compileTimestamp) {
+                        $output->query->cts = df\Launchpad::$compileTimestamp;
                     } else if(df\Launchpad::$application && df\Launchpad::$application->isDevelopment()) {
                         $output->query->cts = time();
                     }

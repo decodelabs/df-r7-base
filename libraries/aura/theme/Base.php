@@ -108,8 +108,8 @@ class Base implements ITheme, core\IDumpable {
             ->setDataAttribute('location', $request->getLiteralPathString())
             ->setDataAttribute('layout', $view->getLayout());
 
-        if(df\Launchpad::COMPILE_TIMESTAMP) {
-            $view->setData('cts', df\Launchpad::COMPILE_TIMESTAMP);
+        if(df\Launchpad::$compileTimestamp) {
+            $view->setData('cts', df\Launchpad::$compileTimestamp);
         } else if($view->context->application->isDevelopment()) {
             $view->setData('cts', time());
         }

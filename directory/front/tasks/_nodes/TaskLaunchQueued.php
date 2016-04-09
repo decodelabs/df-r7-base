@@ -28,13 +28,9 @@ class TaskLaunchQueued extends arch\node\Task {
             $this->request['id']
         );
 
-        if(!$environmentMode = $this->_entry['environmentMode']) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-
         $this->_log = $this->data->task->log->newRecord([
                 'request' => $this->_entry['request'],
-                'environmentMode' => $environmentMode
+                'environmentMode' => df\Launchpad::getEnvironmentMode()
             ])
             ->save();
 
@@ -45,7 +41,7 @@ class TaskLaunchQueued extends arch\node\Task {
         }
 
         $this->_timer = new core\time\Timer();
-        $this->task->launch($this->_entry['request'], $this->io, $this->_entry['environmentMode']);
+        $this->task->launch($this->_entry['request'], $this->io);
     }
 
     protected function _afterDispatch($output) {

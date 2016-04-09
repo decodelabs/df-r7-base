@@ -22,6 +22,8 @@ class TaskRefresh extends arch\node\Task {
     }
 
     public function execute() {
+        $this->ensureDfSource();
+
         $names = $this->request->query->packages->toArray();
 
         if($this->request->query->has('package')) {

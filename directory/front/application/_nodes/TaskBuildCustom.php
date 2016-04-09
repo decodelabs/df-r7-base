@@ -14,6 +14,8 @@ use df\halo;
 class TaskBuildCustom extends arch\node\Task {
 
     public function execute() {
+        $this->ensureDfSource();
+
         $this->io->writeLine('Running custom user build tasks...');
         $isRun = false;
 

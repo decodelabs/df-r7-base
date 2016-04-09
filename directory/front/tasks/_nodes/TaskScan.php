@@ -63,7 +63,6 @@ class TaskScan extends arch\node\Task {
 
             $schedules[$request] = [
                 'schedule' => $schedule,
-                'environmentMode' => $class::getScheduleEnvironmentMode(),
                 'priority' => $class::getSchedulePriority(),
                 'automatic' => $class::shouldScheduleAutomatically(),
                 'record' => null
@@ -124,7 +123,7 @@ class TaskScan extends arch\node\Task {
             } else {
                 $schedule = $this->data->task->schedule->newRecord([
                     'request' => $request,
-                    'environmentMode' => $set['environmentMode'],
+                    'environmentMode' => df\Launchpad::$environmentMode,
                     'priority' => $set['priority'],
                 ]);
             }

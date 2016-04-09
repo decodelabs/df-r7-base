@@ -25,28 +25,16 @@ class Unit extends axis\unit\table\Base {
             ->isNullable(true);
     }
 
-    public function prepareTask($request, $environmentMode=null, core\time\IDate $expiryDate=null) {
+    public function prepareTask($request, core\time\IDate $expiryDate=null) {
         $request = arch\Request::factory($request);
         $token = md5(uniqid('task', true));
         $parts = explode('://', (string)$request, 2);
-
-        switch(strtolower($environmentMode)) {
-            case 'production':
-            case 'testing':
-            case 'development':
-                $environmentMode = strtolower($environmentMode);
-                break;
-
-            default:
-                $environmentMode = null;
-                break;
-        }
 
         $invoke = $this->newRecord([
                 'token' => $token,
                 'expiryDate' => $expiryDate ?? '+1 minute',
                 'request' => array_pop($parts),
-                'environmentMode' => $environmentMode
+                'environmentMode' => df\Launchpad::$environmentMode
             ])
             ->save();
 

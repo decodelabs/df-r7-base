@@ -156,7 +156,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
             try {
                 $value = core\lang\Callback($renderer, $value, $this);
             } catch(\Exception $e) {
-                if(!df\Launchpad::$isTesting) {
+                if(!df\Launchpad::isTesting()) {
                     $value = new aura\html\ElementString('<span class="error">ERROR: '.$e->getMessage().'</span>');
                 } else {
                     throw $e;

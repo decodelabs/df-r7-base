@@ -235,17 +235,20 @@ interface IDirectory extends INode {
 
     public function getParent();
     public function getChild($name);
+    public function getExistingChild($name);
     public function deleteChild($name);
     public function createDir($path);
     public function hasDir($name);
     public function getDir($name);
+    public function getExistingDir($name);
     public function deleteDir($name);
     public function createFile($name, $content);
     public function newFile($name, $mode=Mode::READ_WRITE_NEW);
     public function hasFile($name);
     public function getFile($name);
+    public function getExistingFile($name);
     public function deleteFile($name);
-    
+
     public function emptyOut();
     public function mergeInto($destination);
 }

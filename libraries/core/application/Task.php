@@ -98,7 +98,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
         }
 
         $request = arch\Request::factory($request);
-        $this->_command = new core\cli\Command(df\Launchpad::$environmentId.'.'.df\Launchpad::getEnvironmentMode().'.php');
+        $this->_command = new core\cli\Command(df\Launchpad::$environmentId.'.php');
 
         if($args) {
             foreach($args as $arg) {

@@ -16,6 +16,8 @@ class TaskFixUi extends arch\node\Task {
     const GEOMETRY = '1914x1036+5+23 450 300';
 
     public function execute() {
+        $this->ensureDfSource();
+
         $this->io->write('Updating repositories...');
         $model = $this->data->getModel('package');
 

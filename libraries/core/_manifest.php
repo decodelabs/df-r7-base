@@ -240,8 +240,8 @@ class Package implements IPackage {
             $path = dirname($ref->getFileName());
         }
 
-        if(df\Launchpad::IS_COMPILED) {
-            $this->path = df\Launchpad::DF_PATH.'/apex/packages/'.$name;
+        if(df\Launchpad::$isCompiled) {
+            $this->path = df\Launchpad::$rootPath.'/apex/packages/'.$name;
         } else {
             $this->path = $path;
         }
@@ -274,7 +274,6 @@ interface IApplication {
     // Environment
     public function getEnvironmentId();
     public function getEnvironmentMode();
-    public function hasEnvironmentMode($mode);
     public function isDevelopment();
     public function isTesting();
     public function isProduction();
@@ -705,7 +704,7 @@ interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess {
 
 include __DIR__.'/Loader.php';
 
-if(!df\Launchpad::IS_COMPILED) {
+if(!df\Launchpad::$isCompiled) {
     include __DIR__.'/DevLoader.php';
 }
 

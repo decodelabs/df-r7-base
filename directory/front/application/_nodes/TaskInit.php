@@ -14,8 +14,10 @@ use df\arch;
 class TaskInit extends arch\node\Task {
 
     public function execute() {
+        $this->ensureDfSource();
+
         $this->io->writeLine('Initialising app...');
-        $this->runChild('application/generate-base-entry');
+        $this->runChild('application/generate-entry');
 
         $this->io->writeLine();
         $this->runChild('config/init');

@@ -63,7 +63,7 @@ class TaskQueueScheduled extends arch\node\Task {
                 'axis://task/Queue',
                 [
                     'request' => $task['request'],
-                    'environmentMode' => $task['environmentMode'],
+                    'environmentMode' => df\Launchpad::$environmentMode,
                     'priority' => $task['priority']
                 ]
             )

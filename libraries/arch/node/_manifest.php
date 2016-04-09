@@ -49,7 +49,6 @@ interface INode extends core\IContextAware, user\IAccessLock, arch\IResponseForc
 ##############################
 interface ITaskNode extends INode {
     public static function getSchedule();
-    public static function getScheduleEnvironmentMode();
     public static function getSchedulePriority();
     public static function shouldScheduleAutomatically();
 
@@ -57,22 +56,21 @@ interface ITaskNode extends INode {
     public function runChild($request, $incLevel=true);
     public function runChildQuietly($request);
 
-    public function ensureEnvironmentMode($mode);
-    public function promptEnvironmentMode($mode, $default=false);
+    public function ensureDfSource();
 }
 
 interface IBuildTaskNode extends ITaskNode {}
 
 
 interface ITaskManager extends core\IManager {
-    public function launch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null, $user=null);
-    public function launchBackground($request, $environmentMode=null, $user=null);
+    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, $dfSource=false);
+    public function launchBackground($request, $user=null, $dfSource=false);
     public function launchQuietly($request);
     public function invoke($request, core\io\IMultiplexer $io=null);
-    public function initiateStream($request, $environmentMode=null);
-    public function queue($request, $priority='medium', $environmentMode=null);
-    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null);
-    public function queueAndLaunchBackground($request, $environmentMode=null);
+    public function initiateStream($request);
+    public function queue($request, $priority='medium');
+    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null);
+    public function queueAndLaunchBackground($request);
     public function getSharedIo();
     public function shouldCaptureBackgroundTasks(bool $flag=null);
 }

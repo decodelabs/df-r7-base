@@ -117,7 +117,7 @@ class Bridge implements IBridge {
                 }
             }
         } else {
-            if($mtime < df\Launchpad::COMPILE_TIMESTAMP) {
+            if($mtime < df\Launchpad::$compileTimestamp) {
                 $this->compile();
             }
         }
@@ -290,8 +290,8 @@ class Bridge implements IBridge {
     protected function _replaceUrls($sass) {
         preg_match_all('/url\([\'\"]?([^\'\"\)]+)[\'\"]?\)/i', $sass, $matches);
 
-        if(df\Launchpad::COMPILE_TIMESTAMP) {
-            $cts = df\Launchpad::COMPILE_TIMESTAMP;
+        if(df\Launchpad::$compileTimestamp) {
+            $cts = df\Launchpad::$compileTimestamp;
         } else if($this->context->application->isDevelopment()) {
             $cts = time();
         } else {

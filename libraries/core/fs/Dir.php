@@ -33,7 +33,7 @@ class Dir implements IDirectory, core\IDumpable {
             if(substr($path, 0, $len = strlen($match)) == $match) {
                 $innerPath = substr(str_replace('\\', '/', $path), $len + 1);
 
-                if(df\Launchpad::IS_COMPILED && $key == 'root') {
+                if(df\Launchpad::$isCompiled && $key == 'root') {
                     $parts = explode('/', $innerPath);
                     array_shift($parts);
                     $innerPath = implode('/', $parts);
@@ -572,6 +572,14 @@ class Dir implements IDirectory, core\IDumpable {
         throw new RuntimeException('Child '.$name.' does not exist');
     }
 
+    public function getExistingChild($name) {
+        $output = $this->getChild($name);
+
+        if($output->exists()) {
+            return $output;
+        }
+    }
+
     public function deleteChild($name) {
         return $this->getChild($name)->unlink();
     }
@@ -586,6 +594,14 @@ class Dir implements IDirectory, core\IDumpable {
 
     public function getDir($name) {
         return new self($this->_path.'/'.ltrim($name, '/'));
+    }
+
+    public function getExistingDir($name) {
+        $output = $this->getDir($name);
+
+        if($output->exists()) {
+            return $output;
+        }
     }
 
     public function deleteDir($name) {
@@ -606,6 +622,14 @@ class Dir implements IDirectory, core\IDumpable {
 
     public function getFile($name) {
         return new File($this->_path.'/'.ltrim($name, '/'));
+    }
+
+    public function getExistingFile($name) {
+        $output = $this->getFile($name);
+
+        if($output->exists()) {
+            return $output;
+        }
     }
 
     public function deleteFile($name) {
