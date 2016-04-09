@@ -44,30 +44,10 @@ class TaskApcuClear extends arch\node\Task {
 
         if($isHttp) {
             $config = $this->getConfig('core/application/http/Config');
-            $baseUrls = [];
+            $mode = $this->application->getEnvironmentMode();
 
-            foreach(['development', 'testing', 'production'] as $mode) {
-                if(strlen($url = $config->getRootUrl($mode))) {
-                    $baseUrls[$mode] = $url;
-                }
-            }
-
-            $credentials = null;
-
-            /*
-            if(isset($baseUrls['production']) && substr($baseUrls['production'], 0, 11) != 'production.') {
-                $baseUrl = $baseUrls['production'];
-            } else
-            */
-            if(isset($baseUrls['testing']) && substr($baseUrls['testing'], 0, 8) != 'testing.') {
-                $baseUrl = $baseUrls['testing'];
-                $credentials = $config->getCredentials('testing');
-            } else if(isset($baseUrls['development'])) {
-                $baseUrl = $baseUrls['development'];
-                $credentials = $config->getCredentials('development');
-            } else {
-                $this->throwError(500, 'Cannot find a suitable base url in config');
-            }
+            $baseUrl = $config->getRootUrl($mode);
+            $credentials = $config->getCredentials($mode);
 
             $url = new link\http\Url('http://'.rtrim($baseUrl, '/').'/cache/apcu-clear.json');
             $url->query->import($this->request->query);
