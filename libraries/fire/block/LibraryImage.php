@@ -146,13 +146,15 @@ class LibraryImage extends Base {
 
         $url = $view->media->getImageUrl($this->_imageId, $transform);
 
-        $output = $view->html->image($url)
-            ->addClass('block')
-            ->setDataAttribute('type', $this->getName());
+        $output = $view->html->image($url);
 
         if($this->_link) {
             $output = $view->html->link($this->_link, $output);
         }
+
+        $output
+            ->addClass('block')
+            ->setDataAttribute('type', $this->getName());
 
         return $output;
     }
