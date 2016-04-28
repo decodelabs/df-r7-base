@@ -19,6 +19,7 @@ class LibraryImage extends Base {
     protected $_imageId;
     protected $_width;
     protected $_height;
+    protected $_link;
     protected $_storeDimensions = true;
 
     public function getFormat() {
@@ -74,6 +75,17 @@ class LibraryImage extends Base {
     }
 
 
+// Link
+    public function setLink(string $link=null) {
+        $this->_link = $link;
+        return $this;
+    }
+
+    public function getLink() {
+        return $this->_link;
+    }
+
+
 // IO
     public function isEmpty() {
         return empty($this->_imageId);
@@ -88,10 +100,9 @@ class LibraryImage extends Base {
             $this->_imageId = $reader->getAttribute('image');
         }
 
-        if($this->shouldStoreDimensions()) {
-            $this->setWidth($reader->getAttribute('width'));
-            $this->setHeight($reader->getAttribute('height'));
-        }
+        $this->setWidth($reader->getAttribute('width'));
+        $this->setHeight($reader->getAttribute('height'));
+        $this->setLink($reader->getAttribute('href'));
 
         return $this;
     }
@@ -109,6 +120,10 @@ class LibraryImage extends Base {
             if($this->_height) {
                 $writer->setAttribute('height', $this->_height);
             }
+        }
+
+        if($this->_link) {
+            $writer->setAttribute('href', $this->_link);
         }
 
         $this->_endWriterBlockElement($writer);
@@ -131,9 +146,16 @@ class LibraryImage extends Base {
 
         $url = $view->media->getImageUrl($this->_imageId, $transform);
 
-        return $view->html->image($url)
+        $output = $view->html->image($url)
             ->addClass('block')
             ->setDataAttribute('type', $this->getName());
+
+        if($this->_link) {
+            $output = $view->html->link($this->_link, $output);
+            core\dump($output);
+        }
+
+        return $output;
     }
 
     protected function _getDefaultTransformation() {

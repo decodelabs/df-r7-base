@@ -28,6 +28,8 @@ class LibraryImage extends Base {
             $this->values->width = $this->_block->getWidth();
             $this->values->height = $this->_block->getHeight();
         }
+
+        $this->values->link = $this->_block->getLink();
     }
 
     public function renderFieldContent(aura\html\widget\Field $field) {
@@ -46,6 +48,10 @@ class LibraryImage extends Base {
                 )
             );
         }
+
+        $field->addField($this->_('Link URL'))->push(
+            $this->html->textbox($this->fieldName('link'), $this->values->link)
+        );
 
         return $this;
     }
@@ -67,6 +73,9 @@ class LibraryImage extends Base {
                         ->setMin(1);
             })
 
+            // Link
+            ->addField('link', 'text')
+
             ->validate($this->values);
 
         if($this->_block->shouldStoreDimensions()) {
@@ -75,6 +84,7 @@ class LibraryImage extends Base {
         }
 
         $this->_block->setImageId($validator['image']);
+        $this->_block->setLink($validator['link']);
 
         return $this->_block;
     }
