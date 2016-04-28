@@ -142,12 +142,22 @@ abstract class Base implements IScaffold {
 
         $method = 'generate'.$name.'Component';
 
-        if(method_exists($this, $method)) {
-            return new arch\scaffold\component\Generic($this, $name, $args);
+        if(!method_exists($this, $method) && $origName !== $name) {
+            $method = 'generate'.$origName.'Component';
+            $activeName = $origName;
+        } else {
+            $activeName = $name;
         }
 
+        if(method_exists($this, $method)) {
+            return new arch\scaffold\component\Generic($this, $activeName, $args);
+        }
 
         $method = 'build'.$name.'Component';
+
+        if(!method_exists($this, $method) && $origName !== $name) {
+            $method = 'build'.$origName.'Component';
+        }
 
         if(method_exists($this, $method)) {
             $output = $this->{$method}($args);
