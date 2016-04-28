@@ -152,7 +152,6 @@ class LibraryImage extends Base {
 
         if($this->_link) {
             $output = $view->html->link($this->_link, $output);
-            core\dump($output);
         }
 
         return $output;
