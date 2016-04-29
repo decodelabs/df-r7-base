@@ -39,6 +39,10 @@ class TaskBuild extends arch\node\Task {
         $buildId = (string)flex\Guid::uuid1();
         $isDev = isset($this->request['dev']);
 
+        if(!$isDev && $this->application->isDevelopment()) {
+            $isDev = true;
+        }
+
         if($isDev) {
             $this->io->writeLine('Builder is running in dev mode, no build folder will be created');
             $this->io->writeLine();
