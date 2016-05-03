@@ -74,13 +74,17 @@ abstract class Base implements IJob {
         return $output;
     }
 
-    public function untangleDependencies(IQueue $queue) {
-        while(!empty($this->_dependencies)) {
-            $dependency = array_shift($this->_dependencies);
-            $dependency->untangle($queue, $this);
+    public function untangleDependencies(IQueue $queue): bool {
+        $output = false;
+
+        foreach($this->_dependencies as $id => $dependency) {
+            if($dependency->untangle($queue, $this)) {
+                $output = true;
+                unset($this->_dependencies[$id]);
+            }
         }
 
-        return $this;
+        return $output;
     }
 
     public function resolveDependenciesOn(IJob $job) {

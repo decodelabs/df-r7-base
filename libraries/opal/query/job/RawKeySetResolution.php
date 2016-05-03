@@ -18,8 +18,8 @@ class RawKeySetResolution implements mesh\job\IResolution {
         $this->_targetField = $targetField;
     }
 
-    public function untangle(mesh\job\IQueue $queue, mesh\job\IJob $subordinate, mesh\job\IJob $dependency) {
-        return;
+    public function untangle(mesh\job\IQueue $queue, mesh\job\IJob $subordinate, mesh\job\IJob $dependency): bool {
+        return false;
     }
 
     public function resolve(mesh\job\IJob $subordinate, mesh\job\IJob $dependency) {

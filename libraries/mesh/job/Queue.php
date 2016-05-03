@@ -311,13 +311,29 @@ class Queue implements IQueue {
 
         try {
             while(!empty($this->_jobs)) {
+                foreach($this->_jobs as $job) {
+                    if(!$job->hasDependencies()) {
+                        break;
+                    }
+
+                    if($job->untangleDependencies($this)) {
+                        $this->_sortJobs();
+                        continue 2;
+                    }
+                }
+
                 $job = array_shift($this->_jobs);
 
                 if(!$job) {
                     continue;
                 }
 
-                $job->untangleDependencies($this);
+                if($job->hasDependencies()) {
+                    throw new RuntimeException(
+                        'Unable to untable job dependencies'
+                    );
+                }
+
 
                 if($job instanceof IEventBroadcastingJob) {
                     $job->reportExecuteEvent($this);

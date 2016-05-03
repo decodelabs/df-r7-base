@@ -626,7 +626,7 @@ class BridgedManyRelationValueContainer implements
             if($recordJob) {
                 $bridgeJob->addDependency(
                     $recordJob,
-                    new opal\record\job\InsertResolution($bridgeLocalFieldName)
+                    new opal\record\job\BridgeResolution($bridgeLocalFieldName)
                 );
             }
 
@@ -660,10 +660,10 @@ class BridgedManyRelationValueContainer implements
             if($targetRecordJob) {
                 $bridgeJob->addDependency(
                     $targetRecordJob,
-                    new opal\record\job\InsertResolution($bridgeTargetFieldName)
+                    new opal\record\job\BridgeResolution($bridgeTargetFieldName)
                 );
-            }
 
+            }
 
             if($record instanceof opal\record\IPartial) {
                 $bridgeRecord->import($record->getValuesForStorage());

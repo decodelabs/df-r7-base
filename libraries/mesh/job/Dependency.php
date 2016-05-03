@@ -38,12 +38,12 @@ class Dependency implements IDependency {
     }
 
 
-    public function untangle(IQueue $queue, IJob $subordinate) {
+    public function untangle(IQueue $queue, IJob $subordinate): bool {
         if($this->_resolution) {
-            $this->_resolution->untangle($queue, $subordinate, $this->_requiredJob);
+            return $this->_resolution->untangle($queue, $subordinate, $this->_requiredJob);
         }
 
-        return $this;
+        return false;
     }
 
     public function resolve(IJob $subordinate) {

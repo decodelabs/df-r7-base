@@ -90,7 +90,7 @@ interface IJob {
     public function countDependencies(): int;
     public function hasDependencies(): bool;
     public function getDependencyScore(): float;
-    public function untangleDependencies(IQueue $queue);
+    public function untangleDependencies(IQueue $queue): bool;
     public function resolveDependenciesOn(IJob $job);
 
     public function addSubordinate(IJob $job);
@@ -129,11 +129,11 @@ interface IDependency {
     public function setResolution(IResolution $resolution=null);
     public function getResolution(); //: ?IResolution
 
-    public function untangle(IQueue $queue, IJob $subordinate);
+    public function untangle(IQueue $queue, IJob $subordinate): bool;
     public function resolve(IJob $subordinate);
 }
 
 interface IResolution {
-    public function untangle(IQueue $queue, IJob $subordinate, IJob $dependency);
+    public function untangle(IQueue $queue, IJob $subordinate, IJob $dependency): bool;
     public function resolve(IJob $subordinate, IJob $dependency);
 }
