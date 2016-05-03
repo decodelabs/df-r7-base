@@ -319,6 +319,7 @@ class Queue implements IQueue {
                     if($job->untangleDependencies($this)) {
                         $this->_sortJobs();
                         continue 2;
+                        //break;
                     }
                 }
 

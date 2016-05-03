@@ -43,7 +43,7 @@ class Dependency implements IDependency {
             return $this->_resolution->untangle($queue, $subordinate, $this->_requiredJob);
         }
 
-        return false;
+        return true;
     }
 
     public function resolve(IJob $subordinate) {

@@ -14,8 +14,7 @@ class InsertResolution implements mesh\job\IResolution {
 
     protected $_targetField;
     protected $_isForeign = false;
-
-    protected $_queue;
+    protected $_isUntangled = false;
 
     public function __construct(string $targetField, bool $isForeign=false) {
         $this->_targetField = $targetField;
@@ -23,6 +22,10 @@ class InsertResolution implements mesh\job\IResolution {
     }
 
     public function untangle(mesh\job\IQueue $queue, mesh\job\IJob $subordinate, mesh\job\IJob $dependency): bool {
+        if($this->_isUntangled) {
+            return false;
+        }
+
         /*
          * Need to create a new Update task for record in subordinate to fill in missing
          * id when this record is inserted, then save it to queue
@@ -30,9 +33,7 @@ class InsertResolution implements mesh\job\IResolution {
         $queue->after($dependency, new Update($subordinate->getRecord()), $this)
             ->addDependency($subordinate);
 
-        $this->_queue = $queue;
-
-        return true;
+        return $this->_isUntangled = true;
     }
 
     public function resolve(mesh\job\IJob $subordinate, mesh\job\IJob $dependency) {
