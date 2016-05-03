@@ -330,7 +330,7 @@ class Queue implements IQueue {
 
                 if($job->hasDependencies()) {
                     throw new RuntimeException(
-                        'Unable to untable job dependencies'
+                        'Unable to untangle job dependencies'
                     );
                 }
 
@@ -341,12 +341,12 @@ class Queue implements IQueue {
 
                 $job->execute();
 
-                if($job->resolveSubordinates()) {
-                    $this->_sortJobs();
-                }
-
                 if($job instanceof IEventBroadcastingJob) {
                     $job->reportPostEvent($this);
+                }
+
+                if($job->resolveSubordinates()) {
+                    $this->_sortJobs();
                 }
             }
         } catch(\Exception $e) {
