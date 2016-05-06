@@ -41,8 +41,10 @@ class File implements link\http\IUploadFile {
             $fileName;
 
         $this->_type = $data['type'];
+        $parts = explode('/', $this->_type, 2);
+        $top = array_pop($parts);
 
-        if($this->_type == 'application/octet-stream') {
+        if($top == 'octet-stream' || empty($top)) {
             $this->_type = core\fs\Type::extToMime($this->_extension);
         }
 
