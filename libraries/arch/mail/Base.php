@@ -23,12 +23,11 @@ abstract class Base extends aura\view\Mail implements IMail {
         $location = $context->extractDirectoryLocation($path);
         $parts = $location->getControllerParts();
         $parts[] = '_mail';
-        $parts[] = ucfirst(str_replace('/', '\\', $path));
+        $parts[] = str_replace('/', '\\', $path);
 
         $class = 'df\\apex\\directory\\'.$location->getArea().'\\'.implode('\\', $parts);
 
         if(!class_exists($class)) {
-            core\dump($class);
             throw new RuntimeException('Mail '.$origPath.' could not be found');
         }
 
