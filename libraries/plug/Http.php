@@ -223,7 +223,7 @@ class Http implements arch\IDirectoryHelper {
         return new link\http\response\Redirect($url);
     }
 
-    public function defaultRedirect($default=null, $success=true, $sectionReferrer=null) {
+    public function defaultRedirect($default=null, $success=true, $sectionReferrer=null, $fallback=null) {
         $request = $this->context->request;
 
         if($success) {
@@ -246,6 +246,10 @@ class Http implements arch\IDirectoryHelper {
 
         if($default !== null) {
             return $this->redirect($default);
+        }
+
+        if($fallback !== null) {
+            return $this->redirect($fallback);
         }
 
         if($sectionReferrer !== null) {

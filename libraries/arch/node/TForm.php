@@ -305,12 +305,13 @@ trait TForm {
     }
 
     protected function _getCompleteRedirect($default=null, $success=true) {
-        if($default === null) {
-            $default = $this->getDefaultRedirect();
-        }
-
         if($this->request->getType() == 'Html') {
-            return $this->http->defaultRedirect($default, $success, $this->_state->referrer);
+            return $this->http->defaultRedirect(
+                $default,
+                $success,
+                $this->_state->referrer ?? null,
+                $this->getDefaultRedirect()
+            );
         } else if($default) {
             return $this->http->redirect($default);
         }
