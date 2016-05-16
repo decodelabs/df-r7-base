@@ -304,7 +304,7 @@ class Uri implements arch\IDirectoryHelper {
         return $this->directory($this->backRequest($default, $success, $fallback));
     }
 
-    public function backRequest($default=null, $success=true, $fallback) {
+    public function backRequest($default=null, $success=true, $fallback=null) {
         $request = $this->context->request;
 
         if($success) {
