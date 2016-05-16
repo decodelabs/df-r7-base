@@ -300,19 +300,40 @@ class Uri implements arch\IDirectoryHelper {
 
 
 // Back
-    public function back($default=null, $success=true) {
-        return $this->directory($this->backRequest($default, $success));
+    public function back($default=null, $success=true, $fallback=null) {
+        return $this->directory($this->backRequest($default, $success, $fallback));
     }
 
-    public function backRequest($default=null, $success=true) {
+    public function backRequest($default=null, $success=true, $fallback) {
         $request = $this->context->request;
 
-        if($success && ($redirect = $request->getRedirectTo())) {
-            return $redirect;
-        } else if((!$success || ($success && !$request->getRedirectTo()))
-            && ($redirect = $request->getRedirectFrom())) {
-            return $redirect;
+        if($success) {
+            if(!$redirect = $request->getRedirectTo()) {
+                if($default !== null) {
+                    $redirect = $default;
+                } else {
+                    $redirect = $request->getRedirectFrom();
+                }
+            }
+
+
+            if($redirect) {
+                return $this->directoryRequest($redirect);
+            }
         }
+
+        if(!$success && ($redirect = $request->getRedirectFrom()) ){
+            return $this->directoryRequest($redirect);
+        }
+
+        if($default !== null) {
+            return $this->directoryRequest($default);
+        }
+
+        if($fallback !== null) {
+            return $this->directoryRequest($fallback);
+        }
+
 
         if($default === null) {
             $default = $request->getParent();
