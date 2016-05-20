@@ -28,7 +28,7 @@ class TypeKit extends Base {
         }
 
         $view
-            ->linkJs('http://use.typekit.net/'.$this->_kitId.'.js')
+            ->linkJs('//use.typekit.net/'.$this->_kitId.'.js')
             ->addScript('typekit', 'try{Typekit.load();}catch(e){}');
     }
 }
