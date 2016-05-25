@@ -19,6 +19,7 @@ class Dependency implements IDependency {
     public $js = [];
     public $css = [];
     public $shim;
+    public $map;
     public $installName;
 
     public function __construct($id, $data) {
@@ -76,6 +77,10 @@ class Dependency implements IDependency {
             }
         }
 
+        if(isset($data['map'])) {
+            $this->map = (array)$data['map'];
+        }
+
         if(isset($data['shim'])) {
             $this->shim = $data['shim'];
 
@@ -107,6 +112,10 @@ class Dependency implements IDependency {
 
     public function getShim() {
         return $this->shim;
+    }
+
+    public function getMap() {
+        return $this->map;
     }
 
     public function getKey() {

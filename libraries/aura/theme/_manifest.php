@@ -56,6 +56,7 @@ interface IDependency {
     public function getJs();
     public function getCss();
     public function getShim();
+    public function getMap();
     public function getKey();
     public function getPackage();
     public function getInstallName();
