@@ -288,7 +288,6 @@ class Bridge implements IBridge {
     }
 
     protected function _replaceUrls($sass) {
-        preg_match_all('/url\([\'\"]?([^\'\"\)]+)[\'\"]?\)/i', $sass, $matches);
 
         if(df\Launchpad::$compileTimestamp) {
             $cts = df\Launchpad::$compileTimestamp;
@@ -297,6 +296,8 @@ class Bridge implements IBridge {
         } else {
             $cts = null;
         }
+
+        preg_match_all('/url\([\'\"]?([^\'\"\)]+)[\'\"]?\)/i', $sass, $matches);
 
         if(!empty($matches[1])) {
             $urls = [];
@@ -314,6 +315,8 @@ class Bridge implements IBridge {
                 $sass = str_replace($match, 'url(\''.$url.'\')', $sass);
             }
         }
+
+        $sass = preg_replace('/(\?|\&)cts=([^0-9]?)/i', '$1cts='.$cts.'$2', $sass);
 
         return $sass;
     }
