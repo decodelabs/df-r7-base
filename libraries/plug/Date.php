@@ -36,4 +36,43 @@ class Date implements core\ISharedHelper {
     public function fromFormatString($date, $format, $timezone=true, $locale=null) {
         return core\time\Date::fromFormatString($date, $format, $timezone, $locale);
     }
+
+
+
+    public function getMonthList(int $startMonth=null) {
+        if($startMonth === null) {
+            $startMonth = 1;
+        }
+
+        $date = new core\time\Date($startMonth.'/1');
+        $output = [];
+
+        for($i = 0; $i < 12; $i++) {
+            $output[$date->format('n')] = $date->format('F');
+            $date->modify('+1 month');
+        }
+
+        return $output;
+    }
+
+    public function getYearList(int $startYear=null, int $length=null) {
+        if($startYear === null) {
+            $startYear = $this->now()->format('Y');
+        }
+
+        if($length === null) {
+            $length = 10;
+        }
+
+        $output = [];
+        $year = $startYear;
+
+        for($i = 0; $i < $length; $i++) {
+            $strYear = str_pad($year, 4, '0', \STR_PAD_LEFT);
+            $output[$strYear] = $strYear;
+            $year++;
+        }
+
+        return $output;
+    }
 }
