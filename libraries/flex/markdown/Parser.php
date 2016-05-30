@@ -789,10 +789,6 @@ class Parser implements flex\IHtmlProducer {
                     $inline->position = $markerPosition;
                 }
 
-                if(!is_int($inline->position)) {
-                    core\dump($inline, $markerPosition, $excerpt, $inlineType);
-                }
-
                 $unmarkedText = substr($text, 0, $inline->position);
                 $markup .= $this->_normalizeUnmarkedText($unmarkedText);
                 $markup .= $inline->markup ?? $this->_handleElement($inline->element);
