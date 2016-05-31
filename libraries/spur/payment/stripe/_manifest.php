@@ -300,12 +300,18 @@ interface IPlan extends IApiObjectRequest {
     public function setAmount($amount);
     public function getAmount();
     public function isLive();
+
     public function setInterval($quantity, $unit='month');
     public function getInterval();
     public function getIntervalQuantity();
     public function getIntervalUnit();
     public function setTrialPeriodDays($days);
     public function getTrialPeriodDays();
+
+    public function setMetadata(array $data=null);
+    public function getMetadata();
+    public function setStatementDescriptor(string $descriptor=null);
+    public function getStatementDescriptor();
 
     public function rename($newName);
     public function delete();

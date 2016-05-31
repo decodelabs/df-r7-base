@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -46,7 +46,7 @@ class Charge implements ICharge {
         $this->_isPaid = (bool)$data['paid'];
 
         if($data->has('failure_message')) {
-            $this->_failureException = new ApiDataError([
+            $this->_failureException = new ApiDataError($data['failure_message'], [
                 'message' => $data['failure_message'],
                 'type' => 'card_error',
                 'code' => $data['failure_code']

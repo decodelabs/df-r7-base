@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\mint;
-    
+
 class Plan implements IPlan, core\IDumpable {
 
     use TApiObjectRequest;
@@ -21,6 +21,8 @@ class Plan implements IPlan, core\IDumpable {
     protected $_intervalUnit = 'month';
     protected $_intervalQuantity = 1;
     protected $_trialPeriodDays;
+    protected $_metadata;
+    protected $_statementDescriptor;
 
     public function __construct(IMediator $mediator, core\collection\ITree $data=null) {
         $this->_mediator = $mediator;
@@ -33,6 +35,8 @@ class Plan implements IPlan, core\IDumpable {
             $this->setAmount(mint\Currency::fromIntegerAmount($data['amount'], $data['currency']));
             $this->setInterval($data['interval_count'], $data['interval']);
             $this->setTrialPeriodDays($data['trial_period_days']);
+            $this->_metadata = $data->metadata->toArray();
+            $this->_statementDescriptor = $data['statement_descriptor'];
         } else {
             $this->_submitAction = 'create';
         }
@@ -82,6 +86,7 @@ class Plan implements IPlan, core\IDumpable {
         $this->_intervalQuantity = (int)$quantity;
 
         switch($unit) {
+            case 'day':
             case 'week':
             case 'month':
             case 'year':
@@ -124,7 +129,28 @@ class Plan implements IPlan, core\IDumpable {
     }
 
 
-// Sumit
+// Meta
+    public function setMetadata(array $data=null) {
+        $this->_metadata = $data;
+        return $this;
+    }
+
+    public function getMetadata() {
+        return $this->_metadata;
+    }
+
+// Statement
+    public function setStatementDescriptor(string $descriptor=null) {
+        $this->_statementDescriptor = $descriptor;
+        return $this;
+    }
+
+    public function getStatementDescriptor() {
+        return $this->_statementDescriptor;
+    }
+
+
+// Submit
     public function getSubmitArray() {
         $output = [
             'id' => $this->_id,
@@ -132,7 +158,9 @@ class Plan implements IPlan, core\IDumpable {
             'amount' => $this->_amount->getIntegerAmount(),
             'currency' => $this->_amount->getCode(),
             'interval' => $this->_intervalUnit,
-            'interval_count' => $this->_intervalQuantity
+            'interval_count' => $this->_intervalQuantity,
+            'metadata' => $this->_metadata,
+            'statement_descriptor' => $this->_statementDescriptor
         ];
 
         if($this->_trialPeriodDays) {
@@ -176,7 +204,9 @@ class Plan implements IPlan, core\IDumpable {
             'amount' => $this->_amount,
             'isLive' => $this->_isLive,
             'interval' => $this->getInterval(),
-            'trialPeriod' => $this->_trialPeriodDays ? $this->_trialPeriodDays.' days' : null
+            'trialPeriod' => $this->_trialPeriodDays ? $this->_trialPeriodDays.' days' : null,
+            'statementDescriptor' => $this->_statementDescriptor,
+            'metadata' => $this->_metadata
         ];
     }
 }

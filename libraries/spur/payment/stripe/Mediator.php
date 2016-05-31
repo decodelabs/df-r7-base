@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -17,6 +17,7 @@ class Mediator implements IMediator, core\IDumpable {
     use spur\THttpMediator;
 
     const API_URL = 'https://api.stripe.com/v1/';
+    const VERSION = '2014-12-17';
 
     protected $_apiKey;
     protected $_activeUrl;
@@ -117,7 +118,7 @@ class Mediator implements IMediator, core\IDumpable {
             ];
         }
 
-        //$input['include[]'] = 'total_count';
+        $input['include[]'] = 'total_count';
 
         return $input;
     }
@@ -433,7 +434,7 @@ class Mediator implements IMediator, core\IDumpable {
         }
 
         $this->requestJson('delete', 'plans/'.$id);
-        return $this;        
+        return $this;
     }
 
     public function fetchPlanList($limit=10, $offset=0, $returnRaw=false) {
@@ -560,7 +561,8 @@ class Mediator implements IMediator, core\IDumpable {
 
     protected function _prepareRequest(link\http\IRequest $request) {
         $request->options->setSecureTransport('tls');
-        $request->getHeaders()->set('Authorization', 'Bearer '.$this->_apiKey);
+        $request->headers->set('Authorization', 'Bearer '.$this->_apiKey);
+        $request->headers->set('Stripe-Version', self::VERSION);
     }
 
     protected function _extractResponseError(link\http\IResponse $response) {
