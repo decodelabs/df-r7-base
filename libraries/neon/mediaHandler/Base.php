@@ -117,6 +117,10 @@ abstract class Base implements IMediaHandler {
     }
 
     protected function _getStorageKey($fileId) {
+        if(empty($fileId)) {
+            return null;
+        }
+
         $fileId = str_replace('-', '', (string)$fileId);
         $k1 = hexdec($fileId{0});
         $k2 = hexdec($fileId{1});
