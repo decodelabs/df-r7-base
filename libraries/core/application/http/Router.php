@@ -321,6 +321,14 @@ class Router_Map {
     public $mappedKey;
 
     public function __construct($area, $domain) {
+        if(is_int($area)) {
+            $area = '*';
+        }
+
+        if(substr($area, 0, 1) == '*') {
+            $area = '*';
+        }
+
         $this->area = ltrim($area, '~');
         $parts = explode('/', trim($domain, '/'));
         $this->domain = array_shift($parts);
