@@ -28,7 +28,7 @@ class Plan implements IPlan, core\IDumpable {
         $this->_mediator = $mediator;
 
         if($data) {
-            $this->_submitAction = 'rename';
+            $this->_submitAction = 'update';
             $this->_id = $data['id'];
             $this->_name = $data['name'];
             $this->_isLive = (bool)$data['livemode'];
@@ -179,6 +179,10 @@ class Plan implements IPlan, core\IDumpable {
             case 'rename':
                 $data = $this->_mediator->renamePlan($this->_id, $this->_name, true);
                 break;
+
+            case 'update':
+                $data = $this->_mediator->updatePlan($this, true);
+                break;
         }
 
         $this->__construct($this->_mediator, $data);
@@ -187,6 +191,12 @@ class Plan implements IPlan, core\IDumpable {
 
     public function rename($newName) {
         $data = $this->_mediator->renamePlan($this->_id, $newName, true);
+        $this->__construct($this->_mediator, $data);
+        return $this;
+    }
+
+    public function update() {
+        $data = $this->_mediator->updatePlan($this, true);
         $this->__construct($this->_mediator, $data);
         return $this;
     }

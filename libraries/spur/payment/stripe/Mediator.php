@@ -428,6 +428,21 @@ class Mediator implements IMediator, core\IDumpable {
         return new Plan($this, $data);
     }
 
+    public function updatePlan(IPlan $plan, $returnRaw=false) {
+        $data = $this->requestJson('post', 'plans/'.$plan->getId(). [
+            'name' => $plan->getName(),
+            'statement_descriptor' => $plan->getStatementDescriptor()
+        ]);
+
+        $plan->__construct($this, $data);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return $plan;
+    }
+
     public function deletePlan($id) {
         if($id instanceof IPlan) {
             $id = $id->getId();

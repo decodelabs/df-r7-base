@@ -75,6 +75,7 @@ interface IMediator extends spur\IHttpMediator {
     public function createPlan(IPlan $plan, $returnRaw=false);
     public function fetchPlan($id, $returnRaw=false);
     public function renamePlan($id, $newName, $returnRaw=false);
+    public function updatePlan(IPlan $plan, $returnRaw=false);
     public function deletePlan($id);
     public function fetchPlanList($limit=10, $offset=0, $returnRaw=false);
 
@@ -314,6 +315,7 @@ interface IPlan extends IApiObjectRequest {
     public function getStatementDescriptor();
 
     public function rename($newName);
+    public function update();
     public function delete();
 }
 
