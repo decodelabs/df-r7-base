@@ -20,7 +20,7 @@ class Plan implements IPlan, core\IDumpable {
     protected $_isLive = true;
     protected $_intervalUnit = 'month';
     protected $_intervalQuantity = 1;
-    protected $_trialPeriodDays;
+    protected $_trialPeriod;
     protected $_metadata;
     protected $_statementDescriptor;
 
@@ -34,7 +34,7 @@ class Plan implements IPlan, core\IDumpable {
             $this->_isLive = (bool)$data['livemode'];
             $this->setAmount(mint\Currency::fromIntegerAmount($data['amount'], $data['currency']));
             $this->setInterval($data['interval_count'], $data['interval']);
-            $this->setTrialPeriodDays($data['trial_period_days']);
+            $this->setTrialPeriod($data['trial_period_days']);
             $this->_metadata = $data->metadata->toArray();
             $this->_statementDescriptor = $data['statement_descriptor'];
         } else {
@@ -115,17 +115,17 @@ class Plan implements IPlan, core\IDumpable {
 
 
 // Trial
-    public function setTrialPeriodDays($days) {
+    public function setTrialPeriod($days) {
         if(!($days = (int)$days)) {
             $days = null;
         }
 
-        $this->_trialPeriodDays = $days;
+        $this->_trialPeriod = $days;
         return $this;
     }
 
-    public function getTrialPeriodDays() {
-        return $this->_trialPeriodDays;
+    public function getTrialPeriod() {
+        return $this->_trialPeriod;
     }
 
 
@@ -163,8 +163,8 @@ class Plan implements IPlan, core\IDumpable {
             'statement_descriptor' => $this->_statementDescriptor
         ];
 
-        if($this->_trialPeriodDays) {
-            $output['trial_period_days'] = $this->_trialPeriodDays;
+        if($this->_trialPeriod) {
+            $output['trial_period_days'] = $this->_trialPeriod;
         }
 
         return $output;
@@ -204,7 +204,7 @@ class Plan implements IPlan, core\IDumpable {
             'amount' => $this->_amount,
             'isLive' => $this->_isLive,
             'interval' => $this->getInterval(),
-            'trialPeriod' => $this->_trialPeriodDays ? $this->_trialPeriodDays.' days' : null,
+            'trialPeriod' => $this->_trialPeriod ? $this->_trialPeriod.' days' : null,
             'statementDescriptor' => $this->_statementDescriptor,
             'metadata' => $this->_metadata
         ];

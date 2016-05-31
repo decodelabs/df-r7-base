@@ -305,8 +305,8 @@ interface IPlan extends IApiObjectRequest {
     public function getInterval();
     public function getIntervalQuantity();
     public function getIntervalUnit();
-    public function setTrialPeriodDays($days);
-    public function getTrialPeriodDays();
+    public function setTrialPeriod($days);
+    public function getTrialPeriod();
 
     public function setMetadata(array $data=null);
     public function getMetadata();
