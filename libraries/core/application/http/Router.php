@@ -63,7 +63,10 @@ class Router implements core\IRegistryObject {
             $entry = new Router_Map($area, $domain);
 
             $this->_mapIn[$entry->getInDomain()] = $entry;
-            $this->_mapOut[$entry->area] = $entry;
+
+            if(!isset($this->_mapOut[$entry->area])) {
+                $this->_mapOut[$entry->area] = $entry;
+            }
         }
     }
 
