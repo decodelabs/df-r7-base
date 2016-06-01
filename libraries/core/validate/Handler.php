@@ -192,12 +192,10 @@ class Handler implements IHandler {
     }
 
     protected function _getActiveDataMap() {
-        if($this->_dataMap) {
-            $map = array_flip($this->_dataMap);
-        } else {
-            $map = [];
+        $map = $this->_dataMap;
 
-            foreach($this->_fields as $name => $field) {
+        foreach($this->_fields as $name => $field) {
+            if(!isset($map[$name])) {
                 $map[$name] = $name;
             }
         }
