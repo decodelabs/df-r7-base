@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\mint;
 use df\user;
-    
+
 class Customer implements ICustomer, core\IDumpable {
 
     use TMediatorProvider;
@@ -52,8 +52,9 @@ class Customer implements ICustomer, core\IDumpable {
             }
         }
 
-        if(!$data->subscription->isEmpty()) {
-            $this->_subscription = new Subscription($mediator, $data->subscription);
+        if(!$data->subscriptions->isEmpty()) {
+            $data->subscriptions->data->{0}->customer = $this->_id;
+            $this->_subscription = new Subscription($mediator, $data->subscriptions->data->{0});
         }
 
         foreach($data->cards->data as $row) {
@@ -131,7 +132,7 @@ class Customer implements ICustomer, core\IDumpable {
         $this->_coupon = null;
         $this->_discountStartDate = null;
         $this->_discountEndDate = null;
-        
+
         return $this;
     }
 

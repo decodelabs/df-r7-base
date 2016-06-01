@@ -344,6 +344,7 @@ interface ISubscriptionRequest extends IApiObjectRequest {
 
 
 interface ISubscription extends IMediatorProvider {
+    public function getId();
     public function getCustomerId();
     public function fetchCustomer();
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,11 +9,12 @@ use df;
 use df\core;
 use df\spur;
 use df\mint;
-    
+
 class Subscription implements ISubscription, core\IDumpable {
 
     use TMediatorProvider;
 
+    protected $_id;
     protected $_customerId;
     protected $_plan;
     protected $_cancelAtPeriodEnd = false;
@@ -30,6 +31,7 @@ class Subscription implements ISubscription, core\IDumpable {
     public function __construct(IMediator $mediator, core\collection\ITree $data) {
         $this->_mediator = $mediator;
 
+        $this->_id = $data['id'];
         $this->_customerId = $data['customer'];
         $this->_plan = new Plan($mediator, $data->plan);
         $this->_cancelAtPeriodEnd = (bool)$data['cancel_at_period_end'];
@@ -58,7 +60,12 @@ class Subscription implements ISubscription, core\IDumpable {
         }
     }
 
-// Customer
+
+// Ids
+    public function getId() {
+        return $this->_id;
+    }
+
     public function getCustomerId() {
         return $this->_customerId;
     }
@@ -160,6 +167,7 @@ class Subscription implements ISubscription, core\IDumpable {
     public function getDumpProperties() {
         $output = [
             'customerId' => $this->_customerId,
+            'plan' => $this->_plan,
             'cancelAtPeriodEnd' => $this->_cancelAtPeriodEnd,
             'status' => $this->_status,
             'quantity' => $this->_quantity,
