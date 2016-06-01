@@ -71,6 +71,8 @@ class Config extends core\Config {
             $output = $this->values->baseUrl[$environmentMode];
         } else if(isset($this->values->baseUrl->{$environmentMode}->{'*'})) {
             $output = $this->values->baseUrl->{$environmentMode}['*'];
+        } else if(isset($this->values->baseUrl->{$environmentMode}->{0})) {
+            $output = $this->values->baseUrl->{$environmentMode}[0];
         } else if(isset($this->values->baseUrl->{$environmentMode}->{'front'})) {
             $output = $this->values->baseUrl->{$environmentMode}['front'];
         }
