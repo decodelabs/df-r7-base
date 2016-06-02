@@ -157,7 +157,7 @@ class Subscription implements ISubscription, core\IDumpable {
 
 // Submit
     public function cancel($atPeriodEnd=false) {
-        $data = $this->_mediator->cancelSubscription($this->_customerId, $atPeriodEnd, true);
+        $data = $this->_mediator->cancelSubscription($this->_id, $atPeriodEnd, true);
         $this->__construct($this->_mediator, $data);
         return $this;
     }

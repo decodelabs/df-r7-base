@@ -486,7 +486,19 @@ class Mediator implements IMediator, core\IDumpable {
         return new Subscription($this, $data);
     }
 
-    public function cancelSubscription($customerId, $atPeriodEnd=false, $returnRaw=false) {
+    public function cancelSubscription($id, $atPeriodEnd=false, $returnRaw=false) {
+        $data = $this->requestJson('delete', 'subscriptions/'.$id, [
+            'at_period_end' => $atPeriodEnd ? 'true' : 'false'
+        ]);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Subscription($this, $data);
+    }
+
+    public function cancelCustomerSubscription($customerId, $atPeriodEnd=false, $returnRaw=false) {
         $data = $this->requestJson('delete', 'customers/'.$customerId.'/subscription', [
             'at_period_end' => $atPeriodEnd ? 'true' : 'false'
         ]);
