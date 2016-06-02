@@ -481,7 +481,7 @@ class Date implements IDate, core\IDumpable {
     }
 
     public function isPast() {
-        return $this->toTimestamp() < time();
+        return $this->toTimestamp() <= time();
     }
 
     public function isNearPast($hours=null) {
@@ -492,7 +492,7 @@ class Date implements IDate, core\IDumpable {
         $ts = $this->toTimestamp();
         $time = time();
 
-        return $ts < $time && $ts > $time - ($hours * 60);
+        return $ts <= $time && $ts > $time - ($hours * 60);
     }
 
     public function isFuture() {
