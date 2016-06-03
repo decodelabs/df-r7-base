@@ -19,7 +19,7 @@ class Handler implements IHandler {
     protected $_requireGroups = [];
     protected $_isValid = null;
     protected $_shouldSanitizeAll = true;
-    protected $_dataMap = null;
+    protected $_dataMap = [];
 
     public $data = null;
 
