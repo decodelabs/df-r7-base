@@ -42,6 +42,10 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         }
 
         $this->_groupsChanged = $this->hasChanged('groups');
+
+        if($this->hasChanged('status') && $this['status'] == user\IState::DEACTIVATED) {
+            $queue->emitEventAfter($job, $this, 'deactivate');
+        }
     }
 
     protected function onUpdate($queue, $job) {
