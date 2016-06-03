@@ -81,7 +81,7 @@ class Payment implements core\ISharedHelper {
         $creditCard = mint\CreditCard::fromArray($validator->getValues());
 
         if(!$creditCard->isValid()) {
-            $values->number->addError('invalid', $this->_(
+            $values->number->addError('invalid', $this->context->_(
                 'Card details invalid, please check and try again'
             ));
 
