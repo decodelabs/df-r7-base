@@ -476,6 +476,16 @@ class Mediator implements IMediator, core\IDumpable {
         return new SubscriptionRequest($this, $customerId, $planId, $card, $quantity);
     }
 
+    public function fetchSubscription($id, $returnRaw=false) {
+        $data = $this->requestJson('get', 'subscriptions/'.$id);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Subscription($this, $data);
+    }
+
     public function updateSubscription(ISubscriptionRequest $request, $returnRaw=false) {
         $data = $this->requestJson('post', 'customers/'.$request->getCustomerId().'/subscription', $request->getSubmitArray());
 

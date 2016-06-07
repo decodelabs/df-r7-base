@@ -82,6 +82,7 @@ interface IMediator extends spur\IHttpMediator {
 
 // Subscriptions
     public function newSubscriptionRequest($customerId, $planId, mint\ICreditCardReference $card=null, $quantity=1);
+    public function fetchSubscription($id, $returnRaw=false);
     public function updateSubscription(ISubscriptionRequest $request, $returnRaw=false);
     public function cancelSubscription($id, $atPeriodEnd=false, $returnRaw=false);
     public function cancelCustomerSubscription($customerId, $atPeriodEnd=false, $returnRaw=false);
