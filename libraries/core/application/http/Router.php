@@ -53,6 +53,14 @@ class Router implements core\IRegistryObject {
             $this->_defaultRouteProtocol = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
         }
 
+        if(isset($_SERVER['HTTP_X_ORIGINAL_HOST'])) {
+            $testHost = $_SERVER['HTTP_X_ORIGINAL_HOST'];
+        } else if(isset($_SERVER['HTTP_HOST'])) {
+            $testHost = $_SERVER['HTTP_HOST'];
+        } else {
+            $testHost = null;
+        }
+
         foreach($map as $area => $domain) {
             if($area === 'front') {
                 throw new core\RuntimeException(
@@ -64,7 +72,8 @@ class Router implements core\IRegistryObject {
 
             $this->_mapIn[$entry->getInDomain()] = $entry;
 
-            if(!isset($this->_mapOut[$entry->area])) {
+            if(!isset($this->_mapOut[$entry->area])
+            || ($testHost !== null && $testHost == $entry->domain)) {
                 $this->_mapOut[$entry->area] = $entry;
             }
         }
