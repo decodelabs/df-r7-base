@@ -114,7 +114,9 @@ class Url extends core\uri\Url implements IUrl {
             $url = 'http';
         }
 
-        if(isset($_SERVER['HTTP_HOST'])) {
+        if(isset($_SERVER['HTTP_X_ORIGINAL_HOST'])) {
+            $url .= '://'.$_SERVER['HTTP_X_ORIGINAL_HOST'].':'.$_SERVER['SERVER_PORT'];
+        } else if(isset($_SERVER['HTTP_HOST'])) {
             $url .= '://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'];
         } else {
             $url .= '://'.gethostname();
