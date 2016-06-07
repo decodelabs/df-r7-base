@@ -313,7 +313,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
 
 // JSON
-    public function jsonEncodeCollectionQuery(opal\query\IReadQuery $query, array $extraData=null, $rowSanitizer=null) {
+    public function jsonEncodeCollectionQuery(opal\query\IReadQuery $query, array $extraData=null, $rowSanitizer=null, int $flags=0) {
         if($extraData === null) {
             $extraData = [];
         }
@@ -330,11 +330,11 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
         $extraData['data'] = $data;
         $extraData['paginator'] = $query->getPaginator();
-        return flex\json\Codec::encode($extraData);
+        return flex\json\Codec::encode($extraData, $flags);
     }
 
-    public function jsonEncode($data) {
-        return flex\json\Codec::encode($data);
+    public function jsonEncode($data, int $flags=0) {
+        return flex\json\Codec::encode($data, $flags);
     }
 
     public function jsonDecode($data) {

@@ -11,13 +11,13 @@ use df\flex;
 use df\opal;
 
 class Codec {
-    
-    public static function encode($data) {
-        return json_encode(self::prepareJsonData($data));
+
+    public static function encode($data, int $flags=0) {
+        return json_encode(self::prepareJsonData($data), $flags);
     }
 
-    public static function encodeFile($path, $data) {
-        return core\fs\File::create($path, self::encode($data));
+    public static function encodeFile($path, $data, int $flags=0) {
+        return core\fs\File::create($path, self::encode($data, $flags));
     }
 
     public static function prepareJsonData($data) {
