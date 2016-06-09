@@ -238,11 +238,11 @@ class Curl_Handle {
 
 
         // Body data
-        $body = $this->request->getBodyDataFile();
         $size = null;
 
-        if($body !== null) {
+        if($this->request->hasBodyData()) {
             $size = $this->request->headers->get('content-length');
+            $body = $this->request->getBodyDataFile();
             $output[\CURLOPT_UPLOAD] = true;
 
             if($size !== null) {
