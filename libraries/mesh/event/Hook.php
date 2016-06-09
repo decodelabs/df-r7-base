@@ -14,8 +14,9 @@ abstract class Hook implements IHook {
 
     use core\TContextProxy;
 
+    const EVENTS = [];
+
     protected static $_enabled = true;
-    protected $_events = [];
 
     public static function getClassList() {
         $output = [];
@@ -179,6 +180,6 @@ abstract class Hook implements IHook {
     }
 
     public function getEventMap() {
-        return $this->_events;
+        return (array)static::EVENTS;
     }
 }
