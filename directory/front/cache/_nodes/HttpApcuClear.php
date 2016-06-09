@@ -27,7 +27,7 @@ class HttpApcuClear extends arch\node\Base {
 
         return $this->data->jsonEncode([
             'cleared' => $cleared,
-            'addr' => $_SERVER['REMOTE_ADDR'].' ('.$_SERVER['SERVER_ADDR'].')'
+            'addr' => $_SERVER['REMOTE_ADDR'].' => '.$_SERVER['SERVER_ADDR']
         ]);
     }
 }
