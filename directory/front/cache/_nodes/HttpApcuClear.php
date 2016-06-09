@@ -18,12 +18,12 @@ class HttpApcuClear extends arch\node\Base {
     const OPTIMIZE = true;
 
     public function executeAsJson() {
-        if($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {
+        //if($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {
             $cleared = $this->_clearApcu();
-        } else {
+        //} else {
             //$this->throwError(403, 'This action can only be triggered from localhost');
-            $cleared = null;
-        }
+            //$cleared = null;
+        //}
 
         return $this->data->jsonEncode([
             'cleared' => $cleared,
