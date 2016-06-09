@@ -69,6 +69,7 @@ class TaskApcuClear extends arch\node\Task {
                 $cleared = @$json['cleared'];
 
                 if($cleared === null) {
+                    core\dump($json);
                     $this->io->writeLine('APCU unable to pass IP check via '.@$json['addr']);
                 } else {
                     $this->io->writeLine('Cleared '.$cleared.' HTTP APCU entries via '.@$json['addr']);
