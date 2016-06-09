@@ -104,6 +104,13 @@ trait TChainable {
 }
 
 
+
+// Future
+interface IFuture extends core\IValueContainer {
+    public function __invoke();
+}
+
+
 // Promise
 interface IPromise {
 

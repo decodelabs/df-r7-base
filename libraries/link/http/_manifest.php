@@ -59,13 +59,13 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     // Post
     public function setPostData($post);
     public function getPostData();
-    public function getPostDataString();
     public function hasPostData();
 
     // Body
     public function setBodyData($data);
-    public function getBodyData();
-    public function getBodyDataString();
+    public function getRawBodyData();
+    public function getBodyDataString(): string;
+    public function getBodyDataFile(): core\fs\IFile;
     public function hasBodyData();
 
     // Cookies

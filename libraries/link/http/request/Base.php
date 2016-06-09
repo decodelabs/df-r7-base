@@ -126,7 +126,7 @@ class Base implements link\http\IRequest, core\IDumpable {
 
         $this->setUrl($url);
 
-        $this->_ip = core\lang\Promise::defer(function() {
+        $this->_ip = core\lang\Future::factory(function() {
             $ips = '';
 
             if(isset($_SERVER['REMOTE_ADDR'])) {
@@ -156,10 +156,11 @@ class Base implements link\http\IRequest, core\IDumpable {
             }
         });
 
+
         if($this->method === 'post') {
             $this->_bodyData = new core\fs\File('php://input');
 
-            $this->_postData = core\lang\Promise::defer(function() {
+            $this->_postData = core\lang\Future::factory(function() {
                 $payload = $this->getBodyDataString();
                 $usePost = true;
                 $output = null;
@@ -415,8 +416,8 @@ class Base implements link\http\IRequest, core\IDumpable {
     }
 
     public function getPostData() {
-        if($this->_postData instanceof core\lang\IPromise) {
-            $this->_postData = $this->_postData->sync();
+        if($this->_postData instanceof core\lang\IFuture) {
+            $this->_postData = $this->_postData->getValue();
         }
 
         if(!$this->_postData && $this->method === 'post') {
@@ -426,16 +427,12 @@ class Base implements link\http\IRequest, core\IDumpable {
         return $this->_postData;
     }
 
-    public function getPostDataString() {
-        core\stub($this->_postData);
-    }
-
     public function hasPostData() {
         return $this->_postData !== null;
     }
 
 
-// Put
+// Body
     public function setBodyData($body) {
         if(is_array($body)) {
             $body = implode("\r\n", $body);
@@ -453,11 +450,11 @@ class Base implements link\http\IRequest, core\IDumpable {
         return $this;
     }
 
-    public function getBodyData() {
+    public function getRawBodyData() {
         return $this->_bodyData;
     }
 
-    public function getBodyDataString() {
+    public function getBodyDataString(): string {
         if($this->_bodyData instanceof core\fs\IFile) {
             return $this->_bodyData->getContents();
         } else if($this->_bodyData instanceof core\io\IReader) {
@@ -465,6 +462,14 @@ class Base implements link\http\IRequest, core\IDumpable {
         } else {
             return (string)$this->_bodyData;
         }
+    }
+
+    public function getBodyDataFile(): core\fs\IFile {
+        if($this->_bodyData instanceof core\fs\IFile) {
+            return $this->_bodyData;
+        }
+
+        return new core\fs\MemoryFile($this->getBodyDataString(), $this->headers->get('content-type'));
     }
 
     public function hasBodyData() {
@@ -528,8 +533,8 @@ class Base implements link\http\IRequest, core\IDumpable {
     }
 
     public function getIp() {
-        if($this->_ip instanceof core\lang\IPromise) {
-            $this->_ip = $this->_ip->sync();
+        if($this->_ip instanceof core\lang\IFuture) {
+            $this->_ip = $this->_ip->getValue();
         }
 
         if($this->_ip === null) {
@@ -649,7 +654,7 @@ class Base implements link\http\IRequest, core\IDumpable {
         }
 
         if($this->_bodyData !== null) {
-            $output['body'] = $this->getBodyData();
+            $output['body'] = $this->_bodyData;
         }
 
         if(!$this->cookies->isEmpty()) {

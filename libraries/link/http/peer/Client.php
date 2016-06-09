@@ -174,13 +174,8 @@ class Client implements IClient, core\IDumpable {
             $session->writeBuffer = $request->getHeaderString();
             $session->writeBuffer .= "\r\n\r\n";
 
-            $body = $request->getBodyData();
-
-            if($body instanceof core\fs\IFile) {
-                $session->setWriteFileStream($fileStream = $body->open());
-            } else {
-                $session->setWriteFileStream($fileStream = new core\fs\MemoryFile((string)$body, $request->getHeaders()->get('Content-Type')));
-            }
+            $body = $request->getBodyDataFile();
+            $session->setWriteFileStream($fileStream = $body->open());
 
             $fileStream->seek(0);
             $session->setStore('isChunked', $request->getHeaders()->get('Transfer-Encoding') == 'chunked');

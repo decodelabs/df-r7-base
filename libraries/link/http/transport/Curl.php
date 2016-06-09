@@ -238,7 +238,7 @@ class Curl_Handle {
 
 
         // Body data
-        $body = $this->request->getBodyData();
+        $body = $this->request->getBodyDataFile();
         $size = null;
 
         if($body !== null) {
