@@ -74,16 +74,15 @@ class Delegate extends Base implements core\validate\IDelegateField {
 
         $value = $this->_sanitizeValue($value);
 
-        if(!$this->_delegate->isValid()) {
-            //$node->addError('delegate', 'Delegate did not complete');
-
-            if($this->_requireGroup !== null && !$this->validator->checkRequireGroup($this->_requireGroup)) {
-                $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
-            }
-        } else {
-            if($this->_requireGroup !== null) {
+        if($this->_requireGroup !== null) {
+            if($value === null || !$this->_delegate->isValid()) {
+                if(!$this->validator->checkRequireGroup($this->_requireGroup)) {
+                    $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
+                }
+            } else {
                 $this->validator->setRequireGroupFulfilled($this->_requireGroup);
             }
+
         }
 
         $this->isRequired($reqVal);

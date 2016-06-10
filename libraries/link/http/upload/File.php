@@ -261,8 +261,6 @@ class File implements link\http\IUploadFile {
             $inputNode->addError('uploadNotFound', $i18n->_(
                 'There was a problem finding the uploaded file in the temp location - please try again'
             ));
-
-            return $this;
         }
     }
 
