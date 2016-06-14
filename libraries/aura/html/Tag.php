@@ -86,6 +86,11 @@ class Tag implements ITag, core\IDumpable {
             $this->addClasses(...$classes);
         }
 
+        if(false !== strpos($name, '?')) {
+            $name = trim($name, '?');
+            $this->shouldRenderIfEmpty(false);
+        }
+
         $this->_name = $name;
         $this->_isClosable = !in_array($this->_name, self::CLOSED_TAGS);
 
