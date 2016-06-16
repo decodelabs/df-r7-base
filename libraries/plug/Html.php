@@ -477,7 +477,9 @@ class Html implements arch\IDirectoryHelper {
         }
 
         return $this->element('span.numeric', function() use($value, $unit) {
-            if(is_string($value) && (string)((float)$value) === $value) {
+            if(is_int($value)
+            || is_float($value)
+            || is_string($value) && (string)((float)$value) === $value) {
                 $value = $this->context->format->number($value);
             }
 
