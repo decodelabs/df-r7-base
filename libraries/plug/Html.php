@@ -239,6 +239,30 @@ class Html implements arch\IDirectoryHelper {
             ->addClass((bool)$value ? 'locked' : 'unlocked');
     }
 
+
+    public function diff($diff, $invert=false, $tag='sup') {
+        if($diff > 0) {
+            $arrow = '⬆';
+        } else if($diff < 0) {
+            $arrow = '⬇';
+        } else {
+            $arrow = '⬌';
+        }
+
+        $output = $this($tag, [
+            $arrow,
+            $this->number(abs($diff))
+        ]);
+
+        if($invert !== null) {
+            if($invert) $diff *= -1;
+            $output->addClass($diff < 0 ? 'negative' : 'positive');
+        }
+
+        return $output;
+    }
+
+
     public function basicLink($url, $body=null) {
         $url = $this->context->uri->__invoke($url);
 
