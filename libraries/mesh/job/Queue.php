@@ -82,6 +82,10 @@ class Queue implements IQueue {
         return $this->asap(...$args)->addDependency($job, $resolution);
     }
 
+    public function emitEvent($entity, $action, array $data=null, IJob $activeJob=null) {
+        mesh\Manager::getInstance()->emitEvent($entity, $action, $data, $this, $activeJob);
+    }
+
     public function emitEventAfter(IJob $job, $entity, $action, array $data=null): IJob {
         return $this->after($job, function() use($entity, $action, $data, $job) {
             mesh\Manager::getInstance()->emitEvent($entity, $action, $data, $this, $job);
