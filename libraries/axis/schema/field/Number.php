@@ -129,6 +129,12 @@ class Number extends Base implements
         $value1 = $this->sanitizeValue($value1);
         $value2 = $this->sanitizeValue($value2);
 
+        if($value1 === null) {
+            return $value2 === null;
+        } else if($value2 === null) {
+            return false;
+        }
+
         if($this->_byteSize || $this->_isFixedPoint || $this->_zerofill) {
             return $value1 === $value2;
         } else {
