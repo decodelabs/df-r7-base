@@ -252,7 +252,7 @@ class Html implements arch\IDirectoryHelper {
         $output = $this($tag, [
             $arrow,
             $this->number(abs($diff))
-        ]);
+        ])->addClass('w-diff');
 
         if($invert !== null) {
             if($invert) $diff *= -1;
