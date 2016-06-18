@@ -111,14 +111,13 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
         }
 
         if(!empty($this->_targetFields)) {
-            $output = [
-                'name' => $output,
-                'targetFields' => $this->_targetFields
-            ];
-        }
+            $targets = [];
 
-        if($this->_targetSourceAlias) {
-            $output['targetSourceAlias'] = $this->_targetSourceAlias;
+            foreach($this->_targetFields as $target) {
+                $targets[] = $target->getQualifiedName();
+            }
+
+            $output .= '['.implode(',', $targets).']';
         }
 
         return $output;
