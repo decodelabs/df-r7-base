@@ -1048,6 +1048,7 @@ interface ISearchController extends IField {
 interface IPaginator extends core\collection\IOrderablePaginator {
     public function setOrderableFields(...$fields);
     public function addOrderableFields(...$fields);
+    public function getOrderableFieldDirectives();
     public function getOrderableFields();
     //public function getOrderableFieldNames();
 

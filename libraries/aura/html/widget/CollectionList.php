@@ -12,11 +12,11 @@ use df\arch;
 
 class CollectionList extends Base implements IDataDrivenListWidget, IMappedListWidget, core\IDumpable {
 
-    const PRIMARY_TAG = 'div';
-
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
     use TWidget_RendererContextProvider;
+
+    const PRIMARY_TAG = 'div';
 
     public $paginator;
 
@@ -82,7 +82,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 
             if($pageData instanceof core\collection\IOrderablePaginator) {
                 $orderData = $pageData->getOrderDirectives();
-                $orderFields = $pageData->getOrderableFieldNames();
+                $orderFields = $pageData->getOrderableFieldDirectives();
 
                 if(empty($orderData) || empty($orderFields)) {
                     $orderData = null;
@@ -103,7 +103,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             foreach($field->getHeaderList() as $key => $label) {
                 $colClasses[$fieldKey][] = 'field-'.$key;
 
-                if($this->_showHeader && $orderData !== null && in_array($key, $orderFields)) {
+                if($this->_showHeader && $orderData !== null && isset($orderFields[$key])) {
                     $nullOrder = 'ascending';
                     $isNullable = null;
 
@@ -113,14 +113,10 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         $nullOrder = $orderData[$key]->getNullOrder();
                         $isActive = true;
                     } else {
-                        switch($key) {
-                            case 'relevance':
-                                $direction = 'DESC';
-                                break;
-
-                            default:
-                                $direction = 'ASC';
-                                break;
+                        if(isset($orderFields[$key])) {
+                            $direction = $orderFields[$key]->getDirection();
+                        } else {
+                            $direction = 'ASC';
                         }
 
                         $isActive = false;

@@ -29,12 +29,6 @@ class Paginator extends Base implements core\IDumpable {
 
         if(!$data instanceof core\collection\IPaginator) {
             $data = null;
-
-            /*
-            throw new InvalidArgumentException(
-                'Paginator requires an instance of core\\collection\\IPaginator'
-            );
-            */
         }
 
         $this->_pageData = $data;

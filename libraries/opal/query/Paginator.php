@@ -29,7 +29,7 @@ class Paginator implements IPaginator, core\IDumpable {
 
         if($query instanceof ICorrelatableQuery) {
             foreach($query->getCorrelations() as $name => $correlation) {
-                $this->_orderableFields[$correlation->getAlias()] = $correlation;
+                $this->_orderableFields[$correlation->getAlias()] = new OrderDirective($correlation, 'ASC');
             }
         }
     }
@@ -47,24 +47,39 @@ class Paginator implements IPaginator, core\IDumpable {
 
         foreach($fields as $key => $field) {
             $parts = explode(' as ', $field);
-            $field = $sourceManager->extrapolateField($source, array_shift($parts));
+            $field = array_shift($parts);
+            $key = trim(array_shift($parts));
 
-            if(!empty($parts)) {
-                $key = trim(array_shift($parts));
-            }
+            $parts = explode(' ', $field);
+            $field = array_shift($parts);
+            $direction = array_shift($parts);
 
-            if(!is_string($key)) {
+            $field = $sourceManager->extrapolateField($source, $field);
+
+            if(empty($key)) {
                 $key = $field->getAlias();
             }
 
-            $this->_orderableFields[$key] = $field;
+            $this->_orderableFields[$key] = new OrderDirective(
+                $field, $direction
+            );
         }
 
         return $this;
     }
 
-    public function getOrderableFields() {
+    public function getOrderableFieldDirectives() {
         return $this->_orderableFields;
+    }
+
+    public function getOrderableFields() {
+        $output = [];
+
+        foreach($this->_orderableFields as $key => $directive) {
+            $output[$key] = $directive->getField();
+        }
+
+        return $output;
     }
 
     public function getOrderableFieldNames() {
@@ -83,7 +98,7 @@ class Paginator implements IPaginator, core\IDumpable {
             $key = array_shift($parts);
 
             if(isset($this->_orderableFields[$key])) {
-                $field = $this->_orderableFields[$key];
+                $field = $this->_orderableFields[$key]->getField();
             } else {
                 $field = $sourceManager->extrapolateField($source, $key);
                 $key = $field->getAlias();
@@ -174,7 +189,7 @@ class Paginator implements IPaginator, core\IDumpable {
         if(empty($this->_order) && !empty($this->_orderableFields)) {
             // Set first orderable field as default
 
-            foreach($this->_orderableFields as $key => $field) {
+            foreach($this->_orderableFields as $key => $directive) {
                 $this->setDefaultOrder($key.' ASC');
                 break;
             }
@@ -192,7 +207,7 @@ class Paginator implements IPaginator, core\IDumpable {
             );
 
             $this->_order = array_merge([$search->getAlias() => $directive], $this->_order);
-            $this->addOrderableFields($search->getAlias());
+            $this->addOrderableFields($search->getAlias().' DESC');
         }
 
         if(!$data instanceof core\collection\ITree) {
@@ -243,7 +258,7 @@ class Paginator implements IPaginator, core\IDumpable {
                         $dir = trim(strtoupper($t[1]));
                     }
 
-                    $orderList[$key] = new OrderDirective($this->_orderableFields[$key], $dir);
+                    $orderList[$key] = new OrderDirective($this->_orderableFields[$key]->getField(), $dir);
                 }
             }
 
