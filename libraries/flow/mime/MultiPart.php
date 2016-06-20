@@ -168,7 +168,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
         return $output;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->getHeaderString().IPart::LINE_END.IPart::LINE_END;
         $output .= $this->getBodyString();
 

@@ -313,7 +313,7 @@ class SearchController implements ISearchController, core\IDumpable {
         return $this;
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->_phrase;
     }
 

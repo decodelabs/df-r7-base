@@ -96,7 +96,7 @@ trait TNode {
         return true;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->getPath();
 
         if($output === null) {

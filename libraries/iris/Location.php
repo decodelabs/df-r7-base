@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,9 +8,9 @@ namespace df\iris;
 use df;
 use df\core;
 use df\iris;
-    
+
 class Location implements ILocation, core\IStringProvider, core\IDumpable {
-    
+
     use TSourceUriProvider;
     use TLocation;
     use core\TStringProvider;
@@ -21,7 +21,7 @@ class Location implements ILocation, core\IStringProvider, core\IDumpable {
         $this->setColumn($column);
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->getSourceUri();
 
         if(empty($output)) {

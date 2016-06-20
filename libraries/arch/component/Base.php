@@ -106,8 +106,8 @@ abstract class Base implements arch\IComponent {
 
 
 // Renderable
-    public function toString() {
-        return $this->render();
+    public function toString(): string {
+        return (string)$this->render();
     }
 
     public function render() {

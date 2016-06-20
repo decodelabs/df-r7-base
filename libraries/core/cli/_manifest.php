@@ -33,7 +33,7 @@ interface IArgument extends core\IStringProvider {
     public function getClusterOptions();
 
     public function getValue();
-    public function hasValue();
+    public function hasValue(): bool;
 }
 
 interface IInspector extends \ArrayAccess {

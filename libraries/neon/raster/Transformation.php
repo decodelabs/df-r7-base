@@ -89,7 +89,7 @@ class Transformation implements ITransformation {
         }
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = '';
 
         foreach($this->_transformations as $callback) {

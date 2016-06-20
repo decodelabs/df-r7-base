@@ -74,7 +74,7 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
         core\stub($source);
     }
 
-    public function toString() {
+    public function toString(): string {
         return 'attach('.$this->getQualifiedName().')';
     }
 }

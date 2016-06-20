@@ -73,7 +73,11 @@ class Correlation implements opal\query\ICorrelationField, core\IDumpable {
         core\stub($source);
     }
 
-    public function toString() {
+    public function toString(): string {
+        return $this->getAlias().'()';
+    }
+
+    public function getDumpProperties() {
         return [$this->getAlias() => $this->_query];
     }
 }

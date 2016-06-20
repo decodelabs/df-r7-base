@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\neon;
 use df\aura;
-    
+
 class ColorStop implements IColorStop, core\IDumpable {
 
     use core\TStringProvider;
@@ -63,7 +63,7 @@ class ColorStop implements IColorStop, core\IDumpable {
         return $this->_size;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->_color->toCssString();
 
         if($this->_size !== null) {

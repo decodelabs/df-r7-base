@@ -129,7 +129,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return $this->formatArea($area);
     }
 
-    public function isArea($area) {
+    public function isArea($area): bool {
         return $this->getArea() == $this->formatArea($area);
     }
 
@@ -137,7 +137,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return static::DEFAULT_AREA;
     }
 
-    public function isDefaultArea() {
+    public function isDefaultArea(): bool {
         return $this->getArea() == static::DEFAULT_AREA;
     }
 
@@ -214,7 +214,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return $parts;
     }
 
-    public function isController($controller) {
+    public function isController($controller): bool {
         return $this->getController() == $this->formatController($controller);
     }
 
@@ -274,7 +274,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return $fileName;
     }
 
-    public function isNode($node) {
+    public function isNode($node): bool {
         return $this->getNode() == $this->formatNode($node);
     }
 
@@ -282,7 +282,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return static::DEFAULT_NODE;
     }
 
-    public function isDefaultNode() {
+    public function isDefaultNode(): bool {
         return $this->getNode() == static::DEFAULT_NODE;
     }
 
@@ -330,7 +330,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return $this->formatType($extension);
     }
 
-    public function isType($type) {
+    public function isType($type): bool {
         return $this->getType() == $this->formatType($type);
     }
 
@@ -338,7 +338,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return static::DEFAULT_TYPE;
     }
 
-    public function isDefaultType() {
+    public function isDefaultType(): bool {
         return $this->getType() == $this->getDefaultType();
     }
 
@@ -427,15 +427,15 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
 
 // Match
-    public function eq($request) {
+    public function eq($request): bool {
         return $this->_eq($request, true);
     }
 
-    public function pathEq($request) {
+    public function pathEq($request): bool {
         return $this->_eq($request, false);
     }
 
-    protected function _eq($request, $full) {
+    protected function _eq($request, $full): bool {
         $request = Request::factory($request);
 
         if($this->_scheme != $request->_scheme) {
@@ -464,15 +464,15 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
 
 
-    public function matches($request) {
+    public function matches($request): bool {
         return $this->_matches($request, true);
     }
 
-    public function matchesPath($request) {
+    public function matchesPath($request): bool {
         return $this->_matches($request, false);
     }
 
-    protected function _matches($request, $full) {
+    protected function _matches($request, $full): bool {
         $request = Request::factory($request);
 
         if($this->_scheme != $request->_scheme) {
@@ -511,15 +511,15 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
 
 
-    public function contains($request) {
+    public function contains($request): bool {
         return $this->_contains($request, true);
     }
 
-    public function containsPath($request) {
+    public function containsPath($request): bool {
         return $this->_contains($request, false);
     }
 
-    protected function _contains($request, $full) {
+    protected function _contains($request, $full): bool {
         $request = Request::factory($request);
 
         if($this->_scheme != $request->_scheme) {
@@ -554,11 +554,11 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
 
 
-    public function isWithin($request) {
+    public function isWithin($request): bool {
         return Request::factory($request)->contains($this);
     }
 
-    public function isPathWithin($request) {
+    public function isPathWithin($request): bool {
         return Request::factory($request)->containsPath($this);
     }
 
@@ -599,7 +599,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return implode('/', $this->getLiteralPathArray());
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = 'directory://'.implode('/', $this->getLiteralPathArray());
 
         if($this->_query && !$this->_query->isEmpty()) {

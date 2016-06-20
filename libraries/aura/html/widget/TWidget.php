@@ -57,7 +57,7 @@ trait TWidget {
         return $this->getTag()->isBlock();
     }
 
-    public function toString() {
+    public function toString(): string {
         return (string)$this->render();
     }
 }

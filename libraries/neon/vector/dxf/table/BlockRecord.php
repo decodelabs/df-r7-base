@@ -10,14 +10,14 @@ use df\core;
 use df\neon;
 
 class BlockRecord implements neon\vector\dxf\IBlockRecordTable {
-    
+
     use neon\vector\dxf\TTable;
 
     public function getType() {
         return 'BLOCK_RECORD';
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->_writeBaseString();
     }
 }

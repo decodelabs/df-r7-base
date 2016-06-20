@@ -101,7 +101,7 @@ class Text implements neon\vector\dxf\ITextEntity {
         return $this->_verticalJustification;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = sprintf(" 1\n%s\n", $this->_body);
         $output .= neon\vector\dxf\Document::_writePoint($this->_alignmentPoint1, 0);
         $output .= neon\vector\dxf\Document::_writePoint($this->_alignmentPoint2, 1);

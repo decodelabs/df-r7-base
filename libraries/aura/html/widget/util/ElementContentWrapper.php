@@ -59,11 +59,11 @@ class ElementContentWrapper implements aura\html\widget\IElementContentWrapper {
         return $this->_widget->render();
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return $this->_widget->__toString();
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->_widget->toString();
     }
 }

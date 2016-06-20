@@ -40,7 +40,7 @@ class Structure implements IStructureNode {
         return $this->_properties;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->_type;
 
         if($output === null) {

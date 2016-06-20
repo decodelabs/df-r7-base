@@ -615,7 +615,7 @@ class Base implements link\http\IRequest, core\IDumpable {
         return $this;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->getHeaderString()."\r\n\r\n";
 
         if($this->hasBodyData()) {

@@ -110,11 +110,11 @@ class OneChildRelationValueContainer implements
         return $default;
     }
 
-    public function hasValue() {
+    public function hasValue(): bool {
         return $this->_record !== false && $this->_record !== null;
     }
 
-    public function getStringValue($default='') {
+    public function getStringValue($default=''): string {
         return $this->__toString();
     }
 

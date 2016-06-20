@@ -94,7 +94,7 @@ class Expression implements opal\query\IExpressionField, core\IDumpable {
         core\stub($source);
     }
 
-    public function toString() {
+    public function toString(): string {
         return 'expression('.$this->getName().')';
     }
 }

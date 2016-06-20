@@ -368,7 +368,7 @@ trait TPostalAddress {
         return $this->_countryName;
     }
 
-    public function toString() {
+    public function toString(): string {
         $data = $this->toArray();
         $data['country'] = $this->getCountryName();
         $data['countryCode'] = null;

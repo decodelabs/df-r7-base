@@ -206,7 +206,7 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
     }
 
 // Strings
-    public function toString() {
+    public function toString(): string {
         $output = [];
 
         foreach($this->_set as $cookie) {

@@ -114,7 +114,7 @@ class Url extends core\uri\Url implements IUrl {
 
 
 // Strings
-    public function toString() {
+    public function toString(): string {
         if($this->isJustFragment()) {
             return $this->_getFragmentString();
         }

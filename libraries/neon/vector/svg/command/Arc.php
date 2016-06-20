@@ -104,7 +104,7 @@ class Arc extends Base implements neon\vector\svg\IArcCommand {
         return $this->_y;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->_isRelative ? 'a' : 'A';
         $output .= $this->_xRadius->toString().' ';
         $output .= $this->_yRadius->toString().' ';

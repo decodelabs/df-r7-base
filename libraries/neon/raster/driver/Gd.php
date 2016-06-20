@@ -132,7 +132,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function toString($quality) {
+    public function toString($quality): string {
         ob_start();
 
         try {

@@ -135,7 +135,7 @@ trait TElementContent {
         return $this->_parent;
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->getElementContentString();
     }
 
@@ -335,11 +335,11 @@ class ElementString implements IElementRepresentation, core\IDumpable {
         $this->_content = (string)$content;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return $this->_content;
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->_content;
     }
 

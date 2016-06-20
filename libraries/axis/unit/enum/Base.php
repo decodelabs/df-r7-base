@@ -174,11 +174,11 @@ class Base_Enum implements core\lang\IEnum {
         return $this->_labels[$this->_index];
     }
 
-    public function toString() {
-        return $this->_labels[$this->_index];
+    public function toString(): string {
+        return (string)$this->_labels[$this->_index];
     }
 
-    public function getStringValue($default='') {
+    public function getStringValue($default=''): string {
         return $this->_options[$this->_index];
     }
 

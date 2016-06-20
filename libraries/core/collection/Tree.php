@@ -372,7 +372,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return $this->_value;
     }
 
-    public function hasValue() {
+    public function hasValue(): bool {
         //return $this->_value !== null;
         return !empty($this->_value) || $this->_value === '0';
     }
@@ -395,13 +395,13 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return false;
     }
 
-    public function getStringValue($default='') {
+    public function getStringValue($default=''): string {
         return $this->_getStringValue($this->_value, $default);
     }
 
 
 // String provider
-    public function __toString() {
+    public function __toString(): string {
         try {
             return (string)$this->toString();
         } catch(\Exception $e) {
@@ -411,7 +411,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         }
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->getStringValue();
     }
 

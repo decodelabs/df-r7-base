@@ -157,7 +157,7 @@ class CacheControl implements link\http\ICacheControl {
         return $this->_sharedExpiration;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = [];
 
         if($this->_access !== null) {

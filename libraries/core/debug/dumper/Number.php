@@ -32,7 +32,7 @@ class Number implements INumberNode {
         return $this->_number;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = (string)$this->_number;
 
         if(is_float($this->_number)) {

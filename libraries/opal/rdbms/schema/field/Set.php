@@ -22,7 +22,7 @@ class Set extends Base implements
 
 
 // String
-    public function toString() {
+    public function toString(): string {
         $output = $this->_name.' '.strtoupper($this->_type).'('.flex\Delimited::implode($this->_options).')';
 
         if($this->_isNullable) {

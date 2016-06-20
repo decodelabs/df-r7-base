@@ -28,7 +28,7 @@ class Text implements IStringNode {
         return $this->_string;
     }
 
-    public function toString() {
+    public function toString(): string {
         return '"'.$this->_string.'"';
     }
 }

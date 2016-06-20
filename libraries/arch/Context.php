@@ -122,7 +122,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return $this->application->getContext();
     }
 
-    public function isDispatchContext() {
+    public function isDispatchContext(): bool {
         return $this->getDispatchContext() === $this;
     }
 

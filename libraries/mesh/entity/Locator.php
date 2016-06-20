@@ -27,7 +27,7 @@ class Locator implements ILocator, core\IDumpable {
         if($locator instanceof ILocatorProvider) {
             return $locator->getEntityLocator();
         }
-        
+
         return new self($locator);
     }
 
@@ -52,7 +52,7 @@ class Locator implements ILocator, core\IDumpable {
             $this->_scheme = array_shift($parts);
             $path = array_shift($parts);
         }
-        
+
         $this->_nodes = $this->_parseString((string)$path);
     }
 
@@ -63,17 +63,17 @@ class Locator implements ILocator, core\IDumpable {
         $length = strlen($path);
         $mode = 0;
         $part = '';
-        
+
         $output = [];
         $node = [
             'location' => [],
             'type' => null,
             'id' => null
         ];
-        
+
         for($i = 0; $i < $length; $i++) {
             $char = $path{$i};
-            
+
             switch($mode) {
                 // Location
                 case 0:
@@ -90,27 +90,27 @@ class Locator implements ILocator, core\IDumpable {
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
-                    
+
                     break;
-                    
+
                 // Entity type name
                 case 1:
                     if($char == ':') {
                         $node['type'] = ucfirst($part);
                         $part = '';
-                        
+
                         $mode = 2; // Id
                     } else if($char == '/') {
                         $node['type'] = ucfirst($part);
                         $part = '';
-                        
+
                         $output[] = $node;
                         $node = [
                             'location' => [],
                             'type' => null,
                             'id' => null
                         ];
-                        
+
                         $mode = 0; // Location
                     } else if(preg_match('/[a-zA-Z0-9-_]/', $char)) {
                         $part .= $char;
@@ -119,9 +119,9 @@ class Locator implements ILocator, core\IDumpable {
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
-                    
+
                     break;
-                    
+
                 // Entity id
                 case 2:
                     if($char == '"') {
@@ -130,7 +130,7 @@ class Locator implements ILocator, core\IDumpable {
                         $mode = 0; // Location
                         $node['id'] = $part;
                         $part = '';
-                        
+
                         $output[] = $node;
                         $node = [
                             'location' => [],
@@ -144,9 +144,9 @@ class Locator implements ILocator, core\IDumpable {
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
-                    
+
                     break;
-                    
+
                 // Entity id quote
                 case 3:
                     if($char == '\\') {
@@ -156,15 +156,15 @@ class Locator implements ILocator, core\IDumpable {
                     } else {
                         $part .= $char;
                     }
-                    
+
                     break;
-                    
+
                 // Entity id escape
                 case 4:
                     $part .= $char;
                     $mode = 3; // Quote
                     break;
-                    
+
                 // Entity id end quote
                 case 5:
                     if($char != '/') {
@@ -172,23 +172,23 @@ class Locator implements ILocator, core\IDumpable {
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
-                    
+
                     $mode = 0; // Location
                     $node['id'] = $part;
                     $part = '';
-                    
+
                     $output[] = $node;
                     $node = [
                         'location' => [],
                         'type' => null,
                         'id' => null
                     ];
-                    
+
                     break;
             }
-            
+
         }
-        
+
         if(empty($output)) {
             throw new InvalidArgumentException(
                 'No entity type definition detected in: '.$path
@@ -212,7 +212,7 @@ class Locator implements ILocator, core\IDumpable {
         $this->_scheme = $scheme;
         return $this;
     }
-    
+
     public function getScheme() {
         return $this->_scheme;
     }
@@ -261,10 +261,10 @@ class Locator implements ILocator, core\IDumpable {
 
     public function setNodeArray($index, array $node) {
         $index = (int)$index;
-        
+
         if($index < 0) {
             $index += count($this->_nodes);
-            
+
             if($index < 0) {
                 throw new InvalidArgumentException(
                     'Index is out of bounds'
@@ -334,7 +334,7 @@ class Locator implements ILocator, core\IDumpable {
         foreach($location as $part) {
             $this->_nodes[$index]['location'][] = $part;
         }
-        
+
         $this->_clearCache();
 
         return $this;
@@ -358,7 +358,7 @@ class Locator implements ILocator, core\IDumpable {
 
         return $this;
     }
-    
+
     public function getNodeType($index) {
         if(!$node = $this->getNode($index)) {
             return null;
@@ -508,10 +508,10 @@ class Locator implements ILocator, core\IDumpable {
 
     protected function _normalizeNodeIndex($index) {
         $index = (int)$index;
-        
+
         if($index < 0) {
             $index += count($this->_nodes);
-            
+
             if($index < 0) {
                 return null;
             }
@@ -598,8 +598,8 @@ class Locator implements ILocator, core\IDumpable {
     public function getId() {
         return $this->getLastNodeId();
     }
-        
-    public function toString() {
+
+    public function toString(): string {
         if($this->_string === null) {
             $nodes = [];
 
@@ -634,7 +634,7 @@ class Locator implements ILocator, core\IDumpable {
 
         return $this->_scheme.'://'.implode('/', $nodes);
     }
-    
+
     protected function _clearCache() {
         $this->_string = $this->_domainString = null;
     }

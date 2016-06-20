@@ -157,7 +157,7 @@ class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
 
 
 
-    public function toString() {
+    public function toString(): string {
         return implode(', ', $this->_addresses);
     }
 

@@ -96,7 +96,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function toString($quality) {
+    public function toString($quality): string {
         $this->_pointer->setImageFormat($this->_outputFormat);
         $this->_pointer->setCompressionQuality($quality);
 

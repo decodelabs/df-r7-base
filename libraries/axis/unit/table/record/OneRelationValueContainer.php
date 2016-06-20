@@ -125,7 +125,7 @@ class OneRelationValueContainer implements
         return $default;
     }
 
-    public function hasValue() {
+    public function hasValue(): bool {
         if($this->_record === null) {
             return false;
         } else if($this->_record !== false) {
@@ -137,7 +137,7 @@ class OneRelationValueContainer implements
         }
     }
 
-    public function getStringValue($default='') {
+    public function getStringValue($default=''): string {
         return $this->__toString();
     }
 
@@ -186,7 +186,7 @@ class OneRelationValueContainer implements
         return $this;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return (string)$this->getRawId();
     }
 

@@ -31,7 +31,7 @@ abstract class Transformer implements ITransformer {
         }
     }
 
-    public static function isNodeDeliverable(IContext $context) {
+    public static function isNodeDeliverable(IContext $context): bool {
         $transformer = self::factory($context);
 
         if(!$transformer) {

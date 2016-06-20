@@ -182,7 +182,7 @@ class Dn implements IDn, core\IDumpable {
     }
 
 
-    public function toString() {
+    public function toString(): string {
         return $this->implode(',');
     }
 

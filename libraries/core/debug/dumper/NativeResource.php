@@ -46,7 +46,7 @@ class NativeResource implements IResourceNode {
         return $this->toString();
     }
 
-    public function toString() {
+    public function toString(): string {
         return '* '.$this->_type.' '.$this->_name;
     }
 }

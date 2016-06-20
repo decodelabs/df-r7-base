@@ -18,7 +18,7 @@ class FloatingPoint extends Base implements opal\schema\IFloatingPointNumericFie
     }
 
 // String
-    public function toString() {
+    public function toString(): string {
         $output = $this->_name.' '.strtoupper($this->_type);
 
         if($this->_precision !== null) {

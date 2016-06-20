@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,7 +7,7 @@ namespace df\core\time;
 
 use df;
 use df\core;
-    
+
 class TimeOfDay implements ITimeOfDay, core\IDumpable {
 
     use core\TStringProvider;
@@ -89,7 +89,7 @@ class TimeOfDay implements ITimeOfDay, core\IDumpable {
         }
     }
 
-    public function toString() {
+    public function toString(): string {
         return sprintf('%02d:%02d:%02d', $this->_hours, $this->_minutes, $this->_seconds);
     }
 
@@ -191,7 +191,7 @@ class TimeOfDay implements ITimeOfDay, core\IDumpable {
     public function getAsHours() {
         return $this->_hours + ($this->_minutes / 60) + ($this->_seconds / 3600);
     }
-    
+
 
 
 // Dump

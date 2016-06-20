@@ -935,7 +935,7 @@ class Tree implements ITree, core\IDumpable {
     }
 
 // Output
-    public function toString() {
+    public function toString(): string {
         return $this->getComposedTextContent();
     }
 

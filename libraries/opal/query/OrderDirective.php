@@ -164,7 +164,7 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
         return $this->_nullOrder;
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->_field->getQualifiedName().' '.$this->getDirection();
     }
 

@@ -198,7 +198,7 @@ class Vertex implements neon\vector\dxf\IVertexEntity {
         return $this->_polyFaceIndices;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = neon\vector\dxf\Document::_writePoint($this->_point);
 
         if($this->_startWidth) {

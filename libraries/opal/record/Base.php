@@ -594,7 +594,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return $this->getPrimaryKeySet()->__toString();
     }
 

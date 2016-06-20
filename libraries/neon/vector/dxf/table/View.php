@@ -10,13 +10,13 @@ use df\core;
 use df\neon;
 
 class View implements neon\vector\dxf\IViewTable {
-    
+
     use neon\vector\dxf\TTable;
     use neon\vector\dxf\TViewControlTable;
 
     protected $_width = 1;
     protected $_height = 1;
-    
+
 
     public function __construct($name) {
         $this->setName($name);
@@ -48,9 +48,9 @@ class View implements neon\vector\dxf\IViewTable {
     }
 
 
-    public function toString() {
+    public function toString(): string {
         $output = sprintf(
-            " 40\n%F\n 41\n%F\n", 
+            " 40\n%F\n 41\n%F\n",
             $this->_height,
             $this->_width
         );

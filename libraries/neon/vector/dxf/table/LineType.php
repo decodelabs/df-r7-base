@@ -104,7 +104,7 @@ class LineType implements neon\vector\dxf\ILineTypeTable {
     }
 
 
-    public function toString() {
+    public function toString(): string {
         $output = '';
 
         if($this->_description !== null) {
@@ -249,7 +249,7 @@ class LineType_Element implements neon\vector\dxf\ILineTypeTableElement {
         return $this->_offset;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = sprintf(" 49\n%F\n", $this->_length);
         $flags = 0;
 

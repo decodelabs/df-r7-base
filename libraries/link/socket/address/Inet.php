@@ -10,37 +10,37 @@ use df\core;
 use df\link;
 
 class Inet extends Base implements IInetAddress, core\IDumpable {
-    
+
     use core\uri\TUrl_IpContainer;
     use core\uri\TUrl_PortContainer;
-    
-    
+
+
     public static function factory($address) {
         if($address instanceof IInetAddress) {
             return $address;
         }
-        
+
         return new self($address);
     }
-    
+
     public function import($address='') {
         if($address !== null) {
             $this->reset();
         }
-        
+
         if($address == '' || $address === null) {
             return $this;
         }
-        
+
         if($address instanceof IInetAddress) {
             $this->_scheme = $address->_scheme;
             $this->_ip = $address->_ip;
             $this->_port = $address->_ip;
-            
+
             return $this;
         }
-        
-        
+
+
         $parts = explode('://', $address, 2);
 
         if(false !== strpos($address, '.')
@@ -57,12 +57,12 @@ class Inet extends Base implements IInetAddress, core\IDumpable {
         }
 
         $this->setScheme($scheme);
-        
+
         if(isset($address{0}) && $address{0} == '[') {
             // V6
             $parts = explode(']', substr($address, 1), 2);
             $this->setIp(array_shift($parts));
-            
+
             if(isset($parts[0])) {
                 $this->setPort(substr(array_shift($parts), 1));
             }
@@ -79,7 +79,7 @@ class Inet extends Base implements IInetAddress, core\IDumpable {
             }
 
             $this->setIp($ip);
-            
+
             if(isset($parts[0])) {
                 $this->setPort(array_shift($parts));
             }
@@ -88,54 +88,54 @@ class Inet extends Base implements IInetAddress, core\IDumpable {
                 $this->_ip->convertToV6();
             }
         }
-        
+
         return $this;
     }
-    
+
     public function reset() {
         $this->_resetScheme();
         $this->_resetIp();
         $this->_resetPort();
-        
+
         return $this;
     }
-    
-    
+
+
     public function __get($member) {
         switch($member) {
             case 'scheme':
                 return $this->getScheme();
-                
+
             case 'ip':
                 return $this->getIp();
-                
+
             case 'port':
                 return $this->getPort();
         }
     }
-    
+
     public function __set($member, $value) {
         switch($member) {
             case 'scheme':
                 return $this->setScheme($value);
-                
+
             case 'ip':
                 return $this->setIp($value);
-                
+
             case 'port':
                 return $this->setPort($value);
         }
     }
-    
-    
+
+
 // Scheme
     public function setScheme($scheme) {
         if(!strlen($scheme)) {
             $scheme = 'tcp';
         }
-        
+
         $scheme = strtolower($scheme);
-        
+
         switch($scheme) {
             case 'udp':
             case 'tcp':
@@ -150,22 +150,22 @@ class Inet extends Base implements IInetAddress, core\IDumpable {
                 $this->_scheme = 'tcp';
                 $this->setSecureTransport($scheme);
                 break;
-                
+
             default:
                 if(false == getprotobyname($scheme)) {
                     throw new link\socket\InvalidArgumentException(
                         'Protocol '.$scheme.' is not currently supported'
                     );
                 }
-                
+
                 $this->_scheme = $scheme;
                 break;
         }
-        
+
         return $this;
     }
-    
-    
+
+
 // Type
     public function getSocketDomain() {
         if($this->getIp()->isV6()) {
@@ -174,7 +174,7 @@ class Inet extends Base implements IInetAddress, core\IDumpable {
             return 'inet';
         }
     }
-    
+
     public function getDefaultSocketType() {
         if($this->_protocol == 'tcp') {
             return 'stream';
@@ -185,10 +185,10 @@ class Inet extends Base implements IInetAddress, core\IDumpable {
         }
     }
 
-    
-    
+
+
 // Strings
-    public function toString($scheme=null) {
+    public function toString($scheme=null): string {
         if($scheme === null) {
             $scheme = $this->_scheme;
 
@@ -200,11 +200,11 @@ class Inet extends Base implements IInetAddress, core\IDumpable {
                 $scheme = $this->_secureTransport;
             }
         }
-        
+
         $output = $scheme.'://';
         $output .= $this->_getIpString();
         $output .= $this->_getPortString();
-        
+
         return $output;
     }
 

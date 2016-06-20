@@ -120,7 +120,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy {
         return $this;
     }
 
-    public function isFieldVisible($key) {
+    public function isFieldVisible($key): bool {
         return isset($this->_fields[$key])
             && $this->_fields[$key] !== false;
     }

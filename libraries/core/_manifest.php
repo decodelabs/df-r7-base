@@ -22,17 +22,17 @@ class HelperNotFoundException extends RuntimeException {}
 
 // String provider
 interface IStringProvider {
-    public function toString();
-    public function __toString();
+    public function toString(): string;
+    public function __toString(): string;
 }
 
 interface IStringValueProvider {
-    public function getStringValue($default='');
+    public function getStringValue($default=''): string;
 }
 
 trait TStringProvider {
 
-    public function __toString() {
+    public function __toString(): string {
         try {
             return (string)$this->toString();
         } catch(\Exception $e) {
@@ -47,7 +47,7 @@ trait TStringProvider {
 
 trait TStringValueProvider {
 
-    protected function _getStringValue($value, $default='') {
+    protected function _getStringValue($value, $default=''): string {
         if($value instanceof IStringValueProvider) {
             $value = $value->getStringValue($default);
         }
@@ -155,22 +155,22 @@ interface IValueContainer {
 }
 
 interface IUserValueContainer extends IValueContainer, IStringValueProvider {
-    public function hasValue();
+    public function hasValue(): bool;
 }
 
 trait TUserValueContainer {
 
-    public function getStringValue($default='') {
+    public function getStringValue($default=''): string {
         $value = $this->getValue();
 
         if($value !== null) {
             return (string)$value;
         }
 
-        return $default;
+        return (string)$default;
     }
 
-    public function hasValue() {
+    public function hasValue(): bool {
         return $this->getValue() !== null;
     }
 }
@@ -274,9 +274,9 @@ interface IApplication {
     // Environment
     public function getEnvironmentId();
     public function getEnvironmentMode();
-    public function isDevelopment();
-    public function isTesting();
-    public function isProduction();
+    public function isDevelopment(): bool;
+    public function isTesting(): bool;
+    public function isProduction(): bool;
     public function getRunMode();
     public function isDistributed();
 

@@ -250,7 +250,7 @@ class Cookie implements ICookie {
     }
 
 // String
-    public function toString() {
+    public function toString(): string {
         $output = $this->_name.'='.urlencode($this->_value);
 
         if($this->_expiryDate) {

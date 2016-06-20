@@ -74,7 +74,7 @@ abstract class Delegate implements IDelegateDecorator {
     }
 
 
-    final public function isRenderingInline() {
+    final public function isRenderingInline(): bool {
         return $this->delegate->isRenderingInline();
     }
 

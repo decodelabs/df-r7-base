@@ -169,7 +169,7 @@ class FileSize implements IFileSize, core\IDumpable {
         return $output;
     }
 
-    public function toString() {
+    public function toString(): string {
         $unit = $this->_unit;
         $value = $this->_value;
 

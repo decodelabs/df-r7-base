@@ -10,14 +10,14 @@ use df\core;
 use df\neon;
 
 class AppId implements neon\vector\dxf\IAppIdTable {
-    
-    use neon\vector\dxf\TTable;   
+
+    use neon\vector\dxf\TTable;
 
     public function getType() {
         return 'APPID';
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->_writeBaseString('');
-    } 
+    }
 }

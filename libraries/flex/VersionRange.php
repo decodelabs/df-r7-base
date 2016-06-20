@@ -202,7 +202,7 @@ class VersionRange implements IVersionRange, core\IDumpable {
 
 
 // String
-    public function toString() {
+    public function toString(): string {
         $output = [];
 
         foreach($this->_groups as $group) {

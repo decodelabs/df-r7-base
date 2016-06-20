@@ -246,7 +246,7 @@ class Guid implements IGuid, core\IDumpable {
         return (hexdec($time) - self::INTERVAL) / 1000000;
     }
 
-    public function toString() {
+    public function toString(): string {
         return bin2hex(substr($this->_bytes, 0, 4)).'-'.
                bin2hex(substr($this->_bytes, 4, 2)).'-'.
                bin2hex(substr($this->_bytes, 6, 2)).'-'.

@@ -205,7 +205,7 @@ class Viewport implements neon\vector\dxf\IViewportTable {
     }
 
 
-    public function toString() {
+    public function toString(): string {
         $output = '';
 
         $output .= neon\vector\dxf\Document::_writePoint($this->_lowerLeft, 0, [0, 0]);

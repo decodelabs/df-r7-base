@@ -77,7 +77,7 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
     }
 
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->getQualifiedName();
         $mute = [];
 

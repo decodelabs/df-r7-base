@@ -292,7 +292,7 @@ class Document implements IDocument {
     }
 
 // String
-    public function toString() {
+    public function toString(): string {
         $output = '';
 
         // Comments

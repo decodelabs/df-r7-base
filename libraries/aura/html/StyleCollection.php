@@ -58,7 +58,7 @@ class StyleCollection implements IStyleCollection, core\IDumpable {
         }
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = [];
 
         foreach($this->_collection as $key => $value) {

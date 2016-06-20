@@ -67,7 +67,7 @@ class Rdn implements IRdn, core\IDumpable {
         return $default;
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->implode();
     }
 

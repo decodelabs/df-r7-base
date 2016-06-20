@@ -88,7 +88,7 @@ interface IImage extends IImageManipulationController, IImageFilterController {
 
     public function saveTo($savePath, $quality=100);
     public function save($quality=100);
-    public function toString($quality=100);
+    public function toString($quality=100): string;
 }
 
 
@@ -112,7 +112,7 @@ interface IDriver {
     public function getOutputFormat();
 
     public function saveTo($savePath, $quality);
-    public function toString($quality);
+    public function toString($quality): string;
 }
 
 interface IImageManipulationDriver extends IDriver {

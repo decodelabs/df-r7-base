@@ -67,7 +67,7 @@ class Combine implements opal\query\ICombineField, core\IDumpable {
     }
 
 
-    public function toString() {
+    public function toString(): string {
         return 'combine('.$this->getQualifiedName().', ['.implode(', ', array_keys($this->_combine->getFields())).'])';
     }
 }

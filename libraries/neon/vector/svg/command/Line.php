@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\neon\vector\svg\command;
 use df;
 use df\core;
 use df\neon;
-    
+
 class Line extends Base implements neon\vector\svg\ILineCommand {
 
     protected $_x;
@@ -40,7 +40,7 @@ class Line extends Base implements neon\vector\svg\ILineCommand {
         return $this->_y;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->_isRelative ? 'l' : 'L';
         $output .= $this->_x->toString().' ';
         $output .= $this->_y->toString();

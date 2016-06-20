@@ -361,7 +361,7 @@ class Version implements IVersion, core\IDumpable {
 
 
 // String
-    public function toString() {
+    public function toString(): string {
         $output = sprintf(
             '%d.%d.%d',
             $this->major,
@@ -422,7 +422,7 @@ class Version_Comparator extends Version {
         }
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->operator.' '.parent::toString();
     }
 }

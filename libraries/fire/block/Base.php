@@ -108,8 +108,8 @@ abstract class Base implements IBlock {
         return (array)static::DEFAULT_CATEGORIES;
     }
 
-    public function toString() {
-        return $this->render();
+    public function toString(): string {
+        return (string)$this->render();
     }
 
     public function getTransitionValue() {

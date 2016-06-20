@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\neon\vector\svg\command;
 use df;
 use df\core;
 use df\neon;
-    
+
 class CubicCurve extends Base implements neon\vector\svg\ICubicCurveCommand {
 
     protected $_control1X;
@@ -90,7 +90,7 @@ class CubicCurve extends Base implements neon\vector\svg\ICubicCurveCommand {
         return $this->_y;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->_isRelative ? 'c' : 'C';
         $output .= $this->_control1X->toString().' ';
         $output .= $this->_control1Y->toString().' ';

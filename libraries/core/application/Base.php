@@ -48,15 +48,15 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return df\Launchpad::getEnvironmentMode();
     }
 
-    public function isDevelopment() {
+    public function isDevelopment(): bool {
         return df\Launchpad::isDevelopment();
     }
 
-    public function isTesting() {
+    public function isTesting(): bool {
         return df\Launchpad::isTesting();
     }
 
-    public function isProduction() {
+    public function isProduction(): bool {
         return df\Launchpad::isProduction();
     }
 

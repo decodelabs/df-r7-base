@@ -120,7 +120,7 @@ interface IFormState extends IStoreProvider {
 }
 
 interface IForm extends IStoreProvider, core\lang\IChainable, \ArrayAccess {
-    public function isRenderingInline();
+    public function isRenderingInline(): bool;
     public function getState();
     public function loadDelegate($id, $path);
     public function directLoadDelegate($id, $class);

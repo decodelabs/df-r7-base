@@ -223,14 +223,14 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this->_isLayout;
     }
 
-    public function toString() {
+    public function toString(): string {
         if(!$this->_renderTarget) {
             throw new aura\view\RuntimeException(
                 'No render target has been set'
             );
         }
 
-        return $this->renderTo($this->_renderTarget);
+        return (string)$this->renderTo($this->_renderTarget);
     }
 
 

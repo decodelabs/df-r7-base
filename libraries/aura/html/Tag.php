@@ -520,7 +520,7 @@ class Tag implements ITag, core\IDumpable {
         return $this->renderWith();
     }
 
-    public function toString() {
+    public function toString(): string {
         return (string)$this->open();
     }
 

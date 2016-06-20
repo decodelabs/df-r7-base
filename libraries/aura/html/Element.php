@@ -23,7 +23,7 @@ class Element extends Tag implements IElement, core\IDumpable {
         }
     }
 
-    public function toString() {
+    public function toString(): string {
         return (string)$this->renderWith($this);
     }
 

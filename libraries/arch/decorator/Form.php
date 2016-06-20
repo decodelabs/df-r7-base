@@ -69,7 +69,7 @@ abstract class Form implements IFormDecorator {
     abstract protected function createUi();
 
 
-    final public function isRenderingInline() {
+    final public function isRenderingInline(): bool {
         return $this->form->isRenderingInline();
     }
 

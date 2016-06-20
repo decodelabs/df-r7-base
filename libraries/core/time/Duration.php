@@ -568,7 +568,7 @@ class Duration implements IDuration, core\IDumpable {
         }
     }
 
-    public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true) {
+    public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true): string {
         return implode(', ', $this->_buildStringComponents($maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $this->_locale));
     }
 
@@ -648,7 +648,7 @@ class Duration implements IDuration, core\IDumpable {
         return $output;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         try {
             return (string)$this->toString();
         } catch(\Exception $e) {

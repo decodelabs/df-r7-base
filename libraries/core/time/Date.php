@@ -271,7 +271,7 @@ class Date implements IDate, core\IDumpable {
 
 
 // Formatting
-    public function toString() {
+    public function toString(): string {
         if($this->_timeEnabled) {
             return $this->format('c');
         } else {
@@ -279,7 +279,7 @@ class Date implements IDate, core\IDumpable {
         }
     }
 
-    public function __toString() {
+    public function __toString(): string {
         try {
             return $this->toString();
         } catch(\Exception $e) {

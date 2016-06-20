@@ -198,7 +198,7 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
         return $this->_collation;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         try {
             return $this->toString();
         } catch(\Exception $e) {

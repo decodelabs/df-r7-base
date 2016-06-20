@@ -39,7 +39,7 @@ class FilePath extends Path implements IFilePath {
         return strtolower($matches[1]);
     }
 
-    public function toString() {
+    public function toString(): string {
         $separator = $this->_separator;
 
         if($this->hasWinDrive()) {

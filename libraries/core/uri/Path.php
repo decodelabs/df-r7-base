@@ -391,7 +391,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
 
 
 // Strings
-    public function toString() {
+    public function toString(): string {
         return $this->_pathToString(false);
     }
 

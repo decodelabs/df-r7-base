@@ -75,11 +75,11 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
 
-    public function hasValue() {
+    public function hasValue(): bool {
         return !empty($this->_current) || !empty($this->_new);
     }
 
-    public function getStringValue($default='') {
+    public function getStringValue($default=''): string {
         return $this->__toString();
     }
 
@@ -757,7 +757,7 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return (string)count($this);
     }
 

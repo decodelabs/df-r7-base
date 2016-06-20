@@ -167,7 +167,7 @@ class IpRange implements IIpRange, core\IDumpable {
         }
     }
 
-    public function toString() {
+    public function toString(): string {
         if($this->_isV4) {
             return $this->_toV4String();
         } else {

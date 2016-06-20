@@ -122,7 +122,7 @@ class Command implements ICommand {
 
 
 // String
-    public function toString() {
+    public function toString(): string {
         $output = $this->_executable;
 
         foreach($this->_collection as $argument) {

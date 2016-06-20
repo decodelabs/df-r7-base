@@ -121,11 +121,11 @@ abstract class Enum implements IEnum, core\IDumpable {
         return self::factory($option)->getLabel();
     }
 
-    public function toString() {
-        return self::$_labels[get_class($this)][$this->_index];
+    public function toString(): string {
+        return (string)self::$_labels[get_class($this)][$this->_index];
     }
 
-    public function getStringValue($default='') {
+    public function getStringValue($default=''): string {
         return self::$_options[get_class($this)][$this->_index];
     }
 

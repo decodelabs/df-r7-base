@@ -343,7 +343,7 @@ class Currency implements ICurrency, core\IDumpable {
 
 
 // String
-    public function toString() {
+    public function toString(): string {
         return $this->getFormattedAmount().' '.$this->_code;
     }
 

@@ -163,16 +163,16 @@ class Launchpad {
         return self::$environmentMode;
     }
 
-    public static function isDevelopment() {
+    public static function isDevelopment(): bool {
         return self::$environmentMode == 'development';
     }
 
-    public static function isTesting() {
+    public static function isTesting(): bool {
         return self::$environmentMode == 'testing'
             || self::$environmentMode == 'development';
     }
 
-    public static function isProduction() {
+    public static function isProduction(): bool {
         return self::$environmentMode == 'production';
     }
 

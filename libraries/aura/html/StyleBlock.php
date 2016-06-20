@@ -77,7 +77,7 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, core
         return $output;
     }
 
-    public function toString() {
+    public function toString(): string {
         if(empty($this->_collection)) {
             return '';
         }

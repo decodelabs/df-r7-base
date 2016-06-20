@@ -292,7 +292,7 @@ class PolyLine implements neon\vector\dxf\IPolyLineEntity {
         return $this;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = '';
 
         if($this->_elevation > 0) {

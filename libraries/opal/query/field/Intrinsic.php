@@ -69,7 +69,7 @@ class Intrinsic implements opal\query\IIntrinsicField, core\IDumpable {
         return new self($source, $this->_source->getAlias().'.'.$this->_name, $this->_source->getAlias().'.'.$this->_alias);
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->getQualifiedName();
 
         if($this->hasDiscreetAlias()) {

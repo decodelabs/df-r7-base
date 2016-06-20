@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class Layer implements neon\vector\dxf\ILayerTable {
-    
+
     use neon\vector\dxf\TTable;
 
     protected $_color = 7;
@@ -47,7 +47,7 @@ class Layer implements neon\vector\dxf\ILayerTable {
     }
 
 
-    public function toString() {
+    public function toString(): string {
         $output = '';
 
         if($this->_color !== null) {

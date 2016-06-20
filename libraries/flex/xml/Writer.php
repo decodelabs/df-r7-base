@@ -422,7 +422,7 @@ class Writer implements IWriter {
         return $this;
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->toXmlString();
     }
 

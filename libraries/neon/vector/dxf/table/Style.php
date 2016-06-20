@@ -55,7 +55,7 @@ class Style implements neon\vector\dxf\IStyleTable {
         return $this->_bigFontFileName;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = sprintf(" 40\n%F\n", $this->_height ?? 0);
         $output .= sprintf(" 41\n%F\n", $this->_widthFactor);
         $output .= sprintf(" 50\n%F\n", $this->_obliqueAngle);

@@ -103,7 +103,7 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
         return new self($source, $this->_name, $this->_source->getAlias().'.'.$this->_alias, $targetFields);
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->getQualifiedName();
 
         if($this->hasDiscreetAlias()) {

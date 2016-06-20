@@ -64,7 +64,7 @@ interface IContext extends core\IContext, IResponseForcer {
     // Application
     public function spawnInstance($request=null, $copyRequest=false);
     public function getDispatchContext();
-    public function isDispatchContext();
+    public function isDispatchContext(): bool;
 
     // Requests
     public function getRequest();
@@ -127,9 +127,9 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
     // Area
     public function setArea(string $area);
     public function getArea();
-    public function isArea($area);
+    public function isArea($area): bool;
     public static function getDefaultArea();
-    public function isDefaultArea();
+    public function isDefaultArea(): bool;
     public static function formatArea($area);
 
     // Controller
@@ -138,7 +138,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
     public function getControllerParts();
     public function getRawController();
     public function getRawControllerParts();
-    public function isController($controller);
+    public function isController($controller): bool;
     public static function formatController($controller);
     public static function formatControllerParts(array $parts);
 
@@ -146,34 +146,34 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
     public function setNode(string $node=null);
     public function getNode();
     public function getRawNode();
-    public function isNode($node);
+    public function isNode($node): bool;
     public static function getDefaultNode();
-    public function isDefaultNode();
+    public function isDefaultNode(): bool;
     public static function formatNode($node);
 
     // Type
     public function setType(string $type=null);
     public function getType();
-    public function isType($type);
+    public function isType($type): bool;
     public static function getDefaultType();
-    public function isDefaultType();
+    public function isDefaultType(): bool;
     public static function formatType($type);
 
     public function getComponents();
     public function toSlug();
 
     // Match
-    public function eq($request);
-    public function pathEq($request);
+    public function eq($request): bool;
+    public function pathEq($request): bool;
 
-    public function matches($request);
-    public function matchesPath($request);
+    public function matches($request): bool;
+    public function matchesPath($request): bool;
 
-    public function contains($request);
-    public function containsPath($request);
+    public function contains($request): bool;
+    public function containsPath($request): bool;
 
-    public function isWithin($request);
-    public function isPathWithin($request);
+    public function isWithin($request): bool;
+    public function isPathWithin($request): bool;
 
     public function getLiteralPath();
     public function getLiteralPathArray();
@@ -240,7 +240,7 @@ trait TOptionalDirectoryAccessLock {
 }
 
 interface IController extends core\IContextAware, IResponseForcer, IOptionalDirectoryAccessLock {
-    public function isControllerInline();
+    public function isControllerInline(): bool;
 }
 
 

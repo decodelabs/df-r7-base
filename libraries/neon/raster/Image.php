@@ -195,7 +195,7 @@ class Image implements IImage {
         return $this;
     }
 
-    public function toString($quality=100) {
+    public function toString($quality=100): string {
         return $this->_driver->toString($this->_normalizePercentage($quality));
     }
 

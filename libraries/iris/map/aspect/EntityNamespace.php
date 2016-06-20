@@ -26,7 +26,7 @@ class EntityNamespace extends iris\map\Node implements iris\map\IAspect, core\IS
         }
     }
 
-    public function toString() {
+    public function toString(): string {
         return implode('.', $this->_collection);
     }
 

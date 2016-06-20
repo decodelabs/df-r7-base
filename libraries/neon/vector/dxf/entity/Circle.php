@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class Circle implements neon\vector\dxf\ICircleEntity {
-    
+
     use neon\vector\dxf\TEntity;
     use neon\vector\dxf\TDrawingEntity;
 
@@ -47,7 +47,7 @@ class Circle implements neon\vector\dxf\ICircleEntity {
         return $this->_radius;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = neon\vector\dxf\Document::_writePoint($this->_centerPoint, 0, [0, 0]);
         $output .= sprintf(" 40\n%F\n", $this->_radius);
 

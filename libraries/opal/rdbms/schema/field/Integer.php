@@ -56,7 +56,7 @@ class Integer extends Base implements
 
 
 // String
-    public function toString() {
+    public function toString(): string {
         $output = $this->_name.' '.strtoupper($this->_type);
 
         if($this->_length !== null) {

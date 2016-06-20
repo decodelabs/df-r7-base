@@ -406,7 +406,7 @@ class Schedule implements ISchedule/*, core\IDumpable*/ {
     }
 
 
-    public function toString() {
+    public function toString(): string {
         return $this->_minuteString.' '.$this->_hourString.' '.$this->_dayString.' '.$this->_monthString.' '.$this->_weekdayString;
     }
 

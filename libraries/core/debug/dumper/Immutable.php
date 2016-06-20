@@ -44,17 +44,15 @@ class Immutable implements IImmutableNode {
         return $this->_value;
     }
 
-    public function toString() {
-        if($this->_value === null) {
-            return 'null';
-        }
-
+    public function toString(): string {
         if($this->_value === true) {
             return 'true';
-        }
-
-        if($this->_value === false) {
+        } else if($this->_value === false) {
             return 'false';
+        } else if($this->_value === null) {
+            return 'null';
+        } else {
+            return '';
         }
     }
 }

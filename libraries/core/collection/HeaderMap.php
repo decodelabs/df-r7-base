@@ -254,7 +254,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return false;
     }
 
-    public function hasValue($key, $value) {
+    public function hasValue($key, $value): bool {
         $key = $this->normalizeKey($key);
 
         if(!isset($this->_collection[$key])) {
@@ -299,7 +299,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
 
 
 // Strings
-    public function toString(array $skipKeys=null) {
+    public function toString(array $skipKeys=null): string {
         return implode("\r\n", $this->getLines($skipKeys));
     }
 

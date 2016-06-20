@@ -108,7 +108,7 @@ class Ip implements IIp, core\IDumpable {
 
 
 // Strings
-    public function __toString() {
+    public function __toString(): string {
         try {
             return $this->toString();
         } catch(\Exception $e) {
@@ -118,7 +118,7 @@ class Ip implements IIp, core\IDumpable {
         }
     }
 
-    public function toString() {
+    public function toString(): string {
         if($this->isStandardV4()) {
             return $this->getV4String();
         } else {

@@ -525,11 +525,11 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
 
 
 // Output
-    public function __toString() {
+    public function __toString(): string {
         return $this->_value;
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->_value;
     }
 

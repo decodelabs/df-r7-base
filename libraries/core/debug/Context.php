@@ -15,12 +15,12 @@ df\Launchpad::loadBaseClass('core/log/_manifest');
 df\Launchpad::loadBaseClass('core/log/node/Group');
 
 class Context extends core\log\node\Group implements IContext {
-        
+
     use core\log\TWriterProvider;
 
     public $runningTime;
     protected $_stackTrace;
-    
+
     public function __construct() {
         $this->setNodeTitle('Context');
     }
@@ -46,8 +46,8 @@ class Context extends core\log\node\Group implements IContext {
     }
 
     public function execute() {
-        if(df\Launchpad::$application 
-        && df\Launchpad::$application->isDevelopment() 
+        if(df\Launchpad::$application
+        && df\Launchpad::$application->isDevelopment()
         && $this->isCritical()) {
             return $this->render();
         }
@@ -66,11 +66,11 @@ class Context extends core\log\node\Group implements IContext {
         return $this;
     }
 
-    public function toString() {
+    public function toString(): string {
         $renderer = new core\debug\renderer\PlainText($this);
         return $renderer->render();
     }
-    
+
     public function getStackTrace() {
         return $this->_stackTrace;
     }

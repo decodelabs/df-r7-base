@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class Line implements neon\vector\dxf\ILineEntity {
-    
+
     use neon\vector\dxf\TEntity;
     use neon\vector\dxf\TDrawingEntity;
 
@@ -44,7 +44,7 @@ class Line implements neon\vector\dxf\ILineEntity {
         return $this->_endPoint;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = '';
         $output .= neon\vector\dxf\Document::_writePoint($this->_startPoint, 0);
         $output .= neon\vector\dxf\Document::_writePoint($this->_endPoint, 1);

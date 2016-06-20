@@ -10,7 +10,7 @@ use df\core;
 use df\neon;
 
 class Arc implements neon\vector\dxf\IArcEntity {
-    
+
     use neon\vector\dxf\TEntity;
     use neon\vector\dxf\TDrawingEntity;
 
@@ -75,7 +75,7 @@ class Arc implements neon\vector\dxf\IArcEntity {
         return $this->_endAngle;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = neon\vector\dxf\Document::_writePoint($this->_centerPoint, 0, [0, 0]);
         $output .= sprintf(" 40\n%F\n", $this->_radius);
         $output .= sprintf(" 50\n%F\n", $this->_startAngle);

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\neon\vector\svg\command;
 use df;
 use df\core;
 use df\neon;
-    
+
 class QuadraticCurve extends Base implements neon\vector\svg\IQuadraticCurveCommand {
 
     protected $_controlX;
@@ -65,7 +65,7 @@ class QuadraticCurve extends Base implements neon\vector\svg\IQuadraticCurveComm
         return $this->_y;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->_isRelative ? 'q' : 'Q';
         $output .= $this->_controlX->toString().' ';
         $output .= $this->_controlY->toString().' ';

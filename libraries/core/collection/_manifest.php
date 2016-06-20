@@ -292,7 +292,7 @@ interface IInputTree extends ITree, IErrorContainer {
 
 interface IHeaderMap extends IMappedCollection, core\IStringProvider, \Iterator {
     public function append($key, $value);
-    public function hasValue($key, $value);
+    public function hasValue($key, $value): bool;
 
     public function setBase($key, $value);
     public function getBase($key, $default=null);

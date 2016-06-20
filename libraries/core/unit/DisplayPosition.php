@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,7 +7,7 @@ namespace df\core\unit;
 
 use df;
 use df\core;
-    
+
 class DisplayPosition implements IDisplayPosition, core\IDumpable {
 
     use core\TStringProvider;
@@ -54,7 +54,7 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
                 case 'bottom':
                     $this->setYAnchor($part);
 
-                    if(isset($parts[0]) 
+                    if(isset($parts[0])
                     && !in_array($parts[0], ['left', 'right', 'center'])
                     && (isset($parts[1]) || $this->_xAnchor !== null)) {
                         $this->setYOffset(array_shift($parts));
@@ -66,7 +66,7 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
                 case 'right':
                     $this->setXAnchor($part);
 
-                    if(isset($parts[0]) 
+                    if(isset($parts[0])
                     && !in_array($parts[0], ['top', 'bottom', 'center'])
                     && (isset($parts[1]) || $this->_yAnchor !== null)) {
                         $this->setXOffset(array_shift($parts));
@@ -121,7 +121,7 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
             $this->setXOffset($value);
             $this->setXAnchor('left');
         }
-        
+
         return $this;
     }
 
@@ -189,7 +189,7 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
             $this->setYOffset($value);
             $this->setYAnchor('top');
         }
-        
+
         return $this;
     }
 
@@ -227,7 +227,7 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
         $this->_yAnchor = $anchor;
         return $this;
     }
-    
+
     public function getYAnchor() {
         return $this->_yAnchor;
     }
@@ -245,7 +245,7 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
         return $this->_yOffset;
     }
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->getX().' '.$this->getY();
 
         if($output == 'center center') {
@@ -264,9 +264,9 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
     }
 
     public function isAbsolute() {
-        return 
+        return
             $this->hasRelativeAnchor()
-        || ($this->_xOffset && !$this->_xOffset->isAbsolute()) 
+        || ($this->_xOffset && !$this->_xOffset->isAbsolute())
         || ($this->_yOffset && !$this->_yOffset->isAbsolute())
          ;
     }

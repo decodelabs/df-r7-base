@@ -228,7 +228,7 @@ class ContentPart implements IContentPart, core\IDumpable {
     }
 
 
-    public function toString() {
+    public function toString(): string {
         $output = $this->getHeaderString().IPart::LINE_END.IPart::LINE_END;
         $output .= $this->getEncodedContent();
 

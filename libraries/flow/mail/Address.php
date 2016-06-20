@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\flow\mail;
 use df;
 use df\core;
 use df\flow;
-    
+
 class Address implements IAddress, core\IDumpable {
 
     use core\TStringProvider;
@@ -82,8 +82,8 @@ class Address implements IAddress, core\IDumpable {
 
         return (bool)$this->_isValid;
     }
-    
-    public function toString() {
+
+    public function toString(): string {
         $output = $this->_address;
 
         if(!empty($this->_name)) {

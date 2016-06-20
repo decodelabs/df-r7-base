@@ -38,7 +38,7 @@ class Solid implements neon\vector\dxf\ISolidEntity {
 
 
 
-    public function toString() {
+    public function toString(): string {
         $output = '';
 
         foreach($this->_points as $i => $point) {

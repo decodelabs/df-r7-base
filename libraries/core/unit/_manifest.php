@@ -114,7 +114,7 @@ trait TSingleValueUnit {
         return $this->_unit;
     }
 
-    public function toString() {
+    public function toString(): string {
         return $this->_value.$this->_unit;
     }
 

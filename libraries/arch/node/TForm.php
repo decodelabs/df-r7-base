@@ -196,7 +196,7 @@ trait TForm {
     }
 
 
-    public function isRenderingInline() {
+    public function isRenderingInline(): bool {
         return $this->_isRenderingInline;
     }
 

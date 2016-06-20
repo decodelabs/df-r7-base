@@ -145,8 +145,8 @@ trait TView {
         return $this->content;
     }
 
-    public function toString() {
-        return $this->render();
+    public function toString(): string {
+        return (string)$this->render();
     }
 
 

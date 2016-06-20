@@ -154,8 +154,8 @@ class Content implements IContent {
     }
 
 // Rendering
-    public function toString() {
-        return $this->render();
+    public function toString(): string {
+        return (string)$this->render();
     }
 
     public function render() {

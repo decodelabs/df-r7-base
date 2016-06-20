@@ -84,7 +84,7 @@ class AppClass implements IAppClass {
         return $this->_isEntity;
     }
 
-    public function toString() {
+    public function toString(): string {
         return sprintf(
             " 0\nCLASS\n 1\n%s\n 2\n%s\n 3\n%s\n 90\n%u\n 280\n%u\n 281\n%u\n",
             $this->_dxfName,
