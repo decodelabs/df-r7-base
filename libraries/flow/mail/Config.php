@@ -21,6 +21,7 @@ class Config extends core\Config {
             'defaultAddress' => $this->_getDefaultAdminAddress(),
             'defaultReturnPath' => null,
             'adminAddresses' => [],
+            'devAddresses' => [],
             'captureInTesting' => true,
             'transports' => flow\mail\transport\Base::getAllDefaultConfigValues(),
             'listSources' => [
@@ -99,6 +100,8 @@ class Config extends core\Config {
         return $this->values['defaultReturnPath'];
     }
 
+
+// Admin addresses
     public function setAdminAddresses(array $addresses) {
         $values = [];
 
@@ -139,6 +142,37 @@ class Config extends core\Config {
         }
 
         return $name.'@'.$domain;
+    }
+
+
+// Dev addresses
+    public function setDevAddresses(array $addresses) {
+        $values = [];
+
+        foreach($addresses as $i => $address) {
+            $address = Address::factory($address);
+
+            if($address->isValid()) {
+                $values[] = (string)$address;
+            }
+        }
+
+        $this->values['devAddresses'] = $values;
+        return $this;
+    }
+
+    public function getDevAddresses() {
+        $output = [];
+
+        foreach($this->values->devAddresses as $address) {
+            $output[] = Address::factory($address->getValue());
+        }
+
+        if(empty($output)) {
+            $output[] = Address::factory($this->getDefaultAddress());
+        }
+
+        return $output;
     }
 
 
