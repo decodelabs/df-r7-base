@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core;
+namespace df\core\environment;
 
 use df;
 use df\core;
 use df\arch;
 use df\halo;
 
-class Environment extends Config {
+class Config extends core\Config {
 
     const ID = 'environment';
     const STORE_IN_MEMORY = true;
@@ -37,7 +37,7 @@ class Environment extends Config {
 
 // Mode
     public function setMode($mode) {
-        $this->values->mode = EnvironmentMode::normalize($mode);
+        $this->values->mode = Mode::normalize($mode);
         return $this;
     }
 
@@ -94,7 +94,7 @@ class Environment extends Config {
         }
 
         if(empty($user)) {
-            throw new InvalidArgumentException(
+            throw new core\InvalidArgumentException(
                 'Invalid username detected'
             );
         }
@@ -139,7 +139,7 @@ class Environment extends Config {
         }
 
         if(empty($group)) {
-            throw new InvalidArgumentException(
+            throw new core\InvalidArgumentException(
                 'Invalid group name detected'
             );
         }

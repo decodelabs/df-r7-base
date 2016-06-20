@@ -40,7 +40,7 @@ abstract class Base implements IDaemon {
 
     public static function launch($name, $user=null) {
         if($user === null) {
-            $user = core\Environment::getInstance()->getDaemonUser();
+            $user = core\environment\Config::getInstance()->getDaemonUser();
         }
 
         $path = df\Launchpad::$applicationPath.'/entry/';
@@ -93,7 +93,7 @@ abstract class Base implements IDaemon {
 
     public function getUser() {
         if(!$this->_user) {
-            $this->_user = core\Environment::getInstance()->getDaemonUser();
+            $this->_user = core\environment\Config::getInstance()->getDaemonUser();
         }
 
         return $this->_user;
@@ -106,7 +106,7 @@ abstract class Base implements IDaemon {
 
     public function getGroup() {
         if(!$this->_group) {
-            $this->_group = core\Environment::getInstance()->getDaemonGroup();
+            $this->_group = core\environment\Config::getInstance()->getDaemonGroup();
         }
 
         return $this->_group;

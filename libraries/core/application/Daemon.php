@@ -26,7 +26,7 @@ class Daemon extends Base {
         }
 
         $this->io = new core\io\Std();
-        $env = core\Environment::getInstance();
+        $env = core\environment\Config::getInstance();
 
         if(!$env->canUseDaemons() || !extension_loaded('pcntl')) {
             $this->io->writeErrorLine('Daemons are not enabled in config');

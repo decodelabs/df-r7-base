@@ -8,9 +8,7 @@ namespace df\core;
 use df;
 use df\core;
 
-class EnvironmentMode extends core\lang\Enum {
+class EnvironmentMode extends core\environment\Mode {
 
-    const DEVELOPMENT = 'Development';
-    const TESTING = 'Testing';
-    const PRODUCTION = 'Production';
+    // DELETE THIS CLASS!
 }

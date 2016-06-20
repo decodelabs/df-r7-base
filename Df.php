@@ -127,7 +127,7 @@ class Launchpad {
 
 
         // Load application / packages
-        $envConfig = core\Environment::getInstance();
+        $envConfig = core\environment\Config::getInstance();
         self::$isDistributed = $envConfig->isDistributed();
 
         if(!self::$isCompiled) {

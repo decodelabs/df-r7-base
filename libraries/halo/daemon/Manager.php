@@ -20,7 +20,7 @@ class Manager implements IManager {
 
     public function isEnabled() {
         if($this->_isEnabled === null) {
-            $this->_isEnabled = core\Environment::getInstance()->canUseDaemons();
+            $this->_isEnabled = core\environment\Config::getInstance()->canUseDaemons();
         }
 
         return $this->_isEnabled;

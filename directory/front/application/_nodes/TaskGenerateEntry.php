@@ -16,7 +16,7 @@ class TaskGenerateEntry extends arch\node\Task {
     public function execute() {
         $this->io->writeLine('Generating entry point');
 
-        $phpPath = core\Environment::getInstance()->getBinaryPath('php');
+        $phpPath = core\environment\Config::getInstance()->getBinaryPath('php');
         $appPath = df\Launchpad::$applicationPath;
         $environmentId = df\Launchpad::$environmentId;
 

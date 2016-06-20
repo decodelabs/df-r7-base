@@ -23,7 +23,7 @@ class Unit extends axis\unit\table\Base {
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('request', 'Text', 1024);
-        $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode');
+        $schema->addField('environmentMode', 'Enum', 'core/environment/Mode');
 
         $schema->addField('startDate', 'Timestamp');
         $schema->addField('runTime', 'Duration')

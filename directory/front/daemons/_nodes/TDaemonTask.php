@@ -13,7 +13,7 @@ use df\halo;
 trait TDaemonTask {
 
     protected function _ensurePrivileges() {
-        $env = core\Environment::getInstance();
+        $env = core\environment\Config::getInstance();
 
         if(!$env->canUseDaemons()) {
             $this->io->writeLine('Daemons are currently disabled in config');
