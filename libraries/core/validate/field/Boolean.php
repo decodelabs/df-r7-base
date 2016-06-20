@@ -13,7 +13,7 @@ class Boolean extends Base implements core\validate\IBooleanField {
 
     use core\validate\TRequiredValueField;
 
-    protected $_isRequired = true;
+    protected $_isRequired = false;
     protected $_forceAnswer = true;
 
     public function shouldForceAnswer(bool $flag=null) {
