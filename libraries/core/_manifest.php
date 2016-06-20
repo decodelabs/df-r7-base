@@ -702,10 +702,10 @@ interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess {
 }
 
 
-include __DIR__.'/Loader.php';
+include __DIR__.'/loader/Base.php';
 
 if(!df\Launchpad::$isCompiled) {
-    include __DIR__.'/DevLoader.php';
+    include __DIR__.'/loader/Development.php';
 }
 
 

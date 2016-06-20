@@ -95,9 +95,9 @@ class Launchpad {
 
         // Register loader
         if(self::$isCompiled) {
-            self::$loader = new core\Loader(['root' => dirname(self::$rootPath)]);
+            self::$loader = new core\loader\Base(['root' => dirname(self::$rootPath)]);
         } else {
-            self::$loader = new core\DevLoader(['root' => dirname(self::$rootPath)]);
+            self::$loader = new core\loader\Development(['root' => dirname(self::$rootPath)]);
         }
 
         // Set error handlers

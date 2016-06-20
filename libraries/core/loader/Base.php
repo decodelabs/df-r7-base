@@ -3,12 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core;
+namespace df\core\loader;
 
 use df;
 use df\core;
 
-class Loader implements ILoader {
+class Base implements core\ILoader {
 
     private static $_includeAttempts = 0;
     private static $_includeMisses = 0;
@@ -299,7 +299,7 @@ class Loader implements ILoader {
 // Packages
     public function loadPackages(array $packages) {
         if($this->_isInit) {
-            throw new LogicException(
+            throw new core\LogicException(
                 'Cannot load packages after init'
             );
         }

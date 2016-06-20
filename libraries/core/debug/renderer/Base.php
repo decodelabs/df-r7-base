@@ -33,7 +33,7 @@ abstract class Base implements core\debug\IRenderer {
         $this->_stats['Includes'] = count(get_included_files());
 
         if(class_exists('df\\core\\Loader', false)) {
-            $this->_stats['Includes'] .= ' / '.core\Loader::getTotalIncludeMisses();
+            $this->_stats['Includes'] .= ' / '.core\loader\Base::getTotalIncludeMisses();
         }
 
         if(class_exists('df\\opal\\rdbms\\adapter\\statement\\Base', false)) {
