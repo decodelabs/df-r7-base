@@ -113,6 +113,14 @@ class Primitive_Date extends Primitive {
     public function getDefaultNonNullValue() {
         return new core\time\Date();
     }
+
+    protected function _normalizeDefaultValue($value) {
+        if($value !== null) {
+            $value = core\time\Date::factory($value);
+        }
+
+        return $value;
+    }
 }
 
 class Primitive_DateTime extends Primitive {
@@ -121,6 +129,14 @@ class Primitive_DateTime extends Primitive {
 
     public function getDefaultNonNullValue() {
         return new core\time\Date();
+    }
+
+    protected function _normalizeDefaultValue($value) {
+        if($value !== null) {
+            $value = core\time\Date::factory($value);
+        }
+
+        return $value;
     }
 }
 

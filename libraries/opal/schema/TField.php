@@ -73,6 +73,8 @@ trait TField {
     }
 
     public function setDefaultValue($value) {
+        $value = $this->_normalizeDefaultValue($value);
+
         if($value != $this->_defaultValue) {
             $this->_hasChanged = true;
         }
@@ -83,6 +85,10 @@ trait TField {
 
     public function getDefaultValue() {
         return $this->_defaultValue;
+    }
+
+    protected function _normalizeDefaultValue($value) {
+        return $value;
     }
 
     public function hasChanged() {
