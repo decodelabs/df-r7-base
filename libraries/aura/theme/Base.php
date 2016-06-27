@@ -98,7 +98,8 @@ class Base implements ITheme, core\IDumpable {
     public function applyDefaultBodyTagData(aura\view\IView $view) {
         $request = $view->context->request;
         $router = core\application\http\Router::getInstance();
-        $view->setData('base', '/'.ltrim($router->getBaseUrl()->getPathString(), './'));
+        //$view->setData('base', '/'.ltrim($router->getBaseUrl()->getPathString(), './'));
+        $view->setData('base', $router->getBaseUrl());
 
         if(!$router->isBaseRoot()) {
             $view->setData('root', $router->getRootUrl());
