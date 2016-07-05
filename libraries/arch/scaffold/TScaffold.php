@@ -940,7 +940,12 @@ trait TScaffold_IndexHeaderBarProvider {
 
     public function buildIndexHeaderBarComponent(array $args=null) {
         return (new arch\scaffold\component\HeaderBar($this, 'index', $args))
-            ->setTitle($this->getDirectoryTitle());
+            ->setTitle($this->getDirectoryTitle())
+            ->setBackLinkRequest($this->getIndexBackLinkRequest());
+    }
+
+    protected function getIndexBackLinkRequest() {
+        return $this->uri->backRequest();
     }
 
     public function buildIndexSection($name, $builder, $linkBuilder=null) {
