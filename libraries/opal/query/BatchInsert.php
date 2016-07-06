@@ -21,7 +21,7 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
     protected $_preparedRows = [];
     protected $_fields = [];
     protected $_dereferencedFields = null;
-    protected $_flushThreshold = 500;
+    protected $_flushThreshold = 50;
     protected $_inserted = 0;
 
     public function __construct(ISourceManager $sourceManager, ISource $source, $rows, $shouldReplace=false) {
