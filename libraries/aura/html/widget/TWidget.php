@@ -1268,6 +1268,12 @@ trait TWidget_MappedList {
         return $this->_fields;
     }
 
+    public function getField($key) {
+        if(isset($this->_fields[$key])) {
+            return $this->_fields[$key];
+        }
+    }
+
     public function hasFields() {
         return !empty($this->_fields);
     }

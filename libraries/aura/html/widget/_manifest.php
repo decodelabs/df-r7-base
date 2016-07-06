@@ -335,6 +335,7 @@ interface IMappedListWidget extends IListWidget {
     public function addLabel($fieldKey, $labelKey, $label=null);
     public function removeLabel($fieldKey, $labelKey);
     public function getFields();
+    public function getField($key);
 }
 
 
