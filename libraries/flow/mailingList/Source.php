@@ -229,7 +229,8 @@ class Source implements ISource {
         $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace);
 
         $cache = flow\mailingList\Cache::getInstance();
-        $cache->removeSession('client:'.$this->_cid);
+        $cache->clearSession();
+        //$cache->removeSession('client:'.$this->_cid);
 
         return $this;
     }
@@ -268,7 +269,8 @@ class Source implements ISource {
         $this->_adapter->unsubscribeUserFromList($client, $listId);
 
         $cache = flow\mailingList\Cache::getInstance();
-        $cache->removeSession('client:'.$this->_cid);
+        $cache->clearSession();
+        //$cache->removeSession('client:'.$this->_cid);
 
         return $this;
     }
