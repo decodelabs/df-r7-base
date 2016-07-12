@@ -13,7 +13,6 @@ use df\user;
 class Source implements ISource {
 
     protected $_id;
-    protected $_cid;
     protected $_adapter;
     protected $_primaryListId;
 
@@ -22,7 +21,6 @@ class Source implements ISource {
 
         $this->_id = $id;
         $this->_adapter = flow\mailingList\adapter\Base::factory($options);
-        $this->_cid = $id.'-'.$this->_adapter->getId();
         $this->_primaryListId = $options['primaryList'];
     }
 
@@ -42,10 +40,10 @@ class Source implements ISource {
     public function getManifest() {
         $cache = Cache::getInstance();
 
-        if(!$manifest = $cache->get('source:'.$this->_cid)) {
+        if(!$manifest = $cache->get('source:'.$this->_id)) {
             $manifest = $this->_adapter->fetchManifest();
             $manifest = $this->_normalizeManifest($manifest);
-            $cache->set('source:'.$this->_cid, $manifest);
+            $cache->set('source:'.$this->_id, $manifest);
         }
 
         return $manifest;
@@ -229,8 +227,7 @@ class Source implements ISource {
         $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace);
 
         $cache = flow\mailingList\Cache::getInstance();
-        $cache->clearSession();
-        //$cache->removeSession('client:'.$this->_cid);
+        $cache->removeSession('client:'.$this->_id);
 
         return $this;
     }
@@ -238,24 +235,52 @@ class Source implements ISource {
 
 
     public function getClientManifest() {
-        $cache = Cache::getInstance();
-
-        if(!$manifest = $cache->getSession('client:'.$this->_cid)) {
-            $manifest = $this->_adapter->fetchClientManifest($this->getManifest());
-            $cache->setSession('client:'.$this->_cid, $manifest);
-        }
-
-        return $manifest;
+        return $this->_getClientManifest();
     }
 
     public function getClientSubscribedGroupsIn($listId) {
-        $clientManifest = $this->getClientManifest();
+        $clientManifest = $this->_getClientManifest([$listId]);
 
         if(isset($clientManifest[$listId])) {
             return $clientManifest[$listId];
         } else {
             return [];
         }
+    }
+
+    protected function _getClientManifest(array $listIds=null) {
+        $cache = Cache::getInstance();
+        $manifest = $cache->getSession('client:'.$this->_id);
+        $lists = null;
+
+        if(!$manifest) {
+            $manifest = [];
+        }
+
+        $selectIds = [];
+
+        if($listIds === null) {
+            $lists = $this->getManifest();
+            $listIds = array_keys($lists);
+        }
+
+        foreach($listIds as $listId) {
+            if(!array_key_exists($listId, $manifest)) {
+                $selectIds[] = $listId;
+            }
+        }
+
+        if(!empty($selectIds)) {
+            if($lists === null) {
+                $lists = $this->getManifest();
+            }
+
+            $lists = array_intersect_key($lists, array_flip($selectIds));
+            $manifest = array_merge($manifest, $this->_adapter->fetchClientManifest($lists));
+            $cache->setSession('client:'.$this->_id, $manifest);
+        }
+
+        return $manifest;
     }
 
 
@@ -269,8 +294,7 @@ class Source implements ISource {
         $this->_adapter->unsubscribeUserFromList($client, $listId);
 
         $cache = flow\mailingList\Cache::getInstance();
-        $cache->clearSession();
-        //$cache->removeSession('client:'.$this->_cid);
+        $cache->removeSession('client:'.$this->_id);
 
         return $this;
     }

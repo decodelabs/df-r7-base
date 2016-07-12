@@ -32,7 +32,7 @@ class SessionExtended extends Base implements ISessionExtendedCache {
 
     public function clear() {
         parent::clear();
-        $this->clearSession();
+        $this->clearSessionForAll();
 
         return $this;
     }
@@ -56,6 +56,11 @@ class SessionExtended extends Base implements ISessionExtendedCache {
     }
 
     public function clearSession() {
+        $this->_session->clear();
+        return $this;
+    }
+
+    public function clearSessionForAll() {
         $this->_session->clearForAll();
         return $this;
     }

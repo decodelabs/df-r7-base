@@ -168,6 +168,10 @@ class Mailchimp extends Base {
         }
 
         $this->_mediator->ensureSubscription($listId, $email, $merges, $groups);
+
+        $cache = flow\mailingList\Cache::getInstance();
+        $cache->removeSession('mailchimp:'.$listId);
+
         return $this;
     }
 
@@ -177,6 +181,9 @@ class Mailchimp extends Base {
         if($member) {
             $member->delete();
         }
+
+        $cache = flow\mailingList\Cache::getInstance();
+        $cache->removeSession('mailchimp:'.$listId);
 
         return $this;
     }
@@ -211,6 +218,8 @@ class Mailchimp extends Base {
 
 
     public function updateListUserDetails($oldEmail, user\IClientDataObject $client, array $manifest) {
+        $cache = flow\mailingList\Cache::getInstance();
+
         foreach($manifest as $listId => $list) {
             if(!$member = $this->_getMemberData($listId, $oldEmail)) {
                 continue;
@@ -230,6 +239,7 @@ class Mailchimp extends Base {
             );
 
             $member->save();
+            $cache->removeSession('mailchimp:'.$listId);
         }
 
         return $this;
@@ -239,7 +249,7 @@ class Mailchimp extends Base {
 
 
     protected function _getClientMemberData($listId) {
-        $sessionKey = 'mailchimp:member:'.$listId;
+        $sessionKey = 'mailchimp:'.$listId;
         $cache = flow\mailingList\Cache::getInstance();
 
         if(null === ($member = $cache->getSession($sessionKey))) {
