@@ -17,23 +17,17 @@ class TaskRebuildSchemas extends arch\node\Task {
         $list = $this->data->axis->schema->select('unitId')
             ->toList('unitId');
 
+        $this->data->axis->schema->delete()->execute();
+        axis\schema\Cache::getInstance()->clearAll();
+
         foreach($list as $unitId) {
             try {
                 $unit = axis\Model::loadUnitFromId($unitId);
             } catch(axis\IException $e) {
                 $this->io->writeLine('Skipped '.$unitId.', definition not found');
-
-                $this->data->axis->schema->delete()
-                    ->where('unitId', '=', $unitId)
-                    ->execute();
-
                 continue;
             }
-        }
 
-        axis\schema\Cache::getInstance()->clearAll();
-
-        foreach($list as $unitId) {
             $schema = $unit->buildInitialSchema();
             $unit->updateUnitSchema($schema);
             $unit->validateUnitSchema($schema);
@@ -41,5 +35,7 @@ class TaskRebuildSchemas extends arch\node\Task {
 
             $this->io->writeLine('Updated '.$unitId);
         }
+
+        axis\schema\Cache::getInstance()->clearAll();
     }
 }
