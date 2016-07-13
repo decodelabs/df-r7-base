@@ -29,7 +29,11 @@ class TaskRebuildSchemas extends arch\node\Task {
 
                 continue;
             }
+        }
 
+        axis\schema\Cache::getInstance()->clearAll();
+
+        foreach($list as $unitId) {
             $schema = $unit->buildInitialSchema();
             $unit->updateUnitSchema($schema);
             $unit->validateUnitSchema($schema);
@@ -37,7 +41,5 @@ class TaskRebuildSchemas extends arch\node\Task {
 
             $this->io->writeLine('Updated '.$unitId);
         }
-
-        axis\schema\Cache::getInstance()->clearAll();
     }
 }
