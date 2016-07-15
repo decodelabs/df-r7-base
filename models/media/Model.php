@@ -97,18 +97,15 @@ class Model extends axis\Model {
             $filePath,
             $fileData,
             $bucket['id'],
-            $file ? $file['id'] : null,
-            $file ? $file['slug'] : null
+            $file ? $file['id'] : null
         );
 
         if($file) {
             $file->import([
-                'slug' => $fileData['slug'],
                 'fileName' => $fileData['fileName']
             ]);
         } else {
             $file = $this->file->newRecord([
-                'slug' => $fileData['slug'],
                 'bucket' => $bucket,
                 'owner' => $fileData['owner'],
                 'fileName' => $fileData['fileName'],
@@ -162,8 +159,7 @@ class Model extends axis\Model {
             $filePath,
             $fileData,
             $file['#bucket'],
-            $file['id'],
-            $file['slug']
+            $file['id']
         );
 
         $hash = $isMissing ? $fileData->get('hash') : hash_file('crc32', $filePath, true);
@@ -205,7 +201,6 @@ class Model extends axis\Model {
         $oldVersionId = $file['#activeVersion'];
 
         $file->import([
-            'slug' => $fileData['slug'],
             'fileName' => $fileData['fileName'],
             'activeVersion' => $version
         ]);
@@ -246,14 +241,12 @@ class Model extends axis\Model {
             $version['fileName'],
             $fileData,
             $file['#bucket'],
-            $file['id'],
-            $file['slug']
+            $file['id']
         );
 
         $oldVersionId = $file['#activeVersion'];
 
         $file->import([
-            'slug' => $fileData['slug'],
             'fileName' => $fileData['fileName'],
             'activeVersion' => $version
         ]);
@@ -299,7 +292,7 @@ class Model extends axis\Model {
     }
 
 
-    protected function _normalizeFileData($filePath, $fileData, $bucketId, $fileId, $oldSlug=null) {
+    protected function _normalizeFileData($filePath, $fileData, $bucketId, $fileId) {
         $fileData = core\collection\Tree::factory($fileData);
 
         if(!$fileData->has('owner') && $this->context->user->isLoggedIn()) {
@@ -313,24 +306,6 @@ class Model extends axis\Model {
         if(!$fileData->has('contentType')) {
             $fileData->contentType = core\fs\Type::fileToMime($filePath);
         }
-
-        if(!$fileData->has('slug')) {
-            $newSlug = (new core\uri\Path($fileData['fileName']))->getFilename();
-
-            if($oldSlug) {
-                $parts = explode('/', trim($oldSlug, ' /'));
-
-                if(count($parts) > 1) {
-                    array_pop($parts);
-                    $parts[] = $newSlug;
-                    $newSlug = implode('/', $parts);
-                }
-            }
-
-            $fileData->slug = $this->context->format->pathSlug($newSlug);
-        }
-
-        $fileData->slug = $this->file->ensureSlugUnique($fileData['slug'], $bucketId, $fileId);
 
         if(!$fileData->has('creationDate')) {
             $fileData->creationDate = 'now';

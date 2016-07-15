@@ -16,26 +16,20 @@ class Unit extends axis\unit\table\Base {
     const NAME_FIELD = 'fileName';
 
     const SEARCH_FIELDS = [
-        'slug' => 5,
         'fileName' => 4,
         'id' => 10
     ];
 
     const ORDERABLE_FIELDS = [
-        'slug', 'creationDate', 'fileName'
+        'creationDate', 'fileName'
     ];
 
-    const DEFAULT_ORDER = 'slug ASC';
+    const DEFAULT_ORDER = 'fileName ASC';
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
 
-        $schema->addField('slug', 'Slug')
-            ->allowPathFormat(true);
-
         $schema->addField('bucket', 'ManyToOne', 'bucket', 'files');
-
-        $schema->addUniqueIndex('slug', ['slug', 'bucket']);
 
         $schema->addField('creationDate', 'Timestamp');
         $schema->addField('owner', 'One', 'user/client')
@@ -45,35 +39,6 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('activeVersion', 'One', 'version');
         $schema->addField('versions', 'OneToMany', 'version', 'file');
-    }
-
-    public function ensureSlugUnique($slug, $bucketId=null, $fileId=null) {
-        $output = $slug;
-        $counter = 0;
-
-        while($this->slugExists($output, $bucketId, $fileId)) {
-            $output = $this->context->format->slug($slug.'-'.(++$counter));
-        }
-
-        return $output;
-    }
-
-    public function slugExists($slug, $bucketId=null, $fileId=null) {
-        return (bool)$this->select('slug')
-            ->where('slug', '=', $slug)
-            ->chainIf($bucketId !== null, function($query) use($bucketId) {
-                $query->where('bucket', '=', $bucketId);
-            })
-            ->chainIf($fileId !== null, function($query) use($fileId) {
-                $query->where('id', '!=', $fileId);
-            })
-            ->count();
-    }
-
-    public function fetchBySlug($slug) {
-        return $this->fetch()
-            ->where('slug', '=', $slug)
-            ->toRow();
     }
 
     public function selectActive(...$fields) {
