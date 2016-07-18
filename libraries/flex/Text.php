@@ -518,7 +518,7 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             $this->_value
         );
 
-        $this->_value = iconv($this->_encoding, 'ASCII//TRANSLIT', $this->_value);
+        $this->_value = iconv($this->_encoding, 'ASCII//TRANSLIT//IGNORE', $this->_value);
 
         return $this;
     }
