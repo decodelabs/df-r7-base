@@ -234,23 +234,31 @@ trait TArrayCollection_MappedMovable {
                 $temp[$currentKey] = $value;
             }
         } else {
-            $keyValue = $this->_collection[$key];
-            unset($this->_collection[$key]);
+            $keyValue = null;
             $temp = [];
             $i = 0;
-            $found = false;
+            $found = $inserted = false;
 
             foreach($this->_collection as $currentKey => $value) {
+                if($key == $currentKey) {
+                    $found = true;
+                    $keyValue = $value;
+                    continue;
+                }
+
                 if($i == $index) {
                     $temp[$key] = $keyValue;
-                    $found = true;
+                    $inserted = true;
                 }
 
                 $temp[$currentKey] = $value;
-                $i++;
+
+                if($found) {
+                    $i++;
+                }
             }
 
-            if(!$found) {
+            if(!$inserted) {
                 $temp[$key] = $keyValue;
             }
         }
