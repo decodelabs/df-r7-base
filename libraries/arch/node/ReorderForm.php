@@ -128,6 +128,11 @@ abstract class ReorderForm extends Form {
 
     protected function onReorderEvent() {
         $weights = array_flip($this->values->items->toArray());
+
+        array_walk($weights, function(&$value) {
+            $value = $value + 1;
+        });
+
         $output = $this->apply($weights);
 
         if($this->values->isValid()) {
