@@ -123,6 +123,16 @@ class Model extends axis\Model implements user\session\IBackend {
             ->execute();
     }
 
+    public function clearBucketForUser($bucket, $userId) {
+        $this->node->delete()
+            ->where('bucket', '=', $bucket)
+            ->whereCorrelation('descriptor', 'in', 'id')
+                ->from('axis://session/Descriptor')
+                ->where('user', '=', $userId)
+                ->endCorrelation()
+            ->execute();
+    }
+
     public function clearBucketForAll($bucket) {
         $this->node->delete()
             ->where('bucket', '=', $bucket)

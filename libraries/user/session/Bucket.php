@@ -96,6 +96,26 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         return $this;
     }
 
+    public function clearForUser($userId) {
+        $this->_controller->backend->clearBucketForUser($this->_name, $userId);
+        $this->_controller->cache->clear();
+        $this->_nodes = [];
+
+        return $this;
+    }
+
+    public function clearForClient() {
+        $manager = user\Manager::getInstance();
+
+        if($manager->isLoggedIn()) {
+            $this->clearForUser($manager->client->getId());
+        } else {
+            $this->clear();
+        }
+
+        return $this;
+    }
+
     public function clearForAll() {
         $this->_controller->backend->clearBucketForAll($this->_name);
         $this->_controller->cache->clear();

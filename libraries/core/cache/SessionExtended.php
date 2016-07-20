@@ -60,6 +60,16 @@ class SessionExtended extends Base implements ISessionExtendedCache {
         return $this;
     }
 
+    public function clearSessionForUser($userId) {
+        $this->_session->clearForUser($userId);
+        return $this;
+    }
+
+    public function clearSessionForClient() {
+        $this->_session->clearForClient();
+        return $this;
+    }
+
     public function clearSessionForAll() {
         $this->_session->clearForAll();
         return $this;

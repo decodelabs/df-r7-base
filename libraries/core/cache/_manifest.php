@@ -44,6 +44,8 @@ interface ISessionExtendedCache extends ICache {
     public function hasSession($key);
     public function removeSession($key);
     public function clearSession();
+    public function clearSessionForUser($userId);
+    public function clearSessionForClient();
     public function clearSessionForAll();
 }
 

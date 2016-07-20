@@ -54,6 +54,8 @@ interface IBucket extends core\IValueMap, \ArrayAccess {
 
     public function getAllKeys();
     public function clear();
+    public function clearForUser($userId);
+    public function clearForClient();
     public function clearForAll();
     public function prune($age=7200);
 
@@ -77,10 +79,11 @@ interface IBackend {
     public function killSession(IDescriptor $descriptor);
     public function idExists($id);
 
-    public function getBucketKeys(IDescriptor $descriptor, $namespace);
-    public function pruneBucket(IDescriptor $descriptor, $namespace, $age);
-    public function clearBucket(IDescriptor $descriptor, $namespace);
-    public function clearBucketForAll($namespace);
+    public function getBucketKeys(IDescriptor $descriptor, $bucket);
+    public function pruneBucket(IDescriptor $descriptor, $bucket, $age);
+    public function clearBucket(IDescriptor $descriptor, $bucket);
+    public function clearBucketForUser($bucket, $userId);
+    public function clearBucketForAll($bucket);
 
     public function fetchNode(IBucket $bucket, $key);
     public function fetchLastUpdatedNode(IBucket $bucket);

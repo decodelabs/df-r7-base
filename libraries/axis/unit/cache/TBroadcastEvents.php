@@ -78,6 +78,19 @@ trait TBroadcastEvents_Session {
         return parent::clearSession();
     }
 
+    public function clearSessionForUser($userId) {
+        $this->context->mesh->emitEvent($this, 'clearSessionForUser', [
+            'userId' => $userId
+        ]);
+
+        return parent::clearSessionForUser($userId);
+    }
+
+    public function clearSessionForClient() {
+        $this->context->mesh->emitEvent($this, 'clearSessionForClient');
+        return parent::clearSessionForClient();
+    }
+
     public function clearSessionForAll() {
         $this->context->mesh->emitEvent($this, 'clearSessionForAll');
         parent::clearSessionForAll();
