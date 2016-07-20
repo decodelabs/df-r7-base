@@ -22,6 +22,7 @@ class Manager implements IManager, core\IShutdownAware {
 
     protected $_flashQueue;
     protected $_isFlashQueueProcessed = false;
+    protected $_flashQueueChanged = false;
 
     public function onApplicationShutdown() {
         $this->_saveFlashQueue();
@@ -614,6 +615,8 @@ class Manager implements IManager, core\IShutdownAware {
                     } else {
                         unset($this->_flashQueue->instant[$id]);
                     }
+
+                    $this->_flashQueueChanged = true;
                 }
             }
 
@@ -625,6 +628,7 @@ class Manager implements IManager, core\IShutdownAware {
                 }
 
                 $this->_flashQueue->instant[$message->getId()] = $message;
+                $this->_flashQueueChanged = true;
             }
 
             $this->_isFlashQueueProcessed = true;
@@ -640,17 +644,20 @@ class Manager implements IManager, core\IShutdownAware {
 
             if(!$this->_flashQueue instanceof FlashQueue) {
                 $this->_flashQueue = new FlashQueue();
+                $this->_flashQueueChanged = true;
             }
         }
     }
 
     protected function _saveFlashQueue() {
-        if(!$this->_flashQueue instanceof FlashQueue) {
+        if(!$this->_flashQueue instanceof FlashQueue
+        || !$this->_flashQueueChanged) {
             return false;
         }
 
         $session = user\Manager::getInstance()->session->getBucket(self::SESSION_NAMESPACE);
         $session->set(self::FLASH_SESSION_KEY, $this->_flashQueue);
+        $this->_flashQueueChanged = false;
 
         return true;
     }
@@ -680,6 +687,7 @@ class Manager implements IManager, core\IShutdownAware {
     public function addConstantFlash(IFlashMessage $message) {
         $this->_loadFlashQueue();
         $this->_flashQueue->constant[$message->getId()] = $message;
+        $this->_flashQueueChanged = true;
         return $this;
     }
 
@@ -701,12 +709,14 @@ class Manager implements IManager, core\IShutdownAware {
     public function removeConstantFlash($id) {
         $this->_loadFlashQueue();
         unset($this->_flashQueue->constant[$id]);
+        $this->_flashQueueChanged = true;
         return $this;
     }
 
     public function clearConstantFlashes() {
         $this->_loadFlashQueue();
         $this->_flashQueue->constant = [];
+        $this->_flashQueueChanged = true;
         return $this;
     }
 
@@ -722,6 +732,8 @@ class Manager implements IManager, core\IShutdownAware {
         } else {
             $this->_flashQueue->queued[$id] = $message;
         }
+
+        $this->_flashQueueChanged = true;
 
         return $this;
     }
@@ -742,6 +754,8 @@ class Manager implements IManager, core\IShutdownAware {
             $this->_flashQueue->constant[$id],
             $this->_flashQueue->instant[$id]
         );
+
+        $this->_flashQueueChanged = true;
 
         return $this;
     }
