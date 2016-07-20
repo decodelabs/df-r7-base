@@ -241,7 +241,7 @@ class Source implements ISource {
     public function getClientSubscribedGroupsIn($listId) {
         $clientManifest = $this->_getClientManifest([$listId]);
 
-        if(isset($clientManifest[$listId])) {
+        if(isset($clientManifest[$listId]) && !empty($clientManifest[$listId])) {
             return $clientManifest[$listId];
         } else {
             return [];
