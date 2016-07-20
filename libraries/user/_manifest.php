@@ -139,10 +139,12 @@ trait TSessionBackedHelper {
 
     protected $_sessionData = null;
     protected $_sessionDataNew = false;
+    protected $_sessionDataChanged = false;
 
     public function offsetSet($key, $value) {
         $this->_ensureSessionData();
         $this->_sessionData[$key] = $value;
+        $this->_sessionDataChanged = true;
         return $this;
     }
 
@@ -162,6 +164,7 @@ trait TSessionBackedHelper {
     public function offsetUnset($key) {
         $this->_ensureSessionData();
         unset($this->_sessionData[$key]);
+        $this->_sessionDataChanged = true;
         return $this;
     }
 
@@ -197,7 +200,9 @@ trait TSessionBackedHelper {
     }
 
     public function storeSessionData() {
-        if($this->_sessionData === null || (empty($this->_sessionData) && $this->_sessionDataNew)) {
+        if($this->_sessionData === null
+        || !$this->_sessionDataChanged
+        || (empty($this->_sessionData) && $this->_sessionDataNew)) {
             return;
         }
 
@@ -209,6 +214,8 @@ trait TSessionBackedHelper {
         } else {
             $bucket->set($this->getHelperName(), $this->_sessionData);
         }
+
+        $this->_sessionDataChanged = false;
     }
 
     public function getDumpProperties() {

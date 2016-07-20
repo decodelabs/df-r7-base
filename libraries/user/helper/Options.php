@@ -33,6 +33,7 @@ class Options extends Base implements user\ISessionBackedHelper, core\IValueMap,
         }
 
         $this->_sessionData[$key] = $value;
+        $this->_sessionDataChanged = true;
 
         if($this->manager->isLoggedIn()) {
             $this->manager->getUserModel()->updateClientOptions(
@@ -71,6 +72,7 @@ class Options extends Base implements user\ISessionBackedHelper, core\IValueMap,
 
         foreach($keys as $key) {
             unset($this->_sessionData[$key]);
+            $this->_sessionDataChanged = true;
         }
 
         if($this->manager->isLoggedIn()) {
@@ -86,6 +88,7 @@ class Options extends Base implements user\ISessionBackedHelper, core\IValueMap,
     public function import(array $options) {
         $this->_ensureSessionData();
         $this->_sessionData = array_merge($this->_sessionData, $options);
+        $this->_sessionDataChanged = true;
 
         if($this->manager->isLoggedIn()) {
             $this->manager->getUserModel()->updateClientOptions(
