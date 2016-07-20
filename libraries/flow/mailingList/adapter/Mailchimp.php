@@ -195,6 +195,7 @@ class Mailchimp extends Base {
 
         foreach($manifest as $listId => $list) {
             if(!$memberData = $this->_getClientMemberData($listId)) {
+                $output[$listId] = false;
                 continue;
             }
 
