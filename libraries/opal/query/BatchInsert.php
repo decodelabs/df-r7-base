@@ -180,7 +180,7 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
         $queryFields = [];
         $values = [];
 
-        foreach($rows as $row) {
+        foreach($rows as $i => $row) {
             $rowValues = [];
 
             foreach($fields as $name => $field) {
@@ -189,7 +189,7 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
                 }
 
                 if(!isset($row[$name])) {
-                    $value = $field->generateInsertValue($row);
+                    $this->_rows[$i][$name] = $value = $field->generateInsertValue($row);
                 } else {
                     $value = $field->sanitizeValue($row[$name]);
                 }

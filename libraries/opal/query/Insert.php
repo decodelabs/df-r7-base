@@ -143,7 +143,7 @@ class Insert implements IInsertQuery, core\IDumpable {
             }
 
             if(!isset($row[$name])) {
-                $value = $field->generateInsertValue($row);
+                $this->_row[$name] = $value = $field->generateInsertValue($row);
             } else {
                 $value = $field->sanitizeValue($row[$name]);
             }
