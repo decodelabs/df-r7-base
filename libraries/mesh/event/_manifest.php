@@ -24,6 +24,10 @@ interface IEmitter {
 trait TEmitter {
 
     public function emitEvent($entity, $action, array $data=null, mesh\job\IQueue $jobQueue=null, mesh\job\IJob $job=null) {
+        if($entity === null) {
+            return $this;
+        }
+
         return $this->emitEventObject(new mesh\event\Event($entity, $action, $data, $jobQueue, $job));
     }
 }
