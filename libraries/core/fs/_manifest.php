@@ -51,6 +51,7 @@ interface INode extends core\IStringProvider {
     public function getLocationPath();
     public function getName();
     public function exists();
+    public function clearStatCache();
     public function getLastModified();
     public function isRecent($timeout);
 
@@ -78,6 +79,11 @@ trait TNode {
         }
 
         return core\fs\Dir::stripPathLocation($path);
+    }
+
+    public function clearStatCache() {
+        clearstatcache(true, $this->getPath());
+        return $this;
     }
 
     public function isRecent($timeout) {

@@ -78,13 +78,14 @@ class LockFile implements ILockFile {
     }
 
     public function getRemainingTime() {
-        clearstatcache(true, $this->_path.'/'.$this->_fileName);
+        $file = new core\fs\File($this->_path.'/'.$this->_fileName);
+        $file->clearStatCache();
 
-        if(!is_file($this->_path.'/'.$this->_fileName)) {
+        if(!$file->exists()) {
             return 0;
         }
 
-        $data = (int)core\fs\File::getContentsOf($this->_path.'/'.$this->_fileName);
+        $data = $file->getContents();
         @list($time, $timeout) = explode(':', $data, 2);
 
         if(!$timeout) {
