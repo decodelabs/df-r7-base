@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 class LockFile implements ILockFile {
-    
+
     protected $_path;
     protected $_fileName = '.lock';
     protected $_timeout = 30;
@@ -78,6 +78,8 @@ class LockFile implements ILockFile {
     }
 
     public function getRemainingTime() {
+        clearstatcache(true, $this->_path.'/'.$this->_fileName);
+
         if(!is_file($this->_path.'/'.$this->_fileName)) {
             return 0;
         }
@@ -106,7 +108,7 @@ class LockFile implements ILockFile {
         }
 
         core\fs\File::create(
-            $this->_path.'/'.$this->_fileName, 
+            $this->_path.'/'.$this->_fileName,
             time().':'.$this->_timeout
         );
 

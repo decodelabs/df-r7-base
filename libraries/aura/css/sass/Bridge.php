@@ -96,7 +96,8 @@ class Bridge implements IBridge {
         $filePath = $this->_workDir.'/'.$this->_key.'.css';
 
         if(!is_file($filePath)) {
-            return $this->compile();
+            $this->compile();
+            return $filePath;
         }
 
         $mtime = filemtime($filePath);
@@ -126,7 +127,47 @@ class Bridge implements IBridge {
     }
 
     public function compile() {
+        $lockFile = new core\fs\LockFile($this->_workDir, 60);
+        $lockFile->setFileName($this->_key.'.lock');
+
+        if($this->_waitForLock($lockFile)) {
+            return;
+        }
+
+        $lockFile->lock();
         core\fs\Dir::create($this->_workDir.'/'.$this->_key);
+
+        $error = null;
+
+        try {
+            $this->_compile();
+        } catch(\Exception $e) {
+            $error = $e;
+        }
+
+        $lockFile->unlock();
+        core\fs\Dir::delete($this->_workDir.'/'.$this->_key);
+
+        if($error) {
+            throw $error;
+        }
+
+        return;
+    }
+
+    protected function _waitForLock($lockFile) {
+        if($lockFile->canLock()) {
+            return false;
+        }
+
+        do {
+            sleep(1);
+        } while(!$lockFile->canLock());
+
+        return is_file($this->_workDir.'/'.$this->_key.'.css');
+    }
+
+    protected function _compile() {
         $sourceFiles = [$this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type];
         $manifest = [];
 
@@ -244,11 +285,7 @@ class Bridge implements IBridge {
         }
 
         file_put_contents($this->_workDir.'/'.$this->_key.'.json', json_encode(array_values($manifest)));
-
-        // Clean up
-        core\fs\Dir::delete($this->_workDir.'/'.$this->_key);
-
-        return $this->_workDir.'/'.$this->_key.'.css';
+        return;
     }
 
     protected function _replaceLocalPaths($sass, $filePath, array &$sourceFiles) {
