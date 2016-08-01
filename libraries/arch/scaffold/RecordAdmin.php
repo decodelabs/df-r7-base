@@ -108,7 +108,8 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         }
 
         $list = $this->apex->component(ucfirst($keyName).'List', $fields)
-            ->setCollection($query);
+            ->setCollection($query)
+            ->setSlot('scaffold', $this);
 
         if($callback) {
             core\lang\Callback::call($callback, $list, $searchBar);
