@@ -81,29 +81,10 @@ trait TView_SlotContainer {
 
     public function renderSlot(string $key, $default=null) {
         $value = $this->getSlot($key, $default);
-
-        if(is_callable($value)) {
-            $target = $this instanceof IDeferredRenderable ?
+        $target = $this instanceof IDeferredRenderable ?
                 $this->getRenderTarget() : $this;
 
-            $value = $value($target);
-        }
-
-        if($value instanceof \Traversable) {
-            $value = iterator_to_array($value);
-        }
-
-        if(is_array($value)) {
-            $value = new aura\html\ElementContent($value);
-        }
-
-        if($value instanceof IRenderable) {
-            return $value->renderTo($this);
-        } else if($value instanceof aura\html\IElementRepresentation) {
-            return $value;
-        } else {
-            return $this->esc((string)$value);
-        }
+        return aura\html\ElementContent::normalize($value, $target);
     }
 }
 
@@ -262,7 +243,9 @@ trait TView {
             try {
                 $layout = aura\view\content\Template::loadLayout($this, $innerContent);
                 $output = $layout->renderTo($this);
-            } catch(aura\view\ContentNotFoundException $e) {}
+            } catch(aura\view\ContentNotFoundException $e) {
+                $this->logs->logException($e);
+            }
 
             $output = $this->_onLayoutRender($output);
         }
