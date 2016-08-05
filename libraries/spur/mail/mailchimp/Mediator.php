@@ -521,6 +521,10 @@ class Mediator implements IMediator, \Serializable {
         return true;
     }
 
+    protected function _normalizeErrorData($data) {
+        return flex\json\Codec::decode($data);
+    }
+
     protected function _extractResponseError(link\http\IResponse $response) {
         $data = flex\json\Codec::decode($response->getContent());
         $error = $data['error'] ?? 'Undefined chimp calamity!';

@@ -119,11 +119,15 @@ trait THttpMediator {
             if($response->getHeaders()->getStatusCode() >= 500) {
                 throw new ApiImplementationError($message, $response->getContent());
             } else {
-                throw new ApiDataError($message, $response->getContent());
+                throw new ApiDataError($message, $this->_normalizeErrorData($response->getContent()));
             }
         }
 
         return $response;
+    }
+
+    protected function _normalizeErrorData($data) {
+        return $data;
     }
 
 
