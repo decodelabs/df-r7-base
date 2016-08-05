@@ -47,6 +47,7 @@ class Mailchimp extends Base {
         foreach($this->_mediator->fetchAllLists() as $listId => $list) {
             $row = [
                 'name' => $list->getName(),
+                'url' => $list->getShortSubscribeUrl(),
                 'groupSets' => [],
                 'groups' => [],
                 'subscribers' => $list->countMembers()

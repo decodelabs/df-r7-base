@@ -67,6 +67,10 @@ class Source implements ISource {
                 $list['groups'] = [];
             }
 
+            if(!isset($list['url'])) {
+                $list['url'] = null;
+            }
+
             foreach($list['groups'] as $groupId => $group) {
                 if(!is_array($group)) {
                     $group = ['name' => (string)$group];
@@ -112,6 +116,16 @@ class Source implements ISource {
         if(isset($manifest[$this->_primaryListId])) {
             return $manifest[$this->_primaryListId];
         }
+    }
+
+
+
+    public function getListExternalLink() {
+        if(!$manifest = $this->getPrimaryListManifest()) {
+            return;
+        }
+
+        return $manifest['url'];
     }
 
 

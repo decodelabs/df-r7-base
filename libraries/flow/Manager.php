@@ -387,6 +387,16 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
+
+
+    public function getListExternalLinkFor($sourceId) {
+        if($source = $this->getListSource($sourceId)) {
+            return $source->getListExternalLink();
+        }
+    }
+
+
+
     public function getPrimaryGroupOptionsFor($sourceId, $nested=false, $showSets=true) {
         if(!$source = $this->getListSource($sourceId)) {
             return [];
