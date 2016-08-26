@@ -37,6 +37,11 @@ class SessionExtended extends Base implements ISessionExtendedCache {
         return $this;
     }
 
+    public function clearGlobal() {
+        parent::clear();
+        return $this;
+    }
+
     public function setSession($key, $value) {
         $this->_session->set($key, $value);
         return $this;

@@ -71,7 +71,6 @@ class Mailchimp extends Base {
         return $output;
     }
 
-
     public function subscribeUserToList(user\IClientDataObject $client, $listId, array $manifest, array $groups=null, $replace=false) {
         $email = $client->getEmail();
         $merges = [];

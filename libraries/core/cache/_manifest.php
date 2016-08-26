@@ -39,6 +39,7 @@ interface ICache extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Co
 
 
 interface ISessionExtendedCache extends ICache {
+    public function clearGlobal();
     public function setSession($key, $value);
     public function getSession($key, $default=null);
     public function hasSession($key);

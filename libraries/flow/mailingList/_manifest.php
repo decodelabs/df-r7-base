@@ -41,7 +41,6 @@ interface ISource {
     public function getClientSubscribedGroupsIn($listId);
 
     public function updateListUserDetails($oldEmail, user\IClientDataObject $client);
-
     public function unsubscribeUserFromList(user\IClientDataObject $client, $listId);
 }
 

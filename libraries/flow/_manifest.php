@@ -38,6 +38,7 @@ interface IManager extends core\IManager {
     public function getListAdapterSettingsFields($adapter);
     public function getListOptions();
     public function getListGroupOptions();
+    public function clearListCache();
 
     public function getListExternalLinkFor($sourceId);
 

@@ -387,6 +387,12 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
+    public function clearListCache() {
+        flow\mailingList\Cache::getInstance()->clearGlobal();
+        return $this;
+    }
+
+
 
 
     public function getListExternalLinkFor($sourceId) {
