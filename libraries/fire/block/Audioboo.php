@@ -64,7 +64,7 @@ class Audioboo extends Base {
     }
 
     public function render() {
-        $string = '<div class="ab-player block" data-type="Audioboo" data-boourl="//audioboom.com/boos/'.$this->_booId.'/embed"><a href="//audioboom.com/boos/'.$this->_booId.'">listen to this clip on Audioboom</a></div><script type="text/javascript">(function() { var po = document.createElement("script"); po.type = "text/javascript"; po.async = true; po.src = "//d15mj6e6qmt1na.cloudfront.net/assets/embed.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(po, s); })();</script>';
+        $string = '<iframe width="100%" height="300" style="background-color:transparent; display:block; max-width: 700px;" frameborder="0" allowtransparency="allowtransparency" scrolling="no" src="//embeds.audioboom.com/boos/'.$this->_booId.'/embed/v4?eid=AQAAANIgxFfWgAoA" title="audioBoom player"></iframe>';
 
         if(!$this->_isNested) {
             $string = '<div class="audioBooContent">'.$string.'</div>';
