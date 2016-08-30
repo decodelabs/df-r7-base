@@ -17,11 +17,12 @@ class Base implements ITheme, core\IDumpable {
     const APPLICATION_IMAGE = null;//'app.png';
     const APPLICATION_COLOR = 'white';
 
+    const DEPENDENCIES = [];
+
     protected $_id;
     protected $_iconMap = null;
     protected $_facets = ['analytics', 'touchIcons'];
 
-    protected $_dependencies = [];
 
     public static function factory($id) {
         if($id instanceof ITheme) {
@@ -272,7 +273,7 @@ class Base implements ITheme, core\IDumpable {
     }
 
     public function getDependencies() {
-        return $this->_dependencies;
+        return static::DEPENDENCIES;
     }
 
 
