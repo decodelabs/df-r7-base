@@ -17,11 +17,14 @@ class Base implements ITheme, core\IDumpable {
     const APPLICATION_IMAGE = null;//'app.png';
     const APPLICATION_COLOR = 'white';
 
+    const FACETS = [];
+    const DEFAULT_FACETS = ['analytics', 'touchIcons'];
+
     const DEPENDENCIES = [];
 
     protected $_id;
     protected $_iconMap = null;
-    protected $_facets = ['analytics', 'touchIcons'];
+    protected $_facets = [];
 
 
     public static function factory($id) {
@@ -49,10 +52,10 @@ class Base implements ITheme, core\IDumpable {
     protected function __construct($id) {
         $this->_id = $id;
 
-        $facets = [];
+        $facets = static::DEFAULT_FACETS;
 
-        if(is_array($this->_facets)) {
-            $facets = $this->_facets;
+        if(is_array(static::FACETS)) {
+            $facets = array_merge($facets, static::FACETS);
         }
 
         $this->_facets = [];
