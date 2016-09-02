@@ -197,8 +197,11 @@ trait TElementContent {
             $value->setRenderTarget($this->getRenderTarget());
         }
 
+        $test = false;
+
         if($value instanceof IRenderable) {
             $output = $value->render();
+            $test = 1;
         } else if($value instanceof aura\view\IDeferredRenderable) {
             $value = $value->render();
 
@@ -207,6 +210,7 @@ trait TElementContent {
             }
 
             $output = $value = $this->_renderChild($value);
+            $test = 2;
         } else if($value instanceof aura\view\IRenderable) {
             $value = $value->renderTo($this->getRenderTarget());
 
@@ -215,9 +219,12 @@ trait TElementContent {
             }
 
             $output = $value = $this->_renderChild($value);
+            $test = 3;
         } else {
             $output = (string)$value;
+            $test = 4;
         }
+
 
         if(!$value instanceof IElementRepresentation) {
             $output = $this->esc($output);
@@ -314,7 +321,9 @@ class ElementContent implements IElementContentCollection, core\IDumpable {
     use flex\THtmlStringEscapeHandler;
 
     public static function normalize($content, $parent=null) {
-        return (new self($content, $parent))->toString();
+        return new aura\html\ElementString(
+            (new self($content, $parent))->toString()
+        );
     }
 
     public function __construct($content=null, $parent=null) {
