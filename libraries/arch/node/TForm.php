@@ -312,7 +312,11 @@ trait TForm {
                 $this->_state->referrer ?? null,
                 $this->getDefaultRedirect()
             );
-        } else if($default) {
+        } else {
+            if(!$default) {
+                $default = $this->getDefaultRedirect();
+            }
+
             return $this->http->redirect($default);
         }
     }
