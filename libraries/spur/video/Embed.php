@@ -333,7 +333,7 @@ class Embed implements IVideoEmbed {
         $id = $urlObj->path->getLast();
 
         if(!is_numeric($id)) {
-            return $url;
+            return $urlObj;
         }
 
         $output = new link\http\Url('//player.vimeo.com/video/'.$id);
