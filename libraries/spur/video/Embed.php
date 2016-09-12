@@ -307,7 +307,20 @@ class Embed implements IVideoEmbed {
             }
         }
 
+        static $vars = [
+            'autohide', 'autoplay', 'cc_load_policy', 'color', 'controls',
+            'disablekb', 'enablejsapi', 'end', 'fs', 'hl', 'iv_load_policy',
+            'list', 'listType', 'loop', 'modestbranding', 'origin', 'playerapiid',
+            'playlist', 'playsinline', 'rel', 'showinfo', 'start', 'theme'
+        ];
+
         $output = new link\http\Url('//www.youtube.com/embed/'.$id);
+
+        foreach($url->query as $key => $node) {
+            if(in_array(strtolower($key), $vars)) {
+                $output->query->set($key, $node);
+            }
+        }
 
         if($this->_startTime !== null) {
             $output->query->start = $this->_startTime;
