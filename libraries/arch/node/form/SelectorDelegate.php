@@ -30,6 +30,7 @@ abstract class SelectorDelegate extends Delegate implements
     protected $_searchMessage = null;
     protected $_searchPlaceholder = null;
     protected $_defaultSearchString = null;
+    protected $_autoSelect = true;
 
     private $_selectionList = null;
 
@@ -58,6 +59,15 @@ abstract class SelectorDelegate extends Delegate implements
 
     public function getDefaultSearchString() {
         return $this->_defaultSearchString;
+    }
+
+    public function shouldAutoSelect(bool $flag=null) {
+        if($flag !== null) {
+            $this->_autoSelect = $flag;
+            return $this;
+        }
+
+        return $this->_autoSelect;
     }
 
 
@@ -171,7 +181,7 @@ abstract class SelectorDelegate extends Delegate implements
 
         if(isset($this->request[$id])) {
             $this->setSelected($this->request[$id]);
-        } else if($this->_isRequired) {
+        } else if($this->_isRequired && $this->_autoSelect) {
             $r = $this->_getQuery(['@primary'])->limit(2)->toList('@primary');
 
             if(count($r) == 1) {
