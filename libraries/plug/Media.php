@@ -177,8 +177,8 @@ class Media implements arch\IDirectoryHelper {
         return $this->_getImageFileLocation($fileId, $versionId, $isActive, $contentType, $transformation, $modificationDate, true);
     }
 
-    public function image($fileId, $alt=null, $width=null, $height=null) {
-        return $this->context->html->image($this->getDownloadUrl($fileId), $alt, $width, $height);
+    public function image($fileId, $transformation=null, $alt=null, $width=null, $height=null) {
+        return $this->context->html->image($this->getImageUrl($fileId, $transformation), $alt, $width, $height);
     }
 
     protected function _getDownloadFileLocation($fileId, $versionId, $isActive) {
