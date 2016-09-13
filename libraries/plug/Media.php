@@ -202,7 +202,7 @@ class Media implements arch\IDirectoryHelper {
         $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
         $isUrl = $filePath instanceof link\http\IUrl;
 
-        if(($forceLocal && $isUrl) || ($transformation !== null && $contentType != 'image/svg+xml')) {
+        if(($forceLocal && $isUrl) || ($transformation !== null && !in_array($contentType, ['image/svg+xml', 'image/gif']))) {
             $cache = neon\raster\Cache::getInstance();
 
             if($modificationDate !== null) {
