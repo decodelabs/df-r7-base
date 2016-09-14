@@ -229,7 +229,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         }
 
         $parts = core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
-        return $parts->get($name, $default);
+        return trim($parts->get($name, $default), '"');
     }
 
     public function hasDelimitedValue($key, $name) {
