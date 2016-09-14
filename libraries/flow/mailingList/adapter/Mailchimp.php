@@ -88,7 +88,9 @@ class Mailchimp extends Base {
             if(!$replace) {
                 $memberGroupData = $member->getGroupSetData();
             }
-        } else {
+        }
+
+        if(!isset($merges['FNAME']) || !strlen($merges['FNAME'])) {
             if($firstName = $client->getFirstName()) {
                 $merges['FNAME'] = $firstName;
             }
