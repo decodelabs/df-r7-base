@@ -197,7 +197,7 @@ class Uri implements arch\IDirectoryHelper {
                 $from = $this->context->request;
             }
 
-            $request->setRedirectFrom($this->directoryRequest($from));
+            $request->setRedirectFrom($from);
         }
 
         if($to !== null) {
@@ -205,7 +205,7 @@ class Uri implements arch\IDirectoryHelper {
                 $to = $this->context->request;
             }
 
-            $request->setRedirectTo($this->directoryRequest($to));
+            $request->setRedirectTo($to);
         }
 
         return $request;

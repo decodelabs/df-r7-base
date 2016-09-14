@@ -476,6 +476,10 @@ class Html implements arch\IDirectoryHelper {
             return null;
         }
 
+        if($unit === null && false !== strpos($value, ' ')) {
+            list($value, $unit) = explode(' ', $value, 2);
+        }
+
         return $this->element('span.numeric', function() use($value, $unit) {
             if(is_int($value)
             || is_float($value)

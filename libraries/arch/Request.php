@@ -695,6 +695,22 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return $output;
     }
 
+    public function normalize() {
+        if(substr($this->_path[0], 0, 1) == self::AREA_MARKER
+        && substr($this->_path[0], 1) == self::DEFAULT_AREA) {
+            $this->_path->remove(0);
+        }
+
+        if(!$this->_path->shouldAddTrailingSlash()
+        && $this->_path->getFileName() == self::DEFAULT_NODE
+        && $this->_path->getExtension() == self::DEFAULT_TYPE) {
+            $this->_path->pop();
+            $this->_path->shouldAddTrailingSlash(true);
+        }
+
+        return $this;
+    }
+
 
 // Redirect
     public function encode() {

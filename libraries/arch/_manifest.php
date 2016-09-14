@@ -181,6 +181,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
     public function getDirectoryLocation();
     public function getLibraryPath();
     public function toReadableString();
+    public function normalize();
 
     // Redirect
     public function encode();
