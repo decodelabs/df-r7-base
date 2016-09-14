@@ -148,12 +148,13 @@ class Media implements arch\IDirectoryHelper {
             $version['id'],
             $version['isActive'],
             $version['contentType'],
+            $version['fileName'],
             $transformation,
             $version['creationDate']
         );
     }
 
-    public function serveImage($fileId, $versionId, $isActive, $contentType, $transformation=null, $modificationDate=null) {
+    public function serveImage($fileId, $versionId, $isActive, $contentType, $fileName=null, $transformation=null, $modificationDate=null) {
         $filePath = $this->_getImageFileLocation($fileId, $versionId, $isActive, $contentType, $transformation, $modificationDate);
         $isUrl = $filePath instanceof link\http\IUrl;
 
@@ -161,7 +162,8 @@ class Media implements arch\IDirectoryHelper {
             $output = $this->context->http->redirect($filePath);
         } else {
             $output = $this->context->http->fileResponse($filePath)
-                ->setContentType($contentType);
+                ->setContentType($contentType)
+                ->setFileName($fileName);
 
             $output->getHeaders()
                 ->set('Access-Control-Allow-Origin', '*')
