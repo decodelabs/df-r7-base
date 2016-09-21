@@ -176,7 +176,6 @@ class ContentSlot extends arch\node\form\Delegate implements
         $availableCount = $this->_state->getStore('availableBlockCount');
 
         $blockCount = count($this->_blocks);
-        $showRemove = $blockCount > 1;
         $counter = 1;
         $topKey = 0;
 
@@ -216,8 +215,7 @@ class ContentSlot extends arch\node\form\Delegate implements
                         $this->_('Remove')
                     )
                     ->setIcon('remove')
-                    ->shouldValidate(false)
-                    ->isDisabled(!$showRemove),
+                    ->shouldValidate(false),
 
                 $this->html->eventButton(
                         $this->eventName('moveBlockUp', $delegateId),
