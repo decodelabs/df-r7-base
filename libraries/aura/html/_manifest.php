@@ -173,6 +173,10 @@ trait TElementContent {
     }
 
     protected function _renderChild(&$value) {
+        if($value instanceof IRenderable) {
+            $value = $value->render();
+        }
+
         if(is_callable($value) && is_object($value)) {
             $value = $value($this->_parent ?? $this);
             return $this->_renderChild($value);
@@ -201,7 +205,6 @@ trait TElementContent {
 
         if($value instanceof IRenderable) {
             $output = $value->render();
-            $test = 1;
         } else if($value instanceof aura\view\IDeferredRenderable) {
             $value = $value->render();
 
@@ -210,7 +213,6 @@ trait TElementContent {
             }
 
             $output = $value = $this->_renderChild($value);
-            $test = 2;
         } else if($value instanceof aura\view\IRenderable) {
             $value = $value->renderTo($this->getRenderTarget());
 
@@ -219,10 +221,8 @@ trait TElementContent {
             }
 
             $output = $value = $this->_renderChild($value);
-            $test = 3;
         } else {
             $output = (string)$value;
-            $test = 4;
         }
 
 
