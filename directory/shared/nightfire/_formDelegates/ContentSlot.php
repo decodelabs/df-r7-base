@@ -17,7 +17,7 @@ class ContentSlot extends arch\node\form\Delegate implements
     arch\node\IResultProviderDelegate {
 
     use arch\node\TForm_SelfContainedRenderableDelegate;
-    use arch\node\TForm_RequirableDelegate;
+    use core\constraint\TRequirable;
 
     protected $_slotDefinition;
     protected $_isNested = false;

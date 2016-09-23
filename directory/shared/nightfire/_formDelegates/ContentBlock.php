@@ -17,7 +17,7 @@ class ContentBlock extends arch\node\form\Delegate implements
     arch\node\IResultProviderDelegate {
 
     use arch\node\TForm_InlineFieldRenderableDelegate;
-    use arch\node\TForm_RequirableDelegate;
+    use core\constraint\TRequirable;
 
     protected $_block;
     protected $_isNested = false;

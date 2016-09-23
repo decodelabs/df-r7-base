@@ -193,10 +193,6 @@ interface ISelfContainedRenderableDelegate {
     public function renderContainerContent(aura\html\widget\IContainerWidget $fieldSet);
 }
 
-interface IRequirableDelegate {
-    public function isRequired(bool $flag=null);
-}
-
 interface IParentEventHandlerDelegate extends IDelegate {
     public function apply();
 }
@@ -205,7 +201,7 @@ interface IParentUiHandlerDelegate extends IDelegate {
     public function renderUi();
 }
 
-interface IResultProviderDelegate extends IRequirableDelegate, IParentEventHandlerDelegate {}
+interface IResultProviderDelegate extends core\constraint\IRequirable, IParentEventHandlerDelegate {}
 
 interface ISelectionProviderDelegate extends IResultProviderDelegate {
     public function isForOne(bool $flag=null);

@@ -53,13 +53,11 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
 
 
 
-interface IField {
+interface IField extends core\constraint\IRequirable, core\constraint\IOptional {
     public function getName();
     public function setRecordName($name);
     public function getRecordName();
 
-    public function isRequired(bool $flag=null);
-    public function isOptional(bool $flag=null);
     public function setRequireGroup($name);
     public function getRequireGroup();
     public function setToggleField($name);

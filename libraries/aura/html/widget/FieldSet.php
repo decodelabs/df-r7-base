@@ -12,7 +12,7 @@ use df\arch;
 
 class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProvider {
 
-    use TWidget_Disableable;
+    use core\constraint\TDisableable;
 
     const PRIMARY_TAG = 'fieldset';
 

@@ -15,7 +15,7 @@ use df\user;
 class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIconProviderWidget, core\IDumpable {
 
     use TWidget_BodyContentAware;
-    use TWidget_Disableable;
+    use core\constraint\TDisableable;
     use TWidget_TargetAware;
     use TWidget_DispositionAware;
     use TWidget_IconProvider;

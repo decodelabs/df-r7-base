@@ -179,13 +179,12 @@ interface ITriggerProvider extends ISchema {
 
 
 
-interface IField extends IChangeTracker {
+interface IField extends IChangeTracker, core\constraint\INullable {
     public function getFieldType();
     public function _setName($name);
     public function getName();
     public function setComment($comment);
     public function getComment();
-    public function isNullable(bool $flag=null);
     public function setDefaultValue($default);
     public function getDefaultValue();
     public function toStorageArray();

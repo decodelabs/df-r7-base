@@ -555,27 +555,11 @@ trait TForm_SelfContainedRenderableDelegate {
 }
 
 
-// Result provider
-trait TForm_RequirableDelegate {
-
-    protected $_isRequired = false;
-
-    public function isRequired(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isRequired = $flag;
-            return $this;
-        }
-
-        return $this->_isRequired;
-    }
-}
-
-
 
 // Selector
 trait TForm_SelectorDelegate {
 
-    use TForm_RequirableDelegate;
+    use core\constraint\TRequirable;
 
     protected $_isForMany = true;
 

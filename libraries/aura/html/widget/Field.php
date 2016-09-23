@@ -12,10 +12,11 @@ use df\arch;
 
 class Field extends Container implements IFormOrientedWidget {
 
+    use core\constraint\TRequirable;
+
     protected $_label;
     protected $_description;
     protected $_errorContainer;
-    protected $_isRequired = false;
 
     public function __construct(arch\IContext $context, $labelBody=null, $input=null) {
         parent::__construct($context, $input);
@@ -184,15 +185,6 @@ class Field extends Container implements IFormOrientedWidget {
         return $this->_errorContainer;
     }
 
-// Required
-    public function isRequired(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isRequired = $flag;
-            return $this;
-        }
-
-        return $this->_isRequired;
-    }
 
 // Description
     public function setDescription($description) {

@@ -44,14 +44,13 @@ interface IInspector extends \ArrayAccess {
     public function getOptionArguments();
 }
 
-interface IRule {
+interface IRule extends core\constraint\IRequirable {
     public function setNames($names);
     public function getName();
     public function getNames();
     public function getFlags();
     public function requiresValue(bool $flag=null);
     public function canHaveValue(bool $flag=null);
-    public function isRequired(bool $flag=null);
     public function setDefaultValue($value);
     public function getDefaultValue();
     public function setValueType($type);

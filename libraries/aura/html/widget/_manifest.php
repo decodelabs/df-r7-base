@@ -87,11 +87,12 @@ interface IBodyContentAwareWidget extends IWidget {
 }
 
 
-interface IDisableableWidget {
-    public function isDisabled(bool $flag=null);
-}
-
 interface IContainerWidget extends IWidget, core\collection\IIndexedQueue, aura\html\IWidgetFinder {}
+
+
+interface IFieldDataProvider extends core\constraint\IRequirable, core\constraint\IDisableable, core\constraint\IReadOnly {
+
+}
 
 
 interface IFormOrientedWidget extends IWidget {}
@@ -109,10 +110,7 @@ interface IFormDataWidget extends IFormOrientedWidget {
     public function getTargetFormId();
 }
 
-interface IInputWidget extends IFormDataWidget, IDisableableWidget {
-    public function isRequired(bool $flag=null);
-    public function isReadOnly(bool $flag=null);
-
+interface IInputWidget extends IFormDataWidget, IFieldDataProvider {
     public function setTabIndex($index);
     public function getTabIndex();
 }
@@ -342,7 +340,7 @@ interface IMappedListWidget extends IListWidget {
 
 
 // Links
-interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidget, IDispositionAwareWidget, arch\navigation\ILink {
+interface ILinkWidget extends IWidget, IBodyContentAwareWidget, core\constraint\IDisableable, IDispositionAwareWidget, arch\navigation\ILink {
     public function setTarget($target);
     public function getTarget();
 

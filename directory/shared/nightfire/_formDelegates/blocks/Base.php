@@ -14,7 +14,7 @@ use df\fire;
 abstract class Base extends arch\node\form\Delegate implements fire\block\IFormDelegate {
 
     use arch\node\TForm_InlineFieldRenderableDelegate;
-    use arch\node\TForm_RequirableDelegate;
+    use core\constraint\TRequirable;
 
     protected $_isNested = false;
     protected $_block;

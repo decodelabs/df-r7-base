@@ -121,20 +121,6 @@ trait TWidget_BodyContentAware {
 }
 
 
-trait TWidget_Disableable {
-
-    protected $_isDisabled = false;
-
-    public function isDisabled(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isDisabled = $flag;
-            return $this;
-        }
-
-        return $this->_isDisabled;
-    }
-}
-
 
 // Forms
 trait TWidget_FormData {
@@ -263,10 +249,10 @@ trait TWidget_FormData {
 
 trait TWidget_Input {
 
-    use TWidget_Disableable;
+    use core\constraint\TDisableable;
+    use core\constraint\TRequirable;
+    use core\constraint\TReadOnly;
 
-    protected $_isRequired = false;
-    protected $_isReadOnly = false;
     protected $_tabIndex;
 
     protected function _applyInputAttributes(aura\html\ITag $tag) {
@@ -299,26 +285,6 @@ trait TWidget_Input {
         } else if($this->_tabIndex === false) {
             $tag->setAttribute('tabindex', '-1');
         }
-    }
-
-
-    public function isRequired(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isRequired = $flag;
-            return $this;
-        }
-
-        return $this->_isRequired;
-    }
-
-
-    public function isReadOnly(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isReadOnly = $flag;
-            return $this;
-        }
-
-        return $this->_isReadOnly;
     }
 
 

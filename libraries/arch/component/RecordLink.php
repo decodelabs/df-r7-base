@@ -15,13 +15,13 @@ use df\opal;
 abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy {
 
     use user\TAccessControlled;
+    use core\constraint\TDisableable;
+    use core\constraint\TNullable;
 
     const DEFAULT_MISSING_MESSAGE = 'not found';
 
     protected $_icon = 'item';
     protected $_disposition = 'transitive';
-    protected $_isNullable = false;
-    protected $_isDisabled = false;
     protected $_note;
     protected $_maxLength;
     protected $_missingMessage;
@@ -83,27 +83,6 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
 
     public function getDisposition() {
         return $this->_disposition;
-    }
-
-// Nullable
-    public function isNullable(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isNullable = $flag;
-            return $this;
-        }
-
-        return $this->_isNullable;
-    }
-
-
-// Disabled
-    public function isDisabled(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isDisabled = $flag;
-            return $this;
-        }
-
-        return $this->_isDisabled;
     }
 
 // Note

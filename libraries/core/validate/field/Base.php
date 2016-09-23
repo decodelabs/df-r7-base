@@ -10,12 +10,13 @@ use df\core;
 
 abstract class Base implements core\validate\IField {
 
+    use core\constraint\TRequirable;
+    use core\constraint\TOptional;
+
     public $validator;
 
     protected $_name;
     protected $_recordName = null;
-    protected $_isRequired = false;
-    protected $_isOptional = false;
     protected $_requireGroup = null;
     protected $_toggleField = null;
     protected $_shouldSanitize = true;
@@ -66,24 +67,6 @@ abstract class Base implements core\validate\IField {
 
 
 // Requirements
-    public function isRequired(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isRequired = $flag;
-            return $this;
-        }
-
-        return $this->_isRequired;
-    }
-
-    public function isOptional(bool $flag=null) {
-        if($flag !== null) {
-            $this->_isOptional = $flag;
-            return $this;
-        }
-
-        return $this->_isOptional;
-    }
-
     public function setRequireGroup($name) {
         $this->_requireGroup = $name;
         return $this;
