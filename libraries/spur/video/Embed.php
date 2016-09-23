@@ -30,6 +30,7 @@ class Embed implements IVideoEmbed {
     protected $_duration;
     protected $_autoPlay = false;
     protected $_provider;
+    protected $_source;
 
     public static function parse($embed) {
         $embed = trim($embed);
@@ -50,14 +51,14 @@ class Embed implements IVideoEmbed {
             switch($tag) {
                 case 'iframe':
                 case 'object':
-                    if(!preg_match('/src\=\"([^\"]+)\"/i', $embed, $matches)) {
+                    if(!preg_match('/src\=(\"|\')([^\'"]+)(\"|\')/i', $embed, $matches)) {
                         throw new UnexpectedValueException(
                             'Could not extract source from flash embed'
                         );
                     }
 
-                    $url = trim($matches[1]);
-                    $output = new self($url);
+                    $url = trim($matches[2]);
+                    $output = new self($url, null, null, $embed);
 
                     if(preg_match('/width\=\"([^\"]+)\"/i', $embed, $matches)) {
                         $width = $matches[1];
@@ -74,6 +75,10 @@ class Embed implements IVideoEmbed {
 
                     break;
 
+                case 'script':
+                    $output = new self(null, null, null, $embed);
+                    break;
+
                 default:
                     throw new UnexpectedValueException(
                         'Don\'t know how to parse this video embed'
@@ -88,7 +93,7 @@ class Embed implements IVideoEmbed {
     }
 
 
-    public function __construct($url, $width=null, $height=null) {
+    public function __construct($url, $width=null, $height=null, $embedSource=null) {
         $this->setUrl($url);
 
         if($width !== null) {
@@ -98,10 +103,17 @@ class Embed implements IVideoEmbed {
         if($height !== null) {
             $this->setHeight($height);
         }
+
+        $this->_source = $embedSource;
     }
 
 // Url
     public function setUrl($url) {
+        if(empty($url)) {
+            $this->_url = null;
+            return $this;
+        }
+
         $url = str_replace('&amp;', '&', $url);
 
         if(false !== strpos($url, '&') && false === strpos($url, '?')) {
@@ -262,13 +274,17 @@ class Embed implements IVideoEmbed {
 
 // String
     public function render() {
+        if($this->_url === null && $this->_source !== null) {
+            return new aura\html\Element('div.videoEmbed', new aura\html\ElementString($this->_source));
+        }
+
         if($this->_provider) {
             $func = '_prepare'.ucfirst($this->_provider).'Url';
         } else {
             $func = '_prepareGenericUrl';
         }
 
-        $tag = new aura\html\Element('iframe', null, [
+        $tag = new aura\html\Element('iframe.videoEmbed', null, [
             'src' => $this->$func($this->_url),
             'width' => $this->_width,
             'height' => $this->_height,
