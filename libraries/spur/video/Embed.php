@@ -275,7 +275,7 @@ class Embed implements IVideoEmbed {
 // String
     public function render() {
         if($this->_url === null && $this->_source !== null) {
-            return new aura\html\Element('div.videoEmbed', new aura\html\ElementString($this->_source));
+            return new aura\html\Element('div.w-videoEmbed', new aura\html\ElementString($this->_source));
         }
 
         if($this->_provider) {
@@ -284,7 +284,7 @@ class Embed implements IVideoEmbed {
             $func = '_prepareGenericUrl';
         }
 
-        $tag = new aura\html\Element('iframe.videoEmbed', null, [
+        $tag = new aura\html\Element('iframe.w-videoEmbed', null, [
             'src' => $this->$func($this->_url),
             'width' => $this->_width,
             'height' => $this->_height,
