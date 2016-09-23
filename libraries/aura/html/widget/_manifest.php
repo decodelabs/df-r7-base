@@ -90,8 +90,8 @@ interface IBodyContentAwareWidget extends IWidget {
 interface IContainerWidget extends IWidget, core\collection\IIndexedQueue, aura\html\IWidgetFinder {}
 
 
-interface IFieldDataProvider extends core\constraint\IRequirable, core\constraint\IDisableable, core\constraint\IReadOnly {
-
+interface IFieldDataProvider extends core\constraint\IRequirable, core\constraint\IDisableable {
+    public function getErrors(): array;
 }
 
 
@@ -110,7 +110,7 @@ interface IFormDataWidget extends IFormOrientedWidget {
     public function getTargetFormId();
 }
 
-interface IInputWidget extends IFormDataWidget, IFieldDataProvider {
+interface IInputWidget extends IFormDataWidget, IFieldDataProvider, core\constraint\IReadOnly {
     public function setTabIndex($index);
     public function getTabIndex();
 }

@@ -224,6 +224,10 @@ trait TWidget_FormData {
         return $this;
     }
 
+    public function getErrors(): array {
+        return $this->getValue()->getErrors();
+    }
+
 
 // Target form
     public function setTargetFormId($id) {

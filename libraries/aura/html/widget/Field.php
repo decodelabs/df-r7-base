@@ -97,7 +97,7 @@ class Field extends Container implements IFormOrientedWidget {
 
     protected function _walkChildren(array $children, &$errors, &$isRequired, &$primaryWidget) {
         foreach($children as $child) {
-            if($child instanceof IInputWidget) {
+            if($child instanceof IFieldDataProvider) {
                 if(!$primaryWidget) {
                     $primaryWidget = $child;
                 }
@@ -106,11 +106,7 @@ class Field extends Container implements IFormOrientedWidget {
                     $isRequired = $child->isRequired();
                 }
 
-                $value = $child->getValue();
-
-                if($value->hasErrors()) {
-                    $errors = array_merge($errors, $value->getErrors());
-                }
+                $errors = array_merge($errors, $child->getErrors());
             } else if($child instanceof aura\html\IElement) {
                 $this->_walkChildren($child->toArray(), $errors, $isRequired, $primaryWidget);
             }
@@ -135,12 +131,8 @@ class Field extends Container implements IFormOrientedWidget {
         }
 
         foreach($children as $child) {
-            if($child instanceof IInputWidget) {
-                $value = $child->getValue();
-
-                if($value->hasErrors()) {
-                    $errors = array_merge($errors, $value->getErrors());
-                }
+            if($child instanceof IFieldDataProvider) {
+                $errors = array_merge($errors, $child->getErrors());
             }
         }
 
