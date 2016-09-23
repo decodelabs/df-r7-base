@@ -198,7 +198,7 @@ class Parser implements flex\IHtmlProducer {
             }
         }
 
-        if(!$currentBlock->isComplete) {
+        if($currentBlock && !$currentBlock->isComplete) {
             $currentBlock->isComplete = true;
         }
 
