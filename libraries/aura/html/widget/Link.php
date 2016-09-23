@@ -153,7 +153,8 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         if(!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
-            $active = $matchRequest->eq($this->_context->request);
+            //$active = $matchRequest->matches($this->_context->request);
+            $active = $this->_context->request->matches($matchRequest);
         }
 
         if(!$active && !empty($this->_altMatches)) {
@@ -315,7 +316,8 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         if(!$active && $this->_matchRequest) {
             $matchRequest = $this->_context->uri->directoryRequest($this->_matchRequest);
-            $active = $matchRequest->eq($request);
+            //$active = $matchRequest->eq($request);
+            $active = $request->matches($matchRequest);
         }
 
         if(!$active && !empty($this->_altMatches)) {
