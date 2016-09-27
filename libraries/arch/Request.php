@@ -490,7 +490,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
         if(substr($rpString, -6) == '/index') {
             if(0 !== stripos($tpString, $rpDirString)
-            || $rpDirString == '~front/'
+            || ($rpDirString == '~front/' && $tpString != $rpString)
             || dirname($tpString).'/' != $rpDirString) {
                 return false;
             }
