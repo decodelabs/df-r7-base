@@ -40,7 +40,7 @@ class OneChild extends Base implements axis\schema\IOneChildField {
 
             return $output;
         } else {
-            return null;
+            return $value;
         }
     }
 

@@ -93,7 +93,7 @@ class OneChildRelationValueContainer implements
             $value = $value->getPrimaryKeySet();
         } else if(!$value instanceof opal\record\IPrimaryKeySet) {
             // TODO: swap array('id') for target primary fields
-            $value = new opal\record\PrimaryKeySet(['id'], [$value]);
+            $value = new opal\record\PrimaryKeySet(['id'], ['id' => $value]);
         }
 
         $this->_insertPrimaryKeySet = $value;
