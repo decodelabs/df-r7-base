@@ -58,6 +58,7 @@ class OneChildRelationValueContainer implements
         if($this->_record) {
             $inverseValue = $this->_record->getRaw($this->_field->getTargetField());
             $inverseValue->populateInverse($record);
+            $this->_record->markAsChanged($this->_field->getTargetField());
         }
 
         return $this;
