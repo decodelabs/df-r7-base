@@ -412,7 +412,13 @@ trait TView_Layout {
     }
 
     public function setLayout($layout) {
-        $this->_layout = ucfirst(flex\Text::formatId($layout));
+        if($layout === null) {
+            $this->_layout = null;
+            $this->_useLayout = false;
+        } else {
+            $this->_layout = ucfirst(flex\Text::formatId($layout));
+        }
+
         return $this;
     }
 
