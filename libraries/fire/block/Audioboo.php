@@ -64,12 +64,13 @@ class Audioboo extends Base {
     }
 
     public function render() {
-        $string = '<iframe width="100%" height="300" style="background-color:transparent; display:block; max-width: 700px;" frameborder="0" allowtransparency="allowtransparency" scrolling="no" src="//embeds.audioboom.com/boos/'.$this->_booId.'/embed/v4?eid=AQAAANIgxFfWgAoA" title="audioBoom player"></iframe>';
+        $view = $this->getView();
+        $output = $view->html->audioEmbed('//embeds.audioboom.com/boos/'.$this->_booId.'/embed/v4');
 
         if(!$this->_isNested) {
-            $string = '<div class="audioBooContent">'.$string.'</div>';
+            $output = $view->html('div.audioBooContent', $output);
         }
 
-        return $this->getView()->html($string);
+        return $output;
     }
 }

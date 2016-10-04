@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\spur\video;
+namespace df\spur\audio;
 
 use df;
 use df\core;
@@ -11,20 +11,18 @@ use df\spur;
 use df\link;
 use df\aura;
 
-class Embed implements IVideoEmbed {
+class Embed implements IAudioEmbed {
 
     use core\TStringProvider;
 
     const URL_MAP = [
-        'youtube' => 'youtube',
-        'youtu.be' => 'youtube',
-        'vimeo' => 'vimeo'
+        'audioboom' => 'audioboom',
+        'audioboo' => 'audioboom'
     ];
 
     protected $_url;
     protected $_width = 640;
     protected $_height = 360;
-    protected $_allowFullScreen = true;
     protected $_startTime;
     protected $_endTime;
     protected $_duration;
@@ -42,7 +40,7 @@ class Embed implements IVideoEmbed {
 
             if(!preg_match('/^\<([a-zA-Z0-9\-]+) /i', $embed, $matches)) {
                 throw new UnexpectedValueException(
-                    'Don\'t know how to parse this video embed'
+                    'Don\'t know how to parse this audio embed'
                 );
             }
 
@@ -81,7 +79,7 @@ class Embed implements IVideoEmbed {
 
                 default:
                     throw new UnexpectedValueException(
-                        'Don\'t know how to parse this video embed'
+                        'Don\'t know how to parse this audio embed'
                     );
             }
         } else {
@@ -202,15 +200,6 @@ class Embed implements IVideoEmbed {
         return $this;
     }
 
-// Full screen
-    public function shouldAllowFullScreen(bool $flag=null) {
-        if($flag !== null) {
-            $this->_allowFullScreen = $flag;
-            return $this;
-        }
-
-        return $this->_allowFullScreen;
-    }
 
 
 // Duration
@@ -275,7 +264,7 @@ class Embed implements IVideoEmbed {
 // String
     public function render() {
         if(($this->_url === null || !$this->_provider) && $this->_source !== null) {
-            return new aura\html\Element('div.w-videoEmbed', new aura\html\ElementString($this->_source));
+            return new aura\html\Element('div.w-audioEmbed', new aura\html\ElementString($this->_source));
         }
 
         if($this->_provider) {
@@ -290,110 +279,36 @@ class Embed implements IVideoEmbed {
             ]);
         }
 
-        $tag->addClass('w-videoEmbed');
-
-        if($tag->getName() == 'iframe' && $this->_allowFullScreen) {
-            $tag->setAttribute('allowfullscreen', true);
-            $tag->setAttribute('webkitAllowFullScreen', true);
-            $tag->setAttribute('mozallowfullscreen', true);
-        }
+        $tag->addClass('w-audioEmbed');
 
         return $tag;
     }
 
     public function toString(): string {
-        return $this->render()->toString();
+        return (string)$this->render();
     }
 
 
-// Url prepare
-    protected function _renderYoutube() {
+
+    protected function _renderAudioboom() {
         $url = link\http\Url::factory($this->_url);
 
-        if(isset($url->query->v)) {
-            $id = $url->query['v'];
-        } else {
-            $id = $url->path->getLast();
+        $booId = $url->path->get(1);
+        $eid = $url->query['eid'];
 
-            if($id == 'watch') {
-                core\stub($url);
-            }
-        }
+        $url = new link\http\Url('embeds.audioboom.com/boos/'.$booId.'/embed/v4');
 
-        static $vars = [
-            'autohide', 'autoplay', 'cc_load_policy', 'color', 'controls',
-            'disablekb', 'enablejsapi', 'end', 'fs', 'hl', 'iv_load_policy',
-            'list', 'listType', 'loop', 'modestbranding', 'origin', 'playerapiid',
-            'playlist', 'playsinline', 'rel', 'showinfo', 'start', 'theme'
-        ];
-
-        $url = new link\http\Url('//www.youtube.com/embed/'.$id);
-
-        foreach($url->query as $key => $node) {
-            if(in_array(strtolower($key), $vars)) {
-                $url->query->set($key, $node);
-            }
-        }
-
-        if($this->_startTime !== null) {
-            $url->query->start = $this->_startTime;
-        }
-
-        if($this->_endTime !== null) {
-            $url->query->end = $this->_endTime;
-        }
-
-        if($this->_duration !== null) {
-            $url->query->end = $this->_duration + $this->_startTime;
-        }
-
-        if($this->_autoPlay) {
-            $url->query->autoplay = 1;
+        if(!empty($eid)) {
+            $url->query->eid = $eid;
         }
 
         $tag = new aura\html\Element('iframe', null, [
             'src' => $url,
-            'width' => $this->_width,
-            'height' => $this->_height,
-            'frameborder' => 0
-        ]);
-
-        return $tag;
-    }
-
-    protected function _renderVimeo() {
-        $urlObj = link\http\Url::factory($this->_url);
-        $id = $urlObj->path->getLast();
-
-        if(!is_numeric($id)) {
-            return $urlObj;
-        }
-
-        $url = new link\http\Url('//player.vimeo.com/video/'.$id);
-
-        if($this->_autoPlay) {
-            $url->query->autoplay = 1;
-        }
-
-        /*
-        if($this->_startTime !== null) {
-            $url->query->start = $this->_startTime.'s';
-        }
-
-        if($this->_endTime !== null) {
-            $url->query->end = $this->_endTime.'s';
-        }
-
-        if($this->_duration !== null) {
-            $url->query->end = $this->_duration + $this->_startTime;
-        }
-        */
-
-        $tag = new aura\html\Element('iframe', null, [
-            'src' => $url,
-            'width' => $this->_width,
-            'height' => $this->_height,
-            'frameborder' => 0
+            'width' => '100%',
+            'height' => '300',
+            'frameborder' => 0,
+            'allowtransparency' => 'allowtransparency',
+            'scrolling' => 'no'
         ]);
 
         return $tag;

@@ -11,7 +11,7 @@ use df\fire;
 use df\flex;
 use df\aura;
 
-class VideoEmbed extends Base {
+class AudioEmbed extends Base {
 
     const OUTPUT_TYPES = ['Html'];
     const DEFAULT_CATEGORIES = ['Article', 'Description'];
@@ -19,7 +19,7 @@ class VideoEmbed extends Base {
     protected $_embedCode;
 
     public function getFormat() {
-        return 'video';
+        return 'audio';
     }
 
     public function setEmbedCode($code) {
@@ -62,7 +62,7 @@ class VideoEmbed extends Base {
 
 
     public function render() {
-        $output = $this->getView()->html->videoEmbed($this->_embedCode);
+        $output = $this->getView()->html->audioEmbed($this->_embedCode);
 
         if($output) {
             $output = $output->render()
