@@ -290,7 +290,7 @@ class Embed implements IAudioEmbed {
         $booId = $url->path->get(1);
         $eid = $url->query['eid'];
 
-        $url = new link\http\Url('embeds.audioboom.com/boos/'.$booId.'/embed/v4');
+        $url = new link\http\Url('//embeds.audioboom.com/boos/'.$booId.'/embed/v4');
 
         if(!empty($eid)) {
             $url->query->eid = $eid;
