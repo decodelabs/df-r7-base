@@ -139,8 +139,7 @@ class Embed implements IVideoEmbed {
     }
 
     public function getPreparedUrl() {
-        $tag = $this->render();
-        return $tag->getAttribute('src');
+        return $this->render()->getAttribute('src');
     }
 
     public function getProvider() {

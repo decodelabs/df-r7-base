@@ -137,13 +137,7 @@ class Embed implements IAudioEmbed {
     }
 
     public function getPreparedUrl() {
-        if($this->_provider) {
-            $func = '_prepare'.ucfirst($this->_provider).'Url';
-        } else {
-            $func = '_prepareGenericUrl';
-        }
-
-        return $this->{$func}($this->_url);
+        return $this->render()->getAttribute('src');
     }
 
     public function getProvider() {
