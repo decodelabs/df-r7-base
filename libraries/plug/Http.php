@@ -263,7 +263,7 @@ class Http implements arch\IDirectoryHelper {
         if($referrer = $this->getReferrer()) {
             $referrer = $this->localReferrerToRequest($referrer);
 
-            if(!$referrer->matches($request)) {
+            if($referrer && !$referrer->matches($request)) {
                 return $this->redirect($referrer);
             }
         }
