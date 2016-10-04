@@ -139,13 +139,8 @@ class Embed implements IVideoEmbed {
     }
 
     public function getPreparedUrl() {
-        if($this->_provider) {
-            $func = '_prepare'.ucfirst($this->_provider).'Url';
-        } else {
-            $func = '_prepareGenericUrl';
-        }
-
-        return $this->{$func}($this->_url);
+        $tag = $this->render();
+        return $tag->getAttribute('src');
     }
 
     public function getProvider() {
