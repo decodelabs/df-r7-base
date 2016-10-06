@@ -16,9 +16,9 @@ use df\opal;
 
 // Exceptions
 interface IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
+class InvalidArgumentException extends arch\InvalidArgumentException implements IException {}
+class RuntimeException extends arch\RuntimeException implements IException {}
+class LogicException extends arch\LogicException implements IException {}
 
 
 class DelegateException extends RuntimeException {}
