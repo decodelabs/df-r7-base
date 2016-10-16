@@ -23,6 +23,8 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     protected $_errorMessage = 'No results to display';
     protected $_renderIfEmpty = true;
     protected $_showHeader = true;
+    protected $_mode = 'get';
+    protected $_postEvent = 'paginate';
 
     public function __construct(arch\IContext $context, $data, core\collection\IPaginator $paginator=null) {
         parent::__construct($context);
@@ -56,6 +58,44 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         return $this->_showHeader;
     }
 
+    public function setMode(string $mode) {
+        switch($mode) {
+            case 'post':
+            case 'get':
+                $this->_mode = $mode;
+
+                if($this->paginator) {
+                    $this->paginator->setMode($this->_mode);
+                }
+                break;
+
+            default:
+                throw new RuntimeException('Invalid paginator mode: '.$mode);
+        }
+
+        return $this;
+    }
+
+    public function getMode(): string {
+        return $this->_mode;
+    }
+
+    public function setPostEvent(string $event) {
+        $this->_postEvent = $event;
+
+        if($this->paginator) {
+            $this->paginator->setPostEvent($event);
+        }
+
+        return $this;
+    }
+
+    public function getPostEvent() {
+        return $this->_postEvent;
+    }
+
+
+// Render
     protected function _render() {
         if(empty($this->_fields)) {
             throw new RuntimeException(
@@ -78,6 +118,8 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         $orderData = null;
 
         if($this->paginator) {
+            $this->paginator->setMode($this->_mode);
+            $this->paginator->setPostEvent($this->_postEvent);
             $pageData = $this->paginator->getPageData();
 
             if($pageData instanceof core\collection\IOrderablePaginator) {
@@ -88,8 +130,18 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                     $orderData = null;
                 } else {
                     $keyMap = $pageData->getKeyMap();
-                    $request = clone $this->_context->request;
-                    $query = $request->getQuery();
+
+                    if($this->_mode == 'get') {
+                        $request = clone $this->_context->request;
+                        $query = $request->getQuery();
+                    } else {
+                        $request = null;
+                        $query = new core\collection\Tree([
+                            $keyMap['limit'] => $pageData->getLimit(),
+                            $keyMap['page'] => $pageData->getPage(),
+                            $keyMap['order'] => ''
+                        ]);
+                    }
                 }
             }
         }
@@ -134,12 +186,23 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         $tagContent[] = ' / ';
                     }
 
-                    $tagContent[] = (new aura\html\Element('a', $label, [
-                            'href' => $this->_context->uri->__invoke($request),
-                            'class' => $class,
-                            'rel' => 'nofollow'
-                        ]))
-                        ->render();
+                    if($this->_mode == 'get') {
+                        $tagContent[] = (new aura\html\Element('a', $label, [
+                                'href' => $this->_context->uri->__invoke($request),
+                                'class' => $class,
+                                'rel' => 'nofollow'
+                            ]))
+                            ->render();
+                    } else {
+                        $tagContent[] = (new aura\html\Element('button', $label, [
+                                'type' => 'submit',
+                                'class' => $class,
+                                'name' => 'formEvent',
+                                'value' => $this->_postEvent.'('.$query->toArrayDelimitedString().')',
+                                'formnovalidate' => true
+                            ]))
+                            ->render();
+                    }
 
                     if($isActive && $isNullable !== false) {
                         $direction = trim($direction, '!^*') == 'DESC' ? 'ASC' : 'DESC';
@@ -157,13 +220,25 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         }
 
                         $query->__set($keyMap['order'], $key.' '.$direction);
+                        $nullLabel = $newOrder == 'ascending' ? '○' : '●';
 
-                        $tagContent[] = (new aura\html\Element('a', $newOrder == 'ascending' ? '○' : '●', [
-                                'href' => $this->_context->uri->__invoke($request),
-                                'class' => 'null-order null-'.$newOrder,
-                                'rel' => 'nofollow'
-                            ]))
-                            ->render();
+                        if($this->_mode == 'get') {
+                            $tagContent[] = (new aura\html\Element('a', $nullLabel, [
+                                    'href' => $this->_context->uri->__invoke($request),
+                                    'class' => 'null-order null-'.$newOrder,
+                                    'rel' => 'nofollow'
+                                ]))
+                                ->render();
+                        } else {
+                            $tagContent[] = (new aura\html\Element('button', $nullLabel, [
+                                    'type' => 'submit',
+                                    'class' => 'null-order null-'.$newOrder,
+                                    'name' => 'formEvent',
+                                    'value' => $this->_postEvent.'('.$query->toArrayDelimitedString().')',
+                                    'formnovalidate' => true
+                                ]))
+                                ->render();
+                        }
                     }
                 } else {
                     $tagContent[] = $label;

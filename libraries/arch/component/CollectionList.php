@@ -20,6 +20,8 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy {
     protected $_fields = [];
     protected $_urlRedirect = null;
     protected $_viewArg;
+    protected $_mode = 'get';
+    protected $_postEvent = 'paginate';
 
     protected function init(array $fields=null, $collection=null) {
         if(static::DEFAULT_ERROR_MESSAGE !== null) {
@@ -48,6 +50,33 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy {
 
     public function getCollection() {
         return $this->_collection;
+    }
+
+    public function setMode(string $mode) {
+        switch($mode) {
+            case 'post':
+            case 'get':
+                $this->_mode = $mode;
+                break;
+
+            default:
+                throw new RuntimeException('Invalid paginator mode: '.$mode);
+        }
+
+        return $this;
+    }
+
+    public function getMode(): string {
+        return $this->_mode;
+    }
+
+    public function setPostEvent(string $event) {
+        $this->_postEvent = $event;
+        return $this;
+    }
+
+    public function getPostEvent() {
+        return $this->_postEvent;
     }
 
 // Error
@@ -165,6 +194,8 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy {
         }
 
         $output = $this->view->html->collectionList($this->_collection);
+        $output->setMode($this->_mode);
+        $output->setPostEvent($this->_postEvent);
         $context = $output->getRendererContext();
         $context->setComponent($this);
 

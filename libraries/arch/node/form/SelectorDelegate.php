@@ -475,9 +475,14 @@ abstract class SelectorDelegate extends Delegate implements
 
             $query = $this->_getQuery(null, $search);
             $query->wherePrerequisite('@primary', '!in', $keyList);
-            $query->paginate()->setDefaultLimit(50)->applyWith([]);
+            $query->paginate()->setDefaultLimit(50)->applyWith($this->values->paginator);
 
             $fa = $fs->addField($this->_('Search results'));
+
+            foreach($this->values->paginator as $key => $val) {
+                $fa->addHidden($this->fieldName('paginator['.$key.']'), $val);
+            }
+
             $collectionWidget = $this->_renderCollectionList($query);
 
             if($collectionWidget instanceof aura\html\widget\IWidgetProxy) {
@@ -501,6 +506,12 @@ abstract class SelectorDelegate extends Delegate implements
                     ];
                 });
 
+                if(method_exists($collectionWidget, 'setMode')) {
+                    $collectionWidget
+                        ->setMode('post')
+                        ->setPostEvent($this->eventName('paginate'));
+                }
+
                 $fa->push($collectionWidget);
             } else if($collectionWidget !== null) {
                 // Something else - trust child class
@@ -518,7 +529,6 @@ abstract class SelectorDelegate extends Delegate implements
                     );
                 }
             }
-
 
 
             $fa->addEventButton(
@@ -650,7 +660,7 @@ abstract class SelectorDelegate extends Delegate implements
 
 // Events
     protected function onSearchEvent() {
-        unset($this->values->searchResults);
+        unset($this->values->searchResults, $this->values->paginator);
 
         $this->data->newValidator()
             // Search
@@ -717,5 +727,10 @@ abstract class SelectorDelegate extends Delegate implements
         if($this->_state->hasStore('originalSelection')) {
             $this->setSelected($this->_state->getStore('originalSelection'));
         }
+    }
+
+    protected function onPaginateEvent($query) {
+        $query = core\collection\Tree::fromArrayDelimitedString($query);
+        $this->values->paginator->import($query);
     }
 }

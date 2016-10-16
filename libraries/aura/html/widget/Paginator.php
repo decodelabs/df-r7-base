@@ -18,6 +18,8 @@ class Paginator extends Base implements core\IDumpable {
     protected $_prevText = null;
     protected $_nextText = null;
     protected $_renderDetails = true;
+    protected $_mode = 'get';
+    protected $_postEvent = 'paginate';
     protected $_pageData;
 
     public function __construct(arch\IContext $context, $data) {
@@ -34,6 +36,33 @@ class Paginator extends Base implements core\IDumpable {
         $this->_pageData = $data;
     }
 
+    public function setMode(string $mode) {
+        switch($mode) {
+            case 'post':
+            case 'get':
+                $this->_mode = $mode;
+                break;
+
+            default:
+                throw new RuntimeException('Invalid paginator mode: '.$mode);
+        }
+
+        return $this;
+    }
+
+    public function getMode(): string {
+        return $this->_mode;
+    }
+
+    public function setPostEvent(string $event) {
+        $this->_postEvent = $event;
+        return $this;
+    }
+
+    public function getPostEvent() {
+        return $this->_postEvent;
+    }
+
     protected function _render() {
         if(!$this->_pageData) {
             return '';
@@ -46,7 +75,7 @@ class Paginator extends Base implements core\IDumpable {
         }
 
         $offset = $this->_pageData->getOffset();
-        $currentPage = round($offset / $limit) + 1;
+        $currentPage = $this->_pageData->getPage();
         $total = $this->_pageData->countTotal();
         $totalPages = ceil($total / $limit);
 
@@ -58,11 +87,30 @@ class Paginator extends Base implements core\IDumpable {
             $currentPage = $totalPages;
         }
 
-        $request = clone $this->_context->request;
-        $query = $request->getQuery();
-
         $map = $this->_pageData->getKeyMap();
         $linkList = [];
+
+        if($this->_mode == 'get') {
+            $request = clone $this->_context->request;
+            $query = $request->getQuery();
+        } else {
+            $request = null;
+
+            $order = [];
+
+            foreach($this->_pageData->getOrderDirectives() as $dirName => $directive) {
+                $order[] = $dirName.' '.$directive->getDirection();
+            }
+
+            $order = implode(',', $order);
+
+            $query = new core\collection\Tree([
+                $map['limit'] => $limit,
+                $map['page'] => $currentPage,
+                $map['order'] => $order
+            ]);
+        }
+
 
 
         // Prev
@@ -75,11 +123,21 @@ class Paginator extends Base implements core\IDumpable {
                 $prevText = $this->_prevText;
             }
 
-            $element = new aura\html\Element('a', $prevText, [
-                'href' => $this->_context->uri->__invoke($request),
-                'class' => 'link-prev',
-                'rel' => 'prev'
-            ]);
+            if($this->_mode == 'get') {
+                $element = new aura\html\Element('a', $prevText, [
+                    'href' => $this->_context->uri->__invoke($request),
+                    'class' => 'prev',
+                    'rel' => 'prev'
+                ]);
+            } else {
+                $element = new aura\html\Element('button', $prevText, [
+                    'type' => 'submit',
+                    'class' => 'prev',
+                    'name' => 'formEvent',
+                    'value' => $this->_postEvent.'('.$query->toArrayDelimitedString().')',
+                    'formnovalidate' => true
+                ]);
+            }
 
             $linkList[] = $element->render();
         }
@@ -96,12 +154,23 @@ class Paginator extends Base implements core\IDumpable {
             || $i < 3
             || $i > $totalPages - 2
             || ($i > $currentPage - 3 && $i < $currentPage + 3)) {
-                $element = new aura\html\Element('a', $i, [
-                    'href' => $this->_context->uri->__invoke($request)
-                ]);
+                if($this->_mode == 'get') {
+                    $element = new aura\html\Element('a', $i, [
+                        'href' => $this->_context->uri->__invoke($request),
+                        'class' => 'page'
+                    ]);
+                } else {
+                    $element = new aura\html\Element('button', $i, [
+                        'type' => 'submit',
+                        'class' => 'page',
+                        'name' => 'formEvent',
+                        'value' => $this->_postEvent.'('.$query->toArrayDelimitedString().')',
+                        'formnovalidate' => true
+                    ]);
+                }
 
                 if($isCurrent) {
-                    $element->addClass('link-selected');
+                    $element->addClass('active');
                 }
 
                 if($i == 1) {
@@ -129,11 +198,21 @@ class Paginator extends Base implements core\IDumpable {
                 $nextText = $this->_nextText;
             }
 
-            $element = new aura\html\Element('a', $nextText, [
-                'href' => $this->_context->uri->__invoke($request),
-                'class' => 'link-next',
-                'rel' => 'next'
-            ]);
+            if($this->_mode == 'get') {
+                $element = new aura\html\Element('a', $nextText, [
+                    'href' => $this->_context->uri->__invoke($request),
+                    'class' => 'next',
+                    'rel' => 'next'
+                ]);
+            } else {
+                $element = new aura\html\Element('button', $nextText, [
+                    'type' => 'submit',
+                    'class' => 'next',
+                    'name' => 'formEvent',
+                    'value' => $this->_postEvent.'('.$query->toArrayDelimitedString().')',
+                    'formnovalidate' => true
+                ]);
+            }
 
             $linkList[] = $element->render();
         }
