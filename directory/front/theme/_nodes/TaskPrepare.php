@@ -13,6 +13,8 @@ use df\arch;
 class TaskPrepare extends arch\node\Task implements arch\node\IBuildTaskNode {
 
     public function execute() {
+        $this->runChild('theme/install-dependencies', false);
+
         $this->io->write('Clearing sass cache...');
 
         core\fs\Dir::delete(
@@ -20,7 +22,5 @@ class TaskPrepare extends arch\node\Task implements arch\node\IBuildTaskNode {
         );
 
         $this->io->writeLine(' done');
-
-        $this->runChild('theme/install-dependencies', false);
     }
 }
