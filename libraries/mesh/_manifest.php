@@ -18,6 +18,9 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 // Interfaces
 interface IManager extends mesh\event\IEmitter, core\IManager {
+    // Jobs
+    public function newJobQueue();
+
     // Handlers
     public function registerHandler($scheme, IHandler $handler);
     public function unregisterHandler($scheme);
