@@ -353,7 +353,7 @@ class Bridge implements IBridge {
             }
         }
 
-        $sass = preg_replace('/(\?|\&)cts=([^0-9]?)/i', '$1cts='.$cts.'$2', $sass);
+        $sass = preg_replace('/(\?|\&)cts=([^0-9])/i', '$1cts='.$cts.'$2', $sass);
 
         return $sass;
     }
