@@ -402,6 +402,17 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
 
+    public function getPrimaryGroupSetOptionsFor($sourceId) {
+        if(!$source = $this->getListSource($sourceId)) {
+            return [];
+        }
+
+        if(!$listId = $source->getPrimaryListId()) {
+            return [];
+        }
+
+        return $source->getGroupSetOptionsFor($listId);
+    }
 
     public function getPrimaryGroupOptionsFor($sourceId, $nested=false, $showSets=true) {
         if(!$source = $this->getListSource($sourceId)) {

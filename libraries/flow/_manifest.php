@@ -42,6 +42,7 @@ interface IManager extends core\IManager {
 
     public function getListExternalLinkFor($sourceId);
 
+    public function getPrimaryGroupSetOptionsFor($sourceId);
     public function getPrimaryGroupOptionsFor($sourceId, $nested=false);
     public function getPrimaryGroupIdListFor($sourceId);
 
