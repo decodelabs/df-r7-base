@@ -27,6 +27,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     protected $_rel = [];
     protected $_isActive = false;
     protected $_isComputedActive = null;
+    protected $_matchExact = false;
     protected $_hrefLang;
     protected $_media;
     protected $_contentType;
@@ -38,8 +39,9 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         $checkUriMatch = false;
         $this->_checkAccess = null;
 
-        if($matchRequest === true) {
+        if(is_bool($matchRequest)) {
             $checkUriMatch = true;
+            $this->_matchExact = $matchRequest;
             $matchRequest = null;
         }
 
@@ -153,8 +155,12 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         if(!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
-            //$active = $matchRequest->matches($this->_context->request);
-            $active = $this->_context->request->matches($matchRequest);
+
+            if($this->_matchExact) {
+                $active = $this->_context->request->eq($matchRequest);
+            } else {
+                $active = $this->_context->request->matches($matchRequest);
+            }
         }
 
         if(!$active && !empty($this->_altMatches)) {
@@ -228,6 +234,19 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
 
         return $tag->renderWith([$icon, $body]);
+    }
+
+
+
+
+// Match
+    public function shouldMatchExact(bool $flag=null) {
+        if($flag !== null) {
+            $this->_matchExact = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_matchExact;
     }
 
 
@@ -316,8 +335,12 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         if(!$active && $this->_matchRequest) {
             $matchRequest = $this->_context->uri->directoryRequest($this->_matchRequest);
-            //$active = $matchRequest->eq($request);
-            $active = $request->matches($matchRequest);
+
+            if($this->_matchExact) {
+                $active = $request->eq($matchRequest);
+            } else {
+                $active = $request->matches($matchRequest);
+            }
         }
 
         if(!$active && !empty($this->_altMatches)) {
