@@ -25,7 +25,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         }
 
         if($this['timezone'] == 'UTC') {
-            $this['timezone'] = $unit->context->i18n->timezones->suggestForCountry($this['country']);
+            $this['timezone'] = $this->getAdapter()->context->i18n->timezones->suggestForCountry($this['country']);
         }
     }
 
