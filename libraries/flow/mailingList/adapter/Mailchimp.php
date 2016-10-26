@@ -172,7 +172,7 @@ class Mailchimp extends Base {
         }
 
         $result
-            ->isSubscribed($member->getStatus() != 'unsubscribed')
+            ->isSubscribed($member ? $member->getStatus() != 'unsubscribed' : false)
             ->setManualInputUrl($manifest['url']);
 
         try {
