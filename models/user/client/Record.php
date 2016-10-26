@@ -19,17 +19,18 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
 
     protected $_groupsChanged = false;
 
-    protected function onPreUpdate($queue, $job) {
-        $unit = $this->getAdapter();
-
+    protected function onPreSave($queue, $job) {
         if(!$this['nickName']) {
-            $parts = explode(' ', $this['fullName'], 2);
-            $this['nickName'] = array_shift($parts);
+            $this['nickName'] = $this->getFirstName();
         }
 
         if($this['timezone'] == 'UTC') {
             $this['timezone'] = $unit->context->i18n->timezones->suggestForCountry($this['country']);
         }
+    }
+
+    protected function onPreUpdate($queue, $job) {
+        $unit = $this->getAdapter();
 
         if($this->hasChanged('email')) {
             $queue->after($job, 'updateLocalAdapter',
