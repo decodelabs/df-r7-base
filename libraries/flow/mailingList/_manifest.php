@@ -35,7 +35,7 @@ interface ISource {
     public function getGroupOptionsFor($listId, $nested=false, $showSets=true);
     public function getGroupIdListFor($listId);
 
-    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $groups=null, $replace=false);
+    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $groups=null, $replace=false): ISubscribeResult;
 
     public function getClientManifest();
     public function getClientSubscribedGroupsIn($listId);
@@ -51,12 +51,24 @@ interface IAdapter {
     public function canConnect();
     public function fetchManifest();
 
-    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $manifest, array $groups=null, $replace=false);
+    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $manifest, array $groups=null, $replace=false): ISubscribeResult;
     public function fetchClientManifest(array $manifest);
     public function updateListUserDetails($oldEmail, user\IClientDataObject $client, array $manifest);
     public function unsubscribeUserFromList(user\IClientDataObject $client, $listId);
 }
 
+
+interface ISubscribeResult {
+    public function isSuccessful(bool $flag=null);
+    public function isSubscribed(bool $flag=null);
+    public function requiresManualInput(bool $flag=null);
+    public function setManualInputUrl(string $url=null);
+    public function getManualInputUrl();
+    public function setEmailAddress($address, $name=null);
+    public function getEmailAddress();//: ?flow\mail\IAddress;
+    public function setSubscribedGroups(array $groups);
+    public function getSubscribedGroups(): array;
+}
 
 
 class Cache extends core\cache\SessionExtended {}

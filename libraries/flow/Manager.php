@@ -440,24 +440,26 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 
-    public function subscribeClientToPrimaryList($sourceId, array $groups=null, $replace=false) {
+    public function subscribeClientToPrimaryList($sourceId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult {
         $client = user\Manager::getInstance()->getClient();
         return $this->subscribeUserToPrimaryList($client, $sourceId, $groups, $replace);
     }
 
-    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=false)  {
+    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult  {
         $client = user\Manager::getInstance()->getClient();
         return $this->subscribeUserToList($client, $sourceId, $listId, $groups, $replace);
     }
 
-    public function subscribeClientToGroups(array $compoundGroupIds, $replace=false)  {
+    public function subscribeClientToGroups(array $compoundGroupIds, $replace=false): array  {
         $client = user\Manager::getInstance()->getClient();
         return $this->subscribeUserToGroups($client, $compoundGroupIds, $replace);
     }
 
-    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId, array $groups=null, $replace=false)  {
+    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult  {
         if(!$source = $this->getListSource($sourceId)) {
-            return $this;
+            throw new flow\mailingList\RuntimeException(
+                'List source '.$sourceId.' does not exist'
+            );
         }
 
         if(!$listId = $source->getPrimaryListId()) {
@@ -469,16 +471,18 @@ class Manager implements IManager, core\IShutdownAware {
         return $this->subscribeUserToList($client, $source, $listId, $groups, $replace);
     }
 
-    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false)  {
-        if($source = $this->getListSource($sourceId)) {
-            $source->subscribeUserToList($client, $listId, $groups, $replace);
+    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult  {
+        if(!$source = $this->getListSource($sourceId)) {
+            throw new flow\mailingList\RuntimeException(
+                'List source '.$sourceId.' does not exist'
+            );
         }
 
-        return $this;
+        return $source->subscribeUserToList($client, $listId, $groups, $replace);
     }
 
-    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=false)  {
-        $manifest = [];
+    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=false): array  {
+        $manifest = $output = [];
 
         foreach($compoundGroupIds as $id) {
             list($sourceId, $listId, $groupId) = explode('/', $id);
@@ -487,11 +491,11 @@ class Manager implements IManager, core\IShutdownAware {
 
         foreach($manifest as $sourceId => $lists) {
             foreach($lists as $listId => $groups) {
-                $this->subscribeClientToList($client, $sourceId, $listId, $groups, $replace);
+                $output[$sourceId][$listId] = $this->subscribeClientToList($client, $sourceId, $listId, $groups, $replace);
             }
         }
 
-        return $this;
+        return $output;
     }
 
 

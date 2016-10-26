@@ -231,19 +231,21 @@ class Source implements ISource {
 
 
 
-    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $groups=null, $replace=false) {
+    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $groups=null, $replace=false): ISubscribeResult {
         $manifest = $this->getManifest();
 
         if(!isset($manifest[$listId])) {
             throw new RuntimeException('List id '.$listId.' could not be found on source '.$this->_id);
         }
 
-        $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace);
+        $result = $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace);
 
-        $cache = flow\mailingList\Cache::getInstance();
-        $cache->removeSession('client:'.$this->_id);
+        if($result->isSuccessful()) {
+            $cache = flow\mailingList\Cache::getInstance();
+            $cache->removeSession('client:'.$this->_id);
+        }
 
-        return $this;
+        return $result;
     }
 
 

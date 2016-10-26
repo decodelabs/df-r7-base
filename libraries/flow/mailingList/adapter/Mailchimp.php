@@ -71,14 +71,16 @@ class Mailchimp extends Base {
         return $output;
     }
 
-    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $manifest, array $groups=null, $replace=false) {
+    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $manifest, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult {
         $email = $client->getEmail();
         $merges = [];
+        $result = new flow\mailingList\SubscribeResult();
 
         if(!$email) {
-            return $this;
+            return $result;
         }
 
+        $result->setEmailAddress($email, $client->getFullName());
         $memberGroupData = null;
 
         if($member = $this->_getMemberData($listId, $email)) {
@@ -169,12 +171,41 @@ class Mailchimp extends Base {
             }
         }
 
-        $this->_mediator->ensureSubscription($listId, $email, $merges, $groups);
+        $result
+            ->isSubscribed($member->getStatus() != 'unsubscribed')
+            ->setManualInputUrl($manifest['url']);
 
-        $cache = flow\mailingList\Cache::getInstance();
-        $cache->removeSession('mailchimp:'.$listId);
+        try {
+            $this->_mediator->ensureSubscription($listId, $email, $merges, $groups);
 
-        return $this;
+            $result
+                ->isSuccessful(true)
+                ->isSubscribed(true);
+        } catch(spur\ApiError $e) {
+            switch($e->getData()['code']) {
+                case 212:
+                    $result
+                        ->isSuccessful(false)
+                        ->requiresManualInput(true);
+                    break;
+
+                default:
+                    throw $e;
+            }
+        }
+
+        if($result->isSuccessful()) {
+            $cache = flow\mailingList\Cache::getInstance();
+            $cache->removeSession('mailchimp:'.$listId);
+        }
+
+        $clientManifest = $this->fetchClientManifest([$listId => $manifest]);
+
+        if(isset($clientManifest[$listId])) {
+            $result->setSubscribedGroups(array_keys($clientManifest[$listId]));
+        }
+
+        return $result;
     }
 
     public function unsubscribeUserFromList(user\IClientDataObject $client, $listId) {

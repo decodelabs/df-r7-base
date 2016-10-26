@@ -46,12 +46,12 @@ interface IManager extends core\IManager {
     public function getPrimaryGroupOptionsFor($sourceId, $nested=false);
     public function getPrimaryGroupIdListFor($sourceId);
 
-    public function subscribeClientToPrimaryList($sourceId, array $groups=null, $replace=false);
-    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=false);
-    public function subscribeClientToGroups(array $compoundGroupIds, $replace=false);
-    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId, array $groups=null, $replace=false);
-    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false);
-    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=false);
+    public function subscribeClientToPrimaryList($sourceId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult;
+    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult;
+    public function subscribeClientToGroups(array $compoundGroupIds, $replace=false): array;
+    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult;
+    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult;
+    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=false): array;
 
     public function getClientSubscribedGroups();
     public function getClientSubscribedGroupsFor($sourceId);
