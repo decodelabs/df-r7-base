@@ -199,12 +199,6 @@ class Mailchimp extends Base {
             $cache->removeSession('mailchimp:'.$listId);
         }
 
-        $clientManifest = $this->fetchClientManifest([$listId => $manifest]);
-
-        if(isset($clientManifest[$listId])) {
-            $result->setSubscribedGroups(array_keys($clientManifest[$listId]));
-        }
-
         return $result;
     }
 

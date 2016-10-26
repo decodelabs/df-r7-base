@@ -16,7 +16,6 @@ class SubscribeResult implements ISubscribeResult {
     protected $_requiresManualInput = false;
     protected $_manualInputUrl = '';
     protected $_emailAddress;
-    protected $_subscribedGroups = [];
 
     public function isSuccessful(bool $flag=null) {
         if($flag !== null) {
@@ -66,14 +65,5 @@ class SubscribeResult implements ISubscribeResult {
 
     public function getEmailAddress() {
         return $this->_emailAddress;
-    }
-
-    public function setSubscribedGroups(array $groups) {
-        $this->_subscribedGroups = $groups;
-        return $this;
-    }
-
-    public function getSubscribedGroups(): array {
-        return $this->_subscribedGroups;
     }
 }
