@@ -1090,6 +1090,9 @@ interface IBatchIterator extends core\collection\ICollection, \Iterator {
     public function setListValueField(IField $field=null);
     public function getListValueField();
 
+    public function setFormatter(Callable $formatter=null);
+    public function getFormatter();
+
     public function setNestFields(IField ...$fields);
     public function getNestFields();
 

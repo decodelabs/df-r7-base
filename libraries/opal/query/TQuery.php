@@ -2044,11 +2044,13 @@ trait TQuery_Read {
         return $output;
     }
 
-    protected function _createBatchIterator($res, IField $keyField=null, IField $valField=null, $forFetch=false) {
+    protected function _createBatchIterator($res, IField $keyField=null, IField $valField=null, $forFetch=false, Callable $formatter=null) {
         $output = new BatchIterator($this->getSource(), $res, $this->getOutputManifest());
+
         $output->isForFetch($forFetch)
             ->setListKeyField($keyField)
-            ->setListValueField($valField);
+            ->setListValueField($valField)
+            ->setFormatter($formatter);
 
         if($this instanceof IPopulatableQuery) {
             $output->setPopulates($this->getPopulates());
@@ -2078,7 +2080,9 @@ trait TQuery_SelectSourceDataFetcher {
             $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);
         }
 
-        if($valField !== null) {
+        $formatter = null;
+
+        if(is_string($valField)) {
             if(isset($this->_attachments[$valField])) {
                 $valField = new opal\query\field\Attachment($valField, $this->_attachments[$valField]);
             } else {
@@ -2086,6 +2090,9 @@ trait TQuery_SelectSourceDataFetcher {
             }
 
             $this->_source->addOutputField($valField);
+        } else if(is_callable($valField)) {
+            $formatter = $valField;
+            $valField = null;
         }
 
         $this->_source->setKeyField($keyField);
@@ -2097,7 +2104,7 @@ trait TQuery_SelectSourceDataFetcher {
             return $adapter->{$func}($this);
         });
 
-        $output = $this->_createBatchIterator($output, $keyField, $valField);
+        $output = $this->_createBatchIterator($output, $keyField, $valField, false, $formatter);
 
         if($this->_paginator && $this->_offset == 0 && $this->_limit) {
             $count = count($output);

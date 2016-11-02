@@ -22,6 +22,7 @@ class BatchIterator implements IBatchIterator {
 
     protected $_keyField;
     protected $_valField;
+    protected $_formatter;
     protected $_nestFields = [];
 
     protected $_batchData = [];
@@ -127,6 +128,15 @@ class BatchIterator implements IBatchIterator {
 
     public function getListValueField() {
         return $this->_valField;
+    }
+
+    public function setFormatter(Callable $formatter=null) {
+        $this->_formatter = $formatter;
+        return $this;
+    }
+
+    public function getFormatter() {
+        return $this->_formatter;
     }
 
     public function setNestFields(IField ...$fields) {

@@ -39,7 +39,7 @@ interface IArrayManipulator {
     public function applyPopulates(array $populates);
     public function applyAttachments(array $attachments);
     public function applyCombines(array $combines);
-    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, array $nestFields=null, $forFetch=false);
+    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, array $nestFields=null, $forFetch=false, Callable $formatter=null);
 }
 
 interface IClauseMatcher {

@@ -237,13 +237,12 @@ class ArrayManipulator implements IArrayManipulator {
         $this->applyAttachments($batchIterator->getAttachments());
         $this->applyCombines($batchIterator->getCombines());
 
-        //core\dump($batchIterator->getNestFields());
-
         $this->applyOutputFields(
             $batchIterator->getListKeyField(),
             $batchIterator->getListValueField(),
             $batchIterator->getNestFields(),
-            $batchIterator->isForFetch()
+            $batchIterator->isForFetch(),
+            $batchIterator->getFormatter()
         );
 
         return $this->_rows;
@@ -1007,7 +1006,7 @@ class ArrayManipulator implements IArrayManipulator {
 
 
 // Output
-    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, array $nestFields=null, $forFetch=false) {
+    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, array $nestFields=null, $forFetch=false, Callable $formatter=null) {
         if(empty($this->_rows)) {
             return $this;
         }
@@ -1345,6 +1344,10 @@ class ArrayManipulator implements IArrayManipulator {
 
             if($key !== null && !is_scalar($key)) {
                 $key = (string)$key;
+            }
+
+            if($formatter) {
+                $current = $formatter($current, $key);
             }
 
             if($nestFields) {

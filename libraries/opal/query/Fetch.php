@@ -51,11 +51,18 @@ class Fetch implements IFetchQuery, core\IDumpable {
             $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);
         }
 
+        $formatter = null;
+
+        if(is_callable($valField)) {
+            $formatter = $valField;
+            $valField = null;
+        }
+
         $output = $this->_sourceManager->executeQuery($this, function($adapter) {
             return $adapter->executeFetchQuery($this);
         });
 
-        $output = $this->_createBatchIterator($output, $keyField, null, true);
+        $output = $this->_createBatchIterator($output, $keyField, null, true, $formatter);
 
         if($this->_paginator && $this->_offset == 0 && $this->_limit) {
             $count = count($output);
