@@ -23,7 +23,7 @@ interface IScaffold extends core\IRegistryObject, arch\IOptionalDirectoryAccessL
     public function loadNode();
     public function onNodeDispatch(arch\node\INode $node);
     public function loadComponent($name, array $args=null);
-    public function loadFormDelegate($name, arch\node\IFormState $state, $id);
+    public function loadFormDelegate($name, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id);
     public function loadMenu($name, $id);
 
     public function getPropagatingQueryVars();

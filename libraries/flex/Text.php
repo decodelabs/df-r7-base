@@ -68,6 +68,17 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->toString();
     }
 
+    public static function formatConstant($const) {
+        return self::factory($const)
+            ->translitToAscii()
+            ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
+            ->regexReplace('/[^a-zA-Z0-9_ ]/', '')
+            ->replace(' ', '_')
+            ->replace('__', '_')
+            ->toUpper()
+            ->toString();
+    }
+
     public static function formatNodeSlug($node) {
         return self::factory($node)
             ->translitToAscii()

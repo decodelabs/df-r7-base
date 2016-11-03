@@ -176,7 +176,7 @@ abstract class Base implements IScaffold {
         );
     }
 
-    public function loadFormDelegate($name, arch\node\IFormState $state, $id) {
+    public function loadFormDelegate($name, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id) {
         $keyName = $this->getDirectoryKeyName();
         $origName = $name;
 
@@ -192,7 +192,7 @@ abstract class Base implements IScaffold {
             );
         }
 
-        $output = $this->{$method}($state, $id);
+        $output = $this->{$method}($state, $event, $id);
 
         if(!$output instanceof arch\node\IDelegate) {
             throw new LogicException(

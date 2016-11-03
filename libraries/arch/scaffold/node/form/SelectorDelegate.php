@@ -14,9 +14,9 @@ class SelectorDelegate extends arch\node\form\SelectorDelegate {
 
     protected $_scaffold;
 
-    public function __construct(arch\scaffold\IScaffold $scaffold, arch\node\IFormState $state, $id) {
+    public function __construct(arch\scaffold\IScaffold $scaffold, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id) {
         $this->_scaffold = $scaffold;
-        parent::__construct($scaffold->getContext(), $state, $id);
+        parent::__construct($scaffold->getContext(), $state, $event, $id);
     }
 
     protected function setDefaultValues() {

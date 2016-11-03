@@ -90,6 +90,14 @@ class Http implements arch\IDirectoryHelper {
         return $this->_httpRequest->headers->get('Referer');
     }
 
+    public function getReferrerDirectoryRequest() {
+        if(!$referrer = $this->getReferrer()) {
+            return null;
+        }
+
+        return $this->localReferrerToRequest($referrer);
+    }
+
     public function getPostData() {
         return $this->_httpRequest->getPostData();
     }
@@ -196,7 +204,7 @@ class Http implements arch\IDirectoryHelper {
         return $content;
     }
 
-    public function jsonResponse(array $data) {
+    public function jsonResponse($data) {
         return $this->streamResponse(
             $this->context->data->jsonEncode($data),
             'application/json'

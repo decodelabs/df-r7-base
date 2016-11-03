@@ -23,12 +23,10 @@ abstract class Form extends Base implements IFormNode {
 
     const DEFAULT_EVENT = 'save';
     const DEFAULT_REDIRECT = null;
-    const FORCE_REDIRECT = false;
 
     private $_isNew = false;
     private $_isComplete = false;
     private $_sessionNamespace;
-    private $_initResponse;
 
 
     public function __construct(arch\IContext $context) {
@@ -40,6 +38,7 @@ abstract class Form extends Base implements IFormNode {
             );
         }
 
+        $this->event = new arch\node\form\EventDescriptor();
         $this->afterConstruct();
     }
 
@@ -51,6 +50,7 @@ abstract class Form extends Base implements IFormNode {
         $id = null;
 
         if(!empty($response)) {
+            $this->event->parseOutput($response);
             return $response;
         }
 
@@ -100,7 +100,7 @@ abstract class Form extends Base implements IFormNode {
         $response = $this->initWithSession();
 
         if(!empty($response)) {
-            $this->_initResponse = $response;
+            $this->event->parseOutput($response);
         } else {
             if($this->_state->isNew()) {
                 $this->_isNew = true;
@@ -121,15 +121,11 @@ abstract class Form extends Base implements IFormNode {
             }
         }
 
-        if($this->_state->isNew()) {
-            if($referrer = $this->http->getReferrer()) {
-                try {
-                    $referrer = $this->http->getRouter()->urlToRequest(link\http\Url::factory($referrer));
 
-                    if($referrer->matches($this->request)) {
-                        $referrer = null;
-                    }
-                } catch(core\IException $e) {}
+        if($this->_state->isNew()) {
+            if(($referrer = $this->http->getReferrerDirectoryRequest())
+            && $referrer->matches($this->request)) {
+                $referrer = null;
             }
 
             $this->_state->referrer = $referrer;
@@ -232,10 +228,14 @@ abstract class Form extends Base implements IFormNode {
 
 // HTML Request
     public function handleHtmlGetRequest() {
-        if($this->_initResponse) {
-            return $this->_initResponse;
+        if($this->event->hasResponse()) {
+            return $this->event->getResponse();
         }
 
+        return $this->_renderHtmlGetRequest();
+    }
+
+    private function _renderHtmlGetRequest() {
         $setContentProvider = false;
 
         if(!$this->view) {
@@ -278,11 +278,12 @@ abstract class Form extends Base implements IFormNode {
     }
 
     public function handleHtmlPostRequest() {
-        if($this->_initResponse) {
-            return $this->_initResponse;
+        if($this->event->hasResponse()) {
+            return $this->event->getResponse();
         }
 
-        $response = $this->_runPostRequest();
+        $this->_runPostRequest();
+        $response = $this->event->getResponse();
 
         if(empty($response)) {
             $response = $this->http->redirect()->isAlternativeContent(true);
@@ -295,88 +296,56 @@ abstract class Form extends Base implements IFormNode {
 
 // JSON Request
     public function handleJsonGetRequest() {
-        return $this->_newJsonResponse($this->_getJsonResponseData());
+        return $this->http->jsonResponse($this->_getJsonResponseData());
     }
 
     public function handleJsonPostRequest() {
-        $response = $this->_runPostRequest();
+        $this->_runPostRequest();
         $data = $this->_getJsonResponseData();
 
-        if($response instanceof link\http\IRedirectResponse) {
-            $data['redirect'] = (string)$response->getUrl();
+        if($this->event->hasRedirect()) {
+            $data['redirect'] = $this->uri($result->getRedirect());
         }
 
-        return $this->_newJsonResponse($data);
+        return $this->http->jsonResponse($data);
     }
 
     private function _getJsonResponseData() {
-        if($this->_initResponse) {
-            $redirect = null;
-
-            if($this->_initResponse instanceof link\http\IRedirectResponse) {
-                $redirect = clone $this->_initResponse->getUrl();
-                $redirect->path->setExtension('json');
-                $redirect = (string)$redirect;
-            }
-
-            return [
-                'values' => [],
-                'errors' => [],
-                'events' => [],
-                'defaultEvent' => static::DEFAULT_EVENT,
-                'isNew' => $this->_isNew,
-                'isComplete' => $this->_isComplete,
-                'redirect' => $redirect,
-                'forceRedirect' => static::FORCE_REDIRECT
-            ];
-        }
-
         return array_merge($this->getStateData(), [
             'node' => $this->context->request->getLiteralPathString(),
             'events' => $this->getAvailableEvents(),
             'defaultEvent' => static::DEFAULT_EVENT,
             'isNew' => $this->_isNew,
             'isComplete' => $this->_isComplete,
-            'redirect' => null,
-            'forceRedirect' => static::FORCE_REDIRECT
+            'redirect' => $this->event->getRedirect(),
+            'forceRedirect' => $this->event->shouldForceRedirect(),
+            'reload' => $this->event->shouldReload()
         ]);
-    }
-
-    private function _newJsonResponse($json) {
-        return $this->http->stringResponse($this->data->jsonEncode($json), 'application/json');
     }
 
 
 // AJAX Request
     public function handleAjaxGetRequest() {
-        if($this->_initResponse) {
-            $response = $this->_initResponse;
-        } else {
-            $response = null;
-        }
-
-        return $this->_newJsonResponse($this->_getAjaxResponseData($response, $response === null));
+        return $this->http->jsonResponse($this->_getAjaxResponseData());
     }
 
     public function handleAjaxPostRequest() {
-        if($this->_initResponse) {
-            $response = $this->_initResponse;
-        } else {
-            $response = $this->_runPostRequest();
+        if(!$this->event->hasResponse()) {
+            $this->_runPostRequest();
         }
 
-        return $this->_newJsonResponse($this->_getAjaxResponseData($response, true));
+        return $this->http->jsonResponse($this->_getAjaxResponseData());
     }
 
-    private function _getAjaxResponseData($response, $loadUi=false) {
-        $content = $redirect = null;
+    private function _getAjaxResponseData() {
+        $response = $this->event->getResponse();
+        $loadUi = $this->event->getEventName() !== null
+            || $response === null;
+
+        $content = null;
         $type = 'text/html';
 
-        if($response instanceof link\http\IRedirectResponse) {
-            $redirect = clone $response->getUrl();
-            $redirect->path->setExtension('ajax');
-            $redirect = (string)$redirect;
-        } else if($response instanceof link\http\IResponse) {
+        if($response instanceof link\http\IResponse) {
             $content = $response->getContent();
             $type = $response->getContentType();
         } else if(is_string($response)) {
@@ -384,18 +353,24 @@ abstract class Form extends Base implements IFormNode {
         }
 
         if($content === null && $loadUi) {
-            $content = $this->http->getAjaxViewContent($this->handleHtmlGetRequest());
+            $content = $this->http->getAjaxViewContent($this->_renderHtmlGetRequest());
         }
 
-        return [
+        $redirect = $this->event->hasRedirect() ?
+            $this->uri($this->event->getRedirect()) : null;
+
+        $output = [
             'node' => $this->context->request->getLiteralPathString(),
             'content' => $content,
             'type' => $type,
             'redirect' => $redirect,
-            'forceRedirect' => static::FORCE_REDIRECT,
+            'forceRedirect' => $this->event->shouldForceRedirect(),
+            'reload' => $this->event->shouldReload(),
             'isNew' => $this->_isNew,
             'isComplete' => $this->_isComplete
         ];
+
+        return $output;
     }
 
 
@@ -450,6 +425,7 @@ abstract class Form extends Base implements IFormNode {
 
         $targetId = explode('.', trim($event, '.'));
         $event = array_pop($targetId);
+        $targetString = implode('.', $targetId);
         $target = $this;
 
         if(!empty($targetId)) {
@@ -459,16 +435,14 @@ abstract class Form extends Base implements IFormNode {
             }
         }
 
-        $output = $target->handleEvent($event, $args);
+        $target->handleEvent($event, $args);
         $this->triggerPostEvent($target, $event, $args);
 
         if($target->isComplete()) {
-            // TODO: work out $success
-            $success = true;
             $this->setComplete();
 
             foreach($this->_delegates as $delegate) {
-                $delegate->setComplete($success);
+                $delegate->setComplete();
             }
 
             if($this->_sessionNamespace) {
@@ -477,7 +451,6 @@ abstract class Form extends Base implements IFormNode {
             }
         }
 
-        return $output;
     }
 
 

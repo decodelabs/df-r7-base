@@ -383,6 +383,10 @@ class Format implements core\ISharedHelper {
         return flex\Text::formatId($id);
     }
 
+    public function constant($const) {
+        return flex\Text::formatConstant($const);
+    }
+
     public function nodeSlug($node) {
         return flex\Text::formatNodeSlug($node);
     }

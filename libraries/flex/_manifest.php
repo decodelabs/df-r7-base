@@ -217,6 +217,7 @@ interface IText extends core\collection\IIndexedCollection, core\IStringProvider
     public static function formatInitials($name);
     public static function formatLabel($label);
     public static function formatId($id);
+    public static function formatConstant($const);
     public static function formatNodeSlug($slug);
     public static function formatSlug($slug, $allowedChars=null);
     public static function formatPathSlug($slug, $allowChars=null);

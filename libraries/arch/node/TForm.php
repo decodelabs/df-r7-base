@@ -21,6 +21,7 @@ trait TForm {
 
     public $content;
     public $values;
+    public $event;
 
     protected $_isRenderingInline = false;
     protected $_state;
@@ -76,7 +77,7 @@ trait TForm {
             if(!class_exists($class)) {
                 try {
                     $scaffold = arch\scaffold\Base::factory($context);
-                    return $this->_delegates[$id] = $scaffold->loadFormDelegate($name, $state, $mainId);
+                    return $this->_delegates[$id] = $scaffold->loadFormDelegate($name, $state, $this->event, $mainId);
                 } catch(arch\scaffold\IException $e) {}
 
                 throw new DelegateException(
@@ -85,7 +86,7 @@ trait TForm {
             }
         }
 
-        return $this->_delegates[$id] = new $class($context, $state, $mainId);
+        return $this->_delegates[$id] = new $class($context, $state, $this->event, $mainId);
     }
 
     public function directLoadDelegate($id, $class) {
@@ -98,7 +99,8 @@ trait TForm {
         return $this->_delegates[$id] = new $class(
             $this->context,
             $this->_state->getDelegateState($id),
-            $this->_getDelegateIdPrefix().$id
+            $this->_getDelegateIdPrefix().$id,
+            $this->event
         );
     }
 
@@ -270,20 +272,27 @@ trait TForm {
     }
 
     public function complete($success=true, $failure=null) {
-        if($this->isValid() || ($success && !is_callable($success))) {
-            $output = $default = null;
+        $isDirect = is_bool($success);
 
-            if(is_string($success) || $success instanceof arch\IRequest) {
-                $default = $success;
-                $success = null;
-            } else if(is_callable($success)) {
-                $output = core\lang\Callback::call($success);
+        if(is_callable($success)
+        || core\lang\Util::isAnonymousObject($success)
+        || is_array($success)) {
+            $this->event->parseOutput($success);
+            $success = true;
+        } else if(is_string($success)
+        || $success instanceof arch\IRequest
+        || $success instanceof link\http\IUrl) {
+            $this->event->setRedirect($success);
+            $success = true;
+        }
 
-                if(is_string($output) || $output instanceof arch\IRequest) {
-                    $default = $output;
-                    $output = null;
-                }
-            }
+        if($failure) {
+            $this->event->setFailureCallback($failure);
+        }
+
+
+        if($this->isValid() || $isDirect) {
+            $output = $this->event->triggerSuccess($this);
 
             if($output === false) {
                 return;
@@ -292,33 +301,23 @@ trait TForm {
             }
 
             $this->_isComplete = true;
-            $completeOutput = $this->_getCompleteRedirect($default);
 
-            if(!$output) {
-                $output = $completeOutput;
+            if(!$this->event->hasRedirect()
+            && !$this->event->hasResponse()) {
+                $this->event->setRedirect($this->_getCompleteRedirect());
             }
-
-            return $output;
         } else {
-            return core\lang\Callback::call($failure);
+            $this->event->triggerFailure($this);
         }
     }
 
     protected function _getCompleteRedirect($default=null, $success=true) {
-        if($this->request->getType() == 'Html') {
-            return $this->http->defaultRedirect(
-                $default,
-                $success,
-                $this->_state->referrer ?? null,
-                $this->getDefaultRedirect()
-            );
-        } else {
-            if(!$default) {
-                $default = $this->getDefaultRedirect();
-            }
-
-            return $this->http->redirect($default);
-        }
+        return $this->http->defaultRedirect(
+            $default,
+            $success,
+            $this->_state->referrer ?? null,
+            $this->getDefaultRedirect()
+        );
     }
 
 
@@ -341,6 +340,14 @@ trait TForm {
 
 // Events
     public function handleEvent($name, array $args=[]) {
+        $this->event->setTarget(
+                $this instanceof IDelegate ?
+                    $this->getDelegateId() :
+                    null
+            )
+            ->setEventName($name)
+            ->setEventArgs($args);
+
         $func = 'on'.ucfirst($name).'Event';
 
         if(!method_exists($this, $func)) {
@@ -354,7 +361,11 @@ trait TForm {
         }
 
         $this->_beforeEvent($name);
-        return $this->{$func}(...$args);
+        $output = $this->{$func}(...$args);
+
+        $this->event->parseOutput($output);
+
+        return $this->event;
     }
 
     protected function _beforeEvent($event) {}
@@ -387,7 +398,7 @@ trait TForm {
         $ref = new \ReflectionClass($this);
 
         foreach($ref->getMethods() as $method) {
-            if(preg_match('/^\on([A-Z\_][a-zA-Z0-9_]*)Event$/', $method->getName(), $matches)) {
+            if(preg_match('/^on([A-Z\_][a-zA-Z0-9_]*)Event$/', $method->getName(), $matches)) {
                 $output[] = $this->eventName(lcfirst($matches[1]));
             }
         }

@@ -12,6 +12,7 @@ use df\user;
 use df\aura;
 use df\flow;
 use df\opal;
+use df\link;
 
 
 // Exceptions
@@ -119,6 +120,37 @@ interface IFormState extends IStoreProvider {
     public function isOperating();
 }
 
+interface IFormEventDescriptor {
+    public function parseOutput($output);
+
+    public function setTarget(/*string?*/ $target);
+    public function getTarget();
+
+    public function setEventName(string $name);
+    public function getEventName();
+    public function getFullEventName();
+    public function getFullEventCall();
+    public function setEventArgs(array $args);
+    public function getEventArgs();
+
+    public function setSuccessCallback($callback);
+    public function getSuccessCallback();
+    public function triggerSuccess(IForm $form);
+    public function setFailureCallback($callback);
+    public function getFailureCallback();
+    public function triggerFailure(IForm $form);
+
+    public function setRedirect($redirect);
+    public function getRedirect();
+    public function hasRedirect(): bool;
+    public function shouldForceRedirect(bool $flag=null);
+    public function shouldReload(bool $flag=null);
+
+    public function setResponse($response);
+    public function getResponse();
+    public function hasResponse(): bool;
+}
+
 interface IForm extends IStoreProvider, core\lang\IChainable, \ArrayAccess {
     public function isRenderingInline(): bool;
     public function getState();
@@ -172,7 +204,7 @@ interface IDelegate extends IActiveForm, core\IContextAware {
     public function beginInitialize();
     public function endInitialize();
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false);
-    public function setComplete($success=true);
+    public function setComplete();
 }
 
 interface IModalDelegate {

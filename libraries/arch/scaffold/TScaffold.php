@@ -695,8 +695,8 @@ trait TScaffold_RecordListProvider {
         );
     }
 
-    public function buildSelectorFormDelegate($state, $id) {
-        return new arch\scaffold\node\form\SelectorDelegate($this, $state, $id);
+    public function buildSelectorFormDelegate($state, $event, $id) {
+        return new arch\scaffold\node\form\SelectorDelegate($this, $state, $event, $id);
     }
 }
 

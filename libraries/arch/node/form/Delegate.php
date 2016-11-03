@@ -22,11 +22,12 @@ class Delegate implements arch\node\IDelegate {
     private $_isNew = false;
     private $_isComplete = false;
 
-    public function __construct(arch\IContext $context, arch\node\IFormState $state, $id) {
+    public function __construct(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id) {
         $this->context = $context;
         $this->_state = $state;
         $this->_delegateId = $id;
 
+        $this->event = $event;
         $this->values = $state->getValues();
         $this->afterConstruct();
     }
@@ -96,12 +97,12 @@ class Delegate implements arch\node\IDelegate {
     }
 
 
-    public function setComplete($success=true) {
+    public function setComplete() {
         $this->_isComplete = true;
-        $this->onComplete($success);
+        $this->onComplete();
 
         foreach($this->_delegates as $delegate) {
-            $delegate->setComplete($success);
+            $delegate->setComplete();
         }
 
         $this->_state->reset();
@@ -112,7 +113,7 @@ class Delegate implements arch\node\IDelegate {
         return $this->_isComplete;
     }
 
-    protected function onComplete($success) {}
+    protected function onComplete() {}
 
 
     protected function getDefaultRedirect() {
@@ -149,7 +150,7 @@ class Delegate implements arch\node\IDelegate {
 
 // Events
     protected function onCancelEvent() {
-        $this->setComplete(false);
+        $this->setComplete();
         return $this->_getCompleteRedirect();
     }
 
