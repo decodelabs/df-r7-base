@@ -396,10 +396,14 @@ trait THelperProvider {
     }
 
     protected function _loadSharedHelper($name, $target=null) {
-        $class = 'df\\plug\\'.ucfirst($name);
+        $class = 'df\\apex\\helpers\\'.ucfirst($name);
 
         if(!class_exists($class)) {
-            return null;
+            $class = 'df\\plug\\'.ucfirst($name);
+
+            if(!class_exists($class)) {
+                return null;
+            }
         }
 
         $context = $this;
@@ -568,9 +572,6 @@ trait TContext {
 
             case 'application':
                 return $this->application;
-
-            case 'runMode':
-                return $this->application->getRunMode();
 
             case 'locale':
                 return $this->getLocale();

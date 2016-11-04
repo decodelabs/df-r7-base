@@ -116,6 +116,15 @@ trait TDirectoryHelper {
 }
 
 
+class Helper implements IDirectoryHelper, aura\view\IContextSensitiveHelper {
+
+    use arch\TDirectoryHelper, core\TContextProxy {
+        core\TContextProxy::getContext insteadof arch\TDirectoryHelper;
+        core\TContextProxy::hasContext insteadof arch\TDirectoryHelper;
+    }
+}
+
+
 interface IRouter {
     public function routeIn(arch\IRequest $request);
     public function routeOut(arch\IRequest $request);
