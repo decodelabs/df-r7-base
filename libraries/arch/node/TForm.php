@@ -623,8 +623,9 @@ trait TForm_ValueListSelectorDelegate {
             $this->values->selected = $this->_normalizeSelection($selected);
         } else {
             if(!is_array($selected)) {
-                $selected = (array)$selected;
+                $selected = [$selected];
             }
+
 
             foreach($selected as $id) {
                 $id = $this->_normalizeSelection($id);
