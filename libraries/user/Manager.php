@@ -93,6 +93,10 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
+    public function getId() {
+        return $this->client->getId();
+    }
+
     public function isLoggedIn() {
         return $this->client->isLoggedIn();
     }
