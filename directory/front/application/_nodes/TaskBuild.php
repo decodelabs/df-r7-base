@@ -15,7 +15,7 @@ use df\flex;
 class TaskBuild extends arch\node\Task {
 
     const APP_EXPORT = [
-        'libraries', 'assets', 'daemons', 'directory', 'hooks', 'models', 'themes', 'tests'
+        'libraries', 'assets', 'daemons', 'directory', 'helpers', 'hooks', 'models', 'themes', 'tests'
     ];
 
     public function extractCliArguments(core\cli\ICommand $command) {
