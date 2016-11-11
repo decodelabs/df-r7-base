@@ -75,6 +75,7 @@ interface IDate extends \Serializable, core\IStringProvider {
     public function isNearPast($hours=null);
     public function isFuture();
     public function isNearFuture($hours=null);
+    public function isToday($date=null);
 
     public function isYear($year);
     public function getYear();

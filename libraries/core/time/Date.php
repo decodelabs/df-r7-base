@@ -510,6 +510,10 @@ class Date implements IDate, core\IDumpable {
         return $ts > $time && $ts < $time + ($hours * 60);
     }
 
+    public function isToday($date=null) {
+        return $this->format('Y-m-d') == self::factory($date ?? 'today')->format('Y-m-d');
+    }
+
 
 
     public function isYear($year) {
