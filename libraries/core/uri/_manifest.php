@@ -137,6 +137,12 @@ interface IMailtoUrl extends IUrl, IUsernameContainer, IDomainContainer, IQueryC
     public function hasSubject();
 }
 
+interface ITelephoneUrl extends IUrl {
+    public function setNumber($number);
+    public function getNumber();
+    public function getCanonicalNumber();
+}
+
 
 
 

@@ -80,6 +80,9 @@ class Uri implements arch\IDirectoryHelper {
                 case 'mailto':
                     return new core\uri\MailtoUrl($uri);
 
+                case 'tel':
+                    return new core\uri\TelephoneUrl($uri);
+
                 case 'theme':
                     return $asRequest ?
                         $this->themeAssetRequest($matches[3]) :
