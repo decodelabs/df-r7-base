@@ -19,7 +19,7 @@ class Parser implements flex\IInlineHtmlProducer {
         'a', 'abbr', 'b', 'br', 'cite', 'code', 'del', 'em',
         //'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
         'i', 'img', 'ins', 'q', 'small', 'span', 'strong',
-        'sub', 'sup', 'time', 'var'
+        'sub', 'sup', 'time', 'u', 'var'
     ];
 
     protected $_customTags = [];
