@@ -552,6 +552,30 @@ class BridgedManyRelationValueContainer implements
         return $output;
     }
 
+    public function getLiveIds() {
+        $output = [];
+
+        if(!$this->_removeAll) {
+            $output = $this->getRawId();
+
+            foreach($this->_getKeySets($this->_remove) as $id) {
+                if(($key = array_search($id, $output)) !== false) {
+                    unset($output[$key]);
+                }
+            }
+        }
+
+        foreach($this->_getKeySets($this->_new) as $id) {
+            if($id instanceof opal\record\IPrimaryKeySet) {
+                $output[] = $id->getValue();
+            } else {
+                $output[] = $id;
+            }
+        }
+
+        return array_unique($output);
+    }
+
     protected function _getKeySets(array $records) {
         $keys = [];
 
