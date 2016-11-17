@@ -50,14 +50,14 @@ interface IQueue {
     public function registerAdapter(ITransactionAdapter $adapter);
 
     public function asap(...$args): IJob;
-    public function after(IJob $job, ...$args): IJob;
+    public function after(IJob $job=null, ...$args): IJob;
 
     public function emitEvent($entity, $action, array $data=null);
-    public function emitEventAfter(IJob $job, $entity, $action, array $data=null): IJob;
+    public function emitEventAfter(IJob $job=null, $entity, $action, array $data=null): IJob;
 
     public function __call($method, $args);
     public function prepareAsap(IJobProvider $provider, string $name, ...$args);
-    public function prepareAfter(IJob $job, IJobProvider $provider, string $name, ...$args);
+    public function prepareAfter(IJob $job=null, IJobProvider $provider, string $name, ...$args);
 
     public function addJob(IJob $job);
     public function hasJob($id): bool;

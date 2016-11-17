@@ -68,7 +68,11 @@ class Queue implements IQueue {
         return $job;
     }
 
-    public function after(IJob $job, ...$args): IJob {
+    public function after(IJob $job=null, ...$args): IJob {
+        if(!$job) {
+            return $this->asap(...$args);
+        }
+
         $resolution = null;
 
         foreach($args as $i => $arg) {
@@ -86,7 +90,12 @@ class Queue implements IQueue {
         mesh\Manager::getInstance()->emitEvent($entity, $action, $data, $this, $activeJob);
     }
 
-    public function emitEventAfter(IJob $job, $entity, $action, array $data=null): IJob {
+    public function emitEventAfter(IJob $job=null, $entity, $action, array $data=null): IJob {
+        if(!$job) {
+            $this->emitEvent($entity, $action, $data);
+            return $this;
+        }
+
         return $this->after($job, function() use($entity, $action, $data, $job) {
             mesh\Manager::getInstance()->emitEvent($entity, $action, $data, $this, $job);
         });
@@ -98,43 +107,50 @@ class Queue implements IQueue {
         if(substr($method, -5) == 'After') {
             $job = array_shift($args);
 
-            if(!$job instanceof IJob) {
+            if(!$job instanceof IJob
+            && $job !== null) {
                 throw new RuntimeException(
                     'Cannot prepare dependency, context is not an IJob'
                 );
             }
 
-            $provider = array_shift($args);
+            if($job) {
+                $provider = array_shift($args);
 
-            if(!$provider instanceof IJobProvider) {
-                throw new RuntimeException(
-                    'Cannot prepare job, context is not an IJobProvider'
-                );
+                if(!$provider instanceof IJobProvider) {
+                    throw new RuntimeException(
+                        'Cannot prepare job, context is not an IJobProvider'
+                    );
+                }
+
+                return $this->prepareAfter($job, $provider, substr($method, 0, -5), ...$args);
             }
-
-            return $this->prepareAfter($job, $provider, substr($method, 0, -5), ...$args);
-        } else {
-            if(substr($method, -4) == 'Asap') {
-                $method = substr($method, 0, -4);
-            }
-
-            $provider = array_shift($args);
-
-            if(!$provider instanceof IJobProvider) {
-                throw new RuntimeException(
-                    'Cannot prepare job, context is not an IJobProvider'
-                );
-            }
-
-            return $this->prepareAsap($provider, $method, ...$args);
         }
+
+        if(substr($method, -4) == 'Asap') {
+            $method = substr($method, 0, -4);
+        }
+
+        $provider = array_shift($args);
+
+        if(!$provider instanceof IJobProvider) {
+            throw new RuntimeException(
+                'Cannot prepare job, context is not an IJobProvider'
+            );
+        }
+
+        return $this->prepareAsap($provider, $method, ...$args);
     }
 
     public function prepareAsap(IJobProvider $provider, string $name, ...$args) {
         return $this->asap($provider->prepareJob($name, ...$args));
     }
 
-    public function prepareAfter(IJob $job, IJobProvider $provider, string $name, ...$args) {
+    public function prepareAfter(IJob $job=null, IJobProvider $provider, string $name, ...$args) {
+        if(!$job) {
+            return $this->prepareAsap($provider, $name, ...$args);
+        }
+
         return $this->after($job, $provider->prepareJob($name, ...$args));
     }
 
