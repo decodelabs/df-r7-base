@@ -20,8 +20,8 @@ class Markdown extends Base {
 
     public function renderFieldContent(aura\html\widget\Field $field) {
         $this->view
-            ->linkCss('asset://lib/simplemde/simplemde.min.css')
-            ->linkJs('asset://lib/simplemde/simplemde.min.js');
+            ->linkCss('asset://lib/simplemde/simplemde.min.css', 100)
+            ->linkJs('asset://lib/simplemde/simplemde.min.js', 100);
 
         $field->push(
             $ta = $this->html->textarea(
