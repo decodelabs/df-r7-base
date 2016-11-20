@@ -40,7 +40,7 @@ class Registry implements IRegistry {
             $data = $this->requestJson('get', 'packages/'.rawurlencode($name));
         } catch(\Exception $e) {
             core\log\Manager::getInstance()->logException($e);
-            throw new spur\ApiError($e->message, null, $e->code);
+            throw new spur\ApiError($e->getMessage(), null, $e->getCode());
         }
 
         flex\json\Codec::encodeFile($path, $data);
