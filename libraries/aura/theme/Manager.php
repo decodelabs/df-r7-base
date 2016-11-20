@@ -70,27 +70,49 @@ class Manager implements IManager {
 
         $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$id;
         $vendorPath = df\Launchpad::$application->getApplicationPath().'/assets/vendor/';
+        $swallow = true;
+        $depContent = null;
 
         if(df\Launchpad::$application->isDevelopment()) {
+            $swallow = false;
+
             if(!is_dir($vendorPath)) {
                 core\fs\Dir::delete(dirname($path));
+                $swallow = true;
             }
 
             if(file_exists($path)) {
                 $time = filemtime($path);
 
                 if($time < time() - (30 * 60 * 60)) {
+                    $depContent = core\df\File::getContentsOf($path);
                     core\fs\File::delete($path);
                     unset(self::$_depCache[$id]);
                 }
+            } else {
+                $swallow = true;
             }
+        }
+
+        if($depContent === null) {
+            $swallow = false;
         }
 
         if(file_exists($path) && is_dir($vendorPath)) {
             return $this;
         }
 
-        return $this->installDependenciesFor($theme, $io);
+        try {
+            $this->installDependenciesFor($theme, $io);
+        } catch(\Exception $e) {
+            if($swallow) {
+                core\log\Manager::getInstance()->logException($e);
+            } else {
+                throw $e;
+            }
+        }
+
+        return $this;
     }
 
     public function installDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null) {
