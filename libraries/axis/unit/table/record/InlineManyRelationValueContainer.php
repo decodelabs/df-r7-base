@@ -410,11 +410,13 @@ class InlineManyRelationValueContainer implements
 
 
         // Save any changed populated records
+        /*
         foreach($this->_current as $id => $record) {
             if($record instanceof opal\record\IRecord) {
                 $record->deploySaveJobs($queue);
             }
         }
+        */
 
 
         // Remove all
