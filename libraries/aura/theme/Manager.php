@@ -85,7 +85,7 @@ class Manager implements IManager {
                 $time = filemtime($path);
 
                 if($time < time() - (30 * 60 * 60)) {
-                    $depContent = core\df\File::getContentsOf($path);
+                    $depContent = core\fs\File::getContentsOf($path);
                     core\fs\File::delete($path);
                     unset(self::$_depCache[$id]);
                 }
