@@ -102,7 +102,9 @@ class Number extends Base implements
 // Values
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($value !== null) {
-            if($this->_isFixedPoint || $this->_zerofill) {
+            if($this->_isFixedPoint) {
+                $value = number_format($value, $this->_scale, '.', '');
+            } else if($this->_zerofill) {
                 $value = (string)$value;
             } else if($this->_byteSize) {
                 $value = (int)$value;
