@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,21 +9,25 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
-    
-class Set extends Base implements 
+
+class Set extends Base implements
     opal\schema\IOptionProviderField,
     opal\schema\ICharacterSetAwareField {
 
     use opal\schema\TField_OptionProvider;
     use opal\schema\TField_CharacterSetAware;
 
-    protected function _init(array $options=[]) {
-        $this->setOptions($options);
+    protected function _init($options=null) {
+        if(is_array($options)) {
+            $this->setOptions($options);
+        } else {
+            $this->setType($options);
+        }
     }
 
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         $value = null;
-        
+
         if(isset($row[$key])) {
             $value = $row[$key];
         }
@@ -31,17 +35,17 @@ class Set extends Base implements
         if(!empty($value)) {
             $value = explode(',', $value);
         }
-        
+
         return $this->sanitizeValue($value, $forRecord);
     }
-    
+
     public function deflateValue($value) {
         $value = $this->sanitizeValue($value);
-        
+
         if($value === null) {
             return null;
         }
-        
+
         return implode(',', $value);
     }
 
