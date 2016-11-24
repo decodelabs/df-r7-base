@@ -266,6 +266,7 @@ interface IOptionProviderField extends IField {
 trait TOptionProviderField {
 
     protected $_options = null;
+    protected $_type = null;
 
     public function setOptions(array $options) {
         $this->_options = $options;
@@ -275,7 +276,33 @@ trait TOptionProviderField {
     public function getOptions() {
         return $this->_options;
     }
+
+    public function setType($type) {
+        if($type !== null) {
+            if(is_string($type) && false === strpos($type, '://')) {
+                $type = 'type://'.$type;
+            }
+
+            $type = mesh\Manager::getInstance()->fetchEntity($type);
+
+            if($type instanceof core\lang\ITypeRef) {
+                $type->checkType('core/lang/IEnum');
+            } else if(!$type instanceof core\lang\IEnumFactory) {
+                throw new core\validate\InvalidArgumentException(
+                    'Type cannot provide an enum'
+                );
+            }
+        }
+
+        $this->_type = $type;
+        return $this;
+    }
+
+    public function getType() {
+        return $this->_type;
+    }
 }
+
 
 
 // Storage unit

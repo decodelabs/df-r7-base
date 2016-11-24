@@ -59,6 +59,13 @@ class Boolean extends Base implements core\validate\IBooleanField {
             $this->_checkRequiredValue($node, $value, $isRequired);
         }
 
+        if($this->_requireGroup !== null) {
+            $check = $isRequired ? $value !== null : (bool)$value;
+            $check ?
+                $this->validator->setRequireGroupFulfilled($this->_requireGroup) :
+                $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
+        }
+
         return $this->_finalize($node, $value);
     }
 }
