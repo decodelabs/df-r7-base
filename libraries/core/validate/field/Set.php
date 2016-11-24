@@ -10,17 +10,9 @@ use df\core;
 
 class Set extends Base implements core\validate\IEnumField {
 
-    protected $_options = [];
+    use core\validate\TOptionProviderField;
+
     protected $_stringDelimiter = null;
-
-    public function setOptions(array $options) {
-        $this->_options = $options;
-        return $this;
-    }
-
-    public function getOptions() {
-        return $this->_options;
-    }
 
     public function applyAsString($delimiter) {
         if($delimiter === false) {
@@ -66,7 +58,14 @@ class Set extends Base implements core\validate\IEnumField {
             $this->validator->setRequireGroupFulfilled($this->_requireGroup);
         }
 
-        $hasOptions = !empty($this->_options);
+
+        if($this->_type) {
+            $options = $this->_type->getOptions();
+        } else {
+            $options = $this->_options;
+        }
+
+        $hasOptions = !empty($options);
 
         foreach($value as $key => $keyValue) {
             if(trim($keyValue) === '') {
@@ -78,7 +77,7 @@ class Set extends Base implements core\validate\IEnumField {
             }
 
 
-            if($hasOptions && !in_array($keyValue, $this->_options)) {
+            if($hasOptions && !in_array($keyValue, $options)) {
                 $this->_applyMessage($node->{$key}, 'invalid', $this->validator->_(
                     'This is not a valid option'
                 ));
