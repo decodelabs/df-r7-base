@@ -779,7 +779,7 @@ class BridgedManyRelationValueContainer implements
 
 
     public function populateInverse(array $inverse) {
-        $this->_current = array_merge($this->_normalizeInputRecordList($inverse));
+        $this->_new = array_merge($this->_new, $this->_normalizeInputRecordList($inverse));
         return $this;
     }
 

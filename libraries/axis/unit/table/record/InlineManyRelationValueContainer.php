@@ -93,7 +93,7 @@ class InlineManyRelationValueContainer implements
     public function populateInverse(opal\record\IRecord $record=null) {
         if($record) {
             $id = opal\record\Base::extractRecordId($record);
-            $this->_current[$id] = $record;
+            $this->_new[$id] = $record;
         }
 
         return $this;
