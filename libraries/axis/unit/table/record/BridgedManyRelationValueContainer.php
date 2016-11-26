@@ -613,13 +613,11 @@ class BridgedManyRelationValueContainer implements
 
 
         // Save any changed populated records
-        /*
         foreach($this->_current as $id => $record) {
             if($record instanceof opal\record\IRecord) {
                 $record->deploySaveJobs($queue);
             }
         }
-        */
 
 
 
@@ -779,7 +777,7 @@ class BridgedManyRelationValueContainer implements
 
 
     public function populateInverse(array $inverse) {
-        $this->_new = array_merge($this->_new, $this->_normalizeInputRecordList($inverse));
+        $this->_current = array_merge($this->_current, $this->_normalizeInputRecordList($inverse));
         return $this;
     }
 
