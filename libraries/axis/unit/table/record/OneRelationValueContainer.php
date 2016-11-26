@@ -100,6 +100,16 @@ class OneRelationValueContainer implements
             }
         }
 
+        if($record === false
+        && $value instanceof opal\record\IPrimaryKeySet
+        && $this->_record instanceof opal\record\IPrimaryKeySetProvider) {
+            $ks = $this->_record->getPrimaryKeySet();
+
+            if($ks->eq($value)) {
+                $record = $this->_record;
+            }
+        }
+
         $value = $this->_value->duplicateWith($value);
 
         $this->_value = $value;
@@ -195,13 +205,14 @@ class OneRelationValueContainer implements
 // Tasks
     public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob=null) {
         if($this->_record instanceof opal\record\IRecord) {
-            $job = $this->_record->deploySaveJobs($queue);
+            $record = $this->_record;
+            $job = $record->deploySaveJobs($queue);
 
-            if(!$job && $this->_record->isNew()) {
-                $job = $queue->getLastJobUsing($this->_record);
+            if(!$job && $record->isNew()) {
+                $job = $queue->getLastJobUsing($record);
             }
 
-            if($job && $recordJob && $this->_record->isNew()) {
+            if($job && $recordJob && $record->isNew()) {
                 $recordJob->addDependency(
                     $job,
                     new opal\record\job\InsertResolution($fieldName)
