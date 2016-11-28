@@ -301,6 +301,15 @@ class Html implements arch\IDirectoryHelper {
             ->setDisposition('external');
     }
 
+    public function phoneLink($number, $icon='phone') {
+        if(empty($number)) {
+            return null;
+        }
+
+        return $this->link('tel:'.$number, $number)
+            ->setIcon($icon);
+    }
+
     public function backLink($default=null, $success=true, $body=null) {
         return $this->link(
                 $this->context->uri->back($default, $success),
