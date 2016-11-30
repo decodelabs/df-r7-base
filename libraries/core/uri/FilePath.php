@@ -10,6 +10,28 @@ use df\core;
 
 class FilePath extends Path implements IFilePath {
 
+    public static function normalizeLocal($path) {
+        $path = self::factory($path);
+        $queue = $path->_collection;
+        $path->_collection = [];
+
+        foreach($queue as $key => $part) {
+            if($part == '..') {
+                if(empty($path->_collection)) {
+                    throw new RuntimeException('Invalid local path');
+                }
+
+                array_pop($path->_collection);
+            }
+
+            if($part != '.' && strlen($part)) {
+                $path->_collection[] = $part;
+            }
+        }
+
+        return (string)$path;
+    }
+
     public function __construct($input=null, $autoCanonicalize=true) {
         parent::__construct($input, $autoCanonicalize);
     }
