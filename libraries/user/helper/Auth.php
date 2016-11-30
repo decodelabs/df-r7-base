@@ -115,7 +115,10 @@ class Auth extends Base {
         $manager->clearAccessLockCache();
 
         $model = $manager->getUserModel();
-        $clientData = $model->getClientData($key->userId);
+
+        if(!$clientData = $model->getClientData($key->userId)) {
+            return false;
+        }
 
         if($clientData->getStatus() !== user\IState::CONFIRMED) {
             return false;
