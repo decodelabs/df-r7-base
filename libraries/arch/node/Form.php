@@ -129,7 +129,9 @@ abstract class Form extends Base implements IFormNode {
             }
 
             $this->_state->referrer = $referrer;
-            $this->_state->isOperating = $this->http->getMethod() != 'get';
+
+            $method = $this->http->getMethod();
+            $this->_state->isOperating = $method != 'get' && $method != 'head';
         } else {
             $this->_state->isOperating = true;
         }
@@ -509,6 +511,11 @@ abstract class Form extends Base implements IFormNode {
 // Node dispatch
     public function getDispatchMethodName() {
         $method = ucfirst(strtolower($this->context->application->getHttpRequest()->getMethod()));
+
+        if($method == 'Head') {
+            $method = 'Get';
+        }
+
         $func = 'handle'.$this->context->request->getType().$method.'Request';
 
         if(!method_exists($this, $func)) {

@@ -248,9 +248,14 @@ class Base implements INode, core\IDumpable {
 
         if($this->getRunMode() == 'Http') {
             $mode = ucfirst(strtolower($this->context->application->getHttpRequest()->getMethod()));
+
+            if($mode == 'Head') {
+                $mode = 'Get';
+            }
         } else {
             $mode = null;
         }
+
 
         if($mode) {
             $func = 'execute'.$mode.'As'.$type;

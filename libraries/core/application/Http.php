@@ -510,6 +510,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
 
+        // HEAD request
+        if($this->_httpRequest->getMethod() == 'head') {
+            $sendData = false;
+        }
+
+
         if(!$sendData) {
             // Send headers
             if($response->hasHeaders()) {
@@ -569,6 +575,11 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             header('Content-Type: text/html; charset=UTF-8');
             header('Cache-Control: no-cache, no-store, must-revalidate');
             header('Pragma: no-cache');
+
+            if($this->_httpRequest && $this->_httpRequest->method == 'head') {
+                header('X-Dump: '.json_encode($context->toString()));
+            }
+
 
             try {
                 if($this->_responseAugmentor) {
