@@ -189,10 +189,9 @@ class Auth extends Base {
     }
 
 
-    public function unbind() {
+    public function unbind(bool $restartSession=false) {
         $this->manager->emitEvent($this->manager->client, 'logout');
-        $this->manager->session->destroy();
-        $this->manager->clearClient();
+        $this->manager->session->destroy($restartSession);
 
         return $this;
     }

@@ -178,7 +178,7 @@ class Session extends Base implements user\session\IController {
         return $this->_buckets[$name];
     }
 
-    public function destroy() {
+    public function destroy(bool $restart=false) {
         if($this->perpetuator) {
             $key = $this->perpetuator->getRecallKey($this);
             $this->perpetuator->destroy($this);
@@ -195,6 +195,11 @@ class Session extends Base implements user\session\IController {
         $this->_isOpen = false;
 
         $this->manager->clearClient();
+
+        if($restart) {
+            $this->_open();
+        }
+
         return $this;
     }
 

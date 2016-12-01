@@ -55,6 +55,7 @@ class Manager implements IManager, core\IShutdownAware {
             $regenKeyring = false;
         }
 
+
         if($regenKeyring) {
             try {
                 if($this->client->isLoggedIn()) {
@@ -105,7 +106,13 @@ class Manager implements IManager, core\IShutdownAware {
         if($this->isLoggedIn()) {
             $model = $this->getUserModel();
             $data = $model->getClientData($this->client->getId());
-            $this->client->import($data);
+
+            if(!$data) {
+                $this->auth->unbind(true);
+                $this->client = Client::generateGuest($this);
+            } else {
+                $this->client->import($data);
+            }
         }
 
         $this->regenerateKeyring();

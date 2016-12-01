@@ -30,7 +30,7 @@ interface IController {
     public function getId();
     public function transition();
     public function getBucket($namespace);
-    public function destroy();
+    public function destroy(bool $restart=false);
     public function getStartTime();
 
     public function hasRecallKey(RecallKey $key);
