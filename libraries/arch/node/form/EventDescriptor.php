@@ -41,7 +41,7 @@ class EventDescriptor implements arch\node\IFormEventDescriptor {
 
 
     public function parseOutput($output) {
-        if($output === null) {
+        if($output === null || $output === $this) {
             return $this;
         }
 
