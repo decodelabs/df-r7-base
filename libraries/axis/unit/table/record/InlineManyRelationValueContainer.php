@@ -451,7 +451,7 @@ class InlineManyRelationValueContainer implements
                     $targetRecordJob = $queue->update($record);
                 }
 
-                if($recordJob) {
+                if($recordJob && $parentRecord->isNew()) {
                     $recordJob->addDependency(
                         $targetRecordJob,
                         new opal\record\job\InsertResolution($targetField, true)
