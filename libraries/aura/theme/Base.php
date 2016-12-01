@@ -39,10 +39,6 @@ class Base implements ITheme, core\IDumpable {
             $id = $config->getThemeIdFor($context->location->getArea());
         }
 
-        if(preg_match('/[^a-zA-Z0-9_]/', $id)) {
-            throw new RuntimeException('Invalid theme id');
-        }
-
         $id = lcfirst($id);
         $class = 'df\\apex\\themes\\'.$id.'\\Theme';
 
@@ -54,6 +50,10 @@ class Base implements ITheme, core\IDumpable {
     }
 
     protected function __construct($id) {
+        if(preg_match('/[^a-zA-Z0-9_]/', $id)) {
+            throw new RuntimeException('Invalid theme id');
+        }
+
         $this->_id = $id;
 
         $facets = static::DEFAULT_FACETS;

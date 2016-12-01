@@ -70,6 +70,8 @@ class Development extends Base {
     }
 
     public function getFileSearchPaths($path) {
+        $path = core\uri\FilePath::normalizeLocal($path);
+
         $parts = explode('/', $path);
         $output = [];
 
