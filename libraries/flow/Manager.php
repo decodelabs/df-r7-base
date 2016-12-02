@@ -681,12 +681,13 @@ class Manager implements IManager, core\IShutdownAware {
 
         if($this->_flashQueue === null) {
             if($this->_flashDisabled === null) {
-                // Is it ajax?
-                if($context = df\arch\Context::getCurrent()) {
-                    if($context->getRunMode() == 'Http' && $context->http->isAjaxRequest()) {
-                        $this->_flashDisabled = true;
-                        return;
-                    }
+                $context = df\arch\Context::getCurrent();
+
+                if($context->getRunMode() == 'Http' && !$context->http->isAjaxRequest()) {
+                    $this->_flashDisabled = false;
+                } else {
+                    $this->_flashDisabled = true;
+                    return;
                 }
             }
 
