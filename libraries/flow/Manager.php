@@ -636,6 +636,10 @@ class Manager implements IManager, core\IShutdownAware {
 
 // Queue
     public function processFlashQueue() {
+        if($this->_flashDisabled) {
+            return $this;
+        }
+
         if(!$this->_isFlashQueueProcessed) {
             $this->_loadFlashQueue();
 
@@ -668,8 +672,24 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
+    private $_flashDisabled = null;
+
     protected function _loadFlashQueue() {
+        if($this->_flashDisabled) {
+            return;
+        }
+
         if($this->_flashQueue === null) {
+            if($this->_flashDisabled === null) {
+                // Is it ajax?
+                if($context = df\arch\Context::getCurrent()) {
+                    if($context->getRunMode() == 'Http' && $context->http->isAjaxRequest()) {
+                        $this->_flashDisabled = true;
+                        return;
+                    }
+                }
+            }
+
             $session = user\Manager::getInstance()->session->getBucket(self::SESSION_NAMESPACE);
             $this->_flashQueue = $session->get(self::FLASH_SESSION_KEY);
 
@@ -681,6 +701,10 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
     protected function _saveFlashQueue() {
+        if($this->_flashDisabled) {
+            return false;
+        }
+
         if(!$this->_flashQueue instanceof FlashQueue
         || !$this->_flashQueueChanged) {
             return false;
@@ -697,19 +721,31 @@ class Manager implements IManager, core\IShutdownAware {
 // Shortcuts
     public function flash($id, $message=null, $type=null) {
         $message = $this->newFlashMessage($id, $message, $type);
-        $this->queueFlash($message);
+
+        if(!$this->_flashDisabled) {
+            $this->queueFlash($message);
+        }
+
         return $message;
     }
 
     public function flashNow($id, $message=null, $type=null) {
         $message = $this->newFlashMessage($id, $message, $type);
-        $this->addInstantFlash($message);
+
+        if(!$this->_flashDisabled) {
+            $this->addInstantFlash($message);
+        }
+
         return $message;
     }
 
     public function flashAlways($id, $message=null, $type=null) {
         $message = $this->newFlashMessage($id, $message, $type);
-        $this->addConstantFlash($message);
+
+        if(!$this->_flashDisabled) {
+            $this->addConstantFlash($message);
+        }
+
         return $message;
     }
 
@@ -717,8 +753,12 @@ class Manager implements IManager, core\IShutdownAware {
 // Constant
     public function addConstantFlash(IFlashMessage $message) {
         $this->_loadFlashQueue();
-        $this->_flashQueue->constant[$message->getId()] = $message;
-        $this->_flashQueueChanged = true;
+
+        if(!$this->_flashDisabled) {
+            $this->_flashQueue->constant[$message->getId()] = $message;
+            $this->_flashQueueChanged = true;
+        }
+
         return $this;
     }
 
@@ -734,26 +774,44 @@ class Manager implements IManager, core\IShutdownAware {
 
     public function getConstantFlashes() {
         $this->_loadFlashQueue();
+
+        if($this->_flashDisabled) {
+            return [];
+        }
+
         return $this->_flashQueue->constant;
     }
 
     public function removeConstantFlash($id) {
         $this->_loadFlashQueue();
-        unset($this->_flashQueue->constant[$id]);
-        $this->_flashQueueChanged = true;
+
+        if(!$this->_flashDisabled) {
+            unset($this->_flashQueue->constant[$id]);
+            $this->_flashQueueChanged = true;
+        }
+
         return $this;
     }
 
     public function clearConstantFlashes() {
         $this->_loadFlashQueue();
-        $this->_flashQueue->constant = [];
-        $this->_flashQueueChanged = true;
+
+        if(!$this->_flashDisabled) {
+            $this->_flashQueue->constant = [];
+            $this->_flashQueueChanged = true;
+        }
+
         return $this;
     }
 
 // Queued
     public function queueFlash(IFlashMessage $message, $instantIfSpace=false) {
         $this->_loadFlashQueue();
+
+        if($this->_flashDisabled) {
+            return $this;
+        }
+
         $id = $message->getId();
 
         unset($this->_flashQueue->instant[$id], $this->_flashQueue->queued[$id]);
@@ -775,18 +833,25 @@ class Manager implements IManager, core\IShutdownAware {
 
     public function getInstantFlashes() {
         $this->_loadFlashQueue();
+
+        if($this->_flashDisabled) {
+            return [];
+        }
+
         return $this->_flashQueue->instant;
     }
 
     public function removeQueuedFlash($id) {
         $this->_loadFlashQueue();
 
-        unset(
-            $this->_flashQueue->constant[$id],
-            $this->_flashQueue->instant[$id]
-        );
+        if(!$this->_flashDisabled) {
+            unset(
+                $this->_flashQueue->constant[$id],
+                $this->_flashQueue->instant[$id]
+            );
 
-        $this->_flashQueueChanged = true;
+            $this->_flashQueueChanged = true;
+        }
 
         return $this;
     }
