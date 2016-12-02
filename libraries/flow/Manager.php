@@ -643,6 +643,10 @@ class Manager implements IManager, core\IShutdownAware {
         if(!$this->_isFlashQueueProcessed) {
             $this->_loadFlashQueue();
 
+            if($this->_flashDisabled) {
+                return $this;
+            }
+
             foreach($this->_flashQueue->instant as $id => $message) {
                 if($message->isDisplayed()) {
                     if($message->canDisplayAgain()) {
