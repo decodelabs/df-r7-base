@@ -26,8 +26,8 @@ class EventButton extends Button {
             $this->_body->push(flex\Text::formatName($event));
         }
 
-        $parts = explode('.', $event);
-        $parts = explode('(', array_pop($parts));
+        $parts = explode('(', $event);
+        $parts = explode('.', array_shift($parts));
         $this->addClass(array_shift($parts));
 
         return parent::_render();
