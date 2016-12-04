@@ -186,26 +186,7 @@ class Http implements arch\IDirectoryHelper {
     }
 
     public function getAjaxViewContent(aura\view\IView $view) {
-        switch($this->getHeader('x-ajax-request-source')) {
-            case 'modal':
-                $layout = $view->getLayout();
-                $renderBase = $view->shouldRenderBase();
-
-                $content = $view
-                    ->setLayout('Modal')
-                    ->shouldRenderBase(false)
-                    ->render();
-
-                $view->setLayout($layout)
-                    ->shouldRenderBase($renderBase);
-                break;
-
-            default:
-                $content = (string)$view->getContentProvider()->setRenderTarget($view);
-                break;
-        }
-
-        return $content;
+        return (string)$view->getContentProvider()->setRenderTarget($view);
     }
 
     public function jsonResponse($data) {
