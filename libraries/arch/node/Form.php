@@ -313,16 +313,20 @@ abstract class Form extends Base implements IFormNode {
     }
 
     private function _getJsonResponseData() {
-        return array_merge($this->getStateData(), [
-            'node' => $this->context->request->getLiteralPathString(),
-            'events' => $this->getAvailableEvents(),
-            'defaultEvent' => static::DEFAULT_EVENT,
-            'isNew' => $this->_isNew,
-            'isComplete' => $this->_isComplete,
-            'redirect' => $this->event->getRedirect(),
-            'forceRedirect' => $this->event->shouldForceRedirect(),
-            'reload' => $this->event->shouldReload()
-        ]);
+        return array_merge(
+            $this->getStateData(),
+            $this->view ? $this->view->getAjaxData() : [],
+            [
+                'node' => $this->context->request->getLiteralPathString(),
+                'events' => $this->getAvailableEvents(),
+                'defaultEvent' => static::DEFAULT_EVENT,
+                'isNew' => $this->_isNew,
+                'isComplete' => $this->_isComplete,
+                'redirect' => $this->event->getRedirect(),
+                'forceRedirect' => $this->event->shouldForceRedirect(),
+                'reload' => $this->event->shouldReload()
+            ]
+        );
     }
 
 
@@ -371,6 +375,10 @@ abstract class Form extends Base implements IFormNode {
             'isNew' => $this->_isNew,
             'isComplete' => $this->_isComplete
         ];
+
+        if($this->view) {
+            $output = array_merge($this->view->getAjaxData(), $output);
+        }
 
         return $output;
     }
