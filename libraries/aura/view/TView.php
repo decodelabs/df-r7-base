@@ -98,6 +98,7 @@ trait TView {
     use core\TStringProvider;
     use core\TTranslator;
     use core\lang\TChainable;
+    use arch\TAjaxDataProvider;
 
     public $content;
     public $slots = [];

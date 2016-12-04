@@ -150,8 +150,14 @@ class Http implements arch\IDirectoryHelper {
     }
 
     public function ajaxResponse($content, array $extraData=[]) {
+        $originalContent = $content;
+
         if($content instanceof aura\view\IView) {
             $content = $this->getAjaxViewContent($content);
+        }
+
+        if($originalContent instanceof arch\IAjaxDataProvider) {
+            $extraData = array_merge($originalContent->getAjaxData(), $extraData);
         }
 
         return $this->stringResponse(
@@ -179,7 +185,7 @@ class Http implements arch\IDirectoryHelper {
         );
     }
 
-    public function getAjaxViewContent(aura\view\IView $view, $showFlashList=false) {
+    public function getAjaxViewContent(aura\view\IView $view) {
         switch($this->getHeader('x-ajax-request-source')) {
             case 'modal':
                 $view = clone $view;
@@ -191,13 +197,6 @@ class Http implements arch\IDirectoryHelper {
 
             default:
                 $content = (string)$view->getContentProvider()->setRenderTarget($view);
-
-                if($showFlashList) {
-                    if($flashList = $this->html->flashList()) {
-                        $content = $flashList."\n".$content;
-                    }
-                }
-
                 break;
         }
 

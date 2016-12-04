@@ -985,6 +985,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         $output['renderBase'] = $this->_shouldRenderBase;
         $output['content'] = $this->content;
         $output['slots'] = $this->slots;
+        $output['ajax'] = $this->_ajax;
 
         return $output;
     }

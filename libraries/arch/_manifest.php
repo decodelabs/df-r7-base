@@ -324,3 +324,62 @@ trait TDirectoryAccessLock {
 class DirectoryAccessController {
     public static $defaultAccess = arch\IAccess::NONE;
 }
+
+
+
+// Ajax
+interface IAjaxDataProvider {
+    public function setAjaxData(array $data);
+    public function addAjaxData(array $data);
+    public function getAjaxData(): array;
+    public function setAjax(string $key, $value);
+    public function getAjax(string $key);
+    public function hasAjax(string $key): bool;
+    public function removeAjax(string $key);
+    public function clearAjax();
+}
+
+trait TAjaxDataProvider {
+
+    protected $_ajax = [];
+
+    public function setAjaxData(array $data) {
+        $this->_ajax = $data;
+        return $this;
+    }
+
+    public function addAjaxData(array $data) {
+        foreach($data as $key => $value) {
+            $this->setAjax($key, $value);
+        }
+
+        return $this;
+    }
+
+    public function getAjaxData(): array {
+        return $this->_ajax;
+    }
+
+    public function setAjax(string $key, $value) {
+        $this->_ajax[$key] = $value;
+        return $this;
+    }
+
+    public function getAjax(string $key) {
+        return $this->_ajax[$key] ?? null;
+    }
+
+    public function hasAjax(string $key): bool {
+        return isset($this->_ajax[$key]);
+    }
+
+    public function removeAjax(string $key) {
+        unset($this->_ajax[$key]);
+        return $this;
+    }
+
+    public function clearAjax() {
+        $this->_ajax = [];
+        return $this;
+    }
+}

@@ -96,7 +96,8 @@ interface IView extends
     \ArrayAccess,
     core\IHelperProvider,
     flex\IStringEscapeHandler,
-    core\lang\IChainable
+    core\lang\IChainable,
+    arch\IAjaxDataProvider
 {
     public function getType();
     public function render();
