@@ -16,10 +16,12 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 
     const RUN_AFTER = true;
 
+    protected $_dir;
+
     public function execute() {
         $this->io->writeLine('Rebuilding sass...');
         $path = $this->application->getLocalStoragePath().'/sass/'.$this->application->getEnvironmentMode();
-        $dir = new core\fs\Dir($path);
+        $this->_dir = new core\fs\Dir($path);
 
         if(!$dir->exists()) {
             return;
@@ -35,7 +37,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         $this->io->incrementLineLevel();
         $done = [];
 
-        foreach($dir->scanFiles(function($fileName) {
+        foreach($this->_dir->scanFiles(function($fileName) {
             return core\uri\Path::extractExtension($fileName) == 'json';
         }) as $fileName => $file) {
             $json = $this->data->jsonDecodeFile($file);
@@ -81,7 +83,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $key = core\uri\Path::extractFileName((string)$file);
 
             foreach($exts as $ext) {
-                core\fs\File::delete($path.'/'.$key.'.'.$ext);
+                $this->_dir->deleteFile($key.'.'.$ext);
             }
 
             return false;
