@@ -118,7 +118,7 @@ class Bridge implements IBridge {
                 }
             }
         } else {
-            if($mtime < df\Launchpad::$compileTimestamp) {
+            if($mtime < df\Launchpad::$compileTimestamp - 30) {
                 $this->compile();
             }
         }
