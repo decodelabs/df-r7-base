@@ -14,12 +14,7 @@ class TaskPrepare extends arch\node\Task implements arch\node\IBuildTaskNode {
 
     public function execute() {
         $this->runChild('theme/install-dependencies', false);
-
-        $this->io->write('Clearing sass cache...');
-
-        core\fs\Dir::delete(
-            $this->application->getLocalStoragePath().'/sass/'.$this->application->getEnvironmentMode().'/'
-        );
+        $this->runChild('theme/rebuild-sass', false);
 
         $this->io->writeLine(' done');
     }
