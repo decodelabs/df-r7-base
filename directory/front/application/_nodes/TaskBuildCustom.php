@@ -13,8 +13,16 @@ use df\halo;
 
 class TaskBuildCustom extends arch\node\Task {
 
+    protected $_after = false;
+    protected $_buildId;
+
     public function execute() {
         $this->ensureDfSource();
+        $this->_after = isset($this->request['after']);
+
+        if($this->_after) {
+            $this->_buildId = $this->request['after'];
+        }
 
         $this->io->writeLine('Running custom user build tasks...');
         $isRun = false;
@@ -22,6 +30,12 @@ class TaskBuildCustom extends arch\node\Task {
         foreach($this->_scanNodes() as $request) {
             if(!$isRun) {
                 $isRun = true;
+            }
+
+            $request = arch\Request::factory($request);
+
+            if($this->_after) {
+                $request->query->buildId = $this->_buildId;
             }
 
             $this->runChild($request);
@@ -49,6 +63,13 @@ class TaskBuildCustom extends arch\node\Task {
             $ref = new \ReflectionClass($class);
 
             if(!$ref->implementsInterface('df\\arch\\node\\IBuildTaskNode')) {
+                continue;
+            }
+
+            $runAfter = defined($class.'::RUN_AFTER') && (bool)$class::RUN_AFTER;
+
+            if((!$this->_after && $runAfter)
+            || ($this->_after && !$runAfter)) {
                 continue;
             }
 

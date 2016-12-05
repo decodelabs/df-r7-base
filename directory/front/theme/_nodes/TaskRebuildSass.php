@@ -12,7 +12,9 @@ use df\arch;
 use df\flex;
 use df\aura;
 
-class TaskRebuildSass extends arch\node\Task {
+class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode {
+
+    const RUN_AFTER = true;
 
     public function execute() {
         $this->io->writeLine('Rebuilding sass...');
@@ -23,13 +25,33 @@ class TaskRebuildSass extends arch\node\Task {
             return;
         }
 
+        if($this->application->isDevelopment()) {
+            $newBuild = false;
+        } else {
+            $buildId = $this->request['buildId'];
+            $newBuild = !empty($buildId);
+        }
+
         $this->io->incrementLineLevel();
+        $done = [];
 
         foreach($dir->scanFiles(function($fileName) {
             return core\uri\Path::extractExtension($fileName) == 'json';
         }) as $fileName => $file) {
             $json = $this->data->jsonDecodeFile($file);
-            $sassFile = new core\fs\File(array_shift($json));
+            $sassPath = array_shift($json);
+
+            if($newBuild) {
+                $sassPath = preg_replace('|data/local/run/[^/]+/|', 'data/local/run/'.$buildId.'/', $sassPath);
+            }
+
+            if(in_array($sassPath, $done)) {
+                continue;
+            }
+
+            $done[] = $sassPath;
+
+            $sassFile = new core\fs\File($sassPath);
             $shortPath = core\fs\Dir::stripPathLocation($sassFile);
 
             if(!$sassFile->exists()) {

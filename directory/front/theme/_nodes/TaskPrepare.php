@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPrepare extends arch\node\Task implements arch\node\IBuildTaskNode {
+class TaskPrepare extends arch\node\Task {
 
     public function execute() {
         $this->runChild('theme/install-dependencies', false);

@@ -48,6 +48,10 @@ class TaskBuild extends arch\node\Task {
             $this->io->writeLine();
         }
 
+        // Creating build
+        $this->io->writeLine('Using build id: '.$buildId);
+        $this->io->writeLine();
+
 
         // Run custom tasks
         $this->runChild('./build-custom', false);
@@ -128,10 +132,15 @@ class TaskBuild extends arch\node\Task {
                 }
             }
 
-
-            // Switch active
+            // Move to run path
             $destination->moveTo($runPath, $buildId);
 
+
+            // Late build tasks
+            $this->runChild('./build-custom?after='.$buildId, false);
+
+
+            // Switch active
             core\fs\File::create($runPath.'/Active.php',
                 '<?php'."\n".
                 'df\\Launchpad::$isCompiled = true;'."\n".
@@ -139,6 +148,9 @@ class TaskBuild extends arch\node\Task {
                 'df\\Launchpad::$rootPath = \''.$runPath.'/'.$buildId.'\';'."\n".
                 'df\\Launchpad::$environmentMode = \''.df\Launchpad::$environmentMode.'\';'
             );
+        } else {
+            // Late build tasks
+            $this->runChild('./build-custom?after', false);
         }
 
         $this->io->decrementLineLevel();
