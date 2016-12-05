@@ -23,7 +23,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         $path = $this->application->getLocalStoragePath().'/sass/'.$this->application->getEnvironmentMode();
         $this->_dir = new core\fs\Dir($path);
 
-        if(!$dir->exists()) {
+        if(!$this->_dir->exists()) {
             return;
         }
 
