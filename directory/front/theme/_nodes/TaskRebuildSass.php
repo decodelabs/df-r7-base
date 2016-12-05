@@ -78,7 +78,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         if(!$file->exists()) {
             $this->io->writeLine('Skipping '.$shortPath.' - file not found');
             $exts = ['json', 'css', 'css.map'];
-            $key = core\uri\Path::extractFileName($fileName);
+            $key = core\uri\Path::extractFileName((string)$file);
 
             foreach($exts as $ext) {
                 core\fs\File::delete($path.'/'.$key.'.'.$ext);
