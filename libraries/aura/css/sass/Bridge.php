@@ -227,7 +227,7 @@ class Bridge implements IBridge {
                 '--style='.$outputType,
                 '--sourcemap=file',
                 $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type,
-                $this->_workDir.'/'.$this->_key.'.css'
+                $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css'
             ])
             ->setWorkingDirectory($this->_workDir)
             ->launch();
@@ -246,10 +246,10 @@ class Bridge implements IBridge {
             );
         }
 
-        $content = file_get_contents($this->_workDir.'/'.$this->_key.'.css');
+        $content = file_get_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css');
 
         // Replace map url
-        $mapPath = $this->_workDir.'/'.$this->_key.'.css.map';
+        $mapPath = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css.map';
         $mapExists = is_file($mapPath);
 
         $content = str_replace(
@@ -260,7 +260,7 @@ class Bridge implements IBridge {
             $content
         );
 
-        file_put_contents($this->_workDir.'/'.$this->_key.'.css', $content);
+        file_put_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css', $content);
 
         // Replace map file paths
         if($mapExists && $envMode != 'production') {
@@ -274,17 +274,29 @@ class Bridge implements IBridge {
                 );
             }
 
-            file_put_contents($this->_workDir.'/'.$this->_key.'.css.map', $content);
+            file_put_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css.map', $content);
         }
 
         // Apply plugins
         if(!empty($options)) {
             foreach($options as $name => $settings) {
-                $this->_applyProcessor($name, $settings);
+                $processor = aura\css\processor\Base::factory($name, $settings);
+                $processor->process($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css');
             }
         }
 
-        file_put_contents($this->_workDir.'/'.$this->_key.'.json', json_encode(array_values($manifest)));
+        file_put_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.json', json_encode(array_values($manifest)));
+
+        $files = [
+            $this->_key.'.css',
+            $this->_key.'.css.map',
+            $this->_key.'.json'
+        ];
+
+        foreach($files as $fileName) {
+            core\fs\File::copy($this->_workDir.'/'.$this->_key.'/'.$fileName, $this->_workDir.'/'.$fileName);
+        }
+
         return;
     }
 
@@ -407,10 +419,5 @@ class Bridge implements IBridge {
         }
 
         return $uri;
-    }
-
-    protected function _applyProcessor($name, array $settings) {
-        $processor = aura\css\processor\Base::factory($name, $settings);
-        $processor->process($this->_workDir.'/'.$this->_key.'.css');
     }
 }

@@ -341,6 +341,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         return flex\json\Codec::decode($data);
     }
 
+    public function jsonDecodeFile($path) {
+        return flex\json\Codec::decodeFile($path);
+    }
+
 
 // Crypt
     public function hash($message, $salt=null) {
