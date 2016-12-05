@@ -72,7 +72,7 @@ class TaskPurgeBuilds extends arch\node\Task {
             $checkTime = $this->date('-'.self::RUN_DURATION)->toTimestamp();
             $del = 0;
             $keep = 0;
-            $ids = [];
+            $ids = $keepIds = [];
 
             foreach($runDir->scanDirs() as $name => $dir) {
                 try {
@@ -86,8 +86,16 @@ class TaskPurgeBuilds extends arch\node\Task {
                 if($all || $guid->getTime() < $checkTime) {
                     $ids[] = $name;
                 } else {
+                    $keepIds[] = $name;
                     $keep++;
                 }
+            }
+
+            rsort($keepIds);
+
+            while($keep > 2) {
+                $ids[] = array_pop($keepIds);
+                $keep--;
             }
 
             rsort($ids);

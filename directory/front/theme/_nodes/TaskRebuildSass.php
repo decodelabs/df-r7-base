@@ -40,20 +40,21 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         foreach($this->_dir->scanFiles(function($fileName) {
             return core\uri\Path::extractExtension($fileName) == 'json';
         }) as $fileName => $file) {
+            $key = core\uri\Path::extractFileName($fileName);
             $json = $this->data->jsonDecodeFile($file);
             $sassPath = array_shift($json);
 
             $sassFile = new core\fs\File($sassPath);
             $shortPath = core\fs\Dir::stripPathLocation($sassFile);
 
-            $result = $this->_checkFile($sassFile);
+            $result = $this->_checkFile($sassFile, $key);
 
             if($newBuild) {
                 $sassPath = preg_replace('|data/local/run/[^/]+/|', 'data/local/run/'.$buildId.'/', $sassPath);
                 $sassFile = new core\fs\File($sassPath);
                 $shortPath = core\fs\Dir::stripPathLocation($sassFile);
 
-                if(!$this->_checkFile($sassFile)) {
+                if(!$this->_checkFile($sassFile, $key)) {
                     continue;
                 }
             } else if(!$result) {
@@ -74,13 +75,12 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         $this->io->decrementLineLevel();
     }
 
-    protected function _checkFile($file) {
+    protected function _checkFile($file, $key) {
         $shortPath = core\fs\Dir::stripPathLocation($file);
 
         if(!$file->exists()) {
             $this->io->writeLine('Skipping '.$shortPath.' - file not found');
             $exts = ['json', 'css', 'css.map'];
-            $key = core\uri\Path::extractFileName((string)$file);
 
             foreach($exts as $ext) {
                 $this->_dir->deleteFile($key.'.'.$ext);
