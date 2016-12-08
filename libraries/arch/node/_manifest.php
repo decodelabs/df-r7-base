@@ -174,6 +174,7 @@ interface IActiveForm extends IForm {
     public function handleDelegateEvent($delegateId, $event, $args);
     public function triggerPostEvent(IActiveForm $target, string $event, array $args);
     public function handlePostEvent(IActiveForm $target, string $event, array $args);
+    public function handleMissingDelegate(string $id, string $event, array $args): bool;
 
     public function getAvailableEvents();
     public function getStateData();

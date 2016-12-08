@@ -392,6 +392,10 @@ trait TForm {
 
     public function handlePostEvent(IActiveForm $target, string $event, array $args) {}
 
+    public function handleMissingDelegate(string $id, string $event, array $args): bool {
+        return false;
+    }
+
 
     public function getAvailableEvents() {
         $output = [];

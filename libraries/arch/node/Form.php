@@ -437,18 +437,34 @@ abstract class Form extends Base implements IFormNode {
         $event = array_pop($targetId);
         $targetString = implode('.', $targetId);
         $target = $this;
+        $isTargetComplete = false;
 
         if(!empty($targetId)) {
             while(!empty($targetId)) {
                 $target->handleDelegateEvent(implode('.', $targetId), $event, $args);
-                $target = $target->getDelegate(array_shift($targetId));
+
+                try {
+                    $target = $target->getDelegate($currentId = array_shift($targetId));
+                } catch(DelegateException $e) {
+                    if($target->handleMissingDelegate($currentId, $event, $args)) {
+                        $isTargetComplete = $target->isComplete();
+                        $target = null;
+                        break;
+                    } else {
+                        throw $e;
+                    }
+                }
             }
         }
 
-        $target->handleEvent($event, $args);
-        $this->triggerPostEvent($target, $event, $args);
 
-        if($target->isComplete()) {
+        if($target) {
+            $target->handleEvent($event, $args);
+            $this->triggerPostEvent($target, $event, $args);
+            $isTargetComplete = $target->isComplete();
+        }
+
+        if($isTargetComplete) {
             $this->setComplete();
 
             foreach($this->_delegates as $delegate) {
@@ -460,7 +476,6 @@ abstract class Form extends Base implements IFormNode {
                 $session->remove($this->_state->sessionId);
             }
         }
-
     }
 
 
