@@ -352,20 +352,13 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
 
     public function getComponents() {
-        $literal = $this->getLiteralPathArray();
-        $node = array_pop($literal);
-
-        if($fileName = $this->_path->getFileName()) {
-            $node = $fileName;
-        }
-
         return [
-            'node' => $node,
+            'node' => $this->getRawNode(),
             'extension' => $this->_path->getExtension(),
             'type' => $this->getType(),
-            'area' => array_shift($literal),
-            'controller' => implode('/', $literal),
-            'controllerParts' => $literal,
+            'area' => $this->getArea(),
+            'controllerParts' => $parts = $this->getRawControllerParts(),
+            'controller' => implode('/', $parts),
             'query' => $this->getQuery()
         ];
     }
@@ -437,6 +430,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
     protected function _eq($request, $full): bool {
         $request = Request::factory($request);
+
 
         if($this->_scheme != $request->_scheme) {
             return false;
@@ -528,12 +522,9 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
         $tpString = $this->getLiteralPathString();
         $rpString = $request->getLiteralPathString();
+        $rpDirString = dirname($rpString).'/';
 
-        if(substr($rpString, -6) == '/index') {
-            $rpString = substr($rpString, 0, -5);
-        }
-
-        if(0 !== stripos($tpString, $rpString)) {
+        if(0 !== stripos($tpString, $rpDirString)) {
             return false;
         }
 
@@ -577,7 +568,9 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             if(empty($parts)) {
                 $addTrailingSlash = true;
             } else {
-                $addTrailingSlash = $this->_path->shouldAddTrailingSlash();
+                if((!$addTrailingSlash = $this->_path->shouldAddTrailingSlash()) && !$this->_path->hasExtension()) {
+                    $parts[] = array_pop($parts).'.'.static::DEFAULT_TYPE;
+                }
             }
         } else {
             $parts = [];
@@ -589,9 +582,10 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         if($addTrailingSlash) {
-            $parts[] = static::DEFAULT_NODE;//.'.'.static::DEFAULT_TYPE;
+            $parts[] = static::DEFAULT_NODE.'.'.static::DEFAULT_TYPE;
         }
 
+        array_map('strtolower', $parts);
         return $parts;
     }
 
