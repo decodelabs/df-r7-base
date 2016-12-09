@@ -25,7 +25,7 @@ class AreaMenu extends Base {
         }
 
         $menuId = (string)$this->context->location;
-        $menuId = dirname($menuId).'/'.ucfirst(basename($menuId));
+        $menuId = dirname($menuId).'/'.ucfirst($this->context->location->getRawNode());
         $view->content->addBlockMenu($menuId);
 
         return $view;
