@@ -73,6 +73,7 @@ abstract class Base implements IWidget {
 
     protected function _renderStringError($e) {
         core\debug()->exception($e);
+        core\log\Manager::getInstance()->logException($e);
 
         $message = $this->esc('Error rendering widget '.$this->getWidgetName());
 
