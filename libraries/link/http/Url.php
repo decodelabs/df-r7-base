@@ -22,7 +22,8 @@ class Url extends core\uri\Url implements IUrl {
         if($request->isJustFragment()) {
             $output = new self('#'.$request->getFragment());
         } else {
-            $path = $area = 'front';
+            $path = null;
+            $area = 'front';
 
             $output = new static();
             $output->_scheme = $scheme;
