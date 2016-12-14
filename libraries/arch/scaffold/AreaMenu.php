@@ -24,7 +24,7 @@ class AreaMenu extends Base {
             $view->content->push($this->apex->component('IndexHeaderBar'));
         }
 
-        $menuId = (string)$this->context->location;
+        $menuId = (string)$this->context->location->getLiteralPathString();
         $menuId = dirname($menuId).'/'.ucfirst($this->context->location->getRawNode());
         $view->content->addBlockMenu($menuId);
 
