@@ -190,6 +190,7 @@ class Uri implements arch\IDirectoryHelper {
             $request = clone $request;
         }
 
+        $request->normalize();
         $this->_applyRequestRedirect($request, $from, $to);
         return $request;
     }

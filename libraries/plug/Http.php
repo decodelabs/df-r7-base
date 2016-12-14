@@ -233,7 +233,7 @@ class Http implements arch\IDirectoryHelper {
             }
         }
 
-        if(!$success && ($redirect = $request->getRedirectFrom()) ){
+        if(!$success && ($redirect = $request->getRedirectFrom())) {
             return $this->redirect($redirect);
         }
 

@@ -594,7 +594,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function toString(): string {
-        $output = 'directory://'.implode('/', $this->getLiteralPathArray());
+        $output = 'directory://'.$this->_path;
 
         if($this->_query && !$this->_query->isEmpty()) {
             $output .= '?'.$this->_query->toArrayDelimitedString();
@@ -690,16 +690,24 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function normalize() {
+        if(!$this->_path) {
+            return $this;
+        }
+
         if(substr($this->_path[0], 0, 1) == self::AREA_MARKER
         && substr($this->_path[0], 1) == self::DEFAULT_AREA) {
             $this->_path->remove(0);
         }
 
-        if(!$this->_path->shouldAddTrailingSlash()
-        && $this->_path->getFileName() == self::DEFAULT_NODE
-        && $this->_path->getExtension() == self::DEFAULT_TYPE) {
-            $this->_path->pop();
-            $this->_path->shouldAddTrailingSlash(true);
+        if(!$this->_path->shouldAddTrailingSlash()) {
+            $isDefaultExtension = strtolower($this->_path->getExtension()) == self::DEFAULT_TYPE;
+
+            if($this->_path->getFileName() == self::DEFAULT_NODE && $isDefaultExtension) {
+                $this->_path->pop();
+                $this->_path->shouldAddTrailingSlash(true);
+            } else if($isDefaultExtension) {
+                $this->_path->setExtension(null);
+            }
         }
 
         return $this;
@@ -749,7 +757,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         $from = Request::factory($from);
-        $this->getQuery()->{self::REDIRECT_FROM} = $from->encode();
+        $this->getQuery()->{self::REDIRECT_FROM} = $from->normalize()->encode();
 
         return $this;
     }
@@ -772,7 +780,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         $to = Request::factory($to);
-        $this->getQuery()->{self::REDIRECT_TO} = $to->encode();
+        $this->getQuery()->{self::REDIRECT_TO} = $to->normalize()->encode();
 
         return $this;
     }
@@ -792,15 +800,17 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         $output->_query = null;
         $output->_fragment = null;
 
-        $isDefaultNode = $output->isDefaultNode();
+        if($output->_path) {
+            $isDefaultNode = $output->isDefaultNode();
 
-        if(!$output->_path->shouldAddTrailingSlash()) {
-            $output->_path->pop();
-            $output->_path->shouldAddTrailingSlash(true);
-        }
+            if(!$output->_path->shouldAddTrailingSlash()) {
+                $output->_path->pop();
+                $output->_path->shouldAddTrailingSlash(true);
+            }
 
-        if($isDefaultNode) {
-            $output->_path->pop();
+            if($isDefaultNode) {
+                $output->_path->pop();
+            }
         }
 
         return $output;
@@ -808,7 +818,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
     public function extractRelative($path) {
         $output = new self($path);
-        $output->_path = $this->_path->extractRelative($output->_path);
+        $output->_path = $this->getPath()->extractRelative($output->getPath());
         return $output;
     }
 
