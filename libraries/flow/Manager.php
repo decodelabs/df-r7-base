@@ -330,7 +330,7 @@ class Manager implements IManager, core\IShutdownAware {
         $config = flow\mail\Config::getInstance();
         $options = $config->getListSource($id);
 
-        return isset($option->adapter);
+        return isset($options->adapter);
     }
 
     public function getListManifest() {
