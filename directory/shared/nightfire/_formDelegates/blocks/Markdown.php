@@ -28,7 +28,7 @@ class Markdown extends Base {
                     $this->fieldName('body'),
                     $this->values->body
                 )
-                ->isRequired($this->_isRequired)
+                //->isRequired($this->_isRequired)
                 ->setId($id = uniqid('markdown'))
         );
 
@@ -43,7 +43,12 @@ class Markdown extends Base {
     }
 
     public function apply() {
-        $this->_block->setBody($this->values['body']);
+        $validator = $this->data->newValidator()
+            ->addField('body', 'text')
+                ->isRequired($this->_isRequired)
+            ->validate($this->values);
+
+        $this->_block->setBody($validator['body']);
         return $this->_block;
     }
 }

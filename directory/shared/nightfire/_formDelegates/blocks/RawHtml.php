@@ -28,7 +28,12 @@ class RawHtml extends Base {
     }
 
     public function apply() {
-        $this->_block->setHtmlContent($this->values['content']);
+        $validator = $this->data->newValidator()
+            ->addField('content', 'text')
+                ->isRequired($this->_isRequired)
+            ->validate($this->values);
+
+        $this->_block->setHtmlContent($validator['content']);
         return $this->_block;
     }
 }
