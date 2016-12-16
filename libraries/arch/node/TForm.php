@@ -613,7 +613,7 @@ trait TForm_ValueListSelectorDelegate {
     }
 
     public function setSelected($selected) {
-        unset($this->values->selected);
+        $this->values->selected->clear();
 
         if($selected === null) {
             return $this;

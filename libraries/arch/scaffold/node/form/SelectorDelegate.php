@@ -22,8 +22,8 @@ class SelectorDelegate extends arch\node\form\SelectorDelegate {
     protected function setDefaultValues() {
         $name = $this->_scaffold->getRecordKeyName();
 
-        if(isset($this->request[$name])) {
-            $this->setSelected($this->request->query[$name]);
+        if(isset($this->request[$name]) && !isset($this->values->selected)) {
+            $this->setSelected($this->request[$name]);
         } else {
             parent::setDefaultValues();
         }

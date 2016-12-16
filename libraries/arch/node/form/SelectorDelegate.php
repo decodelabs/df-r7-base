@@ -179,7 +179,7 @@ abstract class SelectorDelegate extends Delegate implements
         $parts = explode('.', $this->_delegateId);
         $id = array_pop($parts);
 
-        if(isset($this->request[$id])) {
+        if(isset($this->request[$id]) && !isset($this->values->selected)) {
             $this->setSelected($this->request[$id]);
         } else if($this->_isRequired && $this->_autoSelect) {
             $r = $this->_getQuery(['@primary'])->limit(2)->toList('@primary');
