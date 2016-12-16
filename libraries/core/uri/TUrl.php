@@ -252,15 +252,23 @@ trait TUrl_PortContainer {
         $this->_port = null;
     }
 
-    protected function _getPortString($skip=null) {
+    protected function _getPortString($skip=null): string {
         if($this->_port !== null && $this->_port !== $skip) {
             return ':'.$this->_port;
         }
-    }
 
-    public function getHostString() {
-        return $this->getDomain().$this->_getPortString();
+        return '';
     }
+}
+
+
+trait TUrl_DomainPortContainer {
+     use TUrl_DomainContainer;
+     use TUrl_PortContainer;
+
+     public function getHost(): string {
+        return (string)$this->getDomain().$this->_getPortString();
+     }
 }
 
 

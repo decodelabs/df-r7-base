@@ -13,8 +13,7 @@ use df\arch;
 class Url extends core\uri\Url implements IUrl {
 
     use core\uri\TUrl_CredentialContainer;
-    use core\uri\TUrl_DomainContainer;
-    use core\uri\TUrl_PortContainer;
+    use core\uri\TUrl_DomainPortContainer;
 
     protected $_directoryRequest;
 

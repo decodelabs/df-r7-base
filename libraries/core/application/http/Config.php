@@ -142,7 +142,7 @@ class Config extends core\Config {
     protected function _generateRootUrl() {
         $baseUrl = null;
         $request = new link\http\request\Base(true);
-        $host = $request->getUrl()->getDomain();
+        $host = $request->getUrl()->getHost();
         $path = $request->getUrl()->getPathString();
 
         $baseUrl = $host.'/'.trim(dirname($_SERVER['SCRIPT_NAME']), '/').'/';

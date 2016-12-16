@@ -80,7 +80,10 @@ interface IPortContainer {
     public function hasPort(...$ports);
 }
 
-interface IDomainPortContainer extends IDomainContainer, IPortContainer {}
+interface IDomainPortContainer extends IDomainContainer, IPortContainer {
+    public function getHost(): string;
+}
+
 interface IIpPortContainer extends IIpContainer, IPortContainer {}
 
 interface IPathContainer {

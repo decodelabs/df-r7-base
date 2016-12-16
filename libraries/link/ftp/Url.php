@@ -12,8 +12,7 @@ use df\link;
 class Url extends core\uri\Url implements IUrl {
 
     use core\uri\TUrl_CredentialContainer;
-    use core\uri\TUrl_DomainContainer;
-    use core\uri\TUrl_PortContainer;
+    use core\uri\TUrl_DomainPortContainer;
 
     public function import($url='') {
         if($url !== null) {
