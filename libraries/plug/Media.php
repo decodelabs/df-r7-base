@@ -169,7 +169,7 @@ class Media implements arch\IDirectoryHelper {
                 ->set('Access-Control-Allow-Origin', '*')
                 ->setCacheAccess('public')
                 ->canStoreCache(true)
-                ->setCacheExpiration('+1 year');
+                ->setCacheExpiration('+1 hour');
         }
 
         return $output;
