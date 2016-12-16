@@ -78,6 +78,10 @@ abstract class Base implements IMediaHandler {
             $output .= '&transform='.$transformation;
         }
 
+        if(df\Launchpad::$compileTimestamp) {
+            $output .= '&cts='.df\Launchpad::$compileTimestamp;
+        }
+
         return $output;
     }
 

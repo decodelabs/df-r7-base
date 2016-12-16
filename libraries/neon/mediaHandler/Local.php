@@ -28,15 +28,27 @@ class Local extends Base implements ILocalDataHandler {
     }
 
     public function getDownloadUrl($fileId) {
-        return '/media/download?file='.$fileId;
+        $output = '/media/download?file='.$fileId;
+
+        if(df\Launchpad::$compileTimestamp) {
+            $output .= '&cts='.df\Launchpad::$compileTimestamp;
+        }
+
+        return $output;
     }
 
     public function getEmbedUrl($fileId) {
-        return '/media/download?file='.$fileId.'&embed';
+        return $this->getDownloadUrl($fileId).'&embed';
     }
 
     public function getVersionDownloadUrl($fileId, $versionId, $isActive) {
-        return '/media/download?version='.$versionId;
+        $output = '/media/download?version='.$versionId;
+
+        if(df\Launchpad::$compileTimestamp) {
+            $output .= '&cts='.df\Launchpad::$compileTimestamp;
+        }
+
+        return $output;
     }
 
     public function getFilePath($fileId, $versionId) {
