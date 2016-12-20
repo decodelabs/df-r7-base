@@ -23,31 +23,11 @@ class LibraryImage extends Base {
 
     protected function setDefaultValues() {
         $this['image']->setSelected($this->_block->getImageId());
-
-        if($this->_block->shouldStoreDimensions()) {
-            $this->values->width = $this->_block->getWidth();
-            $this->values->height = $this->_block->getHeight();
-        }
-
         $this->values->link = $this->_block->getLink();
     }
 
     public function renderFieldContent(aura\html\widget\Field $field) {
         $field->addField($this->_('Library image'))->push($this['image']);
-
-        if($this->_block->shouldStoreDimensions()) {
-            $field->push(
-                $this->html->field($this->_('Dimensions (optional)'))->push(
-                    $this->html->numberTextbox($this->fieldName('width'), $this->values->width)
-                        ->setRange(1, null, 1),
-
-                    ' x ',
-
-                    $this->html->numberTextbox($this->fieldName('height'), $this->values->height)
-                        ->setRange(1, null, 1)
-                )
-            );
-        }
 
         $field->addField($this->_('Link URL'))->push(
             $this->html->textbox($this->fieldName('link'), $this->values->link)
@@ -62,26 +42,10 @@ class LibraryImage extends Base {
             ->addField('image', 'delegate')
                 ->fromForm($this)
 
-            ->chainIf($this->_block->shouldStoreDimensions(), function($validator) {
-                $validator
-                    // Width
-                    ->addField('width', 'integer')
-                        ->setMin(1)
-
-                    // Height
-                    ->addField('height', 'integer')
-                        ->setMin(1);
-            })
-
             // Link
             ->addField('link', 'text')
 
             ->validate($this->values);
-
-        if($this->_block->shouldStoreDimensions()) {
-            $this->_block->setWidth($validator['width']);
-            $this->_block->setHeight($validator['height']);
-        }
 
         $this->_block->setImageId($validator['image']);
         $this->_block->setLink($validator['link']);
