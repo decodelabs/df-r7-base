@@ -82,6 +82,9 @@ class Embed implements IAudioEmbed {
                         'Don\'t know how to parse this audio embed'
                     );
             }
+        } else if(preg_match('/^[0-9]+$/', $embed)) {
+            // Assume audioboom
+            $output = new self('//embeds.audioboom.com/boos/'.$embed.'/embed/v4');
         } else {
             // check is url
             $output = new self($embed);
