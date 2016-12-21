@@ -13,4 +13,5 @@ class Layout extends Base {
 
     const REQUIRED_OUTPUT_TYPES = ['Html'];
     const DEFAULT_BLOCKS = [];
+    const DEFAULT_EDITOR_BLOCK = 'RawHtml';
 }

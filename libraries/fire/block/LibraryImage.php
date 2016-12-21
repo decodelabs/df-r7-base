@@ -17,8 +17,6 @@ class LibraryImage extends Base {
     const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_imageId;
-    protected $_width;
-    protected $_height;
     protected $_link;
 
     public function getFormat() {

@@ -45,7 +45,7 @@ class ContentSlot extends arch\node\form\Delegate implements
             $types = $this->_state->getStore('blockTypes', []);
         }
 
-        if(empty($types)) {
+        if(empty($types) && ($this->_defaultBlockType || $this->_isRequired)) {
             $default = $this->_defaultBlockType ? ucfirst($this->_defaultBlockType) : null;
 
             if(!$default || !$this->_manager->isBlockAvailable($default)) {

@@ -14,6 +14,8 @@ abstract class Base implements fire\ICategory {
 
     const REQUIRED_OUTPUT_TYPES = ['html'];
     const DEFAULT_BLOCKS = ['RawHtml'];
+    const DEFAULT_EDITOR_BLOCK = null;
+
     const FORMAT_WEIGHTS = [
         'markup' => 100,
         'text' => 90,
@@ -57,6 +59,10 @@ abstract class Base implements fire\ICategory {
     }
 
     public function getDefaultEditorBlockType() {
+        if(!empty(static::DEFAULT_EDITOR_BLOCK)) {
+            return static::DEFAULT_EDITOR_BLOCK;
+        }
+
         $types = $this->getDefaultBlocks();
         $output = array_shift($types);
 
