@@ -898,7 +898,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function lookupAccessKey(array $keys, $lockAction=null) {
-        $parts = $this->getLiteralPathArray();
+        $parts = $this->_getAccessLockParts();
         $node = array_pop($parts);
         $basePath = implode('/', $parts);
 
@@ -964,7 +964,36 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function getAccessLockId() {
-        return implode('/', $this->getLiteralPathArray());
+        return implode('/', $this->_getAccessLockParts());
+    }
+
+    protected function _getAccessLockParts() {
+        if($this->_path) {
+            $parts = $this->_path->getRawCollection();
+
+            if(empty($parts)) {
+                $addTrailingSlash = true;
+            } else {
+                if((!$addTrailingSlash = $this->_path->shouldAddTrailingSlash()) && $this->_path->hasExtension() && $this->_path->getExtension() == static::DEFAULT_TYPE) {
+                    array_pop($parts);
+                    $parts[] = $this->_path->getFilename();
+                }
+            }
+        } else {
+            $parts = [];
+            $addTrailingSlash = true;
+        }
+
+        if(!isset($parts[0]) || substr($parts[0], 0, 1) != '~') {
+            array_unshift($parts, static::AREA_MARKER.static::DEFAULT_AREA);
+        }
+
+        if($addTrailingSlash) {
+            $parts[] = static::DEFAULT_NODE;
+        }
+
+        array_map('strtolower', $parts);
+        return $parts;
     }
 
 
