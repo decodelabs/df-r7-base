@@ -90,6 +90,26 @@ class VersionRange implements IVersionRange, core\IDumpable {
             }
         }
 
+        if(substr($expression, 0, 1) == '^') {
+            $matches = Version::matchString(str_replace(['*', 'x', 'X'], '0', substr($expression, 1)));
+
+            if(!isset($matches[1])) {
+                $group[] = new Version_Comparator('>=', '0');
+                return;
+            }
+
+            $parts = explode('.', $matches[1]);
+            $group[] = new Version_Comparator('>=', $matches[1]);
+
+            if(!isset($parts[1])) {
+                $group[] = new Version_Comparator('<', $parts[0] + 1);
+                return;
+            } else {
+                $group[] = new Version_Comparator('<', $parts[0].'.'.($parts[1] + 1));
+                return;
+            }
+        }
+
         if(preg_match('/^([\<\>\=]+)(.+)/i', $expression, $matches)) {
             $group[] = new Version_Comparator($matches[1], $matches[2]);
             return;
