@@ -473,8 +473,8 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return false;
         }
 
-        $tpString = $this->getLiteralPathString();
-        $rpString = $request->getLiteralPathString();
+        $tpString = implode('/', $this->_getLiteralPathArray(false, false));
+        $rpString = implode('/', $request->_getLiteralPathArray(false, false));
 
         if(!$full && $tpString == $rpString) {
             return true;
@@ -562,14 +562,34 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function getLiteralPathArray() {
+        return $this->_getLiteralPathArray();
+    }
+
+    protected function _getLiteralPathArray(bool $incType=true, bool $incNode=true) {
         if($this->_path) {
             $parts = $this->_path->getRawCollection();
 
             if(empty($parts)) {
                 $addTrailingSlash = true;
             } else {
-                if((!$addTrailingSlash = $this->_path->shouldAddTrailingSlash()) && !$this->_path->hasExtension()) {
-                    $parts[] = array_pop($parts).'.'.static::DEFAULT_TYPE;
+                if(!$addTrailingSlash = $this->_path->shouldAddTrailingSlash()) {
+                    $name = $this->_path->getFileName();
+                    $ext = $this->_path->getExtension();
+                    array_pop($parts);
+
+                    if($ext !== null && ($incType || $ext != static::DEFAULT_TYPE)) {
+                        if(empty($name)) {
+                            $name = self::DEFAULT_NODE;
+                        }
+
+                        $name .= '.'.$ext;
+                    }
+
+                    if($incNode || $name != static::DEFAULT_NODE) {
+                        $parts[] = $name;
+                    } else {
+                        $parts[] = '';
+                    }
                 }
             }
         } else {
@@ -582,7 +602,17 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         if($addTrailingSlash) {
-            $parts[] = static::DEFAULT_NODE.'.'.static::DEFAULT_TYPE;
+            if($incNode) {
+                $name = static::DEFAULT_NODE;
+
+                if($incType) {
+                    $name .= '.'.static::DEFAULT_TYPE;
+                }
+
+                $parts[] = $name;
+            } else {
+                $parts[] = '';
+            }
         }
 
         array_map('strtolower', $parts);
@@ -898,7 +928,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function lookupAccessKey(array $keys, $lockAction=null) {
-        $parts = $this->_getAccessLockParts();
+        $parts = $this->_getLiteralPathArray(false, true);
         $node = array_pop($parts);
         $basePath = implode('/', $parts);
 
@@ -964,9 +994,10 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function getAccessLockId() {
-        return implode('/', $this->_getAccessLockParts());
+        return implode('/', $this->_getLiteralPathArray(false, true));
     }
 
+    /*
     protected function _getAccessLockParts() {
         if($this->_path) {
             $parts = $this->_path->getRawCollection();
@@ -995,6 +1026,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         array_map('strtolower', $parts);
         return $parts;
     }
+    */
 
 
 // Dump
