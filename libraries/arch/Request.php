@@ -436,7 +436,10 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return false;
         }
 
-        if($this->getLiteralPathString() != $request->getLiteralPathString()) {
+        $tpString = implode('/', $this->_getLiteralPathArray(false, false));
+        $rpString = implode('/', $request->_getLiteralPathArray(false, false));
+
+        if($tpString != $rpString) {
             return false;
         }
 
