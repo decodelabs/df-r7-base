@@ -88,7 +88,6 @@ trait TScaffold_RecordDataProvider {
     //const DETAILS_FIELDS = [];
 
     protected $_record;
-    protected $_recordAction;
 
     private $_recordNameKey;
 
@@ -102,7 +101,7 @@ trait TScaffold_RecordDataProvider {
         }
 
         $key = $this->context->request->query[$this->getRecordUrlKey()];
-        $this->_record = $this->loadRecord($key, $this->_recordAction);
+        $this->_record = $this->loadRecord($key);
 
         if(!$this->_record) {
             throw new RuntimeException('Unable to load scaffold record');
@@ -210,9 +209,9 @@ trait TScaffold_RecordDataProvider {
         }
     }
 
-    protected function loadRecord($key, $action) {
+    protected function loadRecord($key) {
         return $this->data->fetchForAction(
-            $this->getRecordAdapter(), $key, $action
+            $this->getRecordAdapter(), $key
         );
     }
 
@@ -316,7 +315,6 @@ trait TScaffold_RecordDataProvider {
             $this->context->throwError(403, 'Records cannot be deleted');
         }
 
-        $this->_recordAction = 'delete';
         return new arch\scaffold\node\DeleteForm($this);
     }
 
