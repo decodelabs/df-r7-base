@@ -17,13 +17,23 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
     use arch\TDirectoryHelper;
     use aura\view\TView_DirectoryHelper;
 
-    public function renderBlock($block, $category=null, $isNested=null) {
+
+// Block
+    public function normalizeBlock($block) {
         if(empty($block)) {
             return null;
         }
 
         if(!$block instanceof fire\block\IBlock) {
             $block = fire\block\Base::fromXml($block);
+        }
+
+        return $block;
+    }
+
+    public function renderBlock($block, $category=null, $isNested=null) {
+        if(!$block = $this->normalizeBlock($block)) {
+            return null;
         }
 
         if($isNested !== null) {
@@ -50,13 +60,24 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
         return $this->view->html->previewText($output, $length);
     }
 
-    public function renderSlot($slot, $category=null, $isNested=null) {
+
+
+// Slot
+    public function normalizeSlot($slot) {
         if(empty($slot)) {
             return null;
         }
 
         if(!$slot instanceof fire\slot\IContent) {
             $slot = fire\slot\Content::fromXml($slot);
+        }
+
+        return $slot;
+    }
+
+    public function renderSlot($slot, $category=null, $isNested=null) {
+        if(!$slot = $this->normalizeSlot($slot)) {
+            return null;
         }
 
         if($isNested === null) {
@@ -97,6 +118,8 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
         return $category;
     }
 
+
+// Layout
     public function renderLayoutPreview($layout) {
         if(empty($layout)) {
             return null;
@@ -109,6 +132,8 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
         return $this->renderSlot($layout->getSlot('primary'));
     }
 
+
+// Element
     public function renderElement($slug) {
         $body = $this->context->data->content->element->select('body')
             ->where('slug', '=', $slug)
