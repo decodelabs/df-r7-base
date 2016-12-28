@@ -84,7 +84,7 @@ interface IContent extends core\collection\IAttributeContainer, flex\xml\IRootIn
     public function setSlot(fire\slot\IContent $slot);
     public function getSlot(string $id);
     public function getSlots();
-    public function hasSlot(string $id);
+    public function hasSlot(string ...$ids): bool;
     public function removeSlot(string $id);
     public function clearSlots();
     public function countSlots();

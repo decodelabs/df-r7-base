@@ -149,8 +149,14 @@ trait TView {
         return $this;
     }
 
-    public function hasSlot(string $key) {
-        return isset($this->slots[$key]);
+    public function hasSlot(string ...$keys): bool {
+        foreach($keys as $key) {
+            if(isset($this->slots[$key])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function slotExists(string $key) {

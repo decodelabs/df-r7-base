@@ -74,8 +74,14 @@ class Content implements IContent {
         return $this->_slots;
     }
 
-    public function hasSlot(string $id) {
-        return isset($this->_slots[$id]);
+    public function hasSlot(string ...$ids): bool {
+        foreach($ids as $id) {
+            if(isset($this->_slots[$id])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function removeSlot(string $id) {

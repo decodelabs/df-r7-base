@@ -50,9 +50,9 @@ interface ISlotContainer {
     public function getSlots();
     public function clearSlots();
     public function setSlot(string $key, $value);
-    public function hasSlot(string $key);
+    public function hasSlot(string ...$keys): bool;
     public function slotExists(string $key);
-    public function checkSlots(string ...$key);
+    public function checkSlots(string ...$keys);
     public function getSlot(string $key, $default=null);
     public function renderSlot(string $key, $default=null);
     public function removeSlot(string $key);
