@@ -24,93 +24,70 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         return new core\validate\Handler();
     }
 
-    public function fetchForAction($source, $primary, $action=null, $chain=null) {
-        $output = $this->_queryForAction($this->fetch()->from($source), $primary, $action, $chain);
-        $this->_checkRecordAccess($output, $action);
 
-        return $output;
+
+// Query shortcuts
+    public function fetchForAction($source, $primary, $chain=null) {
+        return $this->queryByPrimaryForAction($this->fetch()->from($source), $primary, $chain);
     }
 
-    public function selectForAction($source, $fields, $primary=null, $action=null, $chain=null) {
-        if(!is_array($fields)) {
-            $chain = $action;
-            $action = $primary;
-            $primary = $fields;
-            $fields = ['*'];
-        }
-
-        return $this->_queryForAction($this->select($fields)->from($source), $primary, $action, $chain);
+    public function selectForAction($source, $fields, $primary=null, $chain=null) {
+        return $this->queryByPrimaryForAction($this->select($fields)->from($source), $primary, $chain);
     }
 
-    public function fetchOrCreateForAction($source, $primary, $action=null, $newChain=null, $queryChain=null) {
-        if(is_callable($action)) {
-            $queryChain = $newChain;
-            $newChain = $action;
-            $action = null;
+    public function fetchOrCreateForAction($source, $primary, $newChain=null, $queryChain=null) {
+        $query = $this->fetch()->from($source);
+        $this->applyQueryPrimaryClause($query, $primary);
+
+        if($queryChain) {
+            $query->chain($queryChain);
         }
 
-        $output = $this->_queryForAction($this->fetch()->from($source), $primary, $action, $queryChain, false);
+        $output = $query->toRow();
 
-        if($output) {
-            $this->_checkRecordAccess($output, $action);
-        } else {
+        if(!$output) {
             $output = $this->newRecord($source);
 
             if($newChain) {
-                core\lang\Callback($newChain, $output);
+                $values = core\lang\Callback($newChain, $output);
+
+                if(is_array($values)) {
+                    $output->import($values);
+                }
             }
         }
 
         return $output;
     }
 
-    public function _queryForAction(opal\query\IReadQuery $query, &$primary, &$action, $chain=null, $throw=true) {
-        $name = $query->getSource()->getDisplayName();
-
+    public function queryByPrimaryForAction(opal\query\IReadQuery $query, $primary, $chain=null) {
         if($primary === null) {
-            if($throw) {
-                $this->context->throwError(404, 'Item not found - '.$name.'#NULL');
-            } else {
-                return null;
-            }
+            $name = $query->getSource()->getDisplayName();
+            $this->context->throwError(404, 'Item not found - '.$name.'#NULL');
         }
 
-        if(is_callable($action)) {
-            $chain = $action;
-            $action = null;
-        }
-
-        $this->applyQueryActionClause($query, $primary);
-
+        $this->applyQueryPrimaryClause($query, $primary);
 
         if($chain) {
             $query->chain($chain);
         }
 
-        if((!$output = $query->toRow()) && $throw) {
+        $output = $query->toRow();
+
+        if($output === null) {
             if(is_array($primary)) {
                 $primary = implode(',', $primary);
             }
 
+            $name = $query->getSource()->getDisplayName();
             $this->context->throwError(404, 'Item not found - '.$name.'#'.$primary);
         }
 
         return $output;
     }
 
-    protected function _checkRecordAccess($record, $action) {
-        if(!$this->context->getUserManager()->canAccess($record, $action)) {
-            $actionName = $action;
 
-            if($actionName === null) {
-                $actionName = 'access';
-            }
-
-            $this->context->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
-        }
-    }
-
-    public function applyQueryActionClause(opal\query\IQuery $query, $primary) {
+    public function applyQueryPrimaryClause(opal\query\IQuery $query, $primary) {
         if(is_array($primary) && is_string(key($primary))) {
             foreach($primary as $key => $value) {
                 $query->where($key, '=', $value);
@@ -122,6 +99,28 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         return $this;
     }
 
+
+    public function queryForAction(opal\query\IReadQuery $query, $chain=null) {
+        if($chain) {
+            $query->chain($chain);
+        }
+
+        $output = $query->toRow();
+
+        if($output === null) {
+            $name = $query->getSource()->getDisplayName();
+            $this->context->throwError(404, 'Item not found - '.$name);
+        }
+
+        return $output;
+    }
+
+
+
+
+
+
+// Unit objects
     public function beginProcedure($unit, $name, $values, $item=null) {
         return $this->_normalizeUnit($unit)
             ->beginProcedure($name, $values, $item);
@@ -149,18 +148,13 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     }
 
     public function newRecord($source, array $values=null) {
-        $adapter = $this->_sourceToAdapter($source);
-        $output = $adapter->newRecord($values);
-
-        if(!$this->context->getUserManager()->canAccess($output, 'add')) {
-            $this->context->throwError(401, 'Cannot add '.$source->getDisplayName().' items');
-        }
-
-        return $output;
+        return $this->_sourceToAdapter($source)
+            ->newRecord($values);
     }
 
     public function newPartial($source, array $values=null) {
-        return $this->_sourceToAdapter($source)->newPartial($values);
+        return $this->_sourceToAdapter($source)
+            ->newPartial($values);
     }
 
     private function _sourceToAdapter($source) {
