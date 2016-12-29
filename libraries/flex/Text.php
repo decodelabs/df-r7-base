@@ -88,15 +88,15 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
     public static function formatSlug($slug, $allowedChars=null) {
-        return self::factory($slug)
+        return trim(self::factory($slug)
             ->translitToAscii()
             ->regexReplace('/([a-z][a-z])([A-Z][a-z])/u', '$1 $2')
             ->toLower()
-            ->replace([' ', '.', ','], '-')
+            ->replace(' ', '-')
             ->replace('/', '_')
             ->regexReplace('/[^a-z0-9_\-'.preg_quote($allowedChars, '/').']/', '')
             ->regexReplace('/-+/', '-')
-            ->toString();
+            ->toString(), ' -');
     }
 
     public static function formatPathSlug($slug, $allowedChars=null) {
