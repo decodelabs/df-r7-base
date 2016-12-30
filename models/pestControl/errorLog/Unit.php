@@ -80,7 +80,7 @@ class Unit extends axis\unit\table\Base {
             $last = array_shift($trace);
         } while(($last['function'] ?? null) == 'logDeprecated');
 
-        array_unshift($last);
+        array_unshift($trace, $last);
 
         $file = $trace[0]['file'];
         $line = $trace[0]['line'];
