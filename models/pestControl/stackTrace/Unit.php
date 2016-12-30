@@ -25,6 +25,11 @@ class Unit extends axis\unit\table\Base {
         return $this->logObject($stackTrace);
     }
 
+    public function logArray(array $trace, $rewind=0) {
+        $stackTrace = core\debug\StackTrace::factory($rewind, $trace);
+        return $this->logObject($stackTrace);
+    }
+
     public function logObject(core\debug\IStackTrace $stackTrace) {
         $json = $stackTrace->toJson();
         return $this->logJson($json);

@@ -70,4 +70,42 @@ class Unit extends axis\unit\table\Base {
             ])
             ->save();
     }
+
+    public function logDeprecated($message, $request=null) {
+        $e = new Deprecated($message);
+        $message = $e->getMessage();
+        $trace = $e->getTrace();
+
+        while(($trace[0]['function'] ?? null) == 'logDeprecated') {
+            array_shift($trace);
+        }
+
+        $file = $trace[0]['file'];
+        $line = $trace[0]['line'];
+
+        $error = $this->_model->error->logError(
+            'Deprecated', null,
+            $file, $line,
+            $message
+        );
+
+        $mode = $this->context->getRunMode();
+
+        if($message == $error['message']) {
+            $message = null;
+        }
+
+        return $this->newRecord([
+                'error' => $error,
+                'mode' => $mode,
+                'request' => $this->_model->normalizeLogRequest($request, $mode),
+                'referrer' => $this->_model->getLogReferrer(),
+                'message' => $message,
+                'userAgent' => $this->context->data->user->agent->logCurrent(),
+                'stackTrace' => $this->_model->stackTrace->logArray($trace),
+                'user' => $this->_model->getLogUserId(),
+                'isProduction' => $this->context->application->isProduction()
+            ])
+            ->save();
+    }
 }

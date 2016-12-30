@@ -28,6 +28,10 @@ class Model extends axis\Model {
         return $this->errorLog->logException($exception, $request);
     }
 
+    public function logDeprecated($message, $request=null) {
+        return $this->errorLog->logDeprecated($message, $request);
+    }
+
 
     public function getPurgeThreshold() {
         return self::PURGE_THRESHOLD;

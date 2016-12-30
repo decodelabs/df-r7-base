@@ -30,6 +30,11 @@ class Manager implements IManager {
         return $this;
     }
 
+    public function logDeprecated($message, $request=null) {
+        $this->_getModel()->logDeprecated($message, $request);
+        return $this;
+    }
+
     protected function _getModel() {
         return axis\Model::factory('pestControl');
     }
