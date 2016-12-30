@@ -76,9 +76,11 @@ class Unit extends axis\unit\table\Base {
         $message = $e->getMessage();
         $trace = $e->getTrace();
 
-        while(($trace[0]['function'] ?? null) == 'logDeprecated') {
-            array_shift($trace);
-        }
+        do {
+            $last = array_shift($trace);
+        } while(($last['function'] ?? null) == 'logDeprecated');
+
+        array_unshift($last);
 
         $file = $trace[0]['file'];
         $line = $trace[0]['line'];
