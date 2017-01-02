@@ -36,9 +36,11 @@ trait TStringProvider {
         try {
             return (string)$this->toString();
         } catch(\Exception $e) {
+            core\log\Manager::getInstance()->logException($e);
             core\debug()->exception($e);
             return '';
         } catch(\Error $e) {
+            core\log\Manager::getInstance()->logException($e);
             core\debug()->exception($e);
             return '';
         }
