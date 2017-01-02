@@ -82,7 +82,7 @@ class Unit extends axis\unit\table\Base {
 
         array_unshift($trace, $last);
 
-        $file = $trace[0]['file'];
+        $file = core\fs\Dir::stripPathLocation($trace[0]['file']);
         $line = $trace[0]['line'];
 
         $error = $this->_model->error->logError(
