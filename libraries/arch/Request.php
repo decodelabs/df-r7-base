@@ -496,8 +496,8 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         if($full && $tpString == $rpString && $this->_query && $request->_query) {
-            foreach($this->_query as $key => $value) {
-                if(!isset($request->_query->{$key}) || $request->_query[$key] != $value) {
+            foreach($request->_query as $key => $value) {
+                if(!isset($this->_query->{$key}) || $this->_query[$key] != $value) {
                     return false;
                 }
             }
