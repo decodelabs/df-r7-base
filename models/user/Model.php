@@ -130,6 +130,22 @@ class Model extends axis\Model implements user\IUserModel {
         return $user->canAccess($lock);
     }
 
+    public function isUserA($user, string ...$signifiers): bool {
+        return (bool)$this->group->select()
+            ->where('users', '=', $user)
+            ->beginWhereClause()
+                ->where('signifier', 'in', $signifiers)
+                ->orWhereCorrelation('id', 'in', 'group')
+                    ->from($this->group->getBridgeUnit('roles'), 'bridge')
+                    ->whereCorrelation('role', 'in', 'id')
+                        ->from('axis://user/Role', 'role')
+                        ->where('role.signifier', 'in', $signifiers)
+                        ->endCorrelation()
+                    ->endCorrelation()
+                ->endClause()
+            ->count();
+    }
+
 
     public function installDefaultManifest() {
         $roleIds = $this->role->select('id', 'name')->toList('id', 'name');
