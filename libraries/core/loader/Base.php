@@ -130,7 +130,7 @@ class Base implements core\ILoader {
     }
 
     public function getFileSearchPaths($path) {
-        $path = core\uri\FilePath::normalizeLocal($path);
+        $path = core\uri\Path::normalizeLocal($path);
         return [df\Launchpad::$rootPath.'/'.$path];
     }
 
@@ -181,7 +181,7 @@ class Base implements core\ILoader {
     }
 
     public function lookupFileListRecursive($path, $extensions=null, $folderCheck=null) {
-        $path = core\uri\FilePath::normalizeLocal($path);
+        $path = core\uri\Path::normalizeLocal($path);
 
         if(!($folderCheck && !core\lang\Callback($folderCheck, $path))) {
             foreach($this->lookupFileList($path, $extensions) as $key => $val) {

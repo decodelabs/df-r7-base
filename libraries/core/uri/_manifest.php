@@ -16,6 +16,11 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 // Interfaces
 interface IPath extends core\IStringProvider, core\collection\IIndexedQueue {
+    public static function normalizeLocal($path): string;
+    public static function extractFileName($path);
+    public static function extractRootFileName($path);
+    public static function extractExtension($path);
+
     public function setSeparator($separator);
     public function getSeparator();
     public function isAbsolute(bool $flag=null);
@@ -35,9 +40,7 @@ interface IPath extends core\IStringProvider, core\collection\IIndexedQueue {
     public function getExtension();
 
     public function toUrlEncodedString();
-}
 
-interface IFilePath extends IPath {
     public function hasWinDrive();
     public function getWinDriveLetter();
 }

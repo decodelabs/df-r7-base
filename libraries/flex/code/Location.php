@@ -35,7 +35,7 @@ class Location implements ILocation {
     }
 
     public function setPath($path) {
-        $this->path = (string)core\uri\FilePath::factory($path);
+        $this->path = (string)core\uri\Path::factory($path);
         return $this;
     }
 

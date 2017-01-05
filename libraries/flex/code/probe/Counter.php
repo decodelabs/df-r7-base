@@ -43,7 +43,7 @@ class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayA
             return;
         }
 
-        $path = core\uri\FilePath::factory($location->path.'/'.$localPath);
+        $path = core\uri\Path::factory($location->path.'/'.$localPath);
         $basename = $path->getBasename();
         $ext = $path->getExtension();
 

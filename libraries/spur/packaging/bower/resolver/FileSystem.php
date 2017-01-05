@@ -14,11 +14,6 @@ class FileSystem implements spur\packaging\bower\IResolver {
 
     public function resolvePackageName(spur\packaging\bower\IPackage $package) {
         return $package->name;
-
-        /*
-        $path = core\uri\FilePath::factory($package->url);
-        return $path->getFileName();
-        */
     }
 
     public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null) {

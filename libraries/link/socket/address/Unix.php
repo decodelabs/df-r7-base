@@ -131,7 +131,7 @@ class Unix extends Base implements IUnixAddress {
         if(is_null($path) || is_string($path) && !strlen($path)) {
             $this->_path = null;
         } else {
-            $this->_path = core\uri\FilePath::factory($path);
+            $this->_path = core\uri\Path::factory($path);
         }
 
         return $this;
@@ -139,7 +139,7 @@ class Unix extends Base implements IUnixAddress {
 
     public function getPath() {
         if(!$this->_path) {
-            $this->_path = new core\uri\FilePath();
+            $this->_path = new core\uri\Path();
         }
 
         return $this->_path;

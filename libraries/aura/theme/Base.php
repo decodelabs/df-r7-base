@@ -232,7 +232,7 @@ class Base implements ITheme, core\IDumpable {
 
 // Assets
     public function findAsset($path) {
-        $path = core\uri\FilePath::normalizeLocal($path);
+        $path = core\uri\Path::normalizeLocal($path);
 
         $output = df\Launchpad::$loader->findFile(
             $lookupPath = 'apex/themes/'.$this->getId().'/assets/'.$path

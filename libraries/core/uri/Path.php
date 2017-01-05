@@ -23,6 +23,28 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
     protected $_isAbsolute = false;
     protected $_addTrailingSlash = false;
 
+    public static function normalizeLocal($path): string {
+        $path = self::factory($path);
+        $queue = $path->_collection;
+        $path->_collection = [];
+
+        foreach($queue as $key => $part) {
+            if($part == '..') {
+                if(empty($path->_collection)) {
+                    throw new RuntimeException('Invalid local path');
+                }
+
+                array_pop($path->_collection);
+            }
+
+            if($part != '.' && strlen($part)) {
+                $path->_collection[] = $part;
+            }
+        }
+
+        return (string)$path;
+    }
+
     public static function extractFileName($path) {
         return self::factory($path)->getFileName();
     }
@@ -89,7 +111,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
             return $this;
         }
 
-        return $this->_isAbsolute;
+        return $this->hasWinDrive() || $this->_isAbsolute;
     }
 
     public function shouldAddTrailingSlash(bool $flag=null) {
@@ -390,6 +412,25 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
     }
 
 
+
+// Win
+    public function hasWinDrive() {
+        return isset($this->_values[0]) && preg_match('/^[a-zA-Z]\:$/', $this->_values[0]);
+    }
+
+    public function getWinDriveLetter() {
+        if(!isset($this->_values[0])) {
+            return null;
+        }
+
+        if(!preg_match('/^([a-zA-Z])\:$/', $this->_values[0], $matches)) {
+            return null;
+        }
+
+        return strtolower($matches[1]);
+    }
+
+
 // Strings
     public function toString(): string {
         return $this->_pathToString(false);
@@ -401,14 +442,19 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
 
     protected function _pathToString($encode=false) {
         $output = '';
+        $separator = $this->_separator;
 
-        if($this->_isAbsolute) {
-            $output .= $this->_separator;
+        if($isWin = (!$encode && $this->hasWinDrive())) {
+            $separator = '\\';
+        }
+
+        if($this->_isAbsolute && !$isWin) {
+            $output .= $separator;
         }
 
         foreach($this->_collection as $key => $value) {
             if($key > 0) {
-                $output .= $this->_separator;
+                $output .= $separator;
             }
 
             if($encode) {
@@ -423,9 +469,9 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         }
 
         if(($this->_addTrailingSlash || empty($output))
-        && $output != $this->_separator
+        && $output != $separator
         && !$this->hasExtension()) {
-            $output .= $this->_separator;
+            $output .= $separator;
         }
 
         return $output;
