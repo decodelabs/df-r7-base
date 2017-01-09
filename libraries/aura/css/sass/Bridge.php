@@ -19,8 +19,8 @@ class Bridge implements IBridge {
         'autoprefixer' => [
             'browsers' => [
                 'last 2 versions',
-                'safari 6',
-                'ie 9',
+                'safari 7',
+                'ie 10',
                 'opera 12.1',
                 'last 3 ios versions',
                 'android 4'
