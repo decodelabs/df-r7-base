@@ -37,6 +37,16 @@ class Duration extends Base implements core\validate\IDurationField {
         return $this->_unitSelectable;
     }
 
+    public function setMin($min) {
+        $this->_min = $min;
+        return $this;
+    }
+
+    public function setMax($max) {
+        $this->_max = $max;
+        return $this;
+    }
+
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         $value = $this->_sanitizeValue($value);
