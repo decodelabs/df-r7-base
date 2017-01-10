@@ -85,6 +85,9 @@ class Auth extends Base {
 
             $clientData->onAuthentication($manager->client);
 
+            // Store session
+            $bucket->set($manager::CLIENT_SESSION_KEY, $manager->client);
+
 
             // Remember me
             if($request->getAttribute('rememberMe')) {
@@ -92,47 +95,74 @@ class Auth extends Base {
             }
 
             // Trigger hook
+            $manager->emitEvent($manager->client, 'bind');
+
             $manager->emitEvent($manager->client, 'authenticate', [
                 'request' => $request,
                 'result' => $result
             ]);
-
-            // Store session
-            $bucket->set($manager::CLIENT_SESSION_KEY, $manager->client);
         }
 
         return $result;
     }
 
-    public function bindRecallKey(user\session\RecallKey $key) {
+
+
+// Access key
+    public function bindDirect($userId, bool $confirmed=false) {
         $manager = $this->manager;
-
-        if(!$manager->session->hasRecallKey($key)) {
-            return false;
-        }
-
         $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
         $manager->clearAccessLockCache();
-
         $model = $manager->getUserModel();
 
-        if(!$clientData = $model->getClientData($key->userId)) {
+        // Get client data
+        if(!$clientData = $model->getClientData($userId)) {
             return false;
         }
 
+        // Check status
         if($clientData->getStatus() !== user\IState::CONFIRMED) {
             return false;
         }
 
+        // Set client
         $manager->client = user\Client::factory($clientData);
 
         // Set state
-        $manager->client->setAuthenticationState(user\IState::BOUND);
+        $manager->client->setAuthenticationState(
+            $confirmed ?
+                user\IState::CONFIRMED :
+                user\IState::BOUND
+        );
+
         $manager->client->setKeyring($model->generateKeyring($manager->client));
         $manager->session->setUserId($clientData->getId());
 
         $clientData->onAuthentication($manager->client);
 
+        // Store session
+        $bucket->set($manager::CLIENT_SESSION_KEY, $manager->client);
+
+        // Trigger hook
+        $manager->emitEvent($manager->client, 'bind');
+
+        return true;
+    }
+
+
+// Recall
+    public function bindRecallKey(user\session\RecallKey $key) {
+        $manager = $this->manager;
+
+        // Check key
+        if(!$manager->session->hasRecallKey($key)) {
+            return false;
+        }
+
+        // Bind
+        if(!$this->bindDirect($key->userId)) {
+            return false;
+        }
 
         // Remember me
         $manager->session->perpetuateRecall($manager->client, $key);
@@ -141,9 +171,6 @@ class Auth extends Base {
         $manager->emitEvent($manager->client, 'recall', [
             'key' => $key
         ]);
-
-        // Store session
-        $bucket->set($manager::CLIENT_SESSION_KEY, $manager->client);
 
         return true;
     }
@@ -189,6 +216,8 @@ class Auth extends Base {
     }
 
 
+
+// Unbind
     public function unbind(bool $restartSession=false) {
         $this->manager->emitEvent($this->manager->client, 'logout');
         $this->manager->session->destroy($restartSession);
