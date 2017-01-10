@@ -11,27 +11,27 @@ use df\opal;
 use df\user;
 
 class Record extends opal\record\Base implements user\authentication\IDomainInfo {
-    
+
     public function getIdentity() {
         return $this['identity'];
     }
-    
+
     public function getPassword() {
         return $this['password'];
     }
-    
+
     public function getBindDate() {
         return $this['bindDate'];
     }
-    
+
     public function getClientData() {
         return $this['user'];
     }
-    
-    public function onAuthentication() {
+
+    public function onAuthentication(bool $asAdmin=false) {
         $this->loginDate = 'now';
         $this->save();
-        
+
         return $this;
     }
 }

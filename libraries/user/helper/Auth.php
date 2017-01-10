@@ -109,7 +109,7 @@ class Auth extends Base {
 
 
 // Access key
-    public function bindDirect($userId, bool $confirmed=false) {
+    public function bindDirect($userId, bool $asAdmin=false) {
         $manager = $this->manager;
         $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
         $manager->clearAccessLockCache();
@@ -130,7 +130,7 @@ class Auth extends Base {
 
         // Set state
         $manager->client->setAuthenticationState(
-            $confirmed ?
+            $asAdmin ?
                 user\IState::CONFIRMED :
                 user\IState::BOUND
         );
@@ -138,7 +138,7 @@ class Auth extends Base {
         $manager->client->setKeyring($model->generateKeyring($manager->client));
         $manager->session->setUserId($clientData->getId());
 
-        $clientData->onAuthentication($manager->client);
+        $clientData->onAuthentication($manager->client, $asAdmin);
 
         // Store session
         $bucket->set($manager::CLIENT_SESSION_KEY, $manager->client);

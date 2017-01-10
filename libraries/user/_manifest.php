@@ -103,7 +103,7 @@ trait TNameExtractor {
 }
 
 interface IActiveClientDataObject extends IClientDataObject {
-    public function onAuthentication(IClient $client);
+    public function onAuthentication(IClient $client, bool $asAdmin=false);
 }
 
 interface IClient extends IClientDataObject {

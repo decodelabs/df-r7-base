@@ -23,7 +23,7 @@ interface IAdapter {
 trait TAdapter {
 
     protected $_manager;
-    
+
     public function __construct(user\IManager $manager) {
         $this->_manager = $manager;
     }
@@ -42,10 +42,10 @@ interface IIdentityRecallAdapter extends IAdapter {
 interface IRequest extends core\collection\IAttributeContainer {
     public function setAdapterName($adapter);
     public function getAdapterName();
-    
+
     public function setIdentity($identity);
     public function getIdentity();
-    
+
     public function setCredential($name, $value);
     public function getCredential($name);
 }
@@ -53,14 +53,14 @@ interface IRequest extends core\collection\IAttributeContainer {
 interface IResult {
     public function setAdapterName($adapter);
     public function getAdapterName();
-    
+
     public function setIdentity($identity);
     public function getIdentity();
-    
+
     public function setCode($code);
     public function getCode();
     public function isValid();
-    
+
     public function setDomainInfo(IDomainInfo $domainInfo);
     public function getDomainInfo();
 }
@@ -69,7 +69,7 @@ interface IDomainInfo {
     public function getIdentity();
     public function getPassword();
     public function getBindDate();
-    
+
     public function getClientData();
-    public function onAuthentication();
+    public function onAuthentication(bool $asAdmin=false);
 }
