@@ -114,6 +114,7 @@ interface IFlashMessage {
     public function setLinkText($text);
     public function getLinkText();
     public function clearLink();
+    public function shouldLinkOpenInNewWindow(bool $flag=null);
 }
 
 

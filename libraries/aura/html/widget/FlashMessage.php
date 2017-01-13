@@ -47,9 +47,13 @@ class FlashMessage extends Base {
 
         if($link = $this->_message->getLink()) {
             $tag->addAttributes([
-                'href' => $this->_context->uri->__invoke($link),
+                'href' => $url = $this->_context->uri->__invoke($link),
                 'title' => $this->_message->getLinkText()
             ]);
+
+            if($this->_message->shouldLinkOpenInNewWindow()) {
+                $tag->setAttribute('target', '_blank');
+            }
         }
 
         return $tag->renderWith([$icon, $title, $description]);

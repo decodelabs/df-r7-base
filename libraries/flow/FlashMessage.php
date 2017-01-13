@@ -20,6 +20,7 @@ class FlashMessage implements IFlashMessage, \Serializable {
     protected $_description;
     protected $_link;
     protected $_linkText;
+    protected $_linkNewWindow = false;
 
     public static function factory($id, $message=null, $type=null) {
         if($id instanceof IFlashMessage) {
@@ -70,6 +71,10 @@ class FlashMessage implements IFlashMessage, \Serializable {
             $data['lt'] = $this->_linkText;
         }
 
+        if($this->_linkNewWindow) {
+            $data['lw'] = $this->_linkNewWindow;
+        }
+
         return json_encode($data);
     }
 
@@ -92,6 +97,10 @@ class FlashMessage implements IFlashMessage, \Serializable {
 
         if(isset($data['lt'])) {
             $this->_linkText = $data['lt'];
+        }
+
+        if(isset($data['lw'])) {
+            $this->_linkNewWindow = (bool)$data['lw'];
         }
     }
 
@@ -203,6 +212,16 @@ class FlashMessage implements IFlashMessage, \Serializable {
     public function clearLink() {
         $this->_link = null;
         $this->_linkText = null;
+        $this->_linkExternal = false;
         return $this;
+    }
+
+    public function shouldLinkOpenInNewWindow(bool $flag=null) {
+        if($flag !== null) {
+            $this->_linkNewWindow = $flag;
+            return $this;
+        }
+
+        return $this->_linkNewWindow;
     }
 }
