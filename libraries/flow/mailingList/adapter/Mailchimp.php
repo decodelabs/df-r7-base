@@ -189,8 +189,22 @@ class Mailchimp extends Base {
                         ->requiresManualInput(true);
                     break;
 
+                case 213:
+                    $result
+                        ->isSuccessful(false)
+                        ->hasBounced(true);
+                    break;
+
+                case -99:
+                    $result
+                        ->isSuccessful(false)
+                        ->isThrottled(preg_match('/List_ThrottledRecipient/', $e->getMessage()))
+                        ->isInvalid(preg_match('/List_RoleEmailMember/', $e->getMessage()));
+
                 default:
-                    throw $e;
+                    $result->isSuccessful(false);
+                    core\logException($e);
+                    //throw $e;
             }
         }
 

@@ -61,11 +61,17 @@ interface IAdapter {
 interface ISubscribeResult {
     public function isSuccessful(bool $flag=null);
     public function isSubscribed(bool $flag=null);
+
     public function requiresManualInput(bool $flag=null);
     public function setManualInputUrl(string $url=null);
     public function getManualInputUrl();
+
     public function setEmailAddress($address, $name=null);
     public function getEmailAddress();//: ?flow\mail\IAddress;
+
+    public function hasBounced(bool $flag=null);
+    public function isInvalid(bool $flag=null);
+    public function isThrottled(bool $flag=null);
 }
 
 

@@ -16,6 +16,9 @@ class SubscribeResult implements ISubscribeResult {
     protected $_requiresManualInput = false;
     protected $_manualInputUrl = '';
     protected $_emailAddress;
+    protected $_hasBounced = false;
+    protected $_isInvalid = false;
+    protected $_isThrottled = false;
 
     public function isSuccessful(bool $flag=null) {
         if($flag !== null) {
@@ -66,4 +69,32 @@ class SubscribeResult implements ISubscribeResult {
     public function getEmailAddress() {
         return $this->_emailAddress;
     }
+
+    public function hasBounced(bool $flag=null) {
+        if($flag !== null) {
+            $this->_hasBounced = $flag;
+            return $this;
+        }
+
+        return $this->_hasBounced;
+    }
+
+    public function isInvalid(bool $flag=null) {
+        if($flag !== null) {
+            $this->_isInvalid = $flag;
+            return $this;
+        }
+
+        return $this->_isInvalid;
+    }
+
+    public function isThrottled(bool $flag=null) {
+        if($flag !== null) {
+            $this->_isThrottled = $flag;
+            return $this;
+        }
+
+        return $this->_isThrottled;
+    }
+
 }
