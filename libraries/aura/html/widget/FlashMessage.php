@@ -91,4 +91,13 @@ class FlashMessage extends Base {
         $this->_message->setLink($link, $text);
         return $this;
     }
+
+    public function shouldLinkOpenInNewWindow(bool $flag=null) {
+        if($flag !== null) {
+            $this->_message->shouldLinkOpenInNewWindow($flag);
+            return $this;
+        }
+
+        return $this->_message->shouldLinkOpenInNewWindow();
+    }
 }
