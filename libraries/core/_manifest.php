@@ -789,3 +789,14 @@ function dumpDeepQuiet(...$args) {
 function debug() {
     return df\Launchpad::getDebugContext();
 }
+
+
+function logException(\Throwable $exception, $request=null) {
+    // Swallow?
+    return core\log\Manager::getInstance()->logException($exception, $request);
+}
+
+function logDeprecated($message, $request=null) {
+    // Swallow?
+    return core\log\Manager::getInstance()->logDeprecated($message, $request);
+}
