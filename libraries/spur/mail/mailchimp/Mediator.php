@@ -530,6 +530,10 @@ class Mediator implements IMediator, \Serializable {
         $error = $data['error'] ?? 'Undefined chimp calamity!';
         //$code = $headers->get('X-Mailchimp-Api-Error-Code');
 
+        if(isset($data['code'])) {
+            $error = '['.$data['code'].'] '.$error;
+        }
+
         return $error;
     }
 
