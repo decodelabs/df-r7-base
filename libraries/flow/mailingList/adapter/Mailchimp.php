@@ -182,27 +182,24 @@ class Mailchimp extends Base {
                 ->isSuccessful(true)
                 ->isSubscribed(true);
         } catch(spur\ApiError $e) {
+            $result->isSuccessful(false);
+
             switch($e->getData()['code'] ?? null) {
                 case 212:
-                    $result
-                        ->isSuccessful(false)
-                        ->requiresManualInput(true);
+                    $result->requiresManualInput(true);
                     break;
 
                 case 213:
-                    $result
-                        ->isSuccessful(false)
-                        ->hasBounced(true);
+                    $result->hasBounced(true);
                     break;
 
                 case -99:
                     $result
-                        ->isSuccessful(false)
                         ->isThrottled(preg_match('/List_ThrottledRecipient/', $e->getMessage()))
                         ->isInvalid(preg_match('/List_RoleEmailMember/', $e->getMessage()));
+                    break;
 
                 default:
-                    $result->isSuccessful(false);
                     core\logException($e);
                     //throw $e;
             }
