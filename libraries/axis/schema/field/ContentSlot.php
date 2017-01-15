@@ -110,13 +110,21 @@ class ContentSlot extends Base {
             return $value;
         }
 
-        if($this->isNullable()) {
+        if($value === null) {
             return null;
         }
 
         throw new axis\schema\UnexpectedValueException(
             'Content slot value appears to be invalid'
         );
+    }
+
+    public function sanitizeClauseValue($value) {
+        if($value === null) {
+            return null;
+        }
+
+        return $this->sanitizeValue($value);
     }
 
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
