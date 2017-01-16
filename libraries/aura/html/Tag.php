@@ -64,6 +64,11 @@ class Tag implements ITag, core\IDumpable {
 
 // Name
     public function setName($name) {
+        if(substr($name, 0, 1) == '?') {
+            $this->shouldRenderIfEmpty(false);
+            $name = substr($name, 1);
+        }
+
         if(false !== strpos($name, '#')) {
             $parts = explode('#', $name, 2);
             $name = array_shift($parts);
