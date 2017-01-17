@@ -561,6 +561,8 @@ interface IPasswordField extends IField, IMinLengthField {
     public function shouldCheckStrength(bool $flag=null);
 }
 
+interface IRecaptchaField extends IField {}
+
 interface ISetField extends IField {
     public function setOptions(array $options);
     public function getOptions();

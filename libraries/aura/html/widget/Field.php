@@ -34,6 +34,10 @@ class Field extends Container implements IFormOrientedWidget {
             return $child;
         });
 
+        if($children->isEmpty()) {
+            return '';
+        }
+
         $primaryWidget = $fieldError = null;
         $errors = [];
         $isRequired = $this->_isRequired;
