@@ -195,16 +195,21 @@ class Bridge implements IBridge {
             $options = self::DEFAULT_PROCESSOR_OPTIONS;
         }
 
-        $path = halo\system\Base::getInstance()->which('sass');
+        $path = halo\system\Base::getInstance()->which('sassc');
 
-        if(!$path || $path == 'sass') {
-            $path = core\environment\Config::getInstance()->getBinaryPath('sass');
+        if(!$path || $path == 'sassc') {
+            $path = halo\system\Base::getInstance()->which('sass');
+
+            if(!$path || $path == 'sass') {
+                $path = core\environment\Config::getInstance()->getBinaryPath('sass');
+            }
+
+            if(!$path || $path == 'sass' && file_exists('/usr/local/bin/sass')) {
+                $path = '/usr/local/bin/sass';
+            }
         }
 
-        if(!$path || $path == 'sass' && file_exists('/usr/local/bin/sass')) {
-            $path = '/usr/local/bin/sass';
-        }
-
+        $isC = basename($path) == 'sassc';
         $envMode = $this->context->application->getEnvironmentMode();
 
         switch($envMode) {
@@ -221,14 +226,24 @@ class Bridge implements IBridge {
                 break;
         }
 
-
-        $result = halo\process\launcher\Base::factory($path, [
-                '--compass',
+        if($isC) {
+            $args = [
                 '--style='.$outputType,
-                '--sourcemap=file',
-                $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type,
-                $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css'
-            ])
+                '--sourcemap'
+            ];
+        } else {
+            $args = [
+                //'--compass',
+                '--quiet',
+                '--style='.$outputType,
+                '--sourcemap=file'
+            ];
+        }
+
+        $args[] = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type;
+        $args[] = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css';
+
+        $result = halo\process\launcher\Base::factory($path, $args)
             ->setWorkingDirectory($this->_workDir)
             ->launch();
 
