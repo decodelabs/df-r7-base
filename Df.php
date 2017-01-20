@@ -131,7 +131,10 @@ class Launchpad {
         // Load application / packages
         $envConfig = core\environment\Config::getInstance();
         self::$isDistributed = $envConfig->isDistributed();
-        self::$isMaintenance = $envConfig->isMaintenanceMode();
+
+        if(method_exists($envConfig, 'isMaintenanceMode')) {
+            self::$isMaintenance = $envConfig->isMaintenanceMode();
+        }
 
         if(!self::$isCompiled) {
             self::$environmentMode = $envConfig->getMode();
