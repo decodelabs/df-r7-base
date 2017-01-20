@@ -305,11 +305,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
 
-        if(df\Launchpad::$isMaintenance) {
-            return new arch\Request('site-maintenance');
-        }
-
-
         // Build init request
         $request = new arch\Request();
 
@@ -344,7 +339,15 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $request->setType($this->_httpRequest->getHeaders()->get('x-ajax-request-type'));
         }
 
-        return $this->_router->routeIn($request);
+        $request = $this->_router->routeIn($request);
+
+        if(df\Launchpad::$isMaintenance
+        && !$request->matches('assets/')
+        && !$request->matches('theme/')) {
+            return new arch\Request('site-maintenance');
+        }
+
+        return $request;
     }
 
 

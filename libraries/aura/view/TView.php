@@ -261,13 +261,13 @@ trait TView {
     }
 
     protected function _beforeRender() {
-        if($this instanceof IThemedView) {
+        if($this instanceof IThemedView && !df\Launchpad::$isMaintenance) {
             $this->getTheme()->beforeViewRender($this);
         }
     }
 
     protected function _onContentRender($content) {
-        if($this instanceof IThemedView) {
+        if($this instanceof IThemedView && !df\Launchpad::$isMaintenance) {
             $content = $this->getTheme()->onViewContentRender($this, $content);
         }
 
@@ -275,7 +275,7 @@ trait TView {
     }
 
     protected function _onLayoutRender($content) {
-        if($this instanceof IThemedView) {
+        if($this instanceof IThemedView && !df\Launchpad::$isMaintenance) {
             $content = $this->getTheme()->onViewLayoutRender($this, $content);
         }
 
@@ -283,7 +283,7 @@ trait TView {
     }
 
     protected function _afterRender($content) {
-        if($this instanceof IThemedView) {
+        if($this instanceof IThemedView && !df\Launchpad::$isMaintenance) {
             $content = $this->getTheme()->afterViewRender($this, $content);
         }
 
