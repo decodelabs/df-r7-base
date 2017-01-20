@@ -22,6 +22,7 @@ class Config extends core\Config {
             'binaryPaths' => [],
             'distributed' => false,
             'activeLocations' => [],
+            'maintenanceMode' => false,
             'daemonsEnabled' => false,
             'daemonUser' => $this->_extrapolateDaemonUser(),
             'daemonGroup' => $this->_extrapolateDaemonGroup()
@@ -74,6 +75,17 @@ class Config extends core\Config {
         }
 
         return $this->values->activeLocations->toArray();
+    }
+
+
+// Maintenance
+    public function isMaintenanceMode(bool $flag=null) {
+        if($flag !== null) {
+            $this->values->maintenanceMode = $flag;
+            return $this;
+        }
+
+        return $this->values['maintenanceMode'];
     }
 
 

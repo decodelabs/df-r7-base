@@ -305,6 +305,11 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
 
+        if(df\Launchpad::$isMaintenance) {
+            return new arch\Request('site-maintenance');
+        }
+
+
         // Build init request
         $request = new arch\Request();
 

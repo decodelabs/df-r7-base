@@ -27,6 +27,7 @@ class Launchpad {
     public static $uniquePrefix;
     public static $passKey;
     public static $isDistributed = false;
+    public static $isMaintenance = false;
 
     public static $loader;
     public static $application;
@@ -130,6 +131,7 @@ class Launchpad {
         // Load application / packages
         $envConfig = core\environment\Config::getInstance();
         self::$isDistributed = $envConfig->isDistributed();
+        self::$isMaintenance = $envConfig->isMaintenanceMode();
 
         if(!self::$isCompiled) {
             self::$environmentMode = $envConfig->getMode();
