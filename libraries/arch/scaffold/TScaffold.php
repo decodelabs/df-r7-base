@@ -611,9 +611,9 @@ trait TScaffold_RecordListProvider {
     public function queryRecordList($mode, array $fields=null) {
         $output = $this->getRecordAdapter()->select($fields);
 
-        if($fields === null) {
+        //if($fields === null) {
             $this->prepareRecordList($output, $mode);
-        }
+        //}
 
         return $output;
     }
