@@ -24,7 +24,9 @@ class Context implements IContext, \Serializable, core\IDumpable {
         $application = df\Launchpad::getApplication();
 
         if($application instanceof core\IContextAware) {
-            return $application->getContext();
+            try {
+                return $application->getContext();
+            } catch(core\RuntimeException $e) {}
         }
 
         if($onlyActive) {
