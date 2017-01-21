@@ -199,34 +199,37 @@ class Manager implements IManager {
             $installPath = $installer->getInstallPath().'/'.$package->installName;
 
             $dependency->installName = $package->installName;
-            $data = $installer->getPackageBowerData($package);
-            $main = null;
 
-            if(isset($data['main'])) {
-                $main = $data['main'];
-            } else {
-                $data = $installer->getPackageJsonData($package);
+            if(empty($dependency->js)) {
+                $data = $installer->getPackageBowerData($package);
+                $main = null;
 
                 if(isset($data['main'])) {
                     $main = $data['main'];
-                } else if(is_file($installPath.'/'.$dependency->id.'.js')) {
-                    $main = $dependency->id.'.js';
+                } else {
+                    $data = $installer->getPackageJsonData($package);
+
+                    if(isset($data['main'])) {
+                        $main = $data['main'];
+                    } else if(is_file($installPath.'/'.$dependency->id.'.js')) {
+                        $main = $dependency->id.'.js';
+                    }
                 }
-            }
 
-            if(substr($main, -6) != 'min.js') {
-                $fileName = substr($main, 0, -3);
+                if(substr($main, -6) != 'min.js') {
+                    $fileName = substr($main, 0, -3);
 
-                if(is_file($installPath.'/'.$fileName.'.min.js')) {
-                    $main = $fileName.'.min.js';
-                } else if(is_file($installPath.'/'.$fileName.'-min.js')) {
-                    $main = $fileName.'-min.js';
+                    if(is_file($installPath.'/'.$fileName.'.min.js')) {
+                        $main = $fileName.'.min.js';
+                    } else if(is_file($installPath.'/'.$fileName.'-min.js')) {
+                        $main = $fileName.'-min.js';
+                    }
                 }
-            }
 
-            if($main !== null) {
-                array_unshift($dependency->js, $main);
-                $dependency->js = array_unique($dependency->js);
+                if($main !== null) {
+                    array_unshift($dependency->js, $main);
+                    $dependency->js = array_unique($dependency->js);
+                }
             }
         }
 
