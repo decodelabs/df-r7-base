@@ -251,6 +251,22 @@ class Manager implements IManager {
             $output[$dependency->id] = $dependency;
         }
 
+
+        // Default defs - need a better way to handle this!
+        if(!isset($output['requirejs'])) {
+            $output['requirejs'] = new Dependency('requirejs#~2.3');
+        }
+
+        if(!isset($output['jquery'])) {
+            $output['jquery'] = new Dependency('jquery#~3.1');
+        }
+
+        if(!isset($output['underscore'])) {
+            $output['underscore'] = new Dependency('underscore#~1.8', [
+                'shim' => '_'
+            ]);
+        }
+
         return $output;
     }
 }

@@ -22,7 +22,7 @@ class Dependency implements IDependency {
     public $map;
     public $installName;
 
-    public function __construct($id, $data) {
+    public function __construct($id, $data=null) {
         $parts = explode('#', $id, 2);
         $id = array_shift($parts);
         $version = array_shift($parts);
