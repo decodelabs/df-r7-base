@@ -831,7 +831,7 @@ trait TWidget_NavigationEntryController {
         }
 
 
-        if($entry instanceof arch\navigation\entry\Void) {
+        if($entry instanceof arch\navigation\entry\None) {
             return $this;
         } else if($entry instanceof ILinkWidget
         || $entry instanceof arch\navigation\entry\Link) {

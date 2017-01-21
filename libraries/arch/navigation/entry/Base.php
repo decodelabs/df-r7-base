@@ -15,7 +15,7 @@ abstract class Base implements arch\navigation\IEntry {
     protected $_weight = 0;
 
     public static function fromArray(array $entry) {
-        $type = 'Void';
+        $type = 'None';
 
         if(isset($entry['type'])) {
             $type = $entry['type'];
