@@ -67,7 +67,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         $this
             ->setMeta('X-UA-Compatible', 'IE=edge,chrome=1')
             ->setMeta('content-type', $this->getContentType())
-            ->setMeta('viewport', 'width=device-width, initial-scale=0.7, minimum-scale=0.7')
+            ->setMeta('viewport', 'width=device-width, minimum-scale=0.5, maximum-scale=1.5')
             ;
 
         $this->getHeaders()
