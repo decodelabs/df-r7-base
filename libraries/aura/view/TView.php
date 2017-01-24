@@ -296,7 +296,7 @@ trait TView {
                 || $this->context->request->isArea('admin')
                 || $this->context->request->isArea('devtools')
                 || $this->context->request->isArea('mail')
-                || $request->matches('account/'));
+                || $this->context->request->matches('account/'));
 
     }
 
