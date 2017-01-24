@@ -342,6 +342,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $request = $this->_router->routeIn($request);
 
         if(df\Launchpad::$isMaintenance
+        && !$request->isArea('admin')
+        && !$request->isArea('devtools')
+        && !$request->isArea('mail')
+        && !$request->matches('account/')
         && !$request->matches('assets/')
         && !$request->matches('theme/')) {
             return new arch\Request('site-maintenance');
