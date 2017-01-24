@@ -19,6 +19,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 interface IAddress extends core\IStringProvider {
     public function setAddress($address);
     public function getAddress();
+    public function getDomain();
     public function setName($name);
     public function getName();
     public function isValid();

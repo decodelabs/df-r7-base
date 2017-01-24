@@ -65,6 +65,12 @@ class Address implements IAddress, core\IDumpable {
         return $this->_address;
     }
 
+    public function getDomain() {
+        $parts = explode('@', $this->_address, 2);
+        $parts = explode('?', array_pop($parts), 2);
+        return array_shift($parts);
+    }
+
     public function setName($name) {
         $this->_name = $name;
         return $this;
