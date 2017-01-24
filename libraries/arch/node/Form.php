@@ -131,7 +131,10 @@ abstract class Form extends Base implements IFormNode {
             $this->_state->referrer = $referrer;
 
             $method = $this->http->getMethod();
-            $this->_state->isOperating = $method != 'get' && $method != 'head';
+
+            if(!$this->_state->isOperating) {
+                $this->_state->isOperating = $method != 'get' && $method != 'head';
+            }
         } else {
             $this->_state->isOperating = true;
         }
