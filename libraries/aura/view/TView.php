@@ -295,7 +295,8 @@ trait TView {
             && (!df\Launchpad::$isMaintenance
                 || $this->context->request->isArea('admin')
                 || $this->context->request->isArea('devtools')
-                || $this->context->request->isArea('mail'));
+                || $this->context->request->isArea('mail')
+                || $request->matches('account/'));
 
     }
 
