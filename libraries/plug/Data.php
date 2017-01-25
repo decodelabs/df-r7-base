@@ -307,7 +307,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
 
 // JSON
-    public function jsonEncodeCollectionQuery(opal\query\IReadQuery $query, array $extraData=null, $rowSanitizer=null, int $flags=0) {
+    public function queryToJson(opal\query\IReadQuery $query, array $extraData=null, $rowSanitizer=null, int $flags=0) {
         if($extraData === null) {
             $extraData = [];
         }
