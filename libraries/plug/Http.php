@@ -161,7 +161,7 @@ class Http implements arch\IDirectoryHelper {
         }
 
         return $this->stringResponse(
-            $this->context->data->jsonEncode(array_merge(
+            $this->context->data->toJson(array_merge(
                 [
                     'node' => $this->context->request->getLiteralPathString(),
                     'content' => $content
@@ -174,7 +174,7 @@ class Http implements arch\IDirectoryHelper {
 
     public function ajaxReload(array $extraData=[]) {
         return $this->stringResponse(
-            $this->context->data->jsonEncode(array_merge(
+            $this->context->data->toJson(array_merge(
                 [
                     'node' => $this->context->request->getLiteralPathString(),
                     'reload' => true
@@ -191,7 +191,7 @@ class Http implements arch\IDirectoryHelper {
 
     public function jsonResponse($data) {
         return $this->streamResponse(
-            $this->context->data->jsonEncode($data),
+            $this->context->data->toJson($data),
             'application/json'
         );
     }

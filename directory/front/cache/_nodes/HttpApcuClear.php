@@ -25,7 +25,7 @@ class HttpApcuClear extends arch\node\Base {
             //$cleared = null;
         //}
 
-        return $this->data->jsonEncode([
+        return $this->data->toJson([
             'cleared' => $cleared,
             'addr' => $_SERVER['REMOTE_ADDR'].' => '.$_SERVER['SERVER_ADDR']
         ]);

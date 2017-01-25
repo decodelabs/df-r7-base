@@ -309,7 +309,7 @@ class Base implements INode, core\IDumpable {
                     return $output;
                 } else if($output !== null) {
                     return $this->http->stringResponse(
-                        $this->data->jsonEncode([
+                        $this->data->toJson([
                             'node' => $this->request->getLiteralPathString(),
                             'content' => (string)$output
                         ]),

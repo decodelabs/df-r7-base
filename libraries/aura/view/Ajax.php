@@ -74,7 +74,7 @@ class Ajax extends Base implements IAjaxView {
             $output['reload'] = true;
         }
 
-        return $this->data->jsonEncode($output);
+        return $this->data->toJson($output);
     }
 
     public function getContentType() {
