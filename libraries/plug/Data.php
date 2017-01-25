@@ -358,14 +358,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         return flex\Json::toString($data, $flags);
     }
 
-    public function jsonDecode($data) {
-        return flex\Json::fromString($data);
-    }
-
-    public function jsonDecodeFile($path) {
-        return flex\Json::fromFile($path);
-    }
-
 
 // Crypt
     public function hash($message, $salt=null) {

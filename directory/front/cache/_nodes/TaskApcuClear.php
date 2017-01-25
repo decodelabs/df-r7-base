@@ -65,7 +65,7 @@ class TaskApcuClear extends arch\node\Task {
             $response = $http->get($url); // TODO use localhost ip?
 
             if($response->isOk()) {
-                $json = $this->data->jsonDecode($response->getContent());
+                $json = $response->getJsonContent();
                 $cleared = @$json['cleared'];
 
                 if($cleared === null) {

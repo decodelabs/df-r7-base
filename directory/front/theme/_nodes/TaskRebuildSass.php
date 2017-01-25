@@ -41,7 +41,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             return core\uri\Path::extractExtension($fileName) == 'json';
         }) as $fileName => $file) {
             $key = core\uri\Path::extractFileName($fileName);
-            $json = $this->data->jsonDecodeFile($file);
+            $json = $this->data->fromJsonFile($file);
             $sassPath = array_shift($json);
 
             $sassFile = new core\fs\File($sassPath);
