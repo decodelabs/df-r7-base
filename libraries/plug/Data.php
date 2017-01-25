@@ -352,13 +352,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     }
 
 
-
-// DEPRECATED
-    public function jsonEncode($data, int $flags=0) {
-        return flex\Json::toString($data, $flags);
-    }
-
-
 // Crypt
     public function hash($message, $salt=null) {
         if($salt === null) {
