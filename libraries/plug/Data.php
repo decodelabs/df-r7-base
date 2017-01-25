@@ -324,19 +324,19 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
         $extraData['data'] = $data;
         $extraData['paginator'] = $query->getPaginator();
-        return flex\json\Codec::encode($extraData, $flags);
+        return flex\Json::toString($extraData, $flags);
     }
 
     public function jsonEncode($data, int $flags=0) {
-        return flex\json\Codec::encode($data, $flags);
+        return flex\Json::toString($data, $flags);
     }
 
     public function jsonDecode($data) {
-        return flex\json\Codec::decode($data);
+        return flex\Json::fromString($data);
     }
 
     public function jsonDecodeFile($path) {
-        return flex\json\Codec::decodeFile($path);
+        return flex\Json::fromFile($path);
     }
 
 

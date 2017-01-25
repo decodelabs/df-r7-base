@@ -304,7 +304,7 @@ abstract class Base implements IDaemon {
             $status = array_merge($data, $status);
         }
 
-        file_put_contents($this->_statusPath, flex\json\Codec::encode($status));
+        file_put_contents($this->_statusPath, flex\Json::toString($status));
     }
 
     protected function _getStatusData() {}

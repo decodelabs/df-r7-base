@@ -12,7 +12,7 @@ use df\flex;
 use df\halo;
 
 class Bridge implements IBridge {
-    
+
     protected $_installPath = 'assets/lib/vendor';
     protected $_execPath;
 
@@ -41,19 +41,19 @@ class Bridge implements IBridge {
     public function generate(array $deps) {
         $application = df\Launchpad::$application;
 
-        $json1 = flex\json\Codec::encode([
+        $json1 = flex\Json::toString([
             'name' => $application->getName(),
             'ignore' => [],
             'dependencies' => $deps
         ]);
 
-        $json2 = flex\json\Codec::encode([
+        $json2 = flex\Json::toString([
             'directory' => $this->_installPath
         ]);
 
         core\fs\File::create($this->_execPath.'/bower.json', $json1);
         core\fs\File::create($this->_execPath.'/.bowerrc', $json2);
-        
+
         return $this;
     }
 

@@ -190,7 +190,7 @@ class Bridge implements IBridge {
 
         if(is_file($jsonPath)) {
             $manifest[md5($jsonPath)] = $jsonPath;
-            $options = flex\json\Codec::decode(file_get_contents($this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type.'.json'));
+            $options = flex\Json::fromFile($this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type.'.json');
         } else {
             $options = self::DEFAULT_PROCESSOR_OPTIONS;
         }

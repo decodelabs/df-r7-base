@@ -86,7 +86,7 @@ class Remote implements IRemote {
                 return $this;
             }
 
-            $this->_statusData = flex\json\Codec::decode(file_get_contents($path));
+            $this->_statusData = flex\Json::fromFile($path);
 
             if(isset($this->_statusData['pid'])) {
                 $pid = $this->_statusData['pid'];

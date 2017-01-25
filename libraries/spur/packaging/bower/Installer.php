@@ -94,7 +94,7 @@ class Installer implements IInstaller {
         $currentVersion = null;
 
         if($this->_hasPackage($package)) {
-            $data = flex\json\Codec::decodeFile($this->_installDir.'/'.$package->installName.'/.bower.json');
+            $data = flex\Json::fromFile($this->_installDir.'/'.$package->installName.'/.bower.json');
             $currentVersion = $data['version'];
 
             if($this->_multiplexer) {
@@ -187,7 +187,7 @@ class Installer implements IInstaller {
                 continue;
             }
 
-            $data = flex\json\Codec::decodeFileAsTree($dir.'/.bower.json');
+            $data = flex\Json::fileToTree($dir.'/.bower.json');
 
             if($name == $data['name']) {
                 return true;
@@ -233,7 +233,7 @@ class Installer implements IInstaller {
                 continue;
             }
 
-            $data = flex\json\Codec::decodeFileAsTree($dir.'/.bower.json');
+            $data = flex\Json::fileToTree($dir.'/.bower.json');
 
             if($name == $data['name']) {
                 $package = new Package($dirName, $data['url']);
@@ -254,7 +254,7 @@ class Installer implements IInstaller {
         $file = $this->_installDir->getFile($name.'/.bower.json');
 
         if($file->exists()) {
-            $data = flex\json\Codec::decodeFileAsTree($file);
+            $data = flex\Json::fileToTree($file);
 
             $package = new Package($name, $data['url']);
             $package->url = $data['url'];
@@ -273,7 +273,7 @@ class Installer implements IInstaller {
         $file = $this->_installDir->getFile($name.'/bower.json');
 
         if($file->exists()) {
-            return flex\json\Codec::decodeFileAsTree($file);
+            return flex\Json::fileToTree($file);
         }
     }
 
@@ -285,7 +285,7 @@ class Installer implements IInstaller {
         $file = $this->_installDir->getFile($name.'/package.json');
 
         if($file->exists()) {
-            return flex\json\Codec::decodeFileAsTree($file);
+            return flex\Json::fileToTree($file);
         }
     }
 
@@ -538,7 +538,7 @@ class Installer implements IInstaller {
 
         $this->_filterFiles($destination);
 
-        flex\json\Codec::encodeFile(
+        flex\Json::toFile(
             $destination.'/.bower.json',
             [
                 'name' => $package->name,
@@ -555,7 +555,7 @@ class Installer implements IInstaller {
         $ignore = ['.bower.json', '.git', '.svn'];
 
         if(is_file($destination.'/bower.json')) {
-            $bowerData = flex\json\Codec::decodeFileAsTree($destination.'/bower.json');
+            $bowerData = flex\Json::fileToTree($destination.'/bower.json');
             $ignore = array_merge($ignore, $bowerData->ignore->toArray());
 
             if(count($bowerData->main)) {

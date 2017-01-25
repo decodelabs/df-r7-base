@@ -12,9 +12,9 @@ use df\opal;
 use df\flex;
 
 class Json extends Base implements opal\schema\ILargeByteSizeRestrictedField {
-    
+
     use opal\schema\TField_LargeByteSizeRestricted;
-    
+
     protected function _init($size=null) {
         if($size === null) {
             $size = opal\schema\IFieldSize::LARGE;
@@ -22,33 +22,33 @@ class Json extends Base implements opal\schema\ILargeByteSizeRestrictedField {
 
         $this->setExponentSize($size);
     }
-    
-    
+
+
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         $value = null;
-        
+
         if(isset($row[$key])) {
-            $value = flex\json\Codec::decode($row[$key]);
+            $value = flex\Json::fromString($row[$key]);
         }
-        
+
         return $this->sanitizeValue($value, $forRecord);
     }
-    
+
     public function deflateValue($value) {
         $value = $this->sanitizeValue($value);
-        
+
         if($value === null) {
             return null;
         }
-        
+
         if($value->isEmpty() && !$value->hasValue() && $this->isNullable()) {
             return null;
         } else {
-            return flex\json\Codec::encode($value);
+            return flex\Json::toString($value);
         }
     }
-    
+
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if(!$value instanceof core\collection\ITree) {
             if(empty($value)) {
@@ -59,21 +59,21 @@ class Json extends Base implements opal\schema\ILargeByteSizeRestrictedField {
                 $value = new core\collection\Tree($value);
             }
         }
-        
+
         return $value;
     }
-    
-    
-    
+
+
+
 // TODO: validate default value
-    
-    
+
+
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_Blob($this, $this->_exponentSize);
     }
-    
-    
+
+
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);

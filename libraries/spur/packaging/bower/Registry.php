@@ -30,7 +30,7 @@ class Registry implements IRegistry {
 
         if(is_file($path)) {
             if((time() - filemtime($path) < $timeout)) {
-                return flex\json\Codec::decodeFileAsTree($path);
+                return flex\Json::fileToTree($path);
             } else {
                 core\fs\File::delete($path);
             }
@@ -43,7 +43,7 @@ class Registry implements IRegistry {
             throw new spur\ApiError($e->getMessage(), null, $e->getCode());
         }
 
-        flex\json\Codec::encodeFile($path, $data);
+        flex\Json::toFile($path, $data);
 
         return $data;
     }

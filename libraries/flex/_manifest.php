@@ -200,6 +200,20 @@ interface IGuid extends core\IStringProvider {
     public function getTime();
 }
 
+
+interface IJson {
+    public static function toString($data, int $flags=0): string;
+    public static function toFile($path, $data, int $flags=0): core\fs\IFile;
+
+    public static function fromString(string $data);
+    public static function fromFile($path);
+    public static function stringToTree(string $data): core\collection\ITree;
+    public static function fileToTree($path): core\collection\ITree;
+
+    public static function prepare($data);
+}
+
+
 interface IMatcher {
     public static function isLike($pattern, $string, $char='_', $wildcard='%');
     public static function generateLikeRegex($pattern, $char='_', $wildcard='%', $delimiter='/');

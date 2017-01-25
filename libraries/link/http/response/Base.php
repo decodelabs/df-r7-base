@@ -226,7 +226,7 @@ abstract class Base implements link\http\IResponse {
             );
         }
 
-        $data = flex\json\Codec::decode($content);
+        $data = flex\Json::fromString($content);
 
         if($data === false || $data === null) {
             throw new link\http\RuntimeException(

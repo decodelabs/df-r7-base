@@ -482,7 +482,7 @@ class Mediator implements IMediator, \Serializable {
         $request->setMethod($method);
 
         $args['apikey'] = $this->_apiKey;
-        $request->setBodyData(flex\json\Codec::encode($args));
+        $request->setBodyData(flex\Json::toString($args));
         $request->headers->set('content-type', 'application/json');
 
         if(!empty($headers)) {
@@ -511,7 +511,7 @@ class Mediator implements IMediator, \Serializable {
             return false;
         }
 
-        $data = flex\json\Codec::decode($response->getContent());
+        $data = flex\Json::fromString($response->getContent());
         $headers = $response->getHeaders();
 
         if(isset($data['error']) || $headers->has('X-Mailchimp-Api-Error-Code')) {
@@ -522,11 +522,11 @@ class Mediator implements IMediator, \Serializable {
     }
 
     protected function _normalizeErrorData($data) {
-        return flex\json\Codec::decode($data);
+        return flex\Json::fromString($data);
     }
 
     protected function _extractResponseError(link\http\IResponse $response) {
-        $data = flex\json\Codec::decode($response->getContent());
+        $data = flex\Json::fromString($response->getContent());
         $error = $data['error'] ?? 'Undefined chimp calamity!';
         //$code = $headers->get('X-Mailchimp-Api-Error-Code');
 

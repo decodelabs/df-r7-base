@@ -3,24 +3,47 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\flex\json;
+namespace df\flex;
 
 use df;
 use df\core;
 use df\flex;
 use df\opal;
 
-class Codec {
+class Json implements IJson {
 
-    public static function encode($data, int $flags=0) {
-        return json_encode(self::prepareJsonData($data), $flags);
+// Encode
+    public static function toString($data, int $flags=0): string {
+        return json_encode(self::prepare($data), $flags);
     }
 
-    public static function encodeFile($path, $data, int $flags=0) {
-        return core\fs\File::create($path, self::encode($data, $flags));
+    public static function toFile($path, $data, int $flags=0): core\fs\IFile {
+        return core\fs\File::create($path, self::toString($data, $flags));
     }
 
-    public static function prepareJsonData($data) {
+
+
+// Decode
+    public static function fromString(string $data) {
+        return json_decode($data, true);
+    }
+
+    public static function fromFile($path) {
+        return self::fromString(core\fs\File::getContentsOf($path));
+    }
+
+    public static function stringToTree(string $data): core\collection\ITree {
+        return core\collection\Tree::factory(self::fromString($data));
+    }
+
+    public static function fileToTree($path): core\collection\ITree {
+        return core\collection\Tree::factory(self::fromFile($path));
+    }
+
+
+
+// Prepare
+    public static function prepare($data) {
         if(is_scalar($data)) {
             return $data;
         }
@@ -52,25 +75,9 @@ class Codec {
         }
 
         foreach($data as $key => $value) {
-            $data[$key] = self::prepareJsonData($value);
+            $data[$key] = self::prepare($value);
         }
 
         return $data;
-    }
-
-    public static function decode($data) {
-        return json_decode($data, true);
-    }
-
-    public static function decodeFile($path) {
-        return self::decode(core\fs\File::getContentsOf($path));
-    }
-
-    public static function decodeAsTree($data) {
-        return core\collection\Tree::factory(self::decode($data));
-    }
-
-    public static function decodeFileAsTree($path) {
-        return core\collection\Tree::factory(self::decodeFile($path));
     }
 }

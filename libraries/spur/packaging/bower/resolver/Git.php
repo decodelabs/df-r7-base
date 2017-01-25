@@ -100,11 +100,11 @@ class Git implements spur\packaging\bower\IResolver {
                 $data[$tag->getName()] = $tag->getCommitId();
             }
 
-            flex\json\Codec::encodeFile($path, $data);
+            flex\Json::toFile($path, $data);
             return $tags;
         }
 
-        $data = flex\json\Codec::decodeFileAsTree($path);
+        $data = flex\Json::fileToTree($path);
         $tags = [];
 
         foreach($data as $name => $commitId) {

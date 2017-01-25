@@ -12,7 +12,6 @@ use df\core;
 trait TArrayCollection {
 
     use TExtractList;
-    use core\TExtendedArrayProvider;
 
     protected $_collection = [];
 

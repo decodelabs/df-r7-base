@@ -105,11 +105,11 @@ class Github implements spur\packaging\bower\IResolver {
                 $data[] = $tag->toArray();
             }
 
-            flex\json\Codec::encodeFile($path, $data);
+            flex\Json::toFile($path, $data);
             return $tags;
         }
 
-        $data = flex\json\Codec::decodeFileAsTree($path);
+        $data = flex\Json::fileToTree($path);
         $tags = [];
 
         foreach($data as $tag) {

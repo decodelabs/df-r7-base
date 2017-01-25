@@ -177,10 +177,7 @@ class Base implements link\http\IRequest, core\IDumpable {
 
                     case 'application/json':
                         $usePost = false;
-                        $output = core\collection\Tree::factory(
-                            flex\json\Codec::decode($payload)
-                        );
-
+                        $output = flex\Json::stringToTree($payload);
                         break;
                 }
 
@@ -588,7 +585,7 @@ class Base implements link\http\IRequest, core\IDumpable {
                     break;
 
                 case 'application/json':
-                    $this->setBodyData(flex\json\Codec::encode($this->_postData));
+                    $this->setBodyData(flex\Json::toString($this->_postData));
                     break;
 
                 default:

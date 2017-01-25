@@ -101,7 +101,7 @@ class Result implements arch\node\IRestApiResult {
         }
 
         $response = new link\http\response\Stream(
-            flex\json\Codec::encode($data),
+            flex\Json::toString($data),
             'application/json'
         );
 

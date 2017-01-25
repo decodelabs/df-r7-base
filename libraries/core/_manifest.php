@@ -36,7 +36,7 @@ trait TStringProvider {
         try {
             return $this->toString();
         } catch(\Throwable $e) {
-            core\log\Manager::getInstance()->logException($e);
+            core\logException($e);
             core\debug()->exception($e);
             return '';
         }
@@ -69,31 +69,6 @@ interface IArrayProvider {
 
 interface IArrayInterchange extends IArrayProvider {
     public static function fromArray(array $array);
-}
-
-interface IExtendedArrayProvider extends IArrayProvider {
-    public function getJsonString();
-}
-
-trait TExtendedArrayProvider {
-
-    public function toJsonString() {
-        return df\flex\json\Codec::encode($this->toArray());
-    }
-}
-
-interface IExtendedArrayInterchange extends IExtendedArrayProvider, IArrayInterchange {
-
-    public static function fromJsonString($json);
-}
-
-trait TExtendedArrayInterchange {
-
-    use TExtendedArrayProvider;
-
-    public static function fromJsonString($json) {
-        return self::fromArray((array)df\flex\json\Codec($json));
-    }
 }
 
 

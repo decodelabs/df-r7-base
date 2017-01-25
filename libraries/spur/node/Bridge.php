@@ -49,7 +49,7 @@ class Bridge implements IBridge {
     public function evaluate($js, $data=null) {
         core\fs\Dir::create($this->_nodePath);
 
-        $payload = flex\json\Codec::encode([
+        $payload = flex\Json::toString([
             'js' => $js,
             'data' => $data
         ]);
@@ -77,7 +77,7 @@ class Bridge implements IBridge {
             }
         }
 
-        $output = flex\json\Codec::decode($output);
+        $output = flex\Json::fromString($output);
         return $output['result'];
     }
 }
