@@ -34,12 +34,8 @@ trait TStringProvider {
 
     public function __toString(): string {
         try {
-            return (string)$this->toString();
-        } catch(\Exception $e) {
-            core\log\Manager::getInstance()->logException($e);
-            core\debug()->exception($e);
-            return '';
-        } catch(\Error $e) {
+            return $this->toString();
+        } catch(\Throwable $e) {
             core\log\Manager::getInstance()->logException($e);
             core\debug()->exception($e);
             return '';
@@ -63,12 +59,12 @@ trait TStringValueProvider {
 }
 
 interface IDescribable {
-    public function getOutputDescription();
+    public function getOutputDescription(): ?string;
 }
 
 // Array provider
 interface IArrayProvider {
-    public function toArray();
+    public function toArray(): array;
 }
 
 interface IArrayInterchange extends IArrayProvider {
@@ -714,22 +710,6 @@ if(!df\Launchpad::$isCompiled) {
 
 
 // Debug
-function qDump(...$args) {
-    while(ob_get_level()) {
-        ob_end_clean();
-    }
-
-    if(($count = count($args)) == 1) {
-        $args = array_shift($args);
-    }
-
-    if($count) {
-        echo '<pre>'.print_r($args, true).'</pre>';
-    }
-
-    df\Launchpad::benchmark();
-}
-
 function stub(...$args) {
     return df\Launchpad::getDebugContext()->addStub(
             $args,

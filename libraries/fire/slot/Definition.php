@@ -32,7 +32,7 @@ class Definition implements IDefinition {
         $output->_category = @$values['category'];
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return [
             'id' => $this->_id,
             'name' => $this->_name,

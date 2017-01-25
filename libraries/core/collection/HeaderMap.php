@@ -14,6 +14,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
     use core\TValueMap;
     use TArrayCollection;
     use TValueMapArrayAccess;
+    use TExtricable;
 
     public static function factory($input) {
         if($input instanceof IHeaderMap) {

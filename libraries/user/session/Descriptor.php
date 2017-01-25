@@ -238,7 +238,7 @@ class Descriptor implements user\session\IDescriptor {
     }
 
 
-    public function toArray() {
+    public function toArray(): array {
         return $this->toDataRowArray();
     }
 

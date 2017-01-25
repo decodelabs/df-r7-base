@@ -51,7 +51,7 @@ class Tag implements ITag, core\IDumpable {
         return $this->_commit;
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return [
             'id' => $this->_id,
             'name' => $this->_name,

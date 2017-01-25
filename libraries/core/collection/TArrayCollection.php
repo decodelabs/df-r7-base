@@ -29,7 +29,7 @@ trait TArrayCollection {
         return array_shift($this->_collection);
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return $this->_collection;
     }
 
@@ -274,6 +274,7 @@ trait TArrayCollection_AssociativeValueMap {
 
     use core\TValueMap;
     use TValueMapArrayAccess;
+    use TExtricable;
 
     public function import(...$input) {
         foreach($input as $data) {

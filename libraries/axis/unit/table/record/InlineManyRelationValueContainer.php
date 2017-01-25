@@ -35,8 +35,8 @@ class InlineManyRelationValueContainer implements
         $this->_targetPrimaryKeySet = $field->getTargetRelationManifest()->toPrimaryKeySet();
     }
 
-    public function getOutputDescription() {
-        return $this->countAll();
+    public function getOutputDescription(): ?string {
+        return (string)$this->countAll();
     }
 
     public function isPrepared() {
@@ -118,7 +118,7 @@ class InlineManyRelationValueContainer implements
 
 
 // Collection
-    public function toArray() {
+    public function toArray(): array {
         return array_merge($this->_current, $this->_new);
     }
 

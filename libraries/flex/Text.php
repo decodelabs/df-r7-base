@@ -766,7 +766,7 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $this;
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return preg_split('/(?<!^)(?!$)/u', $this->_value);
     }
 

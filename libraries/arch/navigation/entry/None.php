@@ -31,7 +31,7 @@ class None extends Base {
         return $this->_id;
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return [
             'type' => 'None',
             'weight' => $this->_weight,

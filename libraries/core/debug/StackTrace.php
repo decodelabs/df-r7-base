@@ -77,7 +77,7 @@ class StackTrace implements IStackTrace, core\IDumpable {
         return $this->_message;
     }
 
-    public function toArray() {
+    public function toArray(): array {
         $output = [];
 
         foreach($this->_calls as $call) {

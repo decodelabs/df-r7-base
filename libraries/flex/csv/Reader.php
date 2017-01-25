@@ -107,7 +107,7 @@ class Reader implements IReader {
         return $this->_currentRow;
     }
 
-    public function toArray() {
+    public function toArray(): array {
         $output = [];
 
         foreach($this as $row) {

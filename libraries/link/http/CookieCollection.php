@@ -15,6 +15,7 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
     use core\TValueMap;
     use core\collection\TValueMapArrayAccess;
     use core\collection\TExtractList;
+    use core\collection\TExtricable;
 
     protected $_set = [];
     protected $_remove = [];
@@ -93,7 +94,7 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
         return count($this->_set);
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return $this->_set;
     }
 

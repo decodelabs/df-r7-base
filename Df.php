@@ -37,7 +37,7 @@ class Launchpad {
 
     private static $_isShutdown = false;
 
-    public static function loadBaseClass($path) {
+    public static function loadBaseClass($path): void {
         if(self::$isCompiled) {
             $path = self::$rootPath.'/'.$path.'.php';
         } else {
@@ -48,7 +48,7 @@ class Launchpad {
     }
 
 // Run
-    public static function run() {
+    public static function run(): void {
         $parts = explode('/', str_replace('\\', '/', realpath($_SERVER['SCRIPT_FILENAME'])));
         $environmentId = array_pop($parts);
 
@@ -65,10 +65,10 @@ class Launchpad {
         $envParts = explode('.', $environmentId, 2);
         $environmentId = array_shift($envParts);
 
-        return self::runAs($environmentId, implode('/', $parts));
+        self::runAs($environmentId, implode('/', $parts));
     }
 
-    public static function runAs($environmentId, $appPath) {
+    public static function runAs($environmentId, $appPath): void {
         if(self::$startTime) {
             return;
         }
@@ -161,12 +161,12 @@ class Launchpad {
         self::shutdown();
     }
 
-    public static function getEnvironmentId() {
-        return self::$environmentId;
+    public static function getEnvironmentId(): string {
+        return (string)self::$environmentId;
     }
 
-    public static function getEnvironmentMode() {
-        return self::$environmentMode;
+    public static function getEnvironmentMode(): string {
+        return (string)self::$environmentMode;
     }
 
     public static function isDevelopment(): bool {
@@ -183,7 +183,7 @@ class Launchpad {
     }
 
 
-    public static function shutdown() {
+    public static function shutdown(): void {
         if(self::$_isShutdown) {
             return;
         }
@@ -206,7 +206,7 @@ class Launchpad {
 
 
 // Errors
-    public static function handleError($errorNumber, $errorMessage, $fileName, $lineNumber) {
+    public static function handleError($errorNumber, $errorMessage, $fileName, $lineNumber): void {
         if(!$level = error_reporting()) {
             return;
         }
@@ -214,7 +214,7 @@ class Launchpad {
         throw new \ErrorException($errorMessage, 0, $errorNumber, $fileName, $lineNumber);
     }
 
-    public static function handleException(\Throwable $e) {
+    public static function handleException(\Throwable $e): void {
         try {
             if(self::$application) {
                 try {
@@ -232,7 +232,7 @@ class Launchpad {
         }
     }
 
-    private static function _fatalError($message) {
+    private static function _fatalError($message): void {
         while(ob_get_level()) {
             ob_end_clean();
         }
@@ -247,7 +247,7 @@ class Launchpad {
 
 
 // Application
-    public static function getApplication() {
+    public static function getApplication(): core\IApplication {
         if(!self::$application) {
             $class = 'df\\core\\application\\LogicException';
 
@@ -265,11 +265,11 @@ class Launchpad {
 
 
 // Paths
-    public static function getApplicationPath() {
+    public static function getApplicationPath(): ?string {
         return self::$applicationPath;
     }
 
-    public static function getBasePackagePath() {
+    public static function getBasePackagePath(): ?string {
         if(self::$isCompiled) {
             return self::$rootPath;
         } else {
@@ -279,14 +279,14 @@ class Launchpad {
 
 
 // Debug
-    public static function setDebugContext(core\debug\IContext $context=null) {
+    public static function setDebugContext(core\debug\IContext $context=null): ?core\debug\IContext {
         $output = self::$debug;
         self::$debug = $context;
 
         return $output;
     }
 
-    public static function getDebugContext() {
+    public static function getDebugContext(): core\debug\IContext {
         if(!self::$debug) {
             self::loadBaseClass('core/debug/Context');
             self::$debug = new core\debug\Context();
@@ -295,36 +295,7 @@ class Launchpad {
         return self::$debug;
     }
 
-// Benchmark
-    public static function benchmark() {
-        echo '<pre>';
-        echo "\n\n".self::getFormattedRunningTime()."\n";
-
-        $includes = get_included_files();
-        echo count($includes).' files included'."\n\n";
-        echo implode("\n", $includes);
-        echo '</pre>'."\n\n";
-
-        self::shutdown();
-    }
-
     public static function getRunningTime() {
         return microtime(true) - self::$startTime;
-    }
-
-    public static function getFormattedRunningTime($seconds=null) {
-        if($seconds === null) {
-            $seconds = self::getRunningTime();
-        }
-
-        if($seconds > 60) {
-            return number_format($seconds / 60, 0).':'.number_format($seconds % 60);
-        } else if($seconds > 1) {
-            return number_format($seconds, 3).' s';
-        } else if($seconds > 0.0005) {
-            return number_format($seconds * 1000, 3).' ms';
-        } else {
-            return number_format($seconds * 1000, 5).' ms';
-        }
     }
 }

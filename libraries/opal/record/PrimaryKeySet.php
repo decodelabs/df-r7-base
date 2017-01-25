@@ -64,7 +64,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
         return '';
     }
 
-    public function toArray() {
+    public function toArray(): array {
         $output = [];
 
         foreach($this->_keys as $key => $value) {

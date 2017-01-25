@@ -182,7 +182,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         return $this->_collection;
     }
 
-    public function toArray() {
+    public function toArray(): array {
         $output = $this->_collection;
 
         if($this->_addTrailingSlash) {

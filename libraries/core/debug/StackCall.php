@@ -244,7 +244,7 @@ class StackCall implements IStackCall, core\IDumpable {
         return $output;
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return [
             'file' => $this->getFile(),
             'line' => $this->getLine(),

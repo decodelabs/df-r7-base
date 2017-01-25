@@ -319,7 +319,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
 
 
 // Array
-    public function toArray() {
+    public function toArray(): array {
         return [
             'name' => $this->_name,
             'number' => $this->_number,

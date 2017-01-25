@@ -1979,7 +1979,7 @@ trait TQuery_Read {
         return $this->toArray();
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return $this->toKeyArray(null);
     }
 

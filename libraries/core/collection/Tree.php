@@ -14,6 +14,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     use core\TStringValueProvider;
 
     use TValueMapArrayAccess;
+    use TExtricable;
     use TArrayCollection;
     use TArrayCollection_Seekable;
     use TArrayCollection_ValueContainerSortable;
@@ -431,7 +432,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
 
 
 // Array provider
-    public function toArray() {
+    public function toArray(): array {
         $output = [];
 
         foreach($this->_collection as $key => $child) {

@@ -390,7 +390,7 @@ trait TPostalAddress {
         return $this->getFullStreetAddress().', '.$this->getLocality().', '.$this->getPostalCode().', '.$this->getCountryCode();
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return [
             'street1' => $this->getStreetLine1(),
             'street2' => $this->getStreetLine2(),

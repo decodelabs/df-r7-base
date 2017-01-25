@@ -19,6 +19,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     use TPrimaryKeySetProvider;
     use core\TValueMap;
     use core\collection\TExtractList;
+    use core\collection\TExtricable;
 
     use TAccessLockProvider, user\TAccessLock {
         TAccessLockProvider::getAccessSignifiers insteadof user\TAccessLock;
@@ -572,11 +573,31 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return count(array_merge($this->_values, $this->_changes));
     }
 
-    public function toArray(array $keys=null) {
+    public function toArray(): array {
+        $output = [];
+
         foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
-            if($keys !== null && !in_array($key, $keys)) {
-                continue;
+            /*
+            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                $value->prepareValue($this, $key);
             }
+            */
+
+            if($value instanceof IValueContainer) {
+                $value = $value->getValue();
+            }
+
+            $output[$key] = $value;
+        }
+
+        return $output;
+    }
+
+    public function extricate(string ...$keys): array {
+        $output = [];
+
+        foreach($keys as $key) {
+            $value = $this->_changes[$key] ?? $this->_values[$key] ?? null;
 
             /*
             if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {

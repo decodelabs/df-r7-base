@@ -129,7 +129,7 @@ class RelationManifest implements IRelationManifest, core\IDumpable {
         return new \ArrayIterator($this->_fields);
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return $this->_fields;
     }
 

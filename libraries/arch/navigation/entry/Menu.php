@@ -33,7 +33,7 @@ class Menu extends Base {
         $this->setIcon($icon);
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return [
             'type' => 'Menu',
             'id' => $this->getId(),

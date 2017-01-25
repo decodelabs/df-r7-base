@@ -187,7 +187,6 @@ interface IManyRelationValueContainer extends IValueContainer {
 
 
 interface IPrimaryKeySet extends \ArrayAccess, core\IArrayProvider {
-    public function toArray();
     public function updateWith($record);
     public function countFields();
     public function getFieldNames();

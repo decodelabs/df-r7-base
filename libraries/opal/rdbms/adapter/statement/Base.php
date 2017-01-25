@@ -299,7 +299,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this->_row;
     }
 
-    public function toArray() {
+    public function toArray(): array {
         $output = [];
 
         foreach($this as $key => $value) {

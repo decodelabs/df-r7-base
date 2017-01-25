@@ -13,6 +13,7 @@ class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
 
     use core\TValueMap;
     use core\collection\TExtractList;
+    use core\collection\TExtricable;
     use core\TStringProvider;
 
     protected $_addresses = [];
@@ -81,7 +82,7 @@ class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
         return count($this->_addresses);
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return $this->_addresses;
     }
 

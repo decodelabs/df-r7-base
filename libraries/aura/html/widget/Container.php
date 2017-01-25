@@ -64,7 +64,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         return $this;
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return $this->_children->toArray();
     }
 

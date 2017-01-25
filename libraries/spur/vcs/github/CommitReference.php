@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 
 class CommitReference implements ICommitReference, core\IDumpable {
-    
+
     use TApiObject;
 
     protected function _importData(core\collection\ITree $data) {
@@ -21,7 +21,7 @@ class CommitReference implements ICommitReference, core\IDumpable {
         return $this->_id;
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return [
             'sha' => $this->_id,
             'urls' => $this->_urls

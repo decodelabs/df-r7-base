@@ -233,7 +233,7 @@ class BatchIterator implements IBatchIterator {
         return $this->_result->count();
     }
 
-    public function toArray() {
+    public function toArray(): array {
         $output = [];
         $useKey = $this->_keyField || !empty($this->_nestFields);
 

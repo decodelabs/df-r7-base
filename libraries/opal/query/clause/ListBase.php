@@ -49,7 +49,7 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         }
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return $this->_clauses;
     }
 

@@ -42,7 +42,7 @@ class Link extends Base implements arch\navigation\ILink {
         $this->setIcon($icon);
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return array_merge([
             'type' => 'Link',
             'id' => $this->getId(),

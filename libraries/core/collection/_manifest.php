@@ -115,6 +115,24 @@ interface ISliceable {
 }
 
 
+// Extricate
+interface IExtricable {
+    public function extricate(string ...$keys): array;
+}
+
+trait TExtricable {
+    public function extricate(string ...$keys): array {
+        $output = [];
+
+        foreach($keys as $key) {
+            $output[$key] = $this->get($key);
+        }
+
+        return $output;
+    }
+}
+
+
 // Paging
 interface IPageable {
     public function setPaginator(IPaginator $paginator);
@@ -180,7 +198,7 @@ trait TPaginator {
         return ceil($total / $this->getLimit());
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return [
             'limit' => $this->_limit,
             'offset' => $this->_offset,
@@ -229,7 +247,7 @@ interface IIndexedCollection extends IRandomAccessCollection, ISeekable, ISlicea
 interface ISequentialCollection extends ICollection, IInsertableCollection {}
 
 // Strict associative indexes
-interface IMappedCollection extends ICollection, core\IValueMap, \ArrayAccess {}
+interface IMappedCollection extends ICollection, core\IValueMap, IExtricable, \ArrayAccess {}
 
 // Object access returns container objects, otherwise, same behaviour as mapped
 interface IMappedContainerCollection extends IMappedCollection {

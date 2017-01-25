@@ -16,10 +16,8 @@ abstract class Base implements core\debug\IRenderer {
     public function __construct(core\debug\IContext $context) {
         $this->_context = $context;
 
-
-
         $this->_stats['Date'] = gmdate('d M Y H:i:s');
-        $this->_stats['Time'] = df\Launchpad::getFormattedRunningTime($context->runningTime);
+        $this->_stats['Time'] = $this->_formatRunningTime($context->runningTime);
 
         if($app = df\Launchpad::$application) {
             $this->_stats['Mode'] = $app->getRunMode();
@@ -57,6 +55,18 @@ abstract class Base implements core\debug\IRenderer {
 
     public function getStats() {
         return $this->_stats;
+    }
+
+    protected function _formatRunningTime(int $seconds): string {
+        if($seconds > 60) {
+            return number_format($seconds / 60, 0).':'.number_format($seconds % 60);
+        } else if($seconds > 1) {
+            return number_format($seconds, 3).' s';
+        } else if($seconds > 0.0005) {
+            return number_format($seconds * 1000, 3).' ms';
+        } else {
+            return number_format($seconds * 1000, 5).' ms';
+        }
     }
 
     protected function _getNormalizedIncludeList() {
