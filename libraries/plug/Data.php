@@ -307,7 +307,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
 
 // JSON
-    public function queryToJson(opal\query\IReadQuery $query, array $extraData=null, $rowSanitizer=null, int $flags=0) {
+    public function queryToJson(opal\query\IReadQuery $query, array $extraData=null, $rowSanitizer=null, int $flags=0): string {
         if($extraData === null) {
             $extraData = [];
         }
@@ -327,6 +327,33 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         return flex\Json::toString($extraData, $flags);
     }
 
+    public function toJson($data, int $flags=0): string {
+        return flex\Json::toString($data, $flags);
+    }
+
+    public function toJsonFile($path, $data, int $flags=0): core\fs\IFile {
+        return flex\Json::toFile($path, $data, $flags);
+    }
+
+    public function fromJson(string $data) {
+        return flex\Json::fromString($data);
+    }
+
+    public function fromJsonFile($path) {
+        return flex\Json::fromFile($path);
+    }
+
+    public function jsonToTree(string $data): core\collection\ITree {
+        return flex\Json::stringToTree($data);
+    }
+
+    public function jsonFileToTree($path): core\collection\ITree {
+        return flex\Json::fileToTree($path);
+    }
+
+
+
+// DEPRECATED
     public function jsonEncode($data, int $flags=0) {
         return flex\Json::toString($data, $flags);
     }
