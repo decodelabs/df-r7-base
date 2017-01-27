@@ -204,8 +204,12 @@ class Manager implements IManager {
                 $data = $installer->getPackageBowerData($package);
                 $main = null;
 
-                if(isset($data['main'])) {
-                    $main = $data['main'];
+                if(isset($data->main)) {
+                    if(count($data->main)) {
+                        $main = $data->main->toArray();
+                    } else {
+                        $main = $data['main'];
+                    }
                 } else {
                     $data = $installer->getPackageJsonData($package);
 
@@ -216,20 +220,29 @@ class Manager implements IManager {
                     }
                 }
 
-                if(substr($main, -6) != 'min.js') {
-                    $fileName = substr($main, 0, -3);
+                if($main === null) {
+                    $main = [];
+                }
 
-                    if(is_file($installPath.'/'.$fileName.'.min.js')) {
-                        $main = $fileName.'.min.js';
-                    } else if(is_file($installPath.'/'.$fileName.'-min.js')) {
-                        $main = $fileName.'-min.js';
+                if(!is_array($main)) {
+                    $main = [$main];
+                }
+
+                foreach(array_reverse($main) as $mainEntry) {
+                    if(substr($mainEntry, -6) != 'min.js') {
+                        $fileName = substr($mainEntry, 0, -3);
+
+                        if(is_file($installPath.'/'.$fileName.'.min.js')) {
+                            $mainEntry = $fileName.'.min.js';
+                        } else if(is_file($installPath.'/'.$fileName.'-min.js')) {
+                            $mainEntry = $fileName.'-min.js';
+                        }
                     }
+
+                    array_unshift($dependency->js, $mainEntry);
                 }
 
-                if($main !== null) {
-                    array_unshift($dependency->js, $main);
-                    $dependency->js = array_unique($dependency->js);
-                }
+                $dependency->js = array_unique($dependency->js);
             }
         }
 
