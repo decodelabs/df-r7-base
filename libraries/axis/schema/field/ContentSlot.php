@@ -169,9 +169,11 @@ class ContentSlot extends Base {
             return false;
         }
 
+        /*
         if($value1->hasChanged() || $value2->hasChanged()) {
             return false;
         }
+        */
 
         if($value1->getId() != $value2->getId()) {
             return false;
