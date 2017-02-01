@@ -156,7 +156,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         if(!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
 
-            if($this->_matchExact) {
+            if($this->_matchExact || $matchRequest->path->isEmpty()) {
                 $active = $matchRequest->eq($this->_context->request);
             } else {
                 $active = $this->_context->request->matches($matchRequest);
