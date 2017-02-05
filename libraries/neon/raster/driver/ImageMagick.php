@@ -115,6 +115,8 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
 
     public function crop($x, $y, $width, $height) {
         $this->_pointer->cropImage($width, $height, $x, $y);
+        $this->_width = $width;
+        $this->_height = $height;
         return $this;
     }
 
