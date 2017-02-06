@@ -73,6 +73,19 @@ class Media implements arch\IDirectoryHelper {
             ->setDirectoryRequest(null);
     }
 
+
+    public function getUploadedUrl($uploadId, $fileName, $transformation=null) {
+        $output = $this->context->uri->directoryRequest('media/uploaded?id='.$uploadId);
+        $output->query->file = $fileName;
+
+        if($transformation !== null) {
+            $output->query->transform = $transformation;
+        }
+
+        return $this->context->uri($output);
+    }
+
+
     public function fetchAndServeDownload($fileId, $embed=false) {
         return $this->_serveVersionDownload(
             $this->_model->fetchActiveVersionForDownload($fileId),
