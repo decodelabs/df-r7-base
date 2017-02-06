@@ -12,7 +12,7 @@ use df\arch;
 use df\aura;
 use df\fire;
 
-class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper {
+class Nightfire implements arch\IDirectoryHelper {
 
     use arch\TDirectoryHelper;
     use aura\view\TView_DirectoryHelper;
@@ -41,9 +41,9 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
         }
 
         if($category = $this->_loadCategory($category)) {
-            $output = $category->renderBlock($block, $this->view);
+            $output = $category->renderBlock($block, $this->getView());
         } else {
-            $output = $block->renderTo($this->view);
+            $output = $block->renderTo($this->getView());
         }
 
         $test = trim($output);
@@ -57,7 +57,7 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
 
     public function renderBlockPreview($block, $category=null, $length=null) {
         $output = $this->renderBlock($block, $category);
-        return $this->view->html->previewText($output, $length);
+        return $this->getView()->html->previewText($output, $length);
     }
 
 
@@ -87,9 +87,9 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
         $slot->isNested((bool)$isNested);
 
         if($category = $this->_loadCategory($category)) {
-            $output = $category->renderSlot($slot, $this->view);
+            $output = $category->renderSlot($slot, $this->getView());
         } else {
-            $output = $slot->renderTo($this->view);
+            $output = $slot->renderTo($this->getView());
         }
 
         $test = trim($output);
@@ -103,7 +103,7 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
 
     public function renderSlotPreview($slot, $category=null, $length=null) {
         $output = $this->renderSlot($slot, $category);
-        return $this->view->html->previewText($output, $length);
+        return $this->getView()->html->previewText($output, $length);
     }
 
     protected function _loadCategory($category) {
@@ -147,7 +147,7 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
 
         if(!$body) {
             if(!df\Launchpad::$application->isProduction()) {
-                return $this->view->html->flashMessage('Dynamic element \''.$slug.'\' not found', 'error');
+                return $this->getView()->html->flashMessage('Dynamic element \''.$slug.'\' not found', 'error');
             }
 
             return;

@@ -480,6 +480,16 @@ trait TView_DirectoryHelper {
             );
         }
     }
+
+    public function getView() {
+        if(!$this->view) {
+            throw new RuntimeException(
+                'Cannot use implicit view helper from objects that do not provide a view'
+            );
+        }
+
+        return $this->view;
+    }
 }
 
 
