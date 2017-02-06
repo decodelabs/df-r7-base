@@ -231,4 +231,9 @@ class Media implements arch\IDirectoryHelper {
 
         return $filePath;
     }
+
+
+    public function newImageTransformation($transformation=null) {
+        return neon\raster\Transformation::factory($transformation);
+    }
 }
