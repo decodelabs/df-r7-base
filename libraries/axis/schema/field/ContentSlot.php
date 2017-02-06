@@ -14,47 +14,6 @@ use df\flex;
 
 class ContentSlot extends Base {
 
-    protected $_category;
-    protected $_slotDefinition;
-
-    protected function _init($category=null) {
-        $this->setCategory($category);
-    }
-
-// Category
-    public function setCategory($category) {
-        if(empty($category)) {
-            $category = null;
-        }
-
-        if($category !== null) {
-            fire\category\Base::factory($category);
-        }
-
-        if($category != $this->_category) {
-            $this->_hasChanged = true;
-        }
-
-        $this->_category = $category;
-        return $this;
-    }
-
-    public function getCategory() {
-        return $this->_category;
-    }
-
-
-// Slot definition
-    public function getSlotDefinition() {
-        $output = new fire\slot\Definition();
-        $output->setMinBlocks(1);
-        $output->setCategory($this->_category);
-
-        return $output;
-    }
-
-
-
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         if(!isset($row[$key])) {
@@ -201,21 +160,5 @@ class ContentSlot extends Base {
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return (new opal\schema\Primitive_Text($this, opal\schema\IFieldSize::HUGE))
             ->setCharacterSet('utf8');
-    }
-
-
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
-        $this->_setBaseStorageArray($data);
-        $this->_category = $data['cat'];
-    }
-
-    public function toStorageArray() {
-        return array_merge(
-            $this->_getBaseStorageArray(),
-            [
-                'cat' => $this->_category
-            ]
-        );
     }
 }

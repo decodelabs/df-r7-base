@@ -31,9 +31,7 @@ class ContentSlot extends arch\node\form\Delegate implements
     }
 
     protected function init() {
-        if(!$this->_slotDefinition) {
-            $this->_slotDefinition = fire\slot\Definition::createDefault();
-        }
+        $this->getSlotDefinition();
 
         if(empty($this->_blocks)) {
             $this->_prepareBlockList();
@@ -92,12 +90,21 @@ class ContentSlot extends arch\node\form\Delegate implements
 
 
 // Slot definition
+    public function setCategory(string $category) {
+        $this->getSlotDefinition()->setCategory($category);
+        return $this;
+    }
+
     public function setSlotDefinition(fire\slot\IDefinition $slotDefinition) {
         $this->_slotDefinition = $slotDefinition;
         return $this;
     }
 
     public function getSlotDefinition() {
+        if(!$this->_slotDefinition) {
+            $this->_slotDefinition = fire\slot\Definition::createDefault();
+        }
+
         return $this->_slotDefinition;
     }
 
