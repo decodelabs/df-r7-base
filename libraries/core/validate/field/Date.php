@@ -158,14 +158,14 @@ class Date extends Base implements core\validate\IDateField {
 
     protected function _validateRange(core\collection\IInputTree $node, $date) {
         if($this->_min !== null && $date->lt($this->_min)) {
-            $this->_applyMessage($node, 'min', $this->_(
+            $this->_applyMessage($node, 'min', $this->validator->_(
                 'This field must be after %min%',
                 ['%min%' => $this->_min->format('Y-m-d')]
             ));
         }
 
         if($this->_max !== null && $date->gt($this->_max)) {
-            $this->_applyMessage($node, 'max', $this->_(
+            $this->_applyMessage($node, 'max', $this->validator->_(
                 'This field must be after %max%',
                 ['%max%' => $this->_max->format('Y-m-d')]
             ));
