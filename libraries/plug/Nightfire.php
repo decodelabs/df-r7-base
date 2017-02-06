@@ -119,6 +119,12 @@ class Nightfire implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper 
     }
 
 
+    public function newSlotDefinition($category=null): fire\slot\IDefinition {
+        return (new fire\slot\Definition())
+            ->setCategory($category);
+    }
+
+
 // Layout
     public function renderLayoutPreview($layout) {
         if(empty($layout)) {

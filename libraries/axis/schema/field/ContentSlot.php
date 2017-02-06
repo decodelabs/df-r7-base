@@ -45,20 +45,7 @@ class ContentSlot extends Base {
 
 
 // Slot definition
-    public function setSlotDefinition(fire\slot\IDefinition $definition) {
-        if($definition !== $this->_slotDefinition) {
-            $this->_hasChanged = true;
-        }
-
-        $this->_slotDefinition = $definition;
-        return $this;
-    }
-
     public function getSlotDefinition() {
-        if($this->_slotDefinition) {
-            return $this->_slotDefinition;
-        }
-
         $output = new fire\slot\Definition();
         $output->setMinBlocks(1);
         $output->setCategory($this->_category);
@@ -220,22 +207,14 @@ class ContentSlot extends Base {
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
-
         $this->_category = $data['cat'];
-
-        if(isset($data['sld'])) {
-            $this->_slotDefinition = fire\slot\Definition::fromArray($data['sld']);
-        }
     }
 
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
             [
-                'cat' => $this->_category,
-                'sld' => $this->_slotDefinition ?
-                    $this->_slotDefinition->toArray() :
-                    null
+                'cat' => $this->_category
             ]
         );
     }

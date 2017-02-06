@@ -13,6 +13,12 @@ use df\opal;
 
 class Unit extends axis\unit\table\Base {
 
+    const ORDERABLE_FIELDS = [
+        'slug', 'name', 'creationDate', 'lastEditDate'
+    ];
+
+    const DEFAULT_ORDER = 'name ASC';
+
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('slug', 'Slug');

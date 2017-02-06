@@ -56,11 +56,4 @@ class Record extends opal\record\Base {
             $this, $queue, $job, $description
         );
     }
-
-    public function getSlotDefinition() {
-        return $this->getAdapter()
-            ->getUnitSchema()
-            ->getField('body')
-            ->getSlotDefinition();
-    }
 }
