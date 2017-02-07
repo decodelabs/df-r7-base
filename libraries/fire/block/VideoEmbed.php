@@ -65,8 +65,7 @@ class VideoEmbed extends Base {
         $output = $this->getView()->html->videoEmbed($this->_embedCode);
 
         if($output) {
-            $output = $output->render()
-                ->addClass('block')
+            $output = $this->getView()->html('div.block', $output->render())
                 ->setDataAttribute('type', $this->getName());
         }
 
