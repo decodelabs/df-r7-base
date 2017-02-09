@@ -96,16 +96,13 @@ abstract class Form extends Base implements IFormNode {
             }
         }
 
+        $this->_isNew = $this->_state->isNew();
         $this->values = $this->_state->values;
         $response = $this->initWithSession();
 
         if(!empty($response)) {
             $this->event->parseOutput($response);
         } else {
-            if($this->_state->isNew()) {
-                $this->_isNew = true;
-            }
-
             $this->loadDelegates();
 
             if($this->_isNew) {
