@@ -345,6 +345,8 @@ class Embed implements IVideoEmbed {
             $url->query->autoplay = 1;
         }
 
+        $url->query->enablejsapi = 1;
+
         $tag = new aura\html\Element('iframe', null, [
             'src' => $url,
             'width' => $this->_width,
