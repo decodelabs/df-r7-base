@@ -177,6 +177,18 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
 
 
 // Ids
+    public function slug($value, array $options=[]): ?string {
+        if(empty($value)) {
+            $value = $options['default'] ?? null;
+        }
+
+        if($value === null) {
+            return $value;
+        }
+
+        return flex\Text::formatSlug($value);
+    }
+
     public function intId($value, array $options=[]): ?int {
         return $this->int($value, [
             'default' => $options['default'] ?? null,
