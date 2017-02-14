@@ -17,7 +17,17 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
     use arch\TDirectoryHelper;
 
     public function __invoke($value, string $type, ...$args) {
-        return $this->{$type}($value, ...$args);
+        if($nullable = substr($type, 0, 1) == '?') {
+            $type = substr($type, 1);
+        }
+
+        $output = $this->{$type}($value, ...$args);
+
+        if(!$nullable && $output === null) {
+            $this->context->throwError(400, 'Empty '.$type.' filter value');
+        }
+
+        return $output;
     }
 
 
@@ -25,24 +35,39 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
     public function offsetSet($key, $value) {}
 
     public function offsetGet($key): Callable {
+        if($nullable = substr($key, 0, 1) == '?') {
+            $key = substr($key, 1);
+        }
+
         $value = $this->context->request[$key];
 
-        return new class($this, $value) {
+        return new class($this, $key, $value, $nullable) {
 
             public $value;
+            public $nullable = false;
+
+            private $_key;
             private $_filter;
 
-            public function __construct(Filter $filter, $value) {
+            public function __construct(Filter $filter, string $key, $value, bool $nullable=false) {
                 $this->_filter = $filter;
+                $this->_key = $key;
                 $this->value = $value;
+                $this->nullable = $nullable;
             }
 
             public function __invoke(string $type, ...$args) {
-                return $this->_filter->__invoke($this->value, $type, ...$args);
+                $output = $this->_filter->{$type}($this->value, ...$args);
+
+                if(!$this->nullable && $output === null) {
+                    $this->_filter->context->throwError(400, 'Query var '.$this->_key.' did not contain a valid '.$type);
+                }
+
+                return $output;
             }
 
             public function __call($type, $args) {
-                return $this->_filter->__invoke($this->value, $type, ...$args);
+                return $this->__invoke($type, ...$args);
             }
         };
     }
@@ -54,6 +79,11 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
     public function offsetUnset($key) {}
 
     public function query($key, string $type, ...$args) {
+        if($nullable = substr($key, 0, 1) == '?') {
+            $key = substr($key, 1);
+            $type = '?'.ltrim($type, '?');
+        }
+
         return $this->__invoke($this->context->request[$key], $type, ...$args);
     }
 
