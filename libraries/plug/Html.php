@@ -29,6 +29,16 @@ class Html implements arch\IDirectoryHelper {
             return new aura\html\ElementString($name);
         }
 
+        if(false !== strpos($name, '>')) {
+            $parts = explode('>', $name);
+
+            foreach(array_reverse($parts) as $name) {
+                $content = new aura\html\Element(trim($name), $content, $attributes);
+            }
+
+            return $content;
+        }
+
         return new aura\html\Element($name, $content, $attributes);
     }
 
