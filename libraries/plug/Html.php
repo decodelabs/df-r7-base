@@ -25,10 +25,6 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function __invoke($name, $content=null, array $attributes=[]) {
-        if($content === null && empty($attributes) && (preg_match('/[^a-zA-Z0-9.#\_\-\?]/', $name) || !strlen($name))) {
-            return new aura\html\ElementString($name);
-        }
-
         if(false !== strpos($name, '>')) {
             $parts = explode('>', $name);
 
