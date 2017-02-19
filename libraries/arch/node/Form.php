@@ -262,9 +262,9 @@ abstract class Form extends Base implements IFormNode {
         } else if(method_exists($this, 'createUi')) {
             $this->createUi();
         } else if($this->context->application->isDevelopment()) {
-            $this->content->push($this->html(
-                '<p>This form handler has no ui generator - you need to implement function createUi() or override function handleGetRequest()</p>'
-            ));
+            $this->content->add('p',
+                'This form handler has no ui generator - you need to implement function createUi() or override function handleGetRequest()'
+            );
         }
 
         $this->view->getHeaders()

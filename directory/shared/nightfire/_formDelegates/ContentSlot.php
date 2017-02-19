@@ -197,7 +197,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
             $fa = $container->addField($this->_($this->_blockLabel, ['%n%' => $key]))
                 ->setId($this->elementId($delegateId));
-            $fa->push($this->html('<div class="fire-block"><nav class="buttons">'));
+            $fa->push($this->html->string('<div class="fire-block"><nav class="buttons">'));
 
             $this->values->blockType->{$delegateId}->setValue($blockName);
 
@@ -242,13 +242,13 @@ class ContentSlot extends arch\node\form\Delegate implements
                     ->isDisabled($counter == $blockCount)
                     ->setDisposition('transitive'),
 
-                $this->html('</nav>')
+                $this->html->string('</nav>')
             );
 
             $delegate = $this[$delegateId];
             $delegate->renderFieldContent($fa);
 
-            $fa->push($this->html('</div>'));
+            $fa->push($this->html->string('</div>'));
             $counter++;
         }
 

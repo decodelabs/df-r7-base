@@ -141,7 +141,7 @@ class ContentBlock extends arch\node\form\Delegate implements
 
     public function renderFieldContent(aura\html\widget\Field $fa) {
         $fa->setId($this->elementId('block'));
-        $fa->push($this->html('<div class="fire-block"><nav class="buttons">'));
+        $fa->push($this->html->string('<div class="fire-block"><nav class="buttons">'));
 
         if($this->values->content->hasErrors()) {
             $fa->push($this->html->fieldError($this->values->content));
@@ -170,7 +170,7 @@ class ContentBlock extends arch\node\form\Delegate implements
             );
 
             if($this->_block) {
-                $fa->push($this->html('</nav>'));
+                $fa->push($this->html->string('</nav>'));
             }
         }
 
@@ -179,7 +179,7 @@ class ContentBlock extends arch\node\form\Delegate implements
             $this['block']->renderFieldContent($fa);
         }
 
-        $fa->push($this->html('</div>'));
+        $fa->push($this->html->string('</div>'));
     }
 
     protected function onSelectBlockTypeEvent() {

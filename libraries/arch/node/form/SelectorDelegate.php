@@ -265,7 +265,7 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
     protected function _renderInlineTextDetails(aura\html\widget\Field $fa) {
-        $fa->push($this->html('<div class="w-selection"><div class="body">'));
+        $fa->push($this->html->string('<div class="w-selection"><div class="body">'));
         $selected = $this->_fetchSelectionList();
 
         if($this->_isForMany) {
@@ -273,7 +273,7 @@ abstract class SelectorDelegate extends Delegate implements
             if(empty($selected)) {
                 $fa->push(
                     $this->html('em', $this->_('nothing selected')),
-                    $this->html('</div>')
+                    $this->html->string('</div>')
                 );
             } else {
                 $tempList = $selected;
@@ -298,7 +298,7 @@ abstract class SelectorDelegate extends Delegate implements
 
                 $fa->push(
                     $this->html->bulletList($displayList),
-                    $this->html('</div>')
+                    $this->html->string('</div>')
                 );
 
                 foreach($selected as $row) {
@@ -336,13 +336,13 @@ abstract class SelectorDelegate extends Delegate implements
                 );
             }
 
-            $fa->push($this->html('</div>'));
+            $fa->push($this->html->string('</div>'));
         }
 
         $ba = $fa->addButtonArea();
         $this->_renderDetailsButtonGroup($ba, $selected);
 
-        $fa->push($this->html('</div>'));
+        $fa->push($this->html->string('</div>'));
     }
 
     protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected, $isList=false) {
@@ -525,7 +525,7 @@ abstract class SelectorDelegate extends Delegate implements
                     $fa->push(
                         $this->html->hidden($this->fieldName('searchResults[]'), $id),
                         $this->_renderCheckbox($id, $name),
-                        $this->html('<br />')
+                        $this->html('br')
                     );
                 }
             }
