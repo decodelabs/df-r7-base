@@ -10,6 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\link;
+use df\fuse;
 
 class Uri implements arch\IDirectoryHelper {
 
@@ -256,7 +257,7 @@ class Uri implements arch\IDirectoryHelper {
         $name = rtrim($name, '/');
         $themeId = $this->_normalizeTheme($themeId);
         $theme = aura\theme\Base::factory($themeId);
-        $manager = aura\theme\Manager::getInstance();
+        $manager = fuse\Manager::getInstance();
         $subPath = null;
 
         if(false !== strpos($name, '/')) {

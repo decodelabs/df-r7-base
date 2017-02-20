@@ -10,12 +10,12 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\spur;
-use df\aura;
+use df\fuse;
 
 class TaskReinstallDependencies extends arch\node\Task {
 
     public function execute() {
         $this->runChild('./purge-dependencies', false);
-        aura\theme\Manager::getInstance()->installAllDependencies($this->io);
+        fuse\Manager::getInstance()->installAllDependencies($this->io);
     }
 }

@@ -8,7 +8,7 @@ namespace df\spur\packaging\bower;
 use df;
 use df\core;
 use df\spur;
-use df\aura;
+use df\fuse;
 
 class Package implements IPackage {
 
@@ -23,7 +23,7 @@ class Package implements IPackage {
     public $cacheFileName;
     public $resolver;
 
-    public static function fromThemeDependency(aura\theme\IDependency $dependency) {
+    public static function fromThemeDependency(fuse\IDependency $dependency) {
         $output = new self($dependency->id, $dependency->source);
         $output->version = $dependency->version;
         $output->installName = null;

@@ -9,17 +9,16 @@ use df;
 use df\core;
 use df\apex;
 use df\arch;
-use df\spur;
+use df\aura;
+use df\fuse;
 
 class TaskPurgeDependencies extends arch\node\Task {
 
     public function execute() {
         $this->io->write('Purging theme dependencies...');
 
-        $vendorPath = df\Launchpad::$application->getApplicationPath().'/assets/vendor/';
-        core\fs\Dir::delete($vendorPath);
-        $themePath = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/';
-        core\fs\Dir::delete($themePath);
+        core\fs\Dir::delete(fuse\Manager::getAssetPath());
+        core\fs\Dir::delete(fuse\Manager::getManifestCachePath());
 
         $this->io->writeLine(' done');
     }

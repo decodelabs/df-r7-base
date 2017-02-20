@@ -36,28 +36,5 @@ interface ITheme extends IFacetProvider, aura\view\IViewRenderEventReceiver, aur
 
 interface IFacet extends aura\view\IViewRenderEventReceiver {}
 
-
-interface IManager extends core\IManager {
-    public function getInstalledDependencyFor(ITheme $theme, $name);
-    public function getInstalledDependenciesFor(ITheme $theme);
-
-    public function ensureDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null);
-    public function installDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null);
-    public function installAllDependencies(core\io\IMultiplexer $io=null);
-    public function installDependencies(array $dependencies, core\io\IMultiplexer $io=null);
-
-    public function getPreparedDependencyDefinitions(ITheme $theme);
-}
-
-interface IDependency {
-    public function getId();
-    public function getVersion();
-    public function getSource();
-    public function getJs();
-    public function getCss();
-    public function getShim();
-    public function getMap();
-    public function getKey();
-    public function getPackage();
-    public function getInstallName();
-}
+// DELETE ME WHEN SITES UPDATED!
+class Dependency extends df\fuse\Dependency {}

@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\flex;
+use df\fuse;
 
 class Installer implements IInstaller {
 
@@ -19,7 +20,7 @@ class Installer implements IInstaller {
     protected $_resolvers = [];
 
     public function __construct(core\io\IMultiplexer $io=null) {
-        $installPath = df\Launchpad::$application->getApplicationPath().'/assets/vendor';
+        $installPath = fuse\Manager::getAssetPath();
         $this->_installDir = new core\fs\Dir($installPath);
         $this->_cachePath = core\fs\Dir::getGlobalCachePath().'/bower';
         $this->_lockFile = new core\fs\LockFile($this->_cachePath);

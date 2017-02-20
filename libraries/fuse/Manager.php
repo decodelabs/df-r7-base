@@ -3,23 +3,33 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\aura\theme;
+namespace df\fuse;
 
 use df;
 use df\core;
 use df\aura;
+use df\fuse;
 use df\spur;
 
 class Manager implements IManager {
 
     use core\TManager;
 
-    const REGISTRY_PREFIX = 'manager://theme';
+    const REGISTRY_PREFIX = 'manager://fuse';
 
     protected static $_depCache = [];
 
 
-    public function getInstalledDependencyFor(ITheme $theme, $name) {
+    public static function getManifestCachePath(): string {
+        return df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies';
+    }
+
+    public static function getAssetPath(): string {
+        return df\Launchpad::$application->getApplicationPath().'/assets/vendor';
+    }
+
+
+    public function getInstalledDependencyFor(aura\theme\ITheme $theme, $name) {
         $deps = $this->getInstalledDependenciesFor($theme);
 
         if(!isset($deps[$name])) {
@@ -31,19 +41,19 @@ class Manager implements IManager {
         return $deps[$name];
     }
 
-    public function getInstalledDependenciesFor(ITheme $theme) {
+    public function getInstalledDependenciesFor(aura\theme\ITheme $theme) {
         $id = $theme->getId();
 
         if(!isset(self::$_depCache[$id])) {
             $this->ensureDependenciesFor($theme);
-            $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$id;
+            $path = self::getManifestCachePath().'/'.$id;
             self::$_depCache[$id] = unserialize(core\fs\File::getContentsOf($path));
         }
 
         return self::$_depCache[$id];
     }
 
-    protected function _storeManifest(ITheme $theme, array $dependencies) {
+    protected function _storeManifest(aura\theme\ITheme $theme, array $dependencies) {
         $id = $theme->getId();
         unset(self::$_depCache[$id]);
 
@@ -55,21 +65,21 @@ class Manager implements IManager {
 
         self::$_depCache[$id] = $output;
 
-        $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$id;
+        $path = self::getManifestCachePath().'/'.$id;
         core\fs\File::create($path, serialize($output));
     }
 
 
 
-    public function ensureDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null) {
+    public function ensureDependenciesFor(aura\theme\ITheme $theme, core\io\IMultiplexer $io=null) {
         $id = $theme->getId();
 
         if(isset(self::$_depCache[$id])) {
             return $this;
         }
 
-        $path = df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies/'.$id;
-        $vendorPath = df\Launchpad::$application->getApplicationPath().'/assets/vendor/';
+        $path = self::getManifestCachePath().'/'.$id;
+        $vendorPath = self::getAssetPath();
         $swallow = true;
         $depContent = null;
 
@@ -115,7 +125,7 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function installDependenciesFor(ITheme $theme, core\io\IMultiplexer $io=null) {
+    public function installDependenciesFor(aura\theme\ITheme $theme, core\io\IMultiplexer $io=null) {
         $deps = $this->getPreparedDependencyDefinitions($theme);
         $this->installDependencies($deps, $io);
         $this->_storeManifest($theme, $deps);
@@ -123,7 +133,7 @@ class Manager implements IManager {
     }
 
     public function installAllDependencies(core\io\IMultiplexer $io=null) {
-        $config = Config::getInstance();
+        $config = aura\theme\Config::getInstance();
         $themes = array_unique($config->getThemeMap());
         $dependencies = [];
         $themeDeps = [];
@@ -174,7 +184,7 @@ class Manager implements IManager {
         }
 
         foreach($dependencies as $i => $dependency) {
-            if(!$dependency instanceof IDependency) {
+            if(!$dependency instanceof fuse\IDependency) {
                 unset($dependencies[$i]);
                 continue;
             }
@@ -249,7 +259,7 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function getPreparedDependencyDefinitions(ITheme $theme) {
+    public function getPreparedDependencyDefinitions(aura\theme\ITheme $theme) {
         $dependencies = $theme->getDependencies();
         $output = [];
 

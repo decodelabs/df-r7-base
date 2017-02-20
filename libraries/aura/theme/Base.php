@@ -11,6 +11,7 @@ use df\aura;
 use df\arch;
 use df\spur;
 use df\neon;
+use df\fuse;
 
 class Base implements ITheme, core\IDumpable {
 
@@ -91,7 +92,7 @@ class Base implements ITheme, core\IDumpable {
 
     public function beforeHtmlViewRender(aura\view\IView $view) {
         if(df\Launchpad::$application->isDevelopment()) {
-            Manager::getInstance()->ensureDependenciesFor($this);
+            fuse\Manager::getInstance()->ensureDependenciesFor($this);
         }
 
         $this->applyDefaultIncludes($view);

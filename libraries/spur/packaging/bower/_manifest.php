@@ -7,8 +7,9 @@ namespace df\spur\packaging\bower;
 
 use df;
 use df\core;
-use df\flex;
 use df\spur;
+use df\fuse;
+use df\flex;
 use df\aura;
 
 // Exceptions
@@ -46,7 +47,7 @@ interface IInstaller {
 }
 
 interface IPackage {
-    public static function fromThemeDependency(aura\theme\IDependency $dependency);
+    public static function fromThemeDependency(fuse\IDependency $dependency);
     public function setName($name);
     public function getName();
     public function getKey();

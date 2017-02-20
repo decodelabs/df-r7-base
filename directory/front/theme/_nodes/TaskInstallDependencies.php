@@ -9,16 +9,17 @@ use df;
 use df\core;
 use df\apex;
 use df\arch;
-use df\aura;
-use df\spur;
+use df\fuse;
 
 class TaskInstallDependencies extends arch\node\Task implements arch\node\IBuildTaskNode {
 
     public function execute() {
-        if(!is_dir($this->application->getLocalStoragePath().'/theme/dependencies/')) {
+        $manager = fuse\Manager::getInstance();
+
+        if(!is_dir($manager::getManifestCachePath())) {
             $this->runChild('./purge-dependencies', false);
         }
 
-        aura\theme\Manager::getInstance()->installAllDependencies($this->io);
+        $manager->installAllDependencies($this->io);
     }
 }

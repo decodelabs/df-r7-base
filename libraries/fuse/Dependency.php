@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\aura\theme;
+namespace df\fuse;
 
 use df;
 use df\core;
+use df\fuse;
 use df\aura;
 use df\flex;
 use df\spur;
@@ -21,6 +22,7 @@ class Dependency implements IDependency {
     public $shim;
     public $map;
     public $installName;
+
 
     public function __construct($id, $data=null) {
         $parts = explode('#', $id, 2);
