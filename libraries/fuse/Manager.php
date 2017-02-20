@@ -126,7 +126,7 @@ class Manager implements IManager {
     }
 
     public function installDependenciesFor(aura\theme\ITheme $theme, core\io\IMultiplexer $io=null) {
-        $deps = $this->getPreparedDependencyDefinitions($theme);
+        $deps = $this->prepareDependenciesFor($theme);
         $this->installDependencies($deps, $io);
         $this->_storeManifest($theme, $deps);
         return $this;
@@ -141,7 +141,7 @@ class Manager implements IManager {
         foreach($themes as $themeId) {
             $theme = aura\theme\Base::factory($themeId);
 
-            foreach($this->getPreparedDependencyDefinitions($theme) as $dependency) {
+            foreach($this->prepareDependenciesFor($theme) as $dependency) {
                 $key = $dependency->getKey();
                 $dependencies[$key] = $dependency;
                 $themeDeps[$theme->getId()][$key] = true;
@@ -259,21 +259,14 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function getPreparedDependencyDefinitions(aura\theme\ITheme $theme) {
-        $dependencies = $theme->getDependencies();
+    public function prepareDependenciesFor(aura\theme\ITheme $theme): array {
         $output = [];
 
-        foreach($dependencies as $id => $data) {
-            if(!is_string($id)) {
-                if(isset($data['id'])) {
-                    $id = $data['id'];
-                } else if(is_string($data)) {
-                    $id = $data;
-                    $data = [];
-                }
-            }
+        foreach($this->_normalizeDependencies(Config::getInstance()->getDependencies()) as $id => $dependency) {
+            $output[$dependency->id] = $dependency;
+        }
 
-            $dependency = new Dependency($id, $data);
+        foreach($this->_normalizeDependencies($theme->getDependencies()) as $id => $dependency) {
             $output[$dependency->id] = $dependency;
         }
 
@@ -294,5 +287,21 @@ class Manager implements IManager {
         }
 
         return $output;
+    }
+
+    protected function _normalizeDependencies(array $dependencies) {
+        foreach($dependencies as $id => $data) {
+            if(!is_string($id)) {
+                if(isset($data['id'])) {
+                    $id = $data['id'];
+                } else if(is_string($data)) {
+                    $id = $data;
+                    $data = [];
+                }
+            }
+
+            $dep = new Dependency($id, $data);
+            yield $dep->id => $dep;
+        }
     }
 }

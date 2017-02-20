@@ -25,7 +25,7 @@ interface IManager extends core\IManager {
     public function installAllDependencies(core\io\IMultiplexer $io=null);
     public function installDependencies(array $dependencies, core\io\IMultiplexer $io=null);
 
-    public function getPreparedDependencyDefinitions(aura\theme\ITheme $theme);
+    public function prepareDependenciesFor(aura\theme\ITheme $theme);
 }
 
 
