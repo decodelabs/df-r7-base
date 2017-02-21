@@ -601,7 +601,22 @@ class Duration implements IDuration, core\IDumpable {
             $isNegative = true;
         }
 
+        $minUnit = null;
+
+        if(is_array($maxUnit)) {
+            $temp = $maxUnit;
+            $maxUnit = array_pop($temp);
+
+            if(!$minUnit = array_shift($temp)) {
+                $minUnit = $maxUnit;
+            }
+        }
+
         $maxUnit = self::normalizeUnitId($maxUnit);
+
+        if($minUnit !== null) {
+            $minUnit = self::normalizeUnitId($minUnit);
+        }
 
         if($maxUnit == self::MICROSECONDS) {
             return [$this->_addUnitString($i18n, round($this->_seconds * 1000000), self::MICROSECONDS, $shortUnits)];
@@ -609,7 +624,7 @@ class Duration implements IDuration, core\IDumpable {
             return [$this->_addUnitString($i18n, round($this->_seconds * 1000), self::MILLISECONDS, $shortUnits)];
         }
 
-        $output = $this->_createOutputArray($seconds, $maxUnits, $maxUnit, $shortUnits === null);
+        $output = $this->_createOutputArray($seconds, $maxUnits, $minUnit, $maxUnit, $shortUnits === null);
 
         foreach($output as $unit => $value) {
             if($isNegative) {
@@ -691,7 +706,7 @@ class Duration implements IDuration, core\IDumpable {
         }
     }
 
-    private function _createOutputArray($seconds, $maxUnits, $maxUnit, $all=false) {
+    private function _createOutputArray($seconds, $maxUnits, $minUnit, $maxUnit, $all=false) {
         if($maxUnits <= 0) {
             $maxUnits = 1;
         }
@@ -703,7 +718,7 @@ class Duration implements IDuration, core\IDumpable {
         for($i = $maxUnit; $i > 0; $i--) {
             if($i == 1) {
                 $output[1] = $seconds + $fraction;
-                return $output;
+                break;
             }
 
             $multiplier = self::MULTIPLIERS[$i];
@@ -721,7 +736,18 @@ class Duration implements IDuration, core\IDumpable {
                     $output[$i] += $seconds / $multiplier;
                 }
 
-                return $output;
+                break;
+            }
+        }
+
+        for($i = 1; $i < $minUnit; $i++) {
+            if(isset($output[$i])) {
+                if(!isset($output[$i + 1])) {
+                    $output[$i + 1] = 0;
+                }
+
+                $output[$i + 1] += $output[$i] / self::MULTIPLIERS[$i];
+                unset($output[$i]);
             }
         }
 
