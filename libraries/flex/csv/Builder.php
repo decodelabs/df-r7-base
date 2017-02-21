@@ -63,6 +63,11 @@ class Builder implements IBuilder {
     public function sendChunks() {
         if($this->_generator) {
             $this->_generator->invoke($this);
+
+            if($this->_writeFields && !$this->_fieldsWritten) {
+                $this->_writeRow($this->_fields);
+                $this->_fieldsWritten = true;
+            }
         } else if(!empty($this->_fields)) {
             if($this->_writeFields && !$this->_fieldsWritten) {
                 $this->_writeRow($this->_fields);
