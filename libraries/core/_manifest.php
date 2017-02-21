@@ -15,8 +15,33 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class BadMethodCallException extends \BadMethodCallException {}
+
 class ApplicationNotFoundException extends RuntimeException {}
 class HelperNotFoundException extends RuntimeException {}
+
+
+interface IError {}
+
+interface ELogic extends IError {}
+interface ERuntime extends IError {}
+interface EValue extends ERuntime {}
+interface EArgument extends ELogic {}
+interface ECall extends ELogic {}
+interface EDomain extends ELogic {}
+interface EBounds extends ERuntime {}
+
+interface EBadRequest extends ERuntime {}
+interface EUnauthorized extends ERuntime {}
+interface ENotFound extends ERuntime {}
+trait TNotFound {
+
+}
+interface ENotImplemented extends ELogic {}
+interface EServiceUnavailable extends ERuntime {}
+
+interface EApplicationNotFound extends ENotFound {}
+interface EHelperNotFound extends ENotFound {}
+
 
 ### Generic interfaces
 
