@@ -30,7 +30,12 @@ class InsertResolution implements mesh\job\IResolution {
          * Need to create a new Update task for record in subordinate to fill in missing
          * id when this record is inserted, then save it to queue
          */
-        $queue->after($dependency, new Update($subordinate->getRecord()), $this)
+        $queue->after(
+                $dependency,
+                (new Update($subordinate->getRecord()))
+                    ->shouldReportEvents(false),
+                $this
+            )
             ->addDependency($subordinate);
 
         return $this->_isUntangled = true;

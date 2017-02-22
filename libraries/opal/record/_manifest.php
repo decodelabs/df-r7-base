@@ -218,6 +218,7 @@ interface IJob extends mesh\job\IJob, mesh\job\IEventBroadcastingJob {
 trait TJob {
 
     protected $_record;
+    protected $_reportEvents = true;
 
     public function getObjectId(): string {
         return mesh\job\Queue::getObjectId($this->_record);
@@ -231,18 +232,36 @@ trait TJob {
         return $this->_record->getAdapter();
     }
 
+    public function shouldReportEvents(bool $flag=null) {
+        if($flag !== null) {
+            $this->_reportEvents = $flag;
+            return $this;
+        }
+
+        return $this->_reportEvents;
+    }
+
     public function reportPreEvent(mesh\job\IQueue $queue) {
-        $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_PRE);
+        if($this->_reportEvents) {
+            $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_PRE);
+        }
+
         return $this;
     }
 
     public function reportExecuteEvent(mesh\job\IQueue $queue) {
-        $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_EXECUTE);
+        if($this->_reportEvents) {
+            $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_EXECUTE);
+        }
+
         return $this;
     }
 
     public function reportPostEvent(mesh\job\IQueue $queue) {
-        $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_POST);
+        if($this->_reportEvents) {
+            $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_POST);
+        }
+
         return $this;
     }
 }
