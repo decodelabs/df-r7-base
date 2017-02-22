@@ -137,7 +137,7 @@ abstract class Base implements core\debug\IRenderer {
             $parts = explode('\\', $name);
             $topName = array_pop($parts);
 
-            if(!preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName)) {
+            if(!preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName) && ($topName !== 'IError' || $name === 'df\\core\\IError')) {
                 continue;
             }
 

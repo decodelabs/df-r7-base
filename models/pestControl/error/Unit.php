@@ -55,8 +55,42 @@ class Unit extends axis\unit\table\Base {
 
 // IO
     public function logException(\Throwable $e) {
+        $type = get_class($e);
+        $normal = false;
+
+        if(preg_match('/^class@anonymous/', $type)) {
+            $reflection = new \ReflectionClass($e);
+
+            if($parent = $reflection->getParentClass()) {
+                $type = [];
+
+                foreach($reflection->getInterfaces() as $name => $interface) {
+                    $parts = explode('\\', $name);
+                    $topName = array_pop($parts);
+
+                    if(!preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName) && ($topName !== 'IError' || $name === 'df\\core\\IError')) {
+                        continue;
+                    }
+
+                    if(implode('\\', $parts) == 'df\\core') {
+                        array_unshift($type, $topName);
+                    } else {
+                        $type[] = $name;
+                    }
+                }
+
+                array_unshift($type, $parent->getName());
+                $type = implode(' + ', $type);
+                $normal = true;
+            }
+        }
+
+        if(!$normal) {
+            $type = core\lang\Util::normalizeClassName($type);
+        }
+
         return $this->logError(
-            get_class($e),
+            $type,
             $e->getCode(),
             core\fs\Dir::stripPathLocation($e->getFile()),
             $e->getLine(),
@@ -70,14 +104,14 @@ class Unit extends axis\unit\table\Base {
                 'archiveDate' => null
             ])
             ->express('seen', 'seen', '+', 1)
-            ->where('type', '=', $type)
+            //->where('type', '=', $type)
             ->where('code', '=', $code)
             ->where('file', '=', $file)
             ->where('line', '=', $line)
             ->execute();
 
         $error = $this->fetch()
-            ->where('type', '=', $type)
+            //->where('type', '=', $type)
             ->where('code', '=', $code)
             ->where('file', '=', $file)
             ->where('line', '=', $line)

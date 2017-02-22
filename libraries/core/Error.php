@@ -29,7 +29,7 @@ class Error extends \Exception implements IError {
     }
 
     protected static function _factory(string $message, array $args=[], array $interfaces=[]) {
-        $args['rewind'] = $rewind = (int)($args['rewind'] ?? 0);
+        $args['rewind'] = $rewind = max((int)($args['rewind'] ?? 0), 0);
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $rewind + 3);
 
         $namespace = explode('\\', array_pop($trace)['class']);
@@ -60,8 +60,34 @@ class Error extends \Exception implements IError {
         $definition = 'return new class(\'\') extends '.$base;
         $traits = [];
 
+        $parts = explode('\\', $namespace);
+        $parts = array_slice($parts, 1, 3);
+        $parent = 'df';
+        $extra = [];
+
+        foreach($parts as $part) {
+            $first = $parent == 'df';
+            $ins = $parent.'\\'.$part;
+            $interface = $ins.'\\IError';
+
+            if(!interface_exists($interface, true)) {
+                $base = $first ? '\df\core\IError' : '\\'.$parent.'\\IError';
+                $interfaceDef = 'namespace '.$ins.';interface IError extends '.$base.' {}';
+                eval($interfaceDef);
+            }
+
+            $parent = $ins;
+            $extra[] = $interface;
+        }
+
         if(!empty($interfaces)) {
             foreach($interfaces as $i => $interface) {
+                if(false !== strpos($interface, '/')) {
+                    $interface = 'df\\'.str_replace('/', '\\', ltrim($interface, '/'));
+                }
+
+                $interface = ltrim($interface, '\\');
+
                 if(false === strpos($interface, '\\')) {
                     $isCore = interface_exists('\\df\\core\\'.$interface, true);
 
@@ -81,18 +107,21 @@ class Error extends \Exception implements IError {
                         $interface = $namespace.'\\'.$interface;
                     }
 
-                    $interfaces[$i] = $interface;
                 } else {
                     $parts = explode('\\', $interface);
-                    $test = '\\df\\core\\'.array_pop($interface);
+                    $test = '\\df\\core\\'.array_pop($parts);
                     $isCore = interface_exists($test, true);
                 }
 
                 if(!interface_exists($interface, true)) {
-                    unset($interfaces[$i]);
-                    continue;
+                    $parts = explode('\\', $interface);
+                    $name = array_pop($parts);
+
+                    $interfaceDef = 'namespace '.implode($parts, '\\').';interface '.$name.' extends \df\core\IError {}';
+                    eval($interfaceDef);
                 }
 
+                $interfaces[$i] = $interface;
                 $parts = explode('\\', $interface);
                 $name = array_pop($parts);
 
@@ -112,11 +141,14 @@ class Error extends \Exception implements IError {
                     }
                 }
             }
-
-            if(!empty($interfaces)) {
-                $definition .= ' implements '.implode(',', $interfaces);
-            }
         }
+
+        $interfaces = array_merge($interfaces, $extra);
+
+        if(!empty($interfaces)) {
+            $definition .= ' implements '.implode(',', array_unique($interfaces));
+        }
+
 
         $definition .= ' {';
 
