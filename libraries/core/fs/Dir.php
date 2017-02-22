@@ -28,6 +28,7 @@ class Dir implements IDirectory, core\IDumpable {
 
         $locations = df\Launchpad::$loader->getLocations();
         $locations['app'] = df\Launchpad::$applicationPath;
+        $path = preg_replace('/[[:^print:]]/', '', $path);
 
         foreach($locations as $key => $match) {
             if(substr($path, 0, $len = strlen($match)) == $match) {

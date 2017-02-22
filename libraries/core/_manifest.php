@@ -20,7 +20,13 @@ class ApplicationNotFoundException extends RuntimeException {}
 class HelperNotFoundException extends RuntimeException {}
 
 
-interface IError {}
+interface IError {
+    public function setData($data);
+    public function getData();
+
+    public function getStackCall(): core\debug\IStackCall;
+    public function getStackTrace(): core\debug\IStackTrace;
+}
 
 interface ELogic extends IError {}
 interface ERuntime extends IError {}

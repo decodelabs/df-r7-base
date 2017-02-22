@@ -125,7 +125,26 @@ class Inspector implements IInspector {
 
 // Object
     public function inspectObjectProperties($object, $deep=false) {
-        return new Structure($this, get_class($object), 0, $this->_getObjectProperties($object, $deep));
+        return new Structure($this, $this->_normalizeObjectClass(get_class($object)), 0, $this->_getObjectProperties($object, $deep));
+    }
+
+    protected function _normalizeObjectClass(string $class): string {
+        $name = [];
+        $parts = explode(':', $class);
+
+        while(!empty($parts)) {
+            $part = trim(array_shift($parts));
+
+            if(preg_match('/^class@anonymous(.+)(\(([0-9]+)\))/', $part, $matches)) {
+                $name[] = core\fs\Dir::stripPathLocation($matches[1]).' : '.($matches[3] ?? null);
+            } else if(preg_match('/^eval\(\)\'d/', $part)) {
+                $name = ['eval[ '.implode(' : ', $name).' ]'];
+            } else {
+                $name[] = $part;
+            }
+        }
+
+        return implode(' : ', $name);
     }
 
 

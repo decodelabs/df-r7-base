@@ -27,7 +27,7 @@ class Html extends Base {
                 $object = $node->getObject();
 
                 if(is_object($object)) {
-                    $output = 'instance of <strong>'.get_class($object).'</strong>';
+                    $output = 'instance of <strong>'.$this->_getObjectClass($object).'</strong>';
                     $inheritance = $this->_getObjectInheritance($object);
 
                     if(!empty($inheritance)) {
@@ -47,8 +47,16 @@ class Html extends Base {
 
             case 'exception':
                 $exception = $node->getException();
-                $output = '<strong>'.get_class($exception).'</strong>';
                 $inheritance = $this->_getObjectInheritance($exception);
+                $class = get_class($exception);
+
+                if(preg_match('/^class@anonymous/', $class) && !empty($inheritance)) {
+                    $class = array_shift($inheritance);
+                } else {
+                    $class = $this->_normalizeObjectClass($class);
+                }
+
+                $output = '<strong>'.$class.'</strong>';
 
                 if(!empty($inheritance)) {
                     $output .= ' &gt; <span class="objectInheritance">'.
@@ -99,6 +107,18 @@ class Html extends Base {
 
                     $lastException = $chainedException;
                     $i++;
+                }
+
+                if($exception instanceof core\IError) {
+                    $inspector = new core\debug\dumper\Inspector();
+
+                    if(null !== ($data = $exception->getData())) {
+                        $data = $inspector->inspect();
+
+                        $output .= '<div class="exception-data dump-body">'.
+                            $this->_renderDumpData($data).
+                        '</div>';
+                    }
                 }
 
                 if($exception instanceof core\IDumpable) {
@@ -247,6 +267,11 @@ class Html extends Base {
 
     protected function _renderExceptionMessage(core\log\IExceptionNode $node, $messagePrefix=null) {
         $output  = '<p class="message">'.$messagePrefix.$this->esc($node->getMessage()).'</p>'."\n";
+
+        if(!empty($types = $this->_normalizeExceptionTypes($node->getException()))) {
+            $output .= '<p class="types">Types: <strong>'.implode(' : ', $types).'</strong></p>'."\n";
+        }
+
         $output .= '<p class="location">Location: <strong>'.$this->_normalizeLocation($node->getFile(), $node->getLine()).'</strong></p>'."\n";
         $output .= '<p class="call">Triggering call: <strong>'.$this->esc($node->getStackCall()->getSignature()).'</strong></p>'."\n";
 

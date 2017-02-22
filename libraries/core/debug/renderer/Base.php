@@ -73,7 +73,7 @@ abstract class Base implements core\debug\IRenderer {
         $output = [];
 
         foreach(get_included_files() as $file) {
-            $output[] = $this->_normalizeFilePath($file);
+            $output[] = core\fs\Dir::stripPathLocation($file);
         }
 
         return $output;
@@ -84,33 +84,11 @@ abstract class Base implements core\debug\IRenderer {
     }
 
     protected function _normalizeLocation($file, $line) {
-        return $this->_normalizeFilePath($file).' : '.$line;
+        return core\fs\Dir::stripPathLocation($file).' : '.$line;
     }
 
     protected function _normalizeFilePath($path) {
-        if(!df\Launchpad::$loader) {
-            return $path;
-        }
-
-        $locations = df\Launchpad::$loader->getLocations();
-        $locations['app'] = df\Launchpad::$applicationPath;
-
-        foreach($locations as $key => $match) {
-            if(substr($path, 0, $len = strlen($match)) == $match) {
-                $innerPath = substr(str_replace('\\', '/', $path), $len + 1);
-
-                if(df\Launchpad::$isCompiled && $key == 'root') {
-                    $parts = explode('/', $innerPath);
-                    array_shift($parts);
-                    $innerPath = implode('/', $parts);
-                }
-
-                $path = $key.'://'.$innerPath;
-                break;
-            }
-        }
-
-        return $path;
+        return core\fs\Dir::stripPathLocation($path);
     }
 
     protected function _getObjectInheritance($object) {
@@ -122,9 +100,54 @@ abstract class Base implements core\debug\IRenderer {
         $list = [];
 
         while($reflection = $reflection->getParentClass()) {
-            $list[] = $reflection->getName();
+            $list[] = $this->_normalizeObjectClass($reflection->getName());
         }
 
         return $list;
+    }
+
+    protected function _getObjectClass($object) {
+        return $this->_normalizeObjectClass(get_class($object));
+    }
+
+    protected function _normalizeObjectClass(string $class): string {
+        $name = [];
+        $parts = explode(':', $class);
+
+        while(!empty($parts)) {
+            $part = trim(array_shift($parts));
+
+            if(preg_match('/^class@anonymous(.+)(\(([0-9]+)\))/', $part, $matches)) {
+                $name[] = $this->_normalizeLocation($matches[1], $matches[3] ?? null);
+            } else if(preg_match('/^eval\(\)\'d/', $part)) {
+                $name = ['eval[ '.implode(' : ', $name).' ]'];
+            } else {
+                $name[] = $part;
+            }
+        }
+
+        return implode(' : ', $name);
+    }
+
+    protected function _normalizeExceptionTypes(\Throwable $exception): array {
+        $reflection = new \ReflectionClass($exception);
+        $output = [];
+
+        foreach($reflection->getInterfaces() as $name => $interface) {
+            $parts = explode('\\', $name);
+            $topName = array_pop($parts);
+
+            if(!preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName)) {
+                continue;
+            }
+
+            if(implode('\\', $parts) == 'df\\core') {
+                array_unshift($output, $topName);
+            } else {
+                $output[] = $name;
+            }
+        }
+
+        return $output;
     }
 }

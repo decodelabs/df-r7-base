@@ -12,6 +12,10 @@ class Error extends \Exception implements IError {
 
     private static $_instances = [];
 
+    protected $_data;
+    protected $_rewind = 0;
+    protected $_stackTrace;
+
     public static function __callStatic($method, array $args) {
         return static::_factory(
             $args[0] ?? 'Error',
@@ -25,7 +29,9 @@ class Error extends \Exception implements IError {
     }
 
     protected static function _factory(string $message, array $args=[], array $interfaces=[]) {
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+        $args['rewind'] = $rewind = (int)($args['rewind'] ?? 0);
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $rewind + 3);
+
         $namespace = explode('\\', array_pop($trace)['class']);
         $className = array_pop($namespace);
         $namespace = implode('\\', $namespace);
@@ -36,6 +42,15 @@ class Error extends \Exception implements IError {
 
         if(!isset(self::$_instances[$hash])) {
             self::$_instances[$hash] = eval($def);
+        }
+
+        $trace = array_pop($trace);
+
+        if(!isset($args['file'])) {
+            $args['file'] = $trace['file'];
+        }
+        if(!isset($args['line'])) {
+            $args['line'] = $trace['line'];
         }
 
         return new self::$_instances[$hash]($message, $args);
@@ -130,5 +145,29 @@ class Error extends \Exception implements IError {
         }
 
         unset($args['code'], $args['previous'], $args['file'], $args['line']);
+
+        $this->_data = $args['data'] ?? null;
+        $this->_rewind = $args['rewind'] ?? 0;
+    }
+
+    public function setData($data) {
+        $this->_data = $data;
+        return $this;
+    }
+
+    public function getData() {
+        return $this->_data;
+    }
+
+    public function getStackCall(): core\debug\IStackCall {
+        return $this->getStackTrace()->getFirstCall();
+    }
+
+    public function getStackTrace(): core\debug\IStackTrace {
+        if(!$this->_stackTrace) {
+            $this->_stackTrace = core\debug\StackTrace::factory($this->_rewind + 1, $this->getTrace());
+        }
+
+        return $this->_stackTrace;
     }
 }

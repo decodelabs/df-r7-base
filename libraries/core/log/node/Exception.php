@@ -61,18 +61,22 @@ class Exception implements core\log\IExceptionNode {
 
     public function getStackCall() {
         if(!$this->_stackCall) {
-            $trace = $this->_exception->getTrace();
-            $last = ['file' => $this->getFile(), 'line' => $this->getLine()];
+            if($this->_exception instanceof core\IError) {
+                $this->_stackCall = $this->_exception->getStackCall();
+            } else {
+                $trace = $this->_exception->getTrace();
+                $last = ['file' => $this->getFile(), 'line' => $this->getLine()];
 
-            if($this->_exception instanceof \ErrorException) {
-                $last = array_shift($trace);
+                if($this->_exception instanceof \ErrorException) {
+                    $last = array_shift($trace);
+                }
+
+                $current = array_shift($trace);
+                $current['fromFile'] = @$last['file'];
+                $current['fromLine'] = @$last['line'];
+
+                $this->_stackCall = new core\debug\StackCall($current);
             }
-
-            $current = array_shift($trace);
-            $current['fromFile'] = @$last['file'];
-            $current['fromLine'] = @$last['line'];
-
-            $this->_stackCall = new core\debug\StackCall($current);
         }
 
         return $this->_stackCall;
