@@ -113,7 +113,7 @@ class Html extends Base {
                     $inspector = new core\debug\dumper\Inspector();
 
                     if(null !== ($data = $exception->getData())) {
-                        $data = $inspector->inspect();
+                        $data = $inspector->inspect($data);
 
                         $output .= '<div class="exception-data dump-body">'.
                             $this->_renderDumpData($data).

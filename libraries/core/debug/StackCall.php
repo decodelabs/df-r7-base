@@ -122,7 +122,7 @@ class StackCall implements IStackCall, core\IDumpable {
             } else if(is_array($arg)) {
                 $arg = 'Array('.count($arg).')';
             } else if(is_object($arg)) {
-                $arg = get_class($arg).' Object';
+                $arg = core\lang\Util::normalizeClassName(get_class($arg)).' Object';
             } else if(is_bool($arg)) {
                 if($arg) {
                     $arg = 'true';
@@ -220,7 +220,7 @@ class StackCall implements IStackCall, core\IDumpable {
         }
 
         if($this->_className !== null) {
-            $output .= $this->_className;
+            $output .= core\lang\Util::normalizeClassName($this->_className);
         }
 
         if($this->_type) {

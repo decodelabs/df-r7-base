@@ -56,7 +56,11 @@ class Exception implements core\log\IExceptionNode {
     }
 
     public function getStackTrace() {
-        return core\debug\StackTrace::factory(0, $this->_exception->getTrace());
+        if($this->_exception instanceof core\IError) {
+            return $this->_exception->getStackTrace();
+        } else {
+            return core\debug\StackTrace::factory(0, $this->_exception->getTrace());
+        }
     }
 
     public function getStackCall() {
