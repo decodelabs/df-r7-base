@@ -223,7 +223,9 @@ class Launchpad {
                         ->render();
 
                     self::shutdown();
-                } catch(\Throwable $g) {}
+                } catch(\Throwable $g) {
+                    self::_fatalError($g->__toString()."\n\n\n".$e->__toString());
+                }
             }
 
             self::_fatalError($e->__toString());
