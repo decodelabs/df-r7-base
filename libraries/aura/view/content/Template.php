@@ -46,7 +46,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
                 $path = '#/'.$path;
             }
 
-            throw new aura\view\ContentNotFoundException(
+            throw core\Error::{'aura/view/ENotFound'}(
                 'Template ~'.rtrim($request->getDirectoryLocation(), '/').'/'.$path.' could not be found'
             );
         }
@@ -81,7 +81,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         }
 
         if(!$templatePath) {
-            throw new aura\view\ContentNotFoundException(
+            throw core\Error::{'aura/view/ENotFound'}(
                 'Theme template '.$path.' could not be found'
             );
         }
@@ -120,7 +120,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         }
 
         if(!$layoutPath) {
-            throw new aura\view\ContentNotFoundException(
+            throw core\Error::{'aura/view/ENotFound'}(
                 'Layout '.$pathName.'.'.$type.' could not be found'
             );
         }
@@ -133,7 +133,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
     public function __construct(arch\IContext $context, $absolutePath, $isLayout=false) {
         if(!is_file($absolutePath)) {
-            throw new ContentNotFoundException(
+            throw core\Error::{'aura/view/ENotFound'}(
                 'Template '.$absolutePath.' could not be found'
             );
         }
@@ -147,7 +147,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 // Renderable
     public function getView() {
         if(!$this->view) {
-            throw new aura\view\RuntimeException(
+            throw core\Error::{'aura/view/ENoView,ENoContext'}(
                 'This template is not currently rendering'
             );
         }
@@ -157,7 +157,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
     public function render() {
         if($this->_isRendering) {
-            throw new aura\view\RuntimeException('Rendering is already in progress');
+            throw core\Error::ELogic('Rendering is already in progress');
         }
 
         $____target = $this->getRenderTarget();
@@ -180,7 +180,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
             $this->_isRendering = false;
             $this->view = null;
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             if(ob_get_level()) {
                 ob_end_clean();
             }
@@ -225,7 +225,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
     public function toString(): string {
         if(!$this->_renderTarget) {
-            throw new aura\view\RuntimeException(
+            throw core\Error::{'aura/view/ENoView,ENoContext'}(
                 'No render target has been set'
             );
         }
@@ -369,7 +369,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
     protected function _checkView() {
         if(!$this->view) {
-            throw new aura\view\RuntimeException(
+            throw core\Error::{'aura/view/ENoView,ENoContext'}(
                 'No view available for content provider to interact with'
             );
         }

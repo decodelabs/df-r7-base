@@ -26,7 +26,7 @@ trait TView_RenderTargetProvider {
 
     public function getRenderTarget() {
         if(!$this->_renderTarget) {
-            throw new RuntimeException(
+            throw core\Error::{'aura/view/ENoView,ENoContext'}(
                 'No render target has been set'
             );
         }
@@ -70,7 +70,7 @@ trait TView_SlotContainer {
     public function checkSlots(string ...$keys) {
         foreach($keys as $key) {
             if(!$this->hasSlot($key)) {
-                throw new RuntimeException(
+                throw core\Error::{'aura/view/ENoSlot,EDomain'}(
                     'Slot '.$key.' has not been defined'
                 );
             }
@@ -250,7 +250,7 @@ trait TView {
             try {
                 $layout = aura\view\content\Template::loadLayout($this, $innerContent);
                 $output = $layout->renderTo($this);
-            } catch(aura\view\ContentNotFoundException $e) {
+            } catch(aura\view\ENoContent $e) {
                 $this->logs->logException($e);
             }
 
@@ -302,10 +302,10 @@ trait TView {
 
     private function _checkContentProvider() {
         if(!$this->content) {
-            throw new RuntimeException(
-                'No content provider has been set for '.$this->_type.' type view',
-                404
-            );
+            throw core\Error::{'EContext,ELogic'}([
+                'message' => 'No content provider has been set for '.$this->_type.' type view',
+                'http' => 404
+            ]);
         }
     }
 
@@ -348,7 +348,7 @@ trait TView_Response {
     }
 
     public function setContentType($type) {
-        throw new RuntimeException(
+        throw core\Error::ELogic(
             'View content type cannot be changed'
         );
     }
@@ -475,7 +475,7 @@ trait TView_DirectoryHelper {
         } else if(isset($target->view)) {
             $this->view = $target->view;
         } else if($this instanceof IImplicitViewHelper) {
-            throw new RuntimeException(
+            throw core\Error::{'aura/view/EContext'}(
                 'Cannot use implicit view helper from objects that do not provide a view'
             );
         }
@@ -483,7 +483,7 @@ trait TView_DirectoryHelper {
 
     public function getView() {
         if(!$this->view) {
-            throw new RuntimeException(
+            throw core\Error::{'aura/view/ENoView,ENoContext'}(
                 'Cannot use implicit view helper from objects that do not provide a view'
             );
         }
@@ -504,7 +504,7 @@ trait TView_CascadingHelperProvider {
         $output = $this->_getHelper($method, true);
 
         if(!is_callable($output)) {
-            throw new RuntimeException(
+            throw core\Error::{'aura/view/ECall,aura/view/EDefinition'}(
                 'Helper '.$method.' is not callable'
             );
         }

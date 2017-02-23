@@ -64,7 +64,7 @@ class Mail extends flow\mail\Message implements ILayoutView {
 
     protected function _beforeRender() {
         if($this->_hasRendered) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'Mail views can only render once'
             );
         }

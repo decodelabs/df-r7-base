@@ -224,7 +224,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
     public function form($request) {
         if(!$this->view) {
-            throw core\Error::{'aura/ENoView,ENoContext'}(
+            throw core\Error::{'aura/view/ENoView,ENoContext'}(
                 'Cannot prepare form for rendering, context has no view'
             );
         }
