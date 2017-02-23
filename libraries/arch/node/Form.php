@@ -33,7 +33,7 @@ abstract class Form extends Base implements IFormNode {
         parent::__construct($context);
 
         if($this->context->getRunMode() !== 'Http') {
-            throw new RuntimeException(
+            throw core\Error::ELogic(
                 'Form nodes can only be used in Http run mode'
             );
         }
@@ -174,7 +174,7 @@ abstract class Form extends Base implements IFormNode {
 
     public function getState() {
         if(!$this->_state) {
-            throw new RuntimeException(
+            throw core\Error::{'ENoState,ENoContext'}(
                 'State controller is not available until the form has been dispatched'
             );
         }
@@ -406,7 +406,7 @@ abstract class Form extends Base implements IFormNode {
             foreach($postData->_delegates as $id => $delegateValues) {
                 try {
                     $this->getDelegate($id)->values->clear()->import($delegateValues);
-                } catch(DelegateException $e) {}
+                } catch(EDelegate $e) {}
             }
 
             $postData->remove('_delegates');
@@ -445,7 +445,7 @@ abstract class Form extends Base implements IFormNode {
 
                 try {
                     $target = $target->getDelegate($currentId = array_shift($targetId));
-                } catch(DelegateException $e) {
+                } catch(EDelegate $e) {
                     if($target->handleMissingDelegate($currentId, $event, $args)) {
                         $isTargetComplete = $target->isComplete();
                         $target = null;
@@ -542,11 +542,11 @@ abstract class Form extends Base implements IFormNode {
         $func = 'handle'.$this->context->request->getType().$method.'Request';
 
         if(!method_exists($this, $func)) {
-            throw new RuntimeException(
-                'Form node '.$this->context->request.' does not support '.
-                $this->context->application->getHttpRequest()->getMethod().' http method',
-                405
-            );
+            throw core\Error::EBadRequest([
+                'message' => 'Form node '.$this->context->location->getLiteralPath().' does not support '.
+                    $this->context->application->getHttpRequest()->getMethod().' http method',
+                'http' => 405
+            ]);
         }
 
         return $func;

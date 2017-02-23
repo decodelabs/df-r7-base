@@ -66,7 +66,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
             $scaffold = arch\scaffold\Base::factory($context);
             $scaffoldId = $baseId.'__scaffold';
             $menus[$scaffoldId] = $scaffold->loadMenu($name, $scaffoldId);
-        } catch(arch\scaffold\IException $e) {}
+        } catch(arch\scaffold\IError $e) {}
 
 
         if(class_exists($classBase)) {
@@ -74,7 +74,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
         } else if(class_exists($sharedClassBase)) {
             $output = new $sharedClassBase($this->context, $baseId);
         } else if(empty($menus)) {
-            throw new arch\navigation\SourceNotFoundException(
+            throw core\Error::{'arch/navigation/ESourceNotFound,ENotFound'}(
                 'Directory menu '.$baseId.' could not be found'
             );
         } else {

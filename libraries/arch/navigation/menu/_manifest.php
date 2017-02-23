@@ -9,8 +9,6 @@ use df;
 use df\core;
 use df\arch;
 
-
-// Interfaces
 interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator {
     public function getId();
     public function setSubId($id);
@@ -53,7 +51,7 @@ trait TResponsiveSourceAdapter {
         $func = '_load'.$id->path->getBaseName().'Menu';
 
         if(!method_exists($this, $func)) {
-            throw new arch\navigation\SourceNotFoundException(
+            throw core\Error::{'ESourceNotFound,ENotFound'}(
                 'Menu '.$id->path->getBaseName().' could not be loaded'
             );
         }

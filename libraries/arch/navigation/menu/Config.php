@@ -10,27 +10,27 @@ use df\core;
 use df\arch;
 
 class Config extends core\Config implements IConfig {
-    
+
     const ID = 'menus';
     const STORE_IN_MEMORY = false;
-    
+
     public function getDefaultValues() {
         return [];
     }
-    
+
     public function createEntries(IMenu $menu, IEntryList $entryList) {
         $id = (string)$menu->getId();
 
         if($this->values->isEmpty()) {
             return $this;
         }
-        
+
         $context = $menu->getContext();
 
         foreach($this->values->{$id}->delegates as $delegate) {
             try {
                 $menu->addDelegate(Base::factory($context, (string)$delegate));
-            } catch(IException $e) {
+            } catch(IError $e) {
                 continue;
             }
         }
@@ -40,21 +40,21 @@ class Config extends core\Config implements IConfig {
                 arch\navigation\entry\Base::fromArray($entry->toArray())
             );
         }
-        
+
         return $this;
     }
-    
+
     public function setDelegatesFor($id, array $delegates) {
         $id = (string)Base::normalizeId($id);
         $this->values->{$id}['delegates'] = $delegates;
-        
+
         return $this;
     }
-    
+
     public function setEntriesFor($id, array $entries) {
         $id = (string)Base::normalizeId($id);
         $data = [];
-        
+
         foreach($entries as $entry) {
             try {
                 if(!$entry instanceof arch\navigation\IEntry) {
@@ -64,18 +64,18 @@ class Config extends core\Config implements IConfig {
                         continue;
                     }
                 }
-                
+
                 $data[] = $entry->toArray();
-            } catch(IException $e) {
+            } catch(IError $e) {
                 continue;
             }
         }
 
         $this->values->{$id}->entries = $data;
-        
+
         return $this;
     }
-    
+
     public function getSettingsFor($id) {
         $id = (string)Base::normalizeId($id);
         return $this->values->{$id};

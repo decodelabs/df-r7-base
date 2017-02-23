@@ -11,14 +11,6 @@ use df\arch;
 use df\aura;
 use df\opal;
 
-// Exceptions
-interface IException {}
-class LogicException extends \LogicException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class NodeNotFoundException extends RuntimeException {}
-
-
-// Interfaces
 interface IScaffold extends core\IRegistryObject, arch\IOptionalDirectoryAccessLock {
     public function loadNode();
     public function onNodeDispatch(arch\node\INode $node);

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -18,13 +18,13 @@ class Model extends Base {
         $menuId = $id->path->getLast();
 
         if(!$model instanceof arch\navigation\menu\ISourceAdapter) {
-            throw new arch\navigation\SourceNotFoundException(
+            throw core\Error::{'arch/navigation/ESourceNotFound,ENotFound'}(
                 'Model '.$modelName.' is not a menu source adapter'
             );
         }
 
         $output = $model->loadMenu($this, $id);
-        
+
         return $output;
     }
 }

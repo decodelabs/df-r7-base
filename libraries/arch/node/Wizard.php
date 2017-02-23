@@ -20,7 +20,7 @@ abstract class Wizard extends Form {
         $func = 'create'.ucfirst($section).'Ui';
 
         if(!method_exists($this, $func)) {
-            throw new LogicException(
+            throw core\Error::EDefinition(
                 'Wizard ui missing for '.$section.' section'
             );
         }
@@ -30,7 +30,7 @@ abstract class Wizard extends Form {
 
     public function getCurrentSection() {
         if(empty(static::SECTIONS)) {
-            throw new LogicException(
+            throw core\Error::EDefinition(
                 'No wizard sections have been defined'
             );
         }

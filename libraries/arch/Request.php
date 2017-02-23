@@ -968,7 +968,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $context = arch\Context::factory($this);
             $node = arch\node\Base::factory($context);
             return $node->getDefaultAccess($lockAction);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return false;
         }
     }
@@ -991,7 +991,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $context = arch\Context::factory($this);
             $node = arch\node\Base::factory($context);
             return $node->getAccessSignifiers();
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return [];
         }
     }

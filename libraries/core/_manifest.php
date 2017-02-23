@@ -37,6 +37,7 @@ interface EDefinition extends ELogic {}
 interface EValue extends ERuntime {}
 interface EArgument extends ELogic {}
 interface ECall extends ELogic {}
+interface ERecursion extends ELogic {}
 interface EDomain extends ELogic {}
 interface EBounds extends ERuntime {}
 

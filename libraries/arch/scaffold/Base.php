@@ -39,7 +39,7 @@ abstract class Base implements IScaffold {
         $class = self::getClassFor($context->location, $runMode);
 
         if(!$class) {
-            throw new RuntimeException('Scaffold could not be found for '.$context->location);
+            throw core\Error::ENotFound('Scaffold could not be found for '.$context->location);
         }
 
         $output = new $class($context);
@@ -121,7 +121,7 @@ abstract class Base implements IScaffold {
                     return $node;
                 }
 
-                throw new NodeNotFoundException(
+                throw core\Error::{'arch/scaffold/ENodeNotFound,ENotFound'}(
                     'Scaffold at '.$this->context->location.' cannot provide node '.$node
                 );
             }
@@ -163,7 +163,7 @@ abstract class Base implements IScaffold {
             $output = $this->{$method}($args);
 
             if(!$output instanceof arch\IComponent) {
-                throw new LogicException(
+                throw core\Error::{'arch/component/ENotFound,ENotFound'}(
                     'Scaffold at '.$this->context->location.' attempted but failed to provide component '.$origName
                 );
             }
@@ -171,7 +171,7 @@ abstract class Base implements IScaffold {
             return $output;
         }
 
-        throw new LogicException(
+        throw core\Error::{'arch/component/ENotFound,ENotFound'}(
             'Scaffold at '.$this->context->location.' cannot provide component '.$origName
         );
     }
@@ -187,7 +187,7 @@ abstract class Base implements IScaffold {
         $method = 'build'.$name.'FormDelegate';
 
         if(!method_exists($this, $method)) {
-            throw new LogicException(
+            throw core\Error::{'arch/node/ENotFound,ENotFound'}(
                 'Scaffold at '.$this->context->location.' cannot provide form delegate '.$origName
             );
         }
@@ -195,7 +195,7 @@ abstract class Base implements IScaffold {
         $output = $this->{$method}($state, $event, $id);
 
         if(!$output instanceof arch\node\IDelegate) {
-            throw new LogicException(
+            throw core\Error::{'arch/node/ENotFound,ENotFound'}(
                 'Scaffold at '.$this->context->location.' attempted but failed to provide form delegate '.$origName
             );
         }
@@ -207,7 +207,7 @@ abstract class Base implements IScaffold {
         $method = 'generate'.ucfirst($name).'Menu';
 
         if(!method_exists($this, $method)) {
-            throw new LogicException(
+            throw core\Error::{'arch/navigation/ENotFound,ENotFound'}(
                 'Scaffold at '.$this->context->location.' could not provider menu '.$name
             );
         }

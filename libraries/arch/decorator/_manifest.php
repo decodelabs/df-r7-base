@@ -10,12 +10,6 @@ use df\core;
 use df\arch;
 use df\aura;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-
-
-// Interfaces
 interface IDecorator extends aura\view\ICascadingHelperProvider {
 
 }

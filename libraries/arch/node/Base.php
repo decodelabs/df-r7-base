@@ -42,7 +42,7 @@ class Base implements INode, core\IDumpable {
             try {
                 $scaffold = arch\scaffold\Base::factory($context);
                 return $scaffold->loadNode();
-            } catch(arch\scaffold\IException $e) {}
+            } catch(arch\scaffold\IError $e) {}
         }
 
         if(!$class) {
@@ -218,17 +218,17 @@ class Base implements INode, core\IDumpable {
                     $output = $this->$func();
                 } catch(arch\IForcedResponse $e) {
                     $output = $e->getResponse();
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     $output = $this->handleException($e);
                 }
             }
 
             if($func === null) {
-                throw new RuntimeException(
-                    'No handler could be found for node: '.
-                    $this->context->location->toString(),
-                    404
-                );
+                throw core\Error::ENotFound([
+                    'message' => 'No handler could be found for node: '.
+                        $this->context->location->toString(),
+                    'http' => 404
+                ]);
             }
         }
 

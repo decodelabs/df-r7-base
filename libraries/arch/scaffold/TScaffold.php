@@ -40,7 +40,7 @@ trait TScaffold_RecordLoader {
             return $this->_recordAdapter;
         }
 
-        throw new LogicException(
+        throw core\Error::EDefinition(
             'Unable to find a suitable adapter for record scaffold'
         );
     }
@@ -104,7 +104,7 @@ trait TScaffold_RecordDataProvider {
         $this->_record = $this->loadRecord($key);
 
         if(!$this->_record) {
-            throw new RuntimeException('Unable to load scaffold record');
+            throw core\Error::{'arch/scaffold/EValue,arch/scaffold/ENotFound'}('Unable to load scaffold record');
         }
 
         return $this->_record;
@@ -197,7 +197,7 @@ trait TScaffold_RecordDataProvider {
         if(!$record) {
             try {
                 $record = $this->getRecord();
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 return $this->getDirectoryIcon();
             }
         }
@@ -546,7 +546,7 @@ trait TScaffold_RecordDataProvider {
         $list->addField('color', function($item, $context) {
             try {
                 $color = df\neon\Color::factory($item['color']);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 return $item['color'];
             }
 
@@ -886,7 +886,7 @@ trait TScaffold_SectionProvider {
         if($this instanceof IRecordDataProviderScaffold) {
             try {
                 $record = $this->getRecord();
-            } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
         }
 
         foreach($sections as $node => $set) {
@@ -916,7 +916,7 @@ trait TScaffold_SectionProvider {
         if($this->_sectionItemCounts === null) {
             try {
                 $this->_sectionItemCounts = (array)$this->countSectionItems($this->getRecord());
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 if($this->application->isDevelopment()) {
                     throw $e;
                 }

@@ -77,9 +77,10 @@ class Dynamic extends Base {
             if(is_array($entry)) {
                 $entry = arch\navigation\entry\Base::fromArray($entry);
             } else {
-                throw new RuntimeException(
-                    'Invalid entry definition detected'
-                );
+                throw core\Error::EArgument([
+                    'message' => 'Invalid entry definition',
+                    'data' => $entry
+                ]);
             }
         }
 

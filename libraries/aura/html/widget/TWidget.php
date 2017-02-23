@@ -846,7 +846,7 @@ trait TWidget_NavigationEntryController {
             try {
                 $entry = arch\navigation\menu\Base::factory($this->_context, $entry);
                 return $this->addEntries($entry);
-            } catch(arch\navigation\SourceNotFoundException $e) {}
+            } catch(arch\navigation\ESourceNotFound $e) {}
         }
 
         return $this;

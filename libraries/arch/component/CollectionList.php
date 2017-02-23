@@ -60,7 +60,10 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy {
                 break;
 
             default:
-                throw new RuntimeException('Invalid paginator mode: '.$mode);
+                throw core\Error::EArgument([
+                    'message' => 'Invalid paginator mode',
+                    'data' => $mode
+                ]);
         }
 
         return $this;

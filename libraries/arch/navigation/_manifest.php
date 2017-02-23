@@ -10,14 +10,6 @@ use df\core;
 use df\arch;
 use df\user;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class RecursionException extends RuntimeException {}
-class EntryTypeNotFoundException extends RuntimeException {}
-class SourceNotFoundException extends RuntimeException {}
-
-
 
 // Interfaces
 interface IEntry extends core\IArrayInterchange {
@@ -66,7 +58,7 @@ trait TEntryGenerator {
             return $output;
         }
 
-        throw new \BadMethodCallException('Method '.$method.' does not exist');
+        throw core\Error::ECall('Method '.$method.' does not exist');
     }
 }
 
@@ -98,9 +90,10 @@ trait TEntryList {
             if(is_array($entry)) {
                 $entry = arch\navigation\entry\Base::fromArray($entry);
             } else {
-                throw new RuntimeException(
-                    'Invalid entry definition detected'
-                );
+                throw core\Error::EArgument([
+                    'message' => 'Invalid entry definition detected',
+                    'data' => $entry
+                ]);
             }
         }
 

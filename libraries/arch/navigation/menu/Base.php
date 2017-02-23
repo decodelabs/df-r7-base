@@ -68,7 +68,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         foreach($ids as $id) {
             try {
                 $output[$id] = self::factory($context, $id);
-            } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
         }
 
         return $output;
@@ -233,7 +233,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         }
 
         if($entryList->hasMenu($this)) {
-            throw new arch\navigation\RecursionException(
+            throw core\Error::ERecusion(
                 'You cannot nest menus within themselves'
             );
         }

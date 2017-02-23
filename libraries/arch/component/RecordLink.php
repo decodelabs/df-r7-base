@@ -241,7 +241,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
         if($this->_name === null) {
             try {
                 $name = $this->_getRecordName();
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $name = $id;
             }
         } else {

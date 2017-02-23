@@ -15,18 +15,6 @@ use df\opal;
 use df\link;
 
 
-// Exceptions
-interface IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-
-
-class DelegateException extends RuntimeException {}
-class EventException extends RuntimeException {}
-
-
-
 ##############################
 ## MAIN
 ##############################

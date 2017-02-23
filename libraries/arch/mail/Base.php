@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-abstract class Base extends aura\view\Mail implements IMail {
+abstract class Base extends aura\view\Mail implements arch\IMail {
 
     const TEMPLATE = true;
     const SUBJECT = null;
@@ -28,7 +28,7 @@ abstract class Base extends aura\view\Mail implements IMail {
         $class = 'df\\apex\\directory\\'.$location->getArea().'\\'.implode('\\', $parts);
 
         if(!class_exists($class)) {
-            throw new RuntimeException('Mail '.$origPath.' could not be found');
+            throw core\Error::ENotFound('Mail '.$origPath.' could not be found');
         }
 
         return new $class($context->spawnInstance($location));

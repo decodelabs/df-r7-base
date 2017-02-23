@@ -379,3 +379,10 @@ trait TAjaxDataProvider {
         return $this;
     }
 }
+
+
+interface IMail extends aura\view\IView, flow\mail\IMessage {
+    public function getName();
+    public function getDescription();
+    public function preparePreview();
+}

@@ -54,7 +54,7 @@ abstract class Base implements arch\IComponent {
             try {
                 $scaffold = arch\scaffold\Base::factory($context);
                 return $scaffold->loadComponent($name, $args);
-            } catch(arch\scaffold\IException $e) {}
+            } catch(arch\scaffold\IError $e) {}
 
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
@@ -132,7 +132,7 @@ abstract class Base implements arch\IComponent {
     public function toResponse() {
         try {
             $this->view = $this->getRenderTarget()->getView();
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->view = $this->context->apex->newWidgetView();
         }
 
