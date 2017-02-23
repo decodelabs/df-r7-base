@@ -273,7 +273,7 @@ class Uri implements arch\IDirectoryHelper {
                 $subPath = $dep->js[0];
             } else {
                 if(!df\Launchpad::$application->isProduction()) {
-                    throw new aura\theme\RuntimeException(
+                    throw core\Error::{'fuse/ERuntime'}(
                         'Dependency '.$name.' does not have a main file'
                     );
                 }

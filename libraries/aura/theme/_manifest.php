@@ -9,12 +9,6 @@ use df;
 use df\core;
 use df\aura;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-
-
-// Interfaces
 interface IFacetProvider {
     public function loadFacet($name, $callback=null);
     public function hasFacet($name);
