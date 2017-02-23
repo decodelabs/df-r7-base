@@ -24,8 +24,8 @@ interface IError {
     public function setData($data);
     public function getData();
 
-    public function setHttpCode(?int $code);
-    public function getHttpCode(): ?int;
+    public function setHttpCode(/*?int */$code);
+    public function getHttpCode();//: ?int;
 
     public function getStackCall(): core\debug\IStackCall;
     public function getStackTrace(): core\debug\IStackTrace;
@@ -93,7 +93,7 @@ trait TStringValueProvider {
 }
 
 interface IDescribable {
-    public function getOutputDescription(): ?string;
+    public function getOutputDescription();//: ?string;
 }
 
 // Array provider

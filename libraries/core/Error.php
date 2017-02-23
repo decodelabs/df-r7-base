@@ -210,12 +210,12 @@ class Error extends \Exception implements IError {
         return $this->_data;
     }
 
-    public function setHttpCode(?int $code) {
+    public function setHttpCode(/*?int*/ $code) {
         $this->_http = $code;
         return $this;
     }
 
-    public function getHttpCode(): ?int {
+    public function getHttpCode() {//: ?int {
         return $this->_http;
     }
 
