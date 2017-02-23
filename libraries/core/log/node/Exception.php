@@ -20,7 +20,13 @@ class Exception implements core\log\IExceptionNode {
     }
 
     public function getNodeTitle() {
-        return 'Exception #'.$this->_exception->getCode();
+        $output = 'Exception';
+
+        if(0 != ($code = $this->_exception->getCode())) {
+            $output .= '#'.$code;
+        }
+
+        return $output;
     }
 
     public function getNodeType() {

@@ -24,6 +24,9 @@ interface IError {
     public function setData($data);
     public function getData();
 
+    public function setHttpCode(?int $code);
+    public function getHttpCode(): ?int;
+
     public function getStackCall(): core\debug\IStackCall;
     public function getStackTrace(): core\debug\IStackTrace;
 }
@@ -39,9 +42,7 @@ interface EBounds extends ERuntime {}
 interface EBadRequest extends ERuntime {}
 interface EUnauthorized extends ERuntime {}
 interface ENotFound extends ERuntime {}
-trait TNotFound {
-
-}
+interface ENoContext extends ERuntime {}
 interface ENotImplemented extends ELogic {}
 interface EServiceUnavailable extends ERuntime {}
 

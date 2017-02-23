@@ -231,6 +231,14 @@ body {
     color: red;
 }
 
+.node-exception p.http {
+    color: #9A1E1E;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 3px 0 8px;
+    white-space: pre;
+}
+
 .node-exception p.message {
     color: #9A1E1E;
     font-size: 1.2em;

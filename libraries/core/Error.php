@@ -12,6 +12,7 @@ class Error extends \Exception implements IError {
 
     private static $_instances = [];
 
+    protected $_http = 500;
     protected $_data;
     protected $_rewind = 0;
     protected $_stackTrace;
@@ -24,11 +25,16 @@ class Error extends \Exception implements IError {
         );
     }
 
-    public static function factory(string $message, array $args=[], array $interfaces=[]) {
+    public static function factory($message, array $args=[], array $interfaces=[]) {
         return static::_factory($message, $args, $interfaces);
     }
 
-    protected static function _factory(string $message, array $args=[], array $interfaces=[]) {
+    protected static function _factory($message, array $args=[], array $interfaces=[]) {
+        if(is_array($message)) {
+            $args = $message;
+            $message = $message['message'] ?? 'Undefined error';
+        }
+
         $args['rewind'] = $rewind = max((int)($args['rewind'] ?? 0), 0);
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $rewind + 3);
 
@@ -197,6 +203,15 @@ class Error extends \Exception implements IError {
 
     public function getData() {
         return $this->_data;
+    }
+
+    public function setHttpCode(?int $code) {
+        $this->_http = $code;
+        return $this;
+    }
+
+    public function getHttpCode(): ?int {
+        return $this->_http;
     }
 
     public function getStackCall(): core\debug\IStackCall {

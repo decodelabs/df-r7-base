@@ -266,9 +266,16 @@ class Html extends Base {
     }
 
     protected function _renderExceptionMessage(core\log\IExceptionNode $node, $messagePrefix=null) {
-        $output  = '<p class="message">'.$messagePrefix.$this->esc($node->getMessage()).'</p>'."\n";
+        $e = $node->getException();
+        $output = '';
 
-        if(!empty($types = $this->_normalizeExceptionTypes($node->getException()))) {
+        if($e instanceof core\IError && (null !== ($http = $e->getHttpCode()))) {
+            $output .= '<p class="http">HTTP '.$http.'</p>';
+        }
+
+        $output .= '<p class="message">'.$messagePrefix.$this->esc($node->getMessage()).'</p>'."\n";
+
+        if(!empty($types = $this->_normalizeExceptionTypes($e))) {
             $output .= '<p class="types">Types: <strong>'.implode(' : ', $types).'</strong></p>'."\n";
         }
 
