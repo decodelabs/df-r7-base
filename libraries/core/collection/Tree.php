@@ -194,10 +194,12 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         while(null !== ($part = array_shift($parts))) {
             if(!strlen($part)) {
                 if(!empty($node->_collection)) {
+                    $k = array_keys($node->_collection);
+
                     try {
-                        $part = max(array_keys($node->_collection)) + 1;
+                        $part = max($k) + 1;
                     } catch(\Throwable $e) {
-                        $part = array_pop($k = array_keys($node->_collection));
+                        $part = array_pop($k);
                     }
                 } else {
                     $part = 0;
