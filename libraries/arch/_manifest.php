@@ -14,11 +14,6 @@ use df\flow;
 
 
 // Exceptions
-interface IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-
 interface IForcedResponse {
     public function setResponse($response);
     public function getResponse();
@@ -96,7 +91,7 @@ trait TDirectoryHelper {
                 $context = Context::getCurrent();
 
                 if(!$context) {
-                    throw new RuntimeException(
+                    throw core\Error::{'arch/ENoContext'}(
                         'No arch context is available for '.__CLASS__.' helper'
                     );
                 }

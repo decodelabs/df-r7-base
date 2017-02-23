@@ -59,7 +59,7 @@ abstract class Base implements arch\IComponent {
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
             if(!class_exists($class)) {
-                throw new arch\RuntimeException(
+                throw core\Error::ENotFound(
                     'Component ~'.$area.'/'.$path.'/#/'.$name.' could not be found'
                 );
             }
@@ -75,7 +75,7 @@ abstract class Base implements arch\IComponent {
             $class = 'df\\apex\\themes\\shared\\components\\'.ucfirst($name);
 
             if(!class_exists($class)) {
-                throw new arch\RuntimeException(
+                throw core\Error::ENotFound(
                     'Theme component '.ucfirst($name).' could not be found'
                 );
             }
@@ -114,9 +114,10 @@ abstract class Base implements arch\IComponent {
         $this->view = $this->getRenderTarget()->getView();
 
         if(!method_exists($this, '_execute')) {
-            throw new arch\LogicException(
-                'Component requires an _execute method'
-            );
+            throw core\Error::EDefinition([
+                'message' => 'Component requires an _execute method',
+                'dataType' => $this
+            ]);
         }
 
         $output = $this->_execute(...$this->_componentArgs);
@@ -136,9 +137,10 @@ abstract class Base implements arch\IComponent {
         }
 
         if(!method_exists($this, '_execute')) {
-            throw new arch\LogicException(
-                'Component requires an _execute method'
-            );
+            throw core\Error::EDefinition([
+                'message' => 'Component requires an _execute method',
+                'dataType' => $this
+            ]);
         }
 
         $output = $this->_execute(...$this->_componentArgs);

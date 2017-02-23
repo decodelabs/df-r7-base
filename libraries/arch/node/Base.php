@@ -50,10 +50,10 @@ class Base implements INode, core\IDumpable {
                 return $node;
             }
 
-            throw new RuntimeException(
-                'No node could be found for '.$context->location->toString(),
-                404
-            );
+            throw core\Error::ENotFound([
+                'message' => 'No node could be found for '.$context->location->toString(),
+                'http' => 404
+            ]);
         }
 
         return new $class($context);

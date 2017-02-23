@@ -224,7 +224,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
     public function form($request) {
         if(!$this->view) {
-            throw new arch\RuntimeException(
+            throw core\Error::{'aura/ENoView,ENoContext'}(
                 'Cannot prepare form for rendering, context has no view'
             );
         }
@@ -234,7 +234,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         $node = arch\node\Form::factory($context);
 
         if(!$node instanceof arch\node\IFormNode) {
-            throw new arch\InvalidArgumentException(
+            throw core\Error::{'arch/ENotForm,EArgument'}(
                 'Node '.$request.' is not a form!'
             );
         }

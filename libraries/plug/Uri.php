@@ -60,7 +60,7 @@ class Uri implements arch\IDirectoryHelper {
         }
 
         if(!is_string($uri)) {
-            throw new arch\InvalidArgumentException(
+            throw core\Error::EArgument(
                 'Uri cannot be converted to a valid URL'
             );
         }

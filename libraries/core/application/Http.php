@@ -96,7 +96,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 // Context
     public function getContext() {
         if(!$this->_context) {
-            throw new core\RuntimeException(
+            throw core\Error::ENoContext(
                 'A context is not available until the application has been dispatched'
             );
         }
@@ -399,7 +399,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $this->_context,
                 arch\Controller::factory($this->_context)
             );
-        } catch(arch\RuntimeException $e) {
+        } catch(arch\node\ENotFound $e) {
             // See if the url just needs a /
             $url = $this->_httpRequest->getUrl();
             $testUrl = null;

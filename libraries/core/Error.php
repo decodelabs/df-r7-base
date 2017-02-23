@@ -198,6 +198,7 @@ class Error extends \Exception implements IError {
         );
 
         $this->_rewind = $args['rewind'] ?? 0;
+        $this->_http = (int)($args['http'] ?? 500);
     }
 
     public function setData($data) {

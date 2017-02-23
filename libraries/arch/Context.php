@@ -26,7 +26,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         if($application instanceof core\IContextAware) {
             try {
                 return $application->getContext();
-            } catch(core\RuntimeException $e) {}
+            } catch(core\ENoContext $e) {}
         }
 
         if($onlyActive) {
@@ -116,7 +116,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
 // Application
     public function getDispatchContext() {
         if(!$this->application instanceof core\IContextAware) {
-            throw new RuntimeException(
+            throw core\Error::ENoContext(
                 'Current application is not context aware'
             );
         }

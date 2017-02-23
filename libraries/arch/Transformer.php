@@ -20,8 +20,10 @@ abstract class Transformer implements ITransformer {
             $output = $transformer->execute();
 
             if($output && !$output instanceof arch\node\INode) {
-                throw new RuntimeException(
-                    'Transformer '.get_class($transformer).' returned an invalid node'
+                throw core\Error::{'arch/EInvalidNode,EValue'}(
+                    'Transformer '.get_class($transformer).' returned an invalid node', [
+                        'data' => $output
+                    ]
                 );
             }
 
