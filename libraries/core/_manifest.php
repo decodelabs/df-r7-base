@@ -33,6 +33,7 @@ interface IError {
 
 interface ELogic extends IError {}
 interface ERuntime extends IError {}
+interface EDefinition extends ELogic {}
 interface EValue extends ERuntime {}
 interface EArgument extends ELogic {}
 interface ECall extends ELogic {}

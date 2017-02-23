@@ -192,7 +192,11 @@ class Error extends \Exception implements IError {
 
         unset($args['code'], $args['previous'], $args['file'], $args['line']);
 
-        $this->_data = $args['data'] ?? null;
+        $this->_data = $args['data'] ?? (
+            isset($args['dataType']) ?
+                core\lang\TypeRef::factory($args['dataType']) : null
+        );
+
         $this->_rewind = $args['rewind'] ?? 0;
     }
 
