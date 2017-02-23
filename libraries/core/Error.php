@@ -58,7 +58,8 @@ class Error extends \Exception implements IError {
 
     private static function _buildDefinition(string $base, array $interfaces, string $namespace) {
         $definition = 'return new class(\'\') extends '.$base;
-        $traits = [];
+        $traits = $interfaceDefs = [];
+        $namespaces = [$namespace];
 
         if(!empty($interfaces)) {
             foreach($interfaces as $i => $interface) {
@@ -70,23 +71,7 @@ class Error extends \Exception implements IError {
 
                 if(false === strpos($interface, '\\')) {
                     $isCore = interface_exists('\\df\\core\\'.$interface, true);
-
-                    if(interface_exists($namespace.'\\'.$interface, true)) {
-                        $interface = $namespace.'\\'.$interface;
-                    } else {
-                        $interfaceDef = 'namespace '.$namespace.';interface '.$interface;
-
-                        if($isCore) {
-                            $interfaceDef .= ' extends \\df\\core\\'.$interface;
-                        } else {
-                            $interfaceDef .= ' extends \\df\\core\\IError';
-                        }
-
-                        $interfaceDef .= ' {}';
-                        eval($interfaceDef);
-                        $interface = $namespace.'\\'.$interface;
-                    }
-
+                    $interface = $namespace.'\\'.$interface;
                 } else {
                     $parts = explode('\\', $interface);
                     $test = '\\df\\core\\'.array_pop($parts);
@@ -97,8 +82,17 @@ class Error extends \Exception implements IError {
                     $parts = explode('\\', $interface);
                     $name = array_pop($parts);
 
-                    $interfaceDef = 'namespace '.implode($parts, '\\').';interface '.$name.' extends \df\core\IError {}';
-                    eval($interfaceDef);
+                    if($isCore) {
+                        $base = '\\df\\core\\'.$name;
+                    } else {
+                        $base = '\\df\\core\\IError';
+                    }
+
+                    if(($parts[1] ?? 'core') !== 'core') {
+                        $namespaces[] = implode('\\', $parts);
+                    }
+
+                    $interfaceDefs[] = 'namespace '.implode($parts, '\\').';interface '.$name.' extends '.$base.' {}';
                 }
 
                 $interfaces[$i] = $interface;
@@ -124,7 +118,14 @@ class Error extends \Exception implements IError {
             }
         }
 
-        $interfaces = array_merge($interfaces, static::_extractNamespaceInterfaces($namespace));
+        $interfaces = array_merge(
+            $interfaces,
+            static::_extractNamespaceInterfaces(...array_unique($namespaces))
+        );
+
+        foreach($interfaceDefs as $interfaceDef) {
+            eval($interfaceDef);
+        }
 
         if(!empty($interfaces)) {
             $definition .= ' implements '.implode(',', array_unique($interfaces));
@@ -141,25 +142,28 @@ class Error extends \Exception implements IError {
         return $definition;
     }
 
-    private static function _extractNamespaceInterfaces(string $namespace): array {
-        $parts = explode('\\', $namespace);
-        $parts = array_slice($parts, 1, 3);
-        $parent = 'df';
+    private static function _extractNamespaceInterfaces(string ...$namespaces): array {
         $extra = [];
 
-        foreach($parts as $part) {
-            $first = $parent == 'df';
-            $ins = $parent.'\\'.$part;
-            $interface = $ins.'\\IError';
+        foreach($namespaces as $namespace) {
+            $parts = explode('\\', $namespace);
+            $parts = array_slice($parts, 1, 3);
+            $parent = 'df';
 
-            if(!interface_exists($interface, true)) {
-                $base = $first ? '\df\core\IError' : '\\'.$parent.'\\IError';
-                $interfaceDef = 'namespace '.$ins.';interface IError extends '.$base.' {}';
-                eval($interfaceDef);
+            foreach($parts as $part) {
+                $first = $parent == 'df';
+                $ins = $parent.'\\'.$part;
+                $interface = $ins.'\\IError';
+
+                if(!interface_exists($interface, true)) {
+                    $base = $first ? '\df\core\IError' : '\\'.$parent.'\\IError';
+                    $interfaceDef = 'namespace '.$ins.';interface IError extends '.$base.' {}';
+                    eval($interfaceDef);
+                }
+
+                $parent = $ins;
+                $extra[] = $interface;
             }
-
-            $parent = $ins;
-            $extra[] = $interface;
         }
 
         return $extra;
