@@ -37,7 +37,7 @@ class Launchpad {
 
     private static $_isShutdown = false;
 
-    public static function loadBaseClass($path): void {
+    public static function loadBaseClass($path) {//: void {
         if(self::$isCompiled) {
             $path = self::$rootPath.'/'.$path.'.php';
         } else {
@@ -48,7 +48,7 @@ class Launchpad {
     }
 
 // Run
-    public static function run(): void {
+    public static function run() {//: void {
         $parts = explode('/', str_replace('\\', '/', realpath($_SERVER['SCRIPT_FILENAME'])));
         $environmentId = array_pop($parts);
 
@@ -68,7 +68,7 @@ class Launchpad {
         self::runAs($environmentId, implode('/', $parts));
     }
 
-    public static function runAs($environmentId, $appPath): void {
+    public static function runAs($environmentId, $appPath) {//: void {
         if(self::$startTime) {
             return;
         }
@@ -183,7 +183,7 @@ class Launchpad {
     }
 
 
-    public static function shutdown(): void {
+    public static function shutdown() {//: void {
         if(self::$_isShutdown) {
             return;
         }
@@ -206,7 +206,7 @@ class Launchpad {
 
 
 // Errors
-    public static function handleError($errorNumber, $errorMessage, $fileName, $lineNumber): void {
+    public static function handleError($errorNumber, $errorMessage, $fileName, $lineNumber) {//: void {
         if(!$level = error_reporting()) {
             return;
         }
@@ -214,7 +214,7 @@ class Launchpad {
         throw new \ErrorException($errorMessage, 0, $errorNumber, $fileName, $lineNumber);
     }
 
-    public static function handleException(\Throwable $e): void {
+    public static function handleException(\Throwable $e) {//: void {
         try {
             if(self::$application) {
                 try {
@@ -234,7 +234,7 @@ class Launchpad {
         }
     }
 
-    private static function _fatalError($message): void {
+    private static function _fatalError($message) {//: void {
         while(ob_get_level()) {
             ob_end_clean();
         }
