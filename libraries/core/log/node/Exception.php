@@ -23,7 +23,7 @@ class Exception implements core\log\IExceptionNode {
         $output = 'Exception';
 
         if(0 != ($code = $this->_exception->getCode())) {
-            $output .= '#'.$code;
+            $output .= ' #'.$code;
         }
 
         return $output;
