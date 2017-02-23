@@ -68,7 +68,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $done[] = $sassPath;
 
             $this->io->writeLine($shortPath);
-            $bridge = new aura\css\sass\Bridge($this->context, $sassFile);
+            $bridge = new aura\css\SassBridge($this->context, $sassFile);
             $bridge->compile();
         }
 

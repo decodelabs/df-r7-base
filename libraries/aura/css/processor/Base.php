@@ -25,7 +25,7 @@ abstract class Base implements aura\css\IProcessor {
         $class = 'df\\aura\\css\\processor\\'.ucfirst($name);
 
         if(!class_exists($class)) {
-            throw new aura\css\RuntimeException(
+            throw core\Error::ENotFound(
                 'Css processor '.$name.' could not be found'
             );
         }

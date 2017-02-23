@@ -18,7 +18,7 @@ class Autoprefixer extends Base {
         if(!$bridge->find('autoprefixer-core')) {
             try {
                 $bridge->npmInstall('autoprefixer-core');
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 core\log\Manager::getInstance()->logException($e);
                 return;
             }

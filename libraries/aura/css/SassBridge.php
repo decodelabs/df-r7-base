@@ -13,7 +13,7 @@ use df\link;
 use df\halo;
 use df\flex;
 
-class Bridge implements IBridge {
+class SassBridge implements ISassBridge {
 
     const DEFAULT_PROCESSOR_OPTIONS = [
         'autoprefixer' => [
@@ -42,9 +42,10 @@ class Bridge implements IBridge {
         $path = realpath($path);
 
         if(!is_file($path)) {
-            throw new RuntimeException(
-                'Sass file not found'
-            );
+            throw core\Error::ENotFound([
+                'message' => 'Sass file not found',
+                'data' => $path
+            ]);
         }
 
         $this->_sourceDir = dirname($path);
@@ -141,7 +142,7 @@ class Bridge implements IBridge {
 
         try {
             $this->_compile();
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $error = $e;
         }
 
@@ -248,7 +249,7 @@ class Bridge implements IBridge {
             ->launch();
 
         if($result->hasError()) {
-            throw new RuntimeException(
+            throw core\Error::{'ERuntime,halo/process/ERuntime'}(
                 $result->getError()
             );
         }
@@ -256,7 +257,7 @@ class Bridge implements IBridge {
         $output = $result->getOutput();
 
         if(false !== stripos($output, 'error')) {
-            throw new RuntimeException(
+            throw core\Error::{'ERuntime,halo/process/ERuntime'}(
                 $output
             );
         }

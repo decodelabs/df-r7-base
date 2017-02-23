@@ -19,3 +19,11 @@ class RuntimeException extends \RuntimeException implements IException {}
 interface IProcessor {
     public function process($cssPath);
 }
+
+
+interface ISassBridge {
+    public function getHttpResponse();
+    public function getMapHttpResponse();
+    public function getCompiledPath();
+    public function compile();
+}
