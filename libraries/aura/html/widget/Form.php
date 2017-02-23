@@ -87,7 +87,7 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
         $method = strtolower($method);
 
         if(!in_array($method, ['get', 'post', 'put', 'delete'])) {
-            throw new InvalidArgumentException(
+            throw core\Error::EArgument(
                 'Invalid form method: '.$method
             );
         }

@@ -11,16 +11,6 @@ use df\aura;
 use df\arch;
 use df\user;
 
-// Exceptions
-interface IException {}
-class Exception extends \Exception implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class WidgetNotFoundException extends \RuntimeException implements IException {}
-
-
-// Interfaces
 interface IElementContentWrapper extends \ArrayAccess, \Countable {}
 
 interface IRendererContext extends core\collection\IMappedCollection {

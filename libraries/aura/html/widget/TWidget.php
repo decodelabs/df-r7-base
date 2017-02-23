@@ -41,7 +41,7 @@ trait TWidget {
 
     protected function _getPrimaryTagType() {
         if(!static::PRIMARY_TAG) {
-            throw new Exception(
+            throw core\Error::EDefinition(
                 'Primary tag name has not been declared for '.$this->getWidgetName().' widget type'
             );
         }
@@ -861,7 +861,7 @@ trait TWidget_NavigationEntryController {
             $class = 'df\\aura\\html\\widget\\'.static::DEFAULT_LINK_WIDGET;
 
             if(!$link instanceof $class) {
-                throw new InvalidArgumentException(
+                throw core\Error::EArgument(
                     'Links in '.$this->getWidgetName().' widgets must be of type '.static::DEFAULT_LINK_WIDGET
                 );
             }
@@ -1261,7 +1261,7 @@ trait TWidget_MappedList {
 
     public function addLabel($fieldKey, $labelKey, $label=null) {
         if(!isset($this->_fields[$fieldKey])) {
-            throw new InvalidArgumentException(
+            throw core\Error::EBounds(
                 'Field '.$fieldKey.' not found'
             );
         }

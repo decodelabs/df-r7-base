@@ -26,7 +26,7 @@ abstract class Base implements IWidget {
         $class = 'df\\aura\\html\\widget\\'.$name;
 
         if(!class_exists($class)) {
-            throw new WidgetNotFoundException(
+            throw core\Error::ENotFound(
                 'Widget '.$name.' could not be found'
             );
         }

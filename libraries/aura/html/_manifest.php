@@ -11,12 +11,6 @@ use df\aura;
 use df\flex;
 
 
-// Exceptions
-interface IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-// Interfaces
 interface IRenderable {
     public function render();
 }

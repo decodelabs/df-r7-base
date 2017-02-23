@@ -237,22 +237,14 @@ class Tag implements ITag, core\IDumpable {
     }
 
     public function setDataAttribute($key, $value) {
-        $key = strtolower($key);
-
-        /*
-        if(preg_match('/[^a-zA-Z\:]/', $key)) {
-            throw new InvalidArgumentException('Invalid data name '.$key.'!');
-        }
-        */
-
-        $key = 'data-'.$key;
+        $key = 'data-'.strtolower($key);
         $this->_attributes[$key] = $value;
 
         return $this;
     }
 
     public function getDataAttribute($key, $default=null) {
-        $key = strtolower('data-'.$key);
+        $key = 'data-'.strtolower($key);
 
         if(isset($this->_attributes[$key])) {
             return $this->_attributes[$key];
@@ -262,11 +254,11 @@ class Tag implements ITag, core\IDumpable {
     }
 
     public function hasDataAttribute($key) {
-        return array_key_exists(strtolower('data-'.$key), $this->_attributes);
+        return array_key_exists('data-'.strtolower($key), $this->_attributes);
     }
 
     public function removeDataAttribute($key) {
-        unset($this->_attributes[strtolower('data-'.$key)]);
+        unset($this->_attributes['data-'.strtolower($key)]);
         return $this;
     }
 
@@ -363,7 +355,7 @@ class Tag implements ITag, core\IDumpable {
         }
 
         if(preg_match('/[^a-zA-Z0-9\-_]/', $id)) {
-            throw new InvalidArgumentException('Invalid tag id '.$id.'!');
+            throw core\Error::EArgument('Invalid tag id '.$id.'!');
         }
 
         $this->setAttribute('id', $id);

@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 
 class Duration extends Textbox {
-    
+
     protected $_placeholder = 'eg. 3 days 4 hours, hh:mm:ss or x number of seconds';
 
     public function setValue($value) {
@@ -41,7 +41,7 @@ class Duration extends Textbox {
     protected function _normalizeDurationString($duration) {
         try {
             $duration = core\time\Duration::factory($duration);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $duration = null;
         }
 

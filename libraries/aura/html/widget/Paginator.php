@@ -44,7 +44,7 @@ class Paginator extends Base implements core\IDumpable {
                 break;
 
             default:
-                throw new RuntimeException('Invalid paginator mode: '.$mode);
+                throw core\Error::EArgument('Invalid paginator mode: '.$mode);
         }
 
         return $this;

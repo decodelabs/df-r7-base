@@ -70,7 +70,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                 break;
 
             default:
-                throw new RuntimeException('Invalid paginator mode: '.$mode);
+                throw core\Error::EArgument('Invalid paginator mode: '.$mode);
         }
 
         return $this;
@@ -98,7 +98,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 // Render
     protected function _render() {
         if(empty($this->_fields)) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'Collection list widgets must have at least one field'
             );
         }
