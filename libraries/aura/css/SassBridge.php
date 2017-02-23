@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\aura\css\sass;
+namespace df\aura\css;
 
 use df;
 use df\core;
