@@ -208,6 +208,7 @@ class Base implements INode, core\IDumpable {
             }
         }
 
+
         if($this->_callback) {
             $output = $this->_callback->invoke($this);
         } else {
@@ -286,7 +287,7 @@ class Base implements INode, core\IDumpable {
         return null;
     }
 
-    public function handleException(\Exception $e) {
+    public function handleException(\Throwable $e) {
         throw $e;
     }
 

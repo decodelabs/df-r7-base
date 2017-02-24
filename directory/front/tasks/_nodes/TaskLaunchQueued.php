@@ -49,7 +49,7 @@ class TaskLaunchQueued extends arch\node\Task {
         $this->_entry->delete();
     }
 
-    public function handleException(\Exception $e) {
+    public function handleException(\Throwable $e) {
         $context = new core\debug\Context();
         $context->exception($e);
         $exception = (new core\debug\renderer\PlainText($context))->render();

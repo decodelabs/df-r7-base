@@ -168,7 +168,7 @@ class TaskRestoreBackup extends arch\node\Task {
 
 
 // Node
-    public function handleException(\Exception $e) {
+    public function handleException(\Throwable $e) {
         if($this->_path) {
             core\fs\Dir::delete($this->_path);
         }

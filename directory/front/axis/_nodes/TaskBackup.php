@@ -59,7 +59,7 @@ class TaskBackup extends arch\node\Task {
         core\fs\Dir::delete($this->_path);
     }
 
-    public function handleException(\Exception $e) {
+    public function handleException(\Throwable $e) {
         core\fs\Dir::delete($this->_path);
         parent::handleException($e);
     }

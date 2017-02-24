@@ -53,7 +53,7 @@ abstract class RestApi extends Base implements IRestApiNode {
         return $response;
     }
 
-    public function handleException(\Exception $e) {
+    public function handleException(\Throwable $e) {
         core\log\Manager::getInstance()->logException($e);
 
         $data = null;
