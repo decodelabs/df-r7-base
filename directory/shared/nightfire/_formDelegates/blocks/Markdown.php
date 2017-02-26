@@ -24,12 +24,10 @@ class Markdown extends Base {
             ->linkJs('asset://lib/simplemde/simplemde.min.js', 100);
 
         $field->push(
-            $ta = $this->html->textarea(
-                    $this->fieldName('body'),
-                    $this->values->body
-                )
+            $ta = $this->html->textarea($this->fieldName('body'), $this->values->body)
                 //->isRequired($this->_isRequired)
                 ->setId($id = uniqid('markdown'))
+                ->addClass('w-editor markdown')
         );
 
         $this->view->addFootScript($id,

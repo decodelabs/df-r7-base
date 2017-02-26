@@ -20,11 +20,9 @@ class SimpleTags extends Base {
 
     public function renderFieldContent(aura\html\widget\Field $field) {
         $field->push(
-            $this->html->textarea(
-                    $this->fieldName('body'),
-                    $this->values->body
-                )
+            $this->html->textarea($this->fieldName('body'), $this->values->body)
                 ->isRequired($this->_isRequired)
+                ->addClass('w-editor simpleTags')
         );
 
         return $this;

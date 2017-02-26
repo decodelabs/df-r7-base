@@ -20,8 +20,9 @@ class RawHtml extends Base {
 
     public function renderFieldContent(aura\html\widget\Field $field) {
         $field->push(
-            $this->html->htmlEditor($this->fieldName('content'), $this->values->content)
+            $this->html->textarea($this->fieldName('content'), $this->values->content)
                 ->isRequired($this->_isRequired)
+                ->addClass('w-editor html')
         );
 
         return $this;
