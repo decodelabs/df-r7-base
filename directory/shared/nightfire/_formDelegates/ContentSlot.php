@@ -13,10 +13,10 @@ use df\arch;
 use df\aura;
 
 class ContentSlot extends arch\node\form\Delegate implements
-    arch\node\ISelfContainedRenderableDelegate,
+    arch\node\IInlineFieldRenderableDelegate,
     arch\node\IResultProviderDelegate {
 
-    use arch\node\TForm_SelfContainedRenderableDelegate;
+    use arch\node\TForm_InlineFieldRenderableDelegate;
     use core\constraint\TRequirable;
 
     protected $_slotDefinition;
@@ -178,7 +178,8 @@ class ContentSlot extends arch\node\form\Delegate implements
     }
 
 // Render
-    public function renderContainerContent(aura\html\widget\IContainerWidget $container) {
+    public function renderFieldContent(aura\html\widget\Field $container) {
+        $container->isRequired($this->isRequired());
         $available = $this->_getAvailableBlockTypes();
         $availableCount = $this->_state->getStore('availableBlockCount');
 
@@ -195,13 +196,14 @@ class ContentSlot extends arch\node\form\Delegate implements
                 $topKey = $key;
             }
 
-            $fa = $container->addField($this->_($this->_blockLabel, ['%n%' => $key]))
+            $fa = $container->addField()//$this->_($this->_blockLabel, ['%n%' => $key]))
+                ->addClass('stacked')
                 ->setId($this->elementId($delegateId));
-            $fa->push($this->html->string('<div class="fire-block"><nav class="buttons">'));
+            $fa->push($this->html->string('<div class="fire-block">'));
 
             $this->values->blockType->{$delegateId}->setValue($blockName);
 
-            $fa->push(
+            $fa->add('nav.buttons', [
                 $this->html->groupedSelectList(
                         $this->fieldName('blockType['.$delegateId.']'),
                         $this->values->blockType->{$delegateId},
@@ -240,10 +242,8 @@ class ContentSlot extends arch\node\form\Delegate implements
                     ->setIcon('arrow-down')
                     ->shouldValidate(false)
                     ->isDisabled($counter == $blockCount)
-                    ->setDisposition('transitive'),
-
-                $this->html->string('</nav>')
-            );
+                    ->setDisposition('transitive')
+            ]);
 
             $delegate = $this[$delegateId];
             $delegate->renderFieldContent($fa);
@@ -253,7 +253,8 @@ class ContentSlot extends arch\node\form\Delegate implements
         }
 
         if(!$this->_slotDefinition->hasBlockLimit() || $blockCount < $this->_slotDefinition->getMaxBlocks()) {
-            $container->addField($this->_($this->_blockLabel, ['%n%' => $topKey + 1]))
+            $container->addField()
+                ->addClass('stacked')
                 ->setId($this->elementId('add-selector'))
                 ->push(
                     $this->html->groupedSelectList(
@@ -273,7 +274,6 @@ class ContentSlot extends arch\node\form\Delegate implements
                 );
         }
     }
-
 
     protected function onSelectBlockTypeEvent($delegateId) {
         $type = $this->values->blockType->{$delegateId};
