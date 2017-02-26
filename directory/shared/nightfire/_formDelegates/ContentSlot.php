@@ -204,45 +204,49 @@ class ContentSlot extends arch\node\form\Delegate implements
             $this->values->blockType->{$delegateId}->setValue($blockName);
 
             $fa->add('nav.buttons', [
-                $this->html->groupedSelectList(
-                        $this->fieldName('blockType['.$delegateId.']'),
-                        $this->values->blockType->{$delegateId},
-                        $available
-                    )
-                    ->setNoSelectionLabel($this->_('-- select format --')),
+                $this->html('div.type', [
+                    $this->html->groupedSelectList(
+                            $this->fieldName('blockType['.$delegateId.']'),
+                            $this->values->blockType->{$delegateId},
+                            $available
+                        )
+                        ->setNoSelectionLabel($this->_('-- select format --')),
 
-                $this->html->eventButton(
-                        $this->eventName('selectBlockType', $delegateId),
-                        $this->_('Change')
-                    )
-                    ->setIcon('refresh')
-                    ->setDisposition('operative')
-                    ->shouldValidate(false),
+                    $this->html->eventButton(
+                            $this->eventName('selectBlockType', $delegateId),
+                            $this->_('Change')
+                        )
+                        ->setIcon('refresh')
+                        ->setDisposition('operative')
+                        ->shouldValidate(false)
+                ]),
 
-                $this->html->eventButton(
-                        $this->eventName('removeBlock', $delegateId),
-                        $this->_('Remove')
-                    )
-                    ->setIcon('remove')
-                    ->shouldValidate(false),
+                $this->html('div.control', [
+                    $this->html->eventButton(
+                            $this->eventName('removeBlock', $delegateId),
+                            $this->_('Remove')
+                        )
+                        ->setIcon('remove')
+                        ->shouldValidate(false),
 
-                $this->html->eventButton(
-                        $this->eventName('moveBlockUp', $delegateId),
-                        $this->_('Up')
-                    )
-                    ->setIcon('arrow-up')
-                    ->shouldValidate(false)
-                    ->isDisabled($counter == 1)
-                    ->setDisposition('transitive'),
+                    $this->html->eventButton(
+                            $this->eventName('moveBlockUp', $delegateId),
+                            $this->_('Up')
+                        )
+                        ->setIcon('arrow-up')
+                        ->shouldValidate(false)
+                        ->isDisabled($counter == 1)
+                        ->setDisposition('transitive'),
 
-                $this->html->eventButton(
-                        $this->eventName('moveBlockDown', $delegateId),
-                        $this->_('Down')
-                    )
-                    ->setIcon('arrow-down')
-                    ->shouldValidate(false)
-                    ->isDisabled($counter == $blockCount)
-                    ->setDisposition('transitive')
+                    $this->html->eventButton(
+                            $this->eventName('moveBlockDown', $delegateId),
+                            $this->_('Down')
+                        )
+                        ->setIcon('arrow-down')
+                        ->shouldValidate(false)
+                        ->isDisabled($counter == $blockCount)
+                        ->setDisposition('transitive')
+                ])
             ]);
 
             $delegate = $this[$delegateId];
