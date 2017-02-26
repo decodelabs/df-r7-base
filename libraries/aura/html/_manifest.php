@@ -190,9 +190,14 @@ trait TElementContent {
             $value = $value->toWidget();
         }
 
-        if($value instanceof aura\view\IDeferredRenderable
-        && $this instanceof aura\view\IDeferredRenderable) {
-            $value->setRenderTarget($this->getRenderTarget());
+        if($value instanceof aura\view\IDeferredRenderable) {
+            if($this instanceof aura\view\IRenderTargetProvider) {
+                $value->setRenderTarget($this->getRenderTarget());
+            } else if($this->_parent instanceof aura\view\IRenderTargetProvider) {
+                $value->setRenderTarget($this->_parent->getRenderTarget());
+            } else if($this->_parent instanceof aura\view\IRenderTarget) {
+                $value->setRenderTarget($this->_parent);
+            }
         }
 
         $test = false;
