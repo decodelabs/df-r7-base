@@ -95,7 +95,7 @@ abstract class Hook implements IHook {
 
                 try {
                     $hook->{$method}($event, $entity);
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     core\log\Manager::getInstance()->logException($e);
 
                     if(!$isProduction) {

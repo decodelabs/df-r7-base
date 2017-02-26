@@ -83,7 +83,7 @@ class ContentBlock extends Base {
             try {
                 $value = fire\block\Base::fromXml($value);
                 // check block matches category and output types
-            } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
         }
 
         return $value;

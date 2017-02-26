@@ -248,7 +248,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         try {
             // Not really sure what to do here?
             $this->seek(0);
-        } catch(\Exception $e) {}
+        } catch(\Throwable $e) {}
 
         while(!$this->eof()) {
             $output .= $this->readChunk(8192);
@@ -295,7 +295,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
     public function renameTo($newName) {
         if($this->exists()) {
-            throw new \Exception(
+            throw core\Error::{'ENotFound'}(
                 'Source file does not exist'
             );
         }
@@ -303,7 +303,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         $destination = dirname($this->_path).'/'.$newName;
 
         if(file_exists($destination)) {
-            throw new \Exception(
+            throw core\Error::{'EAlreadyExists,ERuntime'}(
                 'Destination file already exists'
             );
         }
@@ -317,7 +317,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
     public function moveTo($destination, $newName=null) {
         if(!$this->exists()) {
-            throw new \Exception(
+            throw core\Error::{'ENotFound'}(
                 'Source file does not exist'
             );
         }
@@ -329,7 +329,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         $destination = rtrim($destination, '/').'/'.$newName;
 
         if(file_exists($destination)) {
-            throw new \Exception(
+            throw core\Error::{'EAlreadyExists,ERuntime'}(
                 'Destination directory already exists'
             );
         }
@@ -348,7 +348,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         if($exists) {
             try {
                 unlink($this->_path);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 if($this->exists()) {
                     throw $e;
                 }
@@ -532,7 +532,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
         try {
             $output = fgets($this->_fp);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return false;
         }
 

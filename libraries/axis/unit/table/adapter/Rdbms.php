@@ -235,7 +235,7 @@ class Rdbms implements
 
 
 // Query exceptions
-    public function handleQueryException(opal\query\IQuery $query, \Exception $e) {
+    public function handleQueryException(opal\query\IQuery $query, \Throwable $e) {
         // Table not found
         if($e instanceof opal\rdbms\TableNotFoundException) {
             if(strtolower($e->table) == strtolower($this->_unit->getStorageBackendName())) {

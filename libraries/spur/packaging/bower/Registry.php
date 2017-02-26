@@ -38,7 +38,7 @@ class Registry implements IRegistry {
 
         try {
             $data = $this->requestJson('get', 'packages/'.rawurlencode($name));
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             core\log\Manager::getInstance()->logException($e);
             throw new spur\ApiError($e->getMessage(), null, $e->getCode());
         }

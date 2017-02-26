@@ -238,7 +238,7 @@ abstract class Base implements
         return $this;
     }
 
-    public function handleQueryException(opal\query\IQuery $query, \Exception $e) {
+    public function handleQueryException(opal\query\IQuery $query, \Throwable $e) {
         return $this->_adapter->handleQueryException($query, $e);
     }
 

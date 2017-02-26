@@ -76,7 +76,7 @@ class Callback implements ICallback, core\IDumpable {
             if(method_exists($class, $method)) {
                 try {
                     $reflection = new \ReflectionMethod($class, $method);
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     throw new InvalidArgumentException(
                         'Callback is not callable'
                     );

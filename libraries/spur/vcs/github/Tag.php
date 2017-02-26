@@ -39,7 +39,7 @@ class Tag implements ITag, core\IDumpable {
 
             try {
                 $this->_version = flex\Version::factory($name);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $this->_version = false;
             }
         }

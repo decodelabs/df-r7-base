@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 use df\neon;
-    
+
 class Color extends Base implements core\validate\IColorField {
 
     public function validate(core\collection\IInputTree $node) {
@@ -21,11 +21,11 @@ class Color extends Base implements core\validate\IColorField {
 
         try {
             $value = neon\Color::factory($value);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'Please enter a valid color'
             ));
-            
+
             return null;
         }
 

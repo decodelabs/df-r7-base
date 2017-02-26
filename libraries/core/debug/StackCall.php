@@ -80,7 +80,7 @@ class StackCall implements IStackCall, core\IDumpable {
                     break;
 
                 default:
-                    throw new \Exception('Unknown call type: '.$callData['type']);
+                    throw core\Error::EValue('Unknown call type: '.$callData['type']);
             }
         } else if($this->_namespace !== null) {
             $this->_type = 3;

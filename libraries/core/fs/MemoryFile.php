@@ -35,12 +35,12 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
 
             try {
                 $this->_owner = $process->getOwnerName();
-            } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
 
             try {
                 $this->_group = $process->getGroupName();
-            } catch(\Exception $e) {}
-        } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
+        } catch(\Throwable $e) {}
 
         $this->putContents($data);
         $this->setContentType($contentType);

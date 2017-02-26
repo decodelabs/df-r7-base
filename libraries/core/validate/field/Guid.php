@@ -21,7 +21,7 @@ class Guid extends Base implements core\validate\IGuidField {
 
         try {
             $value = flex\Guid::factory($value);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'Please select a valid entry'
             ));

@@ -118,7 +118,7 @@ class Date extends Base implements core\validate\IDateField {
             } else {
                 $date = core\time\Date::factory($value, $this->_timezone);
             }
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'This is not a valid date'
             ));

@@ -187,7 +187,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
             self::$_queryCount++;
 
             //core\debug()->dump($this->_sql, $timer);//, $this->_bindings);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             // void profiler
             throw $e;
         }
@@ -213,7 +213,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
             self::$_queryCount++;
 
             //core\debug()->dump($this);//, /*$timer);//,*/ $this->_bindings);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             // void profiler
             throw $e;
         }
@@ -248,7 +248,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
             self::$_queryCount++;
 
             //core\debug()->dump($this);//, $this->_bindings);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             // void profiler
             throw $e;
         }

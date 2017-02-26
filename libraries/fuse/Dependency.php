@@ -43,7 +43,7 @@ class Dependency implements IDependency {
                 try {
                     $version = flex\VersionRange::factory($data);
                     $data = ['version' => $data];
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     $data = ['source' => $data];
                 }
             }

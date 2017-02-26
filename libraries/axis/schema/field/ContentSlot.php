@@ -87,7 +87,7 @@ class ContentSlot extends Base {
         if(!$value instanceof fire\slot\IContent) {
             try {
                 $value = fire\slot\Content::fromXml($value);
-            } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
         }
 
         if($value instanceof fire\slot\IContent) {

@@ -229,7 +229,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
     public function guid($value, array $options=[]) {//: ?flex\IGuid {
         try {
             $value = flex\Guid::factory($value);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             if(null !== ($value = ($options['default'] ?? null))) {
                 $value = flex\Guid::factory($value);
             }

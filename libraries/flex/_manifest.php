@@ -143,7 +143,7 @@ trait THtmlStringEscapeHandler {
     public function esc($value) {
         try {
             return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return $value;
         }
     }

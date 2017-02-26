@@ -32,7 +32,7 @@ class Config extends core\Config {
     protected function _sanitizeValuesOnCreate() {
         try {
             arch\node\task\Manager::getInstance()->invoke('git/init-gitignore');
-        } catch(\Exception $e) {}
+        } catch(\Throwable $e) {}
     }
 
 

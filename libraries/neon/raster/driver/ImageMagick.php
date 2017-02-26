@@ -89,7 +89,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
 
         try {
             $this->_pointer->writeImage($savePath);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new neon\raster\RuntimeException($e->getMessage());
         }
 

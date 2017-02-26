@@ -78,7 +78,7 @@ class TaskSetMaster extends arch\node\Task {
 
             try {
                 $adapter = opal\rdbms\adapter\Base::factory($dsn, true);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $this->io->writeErrorLine('!! Unable to connect');
                 continue;
             }

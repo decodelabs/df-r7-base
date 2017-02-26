@@ -194,7 +194,7 @@ class ContentBlock extends arch\node\form\Delegate implements
 
         try {
             $this->setBlockType($type);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->values->blockType->addError('type', $e->getMessage());
         }
 

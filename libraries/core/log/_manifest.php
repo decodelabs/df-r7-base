@@ -84,7 +84,7 @@ trait TEntryPoint {
     }
 
     public function addDump($dumpObject, core\debug\IStackCall $stackCall, $deep=false, $critical=true) {
-        if($dumpObject instanceof \Exception) {
+        if($dumpObject instanceof \Throwable) {
             return $this->addException($dumpObject);
         }
 

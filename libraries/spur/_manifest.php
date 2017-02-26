@@ -112,7 +112,7 @@ trait THttpMediator {
         if(!$this->_isResponseOk($response)) {
             $message = $this->_extractResponseError($response);
 
-            if($message instanceof \Exception) {
+            if($message instanceof \Throwable) {
                 throw $message;
             }
 
@@ -144,7 +144,7 @@ trait THttpMediator {
     protected function _extractResponseError(link\http\IResponse $response) {
         try {
             $data = $response->getJsonContent();
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $data = new core\collection\Tree();
         }
 

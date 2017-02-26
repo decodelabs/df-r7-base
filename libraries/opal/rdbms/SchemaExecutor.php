@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\opal\rdbms;
 use df;
 use df\core;
 use df\opal;
-    
+
 abstract class SchemaExecutor implements ISchemaExecutor {
 
     protected $_adapter;
@@ -16,13 +16,13 @@ abstract class SchemaExecutor implements ISchemaExecutor {
     public static function factory(opal\rdbms\IAdapter $adapter) {
         $type = $adapter->getServerType();
         $class = 'df\\opal\\rdbms\\variant\\'.$type.'\\SchemaExecutor';
-        
+
         if(!class_exists($class)) {
             throw new RuntimeException(
                 'There is no schema executor available for '.$type
             );
         }
-        
+
         return new $class($adapter);
     }
 
@@ -40,7 +40,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         $stmt = $this->_adapter->prepare('SHOW TABLES LIKE :name');
         $stmt->bind('name', $name);
         $res = $stmt->executeRead();
-        
+
         return !$res->isEmpty();
     }
 
@@ -49,11 +49,11 @@ abstract class SchemaExecutor implements ISchemaExecutor {
     public function create(opal\rdbms\schema\ISchema $schema) {
         // Table definition
         $sql = 'CREATE';
-        
+
         if($schema->isTemporary()) {
             $sql .= ' TEMPORARY';
         }
-        
+
         $schemaName = $schema->getName();
 
         $sql .= ' TABLE '.$this->_adapter->quoteIdentifier($schemaName).' ('."\n";
@@ -76,7 +76,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
                     'Index '.$index->getName().' is invalid'
                 );
             }
-            
+
             if(null !== ($def = $this->_generateInlineIndexDefinition($schemaName, $index, $primaryIndex))) {
                 $definitions[] = $def;
             }
@@ -90,56 +90,56 @@ abstract class SchemaExecutor implements ISchemaExecutor {
                     'Foreign key '.$key->getName().' is invalid'
                 );
             }
-            
+
             if(null !== ($def = $this->_generateInlineForeignKeyDefinition($key))) {
                 $definitions[] = $def;
             }
         }
-        
-        
+
+
         // Flatten definitions
         $sql .= '    '.implode(','."\n".'    ', $definitions)."\n".')'.$this->_generateTableOptions($schema)."\n";
-        
-        
-        
+
+
+
         // Table options
         $tableOptions = $this->_defineTableOptions($schema);
-        
+
         if(!empty($tableOptions)) {
             $sql .= implode(','."\n", $tableOptions);
         }
-        
+
         $sql = [$sql];
-        
-        
+
+
         // Indexes
         foreach($schema->getIndexes() as $index) {
             if(null !== ($def = $this->_generateStandaloneIndexDefinition($schemaName, $index, $primaryIndex))) {
                 $sql[] = $def;
             }
         }
-        
-        
+
+
         // Triggers
         foreach($schema->getTriggers() as $trigger) {
             if(null !== ($def = $this->_generateTriggerDefinition($schemaName, $trigger))) {
                 $sql[] = $def;
             }
         }
-        
-        
+
+
         // TODO: stored procedures
 
         try {
             foreach($sql as $query) {
                 $this->_adapter->prepare($query)->executeRaw();
             }
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->drop($schemaName);
-            
+
             throw $e;
         }
-        
+
         return $this;
     }
 
@@ -160,26 +160,26 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         $keySql = 'CONSTRAINT '.$this->_adapter->quoteIdentifier($key->getName()).' FOREIGN KEY';
         $fields = [];
         $references = [];
-        
+
         foreach($key->getReferences() as $reference) {
             $fields[] = $this->_adapter->quoteIdentifier($reference->getField()->getName());
             $references[] = $this->_adapter->quoteIdentifier($reference->getTargetFieldName());
         }
-        
+
         $keySql .= ' ('.implode(',', $fields).')';
         $keySql .= ' REFERENCES '.$this->_adapter->quoteIdentifier($key->getTargetSchema());
         $keySql .= ' ('.implode(',', $references).')';
-        
+
         if(null !== ($action = $key->getDeleteAction())) {
             $action = $this->_normalizeForeignKeyAction($action);
             $keySql .= ' ON DELETE '.$action;
         }
-        
+
         if(null !== ($action = $key->getUpdateAction())) {
             $action = $this->_normalizeForeignKeyAction($action);
             $keySql .= ' ON UPDATE '.$action;
         }
-        
+
         return $keySql;
     }
 
@@ -189,13 +189,13 @@ abstract class SchemaExecutor implements ISchemaExecutor {
             case 'CASCADE':
             case 'NO ACTION':
                 break;
-                
+
             case 'SET NULL':
             default:
                 $action = 'SET NULL';
                 break;
         }
-        
+
         return $action;
     }
 
@@ -206,7 +206,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         $triggerSql .= ' '.$trigger->getEventName();
         $triggerSql .= ' ON '.$this->_adapter->quoteIdentifier($tableName);
         $triggerSql .= ' FOR EACH ROW BEGIN '.implode('; ', $trigger->getStatements()).'; END';
-        
+
         return $triggerSql;
     }
 
@@ -220,7 +220,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
     public function rename($oldName, $newName) {
         $sql = 'ALTER TABLE '.$this->_adapter->quoteIdentifier($oldName).' '.
                'RENAME TO '.$this->_adapter->quoteIdentifier($newName);
-               
+
         $this->_adapter->prepare($sql)->executeRaw();
         return $this;
     }

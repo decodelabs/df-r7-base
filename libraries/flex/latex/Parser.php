@@ -214,7 +214,7 @@ class Parser extends iris\Parser {
             try {
                 $this->document->setDate($textNode->text);
                 $textNode = null;
-            } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
         }
 
         if($textNode) {

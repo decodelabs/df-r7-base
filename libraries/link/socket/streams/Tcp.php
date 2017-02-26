@@ -75,7 +75,7 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
             if($rTimeout = $this->_getOption('receiveTimeout')) {
                 stream_set_timeout($socket, 0, $rTimeout * 1000);
             }
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_lastError = $e->getMessage();
 
             throw new link\socket\ConnectionException(
@@ -174,7 +174,7 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
                 STREAM_SERVER_BIND | STREAM_SERVER_LISTEN,
                 $context
             );
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new link\socket\ConnectionException(
                 'Could not create socket on '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
@@ -184,7 +184,7 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
     protected function _acceptSequencePeer()  {
         try {
             $output = stream_socket_accept($this->_socket);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }

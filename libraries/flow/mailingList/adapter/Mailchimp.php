@@ -36,7 +36,7 @@ class Mailchimp extends Base {
         try {
             $lists = $this->_mediator->fetchAllLists();
             return true;
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return false;
         }
     }
@@ -312,7 +312,7 @@ class Mailchimp extends Base {
 
         try {
             return $this->_mediator->fetchMember($listId, $email);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return null;
         }
     }

@@ -155,7 +155,7 @@ class TaskSpool extends arch\node\Task {
                 'Task manager failure',
                 'The task manager spool process failed with the following exception: '."\n\n".$exception
             );
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             // Never mind :)
         }
         */

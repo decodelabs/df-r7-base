@@ -681,7 +681,7 @@ interface IAdapter extends user\IAccessLock, mesh\job\IJobAdapter {
     public function supportsQueryType($type);
     public function supportsQueryFeature($feature);
 
-    public function handleQueryException(IQuery $query, \Exception $e);
+    public function handleQueryException(IQuery $query, \Throwable $e);
     public function ensureStorageConsistency();
 
     public function executeSelectQuery(ISelectQuery $query);
@@ -740,7 +740,7 @@ interface ISource extends IAdapterAware {
     public function isDerived();
     public function isPrimary(bool $flag=null);
 
-    public function handleQueryException(IQuery $query, \Exception $e);
+    public function handleQueryException(IQuery $query, \Throwable $e);
 
     public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null);
     public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field=null);

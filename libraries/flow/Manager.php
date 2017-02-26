@@ -225,7 +225,7 @@ class Manager implements IManager, core\IShutdownAware {
 
             try {
                 $output = $transport->send($message, $mime);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 if($isDefault && $transportName !== 'Mail' && $transportName !== 'Capture') {
                     $context->logs->logException($e);
                     $transport = flow\mail\transport\Base::factory('Mail');
@@ -239,13 +239,13 @@ class Manager implements IManager, core\IShutdownAware {
                 try {
                     $model = $this->getMailModel();
                     $model->journalMail($message);
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     $context->logs->logException($e);
                 }
             }
 
             return $output;
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             if($context->application->isDevelopment()) {
                 throw $e;
             } else {

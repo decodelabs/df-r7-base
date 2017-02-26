@@ -199,7 +199,7 @@ class Dn implements IDn, core\IDumpable {
     public function isChildOf($dn) {
         try {
             $dn = self::factory($dn);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return false;
         }
 

@@ -29,7 +29,7 @@ class Error extends Base {
         return true;
     }
 
-    public function setError(\Exception $e=null) {
+    public function setError(\Throwable $e=null) {
         $this->_error = $e;
         return $this;
     }

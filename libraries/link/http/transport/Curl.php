@@ -217,7 +217,7 @@ class Curl_Handle {
         } else {
             try {
                 $output[\CURLOPT_CAINFO] = link\http\Client::getDefaultCaBundlePath();
-            } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
         }
 
         if($options->certPath) {

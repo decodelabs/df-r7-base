@@ -162,7 +162,7 @@ class Model extends axis\Model implements user\session\IBackend {
         if($res) {
             try {
                 return user\session\Node::create($res['key'], $res);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $this->context->logs->logException($e);
                 return null;
             }

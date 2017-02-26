@@ -43,7 +43,7 @@ class Manager implements IManager {
             if(df\Launchpad::$startTime - $mtime > 300) {
                 $launch = true;
             }
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $launch = true;
         }
 

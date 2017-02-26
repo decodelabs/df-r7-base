@@ -94,7 +94,7 @@ class Select extends Base {
 
                 try {
                     $res = socket_select($read, $write, $e, 0, 10000);
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     $res = false;
                 }
 
@@ -126,7 +126,7 @@ class Select extends Base {
 
                 try {
                     $res = stream_select($read, $write, $e, 0, 10000);
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     $res = false;
                 }
 

@@ -15,16 +15,16 @@ interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 
 class ExpectationFailedException extends RuntimeException implements core\IDumpable {
-    
+
     protected $_value;
     protected $_expectation;
-    
+
     public function __construct($message, $value, $expectation=null) {
         $this->_value = $value;
         $this->_expectation = $expectation;
         parent::__construct($message);
     }
-    
+
     public function getDumpProperties() {
         if($this->_value !== null && $this->_expectation !== null) {
             return [
@@ -32,11 +32,11 @@ class ExpectationFailedException extends RuntimeException implements core\IDumpa
                 'expectation' => $this->_expectation
             ];
         }
-        
+
         if($this->_value !== null) {
             return $this->_value;
         }
-        
+
         if($this->_expectation !== null) {
             return $this->_expectation;
         }
@@ -48,21 +48,21 @@ class ExpectationFailedException extends RuntimeException implements core\IDumpa
 interface IAssert {
     public function assertEquals($expected, $actual, $message=null);
     public function assertNotEquals($expected, $actual, $message=null);
-    
+
     public function assertNull($actual, $message=null);
     public function assertNotNull($actual, $message=null);
     public function assertTrue($actual, $message=null);
     public function assertFalse($actual, $message=null);
-    
+
     public function assertEmpty($actual, $message=null);
     public function assertNotEmpty($actual, $message=null);
-    
+
     public function evaluate($actual, acid\constraint\IConstraint $constraint, $message=null);
 }
 
 
 interface IBatch extends IAssert {
-    
+
     public function run();
 }
 
@@ -72,7 +72,7 @@ interface IResult {
     public function hasBatch($batch);
     public function hasBatchFailed($batch);
     public function getBatches();
-    
+
     public function registerSuccess(IBatch $batch, $testName);
-    public function registerFailure(IBatch $batch, $testName, \Exception $e);
+    public function registerFailure(IBatch $batch, $testName, \Throwable $e);
 }

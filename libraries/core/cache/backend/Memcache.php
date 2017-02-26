@@ -110,7 +110,7 @@ class Memcache implements core\cache\IBackend {
         if(is_array($val)) {
             try {
                 return unserialize($val[0]);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 return $default;
             }
         }

@@ -36,7 +36,7 @@ class TaskPurgeBuilds extends arch\node\Task {
             foreach($buildDir->scanDirs() as $name => $dir) {
                 try {
                     $guid = flex\Guid::factory($name);
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     $dir->unlink();
                     $del++;
                     continue;
@@ -77,7 +77,7 @@ class TaskPurgeBuilds extends arch\node\Task {
             foreach($runDir->scanDirs() as $name => $dir) {
                 try {
                     $guid = flex\Guid::factory($name);
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     $dir->unlink();
                     $del++;
                     continue;

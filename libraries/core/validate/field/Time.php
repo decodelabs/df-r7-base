@@ -10,18 +10,18 @@ use df\core;
 use df\opal;
 
 class Time extends Base implements core\validate\ITimeField {
-    
+
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         $value = $this->_sanitizeValue($value);
-        
+
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
         }
-        
+
         try {
             $value = core\time\TimeOfDay::factory($value);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'This is not a valid time of day'
             ));

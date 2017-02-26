@@ -109,7 +109,7 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
         }
     }
 
-    public function handleQueryException(opal\query\IQuery $query, \Exception $e) {
+    public function handleQueryException(opal\query\IQuery $query, \Throwable $e) {
         return false;
     }
 

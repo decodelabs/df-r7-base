@@ -59,7 +59,7 @@ class TaskMedia extends arch\node\Task {
                         try {
                             $content = $response->getJsonContent();
                             $message = $content['message'];
-                        } catch(\Exception $e) {
+                        } catch(\Throwable $e) {
                             $message = null;
                         }
 

@@ -370,7 +370,7 @@ class Queue implements IQueue {
                     $this->_sortJobs();
                 }
             }
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_transaction->rollback();
             throw $e;
         }

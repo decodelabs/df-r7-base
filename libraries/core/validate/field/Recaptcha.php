@@ -62,7 +62,7 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField {
 
         try {
             $result = $m->verify($value, $ip);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             core\logException($e);
             return $this->_finalize($node, $value);
         }

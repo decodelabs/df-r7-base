@@ -91,7 +91,7 @@ trait TPidFileProvider {
         if($write) {
             try {
                 file_put_contents($path, $pid);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 throw new RuntimeException(
                     'Unable to write PID file', 0, $e
                 );

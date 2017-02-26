@@ -191,7 +191,7 @@ class File implements link\http\IUploadFile {
                     try {
                         unlink($fullPath);
                         break;
-                    } catch(\Exception $e) {}
+                    } catch(\Throwable $e) {}
 
                 case link\http\IUploadFile::RENAME:
                 default:

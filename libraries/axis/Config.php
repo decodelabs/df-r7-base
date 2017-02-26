@@ -90,7 +90,7 @@ class Config extends core\Config {
             if(!isset($this->values->units[$unitId])) {
                 try {
                     $unitId = '@'.$unit->getUnitType();
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     $unitId = null;
                 }
 

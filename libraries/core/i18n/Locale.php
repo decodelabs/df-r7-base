@@ -84,7 +84,7 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
             }
 
             $output = \Locale::composeLocale($values);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             core\debug()->exception($e);
             return $this->_language.'_'.$this->_region;
         }
@@ -105,7 +105,7 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
     public function __toString(): string {
         try {
             return (string)$this->toString();
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return $this->_language.'_'.$this->_region;
         }
     }

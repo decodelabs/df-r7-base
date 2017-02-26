@@ -157,7 +157,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                     imagePng($this->_pointer);
                     break;
             }
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             ob_clean();
             throw $e;
         }

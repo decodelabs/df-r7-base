@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,9 +8,9 @@ namespace df\link\pop3;
 use df;
 use df\core;
 use df\link;
-    
+
 class Mediator implements IMediator {
-    
+
     const CONNECTION_TIMEOUT = 30;
 
     protected $_socket;
@@ -63,7 +63,7 @@ class Mediator implements IMediator {
             $this->sendRequest('STLS');
             $this->_socket->enableSecureTransport();
         }
-        
+
         return $this;
     }
 
@@ -130,7 +130,7 @@ class Mediator implements IMediator {
                 $line = $this->_socket->readLine();
             }
         }
-        
+
         return $message;
     }
 
@@ -148,7 +148,7 @@ class Mediator implements IMediator {
             try {
                 $this->sendRequest('APOP '.$user.' '.md5($this->_timestamp.$password));
                 $this->_isLoggedIn = true;
-            } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
         }
 
         if(!$this->_isLoggedIn) {
@@ -159,7 +159,7 @@ class Mediator implements IMediator {
 
         return $this;
     }
-    
+
     public function getStatus() {
         if(!$this->_isLoggedIn) {
             throw new LogicException(
@@ -171,11 +171,11 @@ class Mediator implements IMediator {
         $parts = explode(' ', $result, 2);
 
         return [
-            'messages' => (int)array_shift($parts), 
+            'messages' => (int)array_shift($parts),
             'size' => (int)array_shift($parts)
         ];
     }
-    
+
     public function getSizeList() {
         if(!$this->_isLoggedIn) {
             throw new LogicException(
@@ -199,7 +199,7 @@ class Mediator implements IMediator {
 
         return $output;
     }
-    
+
     public function getUniqueIdList() {
         if(!$this->_isLoggedIn) {
             throw new LogicException(
@@ -223,7 +223,7 @@ class Mediator implements IMediator {
 
         return $output;
     }
-    
+
     public function getTop($key, $lines=0) {
         if(!$this->_isLoggedIn) {
             throw new LogicException(
@@ -258,7 +258,7 @@ class Mediator implements IMediator {
         $parts = explode(' ', trim($result), 2);
         return array_pop($parts);
     }
-    
+
     public function getMail($key) {
         if(!$this->_isLoggedIn) {
             throw new LogicException(
@@ -268,7 +268,7 @@ class Mediator implements IMediator {
 
         return $this->sendRequest('RETR '.$key, true);
     }
-    
+
     public function deleteMail($key) {
         if(!$this->_isLoggedIn) {
             throw new LogicException(
@@ -279,7 +279,7 @@ class Mediator implements IMediator {
         $this->sendRequest('DELE '.$key);
         return $this;
     }
-    
+
     public function rollback() {
         if(!$this->_isLoggedIn) {
             throw new LogicException(
@@ -290,7 +290,7 @@ class Mediator implements IMediator {
         $this->sendRequest('RSET');
         return $this;
     }
-    
+
     public function noOp() {
         $this->sendRequest('NOOP');
         return $this;
@@ -304,7 +304,7 @@ class Mediator implements IMediator {
 
         return $this;
     }
-    
+
     protected function _splitList($result) {
         $output = [];
 

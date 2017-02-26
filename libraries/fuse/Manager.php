@@ -114,7 +114,7 @@ class Manager implements IManager {
 
         try {
             $this->installDependenciesFor($theme, $io);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             if($swallow) {
                 core\log\Manager::getInstance()->logException($e);
             } else {

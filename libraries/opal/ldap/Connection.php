@@ -145,7 +145,7 @@ class Connection implements IConnection {
 
         try {
             $result = ldap_read($this->_connection, '', '(objectclass=*)', ['*', '+']);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new ConnectionException(
                 $e->getMessage(),
                 $e->getCode()
@@ -219,7 +219,7 @@ class Connection implements IConnection {
             $connection = $useUri ?
                 ldap_connect($this->_connectionString) :
                 ldap_connect($this->_host, $this->_port);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new ConnectionException(
                 $e->getMessage(),
                 $e->getCode()

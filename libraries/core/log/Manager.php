@@ -45,7 +45,7 @@ class Manager implements IManager {
         try {
             core\lang\Callback($block, ...$args);
             return true;
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->logException($e);
             return false;
         }

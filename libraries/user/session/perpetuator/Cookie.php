@@ -37,7 +37,7 @@ class Cookie implements user\session\IPerpetuator {
         if($this->_inputId === null && $cookies->has(self::SESSION_NAME)) {
             try {
                 $this->_inputId = hex2bin($cookies->get(self::SESSION_NAME));
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $this->_inputId = null;
             }
         }

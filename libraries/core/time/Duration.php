@@ -666,9 +666,7 @@ class Duration implements IDuration, core\IDumpable {
     public function __toString(): string {
         try {
             return (string)$this->toString();
-        } catch(\Exception $e) {
-            return '';
-        } catch(\Error $e) {
+        } catch(\Throwable $e) {
             return '';
         }
     }

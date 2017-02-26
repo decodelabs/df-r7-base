@@ -502,7 +502,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
 
 // Query executor
-    public function handleQueryException(IQuery $query, \Exception $e) {
+    public function handleQueryException(IQuery $query, \Throwable $e) {
         foreach($this->_sources as $source) {
             if($source->handleQueryException($query, $e)) {
                 return true;
@@ -521,7 +521,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
             try {
                 $output = $executor($adapter);
                 break;
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $exceptions[] = $e;
                 $handled = false;
 

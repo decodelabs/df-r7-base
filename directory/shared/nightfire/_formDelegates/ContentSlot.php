@@ -298,7 +298,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
         try {
             $block = fire\block\Base::factory($type);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->values->blockType->{$delegateId}->addError('type', $e->getMessage());
             return;
         }
@@ -333,7 +333,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
         try {
             $block = fire\block\Base::factory($type);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->values->newBlockType->addError('type', $e->getMessage());
             return;
         }

@@ -111,9 +111,7 @@ class Ip implements IIp, core\IDumpable {
     public function __toString(): string {
         try {
             return $this->toString();
-        } catch(\Exception $e) {
-            return '0.0.0.0';
-        } catch(\Error $e) {
+        } catch(\Throwable $e) {
             return '0.0.0.0';
         }
     }

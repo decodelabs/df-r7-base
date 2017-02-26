@@ -69,7 +69,7 @@ class Manager implements IManager, core\IShutdownAware {
 
                     $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
                 }
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 if($rethrowException) {
                     throw $e;
                 }
@@ -203,7 +203,7 @@ class Manager implements IManager, core\IShutdownAware {
 
                 $meshManager = mesh\Manager::getInstance();
                 $lock = $meshManager->fetchEntity($entityId);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $lock = new user\access\lock\Boolean(true);
             }
 

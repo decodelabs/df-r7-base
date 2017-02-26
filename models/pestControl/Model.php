@@ -49,7 +49,7 @@ class Model extends axis\Model {
                 } else if(df\Launchpad::$application instanceof core\IContextAware) {
                     $request = df\Launchpad::$application->getContext()->request;
                 }
-            } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
         }
 
         if($mode == 'Http') {
@@ -80,7 +80,7 @@ class Model extends axis\Model {
             $user = $this->context->user->isLoggedIn() ?
                 $this->context->user->client->getId() :
                 null;
-        } catch(\Exception $e) {}
+        } catch(\Throwable $e) {}
 
         return $user;
     }

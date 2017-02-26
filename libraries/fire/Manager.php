@@ -58,7 +58,7 @@ class Manager implements IManager {
         foreach(df\Launchpad::$loader->lookupClassList('fire/category') as $name => $class) {
             try {
                 $category = fire\category\Base::factory($name);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 continue;
             }
 
@@ -298,7 +298,7 @@ class Manager implements IManager {
         foreach(df\Launchpad::$loader->lookupClassList('fire/block') as $name => $class) {
             try {
                 $block = fire\block\Base::factory($name);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 continue;
             }
 

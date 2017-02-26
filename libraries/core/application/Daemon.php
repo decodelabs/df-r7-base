@@ -20,7 +20,7 @@ class Daemon extends Base {
 // Execute
     public function dispatch() {
         if(php_sapi_name() != 'cli') {
-            throw new \Exception(
+            throw core\Error::EDomain(
                 'Daemon processes must only be started from the CLI SAPI'
             );
         }
@@ -43,7 +43,7 @@ class Daemon extends Base {
 
         try {
             $daemon = halo\daemon\Base::factory($arg->toString());
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->io->writeErrorLine($e->getMessage());
             return;
         }

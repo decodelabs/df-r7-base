@@ -121,7 +121,7 @@ class Apcu implements core\cache\IBackend {
         if(is_array($val)) {
             try {
                 return unserialize($val[0]);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 return $default;
             }
         }
@@ -257,7 +257,7 @@ class Apcu implements core\cache\IBackend {
 
         try {
             arch\node\task\Manager::getInstance()->launchQuietly($request);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             core\log\Manager::getInstance()->logException($e);
         }
     }

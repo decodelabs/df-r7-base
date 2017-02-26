@@ -26,7 +26,7 @@ class Tree implements ITree, core\IDumpable {
         try {
             $document = self::_newDOMDocument();
             $document->load($file);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new RuntimeException(
                 'XML file '.$file.' could not be loaded: '.$e->getMessage()
             );
@@ -47,7 +47,7 @@ class Tree implements ITree, core\IDumpable {
         try {
             $document = self::_newDOMDocument();
             $document->loadXML($xmlString);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new RuntimeException(
                 'XML string could not be loaded: '.$e->getMessage()
             );
@@ -64,7 +64,7 @@ class Tree implements ITree, core\IDumpable {
         try {
             $document = self::_newDOMDocument();
             $document->loadHtmlFile($file);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new RuntimeException(
                 'HTML file '.$file.' could not be loaded: '.$e->getMessage()
             );
@@ -77,7 +77,7 @@ class Tree implements ITree, core\IDumpable {
         try {
             $document = self::_newDOMDocument();
             $document->loadHTML($htmlString);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new RuntimeException(
                 'HTML string could not be loaded: '.$e->getMessage()
             );

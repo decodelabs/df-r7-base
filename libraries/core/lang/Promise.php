@@ -59,7 +59,7 @@ class Promise implements IPromise, core\IDumpable {
 
         return static::deferEach($promises, function($value, $key, $aggregate) use(&$results) {
             $results[$key] = $value;
-        }, function(\Exception $error, $key, IPromise $aggregate) {
+        }, function(\Throwable $error, $key, IPromise $aggregate) {
             $aggregate->deliverError($error);
         })->then(function() use(&$results) {
             return $results;
@@ -84,7 +84,7 @@ class Promise implements IPromise, core\IDumpable {
             if(count($results) >= $count) {
                 $aggregate->deliver(null);
             }
-        }, function(\Exception $error, $key) use(&$rejections) {
+        }, function(\Throwable $error, $key) use(&$rejections) {
             $rejections[$key] = $error;
         })->then(function() use(&$results, &$rejections, $count) {
             if(count($results) < $count) {
@@ -125,7 +125,7 @@ class Promise implements IPromise, core\IDumpable {
 
                 $promise->then(function($value, $promise) use($key, $aggregate, $onFulfill) {
                     return Callback::call($onFulfill, $value, $key, $aggregate);
-                }, function(\Exception $error, $promise) use($key, $aggregate, $onReject) {
+                }, function(\Throwable $error, $promise) use($key, $aggregate, $onReject) {
                     return Callback::call($onReject, $error, $key, $aggregate);
                 })->sync();
 
@@ -199,7 +199,7 @@ class Promise implements IPromise, core\IDumpable {
 
             try {
                 $value = $action->invoke($value, $this);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 return $this->deliverError($e);
             }
 
@@ -210,7 +210,7 @@ class Promise implements IPromise, core\IDumpable {
 
     }
 
-    public function beginThisError(\Exception $e) {
+    public function beginThisError(\Throwable $e) {
         if($this->_hasBegun) {
             throw new LogicException(
                 'Promise action has already begun'
@@ -355,7 +355,7 @@ class Promise implements IPromise, core\IDumpable {
         } else {
             try {
                 $class = $parameters[0]->getClass();
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $class = null;
             }
 
@@ -582,7 +582,7 @@ class Promise implements IPromise, core\IDumpable {
         return $this->then(function($value) use($action) {
             $action($value, true, $this);
             return $value;
-        }, function(\Exception $reason) use($action) {
+        }, function(\Throwable $reason) use($action) {
             $action($reason, false, $this);
             throw $reason;
         });
@@ -605,7 +605,7 @@ class Promise implements IPromise, core\IDumpable {
         return $this->_deliverDependants();
     }
 
-    public function deliverError(\Exception $error) {
+    public function deliverError(\Throwable $error) {
         if($this->_hasDelivered) {
             throw new LogicException(
                 'Promise has already delivered'
@@ -641,7 +641,7 @@ class Promise implements IPromise, core\IDumpable {
                 try {
                     $this->_result = $callback->invoke($error, $this);
                     break 2;
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     $this->_error = $e;
 
                     if($e === $error) {

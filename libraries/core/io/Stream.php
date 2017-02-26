@@ -72,7 +72,7 @@ class Stream implements IStreamChannel, core\IDumpable {
     protected function _readChunk($length) {
         try {
             $output = fread($this->_resource, $length);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return false;
         }
 
@@ -88,7 +88,7 @@ class Stream implements IStreamChannel, core\IDumpable {
     protected function _readLine() {
         try {
             $output = fgets($this->_resource);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return false;
         }
 

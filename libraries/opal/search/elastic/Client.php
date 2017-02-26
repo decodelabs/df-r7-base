@@ -97,7 +97,7 @@ class Client implements opal\search\IClient {
 
         try {
             $json = $response->getJsonContent();
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $message = $response->getContent();
         }
 

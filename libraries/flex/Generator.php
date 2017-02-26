@@ -93,7 +93,7 @@ abstract class Generator implements IGenerator {
                 try {
                     self::$_randomGen = new \COM('CAPICOM.Utilities.1');
                     self::$_randomSource = self::RANDOM_COM;
-                } catch(\Exception $e) {}
+                } catch(\Throwable $e) {}
             }
 
             if(self::$_randomSource === null) {

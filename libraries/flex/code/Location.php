@@ -72,7 +72,7 @@ class Location implements ILocation {
     protected function _scanPath(IScanner $scanner, $path) {
         try {
             $dir = new \DirectoryIterator($path);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return;
         }
 

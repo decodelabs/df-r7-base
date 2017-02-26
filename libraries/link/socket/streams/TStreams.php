@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\link;
 
-    
+
 trait TStreams {
 
     private $_lastError = '';
@@ -22,26 +22,26 @@ trait TStreams {
         try {
             $this->_lastError = '';
             return stream_socket_shutdown($this->_socket, STREAM_SHUT_RD);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
     }
-    
+
     protected function _shutdownWriting() {
         try {
             $this->_lastError = '';
             return stream_socket_shutdown($this->_socket, STREAM_SHUT_WR);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
     }
-    
+
     protected function _closeSocket() {
         return @fclose($this->_socket);
     }
-    
+
     protected function _getLastErrorMessage() {
         return $this->_lastError;
     }
@@ -95,39 +95,39 @@ trait TStreams_IoSocket {
     protected function _peekChunk($length) {
         try {
             $output = stream_socket_recvfrom($this->_socket, $length, STREAM_PEEK);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
-        
+
         if($output === null
         || $output === false) {
             return false;
         }
-        
+
         return $output;
     }
 
     protected function _readChunk($length) {
         try {
             $output = fread($this->_socket, $length);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
-        
+
         if($output === null
         || $output === false) {
             return false;
         }
-        
+
         return $output;
     }
 
     protected function _readLine() {
         try {
             $output = fgets($this->_socket);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
@@ -136,23 +136,23 @@ trait TStreams_IoSocket {
         || $output === false) {
             return false;
         }
-        
+
         return $output;
     }
-    
+
     protected function _writeChunk($data, $length) {
         try {
             $output = @fwrite($this->_socket, $data, $length);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
-        
+
         if($output === false
         || $output === 0) {
             return false;
         }
-        
+
         return $output;
     }
 }

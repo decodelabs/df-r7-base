@@ -136,7 +136,7 @@ interface IPromise {
     public function hasAction();
     public function begin($value=null);
     public function beginThis($value=null);
-    public function beginThisError(\Exception $e);
+    public function beginThisError(\Throwable $e);
     public function hasBegun();
     public function hasBegunThis();
     public function isPending();
@@ -187,7 +187,7 @@ interface IPromise {
 
 // Completion
     public function deliver($value);
-    public function deliverError(\Exception $error);
+    public function deliverError(\Throwable $error);
     public function hasDelivered();
     public function hasError();
     public function isFulfilled();

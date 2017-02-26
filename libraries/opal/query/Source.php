@@ -64,7 +64,7 @@ class Source implements ISource, core\IDumpable {
         return $this->_isPrimary;
     }
 
-    public function handleQueryException(IQuery $query, \Exception $e) {
+    public function handleQueryException(IQuery $query, \Throwable $e) {
         if($this->_adapter->handleQueryException($query, $e)) {
             return true;
         }

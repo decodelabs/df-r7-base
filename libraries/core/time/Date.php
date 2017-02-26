@@ -115,7 +115,7 @@ class Date implements IDate, core\IDumpable {
         if(!$timezone instanceof \DateTimeZone) {
             try {
                 $timezone = new \DateTimeZone((string)$timezone);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 throw new InvalidArgumentException($e->getMessage());
             }
         }
@@ -151,7 +151,7 @@ class Date implements IDate, core\IDumpable {
 
         try {
             $this->_setDate(new \DateTime($date, $timezone), $timeEnabled);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new InvalidArgumentException($e->getMessage());
         }
 
@@ -229,7 +229,7 @@ class Date implements IDate, core\IDumpable {
             $client = $userManager = user\Manager::getInstance()->getClient();
             $timezone = new \DateTimeZone($client->getTimezone());
             $this->_date->setTimezone($timezone);
-        } catch(\Exception $e) {}
+        } catch(\Throwable $e) {}
 
         return $this;
     }
@@ -251,7 +251,7 @@ class Date implements IDate, core\IDumpable {
         if(!$timezone instanceof \DateTimeZone) {
             try {
                 $timezone = new \DateTimeZone((string)$timezone);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 throw new InvalidArgumentException($e->getMessage());
             }
         }
@@ -282,9 +282,7 @@ class Date implements IDate, core\IDumpable {
     public function __toString(): string {
         try {
             return $this->toString();
-        } catch(\Exception $e) {
-            return '0000-00-00';
-        } catch(\Error $e) {
+        } catch(\Throwable $e) {
             return '0000-00-00';
         }
     }

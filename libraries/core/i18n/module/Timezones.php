@@ -107,7 +107,7 @@ class Timezones extends Base implements ITimezonesModule {
     public function isValidId($id) {
         try {
             return (bool)\timezone_open($id);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return false;
         }
     }

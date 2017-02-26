@@ -39,7 +39,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
             try {
                 $keySet = $record->getPrimaryKeySet();
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $keySet = null;
             }
         } else if($record instanceof IPrimaryKeySet) {

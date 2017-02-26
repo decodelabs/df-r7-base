@@ -60,7 +60,7 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
     }
 
 
-    public function handleQueryException(IQuery $query, \Exception $e) {
+    public function handleQueryException(IQuery $query, \Throwable $e) {
         return $this->_adapter->handleQueryException($query, $e);
     }
 

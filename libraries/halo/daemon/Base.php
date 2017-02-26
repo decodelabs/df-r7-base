@@ -169,7 +169,7 @@ abstract class Base implements IDaemon {
         if($pidPath) {
             try {
                 $this->process->setPidFilePath($pidPath);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $this->io->writeErrorLine($e->getMessage());
                 return;
             }

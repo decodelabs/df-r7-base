@@ -584,7 +584,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             }
 
             $this->_adapter->commit();
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_adapter->rollback();
             $this->_adapter->executeSql('PRAGMA foreign_keys=ON');
             throw $e;

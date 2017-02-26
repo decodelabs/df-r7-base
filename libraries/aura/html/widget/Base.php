@@ -64,9 +64,7 @@ abstract class Base implements IWidget {
     public function __toString(): string {
         try {
             return (string)$this->render();
-        } catch(\Exception $e) {
-            return $this->_renderStringError($e);
-        } catch(\Error $e) {
+        } catch(\Throwable $e) {
             return $this->_renderStringError($e);
         }
     }

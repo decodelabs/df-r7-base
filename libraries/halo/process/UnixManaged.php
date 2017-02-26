@@ -127,7 +127,7 @@ class UnixManaged extends Unix implements IManagedProcess {
 
                 try {
                     posix_setuid($id);
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     throw new RuntimeException('Set owner failed', 0, $e);
                 }
             }
@@ -193,7 +193,7 @@ class UnixManaged extends Unix implements IManagedProcess {
 
                 try {
                     posix_setgid($id);
-                } catch(\Exception $e) {
+                } catch(\Throwable $e) {
                     throw new RuntimeException('Set group failed', 0, $e);
                 }
             }

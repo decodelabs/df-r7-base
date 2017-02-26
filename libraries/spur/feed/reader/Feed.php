@@ -57,7 +57,7 @@ abstract class Feed implements spur\feed\IFeedReader {
         try {
             $domDocument = new \DomDocument();
             $domDocument->loadXml($string);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new spur\feed\UnexpectedValueException(
                 'Could not load feed xml document', 0, $e
             );

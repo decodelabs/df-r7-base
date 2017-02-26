@@ -151,7 +151,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
         if($this->_serialize) {
             try {
                 $output = unserialize($output);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 $file->unlink();
                 return $default;
             }

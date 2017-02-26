@@ -64,7 +64,7 @@ class Unit extends axis\unit\table\Base {
                     $userAgent = 'Terminal';
                 }
             }
-        } catch(\Exception $e) {}
+        } catch(\Throwable $e) {}
 
         return $userAgent;
     }

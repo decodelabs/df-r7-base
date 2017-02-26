@@ -226,7 +226,7 @@ abstract class Adapter implements IAdapter {
         }
     }
 
-    public function handleQueryException(opal\query\IQuery $query, \Exception $e) {
+    public function handleQueryException(opal\query\IQuery $query, \Throwable $e) {
         return false;
     }
 
@@ -296,7 +296,7 @@ abstract class Adapter implements IAdapter {
 
         try {
             ldap_add($connection, $baseDn, $row);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             throw new QueryException(
                 $e->getMessage(), $e->getCode()
             );
@@ -490,7 +490,7 @@ abstract class Adapter implements IAdapter {
                 if(in_array($key, static::DATE_ATTRS)) {
                     try {
                         $value = $this->_inflateDate($key, $value);
-                    } catch(\Exception $e) {
+                    } catch(\Throwable $e) {
                         $value = null;
                     }
                 } else if(in_array($key, static::BINARY_ATTRS)) {

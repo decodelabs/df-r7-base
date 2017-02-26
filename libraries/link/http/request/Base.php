@@ -169,7 +169,7 @@ class Base implements link\http\IRequest, core\IDumpable {
                     case 'application/x-www-form-urlencoded':
                         try {
                             $output = core\collection\Tree::fromArrayDelimitedString($payload);
-                        } catch(\Exception $e) {
+                        } catch(\Throwable $e) {
                             $output = null;
                         }
 

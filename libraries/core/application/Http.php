@@ -605,7 +605,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                         header('Set-Cookie: '.$cookie->toInvalidateString());
                     }
                 }
-            } catch(\Exception $e) {}
+            } catch(\Throwable $e) {}
         }
 
         echo $renderer->render();

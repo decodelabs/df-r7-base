@@ -116,7 +116,7 @@ class Installer implements IInstaller {
                     $this->_multiplexer->write(' - up to date');
                 }
             }
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             $this->_lockFile->unlock();
             throw $e;
         }

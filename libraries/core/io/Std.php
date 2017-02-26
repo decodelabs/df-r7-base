@@ -65,7 +65,7 @@ class Std implements IMultiplexReaderChannel {
     protected function _readChunk($length) {
         try {
             $output = fread(STDIN, $length);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return false;
         }
 
@@ -81,7 +81,7 @@ class Std implements IMultiplexReaderChannel {
     protected function _readLine() {
         try {
             $output = fgets(STDIN);
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
             return false;
         }
 

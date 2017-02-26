@@ -82,7 +82,7 @@ class Dir implements IDirectory, core\IDumpable {
         foreach((new self($path))->scanDirs() as $name => $dir) {
             try {
                 $guid = flex\Guid::factory($name);
-            } catch(\Exception $e) {
+            } catch(\Throwable $e) {
                 continue;
             }
 
@@ -191,7 +191,7 @@ class Dir implements IDirectory, core\IDumpable {
             umask($umask);
 
             if($result) {
-                throw new \Exception(
+                throw core\Error::{'ENotWritable,ERuntime'}(
                     'Directory is not writable'
                 );
             }
@@ -642,7 +642,7 @@ class Dir implements IDirectory, core\IDumpable {
         $destination = self::factory($destination);
 
         if($destination->exists()) {
-            throw new \Exception(
+            throw core\Error::{'EAlreadyExists,ERuntime'}(
                 'Destination directory already exists '.$destination->getPath()
             );
         }
@@ -652,7 +652,7 @@ class Dir implements IDirectory, core\IDumpable {
 
     public function mergeInto($destination) {
         if(!is_dir($this->_path)) {
-            throw new \Exception(
+            throw core\Error::{'ENotFound'}(
                 'Source directory does not exist'
             );
         }
@@ -677,7 +677,7 @@ class Dir implements IDirectory, core\IDumpable {
 
     public function moveTo($destination, $newName=null) {
         if(!is_dir($this->_path)) {
-            throw new \Exception(
+            throw core\Error::{'ENotFound'}(
                 'Source directory does not exist'
             );
         }
@@ -690,7 +690,7 @@ class Dir implements IDirectory, core\IDumpable {
         $target = $destination->getDir($newName);
 
         if($target->exists()) {
-            throw new \Exception(
+            throw core\Error::{'EAlreadyExists,ERuntime'}(
                 'Destination directory already exists'
             );
         }

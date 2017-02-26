@@ -79,7 +79,7 @@ interface IRestApiResult extends arch\IProxyResponse {
     public function setStatusCode($code);
     public function getStatusCode();
 
-    public function setException(\Exception $e);
+    public function setException(\Throwable $e);
     public function hasException();
     public function getException();
 }

@@ -68,7 +68,7 @@ class Result implements arch\node\IRestApiResult {
         }
     }
 
-    public function setException(\Exception $e) {
+    public function setException(\Throwable $e) {
         $this->_exception = $e;
         return $this;
     }
