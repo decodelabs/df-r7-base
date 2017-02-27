@@ -13,8 +13,9 @@ use df\arch;
 abstract class Base implements aura\theme\IFacet {
 
     protected static $_types = null;
+    protected $_environments = null;
 
-    public static function factory($name) {
+    public static function factory($name, array $config=null) {
         $class = 'df\\aura\\theme\\facet\\'.ucfirst($name);
 
         if(!class_exists($class)) {
@@ -23,7 +24,21 @@ abstract class Base implements aura\theme\IFacet {
             );
         }
 
-        return new $class();
+        return new $class($config ?? []);
+    }
+
+    public function __construct(array $config) {
+        if(isset($config['environments'])) {
+            $this->_environments = (array)$config['environments'];
+        }
+    }
+
+    protected function _checkEnvironment(): bool {
+        if(empty($this->_environments)) {
+            return true;
+        }
+
+        return in_array(df\Launchpad::$environmentId, $this->_environments);
     }
 
 # Before render

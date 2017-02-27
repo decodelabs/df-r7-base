@@ -387,8 +387,8 @@ trait TView_Themed {
     }
 
 
-    public function loadFacet($name, $callback=null) {
-        $this->getTheme()->loadFacet($name, $callback);
+    public function loadFacet($name, $config=null) {
+        $this->getTheme()->loadFacet($name, $config);
         return $this;
     }
 

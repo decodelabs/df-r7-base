@@ -25,7 +25,7 @@ class Base implements ITheme, core\IDumpable {
 
     protected $_id;
     protected $_iconMap = null;
-    protected $_facets = [];
+    protected $_facets = null;
 
 
     public static function factory($id) {
@@ -56,18 +56,6 @@ class Base implements ITheme, core\IDumpable {
         }
 
         $this->_id = $id;
-
-        $facets = static::DEFAULT_FACETS;
-
-        if(is_array(static::FACETS)) {
-            $facets = array_merge($facets, static::FACETS);
-        }
-
-        $this->_facets = [];
-
-        foreach($facets as $name) {
-            $this->loadFacet($name);
-        }
     }
 
     public function getId() {
@@ -83,7 +71,7 @@ class Base implements ITheme, core\IDumpable {
             $this->$func($view);
         }
 
-        foreach($this->_facets as $facet) {
+        foreach($this->getFacets() as $facet) {
             $facet->beforeViewRender($view);
         }
 
@@ -150,7 +138,7 @@ class Base implements ITheme, core\IDumpable {
             }
         }
 
-        foreach($this->_facets as $facet) {
+        foreach($this->getFacets() as $facet) {
             if(null !== ($newContent = $facet->onViewContentRender($view, $content))) {
                 $content = $newContent;
             }
@@ -170,7 +158,7 @@ class Base implements ITheme, core\IDumpable {
             }
         }
 
-        foreach($this->_facets as $facet) {
+        foreach($this->getFacets() as $facet) {
             if(null !== ($newContent = $facet->onViewLayoutRender($view, $content))) {
                 $content = $newContent;
             }
@@ -191,7 +179,7 @@ class Base implements ITheme, core\IDumpable {
             }
         }
 
-        foreach($this->_facets as $facet) {
+        foreach($this->getFacets() as $facet) {
             if(null !== ($newContent = $facet->afterViewRender($view, $content))) {
                 $content = $newContent;
             }
@@ -288,22 +276,27 @@ class Base implements ITheme, core\IDumpable {
 
 
 // Facets
-    public function loadFacet($name, $callback=null) {
+    public function loadFacet($name, $config=null) {
         $name = lcfirst($name);
 
-        if(!isset($this->_facets[$name])) {
-            $this->_facets[$name] = aura\theme\facet\Base::factory($name);
+        if(!is_array($config)) {
+            $config = [];
         }
 
-        core\lang\Callback::call($callback, $this->_facets[$name], $this);
+        if(!isset($this->_facets[$name])) {
+            $this->_facets[$name] = aura\theme\facet\Base::factory($name, $config);
+        }
+
         return $this->_facets[$name];
     }
 
     public function hasFacet($name) {
+        $this->_loadFacets();
         return isset($this->_facets[lcfirst($name)]);
     }
 
     public function getFacet($name) {
+        $this->_loadFacets();
         $name = lcfirst($name);
 
         if(isset($this->_facets[$name])) {
@@ -314,12 +307,45 @@ class Base implements ITheme, core\IDumpable {
     }
 
     public function removeFacet($name) {
+        $this->_loadFacets();
         unset($this->_facets[lcfirst($name)]);
         return $this;
     }
 
     public function getFacets() {
+        $this->_loadFacets();
         return $this->_facets;
+    }
+
+    protected function _loadFacets() {
+        if($this->_facets !== null) {
+            return;
+        }
+
+        $facets = $this->_normalizeFacetList(static::DEFAULT_FACETS);
+
+        if(is_array(static::FACETS)) {
+            $facets = $this->_normalizeFacetList(static::FACETS, $facets);
+        }
+
+        $this->_facets = [];
+
+        foreach($facets as $name => $config) {
+            $this->loadFacet($name, $config);
+        }
+    }
+
+    protected function _normalizeFacetList(array $list, array $current=[]) {
+        foreach($list as $name => $config) {
+            if(is_string($config)) {
+                $name = $config;
+                $config = null;
+            }
+
+            $current[$name] = $config;
+        }
+
+        return $current;
     }
 
 // Dump

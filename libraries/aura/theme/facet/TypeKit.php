@@ -13,6 +13,11 @@ class TypeKit extends Base {
 
     protected $_kitId;
 
+    public function __construct(array $config) {
+        parent::__construct($config);
+        $this->_kitId = $config['kitId'] ?? null;
+    }
+
     public function setKitId($kitId) {
         $this->_kitId = $kitId;
         return $this;
@@ -23,7 +28,7 @@ class TypeKit extends Base {
     }
 
     public function afterHtmlViewRender(aura\view\IHtmlView $view) {
-        if(!$this->_kitId) {
+        if(!$this->_kitId || !$this->_checkEnvironment()) {
             return;
         }
 

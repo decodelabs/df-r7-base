@@ -12,7 +12,7 @@ use df\arch;
 use df\spur;
 
 class Analytics extends Base {
-    
+
     protected $_handler;
 
     public function getHandler() {
@@ -24,6 +24,10 @@ class Analytics extends Base {
     }
 
     public function afterHtmlViewRender(aura\view\IHtmlView $view) {
+        if(!$this->_checkEnvironment()) {
+            return;
+        }
+
         if($view->context->getRunMode() == 'Http'
         && ($view->context->application->isProduction() || isset($view->context->request->query->forceAnalytics))) {
             $this->getHandler()->apply($view);
