@@ -193,7 +193,7 @@ class Mediator implements IMediator, \Serializable {
             $json = $this->requestJson('post', 'listInterestGroupings', [
                 'id' => $listId
             ]);
-        } catch(spur\ApiDataError $e) {
+        } catch(EApi $e) {
             return $output;
         }
 
@@ -253,7 +253,7 @@ class Mediator implements IMediator, \Serializable {
             $this->requestRaw('post', 'listInterestGroupingDel', [
                 'grouping_id' => $setId
             ]);
-        } catch(spur\ApiDataError $e) {}
+        } catch(EApi $e) {}
 
         return $this;
     }

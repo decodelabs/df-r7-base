@@ -14,26 +14,6 @@ use df\link;
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 
-class ApiError extends RuntimeException implements core\IDumpable {
-
-    protected $_data;
-
-    public function __construct($message, $data, $httpCode=500) {
-        parent::__construct($message, $httpCode);
-        $this->_data = $data;
-    }
-
-    public function getData() {
-        return $this->_data;
-    }
-
-    public function getDumpProperties() {
-        return $this->_data;
-    }
-}
-
-class ApiDataError extends ApiError {}
-
 
 // Interfaces
 interface IHttpMediator {
@@ -124,9 +104,16 @@ trait THttpMediator {
                     'code' => $code
                 ]);
             } else {
-                throw new ApiDataError($message, $this->_normalizeErrorData($response->getContent()));
+                throw core\Error::{'EApi,spur\EApi'}([
+                    'message' => $message,
+                    'data' => $this->_normalizeErrorData($response->getContent()),
+                    'code' => $code
+                ]);
             }
         }
+
+
+
 
         return $response;
     }

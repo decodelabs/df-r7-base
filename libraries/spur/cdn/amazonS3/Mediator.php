@@ -378,18 +378,17 @@ class Mediator implements IMediator {
         }
 
         if($xml) {
-            return new ApiException(
-                $xml->Code[0]->getTextContent(),
-                $xml->Message[0]->getTextContent(),
-                $response->getHeaders()->getStatusCode(),
-                $xml
-            );
+            return core\Error::{'EApi'}([
+                'message' => $xml->Message[0]->getTextContent(),
+                'code' => $xml->Code[0]->getTextContent(),
+                'data' => $xml
+            ]);
         } else if($response->getHeaders()->hasStatusCode(404)) {
-            return new RuntimeException(
+            return core\Error::{'EApi,ENotFound'}(
                 'Resource not found - '.$request->getUrl()
             );
         } else {
-            return new RuntimeException(
+            return core\Error::{'EApi'}(
                 'An unknown API error occurred'
             );
         }

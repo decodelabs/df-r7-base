@@ -85,7 +85,7 @@ class Github implements spur\packaging\bower\IResolver {
     protected function _getRequiredTag(spur\packaging\bower\IPackage $package, $repoName, $cachePath) {
         try {
             $tags = $this->_fetchTags($package, $repoName, $cachePath);
-        } catch(spur\ApiError $e) {
+        } catch(EApi $e) {
             return false;
         }
 

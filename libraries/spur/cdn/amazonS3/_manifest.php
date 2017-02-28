@@ -11,27 +11,6 @@ use df\spur;
 use df\link;
 use df\flex;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-
-class ApiException extends spur\ApiError {
-
-    public $apiCode;
-
-    public function __construct($apiCode, $message, $httpCode=500, flex\xml\ITree $xml=null) {
-        $this->apiCode = $apiCode;
-        parent::__construct($message, $xml, $httpCode);
-    }
-
-    public function getApiCode() {
-        return $this->apiCode;
-    }
-}
-
-
-
-// Interfaces
 interface IStorageClass {
     const STANDARD = 'STANDARD';
     const RRS = 'REDUCED_REDUNDANCY';

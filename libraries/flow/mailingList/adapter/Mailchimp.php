@@ -181,7 +181,7 @@ class Mailchimp extends Base {
             $result
                 ->isSuccessful(true)
                 ->isSubscribed(true);
-        } catch(spur\ApiError $e) {
+        } catch(spur\mail\mailchimp\EApi $e) {
             $result->isSuccessful(false);
 
             switch($e->getData()['code'] ?? null) {

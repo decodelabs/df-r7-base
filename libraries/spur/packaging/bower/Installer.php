@@ -387,7 +387,7 @@ class Installer implements IInstaller {
                     $package->url = $registry['url'];
                     $package->name = $registry['name'];
                     $package->isRegistry = true;
-                } catch(spur\ApiError $e) {
+                } catch(EApi $e) {
                     // never mind
                 }
 
