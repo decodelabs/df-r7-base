@@ -10,29 +10,6 @@ use df\core;
 use df\spur;
 use df\mint;
 
-
-// Exceptions
-interface IException {}
-class BadMethodCallException extends \BadMethodCallException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-class ApiError extends spur\ApiError implements core\IDumpable {
-
-    public function getType() {
-        if(isset($this->_data['type'])) {
-            return $this->_data['type'];
-        }
-
-        return 'card_error';
-    }
-}
-
-class ApiDataError extends ApiError {}
-
-
-
-// Interfaces
 interface IMediator extends spur\IHttpMediator {
 
 // Api key

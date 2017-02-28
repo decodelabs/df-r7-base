@@ -46,9 +46,8 @@ class Charge implements ICharge {
         $this->_isPaid = (bool)$data['paid'];
 
         if($data->has('failure_message')) {
-            $this->_failureException = new ApiDataError($data['failure_message'], [
+            $this->_failureException = core\Error::{'EApi,ECard'}([
                 'message' => $data['failure_message'],
-                'type' => 'card_error',
                 'code' => $data['failure_code']
             ]);
         }
