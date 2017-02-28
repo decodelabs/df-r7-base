@@ -205,7 +205,6 @@ class Mailchimp extends Base {
 
                 default:
                     core\logException($e);
-                    //throw $e;
             }
         }
 

@@ -41,7 +41,15 @@ class Source implements ISource {
         $cache = Cache::getInstance();
 
         if(!$manifest = $cache->get('source:'.$this->_id)) {
-            $manifest = $this->_adapter->fetchManifest();
+            try {
+                $manifest = $this->_adapter->fetchManifest();
+            } catch(\Throwable $e) {
+                throw core\Error::{'EData'}([
+                    'message' => 'Unable to fetch manifest from adapter',
+                    'previous' => $e
+                ]);
+            }
+
             $manifest = $this->_normalizeManifest($manifest);
             $cache->set('source:'.$this->_id, $manifest);
         }
@@ -238,7 +246,18 @@ class Source implements ISource {
             throw new RuntimeException('List id '.$listId.' could not be found on source '.$this->_id);
         }
 
-        $result = $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace);
+        try {
+            $result = $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace);
+        } catch(\Throwable $e) {
+            throw core\Error::{'EData'}([
+                'message' => 'Adapter failed to subscribe user to list',
+                'previous' => $e,
+                'data' => [
+                    'list' => $listId,
+                    'client' => $client
+                ]
+            ]);
+        }
 
         if($result->isSuccessful()) {
             $cache = flow\mailingList\Cache::getInstance();
@@ -292,7 +311,16 @@ class Source implements ISource {
             }
 
             $lists = array_intersect_key($lists, array_flip($selectIds));
-            $manifest = array_merge($manifest, $this->_adapter->fetchClientManifest($lists));
+
+            try {
+                $manifest = array_merge($manifest, $this->_adapter->fetchClientManifest($lists));
+            } catch(\Throwable $e) {
+                throw core\Error::{'EData'}([
+                    'message' => 'Failed to fetch client manifest',
+                    'previous' => $e
+                ]);
+            }
+
             $cache->setSession('client:'.$this->_id, $manifest);
         }
 
@@ -301,13 +329,32 @@ class Source implements ISource {
 
 
     public function updateListUserDetails($oldEmail, user\IClientDataObject $client) {
-        $this->_adapter->updateListUserDetails($oldEmail, $client, $this->getManifest());
+        try {
+            $this->_adapter->updateListUserDetails($oldEmail, $client, $this->getManifest());
+        } catch(\Throwable $e) {
+            throw core\Error::{'EData'}([
+                'message' => 'Unable to update list user details',
+                'previous' => $e
+            ]);
+        }
+
         return $this;
     }
 
 
     public function unsubscribeUserFromList(user\IClientDataObject $client, $listId) {
-        $this->_adapter->unsubscribeUserFromList($client, $listId);
+        try {
+            $this->_adapter->unsubscribeUserFromList($client, $listId);
+        } catch(\Throwable $e) {
+            throw core\Error::{'EData'}([
+                'message' => 'Failed unsubscribing user from list',
+                'previous' => $e,
+                'data' => [
+                    'list' => $listId,
+                    'client' => $client
+                ]
+            ]);
+        }
 
         $cache = flow\mailingList\Cache::getInstance();
         $cache->removeSession('client:'.$this->_id);
