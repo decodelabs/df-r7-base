@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -67,7 +67,7 @@ class Member implements IMember, core\IDumpable {
                 $this->_groupSets[$set['id']] = array_map(
                     function($groupName) {
                         return trim(str_replace('\\,', ',', $groupName));
-                    }, 
+                    },
                     preg_split('/(?<!\\\\)\,\W*/i', $set['groups'])
                 );
 
@@ -189,7 +189,7 @@ class Member implements IMember, core\IDumpable {
         $address = flow\mail\Address::factory($address);
 
         if(!$address->isValid()) {
-            throw new InvalidArgumentException(
+            throw core\Error::EArgument(
                 'Invalid email address: '.$address
             );
         }
@@ -210,16 +210,16 @@ class Member implements IMember, core\IDumpable {
     public function setName($firstName, $surname) {
         $this->_merges['FNAME'] = $firstName;
         $this->_merges['LNAME'] = $surname;
-        
+
         return $this;
     }
 
     public function updateName($firstName, $surname) {
         $this->setName($firstName, $surname);
-        
+
         $this->_mediator->updateMemberName(
-            $this->_listId, 
-            $this->_id, 
+            $this->_listId,
+            $this->_id,
             $this->_merges['FNAME'],
             $this->_merges['LNAME']
         );
@@ -314,7 +314,7 @@ class Member implements IMember, core\IDumpable {
         $this->_mediator->updateMember($this->_listId, $this->_id, $merges, $this->_emailType, true);
         return $this;
     }
-    
+
     public function unsubscribe($sendGoodbye=false, $sendNotify=false) {
         $this->_mediator->unsubscribe($this->_listId, $this->_email, (bool)$sendGoodbye, (bool)$sendNotify);
         return $this;

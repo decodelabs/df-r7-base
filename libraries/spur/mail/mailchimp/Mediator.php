@@ -313,7 +313,7 @@ class Mediator implements IMediator, \Serializable {
         ]);
 
         if(!isset($json->data->{0}) || isset($json->data->{0}->error)) {
-            throw new RuntimeException(
+            throw core\Error::{'ENotFound,EData'}(
                 'Member '.$emailAddress.' could not be found'
             );
         }

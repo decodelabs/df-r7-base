@@ -31,7 +31,7 @@ class WebHook implements IWebHook, core\IDumpable {
 
     public static function normalizeActions(array $actions) {
         if(empty($actions)) {
-            throw new InvalidArgumentException(
+            throw core\Error::EArgument(
                 'WebHook action list must contain at least one action'
             );
         }

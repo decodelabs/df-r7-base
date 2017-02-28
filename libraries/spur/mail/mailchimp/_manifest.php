@@ -10,14 +10,6 @@ use df\core;
 use df\spur;
 
 
-// Exceptions
-interface IException {}
-class BadMethodCallException extends \BadMethodCallException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-// Interfaces
 interface IMediator extends spur\IHttpMediator {
     public function isSecure(bool $flag=null);
 
