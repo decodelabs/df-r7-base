@@ -11,49 +11,6 @@ use df\spur;
 use df\flow;
 
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-class ApiException extends RuntimeException implements core\IDumpable {
-
-    protected $_type;
-    protected $_apiCode;
-    protected $_requestId;
-
-    public function __construct(\SimpleXMLElement $xml) {
-        $this->_type = (string)$xml->Error->Type;
-        $this->_apiCode = (string)$xml->Error->Code;
-        $this->_requestId = (string)$xml->RequestId;
-
-        parent::__construct((string)$xml->Error->Message, 500);
-    }
-
-    public function getType() {
-        return $this->_type;
-    }
-
-    public function getApiCode() {
-        return $this->_apiCode;
-    }
-
-    public function getRequestId() {
-        return $this->_requestId;
-    }
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'type' => $this->_type,
-            'code' => $this->_apiCode,
-            'requestId' => $this->_requestId
-        ];
-    }
-}
-
-
 // Interfaces
 interface IMediator extends spur\IHttpMediator {
     public function getHttpClient();

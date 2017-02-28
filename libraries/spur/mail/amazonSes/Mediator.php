@@ -202,7 +202,7 @@ class Mediator implements IMediator {
 
     public function createUrl($path) {
         if(!$this->_activeUrl) {
-            throw new RuntimeException(
+            throw core\Error::ESetup(
                 'Amazon SES API url has not been set'
             );
         }
@@ -215,13 +215,13 @@ class Mediator implements IMediator {
 
     protected function _prepareRequest(link\http\IRequest $request) {
         if(!$this->_accessKey) {
-            throw new RuntimeException(
+            throw core\Error::ESetup(
                 'Amazon SES access key has not been set'
             );
         }
 
         if(!$this->_secretKey) {
-            throw new RuntimeException(
+            throw core\Error::ESetup(
                 'Amazon SES secret key has not been set'
             );
         }
@@ -238,7 +238,9 @@ class Mediator implements IMediator {
     }
 
     protected function _extractResponseError(link\http\IResponse $response) {
-        $content = $response->getContent();
-        throw new spur\ApiDataError('SES api error', $content);
+        return core\Error::EApi([
+            'message' => 'SES api error',
+            'data' => $response->getContent()
+        ]);
     }
 }
