@@ -193,6 +193,10 @@ class Mailchimp extends Base {
                     $result->hasBounced(true);
                     break;
 
+                case 502:
+                    $result->isInvalid(true);
+                    break;
+
                 case -99:
                     $result
                         ->isThrottled(preg_match('/List_ThrottledRecipient/', $e->getMessage()))
