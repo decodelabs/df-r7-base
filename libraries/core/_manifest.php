@@ -36,9 +36,11 @@ interface ERuntime extends IError {}
 interface EDefinition extends ELogic {}
 interface EImplementation extends ELogic {}
 interface EValue extends ERuntime {}
+interface ESetup extends EValue {}
 interface EArgument extends ELogic {}
 interface ECall extends ELogic {}
 interface ERecursion extends ELogic {}
+interface EApi extends ERuntime {}
 interface EDomain extends ELogic {}
 interface EBounds extends ERuntime {}
 

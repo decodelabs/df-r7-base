@@ -11,11 +11,6 @@ use df\flow;
 use df\spur;
 use df\user;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-
-
 // Interfaces
 interface ISource {
     public function getId();

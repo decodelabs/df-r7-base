@@ -20,7 +20,7 @@ class Mailchimp extends Base {
 
     protected function __construct(core\collection\ITree $options) {
         if(!$apiKey = $options['apiKey']) {
-            throw new flow\mailingList\RuntimeException(
+            throw core\Error::{'flow/mailingList/ESetup'}(
                 'Mailchimp apiKey has not been set'
             );
         }

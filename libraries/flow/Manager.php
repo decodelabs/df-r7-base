@@ -300,8 +300,8 @@ class Manager implements IManager, core\IShutdownAware {
         foreach($config->getListSources() as $id => $options) {
             try {
                 $source = new flow\mailingList\Source($id, $options);
-            } catch(flow\mailingList\IException $e) {
-                core\log\Manager::getInstance()->logException($e);
+            } catch(flow\mailingList\IError $e) {
+                core\logException($e);
                 continue;
             }
 
@@ -321,7 +321,7 @@ class Manager implements IManager, core\IShutdownAware {
 
         try {
             return new flow\mailingList\Source($id, $options);
-        } catch(flow\mailingList\IException $e) {
+        } catch(flow\mailingList\IError $e) {
             return null;
         }
     }
@@ -457,13 +457,13 @@ class Manager implements IManager, core\IShutdownAware {
 
     public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult  {
         if(!$source = $this->getListSource($sourceId)) {
-            throw new flow\mailingList\RuntimeException(
+            throw core\Error::{'flow/mailingList/EApi,flow/mailingList/ENotFound'}(
                 'List source '.$sourceId.' does not exist'
             );
         }
 
         if(!$listId = $source->getPrimaryListId()) {
-            throw new flow\mailingList\RuntimeException(
+            throw core\Error::{'flow/mailingList/EApi,flow/mailingList/ENotFound'}(
                 'No primary list has been set for mailing list source '.$source->getId()
             );
         }
@@ -473,7 +473,7 @@ class Manager implements IManager, core\IShutdownAware {
 
     public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult  {
         if(!$source = $this->getListSource($sourceId)) {
-            throw new flow\mailingList\RuntimeException(
+            throw core\Error::{'flow/mailingList/EApi,flow/mailingList/ENotFound'}(
                 'List source '.$sourceId.' does not exist'
             );
         }

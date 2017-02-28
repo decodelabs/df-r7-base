@@ -15,7 +15,7 @@ abstract class Base implements flow\mailingList\IAdapter {
 
     public static function factory(core\collection\ITree $options) {
         if(!$name = $options['adapter']) {
-            throw new flow\mailingList\RuntimeException(
+            throw core\Error::{'flow/mailingList/ESetup'}(
                 'Mailing list adapter name has not been set in config'
             );
         }
@@ -23,7 +23,7 @@ abstract class Base implements flow\mailingList\IAdapter {
         $class = 'df\\flow\\mailingList\\adapter\\'.ucfirst($name);
 
         if(!class_exists($class)) {
-            throw new flow\mailingList\RuntimeException(
+            throw core\Error::{'flow/mailingList/ESetup,ENotFound'}(
                 'Mailing list adapter '.$name.' could not be found'
             );
         }
@@ -35,7 +35,7 @@ abstract class Base implements flow\mailingList\IAdapter {
         $class = 'df\\flow\\mailingList\\adapter\\'.ucfirst($name);
 
         if(!class_exists($class)) {
-            throw new flow\mailingList\RuntimeException(
+            throw core\Error::{'flow/mailingList/ESetup,ENotFound'}(
                 'Mailing list adapter '.$name.' could not be found'
             );
         }
