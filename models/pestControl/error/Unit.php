@@ -55,6 +55,10 @@ class Unit extends axis\unit\table\Base {
 
 // IO
     public function logException(\Throwable $e) {
+        while($prev = $e->getPrevious()) {
+            $e = $prev;
+        }
+
         $type = get_class($e);
         $normal = false;
 
