@@ -539,7 +539,7 @@ class Manager implements IManager, core\IShutdownAware {
         return $source->getClientSubscribedGroupsIn($listId);
     }
 
-    public function isClientSubscribed($sourceId, $listId=null, $groupId=null) {
+    public function isClientSubscribed($sourceId, $listId=null, $groupId=null): bool {
         if(!$source = $this->getListSource($sourceId)) {
             return false;
         }
@@ -552,7 +552,12 @@ class Manager implements IManager, core\IShutdownAware {
             return false;
         }
 
-        $manifest = $source->getClientManifest();
+        try {
+            $manifest = $source->getClientManifest();
+        } catch(\Throwable $e) {
+            core\logException($e);
+            return false;
+        }
 
         if(!isset($manifest[$listId])) {
             return false;

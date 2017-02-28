@@ -34,6 +34,7 @@ interface IError {
 interface ELogic extends IError {}
 interface ERuntime extends IError {}
 interface EDefinition extends ELogic {}
+interface EImplementation extends ELogic {}
 interface EValue extends ERuntime {}
 interface EArgument extends ELogic {}
 interface ECall extends ELogic {}
@@ -45,7 +46,7 @@ interface EBadRequest extends ERuntime {}
 interface EUnauthorized extends ERuntime {}
 interface ENotFound extends ERuntime {}
 interface ENoContext extends ERuntime {}
-interface ENotImplemented extends ELogic {}
+interface ENotImplemented extends EImplementation {}
 interface EServiceUnavailable extends ERuntime {}
 
 interface EApplicationNotFound extends ENotFound {}

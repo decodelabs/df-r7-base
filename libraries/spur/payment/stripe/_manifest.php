@@ -29,7 +29,6 @@ class ApiError extends spur\ApiError implements core\IDumpable {
 }
 
 class ApiDataError extends ApiError {}
-class ApiImplementationError extends ApiError {}
 
 
 

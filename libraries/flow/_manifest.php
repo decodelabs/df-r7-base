@@ -57,7 +57,7 @@ interface IManager extends core\IManager {
     public function getClientSubscribedGroupsFor($sourceId);
     public function getClientSubscribedGroupsIn($sourceId, $listId);
     public function getClientSubscribedPrimaryGroupsFor($sourceId);
-    public function isClientSubscribed($sourceId, $listId=null, $groupId=null);
+    public function isClientSubscribed($sourceId, $listId=null, $groupId=null): bool;
 
     public function updateListUserDetails($oldEmail, user\IClientDataObject $client);
 

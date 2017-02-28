@@ -33,7 +33,6 @@ class ApiError extends RuntimeException implements core\IDumpable {
 }
 
 class ApiDataError extends ApiError {}
-class ApiImplementationError extends ApiError {}
 
 
 // Interfaces
@@ -116,8 +115,14 @@ trait THttpMediator {
                 throw $message;
             }
 
-            if($response->getHeaders()->getStatusCode() >= 500) {
-                throw new ApiImplementationError($message, $response->getContent());
+            $code = $response->getHeaders()->getStatusCode();
+
+            if($code >= 500) {
+                throw core\Error::{'EImplementation,spur/EImplementation'}([
+                    'message' => $message,
+                    'data' => $response->getContent(),
+                    'code' => $code
+                ]);
             } else {
                 throw new ApiDataError($message, $this->_normalizeErrorData($response->getContent()));
             }
