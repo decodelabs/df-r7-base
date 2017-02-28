@@ -24,7 +24,10 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
         $output = $this->{$type}($value, ...$args);
 
         if(!$nullable && $output === null) {
-            $this->context->throwError(400, 'Empty '.$type.' filter value');
+            throw core\Error::{'core/filter/EValue,EBadRequest'}([
+                'message' => 'Empty '.$type.' filter value',
+                'http' => 400
+            ]);
         }
 
         return $output;
@@ -60,7 +63,11 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
                 $output = $this->_filter->{$type}($this->value, ...$args);
 
                 if(!$this->nullable && $output === null) {
-                    $this->_filter->context->throwError(400, 'Query var '.$this->_key.' did not contain a valid '.$type);
+                    throw core\Error::{'core/filter/EValue,EBadRequest'}([
+                        'message' => 'Query var '.$this->_key.' did not contain a valid '.$type,
+                        'namespace' => __NAMESPACE__,
+                        'http' => 400
+                    ]);
                 }
 
                 return $output;
@@ -216,7 +223,11 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
             return $value;
         }
 
-        return flex\Text::formatSlug($value);
+        if(empty($output = flex\Text::formatSlug($value))) {
+            $output = null;
+        }
+
+        return $output;
     }
 
     public function intId($value, array $options=[]) {//: ?int {

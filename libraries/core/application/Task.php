@@ -167,7 +167,9 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 
         // Forwarding
         if($response instanceof arch\IRequest) {
-            $this->_context->throwError(500, 'Request forwarding is no longer supported');
+            throw core\Error::EImplementation(
+                'Request forwarding is no longer supported'
+            );
         }
 
         if($response === null) {

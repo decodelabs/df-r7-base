@@ -74,7 +74,9 @@ class TaskInstall extends arch\node\Task {
                 if(isset(self::PACKAGES[$name])) {
                     $url = self::PACKAGES[$name];
                 } else {
-                    $this->throwError(500, 'No valid repo URL specified');
+                    throw core\Error::EArgument(
+                        'No valid repo URL specified'
+                    );
                 }
             }
 

@@ -18,7 +18,7 @@ class RegisterLocal extends axis\procedure\Record {
 
     protected function _prepare() {
         if($this->context->user->isLoggedIn()) {
-            $this->throwError(403, 'Already logged in!');
+            throw core\Error::EUnauthorized('Already logged in');
         }
     }
 

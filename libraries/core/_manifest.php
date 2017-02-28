@@ -44,13 +44,13 @@ interface EApi extends ERuntime {}
 interface EDomain extends ELogic {}
 interface EBounds extends ERuntime {}
 
-interface EBadRequest extends ERuntime {}
-interface EUnauthorized extends ERuntime {}
-interface ENotFound extends ERuntime {}
-interface ENoContext extends ERuntime {}
-interface ENotImplemented extends EImplementation {}
-interface EServiceUnavailable extends ERuntime {}
+interface EBadRequest extends ERuntime {} // 400
+interface EUnauthorized extends ERuntime {} // 401 / 403
+interface ENotFound extends ERuntime {} // 404
+interface ENotImplemented extends EImplementation {} // 501
+interface EServiceUnavailable extends ERuntime {} // 503
 
+interface ENoContext extends ERuntime {}
 interface EApplicationNotFound extends ENotFound {}
 interface EHelperNotFound extends ENotFound {}
 
@@ -523,7 +523,11 @@ trait TContext {
 
 // Helpers
     public function throwError($code=500, $message='', array $data=null) {
-        throw new ContextException($message, (int)$code, $data);
+        throw core\Error::{'EContext'}([
+            'message' => $message,
+            'http' => (int)$code,
+            'data' => $data
+        ]);
     }
 
     public function findFile($path) {
@@ -625,20 +629,6 @@ class SharedContext implements IContext {
 
     protected function _loadHelper($name) {
         return $this->loadRootHelper($name);
-    }
-}
-
-class ContextException extends \RuntimeException implements IException, core\IDumpable {
-
-    public $data;
-
-    public function __construct($code, $message, array $data=null) {
-        $this->data = $data;
-        parent::__construct($code, $message);
-    }
-
-    public function getDumpProperties() {
-        return $this->data;
     }
 }
 

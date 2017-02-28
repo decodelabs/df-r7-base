@@ -58,8 +58,8 @@ abstract class RestApi extends Base implements IRestApiNode {
 
         $data = null;
 
-        if($e instanceof core\ContextException) {
-            $data = $e->data;
+        if($e instanceof core\IError) {
+            $data = $e->getData();
         }
 
         $result = new arch\node\restApi\Result($data);

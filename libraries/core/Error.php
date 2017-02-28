@@ -37,10 +37,25 @@ class Error extends \Exception implements IError {
 
         $args['rewind'] = $rewind = max((int)($args['rewind'] ?? 0), 0);
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $rewind + 3);
+        $namespace = array_pop($trace)['class'] ?? null;
 
-        $namespace = explode('\\', array_pop($trace)['class']);
-        $className = array_pop($namespace);
-        $namespace = implode('\\', $namespace);
+        if(isset($args['namespace'])) {
+            $namespace = $args['namespace'];
+            unset($args['namespace']);
+        } else {
+            if(!empty($namespace)) {
+                if(false !== strpos($namespace, 'class@anon')) {
+                    // lookup filepath?
+                    $namespace = '\\df\\core';
+                } else {
+                    $namespace = explode('\\', $namespace);
+                    $className = array_pop($namespace);
+                    $namespace = implode('\\', $namespace);
+                }
+            } else {
+                $namespace = '\\df\\core';
+            }
+        }
 
         $base = $args['base'] ?? get_called_class();
         $def = self::_buildDefinition($base, $interfaces, $namespace);
@@ -65,6 +80,7 @@ class Error extends \Exception implements IError {
     private static function _buildDefinition(string $base, array $interfaces, string $namespace) {
         $definition = 'return new class(\'\') extends '.$base;
         $traits = $interfaceDefs = [];
+        $namespace = ltrim($namespace, '\\');
         $namespaces = [$namespace];
 
         if(!empty($interfaces)) {

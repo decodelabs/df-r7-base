@@ -192,11 +192,17 @@ class Base implements INode, core\IDumpable {
             $client = $this->context->user->getClient();
 
             if($client->isDeactivated()) {
-                $this->throwError(403, 'Client deactivated');
+                throw core\Error::{'EUnauthorized'}([
+                    'message' => 'Client deactivated',
+                    'http' => 403
+                ]);
             }
 
             if(!$client->canAccess($this)) {
-                $this->throwError(401, 'Insufficient permissions');
+                throw core\Error::{'EUnauthorized'}([
+                    'message' => 'Insufficient permissions',
+                    'http' => 401
+                ]);
             }
         }
 
@@ -319,7 +325,10 @@ class Base implements INode, core\IDumpable {
                 }
         }
 
-        $this->throwError(404, 'No ajax content found');
+        throw core\Error::{'ENotFound'}([
+            'message' => 'No ajax content found',
+            'http' => 404
+        ]);
     }
 
 

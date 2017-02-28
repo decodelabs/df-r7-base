@@ -119,7 +119,10 @@ class Media implements arch\IDirectoryHelper {
             $output = $this->context->http->redirect($filePath);
         } else {
             if(!is_file($filePath)) {
-                $this->context->throwError(404, 'Media file could not be found in storage - this is bad!');
+                throw core\Error::{'core/fs/ENotFound'}([
+                    'message' => 'Media file could not be found in storage - this is bad!',
+                    'http' => 404
+                ]);
             }
 
             $output = $this->context->http->fileResponse($filePath)
@@ -203,7 +206,10 @@ class Media implements arch\IDirectoryHelper {
             $filePath = $handler->getFilePath($fileId, $versionId);
 
             if(!is_file($filePath)) {
-                $this->context->throwError(404, 'Media file could not be found in storage - this is bad!');
+                throw core\Error::{'core/fs/ENotFound'}([
+                    'message' => 'Media file could not be found in storage - this is bad!',
+                    'http' => 404
+                ]);
             }
         } else {
             $filePath = link\http\Url::factory($handler->getVersionDownloadUrl($fileId, $versionId, $isActive));

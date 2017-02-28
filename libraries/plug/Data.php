@@ -63,7 +63,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     public function queryByPrimaryForAction(opal\query\IReadQuery $query, $primary, $chain=null) {
         if($primary === null) {
             $name = $query->getSource()->getDisplayName();
-            $this->context->throwError(404, 'Item not found - '.$name.'#NULL');
+            throw core\Error::{'opal/record/ENotFound'}([
+                'message' => 'Item not found - '.$name.'#NULL',
+                'http' => 404
+            ]);
         }
 
         $this->applyQueryPrimaryClause($query, $primary);
@@ -80,7 +83,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             }
 
             $name = $query->getSource()->getDisplayName();
-            $this->context->throwError(404, 'Item not found - '.$name.'#'.$primary);
+            throw core\Error::{'opal/record/ENotFound'}([
+                'message' => 'Item not found - '.$name.'#'.$primary,
+                'http' => 404
+            ]);
         }
 
         return $output;
@@ -109,7 +115,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
         if($output === null) {
             $name = $query->getSource()->getDisplayName();
-            $this->context->throwError(404, 'Item not found - '.$name);
+            throw core\Error::{'opal/record/ENotFound'}([
+                'message' => 'Item not found - '.$name,
+                'http' => 404
+            ]);
         }
 
         return $output;
@@ -179,7 +188,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         $adapter = $source->getAdapter();
 
         if(!$this->context->getUserManager()->canAccess($adapter, $action)) {
-            $this->context->throwError(401, 'Cannot '.$actionName.' '.$source->getDisplayName().' items');
+            throw core\Error::{'opal/record/EUnauthorized'}([
+                'message' => 'Cannot '.$actionName.' '.$source->getDisplayName().' items',
+                'http' => 401
+            ]);
         }
 
         return $this;
@@ -294,11 +306,17 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         }
 
         if(!$output = $this->fetchEntity($id)) {
-            $this->context->throwError(404, 'Entity not found - '.$id);
+            throw core\Error::{'opal/record/ENotFound'}([
+                'message' => 'Entity not found - '.$id,
+                'http' => 404
+            ]);
         }
 
         if(!$this->context->getUserManager()->canAccess($output, $action)) {
-            $this->context->throwError(401, 'Cannot '.$actionName.' entity '.$id);
+            throw core\Error::{'opal/record/EUnauthorized'}([
+                'message' => 'Cannot '.$actionName.' entity '.$id,
+                'http' => 401
+            ]);
         }
 
         return $output;

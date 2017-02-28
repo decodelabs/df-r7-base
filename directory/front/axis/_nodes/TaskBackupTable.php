@@ -21,15 +21,21 @@ class TaskBackupTable extends arch\node\Task {
         $unitId = $this->request['unit'];
 
         if(!$this->_unit = axis\Model::loadUnitFromId($unitId)) {
-            $this->throwError(404, 'Unit '.$unitId.' not found');
+            throw core\Error::{'axis/unit/ENotFound'}(
+                'Unit '.$unitId.' not found'
+            );
         }
 
         if($this->_unit->getUnitType() != 'table') {
-            $this->throwError(403, 'Unit '.$unitId.' is not a table');
+            throw core\Error::{'axis/unit/EDomain'}(
+                'Unit '.$unitId.' is not a table'
+            );
         }
 
         if(!$this->_unit instanceof axis\IAdapterBasedStorageUnit) {
-            $this->throwError(403, 'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!');
+            throw core\Error::{'axis/unit/EDomain'}(
+                'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!'
+            );
         }
 
         $this->io->writeLine('Backing up unit '.$this->_unit->getUnitId());
@@ -41,7 +47,9 @@ class TaskBackupTable extends arch\node\Task {
         $func = '_backup'.$adapterName.'Table';
 
         if(!method_exists($this, $func)) {
-            $this->throwError(403, 'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding');
+            throw core\Error::{'axis/unit/EDomain'}(
+                'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding'
+            );
         }
 
         $schema = $this->_unit->buildInitialSchema();
@@ -65,7 +73,9 @@ class TaskBackupTable extends arch\node\Task {
             $this->io->writeLine('Building copy table');
             $newTable = $connection->createTable($dbSchema);
         } catch(opal\rdbms\TableConflictException $e) {
-            $this->throwError(403, 'Table unit '.$this->_unit->getUnitId().' is currently rebuilding in another process');
+            throw core\Error::{'axis/unit/ERuntime'}(
+                'Table unit '.$this->_unit->getUnitId().' is currently rebuilding in another process'
+            );
         }
 
         $this->io->writeLine('Copying data...');

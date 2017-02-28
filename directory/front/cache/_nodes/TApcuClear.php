@@ -29,7 +29,9 @@ trait TApcuClear {
         }
 
         if(!$isPurge && !($cacheId = $this->request['cacheId'])) {
-            $this->throwError(500, 'Cache id not specified');
+            throw core\Error::{'EValue'}(
+                'Cache id not specified'
+            );
         }
 
         if(!$isPurge) {

@@ -54,11 +54,11 @@ class Handler implements IHandler {
         $content = $response->getJsonContent();
 
         if(!$content->data->nodes->contains('media')) {
-            $this->_context->throwError(
-                403,
-                'Target app does not support media migration',
-                $content->data->nodes->toArray()
-            );
+            throw core\Error::EApi([
+                'message' => 'Target app does not support media migration',
+                'data' => $content->data->nodes->toArray(),
+                'http' => 403
+            ]);
         }
 
         $this->_url = new link\http\Url($content->data['baseUrl']);
@@ -102,7 +102,9 @@ class Handler implements IHandler {
 
         if(!$request instanceof link\http\IRequest) {
             if(!$request instanceof link\http\IUrl) {
-                $this->_context->throwError(500, 'Invalid request');
+                throw core\Error::EBadRequest([
+                    'message' => 'Invalid request'
+                ]);
             }
 
             $request = new link\http\request\Base($request);
@@ -121,7 +123,7 @@ class Handler implements IHandler {
 
         if($response->isError()) {
             $content = $response->getJsonContent();
-            $this->throwError(500, 'Migration failed: '.$content['error']);
+            throw core\Error::EApi('Migration failed: '.$content['error']);
         }
 
         return $response;

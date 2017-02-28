@@ -74,7 +74,9 @@ class TaskBuild extends arch\node\Task {
             $destination = new core\fs\Dir($destinationPath);
 
             if($destination->exists()) {
-                $this->throwError(500, 'Destination build directory already exists');
+                throw core\Error::{'core/fs/EAlreadyExists'}(
+                    'Destination build directory already exists'
+                );
             }
 
             $umask = umask(0);

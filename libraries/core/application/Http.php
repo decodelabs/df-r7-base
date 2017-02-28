@@ -458,10 +458,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         // Empty response
         if($response === null && $this->isDevelopment()) {
-            $this->_context->throwError(
-                500,
-                'No response was returned by node: '.$this->_context->request
-            );
+            throw core\Error::{'ENotImplemented'}([
+                'message' => 'No response was returned by node: '.$this->_context->request,
+                'http' => 501
+            ]);
         }
 
         // Basic response

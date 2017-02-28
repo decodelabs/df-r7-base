@@ -65,9 +65,11 @@ class TaskMedia extends arch\node\Task {
 
                         $this->io->writeLine($versionId.' - '.$version['fileName'].' **NOT FOUND'.($message ? ': '.$message : null).'**');
                     } else if($response->isForbidden()) {
-                        $this->throwError(500, 'Migration key is invalid - check application pass keys match');
+                        throw core\Error::{'EArgument,EApi'}(
+                            'Migration key is invalid - check application pass keys match'
+                        );
                     } else if($response->isError()) {
-                        $this->throwError(500, 'Migration failed!!!');
+                        throw core\Error::EApi('Migration failed!!!');
                     }
                 } else {
                     $this->io->writeLine('Fetched '.$versionId.' - '.$version['fileName'].' - '.$this->format->fileSize(filesize($path)));
@@ -91,8 +93,10 @@ class TaskMedia extends arch\node\Task {
             ->validate(['url' => $url]);
 
         if(!$validator->isValid()) {
-            $this->throwError(403, 'Sorry, the URL you entered is invalid');
-            return;
+            throw core\Error::{'EBadRequest'}([
+                'message' => 'Sorry, the URL you entered is invalid',
+                'http' => 403
+            ]);
         }
 
         return new link\http\Url($validator['url']);

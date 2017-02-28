@@ -80,7 +80,9 @@ class TaskRestoreBackup extends arch\node\Task {
                     break;
 
                 default:
-                    $this->throwError(500, 'Not really sure what to do with '.$extension.' type backups');
+                    throw core\Error::{'axis/unit/EValue'}(
+                        'Not really sure what to do with '.$extension.' type backups'
+                    );
             }
         }
 
@@ -89,7 +91,9 @@ class TaskRestoreBackup extends arch\node\Task {
             $func = '_finalize'.ucfirst($type);
 
             if(!method_exists($this, $func)) {
-                $this->throwError(500, 'Can\'t finalize '.$type.' adapters');
+                throw core\Error::{'axis/unit/ERuntime'}(
+                    'Can\'t finalize '.$type.' adapters'
+                );
             }
 
             $this->{$func}();
@@ -122,7 +126,9 @@ class TaskRestoreBackup extends arch\node\Task {
 
         foreach($tableList as $tableName) {
             if(!isset($this->_schemas[$tableName])) {
-                $this->throwError(500, 'Schema not found for '.$tableName);
+                throw core\Error::{'axis/schema/ENotFound'}(
+                    'Schema not found for '.$tableName
+                );
             }
 
             $schemaSet = $this->_schemas[$tableName];

@@ -312,7 +312,9 @@ trait TScaffold_RecordDataProvider {
 
     public function buildDeleteDynamicNode() {
         if(!$this->canDeleteRecord()) {
-            $this->context->throwError(403, 'Records cannot be deleted');
+            throw core\Error::{'arch/scaffold/ELogic,EUnauthorized'}(
+                'Records cannot be deleted'
+            );
         }
 
         return new arch\scaffold\node\DeleteForm($this);

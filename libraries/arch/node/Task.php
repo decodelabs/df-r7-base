@@ -68,7 +68,9 @@ abstract class Task extends Base implements ITaskNode {
         $node = Base::factory($context);
 
         if(!$node instanceof self) {
-            $this->throwError(500, 'Child node '.$request.' does not extend arch\\node\\Task');
+            throw core\Error::{'EDefinition'}(
+                'Child node '.$request.' does not extend arch\\node\\Task'
+            );
         }
 
         $node->io = $this->io;
@@ -92,7 +94,9 @@ abstract class Task extends Base implements ITaskNode {
         $node = Base::factory($context);
 
         if(!$node instanceof self) {
-            $this->throwError(500, 'Child node '.$request.' does not extend arch\\node\\Task');
+            throw core\Error::{'EDefinition'}(
+                'Child node '.$request.' does not extend arch\\node\\Task'
+            );
         }
 
         $capture = $this->task->shouldCaptureBackgroundTasks();

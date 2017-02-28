@@ -18,7 +18,10 @@ class TaskDefault extends arch\node\Base {
 
     public function execute() {
         if(!$exception = $this->application->getDispatchException()) {
-            $this->throwError(404, 'You shouldn\'t be here');
+            throw core\Error::{'EUnauthorized'}([
+                'message' => 'You shouldn\'t be here',
+                'http' => 403
+            ]);
         }
 
         $code = $exception->getCode();

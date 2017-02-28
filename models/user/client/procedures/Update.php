@@ -16,7 +16,7 @@ class Update extends axis\procedure\Record {
         $userManager = $this->user;
 
         if(!$userManager->isLoggedIn()) {
-            $this->throwError(403, 'Cannot edit guests');
+            throw core\Error::EUnauthorized('Cannot edit guests');
         }
 
         $record = $this->_unit->fetch()
@@ -24,7 +24,9 @@ class Update extends axis\procedure\Record {
             ->toRow();
 
         if(!$record) {
-            $this->throwError(500, 'Client record not found');
+            throw core\Error::{'opal/record/ENotFound'}(
+                'Client record not found'
+            );
         }
 
         return $record;
