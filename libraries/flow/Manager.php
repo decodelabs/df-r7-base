@@ -109,7 +109,7 @@ class Manager implements IManager, core\IShutdownAware {
             }
 
             if(!$from->isValid()) {
-                $context->logs->logException(new RuntimeException(
+                $context->logs->logException(core\Error::EValue(
                     'Invalid from address: '.$from
                 ));
 
@@ -283,8 +283,8 @@ class Manager implements IManager, core\IShutdownAware {
         $model = axis\Model::factory('mail');
 
         if(!$model instanceof flow\mail\IMailModel) {
-            throw new flow\mail\RuntimeException(
-                'Mail model does not implements flow\\mail\\IMailModel'
+            throw core\Error::{'flow/mail/EDefinition'}(
+                'Mail model does not implement flow\\mail\\IMailModel'
             );
         }
 
