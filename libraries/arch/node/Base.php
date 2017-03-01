@@ -192,7 +192,7 @@ class Base implements INode, core\IDumpable {
             $client = $this->context->user->getClient();
 
             if($client->isDeactivated()) {
-                throw core\Error::{'EUnauthorized'}([
+                throw core\Error::{'EForbidden'}([
                     'message' => 'Client deactivated',
                     'http' => 403
                 ]);

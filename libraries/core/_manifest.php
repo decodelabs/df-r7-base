@@ -45,7 +45,8 @@ interface EDomain extends ELogic {}
 interface EBounds extends ERuntime {}
 
 interface EBadRequest extends ERuntime {} // 400
-interface EUnauthorized extends ERuntime {} // 401 / 403
+interface EUnauthorized extends ERuntime {} // 401
+interface EForbidden extends EUnauthorized {} // 403
 interface ENotFound extends ERuntime {} // 404
 interface ENotImplemented extends EImplementation {} // 501
 interface EServiceUnavailable extends ERuntime {} // 503

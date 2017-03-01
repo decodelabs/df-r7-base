@@ -54,7 +54,7 @@ class Handler implements IHandler {
         $content = $response->getJsonContent();
 
         if(!$content->data->nodes->contains('media')) {
-            throw core\Error::EApi([
+            throw core\Error::{'EApi,EForbidden'}([
                 'message' => 'Target app does not support media migration',
                 'data' => $content->data->nodes->toArray(),
                 'http' => 403

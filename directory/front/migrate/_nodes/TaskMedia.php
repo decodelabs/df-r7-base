@@ -93,9 +93,8 @@ class TaskMedia extends arch\node\Task {
             ->validate(['url' => $url]);
 
         if(!$validator->isValid()) {
-            throw core\Error::{'EBadRequest'}([
+            throw core\Error::{'EArgument'}([
                 'message' => 'Sorry, the URL you entered is invalid',
-                'http' => 403
             ]);
         }
 
