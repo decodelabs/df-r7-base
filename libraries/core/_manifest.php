@@ -464,7 +464,6 @@ interface IContext extends core\IHelperProvider, core\ITranslator {
 
     // Helpers
     public function loadRootHelper($name);
-    public function throwError($code=500, $message='', array $data=null);
     public function findFile($path);
 
     public function getLogManager();
@@ -523,14 +522,6 @@ trait TContext {
 
 
 // Helpers
-    public function throwError($code=500, $message='', array $data=null) {
-        throw core\Error::{'EContext'}([
-            'message' => $message,
-            'http' => (int)$code,
-            'data' => $data
-        ]);
-    }
-
     public function findFile($path) {
         return df\Launchpad::$loader->findFile($path);
     }
