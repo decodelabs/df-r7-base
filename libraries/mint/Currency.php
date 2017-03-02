@@ -174,7 +174,7 @@ class Currency implements ICurrency, core\IDumpable {
     protected $_amount;
     protected $_code;
 
-    public static function factory($amount, $code=null) {
+    public static function factory($amount, $code=null): ICurrency {
         if($amount instanceof ICurrency) {
             return $amount;
         }
@@ -197,17 +197,17 @@ class Currency implements ICurrency, core\IDumpable {
         return new self($amount, $code);
     }
 
-    public static function fromIntegerAmount($amount, $code) {
+    public static function fromIntegerAmount($amount, $code): ICurrency {
         $output = new self(0, $code);
         $output->setAmount($amount / $output->getDecimalFactor());
         return $output;
     }
 
-    public static function isRecognizedCode($code) {
+    public static function isRecognizedCode($code): bool {
         return isset(self::CURRENCIES[$code]) || in_array($code, self::CURRENCIES);
     }
 
-    public static function getRecognizedCodes() {
+    public static function getRecognizedCodes(): array {
         return self::CURRENCIES;
     }
 
@@ -216,24 +216,24 @@ class Currency implements ICurrency, core\IDumpable {
         $this->setCode($code);
     }
 
-    public function setAmount($amount) {
+    public function setAmount(float $amount) {
         $this->_amount = $amount;
         return $this;
     }
 
-    public function getAmount() {
+    public function getAmount(): float {
         return $this->_amount;
     }
 
-    public function getIntegerAmount() {
-        return (int)round($this->_amount * $this->getDecimalFactor());
+    public function getIntegerAmount(): int {
+        return round($this->_amount * $this->getDecimalFactor());
     }
 
-    public function getFormattedAmount() {
+    public function getFormattedAmount(): string {
         return number_format($this->_amount, $this->getDecimalPlaces());
     }
 
-    public static function normalizeCode($code) {
+    public static function normalizeCode(string $code): string {
         if(isset(self::CURRENCIES[$code])) {
             $code = self::CURRENCIES[$code];
         }
@@ -243,30 +243,30 @@ class Currency implements ICurrency, core\IDumpable {
 
 
 // Code
-    public function setCode($code) {
+    public function setCode(string $code) {
         $this->_code = self::normalizeCode($code);
         return $this;
     }
 
-    public function getCode() {
+    public function getCode(): string {
         return $this->_code;
     }
 
-    public function convert($code, $origRate, $newRate) {
+    public function convert(string $code, float $origRate, float $newRate) {
         return $this->setAmount(($this->_amount / $origRate) * $newRate)
             ->setCode($code);
     }
 
-    public function convertNew($code, $origRate, $newRate) {
+    public function convertNew(string $code, float $origRate, float $newRate) {
         $output = clone $this;
         return $output->convert($code, $origRate, $newRate);
     }
 
-    public function hasRecognizedCode() {
+    public function hasRecognizedCode(): bool {
         return $this->isRecognizedCode($this->_code);
     }
 
-    public function getDecimalPlaces() {
+    public function getDecimalPlaces(): int {
         if(isset(self::DECIMALS[$this->_code])) {
             return self::DECIMALS[$this->_code];
         }
@@ -274,8 +274,8 @@ class Currency implements ICurrency, core\IDumpable {
         return 2;
     }
 
-    public function getDecimalFactor() {
-        return pow(10, $this->getDecimalPlaces());
+    public function getDecimalFactor(): int {
+        return (int)pow(10, $this->getDecimalPlaces());
     }
 
 
@@ -295,7 +295,7 @@ class Currency implements ICurrency, core\IDumpable {
         return $this;
     }
 
-    public function addNew($amount) {
+    public function addNew($amount): ICurrency {
         $output = clone $this;
         return $output->add($amount);
     }
@@ -315,27 +315,27 @@ class Currency implements ICurrency, core\IDumpable {
         return $this;
     }
 
-    public function subtractNew($amount) {
+    public function subtractNew($amount): ICurrency {
         $output = clone $this;
         return $output->subtract($amount);
     }
 
-    public function multiply($factor) {
+    public function multiply(float $factor) {
         $this->_amount *= $factor;
         return $this;
     }
 
-    public function multiplyNew($factor) {
+    public function multiplyNew(float $factor): ICurrency {
         $output = clone $this;
         return $output->multiply($factor);
     }
 
-    public function divide($factor) {
+    public function divide(float $factor) {
         $this->_amount /= $factor;
         return $this;
     }
 
-    public function divideNew($factor) {
+    public function divideNew(float $factor): ICurrency {
         $output = clone $this;
         return $output->divide($factor);
     }

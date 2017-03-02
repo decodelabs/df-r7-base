@@ -11,7 +11,7 @@ use df\mint;
 
 class Standalone extends Base implements mint\IStandaloneChargeRequest {
 
-    protected $_emailAddress;
+    protected $_email;
 
     public function __construct(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description=null, string $email=null) {
         parent::__construct($amount, $card, $description);
@@ -19,11 +19,11 @@ class Standalone extends Base implements mint\IStandaloneChargeRequest {
     }
 
     public function setEmailAddress(/*?string*/ $email) {
-        $this->_emailAddress = $email;
+        $this->_email = $email;
         return $this;
     }
 
     public function getEmailAddress()/*: ?string*/ {
-        return $this->_emailAddress;
+        return $this->_email;
     }
 }

@@ -18,6 +18,8 @@ class Result implements mint\IChargeResult {
     protected $_apiFailure = false;
     protected $_message;
     protected $_invalidFields = [];
+    protected $_chargeId;
+    protected $_transactionRecord;
 
     public function isSuccessful(bool $flag=null) {
         if($flag !== null) {
@@ -85,5 +87,25 @@ class Result implements mint\IChargeResult {
 
     public function getInvalidFields(): array {
         return $this->_invalidFields;
+    }
+
+
+    public function setChargeId(/*?string*/ $id) {
+        $this->_chargeId = $id;
+        return $this;
+    }
+
+    public function getChargeId()/*: ?string*/ {
+        return $this->_chargeId;
+    }
+
+
+    public function setTransactionRecord($record) {
+        $this->_transactionRecord = $record;
+        return $this;
+    }
+
+    public function getTransactionRecord() {
+        return $this->_transactionRecord;
     }
 }

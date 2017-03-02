@@ -13,7 +13,7 @@ abstract class Base implements mint\IGateway {
 
     protected $_defaultCurrency = 'USD';
 
-    public static function factory($name, $settings) {
+    public static function factory(string $name, $settings=null): mint\IGateway {
         $class = 'df\\mint\\gateway\\'.ucfirst($name);
 
         if(!class_exists($class)) {
@@ -32,7 +32,7 @@ abstract class Base implements mint\IGateway {
     }
 
 
-    public function setDefaultCurrency($code) {
+    public function setDefaultCurrency(string $code) {
         $code = strtoupper($code);
 
         if(!mint\Currency::isRecognizedCode($code)) {
@@ -51,11 +51,11 @@ abstract class Base implements mint\IGateway {
         return $this;
     }
 
-    public function getDefaultCurrency() {
+    public function getDefaultCurrency(): string {
         return $this->_defaultCurrency;
     }
 
-    public function isCurrencySupported($code) {
+    public function isCurrencySupported($code): bool {
         $code = mint\Currency::normalizeCode($code);
         return in_array($code, $this->getSupportedCurrencies());
     }
@@ -72,5 +72,28 @@ abstract class Base implements mint\IGateway {
                 'data' => $charge
             ]);
         }
+    }
+
+    public function newStandaloneCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description=null, string $email=null) {
+        return new mint\charge\Standalone($amount, $card, $description, $email);
+    }
+
+    public function authorizeCharge(mint\IChargeRequest $charge): mint\IChargeResult {
+        if($charge instanceof mint\ICustomerChargeRequest
+        && $this instanceof mint\ICustomerTrackingCaptureProviderGateway) {
+            return $this->authorizeCustomerCharge($charge);
+        } else if($charge instanceof mint\IStandaloneChargeRequest
+        && $this instanceof mint\ICaptureProviderGateway) {
+            return $this->authorizeStandaloneCharge($charge);
+        } else {
+            throw core\Error::{'mint/ECharge,EArgument'}([
+                'message' => 'Gateway doesn\'t support authorizing this type of charge',
+                'data' => $charge
+            ]);
+        }
+    }
+
+    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null) {
+        return new mint\charge\Customer($amount, $card, $customerId, $description);
     }
 }

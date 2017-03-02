@@ -13,27 +13,30 @@ use df\user;
 
 // Gateway
 interface IGateway {
-    public function setDefaultCurrency($code);
-    public function getDefaultCurrency();
+    public function setDefaultCurrency(string $code);
+    public function getDefaultCurrency(): string;
 
-    public function getSupportedCurrencies();
-    public function isCurrencySupported($code);
+    public function getSupportedCurrencies(): array;
+    public function isCurrencySupported($code): bool;
 
     public function submitCharge(IChargeRequest $charge): mint\IChargeResult;
     public function submitStandaloneCharge(IStandaloneChargeRequest $charge): IChargeResult;
+    public function newStandaloneCharge(ICurrency $amount, ICreditCardReference $card, string $description=null, string $email=null);
 }
 
 interface ICaptureProviderGateway extends IGateway {
+    public function authorizeCharge(IChargeRequest $charge): IChargeResult;
     public function authorizeStandaloneCharge(IStandaloneChargeRequest $charge): IChargeResult;
     public function captureCharge($id);
 }
 
 interface IRefundProviderGateway extends IGateway {
-    public function refund($chargeId, $amount=null);
+    public function refund($chargeId, ICurrency $amount=null);
 }
 
 interface ICustomerTrackingGateway extends IGateway {
     public function submitCustomerCharge(ICustomerChargeRequest $charge): IChargeResult;
+    public function newCustomerCharge(ICurrency $amount, ICreditCardReference $card, string $customerId, string $description=null);
 
     public function addCustomer(ICustomer $customer);
     public function updateCustomer(ICustomer $customer);
@@ -66,44 +69,44 @@ interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
 interface ICreditCardReference {}
 
 interface ICreditCard extends ICreditCardReference, core\IArrayProvider {
-    public function setName($name);
-    public function getName();
+    public function setName(string $name);
+    public function getName()/*?: string*/;
 
-    public static function isValidNumber($number);
-    public function setNumber($number);
-    public function getNumber();
-    public function setLast4Digits($digits);
-    public function getLast4Digits();
+    public static function isValidNumber(string $number): bool;
+    public function setNumber(string $number);
+    public function getNumber()/*: ?string*/;
+    public function setLast4Digits(string $digits);
+    public function getLast4Digits()/*: ?string*/;
 
-    public static function getSupportedBrands();
-    public function getBrand();
+    public static function getSupportedBrands(): array;
+    public function getBrand()/*: ?string*/;
 
-    public function setStartMonth($month);
-    public function getStartMonth();
-    public function setStartYear($year);
-    public function getStartYear();
-    public function setStartString($start);
-    public function getStartString();
-    public function getStartDate();
+    public function setStartMonth(/*?int*/ $month);
+    public function getStartMonth()/*: ?int*/;
+    public function setStartYear(/*?int*/ $year);
+    public function getStartYear()/*: ?int*/;
+    public function setStartString(/*?string*/ $start);
+    public function getStartString()/*: ?string*/;
+    public function getStartDate()/*: ?core\time\IDate*/;
 
-    public function setExpiryMonth($month);
-    public function getExpiryMonth();
-    public function setExpiryYear($year);
-    public function getExpiryYear();
-    public function setExpiryString($expiry);
-    public function getExpiryString();
-    public function getExpiryDate();
+    public function setExpiryMonth(int $month);
+    public function getExpiryMonth()/*?: int*/;
+    public function setExpiryYear(int $year);
+    public function getExpiryYear()/*?: int*/;
+    public function setExpiryString(string $expiry);
+    public function getExpiryString()/*?: string*/;
+    public function getExpiryDate()/*?: core\time\IDate*/;
 
-    public function setCvc($cvc);
-    public function getCvc();
+    public function setCvc(string $cvc);
+    public function getCvc()/*?: string*/;
 
-    public function setIssueNumber($number);
-    public function getIssueNumber();
+    public function setIssueNumber(/*?string*/ $number);
+    public function getIssueNumber()/*: ?string*/;
 
     public function setBillingAddress(user\IPostalAddress $address=null);
-    public function getBillingAddress();
+    public function getBillingAddress()/*: ?user\IPostalAddress*/;
 
-    public function isValid();
+    public function isValid(): bool;
 }
 
 interface ICreditCardToken extends ICreditCardReference {
@@ -146,6 +149,12 @@ interface IChargeResult {
     public function setInvalidFields(string ...$fields);
     public function addInvalidFields(string ...$fields);
     public function getInvalidFields(): array;
+
+    public function setChargeId(/*?string*/ $id);
+    public function getChargeId()/*: ?string*/;
+
+    public function setTransactionRecord($record);
+    public function getTransactionRecord();
 }
 
 
@@ -159,26 +168,26 @@ interface ICustomer {
 
 // Currency
 interface ICurrency extends core\IStringProvider {
-    public function setAmount($amount);
-    public function getAmount();
-    public function getIntegerAmount();
-    public function getFormattedAmount();
+    public function setAmount(float $amount);
+    public function getAmount(): float;
+    public function getIntegerAmount(): int;
+    public function getFormattedAmount(): string;
 
-    public function setCode($code);
-    public function getCode();
+    public function setCode(string $code);
+    public function getCode(): string;
 
-    public function convert($code, $origRate, $newRate);
-    public function convertNew($code, $origRate, $newRate);
-    public function hasRecognizedCode();
-    public function getDecimalPlaces();
-    public function getDecimalFactor();
+    public function convert(string $code, float $origRate, float $newRate);
+    public function convertNew(string $code, float $origRate, float $newRate);
+    public function hasRecognizedCode(): bool;
+    public function getDecimalPlaces(): int;
+    public function getDecimalFactor(): int;
 
     public function add($amount);
-    public function addNew($amount);
+    public function addNew($amount): ICurrency;
     public function subtract($amount);
-    public function subtractNew($amount);
-    public function multiply($factor);
-    public function multiplyNew($factor);
-    public function divide($factor);
-    public function divideNew($factor);
+    public function subtractNew($amount): ICurrency;
+    public function multiply(float $factor);
+    public function multiplyNew(float $factor): ICurrency;
+    public function divide(float $factor);
+    public function divideNew(float $factor): ICurrency;
 }

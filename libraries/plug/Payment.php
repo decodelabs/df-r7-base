@@ -19,7 +19,7 @@ class Payment implements core\ISharedHelper {
         return mint\CreditCard::isValidNumber($number);
     }
 
-    public function validateCard(core\collection\IInputTree $values, array $map=[]) {
+    public function validateCard(core\collection\IInputTree $values, array $map=[])/*: mint\ICreditCard*/ {
         $map = array_merge([
             'name' => 'name',
             'number' => 'number',
@@ -62,10 +62,10 @@ class Payment implements core\ISharedHelper {
             ->addRequiredField('expiryYear', 'integer')
                 ->setRange($min = date('Y'), $min + 10)
 
-            // Verification
+            // CVC
             ->addRequiredField('cvc', 'text')
                 ->setMinLength(3)
-                ->setMaxLength(3)
+                ->setMaxLength(4)
                 ->setPattern('/^[0-9]+$/')
 
             ->setDataMap($map)
@@ -78,7 +78,7 @@ class Payment implements core\ISharedHelper {
             return null;
         }
 
-        $creditCard = mint\CreditCard::fromArray($validator->getValues());
+        $creditCard = $this->newCard($validator->getValues());
 
         if(!$creditCard->isValid()) {
             $values->number->addError('invalid', $this->context->_(
@@ -89,5 +89,17 @@ class Payment implements core\ISharedHelper {
         }
 
         return $creditCard;
+    }
+
+    public function currency($amount, $code=null): mint\ICurrency {
+        return mint\Currency::factory($amount, $code);
+    }
+
+    public function newCard(array $values): mint\ICreditCard {
+        return mint\CreditCard::fromArray($values);
+    }
+
+    public function newGateway(string $name, $settings=null): mint\IGateway {
+        return mint\gateway\Base::factory($name, $settings);
     }
 }

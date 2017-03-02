@@ -25,7 +25,7 @@ class Stripe extends Base {
         parent::__construct($settings);
     }
 
-    public function getSupportedCurrencies() {
+    public function getSupportedCurrencies(): array {
         $cache = Stripe_Cache::getInstance();
         $key = $this->_getCacheKeyPrefix().'supportedCurrencies';
         $output = $cache->get($key);
@@ -53,12 +53,15 @@ class Stripe extends Base {
         $result = new mint\charge\Result();
 
         try {
-            $request->submit();
+            $charge = $request->submit();
         } catch(spur\payment\stripe\ECard $e) {
+            $data = $e->getData();
+
             $result->isSuccessful(false);
             $result->setMessage($e->getMessage());
+            $result->setChargeId($data['charge'] ?? null);
 
-            switch($e->getData()['code'] ?? null) {
+            switch($data['code'] ?? null) {
                 case 'invalid_number':
                 case 'incorrect_number':
                     $result->addInvalidFields('number');
@@ -109,10 +112,12 @@ class Stripe extends Base {
             $result->isSuccessful(false);
             $result->isApiFailure(true);
             $result->setMessage($e->getMessage());
+            $result->setChargeId($data['charge'] ?? null);
 
             return $result;
         }
 
+        $result->setChargeId($charge->getId());
         $result->isSuccessful(true);
         $result->isCardAccepted(true);
 
