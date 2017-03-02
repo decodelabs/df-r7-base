@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,16 +11,7 @@ use df\mint;
 use df\user;
 
 
-// Exceptions
-interface IException {}
-
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-
-// Interfaces
+// Gateway
 interface IGateway {
     public function setDefaultCurrency($code);
     public function getDefaultCurrency();
@@ -28,11 +19,12 @@ interface IGateway {
     public function getSupportedCurrencies();
     public function isCurrencySupported($code);
 
-    public function submitCharge(ICharge $charge);
+    public function submitCharge(IChargeRequest $charge): mint\IChargeResult;
+    public function submitStandaloneCharge(IStandaloneChargeRequest $charge): IChargeResult;
 }
 
 interface ICaptureProviderGateway extends IGateway {
-    public function authorizeCharge(ICharge $charge);
+    public function authorizeStandaloneCharge(IStandaloneChargeRequest $charge): IChargeResult;
     public function captureCharge($id);
 }
 
@@ -41,9 +33,15 @@ interface IRefundProviderGateway extends IGateway {
 }
 
 interface ICustomerTrackingGateway extends IGateway {
+    public function submitCustomerCharge(ICustomerChargeRequest $charge): IChargeResult;
+
     public function addCustomer(ICustomer $customer);
     public function updateCustomer(ICustomer $customer);
     public function deleteCustomer($customerId);
+}
+
+interface ICustomerTrackingCaptureProviderGateway extends ICaptureProviderGateway, ICustomerTrackingGateway {
+    public function authorizeCustomerCharge(ICustomerChargeRequest $charge): IChargeResult;
 }
 
 interface ICardStoreGateway extends ICustomerTrackingGateway {
@@ -63,6 +61,8 @@ interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
 
 
 
+
+// Credit card
 interface ICreditCardReference {}
 
 interface ICreditCard extends ICreditCardReference, core\IArrayProvider {
@@ -94,8 +94,8 @@ interface ICreditCard extends ICreditCardReference, core\IArrayProvider {
     public function getExpiryString();
     public function getExpiryDate();
 
-    public function setVerificationCode($code);
-    public function getVerificationCode();
+    public function setCvc($cvc);
+    public function getCvc();
 
     public function setIssueNumber($number);
     public function getIssueNumber();
@@ -112,13 +112,52 @@ interface ICreditCardToken extends ICreditCardReference {
 
 
 
+// Charge
+interface IChargeRequest {
+    public function setAmount(ICurrency $amount);
+    public function getAmount(): ICurrency;
+    public function setCard(ICreditCardReference $card);
+    public function getCard(): ICreditCardReference;
+    public function setDescription(/*?string*/ $description);
+    public function getDescription(); //: ?string;
+}
 
+interface IStandaloneChargeRequest extends IChargeRequest {
+    public function setEmailAddress(/*?string*/ $email);
+    public function getEmailAddress();//: ?string;
+}
+
+interface ICustomerChargeRequest extends IChargeRequest {
+    public function setCustomerId(string $id);
+    public function getCustomerId(): string;
+}
+
+
+interface IChargeResult {
+    public function isSuccessful(bool $flag=null);
+    public function isCardAccepted(bool $flag=null);
+    public function isCardExpired(bool $flag=null);
+    public function isCardUnavailable(bool $flag=null);
+    public function isApiFailure(bool $flag=null);
+
+    public function setMessage(/*?string*/ $message);
+    public function getMessage();//: ?string;
+
+    public function setInvalidFields(string ...$fields);
+    public function addInvalidFields(string ...$fields);
+    public function getInvalidFields(): array;
+}
+
+
+
+// Customer
 interface ICustomer {
 
 }
 
 
 
+// Currency
 interface ICurrency extends core\IStringProvider {
     public function setAmount($amount);
     public function getAmount();

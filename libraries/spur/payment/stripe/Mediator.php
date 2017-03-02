@@ -62,8 +62,8 @@ class Mediator implements IMediator, core\IDumpable {
             $output['exp_month'] = $card->getExpiryMonth();
             $output['exp_year'] = $card->getExpiryYear();
 
-            if(null !== ($verification = $card->getVerificationCode())) {
-                $output['cvc'] = $verification;
+            if(null !== ($cvc = $card->getCvc())) {
+                $output['cvc'] = $cvc;
             }
 
             if(null !== ($name = $card->getName())) {

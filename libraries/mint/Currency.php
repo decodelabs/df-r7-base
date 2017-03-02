@@ -283,7 +283,7 @@ class Currency implements ICurrency, core\IDumpable {
     public function add($amount) {
         if($amount instanceof ICurrency) {
             if($amount->getCode() != $this->_code) {
-                throw new RuntimeException(
+                throw core\Error::{'ECurrency,EArgument'}(
                     'Cannot combine different currency amounts'
                 );
             }
@@ -303,7 +303,7 @@ class Currency implements ICurrency, core\IDumpable {
     public function subtract($amount) {
         if($amount instanceof ICurrency) {
             if($amount->getCode() != $this->_code) {
-                throw new RuntimeException(
+                throw core\Error::{'ECurrency,EArgument'}(
                     'Cannot combine different currency amounts'
                 );
             }

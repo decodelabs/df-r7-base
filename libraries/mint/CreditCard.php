@@ -35,7 +35,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
     protected $_startYear;
     protected $_expiryMonth;
     protected $_expiryYear;
-    protected $_verificationCode;
+    protected $_cvc;
     protected $_issueNumber;
     protected $_billingAddress;
 
@@ -80,8 +80,8 @@ class CreditCard implements ICreditCard, core\IDumpable {
                     $output->setExpiryYear($value);
                     break;
 
-                case 'verificationCode':
-                    $output->setVerificationCode($value);
+                case 'cvc':
+                    $output->setCvc($value);
                     break;
 
                 case 'issueNumber':
@@ -265,14 +265,14 @@ class CreditCard implements ICreditCard, core\IDumpable {
     }
 
 
-// Verification
-    public function setVerificationCode($code) {
-        $this->_verificationCode = $code;
+// Cvc
+    public function setCvc($cvc) {
+        $this->_cvc = $cvc;
         return $this;
     }
 
-    public function getVerificationCode() {
-        return $this->_verificationCode;
+    public function getCvc() {
+        return $this->_cvc;
     }
 
 
@@ -328,7 +328,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
             'startYear' => $this->_startYear,
             'expiryMonth' => $this->_expiryMonth,
             'expiryYear' => $this->_expiryYear,
-            'verificationCode' => $this->_verificationCode,
+            'cvc' => $this->_cvc,
             'issueNumber' => $this->_issueNumber,
             'billingAddress' => $this->_billingAddress ? $this->_billingAddress->toArray() : null
         ];
@@ -362,7 +362,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
             $output['expiry'] = null;
         }
 
-        $output['verificationCode'] = $this->_verificationCode;
+        $output['cvc'] = $this->_cvc;
 
         if($this->_issueNumber) {
             $output['issueNumber'] = $this->_issueNumber;

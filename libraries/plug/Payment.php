@@ -25,7 +25,7 @@ class Payment implements core\ISharedHelper {
             'number' => 'number',
             'expiryMonth' => 'expiryMonth',
             'expiryYear' => 'expiryYear',
-            'verificationCode' => 'verificationCode'
+            'cvc' => 'cvc'
         ], $map);
 
         $validator = $this->context->data->newValidator()
@@ -63,7 +63,7 @@ class Payment implements core\ISharedHelper {
                 ->setRange($min = date('Y'), $min + 10)
 
             // Verification
-            ->addRequiredField('verificationCode', 'text')
+            ->addRequiredField('cvc', 'text')
                 ->setMinLength(3)
                 ->setMaxLength(3)
                 ->setPattern('/^[0-9]+$/')
@@ -72,7 +72,7 @@ class Payment implements core\ISharedHelper {
             ->validate($values);
 
         $values->{$map['number']}->setValue('');
-        $values->{$map['verificationCode']}->setValue('');
+        $values->{$map['cvc']}->setValue('');
 
         if(!$validator->isValid()) {
             return null;
