@@ -141,18 +141,14 @@ class ContentBlock extends arch\node\form\Delegate implements
 
     public function renderFieldContent(aura\html\widget\Field $fa) {
         $fa->setId($this->elementId('block'));
-        $fa->push($this->html->string('<div class="fire-block"><nav class="buttons">'));
-
-        if($this->values->content->hasErrors()) {
-            $fa->push($this->html->fieldError($this->values->content));
-        }
+        $fa->push($this->html->string('<div class="fire-block">'));
 
         $available = $this->_getAvailableBlockTypes();
         $availableCount = $this->_state->getStore('availableBlockCount');
         $this->values->blockType->setValue($this->_block ? $this->_block->getName() : null);
 
         if($availableCount > 1) {
-            $fa->push(
+            $fa->add('nav.buttons > div.type', [
                 $this->html->groupedSelectList(
                         $this->fieldName('blockType'),
                         $this->values->blockType,
@@ -167,13 +163,13 @@ class ContentBlock extends arch\node\form\Delegate implements
                     ->setIcon($this->_block ? 'refresh' : 'tick')
                     ->setDisposition($this->_block ? 'operative' : 'positive')
                     ->shouldValidate(false)
-            );
+            ]);
 
-            if($this->_block) {
-                $fa->push($this->html->string('</nav>'));
-            }
         }
 
+        if($this->values->content->hasErrors()) {
+            $fa->push($this->html->fieldError($this->values->content));
+        }
 
         if($this->_block) {
             $this['block']->renderFieldContent($fa);
