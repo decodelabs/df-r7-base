@@ -27,11 +27,13 @@ interface IGateway {
 interface ICaptureProviderGateway extends IGateway {
     public function authorizeCharge(IChargeRequest $charge): IChargeResult;
     public function authorizeStandaloneCharge(IStandaloneChargeRequest $charge): IChargeResult;
-    public function captureCharge($id);
+    public function captureCharge(IChargeCapture $charge);
+    public function newChargeCapture(string $id);
 }
 
 interface IRefundProviderGateway extends IGateway {
-    public function refund($chargeId, ICurrency $amount=null);
+    public function refundCharge(IChargeRefund $refund);
+    public function newChargeRefund(string $id, ICurrency $amount=null);
 }
 
 interface ICustomerTrackingGateway extends IGateway {
@@ -136,6 +138,11 @@ interface ICustomerChargeRequest extends IChargeRequest {
 }
 
 
+interface IChargeCapture {
+    public function setId(string $id);
+    public function getId(): string;
+}
+
 interface IChargeResult {
     public function isSuccessful(bool $flag=null);
     public function isCardAccepted(bool $flag=null);
@@ -155,6 +162,13 @@ interface IChargeResult {
 
     public function setTransactionRecord($record);
     public function getTransactionRecord();
+}
+
+interface IChargeRefund {
+    public function setId(string $id);
+    public function getId(): string;
+    public function setAmount(/*?ICurrency*/ $amount);
+    public function getAmount()/*: ?ICurrency*/;
 }
 
 

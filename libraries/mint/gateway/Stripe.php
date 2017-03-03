@@ -10,7 +10,9 @@ use df\core;
 use df\mint;
 use df\spur;
 
-class Stripe extends Base {
+class Stripe extends Base implements
+    mint\ICaptureProviderGateway,
+    mint\IRefundProviderGateway {
 
     protected $_mediator;
 
@@ -25,6 +27,8 @@ class Stripe extends Base {
         parent::__construct($settings);
     }
 
+
+// Currency
     public function getSupportedCurrencies(): array {
         $cache = Stripe_Cache::getInstance();
         $key = $this->_getCacheKeyPrefix().'supportedCurrencies';
@@ -38,6 +42,8 @@ class Stripe extends Base {
         return $output;
     }
 
+
+// Charges
     public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): mint\IChargeResult {
         $request = $this->_mediator->newChargeRequest(
             $charge->getAmount(),
@@ -46,14 +52,40 @@ class Stripe extends Base {
             $charge->getEmailAddress()
         );
 
-        return $this->_submitCharge($request);
+        return $this->_submitCharge(function() use($request) {
+            $charge = $request->submit();
+            return $charge->getId();
+        });
     }
 
-    protected function _submitCharge(spur\payment\stripe\IChargeRequest $request) {
+    public function authorizeStandaloneCharge(mint\IStandaloneChargeRequest $charge): mint\IChargeResult {
+        $request = $this->_mediator->newChargeRequest(
+            $charge->getAmount(),
+            $charge->getCard(),
+            $charge->getDescription(),
+            $charge->getEmailAddress()
+        );
+
+        $request->shouldCapture(false);
+
+        return $this->_submitCharge(function() use($request) {
+            $charge = $request->submit();
+            return $charge->getId();
+        });
+    }
+
+    public function captureCharge(mint\IChargeCapture $charge) {
+        return $this->_submitCharge(function() use($charge) {
+            $result = $this->_mediator->captureCharge($charge->getId());
+            return $result->getId();
+        });
+    }
+
+    protected function _submitCharge(Callable $handler) {
         $result = new mint\charge\Result();
 
         try {
-            $charge = $request->submit();
+            $chargeId = $handler();
         } catch(spur\payment\stripe\ECard $e) {
             $data = $e->getData();
 
@@ -117,13 +149,22 @@ class Stripe extends Base {
             return $result;
         }
 
-        $result->setChargeId($charge->getId());
+        $result->setChargeId($chargeId);
         $result->isSuccessful(true);
         $result->isCardAccepted(true);
 
         return $result;
     }
 
+
+    public function refundCharge(mint\IChargeRefund $refund) {
+        return $this->_submitCharge(function() use($refund) {
+            $result = $this->_mediator->captureCharge($refund->getId(), $refund->getAmount());
+            return $result->getId();
+        });
+    }
+
+// Cache
     protected function _getCacheKeyPrefix() {
         return $this->_mediator->getApiKey().'-';
     }

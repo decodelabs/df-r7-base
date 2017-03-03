@@ -96,4 +96,13 @@ abstract class Base implements mint\IGateway {
     public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null) {
         return new mint\charge\Customer($amount, $card, $customerId, $description);
     }
+
+
+    public function newChargeCapture(string $id) {
+        return new mint\charge\Capture($id);
+    }
+
+    public function newChargeRefund(string $id, mint\ICurrency $amount=null) {
+        return new mint\charge\Refund($id, $amount);
+    }
 }
