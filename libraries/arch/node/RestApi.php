@@ -28,10 +28,6 @@ abstract class RestApi extends Base implements IRestApiNode {
     }
 
     protected function _handleRequest() {
-        if(method_exists($this->controller, 'authorizeRequest')) {
-            $this->controller->authorizeRequest();
-        }
-
         $this->authorizeRequest();
 
         $httpMethod = $this->_httpRequest->getMethod();

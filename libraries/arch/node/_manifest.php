@@ -22,7 +22,6 @@ interface INode extends core\IContextAware, user\IAccessLock, arch\IResponseForc
     public function setCallback($callback);
     public function getCallback();
     public function dispatch();
-    public function getController();
 
     public function shouldOptimize(bool $flag=null);
     public function getDispatchMethodName();

@@ -245,11 +245,6 @@ trait TOptionalDirectoryAccessLock {
     }
 }
 
-interface IController extends core\IContextAware, IResponseForcer, IOptionalDirectoryAccessLock {
-    public function isControllerInline(): bool;
-}
-
-
 
 interface ITransformer extends core\IContextAware {
     public function canDeliver();

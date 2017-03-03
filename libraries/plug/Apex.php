@@ -155,22 +155,6 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         }
     }
 
-    public function controllerExists($request, $runMode=null) {
-        $request = $this->context->uri->directoryRequest($request);
-
-        if($runMode === null) {
-            $runMode = $this->context->getRunMode();
-        }
-
-        return null !== arch\Controller::getClassFor($request, $runMode);
-    }
-
-    public function getController($request) {
-        return arch\Controller::factory(
-            arch\Context::factory($request)
-        );
-    }
-
     public function component($path, ...$args) {
         $output = arch\component\Base::factory(
             $this->context->spawnInstance(

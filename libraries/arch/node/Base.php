@@ -112,10 +112,6 @@ class Base implements INode, core\IDumpable {
         return $this->_callback;
     }
 
-    public function getController() {
-        return $this->controller;
-    }
-
     public function shouldOptimize(bool $flag=null) {
         if($flag !== null) {
             $this->_shouldOptimize = $flag;
@@ -357,7 +353,6 @@ class Base implements INode, core\IDumpable {
     public function getDumpProperties() {
         return [
             'type' => $this->context->getRunMode(),
-            'controller' => $this->controller,
             'context' => $this->context
         ];
     }

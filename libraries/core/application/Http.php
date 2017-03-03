@@ -395,10 +395,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $this->_context = arch\Context::factory(clone $request);
 
         try {
-            $node = arch\node\Base::factory(
-                $this->_context,
-                arch\Controller::factory($this->_context)
-            );
+            $node = arch\node\Base::factory($this->_context);
         } catch(arch\node\ENotFound $e) {
             // See if the url just needs a /
             $url = $this->_httpRequest->getUrl();
