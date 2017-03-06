@@ -90,6 +90,12 @@ class Launchpad {
 
         if(file_exists($activePath) && !$sourceMode) {
             require $activePath;
+
+            if(!is_dir(self::$rootPath)) {
+                self::$isCompiled = false;
+                self::$compileTimestamp = null;
+                self::$rootPath = __DIR__;
+            }
         }
 
         // Load core library
