@@ -172,7 +172,7 @@ class TaskBuild extends arch\node\Task {
         // Purge
         $this->io->writeLine();
         $this->io->decrementLineLevel();
-        $this->runChild('./purge-builds');
+        $this->runChild('./purge-builds?active='.$buildId);
         $this->io->incrementLineLevel();
 
         // Task spool

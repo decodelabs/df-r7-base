@@ -25,6 +25,7 @@ class TaskPurgeBuilds extends arch\node\Task {
         $appPath = df\Launchpad::$applicationPath;
         $buildDir = new core\fs\Dir($appPath.'/data/local/build');
         $all = isset($this->request['all']);
+        $active = $this->filter['?active']->guid();
 
         if(!$buildDir->exists()) {
             $this->io->writeLine(' 0 found');
@@ -34,6 +35,11 @@ class TaskPurgeBuilds extends arch\node\Task {
             $keep = 0;
 
             foreach($buildDir->scanDirs() as $name => $dir) {
+                if($name === $active) {
+                    $keep++;
+                    continue;
+                }
+
                 try {
                     $guid = flex\Guid::factory($name);
                 } catch(\Throwable $e) {
@@ -73,8 +79,15 @@ class TaskPurgeBuilds extends arch\node\Task {
             $del = 0;
             $keep = 0;
             $ids = $keepIds = [];
+            $max = 2;
 
             foreach($runDir->scanDirs() as $name => $dir) {
+                if($name === $active) {
+                    $keep++;
+                    $max++;
+                    continue;
+                }
+
                 try {
                     $guid = flex\Guid::factory($name);
                 } catch(\Throwable $e) {
@@ -93,7 +106,7 @@ class TaskPurgeBuilds extends arch\node\Task {
 
             rsort($keepIds);
 
-            while($keep > 2) {
+            while($keep > $max) {
                 $ids[] = array_pop($keepIds);
                 $keep--;
             }
