@@ -11,46 +11,47 @@ use df\axis;
 use df\opal;
 
 class Base implements ISchema, core\IDumpable {
-    
+
     use opal\schema\TSchema;
     use opal\schema\TSchema_FieldProvider;
     use opal\schema\TSchema_IndexProvider;
     use opal\schema\TSchema_IndexedFieldProvider;
-    
+
     protected $_version = 0;
     protected $_unitId;
     protected $_unitType;
-    
+    protected $_requiresTransactions = true;
+
     protected $_options = [
         'name' => null,
         'comment' => null
     ];
-    
-    
+
+
     public function __construct(axis\ISchemaBasedStorageUnit $unit, $name) {
         $this->_unitType = $unit->getUnitType();
         $this->_unitId = $unit->getUnitId();
-        
+
         $this->setName($name);
     }
-    
+
     public function getUnitType() {
         return $this->_unitType;
     }
-    
+
     public function getUnitId() {
         return $this->_unitId;
     }
-    
+
     public function iterateVersion() {
         $this->_version++;
         return $this;
     }
-    
+
     public function getVersion() {
         return $this->_version;
     }
-    
+
     public function hasChanged() {
         return $this->_hasOptionChanges()
             || $this->_hasFieldChanges()
@@ -60,19 +61,19 @@ class Base implements ISchema, core\IDumpable {
     public function markAsChanged() {
         core\stub();
     }
-    
+
     public function acceptChanges() {
         $this->_acceptOptionChanges();
         $this->_acceptFieldChanges();
         $this->_acceptIndexChanges();
-        
+
         return $this;
     }
-    
+
     public function _createField($name, $type, array $args) {
         return axis\schema\field\Base::factory($this, $name, $type, $args);
     }
-    
+
     public function _createFieldFromStorageArray(array $data) {
         return axis\schema\field\Base::fromStorageArray($this, $data);
     }
@@ -96,20 +97,31 @@ class Base implements ISchema, core\IDumpable {
         return true;
     }
 
-    
+
     public function _createIndexFromStorageArray(array $data) {
         return axis\schema\constraint\Index::fromStorageArray($this, $data);
     }
-    
-    
-    
+
+
+
+    public function requiresTransactions(bool $flag=null) {
+        if($flag !== null) {
+            $this->_requiresTransactions = $flag;
+            return $this;
+        }
+
+        return $this->_requiresTransactions;
+    }
+
+
+
 // Validation
     public function sanitize(axis\ISchemaBasedStorageUnit $unit) {
         foreach($this->_fields as $field) {
             if($field instanceof axis\schema\IField) {
                 $field->sanitize($unit, $this);
             }
-            
+
             if($field instanceof axis\schema\IAutoIndexField) {
                 $newName = $field->getName();
                 $oldName = $this->getOriginalFieldNameFor($newName);
@@ -126,7 +138,7 @@ class Base implements ISchema, core\IDumpable {
                 if(!$index = $this->getIndex($newName)) {
                     $index = $this->addIndex($newName, $field);
                 }
-                    
+
                 if($field instanceof axis\schema\IAutoUniqueField) {
                     $unique = $field->shouldBeUnique();
                     $index->isUnique($unique);
@@ -135,7 +147,7 @@ class Base implements ISchema, core\IDumpable {
                         continue;
                     }
                 }
-                
+
                 if($field instanceof axis\schema\IAutoPrimaryField) {
                     if(!$field->shouldBePrimary()) {
                         if($this->getPrimaryIndex() === $index) {
@@ -144,7 +156,7 @@ class Base implements ISchema, core\IDumpable {
 
                         continue;
                     }
-                    
+
                     $this->setPrimaryIndex($index);
                 }
             }
@@ -152,27 +164,27 @@ class Base implements ISchema, core\IDumpable {
 
         return $this;
     }
-    
+
     public function validate(axis\ISchemaBasedStorageUnit $unit) {
         foreach($this->_fields as $field) {
             if($field instanceof axis\schema\IField) {
                 $field->validate($unit, $this);
             }
         }
-        
+
         return $this;
     }
-    
-    
-    
+
+
+
 // Fields
     public function getPrimitiveFieldNames() {
         $output = [];
-        
+
         foreach($this->_fields as $field) {
             if($field instanceof opal\schema\IMultiPrimitiveField) {
                 $names = $field->getPrimitiveFieldNames();
-                
+
                 if(!empty($names)) {
                     foreach($names as $name) {
                         $output[] = $name;
@@ -184,11 +196,11 @@ class Base implements ISchema, core\IDumpable {
                 $output[] = $field->getName();
             }
         }
-        
+
         return $output;
     }
-    
-    
+
+
 // Ext. Serialize
     public static function fromJson(opal\schema\ISchemaContext $unit, $json) {
         if(!$data = json_decode($json, true)) {
@@ -196,18 +208,19 @@ class Base implements ISchema, core\IDumpable {
                 'Invalid json schema representation'
             );
         }
-        
+
         $output = new self($unit, $unit->getUnitName());
         $output->_version = $data['vsn'];
         $output->_unitType = $data['utp'];
         $output->_unitId = $data['uid'];
-        
+        $output->_requiresTransactions = (bool)($data['rtr'] ?? true);
+
         $output->_setGenericStorageArray($data);
         $output->_setFieldStorageArray($data);
         $output->_setIndexStorageArray($data);
-        
+
         $output->acceptChanges();
-        
+
         return $output;
     }
 
@@ -217,9 +230,13 @@ class Base implements ISchema, core\IDumpable {
             'utp' => $this->_unitType,
             'uid' => $this->_unitId
         ];
-        
+
+        if(!$this->_requiresTransactions) {
+            $output['rtr'] = false;
+        }
+
         return array_merge(
-            $output, 
+            $output,
             $this->_getGenericStorageArray(),
             $this->_getFieldStorageArray(),
             $this->_getIndexStorageArray()

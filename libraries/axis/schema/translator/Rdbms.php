@@ -32,7 +32,13 @@ class Rdbms extends Base {
     }
 
     protected function _createTargetSchema() {
-        return $this->_rdbmsAdapter->newSchema($this->_unit->getStorageBackendName());
+        $output = $this->_rdbmsAdapter->newSchema($this->_unit->getStorageBackendName());
+
+        if($this->_rdbmsAdapter->getServerType() == 'mysql' && !$this->_axisSchema->requiresTransactions()) {
+            $output->setEngine('MyISAM');
+        }
+
+        return $output;
     }
 
 
