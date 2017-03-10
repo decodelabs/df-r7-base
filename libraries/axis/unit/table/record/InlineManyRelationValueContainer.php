@@ -551,7 +551,8 @@ class InlineManyRelationValueContainer implements
             $queue->addJob($targetRecordJob);
 
             if($recordJob) {
-                $recordJob->addDependency($targetRecordJob);
+                //$recordJob->addDependency($targetRecordJob);
+                $targetRecordJob->addDependency($recordJob);
             }
         }
 
