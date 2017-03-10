@@ -815,6 +815,14 @@ trait TWidget_NavigationEntryController {
     }
 
     public function addEntry($entry) {
+        if(is_callable($entry)) {
+            $entry = $entry($this);
+        }
+
+        if($entry instanceof \Generator) {
+            return $this->addEntries(...iterator_to_array($entry));
+        }
+
         if($entry instanceof arch\navigation\IEntryListGenerator) {
             $entry = $entry->generateEntries();
         }
