@@ -156,6 +156,7 @@ class State implements arch\node\IFormState, \Serializable {
         }
 
         $this->clearStore();
+        $this->isOperating = true;
 
         return $this;
     }

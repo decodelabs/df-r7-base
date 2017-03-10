@@ -110,7 +110,11 @@ abstract class Form extends Base implements IFormNode {
             }
 
             foreach($this->_delegates as $delegate) {
-                $delegate->beginInitialize();
+                $response = $delegate->beginInitialize();
+
+                if(!empty($response)) {
+                    return $response;
+                }
             }
 
             foreach($this->_delegates as $delegate) {

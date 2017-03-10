@@ -50,7 +50,12 @@ class Delegate implements arch\node\IDelegate {
     }
 
     final public function beginInitialize() {
-        $this->init();
+        $response = $this->init();
+
+        if(!empty($response)) {
+            return $response;
+        }
+
         $this->loadDelegates();
 
         if($this->_state->isNew()) {
@@ -59,10 +64,14 @@ class Delegate implements arch\node\IDelegate {
         }
 
         foreach($this->_delegates as $delegate) {
-            $delegate->beginInitialize();
+            $response = $delegate->beginInitialize();
+
+            if(!empty($response)) {
+                return $response;
+            }
         }
 
-        return $this;
+        return null;
     }
 
     final public function endInitialize() {
