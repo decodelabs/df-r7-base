@@ -763,7 +763,7 @@ class BridgedManyRelationValueContainer implements
         }
 
         if(!empty($bridgeData)) {
-            $bridgeJob = $queue->addJob(new opal\query\job\DeleteKey($bridgeUnit, $bridgeData));
+            $queue->addJob($bridgeJob = new opal\query\job\DeleteKey($bridgeUnit, $bridgeData));
 
             if($recordJob) {
                 $bridgeJob->addDependency($recordJob);
