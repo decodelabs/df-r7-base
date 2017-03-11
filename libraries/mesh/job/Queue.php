@@ -319,17 +319,18 @@ class Queue implements IQueue {
 
         $this->_isExecuting = true;
         $this->_transaction->begin();
-        $this->_jobs = array_filter($this->_jobs);
-
-        foreach($this->_jobs as $job) {
-            if($job instanceof IEventBroadcastingJob) {
-                $job->reportPreEvent($this);
-            }
-        }
-
-        $this->_sortJobs();
 
         try {
+            $this->_jobs = array_filter($this->_jobs);
+
+            foreach($this->_jobs as $job) {
+                if($job instanceof IEventBroadcastingJob) {
+                    $job->reportPreEvent($this);
+                }
+            }
+
+            $this->_sortJobs();
+
             while(!empty($this->_jobs)) {
                 foreach($this->_jobs as $job) {
                     if(!$job->hasDependencies()) {
