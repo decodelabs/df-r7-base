@@ -95,8 +95,13 @@ class Slug extends Base implements core\validate\ISlugField {
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         $value = $this->_sanitizeValue($value, false);
-        $value = $this->_sanitizeSlugValue($value);
+
+        if(!empty($value)) {
+            $value = $this->_sanitizeSlugValue($value);
+        }
+
         $value = $this->_sanitizeValue($value, true);
+        $value = $this->_sanitizeSlugValue($value);
 
         if(false !== strpos($value, '/') && !$this->_allowPathFormat) {
             $this->_applyMessage($node, 'invalid', $this->validator->_(
