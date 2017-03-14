@@ -62,6 +62,14 @@ class Handler implements IHandler {
         }
 
         $this->_url = new link\http\Url($content->data['baseUrl']);
+
+        if($url->hasUsername()) {
+            $this->_url->setUsername($url->getUsername());
+        }
+        if($url->hasPassword()) {
+            $this->_url->setPassword($url->getPassword());
+        }
+
         $this->_router = new core\application\http\Router($this->_url);
     }
 
@@ -108,6 +116,14 @@ class Handler implements IHandler {
             }
 
             $request = new link\http\request\Base($request);
+        }
+
+        if($this->_url->hasUsername()) {
+            $request->url->setUsername($this->_url->getUsername());
+        }
+
+        if($this->_url->hasPassword()) {
+            $request->url->setPassword($this->_url->getPassword());
         }
 
         if($responseFilePath !== null) {

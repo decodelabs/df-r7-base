@@ -17,10 +17,21 @@ class TaskMedia extends arch\node\Task {
     protected $_migrator;
 
     public function extractCliArguments(core\cli\ICommand $command) {
+        $i = 0;
+
         foreach($command->getArguments() as $arg) {
-            if(!$arg->isOption()) {
-                $this->request->query->url = (string)$arg;
-                break;
+            if($arg->isOption()) {
+                continue;
+            }
+
+            switch(++$i) {
+                case 1:
+                    $this->request->query->url = (string)$arg;
+                    break;
+
+                case 2:
+                    $this->request->query->bucket = (string)$arg;
+                    break;
             }
         }
     }
@@ -37,6 +48,17 @@ class TaskMedia extends arch\node\Task {
         $query = $this->data->media->version->fetch()
             ->where('purgeDate', '=', null);
 
+        if(isset($this->request['bucket'])) {
+            $query
+                ->whereCorrelation('file', 'in', 'id')
+                    ->from('axis://media/File')
+                    ->whereCorrelation('bucket', 'in', 'id')
+                        ->from('axis://media/Bucket')
+                        ->where('slug', '=', $this->request['bucket'])
+                        ->endCorrelation()
+                    ->endCorrelation();
+        }
+
         foreach($query as $version) {
             $fileId = (string)$version['#file'];
             $versionId = (string)$version['id'];
@@ -47,6 +69,7 @@ class TaskMedia extends arch\node\Task {
                 $this->io->writeLine('Skipping '.$versionId.' - '.$version['fileName']);
                 continue;
             }
+
 
             $this->_migrator->callAsync($this->_migrator->createRequest(
                 'get', '~devtools/migrate/media', [
