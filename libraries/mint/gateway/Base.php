@@ -78,6 +78,10 @@ abstract class Base implements mint\IGateway {
         return new mint\charge\Standalone($amount, $card, $description, $email);
     }
 
+    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null) {
+        return new mint\charge\Customer($amount, $card, $customerId, $description);
+    }
+
     public function authorizeCharge(mint\IChargeRequest $charge): mint\IChargeResult {
         if($charge instanceof mint\ICustomerChargeRequest
         && $this instanceof mint\ICustomerTrackingCaptureProviderGateway) {
@@ -92,11 +96,6 @@ abstract class Base implements mint\IGateway {
             ]);
         }
     }
-
-    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null) {
-        return new mint\charge\Customer($amount, $card, $customerId, $description);
-    }
-
 
     public function newChargeCapture(string $id) {
         return new mint\charge\Capture($id);

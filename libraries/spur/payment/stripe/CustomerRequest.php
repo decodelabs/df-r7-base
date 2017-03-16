@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\mint;
-    
+
 class CustomerRequest implements ICustomerRequest {
 
     use TApiObjectRequest;

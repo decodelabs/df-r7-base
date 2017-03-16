@@ -40,9 +40,9 @@ interface ICustomerTrackingGateway extends IGateway {
     public function submitCustomerCharge(ICustomerChargeRequest $charge): IChargeResult;
     public function newCustomerCharge(ICurrency $amount, ICreditCardReference $card, string $customerId, string $description=null);
 
-    public function addCustomer(ICustomer $customer);
-    public function updateCustomer(ICustomer $customer);
-    public function deleteCustomer($customerId);
+    public function addCustomer(string $email=null, string $description=null, ICreditCard $card=null): string;
+    //public function updateCustomer(ICustomer $customer);
+    public function deleteCustomer(string $customerId);
 }
 
 interface ICustomerTrackingCaptureProviderGateway extends ICaptureProviderGateway, ICustomerTrackingGateway {
@@ -50,18 +50,22 @@ interface ICustomerTrackingCaptureProviderGateway extends ICaptureProviderGatewa
 }
 
 interface ICardStoreGateway extends ICustomerTrackingGateway {
-    public function addCard($customerId, ICreditCard $card);
-    public function updateCard($customerId, $cardId, ICreditCard $card);
-    public function deleteCard($customerId, $cardId, ICreditCard $card);
+    public function addCard(string $customerId, ICreditCard $card);
+    public function updateCard(string $customerId, string $cardId, ICreditCard $card);
+    public function deleteCard(string $customerId, string $cardId, ICreditCard $card);
 }
 
 interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
+    public function getPlans(): array;
+
+    public function subscribeCustomer(string $planId, string $customerId);
+    public function unsubscribeCustomer(string $planId, string $customerId);
+}
+
+interface ISubscriptionPlanControllerGateway extends ISubscriptionProviderGateway {
     public function addPlan();
     public function updatePlan();
     public function deletePlan();
-
-    public function subscribeCustomer($planId, $customerId);
-    public function unsubscribeCustomer($planId, $customerId);
 }
 
 
@@ -175,7 +179,9 @@ interface IChargeRefund {
 
 // Customer
 interface ICustomer {
-
+    public function getId();
+    public function getEmailAddress();
+    public function getDescription();
 }
 
 

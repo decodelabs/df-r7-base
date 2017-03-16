@@ -52,7 +52,7 @@ class Customer implements ICustomer, core\IDumpable {
             }
         }
 
-        if(!$data->subscriptions->isEmpty()) {
+        if(!$data->subscriptions->data->isEmpty()) {
             $data->subscriptions->data->{0}->customer = $this->_id;
             $this->_subscription = new Subscription($mediator, $data->subscriptions->data->{0});
         }

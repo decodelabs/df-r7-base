@@ -190,8 +190,8 @@ class Currency implements ICurrency, core\IDumpable {
             $amount = $newAmount;
         }
 
-        if(empty($code)) {
-            $code = 'USD';
+        if($amount === null) {
+            $amount = 0;
         }
 
         return new self($amount, $code);
@@ -212,6 +212,10 @@ class Currency implements ICurrency, core\IDumpable {
     }
 
     public function __construct($amount, $code) {
+        if(empty($code)) {
+            $code = 'USD';
+        }
+
         $this->setAmount($amount);
         $this->setCode($code);
     }

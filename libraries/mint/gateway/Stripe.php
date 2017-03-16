@@ -12,7 +12,8 @@ use df\spur;
 
 class Stripe extends Base implements
     mint\ICaptureProviderGateway,
-    mint\IRefundProviderGateway {
+    mint\IRefundProviderGateway,
+    mint\ICustomerTrackingGateway {
 
     protected $_mediator;
 
@@ -57,6 +58,23 @@ class Stripe extends Base implements
             return $charge->getId();
         });
     }
+
+    public function submitCustomerCharge(mint\ICustomerChargeRequest $charge): mint\IChargeResult {
+        $request = $this->_mediator->newChargeRequest(
+            $charge->getAmount(),
+            $charge->getCard(),
+            $charge->getDescription()
+        );
+
+        $request->setCustomerId($charge->getCustomerId());
+
+        return $this->_submitCharge(function() use($request) {
+            $charge = $request->submit();
+            return $charge->getId();
+        });
+    }
+
+
 
     public function authorizeStandaloneCharge(mint\IStandaloneChargeRequest $charge): mint\IChargeResult {
         $request = $this->_mediator->newChargeRequest(
@@ -163,6 +181,49 @@ class Stripe extends Base implements
             return $result->getId();
         });
     }
+
+
+// Customers
+    public function addCustomer(string $email=null, string $description=null, mint\ICreditCard $card=null): string {
+        $request = $this->_mediator->newCustomerRequest(
+            $email, $card, $description
+        );
+
+        try {
+            $customer = $request->submit();
+        } catch(spur\payment\stripe\EApi $e) {
+            core\logException($e);
+
+            throw core\Error::{'mint/ECustomer,mint/EApi'}([
+                'message' => $e->getMessage(),
+                'previous' => $e
+            ]);
+        }
+
+        return $customer->getId();
+    }
+
+/*
+    public function updateCustomer(mint\ICustomer $customer) {
+
+    }
+*/
+
+    public function deleteCustomer(string $customerId) {
+        try {
+            $this->_mediator->deleteCustomer($customerId);
+        } catch(spur\payment\stripe\EApi $e) {
+            core\logException($e);
+
+            throw core\Error::{'mint/ECustomer,mint/EApi'}([
+                'message' => $e->getMessage(),
+                'previous' => $e
+            ]);
+        }
+
+        return $this;
+    }
+
 
 // Cache
     protected function _getCacheKeyPrefix() {
