@@ -199,7 +199,11 @@ class Currency implements ICurrency, core\IDumpable {
 
     public static function fromIntegerAmount($amount, $code): ICurrency {
         $output = new self(0, $code);
-        $output->setAmount($amount / $output->getDecimalFactor());
+
+        if($amount) {
+            $output->setAmount($amount / $output->getDecimalFactor());
+        }
+
         return $output;
     }
 

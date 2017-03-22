@@ -300,6 +300,7 @@ interface ITree extends IRandomAccessCollection, IMappedContainerCollection, cor
     public function clearKeys();
     public function getChildren();
     public function hasAnyValue(array $checkKeys=null);
+    public function replace($key, ITree $node);
 }
 
 interface IInputTree extends ITree, IErrorContainer {

@@ -323,6 +323,11 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return $this;
     }
 
+    public function replace($key, ITree $node) {
+        $this->_collection[$key] = $node;
+        return $this;
+    }
+
 
 // Shiftable
     public function extract() {
