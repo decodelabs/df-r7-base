@@ -15,7 +15,7 @@ class ChargeUpdate implements spur\payment\stripe2\IChargeUpdateRequest {
     use TRequest_ChargeId;
     use TRequest_Description;
     use TRequest_Metadata;
-    use TRequest_ReceiptEmail;
+    use TRequest_Email;
     use TRequest_Shipping;
     use TRequest_TransferGroup;
 
@@ -53,8 +53,8 @@ class ChargeUpdate implements spur\payment\stripe2\IChargeUpdateRequest {
 
         $this->_applyDescription($output);
         $this->_applyMetadata($output);
-        $this->_applyReceiptEmail($output);
-        $this->_applyShipping($output);
+        $this->_applyEmail($output, 'receipt_email');
+        $this->_applyShipped($output);
         $this->_applyTransferGroup($output);
 
         return $output;

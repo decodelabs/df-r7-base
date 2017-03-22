@@ -16,8 +16,9 @@ class ChargeCreate implements spur\payment\stripe2\IChargeCreateRequest {
     use TRequest_Description;
     use TRequest_TransferGroup;
     use TRequest_Metadata;
-    use TRequest_ReceiptEmail;
+    use TRequest_Email;
     use TRequest_Shipping;
+    use TRequest_Source;
     use TRequest_StatementDescriptor;
 
 /*
@@ -43,7 +44,6 @@ class ChargeCreate implements spur\payment\stripe2\IChargeCreateRequest {
     protected $_destinationAmount;
     protected $_onBehalfOf;
     protected $_customerId;
-    protected $_source;
 
     public function __construct(mint\ICurrency $amount, string $description=null) {
         $this->setAmount($amount);
@@ -111,20 +111,6 @@ class ChargeCreate implements spur\payment\stripe2\IChargeCreateRequest {
         return $this->_customerId;
     }
 
-    public function setCard(/*?mint\ICreditCard*/ $card) {
-        $this->_source = $card;
-        return $this;
-    }
-
-    public function setSourceId(/*?string*/ $source) {
-        $this->_source = $source;
-        return $this;
-    }
-
-    public function getSource() {
-        return $this->_source;
-    }
-
 
 
     public function toArray(): array {
@@ -152,20 +138,15 @@ class ChargeCreate implements spur\payment\stripe2\IChargeCreateRequest {
             $output['customer'] = $this->_customerId;
         }
 
-        if($this->_source !== null) {
-            if($this->_source instanceof mint\ICreditCard) {
-                $output['source'] = spur\payment\stripe2\Mediator::cardToArray($this->_source);
-            } else {
-                $output['source'] = $this->_source;
-            }
-        }
+
 
         $this->_applyApplicationFee($output);
         $this->_applyDescription($output);
         $this->_applyTransferGroup($output);
         $this->_applyMetadata($output);
-        $this->_applyReceiptEmail($output);
-        $this->_applyShipping($output);
+        $this->_applyEmail($output, 'receipt_email');
+        $this->_applyShipped($output);
+        $this->_applySource($output);
         $this->_applyStatementDescriptor($output);
 
         return $output;

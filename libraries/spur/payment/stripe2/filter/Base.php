@@ -16,12 +16,18 @@ class Base implements spur\payment\stripe2\IFilter {
     protected $_startingAfter;
     protected $_endingBefore;
 
-    public static function normalize(spur\payment\stripe2\IFilter &$filter=null): array {
+    public static function normalize(spur\payment\stripe2\IFilter &$filter=null, array $extra=null): array {
         if(!$filter) {
             $filter = new static;
         }
 
-        return $filter->toArray();
+        $output = $filter->toArray();
+
+        if($extra !== null) {
+            $output = array_merge($output, $extra);
+        }
+
+        return $output;
     }
 
     public function setLimit(int $limit) {
@@ -77,6 +83,10 @@ class Base implements spur\payment\stripe2\IFilter {
         }
 
         return $output;
+    }
+
+    public function hasPointer(): bool {
+        return $this->_startingAfter !== null || $this->_endingBefore !== null;
     }
 
     protected function _normalizeDateFilter(array $filter=null)/*: ?array*/ {

@@ -19,26 +19,28 @@ class DataList extends core\collection\Tree implements IList {
     protected $_filter;
 
     public function __construct(string $type, IFilter $filter=null, core\collection\ITree $data, $callback=null) {
-        if($filter) {
-            $this->setFilter($filter);
-        }
-
         $this->_total = (int)$data['total_count'];
         $this->_hasMore = (bool)$data['has_more'];
 
         $first = true;
         $object = null;
+        $hasPointer = false;
+
+        if($filter) {
+            $this->setFilter($filter);
+            $hasPointer = $filter->hasPointer();
+        }
 
         foreach($data->data as $node) {
             $this->_collection[] = $object = new DataObject($type, $node, $callback);
 
-            if($first) {
+            if($first && $hasPointer) {
                 $this->_endingBefore = $object['id'];
                 $first = false;
             }
         }
 
-        if($object) {
+        if($object && $this->_hasMore) {
             $this->_startingAfter = $object['id'];
         }
     }
@@ -82,7 +84,7 @@ class DataList extends core\collection\Tree implements IList {
         ];
 
         foreach($this->_collection as $key => $child) {
-            $output[$key] = $child;
+            $output[] = new core\debug\dumper\Property($key, $child, 'public');
         }
 
         return $output;

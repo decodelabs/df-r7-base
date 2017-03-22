@@ -14,7 +14,7 @@ class ChargeCapture implements spur\payment\stripe2\IChargeCaptureRequest {
 
     use TRequest_ChargeId;
     use TRequest_ApplicationFee;
-    use TRequest_ReceiptEmail;
+    use TRequest_Email;
     use TRequest_StatementDescriptor;
 
 /*
@@ -50,7 +50,7 @@ class ChargeCapture implements spur\payment\stripe2\IChargeCaptureRequest {
 
         //$this->_applyChargeId($output);
         $this->_applyApplicationFee($output);
-        $this->_applyReceiptEmail($output);
+        $this->_applyEmail($output, 'receipt_email');
         $this->_applyStatementDescriptor($output);
 
         return $output;

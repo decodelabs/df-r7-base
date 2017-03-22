@@ -53,7 +53,10 @@ class Mediator implements IMediator {
 ### CORE RESOURCES
 
 
-// Balance
+/***************
+ Balance */
+
+// Account balance
     public function fetchBalance(): IData {
         $data = $this->requestJson('get', 'balance');
 
@@ -76,6 +79,8 @@ class Mediator implements IMediator {
         }
     }
 
+
+// Balance transactions
     public function fetchBalanceTransaction(string $id): IData {
         $data = $this->requestJson('get', 'balance/history/'.$id);
         return new DataObject('balance_transaction', $data, [$this, '_processBalanceTransaction']);
@@ -108,7 +113,11 @@ class Mediator implements IMediator {
 
 
 
-// Charges
+/***************
+ Charges */
+
+
+// Create charge
     public function newChargeCreateRequest(mint\ICurrency $amount, string $description=null): IChargeCreateRequest {
         return new namespace\request\ChargeCreate($amount, $description);
     }
@@ -119,12 +128,16 @@ class Mediator implements IMediator {
             ->setRequest($request);
     }
 
+
+// Fetch charge
     public function fetchCharge(string $id): IData {
         $data = $this->requestJson('get', 'charges/'.$id);
         return new DataObject('charge', $data, [$this, '_processCharge']);
     }
 
 
+
+// Update charge
     public function newChargeUpdateRequest(string $id): IChargeUpdateRequest {
         return new namespace\request\ChargeUpdate($id);
     }
@@ -136,6 +149,8 @@ class Mediator implements IMediator {
     }
 
 
+
+// List charges
     public function newChargeFilter(string $customerId=null): IChargeFilter {
         return new namespace\filter\Charge($customerId);
     }
@@ -146,6 +161,7 @@ class Mediator implements IMediator {
     }
 
 
+// Capture charge
     public function newChargeCaptureRequest(string $chargeId, mint\ICurrency $amount=null): IChargeCaptureRequest {
         return new namespace\request\ChargeCapture($chargeId, $amount);
     }
@@ -156,67 +172,106 @@ class Mediator implements IMediator {
             ->setRequest($request);
     }
 
-    protected function _processCharge($data) {
+
+// Process charge
+    protected function _processCharge(core\collection\ITree $data) {
         $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
         $data['amount_refunded'] = $this->_normalizeCurrency($data['amount_refunded'], $data['currency']);
         $data['application_fee'] = $this->_normalizeCurrency($data['application_fee'], $data['currency']);
         $data['created'] = core\time\Date::factory($data['created']);
 
         $data->replace('refunds', new DataList('refund', null, $data->refunds, [$this, '_processRefund']));
-
-        if($data->source['object'] == 'card') {
-            $data->card = $this->_normalizeCard($data->source);
-        }
+        $data->replace('source', new DataObject('source', $data->source, [$this, '_processSource']));
     }
 
 
 
-// Customers
+/***************
+ Customers */
+
+// Create customer
     public function newCustomerCreateRequest(string $emailAddress=null, string $description=null): ICustomerCreateRequest {
-        core\stub();
+        return new namespace\request\CustomerCreate($emailAddress, $description);
     }
 
     public function createCustomer(ICustomerCreateRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'customers', $request->toArray());
+        return (new DataObject('customer', $data, [$this, '_processCustomer']))
+            ->setRequest($request);
     }
 
+
+// Fetch customer
     public function fetchCustomer(string $id): IData {
-        core\stub();
+        $data = $this->requestJson('get', 'customers/'.$id);
+        return (new DataObject('customer', $data, [$this, '_processCustomer']));
     }
 
 
+
+// Update customer
     public function newCustomerUpdateRequest(string $id): ICustomerUpdateRequest {
-        core\stub();
+        return new namespace\request\CustomerUpdate($id);
     }
 
     public function updateCustomer(ICustomerUpdateRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'customers/'.$request->getCustomerId(), $request->toArray());
+        return (new DataObject('customer', $data, [$this, '_processCustomer']));
     }
 
 
+
+// Delete customer
     public function deleteCustomer(string $id) {
-        core\stub();
+        $this->requestJson('delete', 'customers/'.$id);
+        return $this;
     }
 
 
+
+// List customers
     public function newCustomerFilter(): ICustomerFilter {
-        core\stub();
+        return new namespace\filter\Customer();
     }
 
     public function fetchCustomers(ICustomerFilter $filter=null): IList {
-        core\stub();
+        $data = $this->requestJson('get', 'customers', namespace\filter\Customer::normalize($filter));
+        return new DataList('customer', $filter, $data, [$this, '_processCustomer']);
+    }
+
+
+// Process customer
+    protected function _processCustomer(core\collection\ITree $data) {
+        $data['account_balance'] = $this->_normalizeCurrency($data['account_balance'], $data['currency']);
+        $data['created'] = core\time\Date::factory($data['created']);
+
+        if(!$data->discount->isEmpty()) {
+            $data->replace('discount', new DataObject('discount', $data->discount, [$this, '_processDiscount']));
+        }
+
+        if(!$data->shipping->address->isEmpty()) {
+            $address = $this->_normalizeAddress($data->shipping->address);
+            $data->shipping->address->clear();
+            $data->shipping->address->setValue($address);
+        }
+
+        $data->replace('sources', new DataList('source', null, $data->sources, [$this, '_processSource']));
+        $data->replace('subscriptions', new DataList('subscription', null, $data->subscriptions, [$this, '_processSubscription']));
     }
 
 
 
+/***************
+ Disputes */
 
-// Disputes
 /*
+// Fetch dispute
     public function fetchDispute(string $id): IData {
         core\stub();
     }
 
 
+// Update dispute
     public function newDisputeUpdateRequest(string $id): IDisputeUpdateRequest {
         core\stub();
     }
@@ -226,11 +281,14 @@ class Mediator implements IMediator {
     }
 
 
+// Close dispute
     public function closeDispute(string $id): IData {
         core\stub();
     }
 
 
+
+// List disputes
     public function newDisputeFilter(): IDisputeFilter {
         core\stub();
     }
@@ -243,13 +301,17 @@ class Mediator implements IMediator {
 
 
 
-// Events
+/***************
+ Events */
+
 /*
+// Fetch event
     public function fetchEvent(string $id): IData {
         core\stub();
     }
 
 
+// List events
     public function newEventFilter(): IEventFilter {
         core\stub();
     }
@@ -262,17 +324,24 @@ class Mediator implements IMediator {
 
 
 
-// Files
+/***************
+ Files */
+
 /*
+// Upload file
     public function uploadFile(core\fs\IFile $file, string $purpose): IData {
         core\stub();
     }
 
+
+// Fetch file
     public function fetchFileInfo(string $id): IData {
         core\stub();
     }
 
 
+
+// List files
     public function newFileFilter(): IFileFilter {
         core\stub();
     }
@@ -285,8 +354,11 @@ class Mediator implements IMediator {
 
 
 
-// Refunds
+/***************
+ Refunds */
+
 /*
+// Create refund
     public function newRefundCreateRequest(string $chargeId, string $reason=null): IRefundCreateRequest {
         core\stub();
     }
@@ -295,11 +367,14 @@ class Mediator implements IMediator {
         core\stub();
     }
 
+
+// Fetch refund
     public function fetchRefund(string $id): IData {
         core\stub();
     }
 
 
+// Update refund
     public function newRefundUpdateRequest(string $id): IRefundUpdateRequest {
         core\stub();
     }
@@ -309,6 +384,7 @@ class Mediator implements IMediator {
     }
 
 
+// List refunds
     public function newRefundFilter(string $chargeId=null): IRefundFilter {
         core\stub();
     }
@@ -319,26 +395,36 @@ class Mediator implements IMediator {
 
 */
 
-    protected function _processRefund($data) {
+// Process refund
+    protected function _processRefund(core\collection\ITree $data) {
         $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
         $data['created'] = core\time\Date::factory($data['created']);
     }
 
 
-// Tokens
+
+
+/***************
+ Tokens */
+
 /*
+// Card token
     public function createCardToken(mint\ICreditCard $card, string $customerId=null): IData {
         core\stub();
     }
 
-    //public function createBankAccountToken(mint\IBankAccount $account, string $customerId=null): IData {
+// Bank token
+    public function createBankAccountToken(mint\IBankAccount $account, string $customerId=null): IData {
         core\stub();
     }
 
-    //public function createPiiToken(string $id): IData {
+// Pii token
+    public function createPiiToken(string $id): IData {
         core\stub();
     }
 
+
+// Fetch token
     public function fetchToken(string $id): IData {
         core\stub();
     }
@@ -347,8 +433,11 @@ class Mediator implements IMediator {
 
 
 
-// Transfers
+/***************
+ Transfers */
+
 /*
+// Create transfer
     public function newTransferCreateRequest(mint\ICurrency $amount, string $destinationId=null): ITransferCreateRequest {
         core\stub();
     }
@@ -357,11 +446,14 @@ class Mediator implements IMediator {
         core\stub();
     }
 
+
+// Fetch transfer
     public function fetchTransfer(string $id): IData {
         core\stub();
     }
 
 
+// Update transfer
     public function newTransferUpdateRequest(string $id): ITransferUpdateRequest {
         core\stub();
     }
@@ -371,6 +463,7 @@ class Mediator implements IMediator {
     }
 
 
+// List transfers
     public function newTransferFilter(string $recipient=null): ITransferFilter {
         core\stub();
     }
@@ -378,12 +471,15 @@ class Mediator implements IMediator {
     public function fetchTransfers(ITransferFilter $filter=null): IList {
         core\stub();
     }
-
 */
 
 
-// Transfer reversals
+
+/***************
+ Transfer reversals */
+
 /*
+// Create reversal
     public function newTransferReversalCreateRequest(string $transferId): ITransferReversalCreateRequest {
         core\stub();
     }
@@ -392,11 +488,14 @@ class Mediator implements IMediator {
         core\stub();
     }
 
+
+// Fetch reversal
     public function fetchTransferReversal(string $transferId, string $reversalId): IData {
         core\stub();
     }
 
 
+// Update reversal
     public function newTransferReversalUpdateRequest(string $transferId, string $reversalId): ITransferReversalUpdateRequest {
         core\stub();
     }
@@ -406,6 +505,7 @@ class Mediator implements IMediator {
     }
 
 
+// List reversals
     public function newTransferReversalFilter(): ITransferReversalFilter {
         core\stub();
     }
@@ -422,59 +522,84 @@ class Mediator implements IMediator {
 ### PAYMENT METHODS
 
 
-// Alipay
+/***************
+ Alipay */
     //--
 
-// Bank accounts
+
+
+/***************
+ Bank accounts */
     //--
 
 
-// Cards
-    public function createCard(string $customerId, mint\ICreditCard $card): IData {
-        core\stub();
+/***************
+ Cards */
+
+// Create card
+    public function newCardCreateRequest(string $customerId, $source): ICardCreateRequest {
+        return new namespace\request\CardCreate($customerId, $source);
     }
 
-    public function createCardFromToken(string $customerId, string $token): IData {
-        core\stub();
+    public function createCard(ICardCreateRequest $request): IData {
+        $data = $this->requestJson('post', 'customers/'.$request->getCustomerId().'/sources', $request->toArray());
+        return (new DataObject('source', $data, [$this, '_processSource']))
+            ->setRequest($request);
     }
 
+
+// Fetch card
     public function fetchCard(string $customerId, string $cardId) {
-        core\stub();
+        $data = $this->requestJson('get', 'customers/'.$customerId.'/sources/'.$cardId);
+        return (new DataObject('source', $data, [$this, '_processSource']));
     }
 
 
+// Update card
     public function newCardUpdateRequest(string $customerId, string $cardId): ICardUpdateRequest {
-        core\stub();
+        return new namespace\request\CardUpdate($customerId, $cardId);
     }
 
     public function updateCard(ICardUpdateRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'customers/'.$request->getCustomerId().'/sources/'.$request->getCardId(), $request->toArray());
+        return (new DataObject('source', $data, [$this, '_processSource']))
+            ->setRequest($request);
     }
 
-    public function replaceCard(string $customerId, string $cardId, mint\ICreditCard $card): IData {
-        core\stub();
-    }
 
 
+// Delete card
     public function deleteCard(string $customerId, string $cardId) {
-        core\stub();
+        $this->requestJson('delete', 'customers/'.$customerId.'/sources/'.$cardId);
+        return $this;
     }
 
 
+
+// List cards
     public function newCardFilter(): ICardFilter {
-        core\stub();
+        return new namespace\filter\Card();
     }
 
-    public function fetchCardList(string $customerId, ICardFilter $filter=null): IList {
-        core\stub();
+    public function fetchCards(string $customerId, ICardFilter $filter=null): IList {
+        $data = $this->requestJson('get', 'customers/'.$customerId.'/sources', namespace\filter\Card::normalize($filter, ['object' => 'card']));
+        return new DataList('source', $filter, $data, [$this, '_processSource']);
     }
 
 
 
 
-// Sources
-    //--
+/***************
+ Sources */
 
+// Process source
+    protected function _processSource(core\collection\ITree $data) {
+        switch($data['object']) {
+            case 'card':
+                $data->card = $this->_normalizeCard($data);
+                break;
+        }
+    }
 
 
 
@@ -488,8 +613,11 @@ class Mediator implements IMediator {
 
 ### SUBSCRIPTIONS
 
-// Coupons
+/***************
+ Coupons */
+
 /*
+// Create coupon
     public function newCouponCreateRequest(string $id, string $type): ICouponCreateRequest {
         core\stub();
     }
@@ -498,11 +626,14 @@ class Mediator implements IMediator {
         core\stub();
     }
 
+
+// Fetch coupon
     public function fetchCoupon(string $id): IData {
         core\stub();
     }
 
 
+// Update coupon
     public function newCouponUpdateRequest(string $id): ICouponUpdateRequest {
         core\stub();
     }
@@ -512,11 +643,14 @@ class Mediator implements IMediator {
     }
 
 
+// Delete coupon
     public function deleteCoupon(string $id) {
         core\stub();
     }
 
 
+
+// List coupons
     public function newCouponFilter(): ICouponFilter {
         core\stub();
     }
@@ -524,27 +658,48 @@ class Mediator implements IMediator {
     public function fetchCoupons(ICouponFilter $filter=null): IList {
         core\stub();
     }
-
 */
 
+// Process coupon
+    protected function _processCoupon(core\collection\ITree $data) {
+        $data['amount_off'] = $this->_normalizeCurrency($data['amount_off'], $data['currency']);
+        $data['created'] = core\time\Date::factory($data['created']);
+        $data['redeem_by'] = core\time\Date::factory($data['redeem_by']);
+    }
 
 
-// Discounts
+
+/***************
+ Discounts */
+
 /*
+// Delete customer discount
     public function deleteCustomerDiscount(string $customerId) {
         core\stub();
     }
 
+
+// Delete subscription discount
     public function deleteSubscriptionDiscount(string $subscriptionId) {
         core\stub();
     }
-
 */
 
+// Process discount
+    protected function _processDiscount(core\collection\ITree $data) {
+        $data['start'] = core\time\Date::factory($data['start']);
+        $data['end'] = core\time\Date::factory($data['end']);
+
+        $data->replace('coupon', new DataObject('coupon', $data->coupon, [$this, '_processCoupon']));
+    }
 
 
-// Invoices
+
+/***************
+ Invoices */
+
 /*
+// Create invoice
     public function newInvoiceCreateRequest(string $customerId, string $description=null): IInvoiceCreateRequest {
         core\stub();
     }
@@ -553,11 +708,15 @@ class Mediator implements IMediator {
         core\stub();
     }
 
+
+// Fetch invoice
     public function fetchInvoice(string $id): IData {
         core\stub();
     }
 
 
+
+// List lines
     public function newInvoiceLineFilter(): IInvoiceLineFilter {
         core\stub();
     }
@@ -567,6 +726,7 @@ class Mediator implements IMediator {
     }
 
 
+// Preview invoice
     public function newInvoicePreviewRequest(string $customerId): IInvoicePreviewRequest {
         core\stub();
     }
@@ -576,6 +736,8 @@ class Mediator implements IMediator {
     }
 
 
+
+// Update invoice
     public function newInvoiceUpdateRequest(string $id): IInvoiceUpdateRequest {
         core\stub();
     }
@@ -585,11 +747,15 @@ class Mediator implements IMediator {
     }
 
 
+
+// Pay invoice
     public function payInvoice(string $id): IData {
         core\stub();
     }
 
 
+
+// List invoices
     public function newInvoiceFilter(string $customerId=null): IInvoiceFilter {
         core\stub();
     }
@@ -602,8 +768,11 @@ class Mediator implements IMediator {
 
 
 
-// Invoice items
+/***************
+ Invoice items */
+
 /*
+// Create item
     public function newInvoiceItemCreateRequest(string $customerId, mint\ICurrency $amount): IInvoiceItemCreateRequest {
         core\stub();
     }
@@ -612,11 +781,14 @@ class Mediator implements IMediator {
         core\stub();
     }
 
+
+// Fetch item
     public function fetchInvoiceItem(string $id): IData {
         core\stub();
     }
 
 
+// Update item
     public function newInvoiceItemUpdateRequest(string $id): IInvoiceItemUpdateRequest {
         core\stub();
     }
@@ -626,11 +798,13 @@ class Mediator implements IMediator {
     }
 
 
+// Delete item
     public function deleteInvoiceItem(string $id) {
         core\stub();
     }
 
 
+// List items
     public function newInvoiceItemFilter(string $customerId=null): IInvoiceItemFilter {
         core\stub();
     }
@@ -638,12 +812,15 @@ class Mediator implements IMediator {
     public function fetchInvoiceItems(IInvoiceItemFilter $filter=null): IList {
         core\stub();
     }
-
 */
 
 
 
-// Plans
+
+/***************
+ Plans */
+
+// Create plan
     public function newPlanCreateRequest(string $id, string $name, mint\ICurrency $amount, string $interval='month'): IPlanCreateRequest {
         core\stub();
     }
@@ -652,11 +829,15 @@ class Mediator implements IMediator {
         core\stub();
     }
 
+
+// Fetch plan
     public function fetchPlan(string $id): IData {
         core\stub();
     }
 
 
+
+// Update plan
     public function newPlanUpdateRequest(string $id): IPlanUpdateRequest {
         core\stub();
     }
@@ -666,23 +847,36 @@ class Mediator implements IMediator {
     }
 
 
+// Delete plan
     public function deletePlan(string $id) {
         core\stub();
     }
 
 
+// List plans
     public function newPlanFilter(): IPlanFilter {
         core\stub();
     }
 
-    public function fetchPlanList(IPlanFilter $filter=null): IList {
+    public function fetchPlans(IPlanFilter $filter=null): IList {
         core\stub();
+    }
+
+
+// Process plan
+    protected function _processPlan(core\collection\ITree $data) {
+        $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
+        $data['created'] = core\time\Date::factory($data['created']);
     }
 
 
 
 
-// Subscriptions
+
+/***************
+ Subscriptions */
+
+// Create subscription
     public function newSubscriptionCreateRequest(string $customerId, string $planId=null): ISubscriptionCreateRequest {
         core\stub();
     }
@@ -691,11 +885,14 @@ class Mediator implements IMediator {
         core\stub();
     }
 
+
+// Fetch subscription
     public function fetchSubscription(string $id): IData {
         core\stub();
     }
 
 
+// Update subscription
     public function newSubscriptionUpdateRequest(string $id): ISubscriptionUpdateRequest {
         core\stub();
     }
@@ -705,11 +902,14 @@ class Mediator implements IMediator {
     }
 
 
+// Cancel subscription
     public function cancelSubscription(string $id, bool $atPeriodEnd=false): IData {
         core\stub();
     }
 
 
+
+// List subscriptions
     public function newSubscriptionFilter(string $customerId=null): ISubscriptionFilter {
         core\stub();
     }
@@ -719,10 +919,33 @@ class Mediator implements IMediator {
     }
 
 
+// Process subscription
+    protected function _processSubscription(core\collection\ITree $data) {
+        $data['canceled_at'] = core\time\Date::factory($data['canceled_at']);
+        $data['created'] = core\time\Date::factory($data['created']);
+        $data['current_period_start'] = core\time\Date::factory($data['current_period_start']);
+        $data['current_period_end'] = core\time\Date::factory($data['current_period_end']);
+        $data['ended_at'] = core\time\Date::factory($data['ended_at']);
+        $data['start'] = core\time\Date::factory($data['start']);
+        $data['trial_start'] = core\time\Date::factory($data['trial_start']);
+        $data['trial_end'] = core\time\Date::factory($data['trial_end']);
+
+        if(!$data->discount->isEmpty()) {
+            $data->replace('discount', new DataObject('discount', $data->discount, [$this, '_processDiscount']));
+        }
+
+        $data->replace('items', new DataList('subscription_item', null, $data->items, [$this, '_processSubscriptionItem']));
+        $data->replace('plan', new DataObject('plan', $data->plan, [$this, '_processPlan']));
+    }
 
 
-// Subscription items
+
+
+/***************
+ Subscription items */
+
 /*
+// Create item
     public function newSubscriptionItemCreateRequest(string $subscriptionId, string $planId): ISubscriptionItemCreateRequest {
         core\stub();
     }
@@ -731,11 +954,14 @@ class Mediator implements IMediator {
         core\stub();
     }
 
+
+// Fetch item
     public function fetchSubscriptionId(string $id): IData {
         core\stub();
     }
 
 
+// Update item
     public function newSubscriptionItemUpdateRequest(string $id): ISubscriptionItemUpdateRequest {
         core\stub();
     }
@@ -745,6 +971,7 @@ class Mediator implements IMediator {
     }
 
 
+// Delete item
     public function newSubscriptionItemDeleteRequest(string $id): ISubscriptionItemDeleteRequest {
         core\stub();
     }
@@ -754,6 +981,7 @@ class Mediator implements IMediator {
     }
 
 
+// List items
     public function newSubscriptionItemFilter(): ISubscriptionItemFilter {
         core\stub();
     }
@@ -761,9 +989,14 @@ class Mediator implements IMediator {
     public function fetchSubscriptionItems(string $subscriptionId, ISubscriptionItemFilter $filter=null): IList {
         core\stub();
     }
-
 */
 
+
+// Process item
+    protected function _processSubscriptionItem(core\collection\ITree $data) {
+        $data['created'] = core\time\Date::factory($data['created']);
+        $data->replace('plan', new DataObject('plan', $data->plan, [$this, '_processPlan']));
+    }
 
 
 
@@ -797,12 +1030,12 @@ class Mediator implements IMediator {
 
     public static function addressToArray(user\IPostalAddress $address): array {
         return [
-            'line1' => $this->_shippingAddress->getStreetLine1(),
-            'line2' => $this->_shippingAddress->getStreetLine2(),
-            'city' => $this->_shippingAddress->getLocality(),
-            'state' => $this->_shippingAddress->getRegion(),
-            'postal_code' => $this->_shippingAddress->getPostalCode(),
-            'country' => $this->_shippingAddress->getCountryCode()
+            'line1' => $address->getStreetLine1(),
+            'line2' => $address->getStreetLine2(),
+            'city' => $address->getLocality(),
+            'state' => $address->getRegion(),
+            'postal_code' => $address->getPostalCode(),
+            'country' => $address->getCountryCode()
         ];
     }
 
@@ -834,6 +1067,21 @@ class Mediator implements IMediator {
         }
 
         return $card;
+    }
+
+    protected function _normalizeAddress(core\collection\ITree $data) {
+        if($data['city'] === null) {
+            return null;
+        }
+
+        return user\PostalAddress::fromArray([
+            'street1' => $data['line1'],
+            'street2' => $data['line2'],
+            'locality' => $data['city'],
+            'region' => $data['state'],
+            'postalCode' => $data['postal_code'],
+            'countryCode' => $data['country']
+        ]);
     }
 
 

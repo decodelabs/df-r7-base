@@ -79,6 +79,29 @@ trait TRequest_Description {
 
 
 
+// Email
+trait TRequest_Email {
+
+    protected $_email;
+
+    public function setEmailAddress(/*?string*/ $email) {
+        $this->_email = $email;
+        return $this;
+    }
+
+    public function getEmailAddress()/*: ?string*/ {
+        return $this->_email;
+    }
+
+    protected function _applyEmail(array &$output, $key='email') {
+        if($this->_email !== null) {
+            $output[$key] = $this->_email;
+        }
+    }
+}
+
+
+
 // Metadata
 trait TRequest_Metadata {
 
@@ -102,37 +125,13 @@ trait TRequest_Metadata {
 
 
 
-// Receipt email
-trait TRequest_ReceiptEmail {
-
-    protected $_receiptEmail;
-
-    public function setReceiptEmail(/*?string*/ $email) {
-        $this->_receiptEmail = $email;
-        return $this;
-    }
-
-    public function getReceiptEmail()/*: ?string*/ {
-        return $this->_receiptEmail;
-    }
-
-    protected function _applyReceiptEmail(array &$output) {
-        if($this->_receiptEmail !== null) {
-            $output['receipt_email'] = $this->_receiptEmail;
-        }
-    }
-}
-
-
 
 // Shipping
 trait TRequest_Shipping {
 
     protected $_shippingAddress;
-    protected $_carrier;
     protected $_recipientName;
     protected $_recipientPhone;
-    protected $_trackingNumber;
 
     public function setShippingAddress(/*?user\IPostalAddress*/ $address) {
         $this->_shippingAddress = $address;
@@ -141,16 +140,6 @@ trait TRequest_Shipping {
 
     public function getShippingAddress()/*: ?user\IPostralAddress*/ {
         return $this->_shippingAddress;
-    }
-
-
-    public function setCarrier(/*?string*/ $carrier) {
-        $this->_carrier = $carrier;
-        return $this;
-    }
-
-    public function getCarrier()/*: ?string*/ {
-        return $this->_carrier;
     }
 
 
@@ -173,25 +162,11 @@ trait TRequest_Shipping {
         return $this->_recipientPhone;
     }
 
-
-    public function setTrackingNumber(/*?string*/ $number) {
-        $this->_trackingNumber = $number;
-        return $this;
-    }
-
-    public function getTrackingNumber()/*: ?string*/ {
-        return $this->_trackingNumber;
-    }
-
     protected function _applyShipping(array &$output) {
         $shipping = [];
 
         if($this->_shippingAddress !== null) {
             $shipping['address'] = spur\payment\stripe2\Mediator::addressToArray($this->_shippingAddress);
-        }
-
-        if($this->_carrier !== null) {
-            $shipping['carrier'] = $this->_carrier;
         }
 
         if($this->_recipientName !== null) {
@@ -202,13 +177,97 @@ trait TRequest_Shipping {
             $shipping['phone'] = $this->_recipientPhone;
         }
 
-        if($this->_trackingNumber !== null) {
-            $shipping['tracking_number'] = $this->_trackingNumber;
-        }
-
-
         if(!empty($shipping)) {
             $output['shipping'] = $shipping;
+        }
+    }
+}
+
+trait TRequest_Shipped {
+
+    use TRequest_Shipping;
+
+    protected $_carrier;
+    protected $_trackingNumber;
+
+    public function setCarrier(/*?string*/ $carrier) {
+        $this->_carrier = $carrier;
+        return $this;
+    }
+
+    public function getCarrier()/*: ?string*/ {
+        return $this->_carrier;
+    }
+
+    public function setTrackingNumber(/*?string*/ $number) {
+        $this->_trackingNumber = $number;
+        return $this;
+    }
+
+    public function getTrackingNumber()/*: ?string*/ {
+        return $this->_trackingNumber;
+    }
+
+    protected function _applyShipped(array &$output) {
+        $this->_applyShipping($output);
+
+        if($this->_carrier !== null) {
+            $output['shipping']['carrier'] = $this->_carrier;
+        }
+
+        if($this->_trackingNumber !== null) {
+            $output['shipping']['tracking_number'] = $this->_trackingNumber;
+        }
+    }
+}
+
+
+
+
+// Source
+trait TRequest_Source {
+
+    protected $_source;
+
+    public function setCard(/*?mint\ICreditCard*/ $card) {
+        $this->_source = $card;
+        return $this;
+    }
+
+    public function setSourceId(/*?string*/ $source) {
+        $this->_source = $source;
+        return $this;
+    }
+
+    public function setSource($source) {
+        if($source instanceof mint\ICreditCard) {
+            $this->setCard($source);
+        } else if(is_string($source)) {
+            $this->setSourceId($source);
+        } else if($source === null) {
+            $this->_source = null;
+        } else {
+            throw core\Error::EArgument([
+                'message' => 'Invalid source',
+                'data' => $source
+            ]);
+        }
+
+        return $this;
+    }
+
+    public function getSource() {
+        return $this->_source;
+    }
+
+    protected function _applySource(array &$output) {
+        if($this->_source !== null) {
+            if($this->_source instanceof mint\ICreditCard) {
+                $output['source'] = spur\payment\stripe2\Mediator::cardToArray($this->_source);
+                $output['source']['object'] = 'card';
+            } else {
+                $output['source'] = $this->_source;
+            }
         }
     }
 }

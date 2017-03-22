@@ -167,18 +167,17 @@ interface IMediator extends spur\IHttpMediator {
 
 
 // Cards
-    public function createCard(string $customerId, mint\ICreditCard $card): IData;
-    public function createCardFromToken(string $customerId, string $token): IData;
+    public function newCardCreateRequest(string $customerId, $source): ICardCreateRequest;
+    public function createCard(ICardCreateRequest $request): IData;
     public function fetchCard(string $customerId, string $cardId);
 
     public function newCardUpdateRequest(string $customerId, string $cardId): ICardUpdateRequest;
     public function updateCard(ICardUpdateRequest $request): IData;
-    public function replaceCard(string $customerId, string $cardId, mint\ICreditCard $card): IData;
 
     public function deleteCard(string $customerId, string $cardId);
 
     public function newCardFilter(): ICardFilter;
-    public function fetchCardList(string $customerId, ICardFilter $filter=null): IList;
+    public function fetchCards(string $customerId, ICardFilter $filter=null): IList;
 
 
 
@@ -274,7 +273,7 @@ interface IMediator extends spur\IHttpMediator {
     public function deletePlan(string $id);
 
     public function newPlanFilter(): IPlanFilter;
-    public function fetchPlanList(IPlanFilter $filter=null): IList;
+    public function fetchPlans(IPlanFilter $filter=null): IList;
 
 
 
@@ -337,14 +336,7 @@ interface IList extends core\IArrayProvider, \IteratorAggregate {
 
 
 // Request
-interface IRequest extends core\IArrayProvider {
-
-}
-
-interface ICreateRequest extends IRequest {}
-interface IUpdateRequest extends IRequest {}
-interface IDeleteRequest extends IRequest {}
-
+interface IRequest extends core\IArrayProvider {}
 
 interface IApplicationFeeSubRequest extends IRequest {
     public function setApplicationFee(/*?mint\ICurrency*/ $fee);
@@ -361,31 +353,40 @@ interface IDescriptionSubRequest extends IRequest {
     public function getDescription()/*: ?string*/;
 }
 
+interface IEmailSubRequest extends IRequest {
+    public function setEmailAddress(/*?string*/ $email);
+    public function getEmailAddress()/*: ?string*/;
+}
+
 interface IMetadataSubRequest extends IRequest {
     public function setMetadata(/*?array */ $metadata);
     public function getMetadata()/*: ?array*/;
-}
-
-interface IReceiptEmailSubRequest extends IRequest {
-    public function setReceiptEmail(/*?string*/ $email);
-    public function getReceiptEmail()/*: ?string*/;
 }
 
 interface IShippingSubRequest extends IRequest {
     public function setShippingAddress(/*?user\IPostalAddress*/ $address);
     public function getShippingAddress()/*: ?user\IPostralAddress*/;
 
-    public function setCarrier(/*?string*/ $carrier);
-    public function getCarrier()/*: ?string*/;
-
     public function setRecipientName(/*?string*/ $name);
     public function getRecipientName()/*: ?string*/;
 
     public function setRecipientPhone(/*?string*/ $phone);
     public function getRecipientPhone()/*: ?string*/;
+}
+
+interface IShippedSubRequest extends IShippingSubRequest {
+    public function setCarrier(/*?string*/ $carrier);
+    public function getCarrier()/*: ?string*/;
 
     public function setTrackingNumber(/*?string*/ $number);
     public function getTrackingNumber()/*: ?string*/;
+}
+
+interface ISourceSubRequest extends IRequest {
+    public function setCard(/*?mint\ICreditCard*/ $card);
+    public function setSourceId(/*?string*/ $source);
+    public function setSource($source);
+    public function getSource();
 }
 
 interface IStatementDescriptorSubRequest extends IRequest {
@@ -410,6 +411,8 @@ interface IFilter extends core\IArrayProvider {
 
     public function setEndingBefore(/*?string*/ $id);
     public function getEndingBefore()/*: ?string*/;
+
+    public function hasPointer(): bool;
 }
 
 
@@ -459,9 +462,10 @@ interface IBalanceTransactionFilter extends IFilter,
 // Charges
 interface IChargeRequest extends IRequest {}
 
-interface IChargeCreateRequest extends IChargeRequest, ICreateRequest,
-    IDescriptionSubRequest, IApplicationFeeSubRequest, IReceiptEmailSubRequest,
-    ITransferGroupSubRequest, IMetadataSubRequest, IShippingSubRequest, IStatementDescriptorSubRequest {
+interface IChargeCreateRequest extends IChargeRequest,
+    IDescriptionSubRequest, IApplicationFeeSubRequest, IEmailSubRequest,
+    ITransferGroupSubRequest, IMetadataSubRequest, IShippedSubRequest,
+    IStatementDescriptorSubRequest, ISourceSubRequest {
     public function setAmount(mint\ICurrency $amount);
     public function getAmount(): mint\ICurrency;
 
@@ -476,21 +480,18 @@ interface IChargeCreateRequest extends IChargeRequest, ICreateRequest,
 
     public function setCustomerId(/*?string*/ $customerId);
     public function getCustomerId()/*: ?string*/;
-
-    public function setCard(/*?mint\ICreditCard*/ $card);
-    public function setSourceId(/*?string*/ $source);
-    public function getSource();
 }
 
-interface IChargeUpdateRequest extends IChargeRequest, IUpdateRequest,
+interface IChargeUpdateRequest extends IChargeRequest,
     IDescriptionSubRequest, IChargeIdSubRequest, ITransferGroupSubRequest,
-    IMetadataSubRequest, IShippingSubRequest {
+    IMetadataSubRequest, IShippedSubRequest {
     public function setFraudDetails(/*?array*/ $details);
     public function getFraudDetails()/*: ?array*/;
 }
 
 interface IChargeCaptureRequest extends IChargeRequest,
-    IChargeIdSubRequest, IApplicationFeeSubRequest, IReceiptEmailSubRequest, IStatementDescriptorSubRequest {
+    IChargeIdSubRequest, IApplicationFeeSubRequest, IEmailSubRequest,
+    IStatementDescriptorSubRequest {
     public function setAmount(/*?mint\ICurrency*/ $amount);
     public function getAmount()/*: ?mint\ICurrency*/;
 }
@@ -504,107 +505,68 @@ interface IChargeFilter extends IFilter,
 
 
 // Customers
-interface ICustomerRequest extends IRequest {
+interface ICustomerRequest extends IRequest,
+    IDescriptionSubRequest, IEmailSubRequest, IMetadataSubRequest,
+    IShippingSubRequest, ISourceSubRequest {
+    public function setBalance(/*?mint\ICurrency*/ $balance);
+    public function getBalance()/*: ?mint\ICurrency*/;
 
+    public function setVatId(/*?string*/ $id);
+    public function getVatId()/*: ?string*/;
+
+    public function setCouponId(/*?string*/ $id);
+    public function getCouponId()/*: ?string*/;
 }
 
-interface ICustomerCreateRequest extends ICustomerRequest, ICreateRequest {
+interface ICustomerCreateRequest extends ICustomerRequest {}
 
+interface ICustomerUpdateRequest extends ICustomerRequest {
+    public function setCustomerId(string $id);
+    public function getCustomerId(): string;
 }
 
-interface ICustomerUpdateRequest extends ICustomerRequest, IUpdateRequest {
-
-}
-
-interface ICustomerFilter extends IFilter {
-
-}
+interface ICustomerFilter extends IFilter, ICreatedSubFilter {}
 
 
 
 // Disputes
-interface IDisputeRequest extends IRequest {
-
-}
-
-interface IDisputeUpdateRequest extends IDisputeRequest, IUpdateRequest {
-
-}
-
-interface IDisputeFilter extends IFilter {
-
-}
+interface IDisputeRequest extends IRequest {}
+interface IDisputeUpdateRequest extends IDisputeRequest {}
+interface IDisputeFilter extends IFilter {}
 
 
 
 // Events
-interface IEventFilter extends IFilter {
-
-}
+interface IEventFilter extends IFilter {}
 
 
 
 // Filters
-interface IFileFilter extends IFilter {
-
-}
+interface IFileFilter extends IFilter {}
 
 
 
 // Refunds
-interface IRefundRequest extends IRequest {
-
-}
-
-interface IRefundCreateRequest extends IRefundRequest, ICreateRequest {
-
-}
-
-interface IRefundUpdateRequest extends IRefundRequest, IUpdateRequest {
-
-}
-
-interface IRefundFilter extends IFilter {
-
-}
+interface IRefundRequest extends IRequest {}
+interface IRefundCreateRequest extends IRefundRequest {}
+interface IRefundUpdateRequest extends IRefundRequest {}
+interface IRefundFilter extends IFilter {}
 
 
 
 // Transfers
-interface ITransferRequest extends IRequest {
-
-}
-
-interface ITransferCreateRequest extends ITransferRequest, ICreateRequest {
-
-}
-
-interface ITransferUpdateRequest extends ITransferRequest, IUpdateRequest {
-
-}
-
-interface ITransferFilter extends IFilter {
-
-}
+interface ITransferRequest extends IRequest {}
+interface ITransferCreateRequest extends ITransferRequest {}
+interface ITransferUpdateRequest extends ITransferRequest {}
+interface ITransferFilter extends IFilter {}
 
 
 
 // Transfer reversals
-interface ITransferReversalRequest extends IRequest {
-
-}
-
-interface ITransferReversalCreateRequest extends ITransferReversalRequest, ICreateRequest {
-
-}
-
-interface ITransferReversalUpdateRequest extends ITransferReversalRequest, IUpdateRequest {
-
-}
-
-interface ITransferReversalFilter extends IFilter {
-
-}
+interface ITransferReversalRequest extends IRequest {}
+interface ITransferReversalCreateRequest extends ITransferReversalRequest {}
+interface ITransferReversalUpdateRequest extends ITransferReversalRequest {}
+interface ITransferReversalFilter extends IFilter {}
 
 
 // Alipay
@@ -615,17 +577,40 @@ interface ITransferReversalFilter extends IFilter {
 
 
 // Cards
-interface ICardRequest extends IRequest {
-
+interface ICardRequest extends IRequest, IMetadataSubRequest {
+    public function setCustomerId(string $customerId);
+    public function getCustomerId(): string;
 }
 
-interface ICardUpdateRequest extends ICardRequest, IUpdateRequest {
+interface ICardCreateRequest extends ICardRequest, ISourceSubRequest {}
 
+interface ICardUpdateRequest extends ICardRequest {
+    public function setCardId(string $cardId);
+    public function getCardId(): string;
+
+    public function setStreetLine1(/*?string*/ $line1);
+    public function getStreetLine1()/*: ?string*/;
+    public function setStreetLine2(/*?string*/ $line2);
+    public function getStreetLine2()/*: ?string*/;
+    public function setLocality(/*?string*/ $locality);
+    public function getLocality()/*: ?string*/;
+    public function setRegion(/*?string*/ $region);
+    public function getRegion()/*: ?string*/;
+    public function setPostalCode(/*?string*/ $code);
+    public function getPostalCode()/*: ?string*/;
+    public function setCountry(/*?string*/ $country);
+    public function getCountry()/*: ?string*/;
+
+    public function setExpiryMonth(/*?int*/ $month);
+    public function getExpiryMonth()/*: ?int*/;
+    public function setExpiryYear(/*?int*/ $year);
+    public function getExpiryYear()/*: ?int*/;
+
+    public function setName(/*?string*/ $name);
+    public function getName()/*: ?string*/;
 }
 
-interface ICardFilter extends IFilter {
-
-}
+interface ICardFilter extends IFilter {}
 
 
 // Sources
@@ -634,125 +619,50 @@ interface ICardFilter extends IFilter {
 
 
 // Coupons
-interface ICouponRequest extends IRequest {
-
-}
-
-interface ICouponCreateRequest extends ICouponRequest, ICreateRequest {
-
-}
-
-interface ICouponUpdateRequest extends ICouponRequest, IUpdateRequest {
-
-}
-
-interface ICouponFilter extends IFilter {
-
-}
+interface ICouponRequest extends IRequest {}
+interface ICouponCreateRequest extends ICouponRequest {}
+interface ICouponUpdateRequest extends ICouponRequest {}
+interface ICouponFilter extends IFilter {}
 
 
 
 // Invoices
-interface IInvoiceRequest extends IRequest {
-
-}
-
-interface IInvoiceCreateRequest extends IInvoiceRequest, ICreateRequest {
-
-}
-
-interface IInvoiceUpdateRequest extends IInvoiceRequest, IUpdateRequest {
-
-}
-
-interface IInvoicePreviewRequest extends IInvoiceRequest {
-
-}
-
-interface IInvoiceFilter extends IFilter {
-
-}
-
-interface IInvoiceLineFilter extends IFilter {
-
-}
+interface IInvoiceRequest extends IRequest {}
+interface IInvoiceCreateRequest extends IInvoiceRequest {}
+interface IInvoiceUpdateRequest extends IInvoiceRequest {}
+interface IInvoicePreviewRequest extends IInvoiceRequest {}
+interface IInvoiceFilter extends IFilter {}
+interface IInvoiceLineFilter extends IFilter {}
 
 
 
 // Invoice items
-interface IInvoiceItemRequest extends IRequest {
-
-}
-
-interface IInvoiceItemCreateRequest extends IInvoiceItemRequest, ICreateRequest {
-
-}
-
-interface IInvoiceItemUpdateRequest extends IInvoiceItemRequest, IUpdateRequest {
-
-}
-
-interface IInvoiceItemFilter extends IFilter {
-
-}
+interface IInvoiceItemRequest extends IRequest {}
+interface IInvoiceItemCreateRequest extends IInvoiceItemRequest {}
+interface IInvoiceItemUpdateRequest extends IInvoiceItemRequest {}
+interface IInvoiceItemFilter extends IFilter {}
 
 
 
 // Plans
-interface IPlanRequest extends IRequest {
-
-}
-
-interface IPlanCreateRequest extends IPlanRequest, ICreateRequest {
-
-}
-
-interface IPlanUpdateRequest extends IPlanRequest, IUpdateRequest {
-
-}
-
-interface IPlanFilter extends IFilter {
-
-}
+interface IPlanRequest extends IRequest {}
+interface IPlanCreateRequest extends IPlanRequest {}
+interface IPlanUpdateRequest extends IPlanRequest {}
+interface IPlanFilter extends IFilter {}
 
 
 
 // Subscriptions
-interface ISubscriptionRequest extends IRequest {
-
-}
-
-interface ISubscriptionCreateRequest extends ISubscriptionRequest, ICreateRequest {
-
-}
-
-interface ISubscriptionUpdateRequest extends ISubscriptionRequest, IUpdateRequest {
-
-}
-
-interface ISubscriptionFilter extends IFilter {
-
-}
+interface ISubscriptionRequest extends IRequest {}
+interface ISubscriptionCreateRequest extends ISubscriptionRequest {}
+interface ISubscriptionUpdateRequest extends ISubscriptionRequest {}
+interface ISubscriptionFilter extends IFilter {}
 
 
 
 // Subscription items
-interface ISubscriptionItemRequest extends IRequest {
-
-}
-
-interface ISubscriptionItemCreateRequest extends ISubscriptionRequest, ICreateRequest {
-
-}
-
-interface ISubscriptionItemUpdateRequest extends ISubscriptionRequest, IUpdateRequest {
-
-}
-
-interface ISubscriptionItemDeleteRequest extends ISubscriptionRequest, IDeleteRequest {
-
-}
-
-interface ISubscriptionItemFilter extends IFilter {
-
-}
+interface ISubscriptionItemRequest extends IRequest {}
+interface ISubscriptionItemCreateRequest extends ISubscriptionRequest {}
+interface ISubscriptionItemUpdateRequest extends ISubscriptionRequest {}
+interface ISubscriptionItemDeleteRequest extends ISubscriptionRequest {}
+interface ISubscriptionItemFilter extends IFilter {}
