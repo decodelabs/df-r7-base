@@ -732,7 +732,14 @@ interface ISubscriptionUpdateRequest extends ISubscriptionRequest {
     public function setProrationDate($date);
     public function getProrationDate()/*: ?core\time\IDate*/;
 }
-interface ISubscriptionFilter extends IFilter {}
+
+interface ISubscriptionFilter extends IFilter, ICustomerSubFilter {
+    public function setPlanId(/*?string*/ $planId);
+    public function getPlanId()/*: ?string*/;
+
+    public function setStatus(string $status);
+    public function getStatus(): string;
+}
 
 
 
