@@ -143,7 +143,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this->_number;
     }
 
-    public function setLast4Digits(string $digits): string {
+    public function setLast4Digits(string $digits) {
         $this->_last4 = $digits;
 
         if($digits !== null) {
