@@ -126,6 +126,29 @@ trait TRequest_Metadata {
 
 
 
+// Plan
+trait TRequest_Plan {
+
+    protected $_planId;
+
+    public function setPlanId(string $id) {
+        $this->_planId = $id;
+        return $this;
+    }
+
+    public function getPlanId(): string {
+        return $this->_planId;
+    }
+
+    protected function _applyPlan(array &$output, string $key='plan') {
+        if($this->_planId !== null) {
+            $output[$key] = $this->_planId;
+        }
+    }
+}
+
+
+
 // Shipping
 trait TRequest_Shipping {
 
@@ -312,6 +335,28 @@ trait TRequest_TransferGroup {
     protected function _applyTransferGroup(array &$output) {
         if($this->_transferGroup !== null) {
             $output['transfer_group'] = $this->_transferGroup;
+        }
+    }
+}
+
+
+// Trial days
+trait TRequest_TrialDays {
+
+    protected $_trialDays;
+
+    public function setTrialDays(/*?int*/ $days) {
+        $this->_trialDays = $days;
+        return $this;
+    }
+
+    public function getTrialDays()/*: ?int*/ {
+        return $this->_trialDays;
+    }
+
+    protected function _applyTrialDays(array &$output) {
+        if($this->_trialDays !== null) {
+            $output['trial_period_days'] = $this->_trialDays;
         }
     }
 }

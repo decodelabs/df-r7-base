@@ -216,7 +216,8 @@ class Mediator implements IMediator {
 
     public function updateCustomer(ICustomerUpdateRequest $request): IData {
         $data = $this->requestJson('post', 'customers/'.$request->getCustomerId(), $request->toArray());
-        return (new DataObject('customer', $data, [$this, '_processCustomer']));
+        return (new DataObject('customer', $data, [$this, '_processCustomer']))
+            ->setRequest($request);
     }
 
 
@@ -822,44 +823,51 @@ class Mediator implements IMediator {
 
 // Create plan
     public function newPlanCreateRequest(string $id, string $name, mint\ICurrency $amount, string $interval='month'): IPlanCreateRequest {
-        core\stub();
+        return new namespace\request\PlanCreate($id, $name, $amount, $interval);
     }
 
     public function createPlan(IPlanCreateRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'plans', $request->toArray());
+        return (new DataObject('plan', $data, [$this, '_processPlan']))
+            ->setRequest($request);
     }
 
 
 // Fetch plan
     public function fetchPlan(string $id): IData {
-        core\stub();
+        $data = $this->requestJson('get', 'plans/'.$id);
+        return new DataObject('plan', $data, [$this, '_processPlan']);
     }
 
 
 
 // Update plan
     public function newPlanUpdateRequest(string $id): IPlanUpdateRequest {
-        core\stub();
+        return new namespace\request\PlanUpdate($id);
     }
 
     public function updatePlan(IPlanUpdateRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'plans/'.$request->getPlanId(), $request->toArray());
+        return (new DataObject('plan', $data, [$this, '_processPlan']))
+            ->setRequest($request);
     }
 
 
 // Delete plan
     public function deletePlan(string $id) {
-        core\stub();
+        $this->requestJson('delete', 'plans/'.$id);
+        return $this;
     }
 
 
 // List plans
     public function newPlanFilter(): IPlanFilter {
-        core\stub();
+        return new namespace\filter\Plan();
     }
 
     public function fetchPlans(IPlanFilter $filter=null): IList {
-        core\stub();
+        $data = $this->requestJson('get', 'plans', namespace\filter\Plan::normalize($filter));
+        return new DataList('plan', $filter, $data, [$this, '_processPlan']);
     }
 
 

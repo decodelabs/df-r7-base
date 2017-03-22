@@ -363,6 +363,11 @@ interface IMetadataSubRequest extends IRequest {
     public function getMetadata()/*: ?array*/;
 }
 
+interface IPlanSubRequest extends IRequest {
+    public function setPlanId(string $id);
+    public function getPlanId(): string;
+}
+
 interface IShippingSubRequest extends IRequest {
     public function setShippingAddress(/*?user\IPostalAddress*/ $address);
     public function getShippingAddress()/*: ?user\IPostralAddress*/;
@@ -397,6 +402,11 @@ interface IStatementDescriptorSubRequest extends IRequest {
 interface ITransferGroupSubRequest extends IRequest {
     public function setTransferGroup(/*?string*/ $group);
     public function getTransferGroup()/*: ?string*/;
+}
+
+interface ITrialDaysSubRequest extends IRequest {
+    public function setTrialDays(/*?int*/ $days);
+    public function getTrialDays()/*: ?int*/;
 }
 
 
@@ -645,10 +655,30 @@ interface IInvoiceItemFilter extends IFilter {}
 
 
 // Plans
-interface IPlanRequest extends IRequest {}
-interface IPlanCreateRequest extends IPlanRequest {}
-interface IPlanUpdateRequest extends IPlanRequest {}
-interface IPlanFilter extends IFilter {}
+interface IPlanRequest extends IRequest,
+    IPlanSubRequest, IMetadataSubRequest, IStatementDescriptorSubRequest,
+    ITrialDaysSubRequest {}
+
+interface IPlanCreateRequest extends IPlanRequest {
+    public function setAmount(mint\ICurrency $amount);
+    public function getAmount(): mint\ICurrency;
+
+    public function setName(string $name);
+    public function getName(): string;
+
+    public function setInterval(string $interval, int $count=null);
+    public function getInterval(): string;
+
+    public function setIntervalCount(int $count);
+    public function getIntervalCount(): int;
+}
+
+interface IPlanUpdateRequest extends IPlanRequest {
+    public function setName(/*?string*/ $name);
+    public function getName()/*: string*/;
+}
+
+interface IPlanFilter extends IFilter, ICreatedSubFilter {}
 
 
 
