@@ -886,44 +886,52 @@ class Mediator implements IMediator {
 
 // Create subscription
     public function newSubscriptionCreateRequest(string $customerId, string $planId=null): ISubscriptionCreateRequest {
-        core\stub();
+        return new namespace\request\SubscriptionCreate($customerId, $planId);
     }
 
     public function createSubscription(ISubscriptionCreateRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'subscriptions', $request->toArray());
+        return (new DataObject('subscription', $data, [$this, '_processSubscription']))
+            ->setRequest($request);
     }
 
 
 // Fetch subscription
     public function fetchSubscription(string $id): IData {
-        core\stub();
+        $data = $this->requestJson('get', 'subscriptions/'.$id);
+        return new DataObject('subscription', $data, [$this, '_processSubscription']);
     }
 
 
 // Update subscription
     public function newSubscriptionUpdateRequest(string $id): ISubscriptionUpdateRequest {
-        core\stub();
+        return new namespace\request\SubscriptionUpdate($id);
     }
 
     public function updateSubscription(ISubscriptionUpdateRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'subscriptions/'.$request->getSubscriptionId(), $request->toArray());
+        return (new DataObject('subscription', $data, [$this, '_processSubscription']))
+            ->setRequest($request);
     }
 
 
 // Cancel subscription
     public function cancelSubscription(string $id, bool $atPeriodEnd=false): IData {
-        core\stub();
+        $data = ['at_period_end' => $atPeriodEnd ? 'true' : 'false'];
+        $data = $this->requestJson('delete', 'subscriptions/'.$id, $data);
+        return (new DataObject('subscription', $data, [$this, '_processSubscription']));
     }
 
 
 
 // List subscriptions
     public function newSubscriptionFilter(string $customerId=null): ISubscriptionFilter {
-        core\stub();
+        return new namespace\filter\Subscription($customerId);
     }
 
     public function fetchSubscriptions(ISubscriptionFilter $filter=null) {
-        core\stub();
+        $data = $this->requestJson('get', 'subscriptions', namespace\filter\Subscription::normalize($filter));
+        return new DataList('subscription', $filter, $data, [$this, '_processSubscription']);
     }
 
 

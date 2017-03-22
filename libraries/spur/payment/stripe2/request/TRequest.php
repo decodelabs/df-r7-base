@@ -34,6 +34,29 @@ trait TRequest_ApplicationFee {
 }
 
 
+
+// Application fee percent
+trait TRequest_ApplicationFeePercent {
+
+    protected $_applicationFeePercent;
+
+    public function setApplicationFeePercent(/*?float*/ $percent) {
+        $this->_applicationFeePercent = $percent;
+        return $this;
+    }
+
+    public function getApplicationFeePercent()/*: ?float*/ {
+        return $this->_applicationFeePercent;
+    }
+
+    protected function _applyApplicationFeePercent(array &$output) {
+        if($this->_applicationFeePercent !== null) {
+            $output['application_fee_percent'] = $this->_applicationFeePercent;
+        }
+    }
+}
+
+
 // Charge id
 trait TRequest_ChargeId {
 
@@ -51,6 +74,29 @@ trait TRequest_ChargeId {
     protected function _applyChargeId(array &$output) {
         if($this->_chargeId !== null) {
             $output['charge'] = $this->_chargeId;
+        }
+    }
+}
+
+
+
+// Coupon
+trait TRequest_Coupon {
+
+    protected $_coupon;
+
+    public function setCouponId(/*?string*/ $id) {
+        $this->_coupon = $id;
+        return $this;
+    }
+
+    public function getCouponId()/*: ?string*/ {
+        return $this->_coupon;
+    }
+
+    protected function _applyCoupon(array &$output) {
+        if($this->_coupon !== null) {
+            $output['coupon'] = $this->_coupon;
         }
     }
 }
@@ -146,6 +192,32 @@ trait TRequest_Plan {
         }
     }
 }
+
+
+
+
+// Prorate
+trait TRequest_Prorate {
+
+    protected $_prorate;
+
+    public function setProrate(/*?bool*/ $prorate) {
+        $this->_prorate = $prorate;
+        return $this;
+    }
+
+    public function getProrate()/*: ?bool*/ {
+        return $this->_prorate;
+    }
+
+    protected function _applyProrate(array &$output) {
+        if($this->_prorate !== null) {
+            $output['prorate'] = $this->_prorate ? 'true' : 'false';
+        }
+    }
+}
+
+
 
 
 
@@ -318,6 +390,125 @@ trait TRequest_StatementDescriptor {
 }
 
 
+
+
+// Subscription items
+trait TRequest_SubscriptionItems {
+
+    protected $_items = [];
+
+    public function addPlan(string $planId, int $quantity=1) {
+        return $this->addItem(
+            $this->newItem($planId, $quantity)
+        );
+    }
+
+    public function newItem(string $planId, int $quantity=1): spur\payment\stripe2\ISubscriptionItem {
+        return new spur\payment\stripe2\SubscriptionItem(null, $planId, $quantity);
+    }
+
+    public function setItems(array $items) {
+        return $this->clearItems()->addItems($items);
+    }
+
+    public function addItems(array $items) {
+        foreach($items as $item) {
+            $this->addItem($item);
+        }
+
+        return $this;
+    }
+
+    public function addItem(spur\payment\stripe2\ISubscriptionItem $item) {
+        $this->_items[$item->getKey()] = $item;
+        return $this;
+    }
+
+    public function deleteItem(string $itemId) {
+        $item = new spur\payment\stripe2\SubscriptionItem($itemId);
+        $item->shouldDelete(true);
+        return $this->addItem($item);
+    }
+
+    public function clearItems() {
+        $this->_items = [];
+        return $this;
+    }
+
+    public function getItems(): array {
+        return $this->_items;
+    }
+
+
+    protected function _applyItems(array &$output, bool $forUpdate=false) {
+        if(empty($this->_items) && !$forUpdate) {
+            throw core\Error::ELogic('No plans have been set');
+        }
+
+        $output['items'] = [];
+
+        foreach($this->_items as $item) {
+            if($item->shouldDelete()) {
+                if($forUpdate) {
+                    $output['items'][] = [
+                        'id' => $item->getItemId(),
+                        'deleted' => 'true'
+                    ];
+                }
+
+                continue;
+            }
+
+            $arr = [
+                'plan' => $item->getPlanId(),
+                'quantity' => $item->getQuantity()
+            ];
+
+            if($forUpdate && (null !== ($itemId = $item->getItemId()))) {
+                $arr['id'] = $itemId;
+            }
+
+            $output['items'][] = $arr;
+        }
+    }
+}
+
+
+
+
+// Tax Percent
+trait TRequest_TaxPercent {
+
+    protected $_taxPercent;
+
+    public function setTaxPercent(/*?float*/ $percent) {
+        if($percent !== null) {
+            if($percent < 0) {
+                $percent = 0;
+            } else if($percent > 100) {
+                $percent = 100;
+            }
+
+            $percent = round($percent, 4);
+        }
+
+        $this->_taxPercent = $percent;
+        return $this;
+    }
+
+    public function getTaxPercent()/*: ?float*/ {
+        return $this->_taxPercent;
+    }
+
+    protected function _applyTaxPercent(array &$output) {
+        if($this->_taxPercent !== null) {
+            $output['tax_percent'] = $this->_taxPercent;
+        }
+    }
+}
+
+
+
 // Transfer group
 trait TRequest_TransferGroup {
 
@@ -357,6 +548,28 @@ trait TRequest_TrialDays {
     protected function _applyTrialDays(array &$output) {
         if($this->_trialDays !== null) {
             $output['trial_period_days'] = $this->_trialDays;
+        }
+    }
+}
+
+
+// Trial end
+trait TRequest_TrialEnd {
+
+    protected $_trialEnd;
+
+    public function setTrialEnd($date) {
+        $this->_trialEnd = core\time\Date::factory($date);
+        return $this;
+    }
+
+    public function getTrialEnd()/*: ?core\time\IDate*/ {
+        return $this->_trialEnd;
+    }
+
+    protected function _applyTrialEnd(array &$output) {
+        if($this->_trialEnd) {
+            $output['trial_end'] = $this->_trialEnd->toTimestamp();
         }
     }
 }

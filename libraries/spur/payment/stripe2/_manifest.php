@@ -343,9 +343,19 @@ interface IApplicationFeeSubRequest extends IRequest {
     public function getApplicationFee()/*: ?mint\ICurrency*/;
 }
 
+interface IApplicationFeePercentSubRequest extends IRequest {
+    public function setApplicationFeePercent(/*?float*/ $percent);
+    public function getApplicationFeePercent()/*: ?float*/;
+}
+
 interface IChargeIdSubRequest extends IRequest {
     public function setChargeId(string $id);
     public function getChargeId(): string;
+}
+
+interface ICouponSubRequest extends IRequest {
+    public function setCouponId(/*?string*/ $id);
+    public function getCouponId()/*: ?string*/;
 }
 
 interface IDescriptionSubRequest extends IRequest {
@@ -366,6 +376,11 @@ interface IMetadataSubRequest extends IRequest {
 interface IPlanSubRequest extends IRequest {
     public function setPlanId(string $id);
     public function getPlanId(): string;
+}
+
+interface IProrateSubRequest extends IRequest {
+    public function setProrate(/*?bool*/ $prorate);
+    public function getProrate()/*: ?bool*/;
 }
 
 interface IShippingSubRequest extends IRequest {
@@ -407,6 +422,11 @@ interface ITransferGroupSubRequest extends IRequest {
 interface ITrialDaysSubRequest extends IRequest {
     public function setTrialDays(/*?int*/ $days);
     public function getTrialDays()/*: ?int*/;
+}
+
+interface ITrialEndSubRequest extends IRequest {
+    public function setTrialEnd($date);
+    public function getTrialEnd()/*: ?core\time\IDate*/;
 }
 
 
@@ -683,14 +703,55 @@ interface IPlanFilter extends IFilter, ICreatedSubFilter {}
 
 
 // Subscriptions
-interface ISubscriptionRequest extends IRequest {}
-interface ISubscriptionCreateRequest extends ISubscriptionRequest {}
-interface ISubscriptionUpdateRequest extends ISubscriptionRequest {}
+interface ISubscriptionRequest extends IRequest,
+    IApplicationFeePercentSubRequest, ICouponSubRequest, IProrateSubRequest,
+    ISourceSubRequest, ITrialEndSubRequest {
+    public function addPlan(string $planId, int $quantity=1);
+    public function newItem(string $planId, int $quantity=1): ISubscriptionItem;
+
+    public function setItems(array $items);
+    public function addItems(array $items);
+    public function addItem(ISubscriptionItem $item);
+    public function deleteItem(string $itemId);
+    public function clearItems();
+    public function getItems(): array;
+
+    public function setTaxPercent(/*?float*/ $percent);
+    public function getTaxPercent()/*: ?float*/;
+}
+
+interface ISubscriptionCreateRequest extends ISubscriptionRequest, ITrialDaysSubRequest {
+    public function setCustomerId(string $customerId);
+    public function getCustomerId(): string;
+}
+
+interface ISubscriptionUpdateRequest extends ISubscriptionRequest {
+    public function setSubscriptionId(string $id);
+    public function getSubscriptionId(): string;
+
+    public function setProrationDate($date);
+    public function getProrationDate()/*: ?core\time\IDate*/;
+}
 interface ISubscriptionFilter extends IFilter {}
 
 
 
 // Subscription items
+interface ISubscriptionItem {
+    public function setItemId(/*?string*/ $id);
+    public function getItemId()/*: ?string*/;
+
+    public function setPlanId(/*?string*/ $id);
+    public function getPlanId()/*: ?string*/;
+
+    public function getKey(): string;
+
+    public function setQuantity(int $quantity);
+    public function getQuantity(): int;
+
+    public function shouldDelete(bool $flag=null);
+}
+
 interface ISubscriptionItemRequest extends IRequest {}
 interface ISubscriptionItemCreateRequest extends ISubscriptionRequest {}
 interface ISubscriptionItemUpdateRequest extends ISubscriptionRequest {}
