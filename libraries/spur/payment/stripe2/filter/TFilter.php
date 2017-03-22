@@ -81,3 +81,62 @@ trait TFilter_Currency {
         }
     }
 }
+
+
+// Customer
+trait TFilter_Customer {
+
+    protected $_customer;
+
+    public function setCustomerId(/*?string*/ $customerId) {
+        $this->_currency = $customerId;
+        return $this;
+    }
+
+    public function getCustomerId()/*: ?string*/ {
+        return $this->_customer;
+    }
+
+    protected function _applyCustomer(array &$output) {
+        if($this->_customer !== null) {
+            $output['customer'] = $this->_customer;
+        }
+    }
+}
+
+
+// Source
+trait TFilter_Source {
+
+    protected $_source = 'all';
+
+    public function setSource(string $source) {
+        switch($source) {
+            case 'all':
+            case 'alipay_account':
+            case 'bank_account':
+            case 'bitcoin_receiver':
+            case 'card':
+                break;
+
+            default:
+                throw core\Error::EArgument([
+                    'message' => 'Invalid charge source',
+                    'data' => $source
+                ]);
+        }
+
+        $this->_source = $source;
+        return $this;
+    }
+
+    public function getSource(): string {
+        return $this->_source;
+    }
+
+    protected function _applySource(array &$output) {
+        if($this->_source !== 'all') {
+            $output['source'] = ['object' => $this->_source];
+        }
+    }
+}

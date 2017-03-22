@@ -17,11 +17,12 @@ class DataObject extends core\collection\Tree implements IData {
 
     public function __construct(string $type, core\collection\ITree $data, $callback=null) {
         $this->setType($type);
-        $this->_collection = $data->_collection;
 
         if($callback) {
-            core\lang\Callback::call($callback, $this);
+            core\lang\Callback::call($callback, $data);
         }
+
+        $this->_collection = $data->_collection;
     }
 
     public function setType(string $type) {
@@ -40,5 +41,19 @@ class DataObject extends core\collection\Tree implements IData {
 
     public function getRequest()/*: ?IRequest*/ {
         return $this->_request;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        $output = parent::getDumpProperties();
+
+        array_unshift(
+            $output,
+            new core\debug\dumper\Property('type', $this->_type, 'private'),
+            new core\debug\dumper\Property('request', $this->_request, 'private')
+        );
+
+        return $output;
     }
 }

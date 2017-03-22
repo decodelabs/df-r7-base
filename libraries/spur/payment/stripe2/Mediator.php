@@ -59,26 +59,26 @@ class Mediator implements IMediator {
 
         return new DataObject('balance', $data, function($data) {
             foreach($data->available as $i => $node) {
-                $data->available->replace($i, new DataObject('available_balance', $node, [$this, '_normalizeBalance']));
+                $data->available->replace($i, new DataObject('available_balance', $node, [$this, '_processBalance']));
             }
 
             foreach($data->pending as $i => $node) {
-                $data->pending->replace($i, new DataObject('pending_balance', $node, [$this, '_normalizeBalance']));
+                $data->pending->replace($i, new DataObject('pending_balance', $node, [$this, '_processBalance']));
             }
         });
     }
 
-    protected function _normalizeBalance(core\collection\ITree $data) {
-        $data['amount'] = mint\Currency::fromIntegerAmount($data['amount'], $data['currency']);
+    protected function _processBalance(core\collection\ITree $data) {
+        $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
 
         foreach($data->source_types as $node) {
-            $node->setValue(mint\Currency::fromIntegerAmount($node->getValue(), $data['currency']));
+            $node->setValue($this->_normalizeCurrency($node->getValue(), $data['currency']));
         }
     }
 
     public function fetchBalanceTransaction(string $id): IData {
         $data = $this->requestJson('get', 'balance/history/'.$id);
-        return new DataObject('balance_transaction', $data, [$this, '_normalizeBalanceTransaction']);
+        return new DataObject('balance_transaction', $data, [$this, '_processBalanceTransaction']);
     }
 
     public function newBalanceTransactionFilter(string $type=null): IBalanceTransactionFilter {
@@ -87,20 +87,20 @@ class Mediator implements IMediator {
 
     public function fetchBalanceTransactions(IBalanceTransactionFilter $filter=null): IList {
         $data = $this->requestJson('get', 'balance/history', namespace\filter\BalanceTransaction::normalize($filter));
-        return new DataList('balance_transaction', $filter, $data, [$this, '_normalizeBalanceTransaction']);
+        return new DataList('balance_transaction', $filter, $data, [$this, '_processBalanceTransaction']);
     }
 
-    protected function _normalizeBalanceTransaction(core\collection\ITree $data) {
+    protected function _processBalanceTransaction(core\collection\ITree $data) {
         $data['available_on'] = core\time\Date::factory($data['available_on']);
         $data['created'] = core\time\Date::factory($data['created']);
 
-        $data['amount'] = mint\Currency::fromIntegerAmount($data['amount'], $data['currency']);
-        $data['fee'] = mint\Currency::fromIntegerAmount($data['fee'], $data['currency']);
-        $data['net'] = mint\Currency::fromIntegerAmount($data['net'], $data['currency']);
+        $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
+        $data['fee'] = $this->_normalizeCurrency($data['fee'], $data['currency']);
+        $data['net'] = $this->_normalizeCurrency($data['net'], $data['currency']);
 
         foreach($data->fee_details as $i => $node) {
             $data->fee_details->replace($i, new DataObject($node['type'], $node, function($data) {
-                $data['amount'] = mint\Currency::fromIntegerAmount($data['amount'], $data['currency']);
+                $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
             }));
         }
     }
@@ -110,42 +110,63 @@ class Mediator implements IMediator {
 
 // Charges
     public function newChargeCreateRequest(mint\ICurrency $amount, string $description=null): IChargeCreateRequest {
-        return new namespace\request\Charge_Create($amount, $description);
+        return new namespace\request\ChargeCreate($amount, $description);
     }
 
     public function createCharge(IChargeCreateRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'charges', $request->toArray());
+        return (new DataObject('charge', $data, [$this, '_processCharge']))
+            ->setRequest($request);
     }
 
     public function fetchCharge(string $id): IData {
-        core\stub();
+        $data = $this->requestJson('get', 'charges/'.$id);
+        return new DataObject('charge', $data, [$this, '_processCharge']);
     }
 
 
     public function newChargeUpdateRequest(string $id): IChargeUpdateRequest {
-        return new namespace\request\Charge_Update($id);
+        return new namespace\request\ChargeUpdate($id);
     }
 
     public function updateCharge(IChargeUpdateRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'charges/'.$request->getChargeId(), $request->toArray());
+        return (new DataObject('charge', $data, [$this, '_processCharge']))
+            ->setRequest($request);
     }
 
 
     public function newChargeFilter(string $customerId=null): IChargeFilter {
-        core\stub();
+        return new namespace\filter\Charge($customerId);
     }
 
     public function fetchCharges(IChargeFilter $filter=null): IList {
-        core\stub();
+        $data = $this->requestJson('get', 'charges', namespace\filter\Charge::normalize($filter));
+        return new DataList('charge', $filter, $data, [$this, '_processCharge']);
     }
 
 
-    public function newCaptureRequest(string $chargeId, mint\ICurrency $amount=null): IChargeCaptureRequest {
-        return new namespace\request\Charge_Capture($chargeId, $amount);
+    public function newChargeCaptureRequest(string $chargeId, mint\ICurrency $amount=null): IChargeCaptureRequest {
+        return new namespace\request\ChargeCapture($chargeId, $amount);
     }
 
     public function captureCharge(IChargeCaptureRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'charges/'.$request->getChargeId().'/capture', $request->toArray());
+        return (new DataObject('charge', $data, [$this, '_processCharge']))
+            ->setRequest($request);
+    }
+
+    protected function _processCharge($data) {
+        $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
+        $data['amount_refunded'] = $this->_normalizeCurrency($data['amount_refunded'], $data['currency']);
+        $data['application_fee'] = $this->_normalizeCurrency($data['application_fee'], $data['currency']);
+        $data['created'] = core\time\Date::factory($data['created']);
+
+        $data->replace('refunds', new DataList('refund', null, $data->refunds, [$this, '_processRefund']));
+
+        if($data->source['object'] == 'card') {
+            $data->card = $this->_normalizeCard($data->source);
+        }
     }
 
 
@@ -298,6 +319,10 @@ class Mediator implements IMediator {
 
 */
 
+    protected function _processRefund($data) {
+        $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
+        $data['created'] = core\time\Date::factory($data['created']);
+    }
 
 
 // Tokens
@@ -779,6 +804,36 @@ class Mediator implements IMediator {
             'postal_code' => $this->_shippingAddress->getPostalCode(),
             'country' => $this->_shippingAddress->getCountryCode()
         ];
+    }
+
+    protected function _normalizeCurrency(/*?int*/ $amount, /*?string*/ $currency)/*: ?mint\ICurrency*/ {
+        if($amount === null) {
+            return null;
+        }
+
+        return mint\Currency::fromIntegerAmount($amount, $currency);
+    }
+
+    protected function _normalizeCard(core\collection\ITree $data) {
+        $card = mint\CreditCard::fromArray([
+            'name' => $data['name'],
+            'last4' => $data['last4'],
+            'expiryMonth' => $data['exp_month'],
+            'expiryYear' => $data['exp_year']
+        ]);
+
+        if($data['address_city'] !== null) {
+            $card->setBillingAddress(user\PostalAddress::fromArray([
+                'street1' => $data['address_line1'],
+                'street2' => $data['address_line2'],
+                'locality' => $data['address_city'],
+                'region' => $data['address_state'],
+                'postalCode' => $data['address_zip'],
+                'countryCode' => $data['address_country']
+            ]));
+        }
+
+        return $card;
     }
 
 

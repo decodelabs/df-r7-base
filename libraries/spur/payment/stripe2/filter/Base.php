@@ -16,7 +16,7 @@ class Base implements spur\payment\stripe2\IFilter {
     protected $_startingAfter;
     protected $_endingBefore;
 
-    public static function normalize(IFilter &$filter=null): array {
+    public static function normalize(spur\payment\stripe2\IFilter &$filter=null): array {
         if(!$filter) {
             $filter = new static;
         }

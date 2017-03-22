@@ -46,7 +46,7 @@ interface IMediator extends spur\IHttpMediator {
     public function newChargeFilter(string $customerId=null): IChargeFilter;
     public function fetchCharges(IChargeFilter $filter=null): IList;
 
-    public function newCaptureRequest(string $chargeId, mint\ICurrency $amount=null): IChargeCaptureRequest;
+    public function newChargeCaptureRequest(string $chargeId, mint\ICurrency $amount=null): IChargeCaptureRequest;
     public function captureCharge(IChargeCaptureRequest $request): IData;
 
 
@@ -412,6 +412,7 @@ interface IFilter extends core\IArrayProvider {
     public function getEndingBefore()/*: ?string*/;
 }
 
+
 interface IAvailabilitySubFilter extends IFilter {
     public function whereAvailableOn(/*?array*/ $availability);
     public function getAvailability()/*: ?array*/;
@@ -425,6 +426,16 @@ interface ICreatedSubFilter extends IFilter {
 interface ICurrencySubFilter extends IFilter {
     public function setCurrency(/*?string*/ $currency);
     public function getCurrency()/*: ?string*/;
+}
+
+interface ICustomerSubFilter extends IFilter {
+    public function setCustomerId(/*?string*/ $customerId);
+    public function getCustomerId()/*: ?string*/;
+}
+
+interface ISourceSubFilter extends IFilter {
+    public function setSource(string $source);
+    public function getSource(): string;
 }
 
 
@@ -484,8 +495,10 @@ interface IChargeCaptureRequest extends IChargeRequest,
     public function getAmount()/*: ?mint\ICurrency*/;
 }
 
-interface IChargeFilter extends IFilter {
-
+interface IChargeFilter extends IFilter,
+    ICreatedSubFilter, ICustomerSubFilter, ISourceSubFilter {
+    public function setTransferGroup(/*?string*/ $group);
+    public function getTransferGroup()/*: ?string*/;
 }
 
 

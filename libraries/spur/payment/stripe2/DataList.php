@@ -10,14 +10,13 @@ use df\core;
 use df\spur;
 use df\mint;
 
-class DataList implements IList {
+class DataList extends core\collection\Tree implements IList {
 
     protected $_total = 0;
     protected $_hasMore = false;
     protected $_startingAfter;
     protected $_endingBefore;
     protected $_filter;
-    protected $_objects = [];
 
     public function __construct(string $type, IFilter $filter=null, core\collection\ITree $data, $callback=null) {
         if($filter) {
@@ -28,9 +27,10 @@ class DataList implements IList {
         $this->_hasMore = (bool)$data['has_more'];
 
         $first = true;
+        $object = null;
 
         foreach($data->data as $node) {
-            $this->_objects[] = $object = new DataObject($type, $node, $callback);
+            $this->_collection[] = $object = new DataObject($type, $node, $callback);
 
             if($first) {
                 $this->_endingBefore = $object['id'];
@@ -71,11 +71,20 @@ class DataList implements IList {
     }
 
 
-    public function toArray(): array {
-        return $this->_objects;
-    }
+// Dump
+    public function getDumpProperties() {
+        $output = [
+            new core\debug\dumper\Property('total', $this->_total, 'private'),
+            new core\debug\dumper\Property('hasMore', $this->_hasMore, 'private'),
+            new core\debug\dumper\Property('startingAfter', $this->_startingAfter, 'private'),
+            new core\debug\dumper\Property('endingBefore', $this->_endingBefore, 'private'),
+            new core\debug\dumper\Property('filter', $this->_filter, 'private')
+        ];
 
-    public function getIterator() {
-        return new \ArrayIterator($this->_objects);
+        foreach($this->_collection as $key => $child) {
+            $output[$key] = $child;
+        }
+
+        return $output;
     }
 }

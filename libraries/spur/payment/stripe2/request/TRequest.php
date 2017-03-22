@@ -28,7 +28,7 @@ trait TRequest_ApplicationFee {
 
     protected function _applyApplicationFee(array &$output) {
         if($this->_applicationFee !== null) {
-            $output['application_fee'] = $this->_applicationFee->getAmount();
+            $output['application_fee'] = $this->_applicationFee->getIntegerAmount();
         }
     }
 }

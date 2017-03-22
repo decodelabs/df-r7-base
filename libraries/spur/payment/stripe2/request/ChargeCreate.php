@@ -10,9 +10,7 @@ use df\core;
 use df\spur;
 use df\mint;
 
-
-// Create
-class Charge_Create implements spur\payment\stripe2\IChargeCreateRequest {
+class ChargeCreate implements spur\payment\stripe2\IChargeCreateRequest {
 
     use TRequest_ApplicationFee;
     use TRequest_Description;
@@ -131,9 +129,9 @@ class Charge_Create implements spur\payment\stripe2\IChargeCreateRequest {
 
     public function toArray(): array {
         $output = [
-            'amount' => $this->_amount->getAmount(),
-            'currency' => $this->_amount->getCurrency(),
-            'capture' => $this->_capture
+            'amount' => $this->_amount->getIntegerAmount(),
+            'currency' => $this->_amount->getCode(),
+            'capture' => $this->_capture ? 'true' : 'false'
         ];
 
         if($this->_destinationAccountId) {
@@ -142,7 +140,7 @@ class Charge_Create implements spur\payment\stripe2\IChargeCreateRequest {
             ];
 
             if($this->_destinationAmount) {
-                $output['destination']['amount'] = $this->_destinationAmount->getAmount();
+                $output['destination']['amount'] = $this->_destinationAmount->getIntegerAmount();
             }
         }
 
@@ -168,110 +166,6 @@ class Charge_Create implements spur\payment\stripe2\IChargeCreateRequest {
         $this->_applyMetadata($output);
         $this->_applyReceiptEmail($output);
         $this->_applyShipping($output);
-        $this->_applyStatementDescriptor($output);
-
-        return $output;
-    }
-}
-
-
-
-// Update
-class Charge_Update implements spur\payment\stripe2\IChargeUpdateRequest {
-
-    use TRequest_ChargeId;
-    use TRequest_Description;
-    use TRequest_Metadata;
-    use TRequest_ReceiptEmail;
-    use TRequest_Shipping;
-    use TRequest_TransferGroup;
-
-/*
-    ?description
-    ?fraud_details
-    ?metadata
-    ?receipt_email
-    ?shipping
-    ?transfer_group
-*/
-
-    protected $_fraudDetails;
-
-    public function __construct(string $id) {
-        $this->setChargeId($id);
-    }
-
-    public function setFraudDetails(/*?array*/ $details) {
-        $this->_fraudDetails = $details;
-        return $this;
-    }
-
-    public function getFraudDetails()/*: ?array*/ {
-        return $this->_fraudDetails;
-    }
-
-
-    public function toArray(): array {
-        $output = [];
-
-        if($this->_fraudDetails !== null) {
-            $output['fraud_details'] = $this->_fraudDetails;
-        }
-
-        $this->_applyDescription($output);
-        $this->_applyMetadata($output);
-        $this->_applyReceiptEmail($output);
-        $this->_applyShipping($output);
-        $this->_applyTransferGroup($output);
-
-        return $output;
-    }
-}
-
-
-
-// Capture
-class Charge_Capture implements spur\payment\stripe2\IChargeCaptureRequest {
-
-    use TRequest_ChargeId;
-    use TRequest_ApplicationFee;
-    use TRequest_ReceiptEmail;
-    use TRequest_StatementDescriptor;
-
-/*
-    charge
-    ?amount
-    ?application_fee
-    ?receipt_email
-    ?statement_descriptor
-*/
-
-    protected $_amount;
-
-    public function __construct(string $chargeId, mint\ICurrency $amount=null) {
-        $this->setChargeId($chargeId);
-    }
-
-    public function setAmount(/*?mint\ICurrency*/ $amount) {
-        $this->_amount = $amount;
-        return $this;
-    }
-
-    public function getAmount()/*: ?mint\ICurrency*/ {
-        return $this->_amount;
-    }
-
-
-    public function toArray(): array {
-        $output = [];
-
-        if($this->_amount !== null) {
-            $output['amount'] = $this->_amount->getAmount();
-        }
-
-        $this->_applyChargeId($output);
-        $this->_applyApplicationFee($output);
-        $this->_applyReceiptEmail($output);
         $this->_applyStatementDescriptor($output);
 
         return $output;
