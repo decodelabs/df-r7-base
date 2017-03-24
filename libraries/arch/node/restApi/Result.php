@@ -95,8 +95,12 @@ class Result implements arch\node\IRestApiResult {
             $data['error'] = [
                 'message' => $this->_exception->getMessage(),
                 'code' => $this->_exception->getCode(),
-                'key' => $this->_exception->getKey()
+                'key' => null
             ];
+
+            if($this->_exception instanceof core\IError) {
+                $data['error']['key'] = $this->_exception->getKey();
+            }
         }
 
         if(!$this->validator->isValid()) {
