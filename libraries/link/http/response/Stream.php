@@ -16,8 +16,12 @@ class Stream extends Base implements link\http\IAdaptiveStreamResponse {
     public function __construct($content=null, $contentType=null, link\http\IResponseHeaderCollection $headers=null) {
         parent::__construct($headers);
 
-        if($contentType === null && (!$headers || !$headers->has('content-type'))) {
-            $contentType = 'text/plain';
+        if($contentType === null) {
+            if($headers && $headers->has('content-type')) {
+                $contentType = $headers->get('content-type');
+            } else {
+                $contentType = 'text/plain';
+            }
         }
 
         $this->setContent($content, $contentType);
