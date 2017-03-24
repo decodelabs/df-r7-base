@@ -21,11 +21,14 @@ class HelperNotFoundException extends RuntimeException {}
 
 
 interface IError {
+    public function setKey(?string $key);
+    public function getKey(): ?string;
+
     public function setData($data);
     public function getData();
 
-    public function setHttpCode(/*?int */$code);
-    public function getHttpCode();//: ?int;
+    public function setHttpCode(?int $code);
+    public function getHttpCode(): ?int;
 
     public function getStackCall(): core\debug\IStackCall;
     public function getStackTrace(): core\debug\IStackTrace;

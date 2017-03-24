@@ -12,7 +12,8 @@ class Error extends \Exception implements IError {
 
     private static $_instances = [];
 
-    protected $_http = 500;
+    protected $_http;
+    protected $_key;
     protected $_data;
     protected $_rewind = 0;
     protected $_stackTrace;
@@ -214,7 +215,23 @@ class Error extends \Exception implements IError {
         );
 
         $this->_rewind = $args['rewind'] ?? 0;
-        $this->_http = (int)($args['http'] ?? 500);
+
+        if(isset($args['http'])) {
+            $this->_http = (int)$args['http'];
+        }
+
+        if(isset($args['key'])) {
+            $this->_key = (string)$args['key'];
+        }
+    }
+
+    public function setKey(?string $key) {
+        $this->_key = $key;
+        return $this;
+    }
+
+    public function getKey(): ?string {
+        return $this->_key;
     }
 
     public function setData($data) {
@@ -226,12 +243,12 @@ class Error extends \Exception implements IError {
         return $this->_data;
     }
 
-    public function setHttpCode(/*?int*/ $code) {
+    public function setHttpCode(?int $code) {
         $this->_http = $code;
         return $this;
     }
 
-    public function getHttpCode() {//: ?int {
+    public function getHttpCode(): ?int {
         return $this->_http;
     }
 

@@ -51,8 +51,8 @@ class Result implements arch\node\IRestApiResult {
             return $this->_statusCode;
         }
 
-        if($this->_exception) {
-            $code = $this->_exception->getCode();
+        if($this->_exception instanceof core\IError) {
+            $code = $this->_exception->getHttpCode();
 
             if(!link\http\response\HeaderCollection::isValidStatusCode($code)) {
                 $code = 400;
@@ -92,8 +92,11 @@ class Result implements arch\node\IRestApiResult {
         ];
 
         if($this->_exception) {
-            $data['error'] = $this->_exception->getMessage();
-            $data['code'] = $this->_exception->getCode();
+            $data['error'] = [
+                'message' => $this->_exception->getMessage(),
+                'code' => $this->_exception->getCode(),
+                'key' => $this->_exception->getKey()
+            ];
         }
 
         if(!$this->validator->isValid()) {
