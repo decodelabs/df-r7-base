@@ -243,6 +243,11 @@ class Curl_Handle {
         if($this->request->hasBodyData()) {
             $size = $this->request->headers->get('content-length');
             $body = $this->request->getBodyDataFile();
+
+            if(!$body->isOpen()) {
+                $body->open(core\fs\Mode::READ_ONLY);
+            }
+
             $output[\CURLOPT_UPLOAD] = true;
 
             if($size !== null) {
