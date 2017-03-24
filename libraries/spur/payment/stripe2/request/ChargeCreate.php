@@ -17,7 +17,7 @@ class ChargeCreate implements spur\payment\stripe2\IChargeCreateRequest {
     use TRequest_TransferGroup;
     use TRequest_Metadata;
     use TRequest_Email;
-    use TRequest_Shipping;
+    use TRequest_Shipped;
     use TRequest_Source;
     use TRequest_StatementDescriptor;
 

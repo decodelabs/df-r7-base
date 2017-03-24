@@ -16,7 +16,7 @@ class ChargeUpdate implements spur\payment\stripe2\IChargeUpdateRequest {
     use TRequest_Description;
     use TRequest_Metadata;
     use TRequest_Email;
-    use TRequest_Shipping;
+    use TRequest_Shipped;
     use TRequest_TransferGroup;
 
 /*
