@@ -32,6 +32,14 @@ abstract class RestApi extends Base implements IRestApiNode {
 
         $httpMethod = $this->_httpRequest->getMethod();
         $func = 'execute'.ucfirst(strtolower($httpMethod));
+
+        if(!method_exists($this, $func)) {
+            throw core\Error::EApi([
+                'message' => 'Node does not support '.$httpMethod.' method',
+                'http' => 400
+            ]);
+        }
+
         $response = $this->{$func}();
 
         return $this->_handleResponse($response);
