@@ -13,9 +13,6 @@ use df\user;
 
 // Gateway
 interface IGateway {
-    public function setDefaultCurrency(string $code);
-    public function getDefaultCurrency(): string;
-
     public function getSupportedCurrencies(): array;
     public function isCurrencySupported($code): bool;
 

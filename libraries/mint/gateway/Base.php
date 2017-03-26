@@ -11,8 +11,6 @@ use df\mint;
 
 abstract class Base implements mint\IGateway {
 
-    protected $_defaultCurrency = 'USD';
-
     public static function factory(string $name, $settings=null): mint\IGateway {
         $class = 'df\\mint\\gateway\\'.ucfirst($name);
 
@@ -25,35 +23,7 @@ abstract class Base implements mint\IGateway {
         return new $class(core\collection\Tree::factory($settings));
     }
 
-    protected function __construct(core\collection\ITree $settings) {
-        if($settings->has('defaultCurrency')) {
-            $this->setDefaultCurrency($settings['defaultCurrency']);
-        }
-    }
-
-
-    public function setDefaultCurrency(string $code) {
-        $code = strtoupper($code);
-
-        if(!mint\Currency::isRecognizedCode($code)) {
-            throw core\Error::{'mint/ECurrency,EArgument'}(
-                'Invalid currency code: '.$code
-            );
-        }
-
-        if(!$this->isCurrencySupported($code)) {
-            throw core\Error::{'mint/ECurrency,EArgument'}(
-                'Currency not supported: '.$code
-            );
-        }
-
-        $this->_defaultCurrency = $code;
-        return $this;
-    }
-
-    public function getDefaultCurrency(): string {
-        return $this->_defaultCurrency;
-    }
+    protected function __construct(core\collection\ITree $settings) {}
 
     public function isCurrencySupported($code): bool {
         $code = mint\Currency::normalizeCode($code);
