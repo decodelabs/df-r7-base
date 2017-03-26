@@ -38,7 +38,7 @@ class BridgedManyRelationValueContainer implements
         $this->_targetPrimaryKeySet = $field->getTargetRelationManifest()->toPrimaryKeySet();
     }
 
-    public function getOutputDescription() {//: ?string {
+    public function getOutputDescription(): ?string {
         return (string)$this->countAll();
     }
 

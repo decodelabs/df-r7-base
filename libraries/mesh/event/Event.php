@@ -96,7 +96,7 @@ class Event implements IEvent {
         return $this;
     }
 
-    public function getJobQueue() {
+    public function getJobQueue(): ?mesh\job\IQueue {
         return $this->_jobQueue;
     }
 
@@ -105,7 +105,7 @@ class Event implements IEvent {
         return $this;
     }
 
-    public function getJob() {
+    public function getJob(): ?mesh\job\IJob {
         return $this->_job;
     }
 }

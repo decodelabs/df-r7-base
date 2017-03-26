@@ -28,12 +28,12 @@ class Refund implements mint\IChargeRefund {
         return $this->_id;
     }
 
-    public function setAmount(/*?mint\ICurrency*/ $amount) {
+    public function setAmount(?mint\ICurrency $amount) {
         $this->_amount = $amount;
         return $this;
     }
 
-    public function getAmount()/*: ?mint\ICurrency*/ {
+    public function getAmount(): ?mint\ICurrency {
         return $this->_amount;
     }
 }

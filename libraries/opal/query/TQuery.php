@@ -48,7 +48,7 @@ trait TQuery_TransactionAware {
         return $this;
     }
 
-    public function getTransaction() {
+    public function getTransaction(): ?mesh\job\ITransaction {
         return $this->_transaction;
     }
 }
@@ -216,7 +216,7 @@ trait TQuery {
         return $this;
     }
 
-    public function getTransaction() {
+    public function getTransaction(): ?mesh\job\ITransaction {
         return $this->getSourceManager()->getTransaction();
     }
 

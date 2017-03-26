@@ -67,86 +67,86 @@ class CardUpdate implements spur\payment\stripe2\ICardUpdateRequest {
     }
 
 
-    public function setStreetLine1(/*?string*/ $line1) {
+    public function setStreetLine1(?string $line1) {
         $this->_streetLine1 = $line1;
         return $this;
     }
 
-    public function getStreetLine1()/*: ?string*/ {
+    public function getStreetLine1(): ?string {
         return $this->_streetLine1;
     }
 
-    public function setStreetLine2(/*?string*/ $line2) {
+    public function setStreetLine2(?string $line2) {
         $this->_streetLine2 = $line2;
         return $this;
     }
 
-    public function getStreetLine2()/*: ?string*/ {
+    public function getStreetLine2(): ?string {
         return $this->_streetLine2;
     }
 
-    public function setLocality(/*?string*/ $locality) {
+    public function setLocality(?string $locality) {
         $this->_locality = $locality;
         return $this;
     }
 
-    public function getLocality()/*: ?string*/ {
+    public function getLocality(): ?string {
         return $this->_locality;
     }
 
-    public function setRegion(/*?string*/ $region) {
+    public function setRegion(?string $region) {
         $this->_region = $region;
         return $this;
     }
 
-    public function getRegion()/*: ?string*/ {
+    public function getRegion(): ?string {
         return $this->_region;
     }
 
-    public function setPostalCode(/*?string*/ $code) {
+    public function setPostalCode(?string $code) {
         $this->_postalCode = $code;
         return $this;
     }
 
-    public function getPostalCode()/*: ?string*/ {
+    public function getPostalCode(): ?string {
         return $this->_postalCode;
     }
 
-    public function setCountry(/*?string*/ $country) {
+    public function setCountry(?string $country) {
         $this->_country = $country;
         return $this;
     }
 
-    public function getCountry()/*: ?string*/ {
+    public function getCountry(): ?string {
         return $this->_country;
     }
 
 
-    public function setExpiryMonth(/*?int*/ $month) {
+    public function setExpiryMonth(?int $month) {
         $this->_expiryMonth = $month;
         return $this;
     }
 
-    public function getExpiryMonth()/*: ?int*/ {
+    public function getExpiryMonth(): ?int {
         return $this->_expiryMonth;
     }
 
-    public function setExpiryYear(/*?int*/ $year) {
+    public function setExpiryYear(?int $year) {
         $this->_expiryYear = $year;
         return $this;
     }
 
-    public function getExpiryYear()/*: ?int*/ {
+    public function getExpiryYear(): ?int {
         return $this->_expiryYear;
     }
 
 
-    public function setName(/*?string*/ $name) {
+    public function setName(?string $name) {
         $this->_name = $name;
         return $this;
     }
 
-    public function getName()/*: ?string*/ {
+    public function getName(): ?string {
         return $this->_name;
     }
 

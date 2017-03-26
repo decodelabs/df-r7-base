@@ -39,12 +39,12 @@ abstract class Base implements mint\IChargeRequest {
         return $this->_card;
     }
 
-    public function setDescription(/*?string*/ $description) {
+    public function setDescription(?string $description) {
         $this->_description = $description;
         return $this;
     }
 
-    public function getDescription()/*: ?string*/ {
+    public function getDescription(): ?string {
         return $this->_description;
     }
 }

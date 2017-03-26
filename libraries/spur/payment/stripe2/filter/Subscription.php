@@ -22,12 +22,12 @@ class Subscription extends Base implements spur\payment\stripe2\ISubscriptionFil
         $this->setCustomerId($customerId);
     }
 
-    public function setPlanId(/*?string*/ $planId) {
+    public function setPlanId(?string $planId) {
         $this->_plan = $planId;
         return $this;
     }
 
-    public function getPlanId()/*: ?string*/ {
+    public function getPlanId(): ?string {
         return $this->_plan;
     }
 

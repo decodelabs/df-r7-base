@@ -112,7 +112,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getName()/*: ?string*/ {
+    public function getName(): ?string {
         return $this->_name;
     }
 
@@ -139,7 +139,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getNumber()/*: ?string*/ {
+    public function getNumber(): ?string {
         return $this->_number;
     }
 
@@ -155,7 +155,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getLast4Digits()/*: ?string*/ {
+    public function getLast4Digits(): ?string {
         if($this->_last4) {
             return $this->_last4;
         }
@@ -169,7 +169,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return array_keys(self::BRANDS);
     }
 
-    public function getBrand()/*: ?string*/ {
+    public function getBrand(): ?string {
         if($this->_brand === false) {
             foreach(self::BRANDS as $brand => $regex) {
                 if(preg_match($regex, $this->_number)) {
@@ -188,7 +188,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
 
 
 // Start
-    public function setStartMonth(/*?int*/ $month) {
+    public function setStartMonth(?int $month) {
         $this->_startMonth = $month;
 
         if($month === null) {
@@ -198,11 +198,11 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getStartMonth()/*: ?int*/ {
+    public function getStartMonth(): ?int {
         return $this->_startMonth;
     }
 
-    public function setStartYear(/*?int*/ $year) {
+    public function setStartYear(?int $year) {
         if(strlen($year) == 2) {
             $year = '20'.$year;
         }
@@ -216,11 +216,11 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getStartYear()/*: ?int*/ {
+    public function getStartYear(): ?int {
         return $this->_startYear;
     }
 
-    public function setStartString(/*string*/$start) {
+    public function setStartString(string $start) {
         $parts = explode('/', $start);
 
         return $this
@@ -228,11 +228,11 @@ class CreditCard implements ICreditCard, core\IDumpable {
             ->setStartYear(array_shift($parts));
     }
 
-    public function getStartString()/*: ?string*/ {
+    public function getStartString(): ?string {
         return $this->_startMonth.'/'.$this->_startYear;
     }
 
-    public function getStartDate()/*: ?core\time\IDate*/ {
+    public function getStartDate(): ?core\time\IDate {
         return new core\time\Date($this->_startYear.'-'.$this->_startMonth.'-1');
     }
 
@@ -243,7 +243,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getExpiryMonth()/*: ?int*/ {
+    public function getExpiryMonth(): ?int {
         return $this->_expiryMonth;
     }
 
@@ -256,7 +256,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getExpiryYear()/*: ?int*/ {
+    public function getExpiryYear(): ?int {
         return $this->_expiryYear;
     }
 
@@ -268,11 +268,11 @@ class CreditCard implements ICreditCard, core\IDumpable {
             ->setExpiryYear(array_shift($parts));
     }
 
-    public function getExpiryString()/*: ?string*/ {
+    public function getExpiryString(): ?string {
         return $this->_expiryMonth.'/'.$this->_expiryYear;
     }
 
-    public function getExpiryDate()/*: ?core\time\IDate*/ {
+    public function getExpiryDate(): ?core\time\IDate {
         return new core\time\Date($this->_expiryYear.'-'.$this->_expiryMonth.'-1');
     }
 
@@ -283,18 +283,18 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getCvc()/*: ?string*/ {
+    public function getCvc(): ?string {
         return $this->_cvc;
     }
 
 
 // Issue number
-    public function setIssueNumber(/*?string*/ $number) {
+    public function setIssueNumber(?string $number) {
         $this->_issueNumber = $number;
         return $this;
     }
 
-    public function getIssueNumber()/*: ?string*/ {
+    public function getIssueNumber(): ?string {
         return $this->_issueNumber;
     }
 
@@ -305,7 +305,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getBillingAddress()/*: ?user\IPostalAddress*/ {
+    public function getBillingAddress(): ?user\IPostalAddress {
         return $this->_billingAddress;
     }
 

@@ -33,7 +33,7 @@ class Dependency implements IDependency {
         return $this;
     }
 
-    public function getResolution() {
+    public function getResolution(): ?IResolution {
         return $this->_resolution;
     }
 

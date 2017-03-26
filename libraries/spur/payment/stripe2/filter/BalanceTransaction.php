@@ -34,17 +34,17 @@ class BalanceTransaction extends Base implements spur\payment\stripe2\IBalanceTr
     }
 
 
-    public function setTransferId(/*?string*/ $transferId) {
+    public function setTransferId(?string $transferId) {
         $this->_transferId = $transferId;
         return $this;
     }
 
-    public function getTransferId()/*: ?string*/ {
+    public function getTransferId(): ?string {
         return $this->_transferId;
     }
 
 
-    public function setType(/*?string*/ $type) {
+    public function setType(?string $type) {
         switch($type) {
             case null:
             case 'charge':
@@ -68,7 +68,7 @@ class BalanceTransaction extends Base implements spur\payment\stripe2\IBalanceTr
         return $this;
     }
 
-    public function getType()/*: ?string*/ {
+    public function getType(): ?string {
         return $this->_type;
     }
 

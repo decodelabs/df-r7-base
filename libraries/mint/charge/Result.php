@@ -66,12 +66,12 @@ class Result implements mint\IChargeResult {
         return $this->_apiFailure;
     }
 
-    public function setMessage(/*?string*/ $message) {
+    public function setMessage(?string $message) {
         $this->_message = $message;
         return $this;
     }
 
-    public function getMessage()/*: ?string*/ {
+    public function getMessage(): ?string {
         return $this->_message;
     }
 
@@ -90,12 +90,12 @@ class Result implements mint\IChargeResult {
     }
 
 
-    public function setChargeId(/*?string*/ $id) {
+    public function setChargeId(?string $id) {
         $this->_chargeId = $id;
         return $this;
     }
 
-    public function getChargeId()/*: ?string*/ {
+    public function getChargeId(): ?string {
         return $this->_chargeId;
     }
 

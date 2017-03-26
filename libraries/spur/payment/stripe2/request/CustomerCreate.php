@@ -38,32 +38,32 @@ class CustomerCreate implements spur\payment\stripe2\ICustomerCreateRequest {
         $this->setDescription($description);
     }
 
-    public function setBalance(/*?mint\ICurrency*/ $balance) {
+    public function setBalance(?mint\ICurrency $balance) {
         $this->_balance = $balance;
         return $this;
     }
 
-    public function getBalance()/*: ?mint\ICurrency*/ {
+    public function getBalance(): ?mint\ICurrency {
         return $this->_balance;
     }
 
 
-    public function setVatId(/*?string*/ $id) {
+    public function setVatId(?string $id) {
         $this->_vatId = $id;
         return $this;
     }
 
-    public function getVatId()/*: ?string*/ {
+    public function getVatId(): ?string {
         return $this->_vatId;
     }
 
 
-    public function setCouponId(/*?string*/ $id) {
+    public function setCouponId(?string $id) {
         $this->_coupon = $id;
         return $this;
     }
 
-    public function getCouponId()/*: ?string*/ {
+    public function getCouponId(): ?string {
         return $this->_coupon;
     }
 

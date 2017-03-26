@@ -316,7 +316,7 @@ interface IData extends core\collection\ITree {
     public function getType(): string;
 
     public function setRequest(IRequest $request);
-    public function getRequest()/*: ?IRequest*/;
+    public function getRequest(): ?IRequest;
 }
 
 
@@ -325,8 +325,8 @@ interface IList extends core\IArrayProvider, \IteratorAggregate {
     public function getTotal(): int;
     public function hasMore(): bool;
 
-    public function getStartingAfter()/*: ?string*/;
-    public function getEndingBefore()/*: ?string*/;
+    public function getStartingAfter(): ?string;
+    public function getEndingBefore(): ?string;
 
     public function setFilter(IFilter $filter);
     public function getFilter(): IFilter;
@@ -337,13 +337,13 @@ interface IList extends core\IArrayProvider, \IteratorAggregate {
 interface IRequest extends core\IArrayProvider {}
 
 interface IApplicationFeeSubRequest extends IRequest {
-    public function setApplicationFee(/*?mint\ICurrency*/ $fee);
-    public function getApplicationFee()/*: ?mint\ICurrency*/;
+    public function setApplicationFee(?mint\ICurrency $fee);
+    public function getApplicationFee(): ?mint\ICurrency;
 }
 
 interface IApplicationFeePercentSubRequest extends IRequest {
-    public function setApplicationFeePercent(/*?float*/ $percent);
-    public function getApplicationFeePercent()/*: ?float*/;
+    public function setApplicationFeePercent(?float $percent);
+    public function getApplicationFeePercent(): ?float;
 }
 
 interface IChargeIdSubRequest extends IRequest {
@@ -352,23 +352,23 @@ interface IChargeIdSubRequest extends IRequest {
 }
 
 interface ICouponSubRequest extends IRequest {
-    public function setCouponId(/*?string*/ $id);
-    public function getCouponId()/*: ?string*/;
+    public function setCouponId(?string $id);
+    public function getCouponId(): ?string;
 }
 
 interface IDescriptionSubRequest extends IRequest {
-    public function setDescription(/*?string */ $description);
-    public function getDescription()/*: ?string*/;
+    public function setDescription(?string $description);
+    public function getDescription(): ?string;
 }
 
 interface IEmailSubRequest extends IRequest {
-    public function setEmailAddress(/*?string*/ $email);
-    public function getEmailAddress()/*: ?string*/;
+    public function setEmailAddress(?string $email);
+    public function getEmailAddress(): ?string;
 }
 
 interface IMetadataSubRequest extends IRequest {
-    public function setMetadata(/*?array */ $metadata);
-    public function getMetadata()/*: ?array*/;
+    public function setMetadata(?array $metadata);
+    public function getMetadata(): ?array;
 }
 
 interface IPlanSubRequest extends IRequest {
@@ -377,54 +377,54 @@ interface IPlanSubRequest extends IRequest {
 }
 
 interface IProrateSubRequest extends IRequest {
-    public function setProrate(/*?bool*/ $prorate);
-    public function getProrate()/*: ?bool*/;
+    public function setProrate(?bool $prorate);
+    public function getProrate(): ?bool;
 }
 
 interface IShippingSubRequest extends IRequest {
-    public function setShippingAddress(/*?user\IPostalAddress*/ $address);
-    public function getShippingAddress()/*: ?user\IPostralAddress*/;
+    public function setShippingAddress(?user\IPostalAddress $address);
+    public function getShippingAddress(): ?user\IPostralAddress;
 
-    public function setRecipientName(/*?string*/ $name);
-    public function getRecipientName()/*: ?string*/;
+    public function setRecipientName(?string $name);
+    public function getRecipientName(): ?string;
 
-    public function setRecipientPhone(/*?string*/ $phone);
-    public function getRecipientPhone()/*: ?string*/;
+    public function setRecipientPhone(?string $phone);
+    public function getRecipientPhone(): ?string;
 }
 
 interface IShippedSubRequest extends IShippingSubRequest {
-    public function setCarrier(/*?string*/ $carrier);
-    public function getCarrier()/*: ?string*/;
+    public function setCarrier(?string $carrier);
+    public function getCarrier(): ?string;
 
-    public function setTrackingNumber(/*?string*/ $number);
-    public function getTrackingNumber()/*: ?string*/;
+    public function setTrackingNumber(?string $number);
+    public function getTrackingNumber(): ?string;
 }
 
 interface ISourceSubRequest extends IRequest {
-    public function setCard(/*?mint\ICreditCard*/ $card);
-    public function setSourceId(/*?string*/ $source);
+    public function setCard(?mint\ICreditCard $card);
+    public function setSourceId(?string $source);
     public function setSource($source);
     public function getSource();
 }
 
 interface IStatementDescriptorSubRequest extends IRequest {
-    public function setStatementDescriptor(/*?string*/ $descriptor);
-    public function getStatementDescriptor()/*: ?string*/;
+    public function setStatementDescriptor(?string $descriptor);
+    public function getStatementDescriptor(): ?string;
 }
 
 interface ITransferGroupSubRequest extends IRequest {
-    public function setTransferGroup(/*?string*/ $group);
-    public function getTransferGroup()/*: ?string*/;
+    public function setTransferGroup(?string $group);
+    public function getTransferGroup(): ?string;
 }
 
 interface ITrialDaysSubRequest extends IRequest {
-    public function setTrialDays(/*?int*/ $days);
-    public function getTrialDays()/*: ?int*/;
+    public function setTrialDays(?int $days);
+    public function getTrialDays(): ?int;
 }
 
 interface ITrialEndSubRequest extends IRequest {
     public function setTrialEnd($date);
-    public function getTrialEnd()/*: ?core\time\IDate*/;
+    public function getTrialEnd(): ?core\time\IDate;
 }
 
 
@@ -434,34 +434,34 @@ interface IFilter extends core\IArrayProvider {
     public function setLimit(int $limit);
     public function getLimit(): int;
 
-    public function setStartingAfter(/*?string*/ $id);
-    public function getStartingAfter()/*: ?string*/;
+    public function setStartingAfter(?string $id);
+    public function getStartingAfter(): ?string;
 
-    public function setEndingBefore(/*?string*/ $id);
-    public function getEndingBefore()/*: ?string*/;
+    public function setEndingBefore(?string $id);
+    public function getEndingBefore(): ?string;
 
     public function hasPointer(): bool;
 }
 
 
 interface IAvailabilitySubFilter extends IFilter {
-    public function whereAvailableOn(/*?array*/ $availability);
-    public function getAvailability()/*: ?array*/;
+    public function whereAvailableOn(?array $availability);
+    public function getAvailability(): ?array;
 }
 
 interface ICreatedSubFilter extends IFilter {
-    public function whereCreated(/*?array*/ $created);
-    public function getCreated()/*: ?array*/;
+    public function whereCreated(?array $created);
+    public function getCreated(): ?array;
 }
 
 interface ICurrencySubFilter extends IFilter {
-    public function setCurrency(/*?string*/ $currency);
-    public function getCurrency()/*: ?string*/;
+    public function setCurrency(?string $currency);
+    public function getCurrency(): ?string;
 }
 
 interface ICustomerSubFilter extends IFilter {
-    public function setCustomerId(/*?string*/ $customerId);
-    public function getCustomerId()/*: ?string*/;
+    public function setCustomerId(?string $customerId);
+    public function getCustomerId(): ?string;
 }
 
 interface ISourceSubFilter extends IFilter {
@@ -479,11 +479,11 @@ interface IBalanceTransactionFilter extends IFilter,
 
     public function isSourceOnly(bool $flag=null);
 
-    public function setTransferId(/*?string*/ $transferId);
-    public function getTransferId()/*: ?string*/;
+    public function setTransferId(?string $transferId);
+    public function getTransferId(): ?string;
 
-    public function setType(/*?string*/ $type);
-    public function getType()/*: ?string*/;
+    public function setType(?string $type);
+    public function getType(): ?string;
 }
 
 
@@ -499,35 +499,35 @@ interface IChargeCreateRequest extends IChargeRequest,
 
     public function shouldCapture(bool $flag=null);
 
-    public function setDestination(/*?string*/ $accountId, mint\ICurrency $amount=null);
-    public function getDestinationAccountId()/*?string*/;
-    public function getDestinationAmount()/*?mint\ICurrency*/;
+    public function setDestination(?string $accountId, mint\ICurrency $amount=null);
+    public function getDestinationAccountId(): ?string;
+    public function getDestinationAmount(): ?mint\ICurrency;
 
-    public function setOnBehalfOfAccountId(/*?string*/ $accountId);
-    public function getOnBehalfOfAccountId()/*: ?string*/;
+    public function setOnBehalfOfAccountId(?string $accountId);
+    public function getOnBehalfOfAccountId(): ?string;
 
-    public function setCustomerId(/*?string*/ $customerId);
-    public function getCustomerId()/*: ?string*/;
+    public function setCustomerId(?string $customerId);
+    public function getCustomerId(): ?string;
 }
 
 interface IChargeUpdateRequest extends IChargeRequest,
     IDescriptionSubRequest, IChargeIdSubRequest, ITransferGroupSubRequest,
     IMetadataSubRequest, IShippedSubRequest {
-    public function setFraudDetails(/*?array*/ $details);
-    public function getFraudDetails()/*: ?array*/;
+    public function setFraudDetails(?array $details);
+    public function getFraudDetails(): ?array;
 }
 
 interface IChargeCaptureRequest extends IChargeRequest,
     IChargeIdSubRequest, IApplicationFeeSubRequest, IEmailSubRequest,
     IStatementDescriptorSubRequest {
-    public function setAmount(/*?mint\ICurrency*/ $amount);
-    public function getAmount()/*: ?mint\ICurrency*/;
+    public function setAmount(?mint\ICurrency $amount);
+    public function getAmount(): ?mint\ICurrency;
 }
 
 interface IChargeFilter extends IFilter,
     ICreatedSubFilter, ICustomerSubFilter, ISourceSubFilter {
-    public function setTransferGroup(/*?string*/ $group);
-    public function getTransferGroup()/*: ?string*/;
+    public function setTransferGroup(?string $group);
+    public function getTransferGroup(): ?string;
 }
 
 
@@ -536,14 +536,14 @@ interface IChargeFilter extends IFilter,
 interface ICustomerRequest extends IRequest,
     IDescriptionSubRequest, IEmailSubRequest, IMetadataSubRequest,
     IShippingSubRequest, ISourceSubRequest {
-    public function setBalance(/*?mint\ICurrency*/ $balance);
-    public function getBalance()/*: ?mint\ICurrency*/;
+    public function setBalance(?mint\ICurrency $balance);
+    public function getBalance(): ?mint\ICurrency;
 
-    public function setVatId(/*?string*/ $id);
-    public function getVatId()/*: ?string*/;
+    public function setVatId(?string $id);
+    public function getVatId(): ?string;
 
-    public function setCouponId(/*?string*/ $id);
-    public function getCouponId()/*: ?string*/;
+    public function setCouponId(?string $id);
+    public function getCouponId(): ?string;
 }
 
 interface ICustomerCreateRequest extends ICustomerRequest {}
@@ -634,26 +634,26 @@ interface ICardUpdateRequest extends ICardRequest {
     public function setCardId(string $cardId);
     public function getCardId(): string;
 
-    public function setStreetLine1(/*?string*/ $line1);
-    public function getStreetLine1()/*: ?string*/;
-    public function setStreetLine2(/*?string*/ $line2);
-    public function getStreetLine2()/*: ?string*/;
-    public function setLocality(/*?string*/ $locality);
-    public function getLocality()/*: ?string*/;
-    public function setRegion(/*?string*/ $region);
-    public function getRegion()/*: ?string*/;
-    public function setPostalCode(/*?string*/ $code);
-    public function getPostalCode()/*: ?string*/;
-    public function setCountry(/*?string*/ $country);
-    public function getCountry()/*: ?string*/;
+    public function setStreetLine1(?string $line1);
+    public function getStreetLine1(): ?string;
+    public function setStreetLine2(?string $line2);
+    public function getStreetLine2(): ?string;
+    public function setLocality(?string $locality);
+    public function getLocality(): ?string;
+    public function setRegion(?string $region);
+    public function getRegion(): ?string;
+    public function setPostalCode(?string $code);
+    public function getPostalCode(): ?string;
+    public function setCountry(?string $country);
+    public function getCountry(): ?string;
 
-    public function setExpiryMonth(/*?int*/ $month);
-    public function getExpiryMonth()/*: ?int*/;
-    public function setExpiryYear(/*?int*/ $year);
-    public function getExpiryYear()/*: ?int*/;
+    public function setExpiryMonth(?int $month);
+    public function getExpiryMonth(): ?int;
+    public function setExpiryYear(?int $year);
+    public function getExpiryYear(): ?int;
 
-    public function setName(/*?string*/ $name);
-    public function getName()/*: ?string*/;
+    public function setName(?string $name);
+    public function getName(): ?string;
 }
 
 interface ICardFilter extends IFilter {}
@@ -710,8 +710,8 @@ interface IPlanCreateRequest extends IPlanRequest {
 }
 
 interface IPlanUpdateRequest extends IPlanRequest {
-    public function setName(/*?string*/ $name);
-    public function getName()/*: string*/;
+    public function setName(?string $name);
+    public function getName(): ?string;
 }
 
 interface IPlanFilter extends IFilter, ICreatedSubFilter {}
@@ -732,8 +732,8 @@ interface ISubscriptionRequest extends IRequest,
     public function clearItems();
     public function getItems(): array;
 
-    public function setTaxPercent(/*?float*/ $percent);
-    public function getTaxPercent()/*: ?float*/;
+    public function setTaxPercent(?float $percent);
+    public function getTaxPercent(): ?float;
 }
 
 interface ISubscriptionCreateRequest extends ISubscriptionRequest, ITrialDaysSubRequest {
@@ -746,12 +746,12 @@ interface ISubscriptionUpdateRequest extends ISubscriptionRequest {
     public function getSubscriptionId(): string;
 
     public function setProrationDate($date);
-    public function getProrationDate()/*: ?core\time\IDate*/;
+    public function getProrationDate(): ?core\time\IDate;
 }
 
 interface ISubscriptionFilter extends IFilter, ICustomerSubFilter {
-    public function setPlanId(/*?string*/ $planId);
-    public function getPlanId()/*: ?string*/;
+    public function setPlanId(?string $planId);
+    public function getPlanId(): ?string;
 
     public function setStatus(string $status);
     public function getStatus(): string;
@@ -761,11 +761,11 @@ interface ISubscriptionFilter extends IFilter, ICustomerSubFilter {
 
 // Subscription items
 interface ISubscriptionItem {
-    public function setItemId(/*?string*/ $id);
-    public function getItemId()/*: ?string*/;
+    public function setItemId(?string $id);
+    public function getItemId(): ?string;
 
-    public function setPlanId(/*?string*/ $id);
-    public function getPlanId()/*: ?string*/;
+    public function setPlanId(?string $id);
+    public function getPlanId(): ?string;
 
     public function getKey(): string;
 

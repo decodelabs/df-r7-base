@@ -39,7 +39,7 @@ class DataObject extends core\collection\Tree implements IData {
         return $this;
     }
 
-    public function getRequest()/*: ?IRequest*/ {
+    public function getRequest(): ?IRequest {
         return $this->_request;
     }
 

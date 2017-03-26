@@ -96,7 +96,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
 
 
 // Boolean
-    public function bool($value, array $options=[]) {//: ?bool {
+    public function bool($value, array $options=[]): ?bool {
         return $this->_applyFilter($value, FILTER_VALIDATE_BOOLEAN, [
             'default' => $options['default'] ?? null
         ], FILTER_NULL_ON_FAILURE);
@@ -104,7 +104,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
 
 
 // Numbers
-    public function int($value, array $options=[]) {//: ?int {
+    public function int($value, array $options=[]): ?int {
         $value = $this->_applyFilter($value, FILTER_SANITIZE_NUMBER_INT);
 
         return $this->_applyFilter($value, FILTER_VALIDATE_INT, [
@@ -114,7 +114,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
         ]);
     }
 
-    public function float($value, array $options=[]) {//: ?float {
+    public function float($value, array $options=[]): ?float {
         $value = $this->_applyFilter($value, FILTER_SANITIZE_NUMBER_FLOAT, [], FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
 
         $value = $this->_applyFilter($value, FILTER_VALIDATE_FLOAT, [
@@ -135,7 +135,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
 
 
 // Basic strings
-    public function string($value, array $options=[]) {//: ?string {
+    public function string($value, array $options=[]): ?string {
         $flags = 0;
 
         if($options['noEncodeQuotes'] ?? false) $flags |= FILTER_FLAG_NO_ENCODE_QUOTES;
@@ -154,7 +154,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
 
 
 // Email
-    public function email($value, array $options=[]) {//: ?string {
+    public function email($value, array $options=[]): ?string {
         $value = flow\mail\Address::factory($value);
         $value->setAddress($this->_applyFilter($value->getAddress(), FILTER_SANITIZE_EMAIL));
 
@@ -167,7 +167,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
 
 
 // Url
-    public function url($value, array $options=[]) {//: ?link\http\IUrl {
+    public function url($value, array $options=[]): ?link\http\IUrl {
         $value = $this->_applyFilter($value, FILTER_SANITIZE_URL);
 
         $flags = 0;
@@ -214,7 +214,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
 
 
 // Ids
-    public function slug($value, array $options=[]) {//: ?string {
+    public function slug($value, array $options=[]): ?string {
         if(empty($value)) {
             $value = $options['default'] ?? null;
         }
@@ -230,14 +230,14 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
         return $output;
     }
 
-    public function intId($value, array $options=[]) {//: ?int {
+    public function intId($value, array $options=[]): ?int {
         return $this->int($value, [
             'default' => $options['default'] ?? null,
             'min' => 1
         ]);
     }
 
-    public function guid($value, array $options=[]) {//: ?flex\IGuid {
+    public function guid($value, array $options=[]): ?flex\IGuid {
         try {
             $value = flex\Guid::factory($value);
         } catch(\Throwable $e) {

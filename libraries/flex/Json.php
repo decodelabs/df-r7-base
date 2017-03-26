@@ -24,7 +24,7 @@ class Json implements IJson {
 
 
 // Decode
-    public static function fromString(/*?string*/ $data) {
+    public static function fromString(?string $data) {
         return json_decode($data, true);
     }
 
@@ -32,7 +32,7 @@ class Json implements IJson {
         return self::fromString(core\fs\File::getContentsOf($path));
     }
 
-    public static function stringToTree(/*?string*/ $data): core\collection\ITree {
+    public static function stringToTree(?string $data): core\collection\ITree {
         return core\collection\Tree::factory(self::fromString($data));
     }
 

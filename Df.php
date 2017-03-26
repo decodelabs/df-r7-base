@@ -273,11 +273,11 @@ class Launchpad {
 
 
 // Paths
-    public static function getApplicationPath() {//: ?string {
+    public static function getApplicationPath(): ?string {
         return self::$applicationPath;
     }
 
-    public static function getBasePackagePath() {//: ?string {
+    public static function getBasePackagePath(): ?string {
         if(self::$isCompiled) {
             return self::$rootPath;
         } else {
@@ -287,7 +287,7 @@ class Launchpad {
 
 
 // Debug
-    public static function setDebugContext(core\debug\IContext $context=null) {//: ?core\debug\IContext {
+    public static function setDebugContext(core\debug\IContext $context=null): ?core\debug\IContext {
         $output = self::$debug;
         self::$debug = $context;
 

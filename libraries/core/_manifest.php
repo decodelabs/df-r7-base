@@ -100,7 +100,7 @@ trait TStringValueProvider {
 }
 
 interface IDescribable {
-    public function getOutputDescription();//: ?string;
+    public function getOutputDescription(): ?string;
 }
 
 // Array provider

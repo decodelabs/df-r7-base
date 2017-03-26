@@ -76,41 +76,41 @@ interface ICreditCardReference {}
 
 interface ICreditCard extends ICreditCardReference, core\IArrayProvider {
     public function setName(string $name);
-    public function getName()/*?: string*/;
+    public function getName(): ?string;
 
     public static function isValidNumber(string $number): bool;
     public function setNumber(string $number);
-    public function getNumber()/*: ?string*/;
+    public function getNumber(): ?string;
     public function setLast4Digits(string $digits);
-    public function getLast4Digits()/*: ?string*/;
+    public function getLast4Digits(): ?string;
 
     public static function getSupportedBrands(): array;
-    public function getBrand()/*: ?string*/;
+    public function getBrand(): ?string;
 
-    public function setStartMonth(/*?int*/ $month);
-    public function getStartMonth()/*: ?int*/;
-    public function setStartYear(/*?int*/ $year);
-    public function getStartYear()/*: ?int*/;
-    public function setStartString(/*?string*/ $start);
-    public function getStartString()/*: ?string*/;
-    public function getStartDate()/*: ?core\time\IDate*/;
+    public function setStartMonth(?int $month);
+    public function getStartMonth(): ?int;
+    public function setStartYear(?int $year);
+    public function getStartYear(): ?int;
+    public function setStartString(string $start);
+    public function getStartString(): ?string;
+    public function getStartDate(): ?core\time\IDate;
 
     public function setExpiryMonth(int $month);
-    public function getExpiryMonth()/*?: int*/;
+    public function getExpiryMonth(): ?int;
     public function setExpiryYear(int $year);
-    public function getExpiryYear()/*?: int*/;
+    public function getExpiryYear(): ?int;
     public function setExpiryString(string $expiry);
-    public function getExpiryString()/*?: string*/;
-    public function getExpiryDate()/*?: core\time\IDate*/;
+    public function getExpiryString(): ?string;
+    public function getExpiryDate(): ?core\time\IDate;
 
     public function setCvc(string $cvc);
-    public function getCvc()/*?: string*/;
+    public function getCvc(): ?string;
 
-    public function setIssueNumber(/*?string*/ $number);
-    public function getIssueNumber()/*: ?string*/;
+    public function setIssueNumber(?string $number);
+    public function getIssueNumber(): ?string;
 
     public function setBillingAddress(user\IPostalAddress $address=null);
-    public function getBillingAddress()/*: ?user\IPostalAddress*/;
+    public function getBillingAddress(): ?user\IPostalAddress;
 
     public function isValid(): bool;
 }
@@ -127,13 +127,13 @@ interface IChargeRequest {
     public function getAmount(): ICurrency;
     public function setCard(ICreditCardReference $card);
     public function getCard(): ICreditCardReference;
-    public function setDescription(/*?string*/ $description);
-    public function getDescription(); //: ?string;
+    public function setDescription(?string $description);
+    public function getDescription(): ?string;
 }
 
 interface IStandaloneChargeRequest extends IChargeRequest {
-    public function setEmailAddress(/*?string*/ $email);
-    public function getEmailAddress();//: ?string;
+    public function setEmailAddress(?string $email);
+    public function getEmailAddress(): ?string;
 }
 
 interface ICustomerChargeRequest extends IChargeRequest {
@@ -154,15 +154,15 @@ interface IChargeResult {
     public function isCardUnavailable(bool $flag=null);
     public function isApiFailure(bool $flag=null);
 
-    public function setMessage(/*?string*/ $message);
-    public function getMessage();//: ?string;
+    public function setMessage(?string $message);
+    public function getMessage(): ?string;
 
     public function setInvalidFields(string ...$fields);
     public function addInvalidFields(string ...$fields);
     public function getInvalidFields(): array;
 
-    public function setChargeId(/*?string*/ $id);
-    public function getChargeId()/*: ?string*/;
+    public function setChargeId(?string $id);
+    public function getChargeId(): ?string;
 
     public function setTransactionRecord($record);
     public function getTransactionRecord();
@@ -171,8 +171,8 @@ interface IChargeResult {
 interface IChargeRefund {
     public function setId(string $id);
     public function getId(): string;
-    public function setAmount(/*?ICurrency*/ $amount);
-    public function getAmount()/*: ?ICurrency*/;
+    public function setAmount(?ICurrency $amount);
+    public function getAmount(): ?ICurrency;
 }
 
 

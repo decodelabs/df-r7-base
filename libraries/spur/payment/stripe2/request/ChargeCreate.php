@@ -69,7 +69,7 @@ class ChargeCreate implements spur\payment\stripe2\IChargeCreateRequest {
     }
 
 
-    public function setDestination(/*?string*/ $accountId, mint\ICurrency $amount=null) {
+    public function setDestination(?string $accountId, mint\ICurrency $amount=null) {
         if($amount && $amount->getAmount() > $this->_amount->getAmount()) {
             throw core\Error::{'EBounds,EArgument'}([
                 'message' => 'Destination amount cannot be more than total amount',
@@ -85,29 +85,29 @@ class ChargeCreate implements spur\payment\stripe2\IChargeCreateRequest {
         return $this;
     }
 
-    public function getDestinationAccountId()/*?string*/ {
+    public function getDestinationAccountId(): ?string {
         return $this->_destinationAccountId;
     }
 
-    public function getDestinationAmount()/*?mint\ICurrency*/ {
+    public function getDestinationAmount(): ?mint\ICurrency {
         return $this->_destinationAmount;
     }
 
-    public function setOnBehalfOfAccountId(/*?string*/ $accountId) {
+    public function setOnBehalfOfAccountId(?string $accountId) {
         $this->_onBehalfOf = $accountId;
         return $this;
     }
 
-    public function getOnBehalfOfAccountId()/*: ?string*/ {
+    public function getOnBehalfOfAccountId(): ?string {
         return $this->_onBehalfOf;
     }
 
-    public function setCustomerId(/*?string*/ $customerId) {
+    public function setCustomerId(?string $customerId) {
         $this->_customerId = $customerId;
         return $this;
     }
 
-    public function getCustomerId()/*: ?string*/ {
+    public function getCustomerId(): ?string {
         return $this->_customerId;
     }
 

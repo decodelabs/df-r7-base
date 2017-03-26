@@ -66,7 +66,7 @@ class SubscribeResult implements ISubscribeResult {
         return $this;
     }
 
-    public function getEmailAddress() {
+    public function getEmailAddress(): ?flow\mail\IAddress {
         return $this->_emailAddress;
     }
 

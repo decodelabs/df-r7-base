@@ -205,9 +205,9 @@ interface IJson {
     public static function toString($data, int $flags=0): string;
     public static function toFile($path, $data, int $flags=0): core\fs\IFile;
 
-    public static function fromString(/*?string*/ $data);
+    public static function fromString(?string $data);
     public static function fromFile($path);
-    public static function stringToTree(/*?string*/ $data): core\collection\ITree;
+    public static function stringToTree(?string $data): core\collection\ITree;
     public static function fileToTree($path): core\collection\ITree;
 
     public static function prepare($data);

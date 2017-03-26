@@ -62,7 +62,7 @@ interface ISubscribeResult {
     public function getManualInputUrl();
 
     public function setEmailAddress($address, $name=null);
-    public function getEmailAddress();//: ?flow\mail\IAddress;
+    public function getEmailAddress(): ?flow\mail\IAddress;
 
     public function hasBounced(bool $flag=null);
     public function isInvalid(bool $flag=null);

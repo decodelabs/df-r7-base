@@ -23,22 +23,22 @@ class SubscriptionItem implements ISubscriptionItem {
         $this->setQuantity($quantity);
     }
 
-    public function setItemId(/*?string*/ $id) {
+    public function setItemId(?string $id) {
         $this->_itemId = $id;
         return $this;
     }
 
-    public function getItemId()/*: ?string*/ {
+    public function getItemId(): ?string {
         return $this->_itemId;
     }
 
 
-    public function setPlanId(/*?string*/ $id) {
+    public function setPlanId(?string $id) {
         $this->_planId = $id;
         return $this;
     }
 
-    public function getPlanId()/*: ?string*/ {
+    public function getPlanId(): ?string {
         return $this->_planId;
     }
 

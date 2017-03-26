@@ -1059,7 +1059,7 @@ class Mediator implements IMediator {
         ];
     }
 
-    protected function _normalizeCurrency(/*?int*/ $amount, /*?string*/ $currency)/*: ?mint\ICurrency*/ {
+    protected function _normalizeCurrency(?int $amount, ?string $currency): ?mint\ICurrency {
         if($amount === null) {
             return null;
         }

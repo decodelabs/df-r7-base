@@ -10,6 +10,6 @@ use df\core;
 use df\spur;
 use df\link;
 
-interface IMediator extends spur\IMediator {
+interface IMediator extends spur\IHttpMediator {
 
 }

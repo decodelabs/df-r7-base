@@ -38,7 +38,7 @@ interface ITransactionAdapter extends ITransactionExecutor {
 
 interface ITransactionAware {
     public function setTransaction(ITransaction $transaction=null);
-    public function getTransaction(); //: ?ITransaction;
+    public function getTransaction(): ?ITransaction;
 }
 
 interface ITransactionAdapterProvider {
@@ -86,7 +86,7 @@ interface IJobProvider {
 interface IJob {
     public function getId(): string;
     public function getObjectId(): string;
-    public function getAdapter(); //: ?ITransactionAdapter;
+    public function getAdapter(): ?ITransactionAdapter;
 
     public function addDependency($dependency, IResolution $resolution=null);
     public function countDependencies(): int;
@@ -118,7 +118,7 @@ trait TAdapterAwareJob {
 
     protected $_adapter;
 
-    public function getAdapter() {
+    public function getAdapter(): ?ITransactionAdapter {
         return $this->_adapter;
     }
 }
@@ -129,7 +129,7 @@ interface IDependency {
     public function getRequiredJobId(): string;
 
     public function setResolution(IResolution $resolution=null);
-    public function getResolution(); //: ?IResolution
+    public function getResolution(): ?IResolution;
 
     public function untangle(IQueue $queue, IJob $subordinate): bool;
     public function resolve(IJob $subordinate);

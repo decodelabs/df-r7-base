@@ -34,12 +34,12 @@ class ChargeUpdate implements spur\payment\stripe2\IChargeUpdateRequest {
         $this->setChargeId($id);
     }
 
-    public function setFraudDetails(/*?array*/ $details) {
+    public function setFraudDetails(?array $details) {
         $this->_fraudDetails = $details;
         return $this;
     }
 
-    public function getFraudDetails()/*: ?array*/ {
+    public function getFraudDetails(): ?array {
         return $this->_fraudDetails;
     }
 

@@ -48,22 +48,22 @@ class Base implements spur\payment\stripe2\IFilter {
     }
 
 
-    public function setStartingAfter(/*?string*/ $id) {
+    public function setStartingAfter(?string $id) {
         $this->_startingAfter = $id;
         return $this;
     }
 
-    public function getStartingAfter()/*: ?string*/ {
+    public function getStartingAfter(): ?string {
         return $this->_startingAfter;
     }
 
 
-    public function setEndingBefore(/*?string*/ $id) {
+    public function setEndingBefore(?string $id) {
         $this->_endingBefore = $id;
         return $this;
     }
 
-    public function getEndingBefore()/*: ?string*/ {
+    public function getEndingBefore(): ?string {
         return $this->_endingBefore;
     }
 
@@ -89,7 +89,7 @@ class Base implements spur\payment\stripe2\IFilter {
         return $this->_startingAfter !== null || $this->_endingBefore !== null;
     }
 
-    protected function _normalizeDateFilter(array $filter=null)/*: ?array*/ {
+    protected function _normalizeDateFilter(array $filter=null): ?array {
         if($filter === null) {
             return null;
         }

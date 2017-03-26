@@ -23,12 +23,12 @@ class Charge extends Base implements spur\payment\stripe2\IChargeFilter {
     }
 
 
-    public function setTransferGroup(/*?string*/ $group) {
+    public function setTransferGroup(?string $group) {
         $this->_transferGroup = $group;
         return $this;
     }
 
-    public function getTransferGroup()/*: ?string*/ {
+    public function getTransferGroup(): ?string {
         return $this->_transferGroup;
     }
 

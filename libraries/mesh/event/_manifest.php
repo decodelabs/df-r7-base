@@ -49,9 +49,9 @@ interface IEvent extends core\collection\IMap {
 
     // Job
     public function setJobQueue(mesh\job\IQueue $queue=null);
-    public function getJobQueue(); //: ?mesh\job\IQueue;
+    public function getJobQueue(): ?mesh\job\IQueue;
     public function setJob(mesh\job\IJob $job=null);
-    public function getJob(); //: ?mesh\job\IJob;
+    public function getJob(): ?mesh\job\IJob;
 }
 
 interface IListener {

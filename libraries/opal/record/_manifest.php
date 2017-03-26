@@ -228,7 +228,7 @@ trait TJob {
         return $this->_record;
     }
 
-    public function getAdapter() {
+    public function getAdapter(): ?mesh\job\ITransactionAdapter {
         return $this->_record->getAdapter();
     }
 

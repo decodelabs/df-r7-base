@@ -16,12 +16,12 @@ trait TFilter_Availability {
 
     protected $_availability;
 
-    public function whereAvailableOn(/*?array*/ $availability) {
+    public function whereAvailableOn(?array $availability) {
         $this->_availability = $this->_normalizeDateFilter($availability);
         return $this;
     }
 
-    public function getAvailability()/*: ?array*/ {
+    public function getAvailability(): ?array {
         return $this->_availability;
     }
 
@@ -37,12 +37,12 @@ trait TFilter_Created {
 
     protected $_created;
 
-    public function whereCreated(/*?array*/ $created) {
+    public function whereCreated(?array $created) {
         $this->_created = $this->_normalizeDateFilter($created);
         return $this;
     }
 
-    public function getCreated()/*: ?array*/ {
+    public function getCreated(): ?array {
         return $this->_created;
     }
 
@@ -59,7 +59,7 @@ trait TFilter_Currency {
 
     protected $_currency;
 
-    public function setCurrency(/*?string*/ $currency) {
+    public function setCurrency(?string $currency) {
         if(!mint\Currency::isRecognizedCode($currency)) {
             throw core\Error::EArgument([
                 'message' => 'Unsupported currency',
@@ -71,7 +71,7 @@ trait TFilter_Currency {
         return $this;
     }
 
-    public function getCurrency()/*: ?string*/ {
+    public function getCurrency(): ?string {
         return $this->_currency;
     }
 
@@ -88,12 +88,12 @@ trait TFilter_Customer {
 
     protected $_customer;
 
-    public function setCustomerId(/*?string*/ $customerId) {
+    public function setCustomerId(?string $customerId) {
         $this->_currency = $customerId;
         return $this;
     }
 
-    public function getCustomerId()/*: ?string*/ {
+    public function getCustomerId(): ?string {
         return $this->_customer;
     }
 

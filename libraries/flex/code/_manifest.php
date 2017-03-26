@@ -32,7 +32,7 @@ interface ILocation {
 interface IScanner {
     public function setLocations(array $locations);
     public function addLocations(array $locations);
-    public function addFrameworkPackageLocations();
+    public function addFrameworkPackageLocations(bool $allRoot=false);
     public function addLocation(ILocation $location);
     public function getLocation($id);
     public function hasLocation($id);

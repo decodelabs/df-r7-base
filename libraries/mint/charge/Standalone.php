@@ -18,12 +18,12 @@ class Standalone extends Base implements mint\IStandaloneChargeRequest {
         $this->setEmailAddress($email);
     }
 
-    public function setEmailAddress(/*?string*/ $email) {
+    public function setEmailAddress(?string $email) {
         $this->_email = $email;
         return $this;
     }
 
-    public function getEmailAddress()/*: ?string*/ {
+    public function getEmailAddress(): ?string {
         return $this->_email;
     }
 }

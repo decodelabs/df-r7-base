@@ -58,7 +58,7 @@ class SubscriptionUpdate implements spur\payment\stripe2\ISubscriptionUpdateRequ
         return $this;
     }
 
-    public function getProrationDate()/*: ?core\time\IDate*/ {
+    public function getProrationDate(): ?core\time\IDate {
         return $this->_prorationDate;
     }
 

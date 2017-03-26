@@ -32,12 +32,12 @@ class PlanUpdate implements spur\payment\stripe2\IPlanUpdateRequest {
     }
 
 
-    public function setName(/*?string*/ $name) {
+    public function setName(?string $name) {
         $this->_name = $name;
         return $this;
     }
 
-    public function getName()/*: string*/ {
+    public function getName(): ?string {
         return $this->_name;
     }
 

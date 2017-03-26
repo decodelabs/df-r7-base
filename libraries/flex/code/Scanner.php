@@ -8,6 +8,7 @@ namespace df\flex\code;
 use df;
 use df\core;
 use df\flex;
+use df\axis;
 
 class Scanner implements IScanner {
 
@@ -45,10 +46,17 @@ class Scanner implements IScanner {
         return $this;
     }
 
-    public function addFrameworkPackageLocations() {
-        foreach(df\Launchpad::$loader->getPackages() as $name => $package) {
+    public function addFrameworkPackageLocations(bool $allRoot=false) {
+        if($allRoot) {
+            $model = axis\Model::factory('package');
+            $packages = $model->getInstalledPackageList();
+        } else {
+            $packages = df\Launchpad::$loader->getPackages();
+        }
+
+        foreach($packages as $name => $package) {
             $blackList = [];
-            
+
             switch($name) {
                 case 'app':
                     $blackList = [
@@ -57,18 +65,25 @@ class Scanner implements IScanner {
                         'static',
                         'assets/lib/vendor'
                     ];
-                    
+
                     break;
-                    
+
                 case 'root':
                     $blackList = [
                         'base/libraries/core/i18n/module/cldr',
                     ];
-                    
+
                     break;
             }
-            
-            $this->addLocation(new Location($name, $package->path, $blackList));
+
+            if(is_array($package)) {
+                $path = $package['path'];
+                $name = $package['name'];
+            } else {
+                $path = $package->path;
+            }
+
+            $this->addLocation(new Location($name, $path, $blackList));
         }
 
         return $this;

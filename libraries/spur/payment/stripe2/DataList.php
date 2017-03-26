@@ -64,11 +64,11 @@ class DataList extends core\collection\Tree implements IList {
     }
 
 
-    public function getStartingAfter()/*: ?string*/ {
+    public function getStartingAfter(): ?string {
         return $this->_startingAfter;
     }
 
-    public function getEndingBefore()/*: ?string*/ {
+    public function getEndingBefore(): ?string {
         return $this->_endingBefore;
     }
 

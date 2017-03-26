@@ -17,12 +17,12 @@ trait TRequest_ApplicationFee {
 
     protected $_applicationFee;
 
-    public function setApplicationFee(/*?mint\ICurrency*/ $fee) {
+    public function setApplicationFee(?mint\ICurrency $fee) {
         $this->_applicationFee = $fee;
         return $this;
     }
 
-    public function getApplicationFee()/*: ?mint\ICurrency*/ {
+    public function getApplicationFee(): ?mint\ICurrency {
         return $this->_applicationFee;
     }
 
@@ -40,12 +40,12 @@ trait TRequest_ApplicationFeePercent {
 
     protected $_applicationFeePercent;
 
-    public function setApplicationFeePercent(/*?float*/ $percent) {
+    public function setApplicationFeePercent(?float $percent) {
         $this->_applicationFeePercent = $percent;
         return $this;
     }
 
-    public function getApplicationFeePercent()/*: ?float*/ {
+    public function getApplicationFeePercent(): ?float {
         return $this->_applicationFeePercent;
     }
 
@@ -85,12 +85,12 @@ trait TRequest_Coupon {
 
     protected $_coupon;
 
-    public function setCouponId(/*?string*/ $id) {
+    public function setCouponId(?string $id) {
         $this->_coupon = $id;
         return $this;
     }
 
-    public function getCouponId()/*: ?string*/ {
+    public function getCouponId(): ?string {
         return $this->_coupon;
     }
 
@@ -107,12 +107,12 @@ trait TRequest_Description {
 
     protected $_description;
 
-    public function setDescription(/*?string */ $description) {
+    public function setDescription(?string $description) {
         $this->_description = $description;
         return $this;
     }
 
-    public function getDescription()/*: ?string*/ {
+    public function getDescription(): ?string {
         return $this->_description;
     }
 
@@ -130,12 +130,12 @@ trait TRequest_Email {
 
     protected $_email;
 
-    public function setEmailAddress(/*?string*/ $email) {
+    public function setEmailAddress(?string $email) {
         $this->_email = $email;
         return $this;
     }
 
-    public function getEmailAddress()/*: ?string*/ {
+    public function getEmailAddress(): ?string {
         return $this->_email;
     }
 
@@ -153,12 +153,12 @@ trait TRequest_Metadata {
 
     protected $_metadata;
 
-    public function setMetadata(/*?array */ $metadata) {
+    public function setMetadata(?array $metadata) {
         $this->_metadata = $metadata;
         return $this;
     }
 
-    public function getMetadata()/*: ?array*/ {
+    public function getMetadata(): ?array {
         return $this->_metadata;
     }
 
@@ -201,12 +201,12 @@ trait TRequest_Prorate {
 
     protected $_prorate;
 
-    public function setProrate(/*?bool*/ $prorate) {
+    public function setProrate(?bool $prorate) {
         $this->_prorate = $prorate;
         return $this;
     }
 
-    public function getProrate()/*: ?bool*/ {
+    public function getProrate(): ?bool {
         return $this->_prorate;
     }
 
@@ -228,32 +228,32 @@ trait TRequest_Shipping {
     protected $_recipientName;
     protected $_recipientPhone;
 
-    public function setShippingAddress(/*?user\IPostalAddress*/ $address) {
+    public function setShippingAddress(?user\IPostalAddress $address) {
         $this->_shippingAddress = $address;
         return $this;
     }
 
-    public function getShippingAddress()/*: ?user\IPostralAddress*/ {
+    public function getShippingAddress(): ?user\IPostralAddress {
         return $this->_shippingAddress;
     }
 
 
-    public function setRecipientName(/*?string*/ $name) {
+    public function setRecipientName(?string $name) {
         $this->_recipientName = $name;
         return $this;
     }
 
-    public function getRecipientName()/*: ?string*/ {
+    public function getRecipientName(): ?string {
         return $this->_recipientName;
     }
 
 
-    public function setRecipientPhone(/*?string*/ $phone) {
+    public function setRecipientPhone(?string $phone) {
         $this->_recipientPhone = $phone;
         return $this;
     }
 
-    public function getRecipientPhone()/*: ?string*/ {
+    public function getRecipientPhone(): ?string {
         return $this->_recipientPhone;
     }
 
@@ -285,21 +285,21 @@ trait TRequest_Shipped {
     protected $_carrier;
     protected $_trackingNumber;
 
-    public function setCarrier(/*?string*/ $carrier) {
+    public function setCarrier(?string $carrier) {
         $this->_carrier = $carrier;
         return $this;
     }
 
-    public function getCarrier()/*: ?string*/ {
+    public function getCarrier(): ?string {
         return $this->_carrier;
     }
 
-    public function setTrackingNumber(/*?string*/ $number) {
+    public function setTrackingNumber(?string $number) {
         $this->_trackingNumber = $number;
         return $this;
     }
 
-    public function getTrackingNumber()/*: ?string*/ {
+    public function getTrackingNumber(): ?string {
         return $this->_trackingNumber;
     }
 
@@ -324,12 +324,12 @@ trait TRequest_Source {
 
     protected $_source;
 
-    public function setCard(/*?mint\ICreditCard*/ $card) {
+    public function setCard(?mint\ICreditCard $card) {
         $this->_source = $card;
         return $this;
     }
 
-    public function setSourceId(/*?string*/ $source) {
+    public function setSourceId(?string $source) {
         $this->_source = $source;
         return $this;
     }
@@ -373,12 +373,12 @@ trait TRequest_StatementDescriptor {
 
     protected $_statementDescriptor;
 
-    public function setStatementDescriptor(/*?string*/ $descriptor) {
+    public function setStatementDescriptor(?string $descriptor) {
         $this->_statementDescriptor = $descriptor;
         return $this;
     }
 
-    public function getStatementDescriptor()/*: ?string*/ {
+    public function getStatementDescriptor(): ?string {
         return $this->_statementDescriptor;
     }
 
@@ -481,7 +481,7 @@ trait TRequest_TaxPercent {
 
     protected $_taxPercent;
 
-    public function setTaxPercent(/*?float*/ $percent) {
+    public function setTaxPercent(?float $percent) {
         if($percent !== null) {
             if($percent < 0) {
                 $percent = 0;
@@ -496,7 +496,7 @@ trait TRequest_TaxPercent {
         return $this;
     }
 
-    public function getTaxPercent()/*: ?float*/ {
+    public function getTaxPercent(): ?float {
         return $this->_taxPercent;
     }
 
@@ -514,12 +514,12 @@ trait TRequest_TransferGroup {
 
     protected $_transferGroup;
 
-    public function setTransferGroup(/*?string*/ $group) {
+    public function setTransferGroup(?string $group) {
         $this->_transferGroup = $group;
         return $this;
     }
 
-    public function getTransferGroup()/*: ?string*/ {
+    public function getTransferGroup(): ?string {
         return $this->_transferGroup;
     }
 
@@ -536,12 +536,12 @@ trait TRequest_TrialDays {
 
     protected $_trialDays;
 
-    public function setTrialDays(/*?int*/ $days) {
+    public function setTrialDays(?int $days) {
         $this->_trialDays = $days;
         return $this;
     }
 
-    public function getTrialDays()/*: ?int*/ {
+    public function getTrialDays(): ?int {
         return $this->_trialDays;
     }
 
@@ -563,7 +563,7 @@ trait TRequest_TrialEnd {
         return $this;
     }
 
-    public function getTrialEnd()/*: ?core\time\IDate*/ {
+    public function getTrialEnd(): ?core\time\IDate {
         return $this->_trialEnd;
     }
 
