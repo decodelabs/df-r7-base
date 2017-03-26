@@ -358,43 +358,47 @@ class Mediator implements IMediator {
 /***************
  Refunds */
 
-/*
 // Create refund
     public function newRefundCreateRequest(string $chargeId, string $reason=null): IRefundCreateRequest {
-        core\stub();
+        return new namespace\request\RefundCreate($chargeId, $reason);
     }
 
     public function createRefund(IRefundCreateRequest $request): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'refunds', $request->toArray());
+        return (new DataObject('refund', $data, [$this, '_processRefund']))
+            ->setRequest($request);
     }
 
 
 // Fetch refund
     public function fetchRefund(string $id): IData {
-        core\stub();
+        $data = $this->requestJson('post', 'refunds/'.$id);
+        return new DataObject('refund', $data, [$this, '_processRefund']);
     }
 
 
 // Update refund
     public function newRefundUpdateRequest(string $id): IRefundUpdateRequest {
-        core\stub();
+        return new namespace\request\RefundUpdate($id);
     }
 
     public function updateRefund(IRefundUpdateRequest $request) {
-        core\stub();
+        $data = $this->requestJson('post', 'refunds/'.$request->getRefundId(), $request->toArray());
+        return (new DataObject('refund', $data, [$this, '_processRefund']))
+            ->setRequest($request);
     }
 
 
 // List refunds
     public function newRefundFilter(string $chargeId=null): IRefundFilter {
-        core\stub();
+        return new namespace\filter\Refund($chargeId);
     }
 
     public function fetchRefunds(IRefundFilter $filter=null): IList {
-        core\stub();
+        $data = $this->requestJson('get', 'refunds', namespace\filter\Refund::normalize($filter));
+        return new DataList('refund', $filter, $data, [$this, '_processRefund']);
     }
 
-*/
 
 // Process refund
     protected function _processRefund(core\collection\ITree $data) {

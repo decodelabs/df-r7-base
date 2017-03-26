@@ -102,7 +102,6 @@ interface IMediator extends spur\IHttpMediator {
 
 
 // Refunds
-/*
     public function newRefundCreateRequest(string $chargeId, string $reason=null): IRefundCreateRequest;
     public function createRefund(IRefundCreateRequest $request): IData;
     public function fetchRefund(string $id): IData;
@@ -112,7 +111,6 @@ interface IMediator extends spur\IHttpMediator {
 
     public function newRefundFilter(string $chargeId=null): IRefundFilter;
     public function fetchRefunds(IRefundFilter $filter=null): IList;
-*/
 
 
 
@@ -577,10 +575,28 @@ interface IFileFilter extends IFilter {}
 
 
 // Refunds
-interface IRefundRequest extends IRequest {}
-interface IRefundCreateRequest extends IRefundRequest {}
-interface IRefundUpdateRequest extends IRefundRequest {}
-interface IRefundFilter extends IFilter {}
+interface IRefundRequest extends IRequest, IMetadataSubRequest {}
+
+interface IRefundCreateRequest extends IRefundRequest, IChargeIdSubRequest {
+    public function setAmount(?mint\ICurrency $amount);
+    public function getAmount(): ?mint\ICurrency;
+
+    public function setReason(?string $reason);
+    public function getReason(): ?string;
+
+    public function shouldIncludeApplicationFee(bool $flag=null);
+    public function shouldReverseTransfer(bool $flag=null);
+}
+
+interface IRefundUpdateRequest extends IRefundRequest {
+    public function setRefundId(string $id);
+    public function getRefundId(): string;
+}
+
+interface IRefundFilter extends IFilter {
+    public function setChargeId(?string $chargeId);
+    public function getChargeId(): ?string;
+}
 
 
 

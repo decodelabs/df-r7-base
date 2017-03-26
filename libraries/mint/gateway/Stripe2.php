@@ -11,8 +11,8 @@ use df\mint;
 use df\spur;
 
 class Stripe2 extends Base implements
-    mint\ICaptureProviderGateway//,
-    //mint\IRefundProviderGateway,
+    mint\ICaptureProviderGateway,
+    mint\IRefundProviderGateway//,
     //mint\ICustomerTrackingGateway
      {
 
@@ -181,14 +181,15 @@ class Stripe2 extends Base implements
     }
 
 
-/*
     public function refundCharge(mint\IChargeRefund $refund) {
-        return $this->_submitCharge(function() use($refund) {
-            $result = $this->_mediator->captureCharge($refund->getId(), $refund->getAmount());
-            return $result->getId();
+        $request = $this->_mediator->newRefundCreateRequest($refund->getId())
+            ->setAmount($refund->getAmount());
+
+        return $this->_submitCharge(function() use($request) {
+            $refund = $this->_mediator->createRefund($request);
+            return $refund['id'];
         });
     }
-*/
 
 
 // Customers
