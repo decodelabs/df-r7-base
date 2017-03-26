@@ -86,7 +86,14 @@ trait THttpMediator {
             $request = $new;
         }
 
-        $response = $this->getHttpClient()->sendRequest($request);
+        try {
+            $response = $this->getHttpClient()->sendRequest($request);
+        } catch(\Throwable $e) {
+            throw core\Error::{'EImplementation,ETransport,EApi'}([
+                'message' => $e->getMessage(),
+                'previous' => $e
+            ]);
+        }
 
         if(!$this->_isResponseOk($response)) {
             $message = $this->_extractResponseError($response);

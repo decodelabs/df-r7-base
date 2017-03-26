@@ -161,8 +161,13 @@ class Stripe extends Base implements
 
             $result->isSuccessful(false);
             $result->isApiFailure(true);
-            $result->setMessage($e->getMessage());
             $result->setChargeId($data['charge'] ?? null);
+
+            if($e instanceof spur\payment\stripe\ETransport) {
+                $result->setMessage('Unable to process your card details at this time');
+            } else {
+                $result->setMessage($e->getMessage());
+            }
 
             return $result;
         }
