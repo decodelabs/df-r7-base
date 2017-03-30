@@ -36,7 +36,7 @@ class Daemon extends Base {
         $args = core\cli\Command::fromArgv();
 
         if(!$arg = $args[2]) {
-            throw new core\InvalidArgumentException(
+            throw core\Error::EArgument(
                 'No daemon path has been specified'
             );
         }

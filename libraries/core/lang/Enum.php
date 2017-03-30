@@ -49,7 +49,7 @@ abstract class Enum implements IEnum, core\IDumpable {
             } else if(in_array($value, self::$_labels[$class])) {
                 $value = array_search($value, self::$_labels[$class]);
             } else {
-                throw new InvalidArgumentException(
+                throw core\Error::{'EEnum,EArgument'}(
                     $value.' is not a valid enum option'
                 );
             }

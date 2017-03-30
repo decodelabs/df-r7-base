@@ -107,7 +107,7 @@ class Config extends core\Config {
         }
 
         if(empty($user)) {
-            throw new core\InvalidArgumentException(
+            throw core\Error::EArgument(
                 'Invalid username detected'
             );
         }
@@ -152,7 +152,7 @@ class Config extends core\Config {
         }
 
         if(empty($group)) {
-            throw new core\InvalidArgumentException(
+            throw core\Error::EArgument(
                 'Invalid group name detected'
             );
         }

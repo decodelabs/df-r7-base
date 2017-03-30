@@ -24,7 +24,7 @@ class Enum extends Base implements core\validate\IEnumField {
         if($this->_type) {
             try {
                 $value = $this->_type->factory($value)->getOption();
-            } catch(core\InvalidArgumentException $e) {
+            } catch(core\lang\EEnum $e) {
                 $this->_applyMessage($node, 'invalid', $this->validator->_(
                     'Please select a valid option'
                 ));

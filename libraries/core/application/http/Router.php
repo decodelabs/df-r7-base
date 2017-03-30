@@ -63,7 +63,7 @@ class Router implements core\IRegistryObject {
 
         foreach($map as $area => $domain) {
             if($area === 'front') {
-                throw new core\RuntimeException(
+                throw core\Error::ESetup(
                     'Front area must be mapped to root url'
                 );
             }
@@ -111,7 +111,7 @@ class Router implements core\IRegistryObject {
         } else if(isset($this->_mapOut['front'])) {
             return $this->_mapOut['front'];
         } else {
-            throw new core\RuntimeException(
+            throw core\Error::ESetup(
                 'No root map defined'
             );
         }
@@ -211,13 +211,13 @@ class Router implements core\IRegistryObject {
 
     public function urlToRequest(link\http\IUrl $url) {
         if(!$map = $this->lookupDomain($url->getDomain())) {
-            throw new core\RuntimeException('Unable to map url domain');
+            throw core\Error::ERuntime('Unable to map url domain');
         }
 
         $path = clone $url->getPath();
 
         if(!$map->mapPath($path)) {
-            throw new core\RuntimeException('Unable to map url path');
+            throw core\Error::ERuntime('Unable to map url path');
         }
 
         $request = new arch\Request();

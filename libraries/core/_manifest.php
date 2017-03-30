@@ -8,18 +8,7 @@ namespace df\core;
 use df;
 use df\core;
 
-// Exceptions
-interface IException {}
-class LogicException extends \LogicException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class BadMethodCallException extends \BadMethodCallException {}
-
-class ApplicationNotFoundException extends RuntimeException {}
-class HelperNotFoundException extends RuntimeException {}
-
-
+// Error
 interface IError {
     public function setKey(?string $key);
     public function getKey(): ?string;
@@ -242,7 +231,7 @@ class Package implements IPackage {
         $class = 'df\\apex\\packages\\'.$name.'\\Package';
 
         if(!class_exists($class)) {
-            throw new RuntimeException('Package '.$name.' could not be found');
+            throw core\Error::ERuntime('Package '.$name.' could not be found');
         }
 
         return new $class($name);
@@ -377,7 +366,7 @@ trait THelperProvider {
         $helper = $this->getHelper($method);
 
         if(!is_callable($helper)) {
-            throw new core\RuntimeException(
+            throw core\Error::{'ECall'}(
                 'Helper '.$method.' is not callable'
             );
         }
@@ -395,7 +384,7 @@ trait THelperProvider {
         $output = $this->_loadHelper($name);
 
         if(!$output && !$returnNull) {
-            throw new HelperNotFoundException(
+            throw core\Error::EHelperNotFound(
                 'Helper '.$name.' could not be found'
             );
         }
@@ -556,7 +545,7 @@ trait TContext {
 
     public function getConfig($path) {
         if(!$class = df\Launchpad::$loader->lookupClass($path)) {
-            throw new core\RuntimeException(
+            throw core\Error::{'ENotFound'}(
                 'Config '.$path.' could not be found'
             );
         }
@@ -566,7 +555,7 @@ trait TContext {
 
     public function getCache($path) {
         if(!$class = df\Launchpad::$loader->lookupClass($path)) {
-            throw new core\RuntimeException(
+            throw core\Error::{'ENotFound'}(
                 'Cache '.$path.' could not be found'
             );
         }

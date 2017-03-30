@@ -26,7 +26,7 @@ abstract class Config implements IConfig, core\IDumpable {
 // Loading
     public static function getInstance() {
         if(!static::ID) {
-            throw new LogicException('Invalid config id set for '.get_called_class());
+            throw core\Error::EDefinition('Invalid config id set for '.get_called_class());
         }
 
         return static::_factory(static::ID);
@@ -36,7 +36,7 @@ abstract class Config implements IConfig, core\IDumpable {
         $handlerClass = get_called_class();
 
         if(empty($id)) {
-            throw new LogicException('Invalid config id passed for '.$handlerClass);
+            throw core\Error::EImplementation('Invalid config id passed for '.$handlerClass);
         }
 
         if($handlerClass::STORE_IN_MEMORY
@@ -105,7 +105,7 @@ abstract class Config implements IConfig, core\IDumpable {
         $values = $this->getDefaultValues();
 
         if(!is_array($values)) {
-            throw new UnexpectedValueException(
+            throw core\Error::ESetup(
                 'Default values must be an array'
             );
         }

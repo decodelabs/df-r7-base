@@ -20,7 +20,7 @@ class Http implements arch\IDirectoryHelper {
 
     protected function _init() {
         if(!$this->context->application instanceof core\application\Http) {
-            throw new core\RuntimeException(
+            throw core\Error::{'EDomain'}(
                 'Http helper can only be used from http run mode'
             );
         }
@@ -267,7 +267,7 @@ class Http implements arch\IDirectoryHelper {
     public function localReferrerToRequest($referrer) {
         try {
             return $this->getRouter()->urlToRequest(link\http\Url::factory($referrer));
-        } catch(core\IException $e) {
+        } catch(\Throwable $e) {
             return null;
         }
     }

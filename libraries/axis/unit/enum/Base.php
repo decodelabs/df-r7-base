@@ -122,7 +122,7 @@ class Base_Enum implements core\lang\IEnum {
             } else if(in_array($value, $this->_labels)) {
                 $value = array_search($value, $this->_labels);
             } else {
-                throw new core\lang\InvalidArgumentException(
+                throw core\Error::{'core/lang/EEnum,core/lang/EArgument'}(
                     $value.' is not a valid enum option'
                 );
             }

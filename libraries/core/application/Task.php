@@ -28,7 +28,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 // Command
     public function getCommand() {
         if(!$this->_command) {
-            throw new core\RuntimeException(
+            throw core\Error::ELogic(
                 'The task command is not available until the application has been dispatched'
             );
         }
@@ -55,7 +55,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 // Context
     public function getContext() {
         if(!$this->_context) {
-            throw new core\RuntimeException(
+            throw core\Error::ELogic(
                 'A context is not available until the application has been dispatched'
             );
         }
@@ -92,7 +92,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
         }
 
         if(!$request) {
-            throw new core\InvalidArgumentException(
+            throw core\Error::EArgument(
                 'No task path has been specified'
             );
         }

@@ -71,7 +71,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 // Http request
     public function getHttpRequest() {
         if(!$this->_httpRequest) {
-            throw new core\RuntimeException(
+            throw core\Error::ELogic(
                 'The http request is not available until the application has been dispatched'
             );
         }
