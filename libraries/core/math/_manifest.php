@@ -8,13 +8,8 @@ namespace df\core\math;
 use df;
 use df\core;
 
-// Exceptions
-interface IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
 
-
-// Interfaces
+// Tuple
 interface ITuple extends core\collection\IIndexedCollection, core\collection\IAggregateIteratorCollection {
     public function setSize($size);
     public function getSize();
@@ -31,6 +26,9 @@ interface ITuple extends core\collection\IIndexedCollection, core\collection\IAg
     public function getMinMaxIndex();
 }
 
+
+
+// Vector
 interface IVector extends ITuple {
 
     const CITY = 'city';

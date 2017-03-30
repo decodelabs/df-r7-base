@@ -24,7 +24,7 @@ class Tuple implements ITuple, core\IDumpable {
 
     protected function _normalizeValue($value) {
         if(!is_numeric($value)) {
-            throw new InvalidArgumentException(
+            throw core\Error::EArgument(
                 'Invalid tuple value: '.$value
             );
         }

@@ -10,7 +10,7 @@ use df\core;
 use df\math;
 
 class Vector extends Tuple implements IVector {
-    
+
     public static function create($size) {
         return new self(array_fill(0, $size, 0));
     }
@@ -283,7 +283,7 @@ class Vector extends Tuple implements IVector {
 
     public function getCrossProduct($vector) {
         if(($size = $this->getSize()) != 3) {
-            throw new RuntimeException(
+            throw core\Error::{'EDomain'}(
                 'Cross product can only be calculated on a Vector3'
             );
         }
@@ -298,8 +298,8 @@ class Vector extends Tuple implements IVector {
     }
 
     public function getTripleScalarProduct($vector1, $vector2) {
-        if(($size = $this->getSize())) {
-            throw new RuntimeException(
+        if(($size = $this->getSize()) != 3) {
+            throw core\Error::{'EDomain'}(
                 'Cross product can only be calculated on a Vector3'
             );
         }
