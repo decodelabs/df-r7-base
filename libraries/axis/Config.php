@@ -17,7 +17,7 @@ class Config extends core\Config {
 
     protected $_isSetup = null;
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [
             'connections' => [
                 'master' => [

@@ -32,7 +32,7 @@ abstract class Config implements IConfig, core\IDumpable {
         return static::_factory(static::ID);
     }
 
-    final protected static function _factory($id) {
+    final protected static function _factory(?string $id) {
         $handlerClass = get_called_class();
 
         if(empty($id)) {
@@ -81,7 +81,7 @@ abstract class Config implements IConfig, core\IDumpable {
 
 
 // Values
-    final public function getConfigId() {
+    final public function getConfigId(): string {
         return $this->_id;
     }
 
@@ -89,7 +89,7 @@ abstract class Config implements IConfig, core\IDumpable {
         return self::REGISTRY_PREFIX.$this->_id;
     }
 
-    final public function getConfigValues() {
+    final public function getConfigValues(): array {
         return $this->values->toArray();
     }
 
@@ -102,15 +102,7 @@ abstract class Config implements IConfig, core\IDumpable {
     }
 
     public function reset() {
-        $values = $this->getDefaultValues();
-
-        if(!is_array($values)) {
-            throw core\Error::ESetup(
-                'Default values must be an array'
-            );
-        }
-
-        $this->values = new core\collection\Tree($values);
+        $this->values = new core\collection\Tree($this->getDefaultValues());
         $this->_sanitizeValuesOnCreate();
 
         return $this;
@@ -256,7 +248,7 @@ abstract class Config implements IConfig, core\IDumpable {
     }
 
 
-    public function tidyConfigValues() {
+    public function tidyConfigValues(): void {
         $defaults = new core\collection\Tree($this->getDefaultValues());
         $current = new core\collection\Tree($this->getConfigValues());
 

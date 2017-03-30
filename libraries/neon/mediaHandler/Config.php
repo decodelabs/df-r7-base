@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,12 +8,12 @@ namespace df\neon\mediaHandler;
 use df;
 use df\core;
 use df\neon;
-    
+
 class Config extends core\Config implements IConfig {
 
     const ID = 'Media';
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [
             'defaultHandler' => 'Local',
             'handlers' => $this->_getDefaultHandlerConfig()

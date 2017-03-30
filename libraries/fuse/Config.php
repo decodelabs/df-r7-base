@@ -14,7 +14,7 @@ class Config extends core\Config {
 
     const ID = 'Fuse';
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [
             'dependencies' => []
         ];

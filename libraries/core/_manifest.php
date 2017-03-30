@@ -680,10 +680,10 @@ trait TSharedHelper {
 
 // Config
 interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess {
-    public function getDefaultValues();
-    public function getConfigId();
-    public function getConfigValues();
-    public function tidyConfigValues();
+    public function getDefaultValues(): array;
+    public function getConfigId(): string;
+    public function getConfigValues(): array;
+    public function tidyConfigValues(): void;
     public function reset();
 }
 

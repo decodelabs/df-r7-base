@@ -14,7 +14,7 @@ class Config extends core\Config {
     const ID = 'application';
     const STORE_IN_MEMORY = true;
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [
             'applicationName' => 'My Application',
             'uniquePrefix' => strtolower(flex\Generator::random(3, 3)),

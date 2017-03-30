@@ -13,7 +13,7 @@ class Config extends core\Config {
     const ID = 'Cache';
     const STORE_IN_MEMORY = true;
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [
             'caches' => [],
             'backends' => [

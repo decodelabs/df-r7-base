@@ -28,7 +28,7 @@ class Config extends core\Config {
         ]
     ];
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [
             'categories' => [],
             'layouts' => []

@@ -15,7 +15,7 @@ class Config extends core\Config {
     const STORE_IN_MEMORY = true;
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [
             'baseUrl' => $this->_generateRootUrlList(),
             'sendFileHeader' => 'X-Sendfile',

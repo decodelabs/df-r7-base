@@ -14,7 +14,7 @@ class Config extends core\Config implements IConfig {
     const ID = 'menus';
     const STORE_IN_MEMORY = false;
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [];
     }
 

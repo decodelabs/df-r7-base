@@ -13,7 +13,7 @@ class Config extends core\Config {
 
     const ID = 'Authentication';
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         $output = [];
 
         foreach(df\Launchpad::$loader->lookupClassList('user/authentication/adapter') as $name => $class) {

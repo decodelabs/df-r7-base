@@ -13,7 +13,7 @@ class Config extends core\Config {
 
     const ID = 'Analytics';
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         $output = [];
 
         foreach(spur\analytics\adapter\Base::loadAll() as $name => $adapter) {

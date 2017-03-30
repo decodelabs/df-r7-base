@@ -15,7 +15,7 @@ class Config extends core\Config {
 
     const ID = 'mail';
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [
             'defaultTransport' => 'Mail',
             'defaultAddress' => $this->_getDefaultAdminAddress(),

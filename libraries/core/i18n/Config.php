@@ -11,7 +11,7 @@ class Config extends core\Config {
 
     const ID = 'I18n';
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [
             'locale' => [
                 'default' => 'en_GB',

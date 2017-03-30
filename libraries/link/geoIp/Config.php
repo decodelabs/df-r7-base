@@ -13,7 +13,7 @@ class Config extends core\Config {
 
     const ID = 'GeoIp';
 
-    public function getDefaultValues() {
+    public function getDefaultValues(): array {
         return [
             'enabled' => false,
             'defaultAdapter' => 'MaxMindDb',

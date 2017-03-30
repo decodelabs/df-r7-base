@@ -11,16 +11,16 @@ use df\aura;
 use df\arch;
 
 class Config extends core\Config {
-    
+
     const ID = 'Theme';
     const CACHE_IN_MEMORY = false;
-    
-    public function getDefaultValues() {
+
+    public function getDefaultValues(): array {
         return [
             'default' => 'whitewash'
         ];
     }
-    
+
     public function getThemeIdFor($area) {
         $area = ltrim($area, arch\Request::AREA_MARKER);
 
