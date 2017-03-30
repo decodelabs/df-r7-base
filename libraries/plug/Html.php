@@ -17,7 +17,6 @@ class Html implements arch\IDirectoryHelper {
 
     use arch\TDirectoryHelper;
     use aura\view\TView_DirectoryHelper;
-    use core\TTranslator;
     use flex\THtmlStringEscapeHandler;
 
     public function __call($member, $args) {
@@ -149,7 +148,11 @@ class Html implements arch\IDirectoryHelper {
         return $this->element('abbr', $newString)->setTitle($string);
     }
 
-    public function translate(array $args): string {
+    public function _($phrase=''): aura\html\IElementRepresentation {
+        return $this->translate(func_get_args());
+    }
+
+    public function translate(array $args): aura\html\IElementRepresentation {
         return new aura\html\ElementString($this->context->i18n->translate($args));
     }
 
