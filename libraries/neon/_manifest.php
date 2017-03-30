@@ -9,13 +9,6 @@ use df;
 use df\core;
 use df\neon;
 
-// Exceptions
-interface IException {}
-
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
 
 // Interfaces
 interface IColor extends core\unit\ICssCompatibleUnit {

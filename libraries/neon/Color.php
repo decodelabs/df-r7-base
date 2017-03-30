@@ -124,7 +124,7 @@ class Color implements IColor, core\IDumpable {
             );
         }
 
-        throw new InvalidArgumentException('Color name '.$name.' is not recognized');
+        throw core\Error::{'EArgument,EColor'}('Color name '.$name.' is not recognized');
     }
 
     public static function isValidName(string $name): bool {
@@ -152,7 +152,7 @@ class Color implements IColor, core\IDumpable {
             $b = substr($hex, 2, 1);
             $b = hexdec($b.$b);
         } else {
-            throw new InvalidArgumentException('Invalid color '.$hex);
+            throw core\Error::{'EArgument,EColor'}('Invalid color '.$hex);
         }
 
         return new self($r / 255, $g / 255, $b / 255);

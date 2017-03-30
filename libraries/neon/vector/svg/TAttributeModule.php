@@ -489,7 +489,7 @@ trait TAttributeModule {
 
         try {
             return neon\Color::factory($color);
-        } catch(neon\InvalidArgumentException $e) {}
+        } catch(neon\EColor $e) {}
 
         return (string)$orig;
     }
