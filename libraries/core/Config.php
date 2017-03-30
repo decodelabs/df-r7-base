@@ -56,7 +56,7 @@ abstract class Config implements IConfig, core\IDumpable {
     public static function clearLiveCache() {
         if($application = df\Launchpad::$application) {
             foreach($application->findRegistryObjects('config://') as $config) {
-                $application->removeRegistryObject($config);
+                $application->removeRegistryObject($config->getRegistryObjectKey());
             }
         }
     }
