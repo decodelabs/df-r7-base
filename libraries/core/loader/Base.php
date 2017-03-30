@@ -39,7 +39,7 @@ class Base implements core\ILoader {
     }
 
 // Class loader
-    public function loadClass($class) {
+    public function loadClass(string $class): bool {
         if(class_exists($class, false)
         || interface_exists($class, false)
         || trait_exists($class, false)) {
@@ -60,7 +60,7 @@ class Base implements core\ILoader {
                     if(class_exists($class, false)
                     || interface_exists($class, false)
                     || trait_exists($class, false)) {
-                        $output = $path;
+                        $output = true;
                         break;
                     }
                 }
@@ -72,15 +72,15 @@ class Base implements core\ILoader {
         return $output;
     }
 
-    public function getClassSearchPaths($class) {
+    public function getClassSearchPaths(string $class): ?array {
         $parts = explode('\\', $class);
 
         if(array_shift($parts) != 'df') {
-            return false;
+            return null;
         }
 
         if(!$library = array_shift($parts)) {
-            return false;
+            return null;
         }
 
         $fileName = array_pop($parts);
@@ -102,7 +102,7 @@ class Base implements core\ILoader {
         return $output;
     }
 
-    public function lookupClass($path) {
+    public function lookupClass(string $path): ?string {
         $parts = explode('/', trim($path, '/'));
         $class = 'df\\'.implode('\\', $parts);
 
@@ -115,7 +115,7 @@ class Base implements core\ILoader {
 
 
 // File finder
-    public function findFile($path) {
+    public function findFile(string $path): ?string {
         if(null === ($paths = $this->getFileSearchPaths($path))) {
             return null;
         }
@@ -129,20 +129,12 @@ class Base implements core\ILoader {
         return null;
     }
 
-    public function getFileSearchPaths($path) {
+    public function getFileSearchPaths(string $path): array {
         $path = core\uri\Path::normalizeLocal($path);
         return [df\Launchpad::$rootPath.'/'.$path];
     }
 
-    public function lookupFileList($path, $extensions=null) {
-        if($extensions !== null && !is_array($extensions)) {
-            $extensions = [$extensions];
-        }
-
-        if(empty($extensions)) {
-            $extensions = null;
-        }
-
+    public function lookupFileList(string $path, array $extensions=null): \Generator {
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
         $index = [];
 
@@ -180,7 +172,7 @@ class Base implements core\ILoader {
         }
     }
 
-    public function lookupFileListRecursive($path, $extensions=null, $folderCheck=null) {
+    public function lookupFileListRecursive(string $path, array $extensions=null, Callable $folderCheck=null): \Generator {
         $path = core\uri\Path::normalizeLocal($path);
 
         if(!($folderCheck && !core\lang\Callback($folderCheck, $path))) {
@@ -203,7 +195,7 @@ class Base implements core\ILoader {
         }
     }
 
-    public function lookupClassList($path, $test=true) {
+    public function lookupClassList(string $path, bool $test=true): \Generator {
         $path = trim($path, '/');
 
         foreach($this->lookupFileList($path, ['php']) as $fileName => $filePath) {
@@ -231,7 +223,7 @@ class Base implements core\ILoader {
         }
     }
 
-    public function lookupFolderList($path) {
+    public function lookupFolderList(string $path): \Generator {
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
 
         if(!$paths) {
@@ -265,7 +257,7 @@ class Base implements core\ILoader {
         }
     }
 
-    public function lookupLibraryList() {
+    public function lookupLibraryList(): array {
         $libList = ['apex'];
 
         foreach($this->lookupFolderList('/') as $folder) {
@@ -284,17 +276,17 @@ class Base implements core\ILoader {
         return $this;
     }
 
-    public function registerLocation($name, $path) {
+    public function registerLocation(string $name, string $path) {
         $this->_locations = [$name => $path] + $this->_locations;
         return $this;
     }
 
-    public function unregisterLocation($name) {
+    public function unregisterLocation(string $name) {
         unset($this->_locations[$name]);
         return $this;
     }
 
-    public function getLocations() {
+    public function getLocations(): array {
         return $this->_locations;
     }
 
@@ -338,15 +330,15 @@ class Base implements core\ILoader {
         }
     }
 
-    public function getPackages() {
+    public function getPackages(): array {
         return $this->_packages;
     }
 
-    public function hasPackage($package) {
+    public function hasPackage(string $package): bool {
         return isset($this->_packages[$package]);
     }
 
-    public function getPackage($package) {
+    public function getPackage(string $package): ?core\IPackage {
         if(isset($this->_packages[$package])) {
             return $this->_packages[$package];
         }

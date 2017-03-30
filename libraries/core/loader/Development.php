@@ -10,15 +10,15 @@ use df\core;
 
 class Development extends Base {
 
-    public function getClassSearchPaths($class) {
+    public function getClassSearchPaths(string $class): ?array {
         $parts = explode('\\', $class);
 
         if(array_shift($parts) != 'df') {
-            return false;
+            return null;
         }
 
         if(!$library = array_shift($parts)) {
-            return false;
+            return null;
         }
 
         $output = [];
@@ -69,7 +69,7 @@ class Development extends Base {
         return $output;
     }
 
-    public function getFileSearchPaths($path) {
+    public function getFileSearchPaths(string $path): array {
         $path = core\uri\Path::normalizeLocal($path);
 
         $parts = explode('/', $path);

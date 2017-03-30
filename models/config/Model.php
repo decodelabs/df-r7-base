@@ -15,7 +15,7 @@ class Model extends axis\Model {
     public function findIn($path) {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList($path, ['php']) as $name => $class) {
+        foreach(df\Launchpad::$loader->lookupClassList($path, true) as $name => $class) {
             if(!class_exists($class)) {
                 continue;
             }

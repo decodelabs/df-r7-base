@@ -188,26 +188,27 @@ interface IDumpable {
 
 // Loader
 interface ILoader {
-    public function loadClass($class);
-    public function getClassSearchPaths($class);
-    public function lookupClass($path);
+    public function loadClass(string $class): bool;
+    public function getClassSearchPaths(string $class): ?array;
+    public function lookupClass(string $path): ?string;
 
-    public function findFile($path);
-    public function getFileSearchPaths($path);
-    public function lookupFileList($path, $extensions=null);
-    public function lookupFileListRecursive($path, $extensions=null, $folderCheck=null);
-    public function lookupClassList($path, $test=true);
-    public function lookupFolderList($path);
-    public function lookupLibraryList();
+    public function findFile(string $path): ?string;
+    public function getFileSearchPaths(string $path): array;
+    public function lookupFileList(string $path, array $extensions=null): \Generator;
+    public function lookupFileListRecursive(string $path, array $extensions=null, Callable $folderCheck=null): \Generator;
+    public function lookupClassList(string $path, bool $test=true): \Generator;
+    public function lookupFolderList(string $path): \Generator;
+    public function lookupLibraryList(): array;
 
-    public function registerLocation($name, $path);
-    public function unregisterLocation($name);
-    public function getLocations();
+    public function registerLocations(array $locations);
+    public function registerLocation(string $name, string $path);
+    public function unregisterLocation(string $name);
+    public function getLocations(): array;
 
     public function loadPackages(array $packages);
-    public function getPackages();
-    public function hasPackage($package);
-    public function getPackage($package);
+    public function getPackages(): array;
+    public function hasPackage(string $package): bool;
+    public function getPackage(string $package): ?IPackage;
 
     public function shutdown();
 }
@@ -227,7 +228,7 @@ class Package implements IPackage {
     public $name;
     public $priority;
 
-    public static function factory($name) {
+    public static function factory($name): IPackage {
         $class = 'df\\apex\\packages\\'.$name.'\\Package';
 
         if(!class_exists($class)) {
@@ -456,7 +457,7 @@ interface IContext extends core\IHelperProvider, core\ITranslator {
 
     // Helpers
     public function loadRootHelper($name);
-    public function findFile($path);
+    public function findFile(string $path): ?string;
 
     public function getLogManager();
     public function getI18nManager();
@@ -514,7 +515,7 @@ trait TContext {
 
 
 // Helpers
-    public function findFile($path) {
+    public function findFile(string $path): ?string {
         return df\Launchpad::$loader->findFile($path);
     }
 
