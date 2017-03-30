@@ -24,95 +24,96 @@ interface IColor extends core\unit\ICssCompatibleUnit {
     const HSL = 'hsl';
     const HSV = 'hsv';
 
-    public function toHexString($allowShort=false);
-    public function setHexPrefix($prefix);
-    public function getHexPrefix();
-    //public function toCssString($allowRGBA=true);
+    public static function random(float $saturation=null, float $lightness=null): IColor;
+    public static function factory($color): IColor;
+    public static function fromString(string $str): IColor;
+    public static function fromName(string $name): IColor;
+    public static function isValidName(string $name): bool;
+    public static function fromHex(string $hex): IColor;
+
+    public function toHexString(bool $allowShort=false): string;
+    public function setMode(string $mode);
 
 // RGB
-    public function setRgba($r, $g, $b, $a);
-    public function setRgb($r, $g, $b);
+    public function setRgba(float $r, float $g, float $b, float $a=null);
+    public function setRgb(float $r, float $g, float $b);
 
-// RGB Red
-    public function setRed($r);
-    public function getRed();
+    public function setRed(float $r);
+    public function getRed(): float;
 
-// RGB Green
-    public function setGreen($g);
-    public function getGreen();
+    public function setGreen(float $g);
+    public function getGreen(): float;
 
-// RGB Blue
-    public function setBlue($b);
-    public function getBlue();
+    public function setBlue(float $b);
+    public function getBlue(): float;
+
 
 // HSL
-    public function setHsla($h, $s, $l, $a);
-    public function setHsl($h, $s, $l);
+    public function setHsla(float $h, float $s, float $l, float $a=null);
+    public function setHsl(float $h, float $s, float $l);
 
-// HSL Hue
-    public function setHslHue($h);
-    public function getHslHue();
+    public function setHslHue(float $h);
+    public function getHslHue(): float;
 
-// HSL Saturation
-    public function setHslSaturation($s);
-    public function getHslSaturation();
+    public function setHslSaturation(float $s);
+    public function getHslSaturation(): float;
 
-// HSL Lightness
-    public function setHslLightness($l);
-    public function getHslLightness();
+    public function setHslLightness(float $l);
+    public function getHslLightness(): float;
+
 
 // HSV
-    public function setHsva($h, $s, $v, $a);
-    public function setHsv($h, $s, $v);
+    public function setHsva(float $h, float $s, float $v, float $a=null);
+    public function setHsv(float $h, float $s, float $v);
 
-// HSV Hue
-    public function setHsvHue($h);
-    public function getHsvHue();
+    public function setHsvHue(float $h);
+    public function getHsvHue(): float;
 
-// HSV Saturation
-    public function setHsvSaturation($s);
-    public function getHsvSaturation();
+    public function setHsvSaturation(float $s);
+    public function getHsvSaturation(): float;
 
-// HSV Value
-    public function getHsvValue();
-    public function setHsvValue($l);
+    public function setHsvValue(float $l);
+    public function getHsvValue(): float;
+
 
 // Alpha
-    public function setAlpha($alpha);
-    public function getAlpha();
+    public function setAlpha(?float $alpha);
+    public function getAlpha(): float;
 
 // Modification
     public function add($color);
     public function subtract($color);
 
 // Affect HSL
-    public function affectHsl($h, $s, $l, $a=null);
-    public function affectHslHue($h);
-    public function affectHslSaturation($s);
-    public function affectHslLightness($l);
+    public function affectHsl(float $h, float $s, float $l, float $a=null);
+    public function affectHslHue(float $h);
+    public function affectHslSaturation(float $s);
+    public function affectHslLightness(float $l);
 
 // Affect HSV
-    public function affectHsv($h, $s, $v, $a=null);
-    public function affectHsvHue($h);
-    public function affectHsvSaturation($s);
-    public function affectHsvValue($v);
-    public function affectAlpha($a);
+    public function affectHsv(float $h, float $s, float $v, float $a=null);
+    public function affectHsvHue(float $h);
+    public function affectHsvSaturation(float $s);
+    public function affectHsvValue(float $v);
+    public function affectAlpha(float $a);
 
 // Tones
-    public function affectContrast($amount);
-    public function toMidtone($amount=1);
-    public function contrastAgainst($color, $amount=0.5);
-    public function getTextContrastColor();
+    public function affectContrast(float $amount);
+    public function toMidtone(float $amount=1);
+    public function contrastAgainst($color, float $amount=0.5);
+    public function getTextContrastColor(): IColor;
 }
 
 
 interface IColorStop extends core\IStringProvider {
 
+    public static function factory($colorStop): IColorStop;
+
 // Color
     public function setColor($color);
-    public function getColor();
+    public function getColor(): IColor;
 
 // Size
     public function setSize($size);
-    public function getSize();
+    public function getSize(): ?core\unit\IDisplaySize;
 }

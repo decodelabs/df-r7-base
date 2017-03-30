@@ -17,7 +17,7 @@ class ColorStop implements IColorStop, core\IDumpable {
     protected $_color;
     protected $_size;
 
-    public static function factory($colorStop) {
+    public static function factory($colorStop): IColorStop {
         if($colorStop instanceof IColorStop) {
             return $colorStop;
         }
@@ -46,7 +46,7 @@ class ColorStop implements IColorStop, core\IDumpable {
         return $this;
     }
 
-    public function getColor() {
+    public function getColor(): IColor {
         return $this->_color;
     }
 
@@ -59,7 +59,7 @@ class ColorStop implements IColorStop, core\IDumpable {
         return $this;
     }
 
-    public function getSize() {
+    public function getSize(): ?core\unit\IDisplaySize {
         return $this->_size;
     }
 
