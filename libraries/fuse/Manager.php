@@ -171,13 +171,13 @@ class Manager implements IManager {
 
         if($io) {
             $io->write('Installing theme dependencies...');
-            $io->incrementLineLevel();
+            $io->indent();
         }
 
         if(empty($dependencies)) {
             if($io) {
                 $io->writeLine(' none found');
-                $io->decrementLineLevel();
+                $io->outdent();
             }
 
             return;
@@ -200,7 +200,7 @@ class Manager implements IManager {
         $installer->installPackages($packages);
 
         if($io) {
-            $io->decrementLineLevel();
+            $io->outdent();
         }
 
         foreach($dependencies as $dependency) {

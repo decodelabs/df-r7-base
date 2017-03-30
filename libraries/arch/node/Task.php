@@ -76,13 +76,13 @@ abstract class Task extends Base implements ITaskNode {
         $node->io = $this->io;
 
         if($incLevel) {
-            $this->io->incrementLineLevel();
+            $this->io->indent();
         }
 
         $output = $node->dispatch();
 
         if($incLevel) {
-            $this->io->decrementLineLevel();
+            $this->io->outdent();
         }
 
         return $output;

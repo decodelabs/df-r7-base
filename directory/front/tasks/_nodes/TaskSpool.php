@@ -117,7 +117,7 @@ class TaskSpool extends arch\node\Task {
             ->toList('id', 'request');
 
         $lineLevel = $this->io->getLineLevel();
-        $this->io->decrementLineLevel();
+        $this->io->outdent();
 
         foreach($taskIds as $taskId => $request) {
             $this->io->writeLine();

@@ -44,7 +44,7 @@ class TaskRestartAll extends arch\node\Task {
         }
 
         $this->task->shouldCaptureBackgroundTasks(true);
-        $this->io->incrementLineLevel();
+        $this->io->indent();
 
         foreach($daemons as $name => $daemon) {
             $remote = halo\daemon\Remote::factory($daemon);
@@ -57,6 +57,6 @@ class TaskRestartAll extends arch\node\Task {
             }
         }
 
-        $this->io->decrementLineLevel();
+        $this->io->outdent();
     }
 }

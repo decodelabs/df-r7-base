@@ -291,8 +291,8 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
 
     public function setLineLevel($level);
     public function getLineLevel();
-    public function incrementLineLevel();
-    public function decrementLineLevel();
+    public function indent();
+    public function outdent();
 
     public function setChannels(array $channels);
     public function addChannels(array $channels);

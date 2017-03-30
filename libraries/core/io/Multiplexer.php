@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -7,7 +7,7 @@ namespace df\core\io;
 
 use df;
 use df\core;
-    
+
 class Multiplexer implements IMultiplexer, core\IDumpable {
 
     const REGISTRY_KEY = 'multiplexer';
@@ -67,12 +67,12 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
         return $this->_lineLevel;
     }
 
-    public function incrementLineLevel() {
+    public function indent() {
         $this->_lineLevel++;
         return $this;
     }
 
-    public function decrementLineLevel() {
+    public function outdent() {
         $this->_lineLevel--;
 
         if($this->_lineLevel < 0) {

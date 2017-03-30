@@ -26,9 +26,9 @@ class TaskInit extends arch\node\Task {
         $this->runChild('git/init');
 
         $this->io->writeLine();
-        $this->io->incrementLineLevel();
+        $this->io->indent();
         $this->io->writeLine('Set master database connection...');
-        $this->io->decrementLineLevel();
+        $this->io->outdent();
         $this->runChild('axis/set-master?check=false');
 
         if(!$this->data->user->client->countAll()) {

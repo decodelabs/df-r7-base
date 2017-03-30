@@ -83,7 +83,7 @@ class TaskBuild extends arch\node\Task {
             $destination->ensureExists(0777);
 
             $this->io->writeLine('Packaging files...');
-            $this->io->incrementLineLevel();
+            $this->io->indent();
 
 
             // List packages
@@ -155,7 +155,7 @@ class TaskBuild extends arch\node\Task {
             $this->runChild('./build-custom?after', false);
         }
 
-        $this->io->decrementLineLevel();
+        $this->io->outdent();
 
         // Generate entries
         $this->runChild('./generate-entry', false);
@@ -171,9 +171,9 @@ class TaskBuild extends arch\node\Task {
 
         // Purge
         $this->io->writeLine();
-        $this->io->decrementLineLevel();
+        $this->io->outdent();
         $this->runChild('./purge-builds?active='.$buildId);
-        $this->io->incrementLineLevel();
+        $this->io->indent();
 
         // Task spool
         $this->io->writeLine();

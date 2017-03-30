@@ -34,7 +34,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $newBuild = !empty($buildId);
         }
 
-        $this->io->incrementLineLevel();
+        $this->io->indent();
         $done = [];
 
         foreach($this->_dir->scanFiles(function($fileName) {
@@ -72,7 +72,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $bridge->compile();
         }
 
-        $this->io->decrementLineLevel();
+        $this->io->outdent();
     }
 
     protected function _checkFile($file, $key) {
