@@ -57,22 +57,22 @@ interface IAccess extends user\IState {}
 interface IContext extends core\IContext, IResponseForcer {
 
     // Application
-    public function spawnInstance($request=null, $copyRequest=false);
-    public function getDispatchContext();
+    public function spawnInstance($request=null, bool $copyRequest=false): IContext;
+    public function getDispatchContext(): core\IContext;
     public function isDispatchContext(): bool;
 
     // Requests
-    public function getRequest();
-    public function getLocation();
+    public function getRequest(): IRequest;
+    public function getLocation(): IRequest;
 
-    public function extractDirectoryLocation(&$path);
-    public function extractThemeId(&$path, $findDefault=false);
+    public function extractDirectoryLocation(string &$path): IRequest;
+    public function extractThemeId(string &$path, bool $findDefault=false): ?string;
 
-    public function getScaffold();
+    public function getScaffold(): arch\scaffold\IScaffold;
 }
 
 interface IRequestOrientedApplication extends core\IApplication {
-    public function getDispatchRequest();
+    public function getDispatchRequest(): ?arch\IRequest;
 }
 
 

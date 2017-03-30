@@ -20,7 +20,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
     protected $_multiplexer;
 
 // Request
-    public function getDispatchRequest() {
+    public function getDispatchRequest(): ?arch\IRequest {
         return $this->_dispatchRequest;
     }
 

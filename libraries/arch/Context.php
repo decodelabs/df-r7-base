@@ -72,7 +72,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function spawnInstance($request=null, $copyRequest=false) {
+    public function spawnInstance($request=null, bool $copyRequest=false): IContext {
         if($request === null) {
             return clone $this;
         }
@@ -114,7 +114,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
 
 
 // Application
-    public function getDispatchContext() {
+    public function getDispatchContext(): core\IContext {
         if(!$this->application instanceof core\IContextAware) {
             throw core\Error::ENoContext(
                 'Current application is not context aware'
@@ -130,11 +130,11 @@ class Context implements IContext, \Serializable, core\IDumpable {
 
 
 // Requests
-    public function getRequest() {
+    public function getRequest(): IRequest {
         return $this->request;
     }
 
-    public function getLocation() {
+    public function getLocation(): IRequest {
         return $this->location;
     }
 
@@ -159,7 +159,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
     }
 
 
-    public function extractDirectoryLocation(&$path) {
+    public function extractDirectoryLocation(string &$path): IRequest {
         if(false !== strpos($path, '#')) {
             $parts = explode('#', $path, 2);
             $name = array_pop($parts);
@@ -188,7 +188,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return $location;
     }
 
-    public function extractThemeId(&$path, $findDefault=false) {
+    public function extractThemeId(string &$path, bool $findDefault=false): ?string {
         $themeId = null;
 
         if(false !== strpos($path, '#')) {
@@ -230,7 +230,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         }
     }
 
-    public function getScaffold() {
+    public function getScaffold(): arch\scaffold\IScaffold {
         return arch\scaffold\Base::factory($this);
     }
 

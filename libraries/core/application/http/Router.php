@@ -27,7 +27,7 @@ class Router implements core\IRegistryObject {
     protected $_routerCache = [];
     protected $_defaultRouteProtocol = null;
 
-    protected $_rootNodeRouter;
+    protected $_rootNodeRouter = false;
 
     public static function getInstance(): self {
         $application = df\Launchpad::getApplication();
@@ -278,14 +278,14 @@ class Router implements core\IRegistryObject {
         return $request;
     }
 
-    protected function _getRouterFor(arch\IRequest $request, $location) {
+    protected function _getRouterFor(arch\IRequest $request, string $location): ?arch\IRouter {
         if(isset($this->_routerCache[$location])) {
             return $this->_routerCache[$location];
         }
 
         $keys[] = $location;
         $parts = explode('/', $location);
-        $output = false;
+        $output = null;
 
         while(!empty($parts)) {
             $class = 'df\\apex\\directory\\'.implode('\\', $parts).'\\HttpRouter';
@@ -306,14 +306,14 @@ class Router implements core\IRegistryObject {
         return $output;
     }
 
-    protected function _getRootNodeRouter() {
-        if($this->_rootNodeRouter === null) {
+    protected function _getRootNodeRouter(): ?arch\IRouter {
+        if($this->_rootNodeRouter === false) {
             $class = 'df\\apex\\directory\\front\\HttpRootNodeRouter';
 
             if(class_exists($class)) {
                 $this->_rootNodeRouter = new $class();
             } else {
-                $this->_rootNodeRouter = false;
+                $this->_rootNodeRouter = null;
             }
         }
 

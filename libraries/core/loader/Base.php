@@ -20,11 +20,11 @@ class Base implements core\ILoader {
 
 
 // Stats
-    public static function getTotalIncludeAttempts() {
+    public static function getTotalIncludeAttempts(): int {
         return self::$_includeAttempts;
     }
 
-    public static function getTotalIncludeMisses() {
+    public static function getTotalIncludeMisses(): int {
         return self::$_includeMisses;
     }
 

@@ -24,7 +24,7 @@ abstract class RootNodeRouter extends arch\router\Base {
             }
         }
 
-        return false;
+        return null;
     }
 
     public function routeOut(arch\IRequest $request) {

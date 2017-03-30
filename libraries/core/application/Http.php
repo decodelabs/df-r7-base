@@ -108,7 +108,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         return $this->_context !== null;
     }
 
-    public function getDispatchRequest() {
+    public function getDispatchRequest(): ?arch\IRequest {
         return $this->_dispatchRequest;
     }
 
