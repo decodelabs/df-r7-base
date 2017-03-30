@@ -51,7 +51,7 @@ interface IManager extends core\IManager, mesh\event\IEmitter {
     public function clearAccessLockCache();
 
     // Helpers
-    public function getHelper($name);
+    public function getHelper(string $name): IHelper;
 }
 
 interface IUserModel {
@@ -196,7 +196,7 @@ trait TSessionBackedHelper {
         $this->_sessionData = null;
     }
 
-    public function onApplicationShutdown() {
+    public function onApplicationShutdown(): void {
         $this->storeSessionData();
     }
 

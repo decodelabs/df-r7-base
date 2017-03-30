@@ -25,7 +25,7 @@ abstract class Base implements ICache {
 
     private $_backend;
 
-    public static function getInstance() {
+    public static function getInstance(): ICache {
         $application = df\Launchpad::getApplication();
 
         $class = get_called_class();
@@ -145,7 +145,7 @@ abstract class Base implements ICache {
         return $this->_backend->getStats();
     }
 
-    final public function getRegistryObjectKey() {
+    final public function getRegistryObjectKey(): string {
         return self::REGISTRY_PREFIX.static::getCacheId();
     }
 

@@ -23,11 +23,11 @@ class Translator implements ITranslator {
         return $this->_domainId;
     }
 
-    public function _($phrase='') {
+    public function _($phrase=''): string {
         return $this->translate(func_get_args());
     }
 
-    public function translate(array $args) {
+    public function translate(array $args): string {
         $phrase = array_shift($args);
         $plural = false;
 

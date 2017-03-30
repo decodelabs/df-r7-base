@@ -375,7 +375,7 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function translate(array $args) {
+    public function translate(array $args): string {
         return core\i18n\Manager::getInstance()->translate($args);
     }
 }

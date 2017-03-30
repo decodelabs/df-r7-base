@@ -16,35 +16,35 @@ abstract class Base implements core\IApplication, core\IDumpable {
     protected $_registry = [];
     protected $_dispatchException;
 
-    public static function getApplicationPath() {
+    public static function getApplicationPath(): ?string {
         return df\Launchpad::$applicationPath;
     }
 
-    public function getLocalStoragePath() {
+    public function getLocalStoragePath(): string {
         return df\Launchpad::$applicationPath.'/data/local';
     }
 
-    public function getSharedStoragePath() {
+    public function getSharedStoragePath(): string {
         return df\Launchpad::$applicationPath.'/data/shared';
     }
 
-    public function getName() {
+    public function getName(): string {
         return df\Launchpad::$applicationName;
     }
 
-    public function getUniquePrefix() {
+    public function getUniquePrefix(): string {
         return df\Launchpad::$uniquePrefix;
     }
 
-    public function getPassKey() {
+    public function getPassKey(): string {
         return df\Launchpad::$passKey;
     }
 
-    public function getEnvironmentId() {
+    public function getEnvironmentId(): string {
         return df\Launchpad::$environmentId;
     }
 
-    public function getEnvironmentMode() {
+    public function getEnvironmentMode(): string {
         return df\Launchpad::getEnvironmentMode();
     }
 
@@ -60,7 +60,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return df\Launchpad::isProduction();
     }
 
-    public function getRunMode() {
+    public function getRunMode(): string {
         if(static::RUN_MODE !== null) {
             return static::RUN_MODE;
         }
@@ -69,13 +69,13 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return array_pop($parts);
     }
 
-    public function isDistributed() {
+    public function isDistributed(): bool {
         return df\Launchpad::$isDistributed;
     }
 
 
 // Dispatch
-    public function shutdown() {
+    public function shutdown(): void {
         foreach($this->_registry as $object) {
             if($object instanceof core\IShutdownAware) {
                 $object->onApplicationShutdown();
@@ -83,17 +83,15 @@ abstract class Base implements core\IApplication, core\IDumpable {
         }
     }
 
-    public function getDispatchException() {
+    public function getDispatchException(): ?\Exception {
         return $this->_dispatchException;
     }
 
 
 // Debug
-    public function renderDebugContext(core\debug\IContext $context) {
+    public function renderDebugContext(core\debug\IContext $context): void {
         df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
         echo (new core\debug\renderer\PlainText($context))->render();
-
-        return $this;
     }
 
 // Cache objects
@@ -102,7 +100,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return $this;
     }
 
-    public function getRegistryObject($key) {
+    public function getRegistryObject(string $key): ?core\IRegistryObject {
         if(isset($this->_registry[$key])) {
             return $this->_registry[$key];
         }
@@ -110,11 +108,11 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return null;
     }
 
-    public function hasRegistryObject($key) {
+    public function hasRegistryObject(string $key): bool {
         return isset($this->_registry[$key]);
     }
 
-    public function removeRegistryObject($key) {
+    public function removeRegistryObject(string $key) {
         if($key instanceof core\IRegistryObject) {
             $key = $key->getRegistryObjectKey();
         }
@@ -123,7 +121,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return $this;
     }
 
-    public function findRegistryObjects($beginningWith) {
+    public function findRegistryObjects(string $beginningWith): array {
         $output = [];
 
         foreach($this->_registry as $key => $object) {
@@ -135,7 +133,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return $output;
     }
 
-    public function getRegistryObjects() {
+    public function getRegistryObjects(): array {
         return $this->_registry;
     }
 

@@ -363,7 +363,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
 
 // Helpers
-    public function translate(array $args) {
+    public function translate(array $args): string {
         return $this->context->i18n->translate($args);
     }
 

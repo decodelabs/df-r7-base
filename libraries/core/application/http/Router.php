@@ -29,7 +29,7 @@ class Router implements core\IRegistryObject {
 
     protected $_rootNodeRouter;
 
-    public static function getInstance() {
+    public static function getInstance(): self {
         $application = df\Launchpad::getApplication();
 
         if(!$output = $application->getRegistryObject(self::REGISTRY_KEY)) {
@@ -79,7 +79,7 @@ class Router implements core\IRegistryObject {
         }
     }
 
-    public function getRegistryObjectKey() {
+    public function getRegistryObjectKey(): string {
         return self::REGISTRY_KEY;
     }
 

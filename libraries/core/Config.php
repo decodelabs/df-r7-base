@@ -24,7 +24,7 @@ abstract class Config implements IConfig, core\IDumpable {
     private $_filePath = null;
 
 // Loading
-    public static function getInstance() {
+    public static function getInstance(): IConfig {
         if(!static::ID) {
             throw core\Error::EDefinition('Invalid config id set for '.get_called_class());
         }
@@ -85,7 +85,7 @@ abstract class Config implements IConfig, core\IDumpable {
         return $this->_id;
     }
 
-    final public function getRegistryObjectKey() {
+    final public function getRegistryObjectKey(): string {
         return self::REGISTRY_PREFIX.$this->_id;
     }
 

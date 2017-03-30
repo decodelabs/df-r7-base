@@ -349,7 +349,7 @@ class Base implements core\ILoader {
 
 
 // Shutdown
-    public function shutdown() {
+    public function shutdown(): void {
         // do nothing yet
     }
 }

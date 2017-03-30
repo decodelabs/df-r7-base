@@ -211,7 +211,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
 
 
 // Helpers
-    protected function _loadHelper($name) {
+    protected function _loadHelper(string $name) {
         switch($name) {
             case 'dispatchContext':
                 return $this->getDispatchContext();

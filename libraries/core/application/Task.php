@@ -70,7 +70,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 
 
 // Execute
-    public function dispatch() {
+    public function dispatch(): void {
         arch\DirectoryAccessController::$defaultAccess = arch\IAccess::ALL;
 
         $request = $this->_prepareRequest();
@@ -191,13 +191,11 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
 
 
 // Debug
-    public function renderDebugContext(core\debug\IContext $context) {
+    public function renderDebugContext(core\debug\IContext $context): void {
         df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
         $output = (new core\debug\renderer\PlainText($context))->render();
 
         $response = $this->getMultiplexer();
         $response->writeError($output);
-
-        return $this;
     }
 }

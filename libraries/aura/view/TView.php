@@ -316,7 +316,7 @@ trait TView {
     }
 
 
-    public function translate(array $args) {
+    public function translate(array $args): string {
         return $this->context->i18n->translate($args);
     }
 }
@@ -547,7 +547,7 @@ trait TView_CascadingHelperProvider {
         return $output;
     }
 
-    public function translate(array $args) {
+    public function translate(array $args): string {
         if($this->view) {
             return $this->view->i18n->translate($args);
         } else {

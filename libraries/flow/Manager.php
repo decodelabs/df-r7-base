@@ -24,7 +24,7 @@ class Manager implements IManager, core\IShutdownAware {
     protected $_isFlashQueueProcessed = false;
     protected $_flashQueueChanged = false;
 
-    public function onApplicationShutdown() {
+    public function onApplicationShutdown(): void {
         $this->_saveFlashQueue();
     }
 

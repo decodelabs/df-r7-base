@@ -84,7 +84,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
 
 
 // Registry
-    public function getRegistryObjectKey() {
+    public function getRegistryObjectKey(): string {
         $output = static::REGISTRY_KEY;
 
         if($this->_id) {

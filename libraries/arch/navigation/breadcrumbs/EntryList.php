@@ -16,11 +16,11 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
 
     const REGISTRY_KEY = 'breadcrumbs';
 
-    public function getRegistryObjectKey() {
+    public function getRegistryObjectKey(): string {
         return self::REGISTRY_KEY;
     }
 
-    public function onApplicationDispatch(arch\node\INode $node) {
+    public function onApplicationDispatch(arch\node\INode $node): void {
         df\Launchpad::$application->removeRegistryObject(self::REGISTRY_KEY);
     }
 

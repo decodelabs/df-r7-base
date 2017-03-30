@@ -66,7 +66,7 @@ abstract class Base implements IScaffold {
         $this->view = aura\view\Base::factory($context->request->getType(), $this->context);
     }
 
-    public function getRegistryObjectKey() {
+    public function getRegistryObjectKey(): string {
         return 'scaffold('.$this->context->location->getPath()->getDirname().')';
     }
 

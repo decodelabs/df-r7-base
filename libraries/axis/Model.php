@@ -59,7 +59,7 @@ abstract class Model implements IModel, core\IDumpable {
         return $this->_modelName;
     }
 
-    final public function getRegistryObjectKey() {
+    final public function getRegistryObjectKey(): string {
         return self::REGISTRY_PREFIX.$this->getModelName();
     }
 

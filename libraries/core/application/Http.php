@@ -114,7 +114,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
 // Dispatch
-    public function dispatch() {
+    public function dispatch(): void {
         try {
             $ip = $this->_httpRequest->getIp();
 
@@ -571,7 +571,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
 // Debug
-    public function renderDebugContext(core\debug\IContext $context) {
+    public function renderDebugContext(core\debug\IContext $context): void {
         $renderer = new core\debug\renderer\Html($context);
 
         if(!headers_sent()) {
@@ -606,6 +606,5 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         echo $renderer->render();
-        return $this;
     }
 }

@@ -225,7 +225,7 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 // Helpers
-    public function getHelper($name) {
+    public function getHelper(string $name): IHelper {
         $name = lcfirst($name);
 
         if(!isset($this->{$name})) {
@@ -279,7 +279,7 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
-    public function onApplicationShutdown() {
+    public function onApplicationShutdown(): void {
         $obj = new \ReflectionObject($this);
         $props = $obj->getProperties(\ReflectionProperty::IS_PUBLIC);
 
@@ -293,7 +293,5 @@ class Manager implements IManager, core\IShutdownAware {
 
             $value->onApplicationShutdown();
         }
-
-        return $this;
     }
 }

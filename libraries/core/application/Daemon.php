@@ -18,7 +18,7 @@ class Daemon extends Base {
     protected $_statusData;
 
 // Execute
-    public function dispatch() {
+    public function dispatch(): void {
         if(php_sapi_name() != 'cli') {
             throw core\Error::EDomain(
                 'Daemon processes must only be started from the CLI SAPI'
@@ -84,14 +84,17 @@ class Daemon extends Base {
 
         switch($command) {
             case '__spawn':
-                return $this->spawn($daemon, $process);
+                $this->spawn($daemon, $process);
+                return;
 
             case '':
             case 'start':
-                return $this->start($daemon, $process);
+                $this->start($daemon, $process);
+                return;
 
             case 'stop':
-                return $this->stop($daemon, $process);
+                $this->stop($daemon, $process);
+                return;
 
             case 'restart':
                 $this->stop($daemon, $process);
@@ -109,10 +112,12 @@ class Daemon extends Base {
                 return;
 
             case 'status':
-                return $this->status($daemon, $process);
+                $this->status($daemon, $process);
+                return;
 
             case 'nudge':
-                return $this->nudge($daemon, $process);
+                $this->nudge($daemon, $process);
+                return;
 
             default:
                 $this->io->writeErrorLine('Unknown commend '.$command);

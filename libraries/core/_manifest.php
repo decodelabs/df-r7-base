@@ -210,7 +210,7 @@ interface ILoader {
     public function hasPackage(string $package): bool;
     public function getPackage(string $package): ?IPackage;
 
-    public function shutdown();
+    public function shutdown(): void;
 }
 
 
@@ -266,51 +266,51 @@ class Package implements IPackage {
 // Applications
 interface IApplication {
     // Paths
-    public static function getApplicationPath();
-    public function getLocalStoragePath();
-    public function getSharedStoragePath();
+    public static function getApplicationPath(): ?string;
+    public function getLocalStoragePath(): string;
+    public function getSharedStoragePath(): string;
 
     // Execute
-    public function dispatch();
-    public function shutdown();
-    public function getDispatchException();
+    public function dispatch(): void;
+    public function shutdown(): void;
+    public function getDispatchException(): ?\Exception;
 
     // Environment
-    public function getEnvironmentId();
-    public function getEnvironmentMode();
+    public function getEnvironmentId(): string;
+    public function getEnvironmentMode(): string;
     public function isDevelopment(): bool;
     public function isTesting(): bool;
     public function isProduction(): bool;
-    public function getRunMode();
-    public function isDistributed();
+    public function getRunMode(): string;
+    public function isDistributed(): bool;
 
     // Debug
-    public function renderDebugContext(core\debug\IContext $context);
+    public function renderDebugContext(core\debug\IContext $context): void;
 
     // Members
-    public function getName();
-    public function getUniquePrefix();
-    public function getPassKey();
+    public function getName(): string;
+    public function getUniquePrefix(): string;
+    public function getPassKey(): string;
 
     // Cache
     public function setRegistryObject(IRegistryObject $object);
-    public function getRegistryObject($key);
-    public function hasRegistryObject($key);
-    public function removeRegistryObject($key);
-    public function findRegistryObjects($beginningWith);
-    public function getRegistryObjects();
+    public function getRegistryObject(string $key): ?core\IRegistryObject;
+    public function hasRegistryObject(string $key): bool;
+    public function removeRegistryObject(string $key);
+    public function findRegistryObjects(string $beginningWith): array;
+    public function getRegistryObjects(): array;
 }
 
 interface IRegistryObject {
-    public function getRegistryObjectKey();
+    public function getRegistryObjectKey(): string;
 }
 
 interface IShutdownAware {
-    public function onApplicationShutdown();
+    public function onApplicationShutdown(): void;
 }
 
 interface IDispatchAware {
-    public function onApplicationDispatch(df\arch\node\INode $node);
+    public function onApplicationDispatch(df\arch\node\INode $node): void;
 }
 
 
@@ -320,7 +320,7 @@ interface IManager extends IRegistryObject {}
 
 trait TManager {
 
-    public static function getInstance() {
+    public static function getInstance(): IManager {
         $application = df\Launchpad::getApplication();
 
         if(!$output = $application->getRegistryObject(static::REGISTRY_PREFIX)) {
@@ -331,21 +331,21 @@ trait TManager {
         return $output;
     }
 
-    public static function setInstance(IManager $manager) {
-        return df\Launchpad::$application->setRegistryObject($manager);
+    public static function setInstance(IManager $manager): void {
+        df\Launchpad::$application->setRegistryObject($manager);
     }
 
-    protected static function _getDefaultInstance() {
+    protected static function _getDefaultInstance(): IManager {
         return new self();
     }
 
     protected function __construct() {}
 
-    public function getRegistryObjectKey() {
+    public function getRegistryObjectKey(): string {
         return static::REGISTRY_PREFIX;
     }
 
-    public function onApplicationShutdown() {}
+    public function onApplicationShutdown(): void {}
 }
 
 
@@ -353,7 +353,7 @@ trait TManager {
 
 // Helpers
 interface IHelperProvider {
-    public function getHelper($name, $returnNull=false);
+    public function getHelper(string $name, bool $returnNull=false);
     public function __get($member);
 }
 
@@ -375,7 +375,7 @@ trait THelperProvider {
         return $helper(...$args);
     }
 
-    public function getHelper($name, $returnNull=false) {
+    public function getHelper(string $name, bool $returnNull=false) {
         $name = lcfirst($name);
 
         if(isset($this->{$name})) {
@@ -399,7 +399,7 @@ trait THelperProvider {
         return $this->_loadSharedHelper($name);
     }
 
-    protected function _loadSharedHelper($name, $target=null) {
+    protected function _loadSharedHelper(string $name, $target=null): ?IHelper {
         $class = 'df\\apex\\helpers\\'.ucfirst($name);
 
         if(!class_exists($class)) {
@@ -430,17 +430,17 @@ interface IHelper {}
 
 // Translator
 interface ITranslator {
-    public function _($phrase='');
-    public function translate(array $args);
+    public function _($phrase=''): string;
+    public function translate(array $args): string;
 }
 
 trait TTranslator {
 
-    public function _($phrase='') {
+    public function _($phrase=''): string {
         return $this->translate(func_get_args());
     }
 
-    public function translate(array $args) {
+    public function translate(array $args): string {
         return core\i18n\Manager::getInstance()->translate($args);
     }
 }
@@ -449,7 +449,7 @@ trait TTranslator {
 // Context
 interface IContext extends core\IHelperProvider, core\ITranslator {
     public function setRunMode($mode);
-    public function getRunMode();
+    public function getRunMode(): string;
 
     // Locale
     public function setLocale($locale);
@@ -485,7 +485,7 @@ trait TContext {
         return $this;
     }
 
-    public function getRunMode() {
+    public function getRunMode(): string {
         if($this->_runMode) {
             return $this->_runMode;
         }
@@ -599,7 +599,7 @@ trait TContext {
         }
     }
 
-    public function translate(array $args) {
+    public function translate(array $args): string {
         return $this->i18n->translate($args);
     }
 }
@@ -660,7 +660,7 @@ trait TContextProxy {
         return $this->{$key} = $this->context->__get($key);
     }
 
-    public function translate(array $args) {
+    public function translate(array $args): string {
         return $this->context->i18n->translate($args);
     }
 }

@@ -149,7 +149,7 @@ class Html implements arch\IDirectoryHelper {
         return $this->element('abbr', $newString)->setTitle($string);
     }
 
-    public function translate(array $args) {
+    public function translate(array $args): string {
         return new aura\html\ElementString($this->context->i18n->translate($args));
     }
 

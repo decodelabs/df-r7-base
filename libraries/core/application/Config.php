@@ -47,7 +47,7 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getUniquePrefix() {
+    public function getUniquePrefix(): string {
         if(!isset($this->values['uniquePrefix'])) {
             $this->setUniquePrefix();
             $this->save();
@@ -67,7 +67,7 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getPassKey() {
+    public function getPassKey(): string {
         if(!isset($this->values['passKey'])) {
             $this->setPassKey();
             $this->save();
