@@ -35,7 +35,7 @@ class Base implements link\http\IRequest, core\IDumpable {
     protected $_postData;
     protected $_bodyData;
 
-    public static function fromString($string) {
+    public static function fromString(string $string): link\http\IRequest {
         $class = get_called_class();
         $output = new $class();
 

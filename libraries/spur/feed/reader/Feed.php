@@ -34,7 +34,7 @@ abstract class Feed implements spur\feed\IFeedReader {
         return self::fromString(file_get_contents($path));
     }
 
-    public static function fromString($string) {
+    public static function fromString(?string $string) {
         $domDocument = self::_loadDomDocument($string);
         $type = self::detectFeedType($domDocument);
 

@@ -18,7 +18,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
     protected $_parts = [];
 
-    public static function fromString($string) {
+    public static function fromString(?string $string) {
         $class = get_called_class();
         return self::_createPartFromString($string, $class);
     }

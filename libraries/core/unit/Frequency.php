@@ -26,7 +26,7 @@ class Frequency implements IFrequency, core\IDumpable {
         return new self($value, $unit, $allowPlainNumbers);
     }
 
-    public function toCssString() {
+    public function toCssString(): string {
         return $this->getKhz().'kHz';
     }
 

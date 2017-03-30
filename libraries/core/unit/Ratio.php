@@ -51,7 +51,7 @@ class Ratio implements IRatio, core\IDumpable {
         return $this->_numerator.'/'.$this->_denominator;
     }
 
-    public function toCssString() {
+    public function toCssString(): string {
         return $this->toString();
     }
 

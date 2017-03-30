@@ -17,7 +17,7 @@ abstract class Base implements link\http\IResponse {
     public $headers;
     public $cookies;
 
-    public static function fromString($string) {
+    public static function fromString(string $string): link\http\IResponse {
         $content = null;
         $output = self::fromHeaderString($string, $content);
         $headers = $output->headers;
@@ -74,7 +74,7 @@ abstract class Base implements link\http\IResponse {
         return $output;
     }
 
-    public static function fromHeaderString($string, &$content=null) {
+    public static function fromHeaderString(string $string, &$content=null): link\http\IResponse {
         $output = new Stream();
         $output->headers = HeaderCollection::fromResponseString($string, $content);
         $output->cookies->import($output->headers);

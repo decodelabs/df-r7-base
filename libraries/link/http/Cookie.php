@@ -21,7 +21,7 @@ class Cookie implements ICookie {
     protected $_isSecure = false;
     protected $_isHttpOnly = false;
 
-    public static function fromString($string) {
+    public static function fromString(string $string) {
         $parts = explode(';', $string);
         $main = explode('=', trim(array_shift($parts)), 2);
         $output = new self(array_shift($main), array_shift($main));

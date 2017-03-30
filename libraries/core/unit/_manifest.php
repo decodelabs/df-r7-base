@@ -21,7 +21,7 @@ interface IUnit {
 }
 
 interface ICssCompatibleUnit {
-    public function toCssString();
+    public function toCssString(): string;
 }
 
 
@@ -118,7 +118,7 @@ trait TSingleValueUnit {
         return $this->_value.$this->_unit;
     }
 
-    public function toCssString() {
+    public function toCssString(): string {
         return $this->toString();
     }
 

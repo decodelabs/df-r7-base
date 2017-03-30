@@ -17,7 +17,7 @@ class Address implements IAddress, core\IDumpable {
     protected $_address;
     protected $_isValid = null;
 
-    public static function factory($address, $name=null) {
+    public static function factory($address, $name=null): ?IAddress {
         if($address === null) {
             return null;
         } else if($address instanceof IAddress) {
@@ -33,7 +33,7 @@ class Address implements IAddress, core\IDumpable {
         }
     }
 
-    public static function fromString($string) {
+    public static function fromString(string $string): IAddress {
         $parts = explode('<', $string, 2);
 
         $address = rtrim(trim(array_pop($parts)), '>');

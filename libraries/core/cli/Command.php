@@ -42,15 +42,15 @@ class Command implements ICommand {
         return $output;
     }
 
-    public static function factory($command) {
+    public static function factory($command): ICommand {
         if($command instanceof ICommand) {
             return $command;
         }
 
-        return self::fromString($command);
+        return self::fromString((string)$command);
     }
 
-    public static function fromString($string) {
+    public static function fromString(string $string): ICommand {
         // TODO: parse properly to account for quoted strings
         $parts = explode(' ', $string);
         $output = new self(array_shift($parts));

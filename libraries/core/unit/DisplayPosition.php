@@ -255,7 +255,7 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
         return $output;
     }
 
-    public function toCssString() {
+    public function toCssString(): string {
         return $this->toString();
     }
 

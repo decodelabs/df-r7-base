@@ -45,7 +45,7 @@ class Dn implements IDn, core\IDumpable {
         throw new InvalidDnException('Invalid DN input');
     }
 
-    public static function fromString($dn) {
+    public static function fromString(string $dn) {
         $key = null;
         $value = null;
         $length = strlen($dn);
