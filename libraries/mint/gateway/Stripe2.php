@@ -12,8 +12,12 @@ use df\spur;
 
 class Stripe2 extends Base implements
     mint\ICaptureProviderGateway,
-    mint\IRefundProviderGateway//,
-    //mint\ICustomerTrackingGateway
+    mint\IRefundProviderGateway,
+    mint\ICustomerTrackingGateway,
+    mint\ICustomerTrackingCaptureProviderGateway,
+    //mint\ICardStoreGateway,
+    mint\ISubscriptionProviderGateway,
+    mint\ISubscriptionPlanControllerGateway
      {
 
     protected $_mediator;
@@ -49,7 +53,7 @@ class Stripe2 extends Base implements
     }
 
 
-// Charges
+// Direct charge
     public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): mint\IChargeResult {
         $request = $this->_mediator->newChargeCreateRequest(
                 $charge->getAmount(),
@@ -80,7 +84,7 @@ class Stripe2 extends Base implements
     }
 
 
-
+// Authorize / capture
     public function authorizeStandaloneCharge(mint\IStandaloneChargeRequest $charge): mint\IChargeResult {
         $request = $this->_mediator->newChargeCreateRequest(
                 $charge->getAmount(),
@@ -96,6 +100,23 @@ class Stripe2 extends Base implements
         });
     }
 
+    public function authorizeCustomerCharge(mint\ICustomerChargeRequest $charge): mint\IChargeResult {
+        $request = $this->_mediator->newChargeCreateRequest(
+                $charge->getAmount(),
+                $charge->getDescription()
+            )
+            ->setCard($charge->getCard())
+            ->setCustomerId($charge->getCustomerId())
+            ->setEmailAddress($charge->getEmailAddress())
+            ->shouldCapture(false);
+
+        return $this->_submitCharge(function() use($request) {
+            $charge = $this->_mediator->createCharge($request);
+            return $charge['id'];
+        });
+    }
+
+
     public function captureCharge(mint\IChargeCapture $charge) {
         $request = $this->_mediator->newChargeCaptureRequest($charge->getId());
 
@@ -105,6 +126,21 @@ class Stripe2 extends Base implements
         });
     }
 
+
+
+// Refund
+    public function refundCharge(mint\IChargeRefund $refund) {
+        $request = $this->_mediator->newRefundCreateRequest($refund->getId())
+            ->setAmount($refund->getAmount());
+
+        return $this->_submitCharge(function() use($request) {
+            $refund = $this->_mediator->createRefund($request);
+            return $refund['id'];
+        });
+    }
+
+
+// Charge handler
     protected function _submitCharge(Callable $handler) {
         $result = new mint\charge\Result();
 
@@ -186,15 +222,7 @@ class Stripe2 extends Base implements
     }
 
 
-    public function refundCharge(mint\IChargeRefund $refund) {
-        $request = $this->_mediator->newRefundCreateRequest($refund->getId())
-            ->setAmount($refund->getAmount());
 
-        return $this->_submitCharge(function() use($request) {
-            $refund = $this->_mediator->createRefund($request);
-            return $refund['id'];
-        });
-    }
 
 
 // Customers
@@ -237,6 +265,36 @@ class Stripe2 extends Base implements
         return $this;
     }
 */
+
+
+
+// Cards
+
+
+
+// Plans
+    public function getPlans(): array {
+        $data = $this->_mediator->fetchPlans(
+            $this->_mediator->newPlanFilter()
+                ->setLimit(100)
+        );
+
+        $output = [];
+
+        foreach($data as $plan) {
+            $output[] = (new mint\subscription\Plan(
+                    $plan['id'],
+                    $plan['name'],
+                    $plan['amount'],
+                    $plan['interval']
+                ))
+                ->setIntervalCount($plan['interval_count'])
+                ->setStatementDescriptor($plan['statement_descriptor'])
+                ->setTrialPeriod($plan['trial_period_days']);
+        }
+
+        return $output;
+    }
 
 
 // Cache

@@ -37,9 +37,11 @@ interface ICustomerTrackingGateway extends IGateway {
     public function submitCustomerCharge(ICustomerChargeRequest $charge): IChargeResult;
     public function newCustomerCharge(ICurrency $amount, ICreditCardReference $card, string $customerId, string $description=null);
 
+    /*
     public function addCustomer(string $email=null, string $description=null, ICreditCard $card=null): string;
     //public function updateCustomer(ICustomer $customer);
     public function deleteCustomer(string $customerId);
+    */
 }
 
 interface ICustomerTrackingCaptureProviderGateway extends ICaptureProviderGateway, ICustomerTrackingGateway {
@@ -47,22 +49,28 @@ interface ICustomerTrackingCaptureProviderGateway extends ICaptureProviderGatewa
 }
 
 interface ICardStoreGateway extends ICustomerTrackingGateway {
+    /*
     public function addCard(string $customerId, ICreditCard $card);
     public function updateCard(string $customerId, string $cardId, ICreditCard $card);
     public function deleteCard(string $customerId, string $cardId, ICreditCard $card);
+    */
 }
 
 interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
     public function getPlans(): array;
 
+    /*
     public function subscribeCustomer(string $planId, string $customerId);
     public function unsubscribeCustomer(string $planId, string $customerId);
+    */
 }
 
 interface ISubscriptionPlanControllerGateway extends ISubscriptionProviderGateway {
+    /*
     public function addPlan();
     public function updatePlan();
     public function deletePlan();
+    */
 }
 
 
@@ -179,6 +187,26 @@ interface ICustomer {
     public function getId();
     public function getEmailAddress();
     public function getDescription();
+}
+
+
+
+// Plan
+interface IPlan {
+    public function setId(?string $id);
+    public function getId(): ?string;
+    public function setAmount(ICurrency $amount);
+    public function getAmount(): ICurrency;
+    public function setName(string $name);
+    public function getName();
+    public function setInterval(string $interval, int $count=null);
+    public function getInterval();
+    public function setIntervalCount(int $count);
+    public function getIntervalCount();
+    public function setStatementDescriptor(?string $descriptor);
+    public function getStatementDescriptor(): ?string;
+    public function setTrialPeriod(?int $days);
+    public function getTrialPeriod(): ?int;
 }
 
 
