@@ -250,7 +250,7 @@ class Mediator implements IMediator {
             $data->replace('discount', new DataObject('discount', $data->discount, [$this, '_processDiscount']));
         }
 
-        if(!$data->shipping->address->isEmpty()) {
+        if(!$data->shipping->isEmpty() && !$data->shipping->address->isEmpty()) {
             $address = $this->_normalizeAddress($data->shipping->address);
             $data->shipping->address->clear();
             $data->shipping->address->setValue($address);
