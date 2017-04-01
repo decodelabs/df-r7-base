@@ -289,9 +289,7 @@ class Feed extends spur\feed\reader\Feed {
                 $modified = $this->_xPath->evaluate('string(/rss/channel/lastBuildDate)');
             }
 
-            if($modified) {
-                $date = core\time\Date::factory($modified);
-            }
+            $date = core\time\Date::normalize($modified);
         }
 
         return $this->getFromPlugin(['dublinCore', 'atom'], 'lastModifiedDate', $date);

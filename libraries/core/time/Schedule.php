@@ -244,7 +244,7 @@ class Schedule implements ISchedule/*, core\IDumpable*/ {
             $time = 'now';
         }
 
-        $time = clone core\time\Date::factory($time);
+        $time = core\time\Date::factory($time);
         $reset = false;
         $currentYear = (int)$time->format('Y');
 
@@ -322,7 +322,7 @@ class Schedule implements ISchedule/*, core\IDumpable*/ {
             $time = 'now';
         }
 
-        $time = clone core\time\Date::factory($time);
+        $time = core\time\Date::factory($time);
         $reset = false;
         $currentYear = (int)$time->format('Y');
 

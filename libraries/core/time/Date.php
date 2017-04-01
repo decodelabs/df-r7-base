@@ -39,7 +39,7 @@ class Date implements IDate, core\IDumpable {
     public $_date;
     protected $_timeEnabled = true;
 
-    public static function fromCompressedString($string, $timezone=true) {
+    public static function fromCompressedString($string, $timezone=true): IDate {
         if($string instanceof IDate) {
             return $string;
         }
@@ -58,7 +58,7 @@ class Date implements IDate, core\IDumpable {
         return new self($date, $timezone, $timeEnabled);
     }
 
-    public static function fromLocaleString($string, $timezone=true, $size=self::SHORT, $locale=null) {
+    public static function fromLocaleString($string, $timezone=true, $size=self::SHORT, $locale=null): IDate {
         if($string instanceof IDate) {
             return $string;
         }
@@ -76,7 +76,7 @@ class Date implements IDate, core\IDumpable {
         return new self($formatter->parse($string), $timezone);
     }
 
-    public static function fromFormatString($date, $format, $timezone=true, $locale=null) {
+    public static function fromFormatString($date, $format, $timezone=true, $locale=null): IDate {
         if($date instanceof IDate) {
             return $date;
         }
@@ -88,13 +88,23 @@ class Date implements IDate, core\IDumpable {
         return new self($date);
     }
 
-    public static function factory($date, $timezone=null, $timeEnabled=null) {
+    public static function normalize($date, $timezone=null, ?bool $timeEnabled=null): ?IDate {
+        if(empty($date)) {
+            return null;
+        } else if($date instanceof IDate) {
+            return $date;
+        }
+
+        return self::factory($date, $timezone, $timeEnabled);
+    }
+
+    public static function factory($date, $timezone=null, $timeEnabled=null): IDate {
         if($date instanceof IDuration) {
             $date = '+'.$date->getSeconds().' seconds';
         }
 
         if($date instanceof IDate) {
-            return $date;
+            return clone $date;
         }
 
         return new self($date, $timezone, $timeEnabled);

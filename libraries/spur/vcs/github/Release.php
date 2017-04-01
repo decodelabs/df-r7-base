@@ -20,14 +20,14 @@ class Release implements IRelease {
     protected $_publishDate;
     protected $_isDraft;
     protected $_isPrerelease;
-    
+
     protected function _importData(core\collection\ITree $data) {
         $this->_name = $data['name'];
         $this->_tagName = $data['tag_name'];
         $this->_author = new User($this->_mediator, $data->author);
+
         $this->_creationDate = core\time\Date::factory($data['created_at']);
-        $this->_publishDate = $data['published_at'] ?
-            core\time\Date::factory($data['published_at']) : null;
+        $this->_publishDate = core\time\Date::normalize($data['published_at']);
         $this->_isDraft = (bool)$data['draft'];
         $this->_isPrerelease = (bool)$data['prerelease'];
     }

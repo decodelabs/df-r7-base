@@ -10,7 +10,7 @@ use df\core;
 use df\opal;
 
 class TableStats implements ITableStats {
-    
+
     use core\collection\TAttributeContainer;
 
     protected $_version;
@@ -57,13 +57,7 @@ class TableStats implements ITableStats {
     }
 
     public function setCreationDate($date) {
-        if(empty($date)) {
-            $date = null;
-        } else {
-            $date = core\time\Date::factory($date);
-        }
-
-        $this->_creationDate = $date;
+        $this->_creationDate = core\time\Date::normalize($date);
         return $this;
     }
 
@@ -72,13 +66,7 @@ class TableStats implements ITableStats {
     }
 
     public function setSchemaUpdateDate($date) {
-        if(empty($date)) {
-            $date = null;
-        } else {
-            $date = core\time\Date::factory($date);
-        }
-
-        $this->_schemaUpdateDate = $date;
+        $this->_schemaUpdateDate = core\time\Date::normalize($date);
         return $this;
     }
 

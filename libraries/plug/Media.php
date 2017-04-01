@@ -225,10 +225,7 @@ class Media implements arch\IDirectoryHelper {
 
         if(($forceLocal && $isUrl) || ($transformation !== null && !in_array($contentType, ['image/svg+xml', 'image/gif']))) {
             $cache = neon\raster\Cache::getInstance();
-
-            if($modificationDate !== null) {
-                $modificationDate = core\time\Date::factory($modificationDate);
-            }
+            $modificationDate = core\time\Date::normalize($modificationDate);
 
             $filePath = $cache->getTransformationFilePath($filePath, $transformation, $modificationDate);
             $contentType = 'image/png';

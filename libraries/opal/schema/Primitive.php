@@ -115,11 +115,7 @@ class Primitive_Date extends Primitive {
     }
 
     protected function _normalizeDefaultValue($value) {
-        if($value !== null) {
-            $value = core\time\Date::factory($value);
-        }
-
-        return $value;
+        return core\time\Date::normalize($value);
     }
 }
 
@@ -133,7 +129,7 @@ class Primitive_DateTime extends Primitive {
 
     protected function _normalizeDefaultValue($value) {
         if($value !== null) {
-            $value = core\time\Date::factory($value);
+            $value = core\time\Date::normalize($value);
         }
 
         return $value;

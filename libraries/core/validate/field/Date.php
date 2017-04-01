@@ -19,20 +19,12 @@ class Date extends Base implements core\validate\IDateField {
     protected $_timezone = false;
 
     public function setMin($date) {
-        if($date !== null) {
-            $date = core\time\Date::factory($date);
-        }
-
-        $this->_min = $date;
+        $this->_min = core\time\Date::normalize($date);
         return $this;
     }
 
     public function setMax($date) {
-        if($date !== null) {
-            $date = core\time\Date::factory($date);
-        }
-
-        $this->_max = $date;
+        $this->_max = core\time\Date::normalize($date);
         return $this;
     }
 

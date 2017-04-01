@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 
 class Gist implements IGist {
-    
+
     use TApiObject;
 
     protected $_name;
@@ -25,9 +25,10 @@ class Gist implements IGist {
         $this->_name = $data['description'];
         $this->_owner = new User($this->_mediator, $data->owner);
         $this->_isPublic = (bool)$data['public'];
+
         $this->_creationDate = core\time\Date::factory($data['created_at']);
-        $this->_updateDate = $data['updated_at'] ?
-            core\time\Date::factory($data['updated_at']) : clone $this->_creationDate;
+        $this->_updateDate = core\time\Date::factory($data['updated_at'] ?? $this->_creationDate);
+
         $this->_comments = $data['comments'];
 
         foreach($data->files as $file) {

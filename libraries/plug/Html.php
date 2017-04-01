@@ -516,11 +516,9 @@ class Html implements arch\IDirectoryHelper {
 
 // Date
     public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
             $date->format('Y-m-d'),
@@ -529,11 +527,9 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function userDate($date, $size=core\time\Date::MEDIUM) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
             $date->format('Y-m-d'),
@@ -542,11 +538,9 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function dateTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C),
@@ -555,11 +549,9 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function userDateTime($date, $size=core\time\Date::MEDIUM) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C),
@@ -568,11 +560,9 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function customDate($date, $format, $userTime=false) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         if($userTime) {
             $date->toUserTimeZone();
@@ -585,11 +575,9 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function time($date, $format=null, $userTime=false) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         if($userTime) {
             $date->toUserTimeZone();
@@ -606,11 +594,9 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function localeTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
             $date->format('H:m:s'),
@@ -619,11 +605,9 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function userTime($date, $size=core\time\Date::MEDIUM) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
             $date->format('H:m:s'),
@@ -633,11 +617,9 @@ class Html implements arch\IDirectoryHelper {
 
 
     public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
                 $date->format(core\time\Date::W3C),
@@ -647,11 +629,9 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
                 $date->format(core\time\Date::W3C),
@@ -661,7 +641,7 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
@@ -673,7 +653,6 @@ class Html implements arch\IDirectoryHelper {
             $locale = true;
         }
 
-        $date = core\time\Date::factory($date);
         $ts = $date->toTimestamp();
         $now = core\time\Date::factory('now')->toTimestamp();
         $diff = $now - $ts;

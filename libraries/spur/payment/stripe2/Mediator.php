@@ -96,8 +96,8 @@ class Mediator implements IMediator {
     }
 
     protected function _processBalanceTransaction(core\collection\ITree $data) {
-        $data['available_on'] = core\time\Date::factory($data['available_on']);
-        $data['created'] = core\time\Date::factory($data['created']);
+        $data['available_on'] = core\time\Date::normalize($data['available_on']);
+        $data['created'] = core\time\Date::normalize($data['created']);
 
         $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
         $data['fee'] = $this->_normalizeCurrency($data['fee'], $data['currency']);
@@ -178,7 +178,7 @@ class Mediator implements IMediator {
         $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
         $data['amount_refunded'] = $this->_normalizeCurrency($data['amount_refunded'], $data['currency']);
         $data['application_fee'] = $this->_normalizeCurrency($data['application_fee'], $data['currency']);
-        $data['created'] = core\time\Date::factory($data['created']);
+        $data['created'] = core\time\Date::normalize($data['created']);
 
         $data->replace('refunds', new DataList('refund', null, $data->refunds, [$this, '_processRefund']));
         $data->replace('source', new DataObject('source', $data->source, [$this, '_processSource']));
@@ -244,7 +244,7 @@ class Mediator implements IMediator {
 // Process customer
     protected function _processCustomer(core\collection\ITree $data) {
         $data['account_balance'] = $this->_normalizeCurrency($data['account_balance'], $data['currency']);
-        $data['created'] = core\time\Date::factory($data['created']);
+        $data['created'] = core\time\Date::normalize($data['created']);
 
         if(!$data->discount->isEmpty()) {
             $data->replace('discount', new DataObject('discount', $data->discount, [$this, '_processDiscount']));
@@ -403,7 +403,7 @@ class Mediator implements IMediator {
 // Process refund
     protected function _processRefund(core\collection\ITree $data) {
         $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
-        $data['created'] = core\time\Date::factory($data['created']);
+        $data['created'] = core\time\Date::normalize($data['created']);
     }
 
 
@@ -668,8 +668,8 @@ class Mediator implements IMediator {
 // Process coupon
     protected function _processCoupon(core\collection\ITree $data) {
         $data['amount_off'] = $this->_normalizeCurrency($data['amount_off'], $data['currency']);
-        $data['created'] = core\time\Date::factory($data['created']);
-        $data['redeem_by'] = core\time\Date::factory($data['redeem_by']);
+        $data['created'] = core\time\Date::normalize($data['created']);
+        $data['redeem_by'] = core\time\Date::normalize($data['redeem_by']);
     }
 
 
@@ -692,8 +692,8 @@ class Mediator implements IMediator {
 
 // Process discount
     protected function _processDiscount(core\collection\ITree $data) {
-        $data['start'] = core\time\Date::factory($data['start']);
-        $data['end'] = core\time\Date::factory($data['end']);
+        $data['start'] = core\time\Date::normalize($data['start']);
+        $data['end'] = core\time\Date::normalize($data['end']);
 
         $data->replace('coupon', new DataObject('coupon', $data->coupon, [$this, '_processCoupon']));
     }
@@ -878,7 +878,7 @@ class Mediator implements IMediator {
 // Process plan
     protected function _processPlan(core\collection\ITree $data) {
         $data['amount'] = $this->_normalizeCurrency($data['amount'], $data['currency']);
-        $data['created'] = core\time\Date::factory($data['created']);
+        $data['created'] = core\time\Date::normalize($data['created']);
     }
 
 
@@ -941,14 +941,14 @@ class Mediator implements IMediator {
 
 // Process subscription
     protected function _processSubscription(core\collection\ITree $data) {
-        $data['canceled_at'] = core\time\Date::factory($data['canceled_at']);
-        $data['created'] = core\time\Date::factory($data['created']);
-        $data['current_period_start'] = core\time\Date::factory($data['current_period_start']);
-        $data['current_period_end'] = core\time\Date::factory($data['current_period_end']);
-        $data['ended_at'] = core\time\Date::factory($data['ended_at']);
-        $data['start'] = core\time\Date::factory($data['start']);
-        $data['trial_start'] = core\time\Date::factory($data['trial_start']);
-        $data['trial_end'] = core\time\Date::factory($data['trial_end']);
+        $data['canceled_at'] = core\time\Date::normalize($data['canceled_at']);
+        $data['created'] = core\time\Date::normalize($data['created']);
+        $data['current_period_start'] = core\time\Date::normalize($data['current_period_start']);
+        $data['current_period_end'] = core\time\Date::normalize($data['current_period_end']);
+        $data['ended_at'] = core\time\Date::normalize($data['ended_at']);
+        $data['start'] = core\time\Date::normalize($data['start']);
+        $data['trial_start'] = core\time\Date::normalize($data['trial_start']);
+        $data['trial_end'] = core\time\Date::normalize($data['trial_end']);
 
         if(!$data->discount->isEmpty()) {
             $data->replace('discount', new DataObject('discount', $data->discount, [$this, '_processDiscount']));
@@ -1014,7 +1014,7 @@ class Mediator implements IMediator {
 
 // Process item
     protected function _processSubscriptionItem(core\collection\ITree $data) {
-        $data['created'] = core\time\Date::factory($data['created']);
+        $data['created'] = core\time\Date::normalize($data['created']);
         $data->replace('plan', new DataObject('plan', $data->plan, [$this, '_processPlan']));
     }
 

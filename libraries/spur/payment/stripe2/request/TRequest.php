@@ -559,7 +559,7 @@ trait TRequest_TrialEnd {
     protected $_trialEnd;
 
     public function setTrialEnd($date) {
-        $this->_trialEnd = core\time\Date::factory($date);
+        $this->_trialEnd = core\time\Date::normalize($date);
         return $this;
     }
 

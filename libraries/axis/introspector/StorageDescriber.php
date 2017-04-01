@@ -11,7 +11,7 @@ use df\axis;
 use df\opal;
 
 class StorageDescriber implements IStorageDescriber {
-    
+
     public $name;
     public $type;
     public $itemCount;
@@ -25,14 +25,7 @@ class StorageDescriber implements IStorageDescriber {
         $this->itemCount = (int)$itemCount;
         $this->size = (int)$size;
         $this->indexSize = (int)$indexSize;
-
-        if(empty($creationDate)) {
-            $creationDate = null;
-        } else {
-            $creationDate = core\time\Date::factory($creationDate);
-        }
-
-        $this->creationDate = $creationDate;
+        $this->creationDate = core\time\Date::normalize($creationDate);
     }
 
     public function getName() {

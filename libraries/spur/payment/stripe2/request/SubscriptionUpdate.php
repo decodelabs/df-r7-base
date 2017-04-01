@@ -54,7 +54,7 @@ class SubscriptionUpdate implements spur\payment\stripe2\ISubscriptionUpdateRequ
 
 
     public function setProrationDate($date) {
-        $this->_prorationDate = core\time\Date::factory($date);
+        $this->_prorationDate = core\time\Date::normalize($date);
         return $this;
     }
 

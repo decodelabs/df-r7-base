@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 
 class Repository implements IRepository {
-    
+
     use TApiObject;
 
     protected $_name;
@@ -46,10 +46,8 @@ class Repository implements IRepository {
         $this->_defaultBranch = $data['default_branch'];
 
         $this->_creationDate = core\time\Date::factory($data['created_at']);
-        $this->_updateDate = $data['updated_at'] ?
-            core\time\Date::factory($data['updated_at']) : clone $this->_creationDate;
-        $this->_pushDate = $data['pushed_at'] ?
-            core\time\Date::factory($data['pushed_at']) : null;
+        $this->_updateDate = core\time\Date::factory($data['updated_at'] ?? $this->_creationDate);
+        $this->_pushDate = core\time\Date::normalize($data['pushed_at']);
 
         $this->_size = $data['size'];
         $this->_stargazers = $data['stargazers_count'];

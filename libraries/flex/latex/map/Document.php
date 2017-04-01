@@ -97,7 +97,7 @@ class Document extends iris\map\Node implements flex\latex\IDocument, core\IDump
     }
 
     public function setDate($date) {
-        $this->_date = core\time\Date::factory($date);
+        $this->_date = core\time\Date::normalize($date);
         return $this;
     }
 

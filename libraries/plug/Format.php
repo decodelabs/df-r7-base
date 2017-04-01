@@ -204,7 +204,7 @@ class Format implements core\ISharedHelper {
 
 // Date
     public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
@@ -212,21 +212,19 @@ class Format implements core\ISharedHelper {
             $locale = $this->context->getLocale();
         }
 
-        return core\time\Date::factory($date)
-            ->localeDateFormat($size, $locale);
+        return $date->localeDateFormat($size, $locale);
     }
 
     public function userDate($date, $size=core\time\Date::MEDIUM) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
-        return core\time\Date::factory($date)
-            ->userLocaleDateFormat($size);
+        return $date->userLocaleDateFormat($size);
     }
 
     public function dateTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
@@ -234,25 +232,21 @@ class Format implements core\ISharedHelper {
             $locale = $this->context->getLocale();
         }
 
-        return core\time\Date::factory($date)
-            ->localeFormat($size, $locale);
+        return $date->localeFormat($size, $locale);
     }
 
     public function userDateTime($date, $size=core\time\Date::MEDIUM) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
-        return core\time\Date::factory($date)
-            ->userLocaleFormat($size);
+        return $date->userLocaleFormat($size);
     }
 
     public function customDate($date, $format, $userTime=false) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         if($userTime) {
             $date->toUserTimeZone();
@@ -262,11 +256,9 @@ class Format implements core\ISharedHelper {
     }
 
     public function time($date, $format=null, $userTime=false) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
-
-        $date = core\time\Date::factory($date);
 
         if($userTime) {
             $date->toUserTimeZone();
@@ -280,7 +272,7 @@ class Format implements core\ISharedHelper {
     }
 
     public function localeTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
@@ -288,22 +280,20 @@ class Format implements core\ISharedHelper {
             $locale = $this->context->getLocale();
         }
 
-        return core\time\Date::factory($date)
-            ->localeTimeFormat($size, $locale);
+        return $date->localeTimeFormat($size, $locale);
     }
 
     public function userTime($date, $size=core\time\Date::MEDIUM) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
-        return core\time\Date::factory($date)
-            ->userLocaleTimeFormat($size);
+        return $date->userLocaleTimeFormat($size);
     }
 
 
     public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
@@ -315,14 +305,13 @@ class Format implements core\ISharedHelper {
             $locale = true;
         }
 
-        return core\time\Date::factory($date)
-            ->timeSince()
+        return $date->timeSince()
             ->setLocale($locale)
             ->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
 
     public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
@@ -334,14 +323,13 @@ class Format implements core\ISharedHelper {
             $locale = true;
         }
 
-        return core\time\Date::factory($date)
-            ->timeUntil()
+        return $date->timeUntil()
             ->setLocale($locale)
             ->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
 
     public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
-        if($date === null) {
+        if(!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
@@ -353,7 +341,6 @@ class Format implements core\ISharedHelper {
             $locale = true;
         }
 
-        $date = core\time\Date::factory($date);
         $ts = $date->toTimestamp();
         $now = core\time\Date::factory('now')->toTimestamp();
         $diff = $now - $ts;

@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 
 class Profile extends User implements IProfile {
-    
+
     protected $_name;
     protected $_email;
     protected $_company;
@@ -38,8 +38,7 @@ class Profile extends User implements IProfile {
         $this->_followers = $data['followers'];
         $this->_following = $data['following'];
         $this->_creationDate = core\time\Date::factory($data['created_at']);
-        $this->_updateDate = $data['updated_at'] ?
-            core\time\Date::factory($data['updated_at']) : clone $this->_creationDate;
+        $this->_updateDate = core\time\Date::factory($data['updated_at'] ?? $this->_creationDate);
     }
 
     public function getName() {

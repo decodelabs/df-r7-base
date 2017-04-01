@@ -144,13 +144,7 @@ class Cookie implements ICookie {
 
 
     public function setExpiryDate($date=null) {
-        if(!empty($date)) {
-            $date = core\time\Date::factory($date);
-        } else {
-            $date = null;
-        }
-
-        $this->_expiryDate = $date;
+        $this->_expiryDate = core\time\Date::normalize($date);
         return $this;
     }
 
