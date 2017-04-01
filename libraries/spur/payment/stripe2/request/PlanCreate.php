@@ -93,11 +93,7 @@ class PlanCreate implements spur\payment\stripe2\IPlanCreateRequest {
 
 
     public function setIntervalCount(int $count) {
-        if($count < 1) {
-            $count = 1;
-        }
-
-        $this->_intervalCount = $count;
+        $this->_intervalCount = max($count, 1);
         return $this;
     }
 
