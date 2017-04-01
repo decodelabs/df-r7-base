@@ -58,22 +58,6 @@ class Stripe extends Base implements
         });
     }
 
-    public function submitCustomerCharge(mint\ICustomerChargeRequest $charge): mint\IChargeResult {
-        $request = $this->_mediator->newChargeRequest(
-            $charge->getAmount(),
-            $charge->getCard(),
-            $charge->getDescription()
-        );
-
-        $request->setCustomerId($charge->getCustomerId());
-
-        return $this->_submitCharge(function() use($request) {
-            $charge = $request->submit();
-            return $charge->getId();
-        });
-    }
-
-
 
     public function authorizeStandaloneCharge(mint\IStandaloneChargeRequest $charge): mint\IChargeResult {
         $request = $this->_mediator->newChargeRequest(
