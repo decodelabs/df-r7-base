@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\mint;
 
-class DataList extends core\collection\Tree implements IList {
+class DataList extends core\collection\Tree implements IDataList {
 
     protected $_total = 0;
     protected $_hasMore = false;

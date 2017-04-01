@@ -39,12 +39,12 @@ class Mediator implements IMediator {
 
 
 // Account
-    public function fetchAccountDetails(): IData {
+    public function fetchAccountDetails(): IDataObject {
         $data = $this->requestJson('get', 'account');
         return new DataObject('primary_account', $data);
     }
 
-    public function fetchCountrySpec(string $country): IData {
+    public function fetchCountrySpec(string $country): IDataObject {
         $data = $this->requestJson('get', 'country_specs/'.$country);
         return new DataObject('country_spec', $data);
     }
@@ -57,7 +57,7 @@ class Mediator implements IMediator {
  Balance */
 
 // Account balance
-    public function fetchBalance(): IData {
+    public function fetchBalance(): IDataObject {
         $data = $this->requestJson('get', 'balance');
 
         return new DataObject('balance', $data, function($data) {
@@ -81,7 +81,7 @@ class Mediator implements IMediator {
 
 
 // Balance transactions
-    public function fetchBalanceTransaction(string $id): IData {
+    public function fetchBalanceTransaction(string $id): IDataObject {
         $data = $this->requestJson('get', 'balance/history/'.$id);
         return new DataObject('balance_transaction', $data, [$this, '_processBalanceTransaction']);
     }
@@ -90,7 +90,7 @@ class Mediator implements IMediator {
         return new namespace\filter\BalanceTransaction($type);
     }
 
-    public function fetchBalanceTransactions(IBalanceTransactionFilter $filter=null): IList {
+    public function fetchBalanceTransactions(IBalanceTransactionFilter $filter=null): IDataList {
         $data = $this->requestJson('get', 'balance/history', namespace\filter\BalanceTransaction::normalize($filter));
         return new DataList('balance_transaction', $filter, $data, [$this, '_processBalanceTransaction']);
     }
@@ -122,7 +122,7 @@ class Mediator implements IMediator {
         return new namespace\request\ChargeCreate($amount, $description);
     }
 
-    public function createCharge(IChargeCreateRequest $request): IData {
+    public function createCharge(IChargeCreateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'charges', $request->toArray());
         return (new DataObject('charge', $data, [$this, '_processCharge']))
             ->setRequest($request);
@@ -130,7 +130,7 @@ class Mediator implements IMediator {
 
 
 // Fetch charge
-    public function fetchCharge(string $id): IData {
+    public function fetchCharge(string $id): IDataObject {
         $data = $this->requestJson('get', 'charges/'.$id);
         return new DataObject('charge', $data, [$this, '_processCharge']);
     }
@@ -142,7 +142,7 @@ class Mediator implements IMediator {
         return new namespace\request\ChargeUpdate($id);
     }
 
-    public function updateCharge(IChargeUpdateRequest $request): IData {
+    public function updateCharge(IChargeUpdateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'charges/'.$request->getChargeId(), $request->toArray());
         return (new DataObject('charge', $data, [$this, '_processCharge']))
             ->setRequest($request);
@@ -155,7 +155,7 @@ class Mediator implements IMediator {
         return new namespace\filter\Charge($customerId);
     }
 
-    public function fetchCharges(IChargeFilter $filter=null): IList {
+    public function fetchCharges(IChargeFilter $filter=null): IDataList {
         $data = $this->requestJson('get', 'charges', namespace\filter\Charge::normalize($filter));
         return new DataList('charge', $filter, $data, [$this, '_processCharge']);
     }
@@ -166,7 +166,7 @@ class Mediator implements IMediator {
         return new namespace\request\ChargeCapture($chargeId, $amount);
     }
 
-    public function captureCharge(IChargeCaptureRequest $request): IData {
+    public function captureCharge(IChargeCaptureRequest $request): IDataObject {
         $data = $this->requestJson('post', 'charges/'.$request->getChargeId().'/capture', $request->toArray());
         return (new DataObject('charge', $data, [$this, '_processCharge']))
             ->setRequest($request);
@@ -194,7 +194,7 @@ class Mediator implements IMediator {
         return new namespace\request\CustomerCreate($emailAddress, $description);
     }
 
-    public function createCustomer(ICustomerCreateRequest $request): IData {
+    public function createCustomer(ICustomerCreateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'customers', $request->toArray());
         return (new DataObject('customer', $data, [$this, '_processCustomer']))
             ->setRequest($request);
@@ -202,7 +202,7 @@ class Mediator implements IMediator {
 
 
 // Fetch customer
-    public function fetchCustomer(string $id): IData {
+    public function fetchCustomer(string $id): IDataObject {
         $data = $this->requestJson('get', 'customers/'.$id);
         return (new DataObject('customer', $data, [$this, '_processCustomer']));
     }
@@ -214,7 +214,7 @@ class Mediator implements IMediator {
         return new namespace\request\CustomerUpdate($id);
     }
 
-    public function updateCustomer(ICustomerUpdateRequest $request): IData {
+    public function updateCustomer(ICustomerUpdateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'customers/'.$request->getCustomerId(), $request->toArray());
         return (new DataObject('customer', $data, [$this, '_processCustomer']))
             ->setRequest($request);
@@ -235,7 +235,7 @@ class Mediator implements IMediator {
         return new namespace\filter\Customer();
     }
 
-    public function fetchCustomers(ICustomerFilter $filter=null): IList {
+    public function fetchCustomers(ICustomerFilter $filter=null): IDataList {
         $data = $this->requestJson('get', 'customers', namespace\filter\Customer::normalize($filter));
         return new DataList('customer', $filter, $data, [$this, '_processCustomer']);
     }
@@ -267,7 +267,7 @@ class Mediator implements IMediator {
 
 /*
 // Fetch dispute
-    public function fetchDispute(string $id): IData {
+    public function fetchDispute(string $id): IDataObject {
         core\stub();
     }
 
@@ -277,13 +277,13 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function updateDispute(IDisputeUpdateRequest $request): IData {
+    public function updateDispute(IDisputeUpdateRequest $request): IDataObject {
         core\stub();
     }
 
 
 // Close dispute
-    public function closeDispute(string $id): IData {
+    public function closeDispute(string $id): IDataObject {
         core\stub();
     }
 
@@ -307,7 +307,7 @@ class Mediator implements IMediator {
 
 /*
 // Fetch event
-    public function fetchEvent(string $id): IData {
+    public function fetchEvent(string $id): IDataObject {
         core\stub();
     }
 
@@ -330,13 +330,13 @@ class Mediator implements IMediator {
 
 /*
 // Upload file
-    public function uploadFile(core\fs\IFile $file, string $purpose): IData {
+    public function uploadFile(core\fs\IFile $file, string $purpose): IDataObject {
         core\stub();
     }
 
 
 // Fetch file
-    public function fetchFileInfo(string $id): IData {
+    public function fetchFileInfo(string $id): IDataObject {
         core\stub();
     }
 
@@ -363,7 +363,7 @@ class Mediator implements IMediator {
         return new namespace\request\RefundCreate($chargeId, $reason);
     }
 
-    public function createRefund(IRefundCreateRequest $request): IData {
+    public function createRefund(IRefundCreateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'refunds', $request->toArray());
         return (new DataObject('refund', $data, [$this, '_processRefund']))
             ->setRequest($request);
@@ -371,7 +371,7 @@ class Mediator implements IMediator {
 
 
 // Fetch refund
-    public function fetchRefund(string $id): IData {
+    public function fetchRefund(string $id): IDataObject {
         $data = $this->requestJson('post', 'refunds/'.$id);
         return new DataObject('refund', $data, [$this, '_processRefund']);
     }
@@ -394,7 +394,7 @@ class Mediator implements IMediator {
         return new namespace\filter\Refund($chargeId);
     }
 
-    public function fetchRefunds(IRefundFilter $filter=null): IList {
+    public function fetchRefunds(IRefundFilter $filter=null): IDataList {
         $data = $this->requestJson('get', 'refunds', namespace\filter\Refund::normalize($filter));
         return new DataList('refund', $filter, $data, [$this, '_processRefund']);
     }
@@ -414,23 +414,23 @@ class Mediator implements IMediator {
 
 /*
 // Card token
-    public function createCardToken(mint\ICreditCard $card, string $customerId=null): IData {
+    public function createCardToken(mint\ICreditCard $card, string $customerId=null): IDataObject {
         core\stub();
     }
 
 // Bank token
-    public function createBankAccountToken(mint\IBankAccount $account, string $customerId=null): IData {
+    public function createBankAccountToken(mint\IBankAccount $account, string $customerId=null): IDataObject {
         core\stub();
     }
 
 // Pii token
-    public function createPiiToken(string $id): IData {
+    public function createPiiToken(string $id): IDataObject {
         core\stub();
     }
 
 
 // Fetch token
-    public function fetchToken(string $id): IData {
+    public function fetchToken(string $id): IDataObject {
         core\stub();
     }
 
@@ -447,13 +447,13 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function createTransfer(ITransferCreateRequest $request): IData {
+    public function createTransfer(ITransferCreateRequest $request): IDataObject {
         core\stub();
     }
 
 
 // Fetch transfer
-    public function fetchTransfer(string $id): IData {
+    public function fetchTransfer(string $id): IDataObject {
         core\stub();
     }
 
@@ -463,7 +463,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function updateTransfer(ITransferUpdateRequest $request): IData {
+    public function updateTransfer(ITransferUpdateRequest $request): IDataObject {
         core\stub();
     }
 
@@ -473,7 +473,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function fetchTransfers(ITransferFilter $filter=null): IList {
+    public function fetchTransfers(ITransferFilter $filter=null): IDataList {
         core\stub();
     }
 */
@@ -489,13 +489,13 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function createTransferReversal(ITransferReversalCreateRequest $request): IData {
+    public function createTransferReversal(ITransferReversalCreateRequest $request): IDataObject {
         core\stub();
     }
 
 
 // Fetch reversal
-    public function fetchTransferReversal(string $transferId, string $reversalId): IData {
+    public function fetchTransferReversal(string $transferId, string $reversalId): IDataObject {
         core\stub();
     }
 
@@ -505,7 +505,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function updateTransferReversal(ITransferReversalUpdateRequest $request): IData {
+    public function updateTransferReversal(ITransferReversalUpdateRequest $request): IDataObject {
         core\stub();
     }
 
@@ -515,7 +515,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function fetchTransferReversals(string $transferId, ITransferReversalFilter $filter=null): IList {
+    public function fetchTransferReversals(string $transferId, ITransferReversalFilter $filter=null): IDataList {
         core\stub();
     }
 
@@ -546,7 +546,7 @@ class Mediator implements IMediator {
         return new namespace\request\CardCreate($customerId, $source);
     }
 
-    public function createCard(ICardCreateRequest $request): IData {
+    public function createCard(ICardCreateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'customers/'.$request->getCustomerId().'/sources', $request->toArray());
         return (new DataObject('source', $data, [$this, '_processSource']))
             ->setRequest($request);
@@ -565,7 +565,7 @@ class Mediator implements IMediator {
         return new namespace\request\CardUpdate($customerId, $cardId);
     }
 
-    public function updateCard(ICardUpdateRequest $request): IData {
+    public function updateCard(ICardUpdateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'customers/'.$request->getCustomerId().'/sources/'.$request->getCardId(), $request->toArray());
         return (new DataObject('source', $data, [$this, '_processSource']))
             ->setRequest($request);
@@ -586,7 +586,7 @@ class Mediator implements IMediator {
         return new namespace\filter\Card();
     }
 
-    public function fetchCards(string $customerId, ICardFilter $filter=null): IList {
+    public function fetchCards(string $customerId, ICardFilter $filter=null): IDataList {
         $data = $this->requestJson('get', 'customers/'.$customerId.'/sources', namespace\filter\Card::normalize($filter, ['object' => 'card']));
         return new DataList('source', $filter, $data, [$this, '_processSource']);
     }
@@ -627,13 +627,13 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function createCoupon(ICouponCreateRequest $request): IData {
+    public function createCoupon(ICouponCreateRequest $request): IDataObject {
         core\stub();
     }
 
 
 // Fetch coupon
-    public function fetchCoupon(string $id): IData {
+    public function fetchCoupon(string $id): IDataObject {
         core\stub();
     }
 
@@ -643,7 +643,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function updateCoupon(ICouponUpdateRequest $request): IData {
+    public function updateCoupon(ICouponUpdateRequest $request): IDataObject {
         core\stub();
     }
 
@@ -660,7 +660,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function fetchCoupons(ICouponFilter $filter=null): IList {
+    public function fetchCoupons(ICouponFilter $filter=null): IDataList {
         core\stub();
     }
 */
@@ -709,13 +709,13 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function createInvoice(IInvoiceCreateRequest $request): IData {
+    public function createInvoice(IInvoiceCreateRequest $request): IDataObject {
         core\stub();
     }
 
 
 // Fetch invoice
-    public function fetchInvoice(string $id): IData {
+    public function fetchInvoice(string $id): IDataObject {
         core\stub();
     }
 
@@ -726,7 +726,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function fetchInvoiceLines(string $invoiceId, IInvoiceLineFilter $filter=null): IList {
+    public function fetchInvoiceLines(string $invoiceId, IInvoiceLineFilter $filter=null): IDataList {
         core\stub();
     }
 
@@ -736,7 +736,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function previewInvoice(IInvoicePreviewRequest $request): IData {
+    public function previewInvoice(IInvoicePreviewRequest $request): IDataObject {
         core\stub();
     }
 
@@ -747,14 +747,14 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function updateInvoice(IInvoiceUpdateRequest $request): IData {
+    public function updateInvoice(IInvoiceUpdateRequest $request): IDataObject {
         core\stub();
     }
 
 
 
 // Pay invoice
-    public function payInvoice(string $id): IData {
+    public function payInvoice(string $id): IDataObject {
         core\stub();
     }
 
@@ -765,7 +765,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function fetchInvoices(IInvoiceFilter $filter=null): IList {
+    public function fetchInvoices(IInvoiceFilter $filter=null): IDataList {
         core\stub();
     }
 
@@ -782,13 +782,13 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function createInvoiceItem(IInvoiceItemCreateRequest $request): IData {
+    public function createInvoiceItem(IInvoiceItemCreateRequest $request): IDataObject {
         core\stub();
     }
 
 
 // Fetch item
-    public function fetchInvoiceItem(string $id): IData {
+    public function fetchInvoiceItem(string $id): IDataObject {
         core\stub();
     }
 
@@ -798,7 +798,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function updateInvoiceItem(IInvoiceItemUpdateRequest $request): IData {
+    public function updateInvoiceItem(IInvoiceItemUpdateRequest $request): IDataObject {
         core\stub();
     }
 
@@ -814,7 +814,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function fetchInvoiceItems(IInvoiceItemFilter $filter=null): IList {
+    public function fetchInvoiceItems(IInvoiceItemFilter $filter=null): IDataList {
         core\stub();
     }
 */
@@ -830,7 +830,7 @@ class Mediator implements IMediator {
         return new namespace\request\PlanCreate($id, $name, $amount, $interval);
     }
 
-    public function createPlan(IPlanCreateRequest $request): IData {
+    public function createPlan(IPlanCreateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'plans', $request->toArray());
         return (new DataObject('plan', $data, [$this, '_processPlan']))
             ->setRequest($request);
@@ -838,7 +838,7 @@ class Mediator implements IMediator {
 
 
 // Fetch plan
-    public function fetchPlan(string $id): IData {
+    public function fetchPlan(string $id): IDataObject {
         $data = $this->requestJson('get', 'plans/'.$id);
         return new DataObject('plan', $data, [$this, '_processPlan']);
     }
@@ -850,7 +850,7 @@ class Mediator implements IMediator {
         return new namespace\request\PlanUpdate($id);
     }
 
-    public function updatePlan(IPlanUpdateRequest $request): IData {
+    public function updatePlan(IPlanUpdateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'plans/'.$request->getPlanId(), $request->toArray());
         return (new DataObject('plan', $data, [$this, '_processPlan']))
             ->setRequest($request);
@@ -869,7 +869,7 @@ class Mediator implements IMediator {
         return new namespace\filter\Plan();
     }
 
-    public function fetchPlans(IPlanFilter $filter=null): IList {
+    public function fetchPlans(IPlanFilter $filter=null): IDataList {
         $data = $this->requestJson('get', 'plans', namespace\filter\Plan::normalize($filter));
         return new DataList('plan', $filter, $data, [$this, '_processPlan']);
     }
@@ -893,7 +893,7 @@ class Mediator implements IMediator {
         return new namespace\request\SubscriptionCreate($customerId, $planId);
     }
 
-    public function createSubscription(ISubscriptionCreateRequest $request): IData {
+    public function createSubscription(ISubscriptionCreateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'subscriptions', $request->toArray());
         return (new DataObject('subscription', $data, [$this, '_processSubscription']))
             ->setRequest($request);
@@ -901,7 +901,7 @@ class Mediator implements IMediator {
 
 
 // Fetch subscription
-    public function fetchSubscription(string $id): IData {
+    public function fetchSubscription(string $id): IDataObject {
         $data = $this->requestJson('get', 'subscriptions/'.$id);
         return new DataObject('subscription', $data, [$this, '_processSubscription']);
     }
@@ -912,7 +912,7 @@ class Mediator implements IMediator {
         return new namespace\request\SubscriptionUpdate($id);
     }
 
-    public function updateSubscription(ISubscriptionUpdateRequest $request): IData {
+    public function updateSubscription(ISubscriptionUpdateRequest $request): IDataObject {
         $data = $this->requestJson('post', 'subscriptions/'.$request->getSubscriptionId(), $request->toArray());
         return (new DataObject('subscription', $data, [$this, '_processSubscription']))
             ->setRequest($request);
@@ -920,7 +920,7 @@ class Mediator implements IMediator {
 
 
 // Cancel subscription
-    public function cancelSubscription(string $id, bool $atPeriodEnd=false): IData {
+    public function cancelSubscription(string $id, bool $atPeriodEnd=false): IDataObject {
         $data = ['at_period_end' => $atPeriodEnd ? 'true' : 'false'];
         $data = $this->requestJson('delete', 'subscriptions/'.$id, $data);
         return (new DataObject('subscription', $data, [$this, '_processSubscription']));
@@ -970,13 +970,13 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function createSubscriptionItem(ISubscriptionItemCreateRequest $request): IData {
+    public function createSubscriptionItem(ISubscriptionItemCreateRequest $request): IDataObject {
         core\stub();
     }
 
 
 // Fetch item
-    public function fetchSubscriptionId(string $id): IData {
+    public function fetchSubscriptionId(string $id): IDataObject {
         core\stub();
     }
 
@@ -986,7 +986,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function updateSubscriptionItem(ISubscriptionItemUpdateRequest $request): IData {
+    public function updateSubscriptionItem(ISubscriptionItemUpdateRequest $request): IDataObject {
         core\stub();
     }
 
@@ -996,7 +996,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function deleteSubscriptionItem(ISubscriptionItemDeleteRequest $request): IData {
+    public function deleteSubscriptionItem(ISubscriptionItemDeleteRequest $request): IDataObject {
         core\stub();
     }
 
@@ -1006,7 +1006,7 @@ class Mediator implements IMediator {
         core\stub();
     }
 
-    public function fetchSubscriptionItems(string $subscriptionId, ISubscriptionItemFilter $filter=null): IList {
+    public function fetchSubscriptionItems(string $subscriptionId, ISubscriptionItemFilter $filter=null): IDataList {
         core\stub();
     }
 */

@@ -19,60 +19,60 @@ interface IMediator extends spur\IHttpMediator {
 
 
 // Account
-    public function fetchAccountDetails(): IData;
-    public function fetchCountrySpec(string $country): IData;
+    public function fetchAccountDetails(): IDataObject;
+    public function fetchCountrySpec(string $country): IDataObject;
 
 
 ### CORE RESOURCES
 
 
 // Balance
-    public function fetchBalance(): IData;
-    public function fetchBalanceTransaction(string $id): IData;
+    public function fetchBalance(): IDataObject;
+    public function fetchBalanceTransaction(string $id): IDataObject;
 
     public function newBalanceTransactionFilter(string $type=null): IBalanceTransactionFilter;
-    public function fetchBalanceTransactions(IBalanceTransactionFilter $filter=null): IList;
+    public function fetchBalanceTransactions(IBalanceTransactionFilter $filter=null): IDataList;
 
 
 
 // Charges
     public function newChargeCreateRequest(mint\ICurrency $amount, string $description=null): IChargeCreateRequest;
-    public function createCharge(IChargeCreateRequest $request): IData;
-    public function fetchCharge(string $id): IData;
+    public function createCharge(IChargeCreateRequest $request): IDataObject;
+    public function fetchCharge(string $id): IDataObject;
 
     public function newChargeUpdateRequest(string $id): IChargeUpdateRequest;
-    public function updateCharge(IChargeUpdateRequest $request): IData;
+    public function updateCharge(IChargeUpdateRequest $request): IDataObject;
 
     public function newChargeFilter(string $customerId=null): IChargeFilter;
-    public function fetchCharges(IChargeFilter $filter=null): IList;
+    public function fetchCharges(IChargeFilter $filter=null): IDataList;
 
     public function newChargeCaptureRequest(string $chargeId, mint\ICurrency $amount=null): IChargeCaptureRequest;
-    public function captureCharge(IChargeCaptureRequest $request): IData;
+    public function captureCharge(IChargeCaptureRequest $request): IDataObject;
 
 
 // Customers
     public function newCustomerCreateRequest(string $emailAddress=null, string $description=null): ICustomerCreateRequest;
-    public function createCustomer(ICustomerCreateRequest $request): IData;
-    public function fetchCustomer(string $id): IData;
+    public function createCustomer(ICustomerCreateRequest $request): IDataObject;
+    public function fetchCustomer(string $id): IDataObject;
 
     public function newCustomerUpdateRequest(string $id): ICustomerUpdateRequest;
-    public function updateCustomer(ICustomerUpdateRequest $request): IData;
+    public function updateCustomer(ICustomerUpdateRequest $request): IDataObject;
 
     public function deleteCustomer(string $id);
 
     public function newCustomerFilter(): ICustomerFilter;
-    public function fetchCustomers(ICustomerFilter $filter=null): IList;
+    public function fetchCustomers(ICustomerFilter $filter=null): IDataList;
 
 
 
 // Disputes
 /*
-    public function fetchDispute(string $id): IData;
+    public function fetchDispute(string $id): IDataObject;
 
     public function newDisputeUpdateRequest(string $id): IDisputeUpdateRequest;
-    public function updateDispute(IDisputeUpdateRequest $request): IData;
+    public function updateDispute(IDisputeUpdateRequest $request): IDataObject;
 
-    public function closeDispute(string $id): IData;
+    public function closeDispute(string $id): IDataObject;
 
     public function newDisputeFilter(): IDisputeFilter;
     public function fetchDisputes(IDisputeFilter $filter=null);
@@ -82,7 +82,7 @@ interface IMediator extends spur\IHttpMediator {
 
 // Events
 /*
-    public function fetchEvent(string $id): IData;
+    public function fetchEvent(string $id): IDataObject;
 
     public function newEventFilter(): IEventFilter;
     public function fetchEvents(IEventFilter $filter=null);
@@ -92,8 +92,8 @@ interface IMediator extends spur\IHttpMediator {
 
 // Files
 /*
-    public function uploadFile(core\fs\IFile $file, string $purpose): IData;
-    public function fetchFileInfo(string $id): IData;
+    public function uploadFile(core\fs\IFile $file, string $purpose): IDataObject;
+    public function fetchFileInfo(string $id): IDataObject;
 
     public function newFileFilter(): IFileFilter;
     public function fetchFileInfos(IFileFilter $filter=null);
@@ -103,23 +103,23 @@ interface IMediator extends spur\IHttpMediator {
 
 // Refunds
     public function newRefundCreateRequest(string $chargeId, string $reason=null): IRefundCreateRequest;
-    public function createRefund(IRefundCreateRequest $request): IData;
-    public function fetchRefund(string $id): IData;
+    public function createRefund(IRefundCreateRequest $request): IDataObject;
+    public function fetchRefund(string $id): IDataObject;
 
     public function newRefundUpdateRequest(string $id): IRefundUpdateRequest;
     public function updateRefund(IRefundUpdateRequest $request);
 
     public function newRefundFilter(string $chargeId=null): IRefundFilter;
-    public function fetchRefunds(IRefundFilter $filter=null): IList;
+    public function fetchRefunds(IRefundFilter $filter=null): IDataList;
 
 
 
 // Tokens
 /*
-    public function createCardToken(mint\ICreditCard $card, string $customerId=null): IData;
-    //public function createBankAccountToken(mint\IBankAccount $account, string $customerId=null): IData;
-    //public function createPiiToken(string $id): IData;
-    public function fetchToken(string $id): IData;
+    public function createCardToken(mint\ICreditCard $card, string $customerId=null): IDataObject;
+    //public function createBankAccountToken(mint\IBankAccount $account, string $customerId=null): IDataObject;
+    //public function createPiiToken(string $id): IDataObject;
+    public function fetchToken(string $id): IDataObject;
 */
 
 
@@ -127,28 +127,28 @@ interface IMediator extends spur\IHttpMediator {
 // Transfers
 /*
     public function newTransferCreateRequest(mint\ICurrency $amount, string $destinationId=null): ITransferCreateRequest;
-    public function createTransfer(ITransferCreateRequest $request): IData;
-    public function fetchTransfer(string $id): IData;
+    public function createTransfer(ITransferCreateRequest $request): IDataObject;
+    public function fetchTransfer(string $id): IDataObject;
 
     public function newTransferUpdateRequest(string $id): ITransferUpdateRequest;
-    public function updateTransfer(ITransferUpdateRequest $request): IData;
+    public function updateTransfer(ITransferUpdateRequest $request): IDataObject;
 
     public function newTransferFilter(string $recipient=null): ITransferFilter;
-    public function fetchTransfers(ITransferFilter $filter=null): IList;
+    public function fetchTransfers(ITransferFilter $filter=null): IDataList;
 */
 
 
 // Transfer reversals
 /*
     public function newTransferReversalCreateRequest(string $transferId): ITransferReversalCreateRequest;
-    public function createTransferReversal(ITransferReversalCreateRequest $request): IData;
-    public function fetchTransferReversal(string $transferId, string $reversalId): IData;
+    public function createTransferReversal(ITransferReversalCreateRequest $request): IDataObject;
+    public function fetchTransferReversal(string $transferId, string $reversalId): IDataObject;
 
     public function newTransferReversalUpdateRequest(string $transferId, string $reversalId): ITransferReversalUpdateRequest;
-    public function updateTransferReversal(ITransferReversalUpdateRequest $request): IData;
+    public function updateTransferReversal(ITransferReversalUpdateRequest $request): IDataObject;
 
     public function newTransferReversalFilter(): ITransferReversalFilter;
-    public function fetchTransferReversals(string $transferId, ITransferReversalFilter $filter=null): IList;
+    public function fetchTransferReversals(string $transferId, ITransferReversalFilter $filter=null): IDataList;
 */
 
 
@@ -166,16 +166,16 @@ interface IMediator extends spur\IHttpMediator {
 
 // Cards
     public function newCardCreateRequest(string $customerId, $source): ICardCreateRequest;
-    public function createCard(ICardCreateRequest $request): IData;
+    public function createCard(ICardCreateRequest $request): IDataObject;
     public function fetchCard(string $customerId, string $cardId);
 
     public function newCardUpdateRequest(string $customerId, string $cardId): ICardUpdateRequest;
-    public function updateCard(ICardUpdateRequest $request): IData;
+    public function updateCard(ICardUpdateRequest $request): IDataObject;
 
     public function deleteCard(string $customerId, string $cardId);
 
     public function newCardFilter(): ICardFilter;
-    public function fetchCards(string $customerId, ICardFilter $filter=null): IList;
+    public function fetchCards(string $customerId, ICardFilter $filter=null): IDataList;
 
 
 
@@ -198,16 +198,16 @@ interface IMediator extends spur\IHttpMediator {
 // Coupons
 /*
     public function newCouponCreateRequest(string $id, string $type): ICouponCreateRequest;
-    public function createCoupon(ICouponCreateRequest $request): IData;
-    public function fetchCoupon(string $id): IData;
+    public function createCoupon(ICouponCreateRequest $request): IDataObject;
+    public function fetchCoupon(string $id): IDataObject;
 
     public function newCouponUpdateRequest(string $id): ICouponUpdateRequest;
-    public function updateCoupon(ICouponUpdateRequest $request): IData;
+    public function updateCoupon(ICouponUpdateRequest $request): IDataObject;
 
     public function deleteCoupon(string $id);
 
     public function newCouponFilter(): ICouponFilter;
-    public function fetchCoupons(ICouponFilter $filter=null): IList;
+    public function fetchCoupons(ICouponFilter $filter=null): IDataList;
 */
 
 
@@ -223,22 +223,22 @@ interface IMediator extends spur\IHttpMediator {
 // Invoices
 /*
     public function newInvoiceCreateRequest(string $customerId, string $description=null): IInvoiceCreateRequest;
-    public function createInvoice(IInvoiceCreateRequest $request): IData;
-    public function fetchInvoice(string $id): IData;
+    public function createInvoice(IInvoiceCreateRequest $request): IDataObject;
+    public function fetchInvoice(string $id): IDataObject;
 
     public function newInvoiceLineFilter(): IInvoiceLineFilter;
-    public function fetchInvoiceLines(string $invoiceId, IInvoiceLineFilter $filter=null): IList;
+    public function fetchInvoiceLines(string $invoiceId, IInvoiceLineFilter $filter=null): IDataList;
 
     public function newInvoicePreviewRequest(string $customerId): IInvoicePreviewRequest;
-    public function previewInvoice(IInvoicePreviewRequest $request): IData;
+    public function previewInvoice(IInvoicePreviewRequest $request): IDataObject;
 
     public function newInvoiceUpdateRequest(string $id): IInvoiceUpdateRequest;
-    public function updateInvoice(IInvoiceUpdateRequest $request): IData;
+    public function updateInvoice(IInvoiceUpdateRequest $request): IDataObject;
 
-    public function payInvoice(string $id): IData;
+    public function payInvoice(string $id): IDataObject;
 
     public function newInvoiceFilter(string $customerId=null): IInvoiceFilter;
-    public function fetchInvoices(IInvoiceFilter $filter=null): IList;
+    public function fetchInvoices(IInvoiceFilter $filter=null): IDataList;
 */
 
 
@@ -246,44 +246,44 @@ interface IMediator extends spur\IHttpMediator {
 // Invoice items
 /*
     public function newInvoiceItemCreateRequest(string $customerId, mint\ICurrency $amount): IInvoiceItemCreateRequest;
-    public function createInvoiceItem(IInvoiceItemCreateRequest $request): IData;
-    public function fetchInvoiceItem(string $id): IData;
+    public function createInvoiceItem(IInvoiceItemCreateRequest $request): IDataObject;
+    public function fetchInvoiceItem(string $id): IDataObject;
 
     public function newInvoiceItemUpdateRequest(string $id): IInvoiceItemUpdateRequest;
-    public function updateInvoiceItem(IInvoiceItemUpdateRequest $request): IData;
+    public function updateInvoiceItem(IInvoiceItemUpdateRequest $request): IDataObject;
 
     public function deleteInvoiceItem(string $id);
 
     public function newInvoiceItemFilter(string $customerId=null): IInvoiceItemFilter;
-    public function fetchInvoiceItems(IInvoiceItemFilter $filter=null): IList;
+    public function fetchInvoiceItems(IInvoiceItemFilter $filter=null): IDataList;
 */
 
 
 
 // Plans
     public function newPlanCreateRequest(string $id, string $name, mint\ICurrency $amount, string $interval='month'): IPlanCreateRequest;
-    public function createPlan(IPlanCreateRequest $request): IData;
-    public function fetchPlan(string $id): IData;
+    public function createPlan(IPlanCreateRequest $request): IDataObject;
+    public function fetchPlan(string $id): IDataObject;
 
     public function newPlanUpdateRequest(string $id): IPlanUpdateRequest;
-    public function updatePlan(IPlanUpdateRequest $request): IData;
+    public function updatePlan(IPlanUpdateRequest $request): IDataObject;
 
     public function deletePlan(string $id);
 
     public function newPlanFilter(): IPlanFilter;
-    public function fetchPlans(IPlanFilter $filter=null): IList;
+    public function fetchPlans(IPlanFilter $filter=null): IDataList;
 
 
 
 // Subscriptions
     public function newSubscriptionCreateRequest(string $customerId, string $planId=null): ISubscriptionCreateRequest;
-    public function createSubscription(ISubscriptionCreateRequest $request): IData;
-    public function fetchSubscription(string $id): IData;
+    public function createSubscription(ISubscriptionCreateRequest $request): IDataObject;
+    public function fetchSubscription(string $id): IDataObject;
 
     public function newSubscriptionUpdateRequest(string $id): ISubscriptionUpdateRequest;
-    public function updateSubscription(ISubscriptionUpdateRequest $request): IData;
+    public function updateSubscription(ISubscriptionUpdateRequest $request): IDataObject;
 
-    public function cancelSubscription(string $id, bool $atPeriodEnd=false): IData;
+    public function cancelSubscription(string $id, bool $atPeriodEnd=false): IDataObject;
 
     public function newSubscriptionFilter(string $customerId=null): ISubscriptionFilter;
     public function fetchSubscriptions(ISubscriptionFilter $filter=null);
@@ -293,25 +293,25 @@ interface IMediator extends spur\IHttpMediator {
 // Subscription items
 /*
     public function newSubscriptionItemCreateRequest(string $subscriptionId, string $planId): ISubscriptionItemCreateRequest;
-    public function createSubscriptionItem(ISubscriptionItemCreateRequest $request): IData;
-    public function fetchSubscriptionId(string $id): IData;
+    public function createSubscriptionItem(ISubscriptionItemCreateRequest $request): IDataObject;
+    public function fetchSubscriptionId(string $id): IDataObject;
 
     public function newSubscriptionItemUpdateRequest(string $id): ISubscriptionItemUpdateRequest;
-    public function updateSubscriptionItem(ISubscriptionItemUpdateRequest $request): IData;
+    public function updateSubscriptionItem(ISubscriptionItemUpdateRequest $request): IDataObject;
 
     public function newSubscriptionItemDeleteRequest(string $id): ISubscriptionItemDeleteRequest;
-    public function deleteSubscriptionItem(ISubscriptionItemDeleteRequest $request): IData;
+    public function deleteSubscriptionItem(ISubscriptionItemDeleteRequest $request): IDataObject;
 
     public function newSubscriptionItemFilter(): ISubscriptionItemFilter;
-    public function fetchSubscriptionItems(string $subscriptionId, ISubscriptionItemFilter $filter=null): IList;
+    public function fetchSubscriptionItems(string $subscriptionId, ISubscriptionItemFilter $filter=null): IDataList;
 */
 }
 
 
 
 
-// Data
-interface IData extends core\collection\ITree {
+// DataObject
+interface IDataObject extends core\collection\ITree {
     public function setType(string $type);
     public function getType(): string;
 
@@ -321,7 +321,7 @@ interface IData extends core\collection\ITree {
 
 
 // List
-interface IList extends core\IArrayProvider, \IteratorAggregate {
+interface IDataList extends core\IArrayProvider, \IteratorAggregate {
     public function getTotal(): int;
     public function hasMore(): bool;
 

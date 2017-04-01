@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\mint;
 
-class DataObject extends core\collection\Tree implements IData {
+class DataObject extends core\collection\Tree implements IDataObject {
 
     protected $_type;
     protected $_request;
