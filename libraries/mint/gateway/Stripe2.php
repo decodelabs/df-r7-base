@@ -274,23 +274,31 @@ class Stripe2 extends Base implements
 
 // Plans
     public function getPlans(): array {
-        $data = $this->_mediator->fetchPlans(
-            $this->_mediator->newPlanFilter()
-                ->setLimit(100)
-        );
+        $cache = Stripe2_Cache::getInstance();
+        $key = $this->_getCacheKeyPrefix().'plans';
+        $output = $cache->get($key);
 
-        $output = [];
+        if($output === null) {
+            $data = $this->_mediator->fetchPlans(
+                $this->_mediator->newPlanFilter()
+                    ->setLimit(100)
+            );
 
-        foreach($data as $plan) {
-            $output[] = (new mint\subscription\Plan(
-                    $plan['id'],
-                    $plan['name'],
-                    $plan['amount'],
-                    $plan['interval']
-                ))
-                ->setIntervalCount($plan['interval_count'])
-                ->setStatementDescriptor($plan['statement_descriptor'])
-                ->setTrialPeriod($plan['trial_period_days']);
+            $output = [];
+
+            foreach($data as $plan) {
+                $output[] = (new mint\subscription\Plan(
+                        $plan['id'],
+                        $plan['name'],
+                        $plan['amount'],
+                        $plan['interval']
+                    ))
+                    ->setIntervalCount($plan['interval_count'])
+                    ->setStatementDescriptor($plan['statement_descriptor'])
+                    ->setTrialPeriod($plan['trial_period_days']);
+            }
+
+            $cache->set($key, $output);
         }
 
         return $output;
