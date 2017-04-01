@@ -73,6 +73,36 @@ class DataList extends core\collection\Tree implements IList {
     }
 
 
+// Serialize
+    protected function _getSerializeValues() {
+        $output = parent::_getSerializeValues();
+
+        $output['tl'] = $this->_total;
+
+        if($this->_startingAfter !== null) {
+            $output['sa'] = $this->_startingAfter;
+        }
+        if($this->_endingBefore !== null) {
+            $output['eb'] = $this->_endingBefore;
+        }
+
+        if($this->_filter) {
+            $output['fl'] = $this->_filter;
+        }
+
+        return $output;
+    }
+
+    protected function _setUnserializedValues(array $values) {
+        parent::_setUnserializedValues($values);
+
+        $this->_total = $values['tl'] ?? 0;
+        $this->_startingAfter  = $values['sa'] ?? null;
+        $this->_endingBefore = $values['eb'] ?? null;
+        $this->_filter = $values['fl'] ?? null;
+    }
+
+
 // Dump
     public function getDumpProperties() {
         $output = [

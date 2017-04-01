@@ -115,11 +115,18 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
             $output['vl'] = $this->_value;
         }
 
+        $class = get_class($this);
+
         if(!empty($this->_collection)) {
             $children = [];
 
             foreach($this->_collection as $key => $child) {
                 $children[$key] = $child->_getSerializeValues();
+                $childClass = get_class($child);
+
+                if($class != $childClass) {
+                    $children[$key]['cl'] = $childClass;
+                }
             }
 
             $output['cd'] = $children;
@@ -146,10 +153,11 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         }
 
         if(isset($values['cd'])) {
-            $class = get_class($this);
+            $parentClass = get_class($this);
 
             foreach($values['cd'] as $key => $childData) {
-                $child = new $class();
+                $ref = new \ReflectionClass($childData['cl'] ?? $parentClass);
+                $child = $ref->newInstanceWithoutConstructor();
 
                 if(!empty($childData)) {
                     $child->_setUnserializedValues($childData);

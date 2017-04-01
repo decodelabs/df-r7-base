@@ -44,6 +44,26 @@ class DataObject extends core\collection\Tree implements IData {
     }
 
 
+// Serialize
+    protected function _getSerializeValues() {
+        $output = parent::_getSerializeValues();
+
+        $output['ty'] = $this->_type;
+
+        if($this->_request) {
+            $output['re'] = $this->_request;
+        }
+
+        return $output;
+    }
+
+    protected function _setUnserializedValues(array $values) {
+        parent::_setUnserializedValues($values);
+
+        $this->_type = $values['ty'] ?? 'object';
+        $this->_request = $values['re'] ?? null;
+    }
+
 // Dump
     public function getDumpProperties() {
         $output = parent::getDumpProperties();
