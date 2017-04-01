@@ -1144,6 +1144,12 @@ class Mediator implements IMediator {
                 break;
         }
 
+        switch($code) {
+            case 404:
+                $errorType .= ',ENotFound';
+                break;
+        }
+
         return core\Error::{$errorType}([
             'message' => $message,
             'data' => $data,
