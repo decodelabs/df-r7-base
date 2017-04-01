@@ -152,6 +152,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
             try {
                 $output = unserialize($output);
             } catch(\Throwable $e) {
+                core\logException($e);
                 $file->unlink();
                 return $default;
             }

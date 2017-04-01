@@ -122,6 +122,7 @@ class Apcu implements core\cache\IBackend {
             try {
                 return unserialize($val[0]);
             } catch(\Throwable $e) {
+                core\logException($e);
                 return $default;
             }
         }
