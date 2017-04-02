@@ -182,7 +182,11 @@ class Auth extends Base {
             if($this->bindRecallKey($key)) {
                 return true;
             } else {
-                $this->manager->session->perpetuator->destroyRecallKey($this->manager->session);
+                try {
+                    $this->manager->session->perpetuator->destroyRecallKey($this->manager->session);
+                } catch(\Throwable $e) {
+                    core\logException($e);
+                }
             }
         }
 
