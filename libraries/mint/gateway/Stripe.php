@@ -14,6 +14,9 @@ class Stripe extends Base implements
     mint\ICaptureProviderGateway,
     mint\IRefundProviderGateway {
 
+    use mint\TCaptureProviderGateway;
+    use mint\TRefundProviderGateway;
+
     protected $_mediator;
 
     protected function __construct(core\collection\ITree $settings) {

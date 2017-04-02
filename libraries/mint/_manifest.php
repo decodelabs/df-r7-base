@@ -28,9 +28,37 @@ interface ICaptureProviderGateway extends IGateway {
     public function newChargeCapture(string $id);
 }
 
+trait TCaptureProviderGateway {
+
+    public function authorizeCharge(IChargeRequest $charge): IChargeResult {
+        if($charge instanceof ICustomerChargeRequest
+        && $this instanceof ICustomerTrackingCaptureProviderGateway) {
+            return $this->authorizeCustomerCharge($charge);
+        } else if($charge instanceof IStandaloneChargeRequest
+        && $this instanceof ICaptureProviderGateway) {
+            return $this->authorizeStandaloneCharge($charge);
+        } else {
+            throw core\Error::{'ECharge,EArgument'}([
+                'message' => 'Gateway doesn\'t support authorizing this type of charge',
+                'data' => $charge
+            ]);
+        }
+    }
+
+    public function newChargeCapture(string $id) {
+        return new mint\charge\Capture($id);
+    }
+}
+
 interface IRefundProviderGateway extends IGateway {
     public function refundCharge(IChargeRefund $refund);
     public function newChargeRefund(string $id, ICurrency $amount=null);
+}
+
+trait TRefundProviderGateway {
+    public function newChargeRefund(string $id, ICurrency $amount=null) {
+        return new mint\charge\Refund($id, $amount);
+    }
 }
 
 interface ICustomerTrackingGateway extends IGateway {
@@ -42,6 +70,13 @@ interface ICustomerTrackingGateway extends IGateway {
     //public function updateCustomer(ICustomer $customer);
     public function deleteCustomer(string $customerId);
     */
+}
+
+trait TCustomerTrackingGateway {
+
+    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null) {
+        return new mint\charge\Customer($amount, $card, $customerId, $description);
+    }
 }
 
 interface ICustomerTrackingCaptureProviderGateway extends ICaptureProviderGateway, ICustomerTrackingGateway {
@@ -66,11 +101,46 @@ interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
 }
 
 interface ISubscriptionPlanControllerGateway extends ISubscriptionProviderGateway {
-    /*
-    public function addPlan();
-    public function updatePlan();
-    public function deletePlan();
-    */
+    public function syncPlans(iterable $local=[]): \Generator;
+
+    public function addPlan(IPlan $plan);
+    public function updatePlan(IPlan $plan);
+    public function deletePlan(string $planId);
+    public function clearPlanCache();
+}
+
+trait TSubscriptionPlanControllerGateway {
+
+    public function syncPlans(iterable $local=[]): \Generator {
+        $planList = [];
+        $this->clearPlanCache();
+
+        foreach($this->getPlans() as $plan) {
+            $planList[$plan->getId()] = $plan;
+        }
+
+        foreach($local as $plan) {
+            if(isset($planList[$plan->getId()])) {
+                $remote = $planList[$plan->getId()];
+
+                if($plan->shouldUpdate($remote)) {
+                    $plan = $this->updatePlan($plan);
+                    $action = 'update';
+                } else {
+                    $action = 'match';
+                }
+
+                unset($planList[$plan->getId()]);
+                yield $action => $plan;
+            } else {
+                yield 'create' => $this->createPlan($plan);
+            }
+        }
+
+        foreach($planList as $plan) {
+            yield 'export' => $plan;
+        }
+    }
 }
 
 
@@ -193,8 +263,8 @@ interface ICustomer {
 
 // Plan
 interface IPlan {
-    public function setId(?string $id);
-    public function getId(): ?string;
+    public function setId(string $id);
+    public function getId(): string;
     public function setAmount(ICurrency $amount);
     public function getAmount(): ICurrency;
     public function setName(string $name);
@@ -205,8 +275,10 @@ interface IPlan {
     public function getIntervalCount();
     public function setStatementDescriptor(?string $descriptor);
     public function getStatementDescriptor(): ?string;
-    public function setTrialPeriod(?int $days);
-    public function getTrialPeriod(): ?int;
+    public function setTrialDays(?int $days);
+    public function getTrialDays(): ?int;
+
+    public function shouldUpdate(IPlan $plan): bool;
 }
 
 

@@ -17,21 +17,21 @@ class Plan implements mint\IPlan, core\IDumpable {
     protected $_interval;
     protected $_intervalCount;
     protected $_statementDescriptor;
-    protected $_trialPeriod;
+    protected $_trialDays;
 
-    public function __construct(?string $id, string $name, mint\ICurrency $amount, string $interval='month') {
+    public function __construct(string $id, string $name, mint\ICurrency $amount, string $interval='month') {
         $this->setId($id);
         $this->setName($name);
         $this->setAmount($amount);
         $this->setInterval($interval);
     }
 
-    public function setId(?string $id) {
+    public function setId(string $id) {
         $this->_id = $id;
         return $this;
     }
 
-    public function getId(): ?string {
+    public function getId(): string {
         return $this->_id;
     }
 
@@ -102,13 +102,33 @@ class Plan implements mint\IPlan, core\IDumpable {
         return $this->_statementDescriptor;
     }
 
-    public function setTrialPeriod(?int $days) {
-        $this->_trialPeriod = $days;
+    public function setTrialDays(?int $days) {
+        $this->_trialDays = $days;
         return $this;
     }
 
-    public function getTrialPeriod(): ?int {
-        return $this->_trialPeriod;
+    public function getTrialDays(): ?int {
+        return $this->_trialDays;
+    }
+
+
+// Updates
+    public function shouldUpdate(mint\IPlan $plan): bool {
+        if($this->_name !== $plan->getName()) {
+            return true;
+        }
+
+        if($this->_statementDescriptor !== null
+        && $this->_statementDescriptor !== $plan->getStatementDescriptor()) {
+            return true;
+        }
+
+        if($this->_trialDays !== null
+        && $this->_trialDays !== $plan->getTrialDays()) {
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -123,8 +143,8 @@ class Plan implements mint\IPlan, core\IDumpable {
         $output .= "\n";
         $output .= $this->_amount.' @ '.$this->_intervalCount.' '.$this->_interval;
 
-        if($this->_trialPeriod) {
-            $output .= ' ('.$this->_trialPeriod.' day trial)';
+        if($this->_trialDays) {
+            $output .= ' ('.$this->_trialDays.' day trial)';
         }
 
         return $output;

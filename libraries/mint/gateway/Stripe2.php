@@ -20,6 +20,11 @@ class Stripe2 extends Base implements
     mint\ISubscriptionPlanControllerGateway
      {
 
+    use mint\TCaptureProviderGateway;
+    use mint\TRefundProviderGateway;
+    use mint\TCustomerTrackingGateway;
+    use mint\TSubscriptionPlanControllerGateway;
+
     protected $_mediator;
 
     protected function __construct(core\collection\ITree $settings) {
@@ -279,23 +284,17 @@ class Stripe2 extends Base implements
         $output = $cache->get($key);
 
         if($output === null) {
-            $data = $this->_mediator->fetchPlans(
-                $this->_mediator->newPlanFilter()
-                    ->setLimit(100)
-            );
+            $data = $this->_execute(function() {
+                return $this->_mediator->fetchPlans(
+                    $this->_mediator->newPlanFilter()
+                        ->setLimit(100)
+                );
+            });
 
             $output = [];
 
             foreach($data as $plan) {
-                $output[] = (new mint\subscription\Plan(
-                        $plan['id'],
-                        $plan['name'],
-                        $plan['amount'],
-                        $plan['interval']
-                    ))
-                    ->setIntervalCount($plan['interval_count'])
-                    ->setStatementDescriptor($plan['statement_descriptor'])
-                    ->setTrialPeriod($plan['trial_period_days']);
+                $output[] = $this->_wrapPlan($plan);
             }
 
             $cache->set($key, $output);
@@ -305,9 +304,93 @@ class Stripe2 extends Base implements
     }
 
 
-// Cache
+    public function addPlan(mint\IPlan $plan) {
+        $data = $this->_execute(function() use($plan) {
+            return $this->_mediator->createPlan(
+                $this->_mediator->newPlanCreateRequest(
+                        $plan->getId(),
+                        $plan->getName(),
+                        $plan->getAmount(),
+                        $plan->getInterval()
+                    )
+                    ->setIntervalCount($plan->getIntervalCount())
+                    ->setStatementDescriptor($plan->getStatementDescriptor())
+                    ->setTrialDays($plan->getTrialDays())
+            );
+        });
+
+        $this->clearPlanCache();
+        return $this->_wrapPlan($data);
+    }
+
+    public function updatePlan(mint\IPlan $plan) {
+        $data = $this->_execute(function() use($plan) {
+            return $this->_mediator->updatePlan(
+                $this->_mediator->newPlanUpdateRequest($plan->getId())
+                    ->setName($plan->getName())
+                    ->setStatementDescriptor($plan->getStatementDescriptor())
+                    ->setTrialDays($plan->getTrialDays())
+            );
+        });
+
+        $this->clearPlanCache();
+        return $this->_wrapPlan($data);
+    }
+
+    public function deletePlan(string $planId) {
+        $this->_execute(function() use($planId) {
+            $this->_mediator->deletePlan($planId);
+        });
+
+        $this->clearPlanCache();
+        return $this;
+    }
+
+    protected function _wrapPlan(spur\payment\stripe2\IDataObject $plan) {
+        return (new mint\subscription\Plan(
+                $plan['id'],
+                $plan['name'],
+                $plan['amount'],
+                $plan['interval']
+            ))
+            ->setIntervalCount($plan['interval_count'])
+            ->setStatementDescriptor($plan['statement_descriptor'])
+            ->setTrialDays($plan['trial_period_days']);
+    }
+
+    public function clearPlanCache() {
+        $cache = Stripe2_Cache::getInstance();
+        $key = $this->_getCacheKeyPrefix().'plans';
+        $cache->remove($key);
+        return $this;
+    }
+
+
+
+// Helpers
     protected function _getCacheKeyPrefix() {
         return $this->_mediator->getApiKey().'-';
+    }
+
+    protected function _execute(callable $func) {
+        try {
+            return $func();
+        } catch(spur\payment\stripe2\EApi $e) {
+            $type = 'EApi';
+
+            if($e instanceof core\ENotFound) {
+                $type .= ',ENotFound';
+            }
+
+            if($e instanceof core\ETransport) {
+                $type .= ',ETransport';
+            }
+
+            throw core\Error::{$type}([
+                'message' => $e->getMessage(),
+                'previous' => $e
+            ]);
+        }
     }
 }
 

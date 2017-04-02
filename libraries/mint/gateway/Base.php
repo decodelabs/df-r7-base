@@ -47,31 +47,4 @@ abstract class Base implements mint\IGateway {
     public function newStandaloneCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description=null, string $email=null) {
         return new mint\charge\Standalone($amount, $card, $description, $email);
     }
-
-    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null) {
-        return new mint\charge\Customer($amount, $card, $customerId, $description);
-    }
-
-    public function authorizeCharge(mint\IChargeRequest $charge): mint\IChargeResult {
-        if($charge instanceof mint\ICustomerChargeRequest
-        && $this instanceof mint\ICustomerTrackingCaptureProviderGateway) {
-            return $this->authorizeCustomerCharge($charge);
-        } else if($charge instanceof mint\IStandaloneChargeRequest
-        && $this instanceof mint\ICaptureProviderGateway) {
-            return $this->authorizeStandaloneCharge($charge);
-        } else {
-            throw core\Error::{'mint/ECharge,EArgument'}([
-                'message' => 'Gateway doesn\'t support authorizing this type of charge',
-                'data' => $charge
-            ]);
-        }
-    }
-
-    public function newChargeCapture(string $id) {
-        return new mint\charge\Capture($id);
-    }
-
-    public function newChargeRefund(string $id, mint\ICurrency $amount=null) {
-        return new mint\charge\Refund($id, $amount);
-    }
 }
