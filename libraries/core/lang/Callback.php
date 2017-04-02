@@ -15,7 +15,7 @@ class Callback implements ICallback, core\IDumpable {
     protected $_mode;
     protected $_extraArgs = [];
 
-    public static function getCallableId(Callable $callable) {
+    public static function getCallableId(callable $callable) {
         $output = '';
 
         if(is_array($callable)) {

@@ -133,7 +133,7 @@ abstract class Task extends Base implements ITaskNode {
 
 
 // Interaction
-    protected function _askFor($label, Callable $validator, $default=null, $check=false) {
+    protected function _askFor($label, callable $validator, $default=null, $check=false) {
         do {
             $this->io->write('>> '.$label.': ');
 

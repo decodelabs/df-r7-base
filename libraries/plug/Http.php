@@ -278,7 +278,7 @@ class Http implements arch\IDirectoryHelper {
         return new link\http\response\Generator($contentType, $sender);
     }
 
-    public function csvGenerator($fileName, Callable $generator) {
+    public function csvGenerator($fileName, callable $generator) {
         return $this->generator('text/csv', new flex\csv\Builder($generator))
             ->setAttachmentFileName($fileName);
     }

@@ -2044,7 +2044,7 @@ trait TQuery_Read {
         return $output;
     }
 
-    protected function _createBatchIterator($res, IField $keyField=null, IField $valField=null, $forFetch=false, Callable $formatter=null) {
+    protected function _createBatchIterator($res, IField $keyField=null, IField $valField=null, $forFetch=false, callable $formatter=null) {
         $output = new BatchIterator($this->getSource(), $res, $this->getOutputManifest());
 
         $output->isForFetch($forFetch)

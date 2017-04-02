@@ -130,7 +130,7 @@ class BatchIterator implements IBatchIterator {
         return $this->_valField;
     }
 
-    public function setFormatter(Callable $formatter=null) {
+    public function setFormatter(callable $formatter=null) {
         $this->_formatter = $formatter;
         return $this;
     }

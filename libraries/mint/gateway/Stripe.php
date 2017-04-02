@@ -82,7 +82,7 @@ class Stripe extends Base implements
         });
     }
 
-    protected function _submitCharge(Callable $handler) {
+    protected function _submitCharge(callable $handler) {
         $result = new mint\charge\Result();
 
         try {

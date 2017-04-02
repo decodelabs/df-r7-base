@@ -137,7 +137,7 @@ class UnitNamespace extends Base {
         return $declaration;
     }
 
-    public function processBlockDeclaration(Callable $bodyHandler) {
+    public function processBlockDeclaration(callable $bodyHandler) {
         $comment = $this->parser->getLastCommentBody();
 
         $this->parser->extractMatch('keyword', null, $this->_keyword);

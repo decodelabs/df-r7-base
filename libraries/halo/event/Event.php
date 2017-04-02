@@ -245,7 +245,7 @@ class Event extends Base implements core\IDumpable {
 
 
 // Helpers
-    public function _registerEvent($target, $flags, $timeout, Callable $callback, $arg=null) {
+    public function _registerEvent($target, $flags, $timeout, callable $callback, $arg=null) {
         if($timeout <= 0) {
             $timeout = null;
         } else {

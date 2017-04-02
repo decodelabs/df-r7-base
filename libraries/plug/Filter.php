@@ -37,7 +37,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
 // Query access
     public function offsetSet($key, $value) {}
 
-    public function offsetGet($key): Callable {
+    public function offsetGet($key): callable {
         if($nullable = substr($key, 0, 1) == '?') {
             $key = substr($key, 1);
         }
@@ -268,7 +268,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
         ]);
     }
 
-    protected function _check(&$value, $option, Callable $callback) {
+    protected function _check(&$value, $option, callable $callback) {
         if($option === null) {
             return;
         }

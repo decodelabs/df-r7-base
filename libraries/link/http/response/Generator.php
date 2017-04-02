@@ -23,7 +23,7 @@ class Generator extends Base implements link\http\IGeneratorResponse {
             $sender->setChunkReceiver($this);
         } else if(!is_callable($this->_sender)) {
             throw new link\http\RuntimeException(
-                'Generator sender must either be a core\\io\\IChunkSender or Callable'
+                'Generator sender must either be a core\\io\\IChunkSender or callable'
             );
         }
 

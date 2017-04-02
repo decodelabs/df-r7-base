@@ -53,7 +53,7 @@ class Initiator implements IInitiator {
         return new self();
     }
 
-    public function setApplicator(Callable $applicator=null) {
+    public function setApplicator(callable $applicator=null) {
         $this->_applicator = $applicator;
         return $this;
     }

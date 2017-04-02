@@ -1006,7 +1006,7 @@ class ArrayManipulator implements IArrayManipulator {
 
 
 // Output
-    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, array $nestFields=null, $forFetch=false, Callable $formatter=null) {
+    public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, array $nestFields=null, $forFetch=false, callable $formatter=null) {
         if(empty($this->_rows)) {
             return $this;
         }

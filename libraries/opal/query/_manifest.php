@@ -57,7 +57,7 @@ interface IInitiator extends mesh\job\ITransactionAware {
     public function getParentQuery();
     public function getJoinType();
 
-    public function setApplicator(Callable $applicator=null);
+    public function setApplicator(callable $applicator=null);
     public function getApplicator();
 
     public function from($sourceAdapter, $alias=null);
@@ -349,7 +349,7 @@ interface ICorrelationQuery extends
     IWhereClauseFactory,
     ILimitableQuery,
     IOffsettableQuery {
-    public function setApplicator(Callable $applicator=null);
+    public function setApplicator(callable $applicator=null);
     public function getApplicator();
     public function getFieldAlias();
     public function endCorrelation($fieldAlias=null);
@@ -784,7 +784,7 @@ interface ISourceManager extends mesh\job\ITransactionAware {
     public function countSourceAdapters();
     public function canQueryLocally();
 
-    public function executeQuery(IQuery $query, Callable $executor);
+    public function executeQuery(IQuery $query, callable $executor);
 
     public function extrapolateSourceAdapter($adapter);
     public function extrapolateOutputField(ISource $source, $name);
@@ -1090,7 +1090,7 @@ interface IBatchIterator extends core\collection\ICollection, \Iterator {
     public function setListValueField(IField $field=null);
     public function getListValueField();
 
-    public function setFormatter(Callable $formatter=null);
+    public function setFormatter(callable $formatter=null);
     public function getFormatter();
 
     public function setNestFields(IField ...$fields);

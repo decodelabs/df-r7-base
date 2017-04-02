@@ -72,7 +72,7 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
 
 
 // Applicator
-    public function setApplicator(Callable $applicator=null) {
+    public function setApplicator(callable $applicator=null) {
         $this->_applicator = $applicator;
         return $this;
     }

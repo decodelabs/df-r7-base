@@ -141,7 +141,7 @@ class Stripe2 extends Base implements
 
 
 // Charge handler
-    protected function _submitCharge(Callable $handler) {
+    protected function _submitCharge(callable $handler) {
         $result = new mint\charge\Result();
 
         try {

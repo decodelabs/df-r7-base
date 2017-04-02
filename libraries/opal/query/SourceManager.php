@@ -512,7 +512,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return false;
     }
 
-    public function executeQuery(IQuery $query, Callable $executor) {
+    public function executeQuery(IQuery $query, callable $executor) {
         $adapter = $query->getSource()->getAdapter();
         $count = 0;
         $exceptions = [];

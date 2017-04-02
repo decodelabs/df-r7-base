@@ -10,10 +10,10 @@ use df\core;
 use df\opal;
 
 class Custom extends Base implements core\validate\ICustomField {
-    
+
     protected $_validator;
 
-    public function setValidator(Callable $validator) {
+    public function setValidator(callable $validator) {
         $this->_validator = core\lang\Callback::factory($validator);
         return $this;
     }
@@ -25,11 +25,11 @@ class Custom extends Base implements core\validate\ICustomField {
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         $value = $this->_sanitizeValue($value);
-        
+
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
         }
-        
+
         $this->_validator->invoke($node, $value);
         return $this->_finalize($node, $value);
     }

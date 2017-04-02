@@ -172,7 +172,7 @@ class Base implements core\ILoader {
         }
     }
 
-    public function lookupFileListRecursive(string $path, array $extensions=null, Callable $folderCheck=null): \Generator {
+    public function lookupFileListRecursive(string $path, array $extensions=null, callable $folderCheck=null): \Generator {
         $path = core\uri\Path::normalizeLocal($path);
 
         if(!($folderCheck && !core\lang\Callback($folderCheck, $path))) {

@@ -195,7 +195,7 @@ interface ILoader {
     public function findFile(string $path): ?string;
     public function getFileSearchPaths(string $path): array;
     public function lookupFileList(string $path, array $extensions=null): \Generator;
-    public function lookupFileListRecursive(string $path, array $extensions=null, Callable $folderCheck=null): \Generator;
+    public function lookupFileListRecursive(string $path, array $extensions=null, callable $folderCheck=null): \Generator;
     public function lookupClassList(string $path, bool $test=true): \Generator;
     public function lookupFolderList(string $path): \Generator;
     public function lookupLibraryList(): array;

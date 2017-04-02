@@ -514,7 +514,7 @@ interface ICurrencyField extends IField, IRangeField {
 }
 
 interface ICustomField extends IField {
-    public function setValidator(Callable $validator);
+    public function setValidator(callable $validator);
     public function getValidator();
 }
 
