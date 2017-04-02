@@ -23,6 +23,7 @@ class Stripe2 extends Base implements
     use mint\TCaptureProviderGateway;
     use mint\TRefundProviderGateway;
     use mint\TCustomerTrackingGateway;
+    use mint\TSubscriptionProviderGateway;
     use mint\TSubscriptionPlanControllerGateway;
 
     protected $_mediator;
@@ -59,171 +60,82 @@ class Stripe2 extends Base implements
 
 
 // Direct charge
-    public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): mint\IChargeResult {
-        $request = $this->_mediator->newChargeCreateRequest(
-                $charge->getAmount(),
-                $charge->getDescription()
-            )
-            ->setCard($charge->getCard())
-            ->setEmailAddress($charge->getEmailAddress());
-
-        return $this->_submitCharge(function() use($request) {
-            $charge = $this->_mediator->createCharge($request);
-            return $charge['id'];
-        });
+    public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): string {
+        return $this->_execute(function() use($charge) {
+            return $this->_mediator->createCharge(
+                $this->_mediator->newChargeCreateRequest(
+                        $charge->getAmount(),
+                        $charge->getDescription()
+                    )
+                    ->setCard($charge->getCard())
+                    ->setEmailAddress($charge->getEmailAddress())
+            )['id'];
+        }, 'ECharge');
     }
 
-    public function submitCustomerCharge(mint\ICustomerChargeRequest $charge): mint\IChargeResult {
-        $request = $this->_mediator->newChargeCreateRequest(
-                $charge->getAmount(),
-                $charge->getDescription()
-            )
-            ->setCard($charge->getCard())
-            ->setCustomerId($charge->getCustomerId())
-            ->setEmailAddress($charge->getEmailAddress());
-
-        return $this->_submitCharge(function() use($request) {
-            $charge = $this->_mediator->createCharge($request);
-            return $charge['id'];
-        });
+    public function submitCustomerCharge(mint\ICustomerChargeRequest $charge): string {
+        return $this->_execute(function() use($charge) {
+            return $this->_mediator->createCharge(
+                $this->_mediator->newChargeCreateRequest(
+                        $charge->getAmount(),
+                        $charge->getDescription()
+                    )
+                    ->setCard($charge->getCard())
+                    ->setCustomerId($charge->getCustomerId())
+                    ->setEmailAddress($charge->getEmailAddress())
+            )['id'];
+        }, 'ECharge');
     }
 
 
 // Authorize / capture
-    public function authorizeStandaloneCharge(mint\IStandaloneChargeRequest $charge): mint\IChargeResult {
-        $request = $this->_mediator->newChargeCreateRequest(
-                $charge->getAmount(),
-                $charge->getDescription()
-            )
-            ->setCard($charge->getCard())
-            ->setEmailAddress($charge->getEmailAddress())
-            ->shouldCapture(false);
-
-        return $this->_submitCharge(function() use($request) {
-            $charge = $this->_mediator->createCharge($request);
-            return $charge['id'];
-        });
+    public function authorizeStandaloneCharge(mint\IStandaloneChargeRequest $charge): string {
+        return $this->_execute(function() use($charge) {
+            return $this->_mediator->createCharge(
+                $this->_mediator->newChargeCreateRequest(
+                        $charge->getAmount(),
+                        $charge->getDescription()
+                    )
+                    ->setCard($charge->getCard())
+                    ->setEmailAddress($charge->getEmailAddress())
+                    ->shouldCapture(false)
+            )['id'];
+        }, 'ECharge');
     }
 
-    public function authorizeCustomerCharge(mint\ICustomerChargeRequest $charge): mint\IChargeResult {
-        $request = $this->_mediator->newChargeCreateRequest(
-                $charge->getAmount(),
-                $charge->getDescription()
-            )
-            ->setCard($charge->getCard())
-            ->setCustomerId($charge->getCustomerId())
-            ->setEmailAddress($charge->getEmailAddress())
-            ->shouldCapture(false);
-
-        return $this->_submitCharge(function() use($request) {
-            $charge = $this->_mediator->createCharge($request);
-            return $charge['id'];
-        });
+    public function authorizeCustomerCharge(mint\ICustomerChargeRequest $charge): string {
+        return $this->_execute(function() use($charge) {
+            return $this->_mediator->createCharge(
+                $this->_mediator->newChargeCreateRequest(
+                        $charge->getAmount(),
+                        $charge->getDescription()
+                    )
+                    ->setCard($charge->getCard())
+                    ->setCustomerId($charge->getCustomerId())
+                    ->setEmailAddress($charge->getEmailAddress())
+                    ->shouldCapture(false)
+            )['id'];
+        }, 'ECharge');
     }
 
-
-    public function captureCharge(mint\IChargeCapture $charge) {
-        $request = $this->_mediator->newChargeCaptureRequest($charge->getId());
-
-        return $this->_submitCharge(function() use($request) {
-            $charge = $this->_mediator->captureCharge($request);
-            return $charge['id'];
-        });
+    public function captureCharge(mint\IChargeCapture $charge): string {
+        return $this->_execute(function() use($charge) {
+            return $this->_mediator->captureCharge(
+                $this->_mediator->newChargeCaptureRequest($charge->getId())
+            )['id'];
+        }, 'ECharge,ECapture');
     }
 
 
 
 // Refund
-    public function refundCharge(mint\IChargeRefund $refund) {
-        $request = $this->_mediator->newRefundCreateRequest($refund->getId())
-            ->setAmount($refund->getAmount());
-
-        return $this->_submitCharge(function() use($request) {
-            $refund = $this->_mediator->createRefund($request);
-            return $refund['id'];
-        });
-    }
-
-
-// Charge handler
-    protected function _submitCharge(callable $handler) {
-        $result = new mint\charge\Result();
-
-        try {
-            $chargeId = $handler();
-        } catch(spur\payment\stripe2\ECard $e) {
-            $data = $e->getData();
-
-            $result->isSuccessful(false);
-            $result->setMessage($e->getMessage());
-            $result->setChargeId($data['charge'] ?? null);
-
-            switch($data['code'] ?? null) {
-                case 'invalid_number':
-                case 'incorrect_number':
-                    $result->addInvalidFields('number');
-                    break;
-
-                case 'invalid_expiry_month':
-                    $result->addInvalidFields('expiryMonth');
-                    break;
-
-                case 'invalid_expiry_year':
-                    $result->addInvalidFields('expiryYear');
-                    break;
-
-                case 'invalid_cvc':
-                case 'incorrect_cvc':
-                    $result->addInvalidFields('cvc');
-                    break;
-
-                case 'invalid_swipe_data':
-                    // hmm
-                    break;
-
-                case 'expired_card':
-                    $result->isCardExpired(true);
-                    break;
-
-                case 'incorrect_zip':
-                    $result->addInvalidFields('billingAddress');
-                    break;
-
-                case 'card_declined':
-                    // meh, already covered
-                    break;
-
-                case 'missing':
-                    $result->isCardUnavailable(true);
-                    break;
-
-                case 'processing_error':
-                    $result->isApiFailure(true);
-                    break;
-            }
-
-            return $result;
-        } catch(spur\payment\stripe2\EApi $e) {
-            core\logException($e);
-
-            $result->isSuccessful(false);
-            $result->isApiFailure(true);
-            $result->setChargeId($data['charge'] ?? null);
-
-            if($e instanceof spur\payment\stripe\ETransport) {
-                $result->setMessage('Unable to process your card details at this time');
-            } else {
-                $result->setMessage($e->getMessage());
-            }
-
-            return $result;
-        }
-
-        $result->setChargeId($chargeId);
-        $result->isSuccessful(true);
-        $result->isCardAccepted(true);
-
-        return $result;
+    public function refundCharge(mint\IChargeRefund $refund): string {
+        return $this->_execute(function() use($refund) {
+            return $this->_mediator->createRefund(
+                $this->_mediator->newRefundCreateRequest($refund->getId())
+                    ->setAmount($refund->getAmount())
+            )['charge'];
+        }, 'ECharge,ERefund');
     }
 
 
@@ -232,18 +144,17 @@ class Stripe2 extends Base implements
 
 // Customers
     public function fetchCustomer(string $customerId): mint\ICustomer {
-        $data = $this->_execute(function() use($customerId) {
-            return $this->_mediator->fetchCustomer($customerId);
+        return $this->_execute(function() use($customerId) {
+            $data = $this->_mediator->fetchCustomer($customerId);
+            return $this->_wrapCustomer($data);
         }, 'ECustomer');
-
-        return $this->_wrapCustomer($data);
     }
 
     public function addCustomer(mint\ICustomer $customer): mint\ICustomer {
-        $data = $this->_execute(function() use($customer) {
+        return $this->_execute(function() use($customer) {
             $metadata = ($id = $customer->getUserId()) ? ['userId' => (string)$id] : null;
 
-            return $this->_mediator->createCustomer(
+            $data = $this->_mediator->createCustomer(
                 $this->_mediator->newCustomerCreateRequest(
                         $customer->getEmailAddress(),
                         $customer->getDescription()
@@ -252,9 +163,9 @@ class Stripe2 extends Base implements
                     ->setMetadata($metadata)
                     // shipping
             );
-        }, 'ECustomer');
 
-        return $this->_wrapCustomer($data);
+            return $this->_wrapCustomer($data);
+        }, 'ECustomer');
     }
 
     public function updateCustomer(mint\ICustomer $customer): mint\ICustomer {
@@ -265,10 +176,10 @@ class Stripe2 extends Base implements
             ]);
         }
 
-        $data = $this->_execute(function() use($customer) {
+        return $this->_execute(function() use($customer) {
             $metadata = ($id = $customer->getUserId()) ? ['userId' => (string)$id] : null;
 
-            return $this->_mediator->updateCustomer(
+            $data = $this->_mediator->updateCustomer(
                 $this->_mediator->newCustomerUpdateRequest($customer->getId())
                     ->setEmailAddress($customer->getEmailAddress())
                     ->setDescription($customer->getDescription())
@@ -276,9 +187,9 @@ class Stripe2 extends Base implements
                     ->setMetadata($metadata)
                     // shipping
             );
-        }, 'ECustomer');
 
-        return $this->_wrapCustomer($data);
+            return $this->_wrapCustomer($data);
+        }, 'ECustomer');
     }
 
     public function deleteCustomer(string $customerId) {
@@ -290,7 +201,7 @@ class Stripe2 extends Base implements
     }
 
     protected function _wrapCustomer(spur\payment\stripe2\IDataObject $customer): mint\ICustomer {
-        return (new mint\subscription\Customer(
+        return (new mint\Customer(
                 $customer['id'],
                 $customer['email'],
                 $customer['description']
@@ -331,9 +242,9 @@ class Stripe2 extends Base implements
     }
 
 
-    public function addPlan(mint\IPlan $plan) {
-        $data = $this->_execute(function() use($plan) {
-            return $this->_mediator->createPlan(
+    public function addPlan(mint\IPlan $plan): mint\IPlan {
+        return $this->_execute(function() use($plan) {
+            $data = $this->_mediator->createPlan(
                 $this->_mediator->newPlanCreateRequest(
                         $plan->getId(),
                         $plan->getName(),
@@ -344,37 +255,37 @@ class Stripe2 extends Base implements
                     ->setStatementDescriptor($plan->getStatementDescriptor())
                     ->setTrialDays($plan->getTrialDays())
             );
-        }, 'EPlan');
 
-        $this->clearPlanCache();
-        return $this->_wrapPlan($data);
+            $this->clearPlanCache();
+            return $this->_wrapPlan($data);
+        }, 'EPlan');
     }
 
-    public function updatePlan(mint\IPlan $plan) {
-        $data = $this->_execute(function() use($plan) {
-            return $this->_mediator->updatePlan(
+    public function updatePlan(mint\IPlan $plan): mint\IPlan {
+        return $this->_execute(function() use($plan) {
+            $data = $this->_mediator->updatePlan(
                 $this->_mediator->newPlanUpdateRequest($plan->getId())
                     ->setName($plan->getName())
                     ->setStatementDescriptor($plan->getStatementDescriptor())
                     ->setTrialDays($plan->getTrialDays())
             );
-        }, 'EPlan');
 
-        $this->clearPlanCache();
-        return $this->_wrapPlan($data);
+            $this->clearPlanCache();
+            return $this->_wrapPlan($data);
+        }, 'EPlan');
     }
 
     public function deletePlan(string $planId) {
         $this->_execute(function() use($planId) {
             $this->_mediator->deletePlan($planId);
+            $this->clearPlanCache();
         }, 'mint/EPlan');
 
-        $this->clearPlanCache();
         return $this;
     }
 
     protected function _wrapPlan(spur\payment\stripe2\IDataObject $plan): mint\IPlan {
-        return (new mint\subscription\Plan(
+        return (new mint\Plan(
                 $plan['id'],
                 $plan['name'],
                 $plan['amount'],
@@ -393,6 +304,24 @@ class Stripe2 extends Base implements
     }
 
 
+// Subscriptions
+    public function subscribeCustomer(mint\ISubscription $subscription): mint\ISubscription {
+        core\stub($subscription);
+    }
+
+    public function updateSubscription(mint\ISubscription $subscription): mint\ISubscription {
+        core\stub($subscription);
+    }
+
+    public function endSubscriptionTrial(int $inDays=null) {
+        core\stub($inDays);
+    }
+
+    public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): mint\ISubscription {
+        core\stub($subscriptionId, $atPeriodEnd);
+    }
+
+
 
 // Helpers
     protected function _getCacheKeyPrefix() {
@@ -403,17 +332,63 @@ class Stripe2 extends Base implements
         try {
             return $func();
         } catch(spur\payment\stripe2\EApi $e) {
-            $type = 'EApi,'.$eType;
+            $types = ['EApi'];
 
-            if($e instanceof core\ENotFound) {
-                $type .= ',ENotFound';
+            if(!empty($eType)) {
+                $types[] = $eType;
             }
 
-            if($e instanceof core\ETransport) {
-                $type .= ',ETransport';
+            if($e instanceof spur\payment\stripe2\ENotFound) {
+                $types[] = 'ENotFound';
             }
 
-            throw core\Error::{$type}([
+            if($e instanceof spur\payment\stripe2\ETransport) {
+                $types[] = 'ETransport';
+            }
+
+            if($e instanceof spur\payment\stripe2\ECard) {
+                $types[] = 'ECard';
+
+                switch($data['code'] ?? null) {
+                    case 'invalid_number':
+                    case 'incorrect_number':
+                        $types[] = 'ECardNumber';
+                        break;
+
+                    case 'invalid_expiry_month':
+                    case 'invalid_expiry_year':
+                    case 'expired_card':
+                        $types[] = 'ECardExpiry';
+                        break;
+
+                    case 'invalid_cvc':
+                    case 'incorrect_cvc':
+                        $types[] = 'ECardCvc';
+                        break;
+
+                    case 'invalid_swipe_data':
+                        // hmm
+                        break;
+
+                    case 'incorrect_zip':
+                        $types[] = 'ECardAddress';
+                        break;
+
+                    case 'card_declined':
+                        // meh, already covered
+                        break;
+
+                    case 'missing':
+                        $types[] = 'ENotFound';
+                        $types[] = 'ECardMissing';
+                        break;
+
+                    case 'processing_error':
+                        break;
+                }
+            }
+
+            throw core\Error::{implode(',', array_unique($types))}([
                 'message' => $e->getMessage(),
                 'previous' => $e
             ]);

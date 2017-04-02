@@ -15,7 +15,7 @@ class PaypalExpressCheckout extends Base {
         return [];
     }
 
-    public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): mint\IChargeResult {
+    public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): string {
         core\stub($charge);
     }
 }

@@ -16,21 +16,21 @@ interface IGateway {
     public function getSupportedCurrencies(): array;
     public function isCurrencySupported($code): bool;
 
-    public function submitCharge(IChargeRequest $charge): mint\IChargeResult;
-    public function submitStandaloneCharge(IStandaloneChargeRequest $charge): IChargeResult;
-    public function newStandaloneCharge(ICurrency $amount, ICreditCardReference $card, string $description=null, string $email=null);
+    public function submitCharge(IChargeRequest $charge): string;
+    public function submitStandaloneCharge(IStandaloneChargeRequest $charge): string;
+    public function newStandaloneCharge(ICurrency $amount, ICreditCardReference $card, string $description=null, string $email=null): IStandaloneChargeRequest;
 }
 
 interface ICaptureProviderGateway extends IGateway {
-    public function authorizeCharge(IChargeRequest $charge): IChargeResult;
-    public function authorizeStandaloneCharge(IStandaloneChargeRequest $charge): IChargeResult;
-    public function captureCharge(IChargeCapture $charge);
-    public function newChargeCapture(string $id);
+    public function authorizeCharge(IChargeRequest $charge): string;
+    public function authorizeStandaloneCharge(IStandaloneChargeRequest $charge): string;
+    public function captureCharge(IChargeCapture $charge): string;
+    public function newChargeCapture(string $id): IChargeCapture;
 }
 
 trait TCaptureProviderGateway {
 
-    public function authorizeCharge(IChargeRequest $charge): IChargeResult {
+    public function authorizeCharge(IChargeRequest $charge): string {
         if($charge instanceof ICustomerChargeRequest
         && $this instanceof ICustomerTrackingCaptureProviderGateway) {
             return $this->authorizeCustomerCharge($charge);
@@ -45,27 +45,27 @@ trait TCaptureProviderGateway {
         }
     }
 
-    public function newChargeCapture(string $id) {
+    public function newChargeCapture(string $id): IChargeCapture {
         return new mint\charge\Capture($id);
     }
 }
 
 interface IRefundProviderGateway extends IGateway {
-    public function refundCharge(IChargeRefund $refund);
-    public function newChargeRefund(string $id, ICurrency $amount=null);
+    public function refundCharge(IChargeRefund $refund): string;
+    public function newChargeRefund(string $id, ICurrency $amount=null): IChargeRefund;
 }
 
 trait TRefundProviderGateway {
-    public function newChargeRefund(string $id, ICurrency $amount=null) {
+    public function newChargeRefund(string $id, ICurrency $amount=null): IChargeRefund {
         return new mint\charge\Refund($id, $amount);
     }
 }
 
 interface ICustomerTrackingGateway extends IGateway {
-    public function submitCustomerCharge(ICustomerChargeRequest $charge): IChargeResult;
-    public function newCustomerCharge(ICurrency $amount, ICreditCardReference $card, string $customerId, string $description=null);
+    public function submitCustomerCharge(ICustomerChargeRequest $charge): string;
+    public function newCustomerCharge(ICurrency $amount, ICreditCardReference $card, string $customerId, string $description=null): ICustomerChargeRequest;
 
-    public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null);
+    public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null): ICustomer;
     public function fetchCustomer(string $id): ICustomer;
 
     public function addCustomer(ICustomer $customer): ICustomer;
@@ -75,17 +75,17 @@ interface ICustomerTrackingGateway extends IGateway {
 
 trait TCustomerTrackingGateway {
 
-    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null) {
+    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null): ICustomerChargeRequest {
         return new mint\charge\Customer($amount, $card, $customerId, $description);
     }
 
-    public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null) {
-        return new mint\subscription\Customer(null, $email, $description, $card);
+    public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null): ICustomer {
+        return new mint\Customer(null, $email, $description, $card);
     }
 }
 
 interface ICustomerTrackingCaptureProviderGateway extends ICaptureProviderGateway, ICustomerTrackingGateway {
-    public function authorizeCustomerCharge(ICustomerChargeRequest $charge): IChargeResult;
+    public function authorizeCustomerCharge(ICustomerChargeRequest $charge): string;
 }
 
 interface ICardStoreGateway extends ICustomerTrackingGateway {
@@ -98,19 +98,27 @@ interface ICardStoreGateway extends ICustomerTrackingGateway {
 
 interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
     public function getPlans(): array;
+    public function newSubscription(string $customerId, string $planId): ISubscription;
 
-    /*
-    public function subscribeCustomer(string $planId, string $customerId);
-    public function unsubscribeCustomer(string $planId, string $customerId);
-    */
+    public function subscribeCustomer(ISubscription $subscription): ISubscription;
+    public function updateSubscription(ISubscription $subscription): ISubscription;
+    public function endSubscriptionTrial(int $inDays=null);
+    public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): ISubscription;
+}
+
+trait TSubscriptionProviderGateway {
+
+    public function newSubscription(string $customerId, string $planId): ISubscription {
+        return new mint\Subscription($customerId, $planId);
+    }
 }
 
 interface ISubscriptionPlanControllerGateway extends ISubscriptionProviderGateway {
     public function syncPlans(iterable $local=[]): \Generator;
     public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval='month');
 
-    public function addPlan(IPlan $plan);
-    public function updatePlan(IPlan $plan);
+    public function addPlan(IPlan $plan): IPlan;
+    public function updatePlan(IPlan $plan): IPlan;
     public function deletePlan(string $planId);
     public function clearPlanCache();
 }
@@ -149,7 +157,7 @@ trait TSubscriptionPlanControllerGateway {
     }
 
     public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval='month') {
-        return new mint\subscription\Plan($id, $name, $amount, $interval);
+        return new mint\Plan($id, $name, $amount, $interval);
     }
 }
 
@@ -232,26 +240,6 @@ interface IChargeCapture {
     public function getId(): string;
 }
 
-interface IChargeResult {
-    public function isSuccessful(bool $flag=null);
-    public function isCardAccepted(bool $flag=null);
-    public function isCardExpired(bool $flag=null);
-    public function isCardUnavailable(bool $flag=null);
-    public function isApiFailure(bool $flag=null);
-
-    public function setMessage(?string $message);
-    public function getMessage(): ?string;
-
-    public function setInvalidFields(string ...$fields);
-    public function addInvalidFields(string ...$fields);
-    public function getInvalidFields(): array;
-
-    public function setChargeId(?string $id);
-    public function getChargeId(): ?string;
-
-    public function setTransactionRecord($record);
-    public function getTransactionRecord();
-}
 
 interface IChargeRefund {
     public function setId(string $id);

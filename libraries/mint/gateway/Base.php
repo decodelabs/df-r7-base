@@ -30,7 +30,7 @@ abstract class Base implements mint\IGateway {
         return in_array($code, $this->getSupportedCurrencies());
     }
 
-    public function submitCharge(mint\IChargeRequest $charge): mint\IChargeResult {
+    public function submitCharge(mint\IChargeRequest $charge): string {
         if($charge instanceof mint\ICustomerChargeRequest
         && $this instanceof mint\ICustomerTrackingGateway) {
             return $this->submitCustomerCharge($charge);
@@ -44,7 +44,7 @@ abstract class Base implements mint\IGateway {
         }
     }
 
-    public function newStandaloneCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description=null, string $email=null) {
+    public function newStandaloneCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description=null, string $email=null): mint\IStandaloneChargeRequest {
         return new mint\charge\Standalone($amount, $card, $description, $email);
     }
 }
