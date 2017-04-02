@@ -231,46 +231,73 @@ class Stripe2 extends Base implements
 
 
 // Customers
-/*
-    public function addCustomer(string $email=null, string $description=null, mint\ICreditCard $card=null): string {
-        $request = $this->_mediator->newCustomerRequest(
-            $email, $card, $description
-        );
+    public function fetchCustomer(string $customerId): mint\ICustomer {
+        $data = $this->_execute(function() use($customerId) {
+            return $this->_mediator->fetchCustomer($customerId);
+        }, 'ECustomer');
 
-        try {
-            $customer = $request->submit();
-        } catch(spur\payment\stripe\EApi $e) {
-            core\logException($e);
+        return $this->_wrapCustomer($data);
+    }
 
-            throw core\Error::{'mint/ECustomer,mint/EApi'}([
-                'message' => $e->getMessage(),
-                'previous' => $e
+    public function addCustomer(mint\ICustomer $customer): mint\ICustomer {
+        $data = $this->_execute(function() use($customer) {
+            $metadata = ($id = $customer->getUserId()) ? ['userId' => (string)$id] : null;
+
+            return $this->_mediator->createCustomer(
+                $this->_mediator->newCustomerCreateRequest(
+                        $customer->getEmailAddress(),
+                        $customer->getDescription()
+                    )
+                    ->setCard($customer->getCard())
+                    ->setMetadata($metadata)
+                    // shipping
+            );
+        }, 'ECustomer');
+
+        return $this->_wrapCustomer($data);
+    }
+
+    public function updateCustomer(mint\ICustomer $customer): mint\ICustomer {
+        if($customer->getId() === null) {
+            throw core\Error::EArgument([
+                'message' => 'Customer Id not set',
+                'data' => $customer
             ]);
         }
 
-        return $customer->getId();
-    }
+        $data = $this->_execute(function() use($customer) {
+            $metadata = ($id = $customer->getUserId()) ? ['userId' => (string)$id] : null;
 
-    public function updateCustomer(mint\ICustomer $customer) {
+            return $this->_mediator->updateCustomer(
+                $this->_mediator->newCustomerUpdateRequest($customer->getId())
+                    ->setEmailAddress($customer->getEmailAddress())
+                    ->setDescription($customer->getDescription())
+                    ->setCard($customer->getCard())
+                    ->setMetadata($metadata)
+                    // shipping
+            );
+        }, 'ECustomer');
 
+        return $this->_wrapCustomer($data);
     }
 
     public function deleteCustomer(string $customerId) {
-        try {
+        $this->_execute(function() use($customerId) {
             $this->_mediator->deleteCustomer($customerId);
-        } catch(spur\payment\stripe\EApi $e) {
-            core\logException($e);
-
-            throw core\Error::{'mint/ECustomer,mint/EApi'}([
-                'message' => $e->getMessage(),
-                'previous' => $e
-            ]);
-        }
+        }, 'ECustomer');
 
         return $this;
     }
-*/
 
+    protected function _wrapCustomer(spur\payment\stripe2\IDataObject $customer): mint\ICustomer {
+        return (new mint\subscription\Customer(
+                $customer['id'],
+                $customer['email'],
+                $customer['description']
+            ))
+            ->isDelinquent((bool)$customer['delinquent'])
+            ->setUserId($customer->metadata['userId']);
+    }
 
 
 // Cards
@@ -289,7 +316,7 @@ class Stripe2 extends Base implements
                     $this->_mediator->newPlanFilter()
                         ->setLimit(100)
                 );
-            });
+            }, 'EPlan');
 
             $output = [];
 
@@ -317,7 +344,7 @@ class Stripe2 extends Base implements
                     ->setStatementDescriptor($plan->getStatementDescriptor())
                     ->setTrialDays($plan->getTrialDays())
             );
-        });
+        }, 'EPlan');
 
         $this->clearPlanCache();
         return $this->_wrapPlan($data);
@@ -331,7 +358,7 @@ class Stripe2 extends Base implements
                     ->setStatementDescriptor($plan->getStatementDescriptor())
                     ->setTrialDays($plan->getTrialDays())
             );
-        });
+        }, 'EPlan');
 
         $this->clearPlanCache();
         return $this->_wrapPlan($data);
@@ -340,13 +367,13 @@ class Stripe2 extends Base implements
     public function deletePlan(string $planId) {
         $this->_execute(function() use($planId) {
             $this->_mediator->deletePlan($planId);
-        });
+        }, 'mint/EPlan');
 
         $this->clearPlanCache();
         return $this;
     }
 
-    protected function _wrapPlan(spur\payment\stripe2\IDataObject $plan) {
+    protected function _wrapPlan(spur\payment\stripe2\IDataObject $plan): mint\IPlan {
         return (new mint\subscription\Plan(
                 $plan['id'],
                 $plan['name'],
@@ -372,11 +399,11 @@ class Stripe2 extends Base implements
         return $this->_mediator->getApiKey().'-';
     }
 
-    protected function _execute(callable $func) {
+    protected function _execute(callable $func, string $eType=null) {
         try {
             return $func();
         } catch(spur\payment\stripe2\EApi $e) {
-            $type = 'EApi';
+            $type = 'EApi,'.$eType;
 
             if($e instanceof core\ENotFound) {
                 $type .= ',ENotFound';

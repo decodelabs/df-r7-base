@@ -65,17 +65,22 @@ interface ICustomerTrackingGateway extends IGateway {
     public function submitCustomerCharge(ICustomerChargeRequest $charge): IChargeResult;
     public function newCustomerCharge(ICurrency $amount, ICreditCardReference $card, string $customerId, string $description=null);
 
-    /*
-    public function addCustomer(string $email=null, string $description=null, ICreditCard $card=null): string;
-    //public function updateCustomer(ICustomer $customer);
+    public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null);
+    public function fetchCustomer(string $id): ICustomer;
+
+    public function addCustomer(ICustomer $customer): ICustomer;
+    public function updateCustomer(ICustomer $customer): ICustomer;
     public function deleteCustomer(string $customerId);
-    */
 }
 
 trait TCustomerTrackingGateway {
 
     public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null) {
         return new mint\charge\Customer($amount, $card, $customerId, $description);
+    }
+
+    public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null) {
+        return new mint\subscription\Customer(null, $email, $description, $card);
     }
 }
 
@@ -102,6 +107,7 @@ interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
 
 interface ISubscriptionPlanControllerGateway extends ISubscriptionProviderGateway {
     public function syncPlans(iterable $local=[]): \Generator;
+    public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval='month');
 
     public function addPlan(IPlan $plan);
     public function updatePlan(IPlan $plan);
@@ -140,6 +146,10 @@ trait TSubscriptionPlanControllerGateway {
         foreach($planList as $plan) {
             yield 'export' => $plan;
         }
+    }
+
+    public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval='month') {
+        return new mint\subscription\Plan($id, $name, $amount, $interval);
     }
 }
 
@@ -254,9 +264,22 @@ interface IChargeRefund {
 
 // Customer
 interface ICustomer {
-    public function getId();
-    public function getEmailAddress();
-    public function getDescription();
+    public function setId(?string $id);
+    public function getId(): ?string;
+    public function setEmailAddress(?string $email);
+    public function getEmailAddress(): ?string;
+    public function setDescription(?string $description);
+    public function getDescription(): ?string;
+
+    // shipping
+
+    public function setCard(?ICreditCard $card);
+    public function getCard(): ?ICreditCard;
+
+    public function setUserId(?int $userId);
+    public function getUserId(): ?int;
+
+    public function isDelinquent(bool $flag=null);
 }
 
 
