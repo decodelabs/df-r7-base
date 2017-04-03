@@ -12,6 +12,7 @@ use df\mint;
 class Customer implements mint\ICustomer {
 
     protected $_id;
+    protected $_localId;
     protected $_email;
     protected $_description;
     protected $_card;
@@ -34,6 +35,16 @@ class Customer implements mint\ICustomer {
     public function getId(): ?string {
         return $this->_id;
     }
+
+    public function setLocalId(?string $id) {
+        $this->_localId = $id;
+        return $this;
+    }
+
+    public function getLocalId(): ?string {
+        return $this->_localId;
+    }
+
 
     public function setEmailAddress(?string $email) {
         $this->_email = $email;

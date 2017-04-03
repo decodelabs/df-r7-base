@@ -12,6 +12,8 @@ use df\mint;
 class Subscription implements ISubscription {
 
     protected $_id;
+    protected $_localId;
+
     protected $_customerId;
     protected $_planId;
 
@@ -37,6 +39,15 @@ class Subscription implements ISubscription {
 
     public function getId(): ?string {
         return $this->_id;
+    }
+
+    public function setLocalId(?string $id) {
+        $this->_localId = $id;
+        return $this;
+    }
+
+    public function getLocalId(): ?string {
+        return $this->_localId;
     }
 
 

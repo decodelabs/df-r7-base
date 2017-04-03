@@ -159,15 +159,14 @@ class Stripe2 extends Base implements
 
     public function addCustomer(mint\ICustomer $customer): mint\ICustomer {
         return $this->_execute(function() use($customer) {
-            $metadata = ($id = $customer->getUserId()) ? ['userId' => (string)$id] : null;
-
             $data = $this->_mediator->createCustomer(
                 $this->_mediator->newCustomerCreateRequest(
                         $customer->getEmailAddress(),
                         $customer->getDescription()
                     )
                     ->setCard($customer->getCard())
-                    ->setMetadata($metadata)
+                    ->setMetadataValue('localId', $customer->getLocalId())
+                    ->setMetadataValue('userId', $customer->getUserId())
                     // shipping
             );
 
@@ -184,14 +183,13 @@ class Stripe2 extends Base implements
         }
 
         return $this->_execute(function() use($customer) {
-            $metadata = ($id = $customer->getUserId()) ? ['userId' => (string)$id] : null;
-
             $data = $this->_mediator->updateCustomer(
                 $this->_mediator->newCustomerUpdateRequest($customer->getId())
                     ->setEmailAddress($customer->getEmailAddress())
                     ->setDescription($customer->getDescription())
                     ->setCard($customer->getCard())
-                    ->setMetadata($metadata)
+                    ->setMetadataValue('localId', $customer->getLocalId())
+                    ->setMetadataValue('userId', $customer->getUserId())
                     // shipping
             );
 
@@ -214,6 +212,7 @@ class Stripe2 extends Base implements
                 $customer['description']
             ))
             ->isDelinquent((bool)$customer['delinquent'])
+            ->setLocalId($customer->metadata['localId'])
             ->setUserId($customer->metadata['userId']);
 
         $subs = [];
@@ -362,6 +361,7 @@ class Stripe2 extends Base implements
                         $subscription->getPlanId()
                     )
                     ->setTrialEnd($subscription->getTrialEnd())
+                    ->setMetadataValue('localId', $subscription->getLocalId())
                     // coupon
             );
 
@@ -375,6 +375,7 @@ class Stripe2 extends Base implements
                 $this->_mediator->newSubscriptionUpdateRequest($subscription->getId())
                     ->setPlan($subscription->getPlanId())
                     ->setTrialEnd($subscription->getTrialEnd())
+                    ->setMetadataValue('localId', $subscription->getLocalId())
                     // coupon
             );
 
@@ -412,6 +413,7 @@ class Stripe2 extends Base implements
                 $subscription['customer'],
                 $subscription->plan['id']
             ))
+            ->setLocalId($subscription->metadata['localId'])
             ->setTrialStart($subscription['trial_start'])
             ->setTrialEnd($subscription['trial_end'])
             ->setPeriodStart($subscription['current_period_start'])

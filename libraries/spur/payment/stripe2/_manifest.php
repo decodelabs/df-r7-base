@@ -373,6 +373,7 @@ interface IEmailSubRequest extends IRequest {
 
 interface IMetadataSubRequest extends IRequest {
     public function setMetadata(?array $metadata);
+    public function setMetadataValue(string $key, ?string $value);
     public function getMetadata(): ?array;
 }
 

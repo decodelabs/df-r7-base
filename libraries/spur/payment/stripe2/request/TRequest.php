@@ -158,6 +158,18 @@ trait TRequest_Metadata {
         return $this;
     }
 
+    public function setMetadataValue(string $key, ?string $value) {
+        if($value !== null) {
+            if($this->_metadata === null) {
+                $this->_metadata = [];
+            }
+
+            $this->_metadata[$key] = $value;
+        }
+
+        return $this;
+    }
+
     public function getMetadata(): ?array {
         return $this->_metadata;
     }

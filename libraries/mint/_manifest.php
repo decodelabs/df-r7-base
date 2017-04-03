@@ -260,6 +260,9 @@ interface IChargeRefund {
 interface ICustomer {
     public function setId(?string $id);
     public function getId(): ?string;
+    public function setLocalId(?string $id);
+    public function getLocalId(): ?string;
+
     public function setEmailAddress(?string $email);
     public function getEmailAddress(): ?string;
     public function setDescription(?string $description);
@@ -307,6 +310,8 @@ interface IPlan {
 interface ISubscription {
     public function setId(?string $id);
     public function getId(): ?string;
+    public function setLocalId(?string $id);
+    public function getLocalId(): ?string;
 
     public function setCustomerId(string $customerId);
     public function getCustomerId(): string;
