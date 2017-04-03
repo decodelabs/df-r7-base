@@ -17,6 +17,9 @@ interface IGateway {
     public function getSupportedCurrencies(): array;
     public function isCurrencySupported($code): bool;
 
+    public function getApiIps(): ?array;
+    public function getWebhookIps(): ?array;
+
     public function submitCharge(IChargeRequest $charge): string;
     public function submitStandaloneCharge(IStandaloneChargeRequest $charge): string;
     public function newStandaloneCharge(ICurrency $amount, ICreditCardReference $card, string $description=null, string $email=null): IStandaloneChargeRequest;

@@ -30,6 +30,15 @@ abstract class Base implements mint\IGateway {
         return in_array($code, $this->getSupportedCurrencies());
     }
 
+    public function getApiIps(): ?array {
+        return null;
+    }
+
+    public function getWebhookIps(): ?array {
+        return null;
+    }
+
+
     public function submitCharge(mint\IChargeRequest $charge): string {
         if($charge instanceof mint\ICustomerChargeRequest
         && $this instanceof mint\ICustomerTrackingGateway) {

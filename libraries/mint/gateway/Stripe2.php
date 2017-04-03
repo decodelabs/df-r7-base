@@ -40,22 +40,29 @@ class Stripe2 extends Base implements
     }
 
 
+
+// Ips
+    public function getApiIps(): ?array {
+        return $this->_getCachedValue('apiIps', function() {
+            return $this->_mediator->fetchApiIps();
+        });
+    }
+
+    public function getWebhookIps(): ?array {
+        return $this->_getCachedValue('webhookIps', function() {
+            return $this->_mediator->fetchWebhookIps();
+        });
+    }
+
+
 // Currency
     public function getSupportedCurrencies(): array {
-        $cache = Stripe2_Cache::getInstance();
-        $key = $this->_getCacheKeyPrefix().'supportedCurrencies';
-        $output = $cache->get($key);
-
-        if(empty($output)) {
+        return $this->_getCachedValue('supportedCurrencies', function() {
             $account = $this->_mediator->fetchAccountDetails();
             $spec = $this->_mediator->fetchCountrySpec($account['country']);
             $output = $spec->supported_payment_currencies->toArray();
-
-            $output = array_map('strtoupper', $output);
-            $cache->set($key, $output);
-        }
-
-        return $output;
+            return array_map('strtoupper', $output);
+        });
     }
 
 
@@ -411,6 +418,18 @@ class Stripe2 extends Base implements
 // Helpers
     protected function _getCacheKeyPrefix() {
         return $this->_mediator->getApiKey().'-';
+    }
+
+    protected function _getCachedValue(string $key, callable $generator) {
+        $cache = Stripe2_Cache::getInstance();
+        $key = $this->_getCacheKeyPrefix().$key;
+        $output = $cache->get($key);
+
+        if($output === null) {
+            $cache->set($key, $output = $generator());
+        }
+
+        return $output;
     }
 
     protected function _execute(callable $func, string $eType=null) {
