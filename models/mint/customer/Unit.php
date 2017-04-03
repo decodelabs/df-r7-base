@@ -47,6 +47,9 @@ class Unit extends axis\unit\table\Base {
 
                 $customer = $gateway->updateCustomer($customer);
             }
+
+            $record->isDelinquent = $customer->isDelinquent();
+            $record->save();
         } else {
             if(!$record) {
                 $record = $this->newRecord([
