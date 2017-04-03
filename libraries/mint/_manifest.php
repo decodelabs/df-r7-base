@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\mint;
 use df\user;
+use df\arch;
 
 
 // Gateway
@@ -99,17 +100,18 @@ interface ICardStoreGateway extends ICustomerTrackingGateway {
 interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
     public function getPlans(): array;
     public function newSubscription(string $customerId, string $planId): ISubscription;
+    public function getSubscriptionsFor(ICustomer $customer): array;
 
     public function subscribeCustomer(ISubscription $subscription): ISubscription;
     public function updateSubscription(ISubscription $subscription): ISubscription;
-    public function endSubscriptionTrial(int $inDays=null);
+    public function endSubscriptionTrial(string $subscriptionId, int $inDays=null): ISubscription;
     public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): ISubscription;
 }
 
 trait TSubscriptionProviderGateway {
 
     public function newSubscription(string $customerId, string $planId): ISubscription {
-        return new mint\Subscription($customerId, $planId);
+        return new mint\Subscription(null, $customerId, $planId);
     }
 }
 
@@ -268,6 +270,10 @@ interface ICustomer {
     public function getUserId(): ?int;
 
     public function isDelinquent(bool $flag=null);
+
+    public function setCachedSubscriptions(?array $subscriptions);
+    public function getCachedSubscriptions(): ?array;
+    public function hasSubscriptionCache(): bool;
 }
 
 
@@ -291,6 +297,40 @@ interface IPlan {
 
     public function shouldUpdate(IPlan $plan): bool;
 }
+
+
+// Subscriptions
+interface ISubscription {
+    public function setId(?string $id);
+    public function getId(): ?string;
+
+    public function setCustomerId(string $customerId);
+    public function getCustomerId(): string;
+
+    public function setPlanId(string $planId);
+    public function getPlanId(): string;
+
+    public function setTrialStart($date);
+    public function getTrialStart(): ?core\time\IDate;
+    public function setTrialEnd($date);
+    public function getTrialEnd(): ?core\time\IDate;
+
+    public function setPeriodStart($date);
+    public function getPeriodStart(): ?core\time\IDate;
+    public function setPeriodEnd($date);
+    public function getPeriodEnd(): ?core\time\IDate;
+
+    public function setStartDate($date);
+    public function getStartDate(): ?core\time\IDate;
+    public function setEndDate($date);
+    public function getEndDate(): ?core\time\IDate;
+    public function setCancelDate($date, bool $atPeriodEnd=false);
+    public function getCancelDate(): ?core\time\IDate;
+    public function willCancelAtPeriodEnd(): bool;
+
+    // Coupon
+}
+
 
 
 
@@ -318,4 +358,11 @@ interface ICurrency extends core\IStringProvider {
     public function multiplyNew(float $factor): ICurrency;
     public function divide(float $factor);
     public function divideNew(float $factor): ICurrency;
+}
+
+
+
+// Webhook
+interface IWebhookNode extends arch\node\IRestApiNode {
+
 }

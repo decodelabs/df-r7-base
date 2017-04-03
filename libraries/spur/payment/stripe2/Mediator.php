@@ -50,6 +50,25 @@ class Mediator implements IMediator {
     }
 
 
+
+// Ips
+    public function fetchApiIps(): array {
+        return $this->sendRequest(link\http\request\Base::factory(
+                'https://stripe.com/files/ips/ips_api.json'
+            ))
+            ->getJsonContent()
+            ->API->toArray();
+    }
+
+    public function fetchWebhookIps(): array {
+        return $this->sendRequest(link\http\request\Base::factory(
+                'https://stripe.com/files/ips/ips_webhooks.json'
+            ))
+            ->getJsonContent()
+            ->WEBHOOKS->toArray();
+    }
+
+
 ### CORE RESOURCES
 
 

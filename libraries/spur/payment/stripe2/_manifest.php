@@ -23,6 +23,11 @@ interface IMediator extends spur\IHttpMediator {
     public function fetchCountrySpec(string $country): IDataObject;
 
 
+// IPs
+    public function fetchApiIps(): array;
+    public function fetchWebhookIps(): array;
+
+
 ### CORE RESOURCES
 
 
@@ -722,6 +727,10 @@ interface IPlanFilter extends IFilter, ICreatedSubFilter {}
 interface ISubscriptionRequest extends IRequest,
     IApplicationFeePercentSubRequest, ICouponSubRequest, IProrateSubRequest,
     ISourceSubRequest, ITrialEndSubRequest {
+    public function setPlan(string $planId, int $quantity=1);
+    public function getPlan(): ?ISubscriptionItem;
+    public function clearPlan();
+
     public function addPlan(string $planId, int $quantity=1);
     public function newItem(string $planId, int $quantity=1): ISubscriptionItem;
 

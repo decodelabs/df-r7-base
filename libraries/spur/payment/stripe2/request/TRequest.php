@@ -395,7 +395,25 @@ trait TRequest_StatementDescriptor {
 // Subscription items
 trait TRequest_SubscriptionItems {
 
+    protected $_singleItem;
     protected $_items = [];
+
+    public function setPlan(string $planId, int $quantity=1) {
+        $this->_singleItem = $this->newItem($planId, $quantity);
+        $this->_items = [];
+        return $this;
+    }
+
+    public function getPlan(): ?spur\payment\stripe2\ISubscriptionItem {
+        return $this->_singleItem;
+    }
+
+    public function clearPlan() {
+        $this->_singleItem = null;
+        return $this;
+    }
+
+
 
     public function addPlan(string $planId, int $quantity=1) {
         return $this->addItem(
@@ -421,6 +439,7 @@ trait TRequest_SubscriptionItems {
 
     public function addItem(spur\payment\stripe2\ISubscriptionItem $item) {
         $this->_items[$item->getKey()] = $item;
+        $this->_singleItem = null;
         return $this;
     }
 
@@ -441,34 +460,39 @@ trait TRequest_SubscriptionItems {
 
 
     protected function _applyItems(array &$output, bool $forUpdate=false) {
-        if(empty($this->_items) && !$forUpdate) {
+        if(empty($this->_items) && !$this->_singleItem && !$forUpdate) {
             throw core\Error::ELogic('No plans have been set');
         }
 
-        $output['items'] = [];
+        if($this->_singleItem !== null) {
+            $output['plan'] = $this->_singleItem->getPlanId();
+            $output['quantity'] = $this->_singleItem->getQuantity();
+        } else {
+            $output['items'] = [];
 
-        foreach($this->_items as $item) {
-            if($item->shouldDelete()) {
-                if($forUpdate) {
-                    $output['items'][] = [
-                        'id' => $item->getItemId(),
-                        'deleted' => 'true'
-                    ];
+            foreach($this->_items as $item) {
+                if($item->shouldDelete()) {
+                    if($forUpdate) {
+                        $output['items'][] = [
+                            'id' => $item->getItemId(),
+                            'deleted' => 'true'
+                        ];
+                    }
+
+                    continue;
                 }
 
-                continue;
+                $arr = [
+                    'plan' => $item->getPlanId(),
+                    'quantity' => $item->getQuantity()
+                ];
+
+                if($forUpdate && (null !== ($itemId = $item->getItemId()))) {
+                    $arr['id'] = $itemId;
+                }
+
+                $output['items'][] = $arr;
             }
-
-            $arr = [
-                'plan' => $item->getPlanId(),
-                'quantity' => $item->getQuantity()
-            ];
-
-            if($forUpdate && (null !== ($itemId = $item->getItemId()))) {
-                $arr['id'] = $itemId;
-            }
-
-            $output['items'][] = $arr;
         }
     }
 }

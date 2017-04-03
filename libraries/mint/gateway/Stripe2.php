@@ -201,13 +201,22 @@ class Stripe2 extends Base implements
     }
 
     protected function _wrapCustomer(spur\payment\stripe2\IDataObject $customer): mint\ICustomer {
-        return (new mint\Customer(
+        $output = (new mint\Customer(
                 $customer['id'],
                 $customer['email'],
                 $customer['description']
             ))
             ->isDelinquent((bool)$customer['delinquent'])
             ->setUserId($customer->metadata['userId']);
+
+        $subs = [];
+
+        foreach($customer->subscriptions as $subscription) {
+            $subs[] = $this->_wrapSubscription($subscription);
+        }
+
+        $output->setCachedSubscriptions($subs);
+        return $output;
     }
 
 
@@ -279,7 +288,7 @@ class Stripe2 extends Base implements
         $this->_execute(function() use($planId) {
             $this->_mediator->deletePlan($planId);
             $this->clearPlanCache();
-        }, 'mint/EPlan');
+        }, 'EPlan');
 
         return $this;
     }
@@ -305,22 +314,98 @@ class Stripe2 extends Base implements
 
 
 // Subscriptions
+    public function getSubscriptionsFor(mint\ICustomer $customer): array {
+        if($customer->getId() === null) {
+            throw core\Error::EArgument([
+                'message' => 'Customer Id not set',
+                'data' => $customer
+            ]);
+        }
+
+        if(!$customer->hasSubscriptionCache()) {
+            $subscriptions = $this->_mediator->fetchSubscriptions(
+                $this->_mediator->newSubscriptionFilter($customer->getId())
+                    ->setLimit(100)
+            );
+
+            $subs = [];
+
+            foreach($subscriptions as $subscription) {
+                $subs[] = $this->_wrapSubscription($subscription);
+            }
+
+            $customer->setCachedSubscriptions($subs);
+        }
+
+        return $customer->getCachedSubscriptions();
+    }
+
     public function subscribeCustomer(mint\ISubscription $subscription): mint\ISubscription {
-        core\stub($subscription);
+        return $this->_execute(function() use($subscription) {
+            $data = $this->_mediator->createSubscription(
+                $this->_mediator->newSubscriptionCreateRequest(
+                        $subscription->getCustomerId(),
+                        $subscription->getPlanId()
+                    )
+                    ->setTrialEnd($subscription->getTrialEnd())
+                    // coupon
+            );
+
+            return $this->_wrapSubscription($data);
+        }, 'ESubscription');
     }
 
     public function updateSubscription(mint\ISubscription $subscription): mint\ISubscription {
-        core\stub($subscription);
+        return $this->_execute(function() use($subscription) {
+            $data = $this->_mediator->updateSubscription(
+                $this->_mediator->newSubscriptionUpdateRequest($subscription->getId())
+                    ->setPlan($subscription->getPlanId())
+                    ->setTrialEnd($subscription->getTrialEnd())
+                    // coupon
+            );
+
+            return $this->_wrapSubscription($data);
+        }, 'ESubscription');
     }
 
-    public function endSubscriptionTrial(int $inDays=null) {
-        core\stub($inDays);
+    public function endSubscriptionTrial(string $subscriptionId, int $inDays=null): mint\ISubscription {
+        return $this->_execute(function() use($subscriptionId, $inDays) {
+            if($inDays === null || $inDays <= 0) {
+                $date = 'now';
+            } else {
+                $date = '+'.$inDays.' days';
+            }
+
+            $data = $this->_mediator->updateSubscription(
+                $this->_mediator->newSubscriptionUpdateRequest($subscriptionId)
+                    ->setTrialEnd($date)
+            );
+
+            return $this->_wrapSubscription($data);
+        });
     }
 
     public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): mint\ISubscription {
-        core\stub($subscriptionId, $atPeriodEnd);
+        return $this->_execute(function() use($subscriptionId, $atPeriodEnd) {
+            $data = $this->_mediator->cancelSubscription($subscriptionId, $atPeriodEnd);
+            return $this->_wrapSubscription($data);
+        });
     }
 
+    protected function _wrapSubscription(spur\payment\stripe2\IDataObject $subscription): mint\ISubscription {
+        return (new mint\Subscription(
+                $subscription['id'],
+                $subscription['customer'],
+                $subscription->plan['id']
+            ))
+            ->setTrialStart($subscription['trial_start'])
+            ->setTrialEnd($subscription['trial_end'])
+            ->setPeriodStart($subscription['current_period_start'])
+            ->setPeriodEnd($subscription['current_period_end'])
+            ->setStartDate($subscription['start'])
+            ->setEndDate($subscription['ended_at'])
+            ->setCancelDate($subscription['canceled_at'], $subscription['cancel_at_period_end']);
+    }
 
 
 // Helpers

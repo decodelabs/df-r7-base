@@ -17,6 +17,7 @@ class Customer implements mint\ICustomer {
     protected $_card;
     protected $_userId;
     protected $_delinquent = false;
+    protected $_cachedSubscriptions;
 
     public function __construct(string $id=null, string $email=null, string $description=null, mint\ICreditCard $card=null) {
         $this->setId($id);
@@ -80,5 +81,19 @@ class Customer implements mint\ICustomer {
         }
 
         return $this->_delinquent;
+    }
+
+
+    public function setCachedSubscriptions(?array $subscriptions) {
+        $this->_cachedSubscriptions = $subscriptions;
+        return $this;
+    }
+
+    public function getCachedSubscriptions(): ?array {
+        return $this->_cachedSubscriptions;
+    }
+
+    public function hasSubscriptionCache(): bool {
+        return $this->_cachedSubscriptions !== null;
     }
 }
