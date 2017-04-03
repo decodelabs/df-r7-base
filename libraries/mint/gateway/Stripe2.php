@@ -45,13 +45,13 @@ class Stripe2 extends Base implements
     public function getApiIps(): ?array {
         return $this->_getCachedValue('apiIps', function() {
             return $this->_mediator->fetchApiIps();
-        });
+        }, 'EIp');
     }
 
     public function getWebhookIps(): ?array {
         return $this->_getCachedValue('webhookIps', function() {
             return $this->_mediator->fetchWebhookIps();
-        });
+        }, 'EIp');
     }
 
 
@@ -62,7 +62,7 @@ class Stripe2 extends Base implements
             $spec = $this->_mediator->fetchCountrySpec($account['country']);
             $output = $spec->supported_payment_currencies->toArray();
             return array_map('strtoupper', $output);
-        });
+        }, 'ECurrency');
     }
 
 
@@ -321,6 +321,13 @@ class Stripe2 extends Base implements
 
 
 // Subscriptions
+    public function fetchSubscription(string $subscriptionId): mint\ISubscription {
+        return $this->_execute(function() use($subscriptionId) {
+            $data = $this->_mediator->fetchSubscription($subscriptionId);
+            return $this->_wrapSubscription($data);
+        });
+    }
+
     public function getSubscriptionsFor(mint\ICustomer $customer): array {
         if($customer->getId() === null) {
             throw core\Error::EArgument([
@@ -420,13 +427,13 @@ class Stripe2 extends Base implements
         return $this->_mediator->getApiKey().'-';
     }
 
-    protected function _getCachedValue(string $key, callable $generator) {
+    protected function _getCachedValue(string $key, callable $generator, string $eType=null) {
         $cache = Stripe2_Cache::getInstance();
         $key = $this->_getCacheKeyPrefix().$key;
         $output = $cache->get($key);
 
         if($output === null) {
-            $cache->set($key, $output = $generator());
+            $cache->set($key, $this->_execute($generator, $eType));
         }
 
         return $output;

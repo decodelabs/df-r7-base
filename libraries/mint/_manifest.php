@@ -103,6 +103,7 @@ interface ICardStoreGateway extends ICustomerTrackingGateway {
 interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
     public function getPlans(): array;
     public function newSubscription(string $customerId, string $planId): ISubscription;
+    public function fetchSubscription(string $subscriptionId): ISubscription;
     public function getSubscriptionsFor(ICustomer $customer): array;
 
     public function subscribeCustomer(ISubscription $subscription): ISubscription;
@@ -367,5 +368,5 @@ interface ICurrency extends core\IStringProvider {
 
 // Webhook
 interface IWebhookNode extends arch\node\IRestApiNode {
-
+    public function getGateway(): IGateway;
 }
