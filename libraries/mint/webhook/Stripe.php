@@ -15,8 +15,8 @@ abstract class Stripe extends arch\node\RestApi implements mint\IWebhookNode {
     const EVENTS = [];
     const CHECK_IPS = true;
 
+    protected $_log;
     protected $_gateway;
-    private $_dataLog;
 
     final public function executeGet() {
         // do be do
@@ -24,7 +24,12 @@ abstract class Stripe extends arch\node\RestApi implements mint\IWebhookNode {
 
     final public function executePost() {
         $data = $this->http->getPostData();
-        $this->_dataLog = $this->_beginLog($data);
+
+        $this->_log = $this->data->mint->stripeEvent->newRecord([
+            'name' => $data['type'],
+            'stripeId' => $data['id'],
+            'data' => $data
+        ]);
 
         //$this->_dump($data->toArray());
         $event = $data['type'];
@@ -67,18 +72,13 @@ abstract class Stripe extends arch\node\RestApi implements mint\IWebhookNode {
         }
     }
 
-    protected function _beginLog(core\collection\ITree $data) {}
-    protected function _finalizeLog($log) {}
-
-    protected function _getLog() {
-        return $this->_dataLog;
+    protected function _logSuccess() {
+        $this->_log['success'] = true;
     }
 
-    protected function _afterDispatch($response) {
-        if($this->_dataLog !== null) {
-            $this->_finalizeLog($this->_dataLog);
-        }
 
+    protected function _afterDispatch($response) {
+        $this->_log->save();
         return $response;
     }
 
