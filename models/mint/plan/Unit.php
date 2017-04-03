@@ -13,8 +13,8 @@ use df\flex;
 
 class Unit extends axis\unit\table\Base {
 
-    const ORDERABLE_FIELDS = ['remoteId', 'creationDate'];
-    const DEFAULT_ORDER = 'creationDate DESC';
+    const ORDERABLE_FIELDS = ['remoteId', 'weight', 'creationDate'];
+    const DEFAULT_ORDER = 'weight ASC';
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');
@@ -42,5 +42,11 @@ class Unit extends axis\unit\table\Base {
             ->setDefaultValue(true);
 
         $schema->addField('subscriptions', 'OneToMany', 'subscription', 'plan');
+    }
+
+    public function exists($id) {
+        return (bool)$this->select('id')
+            ->where('id', '=', $id)
+            ->count();
     }
 }
