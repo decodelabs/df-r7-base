@@ -70,6 +70,13 @@ class Unit extends axis\unit\table\Base {
             }
         }
 
+        if(null === ($customerLocalId = $customer->getLocalId())) {
+            $customerLocalId = (string)$this->_model->select('user')
+                ->where('remoteId', '=', $customer->getId())
+                ->toValue('user');
+        }
+
+
 
         if($active = $this->fetchActive($userId)) {
             // We have a record, update it
@@ -123,13 +130,6 @@ class Unit extends axis\unit\table\Base {
                     ->orWhere('cancelDate', '>', 'now')
                     ->endClause()
                 ->execute();
-
-
-            if(null === ($customerLocalId = $customer->getLocalId())) {
-                $customerLocalId = $this->_model->select('id')
-                    ->where('remoteId', '=', $customer->getId())
-                    ->toValue('id');
-            }
 
 
             // Update record

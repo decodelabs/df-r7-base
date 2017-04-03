@@ -42,7 +42,8 @@ class Unit extends axis\unit\table\Base {
             if($card) {
                 $customer
                     ->setCard($card)
-                    ->setLocalId($record['id'])
+                    ->setLocalId($record['#user'])
+                    ->setUserId($userId)
                     ->setEmailAddress($client->getEmail());
 
                 $customer = $gateway->updateCustomer($customer);
@@ -53,7 +54,7 @@ class Unit extends axis\unit\table\Base {
         } else {
             if(!$record) {
                 $record = $this->newRecord([
-                    'id' => $id = flex\Guid::comb(),
+                    //'id' => $id = flex\Guid::comb(),
                     'user' => $userId,
                     'remoteId' => '',
                     'creationDate' => 'now'
@@ -65,7 +66,7 @@ class Unit extends axis\unit\table\Base {
                         $client->getEmail(),
                         $client->getId().' : '.$client->getFullName()
                     )
-                    ->setLocalId($id)
+                    ->setLocalId($userId)
                     ->setCard($card)
                     ->setUserId($client->getId())
             );
