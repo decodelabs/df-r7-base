@@ -27,7 +27,7 @@ abstract class Stripe extends arch\node\RestApi implements mint\IWebhookNode {
 
         $this->_log = $this->data->mint->stripeEvent->newRecord([
             'name' => $data['type'],
-            'stripeId' => $data['id'],
+            'remoteId' => $data['id'],
             'data' => $data
         ]);
 
