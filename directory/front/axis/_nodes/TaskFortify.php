@@ -69,10 +69,15 @@ class TaskFortify extends arch\node\Task {
             return;
         }
 
-        $this->io->writeLine('Found '.$count.' consistency routine(s) in '.$unit->getUnitId());
+        //$this->io->writeLine('Found '.$count.' consistency routine(s) in '.$unit->getUnitId());
 
         foreach($routines as $routine) {
+            $this->io->writeLine($unit->getUnitId().'/'.$routine->getName());
+            $this->io->indent();
+
             $this->_runRoutine($routine);
+
+            $this->io->outdent();
         }
 
         $this->io->writeLine();
