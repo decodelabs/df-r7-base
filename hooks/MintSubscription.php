@@ -30,6 +30,10 @@ class MintSubscription extends mesh\event\Hook {
 
 // Deactivate
     public function onDeactivate($event) {
+        if(!$this->payment->isEnabled()) {
+            return;
+        }
+
         $user = $event->getCachedEntity();
 
         $list = $this->data->mint->subscription->fetch()
