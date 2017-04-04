@@ -37,7 +37,8 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('trialDays', 'Number:UInteger', 2)
             ->isNullable(true);
 
-        $schema->addField('isActive', 'Boolean');
+        $schema->addField('isActive', 'Boolean')
+            ->setDefaultValue(true);
         $schema->addField('isPublic', 'Boolean')
             ->setDefaultValue(true);
 

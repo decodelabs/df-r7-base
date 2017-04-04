@@ -156,12 +156,12 @@ trait TSubscriptionPlanControllerGateway {
                 unset($planList[$plan->getId()]);
                 yield $action => $plan;
             } else {
-                yield 'create' => $this->addPlan($plan);
+                yield 'export' => $this->addPlan($plan);
             }
         }
 
         foreach($planList as $plan) {
-            yield 'export' => $plan;
+            yield 'import' => $plan;
         }
     }
 
