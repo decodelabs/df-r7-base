@@ -374,18 +374,14 @@ interface ICurrency extends core\IStringProvider {
 
 
 
-// Webhook
-interface IWebhookNode extends arch\node\IRestApiNode {
-    public function getGateway(): IGateway;
-}
-
+// Events
 interface IEvent extends mesh\entity\IEntity, core\collection\ITree {
     public function getSource(): string;
     public function getAction(): string;
 }
 
 
-
+// Model
 interface IModelConfig extends core\IConfig {
     public function isEnabled(bool $flag=null);
     public function getPrimaryAccount(): ?string;
