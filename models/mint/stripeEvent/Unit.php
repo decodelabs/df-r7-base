@@ -19,7 +19,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addPrimaryField('id', 'Guid');
 
         $schema->addField('name', 'Text', 64);
-        $schema->addField('stripeId', 'Text', 64);
+        $schema->addField('remoteId', 'Text', 64);
 
         $schema->addField('date', 'Timestamp');
         $schema->addField('success', 'Boolean');
