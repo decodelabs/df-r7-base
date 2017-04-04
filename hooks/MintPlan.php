@@ -19,6 +19,11 @@ class MintPlan extends mesh\event\Hook {
             'insert' => 'insert',
             'preUpdate' => 'update',
             'preDelete' => 'delete'
+        ],
+        'mint://stripe/Event' => [
+            'plan.created' => 'remoteChange',
+            'plan.updated' => 'remoteChange',
+            'plan.deleted' => 'remoteDelete'
         ]
     ];
 
@@ -64,5 +69,55 @@ class MintPlan extends mesh\event\Hook {
         } catch(mint\gateway\EPlan $e) {
             core\logException($e);
         }
+    }
+
+
+
+// Remote
+    public function onRemoteChange($event) {
+        $data = $event->getCachedEntity()->data->object;
+        $id = $data['id'];
+
+        $record = $this->data->fetchOrCreateForAction(
+            'axis://mint/Plan',
+            $id,
+            function($record) use($id) {
+                $record->import([
+                    'id' => $id,
+                    'weight' => $this->data->mint->plan->select('MAX(weight) as weight')
+                        ->toValue('weight') + 1,
+                    'isActive' => true
+                ]);
+            }
+        );
+
+        $amount = mint\Currency::fromIntegerAmount($data['amount'], $data['currency']);
+        mesh\event\Hook::toggleEnabled(false);
+
+        $record->import([
+                'name' => $data['name'],
+                'amount' => $amount->getAmount(),
+                'currency' => $amount->getCode(),
+                'interval' => $data['interval'],
+                'intervalCount' => $data['interval_count'],
+                'statementDescriptor' => $data['statement_descriptor'],
+                'trialDays' => $data['trial_period_days']
+            ])
+            ->save();
+
+        mesh\event\Hook::toggleEnabled(true);
+        $event['log']['success'] = true;
+    }
+
+    public function onRemoteDelete($event) {
+        $data = $event->getCachedEntity()->data->object;
+        mesh\event\Hook::toggleEnabled(false);
+
+        $this->data->mint->plan->delete()
+            ->where('id', '=', $data['id'])
+            ->execute();
+
+        mesh\event\Hook::toggleEnabled(true);
+        $event['log']['success'] = true;
     }
 }

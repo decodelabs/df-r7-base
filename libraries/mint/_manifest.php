@@ -10,6 +10,7 @@ use df\core;
 use df\mint;
 use df\user;
 use df\arch;
+use df\mesh;
 
 
 // Gateway
@@ -376,6 +377,11 @@ interface ICurrency extends core\IStringProvider {
 // Webhook
 interface IWebhookNode extends arch\node\IRestApiNode {
     public function getGateway(): IGateway;
+}
+
+interface IEvent extends mesh\entity\IEntity, core\collection\ITree {
+    public function getSource(): string;
+    public function getAction(): string;
 }
 
 
