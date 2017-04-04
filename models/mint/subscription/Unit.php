@@ -184,6 +184,8 @@ class Unit extends axis\unit\table\Base {
                 'trialEnd' => $subscription->getTrialEnd()
             ])->save();
         }
+
+        return null;
     }
 
     public function cancel(mint\IGateway $gateway, opal\record\IRecord $subscription, bool $atPeriodEnd=false) {
