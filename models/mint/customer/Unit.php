@@ -27,7 +27,8 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('subscriptions', 'OneToMany', 'subscription', 'customer');
     }
 
-    public function prepareClient(mint\IGateway $gateway, mint\ICreditCard $card=null): mint\ICustomer {
+    public function prepareClient(mint\ICreditCard $card=null): mint\ICustomer {
+        $gateway = $this->_model->getSubscriptionGateway();
         $client = $this->context->user->client;
         $userId = $client->getId();
         $record = $this->fetchByPrimary($userId);
@@ -35,7 +36,11 @@ class Unit extends axis\unit\table\Base {
 
 
         if($record) {
-            $customer = $gateway->fetchCustomer($record['remoteId']);
+            try {
+                $customer = $gateway->fetchCustomer($record['remoteId']);
+            } catch(mint\gateway\ENotFound $e) {
+                $customer = null;
+            }
         }
 
         if($customer) {

@@ -20,14 +20,32 @@ class Stripe extends Base implements
     protected $_mediator;
 
     protected function __construct(core\collection\ITree $settings) {
-        if(!$settings->has('apiKey')) {
+        $key = null;
+
+        if($settings->has('apiKey')) {
+            $key = $settings['apiKey'];
+        } else {
+            $key = $settings['testing'] ?
+                $settings['testApiKey'] :
+                $settings['liveApiKey'];
+        }
+
+        if(!$key) {
             throw core\Error::{'ESetup'}(
                 'Stripe API key not set in config'
             );
         }
 
-        $this->_mediator = new spur\payment\stripe\Mediator($settings['apiKey']);
+        $this->_mediator = new spur\payment\stripe\Mediator($key);
         parent::__construct($settings);
+    }
+
+
+
+// Testing
+    public function isTesting(): bool {
+        $key = $this->_mediator->getApiKey();
+        return stristr($key, 'test');
     }
 
 

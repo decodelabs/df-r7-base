@@ -55,7 +55,8 @@ class Unit extends axis\unit\table\Base {
             ->isNullable(true);
     }
 
-    public function syncClient(mint\IGateway $gateway, mint\ICustomer $customer, string $planId=null): ?opal\record\IRecord {
+    public function syncClient(mint\ICustomer $customer, string $planId=null): ?opal\record\IRecord {
+        $gateway = $this->_model->getSubscriptionGateway();
         $userId = $this->context->user->client->getId();
         $currentSubscriptions = $gateway->getSubscriptionsFor($customer);
         $planSubscription = null;
@@ -153,6 +154,7 @@ class Unit extends axis\unit\table\Base {
                 'remoteId' => $planSubscription->getId(),
                 'customer' => $customerLocalId,
                 'plan' => $planId,
+                'lastUpdateDate' => 'now',
                 'startDate' => $planSubscription->getStartDate(),
                 'endDate' => $planSubscription->getEndDate(),
                 'cancelDate' => $planSubscription->getCancelDate(),
@@ -172,6 +174,7 @@ class Unit extends axis\unit\table\Base {
                 'remoteId' => $subscription->getId(),
                 'customer' => $customerLocalId,
                 'plan' => $planId,
+                'lastUpdateDate' => 'now',
                 'startDate' => $subscription->getStartDate(),
                 'endDate' => $subscription->getEndDate(),
                 'cancelDate' => $subscription->getCancelDate(),

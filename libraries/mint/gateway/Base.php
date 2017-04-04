@@ -25,6 +25,10 @@ abstract class Base implements mint\IGateway {
 
     protected function __construct(core\collection\ITree $settings) {}
 
+    public function isTesting(): bool {
+        return false;
+    }
+
     public function isCurrencySupported($code): bool {
         $code = mint\Currency::normalizeCode($code);
         return in_array($code, $this->getSupportedCurrencies());

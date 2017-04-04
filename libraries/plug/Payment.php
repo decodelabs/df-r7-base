@@ -102,4 +102,23 @@ class Payment implements core\ISharedHelper {
     public function newGateway(string $name, $settings=null): mint\IGateway {
         return mint\gateway\Base::factory($name, $settings);
     }
+
+
+
+// Model
+    public function isEnabled(): bool {
+        return $this->context->data->mint->isEnabled();
+    }
+
+    public function getPrimaryGateway(): ?mint\IGateway {
+        return $this->context->data->mint->getPrimaryGateway();
+    }
+
+    public function getSubscriptionGateway(): ?mint\IGateway {
+        return $this->context->data->mint->getSubscriptionGateway();
+    }
+
+    public function getAccountGateway(string $account): ?mint\IGateway {
+        return $this->context->data->mint->getGateway($account);
+    }
 }

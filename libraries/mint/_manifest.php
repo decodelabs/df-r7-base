@@ -14,6 +14,8 @@ use df\arch;
 
 // Gateway
 interface IGateway {
+    public function isTesting(): bool;
+
     public function getSupportedCurrencies(): array;
     public function isCurrencySupported($code): bool;
 
@@ -153,7 +155,7 @@ trait TSubscriptionPlanControllerGateway {
                 unset($planList[$plan->getId()]);
                 yield $action => $plan;
             } else {
-                yield 'create' => $this->createPlan($plan);
+                yield 'create' => $this->addPlan($plan);
             }
         }
 
@@ -374,4 +376,15 @@ interface ICurrency extends core\IStringProvider {
 // Webhook
 interface IWebhookNode extends arch\node\IRestApiNode {
     public function getGateway(): IGateway;
+}
+
+
+
+interface IModelConfig extends core\IConfig {
+    public function isEnabled(bool $flag=null);
+    public function getPrimaryAccount(): ?string;
+    public function getPrimarySettings(): ?core\collection\ITree;
+    public function getSubscriptionAccount(): ?string;
+    public function getSubscriptionSettings(): ?core\collection\ITree;
+    public function getSettingsFor(string $account): ?core\collection\ITree;
 }
