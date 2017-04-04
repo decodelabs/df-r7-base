@@ -188,7 +188,7 @@ class Unit extends axis\unit\table\Base {
         return null;
     }
 
-    public function cancel(mint\IGateway $gateway, opal\record\IRecord $subscription, bool $atPeriodEnd=false) {
+    public function cancel(opal\record\IRecord $subscription, bool $atPeriodEnd=false) {
         if($subscription['endDate'] && $subscription['endDate']->isPast()) {
             return $subscription;
         }
@@ -202,6 +202,7 @@ class Unit extends axis\unit\table\Base {
 
         if($subscription['remoteId']) {
             try {
+                $gateway = $this->_model->getSubscriptionGateway();
                 $sub = $gateway->cancelSubscription($subscription['remoteId'], $atPeriodEnd);
 
                 $subscription->import([
