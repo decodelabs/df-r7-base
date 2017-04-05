@@ -49,6 +49,6 @@ class SelectorDelegate extends arch\node\form\SelectorDelegate {
     }
 
     protected function _getResultDisplayName($result) {
-        return $this->_scaffold->getRecordName($result);
+        return $this->_scaffold->getRecordDescription($result);
     }
 }

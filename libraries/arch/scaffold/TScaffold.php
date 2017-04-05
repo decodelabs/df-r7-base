@@ -178,7 +178,7 @@ trait TScaffold_RecordDataProvider {
             $record = $this->getRecord();
         }
 
-        return $this->html->toText($this->describeRecord($record));
+        return $this->describeRecord($record);
     }
 
     protected function describeRecord($record) {
@@ -833,10 +833,10 @@ trait TScaffold_SectionProvider {
         return (new arch\scaffold\component\HeaderBar($this, 'section', $args))
             ->setTitle(
                 $this instanceof IRecordDataProviderScaffold ?
-                    $this->_(
-                        ucfirst($this->getRecordItemName()).': %n%',
-                        ['%n%' => $this->format->shorten($this->getRecordDescription(), 50)]
-                    ) :
+                    [
+                        ucfirst($this->getRecordItemName()).': ',
+                        $this->getRecordDescription()
+                    ] :
                     $this->getDirectoryTitle()
             )
             ->setIcon($this->getRecordIcon())
