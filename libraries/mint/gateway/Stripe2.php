@@ -169,6 +169,14 @@ class Stripe2 extends Base implements
     public function fetchCustomer(string $customerId): mint\ICustomer {
         return $this->_execute(function() use($customerId) {
             $data = $this->_mediator->fetchCustomer($customerId);
+
+            if($data['deleted']) {
+                throw core\Error::{'EApi,ECustomer,ENotFound'}([
+                    'message' => 'Customer has been deleted',
+                    'data' => $data
+                ]);
+            }
+
             return $this->_wrapCustomer($data);
         }, 'ECustomer');
     }
