@@ -12,6 +12,8 @@ use df\mint;
 
 class DataList extends core\collection\Tree implements IDataList {
 
+    protected const PROPAGATE_TYPE = false;
+
     protected $_total = 0;
     protected $_hasMore = false;
     protected $_startingAfter;

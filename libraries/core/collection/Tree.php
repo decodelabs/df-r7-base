@@ -10,6 +10,8 @@ use df\core;
 
 class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection, \Serializable, core\IDumpable {
 
+    protected const PROPAGATE_TYPE = true;
+
     use core\TValueMap;
     use core\TStringValueProvider;
 
@@ -249,7 +251,12 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
             $this->_collection[$key]->_collection = [];
             $this->_collection[$key]->import($value);
         } else {
-            $class = get_class($this);
+            if(static::PROPAGATE_TYPE) {
+                $class = get_class($this);
+            } else {
+                $class = __CLASS__;
+            }
+
             $this->_collection[$key] = new $class($value, null, $extractArray);
         }
 
@@ -258,7 +265,12 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
 
     public function __get($key) {
         if(!array_key_exists($key, $this->_collection)) {
-            $class = get_class($this);
+            if(static::PROPAGATE_TYPE) {
+                $class = get_class($this);
+            } else {
+                $class = __CLASS__;
+            }
+
             $this->_collection[$key] = new $class();
         }
 
@@ -351,7 +363,11 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
 
     public function push(...$values) {
-        $class = get_class($this);
+        if(static::PROPAGATE_TYPE) {
+            $class = get_class($this);
+        } else {
+            $class = __CLASS__;
+        }
 
         array_walk($values, function(&$value) use($class) {
             $value = new $class($value);
@@ -366,7 +382,11 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
 
     public function unshift(...$values) {
-        $class = get_class($this);
+        if(static::PROPAGATE_TYPE) {
+            $class = get_class($this);
+        } else {
+            $class = __CLASS__;
+        }
 
         array_walk($values, function(&$value) use($class) {
             $value = new $class($value);

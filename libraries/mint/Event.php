@@ -12,6 +12,8 @@ use df\mesh;
 
 class Event extends core\collection\Tree implements IEvent {
 
+    protected const PROPAGATE_TYPE = false;
+
     protected $_source;
     protected $_action;
 

@@ -12,6 +12,8 @@ use df\mint;
 
 class DataObject extends core\collection\Tree implements IDataObject {
 
+    protected const PROPAGATE_TYPE = false;
+
     protected $_type;
     protected $_request;
 
