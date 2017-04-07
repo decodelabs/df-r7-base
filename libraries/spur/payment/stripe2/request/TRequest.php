@@ -605,7 +605,7 @@ trait TRequest_TrialEnd {
 
     protected function _applyTrialEnd(array &$output) {
         if($this->_trialEnd) {
-            $output['trial_end'] = $this->_trialEnd->toTimestamp();
+            $output['trial_end'] = $this->_trialEnd->isPast() ? 'now' : $this->_trialEnd->toTimestamp();
         }
     }
 }
