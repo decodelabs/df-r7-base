@@ -211,27 +211,23 @@ class Base implements INode, core\IDumpable {
         }
 
 
-        if($this->_callback) {
-            $output = $this->_callback->invoke($this);
-        } else {
-            $func = $this->getDispatchMethodName();
+        if($output === null) {
+            if($this->_callback) {
+                $output = $this->_callback->invoke($this);
+            } else {
+                $func = $this->getDispatchMethodName();
 
-            if($output === null && $func) {
-                try {
-                    $output = $this->$func();
-                } catch(arch\IForcedResponse $e) {
-                    $output = $e->getResponse();
-                } catch(\Throwable $e) {
-                    $output = $this->handleException($e);
+                if($func !== null) {
+                    try {
+                        $output = $this->$func();
+                    } catch(arch\IForcedResponse $e) {
+                        $output = $e->getResponse();
+                    } catch(\Throwable $e) {
+                        $output = $this->handleException($e);
+                    }
+                } else {
+                    $output = $this->_handleNoDispatchMethod();
                 }
-            }
-
-            if($func === null) {
-                throw core\Error::ENotFound([
-                    'message' => 'No handler could be found for node: '.
-                        $this->context->location->toString(),
-                    'http' => 404
-                ]);
             }
         }
 
@@ -246,7 +242,7 @@ class Base implements INode, core\IDumpable {
         return $output;
     }
 
-    public function getDispatchMethodName() {
+    public function getDispatchMethodName(): ?string {
         $type = $this->context->location->getType();
 
         if($this->getRunMode() == 'Http') {
@@ -287,6 +283,19 @@ class Base implements INode, core\IDumpable {
         }
 
         return null;
+    }
+
+    protected function _handleNoDispatchMethod() {
+        if($this->context->request->getType() == 'Htm') {
+            $request = clone $this->context->request->setType('Html');
+            return $this->context->http->redirect($request);
+        }
+
+        throw core\Error::ENotFound([
+            'message' => 'No handler could be found for node: '.
+                $this->context->location->toString(),
+            'http' => 404
+        ]);
     }
 
     public function handleException(\Throwable $e) {

@@ -536,7 +536,7 @@ abstract class Form extends Base implements IFormNode {
 
 
 // Node dispatch
-    public function getDispatchMethodName() {
+    public function getDispatchMethodName(): ?string {
         $method = ucfirst(strtolower($this->context->application->getHttpRequest()->getMethod()));
 
         if($method == 'Head') {
@@ -545,15 +545,22 @@ abstract class Form extends Base implements IFormNode {
 
         $func = 'handle'.$this->context->request->getType().$method.'Request';
 
-        if(!method_exists($this, $func)) {
-            throw core\Error::EBadRequest([
-                'message' => 'Form node '.$this->context->location->getLiteralPath().' does not support '.
-                    $this->context->application->getHttpRequest()->getMethod().' http method',
-                'http' => 405
-            ]);
+        return method_exists($this, $func) ?
+            $func : null;
+    }
+
+    protected function _handleNoDispatchMethod() {
+        if($this->context->request->getType() == 'Htm') {
+            $request = clone $this->context->request->setType('Html');
+            return $this->context->http->redirect($request)
+                ->isPermanent(true);
         }
 
-        return $func;
+        throw core\Error::EBadRequest([
+            'message' => 'Form node '.$this->context->location->getLiteralPath().' does not support '.
+                $this->context->application->getHttpRequest()->getMethod().' http method',
+            'http' => 405
+        ]);
     }
 
     protected function _afterDispatch($response) {

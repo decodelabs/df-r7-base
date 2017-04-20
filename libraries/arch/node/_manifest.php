@@ -24,7 +24,7 @@ interface INode extends core\IContextAware, user\IAccessLock, arch\IResponseForc
     public function dispatch();
 
     public function shouldOptimize(bool $flag=null);
-    public function getDispatchMethodName();
+    public function getDispatchMethodName(): ?string;
     public function handleException(\Throwable $e);
 
     public function getSitemapEntries();

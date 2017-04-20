@@ -23,7 +23,7 @@ abstract class RestApi extends Base implements IRestApiNode {
         return parent::dispatch();
     }
 
-    public function getDispatchMethodName() {
+    public function getDispatchMethodName(): ?string {
         return '_handleRequest';
     }
 
