@@ -323,12 +323,18 @@ class SassBridge implements ISassBridge {
             $imports = [];
 
             foreach($matches[1] as $path) {
+                $activePath = $path;
+
+                if(!preg_match('/\.s(a|c)ss$/i', $activePath)) {
+                    $activePath .= '.'.$this->_type;
+                }
+
                 if($path{0} == '/') {
-                    $importPath = $path;
-                } else if(false !== strpos($path, '://')) {
-                    $importPath = $this->_uriToPath($path);
+                    $importPath = $activePath;
+                } else if(false !== strpos($activePath, '://')) {
+                    $importPath = $this->_uriToPath($activePath);
                 } else {
-                    $importPath = realpath(dirname($filePath).'/'.$path);
+                    $importPath = realpath(dirname($filePath).'/'.$activePath);
                 }
 
                 if(empty($importPath)) {
