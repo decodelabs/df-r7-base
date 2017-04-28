@@ -164,12 +164,22 @@ class Html implements arch\IDirectoryHelper {
         return new aura\html\Tag($name, $attributes);
     }
 
-    public function element($name, $content=null, array $attributes=[]) {
+    public function element($name, $content=null, array $attributes=[]): aura\html\IElement {
         return new aura\html\Element($name, $content, $attributes);
     }
 
-    public function elementContentContainer($content=null) {
+    public function elementContentContainer($content=null): aura\html\IElementContent {
         return new aura\html\ElementContent($content);
+    }
+
+    public function elements(iterable $list, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation {
+        return aura\html\ElementContent::normalize(function() use($list, $name, $callback, $attributes) {
+            foreach($list as $item) {
+                yield $this->__invoke($name, function($el) use($item, $callback) {
+                    return $callback($item, $el);
+                }, $attributes);
+            }
+        });
     }
 
     public function span($content, array $attributes=[]) {
