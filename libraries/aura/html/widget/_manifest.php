@@ -14,38 +14,44 @@ use df\user;
 interface IElementContentWrapper extends \ArrayAccess, \Countable {}
 
 interface IRendererContext extends core\collection\IMappedCollection {
-    public function setComponent(arch\IComponent $component);
-    public function getComponent();
-    public function getWidget();
+    public function setComponent(?arch\IComponent $component);
+    public function getComponent(): ?arch\IComponent;
+    public function getWidget(): aura\html\widget\IWidget;
     public function getKey();
-    public function getCounter();
-    public function getCellTag();
-    public function getRowTag();
+    public function getCounter(): int;
+
+    public function getCellTag(): ?aura\html\ITag;
+    public function getRowTag(): ?aura\html\ITag;
+    public function getFieldTag(): ?aura\html\ITag;
+
     public function addDivider();
-    public function setDivider($label);
-    public function getDivider();
+    public function setDivider(?string $label);
+    public function getDivider(): ?string;
+
     public function prepareRow($row);
     public function reset();
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
     public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
     public function renderCell($value, $renderer=null);
     public function skipRow();
-    public function shouldSkipRow();
+    public function skipCells(int $count=1);
+    public function shouldSkipRow(): bool;
+    public function shouldSkipCells(): bool;
 }
 
 interface IField {
-    public function getKey();
-    public function setName($name);
-    public function getName();
+    public function getKey(): string;
+    public function setName(string $name);
+    public function getName(): string;
 
-    public function addLabel($key, $label=null);
-    public function removeLabel($key);
-    public function getLabels();
-    public function getHeaderList();
+    public function addLabel(string $key, string $label=null);
+    public function removeLabel(string $key);
+    public function getLabels(): array;
+    public function getHeaderList(): array;
 
-    public function setRenderer($renderer);
-    public function getRenderer();
-    public function render($data, aura\html\widget\IRendererContext $renderContext);
+    public function setRenderer(callable $renderer=null);
+    public function getRenderer(): ?callable;
+    public function render($data, IRendererContext $renderContext);
 }
 
 
@@ -57,15 +63,17 @@ interface IWidgetShortcutProvider {
 
 
 interface IWidget extends aura\html\IElementRepresentation, aura\html\ITagDataContainer, core\lang\IChainable {
-    public function getWidgetName();
-    public function getTag();
-    public function esc($value);
-    public function isInline();
-    public function isBlock();
+    public function getWidgetName(): string;
+    public function getTag(): aura\html\ITag;
+    public function setContext(arch\IContext $context);
+    public function getContext(): arch\IContext;
+    public function esc($value): string;
+    public function isTagInline(): bool;
+    public function isTagBlock(): bool;
 }
 
 interface IWidgetProxy {
-    public function toWidget();
+    public function toWidget(): IWidget;
 }
 
 

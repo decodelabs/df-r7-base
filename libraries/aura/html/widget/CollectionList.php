@@ -301,7 +301,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         ]))->render());
                     }
 
-                    if($renderContext->divider !== true) {
+                    if(!empty($renderContext->divider)) {
                         $content->append((new aura\html\Element('tr.divider', [
                             new aura\html\Element(
                                 'td',

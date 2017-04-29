@@ -135,16 +135,16 @@ interface ITextProducer extends IParser {
 }
 
 interface IStringEscapeHandler {
-    public function esc($value);
+    public function esc($value): string;
 }
 
 trait THtmlStringEscapeHandler {
 
-    public function esc($value) {
+    public function esc($value): string {
         try {
             return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
         } catch(\Throwable $e) {
-            return $value;
+            return (string)$value;
         }
     }
 }

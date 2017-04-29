@@ -61,8 +61,8 @@ interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, 
     // Name
     public function setName($name);
     public function getName();
-    public function isInline();
-    public function isBlock();
+    public function isInline(): bool;
+    public function isBlock(): bool;
 
     // Render count
     public function getRenderCount();
@@ -89,7 +89,7 @@ interface IElementContent extends IElementRepresentation, core\lang\IChainable {
     public function setParentRenderContext($parent);
     public function getParentRenderContext();
     public function getElementContentString();
-    public function esc($value);
+    public function esc($value): string;
 }
 
 interface IElementContentCollection extends
@@ -147,7 +147,7 @@ trait TElementContent {
 
             if($value instanceof aura\html\widget\IWidget
             || $value instanceof aura\html\widget\IWidgetProxy) {
-                $isBlock = $value->isBlock();
+                $isBlock = $value->isTagBlock();
                 $stringValue = trim($stringValue);
             } else if($value instanceof ITag) {
                 $isBlock = $value->isBlock();

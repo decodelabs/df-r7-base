@@ -106,11 +106,11 @@ class Tag implements ITag, core\IDumpable {
         return $this->_name;
     }
 
-    public function isInline() {
+    public function isInline(): bool {
         return in_array(strtolower($this->_name), self::INLINE_TAGS);
     }
 
-    public function isBlock() {
+    public function isBlock(): bool {
         return !$this->isInline();
     }
 

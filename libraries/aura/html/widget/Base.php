@@ -19,9 +19,7 @@ abstract class Base implements IWidget {
 
     const PRIMARY_TAG = 'div';
 
-    private $_widgetName;
-
-    public static function factory(arch\IContext $context, $name, array $args=[]) {
+    public static function factory(arch\IContext $context, $name, array $args=[]): IWidget {
         $name = ucfirst($name);
         $class = 'df\\aura\\html\\widget\\'.$name;
 
@@ -44,10 +42,11 @@ abstract class Base implements IWidget {
         $this->setContext($context);
     }
 
-    public function getWidgetName() {
-        if(empty($this->_widgetName)) {
-            $parts = explode('\\', get_class($this));
-            $this->_widgetName = array_pop($parts);
+    private $_widgetName;
+
+    public function getWidgetName(): string {
+        if($this->_widgetName === null) {
+            $this->_widgetName = (new \ReflectionClass($this))->getShortName();
         }
 
         return $this->_widgetName;
@@ -69,7 +68,7 @@ abstract class Base implements IWidget {
         }
     }
 
-    protected function _renderStringError($e) {
+    protected function _renderStringError($e): string {
         core\debug()->exception($e);
         core\log\Manager::getInstance()->logException($e);
 

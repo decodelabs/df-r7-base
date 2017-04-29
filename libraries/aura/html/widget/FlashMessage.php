@@ -22,7 +22,7 @@ class FlashMessage extends Base {
     }
 
 
-    protected function _getPrimaryTagType() {
+    protected function _getPrimaryTagType(): string {
         if($this->_message->getLink() !== null) {
             return 'a';
         } else {

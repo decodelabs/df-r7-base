@@ -351,13 +351,8 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
 
 // Escaping
-    public function esc($value, $default=null) {
+    public function esc($value): string {
         $this->_checkView();
-
-        if($value === null) {
-            $value = $default;
-        }
-
         return $this->view->esc($value);
     }
 

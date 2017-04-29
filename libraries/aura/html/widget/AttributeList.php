@@ -96,7 +96,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
                 ]))->render());
             }
 
-            if($renderContext->divider !== true) {
+            if(!empty($renderContext->divider)) {
                 $rows->push((new aura\html\Element('tr.divider', [
                     new aura\html\Element(
                         'td',

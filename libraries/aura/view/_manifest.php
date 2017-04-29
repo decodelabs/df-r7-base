@@ -55,7 +55,7 @@ interface ISlotContainer {
     public function getSlot(string $key, $default=null);
     public function renderSlot(string $key, $default=null);
     public function removeSlot(string $key);
-    public function esc($value);
+    public function esc($value): string;
 }
 
 interface ISlotProvider extends ISlotContainer {
@@ -273,7 +273,7 @@ interface ITemplate extends IContentProvider, ISlotProvider, \ArrayAccess, IRend
     public function isLayout();
 
     // Escaping
-    public function esc($value, $default=null);
+    public function esc($value): string;
 
     // Helpers
     public function __get($member);

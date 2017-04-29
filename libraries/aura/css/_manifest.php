@@ -8,22 +8,17 @@ namespace df\aura\css;
 use df;
 use df\core;
 use df\aura;
+use df\link;
 
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-
-
-// Interfaces
 interface IProcessor {
     public function process($cssPath);
 }
 
 
 interface ISassBridge {
-    public function getHttpResponse();
-    public function getMapHttpResponse();
-    public function getCompiledPath();
-    public function compile();
+    public function getHttpResponse(): link\http\IResponse;
+    public function getMapHttpResponse(): link\http\IResponse;
+    public function getCompiledPath(): string;
+    public function compile(): void;
 }

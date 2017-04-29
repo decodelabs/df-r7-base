@@ -17,7 +17,7 @@ class Field implements aura\html\widget\IField, core\IDumpable {
     public $labels = [];
     public $renderer;
 
-    public function __construct($key, $name, $renderer=null) {
+    public function __construct(string $key, string $name, callable $renderer=null) {
         $this->key = $key;
         $this->setName($name);
         $this->setRenderer($renderer);
@@ -25,23 +25,23 @@ class Field implements aura\html\widget\IField, core\IDumpable {
 
 
 // Key
-    public function getKey() {
+    public function getKey(): string {
         return $this->key;
     }
 
 // Name
-    public function setName($name) {
+    public function setName(string $name) {
         $this->name = $name;
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->name;
     }
 
 
 // Labels
-    public function addLabel($key, $label=null) {
+    public function addLabel(string $key, string $label=null) {
         if(empty($label)) {
             $label = flex\Text::formatLabel($key);
         }
@@ -50,21 +50,21 @@ class Field implements aura\html\widget\IField, core\IDumpable {
         return $this;
     }
 
-    public function removeLabel($key) {
+    public function removeLabel(string $key) {
         unset($this->labels[$key]);
         return $this;
     }
 
-    public function getLabels() {
+    public function getLabels(): array {
         return $this->labels;
     }
 
-    public function getHeaderList() {
+    public function getHeaderList(): array {
         return array_merge([$this->key => $this->name], $this->labels);
     }
 
 // Renderer
-    public function setRenderer($renderer=null) {
+    public function setRenderer(callable $renderer=null) {
         if($renderer !== null) {
             $renderer = core\lang\Callback::factory($renderer);
         }
@@ -73,7 +73,7 @@ class Field implements aura\html\widget\IField, core\IDumpable {
         return $this;
     }
 
-    public function getRenderer() {
+    public function getRenderer(): ?callable {
         return $this->renderer;
     }
 

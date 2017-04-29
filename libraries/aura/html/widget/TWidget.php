@@ -25,12 +25,12 @@ trait TWidget {
         return $this;
     }
 
-    public function getContext() {
+    public function getContext(): arch\IContext {
         return $this->_context;
     }
 
 
-    public function getTag() {
+    public function getTag(): aura\html\ITag {
         if(!$this->_primaryTag) {
             $this->_primaryTag = new aura\html\Tag($this->_getPrimaryTagType());
             $this->_primaryTag->setClasses(['w-'.lcfirst($this->getWidgetName())]);
@@ -39,7 +39,7 @@ trait TWidget {
         return $this->_primaryTag;
     }
 
-    protected function _getPrimaryTagType() {
+    protected function _getPrimaryTagType(): string {
         if(!static::PRIMARY_TAG) {
             throw core\Error::EDefinition(
                 'Primary tag name has not been declared for '.$this->getWidgetName().' widget type'
@@ -49,11 +49,11 @@ trait TWidget {
         return static::PRIMARY_TAG;
     }
 
-    public function isInline() {
+    public function isTagInline(): bool {
         return $this->getTag()->isInline();
     }
 
-    public function isBlock() {
+    public function isTagBlock(): bool {
         return $this->getTag()->isBlock();
     }
 

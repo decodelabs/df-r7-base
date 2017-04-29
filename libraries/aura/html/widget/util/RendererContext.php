@@ -40,16 +40,16 @@ class RendererContext implements aura\html\widget\IRendererContext {
         }
     }
 
-    public function setComponent(arch\IComponent $component) {
+    public function setComponent(?arch\IComponent $component) {
         $this->component = $component;
         return $this;
     }
 
-    public function getComponent() {
+    public function getComponent(): ?arch\IComponent {
         return $this->component;
     }
 
-    public function getWidget() {
+    public function getWidget(): aura\html\widget\IWidget {
         return $this->_widget;
     }
 
@@ -61,43 +61,42 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this->field;
     }
 
-    public function getCounter() {
+    public function getCounter(): int {
         return $this->counter;
     }
 
-    public function getCellTag() {
+    public function getCellTag(): ?aura\html\ITag {
         return $this->cellTag;
     }
 
-    public function getRowTag() {
+    public function getRowTag(): ?aura\html\ITag {
         return $this->rowTag;
     }
 
-    public function getFieldTag() {
+    public function getFieldTag(): ?aura\html\ITag {
         return $this->fieldTag;
     }
 
     public function addDivider() {
         if($this->divider === null) {
-            $this->divider = true;
+            $this->divider = '';
         }
 
         return $this;
     }
 
-    public function setDivider($label) {
+    public function setDivider(?string $label) {
         $this->divider = $label;
         return $this;
     }
 
-    public function getDivider() {
+    public function getDivider(): ?string {
         return $this->divider;
     }
 
     public function prepareRow($row) {
         if($this->_rowProcessor) {
-            $c = $this->_rowProcessor;
-            $row = $c($row);
+            $row = core\lang\Callback::call($this->_rowProcessor, $row);
         }
 
         return $row;
@@ -201,19 +200,19 @@ class RendererContext implements aura\html\widget\IRendererContext {
 
     public function skipRow() {
         $this->_skipRow = true;
-        return;
-    }
-
-    public function skipCells($count=1) {
-        $this->_skipCells = (int)$count;
         return $this;
     }
 
-    public function shouldSkipRow() {
+    public function skipCells(int $count=1) {
+        $this->_skipCells = $count;
+        return $this;
+    }
+
+    public function shouldSkipRow(): bool {
         return $this->_skipRow;
     }
 
-    public function shouldSkipCells() {
+    public function shouldSkipCells(): bool {
         return $this->_skipCells;
     }
 

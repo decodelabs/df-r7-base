@@ -90,12 +90,6 @@ abstract class HeaderBar extends Base {
 
 
 // Render
-    /*
-    public function toWidget() {
-        return $this->render();
-    }
-    */
-
     protected function _execute() {
         $output = [];
 

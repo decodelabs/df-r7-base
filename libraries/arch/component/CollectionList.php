@@ -184,7 +184,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy {
 
 
 // Render
-    public function toWidget() {
+    public function toWidget(): aura\html\widget\IWidget {
         return $this->render();
     }
 

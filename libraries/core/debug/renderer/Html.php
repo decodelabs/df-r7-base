@@ -311,25 +311,19 @@ class Html extends Base {
         return $output;
     }
 
-    public function esc($string, $default=null) {
-        if(!strlen($string)) {
-            $string = $default;
-        }
-
+    public function esc($string): string {
         $conv = htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 
-        if(strlen($conv)) {
-            $string = $conv;
-        } else {
-            $conv = htmlspecialchars($string, ENT_QUOTES);
-
-            if(strlen($conv)) {
-                $string = $conv;
-            } else {
-                $string = str_replace(['&', '<', '>'], ['&amp;', '&lt;', '&gt;'], $string);
-            }
+        if(!empty($conv)) {
+            return $conv;
         }
 
-        return $string;
+        $conv = htmlspecialchars($string, ENT_QUOTES);
+
+        if(!empty($conv)) {
+            return $conv;
+        }
+
+        return str_replace(['&', '<', '>'], ['&amp;', '&lt;', '&gt;'], $string);
     }
 }

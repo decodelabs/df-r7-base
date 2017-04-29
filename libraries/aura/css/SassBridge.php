@@ -61,7 +61,7 @@ class SassBridge implements ISassBridge {
     }
 
 
-    public function getHttpResponse() {
+    public function getHttpResponse(): link\http\IResponse {
         $path = $this->getCompiledPath();
 
         $output = $this->context->http->fileResponse($path);
@@ -79,7 +79,7 @@ class SassBridge implements ISassBridge {
         return $output;
     }
 
-    public function getMapHttpResponse() {
+    public function getMapHttpResponse(): link\http\IResponse {
         $path = $this->getCompiledPath().'.map';
 
         $output = $this->context->http->fileResponse($path);
@@ -93,7 +93,7 @@ class SassBridge implements ISassBridge {
         return $output;
     }
 
-    public function getCompiledPath() {
+    public function getCompiledPath(): string {
         $filePath = $this->_workDir.'/'.$this->_key.'.css';
 
         if(!is_file($filePath)) {
@@ -127,7 +127,7 @@ class SassBridge implements ISassBridge {
         return $filePath;
     }
 
-    public function compile() {
+    public function compile(): void {
         $lockFile = new core\fs\LockFile($this->_workDir, 60);
         $lockFile->setFileName($this->_key.'.lock');
 
