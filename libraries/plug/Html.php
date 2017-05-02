@@ -174,9 +174,9 @@ class Html implements arch\IDirectoryHelper {
 
     public function elements(iterable $list, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation {
         return aura\html\ElementContent::normalize(function() use($list, $name, $callback, $attributes) {
-            foreach($list as $item) {
-                yield $this->__invoke($name, function($el) use($item, $callback) {
-                    return $callback($item, $el);
+            foreach($list as $key => $item) {
+                yield $this->__invoke($name, function($el) use($key, $item, $callback) {
+                    return $callback($item, $el, $key);
                 }, $attributes);
             }
         });
