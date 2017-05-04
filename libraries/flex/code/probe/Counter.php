@@ -16,9 +16,9 @@ class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayA
     use core\io\TAcceptTypeProcessor;
 
     const TEXT_TYPES = [
-        'as', 'atom', 'cgi', 'css', 'cs', 'dtd', 'htaccess', 'htc', 'htm', 'html', 'js', 'json', 'mathml',
-        'php', 'rdf', 'smd', 'sh', 'style', 'svg', 'sql', 'template', 'txt', 'xhtml', 'xht', 'xsd',
-        'xsl', 'xslt', 'xml'
+        'as', 'atom', 'cgi', 'css', 'cs', 'dtd', 'htaccess', 'htc', 'htm', 'html', 'js', 'json',
+        'less', 'mathml', 'php', 'rdf', 'sass', 'scss', 'smd', 'sh', 'style', 'svg', 'sql',
+        'template', 'txt', 'xhtml', 'xht', 'xsd', 'xsl', 'xslt', 'xml', 'yml'
     ];
 
     const BLACKLIST = ['gitignore', 'loc'];
