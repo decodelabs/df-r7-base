@@ -10,28 +10,19 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class WidgetContentProvider extends aura\html\ElementContent implements aura\view\ICollapsibleContentProvider, aura\html\widget\IWidgetShortcutProvider {
+class WidgetContentProvider extends aura\html\Element implements aura\view\ICollapsibleContentProvider, aura\html\widget\IWidgetShortcutProvider {
 
     use core\TContextAware;
     use aura\view\TView_DeferredRenderable;
 
-    protected $_wrapperTag = 'section';
+    protected $_name = 'section';
 
     public function __construct(arch\IContext $context) {
         $this->context = $context;
     }
 
-    public function wrapWith(?string $tag) {
-        $this->_wrapperTag = $tag;
-        return $this;
-    }
-
-    public function getWrapperTag(): ?string {
-        return $this->_wrapperTag;
-    }
-
     public function collapse() {
-        $output = parent::render();
+        $output = aura\html\ElementContent::normalize($this->_collection);
         $this->clear();
         $this->push($output);
 
@@ -46,16 +37,6 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
 
     public function toResponse() {
         return $this->getView();
-    }
-
-    public function render() {
-        $output = parent::render();
-
-        if($this->_wrapperTag !== null) {
-            $output = $this->context->html($this->_wrapperTag, $output);
-        }
-
-        return $output;
     }
 
 
