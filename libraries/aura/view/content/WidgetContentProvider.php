@@ -31,7 +31,7 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
     }
 
     public function collapse() {
-        $output = $this->render();
+        $output = parent::render();
         $this->clear();
         $this->push($output);
 
