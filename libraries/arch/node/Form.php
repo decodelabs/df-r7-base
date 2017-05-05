@@ -251,6 +251,10 @@ abstract class Form extends Base implements IFormNode {
 
         $this->content = new aura\view\content\WidgetContentProvider($this->view->getContext());
 
+        $classes = $this->request->getControllerParts();
+        $classes[] = $this->request->getNode();
+        $this->content->addClasses(array_map([$this->format, 'slug'], $classes));
+
         if($setContentProvider) {
             $this->view->setContentProvider($this->content);
         }
