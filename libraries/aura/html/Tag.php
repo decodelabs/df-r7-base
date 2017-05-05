@@ -334,6 +334,10 @@ class Tag implements ITag, core\IDumpable {
         $output = [];
 
         foreach(core\collection\Util::leaves($classes) as $class) {
+            if(empty($class)) {
+                continue;
+            }
+            
             $class = $this->esc($class);
 
             if(false !== strpos($class, ' ')) {
