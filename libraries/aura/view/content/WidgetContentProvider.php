@@ -16,6 +16,7 @@ class WidgetContentProvider extends aura\html\Element implements aura\view\IColl
     use aura\view\TView_DeferredRenderable;
 
     protected $_name = 'section';
+    protected $_wrap = true;
 
     public function __construct(arch\IContext $context) {
         $this->context = $context;
@@ -29,6 +30,15 @@ class WidgetContentProvider extends aura\html\Element implements aura\view\IColl
         return $this;
     }
 
+    public function shouldWrap(bool $flag=null) {
+        if($flag !== null) {
+            $this->_wrap = $flag;
+            return $this;
+        }
+
+        return $this->_wrap;
+    }
+
 
 // Renderable
     public function getView() {
@@ -37,6 +47,14 @@ class WidgetContentProvider extends aura\html\Element implements aura\view\IColl
 
     public function toResponse() {
         return $this->getView();
+    }
+
+    public function render() {
+        if($this->_wrap) {
+            return parent::render();
+        } else {
+            return aura\html\ElementContent::normalize($this->_collection);
+        }
     }
 
 
