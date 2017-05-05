@@ -15,10 +15,20 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
     use core\TContextAware;
     use aura\view\TView_DeferredRenderable;
 
+    protected $_wrapperTag = 'section';
+
     public function __construct(arch\IContext $context) {
         $this->context = $context;
     }
 
+    public function wrapWith(?string $tag) {
+        $this->_wrapperTag = $tag;
+        return $this;
+    }
+
+    public function getWrapperTag(): ?string {
+        return $this->_wrapperTag;
+    }
 
     public function collapse() {
         $output = $this->render();
@@ -36,6 +46,16 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
 
     public function toResponse() {
         return $this->getView();
+    }
+
+    public function render() {
+        $output = parent::render();
+
+        if($this->_wrapperTag !== null) {
+            $output = $this->context->html($this->_wrapperTag, $output);
+        }
+
+        return $output;
     }
 
 
