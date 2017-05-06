@@ -783,6 +783,8 @@ class Html extends Base implements IHtmlView, core\IDumpable {
                 $attr[] = 'data-'.$key.'="'.$this->esc($value).'"';
             }
 
+            $attr[] = 'data-'.df\Launchpad::$environmentMode;
+
             $output .= '    <meta id="custom-view-data" '.implode(' ', $attr).' />'."\n";
         }
 
