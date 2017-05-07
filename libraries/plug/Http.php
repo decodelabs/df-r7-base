@@ -189,9 +189,9 @@ class Http implements arch\IDirectoryHelper {
         return (string)$view->getContentProvider()->setRenderTarget($view);
     }
 
-    public function jsonResponse($data) {
+    public function jsonResponse($data, int $flags=0) {
         return $this->streamResponse(
-            $this->context->data->toJson($data),
+            $this->context->data->toJson($data, $flags),
             'application/json'
         );
     }
