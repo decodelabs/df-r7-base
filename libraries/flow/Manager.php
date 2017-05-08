@@ -564,10 +564,14 @@ class Manager implements IManager, core\IShutdownAware {
         }
 
         if($groupId === null) {
+            if(($manifest[$listId] ?? false) === false) {
+                return false;
+            }
+
             return true;
         }
 
-        return isset($manifest[$listId][$groupId]);
+        return $manifest[$listId][$groupId] ?? false;
     }
 
 
