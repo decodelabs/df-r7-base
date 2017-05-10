@@ -137,6 +137,20 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this;
     }
 
+    public function iterateRow($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
+        $this->counter++;
+
+        $this->key = $key;
+        $this->cellTag = $cellTag;
+        $this->rowTag = $rowTag;
+        $this->fieldTag = $fieldTag;
+        $this->_skipRow = false;
+        $this->_skipCells = 0;
+        $this->divider = null;
+
+        return $this;
+    }
+
     public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
         $this->field = $field;
         $this->cellTag = $cellTag;

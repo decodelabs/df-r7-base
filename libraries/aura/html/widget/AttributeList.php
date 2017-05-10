@@ -81,7 +81,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         $thTag = new aura\html\Element('th');
         $tdTag = new aura\html\Tag('td');
 
-        $renderContext->iterate($key, $tdTag, $trTag, $thTag);
+        $renderContext->iterateRow($key, $tdTag, $trTag, $thTag);
         $renderContext->iterateField($key, $tdTag, $trTag, $thTag);
         $renderContext->shouldConvertNullToNa(!$this->_skipEmptyRows);
         $value = $renderContext->renderCell($data, $field->renderer);
