@@ -78,13 +78,15 @@ trait TQuery_ParentAware {
         if(!$this->_parent instanceof IParentQueryAware) {
             return false;
         }
+
         $gp = $this->_parent;
-        $sourceId = $source->getId();
+        $sourceId = $source->getId().' as '.$source->getAlias();
 
         do {
             $gp = $gp->getParentQuery();
+            $gpSource = $gp->getSource();
 
-            if($gp->getSource()->getId() == $sourceId) {
+            if($gpSource->getId().' as '.$gpSource->getAlias() == $sourceId) {
                 return true;
             }
 
