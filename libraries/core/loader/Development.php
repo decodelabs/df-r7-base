@@ -40,7 +40,8 @@ class Development extends Base {
                         $output[] = $package->path.'/'.$section.'/'.$pathName.'.php';
                     }
 
-                    return $output;
+                    array_unshift($parts, $section);
+                    //return $output;
             }
         }
 
