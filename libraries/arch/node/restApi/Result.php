@@ -107,8 +107,14 @@ class Result implements arch\node\IRestApiResult {
             $data['validation'] = $this->validator->data->toArrayDelimitedErrorSet();
         }
 
+        $flags = 0;
+
+        if(!df\Launchpad::isProduction()) {
+            $flags = \JSON_PRETTY_PRINT;
+        }
+        
         $response = new link\http\response\Stream(
-            flex\Json::toString($data),
+            flex\Json::toString($data, $flags),
             'application/json'
         );
 
