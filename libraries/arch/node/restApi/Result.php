@@ -98,6 +98,11 @@ class Result implements arch\node\IRestApiResult {
                 'key' => null
             ];
 
+            if(!df\Launchpad::isProduction()) {
+                $data['error']['file'] = core\fs\Dir::stripPathLocation($this->_exception->getFile());
+                $data['error']['line'] = $this->_exception->getLine();
+            }
+
             if($this->_exception instanceof core\IError) {
                 $data['error']['key'] = $this->_exception->getKey();
             }
@@ -112,7 +117,7 @@ class Result implements arch\node\IRestApiResult {
         if(!df\Launchpad::isProduction()) {
             $flags = \JSON_PRETTY_PRINT;
         }
-        
+
         $response = new link\http\response\Stream(
             flex\Json::toString($data, $flags),
             'application/json'
