@@ -81,6 +81,24 @@ class Result implements arch\node\IRestApiResult {
         return $this->_exception;
     }
 
+    public function complete(callable $success, callable $failure=null) {
+        if($this->isValid()) {
+            try {
+                $this->value = $success($this->validator);
+            } catch(\Throwable $e) {
+                $this->_exception = $e;
+            }
+        } else if($failure) {
+            try {
+                $failure($this->validator);
+            } catch(\Throwable $e) {
+                $this->_exception = $e;
+            }
+        }
+
+        return $this;
+    }
+
 
 // Response
     public function toResponse() {

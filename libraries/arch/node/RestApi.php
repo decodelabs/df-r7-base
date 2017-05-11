@@ -72,6 +72,10 @@ abstract class RestApi extends Base implements IRestApiNode {
         return $this->_handleResponse($result);
     }
 
+    public function newResult($value=null, core\validate\IHandler $validator=null) {
+        return new arch\node\restApi\Result($value, $validator);
+    }
+
     public function authorizeRequest() {
         return true;
     }

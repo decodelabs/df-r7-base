@@ -81,6 +81,8 @@ interface IRestApiResult extends arch\IProxyResponse {
     public function setException(\Throwable $e);
     public function hasException();
     public function getException();
+
+    public function complete(callable $success, callable $failure=null);
 }
 
 
