@@ -1,7 +1,7 @@
 Rev 7 of the Decode Framework, codename Hydrogen
 This project is distributed under the MIT license - http://opensource.org/licenses/MIT
 
-PHP 7 is required
+PHP 7.2 is required
 
 This repo contains the primary base package containing the main libraries of the framework - you can combine it with other packages to create bigger things.
 
