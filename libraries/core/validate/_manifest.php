@@ -47,7 +47,7 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function hasMappedField($name);
 
     public function isValid();
-    public function validate($data);
+    public function validate($data, array $fields=null);
     public function applyTo(&$targetRecord, array $fields=null);
 }
 

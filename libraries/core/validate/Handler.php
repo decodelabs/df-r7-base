@@ -288,7 +288,7 @@ class Handler implements IHandler {
 
 
 // Validate
-    public function validate($data) {
+    public function validate($data, array $allowFields=null) {
         $this->endField();
 
         if(!$data instanceof core\collection\IInputTree) {
@@ -303,6 +303,10 @@ class Handler implements IHandler {
         $map = $this->_getActiveDataMap();
 
         foreach($map as $fieldName => $dataName) {
+            if($allowFields !== null && !in_array($fieldName, $allowFields)) {
+                continue;
+            }
+            
             if(!isset($this->_fields[$fieldName])) {
                 continue;
             }
