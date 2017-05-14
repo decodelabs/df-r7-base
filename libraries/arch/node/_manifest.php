@@ -83,6 +83,9 @@ interface IRestApiResult extends arch\IProxyResponse {
     public function getException();
 
     public function complete(callable $success, callable $failure=null);
+
+    public function setDataProcessor(?callable $processor);
+    public function getDataProcessor(): ?callable;
 }
 
 

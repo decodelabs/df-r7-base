@@ -18,6 +18,7 @@ class Result implements arch\node\IRestApiResult {
 
     protected $_statusCode = null;
     protected $_exception;
+    protected $_dataProcessor;
 
     public function __construct($value=null, core\validate\IHandler $validator=null) {
         if(!$validator) {
@@ -100,6 +101,17 @@ class Result implements arch\node\IRestApiResult {
     }
 
 
+
+    public function setDataProcessor(?callable $processor) {
+        $this->_dataProcessor = $processor;
+        return $this;
+    }
+
+    public function getDataProcessor(): ?callable {
+        return $this->_dataProcessor;
+    }
+
+
 // Response
     public function toResponse() {
         $isValid = $this->isValid();
@@ -136,8 +148,12 @@ class Result implements arch\node\IRestApiResult {
             $flags = \JSON_PRETTY_PRINT;
         }
 
+        if($this->_dataProcessor) {
+            $data = core\lang\Callback::call($this->_dataProcessor, $data);
+        }
+
         $response = new link\http\response\Stream(
-            flex\Json::toString($data, $flags),
+            $content = flex\Json::toString($data, $flags),
             'application/json'
         );
 
