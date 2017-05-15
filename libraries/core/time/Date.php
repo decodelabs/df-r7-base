@@ -449,7 +449,7 @@ class Date implements IDate, core\IDumpable {
             return false;
         }
 
-        if($end !== null && !$this->lte($end)) {
+        if($end !== null && !$this->lt($end)) {
             return false;
         }
 
