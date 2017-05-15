@@ -241,7 +241,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
         if(empty($value)) {
             $value = $options['default'] ?? null;
         }
-        
+
         try {
             $value = flex\Guid::factory($value);
         } catch(\Throwable $e) {
@@ -257,13 +257,37 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
         if(empty($value)) {
             $value = $options['default'] ?? null;
         }
-        
+
         try {
             $value = core\time\Date::normalize($value);
         } catch(\Throwable $e) {
             if(null !== ($value = ($options['default'] ?? null))) {
                 $value = core\time\Date::factory($value);
             }
+        }
+
+        if($value) {
+            $value->disableTime();
+        }
+
+        return $value;
+    }
+
+    public function dateTime($value, array $options=[]): ?core\time\IDate {
+        if(empty($value)) {
+            $value = $options['default'] ?? null;
+        }
+
+        try {
+            $value = core\time\Date::normalize($value, $options['timezone'] ?? null);
+        } catch(\Throwable $e) {
+            if(null !== ($value = ($options['default'] ?? null))) {
+                $value = core\time\Date::factory($value, $options['timezone'] ?? null);
+            }
+        }
+
+        if($value) {
+            $value->enableTime();
         }
 
         return $value;
