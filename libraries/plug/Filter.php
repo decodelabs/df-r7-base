@@ -249,7 +249,17 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
         return $value;
     }
 
+    public function date($value, array $options=[]): ?core\time\IDate {
+        try {
+            $value = core\time\Date::normalize($value);
+        } catch(\Throwable $e) {
+            if(null !== ($value = ($options['default'] ?? null))) {
+                $value = core\time\Date::factory($value);
+            }
+        }
 
+        return $value;
+    }
 
 
 // Helpers
