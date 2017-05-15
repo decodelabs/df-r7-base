@@ -238,6 +238,10 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
     }
 
     public function guid($value, array $options=[]): ?flex\IGuid {
+        if(empty($value)) {
+            $value = $options['default'] ?? null;
+        }
+        
         try {
             $value = flex\Guid::factory($value);
         } catch(\Throwable $e) {
@@ -250,6 +254,10 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
     }
 
     public function date($value, array $options=[]): ?core\time\IDate {
+        if(empty($value)) {
+            $value = $options['default'] ?? null;
+        }
+        
         try {
             $value = core\time\Date::normalize($value);
         } catch(\Throwable $e) {
