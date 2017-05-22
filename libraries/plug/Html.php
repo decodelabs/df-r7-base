@@ -594,6 +594,21 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
+    public function wrappedDate($date, $body, $userTime=false) {
+        if(!$date = core\time\Date::normalize($date)) {
+            return null;
+        }
+
+        if($userTime) {
+            $date->toUserTimeZone();
+        }
+
+        return $this->_timeTag(
+            $date->format(core\time\Date::W3C),
+            $body
+        );
+    }
+
     public function time($date, $format=null, $userTime=false) {
         if(!$date = core\time\Date::normalize($date)) {
             return null;
