@@ -91,7 +91,9 @@ abstract class Base implements IScaffold {
                 continue;
             }
 
-            $output[] = $this->html->hidden($var, $this->request->query[$var]);
+            if(isset($this->request->query->{$var})) {
+                $output[] = $this->html->hidden($var, $this->request->query[$var]);
+            }
         }
 
         return $output;
@@ -388,7 +390,7 @@ abstract class Base implements IScaffold {
         }
 
         foreach($propagate as $var) {
-            if(!in_array($var, $propagationFilter)) {
+            if(!in_array($var, $propagationFilter) && isset($this->request->query->{$var})) {
                 $outQuery->{$var} = $this->request->query[$var];
             }
         }
