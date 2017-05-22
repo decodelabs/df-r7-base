@@ -589,7 +589,9 @@ class Html implements arch\IDirectoryHelper {
         }
 
         return $this->_timeTag(
-            $date->format(core\time\Date::W3C),
+            $date->hasTime() ?
+                $date->format(core\time\Date::W3C) :
+                $date->format('Y-m-d'),
             $this->context->format->customDate($date, $format, $userTime)
         );
     }
@@ -604,7 +606,9 @@ class Html implements arch\IDirectoryHelper {
         }
 
         return $this->_timeTag(
-            $date->format(core\time\Date::W3C),
+            $date->hasTime() ?
+                $date->format(core\time\Date::W3C) :
+                $date->format('Y-m-d'),
             $body
         );
     }
