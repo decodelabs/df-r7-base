@@ -366,6 +366,10 @@ class Format implements core\ISharedHelper {
         return flex\Text::formatName($name);
     }
 
+    public function initials($name) {
+        return flex\Text::formatInitials($name);
+    }
+
     public function id($id) {
         return flex\Text::formatId($id);
     }
