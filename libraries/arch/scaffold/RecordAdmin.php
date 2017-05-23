@@ -15,7 +15,8 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     IRecordLoaderScaffold,
     IRecordDataProviderScaffold,
     IRecordListProviderScaffold,
-    ISectionProviderScaffold {
+    ISectionProviderScaffold,
+    core\IDumpable {
 
     use TScaffold_RecordLoader;
     use TScaffold_RecordDataProvider;
@@ -132,5 +133,15 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 // Helpers
     public function getDirectoryKeyName() {
         return $this->getRecordKeyName();
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'context' => $this->context,
+            'adapter' => $this->_recordAdapter,
+            'record' => $this->_record
+        ];
     }
 }

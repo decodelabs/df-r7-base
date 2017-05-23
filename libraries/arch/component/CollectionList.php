@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-class CollectionList extends Base implements aura\html\widget\IWidgetProxy {
+class CollectionList extends Base implements aura\html\widget\IWidgetProxy, core\IDumpable {
 
     const DEFAULT_ERROR_MESSAGE = null;
 
@@ -228,5 +228,11 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy {
         }
 
         return $output;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return $this->render();
     }
 }

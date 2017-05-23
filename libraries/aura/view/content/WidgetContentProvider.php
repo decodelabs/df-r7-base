@@ -10,7 +10,10 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class WidgetContentProvider extends aura\html\Element implements aura\view\ICollapsibleContentProvider, aura\html\widget\IWidgetShortcutProvider {
+class WidgetContentProvider extends aura\html\Element implements
+    aura\view\ICollapsibleContentProvider,
+    aura\html\widget\IWidgetShortcutProvider,
+    core\IDumpable {
 
     use core\TContextAware;
     use aura\view\TView_DeferredRenderable;
@@ -76,5 +79,11 @@ class WidgetContentProvider extends aura\html\Element implements aura\view\IColl
             $this->push($widget);
             return $widget;
         }
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return $this->_collection;
     }
 }

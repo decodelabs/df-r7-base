@@ -12,7 +12,7 @@ use df\aura;
 use df\user;
 use df\opal;
 
-abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy {
+abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy, core\IDumpable {
 
     use user\TAccessControlled;
     use core\constraint\TDisableable;
@@ -321,4 +321,11 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy 
     protected function _decorate($link) {}
 
     abstract protected function _getRecordUrl($id);
+
+
+
+// Dump
+    public function getDumpProperties() {
+        return $this->render();
+    }
 }

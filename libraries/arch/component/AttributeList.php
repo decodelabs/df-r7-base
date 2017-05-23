@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-class AttributeList extends Base implements aura\html\widget\IWidgetProxy {
+class AttributeList extends Base implements aura\html\widget\IWidgetProxy, core\IDumpable {
 
     protected $_record;
     protected $_renderIfEmpty = null;
@@ -213,5 +213,11 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy {
         }
 
         return $output;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return $this->render();
     }
 }

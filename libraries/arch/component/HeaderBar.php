@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-abstract class HeaderBar extends Base {
+abstract class HeaderBar extends Base implements core\IDumpable {
 
     protected $_record;
     protected $_title;
@@ -153,4 +153,10 @@ abstract class HeaderBar extends Base {
     protected function _addTransitiveLinks($primaryMenu) {}
     protected function _addSectionLinks($secondaryMenu) {}
     protected function _renderSelectorArea() {}
+
+
+// Dump
+    public function getDumpProperties() {
+        return $this->render();
+    }
 }
