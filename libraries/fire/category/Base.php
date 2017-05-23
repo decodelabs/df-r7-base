@@ -112,25 +112,4 @@ abstract class Base implements fire\ICategory {
     public static function getFormatWeights() {
         return static::FORMAT_WEIGHTS;
     }
-
-    public function renderBlock(fire\block\IBlock $block, aura\view\IView $view) {
-        $name = $block->getName();
-        $func = 'render'.$name.'Block';
-
-        if(method_exists($this, $func)) {
-            return $this->{$func}($block, $view);
-        }
-
-        return $block->renderTo($view);
-    }
-
-    public function renderSlot(fire\slot\IContent $slot, aura\view\IView $view) {
-        $output = [];
-
-        foreach($slot->getBlocks() as $block) {
-            $output[] = $this->renderBlock($block, $view);
-        }
-
-        return new aura\html\ElementContent($output, $slot);
-    }
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -20,7 +20,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 class Cache extends core\cache\Base {}
 
 
-// Interfaces    
+// Interfaces
 interface IManager extends core\IManager {
     public function getConfig();
 
@@ -51,7 +51,4 @@ interface ICategory {
     public function hasBlock($block);
     public function getBlocks();
     public function removeBlock($block);
-
-    public function renderBlock(fire\block\IBlock $block, aura\view\IView $view);
-    public function renderSlot(fire\slot\IContent $slot, aura\view\IView $view);
 }

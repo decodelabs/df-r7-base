@@ -31,21 +31,12 @@ class Nightfire implements arch\IDirectoryHelper {
         return $block;
     }
 
-    public function renderBlock($block, $category=null, $isNested=null) {
+    public function renderBlock($block) {
         if(!$block = $this->normalizeBlock($block)) {
             return null;
         }
 
-        if($isNested !== null) {
-            $block->isNested((bool)$isNested);
-        }
-
-        if($category = $this->_loadCategory($category)) {
-            $output = $category->renderBlock($block, $this->getView());
-        } else {
-            $output = $block->renderTo($this->getView());
-        }
-
+        $output = $block->renderTo($this->getView());
         $test = trim($output);
 
         if(empty($test)) {
@@ -55,8 +46,8 @@ class Nightfire implements arch\IDirectoryHelper {
         return $output;
     }
 
-    public function renderBlockPreview($block, $category=null, $length=null) {
-        $output = $this->renderBlock($block, $category);
+    public function renderBlockPreview($block, $length=null) {
+        $output = $this->renderBlock($block);
         return $this->getView()->html->previewText($output, $length);
     }
 
@@ -75,23 +66,12 @@ class Nightfire implements arch\IDirectoryHelper {
         return $slot;
     }
 
-    public function renderSlot($slot, $category=null, $isNested=null) {
+    public function renderSlot($slot) {
         if(!$slot = $this->normalizeSlot($slot)) {
             return null;
         }
 
-        if($isNested === null) {
-            $isNested = $slot->isNested();
-        }
-
-        $slot->isNested((bool)$isNested);
-
-        if($category = $this->_loadCategory($category)) {
-            $output = $category->renderSlot($slot, $this->getView());
-        } else {
-            $output = $slot->renderTo($this->getView());
-        }
-
+        $output = $slot->renderTo($this->getView());
         $test = trim($output);
 
         if(empty($test)) {
@@ -101,8 +81,8 @@ class Nightfire implements arch\IDirectoryHelper {
         return $output;
     }
 
-    public function renderSlotPreview($slot, $category=null, $length=null) {
-        $output = $this->renderSlot($slot, $category);
+    public function renderSlotPreview($slot, $length=null) {
+        $output = $this->renderSlot($slot);
         return $this->getView()->html->previewText($output, $length);
     }
 
