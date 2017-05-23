@@ -24,9 +24,9 @@ abstract class Base implements IScaffold {
     const CHECK_ACCESS = true;
     const DEFAULT_ACCESS = null;
 
-    private $_directoryKeyName;
+    const PROPAGATE_IN_QUERY = [];
 
-    protected $_propagateQueryVars = [];
+    private $_directoryKeyName;
 
     public static function factory(arch\IContext $context) {
         $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
@@ -75,7 +75,7 @@ abstract class Base implements IScaffold {
     }
 
     public function getPropagatingQueryVars() {
-        return (array)$this->_propagateQueryVars;
+        return (array)static::PROPAGATE_IN_QUERY;
     }
 
     protected function _buildQueryPropagationInputs(array $filter=[]) {
