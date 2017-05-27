@@ -73,8 +73,14 @@ class Memcached implements core\cache\IBackend {
     }
 
     public function getConnectionDescription() {
-        $stats = $this->_connection->getExtendedStats();
-        return implode(' + ', array_keys($stats));
+        $servers = $this->_connection->getServerList();
+        $output = [];
+
+        foreach($servers as $server) {
+            $output[] = $server['host'].':'.$server['port'];
+        }
+
+        return implode(' + ', $output);
     }
 
     public function getStats() {
