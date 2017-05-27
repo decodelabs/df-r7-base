@@ -28,20 +28,32 @@ class Config extends core\Config {
 
     public function getOptionsFor(ICache $cache, $mergeDefaults=true) {
         $id = $cache->getCacheId();
-        $output = clone $this->values->caches->{$id};
+
+        if(isset($this->values->caches->{$id})) {
+            $output = clone $this->values->caches->{$id};
+            $default = false;
+        } else {
+            $output = clone $this->values->caches->default;
+            $default = true;
+        }
+
 
         $list = [];
 
-        if(isset($output->backend)) {
+        if(!$default && isset($output->backend)) {
             $list[] = $output['backend'];
         } else if($mergeDefaults) {
             if($cache->isCacheDistributed()) {
-                $list = ['Memcache', 'LocalFile'];
+                $list = ['Memcached', 'Memcache', 'LocalFile'];
             } else if($cache->mustCacheBeLocal()) {
                 $list = ['Apcu', 'LocalFile'];
             } else {
-                $list = ['Apcu', 'Memcache', 'LocalFile'];
+                $list = ['Apcu', 'Memcached', 'Memcache', 'LocalFile'];
             }
+        }
+
+        if($default && in_array($output['backend'], $list)) {
+            $list = array_merge([$output['backend']], $list);
         }
 
         foreach($list as $name) {

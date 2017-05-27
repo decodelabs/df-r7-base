@@ -8,7 +8,7 @@ namespace df\core\cache\backend;
 use df;
 use df\core;
 
-class Memcache implements core\cache\IBackend {
+class Memcached implements core\cache\IBackend {
 
     use core\TValueMap;
 
@@ -35,11 +35,11 @@ class Memcache implements core\cache\IBackend {
     }
 
     public static function isLoadable() {
-        return extension_loaded('memcache');
+        return extension_loaded('memcached');
     }
 
     protected static function _loadConnection(core\collection\ITree $options) {
-        $output = new \Memcache();
+        $output = new \Memcached();
 
         if($options->has('servers')) {
             $serverList = $options->servers;
@@ -99,7 +99,6 @@ class Memcache implements core\cache\IBackend {
         return $this->_connection->set(
             $this->_prefix.$key,
             [serialize($value), time()],
-            0,
             $lifeTime
         );
     }
@@ -167,23 +166,11 @@ class Memcache implements core\cache\IBackend {
 
     public function count() {
         $output = 0;
-        $allSlabs = $this->_connection->getExtendedStats('slabs');
+        $length = strlen($this->_prefix);
 
-        foreach($allSlabs as $server => $slabs) {
-            foreach($slabs as $slabId => $slabMeta) {
-               $cdump = $this->_connection->getExtendedStats('cachedump', $slabId);
-
-                foreach($cdump as $keys => $arrVal) {
-                    if(!is_array($arrVal)) {
-                        continue;
-                    }
-
-                    foreach($arrVal as $key => $value) {
-                        if(0 === strpos($key, $this->_prefix)) {
-                            $output++;
-                        }
-                    }
-                }
+        foreach($this->_connection->getAllKeys() as $keys) {
+            if(0 === strpos($key, $this->_prefix)) {
+                $output++;
             }
         }
 
@@ -192,28 +179,11 @@ class Memcache implements core\cache\IBackend {
 
     public function getKeys() {
         $output = [];
-        $allSlabs = $this->_connection->getExtendedStats('slabs');
         $length = strlen($this->_prefix);
 
-        foreach($allSlabs as $server => $slabs) {
-            foreach($slabs as $slabId => $slabMeta) {
-                if(is_string($slabId)) {
-                    continue;
-                }
-
-                $cdump = $this->_connection->getExtendedStats('cachedump', $slabId);
-
-                foreach($cdump as $keys => $arrVal) {
-                    if(!is_array($arrVal)) {
-                        continue;
-                    }
-
-                    foreach($arrVal as $key => $value) {
-                        if(0 === strpos($key, $this->_prefix)) {
-                            $output[] = substr($key, $length);
-                        }
-                    }
-                }
+        foreach($this->_connection->getAllKeys() as $key) {
+            if(0 === strpos($key, $this->_prefix)) {
+                $output[] = substr($key, $length);
             }
         }
 
