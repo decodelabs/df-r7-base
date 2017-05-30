@@ -135,6 +135,10 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
             return $this->_defaultValue;
         }
 
+        return $this->getNominalValue();
+    }
+
+    public function getNominalValue() {
         switch($this->_generator) {
             case self::UUID1:
                 return flex\Guid::uuid1();

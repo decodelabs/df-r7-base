@@ -31,6 +31,10 @@ class Boolean extends Base {
         return $value;
     }
 
+    public function getNominalValue() {
+        return false;
+    }
+
     public function compareValues($value1, $value2) {
         if($value1 !== null) {
             $value1 = (bool)$value1;

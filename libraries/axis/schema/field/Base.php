@@ -124,8 +124,12 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
         } else if($this->isNullable()) {
             return null;
         } else {
-            return '';
+            return $this->getNominalValue();
         }
+    }
+
+    public function getNominalValue() {
+        return '';
     }
 
     public function compareValues($value1, $value2) {

@@ -126,6 +126,9 @@ class Number extends Base implements
         return $this->sanitizeValue($output, $forRecord);
     }
 
+    public function getNominalValue() {
+        return 0;
+    }
 
     public function compareValues($value1, $value2) {
         $value1 = $this->sanitizeValue($value1);

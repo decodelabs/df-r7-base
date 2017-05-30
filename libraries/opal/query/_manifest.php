@@ -930,6 +930,7 @@ interface IFieldValueProcessor {
     public function normalizeSavedValue($value, opal\record\IRecord $forRecord=null);
     public function compareValues($value1, $value2);
     public function generateInsertValue(array $row);
+    public function getNominalValue();
     public function getOrderableValue($outputValue);
     public function getSearchFieldType();
     public function canReturnNull();
