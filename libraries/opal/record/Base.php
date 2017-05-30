@@ -880,6 +880,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             $output = $output->getPrimaryKeySet();
         }
 
+        if($output instanceof IPrimaryKeySet && $output->isNull()) {
+            $output = null;
+        }
+
         return $output;
     }
 
