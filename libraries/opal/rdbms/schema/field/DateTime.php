@@ -10,6 +10,8 @@ use df\opal;
 
 class DateTime extends Base {
 
+    const DEFAULT_VALUE = 'now';
+    
 // String
     public function toString(): string {
         $output = $this->_name.' '.strtoupper($this->_type);

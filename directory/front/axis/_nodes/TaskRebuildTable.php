@@ -105,6 +105,7 @@ class TaskRebuildTable extends arch\node\Task {
         $currentFields = $currentTable->getSchema()->getFields();
         $generatorFields = [];
         $nonNullFields = [];
+        $newFields = [];
 
         foreach($fields as $fieldName => $field) {
             if(isset($currentFields[$fieldName])) {
@@ -113,16 +114,16 @@ class TaskRebuildTable extends arch\node\Task {
 
             $axisField = $axisSchema->getField($fieldName);
 
-            if($axisField instanceof opal\schema\IAutoGeneratorField) {
-                $generatorFields[$fieldName] = $axisField;
-            }
-
             if(!$field->isNullable()) {
                 $nonNullFields[$fieldName] = $field;
             }
+
+            if($axisField instanceof opal\schema\IAutoGeneratorField) {
+                $generatorFields[$fieldName] = $axisField;
+            } else {
+                $newFields[$fieldName] = $field;
+            }
         }
-
-
 
         foreach($currentTable->select()->isUnbuffered(true) as $row) {
             foreach($row as $key => $value) {
@@ -137,6 +138,14 @@ class TaskRebuildTable extends arch\node\Task {
 
             foreach($generatorFields as $fieldName => $axisField) {
                 $row[$fieldName] = $axisField->generateInsertValue($row);
+            }
+
+            foreach($newFields as $fieldName => $newField) {
+                if($newField->isNullable()) {
+                    $row[$fieldName] = null;
+                } else {
+                    $row[$fieldName] = $newField->getDefaultNonNullValue();
+                }
             }
 
             $insert->addRow($row);

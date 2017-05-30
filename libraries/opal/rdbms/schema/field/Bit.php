@@ -10,6 +10,8 @@ use df\opal;
 
 class Bit extends Base implements opal\schema\ILengthRestrictedField {
 
+    const DEFAULT_VALUE = 0;
+    
     use opal\schema\TField_LengthRestricted;
 
     protected function _init($length) {

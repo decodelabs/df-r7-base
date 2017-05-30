@@ -13,6 +13,8 @@ class Integer extends Base implements
     opal\schema\INumericField,
     opal\schema\IAutoIncrementableField {
 
+    const DEFAULT_VALUE = 0;
+
     use opal\schema\TField_LengthRestricted;
     use opal\schema\TField_Numeric;
     use opal\schema\TField_AutoIncrementable;

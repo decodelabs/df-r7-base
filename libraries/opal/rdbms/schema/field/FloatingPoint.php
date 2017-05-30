@@ -10,6 +10,8 @@ use df\opal;
 
 class FloatingPoint extends Base implements opal\schema\IFloatingPointNumericField {
 
+    const DEFAULT_VALUE = 0;
+    
     use opal\schema\TField_FloatingPointNumeric;
 
     protected function _init($precision=null, $scale=null) {

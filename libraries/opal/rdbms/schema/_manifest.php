@@ -78,6 +78,8 @@ interface IField extends opal\schema\IField, ISqlVariantAware, core\IStringProvi
     public function setNullConflictClause($clause);
     public function getNullConflictClauseId();
     public function getNullConflictClauseName();
+
+    public function getDefaultNonNullValue();
 }
 
 

@@ -10,6 +10,8 @@ use df\opal;
 
 abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
 
+    const DEFAULT_VALUE = '';
+
     use opal\schema\TField;
 
     protected $_type;
@@ -182,6 +184,11 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
             case opal\schema\IConflictClause::REPLACE:
                 return 'REPLACE';
         }
+    }
+
+
+    public function getDefaultNonNullValue() {
+        return static::DEFAULT_VALUE;
     }
 
 
