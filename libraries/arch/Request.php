@@ -483,11 +483,11 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return true;
         }
 
-
         if(substr($rpString, -1) == '/') {
             if(($rpString == '~front/' && $rpString != $tpString)
             || 0 !== stripos($tpString, $rpString)
-            || dirname($tpString.'-').'/' != $rpString) {
+            //|| dirname($tpString.'-').'/' != $rpString
+            ) {
                 return false;
             }
         } else if(0 !== stripos($tpString, $rpString)) {
