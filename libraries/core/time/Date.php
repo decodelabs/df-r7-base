@@ -70,7 +70,7 @@ class Date implements IDate, core\IDumpable {
             $locale,
             $size,
             $size,
-            $timezone->getName()
+            $timezone
         );
 
         return new self($formatter->parse($string), $timezone);
@@ -323,7 +323,7 @@ class Date implements IDate, core\IDumpable {
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
 
-        $output = \IntlDateFormatter::create($locale, $size, $size, $this->getTimezone());
+        $output = \IntlDateFormatter::create($locale, $size, $size, $this->_date->getTimezone());
 
         if($output) {
             return $output->format($this->toTimestamp());
@@ -350,7 +350,7 @@ class Date implements IDate, core\IDumpable {
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
 
-        return \IntlDateFormatter::create($locale, $size, \IntlDateFormatter::NONE, $this->getTimezone())
+        return \IntlDateFormatter::create($locale, $size, \IntlDateFormatter::NONE, $this->_date->getTimezone())
             ->format($this->toTimestamp());
     }
 
@@ -368,7 +368,7 @@ class Date implements IDate, core\IDumpable {
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
 
-        return \IntlDateFormatter::create($locale, \IntlDateFormatter::NONE, $size, $this->getTimezone())
+        return \IntlDateFormatter::create($locale, \IntlDateFormatter::NONE, $size, $this->_date->getTimezone())
             ->format($this->toTimestamp());
     }
 
