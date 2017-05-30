@@ -75,31 +75,28 @@ abstract class Base implements ICache {
 
     protected function _loadBackend() {
         $config = Config::getInstance();
-        $options = $config->getOptionsFor($this, !static::USE_DIRECT_FILE_BACKEND);
-        $backendName = null;
-
-        if($options->has('backend')) {
-            $backendName = $options->get('backend');
-        }
-
-        if(!$backendName) {
-            if(static::USE_DIRECT_FILE_BACKEND) {
-                $backendName = 'LocalFile';
-            } else {
-                throw new RuntimeException(
-                    'There are no available backends for cache '.$this->getCacheId()
-                );
-            }
-        }
 
         if(static::USE_DIRECT_FILE_BACKEND) {
-            $options->import($config->getBackendOptions($backendName));
-            $output = self::backendFactory($this, $backendName, $options);
+            $options = $config->getBackendOptions('LocalFile');
+            $output = self::backendFactory($this, 'LocalFile', $options);
 
             if($output instanceof IDirectFileBackend) {
                 $output->shouldSerialize(false);
             }
         } else {
+            $options = $config->getOptionsFor($this);
+            $backendName = null;
+
+            if($options->has('backend')) {
+                $backendName = $options->get('backend');
+            }
+
+            if(!$backendName) {
+                throw new RuntimeException(
+                    'There are no available backends for cache '.$this->getCacheId()
+                );
+            }
+
             $output = self::backendFactory($this, $backendName, $options);
         }
 
