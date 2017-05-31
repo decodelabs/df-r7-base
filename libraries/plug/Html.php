@@ -535,74 +535,44 @@ class Html implements arch\IDirectoryHelper {
 
 
 // Date
-    public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function date($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, false)) {
             return null;
         }
 
         return $this->_timeTag(
             $date->format('Y-m-d'),
-            $this->context->format->date($date, $size, $locale)
+            $this->context->format->date($date, $size, null, $locale)
         );
     }
 
-    public function userDate($date, $size=core\time\Date::MEDIUM) {
-        if(!$date = core\time\Date::normalize($date)) {
-            return null;
-        }
-
-        return $this->_timeTag(
-            $date->format('Y-m-d'),
-            $this->context->format->userDate($date, $size)
-        );
-    }
-
-    public function dateTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function dateTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C),
-            $this->context->format->dateTime($date, $size, $locale)
+            $this->context->format->dateTime($date, $size, null, $locale)
         );
     }
 
-    public function userDateTime($date, $size=core\time\Date::MEDIUM) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function customDate($date, string $format, $timezone=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
-        }
-
-        return $this->_timeTag(
-            $date->format(core\time\Date::W3C),
-            $this->context->format->userDateTime($date, $size)
-        );
-    }
-
-    public function customDate($date, $format, $userTime=false) {
-        if(!$date = core\time\Date::normalize($date)) {
-            return null;
-        }
-
-        if($userTime) {
-            $date->toUserTimeZone();
         }
 
         return $this->_timeTag(
             $date->hasTime() ?
                 $date->format(core\time\Date::W3C) :
                 $date->format('Y-m-d'),
-            $this->context->format->customDate($date, $format, $userTime)
+            $this->context->format->customDate($date, $format, null)
         );
     }
 
-    public function wrappedDate($date, $body, $userTime=false) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function wrappedDate($date, $body, $timezone=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
-        }
-
-        if($userTime) {
-            $date->toUserTimeZone();
         }
 
         return $this->_timeTag(
@@ -613,13 +583,9 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function time($date, $format=null, $userTime=false) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function time($date, $format=null, $timezone=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
-        }
-
-        if($userTime) {
-            $date->toUserTimeZone();
         }
 
         if($format === null) {
@@ -628,29 +594,18 @@ class Html implements arch\IDirectoryHelper {
 
         return $this->_timeTag(
             $date->format('H:m:s'),
-            $this->context->format->time($date, $format, $userTime)
+            $this->context->format->time($date, $format, null)
         );
     }
 
-    public function localeTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function localeTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
         return $this->_timeTag(
             $date->format('H:m:s'),
-            $this->context->format->time($date, $size, $locale)
-        );
-    }
-
-    public function userTime($date, $size=core\time\Date::MEDIUM) {
-        if(!$date = core\time\Date::normalize($date)) {
-            return null;
-        }
-
-        return $this->_timeTag(
-            $date->format('H:m:s'),
-            $this->context->format->userTime($date, $size)
+            $this->context->format->time($date, $size, null, $locale)
         );
     }
 
@@ -715,6 +670,26 @@ class Html implements arch\IDirectoryHelper {
                 $output
             )
             ->setTitle($this->context->format->dateTime($date));
+    }
+
+    protected function _prepareDate($date, $timezone=true, bool $includeTime=true) {
+        if(!$date = core\time\Date::normalize($date, null, $includeTime)) {
+            return null;
+        }
+
+        if($timezone !== null) {
+            $date = clone $date;
+
+            if($date->hasTime()) {
+                if($timezone === true) {
+                    $date->toUserTimeZone();
+                } else {
+                    $date->toTimezone($timezone);
+                }
+            }
+        }
+
+        return $date;
     }
 
     protected function _timeTag($w3cString, $formattedString) {

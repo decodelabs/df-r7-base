@@ -404,7 +404,7 @@ abstract class Base implements IScaffold {
 
     protected function _normalizeFieldOutput($field, $value) {
         if($value instanceof core\time\IDate) {
-            return $this->format->userDateTime($value, $value->hasTime() ? 'short' : 'medium');
+            return $this->format->dateTime($value, $value->hasTime() ? 'short' : 'medium');
         }
 
         return $value;

@@ -203,8 +203,8 @@ class Format implements core\ISharedHelper {
 
 
 // Date
-    public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function date($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, false)) {
             return null;
         }
 
@@ -215,16 +215,8 @@ class Format implements core\ISharedHelper {
         return $date->localeDateFormat($size, $locale);
     }
 
-    public function userDate($date, $size=core\time\Date::MEDIUM) {
-        if(!$date = core\time\Date::normalize($date)) {
-            return null;
-        }
-
-        return $date->userLocaleDateFormat($size);
-    }
-
-    public function dateTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function dateTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
@@ -235,32 +227,31 @@ class Format implements core\ISharedHelper {
         return $date->localeFormat($size, $locale);
     }
 
-    public function userDateTime($date, $size=core\time\Date::MEDIUM) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function customDate($date, $format, $timezone=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
-        return $date->userLocaleFormat($size);
-    }
+        if($timezone !== null) {
+            $date = clone $date;
 
-    public function customDate($date, $format, $userTime=false) {
-        if(!$date = core\time\Date::normalize($date)) {
-            return null;
-        }
-
-        if($userTime) {
-            $date->toUserTimeZone();
+            if($timezone === true) {
+                $date->toUserTimeZone();
+            } else {
+                $date->setTimezone($timezone);
+            }
         }
 
         return $date->format($format);
     }
 
-    public function time($date, $format=null, $userTime=false) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function time($date, $format=null, $timezone=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
         if($userTime) {
+            $date = clone $date;
             $date->toUserTimeZone();
         }
 
@@ -271,8 +262,8 @@ class Format implements core\ISharedHelper {
         return $date->format($format);
     }
 
-    public function localeTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function localeTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
+        if(!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
@@ -281,14 +272,6 @@ class Format implements core\ISharedHelper {
         }
 
         return $date->localeTimeFormat($size, $locale);
-    }
-
-    public function userTime($date, $size=core\time\Date::MEDIUM) {
-        if(!$date = core\time\Date::normalize($date)) {
-            return null;
-        }
-
-        return $date->userLocaleTimeFormat($size);
     }
 
 
@@ -358,6 +341,27 @@ class Format implements core\ISharedHelper {
         } else {
             return $this->context->_('just now');
         }
+    }
+
+
+    protected function _prepareDate($date, $timezone=true, bool $includeTime=true) {
+        if(!$date = core\time\Date::normalize($date, null, $includeTime)) {
+            return null;
+        }
+
+        if($timezone !== null) {
+            $date = clone $date;
+
+            if($date->hasTime()) {
+                if($timezone === true) {
+                    $date->toUserTimeZone();
+                } else {
+                    $date->toTimezone($timezone);
+                }
+            }
+        }
+
+        return $date;
     }
 
 

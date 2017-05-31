@@ -230,17 +230,23 @@ class Date implements IDate, core\IDumpable {
 
 
 // Time zone
+    private static $_userTimezone;
+
     public function toUserTimezone() {
         if(!$this->_timeEnabled) {
             return $this;
         }
 
-        try {
-            $client = $userManager = user\Manager::getInstance()->getClient();
-            $timezone = new \DateTimeZone($client->getTimezone());
-            $this->_date->setTimezone($timezone);
-        } catch(\Throwable $e) {}
+        if(self::$_userTimezone === null) {
+            try {
+                $client = $userManager = user\Manager::getInstance()->getClient();
+                self::$_userTimezone = new \DateTimeZone($client->getTimezone());
+            } catch(\Throwable $e) {
+                self::$_userTimezone = new \DateTimeZone('UTC');
+            }
+        }
 
+        $this->_date->setTimezone(self::$_userTimezone);
         return $this;
     }
 
@@ -301,20 +307,6 @@ class Date implements IDate, core\IDumpable {
         return $this->_date->getTimestamp();
     }
 
-    public function userLocaleFormat($size=self::LONG) {
-        if(!$this->_timeEnabled) {
-            return $this->userLocaleDateFormat($size);
-        }
-
-        $tz = $this->_date->getTimezone();
-        $this->toUserTimezone();
-
-        $output = $this->localeFormat($size);
-        $this->toTimezone($tz);
-
-        return $output;
-    }
-
     public function localeFormat($size=self::LONG, $locale=null) {
         if(!$this->_timeEnabled) {
             return $this->localeDateFormat($size, $locale);
@@ -332,36 +324,12 @@ class Date implements IDate, core\IDumpable {
         }
     }
 
-    public function userLocaleDateFormat($size='long') {
-        if(!$this->_timeEnabled) {
-            return $this->localeDateFormat($size);
-        }
-
-        $tz = $this->_date->getTimezone();
-        $this->toUserTimezone();
-
-        $output = $this->localeDateFormat($size);
-        $this->toTimezone($tz);
-
-        return $output;
-    }
-
     public function localeDateFormat($size='long', $locale=true) {
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
 
         return \IntlDateFormatter::create($locale, $size, \IntlDateFormatter::NONE, $this->_date->getTimezone())
             ->format($this->toTimestamp());
-    }
-
-    public function userLocaleTimeFormat($size='long') {
-        $tz = $this->_date->getTimezone();
-        $this->toUserTimezone();
-
-        $output = $this->localeTimeFormat($size);
-        $this->toTimezone($tz);
-
-        return $output;
     }
 
     public function localeTimeFormat($size='long', $locale=true) {
@@ -401,20 +369,6 @@ class Date implements IDate, core\IDumpable {
             default:
                 return self::SHORT;
         }
-    }
-
-    public function userFormat($format='Y-m-d H:i:s T') {
-        if(!$this->_timeEnabled) {
-            return $this->format($format);
-        }
-
-        $tz = $this->getTimezone();
-        $this->toUserTimezone();
-
-        $output = $this->format($format);
-        $this->toTimezone($tz);
-
-        return $output;
     }
 
     public function format($format='Y-m-d H:i:s T') {

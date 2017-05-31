@@ -53,13 +53,9 @@ interface IDate extends \Serializable, core\IStringProvider {
 
     // Formatting
     public function toTimestamp();
-    public function userLocaleFormat($size='long');
     public function localeFormat($size='long', $locale=true);
-    public function userLocaleDateFormat($size='long');
     public function localeDateFormat($size='long', $locale=true);
-    public function userLocaleTimeFormat($size='long');
     public function localeTimeFormat($size='long', $locale=true);
-    public function userFormat($format='Y-m-d H:i:s T');
     public function format($format='Y-m-d H:i:s T');
 
     // Comparison
