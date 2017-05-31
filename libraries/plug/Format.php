@@ -232,27 +232,12 @@ class Format implements core\ISharedHelper {
             return null;
         }
 
-        if($timezone !== null) {
-            $date = clone $date;
-
-            if($timezone === true) {
-                $date->toUserTimeZone();
-            } else {
-                $date->setTimezone($timezone);
-            }
-        }
-
         return $date->format($format);
     }
 
     public function time($date, $format=null, $timezone=true) {
         if(!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
-        }
-
-        if($userTime) {
-            $date = clone $date;
-            $date->toUserTimeZone();
         }
 
         if($format === null) {
