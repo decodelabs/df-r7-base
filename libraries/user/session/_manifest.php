@@ -21,9 +21,6 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 // Interfaces
 interface IController {
 
-    const GC_PROBABILITY = 3;
-    const TRANSITION_PROBABILITY = 10;
-    const TRANSITION_LIFETIME = 30;
     const TRANSITION_COOLOFF = 20;
 
     public function isOpen();
@@ -74,7 +71,7 @@ interface IBackend {
 
     public function insertDescriptor(IDescriptor $descriptor);
     public function fetchDescriptor($id, $transitionTime);
-    public function touchSession(IDescriptor $descriptor);
+    public function touchSession(IDescriptor $descriptor, int $lifeTime=30);
     public function applyTransition(IDescriptor $descriptor);
     public function killSession(IDescriptor $descriptor);
     public function idExists($id);

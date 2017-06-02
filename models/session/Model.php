@@ -51,8 +51,8 @@ class Model extends axis\Model implements user\session\IBackend {
         return $output;
     }
 
-    public function touchSession(user\session\IDescriptor $descriptor) {
-        $values = $descriptor->touchInfo(user\session\IController::TRANSITION_LIFETIME);
+    public function touchSession(user\session\IDescriptor $descriptor, int $lifeTime=30) {
+        $values = $descriptor->touchInfo($lifeTime);
 
         $this->descriptor->update($values)
             ->where('id', '=', $descriptor->id)

@@ -13,6 +13,13 @@ use df\flex;
 
 class Session extends Base implements user\session\IController {
 
+    protected static $_gcProbability = 3;
+    protected static $_transitionsEnabled = true;
+    protected static $_transitionProbability = 10;
+    protected static $_transitionLifeTime = 30;
+    protected static $_transitionCooloff = 20;
+    private static $_configSet = false;
+
     public $descriptor;
     public $perpetuator;
     public $backend;
@@ -28,6 +35,16 @@ class Session extends Base implements user\session\IController {
 
 
     protected function _open() {
+        if(!self::$_configSet) {
+            $config = user\session\Config::getInstance();
+            self::$_gcProbability = $config->getGcProbability();
+            self::$_transitionsEnabled = $config->transitionsEnabled();
+            self::$_transitionLifeTime = $config->getTransitionLifeTime();
+            self::$_transitionCooloff = $config->getTransitionCooloff();
+            self::$_configSet = true;
+        }
+
+
         $runMode = df\Launchpad::$application->getRunMode();
         $this->_isOpen = true;
 
@@ -60,18 +77,19 @@ class Session extends Base implements user\session\IController {
 
         $this->perpetuator->perpetuate($this, $this->descriptor);
 
-        if((mt_rand() % 100) < self::GC_PROBABILITY) {
+        if((mt_rand() % 100) < self::$_gcProbability) {
             $this->backend->collectGarbage();
             $this->backend->purgeRecallKeys();
         }
 
-        if(!$this->descriptor->hasJustTransitioned(120)
-        || ((mt_rand() % 100) < self::TRANSITION_PROBABILITY)) {
+        if(self::$_transitionsEnabled &&
+            (!$this->descriptor->hasJustTransitioned(120) ||
+            (mt_rand() % 100) < self::$_transitionProbability)) {
             $this->transition();
         }
 
-        if($this->descriptor->needsTouching(self::TRANSITION_LIFETIME)) {
-            $this->backend->touchSession($this->descriptor);
+        if($this->descriptor->needsTouching(self::$_transitionLifeTime)) {
+            $this->backend->touchSession($this->descriptor, self::$_transitionLifeTime);
             $this->cache->insertDescriptor($this->descriptor);
         }
     }
@@ -98,7 +116,7 @@ class Session extends Base implements user\session\IController {
 
         if(!$descriptor) {
             $descriptor = $this->backend->fetchDescriptor(
-                $publicKey, time() - self::TRANSITION_LIFETIME
+                $publicKey, time() - self::$_transitionLifeTime
             );
 
             if($descriptor) {
@@ -111,7 +129,7 @@ class Session extends Base implements user\session\IController {
             return $this->_start();
         }
 
-        if(!$descriptor->hasJustTransitioned(self::TRANSITION_LIFETIME)) {
+        if(!$descriptor->hasJustTransitioned(self::$_transitionLifeTime)) {
             $descriptor->transitionKey = null;
         }
 
@@ -131,8 +149,9 @@ class Session extends Base implements user\session\IController {
     }
 
     public function transition() {
-        if($this->descriptor->hasJustStarted()
-        || $this->descriptor->hasJustTransitioned(self::TRANSITION_COOLOFF)) {
+        if(!self::$_transitionsEnabled ||
+            $this->descriptor->hasJustStarted() ||
+            $this->descriptor->hasJustTransitioned(self::$_transitionCooloff)) {
             return $this;
         }
 
