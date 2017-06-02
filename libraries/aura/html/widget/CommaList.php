@@ -27,18 +27,12 @@ class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget
         $this->setRenderer($renderer);
     }
 
-    public function setLimit($limit) {
-        $limit = abs((int)$limit);
-
-        if($limit == 0) {
-            $limit = null;
-        }
-
-        $this->_limit = $limit;
+    public function setLimit(?int $limit) {
+        $this->_limit = $limit ? abs($limit) : $limit;
         return $this;
     }
 
-    public function getLimit() {
+    public function getLimit(): ?int {
         return $this->_limit;
     }
 

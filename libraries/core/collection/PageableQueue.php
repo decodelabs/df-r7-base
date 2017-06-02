@@ -33,12 +33,12 @@ class PageableQueue implements IIndexedQueue, IAggregateIteratorCollection, IPag
         return $this;
     }
 
-    public function setTotal($total) {
+    public function setTotal(?int $total) {
         $this->_total = $total;
         return $this;
     }
 
-    public function countTotal() {
+    public function countTotal(): ?int {
         if($this->_total === null) {
             return count($this->_collection);
         }

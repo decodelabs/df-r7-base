@@ -280,16 +280,12 @@ class Paginator implements IPaginator, core\IDumpable {
         return $this->_isApplied;
     }
 
-    public function setTotal($total) {
-        if($total !== null) {
-            $total = (int)$total;
-        }
-
+    public function setTotal(?int $total) {
         $this->_total = $total;
         return $this;
     }
 
-    public function countTotal() {
+    public function countTotal(): ?int {
         if($this->_total === null) {
             $this->_total = $this->_query->count();
         }

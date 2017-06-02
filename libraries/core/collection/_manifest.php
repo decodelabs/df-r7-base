@@ -140,13 +140,13 @@ interface IPageable {
 }
 
 interface IPaginator extends core\IArrayProvider {
-    public function getLimit();
-    public function getOffset();
-    public function getPage();
-    public function setTotal($total);
-    public function countTotal();
-    public function countTotalPages();
-    public function getKeyMap();
+    public function getLimit(): int;
+    public function getOffset(): int;
+    public function getPage(): int;
+    public function setTotal(?int $total);
+    public function countTotal(): ?int;
+    public function countTotalPages(): ?int;
+    public function getKeyMap(): array;
 }
 
 trait TPaginator {
@@ -162,40 +162,56 @@ trait TPaginator {
         'order' => 'od'
     ];
 
-    public function getLimit() {
+    public function getLimit(): int {
         return $this->_limit;
     }
 
-    public function getOffset() {
+    public function getOffset(): int {
         return $this->_offset;
     }
 
-    public function getPage() {
-        $output = ($this->_offset / $this->_limit) + 1;
+    public function getPage(): int {
+        if(!$this->_limit) {
+            $output = 1;
+        } else {
+            $output = ($this->_offset / $this->_limit) + 1;
+        }
+
         $total = $this->countTotal();
 
         if($total !== null) {
-            $test = ceil($total / $this->_limit);
+            if(!$this->_limit) {
+                $test = 1;
+            } else {
+                $test = ceil($total / $this->_limit);
+            }
 
             if($test < $output) {
                 $output = $test;
             }
         }
 
-        return (int)$output;
+        return $output;
     }
 
-    public function getKeyMap() {
+    public function getKeyMap(): array {
         return $this->_keyMap;
     }
 
-    public function countTotal() {
-        return (int)$this->_total;
+    public function countTotal(): ?int {
+        return $this->_total;
     }
 
-    public function countTotalPages() {
-        $total = $this->countTotal();
-        return ceil($total / $this->getLimit());
+    public function countTotalPages(): ?int {
+        if(null === ($total = $this->countTotal())) {
+            return null;
+        }
+
+        if(!$this->_limit) {
+            return 1;
+        } else {
+            return ceil($total / $this->getLimit());
+        }
     }
 
     public function toArray(): array {
