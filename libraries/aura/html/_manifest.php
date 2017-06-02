@@ -308,8 +308,8 @@ trait TElementContent {
         return $output;
     }
 
-    public function getReductiveIterator() {
-        return new ReductiveIndexIterator($this);
+    public function getReductiveIterator(): \Iterator {
+        return new core\collection\ReductiveIndexIterator($this);
     }
 }
 

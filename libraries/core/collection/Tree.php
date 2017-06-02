@@ -178,7 +178,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return $this;
     }
 
-    public function getReductiveIterator() {
+    public function getReductiveIterator(): \Iterator {
         return new ReductiveMapIterator($this);
     }
 

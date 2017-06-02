@@ -23,7 +23,7 @@ class Set implements ISet, IAggregateIteratorCollection, core\IDumpable {
         return $this;
     }
 
-    public function getReductiveIterator() {
+    public function getReductiveIterator(): \Iterator {
         return new ReductiveIndexIterator($this);
     }
 

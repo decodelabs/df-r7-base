@@ -8,7 +8,7 @@ namespace df\core\math;
 use df;
 use df\core;
 
-class Util {
+class Util implements IUtil {
 
     public static function clampFloat(?float $number, float $min, float $max): ?float {
         if($number === null) {

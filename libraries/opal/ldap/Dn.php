@@ -245,7 +245,7 @@ class Dn implements IDn, core\IDumpable {
     }
 
 
-    public function getReductiveIterator() {
+    public function getReductiveIterator(): \Iterator {
         return new core\collection\ReductiveIndexIterator($this);
     }
 

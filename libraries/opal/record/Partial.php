@@ -51,7 +51,7 @@ class Partial implements IPartial, core\IDumpable {
     }
 
 
-    public function getReductiveIterator() {
+    public function getReductiveIterator(): \Iterator {
         return new ReductiveMapIterator($this);
     }
 

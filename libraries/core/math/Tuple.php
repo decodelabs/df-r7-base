@@ -22,26 +22,22 @@ class Tuple implements ITuple, core\IDumpable {
         $this->import(...$data);
     }
 
-    protected function _normalizeValue($value) {
+    protected function _normalizeValue($value): float {
         if(!is_numeric($value)) {
             throw core\Error::EArgument(
                 'Invalid tuple value: '.$value
             );
         }
 
-        if(!is_int($value)) {
-            $value = (float)$value;
-        }
-
-        return $value;
+        return (float)$value;
     }
 
-    public function getReductiveIterator() {
+    public function getReductiveIterator(): \Iterator {
         return new ReductiveIndexIterator($this);
     }
 
 
-    public function setSize($size) {
+    public function setSize(int $size) {
         $size = abs($size);
         $count = count($this->_collection);
 
@@ -57,14 +53,14 @@ class Tuple implements ITuple, core\IDumpable {
         return $this;
     }
 
-    public function getSize() {
+    public function getSize(): int {
         return count($this->_collection);
     }
 
 
-    public function isZero() {
+    public function isZero(): bool {
         foreach($this->_collection as $i => $value) {
-            if($value != 0) {
+            if($value !== 0) {
                 return false;
             }
         }
@@ -73,17 +69,11 @@ class Tuple implements ITuple, core\IDumpable {
     }
 
 
-    public function getSum() {
-        $output = 0;
-
-        foreach($this->_collection as $value) {
-            $output += $value;
-        }
-
-        return $output;
+    public function getSum(): float {
+        return array_sum($this->_collection);
     }
 
-    public function getProduct() {
+    public function getProduct(): float {
         $output = 1;
 
         foreach($this->_collection as $value) {
@@ -94,27 +84,27 @@ class Tuple implements ITuple, core\IDumpable {
     }
 
 
-    public function getMin() {
+    public function getMin(): float {
         return min($this->_collection);
     }
 
-    public function getMinIndex() {
+    public function getMinIndex(): int {
         return $this->getIndex($this->getMin());
     }
 
-    public function getMax() {
+    public function getMax(): float {
         return max($this->_collection);
     }
 
-    public function getMaxIndex() {
+    public function getMaxIndex(): int {
         return $this->getIndex($this->getMax());
     }
 
-    public function getMinMax() {
+    public function getMinMax(): array {
         return [$this->getMin(), $this->getMax()];
     }
 
-    public function getMinMaxIndex() {
+    public function getMinMaxIndex(): array {
         return [$this->getMinIndex(), $this->getMaxIndex()];
     }
 

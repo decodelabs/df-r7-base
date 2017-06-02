@@ -16,7 +16,7 @@ class Base implements opal\ldap\IRootDse, core\IDumpable {
     use core\collection\TArrayCollection_AssociativeValueMap;
     use core\collection\TArrayCollection_Seekable;
     use core\collection\TArrayCollection_MappedMovable;
-    
+
     public static function factory(opal\ldap\IAdapter $adapter, array $data) {
         $class = 'df\\opal\\ldap\\rootDse\\'.$adapter->getConnection()->getType();
 
@@ -31,33 +31,33 @@ class Base implements opal\ldap\IRootDse, core\IDumpable {
         $this->import($data);
     }
 
-    public function getReductiveIterator() {
+    public function getReductiveIterator(): \Iterator {
         return new core\collection\ReductiveMapIterator($this);
     }
-    
+
 
     public function getNamingContexts() {
         $output = [];
-        
+
         foreach($this['namingContexts'] as $dn) {
             $output[] = opal\ldap\Dn::factory($dn);
         }
-        
+
         return $output;
     }
-    
+
     public function getSubschemaSubentry() {
         return opal\ldap\Dn::factory($this['subschemaSubentry']);
     }
-    
+
     public function supportsVersion($version) {
         return in_array($version, $this['supportedLDAPVersion']);
     }
-    
+
     public function supportsSaslMechanism($mechanism) {
         return in_array(strtoupper($mechanism), $this['supportedSASLMechanisms']);
     }
-    
+
     public function getSchemaDn() {
         return $this->getSubschemaSubentry();
     }

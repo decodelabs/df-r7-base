@@ -40,7 +40,7 @@ trait TExtractList {
 
 
 interface IAggregateIteratorCollection extends \IteratorAggregate {
-    public function getReductiveIterator();
+    public function getReductiveIterator(): \Iterator;
 }
 
 trait TValueMapArrayAccess {

@@ -11,11 +11,11 @@ use df\math;
 
 class Vector extends Tuple implements IVector {
 
-    public static function create($size) {
+    public static function create(int $size): IVector {
         return new self(array_fill(0, $size, 0));
     }
 
-    public static function factory($vector, $size=null) {
+    public static function factory($vector, int $size=null): IVector {
         if(!$vector instanceof IVector) {
             $vector = new self($vector);
         }
@@ -44,32 +44,32 @@ class Vector extends Tuple implements IVector {
         }
     }
 
-    public function setX($x) {
+    public function setX(float $x) {
         return $this->set(0, $x);
     }
 
-    public function getX() {
+    public function getX(): float {
         return $this->get(0);
     }
 
-    public function setY($y) {
+    public function setY(float $y) {
         return $this->set(1, $y);
     }
 
-    public function getY() {
+    public function getY(): float {
         return $this->get(1);
     }
 
-    public function setZ($z) {
+    public function setZ(float $z) {
         return $this->set(2, $z);
     }
 
-    public function getZ() {
+    public function getZ(): float {
         return $this->get(2);
     }
 
 
-    public function isZero() {
+    public function isZero(): bool {
         foreach($this->_collection as $i => $value) {
             if($value != 0) {
                 return false;
@@ -80,7 +80,7 @@ class Vector extends Tuple implements IVector {
     }
 
 
-    public function getSquareLength() {
+    public function getSquareLength(): float {
         $output = 0;
 
         foreach($this->_collection as $value) {
@@ -91,7 +91,7 @@ class Vector extends Tuple implements IVector {
     }
 
 
-    public function setLength($length) {
+    public function setLength(float $length) {
         if(!$this->isZero()) {
             $scale = $length / $this->getLength();
             $this->scale($scale);
@@ -100,14 +100,16 @@ class Vector extends Tuple implements IVector {
         return $this;
     }
 
-    public function setLengthNew($length) {
+    public function setLengthNew(float $length) {
         $output = clone $this;
         return $output->setLength($length);
     }
 
-    public function getLength() {
+    public function getLength(): float {
         return sqrt($this->getSquareLength());
     }
+
+
 
     public function normalize() {
         $length = $this->getLength();
@@ -119,7 +121,7 @@ class Vector extends Tuple implements IVector {
         return $this;
     }
 
-    public function normalizeNew() {
+    public function normalizeNew(): IVector {
         $output = clone $this;
         return $output->normalize();
     }
@@ -129,14 +131,12 @@ class Vector extends Tuple implements IVector {
         return $this;
     }
 
-    public function reverseNew() {
+    public function reverseNew(): IVector {
         $output = clone $this;
         return $output->reverseNew();
     }
 
-    public function scale($factor) {
-        $factor = (float)$factor;
-
+    public function scale(float $factor) {
         foreach($this->_collection as $i => $value) {
             $this->_collection[$i] = $value * $factor;
         }
@@ -144,14 +144,16 @@ class Vector extends Tuple implements IVector {
         return $this;
     }
 
-    public function scaleNew($factor) {
+    public function scaleNew(float $factor): IVector {
         $output = clone $this;
         return $output->scale($factor);
     }
 
 
+
+
 // Distance
-    public function getDistance($vector, $type=IVector::CARTESIAN) {
+    public function getDistance($vector, string $type=IVector::CARTESIAN): float {
         switch($type) {
             case IVector::CITY:
                 return $this->getCityDistance($vector);
@@ -168,11 +170,11 @@ class Vector extends Tuple implements IVector {
         }
     }
 
-    public function getCityDistance($vector) {
+    public function getCityDistance($vector): float {
         return $this->getManhattanDistance($vector);
     }
 
-    public function getManhattanDistance($vector) {
+    public function getManhattanDistance($vector): float {
         $vector = self::factory($vector, $this->getSize());
         $output = 0;
 
@@ -183,7 +185,7 @@ class Vector extends Tuple implements IVector {
         return $output;
     }
 
-    public function getChessboardDistance($vector) {
+    public function getChessboardDistance($vector): float {
         $vector = self::factory($vector, $this->getSize());
         $output = [];
 
@@ -194,7 +196,7 @@ class Vector extends Tuple implements IVector {
         return max($output);
     }
 
-    public function getCartesianDistance($vector) {
+    public function getCartesianDistance($vector): float {
         $vector = self::factory($vector, $this->getSize());
         $output = 0;
 
@@ -218,7 +220,7 @@ class Vector extends Tuple implements IVector {
         return $this;
     }
 
-    public function addNew($vector) {
+    public function addNew($vector): IVector {
         $output = clone $this;
         return $output->add($vector);
     }
@@ -233,7 +235,7 @@ class Vector extends Tuple implements IVector {
         return $this;
     }
 
-    public function subtractNew($vector) {
+    public function subtractNew($vector): IVector {
         $output = clone $this;
         return $output->subtract($vector);
     }
@@ -248,7 +250,7 @@ class Vector extends Tuple implements IVector {
         return $this;
     }
 
-    public function multiplyNew($vector) {
+    public function multiplyNew($vector): IVector {
         $output = clone $this;
         return $output->multiply($vector);
     }
@@ -257,20 +259,26 @@ class Vector extends Tuple implements IVector {
         $vector = self::factory($vector, $this->getSize());
 
         foreach($this->_collection as $i => $value) {
-            $this->_collection[$i] = $value / $vector->_collection[$i];
+            $match = $vector->_collection[$i];
+
+            if($match === 0) {
+                $this->_collection[$i] = 0;
+            } else {
+                $this->_collection[$i] = $value / $vector->_collection[$i];
+            }
         }
 
         return $this;
     }
 
-    public function divideNew($vector) {
+    public function divideNew($vector): IVector {
         $output = clone $this;
         return $output->divide($vector);
     }
 
 
 // Product
-    public function getDotProduct($vector) {
+    public function getDotProduct($vector): float {
         $vector = self::factory($vector, $this->getSize());
         $output = 0;
 
@@ -281,7 +289,7 @@ class Vector extends Tuple implements IVector {
         return $output;
     }
 
-    public function getCrossProduct($vector) {
+    public function getCrossProduct($vector): float {
         if(($size = $this->getSize()) != 3) {
             throw core\Error::{'EDomain'}(
                 'Cross product can only be calculated on a Vector3'
@@ -297,7 +305,7 @@ class Vector extends Tuple implements IVector {
         );
     }
 
-    public function getTripleScalarProduct($vector1, $vector2) {
+    public function getTripleScalarProduct($vector1, $vector2): float {
         if(($size = $this->getSize()) != 3) {
             throw core\Error::{'EDomain'}(
                 'Cross product can only be calculated on a Vector3'
@@ -312,27 +320,27 @@ class Vector extends Tuple implements IVector {
 
 
 // Angles
-    public function set2dAngle($angle, $type=IVector::DEGREES) {
+    public function set2dAngle(float $angle, string $type=IVector::DEGREES) {
         return $this->set2dAngleFrom([0, 0], $angle, $type);
     }
 
-    public function rotate2d($angle, $type=IVector::DEGREES) {
+    public function rotate2d(float $angle, string $type=IVector::DEGREES) {
         return $this->rotate2dFrom([0, 0], $angle, $type);
     }
 
-    public function set2dAngleNew($angle, $type=IVector::DEGREES) {
+    public function set2dAngleNew(float $angle, string $type=IVector::DEGREES): IVector {
         return $this->set2dAngleNewFrom([0, 0], $angle, $type);
     }
 
-    public function rotate2dNew($angle, $type=IVector::DEGREES) {
+    public function rotate2dNew(float $angle, string $type=IVector::DEGREES): IVector {
         return $this->rotate2dNewFrom([0, 0], $angle, $type);
     }
 
-    public function get2dAngle($type=IVector::DEGREES) {
+    public function get2dAngle(string $type=IVector::DEGREES): float {
         return $this->get2dAngleFrom([0, 0], $type);
     }
 
-    public function set2dAngleFrom($vector, $angle, $type=IVector::DEGREES) {
+    public function set2dAngleFrom($vector, float $angle, string $type=IVector::DEGREES) {
         $vector = self::factory($vector, $this->getSize());
         $this->subtract($vector);
 
@@ -358,24 +366,24 @@ class Vector extends Tuple implements IVector {
         return $this;
     }
 
-    public function rotate2dFrom($vector, $angle, $type=IVector::DEGREES) {
+    public function rotate2dFrom($vector, float $angle, string $type=IVector::DEGREES) {
         $vector = self::factory($vector, $this->getSize());
 
         $current = $this->get2dAngleFrom($vector, $type);
         return $this->set2dAngleFrom($vector, $current + $angle, $type);
     }
 
-    public function set2dAngleNewFrom($vector, $angle, $type=IVector::DEGREES) {
+    public function set2dAngleNewFrom($vector, float $angle, string $type=IVector::DEGREES): IVector {
         $output = clone $this;
         return $output->set2dAngleFrom($vector, $angle, $type);
     }
 
-    public function rotate2dNewFrom($vector, $angle, $type=IVector::DEGREES) {
+    public function rotate2dNewFrom($vector, float $angle, string $type=IVector::DEGREES): IVector {
         $output = clone $this;
         return $output->rotate2dFrom($vector, $angle, $type);
     }
 
-    public function get2dAngleFrom($vector, $type=IVector::DEGREES) {
+    public function get2dAngleFrom($vector, string $type=IVector::DEGREES): float {
         $point = $this->subtractNew($vector);
         $output = atan2($point->x, $point->y);
 
@@ -389,7 +397,7 @@ class Vector extends Tuple implements IVector {
         }
     }
 
-    public function getDotAngle($vector=null, $type=IVector::DEGREES) {
+    public function getDotAngle($vector=null, string $type=IVector::DEGREES): float {
         if($vector === null) {
             $vector = [0, 1];
         }
