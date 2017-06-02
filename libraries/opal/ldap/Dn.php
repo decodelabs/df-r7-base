@@ -249,7 +249,7 @@ class Dn implements IDn, core\IDumpable {
         return new core\collection\ReductiveIndexIterator($this);
     }
 
-    protected function _expandInput($value) {
+    protected function _expandInput($value): array {
         return [Rdn::factory($value)];
     }
 

@@ -232,7 +232,7 @@ trait TElementContent {
         return $output;
     }
 
-    protected function _expandInput($input) {
+    protected function _expandInput($input): array {
         if(!is_array($input)) {
             $input = [$input];
         }

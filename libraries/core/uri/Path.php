@@ -284,7 +284,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         }
     }
 
-    protected function _expandInput($input) {
+    protected function _expandInput($input): array {
         if($input instanceof core\ICollection) {
             $input = $input->toArray();
         }

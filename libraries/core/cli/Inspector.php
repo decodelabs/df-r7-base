@@ -9,12 +9,12 @@ use df;
 use df\core;
 
 class Inspector implements IInspector {
-    
+
     protected $_rules = [];
 
     protected $_command;
-    protected $_valueArguments;
-    protected $_optionArguments;
+    protected $_valueArguments = [];
+    protected $_optionArguments = [];
 
     public function __construct($rules, $command=null) {
         if(is_string($rules)) {
@@ -22,7 +22,7 @@ class Inspector implements IInspector {
         } else if(is_array($rules)) {
             $this->_parse($rules);
         } else {
-            throw new InvalidArgumentException('Invalid rules');
+            throw core\Error::EArgument('Invalid rules');
         }
 
         if($command !== null) {
@@ -30,7 +30,7 @@ class Inspector implements IInspector {
         }
     }
 
-    protected function _parseCompact($string) {
+    protected function _parseCompact(string $string): void {
         $length = strlen($string);
         $lastRule = null;
 
@@ -38,7 +38,7 @@ class Inspector implements IInspector {
             $char = $string{$i};
 
             if(!preg_match('/^[a-zA-Z\:]$/', $char)) {
-                throw new InvalidArgumentException(
+                throw core\Error::EArgument(
                     'Invalid option character: '.$char
                 );
             }
@@ -52,10 +52,10 @@ class Inspector implements IInspector {
         }
     }
 
-    protected function _parse(array $options) {
+    protected function _parse(array $options): void {
         foreach($options as $key => $description) {
             if(!preg_match('/^([a-zA-Z|]+)(([\-=])(s|i|w))?$/', $key, $matches)) {
-                throw new InvalidArgumentException(
+                throw core\Error::EArgument(
                     'Invalid rule definition: '.$key
                 );
             }
@@ -90,7 +90,7 @@ class Inspector implements IInspector {
         while($argument = array_shift($arguments)) {
             if($nextIsOptionValue) {
                 if($argument->isOption()) {
-                    throw new InvalidArgumentException(
+                    throw core\Error::EArgument(
                         'Expecting option value for '.$lastArgument->getOption().' flag, not '.$argument
                     );
                 }
@@ -127,7 +127,7 @@ class Inspector implements IInspector {
                             $lastArgument->setValue($default);
                         } else {
                             if(!empty($optionStrings)) {
-                                throw new InvalidArgumentException(
+                                throw core\Error::EArgument(
                                     'Option '.$optionString.' requires a value so cannot be clustered'
                                 );
                             }
@@ -146,7 +146,7 @@ class Inspector implements IInspector {
 
         foreach($this->_rules as $rule) {
             if($rule->isRequired() && isset($this->_optionArguments[$rule->getName()])) {
-                throw new InvalidArgumentException(
+                throw core\Error::EArgument(
                     'Option '.$rule->getName().' is required'
                 );
             }
@@ -155,26 +155,26 @@ class Inspector implements IInspector {
         return $this;
     }
 
-    protected function _exportRule(IRule $rule) {
+    protected function _exportRule(IRule $rule): void {
         foreach($rule->getFlags() as $flag) {
             $this->_rules[$flag] = $rule;
         }
     }
 
-    protected function _storeOptionArgument(IRule $rule, IArgument $argument) {
+    protected function _storeOptionArgument(IRule $rule, IArgument $argument): void {
         foreach($rule->getNames() as $name) {
             $this->_optionArguments[$name] = $argument;
         }
     }
 
-    protected function _testValue(IRule $rule, IArgument $argument) {
+    protected function _testValue(IRule $rule, IArgument $argument): void {
         $type = $rule->getValueType();
         $value = $argument->getValue();
 
         switch($type->getValue()) {
             case ValueType::INTEGER:
                 if(!is_numeric($value)) {
-                    throw new InvalidArgumentException(
+                    throw core\Error::Evalue(
                         'Expected integer value for '.$rule->getName().' rule'
                     );
                 }
@@ -187,7 +187,7 @@ class Inspector implements IInspector {
 
             case ValueType::WORD:
                 if(!preg_match('/^[a-zA-Z]+$/', $value)) {
-                    throw new InvalidArgumentException(
+                    throw core\Error::Evalue(
                         'Expected word value for '.$rule->getName().' rule'
                     );
                 }
@@ -202,15 +202,15 @@ class Inspector implements IInspector {
         return $this;
     }
 
-    public function getCommand() {
+    public function getCommand(): ?ICommand {
         return $this->_command;
     }
 
-    public function getValueArguments() {
+    public function getValueArguments(): array {
         return $this->_valueArguments;
     }
 
-    public function getOptionArguments() {
+    public function getOptionArguments(): array {
         return $this->_optionArguments;
     }
 

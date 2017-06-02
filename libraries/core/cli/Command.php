@@ -19,9 +19,9 @@ class Command implements ICommand {
 
     protected $_executable;
 
-    public static function fromArgv() {
+    public static function fromArgv(): ICommand {
         if(!isset($_SERVER['argv'])) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'No argv information is available'
             );
         }
@@ -62,7 +62,7 @@ class Command implements ICommand {
         return $output;
     }
 
-    public function __construct($executable=null) {
+    public function __construct(string $executable=null) {
         $this->setExecutable($executable);
     }
 
@@ -73,12 +73,12 @@ class Command implements ICommand {
 
 
 // Executable
-    public function setExecutable($executable) {
+    public function setExecutable(?string $executable) {
         $this->_executable = $executable;
         return $this;
     }
 
-    public function getExecutable() {
+    public function getExecutable(): ?string {
         return $this->_executable;
     }
 
@@ -88,7 +88,7 @@ class Command implements ICommand {
         return $this->push($argument);
     }
 
-    public function getArguments() {
+    public function getArguments(): array {
         return $this->toArray();
     }
 
@@ -98,7 +98,7 @@ class Command implements ICommand {
 
     protected function _onInsert() {}
 
-    protected function _expandInput($input) {
+    protected function _expandInput($input): array {
         if($input instanceof core\ICollection) {
             $input = $input->toArray();
         }

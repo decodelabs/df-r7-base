@@ -15,7 +15,7 @@ class Argument implements IArgument, core\IDumpable {
     protected $_option;
     protected $_value;
 
-    public function __construct($string) {
+    public function __construct(?string $string) {
         if($string !== null) {
             if(substr($string, 0, 1) != '-') {
                 $this->_value = $string;
@@ -27,7 +27,7 @@ class Argument implements IArgument, core\IDumpable {
         }
     }
 
-    public function setOption($option) {
+    public function setOption(?string $option) {
         if(!strlen($option)) {
             $option = null;
         }
@@ -36,11 +36,11 @@ class Argument implements IArgument, core\IDumpable {
         return $this;
     }
 
-    public function getOption() {
+    public function getOption(): ?string {
         return $this->_option;
     }
 
-    public function getOptions() {
+    public function getOptions(): array {
         $output = [];
 
         if($this->isOptionCluster()) {
@@ -54,23 +54,23 @@ class Argument implements IArgument, core\IDumpable {
         return $output;
     }
 
-    public function isOption() {
+    public function isOption(): bool {
         return $this->_option !== null;
     }
 
-    public function isLongOption() {
+    public function isLongOption(): bool {
         return substr($this->_option, 0, 2) == '--';
     }
 
-    public function isShortOption() {
+    public function isShortOption(): bool {
         return substr($this->_option, 0, 1) == '-' && !$this->isLongOption();
     }
 
-    public function isOptionCluster() {
+    public function isOptionCluster(): bool {
         return preg_match('/^-[a-zA-Z0-9]{2,}/', $this->_option);
     }
 
-    public function getClusterOptions() {
+    public function getClusterOptions(): array {
         $output = [];
 
         if($this->isOptionCluster()) {
@@ -82,7 +82,9 @@ class Argument implements IArgument, core\IDumpable {
         return $output;
     }
 
-    public function setValue($value) {
+
+
+    public function setValue(?string $value) {
         if(!strlen($value)) {
             $value = null;
         }
@@ -91,7 +93,7 @@ class Argument implements IArgument, core\IDumpable {
         return $this;
     }
 
-    public function getValue() {
+    public function getValue(): ?string {
         return $this->_value;
     }
 

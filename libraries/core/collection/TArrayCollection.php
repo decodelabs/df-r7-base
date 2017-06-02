@@ -575,7 +575,7 @@ trait TArrayCollection_ProcessedIndexedValueMap {
         return $output;
     }
 
-    protected function _expandInput($input) {
+    protected function _expandInput($input): array {
         return (array)$input;
     }
 
@@ -849,7 +849,7 @@ trait TArrayCollection_ProcessedShiftable {
         return $this;
     }
 
-    abstract protected function _expandInput($input);
+    abstract protected function _expandInput($input): array;
     abstract protected function _onInsert();
 }
 

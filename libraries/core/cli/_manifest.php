@@ -8,55 +8,54 @@ namespace df\core\cli;
 use df;
 use df\core;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-// Interfaces
 interface ICommand extends core\collection\IQueue, core\collection\IRandomAccessCollection, core\IStringProvider {
-    public function setExecutable($executable);
-    public function getExecutable();
+    public static function fromArgv(): ICommand;
+
+    public function setExecutable(?string $executable);
+    public function getExecutable(): ?string;
 
     public function addArgument($argument);
-    public function getArguments();
+    public function getArguments(): array;
 }
 
 
 interface IArgument extends core\IStringProvider {
-    public function getOption();
-    public function isOption();
-    public function isLongOption();
-    public function isShortOption();
-    public function isOptionCluster();
-    public function getClusterOptions();
+    public function setOption(?string $option);
+    public function getOption(): ?string;
+    public function getOptions(): array;
+    public function isOption(): bool;
+    public function isLongOption(): bool;
+    public function isShortOption(): bool;
+    public function isOptionCluster(): bool;
+    public function getClusterOptions(): array;
 
-    public function getValue();
+    public function setValue(?string $value);
+    public function getValue(): ?string;
     public function hasValue(): bool;
 }
 
 interface IInspector extends \ArrayAccess {
     public function inspect($command);
     public function reset();
-    public function getCommand();
-    public function getValueArguments();
-    public function getOptionArguments();
+    public function getCommand(): ?ICommand;
+    public function getValueArguments(): array;
+    public function getOptionArguments(): array;
 }
 
 interface IRule extends core\constraint\IRequirable {
     public function setNames($names);
-    public function getName();
-    public function getNames();
-    public function getFlags();
+    public function getName(): string;
+    public function getNames(): array;
+    public function getFlags(): array;
     public function requiresValue(bool $flag=null);
     public function canHaveValue(bool $flag=null);
-    public function setDefaultValue($value);
-    public function getDefaultValue();
+    public function isRequired(bool $flag=null);
+    public function setDefaultValue(?string $value);
+    public function getDefaultValue(): ?string;
     public function setValueType($type);
-    public function getValueType();
-    public function setDescription($description);
-    public function getDescription();
+    public function getValueType(): ValueType;
+    public function setDescription(?string $description);
+    public function getDescription(): ?string;
 }
 
 class ValueType extends core\lang\Enum {

@@ -10,7 +10,7 @@ use df\core;
 
 class Rule implements IRule {
 
-    protected $_defaultName;
+    protected $_defaultName = '';
     protected $_names = [];
     protected $_valueRequired = false;
     protected $_canHaveValue = true;
@@ -19,9 +19,9 @@ class Rule implements IRule {
     protected $_valueType;
     protected $_description = null;
 
-    public function __construct($names, $valueRequired=false, $valueType='s') {
+    public function __construct($names, bool $valueRequired=false, $valueType='s') {
         $this->setNames($names);
-        $this->requiresValue((bool)$valueRequired);
+        $this->requiresValue($valueRequired);
         $this->setValueType($valueType);
     }
 
@@ -42,17 +42,19 @@ class Rule implements IRule {
                 break;
             }
         }
+
+        return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_defaultName;
     }
 
-    public function getNames() {
+    public function getNames(): array {
         return $this->_names;
     }
 
-    public function getFlags() {
+    public function getFlags(): array {
         $output = [];
 
         foreach($this->_names as $name) {
@@ -100,12 +102,12 @@ class Rule implements IRule {
         return $this->_valueRequired && $this->_isRequired;
     }
 
-    public function setDefaultValue($value) {
+    public function setDefaultValue(?string $value) {
         $this->_defaultValue = $value;
         return $this;
     }
 
-    public function getDefaultValue() {
+    public function getDefaultValue(): ?string {
         return $this->_defaultValue;
     }
 
@@ -114,16 +116,16 @@ class Rule implements IRule {
         return $this;
     }
 
-    public function getValueType() {
+    public function getValueType(): ValueType {
         return $this->_valueType;
     }
 
-    public function setDescription($description) {
+    public function setDescription(?string $description) {
         $this->_description = $description;
         return $this;
     }
 
-    public function getDescription() {
+    public function getDescription(): ?string {
         return $this->_description;
     }
 }
