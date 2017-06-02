@@ -17,6 +17,7 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
     use TQuery_NestedComponent;
     use TQuery_JoinConstrainable;
     use TQuery_WhereClauseFactory;
+    use TQuery_Groupable;
     use TQuery_Limitable;
     use TQuery_Offsettable;
 
@@ -139,6 +140,10 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
 
         if($this->_whereClauseList && !$this->_whereClauseList->isEmpty()) {
             $output['where'] = $this->_whereClauseList;
+        }
+
+        if(!empty($this->_group)) {
+            $output['group'] = $this->_groups;
         }
 
         if($this->_limit) {

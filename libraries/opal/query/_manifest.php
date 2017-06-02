@@ -296,7 +296,7 @@ interface ISearchableQuery extends IReadQuery {
     public function clearSearch();
 }
 
-interface IGroupableQuery extends IReadQuery {
+interface IGroupableQuery extends IQuery {
     public function groupBy(...$fields);
     public function getGroupFields();
     public function clearGroupFields();
@@ -347,6 +347,7 @@ interface ICorrelationQuery extends
     IJoinConstrainableQuery,
     IJoinClauseFactory,
     IWhereClauseFactory,
+    IGroupableQuery,
     ILimitableQuery,
     IOffsettableQuery {
     public function setApplicator(callable $applicator=null);
