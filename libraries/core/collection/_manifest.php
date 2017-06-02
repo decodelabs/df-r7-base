@@ -108,10 +108,10 @@ interface ISeekable {
 
 // Sliceable
 interface ISliceable {
-    public function slice($offset, $length=null);
-    public function getSlice($offset, $length=null);
-    public function removeSlice($offset, $length=null);
-    public function keepSlice($offset, $length=null);
+    public function slice(int $offset, int $length=null): array;
+    public function getSlice(int $offset, int $length=null): array;
+    public function removeSlice(int $offset, int $length=null);
+    public function keepSlice(int $offset, int $length=null);
 }
 
 

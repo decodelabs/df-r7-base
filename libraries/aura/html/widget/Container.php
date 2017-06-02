@@ -184,20 +184,20 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         return $this;
     }
 
-    public function slice($offset, $length=null) {
+    public function slice(int $offset, int $length=null): array {
         return $this->_children->slice($offset, $length=null);
     }
 
-    public function getSlice($offset, $length=null) {
+    public function getSlice(int $offset, int $length=null): array {
         return $this->_children->getSlice($offset, $length);
     }
 
-    public function removeSlice($offset, $length=null) {
+    public function removeSlice(int $offset, int $length=null) {
         $this->_children->removeSlice($offset, $length);
         return $this;
     }
 
-    public function keepSlice($offset, $length=null) {
+    public function keepSlice(int $offset, int $length=null) {
         $this->_children->keepSlice($offset, $length);
         return $this;
     }

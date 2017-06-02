@@ -742,7 +742,7 @@ trait TArrayCollection_ReverseSeekable {
 // Sliceable
 trait TArrayCollection_Sliceable {
 
-    public function slice($offset, $length=null) {
+    public function slice(int $offset, int $length=null): array {
         if($length === null) {
             return array_splice($this->_collection, $offset);
         } else {
@@ -750,16 +750,16 @@ trait TArrayCollection_Sliceable {
         }
     }
 
-    public function getSlice($offset, $length=null) {
+    public function getSlice(int $offset, int $length=null): array {
         return array_slice($this->_collection, $offset, $length);
     }
 
-    public function removeSlice($offset, $length=null) {
+    public function removeSlice(int $offset, int $length=null) {
         $this->slice($offset, $length);
         return $this;
     }
 
-    public function keepSlice($offset, $length=null) {
+    public function keepSlice(int $offset, int $length=null) {
         $this->_collection = $this->getSlice($offset, $length);
         return $this;
     }

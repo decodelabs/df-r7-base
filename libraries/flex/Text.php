@@ -955,7 +955,7 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-    public function slice($offset, $length=null) {
+    public function slice(int $offset, int $length=null): array {
         $output = mb_substr($this->_value, $offset, $length, $this->_encoding);
         $this->_value = mb_substr($this->_value, 0, $offset, $this->_encoding).
             ($length !== null ? mb_substr($this->_value, $length) : null);
@@ -963,16 +963,16 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $output;
     }
 
-    public function getSlice($offset, $length=null) {
+    public function getSlice(int $offset, int $length=null): array {
         return mb_substr($this->_value, $offset, $length, $this->_encoding);
     }
 
-    public function removeSlice($offset, $length=null) {
+    public function removeSlice(int $offset, int $length=null) {
         $this->slice($offset, $length);
         return $this;
     }
 
-    public function keepSlice($offset, $length=null) {
+    public function keepSlice(int $offset, int $length=null) {
         $this->_value = $this->getSlice($offset, $length);
         return $this;
     }
