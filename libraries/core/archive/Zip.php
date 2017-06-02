@@ -9,18 +9,18 @@ use df;
 use df\core;
 
 class Zip extends Base {
-    
-    public function extractFile($file, $destination=null, $flattenRoot=false) {
+
+    public function extractFile(string $file, string $destination=null, bool $flattenRoot=false): string {
         $destination = $this->_normalizeExtractDestination($file, $destination);
 
         $zip = new \ZipArchive();
 
         if(($res = $zip->open($file)) !== true) {
-            throw new RuntimeException($this->_getErrorString($res));
+            throw core\Error::ENotFound($this->_getErrorString($res));
         }
 
         if(($res = $zip->extractTo($destination)) !== true) {
-            throw new RuntimeException($this->_getErrorString($res));
+            throw core\Error::ERuntime($this->_getErrorString($res));
         }
 
         $zip->close();
@@ -32,7 +32,7 @@ class Zip extends Base {
         return $destination;
     }
 
-    protected function _getErrorString($error) {
+    protected function _getErrorString($error): string {
         switch($error) {
             case \ZipArchive::ER_MULTIDISK:
                 return 'Multidisk zip archives are not supported';

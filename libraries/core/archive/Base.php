@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 abstract class Base implements IArchive {
-    
+
     public static function extract($file, $destination=null, $flattenRoot=false) {
         if(preg_match('/\.zip$/i', $file)) {
             $type = 'Zip';
@@ -22,17 +22,17 @@ abstract class Base implements IArchive {
         } else if(preg_match('/\.bz2$/i', $file)) {
             $type = 'Bz2';
         } else {
-            throw new RuntimeException('Unable to work out type of archive: '.$file);
+            throw core\Error::ERuntime('Unable to detect type of archive: '.$file);
         }
 
         return self::factory($type)->extractFile($file, $destination, $flattenRoot);
     }
 
-    public static function factory($type) {
+    public static function factory(string $type): IArchive {
         $class = 'df\\core\\archive\\'.ucfirst($type);
 
         if(!class_exists($class)) {
-            throw new LogicException('Archive type '.$type.' is not supported');
+            throw core\Error::EUnsupported('Archive type '.$type.' is not supported');
         }
 
         return new $class();
@@ -40,32 +40,31 @@ abstract class Base implements IArchive {
 
     public function __construct() {}
 
-    public function getType() {
-        $parts = explode('\\', get_class($this));
-        return array_pop($parts);
+    public function getType(): string {
+        return (new \ReflectionObject($this))->getShortName($this);
     }
 
-    public function extractFile($file, $destDir=null, $flattenRoot=false) {
-        throw new LogicException($this->getType().' type archives cannot handle file and folder compression');
+    public function extractFile(string $file, string $destDir=null, bool $flattenRoot=false): string {
+        throw core\Error::EUnsupported($this->getType().' type archives cannot handle file and folder compression');
     }
 
-    public function decompressFile($file, $destFile=null) {
-        throw new LogicException($this->getType().' type archives cannot handle file and folder compression');
+    public function decompressFile(string $file, string $destFile=null): string {
+        throw core\Error::EUnsupported($this->getType().' type archives cannot handle file and folder compression');
     }
 
-    public function compressString($string) {
-        throw new LogicException($this->getType().' type archives cannot handle string compression');
+    public function compressString(string $string): string {
+        throw core\Error::EUnsupported($this->getType().' type archives cannot handle string compression');
     }
 
-    public function decompressString($string) {
-        throw new LogicException($this->getType().' type archives cannot handle string compression');
+    public function decompressString(string $string): string {
+        throw core\Error::EUnsupported($this->getType().' type archives cannot handle string compression');
     }
 
-    protected function _normalizeExtractDestination(&$file, $destination) {
+    protected function _normalizeExtractDestination(string &$file, string $destination): string {
         $file = str_replace(['/', '\\'], \DIRECTORY_SEPARATOR, realpath($file));
 
         if(!is_file($file)) {
-            throw new RuntimeException(
+            throw core\Error::ENotFound(
                 'Source archive could not be found: '.$file
             );
         }
@@ -75,12 +74,10 @@ abstract class Base implements IArchive {
         }
 
         core\fs\Dir::create($destination);
-        
-
         return $destination;
     }
 
-    protected function _normalizeDecompressDestination(&$file, $destFile, $extension) {
+    protected function _normalizeDecompressDestination(string &$file, string $destFile, string $extension): string {
         $file = str_replace(['/', '\\'], \DIRECTORY_SEPARATOR, realpath($file));
 
         if($destFile !== null) {
@@ -92,7 +89,7 @@ abstract class Base implements IArchive {
         }
 
         if(!is_file($file)) {
-            throw new RuntimeException(
+            throw core\Error::ENotFound(
                 'Source archive could not be found: '.$file
             );
         }
@@ -105,7 +102,7 @@ abstract class Base implements IArchive {
         return $destFile;
     }
 
-    protected function _getDecompressFileName($file, $extension) {
+    protected function _getDecompressFileName(string $file, string $extension): string {
         $fileName = basename($file);
         $extLength = 1 + strlen($extension);
 
@@ -118,7 +115,7 @@ abstract class Base implements IArchive {
         return $fileName;
     }
 
-    protected function _flattenRoot($destination) {
+    protected function _flattenRoot(string $destination): void {
         $dir = core\fs\Dir::factory($destination);
         $dirName = null;
 

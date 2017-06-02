@@ -9,28 +9,28 @@ use df;
 use df\core;
 
 class Rar extends Base {
-    
+
     public function __construct() {
         if(!extension_loaded('rar')) {
-            throw new RuntimeException(
+            throw core\Error::EUnsupported(
                 'The rar extension is not loaded'
             );
         }
     }
 
-    public function extractFile($file, $destination=null, $flattenRoot=false) {
+    public function extractFile(string $file, string $destination=null, bool $flattenRoot=false): string {
         $destination = $this->_normalizeExtractDestination($file, $destination);
-        
+
         // TODO: add password support
 
         if(!$archive = rar_open($file)) {
-            throw new RuntimeException(
+            throw core\Error::ENotFound(
                 'Unable to open rar archive: '.$file
             );
         }
 
         if(!$files = rar_list($archive)) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'Unable to read file list from rar archive: '.$file
             );
         }

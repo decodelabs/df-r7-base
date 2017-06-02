@@ -9,16 +9,16 @@ use df;
 use df\core;
 
 class Bz2 extends Base {
-    
+
     public function __construct() {
         if(!extension_loaded('bz2')) {
-            throw new RuntimeException(
+            throw core\Error::EUnsupported(
                 'The bz2 extension is not loaded'
             );
         }
     }
 
-    public function extractFile($file, $destDir=null, $flattenRoot=false) {
+    public function extractFile(string $file, string $destDir=null, bool $flattenRoot=false): string {
         $destFile = null;
 
         if($destDir !== null) {
@@ -28,9 +28,9 @@ class Bz2 extends Base {
         return dirname($this->decompressFile($file, $destFile));
     }
 
-    public function decompressFile($file, $destFile=null) {
+    public function decompressFile(string $file, string $destFile=null): string {
         $destFile = $this->_normalizeDecompressDestination($file, $destFile, 'bz2');
-        
+
         $output = fopen($destFile, 'w');
         $archive = bzopen($file, 'r');
         $block = 1024;
@@ -50,11 +50,11 @@ class Bz2 extends Base {
         return $destFile;
     }
 
-    public function compressString($string) {
+    public function compressString(string $string): string {
         $output = bzcompress($string, 4);
 
         if(is_int($output)) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'Unable to compress bz string'
             );
         }
@@ -62,11 +62,11 @@ class Bz2 extends Base {
         return $output;
     }
 
-    public function decompressString($string) {
+    public function decompressString(string $string): string {
         $output = bzdecompress($string);
 
         if(is_int($output)) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'Unable to decompress bz string, appears invalid'
             );
         }

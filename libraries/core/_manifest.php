@@ -27,6 +27,7 @@ interface ELogic extends IError {}
 interface ERuntime extends IError {}
 interface EDefinition extends ELogic {}
 interface EImplementation extends ELogic {}
+interface EUnsupported extends ELogic {}
 interface EValue extends ERuntime {}
 interface ESetup extends EValue {}
 interface EArgument extends ELogic {}

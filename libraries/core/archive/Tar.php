@@ -9,8 +9,8 @@ use df;
 use df\core;
 
 class Tar extends Base {
-    
-    public function extractFile($file, $destination=null, $flattenRoot=false) {
+
+    public function extractFile(string $file, string $destination=null, bool $flattenRoot=false): string {
         $destination = $this->_normalizeExtractDestination($file, $destination);
         $archive = new \PharData($file);
 
@@ -32,7 +32,7 @@ class Tar extends Base {
         if($flattenRoot) {
             $this->_flattenRoot($destination);
         }
-        
+
         return $destination;
     }
 }

@@ -8,22 +8,15 @@ namespace df\core\archive;
 use df;
 use df\core;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-
-
-// Interfaces
 interface IArchive {
     public static function extract($file, $destDir=null, $flattenRoot=false);
+    public static function factory(string $type): IArchive;
 
-    public function getType();
+    public function getType(): string;
 
-    public function extractFile($file, $destDir=null, $flattenRoot=false);
-    public function decompressFile($file, $destFile=null);
-    
-    public function compressString($string);
-    public function decompressString($string);
+    public function extractFile(string $file, string $destDir=null, bool $flattenRoot=false): string;
+    public function decompressFile(string $file, string $destFile=null): string;
+
+    public function compressString(string $string): string;
+    public function decompressString(string $string): string;
 }
-

@@ -9,20 +9,20 @@ use df;
 use df\core;
 
 class Lzf extends Base {
-    
+
     public function __construct() {
         if(!extension_loaded('lzf')) {
-            throw new RuntimeException(
+            throw core\Error::EUnsupported(
                 'The lzf extension is not loaded'
             );
         }
     }
 
-    public function compressString($string) {
+    public function compressString(string $string): string {
         $output = lzf_compress($string);
 
         if($output === false) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'Unable to compress lzf string'
             );
         }
@@ -30,11 +30,11 @@ class Lzf extends Base {
         return $output;
     }
 
-    public function decompressString($string) {
+    public function decompressString(string $string): string {
         $output = lzf_decompress($string);
 
         if($output === false) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'Unable to decompress lzf string, appears invalid'
             );
         }

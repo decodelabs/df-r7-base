@@ -9,20 +9,20 @@ use df;
 use df\core;
 
 class Snappy extends Base {
-    
+
     public function __construct() {
         if(!extension_loaded('snappy')) {
-            throw new RuntimeException(
+            throw core\Error::EUnsupported(
                 'The snappy extension is not loaded'
             );
         }
     }
 
-    public function compressString($string) {
+    public function compressString(string $string): string {
         $output = snappy_compress($string);
 
         if($output === false) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'Unable to compress snappy string'
             );
         }
@@ -30,11 +30,11 @@ class Snappy extends Base {
         return $output;
     }
 
-    public function decompressString($string) {
+    public function decompressString(string $string): string {
         $output = snappy_uncompress($string);
 
         if($output === false) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'Unable to decompress snappy string, appears invalid'
             );
         }
