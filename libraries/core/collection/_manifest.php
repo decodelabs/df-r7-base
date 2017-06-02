@@ -21,13 +21,13 @@ interface ICollection extends \Countable, core\IArrayProvider {
     public function isEmpty();
     public function clear();
     public function extract();
-    public function extractList($count);
+    public function extractList(int $count): array;
 }
 
 
 trait TExtractList {
 
-    public function extractList($count) {
+    public function extractList(int $count): array {
         $output = [];
 
         for($i = 0; $i < (int)$count; $i++) {

@@ -157,7 +157,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         return $this->_children->extract();
     }
 
-    public function extractList($count) {
+    public function extractList(int $count): array {
         return $this->_children->extractList($count);
     }
 
