@@ -1936,12 +1936,12 @@ trait TQuery_Pageable {
         return $this->paginate()->applyWith($data);
     }
 
-    public function setPaginator(core\collection\IPaginator $paginator) {
+    public function setPaginator(?core\collection\IPaginator $paginator) {
         $this->_paginator = $paginator;
         return $this;
     }
 
-    public function getPaginator() {
+    public function getPaginator(): ?core\collection\IPaginator {
         return $this->_paginator;
     }
 }

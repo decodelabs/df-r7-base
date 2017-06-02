@@ -135,8 +135,8 @@ trait TExtricable {
 
 // Paging
 interface IPageable {
-    public function setPaginator(IPaginator $paginator);
-    public function getPaginator();
+    public function setPaginator(?IPaginator $paginator);
+    public function getPaginator(): ?IPaginator;
 }
 
 interface IPaginator extends core\IArrayProvider {
