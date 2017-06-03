@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,12 +10,12 @@ use df\core;
 use df\plug;
 use df\arch;
 use df\link;
-    
+
 class Avatar implements arch\IDirectoryHelper {
 
     use arch\TDirectoryHelper;
 
-    const GRAVATAR_BASE = 'http://www.gravatar.com/avatar/';
+    const GRAVATAR_BASE = '//www.gravatar.com/avatar/';
 
     public function getClientAvatarUrl($size=null) {
         return $this->getAvatarUrl($this->context->user->client->getId(), $size);
