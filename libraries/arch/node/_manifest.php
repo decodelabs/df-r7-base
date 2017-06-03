@@ -86,6 +86,9 @@ interface IRestApiResult extends arch\IProxyResponse {
 
     public function setDataProcessor(?callable $processor);
     public function getDataProcessor(): ?callable;
+
+    public function setCors(?string $cors);
+    public function getCors(): ?string;
 }
 
 

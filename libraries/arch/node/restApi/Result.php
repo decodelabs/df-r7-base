@@ -17,8 +17,11 @@ class Result implements arch\node\IRestApiResult {
     public $validator;
 
     protected $_statusCode = null;
+    protected $_cors = null;
+
     protected $_exception;
     protected $_dataProcessor;
+
 
     public function __construct($value=null, core\validate\IHandler $validator=null) {
         if(!$validator) {
@@ -111,6 +114,15 @@ class Result implements arch\node\IRestApiResult {
         return $this->_dataProcessor;
     }
 
+    public function setCors(?string $cors) {
+        $this->_cors = $cors;
+        return $this;
+    }
+
+    public function getCors(): ?string {
+        return $this->_cors;
+    }
+
 
 // Response
     public function toResponse() {
@@ -157,7 +169,13 @@ class Result implements arch\node\IRestApiResult {
             'application/json'
         );
 
-        $response->getHeaders()->setStatusCode($this->getStatusCode());
+        $headers = $response->getHeaders();
+        $headers->setStatusCode($this->getStatusCode());
+
+        if($this->_cors) {
+            $headers->set('Access-Control-Allow-Origin', $this->_cors);
+        }
+
         return $response;
     }
 }

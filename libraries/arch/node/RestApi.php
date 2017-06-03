@@ -15,6 +15,7 @@ abstract class RestApi extends Base implements IRestApiNode {
     const DEFAULT_ACCESS = arch\IAccess::ALL;
     const OPTIMIZE = true;
     const CHECK_ACCESS = false;
+    const CORS = false;
 
     protected $_httpRequest;
 
@@ -54,6 +55,7 @@ abstract class RestApi extends Base implements IRestApiNode {
             $response = new arch\node\restApi\Result($response);
         }
 
+        $response->setCors(static::CORS);
         return $response;
     }
 
