@@ -78,22 +78,24 @@ interface IChainable {
 trait TChainable {
 
     public function chain($callback, ...$args) {
-        Callback::factory($callback)->invoke($this, ...$args);
+        Callback::call($callback, $this, ...$args);
         return $this;
     }
 
     public function chainIf($test, $trueCallback, $falseCallback=null) {
         if($test) {
-            Callback::factory($trueCallback)->invoke($this);
+            Callback::call($trueCallback, $this);
         } else if($falseCallback) {
-            Callback::factory($falseCallback)->invoke($this);
+            Callback::call($falseCallback, $this);
         }
 
         return $this;
     }
 
     public function chainEach(array $list, $callback, ...$args) {
-        $callback = Callback::factory($callback);
+        if(!$callback = Callback::factory($callback)) {
+            return $this;
+        }
 
         foreach($list as $key => $value) {
             $callback->invoke($this, $value, $key, ...$args);
