@@ -101,7 +101,7 @@ class Currency extends NumberTextbox {
         }
 
         if($innerValue) {
-            $innerValue = round(str_replace(',', '', $innerValue), 2);
+            $innerValue = number_format(str_replace(',', '', $innerValue), 2);
         }
 
         if($value instanceof core\IValueContainer) {
