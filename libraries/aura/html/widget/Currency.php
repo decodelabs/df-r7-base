@@ -31,6 +31,7 @@ class Currency extends NumberTextbox {
     protected function _render() {
         $currencyFieldName = $this->getName().'[currency]';
         $selectValue = mint\Currency::normalizeCode($this->_inputCurrency);
+        $this->getTag()->addClass('w-numberTextbox');
 
         $output = parent::_render();
 
