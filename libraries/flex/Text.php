@@ -29,7 +29,7 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->toString();
     }
 
-    public static function formatInitials($name) {
+    public static function formatInitials($name, bool $extendShort=true) {
         $output = self::factory($name)
             ->replace(['-', '_'], ' ')
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
@@ -37,7 +37,7 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->regexReplace('/[^A-Z0-9]/', '')
             ->toString();
 
-        if(strlen($output) == 1) {
+        if($extendShort && strlen($output) == 1) {
             $chars = str_replace(['a', 'e', 'i', 'o', 'u'], '', $name);
 
             if(isset($chars{1})) {
@@ -46,6 +46,13 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         }
 
         return $output;
+    }
+
+    public static function formatConsonants($text) {
+        return self::factory($text)
+            ->translitToAscii()
+            ->regexReplace('/[aeiou]+/i', '')
+            ->toString();
     }
 
     public static function formatLabel($label) {

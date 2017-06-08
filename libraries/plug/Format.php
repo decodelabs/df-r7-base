@@ -359,6 +359,10 @@ class Format implements core\ISharedHelper {
         return flex\Text::formatInitials($name);
     }
 
+    public function consonants($text) {
+        return flex\Text::formatConsonants($text);
+    }
+
     public function id($id) {
         return flex\Text::formatId($id);
     }
@@ -417,6 +421,17 @@ class Format implements core\ISharedHelper {
         }
 
         return $output;
+    }
+
+    public function initialsAndSurname($name) {
+        $parts = explode(' ', $name);
+        $surname = array_pop($parts);
+
+        if(in_array(strtolower($parts[0] ?? ''), ['mr', 'ms', 'mrs', 'miss', 'dr'])) {
+            array_shift($parts);
+        }
+
+        return flex\Text::formatInitials(implode(' ', $parts), false).' '.$surname;
     }
 
     public function email($address, $name=null, $visual=false) {

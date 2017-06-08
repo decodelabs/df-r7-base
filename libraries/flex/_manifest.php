@@ -229,6 +229,7 @@ interface IText extends core\collection\IIndexedCollection, core\IStringProvider
 // Macros
     public static function formatName($name);
     public static function formatInitials($name);
+    public static function formatConsonants($text);
     public static function formatLabel($label);
     public static function formatId($id);
     public static function formatConstant($const);
