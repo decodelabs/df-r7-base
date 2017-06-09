@@ -18,6 +18,7 @@ class Base implements link\http\IRequest, core\IDumpable {
     const GET     = 'get';
     const POST    = 'post';
     const PUT     = 'put';
+    const PATCH   = 'patch';
     const HEAD    = 'head';
     const DELETE  = 'delete';
     const TRACE   = 'trace';
@@ -236,6 +237,7 @@ class Base implements link\http\IRequest, core\IDumpable {
             case self::POST:
             case self::GET:
             case self::PUT:
+            case self::PATCH:
             case self::HEAD:
             case self::DELETE:
             case self::TRACE:

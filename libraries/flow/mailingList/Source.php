@@ -32,7 +32,7 @@ class Source implements ISource {
         return $this->_adapter;
     }
 
-    public function canConnect() {
+    public function canConnect(): bool {
         return $this->_adapter->canConnect();
     }
 
@@ -330,7 +330,7 @@ class Source implements ISource {
     }
 
 
-    public function updateListUserDetails($oldEmail, user\IClientDataObject $client) {
+    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client) {
         try {
             $this->_adapter->updateListUserDetails($oldEmail, $client, $this->getManifest());
         } catch(\Throwable $e) {
@@ -344,7 +344,7 @@ class Source implements ISource {
     }
 
 
-    public function unsubscribeUserFromList(user\IClientDataObject $client, $listId) {
+    public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId) {
         try {
             $this->_adapter->unsubscribeUserFromList($client, $listId);
         } catch(\Throwable $e) {

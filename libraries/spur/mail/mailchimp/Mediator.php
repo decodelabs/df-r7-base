@@ -476,7 +476,7 @@ class Mediator implements IMediator, \Serializable {
 
 
 // IO
-    public function createRequest($method, $path, array $args=[], array $headers=[]) {
+    public function createRequest(string $method, string $path, array $args=[], array $headers=[]): link\http\IRequest {
         $url = $this->createUrl($path);
         $request = link\http\request\Base::factory($url);
         $request->setMethod($method);
@@ -492,7 +492,7 @@ class Mediator implements IMediator, \Serializable {
         return $request;
     }
 
-    public function createUrl($method) {
+    public function createUrl(string $path): link\http\IUrl {
         if(!$this->_activeUrl) {
             $this->_activeUrl = link\http\Url::factory(self::API_URL);
             $this->_activeUrl->setDomain($this->_dataCenter.'.'.$this->_activeUrl->getDomain());
@@ -501,12 +501,12 @@ class Mediator implements IMediator, \Serializable {
         }
 
         $url = clone $this->_activeUrl;
-        $url->query->method = $method;
+        $url->query->method = $path;
 
         return $url;
     }
 
-    protected function _isResponseOk(link\http\IResponse $response) {
+    protected function _isResponseOk(link\http\IResponse $response): bool {
         if(!$response->isOk()) {
             return false;
         }

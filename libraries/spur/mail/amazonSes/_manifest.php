@@ -13,8 +13,6 @@ use df\flow;
 
 // Interfaces
 interface IMediator extends spur\IHttpMediator {
-    public function getHttpClient();
-
     public function setUrl($url);
     public function getUrl();
     public function setAccessKey($key);

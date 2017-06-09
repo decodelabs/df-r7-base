@@ -586,7 +586,7 @@ class Mediator implements IMediator, core\IDumpable {
 
 
 // IO
-    public function createUrl($path) {
+    public function createUrl(string $path): link\http\IUrl {
         if(!$this->_activeUrl) {
             $this->_activeUrl = link\http\Url::factory(self::API_URL);
         }
@@ -597,10 +597,12 @@ class Mediator implements IMediator, core\IDumpable {
         return $output;
     }
 
-    protected function _prepareRequest(link\http\IRequest $request) {
+    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest {
         $request->options->setSecureTransport('tls');
         $request->headers->set('Authorization', 'Bearer '.$this->_apiKey);
         $request->headers->set('Stripe-Version', self::VERSION);
+
+        return $request;
     }
 
     protected function _extractResponseError(link\http\IResponse $response) {

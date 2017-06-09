@@ -200,7 +200,7 @@ class Mediator implements IMediator {
         return simplexml_load_string($response->getContent());
 }
 
-    public function createUrl($path) {
+    public function createUrl(string $path): link\http\IUrl {
         if(!$this->_activeUrl) {
             throw core\Error::ESetup(
                 'Amazon SES API url has not been set'
@@ -213,7 +213,7 @@ class Mediator implements IMediator {
         return $output;
     }
 
-    protected function _prepareRequest(link\http\IRequest $request) {
+    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest {
         if(!$this->_accessKey) {
             throw core\Error::ESetup(
                 'Amazon SES access key has not been set'
@@ -235,6 +235,8 @@ class Mediator implements IMediator {
         $auth .= ',Algorithm=HmacSHA256,Signature='.base64_encode(hash_hmac('sha256', $date, $this->_secretKey, true));
         $headers->set('X-Amzn-Authorization', $auth);
         $headers->set('Connection', 'close');
+
+        return $request;
     }
 
     protected function _extractResponseError(link\http\IResponse $response) {

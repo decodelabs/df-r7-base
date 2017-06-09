@@ -16,12 +16,20 @@ class Ip implements IIp, core\IDumpable {
     protected $_isV4 = false;
     protected $_isV6 = false;
 
-    public static function factory($ip) {
+    public static function factory($ip): IIp {
         if($ip instanceof self) {
             return $ip;
         }
 
         return new self($ip);
+    }
+
+    public static function normalize($ip): ?IIp {
+        if(empty($ip)) {
+            return null;
+        }
+
+        return self::factory($ip);
     }
 
     public function __construct($ip) {

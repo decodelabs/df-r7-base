@@ -54,7 +54,7 @@ abstract class Base implements flow\mailingList\IAdapter {
         return array_pop($parts);
     }
 
-    public function canConnect() {
+    public function canConnect(): bool {
         return true;
     }
 }

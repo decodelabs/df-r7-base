@@ -1125,15 +1125,17 @@ class Mediator implements IMediator {
 
 
 ### IO
-    public function createUrl($path) {
+    public function createUrl(string $path): link\http\IUrl {
         $base = self::API_URL;
         return link\http\Url::factory($base.ltrim($path, '/'));
     }
 
-    protected function _prepareRequest(link\http\IRequest $request) {
+    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest {
         $request->options->setSecureTransport('tls');
         $request->headers->set('Authorization', 'Bearer '.$this->_apiKey);
         $request->headers->set('Stripe-Version', self::VERSION);
+
+        return $request;
     }
 
     protected function _extractResponseError(link\http\IResponse $response) {

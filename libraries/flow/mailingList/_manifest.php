@@ -15,7 +15,7 @@ use df\user;
 interface ISource {
     public function getId();
     public function getAdapter();
-    public function canConnect();
+    public function canConnect(): bool;
 
     public function getManifest();
     public function getPrimaryListId();
@@ -35,21 +35,21 @@ interface ISource {
     public function getClientManifest();
     public function getClientSubscribedGroupsIn($listId);
 
-    public function updateListUserDetails($oldEmail, user\IClientDataObject $client);
-    public function unsubscribeUserFromList(user\IClientDataObject $client, $listId);
+    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client);
+    public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId);
 }
 
 interface IAdapter {
     public static function getSettingsFields();
     public function getName();
     public function getId();
-    public function canConnect();
-    public function fetchManifest();
+    public function canConnect(): bool;
+    public function fetchManifest(): array;
 
     public function subscribeUserToList(user\IClientDataObject $client, $listId, array $manifest, array $groups=null, $replace=false): ISubscribeResult;
-    public function fetchClientManifest(array $manifest);
-    public function updateListUserDetails($oldEmail, user\IClientDataObject $client, array $manifest);
-    public function unsubscribeUserFromList(user\IClientDataObject $client, $listId);
+    public function fetchClientManifest(array $manifest): array;
+    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client, array $manifest);
+    public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId);
 }
 
 

@@ -32,7 +32,7 @@ class Mailchimp extends Base {
         return $this->_mediator->getApiKey();
     }
 
-    public function canConnect() {
+    public function canConnect(): bool {
         try {
             $lists = $this->_mediator->fetchAllLists();
             return true;
@@ -41,7 +41,7 @@ class Mailchimp extends Base {
         }
     }
 
-    public function fetchManifest() {
+    public function fetchManifest(): array {
         $output = [];
 
         foreach($this->_mediator->fetchAllLists() as $listId => $list) {
@@ -216,7 +216,7 @@ class Mailchimp extends Base {
         return $result;
     }
 
-    public function unsubscribeUserFromList(user\IClientDataObject $client, $listId) {
+    public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId) {
         $member = $this->_getMemberData($listId, $client->getEmail());
 
         if($member) {
@@ -231,7 +231,7 @@ class Mailchimp extends Base {
 
 
 
-    public function fetchClientManifest(array $manifest) {
+    public function fetchClientManifest(array $manifest): array {
         $output = [];
 
         foreach($manifest as $listId => $list) {
@@ -259,7 +259,7 @@ class Mailchimp extends Base {
     }
 
 
-    public function updateListUserDetails($oldEmail, user\IClientDataObject $client, array $manifest) {
+    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client, array $manifest) {
         $cache = flow\mailingList\Cache::getInstance();
 
         foreach($manifest as $listId => $list) {

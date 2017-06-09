@@ -30,7 +30,11 @@ class Base implements spur\payment\stripe2\IFilter {
         return $output;
     }
 
-    public function setLimit(int $limit) {
+    public function setLimit(?int $limit) {
+        if($limit === null) {
+            $limit = 10;
+        }
+        
         if($limit < 1) {
             $limit = 1;
         }
@@ -43,7 +47,7 @@ class Base implements spur\payment\stripe2\IFilter {
         return $this;
     }
 
-    public function getLimit(): int {
+    public function getLimit(): ?int {
         return $this->_limit;
     }
 

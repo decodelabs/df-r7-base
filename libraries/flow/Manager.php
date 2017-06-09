@@ -575,7 +575,7 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
 
-    public function updateListUserDetails($oldEmail, user\IClientDataObject $client) {
+    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client) {
         foreach($this->getListSources() as $source) {
             $source->updateListUserDetails($oldEmail, $client);
         }
@@ -607,7 +607,7 @@ class Manager implements IManager, core\IShutdownAware {
         return $this->unsubscribeUserFromList($client, $source, $listId);
     }
 
-    public function unsubscribeUserFromList(user\IClientDataObject $client, $sourceId, $listId) {
+    public function unsubscribeUserFromList(user\IClientDataObject $client, $sourceId, string $listId) {
         if(!$source = $this->getListSource($sourceId)) {
             return $this;
         }

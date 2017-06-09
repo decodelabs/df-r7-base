@@ -57,7 +57,7 @@ class Registry implements IRegistry {
 
 
 // Server
-    public function createUrl($path) {
+    public function createUrl(string $path): link\http\IUrl {
         return link\http\Url::factory(self::BASE_URL.ltrim($path, '/'));
     }
 }

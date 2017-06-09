@@ -272,7 +272,7 @@ class Mediator implements IMediator {
         return link\http\Url::factory('//'.$url);
     }
 
-    public function createUrl($path) {
+    public function createUrl(string $path): link\http\IUrl {
         $bucket = null;
 
         if(isset($path['bucket'])) {
@@ -305,7 +305,7 @@ class Mediator implements IMediator {
         return $url;
     }
 
-    protected function _prepareRequest(link\http\IRequest $request) {
+    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest {
         $request = clone $request;
 
         $headers = $request->getHeaders();

@@ -11,7 +11,7 @@ use df\spur;
 use df\link;
 
 class Mediator implements IMediator, core\IDumpable {
-    
+
     use spur\THttpMediator;
 
     const BASE_URL = 'https://api.github.com/';
@@ -249,12 +249,13 @@ class Mediator implements IMediator, core\IDumpable {
 
 
 // Server
-    public function createUrl($path) {
+    public function createUrl(string $path): link\http\IUrl {
         return link\http\Url::factory(self::BASE_URL.ltrim($path, '/'));
     }
 
-    protected function _prepareRequest(link\http\IRequest $request) {
+    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest {
         $request->headers->set('accept', 'application/vnd.github.'.self::API_VERSION.'+json');
+        return $request;
     }
 
     protected function _getPagedData($path) {
@@ -265,7 +266,7 @@ class Mediator implements IMediator, core\IDumpable {
             $response = $this->requestRaw('get', $path, [
                 'per_page' => 100,
                 'page' => ++$page
-            ]);  
+            ]);
 
             $data = $response->getJsonContent();
 

@@ -18,6 +18,9 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 // Interfaces
 interface IIp extends core\IStringProvider {
+    public static function factory($ip): IIp;
+    public static function normalize($ip): ?IIp;
+
     // Ranges
     public function isInRange($range);
     public function isV4();
@@ -26,18 +29,18 @@ interface IIp extends core\IStringProvider {
     public function isStandardV6();
     public function isHybrid();
     public function convertToV6();
-    
+
     // Strings
     public function getV6String();
     public function getCompressedV6String();
     public function getV4String();
-    
+
     // Base conversion
     public function getV6Decimal();
     public function getV4Decimal();
     public function getV6Hex();
     public function getV4Hex();
-    
+
     // Loopback
     public static function getV4Loopback();
     public static function getV6Loopback();

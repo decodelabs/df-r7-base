@@ -316,10 +316,7 @@ interface IMediator extends spur\IHttpMediator {
 
 
 // DataObject
-interface IDataObject extends core\collection\ITree {
-    public function setType(string $type);
-    public function getType(): string;
-
+interface IDataObject extends spur\IDataObject {
     public function setRequest(IRequest $request);
     public function getRequest(): ?IRequest;
 }
@@ -437,8 +434,8 @@ interface ITrialEndSubRequest extends IRequest {
 
 // Filter
 interface IFilter extends core\IArrayProvider {
-    public function setLimit(int $limit);
-    public function getLimit(): int;
+    public function setLimit(?int $limit);
+    public function getLimit(): ?int;
 
     public function setStartingAfter(?string $id);
     public function getStartingAfter(): ?string;
