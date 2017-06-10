@@ -26,7 +26,7 @@ class Config extends core\Config {
             'transports' => flow\mail\transport\Base::getAllDefaultConfigValues(),
             'listSources' => [
                 '!example' => [
-                    'adapter' => 'Mailchimp',
+                    'adapter' => 'Mailchimp3',
                     'apiKey' => null
                 ]
             ]
