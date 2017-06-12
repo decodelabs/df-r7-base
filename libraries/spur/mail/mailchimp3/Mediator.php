@@ -193,9 +193,12 @@ class Mediator implements IMediator {
             'email_address' => $email = $user->getEmail(),
             'status_if_new' => 'subscribed',
             'status' => 'subscribed',
-            'interests' => $groups,
             'exclude_fields' => '_links'
         ];
+
+        if(!empty($groups)) {
+            $input['interests'] = $groups;
+        }
 
         if(null !== ($firstName = $user->getFirstName())) {
             $input['merge_fields']['FNAME'] = $firstName;

@@ -111,9 +111,11 @@ class Mailchimp3 extends Base {
             }
         }
 
-        foreach($groups as $groupId) {
-            if(isset($manifest['groups'][$groupId])) {
-                $interests[$groupId] = true;
+        if(!empty($groups)) {
+            foreach($groups as $groupId) {
+                if(isset($manifest['groups'][$groupId])) {
+                    $interests[$groupId] = true;
+                }
             }
         }
 
@@ -129,8 +131,27 @@ class Mailchimp3 extends Base {
                 ->isSubscribed(true);
         } catch(spur\mail\mailchimp3\EApi $e) {
             $result->isSuccessful(false);
+            $handled = false;
 
-            core\logException($e);
+            switch($e->getCode()) {
+                case 400:
+                    if(preg_match('/fake or invalid/i', $e->getMessage())) {
+                        $result->isInvalid(true);
+                        $handled = true;
+                    } else if(preg_match('/not allowing more signups for now/i', $e->getMessage())) {
+                        $result->isThrottled(true);
+                        $handled = true;
+                    } else if(preg_match('/is in a compliance state/i', $e->getMessage())) {
+                        $result->requiresManualInput(true);
+                        $handled = true;
+                    }
+
+                    break;
+            }
+
+            if(!$handled) {
+                core\logException($e);
+            }
         }
 
         if($result->isSuccessful()) {
