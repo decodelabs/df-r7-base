@@ -171,6 +171,8 @@ class Mailchimp3 extends Base {
                 continue;
             }
 
+            $output[$listId] = [];
+
             foreach($list['groups'] as $groupId => $group) {
                 if(!isset($memberData['interests'][$groupId]) ||
                     !$memberData['interests'][$groupId]) {
