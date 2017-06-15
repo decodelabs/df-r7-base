@@ -101,6 +101,55 @@ abstract class Enum implements IEnum, core\IDumpable {
         return $output;
     }
 
+
+    public static function getLt($option): array {
+        $option = self::normalizeOption($option);
+        $options = self::getOptions();
+
+        if(false === ($key = array_search($option, $options, true))) {
+            throw core\Error::EArgument('Invalid option: '.$option);
+        }
+
+        return array_slice($options, 0, $key);
+    }
+
+    public static function getLte($option): array {
+        $option = self::normalizeOption($option);
+        $options = self::getOptions();
+
+        if(false === ($key = array_search($option, $options, true))) {
+            throw core\Error::EArgument('Invalid option: '.$option);
+        }
+
+        return array_slice($options, 0, $key + 1);
+    }
+
+    public static function getGt($option): array {
+        $option = self::normalizeOption($option);
+        $options = self::getOptions();
+
+        if(false === ($key = array_search($option, $options, true))) {
+            throw core\Error::EArgument('Invalid option: '.$option);
+        }
+
+        return array_slice($options, $key + 1);
+    }
+
+    public static function getGte($option): array {
+        $option = self::normalizeOption($option);
+        $options = self::getOptions();
+
+        if(false === ($key = array_search($option, $options, true))) {
+            throw core\Error::EArgument('Invalid option: '.$option);
+        }
+
+        return array_slice($options, $key);
+    }
+
+
+
+
+
     public function getIndex() {
         return $this->_index;
     }

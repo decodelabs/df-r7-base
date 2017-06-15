@@ -81,6 +81,51 @@ abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
 
         return $this->factory($option)->getLabel();
     }
+
+
+    public function getLt($option): array {
+        $option = core\lang\Enum::normalizeOption($option);
+        $options = $this->getOptions();
+
+        if(false === ($key = array_search($option, $options, true))) {
+            throw core\Error::EArgument('Invalid option: '.$option);
+        }
+
+        return array_slice($options, 0, $key);
+    }
+
+    public function getLte($option): array {
+        $option = core\lang\Enum::normalizeOption($option);
+        $options = $this->getOptions();
+
+        if(false === ($key = array_search($option, $options, true))) {
+            throw core\Error::EArgument('Invalid option: '.$option);
+        }
+
+        return array_slice($options, 0, $key + 1);
+    }
+
+    public function getGt($option): array {
+        $option = core\lang\Enum::normalizeOption($option);
+        $options = $this->getOptions();
+
+        if(false === ($key = array_search($option, $options, true))) {
+            throw core\Error::EArgument('Invalid option: '.$option);
+        }
+
+        return array_slice($options, $key + 1);
+    }
+
+    public function getGte($option): array {
+        $option = core\lang\Enum::normalizeOption($option);
+        $options = $this->getOptions();
+
+        if(false === ($key = array_search($option, $options, true))) {
+            throw core\Error::EArgument('Invalid option: '.$option);
+        }
+
+        return array_slice($options, $key);
+    }
 }
 
 class Base_Enum implements core\lang\IEnum {
@@ -160,6 +205,22 @@ class Base_Enum implements core\lang\IEnum {
         throw new core\lang\RuntimeException(
             'Unit enum static calls are not accessible'
         );
+    }
+
+    public static function getLt($option): array {
+        core\stub();
+    }
+
+    public static function getLte($option): array {
+        core\stub();
+    }
+
+    public static function getGt($option): array {
+        core\stub();
+    }
+
+    public static function getGte($option): array {
+        core\stub();
     }
 
     public function getIndex() {
