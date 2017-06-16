@@ -423,7 +423,7 @@ class Format implements core\ISharedHelper {
         return $output;
     }
 
-    public function initialsAndSurname($name) {
+    public function initialsAndSurname($name): string {
         $parts = explode(' ', $name);
         $surname = array_pop($parts);
 
@@ -432,6 +432,28 @@ class Format implements core\ISharedHelper {
         }
 
         return flex\Text::formatInitials(implode(' ', $parts), false).' '.$surname;
+    }
+
+    public function initialMiddleNames($name): string {
+        $parts = explode(' ', $name);
+        $surname = array_pop($parts);
+
+        if(in_array(strtolower($parts[0] ?? ''), ['mr', 'ms', 'mrs', 'miss', 'dr'])) {
+            array_shift($parts);
+        }
+
+        $output = (string)array_shift($parts);
+
+        if(!empty($output)) {
+            $output .= ' ';
+        }
+
+        if(!empty($parts)) {
+            $output .= flex\Text::formatInitials(implode(' ', $parts), false).' ';
+        }
+
+        $output .= $surname;
+        return $output;
     }
 
     public function email($address, $name=null, $visual=false) {
