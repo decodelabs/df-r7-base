@@ -348,6 +348,7 @@ interface ICorrelationQuery extends
     IJoinClauseFactory,
     IWhereClauseFactory,
     IGroupableQuery,
+    IOrderableQuery,
     ILimitableQuery,
     IOffsettableQuery {
     public function setApplicator(callable $applicator=null);

@@ -281,11 +281,11 @@ class Clause implements opal\query\IClause, core\IDumpable {
         if($value instanceof opal\query\ICorrelationQuery) {
             switch($this->_operator) {
                 case self::OP_EQ:
-                    $this->_operator = self::OP_IN;
+                    //$this->_operator = self::OP_IN;
                     break;
 
                 case self::OP_NEQ:
-                    $this->_operator = self::OP_NOT_IN;
+                    //$this->_operator = self::OP_NOT_IN;
                     break;
 
                 case self::OP_IN:

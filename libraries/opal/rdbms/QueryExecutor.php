@@ -729,6 +729,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $this->writeWhereClauseList($clauses);
         $this->writeGroupSection();
+        $this->writeOrderSection();
         $this->writeLimitSection();
 
         $stmt->importBindings($this->_stmt);

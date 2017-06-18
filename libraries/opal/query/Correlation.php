@@ -18,6 +18,7 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
     use TQuery_JoinConstrainable;
     use TQuery_WhereClauseFactory;
     use TQuery_Groupable;
+    use TQuery_Orderable;
     use TQuery_Limitable;
     use TQuery_Offsettable;
 
