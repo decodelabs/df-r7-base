@@ -673,6 +673,10 @@ class Html implements arch\IDirectoryHelper {
     }
 
     protected function _prepareDate($date, $timezone=true, bool $includeTime=true) {
+        if($date instanceof core\time\ITimeOfDay) {
+            return new core\time\Date($date);
+        }
+
         if(!$date = core\time\Date::normalize($date, null, $includeTime)) {
             return null;
         }
