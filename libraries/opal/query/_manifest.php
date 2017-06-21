@@ -908,6 +908,11 @@ interface IExpressionField extends IField {
     public function isNull();
 }
 
+interface IRawField extends IField {
+    public function setAlias($alias);
+    public function getExpression(): string;
+}
+
 interface ILateAttachField extends IField {}
 
 interface IAttachmentField extends ILateAttachField {

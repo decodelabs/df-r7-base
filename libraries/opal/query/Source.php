@@ -8,6 +8,7 @@ namespace df\opal\query;
 use df;
 use df\core;
 use df\opal;
+use df\axis;
 
 class Source implements ISource, core\IDumpable {
 
@@ -105,6 +106,13 @@ class Source implements ISource, core\IDumpable {
                 }
 
                 return new opal\query\field\Virtual($this, $name, $alias, $fields);
+            }
+
+
+            // Raw sql field
+            if(substr($name, 0, 5) == '@raw ') {
+                $expression = trim(substr($name, 5));
+                return new opal\query\field\Raw($this, $expression, $alias);
             }
 
 

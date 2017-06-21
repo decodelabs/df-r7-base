@@ -817,13 +817,14 @@ abstract class QueryExecutor implements IQueryExecutor {
             $defineAlias = false;
         }
 
+        // Wildcard
         if($field instanceof opal\query\IWildcardField) {
-            // Wildcard
             $output = $this->_adapter->quoteTableAliasReference($field->getSourceAlias()).'.*';
             $defineAlias = false;
 
+
+        // Aggregate
         } else if($field instanceof opal\query\IAggregateField) {
-            // Aggregate
             $targetField = $field->getTargetField();
 
             if($targetField instanceof opal\query\IWildcardField) {
@@ -845,6 +846,9 @@ abstract class QueryExecutor implements IQueryExecutor {
                     $output = $field->getTypeName().'('.$targetFieldString.')';
                     break;
             }
+
+
+        // Expression
         } else if($field instanceof opal\query\IExpressionField) {
             $expression = $field->getExpression();
 
@@ -853,11 +857,16 @@ abstract class QueryExecutor implements IQueryExecutor {
             } else {
                 $output = 'NULL';
             }
+
+
+        // Intrinsic
         } else if($field instanceof opal\query\IIntrinsicField) {
             // Intrinsic
             $output = $this->_adapter->quoteTableAliasReference($field->getSourceAlias()).'.'.
                       $this->_adapter->quoteIdentifier($field->getName());
 
+
+        // Virtual
         } else if($field instanceof opal\query\IVirtualField) {
             $deref = $field->dereference();
 
@@ -868,10 +877,20 @@ abstract class QueryExecutor implements IQueryExecutor {
             throw new InvalidArgumentException(
                 'Virtual fields can not be used directly'
             );
+
+
+        // Raw
+        } else if($field instanceof opal\query\IRawField) {
+            $output = $field->getExpression();
+
+        // Correlation
         } else if($field instanceof opal\query\ICorrelationField) {
             $exec = self::factory($this->_adapter, $field->getCorrelationQuery());
             $sql = $exec->buildCorrelation($this->_stmt);
             $output = '('."\n".'    '.str_replace("\n", "\n    ", $sql)."\n".'  )';
+
+
+        // Search
         } else if($field instanceof opal\query\ISearchController) {
             $output = [];
 
