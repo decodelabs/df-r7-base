@@ -22,9 +22,11 @@ class Capture extends Base {
 
         $record = $model->captureMail($mime);
 
-        $manager->flashNow('mail.capture', 'A new email has been received at the testing mail inbox', 'debug')
-            ->setDescription('Mail is stored locally when in development mode so you don\'t spam your test users')
-            ->setLink('~mail/capture/details?mail='.$record['id']);
+        if(!df\Launchpad::isProduction()) {
+            $manager->flashNow('mail.capture', 'A new email has been received at the testing mail inbox', 'debug')
+                ->setDescription('Mail is stored locally when in development mode so you don\'t spam your test users')
+                ->setLink('~mail/capture/details?mail='.$record['id']);
+        }
 
         return $this;
     }
