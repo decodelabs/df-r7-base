@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
-class LocalFile implements core\cache\IDirectFileBackend {
+class LocalFile implements core\cache\IBackend {
 
     use core\TValueMap;
 
@@ -18,7 +18,6 @@ class LocalFile implements core\cache\IDirectFileBackend {
     protected $_lifeTime;
     protected $_cache;
     protected $_dir;
-    protected $_serialize = true;
 
     public static function purgeApp(core\collection\ITree $options) {
         self::purgeAll($options);
@@ -112,20 +111,8 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $this->_lifeTime;
     }
 
-    public function shouldSerialize(bool $flag=null) {
-        if($flag !== null) {
-            $this->_serialize = $flag;
-            return $this;
-        }
-
-        return $this->_serialize;
-    }
-
     public function set($key, $value) {
-        if($this->_serialize) {
-            $value = serialize($value);
-        }
-
+        $value = serialize($value);
         $key = $this->_normalizeKey($key);
         $file = $this->_dir->createFile('cache-'.$key, $value);
 
@@ -148,14 +135,12 @@ class LocalFile implements core\cache\IDirectFileBackend {
 
         $output = $file->getContents();
 
-        if($this->_serialize) {
-            try {
-                $output = unserialize($output);
-            } catch(\Throwable $e) {
-                core\logException($e);
-                $file->unlink();
-                return $default;
-            }
+        try {
+            $output = unserialize($output);
+        } catch(\Throwable $e) {
+            core\logException($e);
+            $file->unlink();
+            return $default;
         }
 
         return $output;
@@ -243,50 +228,6 @@ class LocalFile implements core\cache\IDirectFileBackend {
         }
 
         return $file->getLastModified();
-    }
-
-    public function getDirectFilePath(string $key): ?string {
-        if(!$file = $this->getDirectFile($key)) {
-            return null;
-        }
-
-        return $file->getPath();
-    }
-
-    public function getDirectFileSize(string $key): ?int {
-        if(!$file = $this->getDirectFile($key)) {
-            return null;
-        }
-
-        return $file->getSize();
-    }
-
-    public function getDirectFile(string $key): ?core\fs\IFile {
-        $key = $this->_normalizeKey($key);
-        $file = $this->_dir->getFile('cache-'.$key);
-        clearstatcache(false, $file->getPath());
-
-        if(!$file->exists()) {
-            return null;
-        }
-
-        if(!$file->isRecent($this->_lifeTime)) {
-            $file->unlink();
-            return null;
-        }
-
-        return $file;
-    }
-
-    public function getDirectFileList(): array {
-        $output = [];
-
-        foreach($this->_dir->scanFiles() as $name => $file) {
-            $key = substr($name, 6);
-            $output[$key] = $file;
-        }
-
-        return $output;
     }
 
     protected static function _normalizeKey($key) {

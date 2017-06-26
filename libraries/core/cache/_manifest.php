@@ -29,12 +29,6 @@ interface ICache extends IStore {
     public function getLifeTime(): int;
     public function getDefaultLifeTime(): int;
     public function clearAll();
-
-    public function hasDirectFileBackend(): bool;
-    public function getDirectFilePath(string $key): ?string;
-    public function getDirectFileSize(string $key): ?int;
-    public function getDirectFile(string $key): ?core\fs\IFile;
-    public function getDirectFileList(): array;
 }
 
 interface IFileStore extends IStore {
@@ -72,12 +66,4 @@ interface IBackend extends core\IValueMap, \Countable {
     public function clearMatches(string $regex);
     public function getCreationTime(string $key): ?int;
     public function getKeys(): array;
-}
-
-interface IDirectFileBackend extends IBackend {
-    public function shouldSerialize(bool $flag=null);
-    public function getDirectFilePath(string $key): ?string;
-    public function getDirectFileSize(string $key): ?int;
-    public function getDirectFile(string $key): ?core\fs\IFile;
-    public function getDirectFileList(): array;
 }

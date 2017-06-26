@@ -17,8 +17,6 @@ abstract class Base implements ICache {
     const IS_DISTRIBUTED = true;
     const DEFAULT_LIFETIME = 1800;
 
-    const USE_DIRECT_FILE_BACKEND = false;
-
     private $_backend;
 
     public static function purgeApp(): void {
@@ -56,29 +54,20 @@ abstract class Base implements ICache {
     protected function _loadBackend(): IBackend {
         $config = Config::getInstance();
 
-        if(static::USE_DIRECT_FILE_BACKEND) {
-            $options = $config->getBackendOptions('LocalFile');
-            $output = self::backendFactory($this, 'LocalFile', $options);
+        $options = $config->getOptionsFor($this);
+        $backendName = null;
 
-            if($output instanceof IDirectFileBackend) {
-                $output->shouldSerialize(false);
-            }
-        } else {
-            $options = $config->getOptionsFor($this);
-            $backendName = null;
-
-            if($options->has('backend')) {
-                $backendName = $options->get('backend');
-            }
-
-            if(!$backendName) {
-                throw core\Error::{'ESetup'}(
-                    'There are no available backends for cache '.$this->getCacheId()
-                );
-            }
-
-            $output = self::backendFactory($this, $backendName, $options);
+        if($options->has('backend')) {
+            $backendName = $options->get('backend');
         }
+
+        if(!$backendName) {
+            throw core\Error::{'ESetup'}(
+                'There are no available backends for cache '.$this->getCacheId()
+            );
+        }
+
+        $output = self::backendFactory($this, $backendName, $options);
 
         return $output;
     }
@@ -181,41 +170,5 @@ abstract class Base implements ICache {
 
     public function getCreationTime(string $key): ?int {
         return $this->_backend->getCreationTime($key);
-    }
-
-    public function hasDirectFileBackend(): bool {
-        return $this->_backend instanceof IDirectFileBackend;
-    }
-
-    public function getDirectFilePath(string $key): ?string {
-        if(!$this->hasDirectFileBackend()) {
-            return null;
-        }
-
-        return $this->_backend->getDirectFilePath($key);
-    }
-
-    public function getDirectFileSize(string $key): ?int {
-        if(!$this->hasDirectFileBackend()) {
-            return null;
-        }
-
-        return $this->_backend->getDirectFileSize($key);
-    }
-
-    public function getDirectFile(string $key): ?core\fs\IFile {
-        if(!$this->hasDirectFileBackend()) {
-            return null;
-        }
-
-        return $this->_backend->getDirectFile($key);
-    }
-
-    public function getDirectFileList(): array {
-        if(!$this->hasDirectFileBackend()) {
-            return [];
-        }
-
-        return $this->_backend->getDirectFileList();
     }
 }
