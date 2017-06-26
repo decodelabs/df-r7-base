@@ -249,13 +249,20 @@ class SassBridge implements ISassBridge {
             ->setWorkingDirectory($this->_workDir)
             ->launch();
 
+        $output = $result->getOutput();
+
         if($result->hasError()) {
-            throw core\Error::{'ERuntime,halo/process/ERuntime'}(
+            $error = core\Error::{'ERuntime,halo/process/ERuntime'}(
                 $result->getError()
             );
+
+            if(empty($output)) {
+                core\logException($error);
+            } else {
+                throw $error;
+            }
         }
 
-        $output = $result->getOutput();
 
         if(false !== stripos($output, 'error')) {
             throw core\Error::{'ERuntime,halo/process/ERuntime'}(
