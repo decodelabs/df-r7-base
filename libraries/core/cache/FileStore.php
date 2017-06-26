@@ -153,6 +153,17 @@ abstract class FileStore implements IFileStore {
         return $output;
     }
 
+    public function getFileList(): array {
+        $output = [];
+
+        foreach($this->_dir->scanFiles() as $name => $file) {
+            $key = substr($name, 6);
+            $output[$key] = $file;
+        }
+
+        return $output;
+    }
+
 
     public function getCreationTime(string $key): ?int {
         $key = $this->_normalizeKey($key);

@@ -10,14 +10,12 @@ use df\core;
 use df\neon;
 use df\link;
 
-class Cache extends core\cache\Base {
+class FileStore extends core\cache\FileStore {
 
-    const USE_DIRECT_FILE_BACKEND = true;
-    const IS_DISTRIBUTED = false;
-    const DEFAULT_LIFETIME = 86400; // 1 day
-    const URL_LIFETIME = 31536000; // 1 year
+    const DEFAULT_LIFETIME = '1 day';
+    const URL_LIFETIME = '1 month';
 
-    public function getTransformationFilePath($sourceFilePath, $transformation, core\time\IDate $modificationDate=null) {
+    public function getTransformationFilePath(string $sourceFilePath, $transformation, core\time\IDate $modificationDate=null): string {
         $mTime = null;
         $isUrl = false;
         $lifetime = static::DEFAULT_LIFETIME;
@@ -43,11 +41,11 @@ class Cache extends core\cache\Base {
             $this->remove($key);
         }
 
-        if(!$output = $this->getDirectFilePath($key)) {
+        if(!$file = $this->get($key, $lifetime)) {
             if($isUrl) {
                 $http = new link\http\Client();
-                $file = core\fs\File::createTemp();
-                $response = $http->getFile($sourceFilePath, $file);
+                $download = core\fs\File::createTemp();
+                $response = $http->getFile($sourceFilePath, $download);
 
                 if(!$response->isOk()) {
                     throw new RuntimeException(
@@ -55,7 +53,7 @@ class Cache extends core\cache\Base {
                     );
                 }
 
-                $sourceFilePath = $file->getPath();
+                $sourceFilePath = $download->getPath();
             }
 
             try {
@@ -66,18 +64,18 @@ class Cache extends core\cache\Base {
 
             $image->transform($transformation)->apply();
 
-            $this->set($key, $image->toString(), $lifetime);
-            $output = $this->getDirectFilePath($key);
+            $this->set($key, $image->toString());
+            $file = $this->get($key);
 
             if($isUrl) {
-                $file->unlink();
+                $download->unlink();
             }
         }
 
-        return $output;
+        return $file->getPath();
     }
 
-    public static function createKey($sourceFilePath, $transformation=null) {
+    public static function createKey(string $sourceFilePath, $transformation=null): string {
         if($sourceFilePath instanceof link\http\IUrl) {
             $path = (string)$sourceFilePath->getPath();
             $key = basename(dirname($path)).'_'.basename($path).'-'.md5($sourceFilePath.':'.$transformation);
@@ -89,15 +87,15 @@ class Cache extends core\cache\Base {
         return $key;
     }
 
-    public function getIconFilePath($absolutePath, int ...$sizes) {
-        $key = $this->createKey($absolutePath);
+    public function getIconFilePath(string $absolutePath, int ...$sizes): string {
+        $key = $this->createKey($absolutePath).'-ico';
 
-        //if(!$output = $this->getDirectFilePath($key)) {
+        if(!$file = $this->get($key, self::DEFAULT_LIFETIME)) {
             $ico = new neon\raster\Ico($absolutePath, 16, 32);
-            $this->set($key, $ico->generate(), self::DEFAULT_LIFETIME);
-            $output = $this->getDirectFilePath($key);
-        //}
+            $this->set($key, $ico->generate());
+            $file = $this->get($key);
+        }
 
-        return $output;
+        return $file->getPath();
     }
 }

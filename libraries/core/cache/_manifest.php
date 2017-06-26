@@ -39,6 +39,7 @@ interface ICache extends IStore {
 
 interface IFileStore extends IStore {
     public function clearOlderThan($lifeTime);
+    public function getFileList(): array;
 }
 
 
