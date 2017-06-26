@@ -11,6 +11,7 @@ use df\core;
 interface IStore extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Countable {
     public static function getInstance(): IStore;
     public static function getCacheId(): string;
+    public static function createCacheId(): string;
 
     public function isCacheDistributed(): bool;
     public function getCacheStats(): array;

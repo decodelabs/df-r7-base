@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,16 +8,22 @@ namespace df\axis\unit\cache;
 use df;
 use df\core;
 use df\axis;
-    
+
 abstract class SessionExtended extends core\cache\SessionExtended implements axis\IUnit, axis\IAdapterBasedUnit {
 
     use axis\TUnit;
+
+    public static function createCacheId(): string {
+        $parts = explode('\\', get_called_class());
+        $parts = array_slice($parts, 3, -1);
+        return 'axis/'.implode('/', $parts);
+    }
 
     public function __construct(axis\IModel $model) {
         $this->_model = $model;
         parent::__construct();
     }
-    
+
     public function getUnitType() {
         return 'cache';
     }

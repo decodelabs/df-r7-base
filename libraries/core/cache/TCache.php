@@ -40,12 +40,16 @@ trait TCache {
         $class = get_called_class();
 
         if(!isset(self::$_cacheIds[$class])) {
-            $parts = explode('\\', $class);
-            array_shift($parts);
-            self::$_cacheIds[$class] = implode('/', $parts);
+            self::$_cacheIds[$class] = $class::createCacheId();
         }
 
         return self::$_cacheIds[$class];
+    }
+
+    public static function createCacheId(): string {
+        $parts = explode('\\', get_called_class());
+        array_shift($parts);
+        return implode('/', $parts);
     }
 
     public function isCacheDistributed(): bool {
