@@ -217,7 +217,7 @@ class Apcu implements core\cache\IBackend {
         return $output;
     }
 
-    public function getCreationTime(string $key) {
+    public function getCreationTime(string $key): ?int {
         $val = apcu_fetch($this->_prefix.$key);
 
         if(is_array($val)) {

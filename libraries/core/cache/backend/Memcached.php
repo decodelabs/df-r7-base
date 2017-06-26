@@ -196,7 +196,7 @@ class Memcached implements core\cache\IBackend {
         return $output;
     }
 
-    public function getCreationTime(string $key) {
+    public function getCreationTime(string $key): ?int {
         $val = $this->_connection->get($this->_prefix.$key);
 
         if(is_array($val)) {

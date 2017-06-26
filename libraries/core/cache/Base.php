@@ -10,7 +10,7 @@ use df\core;
 
 abstract class Base implements ICache {
 
-    use core\TValueMap;
+    use TCache;
 
     const REGISTRY_PREFIX = 'cache://';
 
@@ -20,25 +20,7 @@ abstract class Base implements ICache {
 
     const USE_DIRECT_FILE_BACKEND = false;
 
-    private static $_cacheIds = [];
-
     private $_backend;
-
-    public static function getInstance(): ICache {
-        $application = df\Launchpad::getApplication();
-
-        $class = get_called_class();
-        $id = self::REGISTRY_PREFIX.$class::getCacheId();
-
-        if(!$cache = $application->getRegistryObject($id)) {
-            $application->setRegistryObject(
-                $cache = new $class($application)
-            );
-        }
-
-        return $cache;
-    }
-
 
     public static function purgeApp(): void {
         if(function_exists('opcache_reset')) {
@@ -116,19 +98,9 @@ abstract class Base implements ICache {
         return new $class($cache, $lifeTime, $options);
     }
 
+
+
 // Properties
-    public static function getCacheId(): string {
-        $class = get_called_class();
-
-        if(!isset(self::$_cacheIds[$class])) {
-            $parts = explode('\\', $class);
-            array_shift($parts);
-            self::$_cacheIds[$class] = implode('/', $parts);
-        }
-
-        return self::$_cacheIds[$class];
-    }
-
     public function getCacheBackend(): IBackend {
         return $this->_backend;
     }
@@ -137,20 +109,12 @@ abstract class Base implements ICache {
         return $this->_backend->getStats();
     }
 
-    final public function getRegistryObjectKey(): string {
-        return self::REGISTRY_PREFIX.static::getCacheId();
-    }
-
     public function getLifeTime(): int {
         return $this->_backend->getLifeTime();
     }
 
     public function getDefaultLifeTime(): int {
         return static::DEFAULT_LIFETIME;
-    }
-
-    public function isCacheDistributed(): bool {
-        return static::IS_DISTRIBUTED && df\Launchpad::$application->isDistributed();
     }
 
     public function mustCacheBeLocal(): bool {
@@ -219,24 +183,8 @@ abstract class Base implements ICache {
         return $this->_backend->getKeys();
     }
 
-    public function offsetSet($key, $value) {
-        return $this->set($key, $value);
-    }
 
-    public function offsetGet($key) {
-        return $this->get($key);
-    }
-
-    public function offsetExists($key) {
-        return $this->has($key);
-    }
-
-    public function offsetUnset($key) {
-        return $this->remove($key);
-    }
-
-
-    public function getCreationTime(string $key) {
+    public function getCreationTime(string $key): ?int {
         return $this->_backend->getCreationTime($key);
     }
 

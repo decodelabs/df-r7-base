@@ -8,27 +8,37 @@ namespace df\core\cache;
 use df;
 use df\core;
 
-interface ICache extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Countable {
+interface IStore extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Countable {
+    public static function getInstance(): IStore;
     public static function getCacheId(): string;
 
-    public function getCacheBackend(): IBackend;
-    public function getCacheStats(): array;
-    public function getLifeTime(): int;
-    public function getDefaultLifeTime(): int;
     public function isCacheDistributed(): bool;
-    public function mustCacheBeLocal(): bool;
+    public function getCacheStats(): array;
+
     public function clear();
-    public function clearAll();
     public function clearBegins(string $key);
     public function clearMatches(string $regex);
-    public function getCreationTime(string $key);
+    public function getCreationTime(string $key): ?int;
+    public function getCreationDate(string $key): ?core\time\IDate;
     public function getKeys(): array;
+}
+
+interface ICache extends IStore {
+    public function getCacheBackend(): IBackend;
+    public function getLifeTime(): int;
+    public function getDefaultLifeTime(): int;
+    public function mustCacheBeLocal(): bool;
+    public function clearAll();
 
     public function hasDirectFileBackend(): bool;
     public function getDirectFilePath(string $key): ?string;
     public function getDirectFileSize(string $key): ?int;
     public function getDirectFile(string $key): ?core\fs\IFile;
     public function getDirectFileList(): array;
+}
+
+interface IFileStore extends IStore {
+    public function clearOlderThan($lifeTime);
 }
 
 
@@ -59,7 +69,7 @@ interface IBackend extends core\IValueMap, \Countable {
     public function clear();
     public function clearBegins(string $key);
     public function clearMatches(string $regex);
-    public function getCreationTime(string $key);
+    public function getCreationTime(string $key): ?int;
     public function getKeys(): array;
 }
 

@@ -135,7 +135,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
     public function get($key, $default=null) {
         $key = $this->_normalizeKey($key);
         $file = $this->_dir->getFile('cache-'.$key);
-        clearstatcache();
+        clearstatcache(false, $file->getPath());
 
         if(!$file->exists()) {
             return $default;
@@ -165,7 +165,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
         foreach($keys as $key) {
             $key = $this->_normalizeKey($key);
             $file = $this->_dir->getFile('cache-'.$key);
-            clearstatcache();
+            clearstatcache(false, $file->getPath());
 
             if(!$file->exists()) {
                 continue;
@@ -233,10 +233,10 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $output;
     }
 
-    public function getCreationTime(string $key) {
+    public function getCreationTime(string $key): ?int {
         $key = $this->_normalizeKey($key);
         $file = $this->_dir->getFile('cache-'.$key);
-        clearstatcache();
+        clearstatcache(false, $file->getPath());
 
         if(!$file->exists()) {
             return null;
@@ -264,7 +264,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
     public function getDirectFile(string $key): ?core\fs\IFile {
         $key = $this->_normalizeKey($key);
         $file = $this->_dir->getFile('cache-'.$key);
-        clearstatcache();
+        clearstatcache(false, $file->getPath());
 
         if(!$file->exists()) {
             return null;
