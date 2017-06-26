@@ -69,12 +69,14 @@ class Bridge implements IBridge {
 
         $output = $result->getOutput();
 
-        if($result->hasError()) {// && empty($output)) {
+        if($result->hasError() && empty($output)) {
             $error = $result->getError();
 
-            //if(!preg_match('/deprecated/i', $error)) {
+            if(!preg_match('/deprecated/i', $error)) {
                 throw new RuntimeException($error);
-            //}
+            } else {
+                core\logException($e);
+            }
         }
 
         $output = flex\Json::fromString($output);
