@@ -27,7 +27,6 @@ interface ICache extends IStore {
     public function getCacheBackend(): IBackend;
     public function getLifeTime(): int;
     public function getDefaultLifeTime(): int;
-    public function mustCacheBeLocal(): bool;
     public function clearAll();
 
     public function hasDirectFileBackend(): bool;

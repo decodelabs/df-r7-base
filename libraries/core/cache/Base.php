@@ -15,7 +15,6 @@ abstract class Base implements ICache {
     const REGISTRY_PREFIX = 'cache://';
 
     const IS_DISTRIBUTED = true;
-    const MUST_BE_LOCAL = false;
     const DEFAULT_LIFETIME = 1800;
 
     const USE_DIRECT_FILE_BACKEND = false;
@@ -115,10 +114,6 @@ abstract class Base implements ICache {
 
     public function getDefaultLifeTime(): int {
         return static::DEFAULT_LIFETIME;
-    }
-
-    public function mustCacheBeLocal(): bool {
-        return !static::IS_DISTRIBUTED && static::MUST_BE_LOCAL;
     }
 
 

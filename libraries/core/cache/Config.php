@@ -45,8 +45,6 @@ class Config extends core\Config {
         } else if($mergeDefaults) {
             if($cache->isCacheDistributed()) {
                 $list = ['Memcached', 'Memcache', 'LocalFile'];
-            } else if($cache->mustCacheBeLocal()) {
-                $list = ['Apcu', 'LocalFile'];
             } else {
                 $list = ['Apcu', 'Memcached', 'Memcache', 'LocalFile'];
             }
