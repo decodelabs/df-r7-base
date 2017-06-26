@@ -278,7 +278,6 @@ class SassBridge implements ISassBridge {
         );
 
         file_put_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css', $content);
-        file_put_contents($this->_workDir.'/'.$this->_key.'.raw.css', $content);
 
         // Replace map file paths
         if($mapExists && $envMode != 'production') {
