@@ -15,9 +15,9 @@ class Autoprefixer extends Base {
     public function process($cssPath) {
         $bridge = new spur\node\Bridge();
 
-        if(!$bridge->find('autoprefixer-core')) {
+        if(!$bridge->find('autoprefixer')) {
             try {
-                $bridge->npmInstall('autoprefixer-core');
+                $bridge->npmInstall('autoprefixer');
             } catch(\Throwable $e) {
                 core\log\Manager::getInstance()->logException($e);
                 return;
@@ -46,7 +46,7 @@ class Autoprefixer extends Base {
 
         $js =
 <<<js
-var autoprefixer = require('autoprefixer-core');
+var autoprefixer = require('autoprefixer');
 var postcss      = require('postcss');
 
 return postcss([ autoprefixer(data.settings) ]).process(data.css, {
