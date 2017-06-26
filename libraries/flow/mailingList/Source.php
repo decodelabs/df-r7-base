@@ -12,6 +12,8 @@ use df\user;
 
 class Source implements ISource {
 
+    const MANIFEST_VERSION = 100;
+
     protected $_id;
     protected $_adapter;
     protected $_primaryListId;
@@ -40,7 +42,25 @@ class Source implements ISource {
     public function getManifest() {
         $cache = Cache::getInstance();
 
-        if(!$manifest = $cache->get('source:'.$this->_id)) {
+        if(!$manifest = $cache->get('manifest:'.$this->_id)) {
+            $manifest = $this->_getManifestFromStore();
+
+            if(($manifest['__manifest_version__'] ?? null) !== self::MANIFEST_VERSION) {
+                $this->_clearManifestStore();
+                $manifest = $this->_getManifestFromStore();
+            }
+
+            unset($manifest['__manifest_version__']);
+            $cache->set('manifest:'.$this->_id, $manifest);
+        }
+
+        return $manifest;
+    }
+
+    protected function _getManifestFromStore() {
+        $store = ApiStore::getInstance();
+
+        if(!$manifestFile = $store->get($this->_id, '1 day')) {
             try {
                 $manifest = $this->_adapter->fetchManifest();
             } catch(\Throwable $e) {
@@ -51,10 +71,17 @@ class Source implements ISource {
             }
 
             $manifest = $this->_normalizeManifest($manifest);
-            $cache->set('source:'.$this->_id, $manifest);
+            $store->set($this->_id, serialize($manifest));
+        } else {
+            $manifest = unserialize($manifestFile->getContents());
         }
 
         return $manifest;
+    }
+
+    protected function _clearManifestStore() {
+        $store = ApiStore::getInstance();
+        $store->remove($this->_id);
     }
 
     protected function _normalizeManifest($manifest) {
@@ -105,6 +132,8 @@ class Source implements ISource {
 
             $manifest[$id] = $list;
         }
+
+        $manifest['__manifest_version__'] = self::MANIFEST_VERSION;
 
         return $manifest;
     }

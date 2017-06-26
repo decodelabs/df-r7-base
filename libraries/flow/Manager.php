@@ -389,6 +389,7 @@ class Manager implements IManager, core\IShutdownAware {
 
     public function clearListCache() {
         flow\mailingList\Cache::getInstance()->clearGlobal();
+        flow\mailingList\ApiStore::getInstance()->clear();
         return $this;
     }
 

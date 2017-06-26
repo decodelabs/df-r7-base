@@ -71,3 +71,4 @@ interface ISubscribeResult {
 
 
 class Cache extends core\cache\SessionExtended {}
+class ApiStore extends core\cache\FileStore {}
