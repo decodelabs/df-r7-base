@@ -534,6 +534,4 @@ class Stripe2 extends Base implements
 }
 
 
-class Stripe2_Cache extends core\cache\Base {
-    const CACHE_ID = 'payment/stripe2';
-}
+class Stripe2_Cache extends core\cache\Base {}

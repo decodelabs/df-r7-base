@@ -11,8 +11,6 @@ use df\user;
 
 class Cache extends core\cache\Base implements ICache {
 
-    const CACHE_ID = 'session';
-
     public function insertDescriptor(IDescriptor $descriptor) {
         $id = 'd:'.$descriptor->getPublicKeyHex();
 

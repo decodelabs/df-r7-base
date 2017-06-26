@@ -13,7 +13,6 @@ abstract class Base implements ICache {
     use core\TValueMap;
 
     const REGISTRY_PREFIX = 'cache://';
-    const CACHE_ID = null;
 
     const IS_DISTRIBUTED = true;
     const MUST_BE_LOCAL = false;
@@ -122,13 +121,9 @@ abstract class Base implements ICache {
         $class = get_called_class();
 
         if(!isset(self::$_cacheIds[$class])) {
-            if($class::CACHE_ID !== null) {
-                self::$_cacheIds[$class] = $class::CACHE_ID;
-            } else {
-                $parts = explode('\\', $class);
-                array_shift($parts);
-                self::$_cacheIds[$class] = implode('/', $parts);
-            }
+            $parts = explode('\\', $class);
+            array_shift($parts);
+            self::$_cacheIds[$class] = implode('/', $parts);
         }
 
         return self::$_cacheIds[$class];
