@@ -235,7 +235,7 @@ class SassBridge implements ISassBridge {
         } else {
             $args = [
                 //'--compass',
-                '--quiet',
+                //'--quiet',
                 '--style='.$outputType,
                 '--sourcemap=file',
                 '-Eutf-8'
