@@ -34,7 +34,7 @@ class Memcache implements core\cache\IBackend {
         // pruning is automatic :)
     }
 
-    public static function isLoadable() {
+    public static function isLoadable(): bool {
         return extension_loaded('memcache');
     }
 
@@ -64,7 +64,7 @@ class Memcache implements core\cache\IBackend {
         }
     }
 
-    public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
+    public function __construct(core\cache\ICache $cache, int $lifeTime, core\collection\ITree $options) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
         $this->_prefix = df\Launchpad::$application->getUniquePrefix().'-'.$cache->getCacheId().':';
@@ -72,21 +72,21 @@ class Memcache implements core\cache\IBackend {
         $this->_connection = self::_loadConnection($options);
     }
 
-    public function getConnectionDescription() {
+    public function getConnectionDescription(): string {
         $stats = $this->_connection->getExtendedStats();
         return implode(' + ', array_keys($stats));
     }
 
-    public function getStats() {
+    public function getStats(): array {
         return $this->_connection->getStats();
     }
 
-    public function setLifeTime($lifeTime) {
+    public function setLifeTime(int $lifeTime) {
         $this->_lifeTime = $lifeTime;
         return $this;
     }
 
-    public function getLifeTime() {
+    public function getLifeTime(): int {
         return $this->_lifeTime;
     }
 
@@ -145,7 +145,7 @@ class Memcache implements core\cache\IBackend {
         return $this;
     }
 
-    public function clearBegins($key) {
+    public function clearBegins(string $key) {
         foreach($this->getKeys() as $test) {
             if(0 === strpos($test, $key)) {
                 $this->remove($test);
@@ -155,7 +155,7 @@ class Memcache implements core\cache\IBackend {
         return $this;
     }
 
-    public function clearMatches($regex) {
+    public function clearMatches(string $regex) {
         foreach($this->getKeys() as $test) {
             if(preg_match($regex, $test)) {
                 $this->remove($test);
@@ -190,7 +190,7 @@ class Memcache implements core\cache\IBackend {
         return $output;
     }
 
-    public function getKeys() {
+    public function getKeys(): array {
         $output = [];
         $allSlabs = $this->_connection->getExtendedStats('slabs');
         $length = strlen($this->_prefix);
@@ -220,7 +220,7 @@ class Memcache implements core\cache\IBackend {
         return $output;
     }
 
-    public function getCreationTime($key) {
+    public function getCreationTime(string $key) {
         $val = $this->_connection->get($this->_prefix.$key);
 
         if(is_array($val)) {

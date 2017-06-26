@@ -25,7 +25,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         }
     }
 
-    public static function isLoadable() {
+    public static function isLoadable(): bool {
         return extension_loaded('gd');
     }
 

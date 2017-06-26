@@ -59,7 +59,7 @@ class Apcu implements core\cache\IBackend {
         (new self($cache, 0, $options))->clear();
     }
 
-    public static function isLoadable() {
+    public static function isLoadable(): bool {
         if($output = extension_loaded('apcu')) {
             if(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli')) {
                 $output = false;
@@ -69,18 +69,18 @@ class Apcu implements core\cache\IBackend {
         return $output;
     }
 
-    public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
+    public function __construct(core\cache\ICache $cache, int $lifeTime, core\collection\ITree $options) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
         $this->_prefix = df\Launchpad::$application->getUniquePrefix().'-'.$cache->getCacheId().':';
         $this->_isCli = php_sapi_name() == 'cli';
     }
 
-    public function getConnectionDescription() {
+    public function getConnectionDescription(): string {
         return 'localhost/'.$this->_cache->getCacheId();
     }
 
-    public function getStats() {
+    public function getStats(): array {
         $info = apcu_cache_info();
 
         $info = [
@@ -93,12 +93,12 @@ class Apcu implements core\cache\IBackend {
         return $info;
     }
 
-    public function setLifeTime($lifeTime) {
+    public function setLifeTime(int $lifeTime) {
         $this->_lifeTime = $lifeTime;
         return $this;
     }
 
-    public function getLifeTime() {
+    public function getLifeTime(): int {
         return $this->_lifeTime;
     }
 
@@ -167,8 +167,7 @@ class Apcu implements core\cache\IBackend {
         return $this;
     }
 
-    public function clearBegins($key) {
-
+    public function clearBegins(string $key) {
         foreach($this->getCacheList() as $set) {
             if(0 === strpos($set['info'], $this->_prefix.$key)) {
                 @apcu_delete($set['info']);
@@ -179,7 +178,7 @@ class Apcu implements core\cache\IBackend {
         return $this;
     }
 
-    public function clearMatches($regex) {
+    public function clearMatches(string $regex) {
         $prefixLength = strlen($this->_prefix);
 
         foreach($this->getCacheList() as $set) {
@@ -205,7 +204,7 @@ class Apcu implements core\cache\IBackend {
         return $output;
     }
 
-    public function getKeys() {
+    public function getKeys(): array {
         $output = [];
         $length = strlen($this->_prefix);
 
@@ -218,7 +217,7 @@ class Apcu implements core\cache\IBackend {
         return $output;
     }
 
-    public function getCreationTime($key) {
+    public function getCreationTime(string $key) {
         $val = apcu_fetch($this->_prefix.$key);
 
         if(is_array($val)) {

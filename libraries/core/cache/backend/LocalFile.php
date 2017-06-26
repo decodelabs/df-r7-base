@@ -66,11 +66,11 @@ class LocalFile implements core\cache\IDirectFileBackend {
         (new self($cache, 0, $options))->clear();
     }
 
-    public static function isLoadable() {
+    public static function isLoadable(): bool {
         return true;
     }
 
-    public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
+    public function __construct(core\cache\ICache $cache, int $lifeTime, core\collection\ITree $options) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
 
@@ -84,11 +84,11 @@ class LocalFile implements core\cache\IDirectFileBackend {
         $this->_dir = core\fs\Dir::create($path);
     }
 
-    public function getConnectionDescription() {
+    public function getConnectionDescription(): string {
         return $this->_dir->getLocationPath();
     }
 
-    public function getStats() {
+    public function getStats(): array {
         $count = 0;
         $size = 0;
 
@@ -103,12 +103,12 @@ class LocalFile implements core\cache\IDirectFileBackend {
         ];
     }
 
-    public function setLifeTime($lifeTime) {
+    public function setLifeTime(int $lifeTime) {
         $this->_lifeTime = $lifeTime;
         return $this;
     }
 
-    public function getLifeTime() {
+    public function getLifeTime(): int {
         return $this->_lifeTime;
     }
 
@@ -196,7 +196,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return true;
     }
 
-    public function clearBegins($key) {
+    public function clearBegins(string $key) {
         $key = $this->_normalizeKey($key);
         $length = strlen($key);
 
@@ -209,7 +209,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return true;
     }
 
-    public function clearMatches($regex) {
+    public function clearMatches(string $regex) {
         foreach($this->_dir->scanFiles() as $name => $file) {
             if(preg_match($regex, substr($name, 6))) {
                 $file->unlink();
@@ -223,7 +223,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $this->_dir->countFiles();
     }
 
-    public function getKeys() {
+    public function getKeys(): array {
         $output = [];
 
         foreach($this->_dir->scanFiles() as $name => $file) {
@@ -233,7 +233,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $output;
     }
 
-    public function getCreationTime($key) {
+    public function getCreationTime(string $key) {
         $key = $this->_normalizeKey($key);
         $file = $this->_dir->getFile('cache-'.$key);
         clearstatcache();
@@ -245,19 +245,23 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $file->getLastModified();
     }
 
-    public function getDirectFilePath($key) {
-        if($file = $this->getDirectFile($key)) {
-            return $file->getPath();
+    public function getDirectFilePath(string $key): ?string {
+        if(!$file = $this->getDirectFile($key)) {
+            return null;
         }
+
+        return $file->getPath();
     }
 
-    public function getDirectFileSize($key) {
-        if($file = $this->getDirectFile($key)) {
-            return $file->getSize();
+    public function getDirectFileSize(string $key): ?int {
+        if(!$file = $this->getDirectFile($key)) {
+            return null;
         }
+
+        return $file->getSize();
     }
 
-    public function getDirectFile($key) {
+    public function getDirectFile(string $key): ?core\fs\IFile {
         $key = $this->_normalizeKey($key);
         $file = $this->_dir->getFile('cache-'.$key);
         clearstatcache();
@@ -274,7 +278,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $file;
     }
 
-    public function getDirectFileList() {
+    public function getDirectFileList(): array {
         $output = [];
 
         foreach($this->_dir->scanFiles() as $name => $file) {

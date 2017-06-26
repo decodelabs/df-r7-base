@@ -41,7 +41,7 @@ abstract class Base implements ICache {
     }
 
 
-    public static function purgeApp() {
+    public static function purgeApp(): void {
         if(function_exists('opcache_reset')) {
             opcache_reset();
         }
@@ -54,7 +54,7 @@ abstract class Base implements ICache {
         }
     }
 
-    public static function purgeAll() {
+    public static function purgeAll(): void {
         if(function_exists('opcache_reset')) {
             opcache_reset();
         }
@@ -73,7 +73,7 @@ abstract class Base implements ICache {
         $this->_backend = $this->_loadBackend();
     }
 
-    protected function _loadBackend() {
+    protected function _loadBackend(): IBackend {
         $config = Config::getInstance();
 
         if(static::USE_DIRECT_FILE_BACKEND) {
@@ -92,7 +92,7 @@ abstract class Base implements ICache {
             }
 
             if(!$backendName) {
-                throw new RuntimeException(
+                throw core\Error::{'ESetup'}(
                     'There are no available backends for cache '.$this->getCacheId()
                 );
             }
@@ -103,7 +103,7 @@ abstract class Base implements ICache {
         return $output;
     }
 
-    public static function backendFactory(ICache $cache, $name, core\collection\ITree $options, $lifeTime=0) {
+    public static function backendFactory(ICache $cache, $name, core\collection\ITree $options, $lifeTime=0): IBackend {
         $class = 'df\\core\\cache\\backend\\'.$name;
 
         if(isset($options->lifeTime)) {
@@ -118,7 +118,7 @@ abstract class Base implements ICache {
     }
 
 // Properties
-    public static function getCacheId() {
+    public static function getCacheId(): string {
         $class = get_called_class();
 
         if(!isset(self::$_cacheIds[$class])) {
@@ -134,11 +134,11 @@ abstract class Base implements ICache {
         return self::$_cacheIds[$class];
     }
 
-    public function getCacheBackend() {
+    public function getCacheBackend(): IBackend {
         return $this->_backend;
     }
 
-    public function getCacheStats() {
+    public function getCacheStats(): array {
         return $this->_backend->getStats();
     }
 
@@ -146,19 +146,19 @@ abstract class Base implements ICache {
         return self::REGISTRY_PREFIX.static::getCacheId();
     }
 
-    public function getLifeTime() {
+    public function getLifeTime(): int {
         return $this->_backend->getLifeTime();
     }
 
-    public function getDefaultLifeTime() {
+    public function getDefaultLifeTime(): int {
         return static::DEFAULT_LIFETIME;
     }
 
-    public function isCacheDistributed() {
+    public function isCacheDistributed(): bool {
         return static::IS_DISTRIBUTED && df\Launchpad::$application->isDistributed();
     }
 
-    public function mustCacheBeLocal() {
+    public function mustCacheBeLocal(): bool {
         return !static::IS_DISTRIBUTED && static::MUST_BE_LOCAL;
     }
 
@@ -206,12 +206,12 @@ abstract class Base implements ICache {
         return $this;
     }
 
-    public function clearBegins($key) {
+    public function clearBegins(string $key) {
         $this->_backend->clearBegins($key);
         return $this;
     }
 
-    public function clearMatches($regex) {
+    public function clearMatches(string $regex) {
         $this->_backend->clearMatches($regex);
         return $this;
     }
@@ -220,7 +220,7 @@ abstract class Base implements ICache {
         return $this->_backend->count();
     }
 
-    public function getKeys() {
+    public function getKeys(): array {
         return $this->_backend->getKeys();
     }
 
@@ -241,15 +241,15 @@ abstract class Base implements ICache {
     }
 
 
-    public function getCreationTime($key) {
+    public function getCreationTime(string $key) {
         return $this->_backend->getCreationTime($key);
     }
 
-    public function hasDirectFileBackend() {
+    public function hasDirectFileBackend(): bool {
         return $this->_backend instanceof IDirectFileBackend;
     }
 
-    public function getDirectFilePath($key) {
+    public function getDirectFilePath(string $key): ?string {
         if(!$this->hasDirectFileBackend()) {
             return null;
         }
@@ -257,7 +257,7 @@ abstract class Base implements ICache {
         return $this->_backend->getDirectFilePath($key);
     }
 
-    public function getDirectFileSize($key) {
+    public function getDirectFileSize(string $key): ?int {
         if(!$this->hasDirectFileBackend()) {
             return null;
         }
@@ -265,7 +265,7 @@ abstract class Base implements ICache {
         return $this->_backend->getDirectFileSize($key);
     }
 
-    public function getDirectFile($key) {
+    public function getDirectFile(string $key): ?core\fs\IFile {
         if(!$this->hasDirectFileBackend()) {
             return null;
         }
@@ -273,9 +273,9 @@ abstract class Base implements ICache {
         return $this->_backend->getDirectFile($key);
     }
 
-    public function getDirectFileList() {
+    public function getDirectFileList(): array {
         if(!$this->hasDirectFileBackend()) {
-            return null;
+            return [];
         }
 
         return $this->_backend->getDirectFileList();

@@ -94,7 +94,7 @@ interface IImage extends IImageManipulationController, IImageFilterController {
 
 interface IDriver {
 
-    public static function isLoadable();
+    public static function isLoadable(): bool;
     public static function canRead($format);
     public static function canWrite($format);
 

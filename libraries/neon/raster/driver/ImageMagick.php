@@ -35,7 +35,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         'TXT', 'UYVY', 'VICAR', 'VIFF', 'WBMP', 'WEBP', 'X', 'XBM', 'XPM', 'XWD', 'YCbCr', 'YCbCrA', 'YUV'
     ];
 
-    public static function isLoadable() {
+    public static function isLoadable(): bool {
         return extension_loaded('imagick');
     }
 

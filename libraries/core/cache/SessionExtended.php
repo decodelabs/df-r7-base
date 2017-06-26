@@ -42,20 +42,20 @@ class SessionExtended extends Base implements ISessionExtendedCache {
         return $this;
     }
 
-    public function setSession($key, $value) {
+    public function setSession(string $key, $value) {
         $this->_session->set($key, $value);
         return $this;
     }
 
-    public function getSession($key, $default=null) {
+    public function getSession(string $key, $default=null) {
         return $this->_session->get($key, $default);
     }
 
-    public function hasSession($key) {
+    public function hasSession(string $key): bool {
         return $this->_session->has($key);
     }
 
-    public function removeSession($key) {
+    public function removeSession(string $key) {
         $this->_session->remove($key);
         return $this;
     }

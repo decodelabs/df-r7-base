@@ -8,42 +8,36 @@ namespace df\core\cache;
 use df;
 use df\core;
 
-// Exceptions
-interface IException {}
-class LogicException extends \LogicException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-
-
-// Interfaces
 interface ICache extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Countable {
-    public static function getCacheId();
-    public function getCacheBackend();
-    public function getCacheStats();
-    public function getLifeTime();
-    public function getDefaultLifeTime();
-    public function isCacheDistributed();
-    public function mustCacheBeLocal();
+    public static function getCacheId(): string;
+
+    public function getCacheBackend(): IBackend;
+    public function getCacheStats(): array;
+    public function getLifeTime(): int;
+    public function getDefaultLifeTime(): int;
+    public function isCacheDistributed(): bool;
+    public function mustCacheBeLocal(): bool;
     public function clear();
     public function clearAll();
-    public function clearBegins($key);
-    public function clearMatches($regex);
-    public function getCreationTime($key);
-    public function getKeys();
+    public function clearBegins(string $key);
+    public function clearMatches(string $regex);
+    public function getCreationTime(string $key);
+    public function getKeys(): array;
 
-    public function hasDirectFileBackend();
-    public function getDirectFilePath($key);
-    public function getDirectFileSize($key);
-    public function getDirectFile($key);
-    public function getDirectFileList();
+    public function hasDirectFileBackend(): bool;
+    public function getDirectFilePath(string $key): ?string;
+    public function getDirectFileSize(string $key): ?int;
+    public function getDirectFile(string $key): ?core\fs\IFile;
+    public function getDirectFileList(): array;
 }
 
 
 interface ISessionExtendedCache extends ICache {
     public function clearGlobal();
-    public function setSession($key, $value);
-    public function getSession($key, $default=null);
-    public function hasSession($key);
-    public function removeSession($key);
+    public function setSession(string $key, $value);
+    public function getSession(string $key, $default=null);
+    public function hasSession(string $key): bool;
+    public function removeSession(string $key);
     public function clearSession();
     public function clearSessionForUser($userId);
     public function clearSessionForClient();
@@ -57,22 +51,22 @@ interface IBackend extends core\IValueMap, \Countable {
     public static function purgeAll(core\collection\ITree $options);
     public static function prune(core\collection\ITree $options);
     public static function clearFor(core\collection\ITree $options, ICache $cache);
-    public static function isLoadable();
-    public function getConnectionDescription();
-    public function getStats();
-    public function setLifeTime($lifeTime);
-    public function getLifeTime();
+    public static function isLoadable(): bool;
+    public function getConnectionDescription(): string;
+    public function getStats(): array;
+    public function setLifeTime(int $lifeTime);
+    public function getLifeTime(): int;
     public function clear();
-    public function clearBegins($key);
-    public function clearMatches($regex);
-    public function getCreationTime($key);
-    public function getKeys();
+    public function clearBegins(string $key);
+    public function clearMatches(string $regex);
+    public function getCreationTime(string $key);
+    public function getKeys(): array;
 }
 
 interface IDirectFileBackend extends IBackend {
     public function shouldSerialize(bool $flag=null);
-    public function getDirectFilePath($id);
-    public function getDirectFileSize($id);
-    public function getDirectFile($id);
-    public function getDirectFileList();
+    public function getDirectFilePath(string $key): ?string;
+    public function getDirectFileSize(string $key): ?int;
+    public function getDirectFile(string $key): ?core\fs\IFile;
+    public function getDirectFileList(): array;
 }
