@@ -121,7 +121,7 @@ abstract class FileStore implements IFileStore {
         $length = strlen($key);
 
         foreach($this->_dir->scanFiles() as $name => $file) {
-            if(substr($name, 6, $length) == $key) {
+            if(substr($name, 2, $length) == $key) {
                 $file->unlink();
             }
         }
@@ -131,7 +131,7 @@ abstract class FileStore implements IFileStore {
 
     public function clearMatches(string $regex) {
         foreach($this->_dir->scanFiles() as $name => $file) {
-            if(preg_match($regex, substr($name, 6))) {
+            if(preg_match($regex, substr($name, 2))) {
                 $file->unlink();
             }
         }
@@ -147,7 +147,7 @@ abstract class FileStore implements IFileStore {
         $output = [];
 
         foreach($this->_dir->scanFiles() as $name => $file) {
-            $output[] = substr($name, 6);
+            $output[] = substr($name, 2);
         }
 
         return $output;
@@ -157,7 +157,7 @@ abstract class FileStore implements IFileStore {
         $output = [];
 
         foreach($this->_dir->scanFiles() as $name => $file) {
-            $key = substr($name, 6);
+            $key = substr($name, 2);
             $output[$key] = $file;
         }
 
