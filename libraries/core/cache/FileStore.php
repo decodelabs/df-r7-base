@@ -70,7 +70,7 @@ abstract class FileStore implements IFileStore {
 
         if($lifeTime !== null && !$file->isRecent($lifeTime)) {
             $file->unlink();
-            return $default;
+            return null;
         }
 
         return $file;
