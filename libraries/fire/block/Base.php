@@ -187,8 +187,8 @@ abstract class Base_Delegate extends arch\node\form\Delegate implements fire\blo
     protected $_block;
 
     public function __construct(IBlock $block, arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id) {
-        parent::__construct($context, $state, $event, $id);
         $this->_block = $block;
+        parent::__construct($context, $state, $event, $id);
     }
 
     public function setBlock(fire\block\IBlock $block) {

@@ -28,6 +28,8 @@ class Heading extends Base {
 
     protected $_heading;
     protected $_level = 3;
+    protected $_class;
+    protected $_classOptions;
 
     public function getDisplayName() {
         return 'Heading';
@@ -63,6 +65,25 @@ class Heading extends Base {
         return $this->_level;
     }
 
+    public function setHeadingClass(?string $class) {
+        $this->_class = $class;
+        return $this;
+    }
+
+    public function getHeadingClass(): ?string {
+        return $this->_class;
+    }
+
+    public function setClassOptions(?array $options) {
+        $this->_classOptions = $options;
+        return $this;
+    }
+
+    public function getClassOptions(): ?array {
+        return $this->_classOptions;
+    }
+
+
 // IO
     public function isEmpty() {
         return !strlen(trim($this->_heading));
@@ -81,6 +102,7 @@ class Heading extends Base {
         $this->_validateXmlReader($reader);
         $this->_heading = $reader->getFirstCDataSection();
         $this->_level = $reader->getAttribute('level');
+        $this->_class = $reader->getAttribute('class');
 
         return $this;
     }
@@ -89,6 +111,11 @@ class Heading extends Base {
         $this->_startWriterBlockElement($writer);
 
         $writer->setAttribute('level', $this->_level);
+
+        if($this->_class !== null) {
+            $writer->setAttribute('class', $this->_class);
+        }
+
         $writer->writeCData($this->_heading);
 
         $this->_endWriterBlockElement($writer);
@@ -98,6 +125,7 @@ class Heading extends Base {
 // Render
     public function render() {
         return $this->getView()->html('h'.$this->_level.'.block', $this->_heading)
+            ->addClass($this->_class)
             ->setDataAttribute('type', $this->getName());
     }
 
@@ -110,11 +138,13 @@ class Heading extends Base {
             protected function setDefaultValues() {
                 $this->values->heading = $this->_block->getHeading();
                 $this->values->level = $this->_block->getHeadingLevel();
+                $this->values->class = $this->_block->getHeadingClass();
             }
 
             public function renderFieldContent(aura\html\widget\Field $field) {
+                // Main
                 $field->push(
-                    $this->html->field($this->_('Heading text'))->push(
+                    $inner = $this->html->field($this->_('Heading text'))->push(
                         $this->html->selectList($this->fieldName('level'), $this->values->level, Heading::OPTIONS),
 
                         $this->html->textbox($this->fieldName('heading'), $this->values->heading)
@@ -122,6 +152,29 @@ class Heading extends Base {
                             ->setPlaceholder('Heading text')
                     )
                 );
+
+                // Class
+                $classes = $this->_block->getClassOptions();
+
+                if(!empty($classes)) {
+                    $current = $this->values['class'];
+
+                    if($current !== null && !isset($classes[$current])) {
+                        $classes[$current] = ucfirst($current);
+                    }
+
+                    $inner->push(
+                        ' ',
+                        $this->html->selectList($this->fieldName('class'), $this->values->class, $classes)
+                    );
+                } else {
+                    $inner->push(
+                        ' ',
+                        $this->html->textbox($this->fieldName('class'), $this->values->class)
+                            ->setPlaceholder('class')
+                            ->addClass('short')
+                    );
+                }
 
                 return $this;
             }
@@ -131,10 +184,12 @@ class Heading extends Base {
                     ->addRequiredField('heading', 'text')
                     ->addRequiredField('level', 'integer')
                         ->setRange(1, 6)
+                    ->addField('class', 'text')
                     ->validate($this->values);
 
                 $this->_block->setHeading($this->values['heading']);
                 $this->_block->setHeadingLevel($this->values['level']);
+                $this->_block->setHeadingClass($this->values['class']);
 
                 return $this->_block;
             }
