@@ -32,7 +32,7 @@ class Result implements arch\node\IRestApiResult {
         $this->value = $value;
     }
 
-    public function isValid() {
+    public function isValid(): bool {
         if($this->_exception) {
             return false;
         }
@@ -40,7 +40,7 @@ class Result implements arch\node\IRestApiResult {
         return $this->validator->isValid();
     }
 
-    public function setStatusCode($code) {
+    public function setStatusCode(?int $code) {
         if(link\http\response\HeaderCollection::isValidStatusCode($code)) {
             $this->_statusCode = $code;
         } else {
@@ -50,7 +50,7 @@ class Result implements arch\node\IRestApiResult {
         return $this;
     }
 
-    public function getStatusCode() {
+    public function getStatusCode(): int {
         if($this->_statusCode !== null) {
             return $this->_statusCode;
         }
@@ -77,11 +77,11 @@ class Result implements arch\node\IRestApiResult {
         return $this;
     }
 
-    public function hasException() {
+    public function hasException(): bool {
         return $this->_exception !== null;
     }
 
-    public function getException() {
+    public function getException(): ?\Throwable {
         return $this->_exception;
     }
 

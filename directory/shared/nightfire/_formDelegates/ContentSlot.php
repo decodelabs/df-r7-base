@@ -169,9 +169,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 // Delegates
     protected function loadDelegates() {
         foreach($this->_blocks as $delegateId => $block) {
-            $type = $block->getFormDelegateName();
-            $this->loadDelegate($delegateId, '~/nightfire/#/blocks/'.$type)
-                ->setBlock($block)
+            $this->proxyLoadDelegate($delegateId, $block)
                 ->isRequired($this->_isRequired)
                 ->isNested($this->_isNested);
         }
@@ -316,8 +314,7 @@ class ContentSlot extends arch\node\form\Delegate implements
                 $block->setTransitionValue($oldBlock->getTransitionValue());
                 $this->_blocks[$delegateId] = $block;
 
-                $this->loadDelegate($delegateId, '~/nightfire/#/blocks/'.$block->getFormDelegateName())
-                    ->setBlock($block)
+                $this->proxyLoadDelegate($delegateId, $block)
                     ->isRequired($this->_isRequired)
                     ->isNested($this->_isNested)
                     ->initialize();

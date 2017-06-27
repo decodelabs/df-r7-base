@@ -46,7 +46,7 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function getDataMap();
     public function hasMappedField($name);
 
-    public function isValid();
+    public function isValid(): bool;
     public function validate($data, array $fields=null);
     public function applyTo(&$targetRecord, array $fields=null);
 }
@@ -527,9 +527,9 @@ interface IDateField extends IField, IRangeField {
 }
 
 interface IDelegateField extends IField {
-    public function fromForm(arch\node\IForm $form, $name=null);
+    public function fromForm(arch\node\IForm $form, string $name=null);
     public function setDelegate(arch\node\IDelegate $delegate);
-    public function getDelegate();
+    public function getDelegate(): ?arch\node\IDelegate;
 }
 
 interface IDurationField extends IField, IRangeField {

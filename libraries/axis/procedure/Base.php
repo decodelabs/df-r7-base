@@ -115,7 +115,7 @@ abstract class Base implements IProcedure {
         $this->_unit->prepareValidator($this->validator);
     }
 
-    public function isValid() {
+    public function isValid(): bool {
         return $this->values->isValid() && $this->validator->isValid();
     }
 }

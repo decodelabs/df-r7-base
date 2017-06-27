@@ -483,7 +483,7 @@ interface IAuthor {
     public function getUrl();
     public function hasUrl();
 
-    public function isValid();
+    public function isValid(): bool;
 }
 
 interface IImage {

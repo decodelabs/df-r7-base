@@ -17,6 +17,15 @@ class Heading extends Base {
     const OUTPUT_TYPES = ['Html'];
     const DEFAULT_CATEGORIES = ['Description'];
 
+    const OPTIONS = [
+        1 => 'h1',
+        2 => 'h2',
+        3 => 'h3',
+        4 => 'h4',
+        5 => 'h5',
+        6 => 'h6'
+    ];
+
     protected $_heading;
     protected $_level = 3;
 
@@ -90,5 +99,45 @@ class Heading extends Base {
     public function render() {
         return $this->getView()->html('h'.$this->_level.'.block', $this->_heading)
             ->setDataAttribute('type', $this->getName());
+    }
+
+
+
+// Form
+    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
+        return new class($this, ...func_get_args()) extends Base_Delegate {
+
+            protected function setDefaultValues() {
+                $this->values->heading = $this->_block->getHeading();
+                $this->values->level = $this->_block->getHeadingLevel();
+            }
+
+            public function renderFieldContent(aura\html\widget\Field $field) {
+                $field->push(
+                    $this->html->field($this->_('Heading text'))->push(
+                        $this->html->selectList($this->fieldName('level'), $this->values->level, Heading::OPTIONS),
+
+                        $this->html->textbox($this->fieldName('heading'), $this->values->heading)
+                            ->isRequired($this->_isRequired)
+                            ->setPlaceholder('Heading text')
+                    )
+                );
+
+                return $this;
+            }
+
+            public function apply() {
+                $this->data->newValidator()
+                    ->addRequiredField('heading', 'text')
+                    ->addRequiredField('level', 'integer')
+                        ->setRange(1, 6)
+                    ->validate($this->values);
+
+                $this->_block->setHeading($this->values['heading']);
+                $this->_block->setHeadingLevel($this->values['level']);
+
+                return $this->_block;
+            }
+        };
     }
 }

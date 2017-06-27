@@ -32,12 +32,12 @@ trait TForm {
     protected function loadDelegates() {}
     protected function afterInit() {}
 
-    public function getState() {
+    public function getState(): IFormState {
         return $this->_state;
     }
 
 // Delegates
-    public function loadDelegate($id, $name) {
+    public function loadDelegate(string $id, string $name): IDelegate {
         if(false !== strpos($id, '.')) {
             throw core\Error::EArgument(
                 'Delegate IDs must not contain . character'
@@ -89,7 +89,7 @@ trait TForm {
         return $this->_delegates[$id] = new $class($context, $state, $this->event, $mainId);
     }
 
-    public function directLoadDelegate($id, $class) {
+    public function directLoadDelegate(string $id, string $class): IDelegate {
         if(!class_exists($class)) {
             throw core\Error::{'arch/node/EDelegate,ENotFound'}(
                 'Cannot direct load delegate '.$id.' - class not found'
@@ -99,15 +99,22 @@ trait TForm {
         return $this->_delegates[$id] = new $class(
             $this->context,
             $this->_state->getDelegateState($id),
-            $this->_getDelegateIdPrefix().$id,
-            $this->event
+            $this->event,
+            $this->_getDelegateIdPrefix().$id
         );
     }
 
-    public function getDelegate($id) {
-        if(!is_array($id)) {
-            $id = explode('.', trim($id, ' .'));
-        }
+    public function proxyLoadDelegate(string $id, arch\node\IDelegateProxy $proxy): IDelegate {
+        return $this->_delegates[$id] = $proxy->loadFormDelegate(
+            $this->context,
+            $this->_state->getDelegateState($id),
+            $this->event,
+            $this->_getDelegateIdPrefix().$id
+        );
+    }
+
+    public function getDelegate(string $id): IDelegate {
+        $id = explode('.', trim($id, ' .'));
 
         if(empty($id)) {
             throw core\Error::{'arch/node/EDelegate,EArgument'}(
@@ -126,16 +133,14 @@ trait TForm {
         $output = $this->_delegates[$top];
 
         if(!empty($id)) {
-            $output = $output->getDelegate($id);
+            $output = $output->getDelegate(implode('.', $id));
         }
 
         return $output;
     }
 
-    public function hasDelegate($id) {
-        if(!is_array($id)) {
-            $id = explode('.', trim($id, ' .'));
-        }
+    public function hasDelegate(string $id): bool {
+        $id = explode('.', trim($id, ' .'));
 
         if(empty($id)) {
             return false;
@@ -150,16 +155,14 @@ trait TForm {
         $delegate = $this->_delegates[$top];
 
         if(!empty($id)) {
-            return $delegate->hasDelegate($id);
+            return $delegate->hasDelegate(implode('.', $id));
         }
 
         return true;
     }
 
-    public function unloadDelegate($id) {
-        if(!is_array($id)) {
-            $id = explode('.', trim($id, ' .'));
-        }
+    public function unloadDelegate(string $id) {
+        $id = explode('.', trim($id, ' .'));
 
         if(empty($id)) {
             throw core\Error::{'arch/node/EDelegate,EArgument'}(
@@ -178,7 +181,7 @@ trait TForm {
         $delegate = $this->_delegates[$top];
 
         if(!empty($id)) {
-            $delegate->unloadDelegate($id);
+            $delegate->unloadDelegate(implode('.', $id));
             return $this;
         }
 
@@ -247,7 +250,7 @@ trait TForm {
 
 
 // Delivery
-    public function isValid() {
+    public function isValid(): bool {
         if($this->_state && !$this->_state->values->isValid()) {
             return false;
         }
@@ -261,7 +264,7 @@ trait TForm {
         return true;
     }
 
-    public function countErrors() {
+    public function countErrors(): int {
         $output = $this->values->countErrors();
 
         foreach($this->_delegates as $delegate) {
@@ -322,7 +325,7 @@ trait TForm {
 
 
 // Names
-    public function eventName($name, ...$args) {
+    public function eventName(string $name, string ...$args): string {
         $output = $this->_getDelegateIdPrefix().$name;
 
         if(!empty($args)) {
@@ -339,7 +342,7 @@ trait TForm {
 
 
 // Events
-    public function handleEvent($name, array $args=[]) {
+    public function handleEvent(string $name, array $args=[]): IFormEventDescriptor {
         $this->event->setTarget(
                 $this instanceof IDelegate ?
                     $this->getDelegateId() :
@@ -364,7 +367,6 @@ trait TForm {
         $output = $this->{$func}(...$args);
 
         $this->event->parseOutput($output);
-
         return $this->event;
     }
 
@@ -376,7 +378,7 @@ trait TForm {
 
     protected function onRefreshEvent() {}
 
-    public function handleDelegateEvent($delegateId, $event, $args) {}
+    public function handleDelegateEvent(string $delegateId, string $event, array $args) {}
 
     public function triggerPostEvent(IActiveForm $target, string $event, array $args) {
         if($this !== $target) {
@@ -397,7 +399,7 @@ trait TForm {
     }
 
 
-    public function getAvailableEvents() {
+    public function getAvailableEvents(): array {
         $output = [];
         $ref = new \ReflectionClass($this);
 
@@ -440,7 +442,7 @@ trait TForm_ModalDelegate {
 
     protected $_defaultMode = null;
 
-    public function getAvailableModes() {
+    public function getAvailableModes(): array {
         return array_keys($this->_getModeRenderers());
     }
 
@@ -452,7 +454,7 @@ trait TForm_ModalDelegate {
         }
     }
 
-    public function setDefaultMode($mode) {
+    public function setDefaultMode(?string $mode) {
         if($mode === null) {
             $this->_defaultMode = null;
             return $this;
@@ -471,7 +473,7 @@ trait TForm_ModalDelegate {
         return $this;
     }
 
-    public function getDefaultMode() {
+    public function getDefaultMode(): ?string {
         if(empty($this->_defaultMode)) {
             $this->_defaultMode = $this->_getDefaultMode();
         }
@@ -602,11 +604,13 @@ trait TForm_SelectorDelegate {
 trait TForm_ValueListSelectorDelegate {
 
 // Selected
-    public function isSelected($id) {
-        $id = (string)$id;
+    public function isSelected(?string $id): bool {
+        if($id === null) {
+            return false;
+        }
 
         if(!$this->_isForMany) {
-            return $this->values['selected'] == $id;
+            return (string)$this->values['selected'] == $id;
         } else {
             return $this->values->selected->has($id);
         }
@@ -666,7 +670,7 @@ trait TForm_ValueListSelectorDelegate {
         }
     }
 
-    public function hasSelection() {
+    public function hasSelection(): bool {
         if(!$this->_isForMany) {
             return $this->values->selected->hasValue();
         } else {
@@ -678,11 +682,13 @@ trait TForm_ValueListSelectorDelegate {
         return $this->setSelected(null);
     }
 
-    public function removeSelected($id) {
-        if(!$this->_isForMany) {
-            unset($this->values->selected);
-        } else {
-            unset($this->values->selected->{$id});
+    public function removeSelected(?string $id) {
+        if($id !== null) {
+            if(!$this->_isForMany) {
+                unset($this->values->selected);
+            } else {
+                unset($this->values->selected->{$id});
+            }
         }
 
         return $this;
@@ -692,7 +698,7 @@ trait TForm_ValueListSelectorDelegate {
         return $this->getSelected();
     }
 
-    public function hasDependencyValue() {
+    public function hasDependencyValue(): bool {
         return $this->hasSelection();
     }
 
@@ -739,7 +745,7 @@ trait TForm_DependentDelegate {
     protected $_dependencies = [];
     protected $_dependencyMessages = [];
 
-    public function addDependency($value, $message=null, $filter=null, $callback=null) {
+    public function addDependency($value, string $message=null, callable $filter=null, callable $callback=null) {
         if($value instanceof IDelegate) {
             $name = $value->getDelegateKey();
         } else {
@@ -749,7 +755,7 @@ trait TForm_DependentDelegate {
         return $this->setDependency($name, $value, $message, $filter, $callback);
     }
 
-    public function setDependency($name, $value, $message=null, $filter=null, $callback=null) {
+    public function setDependency(string $name, $value, string $message=null, callable $filter=null, callable $callback=null) {
         $this->_dependencies[$name] = [
             'value' => $value,
             'message' => $message,
@@ -762,26 +768,28 @@ trait TForm_DependentDelegate {
         return $this;
     }
 
-    public function hasDependency($name) {
+    public function hasDependency(string $name): bool {
         return isset($this->_dependencies[$name]);
     }
 
-    public function getDependency($name) {
+    public function getDependency(string $name): array {
         if(isset($this->_dependencies[$name])) {
             return $this->_dependencies[$name];
+        } else {
+            return null;
         }
     }
 
-    public function removeDependency($name) {
+    public function removeDependency(string $name) {
         unset($this->_dependencies[$name]);
         return $this;
     }
 
-    public function getDependencies() {
+    public function getDependencies(): array {
         return $this->_dependencies;
     }
 
-    public function getDependencyMessages() {
+    public function getDependencyMessages(): array {
         $this->normalizeDependencyValues();
         $output = [];
 
@@ -886,6 +894,8 @@ trait TForm_DependentDelegate {
                 $this->setStore('__dependency:'.$name, [$isResolved, $value]);
             }
         }
+
+        return $this;
     }
 }
 

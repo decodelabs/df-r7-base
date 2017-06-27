@@ -99,16 +99,11 @@ class Base implements INode, core\IDumpable {
     }
 
     public function setCallback($callback) {
-        if($callback !== null) {
-            $this->_callback = core\lang\Callback::factory($callback);
-        } else {
-            $this->_callback = null;
-        }
-
+        $this->_callback = core\lang\Callback::factory($callback);
         return $this;
     }
 
-    public function getCallback() {
+    public function getCallback(): ?callable {
         return $this->_callback;
     }
 
@@ -339,7 +334,7 @@ class Base implements INode, core\IDumpable {
 
 
 // Sitemap
-    public function getSitemapEntries() {
+    public function getSitemapEntries(): iterable {
         if(!static::SITEMAP) {
             return;
         }

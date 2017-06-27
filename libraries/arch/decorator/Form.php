@@ -73,49 +73,53 @@ abstract class Form implements IFormDecorator {
         return $this->form->isRenderingInline();
     }
 
-    final public function getState() {
+    final public function getState(): arch\node\IFormState {
         return $this->form->getState();
     }
 
-    final public function loadDelegate($id, $path) {
+    final public function loadDelegate(string $id, string $path): arch\node\IDelegate {
         return $this->form->loadDelegate($id, $path);
     }
 
-    final public function directLoadDelegate($id, $class) {
+    final public function directLoadDelegate(string $id, string $class): arch\node\IDelegate {
         return $this->form->directLoadDelegate($id, $class);
     }
 
-    final public function getDelegate($id) {
+    final public function proxyLoadDelegate(string $id, arch\node\IDelegateProxy $proxy): arch\node\IDelegate {
+        return $this->form->proxyLoadDelegate($id, $proxy);
+    }
+
+    final public function getDelegate(string $id): arch\node\IDelegate {
         return $this->form->getDelegate($id);
     }
 
-    final public function hasDelegate($id) {
+    final public function hasDelegate(string $id): bool {
         return $this->form->hasDelegate($id);
     }
 
-    final public function unloadDelegate($id) {
+    final public function unloadDelegate(string $id) {
         $this->form->unloadDelegate($id);
         return $this;
     }
 
 // Helpers
-    final public function isValid() {
+    final public function isValid(): bool {
         return $this->form->isValid();
     }
 
-    final public function countErrors() {
+    final public function countErrors(): int {
         return $this->form->countErrors();
     }
 
-    final public function fieldName($name) {
+    final public function fieldName(string $name): string {
         return $this->form->fieldName($name);
     }
 
-    final public function eventName($name, ...$args) {
+    final public function eventName(string $name, string ...$args): string {
         return $this->form->eventName($name, ...$args);
     }
 
-    final public function elementId($name) {
+    final public function elementId(string $name): string {
         return $this->form->elementId($name);
     }
 

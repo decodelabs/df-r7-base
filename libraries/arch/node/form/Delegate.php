@@ -22,7 +22,7 @@ class Delegate implements arch\node\IDelegate {
     private $_isNew = false;
     private $_isComplete = false;
 
-    public function __construct(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id) {
+    public function __construct(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id) {
         $this->context = $context;
         $this->_state = $state;
         $this->_delegateId = $id;
@@ -34,11 +34,11 @@ class Delegate implements arch\node\IDelegate {
 
     protected function afterConstruct() {}
 
-    public function getDelegateId() {
+    public function getDelegateId(): string {
         return $this->_delegateId;
     }
 
-    public function getDelegateKey() {
+    public function getDelegateKey(): string {
         $parts = explode('.', $this->_delegateId);
         return array_pop($parts);
     }
@@ -89,7 +89,7 @@ class Delegate implements arch\node\IDelegate {
         return $this;
     }
 
-    public function isNew() {
+    public function isNew(): bool {
         return $this->_isNew;
     }
 
@@ -118,7 +118,7 @@ class Delegate implements arch\node\IDelegate {
         return $this;
     }
 
-    public function isComplete() {
+    public function isComplete(): bool {
         return $this->_isComplete;
     }
 
@@ -165,20 +165,20 @@ class Delegate implements arch\node\IDelegate {
 
 
 // Names
-    public function fieldName($name) {
+    public function fieldName(string $name): string {
         $parts = explode('[', $name, 2);
         $parts[0] .= ']';
 
         return '_delegates['.$this->_delegateId.']['.implode('[', $parts);
     }
 
-    public function elementId($name) {
+    public function elementId(string $name): string {
         return flex\Text::formatSlug($this->getDelegateId().'-'.$name);
     }
 
 
 
-    public function getStateData() {
+    public function getStateData(): array {
         $output = [
             'isValid' => $this->isValid(),
             'isNew' => $this->_isNew,

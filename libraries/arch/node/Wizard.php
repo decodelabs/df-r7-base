@@ -28,7 +28,7 @@ abstract class Wizard extends Form {
         $this->{$func}();
     }
 
-    public function getCurrentSection() {
+    public function getCurrentSection(): string {
         if(empty(static::SECTIONS)) {
             throw core\Error::EDefinition(
                 'No wizard sections have been defined'
@@ -44,7 +44,7 @@ abstract class Wizard extends Form {
         return $section;
     }
 
-    public function setSection($section) {
+    public function setSection(string $section) {
         $this->setStore('section', $section);
         $this->values->clear();
 
@@ -57,11 +57,13 @@ abstract class Wizard extends Form {
                 $this->{$func}();
             }
         }
+
+        return $this;
     }
 
 
 
-    public function getPrevSection() {
+    public function getPrevSection(): ?string {
         $current = $this->getCurrentSection();
         $last = null;
 
@@ -76,7 +78,7 @@ abstract class Wizard extends Form {
         return null;
     }
 
-    public function getNextSection() {
+    public function getNextSection(): ?string {
         $current = $this->getCurrentSection();
         $found = false;
 
@@ -91,7 +93,7 @@ abstract class Wizard extends Form {
         return null;
     }
 
-    public function getSectionData($section=null) {
+    public function getSectionData(string $section=null): core\collection\ITree {
         if($section === null) {
             $output = [];
 

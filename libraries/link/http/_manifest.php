@@ -401,8 +401,8 @@ interface IResponseAugmentor {
     public function apply(IResponse $response);
 
     // Status
-    public function setStatusCode($code);
-    public function getStatusCode();
+    public function setStatusCode(?int $code);
+    public function getStatusCode(): ?int;
 
     // Headers
     public function addHeaderForCurrentRequest($name, $value);
@@ -439,8 +439,8 @@ interface IResponseHeaderCollection {
     public function getHttpVersion();
 
     // Status
-    public function setStatusCode($code);
-    public function getStatusCode();
+    public function setStatusCode(int $code);
+    public function getStatusCode(): int;
     public function hasErrorStatusCode();
     public function hasSuccessStatusCode();
     public function hasRedirectStatusCode();
@@ -565,7 +565,7 @@ interface IUploadFile {
     public function getContentType();
     public function getPointer();
 
-    public function isValid();
+    public function isValid(): bool;
     public function isSuccess();
     public function getErrorCode();
     public function getErrorString();

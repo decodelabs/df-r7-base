@@ -45,7 +45,7 @@ class Exception implements core\log\IExceptionNode {
         return df\Launchpad::isTesting();
     }
 
-    public function getException() {
+    public function getException(): \Throwable {
         return $this->_exception;
     }
 

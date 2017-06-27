@@ -149,7 +149,7 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
 
-    public function getSourceEntityLocator() {
+    public function getSourceEntityLocator(): mesh\entity\ILocator {
         $adapter = $this->_getBaseQuery()->getSource()->getAdapter();
 
         if(!$adapter instanceof mesh\entity\ILocatorProvider) {

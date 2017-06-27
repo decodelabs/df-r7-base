@@ -22,7 +22,7 @@ interface IAddress extends core\IStringProvider {
     public function getDomain();
     public function setName($name);
     public function getName();
-    public function isValid();
+    public function isValid(): bool;
 }
 
 interface IAddressList extends core\collection\IMappedCollection, core\IStringProvider {

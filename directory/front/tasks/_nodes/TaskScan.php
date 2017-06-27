@@ -150,7 +150,7 @@ class TaskScan extends arch\node\Task {
                 $this->io->writeLine();
             }
 
-            $this->io->writeLine('Scheduling '.$request.' at '.$set['schedule']);
+            $this->io->writeLine('Scheduling '.$request.' at '.$set['schedule'].', '.$set['priority'].' priority');
             $schedule->save();
         }
     }

@@ -250,7 +250,7 @@ interface ITransformer extends core\IContextAware {
     public function canDeliver();
     public function execute();
 
-    public function getSitemapEntries();
+    public function getSitemapEntries(): iterable;
 }
 
 interface IComponent extends

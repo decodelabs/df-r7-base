@@ -59,7 +59,7 @@ interface IResult {
 
     public function setCode($code);
     public function getCode();
-    public function isValid();
+    public function isValid(): bool;
 
     public function setDomainInfo(IDomainInfo $domainInfo);
     public function getDomainInfo();

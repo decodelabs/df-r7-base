@@ -155,18 +155,18 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
 
 
 // Status
-    public function setStatusCode($code) {
+    public function setStatusCode(int $code) {
         if(!self::isValidStatusCode($code)) {
             throw new link\http\InvalidArgumentException(
                 $code.' is not a valid http response code'
             );
         }
 
-        $this->_statusCode = (int)$code;
+        $this->_statusCode = $code;
         return $this;
     }
 
-    public function getStatusCode() {
+    public function getStatusCode(): int {
         return $this->_statusCode;
     }
 

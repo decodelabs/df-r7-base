@@ -104,6 +104,20 @@ abstract class Base implements IBlock {
         return $this->getName();
     }
 
+    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
+        $name = $this->getFormDelegateName();
+        $class = 'df\\apex\\directory\\shared\\nightfire\\_formDelegates\\blocks\\'.$name;
+
+        if(!class_exists($class)) {
+            throw core\Error::{'arch/node/EDelegate,ENotFound'}(
+                'Fire block delegate '.$name.' could not be found'
+            );
+        }
+
+        return (new $class($context, $state, $event, $id))
+            ->setBlock($this);
+    }
+
     public static function getDefaultCategories() {
         return (array)static::DEFAULT_CATEGORIES;
     }
@@ -158,5 +172,40 @@ abstract class Base implements IBlock {
         // TODO: End any unclosed child elements
 
         $writer->endElement();
+    }
+}
+
+
+
+// Form delegate
+abstract class Base_Delegate extends arch\node\form\Delegate implements fire\block\IFormDelegate {
+
+    use arch\node\TForm_InlineFieldRenderableDelegate;
+    use core\constraint\TRequirable;
+
+    protected $_isNested = false;
+    protected $_block;
+
+    public function __construct(IBlock $block, arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id) {
+        parent::__construct($context, $state, $event, $id);
+        $this->_block = $block;
+    }
+
+    public function setBlock(fire\block\IBlock $block) {
+        $this->_block = $block;
+        return $this;
+    }
+
+    public function getBlock() {
+        return $this->_block;
+    }
+
+    public function isNested(bool $flag=null) {
+        if($flag !== null) {
+            $this->_isNested = $flag;
+            return $this;
+        }
+
+        return $this->_isNested;
     }
 }

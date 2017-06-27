@@ -412,5 +412,5 @@ interface ISchemaProviderAdapter extends IAdapter {
 
 interface INode {
     public function validate();
-    public function isValid();
+    public function isValid(): bool;
 }

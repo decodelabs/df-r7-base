@@ -133,7 +133,7 @@ class Handler implements IHandler {
         return $this->_shouldSanitizeAll;
     }
 
-    public function isValid() {
+    public function isValid(): bool {
         if($this->_isValid === null) {
             return true;
         }
@@ -306,7 +306,7 @@ class Handler implements IHandler {
             if($allowFields !== null && !in_array($fieldName, $allowFields)) {
                 continue;
             }
-            
+
             if(!isset($this->_fields[$fieldName])) {
                 continue;
             }

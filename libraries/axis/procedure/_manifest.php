@@ -27,7 +27,7 @@ interface IProcedure extends core\IContextAware {
     public function getDataMap();
     public function prepare();
     public function execute(...$args);
-    public function isValid();
+    public function isValid(): bool;
 }
 
 interface IRecordProcedure extends IProcedure {

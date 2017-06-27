@@ -70,7 +70,7 @@ class Result implements IResult {
         return $this->_code;
     }
 
-    public function isValid() {
+    public function isValid(): bool {
         return $this->_code > 0;
     }
 

@@ -58,7 +58,7 @@ class InputTree extends Tree implements IInputTree {
         return parent::importTree($child);
     }
 
-    public function isValid() {
+    public function isValid(): bool {
         if($this->hasErrors()) {
             return false;
         }
@@ -72,7 +72,7 @@ class InputTree extends Tree implements IInputTree {
         return true;
     }
 
-    public function countErrors() {
+    public function countErrors(): int {
         $output = count($this->_errors);
 
         foreach($this->_collection as $child) {

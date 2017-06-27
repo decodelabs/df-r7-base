@@ -29,7 +29,7 @@ abstract class Task extends Base implements ITaskNode {
 
 
 // Schedule
-    public static function getSchedule() {
+    public static function getSchedule(): ?string {
         $schedule = static::SCHEDULE;
 
         if(empty($schedule)) {
@@ -39,11 +39,11 @@ abstract class Task extends Base implements ITaskNode {
         return $schedule;
     }
 
-    public static function getSchedulePriority() {
-        return core\unit\Priority::factory(static::SCHEDULE_PRIORITY);
+    public static function getSchedulePriority(): string {
+        return core\unit\Priority::normalize(static::SCHEDULE_PRIORITY);
     }
 
-    public static function shouldScheduleAutomatically() {
+    public static function shouldScheduleAutomatically(): bool {
         return (bool)static::SCHEDULE_AUTOMATIC;
     }
 
@@ -62,7 +62,7 @@ abstract class Task extends Base implements ITaskNode {
         return parent::dispatch();
     }
 
-    public function runChild($request, $incLevel=true) {
+    public function runChild($request, bool $incLevel=true) {
         $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request, true);
         $node = Base::factory($context);

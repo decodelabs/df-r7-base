@@ -235,7 +235,7 @@ interface IDumpNode extends INode, IInspectableNode {
 }
 
 interface IExceptionNode extends INode, IInspectableNode {
-    public function getException();
+    public function getException(): \Throwable;
     public function getExceptionClass();
     public function getCode();
     public function getMessage();

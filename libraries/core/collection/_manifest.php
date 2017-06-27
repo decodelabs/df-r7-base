@@ -390,8 +390,8 @@ trait THeaderMapProvider {
 
 // Error Container
 interface IErrorContainer {
-    public function isValid();
-    public function countErrors();
+    public function isValid(): bool;
+    public function countErrors(): int;
     public function setErrors(array $errors);
     public function addErrors(array $errors);
     public function addError($code, $message);
@@ -407,11 +407,11 @@ trait TErrorContainer {
 
     protected $_errors = [];
 
-    public function isValid() {
+    public function isValid(): bool {
         return $this->hasErrors();
     }
 
-    public function countErrors() {
+    public function countErrors(): int {
         return count($this->_errors);
     }
 

@@ -20,7 +20,7 @@ class State implements arch\node\IFormState, \Serializable {
     protected $_delegates = [];
     protected $_store = [];
 
-    public function __construct($sessionId) {
+    public function __construct(string $sessionId) {
         $this->sessionId = $sessionId;
         $this->values = new core\collection\InputTree();
         $this->_isNew = true;
@@ -74,7 +74,7 @@ class State implements arch\node\IFormState, \Serializable {
         return $this;
     }
 
-    protected function _setUnserializedValues(array $values, $id) {
+    protected function _setUnserializedValues(array $values, string $id) {
         $this->_isNew = false;
         $this->sessionId = $id;
 
@@ -106,16 +106,16 @@ class State implements arch\node\IFormState, \Serializable {
         }
     }
 
-    public function getSessionId() {
+    public function getSessionId(): string {
         return $this->sessionId;
     }
 
-    public function getValues() {
+    public function getValues(): core\collection\IInputTree {
         return $this->values;
     }
 
 
-    public function getDelegateState($id) {
+    public function getDelegateState(string $id): arch\node\IFormState {
         if(!isset($this->_delegates[$id])) {
             $this->_delegates[$id] = new self($this->sessionId);
         }
@@ -161,7 +161,7 @@ class State implements arch\node\IFormState, \Serializable {
         return $this;
     }
 
-    public function isOperating() {
+    public function isOperating(): bool {
         if($this->isOperating) {
             return true;
         }

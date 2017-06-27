@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\arch;
 use df\halo;
+use df\link;
+use df\flex;
 
 class Manager implements arch\node\ITaskManager {
 
@@ -18,7 +20,7 @@ class Manager implements arch\node\ITaskManager {
 
     protected $_captureBackground = false;
 
-    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, $dfSource=false) {
+    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): halo\process\IResult {
         $request = arch\Request::factory($request);
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.php';
@@ -40,7 +42,7 @@ class Manager implements arch\node\ITaskManager {
         return halo\process\Base::launchScript($path, $args, $multiplexer, $user);
     }
 
-    public function launchBackground($request, $user=null, $dfSource=false) {
+    public function launchBackground($request, $user=null, bool $dfSource=false) {
         $request = arch\Request::factory($request);
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.php';
@@ -72,7 +74,7 @@ class Manager implements arch\node\ITaskManager {
         }
     }
 
-    public function invoke($request, core\io\IMultiplexer $io=null) {
+    public function invoke($request, core\io\IMultiplexer $io=null): core\io\IMultiplexer {
         $request = arch\Request::factory($request);
         $context = arch\Context::factory($request, 'Task', true);
         $node = arch\node\Base::factory($context);
@@ -91,7 +93,7 @@ class Manager implements arch\node\ITaskManager {
         return $node->io;
     }
 
-    public function initiateStream($request) {
+    public function initiateStream($request): link\http\IResponse {
         $context = $this->_getActiveContext();
         $token = $context->data->task->invoke->prepareTask($request);
 
@@ -103,7 +105,7 @@ class Manager implements arch\node\ITaskManager {
         );
     }
 
-    public function queue($request, $priority='medium') {
+    public function queue($request, string $priority='medium'): flex\IGuid {
         $context = $this->_getActiveContext();
 
         $queue = $context->data->task->queue->newRecord([
@@ -115,7 +117,7 @@ class Manager implements arch\node\ITaskManager {
         return $queue['id'];
     }
 
-    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null) {
+    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): halo\process\IResult {
         $id = $this->queue($request, 'medium');
         return self::launch('tasks/launch-queued?id='.$id, $multiplexer);
     }
@@ -125,7 +127,7 @@ class Manager implements arch\node\ITaskManager {
         return self::launchBackground('tasks/launch-queued?id='.$id);
     }
 
-    public function getSharedIo() {
+    public function getSharedIo(): core\io\IMultiplexer {
         $application = df\Launchpad::getApplication();
 
         if($application instanceof core\application\Task) {

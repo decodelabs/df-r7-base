@@ -78,49 +78,53 @@ abstract class Delegate implements IDelegateDecorator {
         return $this->delegate->isRenderingInline();
     }
 
-    final public function getState() {
+    final public function getState(): arch\node\IFormState {
         return $this->delegate->getState();
     }
 
-    final public function loadDelegate($id, $path) {
+    final public function loadDelegate(string $id, string $path): arch\node\IDelegate {
         return $this->delegate->loadDelegate($id, $path);
     }
 
-    final public function directLoadDelegate($id, $class) {
+    final public function directLoadDelegate(string $id, string $class): arch\node\IDelegate {
         return $this->delegate->directLoadDelegate($id, $class);
     }
 
-    final public function getDelegate($id) {
+    final public function proxyLoadDelegate(string $id, arch\node\IDelegateProxy $proxy): arch\node\IDelegate {
+        return $this->delegate->proxyLoadDelegate($id, $proxy);
+    }
+
+    final public function getDelegate(string $id): arch\node\IDelegate {
         return $this->delegate->getDelegate($id);
     }
 
-    final public function hasDelegate($id) {
+    final public function hasDelegate(string $id): bool {
         return $this->delegate->hasDelegate($id);
     }
 
-    final public function unloadDelegate($id) {
+    final public function unloadDelegate(string $id) {
         $this->delegate->unloadDelegate($id);
         return $this;
     }
 
 // Helpers
-    final public function isValid() {
+    final public function isValid(): bool {
         return $this->delegate->isValid();
     }
 
-    final public function countErrors() {
+    final public function countErrors(): int {
         return $this->delegate->countErrors();
     }
 
-    final public function fieldName($name) {
+    final public function fieldName(string $name): string {
         return $this->delegate->fieldName($name);
     }
 
-    final public function eventName($name, ...$args) {
+    final public function eventName(string $name, string ...$args): string {
         return $this->delegate->eventName($name, ...$args);
     }
 
-    final public function elementId($name) {
+    final public function elementId(string $name): string {
         return $this->delegate->elementId($name);
     }
 

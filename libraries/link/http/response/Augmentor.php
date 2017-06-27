@@ -78,7 +78,7 @@ class Augmentor implements link\http\IResponseAugmentor {
 
 
 // Status
-    public function setStatusCode($code) {
+    public function setStatusCode(?int $code) {
         if(!HeaderCollection::isValidStatusCode($code)) {
             $code = null;
         }
@@ -87,7 +87,7 @@ class Augmentor implements link\http\IResponseAugmentor {
         return $this;
     }
 
-    public function getStatusCode() {
+    public function getStatusCode(): ?int {
         return $this->_statusCode;
     }
 

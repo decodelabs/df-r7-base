@@ -14,7 +14,7 @@ class Delegate extends Base implements core\validate\IDelegateField {
     protected $_delegate;
     protected $_isRequired = null;
 
-    public function fromForm(arch\node\IForm $form, $name=null) {
+    public function fromForm(arch\node\IForm $form, string $name=null) {
         if($name === null) {
             $name = $this->_name;
         }
@@ -40,7 +40,7 @@ class Delegate extends Base implements core\validate\IDelegateField {
         return $this;
     }
 
-    public function getDelegate() {
+    public function getDelegate(): ?arch\node\IDelegate {
         return $this->_delegate;
     }
 

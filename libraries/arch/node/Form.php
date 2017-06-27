@@ -144,11 +144,11 @@ abstract class Form extends Base implements IFormNode {
         $this->afterInit();
     }
 
-    public function isNew() {
+    public function isNew(): bool {
         return $this->_isNew;
     }
 
-    public function isComplete() {
+    public function isComplete(): bool {
         return $this->_isComplete;
     }
 
@@ -176,7 +176,7 @@ abstract class Form extends Base implements IFormNode {
 
     protected function initWithSession() {}
 
-    public function getState() {
+    public function getState(): IFormState {
         if(!$this->_state) {
             throw core\Error::{'ENoState,ENoContext'}(
                 'State controller is not available until the form has been dispatched'
@@ -492,7 +492,7 @@ abstract class Form extends Base implements IFormNode {
         return $this;
     }
 
-    public function getStateData() {
+    public function getStateData(): array {
         $output = [
             'isValid' => $this->isValid(),
             'isNew' => $this->_isNew,
@@ -515,11 +515,11 @@ abstract class Form extends Base implements IFormNode {
     }
 
 // Names
-    public function fieldName($name) {
+    public function fieldName(string $name): string {
         return $name;
     }
 
-    public function elementId($name) {
+    public function elementId(string $name): string {
         return flex\Text::formatSlug($name);
     }
 

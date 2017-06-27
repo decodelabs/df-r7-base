@@ -21,7 +21,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 
 // Interfaces
-interface IBlock extends flex\xml\IRootInterchange, aura\view\IDeferredRenderable {
+interface IBlock extends flex\xml\IRootInterchange, aura\view\IDeferredRenderable, arch\node\IDelegateProxy {
     public function getName();
     public function getDisplayName();
     public function isNested(bool $flag=null);

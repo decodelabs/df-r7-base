@@ -7,12 +7,15 @@ namespace df\arch\node;
 
 use df;
 use df\core;
-use df\arch;
-use df\user;
 use df\aura;
+use df\arch;
+use df\flex;
 use df\flow;
-use df\opal;
+use df\halo;
 use df\link;
+use df\mesh;
+use df\opal;
+use df\user;
 
 
 ##############################
@@ -20,14 +23,14 @@ use df\link;
 ##############################
 interface INode extends core\IContextAware, user\IAccessLock, arch\IResponseForcer, arch\IOptionalDirectoryAccessLock {
     public function setCallback($callback);
-    public function getCallback();
+    public function getCallback(): ?callable;
     public function dispatch();
 
     public function shouldOptimize(bool $flag=null);
     public function getDispatchMethodName(): ?string;
     public function handleException(\Throwable $e);
 
-    public function getSitemapEntries();
+    public function getSitemapEntries(): iterable;
 }
 
 
@@ -36,12 +39,12 @@ interface INode extends core\IContextAware, user\IAccessLock, arch\IResponseForc
 ## TASKS
 ##############################
 interface ITaskNode extends INode {
-    public static function getSchedule();
-    public static function getSchedulePriority();
-    public static function shouldScheduleAutomatically();
+    public static function getSchedule(): ?string;
+    public static function getSchedulePriority(): string;
+    public static function shouldScheduleAutomatically(): bool;
 
     public function extractCliArguments(core\cli\ICommand $command);
-    public function runChild($request, $incLevel=true);
+    public function runChild($request, bool $incLevel=true);
     public function runChildQuietly($request);
 
     public function ensureDfSource();
@@ -51,15 +54,15 @@ interface IBuildTaskNode extends ITaskNode {}
 
 
 interface ITaskManager extends core\IManager {
-    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, $dfSource=false);
-    public function launchBackground($request, $user=null, $dfSource=false);
+    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): halo\process\IResult;
+    public function launchBackground($request, $user=null, bool $dfSource=false);
     public function launchQuietly($request);
-    public function invoke($request, core\io\IMultiplexer $io=null);
-    public function initiateStream($request);
-    public function queue($request, $priority='medium');
-    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null);
+    public function invoke($request, core\io\IMultiplexer $io=null): core\io\IMultiplexer;
+    public function initiateStream($request): link\http\IResponse;
+    public function queue($request, string $priority='medium'): flex\IGuid;
+    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): halo\process\IResult;
     public function queueAndLaunchBackground($request);
-    public function getSharedIo();
+    public function getSharedIo(): core\io\IMultiplexer;
     public function shouldCaptureBackgroundTasks(bool $flag=null);
 }
 
@@ -73,14 +76,14 @@ interface IRestApiNode extends INode {
 }
 
 interface IRestApiResult extends arch\IProxyResponse {
-    public function isValid();
+    public function isValid(): bool;
 
-    public function setStatusCode($code);
-    public function getStatusCode();
+    public function setStatusCode(?int $code);
+    public function getStatusCode(): int;
 
     public function setException(\Throwable $e);
-    public function hasException();
-    public function getException();
+    public function hasException(): bool;
+    public function getException(): ?\Throwable;
 
     public function complete(callable $success, callable $failure=null);
 
@@ -105,14 +108,14 @@ interface IStoreProvider {
 }
 
 interface IFormState extends IStoreProvider {
-    public function getSessionId();
-    public function getValues();
+    public function getSessionId(): string;
+    public function getValues(): core\collection\IInputTree;
 
-    public function getDelegateState($id);
+    public function getDelegateState(string $id): IFormState;
 
     public function isNew(bool $flag=null);
     public function reset();
-    public function isOperating();
+    public function isOperating(): bool;
 }
 
 interface IFormEventDescriptor {
@@ -148,35 +151,36 @@ interface IFormEventDescriptor {
 
 interface IForm extends IStoreProvider, core\lang\IChainable, \ArrayAccess {
     public function isRenderingInline(): bool;
-    public function getState();
-    public function loadDelegate($id, $path);
-    public function directLoadDelegate($id, $class);
-    public function getDelegate($id);
-    public function hasDelegate($id);
-    public function unloadDelegate($id);
+    public function getState(): IFormState;
+    public function loadDelegate(string $id, string $path): IDelegate;
+    public function directLoadDelegate(string $id, string $class): IDelegate;
+    public function proxyLoadDelegate(string $id, IDelegateProxy $proxy): IDelegate;
+    public function getDelegate(string $id): IDelegate;
+    public function hasDelegate(string $id): bool;
+    public function unloadDelegate(string $id);
 
-    public function isValid();
-    public function countErrors();
-    public function fieldName($name);
-    public function eventName($name, ...$args);
-    public function elementId($name);
+    public function isValid(): bool;
+    public function countErrors(): int;
+    public function fieldName(string $name): string;
+    public function eventName(string $name, string ...$args): string;
+    public function elementId(string $name): string;
 }
 
 interface IActiveForm extends IForm {
-    public function isNew();
+    public function isNew(): bool;
 
-    public function handleEvent($name, array $args=[]);
-    public function handleDelegateEvent($delegateId, $event, $args);
+    public function handleEvent(string $name, array $args=[]): IFormEventDescriptor;
+    public function handleDelegateEvent(string $delegateId, string $event, array $args);
     public function triggerPostEvent(IActiveForm $target, string $event, array $args);
     public function handlePostEvent(IActiveForm $target, string $event, array $args);
     public function handleMissingDelegate(string $id, string $event, array $args): bool;
 
-    public function getAvailableEvents();
-    public function getStateData();
+    public function getAvailableEvents(): array;
+    public function getStateData(): array;
 
     public function reset();
     public function complete($success=true, $failure=null);
-    public function isComplete();
+    public function isComplete(): bool;
 }
 
 
@@ -185,28 +189,30 @@ interface IFormNode extends INode, IActiveForm {
 }
 
 interface IWizard extends IFormNode {
-    public function getCurrentSection();
-    public function setSection($section);
-    public function getPrevSection();
-    public function getNextSection();
-    public function getSectionData($section=null);
+    public function getCurrentSection(): string;
+    public function setSection(string $section);
+    public function getPrevSection(): ?string;
+    public function getNextSection(): ?string;
+    public function getSectionData(string $section=null): core\collection\ITree;
 }
 
 
 interface IDelegate extends IActiveForm, core\IContextAware {
-    public function getDelegateId();
-    public function getDelegateKey();
+    public function getDelegateId(): string;
+    public function getDelegateKey(): string;
+
     public function initialize();
     public function beginInitialize();
     public function endInitialize();
+
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false);
     public function setComplete();
 }
 
 interface IModalDelegate {
-    public function getAvailableModes();
-    public function setDefaultMode($mode);
-    public function getDefaultMode();
+    public function getAvailableModes(): array;
+    public function setDefaultMode(?string $mode);
+    public function getDefaultMode(): ?string;
 }
 
 interface IInlineFieldRenderableDelegate {
@@ -237,12 +243,12 @@ interface ISelectionProviderDelegate extends IResultProviderDelegate {
 }
 
 interface ISelectorDelegate extends ISelectionProviderDelegate, IDependencyValueProvider {
-    public function getSourceEntityLocator();
-    public function isSelected($id);
+    public function getSourceEntityLocator(): mesh\entity\ILocator;
+    public function isSelected(?string $id): bool;
     public function setSelected($selected);
     public function getSelected();
-    public function hasSelection();
-    public function removeSelected($id);
+    public function hasSelection(): bool;
+    public function removeSelected(?string $id);
     public function clearSelection();
 }
 
@@ -252,16 +258,21 @@ interface IAdapterDelegate extends IParentUiHandlerDelegate, IParentEventHandler
 
 interface IDependencyValueProvider {
     public function getDependencyValue();
-    public function hasDependencyValue();
+    public function hasDependencyValue(): bool;
 }
 
 interface IDependentDelegate extends opal\query\IFilterConsumer {
-    public function addDependency($value, $message=null, $filter=null, $callback=null);
-    public function setDependency($name, $value, $message=null, $filter=null, $callback=null);
-    public function hasDependency($name);
-    public function getDependency($name);
-    public function removeDependency($name);
-    public function getDependencies();
-    public function getDependencyMessages();
+    public function addDependency($value, string $message=null, callable $filter=null, callable $callback=null);
+    public function setDependency(string $name, $value, string $message=null, callable $filter=null, callable $callback=null);
+    public function hasDependency(string $name): bool;
+    public function getDependency(string $name): array;
+    public function removeDependency(string $name);
+    public function getDependencies(): array;
+    public function getDependencyMessages(): array;
     public function normalizeDependencyValues();
+}
+
+
+interface IDelegateProxy {
+    public function loadFormDelegate(arch\IContext $context, IFormState $state, IFormEventDescriptor $event, string $id): IDelegate;
 }

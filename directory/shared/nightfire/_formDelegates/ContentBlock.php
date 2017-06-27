@@ -132,9 +132,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         }
 
         if($this->_block) {
-            $type = $this->_block->getFormDelegateName();
-            $this->loadDelegate('block', '~/nightfire/#/blocks/'.$type)
-                ->setBlock($this->_block)
+            $this->proxyLoadDelegate('block', $this->_block)
                 ->isRequired($this->_isRequired);
         }
     }
@@ -199,8 +197,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         if($oldBlock && $oldBlock !== $this->_block) {
             $this->_block->setTransitionValue($oldBlock->getTransitionValue());
 
-            $this->loadDelegate('block', '~/nightfire/#/blocks/'.$this->_block->getFormDelegateName())
-                ->setBlock($this->_block)
+            $this->proxyLoadDelegate('block', $this->_block)
                 ->isRequired($this->_isRequired)
                 ->isNested($this->_isNested)
                 ->initialize();

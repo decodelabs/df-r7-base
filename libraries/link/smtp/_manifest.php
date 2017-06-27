@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -24,14 +24,14 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
         $this->_value = $value;
     }
-    
+
     public function getDumpProperties() {
         return $this->_value;
     }
 }
 
 
-// Interfaces    
+// Interfaces
 interface IMediator {
 
     const CRAMMD5 = 'crammd5';
@@ -61,7 +61,7 @@ class Response {
     public $code;
     public $message;
 
-    public function isValid() {
+    public function isValid(): bool {
         return empty($this->error);
     }
 }

@@ -81,7 +81,7 @@ class Address implements IAddress, core\IDumpable {
     }
 
 
-    public function isValid() {
+    public function isValid(): bool {
         if($this->_isValid === null) {
             $this->_isValid = (bool)filter_var($this->_address, \FILTER_VALIDATE_EMAIL);
         }
