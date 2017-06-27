@@ -64,6 +64,8 @@ class Error extends Base {
         return false;
     }
 
+
+// Io
     public function readXml(flex\xml\IReadable $reader) {
         return $this;
     }
@@ -74,6 +76,9 @@ class Error extends Base {
         );
     }
 
+
+
+// Render
     public function render() {
         $view = $this->getView();
 
@@ -90,5 +95,44 @@ class Error extends Base {
         }
 
         return $output;
+    }
+
+
+
+// Form
+    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
+        return new class($this, ...func_get_args()) extends Base_Delegate {
+
+            protected function setDefaultValues() {
+                $this->setStore('type', $this->_block->getType());
+                $this->setStore('data', $this->_block->getData());
+
+                if($error = $this->_block->getError()) {
+                    $this->setStore('message', $error->getMessage());
+                }
+            }
+
+            protected function afterInit() {
+                $this->_block->setType($this->getStore('type'));
+                $this->_block->setData($this->getStore('data'));
+            }
+
+            public function renderFieldContent(aura\html\widget\Field $field) {
+                $output = $this->html->flashMessage($this->_(
+                    'Error loading block type: '.$this->getStore('type')
+                ), 'error');
+
+                $output->setDescription($this->getStore('message'));
+                $this->_block->setData($this->getStore('data'));
+
+                $field->push($output);
+
+                return $this;
+            }
+
+            public function apply() {
+                $this->values->addError('noentry', 'Must update block!');
+            }
+        };
     }
 }

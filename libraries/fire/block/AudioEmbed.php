@@ -8,6 +8,7 @@ namespace df\fire\block;
 use df;
 use df\core;
 use df\fire;
+use df\arch;
 use df\flex;
 use df\aura;
 
@@ -45,6 +46,8 @@ class AudioEmbed extends Base {
         return $this;
     }
 
+
+// Io
     public function readXml(flex\xml\IReadable $reader) {
         $this->_validateXmlReader($reader);
         $this->_embedCode = $reader->getFirstCDataSection();
@@ -61,6 +64,7 @@ class AudioEmbed extends Base {
     }
 
 
+// Render
     public function render() {
         $output = $this->getView()->html->audioEmbed($this->_embedCode);
 
@@ -71,5 +75,34 @@ class AudioEmbed extends Base {
         }
 
         return $output;
+    }
+
+
+
+// Form
+    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
+        return new class($this, ...func_get_args()) extends Base_Delegate {
+
+            protected function setDefaultValues() {
+                $this->values->embed = $this->_block->getEmbedCode();
+            }
+
+            public function renderFieldContent(aura\html\widget\Field $field) {
+                $field->push(
+                    $this->html->textarea(
+                            $this->fieldName('embed'),
+                            $this->values->embed
+                        )
+                        ->isRequired($this->_isRequired)
+                );
+
+                return $this;
+            }
+
+            public function apply() {
+                $this->_block->setEmbedCode($this->values['embed']);
+                return $this->_block;
+            }
+        };
     }
 }

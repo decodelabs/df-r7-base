@@ -8,6 +8,7 @@ namespace df\fire\block;
 use df;
 use df\core;
 use df\fire;
+use df\arch;
 use df\flex;
 use df\aura;
 
@@ -36,6 +37,9 @@ class Element extends Base {
         return !strlen($this->_slug);
     }
 
+
+
+// Io
     public function readXml(flex\xml\IReadable $reader) {
         $this->_validateXmlReader($reader);
         $this->_slug = $reader->getAttribute('slug');
@@ -52,8 +56,45 @@ class Element extends Base {
     }
 
 
+// Render
     public function render() {
         $view = $this->getView();
         return $view->nightfire->renderElement($this->_slug);
+    }
+
+
+// Form
+    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
+        return new class($this, ...func_get_args()) extends Base_Delegate {
+
+            protected function loadDelegates() {
+                $this->loadDelegate('element', '~/content/elements/ElementSelector')
+                    ->isForOne(true)
+                    ->isRequired($this->_isRequired);
+            }
+
+            protected function setDefaultValues() {
+                $id = $this->data->content->element->select('id')
+                    ->where('slug', '=', $this->_block->getSlug())
+                    ->toValue('id');
+
+                $this['element']->setSelected($id);
+            }
+
+            public function renderFieldContent(aura\html\widget\Field $field) {
+                $this['element']->renderFieldContent($field);
+
+                return $this;
+            }
+
+            public function apply() {
+                $slug = $this->data->content->element->select('slug')
+                    ->where('id', '=', $this['element']->apply())
+                    ->toValue('slug');
+
+                $this->_block->setSlug($slug);
+                return $this->_block;
+            }
+        };
     }
 }
