@@ -159,7 +159,7 @@ class Heading extends Base {
                 if(!empty($classes)) {
                     $current = $this->values['class'];
 
-                    if($current !== null && !isset($classes[$current])) {
+                    if(!empty($current) && !isset($classes[$current])) {
                         $classes[$current] = ucfirst($current);
                     }
 
