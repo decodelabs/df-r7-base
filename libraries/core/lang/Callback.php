@@ -52,6 +52,14 @@ class Callback implements ICallback, core\IDumpable {
         return new self($callback, $extraArgs);
     }
 
+    public static function normalize($callback): ?ICallback {
+        if($callback instanceof ICallback || $callback === null) {
+            return $callback;
+        }
+
+        return self::factory($callback);
+    }
+
     public static function call($callback, ...$args) {
         if($callback = self::factory($callback)) {
             return $callback->invoke(...$args);

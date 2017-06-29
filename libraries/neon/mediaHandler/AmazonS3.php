@@ -12,7 +12,7 @@ use df\spur;
 use df\link;
 
 class AmazonS3 extends Base {
-    
+
     protected $_bucket;
     protected $_path;
     protected $_mediator;
@@ -46,7 +46,7 @@ class AmazonS3 extends Base {
         ];
     }
 
-    public static function getDisplayName() {
+    public static function getDisplayName(): string {
         return 'Amazon S3';
     }
 
@@ -55,8 +55,8 @@ class AmazonS3 extends Base {
 
         if($oldVersionId !== null) {
             $this->_mediator->moveFile(
-                $this->_bucket, 
-                $basePath, 
+                $this->_bucket,
+                $basePath,
                 $basePath.'/'.$oldVersionId,
                 spur\cdn\amazonS3\IAcl::PUBLIC_READ
             );
@@ -85,19 +85,19 @@ class AmazonS3 extends Base {
         $basePath = $this->_path.'/media/'.$fileId;
 
         $this->_mediator->moveFile(
-            $this->_bucket, 
-            $basePath, 
+            $this->_bucket,
+            $basePath,
             $basePath.'/'.$oldVersionId,
             spur\cdn\amazonS3\IAcl::PUBLIC_READ
         );
 
         $this->_mediator->moveFile(
-            $this->_bucket, 
-            $basePath.'/'.$newVersionId, 
+            $this->_bucket,
+            $basePath.'/'.$newVersionId,
             $basePath,
             spur\cdn\amazonS3\IAcl::PUBLIC_READ
         );
-        
+
         return $this;
     }
 
@@ -107,7 +107,7 @@ class AmazonS3 extends Base {
 
     public function getVersionDownloadUrl($fileId, $versionId, $isActive) {
         return $this->_mediator->getBucketUrl(
-            $this->_bucket, 
+            $this->_bucket,
             $this->_getVersionPath($fileId, $versionId, $isActive)
         );
     }
@@ -117,7 +117,7 @@ class AmazonS3 extends Base {
             $this->_bucket,
             $this->_getVersionPath($fileId, $versionId, $isActive)
         );
-        
+
         return $this;
     }
 

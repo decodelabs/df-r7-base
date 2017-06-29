@@ -181,7 +181,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $this->_subId;
     }
 
-    public function getDisplayName() {
+    public function getDisplayName(): string {
         $parts = explode('_', $this->_id->getPath()->getLast());
         $output = flex\Text::formatName(array_shift($parts));
 

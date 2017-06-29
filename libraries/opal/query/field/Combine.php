@@ -16,7 +16,7 @@ class Combine implements opal\query\ICombineField, core\IDumpable {
     protected $_name;
     protected $_combine;
 
-    public function __construct($name, opal\query\ICombineQuery $combine) {
+    public function __construct(string $name, opal\query\ICombineQuery $combine) {
         $this->_name = $name;
         $this->_combine = $combine;
     }
@@ -29,7 +29,7 @@ class Combine implements opal\query\ICombineField, core\IDumpable {
         return $this->_combine->getSourceAlias();
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

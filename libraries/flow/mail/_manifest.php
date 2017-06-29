@@ -21,7 +21,7 @@ interface IAddress extends core\IStringProvider {
     public function getAddress();
     public function getDomain();
     public function setName($name);
-    public function getName();
+    public function getName(): ?string;
     public function isValid(): bool;
 }
 
@@ -143,7 +143,7 @@ interface IAttachment {
 
 
 interface ITransport {
-    public static function getName();
+    public static function getName(): string;
     public static function getDescription();
 
     public function send(IMessage $message, flow\mime\IMultiPart $mime);

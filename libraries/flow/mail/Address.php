@@ -76,7 +76,7 @@ class Address implements IAddress, core\IDumpable {
         return $this;
     }
 
-    public function getName() {
+    public function getName(): ?string {
         return $this->_name;
     }
 

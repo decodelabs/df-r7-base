@@ -11,7 +11,7 @@ use df\neon;
 
 class Local extends Base implements ILocalDataHandler {
 
-    public static function getDisplayName() {
+    public static function getDisplayName(): string {
         return 'Local file system';
     }
 

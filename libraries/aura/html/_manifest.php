@@ -60,7 +60,7 @@ interface ITagDataContainer extends core\collection\IAttributeContainer {
 interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, flex\IStringEscapeHandler, core\lang\IChainable {
     // Name
     public function setName($name);
-    public function getName();
+    public function getName(): string;
     public function isInline(): bool;
     public function isBlock(): bool;
 
@@ -365,7 +365,7 @@ class ElementString implements IElementRepresentation, core\IDumpable {
         return $this;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return !strlen($this->_content);
     }
 

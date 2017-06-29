@@ -12,7 +12,7 @@ use df\flex;
 use df\arch;
 use df\aura;
 
-class Content implements IContent {
+class Content implements fire\ILayoutContent {
 
     use core\collection\TAttributeContainer;
     use flex\xml\TReaderInterchange;
@@ -20,18 +20,18 @@ class Content implements IContent {
 
     protected $_slots = [];
 
-    public function __construct($id=null) {
+    public function __construct(string $id=null) {
         if($id !== null) {
             $this->setId($id);
         }
     }
 
 // Id
-    public function setId($id) {
+    public function setId(?string $id) {
         return $this->setAttribute('id', $id);
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->getAttribute('id');
     }
 
@@ -47,8 +47,8 @@ class Content implements IContent {
                 continue;
             }
 
-            if(!$slot instanceof fire\slot\IContent) {
-                throw new InvalidArgumentException(
+            if(!$slot instanceof fire\ISlotContent) {
+                throw core\Error::EArgument(
                     'Invalid slot content detected'
                 );
             }
@@ -59,18 +59,20 @@ class Content implements IContent {
         return $this;
     }
 
-    public function setSlot(fire\slot\IContent $slot) {
+    public function setSlot(fire\ISlotContent $slot) {
         $this->_slots[$slot->getId()] = $slot;
         return $this;
     }
 
-    public function getSlot(string $id) {
-        if(isset($this->_slots[$id])) {
-            return $this->_slots[$id];
+    public function getSlot(string $id): ?fire\ISlotContent {
+        if(!isset($this->_slots[$id])) {
+            return null;
         }
+
+        return $this->_slots[$id];
     }
 
-    public function getSlots() {
+    public function getSlots(): array {
         return $this->_slots;
     }
 
@@ -94,14 +96,14 @@ class Content implements IContent {
         return $this;
     }
 
-    public function countSlots() {
+    public function countSlots(): int {
         return count($this->_slots);
     }
 
 // XML interchange
     public function readXml(flex\xml\IReadable $reader) {
         if($reader->getTagName() != 'layout') {
-            throw new UnexpectedValueException(
+            throw core\Error::EValue(
                 'Layout content object expected layout xml element'
             );
         }

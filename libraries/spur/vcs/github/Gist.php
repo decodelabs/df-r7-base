@@ -36,7 +36,7 @@ class Gist implements IGist {
         }
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

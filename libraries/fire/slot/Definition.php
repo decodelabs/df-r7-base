@@ -11,12 +11,11 @@ use df\fire;
 use df\aura;
 use df\arch;
 
-class Definition implements IDefinition {
+class Definition implements fire\ISlotDefinition {
 
     protected $_id;
     protected $_name;
     protected $_isStatic = false;
-    protected $_isLayoutChild = false;
     protected $_minBlocks = 0;
     protected $_maxBlocks = null;
     protected $_category;
@@ -24,12 +23,18 @@ class Definition implements IDefinition {
 
 
 // Interchange
-    public static function fromArray(array $values) {
-        $output = new self(@$values['id'], @$values['name'], @$values['static']);
-        $output->_isLayoutChild = @$values['layoutChild'];
-        $output->_minBlocks = @$values['minBlocks'];
-        $output->_maxBlocks = @$values['maxBlocks'];
-        $output->_category = @$values['category'];
+    public static function fromArray(array $values): fire\ISlotDefinition {
+        $output = new self(
+            $values['id'] ?? null,
+            $values['name'] ?? null,
+            $values['static'] ?? false
+        );
+
+        $output->_minBlocks = $values['minBlocks'] ?? 0;
+        $output->_maxBlocks = $values['maxBlocks'] ?? null;
+        $output->_category = $values['category'] ?? null;
+
+        return $output;
     }
 
     public function toArray(): array {
@@ -37,26 +42,28 @@ class Definition implements IDefinition {
             'id' => $this->_id,
             'name' => $this->_name,
             'static' => $this->_isStatic,
-            'layoutChild' => $this->_isLayoutChild,
             'minBlocks' => $this->_minBlocks,
             'maxBlocks' => $this->_maxBlocks,
             'category' => $this->_category
         ];
     }
 
-    public static function createDefault() {
+    public static function createDefault(): fire\ISlotDefinition {
         return new self('default', 'Default');
     }
 
-    public function __construct($id=null, $name=null, $isStatic=false) {
+
+
+// Construct
+    public function __construct(string $id=null, string $name=null, bool $isStatic=false) {
         $this->setId($id);
         $this->setName($name);
-        $this->_setStatic($isStatic);
+        $this->_isStatic = $isStatic;
     }
 
 
 // Id
-    public function setId($id) {
+    public function setId(?string $id) {
         if($id === null) {
             $id = 'primary';
         }
@@ -65,17 +72,17 @@ class Definition implements IDefinition {
         return $this;
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->_id;
     }
 
-    public function isPrimary() {
+    public function isPrimary(): bool {
         return $this->_id == 'primary';
     }
 
 
 // Name
-    public function setName($name) {
+    public function setName(?string $name) {
         if($name === null) {
             $name = $this->_id;
         }
@@ -84,74 +91,56 @@ class Definition implements IDefinition {
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 
 
 // Static
-    public function isStatic() {
+    public function isStatic(): bool {
+        if($this->isPrimary()) {
+            return true;
+        }
+
         return $this->_isStatic;
-    }
-
-    public function _setStatic($flag=true) {
-        $this->_isStatic = $flag;
-        return $this;
-    }
-
-
-// Layout child
-    public function isLayoutChild() {
-        return $this->_isLayoutChild;
-    }
-
-    public function _setLayoutChild($flag=true) {
-        $this->_isLayoutChild = $flag;
-        return $this;
     }
 
 
 // Blocks
-    public function setMinBlocks($minBlocks) {
-        $this->_minBlocks = (int)$minBlocks;
+    public function setMinBlocks(int $min) {
+        $this->_minBlocks = $min;
         return $this;
     }
 
-    public function getMinBlocks() {
+    public function getMinBlocks(): int {
         return $this->_minBlocks;
     }
 
-    public function setMaxBlocks($maxBlocks) {
-        $maxBlocks = (int)$maxBlocks;
-
-        if($maxBlocks <= 0) {
-            $maxBlocks = null;
+    public function setMaxBlocks(?int $max) {
+        if($max <= 0) {
+            $max = null;
         }
 
-        $this->_maxBlocks = $maxBlocks;
+        $this->_maxBlocks = $max;
         return $this;
     }
 
-    public function getMaxBlocks() {
+    public function getMaxBlocks(): ?int {
         return $this->_maxBlocks;
     }
 
-    public function hasBlockLimit() {
+    public function hasBlockLimit(): bool {
         return $this->_maxBlocks !== null;
     }
 
-    public function setCategory($category) {
-        if($category !== null) {
-            $category = fire\category\Base::factory($category);
-            $this->_category = $category->getName();
-        } else {
-            $this->_category = null;
-        }
 
+// Category
+    public function setCategory($category) {
+        $this->_category = fire\category\Base::normalizeName($category);
         return $this;
     }
 
-    public function getCategory() {
+    public function getCategory(): ?string {
         return $this->_category;
     }
 }

@@ -20,7 +20,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 interface IRoutine extends core\IContextAware {
     public function getUnit();
     public function getModel();
-    public function getName();
+    public function getName(): string;
     public function setMultiplexer(core\io\IMultiplexer $multiplexer);
     public function getMultiplexer();
     public function execute(...$args);

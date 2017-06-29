@@ -14,13 +14,12 @@ use df\aura;
 
 class LibraryImage extends Base {
 
-    const OUTPUT_TYPES = ['Html'];
     const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_imageId;
     protected $_link;
 
-    public function getFormat() {
+    public function getFormat(): string {
         return 'image';
     }
 
@@ -47,7 +46,7 @@ class LibraryImage extends Base {
 
 
 // IO
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return empty($this->_imageId);
     }
 

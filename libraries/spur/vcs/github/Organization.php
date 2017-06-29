@@ -10,9 +10,9 @@ use df\core;
 use df\spur;
 
 class Organization implements IOrganization {
-    
+
     use TApiObject;
-    
+
     protected $_name;
     protected $_description;
 
@@ -21,7 +21,7 @@ class Organization implements IOrganization {
         $this->_description = $data['description'];
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

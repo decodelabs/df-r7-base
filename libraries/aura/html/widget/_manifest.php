@@ -96,8 +96,8 @@ interface IFieldDataProvider extends core\constraint\IRequirable, core\constrain
 interface IFormOrientedWidget extends IWidget {}
 
 interface IFormDataWidget extends IFormOrientedWidget {
-    public function setName($name);
-    public function getName();
+    public function setName(?string $name);
+    public function getName(): ?string;
 
     public function setValue($value);
     public function getValue();
@@ -225,8 +225,8 @@ interface IFormWidget extends IFormOrientedWidget {
     public function setEncoding($encoding);
     public function getEncoding();
 
-    public function setName($name);
-    public function getName();
+    public function setName(?string $name);
+    public function getName(): ?string;
 
     public function setTarget($target);
     public function getTarget();
@@ -243,8 +243,8 @@ interface IFieldSetWidget extends IFormOrientedWidget {
     public function setLegendBody(aura\html\IElementContent $body);
     public function getLegendBody();
 
-    public function setName($name);
-    public function getName();
+    public function setName(?string $name);
+    public function getName(): ?string;
 
     public function setTargetFormId($id);
     public function getTargetFormId();

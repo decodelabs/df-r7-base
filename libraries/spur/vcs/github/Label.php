@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 
 class Label implements ILabel {
-    
+
     use TApiObject;
 
     protected $_color;
@@ -20,7 +20,7 @@ class Label implements ILabel {
         $this->_color = $data['color'];
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_id;
     }
 

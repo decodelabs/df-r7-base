@@ -152,7 +152,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
         return $this;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return !empty($this->_parts);
     }
 

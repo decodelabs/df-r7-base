@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\iris\map\aspect;
 use df;
 use df\core;
 use df\iris;
-    
+
 class TypeReference extends iris\map\Node implements iris\map\IAspect, core\IDumpable {
 
     protected $_name;
@@ -37,7 +37,7 @@ class TypeReference extends iris\map\Node implements iris\map\IAspect, core\IDum
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

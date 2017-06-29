@@ -98,7 +98,7 @@ abstract class Base implements arch\IComponent {
         }
     }
 
-    public function getName() {
+    public function getName(): string {
         $path = str_replace('\\', '/', get_class($this));
         $parts = explode('_components/', $path, 2);
         return array_pop($parts);

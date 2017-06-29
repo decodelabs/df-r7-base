@@ -40,7 +40,7 @@ class ContentSlot extends Base {
 
 
     public function deflateValue($value) {
-        if($value instanceof fire\slot\IContent) {
+        if($value instanceof fire\ISlotContent) {
             return $value->toXmlString(true);
         }
 
@@ -84,13 +84,13 @@ class ContentSlot extends Base {
             );
         }
 
-        if(!$value instanceof fire\slot\IContent) {
+        if(!$value instanceof fire\ISlotContent) {
             try {
                 $value = fire\slot\Content::fromXml($value);
             } catch(\Throwable $e) {}
         }
 
-        if($value instanceof fire\slot\IContent) {
+        if($value instanceof fire\ISlotContent) {
             // check slot validity
         }
 
@@ -110,8 +110,8 @@ class ContentSlot extends Base {
             return false;
         }
 
-        if(!$value1 instanceof fire\slot\IContent
-        || !$value2 instanceof fire\slot\IContent) {
+        if(!$value1 instanceof fire\ISlotContent
+        || !$value2 instanceof fire\ISlotContent) {
             return false;
         }
 

@@ -13,7 +13,7 @@ interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator 
     public function getId();
     public function setSubId($id);
     public function getSubId();
-    public function getDisplayName();
+    public function getDisplayName(): string;
     public function getSource();
     public function getSourceId();
 
@@ -32,8 +32,8 @@ interface IConfig extends core\IConfig {
 
 
 interface ISource {
-    public function getName();
-    public function getDisplayName();
+    public function getName(): string;
+    public function getDisplayName(): string;
     public function loadMenu(core\uri\Url $id);
 }
 

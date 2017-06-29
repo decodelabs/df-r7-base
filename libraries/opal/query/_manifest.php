@@ -738,7 +738,7 @@ interface ISource extends IAdapterAware {
     public function getId();
     public function getUniqueId();
     public function getHash();
-    public function getDisplayName();
+    public function getDisplayName(): string;
     public function isDerived();
     public function isPrimary(bool $flag=null);
 
@@ -811,7 +811,7 @@ interface IField extends core\IStringProvider {
     public function getSource();
     public function getSourceAlias();
 
-    public function getName();
+    public function getName(): string;
     public function getAlias();
     public function setAlias($alias);
     public function hasDiscreetAlias();

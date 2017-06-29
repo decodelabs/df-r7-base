@@ -258,7 +258,7 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         foreach($this->_values as $value) {
             if($value !== null) {
                 return false;

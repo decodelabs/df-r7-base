@@ -66,7 +66,7 @@ class ContentSlot extends arch\node\form\Delegate implements
             try {
                 $this->_blocks[$delegateId] = fire\block\Base::factory($type)
                     ->isNested($this->_isNested);
-            } catch(fire\block\RuntimeException $e) {}
+            } catch(fire\block\ENotFound $e) {}
         }
     }
 
@@ -95,7 +95,7 @@ class ContentSlot extends arch\node\form\Delegate implements
         return $this;
     }
 
-    public function setSlotDefinition(fire\slot\IDefinition $slotDefinition) {
+    public function setSlotDefinition(fire\ISlotDefinition $slotDefinition) {
         $this->_slotDefinition = $slotDefinition;
         return $this;
     }
@@ -110,7 +110,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
 
 // Slot content
-    public function setSlotContent(fire\slot\IContent $slotContent=null) {
+    public function setSlotContent(fire\ISlotContent $slotContent=null) {
         if($slotContent !== null) {
             $slotContent = clone $slotContent;
             $types = [];
@@ -146,7 +146,9 @@ class ContentSlot extends arch\node\form\Delegate implements
     protected function _getAvailableBlockTypes() {
         if(!$this->_state->hasStore('availableBlockTypes')) {
             if($category = $this->_slotDefinition->getCategory()) {
-                $types = $this->_manager->getCategoryBlockNamesByFormat($this->_slotDefinition->getCategory());
+                $types = $this->_manager->getCategoryBlockNamesByFormat(
+                    $this->_slotDefinition->getCategory()
+                );
             } else {
                 $types = $this->_manager->getAllBlockNamesByFormat();
             }

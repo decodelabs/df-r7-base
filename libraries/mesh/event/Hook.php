@@ -174,7 +174,7 @@ abstract class Hook implements IHook {
         $this->context = $context;
     }
 
-    public function getName() {
+    public function getName(): string {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }

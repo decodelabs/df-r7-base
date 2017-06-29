@@ -279,7 +279,7 @@ class SearchController implements ISearchController, core\IDumpable {
         return $this->_query->getSourceAlias();
     }
 
-    public function getName() {
+    public function getName(): string {
         return 'relevance';
     }
 

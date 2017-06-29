@@ -17,13 +17,13 @@ class Tag implements ITag, core\IDumpable {
     protected $_commitId;
     protected $_repository;
 
-    public function __construct(IRepository $repository, $name, $commit) {
+    public function __construct(IRepository $repository, string $name, $commit) {
         $this->_name = $name;
         $this->_commitId = $commit;
         $this->_repository = $repository;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

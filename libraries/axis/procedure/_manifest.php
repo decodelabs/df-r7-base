@@ -20,7 +20,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 interface IProcedure extends core\IContextAware {
     public function getUnit();
     public function getModel();
-    public function getName();
+    public function getName(): string;
     public function setValues($values);
     public function getValues();
     public function setDataMap(array $map);

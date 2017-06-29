@@ -266,7 +266,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         throw new core\collection\RuntimeException('This collection is read only');
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return $this->_isEmpty;
     }
 

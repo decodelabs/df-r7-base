@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\neon\bucket;
 use df;
 use df\core;
 use df\neon;
-    
+
 class Avatar extends Base {
 
     const USER_SPECIFIC = true;
@@ -18,7 +18,7 @@ class Avatar extends Base {
         'image/*'
     ];
 
-    public function getDisplayName() {
+    public function getDisplayName(): string {
         return 'User avatar';
     }
 }

@@ -48,7 +48,7 @@ abstract class Base implements core\validate\IField {
         $this->_name = $name;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

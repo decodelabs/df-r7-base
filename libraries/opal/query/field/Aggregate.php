@@ -121,7 +121,7 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
         return self::typeIdToName($this->_type);
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->getTypeName().'('.($this->_isDistinct ? 'distinct ' : '').$this->_targetField->getName().')';
     }
 

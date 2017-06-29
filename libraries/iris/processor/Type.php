@@ -22,7 +22,7 @@ class Type extends Base {
     protected $_allowContext = false;
     protected $_contextSeparator = '/';
 
-    public function getName() {
+    public function getName(): string {
         return 'Type';
     }
 

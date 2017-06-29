@@ -44,7 +44,7 @@ class Correlation implements opal\query\ICorrelationField, core\IDumpable {
         }
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->getAlias();
     }
 

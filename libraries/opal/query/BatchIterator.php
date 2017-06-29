@@ -164,7 +164,7 @@ class BatchIterator implements IBatchIterator {
         throw new RuntimeException('This collection is read only');
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return empty($this->_batchData) && $this->_isResultEmpty();
     }
 

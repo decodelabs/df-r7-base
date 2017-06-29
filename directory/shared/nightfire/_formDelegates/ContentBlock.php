@@ -74,7 +74,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this->_isNested;
     }
 
-    public function setBlock(fire\block\IBlock $block=null) {
+    public function setBlock(fire\IBlock $block=null) {
         if($block !== null) {
             $this->setBlockType($block);
         } else {

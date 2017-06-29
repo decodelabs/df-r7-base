@@ -49,7 +49,7 @@ class Mode extends core\lang\Enum {
 interface INode extends core\IStringProvider {
     public function getPath();
     public function getLocationPath();
-    public function getName();
+    public function getName(): string;
     public function exists();
     public function clearStatCache();
     public function getLastModified();
@@ -69,7 +69,7 @@ trait TNode {
 
     use core\TStringProvider;
 
-    public function getName() {
+    public function getName(): string {
         return basename($this->getPath());
     }
 
@@ -195,7 +195,7 @@ interface ILockFile {
 
 interface IDirectory extends INode {
     public function ensureExists($perms=null);
-    public function isEmpty();
+    public function isEmpty(): bool;
 
     public function setPermissions($mode, $recursive=false);
     public function setOwner($owner, $recursive=false);

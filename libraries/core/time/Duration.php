@@ -229,7 +229,7 @@ class Duration implements IDuration, core\IDumpable {
 
 
 // Util
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return $this->_seconds == 0;
     }
 

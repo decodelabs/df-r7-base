@@ -40,7 +40,7 @@ abstract class Base implements neon\raster\IDriver {
         return new $class($this->_outputFormat);
     }
 
-    public function getName() {
+    public function getName(): string {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }

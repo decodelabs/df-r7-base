@@ -79,7 +79,7 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         return $this;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return empty($this->_clauses);
     }
 

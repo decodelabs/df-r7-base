@@ -38,7 +38,7 @@ class NativeResource implements IResourceNode {
         return $this->_type;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

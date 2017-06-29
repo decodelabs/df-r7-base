@@ -11,7 +11,7 @@ use df\user;
 use df\opal;
 
 class Ldap implements user\authentication\IAdapter, user\authentication\IIdentityRecallAdapter {
-    
+
     use user\authentication\TAdapter;
 
     public static function getDefaultConfigValues() {
@@ -40,7 +40,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
         ];
     }
 
-    public static function getDisplayName() {
+    public static function getDisplayName(): string {
         return 'LDAP Network Domain';
     }
 
@@ -93,7 +93,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
             case 1:
                 $chars = [0,2,0,0,0,0,0,0,0,40,0,0,0,1,130,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0];
                 $ret = 'NTLMSSP';
-                
+
                 foreach($chars as $char) {
                     $ret .= chr($char);
                 }
@@ -101,7 +101,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
                 header('HTTP/1.1 401 Unauthorized');
                 header('WWW-Authenticate: NTLM '.trim(base64_encode($ret)));
                 exit;
-                
+
             case 3:
                 $l = ord($c64{31}) * 256 + ord($c64{30});
                 $o = ord($c64{33}) * 256 + ord($c64{32});
@@ -114,21 +114,21 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
                 if(!strlen($user)) {
                     return null;
                 }
-                
+
                 $request = new user\authentication\Request('ldap');
                 $request->setIdentity($user);
                 $request->setCredential('domain', $domain);
                 $request->setAttribute('ntlm', true);
 
                 return $request;
-                
+
             default:
                 return null;
         }
 
         return null;
     }
-    
+
     public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result) {
         if($request->getAttribute('ntlm')) {
             $isNtlm = true;
@@ -146,7 +146,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
                 $request->getCredential('password')
             );
         }
-        
+
 
         $config = user\authentication\Config::getInstance();
         $options = $config->getOptionsFor('Ldap');
@@ -191,7 +191,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
                         ),
 
                         opal\ldap\Context::factory($domainOptions['baseDn'])
-                            ->setControllerDomain($domainId), 
+                            ->setControllerDomain($domainId),
 
                         $privilegedIdentity
                     );
@@ -216,11 +216,11 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
                             //$results[$domainId] = $result::ERROR;
                             //break;
                             continue 2;
-                        
+
                         case opal\ldap\IStatus::INVALID_CREDENTIALS:
                             $results[$domainId] = $result::INVALID_CREDENTIAL;
                             break;
-                            
+
                         default:
                             $results[$domainId] = $result::FAILURE;
                             break;

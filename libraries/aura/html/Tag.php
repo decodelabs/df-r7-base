@@ -102,7 +102,7 @@ class Tag implements ITag, core\IDumpable {
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 
@@ -337,7 +337,7 @@ class Tag implements ITag, core\IDumpable {
             if(empty($class)) {
                 continue;
             }
-            
+
             $class = $this->esc($class);
 
             if(false !== strpos($class, ' ')) {

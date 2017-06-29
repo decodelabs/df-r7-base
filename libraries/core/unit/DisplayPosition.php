@@ -31,7 +31,7 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
         $this->parse($position, $position2);
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return false;
     }
 

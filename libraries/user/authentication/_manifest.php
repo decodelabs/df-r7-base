@@ -15,8 +15,8 @@ use df\user;
 // Interfaces
 interface IAdapter {
     public static function getDefaultConfigValues();
-    public static function getDisplayName();
-    public function getName();
+    public static function getDisplayName(): string;
+    public function getName(): string;
     public function authenticate(IRequest $request, IResult $result);
 }
 
@@ -28,7 +28,7 @@ trait TAdapter {
         $this->_manager = $manager;
     }
 
-    public function getName() {
+    public function getName(): string {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }

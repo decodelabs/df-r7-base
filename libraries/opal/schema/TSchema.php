@@ -37,7 +37,7 @@ trait TSchema {
         return $this->setOption('name', $name);
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->getOption('name');
     }
 

@@ -28,7 +28,7 @@ class StorageDescriber implements IStorageDescriber {
         $this->creationDate = core\time\Date::normalize($creationDate);
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->name;
     }
 

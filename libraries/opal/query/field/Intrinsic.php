@@ -17,7 +17,7 @@ class Intrinsic implements opal\query\IIntrinsicField, core\IDumpable {
     protected $_alias;
     protected $_source;
 
-    public function __construct(opal\query\ISource $source, $name, $alias=null) {
+    public function __construct(opal\query\ISource $source, string $name, $alias=null) {
         $this->_source = $source;
         $this->_name = $name;
 
@@ -40,7 +40,7 @@ class Intrinsic implements opal\query\IIntrinsicField, core\IDumpable {
         return $this->getSourceAlias().'.'.$this->_name;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

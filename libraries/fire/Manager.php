@@ -18,29 +18,26 @@ class Manager implements IManager {
     protected $_categories = null;
     protected $_blocks = null;
 
-    public function getConfig() {
+    public function getConfig(): Config {
         return Config::getInstance();
     }
 
-    public function getCategories() {
+    public function getCategories(): array {
         $this->_loadCategories();
-
         return $this->_categories;
     }
 
-    public function getCategory($name) {
+    public function getCategory(string $name): ?ICategory {
         $this->_loadCategories();
 
-        if($name instanceof ICategory) {
-            $name = $name->getName();
+        if(!isset($this->_categories[$name])) {
+            return null;
         }
 
-        if(isset($this->_categories[$name])) {
-            return $this->_categories[$name];
-        }
+        return $this->_categories[$name];
     }
 
-    protected function _loadCategories() {
+    protected function _loadCategories(): void {
         if($this->_categories !== null) {
             return;
         }
@@ -48,7 +45,6 @@ class Manager implements IManager {
         $this->_loadBlocks();
 
         // TODO: cache result
-
 
 
         // Load the category list
@@ -65,7 +61,7 @@ class Manager implements IManager {
             $this->_categories[$name] = $category;
             $blockIndex[$category->getName()] = [];
 
-            foreach($category->getDefaultBlocks() as $blockName) {
+            foreach($category->getDefaultBlockTypes() as $blockName) {
                 if(!isset($this->_blocks[$blockName])) {
                     continue;
                 }
@@ -112,25 +108,8 @@ class Manager implements IManager {
         // Add the block index to the categories
         foreach($blockIndex as $catName => $blockSet) {
             $category = $this->_categories[$catName];
-            $outputTypes = $category->getRequiredOutputTypes();
 
             foreach($blockSet as $blockName => $block) {
-                // Check block is compatible
-                if(!empty($outputTypes)) {
-                    $canOutput = false;
-
-                    foreach($outputTypes as $type) {
-                        if($block->canOutput($type)) {
-                            $canOutput = true;
-                            break;
-                        }
-                    }
-
-                    if(!$canOutput) {
-                        continue;
-                    }
-                }
-
                 $category->addBlock($block);
             }
         }
@@ -139,17 +118,17 @@ class Manager implements IManager {
 
 
 // Blocks
-    public function isBlockAvailable($name) {
+    public function isBlockAvailable(string $name): bool {
         $this->_loadBlocks();
         return isset($this->_blocks[ucfirst($name)]);
     }
 
-    public function getAllBlocks() {
+    public function getAllBlocks(): array {
         $this->_loadBlocks();
         return $this->_blocks;
     }
 
-    public function getAllBlockNames() {
+    public function getAllBlockNames(): array {
         $output = [];
 
         foreach($this->getAllBlocks() as $block) {
@@ -163,7 +142,7 @@ class Manager implements IManager {
         return $output;
     }
 
-    public function getAllBlockNamesByFormat() {
+    public function getAllBlockNamesByFormat(): array {
         $output = [];
 
         foreach($this->getAllBlocks() as $block) {
@@ -177,41 +156,14 @@ class Manager implements IManager {
         $formatWeights = fire\category\Base::getFormatWeights();
 
         uksort($output, function($a, $b) use($formatWeights) {
-            return @$formatWeights[$a] < @$formatWeights[$b];
+            return ($formatWeights[$a] ?? 0) < ($formatWeights[$b] ?? 0);
         });
 
-        /*
-        foreach(array_keys($output) as $key) {
-            asort($output[$key]);
-        }
-        */
-
         return $output;
     }
 
-    public function getBlocksFor($outputType) {
-        $this->_loadBlocks();
-        $output = [];
-
-        foreach($this->_blocks as $name => $block) {
-            if($block->isHidden()) {
-                continue;
-            }
-
-            if($block->canOutput($outputType)) {
-                $output[$name] = $block;
-            }
-        }
-
-        return $output;
-    }
-
-    public function getCategoryBlocks($category, $outputType=null) {
+    public function getCategoryBlocks(string $category): array {
         $this->_loadCategories();
-
-        if($category instanceof ICategory) {
-            $category = $category->getName();
-        }
 
         if(!isset($this->_categories[$category])) {
             return [];
@@ -227,21 +179,16 @@ class Manager implements IManager {
             }
 
             $block = $this->_blocks[$blockName];
-
-            if($outputType !== null && !$block->canOutput($outputType)) {
-                continue;
-            }
-
             $output[$block->getName()] = $block;
         }
 
         return $output;
     }
 
-    public function getCategoryBlockNames($category, $outputType=null) {
+    public function getCategoryBlockNames(string $category): array {
         $output = [];
 
-        foreach($this->getCategoryBlocks($category, $outputType) as $block) {
+        foreach($this->getCategoryBlocks($category) as $block) {
             if($block->isHidden()) {
                 continue;
             }
@@ -249,15 +196,13 @@ class Manager implements IManager {
             $output[$block->getName()] = $block->getDisplayName();
         }
 
-        //asort($output);
-
         return $output;
     }
 
-    public function getCategoryBlockNamesByFormat($category, $outputType=null) {
+    public function getCategoryBlockNamesByFormat(string $category): array {
         $output = [];
 
-        foreach($this->getCategoryBlocks($category, $outputType) as $block) {
+        foreach($this->getCategoryBlocks($category) as $block) {
             if($block->isHidden()) {
                 continue;
             }
@@ -272,14 +217,8 @@ class Manager implements IManager {
         }
 
         uksort($output, function($a, $b) use($formatWeights) {
-            return @$formatWeights[$a] < @$formatWeights[$b];
+            return ($formatWeights[$a] ?? 0) < ($formatWeights[$b] ?? 0);
         });
-
-        /*
-        foreach(array_keys($output) as $key) {
-            asort($output[$key]);
-        }
-        */
 
         return $output;
     }

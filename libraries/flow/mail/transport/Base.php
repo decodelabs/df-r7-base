@@ -64,7 +64,7 @@ abstract class Base implements flow\mail\ITransport {
 
     public function __construct(core\collection\ITree $settings=null) {}
 
-    public static function getName() {
+    public static function getName(): string {
         $parts = explode('\\', get_called_class());
         return array_pop($parts);
     }

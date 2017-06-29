@@ -295,7 +295,7 @@ interface IPlan {
     public function setAmount(ICurrency $amount);
     public function getAmount(): ICurrency;
     public function setName(string $name);
-    public function getName();
+    public function getName(): string;
     public function setInterval(string $interval, int $count=null);
     public function getInterval();
     public function setIntervalCount(int $count);

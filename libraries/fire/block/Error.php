@@ -14,18 +14,17 @@ use df\aura;
 
 class Error extends Base {
 
-    const OUTPUT_TYPES = [];
     const DEFAULT_CATEGORIES = [];
 
     protected $_error;
     protected $_type;
     protected $_data;
 
-    public function getFormat() {
+    public function getFormat(): string {
         return 'structure';
     }
 
-    public function isHidden() {
+    public function isHidden(): bool {
         return true;
     }
 
@@ -60,7 +59,7 @@ class Error extends Base {
         return $this->_data;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return false;
     }
 
@@ -71,7 +70,7 @@ class Error extends Base {
     }
 
     public function writeXml(flex\xml\IWritable $writer) {
-        throw new RuntimeException(
+        throw core\Error::ERuntime(
             'Error block type cannot be saved to xml'
         );
     }

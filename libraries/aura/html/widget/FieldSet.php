@@ -98,12 +98,12 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
 
 
 // Name
-    public function setName($name) {
+    public function setName(?string $name) {
         $this->_name = $name;
         return $this;
     }
 
-    public function getName() {
+    public function getName(): ?string {
         return $this->_name;
     }
 

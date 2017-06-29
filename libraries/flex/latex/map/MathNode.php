@@ -55,7 +55,7 @@ class MathNode extends iris\map\Node implements flex\latex\IMathNode, core\IDump
         return $this->symbols;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return !strlen($this->symbols);
     }
 

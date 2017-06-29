@@ -99,7 +99,7 @@ interface IDriver {
     public static function canWrite($format);
 
     public function spawnInstance();
-    public function getName();
+    public function getName(): string;
 
     public function loadFile($file);
     public function loadString($string);

@@ -41,7 +41,7 @@ interface ISchema extends opal\schema\ISchema, opal\schema\IFieldProvider, opal\
     public function getUnitType();
     public function getUnitId();
     public function iterateVersion();
-    public function getVersion();
+    public function getVersion(): int;
     public function requiresTransactions(bool $flag=null);
 
     public function sanitize(axis\ISchemaBasedStorageUnit $unit);

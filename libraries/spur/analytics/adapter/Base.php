@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\spur\analytics\adapter;
 use df;
 use df\core;
 use df\spur;
-    
+
 abstract class Base implements spur\analytics\IAdapter {
 
     protected $_options = [];
@@ -87,7 +87,7 @@ abstract class Base implements spur\analytics\IAdapter {
         $this->setDefaultUserAttributes($defaultUserAttributes);
     }
 
-    public function getName() {
+    public function getName(): string {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }

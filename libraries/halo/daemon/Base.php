@@ -81,7 +81,7 @@ abstract class Base implements IDaemon {
 
     protected function __construct() {}
 
-    public function getName() {
+    public function getName(): string {
         $parts = array_slice(explode('\\', get_class($this)), 3);
         return implode('/', $parts);
     }

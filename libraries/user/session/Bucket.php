@@ -18,7 +18,7 @@ class Bucket implements user\session\IBucket, core\IDumpable {
     protected $_controller;
     protected $_lifeTime = null;
 
-    public function __construct(user\session\IController $controller, $name) {
+    public function __construct(user\session\IController $controller, string $name) {
         $this->_controller = $controller;
         $this->_name = $name;
 
@@ -29,7 +29,7 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         }
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

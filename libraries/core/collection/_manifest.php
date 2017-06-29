@@ -18,7 +18,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 // Interfaces
 interface ICollection extends \Countable, core\IArrayProvider {
     public function import(...$input);
-    public function isEmpty();
+    public function isEmpty(): bool;
     public function clear();
     public function extract();
     public function extractList(int $count): array;

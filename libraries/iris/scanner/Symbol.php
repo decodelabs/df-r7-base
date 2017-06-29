@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\iris\scanner;
 use df;
 use df\core;
 use df\iris;
-    
+
 class Symbol implements iris\IScanner, core\IDumpable {
 
     protected $_symbols = [];
@@ -17,7 +17,7 @@ class Symbol implements iris\IScanner, core\IDumpable {
         $this->setSymbols($symbols);
     }
 
-    public function getName() {
+    public function getName(): string {
         return 'Symbol';
     }
 
@@ -87,7 +87,7 @@ class Symbol implements iris\IScanner, core\IDumpable {
             return mb_strlen($a) < mb_strlen($b);
         });
     }
-    
+
 
     public function check(iris\ILexer $lexer) {
         return true;

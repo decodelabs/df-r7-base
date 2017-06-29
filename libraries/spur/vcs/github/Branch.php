@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 
 class Branch implements IBranch, core\IDumpable {
-    
+
     use TApiObject;
 
     protected $_commit;
@@ -27,7 +27,7 @@ class Branch implements IBranch, core\IDumpable {
         }
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_id;
     }
 

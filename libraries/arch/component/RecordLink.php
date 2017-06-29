@@ -182,7 +182,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

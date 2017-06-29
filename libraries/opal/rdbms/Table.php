@@ -20,7 +20,7 @@ class Table implements ITable, core\IDumpable {
     protected $_name;
     protected $_querySourceId;
 
-    public function __construct(opal\rdbms\IAdapter $adapter, $name) {
+    public function __construct(opal\rdbms\IAdapter $adapter, string $name) {
         $this->_adapter = $adapter;
         $this->_setName($name);
     }
@@ -34,7 +34,7 @@ class Table implements ITable, core\IDumpable {
         $this->_querySourceId = 'opal://rdbms/'.$this->_adapter->getServerType().':"'.addslashes($this->_adapter->getDsn()->getConnectionString()).'"/Table:'.$this->_name;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

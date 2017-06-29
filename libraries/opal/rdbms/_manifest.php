@@ -218,7 +218,7 @@ interface IServer {
 }
 
 interface IDatabase {
-    public function getName();
+    public function getName(): string;
     public function getAdapter();
 
     public function getTable($name);
@@ -235,7 +235,7 @@ interface IDatabase {
 }
 
 interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IEntryPoint, \Countable, opal\schema\ISchemaContext {
-    public function getName();
+    public function getName(): string;
     public function getAdapter();
     public function getSchema();
     public function getStats();

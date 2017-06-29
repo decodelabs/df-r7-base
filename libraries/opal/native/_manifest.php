@@ -21,7 +21,7 @@ interface IArrayManipulator {
     public function setRows(array $rows, $isNormalized=true);
     public function getRows();
     public function getOutputManifest();
-    public function isEmpty();
+    public function isEmpty(): bool;
 
     public function applyReadQuery(opal\query\IQuery $query, $keyField=null, $valField=null);
     public function applyRemoteJoinQuery(opal\query\IQuery $query, array $localJoins, array $remoteJoins);

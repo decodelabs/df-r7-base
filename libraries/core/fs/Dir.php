@@ -204,7 +204,7 @@ class Dir implements IDirectory, core\IDumpable {
         return $this;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         if(!$this->exists()) {
             return true;
         }

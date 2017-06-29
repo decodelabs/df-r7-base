@@ -14,12 +14,11 @@ use df\aura;
 
 class Element extends Base {
 
-    const OUTPUT_TYPES = ['Html'];
     const DEFAULT_CATEGORIES = [];
 
     protected $_slug;
 
-    public function getFormat() {
+    public function getFormat(): string {
         return 'structure';
     }
 
@@ -33,7 +32,7 @@ class Element extends Base {
     }
 
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return !strlen($this->_slug);
     }
 

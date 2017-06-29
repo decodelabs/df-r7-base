@@ -41,7 +41,7 @@ class Profile extends User implements IProfile {
         $this->_updateDate = core\time\Date::factory($data['updated_at'] ?? $this->_creationDate);
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

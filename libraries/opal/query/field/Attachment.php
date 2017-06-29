@@ -16,7 +16,7 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
     protected $_name;
     protected $_attachment;
 
-    public function __construct($name, opal\query\IAttachQuery $attachment) {
+    public function __construct(string $name, opal\query\IAttachQuery $attachment) {
         $this->_name = $name;
         $this->_attachment = $attachment;
     }
@@ -29,7 +29,7 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
         return $this->_attachment->getSourceAlias();
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

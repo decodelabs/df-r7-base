@@ -26,13 +26,13 @@ interface IHandler {
 interface IAdapter {
     public static function fromConfig();
     public static function isAvailable();
-    public function getName();
+    public function getName(): string;
     public function lookup(link\IIp $ip, IResult $result);
 }
 
 trait TAdapter {
 
-    public function getName() {
+    public function getName(): string {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }

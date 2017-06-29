@@ -48,7 +48,7 @@ class Source implements ISource, core\IDumpable {
         return $this->_adapter->getQuerySourceAdapterHash();
     }
 
-    public function getDisplayName() {
+    public function getDisplayName(): string {
         return $this->_adapter->getQuerySourceDisplayName();
     }
 

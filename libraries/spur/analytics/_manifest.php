@@ -62,7 +62,7 @@ interface IEvent extends core\collection\IAttributeContainer {
     public function setCategory($category);
     public function getCategory();
     public function setName($name);
-    public function getName();
+    public function getName(): string;
     public function setLabel($label);
     public function getLabel();
 }
@@ -81,7 +81,7 @@ interface IECommerceTransaction extends core\collection\IAttributeContainer {
 }
 
 interface IAdapter {
-    public function getName();
+    public function getName(): string;
     public function apply(IHandler $handler, aura\view\IHtmlView $view);
 
     public function setOptions(array $options);

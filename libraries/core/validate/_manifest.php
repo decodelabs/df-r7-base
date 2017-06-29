@@ -37,7 +37,7 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function getValues();
     public function getValue($name);
     public function setValue($name, $value);
-    public function isEmpty();
+    public function isEmpty(): bool;
     public function shouldSanitizeAll(bool $flag=null);
     public function setRequireGroupFulfilled($name);
     public function setRequireGroupUnfulfilled($name, $field);
@@ -54,7 +54,7 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
 
 
 interface IField extends core\constraint\IRequirable, core\constraint\IOptional {
-    public function getName();
+    public function getName(): string;
     public function setRecordName($name);
     public function getRecordName();
 

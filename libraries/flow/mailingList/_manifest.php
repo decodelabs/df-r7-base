@@ -41,7 +41,7 @@ interface ISource {
 
 interface IAdapter {
     public static function getSettingsFields();
-    public function getName();
+    public function getName(): string;
     public function getId();
     public function canConnect(): bool;
     public function fetchManifest(): array;

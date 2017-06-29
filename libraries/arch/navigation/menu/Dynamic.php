@@ -51,7 +51,7 @@ class Dynamic extends Base {
         return $this;
     }
 
-    public function getDisplayName() {
+    public function getDisplayName(): string {
         if($this->_displayName !== null) {
             return $this->_displayName;
         } else {

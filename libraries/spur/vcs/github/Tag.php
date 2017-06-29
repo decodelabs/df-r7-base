@@ -25,7 +25,7 @@ class Tag implements ITag, core\IDumpable {
         $this->_commit = new CommitReference($this->_mediator, $data->commit);
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

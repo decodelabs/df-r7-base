@@ -68,7 +68,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         return $this->_children->toArray();
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return $this->_children->isEmpty();
     }
 

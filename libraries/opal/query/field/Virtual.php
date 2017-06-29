@@ -19,7 +19,7 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
     protected $_source;
     protected $_targetSourceAlias;
 
-    public function __construct(opal\query\ISource $source, $name, $alias=null, array $targetFields=[]) {
+    public function __construct(opal\query\ISource $source, string $name, $alias=null, array $targetFields=[]) {
         $this->_source = $source;
         $this->_name = $name;
 
@@ -44,7 +44,7 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
         return $this->getSourceAlias().'.'.$this->getName();
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

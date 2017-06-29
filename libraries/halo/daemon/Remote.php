@@ -30,7 +30,7 @@ class Remote implements IRemote {
         $this->_daemon = $daemon;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_daemon->getName();
     }
 

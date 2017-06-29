@@ -24,7 +24,7 @@ class Comment implements iris\IScanner {
         }
     }
 
-    public function getName() {
+    public function getName(): string {
         return 'Comment';
     }
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,8 +10,8 @@ use df\core;
 use df\fire;
 use df\arch;
 use df\aura;
-    
-class Map implements fire\layout\IMap {
+
+class Map implements fire\ILayoutMap {
 
     protected $_theme;
     protected $_entries = [];
@@ -21,20 +21,16 @@ class Map implements fire\layout\IMap {
         $this->_theme = $theme;
     }
 
-    public function getTheme() {
+    public function getTheme(): aura\theme\ITheme {
         return $this->_theme;
     }
 
-    public function setGenerator($generator=null) {
-        if($generator !== null) {
-            $generator = core\lang\Callback::factory($generator);
-        }
-
+    public function setGenerator(callable $generator=null) {
         $this->_generator = $generator;
         return $this;
     }
 
-    public function getGenerator() {
+    public function getGenerator(): ?callable {
         return $this->_generator;
     }
 
@@ -45,8 +41,8 @@ class Map implements fire\layout\IMap {
 
     public function addEntries(array $entries) {
         foreach($entries as $entry) {
-            if(!$entry instanceof fire\layout\IMapEntry) {
-                throw new fire\layout\InvalidArgumentException(
+            if(!$entry instanceof fire\ILayoutMapEntry) {
+                throw core\Error::EArgument(
                     'Invalid map entry detected'
                 );
             }
@@ -57,7 +53,7 @@ class Map implements fire\layout\IMap {
         return $this;
     }
 
-    public function addEntry(fire\layout\IMapEntry $entry) {
+    public function addEntry(fire\ILayoutMapEntry $entry) {
         $this->_entries[$entry->getId()] = $entry;
         return $this;
     }
@@ -66,11 +62,7 @@ class Map implements fire\layout\IMap {
         return $this->_entries;
     }
 
-    public function removeEntry($id) {
-        if($id instanceof fire\layout\IMapEntry) {
-            $id = $id->getId();
-        }
-
+    public function removeEntry(string $id) {
         unset($this->_entries[$id]);
         return $this;
     }
@@ -82,7 +74,7 @@ class Map implements fire\layout\IMap {
 
     public function mapLayout(aura\view\ILayoutView $view) {
         if(empty($this->_entries) && $this->_generator) {
-            $this->_generator->invoke($this);
+            core\lang\Callback::call($this->_generator, $this);
         }
 
         $request = $view->getContext()->request;

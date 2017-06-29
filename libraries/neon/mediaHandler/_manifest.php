@@ -16,8 +16,8 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 // Interfaces
 interface IMediaHandler extends core\IManager {
-    public function getName();
-    public static function getDisplayName();
+    public function getName(): string;
+    public static function getDisplayName(): string;
 
     public function publishFile($fileId, $oldVersionId, $newVersionId, $filePath, $fileName);
     public function transferFile($fileId, $versionId, $isActive, $filePath, $fileName);

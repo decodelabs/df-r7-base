@@ -164,7 +164,7 @@ trait TLocation {
 }
 
 interface IScanner {
-    public function getName();
+    public function getName(): string;
     public function getWeight();
     public function initialize(ILexer $lexer);
     public function check(ILexer $lexer);
@@ -266,7 +266,7 @@ interface IParser {
 
 
 interface IProcessor {
-    public function getName();
+    public function getName(): string;
     public function initialize(IParser $parser);
 }
 

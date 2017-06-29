@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 class Figure extends iris\map\Node implements flex\latex\IFigure, core\IDumpable {
 
     use flex\latex\TContainerNode;
@@ -29,7 +29,7 @@ class Figure extends iris\map\Node implements flex\latex\IFigure, core\IDumpable
         return $this->number;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return false;
     }
 

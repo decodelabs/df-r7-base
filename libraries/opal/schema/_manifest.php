@@ -60,7 +60,7 @@ interface IChangeTracker {
 
 interface ISchema extends IChangeTracker {
     public function setName($name);
-    public function getName();
+    public function getName(): string;
     public function setComment($comment);
     public function getComment();
     public function isAudited(bool $flag=null);
@@ -182,7 +182,7 @@ interface ITriggerProvider extends ISchema {
 interface IField extends IChangeTracker, core\constraint\INullable {
     public function getFieldType();
     public function _setName($name);
-    public function getName();
+    public function getName(): string;
     public function setComment($comment);
     public function getComment();
     public function setDefaultValue($default);
@@ -319,7 +319,7 @@ interface IMultiFieldPrimitive extends IPrimitive {
 
 interface IIndex extends IChangeTracker {
     public function _setName($name);
-    public function getName();
+    public function getName(): string;
     public function isUnique(bool $flag=null);
     public function setComment($comment);
     public function getComment();
@@ -351,7 +351,7 @@ interface IIndexFieldReference {
 
 interface IForeignKey extends IChangeTracker {
     public function _setName($name);
-    public function getName();
+    public function getName(): string;
     public function setTargetSchema($table);
     public function getTargetSchema();
 
@@ -382,7 +382,7 @@ interface IForeignKeyFieldReference {
 
 interface ITrigger extends IChangeTracker {
     public function _setName($name);
-    public function getName();
+    public function getName(): string;
     public function setEvent($event);
     public function getEvent();
     public function getEventName();

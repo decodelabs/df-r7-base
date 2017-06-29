@@ -74,7 +74,7 @@ interface IMultiPart extends IPart, \Countable, \RecursiveIterator {
     public function getParts();
     public function getPart($index);
     public function clearParts();
-    public function isEmpty();
+    public function isEmpty(): bool;
 
     public function newContentPart($content);
     public function newMultiPart($type=IMultiPart::MIXED);

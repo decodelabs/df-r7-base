@@ -78,7 +78,7 @@ class Keyword implements iris\IScanner, core\IDumpable {
         return $this->_isCaseSensitive;
     }
 
-    public function getName() {
+    public function getName(): string {
         return 'Keyword';
     }
 

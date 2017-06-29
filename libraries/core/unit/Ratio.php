@@ -29,7 +29,7 @@ class Ratio implements IRatio, core\IDumpable {
         $this->parse($value, $denominator);
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return false;
     }
 

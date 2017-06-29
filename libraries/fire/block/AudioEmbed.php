@@ -14,12 +14,11 @@ use df\aura;
 
 class AudioEmbed extends Base {
 
-    const OUTPUT_TYPES = ['Html'];
     const DEFAULT_CATEGORIES = ['Article', 'Description'];
 
     protected $_embedCode;
 
-    public function getFormat() {
+    public function getFormat(): string {
         return 'audio';
     }
 
@@ -33,7 +32,7 @@ class AudioEmbed extends Base {
     }
 
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return !strlen(trim($this->_embedCode));
     }
 

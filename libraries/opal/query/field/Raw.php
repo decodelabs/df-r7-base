@@ -39,7 +39,7 @@ class Raw implements opal\query\IRawField, core\IDumpable {
         return $this->_expression;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_expression;
     }
 

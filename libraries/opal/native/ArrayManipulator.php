@@ -43,7 +43,7 @@ class ArrayManipulator implements IArrayManipulator {
         return $this->_outputManifest;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return empty($this->_rows);
     }
 

@@ -49,7 +49,7 @@ interface IInstaller {
 interface IPackage {
     public static function fromThemeDependency(fuse\IDependency $dependency);
     public function setName($name);
-    public function getName();
+    public function getName(): string;
     public function getKey();
     public function setVersion($version);
     public function getVersion();

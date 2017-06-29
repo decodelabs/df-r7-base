@@ -58,7 +58,7 @@ abstract class Base implements IMediaHandler {
         return $output;
     }
 
-    public function getName() {
+    public function getName(): string {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }

@@ -777,7 +777,7 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return preg_split('/(?<!^)(?!$)/u', $this->_value);
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return mb_strlen($this->_value, $this->_encoding) == 0;
     }
 

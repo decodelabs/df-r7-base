@@ -12,7 +12,8 @@ use df\aura;
 
 abstract class Base implements fire\ICategory {
 
-    const REQUIRED_OUTPUT_TYPES = ['html'];
+    use core\TStringProvider;
+
     const DEFAULT_BLOCKS = ['RawHtml'];
     const DEFAULT_EDITOR_BLOCK = null;
 
@@ -27,16 +28,12 @@ abstract class Base implements fire\ICategory {
 
     protected $_blocks = [];
 
-    public static function factory($name) {
-        if($name instanceof fire\ICategory) {
-            return $name;
-        }
-
+    public static function factory(string $name): fire\ICategory {
         $name = ucfirst($name);
         $class = 'df\\fire\\category\\'.$name;
 
         if(!class_exists($class)) {
-            throw new fire\RuntimeException(
+            throw core\Error::ENotFound(
                 'Content category '.$name.' could not be found'
             );
         }
@@ -44,26 +41,42 @@ abstract class Base implements fire\ICategory {
         return new $class();
     }
 
+    public static function normalize($category): ?fire\ICategory {
+        if($category instanceof fire\ICategory || $category === null) {
+            return $category;
+        }
 
-    public function getName() {
+        return self::factory($category);
+    }
+
+    public static function normalizeName($category): ?string {
+        if($category = self::normalize($category)) {
+            return $category->getName();
+        } else {
+            return null;
+        }
+    }
+
+
+    public function getName(): string {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public static function getRequiredOutputTypes() {
-        return (array)static::REQUIRED_OUTPUT_TYPES;
+    public function toString(): string {
+        return $this->getName();
     }
 
-    public static function getDefaultBlocks() {
+    public static function getDefaultBlockTypes(): array {
         return (array)static::DEFAULT_BLOCKS;
     }
 
-    public function getDefaultEditorBlockType() {
+    public function getDefaultEditorBlockType(): ?string {
         if(!empty(static::DEFAULT_EDITOR_BLOCK)) {
             return static::DEFAULT_EDITOR_BLOCK;
         }
 
-        $types = $this->getDefaultBlocks();
+        $types = $this->getDefaultBlockTypes();
         $output = array_shift($types);
 
         if(!empty($output)) {
@@ -87,29 +100,27 @@ abstract class Base implements fire\ICategory {
     }
 
     public function addBlock($block) {
-        $block = fire\block\Base::factory($block);
-        $this->_blocks[$block->getName()] = true;
+        if($block = fire\block\Base::normalize($block)) {
+            $this->_blocks[$block->getName()] = true;
+        }
 
         return $this;
     }
 
-    public function hasBlock($block) {
-        $block = fire\block\Base::factory($block);
-        return isset($this->_blocks[$block->getName()]);
+    public function hasBlock(string $block): bool {
+        return isset($this->_blocks[ucfirst($block)]);
     }
 
-    public function getBlocks() {
+    public function getBlocks(): array {
         return array_keys($this->_blocks);
     }
 
-    public function removeBlock($block) {
-        $block = fire\block\Base::factory($block);
-        unset($this->_blocks[$block->getName()]);
-
+    public function removeBlock(string $block) {
+        unset($this->_blocks[ucfirst($block)]);
         return $this;
     }
 
-    public static function getFormatWeights() {
-        return static::FORMAT_WEIGHTS;
+    public static function getFormatWeights(): array {
+        return (array)static::FORMAT_WEIGHTS;
     }
 }

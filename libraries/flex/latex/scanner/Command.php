@@ -16,7 +16,7 @@ class Command implements iris\IScanner {
         '\\', '`', '\'', '^', '"', '~', '=', '.'
     ];
 
-    public function getName() {
+    public function getName(): string {
         return 'Command';
     }
 

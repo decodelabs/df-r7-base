@@ -386,7 +386,7 @@ interface IContext extends IUnit, core\IContext {}
 
 
 interface IAdapter {
-    public function getDisplayName();
+    public function getDisplayName(): string;
     public function getUnit();
 }
 

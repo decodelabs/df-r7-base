@@ -21,7 +21,7 @@ class Number implements iris\IScanner, core\IDumpable {
 
     }
 
-    public function getName() {
+    public function getName(): string {
         return 'Number';
     }
 

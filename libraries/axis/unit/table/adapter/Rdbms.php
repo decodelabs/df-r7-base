@@ -28,7 +28,7 @@ class Rdbms implements
         $this->_unit = $unit;
     }
 
-    public function getDisplayName() {
+    public function getDisplayName(): string {
         return 'Rdbms';
     }
 

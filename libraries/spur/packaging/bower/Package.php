@@ -31,7 +31,7 @@ class Package implements IPackage {
         return $output;
     }
 
-    public function __construct($name, $source) {
+    public function __construct(string $name, $source) {
         $installName = $name;
 
         if(false !== strpos($source, '#')) {
@@ -49,7 +49,7 @@ class Package implements IPackage {
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->name;
     }
 

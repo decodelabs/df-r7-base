@@ -184,7 +184,7 @@ trait TRepository {
 }
 
 interface IBranch {
-    public function getName();
+    public function getName(): string;
     public function exists();
     public function isActive();
     public function delete();
@@ -217,7 +217,7 @@ interface ICommit {
 interface IFile {
     public function getId();
     public function _setName($name);
-    public function getName();
+    public function getName(): string;
     public function _setMode($mode);
     public function getMode();
     public function getContent();
@@ -229,7 +229,7 @@ interface IFile {
 interface ITree {
     public function getId();
     public function _setName($name);
-    public function getName();
+    public function getName(): string;
     public function _setMode($mode);
     public function getMode();
 
@@ -265,7 +265,7 @@ interface IStatus extends \Countable {
 }
 
 interface ITag {
-    public function getName();
+    public function getName(): string;
     public function getVersion();
     public function getCommit();
     public function getCommitId();

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\spur\analytics;
 use df;
 use df\core;
 use df\spur;
-    
+
 class Event implements IEvent {
 
     use core\collection\TAttributeContainer;
@@ -17,7 +17,7 @@ class Event implements IEvent {
     protected $_name;
     protected $_label;
 
-    public function __construct($category, $name, $label=null, array $attributes=null) {
+    public function __construct($category, string $name, $label=null, array $attributes=null) {
         $this->setCategory($category);
         $this->setName($name);
         $this->setLabel($label);
@@ -42,7 +42,7 @@ class Event implements IEvent {
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

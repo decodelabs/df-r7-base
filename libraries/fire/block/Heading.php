@@ -14,7 +14,6 @@ use df\aura;
 
 class Heading extends Base {
 
-    const OUTPUT_TYPES = ['Html'];
     const DEFAULT_CATEGORIES = ['Description'];
 
     const OPTIONS = [
@@ -31,11 +30,11 @@ class Heading extends Base {
     protected $_class;
     protected $_classOptions;
 
-    public function getDisplayName() {
+    public function getDisplayName(): string {
         return 'Heading';
     }
 
-    public function getFormat() {
+    public function getFormat(): string {
         return 'structure';
     }
 
@@ -85,7 +84,7 @@ class Heading extends Base {
 
 
 // IO
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return !strlen(trim($this->_heading));
     }
 

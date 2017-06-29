@@ -23,7 +23,7 @@ abstract class Base extends iris\processor\Base implements flex\latex\IPackage {
         return static::ENVIRONMENTS;
     }
 
-    public function getName() {
+    public function getName(): string {
         return parent::getName().'Package';
     }
 

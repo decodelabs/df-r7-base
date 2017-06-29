@@ -17,8 +17,8 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 // Interfaces
 interface IBucket extends core\io\IAcceptTypeProcessor {
-    public function getName();
-    public function getDisplayName();
+    public function getName(): string;
+    public function getDisplayName(): string;
 
     public function isUserSpecific();
     public function allowOnePerUser();

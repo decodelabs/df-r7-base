@@ -39,7 +39,7 @@ class ContentBlock extends Base {
     }
 
     public function deflateValue($value) {
-        if($value instanceof fire\block\IBlock) {
+        if($value instanceof fire\IBlock) {
             return $value->toXmlString(true);
         }
 
@@ -79,7 +79,7 @@ class ContentBlock extends Base {
             );
         }
 
-        if(!$value instanceof fire\block\IBlock) {
+        if(!$value instanceof fire\IBlock) {
             try {
                 $value = fire\block\Base::fromXml($value);
                 // check block matches category and output types
@@ -97,8 +97,8 @@ class ContentBlock extends Base {
         $value1 = $this->_extractFromLazyLoader($value1);
         $value2 = $this->_extractFromLazyLoader($value2);
 
-        if(!$value1 instanceof fire\block\IBlock
-        || !$value2 instanceof fire\block\IBlock) {
+        if(!$value1 instanceof fire\IBlock
+        || !$value2 instanceof fire\IBlock) {
             return false;
         }
 

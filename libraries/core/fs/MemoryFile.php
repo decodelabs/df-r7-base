@@ -59,7 +59,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         return $this->_id;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->getChannelId();
     }
 

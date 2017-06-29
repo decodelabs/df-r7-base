@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -18,7 +18,7 @@ class LogicException extends \LogicException implements IException {}
 
 // Interfaces
 interface IDaemon extends halo\event\IDispatcherProvider {
-    public function getName();
+    public function getName(): string;
     public function getPidFilePath();
     public function setUser($user);
     public function getUser();
@@ -38,7 +38,7 @@ interface IDaemon extends halo\event\IDispatcherProvider {
 
 
 interface IRemote {
-    public function getName();
+    public function getName(): string;
     public function setMultiplexer(core\io\IMultiplexer $multiplexer=null);
     public function getMultiplexer();
     public function isRunning();

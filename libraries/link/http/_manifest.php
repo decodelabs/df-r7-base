@@ -492,7 +492,7 @@ interface ICacheControl extends core\IStringProvider {
 // Cookies
 interface ICookie extends core\IStringProvider {
     public function setName($name);
-    public function getName();
+    public function getName(): string;
     public function matchesName($name);
     public function setValue($value);
     public function getValue();

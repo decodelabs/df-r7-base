@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\halo\process;
 use df;
 use df\core;
 use df\halo;
-    
+
 class Signal implements ISignal, core\IDumpable {
 
     protected static $_signalMap = [
@@ -122,7 +122,7 @@ class Signal implements ISignal, core\IDumpable {
         $this->_number = self::$_signalMap[$name];
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

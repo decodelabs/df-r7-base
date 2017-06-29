@@ -24,7 +24,7 @@ class Nightfire implements arch\IDirectoryHelper {
             return null;
         }
 
-        if(!$block instanceof fire\block\IBlock) {
+        if(!$block instanceof fire\IBlock) {
             $block = fire\block\Base::fromXml($block);
         }
 
@@ -59,7 +59,7 @@ class Nightfire implements arch\IDirectoryHelper {
             return null;
         }
 
-        if(!$slot instanceof fire\slot\IContent) {
+        if(!$slot instanceof fire\ISlotContent) {
             $slot = fire\slot\Content::fromXml($slot);
         }
 
@@ -86,20 +86,7 @@ class Nightfire implements arch\IDirectoryHelper {
         return $this->getView()->html->previewText($output, $length);
     }
 
-    protected function _loadCategory($category) {
-        if($category) {
-            try {
-                $category = fire\category\Base::factory($category);
-            } catch(fire\RuntimeException $e) {
-                $category = null;
-            }
-        }
-
-        return $category;
-    }
-
-
-    public function newSlotDefinition($category=null): fire\slot\IDefinition {
+    public function newSlotDefinition($category=null): fire\ISlotDefinition {
         return (new fire\slot\Definition())
             ->setCategory($category);
     }
@@ -111,7 +98,7 @@ class Nightfire implements arch\IDirectoryHelper {
             return null;
         }
 
-        if(!$layout instanceof fire\layout\IContent) {
+        if(!$layout instanceof fire\ILayoutContent) {
             $layout = fire\layout\Content::fromXml($layout);
         }
 

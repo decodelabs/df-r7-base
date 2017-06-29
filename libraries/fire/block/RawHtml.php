@@ -14,12 +14,11 @@ use df\aura;
 
 class RawHtml extends Base {
 
-    const OUTPUT_TYPES = ['Html'];
     const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_content;
 
-    public function getFormat() {
+    public function getFormat(): string {
         return 'markup';
     }
 
@@ -32,7 +31,7 @@ class RawHtml extends Base {
         return $this->_content;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return !strlen(trim($this->_content));
     }
 

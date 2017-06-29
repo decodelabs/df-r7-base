@@ -32,7 +32,7 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
         return $this->getSourceAlias().'.*';
     }
 
-    public function getName() {
+    public function getName(): string {
         return '*';
     }
 

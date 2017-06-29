@@ -63,7 +63,7 @@ class Repository implements IRepository {
         $this->_urls['homepage'] = $data['homepage'];
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

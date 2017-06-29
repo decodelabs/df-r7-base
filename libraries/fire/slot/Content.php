@@ -12,7 +12,7 @@ use df\flex;
 use df\arch;
 use df\aura;
 
-class Content implements IContent {
+class Content implements fire\ISlotContent {
 
     use core\collection\TAttributeContainer;
     use flex\xml\TReaderInterchange;
@@ -24,7 +24,7 @@ class Content implements IContent {
     protected $_isNested = false;
     protected $_hasChanged = false;
 
-    public function __construct($id=null) {
+    public function __construct(string $id=null) {
         $this->blocks = new core\collection\Queue();
 
         if($id !== null) {
@@ -37,15 +37,15 @@ class Content implements IContent {
     }
 
 // Id
-    public function setId($id) {
+    public function setId(?string $id) {
         return $this->setAttribute('id', $id);
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->getAttribute('id');
     }
 
-    public function isPrimary() {
+    public function isPrimary(): bool {
         return $this->getAttribute('id') == 'primary';
     }
 
@@ -81,10 +81,8 @@ class Content implements IContent {
 
     public function addBlocks(array $blocks) {
         foreach($blocks as $block) {
-            if(!$block instanceof fire\block\IBlock) {
-                throw new InvalidArgumentException(
-                    'Invalid block content detected'
-                );
+            if(!$block = fire\block\Base::normalize($block)) {
+                continue;
             }
 
             $this->addBlock($block);
@@ -93,7 +91,7 @@ class Content implements IContent {
         return $this;
     }
 
-    public function setBlock($index, fire\block\IBlock $block) {
+    public function setBlock(int $index, fire\IBlock $block) {
         if($block !== $this->blocks->get($index)) {
             $this->_hasChanged = true;
         }
@@ -102,32 +100,32 @@ class Content implements IContent {
         return $this;
     }
 
-    public function putBlock($index, fire\block\IBlock $block) {
+    public function putBlock(int $index, fire\IBlock $block) {
         $this->_hasChanged = true;
         $this->blocks->put($index, $block);
         return $this;
     }
 
-    public function addBlock(fire\block\IBlock $block) {
+    public function addBlock(fire\IBlock $block) {
         $this->_hasChanged = true;
         $this->blocks->push($block);
         return $this;
     }
 
-    public function getBlock($index) {
+    public function getBlock(int $index): ?fire\IBlock {
         return $this->blocks->get($index);
     }
 
-    public function getBlocks() {
+    public function getBlocks(): array {
         return $this->blocks->toArray();
     }
 
-    public function hasBlock($index) {
+    public function hasBlock(int $index): bool {
         return $this->blocks->has($index);
     }
 
-    public function removeBlock($index) {
-        if($index instanceof fire\block\IBlock) {
+    public function removeBlock(int $index) {
+        if($index instanceof fire\IBlock) {
             foreach($this->blocks as $i => $block) {
                 if($index === $block) {
                     $this->_hasChanged = true;
@@ -149,7 +147,7 @@ class Content implements IContent {
         return $this;
     }
 
-    public function countBlocks() {
+    public function countBlocks(): int {
         return $this->blocks->count();
     }
 
@@ -172,7 +170,7 @@ class Content implements IContent {
 // XML interchange
     public function readXml(flex\xml\IReadable $reader) {
         if($reader->getTagName() != 'slot') {
-            throw new UnexpectedValueException(
+            throw core\Error::EValue(
                 'Slot content object expected slot xml element - found '.$reader->getTagName()
             );
         }
@@ -182,7 +180,7 @@ class Content implements IContent {
         foreach($reader->block as $blockNode) {
             try {
                 $block = fire\block\Base::fromXmlElement($blockNode);
-            } catch(fire\block\IException $e) {
+            } catch(fire\block\ENotFound $e) {
                 $block = new fire\block\Error();
                 $block->setError($e);
                 $block->setType($blockNode['type']);

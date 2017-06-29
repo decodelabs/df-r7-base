@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 use df\fire;
 
-class Definition implements IDefinition, core\IDumpable {
+class Definition implements fire\ILayoutDefinition, core\IDumpable {
 
     protected $_id;
     protected $_name;
@@ -19,14 +19,15 @@ class Definition implements IDefinition, core\IDumpable {
     protected $_areas = [];
     protected $_slots = [];
 
-    public function __construct($id=null, $name=null, $isStatic=false) {
+    public function __construct(string $id=null, string $name=null, bool $isStatic=false) {
         $this->setId($id);
         $this->setName($name);
-        $this->_setStatic($isStatic);
+        $this->_isStatic = $isStatic;
     }
 
+
 // Id
-    public function setId($id) {
+    public function setId(?string $id) {
         if($id === null) {
             $id = 'Default';
         }
@@ -35,12 +36,12 @@ class Definition implements IDefinition, core\IDumpable {
         return $this;
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->_id;
     }
 
 // Name
-    public function setName($name) {
+    public function setName(?string $name) {
         if($name === null) {
             $name = $this->_id;
         }
@@ -49,26 +50,23 @@ class Definition implements IDefinition, core\IDumpable {
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 
+
 // Static
-    public function isStatic() {
+    public function isStatic(): bool {
         return $this->_isStatic;
     }
 
-    public function _setStatic($flag=true) {
-        $this->_isStatic = $flag;
-        return $this;
-    }
 
 // Areas
     public function setAreas(array $areas) {
         $this->_areas = $areas;
 
         foreach($this->_areas as $i => $area) {
-            $this->_areas[$i] = ltrim($area, arch\Request::AREA_MARKER);
+            $this->_areas[$i] = ltrim($area, '~');
         }
 
         return $this;
@@ -78,15 +76,15 @@ class Definition implements IDefinition, core\IDumpable {
         return $this->_areas;
     }
 
-    public function hasArea($area) {
-        return in_array(ltrim($area, arch\Request::AREA_MARKER), $this->_areas);
+    public function hasArea(string $area): bool {
+        return in_array(ltrim($area, '~'), $this->_areas);
     }
 
-    public function hasAreas() {
+    public function hasAreas(): bool {
         return !empty($this->_areas);
     }
 
-    public function countAreas() {
+    public function countAreas(): int {
         return count($this->_areas);
     }
 
@@ -98,7 +96,7 @@ class Definition implements IDefinition, core\IDumpable {
 
     public function addSlots(array $slots) {
         foreach($slots as $slot) {
-            if($slot instanceof fire\slot\IDefinition) {
+            if($slot instanceof fire\ISlotDefinition) {
                 $this->addSlot($slot);
             }
         }
@@ -106,27 +104,21 @@ class Definition implements IDefinition, core\IDumpable {
         return $this;
     }
 
-    public function addSlot(fire\slot\IDefinition $slot) {
-        $slot->_setLayoutChild(true);
+    public function addSlot(fire\ISlotDefinition $slot) {
         $this->_slots[$slot->getId()] = $slot;
-
-        if($slot->isPrimary()) {
-            $slot->_setStatic(true);
-        }
-
         return $this;
     }
 
-    public function getSlots() {
+    public function getSlots(): array {
         return $this->_slots;
     }
 
-    public function getSlot(string $id) {
-        if(isset($this->_slots[$id])) {
-            return $this->_slots[$id];
+    public function getSlot(string $id): ?fire\ISlotDefinition {
+        if(!isset($this->_slots[$id])) {
+            return null;
         }
 
-        return null;
+        return $this->_slots[$id];
     }
 
     public function removeSlot(string $id) {
@@ -134,7 +126,7 @@ class Definition implements IDefinition, core\IDumpable {
         return $this;
     }
 
-    public function countSlots() {
+    public function countSlots(): int {
         return count($this->_slots);
     }
 

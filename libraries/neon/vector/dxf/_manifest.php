@@ -93,7 +93,7 @@ interface IAppClass extends core\IStringProvider {
 interface ITable extends core\IStringProvider {
     public function getType();
     public function setName($name);
-    public function getName();
+    public function getName(): string;
     public function setHandle($handle);
     public function getHandle();
     public function setSubclassMarker($marker);
@@ -129,7 +129,7 @@ trait TTable {
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

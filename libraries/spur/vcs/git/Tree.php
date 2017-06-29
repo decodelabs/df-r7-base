@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\spur\vcs\git;
 use df;
 use df\core;
 use df\spur;
-    
+
 class Tree implements ITree, core\IDumpable {
 
     protected $_id;
@@ -31,7 +31,7 @@ class Tree implements ITree, core\IDumpable {
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         if($this->_name === null) {
             $this->_fetchData();
         }
@@ -72,7 +72,7 @@ class Tree implements ITree, core\IDumpable {
                         $object = new Tree($this->_repository, $id, $name);
                         break;
                 }
-                
+
                 $output[] = $object->_setMode($mode);
             }
         }
@@ -126,9 +126,9 @@ class Tree implements ITree, core\IDumpable {
         $result = $this->_repository->_runCommand('ls-tree -r HEAD | grep ', [$this->_id]);
 
         list(
-            $this->_mode, 
-            $type, 
-            $id, 
+            $this->_mode,
+            $type,
+            $id,
             $this->_name
         ) = explode(' ', str_replace("\t", ' ', $result), 4);
     }

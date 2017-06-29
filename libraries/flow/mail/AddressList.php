@@ -65,7 +65,7 @@ class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
         return $this;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return empty($this->_addresses);
     }
 

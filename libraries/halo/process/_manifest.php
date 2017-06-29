@@ -110,7 +110,7 @@ trait TPidFileProvider {
 
 
 interface ISignal {
-    public function getName();
+    public function getName(): string;
     public function getNumber();
 }
 

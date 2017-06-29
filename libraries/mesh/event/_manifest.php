@@ -61,7 +61,7 @@ interface IListener {
 
 interface IHook extends core\IContextAware {
     public static function triggerEvent(IEvent $event);
-    public function getName();
+    public function getName(): string;
     public function getEventMap();
 }
 

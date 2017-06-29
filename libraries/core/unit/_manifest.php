@@ -62,7 +62,7 @@ trait TSingleValueUnit {
         return $this;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return $this->_value == 0;
     }
 

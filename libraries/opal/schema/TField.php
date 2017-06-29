@@ -42,7 +42,7 @@ trait TField {
         return $this;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

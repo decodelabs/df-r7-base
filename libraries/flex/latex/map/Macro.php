@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 class Macro extends iris\map\Node implements flex\latex\IMacro, core\IDumpable {
 
     public $name;
@@ -19,7 +19,7 @@ class Macro extends iris\map\Node implements flex\latex\IMacro, core\IDumpable {
         return $this;
     }
 
-    public function getName() {
+    public function getName(): ?string {
         return $this->name;
     }
 

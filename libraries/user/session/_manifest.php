@@ -35,7 +35,7 @@ interface IController {
 }
 
 interface IBucket extends core\IValueMap, \ArrayAccess {
-    public function getName();
+    public function getName(): string;
 
     public function setLifeTime($lifeTime);
     public function getLifeTime();

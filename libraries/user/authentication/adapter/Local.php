@@ -21,7 +21,7 @@ class Local implements user\authentication\IAdapter {
         ];
     }
 
-    public static function getDisplayName() {
+    public static function getDisplayName(): string {
         return 'Email and password';
     }
 

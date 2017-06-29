@@ -71,7 +71,7 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
         return $this;
     }
 
-    public function isEmpty($includeRemoved=true) {
+    public function isEmpty($includeRemoved=true): bool {
         $output = empty($this->_set);
 
         if($includeRemoved) {

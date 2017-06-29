@@ -108,7 +108,7 @@ interface IUser extends IApiObject {
 }
 
 interface IProfile extends IUser {
-    public function getName();
+    public function getName(): string;
     public function getEmail();
     public function getCompany();
     public function getLocation();
@@ -123,14 +123,14 @@ interface IProfile extends IUser {
 }
 
 interface IOrganization extends IApiObject {
-    public function getName();
+    public function getName(): string;
     public function getDescription();
 
     public function getRepositories();
 }
 
 interface IRepository extends IApiObject {
-    public function getName();
+    public function getName(): string;
     public function getFullName();
     public function getOwner();
     public function getDescription();
@@ -165,12 +165,12 @@ interface IRepository extends IApiObject {
 }
 
 interface IBranch {
-    public function getName();
+    public function getName(): string;
     public function getCommit();
 }
 
 interface IGist extends IApiObject {
-    public function getName();
+    public function getName(): string;
     public function getOwner();
     public function isPublic();
     public function getCreationDate();
@@ -188,13 +188,13 @@ interface IFile {
 }
 
 interface ITag extends IApiObject, core\IArrayProvider {
-    public function getName();
+    public function getName(): string;
     public function getVersion();
     public function getCommit();
 }
 
 interface ILabel extends IApiObject {
-    public function getName();
+    public function getName(): string;
     public function getColor();
 }
 
@@ -212,7 +212,7 @@ interface ICommit extends ICommitReference {
 }
 
 interface IRelease extends IApiObject {
-    public function getName();
+    public function getName(): string;
     public function getTagName();
     public function getCreationDate();
     public function getPublishDate();

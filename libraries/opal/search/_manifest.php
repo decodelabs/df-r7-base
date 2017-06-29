@@ -23,15 +23,15 @@ interface IClient {
 }
 
 interface IIndex extends \Countable {
-    public function getName();
+    public function getName(): string;
     public function getClient();
-    
+
     public function newDocument($id=null, array $values=null);
     public function storeDocument(IDocument $document);
     public function storeDocumentList(array $documents);
     public function deleteDocument($id);
     public function hasDocument($id);
-    
+
     public function find($query);
 }
 
@@ -48,5 +48,5 @@ interface IDocument {
 }
 
 interface IResult extends opal\record\IRecord {
-    
+
 }

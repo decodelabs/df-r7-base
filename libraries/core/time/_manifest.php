@@ -124,7 +124,7 @@ interface IDuration extends core\IStringProvider {
     public function invert();
 
 // Util
-    public function isEmpty();
+    public function isEmpty(): bool;
     public function eq($duration);
     public function gt($duration);
     public function gte($duration);

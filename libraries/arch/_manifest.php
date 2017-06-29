@@ -262,7 +262,7 @@ interface IComponent extends
     arch\IProxyResponse,
     aura\view\ISlotContainer,
     \ArrayAccess {
-    public function getName();
+    public function getName(): string;
 }
 
 
@@ -377,7 +377,7 @@ trait TAjaxDataProvider {
 
 
 interface IMail extends aura\view\IView, flow\mail\IMessage {
-    public function getName();
+    public function getName(): string;
     public function getDescription();
     public function preparePreview();
 }

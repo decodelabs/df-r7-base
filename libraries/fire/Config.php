@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\fire;
 
-class Config extends core\Config {
+class Config extends core\Config implements ILayoutConfig {
 
     const ID = 'nightfire';
 
@@ -53,7 +53,7 @@ class Config extends core\Config {
 
 
 // Layouts
-    public function getLayoutList($area=null) {
+    public function getLayoutList(string $area=null): array {
         $output = [];
 
         foreach(self::STATIC_LAYOUTS as $id => $set) {
@@ -81,7 +81,7 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function getLayoutDefinition($id) {
+    public function getLayoutDefinition(string $id): fire\ILayoutDefinition {
         $data = $this->values->layouts->{$id};
 
         if(isset(self::STATIC_LAYOUTS[$id])) {
@@ -115,11 +115,11 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function isStaticLayout($id) {
+    public function isStaticLayout(string $id): bool {
         return isset(self::STATIC_LAYOUTS[$id]);
     }
 
-    public function getStaticLayoutDefinition($id) {
+    public function getStaticLayoutDefinition(string $id): fire\ILayoutDefinition {
         if(!isset(self::STATIC_LAYOUTS[$id])) {
             $id = 'Default';
         }
@@ -139,7 +139,7 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function getAllLayoutDefinitions() {
+    public function getAllLayoutDefinitions(): array {
         $output = [];
 
         $ids = array_unique(
@@ -161,7 +161,7 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function setLayoutDefinition(fire\layout\IDefinition $definition) {
+    public function setLayoutDefinition(fire\ILayoutDefinition $definition) {
         $id = $definition->getId();
 
         if(isset(self::STATIC_LAYOUTS[$id])) {
@@ -189,7 +189,7 @@ class Config extends core\Config {
         return $this;
     }
 
-    protected function _setStaticLayoutDefinition(fire\layout\IDefinition $definition) {
+    protected function _setStaticLayoutDefinition(fire\ILayoutDefinition $definition) {
         $id = $definition->getId();
         $this->removeLayoutDefinition($id);
         $slots = [];
@@ -215,11 +215,7 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function removeLayoutDefinition($id) {
-        if($id instanceof fire\layout\IDefinition) {
-            $id = $id->getId();
-        }
-
+    public function removeLayoutDefinition(string $id) {
         unset($this->values->layouts->{$id});
         return $this;
     }

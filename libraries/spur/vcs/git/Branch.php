@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,14 +8,14 @@ namespace df\spur\vcs\git;
 use df;
 use df\core;
 use df\spur;
-    
+
 class Branch implements IBranch {
 
     protected $_name;
     protected $_isActive = null;
     protected $_repository;
 
-    public function __construct(ILocalRepository $repo, $name, $isActive=null) {
+    public function __construct(ILocalRepository $repo, string $name, $isActive=null) {
         $this->_name = $name;
 
         if($isActive !== null) {
@@ -26,7 +26,7 @@ class Branch implements IBranch {
         $this->_repository = $repo;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

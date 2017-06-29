@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\opal\rdbms;
 use df;
 use df\core;
 use df\opal;
-    
+
 abstract class Database implements IDatabase {
 
     protected $_adapter;
@@ -36,7 +36,7 @@ abstract class Database implements IDatabase {
         $this->_adapter = $adapter;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_adapter->getDsn()->getDatabase();
     }
 

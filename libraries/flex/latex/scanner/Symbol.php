@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,10 +9,10 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 class Symbol implements iris\IScanner {
 
-    public function getName() {
+    public function getName(): string {
         return 'Symbol';
     }
 
@@ -21,7 +21,7 @@ class Symbol implements iris\IScanner {
     }
 
     public function initialize(iris\ILexer $lexer) {
-        
+
     }
 
     public function check(iris\ILexer $lexer) {

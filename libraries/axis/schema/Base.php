@@ -48,7 +48,7 @@ class Base implements ISchema, core\IDumpable {
         return $this;
     }
 
-    public function getVersion() {
+    public function getVersion(): int {
         return $this->_version;
     }
 

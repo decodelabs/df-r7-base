@@ -53,7 +53,7 @@ class Expression implements opal\query\IExpressionField, core\IDumpable {
         return $this->_expression === null;
     }
 
-    public function getName() {
+    public function getName(): string {
         if($this->_expression) {
             return (string)$this->_expression;
         } else {

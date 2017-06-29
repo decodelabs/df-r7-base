@@ -178,7 +178,7 @@ interface IBlock extends iris\map\IAspect, IContainerNode {}
 
 interface IMacro extends iris\map\IAspect {
     public function setName($name);
-    public function getName();
+    public function getName(): ?string;
 }
 
 
@@ -242,7 +242,7 @@ interface ITextNode extends iris\map\IAspect, INodeClassProvider {
     public function setText($text);
     public function appendText($text);
     public function getText();
-    public function isEmpty();
+    public function isEmpty(): bool;
 }
 
 interface IMathNode extends IReferable, IListedNode {
@@ -253,7 +253,7 @@ interface IMathNode extends IReferable, IListedNode {
     public function setSymbols($text);
     public function appendSymbols($text);
     public function getSymbols();
-    public function isEmpty();
+    public function isEmpty(): bool;
 }
 
 

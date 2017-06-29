@@ -58,7 +58,7 @@ interface IReferenceNode extends INode {
 
 interface IResourceNode extends INode {
     public function getType();
-    public function getName();
+    public function getName(): string;
 }
 
 interface IStringNode extends INode {
@@ -81,7 +81,7 @@ interface IProperty {
 
     public function setName($name);
     public function hasName();
-    public function getName();
+    public function getName(): string;
 
     public function setValue($value);
     public function getValue();

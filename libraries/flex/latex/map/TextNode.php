@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
+
 class TextNode extends iris\map\Node implements flex\latex\ITextNode, core\IDumpable {
 
     use flex\latex\TNodeClassProvider;
@@ -30,7 +30,7 @@ class TextNode extends iris\map\Node implements flex\latex\ITextNode, core\IDump
         return $this->text;
     }
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return !strlen($this->text);
     }
 

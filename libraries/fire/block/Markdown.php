@@ -14,12 +14,11 @@ use df\aura;
 
 class Markdown extends Base {
 
-    const OUTPUT_TYPES = ['Html'];
     const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_body;
 
-    public function getFormat() {
+    public function getFormat(): string {
         return 'markup';
     }
 
@@ -33,7 +32,7 @@ class Markdown extends Base {
     }
 
 
-    public function isEmpty() {
+    public function isEmpty(): bool {
         return !strlen(trim($this->_body));
     }
 

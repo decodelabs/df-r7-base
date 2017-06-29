@@ -53,7 +53,7 @@ interface IUnitInspector {
 }
 
 interface IStorageDescriber {
-    public function getName();
+    public function getName(): string;
     public function getType();
     public function getItemCount();
     public function getSize();

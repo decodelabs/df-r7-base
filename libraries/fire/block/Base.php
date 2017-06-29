@@ -12,7 +12,7 @@ use df\flex;
 use df\aura;
 use df\arch;
 
-abstract class Base implements IBlock {
+abstract class Base implements fire\IBlock {
 
     use flex\xml\TReaderInterchange;
     use flex\xml\TWriterInterchange;
@@ -20,8 +20,6 @@ abstract class Base implements IBlock {
     use core\TStringProvider;
 
     const VERSION = 1;
-
-    const OUTPUT_TYPES = ['Html'];
     const DEFAULT_CATEGORIES = [];
 
     protected $_isNested = false;
@@ -33,15 +31,11 @@ abstract class Base implements IBlock {
         return $output;
     }
 
-    public static function factory($name) {
-        if($name instanceof IBlock) {
-            return $name;
-        }
-
+    public static function factory(string $name): fire\IBlock {
         $class = 'df\\fire\\block\\'.ucfirst($name);
 
         if(!class_exists($class)) {
-            throw new RuntimeException(
+            throw core\Error::ENotFound(
                 'Block type '.$name.' could not be found'
             );
         }
@@ -49,16 +43,26 @@ abstract class Base implements IBlock {
         return new $class();
     }
 
-    public function getName() {
+    public static function normalize($block): ?fire\IBlock {
+        if($block instanceof fire\IBlock || $block === null) {
+            return $block;
+        }
+
+        return static::factory($block);
+    }
+
+
+
+    public function getName(): string {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public function getDisplayName() {
+    public function getDisplayName(): string {
         return flex\Text::formatName($this->getName());
     }
 
-    public function getVersion() {
+    public function getVersion(): int {
         return static::VERSION;
     }
 
@@ -72,53 +76,15 @@ abstract class Base implements IBlock {
     }
 
 
-    public static function getOutputTypes() {
-        return (array)static::OUTPUT_TYPES;
-    }
-
-    public function canOutput($outputType) {
-        if(empty(static::OUTPUT_TYPES)) {
-            return true;
-        }
-
-        $outputType = strtolower($outputType);
-
-        foreach($this->getOutputTypes() as $type) {
-            if($outputType == strtolower($type)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function getFormat() {
+    public function getFormat(): string {
         return 'text';
     }
 
-    public function isHidden() {
+    public function isHidden(): bool {
         return false;
     }
 
-    public function getFormDelegateName() {
-        return $this->getName();
-    }
-
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
-        $name = $this->getFormDelegateName();
-        $class = 'df\\apex\\directory\\shared\\nightfire\\_formDelegates\\blocks\\'.$name;
-
-        if(!class_exists($class)) {
-            throw core\Error::{'arch/node/EDelegate,ENotFound'}(
-                'Fire block delegate '.$name.' could not be found'
-            );
-        }
-
-        return (new $class($context, $state, $event, $id))
-            ->setBlock($this);
-    }
-
-    public static function getDefaultCategories() {
+    public static function getDefaultCategories(): array {
         return (array)static::DEFAULT_CATEGORIES;
     }
 
@@ -137,7 +103,7 @@ abstract class Base implements IBlock {
 
     protected function _validateXmlReader(flex\xml\IReadable $reader) {
         if($reader->getTagName() != 'block') {
-            throw new UnexpectedValueException(
+            throw core\Error::EValue(
                 'Block content object expected block xml element'
             );
         }
@@ -149,7 +115,7 @@ abstract class Base implements IBlock {
         }
 
         if(strtolower($type) != strtolower($this->getName())) {
-            throw new UnexpectedValueException(
+            throw core\Error::EValue(
                 'Block content is meant for a '.$reader->getAttribute('type').' block, not a '.$this->getName().' block'
             );
         }
@@ -178,7 +144,7 @@ abstract class Base implements IBlock {
 
 
 // Form delegate
-abstract class Base_Delegate extends arch\node\form\Delegate implements fire\block\IFormDelegate {
+abstract class Base_Delegate extends arch\node\form\Delegate implements fire\IBlockDelegate {
 
     use arch\node\TForm_InlineFieldRenderableDelegate;
     use core\constraint\TRequirable;
@@ -186,12 +152,12 @@ abstract class Base_Delegate extends arch\node\form\Delegate implements fire\blo
     protected $_isNested = false;
     protected $_block;
 
-    public function __construct(IBlock $block, arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id) {
+    public function __construct(fire\IBlock $block, arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id) {
         $this->_block = $block;
         parent::__construct($context, $state, $event, $id);
     }
 
-    public function setBlock(fire\block\IBlock $block) {
+    public function setBlock(fire\IBlock $block) {
         $this->_block = $block;
         return $this;
     }

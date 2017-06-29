@@ -32,7 +32,7 @@ class Release implements IRelease {
         $this->_isPrerelease = (bool)$data['prerelease'];
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->_name;
     }
 

@@ -60,12 +60,12 @@ class Base implements IBucket {
         $this->setAcceptTypes(...$this->_acceptTypes);
     }
 
-    public function getName() {
+    public function getName(): string {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public function getDisplayName() {
+    public function getDisplayName(): string {
         return flex\Text::formatName($this->getName());
     }
 

@@ -18,7 +18,7 @@ class Variable implements iris\IScanner, core\IDumpable {
         $this->setMarkers($markers);
     }
 
-    public function getName() {
+    public function getName(): string {
         return 'Variable';
     }
 
