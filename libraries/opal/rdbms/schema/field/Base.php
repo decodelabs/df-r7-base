@@ -188,6 +188,10 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
 
 
     public function getDefaultNonNullValue() {
+        if(null !== ($value = $this->getDefaultValue())) {
+            return $this->getDefaultValue();
+        }
+        
         return static::DEFAULT_VALUE;
     }
 

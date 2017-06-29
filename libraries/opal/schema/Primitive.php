@@ -36,6 +36,10 @@ abstract class Primitive implements IPrimitive {
     }
 
     public function getDefaultNonNullValue() {
+        if(null !== ($value = $this->getDefaultValue())) {
+            return $this->getDefaultValue();
+        }
+
         return static::DEFAULT_VALUE;
     }
 }
@@ -111,6 +115,10 @@ class Primitive_Date extends Primitive {
     const DEFAULT_VALUE = 'now';
 
     public function getDefaultNonNullValue() {
+        if(null !== ($value = $this->getDefaultValue())) {
+            return $this->getDefaultValue();
+        }
+
         return new core\time\Date();
     }
 
@@ -124,6 +132,10 @@ class Primitive_DateTime extends Primitive {
     const DEFAULT_VALUE = 'now';
 
     public function getDefaultNonNullValue() {
+        if(null !== ($value = $this->getDefaultValue())) {
+            return $this->getDefaultValue();
+        }
+
         return new core\time\Date();
     }
 
@@ -235,6 +247,10 @@ class Primitive_Guid extends Primitive {
     }
 
     public function getDefaultNonNullValue() {
+        if(null !== ($value = $this->getDefaultValue())) {
+            return $this->getDefaultValue();
+        }
+
         return flex\Guid::comb();
     }
 }
@@ -317,6 +333,10 @@ class Primitive_Timestamp extends Primitive implements IAutoTimestampField {
     use TField_AutoTimestamp;
 
     public function getDefaultNonNullValue() {
+        if(null !== ($value = $this->getDefaultValue())) {
+            return $this->getDefaultValue();
+        }
+
         return new core\time\Date();
     }
 }
@@ -329,6 +349,10 @@ class Primitive_Varchar extends Primitive_Char {}
 class Primitive_Year extends Primitive {
 
     public function getDefaultNonNullValue() {
+        if(null !== ($value = $this->getDefaultValue())) {
+            return $this->getDefaultValue();
+        }
+
         return date('Y');
     }
 }
