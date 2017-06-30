@@ -27,7 +27,11 @@ class Manager implements IManager {
         return $this->_categories;
     }
 
-    public function getCategory(string $name): ?ICategory {
+    public function getCategory(?string $name): ?ICategory {
+        if($name === null) {
+            return null;
+        }
+
         $this->_loadCategories();
 
         if(!isset($this->_categories[$name])) {

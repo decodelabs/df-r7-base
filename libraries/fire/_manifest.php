@@ -19,7 +19,7 @@ interface IManager extends core\IManager {
     public function getConfig(): Config;
 
     public function getCategories(): array;
-    public function getCategory(string $name): ?ICategory;
+    public function getCategory(?string $name): ?ICategory;
 
     public function isBlockAvailable(string $name): bool;
     public function getAllBlocks(): array;
