@@ -214,61 +214,6 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     }
 
 
-// Keywords
-    public function setKeywords($keywords) {
-        $this->removeMeta('keywords');
-        return $this->addKeywords($keywords);
-    }
-
-    public function addKeywords($keywords) {
-        if(!is_array($keywords)) {
-            $keywords = explode(' ', $keywords);
-        }
-
-        if(empty($keywords)) {
-            return $this;
-        }
-
-        if($this->hasMeta('keywords')) {
-            $current = explode(' ', $this->getMeta('keywords'));
-        } else {
-            $current = [];
-        }
-
-        return $this->setMeta('keywords', implode(' ', array_unique(array_merge($current, $keywords))));
-    }
-
-    public function getKeywords() {
-        return $this->getMeta('keywords');
-    }
-
-    public function hasKeywords() {
-        return $this->hasMeta('keywords');
-    }
-
-    public function hasKeyword($keyword) {
-        if(!$this->hasMeta('keywords')) {
-            return false;
-        }
-
-        return in_array($keyword, explode(' ', $this->getMeta('keywords')));
-    }
-
-    public function removeKeyword($keyword) {
-        if(!$this->hasMeta('keywords')) {
-            return $this;
-        }
-
-        $keywords = array_flip(explode(' ', $this->getMeta('keywords')));
-        unset($keywords[$keyword]);
-        return $this->setMeta('keywords', implode(' ', array_keys($keywords)));
-    }
-
-    public function removeKeywords() {
-        return $this->removeMeta('keywords');
-    }
-
-
 // Robots
     public function canIndex(bool $flag=null, $bot='robots') {
         if(is_string($flag)) {

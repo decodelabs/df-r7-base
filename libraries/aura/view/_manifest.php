@@ -182,16 +182,6 @@ interface IHtmlView extends IResponseView, ILayoutView {
     public function hasData($key);
     public function removeData($key);
 
-    // Keywords
-    public function setKeywords($keywords);
-    public function addKeywords($keywords);
-    public function getKeywords();
-    public function hasKeywords();
-    public function hasKeyword($keyword);
-    public function removeKeyword($keyword);
-    public function removeKeywords();
-
-
     // Robots
     public function canIndex(bool $flag=null, $bot='robots');
     public function canFollow(bool $flag=null, $bot='robots');
