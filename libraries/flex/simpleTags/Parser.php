@@ -17,60 +17,35 @@ class Parser implements flex\IInlineHtmlProducer {
 
     const TAG_LIST = [
         'a', 'abbr', 'b', 'br', 'cite', 'code', 'del', 'em',
-        //'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
         'i', 'img', 'ins', 'q', 'small', 'span', 'strong',
         'sub', 'sup', 'time', 'u', 'var'
     ];
 
-    protected $_customTags = [];
+    const EXTENDED_TAG_LIST = [
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'ul', 'ol', 'li',
+        'table', 'thead', 'tbody', 'tr', 'th', 'td',
+        'dl', 'dt', 'dd',
+        'p', 'hr', 'pre', 'blockquote',
+        'address', 'figure', 'figcaption'
+    ];
 
-    public function __construct($source, array $customTags=null) {
+    protected $_extended = false;
+
+    public function __construct(string $source, bool $extended=false) {
         $this->source = $source;
-
-        if(!empty($customTags)) {
-            $this->setCustomTags($customTags);
-        }
-    }
-
-
-// Custom tags
-    public function setCustomTags(array $tags) {
-        $this->_customTags = [];
-        return $this->addCustomTags($tags);
-    }
-
-    public function addCustomTags(array $tags) {
-        foreach($tags as $name => $callback) {
-            $this->addCustomTag($name, $callback);
-        }
-
-        return $this;
-    }
-
-    public function addCustomTag($name, $callback) {
-        $this->_customTags[strtolower($name)] = core\lang\Callback::factory($callback);
-        return $this;
-    }
-
-    public function removeCustomTag($name) {
-        unset($this->_customTags[strtolower($name)]);
-        return $this;
-    }
-
-    public function getCustomTags() {
-        return $this->_customTags;
-    }
-
-    public function clearCustomTags() {
-        $this->_customTags = [];
-        return $this;
+        $this->_extended = $extended;
     }
 
 
 // Translate
     public function toHtml() {
-        if(null === ($text = $this->_prepareSource())) {
+        if(null === ($text = $this->_prepareSource($this->_extended))) {
             return null;
+        }
+
+        if($this->_extended) {
+            return $this->_blockify($text);
         }
 
         $text = '<p>'.str_replace("\n\n", '</p>'.'<p>', $text).'</p>';
@@ -81,16 +56,14 @@ class Parser implements flex\IInlineHtmlProducer {
     }
 
     public function toInlineHtml() {
-        if(null === ($text = $this->_prepareSource())) {
+        if(null === ($text = $this->_prepareSource(false))) {
             return null;
         }
 
-        $text = str_replace("\n", '<br />'."\n", $text);
-
-        return $text;
+        return str_replace("\n", '<br />'."\n", $text);
     }
 
-    protected function _prepareSource() {
+    protected function _prepareSource(bool $extended) {
         $text = trim($this->source);
 
         if(empty($text) && $text !== '0') {
@@ -103,8 +76,10 @@ class Parser implements flex\IInlineHtmlProducer {
             $tags[] = '<'.$tag.'>';
         }
 
-        foreach($this->_customTags as $name => $callback) {
-            $tags[] = '<'.$name.'>';
+        if($extended) {
+            foreach(self::EXTENDED_TAG_LIST as $tag) {
+                $tags[] = '<'.$tag.'>';
+            }
         }
 
         $text = strip_tags($text, implode('', $tags));
@@ -114,7 +89,7 @@ class Parser implements flex\IInlineHtmlProducer {
 
         for($i = 0; $i < $length; $i++) {
             $char = $text{$i};
-            $next = @$text{$i+1};
+            $next = $text{$i+1} ?? null;
 
             if($char == ' ') {
                 $rep = ' ';
@@ -139,52 +114,90 @@ class Parser implements flex\IInlineHtmlProducer {
             return ' '.$matches[1].'="'.htmlspecialchars((string)$context->uri->__invoke($matches[2])).'"';
         }, $output);
 
-        foreach($this->_customTags as $name => $callback) {
-            $newName = null;
+        return $output;
+    }
 
-            $output = preg_replace_callback(
-                '/<'.$name.'([^>]*)\/?>/i',
-                function($matches) use($name, $callback, &$newName) {
-                    $attributes = [];
 
-                    if(preg_match_all('/([a-zA-Z0-9]+)\="([^"]*)"/', $matches[1], $attrMatches)) {
-                        foreach($attrMatches[1] as $i => $key) {
-                            $attributes[$key] = $attrMatches[2][$i];
-                        }
-                    }
-
-                    $tag = $callback($attributes);
-
-                    if(!$tag) {
-                        return '';
-                    }
-
-                    if(is_string($tag)) {
-                        $tag = new aura\html\Tag($tag);
-                    } else if(!$tag instanceof aura\html\ITag) {
-                        return '';
-                    }
-
-                    if($newName === null) {
-                        $newName = $tag->getName();
-                    } else if($newName != $tag->getName()) {
-                        throw new \UnexpectedValueException(
-                            'Custom tag replacement names must be constant throughout a document - found "'.$newName.'" and "'.$tag->getName().'" as tag names'
-                        );
-                    }
-
-                    return $tag->open();
-                },
-                $output
-            );
-
-            if($newName) {
-                $output = preg_replace('/<\/'.$name.'>/i', '</'.$newName.'>', $output);
-            } else {
-                $output = preg_replace('/<\/'.$name.'>/i', '', $output);
-            }
+    protected function _blockify(string $text): string {
+        if(empty(trim($text))) {
+            return '';
         }
 
-        return $output;
+        $text = rtrim($text)."\n";
+        $preTags = [];
+
+        if(strpos($text, '<pre') !== false) {
+            $parts = explode('</pre>', $text);
+            $last = array_pop($parts);
+            $text = '';
+            $i = 0;
+
+            foreach($parts as $part) {
+                if(false === ($start = strpos($part, '<pre'))) {
+                    $text .= $part;
+                    continue;
+                }
+
+                $name = '<pre st-placeholder-'.$i.'></pre>';
+                $preTags[$name] = substr($part, $start).'</pre>';
+                $text .= substr($part, 0, $start).$name;
+                $i++;
+            }
+
+            $text .= $last;
+        }
+
+        $text = new flex\Text($text);
+        $blockReg = '(?:'.implode('|', self::EXTENDED_TAG_LIST).')';
+
+        $text
+            // Double <br>s
+            ->regexReplace('|<br\s*/?>\s*<br\s*/?>|', "\n\n")
+
+            // Line break around block elements
+            ->regexReplace('!(<'.$blockReg.'[\s/>])!', "\n\n".'$1')
+            ->regexReplace('!(</'.$blockReg.'>)!', '$1'."\n\n")
+
+            // Standardise new lines
+            ->replace(["\r\n", "\r"], "\n")
+            ->regexReplace("/\n\n+/", "\n\n");
+
+        $parts = preg_split('/\n\s*\n/', $text->toString(), -1, \PREG_SPLIT_NO_EMPTY);
+        $text = '';
+
+        foreach($parts as $part) {
+            $part = trim($part);
+
+            if(!preg_match('!</?'.$blockReg.'[^>]*>!', $part)) {
+                $part = '<p>'.$part.'</p>';
+            }
+
+            $text .= $part."\n";
+        }
+
+        $text = (new flex\Text($text))
+
+            // Remove empties
+            ->regexReplace('|<p>\s*</p>|', '')
+
+            // Normalize blocks;
+            ->regexReplace('!<p>\s*(</?'.$blockReg.'[^>]*>)!', '$1')
+            ->regexReplace('!(</?'.$blockReg.'[^>]*>)\s*</p>!', '$1')
+
+            // Normalize <br>s
+            ->replace(['<br>', '<br/>'], '<br />')
+            ->regexReplace('|(?<!<br />)\s*\n|', "<br />\n")
+            ->regexReplace('!(</?'.$blockReg.'[^>]*>)\s*<br />!', '$1')
+            ->regexReplace('!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1')
+            ->regexReplace("|\n</p>$|", '</p>')
+
+            ->toString();
+
+        // Replace pres
+        if(!empty($preTags)) {
+            $text = str_replace(array_keys($preTags), array_values($preTags), $text);
+        }
+
+        return $text;
     }
 }

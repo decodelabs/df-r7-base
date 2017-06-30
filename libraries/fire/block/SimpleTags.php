@@ -68,7 +68,8 @@ class SimpleTags extends Base {
 // Render
     public function render() {
         $view = $this->getView();
-        return $view->html('div.block', $view->html->simpleTags($this->_body))
+
+        return $view->html('div.block', $view->html->simpleTags($this->_body, true))
             ->setDataAttribute('type', $this->getName());
     }
 
