@@ -302,9 +302,13 @@ interface IText extends core\collection\IIndexedCollection, core\IStringProvider
     public function truncate($length, $marker=null);
     public function truncateFrom($start, $length, $marker=null);
 
+    public function split(string $delimiter): array;
+    public function regexSplit(string $pattern, int $limit=-1, int $flag=0): array;
+
 // Replace
     public function replace($in, $out);
     public function regexReplace($in, $out);
+    public function stripTags(string $allowableTags=null);
 }
 
 interface ITermParser {

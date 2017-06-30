@@ -751,6 +751,15 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
+    public function split(string $delimiter): array {
+        return explode($delimiter, $this->_value);
+    }
+
+    public function regexSplit(string $pattern, int $limit=-1, int $flags=0): array {
+        return preg_split($pattern, $this->_value, $limit, $flags);
+    }
+
+
 
 // Replace
     public function replace($in, $out) {
@@ -759,7 +768,22 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
     public function regexReplace($in, $out) {
-        $this->_value = preg_replace($in, $out, $this->_value);
+        if(is_callable($out)) {
+            $this->_value = preg_replace_callback($in, $out, $this->_value);
+        } else {
+            $this->_value = preg_replace($in, $out, $this->_value);
+        }
+
+        return $this;
+    }
+
+    public function stripTags(string $allowableTags=null) {
+        if($allowableTags !== null) {
+            $this->_value = strip_tags($this->_value, $allowableTags);
+        } else {
+            $this->_value = strip_tags($this->_value);
+        }
+
         return $this;
     }
 
