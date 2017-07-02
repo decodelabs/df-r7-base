@@ -101,7 +101,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         if($type === null) {
             $this->_state->removeStore('blockType');
         } else {
-            $this->_block = fire\block\Base::factory($type)->isNested($this->_isNested);
+            $this->_block = fire\block\Base::normalize($type)->isNested($this->_isNested);
             $this->_state->setStore('blockType', $this->_block->getName());
         }
 
