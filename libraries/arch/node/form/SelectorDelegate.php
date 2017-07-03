@@ -297,7 +297,7 @@ abstract class SelectorDelegate extends Delegate implements
                 }
 
                 $fa->push(
-                    $this->html->bulletList($displayList),
+                    $this->html->uList($displayList),
                     $this->html->string('</div>')
                 );
 
