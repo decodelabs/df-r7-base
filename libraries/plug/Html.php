@@ -89,7 +89,7 @@ class Html implements arch\IDirectoryHelper {
         return $output;
     }
 
-    public function simpleTags(string $text, bool $extended=false) {
+    public function simpleTags(?string $text, bool $extended=false) {
         $output = (new flex\simpleTags\Parser($text, $extended))->toHtml();
 
         if($output !== null) {
@@ -99,7 +99,7 @@ class Html implements arch\IDirectoryHelper {
         return $output;
     }
 
-    public function inlineSimpleTags($text) {
+    public function inlineSimpleTags(?string $text) {
         $output = (new flex\simpleTags\Parser($text))->toInlineHtml();
 
         if($output !== null) {
