@@ -215,10 +215,14 @@ class Html implements arch\IDirectoryHelper {
 
         return $this->__invoke('dl', function() use($list, $renderer) {
             foreach($list as $key => $item) {
-                $dt = $this->__invoke('dt', $key);
+                $dt = $this->__invoke('dt', null);
                 $dd = (string)$this->__invoke('dd', function($dd) use($key, $item, $renderer, &$i, $dt) {
                     return $renderer($item, $dt, $dd, $key, ++$i);
                 });
+
+                if($dt->isEmpty()) {
+                    $dt->push($key);
+                }
 
                 yield $dt;
                 yield $this->string($dd);
