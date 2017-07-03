@@ -173,7 +173,7 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function list(iterable $list, string $container, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation {
-        return new aura\html\Element($container, function() use($list, $name, $callback) {
+        return (new aura\html\Element($container, function() use($list, $name, $callback) {
             $i = 0;
 
             foreach($list as $key => $item) {
@@ -181,7 +181,7 @@ class Html implements arch\IDirectoryHelper {
                     return $callback($item, $el, $key, ++$i);
                 });
             }
-        }, $attributes);
+        }, $attributes))->shouldRenderIfEmpty(false);
     }
 
     public function elements(iterable $list, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation {
