@@ -231,6 +231,10 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function iList(iterable $list, callable $renderer=null, int $limit=null, string $delimiter=', '): aura\html\IElementRepresentation {
+        $renderer = $renderer ?? function($value) {
+            return $value;
+        };
+        
         return (new aura\html\Element('span', function($el) use($list, $renderer, $delimiter, $limit) {
             $el->shouldRenderIfEmpty(false);
 
