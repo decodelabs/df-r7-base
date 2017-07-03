@@ -208,6 +208,24 @@ class Html implements arch\IDirectoryHelper {
         }, $attributes);
     }
 
+    public function dList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation {
+        $renderer = $renderer ?? function($value) {
+            return $value;
+        };
+
+        return $this->__invoke('dl', function() use($list, $renderer) {
+            foreach($list as $key => $item) {
+                $dt = $this->__invoke('dt', $key);
+                $dd = (string)$this->__invoke('dd', function($dd) use($key, $item, $renderer, &$i, $dt) {
+                    return $renderer($item, $dt, $dd, $key, ++$i);
+                });
+
+                yield $dt;
+                yield $this->string($dd);
+            }
+        }, $attributes);
+    }
+
     public function span($content, array $attributes=[]) {
         return $this->element('span', $content, $attributes);
     }
