@@ -32,8 +32,8 @@ class Parser implements flex\IInlineHtmlProducer {
 
     protected $_extended = false;
 
-    public function __construct(string $source, bool $extended=false) {
-        $this->source = $source;
+    public function __construct(?string $source, bool $extended=false) {
+        $this->source = (string)$source;
         $this->_extended = $extended;
     }
 
