@@ -174,9 +174,11 @@ class Html implements arch\IDirectoryHelper {
 
     public function list(iterable $list, string $container, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation {
         return new aura\html\Element($container, function() use($list, $name, $callback) {
+            $i = 0;
+
             foreach($list as $key => $item) {
-                yield $this->__invoke($name, function($el) use($key, $item, $callback) {
-                    return $callback($item, $el, $key);
+                yield $this->__invoke($name, function($el) use($key, $item, $callback, &$i) {
+                    return $callback($item, $el, $key, ++$i);
                 });
             }
         }, $attributes);
@@ -184,9 +186,11 @@ class Html implements arch\IDirectoryHelper {
 
     public function elements(iterable $list, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation {
         return aura\html\ElementContent::normalize(function() use($list, $name, $callback, $attributes) {
+            $i = 0;
+
             foreach($list as $key => $item) {
-                yield $this->__invoke($name, function($el) use($key, $item, $callback) {
-                    return $callback($item, $el, $key);
+                yield $this->__invoke($name, function($el) use($key, $item, $callback, &$i) {
+                    return $callback($item, $el, $key, ++$i);
                 }, $attributes);
             }
         });
