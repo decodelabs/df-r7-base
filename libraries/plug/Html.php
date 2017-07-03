@@ -192,6 +192,18 @@ class Html implements arch\IDirectoryHelper {
         });
     }
 
+    public function uList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation {
+        return $this->list($list, 'ul', 'li', $renderer ?? function($value) {
+            return $value;
+        }, $attributes);
+    }
+
+    public function oList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation {
+        return $this->list($list, 'ol', 'li', $renderer ?? function($value) {
+            return $value;
+        }, $attributes);
+    }
+
     public function span($content, array $attributes=[]) {
         return $this->element('span', $content, $attributes);
     }
