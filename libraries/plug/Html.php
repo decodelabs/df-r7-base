@@ -230,6 +230,47 @@ class Html implements arch\IDirectoryHelper {
         }, $attributes);
     }
 
+    public function iList(iterable $list, callable $renderer=null, int $limit=null, string $delimiter=', '): aura\html\IElementRepresentation {
+        return (new aura\html\Element('span', function($el) use($list, $renderer, $delimiter, $limit) {
+            $el->shouldRenderIfEmpty(false);
+
+            $first = true;
+            $i = $more = 0;
+
+            foreach($list as $key => $item) {
+                if($item === null) {
+                    continue;
+                }
+
+                $i++;
+
+                $cellTag = new aura\html\Element('span', function($el) use($key, $item, $renderer, &$i) {
+                    return $renderer($item, $el, $key, $i);
+                });
+
+                if($limit !== null && $i > $limit) {
+                    $more++;
+                    continue;
+                }
+
+                if(!$first) {
+                    yield $delimiter;
+                }
+
+                $first = false;
+                yield $cellTag;
+            }
+
+            if($more) {
+                if(!$first) {
+                    yield $delimiter;
+                }
+
+                yield new aura\html\Element('em.inactive', $this->context->_('...and %c% more', ['%c%' => $more]));
+            }
+        }));
+    }
+
     public function span($content, array $attributes=[]) {
         return $this->element('span', $content, $attributes);
     }
