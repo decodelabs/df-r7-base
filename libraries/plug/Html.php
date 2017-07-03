@@ -234,8 +234,8 @@ class Html implements arch\IDirectoryHelper {
         $renderer = $renderer ?? function($value) {
             return $value;
         };
-        
-        return (new aura\html\Element('span', function($el) use($list, $renderer, $delimiter, $limit) {
+
+        return (new aura\html\Element('span.list', function($el) use($list, $renderer, $delimiter, $limit) {
             $el->shouldRenderIfEmpty(false);
 
             $first = true;
