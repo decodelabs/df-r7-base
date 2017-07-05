@@ -194,11 +194,11 @@ class Mediator implements IMediator {
 // IO
     public function requestXml($method, array $data=[], array $headers=[]) {
         $response = $this->sendRequest($this->createRequest(
-            $method, null, $data, $headers
+            $method, '', $data, $headers
         ));
 
         return simplexml_load_string($response->getContent());
-}
+    }
 
     public function createUrl(string $path): link\http\IUrl {
         if(!$this->_activeUrl) {
