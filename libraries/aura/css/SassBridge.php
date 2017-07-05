@@ -177,6 +177,11 @@ class SassBridge implements ISassBridge {
         while(!empty($sourceFiles)) {
             $filePath = array_shift($sourceFiles);
             $fileKey = md5($filePath);
+
+            if(isset($this->_manifest[$fileKey])) {
+                continue;
+            }
+
             $fileType = substr($filePath, -4);
             $this->_manifest[$fileKey] = $filePath;
 
@@ -185,7 +190,7 @@ class SassBridge implements ISassBridge {
             $contents = $this->_replaceUrls($contents);
             $contents = $this->_setCharset($contents);
 
-            file_put_contents($this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$fileType, $contents);
+            file_put_contents($this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.basename($filePath), $contents);
         }
 
         $options = [];
@@ -243,7 +248,7 @@ class SassBridge implements ISassBridge {
             ];
         }
 
-        $args[] = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type;
+        $args[] = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_fileName.'.'.$this->_type;
         $args[] = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css';
 
         $result = halo\process\launcher\Base::factory($path, $args)
@@ -356,7 +361,7 @@ class SassBridge implements ISassBridge {
 
                 $key = md5($importPath);
                 $type = substr($importPath, -4);
-                $imports[$path] = $key.'.'.$type;
+                $imports[$path] = $key.'.'.basename($path);
 
                 if(!isset($this->_manifest[$key])) {
                     $sourceFiles[] = $importPath;
