@@ -278,7 +278,7 @@ trait TWriterProvider {
 
 
 interface IWriter {
-    public function getId();
+    public function getId(): string;
     public function flush(core\log\IHandler $handler);
     public function writeNode(IHandler $handler, INode $node);
     public function writeContextNode(core\log\IHandler $handler, core\debug\IContext $node);
@@ -293,7 +293,7 @@ interface IWriter {
 
 trait TWriter {
 
-    public function getId() {
+    public function getId(): string {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }

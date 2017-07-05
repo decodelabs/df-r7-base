@@ -37,6 +37,8 @@ class SassBridge implements ISassBridge {
     protected $_key;
     protected $_isDevelopment;
 
+    protected $_manifest = [];
+
     public function __construct(arch\IContext $context, $path) {
         $this->context = $context;
         $path = realpath($path);
@@ -170,13 +172,13 @@ class SassBridge implements ISassBridge {
 
     protected function _compile() {
         $sourceFiles = [$this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type];
-        $manifest = [];
+        $this->_manifest = [];
 
         while(!empty($sourceFiles)) {
             $filePath = array_shift($sourceFiles);
             $fileKey = md5($filePath);
             $fileType = substr($filePath, -4);
-            $manifest[$fileKey] = $filePath;
+            $this->_manifest[$fileKey] = $filePath;
 
             $contents = file_get_contents($filePath);
             $contents = $this->_replaceLocalPaths($contents, $filePath, $sourceFiles);
@@ -190,7 +192,7 @@ class SassBridge implements ISassBridge {
         $jsonPath = $this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type.'.json';
 
         if(is_file($jsonPath)) {
-            $manifest[md5($jsonPath)] = $jsonPath;
+            $this->_manifest[md5($jsonPath)] = $jsonPath;
             $options = flex\Json::fromFile($this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type.'.json');
         } else {
             $options = self::DEFAULT_PROCESSOR_OPTIONS;
@@ -234,8 +236,7 @@ class SassBridge implements ISassBridge {
             ];
         } else {
             $args = [
-                //'--compass',
-                //'--quiet',
+                '--quiet',
                 '--style='.$outputType,
                 '--sourcemap=file',
                 '-Eutf-8'
@@ -256,7 +257,7 @@ class SassBridge implements ISassBridge {
                 $result->getError()
             );
 
-            if(empty($output)) {
+            if(!empty($output)) {
                 core\logException($error);
             } else {
                 throw $error;
@@ -290,7 +291,7 @@ class SassBridge implements ISassBridge {
         if($mapExists && $envMode != 'production') {
             $content = file_get_contents($mapPath);
 
-            foreach($manifest as $fileKey => $filePath) {
+            foreach($this->_manifest as $fileKey => $filePath) {
                 $content = str_replace(
                     'file://'.$this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$this->_type,
                     'file://'.$filePath,
@@ -309,7 +310,10 @@ class SassBridge implements ISassBridge {
             }
         }
 
-        file_put_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.json', json_encode(array_values($manifest)));
+        file_put_contents(
+            $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.json',
+            json_encode(array_values($this->_manifest))
+        );
 
         $files = [
             $this->_key.'.css',
@@ -325,7 +329,8 @@ class SassBridge implements ISassBridge {
     }
 
     protected function _replaceLocalPaths($sass, $filePath, array &$sourceFiles) {
-        preg_match_all('/\@import \"([^"]+)\"\;/', $sass, $matches);
+        $sass = preg_replace('/\@import \'([^\']+)\'/', '@import "$1"', $sass);
+        preg_match_all('/\@import \"([^"]+)\"/', $sass, $matches);
 
         if(!empty($matches[1])) {
             $imports = [];
@@ -353,7 +358,7 @@ class SassBridge implements ISassBridge {
                 $type = substr($importPath, -4);
                 $imports[$path] = $key.'.'.$type;
 
-                if(!isset($manifest[$key])) {
+                if(!isset($this->_manifest[$key])) {
                     $sourceFiles[] = $importPath;
                 }
             }
@@ -367,7 +372,6 @@ class SassBridge implements ISassBridge {
     }
 
     protected function _replaceUrls($sass) {
-
         if(df\Launchpad::$compileTimestamp) {
             $cts = df\Launchpad::$compileTimestamp;
         } else if($this->context->application->isDevelopment()) {
@@ -443,6 +447,8 @@ class SassBridge implements ISassBridge {
 
                 if($output) {
                     return $output;
+                } else {
+                    throw core\Error::ENotFound('Theme sass file not found: '.$path);
                 }
 
                 break;

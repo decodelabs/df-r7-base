@@ -28,7 +28,7 @@ class Mailchimp3 extends Base {
         $this->_mediator = new spur\mail\mailchimp3\Mediator($apiKey);
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->_mediator->getApiKey();
     }
 

@@ -78,12 +78,12 @@ class Document extends iris\map\Node implements flex\latex\IDocument, core\IDump
 
 
 // Top matter
-    public function setTitle(string $title=null) {
+    public function setTitle(?string $title) {
         $this->_title = $title;
         return $this;
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         return $this->_title;
     }
 

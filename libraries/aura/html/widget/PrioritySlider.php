@@ -15,7 +15,7 @@ class PrioritySlider extends Base implements IInputWidget {
     use TWidget_FormData;
     use TWidget_Input;
 
-    const PRIMARY_TAG = 'div';
+    const PRIMARY_TAG = 'div.range';
 
     public function __construct(arch\IContext $context, $name, $value=null) {
         parent::__construct($context);
@@ -54,7 +54,7 @@ class PrioritySlider extends Base implements IInputWidget {
                 'max' => 4,
                 'step' => 1,
                 'required' => $this->_isRequired,
-                'class' => 'w-rangeSlider'
+                'class' => 'w.number.slider'
             ]),
             ' ',
             new aura\html\Element('span', 'Critical')

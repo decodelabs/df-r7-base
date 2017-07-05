@@ -57,7 +57,7 @@ interface ILocator extends ILocatorProvider, core\IStringProvider  {
 
     public function setFirstNode($location, $type, $id=null);
     public function getFirstNode();
-    public function setFirstNodeLocation($location);    
+    public function setFirstNodeLocation($location);
     public function getFirstNodeLocation();
     public function setFirstNodeType($type);
     public function getFirstNodeType();
@@ -74,8 +74,8 @@ interface ILocator extends ILocatorProvider, core\IStringProvider  {
     public function getLastNodeId();
 
     public function getDomain();
-    public function setId($id);
-    public function getId();
+    public function setId(?string $id);
+    public function getId(): ?string;
 
     public function toStringUpTo($type);
 }

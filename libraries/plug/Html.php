@@ -364,7 +364,7 @@ class Html implements arch\IDirectoryHelper {
         $output = $this($tag, [
             $arrow,
             $this->number(abs($diff))
-        ])->addClass('w-diff');
+        ])->addClass('w.diff');
 
         if($invert !== null) {
             if($invert) $diff *= -1;
@@ -445,7 +445,7 @@ class Html implements arch\IDirectoryHelper {
 
         $isProduction = df\Launchpad::$application->isProduction();
 
-        $output = '<section class="w-flashList">'."\n";
+        $output = '<div class="w list flash">'."\n";
 
         foreach($manager->getConstantFlashes() as $message) {
             $message->isDisplayed(true);
@@ -469,7 +469,7 @@ class Html implements arch\IDirectoryHelper {
             $output .= $this->flashMessage($message);
         }
 
-        $output .= '</section>';
+        $output .= '</div>';
 
         if(!$messageCount) {
             return null;
@@ -547,12 +547,6 @@ class Html implements arch\IDirectoryHelper {
 
         if($icon === null) {
             $icon = 'refresh';
-        }
-
-        if($disposition === null) {
-            $disposition = 'informative';
-        } else if($disposition === false) {
-            $disposition = null;
         }
 
         return $this->eventButton($event, $label)

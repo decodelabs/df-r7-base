@@ -15,9 +15,10 @@ class Dependencies implements flex\code\IProbe {
     use flex\code\TProbe;
 
     protected $_errors = [];
+    protected static $_paths = [];
 
     public function probe(flex\code\ILocation $location, $localPath) {
-        if(substr($localPath, -4) != '.php') {
+        if(substr($localPath, -4) != '.php' || isset(self::$_paths[$localPath])) {
             return;
         }
 
@@ -35,6 +36,7 @@ class Dependencies implements flex\code\IProbe {
             return;
         }
 
+        self::$_paths[$localPath] = true;
         require_once $location->path.'/'.$localPath;
     }
 

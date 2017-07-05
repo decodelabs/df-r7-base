@@ -14,6 +14,8 @@ class Field extends Container implements IFormOrientedWidget {
 
     use core\constraint\TRequirable;
 
+    const PRIMARY_TAG = 'div.field';
+
     protected $_label;
     protected $_description;
     protected $_errorContainer;
@@ -65,7 +67,7 @@ class Field extends Container implements IFormOrientedWidget {
             $this->_label->setInputId($inputId);
         }
 
-        $labelContainer = new aura\html\Element('div.w-labelArea', $this->_label);
+        $labelContainer = new aura\html\Element('div.w.list.labels', $this->_label);
         $output[] = $labelContainer;
 
         if(!$this->_label->hasBody()) {
@@ -90,7 +92,7 @@ class Field extends Container implements IFormOrientedWidget {
             ];
         }
 
-        $output[] = new aura\html\Element('div.w-inputArea', $inputAreaBody);
+        $output[] = new aura\html\Element('div.w.list.inputs', $inputAreaBody);
 
         if($isRequired) {
             $tag->addClass('required');
@@ -153,7 +155,7 @@ class Field extends Container implements IFormOrientedWidget {
             ];
         }
 
-        return (new aura\html\Element('div', $inputAreaBody, ['class' => 'w-inputArea']))->render();
+        return (new aura\html\Element('div', $inputAreaBody, ['class' => 'w list inputs']))->render();
     }
 
 

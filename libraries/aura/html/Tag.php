@@ -352,7 +352,7 @@ class Tag implements ITag, core\IDumpable {
 
 
 // Id
-    public function setId($id) {
+    public function setId(?string $id) {
         if($id === null) {
             $this->removeAttribute('id');
             return $this;
@@ -366,7 +366,7 @@ class Tag implements ITag, core\IDumpable {
         return $this;
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->getAttribute('id');
     }
 
@@ -384,11 +384,11 @@ class Tag implements ITag, core\IDumpable {
         return $this->hasAttribute('hidden');
     }
 
-    public function setTitle(string $title=null) {
+    public function setTitle(?string $title) {
         return $this->setAttribute('title', $title);
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         return $this->getAttribute('title');
     }
 

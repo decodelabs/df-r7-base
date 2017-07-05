@@ -44,7 +44,7 @@ class UnixManaged extends Unix implements IManagedProcess {
     }
 
 // Title
-    public function setTitle(string $title=null) {
+    public function setTitle(?string $title) {
         $this->_title = $title;
 
         if($title && extension_loaded('proctitle')) {

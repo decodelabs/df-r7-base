@@ -116,7 +116,7 @@ abstract class Base implements IProcess {
 
 
 
-    public function __construct($processId, $title) {
+    public function __construct($processId, ?string $title) {
         $this->_processId = $processId;
         $this->_title = $title;
     }
@@ -125,7 +125,7 @@ abstract class Base implements IProcess {
         return $this->_processId;
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         return $this->_title;
     }
 }

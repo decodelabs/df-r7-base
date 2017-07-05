@@ -27,7 +27,7 @@ interface IProbe {
 interface IUnitInspector {
     public function getUnit();
     public function getModel();
-    public function getId();
+    public function getId(): string;
     public function getCanonicalId();
     public function getType();
     public function isVirtual();

@@ -18,7 +18,7 @@ class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
     use TWidget_OptionalMultipleValueInput;
     use core\io\TAcceptTypeProcessor;
 
-    const PRIMARY_TAG = 'input';
+    const PRIMARY_TAG = 'input.picker.file';
     const ARRAY_INPUT = false;
 
     public function __construct(arch\IContext $context, $name, $value=null) {

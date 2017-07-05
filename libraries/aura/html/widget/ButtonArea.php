@@ -11,4 +11,5 @@ use df\aura;
 
 class ButtonArea extends Container {
 
+    const PRIMARY_TAG = 'div.button-area';
 }

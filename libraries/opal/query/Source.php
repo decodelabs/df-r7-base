@@ -32,7 +32,7 @@ class Source implements ISource, core\IDumpable {
         return $this->_alias;
     }
 
-    public function getId() {
+    public function getId(): string {
         if(!$this->_id) {
             $this->_id = $this->_adapter->getQuerySourceId();
         }

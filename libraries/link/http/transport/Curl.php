@@ -132,8 +132,8 @@ class Curl_Handle {
         curl_setopt_array($this->resource, $conf);
     }
 
-    public function getId() {
-        return (int)$this->resource;
+    public function getId(): string {
+        return (string)((int)$this->resource);
     }
 
     protected function _createConf(link\http\IClient $client, core\lang\IPromise $promise) {

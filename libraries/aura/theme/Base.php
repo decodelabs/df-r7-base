@@ -50,7 +50,7 @@ class Base implements ITheme, core\IDumpable {
         return new $class($id);
     }
 
-    protected function __construct($id) {
+    protected function __construct(string $id) {
         if(preg_match('/[^a-zA-Z0-9_]/', $id)) {
             throw core\Error::EArgument('Invalid theme id');
         }
@@ -58,7 +58,7 @@ class Base implements ITheme, core\IDumpable {
         $this->_id = $id;
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->_id;
     }
 

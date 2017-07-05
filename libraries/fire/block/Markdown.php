@@ -90,7 +90,7 @@ class Markdown extends Base {
                     $ta = $this->html->textarea($this->fieldName('body'), $this->values->body)
                         //->isRequired($this->_isRequired)
                         ->setId($id = uniqid('markdown'))
-                        ->addClass('w-editor markdown')
+                        ->addClass('editor markdown')
                 );
 
                 $this->view->addFootScript($id,

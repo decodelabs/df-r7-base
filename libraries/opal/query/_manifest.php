@@ -735,7 +735,7 @@ interface IDerivedSourceAdapter extends IAdapter {
 // Source
 interface ISource extends IAdapterAware {
     public function getAlias();
-    public function getId();
+    public function getId(): string;
     public function getUniqueId();
     public function getHash();
     public function getDisplayName(): string;

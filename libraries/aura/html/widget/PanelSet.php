@@ -12,7 +12,7 @@ use df\arch;
 
 class PanelSet extends Base {
 
-    const PRIMARY_TAG = 'div';
+    const PRIMARY_TAG = 'div.list.panelSet';
 
     protected $_panels = [];
 
@@ -24,7 +24,7 @@ class PanelSet extends Base {
         $cells = [];
 
         foreach($this->_panels as $id => $panel) {
-            $cellTag = new aura\html\Tag('article', ['class' => 'w-panel field-'.$id, 'style' => 'width: '.$panel['width'].'%;']);
+            $cellTag = new aura\html\Tag('article', ['class' => 'w panel field-'.$id, 'style' => 'width: '.$panel['width'].'%;']);
             $bodyTag = new aura\html\Tag('div', ['class' => 'body']);
             $cells[] = $cellTag->renderWith($bodyTag->renderWith($panel['content']));
         }

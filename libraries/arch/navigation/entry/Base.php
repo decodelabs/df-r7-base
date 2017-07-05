@@ -73,7 +73,7 @@ abstract class Base implements arch\navigation\IEntry {
         return array_pop($parts);
     }
 
-    public function setId($id) {
+    public function setId(?string $id) {
         if(empty($id)) {
             $id = null;
         }
@@ -82,7 +82,7 @@ abstract class Base implements arch\navigation\IEntry {
         return $this;
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->_id;
     }
 

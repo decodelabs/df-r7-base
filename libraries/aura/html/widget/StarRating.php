@@ -12,7 +12,7 @@ use df\arch;
 
 class StarRating extends Base {
 
-    const PRIMARY_TAG = 'div';
+    const PRIMARY_TAG = 'div.starRating';
 
     protected $_value;
     protected $_max = 5;

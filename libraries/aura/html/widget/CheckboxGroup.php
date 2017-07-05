@@ -9,11 +9,12 @@ use df;
 use df\core;
 use df\aura;
 
-class CheckboxGroup extends RadioButtonGroup implements IMultipleSelectionInputWidget {
+class CheckboxGroup extends RadioGroup implements IMultipleSelectionInputWidget {
 
+    const PRIMARY_TAG = 'div.group.checkbox';
     const INPUT_TYPE = 'checkbox';
     const ARRAY_INPUT = true;
-    const WIDGET_CLASS = 'w-checkbox';
+    const WIDGET_CLASS = 'w.check.checkbox';
 
     protected $_allRequired = false;
 

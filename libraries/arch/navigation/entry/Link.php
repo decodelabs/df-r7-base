@@ -55,7 +55,7 @@ class Link extends Base implements arch\navigation\ILink {
         ], $this->_getSharedLinkComponentData());
     }
 
-    public function getId() {
+    public function getId(): ?string {
         if($this->_id === null) {
             return $this->_id = 'link-'.md5((string)$this->getUri());
         }

@@ -50,12 +50,12 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         }
     }
 
-    public function setId($id) {
+    public function setId(?string $id) {
         $this->_id = $id;
         return $this;
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->_id;
     }
 

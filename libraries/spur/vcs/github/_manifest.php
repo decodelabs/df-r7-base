@@ -46,7 +46,7 @@ interface IMediator extends spur\IHttpMediator {
 
 
 interface IApiObject {
-    public function getId();
+    public function getId(): ?string;
     public function getUrl($key=null);
 }
 
@@ -79,7 +79,7 @@ trait TApiObject {
 
     abstract protected function _importData(core\collection\ITree $data);
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->_id;
     }
 

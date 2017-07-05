@@ -10,16 +10,16 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, core\IDumpable {
+class RadioGroup extends Base implements IUngroupedSelectionInputWidget, core\IDumpable {
 
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_UngroupedSelectionInput;
 
-    const PRIMARY_TAG = 'div';
+    const PRIMARY_TAG = 'div.group.radio';
     const INPUT_TYPE = 'radio';
     const ARRAY_INPUT = false;
-    const WIDGET_CLASS = 'w-radioButton';
+    const WIDGET_CLASS = 'w.check.radio';
     const EMPTY_PLACEHOLDER = '_%_empty_%_';
 
     protected $_inputIdCounter = 0;
@@ -61,15 +61,14 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
         }
 
         foreach($options as $value => $label) {
-            $labelTag = new aura\html\Element('label.'.static::WIDGET_CLASS.'Label');
+            $labelTag = new aura\html\Element('label.'.static::WIDGET_CLASS);
 
             if($this->_labelClass) {
                 $labelTag->addClass($this->_labelClass);
             }
 
-            $inputTag = new aura\html\Tag('input', [
-                'type' => static::INPUT_TYPE,
-                'class' => static::WIDGET_CLASS
+            $inputTag = new aura\html\Tag('input.'.static::WIDGET_CLASS, [
+                'type' => static::INPUT_TYPE
             ]);
 
             $this->_applyFormDataAttributes($inputTag);

@@ -21,7 +21,7 @@ class IOException extends RuntimeException {}
 
 // Interfaces
 interface ISocket {
-    public function getId();
+    public function getId(): string;
     public function getImplementationName();
     public function getAddress();
     public function getSocketDescriptor();

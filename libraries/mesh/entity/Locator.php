@@ -591,11 +591,11 @@ class Locator implements ILocator, core\IDumpable {
         return $this->_domainString;
     }
 
-    public function setId($id) {
+    public function setId(?string $id) {
         return $this->setNodeId(-1, $id);
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->getLastNodeId();
     }
 

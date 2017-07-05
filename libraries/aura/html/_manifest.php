@@ -38,11 +38,11 @@ interface ITagDataContainer extends core\collection\IAttributeContainer {
     public function countClasses();
 
     // Direct attributes
-    public function setId($id);
-    public function getId();
+    public function setId(?string $id);
+    public function getId(): ?string;
     public function isHidden(bool $flag=null);
-    public function setTitle(string $title=null);
-    public function getTitle();
+    public function setTitle(?string $title);
+    public function getTitle(): ?string;
 
 
     // Style

@@ -147,7 +147,7 @@ class ContentBlock extends arch\node\form\Delegate implements
 
         if($availableCount > 1) {
             $fa->add('nav.buttons > div.type', [
-                $this->html->groupedSelectList(
+                $this->html->groupedSelect(
                         $this->fieldName('blockType'),
                         $this->values->blockType,
                         $available

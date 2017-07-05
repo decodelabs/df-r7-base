@@ -286,8 +286,8 @@ interface IStreamChannel extends IContainedStateChannel {
 
 // File
 interface IMultiplexer extends IFlushable, core\IRegistryObject {
-    public function setId($id);
-    public function getId();
+    public function setId(?string $id);
+    public function getId(): ?string;
 
     public function setLineLevel($level);
     public function getLineLevel();

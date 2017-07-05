@@ -14,6 +14,8 @@ class FieldError extends Base implements IFormOrientedWidget, core\collection\IE
 
     use core\collection\TErrorContainer;
 
+    const PRIMARY_TAG = 'div.list.errors';
+
     public function __construct(arch\IContext $context, $errors=null) {
         parent::__construct($context);
 

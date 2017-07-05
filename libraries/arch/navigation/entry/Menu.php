@@ -44,7 +44,7 @@ class Menu extends Base {
         ];
     }
 
-    public function getId() {
+    public function getId(): ?string {
         if($this->_id === null) {
             return $this->_id = 'menu-'.md5((string)$this->getDelegate());
         }

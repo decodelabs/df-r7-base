@@ -76,12 +76,12 @@ class Customer implements mint\ICustomer {
         return $this->_card;
     }
 
-    public function setUserId(?int $userId) {
+    public function setUserId(?string $userId) {
         $this->_userId = $userId;
         return $this;
     }
 
-    public function getUserId(): ?int {
+    public function getUserId(): ?string {
         return $this->_userId;
     }
 

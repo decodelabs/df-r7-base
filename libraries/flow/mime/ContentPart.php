@@ -139,12 +139,12 @@ class ContentPart implements IContentPart, core\IDumpable {
     }
 
 
-    public function setId($id) {
+    public function setId(string $id) {
         $this->_headers->set('content-id', '<'.$id.'>');
         return $this;
     }
 
-    public function getId() {
+    public function getId(): string {
         return substr($this->_headers->get('content-id'), 1, -1);
     }
 

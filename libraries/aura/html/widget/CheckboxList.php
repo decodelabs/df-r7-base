@@ -12,7 +12,7 @@ use df\arch;
 
 class CheckboxList extends Base implements core\IDumpable {
 
-    const PRIMARY_TAG = 'div';
+    const PRIMARY_TAG = 'div.list.check.checkbox';
 
     protected $_labelClass = null;
     protected $_shouldWrapBody = true;

@@ -20,7 +20,7 @@ class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
     use TWidget_PlaceholderProvider;
     use TWidget_RangeEntry;
 
-    const PRIMARY_TAG = 'input';
+    const PRIMARY_TAG = 'input.textbox.number';
     const ARRAY_INPUT = false;
     const INPUT_TYPE = 'number';
     const DEFAULT_PLACEHOLDER = null;

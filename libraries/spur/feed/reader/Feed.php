@@ -155,7 +155,7 @@ abstract class Feed implements spur\feed\IFeedReader {
 
 
 // Feed
-    public function getId() {
+    public function getId(): ?string {
         return $this->_getDefaultValue('id');
     }
 
@@ -173,7 +173,7 @@ abstract class Feed implements spur\feed\IFeedReader {
         return $this->_getDefaultValue('authors');
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         return $this->_getDefaultValue('title');
     }
 

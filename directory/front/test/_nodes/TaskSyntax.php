@@ -18,7 +18,7 @@ class TaskSyntax extends arch\node\Task {
             new flex\code\probe\Syntax()
         ]);
 
-        $scanner->addFrameworkPackageLocations();
+        $scanner->addFrameworkPackageLocations(true);
         $this->io->write('Scanning packages:');
         $errors = [];
 

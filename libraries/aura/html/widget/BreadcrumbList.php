@@ -14,7 +14,7 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
 
     use TWidget_NavigationEntryController;
 
-    const PRIMARY_TAG = 'nav';
+    const PRIMARY_TAG = 'nav.breadcrumbs';
     const DEFAULT_LINK_WIDGET = 'Link';
     const ENFORCE_DEFAULT_LINK_WIDGET = false;
 

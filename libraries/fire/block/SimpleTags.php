@@ -86,7 +86,7 @@ class SimpleTags extends Base {
                 $field->push(
                     $this->html->textarea($this->fieldName('body'), $this->values->body)
                         ->isRequired($this->_isRequired)
-                        ->addClass('w-editor simpleTags')
+                        ->addClass('editor simpleTags')
                 );
 
                 return $this;

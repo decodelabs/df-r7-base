@@ -14,7 +14,7 @@ class OrderList extends Base implements IMappedListWidget {
 
     use TWidget_MappedList;
 
-    const PRIMARY_TAG = 'ul';
+    const PRIMARY_TAG = 'ul.order';
 
     protected $_pageData;
 

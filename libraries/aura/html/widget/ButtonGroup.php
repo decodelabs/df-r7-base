@@ -9,4 +9,7 @@ use df;
 use df\core;
 use df\aura;
 
-class ButtonGroup extends Container {}
+class ButtonGroup extends Container {
+
+    const PRIMARY_TAG = 'div.button-group';
+}

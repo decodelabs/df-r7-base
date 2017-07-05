@@ -12,7 +12,7 @@ use df\arch;
 
 class Overlay extends Container implements IWidgetShortcutProvider {
 
-    const PRIMARY_TAG = 'div';
+    const PRIMARY_TAG = 'div.overlay';
 
     protected $_titleBody;
     protected $_titleTagName = 'h3';

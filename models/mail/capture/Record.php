@@ -13,8 +13,12 @@ use df\flow;
 
 class Record extends opal\record\Base implements flow\mail\IMailRecord {
 
-    public function getId() {
-        return $this['id'];
+    public function getId(): ?string {
+        if(null !== ($id = $this['id'])) {
+            return (string)$id;
+        } else {
+            return null;
+        }
     }
 
     public function getFromAddress() {

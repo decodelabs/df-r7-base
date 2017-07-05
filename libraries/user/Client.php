@@ -170,7 +170,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         $this->_keyringTimestamp = $data['kt'];
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->_id;
     }
 

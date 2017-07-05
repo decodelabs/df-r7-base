@@ -293,11 +293,13 @@ class Base implements core\ILoader {
 
 // Packages
     public function loadPackages(array $packages) {
+        /*
         if($this->_isInit) {
             throw core\Error::ELogic(
                 'Cannot load packages after init'
             );
         }
+        */
 
         $this->_loadPackageList($packages);
 

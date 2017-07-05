@@ -13,7 +13,7 @@ use df\spur;
 
 class Recaptcha extends Base {
 
-    const PRIMARY_TAG = 'div';
+    const PRIMARY_TAG = 'div.recaptcha';
 
     protected $_siteKey = null;
 

@@ -11,7 +11,7 @@ use df\arch;
 
 class Spacer extends Base {
 
-    public function getId() {
+    public function getId(): ?string {
         if($this->_id === null) {
             return $this->_id = 'spacer-'.md5(uniqid('spacer', true));
         }

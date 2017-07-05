@@ -70,7 +70,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         );
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this['id'];
     }
 

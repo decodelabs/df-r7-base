@@ -18,7 +18,7 @@ class Source implements ISource {
     protected $_adapter;
     protected $_primaryListId;
 
-    public function __construct($id, $options) {
+    public function __construct(string $id, $options) {
         $options = core\collection\Tree::factory($options);
 
         $this->_id = $id;
@@ -26,7 +26,7 @@ class Source implements ISource {
         $this->_primaryListId = $options['primaryList'];
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->_id;
     }
 

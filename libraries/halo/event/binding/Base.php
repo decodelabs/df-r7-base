@@ -19,14 +19,14 @@ abstract class Base implements halo\event\IBinding {
     public $eventResource;
     public $dispatcher;
 
-    public function __construct(halo\event\IDispatcher $dispatcher, $id, $isPersistent, $callback) {
+    public function __construct(halo\event\IDispatcher $dispatcher, string $id, $isPersistent, $callback) {
         $this->id = $id;
         $this->isPersistent = (bool)$isPersistent;
         $this->handler = core\lang\Callback::factory($callback);
         $this->dispatcher = $dispatcher;
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->id;
     }
 

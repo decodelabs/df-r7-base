@@ -199,7 +199,7 @@ interface IBranch {
 
 
 interface ICommit {
-    public function getId();
+    public function getId(): string;
     public function getTreeId();
     public function getTree();
     public function getParentIds();
@@ -215,7 +215,7 @@ interface ICommit {
 }
 
 interface IFile {
-    public function getId();
+    public function getId(): string;
     public function _setName($name);
     public function getName(): string;
     public function _setMode($mode);
@@ -227,7 +227,7 @@ interface IFile {
 }
 
 interface ITree {
-    public function getId();
+    public function getId(): string;
     public function _setName($name);
     public function getName(): string;
     public function _setMode($mode);

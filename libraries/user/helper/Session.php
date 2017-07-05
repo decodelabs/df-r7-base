@@ -144,7 +144,7 @@ class Session extends Base implements user\session\IController {
         return $this->_isOpen;
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->descriptor->getPublicKey();
     }
 
@@ -163,7 +163,7 @@ class Session extends Base implements user\session\IController {
         return $this;
     }
 
-    public function setUserId($id) {
+    public function setUserId(?string $id) {
         $this->descriptor->setUserId($id);
         $this->backend->applyTransition($this->descriptor);
         return $this;

@@ -49,7 +49,7 @@ class Image implements IImage {
         return $this->_link !== null;
     }
 
-    public function setTitle(string $title=null) {
+    public function setTitle(?string $title) {
         $this->_title = trim($title);
 
         if(!strlen($this->_title)) {
@@ -59,7 +59,7 @@ class Image implements IImage {
         return $this;
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         return $this->_title;
     }
 

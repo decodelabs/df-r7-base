@@ -261,7 +261,7 @@ class Embed implements IAudioEmbed {
 // String
     public function render() {
         if(($this->_url === null || !$this->_provider) && $this->_source !== null) {
-            return new aura\html\Element('div.w-audioEmbed', new aura\html\ElementString($this->_source));
+            return new aura\html\Element('div.w.embed.audio', new aura\html\ElementString($this->_source));
         }
 
         if($this->_provider) {
@@ -276,7 +276,7 @@ class Embed implements IAudioEmbed {
             ]);
         }
 
-        $tag->addClass('w-audioEmbed');
+        $tag->addClass('w embed audio');
 
         return $tag;
     }

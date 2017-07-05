@@ -38,7 +38,7 @@ abstract class Wizard extends Form {
         $section = $this->getStore('section');
 
         if(!$section) {
-            $this->setSection(array_values(static::SECTIONS)[0]);
+            $this->setSection($section = array_values(static::SECTIONS)[0]);
         }
 
         return $section;

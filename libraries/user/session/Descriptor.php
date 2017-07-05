@@ -21,18 +21,13 @@ class Descriptor implements user\session\IDescriptor {
     public $justStarted = false;
 
     public static function fromArray(array $values) {
-        $output = new self(null, null);
+        $output = new self(
+            $values['id'],
+            $values['publicKey']
+        );
 
         foreach($values as $key => $value) {
             switch($key) {
-                case 'id':
-                    $output->setId($value);
-                    break;
-
-                case 'publicKey':
-                    $output->setPublicKey($value);
-                    break;
-
                 case 'transitionKey':
                     $output->setTransitionKey($value);
                     break;
@@ -59,7 +54,7 @@ class Descriptor implements user\session\IDescriptor {
         return $output;
     }
 
-    public function __construct($id, $publicKey) {
+    public function __construct(string $id, $publicKey) {
         $this->setId($id);
         $this->setPublicKey($publicKey);
     }
@@ -78,12 +73,12 @@ class Descriptor implements user\session\IDescriptor {
         return $this->justStarted;
     }
 
-    public function setId($id) {
+    public function setId(string $id) {
         $this->id = $id;
         return $this;
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->id;
     }
 
@@ -166,16 +161,12 @@ class Descriptor implements user\session\IDescriptor {
         return $output;
     }
 
-    public function setUserId($id) {
-        if(is_object($id)) {
-            $id = (string)$id;
-        }
-
-        $this->userId = $id ? (int)$id : null;
+    public function setUserId(?string $id) {
+        $this->userId = $id;
         return $this;
     }
 
-    public function getUserId() {
+    public function getUserId(): ?string {
         return $this->userId;
     }
 

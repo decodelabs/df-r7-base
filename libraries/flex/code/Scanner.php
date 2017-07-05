@@ -46,7 +46,7 @@ class Scanner implements IScanner {
         return $this;
     }
 
-    public function addFrameworkPackageLocations(bool $allRoot=false) {
+    public function addFrameworkPackageLocations(bool $allRoot=false, array $blackList=null) {
         if($allRoot) {
             $model = axis\Model::factory('package');
             $packages = $model->getInstalledPackageList();
@@ -55,11 +55,22 @@ class Scanner implements IScanner {
         }
 
         foreach($packages as $name => $package) {
-            $blackList = [];
+            $pathBlackList = [];
+
+            if(is_array($package)) {
+                $path = $package['path'];
+                $name = $package['name'];
+            } else {
+                $path = $package->path;
+            }
+
+            if($blackList !== null && in_array($name, $blackList)) {
+                continue;
+            }
 
             switch($name) {
                 case 'app':
-                    $blackList = [
+                    $pathBlackList = [
                         'data',
                         'dev',
                         'static',
@@ -69,21 +80,14 @@ class Scanner implements IScanner {
                     break;
 
                 case 'root':
-                    $blackList = [
+                    $pathBlackList = [
                         'base/libraries/core/i18n/module/cldr',
                     ];
 
                     break;
             }
 
-            if(is_array($package)) {
-                $path = $package['path'];
-                $name = $package['name'];
-            } else {
-                $path = $package->path;
-            }
-
-            $this->addLocation(new Location($name, $path, $blackList));
+            $this->addLocation(new Location($name, $path, $pathBlackList));
         }
 
         return $this;

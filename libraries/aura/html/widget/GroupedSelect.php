@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IFocusableInputWidget, core\IDumpable {
+class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocusableInputWidget, core\IDumpable {
 
     use TWidget_FormData;
     use TWidget_Input;
@@ -18,7 +18,7 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
     use TWidget_FocusableInput;
     use TWidget_GroupedSelectionInput;
 
-    const PRIMARY_TAG = 'select';
+    const PRIMARY_TAG = 'select.single.grouped';
     const ARRAY_INPUT = false;
 
     protected $_selected;

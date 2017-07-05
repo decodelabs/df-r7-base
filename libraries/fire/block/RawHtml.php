@@ -88,7 +88,7 @@ class RawHtml extends Base {
                 $field->push(
                     $this->html->textarea($this->fieldName('content'), $this->values->content)
                         ->isRequired($this->_isRequired)
-                        ->addClass('w-editor html')
+                        ->addClass('editor html')
                 );
 
                 return $this;

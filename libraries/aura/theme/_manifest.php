@@ -18,7 +18,7 @@ interface IFacetProvider {
 }
 
 interface ITheme extends IFacetProvider, aura\view\IViewRenderEventReceiver, aura\view\ILayoutMap {
-    public function getId();
+    public function getId(): string;
 
     public function findAsset($path);
     public function getApplicationImagePath();

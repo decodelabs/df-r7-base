@@ -24,7 +24,7 @@ class Dependency implements IDependency {
     public $installName;
 
 
-    public function __construct($id, $data=null) {
+    public function __construct(string $id, $data=null) {
         $parts = explode('#', $id, 2);
         $id = array_shift($parts);
         $version = array_shift($parts);
@@ -92,7 +92,7 @@ class Dependency implements IDependency {
         }
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->id;
     }
 

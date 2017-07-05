@@ -13,7 +13,7 @@ use df\user;
 
 // Interfaces
 interface ISource {
-    public function getId();
+    public function getId(): string;
     public function getAdapter();
     public function canConnect(): bool;
 
@@ -42,7 +42,7 @@ interface ISource {
 interface IAdapter {
     public static function getSettingsFields();
     public function getName(): string;
-    public function getId();
+    public function getId(): string;
     public function canConnect(): bool;
     public function fetchManifest(): array;
 

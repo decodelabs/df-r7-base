@@ -11,6 +11,7 @@ use df\aura;
 use df\arch;
 
 class PasswordTextbox extends Textbox {
-    
+
+    const PRIMARY_TAG = 'input.textbox.password';
     const INPUT_TYPE = 'password';
 }

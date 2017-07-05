@@ -157,7 +157,7 @@ interface IMailModel {
 }
 
 interface IMailRecord {
-    public function getId();
+    public function getId(): ?string;
     public function getFromAddress();
     public function getToAddresses();
     public function getSubject();

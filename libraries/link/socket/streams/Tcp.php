@@ -26,7 +26,7 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
         return array_merge(parent::_populateOptions(), self::DEFAULT_OPTIONS);
     }
 
-    public function getId() {
+    public function getId(): string {
         if(!$this->_id) {
             if(!$this->_isConnected) {
                 $this->connect();

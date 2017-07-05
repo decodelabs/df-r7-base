@@ -952,14 +952,14 @@ trait TAttributeModule_Container {
 // Core
 trait TAttributeModule_Core {
 
-    public function setId($id) {
+    public function setId(?string $id) {
         return $this->_setAttribute(
             'id',
             $this->_normalizeIdentifier($id)
         );
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->_getAttribute('id');
     }
 

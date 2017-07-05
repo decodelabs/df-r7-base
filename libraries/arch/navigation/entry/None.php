@@ -14,20 +14,20 @@ class None extends Base {
     protected $_id;
 
     protected static function _fromArray(array $entry) {
-        return new self(@$entry['id']);
+        return new self($entry['id'] ?? null);
     }
 
     public function __construct($id) {
         $this->setId($id);
     }
 
-    public function setId($id) {
+    public function setId(?string $id) {
         $this->_id = $id;
 
         return $this;
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->_id;
     }
 

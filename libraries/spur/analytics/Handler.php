@@ -91,12 +91,12 @@ class Handler implements IHandler {
 
 
 // Title
-    public function setTitle(string $title=null) {
+    public function setTitle(?string $title) {
         $this->_title = $title;
         return $this;
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         return $this->_title;
     }
 

@@ -157,8 +157,8 @@ interface IHtmlView extends IResponseView, ILayoutView {
     public function getBodyTag();
 
     // Title
-    public function setTitle(string $title=null);
-    public function getTitle();
+    public function setTitle(?string $title);
+    public function getTitle(): ?string;
     public function hasTitle();
     public function setTitlePrefix($prefix);
     public function getTitlePrefix();

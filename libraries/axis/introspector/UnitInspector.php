@@ -26,7 +26,7 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         return $this->_unit->getModel();
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->_unit->getUnitId();
     }
 

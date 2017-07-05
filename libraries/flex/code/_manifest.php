@@ -17,8 +17,8 @@ class LogicException extends \LogicException implements IException {}
 
 // Interfaces
 interface ILocation {
-    public function setId($id);
-    public function getId();
+    public function setId(string $id);
+    public function getId(): string;
     public function setPath($path);
     public function getPath();
     public function setBlackList(array $blackList);
@@ -32,7 +32,7 @@ interface ILocation {
 interface IScanner {
     public function setLocations(array $locations);
     public function addLocations(array $locations);
-    public function addFrameworkPackageLocations(bool $allRoot=false);
+    public function addFrameworkPackageLocations(bool $allRoot=false, array $blackList=null);
     public function addLocation(ILocation $location);
     public function getLocation($id);
     public function hasLocation($id);
@@ -53,13 +53,13 @@ interface IScanner {
 }
 
 interface IProbe {
-    public function getId();
+    public function getId(): string;
     public function probe(ILocation $location, $localPath);
     public function exportTo(self $probe);
 }
 
 trait TProbe {
-    public function getId() {
+    public function getId(): string {
         $parts = explode('\\', get_class($this));
         return lcfirst(array_pop($parts));
     }

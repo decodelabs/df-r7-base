@@ -41,7 +41,7 @@ interface IDispatcher {
     public function removeAllBindings();
     public function getAllBindings();
     public function countAllBindings();
-    
+
 
 // Cycle
     public function setCycleHandler($callback=null);
@@ -73,7 +73,7 @@ interface IDispatcher {
     public function removeSocketWrite(link\socket\ISocket $socket);
     public function removeSocketBinding(ISocketBinding $binding);
     public function removeAllSockets();
-    
+
     public function countSocketBindings(link\socket\ISocket $socket=null);
     public function getSocketBindings(link\socket\ISocket $socket=null);
     public function countSocketReadBindings();
@@ -107,7 +107,7 @@ interface IDispatcher {
     public function removeStreamWrite(core\io\IStreamChannel $stream);
     public function removeStreamBinding(IStreamBinding $binding);
     public function removeAllStreams();
-    
+
     public function countStreamBindings(core\io\IStreamChannel $stream=null);
     public function getStreamBindings(core\io\IStreamChannel $stream=null);
     public function countStreamReadBindings();
@@ -133,7 +133,7 @@ interface IDispatcher {
     public function removeSignal($signal);
     public function removeSignalBinding($binding);
     public function removeAllSignals();
-    
+
     public function getSignalBinding($id);
     public function countSignalBindings();
     public function getSignalBindings();
@@ -153,7 +153,7 @@ interface IDispatcher {
 
     public function removeTimer($id);
     public function removeAllTimers();
-    
+
     public function getTimerBinding($id);
     public function countTimerBindings();
     public function getTimerBindings();
@@ -201,7 +201,7 @@ trait TDispatcherProvider {
 
 // Binding
 interface IBinding {
-    public function getId();
+    public function getId(): string;
     public function getType();
     public function isPersistent();
     public function getHandler();

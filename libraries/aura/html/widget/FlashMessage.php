@@ -24,9 +24,9 @@ class FlashMessage extends Base {
 
     protected function _getPrimaryTagType(): string {
         if($this->_message->getLink() !== null) {
-            return 'a';
+            return 'a.flashMessage';
         } else {
-            return 'div';
+            return 'div.flashMessage';
         }
     }
 

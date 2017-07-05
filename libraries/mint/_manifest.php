@@ -276,8 +276,8 @@ interface ICustomer {
     public function setCard(?ICreditCard $card);
     public function getCard(): ?ICreditCard;
 
-    public function setUserId(?int $userId);
-    public function getUserId(): ?int;
+    public function setUserId(?string $userId);
+    public function getUserId(): ?string;
 
     public function isDelinquent(bool $flag=null);
 

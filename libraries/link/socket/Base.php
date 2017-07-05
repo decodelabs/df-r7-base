@@ -50,7 +50,7 @@ abstract class Base implements ISocket {
         return self::DEFAULT_OPTIONS;
     }
 
-    public function getId() {
+    public function getId(): string {
         if($this->_id === null) {
             $this->_id = (string)$this->_address;
         }

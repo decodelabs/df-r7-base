@@ -233,7 +233,7 @@ abstract class SelectorDelegate extends Delegate implements
         $selected = $this->_fetchSelectionList();
 
         if($this->_isForMany) {
-            $select = $this->html('div.w-checkboxGroup', function() use($options) {
+            $select = $this->html('div.w.list.checkbox', function() use($options) {
                 foreach($options as $key => $val) {
                     yield $this->html->checkbox(
                             $this->fieldName('selected['.$key.']'),
@@ -244,7 +244,7 @@ abstract class SelectorDelegate extends Delegate implements
                 }
             });
         } else {
-            $select = $this->html->selectList(
+            $select = $this->html->select(
                     $this->fieldName('selected'),
                     $this->values->selected,
                     $options
@@ -253,7 +253,7 @@ abstract class SelectorDelegate extends Delegate implements
         }
 
         $fa->push(
-            $this->html('div.w-selection', [
+            $this->html('div.w.list.selection', [
                 $this->html('div.body', $select),
                 $this->html->hidden($this->fieldName('_poke'), 1),
 
@@ -265,7 +265,7 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
     protected function _renderInlineTextDetails(aura\html\widget\Field $fa) {
-        $fa->push($this->html->string('<div class="w-selection"><div class="body">'));
+        $fa->push($this->html->string('<div class="w list selection"><div class="body">'));
         $selected = $this->_fetchSelectionList();
 
         if($this->_isForMany) {
@@ -417,7 +417,7 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
     protected function createOverlaySelectorUiContent(aura\html\widget\Overlay $ol, $selected) {
-        $fs = $ol->addFieldSet($this->_('Select'))->addClass('stacked');
+        $fs = $ol->addFieldSet($this->_('Select'));
 
         if(!$this->values->search->hasValue() && $this->_defaultSearchString !== null) {
             $this->values->search->setValue($this->_defaultSearchString);
@@ -586,7 +586,7 @@ abstract class SelectorDelegate extends Delegate implements
         $name = $this->_getResultDisplayName($selected);
 
         $fa->push(
-            $this->html('div.w-selection', [
+            $this->html('div.w.list.selection', [
                 $this->html->hidden($this->fieldName('selected'), $id),
 
                 $this->html('div.body', $name),
@@ -616,7 +616,7 @@ abstract class SelectorDelegate extends Delegate implements
             $name = $this->_getResultDisplayName($result);
 
             $fa->push(
-                $this->html('div.w-selection', [
+                $this->html('div.w.list.selection', [
                     $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
 
                     $this->html('div.body', $name),
@@ -641,7 +641,7 @@ abstract class SelectorDelegate extends Delegate implements
 
     protected function _renderCheckbox($id, $name=null) {
         if(!$this->_isForMany) {
-            return $this->html->radioButton(
+            return $this->html->radio(
                 $this->fieldName('selected'),
                 $this->isSelected($id),
                 $name,

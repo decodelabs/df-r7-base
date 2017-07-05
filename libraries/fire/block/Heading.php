@@ -144,7 +144,7 @@ class Heading extends Base {
                 // Main
                 $field->push(
                     $inner = $this->html->field($this->_('Heading text'))->push(
-                        $this->html->selectList($this->fieldName('level'), $this->values->level, Heading::OPTIONS),
+                        $this->html->select($this->fieldName('level'), $this->values->level, Heading::OPTIONS),
 
                         $this->html->textbox($this->fieldName('heading'), $this->values->heading)
                             ->isRequired($this->_isRequired)
@@ -164,7 +164,7 @@ class Heading extends Base {
 
                     $inner->push(
                         ' ',
-                        $this->html->selectList($this->fieldName('class'), $this->values->class, $classes)
+                        $this->html->select($this->fieldName('class'), $this->values->class, $classes)
                     );
                 } else {
                     $inner->push(

@@ -11,6 +11,7 @@ use df\aura;
 use df\arch;
 
 class TelephoneTextbox extends Textbox {
-    
+
+    const PRIMARY_TAG = 'input.textbox.telephone';
     const INPUT_TYPE = 'tel';
 }

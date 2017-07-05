@@ -13,6 +13,7 @@ use df\flex;
 
 class EventButton extends Button {
 
+    const PRIMARY_TAG = 'button.btn.event';
     const BUTTON_TYPE = 'submit';
 
     public function __construct(arch\IContext $context, $event, $body=null) {

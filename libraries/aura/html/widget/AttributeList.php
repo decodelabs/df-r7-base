@@ -12,7 +12,7 @@ use df\arch;
 
 class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWidget, core\IDumpable {
 
-    const PRIMARY_TAG = 'div';
+    const PRIMARY_TAG = 'div.list.attributes';
 
     use TWidget_DataDrivenList;
     use TWidget_MappedList;

@@ -123,7 +123,7 @@ abstract class HeaderBar extends Base implements core\IDumpable {
 
         // Selector area
         if($selectorArea = $this->_renderSelectorArea()) {
-            $output[] = $this->html('div.w-selectorArea', [$selectorArea]);
+            $output[] = $this->html('div.w.selectorArea.floated', [$selectorArea]);
         }
 
 
@@ -141,7 +141,7 @@ abstract class HeaderBar extends Base implements core\IDumpable {
         $output[] = $secondaryMenu = $this->html->menuBar()->addClass('secondary');
         $this->_addSectionLinks($secondaryMenu);
 
-        return $this->html('header.w-headerBar', $output);
+        return $this->html('header.w.bar', $output);
     }
 
 

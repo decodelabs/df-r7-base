@@ -14,7 +14,7 @@ class Hidden extends Base implements IFormDataWidget, core\IDumpable {
 
     use TWidget_FormData;
 
-    const PRIMARY_TAG = 'input';
+    const PRIMARY_TAG = 'input.hidden';
     const ARRAY_INPUT = false;
 
     public function __construct(arch\IContext $context, $name, $value=null) {

@@ -78,7 +78,7 @@ trait TAuthorProvider {
 }
 
 interface IDescriptionProvider {
-    public function getTitle();
+    public function getTitle(): ?string;
     public function getDescription();
 }
 
@@ -304,7 +304,7 @@ interface IFeed extends
     ICategorized,
     ITimestamped {
 
-    public function getId();
+    public function getId(): ?string;
     public function getType();
     public function getTypeName();
     public function getImage();
@@ -366,7 +366,7 @@ interface IEntry extends
     IDescriptionProvider,
     ICategorized,
     ITimestamped {
-    public function getId();
+    public function getId(): ?string;
     public function getContent();
 
     public function getPermalink();
@@ -492,8 +492,8 @@ interface IImage {
     public function setLink($link);
     public function getLink();
     public function hasLink();
-    public function setTitle(string $title=null);
-    public function getTitle();
+    public function setTitle(?string $title);
+    public function getTitle(): ?string;
     public function hasTitle();
     public function setHeight($height);
     public function getHeight();

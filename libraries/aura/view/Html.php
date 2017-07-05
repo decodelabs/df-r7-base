@@ -89,7 +89,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
 
 // Title
-    public function setTitle(string $title=null) {
+    public function setTitle(?string $title) {
         if(empty($title)) {
             $title = null;
         }
@@ -98,7 +98,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         return $this;
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         return $this->_title;
     }
 

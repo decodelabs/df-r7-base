@@ -18,7 +18,7 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         'dc11' => 'http://purl.org/dc/elements/1.1/'
     ];
 
-    public function getId() {
+    public function getId(): ?string {
         $id = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/dc11:identifier)'
         );
@@ -64,7 +64,7 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $authors;
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         $title = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/dc11:title)'
         );

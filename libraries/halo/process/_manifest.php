@@ -18,7 +18,7 @@ class LogicException extends \LogicException implements IException {}
 // Interfaces
 interface IProcess {
     public static function getCurrentProcessId();
-    public function getTitle();
+    public function getTitle(): ?string;
     public function getProcessId();
 
     public function isAlive();
@@ -30,7 +30,7 @@ interface IProcess {
 
 
 interface IManagedProcess extends IProcess {
-    public function setTitle(string $title=null);
+    public function setTitle(?string $title);
     public function getParentProcessId();
     public function setPriority($priority);
     public function getPriority();
@@ -126,8 +126,8 @@ interface ILauncher {
     public function setUser($user);
     public function getUser();
     public function isPrivileged();
-    public function setTitle(string $title=null);
-    public function getTitle();
+    public function setTitle(?string $title);
+    public function getTitle(): ?string;
     public function setPriority($priority);
     public function getPriority();
     public function setWorkingDirectory($path);

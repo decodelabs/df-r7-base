@@ -74,7 +74,7 @@ abstract class ReorderForm extends Form {
 
         foreach($names as $id => $name) {
             $fa->push(
-                $this->html('div.w-selection', [
+                $this->html('div.w.list.selection', [
                     $this->html->hidden('items[]', $id),
 
                     $this->html('div.body', $name)

@@ -19,7 +19,7 @@ class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
     use TWidget_VisualInput;
     use TWidget_DataListEntry;
 
-    const PRIMARY_TAG = 'input';
+    const PRIMARY_TAG = 'input.color.picker';
     const ARRAY_INPUT = false;
 
     public function __construct(arch\IContext $context, $name, $value=null) {

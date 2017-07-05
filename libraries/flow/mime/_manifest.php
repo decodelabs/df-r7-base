@@ -38,8 +38,8 @@ interface IContentPart extends IPart {
     public function setCharacterSet($charset);
     public function getCharacterSet();
 
-    public function setId($id);
-    public function getId();
+    public function setId(string $id);
+    public function getId(): string;
     public function setDisposition($disposition);
     public function getDisposition();
     public function getFullDisposition();

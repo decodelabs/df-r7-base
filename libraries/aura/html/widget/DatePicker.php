@@ -12,6 +12,7 @@ use df\arch;
 
 class DatePicker extends NumberTextbox implements IDateWidget {
 
+    const PRIMARY_TAG = 'input.textbox.picker.date';
     const INPUT_TYPE = null;
 
     protected $_outputFormat = 'Y-m-d';

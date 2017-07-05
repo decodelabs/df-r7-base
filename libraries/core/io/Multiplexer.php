@@ -42,12 +42,12 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
         }
     }
 
-    public function setId($id) {
+    public function setId(?string $id) {
         $this->_id = $id;
         return $this;
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->_id;
     }
 

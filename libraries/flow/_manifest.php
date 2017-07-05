@@ -90,7 +90,7 @@ interface IFlashMessage {
     const WARNING = 'warning';
     const DEBUG = 'debug';
 
-    public function getId();
+    public function getId(): string;
     public function setType($type);
     public function getType();
     public function isDebug();

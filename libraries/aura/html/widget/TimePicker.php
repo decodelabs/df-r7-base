@@ -11,7 +11,8 @@ use df\aura;
 use df\arch;
 
 class TimePicker extends DatePicker {
-    
+
+    const PRIMARY_TAG = 'input.textbox.picker.time';
     const INPUT_TYPE = 'time';
 
     protected $_outputFormat = 'h:i';
@@ -24,16 +25,16 @@ class TimePicker extends DatePicker {
             return 'time';
         }
     }
-    
+
     protected function _normalizeDateString($date) {
         if($date instanceof core\time\IDate) {
             return $this->_dateToString($date);
-        } 
+        }
 
         if(!$date instanceof core\time\ITimeOfDay) {
             $date = core\time\TimeOfDay::factory($date);
         }
-        
+
         return sprintf('%02d:%02d', $date->getHours(), $date->getMinutes());
     }
 

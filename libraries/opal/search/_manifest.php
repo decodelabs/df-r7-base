@@ -36,8 +36,8 @@ interface IIndex extends \Countable {
 }
 
 interface IDocument {
-    public function setId($id);
-    public function getId();
+    public function setId(?string $id);
+    public function getId(): ?string;
     public function setValues(array $values);
     public function getValues();
     public function getPreparedValues();

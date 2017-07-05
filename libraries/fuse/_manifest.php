@@ -30,7 +30,7 @@ interface IManager extends core\IManager {
 
 
 interface IDependency {
-    public function getId();
+    public function getId(): string;
     public function getVersion();
     public function getSource();
     public function getJs();

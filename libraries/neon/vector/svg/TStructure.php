@@ -23,12 +23,12 @@ trait TStructure_Description {
     protected $_title;
     protected $_description;
 
-    public function setTitle(string $title=null) {
+    public function setTitle(?string $title) {
         $this->_title = $this->_normalizeText($title);
         return $this;
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         return $this->_title;
     }
 

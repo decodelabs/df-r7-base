@@ -24,7 +24,7 @@ interface IController {
     const TRANSITION_COOLOFF = 20;
 
     public function isOpen();
-    public function getId();
+    public function getId(): string;
     public function transition();
     public function getBucket($namespace);
     public function destroy(bool $restart=false);
@@ -120,8 +120,8 @@ interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvide
     public function isNew();
     public function hasJustStarted(bool $flag=null);
 
-    public function setId($id);
-    public function getId();
+    public function setId(string $id);
+    public function getId(): string;
     public function getIdHex();
     public function setPublicKey($key);
     public function getPublicKey();
@@ -132,8 +132,8 @@ interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvide
     public function getTransitionKeyHex();
     public function applyTransition($newPublicKey);
 
-    public function setUserId($id);
-    public function getUserId();
+    public function setUserId(?string $id);
+    public function getUserId(): ?string;
 
     public function setStartTime($time);
     public function getStartTime();

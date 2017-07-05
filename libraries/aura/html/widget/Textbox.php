@@ -20,7 +20,7 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     use TWidget_TextEntry;
     use TWidget_DataListEntry;
 
-    const PRIMARY_TAG = 'input';
+    const PRIMARY_TAG = 'input.textbox';
     const ARRAY_INPUT = false;
 
     const INPUT_TYPE = 'text';
@@ -43,7 +43,6 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     protected function _render() {
         $tag = $this->getTag();
         $tag->setAttribute('type', $this->_getInputType());
-        $tag->addClass('w-textbox');
 
         $this->_applyFormDataAttributes($tag);
         $this->_applyInputAttributes($tag);

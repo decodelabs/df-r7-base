@@ -19,7 +19,7 @@ class Textarea extends Base implements ITextareaWidget {
     use TWidget_PlaceholderProvider;
     use TWidget_TextEntry;
 
-    const PRIMARY_TAG = 'textarea';
+    const PRIMARY_TAG = 'textarea.textbox.multiline';
     const ARRAY_INPUT = false;
 
     protected $_columns;

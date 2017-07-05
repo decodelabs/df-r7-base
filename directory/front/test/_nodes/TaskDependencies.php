@@ -18,7 +18,9 @@ class TaskDependencies extends arch\node\Task {
             new flex\code\probe\Dependencies()
         ]);
 
-        $scanner->addFrameworkPackageLocations();
+        $scanner->addFrameworkPackageLocations(true);
+        df\Launchpad::$loader->loadPackages(array_keys($scanner->getLocations()));
+
         $this->io->write('Scanning packages:');
         $errors = [];
 

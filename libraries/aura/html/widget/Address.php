@@ -13,7 +13,7 @@ use df\arch;
 
 class Address extends Base implements core\IDumpable {
 
-    const PRIMARY_TAG = 'div';
+    const PRIMARY_TAG = 'div.address';
 
     const SHORT = 'short';
     const LONG = 'long';
@@ -39,7 +39,7 @@ class Address extends Base implements core\IDumpable {
         return $this;
     }
 
-    public function getAddress() {
+    public function getAddress(): ?user\IPostalAddress {
         return $this->_address;
     }
 
@@ -80,7 +80,7 @@ class Address extends Base implements core\IDumpable {
         $tag->setName($blockTag);
 
         if(!empty($poBox)) {
-            $content->push(new aura\html\Element($blockTag, $poBox, ['class' => 'post-office-box']));
+            $content->push(new aura\html\Element($blockTag, $poBox, ['class' => 'po-box']));
         }
 
         if(!empty($streetAddress)) {
@@ -88,7 +88,7 @@ class Address extends Base implements core\IDumpable {
                 $content->push(', ');
             }
 
-            $content->push(new aura\html\Element($blockTag, $streetAddress, ['class' => 'street-address']));
+            $content->push(new aura\html\Element($blockTag, $streetAddress, ['class' => 'street']));
         }
 
         if(!empty($extendedAddress)) {
@@ -96,7 +96,7 @@ class Address extends Base implements core\IDumpable {
                 $content->push(', ');
             }
 
-            $content->push(new aura\html\Element($blockTag, $extendedAddress, ['class' => 'extended-address']));
+            $content->push(new aura\html\Element($blockTag, $extendedAddress, ['class' => 'extended']));
         }
 
         if(!$isShort && !empty($locality)) {
@@ -117,13 +117,13 @@ class Address extends Base implements core\IDumpable {
 
         if(!empty($postcode)) {
             if(strlen($region) == 2) {
-                $content->push(' ', new aura\html\Element('span', $postcode, ['class' => 'postal-code']));
+                $content->push(' ', new aura\html\Element('span', $postcode, ['class' => 'postcode']));
             } else {
                 if(!$isFull && !$content->isEmpty()) {
                     $content->push(', ');
                 }
 
-                $content->push(new aura\html\Element($blockTag, $postcode, ['class' => 'postal-code']));
+                $content->push(new aura\html\Element($blockTag, $postcode, ['class' => 'postcode']));
             }
         }
 
@@ -139,14 +139,14 @@ class Address extends Base implements core\IDumpable {
             }
 
             $content->push(new aura\html\Element(
-                $blockTag, $country, ['class' => 'country-name']
+                $blockTag, $country, ['class' => 'country']
             ));
         }
 
         return $tag->renderWith($content);
     }
 
-    public function setMode($mode) {
+    public function setMode(?string $mode) {
         switch($mode = strtolower($mode)) {
             case self::SHORT:
             case self::LONG:
@@ -162,7 +162,7 @@ class Address extends Base implements core\IDumpable {
         return $this;
     }
 
-    public function getMode() {
+    public function getMode(): string {
         return $this->_mode;
     }
 

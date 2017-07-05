@@ -502,7 +502,7 @@ trait TPeer_Session {
         $this->_socket = $socket;
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->_socket->getId();
     }
 

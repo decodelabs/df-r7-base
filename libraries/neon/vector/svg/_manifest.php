@@ -155,8 +155,8 @@ interface IContainerAttributeModule {
 }
 
 interface ICoreAttributeModule {
-    public function setId($id);
-    public function getId();
+    public function setId(?string $id);
+    public function getId(): ?string;
     public function setXmlBase($baseIri);
     public function getXmlBase();
     public function setXmlLang($lang);
@@ -446,8 +446,8 @@ interface IZoomAndPanAttributeModule {
 
 // Description
 interface IDescriptionProvider {
-    public function setTitle(string $title=null);
-    public function getTitle();
+    public function setTitle(?string $title);
+    public function getTitle(): ?string;
     public function setDescription($description);
     public function getDescription();
 }

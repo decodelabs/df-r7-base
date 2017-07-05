@@ -163,8 +163,8 @@ interface IDocument extends IEnvironmentNode, IContainerNode {
     public function getPackages();
 
     // Top matter
-    public function setTitle(string $title=null);
-    public function getTitle();
+    public function setTitle(?string $title);
+    public function getTitle(): ?string;
     public function setAuthor($author);
     public function getAuthor();
     public function setDate($date);
@@ -183,28 +183,28 @@ interface IMacro extends iris\map\IAspect {
 
 
 interface IReference extends iris\map\IAspect {
-    public function setId($id);
-    public function getId();
+    public function setId(?string $id);
+    public function getId(): ?string;
     public function setType($type);
     public function getType();
     public function getTargetType();
 }
 
 interface IReferable extends iris\map\IEntity {
-    public function setId($id);
-    public function getId();
+    public function setId(?string $id);
+    public function getId(): ?string;
 }
 
 trait TReferable {
 
     public $id;
 
-    public function setId($id) {
+    public function setId(?string $id) {
         $this->id = $id;
         return $this;
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->id;
     }
 }

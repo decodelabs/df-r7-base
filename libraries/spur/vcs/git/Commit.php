@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\spur\vcs\git;
 use df;
 use df\core;
 use df\spur;
-    
+
 class Commit implements ICommit, core\IDumpable {
 
     protected $_id;
@@ -63,12 +63,12 @@ class Commit implements ICommit, core\IDumpable {
     }
 
 
-    public function __construct(ILocalRepository $repo, $commitId) {
+    public function __construct(ILocalRepository $repo, string $commitId) {
         $this->_repository = $repo;
         $this->_id = $commitId;
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->_id;
     }
 
@@ -92,7 +92,7 @@ class Commit implements ICommit, core\IDumpable {
         if(!$this->_isFetched) {
             $this->_fetchData();
         }
-        
+
         return $this->_parentIds;
     }
 
@@ -114,7 +114,7 @@ class Commit implements ICommit, core\IDumpable {
         if(!$this->_isFetched) {
             $this->_fetchData();
         }
-        
+
         return $this->_author;
     }
 
@@ -122,7 +122,7 @@ class Commit implements ICommit, core\IDumpable {
         if(!$this->_isFetched) {
             $this->_fetchData();
         }
-        
+
         return $this->_creationTimestamp;
     }
 
@@ -130,7 +130,7 @@ class Commit implements ICommit, core\IDumpable {
         if(!$this->_isFetched) {
             $this->_fetchData();
         }
-        
+
         return new core\time\Date($this->_creationTimestamp);
     }
 
@@ -138,7 +138,7 @@ class Commit implements ICommit, core\IDumpable {
         if(!$this->_isFetched) {
             $this->_fetchData();
         }
-        
+
         return $this->_committer;
     }
 
@@ -146,7 +146,7 @@ class Commit implements ICommit, core\IDumpable {
         if(!$this->_isFetched) {
             $this->_fetchData();
         }
-        
+
         return $this->_commitTimestamp;
     }
 
@@ -154,7 +154,7 @@ class Commit implements ICommit, core\IDumpable {
         if(!$this->_isFetched) {
             $this->_fetchData();
         }
-        
+
         return new core\time\Date($this->_commitTimestamp);
     }
 
@@ -162,7 +162,7 @@ class Commit implements ICommit, core\IDumpable {
         if(!$this->_isFetched) {
             $this->_fetchData();
         }
-        
+
         return $this->_message;
     }
 

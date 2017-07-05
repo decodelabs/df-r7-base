@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,9 +9,10 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
-    
+
 class BlockMenu extends Menu {
 
+    const PRIMARY_TAG = 'nav.menu.block';
     const DEFAULT_LINK_WIDGET = 'BlockLink';
     const ENFORCE_DEFAULT_LINK_WIDGET = true;
 }

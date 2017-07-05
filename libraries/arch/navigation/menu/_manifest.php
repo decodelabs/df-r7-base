@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 
 interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator {
-    public function getId();
+    public function getId(): string;
     public function setSubId($id);
     public function getSubId();
     public function getDisplayName(): string;

@@ -9,7 +9,8 @@ use df;
 use df\core;
 use df\aura;
 
-class Checkbox extends RadioButton {
-    
+class Checkbox extends Radio {
+
+    const PRIMARY_TAG = 'input.check.checkbox';
     const INPUT_TYPE = 'checkbox';
 }

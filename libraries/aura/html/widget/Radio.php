@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
+class Radio extends Base implements ICheckInputWidget, core\IDumpable {
 
     use TWidget_BodyContentAware;
     use TWidget_FormData;
@@ -18,7 +18,7 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
     use TWidget_FocusableInput;
     use TWidget_CheckInput;
 
-    const PRIMARY_TAG = 'input';
+    const PRIMARY_TAG = 'input.check.radio';
     const ARRAY_INPUT = false;
     const INPUT_TYPE = 'radio';
 
@@ -45,16 +45,7 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
         $this->_applyCheckInputAttributes($tag);
 
         $output = $tag;
-
-        switch(static::INPUT_TYPE) {
-            case 'radio':
-                $widgetClass = 'w-radioButton';
-                break;
-
-            default:
-                $widgetClass = 'w-'.static::INPUT_TYPE;
-                break;
-        }
+        $widgetClass = 'w.'.static::INPUT_TYPE;
 
         if(!$this->_body->isEmpty()) {
             $label = $this->_body;
@@ -63,7 +54,7 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
                 $label = new aura\html\Element('span', $label);
             }
 
-            $output = new aura\html\Element('label.'.$widgetClass.'Label', $label);
+            $output = new aura\html\Element('label.'.$widgetClass, $label);
 
             if($this->_isDisabled) {
                 $output->addClass('disabled');

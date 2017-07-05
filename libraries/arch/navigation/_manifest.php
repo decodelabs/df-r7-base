@@ -15,8 +15,8 @@ use df\user;
 interface IEntry extends core\IArrayInterchange {
     public function getType();
 
-    public function setId($id);
-    public function getId();
+    public function setId(?string $id);
+    public function getId(): ?string;
 
     public function setWeight($weight);
     public function getWeight();

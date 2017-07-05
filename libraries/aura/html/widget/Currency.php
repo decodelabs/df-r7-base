@@ -13,11 +13,13 @@ use df\mint;
 
 class Currency extends NumberTextbox {
 
+    const PRIMARY_TAG = 'input.textbox.number.currency';
+
     protected $_inputCurrency = 'GBP';
     protected $_currencySelectable = false;
     protected $_showCurrency = true;
 
-    public function __construct(arch\IContext $context, $name, $value=null, $inputCurrency=null, $allowSelection=false) {
+    public function __construct(arch\IContext $context, $name, $value=null, string $inputCurrency=null, bool $allowSelection=false) {
         $this->_currencySelectable = (bool)$allowSelection;
 
         if($inputCurrency !== null) {
@@ -31,7 +33,6 @@ class Currency extends NumberTextbox {
     protected function _render() {
         $currencyFieldName = $this->getName().'[currency]';
         $selectValue = mint\Currency::normalizeCode($this->_inputCurrency);
-        $this->getTag()->addClass('w-numberTextbox');
 
         $output = parent::_render();
 
@@ -42,15 +43,15 @@ class Currency extends NumberTextbox {
             $options = array_intersect_key($list, array_flip(mint\Currency::getRecognizedCodes()));
 
             $output = new aura\html\ElementContent([$output, ' ',
-                self::factory($this->_context, 'SelectList', [
+                self::factory($this->_context, 'Select', [
                     $currencyFieldName,
                     $selectValue,
                     $options
-                ])
+                ])->addClass('currency')
             ]);
         } else if($this->_showCurrency) {
             $currency = $this->_context->i18n->numbers->getCurrencyName($this->_inputCurrency);
-            $output = new aura\html\Element('label', [$output, ' ',
+            $output = new aura\html\Element('label.currency', [$output, ' ',
                 new aura\html\Element('abbr', $this->_inputCurrency, ['title' => $currency]),
                 new aura\html\Element('input', null, [
                     'type' => 'hidden',
@@ -63,11 +64,11 @@ class Currency extends NumberTextbox {
         return $output;
     }
 
-    public function getInputCurrency() {
+    public function getInputCurrency(): ?string {
         return $this->_inputCurrency;
     }
 
-    public function allowSelection() {
+    public function allowSelection(): bool {
         return $this->_currencySelectable;
     }
 

@@ -19,7 +19,7 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, core\ID
     use TWidget_DispositionAware;
     use TWidget_IconProvider;
 
-    const PRIMARY_TAG = 'button';
+    const PRIMARY_TAG = 'button.btn';
     const ARRAY_INPUT = false;
     const BUTTON_TYPE = 'button';
     const HAS_VALUE = true;

@@ -130,7 +130,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $id;
     }
 
-    public function __construct(arch\IContext $context, $id) {
+    public function __construct(arch\IContext $context, string $id) {
         $this->context = $context;
         $this->_id = self::normalizeId($id);
     }
@@ -168,7 +168,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         }
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->_id;
     }
 

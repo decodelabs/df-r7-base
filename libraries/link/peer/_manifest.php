@@ -46,7 +46,7 @@ interface IServer extends IPeer {
 
 
 interface ISession {
-    public function getId();
+    public function getId(): string;
     public function getSocket();
     public function setWriteState($state);
     public function getWriteState();

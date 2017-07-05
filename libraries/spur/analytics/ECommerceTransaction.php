@@ -11,7 +11,7 @@ use df\spur;
 use df\mint;
 
 class ECommerceTransaction implements IECommerceTransaction {
-    
+
     use core\collection\TAttributeContainer;
 
     protected $_id;
@@ -20,7 +20,7 @@ class ECommerceTransaction implements IECommerceTransaction {
     protected $_shippingAmount;
     protected $_taxAmount;
 
-    public function __construct($id, mint\ICurrency $amount, $affiliation=null, mint\ICurrency $shipping=null, mint\ICurrency $tax=null) {
+    public function __construct(string $id, mint\ICurrency $amount, $affiliation=null, mint\ICurrency $shipping=null, mint\ICurrency $tax=null) {
         $this->setId($id);
         $this->setAmount($amount);
         $this->setAffiliation($affiliation);
@@ -28,12 +28,12 @@ class ECommerceTransaction implements IECommerceTransaction {
         $this->setTaxAmount($tax);
     }
 
-    public function setId($id) {
-        $this->_id = (string)$id;
+    public function setId(string $id) {
+        $this->_id = $id;
         return $this;
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->_id;
     }
 

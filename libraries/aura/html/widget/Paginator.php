@@ -13,7 +13,7 @@ use df\arch;
 
 class Paginator extends Base implements core\IDumpable {
 
-    const PRIMARY_TAG = 'nav';
+    const PRIMARY_TAG = 'div.paginator';
 
     protected $_prevText = null;
     protected $_nextText = null;
@@ -252,12 +252,13 @@ class Paginator extends Base implements core\IDumpable {
                 );
             }
 
-            $content[] = new aura\html\Element('div', $message, ['class' => 'block-details']);
+            $content[] = new aura\html\Element('div.counts', $message);
         }
 
-        $content[] = new aura\html\Element('div', $linkList, ['class' => 'block-links']);
+        $content[] = new aura\html\Element('nav.pages', $linkList);
 
-        return $this->getTag()->renderWith($content, true);
+        return $this->getTag()
+            ->renderWith($content, true);
     }
 
 

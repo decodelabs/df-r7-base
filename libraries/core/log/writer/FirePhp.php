@@ -40,7 +40,7 @@ class FirePhp implements core\log\IWriter {
         $this->reset();
     }
 
-    public function getId() {
+    public function getId(): string {
         return 'FirePhp';
     }
 

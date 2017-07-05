@@ -14,7 +14,7 @@ class Menu extends Base implements core\IDumpable {
 
     use TWidget_NavigationEntryController;
 
-    const PRIMARY_TAG = 'nav';
+    const PRIMARY_TAG = 'nav.menu.list';
     const DEFAULT_LINK_WIDGET = 'Link';
     const ENFORCE_DEFAULT_LINK_WIDGET = false;
 

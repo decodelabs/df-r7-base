@@ -38,7 +38,7 @@ interface IManager extends core\IManager, mesh\event\IEmitter {
     // Client
     public function getClient();
     public function clearClient();
-    public function getId();
+    public function getId(): ?string;
     public function isLoggedIn();
     public function refreshClientData();
     public function importClientData(user\IClientDataObject $data);
@@ -66,7 +66,7 @@ interface IUserModel {
 }
 
 interface IClientDataObject extends \ArrayAccess {
-    public function getId();
+    public function getId(): ?string;
     public function getEmail();
     public function getFullName();
     public function getNickName();

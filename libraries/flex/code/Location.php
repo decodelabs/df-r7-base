@@ -17,7 +17,7 @@ class Location implements ILocation {
     public $blackList = [];
     public $probes = [];
 
-    public function __construct($id, $path, array $blackList=[]) {
+    public function __construct(string $id, $path, array $blackList=[]) {
         $this->setId($id);
         $this->setPath($path);
         $this->setBlackList($blackList);
@@ -25,12 +25,12 @@ class Location implements ILocation {
 
 
 // Meta
-    public function setId($id) {
+    public function setId(string $id) {
         $this->id = $id;
         return $this;
     }
 
-    public function getId() {
+    public function getId(): string {
         return $this->id;
     }
 

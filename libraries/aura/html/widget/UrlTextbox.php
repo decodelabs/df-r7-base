@@ -12,6 +12,7 @@ use df\arch;
 
 class UrlTextbox extends Textbox {
 
+    const PRIMARY_TAG = 'input.textbox.url';
     const INPUT_TYPE = 'url';
 
     protected $_allowInternal = false;

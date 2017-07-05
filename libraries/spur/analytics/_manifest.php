@@ -30,8 +30,8 @@ interface IHandler {
 
     public function setUrl($url);
     public function getUrl();
-    public function setTitle(string $title=null);
-    public function getTitle();
+    public function setTitle(?string $title);
+    public function getTitle(): ?string;
 
     public function setUserAttributes(array $attributes);
     public function addUserAttributes(array $attributes);
@@ -68,8 +68,8 @@ interface IEvent extends core\collection\IAttributeContainer {
 }
 
 interface IECommerceTransaction extends core\collection\IAttributeContainer {
-    public function setId($id);
-    public function getId();
+    public function setId(string $id);
+    public function getId(): string;
     public function setAffiliation($affiliation);
     public function getAffiliation();
     public function setAmount(mint\ICurrency $amount);

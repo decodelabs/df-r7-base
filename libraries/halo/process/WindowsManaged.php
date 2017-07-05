@@ -31,7 +31,7 @@ class WindowsManaged extends Windows implements IManagedProcess {
 
 
 // Title
-    public function setTitle(string $title=null) {
+    public function setTitle(?string $title) {
         $this->_title = $title;
         return $this;
     }

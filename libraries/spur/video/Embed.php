@@ -269,7 +269,7 @@ class Embed implements IVideoEmbed {
 // String
     public function render() {
         if(($this->_url === null || !$this->_provider) && $this->_source !== null) {
-            return new aura\html\Element('div.w-videoEmbed', new aura\html\ElementString($this->_source));
+            return new aura\html\Element('div.w.embed.video', new aura\html\ElementString($this->_source));
         }
 
         if($this->_provider) {
@@ -284,7 +284,7 @@ class Embed implements IVideoEmbed {
             ]);
         }
 
-        $tag->addClass('w-videoEmbed');
+        $tag->addClass('w embed video');
 
         if($tag->getName() == 'iframe' && $this->_allowFullScreen) {
             $tag->setAttribute('allowfullscreen', true);

@@ -16,7 +16,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     use TWidget_MappedList;
     use TWidget_RendererContextProvider;
 
-    const PRIMARY_TAG = 'div';
+    const PRIMARY_TAG = 'div.list.collection';
 
     public $paginator;
 

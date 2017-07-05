@@ -208,7 +208,7 @@ interface ILayoutMap extends aura\view\ILayoutMap {
 }
 
 interface ILayoutMapEntry {
-    public function getId();
+    public function getId(): string;
     public function allowsTheme(aura\theme\ITheme $theme);
     public function matches(arch\IRequest $request);
     public function apply(aura\view\ILayoutView $view);

@@ -12,6 +12,8 @@ use df\arch;
 
 class Duration extends Textbox {
 
+    const PRIMARY_TAG = 'input.textbox.duration';
+
     protected $_placeholder = 'eg. 3 days 4 hours, hh:mm:ss or x number of seconds';
 
     public function setValue($value) {

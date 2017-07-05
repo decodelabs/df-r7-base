@@ -19,7 +19,7 @@ class Entry implements spur\feed\IEntryReader {
     const XPATH_NAMESPACES = [];
 
 // Entry
-    public function getId() {
+    public function getId(): ?string {
         return $this->_getDefaultValue('id');
     }
 
@@ -37,7 +37,7 @@ class Entry implements spur\feed\IEntryReader {
         return $this->_getDefaultValue('authors');
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         return $this->_getDefaultValue('title');
     }
 

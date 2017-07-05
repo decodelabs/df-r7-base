@@ -12,6 +12,7 @@ use df\arch;
 
 class DateTimePicker extends DatePicker {
 
+    const PRIMARY_TAG = 'input.textbox.picker.datetime';
     const INPUT_TYPE = 'datetime-local';
 
     protected $_outputFormat = 'Y-m-d\TH:i';
@@ -45,8 +46,8 @@ class DateTimePicker extends DatePicker {
                 $date->toUserTimezone();
             }
 
-            $output = new aura\html\Element('label', [$output, ' ',
-                new aura\html\Element('abbr', $date->getTimezoneAbbreviation(), ['title' => $date->getTimezone()])
+            $output = new aura\html\Element('label.datetime', [$output, ' ',
+                new aura\html\Element('abbr.timezone', $date->getTimezoneAbbreviation(), ['title' => $date->getTimezone()])
             ]);
         }
 

@@ -86,12 +86,12 @@ abstract class Base implements IWidget {
 
 
 // Id
-    public function setId($id) {
+    public function setId(?string $id) {
         $this->getTag()->setId($id);
         return $this;
     }
 
-    public function getId() {
+    public function getId(): ?string {
         return $this->getTag()->getId();
     }
 
@@ -104,12 +104,12 @@ abstract class Base implements IWidget {
         return $this->getTag()->isHidden();
     }
 
-    public function setTitle(string $title=null) {
+    public function setTitle(?string $title) {
         $this->getTag()->setTitle($title);
         return $this;
     }
 
-    public function getTitle() {
+    public function getTitle(): ?string {
         return $this->getTag()->getTitle();
     }
 

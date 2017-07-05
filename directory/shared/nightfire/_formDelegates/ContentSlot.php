@@ -197,7 +197,6 @@ class ContentSlot extends arch\node\form\Delegate implements
             }
 
             $fa = $container->addField()//$this->_($this->_blockLabel, ['%n%' => $key]))
-                ->addClass('stacked')
                 ->setId($this->elementId($delegateId));
             $fa->push($this->html->string('<div class="fire-block">'));
 
@@ -205,7 +204,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
             $fa->add('nav.buttons', [
                 $this->html('div.type', [
-                    $this->html->groupedSelectList(
+                    $this->html->groupedSelect(
                             $this->fieldName('blockType['.$delegateId.']'),
                             $this->values->blockType->{$delegateId},
                             $available
@@ -258,10 +257,9 @@ class ContentSlot extends arch\node\form\Delegate implements
 
         if(!$this->_slotDefinition->hasBlockLimit() || $blockCount < $this->_slotDefinition->getMaxBlocks()) {
             $container->addField()
-                ->addClass('stacked')
                 ->setId($this->elementId('add-selector'))
                 ->push(
-                    $this->html->groupedSelectList(
+                    $this->html->groupedSelect(
                             $this->fieldName('newBlockType'),
                             $this->values->newBlockType,
                             $available

@@ -11,6 +11,7 @@ use df\aura;
 use df\arch;
 
 class SubmitButton extends Button {
-    
+
+    const PRIMARY_TAG = 'button.btn.submit';
     const BUTTON_TYPE = 'submit';
 }

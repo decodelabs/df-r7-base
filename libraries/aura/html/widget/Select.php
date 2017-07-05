@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusableInputWidget, core\IDumpable {
+class Select extends Base implements IUngroupedSelectionInputWidget, IFocusableInputWidget, core\IDumpable {
 
     use TWidget_FormData;
     use TWidget_Input;
@@ -18,7 +18,7 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
     use TWidget_FocusableInput;
     use TWidget_UngroupedSelectionInput;
 
-    const PRIMARY_TAG = 'select';
+    const PRIMARY_TAG = 'select.single';
     const ARRAY_INPUT = false;
 
     protected $_markSelected = true;

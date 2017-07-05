@@ -11,7 +11,8 @@ use df\aura;
 use df\arch;
 
 class ResetButton extends Button {
-    
+
+    const PRIMARY_TAG = 'button.btn.reset';
     const BUTTON_TYPE = 'reset';
     const HAS_VALUE = false;
 }

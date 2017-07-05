@@ -11,6 +11,7 @@ use df\aura;
 use df\arch;
 
 class SearchTextbox extends Textbox {
-    
+
+    const PRIMARY_TAG = 'input.textbox.search';
     const INPUT_TYPE = 'search';
 }
