@@ -130,6 +130,8 @@ class Parser implements flex\IInlineHtmlProducer {
             ->regexReplace('|<p>\s*</p>|', '')
 
             // Normalize new lines
+            ->replace(['<br>', '<br/>'], '<br />')
+            ->regexReplace('|(?<!<br />)\s*\n|', "<br />\n")
             ->regexReplace("|\n</p>$|", '</p>')
 
             ->toString();
