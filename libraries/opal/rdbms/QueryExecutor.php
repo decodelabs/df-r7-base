@@ -941,7 +941,9 @@ abstract class QueryExecutor implements IQueryExecutor {
             $allowAlias = IAlias::NONE;
         }
 
-        if($isDiscreetAggregate) {
+        if($field instanceof opal\query\IRawField) {
+            return $this->_adapter->quoteFieldAliasReference($field->getQualifiedName());
+        } else if($isDiscreetAggregate) {
             // Reference an aggregate by alias
             //return $this->_adapter->quoteFieldAliasReference($field->getAlias());
 
