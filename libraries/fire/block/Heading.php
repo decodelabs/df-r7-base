@@ -143,7 +143,7 @@ class Heading extends Base {
             public function renderFieldContent(aura\html\widget\Field $field) {
                 // Main
                 $field->push(
-                    $inner = $this->html->field($this->_('Heading text'))->push(
+                    $inner = $this->html->field()->push(
                         $this->html->select($this->fieldName('level'), $this->values->level, Heading::OPTIONS),
 
                         $this->html->textbox($this->fieldName('heading'), $this->values->heading)
