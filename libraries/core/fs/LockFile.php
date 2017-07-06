@@ -89,7 +89,7 @@ class LockFile implements ILockFile {
         @list($time, $timeout) = explode(':', $data, 2);
 
         if(!is_numeric($time) || !is_numeric($timeout)) {
-            $file->delete();
+            $file->unlink();
             return 0;
         }
 
