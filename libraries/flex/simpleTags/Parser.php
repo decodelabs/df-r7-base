@@ -124,13 +124,12 @@ class Parser implements flex\IInlineHtmlProducer {
             $text .= '<p>'.trim($part).'</p>'."\n";
         }
 
-        return (new flex\Text($text))
+        return (new flex\Text(trim($text)))
 
             // Remove empties
             ->regexReplace('|<p>\s*</p>|', '')
 
             // Normalize new lines
-            ->replace(['<br>', '<br/>'], '<br />')
             ->regexReplace('|(?<!<br />)\s*\n|', "<br />\n")
             ->regexReplace("|\n</p>$|", '</p>')
 
