@@ -20,7 +20,7 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     use TWidget_TextEntry;
     use TWidget_DataListEntry;
 
-    const PRIMARY_TAG = 'input.textbox';
+    const PRIMARY_TAG = 'input.textbox.text';
     const ARRAY_INPUT = false;
 
     const INPUT_TYPE = 'text';
