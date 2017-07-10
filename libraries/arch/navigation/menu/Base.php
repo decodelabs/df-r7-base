@@ -112,7 +112,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         $cache->clear();
     }
 
-    public static function normalizeId($id) {
+    public static function normalizeId($id): core\uri\IUrl {
         if($id instanceof IMenu) {
             return $id->getId();
         }
@@ -168,7 +168,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         }
     }
 
-    public function getId(): string {
+    public function getId(): core\uri\IUrl {
         return $this->_id;
     }
 
