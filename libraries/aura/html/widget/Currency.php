@@ -82,35 +82,13 @@ class Currency extends NumberTextbox {
     }
 
 
-    public function setValue($value) {
-        $innerValue = $value;
-
-        if($innerValue instanceof core\IValueContainer) {
-            if($this->_currencySelectable && isset($innerValue->currency)) {
-                $this->_inputCurrency = mint\Currency::normalizeCode($innerValue['currency']);
-            }
-
-            $innerValue = $innerValue->getValue();
-        }
-
-        if(is_string($innerValue) && !strlen($innerValue)) {
-            $innerValue = null;
-        }
-
-        if($innerValue == 0 && !$this->isRequired()) {
-            $innerValue = null;
-        }
-
-        if($innerValue) {
-            $innerValue = number_format(str_replace(',', '', $innerValue), 2);
-        }
-
+    protected function _normalizeValue(core\collection\IInputTree $value) {
         if($value instanceof core\IValueContainer) {
-            $value->setValue($innerValue);
-        } else {
-            $value = $innerValue;
+            if($this->_currencySelectable && isset($value->currency)) {
+                $this->_inputCurrency = mint\Currency::normalizeCode($value['currency']);
+            }
         }
 
-        return parent::setValue($value);
+        parent::_normalizeValue($value);
     }
 }
