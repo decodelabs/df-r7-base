@@ -89,6 +89,13 @@ class Currency extends NumberTextbox {
             }
         }
 
-        parent::_normalizeValue($value);
+        $number = $value->getValue();
+
+        if($number !== null) {
+            $number = number_format(str_replace(',', '', $number), 2, '.', '');
+            $number = str_replace('.00', '', $number);
+        }
+
+        $value->setValue($number);
     }
 }

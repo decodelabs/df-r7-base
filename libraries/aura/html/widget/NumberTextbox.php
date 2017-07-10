@@ -51,16 +51,6 @@ class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
         return static::INPUT_TYPE;
     }
 
-    protected function _normalizeValue(core\collection\IInputTree $value) {
-        $number = $value->getValue();
-
-        if($number !== null) {
-            $number = number_format(str_replace(',', '', $number), 2, '.', '');
-        }
-
-        $value->setValue($number);
-    }
-
 
 // Dump
     public function getDumpProperties() {
