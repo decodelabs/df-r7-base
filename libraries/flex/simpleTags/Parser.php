@@ -44,11 +44,7 @@ class Parser implements flex\IInlineHtmlProducer {
             return null;
         }
 
-        if($this->_extended) {
-            return $this->_blockify($text);
-        } else {
-            return $this->_inlineBlockify($text);
-        }
+        return $this->_blockify($text, $this->_extended);
     }
 
     public function toInlineHtml() {
@@ -100,45 +96,8 @@ class Parser implements flex\IInlineHtmlProducer {
     }
 
 
-// Inline tags blockify
-    protected function _inlineBlockify(string $text): string {
-        if(!strlen(trim($text))) {
-            return '';
-        }
-
-        $parts = (new flex\Text($text))
-
-            // Double <br>s
-            ->regexReplace('|<br\s*/?>\s*<br\s*/?>|', "\n\n")
-
-            // Standardise new lines
-            ->replace(["\r\n", "\r"], "\n")
-            ->regexReplace("/\n\n+/", "\n\n")
-
-            // Split
-            ->regexSplit('/\n\s*\n/', -1, \PREG_SPLIT_NO_EMPTY);
-
-        $text = '';
-
-        foreach($parts as $part) {
-            $text .= '<p>'.trim($part).'</p>'."\n";
-        }
-
-        return (new flex\Text(trim($text)))
-
-            // Remove empties
-            ->regexReplace('|<p>\s*</p>|', '')
-
-            // Normalize new lines
-            ->regexReplace('|(?<!<br />)\s*\n|', "<br />\n")
-            ->regexReplace("|\n</p>$|", '</p>')
-
-            ->toString();
-    }
-
-
 // Extended blockify
-    protected function _blockify(string $text): string {
+    protected function _blockify(string $text, bool $extended=true): string {
         if(!strlen(trim($text))) {
             return '';
         }
@@ -146,7 +105,7 @@ class Parser implements flex\IInlineHtmlProducer {
         $text = rtrim($text)."\n";
         $preTags = [];
 
-        if(strpos($text, '<pre') !== false) {
+        if($extended && strpos($text, '<pre') !== false) {
             $parts = explode('</pre>', $text);
             $last = array_pop($parts);
             $text = '';
@@ -167,7 +126,11 @@ class Parser implements flex\IInlineHtmlProducer {
             $text .= $last;
         }
 
-        $blockReg = '(?:'.implode('|', self::EXTENDED_TAG_LIST).')';
+        if($extended) {
+            $blockReg = '(?:'.implode('|', self::EXTENDED_TAG_LIST).')';
+        } else {
+            $blockReg = '(?:p)';
+        }
 
         $parts = (new flex\Text($text))
 
@@ -216,7 +179,7 @@ class Parser implements flex\IInlineHtmlProducer {
             ->toString();
 
         // Replace pres
-        if(!empty($preTags)) {
+        if($extended && !empty($preTags)) {
             $text = str_replace(array_keys($preTags), array_values($preTags), $text);
         }
 
