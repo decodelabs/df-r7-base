@@ -611,6 +611,21 @@ class Html implements arch\IDirectoryHelper {
     }
 
 
+    public function jsonLd(string $type, $data, string $context=null): aura\html\IElementRepresentation {
+        if($context === null) {
+            $context = 'http://schema.org';
+        }
+
+        $tree = new core\collection\Tree([
+            '@context' => $context,
+            '@type' => $type
+        ]);
+        $tree->merge(core\collection\Tree::factory($data));
+
+        return $this->string($this->tag('script', ['type' => 'application/ld+json']).flex\Json::toString($tree).'</script>');
+    }
+
+
 // Date
     public function date($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
         if(!$date = $this->_prepareDate($date, $timezone, false)) {
