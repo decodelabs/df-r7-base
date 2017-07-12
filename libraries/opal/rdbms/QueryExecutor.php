@@ -943,7 +943,14 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         if($isDiscreetAggregate || $field instanceof opal\query\IRawField) {
             // Reference an aggregate by alias
-            return $this->_adapter->quoteFieldAliasReference($field->getQualifiedName());
+            if($field->isOutputField()) {
+                return $this->_adapter->quoteFieldAliasReference($field->getQualifiedName());
+            } else if($field instanceof opal\query\IRawField) {
+                return $field->getExpression();
+            } else {
+                // TODO: Add getExpression() to aggregates
+                return $field->getQualifiedName();
+            }
 
         } else if($forUpdateOrDelete) {
             /*

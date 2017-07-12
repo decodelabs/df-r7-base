@@ -330,7 +330,11 @@ class SourceManager implements ISourceManager, core\IDumpable {
         } else {
             $shouldCheck = true;
 
-            if(false !== strpos($name, '.')) {
+            if(substr($name, 0, 5) == '@raw ') {
+                // raw - fudge it!
+                $sourceAlias = $source->getAlias();
+                $qName = $sourceAlias.'.'.$name;
+            } else if(false !== strpos($name, '.')) {
                 // qualified
                 $qName = $name;
                 list($sourceAlias, $name) = explode('.', $name, 2);
