@@ -74,7 +74,7 @@ class TelephoneUrl implements ITelephoneUrl, core\IDumpable {
     }
 
     public function getCanonicalNumber() {
-        return preg_replace('/[^0-9]/', '', $this->_number);
+        return preg_replace('/[^0-9\#\+]/', '', $this->_number);
     }
 
 // String
