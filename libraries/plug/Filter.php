@@ -97,6 +97,10 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
 
 // Boolean
     public function bool($value, array $options=[]): ?bool {
+        return $this->boolean($value, $options);
+    }
+
+    public function boolean($value, array $options=[]): ?bool {
         return $this->_applyFilter($value, FILTER_VALIDATE_BOOLEAN, [
             'default' => $options['default'] ?? null
         ], FILTER_NULL_ON_FAILURE);
@@ -105,6 +109,10 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess {
 
 // Numbers
     public function int($value, array $options=[]): ?int {
+        return $this->integer($value, $options);
+    }
+    
+    public function integer($value, array $options=[]): ?int {
         $value = $this->_applyFilter($value, FILTER_SANITIZE_NUMBER_INT);
 
         return $this->_applyFilter($value, FILTER_VALIDATE_INT, [
