@@ -566,63 +566,10 @@ class Installer implements IInstaller {
             }
         }
 
-        $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(
-            $destination,
-            \FilesystemIterator::KEY_AS_PATHNAME |
-            \FilesystemIterator::CURRENT_AS_SELF |
-            \FilesystemIterator::SKIP_DOTS
-        ), \RecursiveIteratorIterator::SELF_FIRST);
+        $matcher = new core\fs\matcher\Ignore($destination);
 
-        $delete = [];
-
-        foreach($it as $name => $entry) {
-            $path = $entry->getSubPathname();
-
-            if($this->_matchFile($path, $ignore, $force)) {
-                $delete[] = $path;
-            }
+        foreach($matcher->match($ignore, $force) as $path => $entry) {
+            $entry->unlink();
         }
-
-        foreach($delete as $path) {
-            core\fs\File::delete($destination.'/'.$path);
-        }
-    }
-
-    protected function _matchFile($path, array $patterns, array $blacklist) {
-        if(in_array($path, $blacklist)) {
-            return false;
-        }
-
-        foreach($patterns as $pattern) {
-            $testPath = $path;
-
-            if($isNegated = 0 === strpos($pattern, '!')) {
-                $pattern = substr($pattern, 1);
-            }
-
-            if(false !== strpos($pattern, '**')) {
-                $pattern = str_replace('**', '*', $pattern);
-
-                if(substr($pattern, 0, 1) == '/'
-                || substr($testPath, 0, 1) == '.') {
-                    $testPath = '/'.$testPath;
-                }
-
-                if(fnmatch($pattern, $testPath, \FNM_PATHNAME)) {
-                    return true;
-                }
-            } else {
-                $pattern = ltrim($pattern, '/');
-                $testPath = ltrim($testPath, '/');
-
-                $regex = str_replace(['.', '*'], ['\.', '.*'], $pattern);
-
-                if(preg_match('#^'.$regex.'#', $testPath)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }

@@ -258,3 +258,13 @@ interface IDirectory extends INode {
     public function emptyOut();
     public function mergeInto($destination);
 }
+
+
+
+// Matches
+interface IMatcher {
+    public function setPath(string $path);
+    public function getPath(): string;
+
+    public function match(array $patterns, array $blacklist=[]): iterable;
+}
