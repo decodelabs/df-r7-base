@@ -21,7 +21,7 @@ abstract class Delegate implements IDelegateDecorator {
     public $content;
     public $delegate;
 
-    public static function factory(arch\node\IDelegate $delegate) {
+    public static function factory(arch\node\IDelegate $delegate): ?IDelegateDecorator {
         $request = $delegate->context->location;
         $path = $request->getController();
 

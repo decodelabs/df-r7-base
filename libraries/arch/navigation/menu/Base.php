@@ -74,7 +74,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public static function factory(arch\IContext $context, $id) {
+    public static function factory(arch\IContext $context, $id): IMenu {
         if($id instanceof IMenu) {
             return $id;
         }

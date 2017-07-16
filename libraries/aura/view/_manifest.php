@@ -107,7 +107,7 @@ class Base implements IView {
 
     use TView;
 
-    public static function factory($type, arch\IContext $context) {
+    public static function factory(string $type, arch\IContext $context): IView {
         $type = ucfirst($type);
         $class = 'df\\aura\\view\\'.$type;
 

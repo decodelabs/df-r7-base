@@ -27,7 +27,7 @@ abstract class Base implements arch\IComponent {
     public $slots = [];
     protected $_componentArgs = [];
 
-    public static function factory(arch\IContext $context, $name, array $args=null) {
+    public static function factory(arch\IContext $context, $name, array $args=null): arch\IComponent {
         $path = $context->location->getController();
         $area = $context->location->getArea();
 

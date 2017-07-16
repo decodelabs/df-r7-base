@@ -18,7 +18,7 @@ abstract class Base implements IRoutine {
     protected $_unit;
     protected $_model;
 
-    public static function factory(axis\IUnit $unit, $name, core\io\IMultiplexer $multiplexer=null) {
+    public static function factory(axis\IUnit $unit, string $name, core\io\IMultiplexer $multiplexer=null): IRoutine {
         $modelName = $unit->getModel()->getModelName();
         $unitName = $unit->getUnitName();
 

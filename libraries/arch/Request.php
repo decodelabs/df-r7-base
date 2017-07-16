@@ -28,7 +28,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     protected $_defaultAccess = null;
     protected $_accessSignifiers = null;
 
-    public static function factory($url) {
+    public static function factory($url): IRequest {
         if($url instanceof IRequest) {
             return $url;
         }

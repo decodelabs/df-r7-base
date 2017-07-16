@@ -43,7 +43,7 @@ abstract class Transformer implements ITransformer {
         return $transformer->canDeliver();
     }
 
-    public static function factory(IContext $context) {
+    public static function factory(IContext $context): ?ITransformer {
         $runMode = $context->getRunMode();
         $class = self::getClassFor($context->location, $runMode);
 

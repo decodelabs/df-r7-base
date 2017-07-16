@@ -15,7 +15,7 @@ abstract class Base implements aura\theme\IFacet {
     protected static $_types = null;
     protected $_environments = null;
 
-    public static function factory($name, array $config=null) {
+    public static function factory(string $name, array $config=null): aura\theme\IFacet {
         $class = 'df\\aura\\theme\\facet\\'.ucfirst($name);
 
         if(!class_exists($class)) {

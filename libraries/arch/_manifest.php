@@ -56,6 +56,8 @@ interface IAccess extends user\IState {}
 
 interface IContext extends core\IContext, IResponseForcer {
 
+    public static function factory($location=null, $runMode=null, $request=null): IContext;
+
     // Application
     public function spawnInstance($request=null, bool $copyRequest=false): IContext;
     public function getDispatchContext(): core\IContext;
@@ -262,6 +264,7 @@ interface IComponent extends
     arch\IProxyResponse,
     aura\view\ISlotContainer,
     \ArrayAccess {
+    public static function factory(arch\IContext $context, $name, array $args=null): arch\IComponent;
     public function getName(): string;
 }
 
@@ -377,6 +380,8 @@ trait TAjaxDataProvider {
 
 
 interface IMail extends aura\view\IView, flow\mail\IMessage {
+    public static function factory(arch\IContext $context, $path): arch\IMail;
+    
     public function getName(): string;
     public function getDescription();
     public function preparePreview();

@@ -14,7 +14,7 @@ abstract class Base implements arch\navigation\IEntry {
     protected $_id;
     protected $_weight = 0;
 
-    public static function fromArray(array $entry) {
+    public static function fromArray(array $entry): arch\navigation\IEntry {
         $type = 'None';
 
         if(isset($entry['type'])) {
@@ -38,13 +38,13 @@ abstract class Base implements arch\navigation\IEntry {
         return $class::_fromArray($entry);
     }
 
-    protected static function _fromArray(array $entry) {
+    protected static function _fromArray(array $entry): arch\navigation\IEntry {
         $class = get_called_class();
         return (new $class())->setId($id)->setWeight($weight);
     }
 
 
-    public static function factory($type, ...$args) {
+    public static function factory($type, ...$args): arch\navigation\IEntry {
         if(!$class = self::_getEntryClass($type)) {
             throw core\Error::ENotFound(
                 'Entry type '.$type.' could not be found'

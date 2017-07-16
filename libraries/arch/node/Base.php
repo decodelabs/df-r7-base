@@ -31,7 +31,7 @@ class Base implements INode, core\IDumpable {
     private $_accessSignifiers = null;
     private $_callback;
 
-    public static function factory(arch\IContext $context) {
+    public static function factory(arch\IContext $context): INode {
         $class = self::getClassFor(
             $context->location,
             $context->getRunMode(),

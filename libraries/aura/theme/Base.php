@@ -28,7 +28,7 @@ class Base implements ITheme, core\IDumpable {
     protected $_facets = null;
 
 
-    public static function factory($id) {
+    public static function factory($id): ITheme {
         if($id instanceof ITheme) {
             return $id;
         } else if(is_string($id) && substr($id, 0, 1) == '~') {

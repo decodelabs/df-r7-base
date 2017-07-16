@@ -13,7 +13,7 @@ abstract class Base implements aura\css\IProcessor {
 
     public $settings;
 
-    public static function factory($name, $settings=null) {
+    public static function factory($name, $settings=null): aura\css\IProcessor {
         if($name instanceof aura\css\IProcessor) {
             if($settings) {
                 $name->settings->import($settings);

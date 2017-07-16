@@ -15,7 +15,7 @@ class Menu extends Base {
     protected $_text;
     protected $_icon;
 
-    protected static function _fromArray(array $entry) {
+    protected static function _fromArray(array $entry): arch\navigation\IEntry {
         $tree = new core\collection\Tree($entry);
 
         return (new self(

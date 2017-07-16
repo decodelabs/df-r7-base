@@ -13,7 +13,7 @@ class None extends Base {
 
     protected $_id;
 
-    protected static function _fromArray(array $entry) {
+    protected static function _fromArray(array $entry): arch\navigation\IEntry {
         return new self($entry['id'] ?? null);
     }
 

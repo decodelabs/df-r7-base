@@ -20,7 +20,7 @@ abstract class Base implements IProcedure {
     protected $_model;
     protected $_isPrepared = false;
 
-    public static function factory(axis\IUnit $unit, $name, $values, $item=null) {
+    public static function factory(axis\IUnit $unit, string $name, $values, $item=null): IProcedure {
         $modelName = $unit->getModel()->getModelName();
         $unitName = $unit->getUnitName();
 

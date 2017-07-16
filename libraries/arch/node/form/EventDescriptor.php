@@ -25,7 +25,7 @@ class EventDescriptor implements arch\node\IFormEventDescriptor {
     protected $_successCallback;
     protected $_failureCallback;
 
-    public static function factory($output) {
+    public static function factory($output): arch\node\IFormEventDescriptor {
         if($output instanceof arch\node\IFormEventDescriptor) {
             return $output;
         }

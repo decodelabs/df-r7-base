@@ -19,12 +19,7 @@ abstract class Model implements IModel, core\IDumpable {
     private $_modelName;
     private $_units = [];
 
-    public static function factory($name) {
-        if($name instanceof IModel) {
-            return $name;
-        }
-
-
+    public static function factory(string $name): IModel {
         $name = lcfirst($name);
         $key = self::REGISTRY_PREFIX.$name;
         $application = df\Launchpad::getApplication();

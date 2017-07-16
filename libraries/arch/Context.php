@@ -36,7 +36,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return self::factory();
     }
 
-    public static function factory($location=null, $runMode=null, $request=null) {
+    public static function factory($location=null, $runMode=null, $request=null): IContext {
         $application = df\Launchpad::getApplication();
 
         if(!empty($location)) {

@@ -119,6 +119,8 @@ interface IFormState extends IStoreProvider {
 }
 
 interface IFormEventDescriptor {
+    public static function factory($output): IFormEventDescriptor;
+
     public function parseOutput($output);
 
     public function setTarget(/*string?*/ $target);

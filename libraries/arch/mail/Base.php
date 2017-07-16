@@ -18,7 +18,7 @@ abstract class Base extends aura\view\Mail implements arch\IMail {
 
     const JOURNAL_WEEKS = 10; // weeks
 
-    public static function factory(arch\IContext $context, $path) {
+    public static function factory(arch\IContext $context, $path): arch\IMail {
         $origPath = $path;
         $location = $context->extractDirectoryLocation($path);
         $parts = $location->getControllerParts();

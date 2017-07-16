@@ -30,7 +30,7 @@ abstract class Base implements arch\navigation\menu\ISource, core\IContextAware 
         return $output;
     }
 
-    public static function factory(arch\IContext $context, $type) {
+    public static function factory(arch\IContext $context, $type): arch\navigation\menu\ISource {
         $class = 'df\\arch\\navigation\\menu\\source\\'.ucfirst($type);
 
         if(!class_exists($class)) {

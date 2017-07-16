@@ -28,7 +28,7 @@ abstract class Base implements IScaffold {
 
     private $_directoryKeyName;
 
-    public static function factory(arch\IContext $context) {
+    public static function factory(arch\IContext $context): IScaffold {
         $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
 
         if($output = $context->application->getRegistryObject($registryKey)) {

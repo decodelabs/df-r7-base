@@ -21,7 +21,7 @@ abstract class Form implements IFormDecorator {
     public $content;
     public $form;
 
-    public static function factory(arch\node\IFormNode $form) {
+    public static function factory(arch\node\IFormNode $form): ?IFormDecorator {
         $request = $form->context->location;
         $path = $request->getController();
 
