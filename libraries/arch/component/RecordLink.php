@@ -110,7 +110,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
     }
 
 // Max length
-    public function setMaxLength($length) {
+    public function setMaxLength(?int $length) {
         if(!$length) {
             $length = null;
         } else {
@@ -121,7 +121,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
         return $this;
     }
 
-    public function getMaxLength() {
+    public function getMaxLength(): ?int {
         return $this->_maxLength;
     }
 

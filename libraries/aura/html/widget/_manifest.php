@@ -134,8 +134,8 @@ interface IDataListEntryWidget extends IVisualInputWidget {
 interface IDataEntryWidget extends IVisualInputWidget, IDataListEntryWidget {}
 
 interface ITextEntryWidget extends IVisualInputWidget {
-    public function setMaxLength($length);
-    public function getMaxLength();
+    public function setMaxLength(?int $length);
+    public function getMaxLength(): ?int;
 
     public function setPlaceholder($placeholder);
     public function getPlaceholder();

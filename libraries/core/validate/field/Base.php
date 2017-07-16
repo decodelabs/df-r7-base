@@ -52,13 +52,13 @@ abstract class Base implements core\validate\IField {
         return $this->_name;
     }
 
-    public function setRecordName($name) {
+    public function setRecordName(?string $name) {
         $this->_recordName = $name;
         return $this;
     }
 
-    public function getRecordName() {
-        if($this->_recordName) {
+    public function getRecordName(): string {
+        if($this->_recordName !== null) {
             return $this->_recordName;
         } else {
             return $this->_name;
@@ -67,21 +67,21 @@ abstract class Base implements core\validate\IField {
 
 
 // Requirements
-    public function setRequireGroup($name) {
+    public function setRequireGroup(?string $name) {
         $this->_requireGroup = $name;
         return $this;
     }
 
-    public function getRequireGroup() {
+    public function getRequireGroup(): ?string {
         return $this->_requireGroup;
     }
 
-    public function setToggleField($name) {
+    public function setToggleField(?string $name) {
         $this->_toggleField = $name;
         return $this;
     }
 
-    public function getToggleField() {
+    public function getToggleField(): ?string {
         return $this->_toggleField;
     }
 
@@ -109,7 +109,7 @@ abstract class Base implements core\validate\IField {
         return $length;
     }
 
-    protected function _isRequiredAfterToggle(core\collection\IInputTree $node, &$value) {
+    protected function _isRequiredAfterToggle(core\collection\IInputTree $node, &$value): bool {
         $required = $this->_isRequired;
 
         if($this->_toggleField) {
@@ -158,16 +158,12 @@ abstract class Base implements core\validate\IField {
         return $this->_shouldSanitize;
     }
 
-    public function setSanitizer($sanitizer) {
-        if($sanitizer !== null) {
-            $sanitizer = core\lang\Callback::factory($sanitizer);
-        }
-
-        $this->_sanitizer = $sanitizer;
+    public function setSanitizer(?callable $sanitizer) {
+        $this->_sanitizer = core\lang\Callback::normalize($sanitizer);
         return $this;
     }
 
-    public function getSanitizer() {
+    public function getSanitizer(): ?callable {
         return $this->_sanitizer;
     }
 
@@ -180,7 +176,7 @@ abstract class Base implements core\validate\IField {
         return $this->_defaultValue;
     }
 
-    protected function _sanitizeValue($value, $runSanitizer=true) {
+    protected function _sanitizeValue($value, bool $runSanitizer=true) {
         if($value === '') {
             $value = null;
         }
@@ -199,16 +195,12 @@ abstract class Base implements core\validate\IField {
 
 
 // Custom validator
-    public function setCustomValidator($validator=null) {
-        if($validator !== null) {
-            $validator = core\lang\Callback::factory($validator);
-        }
-
-        $this->_customValidator = $validator;
+    public function setCustomValidator(?callable $validator) {
+        $this->_customValidator = core\lang\Callback::normalize($validator);
         return $this;
     }
 
-    public function getCustomValidator() {
+    public function getCustomValidator(): ?callable {
         return $this->_customValidator;
     }
 
@@ -222,20 +214,16 @@ abstract class Base implements core\validate\IField {
 
 
 // Messages
-    public function setMessageGenerator($generator=null) {
-        if($generator !== null) {
-            $generator = core\lang\Callback::factory($generator);
-        }
-
-        $this->_messageGenerator = $generator;
+    public function setMessageGenerator(?callable $generator) {
+        $this->_messageGenerator = core\lang\Callback::normalize($generator);
         return $this;
     }
 
-    public function getMessageGenerator() {
+    public function getMessageGenerator(): ?callable {
         return $this->_messageGenerator;
     }
 
-    protected function _applyMessage(core\collection\IInputTree $node, $code, $defaultMessage) {
+    protected function _applyMessage(core\collection\IInputTree $node, string $code, string $defaultMessage) {
         $message = null;
 
         if($this->_messageGenerator) {

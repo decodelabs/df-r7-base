@@ -456,12 +456,12 @@ trait TWidget_TextEntry {
     protected $_maxLength;
     protected $_spellCheck = null;
 
-    public function setMaxLength($length) {
+    public function setMaxLength(?int $length) {
         $this->_maxLength = $length;
         return $this;
     }
 
-    public function getMaxLength() {
+    public function getMaxLength(): ?int {
         return $this->_maxLength;
     }
 

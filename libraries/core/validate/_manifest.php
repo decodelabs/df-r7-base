@@ -22,32 +22,40 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 // Interfaces
 interface IHandler extends \ArrayAccess, core\lang\IChainable {
-    public function addField($name, $type=null);
-    public function addRequiredField($name, $type=null);
-    public function addAutoField($key);
-    public function newField($name, $type=null);
-    public function newRequiredField($name, $type=null);
-    public function newAutoField($key);
-    public function getTargetField();
-    public function endField();
-    public function hasField($name);
-    public function getField($name);
-    public function getFields();
-    public function removeField($name);
-    public function getValues();
-    public function getValue($name);
-    public function setValue($name, $value);
-    public function isEmpty(): bool;
-    public function shouldSanitizeAll(bool $flag=null);
-    public function setRequireGroupFulfilled($name);
-    public function setRequireGroupUnfulfilled($name, $field);
-    public function checkRequireGroup($name);
-    public function setDataMap(array $map=null);
-    public function getDataMap();
-    public function hasMappedField($name);
+    public function addField(string $name, string $type=null);
+    public function addRequiredField(string $name, string $type=null);
+    public function addAutoField(string $key);
 
-    public function isValid(): bool;
+    public function newField(string $name, string $type=null): IField;
+    public function newRequiredField(string $name, string $type=null): IField;
+    public function newAutoField(string $key): IField;
+
+    public function getTargetField(): ?IField;
+    public function endField();
+
+    public function hasField(string $name): bool;
+    public function getField(string $name): ?IField;
+    public function getFields(): array;
+    public function removeField(string $name);
+
+    public function getValues();
+    public function getValue(string $name);
+    public function setValue(string $name, $value);
+    public function isEmpty(): bool;
+
+    public function shouldSanitizeAll(bool $flag=null);
+
+    public function setRequireGroupFulfilled(string $name);
+    public function setRequireGroupUnfulfilled(string $name, string $field);
+    public function checkRequireGroup(string $name);
+
+    public function setDataMap(array $map=null);
+    public function getDataMap(): ?array;
+    public function hasMappedField(string $name);
+
     public function validate($data, array $fields=null);
+    public function getCurrentData(): ?core\collection\IInputTree;
+    public function isValid(): bool;
     public function applyTo(&$targetRecord, array $fields=null);
 }
 
@@ -55,24 +63,24 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
 
 interface IField extends core\constraint\IRequirable, core\constraint\IOptional {
     public function getName(): string;
-    public function setRecordName($name);
-    public function getRecordName();
+    public function setRecordName(?string $name);
+    public function getRecordName(): string;
 
-    public function setRequireGroup($name);
-    public function getRequireGroup();
-    public function setToggleField($name);
-    public function getToggleField();
+    public function setRequireGroup(?string $name);
+    public function getRequireGroup(): ?string;
+    public function setToggleField(?string $name);
+    public function getToggleField(): ?string;
 
     public function shouldSanitize(bool $flag=null);
-    public function setSanitizer($sanitizer);
-    public function getSanitizer();
+    public function setSanitizer(?callable $sanitizer);
+    public function getSanitizer(): ?callable;
     public function setDefaultValue($value);
     public function getDefaultValue();
 
-    public function setCustomValidator($validator=null);
-    public function getCustomValidator();
-    public function setMessageGenerator($generator=null);
-    public function getMessageGenerator();
+    public function setCustomValidator(?callable $validator);
+    public function getCustomValidator(): ?callable;
+    public function setMessageGenerator(?callable $generator);
+    public function getMessageGenerator(): ?callable;
 
     public function validate(core\collection\IInputTree $node);
     public function applyValueTo(&$record, $value);
@@ -145,18 +153,16 @@ trait TRangeField {
 
 // Min length
 interface IMinLengthField extends IField {
-    public function setMinLength($length);
-    public function getMinLength();
+    public function setMinLength(?int $length);
+    public function getMinLength(): ?int;
 }
 
 trait TMinLengthField {
 
     protected $_minLength = null;
 
-    public function setMinLength($length) {
+    public function setMinLength(?int $length) {
         if($length !== null) {
-            $length = (int)$length;
-
             if(empty($length)) {
                 $length = 0;
             }
@@ -170,17 +176,17 @@ trait TMinLengthField {
         return $this;
     }
 
-    public function getMinLength() {
+    public function getMinLength(): ?int {
         return $this->_minLength;
     }
 
-    protected function _setDefaultMinLength($length) {
+    protected function _setDefaultMinLength(?int $length) {
         if($this->_minLength === null) {
             $this->_minLength = $length;
         }
     }
 
-    protected function _validateMinLength(core\collection\IInputTree $node, $value, $length=null) {
+    protected function _validateMinLength(core\collection\IInputTree $node, string $value, int $length=null) {
         if($length === null) {
             $length = mb_strlen($value);
         }
@@ -202,15 +208,15 @@ trait TMinLengthField {
 
 // Max length
 interface IMaxLengthField extends IField {
-    public function setMaxLength($length);
-    public function getMaxLength();
+    public function setMaxLength(?int $length);
+    public function getMaxLength(): ?int;
 }
 
 trait TMaxLengthField {
 
     protected $_maxLength = null;
 
-    public function setMaxLength($length) {
+    public function setMaxLength(?int $length) {
         if($length !== null) {
             $length = (int)$length;
 
@@ -227,17 +233,17 @@ trait TMaxLengthField {
         return $this;
     }
 
-    public function getMaxLength() {
+    public function getMaxLength(): ?int {
         return $this->_maxLength;
     }
 
-    protected function _setDefaultMaxLength($length) {
+    protected function _setDefaultMaxLength(?int $length) {
         if($this->_maxLength === null) {
             $this->_maxLength = $length;
         }
     }
 
-    protected function _validateMaxLength(core\collection\IInputTree $node, $value, $length=null) {
+    protected function _validateMaxLength(core\collection\IInputTree $node, string $value, int $length=null) {
         if($length === null) {
             $length = mb_strlen($value);
         }
@@ -260,7 +266,7 @@ trait TMaxLengthField {
 // Options
 interface IOptionProviderField extends IField {
     public function setOptions(array $options);
-    public function getOptions();
+    public function getOptions(): ?array;
 }
 
 trait TOptionProviderField {
@@ -273,7 +279,7 @@ trait TOptionProviderField {
         return $this;
     }
 
-    public function getOptions() {
+    public function getOptions(): ?array {
         return $this->_options;
     }
 
@@ -563,10 +569,7 @@ interface IPasswordField extends IField, IMinLengthField {
 
 interface IRecaptchaField extends IField {}
 
-interface ISetField extends IField {
-    public function setOptions(array $options);
-    public function getOptions();
-}
+interface ISetField extends IField, IOptionProviderField {}
 
 interface ISlugField extends IField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
     public function allowPathFormat(bool $flag=null);

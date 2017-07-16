@@ -23,22 +23,27 @@ class Handler implements IHandler {
 
     public $data = null;
 
-    public function addField($name, $type=null) {
+
+
+// Fields
+    public function addField(string $name, string $type=null) {
         $this->newField($name, $type);
         return $this;
     }
 
-    public function addRequiredField($name, $type=null) {
+    public function addRequiredField(string $name, string $type=null) {
         $this->newField($name, $type)->isRequired(true);
         return $this;
     }
 
-    public function addAutoField($key) {
+    public function addAutoField(string $key) {
         $this->newAutoField($key);
         return $this;
     }
 
-    public function newField($name, $type=null) {
+
+
+    public function newField(string $name, string $type=null): IField {
         $this->endField();
         $field = core\validate\field\Base::factory($this, $type, $name);
         $field->shouldSanitize($this->_shouldSanitizeAll);
@@ -49,11 +54,11 @@ class Handler implements IHandler {
         return $field;
     }
 
-    public function newRequiredField($name, $type=null) {
+    public function newRequiredField(string $name, string $type=null): IField {
         return $this->newField($name, $type)->isRequired(true);
     }
 
-    public function newAutoField($key) {
+    public function newAutoField(string $key): IField {
         $isRequired = $isBoolean = false;
 
         if(substr($key, 0, 1) == '*') {
@@ -74,7 +79,9 @@ class Handler implements IHandler {
         return $field;
     }
 
-    public function getTargetField() {
+
+
+    public function getTargetField(): ?IField {
         return $this->_targetField;
     }
 
@@ -105,25 +112,95 @@ class Handler implements IHandler {
         return $output;
     }
 
-    public function hasField($name) {
+
+
+    public function hasField(string $name): bool {
         return isset($this->_fields[$name]);
     }
 
-    public function getField($name) {
-        if(isset($this->_fields[$name])) {
-            return $this->_fields[$name];
+    public function getField(string $name): ?IField {
+        if(!isset($this->_fields[$name])) {
+            return null;
         }
+
+        return $this->_fields[$name];
     }
 
-    public function getFields() {
+    public function getFields(): array {
         return $this->_fields;
     }
 
-    public function removeField($name) {
+    public function removeField(string $name) {
         unset($this->_fields[$name]);
         return $this;
     }
 
+
+
+// Values
+    public function getValues() {
+        if($this->_isValid === null) {
+            throw new RuntimeException(
+                'This validator has not been run yet'
+            );
+        }
+
+        return $this->_values;
+    }
+
+    public function getValue(string $name) {
+        if($this->_isValid === null) {
+            throw new RuntimeException(
+                'This validator has not been run yet'
+            );
+        }
+
+        if(isset($this->_values[$name])) {
+            return $this->_values[$name];
+        }
+    }
+
+    public function setValue(string $name, $value) {
+        if($this->_isValid === null) {
+            throw new RuntimeException(
+                'This validator has not been run yet'
+            );
+        }
+
+        $this->_values[$name] = $value;
+        return $this;
+    }
+
+    public function isEmpty(): bool {
+        foreach($this->_values as $value) {
+            if($value !== null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function offsetSet($offset, $value) {
+        return $this->setValue($offset, $value);
+    }
+
+    public function offsetGet($offset) {
+        return $this->getValue($offset);
+    }
+
+    public function offsetExists($offset) {
+        return array_key_exists($offset, $this->_values);
+    }
+
+    public function offsetUnset($offset) {
+        throw new BadMethodCallException('Validator values cannot be set via array access');
+    }
+
+
+
+
+// Field data
     public function shouldSanitizeAll(bool $flag=null) {
         if($flag !== null) {
             $this->_shouldSanitizeAll = $flag;
@@ -133,24 +210,16 @@ class Handler implements IHandler {
         return $this->_shouldSanitizeAll;
     }
 
-    public function isValid(): bool {
-        if($this->_isValid === null) {
-            return true;
-        }
 
-        if(!$this->_isValid) {
-            return false;
-        }
 
-        return $this->data->isValid();
-    }
 
-    public function setRequireGroupFulfilled($name) {
+// Require group
+    public function setRequireGroupFulfilled(string $name) {
         $this->_requireGroups[$name] = true;
         return $this;
     }
 
-    public function setRequireGroupUnfulfilled($name, $field) {
+    public function setRequireGroupUnfulfilled(string $name, string $field) {
         if(isset($this->_requireGroups[$name]) && $this->_requireGroups[$name] === true) {
             return $this;
         }
@@ -159,7 +228,7 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function checkRequireGroup($name) {
+    public function checkRequireGroup(string $name) {
         if(isset($this->_requireGroups[$name])) {
             return $this->_requireGroups[$name] === true;
         }
@@ -187,7 +256,7 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function getDataMap() {
+    public function getDataMap(): ?array {
         return $this->_dataMap;
     }
 
@@ -203,7 +272,7 @@ class Handler implements IHandler {
         return $map;
     }
 
-    public function hasMappedField($name) {
+    public function hasMappedField(string $name) {
         if($this->_dataMap) {
             return in_array($name, $this->_dataMap);
         } else {
@@ -224,66 +293,7 @@ class Handler implements IHandler {
     }
 
 
-// Io
-    public function getValues() {
-        if($this->_isValid === null) {
-            throw new RuntimeException(
-                'This validator has not been run yet'
-            );
-        }
 
-        return $this->_values;
-    }
-
-    public function getValue($name) {
-        if($this->_isValid === null) {
-            throw new RuntimeException(
-                'This validator has not been run yet'
-            );
-        }
-
-        if(isset($this->_values[$name])) {
-            return $this->_values[$name];
-        }
-    }
-
-    public function setValue($name, $value) {
-        if($this->_isValid === null) {
-            throw new RuntimeException(
-                'This validator has not been run yet'
-            );
-        }
-
-        $this->_values[$name] = $value;
-        return $this;
-    }
-
-    public function isEmpty(): bool {
-        foreach($this->_values as $value) {
-            if($value !== null) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public function offsetSet($offset, $value) {
-        //throw new BadMethodCallException('Validator values cannot be set via array access');
-        return $this->setValue($offset, $value);
-    }
-
-    public function offsetGet($offset) {
-        return $this->getValue($offset);
-    }
-
-    public function offsetExists($offset) {
-        return array_key_exists($offset, $this->_values);
-    }
-
-    public function offsetUnset($offset) {
-        throw new BadMethodCallException('Validator values cannot be set via array access');
-    }
 
 
 
@@ -345,7 +355,19 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function getCurrentData() {
+    public function isValid(): bool {
+        if($this->_isValid === null) {
+            return true;
+        }
+
+        if(!$this->_isValid) {
+            return false;
+        }
+
+        return $this->data->isValid();
+    }
+
+    public function getCurrentData(): ?core\collection\IInputTree {
         return $this->data;
     }
 
