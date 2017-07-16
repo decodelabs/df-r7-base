@@ -12,7 +12,7 @@ use df\arch;
 
 class PanelSet extends Base {
 
-    const PRIMARY_TAG = 'div.list.panelSet';
+    const PRIMARY_TAG = 'div.list.panels';
 
     protected $_panels = [];
 
@@ -24,9 +24,16 @@ class PanelSet extends Base {
         $cells = [];
 
         foreach($this->_panels as $id => $panel) {
-            $cellTag = new aura\html\Tag('article', ['class' => 'w panel field-'.$id, 'style' => 'width: '.$panel['width'].'%;']);
+            $cellTag = new aura\html\Tag('article', [
+                'class' => 'w panel field-'.$id,
+            ]);
+
+            if($width = $panel->getWidth()) {
+                $cellTag->setStyle('flex-basis', $width.'%');
+            }
+
             $bodyTag = new aura\html\Tag('div', ['class' => 'body']);
-            $cells[] = $cellTag->renderWith($bodyTag->renderWith($panel['content']));
+            $cells[] = $cellTag->renderWith($bodyTag->renderWith($panel->getBody()));
         }
 
         return $this->getTag()->renderWith($cells);
@@ -34,61 +41,87 @@ class PanelSet extends Base {
 
 
 
-    public function addPanel($id, $width, $content) {
-        $this->_panels[$id] = [
-            'width' => $this->_normalizePercent($width),
-            'content' => $content
-        ];
+    public function addPanel($a, $b=null, $c=null) {
+        if($c !== null) {
+            $id = $a;
+            $width = $b;
+            $content = $c;
+        } else if($b !== null) {
+            if(is_numeric($a)) {
+                $id = null;
+                $width = $a;
+            } else {
+                $id = $a;
+                $width = null;
+            }
 
+            $content = $b;
+        } else {
+            $id = null;
+            $width = null;
+            $content = $a;
+        }
+
+        $panel = (new PanelSet_Panel($id))
+            ->setWidth($width)
+            ->setBody($content);
+
+
+        $this->_panels[$panel->getId()] = $panel;
         return $this;
     }
 
-    public function setPanelWidth($id, $width) {
-        if(isset($this->_panels[$id])) {
-            $this->_panels[$id]['width'] = $this->_normalizePercent($width);
-        }
-    }
-
-    public function getPanelWidth($id) {
-        if(isset($this->_panels[$id])) {
-            return $this->_panels[$id]['width'];
-        }
-    }
-
-    public function setPanelContent($id, $content) {
-        if(isset($this->_panels[$id])) {
-            $this->_panels[$id]['content'] = $content;
-        }
-
-        return $this;
-    }
-
-    public function getPanelContent($id) {
-        if(isset($this->_panels[$id])) {
-            return $this->_panels[$id]['content'];
-        }
-    }
-
-    public function removePanel($id) {
+    public function removePanel(string $id) {
         unset($this->_panels[$id]);
         return $this;
     }
+}
 
-    protected function _normalizePercent($value) {
-        if(substr($value, -1) == '%') {
-            $value = substr($value, 0, -1);
+
+
+// Panel
+class PanelSet_Panel {
+
+    protected $_id;
+    protected $_width;
+    protected $_body;
+
+    public function __construct(?string $id) {
+        if($id === null) {
+            $id = 'panel'.uniqid();
         }
 
-        $value = (float)$value;
+        $this->setId($id);
+    }
 
-        if($value > 100) {
-            $value = 100;
+    public function setId(string $id) {
+        $this->_id = $id;
+        return $this;
+    }
+
+    public function getId(): string {
+        return $this->_id;
+    }
+
+    public function setWidth($width) {
+        if(substr($width, -1) == '%') {
+            $width = substr($width, 0, -1);
         }
 
-        if($value < 0) {
-            $value = 0.1;
-        }
+        $this->_width = core\math\Util::clampFloat($width, 0.1, 100);
+        return $this;
+    }
 
-        return $value;
+    public function getWidth(): ?float {
+        return $this->_width;
+    }
+
+    public function setBody($body) {
+        $this->_body = $body;
+        return $this;
+    }
+
+    public function getBody() {
+        return $this->_body;
     }
 }
