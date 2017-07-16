@@ -382,22 +382,4 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     public function hexHash($message, $salt=null) {
         return bin2hex($this->hash($message, $salt));
     }
-
-    public function encrypt($message, $password=null, $salt=null) {
-        if($password === null) {
-            $password = $this->context->application->getPassKey();
-            $salt = $this->context->application->getUniquePrefix();
-        }
-
-        return core\crypt\Util::encrypt($message, $password, $salt);
-    }
-
-    public function decrypt($message, $password=null, $salt=null) {
-        if($password === null) {
-            $password = $this->context->application->getPassKey();
-            $salt = $this->context->application->getUniquePrefix();
-        }
-
-        return core\crypt\Util::decrypt($message, $password, $salt);
-    }
 }
