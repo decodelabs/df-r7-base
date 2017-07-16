@@ -337,7 +337,6 @@ trait TUrl_PathContainer {
 trait TUrl_QueryContainer {
 
     protected $_query;
-    protected $_rfc3986QueryEncode = false;
 
     public function setQuery($query) {
         if(empty($query)) {
@@ -389,13 +388,7 @@ trait TUrl_QueryContainer {
 
     public function getQueryString() {
         if($this->_query) {
-            $output = $this->_query->toArrayDelimitedString();
-
-            if($this->_rfc3986QueryEncode) {
-                $output = str_replace('%7E', '~', $output);
-            }
-
-            return $output;
+            return $this->_query->toArrayDelimitedString();
         } else {
             return '';
         }
@@ -421,15 +414,6 @@ trait TUrl_QueryContainer {
 
     public function hasQuery() {
         return $this->_query !== null;
-    }
-
-    public function shouldEncodeQueryAsRfc3986(bool $flag=null) {
-        if($flag !== null) {
-            $this->_rfc3986QueryEncode = $flag;
-            return $this;
-        }
-
-        return $this->_rfc3986QueryEncode;
     }
 
     protected function _cloneQuery() {

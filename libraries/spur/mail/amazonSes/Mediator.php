@@ -207,10 +207,7 @@ class Mediator implements IMediator {
             );
         }
 
-        $output = clone $this->_activeUrl;
-        $output->shouldEncodeQueryAsRfc3986(true);
-
-        return $output;
+        return clone $this->_activeUrl;
     }
 
     protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest {

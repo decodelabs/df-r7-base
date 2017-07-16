@@ -577,13 +577,7 @@ class Base implements link\http\IRequest, core\IDumpable {
 
             switch($headers->get('content-type')) {
                 case 'application/x-www-form-urlencoded':
-                    $postData = $this->_postData->toArrayDelimitedString();
-
-                    if($url->shouldEncodeQueryAsRfc3986()) {
-                        $postData = str_replace('%7E', '~', $postData);
-                    }
-
-                    $this->setBodyData($postData);
+                    $this->setBodyData($this->_postData->toArrayDelimitedString());
                     break;
 
                 case 'application/json':
