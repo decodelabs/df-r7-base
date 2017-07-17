@@ -55,12 +55,8 @@ class Ignore implements core\fs\IMatcher {
                 $pattern = str_replace('**/**', '**', $pattern);
 
                 if($pattern == '**') {
-                    $pattern = '*/';
-                }
-
-                if(substr($pattern, 0, 1) == '/'
-                || substr($testPath, 0, 1) == '.') {
-                    $testPath = '/'.$testPath;
+                    $match = true;
+                    continue;
                 }
 
 
@@ -71,6 +67,13 @@ class Ignore implements core\fs\IMatcher {
                 }
 
                 $pattern = str_replace('\\!', '!', $pattern);
+
+
+                // Root slash
+                if(substr($pattern, 0, 1) == '/'
+                || substr($testPath, 0, 1) == '.') {
+                    $testPath = '/'.$testPath;
+                }
 
 
                 // Dir match
@@ -102,7 +105,6 @@ class Ignore implements core\fs\IMatcher {
 
     protected function _patternMatch(string $path, string $pattern): bool {
         $origPath = $path;
-
 
         // Any inner dir
         if(preg_match('|\*\*/|', $pattern)) {
@@ -163,7 +165,9 @@ class Ignore implements core\fs\IMatcher {
         // Any in
         if(preg_match('|/\*\*$|', $pattern)) {
             $pattern = substr($pattern, 0, -1);
-            return fnmatch($pattern, $path, \FNM_CASEFOLD);
+
+            return fnmatch($pattern, $path, \FNM_CASEFOLD) ||
+                fnmatch($pattern, $path.'/');
         }
 
 
