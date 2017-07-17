@@ -22,6 +22,8 @@ interface IVideoEmbed extends aura\html\IElementRepresentation {
     public function getPreparedUrl();
     public function getProvider();
 
+    public function lookupThumbnailUrl(): ?string;
+
     public function setWidth($width);
     public function scaleWidth($width);
     public function getWidth();

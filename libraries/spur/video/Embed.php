@@ -146,6 +146,50 @@ class Embed implements IVideoEmbed {
         return $this->_provider;
     }
 
+
+
+// Thumbnail
+    public function lookupThumbnailUrl(): ?string {
+        if($this->_provider === 'youtube') {
+            return $this->_lookupYoutubeThumbnail();
+        } else if($this->_provider === 'vimeo') {
+            return $this->_lookupVimeoThumbnail();
+        } else {
+            return null;
+        }
+    }
+
+    protected function _lookupYoutubeThumbnail(): ?string {
+        $url = link\http\Url::factory($this->_url);
+
+        if(isset($url->query->v)) {
+            $id = $url->query['v'];
+        } else {
+            $id = $url->path->getLast();
+
+            if($id == 'watch') {
+                return null;
+            }
+        }
+
+        return 'http://img.youtube.com/vi/'.$id.'/hqdefault.jpg';
+    }
+
+    protected function _lookupVimeoThumbnail(): ?string {
+        $url = 'https://vimeo.com/api/oembed.json?url='.$this->_url;
+        $client = new link\http\Client();
+        $response = $client->get($url);
+
+        if(!$response->isOk()) {
+            return null;
+        }
+
+        $data = $response->getJsonContent();
+        return $data['thumbnail_url'];
+    }
+
+
+
  // Width
     public function setWidth($width) {
         $this->_width = (int)$width;
