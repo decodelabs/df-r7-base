@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\front\application\_nodes;
+namespace df\apex\directory\front\app\_nodes;
 
 use df;
 use df\core;

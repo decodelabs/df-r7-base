@@ -44,9 +44,9 @@ class TaskUpdateAll extends arch\node\Task {
         $this->io->writeLine('Done');
 
         if($this->app->isDevelopment()) {
-            $this->runChild('application/build?dev', false);
+            $this->runChild('app/build?dev', false);
         } else if($this->app->isTesting()) {
-            $this->runChild('application/build', false);
+            $this->runChild('app/build', false);
         }
     }
 }

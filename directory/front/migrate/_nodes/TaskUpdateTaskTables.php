@@ -21,9 +21,9 @@ class TaskUpdateTaskTables extends arch\node\Task {
         $this->runChild('axis/rebuild-table?unit=task/queue&delete=true');
 
         if($this->app->isDevelopment()) {
-            $this->runChild('application/build?dev');
+            $this->runChild('app/build?dev');
         } else {
-            $this->runChild('application/build');
+            $this->runChild('app/build');
         }
     }
 }

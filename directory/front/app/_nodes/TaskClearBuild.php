@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\front\application\_nodes;
+namespace df\apex\directory\front\app\_nodes;
 
 use df;
 use df\core;
@@ -20,7 +20,7 @@ class TaskClearBuild extends arch\node\Task {
 
         core\fs\File::delete($appPath.'/data/local/run/Active.php');
 
-        $this->runChild('application/purge-builds?all', false);
+        $this->runChild('app/purge-builds?all', false);
         core\fs\Dir::delete($appPath.'/data/local/run/');
 
         core\fs\File::delete($appPath.'/entry/'.$envId.'.testing.php');
