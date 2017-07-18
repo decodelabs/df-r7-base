@@ -57,7 +57,7 @@ abstract class Base implements core\debug\IRenderer {
         return $this->_stats;
     }
 
-    protected function _formatRunningTime(float $seconds): string {
+    protected function _formatRunningTime(?float $seconds): string {
         if($seconds > 60) {
             return number_format($seconds / 60, 0).':'.number_format($seconds % 60);
         } else if($seconds > 1) {
