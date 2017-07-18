@@ -22,8 +22,8 @@ class Manager implements arch\node\ITaskManager {
 
     public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): halo\process\IResult {
         $request = arch\Request::factory($request);
-        $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.php';
+        $path = df\Launchpad::$app->path.'/entry/';
+        $path .= df\Launchpad::$app->envId.'.php';
         $args = ['task', $request];
 
         if($dfSource) {
@@ -31,10 +31,10 @@ class Manager implements arch\node\ITaskManager {
         }
 
         if($this->_captureBackground && !$multiplexer) {
-            $application = df\Launchpad::getApplication();
+            $runner = df\Launchpad::$runner;
 
-            if($application instanceof core\application\Task) {
-                $multiplexer = $application->getMultiplexer();
+            if($runner instanceof core\app\runner\Task) {
+                $multiplexer = $runner->getMultiplexer();
                 return halo\process\Base::launchScript($path, $args, $multiplexer, $user);
             }
         }
@@ -44,8 +44,8 @@ class Manager implements arch\node\ITaskManager {
 
     public function launchBackground($request, $user=null, bool $dfSource=false) {
         $request = arch\Request::factory($request);
-        $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.php';
+        $path = df\Launchpad::$app->path.'/entry/';
+        $path .= df\Launchpad::$app->envId.'.php';
         $args = ['task', $request];
 
         if($dfSource) {
@@ -53,10 +53,10 @@ class Manager implements arch\node\ITaskManager {
         }
 
         if($this->_captureBackground) {
-            $application = df\Launchpad::getApplication();
+            $runner = df\Launchpad::$runner;
 
-            if($application instanceof core\application\Task) {
-                $multiplexer = $application->getMultiplexer();
+            if($runner instanceof core\app\runner\Task) {
+                $multiplexer = $runner->getMultiplexer();
                 return halo\process\Base::launchScript($path, $args, $multiplexer, $user);
             }
         }
@@ -65,9 +65,7 @@ class Manager implements arch\node\ITaskManager {
     }
 
     public function launchQuietly($request) {
-        $application = df\Launchpad::getApplication();
-
-        if($application instanceof core\application\Task) {
+        if(df\Launchpad::$runner instanceof core\app\runner\Task) {
             return $this->invoke($request, core\io\Multiplexer::defaultFactory('memory'));
         } else {
             return $this->launchBackground($request);
@@ -128,28 +126,28 @@ class Manager implements arch\node\ITaskManager {
     }
 
     public function getSharedIo(): core\io\IMultiplexer {
-        $application = df\Launchpad::getApplication();
+        $runner = df\Launchpad::$runner;
 
-        if($application instanceof core\application\Task) {
-            return $application->getMultiplexer();
+        if($runner instanceof core\app\runner\Task) {
+            return $runner->getMultiplexer();
         }
 
         $key = core\io\Multiplexer::REGISTRY_KEY.':task';
 
-        if(!$output = $application->getRegistryObject($key)) {
+        if(!$output = df\Launchpad::$app->getRegistryObject($key)) {
             $output = core\io\Multiplexer::defaultFactory('task');
-            $application->setRegistryObject($output);
+            df\Launchpad::$app->setRegistryObject($output);
         }
 
         return $output;
     }
 
     protected function _getActiveContext() {
-        $application = df\Launchpad::getApplication();
+        $runner = df\Launchpad::$runner;
         $context = null;
 
-        if($application instanceof core\IContextAware) {
-            $context = $application->getContext();
+        if($runner instanceof core\IContextAware) {
+            $context = $runner->getContext();
         }
 
         if(!$context) {

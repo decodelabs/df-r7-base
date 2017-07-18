@@ -334,11 +334,11 @@ trait THttpWriter {
 
     protected function _getRequest() {
         if(!$this->_request) {
-            $application = df\Launchpad::$application;
+            $runner = df\Launchpad::$runner;
 
-            if($application instanceof core\application\Http
-            && $application->hasContext()) {
-                $this->_request = $application->getHttpRequest()->getUrl()->toString();
+            if($runner instanceof core\app\runner\Http
+            && $runner->hasContext()) {
+                $this->_request = $runner->getHttpRequest()->getUrl()->toString();
             }
         }
 

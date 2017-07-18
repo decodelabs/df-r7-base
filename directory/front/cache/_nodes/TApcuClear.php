@@ -35,7 +35,7 @@ trait TApcuClear {
         }
 
         if(!$isPurge) {
-            $prefix = $this->application->getUniquePrefix().'-'.$cacheId.':';
+            $prefix = $this->app->getUniquePrefix().'-'.$cacheId.':';
         }
 
         if(!extension_loaded('apcu')) {
@@ -50,7 +50,7 @@ trait TApcuClear {
             $list = core\cache\backend\Apcu::getCacheList();
 
             if($purgeType == 'app') {
-                $prefix = $this->application->getUniquePrefix().'-';
+                $prefix = $this->app->getUniquePrefix().'-';
 
                 foreach($list as $set) {
                     if(0 === strpos($set['info'], $prefix)) {

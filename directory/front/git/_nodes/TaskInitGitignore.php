@@ -16,7 +16,7 @@ class TaskInitGitignore extends arch\node\Task {
     public function execute() {
         $this->ensureDfSource();
 
-        $path = df\Launchpad::$applicationPath;
+        $path = df\Launchpad::$app->path;
 
         if(!is_file($path.'/.gitignore')) {
             $this->io->writeLine('Copying default .gitignore file');

@@ -19,13 +19,13 @@ class Http implements arch\IDirectoryHelper {
     protected $_httpRequest;
 
     protected function _init() {
-        if(!$this->context->application instanceof core\application\Http) {
+        if(!$this->context->runner instanceof core\app\runner\Http) {
             throw core\Error::{'EDomain'}(
                 'Http helper can only be used from http run mode'
             );
         }
 
-        $this->_httpRequest = $this->context->application->getHttpRequest();
+        $this->_httpRequest = $this->context->runner->getHttpRequest();
     }
 
     public function __get($member) {
@@ -54,12 +54,12 @@ class Http implements arch\IDirectoryHelper {
 
 
     public function directoryRequestToUrl($request) {
-        return core\application\http\Router::getInstance()
+        return core\app\runner\http\Router::getInstance()
             ->requestToUrl(arch\Request::factory($request));
     }
 
     public function getRouter() {
-        return $this->context->application->getRouter();
+        return $this->context->runner->getRouter();
     }
 
     public function getRequest() {
@@ -288,7 +288,7 @@ class Http implements arch\IDirectoryHelper {
 
 // Cookies
     public function setCookie($name, $value=null, $expiry=null, $httpOnly=null, $secure=null) {
-        $augmentor = $this->context->application->getResponseAugmentor();
+        $augmentor = $this->context->runner->getResponseAugmentor();
 
         if($name instanceof link\http\ICookie) {
             $cookie = $name;
@@ -309,7 +309,7 @@ class Http implements arch\IDirectoryHelper {
     }
 
     public function removeCookie($name) {
-        $augmentor = $this->context->application->getResponseAugmentor();
+        $augmentor = $this->context->runner->getResponseAugmentor();
 
         if($name instanceof link\http\ICookie) {
             $cookie = $name;
@@ -326,11 +326,11 @@ class Http implements arch\IDirectoryHelper {
     }
 
     public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null) {
-        return $this->context->application->getResponseAugmentor()->newCookie($name, $value, $expiry, $httpOnly, $secure);
+        return $this->context->runner->getResponseAugmentor()->newCookie($name, $value, $expiry, $httpOnly, $secure);
     }
 
     public function getResponseAugmentor() {
-        return $this->context->application->getResponseAugmentor();
+        return $this->context->runner->getResponseAugmentor();
     }
 
 

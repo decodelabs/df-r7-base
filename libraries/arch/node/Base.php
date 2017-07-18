@@ -240,8 +240,8 @@ class Base implements INode, core\IDumpable {
     public function getDispatchMethodName(): ?string {
         $type = $this->context->location->getType();
 
-        if($this->getRunMode() == 'Http') {
-            $mode = ucfirst(strtolower($this->context->application->getHttpRequest()->getMethod()));
+        if($this->context->getRunMode() == 'Http') {
+            $mode = ucfirst(strtolower($this->context->runner->getHttpRequest()->getMethod()));
 
             if($mode == 'Head') {
                 $mode = 'Get';
@@ -299,7 +299,7 @@ class Base implements INode, core\IDumpable {
 
 
     public function executeAsAjax() {
-        switch($this->getRunMode()) {
+        switch($this->context->getRunMode()) {
             case 'Http':
                 if(method_exists($this, 'executeAsHtml')) {
                     $this->request->setType(null);

@@ -67,7 +67,7 @@ class Memcached implements core\cache\IBackend {
     public function __construct(core\cache\ICache $cache, int $lifeTime, core\collection\ITree $options) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
-        $this->_prefix = df\Launchpad::$application->getUniquePrefix().'-'.$cache->getCacheId().':';
+        $this->_prefix = df\Launchpad::$app->getUniquePrefix().'-'.$cache->getCacheId().':';
 
         $this->_connection = self::_loadConnection($options);
     }

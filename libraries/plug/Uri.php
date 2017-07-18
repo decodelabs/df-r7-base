@@ -20,7 +20,7 @@ class Uri implements arch\IDirectoryHelper {
     protected $_defaultTheme;
 
     public function requestToUrl(arch\IRequest $request) {
-        return core\application\http\Router::getInstance()
+        return core\app\runner\http\Router::getInstance()
             ->requestToUrl($request);
     }
 
@@ -182,7 +182,7 @@ class Uri implements arch\IDirectoryHelper {
                 $request = clone $this->context->request;
             } else if(is_string($request) && preg_match('#^\.\.?/#', $request)) {
                 $request = $this->context->location->extractRelative($request);
-                $router = core\application\http\Router::getInstance();
+                $router = core\app\runner\http\Router::getInstance();
                 $router->applyBaseMapToRelativeRequest($request);
             } else {
                 $request = arch\Request::factory($request);
@@ -272,7 +272,7 @@ class Uri implements arch\IDirectoryHelper {
             if(isset($dep->js[0])) {
                 $subPath = $dep->js[0];
             } else {
-                if(!df\Launchpad::$application->isProduction()) {
+                if(!df\Launchpad::$app->isProduction()) {
                     throw core\Error::{'fuse/ERuntime'}(
                         'Dependency '.$name.' does not have a main file'
                     );

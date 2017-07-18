@@ -20,8 +20,8 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
         return self::REGISTRY_KEY;
     }
 
-    public function onApplicationDispatch(arch\node\INode $node): void {
-        df\Launchpad::$application->removeRegistryObject(self::REGISTRY_KEY);
+    public function onAppDispatch(arch\node\INode $node): void {
+        df\Launchpad::$app->removeRegistryObject(self::REGISTRY_KEY);
     }
 
     public static function generateFromRequest(arch\IRequest $request) {

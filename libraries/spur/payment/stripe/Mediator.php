@@ -188,7 +188,7 @@ class Mediator implements IMediator, core\IDumpable {
 
         if($applicationFee !== null) {
             $applicationFee = mint\Currency::factory($applicationFee, $this->_defaultCurrency);
-            $input['application_fee'] = $application->getIntegerAmount();
+            $input['application_fee'] = $applicationFee->getIntegerAmount();
         }
 
         $data = $this->requestJson('post', 'charges/'.$id.'/capture', $input);

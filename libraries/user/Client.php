@@ -85,8 +85,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
         $output->_language = $locale->getLanguage();
 
-        if(df\Launchpad::$application instanceof core\application\Http) {
-            $ip = df\Launchpad::$application->getHttpRequest()->getIp();
+        if(df\Launchpad::$runner instanceof core\app\runner\Http) {
+            $ip = df\Launchpad::$runner->getHttpRequest()->getIp();
             $geoIp = link\geoIp\Handler::factory()->lookup($ip);
 
             if($geoIp->country) {
@@ -299,8 +299,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
         $this->_signifiers = $clientData->getSignifiers();
 
-        if(df\Launchpad::$application instanceof core\application\Http) {
-            $ip = df\Launchpad::$application->getHttpRequest()->getIp();
+        if(df\Launchpad::$runner instanceof core\app\runner\Http) {
+            $ip = df\Launchpad::$runner->getHttpRequest()->getIp();
             $geoIp = link\geoIp\Handler::factory()->lookup($ip);
 
             if($geoIp->country) {
@@ -396,7 +396,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
                         break;
 
                     case IState::DEV:
-                        $output = df\Launchpad::$application->isDevelopment()
+                        $output = df\Launchpad::$app->isDevelopment()
                                && $this->_authState >= IState::GUEST
                                && $this->_authState != IState::PENDING;
                         break;

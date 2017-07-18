@@ -42,7 +42,7 @@ class Exception implements core\log\IExceptionNode {
     }
 
     public function isCritical() {
-        return df\Launchpad::isTesting();
+        return df\Launchpad::$app->isTesting();
     }
 
     public function getException(): \Throwable {

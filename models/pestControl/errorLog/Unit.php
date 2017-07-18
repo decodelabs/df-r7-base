@@ -70,7 +70,7 @@ class Unit extends axis\unit\table\Base {
                 'userAgent' => $this->context->data->user->agent->logCurrent(),
                 'stackTrace' => $this->_model->stackTrace->logException($e),
                 'user' => $this->_model->getLogUserId(),
-                'isProduction' => $this->context->application->isProduction()
+                'isProduction' => $this->context->app->isProduction()
             ])
             ->save();
     }
@@ -110,7 +110,7 @@ class Unit extends axis\unit\table\Base {
                 'userAgent' => $this->context->data->user->agent->logCurrent(),
                 'stackTrace' => $this->_model->stackTrace->logArray($trace),
                 'user' => $this->_model->getLogUserId(),
-                'isProduction' => $this->context->application->isProduction()
+                'isProduction' => $this->context->app->isProduction()
             ])
             ->save();
     }

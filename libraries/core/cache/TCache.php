@@ -18,13 +18,11 @@ trait TCache {
     private static $_cacheIds = [];
 
     public static function getInstance(): IStore {
-        $application = df\Launchpad::getApplication();
-
         $class = get_called_class();
         $id = self::REGISTRY_PREFIX.$class::getCacheId();
 
-        if(!$cache = $application->getRegistryObject($id)) {
-            $application->setRegistryObject(
+        if(!$cache = df\Launchpad::$app->getRegistryObject($id)) {
+            df\Launchpad::$app->setRegistryObject(
                 $cache = new $class()
             );
         }
@@ -53,7 +51,7 @@ trait TCache {
     }
 
     public function isCacheDistributed(): bool {
-        return static::IS_DISTRIBUTED && df\Launchpad::$application->isDistributed();
+        return static::IS_DISTRIBUTED && df\Launchpad::$app->isDistributed();
     }
 
 

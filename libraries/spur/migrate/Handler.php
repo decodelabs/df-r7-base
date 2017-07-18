@@ -26,7 +26,7 @@ class Handler implements IHandler {
         $this->_context = new core\SharedContext();
 
         $this->_key = $this->_context->data->hexHash(
-            $this->_context->application->getPassKey()
+            $this->_context->app->getPassKey()
         );
 
         $this->_httpPool = (new link\http\Client())->newPool();
@@ -70,7 +70,7 @@ class Handler implements IHandler {
             $this->_url->setPassword($url->getPassword());
         }
 
-        $this->_router = new core\application\http\Router($this->_url);
+        $this->_router = new core\app\runner\http\Router($this->_url);
     }
 
 

@@ -63,7 +63,7 @@ abstract class Base implements IRoutine {
 
     public function getMultiplexer() {
         if(!$this->io) {
-            if($this->getRunMode() == 'Task') {
+            if($this->context->getRunMode() == 'Task') {
                 $this->io = $this->task->getSharedIo();
             } else {
                 $this->io = core\io\Multiplexer::defaultFactory('memory');

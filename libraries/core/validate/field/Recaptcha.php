@@ -52,7 +52,7 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField {
 
         $context = arch\Context::getCurrent();
 
-        if($context->application instanceof core\application\Http) {
+        if($context->runner instanceof core\app\runner\Http) {
             $ip = $context->http->getIp();
         } else {
             $ip = null;

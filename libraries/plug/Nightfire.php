@@ -113,7 +113,7 @@ class Nightfire implements arch\IDirectoryHelper {
             ->toValue('body');
 
         if(!$body) {
-            if(!df\Launchpad::$application->isProduction()) {
+            if(!df\Launchpad::$app->isProduction()) {
                 return $this->getView()->html->flashMessage('Dynamic element \''.$slug.'\' not found', 'error');
             }
 

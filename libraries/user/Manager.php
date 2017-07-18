@@ -279,7 +279,7 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
-    public function onApplicationShutdown(): void {
+    public function onAppShutdown(): void {
         $obj = new \ReflectionObject($this);
         $props = $obj->getProperties(\ReflectionProperty::IS_PUBLIC);
 
@@ -291,7 +291,7 @@ class Manager implements IManager, core\IShutdownAware {
                 continue;
             }
 
-            $value->onApplicationShutdown();
+            $value->onAppShutdown();
         }
     }
 }

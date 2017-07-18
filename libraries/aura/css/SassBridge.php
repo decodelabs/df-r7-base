@@ -56,9 +56,9 @@ class SassBridge implements ISassBridge {
         $this->_fileName = substr($basename, 0, -5);
         $this->_type = strtolower(substr($basename, -4));
 
-        $this->_workDir = $context->application->getLocalStoragePath().'/sass/'.$context->application->getEnvironmentMode();
+        $this->_workDir = $context->app->getLocalDataPath().'/sass/'.$context->app->envMode;
 
-        $this->_isDevelopment = $this->context->application->isDevelopment();
+        $this->_isDevelopment = $this->context->app->isDevelopment();
         $this->_key = md5($path);
     }
 
@@ -218,7 +218,7 @@ class SassBridge implements ISassBridge {
         }
 
         $isC = basename($path) == 'sassc';
-        $envMode = $this->context->application->getEnvironmentMode();
+        $envMode = $this->context->app->envMode;
 
         switch($envMode) {
             case 'development':
@@ -379,7 +379,7 @@ class SassBridge implements ISassBridge {
     protected function _replaceUrls($sass) {
         if(df\Launchpad::$compileTimestamp) {
             $cts = df\Launchpad::$compileTimestamp;
-        } else if($this->context->application->isDevelopment()) {
+        } else if($this->context->app->isDevelopment()) {
             $cts = time();
         } else {
             $cts = null;

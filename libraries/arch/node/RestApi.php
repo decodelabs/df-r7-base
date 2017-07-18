@@ -20,7 +20,7 @@ abstract class RestApi extends Base implements IRestApiNode {
     protected $_httpRequest;
 
     public function dispatch() {
-        $this->_httpRequest = $this->application->getHttpRequest();
+        $this->_httpRequest = $this->runner->getHttpRequest();
         return parent::dispatch();
     }
 

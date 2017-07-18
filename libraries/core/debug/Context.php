@@ -31,12 +31,17 @@ class Context extends core\log\node\Group implements IContext {
             ob_end_clean();
         }
 
-        $this->runningTime = df\Launchpad::getRunningTime();
+        if(df\Launchpad::$app) {
+            $this->runningTime = df\Launchpad::$app->getRunningTime();
+        } else {
+            $this->runningTime = 0;
+        }
+
         $this->_stackTrace = StackTrace::factory(1);
         $this->_stackTrace->stripDebugEntries();
 
-        if(df\Launchpad::$application) {
-            df\Launchpad::$application->renderDebugContext($this);
+        if(df\Launchpad::$runner) {
+            df\Launchpad::$runner->renderDebugContext($this);
         } else {
             df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
             echo (new core\debug\renderer\PlainText($this))->render();
@@ -46,8 +51,8 @@ class Context extends core\log\node\Group implements IContext {
     }
 
     public function execute() {
-        if(df\Launchpad::$application
-        && df\Launchpad::$application->isDevelopment()
+        if(df\Launchpad::$app
+        && df\Launchpad::$app->isDevelopment()
         && $this->isCritical()) {
             return $this->render();
         }

@@ -44,10 +44,10 @@ class Model extends axis\Model {
             $request = '/';
 
             try {
-                if(df\Launchpad::$application instanceof core\application\Http) {
-                    $request = df\Launchpad::$application->getContext()->http->getRequest()->getUrl();
-                } else if(df\Launchpad::$application instanceof core\IContextAware) {
-                    $request = df\Launchpad::$application->getContext()->request;
+                if(df\Launchpad::$runner instanceof core\app\runner\Http) {
+                    $request = df\Launchpad::$runner->getContext()->http->getRequest()->getUrl();
+                } else if(df\Launchpad::$runner instanceof core\IContextAware) {
+                    $request = df\Launchpad::$runner->getContext()->request;
                 }
             } catch(\Throwable $e) {}
         }
@@ -59,7 +59,7 @@ class Model extends axis\Model {
             }
 
             if($request instanceof link\http\IUrl) {
-                $router = core\application\http\Router::getInstance();
+                $router = core\app\runner\http\Router::getInstance();
                 $request = new core\uri\Url($request->getLocalString());
                 $router->getRootMap()->mapPath($request->path);
                 $request = ltrim((string)$request, '/');
@@ -86,8 +86,8 @@ class Model extends axis\Model {
     }
 
     public function getLogReferrer() {
-        if(df\Launchpad::$application instanceof core\application\Http) {
-            return df\Launchpad::$application->getContext()->http->getReferrer();
+        if(df\Launchpad::$runner instanceof core\app\runner\Http) {
+            return df\Launchpad::$runner->getContext()->http->getReferrer();
         }
 
         return null;

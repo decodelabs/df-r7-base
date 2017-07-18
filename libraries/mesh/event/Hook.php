@@ -74,7 +74,7 @@ abstract class Hook implements IHook {
             return;
         }
 
-        $isProduction = df\Launchpad::$application->isProduction();
+        $isProduction = df\Launchpad::$app->isProduction();
         $entity = $event->getCachedEntity();
 
         foreach($entitySet[$action] as $target) {

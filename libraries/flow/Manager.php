@@ -24,7 +24,7 @@ class Manager implements IManager, core\IShutdownAware {
     protected $_isFlashQueueProcessed = false;
     protected $_flashQueueChanged = false;
 
-    public function onApplicationShutdown(): void {
+    public function onAppShutdown(): void {
         $this->_saveFlashQueue();
     }
 
@@ -102,7 +102,7 @@ class Manager implements IManager, core\IShutdownAware {
                 $from = flow\mail\Address::factory($config->getDefaultAddress());
 
                 if(!$from->getName()) {
-                    $from->setName(df\Launchpad::$application->getName());
+                    $from->setName(df\Launchpad::$app->getName());
                 }
 
                 $message->setFromAddress($from);
@@ -130,7 +130,7 @@ class Manager implements IManager, core\IShutdownAware {
             if(isset($_SERVER['SERVER_NAME'])) {
                 $domain = $_SERVER['SERVER_NAME'];
             } else {
-                if($url = core\application\http\Config::getInstance()->getRootUrl()) {
+                if($url = core\app\runner\http\Config::getInstance()->getRootUrl()) {
                     $domain = df\link\http\Url::factory($url)->getDomain();
                 }
             }
@@ -246,7 +246,7 @@ class Manager implements IManager, core\IShutdownAware {
 
             return $output;
         } catch(\Throwable $e) {
-            if($context->application->isDevelopment()) {
+            if($context->app->isDevelopment()) {
                 throw $e;
             } else {
                 $context->logs->logException($e);
@@ -260,13 +260,13 @@ class Manager implements IManager, core\IShutdownAware {
 
 
     public function getDefaultMailTransportName($forceSend=false) {
-        if(df\Launchpad::$application->isDevelopment() && !$forceSend) {
+        if(df\Launchpad::$app->isDevelopment() && !$forceSend) {
             return 'Capture';
         }
 
         $config = flow\mail\Config::getInstance();
 
-        if(df\Launchpad::$application->isTesting() && $config->shouldCaptureInTesting() && !$forceSend) {
+        if(df\Launchpad::$app->isTesting() && $config->shouldCaptureInTesting() && !$forceSend) {
             return 'Capture';
         }
 

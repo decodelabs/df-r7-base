@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\axis;
 use df;
 use df\core;
 use df\axis;
-    
+
 final class Context implements IContext {
 
     use axis\TUnit;
@@ -18,7 +18,7 @@ final class Context implements IContext {
 
     public function __construct(IModel $model) {
         $this->_model = $this->model = $model;
-        $this->application = df\Launchpad::$application;
+        $this->runner = df\Launchpad::$runner;
     }
 
     public function getUnitType() {

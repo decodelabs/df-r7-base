@@ -22,7 +22,7 @@ class TaskPurgeBuilds extends arch\node\Task {
 
         $this->io->write('Purging old build folders...');
 
-        $appPath = df\Launchpad::$applicationPath;
+        $appPath = df\Launchpad::$app->path;
         $buildDir = new core\fs\Dir($appPath.'/data/local/build');
         $all = isset($this->request['all']);
         $active = $this->filter['?active']->guid();

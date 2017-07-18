@@ -80,7 +80,7 @@ class Remote implements IRemote {
         $pid = null;
 
         if($daemon::REPORT_STATUS) {
-            $path = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.flex\Text::formatFileName($name).'.status';
+            $path = df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($name).'.status';
 
             if(!is_file($path)) {
                 return $this;
@@ -157,7 +157,7 @@ class Remote implements IRemote {
                 );
         }
 
-        $path = df\Launchpad::$applicationPath.'/entry/'.df\Launchpad::$environmentId.'.php';
+        $path = df\Launchpad::$app->path.'/entry/'.df\Launchpad::$app->envId.'.php';
 
         if($this->_multiplexer) {
             return halo\process\Base::launchScript($path, ['daemon', $this->_daemon->getName(), $command], $this->_multiplexer);

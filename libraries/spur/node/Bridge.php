@@ -16,7 +16,7 @@ class Bridge implements IBridge {
     protected $_nodePath;
 
     public function __construct() {
-        $this->_nodePath = df\Launchpad::$application->getLocalStoragePath().'/node';
+        $this->_nodePath = df\Launchpad::$app->getLocalDataPath().'/node';
     }
 
     public function find($name) {

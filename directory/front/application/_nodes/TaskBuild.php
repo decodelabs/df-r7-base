@@ -39,7 +39,7 @@ class TaskBuild extends arch\node\Task {
         $buildId = (string)flex\Guid::uuid1();
         $isDev = isset($this->request['dev']);
 
-        if(!$isDev && $this->application->isDevelopment()) {
+        if(!$isDev && $this->app->isDevelopment()) {
             $isDev = true;
         }
 
@@ -62,9 +62,10 @@ class TaskBuild extends arch\node\Task {
 
 
         if(!$isDev) {
-            $appPath = df\Launchpad::$applicationPath;
-            $environmentId = df\Launchpad::$environmentId;
-            $prefix = df\Launchpad::$uniquePrefix;
+            $appPath = df\Launchpad::$app->path;
+            $envId = df\Launchpad::$app->envId;
+
+            $prefix = df\Launchpad::$app->getUniquePrefix();
             $loader = df\Launchpad::$loader;
 
             $localPath = $appPath.'/data/local';
@@ -134,6 +135,8 @@ class TaskBuild extends arch\node\Task {
                 }
             }
 
+            $appDir->getFile('App.php')->copyTo($destinationPath.'/apex/App.php');
+
             // Move to run path
             $destination->moveTo($runPath, $buildId);
 
@@ -145,10 +148,10 @@ class TaskBuild extends arch\node\Task {
             // Switch active
             core\fs\File::create($runPath.'/Active.php',
                 '<?php'."\n".
-                'df\\Launchpad::$isCompiled = true;'."\n".
-                'df\\Launchpad::$compileTimestamp = '.time().';'."\n".
-                'df\\Launchpad::$rootPath = \''.$runPath.'/'.$buildId.'\';'."\n".
-                'df\\Launchpad::$environmentMode = \''.df\Launchpad::$environmentMode.'\';'
+                'namespace df;'."\n".
+                'const COMPILE_TIMESTAMP = '.time().';'."\n".
+                'const COMPILE_ROOT_PATH = \''.$runPath.'/'.$buildId.'\';'."\n".
+                'const COMPILE_ENV_MODE = \''.df\Launchpad::$app->envMode.'\';'
             );
         } else {
             // Late build tasks

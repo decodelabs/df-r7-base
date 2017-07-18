@@ -27,13 +27,13 @@ class TaskInit extends arch\node\Task {
         if(!empty($this->request->query->environments)) {
             foreach($this->request->query->environments as $envNode) {
                 core\Config::clearLiveCache();
-                $currentEnv = df\Launchpad::$environmentId;
-                df\Launchpad::$environmentId = $envNode->getValue();
+                $currentEnv = df\Launchpad::$app->envId;
+                df\Launchpad::$app->envId = $envNode->getValue();
 
                 $this->_apply();
             }
 
-            df\Launchpad::$environmentId = $currentEnv;
+            df\Launchpad::$app->envId = $currentEnv;
             core\Config::clearLiveCache();
         } else {
             $this->_apply();

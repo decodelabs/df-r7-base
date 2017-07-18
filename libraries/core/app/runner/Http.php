@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\application;
+namespace df\core\app\runner;
 
 use df;
 use df\core;
@@ -12,9 +12,7 @@ use df\flow;
 use df\arch;
 use df\halo;
 
-class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedApplication {
-
-    const RUN_MODE = 'Http';
+class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedRunner {
 
     private static $_init = false;
 
@@ -51,15 +49,15 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             self::$_init = true;
         }
 
-        df\Launchpad::$application = $this;
+        df\Launchpad::$runner = $this;
 
-        $config = core\application\http\Config::getInstance();
+        $config = namespace\http\Config::getInstance();
         $this->_sendFileHeader = $config->getSendFileHeader();
         $this->_manualChunk = $config->shouldChunkManually();
         $this->_credentials = $config->getCredentials();
 
         $this->_httpRequest = new link\http\request\Base(null, true);
-        $this->_router = core\application\http\Router::getInstance();
+        $this->_router = namespace\http\Router::getInstance();
     }
 
 
@@ -160,7 +158,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 // IP check
     protected function _checkIpRanges(link\IIp $ip, arch\IRequest $request=null) {
-        $config = core\application\http\Config::getInstance();
+        $config = namespace\http\Config::getInstance();
 
         if($request) {
             $ranges = $config->getIpRangesForArea($request->getArea());
@@ -233,7 +231,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 // Prepare http request
     protected function _prepareHttpRequest() {
-        if($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure() && $this->isProduction()) {
+        if($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure() && df\Launchpad::$app->isProduction()) {
             $response = new link\http\response\Redirect(
                 $this->_httpRequest->getUrl()
                     ->isSecure(true)
@@ -249,7 +247,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 // Debug mode
     protected function _handleDebugMode() {
         if($this->_httpRequest->hasCookie('debug')) {
-            df\Launchpad::$environmentMode = 'testing';
+            df\Launchpad::$app->envMode = 'testing';
 
             flow\Manager::getInstance()->flashNow(
                     'global.debug',
@@ -288,7 +286,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $baseUrl->setQuery($url->getQuery());
             $baseUrl = (string)$baseUrl;
 
-            if($this->isDevelopment()) {
+            if(df\Launchpad::$app->isDevelopment()) {
                 $response = new link\http\response\Stream(
                     '<html><head><title>Bad request</title></head><body>'.
                     '<p>Sorry, you are not in the right place!</p>'.
@@ -341,7 +339,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         $request = $this->_router->routeIn($request);
 
-        if(df\Launchpad::$isMaintenance
+        if(df\Launchpad::$app->isMaintenance
         && !$request->isArea('admin')
         && !$request->isArea('devtools')
         && !$request->isArea('mail')
@@ -421,9 +419,9 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             throw $e;
         }
 
-        foreach($this->_registry as $object) {
+        foreach(df\Launchpad::$app->getRegistryObjects() as $object) {
             if($object instanceof core\IDispatchAware) {
-                $object->onApplicationDispatch($node);
+                $object->onAppDispatch($node);
             }
         }
 
@@ -454,7 +452,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         // Empty response
-        if($response === null && $this->isDevelopment()) {
+        if($response === null && df\Launchpad::$app->isDevelopment()) {
             throw core\Error::{'ENotImplemented'}([
                 'message' => 'No response was returned by node: '.$this->_context->request,
                 'http' => 501

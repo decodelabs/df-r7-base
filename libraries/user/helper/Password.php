@@ -13,7 +13,7 @@ use df\flex;
 class Password extends Base {
 
     public function analyze($password) {
-        return new flex\PasswordAnalyzer($password, $this->_getPassKey());
+        return new flex\PasswordAnalyzer($password, df\Launchpad::$app->getPassKey());
     }
 
     public function generate() {
@@ -21,14 +21,10 @@ class Password extends Base {
     }
 
     public function hash($message) {
-        return core\crypt\Util::passwordHash($message, $this->_getPassKey());
+        return core\crypt\Util::passwordHash($message, df\Launchpad::$app->getPassKey());
     }
 
     public function hexHash($message) {
         return bin2hex($this->hash($message));
-    }
-
-    protected function _getPassKey() {
-        return df\Launchpad::$application->getPassKey();
     }
 }

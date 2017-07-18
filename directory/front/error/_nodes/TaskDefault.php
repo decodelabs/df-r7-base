@@ -17,7 +17,7 @@ class TaskDefault extends arch\node\Base {
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 
     public function execute() {
-        if(!$exception = $this->application->getDispatchException()) {
+        if(!$exception = $this->runner->getDispatchException()) {
             throw core\Error::{'EForbidden'}([
                 'message' => 'You shouldn\'t be here',
                 'http' => 403
@@ -25,7 +25,7 @@ class TaskDefault extends arch\node\Base {
         }
 
         $code = $exception->getCode();
-        $lastRequest = $this->application->getDispatchRequest();
+        $lastRequest = $this->runner->getDispatchRequest();
 
         if(!link\http\response\HeaderCollection::isValidStatusCode($code)
         || !link\http\response\HeaderCollection::isErrorStatusCode($code)) {

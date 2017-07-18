@@ -38,7 +38,7 @@ abstract class Base implements aura\theme\IFacet {
             return true;
         }
 
-        return in_array(df\Launchpad::$environmentId, $this->_environments);
+        return in_array(df\Launchpad::$app->envId, $this->_environments);
     }
 
 # Before render

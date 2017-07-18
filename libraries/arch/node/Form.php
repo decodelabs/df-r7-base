@@ -269,7 +269,7 @@ abstract class Form extends Base implements IFormNode {
             $decorator->renderUi();
         } else if(method_exists($this, 'createUi')) {
             $this->createUi();
-        } else if($this->context->application->isDevelopment()) {
+        } else if($this->context->app->isDevelopment()) {
             $this->content->add('p',
                 'This form handler has no ui generator - you need to implement function createUi() or override function handleGetRequest()'
             );
@@ -395,7 +395,7 @@ abstract class Form extends Base implements IFormNode {
 
     private function _runPostRequest(core\collection\ITree $postData=null) {
         if($postData === null) {
-            $httpRequest = $this->context->application->getHttpRequest();
+            $httpRequest = $this->context->runner->getHttpRequest();
             $postData = clone $httpRequest->getPostData();
         }
 
@@ -541,7 +541,7 @@ abstract class Form extends Base implements IFormNode {
 
 // Node dispatch
     public function getDispatchMethodName(): ?string {
-        $method = ucfirst(strtolower($this->context->application->getHttpRequest()->getMethod()));
+        $method = ucfirst(strtolower($this->context->runner->getHttpRequest()->getMethod()));
 
         if($method == 'Head') {
             $method = 'Get';
@@ -562,7 +562,7 @@ abstract class Form extends Base implements IFormNode {
 
         throw core\Error::EBadRequest([
             'message' => 'Form node '.$this->context->location->getLiteralPath().' does not support '.
-                $this->context->application->getHttpRequest()->getMethod().' http method',
+                $this->context->runner->getHttpRequest()->getMethod().' http method',
             'http' => 405
         ]);
     }

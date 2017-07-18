@@ -443,7 +443,7 @@ class Html implements arch\IDirectoryHelper {
         $manager->processFlashQueue();
         $messageCount = 0;
 
-        $isProduction = df\Launchpad::$application->isProduction();
+        $isProduction = df\Launchpad::$app->isProduction();
 
         $output = '<div class="w list flash">'."\n";
 

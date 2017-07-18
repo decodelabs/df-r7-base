@@ -66,7 +66,7 @@ class Avatar implements arch\IDirectoryHelper {
                 $path = new core\uri\Path($path);
                 $this->_defaultImageUrl = $this->context->uri->__invoke('avatar/download?user=default&type='.$path->getExtension());
 
-                $config = core\application\http\Config::getInstance();
+                $config = core\app\runner\http\Config::getInstance();
 
                 if($credentials = $config->getCredentials()) {
                     $this->_defaultImageUrl->setCredentials(

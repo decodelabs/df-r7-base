@@ -83,13 +83,13 @@ class Base implements link\http\IRequest, core\IDumpable {
         return new self($url);
     }
 
-    public function __construct($url=null, $environmentMode=false) {
+    public function __construct($url=null, $envMode=false) {
         if($url === true || $url === false) {
-            $environmentMode = $url;
+            $envMode = $url;
             $url = null;
         }
 
-        if($environmentMode) {
+        if($envMode) {
             $this->_importEnvironment($url);
         } else {
             $this->headers = new HeaderCollection();

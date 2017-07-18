@@ -33,9 +33,6 @@ class Base implements core\ILoader {
     public function __construct(array $locations=[]) {
         $this->_locations = $locations;
         spl_autoload_register([$this, 'loadClass']);
-
-        $this->_packages['base'] = new core\Package('base', 0, df\Launchpad::$rootPath);
-        $this->_packages['app'] = new core\Package('app', PHP_INT_MAX, df\Launchpad::$applicationPath);
     }
 
 // Class loader
@@ -292,6 +289,12 @@ class Base implements core\ILoader {
 
 
 // Packages
+    public function initRootPackages(string $rootPath, string $appPath) {
+        $this->_packages['base'] = new core\Package('base', 0, $rootPath);
+        $this->_packages['app'] = new core\Package('app', PHP_INT_MAX, $appPath);
+        return $this;
+    }
+
     public function loadPackages(array $packages) {
         /*
         if($this->_isInit) {

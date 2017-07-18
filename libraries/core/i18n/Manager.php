@@ -48,8 +48,8 @@ class Manager implements IManager {
         $default = null;
 
         if($config->shouldDetectClientLocale()
-        && df\Launchpad::$application instanceof core\application\Http) {
-            $request = df\Launchpad::$application->getHttpRequest();
+        && df\Launchpad::$runner instanceof core\app\runner\Http) {
+            $request = df\Launchpad::$runner->getHttpRequest();
 
             if(isset($request->headers['accept-language'])) {
                 $default = \Locale::acceptFromHttp($request->headers['accept-language']);

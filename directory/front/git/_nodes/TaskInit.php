@@ -19,7 +19,7 @@ class TaskInit extends arch\node\Task {
     public function execute() {
         $this->ensureDfSource();
 
-        $path = df\Launchpad::$applicationPath;
+        $path = df\Launchpad::$app->path;
         $this->runChild('git/init-gitignore');
 
         if(is_dir($path.'/.git')) {

@@ -81,7 +81,7 @@ class Error extends Base {
     public function render() {
         $view = $this->getView();
 
-        if(df\Launchpad::$application->isProduction() && !$view->context->request->isArea('admin')) {
+        if(df\Launchpad::$app->isProduction() && !$view->context->request->isArea('admin')) {
             return null;
         }
 

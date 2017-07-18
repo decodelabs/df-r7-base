@@ -647,7 +647,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
             $this->canIndex(false)->canFollow(false);
         }
 
-        if($this->context->application->getRunMode() == 'Http') {
+        if($this->context->getRunMode() == 'Http') {
             if($this->context->http->isAjaxRequest()) {
                 $this->_shouldRenderBase = false;
             }
@@ -728,7 +728,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
                 $attr[] = 'data-'.$key.'="'.$this->esc($value).'"';
             }
 
-            $attr[] = 'data-'.df\Launchpad::$environmentMode;
+            $attr[] = 'data-'.df\Launchpad::$app->envMode;
 
             $output .= '    <meta id="custom-view-data" '.implode(' ', $attr).' />'."\n";
         }

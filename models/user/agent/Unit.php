@@ -49,11 +49,11 @@ class Unit extends axis\unit\table\Base {
         $userAgent = null;
 
         try {
-            $application = df\Launchpad::$application;
+            $runner = df\Launchpad::$runner;
 
-            if($application instanceof core\application\Http) {
-                $userAgent = $application->getContext()->http->getUserAgent();
-            } else if($application instanceof core\application\Task) {
+            if($runner instanceof core\app\runner\Http) {
+                $userAgent = $runner->getContext()->http->getUserAgent();
+            } else if($runner instanceof core\app\runner\Task) {
                 if(isset($_SERVER['TERM'])) {
                     $userAgent = $_SERVER['TERM'];
                 } else if(isset($_SERVER['TERM_PROGRAM'])) {

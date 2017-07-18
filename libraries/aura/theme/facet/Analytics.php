@@ -29,7 +29,7 @@ class Analytics extends Base {
         }
 
         if($view->context->getRunMode() == 'Http'
-        && ($view->context->application->isProduction() || isset($view->context->request->query->forceAnalytics))) {
+        && ($view->context->app->isProduction() || isset($view->context->request->query->forceAnalytics))) {
             $this->getHandler()->apply($view);
         }
     }

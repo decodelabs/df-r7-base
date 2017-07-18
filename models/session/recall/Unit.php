@@ -25,7 +25,7 @@ class Unit extends axis\unit\table\Base {
 
     public function generateKey(user\IClient $client) {
         $output = user\session\RecallKey::generate($client->getId());
-        $passKey = df\Launchpad::$application->getPassKey();
+        $passKey = df\Launchpad::$app->getPassKey();
 
         $this->newRecord([
                 'user' => $client->getId(),
@@ -37,7 +37,7 @@ class Unit extends axis\unit\table\Base {
     }
 
     public function hasKey(user\session\RecallKey $key) {
-        $passKey = df\Launchpad::$application->getPassKey();
+        $passKey = df\Launchpad::$app->getPassKey();
 
         return (bool)$this->select()
             ->where('user', '=', $key->userId)
@@ -46,7 +46,7 @@ class Unit extends axis\unit\table\Base {
     }
 
     public function destroyKey(user\session\RecallKey $key) {
-        $passKey = df\Launchpad::$application->getPassKey();
+        $passKey = df\Launchpad::$app->getPassKey();
 
         $this->delete()
             ->where('user', '=', $key->userId)

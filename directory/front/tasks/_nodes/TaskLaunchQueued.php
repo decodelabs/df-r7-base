@@ -30,7 +30,7 @@ class TaskLaunchQueued extends arch\node\Task {
 
         $this->_log = $this->data->task->log->newRecord([
                 'request' => $this->_entry['request'],
-                'environmentMode' => df\Launchpad::getEnvironmentMode()
+                'environmentMode' => df\Launchpad::$app->envMode
             ])
             ->save();
 

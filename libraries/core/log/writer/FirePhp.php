@@ -55,11 +55,11 @@ class FirePhp implements core\log\IWriter {
     }
 
     public function flush(core\log\IHandler $handler) {
-        $application = df\Launchpad::$application;
+        $runner = df\Launchpad::$runner;
 
-        if($application instanceof core\application\Http) {
+        if($runner instanceof core\app\runner\Http) {
             $this->_buffer['X-Wf-1-Index'] = self::$_messageIndex;
-            $augmentor = $application->getResponseAugmentor();
+            $augmentor = $runner->getResponseAugmentor();
 
             foreach($this->_buffer as $key => $value) {
                 $augmentor->setHeaderForCurrentRequest($key, $value);

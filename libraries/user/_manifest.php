@@ -196,7 +196,7 @@ trait TSessionBackedHelper {
         $this->_sessionData = null;
     }
 
-    public function onApplicationShutdown(): void {
+    public function onAppShutdown(): void {
         $this->storeSessionData();
     }
 

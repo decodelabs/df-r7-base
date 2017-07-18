@@ -79,7 +79,7 @@ class Base implements ITheme, core\IDumpable {
     }
 
     public function beforeHtmlViewRender(aura\view\IView $view) {
-        if(df\Launchpad::$application->isDevelopment()) {
+        if(df\Launchpad::$app->isDevelopment()) {
             fuse\Manager::getInstance()->ensureDependenciesFor($this);
         }
 
@@ -94,7 +94,7 @@ class Base implements ITheme, core\IDumpable {
 
     public function applyDefaultBodyTagData(aura\view\IView $view) {
         $request = $view->context->request;
-        $router = core\application\http\Router::getInstance();
+        $router = core\app\runner\http\Router::getInstance();
         //$view->setData('base', '/'.ltrim($router->getBaseUrl()->getPathString(), './'));
         $view->setData('base', $router->getBaseUrl());
 
@@ -108,7 +108,7 @@ class Base implements ITheme, core\IDumpable {
 
         if(df\Launchpad::$compileTimestamp) {
             $view->setData('cts', df\Launchpad::$compileTimestamp);
-        } else if($view->context->application->isDevelopment()) {
+        } else if($view->context->app->isDevelopment()) {
             $view->setData('cts', time());
         }
     }
@@ -123,7 +123,7 @@ class Base implements ITheme, core\IDumpable {
         }
 
         if(!$view->hasMeta('application-name')) {
-            $view->setMeta('application-name', $view->context->application->getName());
+            $view->setMeta('application-name', df\Launchpad::$app->getName());
         }
     }
 
@@ -208,7 +208,7 @@ class Base implements ITheme, core\IDumpable {
         }
 
         if(!$view->hasTitleSuffix()) {
-            $suffix = df\Launchpad::$application->getName();
+            $suffix = df\Launchpad::$app->getName();
 
             if($view->hasTitle()) {
                 $suffix = ' : '.$suffix;

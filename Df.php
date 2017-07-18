@@ -17,40 +17,21 @@ class Launchpad {
     public static $compileTimestamp = null;
 
     public static $rootPath = __DIR__;
-
-    public static $applicationName;
-    public static $applicationPath;
-
-    public static $environmentId;
-    public static $environmentMode = 'testing';
-
-    public static $uniquePrefix;
-    public static $passKey;
-    public static $isDistributed = false;
-    public static $isMaintenance = false;
+    public static $activeEnvMode = 'testing';
 
     public static $loader;
-    public static $application;
+    public static $app;
+    public static $runner;
     public static $debug;
-
-    public static $startTime;
 
     private static $_isShutdown = false;
 
-    public static function loadBaseClass($path): void {
-        if(self::$isCompiled) {
-            $path = self::$rootPath.'/'.$path.'.php';
-        } else {
-            $path = self::$rootPath.'/libraries/'.$path.'.php';
-        }
 
-        require_once $path;
-    }
 
 // Run
     public static function run(): void {
         $parts = explode('/', str_replace('\\', '/', realpath($_SERVER['SCRIPT_FILENAME'])));
-        $environmentId = array_pop($parts);
+        $envId = array_pop($parts);
 
         if(array_pop($parts) != 'entry') {
             throw new \Exception(
@@ -58,31 +39,29 @@ class Launchpad {
             );
         }
 
-        if(substr($environmentId, -4) == '.php') {
-            $environmentId = substr($environmentId, 0, -4);
+        if(substr($envId, -4) == '.php') {
+            $envId = substr($envId, 0, -4);
         }
 
-        $envParts = explode('.', $environmentId, 2);
-        $environmentId = array_shift($envParts);
+        $envParts = explode('.', $envId, 2);
+        $envId = array_shift($envParts);
 
-        self::runAs($environmentId, implode('/', $parts));
+        self::runAs($envId, implode('/', $parts));
     }
 
-    public static function runAs($environmentId, $appPath): void {
-        if(self::$startTime) {
+    public static function runAs($envId, $appPath): void {
+        if(self::$app) {
             return;
         }
 
-        self::$startTime = microtime(true);
-        self::$applicationPath = $appPath;
-        self::$environmentId = $environmentId;
+        $startTime = microtime(true);
 
         // Set a few system defaults
         umask(0);
         error_reporting(E_ALL | E_STRICT);
         date_default_timezone_set('UTC');
         mb_internal_encoding('UTF-8');
-        chdir(self::$applicationPath.'/entry');
+        chdir($appPath.'/entry');
 
         // Check for compiled version
         $activePath = $appPath.'/data/local/run/Active.php';
@@ -90,13 +69,20 @@ class Launchpad {
 
         if(file_exists($activePath) && !$sourceMode) {
             require $activePath;
-
-            if(!is_dir(self::$rootPath)) {
-                self::$isCompiled = false;
-                self::$compileTimestamp = null;
-                self::$rootPath = __DIR__;
-            }
         }
+
+        if(!defined('df\\COMPILE_TIMESTAMP')) {
+            define('df\\COMPILE_TIMESTAMP', null);
+            define('df\\COMPILE_ROOT_PATH', null);
+            define('df\\COMPILE_ENV_NODE', null);
+        }
+
+        if(df\COMPILE_ROOT_PATH && is_dir(df\COMPILE_ROOT_PATH)) {
+            self::$isCompiled = true;
+            self::$compileTimestamp = df\COMPILE_TIMESTAMP;
+            self::$rootPath = df\COMPILE_ROOT_PATH;
+        }
+
 
         // Load core library
         self::loadBaseClass('core/_manifest');
@@ -108,84 +94,15 @@ class Launchpad {
             self::$loader = new core\loader\Development(['root' => dirname(self::$rootPath)]);
         }
 
-        // Set error handlers
-        set_error_handler(['df\\Launchpad', 'handleError']);
-        set_exception_handler(['df\\Launchpad', 'handleException']);
-
-        if(isset($_SERVER['HTTP_HOST'])) {
-            $appType = 'Http';
-        } else {
-            if(isset($_SERVER['argv'][1])) {
-                $appType = ucfirst($_SERVER['argv'][1]);
-            } else {
-                $appType = 'Task';
-            }
-        }
-
-        switch($appType) {
-            case 'Http':
-            case 'Daemon':
-            case 'Task':
-                break;
-
-            default:
-                $appType = 'Task';
-        }
+        self::$loader->initRootPackages(self::$rootPath, $appPath);
 
 
+        // App
+        self::$app = core\app\Base::factory($envId, $appPath);
+        self::$app->startup($startTime);
+        self::$app->run();
 
-        // Load application / packages
-        $envConfig = core\environment\Config::getInstance();
-        self::$isDistributed = $envConfig->isDistributed();
-
-        if(method_exists($envConfig, 'isMaintenanceMode')) {
-            self::$isMaintenance = $envConfig->isMaintenanceMode();
-        }
-
-        if(!self::$isCompiled) {
-            self::$environmentMode = $envConfig->getMode();
-        }
-
-
-
-        $class = 'df\\core\\application\\'.$appType;
-        self::$application = new $class();
-
-        if(!self::$isCompiled) {
-            self::$loader->registerLocations($envConfig->getActiveLocations());
-        }
-
-        $appConfig = core\application\Config::getInstance();
-
-        self::$applicationName = $appConfig->getApplicationName();
-        self::$uniquePrefix = $appConfig->getUniquePrefix();
-        self::$passKey = $appConfig->getPassKey();
-
-        self::$loader->loadPackages($appConfig->getActivePackages());
-
-        self::$application->dispatch();
         self::shutdown();
-    }
-
-    public static function getEnvironmentId(): string {
-        return (string)self::$environmentId;
-    }
-
-    public static function getEnvironmentMode(): string {
-        return (string)self::$environmentMode;
-    }
-
-    public static function isDevelopment(): bool {
-        return self::$environmentMode == 'development';
-    }
-
-    public static function isTesting(): bool {
-        return self::$environmentMode == 'testing'
-            || self::$environmentMode == 'development';
-    }
-
-    public static function isProduction(): bool {
-        return self::$environmentMode == 'production';
     }
 
 
@@ -196,93 +113,30 @@ class Launchpad {
 
         self::$_isShutdown = true;
 
-        if(self::$application) {
-            self::$application->shutdown();
-            self::$application = null;
+        if(self::$app) {
+            self::$app->shutdown();
         }
 
         if(self::$loader) {
             self::$loader->shutdown();
-            self::$loader = null;
         }
+
+        self::$app = null;
+        self::$loader = null;
 
         exit;
     }
 
 
-
-// Errors
-    public static function handleError($errorNumber, $errorMessage, $fileName, $lineNumber) {//: void {
-        if(!$level = error_reporting()) {
-            return;
-        }
-
-        throw new \ErrorException($errorMessage, 0, $errorNumber, $fileName, $lineNumber);
-    }
-
-    public static function handleException(\Throwable $e): void {
-        try {
-            if(self::$application) {
-                try {
-                    core\debug()
-                        ->exception($e)
-                        ->render();
-
-                    self::shutdown();
-                } catch(\Throwable $g) {
-                    self::_fatalError($g->__toString()."\n\n\n".$e->__toString());
-                }
-            }
-
-            self::_fatalError($e->__toString());
-        } catch(\Throwable $f) {
-            self::_fatalError($e->__toString()."\n\n\n".$f->__toString());
-        }
-    }
-
-    private static function _fatalError($message) {//: void {
-        while(ob_get_level()) {
-            ob_end_clean();
-        }
-
-        if(isset($_SERVER['HTTP_HOST'])) {
-            $message = '<pre>'.$message.'</pre>';
-        }
-
-        echo $message;
-        self::shutdown();
-    }
-
-
-// Application
-    public static function getApplication(): core\IApplication {
-        if(!self::$application) {
-            $class = 'df\\core\\application\\LogicException';
-
-            if(!class_exists($class)) {
-                $class = '\\LogicException';
-            }
-
-            throw new $class(
-                'No active application is available'
-            );
-        }
-
-        return self::$application;
-    }
-
-
-// Paths
-    public static function getApplicationPath(): ?string {
-        return self::$applicationPath;
-    }
-
-    public static function getBasePackagePath(): ?string {
+// Loading
+    public static function loadBaseClass($path): void {
         if(self::$isCompiled) {
-            return self::$rootPath;
+            $path = self::$rootPath.'/'.$path.'.php';
         } else {
-            return self::$rootPath.'/libraries';
+            $path = self::$rootPath.'/libraries/'.$path.'.php';
         }
+
+        require_once $path;
     }
 
 
@@ -301,9 +155,5 @@ class Launchpad {
         }
 
         return self::$debug;
-    }
-
-    public static function getRunningTime() {
-        return microtime(true) - self::$startTime;
     }
 }

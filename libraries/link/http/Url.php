@@ -17,7 +17,7 @@ class Url extends core\uri\Url implements IUrl {
 
     protected $_directoryRequest;
 
-    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, core\application\http\Router_Map $map=null, arch\IRequest $routedRequest=null) {
+    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, core\app\runner\http\Router_Map $map=null, arch\IRequest $routedRequest=null) {
         if($request->isJustFragment()) {
             $output = new self('#'.$request->getFragment());
         } else {
@@ -92,7 +92,7 @@ class Url extends core\uri\Url implements IUrl {
                 if(isset($output->_query->cts) && $output->_query->cts->getValue() == null) {
                     if(df\Launchpad::$compileTimestamp) {
                         $output->query->cts = df\Launchpad::$compileTimestamp;
-                    } else if(df\Launchpad::$application && df\Launchpad::$application->isDevelopment()) {
+                    } else if(df\Launchpad::$app && df\Launchpad::$app->isDevelopment()) {
                         $output->query->cts = time();
                     }
                 }
@@ -198,10 +198,10 @@ class Url extends core\uri\Url implements IUrl {
 
         if(substr($url, 0, 1) == '/') {
             unset($path[0]);
-            $app = df\Launchpad::getApplication();
+            $runner = df\Launchpad::$runner;
 
-            if($app instanceof core\application\Http) {
-                $requestUrl = $app->getHttpRequest()->getUrl();
+            if($runner instanceof core\app\runner\Http) {
+                $requestUrl = $runner->getHttpRequest()->getUrl();
 
                 $this->_username = $requestUrl->getUsername();
                 $this->_password = $requestUrl->getPassword();

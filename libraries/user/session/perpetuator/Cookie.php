@@ -22,8 +22,8 @@ class Cookie implements user\session\IPerpetuator {
     protected $_canRecall = true;
 
     public function __construct(user\session\IController $controller) {
-        $cookies = df\Launchpad::$application->getHttpRequest()->cookies;
-        $isRoot = df\Launchpad::$application->getRouter()->isBaseRoot();
+        $cookies = df\Launchpad::$runner->getHttpRequest()->cookies;
+        $isRoot = df\Launchpad::$runner->getRouter()->isBaseRoot();
 
         if(!$isRoot && !$cookies->has(self::SESSION_NAME) && !$cookies->has(self::JOIN_NAME)) {
             $this->_joinRoot();
@@ -66,10 +66,10 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     protected function _setSessionCookie($outputId) {
-        $application = df\Launchpad::$application;
+        $runner = df\Launchpad::$runner;
 
-        if($application instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $application->getResponseAugmentor();
+        if($runner instanceof link\http\IResponseAugmentorProvider) {
+            $augmentor = $runner->getResponseAugmentor();
             $augmentor->setCookieForAnyRequest($augmentor->newCookie(
                 self::SESSION_NAME, $outputId, null, true
             ));
@@ -77,10 +77,10 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function destroy(user\session\IController $controller) {
-        $application = df\Launchpad::$application;
+        $runner = df\Launchpad::$runner;
 
-        if($application instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $application->getResponseAugmentor();
+        if($runner instanceof link\http\IResponseAugmentorProvider) {
+            $augmentor = $runner->getResponseAugmentor();
 
             // Remove session cookie
             $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
@@ -97,8 +97,8 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function handleDeadPublicKey($publicKey) {
-        $cookies = df\Launchpad::$application->getHttpRequest()->cookies;
-        $isRoot = df\Launchpad::$application->getRouter()->isBaseRoot();
+        $cookies = df\Launchpad::$runner->getHttpRequest()->cookies;
+        $isRoot = df\Launchpad::$runner->getRouter()->isBaseRoot();
 
         if(!$isRoot && !$cookies->has(self::JOIN_NAME)) {
             $this->_joinRoot();
@@ -108,8 +108,8 @@ class Cookie implements user\session\IPerpetuator {
     protected function _joinRoot() {
         $key = $this->_generateJoinKey();
         $this->setJoinKey($key);
-        $httpRequest = df\Launchpad::$application->getHttpRequest();
-        $router = df\Launchpad::$application->getRouter();
+        $httpRequest = df\Launchpad::$runner->getHttpRequest();
+        $router = df\Launchpad::$runner->getRouter();
         $request = $router->requestToUrl(arch\Request::factory('account/join-session?key='.bin2hex($key)));
         $request->query->rf = $router->urlToRequest($httpRequest->url)->encode();
         $redirect = new link\http\response\Redirect($request);
@@ -118,10 +118,10 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function perpetuateRecallKey(user\session\IController $controller, user\session\RecallKey $key) {
-        $application = df\Launchpad::$application;
+        $runner = df\Launchpad::$runner;
 
-        if($application instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $application->getResponseAugmentor();
+        if($runner instanceof link\http\IResponseAugmentorProvider) {
+            $augmentor = $runner->getResponseAugmentor();
 
             $augmentor->setCookieForAnyRequest($augmentor->newCookie(
                 self::REMEMBER_NAME,
@@ -135,7 +135,7 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function getRecallKey(user\session\IController $controller) {
-        $httpRequest = df\Launchpad::$application->getHttpRequest();
+        $httpRequest = df\Launchpad::$runner->getHttpRequest();
 
         if(!$httpRequest->hasCookieData()) {
             return null;
@@ -152,10 +152,10 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function destroyRecallKey(user\session\IController $controller) {
-        $application = df\Launchpad::$application;
+        $runner = df\Launchpad::$runner;
 
-        if($application instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $application->getResponseAugmentor();
+        if($runner instanceof link\http\IResponseAugmentorProvider) {
+            $augmentor = $runner->getResponseAugmentor();
 
             $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
                 self::REMEMBER_NAME, '', null, true
@@ -167,10 +167,10 @@ class Cookie implements user\session\IPerpetuator {
 
 
     public function setJoinKey($key) {
-        $application = df\Launchpad::$application;
+        $runner = df\Launchpad::$runner;
 
-        if($application instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $application->getResponseAugmentor();
+        if($runner instanceof link\http\IResponseAugmentorProvider) {
+            $augmentor = $runner->getResponseAugmentor();
 
             $augmentor->setCookieForAnyRequest($augmentor->newCookie(
                 self::JOIN_NAME,
@@ -184,10 +184,10 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function destroyJoinKey() {
-        $application = df\Launchpad::$application;
+        $runner = df\Launchpad::$runner;
 
-        if($application instanceof link\http\IResponseAugmentorProvider) {
-            $augmentor = $application->getResponseAugmentor();
+        if($runner instanceof link\http\IResponseAugmentorProvider) {
+            $augmentor = $runner->getResponseAugmentor();
 
             $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
                 self::JOIN_NAME, '', null, true

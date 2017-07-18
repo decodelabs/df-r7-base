@@ -21,11 +21,11 @@ class Context implements IContext, \Serializable, core\IDumpable {
     public $location;
 
     public static function getCurrent($onlyActive=false) {
-        $application = df\Launchpad::getApplication();
+        $runner = df\Launchpad::$runner;
 
-        if($application instanceof core\IContextAware) {
+        if($runner instanceof core\IContextAware) {
             try {
-                return $application->getContext();
+                return $runner->getContext();
             } catch(core\ENoContext $e) {}
         }
 
@@ -37,12 +37,12 @@ class Context implements IContext, \Serializable, core\IDumpable {
     }
 
     public static function factory($location=null, $runMode=null, $request=null): IContext {
-        $application = df\Launchpad::getApplication();
+        $runner = df\Launchpad::$runner;
 
         if(!empty($location)) {
             $location = arch\Request::factory($location);
-        } else if($application instanceof core\IContextAware && $application->hasContext()) {
-            $location = $application->getContext()->location;
+        } else if($runner instanceof core\IContextAware && $runner->hasContext()) {
+            $location = $runner->getContext()->location;
         } else {
             $location = new arch\Request('/');
         }
@@ -51,16 +51,16 @@ class Context implements IContext, \Serializable, core\IDumpable {
     }
 
     public function __construct(arch\IRequest $location, $runMode=null, $request=null) {
-        $this->application = df\Launchpad::$application;
+        $this->runner = df\Launchpad::$runner;
         $this->location = $location;
 
         if($request === true) {
             $this->request = clone $location;
         } else if($request !== null) {
             $this->request = arch\Request::factory($request);
-        } else if($this->application instanceof core\IContextAware
-               && $this->application->hasContext()) {
-            $this->request = $this->application->getContext()->location;
+        } else if($this->runner instanceof core\IContextAware
+               && $this->runner->hasContext()) {
+            $this->request = $this->runner->getContext()->location;
         } else {
             $this->request = $location;
         }
@@ -99,11 +99,11 @@ class Context implements IContext, \Serializable, core\IDumpable {
 
     public function unserialize($data) {
         $this->location = Request::factory($data);
-        $this->application = df\Launchpad::$application;
+        $this->runner = df\Launchpad::$runner;
 
-        if($this->application instanceof core\IContextAware
-        && $this->application->hasContext()) {
-            $this->request = $this->application->getContext()->location;
+        if($this->runner instanceof core\IContextAware
+        && $this->runner->hasContext()) {
+            $this->request = $this->runner->getContext()->location;
         } else {
             $this->request = $this->location;
         }
@@ -115,13 +115,13 @@ class Context implements IContext, \Serializable, core\IDumpable {
 
 // Application
     public function getDispatchContext(): core\IContext {
-        if(!$this->application instanceof core\IContextAware) {
+        if(!$this->runner instanceof core\IContextAware) {
             throw core\Error::ENoContext(
-                'Current application is not context aware'
+                'Current runner is not context aware'
             );
         }
 
-        return $this->application->getContext();
+        return $this->runner->getContext();
     }
 
     public function isDispatchContext(): bool {

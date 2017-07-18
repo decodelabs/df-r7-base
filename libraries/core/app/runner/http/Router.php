@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\application\http;
+namespace df\core\app\runner\http;
 
 use df;
 use df\core;
@@ -30,18 +30,16 @@ class Router implements core\IRegistryObject {
     protected $_rootNodeRouter = false;
 
     public static function getInstance(): self {
-        $application = df\Launchpad::getApplication();
-
-        if(!$output = $application->getRegistryObject(self::REGISTRY_KEY)) {
+        if(!$output = df\Launchpad::$app->getRegistryObject(self::REGISTRY_KEY)) {
             $output = new self();
-            $application->setRegistryObject($output);
+            df\Launchpad::$app->setRegistryObject($output);
         }
 
         return $output;
     }
 
     public function __construct(link\http\IUrl $rootUrl=null) {
-        $config = core\application\http\Config::getInstance();
+        $config = Config::getInstance();
 
         if($rootUrl !== null) {
             $map = ['*' => $rootUrl->getDomain().'/'.ltrim($rootUrl->getPathString())];

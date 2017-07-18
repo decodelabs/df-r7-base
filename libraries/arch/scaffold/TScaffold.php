@@ -919,7 +919,7 @@ trait TScaffold_SectionProvider {
             try {
                 $this->_sectionItemCounts = (array)$this->countSectionItems($this->getRecord());
             } catch(\Throwable $e) {
-                if($this->application->isDevelopment()) {
+                if($this->app->isDevelopment()) {
                     throw $e;
                 }
 

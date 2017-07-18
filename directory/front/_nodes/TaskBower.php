@@ -14,14 +14,14 @@ use df\halo;
 class TaskBower extends arch\node\Task implements arch\node\IBuildTaskNode {
 
     public function execute() {
-        if(!core\fs\File::iFileExists($this->application->getApplicationPath().'/bower.json')) {
+        if(!core\fs\File::iFileExists($this->app->path.'/bower.json')) {
             return;
         }
 
         $this->io->writeLine('Calling bower');
 
         halo\process\launcher\Base::factory('bower install')
-            ->setWorkingDirectory($this->application->getApplicationPath())
+            ->setWorkingDirectory($this->app->path)
             ->setMultiplexer($this->io)
             ->launch();
     }

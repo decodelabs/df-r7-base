@@ -232,7 +232,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
     }
 
     public function breadcrumbs($empty=false) {
-        if(!$output = $this->context->application->getRegistryObject('breadcrumbs')) {
+        if(!$output = $this->context->app->getRegistryObject('breadcrumbs')) {
             if($empty) {
                 $output = new arch\navigation\breadcrumbs\EntryList();
             } else {
@@ -241,7 +241,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
                 );
             }
 
-            $this->context->application->setRegistryObject($output);
+            $this->context->app->setRegistryObject($output);
         }
 
         return $output;
@@ -254,7 +254,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
             return $entry->getBody();
         }
 
-        return $this->context->application->getName();
+        return $this->context->app->getName();
     }
 
     public function clearMenuCache($id=null) {

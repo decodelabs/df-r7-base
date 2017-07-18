@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\application;
+namespace df\core\app\runner;
 
 use df;
 use df\core;
@@ -11,8 +11,6 @@ use df\halo;
 use df\flex;
 
 class Daemon extends Base {
-
-    const RUN_MODE = 'Daemon';
 
     public $io;
     protected $_statusData;
@@ -154,7 +152,7 @@ class Daemon extends Base {
             $this->io->write('...');
         }
 
-        $entryPath = df\Launchpad::$applicationPath.'/entry/'.df\Launchpad::$environmentId.'.php';
+        $entryPath = df\Launchpad::$app->path.'/entry/'.df\Launchpad::$app->envId.'.php';
 
         halo\process\Base::launchScript(
             $entryPath,

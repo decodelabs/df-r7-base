@@ -54,7 +54,7 @@ class Unit extends axis\unit\table\Base {
                 'to' => (string)$to,
                 'subject' => $headers->get('subject'),
                 'body' => (string)$message,
-                'environmentMode' => $this->context->application->getEnvironmentMode()
+                'environmentMode' => $this->context->app->envMode
             ])
             ->save();
     }

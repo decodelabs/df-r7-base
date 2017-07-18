@@ -37,7 +37,7 @@ class TaskBackup extends arch\node\Task {
 
         $this->_manifest['timestamp'] = time();
         $backupId = 'axis-'.date('YmdHis');
-        $this->_path = $this->application->getSharedStoragePath().'/backup/'.$backupId;
+        $this->_path = $this->app->getSharedDataPath().'/backup/'.$backupId;
         core\fs\Dir::create($this->_path);
 
         $this->io->writeLine('Backing up units');

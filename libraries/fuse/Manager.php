@@ -21,11 +21,11 @@ class Manager implements IManager {
 
 
     public static function getManifestCachePath(): string {
-        return df\Launchpad::$application->getLocalStoragePath().'/theme/dependencies';
+        return df\Launchpad::$app->getLocalDataPath().'/theme/dependencies';
     }
 
     public static function getAssetPath(): string {
-        return df\Launchpad::$application->getApplicationPath().'/assets/vendor';
+        return df\Launchpad::$app->path.'/assets/vendor';
     }
 
 
@@ -83,7 +83,7 @@ class Manager implements IManager {
         $swallow = true;
         $depContent = null;
 
-        if(df\Launchpad::$application->isDevelopment()) {
+        if(df\Launchpad::$app->isDevelopment()) {
             $swallow = false;
 
             if(!is_dir($vendorPath)) {

@@ -20,7 +20,7 @@ class Apcu implements core\cache\IBackend {
 
     public static function purgeApp(core\collection\ITree $options) {
         if(extension_loaded('apcu') && !(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli'))) {
-            $prefix = df\Launchpad::$application->getUniquePrefix().'-';
+            $prefix = df\Launchpad::$app->getUniquePrefix().'-';
             $list = self::getCacheList();
 
             foreach($list as $set) {
@@ -72,7 +72,7 @@ class Apcu implements core\cache\IBackend {
     public function __construct(core\cache\ICache $cache, int $lifeTime, core\collection\ITree $options) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
-        $this->_prefix = df\Launchpad::$application->getUniquePrefix().'-'.$cache->getCacheId().':';
+        $this->_prefix = df\Launchpad::$app->getUniquePrefix().'-'.$cache->getCacheId().':';
         $this->_isCli = php_sapi_name() == 'cli';
     }
 

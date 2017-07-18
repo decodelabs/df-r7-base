@@ -20,9 +20,9 @@ abstract class FileStore implements IFileStore {
 
     public function __construct() {
         if(self::IS_DISTRIBUTED) {
-            $path = df\Launchpad::$application->getSharedStoragePath();
+            $path = df\Launchpad::$app->getSharedDataPath();
         } else {
-            $path = df\Launchpad::$application->getLocalStoragePath();
+            $path = df\Launchpad::$app->getLocalDataPath();
         }
 
         $path .= '/filestore/'.flex\Text::formatFileName($this->getCacheId());

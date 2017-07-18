@@ -38,7 +38,7 @@ class Local implements user\authentication\IAdapter {
 
         $passwordHash = core\crypt\Util::passwordHash(
             $request->getCredential('password'),
-            df\Launchpad::$application->getPassKey()
+            df\Launchpad::$app->getPassKey()
         );
 
         $domainPassword = $domainInfo->getPassword();

@@ -53,7 +53,7 @@ class Local extends Base implements ILocalDataHandler {
 
     public function getFilePath($fileId, $versionId) {
         $storageKey = $this->_getStorageKey($fileId);
-        return df\Launchpad::$application->getSharedStoragePath().'/media/'.$storageKey.'/'.$fileId.'/'.$versionId;
+        return df\Launchpad::$app->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId.'/'.$versionId;
     }
 
     public function purgeVersion($fileId, $versionId, $isActive) {
@@ -65,7 +65,7 @@ class Local extends Base implements ILocalDataHandler {
 
     public function deleteFile($fileId) {
         $storageKey = $this->_getStorageKey($fileId);
-        $path = df\Launchpad::$application->getSharedStoragePath().'/media/'.$storageKey.'/'.$fileId;
+        $path = df\Launchpad::$app->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId;
         $dir = (new core\fs\Dir($path))->unlink();
 
         $parent = $dir->getParent();

@@ -74,7 +74,7 @@ abstract class Base implements IWidget {
 
         $message = $this->esc('Error rendering widget '.$this->getWidgetName());
 
-        if(df\Launchpad::$application->isTesting()) {
+        if(df\Launchpad::$app->isTesting()) {
             $message .= $this->esc(' - '.$e->getMessage()).'<br /><code>'.$this->esc($e->getFile().' : '.$e->getLine()).'</code>';
         }
 

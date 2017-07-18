@@ -73,7 +73,7 @@ interface IContext extends core\IContext, IResponseForcer {
     public function getScaffold(): arch\scaffold\IScaffold;
 }
 
-interface IRequestOrientedApplication extends core\IApplication {
+interface IRequestOrientedRunner extends core\IRunner {
     public function getDispatchRequest(): ?arch\IRequest;
 }
 
@@ -381,7 +381,7 @@ trait TAjaxDataProvider {
 
 interface IMail extends aura\view\IView, flow\mail\IMessage {
     public static function factory(arch\IContext $context, $path): arch\IMail;
-    
+
     public function getName(): string;
     public function getDescription();
     public function preparePreview();

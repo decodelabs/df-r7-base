@@ -17,7 +17,7 @@ class Bridge implements IBridge {
     protected $_execPath;
 
     public function __construct() {
-        $this->_execPath = df\Launchpad::$application->getLocalStoragePath().'/bower';
+        $this->_execPath = df\Launchpad::$app->getLocalDataPath().'/bower';
     }
 
     public function setInstallPath($path) {
@@ -39,10 +39,8 @@ class Bridge implements IBridge {
     }
 
     public function generate(array $deps) {
-        $application = df\Launchpad::$application;
-
         $json1 = flex\Json::toString([
-            'name' => $application->getName(),
+            'name' => df\Launchpad::$app->getName(),
             'ignore' => [],
             'dependencies' => $deps
         ]);

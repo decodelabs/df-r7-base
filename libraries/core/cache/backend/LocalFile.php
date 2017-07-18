@@ -28,8 +28,8 @@ class LocalFile implements core\cache\IBackend {
             return;
         }
 
-        $path1 = df\Launchpad::$application->getSharedStoragePath().'/cache/';
-        $path2 = df\Launchpad::$application->getLocalStoragePath().'/cache/';
+        $path1 = df\Launchpad::$app->getSharedDataPath().'/cache/';
+        $path2 = df\Launchpad::$app->getLocalDataPath().'/cache/';
 
         core\fs\Dir::deleteContents($path1);
         core\fs\Dir::deleteContents($path2);
@@ -37,8 +37,8 @@ class LocalFile implements core\cache\IBackend {
 
     public static function prune(core\collection\ITree $options) {
         $paths = [
-            df\Launchpad::$application->getSharedStoragePath().'/cache',
-            df\Launchpad::$application->getLocalStoragePath().'/cache'
+            df\Launchpad::$app->getSharedDataPath().'/cache',
+            df\Launchpad::$app->getLocalDataPath().'/cache'
         ];
 
         clearstatcache();
@@ -74,9 +74,9 @@ class LocalFile implements core\cache\IBackend {
         $this->_lifeTime = $lifeTime;
 
         if($cache->isCacheDistributed()) {
-            $path = df\Launchpad::$application->getSharedStoragePath();
+            $path = df\Launchpad::$app->getSharedDataPath();
         } else {
-            $path = df\Launchpad::$application->getLocalStoragePath();
+            $path = df\Launchpad::$app->getLocalDataPath();
         }
 
         $path .= '/cache/'.flex\Text::formatFileName($cache->getCacheId());

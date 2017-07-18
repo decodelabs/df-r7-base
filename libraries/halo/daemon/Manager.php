@@ -29,18 +29,18 @@ class Manager implements IManager {
     public function ensureActivity() {
         $spoolOnly = false;
 
-        if(!$this->isEnabled() || !df\Launchpad::$application->isProduction()) {
+        if(!$this->isEnabled() || !df\Launchpad::$app->isProduction()) {
             $spoolOnly = true;
             //return $this;
         }
 
-        $path = df\Launchpad::$application->getLocalStoragePath().'/daemons/__activity';
+        $path = df\Launchpad::$app->getLocalDataPath().'/daemons/__activity';
         $launch = false;
 
         try {
             $mtime = filemtime($path);
 
-            if(df\Launchpad::$startTime - $mtime > 300) {
+            if(df\Launchpad::$app->startTime - $mtime > 300) {
                 $launch = true;
             }
         } catch(\Throwable $e) {

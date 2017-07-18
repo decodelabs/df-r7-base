@@ -292,7 +292,7 @@ trait TView {
 
     protected function _canThemeProcess(): bool {
         return $this instanceof IThemedView
-            && (!df\Launchpad::$isMaintenance
+            && (!df\Launchpad::$app->isMaintenance
                 || $this->context->request->isArea('admin')
                 || $this->context->request->isArea('devtools')
                 || $this->context->request->isArea('mail')

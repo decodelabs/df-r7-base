@@ -45,7 +45,7 @@ class Session extends Base implements user\session\IController {
         }
 
 
-        $runMode = df\Launchpad::$application->getRunMode();
+        $runMode = df\Launchpad::$app->getRunMode();
         $this->_isOpen = true;
 
         $this->cache = user\session\Cache::getInstance();

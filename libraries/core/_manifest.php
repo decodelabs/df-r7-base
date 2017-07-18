@@ -206,6 +206,7 @@ interface ILoader {
     public function unregisterLocation(string $name);
     public function getLocations(): array;
 
+    public function initRootPackages(string $rootPath, string $appPath);
     public function loadPackages(array $packages);
     public function getPackages(): array;
     public function hasPackage(string $package): bool;
@@ -265,41 +266,66 @@ class Package implements IPackage {
 
 
 // Applications
-interface IApplication {
-    // Paths
-    public static function getApplicationPath(): ?string;
-    public function getLocalStoragePath(): string;
-    public function getSharedStoragePath(): string;
+interface IApp {
+    public static function factory(string $envId, string $path): IApp;
 
-    // Execute
-    public function dispatch(): void;
-    public function shutdown(): void;
-    public function getDispatchException(): ?\Exception;
 
-    // Environment
-    public function getEnvironmentId(): string;
-    public function getEnvironmentMode(): string;
+// Paths
+    public function getPath(): string;
+    public function getLocalDataPath(): string;
+    public function getSharedDataPath(): string;
+
+
+// Environment
+    public function getEnvId(): string;
+    public function getEnvMode(): string;
+
     public function isDevelopment(): bool;
     public function isTesting(): bool;
     public function isProduction(): bool;
-    public function getRunMode(): string;
     public function isDistributed(): bool;
 
-    // Debug
-    public function renderDebugContext(core\debug\IContext $context): void;
-
-    // Members
-    public function getName(): string;
     public function getUniquePrefix(): string;
     public function getPassKey(): string;
 
-    // Cache
+// Details
+    public function getName(): string;
+    public function getStartTime(): float;
+    public function getRunningTime(): float;
+
+
+// Runner
+    public function startup(float $startTime=null): void;
+    public function run(): void;
+    public function shutdown(): void;
+    public function getRunMode(): string;
+
+
+// Registry
     public function setRegistryObject(IRegistryObject $object);
     public function getRegistryObject(string $key): ?core\IRegistryObject;
     public function hasRegistryObject(string $key): bool;
     public function removeRegistryObject(string $key);
     public function findRegistryObjects(string $beginningWith): array;
     public function getRegistryObjects(): array;
+
+
+// Errors
+    public static function handleError(int $errorNumber, string $errorMessage, string $fileName, int $lineNumber): void;
+    public static function handleException(\Throwable $e): void;
+}
+
+
+
+
+
+interface IRunner {
+    // Execute
+    public function dispatch(): void;
+    public function getDispatchException(): ?\Exception;
+
+    // Debug
+    public function renderDebugContext(core\debug\IContext $context): void;
 }
 
 interface IRegistryObject {
@@ -307,11 +333,11 @@ interface IRegistryObject {
 }
 
 interface IShutdownAware {
-    public function onApplicationShutdown(): void;
+    public function onAppShutdown(): void;
 }
 
 interface IDispatchAware {
-    public function onApplicationDispatch(df\arch\node\INode $node): void;
+    public function onAppDispatch(df\arch\node\INode $node): void;
 }
 
 
@@ -322,9 +348,7 @@ interface IManager extends IRegistryObject {}
 trait TManager {
 
     public static function getInstance(): IManager {
-        $application = df\Launchpad::getApplication();
-
-        if(!$output = $application->getRegistryObject(static::REGISTRY_PREFIX)) {
+        if(!$output = df\Launchpad::$app->getRegistryObject(static::REGISTRY_PREFIX)) {
             $output = static::_getDefaultInstance();
             static::setInstance($output);
         }
@@ -333,7 +357,7 @@ trait TManager {
     }
 
     public static function setInstance(IManager $manager): void {
-        df\Launchpad::$application->setRegistryObject($manager);
+        df\Launchpad::$app->setRegistryObject($manager);
     }
 
     protected static function _getDefaultInstance(): IManager {
@@ -346,7 +370,7 @@ trait TManager {
         return static::REGISTRY_PREFIX;
     }
 
-    public function onApplicationShutdown(): void {}
+    public function onAppShutdown(): void {}
 }
 
 
@@ -415,8 +439,8 @@ trait THelperProvider {
         $target = $target ?? $this;
 
         if(!$context instanceof IContext) {
-            if(df\Launchpad::$application instanceof core\IContextAware) {
-                $context = df\Launchpad::$application->getContext();
+            if(df\Launchpad::$runner instanceof core\IContextAware) {
+                $context = df\Launchpad::$runner->getContext();
             } else {
                 $context = new SharedContext();
             }
@@ -449,7 +473,6 @@ trait TTranslator {
 
 // Context
 interface IContext extends core\IHelperProvider, core\ITranslator {
-    public function setRunMode($mode);
     public function getRunMode(): string;
 
     // Locale
@@ -466,9 +489,6 @@ interface IContext extends core\IHelperProvider, core\ITranslator {
     public function getSystemInfo();
     public function getUserManager();
     public function getTaskManager();
-
-    public function getConfig($path);
-    public function getCache($path);
 }
 
 
@@ -477,21 +497,11 @@ trait TContext {
     use core\TTranslator;
     use THelperProvider;
 
-    public $application;
+    public $runner;
     protected $_locale;
-    protected $_runMode;
-
-    public function setRunMode($runMode) {
-        $this->_runMode = $runMode;
-        return $this;
-    }
 
     public function getRunMode(): string {
-        if($this->_runMode) {
-            return $this->_runMode;
-        }
-
-        return $this->application->getRunMode();
+        return df\Launchpad::$app->getRunMode();
     }
 
 
@@ -544,34 +554,16 @@ trait TContext {
         return df\arch\node\task\Manager::getInstance();
     }
 
-
-    public function getConfig($path) {
-        if(!$class = df\Launchpad::$loader->lookupClass($path)) {
-            throw core\Error::{'ENotFound'}(
-                'Config '.$path.' could not be found'
-            );
-        }
-
-        return $class::getInstance();
-    }
-
-    public function getCache($path) {
-        if(!$class = df\Launchpad::$loader->lookupClass($path)) {
-            throw core\Error::{'ENotFound'}(
-                'Cache '.$path.' could not be found'
-            );
-        }
-
-        return $class::getInstance();
-    }
-
     public function loadRootHelper($name, $target=null) {
         switch($name) {
             case 'context':
                 return $this;
 
-            case 'application':
-                return $this->application;
+            case 'app':
+                return df\Launchpad::$app;
+
+            case 'runner':
+                return $this->runner;
 
             case 'locale':
                 return $this->getLocale();
@@ -610,7 +602,7 @@ class SharedContext implements IContext {
     use TContext;
 
     public function __construct() {
-        $this->application = df\Launchpad::$application;
+        $this->runner = df\Launchpad::$runner;
     }
 
     protected function _loadHelper($name) {

@@ -39,7 +39,7 @@ abstract class Base implements axis\IAdapterBasedStorageUnit {
             );
         }
 
-        $indexName = df\Launchpad::$application->getUniquePrefix().'_'.preg_replace('/[^a-zA-Z0-9_]/', '_', $this->getUnitId());
+        $indexName = df\Launchpad::$app->getUniquePrefix().'_'.preg_replace('/[^a-zA-Z0-9_]/', '_', $this->getUnitId());
         $client = $class::factory($settings);
 
         $this->_adapter = $client->getIndex($indexName);

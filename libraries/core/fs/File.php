@@ -37,7 +37,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         $output = new self(
             tempnam(
                 sys_get_temp_dir(),
-                df\Launchpad::$application->getUniquePrefix().'-'
+                df\Launchpad::$app->getUniquePrefix().'-'
             ),
             $mode
         );

@@ -31,7 +31,7 @@ abstract class Base implements IScaffold {
     public static function factory(arch\IContext $context): IScaffold {
         $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
 
-        if($output = $context->application->getRegistryObject($registryKey)) {
+        if($output = $context->app->getRegistryObject($registryKey)) {
             return $output;
         }
 
@@ -43,7 +43,7 @@ abstract class Base implements IScaffold {
         }
 
         $output = new $class($context);
-        $context->application->setRegistryObject($output);
+        $context->app->setRegistryObject($output);
 
         return $output;
     }

@@ -22,9 +22,8 @@ abstract class Model implements IModel, core\IDumpable {
     public static function factory(string $name): IModel {
         $name = lcfirst($name);
         $key = self::REGISTRY_PREFIX.$name;
-        $application = df\Launchpad::getApplication();
 
-        if($model = $application->getRegistryObject($key)) {
+        if($model = df\Launchpad::$app->getRegistryObject($key)) {
             return $model;
         }
 
@@ -37,7 +36,7 @@ abstract class Model implements IModel, core\IDumpable {
         }
 
         $model = new $class();
-        $application->setRegistryObject($model);
+        df\Launchpad::$app->setRegistryObject($model);
 
         return $model;
     }
@@ -121,9 +120,7 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
     public static function purgeLiveCache() {
-        $application = df\Launchpad::getApplication();
-
-        foreach($application->findRegistryObjects(self::REGISTRY_PREFIX) as $key => $model) {
+        foreach(df\Launchpad::$app->findRegistryObjects(self::REGISTRY_PREFIX) as $key => $model) {
             $model->_purgeLiveCache();
         }
     }

@@ -28,9 +28,9 @@ class ChromePhp implements core\log\IWriter {
     }
 
     public function flush(core\log\IHandler $handler) {
-        $application = df\Launchpad::$application;
+        $runner = df\Launchpad::$runner;
 
-        if($application instanceof core\application\Http) {
+        if($runner instanceof core\app\runner\Http) {
             $data = base64_encode(utf8_encode(json_encode([
                 'version' => self::VERSION,
                 'columns' => ['log', 'backtrace', 'type'],
@@ -38,7 +38,7 @@ class ChromePhp implements core\log\IWriter {
                 'rows' => $this->_buffer
             ])));
 
-            $application->getResponseAugmentor()->setHeaderForCurrentRequest(
+            $runner->getResponseAugmentor()->setHeaderForCurrentRequest(
                 self::HEADER_NAME, $data
             );
         }

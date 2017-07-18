@@ -11,7 +11,7 @@ use df\link;
 use df\opal;
 
 class MaxMindDb implements link\geoIp\IAdapter {
-    
+
     use link\geoIp\TAdapter;
 
     protected $_reader;
@@ -45,7 +45,7 @@ class MaxMindDb implements link\geoIp\IAdapter {
         $file = $settings['file'];
 
         if(dirname($file) == '.') {
-            $file = df\Launchpad::$application->getLocalStoragePath().'/geoIp/'.$file;
+            $file = df\Launchpad::$app->getLocalDataPath().'/geoIp/'.$file;
         }
 
         return $file;
@@ -83,7 +83,7 @@ class MaxMindDb implements link\geoIp\IAdapter {
         if(isset($data['subdivisions'])) {
             if($region = array_pop($data['subdivisions'])) {
                 $result->regionName = $region['names']['en'];
-                
+
                 if(isset($region['iso_code'])) {
                     $result->region = $region['iso_code'];
                 }

@@ -48,7 +48,7 @@ class Unit extends axis\unit\table\Base {
                 'message' => $message,
                 'userAgent' => $agent,
                 'user' => $this->_model->getLogUserId(),
-                'isProduction' => $this->context->application->isProduction()
+                'isProduction' => $this->context->app->isProduction()
             ])
             ->save();
     }

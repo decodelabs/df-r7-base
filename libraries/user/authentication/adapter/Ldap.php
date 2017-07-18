@@ -45,7 +45,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
     }
 
     public function recallIdentity() {
-        if(!df\Launchpad::$application instanceof core\application\Http) {
+        if(!df\Launchpad::$runner instanceof core\app\runner\Http) {
             return null;
         }
 
@@ -56,7 +56,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
             return null;
         }
 
-        $httpRequest = df\Launchpad::$application->getHttpRequest();
+        $httpRequest = df\Launchpad::$runner->getHttpRequest();
         $ip = $httpRequest->getIp();
         $inRange = false;
 

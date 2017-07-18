@@ -39,10 +39,9 @@ abstract class Config implements IConfig, core\IDumpable {
             throw core\Error::EImplementation('Invalid config id passed for '.$handlerClass);
         }
 
-        if($handlerClass::STORE_IN_MEMORY
-        && $application = df\Launchpad::$application) {
-            if(!$config = $application->getRegistryObject(self::REGISTRY_PREFIX.$id)) {
-                $application->setRegistryObject(
+        if($handlerClass::STORE_IN_MEMORY) {
+            if(!$config = df\Launchpad::$app->getRegistryObject(self::REGISTRY_PREFIX.$id)) {
+                df\Launchpad::$app->setRegistryObject(
                     $config = new $handlerClass($id)
                 );
             }
@@ -54,10 +53,8 @@ abstract class Config implements IConfig, core\IDumpable {
     }
 
     public static function clearLiveCache() {
-        if($application = df\Launchpad::$application) {
-            foreach($application->findRegistryObjects('config://') as $config) {
-                $application->removeRegistryObject($config->getRegistryObjectKey());
-            }
+        foreach(df\Launchpad::$app->findRegistryObjects('config://') as $config) {
+            df\Launchpad::$app->removeRegistryObject($config->getRegistryObjectKey());
         }
     }
 
@@ -174,8 +171,7 @@ abstract class Config implements IConfig, core\IDumpable {
     private function _loadValues() {
         $parts = explode('/', $this->_id);
         $name = array_pop($parts);
-        $environmentId = df\Launchpad::$environmentId;
-        $environmentMode = df\Launchpad::$environmentMode;
+        $envId = df\Launchpad::$app->envId;
         $basePath = $this->_getBasePath();
 
         if(!empty($parts)) {
@@ -185,16 +181,7 @@ abstract class Config implements IConfig, core\IDumpable {
         $basePath .= '/'.$name;
         $paths = [];
 
-        if($environmentMode != 'production') {
-            $paths[] = $basePath.'#'.$environmentId.'--'.$environmentMode.'.php';
-        }
-
-        $paths[] = $basePath.'#'.$environmentId.'.php';
-
-        if($environmentMode != 'production') {
-            $paths[] = $basePath.'--'.$environmentMode.'.php';
-        }
-
+        $paths[] = $basePath.'#'.$envId.'.php';
         $paths[] = $basePath.'.php';
         $output = null;
 
@@ -218,7 +205,7 @@ abstract class Config implements IConfig, core\IDumpable {
         if($this->_filePath) {
             $savePath = $this->_filePath;
         } else {
-            $environmentId = df\Launchpad::getEnvironmentId();
+            $envId = df\Launchpad::$app->envId;
             $parts = explode('/', $this->_id);
             $name = array_pop($parts);
             $basePath = $this->_getBasePath();
@@ -228,7 +215,7 @@ abstract class Config implements IConfig, core\IDumpable {
             }
 
             $corePath = $basePath.'/'.$name.'.php';
-            $environmentPath = $basePath.'/'.$name.'#'.$environmentId.'.php';
+            $environmentPath = $basePath.'/'.$name.'#'.$envId.'.php';
             $isEnvironment = static::USE_ENVIRONMENT_ID_BY_DEFAULT || is_file($environmentPath);
 
             if($isEnvironment) {
@@ -244,7 +231,7 @@ abstract class Config implements IConfig, core\IDumpable {
     }
 
     private function _getBasePath() {
-        return df\Launchpad::getApplicationPath().'/config';
+        return df\Launchpad::$app->path.'/config';
     }
 
 

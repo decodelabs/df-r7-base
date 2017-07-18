@@ -19,8 +19,8 @@ abstract class Base implements core\debug\IRenderer {
         $this->_stats['Date'] = gmdate('d M Y H:i:s');
         $this->_stats['Time'] = $this->_formatRunningTime($context->runningTime);
 
-        if($app = df\Launchpad::$application) {
-            $this->_stats['Mode'] = $app->getRunMode();
+        if(df\Launchpad::$app) {
+            $this->_stats['Mode'] = df\Launchpad::$app->getRunMode();
         }
 
         if(function_exists('memory_get_peak_usage')) {

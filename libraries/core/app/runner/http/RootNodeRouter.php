@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\application\http;
+namespace df\core\app\runner\http;
 
 use df;
 use df\core;

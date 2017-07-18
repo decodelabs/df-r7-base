@@ -76,7 +76,7 @@ class Password extends Base implements core\validate\IPasswordField {
         $value = $this->_applyCustomValidator($node, $value);
 
         if($this->_checkStrength && $this->_minStrength > 0) {
-            $analyzer = new flex\PasswordAnalyzer($value, df\Launchpad::$application->getPassKey());
+            $analyzer = new flex\PasswordAnalyzer($value, df\Launchpad::$app->getPassKey());
 
             if($analyzer->getStrength() < $this->_minStrength) {
                 $this->_applyMessage($node, 'strength', $this->validator->_(
@@ -98,7 +98,7 @@ class Password extends Base implements core\validate\IPasswordField {
         }
 
         if($this->_shouldHash) {
-            $value = core\crypt\Util::passwordHash($value, df\Launchpad::$application->getPassKey());
+            $value = core\crypt\Util::passwordHash($value, df\Launchpad::$app->getPassKey());
         }
 
         return $value;

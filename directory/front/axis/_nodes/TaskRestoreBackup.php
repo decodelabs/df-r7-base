@@ -29,7 +29,7 @@ class TaskRestoreBackup extends arch\node\Task {
             return;
         }
 
-        $file = $this->application->getSharedStoragePath().'/backup/'.$fileName;
+        $file = $this->app->getSharedDataPath().'/backup/'.$fileName;
 
         if(!is_file($file)) {
             $this->io->writeErrorLine('Backup not found');

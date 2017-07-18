@@ -140,7 +140,7 @@ class Result implements arch\node\IRestApiResult {
                 'key' => null
             ];
 
-            if(!df\Launchpad::isProduction()) {
+            if(!df\Launchpad::$app->isProduction()) {
                 $data['error']['file'] = core\fs\Dir::stripPathLocation($this->_exception->getFile());
                 $data['error']['line'] = $this->_exception->getLine();
             }
@@ -156,7 +156,7 @@ class Result implements arch\node\IRestApiResult {
 
         $flags = 0;
 
-        if(!df\Launchpad::isProduction()) {
+        if(!df\Launchpad::$app->isProduction()) {
             $flags = \JSON_PRETTY_PRINT;
         }
 

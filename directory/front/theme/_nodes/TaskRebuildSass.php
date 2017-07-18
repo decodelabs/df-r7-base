@@ -20,14 +20,14 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 
     public function execute() {
         $this->io->writeLine('Rebuilding sass...');
-        $path = $this->application->getLocalStoragePath().'/sass/'.$this->application->getEnvironmentMode();
+        $path = $this->app->getLocalDataPath().'/sass/'.$this->app->envMode;
         $this->_dir = new core\fs\Dir($path);
 
         if(!$this->_dir->exists()) {
             return;
         }
 
-        if($this->application->isDevelopment()) {
+        if($this->app->isDevelopment()) {
             $newBuild = false;
         } else {
             $buildId = $this->request['buildId'];

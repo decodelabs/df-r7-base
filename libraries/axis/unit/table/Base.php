@@ -52,7 +52,7 @@ abstract class Base implements
         $output = $this->_model->getModelName().'_'.$this->getCanonicalUnitName();
 
         if($this->_shouldPrefixNames()) {
-            $output = df\Launchpad::$application->getUniquePrefix().'_'.$output;
+            $output = df\Launchpad::$app->getUniquePrefix().'_'.$output;
         }
 
         return $output;

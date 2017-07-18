@@ -27,7 +27,7 @@ class Dir implements IDirectory, core\IDumpable {
         }
 
         $locations = df\Launchpad::$loader->getLocations();
-        $locations['app'] = df\Launchpad::$applicationPath;
+        $locations['app'] = df\Launchpad::$app->path;
         $path = preg_replace('/[[:^print:]]/', '', $path);
 
         foreach($locations as $key => $match) {
@@ -61,9 +61,9 @@ class Dir implements IDirectory, core\IDumpable {
 
     public static function createUploadTemp($path=null) {
         if($path === null) {
-            $path = df\Launchpad::$isDistributed ?
-                df\Launchpad::$application->getSharedStoragePath() :
-                df\Launchpad::$application->getLocalStoragePath();
+            $path = df\Launchpad::$app->isDistributed ?
+                df\Launchpad::$app->getSharedDataPath() :
+                df\Launchpad::$app->getLocalDataPath();
 
             $path .= '/upload/'.flex\Guid::uuid1();
         }
@@ -72,9 +72,9 @@ class Dir implements IDirectory, core\IDumpable {
     }
 
     public static function purgeUploadTemp() {
-        $path = df\Launchpad::$isDistributed ?
-            df\Launchpad::$application->getSharedStoragePath() :
-            df\Launchpad::$application->getLocalStoragePath();
+        $path = df\Launchpad::$app->isDistributed ?
+            df\Launchpad::$app->getSharedDataPath() :
+            df\Launchpad::$app->getLocalDataPath();
 
         $path .= '/upload/';
 

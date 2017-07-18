@@ -3,16 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\application;
+namespace df\core\app\runner;
 
 use df;
 use df\core;
 use df\arch;
 use df\halo;
 
-class Task extends Base implements core\IContextAware, arch\IRequestOrientedApplication {
-
-    const RUN_MODE = 'Task';
+class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunner {
 
     protected $_context;
     protected $_dispatchRequest;
@@ -98,7 +96,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
         }
 
         $request = arch\Request::factory($request);
-        $this->_command = new core\cli\Command(df\Launchpad::$environmentId.'.php');
+        $this->_command = new core\cli\Command(df\Launchpad::$app->envId.'.php');
 
         if($args) {
             foreach($args as $arg) {
@@ -147,9 +145,9 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedAppl
         }
 
 
-        foreach($this->_registry as $object) {
+        foreach(df\Launchpad::$app->getRegistryObjects() as $object) {
             if($object instanceof core\IDispatchAware) {
-                $object->onApplicationDispatch($node);
+                $object->onAppDispatch($node);
             }
         }
 

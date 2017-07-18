@@ -54,7 +54,7 @@ class Unit extends axis\unit\table\Base {
             'key1' => $message->getJournalKey1(),
             'key2' => $message->getJournalKey2(),
             'expireDate' => $expire,
-            'environmentMode' => $this->context->application->getEnvironmentMode()
+            'environmentMode' => $this->context->app->envMode
         ];
 
         $emails = [];

@@ -373,7 +373,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 // Crypt
     public function hash($message, $salt=null) {
         if($salt === null) {
-            $salt = $this->context->application->getPassKey();
+            $salt = $this->context->app->getPassKey();
         }
 
         return core\crypt\Util::passwordHash($message, $salt);

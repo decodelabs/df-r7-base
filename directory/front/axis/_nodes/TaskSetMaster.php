@@ -38,7 +38,7 @@ class TaskSetMaster extends arch\node\Task {
             return;
         }
 
-        $dsn = new opal\rdbms\Dsn('mysql://localhost/'.basename(dirname($this->application->getApplicationPath())));
+        $dsn = new opal\rdbms\Dsn('mysql://localhost/'.basename(dirname($this->app->path)));
 
         do {
             $adapter = $this->_askFor('Adapter', function($answer) {

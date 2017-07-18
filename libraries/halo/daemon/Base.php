@@ -43,8 +43,8 @@ abstract class Base implements IDaemon {
             $user = core\environment\Config::getInstance()->getDaemonUser();
         }
 
-        $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.php';
+        $path = df\Launchpad::$app->path.'/entry/';
+        $path .= df\Launchpad::$app->envId.'.php';
 
         return halo\process\Base::launchScript($path, ['daemon', $name], $user);
     }
@@ -125,13 +125,13 @@ abstract class Base implements IDaemon {
         $this->context = new core\SharedContext();
         $this->process = halo\process\Base::getCurrent();
 
-        $basePath = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.flex\Text::formatFileName($this->getName());
+        $basePath = df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($this->getName());
         core\fs\Dir::create(dirname($basePath));
 
         $this->_startTime = time();
         $this->_statusPath = $basePath.'.status';
 
-        if(!df\Launchpad::$application->isProduction()) {
+        if(!df\Launchpad::$app->isProduction()) {
             $this->_endTime = core\time\Date::factory('+'.self::DEV_RUN_TIME)->toTimestamp();
         }
 
@@ -162,7 +162,7 @@ abstract class Base implements IDaemon {
         }
 
         $this->getEventDispatcher();
-        $this->process->setTitle(df\Launchpad::$application->getName().' - '.$this->getName());
+        $this->process->setTitle(df\Launchpad::$app->getName().' - '.$this->getName());
 
         $pidPath = $this->getPidFilePath();
 
@@ -265,7 +265,7 @@ abstract class Base implements IDaemon {
     }
 
     public function getPidFilePath() {
-        return df\Launchpad::$application->getLocalStoragePath().'/daemons/'.flex\Text::formatFileName($this->getName()).'.pid';
+        return df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($this->getName()).'.pid';
     }
 
     protected function _setup() {}

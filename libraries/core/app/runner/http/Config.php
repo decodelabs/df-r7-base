@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\application\http;
+namespace df\core\app\runner\http;
 
 use df;
 use df\core;
@@ -28,9 +28,9 @@ class Config extends core\Config {
     }
 
     // Base url
-    public function setRootUrl($url, $environmentMode=null) {
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
+    public function setRootUrl($url, $envMode=null) {
+        if($envMode === null) {
+            $envMode = df\Launchpad::$app->envMode;
         }
 
         if($url !== null) {
@@ -46,35 +46,35 @@ class Config extends core\Config {
             $url = $domain.$url->getPathString();
         }
 
-        if(!count($this->values->baseUrl->{$environmentMode})) {
-            $this->values->baseUrl->{$environmentMode} = $url;
+        if(!count($this->values->baseUrl->{$envMode})) {
+            $this->values->baseUrl->{$envMode} = $url;
         } else {
-            $this->values->baseUrl->{$environmentMode}->{'*'} = $url;
+            $this->values->baseUrl->{$envMode}->{'*'} = $url;
         }
 
         return $this;
     }
 
-    public function getRootUrl($environmentMode=null) {
+    public function getRootUrl($envMode=null) {
         if(!isset($this->values->baseUrl)) {
             $this->values->baseUrl = $this->_generateRootUrlList();
             $this->save();
         }
 
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
+        if($envMode === null) {
+            $envMode = df\Launchpad::$app->envMode;
         }
 
         $output = null;
 
-        if(isset($this->values->baseUrl[$environmentMode])) {
-            $output = $this->values->baseUrl[$environmentMode];
-        } else if(isset($this->values->baseUrl->{$environmentMode}->{'*'})) {
-            $output = $this->values->baseUrl->{$environmentMode}['*'];
-        } else if(isset($this->values->baseUrl->{$environmentMode}->{0})) {
-            $output = $this->values->baseUrl->{$environmentMode}[0];
-        } else if(isset($this->values->baseUrl->{$environmentMode}->{'front'})) {
-            $output = $this->values->baseUrl->{$environmentMode}['front'];
+        if(isset($this->values->baseUrl[$envMode])) {
+            $output = $this->values->baseUrl[$envMode];
+        } else if(isset($this->values->baseUrl->{$envMode}->{'*'})) {
+            $output = $this->values->baseUrl->{$envMode}['*'];
+        } else if(isset($this->values->baseUrl->{$envMode}->{0})) {
+            $output = $this->values->baseUrl->{$envMode}[0];
+        } else if(isset($this->values->baseUrl->{$envMode}->{'front'})) {
+            $output = $this->values->baseUrl->{$envMode}['front'];
         }
 
         if($output === null && isset($_SERVER['HTTP_HOST'])) {
@@ -86,17 +86,17 @@ class Config extends core\Config {
         return trim($output, '/');
     }
 
-    public function getBaseUrlMap($environmentMode=null) {
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
+    public function getBaseUrlMap($envMode=null) {
+        if($envMode === null) {
+            $envMode = df\Launchpad::$app->envMode;
         }
 
-        if(!isset($this->values->baseUrl->{$environmentMode}) && isset($_SERVER['HTTP_HOST'])) {
-            $this->values->baseUrl->{$environmentMode} = $this->_generateRootUrl();
+        if(!isset($this->values->baseUrl->{$envMode}) && isset($_SERVER['HTTP_HOST'])) {
+            $this->values->baseUrl->{$envMode} = $this->_generateRootUrl();
             $this->save();
         }
 
-        $node = $this->values->baseUrl->{$environmentMode};
+        $node = $this->values->baseUrl->{$envMode};
         $output = [];
 
         if($node->hasValue()) {
@@ -116,7 +116,7 @@ class Config extends core\Config {
         }
 
         $baseUrl = $this->_generateRootUrl();
-        $envMode = df\Launchpad::getEnvironmentMode();
+        $envMode = df\Launchpad::$app->envMode;
 
         $output = [
             'development' => null,
@@ -236,7 +236,7 @@ class Config extends core\Config {
 // Credentials
     public function getCredentials($mode=null) {
         if($mode === null) {
-            $mode = df\Launchpad::getEnvironmentMode();
+            $mode = df\Launchpad::$app->envMode;
         }
 
         if(isset($this->values->credentials->{$mode}['username'])) {

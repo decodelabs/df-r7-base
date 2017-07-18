@@ -43,8 +43,8 @@ class TaskApcuClear extends arch\node\Task {
         }
 
         if($isHttp) {
-            $config = $this->getConfig('core/application/http/Config');
-            $mode = $this->application->getEnvironmentMode();
+            $config = core\app\runner\http\Config::getInstance();
+            $mode = $this->app->envMode;
 
             $baseUrl = $config->getRootUrl($mode);
             $credentials = $config->getCredentials($mode);
