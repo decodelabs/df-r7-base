@@ -375,7 +375,9 @@ class ElementString implements IElementRepresentation, core\IDumpable {
 }
 
 
-interface IElement extends ITag, IElementContent, IWidgetFinder {}
+interface IElement extends ITag, IElementContent, IWidgetFinder {
+    public function setBody($body);
+}
 
 
 interface IStyleBlock extends core\IStringProvider {}
