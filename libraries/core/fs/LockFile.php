@@ -25,6 +25,13 @@ class LockFile implements ILockFile {
         }
     }
 
+
+    public function __destruct() {
+        if($this->isLocked()) {
+            $this->unlock();
+        }
+    }
+
     public function setPath($path) {
         $this->_path = $path;
         return $this;
