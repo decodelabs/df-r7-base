@@ -101,7 +101,8 @@ PHP;
         $this->path = $path;
 
         $this->envId = $envId;
-        $this->envMode = df\Launchpad::$activeEnvMode;
+        $this->envMode = defined('df\\COMPILE_ENV_MODE') ?
+            df\COMPILE_ENV_MODE : 'testing';
 
         // Set error handlers
         set_error_handler([$this, 'handleError']);
@@ -194,7 +195,7 @@ PHP;
 
         // Not compiled
         if(!df\Launchpad::$isCompiled) {
-            df\Launchpad::$activeEnvMode = $this->envMode = $envConfig->getMode();
+            $this->envMode = $envConfig->getMode();
             df\Launchpad::$loader->registerLocations($envConfig->getActiveLocations());
         }
 

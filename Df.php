@@ -17,7 +17,6 @@ class Launchpad {
     public static $compileTimestamp = null;
 
     public static $rootPath = __DIR__;
-    public static $activeEnvMode = 'testing';
 
     public static $loader;
     public static $app;
