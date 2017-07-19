@@ -69,18 +69,18 @@ class Unit extends axis\unit\table\Base {
         if($query instanceof opal\query\ISelectQuery) {
             if($combine) {
                 $query->leftJoinRelation($relationField, 'id as '.$rName.'|id', 'fileName as '.$rName.'|fileName')
-                    ->leftJoinRelation($rName.'.activeVersion as '.$rName.'_activeVersion', 'number as '.$rName.'|version')
+                    ->leftJoinRelation($rName.'.activeVersion as '.$rName.'_activeVersion', 'number as '.$rName.'|version', 'fileSize as '.$rName.'|fileSize')
                     ->countRelation($rName.'.versions', $rName.'|versions')
-                    ->combine($rName.'|id as id', $rName.'|fileName as fileName', $rName.'|version as version', $rName.'|versions as versions')
+                    ->combine($rName.'|id as id', $rName.'|fileName as fileName', $rName.'|version as version', $rName.'|versions as versions', $rName.'|fileSize as fileSize')
                         ->nullOn('id')
                         ->asOne($relationField);
             } else {
                 $query->leftJoinRelation($relationField, 'id as file', 'fileName')
-                    ->leftJoinRelation($rName.'.activeVersion as '.$rName.'_activeVersion', 'number as version');
+                    ->leftJoinRelation($rName.'.activeVersion as '.$rName.'_activeVersion', 'number as version', 'fileSize');
             }
         } else {
             $query->attachRelation($rName, 'id as file')
-                ->leftJoinRelation('activeVersion', 'number as version', 'fileName');
+                ->leftJoinRelation('activeVersion', 'number as version', 'fileName', 'fileSize');
         }
     }
 
