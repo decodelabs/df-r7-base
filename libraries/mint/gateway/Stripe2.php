@@ -459,7 +459,7 @@ class Stripe2 extends Base implements
         $output = $cache->get($key);
 
         if($output === null) {
-            $cache->set($key, $this->_execute($generator, $eType));
+            $cache->set($key, $output = $this->_execute($generator, $eType));
         }
 
         return $output;
