@@ -188,7 +188,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
         return array_keys($this->toArray());
     }
 
-    public function isNull() {
+    public function isNull(): bool {
         foreach($this->_keys as $value) {
             if($value === null) {
                 return true;

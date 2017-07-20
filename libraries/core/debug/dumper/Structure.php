@@ -17,26 +17,26 @@ class Structure implements IStructureNode {
     protected $_dumpId;
     protected $_properties;
 
-    public function __construct(Inspector $inspector, $type, $dumpId, array $properties) {
+    public function __construct(Inspector $inspector, ?string $type, ?string $dumpId, array $properties) {
         $this->_inspector = $inspector;
         $this->_type = $type;
         $this->_dumpId = $dumpId;
         $this->_properties = array_values($properties);
     }
 
-    public function isArray() {
+    public function isArray(): bool {
         return $this->_type === null;
     }
 
-    public function getType() {
+    public function getType(): ?string {
         return $this->_type;
     }
 
-    public function getDumpId() {
+    public function getDumpId(): ?string {
         return $this->_dumpId;
     }
 
-    public function getProperties() {
+    public function getProperties(): array {
         return $this->_properties;
     }
 

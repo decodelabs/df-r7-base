@@ -29,15 +29,15 @@ class Exception implements core\log\IExceptionNode {
         return $output;
     }
 
-    public function getNodeType() {
+    public function getNodeType(): string {
         return 'exception';
     }
 
-    public function getFile() {
+    public function getFile(): ?string {
         return $this->_exception->getFile();
     }
 
-    public function getLine() {
+    public function getLine(): ?int {
         return $this->_exception->getLine();
     }
 
@@ -57,11 +57,11 @@ class Exception implements core\log\IExceptionNode {
         return $this->_exception->getCode();
     }
 
-    public function getMessage() {
+    public function getMessage(): ?string {
         return $this->_exception->getMessage();
     }
 
-    public function getStackTrace() {
+    public function getStackTrace(): core\debug\IStackTrace {
         if($this->_exception instanceof core\IError) {
             return $this->_exception->getStackTrace();
         } else {
@@ -69,7 +69,7 @@ class Exception implements core\log\IExceptionNode {
         }
     }
 
-    public function getStackCall() {
+    public function getStackCall(): core\debug\IStackCall {
         if(!$this->_stackCall) {
             if($this->_exception instanceof core\IError) {
                 $this->_stackCall = $this->_exception->getStackCall();
@@ -92,7 +92,7 @@ class Exception implements core\log\IExceptionNode {
         return $this->_stackCall;
     }
 
-    public function inspect() {
+    public function inspect(): core\debug\dumper\INode {
         $inspector = new core\debug\dumper\Inspector();
         return $inspector->inspect($this->_exception, false);
     }

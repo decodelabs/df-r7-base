@@ -83,7 +83,7 @@ class Repository implements IRepository {
         return $this->_language;
     }
 
-    public function isPrivate() {
+    public function isPrivate(): bool {
         return $this->_isPrivate;
     }
 

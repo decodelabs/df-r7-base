@@ -44,7 +44,7 @@ class PlainText extends Base {
         return $this->_indent;
     }
 
-    public function render() {
+    public function render(): string {
         $output = "\n";
         $output .= $this->_renderGroup($this->_context);
 

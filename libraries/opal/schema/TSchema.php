@@ -100,7 +100,7 @@ trait TSchema {
 
 // Ext. Serialize
 
-    public function toJson() {
+    public function toJson(): string {
         return json_encode($this->toStorageArray());
     }
 

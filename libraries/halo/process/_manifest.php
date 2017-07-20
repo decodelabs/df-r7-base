@@ -120,7 +120,7 @@ interface ILauncher {
     public function setProcessName($name);
     public function getProcessName();
     public function setArgs(...$args);
-    public function getArgs();
+    public function getArgs(): array;
     public function setPath($path);
     public function getPath();
     public function setUser($user);

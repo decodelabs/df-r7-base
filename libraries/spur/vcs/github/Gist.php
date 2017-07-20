@@ -44,7 +44,7 @@ class Gist implements IGist {
         return $this->_owner;
     }
 
-    public function isPublic() {
+    public function isPublic(): bool {
         return $this->_isPublic;
     }
 

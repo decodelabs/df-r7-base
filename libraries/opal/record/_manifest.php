@@ -190,7 +190,7 @@ interface IPrimaryKeySet extends \ArrayAccess, core\IArrayProvider {
     public function updateWith($record);
     public function countFields();
     public function getFieldNames();
-    public function isNull();
+    public function isNull(): bool;
     public function getCombinedId();
     public function getEntityId();
     public function getValue();

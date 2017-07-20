@@ -104,7 +104,7 @@ interface ISource extends ISourceUriAware, flex\IEncodingAware {
 }
 
 interface ILocationProxy {
-    public function getLine();
+    public function getLine(): ?int;
     public function getColumn();
 }
 
@@ -139,7 +139,7 @@ trait TLocation {
         return $this;
     }
 
-    public function getLine() {
+    public function getLine(): ?int {
         return $this->_line;
     }
 

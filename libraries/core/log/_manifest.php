@@ -27,7 +27,7 @@ interface IManager extends core\IManager {
 
 
 interface IMessageProvider {
-    public function getMessage();
+    public function getMessage(): ?string;
 }
 
 interface IEntryPoint {
@@ -195,18 +195,18 @@ trait TEntryPoint {
 }
 
 interface ILocationProvider {
-    public function getFile();
-    public function getLine();
+    public function getFile(): ?string;
+    public function getLine(): ?int;
 }
 
 interface INode extends ILocationProvider {
     public function getNodeTitle();
-    public function getNodeType();
+    public function getNodeType(): string;
     public function isCritical();
 }
 
 interface IInspectableNode {
-    public function inspect();
+    public function inspect(): core\debug\dumper\INode;
 }
 
 interface IGroupNode extends INode, IEntryPoint, core\IArrayProvider {
@@ -231,16 +231,16 @@ interface IMessageNode extends INode, IMessageProvider {
 
 interface IDumpNode extends INode, IInspectableNode {
     public function getObject();
-    public function isDeep();
+    public function isDeep(): bool;
 }
 
 interface IExceptionNode extends INode, IInspectableNode {
     public function getException(): \Throwable;
     public function getExceptionClass();
     public function getCode();
-    public function getMessage();
-    public function getStackTrace();
-    public function getStackCall();
+    public function getMessage(): ?string;
+    public function getStackTrace(): core\debug\IStackTrace;
+    public function getStackCall(): core\debug\IStackCall;
 }
 
 interface IStubNode extends IGroupNode, IMessageProvider {}

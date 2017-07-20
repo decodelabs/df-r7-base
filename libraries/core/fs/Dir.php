@@ -21,8 +21,8 @@ class Dir implements IDirectory, core\IDumpable {
         //return sys_get_temp_dir().'decode-framework';
     }
 
-    public static function stripPathLocation($path) {
-        if(!df\Launchpad::$loader) {
+    public static function stripPathLocation(?string $path) {
+        if(!df\Launchpad::$loader || $path === null) {
             return $path;
         }
 

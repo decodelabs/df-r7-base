@@ -905,7 +905,7 @@ interface IExpressionField extends IField {
     public function setAltSourceAlias($alias);
     public function getAltSourceAlias();
     public function getExpression();
-    public function isNull();
+    public function isNull(): bool;
 }
 
 interface IRawField extends IField {

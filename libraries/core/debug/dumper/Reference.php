@@ -16,21 +16,21 @@ class Reference implements IReferenceNode {
     protected $_type;
     protected $_dumpId;
 
-    public function __construct(IInspector $inspector, $type, $dumpId) {
+    public function __construct(IInspector $inspector, string $type, $dumpId) {
         $this->_inspector = $inspector;
         $this->_type = $type;
         $this->_dumpId = $dumpId;
     }
 
-    public function getType() {
+    public function getType(): string {
         return $this->_type;
     }
 
-    public function isArray() {
+    public function isArray(): bool {
         return $this->_type == 'array';
     }
 
-    public function getDumpId() {
+    public function getDumpId(): string {
         return $this->_dumpId;
     }
 

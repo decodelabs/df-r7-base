@@ -68,12 +68,12 @@ class StackTrace implements IStackTrace, core\IDumpable {
         }
     }
 
-    public function setMessage(string $message=null) {
+    public function setMessage(?string $message) {
         $this->_message = $message;
         return $this;
     }
 
-    public function getMessage() {
+    public function getMessage(): ?string {
         return $this->_message;
     }
 
@@ -87,7 +87,7 @@ class StackTrace implements IStackTrace, core\IDumpable {
         return $output;
     }
 
-    public function toJsonArray() {
+    public function toJsonArray(): array {
         $output = [];
 
         foreach($this->_calls as $call) {
@@ -97,16 +97,16 @@ class StackTrace implements IStackTrace, core\IDumpable {
         return $output;
     }
 
-    public function toJson() {
+    public function toJson(): string {
         return json_encode($this->toJsonArray());
     }
 
-    public function getCalls() {
+    public function getCalls(): array {
         return $this->_calls;
     }
 
-    public function getFirstCall() {
-        return $this->_calls[0];
+    public function getFirstCall(): ?IStackCall {
+        return $this->_calls[0] ?? null;
     }
 
 // Debug node
@@ -114,7 +114,7 @@ class StackTrace implements IStackTrace, core\IDumpable {
         return 'Stack Trace';
     }
 
-    public function getNodeType() {
+    public function getNodeType(): string {
         return 'stackTrace';
     }
 

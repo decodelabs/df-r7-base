@@ -24,7 +24,7 @@ class Number implements INumberNode {
         return $this->_number;
     }
 
-    public function isFloat() {
+    public function isFloat(): bool {
         return is_float($this->_number);
     }
 

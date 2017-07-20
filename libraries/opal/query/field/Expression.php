@@ -49,7 +49,7 @@ class Expression implements opal\query\IExpressionField, core\IDumpable {
         return $this->_expression;
     }
 
-    public function isNull() {
+    public function isNull(): bool {
         return $this->_expression === null;
     }
 

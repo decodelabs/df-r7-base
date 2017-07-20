@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\iris\map;
 use df;
 use df\core;
 use df\iris;
-    
+
 abstract class Node implements INode {
 
     protected $_location;
@@ -22,7 +22,7 @@ abstract class Node implements INode {
         }
     }
 
-    public function getLine() {
+    public function getLine(): ?int {
         return $this->_location->getLine();
     }
 

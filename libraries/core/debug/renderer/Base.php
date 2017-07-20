@@ -53,7 +53,7 @@ abstract class Base implements core\debug\IRenderer {
         }
     }
 
-    public function getStats() {
+    public function getStats(): array {
         return $this->_stats;
     }
 
@@ -69,7 +69,7 @@ abstract class Base implements core\debug\IRenderer {
         }
     }
 
-    protected function _getNormalizedIncludeList() {
+    protected function _getNormalizedIncludeList(): array {
         $output = [];
 
         foreach(get_included_files() as $file) {
@@ -79,19 +79,19 @@ abstract class Base implements core\debug\IRenderer {
         return $output;
     }
 
-    protected function _getNodeLocation(core\log\INode $node) {
+    protected function _getNodeLocation(core\log\INode $node): string {
         return $this->_normalizeLocation($node->getFile(), $node->getLine());
     }
 
-    protected function _normalizeLocation($file, $line) {
+    protected function _normalizeLocation(?string $file, ?int $line): string {
         return core\fs\Dir::stripPathLocation($file).' : '.$line;
     }
 
-    protected function _normalizeFilePath($path) {
+    protected function _normalizeFilePath(?string $path): string {
         return core\fs\Dir::stripPathLocation($path);
     }
 
-    protected function _getObjectInheritance($object) {
+    protected function _getObjectInheritance($object): array {
         if(!is_object($object)) {
             return [];
         }
@@ -106,7 +106,7 @@ abstract class Base implements core\debug\IRenderer {
         return $list;
     }
 
-    protected function _getObjectClass($object) {
+    protected function _getObjectClass($object): string {
         return $this->_normalizeObjectClass(get_class($object));
     }
 

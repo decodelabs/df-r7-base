@@ -10,7 +10,7 @@ use df\core;
 
 class Html extends Base {
 
-    public function render() {
+    public function render(): string {
         while(ob_get_level()) {
             ob_end_clean();
         }
@@ -188,7 +188,7 @@ class Html extends Base {
                 $output = '<span class="dump-array open" id="dump-array-'.$insCount.'-'.$dumpId.'">';
                 $output .= 'array</span>';
 
-                if($inspector->countArrayRefHits($dumpId)) {
+                if($inspector->countArrayHashHits($dumpId)) {
                     $output .= ':<span class="dump-arrayRef">'.$dumpId.'</span>';
                 }
             } else {

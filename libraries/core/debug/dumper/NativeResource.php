@@ -34,7 +34,7 @@ class NativeResource implements IResourceNode {
         $this->_name = substr((string)$resource, strrpos((string)$resource, '#'));
     }
 
-    public function getType() {
+    public function getType(): string {
         return $this->_type;
     }
 

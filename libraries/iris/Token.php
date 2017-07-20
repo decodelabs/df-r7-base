@@ -148,7 +148,7 @@ class Token implements IToken, core\IDumpable {
 
 
 // Location
-    public function getLine() {
+    public function getLine(): ?int {
         return $this->line;
     }
 

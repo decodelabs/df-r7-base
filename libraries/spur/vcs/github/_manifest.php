@@ -135,7 +135,7 @@ interface IRepository extends IApiObject {
     public function getOwner();
     public function getDescription();
     public function getLanguage();
-    public function isPrivate();
+    public function isPrivate(): bool;
     public function isFork();
     public function getDefaultBranch();
 
@@ -172,7 +172,7 @@ interface IBranch {
 interface IGist extends IApiObject {
     public function getName(): string;
     public function getOwner();
-    public function isPublic();
+    public function isPublic(): bool;
     public function getCreationDate();
     public function getUpdateDate();
     public function countComments();

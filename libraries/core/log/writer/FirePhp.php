@@ -244,7 +244,7 @@ class FirePhp implements core\log\IWriter {
                         $name = '#';
                     }
 
-                    $name = $property->getVisibilityString().':'.$name;
+                    $name = $property->getVisibility().':'.$name;
                 }
 
                 $value = $property->getValue();

@@ -15,8 +15,8 @@ class Inspector implements IInspector {
 
     protected static $_instanceCount = 0;
 
-    protected $_arrayRefs = [];
-    protected $_arrayRefHits = [];
+    protected $_arrayHashes = [];
+    protected $_arrayHashHits = [];
     protected $_objectHashes = [];
     protected $_objectHashHits = [];
 
@@ -24,11 +24,11 @@ class Inspector implements IInspector {
         self::$_instanceCount++;
     }
 
-    public static function getInstanceCount() {
+    public static function getInstanceCount(): int {
         return self::$_instanceCount;
     }
 
-    public function inspect($object, $deep=false) {
+    public function inspect($object, bool $deep=false): INode {
         if(is_null($object)) {
             df\Launchpad::loadBaseClass('core/debug/dumper/Immutable');
             return new Immutable($this, null);
@@ -56,26 +56,27 @@ class Inspector implements IInspector {
         } else {
             df\Launchpad::loadBaseClass('core/debug/dumper/Text');
             return new Text($this, (string)$object);
-            //throw new core\debug\RuntimeException('Unknown data type');
         }
     }
 
 
 // Array
     protected function _dumpArray(array &$array, $deep=false) {
-        if(null !== ($dumpId = $this->_getArrayDumpId($array))) {
-            if(!isset($this->_arrayRefHits[$dumpId])) {
-                $this->_arrayRefHits[$dumpId] = 0;
+        $hash = $this->_getArrayHash($array);
+
+        if(null !== ($dumpId = $this->_getArrayDumpId($hash))) {
+            if(!isset($this->_arrayHashHits[$dumpId])) {
+                $this->_arrayHashHits[$dumpId] = 0;
             }
 
-            $this->_arrayRefHits[$dumpId]++;
+            $this->_arrayHashHits[$dumpId]++;
 
             df\Launchpad::loadBaseClass('core/debug/dumper/Reference');
-            return new Reference($this, null, $dumpId);
+            return new Reference($this, 'array', $dumpId);
         }
 
         df\Launchpad::loadBaseClass('core/debug/dumper/Structure');
-        $this->_registerArray($array);
+        $dumpId = $this->_registerArray($array);
         $properties = [];
 
         foreach(array_keys($array) as $key) {
@@ -85,46 +86,41 @@ class Inspector implements IInspector {
         return new Structure($this, null, $dumpId, $properties);
     }
 
-    protected function _registerArray(array &$array) {
-        $this->_arrayRefs[] = &$array;
-        return count($this->_arrayRefs);
-    }
-
-    protected function _getArrayDumpId(array &$array) {
-        do {
-            $testKey = uniqid('__refId', true);
-        } while(isset($array[$testKey]));
-
-        $testData = uniqid('refData', true);
-
-        foreach($this->_arrayRefs as $i => &$ref) {
-            if(isset($ref[$testKey])) {
-                continue;
-            }
-
-            $array[$testKey] = $testData;
-            $isSame = isset($ref[$testKey]) && $ref[$testKey] === $testData;
-
-            unset($array[$testKey]);
-
-            if($isSame) {
-                return $i + 1;
-            }
+    protected function _registerArray(array &$array): ?int {
+        if(null === ($hash = $this->_getArrayHash($array))) {
+            return null;
         }
 
-        return null;
+        $this->_arrayHashes[$hash] = $dumpId = count($this->_arrayHashes) + 1;
+        return $dumpId;
     }
 
-    public function countArrayRefHits($dumpId) {
-        if(isset($this->_arrayRefHits[$dumpId])) {
-            return $this->_arrayRefHits[$dumpId];
+    protected function _getArrayDumpId(?string $hash): ?int {
+        if($hash === null || !isset($this->_arrayHashes[$hash])) {
+            return null;
         }
 
-        return 0;
+        return $this->_arrayHashes[$hash];
+    }
+
+    protected function _getArrayHash(array &$array): ?string {
+        if(empty($array)) {
+            return null;
+        }
+
+        return md5(print_r($array, true));
+    }
+
+    public function countArrayHashHits(?string $dumpId): int {
+        if(!isset($this->_arrayHashHits[$dumpId])) {
+            return 0;
+        }
+
+        return $this->_arrayHashHits[$dumpId];
     }
 
 // Object
-    public function inspectObjectProperties($object, $deep=false) {
+    public function inspectObjectProperties($object, bool $deep=false): IStructureNode {
         return new Structure(
             $this,
             core\lang\Util::normalizeClassName(get_class($object)),
@@ -309,26 +305,26 @@ class Inspector implements IInspector {
         }
     }
 
-    protected function _registerObject($object) {
+    protected function _registerObject($object): int {
         $this->_objectHashes[spl_object_hash($object)] = $dumpId = count($this->_objectHashes) + 1;
         return $dumpId;
     }
 
-    protected function _getObjectDumpId($object) {
+    protected function _getObjectDumpId($object): ?int {
         $hash = spl_object_hash($object);
 
-        if(isset($this->_objectHashes[$hash])) {
-            return $this->_objectHashes[$hash];
+        if(!isset($this->_objectHashes[$hash])) {
+            return null;
         }
 
-        return null;
+        return $this->_objectHashes[$hash];
     }
 
-    public function countObjectHashHits($dumpId) {
-        if(isset($this->_objectHashHits[$dumpId])) {
-            return $this->_objectHashHits[$dumpId];
+    public function countObjectHashHits(string $dumpId): int {
+        if(!isset($this->_objectHashHits[$dumpId])) {
+            return 0;
         }
 
-        return 0;
+        return $this->_objectHashHits[$dumpId];
     }
 }

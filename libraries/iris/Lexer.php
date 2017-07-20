@@ -46,7 +46,7 @@ class Lexer implements ILexer, core\IDumpable {
         return $this->_source->getSourceUri();
     }
 
-    public function getLine() {
+    public function getLine(): ?int {
         return $this->line;
     }
 

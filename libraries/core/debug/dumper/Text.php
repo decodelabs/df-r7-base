@@ -15,12 +15,12 @@ class Text implements IStringNode {
 
     protected $_string;
 
-    public function __construct(IInspector $inspector, $string) {
+    public function __construct(IInspector $inspector, string $string) {
         $this->_inspector = $inspector;
         $this->_string = $string;
     }
 
-    public function getValue() {
+    public function getValue(): string {
         return $this->_string;
     }
 

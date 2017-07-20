@@ -22,7 +22,7 @@ class Dump implements core\log\IDumpNode {
     protected $_isCritical = true;
     protected $_inspectData;
 
-    public function __construct($object, $deep=false, $critical=true, $file=null, $line=null) {
+    public function __construct($object, bool $deep=false, bool $critical=true, string $file=null, int $line=null) {
         $this->_object = $object;
         $this->_id = ++self::$_counter;
         $this->_isDeep = (bool)$deep;
@@ -40,7 +40,7 @@ class Dump implements core\log\IDumpNode {
         return 'Dump #'.$this->_id.' '.ucfirst(getType($this->_object));
     }
 
-    public function getNodeType() {
+    public function getNodeType(): string {
         return 'dump';
     }
 
@@ -52,11 +52,11 @@ class Dump implements core\log\IDumpNode {
         return $this->_object;
     }
 
-    public function isDeep() {
+    public function isDeep(): bool {
         return $this->_isDeep;
     }
 
-    public function inspect() {
+    public function inspect(): core\debug\dumper\INode {
         if(!$this->_inspectData) {
             $inspector = new core\debug\dumper\Inspector();
             $this->_inspectData = $inspector->inspect($this->_object, $this->_isDeep);

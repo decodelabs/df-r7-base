@@ -15,29 +15,28 @@ class Property {
     protected $_visibility = IProperty::VIS_PUBLIC;
     protected $_deep = false;
 
-    public function __construct($name, $value, $visibility=IProperty::VIS_PUBLIC, $deep=false) {
+    public function __construct(?string $name, $value, string $visibility='public', bool $deep=false) {
         $this->setName($name);
         $this->_value = $value;
         $this->setVisibility($visibility);
-        $this->_deep = (bool)$deep;
+        $this->_deep = $deep;
     }
 
 // Name
-    public function setName($name) {
-        $this->_name = (string)$name;
-
-        if(empty($this->_name) && $this->_name !== '0') {
-            $this->_name = null;
+    public function setName(?string $name) {
+        if(!strlen($name)) {
+            $name = null;
         }
 
+        $this->_name = $name;
         return $this;
     }
 
-    public function hasName() {
+    public function hasName(): bool {
         return $this->_name !== null;
     }
 
-    public function getName(): string {
+    public function getName(): ?string {
         return $this->_name;
     }
 
@@ -52,8 +51,8 @@ class Property {
         return $this->_value;
     }
 
-    public function inspectValue(IInspector $inspector) {
-        if($this->_value instanceof core\debug\IDump) {
+    public function inspectValue(IInspector $inspector): INode {
+        if($this->_value instanceof INode) {
             return $this->_value;
         }
 
@@ -62,58 +61,44 @@ class Property {
 
 
 // Visibility
-    public function setVisibility($visibility) {
-        df\Launchpad::loadBaseClass('core/collection/_manifest');
-        df\Launchpad::loadBaseClass('core/collection/Util');
+    public function setVisibility(string $visibility) {
+        switch($visibility) {
+            case 'private':
+            case 'protected':
+                $this->_visibility = $visibility;
+                break;
 
-        $this->_visibility = core\collection\Util::normalizeEnumValue(
-            $visibility,
-            [
-                'public' => IProperty::VIS_PUBLIC,
-                'protected' => IProperty::VIS_PROTECTED,
-                'private' => IProperty::VIS_PRIVATE
-            ],
-            IProperty::VIS_PUBLIC
-        );
+            case 'public':
+            default:
+                $this->_visibility = 'public';
+                break;
+        }
 
         return $this;
     }
 
-    public function getVisibility() {
+    public function getVisibility(): string {
         return $this->_visibility;
     }
 
-    public function getVisibilityString() {
-        switch($this->_visibility) {
-            case IProperty::VIS_PRIVATE:
-                return 'private';
-
-            case IProperty::VIS_PROTECTED:
-                return 'protected';
-
-            case IProperty::VIS_PUBLIC:
-                return 'public';
-        }
-    }
-
-    public function isPublic() {
+    public function isPublic(): bool {
         return $this->_visibility === IProperty::VIS_PUBLIC;
     }
 
-    public function isProtected() {
+    public function isProtected(): bool {
         return $this->_visibility === IProperty::VIS_PROTECTED;
     }
 
-    public function isPrivate() {
+    public function isPrivate(): bool {
         return $this->_visibility === IProperty::VIS_PRIVATE;
     }
 
 // Deep
-    public function isDeep() {
+    public function isDeep(): bool {
         return $this->_deep;
     }
 
-    public function canInline() {
+    public function canInline(): bool {
         return !$this->_deep
             && !$this->hasName()
             && (is_scalar($this->_value) || is_null($this->_value))

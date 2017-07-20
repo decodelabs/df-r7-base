@@ -26,7 +26,7 @@ class Context extends core\log\node\Group implements IContext {
     }
 
 // IO
-    public function render() {
+    public function render(): void {
         while(ob_get_level()) {
             ob_end_clean();
         }
@@ -58,7 +58,6 @@ class Context extends core\log\node\Group implements IContext {
         }
 
         $this->flush();
-
         return $this;
     }
 
@@ -76,11 +75,15 @@ class Context extends core\log\node\Group implements IContext {
         return $renderer->render();
     }
 
-    public function getStackTrace() {
+    public function getStackTrace(): IStackTrace {
+        if(!$this->_stackTrace) {
+            return StackTrace::factory(1);
+        }
+
         return $this->_stackTrace;
     }
 
-    public function getNodeType() {
+    public function getNodeType(): string {
         return 'context';
     }
 }

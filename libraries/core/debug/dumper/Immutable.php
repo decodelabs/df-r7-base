@@ -20,15 +20,15 @@ class Immutable implements IImmutableNode {
         $this->_value = $value;
     }
 
-    public function isNull() {
+    public function isNull(): bool {
         return $this->_value === null;
     }
 
-    public function isBoolean() {
+    public function isBoolean(): bool {
         return $this->_value !== null;
     }
 
-    public function getType() {
+    public function getType(): string {
         if($this->_value === null) {
             return 'null';
         } else {

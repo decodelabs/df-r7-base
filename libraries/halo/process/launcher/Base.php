@@ -61,7 +61,7 @@ abstract class Base implements halo\process\ILauncher {
         return $this;
     }
 
-    public function getArgs() {
+    public function getArgs(): array {
         return $this->_args;
     }
 

@@ -10,15 +10,12 @@ use df\core;
 
 df\Launchpad::loadBaseClass('core/log/_manifest');
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
 
 
-// Interfaces
+// Location provider
 interface ILocationProvider {
-    public function getFile();
-    public function getLine();
+    public function getFile(): ?string;
+    public function getLine(): ?int;
 }
 
 trait TLocationProvider {
@@ -26,31 +23,38 @@ trait TLocationProvider {
     protected $_file;
     protected $_line;
 
-    public function getFile() {
+    public function getFile(): ?string {
         return $this->_file;
     }
 
-    public function getLine() {
+    public function getLine(): ?int {
         return $this->_line;
     }
 }
 
+
+// Context
 interface IContext extends core\log\IGroupNode, core\log\IHandler {
-    public function render();
+    public function render(): void;
     public function flush();
     public function execute();
 }
 
 
-interface IStackTrace extends core\log\INode, core\IArrayProvider {
-    public function getCalls();
-    public function toJsonArray();
-    public function toJson();
 
-    public function setMessage(string $message=null);
-    public function getMessage();
+// Stack trace
+interface IStackTrace extends core\log\INode, core\IArrayProvider {
+    public function getCalls(): array;
+    public function getFirstCall(): ?IStackCall;
+    public function toJsonArray(): array;
+    public function toJson(): string;
+
+    public function setMessage(?string $message);
+    public function getMessage(): ?string;
 }
 
+
+// Stack call
 interface IStackCall extends ILocationProvider, core\IArrayProvider {
 
     const STATIC_METHOD = 1;
@@ -58,35 +62,37 @@ interface IStackCall extends ILocationProvider, core\IArrayProvider {
     const NAMESPACE_FUNCTION = 3;
     const GLOBAL_FUNCTION = 4;
 
-    public function getArgs();
-    public function hasArgs();
-    public function countArgs();
-    public function getArgString();
+    public function getArgs(): array;
+    public function hasArgs(): bool;
+    public function countArgs(): int;
+    public function getArgString(): string;
 
-    public function getType();
-    public function getTypeString();
-    public function isStatic();
-    public function isObject();
-    public function isNamespaceFunction();
-    public function isGlobalFunction();
+    public function getType(): string;
+    public function getTypeString(): string;
+    public function isStatic(): bool;
+    public function isObject(): bool;
+    public function isNamespaceFunction(): bool;
+    public function isGlobalFunction(): bool;
 
-    public function getNamespace();
-    public function hasNamespace();
+    public function getNamespace(): ?string;
+    public function hasNamespace(): bool;
 
-    public function getClass();
-    public function hasClass();
-    public function getClassName();
+    public function getClass(): ?string;
+    public function hasClass(): bool;
+    public function getClassName(): ?string;
 
-    public function getFunctionName();
-    public function getSignature($argString=false);
+    public function getFunctionName(): ?string;
+    public function getSignature(?bool $argString=false): string;
 
-    public function getCallingFile();
-    public function getCallingLine();
+    public function getCallingFile(): ?string;
+    public function getCallingLine(): ?int;
 
-    public function toJsonArray();
-    public function toJson();
+    public function toJsonArray(): array;
+    public function toJson(): string;
 }
 
+
+// Renderer
 interface IRenderer {
-    public function render();
+    public function render(): string;
 }

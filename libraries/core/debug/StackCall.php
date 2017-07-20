@@ -14,7 +14,7 @@ class StackCall implements IStackCall, core\IDumpable {
     protected $_className;
     protected $_namespace;
     protected $_type = 4;
-    protected $_args;
+    protected $_args = [];
 
     protected $_callingFile;
     protected $_callingLine;
@@ -93,19 +93,19 @@ class StackCall implements IStackCall, core\IDumpable {
 
 
 // Args
-    public function getArgs() {
+    public function getArgs(): array {
         return $this->_args;
     }
 
-    public function hasArgs() {
+    public function hasArgs(): bool {
         return !empty($this->_args);
     }
 
-    public function countArgs() {
+    public function countArgs(): int {
         return count($this->_args);
     }
 
-    public function getArgString() {
+    public function getArgString(): string {
         $output = [];
 
         if(!is_array($this->_args)) {
@@ -141,11 +141,11 @@ class StackCall implements IStackCall, core\IDumpable {
 
 
 // Type
-    public function getType() {
+    public function getType(): string {
         return $this->_type;
     }
 
-    public function getTypeString() {
+    public function getTypeString(): string {
         switch($this->_type) {
             case IStackCall::STATIC_METHOD:
                 return '::';
@@ -155,35 +155,35 @@ class StackCall implements IStackCall, core\IDumpable {
         }
     }
 
-    public function isStatic() {
+    public function isStatic(): bool {
         return $this->_type === IStackCall::STATIC_METHOD;
     }
 
-    public function isObject() {
+    public function isObject(): bool {
         return $this->_type === IStackCall::OBJECT_METHOD;
     }
 
-    public function isNamespaceFunction() {
+    public function isNamespaceFunction(): bool {
         return $this->_type === IStackCall::NAMESPACE_FUNCTION;
     }
 
-    public function isGlobalFunction() {
+    public function isGlobalFunction(): bool {
         return $this->_type === IStackCall::GLOBAL_FUNCTION;
     }
 
 
 // Namespace
-    public function getNamespace() {
+    public function getNamespace(): ?string {
         return $this->_namespace;
     }
 
-    public function hasNamespace() {
+    public function hasNamespace(): bool {
         return $this->_namespace !== null;
     }
 
 
 // Class
-    public function getClass() {
+    public function getClass(): ?string {
         if($this->_className === null) {
             return null;
         }
@@ -198,21 +198,21 @@ class StackCall implements IStackCall, core\IDumpable {
         return $output;
     }
 
-    public function hasClass() {
+    public function hasClass(): bool {
         return $this->_className !== null;
     }
 
-    public function getClassName() {
+    public function getClassName(): ?string {
         return $this->_className;
     }
 
 
 // Function
-    public function getFunctionName() {
+    public function getFunctionName(): ?string {
         return $this->_function;
     }
 
-    public function getSignature($argString=false) {
+    public function getSignature(?bool $argString=false): string {
         $output = '';
 
         if($this->_namespace !== null) {
@@ -255,7 +255,7 @@ class StackCall implements IStackCall, core\IDumpable {
         ];
     }
 
-    public function toJsonArray() {
+    public function toJsonArray(): array {
         return [
             'file' => $this->_local ?
                 core\fs\Dir::stripPathLocation($this->getFile()) :
@@ -271,22 +271,22 @@ class StackCall implements IStackCall, core\IDumpable {
         ];
     }
 
-    public function toJson() {
+    public function toJson(): string {
         return json_encode($this->toJsonArray());
     }
 
 
 
 // Location
-    public function getFile() {
+    public function getFile(): ?string {
         return $this->_originFile;
     }
 
-    public function getLine() {
+    public function getLine(): ?int {
         return $this->_originLine;
     }
 
-    public function getCallingFile() {
+    public function getCallingFile(): ?string {
         if($this->_callingFile !== null) {
             return $this->_callingFile;
         }
@@ -294,7 +294,7 @@ class StackCall implements IStackCall, core\IDumpable {
         return $this->_originFile;
     }
 
-    public function getCallingLine() {
+    public function getCallingLine(): ?int {
         if($this->_callingLine !== null) {
             return $this->_callingLine;
         }

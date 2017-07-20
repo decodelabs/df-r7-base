@@ -72,7 +72,7 @@ interface ISchema extends IChangeTracker {
     public function getOptionChanges();
 
     public static function fromJson(ISchemaContext $schemaContext, $json);
-    public function toJson();
+    public function toJson(): string;
     public function toStorageArray();
 }
 

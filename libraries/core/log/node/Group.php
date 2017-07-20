@@ -35,7 +35,7 @@ class Group implements core\log\IGroupNode {
         return $this->_title;
     }
 
-    public function getNodeType() {
+    public function getNodeType(): string {
         return 'group';
     }
 
