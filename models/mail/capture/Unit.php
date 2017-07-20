@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\flow;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     const SEARCH_FIELDS = [
         'subject' => 10,

@@ -628,7 +628,7 @@ trait TBridgedRelationField {
                 $bridgeModelName = $modelName;
             }
 
-            $bridgeClass = axis\unit\table\Bridge::getBridgeClass($bridgeModelName, $bridgeId);
+            $bridgeClass = axis\unit\BridgeTable::getBridgeClass($bridgeModelName, $bridgeId);
 
             if($bridgeClass::IS_SHARED) {
                 if($isManyToMany && !$this->isDominant()) {
@@ -672,7 +672,7 @@ trait TBridgedRelationField {
     }
 
     protected function _getBridgeUnitType() {
-        return 'table.Bridge';
+        return 'BridgeTable';
     }
 
     public function getLocalRelationManifest() {
@@ -690,6 +690,12 @@ trait TBridgedRelationField {
         $this->_bridgeUnitId = $data['bui'];
         $this->_bridgeLocalFieldName = $data['blf'];
         $this->_bridgeTargetFieldName = $data['btf'];
+
+        // Fix legacy
+        if(preg_match('|^([a-zA-Z0-9_]+)/table.Bridge\(|i', $this->_bridgeUnitId)) {
+            list($model, $unit) = explode('/', $this->_bridgeUnitId, 2);
+            $this->_bridgeUnitId = $model.'/BridgeTable'.substr($unit, 12);
+        }
     }
 
     protected function _getBridgeRelationStorageArray() {

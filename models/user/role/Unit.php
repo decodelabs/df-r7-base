@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\axis;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     const DEFAULT_MANIFEST = [
         '30dc3f8f-ee05-c1e8-f701-c05c8cb96c35' => [

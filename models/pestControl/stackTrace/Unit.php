@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');

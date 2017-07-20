@@ -12,7 +12,7 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     const ORDERABLE_FIELDS = [
         'user', 'date'

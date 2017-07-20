@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 use df\mint;
 
-class Unit extends axis\unit\config\Base implements mint\IModelConfig {
+class Unit extends axis\unit\Config implements mint\IModelConfig {
 
     const ID = 'Mint';
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;

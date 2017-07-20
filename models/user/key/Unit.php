@@ -5,7 +5,7 @@ namespace df\apex\models\user\key;
 use df\core;
 use df\axis;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     protected function createSchema($schema) {
         $schema->addPrimaryField('id', 'Guid');

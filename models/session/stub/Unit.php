@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 use df\flex;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     const BROADCAST_HOOK_EVENTS = false;
 

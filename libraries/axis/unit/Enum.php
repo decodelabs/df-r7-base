@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\unit\enum;
+namespace df\axis\unit;
 
 use df;
 use df\core;
 use df\axis;
 
-abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
+abstract class Enum implements axis\IUnit, core\lang\IEnumFactory {
 
     use axis\TUnit;
 
@@ -21,7 +21,7 @@ abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
     }
 
     public function factory($value) {
-        return new Base_Enum($this, $value);
+        return new Enum_Inst($this, $value);
     }
 
     public function normalize($value) {
@@ -128,7 +128,7 @@ abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
     }
 }
 
-class Base_Enum implements core\lang\IEnum {
+class Enum_Inst implements core\lang\IEnum {
 
     use core\TStringProvider;
 
@@ -137,18 +137,18 @@ class Base_Enum implements core\lang\IEnum {
     protected $_index;
 
     public static function factory($value) {
-        throw new core\lang\RuntimeException(
+        throw core\Error::EImplementation(
             'Unit enum factory is not accessible'
         );
     }
 
     public static function normalize($value) {
-        throw new core\lang\RuntimeException(
+        throw core\Error::EImplementation(
             'Unit enum normalize is not accessible'
         );
     }
 
-    public function __construct(Base $unit, $value) {
+    public function __construct(Enum $unit, $value) {
         $this->_options = $unit->getOptions();
         $this->_labels = $unit->getLabelList();
         $this->_index = $this->_normalizeIndex($value);

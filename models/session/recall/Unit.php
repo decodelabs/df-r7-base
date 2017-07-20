@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 use df\user;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     const PURGE_THRESHOLD = '-1 month';
     const BROADCAST_HOOK_EVENTS = false;

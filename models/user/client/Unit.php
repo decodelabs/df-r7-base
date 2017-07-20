@@ -12,7 +12,7 @@ use df\opal;
 use df\user;
 use df\flex;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     const NAME_FIELD = 'fullName';
 

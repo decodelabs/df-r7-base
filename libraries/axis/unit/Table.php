@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\unit\table;
+namespace df\axis\unit;
 
 use df;
 use df\core;
@@ -11,7 +11,7 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
-abstract class Base implements
+abstract class Table implements
     axis\ISchemaBasedStorageUnit,
     mesh\entity\IActiveParentEntity,
     opal\query\IEntryPoint,

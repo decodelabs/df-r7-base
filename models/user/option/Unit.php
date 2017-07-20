@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     const BROADCAST_HOOK_EVENTS = false;
 

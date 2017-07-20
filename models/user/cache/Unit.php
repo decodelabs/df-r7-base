@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\cache\SessionExtended {
+class Unit extends axis\unit\SessionCache {
 
     public function setAvatarCacheTime() {
         $this->set('avatarCacheTime', $time = time());

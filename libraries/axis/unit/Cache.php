@@ -3,20 +3,20 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\unit\cache;
+namespace df\axis\unit;
 
 use df;
 use df\core;
 use df\axis;
 
-abstract class SessionExtended extends core\cache\SessionExtended implements axis\IUnit, axis\IAdapterBasedUnit {
+abstract class Cache extends core\cache\Base implements axis\IUnit, axis\IAdapterBasedUnit {
 
     use axis\TUnit;
 
     public static function createCacheId(): string {
         $parts = explode('\\', get_called_class());
         $parts = array_slice($parts, 3, -1);
-        return 'axis/'.implode('/', $parts);
+        return 'axis/unit/'.implode('/', $parts);
     }
 
     public function __construct(axis\IModel $model) {

@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\unit\table;
+namespace df\axis\unit;
 
 use df\core;
 use df\axis;
 use df\mesh;
 use df\opal;
 
-class Bridge extends Base implements axis\IVirtualUnit {
+class BridgeTable extends Table implements axis\IVirtualUnit {
 
     const IS_SHARED = false;
     const DOMINANT_UNIT = null;
@@ -94,7 +94,7 @@ class Bridge extends Base implements axis\IVirtualUnit {
                 $args[] = $modelName.'/'.$unitId;
             }
 
-            return 'table.Bridge('.implode(',', $args).')';
+            return 'BridgeTable('.implode(',', $args).')';
         } else {
             return parent::getUnitName();
         }

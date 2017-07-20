@@ -11,7 +11,7 @@ use df\apex;
 use df\axis;
 use df\user;
 
-class Unit extends axis\unit\config\Base {
+class Unit extends axis\unit\Config {
 
     const ID = 'Avatars';
 

@@ -10,7 +10,7 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     const SEARCH_FIELDS = [
         'request' => 4,

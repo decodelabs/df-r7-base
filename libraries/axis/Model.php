@@ -60,26 +60,35 @@ abstract class Model implements IModel, core\IDumpable {
 
 // Units
     public function getUnit($name) {
-        $name = lcfirst($name);
+        $lookupName = lcfirst($name);
 
-        if(isset($this->_units[$name])) {
-            return $this->_units[$name];
+        if(isset($this->_units[$lookupName])) {
+            return $this->_units[$lookupName];
         }
 
-        if($name == 'context') {
-            return $this->_units[$name] = new Context($this);
+        if($lookupName == 'context') {
+            return $this->_units[$lookupName] = new Context($this);
         }
 
 
         $class = 'df\\apex\\models\\'.$this->getModelName().'\\'.$name.'\\Unit';
 
         if(!class_exists($class)) {
-            if(preg_match('/^([a-z0-9_]+)\.([a-z0-9_]+)\(([a-zA-Z0-9_.\, \/]*)\)$/i', $name, $matches)) {
-                $class = 'df\\axis\\unit\\'.$matches[1].'\\'.$matches[2];
+            if(preg_match('/^([a-z0-9_.]+)\(([a-zA-Z0-9_.\, \/]*)\)$/i', $name, $matches)) {
+                $className = $matches[1];
+
+                // Fix legacy
+                if($className === 'table.Bridge') {
+                    $className = 'BridgeTable';
+                } else {
+                    $className = ucfirst($className);
+                }
+
+                $class = 'df\\axis\\unit\\'.$className;
 
                 if(!class_exists($class)) {
                     throw new axis\RuntimeException(
-                        'Virtual model unit type '.$this->getModelName().'/'.$matches[1].'.'.$matches[2].' could not be found'
+                        'Virtual model unit type '.$this->getModelName().'/'.$className.' could not be found'
                     );
                 }
 
@@ -87,11 +96,11 @@ abstract class Model implements IModel, core\IDumpable {
 
                 if(!$ref->implementsInterface('df\\axis\\IVirtualUnit')) {
                     throw new axis\RuntimeException(
-                        'Unit type '.$this->getModelName().'/'.$matches[1].'.'.$matches[2].' cannot load virtual units'
+                        'Unit type '.$this->getModelName().'/'.$className.' cannot load virtual units'
                     );
                 }
 
-                $args = flex\Delimited::parse($matches[3]);
+                $args = flex\Delimited::parse($matches[2]);
                 $output = $class::loadVirtual($this, $args);
                 $output->_setUnitName($name);
 

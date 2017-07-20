@@ -12,7 +12,7 @@ use df\axis;
 use df\opal;
 use df\flow;
 
-class Unit extends axis\unit\table\Base {
+class Unit extends axis\unit\Table {
 
     const BROADCAST_HOOK_EVENTS = false;
 
