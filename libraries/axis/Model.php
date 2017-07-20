@@ -71,7 +71,7 @@ abstract class Model implements IModel, core\IDumpable {
         }
 
 
-        $class = 'df\\apex\\models\\'.$this->getModelName().'\\'.$name.'\\Unit';
+        $class = 'df\\apex\\models\\'.$this->getModelName().'\\'.$lookupName.'\\Unit';
 
         if(!class_exists($class)) {
             if(preg_match('/^([a-z0-9_.]+)\(([a-zA-Z0-9_.\, \/]*)\)$/i', $name, $matches)) {
