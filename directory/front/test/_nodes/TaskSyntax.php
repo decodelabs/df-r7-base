@@ -14,6 +14,8 @@ use df\flex;
 class TaskSyntax extends arch\node\Task {
 
     public function execute() {
+        $this->ensureDfSource();
+        
         $scanner = new flex\code\Scanner(null, [
             new flex\code\probe\Syntax()
         ]);
