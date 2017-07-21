@@ -83,11 +83,15 @@ abstract class Base implements core\debug\IRenderer {
         return $this->_normalizeLocation($node->getFile(), $node->getLine());
     }
 
-    protected function _normalizeLocation(?string $file, ?int $line): string {
+    protected function _normalizeLocation(?string $file, ?int $line): ?string {
+        if(!$file && !$line) {
+            return null;
+        }
+        
         return core\fs\Dir::stripPathLocation($file).' : '.$line;
     }
 
-    protected function _normalizeFilePath(?string $path): string {
+    protected function _normalizeFilePath(?string $path): ?string {
         return core\fs\Dir::stripPathLocation($path);
     }
 
