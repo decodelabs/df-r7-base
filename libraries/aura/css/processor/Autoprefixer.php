@@ -37,10 +37,9 @@ class Autoprefixer extends Base {
         }
 
         $content = file_get_contents($cssPath);
-        $mapPath = $map = null;
+        $map = null;
 
         if(preg_match('/sourceMappingURL\=([^ ]+) \*/i', $content, $matches)) {
-            $mapPath = $matches[1];
             $map = file_get_contents($cssPath.'.map');
         }
 
@@ -65,14 +64,6 @@ js;
             'path' => $cssPath,
             'settings' => $this->settings
         ]);
-
-        if($mapPath) {
-            $output = str_replace(
-                '/*# sourceMappingURL='.basename($cssPath).'.map */',
-                '/*# sourceMappingURL='.$mapPath.' */',
-                $output
-            );
-        }
 
         file_put_contents($cssPath, $output);
     }

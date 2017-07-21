@@ -276,7 +276,17 @@ class SassBridge implements ISassBridge {
             );
         }
 
+
         $content = file_get_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css');
+
+        // Apply plugins
+        if(!empty($options)) {
+            foreach($options as $name => $settings) {
+                $processor = aura\css\processor\Base::factory($name, $settings);
+                $processor->process($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css');
+            }
+        }
+
 
         // Replace map url
         $mapPath = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css.map';
@@ -292,13 +302,23 @@ class SassBridge implements ISassBridge {
 
         file_put_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css', $content);
 
+
         // Replace map file paths
         if($mapExists && $envMode != 'production') {
             $content = file_get_contents($mapPath);
 
+            $content = str_replace(
+                $this->_key.'.css',
+                $this->_fileName.'.css',
+                $content
+            );
+
             foreach($this->_manifest as $fileKey => $filePath) {
                 $content = str_replace(
-                    'file://'.$this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$this->_type,
+                    [
+                        'file://'.$this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.basename($filePath),
+                        $fileKey.'.'.basename($filePath)
+                    ],
                     'file://'.$filePath,
                     $content
                 );
@@ -307,17 +327,11 @@ class SassBridge implements ISassBridge {
             file_put_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css.map', $content);
         }
 
-        // Apply plugins
-        if(!empty($options)) {
-            foreach($options as $name => $settings) {
-                $processor = aura\css\processor\Base::factory($name, $settings);
-                $processor->process($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css');
-            }
-        }
 
+        // Write Manifest json
         file_put_contents(
             $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.json',
-            json_encode(array_values($this->_manifest))
+            json_encode(array_values($this->_manifest), \JSON_UNESCAPED_SLASHES)
         );
 
         $files = [
