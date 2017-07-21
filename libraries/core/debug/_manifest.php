@@ -67,8 +67,8 @@ interface IStackCall extends ILocationProvider, core\IArrayProvider {
     public function countArgs(): int;
     public function getArgString(): string;
 
-    public function getType(): string;
-    public function getTypeString(): string;
+    public function getType(): ?string;
+    public function getTypeString(): ?string;
     public function isStatic(): bool;
     public function isObject(): bool;
     public function isNamespaceFunction(): bool;

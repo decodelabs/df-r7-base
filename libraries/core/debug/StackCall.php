@@ -141,11 +141,11 @@ class StackCall implements IStackCall, core\IDumpable {
 
 
 // Type
-    public function getType(): string {
+    public function getType(): ?string {
         return $this->_type;
     }
 
-    public function getTypeString(): string {
+    public function getTypeString(): ?string {
         switch($this->_type) {
             case IStackCall::STATIC_METHOD:
                 return '::';
