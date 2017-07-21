@@ -153,6 +153,8 @@ class StackCall implements IStackCall, core\IDumpable {
             case IStackCall::OBJECT_METHOD:
                 return '->';
         }
+
+        return null;
     }
 
     public function isStatic(): bool {
