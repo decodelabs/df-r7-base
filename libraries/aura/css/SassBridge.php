@@ -277,8 +277,6 @@ class SassBridge implements ISassBridge {
         }
 
 
-        $content = file_get_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css');
-
         // Apply plugins
         if(!empty($options)) {
             foreach($options as $name => $settings) {
@@ -287,6 +285,8 @@ class SassBridge implements ISassBridge {
             }
         }
 
+
+        $content = file_get_contents($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css');
 
         // Replace map url
         $mapPath = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css.map';
