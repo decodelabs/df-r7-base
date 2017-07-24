@@ -37,6 +37,9 @@ class Config extends core\Config {
             $default = true;
         }
 
+        if(is_string($output->getValue())) {
+            $output = new core\collection\Tree(['backend' => $output->getValue()]);
+        }
 
         $list = [];
 
