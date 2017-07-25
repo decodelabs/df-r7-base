@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\spur;
+use df\flex;
 
 class Autoprefixer extends Base {
 
@@ -48,11 +49,16 @@ class Autoprefixer extends Base {
 var autoprefixer = require('autoprefixer');
 var postcss      = require('postcss');
 
-return postcss([ autoprefixer(data.settings) ]).process(data.css, {
+var output = postcss([ autoprefixer(data.settings) ]).process(data.css, {
     from: data.path,
     to: data.path,
     map: data.map
-}).css;
+});
+
+return {
+    css: output.css,
+    map: output.map
+};
 js;
 
         $output = $bridge->evaluate($js, [
@@ -65,6 +71,13 @@ js;
             'settings' => $this->settings
         ]);
 
-        file_put_contents($cssPath, $output);
+        core\fs\File::create($cssPath, $output['css']);
+
+        if(isset($output['map'])) {
+            core\fs\File::create(
+                $cssPath.'.map',
+                flex\Json::toString($output['map'], \JSON_UNESCAPED_SLASHES)
+            );
+        }
     }
 }
