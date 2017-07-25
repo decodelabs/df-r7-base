@@ -171,6 +171,21 @@ abstract class Form extends Base implements IFormNode {
     }
 
     protected function getInstanceId() {
+        static $ignore = ['rf', 'rt'];
+        $output = [];
+
+        foreach($this->request->query as $key => $node) {
+            if(in_array($key, $ignore) || !$node->hasValue()) {
+                continue;
+            }
+
+            $output[$key] = $node->getValue();
+        }
+
+        if(!empty($output)) {
+            return implode('|', $output);
+        }
+
         return null;
     }
 
