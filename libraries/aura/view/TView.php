@@ -55,11 +55,11 @@ trait TView_DeferredRenderable {
 
 trait TView_SlotContainer {
 
-    public function setSlots(array $slots) {
+    public function setSlots(iterable $slots) {
         return $this->clearSlots()->addSlots($slots);
     }
 
-    public function addSlots(array $slots) {
+    public function addSlots(iterable $slots) {
         foreach($slots as $key => $value) {
             $this->setSlot($key, $value);
         }

@@ -24,7 +24,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
     }
 
 // Aura
-    public function view($path, array $slots=null) {
+    public function view(string $path, $slots=null) {
         $parts = explode('.', $path);
         $location = $this->context->extractDirectoryLocation($path);
         $view = $this->newView(array_pop($parts), $location);
@@ -34,7 +34,13 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         );
 
         if($slots) {
-            $view->addSlots($slots);
+            if(is_callable($slots)) {
+                $slots = core\lang\Callback::call($slots, $view);
+            }
+
+            if(is_iterable($slots)) {
+                $view->addSlots($slots);
+            }
         }
 
         return $view;
@@ -55,7 +61,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         return $view;
     }
 
-    public function template($path, array $slots=null) {
+    public function template(string $path, $slots=null) {
         $location = $this->context->extractDirectoryLocation($path);
         $template = aura\view\content\Template::loadDirectoryTemplate(
             $this->context->spawnInstance($location), $path
@@ -66,13 +72,19 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         }
 
         if($slots) {
-            $template->addSlots($slots);
+            if(is_callable($slots)) {
+                $slots = core\lang\Callback::call($slots, $template);
+            }
+
+            if(is_iterable($slots)) {
+                $template->addSlots($slots);
+            }
         }
 
         return $template;
     }
 
-    public function themeTemplate($path, array $slots=null) {
+    public function themeTemplate(string $path, $slots=null) {
         $themeId = $this->context->extractThemeId($path);
 
         if(!$themeId) {
@@ -88,7 +100,13 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         }
 
         if($slots) {
-            $template->addSlots($slots);
+            if(is_callable($slots)) {
+                $slots = core\lang\Callback::call($slots, $template);
+            }
+
+            if(is_iterable($slots)) {
+                $template->addSlots($slots);
+            }
         }
 
         return $template;

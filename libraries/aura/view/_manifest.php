@@ -44,8 +44,8 @@ interface IRenderTarget extends core\IContextAware {
 
 
 interface ISlotContainer {
-    public function setSlots(array $slots);
-    public function addSlots(array $slots);
+    public function setSlots(iterable $slots);
+    public function addSlots(iterable $slots);
     public function getSlots();
     public function clearSlots();
     public function setSlot(string $key, $value);
