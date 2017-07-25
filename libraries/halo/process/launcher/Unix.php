@@ -11,7 +11,7 @@ use df\halo;
 
 class Unix extends Base {
 
-    protected $_readChunkSize = 64;
+    protected $_readChunkSize = 2048;
 
     /*
     public function isPrivileged() {
