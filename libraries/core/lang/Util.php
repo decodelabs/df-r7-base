@@ -37,4 +37,38 @@ class Util {
 
         return implode(' : ', $name);
     }
+
+
+
+    public static function isFlagSet(?int $flags, ?int $flag): bool {
+        if(!$flags || !$flag) {
+            return false;
+        }
+
+        return (($flags & $flag) == $flag);
+    }
+
+    public function setFlag(?int $flags, ?int $flag): int {
+        if(!$flags) {
+            $flags = 0;
+        }
+
+        if($flag) {
+            $flags |= $flag;
+        }
+
+        return $flags;
+    }
+
+    public function removeFlag(?int $flags, ?int $flag): int {
+        if(!$flags) {
+            return 0;
+        }
+
+        if($flag) {
+            $flags &= ~$flag;
+        }
+
+        return $flags;
+    }
 }
