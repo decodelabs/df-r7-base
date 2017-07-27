@@ -176,6 +176,11 @@ class Result implements arch\node\IRestApiResult {
             $headers->set('Access-Control-Allow-Origin', $this->_cors);
         }
 
+        $headers
+            ->setCacheAccess('no-cache')
+            ->canStoreCache(false)
+            ->shouldRevalidateCache(true);
+
         return $response;
     }
 }
