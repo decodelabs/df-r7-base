@@ -79,7 +79,7 @@ abstract class Base implements core\debug\IRenderer {
         return $output;
     }
 
-    protected function _getNodeLocation(core\log\INode $node): string {
+    protected function _getNodeLocation(core\log\INode $node): ?string {
         return $this->_normalizeLocation($node->getFile(), $node->getLine());
     }
 
@@ -87,7 +87,7 @@ abstract class Base implements core\debug\IRenderer {
         if(!$file && !$line) {
             return null;
         }
-        
+
         return core\fs\Dir::stripPathLocation($file).' : '.$line;
     }
 
