@@ -45,19 +45,28 @@ class TaskMedia extends arch\node\Task {
         $handler = $this->data->media->getMediaHandler();
         $this->_migrator = new spur\migrate\Handler($this->_getUrl());
 
+        $bucket = $this->_getBucket();
+        $limit = $this->_getLimit();
+
         $query = $this->data->media->version->fetch()
             ->where('purgeDate', '=', null);
 
-        if(isset($this->request['bucket'])) {
+        if($bucket) {
             $query
                 ->whereCorrelation('file', 'in', 'id')
                     ->from('axis://media/File')
                     ->whereCorrelation('bucket', 'in', 'id')
                         ->from('axis://media/Bucket')
-                        ->where('slug', '=', $this->request['bucket'])
+                        ->where('slug', '=', $bucket)
                         ->endCorrelation()
                     ->endCorrelation();
         }
+
+        if($limit) {
+            $query
+                ->where('fileSize', '<', $limit);
+        }
+
 
         foreach($query as $version) {
             $fileId = (string)$version['#file'];
@@ -122,5 +131,58 @@ class TaskMedia extends arch\node\Task {
         }
 
         return new link\http\Url($validator['url']);
+    }
+
+    protected function _getBucket(): ?string {
+        if(isset($this->request['bucket'])) {
+            $bucket = $this->request['bucket'];
+        } else {
+            $bucket = $this->_askFor('Bucket [default: all]', function($answer) {
+                return $this->data->newValidator()
+                    ->addField('bucket', 'slug')
+                        ->setCustomValidator(function($node, $value) {
+                            if(empty($value)) {
+                                return;
+                            }
+
+                            $check = $this->data->media->bucket->select('slug')
+                                ->where('slug', '=', $value)
+                                ->count();
+
+                            if(!$check) {
+                                $node->addError('invalid', 'Bucket not found');
+                            }
+                        });
+            });
+        }
+
+        return $bucket;
+    }
+
+    protected function _getLimit(): ?int {
+        if(isset($this->request['limit'])) {
+            $limit = $this->request['limit'];
+        } else {
+            $limit = $this->_askFor('Size limit [default: none]', function($answer) {
+                return $this->data->newValidator()
+                    ->addField('limit', 'text')
+                    ->setSanitizer(function($value) {
+                        if(!$value) {
+                            return null;
+                        }
+
+                        return core\unit\FileSize::factory($value)->getBytes();
+                    })
+
+                    ->shouldSanitize(false)
+                    ->setCustomValidator(function($node, $value) {
+                        if(!$value && $value !== null) {
+                            $node->addError('invalid', 'Invalid file size');
+                        }
+                    });
+            });
+        }
+
+        return $limit;
     }
 }

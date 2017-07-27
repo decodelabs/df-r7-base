@@ -13,7 +13,7 @@ use df\neon;
 
 class TaskPurgeLargeFiles extends arch\node\Task {
 
-    const THRESHOLD = 2621440; // 2.5mb
+    const THRESHOLD = '2mb';
 
     public function execute() {
         if(!$this->app->isDevelopment()) {
@@ -27,18 +27,26 @@ class TaskPurgeLargeFiles extends arch\node\Task {
             $this->io->writeErrorLine('Media handler is not local');
         }
 
-        $this->io->write('Purging large files...');
+        $limit = $this->_getLimit();
+
+        $this->io->writeLine('Purging large files...');
         $this->io->indent();
 
         $total = 0;
 
         $versions = $this->data->media->version->select('id', 'file', 'fileName', 'fileSize')
             ->where('purgeDate', '=', null)
-            ->where('fileSize', '>', self::THRESHOLD);
+            ->where('fileSize', '>', $limit);
 
         foreach($versions as $version) {
+            $path = $handler->getFilePath($version['file'], $version['id']);
+
+            if(!file_exists($path)) {
+                continue;
+            }
+
             $this->io->writeLine($version['fileName'].' - '.$this->format->fileSize($version['fileSize']));
-            core\fs\File::delete($handler->getFilePath($version['file'], $version['id']));
+            core\fs\File::delete($path);
 
             $total += $version['fileSize'];
         }
@@ -46,5 +54,28 @@ class TaskPurgeLargeFiles extends arch\node\Task {
         $this->io->outdent();
 
         $this->io->writeLine('Purged '.$this->format->fileSize($total).' in total');
+    }
+
+    protected function _getLimit(): ?int {
+        if(isset($this->request['limit'])) {
+            $limit = $this->request['limit'];
+        } else {
+            $limit = $this->_askFor('Size limit', function($answer) {
+                return $this->data->newValidator()
+                    ->addRequiredField('limit', 'text')
+                    ->setSanitizer(function($value) {
+                        return core\unit\FileSize::factory($value)->getBytes();
+                    })
+
+                    ->shouldSanitize(false)
+                    ->setCustomValidator(function($node, $value) {
+                        if(!$value) {
+                            $node->addError('invalid', 'Invalid file size');
+                        }
+                    });
+            }, self::THRESHOLD);
+        }
+
+        return $limit;
     }
 }
