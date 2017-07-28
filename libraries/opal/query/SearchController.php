@@ -24,7 +24,7 @@ class SearchController implements ISearchController, core\IDumpable {
     protected $_isPrepared = false;
     protected $_query;
 
-    public function __construct(IReadQuery $query, $phrase=null, array $fields=null) {
+    public function __construct(IReadQuery $query, string $phrase=null, array $fields=null) {
         $this->_query = $query;
 
         if($phrase !== null) {

@@ -290,7 +290,7 @@ interface IPrerequisiteClauseQuery extends IWhereClauseQuery, IPrerequisiteClaus
 interface IHavingClauseQuery extends IReadQuery, IHavingClauseFactory {}
 
 interface ISearchableQuery extends IReadQuery {
-    public function searchFor($phrase, array $fields=null);
+    public function searchFor(?string $phrase, array $fields=null);
     public function getSearch();
     public function hasSearch();
     public function clearSearch();

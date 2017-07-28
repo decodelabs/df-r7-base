@@ -1595,7 +1595,11 @@ trait TQuery_Searchable {
 
     protected $_searchController;
 
-    public function searchFor($phrase, array $fields=null) {
+    public function searchFor(?string $phrase, array $fields=null) {
+        if($phrase === null) {
+            return $this;
+        }
+        
         $this->_searchController = new SearchController($this, $phrase, $fields);
         return $this;
     }
