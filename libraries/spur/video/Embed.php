@@ -402,32 +402,30 @@ class Embed implements IVideoEmbed {
     }
 
     protected function _renderVimeo() {
-        $urlObj = link\http\Url::factory($this->_url);
-        $id = $urlObj->path->getLast();
+        $url = link\http\Url::factory($this->_url);
+        $id = $url->path->getLast();
 
-        if(!is_numeric($id)) {
-            return $urlObj;
+        if(is_numeric($id)) {
+            $url = new link\http\Url('//player.vimeo.com/video/'.$id);
+
+            if($this->_autoPlay) {
+                $url->query->autoplay = 1;
+            }
+
+            /*
+            if($this->_startTime !== null) {
+                $url->query->start = $this->_startTime.'s';
+            }
+
+            if($this->_endTime !== null) {
+                $url->query->end = $this->_endTime.'s';
+            }
+
+            if($this->_duration !== null) {
+                $url->query->end = $this->_duration + $this->_startTime;
+            }
+            */
         }
-
-        $url = new link\http\Url('//player.vimeo.com/video/'.$id);
-
-        if($this->_autoPlay) {
-            $url->query->autoplay = 1;
-        }
-
-        /*
-        if($this->_startTime !== null) {
-            $url->query->start = $this->_startTime.'s';
-        }
-
-        if($this->_endTime !== null) {
-            $url->query->end = $this->_endTime.'s';
-        }
-
-        if($this->_duration !== null) {
-            $url->query->end = $this->_duration + $this->_startTime;
-        }
-        */
 
         $tag = new aura\html\Element('iframe', null, [
             'src' => $url,
