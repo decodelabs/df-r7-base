@@ -446,9 +446,11 @@ class Html implements arch\IDirectoryHelper {
         $isProduction = df\Launchpad::$app->isProduction();
 
         $output = '<div class="w list flash">'."\n";
+        $change = false;
 
         foreach($manager->getConstantFlashes() as $message) {
             $message->isDisplayed(true);
+            $change = true;
 
             if($isProduction && $message->isDebug()) {
                 continue;
@@ -460,6 +462,7 @@ class Html implements arch\IDirectoryHelper {
 
         foreach($manager->getInstantFlashes() as $message) {
             $message->isDisplayed(true);
+            $change = true;
 
             if($isProduction && $message->isDebug()) {
                 continue;
@@ -467,6 +470,10 @@ class Html implements arch\IDirectoryHelper {
 
             $messageCount++;
             $output .= $this->flashMessage($message);
+        }
+
+        if($change) {
+            $manager->flashHasChanged(true);
         }
 
         $output .= '</div>';

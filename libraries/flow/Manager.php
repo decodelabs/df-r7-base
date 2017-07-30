@@ -732,6 +732,11 @@ class Manager implements IManager, core\IShutdownAware {
         return true;
     }
 
+    public function flashHasChanged(bool $flag) {
+        $this->_flashQueueChanged = $this->_flashQueueChanged || $flag;
+        return $this;
+    }
+
 
 // Shortcuts
     public function flash($id, $message=null, $type=null) {
