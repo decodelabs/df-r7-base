@@ -627,7 +627,9 @@ class Html implements arch\IDirectoryHelper {
             '@context' => $context,
             '@type' => $type
         ]);
+        
         $tree->merge(core\collection\Tree::factory($data));
+        $tree->removeEmpty();
 
         return $this->string($this->tag('script', ['type' => 'application/ld+json']).
             flex\Json::toString($tree, \JSON_UNESCAPED_SLASHES).

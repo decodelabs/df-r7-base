@@ -330,6 +330,18 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return $this;
     }
 
+    public function removeEmpty() {
+        foreach($this->_collection as $key => $child) {
+            $child->removeEmpty();
+
+            if($child->isEmpty() && !$child->hasValue()) {
+                unset($this->_collection[$key]);
+            }
+        }
+
+        return $this;
+    }
+
     public function offsetSet($key, $value) {
         if($key === null) {
             return $this->push($value);
