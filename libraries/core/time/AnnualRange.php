@@ -105,7 +105,7 @@ class AnnualRange implements IAnnualRange, core\IDumpable {
 // Open
     public function isOpen(): bool {
         if($this->_isOpen === null) {
-            $this->_isOpen = $this->_start->lte('now') && $this->_end->gt('now');
+            $this->_isOpen = $this->_start->lte('now') && $this->_end->gte('now');
         }
 
         return $this->_isOpen;
