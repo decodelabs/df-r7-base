@@ -174,7 +174,7 @@ class Memcached implements core\cache\IBackend {
         $output = 0;
         $length = strlen($this->_prefix);
 
-        foreach($this->_connection->getAllKeys() as $keys) {
+        foreach($this->_connection->getAllKeys() ?? [] as $keys) {
             if(0 === strpos($key, $this->_prefix)) {
                 $output++;
             }
@@ -187,7 +187,7 @@ class Memcached implements core\cache\IBackend {
         $output = [];
         $length = strlen($this->_prefix);
 
-        foreach($this->_connection->getAllKeys() as $key) {
+        foreach($this->_connection->getAllKeys() ?? [] as $key) {
             if(0 === strpos($key, $this->_prefix)) {
                 $output[] = substr($key, $length);
             }
