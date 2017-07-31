@@ -241,3 +241,26 @@ interface ISchedule extends core\IStringProvider {
     public function getLast($time=null, $yearThreshold=2);
     public function getNext($time=null, $yearThreshold=2);
 }
+
+
+
+interface IAnnualRange {
+    public function update($start, $end, $timezone=null);
+
+    public function getStartDate(): IDate;
+    public function getNextStartDate(): IDate;
+    public function getEndDate(): IDate;
+
+    public function getStartYear(): int;
+    public function getEndYear(): int;
+    public function getActiveYear(): int;
+
+    public function isOpen(): bool;
+    public function getTimeUntilStart(): ?IDuration;
+    public function getTimeUntilEnd(): ?IDuration;
+
+    public function getPrevious(): IAnnualRange;
+    public function getNext(): IAnnualRange;
+
+    public function getEventDate($date, $timezone=null): IDate;
+}
