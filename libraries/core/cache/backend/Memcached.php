@@ -173,8 +173,13 @@ class Memcached implements core\cache\IBackend {
     public function count() {
         $output = 0;
         $length = strlen($this->_prefix);
+        $keys = $this->_connection->getAllKeys();
 
-        foreach($this->_connection->getAllKeys() ?? [] as $keys) {
+        if(!is_iterable($keys)) {
+            return [];
+        }
+
+        foreach($keys as $key) {
             if(0 === strpos($key, $this->_prefix)) {
                 $output++;
             }
@@ -186,8 +191,13 @@ class Memcached implements core\cache\IBackend {
     public function getKeys(): array {
         $output = [];
         $length = strlen($this->_prefix);
+        $keys = $this->_connection->getAllKeys();
 
-        foreach($this->_connection->getAllKeys() ?? [] as $key) {
+        if(!is_iterable($keys)) {
+            return [];
+        }
+
+        foreach($keys as $key) {
             if(0 === strpos($key, $this->_prefix)) {
                 $output[] = substr($key, $length);
             }
