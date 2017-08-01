@@ -171,8 +171,12 @@ class SassBridge implements ISassBridge {
     }
 
     protected function _compile() {
+        $envMode = $this->context->app->envMode;
+        $envId = $this->context->app->envId;
+
         $sourceFiles = [$this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type];
         $this->_manifest = [];
+        $first = true;
 
         while(!empty($sourceFiles)) {
             $filePath = array_shift($sourceFiles);
@@ -189,6 +193,14 @@ class SassBridge implements ISassBridge {
             $contents = $this->_replaceLocalPaths($contents, $filePath, $sourceFiles);
             $contents = $this->_replaceUrls($contents);
             $contents = $this->_setCharset($contents);
+
+            if($first) {
+                $first = false;
+                $contents =
+                    '$env-mode: \''.$envMode.'\';'."\n".
+                    '$env-id: \''.$envId.'\';'."\n".
+                    $contents;
+            }
 
             file_put_contents($this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.basename($filePath), $contents);
         }
@@ -218,7 +230,6 @@ class SassBridge implements ISassBridge {
         }
 
         $isC = basename($path) == 'sassc';
-        $envMode = $this->context->app->envMode;
 
         switch($envMode) {
             case 'development':
