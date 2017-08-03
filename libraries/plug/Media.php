@@ -177,6 +177,14 @@ class Media implements arch\IDirectoryHelper {
         if($isUrl) {
             $output = $this->context->http->redirect($filePath);
         } else {
+            if($transformation !== null) {
+                $namePath = core\uri\Path::factory($fileName);
+
+                $fileName = (string)$namePath->setFileName(
+                    $namePath->getFileName().' '.$this->context->format->filename($transformation)
+                );
+            }
+
             $output = $this->context->http->fileResponse($filePath)
                 ->setContentType($contentType)
                 ->setFileName($fileName);
