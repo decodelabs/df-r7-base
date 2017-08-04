@@ -15,7 +15,7 @@ class FileStore extends core\cache\FileStore {
     const DEFAULT_LIFETIME = '1 day';
     const URL_LIFETIME = '1 month';
 
-    public function getTransformationFilePath(string $sourceFilePath, $transformation, core\time\IDate $modificationDate=null): string {
+    public function getTransformationFilePath($sourceFilePath, $transformation, core\time\IDate $modificationDate=null): string {
         $mTime = null;
         $isUrl = false;
         $lifetime = static::DEFAULT_LIFETIME;
