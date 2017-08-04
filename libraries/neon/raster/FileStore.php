@@ -89,7 +89,7 @@ class FileStore extends core\cache\FileStore {
 
             $image->transform($transformation)->apply();
 
-            $this->set($key, $image->toString());
+            $this->set($key, $image->toString(90));
             $file = $this->get($key);
 
             if($isUrl) {

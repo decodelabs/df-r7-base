@@ -186,7 +186,7 @@ class Image implements IImage {
             );
         }
 
-        if(!$this->_driver->saveTo($savePath, $this->_normalizePercentage($quality))) {
+        if(!$this->_driver->saveTo($this->_savePath, $this->_normalizePercentage($quality))) {
             throw new RuntimeException(
                 'Raster image could not be saved'
             );
