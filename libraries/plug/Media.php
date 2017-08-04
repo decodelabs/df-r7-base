@@ -226,7 +226,7 @@ class Media implements arch\IDirectoryHelper {
         return $filePath;
     }
 
-    protected function _getImageFileLocation($fileId, $versionId, $isActive, $contentType, $transformation=null, $modificationDate=null, $forceLocal=false) {
+    protected function _getImageFileLocation($fileId, $versionId, $isActive, &$contentType, $transformation=null, $modificationDate=null, $forceLocal=false) {
         $handler = $this->_model->getMediaHandler();
         $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
         $isUrl = $filePath instanceof link\http\IUrl;
@@ -235,9 +235,9 @@ class Media implements arch\IDirectoryHelper {
             $fileStore = neon\raster\FileStore::getInstance();
             $modificationDate = core\time\Date::normalize($modificationDate);
 
-            $filePath = $fileStore->getTransformationFilePath($filePath, $transformation, $modificationDate);
-            $contentType = 'image/png';
-            $isUrl = false;
+            $fileInfo = $fileStore->getTransformationFileInfo($filePath, $transformation, $modificationDate);
+            $filePath = $fileInfo['path'];
+            $contentType = $fileInfo['type'];
         }
 
         return $filePath;

@@ -15,6 +15,31 @@ class FileStore extends core\cache\FileStore {
     const DEFAULT_LIFETIME = '1 day';
     const URL_LIFETIME = '1 month';
 
+    public function getTransformationFileInfo($sourceFilePath, $transformation, core\time\IDate $modificationDate=null): array {
+        $output = [
+            'source' => $sourceFilePath,
+            'isUrl' => $sourceFilePath instanceof link\http\IUrl,
+            'transformation' => $transformation,
+            'path' => $path = $this->getTransformationFilePath($sourceFilePath, $transformation, $modificationDate),
+            'type' => null,
+            'width' => null,
+            'height' => null
+        ];
+
+        try {
+            $info = getimagesize($path);
+            $output['type'] = $info['mime'];
+            $output['width'] = $info[0];
+            $output['height'] = $info[1];
+        } catch(\Throwable $e) {
+            $output['type'] = 'image/png';
+            $output['width'] = 0;
+            $output['height'] = 0;
+        }
+
+        return $output;
+    }
+
     public function getTransformationFilePath($sourceFilePath, $transformation, core\time\IDate $modificationDate=null): string {
         $mTime = null;
         $isUrl = false;
