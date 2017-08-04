@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\neon;
 
-class Transformation implements ITransformation {
+class Transformation implements ITransformation, core\IDumpable {
 
     use core\TStringProvider;
 
@@ -229,5 +229,11 @@ class Transformation implements ITransformation {
     protected function _addTransformation($method, array $args=[]) {
         $this->_transformations[] = [$method, $args];
         return $this;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return $this->toString();
     }
 }

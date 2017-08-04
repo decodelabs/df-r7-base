@@ -171,11 +171,18 @@ class Media implements arch\IDirectoryHelper {
     }
 
     public function serveImage($fileId, $versionId, $isActive, $contentType, $fileName=null, $transformation=null, $modificationDate=null) {
-        $filePath = $this->_getImageFileLocation($fileId, $versionId, $isActive, $contentType, $transformation, $modificationDate);
-        $isUrl = $filePath instanceof link\http\IUrl;
+        $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
+        $descriptor = new neon\raster\Descriptor($filePath, $contentType);
+        $descriptor->setFileName($fileName);
 
-        if($isUrl) {
-            $output = $this->context->http->redirect($filePath);
+        if($transformation !== null) {
+            $descriptor->applyTransformation($transformation, core\time\Date::normalize($modificationDate));
+        }
+
+        $location = $descriptor->getLocation();
+
+        if(!$descriptor->isLocal()) {
+            $output = $this->context->http->redirect($location);
         } else {
             if($transformation !== null) {
                 $namePath = core\uri\Path::factory($fileName);
@@ -185,9 +192,9 @@ class Media implements arch\IDirectoryHelper {
                 );
             }
 
-            $output = $this->context->http->fileResponse($filePath)
-                ->setContentType($contentType)
-                ->setFileName($fileName);
+            $output = $this->context->http->fileResponse($location)
+                ->setContentType($descriptor->getContentType())
+                ->setFileName($descriptor->getFileName());
 
             $output->getHeaders()
                 ->set('Access-Control-Allow-Origin', '*')
@@ -200,7 +207,12 @@ class Media implements arch\IDirectoryHelper {
     }
 
     public function getImageFilePath($fileId, $versionId, $isActive, $contentType, $transformation=null, $modificationDate=null) {
-        return $this->_getImageFileLocation($fileId, $versionId, $isActive, $contentType, $transformation, $modificationDate, true);
+        $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
+
+        $descriptor = new neon\raster\Descriptor($filePath, $contentType);
+        $descriptor->applyTransformation($transformation, core\time\Date::normalize($modificationDate));
+
+        return $descriptor->getLocation();
     }
 
     public function image($fileId, $transformation=null, $alt=null, $width=null, $height=null) {
@@ -221,23 +233,6 @@ class Media implements arch\IDirectoryHelper {
             }
         } else {
             $filePath = link\http\Url::factory($handler->getVersionDownloadUrl($fileId, $versionId, $isActive));
-        }
-
-        return $filePath;
-    }
-
-    protected function _getImageFileLocation($fileId, $versionId, $isActive, &$contentType, $transformation=null, $modificationDate=null, $forceLocal=false) {
-        $handler = $this->_model->getMediaHandler();
-        $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
-        $isUrl = $filePath instanceof link\http\IUrl;
-
-        if(($forceLocal && $isUrl) || ($transformation !== null && !in_array($contentType, ['image/svg+xml', 'image/gif']))) {
-            $fileStore = neon\raster\FileStore::getInstance();
-            $modificationDate = core\time\Date::normalize($modificationDate);
-
-            $fileInfo = $fileStore->getTransformationFileInfo($filePath, $transformation, $modificationDate);
-            $filePath = $fileInfo['path'];
-            $contentType = $fileInfo['type'];
         }
 
         return $filePath;

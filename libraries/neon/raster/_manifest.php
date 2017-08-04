@@ -154,3 +154,25 @@ interface IIcoGenerator {
     public function save($file);
     public function generate();
 }
+
+
+
+interface IDescriptor {
+    public function getSourceLocation(): string;
+    public function isSourceLocal(): bool;
+
+    public function applyTransformation($transformation, core\time\IDate $modificationDate=null);
+    public function getTransformation(): ?ITransformation;
+    public function toIcon(int ...$sizes);
+
+    public function getLocation(): string;
+    public function isLocal(): bool;
+
+    public function setFileName(?string $fileName);
+    public function getFileName(): string;
+    public function shouldIncludeTransformationInFileName(bool $flag=null);
+
+    public function getContentType(): string;
+}
+
+class FileStore extends core\cache\FileStore {}

@@ -132,21 +132,21 @@ class Type {
         'snd' => 'audio/basic',
         'flac' => 'audio/flac',
         'mid' => 'audio/midi',
-        'midi' => 'audio/midi',
         'kar' => 'audio/midi',
+        'midi' => 'audio/midi',
         'mpga' => 'audio/mpeg',
         'mp2' => 'audio/mpeg',
         'mp3' => 'audio/mpeg',
         'aif' => 'audio/x-aiff',
-        'aiff' => 'audio/x-aiff',
         'aifc' => 'audio/x-aiff',
+        'aiff' => 'audio/x-aiff',
         'm4a' => 'audio/x-m4a',
         'm4b' => 'audio/x-m4b',
         'm4p' => 'audio/x-m4p',
         'm3u' => 'audio/x-mpegurl',
         'oga' => 'audio/ogg',
-        'ogg' => 'audio/ogg',
         'spx' => 'audio/ogg',
+        'ogg' => 'audio/ogg',
         'ram' => 'audio/x-pn-realaudio',
         'ra' => 'audio/x-pn-realaudio',
         'wma' => 'audio/x-ms-wma',
@@ -166,11 +166,11 @@ class Type {
         'gif' => 'image/gif',
         'ief' => 'image/ief',
         'jpeg' => 'image/jpeg',
-        'jpg' => 'image/jpeg',
         'jpe' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
         'pict' => 'image/pict',
-        'pic' => 'image/pict',
         'pct' => 'image/pict',
+        'pic' => 'image/pict',
         'png' => 'image/png',
         'svg' => 'image/svg+xml',
         'tiff' => 'image/tiff',
@@ -268,4 +268,13 @@ class Type {
         return self::extToMime($extension);
     }
 
+    public static function mimeToExt(string $mime): ?string {
+        $types = array_flip(self::TYPES);
+
+        if(array_key_exists($mime, $types)) {
+            return $types[$mime];
+        } else {
+            return null;
+        }
+    }
 }
