@@ -683,6 +683,8 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         $meta = $this->_meta;
 
         // Priority meta
+        ksort($meta);
+        
         foreach($meta as $key => $value) {
             if(in_array(strtolower($key), self::META_PRIORITY)) {
                 $output .= '    '.$this->_metaToString($key, $meta[$key])."\n";
