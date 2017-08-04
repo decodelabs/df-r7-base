@@ -132,7 +132,7 @@ class Descriptor implements IDescriptor {
 
                 $fileStore->set($key, $image->toString(90));
             } else {
-                $fileStore->set($key, $download);
+                $fileStore->set($key, new core\fs\File($this->_location));
             }
 
             $file = $fileStore->get($key);
