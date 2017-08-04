@@ -85,7 +85,6 @@ class Base implements ITheme, core\IDumpable {
 
         $this->applyDefaultIncludes($view);
         $this->applyDefaultBodyTagData($view);
-        $this->applyDefaultMetaData($view);
     }
 
     public function applyDefaultIncludes(aura\view\IView $view) {
@@ -110,20 +109,6 @@ class Base implements ITheme, core\IDumpable {
             $view->setData('cts', df\Launchpad::$compileTimestamp);
         } else if($view->context->app->isDevelopment()) {
             $view->setData('cts', time());
-        }
-    }
-
-    public function applyDefaultMetaData(aura\view\IView $view) {
-        if(!$view->hasMeta('msapplication-config')) {
-            $view->setMeta('msapplication-config', 'none');
-        }
-
-        if(!$view->hasMeta('msapplication-TileColor')) {
-            $view->setMeta('msapplication-TileColor', $this->getApplicationColor());
-        }
-
-        if(!$view->hasMeta('application-name')) {
-            $view->setMeta('application-name', df\Launchpad::$app->getName());
         }
     }
 
@@ -190,6 +175,7 @@ class Base implements ITheme, core\IDumpable {
 
     public function afterHtmlViewRender(aura\view\IHtmlView $view, $content) {
         $this->applyDefaultViewTitle($view);
+        $this->applyDefaultMetaData($view);
         return $content;
     }
 
@@ -215,6 +201,28 @@ class Base implements ITheme, core\IDumpable {
             }
 
             $view->setTitleSuffix($suffix);
+        }
+    }
+
+    public function applyDefaultMetaData(aura\view\IView $view) {
+        if(!$view->hasMeta('msapplication-config')) {
+            $view->setMeta('msapplication-config', 'none');
+        }
+
+        if(!$view->hasMeta('msapplication-TileColor')) {
+            $view->setMeta('msapplication-TileColor', $this->getApplicationColor());
+        }
+
+        if(!$view->hasMeta('application-name')) {
+            $view->setMeta('application-name', df\Launchpad::$app->getName());
+        }
+
+        if(!$view->hasMeta('og:title')) {
+            $view->setMeta('og:title', $view->getFullTitle());
+        }
+
+        if(!$view->hasMeta('og:description') && $view->hasMeta('description')) {
+            $view->setMeta('og:description', $view->getMeta('description'));
         }
     }
 
