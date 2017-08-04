@@ -18,6 +18,44 @@ abstract class FileStore implements IFileStore {
 
     protected $_dir;
 
+    public static function prune($lifeTime='1 month'): int {
+        $total = 0;
+        $dirs = [
+            df\Launchpad::$app->getLocalDataPath().'/filestore/',
+            df\Launchpad::$app->getSharedDataPath().'/filestore/',
+        ];
+
+        foreach($dirs as $path) {
+            $dir = new core\fs\Dir($path);
+
+            if(!$dir->exists()) {
+                continue;
+            }
+
+            foreach($dir->scanDirs() as $inner) {
+                foreach($inner->scanFiles() as $name => $file) {
+                    if(!$file->isRecent($lifeTime)) {
+                        $file->unlink();
+                        $total++;
+                    }
+                }
+            }
+        }
+
+        return $total;
+    }
+
+    public static function purgeAll(): void {
+        $dirs = [
+            df\Launchpad::$app->getLocalDataPath().'/filestore/',
+            df\Launchpad::$app->getSharedDataPath().'/filestore/',
+        ];
+
+        foreach($dirs as $path) {
+            core\fs\Dir::delete($path);
+        }
+    }
+
     public function __construct() {
         if(self::IS_DISTRIBUTED) {
             $path = df\Launchpad::$app->getSharedDataPath();

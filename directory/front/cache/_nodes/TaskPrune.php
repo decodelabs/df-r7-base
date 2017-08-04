@@ -27,5 +27,9 @@ class TaskPrune extends arch\node\Task {
             $count = (int)$class::prune($options);
             $this->io->writeLine($count.' stale items removed');
         }
+
+        $this->io->write('FileStore... ');
+        $count = core\cache\FileStore::prune('1 week');
+        $this->io->writeLine($count.' stale items removed');
     }
 }
