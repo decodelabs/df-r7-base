@@ -230,7 +230,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
     public function rotate(core\unit\IAngle $angle, neon\IColor $background=null) {
         if($background === null) {
-            $background = -1;
+            $background = imageColorAllocateAlpha($this->_pointer, 0, 0, 0, 127);
         } else {
             $background = imageColorAllocate(
                 $this->_pointer,
