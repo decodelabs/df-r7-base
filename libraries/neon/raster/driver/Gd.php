@@ -42,26 +42,32 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
             switch(@$i[2]) {
                 case 1: // gif
                     $this->_pointer = imageCreateFromGif($file);
+                    $this->_outputFormat = 'GIF';
                     break;
 
                 case 2: // jpg
                     $this->_pointer = imageCreateFromJpeg($file);
+                    $this->_outputFormat = 'JPEG';
                     break;
 
                 case 3: // png
                     $this->_pointer = imageCreateFromPng($file);
+                    $this->_outputFormat = 'PNG';
                     break;
 
                 case 15: // wbmp
                     $this->_pointer = imageCreateFromWbmp($file);
+                    $this->_outputFormat = 'WBMP';
                     break;
 
                 case 16: // xbm
                     $this->_pointer = imageCreateFromXbm($file);
+                    $this->_outputFormat = 'PNG';
                     break;
 
                 default:
                     $this->_pointer = imageCreateFromString(file_get_contents($file));
+                    $this->_outputFormat = 'PNG';
                     break;
             }
         } catch(\ErrorException $e) {

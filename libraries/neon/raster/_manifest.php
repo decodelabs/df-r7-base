@@ -141,6 +141,7 @@ interface IImageFilterDriver extends IDriver {
 interface ITransformation extends IImageManipulationController, IImageFilterController, core\IStringProvider {
     public function setImage(IImage $image);
     public function getImage();
+    public function isAlphaRequired(): bool;
 
     public function rescale($scale);
 
@@ -162,6 +163,7 @@ interface IDescriptor {
     public function isSourceLocal(): bool;
 
     public function applyTransformation($transformation, core\time\IDate $modificationDate=null);
+    public function shouldOptimizeTransformation(bool $flag=null);
     public function getTransformation(): ?ITransformation;
     public function toIcon(int ...$sizes);
 

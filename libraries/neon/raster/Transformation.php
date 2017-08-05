@@ -114,6 +114,26 @@ class Transformation implements ITransformation, core\IDumpable {
         return $this->_image;
     }
 
+    public function isAlphaRequired(): bool {
+        foreach($this->_transformations as $node) {
+            switch($node[0]) {
+                case 'frame':
+                    if(!isset($node[1][2])) {
+                        return true;
+                    }
+                    break;
+
+                case 'rotate':
+                    if(!isset($node[1][1])) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+
+        return false;
+    }
+
     public function rescale($scale) {
         foreach($this->_transformations as $key => $set) {
             if(in_array($set[0], self::RESCALABLE)) {

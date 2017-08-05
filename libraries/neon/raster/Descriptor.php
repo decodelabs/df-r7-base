@@ -16,10 +16,20 @@ class Descriptor implements IDescriptor {
     const DEFAULT_LIFETIME = '3 days';
     const URL_LIFETIME = '1 month';
 
+    const ALPHA_TYPES = [
+        'image/gif',
+        'image/png',
+        'image/svg+xml',
+        'image/tiff',
+        'image/x-icon',
+        'image/x-targa'
+    ];
+
     protected $_sourceLocation = null;
     protected $_isSourceLocal = true;
 
     protected $_transformation;
+    protected $_optimizeTransformation = true;
     protected $_location = null;
     protected $_isLocal = true;
 
@@ -119,17 +129,25 @@ class Descriptor implements IDescriptor {
                 }
             }
 
-            $shouldTransform = $transformation !== null && !in_array($this->getContentType(), ['image/svg+xml', 'image/gif']);
+            $type = $this->getContentType();
+            $shouldTransform = $transformation !== null && !in_array($type, ['image/svg+xml', 'image/gif']);
 
             if($shouldTransform) {
+                $isAlphaType = in_array($type, self::ALPHA_TYPES);
+
                 try {
-                    $image = Image::loadFile($this->_location)->setOutputFormat('PNG32');
+                    $image = Image::loadFile($this->_location);
                 } catch(FormatException $e) {
                     $image = Image::newCanvas(100, 100, neon\Color::factory('black'));
                 }
 
-                $image->transform($transformation)->apply();
+                if(!$isAlphaType && $transformation->isAlphaRequired()) {
+                    $image->setOutputFormat('PNG32');
+                } else if($this->_optimizeTransformation) {
+                    $image->setOutputFormat('JPEG');
+                }
 
+                $image->transform($transformation)->apply();
                 $fileStore->set($key, $image->toString(90));
             } else {
                 $fileStore->set($key, new core\fs\File($this->_location));
@@ -176,6 +194,14 @@ class Descriptor implements IDescriptor {
         return $this;
     }
 
+    public function shouldOptimizeTransformation(bool $flag=null) {
+        if($flag !== null) {
+            $this->_optimizeTransformation = $flag;
+            return $this;
+        }
+
+        return $this->_optimizeTransformation;
+    }
 
     public function getTransformation(): ?ITransformation {
         return $this->_transformation;

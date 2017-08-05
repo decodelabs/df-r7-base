@@ -49,6 +49,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
 
         $this->_width = $this->_pointer->getImageWidth();
         $this->_height = $this->_pointer->getImageHeight();
+        $this->_outputFormat = $this->_pointer->getImageFormat();
 
         return $this;
     }
@@ -63,6 +64,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
 
         $this->_width = $this->_pointer->getImageWidth();
         $this->_height = $this->_pointer->getImageHeight();
+        $this->_outputFormat = $this->_pointer->getImageFormat();
 
         return $this;
     }
