@@ -143,7 +143,7 @@ class Descriptor implements IDescriptor {
 
                 if(!$isAlphaType && $transformation->isAlphaRequired()) {
                     $image->setOutputFormat('PNG32');
-                } else if($this->_optimizeTransformation) {
+                } else if($this->_optimizeTransformation && !$isAlphaType) {
                     $image->setOutputFormat('JPEG');
                 }
 
