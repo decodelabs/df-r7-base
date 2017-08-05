@@ -23,13 +23,13 @@ class Ico implements IIcoGenerator {
         $file = core\fs\File::factory($file);
 
         if(!$file->exists()) {
-            throw new RuntimeException(
+            throw core\Error::ENotFound(
                 'Source file '.$file->getPath().' does not exist'
             );
         }
 
         if(!getImageSize($file->getPath())) {
-            throw new RuntimeException(
+            throw core\Error::{'EValue,EUnreadable'}(
                 'Unable to read image data from '.$file->getPath()
             );
         }
@@ -58,13 +58,13 @@ class Ico implements IIcoGenerator {
         return $this;
     }
 
-    public function save($file) {
-        return core\fs\File::create($file, $data);
+    public function save($file): core\fs\IFile {
+        return core\fs\File::create($file, $this->generate());
     }
 
-    public function generate() {
+    public function generate(): string {
         if(empty($this->_images)) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'No images have been added to ICO generator'
             );
         }

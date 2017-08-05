@@ -116,7 +116,7 @@ class Descriptor implements IDescriptor {
                 $response = $http->getFile($this->_sourceLocation, $download);
 
                 if(!$response->isOk()) {
-                    throw new RuntimeException(
+                    throw core\Error::{'EValue,ENotFound'}(
                         'Unable to fetch remote image for transformation'
                     );
                 }
@@ -137,7 +137,7 @@ class Descriptor implements IDescriptor {
 
                 try {
                     $image = Image::loadFile($this->_location);
-                } catch(FormatException $e) {
+                } catch(EFormat $e) {
                     $image = Image::newCanvas(100, 100, neon\Color::factory('black'));
                 }
 

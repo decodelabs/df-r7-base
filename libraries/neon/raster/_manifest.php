@@ -9,12 +9,6 @@ use df;
 use df\core;
 use df\neon;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class FormatException extends RuntimeException {}
-class InvalidAgumentException extends \InvalidArgumentException implements IException {}
-
 
 // Interfaces
 interface IDimension {
@@ -37,10 +31,10 @@ interface IPosition {
 }
 
 interface IImageManipulationController {
-    public function resize($width, $height=null, $mode=IDimension::PROPORTIONAL);
-    public function crop($x, $y, $width, $height);
-    public function cropZoom($width, $height);
-    public function frame($width, $height=null, $color=null);
+    public function resize(?int $width, int $height=null, string $mode=null);
+    public function crop(int $x, int $y, int $width, int $height);
+    public function cropZoom(?int $width, int $height=null);
+    public function frame(?int $width, int $height=null, $color=null);
     public function rotate($angle, $background=null);
     public function mirror();
     public function flip();
@@ -49,21 +43,21 @@ interface IImageManipulationController {
 interface IImageCompositeController {
     public function composite(IImage $image, $x=IPosition::CENTER, $y=IPosition::CENTER);
     public function watermark(IImage $image, $x=IPosition::RIGHT, $y=IPosition::BOTTOM, $scaleFactor=1.0);
-    public function textWatermark($text, $fontSize, $color, $x=IPosition::RIGHT, $y=IPosition::BOTTOM);
+    public function textWatermark(string $text, int $fontSize, $color, $x=IPosition::RIGHT, $y=IPosition::BOTTOM);
 }
 
 interface IImageFilterController {
     public function brightness($brightness);
     public function contrast($contrast);
     public function greyscale();
-    public function colorize($color, $alpha=100);
+    public function colorize($color, $alpha=null);
     public function invert();
     public function detectEdges();
     public function emboss();
     public function blur();
     public function gaussianBlur();
     public function removeMean();
-    public function smooth($amount=50);
+    public function smooth($amount=null);
 }
 
 interface IImageDrawingController {
@@ -116,44 +110,44 @@ interface IDriver {
 }
 
 interface IImageManipulationDriver extends IDriver {
-    public function resize($width, $height);
-    public function crop($x, $y, $width, $height);
+    public function resize(int $width, int $height);
+    public function crop(int $x, int $y, int $width, int $height);
     public function composite(IDriver $image, $x, $y);
     public function rotate(core\unit\IAngle $angle, neon\IColor $background=null);
 }
 
 interface IImageFilterDriver extends IDriver {
-    public function brightness($brightness);
-    public function contrast($contrast);
+    public function brightness(float $brightness);
+    public function contrast(float $contrast);
     public function greyscale();
-    public function colorize(neon\IColor $color, $alpha);
+    public function colorize(neon\IColor $color, float $alpha);
     public function invert();
     public function detectEdges();
     public function emboss();
     public function blur();
     public function gaussianBlur();
     public function removeMean();
-    public function smooth($amount);
+    public function smooth(float $amount);
 }
 
 
 
 interface ITransformation extends IImageManipulationController, IImageFilterController, core\IStringProvider {
-    public function setImage(IImage $image);
-    public function getImage();
+    public function setImage(?IImage $image);
+    public function getImage(): ?IImage;
     public function isAlphaRequired(): bool;
 
-    public function rescale($scale);
+    public function rescale(float $scale);
 
-    public function apply();
+    public function apply(): IImage;
 }
 
 
 
 interface IIcoGenerator {
     public function addImage($file, int ...$sizes);
-    public function save($file);
-    public function generate();
+    public function save($file): core\fs\IFile;
+    public function generate(): string;
 }
 
 

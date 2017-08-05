@@ -105,12 +105,12 @@ class Transformation implements ITransformation, core\IDumpable {
         return $output;
     }
 
-    public function setImage(IImage $image) {
+    public function setImage(?IImage $image) {
         $this->_image = $image;
         return $this;
     }
 
-    public function getImage() {
+    public function getImage(): ?IImage {
         return $this->_image;
     }
 
@@ -134,7 +134,7 @@ class Transformation implements ITransformation, core\IDumpable {
         return false;
     }
 
-    public function rescale($scale) {
+    public function rescale(float $scale) {
         foreach($this->_transformations as $key => $set) {
             if(in_array($set[0], self::RESCALABLE)) {
                 if(isset($set[1][0])) {
@@ -152,9 +152,9 @@ class Transformation implements ITransformation, core\IDumpable {
         return $this;
     }
 
-    public function apply() {
+    public function apply(): IImage {
         if(!$this->_image) {
-            throw new RuntimeException(
+            throw core\Error::ESetup(
                 'No image has been set for transformation'
             );
         }
@@ -170,19 +170,19 @@ class Transformation implements ITransformation, core\IDumpable {
 
 
 // Manipulations
-    public function resize($width, $height=null, $mode=IDimension::FIT) {
+    public function resize(?int $width, int $height=null, string $mode=null) {
         return $this->_addTransformation('resize', [$width, $height, $mode]);
     }
 
-    public function crop($x, $y, $width, $height) {
+    public function crop(int $x, int $y, int $width, int $height) {
         return $this->_addTransformation('crop', [$x, $y, $width, $height]);
     }
 
-    public function cropZoom($width, $height) {
+    public function cropZoom(?int $width, int $height=null) {
         return $this->_addTransformation('cropZoom', [$width, $height]);
     }
 
-    public function frame($width, $height=null, $color=null) {
+    public function frame(?int $width, int $height=null, $color=null) {
         return $this->_addTransformation('frame', [$width, $height, $color]);
     }
 
@@ -212,7 +212,7 @@ class Transformation implements ITransformation, core\IDumpable {
         return $this->_addTransformation('greyscale');
     }
 
-    public function colorize($color, $alpha=100) {
+    public function colorize($color, $alpha=null) {
         return $this->_addTransformation('colorize', [$color, $alpha]);
     }
 
@@ -240,13 +240,19 @@ class Transformation implements ITransformation, core\IDumpable {
         return $this->_addTransformation('removeMean');
     }
 
-    public function smooth($amount=50) {
+    public function smooth($amount=null) {
         return $this->_addTransformation('smooth', [$smooth]);
     }
 
 
 // Helpers
     protected function _addTransformation($method, array $args=[]) {
+        foreach($args as $i => $arg) {
+            if(!strlen($arg)) {
+                $args[$i] = null;
+            }
+        }
+
         $this->_transformations[] = [$method, $args];
         return $this;
     }

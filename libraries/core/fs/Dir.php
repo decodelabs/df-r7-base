@@ -191,7 +191,7 @@ class Dir implements IDirectory, core\IDumpable {
             umask($umask);
 
             if($result) {
-                throw core\Error::{'ENotWritable,ERuntime'}(
+                throw core\Error::{'EUnwritable,ERuntime'}(
                     'Directory is not writable'
                 );
             }

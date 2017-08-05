@@ -31,7 +31,7 @@ class Image implements IImage {
 
         if(class_exists($class)) {
             if(!$class::isLoadable()) {
-                throw new RuntimeException(
+                throw core\Error::{'EUnsupported'}(
                     'Raster image driver '.$driver.' is not loadable'
                 );
             }
@@ -40,7 +40,7 @@ class Image implements IImage {
             return true;
         }
 
-        throw new RuntimeException(
+        throw core\Error::ENotFound(
             $driver.' is not a valid raster image driver'
         );
     }
@@ -50,7 +50,7 @@ class Image implements IImage {
             foreach(self::getDriverList() as $driver) {
                 try {
                     self::setDefaultDriver($driver);
-                } catch(RuntimeException $e) {
+                } catch(IError $e) {
                     continue;
                 }
 
@@ -58,7 +58,7 @@ class Image implements IImage {
             }
 
             if(!self::$_driverClass) {
-                throw new RuntimeException(
+                throw core\Error::ESetup(
                     'There are no available raster image drivers'
                 );
             }
@@ -73,7 +73,7 @@ class Image implements IImage {
         $class = self::getDefaultDriverClass();
 
         if(!is_readable($file)) {
-            throw new RuntimeException(
+            throw core\Error::{'EValue,EUnreadable'}(
                 'Raster image '.$file.' is not readable'
             );
         }
@@ -137,13 +137,13 @@ class Image implements IImage {
 // Output format
     public function setOutputFormat($format) {
         if(!self::isFormatValid($format)) {
-            throw new RuntimeException(
+            throw core\Error::{'EArgument,EFormat'}(
                 $format.' is not a valid output raster image format'
             );
         }
 
         if(!$this->_driver->canWrite($format)) {
-            throw new RuntimeException(
+            throw core\Error::{'EFormat'}(
                 $this->_driver->getName().' image driver cannot write '.$format.' format files'
             );
         }
@@ -159,7 +159,7 @@ class Image implements IImage {
 // Save
     public function setSavePath($savePath) {
         if(!is_writable($savePath)) {
-            throw new RuntimeException(
+            throw core\Error::{'ERuntime,EUnwritable'}(
                 'Raster image save path is not writable'
             );
         }
@@ -181,13 +181,13 @@ class Image implements IImage {
 
     public function save($quality=100) {
         if(!$this->_savePath) {
-            throw new RuntimeException(
+            throw core\Error::ESetup(
                 'Raster image save path has not been set'
             );
         }
 
         if(!$this->_driver->saveTo($this->_savePath, $this->_normalizePercentage($quality))) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'Raster image could not be saved'
             );
         }
@@ -202,18 +202,17 @@ class Image implements IImage {
 
 
 // Manipulations
-    public function resize($width, $height=null, $mode=IDimension::PROPORTIONAL) {
+    public function resize(?int $width, int $height=null, string $mode=null) {
         $this->_checkDriverForManipulations();
-
         $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
 
         if(!$width && !$height) {
-            throw new neon\raster\InvalidArgumentException(
+            throw core\Error::EArgument(
                 'Invalid proportions specified for resize'
             );
         }
 
-        $mode = $this->_normalizeResizeMode($mode);
+        $mode = $this->_normalizeResizeMode($mode, IDimension::FIT);
 
         switch($mode) {
             case IDimension::STRETCH:
@@ -242,20 +241,28 @@ class Image implements IImage {
         return $this;
     }
 
-    public function crop($x, $y, $width, $height) {
+    public function crop(int $x, int $y, int $width, int $height) {
         $this->_checkDriverForManipulations();
 
         list($x, $y) = $this->_normalizePosition($x, $y);
-        $this->_normalizeRelativeDimensions($width, $height);
+        $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
+
+        if($width < 0) {
+            $width = $currentWidth - ($x + abs($width));
+        }
+
+        if($height < 0) {
+            $height = $currentHeight - ($x + abs($height));
+        }
 
         $this->_driver->crop($x, $y, $width, $height);
         return $this;
     }
 
-    public function cropZoom($width, $height) {
+    public function cropZoom(?int $width, int $height=null) {
         $this->_checkDriverForManipulations();
 
-        $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
+        $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight, false);
 
         $widthFactor = $width / $currentWidth;
         $heightFactor = $height / $currentHeight;
@@ -275,7 +282,7 @@ class Image implements IImage {
         return $this->crop($x, $y, $width, $height);
     }
 
-    public function frame($width, $height=null, $color=null) {
+    public function frame(?int $width, int $height=null, $color=null) {
         $this->_checkDriverForManipulations();
 
         $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
@@ -350,11 +357,11 @@ class Image implements IImage {
         return $this;
     }
 
-    public function colorize($color, $alpha=100) {
+    public function colorize($color, $alpha=null) {
         $this->_checkDriverForFilters();
 
         $color = $this->_normalizeColor($color);
-        $alpha = $this->_normalizePercentage($alpha);
+        $alpha = $this->_normalizePercentage($alpha ?? 100);
         $this->_driver->colorize($color, $alpha);
 
         return $this;
@@ -402,10 +409,10 @@ class Image implements IImage {
         return $this;
     }
 
-    public function smooth($amount=50) {
+    public function smooth($amount=null) {
         $this->_checkDriverForFilters();
 
-        $amount = $this->_normalizePercentage($amount);
+        $amount = $this->_normalizePercentage($amount ?? 50);
         $this->_driver->smooth($amount);
 
         return $this;
@@ -415,7 +422,7 @@ class Image implements IImage {
 // Driver
     protected function _checkDriverForManipulations() {
         if(!$this->_driver instanceof IImageManipulationDriver) {
-            throw new RuntimeException(
+            throw core\Error::EUnsupported(
                 'Raster image driver '.$this->_driver->getName().' does not support manipulations'
             );
         }
@@ -423,7 +430,7 @@ class Image implements IImage {
 
     protected function _checkDriverForFilters() {
         if(!$this->_driver instanceof IImageFilterDriver) {
-            throw new RuntimeException(
+            throw core\Error::EUnsupported(
                 'Raster image driver '.$this->_driver->getName().' does not support filters'
             );
         }
@@ -459,7 +466,7 @@ class Image implements IImage {
         return $size->getPixels();
     }
 
-    protected function _normalizeRelativeDimensions(&$width, &$height, &$currentWidth=null, &$currentHeight=null) {
+    protected function _normalizeRelativeDimensions(&$width, &$height, &$currentWidth=null, &$currentHeight=null, bool $proportional=true) {
         $width = $this->_normalizePixelSize($width, IDimension::WIDTH);
         $height = $this->_normalizePixelSize($height, IDimension::HEIGHT);
 
@@ -471,13 +478,25 @@ class Image implements IImage {
             $currentHeight = $this->getHeight();
         }
 
+        if(!$width && !$height) {
+            $width = $currentWidth;
+        }
+
         if(!$width || !$height) {
             if(!$width) {
-                $width = floor($currentWidth * $height / $currentHeight);
+                if($proportional) {
+                    $width = floor($currentWidth * $height / $currentHeight);
+                } else {
+                    $width = $height;
+                }
             }
 
             if(!$height) {
-                $height = floor($currentHeight * $width / $currentWidth);
+                if($proportional) {
+                    $height = floor($currentHeight * $width / $currentWidth);
+                } else {
+                    $height = $width;
+                }
             }
         }
     }
@@ -524,16 +543,18 @@ class Image implements IImage {
         }
     }
 
-    protected function _normalizeResizeMode($mode) {
+    protected function _normalizeResizeMode(?string $mode, string $default=null) {
         switch($mode) {
             case IDimension::STRETCH:
-                return IDimension::STRETCH;
-
             case IDimension::FIT:
-                return IDimension::FIT;
-
             case IDimension::PROPORTIONAL:
+                return $mode;
+
             default:
+                if($default !== null) {
+                    return $this->_normalizeResizeMode($default);
+                }
+
                 return IDimension::PROPORTIONAL;
         }
     }
@@ -713,7 +734,7 @@ class Image implements IImage {
             return self::getFormatFromExtension($p['extension']);
         }
 
-        throw new RuntimeException(
+        throw core\Error::EFormat(
             'Format could not be extracted from path: '.$path
         );
     }
@@ -725,7 +746,7 @@ class Image implements IImage {
 
         $extension = strtolower($extension);
 
-        throw new RuntimeException(
+        throw core\Error::EFormat(
             'Format could not be extracted from extension: '.$extension
         );
     }

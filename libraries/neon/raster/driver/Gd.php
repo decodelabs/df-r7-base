@@ -70,14 +70,14 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
                     $this->_outputFormat = 'PNG';
                     break;
             }
-        } catch(\ErrorException $e) {
-            throw new neon\raster\FormatException(
+        } catch(\Throwable $e) {
+            throw core\Error::{'neon/raster/EFormat'}(
                 $e->getMessage()
             );
         }
 
         if(!$this->_pointer) {
-            throw new neon\raster\FormatException(
+            throw core\Error::{'neon/raster/EUnreadable'}(
                 'Unable to load raster image '.$file
             );
         }
@@ -94,7 +94,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         $this->_pointer = imageCreateFromString($string);
 
         if(!$this->_pointer) {
-            throw new neon\raster\RuntimeException(
+            throw core\Error::{'neon/raster/EUnreadable'}(
                 'Unable to load raster image from string'
             );
         }
@@ -174,7 +174,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
 
 // Manipulations
-    public function resize($width, $height) {
+    public function resize(int $width, int $height) {
         $img = imageCreateTrueColor($width, $height);
         $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
         imageColorTransparent($img, $background);
@@ -193,7 +193,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function crop($x, $y, $width, $height) {
+    public function crop(int $x, int $y, int $width, int $height) {
         $img = imageCreateTrueColor($width, $height);
         $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
         imageColorTransparent($img, $background);
@@ -292,7 +292,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
 
 // Filters
-    public function brightness($brightness) {
+    public function brightness(float $brightness) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
 
@@ -303,7 +303,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function contrast($contrast) {
+    public function contrast(float $contrast) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
 
@@ -331,7 +331,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function colorize(neon\IColor $color, $alpha) {
+    public function colorize(neon\IColor $color, float $alpha) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
 
@@ -415,7 +415,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function smooth($amount) {
+    public function smooth(float $amount) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
 

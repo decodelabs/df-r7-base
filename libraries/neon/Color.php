@@ -402,7 +402,7 @@ class Color implements IColor, core\IDumpable {
             ')';
         }
 
-        return $this->toHexString(true);
+        return $this->toHexString(false);
     }
 
     public function __toString(): string {
