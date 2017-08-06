@@ -293,13 +293,13 @@ class Descriptor implements IDescriptor {
             } else {
                 $url = new link\http\Url($this->_location);
                 $this->_contentType = core\fs\Type::extToMime($url->path->getExtension());
-
-                if(substr($this->_contentType, 0, 6) !== 'image/') {
-                    $this->_contentType = 'image/png';
-                }
             }
 
-            if($this->_contentType === null) {
+            if($this->_contentType === null && $this->_fileName) {
+                $this->_contentType = core\fs\Type::fileToMime($this->_fileName);
+            }
+
+            if(substr($this->_contentType, 0, 6) !== 'image/') {
                 $this->_contentType = 'image/png';
             }
         }
