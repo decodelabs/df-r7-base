@@ -61,27 +61,34 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
 
 
 
-interface IField extends core\constraint\IRequirable, core\constraint\IOptional {
+interface IField extends core\constraint\IRequirable, core\constraint\IOptional, core\collection\IErrorContainer {
+    // Names
     public function getName(): string;
     public function setRecordName(?string $name);
     public function getRecordName(): string;
 
+    // Require group
     public function setRequireGroup(?string $name);
     public function getRequireGroup(): ?string;
     public function setToggleField(?string $name);
     public function getToggleField(): ?string;
 
+    // Sanitizing
     public function shouldSanitize(bool $flag=null);
     public function setSanitizer(?callable $sanitizer);
     public function getSanitizer(): ?callable;
     public function setDefaultValue($value);
     public function getDefaultValue();
 
+    // Custom validator
     public function setCustomValidator(?callable $validator);
     public function getCustomValidator(): ?callable;
+
+    // Errors
     public function setMessageGenerator(?callable $generator);
     public function getMessageGenerator(): ?callable;
 
+    // Apply
     public function validate(core\collection\IInputTree $node);
     public function applyValueTo(&$record, $value);
 }

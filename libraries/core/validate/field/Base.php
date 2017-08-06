@@ -213,7 +213,103 @@ abstract class Base implements core\validate\IField {
     }
 
 
-// Messages
+// Errors
+    public function isValid(): bool {
+        if(!$this->validator->data) {
+            return false;
+        }
+
+        return $this->validator->data->{$this->_name}->isValid();
+    }
+
+    public function countErrors(): int {
+        if(!$this->validator->data) {
+            return 0;
+        }
+
+        return $this->validator->data->{$this->_name}->countErrors();
+    }
+
+    public function setErrors(array $errors) {
+        if(!$this->validator->data) {
+            return $this;
+        }
+
+        return $this->clearErrors()->addErrors($errors);
+    }
+
+    public function addErrors(array $errors) {
+        if(!$this->validator->data) {
+            return $this;
+        }
+
+        foreach($errors as $code => $message) {
+            $this->addError($code, $message);
+        }
+
+        return $this;
+    }
+
+    public function addError($code, $message) {
+        if(!$this->validator->data) {
+            return $this;
+        }
+
+        $this->_applyMessage($this->validator->data->{$this->_name}, $code, $message);
+        return $this;
+    }
+
+    public function getErrors() {
+        if(!$this->validator->data) {
+            return [];
+        }
+
+        return $this->validator->data->{$this->_name}->getErrors();
+    }
+
+    public function getError($code) {
+        if(!$this->validator->data) {
+            return null;
+        }
+
+        return $this->validator->data->{$this->_name}->getError($code);
+    }
+
+    public function hasErrors() {
+        if(!$this->validator->data) {
+            return false;
+        }
+
+        return $this->validator->data->{$this->_name}->hasErrors();
+    }
+
+    public function hasError($code) {
+        if(!$this->validator->data) {
+            return false;
+        }
+
+        return $this->validator->data->{$this->_name}->hasError($code);
+    }
+
+    public function clearErrors() {
+        if(!$this->validator->data) {
+            return $this;
+        }
+
+        $this->validator->data->{$this->_name}->clearErrors();
+        return $this;
+    }
+
+    public function clearError($code) {
+        if(!$this->validator->data) {
+            return $this;
+        }
+
+        $this->validator->data->{$this->_name}->clearError($code);
+        return $this;
+    }
+
+
     public function setMessageGenerator(?callable $generator) {
         $this->_messageGenerator = core\lang\Callback::normalize($generator);
         return $this;
@@ -227,7 +323,7 @@ abstract class Base implements core\validate\IField {
         $message = null;
 
         if($this->_messageGenerator) {
-            $message = $this->_messageGenerator->invoke($code, $this, $this->validator);
+            $message = $this->_messageGenerator->invoke($code, $this);
         }
 
         if(empty($message)) {
