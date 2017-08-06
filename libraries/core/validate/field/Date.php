@@ -113,9 +113,9 @@ class Date extends Base implements core\validate\IDateField {
         // Validate
         try {
             if($this->_expectedFormat) {
-                $date = core\time\Date::fromFormatString($value, $this->_expectedFormat, $this->_timezone);
+                $value = core\time\Date::fromFormatString($value, $this->_expectedFormat, $this->_timezone);
             } else {
-                $date = core\time\Date::factory($value, $this->_timezone);
+                $value = core\time\Date::factory($value, $this->_timezone);
             }
         } catch(\Throwable $e) {
             $this->addError('invalid', $this->validator->_(
@@ -125,18 +125,18 @@ class Date extends Base implements core\validate\IDateField {
             return $value;
         }
 
-        $date->toUtc();
+        $value->toUtc();
 
-        $date = $this->_sanitizeValue($date);
-        $this->_validateRange($date);
+        $value = $this->_sanitizeValue($value);
+        $this->_validateRange($value);
 
-        if($this->_mustBePast && !$date->isPast()) {
+        if($this->_mustBePast && !$value->isPast()) {
             $this->addError('mustBePast', $this->validator->_(
                 'This date must not be in the future'
             ));
         }
 
-        if($this->_mustBeFuture && !$date->isFuture()) {
+        if($this->_mustBeFuture && !$value->isFuture()) {
             $this->addError('mustBeFuture', $this->validator->_(
                 'This date must not be in the past'
             ));
