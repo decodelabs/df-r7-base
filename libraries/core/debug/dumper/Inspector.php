@@ -108,7 +108,29 @@ class Inspector implements IInspector {
             return null;
         }
 
-        return md5(print_r($array, true));
+        return $this->_smashArray($array);
+    }
+
+    private function _smashArray(array $array) {
+        $output = [];
+
+        foreach($array as $key => $value) {
+            if(is_array($value)) {
+                $hash = $this->_smashArray($value);
+            } else if(is_object($value)) {
+                $hash = spl_object_hash($value);
+            } else if(is_bool($value)) {
+                $hash = $value ? 'true' : 'false';
+            } else if(is_null($value)) {
+                $hash = 'null';
+            } else {
+                $hash = (string)$value;
+            }
+
+            $output[] = $key.':'.$hash;
+        }
+
+        return md5(implode(',', $output));
     }
 
     public function countArrayHashHits(?string $dumpId): int {
