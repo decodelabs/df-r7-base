@@ -298,6 +298,10 @@ class Descriptor implements IDescriptor {
                     $this->_contentType = 'image/png';
                 }
             }
+
+            if($this->_contentType === null) {
+                $this->_contentType = 'image/png';
+            }
         }
 
         return $this->_contentType;
