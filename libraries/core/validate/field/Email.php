@@ -42,7 +42,6 @@ class Email extends Base implements core\validate\IEmailField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

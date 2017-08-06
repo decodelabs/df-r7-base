@@ -94,7 +94,6 @@ class Set extends Base implements core\validate\IEnumField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
 
         return $value;

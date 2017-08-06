@@ -33,7 +33,6 @@ class Time extends Base implements core\validate\ITimeField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

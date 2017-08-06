@@ -73,10 +73,6 @@ interface IField extends core\constraint\IRequirable, core\constraint\IOptional,
     public function extend(?callable $extension);
     public function getExtension(): ?callable;
 
-    // Custom validator
-    public function setCustomValidator(?callable $validator);
-    public function getCustomValidator(): ?callable;
-
     // Errors
     public function getDataNode(): ?core\collection\IInputTree;
 

@@ -44,7 +44,6 @@ class VideoEmbed extends Base implements core\validate\IVideoEmbedField {
             }
         }
 
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

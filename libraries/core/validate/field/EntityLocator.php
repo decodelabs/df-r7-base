@@ -35,7 +35,6 @@ class EntityLocator extends Base implements core\validate\IEntityLocatorField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

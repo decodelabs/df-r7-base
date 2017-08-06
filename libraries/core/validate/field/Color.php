@@ -36,7 +36,6 @@ class Color extends Base implements core\validate\IColorField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue((string)$value);
 

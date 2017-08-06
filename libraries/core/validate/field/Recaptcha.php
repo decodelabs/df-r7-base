@@ -83,7 +83,6 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

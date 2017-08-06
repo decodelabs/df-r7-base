@@ -69,7 +69,6 @@ class IdList extends Base implements core\validate\IIdListField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
 
         return $value;

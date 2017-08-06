@@ -39,7 +39,6 @@ class Integer extends Base implements core\validate\IIntegerField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

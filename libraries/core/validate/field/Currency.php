@@ -79,7 +79,6 @@ class Currency extends Base implements core\validate\ICurrencyField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

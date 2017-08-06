@@ -23,7 +23,6 @@ abstract class Base implements core\validate\IField {
     protected $_sanitizer;
     protected $_defaultValue;
     protected $_extension = null;
-    protected $_customValidator = null;
     protected $_messageGenerator = null;
     protected $_applicator = null;
 
@@ -199,28 +198,6 @@ abstract class Base implements core\validate\IField {
             $this->_extension->invoke($value, $this);
         }
     }
-
-
-
-
-// Custom validator
-    public function setCustomValidator(?callable $validator) {
-        $this->_customValidator = core\lang\Callback::normalize($validator);
-        return $this;
-    }
-
-    public function getCustomValidator(): ?callable {
-        return $this->_customValidator;
-    }
-
-    protected function _applyCustomValidator($value) {
-        if(!$this->data->hasErrors() && $this->_customValidator) {
-            $this->_customValidator->invoke($this->data, $value, $this);
-        }
-
-        return $value;
-    }
-
 
 
 

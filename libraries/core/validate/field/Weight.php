@@ -41,7 +41,6 @@ class Weight extends Base implements core\validate\IWeightField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

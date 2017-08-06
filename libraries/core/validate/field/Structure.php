@@ -74,7 +74,6 @@ class Structure extends Base implements core\validate\IStructureField {
 
         // Finalize
         $value = $this->_sanitizeValue($value);
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
 
         return $value;

@@ -145,7 +145,6 @@ class Date extends Base implements core\validate\IDateField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($date);
         $this->_applyExtension($value);
 
         if($this->_expectedFormat) {

@@ -52,7 +52,6 @@ class Url extends Base implements core\validate\IUrlField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

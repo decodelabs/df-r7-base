@@ -37,7 +37,6 @@ class FloatingPoint extends Base implements core\validate\IFloatingPointField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

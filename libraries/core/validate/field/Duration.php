@@ -76,7 +76,6 @@ class Duration extends Base implements core\validate\IDurationField {
 
         $this->_validateRange($duration);
 
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

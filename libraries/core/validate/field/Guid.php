@@ -35,9 +35,7 @@ class Guid extends Base implements core\validate\IGuidField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
-
         $this->data->setValue((string)$value);
 
         return $value;

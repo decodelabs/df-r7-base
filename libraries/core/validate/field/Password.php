@@ -103,7 +103,6 @@ class Password extends Base implements core\validate\IPasswordField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
 
         if($this->_shouldHash) {

@@ -143,7 +143,6 @@ class Slug extends Base implements core\validate\ISlugField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

@@ -76,7 +76,6 @@ class Boolean extends Base implements core\validate\IBooleanField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
         $this->data->setValue($value);
 

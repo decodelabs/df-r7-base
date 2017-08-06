@@ -74,7 +74,6 @@ class TextList extends Base implements core\validate\ITextListField {
 
 
         // Finalize
-        $value = $this->_applyCustomValidator($value);
         $this->_applyExtension($value);
 
         return $value;
