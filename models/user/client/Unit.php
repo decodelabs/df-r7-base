@@ -129,9 +129,9 @@ class Unit extends axis\unit\Table {
             // Status
             ->addRequiredField('status', 'integer')
                 ->isOptional(true)
-                ->setCustomValidator(function($node, $value) {
+                ->extend(function($value, $field) {
                     if($value < -1 || $value > 3) {
-                        $node->addError('invalid', $this->context->_(
+                        $field->addError('invalid', $this->context->_(
                             'Please enter a valid status id'
                         ));
                     }
@@ -143,9 +143,9 @@ class Unit extends axis\unit\Table {
                 ->setSanitizer(function($value) {
                     return str_replace(' ', '/', ucwords(str_replace('/', ' ', $value)));
                 })
-                ->setCustomValidator(function($node, $value) {
+                ->extend(function($value, $field) {
                     if(!$this->context->i18n->timezones->isValidId($value)) {
-                        $node->addError('invalid', $this->context->_(
+                        $field->addError('invalid', $this->context->_(
                             'Please enter a valid timezone id'
                         ));
                     }
@@ -157,9 +157,9 @@ class Unit extends axis\unit\Table {
                 ->setSanitizer(function($value) {
                     return strtoupper($value);
                 })
-                ->setCustomValidator(function($node, $value) {
+                ->extend(function($value, $field) {
                     if(!$this->context->i18n->countries->isValidId($value)) {
-                        $node->addError('invalid', $this->context->_(
+                        $field->addError('invalid', $this->context->_(
                             'Please enter a valid country code'
                         ));
                     }
@@ -171,9 +171,9 @@ class Unit extends axis\unit\Table {
                 ->setSanitizer(function($value) {
                     return strtolower($value);
                 })
-                ->setCustomValidator(function($node, $value) {
+                ->extend(function($value, $field) {
                     if(!$this->context->i18n->languages->isValidId($value)) {
-                        $node->addError('invalid', $this->context->_(
+                        $field->addError('invalid', $this->context->_(
                             'Please enter a valid language id'
                         ));
                     }

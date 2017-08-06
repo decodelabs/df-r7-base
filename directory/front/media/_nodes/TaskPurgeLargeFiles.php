@@ -67,9 +67,9 @@ class TaskPurgeLargeFiles extends arch\node\Task {
                             return core\unit\FileSize::factory($value)->getBytes();
                         })
 
-                        ->setCustomValidator(function($node, $value) {
+                        ->extend(function($value, $field) {
                             if(!$value) {
-                                $node->addError('invalid', 'Invalid file size');
+                                $field->addError('invalid', 'Invalid file size');
                             }
                         });
             }, self::THRESHOLD);

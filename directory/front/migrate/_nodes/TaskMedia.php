@@ -140,7 +140,7 @@ class TaskMedia extends arch\node\Task {
             $bucket = $this->_askFor('Bucket [default: all]', function($answer) {
                 return $this->data->newValidator()
                     ->addField('bucket', 'slug')
-                        ->setCustomValidator(function($node, $value) {
+                        ->extend(function($value, $field) {
                             if(empty($value)) {
                                 return;
                             }
@@ -150,7 +150,7 @@ class TaskMedia extends arch\node\Task {
                                 ->count();
 
                             if(!$check) {
-                                $node->addError('invalid', 'Bucket not found');
+                                $field->addError('invalid', 'Bucket not found');
                             }
                         });
             });
@@ -174,9 +174,9 @@ class TaskMedia extends arch\node\Task {
                             return core\unit\FileSize::factory($value)->getBytes();
                         })
 
-                        ->setCustomValidator(function($node, $value) {
+                        ->extend(function($value, $field) {
                             if(!$value && $value !== null) {
-                                $node->addError('invalid', 'Invalid file size');
+                                $field->addError('invalid', 'Invalid file size');
                             }
                         });
             });

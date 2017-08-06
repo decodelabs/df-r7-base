@@ -38,9 +38,9 @@ class Payment implements core\ISharedHelper {
                 ->setSanitizer(function($value) {
                     return preg_replace('/[^0-9]/', '', $value);
                 })
-                ->setCustomValidator(function($node, $value) {
+                ->extend(function($value, $field) {
                     if(!$this->isValidCardNumber($value)) {
-                        $node->addError('invalid', $this->context->_(
+                        $field->addError('invalid', $this->context->_(
                             'Please enter a valid credit card number'
                         ));
                     }

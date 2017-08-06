@@ -63,9 +63,9 @@ class TaskAdd extends arch\node\Task {
                     ->setSanitizer(function($value) {
                         return strtoupper($value);
                     })
-                    ->setCustomValidator(function($node, $value) {
+                    ->extend(function($value, $field) {
                         if(!$this->i18n->countries->isValidId($value)) {
-                            $node->addError('invalid', $this->_(
+                            $field->addError('invalid', $this->_(
                                 'Please enter a valid country code'
                             ));
                         }
@@ -78,9 +78,9 @@ class TaskAdd extends arch\node\Task {
                     ->setSanitizer(function($value) {
                         return strtolower($value);
                     })
-                    ->setCustomValidator(function($node, $value) {
+                    ->extend(function($value, $field) {
                         if(!$this->i18n->languages->isValidId($value)) {
-                            $node->addError('invalid', $this->_(
+                            $field->addError('invalid', $this->_(
                                 'Please enter a valid language id'
                             ));
                         }
@@ -93,9 +93,9 @@ class TaskAdd extends arch\node\Task {
                     ->setSanitizer(function($value) {
                         return str_replace(' ', '/', ucwords(str_replace('/', ' ', $value)));
                     })
-                    ->setCustomValidator(function($node, $value) {
+                    ->extend(function($value, $field) {
                         if(!$this->i18n->timezones->isValidId($value)) {
-                            $node->addError('invalid', $this->_(
+                            $field->addError('invalid', $this->_(
                                 'Please enter a valid timezone id'
                             ));
                         }

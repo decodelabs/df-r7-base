@@ -57,11 +57,13 @@ class Update extends axis\procedure\Record {
                 ->chainIf(!$auth->isNew() && isset($this->values->{$this->validator->getMappedName('currentPassword')}), function($validator) use($auth) {
                     $validator->addField('currentPassword', 'text')
                         ->isRequired(true)
-                        ->setCustomValidator(function($node, $value, $field) use ($auth) {
+                        ->extend(function($value, $field) use($auth) {
                             $hash = $this->context->user->password->hash($value);
 
                             if($hash != $auth['password']) {
-                                $node->addError('incorrect', $this->context->_('This password is incorrect'));
+                                $field->addError('incorrect', $this->context->_(
+                                    'This password is incorrect'
+                                ));
                             }
                         });
                 })
