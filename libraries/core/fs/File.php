@@ -207,6 +207,14 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
 // Contents
     public function putContents($data) {
+        if(!$data instanceof core\io\IReader) {
+            $data = new MemoryFile((string)$data);
+        }
+
+        if($data instanceof IFile && !$data->isOpen()) {
+            $data->open(Mode::READ_ONLY);
+        }
+
         $closeAfter = false;
 
         if(!$this->_fp) {
@@ -217,15 +225,7 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
         $this->lock(LOCK_EX);
         $this->truncate();
 
-        if(!$data instanceof core\io\IReader) {
-            $data = new MemoryFile((string)$data);
-        }
-
-        if($data instanceof IFile && !$data->isOpen()) {
-            $data->open(Mode::READ_ONLY);
-        }
-
-        while(false !== ($chunk = $data->readChunk(1024))) {
+        while(false !== ($chunk = $data->readChunk(8192))) {
             $this->write($chunk);
         }
 
