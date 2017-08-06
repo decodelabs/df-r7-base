@@ -108,7 +108,12 @@ class Descriptor implements IDescriptor {
 
 
         // Fetch / create
-        if(!$file = $fileStore->get($key, $lifetime)) {
+        $type = $this->getContentType();
+        $isTransformable = !in_array($type, ['image/svg+xml', 'image/gif']);
+
+        if($this->_isSourceLocal && !$isTransformable) {
+            $file = new core\fs\File($this->_sourceLocation);
+        } else if(!$file = $fileStore->get($key, $lifetime)) {
             if(!$this->_isSourceLocal) {
                 // Download file
                 $http = new link\http\Client();
@@ -127,12 +132,15 @@ class Descriptor implements IDescriptor {
                 if($this->_fileName === null) {
                     $this->_fileName = basename($this->_location);
                 }
+
+                try {
+                    $info = getImageSize($this->_location);
+                    $this->_contentType = $info['mime'];
+                } catch(\Throwable $e) {}
             }
 
-            $type = $this->getContentType();
-            $shouldTransform = $transformation !== null && !in_array($type, ['image/svg+xml', 'image/gif']);
 
-            if($shouldTransform) {
+            if($transformation !== null && $isTransformable) {
                 $isAlphaType = in_array($type, self::ALPHA_TYPES);
 
                 try {
