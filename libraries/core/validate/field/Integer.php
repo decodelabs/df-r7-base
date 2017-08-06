@@ -9,28 +9,40 @@ use df;
 use df\core;
 
 class Integer extends Base implements core\validate\IIntegerField {
-    
-    use core\validate\TRangeField;
-    
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+    use core\validate\TRangeField;
+
+
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
+
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
-        
+
+
+        // Validate
         $options = ['flags' => FILTER_FLAG_ALLOW_OCTAL | FILTER_FLAG_ALLOW_HEX];
 
         if(false === filter_var($value, FILTER_VALIDATE_INT, $options)) {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
+            $this->addError('invalid', $this->validator->_(
                 'This is not a valid number'
             ));
         } else {
             $value = (int)$value;
         }
-        
-        $this->_validateRange($node, $value);
-        return $this->_finalize($node, $value);
+
+        $this->_validateRange($value);
+
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 }

@@ -27,6 +27,9 @@ class Slug extends Base implements core\validate\ISlugField {
     protected $_generateIfEmpty = false;
     protected $_renameOnConflict = true;
 
+
+
+// Options
     public function allowPathFormat(bool $flag=null) {
         if($flag !== null) {
             $this->_allowPathFormat = $flag;
@@ -92,9 +95,10 @@ class Slug extends Base implements core\validate\ISlugField {
 
 
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value, false);
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue(), false);
 
         if(!empty($value)) {
             $value = $this->_sanitizeSlugValue($value);
@@ -103,14 +107,17 @@ class Slug extends Base implements core\validate\ISlugField {
         $value = $this->_sanitizeValue($value, true);
         $value = $this->_sanitizeSlugValue($value);
 
+
+
+        // Validate
         if(false !== strpos($value, '/') && !$this->_allowPathFormat) {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
+            $this->addError('invalid', $this->validator->_(
                 'Path type slugs are not allowed here'
             ));
         }
 
         if($this->_allowPathFormat && substr($value, -1) == '/' && strlen($value) > 1) {
-            $this->_applyMessage($node, 'required', $this->validator->_(
+            $this->addError('required', $this->validator->_(
                 'You must enter a full path slug'
             ));
 
@@ -118,21 +125,29 @@ class Slug extends Base implements core\validate\ISlugField {
         }
 
         if($value == '/' && !$this->_allowRoot) {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
+            $this->addError('invalid', $this->validator->_(
                 'Root slug is not allowed here'
             ));
         }
 
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
 
-        $this->_validateMinLength($node, $value, $length);
-        $this->_validateMaxLength($node, $value, $length);
+        $this->_validateMinLength($value, $length);
+        $this->_validateMaxLength($value, $length);
 
-        $this->_validateUnique($node, $value, $this->_renameOnConflict);
-        return $this->_finalize($node, $value);
+        $this->_validateUnique($value, $this->_renameOnConflict);
+
+
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 
     protected function _sanitizeSlugValue($value) {

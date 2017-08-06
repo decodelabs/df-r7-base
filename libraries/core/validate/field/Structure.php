@@ -12,6 +12,9 @@ class Structure extends Base implements core\validate\IStructureField {
 
     protected $_allowEmpty = false;
 
+
+
+// Options
     public function shouldAllowEmpty(bool $flag=null) {
         if($flag !== null) {
             $this->_allowEmpty = $flag;
@@ -21,7 +24,17 @@ class Structure extends Base implements core\validate\IStructureField {
         return $this->_allowEmpty;
     }
 
-    public function validate(core\collection\IInputTree $node) {
+
+
+// Validate
+    public function validate() {
+        // Sanitize
+        if($this->data->isEmpty()) {
+            $value = $this->data->getValue();
+        } else {
+            $value = $this->data->toArray();
+        }
+
         $required = $this->_isRequired;
 
         if($this->_toggleField) {
@@ -29,7 +42,7 @@ class Structure extends Base implements core\validate\IStructureField {
                 $toggle = (bool)$this->validator[$this->_toggleField];
 
                 if(!$toggle) {
-                    $node->setValue($value = []);
+                    $this->data->setValue($value = []);
                 }
 
                 if($required) {
@@ -38,18 +51,14 @@ class Structure extends Base implements core\validate\IStructureField {
             }
         }
 
-        if($node->isEmpty()) {
-            $value = $node->getValue();
-        } else {
-            $value = $node->toArray();
-        }
-
         if($value === null && $required && $this->_allowEmpty) {
             $value = [];
         }
 
-        if($node->isEmpty() && !$node->hasValue() && $required && !$this->_allowEmpty) {
-            $this->_applyMessage($node, 'required', $this->validator->_(
+
+        // Validate
+        if($this->data->isEmpty() && !$this->data->hasValue() && $required && !$this->_allowEmpty) {
+            $this->addError('required', $this->validator->_(
                 'This field cannot be empty'
             ));
 
@@ -62,8 +71,11 @@ class Structure extends Base implements core\validate\IStructureField {
             }
         }
 
+
+        // Finalize
         $value = $this->_sanitizeValue($value);
-        $value = $this->_applyCustomValidator($node, $value);
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
 
         return $value;
     }

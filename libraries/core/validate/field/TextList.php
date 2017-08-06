@@ -12,6 +12,8 @@ class TextList extends Base implements core\validate\ITextListField {
 
     protected $_allowEmptyEntries = false;
 
+
+// Options
     public function shouldAllowEmptyEntries(bool $flag=null) {
         if($flag !== null) {
             $this->_allowEmptyEntries = $flag;
@@ -21,7 +23,13 @@ class TextList extends Base implements core\validate\ITextListField {
         return $this->_allowEmptyEntries;
     }
 
-    public function validate(core\collection\IInputTree $node) {
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->data->toArray();
+        $value = (array)$this->_sanitizeValue($value);
+
         $required = $this->_isRequired;
 
         if($this->_toggleField) {
@@ -29,7 +37,7 @@ class TextList extends Base implements core\validate\ITextListField {
                 $toggle = (bool)$this->validator[$this->_toggleField];
 
                 if(!$toggle) {
-                    $node->setValue($value = []);
+                    $this->data->setValue($value = []);
                 }
 
                 if($required) {
@@ -38,8 +46,8 @@ class TextList extends Base implements core\validate\ITextListField {
             }
         }
 
-        if((!$count = count($node)) && $required) {
-            $this->_applyMessage($node, 'required', $this->validator->_(
+        if((!$count = count($this->data)) && $required) {
+            $this->addError('required', $this->validator->_(
                 'This field requires at least one selection'
             ));
 
@@ -52,36 +60,31 @@ class TextList extends Base implements core\validate\ITextListField {
             }
         }
 
-        $value = $node->toArray();
-        $value = (array)$this->_sanitizeValue($value);
 
+        // Validate
         if(!$this->_allowEmptyEntries) {
             foreach($value as $key => $keyValue) {
                 if(trim($keyValue) === '') {
-                    $this->_applyMessage($node->{$key}, 'required', $this->validator->_(
+                    $this->data->{$key}->addError('required', $this->validator->_(
                         'This field cannot be empty'
                     ));
                 }
             }
         }
 
-        $value = $this->_applyCustomValidator($node, $value);
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
 
         return $value;
     }
 
     public function applyValueTo(&$record, $value) {
-        if(!is_array($record) && !$record instanceof \ArrayAccess) {
-            throw new RuntimeException(
-                'Target record does not implement ArrayAccess'
-            );
-        }
-
         if(!is_array($value)) {
             $value = [$value];
         }
 
-        $record[$this->getRecordName()] = $value;
-        return $this;
+        return parent::applyValueTo($record, $value);
     }
 }

@@ -96,8 +96,9 @@ class Text extends Base implements core\validate\ITextField {
 
 
 // Validate
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
+    public function validate() {
+        // Sanitize
+        $value = $this->data->getValue();
 
         if($this->_shouldTrim) {
             $value = trim($value);
@@ -106,19 +107,21 @@ class Text extends Base implements core\validate\ITextField {
         $value = $this->_sanitizeValue($value);
 
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
 
 
-        $this->_validateMinLength($node, $value, $length);
-        $this->_validateMaxLength($node, $value, $length);
+
+        // Validate
+        $this->_validateMinLength($value, $length);
+        $this->_validateMaxLength($value, $length);
 
         if($this->_minWords !== null || $this->_maxWords !== null) {
             $wordCount = flex\Text::countWords($value);
 
             if($this->_minWords !== null && $wordCount < $this->_minWords) {
-                $this->_applyMessage($node, 'minWords', $this->validator->_(
+                $this->addError('minWords', $this->validator->_(
                     [
                         'n = 1' => 'This field must contain at least %min% word',
                         '*' => 'This field must contain at least %min% words'
@@ -129,7 +132,7 @@ class Text extends Base implements core\validate\ITextField {
             }
 
             if($this->_maxWords !== null && $wordCount > $this->_maxWords) {
-                $this->_applyMessage($node, 'maxWords', $this->validator->_(
+                $this->addError('maxWords', $this->validator->_(
                     [
                         'n = 1' => 'This field must not me more than %max% word',
                         '*' => 'This field must not me more than %max% words'
@@ -144,10 +147,17 @@ class Text extends Base implements core\validate\ITextField {
             $value, FILTER_VALIDATE_REGEXP,
             ['options' => ['regexp' => $this->_pattern]]
         )) {
-            $node->addError('pattern', $this->validator->_('The value entered is invalid'));
+            $this->addError('pattern', $this->validator->_('The value entered is invalid'));
         }
 
-        $this->_validateUnique($node, $value);
-        return $this->_finalize($node, $value);
+        $this->_validateUnique($value);
+
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 }

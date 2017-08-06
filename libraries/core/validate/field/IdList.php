@@ -12,6 +12,8 @@ class IdList extends Base implements core\validate\IIdListField {
 
     protected $_useKeys = false;
 
+
+// Options
     public function shouldUseKeys(bool $flag=null) {
         if($flag !== null) {
             $this->_useKeys = $flag;
@@ -21,7 +23,18 @@ class IdList extends Base implements core\validate\IIdListField {
         return $this->_useKeys;
     }
 
-    public function validate(core\collection\IInputTree $node) {
+
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->data->toArray();
+
+        if($this->_useKeys) {
+            $value = array_keys($value);
+        }
+
+        $value = (array)$this->_sanitizeValue($value);
         $required = $this->_isRequired;
 
         if($this->_toggleField) {
@@ -29,7 +42,7 @@ class IdList extends Base implements core\validate\IIdListField {
                 $toggle = (bool)$this->validator[$this->_toggleField];
 
                 if(!$toggle) {
-                    $node->setValue($value = []);
+                    $this->data->setValue($value = []);
                 }
 
                 if($required) {
@@ -38,8 +51,10 @@ class IdList extends Base implements core\validate\IIdListField {
             }
         }
 
-        if((!$count = count($node)) && $required) {
-            $this->_applyMessage($node, 'required', $this->validator->_(
+
+        // Validate
+        if((!$count = count($this->data)) && $required) {
+            $this->addError('required', $this->validator->_(
                 'This field requires at least one selection'
             ));
 
@@ -52,30 +67,21 @@ class IdList extends Base implements core\validate\IIdListField {
             }
         }
 
-        $value = $node->toArray();
 
-        if($this->_useKeys) {
-            $value = array_keys($value);
-        }
-
-        $value = (array)$this->_sanitizeValue($value);
-        $value = $this->_applyCustomValidator($node, $value);
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
 
         return $value;
     }
 
-    public function applyValueTo(&$record, $value) {
-        if(!is_array($record) && !$record instanceof \ArrayAccess) {
-            throw new RuntimeException(
-                'Target record does not implement ArrayAccess'
-            );
-        }
 
+// Apply
+    public function applyValueTo(&$record, $value) {
         if(!is_array($value)) {
             $value = [$value];
         }
 
-        $record[$this->getRecordName()] = $value;
-        return $this;
+        return parent::applyValueTo($record, $value);
     }
 }

@@ -166,20 +166,19 @@ class TaskMedia extends arch\node\Task {
             $limit = $this->_askFor('Size limit [default: none]', function($answer) {
                 return $this->data->newValidator()
                     ->addField('limit', 'text')
-                    ->setSanitizer(function($value) {
-                        if(!$value) {
-                            return null;
-                        }
+                        ->setSanitizer(function($value) {
+                            if(!$value) {
+                                return null;
+                            }
 
-                        return core\unit\FileSize::factory($value)->getBytes();
-                    })
+                            return core\unit\FileSize::factory($value)->getBytes();
+                        })
 
-                    ->shouldSanitize(false)
-                    ->setCustomValidator(function($node, $value) {
-                        if(!$value && $value !== null) {
-                            $node->addError('invalid', 'Invalid file size');
-                        }
-                    });
+                        ->setCustomValidator(function($node, $value) {
+                            if(!$value && $value !== null) {
+                                $node->addError('invalid', 'Invalid file size');
+                            }
+                        });
             });
         }
 

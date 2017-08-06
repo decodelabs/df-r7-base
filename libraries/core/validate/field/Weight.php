@@ -15,27 +15,37 @@ class Weight extends Base implements core\validate\IWeightField {
     use core\validate\TRecordManipulatorField;
     use opal\query\TFilterConsumer;
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
 
         if(!$value) {
             $value = $this->_generateValue();
         }
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
-        
+
+
+        // Validate
         if(false === filter_var($value, FILTER_VALIDATE_INT)) {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
+            $this->addError('invalid', $this->validator->_(
                 'This is not a valid number'
             ));
         } else {
             $value = (int)$value;
         }
-        
-        return $this->_finalize($node, $value);
+
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 
     protected function _generateValue() {

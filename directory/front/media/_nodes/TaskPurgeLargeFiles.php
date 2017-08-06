@@ -63,16 +63,15 @@ class TaskPurgeLargeFiles extends arch\node\Task {
             $limit = $this->_askFor('Size limit', function($answer) {
                 return $this->data->newValidator()
                     ->addRequiredField('limit', 'text')
-                    ->setSanitizer(function($value) {
-                        return core\unit\FileSize::factory($value)->getBytes();
-                    })
+                        ->setSanitizer(function($value) {
+                            return core\unit\FileSize::factory($value)->getBytes();
+                        })
 
-                    ->shouldSanitize(false)
-                    ->setCustomValidator(function($node, $value) {
-                        if(!$value) {
-                            $node->addError('invalid', 'Invalid file size');
-                        }
-                    });
+                        ->setCustomValidator(function($node, $value) {
+                            if(!$value) {
+                                $node->addError('invalid', 'Invalid file size');
+                            }
+                        });
             }, self::THRESHOLD);
         }
 

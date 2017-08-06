@@ -17,6 +17,8 @@ class Currency extends Base implements core\validate\ICurrencyField {
     protected $_currencySelectable = true;
     protected $_currencyFieldName = null;
 
+
+// Options
     public function setCurrency($code) {
         if($code !== null) {
             $code = mint\Currency::normalizeCode($code);
@@ -30,37 +32,6 @@ class Currency extends Base implements core\validate\ICurrencyField {
         return $this->_currency;
     }
 
-    public function allowSelection(bool $flag=null) {
-        if($flag !== null) {
-            $this->_currencySelectable = $flag;
-            return $this;
-        }
-
-        return $this->_currencySelectable;
-    }
-
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
-
-        if($this->_currencySelectable && ($currency = $node->currency->getValue())) {
-            $this->_currency = $currency;
-        }
-
-        if(!$length = $this->_checkRequired($node, $value)) {
-            return null;
-        }
-
-        if(!filter_var($value, FILTER_VALIDATE_FLOAT, ['decimal' => true]) && $value !== '0') {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
-                'This is not a valid number'
-            ));
-        }
-
-        $this->_validateRange($node, $value);
-        return $this->_finalize($node, $value);
-    }
-
     public function setCurrencyFieldName($name) {
         $this->_currencyFieldName = $name;
         return $this;
@@ -70,6 +41,53 @@ class Currency extends Base implements core\validate\ICurrencyField {
         return $this->_currencyFieldName;
     }
 
+    public function allowSelection(bool $flag=null) {
+        if($flag !== null) {
+            $this->_currencySelectable = $flag;
+            return $this;
+        }
+
+        return $this->_currencySelectable;
+    }
+
+
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
+
+        if($this->_currencySelectable && ($currency = $this->data->currency->getValue())) {
+            $this->_currency = $currency;
+        }
+
+        if(!$length = $this->_checkRequired($value)) {
+            return null;
+        }
+
+
+
+        // Validate
+        if(!filter_var($value, FILTER_VALIDATE_FLOAT, ['decimal' => true]) && $value !== '0') {
+            $this->addError('invalid', $this->validator->_(
+                'This is not a valid number'
+            ));
+        }
+
+        $this->_validateRange($value);
+
+
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
+    }
+
+
+// Apply
     public function applyValueTo(&$record, $value) {
         $output = parent::applyValueTo($record, $value);
 

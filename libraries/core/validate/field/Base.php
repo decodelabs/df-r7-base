@@ -14,16 +14,18 @@ abstract class Base implements core\validate\IField {
     use core\constraint\TOptional;
 
     public $validator;
+    public $data;
 
     protected $_name;
     protected $_recordName = null;
     protected $_requireGroup = null;
     protected $_toggleField = null;
-    protected $_shouldSanitize = true;
     protected $_sanitizer;
     protected $_defaultValue;
+    protected $_extension = null;
     protected $_customValidator = null;
     protected $_messageGenerator = null;
+    protected $_applicator = null;
 
 
     public static function factory(core\validate\IHandler $handler, $type, $name) {
@@ -34,7 +36,7 @@ abstract class Base implements core\validate\IField {
         $class = 'df\\core\\validate\\field\\'.ucfirst($type);
 
         if(!class_exists($class)) {
-            throw new core\validate\RuntimeException(
+            throw core\Error::ENotFound(
                 'Validator type '.ucfirst($type).' could not be found for field '.$name
             );
         }
@@ -85,18 +87,15 @@ abstract class Base implements core\validate\IField {
         return $this->_toggleField;
     }
 
-    protected function _checkRequired(core\collection\IInputTree $node, $value) {
-        if($this->_shouldSanitize) {
-            $node->setValue($value);
-        }
-
-        $required = $this->_isRequiredAfterToggle($node, $value);
+    protected function _checkRequired($value) {
+        $this->data->setValue($value);
+        $required = $this->_isRequiredAfterToggle($value);
 
         if(!$length = mb_strlen($value)) {
             $value = null;
 
             if($required) {
-                $this->_applyMessage($node, 'required', 'This field cannot be empty');
+                $this->addError('required', 'This field cannot be empty');
             }
 
             if($this->_requireGroup !== null && !$this->validator->checkRequireGroup($this->_requireGroup)) {
@@ -109,7 +108,7 @@ abstract class Base implements core\validate\IField {
         return $length;
     }
 
-    protected function _isRequiredAfterToggle(core\collection\IInputTree $node, &$value): bool {
+    protected function _isRequiredAfterToggle(&$value): bool {
         $required = $this->_isRequired;
 
         if($this->_toggleField) {
@@ -126,13 +125,13 @@ abstract class Base implements core\validate\IField {
 
                     if($required) {
                         if(!$toggle) {
-                            $node->setValue($value = null);
+                            $this->data->setValue($value = null);
                         }
 
                         $required = $toggle;
                     } else {
                         if($toggle) {
-                            $node->setValue($value = null);
+                            $this->data->setValue($value = null);
                         }
 
                         $required = !$toggle;
@@ -149,15 +148,6 @@ abstract class Base implements core\validate\IField {
 
 
 // Sanitize
-    public function shouldSanitize(bool $flag=null) {
-        if($flag !== null) {
-            $this->_shouldSanitize = $flag;
-            return $this;
-        }
-
-        return $this->_shouldSanitize;
-    }
-
     public function setSanitizer(?callable $sanitizer) {
         $this->_sanitizer = core\lang\Callback::normalize($sanitizer);
         return $this;
@@ -194,6 +184,25 @@ abstract class Base implements core\validate\IField {
 
 
 
+// Extension
+    public function extend(?callable $extension) {
+        $this->_extension = core\lang\Callback::normalize($extension);
+        return $this;
+    }
+
+    public function getExtension(): ?callable {
+        return $this->_extension;
+    }
+
+    protected function _applyExtension($value) {
+        if(!$this->data->hasErrors() && $this->_extension) {
+            $this->_extension->invoke($value, $this);
+        }
+    }
+
+
+
+
 // Custom validator
     public function setCustomValidator(?callable $validator) {
         $this->_customValidator = core\lang\Callback::normalize($validator);
@@ -204,34 +213,41 @@ abstract class Base implements core\validate\IField {
         return $this->_customValidator;
     }
 
-    protected function _applyCustomValidator(core\collection\IInputTree $node, $value) {
-        if(!$node->hasErrors() && $this->_customValidator) {
-            $this->_customValidator->invoke($node, $value, $this);
+    protected function _applyCustomValidator($value) {
+        if(!$this->data->hasErrors() && $this->_customValidator) {
+            $this->_customValidator->invoke($this->data, $value, $this);
         }
 
         return $value;
     }
 
 
+
+
+
 // Errors
+    public function getDataNode(): ?core\collection\IInputTree {
+        return $this->data;
+    }
+
     public function isValid(): bool {
-        if(!$this->validator->data) {
+        if(!$this->data) {
             return false;
         }
 
-        return $this->validator->data->{$this->_name}->isValid();
+        return $this->data->isValid();
     }
 
     public function countErrors(): int {
-        if(!$this->validator->data) {
+        if(!$this->data) {
             return 0;
         }
 
-        return $this->validator->data->{$this->_name}->countErrors();
+        return $this->data->countErrors();
     }
 
     public function setErrors(array $errors) {
-        if(!$this->validator->data) {
+        if(!$this->data) {
             return $this;
         }
 
@@ -239,7 +255,7 @@ abstract class Base implements core\validate\IField {
     }
 
     public function addErrors(array $errors) {
-        if(!$this->validator->data) {
+        if(!$this->data) {
             return $this;
         }
 
@@ -250,62 +266,72 @@ abstract class Base implements core\validate\IField {
         return $this;
     }
 
-    public function addError($code, $message) {
-        if(!$this->validator->data) {
+    public function addError($code, $defaultMessage) {
+        if(!$this->data) {
             return $this;
         }
 
-        $this->_applyMessage($this->validator->data->{$this->_name}, $code, $message);
+        $message = null;
+
+        if($this->_messageGenerator) {
+            $message = $this->_messageGenerator->invoke($code, $this);
+        }
+
+        if(empty($message)) {
+            $message = $defaultMessage;
+        }
+
+        $this->data->addError($code, $message);
         return $this;
     }
 
     public function getErrors() {
-        if(!$this->validator->data) {
+        if(!$this->data) {
             return [];
         }
 
-        return $this->validator->data->{$this->_name}->getErrors();
+        return $this->data->getErrors();
     }
 
     public function getError($code) {
-        if(!$this->validator->data) {
+        if(!$this->data) {
             return null;
         }
 
-        return $this->validator->data->{$this->_name}->getError($code);
+        return $this->data->getError($code);
     }
 
     public function hasErrors() {
-        if(!$this->validator->data) {
+        if(!$this->data) {
             return false;
         }
 
-        return $this->validator->data->{$this->_name}->hasErrors();
+        return $this->data->hasErrors();
     }
 
     public function hasError($code) {
-        if(!$this->validator->data) {
+        if(!$this->data) {
             return false;
         }
 
-        return $this->validator->data->{$this->_name}->hasError($code);
+        return $this->data->hasError($code);
     }
 
     public function clearErrors() {
-        if(!$this->validator->data) {
+        if(!$this->data) {
             return $this;
         }
 
-        $this->validator->data->{$this->_name}->clearErrors();
+        $this->data->clearErrors();
         return $this;
     }
 
     public function clearError($code) {
-        if(!$this->validator->data) {
+        if(!$this->data) {
             return $this;
         }
 
-        $this->validator->data->{$this->_name}->clearError($code);
+        $this->data->clearError($code);
         return $this;
     }
 
@@ -319,42 +345,32 @@ abstract class Base implements core\validate\IField {
         return $this->_messageGenerator;
     }
 
-    protected function _applyMessage(core\collection\IInputTree $node, string $code, string $defaultMessage) {
-        $message = null;
-
-        if($this->_messageGenerator) {
-            $message = $this->_messageGenerator->invoke($code, $this);
-        }
-
-        if(empty($message)) {
-            $message = $defaultMessage;
-        }
-
-        $node->addError($code, $message);
-    }
-
 
 // Values
     public function applyValueTo(&$record, $value) {
         if(!is_array($record) && !$record instanceof \ArrayAccess) {
-            throw new RuntimeException(
+            throw core\Error::EArgument(
                 'Target record does not implement ArrayAccess'
             );
         }
 
         $name = $this->getRecordName();
-        $record[$name] = $value;
+
+        if($this->_applicator) {
+            $this->_applicator->invoke($record, $name, $value, $this);
+        } else {
+            $record[$name] = $value;
+        }
 
         return $this;
     }
 
-    protected function _finalize(core\collection\IInputTree $node, $value) {
-        $value = $this->_applyCustomValidator($node, $value);
+    public function setApplicator(?callable $applicator) {
+        $this->_applicator = core\lang\Callback::normalize($applicator);
+        return $this;
+    }
 
-        if($this->_shouldSanitize) {
-            $node->setValue($value);
-        }
-
-        return $value;
+    public function getApplicator(): ?callable {
+        return $this->_applicator;
     }
 }

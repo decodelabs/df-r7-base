@@ -13,9 +13,10 @@ use df\spur;
 class Recaptcha extends Base implements core\validate\IRecaptchaField {
 
     protected $_name = 'g-recaptcha-response';
-
     protected $_secret = null;
 
+
+// Options
     public function __construct(core\validate\IHandler $handler, $name) {
         $this->validator = $handler;
         $this->_recordName = null;
@@ -30,9 +31,12 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField {
         return $this->_secret;
     }
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
+        $this->data->setValue($value);
 
         if($this->_secret !== null) {
             $secret = $this->_secret;
@@ -40,16 +44,19 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField {
             $config = spur\auth\recaptcha\Config::getInstance();
 
             if(!$config->isEnabled()) {
-                return $this->_finalize($node, $value);
+                return $value;
             }
 
             $secret = $config->getSecret();
         }
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
 
+
+
+        // Validate
         $context = arch\Context::getCurrent();
 
         if($context->runner instanceof core\app\runner\Http) {
@@ -64,16 +71,23 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField {
             $result = $m->verify($value, $ip);
         } catch(\Throwable $e) {
             core\logException($e);
-            return $this->_finalize($node, $value);
+            return $value;
         }
 
         if(!$result->isSuccess()) {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
+            $this->addError('invalid', $this->validator->_(
                 'Sorry, you don\'t appear to be a human!'
             ));
         }
 
-        return $this->_finalize($node, $value);
+
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 
     public function applyValueTo(&$record, $value) {

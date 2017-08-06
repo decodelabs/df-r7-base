@@ -12,6 +12,8 @@ class Url extends Base implements core\validate\IUrlField {
 
     protected $_allowInternal;
 
+
+// Options
     public function allowInternal(bool $flag=null) {
         if($flag !== null) {
             $this->_allowInternal = $flag;
@@ -21,14 +23,19 @@ class Url extends Base implements core\validate\IUrlField {
         return $this->_allowInternal;
     }
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
+
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
 
+
+        // Validate
         if(!$this->_allowInternal) {
             if(!preg_match('/^[a-zA-Z0-9]+\:/', $value)) {
                 $value = 'http://'.$value;
@@ -37,12 +44,18 @@ class Url extends Base implements core\validate\IUrlField {
             $value = filter_var($value, FILTER_SANITIZE_URL);
 
             if(!filter_var($value, FILTER_VALIDATE_URL)) {
-                $this->_applyMessage($node, 'invalid', $this->validator->_(
+                $this->addError('invalid', $this->validator->_(
                     'This is not a valid URL'
                 ));
             }
         }
 
-        return $this->_finalize($node, $value);
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 }

@@ -12,23 +12,35 @@ class FloatingPoint extends Base implements core\validate\IFloatingPointField {
 
     use core\validate\TRangeField;
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
+
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
 
+
+        // Validate
         if(false === filter_var($value, FILTER_VALIDATE_FLOAT) && $value !== '0') {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
+            $this->addError('invalid', $this->validator->_(
                 'This is not a valid number'
             ));
         } else {
             $value = (float)$value;
         }
 
-        $this->_validateRange($node, $value);
-        return $this->_finalize($node, $value);
+        $this->_validateRange($value);
+
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 }

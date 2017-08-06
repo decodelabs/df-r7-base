@@ -11,22 +11,32 @@ use df\opal;
 
 class Time extends Base implements core\validate\ITimeField {
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
+
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
 
+
+        // Validate
         try {
             $value = core\time\TimeOfDay::factory($value);
         } catch(\Throwable $e) {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
+            $this->addError('invalid', $this->validator->_(
                 'This is not a valid time of day'
             ));
         }
 
-        return $this->_finalize($node, $value);
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 }

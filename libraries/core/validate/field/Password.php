@@ -20,6 +20,8 @@ class Password extends Base implements core\validate\IPasswordField {
     protected $_checkStrength = true;
     protected $_shouldHash = true;
 
+
+// Options
     public function setMatchField($field) {
         $this->_matchField = $field;
         return $this;
@@ -57,29 +59,30 @@ class Password extends Base implements core\validate\IPasswordField {
     }
 
 
-    public function validate(core\collection\IInputTree $node) {
+
+// Validate
+    public function validate() {
+        // Sanitize
         $this->_setDefaultMinLength(self::DEFAULT_MIN_LENGTH);
+        $value = $this->_sanitizeValue($this->data->getValue());
 
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
-
-        if(!$length = $this->_checkRequired($node, $value)) {
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
 
-        $this->_validateMinLength($node, $value, $length);
 
-        if($node->hasErrors()) {
-            return $value;
+        // Validate
+        $this->_validateMinLength($value, $length);
+
+        if($this->data->hasErrors()) {
+            return null;
         }
-
-        $value = $this->_applyCustomValidator($node, $value);
 
         if($this->_checkStrength && $this->_minStrength > 0) {
             $analyzer = new flex\PasswordAnalyzer($value, df\Launchpad::$app->getPassKey());
 
             if($analyzer->getStrength() < $this->_minStrength) {
-                $this->_applyMessage($node, 'strength', $this->validator->_(
+                $this->addError('strength', $this->validator->_(
                     'This password is not strong enough - consider using numbers, capitals and more characters'
                 ));
             }
@@ -91,11 +94,17 @@ class Password extends Base implements core\validate\IPasswordField {
             $matchNode = $data->{$this->_matchField};
 
             if($matchNode->getValue() != $value) {
-                $this->_applyMessage($matchNode, 'invalid', $this->validator->_(
+                $matchNode->addError('invalid', $this->validator->_(
                     'Your passwords do not match'
                 ));
             }
         }
+
+
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
 
         if($this->_shouldHash) {
             $value = core\crypt\Util::passwordHash($value, df\Launchpad::$app->getPassKey());

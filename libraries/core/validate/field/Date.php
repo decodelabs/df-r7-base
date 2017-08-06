@@ -18,6 +18,8 @@ class Date extends Base implements core\validate\IDateField {
     protected $_expectedFormat = null;
     protected $_timezone = false;
 
+
+// Options
     public function setMin($date) {
         $this->_min = core\time\Date::normalize($date);
         return $this;
@@ -92,18 +94,23 @@ class Date extends Base implements core\validate\IDateField {
         return (bool)$this->_timezone;
     }
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
+
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
 
         if($this->_defaultToNow && !$value && !strlen($value)) {
             $value = 'now';
         }
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
 
+
+        // Validate
         try {
             if($this->_expectedFormat) {
                 $date = core\time\Date::fromFormatString($value, $this->_expectedFormat, $this->_timezone);
@@ -111,7 +118,7 @@ class Date extends Base implements core\validate\IDateField {
                 $date = core\time\Date::factory($value, $this->_timezone);
             }
         } catch(\Throwable $e) {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
+            $this->addError('invalid', $this->validator->_(
                 'This is not a valid date'
             ));
 
@@ -121,43 +128,45 @@ class Date extends Base implements core\validate\IDateField {
         $date->toUtc();
 
         $date = $this->_sanitizeValue($date);
-        $this->_validateRange($node, $date);
+        $this->_validateRange($date);
 
         if($this->_mustBePast && !$date->isPast()) {
-            $this->_applyMessage($node, 'mustBePast', $this->validator->_(
+            $this->addError('mustBePast', $this->validator->_(
                 'This date must not be in the future'
             ));
         }
 
         if($this->_mustBeFuture && !$date->isFuture()) {
-            $this->_applyMessage($node, 'mustBeFuture', $this->validator->_(
+            $this->addError('mustBeFuture', $this->validator->_(
                 'This date must not be in the past'
             ));
         }
 
-        $value = $this->_applyCustomValidator($node, $date);
 
-        if($this->_shouldSanitize) {
-            if($this->_expectedFormat) {
-                $node->setValue($value->format($this->_expectedFormat));
-            } else {
-                $node->setValue($value->format(core\time\Date::W3C));
-            }
+
+        // Finalize
+        $value = $this->_applyCustomValidator($date);
+        $this->_applyExtension($value);
+
+        if($this->_expectedFormat) {
+            $this->data->setValue($value->format($this->_expectedFormat));
+        } else {
+            $this->data->setValue($value->format(core\time\Date::W3C));
         }
 
         return $value;
     }
 
-    protected function _validateRange(core\collection\IInputTree $node, $date) {
+    protected function _validateRange($date) {
         if($this->_min !== null && $date->lt($this->_min)) {
-            $this->_applyMessage($node, 'min', $this->validator->_(
+            $this->addError('min', $this->validator->_(
                 'This field must be after %min%',
                 ['%min%' => $this->_min->format('Y-m-d')]
             ));
         }
 
         if($this->_max !== null && $date->gt($this->_max)) {
-            $this->_applyMessage($node, 'max', $this->validator->_(
+            $this->addError('max', $this->validator->_(
                 'This field must be after %max%',
                 ['%max%' => $this->_max->format('Y-m-d')]
             ));

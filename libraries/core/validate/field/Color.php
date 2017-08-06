@@ -11,29 +11,34 @@ use df\neon;
 
 class Color extends Base implements core\validate\IColorField {
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
+
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
 
+
+
+        // Validate
         try {
             $value = neon\Color::factory($value);
         } catch(\Throwable $e) {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
+            $this->addError('invalid', $this->validator->_(
                 'Please enter a valid color'
             ));
 
             return null;
         }
 
-        $value = $this->_applyCustomValidator($node, $value);
 
-        if($this->_shouldSanitize) {
-            $node->setValue((string)$value);
-        }
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue((string)$value);
 
         return $value;
     }

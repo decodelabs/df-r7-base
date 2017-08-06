@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -11,23 +11,30 @@ use df\spur;
 
 class VideoEmbed extends Base implements core\validate\IVideoEmbedField {
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = trim($node->getValue());
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = trim($this->data->getValue());
         $value = $this->_sanitizeValue($value);
 
-        if(!$length = $this->_checkRequired($node, $value)) {
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
 
+
+        // Validate
         try {
             $embed = spur\video\Embed::parse($value);
         } catch(spur\video\IException $e) {
-            $this->_applyMessage($node, 'invalid', $this->_(
+            $this->addError('invalid', $this->_(
                 'This does not appear to be a valid video embed'
             ));
         }
 
-        if($node->isValid()) {
+
+        // Finalize
+        if($this->data->isValid()) {
             if($this->_requireGroup !== null && !$this->validator->checkRequireGroup($this->_requireGroup)) {
                 $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
             }
@@ -37,6 +44,10 @@ class VideoEmbed extends Base implements core\validate\IVideoEmbedField {
             }
         }
 
-        return $this->_finalize($node, $value);
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 }

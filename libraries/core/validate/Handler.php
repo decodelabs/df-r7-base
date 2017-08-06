@@ -18,7 +18,6 @@ class Handler implements IHandler {
     protected $_targetField = null;
     protected $_requireGroups = [];
     protected $_isValid = null;
-    protected $_shouldSanitizeAll = true;
     protected $_dataMap = [];
 
     public $data = null;
@@ -46,7 +45,6 @@ class Handler implements IHandler {
     public function newField(string $name, string $type=null): IField {
         $this->endField();
         $field = core\validate\field\Base::factory($this, $type, $name);
-        $field->shouldSanitize($this->_shouldSanitizeAll);
 
         $this->_fields[$field->getName()] = $field;
         $this->_targetField = $field;
@@ -92,13 +90,13 @@ class Handler implements IHandler {
 
     public function __call($method, array $args) {
         if(!$this->_targetField) {
-            throw new RuntimeException(
+            throw core\Error::ERuntime(
                 'There is no active target field to apply method '.$method.' to'
             );
         }
 
         if(!method_exists($this->_targetField, $method)) {
-            throw new BadMethodCallException(
+            throw core\Error::ECall(
                 'Target field '.$this->_targetField->getName().' does not have method '.$method
             );
         }
@@ -140,7 +138,7 @@ class Handler implements IHandler {
 // Values
     public function getValues() {
         if($this->_isValid === null) {
-            throw new RuntimeException(
+            throw core\Error::ESetup(
                 'This validator has not been run yet'
             );
         }
@@ -150,7 +148,7 @@ class Handler implements IHandler {
 
     public function getValue(string $name) {
         if($this->_isValid === null) {
-            throw new RuntimeException(
+            throw core\Error::ESetup(
                 'This validator has not been run yet'
             );
         }
@@ -162,7 +160,7 @@ class Handler implements IHandler {
 
     public function setValue(string $name, $value) {
         if($this->_isValid === null) {
-            throw new RuntimeException(
+            throw core\Error::ESetup(
                 'This validator has not been run yet'
             );
         }
@@ -194,21 +192,11 @@ class Handler implements IHandler {
     }
 
     public function offsetUnset($offset) {
-        throw new BadMethodCallException('Validator values cannot be set via array access');
+        throw core\Error::ECall(
+            'Validator values cannot be set via array access'
+        );
     }
 
-
-
-
-// Field data
-    public function shouldSanitizeAll(bool $flag=null) {
-        if($flag !== null) {
-            $this->_shouldSanitizeAll = $flag;
-            return $this;
-        }
-
-        return $this->_shouldSanitizeAll;
-    }
 
 
 
@@ -328,6 +316,8 @@ class Handler implements IHandler {
             }
 
             $node = $data->{$dataName};
+            $field->data = $node;
+
             $this->_values[$fieldName] = $field->validate($node);
 
             if(!$node->isValid()) {
@@ -373,7 +363,7 @@ class Handler implements IHandler {
 
     public function applyTo(&$record, array $fields=null) {
         if(!is_array($record) && !$record instanceof \ArrayAccess) {
-            throw new RuntimeException(
+            throw core\Error::EArgument(
                 'Target record does not implement ArrayAccess'
             );
         }

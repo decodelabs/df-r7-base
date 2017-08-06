@@ -16,6 +16,8 @@ class Boolean extends Base implements core\validate\IBooleanField {
     protected $_isRequired = false;
     protected $_forceAnswer = true;
 
+
+// Options
     public function shouldForceAnswer(bool $flag=null) {
         if($flag !== null) {
             $this->_forceAnswer = $flag;
@@ -29,11 +31,12 @@ class Boolean extends Base implements core\validate\IBooleanField {
         return flex\Text::stringToBoolean($value);
     }
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
 
-        $isRequired = $this->_isRequiredAfterToggle($node, $value);
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
+        $isRequired = $this->_isRequiredAfterToggle($value);
 
         if(!is_bool($value)) {
             if(!$length = strlen($value)) {
@@ -51,12 +54,14 @@ class Boolean extends Base implements core\validate\IBooleanField {
             }
         }
 
+
+        // Validate
         if($isRequired && $value === null) {
-            $this->_applyMessage($node, 'required', $this->validator->_(
+            $this->addError('required', $this->validator->_(
                 'This field requires an answer'
             ));
         } else {
-            $this->_checkRequiredValue($node, $value, $isRequired);
+            $this->_checkRequiredValue($value, $isRequired);
         }
 
         if($this->_requireGroup !== null) {
@@ -69,6 +74,12 @@ class Boolean extends Base implements core\validate\IBooleanField {
             }
         }
 
-        return $this->_finalize($node, $value);
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 }

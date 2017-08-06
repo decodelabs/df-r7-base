@@ -10,31 +10,42 @@ use df\core;
 use df\opal;
 
 class Email extends Base implements core\validate\IEmailField {
-    
+
     use core\validate\TStorageAwareField;
     use core\validate\TRecordManipulatorField;
     use opal\query\TFilterConsumer;
     use core\validate\TUniqueCheckerField;
 
-    public function validate(core\collection\IInputTree $node) {
-        $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
-        
-        if(!$length = $this->_checkRequired($node, $value)) {
+
+// Validate
+    public function validate() {
+        // Sanitize
+        $value = $this->_sanitizeValue($this->data->getValue());
+
+        if(!$length = $this->_checkRequired($value)) {
             return null;
         }
-        
+
+
+        // Validate
         $value = strtolower($value);
         $value = str_replace([' at ', ' dot '], ['@', '.'], $value);
         $value = filter_var($value, FILTER_SANITIZE_EMAIL);
-        
+
         if(!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            $this->_applyMessage($node, 'invalid', $this->validator->_(
+            $this->addError('invalid', $this->validator->_(
                 'This is not a valid email address'
             ));
         }
-        
-        $this->_validateUnique($node, $value);
-        return $this->_finalize($node, $value);
+
+        $this->_validateUnique($value);
+
+
+        // Finalize
+        $value = $this->_applyCustomValidator($value);
+        $this->_applyExtension($value);
+        $this->data->setValue($value);
+
+        return $value;
     }
 }

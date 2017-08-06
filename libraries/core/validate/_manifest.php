@@ -12,15 +12,6 @@ use df\arch;
 use df\mesh;
 
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class BadMethodCallException extends \BadMethodCallException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-
-// Interfaces
 interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function addField(string $name, string $type=null);
     public function addRequiredField(string $name, string $type=null);
@@ -42,8 +33,6 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function getValue(string $name);
     public function setValue(string $name, $value);
     public function isEmpty(): bool;
-
-    public function shouldSanitizeAll(bool $flag=null);
 
     public function setRequireGroupFulfilled(string $name);
     public function setRequireGroupUnfulfilled(string $name, string $field);
@@ -67,6 +56,7 @@ interface IField extends core\constraint\IRequirable, core\constraint\IOptional,
     public function setRecordName(?string $name);
     public function getRecordName(): string;
 
+
     // Require group
     public function setRequireGroup(?string $name);
     public function getRequireGroup(): ?string;
@@ -74,23 +64,30 @@ interface IField extends core\constraint\IRequirable, core\constraint\IOptional,
     public function getToggleField(): ?string;
 
     // Sanitizing
-    public function shouldSanitize(bool $flag=null);
     public function setSanitizer(?callable $sanitizer);
     public function getSanitizer(): ?callable;
     public function setDefaultValue($value);
     public function getDefaultValue();
+
+    // Extension
+    public function extend(?callable $extension);
+    public function getExtension(): ?callable;
 
     // Custom validator
     public function setCustomValidator(?callable $validator);
     public function getCustomValidator(): ?callable;
 
     // Errors
+    public function getDataNode(): ?core\collection\IInputTree;
+
     public function setMessageGenerator(?callable $generator);
     public function getMessageGenerator(): ?callable;
 
     // Apply
-    public function validate(core\collection\IInputTree $node);
+    public function validate();
     public function applyValueTo(&$record, $value);
+    public function setApplicator(?callable $applicator);
+    public function getApplicator(): ?callable;
 }
 
 
@@ -139,16 +136,16 @@ trait TRangeField {
         return $this->_max;
     }
 
-    protected function _validateRange(core\collection\IInputTree $node, $value) {
+    protected function _validateRange($value) {
         if($this->_min !== null && $value < $this->_min) {
-            $this->_applyMessage($node, 'min', $this->validator->_(
+            $this->addError('min', $this->validator->_(
                 'This field must be at least %min%',
                 ['%min%' => $this->_min]
             ));
         }
 
         if($this->_max !== null && $value > $this->_max) {
-            $this->_applyMessage($node, 'max', $this->validator->_(
+            $this->addError('max', $this->validator->_(
                 'This field must not be more than %max%',
                 ['%max%' => $this->_max]
             ));
@@ -193,13 +190,13 @@ trait TMinLengthField {
         }
     }
 
-    protected function _validateMinLength(core\collection\IInputTree $node, string $value, int $length=null) {
+    protected function _validateMinLength(string $value, int $length=null) {
         if($length === null) {
             $length = mb_strlen($value);
         }
 
         if($this->_minLength > 0 && $length < $this->_minLength) {
-            $this->_applyMessage($node, 'minLength', $this->validator->_(
+            $this->addError('minLength', $this->validator->_(
                 [
                     'n = 1' => 'This field must contain at least %min% character',
                     '*' => 'This field must contain at least %min% characters'
@@ -250,13 +247,13 @@ trait TMaxLengthField {
         }
     }
 
-    protected function _validateMaxLength(core\collection\IInputTree $node, string $value, int $length=null) {
+    protected function _validateMaxLength(string $value, int $length=null) {
         if($length === null) {
             $length = mb_strlen($value);
         }
 
         if($this->_maxLength !== null && $length > $this->_maxLength) {
-            $this->_applyMessage($node, 'maxLength', $this->validator->_(
+            $this->addError('maxLength', $this->validator->_(
                 [
                     'n = 1' => 'This field must not contain more than %max% character',
                     '*' => 'This field must not contain more than %max% characters'
@@ -301,7 +298,7 @@ trait TOptionProviderField {
             if($type instanceof core\lang\ITypeRef) {
                 $type->checkType('core/lang/IEnum');
             } else if(!$type instanceof core\lang\IEnumFactory) {
-                throw new core\validate\InvalidArgumentException(
+                throw core\Error::EArgument(
                     'Type cannot provide an enum'
                 );
             }
@@ -337,7 +334,9 @@ trait TStorageAwareField {
             $adapter = mesh\Manager::getInstance()->fetchEntity($adapter);
 
             if(!$adapter instanceof opal\query\IAdapter) {
-                throw new InvalidArgumentException('Invalid storage adapter for validator field '.$this->_name);
+                throw core\Error::EArgument(
+                    'Invalid storage adapter for validator field '.$this->_name
+                );
             }
         }
 
@@ -401,7 +400,7 @@ trait TUniqueCheckerField {
         return $this->_uniqueErrorMessage;
     }
 
-    protected function _validateUnique(core\collection\IInputTree $node, &$value, $rename=false) {
+    protected function _validateUnique(&$value, $rename=false) {
         if(!$this->_storageAdapter) {
             return;
         }
@@ -430,7 +429,7 @@ trait TUniqueCheckerField {
                 $message = $this->validator->_('That value has already been entered before');
             }
 
-            $this->_applyMessage($node, 'unique', $message);
+            $this->addError('unique', $message);
         }
     }
 
@@ -479,9 +478,9 @@ trait TRequiredValueField {
     }
 
 
-    protected function _checkRequiredValue(core\collection\IInputTree $node, $value, $isRequired=null) {
+    protected function _checkRequiredValue($value, $isRequired=null) {
         if($isRequired === null) {
-            $isRequired = $this->_isRequiredAfterToggle($node, $value);
+            $isRequired = $this->_isRequiredAfterToggle($value);
         }
 
         if($this->_requiredValue === null
@@ -502,7 +501,7 @@ trait TRequiredValueField {
         }
 
         if(!$isCorrect) {
-            $this->_applyMessage($node, 'incorrect',
+            $this->addError('incorrect',
                 is_bool($this->_requiredValue) ?
                     $this->validator->_('You must complete this field') :
                     $this->validator->_('Please enter the correct value')
@@ -524,11 +523,6 @@ interface ICurrencyField extends IField, IRangeField {
     public function allowSelection(bool $flag=null);
     public function setCurrencyFieldName($name);
     public function getCurrencyFieldName();
-}
-
-interface ICustomField extends IField {
-    public function setValidator(callable $validator);
-    public function getValidator();
 }
 
 interface IDateField extends IField, IRangeField {
