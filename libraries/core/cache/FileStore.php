@@ -83,12 +83,12 @@ abstract class FileStore implements IFileStore {
     }
 
     public function set($key, $value) {
-        if($value instanceof core\fs\IFile) {
-            $value = $value->getContents();
-        }
-
-        if(!is_string($value)) {
-            throw core\Error::EValue('FileStore values must be strings');
+        if(!$value instanceof core\fs\IFile) {
+            try {
+                $value = (string)$value;
+            } catch(\Throwable $e) {
+                throw core\Error::EValue('FileStore value must be core\fs\File or string');
+            }
         }
 
         $key = $this->_normalizeKey($key);
