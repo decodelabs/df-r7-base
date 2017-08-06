@@ -221,6 +221,10 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
             $data = new MemoryFile((string)$data);
         }
 
+        if($data instanceof IFile && !$data->isOpen()) {
+            $data->open(Mode::READ_ONLY);
+        }
+
         while(false !== ($chunk = $data->readChunk(1024))) {
             $this->write($chunk);
         }
@@ -229,6 +233,10 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
         if($closeAfter) {
             $this->close();
+        }
+
+        if($data instanceof IFile) {
+            $data->close();
         }
 
         return $this;
