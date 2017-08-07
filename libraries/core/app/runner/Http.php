@@ -374,6 +374,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                     $response = $this->_dispatchNode(new arch\Request('error/'));
                     $response = $this->_normalizeResponse($response);
                 } catch(\Throwable $f) {
+                    core\logException($f);
                     throw $e;
                 }
             }

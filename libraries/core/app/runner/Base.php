@@ -26,7 +26,7 @@ abstract class Base implements core\IRunner {
 
 
 // Dispatch
-    public function getDispatchException(): ?\Exception {
+    public function getDispatchException(): ?\Throwable {
         return $this->_dispatchException;
     }
 
