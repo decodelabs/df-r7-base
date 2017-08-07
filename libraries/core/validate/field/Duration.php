@@ -76,10 +76,10 @@ class Duration extends Base implements core\validate\IDurationField {
 
         $this->_validateRange($duration);
 
-        $this->_applyExtension($value);
+        $this->_applyExtension($duration);
         $this->data->setValue($value);
 
-        return $value;
+        return $duration;
     }
 
     protected function _normalizeDuration($value) {
