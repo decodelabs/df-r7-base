@@ -29,7 +29,7 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
             );
         }
 
-        if(!is_subclass_of($class, 'df\\axis\\unit\\table\\Bridge')) {
+        if(!is_subclass_of($class, 'df\\axis\\unit\\BridgeTable')) {
             throw new axis\RuntimeException(
                 'Unit '.$id.' is not a Bridge'
             );
