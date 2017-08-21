@@ -65,6 +65,10 @@ class Delegate extends Base implements core\validate\IDelegateField {
 // Validate
     public function validate() {
         // Prepare
+        if(!$this->_delegate) {
+            throw core\Error::ESetup('Delegate not set');
+        }
+
         $value = false;
 
         $reqVal = $this->_isRequired;
