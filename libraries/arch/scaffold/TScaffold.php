@@ -119,6 +119,10 @@ trait TScaffold_RecordDataProvider {
             return (string)$record->getPrimaryKeySet();
         }
 
+        return $this->idRecord($record);
+    }
+
+    protected function idRecord($record) {
         $idKey = $this->getRecordIdField();
         return @$record[$idKey];
     }
@@ -128,49 +132,53 @@ trait TScaffold_RecordDataProvider {
             $record = $this->getRecord();
         }
 
+
+        $key = $this->getRecordNameField();
+        $output = $this->nameRecord($record);
+
+        return $this->_normalizeFieldOutput($key, $output);
+    }
+
+    protected function nameRecord($record) {
         $key = $this->getRecordNameField();
 
-        if(method_exists($this, 'nameRecord')) {
-            $output = $this->nameRecord($record);
-        } else {
-            if(isset($record[$key])) {
-                $output = $record[$key];
+        if(isset($record[$key])) {
+            $output = $record[$key];
 
-                if($key == $this->getRecordIdField() && is_numeric($output)) {
-                    $output = '#'.$output;
+            if($key == $this->getRecordIdField() && is_numeric($output)) {
+                $output = '#'.$output;
+            }
+        } else {
+            if(is_array($record)) {
+                $available = array_key_exists($key, $record);
+            } else if($record instanceof core\collection\IMappedCollection) {
+                $available = $record->has($key);
+            } else {
+                $available = true;
+            }
+
+            $id = $this->getRecordId($record);
+
+            if($available) {
+                switch($key) {
+                    case 'title':
+                        $output = $this->html('em', $this->_('untitled %c%', ['%c%' => $this->getRecordItemName()]));
+                        break;
+
+                    case 'name':
+                        $output = $this->html('em', $this->_('unnamed %c%', ['%c%' => $this->getRecordItemName()]));
+                        break;
                 }
             } else {
-                if(is_array($record)) {
-                    $available = array_key_exists($key, $record);
-                } else if($record instanceof core\collection\IMappedCollection) {
-                    $available = $record->has($key);
-                } else {
-                    $available = true;
-                }
+                $output = $this->html('em', $this->getRecordItemName());
+            }
 
-                $id = $this->getRecordId($record);
-
-                if($available) {
-                    switch($key) {
-                        case 'title':
-                            $output = $this->html('em', $this->_('untitled %c%', ['%c%' => $this->getRecordItemName()]));
-                            break;
-
-                        case 'name':
-                            $output = $this->html('em', $this->_('unnamed %c%', ['%c%' => $this->getRecordItemName()]));
-                            break;
-                    }
-                } else {
-                    $output = $this->html('em', $this->getRecordItemName());
-                }
-
-                if(is_numeric($id)) {
-                    $output = [$output, $this->html('samp', '#'.$id)];
-                }
+            if(is_numeric($id)) {
+                $output = [$output, $this->html('samp', '#'.$id)];
             }
         }
 
-        return $this->_normalizeFieldOutput($key, $output);
+        return $output;
     }
 
     public function getRecordDescription($record=null) {
