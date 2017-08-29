@@ -404,10 +404,8 @@ class SassBridge implements ISassBridge {
     protected function _replaceUrls($sass) {
         if(df\Launchpad::$compileTimestamp) {
             $cts = df\Launchpad::$compileTimestamp;
-        } else if($this->context->app->isDevelopment()) {
-            $cts = time();
         } else {
-            $cts = null;
+            $cts = time();
         }
 
         preg_match_all('/url\([\'\"]?([^\'\"\)]+)[\'\"]?\)/i', $sass, $matches);
