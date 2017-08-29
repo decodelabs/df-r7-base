@@ -62,13 +62,18 @@ class Model extends axis\Model implements user\session\IBackend {
     }
 
     public function applyTransition(user\session\IDescriptor $descriptor) {
-        $this->descriptor->update([
-                'accessTime' => $descriptor->accessTime,
-                'publicKey' => $descriptor->publicKey,
-                'transitionKey' => $descriptor->transitionKey,
-                'transitionTime' => $descriptor->transitionTime,
-                'user' => $descriptor->userId
-            ])
+        $fields = [
+            'accessTime' => $descriptor->accessTime,
+            'publicKey' => $descriptor->publicKey,
+            'transitionKey' => $descriptor->transitionKey,
+            'transitionTime' => $descriptor->transitionTime
+        ];
+
+        if($descriptor->userId !== null) {
+            $fields['user'] = $descriptor->userId;
+        }
+
+        $this->descriptor->update($fields)
             ->where('id', '=', $descriptor->id)
             ->execute();
 
