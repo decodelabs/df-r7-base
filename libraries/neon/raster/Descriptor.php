@@ -170,7 +170,10 @@ class Descriptor implements IDescriptor {
 
 
         // Update meta
-        $this->_contentType = null;
+        if($type != 'image/svg+xml') {
+            $this->_contentType = null;
+        }
+
         $this->_location = $file->getPath();
 
         if($this->_fileName !== null) {
