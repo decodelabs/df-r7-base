@@ -546,6 +546,8 @@ interface IEnumField extends IField, IOptionProviderField {}
 
 interface IEntityLocatorField extends IField {}
 
+interface IFileSizeField extends IField, IRangeField {}
+
 interface IFloatingPointField extends IField, IRangeField {}
 
 interface IGuidField extends IField {}

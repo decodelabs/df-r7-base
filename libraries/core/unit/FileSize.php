@@ -18,13 +18,22 @@ class FileSize implements IFileSize, core\IDumpable {
     protected $_value;
     protected $_unit;
 
-    public static function factory($value, $unit=null, $allowPlainNumbers=false) {
+    public static function factory($value, $unit=null, $allowPlainNumbers=false): IFileSize {
         if($value instanceof IFileSize) {
             return $value;
         }
 
         return new self($value, $unit, $allowPlainNumbers);
     }
+
+    public static function normalize($value): ?IFileSize {
+        if($value === null) {
+            return null;
+        } else {
+            return self::factory($value);
+        }
+    }
+
 
     public function setBits($bits) {
         return $this->_parseUnit($bits, 'bit');
