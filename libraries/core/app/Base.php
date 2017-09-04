@@ -67,7 +67,12 @@ abstract class Base implements core\IApp {
             $name = 'My application';
             $uniquePrefix = strtolower(flex\Generator::random(3, 3));
             $passKey = flex\Generator::passKey();
-            $packages = ['webCore' => true];
+
+            if(file_exists(dirname(df\Launchpad::DF_PATH).'/webCore/Package.php')) {
+                $packages = ['webCore' => true];
+            } else {
+                $packages = [];
+            }
         }
 
         $packageString = core\collection\Util::exportArray($packages);
