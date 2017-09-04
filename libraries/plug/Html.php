@@ -627,7 +627,7 @@ class Html implements arch\IDirectoryHelper {
             '@context' => $context,
             '@type' => $type
         ]);
-        
+
         $tree->merge(core\collection\Tree::factory($data));
         $tree->removeEmpty();
 
@@ -780,6 +780,11 @@ class Html implements arch\IDirectoryHelper {
             return new core\time\Date($date);
         }
 
+        if($timezone === false) {
+            $timezone = null;
+            $includeTime = false;
+        }
+        
         if(!$date = core\time\Date::normalize($date, null, $includeTime)) {
             return null;
         }

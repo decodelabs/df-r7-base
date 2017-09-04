@@ -310,6 +310,11 @@ class Format implements core\ISharedHelper {
             return new core\time\Date($date);
         }
 
+        if($timezone === false) {
+            $timezone = null;
+            $includeTime = false;
+        }
+
         if(!$date = core\time\Date::normalize($date, null, $includeTime)) {
             return null;
         }
