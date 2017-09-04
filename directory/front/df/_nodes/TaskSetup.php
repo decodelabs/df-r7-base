@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\apex;
 use df\arch;
+use df\halo;
 
 class TaskSetup extends arch\node\Task {
 
@@ -44,16 +45,20 @@ class TaskSetup extends arch\node\Task {
         }, $group, true);
 
         $path = dirname(df\Launchpad::DF_PATH);
+        $this->io->writeLine();
 
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(
-            dirname(df\Launchpad::DF_PATH)
-        ));
+        $this->io->writeLine('sudo chmod -R 0770 '.$path);
+        $this->io->writeLine('sudo chmod -R '.$user.':'.$group.' '.$path);
 
-        foreach($iterator as $item) {
-            chmod($item, 0770);
-            chown($item, $user);
-            chgrp($item, $group);
-        }
+        halo\process\Base::launch('sudo chmod', [
+            '-R', '0770', $path
+        ]);
+
+
+        halo\process\Base::launch('sudo own', [
+            '-R', $user.':'.$group, $path
+        ]);
+
 
         // Clean up
         core\fs\Dir::delete(df\Launchpad::DF_PATH.'/setup');
