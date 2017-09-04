@@ -48,5 +48,4 @@ Thumbs.db
 
 # Port reference #
 ######################
-base/libraries/aura/html/widget/r5
-base/libraries/aura/html/widget/r6
+setup/*

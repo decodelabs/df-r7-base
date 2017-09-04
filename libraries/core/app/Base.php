@@ -7,6 +7,7 @@ namespace df\core\app;
 
 use df;
 use df\core;
+use df\flex;
 
 abstract class Base implements core\IApp {
 
