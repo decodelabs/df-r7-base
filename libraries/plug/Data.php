@@ -78,6 +78,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         $output = $query->toRow();
 
         if($output === null) {
+            if($primary instanceof \Closure) {
+                $primary = '()';
+            }
+
             if(is_array($primary)) {
                 $primary = implode(',', $primary);
             }
