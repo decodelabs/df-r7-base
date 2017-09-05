@@ -98,6 +98,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             foreach($primary as $key => $value) {
                 $query->where($key, '=', $value);
             }
+        } else if($primary instanceof \Closure) {
+            $primary($query);
         } else {
             $query->where('@primary', '=', $primary);
         }
