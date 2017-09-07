@@ -29,6 +29,7 @@ class Html implements arch\IDirectoryHelper {
 
             foreach(array_reverse($parts) as $name) {
                 $content = new aura\html\Element(trim($name), $content, $attributes);
+                $attributes = null;
             }
 
             return $content;
@@ -784,7 +785,7 @@ class Html implements arch\IDirectoryHelper {
             $timezone = null;
             $includeTime = false;
         }
-        
+
         if(!$date = core\time\Date::normalize($date, null, $includeTime)) {
             return null;
         }
