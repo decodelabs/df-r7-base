@@ -50,8 +50,8 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         return aura\view\Base::factory($type, $this->context->spawnInstance($request));
     }
 
-    public function newWidgetView($callback=null) {
-        $view = $this->newView($this->context->location->getType());
+    public function newWidgetView($callback=null, $type='Html') {
+        $view = $this->newView($type);
         $view->setContentProvider($content = new aura\view\content\WidgetContentProvider($view->getContext()));
 
         if($callback) {
