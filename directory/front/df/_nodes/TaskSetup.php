@@ -52,12 +52,12 @@ class TaskSetup extends arch\node\Task {
 
         halo\process\Base::launch('sudo chmod', [
             '-R', '0770', $path
-        ]);
+        ], null, $this->io);
 
 
-        halo\process\Base::launch('sudo own', [
+        halo\process\Base::launch('sudo chown', [
             '-R', $user.':'.$group, $path
-        ]);
+        ], null, $this->io);
 
 
         // Clean up
