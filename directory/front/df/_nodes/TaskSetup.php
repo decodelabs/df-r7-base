@@ -24,7 +24,7 @@ class TaskSetup extends arch\node\Task {
 
         // Install git repos
         $this->runChild('git/install?all');
-        $this->runChild('git/update?all');
+        $this->runChild('git/update-all?no-build');
 
 
         // Permissions

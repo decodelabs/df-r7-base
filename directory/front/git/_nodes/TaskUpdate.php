@@ -54,9 +54,11 @@ class TaskUpdate extends arch\node\Task {
             }
         }
 
-        if($this->app->isDevelopment()) {
+        $noBuild = isset($this->request['no-build']);
+
+        if($this->app->isDevelopment() && !$noBuild) {
             $this->runChild('app/build?dev', false);
-        } else if($this->app->isTesting()) {
+        } else if($this->app->isTesting() && !$noBuild) {
             $this->runChild('app/build', false);
         }
     }
