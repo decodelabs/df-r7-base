@@ -40,6 +40,13 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
             if(is_iterable($slots)) {
                 $view->addSlots($slots);
+
+                if($slots instanceof \Generator &&
+                (null !== ($output = $slots->getReturn()))) {
+                    return $output;
+                }
+            } else if($slots !== null) {
+                return $slots;
             }
         }
 
