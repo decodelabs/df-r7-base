@@ -44,8 +44,7 @@ abstract class ReorderForm extends Form {
 
         if(null !== ($parentName = $this->getParentName())) {
             $fs->addField(ucfirst($this->getParentItemName()))->push(
-                $this->html->textbox('parent', $parentName)
-                    ->isDisabled(true)
+                $this->html('strong', $parentName)
             );
         }
 
