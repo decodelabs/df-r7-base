@@ -36,6 +36,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         305 => 'Use Proxy',
         // 306 is deprecated but reserved
         307 => 'Temporary Redirect',
+        308 => 'Permanent Redirect',
 
         // Client Error 4xx
         400 => 'Bad Request',
