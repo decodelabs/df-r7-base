@@ -129,7 +129,7 @@ class AttributeList extends Base implements aura\html\widget\IWidgetProxy, core\
 
 
 // Render
-    public function toWidget(): aura\html\widget\IWidget {
+    public function toWidget(): ?aura\html\widget\IWidget {
         return $this->render();
     }
 

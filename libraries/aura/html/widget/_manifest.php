@@ -73,7 +73,7 @@ interface IWidget extends aura\html\IElementRepresentation, aura\html\ITagDataCo
 }
 
 interface IWidgetProxy {
-    public function toWidget(): IWidget;
+    public function toWidget(): ?IWidget;
 }
 
 
