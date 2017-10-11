@@ -15,7 +15,7 @@ class Registry implements IRegistry {
 
     use spur\THttpMediator;
 
-    const BASE_URL = 'https://bower.herokuapp.com/';
+    const BASE_URL = 'https://registry.bower.io/';
     const TIMEOUT = '1 day';
 
     protected $_cachePath;
