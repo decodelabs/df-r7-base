@@ -118,6 +118,12 @@ class FlashQueue implements \Serializable {
     public $queued = [];
     public $instant = [];
 
+    public function isEmpty(): bool {
+        return empty($this->constant) &&
+            empty($this->queued) &&
+            empty($this->instant);
+    }
+
     public function serialize() {
         $data = ['l' => $this->limit];
 

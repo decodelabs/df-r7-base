@@ -726,9 +726,16 @@ class Manager implements IManager, core\IShutdownAware {
         }
 
         $session = user\Manager::getInstance()->session->getBucket(self::SESSION_NAMESPACE);
-        $session->set(self::FLASH_SESSION_KEY, $this->_flashQueue);
-        $this->_flashQueueChanged = false;
 
+        if($this->_flashQueue->isEmpty()) {
+            if($this->_flashQueueChanged) {
+                $session->remove(self::FLASH_SESSION_KEY);
+            }
+        } else {
+            $session->set(self::FLASH_SESSION_KEY, $this->_flashQueue);
+        }
+
+        $this->_flashQueueChanged = false;
         return true;
     }
 
