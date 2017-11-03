@@ -39,7 +39,12 @@ class ContentBlock extends arch\node\form\Delegate implements
 
     protected function _getAvailableBlockTypes() {
         if(!$this->_state->hasStore('availableBlockTypes')) {
-            $types = $this->_manager->getCategoryBlockNamesByFormat($this->_category);
+            if($this->_category) {
+                $types = $this->_manager->getCategoryBlockNamesByFormat($this->_category);
+            } else {
+                $types = $this->_manager->getAllBlockNamesByFormat();
+            }
+
             $this->_state->setStore('availableBlockTypes', $types);
 
             $count = 0;
@@ -183,7 +188,10 @@ class ContentBlock extends arch\node\form\Delegate implements
             $type = null;
         }
 
-        $this['block']->apply();
+        if(isset($this['block'])) {
+            $this['block']->apply();
+        }
+
         $oldBlock = $this->_block;
 
         try {
@@ -192,7 +200,9 @@ class ContentBlock extends arch\node\form\Delegate implements
             $this->values->blockType->addError('type', $e->getMessage());
         }
 
-        $this->unloadDelegate('block');
+        if(isset($this['block'])) {
+            $this->unloadDelegate('block');
+        }
 
         if($oldBlock && $oldBlock !== $this->_block) {
             $this->_block->setTransitionValue($oldBlock->getTransitionValue());
