@@ -379,6 +379,24 @@ class Url extends core\uri\Url implements IUrl {
         return $output;
     }
 
+    public function getOrigin(): string {
+        if($this->_scheme === null) {
+            $output = 'http://';
+        } else {
+            $output = $this->getScheme().'://';
+        }
+
+        $output .= $this->_domain;
+        $defaultPort = 80;
+
+        if($this->_scheme == 'https') {
+            $defaultPort = 443;
+        }
+
+        $output .= $this->_getPortString($defaultPort);
+        return $output;
+    }
+
     public function toReadableString() {
         if($this->isJustFragment()) {
             return $this->_getFragmentString();

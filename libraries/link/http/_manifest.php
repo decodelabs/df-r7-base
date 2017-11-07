@@ -20,6 +20,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 // Interfaces
 interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core\uri\ISecureSchemeContainer, core\uri\IDomainPortContainer {
     public function getLocalString();
+    public function getOrigin(): string;
 
     public function setDirectoryRequest(arch\IRequest $request=null);
     public function getDirectoryRequest();
