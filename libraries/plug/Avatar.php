@@ -36,7 +36,9 @@ class Avatar implements arch\IDirectoryHelper {
         }
 
         if($url = $this->_getDefaultAvatarImageUrl()) {
-            if(substr($url->getDomain(), -4) == '.dev' || $url->hasCredentials()) {
+            if(substr($url->getDomain(), -4) == '.dev' ||
+                substr($url->getDomain(), -6) == '.local' || 
+                $url->hasCredentials()) {
                 $this->_defaultImageUrl = null;
             } else {
                 if($size !== null) {
