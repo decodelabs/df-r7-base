@@ -452,14 +452,6 @@ class Embed implements IVideoEmbed {
                 $url->query->autoplay = 1;
             }
 
-            if($this->_useApi) {
-                $url->query->api = 1;
-            }
-
-            if($this->_id !== null) {
-                $url->player_id = $this->_id;
-            }
-
             /*
             if($this->_startTime !== null) {
                 $url->query->start = $this->_startTime.'s';
