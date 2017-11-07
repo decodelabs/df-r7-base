@@ -30,6 +30,7 @@ class Embed implements IVideoEmbed {
     protected $_duration;
     protected $_autoPlay = false;
     protected $_provider;
+    protected $_origin;
     protected $_source;
 
     public static function parse($embed) {
@@ -144,6 +145,15 @@ class Embed implements IVideoEmbed {
 
     public function getProvider() {
         return $this->_provider;
+    }
+
+    public function setOrigin(?string $origin) {
+        $this->_origin = $origin;
+        return $this;
+    }
+
+    public function getOrigin(): ?string {
+        return $this->_origin;
     }
 
 
@@ -391,11 +401,16 @@ class Embed implements IVideoEmbed {
 
         $url->query->enablejsapi = 1;
 
+        if($this->_origin !== null) {
+            $url->query->origin = $this->_origin;
+        }
+
         $tag = new aura\html\Element('iframe', null, [
             'src' => $url,
             'width' => $this->_width,
             'height' => $this->_height,
-            'frameborder' => 0
+            'frameborder' => 0,
+            'data-video' => $this->_provider
         ]);
 
         return $tag;
