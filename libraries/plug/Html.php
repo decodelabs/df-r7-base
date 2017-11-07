@@ -23,7 +23,7 @@ class Html implements arch\IDirectoryHelper {
         return aura\html\widget\Base::factory($this->context, $member, $args);
     }
 
-    public function __invoke($name, $content=null, array $attributes=[]) {
+    public function __invoke($name, $content=null, array $attributes=null) {
         if(false !== strpos($name, '>')) {
             $parts = explode('>', $name);
 
