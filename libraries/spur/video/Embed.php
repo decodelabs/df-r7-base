@@ -30,7 +30,9 @@ class Embed implements IVideoEmbed {
     protected $_duration;
     protected $_autoPlay = false;
     protected $_provider;
+    protected $_id;
     protected $_origin;
+    protected $_useApi = false;
     protected $_source;
 
     public static function parse($embed) {
@@ -106,6 +108,7 @@ class Embed implements IVideoEmbed {
         }
 
         $this->_source = $embedSource;
+        $this->_id = uniqid('video-');
     }
 
 // Url
@@ -147,6 +150,16 @@ class Embed implements IVideoEmbed {
         return $this->_provider;
     }
 
+    public function setId(?string $id) {
+        $this->_id = $id;
+        return $this;
+    }
+
+    public function getId(): ?string {
+        return $this->_id;
+    }
+
+
     public function setOrigin(?string $origin) {
         $this->_origin = $origin;
         return $this;
@@ -154,6 +167,15 @@ class Embed implements IVideoEmbed {
 
     public function getOrigin(): ?string {
         return $this->_origin;
+    }
+
+    public function shouldUseApi(bool $flag=null) {
+        if($flag !== null) {
+            $this->_useApi = $flag;
+            return $this;
+        }
+
+        return $this->_useApi;
     }
 
 
@@ -399,13 +421,16 @@ class Embed implements IVideoEmbed {
             $url->query->autoplay = 1;
         }
 
-        $url->query->enablejsapi = 1;
+        if($this->_useApi) {
+            $url->query->enablejsapi = 1;
+        }
 
         if($this->_origin !== null) {
             $url->query->origin = $this->_origin;
         }
 
         $tag = new aura\html\Element('iframe', null, [
+            'id' => $this->_id,
             'src' => $url,
             'width' => $this->_width,
             'height' => $this->_height,
@@ -427,6 +452,14 @@ class Embed implements IVideoEmbed {
                 $url->query->autoplay = 1;
             }
 
+            if($this->_useApi) {
+                $url->query->api = 1;
+            }
+
+            if($this->_id !== null) {
+                $url->player_id = $this->_id;
+            }
+
             /*
             if($this->_startTime !== null) {
                 $url->query->start = $this->_startTime.'s';
@@ -443,10 +476,12 @@ class Embed implements IVideoEmbed {
         }
 
         $tag = new aura\html\Element('iframe', null, [
+            'id' => $this->_id,
             'src' => $url,
             'width' => $this->_width,
             'height' => $this->_height,
-            'frameborder' => 0
+            'frameborder' => 0,
+            'data-video' => $this->_provider
         ]);
 
         return $tag;

@@ -21,8 +21,12 @@ interface IVideoEmbed extends aura\html\IElementRepresentation {
     public function getUrl();
     public function getPreparedUrl();
     public function getProvider();
+
+    public function setId(?string $id);
+    public function getId(): ?string;
     public function setOrigin(?string $origin);
     public function getOrigin(): ?string;
+    public function shouldUseApi(bool $flag=null);
 
     public function lookupThumbnailUrl(): ?string;
 
