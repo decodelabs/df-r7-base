@@ -75,6 +75,9 @@ class Url extends core\uri\Url implements IUrl {
                     } else if(isset($_SERVER['HTTP_HOST']) && stristr($_SERVER['HTTP_HOST'], '.'.$domain)) {
                         $domain = $_SERVER['HTTP_HOST'];
                     }
+
+                    $parts = explode(':', $domain);
+                    $domain = array_shift($parts);
                 }
 
                 $output->_domain = $domain;

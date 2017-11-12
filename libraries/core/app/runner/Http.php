@@ -277,14 +277,30 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $pathValid = $valid = false;
         }
 
+        if($pathValid && $valid && $map && $map->area === '*') {
+            $area = $path->get(0);
+
+            if(substr($area, 0, 1) != '~') {
+                $area = 'front';
+            } else {
+                $area = substr($area, 1);
+            }
+
+            $mapOut = $this->_router->getMapOut($area);
+
+            if($mapOut && $mapOut->area !== $map->area) {
+                $valid = false;
+            }
+        }
+
         if($pathValid && !$path->isEmpty()) {
             $redirectPath = (string)$path;
         }
 
         if(!$valid) {
-            $baseUrl = $this->_router->requestToUrl(new arch\Request($redirectPath));
-            $baseUrl->setQuery($url->getQuery());
-            $baseUrl = (string)$baseUrl;
+            $baseUrl = (string)$this->_router->requestToUrl(
+                (new arch\Request($redirectPath))->setQuery($url->getQuery())
+            );
 
             if(df\Launchpad::$app->isDevelopment()) {
                 $response = new link\http\response\Stream(

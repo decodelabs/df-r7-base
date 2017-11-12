@@ -103,6 +103,22 @@ class Router implements core\IRegistryObject {
         }
     }
 
+    public function getMapIn(string $area): ?Router_Map {
+        if(!isset($this->_mapIn[$area])) {
+            return null;
+        }
+
+        return $this->_mapIn[$area];
+    }
+
+    public function getMapOut(string $area): ?Router_Map {
+        if(!isset($this->_mapOut[$area])) {
+            return null;
+        }
+
+        return $this->_mapOut[$area];
+    }
+
     public function getRootMap() {
         if(isset($this->_mapOut['*'])) {
             return $this->_mapOut['*'];
