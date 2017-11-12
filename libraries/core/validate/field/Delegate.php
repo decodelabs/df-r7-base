@@ -101,4 +101,14 @@ class Delegate extends Base implements core\validate\IDelegateField {
 
         return $value;
     }
+
+
+// Apply
+    public function applyValueTo(&$record, $value) {
+        if($value === null && $this->isRequired()) {
+            return $this;
+        }
+
+        return parent::applyValueTo($record, $value);
+    }
 }

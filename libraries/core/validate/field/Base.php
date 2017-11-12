@@ -331,6 +331,10 @@ abstract class Base implements core\validate\IField {
             );
         }
 
+        if($value === null && $this->isRequired() && !$this->isValid()) {
+            return $this;
+        }
+
         $name = $this->getRecordName();
 
         if($this->_applicator) {
