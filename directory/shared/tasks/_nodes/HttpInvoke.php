@@ -25,7 +25,7 @@ class HttpInvoke extends arch\node\Base {
     public function executeAsStream() {
         return $this->http->generator('text/plain; charset=UTF-8', function($generator) {
             $invoke = $this->data->task->invoke->authorize($this->request['token']);
-            $generator->writeChunk(str_repeat(' ', 1024));
+            $generator->writeBrowserKeepAlive();
 
             if(!$invoke) {
                 $generator->writeChunk('Task invoke token is no longer valid - please try again!');

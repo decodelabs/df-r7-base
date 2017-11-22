@@ -29,7 +29,7 @@ class Generator extends Base implements link\http\IGeneratorResponse {
 
         $this->headers
             ->set('content-type', $contentType)
-            ->set('transfer-encoding', 'chunked')
+            //->set('transfer-encoding', 'chunked')
             ->setCacheAccess('no-cache')
             ->getCacheControl()
                 ->canStore(false)
@@ -51,7 +51,13 @@ class Generator extends Base implements link\http\IGeneratorResponse {
         if($this->_sender instanceof core\io\IChunkSender) {
             $this->_sender->sendChunks();
         } else {
-            $this->_sender->__invoke($this);
+            $gen = $this->_sender->__invoke($this);
+
+            if($gen instanceof \Generator) {
+                foreach($gen as $chunk) {
+                    $this->writeChunk($chunk);
+                }
+            }
         }
 
         if($this->_manualChunk) {
@@ -78,6 +84,10 @@ class Generator extends Base implements link\http\IGeneratorResponse {
         }
 
         return $this;
+    }
+
+    public function writeBrowserKeepAlive() {
+        return $this->writeChunk(str_repeat(' ', 1024));
     }
 
     public function getContent() {

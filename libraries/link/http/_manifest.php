@@ -235,6 +235,7 @@ interface IRedirectResponse extends IResponse {
 
 interface IGeneratorResponse extends IResponse, core\io\IChunkReceiver {
     public function generate(core\io\IChannel $channel);
+    public function writeBrowserKeepAlive();
     public function getChannel();
 }
 
