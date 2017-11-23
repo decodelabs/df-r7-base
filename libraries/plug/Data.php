@@ -141,15 +141,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             ->beginProcedure($name, $values, $item);
     }
 
-    public function getRoutine($unit, $name, core\io\IMultiplexer $multiplexer=null) {
-        return $this->_normalizeUnit($unit)
-            ->getRoutine($name, $multiplexer);
-    }
-
-    public function executeRoutine($unit, $name, ...$args) {
-        return $this->getRoutine($unit, $name)->execute(...$args);
-    }
-
     protected function _normalizeUnit($unit) {
         if(!$unit instanceof axis\IUnit) {
             $unit = $this->fetchEntity($unit);

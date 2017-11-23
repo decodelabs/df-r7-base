@@ -3,17 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\models\user\client\routines;
+namespace df\apex\models\user\client\fortify;
 
 use df;
 use df\core;
 use df\apex;
 use df\axis;
 
-class FixNames extends axis\routine\Consistency {
-    
-    protected function _execute() {
-        $this->io->write('Tidying user names...');
+class FixNames extends axis\fortify\Base {
+
+    protected function execute() {
         $count = 0;
         $list = $this->_unit->fetch()
             ->where('fullName', 'begins', ' ')
@@ -36,6 +35,6 @@ class FixNames extends axis\routine\Consistency {
             }
         }
 
-        $this->io->writeLine(' '.$count.' updated');
+        yield $count.' updated';
     }
 }

@@ -29,14 +29,14 @@ class TaskFortify extends arch\node\Task {
             $this->request->query->unit = $args[0];
 
             if(isset($args[1])) {
-                $this->request->query->routine = $args[1];
+                $this->request->query->fortify = $args[1];
             }
         }
     }
 
     public function execute() {
         if(isset($this->request['unit'])) {
-            $this->_runRoutines($this->data->getUnit($this->request['unit']));
+            $this->_runTasks($this->data->getUnit($this->request['unit']));
         } else {
             $probe = new axis\introspector\Probe();
             $units = $probe->probeStorageUnits();
@@ -47,48 +47,27 @@ class TaskFortify extends arch\node\Task {
                 }
 
                 $unit = $inspector->getUnit();
-                $this->_runRoutines($unit);
+                $this->_runTasks($unit);
             }
         }
     }
 
-    protected function _runRoutines($unit) {
-        if(isset($this->request['routine'])
+
+    protected function _runTasks(axis\IUnit $unit) {
+        if(isset($this->request['fortify'])
         && $unit->getUnitId() == $this->request['unit']) {
-            $this->_runRoutine($unit->getRoutine(
-                $this->request['routine']
-            ));
-
+            axis\fortify\Base::factory(
+                $unit, $this->request['fortify']
+            )->dispatch($this->io);
             return;
         }
 
-        $routines = axis\routine\Consistency::loadAll($unit);
-        $count = count($routines);
+        $tasks = axis\fortify\Base::loadAll($unit);
 
-        if(!$count) {
-            return;
+        foreach($tasks as $name => $task) {
+            $this->io->write($unit->getUnitId().'/'.$name.': ');
+            $task->dispatch($this->io);
+            $this->io->writeLine();
         }
-
-        //$this->io->writeLine('Found '.$count.' consistency routine(s) in '.$unit->getUnitId());
-
-        foreach($routines as $routine) {
-            $this->io->writeLine($unit->getUnitId().'/'.$routine->getName());
-            $this->io->indent();
-
-            $this->_runRoutine($routine);
-
-            $this->io->outdent();
-        }
-
-        $this->io->writeLine();
-    }
-
-    protected function _runRoutine($routine) {
-        if(!$routine->canExecute()) {
-            return;
-        }
-
-        $routine->setMultiplexer($this->io);
-        $routine->execute();
     }
 }

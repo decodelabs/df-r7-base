@@ -52,9 +52,6 @@ interface IUnit extends mesh\entity\IEntity, user\IAccessLock, \Serializable {
 
     public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null);
     public function beginProcedure($name, $values);
-
-    public function getRoutine($name, core\io\IMultiplexer $multiplexer=null);
-    public function executeRoutine($name, ...$args);
 }
 
 trait TUnit {
@@ -150,14 +147,6 @@ trait TUnit {
 
     public function beginProcedure($name, $values) {
         return axis\procedure\Base::factory($this, $name, $values);
-    }
-
-    public function getRoutine($name, core\io\IMultiplexer $multiplexer=null) {
-        return axis\routine\Base::factory($this, $name, $multiplexer);
-    }
-
-    public function executeRoutine($name, ...$args) {
-        return $this->getRoutine($name)->execute(...$args);
     }
 
 

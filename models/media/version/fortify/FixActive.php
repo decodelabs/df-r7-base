@@ -3,18 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\models\media\version\routines;
+namespace df\apex\models\media\version\fortify;
 
 use df;
 use df\core;
 use df\apex;
 use df\axis;
 
-class FixActive extends axis\routine\Consistency {
-    
-    protected function _execute() {
-        $this->io->write('Clearing inactive version flags...');
+class FixActive extends axis\fortify\Base {
 
+    protected function execute() {
         $list = $this->_unit->select('id', 'isActive')
             ->joinRelation('file', 'id as fileId', 'activeVersion')
             ->where('isActive', '=', true)
@@ -30,9 +28,7 @@ class FixActive extends axis\routine\Consistency {
                 ->execute();
         }
 
-        $this->io->writeLine(' '.$count.' updated');
-
-        $this->io->write('Ensuring active flagged...');
+        yield $count.' inactive flags cleared';
 
         $list = $this->_unit->select('id', 'isActive')
             ->joinRelation('file', 'id as fileId', 'activeVersion')
@@ -49,6 +45,6 @@ class FixActive extends axis\routine\Consistency {
                 ->execute();
         }
 
-        $this->io->writeLine(' '.$count.' updated');
+        yield ', '.$count.' active versions flagged';
     }
 }
