@@ -39,18 +39,17 @@ class Html implements arch\IDirectoryHelper {
     }
 
     public function previewText($html, $length=null) {
-        $html = strip_tags($html);
-        $html = aura\html\ElementContent::normalize($html);
+        $output = $this->toText($html);
 
-        if(!strlen($html)) {
+        if($output === null) {
             return null;
         }
 
         if($length !== null) {
-            $html = $this->context->format->shorten($html, $length);
+            $output = $this->context->format->shorten($output, $length);
         }
 
-        return $this->string($html);
+        return $this->string($output);
     }
 
     public function toText($html) {
