@@ -18,7 +18,7 @@ class TaskClearBuild extends arch\node\Task {
         $appPath = $this->app->path;
         $envId = $this->app->envId;
 
-        core\fs\File::delete($appPath.'/data/local/run/Active.php');
+        core\fs\File::delete($appPath.'/data/local/run/active/Run.php');
 
         $this->runChild('app/purge-builds?all', false);
         core\fs\Dir::delete($appPath.'/data/local/run/');

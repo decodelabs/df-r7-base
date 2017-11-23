@@ -61,16 +61,28 @@ class TaskBuild extends arch\node\Task {
         core\Config::clearLiveCache();
 
 
+        // Setup helper info
+        $appPath = df\Launchpad::$app->path;
+        $envId = df\Launchpad::$app->envId;
+
+        $prefix = df\Launchpad::$app->getUniquePrefix();
+        $loader = df\Launchpad::$loader;
+
+        $localPath = $appPath.'/data/local';
+        $runPath = $localPath.'/run';
+
+
+
+        // Clear legacy builds (DELETE ME!)
+        $legacyPath = $runPath.'/Active.php';
+
+        if(file_exists($legacyPath)) {
+            core\fs\Dir::delete($runPath);
+        }
+
+
+
         if(!$isDev) {
-            $appPath = df\Launchpad::$app->path;
-            $envId = df\Launchpad::$app->envId;
-
-            $prefix = df\Launchpad::$app->getUniquePrefix();
-            $loader = df\Launchpad::$loader;
-
-            $localPath = $appPath.'/data/local';
-            $runPath = $localPath.'/run';
-
             $destinationPath = $localPath.'/build/'.$buildId;
             $destination = new core\fs\Dir($destinationPath);
 
@@ -137,22 +149,25 @@ class TaskBuild extends arch\node\Task {
 
             $appDir->getFile('App.php')->copyTo($destinationPath.'/apex/App.php');
 
+
+            // Generate run file
+            core\fs\File::create($destinationPath.'/Run.php',
+                '<?php'."\n".
+                'namespace df;'."\n".
+                'const COMPILE_TIMESTAMP = '.time().';'."\n".
+                'const COMPILE_BUILD_ID = \''.$buildId.'\';'."\n".
+                'const COMPILE_ROOT_PATH = \''.$runPath.'/active\';'."\n".
+                'const COMPILE_ENV_MODE = \''.df\Launchpad::$app->envMode.'\';'
+            );
+
+
             // Move to run path
-            $destination->moveTo($runPath, $buildId);
+            core\fs\Dir::delete($runPath.'/active');
+            $destination->moveTo($runPath, 'active');
 
 
             // Late build tasks
             $this->runChild('./build-custom?after='.$buildId, false);
-
-
-            // Switch active
-            core\fs\File::create($runPath.'/Active.php',
-                '<?php'."\n".
-                'namespace df;'."\n".
-                'const COMPILE_TIMESTAMP = '.time().';'."\n".
-                'const COMPILE_ROOT_PATH = \''.$runPath.'/'.$buildId.'\';'."\n".
-                'const COMPILE_ENV_MODE = \''.df\Launchpad::$app->envMode.'\';'
-            );
         } else {
             // Late build tasks
             $this->runChild('./build-custom?after', false);

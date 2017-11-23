@@ -63,7 +63,7 @@ class Launchpad {
         chdir($appPath.'/entry');
 
         // Check for compiled version
-        $activePath = $appPath.'/data/local/run/Active.php';
+        $activePath = $appPath.'/data/local/run/active/Run.php';
         $sourceMode = isset($_SERVER['argv']) && in_array('--df-source', $_SERVER['argv']);
 
         if(file_exists($activePath) && !$sourceMode) {
@@ -72,6 +72,7 @@ class Launchpad {
 
         if(!defined('df\\COMPILE_TIMESTAMP')) {
             define('df\\COMPILE_TIMESTAMP', null);
+            define('df\\COMPILE_BUILD_ID', null);
             define('df\\COMPILE_ROOT_PATH', null);
             define('df\\COMPILE_ENV_NODE', null);
         }

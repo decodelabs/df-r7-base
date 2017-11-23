@@ -27,13 +27,6 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             return;
         }
 
-        if($this->app->isDevelopment()) {
-            $newBuild = false;
-        } else {
-            $buildId = $this->request['buildId'];
-            $newBuild = !empty($buildId);
-        }
-
         $this->io->indent();
         $done = [];
 
@@ -47,17 +40,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $sassFile = new core\fs\File($sassPath);
             $shortPath = core\fs\Dir::stripPathLocation($sassFile);
 
-            $result = $this->_checkFile($sassFile, $key);
-
-            if($newBuild) {
-                $sassPath = preg_replace('|data/local/run/[^/]+/|', 'data/local/run/'.$buildId.'/', $sassPath);
-                $sassFile = new core\fs\File($sassPath);
-                $shortPath = core\fs\Dir::stripPathLocation($sassFile);
-
-                if(!$this->_checkFile($sassFile, $key)) {
-                    continue;
-                }
-            } else if(!$result) {
+            if(!$this->_checkFile($sassFile, $key)) {
                 continue;
             }
 
