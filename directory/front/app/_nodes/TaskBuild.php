@@ -20,11 +20,12 @@ class TaskBuild extends arch\node\Task {
 
     public function extractCliArguments(core\cli\ICommand $command) {
         $inspector = new core\cli\Inspector([
-            'dev|development|d' => 'Build in development mode only'
+            'dev|development|d' => 'Do not compile',
+            'force|f' => 'Force compilation'
         ], $command);
 
-        if($inspector['purge']) {
-            $this->request->query->purge = true;
+        if($inspector['force']) {
+            $this->request->query->force = true;
         }
 
         if($inspector['dev']) {
@@ -35,15 +36,22 @@ class TaskBuild extends arch\node\Task {
     public function execute() {
         $this->ensureDfSource();
 
-        // Prepare info
-        $buildId = (string)flex\Guid::uuid1();
-        $isDev = isset($this->request['dev']);
 
-        if(!$isDev && $this->app->isDevelopment()) {
-            $isDev = true;
+        // Setup controller
+        $controller = new core\app\builder\Controller();
+        $controller->setMultiplexer($this->io);
+
+        if(isset($this->request['force'])) {
+            $controller->shouldCompile(true);
+        } else if(isset($this->request['dev'])) {
+            $controller->shouldCompile(false);
         }
 
-        if($isDev) {
+
+        // Prepare info
+        $buildId = $controller->getBuildId();
+
+        if(!$controller->shouldCompile()) {
             $this->io->writeLine('Builder is running in dev mode, no build folder will be created');
             $this->io->writeLine();
         }
@@ -61,28 +69,15 @@ class TaskBuild extends arch\node\Task {
         core\Config::clearLiveCache();
 
 
-        // Setup helper info
-        $appPath = df\Launchpad::$app->path;
-        $envId = df\Launchpad::$app->envId;
+        if($controller->shouldCompile()) {
+            // Setup helper info
+            $appPath = df\Launchpad::$app->path;
+            $loader = df\Launchpad::$loader;
 
-        $prefix = df\Launchpad::$app->getUniquePrefix();
-        $loader = df\Launchpad::$loader;
+            $localPath = $appPath.'/data/local';
+            $runPath = $localPath.'/run';
+            
 
-        $localPath = $appPath.'/data/local';
-        $runPath = $localPath.'/run';
-
-
-
-        // Clear legacy builds (DELETE ME!)
-        $legacyPath = $runPath.'/Active.php';
-
-        if(file_exists($legacyPath)) {
-            core\fs\Dir::delete($runPath);
-        }
-
-
-
-        if(!$isDev) {
             $destinationPath = $localPath.'/build/'.$buildId;
             $destination = new core\fs\Dir($destinationPath);
 
