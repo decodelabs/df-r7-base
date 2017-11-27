@@ -99,6 +99,9 @@ class Delegate extends Base implements core\validate\IDelegateField {
             }
         }
 
+        // Finalize
+        $this->_applyExtension($value);
+
         return $value;
     }
 
