@@ -76,6 +76,8 @@ class Manager implements IManager {
     public function getModule($name, $locale=null) {
         if($locale === null) {
             $locale = $this->getLocale();
+        } else {
+            $locale = Locale::factory($locale);
         }
 
         $id = $name.':'.$locale;
