@@ -69,12 +69,11 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             ]);
         }
 
-        $this->applyQueryPrimaryClause($query, $primary);
-
         if($chain) {
             $query->chain($chain);
         }
 
+        $this->applyQueryPrimaryClause($query, $primary);
         $output = $query->toRow();
 
         if($output === null) {
