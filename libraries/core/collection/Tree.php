@@ -527,7 +527,9 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
                 $key = $prefix.'['.rawurlencode($key).']';
             }
 
-            $output = array_merge($output, $child->toUrlEncodedArrayDelimitedSet($key));
+            foreach($child->toUrlEncodedArrayDelimitedSet($key) as $innerKey => $innerVal) {
+                $output[$innerKey] = $innerVal;
+            }
         }
 
         return $output;
