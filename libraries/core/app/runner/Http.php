@@ -487,9 +487,24 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         $response->onDispatchComplete();
+        $headers = $response->getHeaders();
 
-        if($this->_context && $this->_context->http->isAjaxRequest()) {
-            $response->getHeaders()->set('x-response-url', $this->_httpRequest->url);
+        if($this->_context->http->isAjaxRequest()) {
+            $headers->set('x-response-url', $this->_httpRequest->url);
+        }
+
+
+        // Access control
+        if($this->_httpRequest->headers->has('origin')) {
+            $url = new link\http\Url($this->_httpRequest->headers->get('origin'));
+            $domain = $url->getDomain();
+
+            if($this->_router->lookupDomain($domain)) {
+                $headers->set('access-control-allow-origin', '*');
+
+                // Include from config
+                $headers->set('access-control-allow-headers', 'x-ajax-request-source, x-ajax-request-type');
+            }
         }
 
         return $response;
