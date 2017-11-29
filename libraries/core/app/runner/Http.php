@@ -241,6 +241,14 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $response->isPermanent(true);
             throw new arch\ForcedResponse($response);
         }
+
+        if($this->_httpRequest->getMethod() == 'options') {
+            throw new arch\ForcedResponse(
+                (new link\http\response\Stream('content'))->withHeaders(function($headers) {
+                    $headers->set('allow', 'OPTIONS, GET, HEAD, POST');
+                })
+            );
+        }
     }
 
 
