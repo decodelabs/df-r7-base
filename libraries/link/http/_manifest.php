@@ -170,6 +170,10 @@ trait THeaderCollection {
 interface IRequestHeaderCollection {
     public function setHttpVersion($version);
     public function getHttpVersion();
+
+
+    // Negotiate
+    public function negotiateLanguage(string ...$priorities): ?string;
 }
 
 
