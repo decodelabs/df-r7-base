@@ -156,6 +156,12 @@ interface IHtmlView extends IResponseView, ILayoutView {
     public function getHtmlTag();
     public function getBodyTag();
 
+
+    // Language
+    public function setLanguage(string $language);
+    public function getLanguage(): string;
+
+
     // Title
     public function setTitle(?string $title);
     public function getTitle(): ?string;

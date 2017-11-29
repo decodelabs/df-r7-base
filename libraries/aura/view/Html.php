@@ -88,6 +88,18 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     }
 
 
+// Language
+    public function setLanguage(string $language) {
+        $this->htmlTag->setAttribute('lang', $language);
+        return $this;
+    }
+
+    public function getLanguage(): string {
+        return $this->htmlTag->getAttribute('lang', 'en');
+    }
+
+
+
 // Title
     public function setTitle(?string $title) {
         if(empty($title)) {
@@ -684,7 +696,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
 
         // Priority meta
         ksort($meta);
-        
+
         foreach($meta as $key => $value) {
             if(in_array(strtolower($key), self::META_PRIORITY)) {
                 $output .= '    '.$this->_metaToString($key, $meta[$key])."\n";
