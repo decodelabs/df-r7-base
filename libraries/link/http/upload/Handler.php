@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@ namespace df\link\http\upload;
 use df;
 use df\core;
 use df\link;
-    
+
 class Handler implements link\http\IUploadHandler {
 
     use core\io\TAcceptTypeProcessor;
@@ -46,25 +46,25 @@ class Handler implements link\http\IUploadHandler {
             }
         }
 
-        $this->setMaxFileSize('128mb');
+        $this->setMaxFileSize('256mb');
     }
 
     protected function _flattenArray(array $array, $currentKey='') {
         $output = [];
-        
+
         foreach($array as $key => $var) {
             $thisKey = $currentKey.'['.$key.']';
             //$thisKey = $currentKey.'.'.$key;
-            
+
             if(is_array($var)) {
                 foreach($this->_flattenArray($var, $thisKey) as $childKey => $value) {
-                    $output[$childKey] = $value;    
+                    $output[$childKey] = $value;
                 }
             } else {
-                $output[$thisKey] = $var;    
+                $output[$thisKey] = $var;
             }
         }
-        
+
         return $output;
     }
 
@@ -142,31 +142,31 @@ class Handler implements link\http\IUploadHandler {
     public function count() {
         return count($this->_files);
     }
-    
+
 // Iterator
     public function getIterator() {
         $output = [];
-        
+
         foreach($this->_files as $key => $set) {
-            $output[$key] = new File($this, $key, $set); 
+            $output[$key] = new File($this, $key, $set);
         }
-        
+
         return new \ArrayIterator($output);
     }
-    
+
 // Array access
     public function offsetSet($offset, $value) {}
-    
+
     public function offsetGet($offset) {
         if(isset($this->_files[$offset])) {
             return new File($this, $offset, $this->_files[$offset]);
         }
     }
-    
+
     public function offsetExists($offset) {
         return isset($this->_files[$offset]);
     }
-    
+
     public function offsetUnset($offset) {
         unset($this->_files[$offset]);
     }

@@ -239,7 +239,8 @@ class File implements link\http\IUploadFile {
 
         if($maxSize > 0 && $this->_size->getMegabytes() > $maxSize) {
             $inputNode->addError('tooBig', $i18n->_(
-                'The file exceeds the maximum upload file size'
+                'The file exceeds the maximum upload file size of %m%',
+                ['%m%' => $maxSize.' mb']
             ));
         }
 
