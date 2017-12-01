@@ -399,9 +399,6 @@ trait TStringResponse {
 
 
 interface IResponseAugmentor {
-    public function setBaseUrl(IUrl $url=null);
-    public function getBaseUrl();
-
     public function resetAll();
     public function resetCurrent();
     public function apply(IResponse $response);
@@ -513,7 +510,6 @@ interface ICookie extends core\IStringProvider {
     public function setPath($path);
     public function getPath();
     public function matchesPath($path);
-    public function setBaseUrl(link\http\IUrl $url);
     public function isSecure(bool $flag=null);
     public function isHttpOnly(bool $flag=null);
     public function toInvalidateString();

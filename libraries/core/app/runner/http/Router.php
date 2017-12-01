@@ -135,6 +135,10 @@ class Router implements core\IRegistryObject {
         return $this->_useHttps;
     }
 
+    public function countMaps(): int {
+        return count($this->_mapIn);
+    }
+
 
     public function setBase(Router_Map $map) {
         $this->_baseMap = $map;

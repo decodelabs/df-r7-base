@@ -11,7 +11,9 @@ use df\link;
 
 class Augmentor implements link\http\IResponseAugmentor {
 
-    protected $_baseUrl;
+    protected $_router;
+    protected $_cookiePath;
+    protected $_cookieDomain;
 
     protected $_globalHeaders = [];
     protected $_currentHeaders = [];
@@ -21,18 +23,38 @@ class Augmentor implements link\http\IResponseAugmentor {
 
     protected $_statusCode;
 
-    public function __construct(link\http\IUrl $baseUrl=null) {
-        $this->setBaseUrl($baseUrl);
+    public function __construct(core\app\runner\http\Router $router=null) {
+        $this->_router = $router;
+
+        if($router) {
+            $rootUrl = $router->getRootUrl();
+
+            // Domain
+            if($router->countMaps() > 1) {
+                $baseUrl = $router->getBaseUrl();
+
+                $rootDomain = $rootUrl->getDomain();
+                $baseDomain = $baseUrl->getDomain();
+
+                if(substr($rootDomain, 0, 4) == 'www.') {
+                    $rootDomain = substr($rootDomain, 4);
+                }
+                if(substr($baseDomain, 0, 4) == 'www.') {
+                    $baseDomain = substr($baseDomain, 4);
+                }
+
+                if(substr($baseDomain, -strlen($rootDomain)) == $rootDomain) {
+                    $this->_cookieDomain = '.'.$rootDomain;
+                }
+            }
+
+
+            // Path
+            $path = clone $rootUrl->getPath();
+            $this->_cookiePath = $path->isAbsolute(true)->toString();
+        }
+
         $this->resetAll();
-    }
-
-    public function setBaseUrl(link\http\IUrl $url=null) {
-        $this->_baseUrl = $url;
-        return $this;
-    }
-
-    public function getBaseUrl() {
-        return $this->_baseUrl;
     }
 
     public function resetAll() {
@@ -131,8 +153,12 @@ class Augmentor implements link\http\IResponseAugmentor {
     public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null) {
         $output = new link\http\Cookie($name, $value, $expiry, $httpOnly, $secure);
 
-        if($this->_baseUrl) {
-            $output->setBaseUrl($this->_baseUrl);
+        if($this->_cookieDomain !== null) {
+            $output->setDomain($this->_cookieDomain);
+        }
+
+        if($this->_cookiePath !== null) {
+            $output->setPath($this->_cookiePath);
         }
 
         return $output;

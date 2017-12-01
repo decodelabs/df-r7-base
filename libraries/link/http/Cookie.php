@@ -215,15 +215,6 @@ class Cookie implements ICookie {
         return 0 === stripos($path, $test);
     }
 
-    public function setBaseUrl(IUrl $url) {
-        //$this->setDomain('.'.$url->getDomain());
-
-        $path = clone $url->getPath();
-        $this->setPath($path->isAbsolute(true)->toString());
-
-        return $this;
-    }
-
 
     public function isSecure(bool $flag=null) {
         if($flag !== null) {

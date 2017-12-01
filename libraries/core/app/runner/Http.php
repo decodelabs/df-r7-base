@@ -83,7 +83,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     public function getResponseAugmentor() {
         if(!$this->_responseAugmentor) {
             $this->_responseAugmentor = new link\http\response\Augmentor(
-                $this->_router->getBaseUrl()
+                $this->_router
             );
         }
 
