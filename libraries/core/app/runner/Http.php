@@ -276,6 +276,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $path = clone $url->getPath();
 
         if(!$map = $this->_router->lookupDomain($url->getDomain())) {
+            $tempMap = $this->_router->getRootMap();
+
+            if(!$tempMap->mapPath($path)) {
+                $pathValid = false;
+            }
+
             $valid = false;
         } else {
             $this->_router->setBase($map);
