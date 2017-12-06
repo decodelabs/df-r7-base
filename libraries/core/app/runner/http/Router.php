@@ -182,6 +182,24 @@ class Router implements core\IRegistryObject {
         return $base === $root;
     }
 
+    public function isBaseInRoot(): bool {
+        $base = $this->getBaseMap();
+        $root = $this->getRootMap();
+
+        if($base === $root) {
+            return true;
+        }
+
+        if(!$base->mappedDomain) {
+            return false;
+        }
+
+        $baseDomain = $base->mappedDomain;
+        $rootDomain = $root->domain;
+
+        return substr($baseDomain, -strlen($rootDomain)) == $rootDomain;
+    }
+
 
     public function applyBaseMapToRelativeRequest(arch\IRequest $request) {
         if(!$this->_baseMap) {

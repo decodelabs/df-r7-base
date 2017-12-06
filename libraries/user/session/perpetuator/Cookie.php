@@ -23,14 +23,26 @@ class Cookie implements user\session\IPerpetuator {
 
     public function __construct(user\session\IController $controller) {
         $cookies = df\Launchpad::$runner->getHttpRequest()->cookies;
-        $isRoot = df\Launchpad::$runner->getRouter()->isBaseRoot();
+        $router = df\Launchpad::$runner->getRouter();
+        $isRoot = $router->isBaseInRoot();
 
         if(!$isRoot && !$cookies->has(self::SESSION_NAME) && !$cookies->has(self::JOIN_NAME)) {
             $this->_joinRoot();
         }
 
         if($cookies->has(self::JOIN_NAME)) {
-            $key = hex2bin($cookies->get(self::JOIN_NAME));
+            try {
+                $key = hex2bin($cookies->get(self::JOIN_NAME));
+            } catch(\ErrorException $e) {
+                $cookie = $cookies->get(self::JOIN_NAME);
+                $cookies->remove(self::JOIN_NAME);
+
+                throw core\Error::EValue([
+                    'message' => 'Invalid join cookie: "'.$cookie.'"',
+                    'previous' => $e
+                ]);
+            }
+
             $this->_inputId = $this->_consumeJoinKey($key);
         }
 
