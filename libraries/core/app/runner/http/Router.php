@@ -197,6 +197,13 @@ class Router implements core\IRegistryObject {
         $baseDomain = $base->mappedDomain;
         $rootDomain = $root->domain;
 
+        if(substr($rootDomain, 0, 4) == 'www.') {
+            $rootDomain = substr($rootDomain, 4);
+        }
+        if(substr($baseDomain, 0, 4) == 'www.') {
+            $baseDomain = substr($baseDomain, 4);
+        }
+
         return substr($baseDomain, -strlen($rootDomain)) == $rootDomain;
     }
 
