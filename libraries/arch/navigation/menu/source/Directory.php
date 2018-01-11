@@ -59,9 +59,14 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
         }
 
         try {
-            $context = new arch\Context(new arch\Request(
-                arch\Request::AREA_MARKER.$area.'/'.implode('/', $parts).'/'.lcfirst($name)
-            ));
+            $contextRequest = arch\Request::AREA_MARKER.$area.'/';
+
+            if(!empty($parts)) {
+                $contextRequest .= implode('/', $parts).'/';
+            }
+
+            $contextRequest .= lcfirst($name);
+            $context = new arch\Context(new arch\Request($contextRequest));
 
             $scaffold = arch\scaffold\Base::factory($context);
             $scaffoldId = $baseId.'__scaffold';
@@ -80,6 +85,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
         } else {
             $output = new arch\navigation\menu\Base($this->context, $baseId);
         }
+
 
         $output->setSubId($subId);
 
