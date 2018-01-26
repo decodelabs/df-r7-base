@@ -134,8 +134,8 @@ class Text extends Base implements core\validate\ITextField {
             if($this->_maxWords !== null && $wordCount > $this->_maxWords) {
                 $this->addError('maxWords', $this->validator->_(
                     [
-                        'n = 1' => 'This field must not me more than %max% word',
-                        '*' => 'This field must not me more than %max% words'
+                        'n = 1' => 'This field must not be more than %max% word',
+                        '*' => 'This field must not be more than %max% words'
                     ],
                     ['%max%' => $this->_maxWords],
                     $this->_maxWords
