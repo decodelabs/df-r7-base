@@ -343,7 +343,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
                 if((string)$url != $orig) {
                     $response = new link\http\response\Redirect($url);
-                    $response->isPermanent(true);
+                    //$response->isPermanent(true);
                     throw new arch\ForcedResponse($response);
                 }
             }
@@ -447,7 +447,9 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $context->location = $context->request = $this->_router->urlToRequest($testUrl);
 
                 if($context->apex->nodeExists($context->request)) {
-                    return $context->http->redirect($context->request)->isPermanent(true);
+                    return $context->http->redirect($context->request)
+                        //->isPermanent(true)
+                        ;
                 }
             }
 
