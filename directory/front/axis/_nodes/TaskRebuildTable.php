@@ -125,7 +125,14 @@ class TaskRebuildTable extends arch\node\Task {
             }
         }
 
-        foreach($currentTable->select()->isUnbuffered(true) as $row) {
+        $query = $currentTable->select()
+            ->isUnbuffered(true);
+
+        if(isset($currentFields['creationDate'])) {
+            $query->orderBy('creationDate ASC');
+        }
+
+        foreach($query as $row) {
             foreach($row as $key => $value) {
                 if(!isset($fields[$key])) {
                     unset($row[$key]);
