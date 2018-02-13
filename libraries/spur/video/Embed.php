@@ -222,6 +222,110 @@ class Embed implements IVideoEmbed {
 
 
 
+// Meta
+    public function lookupMeta(): ?array {
+        if($this->_provider === 'youtube') {
+            return $this->_lookupYoutubeMeta();
+        } else if($this->_provider === 'vimeo') {
+            return $this->_lookupVimeoMeta();
+        } else {
+            return null;
+        }
+    }
+
+    protected function _lookupYoutubeMeta(): ?array {
+        $url = link\http\Url::factory($this->_url);
+
+        if(isset($url->query->v)) {
+            $id = $url->query['v'];
+        } else {
+            $id = $url->path->getLast();
+
+            if($id == 'watch') {
+                return null;
+            }
+        }
+
+        $url = link\http\Url::factory('http://www.youtube.com/oembed');
+        $url->query->url = 'http://www.youtube.com/watch?v='.$id;
+        $url->query->format = 'json';
+
+        $client = new link\http\Client();
+        $response = $client->get($url);
+
+        if(!$response->isOk()) {
+            return null;
+        }
+
+        $oEmbed = $response->getJsonContent();
+
+
+        $url = 'https://www.youtube.com/get_video_info?video_id='.$id;
+        $client = new link\http\Client();
+        $response = $client->get($url);
+
+        if(!$response->isOk()) {
+            return null;
+        }
+
+        $info = $response->getContent();
+        $info = core\collection\Tree::fromArrayDelimitedString($info);
+
+        return [
+            'title' => $oEmbed['title'],
+            'url' => $this->_url,
+            'embed' => $oEmbed['html'],
+            'width' => $oEmbed['width'],
+            'height' => $oEmbed['height'],
+            'duration' => $info['length_seconds'],
+            'description' => $oEmbed['description'],
+            'uploadDate' => core\time\Date::normalize($info['timestamp']),
+            'author' => $oEmbed['author_name'] ? [
+                'name' => $oEmbed['author_name'],
+                'url' => $oEmbed['author_url']
+            ] : null,
+            'thumbnail' => $oEmbed['thumbnail_url'] ? [
+                'width' => $oEmbed['thumbnail_width'],
+                'height' => $oEmbed['thumbnail_height'],
+                'url' => $oEmbed['thumbnail_url']
+            ] : null
+        ];
+    }
+
+    protected function _lookupVimeoMeta(): ?array {
+        $url = 'https://vimeo.com/api/oembed.json?url='.$this->_url;
+        $client = new link\http\Client();
+        $response = $client->get($url);
+
+        if(!$response->isOk()) {
+            return null;
+        }
+
+        $data = $response->getJsonContent();
+
+        return [
+            'title' => $data['title'],
+            'url' => $this->_url,
+            'embed' => $data['html'],
+            'width' => $data['width'],
+            'height' => $data['height'],
+            'duration' => $data['duration'],
+            'description' => $data['description'],
+            'uploadDate' => core\time\Date::normalize($data['upload_date']),
+            'author' => $data['author_name'] ? [
+                'name' => $data['author_name'],
+                'url' => $data['author_url']
+            ] : null,
+            'thumbnail' => $data['thumbnail_url'] ? [
+                'width' => $data['thumbnail_width'],
+                'height' => $data['thumbnail_height'],
+                'url' => $data['thumbnail_url']
+            ] : null
+        ];
+    }
+
+
+
  // Width
     public function setWidth($width) {
         $this->_width = (int)$width;
