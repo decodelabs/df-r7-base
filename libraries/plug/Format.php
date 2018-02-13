@@ -147,13 +147,27 @@ class Format implements core\ISharedHelper {
     }
 
     public function genericDuration($number, $locale=null) {
+        if($number === null) {
+            return null;
+        }
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
 
-        return core\i18n\Manager::getInstance()
+        if($number instanceof core\time\IDuration) {
+            $number = $number->getSeconds();
+        }
+
+        $output = core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
             ->formatDuration($number);
+
+        if(preg_match('/([0-9]+) sec./', $output, $matches)) {
+            $output = '0:'.$matches[1];
+        }
+
+        return $output;
     }
 
     public function fileSize($bytes, $precision=2, $longNames=false, $locale=null) {
