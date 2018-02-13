@@ -280,15 +280,11 @@ class Embed implements IVideoEmbed {
             'duration' => $info['length_seconds'],
             'description' => $oEmbed['description'],
             'uploadDate' => core\time\Date::normalize($info['timestamp']),
-            'author' => $oEmbed['author_name'] ? [
-                'name' => $oEmbed['author_name'],
-                'url' => $oEmbed['author_url']
-            ] : null,
-            'thumbnail' => $oEmbed['thumbnail_url'] ? [
-                'width' => $oEmbed['thumbnail_width'],
-                'height' => $oEmbed['thumbnail_height'],
-                'url' => $oEmbed['thumbnail_url']
-            ] : null
+            'authorName' => $oEmbed['author_name'],
+            'authorUrl' => $oEmbed['author_url'],
+            'thumbnailUrl' => $oEmbed['thumbnail_url'],
+            'thumbnailWidth' => $oEmbed['thumbnail_width'],
+            'thumbnailHeight' => $oEmbed['thumbnail_height']
         ];
     }
 
@@ -312,15 +308,11 @@ class Embed implements IVideoEmbed {
             'duration' => $data['duration'],
             'description' => $data['description'],
             'uploadDate' => core\time\Date::normalize($data['upload_date']),
-            'author' => $data['author_name'] ? [
-                'name' => $data['author_name'],
-                'url' => $data['author_url']
-            ] : null,
-            'thumbnail' => $data['thumbnail_url'] ? [
-                'width' => $data['thumbnail_width'],
-                'height' => $data['thumbnail_height'],
-                'url' => $data['thumbnail_url']
-            ] : null
+            'authorName' => $data['author_name'],
+            'authorUrl' => $data['author_url'],
+            'thumbnailUrl' => $data['thumbnail_url'],
+            'thumbnailWidth' => $data['thumbnail_width'],
+            'thumbnailHeight' => $data['thumbnail_height']
         ];
     }
 
