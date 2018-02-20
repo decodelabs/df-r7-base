@@ -230,16 +230,27 @@ class Html implements arch\IDirectoryHelper {
         }, $attributes);
     }
 
-    public function iList(iterable $list, callable $renderer=null, int $limit=null, string $delimiter=', '): aura\html\IElementRepresentation {
+    public function iList(iterable $list, callable $renderer=null, int $limit=null, string $delimiter=', ', string $finalDelimiter=null): aura\html\IElementRepresentation {
         $renderer = $renderer ?? function($value) {
             return $value;
         };
 
-        return (new aura\html\Element('span.list', function($el) use($list, $renderer, $delimiter, $limit) {
+        return (new aura\html\Element('span.list', function($el) use($list, $renderer, $delimiter, $finalDelimiter, $limit) {
             $el->shouldRenderIfEmpty(false);
 
             $first = true;
             $i = $more = 0;
+
+            try {
+                $total = count($list);
+            } catch(\Throwable $e) {
+                $total = null;
+            }
+
+            if($finalDelimiter === null) {
+                $finalDelimiter = $delimiter;
+            }
+
 
             foreach($list as $key => $item) {
                 if($item === null) {
@@ -258,7 +269,11 @@ class Html implements arch\IDirectoryHelper {
                 }
 
                 if(!$first) {
-                    yield $delimiter;
+                    if($i == $total) {
+                        yield $finalDelimiter;
+                    } else {
+                        yield $delimiter;
+                    }
                 }
 
                 $first = false;
