@@ -11,7 +11,7 @@ use df\spur;
 use df\aura;
 
 class GoogleUniversal extends Base {
-    
+
     protected $_options = [
         'trackingId' => null,
         'scriptName' => 'ga',
@@ -20,9 +20,10 @@ class GoogleUniversal extends Base {
 
     public function apply(spur\analytics\IHandler $handler, aura\view\IHtmlView $view) {
         $attributes = $handler->getDefinedUserAttributes(
-            array_merge($this->getDefaultUserAttributes(), ['id']), 
+            array_merge($this->getDefaultUserAttributes(), ['id']),
             false
         );
+
 
         $userId = $attributes['id'];
         $map = $this->getDefaultUserAttributeMap();
@@ -35,17 +36,21 @@ class GoogleUniversal extends Base {
 
         $scriptName = $this->getOption('scriptName', 'ga');
 
-        $script = 
+        $script =
             '(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){'."\n".
             '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),'."\n".
             'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)'."\n".
             '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\''.$scriptName.'\');'."\n";
-        
+
         $script .= $this->_buildCreateCall($scriptName, $userId);
         $pageviewOptions = null;
 
         foreach($attributes as $attribute => $value) {
             $pageviewOptions[$map[$attribute]] = (string)$value;
+        }
+
+        foreach($handler->getUserAttributes() as $attribute => $value) {
+            $pageviewOptions[$attribute] = (string)$value;
         }
 
         // Page view
@@ -56,7 +61,7 @@ class GoogleUniversal extends Base {
         }
 
         $script .= ');'."\n";
-    
+
         // Events
         foreach($handler->getEvents() as $event) {
             $script .= $scriptName.'(\'send\', \'event\', \''.$event->getCategory().'\', \''.$event->getName().'\', \''.$event->getLabel().'\');'."\n";
