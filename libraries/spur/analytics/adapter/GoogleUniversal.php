@@ -124,7 +124,7 @@ class GoogleUniversal extends Base {
                 $createOptions = [];
             }
 
-            $createOptions['cookieDomain'] = 'none';
+            $createOptions['cookieDomain'] = 'auto';
         }
 
         if($userId) {
