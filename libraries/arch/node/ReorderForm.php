@@ -50,14 +50,14 @@ abstract class ReorderForm extends Form {
 
         $fa = $fs->addField($this->_('%n% list', ['%n%' => ucfirst($itemName)]));
 
-        $ids = $this->values->items->toArray();
+        $weights = $this->values->weights->toArray();
         $nameList = $this->fetchNameList();
         $names = [];
         $count = count($nameList);
 
-        foreach($ids as $key => $id) {
+        foreach($weights as $id => $weight) {
             if(!isset($nameList[$id])) {
-                unset($this->values->items->{$key});
+                unset($this->values->weights->{$id});
                 continue;
             }
 
@@ -74,12 +74,13 @@ abstract class ReorderForm extends Form {
         foreach($names as $id => $name) {
             $fa->push(
                 $this->html('div.w.list.selection', [
-                    $this->html->hidden('items[]', $id),
-
                     $this->html('div.body', $name)
                         ->setTitle($id),
 
                     $this->html->buttonArea(
+                        $this->html->textbox('weights['.$id.']', $i + 1)
+                            ->setStyle('width', '4rem'),
+
                         $this->html->eventButton($this->eventName('up', $id), $this->_('Up'))
                             ->setIcon('arrow-up')
                             ->setDisposition('transitive')
@@ -96,42 +97,47 @@ abstract class ReorderForm extends Form {
             $i++;
         }
 
-        $fs->addDefaultButtonGroup('reorder', $this->_('Re-order'), 'list');
+        $fs->addButtonArea(
+            $this->html->saveEventButton('reorder', $this->_('Save'), 'list'),
+            $this->html->eventButton('update', $this->_('Update'))
+                ->setIcon('refresh')
+                ->addClass('informative'),
+
+            $this->html->buttonGroup(
+                $this->html->resetEventButton(),
+                $this->html->cancelEventButton()
+            )
+        );
     }
 
     protected function onUpEvent($id) {
-        if(null === ($index = $this->_getIndex($id))) {
-            return;
-        }
-
-        $this->values->items->move($index, -1);
-        $this->values->items->clearKeys();
+        $this->values->weights->move($id, -1);
     }
 
     protected function onDownEvent($id) {
-        if(null === ($index = $this->_getIndex($id))) {
-            return;
-        }
-
-        $this->values->items->move($index, 1);
-        $this->values->items->clearKeys();
+        $this->values->weights->move($id, 1);
     }
 
-    protected function _getIndex($id) {
-        foreach($this->values->items as $i => $testId) {
-            if($id == $testId) {
-                return $i;
-            }
-        }
-    }
+    protected function onUpdateEvent() {
+        $weights = $this->values->weights->toArray();
 
-    protected function onReorderEvent() {
-        $weights = array_flip($this->values->items->toArray());
+        uasort($weights, function($a, $b) {
+            return $a >= $b;
+        });
+
+        $weights = array_flip(array_keys($weights));
 
         array_walk($weights, function(&$value) {
             $value = $value + 1;
         });
 
+        $this->values->weights = $weights;
+    }
+
+    protected function onReorderEvent() {
+        $this->onUpdateEvent();
+
+        $weights = $this->values->weights->toArray();
         $output = $this->apply($weights);
 
         if($this->values->isValid()) {
