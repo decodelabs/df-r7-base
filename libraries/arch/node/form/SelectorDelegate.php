@@ -111,9 +111,24 @@ abstract class SelectorDelegate extends Delegate implements
             $selected = [$selected];
         }
 
-        $output = $this->_getQuery()
+        $rowSet = $this->_getQuery()
             ->where('@primary', 'in', $selected)
             ->toArray();
+
+        $rows = [];
+
+        foreach($rowSet as $row) {
+            $id = $this->_getResultId($row);
+            $rows[(string)$id] = $row;
+        }
+
+        $output = [];
+
+        foreach($selected as $id) {
+            if(isset($rows[$id])) {
+                $output[] = $rows[$id];
+            }
+        }
 
         if($cache) {
             $this->_selectionList = $output;
