@@ -376,7 +376,7 @@ trait TScaffold_RecordDataProvider {
         if($this->canDeleteRecord($record)) {
             static $redirTo;
 
-            if(!isset($isSection)) {
+            if(!isset($redirTo)) {
                 $redirTo = isset($this->request[$this->getRecordUrlKey()]) ?
                     $this->getRecordBackLinkRequest() : null;
             }
