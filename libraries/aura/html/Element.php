@@ -27,8 +27,8 @@ class Element extends Tag implements IElement, core\IDumpable {
         return (string)$this->renderWith($this);
     }
 
-    public function render($expanded=false) {
-        return $this->renderWith($this, $expanded);
+    public function render() {
+        return $this->renderWith($this);
     }
 
     public function setBody($body) {

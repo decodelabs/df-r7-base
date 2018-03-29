@@ -86,7 +86,7 @@ class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocus
                 $optGroup->push($option->render());
             }
 
-            $groupList->push($optGroup->render(true));
+            $groupList->push($optGroup->render());
         }
 
         if(!$selectionFound && $this->_noSelectionLabel !== null) {

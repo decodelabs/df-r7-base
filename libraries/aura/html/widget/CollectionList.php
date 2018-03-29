@@ -320,7 +320,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                     continue;
                 }
 
-                $content->append($rowTag->render(true));
+                $content->append($rowTag->render());
             }
         }
 
