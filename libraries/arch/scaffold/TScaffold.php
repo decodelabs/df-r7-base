@@ -374,11 +374,16 @@ trait TScaffold_RecordDataProvider {
 
         // Delete
         if($this->canDeleteRecord($record)) {
-            static $redirTo;
+            static $back;
+            $redirTo = null;
 
-            if(!isset($redirTo)) {
-                $redirTo = isset($this->request[$this->getRecordUrlKey()]) ?
-                    $this->getRecordBackLinkRequest() : null;
+            if($mode !== 'list') {
+                if(!isset($back)) {
+                    $back = isset($this->request[$this->getRecordUrlKey()]) ?
+                        $this->getRecordBackLinkRequest() : null;
+                }
+
+                $redirTo = $back;
             }
 
             $output[] = $this->html->link(
