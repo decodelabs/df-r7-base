@@ -332,6 +332,11 @@ class ContentSlot extends arch\node\form\Delegate implements
             $type = null;
         }
 
+        if($type === null) {
+            $this->values->newBlockType->addError('type', $this->_('Please select a type'));
+            return;
+        }
+
         try {
             $block = fire\block\Base::factory($type);
         } catch(\Throwable $e) {
