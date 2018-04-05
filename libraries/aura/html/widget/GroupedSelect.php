@@ -89,8 +89,10 @@ class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocus
             $groupList->push($optGroup->render());
         }
 
-        if(!$selectionFound && $this->_noSelectionLabel !== null) {
-            $groupList->unshift(new aura\html\Element('option', $this->_noSelectionLabel, ['value' => null, 'disabled' => true, 'selected' => true]));
+        if(!$this->isRequired() && !$tag->hasAttribute('multiple')) {
+            $groupList->unshift(new aura\html\Element('option', $this->_noSelectionLabel !== '--' ? $this->_noSelectionLabel : '', ['value' => '']));
+        } else if(!$selectionFound && $this->_noSelectionLabel !== null) {
+            $groupList->unshift(new aura\html\Element('option', $this->_noSelectionLabel, ['value' => '', 'disabled' => true, 'selected' => true]));
         }
 
         return $tag->renderWith($groupList, true);
