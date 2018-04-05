@@ -30,6 +30,11 @@ class Parser implements flex\IInlineHtmlProducer {
         'address', 'figure', 'figcaption'
     ];
 
+    const CONTAINER_TAG_LIST = [
+        'ul', 'ol',
+        'table', 'thead', 'tbody', 'tr'
+    ];
+
     protected $_extended = false;
 
     public function __construct(?string $source, bool $extended=false) {
@@ -78,21 +83,23 @@ class Parser implements flex\IInlineHtmlProducer {
 
         $context = arch\Context::getCurrent();
 
-        return $text
+        // Strip tags
+        $text->stripTags(implode('', $tags));
 
-            // Strip tags
-            ->stripTags(implode('', $tags))
 
-            // Sort out spaces
-            ->regexReplace('/(\s) /', '$1&nbsp;')
-            ->regexReplace('/ (\s)/', '&nbsp;$1')
+        // Sort out spaces
+        if(!$extended) {
+            $text
+                ->regexReplace('/(\s) /', '$1&nbsp;')
+                ->regexReplace('/ (\s)/', '&nbsp;$1');
+        }
 
-            // Urls
-            ->regexReplace('/ (href|src)\=\"([^\"]+)\"/', function($matches) use($context) {
-                return ' '.$matches[1].'="'.htmlspecialchars((string)$context->uri->__invoke($matches[2])).'"';
-            })
+        // Urls
+        $text->regexReplace('/ (href|src)\=\"([^\"]+)\"/', function($matches) use($context) {
+            return ' '.$matches[1].'="'.htmlspecialchars((string)$context->uri->__invoke($matches[2])).'"';
+        });
 
-            ->toString();
+        return $text->toString();
     }
 
 
@@ -132,6 +139,8 @@ class Parser implements flex\IInlineHtmlProducer {
             $blockReg = '(?:p)';
         }
 
+        $containerReg = '(?:'.implode('|', self::CONTAINER_TAG_LIST).')';
+
         $parts = (new flex\Text($text))
 
             // Double <br>s
@@ -153,12 +162,23 @@ class Parser implements flex\IInlineHtmlProducer {
         foreach($parts as $part) {
             $part = trim($part);
 
+            if($extended && !preg_match('!</?'.$containerReg.'[^>]*>!', $part)) {
+                $part = (new flex\Text($part))
+
+                    // Sort out spaces
+                    ->regexReplace('/(\s) /', '$1&nbsp;')
+                    ->regexReplace('/ (\s)/', '&nbsp;$1')
+
+                    ->toString();
+            }
+
             if(!preg_match('!</?'.$blockReg.'[^>]*>!', $part)) {
                 $part = '<p>'.$part.'</p>';
             }
 
             $text .= $part."\n";
         }
+
 
         $text = (new flex\Text($text))
 
