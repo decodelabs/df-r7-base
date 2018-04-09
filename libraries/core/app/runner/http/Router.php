@@ -93,6 +93,12 @@ class Router implements core\IRegistryObject {
 
         $parts = explode('.', $domain);
         $sub = array_shift($parts);
+
+        if($sub == 'www') {
+            $domain = implode('.', $parts);
+            $sub = array_shift($parts);
+        }
+
         $test = implode('.', $parts);
 
         if(isset($this->_mapIn['*.'.$test])) {

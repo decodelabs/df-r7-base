@@ -284,26 +284,30 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
             $valid = false;
         } else {
-            $this->_router->setBase($map);
-        }
-
-        if($map && !$map->mapPath($path)) {
-            $pathValid = $valid = false;
-        }
-
-        if($pathValid && $valid && $map && $map->area === '*') {
-            $area = $path->get(0);
-
-            if(substr($area, 0, 1) != '~') {
-                $area = 'front';
-            } else {
-                $area = substr($area, 1);
+            if($map->mappedDomain !== null && $map->mappedDomain !== $url->getDomain()) {
+                $valid = false;
             }
 
-            $mapOut = $this->_router->getMapOut($area);
+            $this->_router->setBase($map);
 
-            if($mapOut && $mapOut->area !== $map->area) {
-                $valid = false;
+            if(!$map->mapPath($path)) {
+                $pathValid = $valid = false;
+            }
+
+            if($pathValid && $valid && $map->area === '*') {
+                $area = $path->get(0);
+
+                if(substr($area, 0, 1) != '~') {
+                    $area = 'front';
+                } else {
+                    $area = substr($area, 1);
+                }
+
+                $mapOut = $this->_router->getMapOut($area);
+
+                if($mapOut && $mapOut->area !== $map->area) {
+                    $valid = false;
+                }
             }
         }
 
@@ -312,9 +316,15 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         if(!$valid) {
-            $baseUrl = (string)$this->_router->requestToUrl(
-                (new arch\Request($redirectPath))->setQuery($url->getQuery())
-            );
+            $redirectRequest = (new arch\Request($redirectPath))
+                ->setQuery($url->getQuery());
+
+            if($map && $map->area !== '*') {
+                $redirectRequest->setArea($map->area);
+                $redirectRequest->query->{$map->area} = $map->mappedKey;
+            }
+
+            $baseUrl = (string)$this->_router->requestToUrl($redirectRequest);
 
             if(df\Launchpad::$app->isDevelopment()) {
                 $response = new link\http\response\Stream(
