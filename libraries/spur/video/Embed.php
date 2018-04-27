@@ -11,8 +11,8 @@ use df\spur;
 use df\link;
 use df\aura;
 
-class Embed implements IVideoEmbed {
-
+class Embed implements IVideoEmbed
+{
     use core\TStringProvider;
 
     const URL_MAP = [
@@ -35,15 +35,16 @@ class Embed implements IVideoEmbed {
     protected $_useApi = false;
     protected $_source;
 
-    public static function parse($embed) {
+    public static function parse($embed)
+    {
         $embed = trim($embed);
+        $stripEmbed = strip_tags($embed, '<iframe><object><script>');
+        $parts = explode('<', $stripEmbed, 2);
 
-        $parts = explode('<', $embed, 2);
-
-        if(count($parts) == 2) {
+        if (count($parts) == 2) {
             $embed = '<'.array_pop($parts);
 
-            if(!preg_match('/^\<([a-zA-Z0-9\-]+) /i', $embed, $matches)) {
+            if (!preg_match('/^\<([a-zA-Z0-9\-]+) /i', $embed, $matches)) {
                 throw new UnexpectedValueException(
                     'Don\'t know how to parse this video embed'
                 );
@@ -51,10 +52,10 @@ class Embed implements IVideoEmbed {
 
             $tag = strtolower($matches[1]);
 
-            switch($tag) {
+            switch ($tag) {
                 case 'iframe':
                 case 'object':
-                    if(!preg_match('/src\=(\"|\')([^\'"]+)(\"|\')/i', $embed, $matches)) {
+                    if (!preg_match('/src\=(\"|\')([^\'"]+)(\"|\')/i', $embed, $matches)) {
                         throw new UnexpectedValueException(
                             'Could not extract source from flash embed'
                         );
@@ -63,10 +64,10 @@ class Embed implements IVideoEmbed {
                     $url = trim($matches[2]);
                     $output = new self($url, null, null, $embed);
 
-                    if(preg_match('/width\=\"([^\"]+)\"/i', $embed, $matches)) {
+                    if (preg_match('/width\=\"([^\"]+)\"/i', $embed, $matches)) {
                         $width = $matches[1];
 
-                        if(preg_match('/height\=\"([^\"]+)\"/i', $embed, $matches)) {
+                        if (preg_match('/height\=\"([^\"]+)\"/i', $embed, $matches)) {
                             $height = $matches[1];
                         } else {
                             $height = round(($width / $output->_width) * $output->_height);
@@ -96,14 +97,15 @@ class Embed implements IVideoEmbed {
     }
 
 
-    public function __construct($url, $width=null, $height=null, $embedSource=null) {
+    public function __construct($url, $width=null, $height=null, $embedSource=null)
+    {
         $this->setUrl($url);
 
-        if($width !== null) {
+        if ($width !== null) {
             $this->setWidth($width);
         }
 
-        if($height !== null) {
+        if ($height !== null) {
             $this->setHeight($height);
         }
 
@@ -111,16 +113,17 @@ class Embed implements IVideoEmbed {
         $this->_id = uniqid('video-');
     }
 
-// Url
-    public function setUrl($url) {
-        if(empty($url)) {
+    // Url
+    public function setUrl($url)
+    {
+        if (empty($url)) {
             $this->_url = null;
             return $this;
         }
 
         $url = str_replace('&amp;', '&', $url);
 
-        if(false !== strpos($url, '&') && false === strpos($url, '?')) {
+        if (false !== strpos($url, '&') && false === strpos($url, '?')) {
             $parts = explode('&', $url, 2);
             $url = implode('?', $parts);
         }
@@ -128,8 +131,8 @@ class Embed implements IVideoEmbed {
         $this->_url = $url;
         $this->_provider = null;
 
-        foreach(self::URL_MAP as $search => $key) {
-            if(false !== stripos($this->_url, $search)) {
+        foreach (self::URL_MAP as $search => $key) {
+            if (false !== stripos($this->_url, $search)) {
                 $this->_provider = $key;
                 break;
             }
@@ -138,39 +141,47 @@ class Embed implements IVideoEmbed {
         return $this;
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
         return $this->_url;
     }
 
-    public function getPreparedUrl() {
+    public function getPreparedUrl()
+    {
         return $this->render()->getAttribute('src');
     }
 
-    public function getProvider() {
+    public function getProvider()
+    {
         return $this->_provider;
     }
 
-    public function setId(?string $id) {
+    public function setId(?string $id)
+    {
         $this->_id = $id;
         return $this;
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->_id;
     }
 
 
-    public function setOrigin(?string $origin) {
+    public function setOrigin(?string $origin)
+    {
         $this->_origin = $origin;
         return $this;
     }
 
-    public function getOrigin(): ?string {
+    public function getOrigin(): ?string
+    {
         return $this->_origin;
     }
 
-    public function shouldUseApi(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldUseApi(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_useApi = $flag;
             return $this;
         }
@@ -180,26 +191,28 @@ class Embed implements IVideoEmbed {
 
 
 
-// Thumbnail
-    public function lookupThumbnailUrl(): ?string {
-        if($this->_provider === 'youtube') {
+    // Thumbnail
+    public function lookupThumbnailUrl(): ?string
+    {
+        if ($this->_provider === 'youtube') {
             return $this->_lookupYoutubeThumbnail();
-        } else if($this->_provider === 'vimeo') {
+        } elseif ($this->_provider === 'vimeo') {
             return $this->_lookupVimeoThumbnail();
         } else {
             return null;
         }
     }
 
-    protected function _lookupYoutubeThumbnail(): ?string {
+    protected function _lookupYoutubeThumbnail(): ?string
+    {
         $url = link\http\Url::factory($this->_url);
 
-        if(isset($url->query->v)) {
+        if (isset($url->query->v)) {
             $id = $url->query['v'];
         } else {
             $id = $url->path->getLast();
 
-            if($id == 'watch') {
+            if ($id == 'watch') {
                 return null;
             }
         }
@@ -207,12 +220,13 @@ class Embed implements IVideoEmbed {
         return 'http://img.youtube.com/vi/'.$id.'/hqdefault.jpg';
     }
 
-    protected function _lookupVimeoThumbnail(): ?string {
+    protected function _lookupVimeoThumbnail(): ?string
+    {
         $url = 'https://vimeo.com/api/oembed.json?url='.$this->_url;
         $client = new link\http\Client();
         $response = $client->get($url);
 
-        if(!$response->isOk()) {
+        if (!$response->isOk()) {
             return null;
         }
 
@@ -222,26 +236,28 @@ class Embed implements IVideoEmbed {
 
 
 
-// Meta
-    public function lookupMeta(): ?array {
-        if($this->_provider === 'youtube') {
+    // Meta
+    public function lookupMeta(): ?array
+    {
+        if ($this->_provider === 'youtube') {
             return $this->_lookupYoutubeMeta();
-        } else if($this->_provider === 'vimeo') {
+        } elseif ($this->_provider === 'vimeo') {
             return $this->_lookupVimeoMeta();
         } else {
             return null;
         }
     }
 
-    protected function _lookupYoutubeMeta(): ?array {
+    protected function _lookupYoutubeMeta(): ?array
+    {
         $url = link\http\Url::factory($this->_url);
 
-        if(isset($url->query->v)) {
+        if (isset($url->query->v)) {
             $id = $url->query['v'];
         } else {
             $id = $url->path->getLast();
 
-            if($id == 'watch') {
+            if ($id == 'watch') {
                 return null;
             }
         }
@@ -253,7 +269,7 @@ class Embed implements IVideoEmbed {
         $client = new link\http\Client();
         $response = $client->get($url);
 
-        if(!$response->isOk()) {
+        if (!$response->isOk()) {
             return null;
         }
 
@@ -264,7 +280,7 @@ class Embed implements IVideoEmbed {
         $client = new link\http\Client();
         $response = $client->get($url);
 
-        if(!$response->isOk()) {
+        if (!$response->isOk()) {
             return null;
         }
 
@@ -288,12 +304,13 @@ class Embed implements IVideoEmbed {
         ];
     }
 
-    protected function _lookupVimeoMeta(): ?array {
+    protected function _lookupVimeoMeta(): ?array
+    {
         $url = 'https://vimeo.com/api/oembed.json?url='.$this->_url;
         $client = new link\http\Client();
         $response = $client->get($url);
 
-        if(!$response->isOk()) {
+        if (!$response->isOk()) {
             return null;
         }
 
@@ -318,13 +335,15 @@ class Embed implements IVideoEmbed {
 
 
 
- // Width
-    public function setWidth($width) {
+    // Width
+    public function setWidth($width)
+    {
         $this->_width = (int)$width;
         return $this;
     }
 
-    public function scaleWidth($width) {
+    public function scaleWidth($width)
+    {
         $width = (int)$width;
         $this->_height = round(($width / $this->_width) * $this->_height);
         $this->_width = $width;
@@ -332,33 +351,37 @@ class Embed implements IVideoEmbed {
         return $this;
     }
 
-    public function getWidth() {
+    public function getWidth()
+    {
         return $this->_width;
     }
 
-// Height
-    public function setHeight($height) {
+    // Height
+    public function setHeight($height)
+    {
         $this->_height = (int)$height;
         return $this;
     }
 
-    public function getHeight() {
+    public function getHeight()
+    {
         return $this->_height;
     }
 
-    public function setDimensions($width, $height=null) {
+    public function setDimensions($width, $height=null)
+    {
         $width = (int)$width;
         $height = (int)$height;
 
-        if(!$height) {
-            if($width) {
+        if (!$height) {
+            if ($width) {
                 return $this->scaleWidth($width);
             } else {
                 return $this;
             }
         }
 
-        if(!$width) {
+        if (!$width) {
             $width = round(($height / $this->_height) * $this->_width);
         }
 
@@ -368,9 +391,10 @@ class Embed implements IVideoEmbed {
         return $this;
     }
 
-// Full screen
-    public function shouldAllowFullScreen(bool $flag=null) {
-        if($flag !== null) {
+    // Full screen
+    public function shouldAllowFullScreen(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_allowFullScreen = $flag;
             return $this;
         }
@@ -379,25 +403,28 @@ class Embed implements IVideoEmbed {
     }
 
 
-// Duration
-    public function setStartTime($seconds) {
+    // Duration
+    public function setStartTime($seconds)
+    {
         $this->_startTime = (int)$seconds;
 
-        if(!$this->_startTime) {
+        if (!$this->_startTime) {
             $this->_startTime = null;
         }
 
         return $this;
     }
 
-    public function getStartTime() {
+    public function getStartTime()
+    {
         return $this->_startTime;
     }
 
-    public function setEndTime($seconds) {
+    public function setEndTime($seconds)
+    {
         $this->_endTime = (int)$seconds;
 
-        if(!$this->_endTime) {
+        if (!$this->_endTime) {
             $this->_endTime = null;
         } else {
             $this->_duration = null;
@@ -406,14 +433,16 @@ class Embed implements IVideoEmbed {
         return $this;
     }
 
-    public function getEndTime() {
+    public function getEndTime()
+    {
         return $this->_endTime;
     }
 
-    public function setDuration($seconds) {
+    public function setDuration($seconds)
+    {
         $this->_duration = (int)$seconds;
 
-        if(!$this->_duration) {
+        if (!$this->_duration) {
             $this->_duration = null;
         } else {
             $this->_endTime = null;
@@ -422,14 +451,16 @@ class Embed implements IVideoEmbed {
         return $this;
     }
 
-    public function getDuration() {
+    public function getDuration()
+    {
         return $this->_duration;
     }
 
 
-// Auto play
-    public function shouldAutoPlay(bool $flag=null) {
-        if($flag !== null) {
+    // Auto play
+    public function shouldAutoPlay(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_autoPlay = $flag;
             return $this;
         }
@@ -438,13 +469,14 @@ class Embed implements IVideoEmbed {
     }
 
 
-// String
-    public function render() {
-        if(($this->_url === null || !$this->_provider) && $this->_source !== null) {
+    // String
+    public function render()
+    {
+        if (($this->_url === null || !$this->_provider) && $this->_source !== null) {
             return new aura\html\Element('div.w.embed.video', new aura\html\ElementString($this->_source));
         }
 
-        if($this->_provider) {
+        if ($this->_provider) {
             $func = '_render'.ucfirst($this->_provider);
             $tag = $this->$func();
         } else {
@@ -458,7 +490,7 @@ class Embed implements IVideoEmbed {
 
         $tag->addClass('w embed video');
 
-        if($tag->getName() == 'iframe' && $this->_allowFullScreen) {
+        if ($tag->getName() == 'iframe' && $this->_allowFullScreen) {
             $tag->setAttribute('allowfullscreen', true);
             $tag->setAttribute('webkitAllowFullScreen', true);
             $tag->setAttribute('mozallowfullscreen', true);
@@ -467,21 +499,23 @@ class Embed implements IVideoEmbed {
         return $tag;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return $this->render()->toString();
     }
 
 
-// Url prepare
-    protected function _renderYoutube() {
+    // Url prepare
+    protected function _renderYoutube()
+    {
         $url = link\http\Url::factory($this->_url);
 
-        if(isset($url->query->v)) {
+        if (isset($url->query->v)) {
             $id = $url->query['v'];
         } else {
             $id = $url->path->getLast();
 
-            if($id == 'watch') {
+            if ($id == 'watch') {
                 core\stub($url);
             }
         }
@@ -495,33 +529,33 @@ class Embed implements IVideoEmbed {
 
         $url = new link\http\Url('//www.youtube.com/embed/'.$id);
 
-        foreach($url->query as $key => $node) {
-            if(in_array(strtolower($key), $vars)) {
+        foreach ($url->query as $key => $node) {
+            if (in_array(strtolower($key), $vars)) {
                 $url->query->set($key, $node);
             }
         }
 
-        if($this->_startTime !== null) {
+        if ($this->_startTime !== null) {
             $url->query->start = $this->_startTime;
         }
 
-        if($this->_endTime !== null) {
+        if ($this->_endTime !== null) {
             $url->query->end = $this->_endTime;
         }
 
-        if($this->_duration !== null) {
+        if ($this->_duration !== null) {
             $url->query->end = $this->_duration + $this->_startTime;
         }
 
-        if($this->_autoPlay) {
+        if ($this->_autoPlay) {
             $url->query->autoplay = 1;
         }
 
-        if($this->_useApi) {
+        if ($this->_useApi) {
             $url->query->enablejsapi = 1;
         }
 
-        if($this->_origin !== null) {
+        if ($this->_origin !== null) {
             $url->query->origin = $this->_origin;
         }
 
@@ -537,14 +571,15 @@ class Embed implements IVideoEmbed {
         return $tag;
     }
 
-    protected function _renderVimeo() {
+    protected function _renderVimeo()
+    {
         $url = link\http\Url::factory($this->_url);
         $id = $url->path->getLast();
 
-        if(is_numeric($id)) {
+        if (is_numeric($id)) {
             $url = new link\http\Url('//player.vimeo.com/video/'.$id);
 
-            if($this->_autoPlay) {
+            if ($this->_autoPlay) {
                 $url->query->autoplay = 1;
             }
 
