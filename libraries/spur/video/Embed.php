@@ -38,7 +38,7 @@ class Embed implements IVideoEmbed
     public static function parse($embed)
     {
         $embed = trim($embed);
-        $stripEmbed = strip_tags($embed, '<iframe><object><script>');
+        $stripEmbed = strip_tags($embed, '<iframe><object><embed><script>');
         $parts = explode('<', $stripEmbed, 2);
 
         if (count($parts) == 2) {
