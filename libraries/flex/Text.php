@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\flex;
 
-class Text implements IText, \IteratorAggregate, core\IDumpable {
-
+class Text implements IText, \IteratorAggregate, core\IDumpable
+{
     use core\TValueMap;
     use core\collection\TExtractList;
     use core\collection\TNaiveIndexedMovable;
@@ -20,8 +20,9 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     private $_pos = 0;
 
 
-// Macros
-    public static function formatName($name) {
+    // Macros
+    public static function formatName($name)
+    {
         return self::factory($name)
             ->replace(['-', '_'], ' ')
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
@@ -29,7 +30,8 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->toString();
     }
 
-    public static function formatInitials($name, bool $extendShort=true) {
+    public static function formatInitials($name, bool $extendShort=true)
+    {
         $output = self::factory($name)
             ->replace(['-', '_'], ' ')
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
@@ -37,10 +39,10 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->regexReplace('/[^A-Z0-9]/', '')
             ->toString();
 
-        if($extendShort && strlen($output) == 1) {
+        if ($extendShort && strlen($output) == 1) {
             $chars = str_replace(['a', 'e', 'i', 'o', 'u'], '', $name);
 
-            if(isset($chars{1})) {
+            if (isset($chars{1})) {
                 $output .= $chars{1};
             }
         }
@@ -48,14 +50,16 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $output;
     }
 
-    public static function formatConsonants($text) {
+    public static function formatConsonants($text)
+    {
         return self::factory($text)
             ->translitToAscii()
             ->regexReplace('/[aeiou]+/i', '')
             ->toString();
     }
 
-    public static function formatLabel($label) {
+    public static function formatLabel($label)
+    {
         return self::factory($label)
             ->replace(['-', '_'], ' ')
             ->regexReplace('/([a-z])([A-Z])/u', '$1 $2')
@@ -64,7 +68,8 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->toString();
     }
 
-    public static function formatId($id) {
+    public static function formatId($id)
+    {
         return self::factory($id)
             ->translitToAscii()
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
@@ -75,7 +80,8 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->toString();
     }
 
-    public static function formatConstant($const) {
+    public static function formatConstant($const)
+    {
         return self::factory($const)
             ->translitToAscii()
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
@@ -86,7 +92,8 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->toString();
     }
 
-    public static function formatNodeSlug($node) {
+    public static function formatNodeSlug($node)
+    {
         return self::factory($node)
             ->translitToAscii()
             ->regexReplace('/([^ ])([A-Z])/u', '$1-$2')
@@ -94,7 +101,8 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->toString();
     }
 
-    public static function formatSlug($slug, $allowedChars=null) {
+    public static function formatSlug($slug, $allowedChars=null)
+    {
         return trim(self::factory($slug)
             ->translitToAscii()
             ->regexReplace('/([a-z][a-z])([A-Z][a-z])/u', '$1 $2')
@@ -106,13 +114,14 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             ->toString(), ' -');
     }
 
-    public static function formatPathSlug($slug, $allowedChars=null) {
+    public static function formatPathSlug($slug, $allowedChars=null)
+    {
         $parts = explode('/', $slug);
 
-        foreach($parts as $i => $part) {
+        foreach ($parts as $i => $part) {
             $part = trim($part);
 
-            if(empty($part)) {
+            if (empty($part)) {
                 unset($parts[$i]);
                 continue;
             }
@@ -120,20 +129,21 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             $parts[$i] = self::formatSlug($part, $allowedChars);
         }
 
-        if(empty($parts)) {
+        if (empty($parts)) {
             return '/';
         }
 
         return implode('/', $parts);
     }
 
-    public static function formatFileName($fileName, $allowSpaces=false) {
+    public static function formatFileName($fileName, $allowSpaces=false)
+    {
         $output = self::factory($fileName)
             ->translitToAscii()
             ->replace('/', '_')
             ->regexReplace('/[\/\\?%*:|"<>]/', '');
 
-        if(!$allowSpaces) {
+        if (!$allowSpaces) {
             $output->replace(' ', '-');
         }
 
@@ -141,18 +151,19 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-    public static function shorten($string, $length, $right=false) {
+    public static function shorten($string, $length, $right=false)
+    {
         $length = (int)$length;
 
-        if($length < 6) {
+        if ($length < 6) {
             $length = 6;
         }
 
 
         $output = self::factory($string);
 
-        if($output->getLength() > ($length - 3)) {
-            if($right) {
+        if ($output->getLength() > ($length - 3)) {
+            if ($right) {
                 $output->substring(-($length - 3))->prepend('...');
             } else {
                 $output->substring(0, $length - 3)->append('...');
@@ -163,7 +174,8 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-    public static function compare($string1, $string2) {
+    public static function compare($string1, $string2)
+    {
         $string1 = self::factory($string1);
         $string2 = self::factory($string2);
 
@@ -176,10 +188,11 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-// Case flags
-    public static function normalizeCaseFlag($case) {
-        if(is_string($case)) {
-            switch(strtolower(self::formatId($case))) {
+    // Case flags
+    public static function normalizeCaseFlag($case)
+    {
+        if (is_string($case)) {
+            switch (strtolower(self::formatId($case))) {
                 case 'words':
                 case 'upperwords':
                     $case = flex\ICase::UPPER_WORDS;
@@ -207,7 +220,7 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             }
         }
 
-        switch($case) {
+        switch ($case) {
             case flex\ICase::UPPER_WORDS:
             case flex\ICase::UPPER_FIRST:
             case flex\ICase::UPPER:
@@ -223,20 +236,22 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $case;
     }
 
-    public static function applyCase($string, $case, $encoding=flex\IEncoding::UTF_8) {
+    public static function applyCase($string, $case, $encoding=flex\IEncoding::UTF_8)
+    {
         return self::factory($string, $encoding)
             ->setCase($case)
             ->toString();
     }
 
 
-// Alnum convert
-    public static function numericToAlpha($number) {
+    // Alnum convert
+    public static function numericToAlpha($number)
+    {
         $alphabet = 'abcdefghijklmnopqrstuvwxyz';
         $number = (int)$number;
         $output = '';
 
-        while($number >= 0) {
+        while ($number >= 0) {
             $key = $number % 26;
             $output = $alphabet{$key}.$output;
             $number = (($number - $key) / 26) - 1;
@@ -245,10 +260,11 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $output;
     }
 
-    public static function alphaToNumeric($alpha) {
+    public static function alphaToNumeric($alpha)
+    {
         $output = -1;
 
-        for($i = 0; $i < $length = strlen($alpha); $i++) {
+        for ($i = 0; $i < $length = strlen($alpha); $i++) {
             $output = (($output + 1) * 26) + (base_convert($alpha{$i}, 36, 10) - 10);
         }
 
@@ -256,35 +272,40 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-// Checks
-    public static function isAlpha($string) {
+    // Checks
+    public static function isAlpha($string)
+    {
         return (bool)preg_match('/^[a-zA-Z]+$/', $string);
     }
 
-    public static function isAlphaNumeric($string) {
+    public static function isAlphaNumeric($string)
+    {
         return (bool)preg_match('/^[a-zA-Z0-9]+$/', $string);
     }
 
-    public static function isDigit($string) {
+    public static function isDigit($string)
+    {
         return (bool)preg_match('/^[0-9]+$/', $string);
     }
 
-    public static function isWhitespace($string) {
+    public static function isWhitespace($string)
+    {
         return (bool)preg_match('/^\s+$/', $string);
     }
 
 
-// Convert
-    public static function stringToBoolean($value, $default=false) {
-        if(is_bool($value)) {
+    // Convert
+    public static function stringToBoolean($value, $default=false)
+    {
+        if (is_bool($value)) {
             return $value;
-        } else if($value === '') {
+        } elseif ($value === '') {
             return $default;
-        } else if($value === null) {
+        } elseif ($value === null) {
             return false;
         }
 
-        switch(strtolower($value)) {
+        switch (strtolower($value)) {
             case 'false':
             case '0':
             case 'no':
@@ -307,23 +328,24 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-    public static function baseConvert($input, $fromBase, $toBase, $pad=1) {
-        if($fromBase < 2
+    public static function baseConvert($input, $fromBase, $toBase, $pad=1)
+    {
+        if ($fromBase < 2
         || $fromBase > 36
         || $toBase < 2
         || $toBase > 36) {
             return false;
         }
 
-        if(!is_string($input)) {
+        if (!is_string($input)) {
             $input = sprintf('%0.0F', $input);
         }
 
 
-        if(extension_loaded('gmp')) {
+        if (extension_loaded('gmp')) {
             $output = gmp_strval(gmp_init($input, $fromBase), $toBase);
 
-            if($pad > 1) {
+            if ($pad > 1) {
                 $output = str_pad($output, $pad, '0', STR_PAD_LEFT);
             }
 
@@ -339,14 +361,14 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         $length = strlen($input);
 
 
-        for($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             $digit = ord($input{$i}) - 48;
 
-            if($digit > 9) {
+            if ($digit > 9) {
                 $digit -= 39;
             }
 
-            if($digit > $fromBase) {
+            if ($digit > $fromBase) {
                 return false;
             }
 
@@ -354,17 +376,17 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         }
 
 
-        while(!empty($inDigits)) {
+        while (!empty($inDigits)) {
             $work = 0;
             $workDigits = [];
 
-            foreach($inDigits as $digit) {
+            foreach ($inDigits as $digit) {
                 $work *= $fromBase;
                 $work += $digit;
 
 
-                if($work < $toBase) {
-                    if(!empty($workDigits)) {
+                if ($work < $toBase) {
+                    if (!empty($workDigits)) {
                         $workDigits[] = 0;
                     }
                 } else {
@@ -381,14 +403,15 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-    public static function ascii32ToHex32($string) {
-        for($i = 0; $i < strlen($string); $i++) {
+    public static function ascii32ToHex32($string)
+    {
+        for ($i = 0; $i < strlen($string); $i++) {
             $char = substr($string, $i, 1);
 
-            if(ord($char) < 32) {
+            if (ord($char) < 32) {
                 $hex = dechex(ord($char));
 
-                if(strlen($hex) == 1) {
+                if (strlen($hex) == 1) {
                     $hex = '0'.$hex;
                 }
 
@@ -399,29 +422,31 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $string;
     }
 
-    public static function hex32ToAscii32($string) {
+    public static function hex32ToAscii32($string)
+    {
         return preg_replace_callback(
             "/\\\([0-9A-Fa-f]{2})/",
-            function($matches) {
+            function ($matches) {
                 return chr(hexdec($matches[0]));
             },
             $string
         );
     }
 
-    public static function mbOrd($chr) {
+    public static function mbOrd($chr)
+    {
         $h = ord($chr{0});
 
-        if($h <= 0x7F) {
+        if ($h <= 0x7F) {
             return $h;
-        } else if($h < 0xC2) {
+        } elseif ($h < 0xC2) {
             return false;
-        } else if($h <= 0xDF) {
+        } elseif ($h <= 0xDF) {
             return ($h & 0x1F) << 6 | (ord($chr{1}) & 0x3F);
-        } else if($h <= 0xEF) {
+        } elseif ($h <= 0xEF) {
             return ($h & 0x0F) << 12 | (ord($chr{1}) & 0x3F) << 6
                                      | (ord($chr{2}) & 0x3F);
-        } else if($h <= 0xF4) {
+        } elseif ($h <= 0xF4) {
             return ($h & 0x0F) << 18 | (ord($chr{1}) & 0x3F) << 12
                                      | (ord($chr{2}) & 0x3F) << 6
                                      | (ord($chr{3}) & 0x3F);
@@ -431,22 +456,24 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-// Meta
-    public static function countWords($value) {
+    // Meta
+    public static function countWords($value)
+    {
         return self::factory(trim($value).' ')
             ->regexReplace('/[^\w\s]+/', '')
             ->regexReplace('/[\s]+/', ' ')
             ->substringCount(' ');
     }
 
-    public static function splitWords($value, $strip=true, $expand=true) {
+    public static function splitWords($value, $strip=true, $expand=true)
+    {
         $output = self::factory(trim($value));
 
-        if($strip) {
+        if ($strip) {
             $output->regexReplace('/[^\w\s]+/', '');
         }
 
-        if($expand) {
+        if ($expand) {
             $output->regexReplace('/([a-z])([A-Z])/u', '$1 $2');
         }
 
@@ -456,24 +483,26 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
 
 
 
-// Construct
-    public static function factory($value, $encoding=flex\IEncoding::UTF_8) {
-        if($value instanceof IText) {
+    // Construct
+    public static function factory($value, $encoding=flex\IEncoding::UTF_8)
+    {
+        if ($value instanceof IText) {
             return $value;
         }
 
         return new self($value, $encoding);
     }
 
-    public function __construct($value, $encoding=flex\IEncoding::UTF_8) {
+    public function __construct($value, $encoding=flex\IEncoding::UTF_8)
+    {
         $this->import($value);
 
-        if($encoding === null) {
+        if ($encoding === null) {
             $encoding = flex\IEncoding::UTF_8;
         }
 
-        if($this->_encoding === null) {
-            if($encoding != flex\IEncoding::UTF_8 // quick shortcut to avoid lots of lookups
+        if ($this->_encoding === null) {
+            if ($encoding != flex\IEncoding::UTF_8 // quick shortcut to avoid lots of lookups
             || $encoding == flex\IEncoding::AUTO
             || !self::isValidEncoding($encoding)) {
                 // Add an ascii character to avoid the trailing char bug
@@ -485,25 +514,29 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-// Encoding
-    public static function isValidEncoding($encoding) {
+    // Encoding
+    public static function isValidEncoding($encoding)
+    {
         return in_array($encoding, mb_list_encodings());
     }
 
-    public function hasValidEncoding() {
+    public function hasValidEncoding()
+    {
         return mb_check_encoding($this->_value, $this->_encoding);
     }
 
-    public function getEncoding() {
+    public function getEncoding()
+    {
         return $this->_encoding;
     }
 
-    public function convertEncoding($encoding) {
-        if($encoding == $this->_encoding) {
+    public function convertEncoding($encoding)
+    {
+        if ($encoding == $this->_encoding) {
             return $this;
         }
 
-        if(!self::isValidEncoding($encoding)) {
+        if (!self::isValidEncoding($encoding)) {
             throw new InvalidArgumentException($encoding.' is not a valid string encoding');
         }
 
@@ -511,11 +544,13 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $this;
     }
 
-    public function toUtf8() {
+    public function toUtf8()
+    {
         return $this->convertEncoding(flex\IEncoding::UTF_8);
     }
 
-    public function translitToAscii() {
+    public function translitToAscii()
+    {
         $this->_value = str_replace(['À','Á','Â','Ã','Ä','Å'], 'A', $this->_value);
         $this->_value = str_replace(['È','É','Ê','Ë'], 'E', $this->_value);
         $this->_value = str_replace(['Ì','Í','Î','Ï'], 'I', $this->_value);
@@ -542,49 +577,57 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-// Output
-    public function __toString(): string {
+    // Output
+    public function __toString(): string
+    {
         return $this->_value;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return $this->_value;
     }
 
 
 
-// Indexes
-    public function getIndex($value) {
+    // Indexes
+    public function getIndex($value)
+    {
         return $this->indexOf($value);
     }
 
-    public function indexOf($needle, $offset=0) {
+    public function indexOf($needle, $offset=0)
+    {
         return mb_strpos($this->_value, $needle, $offset, $this->_encoding);
     }
 
-    public function iIndexOf($needle, $offset=0) {
+    public function iIndexOf($needle, $offset=0)
+    {
         return mb_stripos($this->_value, $needle, $offset, $this->_endoding);
     }
 
-    public function lastIndexOf($needle, $offset=0) {
+    public function lastIndexOf($needle, $offset=0)
+    {
         return mb_strrpos($this->_value, $needle, $offset, $this->_encoding);
     }
 
-    public function iLastIndexOf($needle, $offset=0) {
+    public function iLastIndexOf($needle, $offset=0)
+    {
         return mb_strripos($this->_value, $needle, $offset, $this->_encoding);
     }
 
 
-    public function toIndexOf($needle, $offset=0) {
-        if($offset <= 0) {
-            if(false === ($output = mb_strstr($this->_value, $needle, true, $this->_encoding))) {
+    public function toIndexOf($needle, $offset=0)
+    {
+        if ($offset <= 0) {
+            if (false === ($output = mb_strstr($this->_value, $needle, true, $this->_encoding))) {
                 return null;
             }
 
             return new self($output, $this->_encoding);
         }
 
-        if(false === ($pos = $this->indexOf($needle, $offset))) {
+        if (false === ($pos = $this->indexOf($needle, $offset))) {
             return null;
         }
 
@@ -594,30 +637,32 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         );
     }
 
-    public function fromIndexOf($needle, $offset=0) {
-        if($offset <= 0) {
+    public function fromIndexOf($needle, $offset=0)
+    {
+        if ($offset <= 0) {
             $output = mb_strstr($this->_value, $needle, false, $this->_encoding);
         } else {
             $output = mb_strstr(mb_substr($this->_value, $offset), $needle, false, $this->_encoding);
         }
 
-        if($output === false) {
+        if ($output === false) {
             $output = null;
         }
 
         return new self($output, $this->_encoding);
     }
 
-    public function iToIndexOf($needle, $offset=0) {
-        if($offset <= 0) {
-            if(false === ($output = mb_stristr($this->_value, $needle, true, $this->_encoding))) {
+    public function iToIndexOf($needle, $offset=0)
+    {
+        if ($offset <= 0) {
+            if (false === ($output = mb_stristr($this->_value, $needle, true, $this->_encoding))) {
                 return null;
             }
 
             return new self($output, $this->_encoding);
         }
 
-        if(false === ($pos = $this->indexOf($needle, $offset))) {
+        if (false === ($pos = $this->indexOf($needle, $offset))) {
             return null;
         }
 
@@ -627,14 +672,15 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         );
     }
 
-    public function iFromIndexOf($needle, $offset=0) {
-        if($offset <= 0) {
+    public function iFromIndexOf($needle, $offset=0)
+    {
+        if ($offset <= 0) {
             $output = mb_stristr($this->_value, $needle, false, $this->_encoding);
         } else {
             $output = mb_stristr(mb_substr($this->_value, $offset), $needle, false, $this->_encoding);
         }
 
-        if($output === false) {
+        if ($output === false) {
             $output = null;
         }
 
@@ -642,33 +688,38 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
     }
 
 
-    public function count() {
+    public function count()
+    {
         return mb_strlen($this->_value, $this->_encoding);
     }
 
 
-// Length
-    public function getLength() {
+    // Length
+    public function getLength()
+    {
         return mb_strlen($this->_value, $this->_encoding);
     }
 
-    public function prepend($string) {
+    public function prepend($string)
+    {
         $this->_value = $string.$this->_value;
         return $this;
     }
 
-    public function append($string) {
+    public function append($string)
+    {
         $this->_value .= $string;
         return $this;
     }
 
 
 
-// Case
-    public function setCase($case) {
+    // Case
+    public function setCase($case)
+    {
         $case = self::normalizeCaseFlag($case);
 
-        switch($case) {
+        switch ($case) {
             case flex\ICase::UPPER_WORDS:
                 return $this->wordsToUpper();
 
@@ -689,28 +740,33 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         }
     }
 
-    public function toUpper() {
+    public function toUpper()
+    {
         $this->_value = mb_strtoupper($this->_value, $this->_encoding);
         return $this;
     }
 
-    public function firstToUpper() {
+    public function firstToUpper()
+    {
         $this->_value = mb_strtoupper(mb_substr($this->_value, 0, 1, $this->_encoding)).
             mb_substr($this->_value, 1, mb_strlen($this->_value, $this->_encoding), $this->_encoding);
         return $this;
     }
 
-    public function wordsToUpper() {
+    public function wordsToUpper()
+    {
         $this->_value = mb_convert_case($this->_value, MB_CASE_TITLE, $this->_encoding);
         return $this;
     }
 
-    public function toLower() {
+    public function toLower()
+    {
         $this->_value = mb_strtolower($this->_value, $this->_encoding);
         return $this;
     }
 
-    public function firstToLower() {
+    public function firstToLower()
+    {
         $this->_value = mb_strtolower(mb_substr($this->_value, 0, 1, $this->_encoding)).
             mb_substr($this->_value, 1, mb_strlen($this->_value, $this->_encoding), $this->_encoding);
         return $this;
@@ -718,9 +774,10 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
 
 
 
-// Splitting
-    public function substring($start, $length=null) {
-        if($length === null) {
+    // Splitting
+    public function substring($start, $length=null)
+    {
+        if ($length === null) {
             $length = mb_strlen($this->_value, $this->_encoding);
         }
 
@@ -728,47 +785,55 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $this;
     }
 
-    public function getSubstring($start, $length=null) {
-        if($length === null) {
+    public function getSubstring($start, $length=null)
+    {
+        if ($length === null) {
             $length = mb_strlen($this->_value, $this->_encoding);
         }
 
         return mb_substr($this->_value, $start, $length, $this->_encoding);
     }
 
-    public function substringCount($needle) {
+    public function substringCount($needle)
+    {
         return mb_substr_count($this->_value, $needle, $this->_encoding);
     }
 
 
-    public function truncate($length, $marker=null) {
+    public function truncate($length, $marker=null)
+    {
         return $this->truncateFrom(0, $length, $marker);
     }
 
-    public function truncateFrom($start, $length, $marker=null) {
+    public function truncateFrom($start, $length, $marker=null)
+    {
         $this->_value = mb_strimwidth($this->_value, $start, $length, $marker, $this->_encoding);
         return $this;
     }
 
 
-    public function split(string $delimiter): array {
+    public function split(string $delimiter): array
+    {
         return explode($delimiter, $this->_value);
     }
 
-    public function regexSplit(string $pattern, int $limit=-1, int $flags=0): array {
+    public function regexSplit(string $pattern, int $limit=-1, int $flags=0): array
+    {
         return preg_split($pattern, $this->_value, $limit, $flags);
     }
 
 
 
-// Replace
-    public function replace($in, $out) {
+    // Replace
+    public function replace($in, $out)
+    {
         $this->_value = str_replace($in, $out, $this->_value);
         return $this;
     }
 
-    public function regexReplace($in, $out) {
-        if(is_callable($out)) {
+    public function regexReplace($in, $out)
+    {
+        if (is_callable($out) && !is_string($out)) {
             $this->_value = preg_replace_callback($in, $out, $this->_value);
         } else {
             $this->_value = preg_replace($in, $out, $this->_value);
@@ -777,8 +842,9 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $this;
     }
 
-    public function stripTags(string $allowableTags=null) {
-        if($allowableTags !== null) {
+    public function stripTags(string $allowableTags=null)
+    {
+        if ($allowableTags !== null) {
             $this->_value = strip_tags($this->_value, $allowableTags);
         } else {
             $this->_value = strip_tags($this->_value);
@@ -789,36 +855,41 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
 
 
 
-// ICollection
-    public function import(...$input) {
+    // ICollection
+    public function import(...$input)
+    {
         $this->_value = implode($input);
         $this->_encoding = mb_detect_encoding($this->_value.'a');
 
         return $this;
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return preg_split('/(?<!^)(?!$)/u', $this->_value);
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return mb_strlen($this->_value, $this->_encoding) == 0;
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->_value = '';
         return $this;
     }
 
 
-    public function set($index, $value) {
+    public function set($index, $value)
+    {
         $index = (int)$index;
         $length = mb_strlen($this->_value);
 
-        if($index < 0) {
+        if ($index < 0) {
             $index += $length;
 
-            if($index < 0) {
+            if ($index < 0) {
                 throw new OutOfBoundsException(
                     'Trying to set a negative index outside of current bounds'
                 );
@@ -827,7 +898,7 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             }
         }
 
-        if($index >= $length) {
+        if ($index >= $length) {
             $this->_value .= $value;
             return $this;
         }
@@ -835,28 +906,29 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         $oldVal = $this->_value;
         $this->_value = '';
 
-        if($index != 0) {
+        if ($index != 0) {
             $this->_value .= mb_substr($oldVal, 0, $index);
         }
 
         $this->_value .= $value;
         $indexLength = $index + max(mb_strlen($value), 1);
 
-        if($indexLength > 0) {
+        if ($indexLength > 0) {
             $this->_value .= mb_substr($oldVal, $indexLength);
         }
 
         return $this;
     }
 
-    public function put($index, $value) {
+    public function put($index, $value)
+    {
         $index = (int)$index;
         $length = mb_strlen($this->_value);
 
-        if($index < 0) {
+        if ($index < 0) {
             $index += $length;
 
-            if($index < 0) {
+            if ($index < 0) {
                 throw new OutOfBoundsException(
                     'Trying to set a negative index outside of current bounds'
                 );
@@ -865,7 +937,7 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
             }
         }
 
-        if($index >= $length) {
+        if ($index >= $length) {
             $this->_value .= $value;
             return $this;
         }
@@ -874,21 +946,23 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $this;
     }
 
-    public function get($index, $default=null) {
+    public function get($index, $default=null)
+    {
         $length = mb_strlen($this->_value);
 
-        if($index >= $length) {
+        if ($index >= $length) {
             return $default;
         }
 
         return mb_substr($this->_value, $index, 1);
     }
 
-    public function has(...$indexes) {
+    public function has(...$indexes)
+    {
         $length = mb_strlen($this->_value);
 
-        foreach($indexes as $index) {
-            if($index < $length && $index >= -$length) {
+        foreach ($indexes as $index) {
+            if ($index < $length && $index >= -$length) {
                 return true;
             }
         }
@@ -896,8 +970,9 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return false;
     }
 
-    public function remove(...$indexes) {
-        foreach($indexes as $index) {
+    public function remove(...$indexes)
+    {
+        foreach ($indexes as $index) {
             $this->set($index, '');
         }
 
@@ -906,87 +981,105 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
 
 
 
-    public function getCurrent() {
+    public function getCurrent()
+    {
         return mb_substr($this->_value, $this->_pos, 1, $this->_encoding);
     }
 
-    public function getNext() {
+    public function getNext()
+    {
         return $this->seekNext()->getCurrent();
     }
 
-    public function getPrev() {
+    public function getPrev()
+    {
         return $this->seekPrev()->getCurrent();
     }
 
-    public function getFirst() {
+    public function getFirst()
+    {
         return $this->seekFirst()->getCurrent();
     }
 
-    public function getLast() {
+    public function getLast()
+    {
         return $this->seekLast()->getCurrent();
     }
 
 
-    public function seekFirst() {
+    public function seekFirst()
+    {
         $this->_pos = 0;
         return $this;
     }
 
-    public function seekNext() {
+    public function seekNext()
+    {
         $this->_pos++;
         return $this;
     }
 
-    public function seekPrev() {
+    public function seekPrev()
+    {
         $this->_pos = max($this->_pos - 1, 0);
         return $this;
     }
 
-    public function seekLast() {
+    public function seekLast()
+    {
         $this->_pos = mb_strlen($this->_value, $this->_encoding) - 1;
         return $this;
     }
 
-    public function hasSeekEnded() {
+    public function hasSeekEnded()
+    {
         return $this->_pos >= mb_strlen($this->_value, $this->_encoding);
     }
 
-    public function getSeekPosition() {
+    public function getSeekPosition()
+    {
         return $this->_pos;
     }
 
-    public function insert(...$values) {
+    public function insert(...$values)
+    {
         return $this->push(...$values);
     }
 
-    public function extract() {
+    public function extract()
+    {
         return $this->shift();
     }
 
-    public function pop() {
+    public function pop()
+    {
         $output = mb_substr($this->_value, -1, 1, $this->_encoding);
         $this->_value = mb_substr($this->_value, 0, -1, $this->_encoding);
         return $output;
     }
 
-    public function push(...$values) {
+    public function push(...$values)
+    {
         $this->_value .= implode($values);
         return $this;
     }
 
-    public function shift() {
+    public function shift()
+    {
         $output = mb_substr($this->_value, 0, 1, $this->_encoding);
         $this->_value = mb_substr($this->_value, 1, mb_strlen($this->_value, $this->_encoding), $this->_encoding);
         return $output;
     }
 
-    public function unshift(...$values) {
+    public function unshift(...$values)
+    {
         $this->_value = implode($value).$this->_value;
         return $this;
     }
 
 
-    public function slice(int $offset, int $length=null): array {
+    public function slice(int $offset, int $length=null): array
+    {
         $output = mb_substr($this->_value, $offset, $length, $this->_encoding);
         $this->_value = mb_substr($this->_value, 0, $offset, $this->_encoding).
             ($length !== null ? mb_substr($this->_value, $length) : null);
@@ -994,45 +1087,54 @@ class Text implements IText, \IteratorAggregate, core\IDumpable {
         return $output;
     }
 
-    public function getSlice(int $offset, int $length=null): array {
+    public function getSlice(int $offset, int $length=null): array
+    {
         return mb_substr($this->_value, $offset, $length, $this->_encoding);
     }
 
-    public function removeSlice(int $offset, int $length=null) {
+    public function removeSlice(int $offset, int $length=null)
+    {
         $this->slice($offset, $length);
         return $this;
     }
 
-    public function keepSlice(int $offset, int $length=null) {
+    public function keepSlice(int $offset, int $length=null)
+    {
         $this->_value = $this->getSlice($offset, $length);
         return $this;
     }
 
 
-    public function offsetSet($index, $value) {
+    public function offsetSet($index, $value)
+    {
         return $this->set($index, $value);
     }
 
-    public function offsetGet($index) {
+    public function offsetGet($index)
+    {
         return $this->get($index);
     }
 
-    public function offsetExists($index) {
+    public function offsetExists($index)
+    {
         return $this->has($index);
     }
 
-    public function offsetUnset($index) {
+    public function offsetUnset($index)
+    {
         return $this->remove($index);
     }
 
-    public function getIterator() {
+    public function getIterator()
+    {
         return new core\collection\SeekableIterator($this);
     }
 
 
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         return $this->_value;
     }
 }
