@@ -11,8 +11,8 @@ use df\aura;
 use df\arch;
 use df\neon;
 
-class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
-
+class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable
+{
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_FocusableInput;
@@ -22,14 +22,16 @@ class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
     const PRIMARY_TAG = 'input.color.picker';
     const ARRAY_INPUT = false;
 
-    public function __construct(arch\IContext $context, $name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null)
+    {
         parent::__construct($context);
 
         $this->setName($name);
         $this->setValue($value);
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
 
         $tag->setAttribute('type', 'color');
@@ -41,8 +43,11 @@ class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
 
         $value = $this->getValueString();
 
-        if(!empty($value)) {
-            $value = neon\Color::factory($value)->toHexString();
+        if (!empty($value)) {
+            try {
+                $value = neon\Color::factory($value)->toHexString();
+            } catch (\Throwable $e) {
+            }
         }
 
         $tag->setAttribute('value', $value);

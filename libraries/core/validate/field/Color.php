@@ -9,15 +9,17 @@ use df;
 use df\core;
 use df\neon;
 
-class Color extends Base implements core\validate\IColorField {
+class Color extends Base implements core\validate\IColorField
+{
 
 
 // Validate
-    public function validate() {
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
@@ -26,9 +28,9 @@ class Color extends Base implements core\validate\IColorField {
         // Validate
         try {
             $value = neon\Color::factory($value);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->addError('invalid', $this->validator->_(
-                'Please enter a valid color'
+                'Please enter a valid color, eg. #45C34A'
             ));
 
             return null;
