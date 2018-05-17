@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,9 +9,9 @@ use df;
 use df\core;
 use df\spur;
 use df\halo;
-    
-class Repository implements ILocalRepository {
 
+class Repository implements ILocalRepository
+{
     use TRepository;
 
     protected $_path;
@@ -20,20 +20,21 @@ class Repository implements ILocalRepository {
     protected $_branches = null;
     protected $_activeBranch = null;
 
-    public static function createNew($path, $isBare=false) {
-        if(!is_dir($path)) {
+    public static function createNew($path, $isBare=false)
+    {
+        if (!is_dir($path)) {
             throw new RuntimeException(
                 'Prospective repository directory could not be found'
             );
         }
 
-        if(!is_writable($path)) {
+        if (!is_writable($path)) {
             throw new RuntimeException(
                 'Cannot write to repository destination'
             );
         }
 
-        if(!$isBare || version_compare('1.5.6.6', self::getGitVersion(), '<=')) {
+        if (!$isBare || version_compare('1.5.6.6', self::getGitVersion(), '<=')) {
             self::_runCommandIn($path, 'init', [
                 '--bare' => (bool)$isBare,
                 '-q'
@@ -45,10 +46,11 @@ class Repository implements ILocalRepository {
         return new self($path);
     }
 
-    public static function createClone($repoUrl, $path, $isBare=false) {
+    public static function createClone($repoUrl, $path, $isBare=false)
+    {
         core\fs\Dir::create(dirname($path));
 
-        if(!is_writable(dirname($path))) {
+        if (!is_writable(dirname($path))) {
             throw new RuntimeException(
                 'Cannot write to repository clone destination'
             );
@@ -64,23 +66,25 @@ class Repository implements ILocalRepository {
         return new self($path);
     }
 
-    public static function getGitVersion() {
-        return substr($this->_runCommandIn(null, '--version'), 12);
+    public static function getGitVersion()
+    {
+        return substr(self::_runCommandIn(null, '--version'), 12);
     }
 
-    public function __construct($path) {
-        if(!is_dir($path)) {
+    public function __construct($path)
+    {
+        if (!is_dir($path)) {
             throw new RuntimeException(
                 'The git repository could not be found'
             );
         }
 
-        if(basename($path) == '.git') {
+        if (basename($path) == '.git') {
             $path = dirname($path);
             $this->_isBare = false;
-        } else if(is_dir($path.'/.git')) {
+        } elseif (is_dir($path.'/.git')) {
             $this->_isBare = false;
-        } else if(is_file($path.'/HEAD')) {
+        } elseif (is_file($path.'/HEAD')) {
             $this->_isBare = true;
         } else {
             throw new RuntimeException(
@@ -91,21 +95,24 @@ class Repository implements ILocalRepository {
         $this->_path = $path;
     }
 
-    public function getRepositoryPath() {
+    public function getRepositoryPath()
+    {
         return $this->_path;
     }
 
-    public function isBare() {
+    public function isBare()
+    {
         return $this->_isBare;
     }
 
 
 
-// Config
-    public function setConfig($key, $value) {
-        if($value === true) {
+    // Config
+    public function setConfig($key, $value)
+    {
+        if ($value === true) {
             $value = 'true';
-        } else if($value === false) {
+        } elseif ($value === false) {
             $value = 'false';
         }
 
@@ -116,12 +123,13 @@ class Repository implements ILocalRepository {
         return $this;
     }
 
-    public function getConfig($key) {
+    public function getConfig($key)
+    {
         $value = $this->_runCommand('config', [$key]);
 
-        if($value === 'true') {
+        if ($value === 'true') {
             return true;
-        } else if($value === 'false') {
+        } elseif ($value === 'false') {
             return false;
         } else {
             return $value;
@@ -131,17 +139,19 @@ class Repository implements ILocalRepository {
 
 
 
-// Branches
-    public function getBranchNames() {
+    // Branches
+    public function getBranchNames()
+    {
         $this->_fillBranchCache();
         return $this->_branches;
     }
 
-    public function getBranches() {
+    public function getBranches()
+    {
         $this->_fillBranchCache();
         $output = [];
 
-        foreach($this->_branches as $name) {
+        foreach ($this->_branches as $name) {
             $isActive = $name == $this->_activeBranch;
             $output[] = new Branch($this, $name, $isActive);
         }
@@ -149,29 +159,33 @@ class Repository implements ILocalRepository {
         return $output;
     }
 
-    public function getBranch($name) {
+    public function getBranch($name)
+    {
         $this->_fillBranchCache();
 
-        if(!in_array($name, $this->_branches)) {
+        if (!in_array($name, $this->_branches)) {
             throw new RuntimeException(
                 'Branch '.$name.' could not be found'
-            );  
+            );
         }
 
         return new Branch($this, $name);
     }
 
-    public function getActiveBranchName() {
+    public function getActiveBranchName()
+    {
         $this->_fillBranchCache();
         return $this->_activeBranch;
     }
 
-    public function getActiveBranch() {
+    public function getActiveBranch()
+    {
         return new Branch($this, $this->getActiveBranchName(), true);
     }
 
-    public function deleteBranch($branch) {
-        if($branch instanceof IBranch) {
+    public function deleteBranch($branch)
+    {
+        if ($branch instanceof IBranch) {
             $branch = $branch->getName();
         }
 
@@ -184,19 +198,20 @@ class Repository implements ILocalRepository {
         return $this;
     }
 
-    protected function _fillBranchCache() {
-        if($this->_branches === null) {
+    protected function _fillBranchCache()
+    {
+        if ($this->_branches === null) {
             $result = $this->_runCommand('branch', ['--list']);
             $this->_branches = [];
 
-            foreach(explode("\n", $result) as $line) {
+            foreach (explode("\n", $result) as $line) {
                 $line = trim($line);
 
-                if(empty($line)) {
+                if (empty($line)) {
                     continue;
                 }
 
-                if(substr($line, 0, 2) == '* ') {
+                if (substr($line, 0, 2) == '* ') {
                     $line = substr($line, 2);
                     $this->_activeBranch = $line;
                 }
@@ -206,13 +221,15 @@ class Repository implements ILocalRepository {
         }
     }
 
-    protected function _clearBranchCache() {
+    protected function _clearBranchCache()
+    {
         $this->_branches = null;
         $this->_activeBranch = null;
     }
 
 
-    public function setUpstream($remote, $remoteBranch='master', $localBranch='master') {
+    public function setUpstream($remote, $remoteBranch='master', $localBranch='master')
+    {
         $this->_runCommand('branch', [
             '--set-upstream-to' => $remote.'/'.$remoteBranch,
             $localBranch
@@ -224,10 +241,11 @@ class Repository implements ILocalRepository {
 
 
 
-    public function countRemoteBranches() {
+    public function countRemoteBranches()
+    {
         $result = trim($this->_runCommand('branch', ['-r']));
 
-        if(empty($result)) {
+        if (empty($result)) {
             return 0;
         }
 
@@ -236,28 +254,32 @@ class Repository implements ILocalRepository {
 
 
 
-    public function getRemotes() {
+    public function getRemotes()
+    {
         $result = trim($this->_runCommand('remote'));
 
-        if(empty($result)) {
+        if (empty($result)) {
             return [];
         }
 
         return explode("\n", trim($result));
     }
 
-    public function countRemotes() {
+    public function countRemotes()
+    {
         return count($this->getRemotes());
     }
 
-    public function addRemote($name, $url) {
+    public function addRemote($name, $url)
+    {
         $this->_runCommand('remote', ['add', $name, $url]);
         return $this;
-    } 
+    }
 
 
-// Refs
-    public function getRefs() {
+    // Refs
+    public function getRefs()
+    {
         $result = $this->_runCommand('for-each-ref', [
             '--format' => '%(refname),%(objectname)',
             'refs/tags', 'refs/heads'
@@ -266,60 +288,65 @@ class Repository implements ILocalRepository {
         return $this->_splitRefList($result);
     }
 
-    public function getHeads() {
+    public function getHeads()
+    {
         $result = $this->_runCommand('for-each-ref', [
             '--format' => '%(refname),%(objectname)',
             'refs/heads'
         ]);
 
-        return $this->_splitRefList($result, function($name) {
+        return $this->_splitRefList($result, function ($name) {
             return substr($name, 11);
         });
     }
 
-    public function getTags() {
+    public function getTags()
+    {
         $result = $this->_runCommand('for-each-ref', [
             '--format' => '%(refname),%(objectname)',
             'refs/tags'
         ]);
 
-        return $this->_splitRefList($result, function($name, $commit) {
+        return $this->_splitRefList($result, function ($name, $commit) {
             return new Tag($this, substr($name, 10), $commit);
         });
     }
 
-    protected function _splitRefList($result, $callback=null) {
+    protected function _splitRefList($result, $callback=null)
+    {
         $result = str_replace(["\r\n"], ["\n"], trim($result));
         $lines = explode("\n", $result);
         $output = [];
 
-        foreach($lines as $line) {
+        foreach ($lines as $line) {
             $parts = explode(',', $line, 2);
             $name = array_shift($parts);
             $commit = array_shift($parts);
 
-            if($callback) {
+            if ($callback) {
                 $name = $callback($name, $commit);
             }
 
-            if(is_object($name)) {
+            if (is_object($name)) {
                 $output[] = $name;
             } else {
                 $output[$name] = $commit;
             }
         }
-        
+
         return $output;
     }
 
 
-// Commits
-    public function getCommitStatus() {
+    // Commits
+    public function getCommitStatus()
+    {
         return new Status($this);
     }
 
-    public function getCommitIds($target=null, $limit=null, $offset=null) {
-        if($target === null) {
+    public function getCommitIds($target=null, $limit=null, $offset=null)
+    {
+        if ($target === null) {
             $target = 'HEAD';
         }
 
@@ -333,8 +360,9 @@ class Repository implements ILocalRepository {
         return explode("\n", $result);
     }
 
-    public function getCommits($target=null, $limit=null, $offset=null) {
-        if($target === null) {
+    public function getCommits($target=null, $limit=null, $offset=null)
+    {
+        if ($target === null) {
             $target = 'HEAD';
         }
 
@@ -349,19 +377,20 @@ class Repository implements ILocalRepository {
         $output = [];
         $lines = explode("\n", $result);
 
-        while(!empty($lines)) {
-            if(!$commit = Commit::extractFromRevList($this, $lines)) {
+        while (!empty($lines)) {
+            if (!$commit = Commit::extractFromRevList($this, $lines)) {
                 continue;
             }
 
             $output[] = $commit;
         }
-        
+
         return $output;
     }
 
-    public function countCommits($target=null) {
-        if($target === null) {
+    public function countCommits($target=null)
+    {
+        if ($target === null) {
             $target = 'HEAD';
         }
 
@@ -370,14 +399,15 @@ class Repository implements ILocalRepository {
                 '--count',
                 $target
             ]);
-        } catch(RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return 0;
         }
 
         return (int)$result;
     }
 
-    public function getHeadCommitIds() {
+    public function getHeadCommitIds()
+    {
         $result = $this->_runCommand('for-each-ref', [
             '--format' => '%(refname),%(objectname)',
             'refs/heads'
@@ -385,37 +415,41 @@ class Repository implements ILocalRepository {
 
         $output = [];
 
-        if(!empty($result)) {
-            foreach(explode("\n", $result) as $line) {
+        if (!empty($result)) {
+            foreach (explode("\n", $result) as $line) {
                 $parts = explode(',', $line, 2);
                 $output[substr($parts[0], 11)] = array_pop($parts);
             }
         }
-        
+
         return $output;
     }
 
-    public function getHeadCommits() {
+    public function getHeadCommits()
+    {
         $output = $this->getHeadCommitIds();
 
-        foreach($output as $key => $id) {
+        foreach ($output as $key => $id) {
             $output[$key] = $this->getCommit($id);
         }
 
         return $output;
     }
 
-    public function getCommit($id) {
+    public function getCommit($id)
+    {
         return Commit::factory($this, $id);
     }
 
 
-    public function countUnpushedCommits($remoteBranch=null) {
+    public function countUnpushedCommits($remoteBranch=null)
+    {
         return count($this->getUnpushedCommitIds($remoteBranch));
     }
 
-    public function getUnpushedCommitIds($remoteBranch=null) {
-        if($remoteBranch === null) {
+    public function getUnpushedCommitIds($remoteBranch=null)
+    {
+        if ($remoteBranch === null) {
             $remoteBranch = 'origin/master';
         }
 
@@ -425,11 +459,11 @@ class Repository implements ILocalRepository {
             $remoteBranch.'..HEAD'
         ]);
 
-        if(!empty($result)) {
-            foreach(explode("\n", $result) as $line) {
+        if (!empty($result)) {
+            foreach (explode("\n", $result) as $line) {
                 $line = trim($line);
 
-                if(empty($line)) {
+                if (empty($line)) {
                     continue;
                 }
 
@@ -440,8 +474,9 @@ class Repository implements ILocalRepository {
         return $output;
     }
 
-    public function getUnpushedCommits($remoteBranch=null) {
-        if($remoteBranch === null) {
+    public function getUnpushedCommits($remoteBranch=null)
+    {
+        if ($remoteBranch === null) {
             $remoteBranch = 'origin/master';
         }
 
@@ -451,30 +486,32 @@ class Repository implements ILocalRepository {
             $remoteBranch.'..HEAD'
         ]);
 
-        if(!empty($result)) {
+        if (!empty($result)) {
             $output = [];
             $lines = explode("\n", $result);
 
-            while(!empty($lines)) {
-                if(!$commit = Commit::extractFromRevList($this, $lines)) {
+            while (!empty($lines)) {
+                if (!$commit = Commit::extractFromRevList($this, $lines)) {
                     continue;
                 }
 
                 $output[] = $commit;
             }
         }
-            
+
         return $output;
     }
 
 
 
-    public function countUnpulledCommits($remoteBranch=null) {
+    public function countUnpulledCommits($remoteBranch=null)
+    {
         return count($this->getUnpulledCommitIds());
     }
 
-    public function getUnpulledCommitIds($remoteBranch=null) {
-        if($remoteBranch === null) {
+    public function getUnpulledCommitIds($remoteBranch=null)
+    {
+        if ($remoteBranch === null) {
             $remoteBranch = 'origin/master';
         }
 
@@ -484,11 +521,11 @@ class Repository implements ILocalRepository {
             'HEAD..'.$remoteBranch
         ]);
 
-        if(!empty($result)) {
-            foreach(explode("\n", $result) as $line) {
+        if (!empty($result)) {
+            foreach (explode("\n", $result) as $line) {
                 $line = trim($line);
 
-                if(empty($line)) {
+                if (empty($line)) {
                     continue;
                 }
 
@@ -499,8 +536,9 @@ class Repository implements ILocalRepository {
         return $output;
     }
 
-    public function getUnpulledCommits($remoteBranch=null) {
-        if($remoteBranch === null) {
+    public function getUnpulledCommits($remoteBranch=null)
+    {
+        if ($remoteBranch === null) {
             $remoteBranch = 'origin/master';
         }
 
@@ -510,24 +548,25 @@ class Repository implements ILocalRepository {
             'HEAD..'.$remoteBranch
         ]);
 
-        if(!empty($result)) {
+        if (!empty($result)) {
             $output = [];
             $lines = explode("\n", $result);
 
-            while(!empty($lines)) {
-                if(!$commit = Commit::extractFromRevList($this, $lines)) {
+            while (!empty($lines)) {
+                if (!$commit = Commit::extractFromRevList($this, $lines)) {
                     continue;
                 }
 
                 $output[] = $commit;
             }
         }
-            
+
         return $output;
     }
 
 
-    public function commitAllChanges($message) {
+    public function commitAllChanges($message)
+    {
         $result = $this->_runCommand('add', [
             '.'
         ]);
@@ -540,75 +579,84 @@ class Repository implements ILocalRepository {
     }
 
 
-// Tree / blob
-    public function getTree($id) {
+    // Tree / blob
+    public function getTree($id)
+    {
         return new Tree($this, $id);
     }
 
-    public function getBlob($id) {
+    public function getBlob($id)
+    {
         return new Blob($this, $id);
     }
 
 
-// Updating
-    public function updateRemote($remote=null) {
+    // Updating
+    public function updateRemote($remote=null)
+    {
         $result = $this->_runCommand('remote', [
             'update',
             $remote
         ]);
 
-        if(empty($result)) {
+        if (empty($result)) {
             $result = true;
         }
 
         return $result;
     }
 
-    public function pull($remoteBranch=null) {
+    public function pull($remoteBranch=null)
+    {
         $result = $this->_runCommand('pull', [
             $remoteBranch
         ]);
 
-        if(empty($result)) {
+        if (empty($result)) {
             $result = true;
         }
 
         return $result;
     }
 
-    public function push($remoteBranch=null) {
+    public function push($remoteBranch=null)
+    {
         $result = $this->_runCommand('push', [
             $remoteBranch
         ]);
 
-        if(empty($result)) {
+        if (empty($result)) {
             $result = true;
         }
 
         return $result;
     }
 
-    public function pushUpstream($remote='origin', $branch='master') {
+    public function pushUpstream($remote='origin', $branch='master')
+    {
         return $this->_runCommand('push', [
             $remote, $branch, '-u'
         ]);
     }
 
 
-// Checkout
-    public function checkoutCommit($commitId) {
+    // Checkout
+    public function checkoutCommit($commitId)
+    {
         return $this->_runCommand('checkout', [
             $commitId
         ]);
     }
 
 
-    public function cloneTo($path) {
+    public function cloneTo($path)
+    {
         return self::createClone($this->_path, $path);
     }
 
-// Commands
-    public function _runCommand($command, array $arguments=null) {
+    // Commands
+    public function _runCommand($command, array $arguments=null)
+    {
         return self::_runCommandIn($this->_path, $command, $arguments, $this->_gitUser);
     }
 }

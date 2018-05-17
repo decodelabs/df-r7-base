@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-class Clause implements opal\query\IClause, core\IDumpable {
-
+class Clause implements opal\query\IClause, core\IDumpable
+{
     const BETWEEN_CONVERSION_THRESHOLD = 15;
 
     const OP_EQ = '=';
@@ -43,31 +43,37 @@ class Clause implements opal\query\IClause, core\IDumpable {
     protected $_hasPreparedValue = null;
 
 
-    public static function factory(opal\query\IClauseFactory $parent, opal\query\IField $field, $operator, $value, $isOr=false) {
-        if($value instanceof opal\query\IQuery
+    public static function factory(opal\query\IClauseFactory $parent, opal\query\IField $field, $operator, $value, $isOr=false)
+    {
+        if ($value instanceof opal\query\IQuery
         && !$value instanceof opal\query\ICorrelationQuery) {
             throw new opal\query\ValueException(
                 'Only correlation queries are allowed as query clause values'
             );
         }
 
-        if($field instanceof opal\query\IVirtualField) {
+        if ($field instanceof opal\query\IVirtualField) {
             return self::_virtualFactory($parent, $field, $operator, $value, $isOr);
         }
 
         return new self($field, $operator, $value, $isOr);
     }
 
-    private static function _virtualFactory(opal\query\IClauseFactory $parent, opal\query\IField $field, $operator, $value, $isOr=false) {
+    private static function _virtualFactory(opal\query\IClauseFactory $parent, opal\query\IField $field, $operator, $value, $isOr=false)
+    {
         $source = $field->getSource();
         $adapter = $source->getAdapter();
         $name = $field->getName();
 
-        if($name{0} == '@') {
-            switch(strtolower($name)) {
+        if ($name{0} == '@') {
+            switch (strtolower($name)) {
                 case '@primary':
                     return self::mapVirtualClause(
-                        $parent, $field, $operator, $value, $isOr
+                        $parent,
+                        $field,
+                        $operator,
+                        $value,
+                        $isOr
                     );
 
                 default:
@@ -77,14 +83,18 @@ class Clause implements opal\query\IClause, core\IDumpable {
             }
         }
 
-        if($adapter instanceof opal\query\IIntegralAdapter) {
+        if ($adapter instanceof opal\query\IIntegralAdapter) {
             $operator = self::normalizeOperator($operator);
 
             $output = $adapter->rewriteVirtualQueryClause(
-                $parent, $field, $operator, $value, $isOr
+                $parent,
+                $field,
+                $operator,
+                $value,
+                $isOr
             );
 
-            if($output instanceof opal\query\IClauseProvider) {
+            if ($output instanceof opal\query\IClauseProvider) {
                 return $output;
             }
         }
@@ -94,15 +104,17 @@ class Clause implements opal\query\IClause, core\IDumpable {
         );
     }
 
-    public function __construct(opal\query\IField $field, $operator, $value, $isOr=false) {
+    public function __construct(opal\query\IField $field, $operator, $value, $isOr=false)
+    {
         $this->setField($field);
         $this->setOperator($operator);
         $this->setValue($value);
         $this->isOr($isOr);
     }
 
-    public function isOr(bool $flag=null) {
-        if($flag !== null) {
+    public function isOr(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isOr = $flag;
             return $this;
         }
@@ -110,8 +122,9 @@ class Clause implements opal\query\IClause, core\IDumpable {
         return $this->_isOr;
     }
 
-    public function isAnd(bool $flag=null) {
-        if($flag !== null) {
+    public function isAnd(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isOr = !$flag;
             return $this;
         }
@@ -119,8 +132,9 @@ class Clause implements opal\query\IClause, core\IDumpable {
         return !$this->_isOr;
     }
 
-    public function setField(opal\query\IField $field) {
-        if($field instanceof opal\query\IVirtualField) {
+    public function setField(opal\query\IField $field)
+    {
+        if ($field instanceof opal\query\IVirtualField) {
             throw new opal\query\InvalidArgumentException(
                 'Virtual fields cannot be used directly in clauses'
             );
@@ -130,16 +144,18 @@ class Clause implements opal\query\IClause, core\IDumpable {
         return $this;
     }
 
-    public function getField() {
+    public function getField()
+    {
         return $this->_field;
     }
 
-    public static function isNegatedOperator($operator) {
-        if(substr($operator, 0, 1) == '!') {
+    public static function isNegatedOperator($operator)
+    {
+        if (substr($operator, 0, 1) == '!') {
             return true;
         }
 
-        switch($operator) {
+        switch ($operator) {
             case self::OP_NEQ:
             case self::OP_NOT_IN:
             case self::OP_NOT_BETWEEN:
@@ -154,8 +170,9 @@ class Clause implements opal\query\IClause, core\IDumpable {
         return false;
     }
 
-    public static function negateOperator($operator) {
-        switch(self::normalizeOperator($operator)) {
+    public static function negateOperator($operator)
+    {
+        switch (self::normalizeOperator($operator)) {
             case self::OP_EQ: return self::OP_NEQ;
             case self::OP_NEQ: return self::OP_EQ;
             case self::OP_GT: return self::OP_LTE;
@@ -186,13 +203,14 @@ class Clause implements opal\query\IClause, core\IDumpable {
         return $operator;
     }
 
-    public static function normalizeOperator($operator) {
+    public static function normalizeOperator($operator)
+    {
         $operator = strtolower($operator);
 
-        if(substr($operator, 0, 1) == '!') {
+        if (substr($operator, 0, 1) == '!') {
             $operator = self::negateOperator(substr($operator, 1));
         } else {
-            switch($operator) {
+            switch ($operator) {
                 case self::OP_EQ:
                 case self::OP_NEQ:
                 case self::OP_GT:
@@ -225,22 +243,25 @@ class Clause implements opal\query\IClause, core\IDumpable {
         return $operator;
     }
 
-    public function setOperator($operator) {
+    public function setOperator($operator)
+    {
         $this->_operator = self::normalizeOperator($operator);
         return $this;
     }
 
-    public function getOperator() {
+    public function getOperator()
+    {
         return $this->_operator;
     }
 
-    public function setValue($value) {
-        if(is_array($value)) {
+    public function setValue($value)
+    {
+        if (is_array($value)) {
             $value = core\collection\Util::flatten($value);
 
-            switch($this->_operator) {
+            switch ($this->_operator) {
                 case self::OP_IN:
-                    if(count($value) == 1) {
+                    if (count($value) == 1) {
                         $this->_operator = self::OP_EQ;
                         $value = array_shift($value);
                     }
@@ -248,7 +269,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     break;
 
                 case self::OP_NOT_IN:
-                    if(count($value) == 1) {
+                    if (count($value) == 1) {
                         $this->_operator = self::OP_NEQ;
                         $value = array_shift($value);
                     }
@@ -266,10 +287,10 @@ class Clause implements opal\query\IClause, core\IDumpable {
         }
 
 
-        if($value instanceof opal\query\IVirtualField) {
+        if ($value instanceof opal\query\IVirtualField) {
             $deref = $value->dereference();
 
-            if(count($deref) > 1) {
+            if (count($deref) > 1) {
                 throw new opal\query\ValueException(
                     'Unable to dereference virtual field to single intrinsic for clause value'
                 );
@@ -278,8 +299,8 @@ class Clause implements opal\query\IClause, core\IDumpable {
             $value = $deref[0];
         }
 
-        if($value instanceof opal\query\ICorrelationQuery) {
-            switch($this->_operator) {
+        if ($value instanceof opal\query\ICorrelationQuery) {
+            switch ($this->_operator) {
                 case self::OP_EQ:
                     //$this->_operator = self::OP_IN;
                     break;
@@ -303,20 +324,20 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     );
             }
         } else {
-            switch($this->_operator) {
+            switch ($this->_operator) {
                 case self::OP_IN:
                 case self::OP_NOT_IN:
-                    if($value instanceof opal\query\IField) {
+                    if ($value instanceof opal\query\IField) {
                         throw new opal\query\ValueException(
                             'Value for in operator cannot be a field reference'
                         );
                     }
 
-                    if($value instanceof core\IArrayProvider) {
+                    if ($value instanceof core\IArrayProvider) {
                         $value = $value->toArray();
                     }
 
-                    if(!is_array($value)) {
+                    if (!is_array($value)) {
                         $value = [(string)$value];
                     }
 
@@ -325,17 +346,17 @@ class Clause implements opal\query\IClause, core\IDumpable {
 
                 case self::OP_BETWEEN:
                 case self::OP_NOT_BETWEEN:
-                    if($value instanceof opal\query\IField) {
+                    if ($value instanceof opal\query\IField) {
                         throw new opal\query\ValueException(
                             'Value for between operator cannot be a field reference'
                         );
                     }
 
-                    if($value instanceof core\IArrayProvider) {
+                    if ($value instanceof core\IArrayProvider) {
                         $value = $value->toArray();
                     }
 
-                    if(!is_array($value) || count($value) < 2) {
+                    if (!is_array($value) || count($value) < 2) {
                         throw new opal\query\ValueException(
                             'Value for between operator must be an array with 2 numeric elements'
                         );
@@ -344,10 +365,10 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     $temp = $value;
                     $value = [];
 
-                    for($i = 0; $i < 2; $i++) {
+                    for ($i = 0; $i < 2; $i++) {
                         $part = array_shift($temp);
 
-                        if(!is_numeric($part)) {
+                        if (!is_numeric($part)) {
                             throw new opal\query\ValueException(
                                 'Value for between operator must be an array with 2 numeric elements'
                             );
@@ -368,20 +389,22 @@ class Clause implements opal\query\IClause, core\IDumpable {
         return $this;
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return $this->_value;
     }
 
-    public function getPreparedValue() {
-        if($this->_hasPreparedValue === false) {
+    public function getPreparedValue()
+    {
+        if ($this->_hasPreparedValue === false) {
             return $this->_value;
         }
 
-        if(!$this->_hasPreparedValue) {
+        if (!$this->_hasPreparedValue) {
             $source = $this->_field->getSource();
             $adapter = $source->getAdapter();
 
-            if($this->_value instanceof opal\query\ICorrelationQuery
+            if ($this->_value instanceof opal\query\ICorrelationQuery
             || $this->_value instanceof opal\query\IField
             || !$adapter instanceof opal\query\IIntegralAdapter) {
                 $this->_hasPreparedValue = false;
@@ -391,7 +414,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
             $this->_preparedValue = $this->_value;
 
             // Prepare
-            switch($this->_operator) {
+            switch ($this->_operator) {
                 case self::OP_IN:
                 case self::OP_NOT_IN:
                     //if(count($this->_value) > self::BETWEEN_CONVERSION_THRESHOLD) {
@@ -403,7 +426,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
                 case self::OP_NOT_BETWEEN:
                     $output = [];
 
-                    foreach($this->_preparedValue as $part) {
+                    foreach ($this->_preparedValue as $part) {
                         $output[] = $this->_prepareInnerValue($adapter, $part);
                     }
 
@@ -417,7 +440,8 @@ class Clause implements opal\query\IClause, core\IDumpable {
 
                 default:
                     $this->_preparedValue = $this->_prepareInnerValue(
-                        $adapter, $this->_preparedValue
+                        $adapter,
+                        $this->_preparedValue
                     );
 
                     break;
@@ -429,22 +453,24 @@ class Clause implements opal\query\IClause, core\IDumpable {
         return $this->_preparedValue;
     }
 
-    protected function _prepareInnerValue($adapter, $value) {
+    protected function _prepareInnerValue($adapter, $value)
+    {
         $preparedValue = $adapter->prepareQueryClauseValue($this->_field, $value);
 
-        if($preparedValue instanceof opal\record\IPrimaryKeySetProvider) {
+        if ($preparedValue instanceof opal\record\IPrimaryKeySetProvider) {
             $preparedValue = $preparedValue->getPrimaryKeySet();
         }
 
         return $preparedValue;
     }
 
-    public function referencesSourceAliases(array $sourceAliases) {
-        if(in_array($this->_field->getSourceAlias(), $sourceAliases)) {
+    public function referencesSourceAliases(array $sourceAliases)
+    {
+        if (in_array($this->_field->getSourceAlias(), $sourceAliases)) {
             return true;
         }
 
-        if($this->_value instanceof opal\query\IField
+        if ($this->_value instanceof opal\query\IField
         && in_array($this->_value->getSourceAlias(), $sourceAliases)) {
             return true;
         }
@@ -452,10 +478,11 @@ class Clause implements opal\query\IClause, core\IDumpable {
         return false;
     }
 
-    public function getNonLocalFieldReferences() {
+    public function getNonLocalFieldReferences()
+    {
         $output = [];
 
-        if($this->_value instanceof opal\query\IField
+        if ($this->_value instanceof opal\query\IField
         && $this->_value->getSourceAlias() != $this->_field->getSourceAlias()) {
             $output[$this->_value->getQualifiedName()] = $this->_value;
         }
@@ -464,16 +491,18 @@ class Clause implements opal\query\IClause, core\IDumpable {
     }
 
 
-// Mapping
-    public static function mapVirtualClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr) {
-        if($value instanceof opal\query\IField) {
+    // Mapping
+    public static function mapVirtualClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr)
+    {
+        if ($value instanceof opal\query\IField) {
             return self::mapVirtualFieldClause($parent, $field, $operator, $value, $isOr);
         } else {
             return self::mapVirtualValueClause($parent, $field, $operator, $value, $isOr);
         }
     }
 
-    public static function mapVirtualFieldClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, opal\query\IField $value, $isOr) {
+    public static function mapVirtualFieldClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, opal\query\IField $value, $isOr)
+    {
         $operator = self::normalizeOperator($operator);
         $fieldList = $field->dereference();
         $fieldCount = count($fieldList);
@@ -481,47 +510,51 @@ class Clause implements opal\query\IClause, core\IDumpable {
 
         $valueList = $value->dereference();
 
-        if(count($fieldList) == 1 && count($valueList) == 1) {
+        if (count($fieldList) == 1 && count($valueList) == 1) {
             return opal\query\clause\Clause::factory($parent, $fieldList[0], $operator, $valueList[0], $isOr);
         }
 
         core\dump($fieldList, $valueList, $value);
     }
 
-    public static function mapVirtualValueClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr) {
+    public static function mapVirtualValueClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr)
+    {
         $operator = self::normalizeOperator($operator);
         $fieldList = $field->dereference();
         $fieldCount = count($fieldList);
         $clauses = [];
 
-        if($value instanceof opal\record\IPrimaryKeySet) {
+        if ($value instanceof opal\record\IPrimaryKeySet) {
             $value = $value->getRawValue();
         }
 
-        if(($operator == self::OP_IN
+        if (($operator == self::OP_IN
         || $operator == self::OP_NOT_IN)
         && $fieldCount > 1) {
-            if(self::isNegatedOperator($operator)) {
+            if (self::isNegatedOperator($operator)) {
                 $innerOperator = '!=';
             } else {
                 $innerOperator = '=';
             }
 
-            foreach($value as $innerValue) {
+            foreach ($value as $innerValue) {
                 $clauses[] = $innerList = new opal\query\clause\ListBase($parent, true);
 
-                foreach($fieldList as $fieldIndex => $innerField) {
+                foreach ($fieldList as $fieldIndex => $innerField) {
                     $clauseValue = self::_extractMultiKeyFieldValue($field, $innerField, $fieldIndex, $innerValue);
 
                     $innerList->_addClause(self::factory(
-                        $parent, $innerField, $innerOperator, $clauseValue
+                        $parent,
+                        $innerField,
+                        $innerOperator,
+                        $clauseValue
                     ));
                 }
             }
         } else {
-            foreach($fieldList as $fieldIndex => $innerField) {
-                if(is_array($value)) {
-                    if($operator == self::OP_IN
+            foreach ($fieldList as $fieldIndex => $innerField) {
+                if (is_array($value)) {
+                    if ($operator == self::OP_IN
                     || $operator == self::OP_NOT_IN) {
                         $clauseValue = $value;
                     } else {
@@ -538,39 +571,41 @@ class Clause implements opal\query\IClause, core\IDumpable {
         return self::_buildClauseList($parent, $clauses, $isOr);
     }
 
-    protected static function _extractMultiKeyFieldValueSet(opal\query\IVirtualField $parentField, opal\query\IField $field, $fieldIndex, array $value) {
+    protected static function _extractMultiKeyFieldValueSet(opal\query\IVirtualField $parentField, opal\query\IField $field, $fieldIndex, array $value)
+    {
         $output = [];
 
-        foreach($value as $inner) {
-            $output[] = $this->_extractMultiKeyFieldValue($parentField, $field, $fieldIndex, $inner);
+        foreach ($value as $inner) {
+            $output[] = self::_extractMultiKeyFieldValue($parentField, $field, $fieldIndex, $inner);
         }
 
         return $output;
     }
 
-    protected static function _extractMultiKeyFieldValue(opal\query\IVirtualField $parentField, opal\query\IField $field, $fieldIndex, array $value) {
+    protected static function _extractMultiKeyFieldValue(opal\query\IVirtualField $parentField, opal\query\IField $field, $fieldIndex, array $value)
+    {
         $name = $field->getName();
 
-        if(array_key_exists($name, $value)) {
+        if (array_key_exists($name, $value)) {
             return $value[$name];
-        } else if(array_key_exists($fieldIndex, $value)) {
+        } elseif (array_key_exists($fieldIndex, $value)) {
             return $value[$fieldIndex];
         }
 
         $parentName = $parentField->getName();
 
-        if(0 === strpos($name, $parentName)) {
+        if (0 === strpos($name, $parentName)) {
             $innerName = substr($name, strlen($parentName));
 
-            if(array_key_exists($innerName, $value)) {
+            if (array_key_exists($innerName, $value)) {
                 return $value[$innerName];
             }
         }
 
-        foreach($value as $key => $innerValue) {
-            if(0 === strpos($name, $key.'_')) {
+        foreach ($value as $key => $innerValue) {
+            if (0 === strpos($name, $key.'_')) {
                 return $innerValue;
-            } else if(substr($name, -(strlen($key) + 1)) == '_'.$key) {
+            } elseif (substr($name, -(strlen($key) + 1)) == '_'.$key) {
                 return $innerValue;
             }
         }
@@ -580,8 +615,9 @@ class Clause implements opal\query\IClause, core\IDumpable {
         );
     }
 
-    protected static function _buildClauseList(opal\query\IClauseFactory $parent, array $clauses, $isOr) {
-        if(count($clauses) == 1) {
+    protected static function _buildClauseList(opal\query\IClauseFactory $parent, array $clauses, $isOr)
+    {
+        if (count($clauses) == 1) {
             $clause = array_shift($clauses);
             $clause->isOr($isOr);
             return $clause;
@@ -589,16 +625,17 @@ class Clause implements opal\query\IClause, core\IDumpable {
 
         $clauseList = new opal\query\clause\ListBase($parent, $isOr);
 
-        foreach($clauses as $clause) {
+        foreach ($clauses as $clause) {
             $clauseList->_addClause($clause);
         }
 
         return $clauseList;
     }
 
-// Dump
-    public function getDumpProperties() {
-        if($this->_isOr) {
+    // Dump
+    public function getDumpProperties()
+    {
+        if ($this->_isOr) {
             $type = 'OR';
         } else {
             $type = 'AND';
@@ -606,23 +643,23 @@ class Clause implements opal\query\IClause, core\IDumpable {
 
         $field = $this->_field->getQualifiedName();
 
-        if($this->_value instanceof opal\query\IField) {
+        if ($this->_value instanceof opal\query\IField) {
             $value = $this->_value->getQualifiedName();
-        } else if($this->_value instanceof opal\record\IPrimaryKeySetProvider) {
+        } elseif ($this->_value instanceof opal\record\IPrimaryKeySetProvider) {
             $value = $this->_value->getAdapter()->getQuerySourceId().' : '.$this->_value->getPrimaryKeySet();
-        } else if($this->_value instanceof opal\query\IQuery) {
+        } elseif ($this->_value instanceof opal\query\IQuery) {
             $value = $this->_value;
-        } else if($this->_value === null) {
+        } elseif ($this->_value === null) {
             $value = 'NULL';
-        } else if(is_bool($this->_value)) {
+        } elseif (is_bool($this->_value)) {
             $value = $this->_value ? 'TRUE' : 'FALSE';
-        } else if(is_array($this->_value)) {
+        } elseif (is_array($this->_value)) {
             $value = '(\''.implode('\', \'', $this->_value).'\')';
         } else {
             $value = '\''.(string)$this->_value.'\'';
         }
 
-        if(is_string($value)) {
+        if (is_string($value)) {
             return $type.' '.$field.' '.$this->_operator.' '.$value;
         } else {
             return [
