@@ -10,15 +10,16 @@ use df\core;
 use df\spur;
 use df\aura;
 
-class GoogleUniversal extends Base {
-
+class GoogleUniversal extends Base
+{
     protected $_options = [
         'trackingId' => null,
         'scriptName' => 'ga',
         'createOptions' => [],
     ];
 
-    public function apply(spur\analytics\IHandler $handler, aura\view\IHtmlView $view) {
+    public function apply(spur\analytics\IHandler $handler, aura\view\IHtmlView $view)
+    {
         $attributes = $handler->getDefinedUserAttributes(
             array_merge($this->getDefaultUserAttributes(), ['id']),
             false
@@ -28,8 +29,8 @@ class GoogleUniversal extends Base {
         $userId = $attributes['id'];
         $map = $this->getDefaultUserAttributeMap();
 
-        foreach($attributes as $attribute => $value) {
-            if(!isset($map[$attribute]) || $map[$attribute] === null) {
+        foreach ($attributes as $attribute => $value) {
+            if (!isset($map[$attribute]) || $map[$attribute] === null) {
                 unset($attributes[$attribute]);
             }
         }
@@ -45,25 +46,27 @@ class GoogleUniversal extends Base {
         $script .= $this->_buildCreateCall($scriptName, $userId);
         $pageviewOptions = null;
 
-        foreach($attributes as $attribute => $value) {
+        foreach ($attributes as $attribute => $value) {
             $pageviewOptions[$map[$attribute]] = (string)$value;
         }
 
-        foreach($handler->getUserAttributes() as $attribute => $value) {
+        foreach ($handler->getUserAttributes() as $attribute => $value) {
             $pageviewOptions[$attribute] = (string)$value;
         }
+
+        $script .= $scriptName.'(\'set\', \'anonymizeIp\', true);'."\n";
 
         // Page view
         $script .= $scriptName.'(\'send\', \'pageview\'';
 
-        if(!empty($pageviewOptions)) {
+        if (!empty($pageviewOptions)) {
             $script .= ', '.json_encode($pageviewOptions);
         }
 
         $script .= ');'."\n";
 
         // Events
-        foreach($handler->getEvents() as $event) {
+        foreach ($handler->getEvents() as $event) {
             $script .= $scriptName.'(\'send\', \'event\', \''.$event->getCategory().'\', \''.$event->getName().'\', \''.$event->getLabel().'\');'."\n";
         }
 
@@ -71,25 +74,25 @@ class GoogleUniversal extends Base {
         // ECommerce
         $transactions = $handler->getECommerceTransactions();
 
-        if(!empty($transactions)) {
+        if (!empty($transactions)) {
             $script .= $scriptName.'(\'require\', \'ecommerce\');'."\n";
 
-            foreach($transactions as $transaction) {
+            foreach ($transactions as $transaction) {
                 $transactionData = [
                     'id' => $transaction->getId(),
                     'revenue' => $transaction->getAmount()->getAmount(),
                     'currency' => $transaction->getAmount()->getCode()
                 ];
 
-                if($affiliation = $transaction->getAffiliation()) {
+                if ($affiliation = $transaction->getAffiliation()) {
                     $transactionData['affiliation'] = $affiliation;
                 }
 
-                if($shipping = $transaction->getShippingAmount()) {
+                if ($shipping = $transaction->getShippingAmount()) {
                     $transactionData['shipping'] = $shipping->getAmount();
                 }
 
-                if($tax = $transaction->getTaxAmount()) {
+                if ($tax = $transaction->getTaxAmount()) {
                     $transactionData['tax'] = $tax->getAmount();
                 }
 
@@ -102,40 +105,44 @@ class GoogleUniversal extends Base {
         $view->addHeadScript('google-analytics', rtrim($script));
     }
 
-    public function setTrackingId($id) {
+    public function setTrackingId($id)
+    {
         $this->setOption('trackingId', $id);
         return $this;
     }
 
-    public function getTrackingId() {
+    public function getTrackingId()
+    {
         return $this->getOption('trackingId');
     }
 
-    protected function _validateOptions(core\collection\IInputTree $values) {
+    protected function _validateOptions(core\collection\IInputTree $values)
+    {
         $validator = new core\validate\Handler();
         $validator->addRequiredField('trackingId', 'text')->validate($values);
     }
 
-    protected function _buildCreateCall($scriptName, $userId) {
+    protected function _buildCreateCall($scriptName, $userId)
+    {
         $createOptions = $this->getOption('createOptions');
 
-        if(isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] == '127.0.0.1' && !isset($createOptions['cookieDomain'])) {
-            if(!is_array($createOptions)) {
+        if (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] == '127.0.0.1' && !isset($createOptions['cookieDomain'])) {
+            if (!is_array($createOptions)) {
                 $createOptions = [];
             }
 
             $createOptions['cookieDomain'] = 'auto';
         }
 
-        if($userId) {
-            if(!is_array($createOptions)) {
+        if ($userId) {
+            if (!is_array($createOptions)) {
                 $createOptions = [];
             }
 
             $createOptions['userId'] = $userId;
         }
 
-        if(empty($createOptions) || !is_array($createOptions)) {
+        if (empty($createOptions) || !is_array($createOptions)) {
             $createOptions = '\'auto\'';
         } else {
             $createOptions = json_encode($createOptions);
