@@ -12,50 +12,58 @@ use df\arch;
 use df\flex;
 use df\aura;
 
-class VideoEmbed extends Base {
-
+class VideoEmbed extends Base
+{
     const DEFAULT_CATEGORIES = ['Article', 'Description'];
 
     protected $_embedCode;
 
-    public function getFormat(): string {
+    public function getFormat(): string
+    {
         return 'video';
     }
 
-    public function setEmbedCode($code) {
+    public function setEmbedCode($code)
+    {
         $this->_embedCode = trim($code);
         return $this;
     }
 
-    public function getEmbedCode() {
+    public function getEmbedCode()
+    {
         return $this->_embedCode;
     }
 
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return !strlen(trim($this->_embedCode));
     }
 
-    public function getTransitionValue() {
+    public function getTransitionValue()
+    {
         return $this->_embedCode;
     }
 
-    public function setTransitionValue($value) {
+    public function setTransitionValue($value)
+    {
         $this->_embedCode = $value;
         return $this;
     }
 
 
 
-// Io
-    public function readXml(flex\xml\IReadable $reader) {
+    // Io
+    public function readXml(flex\xml\IReadable $reader)
+    {
         $this->_validateXmlReader($reader);
         $this->_embedCode = $reader->getFirstCDataSection();
 
         return $this;
     }
 
-    public function writeXml(flex\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer)
+    {
         $this->_startWriterBlockElement($writer);
         $writer->writeCData($this->_embedCode);
         $this->_endWriterBlockElement($writer);
@@ -64,12 +72,24 @@ class VideoEmbed extends Base {
     }
 
 
-// Render
-    public function render() {
-        $output = $this->getView()->html->videoEmbed($this->_embedCode);
+    // Render
+    public function render()
+    {
+        $view = $this->getView();
 
-        if($output) {
-            $output = $this->getView()->html('div.block', $output->render())
+        try {
+            $cookieNotice = $view->getTheme()->getFacet('cookieNotice');
+
+            if ($cookieNotice && !$view->consent->has('statistics')) {
+                return '';
+            }
+        } catch (\Throwable $e) {
+        }
+
+        $output = $view->html->videoEmbed($this->_embedCode);
+
+        if ($output) {
+            $output = $view->html('div.block', $output->render())
                 ->setDataAttribute('type', $this->getName());
         }
 
@@ -77,15 +97,17 @@ class VideoEmbed extends Base {
     }
 
 
-// Form
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
+    // Form
+    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
+    {
         return new class($this, ...func_get_args()) extends Base_Delegate {
-
-            protected function setDefaultValues() {
+            protected function setDefaultValues()
+            {
                 $this->values->embed = $this->_block->getEmbedCode();
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field) {
+            public function renderFieldContent(aura\html\widget\Field $field)
+            {
                 $field->push(
                     $this->html->textarea(
                             $this->fieldName('embed'),
@@ -97,7 +119,8 @@ class VideoEmbed extends Base {
                 return $this;
             }
 
-            public function apply() {
+            public function apply()
+            {
                 $this->_block->setEmbedCode($this->values['embed']);
                 return $this->_block;
             }
