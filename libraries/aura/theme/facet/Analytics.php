@@ -11,24 +11,36 @@ use df\aura;
 use df\arch;
 use df\spur;
 
-class Analytics extends Base {
-
+class Analytics extends Base
+{
     protected $_handler;
 
-    public function getHandler() {
-        if(!$this->_handler) {
+    public function getHandler()
+    {
+        if (!$this->_handler) {
             $this->_handler = spur\analytics\Handler::factory();
         }
 
         return $this->_handler;
     }
 
-    public function afterHtmlViewRender(aura\view\IHtmlView $view) {
-        if(!$this->_checkEnvironment()) {
+    public function afterHtmlViewRender(aura\view\IHtmlView $view)
+    {
+        if (!$this->_checkEnvironment()) {
             return;
         }
 
-        if($view->context->getRunMode() == 'Http'
+        try {
+            $cookieNotice = $view->getTheme()->getFacet('cookieNotice');
+
+            if ($cookieNotice && !$view->consent->has('statistics')) {
+                return;
+            }
+        } catch (\Exception $e) {
+            core\logException($e);
+        }
+
+        if ($view->context->getRunMode() == 'Http'
         && ($view->context->app->isProduction() || isset($view->context->request->query->forceAnalytics))) {
             $this->getHandler()->apply($view);
         }
