@@ -12,14 +12,15 @@ use df\link;
 use df\aura;
 use df\flex;
 
-class Http implements arch\IDirectoryHelper {
-
+class Http implements arch\IDirectoryHelper
+{
     use arch\TDirectoryHelper;
 
     protected $_httpRequest;
 
-    protected function _init() {
-        if(!$this->context->runner instanceof core\app\runner\Http) {
+    protected function _init()
+    {
+        if (!$this->context->runner instanceof core\app\runner\Http) {
             throw core\Error::{'EDomain'}(
                 'Http helper can only be used from http run mode'
             );
@@ -28,8 +29,9 @@ class Http implements arch\IDirectoryHelper {
         $this->_httpRequest = $this->context->runner->getHttpRequest();
     }
 
-    public function __get($member) {
-        switch($member) {
+    public function __get($member)
+    {
+        switch ($member) {
             case 'request':
                 return $this->_httpRequest;
 
@@ -53,110 +55,133 @@ class Http implements arch\IDirectoryHelper {
     }
 
 
-    public function directoryRequestToUrl($request) {
+    public function directoryRequestToUrl($request)
+    {
         return core\app\runner\http\Router::getInstance()
             ->requestToUrl(arch\Request::factory($request));
     }
 
-    public function getRouter() {
+    public function getRouter()
+    {
         return $this->context->runner->getRouter();
     }
 
-    public function getRequest() {
+    public function getRequest()
+    {
         return $this->_httpRequest;
     }
 
-    public function getMethod() {
+    public function getMethod()
+    {
         return $this->_httpRequest->getMethod();
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
         return $this->_httpRequest->url;
     }
 
-    public function getHost() {
+    public function getHost()
+    {
         return $this->_httpRequest->url->getDomain();
     }
 
-    public function getHeaders() {
+    public function getHeaders()
+    {
         return $this->_httpRequest->headers;
     }
 
-    public function getHeader($key) {
+    public function getHeader($key)
+    {
         return $this->_httpRequest->headers->get($key);
     }
 
-    public function getReferrer() {
+    public function getReferrer()
+    {
         return $this->_httpRequest->headers->get('Referer');
     }
 
-    public function getReferrerDirectoryRequest() {
-        if(!$referrer = $this->getReferrer()) {
+    public function getReferrerDirectoryRequest()
+    {
+        if (!$referrer = $this->getReferrer()) {
             return null;
         }
 
         return $this->localReferrerToRequest($referrer);
     }
 
-    public function getPostData() {
+    public function getPostData()
+    {
         return $this->_httpRequest->getPostData();
     }
 
-    public function getUserAgent() {
+    public function getUserAgent()
+    {
         return $this->_httpRequest->headers->get('User-Agent');
     }
 
-    public function getIp() {
+    public function getIp()
+    {
         return $this->_httpRequest->getIp();
     }
 
 
-    public function isGetRequest() {
+    public function isGetRequest()
+    {
         return $this->getMethod() == 'get';
     }
 
-    public function isPostRequest() {
+    public function isPostRequest()
+    {
         return $this->getMethod() == 'post';
     }
 
-    public function isPutRequest() {
+    public function isPutRequest()
+    {
         return $this->getMethod() == 'put';
     }
 
-    public function isDeleteRequest() {
+    public function isDeleteRequest()
+    {
         return $this->getMethod() == 'delete';
     }
 
-    public function isAjaxRequest() {
-        return strtolower($this->_httpRequest->headers->get('x-requested-with')) == 'xmlhttprequest';
+    public function isAjaxRequest()
+    {
+        return strtolower($this->_httpRequest->headers->get('x-requested-with')) == 'xmlhttprequest' ||
+            $this->_httpRequest->headers->get('x-ajax-request-type') == 'ajax';
     }
 
 
 
-// Responses
-    public function stringResponse($content, $contentType=null) {
+    // Responses
+    public function stringResponse($content, $contentType=null)
+    {
         return new link\http\response\Stream($content, $contentType);
     }
 
-    public function streamResponse($content, $contentType=null) {
+    public function streamResponse($content, $contentType=null)
+    {
         return new link\http\response\Stream($content, $contentType);
     }
 
-    public function ajaxElementResponse(aura\view\IView $view) {
+    public function ajaxElementResponse(aura\view\IView $view)
+    {
         return $this->stringResponse(
             (string)$view->getContentProvider()->setRenderTarget($view),
             $view->getContentType()
         );
     }
 
-    public function ajaxResponse($content, array $extraData=[]) {
+    public function ajaxResponse($content, array $extraData=[])
+    {
         $originalContent = $content;
 
-        if($content instanceof aura\view\IView) {
+        if ($content instanceof aura\view\IView) {
             $content = $this->getAjaxViewContent($content);
         }
 
-        if($originalContent instanceof arch\IAjaxDataProvider) {
+        if ($originalContent instanceof arch\IAjaxDataProvider) {
             $extraData = array_merge($originalContent->getAjaxData(), $extraData);
         }
 
@@ -172,7 +197,8 @@ class Http implements arch\IDirectoryHelper {
         );
     }
 
-    public function ajaxReload(array $extraData=[]) {
+    public function ajaxReload(array $extraData=[])
+    {
         return $this->stringResponse(
             $this->context->data->toJson(array_merge(
                 [
@@ -185,25 +211,29 @@ class Http implements arch\IDirectoryHelper {
         );
     }
 
-    public function getAjaxViewContent(aura\view\IView $view) {
+    public function getAjaxViewContent(aura\view\IView $view)
+    {
         return (string)$view->getContentProvider()->setRenderTarget($view);
     }
 
-    public function jsonResponse($data, int $flags=0) {
+    public function jsonResponse($data, int $flags=0)
+    {
         return $this->streamResponse(
             $this->context->data->toJson($data, $flags),
             'application/json'
         );
     }
 
-    public function fileResponse($path, $checkPath=true) {
+    public function fileResponse($path, $checkPath=true)
+    {
         return new link\http\response\File($path, $checkPath);
     }
 
-    public function redirect($request=null) {
+    public function redirect($request=null)
+    {
         $url = $this->context->uri($request);
 
-        if($url->isJustFragment()) {
+        if ($url->isJustFragment()) {
             $fragment = $url->getFragment();
             $url = clone $this->_httpRequest->url;
             $url->setFragment($fragment);
@@ -212,51 +242,53 @@ class Http implements arch\IDirectoryHelper {
         return new link\http\response\Redirect($url);
     }
 
-    public function redirectExternal($url) {
+    public function redirectExternal($url)
+    {
         return new link\http\response\Redirect($url);
     }
 
-    public function defaultRedirect($default=null, $success=true, $sectionReferrer=null, $fallback=null) {
+    public function defaultRedirect($default=null, $success=true, $sectionReferrer=null, $fallback=null)
+    {
         $request = $this->context->request;
 
-        if($success) {
-            if(!$redirect = $request->getRedirectTo()) {
-                if($default !== null) {
+        if ($success) {
+            if (!$redirect = $request->getRedirectTo()) {
+                if ($default !== null) {
                     $redirect = $default;
                 } else {
                     $redirect = $request->getRedirectFrom();
                 }
             }
 
-            if($redirect) {
+            if ($redirect) {
                 return $this->redirect($redirect);
             }
         }
 
-        if(!$success && ($redirect = $request->getRedirectFrom())) {
+        if (!$success && ($redirect = $request->getRedirectFrom())) {
             return $this->redirect($redirect);
         }
 
-        if($default !== null) {
+        if ($default !== null) {
             return $this->redirect($default);
         }
 
-        if($fallback !== null) {
+        if ($fallback !== null) {
             return $this->redirect($fallback);
         }
 
-        if($sectionReferrer !== null) {
-            if(substr($sectionReferrer, 0, 4) == 'http') {
+        if ($sectionReferrer !== null) {
+            if (substr($sectionReferrer, 0, 4) == 'http') {
                 $sectionReferrer = $this->localReferrerToRequest($sectionReferrer);
             }
 
             return $this->redirect($sectionReferrer);
         }
 
-        if($referrer = $this->getReferrer()) {
+        if ($referrer = $this->getReferrer()) {
             $referrer = $this->localReferrerToRequest($referrer);
 
-            if($referrer && !$referrer->matches($request)) {
+            if ($referrer && !$referrer->matches($request)) {
                 return $this->redirect($referrer);
             }
         }
@@ -264,21 +296,24 @@ class Http implements arch\IDirectoryHelper {
         return $this->redirect($request->getParent());
     }
 
-    public function localReferrerToRequest($referrer) {
+    public function localReferrerToRequest($referrer)
+    {
         try {
             return $this->getRouter()->urlToRequest(link\http\Url::factory($referrer));
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return null;
         }
     }
 
 
-// Generator
-    public function generator($contentType, /*core\io\IChunkSender*/ $sender) {
+    // Generator
+    public function generator($contentType, /*core\io\IChunkSender*/ $sender)
+    {
         return new link\http\response\Generator($contentType, $sender);
     }
 
-    public function csvGenerator($fileName, callable $generator) {
+    public function csvGenerator($fileName, callable $generator)
+    {
         return $this->generator('text/csv', new flex\csv\Builder($generator))
             ->setAttachmentFileName($fileName);
     }
@@ -286,11 +321,12 @@ class Http implements arch\IDirectoryHelper {
 
 
 
-// Cookies
-    public function setCookie($name, $value=null, $expiry=null, $httpOnly=null, $secure=null) {
+    // Cookies
+    public function setCookie($name, $value=null, $expiry=null, $httpOnly=null, $secure=null)
+    {
         $augmentor = $this->context->runner->getResponseAugmentor();
 
-        if($name instanceof link\http\ICookie) {
+        if ($name instanceof link\http\ICookie) {
             $cookie = $name;
         } else {
             $cookie = $augmentor->newCookie($name, $value, $expiry, $httpOnly, $secure);
@@ -300,18 +336,21 @@ class Http implements arch\IDirectoryHelper {
         return $cookie;
     }
 
-    public function getCookie($name, $default=null) {
+    public function getCookie($name, $default=null)
+    {
         return $this->getCookies()->get($name, $default);
     }
 
-    public function hasCookie($name) {
+    public function hasCookie($name)
+    {
         return $this->getCookies()->has($name);
     }
 
-    public function removeCookie($name) {
+    public function removeCookie($name)
+    {
         $augmentor = $this->context->runner->getResponseAugmentor();
 
-        if($name instanceof link\http\ICookie) {
+        if ($name instanceof link\http\ICookie) {
             $cookie = $name;
         } else {
             $cookie = $augmentor->newCookie($name, 'deleted');
@@ -321,53 +360,65 @@ class Http implements arch\IDirectoryHelper {
         return $cookie;
     }
 
-    public function getCookies() {
+    public function getCookies()
+    {
         return $this->_httpRequest->cookies;
     }
 
-    public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null) {
+    public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null)
+    {
         return $this->context->runner->getResponseAugmentor()->newCookie($name, $value, $expiry, $httpOnly, $secure);
     }
 
-    public function getResponseAugmentor() {
+    public function getResponseAugmentor()
+    {
         return $this->context->runner->getResponseAugmentor();
     }
 
 
-// Status
-    public static function isValidStatusCode($code) {
+    // Status
+    public static function isValidStatusCode($code)
+    {
         return link\http\response\HeaderCollection::isValidStatusCode($code);
     }
 
-    public static function statusCodeToString($code) {
+    public static function statusCodeToString($code)
+    {
         return link\http\response\HeaderCollection::statusCodeToString($code);
     }
 
-    public static function statusCodeToMessage($code) {
+    public static function statusCodeToMessage($code)
+    {
         return link\http\response\HeaderCollection::statusCodeToMessage($code);
     }
 
-    public static function isInformationStatusCode($code) {
+    public static function isInformationStatusCode($code)
+    {
         return link\http\response\HeaderCollection::isInformationStatusCode($code);
     }
 
-    public static function isSuccessStatusCode($code) {
+    public static function isSuccessStatusCode($code)
+    {
         return link\http\response\HeaderCollection::isSuccessStatusCode($code);
     }
 
-    public static function isRedirectStatusCode($code) {
+    public static function isRedirectStatusCode($code)
+    {
         return link\http\response\HeaderCollection::isRedirectStatusCode($code);
     }
 
-    public static function isClientErrorStatusCode($code) {
+    public static function isClientErrorStatusCode($code)
+    {
         return link\http\response\HeaderCollection::isClientErrorStatusCode($code);
     }
 
-    public static function isServerErrorStatusCode($code) {
+    public static function isServerErrorStatusCode($code)
+    {
         return link\http\response\HeaderCollection::isServerErrorStatusCode($code);
     }
 
-    public static function isErrorStatusCode($code) {
+    public static function isErrorStatusCode($code)
+    {
         return link\http\response\HeaderCollection::isErrorStatusCode($code);
     }
 }
