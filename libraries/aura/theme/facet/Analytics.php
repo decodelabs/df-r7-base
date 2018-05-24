@@ -30,14 +30,8 @@ class Analytics extends Base
             return;
         }
 
-        try {
-            $cookieNotice = $view->getTheme()->getFacet('cookieNotice');
-
-            if ($cookieNotice && !$view->consent->has('statistics')) {
-                return;
-            }
-        } catch (\Exception $e) {
-            core\logException($e);
+        if (!$view->consent->has('statistics')) {
+            return;
         }
 
         if ($view->context->getRunMode() == 'Http'
