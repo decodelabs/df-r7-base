@@ -14,8 +14,8 @@ use df\mesh;
 
 abstract class SelectorDelegate extends Delegate implements
     arch\node\IInlineFieldRenderableModalSelectorDelegate,
-    arch\node\IDependentDelegate {
-
+    arch\node\IDependentDelegate
+{
     use arch\node\TForm_ModalDelegate;
     use arch\node\TForm_InlineFieldRenderableDelegate;
     use arch\node\TForm_SelectorDelegate;
@@ -34,35 +34,42 @@ abstract class SelectorDelegate extends Delegate implements
 
     private $_selectionList = null;
 
-    public function setSearchMessage($message) {
+    public function setSearchMessage($message)
+    {
         $this->_searchMessage = $message;
         return $this;
     }
 
-    public function getSearchMessage() {
+    public function getSearchMessage()
+    {
         return $this->_searchMessage;
     }
 
-    public function setSearchPlaceholder($placeholder) {
+    public function setSearchPlaceholder($placeholder)
+    {
         $this->_searchPlaceholder = $placeholder;
         return $this;
     }
 
-    public function getSearchPlaceholder() {
+    public function getSearchPlaceholder()
+    {
         return $this->_searchPlaceholder;
     }
 
-    public function setDefaultSearchString($search) {
+    public function setDefaultSearchString($search)
+    {
         $this->_defaultSearchString = $search;
         return $this;
     }
 
-    public function getDefaultSearchString() {
+    public function getDefaultSearchString()
+    {
         return $this->_defaultSearchString;
     }
 
-    public function shouldAutoSelect(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldAutoSelect(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_autoSelect = $flag;
             return $this;
         }
@@ -71,43 +78,47 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
 
-// Modes
-    protected function _getDefaultMode() {
+    // Modes
+    protected function _getDefaultMode()
+    {
         return 'details';
     }
 
 
 
-// Queries
+    // Queries
     abstract protected function _getBaseQuery($fields=null);
 
-    protected function _getQuery($fields=null, $search=null) {
+    protected function _getQuery($fields=null, $search=null)
+    {
         $query = $this->_getBaseQuery($fields);
         $this->applyFilters($query);
 
-        if($search !== null) {
+        if ($search !== null) {
             $this->_applyQuerySearch($query, $search);
         }
 
         return $query;
     }
 
-    protected function _applyQuerySearch(opal\query\IQuery $query, $search) {
+    protected function _applyQuerySearch(opal\query\IQuery $query, $search)
+    {
         $query->searchFor($search);
     }
 
-    protected function _fetchSelectionList($cache=true) {
-        if($cache && $this->_selectionList !== null) {
+    protected function _fetchSelectionList($cache=true)
+    {
+        if ($cache && $this->_selectionList !== null) {
             return $this->_selectionList;
         }
 
         $selected = $this->getSelected();
 
-        if(empty($selected)) {
+        if (empty($selected)) {
             return [];
         }
 
-        if(!$this->_isForMany) {
+        if (!$this->_isForMany) {
             $selected = [$selected];
         }
 
@@ -117,46 +128,50 @@ abstract class SelectorDelegate extends Delegate implements
 
         $rows = [];
 
-        foreach($rowSet as $row) {
+        foreach ($rowSet as $row) {
             $id = $this->_getResultId($row);
             $rows[(string)$id] = $row;
         }
 
         $output = [];
 
-        foreach($selected as $id) {
-            if(isset($rows[$id])) {
+        foreach ($selected as $id) {
+            if (isset($rows[$id])) {
                 $output[] = $rows[$id];
             }
         }
 
-        if($cache) {
+        if ($cache) {
             $this->_selectionList = $output;
         }
 
         return $output;
     }
 
-    protected function _getResultId($result) {
+    protected function _getResultId($result)
+    {
         return $result['id'];
     }
 
-    protected function _getResultDisplayName($result) {
+    protected function _getResultDisplayName($result)
+    {
         return $result['name'];
     }
 
-    protected function _countTotalItems() {
+    protected function _countTotalItems()
+    {
         return $this->_getQuery()->count();
     }
 
-    protected function _getOptionsList() {
+    protected function _getOptionsList()
+    {
         $output = [];
         $query = $this->_getQuery()
             ->paginate()
                 ->setDefaultLimit(100)
                 ->applyWith([]);
 
-        foreach($query as $row) {
+        foreach ($query as $row) {
             $output[(string)$this->_getResultId($row)] = $this->_getResultDisplayName($row);
         }
 
@@ -164,10 +179,11 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
 
-    public function getSourceEntityLocator(): mesh\entity\ILocator {
+    public function getSourceEntityLocator(): mesh\entity\ILocator
+    {
         $adapter = $this->_getBaseQuery()->getSource()->getAdapter();
 
-        if(!$adapter instanceof mesh\entity\ILocatorProvider) {
+        if (!$adapter instanceof mesh\entity\ILocatorProvider) {
             throw new mesh\entity\RuntimeException(
                 'Selector source is not an entity locator provider'
             );
@@ -176,66 +192,72 @@ abstract class SelectorDelegate extends Delegate implements
         return $adapter->getEntityLocator();
     }
 
-    public function getSelectionName() {
-        if($this->_isForMany) {
+    public function getSelectionName()
+    {
+        if ($this->_isForMany) {
             return null;
         }
 
         $list = $this->_fetchSelectionList();
 
-        if(!empty($list) && ($result = array_shift($list))) {
+        if (!empty($list) && ($result = array_shift($list))) {
             return $this->_getResultDisplayName($result);
         }
     }
 
 
-// Form
-    protected function setDefaultValues() {
+    // Form
+    protected function setDefaultValues()
+    {
         $parts = explode('.', $this->_delegateId);
         $id = array_pop($parts);
 
-        if(isset($this->request[$id]) && !isset($this->values->selected)) {
+        if (isset($this->request[$id]) && !isset($this->values->selected)) {
             $this->setSelected($this->request[$id]);
-        } else if($this->_isRequired && $this->_autoSelect) {
+        } elseif ($this->_isRequired && $this->_autoSelect) {
             $r = $this->_getQuery(['@primary'])->limit(2)->toList('@primary');
 
-            if(count($r) == 1) {
+            if (count($r) == 1) {
                 $this->setSelected(array_shift($r));
             }
         }
     }
 
 
-// Render
-    public function renderFieldContent(aura\html\widget\Field $fa) {
+    // Render
+    public function renderFieldContent(aura\html\widget\Field $fa)
+    {
         $fa->setId($this->elementId('selector'));
         $fa->isRequired($this->_isRequired);
 
         $this->createModeUi([$fa]);
     }
 
-    protected function createInlineDetailsUi(aura\html\widget\Field $fa) {
+    protected function createInlineDetailsUi(aura\html\widget\Field $fa)
+    {
         $fa->addClass('delegate-selector');
 
-        if($this instanceof arch\node\IDependentDelegate) {
+        if ($this instanceof arch\node\IDependentDelegate) {
             $messages = $this->getDependencyMessages();
 
-            if(!empty($messages)) {
-                foreach($messages as $key => $value) {
+            if (!empty($messages)) {
+                foreach ($messages as $key => $value) {
                     $fa->addFlashMessage($value, 'warning');
                 }
                 return;
             }
         }
 
+        /*
         if($messages = $this->_getSelectionErrors()) {
             $fa->push($this->html->fieldError($messages));
         }
+        */
 
         $count = $this->_countTotalItems();
         $threshold = $this->_isForMany ? 20 : 70;
 
-        if($count > 0 && $count <= $threshold) {
+        if ($count > 0 && $count <= $threshold) {
             $this->_renderInlineListDetails($fa);
         } else {
             $this->_renderInlineTextDetails($fa);
@@ -243,13 +265,14 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
 
-    protected function _renderInlineListDetails(aura\html\widget\Field $fa) {
+    protected function _renderInlineListDetails(aura\html\widget\Field $fa)
+    {
         $options = $this->_getOptionsList();
         $selected = $this->_fetchSelectionList();
 
-        if($this->_isForMany) {
-            $select = $this->html('div.w.list.checkbox', function() use($options) {
-                foreach($options as $key => $val) {
+        if ($this->_isForMany) {
+            $select = $this->html('div.w.list.checkbox', function () use ($options) {
+                foreach ($options as $key => $val) {
                     yield $this->html->checkbox(
                             $this->fieldName('selected['.$key.']'),
                             $this->values->selected->{$key},
@@ -279,13 +302,14 @@ abstract class SelectorDelegate extends Delegate implements
         $this->_renderDetailsButtonGroup($ba, $selected, true);
     }
 
-    protected function _renderInlineTextDetails(aura\html\widget\Field $fa) {
+    protected function _renderInlineTextDetails(aura\html\widget\Field $fa)
+    {
         $fa->push($this->html->string('<div class="w list selection"><div class="body">'));
         $selected = $this->_fetchSelectionList();
 
-        if($this->_isForMany) {
+        if ($this->_isForMany) {
             // Multiple entry
-            if(empty($selected)) {
+            if (empty($selected)) {
                 $fa->push(
                     $this->html('em', $this->_('nothing selected')),
                     $this->html->string('</div>')
@@ -295,7 +319,7 @@ abstract class SelectorDelegate extends Delegate implements
                 $count = count($selected);
                 $displayList = [];
 
-                for($i = 0; $i < 3 && !empty($tempList); $i++) {
+                for ($i = 0; $i < 3 && !empty($tempList); $i++) {
                     $count--;
 
                     $displayList[] = $this->html(
@@ -304,7 +328,7 @@ abstract class SelectorDelegate extends Delegate implements
                     );
                 }
 
-                if($count) {
+                if ($count) {
                     $displayList[] = $this->html->_(
                         'and <strong>%c%</strong> more selected',
                         ['%c%' => $count]
@@ -316,7 +340,7 @@ abstract class SelectorDelegate extends Delegate implements
                     $this->html->string('</div>')
                 );
 
-                foreach($selected as $row) {
+                foreach ($selected as $row) {
                     $id = $this->_getResultId($row);
 
                     $fa->push(
@@ -329,7 +353,7 @@ abstract class SelectorDelegate extends Delegate implements
             }
         } else {
             // Single entry
-            if(!empty($selected)) {
+            if (!empty($selected)) {
                 // Selection made
                 $selected = array_shift($selected);
 
@@ -360,8 +384,9 @@ abstract class SelectorDelegate extends Delegate implements
         $fa->push($this->html->string('</div>'));
     }
 
-    protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected, $isList=false) {
-        if($isList) {
+    protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected, $isList=false)
+    {
+        if ($isList) {
             $ba->push(
                 $this->html->eventButton(
                         $this->eventName('beginSelect'),
@@ -379,7 +404,7 @@ abstract class SelectorDelegate extends Delegate implements
                     ->setDisposition('informative')
                     ->shouldValidate(false)
             );
-        } else if(empty($selected)) {
+        } elseif (empty($selected)) {
             $ba->push(
                 $this->html->eventButton(
                         $this->eventName('beginSelect'),
@@ -402,7 +427,7 @@ abstract class SelectorDelegate extends Delegate implements
         }
 
 
-        if(!empty($selected)) {
+        if (!empty($selected)) {
             $ba->push(
                 $this->html->eventButton(
                         $this->eventName('clear'),
@@ -414,16 +439,17 @@ abstract class SelectorDelegate extends Delegate implements
         }
     }
 
-    protected function createOverlaySelectorUi(aura\html\widget\Field $fa) {
+    protected function createOverlaySelectorUi(aura\html\widget\Field $fa)
+    {
         $this->createInlineDetailsUi($fa);
 
         $selected = $this->_fetchSelectionList();
 
-        if(!$this->_isForMany && $selected) {
+        if (!$this->_isForMany && $selected) {
             $selected = array_shift($selected);
         }
 
-        if(empty($selected)) {
+        if (empty($selected)) {
             $selected = null;
         }
 
@@ -431,10 +457,11 @@ abstract class SelectorDelegate extends Delegate implements
         $this->createOverlaySelectorUiContent($ol, $selected);
     }
 
-    protected function createOverlaySelectorUiContent(aura\html\widget\Overlay $ol, $selected) {
+    protected function createOverlaySelectorUiContent(aura\html\widget\Overlay $ol, $selected)
+    {
         $fs = $ol->addFieldSet($this->_('Select'));
 
-        if(!$this->values->search->hasValue() && $this->_defaultSearchString !== null) {
+        if (!$this->values->search->hasValue() && $this->_defaultSearchString !== null) {
             $this->values->search->setValue($this->_defaultSearchString);
             $this->onSearchEvent();
         }
@@ -462,7 +489,7 @@ abstract class SelectorDelegate extends Delegate implements
 
 
         // Show selected
-        if(!$this->_isForMany) {
+        if (!$this->_isForMany) {
             $this->_renderOneSelected($fs, $selected);
         } else {
             $this->_renderManySelected($fs, $selected);
@@ -471,19 +498,19 @@ abstract class SelectorDelegate extends Delegate implements
 
 
         // Show search results
-        if(strlen($search = $this->values['search'])) {
-            if($search == '*' || $search == '?') {
+        if (strlen($search = $this->values['search'])) {
+            if ($search == '*' || $search == '?') {
                 $search = null;
             }
 
             $keyList = [];
 
-            if(!empty($selected)) {
-                if(!$this->_isForMany) {
+            if (!empty($selected)) {
+                if (!$this->_isForMany) {
                     $selected = [$selected];
                 }
 
-                foreach($selected as $entry) {
+                foreach ($selected as $entry) {
                     $keyList[] = $this->_getResultId($entry);
                 }
             }
@@ -494,25 +521,25 @@ abstract class SelectorDelegate extends Delegate implements
 
             $fa = $fs->addField($this->_('Search results'));
 
-            foreach($this->values->paginator as $key => $val) {
+            foreach ($this->values->paginator as $key => $val) {
                 $fa->addHidden($this->fieldName('paginator['.$key.']'), $val);
             }
 
             $collectionWidget = $this->_renderCollectionList($query);
 
-            if($collectionWidget instanceof aura\html\widget\IWidgetProxy) {
+            if ($collectionWidget instanceof aura\html\widget\IWidgetProxy) {
                 $collectionWidget = $collectionWidget->toWidget();
             }
 
-            if($collectionWidget instanceof aura\html\widget\IMappedListWidget) {
+            if ($collectionWidget instanceof aura\html\widget\IMappedListWidget) {
                 // Collection list
-                if($search !== null) {
-                    $collectionWidget->addFieldAtIndex(0, 'relevance', function($record) {
+                if ($search !== null) {
+                    $collectionWidget->addFieldAtIndex(0, 'relevance', function ($record) {
                         return $this->html->progressBar(@$record['relevance'] * 100);
                     });
                 }
 
-                $collectionWidget->addFieldAtIndex(0, 'select', 'x', function($row) {
+                $collectionWidget->addFieldAtIndex(0, 'select', 'x', function ($row) {
                     $id = $this->_getResultId($row);
 
                     return [
@@ -521,19 +548,19 @@ abstract class SelectorDelegate extends Delegate implements
                     ];
                 });
 
-                if(method_exists($collectionWidget, 'setMode')) {
+                if (method_exists($collectionWidget, 'setMode')) {
                     $collectionWidget
                         ->setMode('post')
                         ->setPostEvent($this->eventName('paginate'));
                 }
 
                 $fa->push($collectionWidget);
-            } else if($collectionWidget !== null) {
+            } elseif ($collectionWidget !== null) {
                 // Something else - trust child class
                 $fa->push($collectionWidget);
             } else {
                 // Fallback to standard
-                foreach($query as $result) {
+                foreach ($query as $result) {
                     $id = $this->_getResultId($result);
                     $name = $this->_getResultDisplayName($result);
 
@@ -553,7 +580,7 @@ abstract class SelectorDelegate extends Delegate implements
                 ->shouldValidate(false)
                 ->setIcon('add');
 
-            if($this->_isForMany) {
+            if ($this->_isForMany) {
                 $fa->addEventButton(
                         $this->eventName('selectAll'),
                         $this->_('Add all matches')
@@ -578,7 +605,7 @@ abstract class SelectorDelegate extends Delegate implements
 
         $bg = $ba->addButtonGroup();
 
-        if($this->_state->hasStore('originalSelection')) {
+        if ($this->_state->hasStore('originalSelection')) {
             $bg->push(
                 $this->html->resetEventButton($this->eventName('reset'))
             );
@@ -589,8 +616,9 @@ abstract class SelectorDelegate extends Delegate implements
         );
     }
 
-    protected function _renderOneSelected($fs, $selected) {
-        if($selected === null) {
+    protected function _renderOneSelected($fs, $selected)
+    {
+        if ($selected === null) {
             return;
         }
 
@@ -618,15 +646,16 @@ abstract class SelectorDelegate extends Delegate implements
         );
     }
 
-    protected function _renderManySelected($fs, $selected) {
-        if(empty($selected)) {
+    protected function _renderManySelected($fs, $selected)
+    {
+        if (empty($selected)) {
             return;
         }
 
         $fa = $fs->addField($this->_('Selected'));
         $fa->addClass('delegate-selector');
 
-        foreach($selected as $result) {
+        foreach ($selected as $result) {
             $id = $this->_getResultId($result);
             $name = $this->_getResultDisplayName($result);
 
@@ -650,12 +679,14 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
 
-    protected function _renderCollectionList($result) {
+    protected function _renderCollectionList($result)
+    {
         return null;
     }
 
-    protected function _renderCheckbox($id, $name=null) {
-        if(!$this->_isForMany) {
+    protected function _renderCheckbox($id, $name=null)
+    {
+        if (!$this->_isForMany) {
             return $this->html->radio(
                 $this->fieldName('selected'),
                 $this->isSelected($id),
@@ -673,15 +704,16 @@ abstract class SelectorDelegate extends Delegate implements
     }
 
 
-// Events
-    protected function onSearchEvent() {
+    // Events
+    protected function onSearchEvent()
+    {
         unset($this->values->searchResults, $this->values->paginator);
 
         $this->data->newValidator()
             // Search
             ->addField('search', 'text')
-                ->setSanitizer(function($value) {
-                    if(empty($value)) {
+                ->setSanitizer(function ($value) {
+                    if (empty($value)) {
                         $value = '*';
                     }
 
@@ -692,19 +724,21 @@ abstract class SelectorDelegate extends Delegate implements
             ->getValue('search');
     }
 
-    protected function onSelectEvent() {
+    protected function onSelectEvent()
+    {
         unset($this->values->search, $this->values->searchResults);
     }
 
-    protected function onSelectAllEvent() {
-        if(!$this->_isForMany) {
+    protected function onSelectAllEvent()
+    {
+        if (!$this->_isForMany) {
             return;
         }
 
         $selected = $this->getSelected();
         $query = $this->_getQuery(['@primary'], $this->values['search']);
 
-        foreach($query->toList('@primary') as $key) {
+        foreach ($query->toList('@primary') as $key) {
             $selected[(string)$key] = (string)$key;
         }
 
@@ -714,15 +748,17 @@ abstract class SelectorDelegate extends Delegate implements
         $this->onEndSelectEvent();
     }
 
-    protected function onBeginSelectEvent() {
-        $this->switchMode('details', 'select', function() {
+    protected function onBeginSelectEvent()
+    {
+        $this->switchMode('details', 'select', function () {
             $this->_state->setStore('originalSelection', $this->getSelected());
         });
     }
 
-    protected function onCancelSelectEvent() {
-        $this->switchMode('select', 'details', function() {
-            if($this->_state->hasStore('originalSelection')) {
+    protected function onCancelSelectEvent()
+    {
+        $this->switchMode('select', 'details', function () {
+            if ($this->_state->hasStore('originalSelection')) {
                 $this->setSelected($this->_state->getStore('originalSelection'));
             }
         });
@@ -730,21 +766,24 @@ abstract class SelectorDelegate extends Delegate implements
         return $this->http->redirect('#'.$this->elementId('selector'));
     }
 
-    protected function onEndSelectEvent() {
-        $this->switchMode('select', 'details', function() {
+    protected function onEndSelectEvent()
+    {
+        $this->switchMode('select', 'details', function () {
             $this->_state->removeStore('originalSelection');
         });
 
         return $this->http->redirect('#'.$this->elementId('selector'));
     }
 
-    protected function onResetEvent() {
-        if($this->_state->hasStore('originalSelection')) {
+    protected function onResetEvent()
+    {
+        if ($this->_state->hasStore('originalSelection')) {
             $this->setSelected($this->_state->getStore('originalSelection'));
         }
     }
 
-    protected function onPaginateEvent($query) {
+    protected function onPaginateEvent($query)
+    {
         $query = core\collection\Tree::fromArrayDelimitedString($query);
         $this->values->paginator->import($query);
     }
