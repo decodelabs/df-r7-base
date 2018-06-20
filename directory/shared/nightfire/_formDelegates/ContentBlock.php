@@ -14,8 +14,8 @@ use df\aura;
 
 class ContentBlock extends arch\node\form\Delegate implements
     arch\node\IInlineFieldRenderableDelegate,
-    arch\node\IResultProviderDelegate {
-
+    arch\node\IResultProviderDelegate
+{
     use arch\node\TForm_InlineFieldRenderableDelegate;
     use core\constraint\TRequirable;
 
@@ -25,21 +25,34 @@ class ContentBlock extends arch\node\form\Delegate implements
     protected $_defaultType;
     protected $_manager;
 
-    protected function afterConstruct() {
+    protected function afterConstruct()
+    {
         $this->_manager = fire\Manager::getInstance();
     }
 
-    protected function init() {
+    protected function init()
+    {
         $this->_getAvailableBlockTypes();
 
-        if(!$this->_block && ($type = $this->_state->getStore('blockType'))) {
+        if (!$this->_block && ($type = $this->_state->getStore('blockType'))) {
             $this->_block = fire\block\Base::factory($type)->isNested($this->_isNested);
         }
     }
 
-    protected function _getAvailableBlockTypes() {
-        if(!$this->_state->hasStore('availableBlockTypes')) {
-            if($this->_category) {
+    public function reloadDefaultValues(): void
+    {
+        if ($this->hasDelegate('block')) {
+            $this->proxyLoadDelegate('block', $this->_block)
+                ->isRequired($this->_isRequired);
+        }
+
+        parent::reloadDefaultValues();
+    }
+
+    protected function _getAvailableBlockTypes()
+    {
+        if (!$this->_state->hasStore('availableBlockTypes')) {
+            if ($this->_category) {
                 $types = $this->_manager->getCategoryBlockNamesByFormat($this->_category);
             } else {
                 $types = $this->_manager->getAllBlockNamesByFormat();
@@ -50,9 +63,9 @@ class ContentBlock extends arch\node\form\Delegate implements
             $count = 0;
             $default = null;
 
-            foreach($types as $format => $set) {
-                foreach($set as $id => $name) {
-                    if($default === null) {
+            foreach ($types as $format => $set) {
+                foreach ($set as $id => $name) {
+                    if ($default === null) {
                         $default = $id;
                     }
 
@@ -62,7 +75,7 @@ class ContentBlock extends arch\node\form\Delegate implements
 
             $this->_state->setStore('availableBlockCount', $count);
 
-            if(!$this->_state->hasStore('blockType') && $count == 1) {
+            if (!$this->_state->hasStore('blockType') && $count == 1) {
                 $this->_state->setStore('blockType', $default);
             }
         }
@@ -70,8 +83,9 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this->_state->getStore('availableBlockTypes');
     }
 
-    public function isNested(bool $flag=null) {
-        if($flag !== null) {
+    public function isNested(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isNested = $flag;
             return $this;
         }
@@ -79,8 +93,9 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this->_isNested;
     }
 
-    public function setBlock(fire\IBlock $block=null) {
-        if($block !== null) {
+    public function setBlock(fire\IBlock $block=null)
+    {
+        if ($block !== null) {
             $this->setBlockType($block);
         } else {
             $this->_block = null;
@@ -89,21 +104,25 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this;
     }
 
-    public function getBlock() {
+    public function getBlock()
+    {
         return $this->_block;
     }
 
-    public function setDefaultType(string $type=null) {
+    public function setDefaultType(string $type=null)
+    {
         $this->_defaultType = $type;
         return $this;
     }
 
-    public function getDefaultType() {
+    public function getDefaultType()
+    {
         return $this->_defaultType;
     }
 
-    public function setBlockType($type) {
-        if($type === null) {
+    public function setBlockType($type)
+    {
+        if ($type === null) {
             $this->_state->removeStore('blockType');
         } else {
             $this->_block = fire\block\Base::normalize($type)->isNested($this->_isNested);
@@ -113,36 +132,41 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this;
     }
 
-    public function getBlockType() {
+    public function getBlockType()
+    {
         return $this->_state->getStore('blockType');
     }
 
-    public function setCategory($category) {
+    public function setCategory($category)
+    {
         $this->_category = $this->_manager->getCategory($category);
 
         return $this;
     }
 
-    public function getCategory() {
+    public function getCategory()
+    {
         return $this->_category;
     }
 
-    protected function loadDelegates() {
-        if(!$this->_block) {
-            if($this->_defaultType) {
+    protected function loadDelegates()
+    {
+        if (!$this->_block) {
+            if ($this->_defaultType) {
                 $this->setBlockType($this->_defaultType);
-            } else if($this->_category) {
+            } elseif ($this->_category) {
                 $this->setBlockType($this->_category->getDefaultEditorBlockType());
             }
         }
 
-        if($this->_block) {
+        if ($this->_block) {
             $this->proxyLoadDelegate('block', $this->_block)
                 ->isRequired($this->_isRequired);
         }
     }
 
-    public function renderFieldContent(aura\html\widget\Field $fa) {
+    public function renderFieldContent(aura\html\widget\Field $fa)
+    {
         $fa->setId($this->elementId('block'));
         $fa->push($this->html->string('<div class="fire-block">'));
 
@@ -150,7 +174,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         $availableCount = $this->_state->getStore('availableBlockCount');
         $this->values->blockType->setValue($this->_block ? $this->_block->getName() : null);
 
-        if($availableCount > 1) {
+        if ($availableCount > 1) {
             $fa->add('nav.buttons > div.type', [
                 $this->html->groupedSelect(
                         $this->fieldName('blockType'),
@@ -167,28 +191,28 @@ class ContentBlock extends arch\node\form\Delegate implements
                     ->setDisposition($this->_block ? 'operative' : 'positive')
                     ->shouldValidate(false)
             ]);
-
         }
 
-        if($this->values->content->hasErrors()) {
+        if ($this->values->content->hasErrors()) {
             $fa->push($this->html->fieldError($this->values->content));
         }
 
-        if($this->_block) {
+        if ($this->_block) {
             $this['block']->renderFieldContent($fa);
         }
 
         $fa->push($this->html->string('</div>'));
     }
 
-    protected function onSelectBlockTypeEvent() {
+    protected function onSelectBlockTypeEvent()
+    {
         $type = $this->values['blockType'];
 
-        if($type == '--' || empty($type)) {
+        if ($type == '--' || empty($type)) {
             $type = null;
         }
 
-        if(isset($this['block'])) {
+        if (isset($this['block'])) {
             $this['block']->apply();
         }
 
@@ -196,15 +220,15 @@ class ContentBlock extends arch\node\form\Delegate implements
 
         try {
             $this->setBlockType($type);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->values->blockType->addError('type', $e->getMessage());
         }
 
-        if(isset($this['block'])) {
+        if (isset($this['block'])) {
             $this->unloadDelegate('block');
         }
 
-        if($oldBlock && $oldBlock !== $this->_block) {
+        if ($oldBlock && $oldBlock !== $this->_block) {
             $this->_block->setTransitionValue($oldBlock->getTransitionValue());
 
             $this->proxyLoadDelegate('block', $this->_block)
@@ -216,9 +240,10 @@ class ContentBlock extends arch\node\form\Delegate implements
         return $this->http->redirect('#'.$this->elementId('block'));
     }
 
-    public function apply() {
-        if(!$this->_block) {
-            if($this->_isRequired) {
+    public function apply()
+    {
+        if (!$this->_block) {
+            if ($this->_isRequired) {
                 $this->values->content->addError('required', $this->_(
                     'This field cannot be empty'
                 ));
@@ -230,7 +255,7 @@ class ContentBlock extends arch\node\form\Delegate implements
         $delegate = $this['block'];
         $delegate->apply();
 
-        if(!$this->_isRequired && $this->_block->isEmpty()) {
+        if (!$this->_isRequired && $this->_block->isEmpty()) {
             return null;
         }
 

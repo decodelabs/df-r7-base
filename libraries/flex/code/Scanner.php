@@ -10,33 +10,36 @@ use df\core;
 use df\flex;
 use df\axis;
 
-class Scanner implements IScanner {
-
+class Scanner implements IScanner
+{
     public $locations = [];
     public $probes = [];
 
-    public function __construct(array $locations=null, array $probes=null) {
-        if(!empty($locations)) {
+    public function __construct(array $locations=null, array $probes=null)
+    {
+        if (!empty($locations)) {
             $this->addLocations($locations);
         }
 
-        if(!empty($probes)) {
+        if (!empty($probes)) {
             $this->addProbes($probes);
         }
     }
 
 
 
-// Locations
-    public function setLocations(array $locations) {
+    // Locations
+    public function setLocations(array $locations)
+    {
         return $this->clearLocations()->addLocations($locations);
     }
 
-    public function addLocations(array $locations) {
-        foreach($locations as $location) {
-            if(empty($location)) {
+    public function addLocations(array $locations)
+    {
+        foreach ($locations as $location) {
+            if (empty($location)) {
                 continue;
-            } else if(!$location instanceof ILocation) {
+            } elseif (!$location instanceof ILocation) {
                 throw new RuntimeException('Invalid location');
             }
 
@@ -46,35 +49,37 @@ class Scanner implements IScanner {
         return $this;
     }
 
-    public function addFrameworkPackageLocations(bool $allRoot=false, array $blackList=null) {
-        if($allRoot) {
+    public function addFrameworkPackageLocations(bool $allRoot=false, array $blackList=null)
+    {
+        if ($allRoot) {
             $model = axis\Model::factory('package');
             $packages = $model->getInstalledPackageList();
         } else {
             $packages = df\Launchpad::$loader->getPackages();
         }
 
-        foreach($packages as $name => $package) {
+        foreach ($packages as $name => $package) {
             $pathBlackList = [];
 
-            if(is_array($package)) {
+            if (is_array($package)) {
                 $path = $package['path'];
                 $name = $package['name'];
             } else {
                 $path = $package->path;
             }
 
-            if($blackList !== null && in_array($name, $blackList)) {
+            if ($blackList !== null && in_array($name, $blackList)) {
                 continue;
             }
 
-            switch($name) {
+            switch ($name) {
                 case 'app':
                     $pathBlackList = [
                         'data',
                         'dev',
                         'static',
-                        'assets/lib/vendor'
+                        'assets/lib/vendor',
+                        'vendor'
                     ];
 
                     break;
@@ -93,27 +98,31 @@ class Scanner implements IScanner {
         return $this;
     }
 
-    public function addLocation(ILocation $location) {
+    public function addLocation(ILocation $location)
+    {
         $this->locations[$location->getId()] = $location;
         return $this;
     }
 
-    public function getLocation($id) {
-        if(isset($this->locations[$id])) {
+    public function getLocation($id)
+    {
+        if (isset($this->locations[$id])) {
             return $this->locations[$id];
         }
     }
 
-    public function hasLocation($id) {
-        if($id instanceof ILocation) {
+    public function hasLocation($id)
+    {
+        if ($id instanceof ILocation) {
             $id = $id->getId();
         }
 
         return isset($this->locations[$id]);
     }
 
-    public function removeLocation($id) {
-        if($id instanceof ILocation) {
+    public function removeLocation($id)
+    {
+        if ($id instanceof ILocation) {
             $id = $id->getId();
         }
 
@@ -121,26 +130,30 @@ class Scanner implements IScanner {
         return $this;
     }
 
-    public function getLocations() {
+    public function getLocations()
+    {
         return $this->locations;
     }
 
-    public function clearLocations() {
+    public function clearLocations()
+    {
         $this->locations = [];
         return $this;
     }
 
 
-// Probes
-    public function setProbes(array $probes) {
+    // Probes
+    public function setProbes(array $probes)
+    {
         return $this->clearProbes()->addProbes($probes);
     }
 
-    public function addProbes(array $probes) {
-        foreach($probes as $probe) {
-            if(empty($probe)) {
+    public function addProbes(array $probes)
+    {
+        foreach ($probes as $probe) {
+            if (empty($probe)) {
                 continue;
-            } else if(!$probe instanceof IProbe) {
+            } elseif (!$probe instanceof IProbe) {
                 throw new RuntimeException('Invalid probe');
             }
 
@@ -150,27 +163,31 @@ class Scanner implements IScanner {
         return $this;
     }
 
-    public function addProbe(IProbe $probe) {
+    public function addProbe(IProbe $probe)
+    {
         $this->probes[$probe->getId()] = $probe;
         return $this;
     }
 
-    public function getProbe($id) {
-        if(isset($this->probes[$id])) {
+    public function getProbe($id)
+    {
+        if (isset($this->probes[$id])) {
             return $this->probes[$id];
         }
     }
 
-    public function hasProbe($id) {
-        if($id instanceof IProbe) {
+    public function hasProbe($id)
+    {
+        if ($id instanceof IProbe) {
             $id = $id->getId();
         }
 
         return isset($this->probes[$id]);
     }
 
-    public function removeProbe($id) {
-        if($id instanceof IProbe) {
+    public function removeProbe($id)
+    {
+        if ($id instanceof IProbe) {
             $id = $id->getId();
         }
 
@@ -178,27 +195,30 @@ class Scanner implements IScanner {
         return $this;
     }
 
-    public function getProbes() {
+    public function getProbes()
+    {
         return $this->probes;
     }
 
-    public function clearProbes() {
+    public function clearProbes()
+    {
         $this->probes = [];
         return $this;
     }
 
 
 
-// Exec
-    public function scan() {
+    // Exec
+    public function scan()
+    {
         $output = [];
 
-        foreach($this->probes as $id => $probe) {
+        foreach ($this->probes as $id => $probe) {
             $output[$id] = new ProbeGroup();
         }
 
-        foreach($this->locations as $id => $location) {
-            foreach($location->scan($this) as $probeId => $probe) {
+        foreach ($this->locations as $id => $location) {
+            foreach ($location->scan($this) as $probeId => $probe) {
                 $output[$probeId]->set($id, $probe);
             }
         }

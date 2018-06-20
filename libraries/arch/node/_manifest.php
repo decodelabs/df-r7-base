@@ -17,11 +17,11 @@ use df\mesh;
 use df\opal;
 use df\user;
 
-
 ##############################
 ## MAIN
 ##############################
-interface INode extends core\IContextAware, user\IAccessLock, arch\IResponseForcer, arch\IOptionalDirectoryAccessLock {
+interface INode extends core\IContextAware, user\IAccessLock, arch\IResponseForcer, arch\IOptionalDirectoryAccessLock
+{
     public function setCallback($callback);
     public function getCallback(): ?callable;
     public function dispatch();
@@ -38,7 +38,8 @@ interface INode extends core\IContextAware, user\IAccessLock, arch\IResponseForc
 ##############################
 ## TASKS
 ##############################
-interface ITaskNode extends INode {
+interface ITaskNode extends INode
+{
     public static function getSchedule(): ?string;
     public static function getSchedulePriority(): string;
     public static function shouldScheduleAutomatically(): bool;
@@ -50,10 +51,13 @@ interface ITaskNode extends INode {
     public function ensureDfSource();
 }
 
-interface IBuildTaskNode extends ITaskNode {}
+interface IBuildTaskNode extends ITaskNode
+{
+}
 
 
-interface ITaskManager extends core\IManager {
+interface ITaskManager extends core\IManager
+{
     public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): halo\process\IResult;
     public function launchBackground($request, $user=null, bool $dfSource=false);
     public function launchQuietly($request);
@@ -71,11 +75,13 @@ interface ITaskManager extends core\IManager {
 ##############################
 ## REST API
 ##############################
-interface IRestApiNode extends INode {
+interface IRestApiNode extends INode
+{
     public function authorizeRequest();
 }
 
-interface IRestApiResult extends arch\IProxyResponse {
+interface IRestApiResult extends arch\IProxyResponse
+{
     public function isValid(): bool;
 
     public function setStatusCode(?int $code);
@@ -99,7 +105,8 @@ interface IRestApiResult extends arch\IProxyResponse {
 ##############################
 ## FORMS
 ##############################
-interface IStoreProvider {
+interface IStoreProvider
+{
     public function setStore($key, $value);
     public function hasStore(...$keys): bool;
     public function getStore($key, $default=null);
@@ -107,7 +114,8 @@ interface IStoreProvider {
     public function clearStore();
 }
 
-interface IFormState extends IStoreProvider {
+interface IFormState extends IStoreProvider
+{
     public function getSessionId(): string;
     public function getValues(): core\collection\IInputTree;
 
@@ -118,7 +126,8 @@ interface IFormState extends IStoreProvider {
     public function isOperating(): bool;
 }
 
-interface IFormEventDescriptor {
+interface IFormEventDescriptor
+{
     public static function factory($output): IFormEventDescriptor;
 
     public function parseOutput($output);
@@ -151,9 +160,11 @@ interface IFormEventDescriptor {
     public function hasResponse(): bool;
 }
 
-interface IForm extends IStoreProvider, core\lang\IChainable, \ArrayAccess {
+interface IForm extends IStoreProvider, core\lang\IChainable, \ArrayAccess
+{
     public function isRenderingInline(): bool;
     public function getState(): IFormState;
+    public function reloadDefaultValues(): void;
     public function loadDelegate(string $id, string $path): IDelegate;
     public function directLoadDelegate(string $id, string $class): IDelegate;
     public function proxyLoadDelegate(string $id, IDelegateProxy $proxy): IDelegate;
@@ -168,7 +179,8 @@ interface IForm extends IStoreProvider, core\lang\IChainable, \ArrayAccess {
     public function elementId(string $name): string;
 }
 
-interface IActiveForm extends IForm {
+interface IActiveForm extends IForm
+{
     public function isNew(): bool;
 
     public function handleEvent(string $name, array $args=[]): IFormEventDescriptor;
@@ -186,11 +198,13 @@ interface IActiveForm extends IForm {
 }
 
 
-interface IFormNode extends INode, IActiveForm {
+interface IFormNode extends INode, IActiveForm
+{
     public function setComplete();
 }
 
-interface IWizard extends IFormNode {
+interface IWizard extends IFormNode
+{
     public function getCurrentSection(): string;
     public function setSection(string $section);
     public function getPrevSection(): ?string;
@@ -199,7 +213,8 @@ interface IWizard extends IFormNode {
 }
 
 
-interface IDelegate extends IActiveForm, core\IContextAware {
+interface IDelegate extends IActiveForm, core\IContextAware
+{
     public function getDelegateId(): string;
     public function getDelegateKey(): string;
 
@@ -211,40 +226,49 @@ interface IDelegate extends IActiveForm, core\IContextAware {
     public function setComplete();
 }
 
-interface IModalDelegate {
+interface IModalDelegate
+{
     public function getAvailableModes(): array;
     public function setDefaultMode(?string $mode);
     public function getDefaultMode(): ?string;
 }
 
-interface IInlineFieldRenderableDelegate {
+interface IInlineFieldRenderableDelegate
+{
     public function renderField($label=null);
     public function renderInlineFieldContent();
     public function renderFieldContent(aura\html\widget\Field $field);
 }
 
-interface ISelfContainedRenderableDelegate {
+interface ISelfContainedRenderableDelegate
+{
     public function renderFieldSet($legend=null);
     public function renderContainer();
     public function renderContainerContent(aura\html\widget\IContainerWidget $fieldSet);
 }
 
-interface IParentEventHandlerDelegate extends IDelegate {
+interface IParentEventHandlerDelegate extends IDelegate
+{
     public function apply();
 }
 
-interface IParentUiHandlerDelegate extends IDelegate {
+interface IParentUiHandlerDelegate extends IDelegate
+{
     public function renderUi();
 }
 
-interface IResultProviderDelegate extends core\constraint\IRequirable, IParentEventHandlerDelegate {}
+interface IResultProviderDelegate extends core\constraint\IRequirable, IParentEventHandlerDelegate
+{
+}
 
-interface ISelectionProviderDelegate extends IResultProviderDelegate {
+interface ISelectionProviderDelegate extends IResultProviderDelegate
+{
     public function isForOne(bool $flag=null);
     public function isForMany(bool $flag=null);
 }
 
-interface ISelectorDelegate extends ISelectionProviderDelegate, IDependencyValueProvider {
+interface ISelectorDelegate extends ISelectionProviderDelegate, IDependencyValueProvider
+{
     public function getSourceEntityLocator(): mesh\entity\ILocator;
     public function isSelected(?string $id): bool;
     public function setSelected($selected);
@@ -254,16 +278,24 @@ interface ISelectorDelegate extends ISelectionProviderDelegate, IDependencyValue
     public function clearSelection();
 }
 
-interface IInlineFieldRenderableSelectorDelegate extends IInlineFieldRenderableDelegate, ISelectorDelegate {}
-interface IInlineFieldRenderableModalSelectorDelegate extends IModalDelegate, IInlineFieldRenderableDelegate, ISelectorDelegate {}
-interface IAdapterDelegate extends IParentUiHandlerDelegate, IParentEventHandlerDelegate {}
+interface IInlineFieldRenderableSelectorDelegate extends IInlineFieldRenderableDelegate, ISelectorDelegate
+{
+}
+interface IInlineFieldRenderableModalSelectorDelegate extends IModalDelegate, IInlineFieldRenderableDelegate, ISelectorDelegate
+{
+}
+interface IAdapterDelegate extends IParentUiHandlerDelegate, IParentEventHandlerDelegate
+{
+}
 
-interface IDependencyValueProvider {
+interface IDependencyValueProvider
+{
     public function getDependencyValue();
     public function hasDependencyValue(): bool;
 }
 
-interface IDependentDelegate extends opal\query\IFilterConsumer {
+interface IDependentDelegate extends opal\query\IFilterConsumer
+{
     public function addDependency($value, string $message=null, callable $filter=null, callable $callback=null);
     public function setDependency(string $name, $value, string $message=null, callable $filter=null, callable $callback=null);
     public function hasDependency(string $name): bool;
@@ -275,6 +307,7 @@ interface IDependentDelegate extends opal\query\IFilterConsumer {
 }
 
 
-interface IDelegateProxy {
+interface IDelegateProxy
+{
     public function loadFormDelegate(arch\IContext $context, IFormState $state, IFormEventDescriptor $event, string $id): IDelegate;
 }

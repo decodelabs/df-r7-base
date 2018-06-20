@@ -12,10 +12,9 @@ use df\aura;
 use df\opal;
 use df\mesh;
 
-
 // BASE
-trait TForm {
-
+trait TForm
+{
     use core\lang\TChainable;
     use aura\view\TView_CascadingHelperProvider;
 
@@ -27,18 +26,38 @@ trait TForm {
     protected $_state;
     protected $_delegates = [];
 
-    protected function init() {}
-    protected function setDefaultValues() {}
-    protected function loadDelegates() {}
-    protected function afterInit() {}
+    protected function init()
+    {
+    }
+    protected function setDefaultValues()
+    {
+    }
 
-    public function getState(): IFormState {
+    public function reloadDefaultValues(): void
+    {
+        $this->setDefaultValues();
+
+        foreach ($this->_delegates as $delegate) {
+            $delegate->reloadDefaultValues();
+        }
+    }
+
+    protected function loadDelegates()
+    {
+    }
+    protected function afterInit()
+    {
+    }
+
+    public function getState(): IFormState
+    {
         return $this->_state;
     }
 
-// Delegates
-    public function loadDelegate(string $id, string $name): IDelegate {
-        if(false !== strpos($id, '.')) {
+    // Delegates
+    public function loadDelegate(string $id, string $name): IDelegate
+    {
+        if (false !== strpos($id, '.')) {
             throw core\Error::EArgument(
                 'Delegate IDs must not contain . character'
             );
@@ -49,7 +68,7 @@ trait TForm {
         $path = $context->location->getController();
         $area = $context->location->getArea();
 
-        if(!empty($path)) {
+        if (!empty($path)) {
             $parts = explode('/', $path);
         } else {
             $parts = [];
@@ -61,7 +80,7 @@ trait TForm {
         $nameParts = explode('/', $name);
         $topName = array_pop($nameParts);
 
-        if(!empty($nameParts)) {
+        if (!empty($nameParts)) {
             $parts = array_merge($parts, $nameParts);
         }
 
@@ -71,14 +90,15 @@ trait TForm {
 
         $class = 'df\\apex\\directory\\'.$area.'\\'.implode('\\', $parts);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
-            if(!class_exists($class)) {
+            if (!class_exists($class)) {
                 try {
                     $scaffold = arch\scaffold\Base::factory($context);
                     return $this->_delegates[$id] = $scaffold->loadFormDelegate($name, $state, $this->event, $mainId);
-                } catch(arch\scaffold\IError $e) {}
+                } catch (arch\scaffold\IError $e) {
+                }
 
                 throw core\Error::{'arch/node/EDelegate,ENotFound'}(
                     'Delegate '.$name.' could not be found at ~'.$area.'/'.$path
@@ -89,8 +109,9 @@ trait TForm {
         return $this->_delegates[$id] = new $class($context, $state, $this->event, $mainId);
     }
 
-    public function directLoadDelegate(string $id, string $class): IDelegate {
-        if(!class_exists($class)) {
+    public function directLoadDelegate(string $id, string $class): IDelegate
+    {
+        if (!class_exists($class)) {
             throw core\Error::{'arch/node/EDelegate,ENotFound'}(
                 'Cannot direct load delegate '.$id.' - class not found'
             );
@@ -104,7 +125,8 @@ trait TForm {
         );
     }
 
-    public function proxyLoadDelegate(string $id, arch\node\IDelegateProxy $proxy): IDelegate {
+    public function proxyLoadDelegate(string $id, arch\node\IDelegateProxy $proxy): IDelegate
+    {
         return $this->_delegates[$id] = $proxy->loadFormDelegate(
             $this->context,
             $this->_state->getDelegateState($id),
@@ -113,10 +135,11 @@ trait TForm {
         );
     }
 
-    public function getDelegate(string $id): IDelegate {
+    public function getDelegate(string $id): IDelegate
+    {
         $id = explode('.', trim($id, ' .'));
 
-        if(empty($id)) {
+        if (empty($id)) {
             throw core\Error::{'arch/node/EDelegate,EArgument'}(
                 'Empty delegate id detected'
             );
@@ -124,7 +147,7 @@ trait TForm {
 
         $top = array_shift($id);
 
-        if(!isset($this->_delegates[$top])) {
+        if (!isset($this->_delegates[$top])) {
             throw core\Error::{'arch/node/EDelegate,ENotFound'}(
                 'Delegate '.$top.' could not be found'
             );
@@ -132,39 +155,41 @@ trait TForm {
 
         $output = $this->_delegates[$top];
 
-        if(!empty($id)) {
+        if (!empty($id)) {
             $output = $output->getDelegate(implode('.', $id));
         }
 
         return $output;
     }
 
-    public function hasDelegate(string $id): bool {
+    public function hasDelegate(string $id): bool
+    {
         $id = explode('.', trim($id, ' .'));
 
-        if(empty($id)) {
+        if (empty($id)) {
             return false;
         }
 
         $top = array_shift($id);
 
-        if(!isset($this->_delegates[$top])) {
+        if (!isset($this->_delegates[$top])) {
             return false;
         }
 
         $delegate = $this->_delegates[$top];
 
-        if(!empty($id)) {
+        if (!empty($id)) {
             return $delegate->hasDelegate(implode('.', $id));
         }
 
         return true;
     }
 
-    public function unloadDelegate(string $id) {
+    public function unloadDelegate(string $id)
+    {
         $id = explode('.', trim($id, ' .'));
 
-        if(empty($id)) {
+        if (empty($id)) {
             throw core\Error::{'arch/node/EDelegate,EArgument'}(
                 'Empty delegate id detected'
             );
@@ -172,7 +197,7 @@ trait TForm {
 
         $top = array_shift($id);
 
-        if(!isset($this->_delegates[$top])) {
+        if (!isset($this->_delegates[$top])) {
             throw core\Error::{'arch/node/EDelegate,ENotFound'}(
                 'Delegate '.$top.' could not be found'
             );
@@ -180,7 +205,7 @@ trait TForm {
 
         $delegate = $this->_delegates[$top];
 
-        if(!empty($id)) {
+        if (!empty($id)) {
             $delegate->unloadDelegate(implode('.', $id));
             return $this;
         }
@@ -192,8 +217,9 @@ trait TForm {
     }
 
 
-    protected function _getDelegateIdPrefix() {
-        if($this instanceof IDelegate) {
+    protected function _getDelegateIdPrefix()
+    {
+        if ($this instanceof IDelegate) {
             return $this->_delegateId.'.';
         }
 
@@ -201,62 +227,73 @@ trait TForm {
     }
 
 
-    public function isRenderingInline(): bool {
+    public function isRenderingInline(): bool
+    {
         return $this->_isRenderingInline;
     }
 
 
-    public function offsetSet($id, $name) {
+    public function offsetSet($id, $name)
+    {
         return $this->loadDelegate($id, $name);
     }
 
-    public function offsetGet($id) {
+    public function offsetGet($id)
+    {
         return $this->getDelegate($id);
     }
 
-    public function offsetExists($id) {
+    public function offsetExists($id)
+    {
         return $this->hasDelegate($id);
     }
 
-    public function offsetUnset($id) {
+    public function offsetUnset($id)
+    {
         return $this->unloadDelegate($id);
     }
 
 
 
-// Store
-    public function setStore($key, $value) {
+    // Store
+    public function setStore($key, $value)
+    {
         $this->_state->setStore($key, $value);
         return $this;
     }
 
-    public function hasStore(...$keys): bool {
+    public function hasStore(...$keys): bool
+    {
         return $this->_state->hasStore(...$keys);
     }
 
-    public function getStore($key, $default=null) {
+    public function getStore($key, $default=null)
+    {
         return $this->_state->getStore($key, $default);
     }
 
-    public function removeStore(...$keys) {
+    public function removeStore(...$keys)
+    {
         $this->_state->removeStore(...$keys);
         return $this;
     }
 
-    public function clearStore() {
+    public function clearStore()
+    {
         $this->_state->clearStore();
         return $this;
     }
 
 
-// Delivery
-    public function isValid(): bool {
-        if($this->_state && !$this->_state->values->isValid()) {
+    // Delivery
+    public function isValid(): bool
+    {
+        if ($this->_state && !$this->_state->values->isValid()) {
             return false;
         }
 
-        foreach($this->_delegates as $delegate) {
-            if(!$delegate->isValid()) {
+        foreach ($this->_delegates as $delegate) {
+            if (!$delegate->isValid()) {
                 return false;
             }
         }
@@ -264,48 +301,50 @@ trait TForm {
         return true;
     }
 
-    public function countErrors(): int {
+    public function countErrors(): int
+    {
         $output = $this->values->countErrors();
 
-        foreach($this->_delegates as $delegate) {
+        foreach ($this->_delegates as $delegate) {
             $output += $delegate->countErrors();
         }
 
         return $output;
     }
 
-    public function complete($success=true, $failure=null) {
+    public function complete($success=true, $failure=null)
+    {
         $isDirect = is_bool($success);
 
-        if(is_callable($success)
+        if (is_callable($success)
         || core\lang\Util::isAnonymousObject($success)
         || is_array($success)) {
             $this->event->parseOutput($success);
             $success = true;
-        } else if(is_string($success)
+        } elseif (is_string($success)
         || $success instanceof arch\IRequest
         || $success instanceof link\http\IUrl) {
             $this->event->setRedirect($success);
             $success = true;
         }
 
-        if($failure) {
+        if ($failure) {
             $this->event->setFailureCallback($failure);
         }
 
 
-        if($this->isValid() || $isDirect) {
+        if ($this->isValid() || $isDirect) {
             $output = $this->event->triggerSuccess($this);
 
-            if($output === false) {
+            if ($output === false) {
                 return;
-            } else if($output === true) {
+            } elseif ($output === true) {
                 $output = null;
             }
 
             $this->_isComplete = true;
 
-            if(!$this->event->hasRedirect()
+            if (!$this->event->hasRedirect()
             && !$this->event->hasResponse()) {
                 $this->event->setRedirect($this->_getCompleteRedirect());
             }
@@ -314,7 +353,8 @@ trait TForm {
         }
     }
 
-    protected function _getCompleteRedirect($default=null, $success=true) {
+    protected function _getCompleteRedirect($default=null, $success=true)
+    {
         return $this->http->defaultRedirect(
             $default,
             $success,
@@ -324,12 +364,13 @@ trait TForm {
     }
 
 
-// Names
-    public function eventName(string $name, string ...$args): string {
+    // Names
+    public function eventName(string $name, string ...$args): string
+    {
         $output = $this->_getDelegateIdPrefix().$name;
 
-        if(!empty($args)) {
-            foreach($args as $i => $arg) {
+        if (!empty($args)) {
+            foreach ($args as $i => $arg) {
                 $args[$i] = '\''.addslashes($arg).'\'';
             }
 
@@ -341,8 +382,9 @@ trait TForm {
 
 
 
-// Events
-    public function handleEvent(string $name, array $args=[]): IFormEventDescriptor {
+    // Events
+    public function handleEvent(string $name, array $args=[]): IFormEventDescriptor
+    {
         $this->event->setTarget(
                 $this instanceof IDelegate ?
                     $this->getDelegateId() :
@@ -353,10 +395,10 @@ trait TForm {
 
         $func = 'on'.ucfirst($name).'Event';
 
-        if(!method_exists($this, $func)) {
+        if (!method_exists($this, $func)) {
             $func = 'onDefaultEvent';
 
-            if(!method_exists($this, $func)) {
+            if (!method_exists($this, $func)) {
                 throw core\Error::{'arch/node/EEvent,EDefinition'}(
                     'Event '.$name.' does not have a handler'
                 );
@@ -370,46 +412,58 @@ trait TForm {
         return $this->event;
     }
 
-    protected function _beforeEvent($event) {}
+    protected function _beforeEvent($event)
+    {
+    }
 
-    protected function onResetEvent() {
+    protected function onResetEvent()
+    {
         $this->reset();
     }
 
-    protected function onRefreshEvent() {}
+    protected function onRefreshEvent()
+    {
+    }
 
-    public function handleDelegateEvent(string $delegateId, string $event, array $args) {}
+    public function handleDelegateEvent(string $delegateId, string $event, array $args)
+    {
+    }
 
-    public function triggerPostEvent(IActiveForm $target, string $event, array $args) {
-        if($this !== $target) {
+    public function triggerPostEvent(IActiveForm $target, string $event, array $args)
+    {
+        if ($this !== $target) {
             $this->handlePostEvent($target, $event, $args);
         }
 
-        foreach($this->_delegates as $id => $delegate) {
+        foreach ($this->_delegates as $id => $delegate) {
             $delegate->triggerPostEvent($target, $event, $args);
         }
 
         return $this;
     }
 
-    public function handlePostEvent(IActiveForm $target, string $event, array $args) {}
+    public function handlePostEvent(IActiveForm $target, string $event, array $args)
+    {
+    }
 
-    public function handleMissingDelegate(string $id, string $event, array $args): bool {
+    public function handleMissingDelegate(string $id, string $event, array $args): bool
+    {
         return false;
     }
 
 
-    public function getAvailableEvents(): array {
+    public function getAvailableEvents(): array
+    {
         $output = [];
         $ref = new \ReflectionClass($this);
 
-        foreach($ref->getMethods() as $method) {
-            if(preg_match('/^on([A-Z\_][a-zA-Z0-9_]*)Event$/', $method->getName(), $matches)) {
+        foreach ($ref->getMethods() as $method) {
+            if (preg_match('/^on([A-Z\_][a-zA-Z0-9_]*)Event$/', $method->getName(), $matches)) {
                 $output[] = $this->eventName(lcfirst($matches[1]));
             }
         }
 
-        foreach($this->_delegates as $delegate) {
+        foreach ($this->_delegates as $delegate) {
             $output = array_merge($output, $delegate->getAvailableEvents());
         }
 
@@ -421,10 +475,11 @@ trait TForm {
 
 
 // Parent renderer
-trait TForm_ParentUiHandlerDelegate {
-
-    final public function renderUi() {
-        if($decorator = arch\decorator\Delegate::factory($this)) {
+trait TForm_ParentUiHandlerDelegate
+{
+    final public function renderUi()
+    {
+        if ($decorator = arch\decorator\Delegate::factory($this)) {
             $decorator->renderUi();
         } else {
             $this->createUi();
@@ -438,24 +493,27 @@ trait TForm_ParentUiHandlerDelegate {
 
 
 // Modal
-trait TForm_ModalDelegate {
-
+trait TForm_ModalDelegate
+{
     protected $_defaultMode = null;
 
-    public function getAvailableModes(): array {
+    public function getAvailableModes(): array
+    {
         return array_keys($this->_getModeRenderers());
     }
 
-    protected function _getModeRenderers() {
-        if(isset(static::$_modes) && !empty(static::$_modes)) {
+    protected function _getModeRenderers()
+    {
+        if (isset(static::$_modes) && !empty(static::$_modes)) {
             return static::$_modes;
-        } else if(defined('static::DEFAULT_MODES')) {
+        } elseif (defined('static::DEFAULT_MODES')) {
             return static::DEFAULT_MODES;
         }
     }
 
-    public function setDefaultMode(?string $mode) {
-        if($mode === null) {
+    public function setDefaultMode(?string $mode)
+    {
+        if ($mode === null) {
             $this->_defaultMode = null;
             return $this;
         }
@@ -463,7 +521,7 @@ trait TForm_ModalDelegate {
 
         $modes = $this->getAvailableModes();
 
-        if(!in_array($mode, $modes)) {
+        if (!in_array($mode, $modes)) {
             throw core\Error::EArgument(
                 'Mode '.$mode.' is not recognised in this form'
             );
@@ -473,8 +531,9 @@ trait TForm_ModalDelegate {
         return $this;
     }
 
-    public function getDefaultMode(): ?string {
-        if(empty($this->_defaultMode)) {
+    public function getDefaultMode(): ?string
+    {
+        if (empty($this->_defaultMode)) {
             $this->_defaultMode = $this->_getDefaultMode();
         }
 
@@ -483,46 +542,50 @@ trait TForm_ModalDelegate {
 
     abstract protected function _getDefaultMode();
 
-    protected function setMode($mode) {
+    protected function setMode($mode)
+    {
         $this->_state->setStore('mode', $mode);
     }
 
-    protected function getMode($default=null) {
-        if($default === null) {
+    protected function getMode($default=null)
+    {
+        if ($default === null) {
             $default = $this->getDefaultMode();
         }
 
         return $this->_state->getStore('mode', $default);
     }
 
-    protected function switchMode($from, $to, $do=null) {
-        if(!is_array($from)) {
+    protected function switchMode($from, $to, $do=null)
+    {
+        if (!is_array($from)) {
             $from = [$from];
         }
 
         $mode = $this->getMode();
 
-        if(!in_array($mode, $from)) {
+        if (!in_array($mode, $from)) {
             return;
         }
 
         $this->setMode($to);
 
-        if($do) {
+        if ($do) {
             core\lang\Callback::factory($do)->invoke($this, $from, $to);
         }
     }
 
-    protected function createModeUi(array $args) {
+    protected function createModeUi(array $args)
+    {
         $mode = $this->getMode();
         $modes = $this->_getModeRenderers();
         $func = null;
 
-        if(isset($modes[$mode])) {
+        if (isset($modes[$mode])) {
             $func = $modes[$mode];
         }
 
-        if(!$func || !method_exists($this, $func)) {
+        if (!$func || !method_exists($this, $func)) {
             throw core\Error::{'arch/node/EDelegate,EDefinition'}(
                 'Selector delegate has no render handler for '.$mode.' mode'
             );
@@ -534,9 +597,10 @@ trait TForm_ModalDelegate {
 
 
 // Inline field renderable
-trait TForm_InlineFieldRenderableDelegate {
-
-    public function renderField($label=null) {
+trait TForm_InlineFieldRenderableDelegate
+{
+    public function renderField($label=null)
+    {
         $this->renderFieldContent(
             $output = $this->html->field($label)
         );
@@ -544,7 +608,8 @@ trait TForm_InlineFieldRenderableDelegate {
         return $output;
     }
 
-    public function renderInlineFieldContent() {
+    public function renderInlineFieldContent()
+    {
         return $this->renderField()->renderInputArea();
     }
 }
@@ -552,9 +617,10 @@ trait TForm_InlineFieldRenderableDelegate {
 
 
 // Self contained renderable
-trait TForm_SelfContainedRenderableDelegate {
-
-    public function renderFieldSet($legend=null) {
+trait TForm_SelfContainedRenderableDelegate
+{
+    public function renderFieldSet($legend=null)
+    {
         $this->renderContainerContent(
             $output = $this->html->fieldSet($legend)
         );
@@ -562,7 +628,8 @@ trait TForm_SelfContainedRenderableDelegate {
         return $output;
     }
 
-    public function renderContainer() {
+    public function renderContainer()
+    {
         $this->renderContainerContent(
             $output = $this->html->container()
         );
@@ -574,14 +641,15 @@ trait TForm_SelfContainedRenderableDelegate {
 
 
 // Selector
-trait TForm_SelectorDelegate {
-
+trait TForm_SelectorDelegate
+{
     use core\constraint\TRequirable;
 
     protected $_isForMany = true;
 
-    public function isForOne(bool $flag=null) {
-        if($flag !== null) {
+    public function isForOne(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isForMany = !$flag;
             return $this;
         }
@@ -589,8 +657,9 @@ trait TForm_SelectorDelegate {
         return !$this->_isForMany;
     }
 
-    public function isForMany(bool $flag=null) {
-        if($flag !== null) {
+    public function isForMany(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isForMany = $flag;
             return $this;
         }
@@ -601,41 +670,45 @@ trait TForm_SelectorDelegate {
 
 
 
-trait TForm_ValueListSelectorDelegate {
+trait TForm_ValueListSelectorDelegate
+{
 
 // Selected
-    public function isSelected(?string $id): bool {
-        if($id === null) {
+    public function isSelected(?string $id): bool
+    {
+        if ($id === null) {
             return false;
         }
 
-        if(!$this->_isForMany) {
+        if (!$this->_isForMany) {
             return (string)$this->values['selected'] == $id;
         } else {
             return $this->values->selected->has($id);
         }
     }
 
-    public function setSelected($selected) {
+    public function setSelected($selected)
+    {
         $this->values->selected->clear();
 
-        if($selected === null) {
+        if ($selected === null) {
             return $this;
         }
 
         return $this->addSelected($selected);
     }
 
-    public function addSelected($selected) {
-        if(!$this->_isForMany) {
+    public function addSelected($selected)
+    {
+        if (!$this->_isForMany) {
             $this->values->selected = $this->_normalizeSelection($selected);
         } else {
-            if(!is_array($selected)) {
+            if (!is_array($selected)) {
                 $selected = [$selected];
             }
 
 
-            foreach($selected as $id) {
+            foreach ($selected as $id) {
                 $id = $this->_normalizeSelection($id);
                 $this->values->selected[$id] = $id;
             }
@@ -644,11 +717,12 @@ trait TForm_ValueListSelectorDelegate {
         return $this;
     }
 
-    protected function _normalizeSelection($selection) {
-        if($selection instanceof opal\record\IRecord) {
+    protected function _normalizeSelection($selection)
+    {
+        if ($selection instanceof opal\record\IRecord) {
             $selection = $selection->getPrimaryKeySet();
-        } else if($selection instanceof opal\record\IPartial) {
-            if($selection->isBridge()) {
+        } elseif ($selection instanceof opal\record\IPartial) {
+            if ($selection->isBridge()) {
                 core\stub($selection);
             } else {
                 $selection = $selection->getPrimaryKeySet();
@@ -658,33 +732,38 @@ trait TForm_ValueListSelectorDelegate {
         return $this->_sanitizeSelection((string)$selection);
     }
 
-    protected function _sanitizeSelection($selection) {
+    protected function _sanitizeSelection($selection)
+    {
         return $selection;
     }
 
-    public function getSelected() {
-        if(!$this->_isForMany) {
+    public function getSelected()
+    {
+        if (!$this->_isForMany) {
             return $this->values['selected'];
         } else {
             return $this->values->selected->toArray();
         }
     }
 
-    public function hasSelection(): bool {
-        if(!$this->_isForMany) {
+    public function hasSelection(): bool
+    {
+        if (!$this->_isForMany) {
             return $this->values->selected->hasValue();
         } else {
             return !$this->values->selected->isEmpty();
         }
     }
 
-    public function clearSelection() {
+    public function clearSelection()
+    {
         return $this->setSelected(null);
     }
 
-    public function removeSelected(?string $id) {
-        if($id !== null) {
-            if(!$this->_isForMany) {
+    public function removeSelected(?string $id)
+    {
+        if ($id !== null) {
+            if (!$this->_isForMany) {
                 unset($this->values->selected);
             } else {
                 unset($this->values->selected->{$id});
@@ -694,18 +773,21 @@ trait TForm_ValueListSelectorDelegate {
         return $this;
     }
 
-    public function getDependencyValue() {
+    public function getDependencyValue()
+    {
         return $this->getSelected();
     }
 
-    public function hasDependencyValue(): bool {
+    public function hasDependencyValue(): bool
+    {
         return $this->hasSelection();
     }
 
-    public function apply() {
-        if($this->_isRequired) {
-            if(!$this->hasSelection()) {
-                if($this->_isForMany) {
+    public function apply()
+    {
+        if ($this->_isRequired) {
+            if (!$this->hasSelection()) {
+                if ($this->_isForMany) {
                     $this->values->selected->addError('required', $this->_(
                         'You must select at least one entry'
                     ));
@@ -720,17 +802,20 @@ trait TForm_ValueListSelectorDelegate {
         return $this->getSelected();
     }
 
-    protected function _getSelectionErrors() {
+    protected function _getSelectionErrors()
+    {
         return $this->values->selected;
     }
 
-// Events
-    protected function onClearEvent() {
+    // Events
+    protected function onClearEvent()
+    {
         unset($this->values->selected);
         return $this->http->redirect('#'.$this->elementId('selector'));
     }
 
-    protected function onRemoveEvent($id) {
+    protected function onRemoveEvent($id)
+    {
         unset($this->values->selected->{$id});
     }
 }
@@ -738,15 +823,16 @@ trait TForm_ValueListSelectorDelegate {
 
 
 // Dependant
-trait TForm_DependentDelegate {
-
+trait TForm_DependentDelegate
+{
     use opal\query\TFilterConsumer;
 
     protected $_dependencies = [];
     protected $_dependencyMessages = [];
 
-    public function addDependency($value, string $message=null, callable $filter=null, callable $callback=null) {
-        if($value instanceof IDelegate) {
+    public function addDependency($value, string $message=null, callable $filter=null, callable $callback=null)
+    {
+        if ($value instanceof IDelegate) {
             $name = $value->getDelegateKey();
         } else {
             $name = uniqid();
@@ -755,7 +841,8 @@ trait TForm_DependentDelegate {
         return $this->setDependency($name, $value, $message, $filter, $callback);
     }
 
-    public function setDependency(string $name, $value, string $message=null, callable $filter=null, callable $callback=null) {
+    public function setDependency(string $name, $value, string $message=null, callable $filter=null, callable $callback=null)
+    {
         $this->_dependencies[$name] = [
             'value' => $value,
             'message' => $message,
@@ -768,33 +855,38 @@ trait TForm_DependentDelegate {
         return $this;
     }
 
-    public function hasDependency(string $name): bool {
+    public function hasDependency(string $name): bool
+    {
         return isset($this->_dependencies[$name]);
     }
 
-    public function getDependency(string $name): array {
-        if(isset($this->_dependencies[$name])) {
+    public function getDependency(string $name): array
+    {
+        if (isset($this->_dependencies[$name])) {
             return $this->_dependencies[$name];
         } else {
             return null;
         }
     }
 
-    public function removeDependency(string $name) {
+    public function removeDependency(string $name)
+    {
         unset($this->_dependencies[$name]);
         return $this;
     }
 
-    public function getDependencies(): array {
+    public function getDependencies(): array
+    {
         return $this->_dependencies;
     }
 
-    public function getDependencyMessages(): array {
+    public function getDependencyMessages(): array
+    {
         $this->normalizeDependencyValues();
         $output = [];
 
-        foreach($this->_dependencies as $name => $dep) {
-            if($dep['resolved']) {
+        foreach ($this->_dependencies as $name => $dep) {
+            if ($dep['resolved']) {
                 continue;
             }
 
@@ -804,15 +896,17 @@ trait TForm_DependentDelegate {
         return $output;
     }
 
-    protected function _beforeEvent($event) {
+    protected function _beforeEvent($event)
+    {
         $this->normalizeDependencyValues();
     }
 
-    public function applyFilters(opal\query\IQuery $query) {
-        if(!empty($this->_filters)) {
+    public function applyFilters(opal\query\IQuery $query)
+    {
+        if (!empty($this->_filters)) {
             $clause = $query->beginWhereClause();
 
-            foreach($this->_filters as $filter) {
+            foreach ($this->_filters as $filter) {
                 $filter->invoke($clause, $this);
             }
 
@@ -823,58 +917,61 @@ trait TForm_DependentDelegate {
         $filters = [];
         $clause = null;
 
-        foreach($this->_dependencies as $name => $dep) {
-            if(!$dep['resolved'] || !isset($dep['filter'])) {
+        foreach ($this->_dependencies as $name => $dep) {
+            if (!$dep['resolved'] || !isset($dep['filter'])) {
                 continue;
             }
 
-            if(!$clause) {
+            if (!$clause) {
                 $clause = $query->beginWhereClause();
             }
 
             core\lang\Callback::factory($dep['filter'])->invoke(
-                $clause, $dep['value'], $this
+                $clause,
+                $dep['value'],
+                $this
             );
         }
 
-        if($clause) {
+        if ($clause) {
             $clause->endClause();
         }
 
         return $this;
     }
 
-    public function normalizeDependencyValues() {
-        foreach($this->_dependencies as $name => $dep) {
-            if($dep['normalized']) {
+    public function normalizeDependencyValues()
+    {
+        foreach ($this->_dependencies as $name => $dep) {
+            if ($dep['normalized']) {
                 continue;
             }
 
             $value = $dep['value'];
             $isResolved = null;
 
-            if($value instanceof IDependencyValueProvider) {
+            if ($value instanceof IDependencyValueProvider) {
                 $isResolved = $value->hasDependencyValue();
                 $value = $value->getDependencyValue();
-            } else if($value instanceof core\IValueContainer) {
+            } elseif ($value instanceof core\IValueContainer) {
                 $value = $value->getValue();
                 $isResolved = $value !== null;
-            } else if(is_callable($value)) {
+            } elseif (is_callable($value)) {
                 $value = $value($this);
             }
 
-            if($isResolved === null) {
+            if ($isResolved === null) {
                 $isResolved = (bool)$value;
             }
 
-            if($dep['callback'] && $isResolved) {
+            if ($dep['callback'] && $isResolved) {
                 $doCallback = $hasChanged = false;
 
-                if($this->hasStore('__dependency:'.$name)) {
+                if ($this->hasStore('__dependency:'.$name)) {
                     @list($wasResolved, $lastValue) = $this->getStore('__dependency:'.$name);
                     $hasChanged = $value != $lastValue;
 
-                    if(!$wasResolved || $hasChanged) {
+                    if (!$wasResolved || $hasChanged) {
                         $doCallback = true;
                     }
                 } else {
@@ -882,7 +979,9 @@ trait TForm_DependentDelegate {
                 }
 
                 core\lang\Callback::factory($dep['callback'])->invoke(
-                    $value, $this, $doCallback
+                    $value,
+                    $this,
+                    $doCallback
                 );
             }
 
@@ -890,7 +989,7 @@ trait TForm_DependentDelegate {
             $this->_dependencies[$name]['normalized'] = true;
             $this->_dependencies[$name]['resolved'] = $isResolved;
 
-            if($dep['callback']) {
+            if ($dep['callback']) {
                 $this->setStore('__dependency:'.$name, [$isResolved, $value]);
             }
         }
@@ -901,32 +1000,36 @@ trait TForm_DependentDelegate {
 
 
 // Media
-trait TForm_MediaBucketAwareSelector {
-
+trait TForm_MediaBucketAwareSelector
+{
     protected $_bucket = 'shared';
     protected $_bucketData;
     protected $_bucketHandler;
 
-    public function setBucket($bucket, array $values=null) {
+    public function setBucket($bucket, array $values=null)
+    {
         $this->_bucket = $bucket;
         $this->_bucketData = $values;
 
         return $this;
     }
 
-    public function getBucket() {
+    public function getBucket()
+    {
         return $this->_bucket;
     }
 
-    public function getBucketData() {
+    public function getBucketData()
+    {
         return $this->_bucketData;
     }
 
 
-    protected function _setupBucket() {
-        if(isset($this->_bucketData['context1'])
+    protected function _setupBucket()
+    {
+        if (isset($this->_bucketData['context1'])
         && $this->_bucketData['context1'] instanceof arch\node\ISelectorDelegate) {
-            if(!$this->_bucketData['context1']->hasSelection()) {
+            if (!$this->_bucketData['context1']->hasSelection()) {
                 $this->_bucket = null;
                 $this->addDependency(
                     $this->_bucketData['context1'],
@@ -940,9 +1043,9 @@ trait TForm_MediaBucketAwareSelector {
             }
         }
 
-        if(isset($this->_bucketData['context2'])
+        if (isset($this->_bucketData['context2'])
         && $this->_bucketData['context2'] instanceof arch\node\ISelectorDelegate) {
-            if(!$this->_bucketData['context2']->hasSelection()) {
+            if (!$this->_bucketData['context2']->hasSelection()) {
                 $this->_bucket = null;
                 $this->addDependency(
                     $this->_bucketData['context1'],
@@ -956,10 +1059,11 @@ trait TForm_MediaBucketAwareSelector {
             }
         }
 
-        if($this->_bucket) {
-            if(!$this->_bucket instanceof opal\record\IRecord) {
+        if ($this->_bucket) {
+            if (!$this->_bucket instanceof opal\record\IRecord) {
                 $this->_bucket = $this->data->media->bucket->ensureSlugExists(
-                    $this->_bucket, $this->_bucketData
+                    $this->_bucket,
+                    $this->_bucketData
                 );
             }
 
