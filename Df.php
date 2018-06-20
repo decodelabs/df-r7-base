@@ -7,8 +7,8 @@ namespace df;
 
 use df;
 
-class Launchpad {
-
+class Launchpad
+{
     const CODENAME = 'hydrogen';
     const REV = 'r7';
     const DF_PATH = __DIR__;
@@ -27,18 +27,19 @@ class Launchpad {
 
 
 
-// Run
-    public static function run(): void {
+    // Run
+    public static function run(): void
+    {
         $parts = explode('/', str_replace('\\', '/', realpath($_SERVER['SCRIPT_FILENAME'])));
         $envId = array_pop($parts);
 
-        if(array_pop($parts) != 'entry') {
+        if (array_pop($parts) != 'entry') {
             throw new \Exception(
                 'Entry point does not appear to be valid'
             );
         }
 
-        if(substr($envId, -4) == '.php') {
+        if (substr($envId, -4) == '.php') {
             $envId = substr($envId, 0, -4);
         }
 
@@ -48,8 +49,9 @@ class Launchpad {
         self::runAs($envId, implode('/', $parts));
     }
 
-    public static function runAs($envId, $appPath): void {
-        if(self::$app) {
+    public static function runAs($envId, $appPath): void
+    {
+        if (self::$app) {
             return;
         }
 
@@ -66,18 +68,18 @@ class Launchpad {
         $activePath = $appPath.'/data/local/run/active/Run.php';
         $sourceMode = isset($_SERVER['argv']) && in_array('--df-source', $_SERVER['argv']);
 
-        if(file_exists($activePath) && !$sourceMode) {
+        if (file_exists($activePath) && !$sourceMode) {
             require $activePath;
         }
 
-        if(!defined('df\\COMPILE_TIMESTAMP')) {
+        if (!defined('df\\COMPILE_TIMESTAMP')) {
             define('df\\COMPILE_TIMESTAMP', null);
             define('df\\COMPILE_BUILD_ID', null);
             define('df\\COMPILE_ROOT_PATH', null);
             define('df\\COMPILE_ENV_NODE', null);
         }
 
-        if(df\COMPILE_ROOT_PATH && is_dir(df\COMPILE_ROOT_PATH)) {
+        if (df\COMPILE_ROOT_PATH && is_dir(df\COMPILE_ROOT_PATH)) {
             self::$isCompiled = true;
             self::$compileTimestamp = df\COMPILE_TIMESTAMP;
             self::$rootPath = df\COMPILE_ROOT_PATH;
@@ -88,7 +90,7 @@ class Launchpad {
         self::loadBaseClass('core/_manifest');
 
         // Register loader
-        if(self::$isCompiled) {
+        if (self::$isCompiled) {
             self::$loader = new core\loader\Base(['root' => dirname(self::$rootPath)]);
         } else {
             self::$loader = new core\loader\Development(['root' => dirname(self::$rootPath)]);
@@ -99,6 +101,17 @@ class Launchpad {
 
         // App
         self::$app = core\app\Base::factory($envId, $appPath);
+
+        // Composer
+        if (self::$app->shouldUseComposer()) {
+            $path = self::$app->getPath().'/vendor/autoload.php';
+
+            if (file_exists($path)) {
+                require $path;
+            }
+        }
+
+        // Run
         self::$app->startup($startTime);
         self::$app->run();
 
@@ -106,18 +119,19 @@ class Launchpad {
     }
 
 
-    public static function shutdown(): void {
-        if(self::$_isShutdown) {
+    public static function shutdown(): void
+    {
+        if (self::$_isShutdown) {
             return;
         }
 
         self::$_isShutdown = true;
 
-        if(self::$app) {
+        if (self::$app) {
             self::$app->shutdown();
         }
 
-        if(self::$loader) {
+        if (self::$loader) {
             self::$loader->shutdown();
         }
 
@@ -128,9 +142,10 @@ class Launchpad {
     }
 
 
-// Loading
-    public static function loadBaseClass($path): void {
-        if(self::$isCompiled) {
+    // Loading
+    public static function loadBaseClass($path): void
+    {
+        if (self::$isCompiled) {
             $path = self::$rootPath.'/'.$path.'.php';
         } else {
             $path = self::$rootPath.'/libraries/'.$path.'.php';
@@ -140,16 +155,18 @@ class Launchpad {
     }
 
 
-// Debug
-    public static function setDebugContext(core\debug\IContext $context=null): ?core\debug\IContext {
+    // Debug
+    public static function setDebugContext(core\debug\IContext $context=null): ?core\debug\IContext
+    {
         $output = self::$debug;
         self::$debug = $context;
 
         return $output;
     }
 
-    public static function getDebugContext(): core\debug\IContext {
-        if(!self::$debug) {
+    public static function getDebugContext(): core\debug\IContext
+    {
+        if (!self::$debug) {
             self::loadBaseClass('core/debug/Context');
             self::$debug = new core\debug\Context();
         }

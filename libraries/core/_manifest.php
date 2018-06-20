@@ -9,7 +9,8 @@ use df;
 use df\core;
 
 // Error
-interface IError {
+interface IError
+{
     public function setKey(?string $key);
     public function getKey(): ?string;
 
@@ -23,50 +24,97 @@ interface IError {
     public function getStackTrace(): core\debug\IStackTrace;
 }
 
-interface ELogic extends IError {}
-interface ERuntime extends IError {}
-interface EDefinition extends ELogic {}
-interface EImplementation extends ELogic {}
-interface EUnsupported extends ELogic {}
-interface EValue extends ERuntime {}
-interface ESetup extends EValue {}
-interface EArgument extends ELogic {}
-interface ECall extends ELogic {}
-interface ERecursion extends ELogic {}
-interface EApi extends ERuntime {}
-interface EDomain extends ELogic {}
-interface EBounds extends ERuntime {}
+interface ELogic extends IError
+{
+}
+interface ERuntime extends IError
+{
+}
+interface EDefinition extends ELogic
+{
+}
+interface EImplementation extends ELogic
+{
+}
+interface EUnsupported extends ELogic
+{
+}
+interface EValue extends ERuntime
+{
+}
+interface ESetup extends EValue
+{
+}
+interface EArgument extends ELogic
+{
+}
+interface ECall extends ELogic
+{
+}
+interface ERecursion extends ELogic
+{
+}
+interface EApi extends ERuntime
+{
+}
+interface EDomain extends ELogic
+{
+}
+interface EBounds extends ERuntime
+{
+}
 
-interface EBadRequest extends ERuntime {} // 400
-interface EUnauthorized extends ERuntime {} // 401
-interface EForbidden extends EUnauthorized {} // 403
-interface ENotFound extends ERuntime {} // 404
-interface ENotImplemented extends EImplementation {} // 501
-interface EServiceUnavailable extends ERuntime {} // 503
+interface EBadRequest extends ERuntime
+{
+} // 400
+interface EUnauthorized extends ERuntime
+{
+} // 401
+interface EForbidden extends EUnauthorized
+{
+} // 403
+interface ENotFound extends ERuntime
+{
+} // 404
+interface ENotImplemented extends EImplementation
+{
+} // 501
+interface EServiceUnavailable extends ERuntime
+{
+} // 503
 
-interface ENoContext extends ERuntime {}
-interface EApplicationNotFound extends ENotFound {}
-interface EHelperNotFound extends ENotFound {}
+interface ENoContext extends ERuntime
+{
+}
+interface EApplicationNotFound extends ENotFound
+{
+}
+interface EHelperNotFound extends ENotFound
+{
+}
 
 
 ### Generic interfaces
 
 // String provider
-interface IStringProvider {
+interface IStringProvider
+{
     public function toString(): string;
     public function __toString(): string;
 }
 
-interface IStringValueProvider {
+interface IStringValueProvider
+{
     public function getStringValue($default=''): string;
 }
 
-trait TStringProvider {
-
-    public function __toString(): string {
+trait TStringProvider
+{
+    public function __toString(): string
+    {
         try {
             return $this->toString();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             core\logException($e);
             core\debug()->exception($e);
             return '';
@@ -74,14 +122,15 @@ trait TStringProvider {
     }
 }
 
-trait TStringValueProvider {
-
-    protected function _getStringValue($value, $default=''): string {
-        if($value instanceof IStringValueProvider) {
+trait TStringValueProvider
+{
+    protected function _getStringValue($value, $default=''): string
+    {
+        if ($value instanceof IStringValueProvider) {
             $value = $value->getStringValue($default);
         }
 
-        if($value === null) {
+        if ($value === null) {
             $value = $default;
         }
 
@@ -89,22 +138,26 @@ trait TStringValueProvider {
     }
 }
 
-interface IDescribable {
+interface IDescribable
+{
     public function getOutputDescription(): ?string;
 }
 
 // Array provider
-interface IArrayProvider {
+interface IArrayProvider
+{
     public function toArray(): array;
 }
 
-interface IArrayInterchange extends IArrayProvider {
+interface IArrayInterchange extends IArrayProvider
+{
     public static function fromArray(array $array);
 }
 
 
 // Value map
-interface IValueMap {
+interface IValueMap
+{
     public function set($key, $value);
     public function get($key, $default=null);
     public function has(...$keys);
@@ -112,39 +165,41 @@ interface IValueMap {
     public function importFrom($source, array $fields);
 }
 
-interface IExporterValueMap extends IValueMap {
+interface IExporterValueMap extends IValueMap
+{
     public function export($key, $default=null);
 }
 
-trait TValueMap {
-
-    public function importFrom($source, array $fields) {
+trait TValueMap
+{
+    public function importFrom($source, array $fields)
+    {
         $values = [];
         $shouldImport = $this instanceof core\collection\ICollection;
 
-        foreach($fields as $toField => $fromField) {
-            if(!is_string($toField)) {
+        foreach ($fields as $toField => $fromField) {
+            if (!is_string($toField)) {
                 $toField = $fromField;
             }
 
-            if($source instanceof IExporterValueMap) {
+            if ($source instanceof IExporterValueMap) {
                 $value = $source->export($fromField);
-            } else if($source instanceof IValueMap) {
+            } elseif ($source instanceof IValueMap) {
                 $value = $source->get($fromField);
-            } else if(is_array($source)) {
+            } elseif (is_array($source)) {
                 $value = $source[$fromField] ?? null;
             } else {
                 core\stub($source);
             }
 
-            if($shouldImport) {
+            if ($shouldImport) {
                 $values[$toField] = $value;
             } else {
                 $this->set($toField, $value);
             }
         }
 
-        if($shouldImport) {
+        if ($shouldImport) {
             $this->import($values);
         }
 
@@ -153,42 +208,48 @@ trait TValueMap {
 }
 
 // Value container
-interface IValueContainer {
+interface IValueContainer
+{
     public function setValue($value);
     public function getValue($default=null);
 }
 
-interface IUserValueContainer extends IValueContainer, IStringValueProvider {
+interface IUserValueContainer extends IValueContainer, IStringValueProvider
+{
     public function hasValue(): bool;
 }
 
-trait TUserValueContainer {
-
-    public function getStringValue($default=''): string {
+trait TUserValueContainer
+{
+    public function getStringValue($default=''): string
+    {
         $value = $this->getValue();
 
-        if($value !== null) {
+        if ($value !== null) {
             return (string)$value;
         }
 
         return (string)$default;
     }
 
-    public function hasValue(): bool {
+    public function hasValue(): bool
+    {
         return $this->getValue() !== null;
     }
 }
 
 
 // Dumpable
-interface IDumpable {
+interface IDumpable
+{
     public function getDumpProperties();
 }
 
 
 
 // Loader
-interface ILoader {
+interface ILoader
+{
     public function loadClass(string $class): bool;
     public function getClassSearchPaths(string $class): ?array;
     public function lookupClass(string $path): ?string;
@@ -217,12 +278,13 @@ interface ILoader {
 
 
 // Package
-interface IPackage {
+interface IPackage
+{
     public function init();
 }
 
-class Package implements IPackage {
-
+class Package implements IPackage
+{
     const PRIORITY = 20;
     const DEPENDENCIES = [];
 
@@ -230,23 +292,25 @@ class Package implements IPackage {
     public $name;
     public $priority;
 
-    public static function factory($name): IPackage {
+    public static function factory($name): IPackage
+    {
         $class = 'df\\apex\\packages\\'.$name.'\\Package';
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw core\Error::ERuntime('Package '.$name.' could not be found');
         }
 
         return new $class($name);
     }
 
-    public function __construct($name, $priority=null, $path=null) {
-        if($path === null) {
+    public function __construct($name, $priority=null, $path=null)
+    {
+        if ($path === null) {
             $ref = new \ReflectionObject($this);
             $path = dirname($ref->getFileName());
         }
 
-        if(df\Launchpad::$isCompiled) {
+        if (df\Launchpad::$isCompiled) {
             $this->path = df\Launchpad::$rootPath.'/apex/packages/'.$name;
         } else {
             $this->path = $path;
@@ -254,29 +318,34 @@ class Package implements IPackage {
 
         $this->name = $name;
 
-        if($priority === null) {
+        if ($priority === null) {
             $priority = static::PRIORITY;
         }
 
         $this->priority = $priority;
     }
 
-    public function init() {}
+    public function init()
+    {
+    }
 }
 
 
 // Applications
-interface IApp {
+interface IApp
+{
     public static function factory(string $envId, string $path): IApp;
 
+    // Composer
+    public function shouldUseComposer(): bool;
 
-// Paths
+    // Paths
     public function getPath(): string;
     public function getLocalDataPath(): string;
     public function getSharedDataPath(): string;
 
 
-// Environment
+    // Environment
     public function getEnvId(): string;
     public function getEnvMode(): string;
 
@@ -288,20 +357,20 @@ interface IApp {
     public function getUniquePrefix(): string;
     public function getPassKey(): string;
 
-// Details
+    // Details
     public function getName(): string;
     public function getStartTime(): float;
     public function getRunningTime(): float;
 
 
-// Runner
+    // Runner
     public function startup(float $startTime=null): void;
     public function run(): void;
     public function shutdown(): void;
     public function getRunMode(): string;
 
 
-// Registry
+    // Registry
     public function setRegistryObject(IRegistryObject $object);
     public function getRegistryObject(string $key): ?core\IRegistryObject;
     public function hasRegistryObject(string $key): bool;
@@ -310,7 +379,7 @@ interface IApp {
     public function getRegistryObjects(): array;
 
 
-// Errors
+    // Errors
     public static function handleError(int $errorNumber, string $errorMessage, string $fileName, int $lineNumber): void;
     public static function handleException(\Throwable $e): void;
 }
@@ -319,7 +388,8 @@ interface IApp {
 
 
 
-interface IRunner {
+interface IRunner
+{
     // Execute
     public function dispatch(): void;
     public function getDispatchException(): ?\Throwable;
@@ -328,27 +398,33 @@ interface IRunner {
     public function renderDebugContext(core\debug\IContext $context): void;
 }
 
-interface IRegistryObject {
+interface IRegistryObject
+{
     public function getRegistryObjectKey(): string;
 }
 
-interface IShutdownAware {
+interface IShutdownAware
+{
     public function onAppShutdown(): void;
 }
 
-interface IDispatchAware {
+interface IDispatchAware
+{
     public function onAppDispatch(df\arch\node\INode $node): void;
 }
 
 
 
 // Manager
-interface IManager extends IRegistryObject {}
+interface IManager extends IRegistryObject
+{
+}
 
-trait TManager {
-
-    public static function getInstance(): IManager {
-        if(!$output = df\Launchpad::$app->getRegistryObject(static::REGISTRY_PREFIX)) {
+trait TManager
+{
+    public static function getInstance(): IManager
+    {
+        if (!$output = df\Launchpad::$app->getRegistryObject(static::REGISTRY_PREFIX)) {
             $output = static::_getDefaultInstance();
             static::setInstance($output);
         }
@@ -356,42 +432,52 @@ trait TManager {
         return $output;
     }
 
-    public static function setInstance(IManager $manager): void {
+    public static function setInstance(IManager $manager): void
+    {
         df\Launchpad::$app->setRegistryObject($manager);
     }
 
-    protected static function _getDefaultInstance(): IManager {
+    protected static function _getDefaultInstance(): IManager
+    {
         return new self();
     }
 
-    protected function __construct() {}
+    protected function __construct()
+    {
+    }
 
-    public function getRegistryObjectKey(): string {
+    public function getRegistryObjectKey(): string
+    {
         return static::REGISTRY_PREFIX;
     }
 
-    public function onAppShutdown(): void {}
+    public function onAppShutdown(): void
+    {
+    }
 }
 
 
 
 
 // Helpers
-interface IHelperProvider {
+interface IHelperProvider
+{
     public function getHelper(string $name, bool $returnNull=false);
     public function __get($member);
 }
 
-trait THelperProvider {
-
-    public function __get($key) {
+trait THelperProvider
+{
+    public function __get($key)
+    {
         return $this->getHelper($key);
     }
 
-    public function __call($method, array $args) {
+    public function __call($method, array $args)
+    {
         $helper = $this->getHelper($method);
 
-        if(!is_callable($helper)) {
+        if (!is_callable($helper)) {
             throw core\Error::{'ECall'}(
                 'Helper '.$method.' is not callable'
             );
@@ -400,16 +486,17 @@ trait THelperProvider {
         return $helper(...$args);
     }
 
-    public function getHelper(string $name, bool $returnNull=false) {
+    public function getHelper(string $name, bool $returnNull=false)
+    {
         $name = lcfirst($name);
 
-        if(isset($this->{$name})) {
+        if (isset($this->{$name})) {
             return $this->{$name};
         }
 
         $output = $this->_loadHelper($name);
 
-        if(!$output && !$returnNull) {
+        if (!$output && !$returnNull) {
             throw core\Error::EHelperNotFound(
                 'Helper '.$name.' could not be found'
             );
@@ -420,17 +507,19 @@ trait THelperProvider {
         return $output;
     }
 
-    protected function _loadHelper($name) {
+    protected function _loadHelper($name)
+    {
         return $this->_loadSharedHelper($name);
     }
 
-    protected function _loadSharedHelper(string $name, $target=null): ?IHelper {
+    protected function _loadSharedHelper(string $name, $target=null): ?IHelper
+    {
         $class = 'df\\apex\\helpers\\'.ucfirst($name);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             $class = 'df\\plug\\'.ucfirst($name);
 
-            if(!class_exists($class)) {
+            if (!class_exists($class)) {
                 return null;
             }
         }
@@ -438,8 +527,8 @@ trait THelperProvider {
         $context = $this;
         $target = $target ?? $this;
 
-        if(!$context instanceof IContext) {
-            if(df\Launchpad::$runner instanceof core\IContextAware) {
+        if (!$context instanceof IContext) {
+            if (df\Launchpad::$runner instanceof core\IContextAware) {
                 $context = df\Launchpad::$runner->getContext();
             } else {
                 $context = new SharedContext();
@@ -450,29 +539,35 @@ trait THelperProvider {
     }
 }
 
-interface IHelper {}
+interface IHelper
+{
+}
 
 
 // Translator
-interface ITranslator {
+interface ITranslator
+{
     public function _($phrase=''): string;
     public function translate(array $args): string;
 }
 
-trait TTranslator {
-
-    public function _($phrase=''): string {
+trait TTranslator
+{
+    public function _($phrase=''): string
+    {
         return $this->translate(func_get_args());
     }
 
-    public function translate(array $args): string {
+    public function translate(array $args): string
+    {
         return core\i18n\Manager::getInstance()->translate($args);
     }
 }
 
 
 // Context
-interface IContext extends core\IHelperProvider, core\ITranslator {
+interface IContext extends core\IHelperProvider, core\ITranslator
+{
     public function getRunMode(): string;
 
     // Locale
@@ -492,22 +587,24 @@ interface IContext extends core\IHelperProvider, core\ITranslator {
 }
 
 
-trait TContext {
-
+trait TContext
+{
     use core\TTranslator;
     use THelperProvider;
 
     public $runner;
     protected $_locale;
 
-    public function getRunMode(): string {
+    public function getRunMode(): string
+    {
         return df\Launchpad::$app->getRunMode();
     }
 
 
-// Locale
-    public function setLocale($locale) {
-        if($locale === null) {
+    // Locale
+    public function setLocale($locale)
+    {
+        if ($locale === null) {
             $this->_locale = null;
         } else {
             $this->_locale = core\i18n\Locale::factory($locale);
@@ -516,8 +613,9 @@ trait TContext {
         return $this;
     }
 
-    public function getLocale() {
-        if($this->_locale) {
+    public function getLocale()
+    {
+        if ($this->_locale) {
             return $this->_locale;
         } else {
             return core\i18n\Manager::getInstance()->getLocale();
@@ -525,37 +623,45 @@ trait TContext {
     }
 
 
-// Helpers
-    public function findFile(string $path): ?string {
+    // Helpers
+    public function findFile(string $path): ?string
+    {
         return df\Launchpad::$loader->findFile($path);
     }
 
-    public function getLogManager() {
+    public function getLogManager()
+    {
         return core\log\Manager::getInstance();
     }
 
-    public function getI18nManager() {
+    public function getI18nManager()
+    {
         return core\i18n\Manager::getInstance();
     }
 
-    public function getMeshManager() {
+    public function getMeshManager()
+    {
         return df\mesh\Manager::getInstance();
     }
 
-    public function getSystemInfo() {
+    public function getSystemInfo()
+    {
         return df\halo\system\Base::getInstance();
     }
 
-    public function getUserManager() {
+    public function getUserManager()
+    {
         return df\user\Manager::getInstance();
     }
 
-    public function getTaskManager() {
+    public function getTaskManager()
+    {
         return df\arch\node\task\Manager::getInstance();
     }
 
-    public function loadRootHelper($name, $target=null) {
-        switch($name) {
+    public function loadRootHelper($name, $target=null)
+    {
+        switch ($name) {
             case 'context':
                 return $this;
 
@@ -592,79 +698,91 @@ trait TContext {
         }
     }
 
-    public function translate(array $args): string {
+    public function translate(array $args): string
+    {
         return $this->i18n->translate($args);
     }
 }
 
-class SharedContext implements IContext {
-
+class SharedContext implements IContext
+{
     use TContext;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->runner = df\Launchpad::$runner;
     }
 
-    protected function _loadHelper($name) {
+    protected function _loadHelper($name)
+    {
         return $this->loadRootHelper($name);
     }
 }
 
-interface IContextAware {
+interface IContextAware
+{
     public function getContext();
     public function hasContext();
 }
 
-trait TContextAware {
-
+trait TContextAware
+{
     public $context;
 
-    public function getContext() {
+    public function getContext()
+    {
         return $this->context;
     }
 
-    public function hasContext() {
+    public function hasContext()
+    {
         return $this->context !== null;
     }
 }
 
 
 
-trait TContextProxy {
-
+trait TContextProxy
+{
     use TContextAware;
     use core\TTranslator;
 
-    public function __call($method, $args) {
-        if($this->context) {
+    public function __call($method, $args)
+    {
+        if ($this->context) {
             return $this->context->{$method}(...$args);
         }
     }
 
-    public function __get($key) {
-        if(isset($this->{$key})) {
+    public function __get($key)
+    {
+        if (isset($this->{$key})) {
             return $this->{$key};
         }
 
-        if(!$this->context) {
+        if (!$this->context) {
             return null;
         }
 
         return $this->{$key} = $this->context->__get($key);
     }
 
-    public function translate(array $args): string {
+    public function translate(array $args): string
+    {
         return $this->context->i18n->translate($args);
     }
 }
 
-interface ISharedHelper extends IHelper {}
+interface ISharedHelper extends IHelper
+{
+}
 
-trait TSharedHelper {
-
+trait TSharedHelper
+{
     public $context;
 
-    public function __construct(IContext $context, $target) {
+    public function __construct(IContext $context, $target)
+    {
         $this->context = $context;
     }
 }
@@ -672,7 +790,8 @@ trait TSharedHelper {
 
 
 // Config
-interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess {
+interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess
+{
     public function getDefaultValues(): array;
     public function getConfigId(): string;
     public function getConfigValues(): array;
@@ -683,14 +802,15 @@ interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess {
 
 include __DIR__.'/loader/Base.php';
 
-if(!df\Launchpad::$isCompiled) {
+if (!df\Launchpad::$isCompiled) {
     include __DIR__.'/loader/Development.php';
 }
 
 
 
 // Debug
-function stub(...$args) {
+function stub(...$args)
+{
     return df\Launchpad::getDebugContext()->addStub(
             $args,
             core\debug\StackCall::factory(1),
@@ -699,7 +819,8 @@ function stub(...$args) {
         ->render();
 }
 
-function stubQuiet(...$args) {
+function stubQuiet(...$args)
+{
     return df\Launchpad::getDebugContext()->addStub(
             $args,
             core\debug\StackCall::factory(1),
@@ -707,7 +828,8 @@ function stubQuiet(...$args) {
         );
 }
 
-function dump(...$args) {
+function dump(...$args)
+{
     return df\Launchpad::getDebugContext()->addDumpList(
             $args,
             core\debug\StackCall::factory(1),
@@ -717,7 +839,8 @@ function dump(...$args) {
         ->render();
 }
 
-function dumpQuiet(...$args) {
+function dumpQuiet(...$args)
+{
     return df\Launchpad::getDebugContext()->addDumpList(
             $args,
             core\debug\StackCall::factory(1),
@@ -726,7 +849,8 @@ function dumpQuiet(...$args) {
         );
 }
 
-function dumpDeep(...$args) {
+function dumpDeep(...$args)
+{
     return df\Launchpad::getDebugContext()->addDumpList(
             $args,
             core\debug\StackCall::factory(1),
@@ -736,7 +860,8 @@ function dumpDeep(...$args) {
         ->render();
 }
 
-function dumpDeepQuiet(...$args) {
+function dumpDeepQuiet(...$args)
+{
     return df\Launchpad::getDebugContext()->addDumpList(
             $args,
             core\debug\StackCall::factory(1),
@@ -746,17 +871,20 @@ function dumpDeepQuiet(...$args) {
         ->render();
 }
 
-function debug() {
+function debug()
+{
     return df\Launchpad::getDebugContext();
 }
 
 
-function logException(\Throwable $exception, $request=null) {
+function logException(\Throwable $exception, $request=null)
+{
     // Swallow?
     return core\log\Manager::getInstance()->logException($exception, $request);
 }
 
-function logDeprecated($message, $request=null) {
+function logDeprecated($message, $request=null)
+{
     // Swallow?
     return core\log\Manager::getInstance()->logDeprecated($message, $request);
 }

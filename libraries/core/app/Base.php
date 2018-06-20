@@ -9,11 +9,12 @@ use df;
 use df\core;
 use df\flex;
 
-abstract class Base implements core\IApp {
-
+abstract class Base implements core\IApp
+{
     const NAME = 'My application';
     const UNIQUE_PREFIX = '123';
     const PASS_KEY = 'temp-pass-key';
+    const COMPOSER = false;
 
     const PACKAGES = [
         'webCore' => true
@@ -33,17 +34,18 @@ abstract class Base implements core\IApp {
     protected $_runMode;
     protected $_registry = [];
 
-    public static function factory(string $envId, string $path): core\IApp {
+    public static function factory(string $envId, string $path): core\IApp
+    {
         $class = 'df\\apex\\App';
 
-        if(df\Launchpad::$isCompiled) {
-            if(!class_exists($class)) {
+        if (df\Launchpad::$isCompiled) {
+            if (!class_exists($class)) {
                 throw core\Error::EImplementation('App class not found');
             }
         } else {
             $filePath = $path.'/App.php';
 
-            if(!file_exists($filePath)) {
+            if (!file_exists($filePath)) {
                 self::_generateClass($filePath);
             }
 
@@ -53,10 +55,11 @@ abstract class Base implements core\IApp {
         return new $class($envId, $path);
     }
 
-    private static function _generateClass(string $path): void {
+    private static function _generateClass(string $path): void
+    {
         $configPath = dirname($path).'/config/Application.php';
 
-        if(file_exists($configPath)) {
+        if (file_exists($configPath)) {
             $appData = require $configPath;
 
             $name = $appData['applicationName'];
@@ -68,7 +71,7 @@ abstract class Base implements core\IApp {
             $uniquePrefix = strtolower(flex\Generator::random(3, 3));
             $passKey = flex\Generator::passKey();
 
-            if(file_exists(dirname(df\Launchpad::DF_PATH).'/webCore/Package.php')) {
+            if (file_exists(dirname(df\Launchpad::DF_PATH).'/webCore/Package.php')) {
                 $packages = ['webCore' => true];
             } else {
                 $packages = [];
@@ -103,7 +106,8 @@ PHP;
         file_put_contents($path, $class);
     }
 
-    public function __construct(string $envId, string $path) {
+    public function __construct(string $envId, string $path)
+    {
         $this->path = $path;
 
         $this->envId = $envId;
@@ -117,76 +121,97 @@ PHP;
 
 
 
+    // Composer
+    public function shouldUseComposer(): bool
+    {
+        return static::COMPOSER;
+    }
 
-// Paths
-    public function getPath(): string {
+
+    // Paths
+    public function getPath(): string
+    {
         return $this->path;
     }
 
-    public function getLocalDataPath(): string {
+    public function getLocalDataPath(): string
+    {
         return $this->path.'/data/local';
     }
 
-    public function getSharedDataPath(): string {
+    public function getSharedDataPath(): string
+    {
         return $this->path.'/data/shared';
     }
 
 
-// Environment
-    public function getEnvId(): string {
+    // Environment
+    public function getEnvId(): string
+    {
         return $this->envId;
     }
 
-    public function getEnvMode(): string {
+    public function getEnvMode(): string
+    {
         return $this->envMode;
     }
 
-    public function isDevelopment(): bool {
+    public function isDevelopment(): bool
+    {
         return $this->envMode == 'development';
     }
 
-    public function isTesting(): bool {
+    public function isTesting(): bool
+    {
         return $this->envMode == 'testing'
             || $this->envMode == 'development';
     }
 
-    public function isProduction(): bool {
+    public function isProduction(): bool
+    {
         return $this->envMode == 'production';
     }
 
-    public function isDistributed(): bool {
+    public function isDistributed(): bool
+    {
         return $this->isDistributed;
     }
 
 
-    public function getUniquePrefix(): string {
+    public function getUniquePrefix(): string
+    {
         return static::UNIQUE_PREFIX;
     }
 
-    public function getPassKey(): string {
+    public function getPassKey(): string
+    {
         return static::PASS_KEY;
     }
 
 
 
-// Details
-    public function getName(): string {
+    // Details
+    public function getName(): string
+    {
         return static::NAME;
     }
 
-    public function getStartTime(): float {
+    public function getStartTime(): float
+    {
         return $this->startTime;
     }
 
-    public function getRunningTime(): float {
+    public function getRunningTime(): float
+    {
         return microtime(true) - $this->startTime;
     }
 
 
 
-// Runner
-    public function startup(float $startTime=null): void {
-        if($startTime === null) {
+    // Runner
+    public function startup(float $startTime=null): void
+    {
+        if ($startTime === null) {
             $startTime = microtime(true);
         }
 
@@ -200,7 +225,7 @@ PHP;
 
 
         // Not compiled
-        if(!df\Launchpad::$isCompiled) {
+        if (!df\Launchpad::$isCompiled) {
             $this->envMode = $envConfig->getMode();
             df\Launchpad::$loader->registerLocations($envConfig->getActiveLocations());
         }
@@ -209,13 +234,13 @@ PHP;
         // Active packages
         $packages = [];
 
-        foreach(static::PACKAGES ?? [] as $name => $enabled) {
-            if(is_string($enabled)) {
+        foreach (static::PACKAGES ?? [] as $name => $enabled) {
+            if (is_string($enabled)) {
                 $name = $enabled;
                 $enabled = true;
             }
 
-            if($enabled) {
+            if ($enabled) {
                 $packages[] = $name;
             }
         }
@@ -224,40 +249,44 @@ PHP;
     }
 
 
-    public function run(): void {
+    public function run(): void
+    {
         $runMode = $this->getRunMode();
         df\Launchpad::$runner = $this->runner = namespace\runner\Base::factory($runMode);
         $this->runner->dispatch();
     }
 
-    public function shutdown(): void {
-        foreach($this->_registry as $object) {
-            if($object instanceof core\IShutdownAware) {
+    public function shutdown(): void
+    {
+        foreach ($this->_registry as $object) {
+            if ($object instanceof core\IShutdownAware) {
                 $object->onAppShutdown();
             }
         }
     }
 
-    public function getRunMode(): string {
-        if($this->_runMode === null) {
+    public function getRunMode(): string
+    {
+        if ($this->_runMode === null) {
             $this->_runMode = $this->_detectRunMode();
         }
 
         return $this->_runMode;
     }
 
-    protected function _detectRunMode(): string {
-        if(isset($_SERVER['HTTP_HOST'])) {
+    protected function _detectRunMode(): string
+    {
+        if (isset($_SERVER['HTTP_HOST'])) {
             $runMode = 'Http';
         } else {
-            if(isset($_SERVER['argv'][1])) {
+            if (isset($_SERVER['argv'][1])) {
                 $runMode = ucfirst($_SERVER['argv'][1]);
             } else {
                 $runMode = 'Task';
             }
         }
 
-        switch($runMode) {
+        switch ($runMode) {
             case 'Http':
             case 'Daemon':
             case 'Task':
@@ -272,34 +301,39 @@ PHP;
 
 
 
-// Registry
-    public function setRegistryObject(core\IRegistryObject $object) {
+    // Registry
+    public function setRegistryObject(core\IRegistryObject $object)
+    {
         $this->_registry[$object->getRegistryObjectKey()] = $object;
         return $this;
     }
 
-    public function getRegistryObject(string $key): ?core\IRegistryObject {
-        if(isset($this->_registry[$key])) {
+    public function getRegistryObject(string $key): ?core\IRegistryObject
+    {
+        if (isset($this->_registry[$key])) {
             return $this->_registry[$key];
         }
 
         return null;
     }
 
-    public function hasRegistryObject(string $key): bool {
+    public function hasRegistryObject(string $key): bool
+    {
         return isset($this->_registry[$key]);
     }
 
-    public function removeRegistryObject(string $key) {
+    public function removeRegistryObject(string $key)
+    {
         unset($this->_registry[$key]);
         return $this;
     }
 
-    public function findRegistryObjects(string $beginningWith): array {
+    public function findRegistryObjects(string $beginningWith): array
+    {
         $output = [];
 
-        foreach($this->_registry as $key => $object) {
-            if(0 === strpos($key, $beginningWith)) {
+        foreach ($this->_registry as $key => $object) {
+            if (0 === strpos($key, $beginningWith)) {
                 $output[$key] = $object;
             }
         }
@@ -307,48 +341,52 @@ PHP;
         return $output;
     }
 
-    public function getRegistryObjects(): array {
+    public function getRegistryObjects(): array
+    {
         return $this->_registry;
     }
 
 
 
 
-// Errors
-    public static function handleError(int $errorNumber, string $errorMessage, string $fileName, int $lineNumber): void {
-        if(!$level = error_reporting()) {
+    // Errors
+    public static function handleError(int $errorNumber, string $errorMessage, string $fileName, int $lineNumber): void
+    {
+        if (!$level = error_reporting()) {
             return;
         }
 
         throw new \ErrorException($errorMessage, 0, $errorNumber, $fileName, $lineNumber);
     }
 
-    public static function handleException(\Throwable $e): void {
+    public static function handleException(\Throwable $e): void
+    {
         try {
-            if(df\Launchpad::$runner) {
+            if (df\Launchpad::$runner) {
                 try {
                     core\debug()
                         ->exception($e)
                         ->render();
 
                     df\Launchpad::shutdown();
-                } catch(\Throwable $g) {
+                } catch (\Throwable $g) {
                     self::_fatalError($g->__toString()."\n\n\n".$e->__toString());
                 }
             }
 
             self::_fatalError($e->__toString());
-        } catch(\Throwable $f) {
+        } catch (\Throwable $f) {
             self::_fatalError($e->__toString()."\n\n\n".$f->__toString());
         }
     }
 
-    private static function _fatalError($message): void {
-        while(ob_get_level()) {
+    private static function _fatalError($message): void
+    {
+        while (ob_get_level()) {
             ob_end_clean();
         }
 
-        if(isset($_SERVER['HTTP_HOST'])) {
+        if (isset($_SERVER['HTTP_HOST'])) {
             $message = '<pre>'.$message.'</pre>';
         }
 
