@@ -80,7 +80,11 @@ class VideoEmbed extends Base
         if (!$view->consent->has('statistics')) {
             $output = $view->apex->template('cookies/#elements/VideoPlaceholder.html');
         } else {
-            $output = $view->html->videoEmbed($this->_embedCode)->render();
+            $output = $view->html->videoEmbed($this->_embedCode);
+
+            if (!empty($output)) {
+                $output = $output->render();
+            }
         }
 
         if ($output) {
