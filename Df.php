@@ -103,7 +103,7 @@ class Launchpad
         self::$app = core\app\Base::factory($envId, $appPath);
 
         // Composer
-        if (self::$app->shouldUseComposer()) {
+        if (method_exists(self::$app, 'shouldUseComposer') && self::$app->shouldUseComposer()) {
             $path = self::$app->getPath().'/vendor/autoload.php';
 
             if (file_exists($path)) {
