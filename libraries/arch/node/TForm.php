@@ -35,11 +35,17 @@ trait TForm
 
     public function reloadDefaultValues(): void
     {
+        if (empty($this->_delegates)) {
+            $this->loadDelegates();
+        }
+
         $this->setDefaultValues();
 
         foreach ($this->_delegates as $delegate) {
             $delegate->reloadDefaultValues();
         }
+
+        $this->_state->isNew(false);
     }
 
     protected function loadDelegates()
