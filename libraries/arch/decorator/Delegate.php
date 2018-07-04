@@ -10,8 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
 
-abstract class Delegate implements IDelegateDecorator {
-
+abstract class Delegate implements IDelegateDecorator
+{
     use core\TContextAware;
     use core\lang\TChainable;
     use aura\view\TView_DeferredRenderable;
@@ -21,11 +21,12 @@ abstract class Delegate implements IDelegateDecorator {
     public $content;
     public $delegate;
 
-    public static function factory(arch\node\IDelegate $delegate): ?IDelegateDecorator {
+    public static function factory(arch\node\IDelegate $delegate): ?IDelegateDecorator
+    {
         $request = $delegate->context->location;
         $path = $request->getController();
 
-        if(!empty($path)) {
+        if (!empty($path)) {
             $parts = explode('/', $path);
         } else {
             $parts = [];
@@ -40,10 +41,10 @@ abstract class Delegate implements IDelegateDecorator {
 
         $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             $class = 'df\\apex\\directory\\shared\\'.$end;
 
-            if(!class_exists($class)) {
+            if (!class_exists($class)) {
                 return null;
             }
         }
@@ -51,7 +52,8 @@ abstract class Delegate implements IDelegateDecorator {
         return new $class($delegate);
     }
 
-    protected function __construct(arch\node\IDelegate $delegate) {
+    protected function __construct(arch\node\IDelegate $delegate)
+    {
         $this->context = $delegate->context;
         $this->delegate = $delegate;
         $this->view = &$delegate->view;
@@ -62,111 +64,142 @@ abstract class Delegate implements IDelegateDecorator {
     }
 
 
-    protected function init() {}
+    protected function init()
+    {
+    }
 
-    final public function renderUi() {
+    public function reloadDefaultValues(): void
+    {
+        $this->delegate->reloadDefaultValues();
+    }
+
+    final public function renderUi()
+    {
         $this->createUi();
         return $this;
     }
 
-    protected function createUi() {
+    protected function createUi()
+    {
         // add default message?
     }
 
 
-    final public function isRenderingInline(): bool {
+    final public function isRenderingInline(): bool
+    {
         return $this->delegate->isRenderingInline();
     }
 
-    final public function getState(): arch\node\IFormState {
+    final public function getState(): arch\node\IFormState
+    {
         return $this->delegate->getState();
     }
 
-    final public function loadDelegate(string $id, string $path): arch\node\IDelegate {
+    final public function loadDelegate(string $id, string $path): arch\node\IDelegate
+    {
         return $this->delegate->loadDelegate($id, $path);
     }
 
-    final public function directLoadDelegate(string $id, string $class): arch\node\IDelegate {
+    final public function directLoadDelegate(string $id, string $class): arch\node\IDelegate
+    {
         return $this->delegate->directLoadDelegate($id, $class);
     }
 
-    final public function proxyLoadDelegate(string $id, arch\node\IDelegateProxy $proxy): arch\node\IDelegate {
+    final public function proxyLoadDelegate(string $id, arch\node\IDelegateProxy $proxy): arch\node\IDelegate
+    {
         return $this->delegate->proxyLoadDelegate($id, $proxy);
     }
 
-    final public function getDelegate(string $id): arch\node\IDelegate {
+    final public function getDelegate(string $id): arch\node\IDelegate
+    {
         return $this->delegate->getDelegate($id);
     }
 
-    final public function hasDelegate(string $id): bool {
+    final public function hasDelegate(string $id): bool
+    {
         return $this->delegate->hasDelegate($id);
     }
 
-    final public function unloadDelegate(string $id) {
+    final public function unloadDelegate(string $id)
+    {
         $this->delegate->unloadDelegate($id);
         return $this;
     }
 
-// Helpers
-    final public function isValid(): bool {
+    // Helpers
+    final public function isValid(): bool
+    {
         return $this->delegate->isValid();
     }
 
-    final public function countErrors(): int {
+    final public function countErrors(): int
+    {
         return $this->delegate->countErrors();
     }
 
-    final public function fieldName(string $name): string {
+    final public function fieldName(string $name): string
+    {
         return $this->delegate->fieldName($name);
     }
 
-    final public function eventName(string $name, string ...$args): string {
+    final public function eventName(string $name, string ...$args): string
+    {
         return $this->delegate->eventName($name, ...$args);
     }
 
-    final public function elementId(string $name): string {
+    final public function elementId(string $name): string
+    {
         return $this->delegate->elementId($name);
     }
 
-// Store
-    final public function setStore($key, $value) {
+    // Store
+    final public function setStore($key, $value)
+    {
         $this->delegate->setStore($key, $value);
         return $this;
     }
 
-    final public function hasStore(...$keys): bool {
+    final public function hasStore(...$keys): bool
+    {
         return $this->delegate->hasStore(...$keys);
     }
 
-    final public function getStore($key, $default=null) {
+    final public function getStore($key, $default=null)
+    {
         return $this->delegate->getStore($key, $default);
     }
 
-    final public function removeStore(...$keys) {
+    final public function removeStore(...$keys)
+    {
         $this->delegate->removeStore(...$keys);
         return $this;
     }
 
-    final public function clearStore() {
+    final public function clearStore()
+    {
         $this->delegate->clearStore();
         return $this;
     }
 
-// ArrayAccess
-    final public function offsetSet($key, $value) {
+    // ArrayAccess
+    final public function offsetSet($key, $value)
+    {
         $this->delegate->offsetSet($key, $value);
         return $this;
     }
 
-    final public function offsetGet($key) {
+    final public function offsetGet($key)
+    {
         return $this->delegate->offsetGet($key);
     }
 
-    final public function offsetExists($key) {
+    final public function offsetExists($key)
+    {
         return $this->delegate->offsetExists($key);
     }
 
-    final public function offsetUnset($key) {
+    final public function offsetUnset($key)
+    {
         $this->delegate->offsetUnset($key);
         return $this;
     }
