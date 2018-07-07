@@ -9,66 +9,105 @@ use df;
 use df\core;
 use df\opal;
 
-class HavingList extends ListBase implements opal\query\IHavingClauseList {
-    
-    public function having($field, $operator, $value) {
+class HavingList extends ListBase implements opal\query\IHavingClauseList
+{
+    public function having($field, $operator, $value)
+    {
         $this->addHavingClause(
             Clause::factory(
                 $this,
-                $this->getSourceManager()->extrapolateAggregateField($this->getSource(), $field), 
-                $operator, 
-                $value, 
+                $this->getSourceManager()->extrapolateAggregateField($this->getSource(), $field),
+                $operator,
+                $value,
                 false
             )
         );
-        
+
         return $this;
     }
-    
-    public function orHaving($field, $operator, $value) {
+
+    public function orHaving($field, $operator, $value)
+    {
         $this->addHavingClause(
             Clause::factory(
                 $this,
-                $this->getSourceManager()->extrapolateAggregateField($this->getSource(), $field), 
-                $operator, 
-                $value, 
+                $this->getSourceManager()->extrapolateAggregateField($this->getSource(), $field),
+                $operator,
+                $value,
                 true
             )
         );
-        
+
         return $this;
     }
-    
-    public function beginHavingClause() {
+
+    public function havingField($leftField, $operator, $rightField)
+    {
+        $this->addHavingClause(
+            Clause::factory(
+                $this,
+                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $leftField),
+                $operator,
+                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $rightField),
+                false
+            )
+        );
+
+        return $this;
+    }
+
+    public function orHavingField($leftField, $operator, $rightField)
+    {
+        $this->addHavingClause(
+            Clause::factory(
+                $this,
+                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $leftField),
+                $operator,
+                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $rightField),
+                true
+            )
+        );
+
+        return $this;
+    }
+
+    public function beginHavingClause()
+    {
         return new HavingList($this);
     }
-    
-    public function beginOrHavingClause() {
+
+    public function beginOrHavingClause()
+    {
         return new HavingList($this, true);
     }
-    
-    
-    public function addHavingClause(opal\query\IHavingClauseProvider $clause=null) {
+
+
+    public function addHavingClause(opal\query\IHavingClauseProvider $clause=null)
+    {
         return $this->_addClause($clause);
     }
-    
-    public function getHavingClauseList() {
+
+    public function getHavingClauseList()
+    {
         return $this;
     }
-    
-    public function hasHavingClauses() {
+
+    public function hasHavingClauses()
+    {
         return !$this->isEmpty();
     }
-    
-    public function clearHavingClauses() {
+
+    public function clearHavingClauses()
+    {
         return $this->clear();
     }
-    
-    public function endClause() {
-        if(!empty($this->_clauses)) {
+
+    public function endClause()
+    {
+        if (!empty($this->_clauses)) {
             $this->_parent->addHavingClause($this);
         }
-        
+
         return $this->_parent;
     }
 }
