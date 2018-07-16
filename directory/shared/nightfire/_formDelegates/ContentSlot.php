@@ -42,7 +42,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
     public function reloadDefaultValues(): void
     {
-        $this->delegates = [];
+        $this->_delegates = [];
 
         parent::reloadDefaultValues();
     }
