@@ -508,15 +508,15 @@ class Embed implements IVideoEmbed
     // Url prepare
     protected function _renderYoutube()
     {
-        $url = link\http\Url::factory($this->_url);
+        $inUrl = link\http\Url::factory($this->_url);
 
-        if (isset($url->query->v)) {
-            $id = $url->query['v'];
+        if (isset($inUrl->query->v)) {
+            $id = $inUrl->query['v'];
         } else {
-            $id = $url->path->getLast();
+            $id = $inUrl->path->getLast();
 
             if ($id == 'watch') {
-                core\stub($url);
+                core\stub($inUrl);
             }
         }
 
@@ -529,7 +529,7 @@ class Embed implements IVideoEmbed
 
         $url = new link\http\Url('//www.youtube.com/embed/'.$id);
 
-        foreach ($url->query as $key => $node) {
+        foreach ($inUrl->query as $key => $node) {
             if (in_array(strtolower($key), $vars)) {
                 $url->query->set($key, $node);
             }
