@@ -21,7 +21,7 @@ class ContentSlot extends arch\node\form\Delegate implements
 
     protected $_slotDefinition;
     protected $_isNested = false;
-    protected $_blockLabel = 'Block %n%';
+    protected $_blockLabel = null;
     protected $_blocks = [];
     protected $_defaultBlockType;
     protected $_manager;
@@ -220,8 +220,13 @@ class ContentSlot extends arch\node\form\Delegate implements
                 $topKey = $key;
             }
 
-            $fa = $container->addField()//$this->_($this->_blockLabel, ['%n%' => $key]))
-                ->setId($this->elementId($delegateId));
+            if ($this->_blockLabel !== null) {
+                $fa = $container->addField($this->_($this->_blockLabel, ['%n%' => $key]));
+            } else {
+                $fa = $container->addField();
+            }
+
+            $fa->setId($this->elementId($delegateId));
             $fa->push($this->html->string('<div class="fire-block">'));
 
             $this->values->blockType->{$delegateId}->setValue($blockName);
