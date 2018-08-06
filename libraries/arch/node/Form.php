@@ -183,9 +183,10 @@ abstract class Form extends Base implements IFormNode
     protected function getInstanceId()
     {
         $output = [];
+        $ignore = array_unique(array_merge(self::AUTO_INSTANCE_ID_IGNORE, static::AUTO_INSTANCE_ID_IGNORE));
 
         foreach ($this->request->query as $key => $node) {
-            if (in_array($key, static::AUTO_INSTANCE_ID_IGNORE) || !$node->hasValue()) {
+            if (in_array($key, $ignore) || !$node->hasValue()) {
                 continue;
             }
 
