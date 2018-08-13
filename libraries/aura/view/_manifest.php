@@ -13,37 +13,49 @@ use df\link;
 use df\flow;
 use df\flex;
 
-
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class BadMethodCallException extends \BadMethodCallException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class BadMethodCallException extends \BadMethodCallException implements IException
+{
+}
 
 
 // Interfaces
-interface IRenderable {
+interface IRenderable
+{
     public function renderTo(IRenderTarget $target);
 }
 
-interface IRenderTargetProvider {
+interface IRenderTargetProvider
+{
     public function setRenderTarget(IRenderTarget $target=null);
     public function getRenderTarget();
     public function getView();
 }
 
 
-interface IDeferredRenderable extends IRenderable, IRenderTargetProvider, core\IStringProvider {
+interface IDeferredRenderable extends IRenderable, IRenderTargetProvider, core\IStringProvider
+{
     public function render();
 }
 
 
-interface IRenderTarget extends core\IContextAware {
+interface IRenderTarget extends core\IContextAware
+{
     public function getView();
 }
 
 
-interface ISlotContainer {
+interface ISlotContainer
+{
     public function setSlots(iterable $slots);
     public function addSlots(iterable $slots);
     public function getSlots();
@@ -58,7 +70,8 @@ interface ISlotContainer {
     public function esc($value): string;
 }
 
-interface ISlotProvider extends ISlotContainer {
+interface ISlotProvider extends ISlotContainer
+{
     public function startSlotCapture($key);
     public function endSlotCapture();
     public function isCapturingSlot();
@@ -68,19 +81,23 @@ interface ISlotProvider extends ISlotContainer {
 interface IContentProvider extends
     IDeferredRenderable,
     arch\IProxyResponse
-    {}
+{
+}
 
-interface ICollapsibleContentProvider extends IContentProvider {
+interface ICollapsibleContentProvider extends IContentProvider
+{
     public function collapse();
 }
 
-interface IContentConsumer {
+interface IContentConsumer
+{
     public function setContentProvider(IContentProvider $provider);
     public function getContentProvider();
 }
 
 
-interface IViewRenderEventReceiver {
+interface IViewRenderEventReceiver
+{
     public function beforeViewRender(IView $view);
     public function onViewContentRender(IView $view, $content);
     public function onViewLayoutRender(IView $view, $content);
@@ -103,15 +120,16 @@ interface IView extends
 }
 
 
-class Base implements IView {
-
+class Base implements IView
+{
     use TView;
 
-    public static function factory(string $type, arch\IContext $context): IView {
+    public static function factory(string $type, arch\IContext $context): IView
+    {
         $type = ucfirst($type);
         $class = 'df\\aura\\view\\'.$type;
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             $class = 'df\\aura\\view\\Generic';
         }
 
@@ -120,29 +138,35 @@ class Base implements IView {
 }
 
 
-interface IResponseView extends IView, link\http\IStreamResponse {}
+interface IResponseView extends IView, link\http\IStreamResponse
+{
+}
 
 
-interface IThemedView extends IView, aura\theme\IFacetProvider {
+interface IThemedView extends IView, aura\theme\IFacetProvider
+{
     public function setTheme($theme);
     public function getTheme();
     public function hasTheme();
 }
 
 
-interface ILayoutView extends IThemedView {
+interface ILayoutView extends IThemedView
+{
     public function shouldUseLayout(bool $flag=null);
     public function setLayout($layout);
     public function getLayout();
 }
 
-interface ILayoutMap {
+interface ILayoutMap
+{
     public function mapLayout(ILayoutView $view);
 }
 
 
 
-interface IAjaxView extends IResponseView {
+interface IAjaxView extends IResponseView
+{
     public function setRedirect($request);
     public function getRedirect();
     public function shouldForceRedirect(bool $flag=null);
@@ -152,7 +176,8 @@ interface IAjaxView extends IResponseView {
 
 
 
-interface IHtmlView extends IResponseView, ILayoutView {
+interface IHtmlView extends IResponseView, ILayoutView
+{
     public function getHtmlTag();
     public function getBodyTag();
 
@@ -202,6 +227,10 @@ interface IHtmlView extends IResponseView, ILayoutView {
     public function getLink($id);
     public function removeLink($id);
     public function clearLinks();
+
+    // Canonical
+    public function setCanonical($canonical);
+    public function getCanonical();
 
     // Favicon
     public function setFaviconHref($url);
@@ -254,17 +283,23 @@ interface IHtmlView extends IResponseView, ILayoutView {
 }
 
 
-interface IImplicitViewHelper extends arch\IDirectoryHelper {}
-interface IContextSensitiveHelper extends arch\IDirectoryHelper {}
+interface IImplicitViewHelper extends arch\IDirectoryHelper
+{
+}
+interface IContextSensitiveHelper extends arch\IDirectoryHelper
+{
+}
 
 
-interface ICascadingHelperProvider extends core\IContextAware, IRenderTargetProvider {
+interface ICascadingHelperProvider extends core\IContextAware, IRenderTargetProvider
+{
     public function __call($method, $args);
     public function __get($key);
 }
 
 
-interface ITemplate extends IContentProvider, ISlotProvider, \ArrayAccess, IRenderTarget {
+interface ITemplate extends IContentProvider, ISlotProvider, \ArrayAccess, IRenderTarget
+{
     public function isRendering();
     public function isLayout();
 
