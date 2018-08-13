@@ -356,6 +356,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $response->getHeaders()->setStatusCode(404);
             } else {
                 $response = new link\http\response\Redirect($baseUrl);
+                $response->isPermanent(true);
             }
 
             throw new arch\ForcedResponse($response);
