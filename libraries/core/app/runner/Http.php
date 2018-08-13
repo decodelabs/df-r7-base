@@ -12,8 +12,8 @@ use df\flow;
 use df\arch;
 use df\halo;
 
-class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedRunner {
-
+class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedRunner
+{
     private static $_init = false;
 
     protected $_httpRequest;
@@ -28,21 +28,22 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     protected $_context;
     protected $_router;
 
-    public function __construct() {
-        if(!self::$_init) {
+    public function __construct()
+    {
+        if (!self::$_init) {
             // If you're on apache, it sometimes hides some env variables = v. annoying
-            if(function_exists('apache_request_headers')) {
-                foreach(apache_request_headers() as $key => $value) {
+            if (function_exists('apache_request_headers')) {
+                foreach (apache_request_headers() as $key => $value) {
                     $_SERVER['HTTP_'.strtoupper(str_replace('-', '_', $key))] = $value;
                 }
             }
 
-            if(isset($_SERVER['CONTENT_TYPE'])) {
+            if (isset($_SERVER['CONTENT_TYPE'])) {
                 $_SERVER['HTTP_CONTENT_TYPE'] = $_SERVER['CONTENT_TYPE'];
             }
 
             // Normalize REQUEST_URI
-            if(isset($_SERVER['HTTP_X_ORIGINAL_URL'])) {
+            if (isset($_SERVER['HTTP_X_ORIGINAL_URL'])) {
                 $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_ORIGINAL_URL'];
             }
 
@@ -61,14 +62,16 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Router
-    public function getRouter() {
+    // Router
+    public function getRouter()
+    {
         return $this->_router;
     }
 
-// Http request
-    public function getHttpRequest() {
-        if(!$this->_httpRequest) {
+    // Http request
+    public function getHttpRequest()
+    {
+        if (!$this->_httpRequest) {
             throw core\Error::ELogic(
                 'The http request is not available until the application has been dispatched'
             );
@@ -79,9 +82,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
 
-// Response augmentor
-    public function getResponseAugmentor() {
-        if(!$this->_responseAugmentor) {
+    // Response augmentor
+    public function getResponseAugmentor()
+    {
+        if (!$this->_responseAugmentor) {
             $this->_responseAugmentor = new link\http\response\Augmentor(
                 $this->_router
             );
@@ -91,9 +95,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Context
-    public function getContext() {
-        if(!$this->_context) {
+    // Context
+    public function getContext()
+    {
+        if (!$this->_context) {
             throw core\Error::ENoContext(
                 'A context is not available until the application has been dispatched'
             );
@@ -102,34 +107,37 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         return $this->_context;
     }
 
-    public function hasContext() {
+    public function hasContext()
+    {
         return $this->_context !== null;
     }
 
-    public function getDispatchRequest(): ?arch\IRequest {
+    public function getDispatchRequest(): ?arch\IRequest
+    {
         return $this->_dispatchRequest;
     }
 
 
-// Dispatch
-    public function dispatch(): void {
+    // Dispatch
+    public function dispatch(): void
+    {
         try {
             $ip = $this->_httpRequest->getIp();
 
-            $this->_prepareHttpRequest();
             $this->_handleDebugMode();
 
             $request = $this->_prepareDirectoryRequest();
+            $this->_prepareHttpRequest();
 
             $this->_enforceCredentials($ip);
             $this->_checkIpRanges($ip, $request);
 
             $response = $this->_dispatchRequest($request);
-        } catch(arch\IForcedResponse $e) {
+        } catch (arch\IForcedResponse $e) {
             $response = $this->_normalizeResponse($e->getResponse());
         }
 
-        if(df\Launchpad::$debug) {
+        if (df\Launchpad::$debug) {
             df\Launchpad::$debug->execute();
         }
 
@@ -137,13 +145,14 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Credentials
-    protected function _enforceCredentials(link\IIp $ip) {
-        if(!$this->_credentials || $ip->isLoopback()) {
+    // Credentials
+    protected function _enforceCredentials(link\IIp $ip)
+    {
+        if (!$this->_credentials || $ip->isLoopback()) {
             return true;
         }
 
-        if(!isset($_SERVER['PHP_AUTH_USER'])
+        if (!isset($_SERVER['PHP_AUTH_USER'])
         || $_SERVER['PHP_AUTH_USER'] != $this->_credentials['username']
         || $_SERVER['PHP_AUTH_PW'] != $this->_credentials['password']) {
             header('WWW-Authenticate: Basic realm="Developer Site"');
@@ -156,53 +165,54 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// IP check
-    protected function _checkIpRanges(link\IIp $ip, arch\IRequest $request=null) {
+    // IP check
+    protected function _checkIpRanges(link\IIp $ip, arch\IRequest $request=null)
+    {
         $config = namespace\http\Config::getInstance();
 
-        if($request) {
+        if ($request) {
             $ranges = $config->getIpRangesForArea($request->getArea());
         } else {
             $ranges = $config->getIpRanges();
         }
 
-        if(empty($ranges)) {
+        if (empty($ranges)) {
             return;
         }
 
         $augmentor = $this->getResponseAugmentor();
         $augmentor->setHeaderForAnyRequest('x-allow-ip', (string)$ip);
 
-        foreach($ranges as $range) {
-            if($range->check($ip)) {
+        foreach ($ranges as $range) {
+            if ($range->check($ip)) {
                 $augmentor->setHeaderForAnyRequest('x-allow-ip-range', (string)$range);
                 return;
             }
         }
 
-        if($ip->isLoopback()) {
+        if ($ip->isLoopback()) {
             $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
             return;
         }
 
         $current = link\Ip::factory(gethostbyname(gethostname()));
 
-        if($current->toString() == $ip->toString()) {
+        if ($current->toString() == $ip->toString()) {
             $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
             return;
         }
 
-        if($request && isset($request['authenticate']) && !isset($_COOKIE['ipbypass'])) {
+        if ($request && isset($request['authenticate']) && !isset($_COOKIE['ipbypass'])) {
             setcookie('ipbypass', 1);
         }
 
-        if($request && (isset($request['authenticate']) || isset($_SERVER['PHP_AUTH_USER']) || isset($_COOKIE['ipbypass']))) {
+        if ($request && (isset($request['authenticate']) || isset($_SERVER['PHP_AUTH_USER']) || isset($_COOKIE['ipbypass']))) {
             $context = new arch\Context($request);
             static $salt = '3efcf3200384a9968a58841812d78f94d88a61b2e0cc57849a19707e0ebed065';
             static $username = 'e793f732b58b8c11ae4048214f9171392a864861d35c0881b3993d12001a78b0';
             static $password = '016ede424aa10ae5895c21c33d200c7b08aa33d961c05c08bfcf946cb7c53619';
 
-            if(isset($_SERVER['PHP_AUTH_USER'])
+            if (isset($_SERVER['PHP_AUTH_USER'])
             && $context->data->hexHash($_SERVER['PHP_AUTH_USER'], $salt) == $username
             && $context->data->hexHash($_SERVER['PHP_AUTH_PW'], $salt) == $password) {
                 return;
@@ -229,9 +239,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Prepare http request
-    protected function _prepareHttpRequest() {
-        if($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure() && df\Launchpad::$app->isProduction()) {
+    // Prepare http request
+    protected function _prepareHttpRequest()
+    {
+        if ($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure() && df\Launchpad::$app->isProduction()) {
             $response = new link\http\response\Redirect(
                 $this->_httpRequest->getUrl()
                     ->isSecure(true)
@@ -242,9 +253,9 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             throw new arch\ForcedResponse($response);
         }
 
-        if($this->_httpRequest->getMethod() == 'options') {
+        if ($this->_httpRequest->getMethod() == 'options') {
             throw new arch\ForcedResponse(
-                (new link\http\response\Stream('content'))->withHeaders(function($headers) {
+                (new link\http\response\Stream('content'))->withHeaders(function ($headers) {
                     $headers->set('allow', 'OPTIONS, GET, HEAD, POST');
                 })
             );
@@ -252,9 +263,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Debug mode
-    protected function _handleDebugMode() {
-        if($this->_httpRequest->hasCookie('debug')) {
+    // Debug mode
+    protected function _handleDebugMode()
+    {
+        if ($this->_httpRequest->hasCookie('debug')) {
             df\Launchpad::$app->envMode = 'testing';
 
             flow\Manager::getInstance()->flashNow(
@@ -267,37 +279,38 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Directory request
-    protected function _prepareDirectoryRequest() {
+    // Directory request
+    protected function _prepareDirectoryRequest()
+    {
         $pathValid = $valid = true;
         $redirectPath = '/';
 
         $url = $this->_httpRequest->getUrl();
         $path = clone $url->getPath();
 
-        if(!$map = $this->_router->lookupDomain($url->getDomain())) {
+        if (!$map = $this->_router->lookupDomain($url->getDomain())) {
             $tempMap = $this->_router->getRootMap();
 
-            if(!$tempMap->mapPath($path)) {
+            if (!$tempMap->mapPath($path)) {
                 $pathValid = false;
             }
 
             $valid = false;
         } else {
-            if($map->mappedDomain !== null && $map->mappedDomain !== $url->getDomain()) {
+            if ($map->mappedDomain !== null && $map->mappedDomain !== $url->getDomain()) {
                 $valid = false;
             }
 
             $this->_router->setBase($map);
 
-            if(!$map->mapPath($path)) {
+            if (!$map->mapPath($path)) {
                 $pathValid = $valid = false;
             }
 
-            if($pathValid && $valid && $map->area === '*') {
+            if ($pathValid && $valid && $map->area === '*') {
                 $area = $path->get(0);
 
-                if(substr($area, 0, 1) != '~') {
+                if (substr($area, 0, 1) != '~') {
                     $area = 'front';
                 } else {
                     $area = substr($area, 1);
@@ -305,28 +318,28 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
                 $mapOut = $this->_router->getMapOut($area);
 
-                if($mapOut && $mapOut->area !== $map->area) {
+                if ($mapOut && $mapOut->area !== $map->area) {
                     $valid = false;
                 }
             }
         }
 
-        if($pathValid && !$path->isEmpty()) {
+        if ($pathValid && !$path->isEmpty()) {
             $redirectPath = (string)$path;
         }
 
-        if(!$valid) {
+        if (!$valid) {
             $redirectRequest = (new arch\Request($redirectPath))
                 ->setQuery($url->getQuery());
 
-            if($map && $map->area !== '*') {
+            if ($map && $map->area !== '*') {
                 $redirectRequest->setArea($map->area);
                 $redirectRequest->query->{$map->area} = $map->mappedKey;
             }
 
             $baseUrl = (string)$this->_router->requestToUrl($redirectRequest);
 
-            if(df\Launchpad::$app->isDevelopment()) {
+            if (df\Launchpad::$app->isDevelopment()) {
                 $response = new link\http\response\Stream(
                     '<html><head><title>Bad request</title></head><body>'.
                     '<p>Sorry, you are not in the right place!</p>'.
@@ -346,12 +359,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         // Build init request
         $request = new arch\Request();
 
-        if($path) {
-            if(preg_match('/^\~[a-zA-Z0-9_]+$/i', $path)) {
+        if ($path) {
+            if (preg_match('/^\~[a-zA-Z0-9_]+$/i', $path)) {
                 $orig = (string)$url;
                 $url->getPath()->shouldAddTrailingSlash(true);
 
-                if((string)$url != $orig) {
+                if ((string)$url != $orig) {
                     $response = new link\http\response\Redirect($url);
                     //$response->isPermanent(true);
                     throw new arch\ForcedResponse($response);
@@ -363,23 +376,23 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         $map->mapArea($request);
 
-        if($url->hasQuery()) {
+        if ($url->hasQuery()) {
             $request->setQuery(clone $url->getQuery());
         }
 
-        if($map->mappedKey) {
+        if ($map->mappedKey) {
             $request->query->{$map->area} = $map->mappedKey;
         }
 
         $request->setFragment($url->getFragment());
 
-        if($this->_httpRequest->getHeaders()->has('x-ajax-request-type')) {
+        if ($this->_httpRequest->getHeaders()->has('x-ajax-request-type')) {
             $request->setType($this->_httpRequest->getHeaders()->get('x-ajax-request-type'));
         }
 
         $request = $this->_router->routeIn($request);
 
-        if(df\Launchpad::$app->isMaintenance
+        if (df\Launchpad::$app->isMaintenance
         && !$request->isArea('admin')
         && !$request->isArea('devtools')
         && !$request->isArea('mail')
@@ -393,19 +406,20 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Dispatch request
-    protected function _dispatchRequest(arch\IRequest $request) {
+    // Dispatch request
+    protected function _dispatchRequest(arch\IRequest $request)
+    {
         $this->_dispatchRequest = clone $request;
 
         try {
             $response = $this->_dispatchNode($request);
             $response = $this->_normalizeResponse($response);
-        } catch(\Throwable $e) {
-            while(ob_get_level()) {
+        } catch (\Throwable $e) {
+            while (ob_get_level()) {
                 ob_end_clean();
             }
 
-            if($e instanceof arch\IForcedResponse) {
+            if ($e instanceof arch\IForcedResponse) {
                 $response = $this->_normalizeResponse($e->getResponse());
             } else {
                 $this->_dispatchException = $e;
@@ -413,8 +427,8 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 try {
                     $response = $this->_dispatchNode(new arch\Request('error/'));
                     $response = $this->_normalizeResponse($response);
-                } catch(\Throwable $f) {
-                    if($f instanceof arch\IForcedResponse) {
+                } catch (\Throwable $f) {
+                    if ($f instanceof arch\IForcedResponse) {
                         $response = $this->_normalizeResponse($f->getResponse());
                     } else {
                         core\logException($f);
@@ -428,9 +442,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Dispatch node
-    protected function _dispatchNode(arch\IRequest $request) {
-        if($this->_responseAugmentor) {
+    // Dispatch node
+    protected function _dispatchNode(arch\IRequest $request)
+    {
+        if ($this->_responseAugmentor) {
             $this->_responseAugmentor->resetCurrent();
         }
 
@@ -439,24 +454,24 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         try {
             $node = arch\node\Base::factory($this->_context);
-        } catch(arch\node\ENotFound $e) {
+        } catch (arch\node\ENotFound $e) {
             // See if the url just needs a /
             $url = $this->_httpRequest->getUrl();
             $testUrl = null;
 
-            if(!$url->path->shouldAddTrailingSlash() && $url->path->getFilename() != 'index') {
+            if (!$url->path->shouldAddTrailingSlash() && $url->path->getFilename() != 'index') {
                 $testUrl = clone $url;
                 $testUrl->path->shouldAddTrailingSlash(true);
-            } else if($url->path->shouldAddTrailingSlash()) {
+            } elseif ($url->path->shouldAddTrailingSlash()) {
                 $testUrl = clone $url;
                 $testUrl->path->shouldAddTrailingSlash(false);
             }
 
-            if($testUrl) {
+            if ($testUrl) {
                 $context = clone $this->_context;
                 $context->location = $context->request = $this->_router->urlToRequest($testUrl);
 
-                if($context->apex->nodeExists($context->request)) {
+                if ($context->apex->nodeExists($context->request)) {
                     return $context->http->redirect($context->request)
                         //->isPermanent(true)
                         ;
@@ -466,13 +481,13 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             throw $e;
         }
 
-        foreach(df\Launchpad::$app->getRegistryObjects() as $object) {
-            if($object instanceof core\IDispatchAware) {
+        foreach (df\Launchpad::$app->getRegistryObjects() as $object) {
+            if ($object instanceof core\IDispatchAware) {
                 $object->onAppDispatch($node);
             }
         }
 
-        if(!$node->shouldOptimize()) {
+        if (!$node->shouldOptimize()) {
             $this->_doTheDirtyWork();
         }
 
@@ -480,26 +495,27 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Normalize response
-    protected function _normalizeResponse($response) {
+    // Normalize response
+    protected function _normalizeResponse($response)
+    {
         // Callback
-        if($response instanceof \Closure
+        if ($response instanceof \Closure
         || $response instanceof core\lang\ICallback) {
             $response = $response();
         }
 
         // Dereference proxy responses
-        while($response instanceof arch\IProxyResponse) {
+        while ($response instanceof arch\IProxyResponse) {
             $response = $response->toResponse();
         }
 
         // Forwarding
-        if($response instanceof arch\IRequest) {
+        if ($response instanceof arch\IRequest) {
             $response = $this->_context->http->redirect($response);
         }
 
         // Empty response
-        if($response === null && df\Launchpad::$app->isDevelopment()) {
+        if ($response === null && df\Launchpad::$app->isDevelopment()) {
             throw core\Error::{'ENotImplemented'}([
                 'message' => 'No response was returned by node: '.$this->_context->request,
                 'http' => 501
@@ -507,7 +523,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         // Basic response
-        if(!$response instanceof link\http\IResponse) {
+        if (!$response instanceof link\http\IResponse) {
             $response = new link\http\response\Stream(
                 (string)$response,
                 core\fs\Type::extToMime(strtolower($this->_context->request->getType()))
@@ -519,17 +535,17 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $response->onDispatchComplete();
         $headers = $response->getHeaders();
 
-        if($this->_context && $this->_context->http->isAjaxRequest()) {
+        if ($this->_context && $this->_context->http->isAjaxRequest()) {
             $headers->set('x-response-url', $this->_httpRequest->url);
         }
 
 
         // Access control
-        if($this->_httpRequest->headers->has('origin')) {
+        if ($this->_httpRequest->headers->has('origin')) {
             $url = new link\http\Url($this->_httpRequest->headers->get('origin'));
             $domain = $url->getDomain();
 
-            if($this->_router->lookupDomain($domain)) {
+            if ($this->_router->lookupDomain($domain)) {
                 $headers->set('access-control-allow-origin', '*');
 
                 // Include from config
@@ -542,20 +558,22 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
 
-    protected function _doTheDirtyWork() {
+    protected function _doTheDirtyWork()
+    {
         halo\daemon\Manager::getInstance()->ensureActivity();
     }
 
 
-// Send response
-    protected function _sendResponse(link\http\IResponse $response) {
+    // Send response
+    protected function _sendResponse(link\http\IResponse $response)
+    {
         // Apply globally defined cookies, headers, etc
-        if($this->_responseAugmentor) {
+        if ($this->_responseAugmentor) {
             $this->_responseAugmentor->apply($response);
         }
 
         // Make sure cookies are in headers
-        if($response->hasCookies()) {
+        if ($response->hasCookies()) {
             $response->getCookies()->applyTo($response->getHeaders());
         }
 
@@ -563,31 +581,31 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         $isFile = $response instanceof link\http\IFileResponse;
         $sendData = true;
 
-        if($this->_httpRequest->isCachedByClient()) {
+        if ($this->_httpRequest->isCachedByClient()) {
             $headers = $response->getHeaders();
 
-            if($headers->isCached($this->_httpRequest)) {
+            if ($headers->isCached($this->_httpRequest)) {
                 $headers->setStatusCode(304);
                 $sendData = false;
             }
         }
 
         // Redirect to x-sendfile header
-        if($this->_sendFileHeader && $isFile && $sendData && $response->isStaticFile()) {
+        if ($this->_sendFileHeader && $isFile && $sendData && $response->isStaticFile()) {
             $response->getHeaders()->set($this->_sendFileHeader, $response->getStaticFilePath());
             $sendData = false;
         }
 
 
         // HEAD request
-        if($this->_httpRequest->getMethod() == 'head') {
+        if ($this->_httpRequest->getMethod() == 'head') {
             $sendData = false;
         }
 
 
-        if(!$sendData) {
+        if (!$sendData) {
             // Send headers
-            if($response->hasHeaders()) {
+            if ($response->hasHeaders()) {
                 $response->getHeaders()->send();
             }
         } else {
@@ -595,30 +613,30 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $channel = new core\io\Stream('php://output');
             set_time_limit(0);
 
-            $channel->setWriteCallback(function() use($response) {
-                while(ob_get_level()) {
+            $channel->setWriteCallback(function () use ($response) {
+                while (ob_get_level()) {
                     ob_end_clean();
                 }
 
                 flush();
                 ob_implicit_flush(true);
 
-                if($response->hasHeaders()) {
+                if ($response->hasHeaders()) {
                     $response->getHeaders()->send();
                 }
             });
 
             // TODO: Seek to resume header location if requested
 
-            if($isFile) {
+            if ($isFile) {
                 $file = $response->getContentFileStream();
 
-                while(!$file->eof()) {
+                while (!$file->eof()) {
                     $channel->write($file->readChunk(8192));
                 }
 
                 $file->close();
-            } else if($response instanceof link\http\IGeneratorResponse) {
+            } elseif ($response instanceof link\http\IGeneratorResponse) {
                 $response->shouldChunkManually($this->_manualChunk);
                 $response->generate($channel);
             } else {
@@ -630,12 +648,13 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
 
 
-// Debug
-    public function renderDebugContext(core\debug\IContext $context): void {
+    // Debug
+    public function renderDebugContext(core\debug\IContext $context): void
+    {
         $renderer = new core\debug\renderer\Html($context);
 
-        if(!headers_sent()) {
-            if(strncasecmp(PHP_SAPI, 'cgi', 3)) {
+        if (!headers_sent()) {
+            if (strncasecmp(PHP_SAPI, 'cgi', 3)) {
                 header('HTTP/1.1 501');
             } else {
                 header('Status: 501');
@@ -645,24 +664,25 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             header('Cache-Control: no-cache, no-store, must-revalidate');
             header('Pragma: no-cache');
 
-            if($this->_httpRequest && $this->_httpRequest->method == 'head') {
+            if ($this->_httpRequest && $this->_httpRequest->method == 'head') {
                 header('X-Dump: '.json_encode($context->toString()));
             }
 
 
             try {
-                if($this->_responseAugmentor) {
+                if ($this->_responseAugmentor) {
                     $cookies = $this->_responseAugmentor->getCookieCollectionForCurrentRequest();
 
-                    foreach($cookies->toArray() as $cookie) {
+                    foreach ($cookies->toArray() as $cookie) {
                         header('Set-Cookie: '.$cookie->toString());
                     }
 
-                    foreach($cookies->getRemoved() as $cookie) {
+                    foreach ($cookies->getRemoved() as $cookie) {
                         header('Set-Cookie: '.$cookie->toInvalidateString());
                     }
                 }
-            } catch(\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
         }
 
         echo $renderer->render();
