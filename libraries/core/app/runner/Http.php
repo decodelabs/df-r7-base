@@ -337,7 +337,13 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $redirectRequest->query->{$map->area} = $map->mappedKey;
             }
 
-            $baseUrl = (string)$this->_router->requestToUrl($redirectRequest);
+            $baseUrl = $this->_router->requestToUrl($redirectRequest);
+
+            if ($this->_router->shouldUseHttps()) {
+                $baseUrl->isSecure(true);
+            }
+
+            $baseUrl = (string)$baseUrl;
 
             if (df\Launchpad::$app->isDevelopment()) {
                 $response = new link\http\response\Stream(
