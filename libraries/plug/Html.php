@@ -13,21 +13,23 @@ use df\flex;
 use df\spur;
 use df\flow;
 
-class Html implements arch\IDirectoryHelper {
-
+class Html implements arch\IDirectoryHelper
+{
     use arch\TDirectoryHelper;
     use aura\view\TView_DirectoryHelper;
     use flex\THtmlStringEscapeHandler;
 
-    public function __call($member, $args) {
+    public function __call($member, $args)
+    {
         return aura\html\widget\Base::factory($this->context, $member, $args);
     }
 
-    public function __invoke($name, $content=null, array $attributes=null) {
-        if(false !== strpos($name, '>')) {
+    public function __invoke($name, $content=null, array $attributes=null)
+    {
+        if (false !== strpos($name, '>')) {
             $parts = explode('>', $name);
 
-            foreach(array_reverse($parts) as $name) {
+            foreach (array_reverse($parts) as $name) {
                 $content = new aura\html\Element(trim($name), $content, $attributes);
                 $attributes = null;
             }
@@ -38,28 +40,30 @@ class Html implements arch\IDirectoryHelper {
         return new aura\html\Element($name, $content, $attributes);
     }
 
-    public function previewText($html, $length=null) {
+    public function previewText($html, $length=null)
+    {
         $output = $this->toText($html);
 
-        if($output === null) {
+        if ($output === null) {
             return null;
         }
 
-        if($length !== null) {
+        if ($length !== null) {
             $output = $this->context->format->shorten($output, $length);
         }
 
         return $this->string($output);
     }
 
-    public function toText($html) {
-        if(is_string($html)) {
+    public function toText($html)
+    {
+        if (is_string($html)) {
             $html = new aura\html\ElementString($html);
         }
 
         $html = aura\html\ElementContent::normalize($html);
 
-        if(!strlen($html)) {
+        if (!strlen($html)) {
             return null;
         }
 
@@ -68,8 +72,9 @@ class Html implements arch\IDirectoryHelper {
         return $output;
     }
 
-    public function plainText($text) {
-        if(empty($text) && $text !== '0') {
+    public function plainText($text)
+    {
+        if (empty($text) && $text !== '0') {
             return null;
         }
 
@@ -79,48 +84,53 @@ class Html implements arch\IDirectoryHelper {
         return $this->string($text);
     }
 
-    public function markdown($text) {
+    public function markdown($text)
+    {
         $output = (new flex\markdown\Parser($text))->toHtml();
 
-        if($output !== null) {
+        if ($output !== null) {
             $output = $this->string($output);
         }
 
         return $output;
     }
 
-    public function simpleTags(?string $text, bool $extended=false) {
+    public function simpleTags(?string $text, bool $extended=false)
+    {
         $output = (new flex\simpleTags\Parser($text, $extended))->toHtml();
 
-        if($output !== null) {
+        if ($output !== null) {
             $output = $this->string($output);
         }
 
         return $output;
     }
 
-    public function inlineSimpleTags(?string $text) {
+    public function inlineSimpleTags(?string $text)
+    {
         $output = (new flex\simpleTags\Parser($text))->toInlineHtml();
 
-        if($output !== null) {
+        if ($output !== null) {
             $output = $this->string($output);
         }
 
         return $output;
     }
 
-    public function tweet($text) {
+    public function tweet($text)
+    {
         $output = (new flex\tweet\Parser($text))->toHtml();
 
-        if($output !== null) {
+        if ($output !== null) {
             $output = $this->string($output);
         }
 
         return $output;
     }
 
-    public function convert($body, $format='SimpleTags') {
-        switch(strtolower($format)) {
+    public function convert($body, $format='SimpleTags')
+    {
+        switch (strtolower($format)) {
             case 'simpletags':
                 return $this->simpleTags($body);
 
@@ -139,8 +149,9 @@ class Html implements arch\IDirectoryHelper {
         }
     }
 
-    public function shorten($string, $length=20) {
-        if(strlen($string) <= $length) {
+    public function shorten($string, $length=20)
+    {
+        if (strlen($string) <= $length) {
             return $string;
         }
 
@@ -148,79 +159,90 @@ class Html implements arch\IDirectoryHelper {
         return $this->element('abbr', $newString)->setTitle($string);
     }
 
-    public function _($phrase=''): aura\html\IElementRepresentation {
+    public function _($phrase=''): aura\html\IElementRepresentation
+    {
         return $this->translate(func_get_args());
     }
 
-    public function translate(array $args): aura\html\IElementRepresentation {
+    public function translate(array $args): aura\html\IElementRepresentation
+    {
         return new aura\html\ElementString($this->context->i18n->translate($args));
     }
 
-    public function string(...$values) {
+    public function string(...$values)
+    {
         return new aura\html\ElementString(implode('', $values));
     }
 
-    public function tag($name, array $attributes=[]) {
+    public function tag($name, array $attributes=[])
+    {
         return new aura\html\Tag($name, $attributes);
     }
 
-    public function element($name, $content=null, array $attributes=[]): aura\html\IElement {
+    public function element($name, $content=null, array $attributes=[]): aura\html\IElement
+    {
         return new aura\html\Element($name, $content, $attributes);
     }
 
-    public function elementContentContainer($content=null): aura\html\IElementContent {
+    public function elementContentContainer($content=null): aura\html\IElementContent
+    {
         return new aura\html\ElementContent($content);
     }
 
-    public function list(iterable $list, string $container, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation {
-        return (new aura\html\Element($container, function() use($list, $name, $callback) {
+    public function list(iterable $list, string $container, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation
+    {
+        return (new aura\html\Element($container, function () use ($list, $name, $callback) {
             $i = 0;
 
-            foreach($list as $key => $item) {
-                yield $this->__invoke($name, function($el) use($key, $item, $callback, &$i) {
+            foreach ($list as $key => $item) {
+                yield $this->__invoke($name, function ($el) use ($key, $item, $callback, &$i) {
                     return $callback($item, $el, $key, ++$i);
                 });
             }
         }, $attributes))->shouldRenderIfEmpty(false);
     }
 
-    public function elements(iterable $list, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation {
-        return aura\html\ElementContent::normalize(function() use($list, $name, $callback, $attributes) {
+    public function elements(iterable $list, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation
+    {
+        return aura\html\ElementContent::normalize(function () use ($list, $name, $callback, $attributes) {
             $i = 0;
 
-            foreach($list as $key => $item) {
-                yield $this->__invoke($name, function($el) use($key, $item, $callback, &$i) {
+            foreach ($list as $key => $item) {
+                yield $this->__invoke($name, function ($el) use ($key, $item, $callback, &$i) {
                     return $callback($item, $el, $key, ++$i);
                 }, $attributes);
             }
         });
     }
 
-    public function uList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation {
-        return $this->list($list, 'ul', 'li', $renderer ?? function($value) {
+    public function uList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
+    {
+        return $this->list($list, 'ul', 'li', $renderer ?? function ($value) {
             return $value;
         }, $attributes);
     }
 
-    public function oList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation {
-        return $this->list($list, 'ol', 'li', $renderer ?? function($value) {
+    public function oList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
+    {
+        return $this->list($list, 'ol', 'li', $renderer ?? function ($value) {
             return $value;
         }, $attributes);
     }
 
-    public function dList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation {
-        $renderer = $renderer ?? function($value) {
+    public function dList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
+    {
+        $renderer = $renderer ?? function ($value) {
             return $value;
         };
 
-        return $this->__invoke('dl', function() use($list, $renderer) {
-            foreach($list as $key => $item) {
+        return $this->__invoke('dl', function () use ($list, $renderer) {
+            foreach ($list as $key => $item) {
                 $dt = $this->__invoke('dt', null);
-                $dd = (string)$this->__invoke('dd', function($dd) use($key, $item, $renderer, &$i, $dt) {
+                $dd = (string)$this->__invoke('dd', function ($dd) use ($key, $item, $renderer, &$i, $dt) {
                     return $renderer($item, $dt, $dd, $key, ++$i);
                 });
 
-                if($dt->isEmpty()) {
+                if ($dt->isEmpty()) {
                     $dt->push($key);
                 }
 
@@ -230,12 +252,13 @@ class Html implements arch\IDirectoryHelper {
         }, $attributes);
     }
 
-    public function iList(iterable $list, callable $renderer=null, int $limit=null, string $delimiter=', ', string $finalDelimiter=null): aura\html\IElementRepresentation {
-        $renderer = $renderer ?? function($value) {
+    public function iList(iterable $list, callable $renderer=null, int $limit=null, string $delimiter=', ', string $finalDelimiter=null): aura\html\IElementRepresentation
+    {
+        $renderer = $renderer ?? function ($value) {
             return $value;
         };
 
-        return (new aura\html\Element('span.list', function($el) use($list, $renderer, $delimiter, $finalDelimiter, $limit) {
+        return (new aura\html\Element('span.list', function ($el) use ($list, $renderer, $delimiter, $finalDelimiter, $limit) {
             $el->shouldRenderIfEmpty(false);
 
             $first = true;
@@ -243,33 +266,33 @@ class Html implements arch\IDirectoryHelper {
 
             try {
                 $total = count($list);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $total = null;
             }
 
-            if($finalDelimiter === null) {
+            if ($finalDelimiter === null) {
                 $finalDelimiter = $delimiter;
             }
 
 
-            foreach($list as $key => $item) {
-                if($item === null) {
+            foreach ($list as $key => $item) {
+                if ($item === null) {
                     continue;
                 }
 
                 $i++;
 
-                $cellTag = new aura\html\Element('span', function($el) use($key, $item, $renderer, &$i) {
+                $cellTag = new aura\html\Element('span', function ($el) use ($key, $item, $renderer, &$i) {
                     return $renderer($item, $el, $key, $i);
                 });
 
-                if($limit !== null && $i > $limit) {
+                if ($limit !== null && $i > $limit) {
                     $more++;
                     continue;
                 }
 
-                if(!$first) {
-                    if($i == $total) {
+                if (!$first) {
+                    if ($i == $total) {
                         yield $finalDelimiter;
                     } else {
                         yield $delimiter;
@@ -280,8 +303,8 @@ class Html implements arch\IDirectoryHelper {
                 yield $cellTag;
             }
 
-            if($more) {
-                if(!$first) {
+            if ($more) {
+                if (!$first) {
                     yield $delimiter;
                 }
 
@@ -290,31 +313,33 @@ class Html implements arch\IDirectoryHelper {
         }));
     }
 
-    public function span($content, array $attributes=[]) {
+    public function span($content, array $attributes=[])
+    {
         return $this->element('span', $content, $attributes);
     }
 
 
 
 
-    public function autoField($key, $name, core\collection\ITree $values=null) {
+    public function autoField($key, $name, core\collection\ITree $values=null)
+    {
         $isRequired = $isBoolean = false;
 
-        if(substr($key, 0, 1) == '*') {
+        if (substr($key, 0, 1) == '*') {
             $key = substr($key, 1);
             $isRequired = true;
-        } else if(substr($key, 0, 1) == '?') {
+        } elseif (substr($key, 0, 1) == '?') {
             $key = substr($key, 1);
             $isBoolean = true;
         }
 
         $value = null;
 
-        if($values) {
+        if ($values) {
             $value = $values->{$key};
         }
 
-        if($isBoolean) {
+        if ($isBoolean) {
             return $this->checkbox($key, $value, $name);
         } else {
             return $this->textbox($key, $value)
@@ -325,9 +350,10 @@ class Html implements arch\IDirectoryHelper {
 
 
 
-// Compound widget shortcuts
-    public function icon($name, $body=null) {
-        if($this->view) {
+    // Compound widget shortcuts
+    public function icon($name, $body=null)
+    {
+        if ($this->view) {
             $theme = $this->view->getTheme();
         } else {
             $theme = $this->context->apex->getTheme();
@@ -336,24 +362,26 @@ class Html implements arch\IDirectoryHelper {
         $iconChar = $theme->mapIcon($name);
         $attrs = [];
 
-        if($iconChar !== null) {
+        if ($iconChar !== null) {
             $attrs = ['data-icon' => new aura\html\ElementString($iconChar)];
         }
 
-        if(empty($body)) {
+        if (empty($body)) {
             $attrs['aria-hidden'] = 'true';
         }
 
         return new aura\html\Element('span', $body, $attrs);
     }
 
-    public function booleanIcon($value, $body=null) {
+    public function booleanIcon($value, $body=null)
+    {
         return $this->icon((bool)$value ? 'tick' : 'cross', $body)
             ->addClass((bool)$value ? 'positive' : 'negative');
     }
 
-    public function yesNoIcon($value, $allowNull=true) {
-        if($value === null && $allowNull) {
+    public function yesNoIcon($value, $allowNull=true)
+    {
+        if ($value === null && $allowNull) {
             return null;
         }
 
@@ -361,16 +389,18 @@ class Html implements arch\IDirectoryHelper {
             ->addClass((bool)$value ? 'positive' : 'negative');
     }
 
-    public function lockIcon($value, $body=null) {
+    public function lockIcon($value, $body=null)
+    {
         return $this->icon((bool)$value ? 'lock' : 'unlock', $body)
             ->addClass((bool)$value ? 'locked' : 'unlocked');
     }
 
 
-    public function diff($diff, $invert=false, $tag='sup') {
-        if($diff > 0) {
+    public function diff($diff, $invert=false, $tag='sup')
+    {
+        if ($diff > 0) {
             $arrow = '⬆';
-        } else if($diff < 0) {
+        } elseif ($diff < 0) {
             $arrow = '⬇';
         } else {
             $arrow = '⬌';
@@ -381,8 +411,10 @@ class Html implements arch\IDirectoryHelper {
             $this->number(abs($diff))
         ])->addClass('w.diff');
 
-        if($invert !== null) {
-            if($invert) $diff *= -1;
+        if ($invert !== null) {
+            if ($invert) {
+                $diff *= -1;
+            }
             $output->addClass($diff < 0 ? 'negative' : 'positive');
         }
 
@@ -390,27 +422,29 @@ class Html implements arch\IDirectoryHelper {
     }
 
 
-    public function basicLink($url, $body=null) {
+    public function basicLink($url, $body=null)
+    {
         $url = $this->context->uri->__invoke($url);
 
-        if(empty($body) && $body !== '0') {
+        if (empty($body) && $body !== '0') {
             $body = $url;
         }
 
         return $this->element('a', $body, ['href' => $url]);
     }
 
-    public function plainMailLink($address, $body=null) {
-        if(empty($address)) {
+    public function plainMailLink($address, $body=null)
+    {
+        if (empty($address)) {
             return $body;
         }
 
         $address = flow\mail\Address::factory($address);
 
-        if($body === null) {
+        if ($body === null) {
             $body = $address->getName();
 
-            if(empty($body)) {
+            if (empty($body)) {
                 $body = $address->getAddress();
             }
         }
@@ -418,8 +452,9 @@ class Html implements arch\IDirectoryHelper {
         return $this->link($this->context->uri->mailto($address), $body);
     }
 
-    public function mailLink($address, $body=null) {
-        if(empty($address)) {
+    public function mailLink($address, $body=null)
+    {
+        if (empty($address)) {
             return $body;
         }
 
@@ -428,8 +463,9 @@ class Html implements arch\IDirectoryHelper {
             ->setDisposition('external');
     }
 
-    public function phoneLink($number, $icon='phone') {
-        if(empty($number)) {
+    public function phoneLink($number, $icon='phone')
+    {
+        if (empty($number)) {
             return null;
         }
 
@@ -437,7 +473,8 @@ class Html implements arch\IDirectoryHelper {
             ->setIcon($icon);
     }
 
-    public function backLink($default=null, $success=true, $body=null) {
+    public function backLink($default=null, $success=true, $body=null)
+    {
         return $this->link(
                 $this->context->uri->back($default, $success),
                 $body ?? $this->context->_('Back')
@@ -445,7 +482,8 @@ class Html implements arch\IDirectoryHelper {
             ->setIcon('back');
     }
 
-    public function queryToggleLink($request, $queryVar, $onString, $offString, $onIcon=null, $offIcon=null) {
+    public function queryToggleLink($request, $queryVar, $onString, $offString, $onIcon=null, $offIcon=null)
+    {
         return $this->link(
                 $this->context->uri->queryToggle($request, $queryVar, $result),
                 $result ? $onString : $offString
@@ -453,7 +491,8 @@ class Html implements arch\IDirectoryHelper {
             ->setIcon($result ? $onIcon : $offIcon);
     }
 
-    public function flashList() {
+    public function flashList()
+    {
         $manager = flow\Manager::getInstance();
         $manager->processFlashQueue();
         $messageCount = 0;
@@ -463,11 +502,11 @@ class Html implements arch\IDirectoryHelper {
         $output = '<div class="w list flash">'."\n";
         $change = false;
 
-        foreach($manager->getConstantFlashes() as $message) {
+        foreach ($manager->getConstantFlashes() as $message) {
             $message->isDisplayed(true);
             $change = true;
 
-            if($isProduction && $message->isDebug()) {
+            if ($isProduction && $message->isDebug()) {
                 continue;
             }
 
@@ -475,11 +514,11 @@ class Html implements arch\IDirectoryHelper {
             $output .= $this->flashMessage($message);
         }
 
-        foreach($manager->getInstantFlashes() as $message) {
+        foreach ($manager->getInstantFlashes() as $message) {
             $message->isDisplayed(true);
             $change = true;
 
-            if($isProduction && $message->isDebug()) {
+            if ($isProduction && $message->isDebug()) {
                 continue;
             }
 
@@ -487,20 +526,21 @@ class Html implements arch\IDirectoryHelper {
             $output .= $this->flashMessage($message);
         }
 
-        if($change) {
+        if ($change) {
             $manager->flashHasChanged(true);
         }
 
         $output .= '</div>';
 
-        if(!$messageCount) {
+        if (!$messageCount) {
             return null;
         }
 
         return $output;
     }
 
-    public function defaultButtonGroup($mainEvent=null, $mainEventText=null, $mainEventIcon=null) {
+    public function defaultButtonGroup($mainEvent=null, $mainEventText=null, $mainEventIcon=null)
+    {
         return $this->buttonArea(
             $this->saveEventButton($mainEvent, $mainEventText, $mainEventIcon),
 
@@ -511,8 +551,9 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function yesNoButtonGroup($mainEvent=null) {
-        if(!$mainEvent) {
+    public function yesNoButtonGroup($mainEvent=null)
+    {
+        if (!$mainEvent) {
             $mainEvent = 'submit';
         }
 
@@ -526,26 +567,27 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function saveEventButton($event=null, $text=null, $icon=null, $disposition=null) {
-        if($event === false) {
+    public function saveEventButton($event=null, $text=null, $icon=null, $disposition=null)
+    {
+        if ($event === false) {
             return null;
         }
 
-        if(!$event) {
+        if (!$event) {
             $event = 'save';
         }
 
-        if($text === null) {
+        if ($text === null) {
             $text = $this->context->_('Save');
         }
 
-        if($icon === null) {
+        if ($icon === null) {
             $icon = 'save';
         }
 
-        if($disposition === null) {
+        if ($disposition === null) {
             $disposition = 'positive';
-        } else if($disposition === false) {
+        } elseif ($disposition === false) {
             $disposition = null;
         }
 
@@ -554,20 +596,21 @@ class Html implements arch\IDirectoryHelper {
             ->setDisposition($disposition);
     }
 
-    public function resetEventButton($event=null, $label=null, $icon=null, $disposition=null) {
-        if($event === false) {
+    public function resetEventButton($event=null, $label=null, $icon=null, $disposition=null)
+    {
+        if ($event === false) {
             return null;
         }
 
-        if(!$event) {
+        if (!$event) {
             $event = 'reset';
         }
 
-        if($label === null) {
+        if ($label === null) {
             $label = $this->context->_('Reset');
         }
 
-        if($icon === null) {
+        if ($icon === null) {
             $icon = 'refresh';
         }
 
@@ -577,26 +620,27 @@ class Html implements arch\IDirectoryHelper {
             ->shouldValidate(false);
     }
 
-    public function cancelEventButton($event=null, $label=null, $icon=null, $disposition=null) {
-        if($event === false) {
+    public function cancelEventButton($event=null, $label=null, $icon=null, $disposition=null)
+    {
+        if ($event === false) {
             return null;
         }
 
-        if(!$event) {
+        if (!$event) {
             $event = 'cancel';
         }
 
-        if($label === null) {
+        if ($label === null) {
             $label = $this->context->_('Cancel');
         }
 
-        if($icon === null) {
+        if ($icon === null) {
             $icon = 'cancel';
         }
 
-        if($disposition === null) {
+        if ($disposition === null) {
             $disposition = 'transitive';
-        } else if($disposition === false) {
+        } elseif ($disposition === false) {
             $disposition = null;
         }
 
@@ -608,17 +652,18 @@ class Html implements arch\IDirectoryHelper {
 
 
 
-    public function number($value, $unit=null) {
-        if($value === null) {
+    public function number($value, $unit=null)
+    {
+        if ($value === null) {
             return null;
         }
 
-        if($unit === null && false !== strpos($value, ' ')) {
+        if ($unit === null && false !== strpos($value, ' ')) {
             list($value, $unit) = explode(' ', $value, 2);
         }
 
-        return $this->element('span.numeric', function() use($value, $unit) {
-            if(is_int($value)
+        return $this->element('span.numeric', function () use ($value, $unit) {
+            if (is_int($value)
             || is_float($value)
             || is_string($value) && (string)((float)$value) === $value) {
                 $value = $this->context->format->number($value);
@@ -626,15 +671,16 @@ class Html implements arch\IDirectoryHelper {
 
             yield $this->element('span.value', $value);
 
-            if($unit !== null) {
+            if ($unit !== null) {
                 yield $this->element('span.unit', $unit);
             }
         });
     }
 
 
-    public function jsonLd(string $type, $data, string $context=null): aura\html\IElementRepresentation {
-        if($context === null) {
+    public function jsonLd(string $type, $data, string $context=null): aura\html\IElementRepresentation
+    {
+        if ($context === null) {
             $context = 'http://schema.org';
         }
 
@@ -651,10 +697,28 @@ class Html implements arch\IDirectoryHelper {
             '</script>');
     }
 
+    public function breadcrumbsLd(arch\navigation\breadcrumbs\EntryList $breadcrumbs)
+    {
+        $data = [];
+        $i = 0;
 
-// Date
-    public function date($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, false)) {
+        foreach ($breadcrumbs->getEntries() as $link) {
+            $data[] = [
+                '@type' => 'ListItem',
+                'position' => ++$i,
+                'name' => $link->getBody(),
+                'item' => $link->getUri()
+            ];
+        }
+
+        return $this->jsonLd('BreadcrumbList', ['itemListElement' => $data]);
+    }
+
+
+    // Date
+    public function date($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, false)) {
             return null;
         }
 
@@ -664,8 +728,9 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function dateTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, true)) {
+    public function dateTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
@@ -675,8 +740,9 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function customDate($date, string $format, $timezone=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, true)) {
+    public function customDate($date, string $format, $timezone=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
@@ -688,8 +754,9 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function wrappedDate($date, $body, $timezone=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, true)) {
+    public function wrappedDate($date, $body, $timezone=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
@@ -701,12 +768,13 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function time($date, $format=null, $timezone=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, true)) {
+    public function time($date, $format=null, $timezone=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
-        if($format === null) {
+        if ($format === null) {
             $format = 'g:ia';
         }
 
@@ -716,8 +784,9 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function localeTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, true)) {
+    public function localeTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
@@ -728,8 +797,9 @@ class Html implements arch\IDirectoryHelper {
     }
 
 
-    public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true)
+    {
+        if (!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
@@ -740,8 +810,9 @@ class Html implements arch\IDirectoryHelper {
             ->setTitle($this->context->format->dateTime($date));
     }
 
-    public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true)
+    {
+        if (!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
@@ -752,16 +823,17 @@ class Html implements arch\IDirectoryHelper {
             ->setTitle($this->context->format->dateTime($date));
     }
 
-    public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null)
+    {
+        if (!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = true;
         }
 
@@ -769,12 +841,12 @@ class Html implements arch\IDirectoryHelper {
         $now = core\time\Date::factory('now')->toTimestamp();
         $diff = $now - $ts;
 
-        if($diff > 0) {
+        if ($diff > 0) {
             $output = $this->context->_(
                 '%t% ago',
                 ['%t%' => $this->context->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
-        } else if($diff < 0) {
+        } elseif ($diff < 0) {
             $output = $this->context->_(
                 'in %t%',
                 ['%t%' => $this->context->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
@@ -790,25 +862,26 @@ class Html implements arch\IDirectoryHelper {
             ->setTitle($this->context->format->dateTime($date));
     }
 
-    protected function _prepareDate($date, $timezone=true, bool $includeTime=true) {
-        if($date instanceof core\time\ITimeOfDay) {
+    protected function _prepareDate($date, $timezone=true, bool $includeTime=true)
+    {
+        if ($date instanceof core\time\ITimeOfDay) {
             return new core\time\Date($date);
         }
 
-        if($timezone === false) {
+        if ($timezone === false) {
             $timezone = null;
             $includeTime = false;
         }
 
-        if(!$date = core\time\Date::normalize($date, null, $includeTime)) {
+        if (!$date = core\time\Date::normalize($date, null, $includeTime)) {
             return null;
         }
 
-        if($timezone !== null) {
+        if ($timezone !== null) {
             $date = clone $date;
 
-            if($date->hasTime()) {
-                if($timezone === true) {
+            if ($date->hasTime()) {
+                if ($timezone === true) {
                     $date->toUserTimeZone();
                 } else {
                     $date->toTimezone($timezone);
@@ -819,7 +892,8 @@ class Html implements arch\IDirectoryHelper {
         return $date;
     }
 
-    protected function _timeTag($w3cString, $formattedString) {
+    protected function _timeTag($w3cString, $formattedString)
+    {
         return $this->element(
             'time',
             $formattedString,
@@ -828,35 +902,40 @@ class Html implements arch\IDirectoryHelper {
     }
 
 
-// Image
-    public function image($url, $alt=null, $width=null, $height=null) {
+    // Image
+    public function image($url, $alt=null, $width=null, $height=null)
+    {
         $output = $this->element(
-            'img', null, [
+            'img',
+            null,
+            [
                 'src' => $this->context->uri->__invoke($url),
                 'alt' => $alt
             ]
         );
 
-        if($width !== null) {
+        if ($width !== null) {
             $output->setAttribute('width', $width);
         }
 
-        if($height !== null) {
-            $output->setAttribute('height',  $height);
+        if ($height !== null) {
+            $output->setAttribute('height', $height);
         }
 
         return $output;
     }
 
-    public function themeImage($path, $alt=null, $width=null, $height=null) {
+    public function themeImage($path, $alt=null, $width=null, $height=null)
+    {
         return $this->image($this->context->uri->themeAsset($path), $alt, $width, $height);
     }
 
-// Media
-    public function videoEmbed($embed, $width=null, $height=null) {
+    // Media
+    public function videoEmbed($embed, $width=null, $height=null)
+    {
         $embed = trim($embed);
 
-        if(!empty($embed)) {
+        if (!empty($embed)) {
             return spur\video\Embed::parse($embed)
                 ->setDimensions($width, $height);
         } else {
@@ -864,10 +943,11 @@ class Html implements arch\IDirectoryHelper {
         }
     }
 
-    public function audioEmbed($embed, $width=null, $height=null) {
+    public function audioEmbed($embed, $width=null, $height=null)
+    {
         $embed = trim($embed);
 
-        if(!empty($embed)) {
+        if (!empty($embed)) {
             return spur\audio\Embed::parse($embed)
                 ->setDimensions($width, $height);
         } else {
