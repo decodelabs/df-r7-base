@@ -139,7 +139,19 @@ class LibraryImage extends Base
 
             public function renderFieldContent(aura\html\widget\Field $field)
             {
-                $field->addField($this->_('Library image'))->push($this['image']);
+                $fa = $field->addField($this->_('Library image'))->push($this['image']);
+
+                if ($this['image']->hasSelection()) {
+                    $fa->add(
+                        'div.link',
+                        $this->html->link(
+                                $this->uri('~admin/media/files/edit?file='.$this['image']->getSelected(), '~admin/media/files/'),
+                                $this->_('Edit file details')
+                            )
+                            ->setIcon('edit')
+                            ->setTarget('_blank')
+                    );
+                }
 
                 // Alt text
                 $field->addField($this->_('Alt text'))->push(
