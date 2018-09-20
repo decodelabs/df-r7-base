@@ -142,10 +142,12 @@ class LibraryImage extends Base
                 $fa = $field->addField($this->_('Library image'))->push($this['image']);
 
                 if ($this['image']->hasSelection()) {
+                    $fileId = $this['image']->getSelected();
+
                     $fa->add(
                         'div.link',
                         $this->html->link(
-                                $this->uri('~admin/media/files/edit?file='.$this['image']->getSelected(), '~admin/media/files/'),
+                                $this->uri('~admin/media/files/edit?file='.$fileId, '~admin/media/files/details?file='.$fileId),
                                 $this->_('Edit file details')
                             )
                             ->setIcon('edit')
