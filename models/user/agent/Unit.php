@@ -10,19 +10,21 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\Table {
-
+class Unit extends axis\unit\Table
+{
     const BROADCAST_HOOK_EVENTS = false;
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addUniqueField('body', 'Text', 255);
         $schema->addField('isBot', 'Boolean');
     }
 
 
-    public function logAgent($agent) {
-        if(empty($agent)) {
+    public function logAgent($agent)
+    {
+        if (empty($agent)) {
             return null;
         }
 
@@ -30,7 +32,7 @@ class Unit extends axis\unit\Table {
             ->where('body', '=', $agent)
             ->toRow();
 
-        if(!$output) {
+        if (!$output) {
             $output = $this->newRecord([
                 'body' => $agent,
                 'isBot' => $this->isBot($agent)
@@ -40,31 +42,34 @@ class Unit extends axis\unit\Table {
         return $output;
     }
 
-    public function logCurrent() {
+    public function logCurrent()
+    {
         return $this->logAgent($this->getCurrentString());
     }
 
 
-    public function getCurrentString() {
+    public function getCurrentString()
+    {
         $userAgent = null;
 
         try {
             $runner = df\Launchpad::$runner;
 
-            if($runner instanceof core\app\runner\Http) {
+            if ($runner instanceof core\app\runner\Http) {
                 $userAgent = $runner->getContext()->http->getUserAgent();
-            } else if($runner instanceof core\app\runner\Task) {
-                if(isset($_SERVER['TERM'])) {
+            } elseif ($runner instanceof core\app\runner\Task) {
+                if (isset($_SERVER['TERM'])) {
                     $userAgent = $_SERVER['TERM'];
-                } else if(isset($_SERVER['TERM_PROGRAM'])) {
+                } elseif (isset($_SERVER['TERM_PROGRAM'])) {
                     $userAgent = $_SERVER['TERM_PROGRAM'];
-                } else if(isset($_SERVER['TERMINAL'])) {
+                } elseif (isset($_SERVER['TERMINAL'])) {
                     $userAgent = $_SERVER['TERMINAL'];
                 } else {
                     $userAgent = 'Terminal';
                 }
             }
-        } catch(\Throwable $e) {}
+        } catch (\Throwable $e) {
+        }
 
         return $userAgent;
     }
@@ -86,6 +91,7 @@ class Unit extends axis\unit\Table {
         'df-link',
         'Domain Re-Animator',
         'DomainCrawler',
+        'DotBot',
         'facebookexternalhit',
         'Feedly',
         'git',
@@ -107,6 +113,7 @@ class Unit extends axis\unit\Table {
         'python-requests',
         'RU_Bot',
         'SafeDNS',
+        'SemrushBot',
         'SeznamBot',
         'Slurp',
         'Sogou',
@@ -121,9 +128,10 @@ class Unit extends axis\unit\Table {
         'YisouSpider'
     ];
 
-    public function isBot($agent) {
-        foreach($this->_botMatch as $match) {
-            if(stristr($agent, $match)) {
+    public function isBot($agent)
+    {
+        foreach ($this->_botMatch as $match) {
+            if (stristr($agent, $match)) {
                 return true;
             }
         }
