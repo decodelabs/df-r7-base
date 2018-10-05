@@ -48,7 +48,11 @@ class Handler implements IHandler
             $adapter->validateOptions($options);
 
             if ($options->isValid()) {
-                $adapter->apply($this, $view);
+                try {
+                    $adapter->apply($this, $view);
+                } catch (\Throwable $e) {
+                    core\logException($e);
+                }
             }
         }
 

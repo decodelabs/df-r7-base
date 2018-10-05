@@ -30,10 +30,6 @@ class Analytics extends Base
             return;
         }
 
-        if (!$view->consent->has('statistics')) {
-            return;
-        }
-
         if ($view->context->getRunMode() == 'Http'
         && ($view->context->app->isProduction() || isset($view->context->request->query->forceAnalytics))) {
             $this->getHandler()->apply($view);

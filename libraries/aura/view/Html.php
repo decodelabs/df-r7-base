@@ -695,6 +695,16 @@ class Html extends Base implements IHtmlView, core\IDumpable
         return $this;
     }
 
+    public function getHeadScript($id)
+    {
+        return $this->_headScripts[$id] ?? null;
+    }
+
+    public function getFootScript($id)
+    {
+        return $this->_footScripts[$id] ?? null;
+    }
+
     public function removeScript($id)
     {
         return $this->removeHeadScript($id)->removeFootScript($id);

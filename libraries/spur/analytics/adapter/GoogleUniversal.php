@@ -20,6 +20,10 @@ class GoogleUniversal extends Base
 
     public function apply(spur\analytics\IHandler $handler, aura\view\IHtmlView $view)
     {
+        if (!$view->consent->has('statistics')) {
+            return;
+        }
+
         $attributes = $handler->getDefinedUserAttributes(
             array_merge($this->getDefaultUserAttributes(), ['id']),
             false

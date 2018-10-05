@@ -16,6 +16,10 @@ class Woopra extends Base
 
     public function apply(spur\analytics\IHandler $handler, aura\view\IHtmlView $view)
     {
+        if (!$view->consent->has('statistics')) {
+            return;
+        }
+
         $view->linkJs('//static.woopra.com/js/woopra.v2.js');
         $attributes = $handler->getDefinedUserAttributes($this->getDefaultUserAttributes(), true);
         $events = $handler->getEvents();

@@ -9,17 +9,18 @@ use df;
 use df\core;
 use df\spur;
 
-abstract class Base implements spur\analytics\IAdapter {
-
+abstract class Base implements spur\analytics\IAdapter
+{
     protected $_options = [];
     protected $_defaultUserAttributes = [];
 
-    public static function loadAllFromConfig($enabled=true) {
+    public static function loadAllFromConfig($enabled=true)
+    {
         $config = spur\analytics\Config::getInstance();
         $output = [];
 
-        foreach($config->getAdapters() as $name => $info) {
-            if($enabled && !$info->get('enabled', true)) {
+        foreach ($config->getAdapters() as $name => $info) {
+            if ($enabled && !$info->get('enabled', true)) {
                 continue;
             }
 
@@ -29,7 +30,7 @@ abstract class Base implements spur\analytics\IAdapter {
                     $info->options->toArray(),
                     $info->userAttributes->toArray()
                 );
-            } catch(spur\analytics\IException $e) {
+            } catch (spur\analytics\IException $e) {
                 continue;
             }
 
@@ -39,10 +40,11 @@ abstract class Base implements spur\analytics\IAdapter {
         return $output;
     }
 
-    public static function loadFromConfig($name) {
+    public static function loadFromConfig($name)
+    {
         $config = spur\analytics\Config::getInstance();
 
-        if(null === ($info = $config->getAdapter($name))) {
+        if (null === ($info = $config->getAdapter($name))) {
             throw new spur\analytics\RuntimeException('Adapter '.$name.' could not be found');
         }
 
@@ -55,13 +57,14 @@ abstract class Base implements spur\analytics\IAdapter {
         return $output;
     }
 
-    public static function loadAll() {
+    public static function loadAll()
+    {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList('spur/analytics/adapter') as $name => $class) {
+        foreach (df\Launchpad::$loader->lookupClassList('spur/analytics/adapter') as $name => $class) {
             try {
                 $adapter = self::factory($name);
-            } catch(spur\analytics\IException $e) {
+            } catch (spur\analytics\IException $e) {
                 continue;
             }
 
@@ -72,81 +75,94 @@ abstract class Base implements spur\analytics\IAdapter {
         return $output;
     }
 
-    public static function factory($name, array $options=[], array $defaultUserAttributes=[]) {
+    public static function factory($name, array $options=[], array $defaultUserAttributes=[])
+    {
         $class = 'df\\spur\\analytics\\adapter\\'.ucfirst($name);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new spur\analytics\RuntimeException('Adapter '.$name.' could not be found');
         }
 
         return new $class($options, $defaultUserAttributes);
     }
 
-    public function __construct(array $options=[], array $defaultUserAttributes=[]) {
+    public function __construct(array $options=[], array $defaultUserAttributes=[])
+    {
         $this->setOptions($options);
         $this->setDefaultUserAttributes($defaultUserAttributes);
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
 
-// Options
-    public function setOptions(array $options) {
-        foreach($options as $key => $val) {
+    // Options
+    public function setOptions(array $options)
+    {
+        foreach ($options as $key => $val) {
             $this->setOption($key, $val);
         }
 
         return $this;
     }
 
-    public function setOption($key, $val) {
+    public function setOption($key, $val)
+    {
         $this->_options[$key] = $val;
         return $this;
     }
 
-    public function getOption($key, $default=null) {
-        if(isset($this->_options[$key])) {
+    public function getOption($key, $default=null)
+    {
+        if (isset($this->_options[$key])) {
             return $this->_options[$key];
         }
 
         return $default;
     }
 
-    public function getOptions() {
+    public function getOptions()
+    {
         return $this->_options;
     }
 
-    public function getRequiredOptions() {
+    public function getRequiredOptions()
+    {
         return array_keys($this->_options);
     }
 
-    public function clearOptions() {
+    public function clearOptions()
+    {
         $this->_options = [];
         return $this;
     }
 
-    public function validateOptions(core\collection\IInputTree $values, $update=false) {
+    public function validateOptions(core\collection\IInputTree $values, $update=false)
+    {
         $this->_validateOptions($values);
 
-        if($update && $values->isValid()) {
+        if ($update && $values->isValid()) {
             $this->setOptions($values->toArray());
         }
 
         return $this;
     }
 
-    protected function _validateOptions(core\collection\IInputTree $values) {}
+    protected function _validateOptions(core\collection\IInputTree $values)
+    {
+    }
 
 
-    public function setDefaultUserAttributes(array $attributes) {
+    public function setDefaultUserAttributes(array $attributes)
+    {
         $available = spur\analytics\Handler::getAvailableUserAttributes();
         $this->_defaultUserAttributes = [];
 
-        foreach($attributes as $key => $value) {
-            if(is_string($key)) {
+        foreach ($attributes as $key => $value) {
+            if (is_string($key)) {
                 $attribute = $key;
                 $map = $value;
             } else {
@@ -154,7 +170,7 @@ abstract class Base implements spur\analytics\IAdapter {
                 $map = null;
             }
 
-            if(in_array($attribute, $available)) {
+            if (in_array($attribute, $available)) {
                 $this->_defaultUserAttributes[$attribute] = $map;
             }
         }
@@ -162,11 +178,13 @@ abstract class Base implements spur\analytics\IAdapter {
         return $this;
     }
 
-    public function getDefaultUserAttributes() {
+    public function getDefaultUserAttributes()
+    {
         return array_keys($this->_defaultUserAttributes);
     }
 
-    public function getDefaultUserAttributeMap() {
+    public function getDefaultUserAttributeMap()
+    {
         return $this->_defaultUserAttributes;
     }
 }

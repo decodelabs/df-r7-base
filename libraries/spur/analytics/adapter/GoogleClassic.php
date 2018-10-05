@@ -20,6 +20,10 @@ class GoogleClassic extends Base implements spur\analytics\ILegacyAdapter
 
     public function apply(spur\analytics\IHandler $handler, aura\view\IHtmlView $view)
     {
+        if (!$view->consent->has('statistics')) {
+            return;
+        }
+
         $attributes = $handler->getDefinedUserAttributes($this->getDefaultUserAttributes(), false);
         $events = $handler->getEvents();
         $script = 'var _gaq = _gaq || [];'."\n".
