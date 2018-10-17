@@ -984,10 +984,13 @@ class Html extends Base implements IHtmlView, core\IDumpable
 
     protected function _metaToString($key, $value)
     {
+        $prefix = null;
+
         if (in_array(strtolower($key), self::META_HTTP)) {
             $nameKey = 'http-equiv';
         } elseif (strpos($key, 'og:') === 0) {
             $nameKey = 'property';
+            $prefix = 'og: http://ogp.me/ns#';
         } else {
             $nameKey = 'name';
         }
@@ -998,6 +1001,10 @@ class Html extends Base implements IHtmlView, core\IDumpable
             $output->setAttributes($value);
         } else {
             $output->setAttribute('content', $value);
+        }
+
+        if ($prefix) {
+            $output->setAttribute('prefix', $prefix);
         }
 
         return (string)$output;
