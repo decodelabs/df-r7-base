@@ -24,6 +24,7 @@ abstract class SelectorDelegate extends Delegate implements
 
     const DEFAULT_MODES = [
         'select' => 'createOverlaySelectorUi',
+        'create' => 'createOverlayCreateUi',
         'details' => 'createInlineDetailsUi'
     ];
 
@@ -386,6 +387,18 @@ abstract class SelectorDelegate extends Delegate implements
 
     protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected, $isList=false)
     {
+        if (method_exists($this, 'createOverlayCreateUiContent')) {
+            $ba->push(
+                $this->html->eventButton(
+                        $this->eventName('beginCreate'),
+                        $this->_('Add')
+                    )
+                    ->setIcon('add')
+                    ->setDisposition('positive')
+                    ->shouldValidate(false)
+            );
+        }
+
         if ($isList) {
             $ba->push(
                 $this->html->eventButton(
@@ -616,6 +629,29 @@ abstract class SelectorDelegate extends Delegate implements
         );
     }
 
+    protected function createOverlayCreateUi(aura\html\widget\Field $fa)
+    {
+        $this->createInlineDetailsUi($fa);
+
+        $ol = $fa->addOverlay($fa->getLabelBody());
+        $this->createOverlayCreateUiContent($ol);
+
+        // Buttons
+        $ol->addButtonArea(
+            $this->html->eventButton(
+                    $this->eventName('create'),
+                    $this->_('Save')
+                )
+                ->setIcon('save')
+                ->shouldValidate(false),
+
+            $this->html->buttonGroup(
+                $this->html->resetEventButton($this->eventName('resetCreate')),
+                $this->html->cancelEventButton($this->eventName('cancelCreate'))
+            )
+        )->addClass('floated');
+    }
+
     protected function _renderOneSelected($fs, $selected)
     {
         if ($selected === null) {
@@ -769,6 +805,52 @@ abstract class SelectorDelegate extends Delegate implements
     protected function onEndSelectEvent()
     {
         $this->switchMode('select', 'details', function () {
+            $this->_state->removeStore('originalSelection');
+        });
+
+        return $this->http->redirect('#'.$this->elementId('selector'));
+    }
+
+    protected function onBeginCreateEvent()
+    {
+        $this->switchMode('details', 'create', function () {
+            $this->_state->setStore('originalSelection', $this->getSelected());
+        });
+    }
+
+    protected function onResetCreateEvent()
+    {
+    }
+
+    protected function onCancelCreateEvent()
+    {
+        $this->switchMode('create', 'details', function () {
+            if ($this->_state->hasStore('originalSelection')) {
+                $this->setSelected($this->_state->getStore('originalSelection'));
+            }
+        });
+
+        return $this->http->redirect('#'.$this->elementId('selector'));
+    }
+
+    protected function onCreateEvent()
+    {
+        $id = $this->saveNewRecord();
+
+        if ($this->values->isValid() && $id !== null) {
+            $this->addSelected($id);
+            $this->onResetCreateEvent();
+            return $this->onEndCreateEvent();
+        }
+    }
+
+    protected function saveNewRecord()
+    {
+    }
+
+    protected function onEndCreateEvent()
+    {
+        $this->switchMode('create', 'details', function () {
             $this->_state->removeStore('originalSelection');
         });
 
