@@ -264,6 +264,17 @@ class Tree implements ITree, core\IDumpable
         return $this->_element->textContent;
     }
 
+    public function getTextContentOf(string $name): ?string
+    {
+        $node = $this->getFirstChildOfType($name);
+
+        if (!$node) {
+            return null;
+        }
+
+        return $node->getTextContent();
+    }
+
     public function getComposedTextContent()
     {
         $isRoot = $this->_element === $this->_element->ownerDocument->documentElement;
@@ -312,6 +323,17 @@ class Tree implements ITree, core\IDumpable
         }
 
         return trim(str_replace(['  ', "\n "], [' ', "\n"], $output));
+    }
+
+    public function getComposedTextContentOf(string $name): ?string
+    {
+        $node = $this->getFirstChildOfType($name);
+
+        if (!$node) {
+            return null;
+        }
+
+        return $node->getComposedTextContent();
     }
 
 
@@ -411,10 +433,15 @@ class Tree implements ITree, core\IDumpable
 
     public function __get($name)
     {
-        return $this->_getChildren($name);
+        return iterator_to_array($this->_getChildren($name));
     }
 
     public function getChildren()
+    {
+        return iterator_to_array($this->_getChildren());
+    }
+
+    public function scanChildren(): \Generator
     {
         return $this->_getChildren();
     }
@@ -441,6 +468,11 @@ class Tree implements ITree, core\IDumpable
 
 
     public function getChildrenOfType($name)
+    {
+        return iterator_to_array($this->_getChildren($name));
+    }
+
+    public function scanChildrenOfType($name): \Generator
     {
         return $this->_getChildren($name);
     }
@@ -475,19 +507,15 @@ class Tree implements ITree, core\IDumpable
 
     protected function _getChildren($name=null)
     {
-        $output = [];
-
         foreach ($this->_element->childNodes as $node) {
             if ($node->nodeType == \XML_ELEMENT_NODE) {
                 if ($name !== null && $node->nodeName != $name) {
                     continue;
                 }
 
-                $output[] = new self($node);
+                yield new self($node);
             }
         }
-
-        return $output;
     }
 
     protected function _getFirstChild($name=null)

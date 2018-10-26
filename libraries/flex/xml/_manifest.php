@@ -10,46 +10,62 @@ use df\core;
 use df\flex;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class OutOfBoundsException extends \OutOfBoundsException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class OutOfBoundsException extends \OutOfBoundsException implements IException
+{
+}
 
 
 // Interfaces
-interface IInterchange {
+interface IInterchange
+{
     public function readXml(IReadable $reader);
     public function writeXml(IWritable $writer);
 }
 
-interface IReaderInterchange {
+interface IReaderInterchange
+{
     public static function fromXmlFile($xmlFile);
     public static function fromXmlString($xmlString);
     public static function fromXmlElement(ITree $element);
 }
 
-trait TReaderInterchange {
-
-    public static function fromXml($xml) {
-        if($xml instanceof ITree) {
+trait TReaderInterchange
+{
+    public static function fromXml($xml)
+    {
+        if ($xml instanceof ITree) {
             return static::fromXmlElement($xml);
         } else {
             return static::fromXmlString($xml);
         }
     }
 
-    public static function fromXmlFile($xmlFile) {
+    public static function fromXmlFile($xmlFile)
+    {
         $reader = Tree::fromXmlFile($xmlFile);
         return static::fromXmlElement($reader);
     }
 
-    public static function fromXmlString($xmlString) {
+    public static function fromXmlString($xmlString)
+    {
         $reader = Tree::fromXmlString($xmlString);
         return static::fromXmlElement($reader);
     }
 
-    public static function fromXmlElement(ITree $element) {
+    public static function fromXmlElement(ITree $element)
+    {
         $output = new self();
         $output->readXml($element);
 
@@ -58,16 +74,18 @@ trait TReaderInterchange {
 }
 
 
-interface IWriterInterchange {
+interface IWriterInterchange
+{
     public function toXmlString($embedded=false);
 }
 
-trait TWriterInterchange {
-
-    public function toXmlString($embedded=false) {
+trait TWriterInterchange
+{
+    public function toXmlString($embedded=false)
+    {
         $writer = Writer::factory($this);
 
-        if(!$embedded) {
+        if (!$embedded) {
             $writer->writeHeader();
             $this->_writeXmlDtd($writer);
         }
@@ -78,45 +96,51 @@ trait TWriterInterchange {
         return $writer->toXmlString();
     }
 
-    protected function _writeXmlDtd(IWritable $writer) {}
+    protected function _writeXmlDtd(IWritable $writer)
+    {
+    }
 }
 
-interface IRootInterchange extends IInterchange, IReaderInterchange, IWriterInterchange {
-
+interface IRootInterchange extends IInterchange, IReaderInterchange, IWriterInterchange
+{
 }
 
-interface IRootInterchangeProvider {
+interface IRootInterchangeProvider
+{
     public function setRootInterchange(IRootInterchange $root=null);
     public function getRootInterchange();
 }
 
-trait TRootInterchangeProvider {
-
+trait TRootInterchangeProvider
+{
     protected $_rootInterchange;
 
-    public function setRootInterchange(IRootInterchange $root=null) {
+    public function setRootInterchange(IRootInterchange $root=null)
+    {
         $this->_rootInterchange = $root;
         return $this;
     }
 
-    public function getRootInterchange() {
+    public function getRootInterchange()
+    {
         return $this->_rootInterchange;
     }
 }
 
 
-interface IReadable extends IReaderInterchange, IRootInterchangeProvider {
-
+interface IReadable extends IReaderInterchange, IRootInterchangeProvider
+{
 }
 
-interface IWritable extends IWriterInterchange, IRootInterchangeProvider {
-
+interface IWritable extends IWriterInterchange, IRootInterchangeProvider
+{
 }
 
 
 
 // Tree
-interface ITree extends IReadable, IWritable, core\collection\IAttributeContainer, \Countable, \ArrayAccess, core\IStringProvider {
+interface ITree extends IReadable, IWritable, core\collection\IAttributeContainer, \Countable, \ArrayAccess, core\IStringProvider
+{
     // Node info
     public function setTagName($name);
     public function getTagName();
@@ -132,7 +156,9 @@ interface ITree extends IReadable, IWritable, core\collection\IAttributeContaine
 
     public function setTextContent($content);
     public function getTextContent();
+    public function getTextContentOf(string $name): ?string;
     public function getComposedTextContent();
+    public function getComposedTextContentOf(string $name): ?string;
 
     public function setCDataContent($content);
     public function prependCDataContent($content);
@@ -147,12 +173,14 @@ interface ITree extends IReadable, IWritable, core\collection\IAttributeContaine
     public function __get($name);
 
     public function getChildren();
+    public function scanChildren(): \Generator;
     public function getFirstChild();
     public function getLastChild();
     public function getNthChild($index);
     public function getNthChildren($formula);
 
     public function getChildrenOfType($name);
+    public function scanChildrenOfType($name): \Generator;
     public function getFirstChildOfType($name);
     public function getLastChildOfType($name);
     public function getNthChildOfType($name, $index);
@@ -212,7 +240,8 @@ interface ITree extends IReadable, IWritable, core\collection\IAttributeContaine
 
 
 // Writer
-interface IWriter extends IWritable, core\collection\IAttributeContainer, core\IStringProvider {
+interface IWriter extends IWritable, core\collection\IAttributeContainer, core\IStringProvider
+{
     // Header
     public function writeHeader($version='1.0', $encoding='UTF-8', $isStandalone=false);
     public function writeDtd($name, $publicId=null, $systemId=null, $subset=null);
