@@ -15,28 +15,29 @@ use df\mesh;
 use df\flex;
 use df\user;
 
-
 // Record loader
-trait TScaffold_RecordLoader {
+trait TScaffold_RecordLoader
+{
 
     //const KEY_NAME = null;
     //const ITEM_NAME = null;
 
     protected $_recordAdapter;
 
-    public function getRecordAdapter() {
-        if($this->_recordAdapter) {
+    public function getRecordAdapter()
+    {
+        if ($this->_recordAdapter) {
             return $this->_recordAdapter;
         }
 
-        if(@static::ADAPTER) {
+        if (@static::ADAPTER) {
             $adapter = $this->data->fetchEntity(static::ADAPTER);
 
-            if($adapter instanceof axis\IUnit) {
+            if ($adapter instanceof axis\IUnit) {
                 $this->_recordAdapter = $adapter;
                 return $adapter;
             }
-        } else if($this->_recordAdapter = $this->generateRecordAdapter()) {
+        } elseif ($this->_recordAdapter = $this->generateRecordAdapter()) {
             return $this->_recordAdapter;
         }
 
@@ -45,26 +46,30 @@ trait TScaffold_RecordLoader {
         );
     }
 
-    protected function generateRecordAdapter() {}
+    protected function generateRecordAdapter()
+    {
+    }
 
-    public function getRecordKeyName() {
-        if(@static::KEY_NAME) {
+    public function getRecordKeyName()
+    {
+        if (@static::KEY_NAME) {
             return static::KEY_NAME;
         }
 
         $adapter = $this->getRecordAdapter();
 
-        if($adapter instanceof axis\ISchemaBasedStorageUnit) {
+        if ($adapter instanceof axis\ISchemaBasedStorageUnit) {
             return $adapter->getRecordKeyName();
-        } else if($adapter instanceof axis\IUnit) {
+        } elseif ($adapter instanceof axis\IUnit) {
             return lcfirst($adapter->getUnitName());
         } else {
             return 'record';
         }
     }
 
-    public function getRecordItemName() {
-        if(@static::ITEM_NAME) {
+    public function getRecordItemName()
+    {
+        if (@static::ITEM_NAME) {
             return static::ITEM_NAME;
         }
 
@@ -73,7 +78,8 @@ trait TScaffold_RecordLoader {
 }
 
 // Record provider
-trait TScaffold_RecordDataProvider {
+trait TScaffold_RecordDataProvider
+{
 
     //const ID_FIELD = 'id';
     //const NAME_FIELD = 'name';
@@ -85,50 +91,57 @@ trait TScaffold_RecordDataProvider {
     //const CAN_EDIT = true;
     //const CAN_DELETE = true;
 
+    //const CAN_SELECT = false;
+
     //const DETAILS_FIELDS = [];
 
     protected $_record;
 
     private $_recordNameKey;
 
-    public function newRecord(array $values=null) {
+    public function newRecord(array $values=null)
+    {
         return $this->data->newRecord($this->getRecordAdapter(), $values);
     }
 
-    public function getRecord() {
-        if($this->_record) {
+    public function getRecord()
+    {
+        if ($this->_record) {
             return $this->_record;
         }
 
         $key = $this->context->request->query[$this->getRecordUrlKey()];
         $this->_record = $this->loadRecord($key);
 
-        if(!$this->_record) {
+        if (!$this->_record) {
             throw core\Error::{'arch/scaffold/EValue,arch/scaffold/ENotFound'}('Unable to load scaffold record');
         }
 
         return $this->_record;
     }
 
-    public function getRecordId($record=null) {
-        if(!$record) {
+    public function getRecordId($record=null)
+    {
+        if (!$record) {
             $record = $this->getRecord();
         }
 
-        if($record instanceof opal\record\IPrimaryKeySetProvider) {
+        if ($record instanceof opal\record\IPrimaryKeySetProvider) {
             return (string)$record->getPrimaryKeySet();
         }
 
         return $this->idRecord($record);
     }
 
-    protected function idRecord($record) {
+    protected function idRecord($record)
+    {
         $idKey = $this->getRecordIdField();
         return @$record[$idKey];
     }
 
-    public function getRecordName($record=null) {
-        if(!$record) {
+    public function getRecordName($record=null)
+    {
+        if (!$record) {
             $record = $this->getRecord();
         }
 
@@ -139,19 +152,20 @@ trait TScaffold_RecordDataProvider {
         return $this->_normalizeFieldOutput($key, $output);
     }
 
-    protected function nameRecord($record) {
+    protected function nameRecord($record)
+    {
         $key = $this->getRecordNameField();
 
-        if(isset($record[$key])) {
+        if (isset($record[$key])) {
             $output = $record[$key];
 
-            if($key == $this->getRecordIdField() && is_numeric($output)) {
+            if ($key == $this->getRecordIdField() && is_numeric($output)) {
                 $output = '#'.$output;
             }
         } else {
-            if(is_array($record)) {
+            if (is_array($record)) {
                 $available = array_key_exists($key, $record);
-            } else if($record instanceof core\collection\IMappedCollection) {
+            } elseif ($record instanceof core\collection\IMappedCollection) {
                 $available = $record->has($key);
             } else {
                 $available = true;
@@ -159,8 +173,8 @@ trait TScaffold_RecordDataProvider {
 
             $id = $this->getRecordId($record);
 
-            if($available) {
-                switch($key) {
+            if ($available) {
+                switch ($key) {
                     case 'title':
                         $output = $this->html('em', $this->_('untitled %c%', ['%c%' => $this->getRecordItemName()]));
                         break;
@@ -173,7 +187,7 @@ trait TScaffold_RecordDataProvider {
                 $output = $this->html('em', $this->getRecordItemName());
             }
 
-            if(is_numeric($id)) {
+            if (is_numeric($id)) {
                 $output = [$output, $this->html('samp', '#'.$id)];
             }
         }
@@ -181,64 +195,72 @@ trait TScaffold_RecordDataProvider {
         return $output;
     }
 
-    public function getRecordDescription($record=null) {
-        if(!$record) {
+    public function getRecordDescription($record=null)
+    {
+        if (!$record) {
             $record = $this->getRecord();
         }
 
         return $this->describeRecord($record);
     }
 
-    protected function describeRecord($record) {
+    protected function describeRecord($record)
+    {
         return $this->getRecordName($record);
     }
 
-    public function getRecordUrl($record=null) {
-        if(!$record) {
+    public function getRecordUrl($record=null)
+    {
+        if (!$record) {
             $record = $this->getRecord();
         }
 
         return $this->_getRecordNodeRequest($record, static::DEFAULT_SECTION);
     }
 
-    public function getRecordIcon($record=null) {
-        if(!$record) {
+    public function getRecordIcon($record=null)
+    {
+        if (!$record) {
             try {
                 $record = $this->getRecord();
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 return $this->getDirectoryIcon();
             }
         }
 
-        if(method_exists($this, 'iconifyRecord')) {
+        if (method_exists($this, 'iconifyRecord')) {
             return $this->iconifyRecord($record);
         } else {
             return $this->getDirectoryIcon();
         }
     }
 
-    protected function loadRecord($key) {
+    protected function loadRecord($key)
+    {
         return $this->data->fetchForAction(
-            $this->getRecordAdapter(), $key
+            $this->getRecordAdapter(),
+            $key
         );
     }
 
-    public function getRecordIdField() {
-        if(@static::ID_FIELD) {
+    public function getRecordIdField()
+    {
+        if (@static::ID_FIELD) {
             return static::ID_FIELD;
         }
 
         return 'id';
     }
 
-    public function getRecordNameField() {
-        if($this->_recordNameKey === null) {
-            if(@static::NAME_FIELD) {
+    public function getRecordNameField()
+    {
+        if ($this->_recordNameKey === null) {
+            if (@static::NAME_FIELD) {
                 $this->_recordNameKey = static::NAME_FIELD;
             } else {
                 $adapter = $this->getRecordAdapter();
 
-                if($adapter instanceof axis\ISchemaBasedStorageUnit) {
+                if ($adapter instanceof axis\ISchemaBasedStorageUnit) {
                     $this->_recordNameKey = $adapter->getRecordNameField();
                 } else {
                     $this->_recordNameKey = 'name';
@@ -249,8 +271,9 @@ trait TScaffold_RecordDataProvider {
         return $this->_recordNameKey;
     }
 
-    public function getRecordUrlKey() {
-        if(@static::URL_KEY) {
+    public function getRecordUrlKey()
+    {
+        if (@static::URL_KEY) {
             return static::URL_KEY;
         }
 
@@ -258,26 +281,28 @@ trait TScaffold_RecordDataProvider {
     }
 
 
-    protected function _countRecordRelations(opal\record\IRecord $record, ...$fields) {
+    protected function _countRecordRelations(opal\record\IRecord $record, ...$fields)
+    {
         $fields = core\collection\Util::flatten($fields);
         $query = $this->getRecordAdapter()->select('@primary');
 
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             try {
                 $query->countRelation($field);
-            } catch(opal\query\InvalidArgumentException $e) {}
+            } catch (opal\query\InvalidArgumentException $e) {
+            }
         }
 
         $output = [];
         $data = $query->where('@primary', '=', $record->getPrimaryKeySet())
             ->toRow();
 
-        foreach($fields as $key => $field) {
-            if(!isset($data[$field])) {
+        foreach ($fields as $key => $field) {
+            if (!isset($data[$field])) {
                 continue;
             }
 
-            if(!is_string($key)) {
+            if (!is_string($key)) {
                 $key = $field;
             }
 
@@ -288,38 +313,45 @@ trait TScaffold_RecordDataProvider {
     }
 
 
-    public function decorateRecordLink($link, $component) {
+    public function decorateRecordLink($link, $component)
+    {
         return $link;
     }
 
 
-    public function canAddRecord() {
+    public function canAddRecord()
+    {
         return static::CAN_ADD;
     }
 
-    public function canEditRecord($record=null) {
+    public function canEditRecord($record=null)
+    {
         return static::CAN_EDIT;
     }
 
-    public function canDeleteRecord($record=null) {
+    public function canDeleteRecord($record=null)
+    {
         return static::CAN_DELETE;
     }
 
 
-    protected function _getRecordNodeRequest($record, $node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]) {
+    protected function _getRecordNodeRequest($record, $node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[])
+    {
         return $this->_getNodeRequest($node, [
             $this->getRecordUrlKey() => $this->getRecordId($record)
         ], $redirFrom, $redirTo, $propagationFilter);
     }
 
 
-    public function getRecordBackLinkRequest() {
+    public function getRecordBackLinkRequest()
+    {
         return $this->uri->directoryRequest($this->getParentSectionRequest());
     }
 
 
-    public function buildDeleteDynamicNode() {
-        if(!$this->canDeleteRecord()) {
+    public function buildDeleteDynamicNode()
+    {
+        if (!$this->canDeleteRecord()) {
             throw core\Error::{'arch/scaffold/ELogic,EUnauthorized'}(
                 'Records cannot be deleted'
             );
@@ -328,29 +360,38 @@ trait TScaffold_RecordDataProvider {
         return new arch\scaffold\node\DeleteForm($this);
     }
 
-    public function getRecordDeleteFlags() {
+    public function buildDeleteSelectedDynamicNode()
+    {
+        return new arch\scaffold\node\DeleteSelectedForm($this);
+    }
+
+    public function getRecordDeleteFlags()
+    {
         return [];
     }
 
-    public function deleteRecord(opal\record\IRecord $record, array $flags=[]) {
+    public function deleteRecord(opal\record\IRecord $record, array $flags=[])
+    {
         $record->delete();
         return $this;
     }
 
-    public function buildLinkComponent(array $args) {
+    public function buildLinkComponent(array $args)
+    {
         return new arch\scaffold\component\RecordLink($this, $args);
     }
 
-    public function buildDetailsComponent(array $args) {
+    public function buildDetailsComponent(array $args)
+    {
         $fields = array_shift($args);
 
-        if(!is_array($fields)) {
+        if (!is_array($fields)) {
             $fields = [];
         }
 
-        if(defined('static::DETAILS_FIELDS') && is_array(static::DETAILS_FIELDS)) {
+        if (defined('static::DETAILS_FIELDS') && is_array(static::DETAILS_FIELDS)) {
             $fields = array_merge(static::DETAILS_FIELDS, $fields);
-        } else if(defined('static::LIST_FIELDS') && is_array(static::LIST_FIELDS)) {
+        } elseif (defined('static::LIST_FIELDS') && is_array(static::LIST_FIELDS)) {
             $fields = array_merge(static::LIST_FIELDS, $fields);
         }
 
@@ -360,11 +401,12 @@ trait TScaffold_RecordDataProvider {
     }
 
 
-    public function getRecordOperativeLinks($record, $mode) {
+    public function getRecordOperativeLinks($record, $mode)
+    {
         $output = [];
 
         // Edit
-        if($this->canEditRecord($record)) {
+        if ($this->canEditRecord($record)) {
             $output[] = $this->html->link(
                     $this->_getRecordNodeRequest($record, 'edit', null, true),
                     $this->_('Edit '.$this->getRecordItemName())
@@ -373,12 +415,12 @@ trait TScaffold_RecordDataProvider {
         }
 
         // Delete
-        if($this->canDeleteRecord($record)) {
+        if ($this->canDeleteRecord($record)) {
             static $back;
             $redirTo = null;
 
-            if($mode !== 'list') {
-                if(!isset($back)) {
+            if ($mode !== 'list') {
+                if (!isset($back)) {
                     $back = isset($this->request[$this->getRecordUrlKey()]) ?
                         $this->getRecordBackLinkRequest() : null;
                 }
@@ -388,7 +430,11 @@ trait TScaffold_RecordDataProvider {
 
             $output[] = $this->html->link(
                     $this->_getRecordNodeRequest(
-                        $record, 'delete', null, true, $redirTo
+                        $record,
+                        'delete',
+                        null,
+                        true,
+                        $redirTo
                     ),
                     $this->_('Delete '.$this->getRecordItemName())
                 )
@@ -398,13 +444,14 @@ trait TScaffold_RecordDataProvider {
         return $output;
     }
 
-    protected function _autoDefineNameKeyField($fieldName, $list, $mode, $label=null) {
-        if($label === null) {
+    protected function _autoDefineNameKeyField($fieldName, $list, $mode, $label=null)
+    {
+        if ($label === null) {
             $label = $this->format->name($fieldName);
         }
 
-        $list->addField($fieldName, $label, function($item) use($mode, $fieldName) {
-            if($mode == 'list') {
+        $list->addField($fieldName, $label, function ($item) use ($mode, $fieldName) {
+            if ($mode == 'list') {
                 return $this->apex->component(
                         ucfirst($this->getRecordKeyName().'Link'),
                         $item
@@ -415,7 +462,7 @@ trait TScaffold_RecordDataProvider {
 
             $output = $this->getRecordName($item);
 
-            if($fieldName == 'slug') {
+            if ($fieldName == 'slug') {
                 $output = $this->html('samp', $output);
             }
 
@@ -423,25 +470,28 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineSlugField($list, $mode) {
-        $list->addField('slug', function($item) {
+    public function defineSlugField($list, $mode)
+    {
+        $list->addField('slug', function ($item) {
             return $this->html('samp', $item['slug']);
         });
     }
 
-    public function defineWeightField($list, $mode) {
+    public function defineWeightField($list, $mode)
+    {
         $list->addField('weight', $mode == 'list' ? '#' : $this->_('Order number'));
     }
 
-    public function defineUrlField($list, $mode) {
-        $list->addField('url', function($item) use($mode) {
+    public function defineUrlField($list, $mode)
+    {
+        $list->addField('url', function ($item) use ($mode) {
             $url = $item['url'];
 
-            if($url === null) {
+            if ($url === null) {
                 return $url;
             }
 
-            if($mode == 'list') {
+            if ($mode == 'list') {
                 $url = $this->uri->__invoke($url);
                 $name = $url->getDomain();
             } else {
@@ -454,15 +504,16 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineWebsiteField($list, $mode) {
-        $list->addField('website', function($item) use($mode) {
+    public function defineWebsiteField($list, $mode)
+    {
+        $list->addField('website', function ($item) use ($mode) {
             $url = $item['website'];
 
-            if($url === null) {
+            if ($url === null) {
                 return $url;
             }
 
-            if($mode == 'list') {
+            if ($mode == 'list') {
                 $url = $this->uri->__invoke($url);
                 $name = $url->getDomain();
             } else {
@@ -475,27 +526,31 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineUserField($list, $mode) {
-        $list->addField('user', function($item) {
+    public function defineUserField($list, $mode)
+    {
+        $list->addField('user', function ($item) {
             return $this->apex->component('~admin/users/clients/UserLink', $item['user']);
         });
     }
 
-    public function defineOwnerField($list, $mode) {
-        $list->addField('owner', function($item) {
+    public function defineOwnerField($list, $mode)
+    {
+        $list->addField('owner', function ($item) {
             return $this->apex->component('~admin/users/clients/UserLink', $item['owner']);
         });
     }
 
-    public function defineEmailField($list, $mode) {
-        $list->addField('email', function($item) {
+    public function defineEmailField($list, $mode)
+    {
+        $list->addField('email', function ($item) {
             return $this->html->mailLink($item['email']);
         });
     }
 
-    public function defineCreationDateField($list, $mode) {
-        $list->addField('creationDate', $this->_('Created'), function($item) use($mode) {
-            if($mode == 'list') {
+    public function defineCreationDateField($list, $mode)
+    {
+        $list->addField('creationDate', $this->_('Created'), function ($item) use ($mode) {
+            if ($mode == 'list') {
                 return $this->html->timeSince($item['creationDate']);
             } else {
                 return $this->html->timeFromNow($item['creationDate']);
@@ -503,9 +558,10 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineLastEditDateField($list, $mode) {
-        $list->addField('lastEditDate', $this->_('Edited'), function($item) use($mode) {
-            if($mode == 'list') {
+    public function defineLastEditDateField($list, $mode)
+    {
+        $list->addField('lastEditDate', $this->_('Edited'), function ($item) use ($mode) {
+            if ($mode == 'list') {
                 return $this->html->timeSince($item['lastEditDate']);
             } else {
                 return $this->html->timeFromNow($item['lastEditDate']);
@@ -513,9 +569,10 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineIsLiveField($list, $mode) {
-        $list->addField('isLive', $this->_('Live'), function($item, $context) {
-            if(!$item['isLive']) {
+    public function defineIsLiveField($list, $mode)
+    {
+        $list->addField('isLive', $this->_('Live'), function ($item, $context) {
+            if (!$item['isLive']) {
                 $context->getRowTag()->addClass('disabled');
             }
 
@@ -523,30 +580,32 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function definePriorityField($list, $mode) {
-        $list->addField('priority', function($item) {
+    public function definePriorityField($list, $mode)
+    {
+        $list->addField('priority', function ($item) {
             $priority = core\unit\Priority::factory($item['priority']);
             return $this->html->icon('priority-'.$priority->getOption(), $priority->getLabel())
                 ->addClass('priority-'.$priority->getOption());
         });
     }
 
-    public function defineArchiveDateField($list, $mode) {
-        $list->addField('archiveDate', $this->_('Archive'), function($item, $context) use($mode) {
+    public function defineArchiveDateField($list, $mode)
+    {
+        $list->addField('archiveDate', $this->_('Archive'), function ($item, $context) use ($mode) {
             $date = $item['archiveDate'];
             $hasDate = (bool)$date;
             $isPast = $hasDate && $date->isPast();
 
-            if($isPast && $mode == 'list') {
+            if ($isPast && $mode == 'list') {
                 $context->getRowTag()->addClass('inactive');
             }
 
             $output = $this->html->date($date);
 
-            if($output) {
-                if($isPast) {
+            if ($output) {
+                if ($isPast) {
                     $output->addClass('negative');
-                } else if($date->lt('+1 month')) {
+                } elseif ($date->lt('+1 month')) {
                     $output->addClass('warning');
                 } else {
                     $output->addClass('positive');
@@ -557,11 +616,12 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineColorField($list, $mode) {
-        $list->addField('color', function($item, $context) {
+    public function defineColorField($list, $mode)
+    {
+        $list->addField('color', function ($item, $context) {
             try {
                 $color = df\neon\Color::factory($item['color']);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 return $item['color'];
             }
 
@@ -572,9 +632,10 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineEnvironmentModeField($list, $mode) {
-        $list->addField('environmentMode', $mode == 'list' ? $this->_('Env.') : null, function($mail) use($mode) {
-            switch($mail['environmentMode']) {
+    public function defineEnvironmentModeField($list, $mode)
+    {
+        $list->addField('environmentMode', $mode == 'list' ? $this->_('Env.') : null, function ($mail) use ($mode) {
+            switch ($mail['environmentMode']) {
                 case 'development':
                     return $this->html('span.priority-low.inactive', $mode == 'list' ? $this->_('Dev') : $this->_('Development'));
                 case 'testing':
@@ -585,14 +646,15 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineAddressField($list, $mode) {
-        if($mode == 'list') {
-            $list->addField('address', function($item) {
-                if(!$addr = $item['address']) {
+    public function defineAddressField($list, $mode)
+    {
+        if ($mode == 'list') {
+            $list->addField('address', function ($item) {
+                if (!$addr = $item['address']) {
                     return;
                 }
 
-                if(!$addr instanceof user\IPostalAddress) {
+                if (!$addr instanceof user\IPostalAddress) {
                     return $addr;
                 }
 
@@ -603,14 +665,15 @@ trait TScaffold_RecordDataProvider {
                     );
             });
         } else {
-            $list->addField('address', function($item) {
+            $list->addField('address', function ($item) {
                 return $this->html->address($item['address']);
             });
         }
     }
 
-    public function defineActionsField($list, $mode) {
-        $list->addField('actions', function($item) {
+    public function defineActionsField($list, $mode)
+    {
+        $list->addField('actions', function ($item) {
             return $this->getRecordOperativeLinks($item, 'list');
         });
     }
@@ -618,35 +681,42 @@ trait TScaffold_RecordDataProvider {
 
 
 // Record list provider
-trait TScaffold_RecordListProvider {
+trait TScaffold_RecordListProvider
+{
 
     // const LIST_FIELDS = [];
     // const SEARCH_FIELDS = [];
 
-    public function queryRecordList($mode, array $fields=null) {
+    public function queryRecordList($mode, array $fields=null)
+    {
         $output = $this->getRecordAdapter()->select($fields);
 
         //if($fields === null) {
-            $this->prepareRecordList($output, $mode);
+        $this->prepareRecordList($output, $mode);
         //}
 
         return $output;
     }
 
-    public function extendRecordList(opal\query\ISelectQuery $query, $mode) {
+    public function extendRecordList(opal\query\ISelectQuery $query, $mode)
+    {
         $this->prepareRecordList($query, $mode);
         return $query;
     }
 
-    protected function prepareRecordList($query, $mode) {}
+    protected function prepareRecordList($query, $mode)
+    {
+    }
 
-    public function applyRecordListSearch(opal\query\ISelectQuery $query, $search) {
+    public function applyRecordListSearch(opal\query\ISelectQuery $query, $search)
+    {
         $this->searchRecordList($query, $search);
         return $query;
     }
 
-    protected function searchRecordList($query, $search) {
-        if(defined('static::SEARCH_FIELDS')
+    protected function searchRecordList($query, $search)
+    {
+        if (defined('static::SEARCH_FIELDS')
         && is_array(static::SEARCH_FIELDS)
         && !empty(static::SEARCH_FIELDS)) {
             $fields = static::SEARCH_FIELDS;
@@ -658,27 +728,28 @@ trait TScaffold_RecordListProvider {
     }
 
 
-    public function buildListComponent(array $args) {
+    public function buildListComponent(array $args)
+    {
         $fields = array_shift($args);
 
-        if(!is_array($fields)) {
+        if (!is_array($fields)) {
             $fields = [];
         }
 
-        if(defined('static::LIST_FIELDS') && is_array(static::LIST_FIELDS)) {
+        if (defined('static::LIST_FIELDS') && is_array(static::LIST_FIELDS)) {
             $fields = array_merge(static::LIST_FIELDS, $fields);
         }
 
         $hasActions = false;
 
-        foreach($fields as $key => $val) {
-            if($key === 'actions' || $val === 'actions') {
+        foreach ($fields as $key => $val) {
+            if ($key === 'actions' || $val === 'actions') {
                 $hasActions = true;
                 break;
             }
         }
 
-        if(!$hasActions) {
+        if (!$hasActions) {
             $fields['actions'] = true;
         }
 
@@ -686,23 +757,25 @@ trait TScaffold_RecordListProvider {
         return $this->generateCollectionList($fields, $collection);
     }
 
-    public function generateSearchBarComponent() {
+    public function generateSearchBarComponent()
+    {
         $search = $this->request->getQueryTerm('search');
         $request = clone $this->context->request;
         $resetRequest = clone $request;
         $filter = ['search', 'lm', 'pg', 'of', 'od'];
 
-        foreach($filter as $key) {
+        foreach ($filter as $key) {
             $resetRequest->query->remove($key);
         }
 
         return $this->html->form($request)->setMethod('get')->push(
-            $this->html->fieldSet($this->_('Search'))->push(
+            $this->html->fieldSet($this->_('Search'))->addClass('scaffold search')->push(
                 $this->_buildQueryPropagationInputs($filter),
 
                 $this->html->searchTextbox('search', $search),
                 $this->html->submitButton(null, $this->_('Go'))
                     ->setIcon('search')
+                    ->addClass('slim')
                     ->setDisposition('positive'),
 
                 $this->html->link(
@@ -714,7 +787,19 @@ trait TScaffold_RecordListProvider {
         );
     }
 
-    public function buildSelectorFormDelegate($state, $event, $id) {
+    public function generateSelectBarComponent()
+    {
+        return $this->html->fieldSet($this->_('With selected...'))->push(function () {
+            yield $this->html->link(
+                    $this->uri('./delete-selected', true),
+                    $this->_('Delete')
+                )
+                ->setIcon('delete');
+        })->addClass('scaffold with-selected');
+    }
+
+    public function buildSelectorFormDelegate($state, $event, $id)
+    {
         return new arch\scaffold\node\form\SelectorDelegate($this, $state, $event, $id);
     }
 }
@@ -724,42 +809,44 @@ trait TScaffold_RecordListProvider {
 
 
 
-trait TScaffold_SectionProvider {
+trait TScaffold_SectionProvider
+{
 
     // const SECTIONS = [];
 
     private $_sections = null;
     private $_sectionItemCounts = null;
 
-    protected function _getSections() {
-        if($this->_sections === null) {
-            if(defined('static::SECTIONS') && !empty(static::SECTIONS)) {
+    protected function _getSections()
+    {
+        if ($this->_sections === null) {
+            if (defined('static::SECTIONS') && !empty(static::SECTIONS)) {
                 $definition = static::SECTIONS;
             } else {
                 $definition = $this->generateSections();
             }
 
-            if(!is_array($definition) || empty($definition)) {
+            if (!is_array($definition) || empty($definition)) {
                 $definition = ['details'];
             }
 
             $sections = [];
 
-            foreach($definition as $key => $value) {
-                if(is_int($key) && is_string($value)) {
+            foreach ($definition as $key => $value) {
+                if (is_int($key) && is_string($value)) {
                     $key = $value;
                     $value = null;
                 }
 
-                if(!is_array($value)) {
+                if (!is_array($value)) {
                     $value = ['icon' => $value];
                 }
 
-                if(!isset($value['icon'])) {
+                if (!isset($value['icon'])) {
                     $value['icon'] = $key;
                 }
 
-                if(!isset($value['name'])) {
+                if (!isset($value['name'])) {
                     $value['name'] = $this->format->name($key);
                 } else {
                     $value['name'] = $this->_($value['name']);
@@ -774,26 +861,28 @@ trait TScaffold_SectionProvider {
         return $this->_sections;
     }
 
-    protected function generateSections() {
+    protected function generateSections()
+    {
         return ['details'];
     }
 
-    public function loadSectionNode() {
+    public function loadSectionNode()
+    {
         $node = $this->context->request->getNode();
         $sections = $this->_getSections();
 
-        if(isset($sections[$node])) {
-            return $this->_generateNode(function() use($node) {
+        if (isset($sections[$node])) {
+            return $this->_generateNode(function () use ($node) {
                 $record = null;
 
-                if($this instanceof IRecordDataProviderScaffold) {
+                if ($this instanceof IRecordDataProviderScaffold) {
                     $record = $this->getRecord();
                 }
 
                 $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
                 $method = 'render'.ucfirst($node).'SectionBody';
 
-                if(method_exists($this, $method)) {
+                if (method_exists($this, $method)) {
                     $body = $this->{$method}($record);
                 } else {
                     $body = null;
@@ -812,18 +901,20 @@ trait TScaffold_SectionProvider {
         }
     }
 
-    protected function updateSectionBreadcrumbs($breadcrumbs, $record, $node) {
+    protected function updateSectionBreadcrumbs($breadcrumbs, $record, $node)
+    {
         $breadcrumbs->getEntryByIndex(-2)->setUri($this->uri->directoryRequest($this->getParentSectionRequest()));
     }
 
-    public function buildSection($name, $builder, $linkBuilder=null) {
+    public function buildSection($name, $builder, $linkBuilder=null)
+    {
         //$this->view = $this->apex->newWidgetView();
         $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
 
         $args = [];
         $record = null;
 
-        if($this instanceof IRecordDataProviderScaffold) {
+        if ($this instanceof IRecordDataProviderScaffold) {
             $args[] = $record = $this->getRecord();
         }
 
@@ -832,7 +923,7 @@ trait TScaffold_SectionProvider {
 
         $hb = $this->apex->component('SectionHeaderBar', $record);
 
-        if($hb instanceof arch\scaffold\component\HeaderBar) {
+        if ($hb instanceof arch\scaffold\component\HeaderBar) {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
@@ -842,7 +933,8 @@ trait TScaffold_SectionProvider {
         return $this->view;
     }
 
-    public function buildSectionHeaderBarComponent(array $args) {
+    public function buildSectionHeaderBarComponent(array $args)
+    {
         return (new arch\scaffold\component\HeaderBar($this, 'section', $args))
             ->setTitle(
                 $this instanceof IRecordDataProviderScaffold ?
@@ -856,58 +948,65 @@ trait TScaffold_SectionProvider {
             ->setBackLinkRequest($this->getParentSectionRequest());
     }
 
-    protected function getParentSectionRequest() {
+    protected function getParentSectionRequest()
+    {
         return $this->_getNodeRequest('index');
     }
 
-    public function addSectionOperativeLinks($menu, $bar) {
-        if($this instanceof IRecordDataProviderScaffold) {
+    public function addSectionOperativeLinks($menu, $bar)
+    {
+        if ($this instanceof IRecordDataProviderScaffold) {
             $menu->addLinks($this->getRecordOperativeLinks($this->getRecord(), 'sectionHeaderBar'));
         }
     }
 
-    public function addSectionSubOperativeLinks($menu, $bar) {
+    public function addSectionSubOperativeLinks($menu, $bar)
+    {
         $node = $this->context->request->getNode();
         $method = 'add'.ucfirst($node).'SectionSubOperativeLinks';
 
-        if(method_exists($this, $method)) {
+        if (method_exists($this, $method)) {
             $this->{$method}($menu, $bar);
         }
     }
 
-    public function addSectionSectionLinks($menu, $bar) {
+    public function addSectionSectionLinks($menu, $bar)
+    {
         $menu->addLinks($this->location->getPath()->getDirname().'Sections');
 
-        if(count($menu->getEntries()) == 1) {
+        if (count($menu->getEntries()) == 1) {
             $menu->clearEntries();
         }
     }
 
-    public function addSectionTransitiveLinks($menu, $bar) {
+    public function addSectionTransitiveLinks($menu, $bar)
+    {
         $node = $this->context->request->getNode();
         $method = 'add'.ucfirst($node).'SectionTransitiveLinks';
 
-        if(method_exists($this, $method)) {
+        if (method_exists($this, $method)) {
             $this->{$method}($menu, $bar);
         }
     }
 
-    public function generateSectionsMenu($entryList) {
+    public function generateSectionsMenu($entryList)
+    {
         $counts = $this->getSectionItemCounts();
         $sections = $this->_getSections();
         $i = 0;
         $record = null;
 
-        if($this instanceof IRecordDataProviderScaffold) {
+        if ($this instanceof IRecordDataProviderScaffold) {
             try {
                 $record = $this->getRecord();
-            } catch(\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
         }
 
-        foreach($sections as $node => $set) {
+        foreach ($sections as $node => $set) {
             $i++;
 
-            if($record) {
+            if ($record) {
                 $request = $this->_getRecordNodeRequest($record, $node);
             } else {
                 $request = $this->_getNodeRequest($node);
@@ -919,7 +1018,7 @@ trait TScaffold_SectionProvider {
                 ->setWeight($node == 'details' ? 1 : $i * 10)
                 ->setDisposition('informative');
 
-            if(isset($counts[$node])) {
+            if (isset($counts[$node])) {
                 $link->setNote($this->format->counterNote($counts[$node]));
             }
 
@@ -927,12 +1026,13 @@ trait TScaffold_SectionProvider {
         }
     }
 
-    public function getSectionItemCounts() {
-        if($this->_sectionItemCounts === null) {
+    public function getSectionItemCounts()
+    {
+        if ($this->_sectionItemCounts === null) {
             try {
                 $this->_sectionItemCounts = (array)$this->countSectionItems($this->getRecord());
-            } catch(\Throwable $e) {
-                if($this->app->isDevelopment()) {
+            } catch (\Throwable $e) {
+                if ($this->app->isDevelopment()) {
                     throw $e;
                 }
 
@@ -943,7 +1043,8 @@ trait TScaffold_SectionProvider {
         return $this->_sectionItemCounts;
     }
 
-    protected function countSectionItems($record) {
+    protected function countSectionItems($record)
+    {
         $sections = $this->_getSections();
         unset($sections['details']);
         return $this->_countRecordRelations($record, array_keys($sections));
@@ -955,26 +1056,29 @@ trait TScaffold_SectionProvider {
 
 
 // Index header bar provider
-trait TScaffold_IndexHeaderBarProvider {
-
-    public function buildIndexHeaderBarComponent(array $args=null) {
+trait TScaffold_IndexHeaderBarProvider
+{
+    public function buildIndexHeaderBarComponent(array $args=null)
+    {
         return (new arch\scaffold\component\HeaderBar($this, 'index', $args))
             ->setTitle($this->getDirectoryTitle())
             ->setBackLinkRequest($this->getIndexBackLinkRequest());
     }
 
-    protected function getIndexBackLinkRequest() {
+    protected function getIndexBackLinkRequest()
+    {
         return $this->uri->backRequest();
     }
 
-    public function buildIndexSection($name, $builder, $linkBuilder=null) {
+    public function buildIndexSection($name, $builder, $linkBuilder=null)
+    {
         //$this->view = $this->apex->newWidgetView();
         $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
 
         $args = [$this->view, $this];
         $hb = $this->apex->component('IndexHeaderBar');
 
-        if($hb instanceof arch\scaffold\component\HeaderBar) {
+        if ($hb instanceof arch\scaffold\component\HeaderBar) {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
@@ -985,10 +1089,11 @@ trait TScaffold_IndexHeaderBarProvider {
     }
 }
 
-trait TScaffold_RecordIndexHeaderBarProvider {
-
-    public function addIndexOperativeLinks($menu, $bar) {
-        if($this->canAddRecord()) {
+trait TScaffold_RecordIndexHeaderBarProvider
+{
+    public function addIndexOperativeLinks($menu, $bar)
+    {
+        if ($this->canAddRecord()) {
             $recordAdapter = $this->getRecordAdapter();
 
             $menu->addLinks(
@@ -997,7 +1102,7 @@ trait TScaffold_RecordIndexHeaderBarProvider {
                         $this->_('Add '.$this->getRecordItemName())
                     )
                     ->setIcon('add')
-                    ->chainIf($recordAdapter instanceof axis\IUnit, function($link) use($recordAdapter) {
+                    ->chainIf($recordAdapter instanceof axis\IUnit, function ($link) use ($recordAdapter) {
                         $link->addAccessLock($recordAdapter->getEntityLocator()->toString().'#add');
                     })
             );

@@ -16,8 +16,8 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     IRecordDataProviderScaffold,
     IRecordListProviderScaffold,
     ISectionProviderScaffold,
-    core\IDumpable {
-
+    core\IDumpable
+{
     use TScaffold_RecordLoader;
     use TScaffold_RecordDataProvider;
     use TScaffold_RecordListProvider;
@@ -42,14 +42,17 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const CAN_DELETE = true;
 
     const CAN_SEARCH = true;
+    const CAN_SELECT = false;
 
 
-// Nodes
-    public function indexHtmlNode() {
+    // Nodes
+    public function indexHtmlNode()
+    {
         return $this->buildListNode();
     }
 
-    public function buildNode($content) {
+    public function buildNode($content)
+    {
         $this->view = $this->apex->newWidgetView();
 
         $this->view->content->push(
@@ -60,8 +63,9 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         return $this->view;
     }
 
-    public function buildListNode(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
-        if($queryMode === null) {
+    public function buildListNode(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null)
+    {
+        if ($queryMode === null) {
             $queryMode = $this->request->getNode();
         }
 
@@ -70,7 +74,8 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         );
     }
 
-    public function renderDetailsSectionBody($record) {
+    public function renderDetailsSectionBody($record)
+    {
         $keyName = $this->getRecordKeyName();
 
         return $this->apex->component(ucfirst($keyName).'Details')
@@ -78,22 +83,23 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     }
 
 
-// Components
-    public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
-        if($queryMode === null) {
+    // Components
+    public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null)
+    {
+        if ($queryMode === null) {
             $queryMode = $this->request->getNode();
         }
 
-        if($query) {
+        if ($query) {
             $this->prepareRecordList($query, $queryMode);
         } else {
             $query = $this->queryRecordList($queryMode);
         }
 
-        if(static::CAN_SEARCH) {
+        if (static::CAN_SEARCH) {
             $search = $this->request->getQueryTerm('search');
 
-            if(strlen($search)) {
+            if (strlen($search)) {
                 $this->searchRecordList($query, $search);
             }
         }
@@ -101,43 +107,58 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         $query->paginateWith($this->request->query);
 
         $keyName = $this->getRecordKeyName();
+        $searchBar = $selectBar = null;
 
-        if(static::CAN_SEARCH) {
+        if (static::CAN_SEARCH) {
             $searchBar = $this->apex->component('SearchBar');
-        } else {
-            $searchBar = null;
         }
 
         $list = $this->apex->component(ucfirst($keyName).'List', $fields)
             ->setCollection($query)
             ->setSlot('scaffold', $this);
 
-        if($callback) {
+        if ($callback) {
             core\lang\Callback::call($callback, $list, $searchBar);
         }
 
-        if($query->hasSearch()) {
-            $list->addCustomField('relevance', function($list) {
-                $list->addFieldAtIndex(0, 'relevance', function($record) {
+        if ($query->hasSearch()) {
+            $list->addCustomField('relevance', function ($list) {
+                $list->addFieldAtIndex(0, 'relevance', function ($record) {
                     return $this->html->progressBar($record['relevance'] * 100);
+                });
+            });
+        }
+
+        if (static::CAN_SELECT) {
+            $selectBar = $this->apex->component('SelectBar');
+
+            $list->addCustomField('select', function ($list) {
+                $list->addFieldAtIndex(0, 'select', '✓', function ($record) {
+                    return $this->html->checkbox('select[]', null, null, $record['id'])
+                        ->addClass('selection');
                 });
             });
         }
 
         return [
             'searchBar' => $searchBar,
+            'selectBar' => $selectBar,
             'collectionList' => $list
         ];
     }
 
-// Helpers
-    public function getDirectoryKeyName() {
+
+
+    // Helpers
+    public function getDirectoryKeyName()
+    {
         return $this->getRecordKeyName();
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         return [
             'context' => $this->context,
             'adapter' => $this->_recordAdapter,
