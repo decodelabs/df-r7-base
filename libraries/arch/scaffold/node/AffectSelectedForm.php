@@ -46,4 +46,10 @@ abstract class AffectSelectedForm extends arch\node\Form
     protected function renderUi($fs)
     {
     }
+
+    protected function fetchSelectedRecords()
+    {
+        return $this->_scaffold->getRecordAdapter()->fetch()
+            ->where('id', 'in', $this->_ids);
+    }
 }

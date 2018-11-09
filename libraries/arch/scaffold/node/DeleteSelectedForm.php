@@ -21,7 +21,7 @@ class DeleteSelectedForm extends AffectSelectedForm
         $this->_scaffold = $scaffold;
         parent::__construct($scaffold->getContext());
     }
-    
+
     protected function renderUi($fs)
     {
         $fs->push($this->html('p', $this->getMainMessage()));
@@ -96,10 +96,7 @@ class DeleteSelectedForm extends AffectSelectedForm
 
     protected function apply()
     {
-        $items = $this->_scaffold->getRecordAdapter()->fetch()
-            ->where('id', 'in', $this->_ids);
-
-        foreach ($items as $item) {
+        foreach ($this->fetchSelectedRecords() as $item) {
             if ($this->_scaffold->canDeleteRecord($item)) {
                 $item->delete();
             }
