@@ -16,6 +16,12 @@ class DeleteSelectedForm extends AffectSelectedForm
 
     const DEFAULT_EVENT = 'delete';
 
+    public function __construct(arch\scaffold\IScaffold $scaffold)
+    {
+        $this->_scaffold = $scaffold;
+        parent::__construct($scaffold->getContext());
+    }
+    
     protected function renderUi($fs)
     {
         $fs->push($this->html('p', $this->getMainMessage()));

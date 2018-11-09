@@ -15,12 +15,6 @@ abstract class AffectSelectedForm extends arch\node\Form
     protected $_scaffold;
     protected $_ids = [];
 
-    public function __construct(arch\scaffold\IScaffold $scaffold)
-    {
-        $this->_scaffold = $scaffold;
-        parent::__construct($scaffold->getContext());
-    }
-
     protected function init()
     {
         if (isset($this->request['selected'])) {
