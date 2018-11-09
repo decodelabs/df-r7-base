@@ -790,12 +790,21 @@ trait TScaffold_RecordListProvider
     public function generateSelectBarComponent()
     {
         return $this->html->fieldSet($this->_('With selected...'))->push(function () {
-            yield $this->html->link(
+            $menu = $this->html->menuBar();
+            $this->addSelectBarLinks($menu);
+            return $menu;
+        })->addClass('scaffold with-selected');
+    }
+
+    public function addSelectBarLinks($menu)
+    {
+        $menu->addLinks(
+            $this->html->link(
                     $this->uri('./delete-selected', true),
                     $this->_('Delete')
                 )
-                ->setIcon('delete');
-        })->addClass('scaffold with-selected');
+                ->setIcon('delete')
+        );
     }
 
     public function buildSelectorFormDelegate($state, $event, $id)
