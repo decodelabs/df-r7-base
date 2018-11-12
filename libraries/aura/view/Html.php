@@ -670,26 +670,28 @@ class Html extends Base implements IHtmlView, core\IDumpable
 
 
     // Scripts
-    public function addScript($id, $script, $condition=null)
+    public function addScript($id, $script, $condition=null, $noScript=null)
     {
-        return $this->addHeadScript($id, $script, $condition);
+        return $this->addHeadScript($id, $script, $condition, $noScript);
     }
 
-    public function addHeadScript($id, $script, $condition=null)
+    public function addHeadScript($id, $script, $condition=null, $noScript=null)
     {
         $this->_headScripts[$id] = [
             'script' => $script,
-            'condition' => $condition
+            'condition' => $condition,
+            'noScript' => $noScript
         ];
 
         return $this;
     }
 
-    public function addFootScript($id, $script, $condition=null)
+    public function addFootScript($id, $script, $condition=null, $noScript=null)
     {
         $this->_footScripts[$id] = [
             'script' => $script,
-            'condition' => $condition
+            'condition' => $condition,
+            'noScript' => $noScript
         ];
 
         return $this;
@@ -966,6 +968,12 @@ class Html extends Base implements IHtmlView, core\IDumpable
             $line = '    <script type="text/javascript">'.
                     "\n        ".str_replace("\n", "\n        ", $entry['script'])."\n".
                     '    </script>'."\n";
+
+            if (isset($entry['noScript'])) {
+                $line .= '    <noscript>'."\n".
+                         '        '.str_replace("\n", "\n        ", $entry['noScript'])."\n".
+                         '    </noscript>'."\n";
+            }
 
             if (isset($entry['condition'])) {
                 $line = $this->_addCondition($line, $entry['condition']);

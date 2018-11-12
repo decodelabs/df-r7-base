@@ -267,9 +267,9 @@ interface IHtmlView extends IResponseView, ILayoutView
     public function clearFootJs();
 
     // Scripts
-    public function addScript($id, $script, $condition=null);
-    public function addHeadScript($id, $script, $condition=null);
-    public function addFootScript($id, $script, $condition=null);
+    public function addScript($id, $script, $condition=null, $noScript=null);
+    public function addHeadScript($id, $script, $condition=null, $noScript=null);
+    public function addFootScript($id, $script, $condition=null, $noScript=null);
     public function getHeadScript($id);
     public function getFootScript($id);
     public function removeScript($id);
