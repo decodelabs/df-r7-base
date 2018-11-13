@@ -11,18 +11,19 @@ use df\aura;
 use df\arch;
 use df\mint;
 
-class Currency extends NumberTextbox {
-
+class Currency extends NumberTextbox
+{
     const PRIMARY_TAG = 'input.textbox.number.currency';
 
     protected $_inputCurrency = 'GBP';
     protected $_currencySelectable = false;
     protected $_showCurrency = true;
 
-    public function __construct(arch\IContext $context, $name, $value=null, string $inputCurrency=null, bool $allowSelection=false) {
+    public function __construct(arch\IContext $context, $name, $value=null, string $inputCurrency=null, bool $allowSelection=false)
+    {
         $this->_currencySelectable = (bool)$allowSelection;
 
-        if($inputCurrency !== null) {
+        if ($inputCurrency !== null) {
             $this->_inputCurrency = mint\Currency::normalizeCode($inputCurrency);
         }
 
@@ -30,13 +31,14 @@ class Currency extends NumberTextbox {
         parent::__construct($context, $name, $value);
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $currencyFieldName = $this->getName().'[currency]';
         $selectValue = mint\Currency::normalizeCode($this->_inputCurrency);
 
         $output = parent::_render();
 
-        if($this->_currencySelectable) {
+        if ($this->_currencySelectable) {
             $value = $this->getValue();
             $output = $output->render();
             $list = $this->_context->i18n->numbers->getCurrencyList();
@@ -49,7 +51,7 @@ class Currency extends NumberTextbox {
                     $options
                 ])->addClass('currency')
             ]);
-        } else if($this->_showCurrency) {
+        } elseif ($this->_showCurrency) {
             $currency = $this->_context->i18n->numbers->getCurrencyName($this->_inputCurrency);
             $output = new aura\html\Element('label.currency', [$output, ' ',
                 new aura\html\Element('abbr', $this->_inputCurrency, ['title' => $currency]),
@@ -64,16 +66,19 @@ class Currency extends NumberTextbox {
         return $output;
     }
 
-    public function getInputCurrency(): ?string {
+    public function getInputCurrency(): ?string
+    {
         return $this->_inputCurrency;
     }
 
-    public function allowSelection(): bool {
+    public function allowSelection(): bool
+    {
         return $this->_currencySelectable;
     }
 
-    public function shouldShowCurrency(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldShowCurrency(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_showCurrency = $flag;
             return $this;
         }
@@ -82,16 +87,17 @@ class Currency extends NumberTextbox {
     }
 
 
-    protected function _normalizeValue(core\collection\IInputTree $value) {
-        if($value instanceof core\IValueContainer) {
-            if($this->_currencySelectable && isset($value->currency)) {
+    protected function _normalizeValue(core\collection\IInputTree $value)
+    {
+        if ($value instanceof core\IValueContainer) {
+            if ($this->_currencySelectable && isset($value->currency)) {
                 $this->_inputCurrency = mint\Currency::normalizeCode($value['currency']);
             }
         }
 
         $number = $value->getValue();
 
-        if($number !== null) {
+        if ($number !== null && is_numeric($number)) {
             $number = number_format(str_replace(',', '', $number), 2, '.', '');
             $number = str_replace('.00', '', $number);
         }
