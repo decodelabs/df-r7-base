@@ -58,7 +58,7 @@ class Numbers extends Base implements core\i18n\module\generator\IModule
             \NumberFormatter::PERCENT
         );
 
-        $nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
+        $nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 3);
         return $nf->format($number / 100);
     }
 
@@ -69,7 +69,7 @@ class Numbers extends Base implements core\i18n\module\generator\IModule
             \NumberFormatter::PERCENT
         );
 
-        $nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
+        $nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 3);
         return $nf->format($number);
     }
 
