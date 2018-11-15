@@ -51,25 +51,25 @@ class Numbers extends Base implements core\i18n\module\generator\IModule
     }
 
     // Percent
-    public function formatPercent($number)
+    public function formatPercent($number, int $maxDigits=3)
     {
         $nf = \NumberFormatter::create(
             (string)$this->_locale,
             \NumberFormatter::PERCENT
         );
 
-        $nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 3);
+        $nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $maxDigits);
         return $nf->format($number / 100);
     }
 
-    public function formatRatioPercent($number)
+    public function formatRatioPercent($number, int $maxDigits=3)
     {
         $nf = \NumberFormatter::create(
             (string)$this->_locale,
             \NumberFormatter::PERCENT
         );
 
-        $nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 3);
+        $nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $maxDigits);
         return $nf->format($number);
     }
 

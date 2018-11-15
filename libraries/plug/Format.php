@@ -11,21 +11,22 @@ use df\mint;
 use df\flow;
 use df\flex;
 
-class Format implements core\ISharedHelper {
-
+class Format implements core\ISharedHelper
+{
     use core\TSharedHelper;
 
-// Numbers
-    public function number($number, $round=null, $format=null, $locale=null) {
-        if($number === null) {
+    // Numbers
+    public function number($number, $round=null, $format=null, $locale=null)
+    {
+        if ($number === null) {
             return null;
         }
 
-        if($round !== null) {
+        if ($round !== null) {
             $number = round($number, $round);
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
@@ -34,16 +35,17 @@ class Format implements core\ISharedHelper {
             ->format($number, $format);
     }
 
-    public function percent($number, $total=100, $locale=null) {
-        if($number === null) {
+    public function percent($number, $total=100, int $maxDigits=0, $locale=null)
+    {
+        if ($number === null) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
-        if($total <= 0) {
+        if ($total <= 0) {
             $number = 0;
         } else {
             $number = $number / $total;
@@ -51,43 +53,45 @@ class Format implements core\ISharedHelper {
 
         return core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
-            ->formatRatioPercent($number);
+            ->formatRatioPercent($number, $maxDigits);
     }
 
-    public function currency($number, $code=null, ?bool $rounded=null, $locale=null) {
-        if($number === null) {
+    public function currency($number, $code=null, ?bool $rounded=null, $locale=null)
+    {
+        if ($number === null) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
-        if($number instanceof mint\ICurrency) {
+        if ($number instanceof mint\ICurrency) {
             $code = $number->getCode();
             $number = $number->getAmount();
         }
 
-        if($code === null) {
+        if ($code === null) {
             $code = 'USD';
         }
 
         $module = core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale);
 
-        if($rounded === true || ($rounded === null && (int)$number == $number)) {
+        if ($rounded === true || ($rounded === null && (int)$number == $number)) {
             return $module->formatCurrencyRounded($number, $code);
         } else {
             return $module->formatCurrency($number, $code);
         }
     }
 
-    public function scientific($number, $locale=null) {
-        if($number === null) {
+    public function scientific($number, $locale=null)
+    {
+        if ($number === null) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
@@ -96,12 +100,13 @@ class Format implements core\ISharedHelper {
             ->formatScientific($number);
     }
 
-    public function spellout($number, $locale=null) {
-        if($number === null) {
+    public function spellout($number, $locale=null)
+    {
+        if ($number === null) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
@@ -110,12 +115,13 @@ class Format implements core\ISharedHelper {
             ->formatSpellout($number);
     }
 
-    public function ordinal($number, $locale=null) {
-        if($number === null) {
+    public function ordinal($number, $locale=null)
+    {
+        if ($number === null) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
@@ -124,38 +130,40 @@ class Format implements core\ISharedHelper {
             ->formatOrdinal($number);
     }
 
-    public function duration($duration, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
-        if($duration === null) {
+    public function duration($duration, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null)
+    {
+        if ($duration === null) {
             return null;
         }
 
         $duration = core\time\Duration::factory($duration);
 
-        if($duration->isEmpty()) {
+        if ($duration->isEmpty()) {
             return '0';
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
-        if($locale !== null) {
+        if ($locale !== null) {
             $duration->setLocale($locale);
         }
 
         return $duration->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
 
-    public function genericDuration($number, $locale=null) {
-        if($number === null) {
+    public function genericDuration($number, $locale=null)
+    {
+        if ($number === null) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
-        if($number instanceof core\time\IDuration) {
+        if ($number instanceof core\time\IDuration) {
             $number = $number->getSeconds();
         }
 
@@ -163,19 +171,20 @@ class Format implements core\ISharedHelper {
             ->getModule('numbers', $locale)
             ->formatDuration($number);
 
-        if(preg_match('/([0-9]+) sec./', $output, $matches)) {
+        if (preg_match('/([0-9]+) sec./', $output, $matches)) {
             $output = '0:'.$matches[1];
         }
 
         return $output;
     }
 
-    public function fileSize($bytes, $precision=2, $longNames=false, $locale=null) {
-        if($bytes === null) {
+    public function fileSize($bytes, $precision=2, $longNames=false, $locale=null)
+    {
+        if ($bytes === null) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
@@ -184,8 +193,9 @@ class Format implements core\ISharedHelper {
             ->formatFileSize($bytes, $precision, $longNames);
     }
 
-    public function binHex($binary) {
-        if($binary === null) {
+    public function binHex($binary)
+    {
+        if ($binary === null) {
             return null;
         }
 
@@ -193,57 +203,62 @@ class Format implements core\ISharedHelper {
     }
 
 
-// Date
-    public function date($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, false)) {
+    // Date
+    public function date($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, false)) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
         return $date->localeDateFormat($size, $locale);
     }
 
-    public function dateTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, true)) {
+    public function dateTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
         return $date->localeFormat($size, $locale);
     }
 
-    public function customDate($date, $format, $timezone=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, true)) {
+    public function customDate($date, $format, $timezone=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
         return $date->format($format);
     }
 
-    public function time($date, $format=null, $timezone=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, true)) {
+    public function time($date, $format=null, $timezone=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
-        if($format === null) {
+        if ($format === null) {
             $format = 'g:ia';
         }
 
         return $date->format($format);
     }
 
-    public function localeTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true) {
-        if(!$date = $this->_prepareDate($date, $timezone, true)) {
+    public function localeTime($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true)
+    {
+        if (!$date = $this->_prepareDate($date, $timezone, true)) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
@@ -251,16 +266,17 @@ class Format implements core\ISharedHelper {
     }
 
 
-    public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null)
+    {
+        if (!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = true;
         }
 
@@ -269,16 +285,17 @@ class Format implements core\ISharedHelper {
             ->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
 
-    public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null)
+    {
+        if (!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = true;
         }
 
@@ -287,16 +304,17 @@ class Format implements core\ISharedHelper {
             ->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
 
-    public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
-        if(!$date = core\time\Date::normalize($date)) {
+    public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null)
+    {
+        if (!$date = core\time\Date::normalize($date)) {
             return null;
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = $this->context->getLocale();
         }
 
-        if($locale === null) {
+        if ($locale === null) {
             $locale = true;
         }
 
@@ -304,12 +322,12 @@ class Format implements core\ISharedHelper {
         $now = core\time\Date::factory('now')->toTimestamp();
         $diff = $now - $ts;
 
-        if($diff > 0) {
+        if ($diff > 0) {
             return $this->context->_(
                 '%t% ago',
                 ['%t%' => $this->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
-        } else if($diff < 0) {
+        } elseif ($diff < 0) {
             return $this->context->_(
                 'in %t%',
                 ['%t%' => $this->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
@@ -319,25 +337,26 @@ class Format implements core\ISharedHelper {
         }
     }
 
-    protected function _prepareDate($date, $timezone=true, bool $includeTime=true) {
-        if($date instanceof core\time\ITimeOfDay) {
+    protected function _prepareDate($date, $timezone=true, bool $includeTime=true)
+    {
+        if ($date instanceof core\time\ITimeOfDay) {
             return new core\time\Date($date);
         }
 
-        if($timezone === false) {
+        if ($timezone === false) {
             $timezone = null;
             $includeTime = false;
         }
 
-        if(!$date = core\time\Date::normalize($date, null, $includeTime)) {
+        if (!$date = core\time\Date::normalize($date, null, $includeTime)) {
             return null;
         }
 
-        if($timezone !== null) {
+        if ($timezone !== null) {
             $date = clone $date;
 
-            if($date->hasTime()) {
-                if($timezone === true) {
+            if ($date->hasTime()) {
+                if ($timezone === true) {
                     $date->toUserTimeZone();
                 } else {
                     $date->toTimezone($timezone);
@@ -349,105 +368,121 @@ class Format implements core\ISharedHelper {
     }
 
 
-// Strings
-    public function name($name) {
+    // Strings
+    public function name($name)
+    {
         return flex\Text::formatName($name);
     }
 
-    public function initials($name) {
+    public function initials($name)
+    {
         return flex\Text::formatInitials($name);
     }
 
-    public function consonants($text) {
+    public function consonants($text)
+    {
         return flex\Text::formatConsonants($text);
     }
 
-    public function id($id) {
+    public function id($id)
+    {
         return flex\Text::formatId($id);
     }
 
-    public function constant($const) {
+    public function constant($const)
+    {
         return flex\Text::formatConstant($const);
     }
 
-    public function nodeSlug($node) {
+    public function nodeSlug($node)
+    {
         return flex\Text::formatNodeSlug($node);
     }
 
-    public function slug($slug) {
+    public function slug($slug)
+    {
         return flex\Text::formatSlug($slug);
     }
 
-    public function pathSlug($slug) {
+    public function pathSlug($slug)
+    {
         return flex\Text::formatPathSlug($slug);
     }
 
-    public function fileName($fileName) {
+    public function fileName($fileName)
+    {
         return flex\Text::formatFileName($fileName);
     }
 
-    public function numericToAlpha($number) {
+    public function numericToAlpha($number)
+    {
         return flex\Text::numericToAlpha($number);
     }
 
-    public function alphaToNumeric($alpha) {
+    public function alphaToNumeric($alpha)
+    {
         return flex\Text::alphaToNumeric($alpha);
     }
 
-    public function shorten($string, $length=20, $right=false) {
+    public function shorten($string, $length=20, $right=false)
+    {
         return flex\Text::shorten($string, $length, $right);
     }
 
-    public function stringToBoolean($string, $default=true) {
+    public function stringToBoolean($string, $default=true)
+    {
         return flex\Text::stringToBoolean($string, $default);
     }
 
 
-    public function firstName($fullName) {
+    public function firstName($fullName)
+    {
         $parts = explode(' ', $fullName);
         $output = array_shift($parts);
 
-        if(in_array(strtolower($output), ['mr', 'ms', 'mrs', 'miss', 'dr'])) {
-            if(isset($parts[1])) {
+        if (in_array(strtolower($output), ['mr', 'ms', 'mrs', 'miss', 'dr'])) {
+            if (isset($parts[1])) {
                 $output = array_shift($parts);
             } else {
                 $output = $fullName;
             }
         }
 
-        if(strlen($output) < 3) {
+        if (strlen($output) < 3) {
             $output = $fullName;
         }
 
         return $output;
     }
 
-    public function initialsAndSurname($name): string {
+    public function initialsAndSurname($name): string
+    {
         $parts = explode(' ', $name);
         $surname = array_pop($parts);
 
-        if(in_array(strtolower($parts[0] ?? ''), ['mr', 'ms', 'mrs', 'miss', 'dr'])) {
+        if (in_array(strtolower($parts[0] ?? ''), ['mr', 'ms', 'mrs', 'miss', 'dr'])) {
             array_shift($parts);
         }
 
         return flex\Text::formatInitials(implode(' ', $parts), false).' '.$surname;
     }
 
-    public function initialMiddleNames($name): string {
+    public function initialMiddleNames($name): string
+    {
         $parts = explode(' ', $name);
         $surname = array_pop($parts);
 
-        if(in_array(strtolower($parts[0] ?? ''), ['mr', 'ms', 'mrs', 'miss', 'dr'])) {
+        if (in_array(strtolower($parts[0] ?? ''), ['mr', 'ms', 'mrs', 'miss', 'dr'])) {
             array_shift($parts);
         }
 
         $output = (string)array_shift($parts);
 
-        if(!empty($output)) {
+        if (!empty($output)) {
             $output .= ' ';
         }
 
-        if(!empty($parts)) {
+        if (!empty($parts)) {
             $output .= flex\Text::formatInitials(implode(' ', $parts), false).' ';
         }
 
@@ -455,10 +490,11 @@ class Format implements core\ISharedHelper {
         return $output;
     }
 
-    public function email($address, $name=null, $visual=false) {
+    public function email($address, $name=null, $visual=false)
+    {
         $output = (string)flow\mail\Address::factory($address, $name);
 
-        if($visual) {
+        if ($visual) {
             $output = str_ireplace(['%2b', '"'], ['+', ''], $output);
         }
 
@@ -466,8 +502,9 @@ class Format implements core\ISharedHelper {
     }
 
 
-    public function counterNote($counter) {
-        if($counter) {
+    public function counterNote($counter)
+    {
+        if ($counter) {
             return '('.$this->number($counter).')';
         }
     }

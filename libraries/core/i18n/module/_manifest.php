@@ -8,32 +8,46 @@ namespace df\core\i18n\module;
 use df\core;
 
 // Exceptions
-interface IException extends core\i18n\IException {}
-class RuntimeException extends \RuntimeException implements IException {}
+interface IException extends core\i18n\IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
 
 
 // Interfaces
-interface IModule {
+interface IModule
+{
     public function getModuleName();
 }
 
 
-interface IListModule extends IModule {
+interface IListModule extends IModule
+{
     public function getName($id);
     public function getList(array $ids=null);
     public function getCodeList();
     public function isValidId($id);
 }
 
-interface ICountriesModule extends IListModule {}
-interface ITerritoriesModule extends IListModule {}
-interface IScriptsModule extends IListModule {}
+interface ICountriesModule extends IListModule
+{
+}
+interface ITerritoriesModule extends IListModule
+{
+}
+interface IScriptsModule extends IListModule
+{
+}
 
-interface ILanguagesModule extends IListModule {
+interface ILanguagesModule extends IListModule
+{
     public function getExtendedList();
 }
 
-interface IDatesModules extends IModule {
+interface IDatesModules extends IModule
+{
     public function getCalendarList();
     public function getDefaultCalendar();
     public function getDayName($day=null, $calendar=null);
@@ -44,7 +58,8 @@ interface IDatesModules extends IModule {
     public function getAbbreviatedMonthList($calendar=null);
 }
 
-interface ITimezonesModule extends IListModule {
+interface ITimezonesModule extends IListModule
+{
     public function forCountry($country=null);
     public function suggestForCountry($country=null);
     public function forContinent($continent);
@@ -53,11 +68,12 @@ interface ITimezonesModule extends IListModule {
     public function getOffset($timezone);
 }
 
-interface INumbersModule extends IModule {
+interface INumbersModule extends IModule
+{
     public function format($number, $format=null);
     public function parse($number, $type=self::DOUBLE, &$pos=0, $format=null);
-    public function formatPercent($number);
-    public function formatRatioPercent($number);
+    public function formatPercent($number, int $maxDigits=3);
+    public function formatRatioPercent($number, int $maxDigits=3);
     public function parsePercent($number);
     public function parseRatioPercent($number);
     public function formatCurrency($amount, $code);
