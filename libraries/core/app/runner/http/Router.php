@@ -10,8 +10,8 @@ use df\core;
 use df\arch;
 use df\link;
 
-class Router implements core\IRegistryObject {
-
+class Router implements core\IRegistryObject
+{
     const REGISTRY_KEY = 'httpRouter';
 
     protected $_mapIn = [];
@@ -29,8 +29,9 @@ class Router implements core\IRegistryObject {
 
     protected $_rootNodeRouter = false;
 
-    public static function getInstance(): self {
-        if(!$output = df\Launchpad::$app->getRegistryObject(self::REGISTRY_KEY)) {
+    public static function getInstance(): self
+    {
+        if (!$output = df\Launchpad::$app->getRegistryObject(self::REGISTRY_KEY)) {
             $output = new self();
             df\Launchpad::$app->setRegistryObject($output);
         }
@@ -38,10 +39,11 @@ class Router implements core\IRegistryObject {
         return $output;
     }
 
-    public function __construct(link\http\IUrl $rootUrl=null) {
+    public function __construct(link\http\IUrl $rootUrl=null)
+    {
         $config = Config::getInstance();
 
-        if($rootUrl !== null) {
+        if ($rootUrl !== null) {
             $map = ['*' => $rootUrl->getDomain().'/'.ltrim($rootUrl->getPathString())];
             $this->_useHttps = $rootUrl->isSecure();
             $this->_defaultRouteProtocol = $this->_useHttps ? 'https' : 'http';
@@ -51,16 +53,16 @@ class Router implements core\IRegistryObject {
             $this->_defaultRouteProtocol = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
         }
 
-        if(isset($_SERVER['HTTP_X_ORIGINAL_HOST'])) {
+        if (isset($_SERVER['HTTP_X_ORIGINAL_HOST'])) {
             $testHost = $_SERVER['HTTP_X_ORIGINAL_HOST'];
-        } else if(isset($_SERVER['HTTP_HOST'])) {
+        } elseif (isset($_SERVER['HTTP_HOST'])) {
             $testHost = $_SERVER['HTTP_HOST'];
         } else {
             $testHost = null;
         }
 
-        foreach($map as $area => $domain) {
-            if($area === 'front') {
+        foreach ($map as $area => $domain) {
+            if ($area === 'front') {
                 throw core\Error::ESetup(
                     'Front area must be mapped to root url'
                 );
@@ -70,14 +72,15 @@ class Router implements core\IRegistryObject {
 
             $this->_mapIn[$entry->getInDomain()] = $entry;
 
-            if(!isset($this->_mapOut[$entry->area])
+            if (!isset($this->_mapOut[$entry->area])
             || ($testHost !== null && $testHost == $entry->domain)) {
                 $this->_mapOut[$entry->area] = $entry;
             }
         }
     }
 
-    public function getRegistryObjectKey(): string {
+    public function getRegistryObjectKey(): string
+    {
         return self::REGISTRY_KEY;
     }
 
@@ -85,23 +88,24 @@ class Router implements core\IRegistryObject {
 
 
 
-// Mapping
-    public function lookupDomain($domain) {
-        if(isset($this->_mapIn[$domain])) {
+    // Mapping
+    public function lookupDomain($domain)
+    {
+        if (isset($this->_mapIn[$domain])) {
             return $this->_mapIn[$domain];
         }
 
         $parts = explode('.', $domain);
         $sub = array_shift($parts);
 
-        if($sub == 'www') {
+        if ($sub == 'www') {
             $domain = implode('.', $parts);
             $sub = array_shift($parts);
         }
 
         $test = implode('.', $parts);
 
-        if(isset($this->_mapIn['*.'.$test])) {
+        if (isset($this->_mapIn['*.'.$test])) {
             $output = clone $this->_mapIn['*.'.$test];
             $output->mappedDomain = $domain;
             $output->mappedKey = $sub;
@@ -109,26 +113,29 @@ class Router implements core\IRegistryObject {
         }
     }
 
-    public function getMapIn(string $area): ?Router_Map {
-        if(!isset($this->_mapIn[$area])) {
+    public function getMapIn(string $area): ?Router_Map
+    {
+        if (!isset($this->_mapIn[$area])) {
             return null;
         }
 
         return $this->_mapIn[$area];
     }
 
-    public function getMapOut(string $area): ?Router_Map {
-        if(!isset($this->_mapOut[$area])) {
+    public function getMapOut(string $area): ?Router_Map
+    {
+        if (!isset($this->_mapOut[$area])) {
             return null;
         }
 
         return $this->_mapOut[$area];
     }
 
-    public function getRootMap() {
-        if(isset($this->_mapOut['*'])) {
+    public function getRootMap()
+    {
+        if (isset($this->_mapOut['*'])) {
             return $this->_mapOut['*'];
-        } else if(isset($this->_mapOut['front'])) {
+        } elseif (isset($this->_mapOut['front'])) {
             return $this->_mapOut['front'];
         } else {
             throw core\Error::ESetup(
@@ -137,43 +144,55 @@ class Router implements core\IRegistryObject {
         }
     }
 
-    public function shouldUseHttps() {
+    public function shouldUseHttps()
+    {
         return $this->_useHttps;
     }
 
-    public function countMaps(): int {
+    public function countMaps(): int
+    {
         return count($this->_mapIn);
     }
 
 
-    public function setBase(Router_Map $map) {
+    public function setBase(Router_Map $map)
+    {
         $this->_baseMap = $map;
         $this->_baseUrl = $map->toUrl($this->_useHttps);
+
+        if ($map->isSecure) {
+            $this->_useHttps = true;
+        }
+
         return $this;
     }
 
-    public function getBaseUrl() {
-        if(!$this->_baseUrl) {
+    public function getBaseUrl()
+    {
+        if (!$this->_baseUrl) {
             $this->_applyDefaultBaseMap();
         }
 
         return $this->_baseUrl;
     }
 
-    public function getBaseMap() {
-        if(!$this->_baseMap) {
+    public function getBaseMap()
+    {
+        if (!$this->_baseMap) {
             $this->_applyDefaultBaseMap();
         }
 
         return $this->_baseMap;
     }
 
-    protected function _applyDefaultBaseMap() {
+    protected function _applyDefaultBaseMap()
+    {
         $this->setBase($this->getRootMap());
     }
 
-    public function getRootUrl() {
-        if(!$this->_rootUrl) {
+    public function getRootUrl()
+    {
+        if (!$this->_rootUrl) {
             $rootMap = $this->getRootMap();
             $this->_rootUrl = $rootMap->toUrl($this->_useHttps);
         }
@@ -181,32 +200,34 @@ class Router implements core\IRegistryObject {
         return $this->_rootUrl;
     }
 
-    public function isBaseRoot() {
+    public function isBaseRoot()
+    {
         $base = $this->getBaseMap();
         $root = $this->getRootMap();
 
         return $base === $root;
     }
 
-    public function isBaseInRoot(): bool {
+    public function isBaseInRoot(): bool
+    {
         $base = $this->getBaseMap();
         $root = $this->getRootMap();
 
-        if($base === $root) {
+        if ($base === $root) {
             return true;
         }
 
-        if(!$base->mappedDomain) {
+        if (!$base->mappedDomain) {
             return false;
         }
 
         $baseDomain = $base->mappedDomain;
         $rootDomain = $root->domain;
 
-        if(substr($rootDomain, 0, 4) == 'www.') {
+        if (substr($rootDomain, 0, 4) == 'www.') {
             $rootDomain = substr($rootDomain, 4);
         }
-        if(substr($baseDomain, 0, 4) == 'www.') {
+        if (substr($baseDomain, 0, 4) == 'www.') {
             $baseDomain = substr($baseDomain, 4);
         }
 
@@ -214,12 +235,13 @@ class Router implements core\IRegistryObject {
     }
 
 
-    public function applyBaseMapToRelativeRequest(arch\IRequest $request) {
-        if(!$this->_baseMap) {
+    public function applyBaseMapToRelativeRequest(arch\IRequest $request)
+    {
+        if (!$this->_baseMap) {
             return $request;
         }
 
-        if($this->_baseMap->isWild) {
+        if ($this->_baseMap->isWild) {
             $request->query->{$this->_baseMap->area} = $this->_baseMap->mappedKey;
         }
 
@@ -228,23 +250,26 @@ class Router implements core\IRegistryObject {
 
 
 
-// Routing
-    public function countRoutes() {
+    // Routing
+    public function countRoutes()
+    {
         return $this->_routeCount;
     }
 
-    public function countRouteMatches() {
+    public function countRouteMatches()
+    {
         return $this->_routeMatchCount;
     }
 
-    public function requestToUrl(arch\IRequest $request) {
+    public function requestToUrl(arch\IRequest $request)
+    {
         $origRequest = $request;
         $request = $this->routeOut(clone $request);
         $area = $request->getArea();
 
-        if(isset($this->_mapOut[$area])) {
+        if (isset($this->_mapOut[$area])) {
             $map = $this->_mapOut[$area];
-        } else if(isset($this->_mapOut['*'])) {
+        } elseif (isset($this->_mapOut['*'])) {
             $map = $this->_mapOut['*'];
         } else {
             $map = null;
@@ -258,14 +283,15 @@ class Router implements core\IRegistryObject {
         );
     }
 
-    public function urlToRequest(link\http\IUrl $url) {
-        if(!$map = $this->lookupDomain($url->getDomain())) {
+    public function urlToRequest(link\http\IUrl $url)
+    {
+        if (!$map = $this->lookupDomain($url->getDomain())) {
             throw core\Error::ERuntime('Unable to map url domain');
         }
 
         $path = clone $url->getPath();
 
-        if(!$map->mapPath($path)) {
+        if (!$map->mapPath($path)) {
             throw core\Error::ERuntime('Unable to map url path');
         }
 
@@ -275,11 +301,11 @@ class Router implements core\IRegistryObject {
 
         $request->setFragment($url->getFragment());
 
-        if($url->hasQuery()) {
+        if ($url->hasQuery()) {
             $request->setQuery(clone $url->getQuery());
         }
 
-        if($map->mappedKey) {
+        if ($map->mappedKey) {
             $request->query->{$map->area} = $map->mappedKey;
         }
 
@@ -287,23 +313,24 @@ class Router implements core\IRegistryObject {
         return $request;
     }
 
-    public function routeIn(arch\IRequest $request) {
+    public function routeIn(arch\IRequest $request)
+    {
         $this->_routeCount++;
         $location = $request->getDirectoryLocation();
 
-        if($location == 'front') {
+        if ($location == 'front') {
             $root = $this->_getRootNodeRouter();
 
-            if($root && ($output = $root->routeIn($request))) {
+            if ($root && ($output = $root->routeIn($request))) {
                 return $output;
             }
         }
 
-        if($router = $this->_getRouterFor($request, $location)) {
+        if ($router = $this->_getRouterFor($request, $location)) {
             $this->_routeMatchCount++;
             $output = $router->routeIn($request);
 
-            if($output instanceof arch\IRequest) {
+            if ($output instanceof arch\IRequest) {
                 $request = $output;
             }
         }
@@ -311,15 +338,16 @@ class Router implements core\IRegistryObject {
         return $request;
     }
 
-    public function routeOut(arch\IRequest $request) {
+    public function routeOut(arch\IRequest $request)
+    {
         $this->_routeCount++;
         $location = $request->getDirectoryLocation();
 
-        if($router = $this->_getRouterFor($request, $location)) {
+        if ($router = $this->_getRouterFor($request, $location)) {
             $this->_routeMatchCount++;
             $output = $router->routeOut($request);
 
-            if($output instanceof arch\IRequest) {
+            if ($output instanceof arch\IRequest) {
                 $request = $output;
             }
         }
@@ -327,8 +355,9 @@ class Router implements core\IRegistryObject {
         return $request;
     }
 
-    protected function _getRouterFor(arch\IRequest $request, string $location): ?arch\IRouter {
-        if(isset($this->_routerCache[$location])) {
+    protected function _getRouterFor(arch\IRequest $request, string $location): ?arch\IRouter
+    {
+        if (isset($this->_routerCache[$location])) {
             return $this->_routerCache[$location];
         }
 
@@ -336,11 +365,11 @@ class Router implements core\IRegistryObject {
         $parts = explode('/', $location);
         $output = null;
 
-        while(!empty($parts)) {
+        while (!empty($parts)) {
             $class = 'df\\apex\\directory\\'.implode('\\', $parts).'\\HttpRouter';
             $keys[] = implode('/', $parts);
 
-            if(class_exists($class)) {
+            if (class_exists($class)) {
                 $output = new $class();
                 break;
             }
@@ -348,18 +377,19 @@ class Router implements core\IRegistryObject {
             array_pop($parts);
         }
 
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $this->_routerCache[$key] = $output;
         }
 
         return $output;
     }
 
-    protected function _getRootNodeRouter(): ?arch\IRouter {
-        if($this->_rootNodeRouter === false) {
+    protected function _getRootNodeRouter(): ?arch\IRouter
+    {
+        if ($this->_rootNodeRouter === false) {
             $class = 'df\\apex\\directory\\front\\HttpRootNodeRouter';
 
-            if(class_exists($class)) {
+            if (class_exists($class)) {
                 $this->_rootNodeRouter = new $class();
             } else {
                 $this->_rootNodeRouter = null;
@@ -371,44 +401,56 @@ class Router implements core\IRegistryObject {
 }
 
 
-class Router_Map {
-
+class Router_Map
+{
     public $domain;
     public $port;
+    public $isSecure = false;
     public $isWild = false;
     public $area;
     public $path;
     public $mappedDomain;
     public $mappedKey;
 
-    public function __construct($area, $domain) {
-        if(is_int($area)) {
+    public function __construct($area, $domain)
+    {
+        if (is_int($area)) {
             $area = '*';
         }
 
-        if(substr($area, 0, 1) == '*') {
+        if (substr($area, 0, 1) == '*') {
             $area = '*';
         }
 
         $this->area = ltrim($area, '~');
-        $parts = explode('/', trim($domain, '/'));
+        $domain = trim($domain, '/');
+        $parts = explode('://', $domain, 2);
+        $domain = array_pop($parts);
+        $scheme = array_shift($parts) ?? 'http';
+
+        if (strtolower($scheme) === 'https') {
+            $this->isSecure = true;
+        }
+
+        $parts = explode('/', $domain);
         $this->domain = array_shift($parts);
         $this->path = $parts;
 
-        if(substr($this->domain, 0, 2) == '*.') {
+        if (substr($this->domain, 0, 2) == '*.') {
             $this->domain = substr($this->domain, 2);
             $this->isWild = true;
         }
 
-        if(false !== strpos($this->domain, ':')) {
+        if (false !== strpos($this->domain, ':')) {
             list($this->domain, $this->port) = explode(':', $this->domain, 2);
         }
     }
 
-    public function getInDomain() {
+    public function getInDomain()
+    {
         $output = $this->domain;
 
-        if($this->isWild) {
+        if ($this->isWild) {
             $output = '*.'.$output;
         }
 
@@ -416,15 +458,16 @@ class Router_Map {
     }
 
 
-    public function mapPath(core\uri\IPath $path=null) {
-        if(!$path) {
+    public function mapPath(core\uri\IPath $path=null)
+    {
+        if (!$path) {
             return false;
         }
 
         $output = true;
 
-        foreach($this->path as $part) {
-            if($part != $path->shift()) {
+        foreach ($this->path as $part) {
+            if ($part != $path->shift()) {
                 $output = false;
                 break;
             }
@@ -433,11 +476,12 @@ class Router_Map {
         return $output;
     }
 
-    public function mapArea(arch\IRequest $request) {
-        if($this->area !== '*' && $this->area !== 'front') {
+    public function mapArea(arch\IRequest $request)
+    {
+        if ($this->area !== '*' && $this->area !== 'front') {
             $path = $request->getPath();
 
-            if($path->isEmpty()) {
+            if ($path->isEmpty()) {
                 $path->shouldAddTrailingSlash(true);
             }
 
@@ -447,20 +491,21 @@ class Router_Map {
         return $request;
     }
 
-    public function toUrl($useHttps=false) {
-        if($this->mappedDomain) {
+    public function toUrl($useHttps=false)
+    {
+        if ($this->mappedDomain) {
             $url = $this->mappedDomain;
         } else {
             $url = $this->domain;
         }
 
-        if($this->port) {
+        if ($this->port) {
             $url .= ':'.$this->port;
         }
 
         $url .= '/';
 
-        if(!empty($this->path)) {
+        if (!empty($this->path)) {
             $url .= implode('/', $this->path).'/';
         }
 
