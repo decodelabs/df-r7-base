@@ -11,48 +11,55 @@ use df\apex;
 use df\arch;
 use df\link;
 
-class TaskApcuClear extends arch\node\Task {
-
+class TaskApcuClear extends arch\node\Task
+{
     use TApcuClear;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
     const OPTIMIZE = true;
 
-    public function execute() {
+    public function execute()
+    {
         $mode = $this->request->query->get('mode');
         unset($this->request->query->mode);
         $isHttp = $isCli = true;
 
-        if($mode) {
+        if ($mode) {
             $mode = strtolower($mode);
         }
 
-        if($mode == 'task') {
+        if ($mode == 'task') {
             $isHttp = false;
-        } else if($mode == 'http') {
+        } elseif ($mode == 'http') {
             $isCli = false;
         }
 
-        if(!isset($this->request['cacheId'])) {
+        if (!isset($this->request['cacheId'])) {
             $this->request->query->purge = 'app';
         }
 
-        if($isCli && extension_loaded('apcu') && ini_get('apc.enable_cli')) {
+        if ($isCli && extension_loaded('apcu') && ini_get('apc.enable_cli')) {
             $count = $this->_clearApcu();
             $this->io->writeLine('Cleared '.$count.' CLI APCU entries');
         }
 
-        if($isHttp) {
+        if ($isHttp) {
             $config = core\app\runner\http\Config::getInstance();
             $mode = $this->app->envMode;
 
             $baseUrl = $config->getRootUrl($mode);
+            $baseUrl = rtrim($baseUrl, '/');
+
+            if (false === strpos($baseUrl, '://')) {
+                $baseUrl = 'http://'.$baseUrl;
+            }
+
             $credentials = $config->getCredentials($mode);
 
-            $url = new link\http\Url('http://'.rtrim($baseUrl, '/').'/cache/apcu-clear.json');
+            $url = new link\http\Url($baseUrl.'/cache/apcu-clear.json');
             $url->query->import($this->request->query);
 
-            if($credentials !== null) {
+            if ($credentials !== null) {
                 $url->setCredentials(
                     $credentials['username'],
                     $credentials['password']
@@ -64,11 +71,11 @@ class TaskApcuClear extends arch\node\Task {
             $http = new link\http\Client();
             $response = $http->get($url); // TODO use localhost ip?
 
-            if($response->isOk()) {
+            if ($response->isOk()) {
                 $json = $response->getJsonContent();
                 $cleared = @$json['cleared'];
 
-                if($cleared === null) {
+                if ($cleared === null) {
                     $this->io->writeLine('APCU unable to pass IP check via '.@$json['addr']);
                 } else {
                     $this->io->writeLine('Cleared '.$cleared.' HTTP APCU entries via '.@$json['addr']);
