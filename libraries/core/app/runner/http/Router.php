@@ -157,12 +157,12 @@ class Router implements core\IRegistryObject
 
     public function setBase(Router_Map $map)
     {
-        $this->_baseMap = $map;
-        $this->_baseUrl = $map->toUrl($this->_useHttps);
-
         if ($map->isSecure) {
             $this->_useHttps = true;
         }
+
+        $this->_baseMap = $map;
+        $this->_baseUrl = $map->toUrl($this->_useHttps);
 
         return $this;
     }
