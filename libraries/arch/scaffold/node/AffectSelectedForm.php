@@ -12,6 +12,8 @@ use df\aura;
 
 abstract class AffectSelectedForm extends arch\node\Form
 {
+    const AUTO_INSTANCE_ID_IGNORE = ['selected'];
+
     protected $_scaffold;
     protected $_ids = [];
 
@@ -20,6 +22,20 @@ abstract class AffectSelectedForm extends arch\node\Form
         if (isset($this->request['selected'])) {
             $this->_ids = explode(',', $this->request['selected']);
         }
+    }
+
+    protected function getInstanceId()
+    {
+        $output = parent::getInstanceId();
+        $hash = md5($this->request['selected']);
+
+        if ($output === null) {
+            $output = $hash;
+        } else {
+            $output .= '|'.$hash;
+        }
+
+        return $output;
     }
 
     protected function createUi()
