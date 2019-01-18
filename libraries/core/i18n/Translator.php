@@ -7,41 +7,46 @@ namespace df\core\i18n;
 
 use df\core;
 
-class Translator implements ITranslator {
-
+class Translator implements ITranslator
+{
     protected $_domainId;
 
-    public static function factory($domainId, $locale=null) {
+    public static function factory($domainId, $locale=null)
+    {
         return new self($domainId);
     }
 
-    protected function __construct($domainId) {
+    protected function __construct($domainId)
+    {
         $this->_domainId = $domainId;
     }
 
-    public function getDomainId() {
+    public function getDomainId()
+    {
         return $this->_domainId;
     }
 
-    public function _($phrase=''): string {
+    public function _($phrase=''): string
+    {
         return $this->translate(func_get_args());
     }
 
-    public function translate(array $args): string {
+    public function translate(array $args): string
+    {
         $phrase = array_shift($args);
         $plural = false;
 
-        if(is_array($phrase)) {
+        if (is_array($phrase)) {
             $plural = array_pop($args);
 
-            if(!is_numeric($plural)) {
+            if (!is_numeric($plural)) {
                 throw new InvalidArgumentException(
                     'The last parameter to a plural translation must be the number of items'
                 );
             }
         }
 
-        if(!empty($args)) {
+        if (!empty($args)) {
             $replacements = array_shift($args);
         } else {
             $replacements = [];
@@ -49,8 +54,8 @@ class Translator implements ITranslator {
 
         $output = $this->_fetch($phrase, $plural !== false);
 
-        if($plural !== false) {
-            if(!isset($replacements['%plural%'])) {
+        if ($plural !== false) {
+            if (!isset($replacements['%plural%'])) {
                 $replacements['%plural%'] = $plural;
             }
 
@@ -58,8 +63,8 @@ class Translator implements ITranslator {
         }
 
 
-        if(!empty($replacements)) {
-            foreach($replacements as $key => $value) {
+        if (!empty($replacements)) {
+            foreach ($replacements as $key => $value) {
                 $replacements[$key] = (string)$value;
             }
 
@@ -69,11 +74,12 @@ class Translator implements ITranslator {
         return $output;
     }
 
-    protected function _fetch($phrase, $isPlural) {
-        if($isPlural) {
+    protected function _fetch($phrase, $isPlural)
+    {
+        if ($isPlural) {
             $matchPhrase = [];
 
-            foreach($phrase as $key => $value) {
+            foreach ($phrase as $key => $value) {
                 $matchPhrase[] = '['.$key.']'.$value;
             }
 
@@ -84,34 +90,35 @@ class Translator implements ITranslator {
 
         // TODO: Lookup phrase
 
-        if($isPlural) {
+        if ($isPlural) {
             return $phrase;
         } else {
             return (string)$phrase;
         }
     }
 
-    protected function _formatPluralPhrase(array $options, $plural) {
-        foreach($options as $key => $phrase) {
-            if(is_numeric($key)) {
-                if($key == $plural) {
+    protected function _formatPluralPhrase(array $options, $plural)
+    {
+        foreach ($options as $key => $phrase) {
+            if (is_numeric($key)) {
+                if ($key == $plural) {
                     return $phrase;
                 } else {
                     continue;
                 }
             }
 
-            if($key == '*') {
+            if ($key == '*') {
                 return $phrase;
             }
 
             $parts = explode('||', $key);
 
-            foreach($parts as $part) {
+            foreach ($parts as $part) {
                 $clauses = explode('&&', str_replace(' ', '', $part));
 
-                foreach($clauses as $clause) {
-                    if(!preg_match('/n(([\/\*\+\-\%])([-0-9])+)?([<>=]+)([-0-9]+)/', $clause, $matches)) {
+                foreach ($clauses as $clause) {
+                    if (!preg_match('/n(([\/\*\+\-\%])([-0-9])+)?([<>=]+)([-0-9]+)/', $clause, $matches)) {
                         throw new InvalidArgumentException(
                             $clause.' is not a valid plural clause'
                         );
@@ -119,8 +126,8 @@ class Translator implements ITranslator {
 
                     $test = $plural;
 
-                    if(isset($matches[1]) && strlen($matches[1])) {
-                        switch($matches[2]) {
+                    if (isset($matches[1]) && strlen($matches[1])) {
+                        switch ($matches[2]) {
                             case '/':
                                 $test /= $matches[3];
                                 break;
@@ -143,42 +150,37 @@ class Translator implements ITranslator {
                         }
                     }
 
-                    switch($matches[4]) {
+                    switch ($matches[4]) {
                         case '>=':
-                            if($test >= $matches[5]) {
-                                continue;
-                            } else {
+                            if (!($test >= $matches[5])) {
                                 continue 3;
                             }
+                            break;
 
                         case '<=':
-                            if($test <= $matches[5]) {
-                                continue;
-                            } else {
+                            if (!($test <= $matches[5])) {
                                 continue 3;
                             }
+                            break;
 
                         case '>':
-                            if($test > $matches[5]) {
-                                continue;
-                            } else {
+                            if (!($test > $matches[5])) {
                                 continue 3;
                             }
+                            break;
 
                         case '<':
-                            if($test < $matches[5]) {
-                                continue;
-                            } else {
+                            if (!($test < $matches[5])) {
                                 continue 3;
                             }
+                            break;
 
                         case '=':
                         case '==':
-                            if($test == $matches[5]) {
-                                continue;
-                            } else {
+                            if (!($test == $matches[5])) {
                                 continue 3;
                             }
+                            break;
 
                         default:
                             continue 3;
