@@ -308,7 +308,20 @@ class Embed implements IVideoEmbed
     {
         $url = 'https://vimeo.com/api/oembed.json?url='.$this->_url;
         $client = new link\http\Client();
-        $response = $client->get($url);
+
+
+        $response = $client->get($url, function ($request) {
+            try {
+                $context = df\Launchpad::$runner->getContext();
+                $referrer = (string)$context->uri('/');
+            } catch (\Throwable $e) {
+                $referrer = null;
+            }
+
+            if ($referrer) {
+                $request->headers->set('Referer', $referrer);
+            }
+        });
 
         if (!$response->isOk()) {
             return null;
