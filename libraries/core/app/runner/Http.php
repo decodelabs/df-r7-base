@@ -54,6 +54,15 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         $config = namespace\http\Config::getInstance();
         $this->_sendFileHeader = $config->getSendFileHeader();
+
+        if (isset($_SERVER['HTTP_X_SENDFILE_TYPE'])) {
+            if ($_SERVER['HTTP_X_SENDFILE_TYPE'] === 'X-Accel-Redirect') {
+                $this->_sendFileHeader = null;
+            } else {
+                $this->_sendFileHeader = $_SERVER['HTTP_X_SENDFILE_TYPE'];
+            }
+        }
+
         $this->_manualChunk = $config->shouldChunkManually();
         $this->_credentials = $config->getCredentials();
 
