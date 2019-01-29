@@ -44,22 +44,14 @@ class TaskApcuClear extends arch\node\Task
         }
 
         if ($isHttp) {
-            $config = core\app\runner\http\Config::getInstance();
-            $mode = $this->app->envMode;
-
-            $baseUrl = $config->getRootUrl($mode);
-            $baseUrl = rtrim($baseUrl, '/');
-
-            if (false === strpos($baseUrl, '://')) {
-                $baseUrl = 'http://'.$baseUrl;
-            }
-
-            $credentials = $config->getCredentials($mode);
-
-            $url = new link\http\Url($baseUrl.'/cache/apcu-clear.json');
+            $router = core\app\runner\http\Router::getInstance();
+            $url = $router->getRootUrl();
+            $url->path->push('/cache/apcu-clear.json');
             $url->query->import($this->request->query);
 
-            if ($credentials !== null) {
+            $config = core\app\runner\http\Config::getInstance();
+
+            if ($credentials = $config->getCredentials($this->app->envMode)) {
                 $url->setCredentials(
                     $credentials['username'],
                     $credentials['password']
@@ -69,7 +61,10 @@ class TaskApcuClear extends arch\node\Task
             //$this->io->writeLine($url);
 
             $http = new link\http\Client();
-            $response = $http->get($url); // TODO use localhost ip?
+
+            $response = $http->get($url, function ($request) {
+                $request->options->verifySsl = false;
+            });
 
             if ($response->isOk()) {
                 $json = $response->getJsonContent();
