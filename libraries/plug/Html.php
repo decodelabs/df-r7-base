@@ -189,9 +189,13 @@ class Html implements arch\IDirectoryHelper
         return new aura\html\ElementContent($content);
     }
 
-    public function list(iterable $list, string $container, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation
+    public function list(?iterable $list, string $container, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation
     {
         return (new aura\html\Element($container, function () use ($list, $name, $callback) {
+            if (!$list) {
+                return;
+            }
+
             $i = 0;
 
             foreach ($list as $key => $item) {
@@ -202,9 +206,13 @@ class Html implements arch\IDirectoryHelper
         }, $attributes))->shouldRenderIfEmpty(false);
     }
 
-    public function elements(iterable $list, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation
+    public function elements(?iterable $list, string $name, callable $callback, array $attributes=[]): aura\html\IElementRepresentation
     {
         return aura\html\ElementContent::normalize(function () use ($list, $name, $callback, $attributes) {
+            if (!$list) {
+                return;
+            }
+
             $i = 0;
 
             foreach ($list as $key => $item) {
@@ -215,27 +223,31 @@ class Html implements arch\IDirectoryHelper
         });
     }
 
-    public function uList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
+    public function uList(?iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
     {
         return $this->list($list, 'ul', 'li', $renderer ?? function ($value) {
             return $value;
         }, $attributes);
     }
 
-    public function oList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
+    public function oList(?iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
     {
         return $this->list($list, 'ol', 'li', $renderer ?? function ($value) {
             return $value;
         }, $attributes);
     }
 
-    public function dList(iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
+    public function dList(?iterable $list, callable $renderer=null, array $attributes=[]): aura\html\IElementRepresentation
     {
         $renderer = $renderer ?? function ($value) {
             return $value;
         };
 
         return $this->__invoke('dl', function () use ($list, $renderer) {
+            if (!$list) {
+                return;
+            }
+
             foreach ($list as $key => $item) {
                 $dt = $this->__invoke('dt', null);
                 $dd = (string)$this->__invoke('dd', function ($dd) use ($key, $item, $renderer, &$i, $dt) {
@@ -249,10 +261,10 @@ class Html implements arch\IDirectoryHelper
                 yield $dt;
                 yield $this->string($dd);
             }
-        }, $attributes);
+        }, $attributes)->shouldRenderIfEmpty(false);
     }
 
-    public function iList(iterable $list, callable $renderer=null, int $limit=null, string $delimiter=', ', string $finalDelimiter=null): aura\html\IElementRepresentation
+    public function iList(?iterable $list, callable $renderer=null, int $limit=null, string $delimiter=', ', string $finalDelimiter=null): aura\html\IElementRepresentation
     {
         $renderer = $renderer ?? function ($value) {
             return $value;
@@ -260,6 +272,10 @@ class Html implements arch\IDirectoryHelper
 
         return (new aura\html\Element('span.list', function ($el) use ($list, $renderer, $delimiter, $finalDelimiter, $limit) {
             $el->shouldRenderIfEmpty(false);
+
+            if (!$list) {
+                return;
+            }
 
             $first = true;
             $i = $more = 0;
