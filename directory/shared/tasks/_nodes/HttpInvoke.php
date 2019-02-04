@@ -11,23 +11,27 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class HttpInvoke extends arch\node\Base {
-
+class HttpInvoke extends arch\node\Base
+{
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 
-    public function executeAsHtml() {
+    public function executeAsHtml()
+    {
         $view = $this->apex->view('Invoke.html');
         $view['token'] = $this->request['token'];
 
         return $view;
     }
 
-    public function executeAsStream() {
-        return $this->http->generator('text/plain; charset=UTF-8', function($generator) {
+    public function executeAsStream()
+    {
+        return $this->http->generator('text/plain; charset=UTF-8', function ($generator) {
+            $generator->headers->set('X-Accel-Buffering', 'no');
+
             $invoke = $this->data->task->invoke->authorize($this->request['token']);
             $generator->writeBrowserKeepAlive();
 
-            if(!$invoke) {
+            if (!$invoke) {
                 $generator->writeChunk('Task invoke token is no longer valid - please try again!');
                 return;
             }
