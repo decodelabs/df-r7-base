@@ -78,7 +78,7 @@ class TaskApcuClear extends arch\node\Task
                 }
             } else {
                 $this->io->writeErrorLine('Http call failed :(');
-                $this->io->writeErrorLine($response->getContent());
+                //$this->io->writeErrorLine($response->getContent());
             }
         }
     }
