@@ -73,8 +73,9 @@ class Html extends Base implements IHtmlView, core\IDumpable
 
         $this->getHeaders()
             ->set('X-Frame-Options', 'SAMEORIGIN')
-            ->set('X-XSS-Protection', '1')
+            ->set('X-XSS-Protection', '1; mode=block')
             ->set('X-Content-Type-Options', 'nosniff')
+            ->set('Referrer-Policy', 'no-referrer-when-downgrade')
             ;
     }
 

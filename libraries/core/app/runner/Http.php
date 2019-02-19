@@ -588,6 +588,15 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $this->_responseAugmentor->apply($response);
         }
 
+        // HSTS
+        if ($this->_router->shouldUseHttps() && df\Launchpad::$app->isProduction()) {
+            $headers = $response->getHeaders();
+
+            if (!$headers->has('Strict-Transport-Security')) {
+                $headers->set('Strict-Transport-Security', 'max-age=31536000');
+            }
+        }
+
         // Make sure cookies are in headers
         if ($response->hasCookies()) {
             $response->getCookies()->applyTo($response->getHeaders());
