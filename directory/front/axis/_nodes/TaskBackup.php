@@ -12,8 +12,8 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskBackup extends arch\node\Task {
-
+class TaskBackup extends arch\node\Task
+{
     const SCHEDULE = '0 0 * * 1';
 
     protected $_unitAdapters = [];
@@ -26,7 +26,8 @@ class TaskBackup extends arch\node\Task {
         'connections' => []
     ];
 
-    public function execute() {
+    public function execute()
+    {
         axis\schema\Cache::getInstance()->clear();
         $this->io->write('Probing units...');
 
@@ -43,7 +44,7 @@ class TaskBackup extends arch\node\Task {
         $this->io->writeLine('Backing up units');
         $this->io->writeLine();
 
-        foreach($units as $inspector) {
+        foreach ($units as $inspector) {
             $this->_backupUnit($inspector);
         }
 
@@ -59,26 +60,29 @@ class TaskBackup extends arch\node\Task {
         core\fs\Dir::delete($this->_path);
     }
 
-    public function handleException(\Throwable $e) {
+    public function handleException(\Throwable $e)
+    {
         core\fs\Dir::delete($this->_path);
         parent::handleException($e);
     }
 
 
-// Units
-    protected function _backupUnit($inspector) {
-        switch($inspector->getType()) {
+    // Units
+    protected function _backupUnit($inspector)
+    {
+        switch ($inspector->getType()) {
             case 'table':
                 $this->_backupTable($inspector);
                 break;
 
             default:
-                continue;
+                break;
         }
     }
 
-    protected function _backupTable($inspector) {
-        if(!$inspector->storageExists()) {
+    protected function _backupTable($inspector)
+    {
+        if (!$inspector->storageExists()) {
             return;
         }
 
@@ -94,7 +98,7 @@ class TaskBackup extends arch\node\Task {
         $insert = $table->batchInsert();
         $count = 0;
 
-        foreach($unit->getDelegateQueryAdapter()->select() as $row) {
+        foreach ($unit->getDelegateQueryAdapter()->select() as $row) {
             $insert->addRow($row);
             $count++;
         }
@@ -105,21 +109,23 @@ class TaskBackup extends arch\node\Task {
 
 
 
-// Backup adapters
-    protected function _getBackupAdapter($inspector) {
+    // Backup adapters
+    protected function _getBackupAdapter($inspector)
+    {
         $unit = $inspector->getUnit();
 
-        if($unit instanceof opal\query\IAdapter) {
+        if ($unit instanceof opal\query\IAdapter) {
             return $this->_getBackupAdapterFromQuerySourceUnit($unit);
         } else {
             core\stub($unit);
         }
     }
 
-    protected function _getBackupAdapterFromQuerySourceUnit($unit) {
+    protected function _getBackupAdapterFromQuerySourceUnit($unit)
+    {
         $hash = $unit->getQuerySourceAdapterHash();
 
-        if(isset($this->_backupAdapters[$hash])) {
+        if (isset($this->_backupAdapters[$hash])) {
             return $this->_backupAdapters[$hash];
         }
 
@@ -131,7 +137,8 @@ class TaskBackup extends arch\node\Task {
         return $this->_loadBackupAdapter($hash, $dbName, (string)$connection->getDsn());
     }
 
-    protected function _loadBackupAdapter($hash, $dbName, $connection) {
+    protected function _loadBackupAdapter($hash, $dbName, $connection)
+    {
         $this->io->writeLine('Creating backup adapter '.$dbName);
         $backupAdapter = opal\rdbms\adapter\Base::factory('sqlite://'.$this->_path.'/'.$dbName.'.sqlite');
         $this->_backupAdapters[$hash] = $backupAdapter;
