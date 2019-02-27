@@ -425,6 +425,47 @@ class Manager implements IManager, core\IShutdownAware
     }
 
 
+    public function getGroupSetOptionsFor($source, ?string $listId): array
+    {
+        if (!$source = $this->getListSource($source)) {
+            return [];
+        }
+
+        if (!$listId) {
+            return [];
+        }
+
+        return $source->getGroupSetOptionsFor($listId);
+    }
+
+    public function getGroupOptionsFor($source, ?string $listId, bool $nested=false, bool $showSets=true): array
+    {
+        if (!$source = $this->getListSource($source)) {
+            return [];
+        }
+
+        if (!$listId) {
+            return [];
+        }
+
+        return $source->getGroupOptionsFor($listId, $nested, $showSets);
+    }
+
+    public function getGroupIdListFor($source, ?string $listId): array
+    {
+        if (!$source = $this->getListSource($source)) {
+            return [];
+        }
+
+        if (!$listId) {
+            return [];
+        }
+
+        return $source->getGroupIdListFor($listId);
+    }
+
+
+
     public function getPrimaryGroupSetOptionsFor($source): array
     {
         if (!$source = $this->getListSource($source)) {

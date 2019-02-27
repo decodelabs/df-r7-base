@@ -34,6 +34,9 @@ interface IManager extends core\IManager
 
     public function getListExternalLinkFor($source, string $listId=null): ?string;
 
+    public function getGroupSetOptionsFor($source, ?string $listId): array;
+    public function getGroupOptionsFor($source, ?string $listId, bool $nested=false, bool $showSets=true): array;
+    public function getGroupIdListFor($source, ?string $listId): array;
     public function getPrimaryGroupSetOptionsFor($source): array;
     public function getPrimaryGroupOptionsFor($source, bool $nested=false, bool $showSets=true): array;
     public function getPrimaryGroupIdListFor($source): array;
