@@ -10,42 +10,51 @@ use df\core;
 use df\flow;
 use df\user;
 
-class Source implements ISource {
-
+class Source implements ISource
+{
     const MANIFEST_VERSION = 100;
 
     protected $_id;
     protected $_adapter;
     protected $_primaryListId;
 
-    public function __construct(string $id, $options) {
+    public function __construct(string $id, $options)
+    {
         $options = core\collection\Tree::factory($options);
 
         $this->_id = $id;
         $this->_adapter = flow\mailingList\adapter\Base::factory($options);
         $this->_primaryListId = $options['primaryList'];
+
+        if ($this->_primaryListId !== null) {
+            $this->_primaryListId = (string)$this->_primaryListId;
+        }
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->_id;
     }
 
-    public function getAdapter() {
+    public function getAdapter(): IAdapter
+    {
         return $this->_adapter;
     }
 
-    public function canConnect(): bool {
+    public function canConnect(): bool
+    {
         return $this->_adapter->canConnect();
     }
 
 
-    public function getManifest() {
+    public function getManifest(): array
+    {
         $cache = Cache::getInstance();
 
-        if(!$manifest = $cache->get('manifest:'.$this->_id)) {
+        if (!$manifest = $cache->get('manifest:'.$this->_id)) {
             $manifest = $this->_getManifestFromStore();
 
-            if(($manifest['__manifest_version__'] ?? null) !== self::MANIFEST_VERSION) {
+            if (($manifest['__manifest_version__'] ?? null) !== self::MANIFEST_VERSION) {
                 $this->_clearManifestStore();
                 $manifest = $this->_getManifestFromStore();
             }
@@ -57,13 +66,14 @@ class Source implements ISource {
         return $manifest;
     }
 
-    protected function _getManifestFromStore() {
+    protected function _getManifestFromStore(): array
+    {
         $store = ApiStore::getInstance();
 
-        if(!$manifestFile = $store->get($this->_id, '1 day')) {
+        if (!$manifestFile = $store->get($this->_id, '1 day')) {
             try {
                 $manifest = $this->_adapter->fetchManifest();
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 throw core\Error::EApi([
                     'message' => 'Unable to fetch manifest from adapter',
                     'previous' => $e
@@ -79,54 +89,56 @@ class Source implements ISource {
         return $manifest;
     }
 
-    protected function _clearManifestStore() {
+    protected function _clearManifestStore(): void
+    {
         $store = ApiStore::getInstance();
         $store->remove($this->_id);
     }
 
-    protected function _normalizeManifest($manifest) {
-        if(!is_array($manifest)) {
+    protected function _normalizeManifest($manifest): array
+    {
+        if (!is_array($manifest)) {
             $manifest = [];
         }
 
-        foreach($manifest as $id => $list) {
-            if(!isset($list['name'])) {
+        foreach ($manifest as $id => $list) {
+            if (!isset($list['name'])) {
                 $list['name'] = $this->_adapter->getName().': '.$list['id'];
             }
 
-            if(!isset($list['groupSets'])) {
+            if (!isset($list['groupSets'])) {
                 $list['groupSets'] = [];
             }
 
-            if(!isset($list['groups'])) {
+            if (!isset($list['groups'])) {
                 $list['groups'] = [];
             }
 
-            if(!isset($list['url'])) {
+            if (!isset($list['url'])) {
                 $list['url'] = null;
             }
 
-            foreach($list['groups'] as $groupId => $group) {
-                if(!is_array($group)) {
+            foreach ($list['groups'] as $groupId => $group) {
+                if (!is_array($group)) {
                     $group = ['name' => (string)$group];
                 }
 
-                if(!isset($group['name'])) {
+                if (!isset($group['name'])) {
                     $group['name'] = 'Group: '.$groupId;
                 }
 
-                if(!isset($group['groupSet'])) {
+                if (!isset($group['groupSet'])) {
                     $group['groupSet'] = null;
                 }
 
-                if(!isset($group['subscribers'])) {
+                if (!isset($group['subscribers'])) {
                     $group['subscribers'] = null;
                 }
 
                 $list['groups'][$groupId] = $group;
             }
 
-            if(!isset($list['subscribers'])) {
+            if (!isset($list['subscribers'])) {
                 $list['subscribers'] = null;
             }
 
@@ -139,27 +151,47 @@ class Source implements ISource {
     }
 
 
-    public function getPrimaryListId() {
-        return $this->_primaryListId;
-    }
-
-    public function getPrimaryListManifest() {
-        if(!$this->_primaryListId) {
+    public function getListManifest(?string $listId): ?array
+    {
+        if ($listId === null) {
             return null;
         }
 
         $manifest = $this->getManifest();
 
-        if(isset($manifest[$this->_primaryListId])) {
-            return $manifest[$this->_primaryListId];
+        if (isset($manifest[$listId])) {
+            return $manifest[$listId];
+        } else {
+            return null;
         }
     }
 
 
+    public function getPrimaryListId(): ?string
+    {
+        return $this->_primaryListId;
+    }
 
-    public function getListExternalLink() {
-        if(!$manifest = $this->getPrimaryListManifest()) {
-            return;
+    public function getPrimaryListManifest(): ?array
+    {
+        return $this->getListManifest($this->_primaryListId);
+    }
+
+
+
+    public function getListExternalLink(?string $listId): ?string
+    {
+        if (!$manifest = $this->getListManifest($listId)) {
+            return null;
+        }
+
+        return $manifest['url'];
+    }
+
+    public function getPrimaryListExternalLink(): ?string
+    {
+        if (!$manifest = $this->getPrimaryListManifest()) {
+            return null;
         }
 
         return $manifest['url'];
@@ -168,21 +200,23 @@ class Source implements ISource {
 
 
 
-    public function getListOptions() {
+    public function getListOptions(): array
+    {
         $output = [];
 
-        foreach($this->getManifest() as $listId => $list) {
+        foreach ($this->getManifest() as $listId => $list) {
             $output[$listId] = $list['name'];
         }
 
         return $output;
     }
 
-    public function getGroupSetOptions() {
+    public function getGroupSetOptions(): array
+    {
         $output = [];
 
-        foreach($this->getManifest() as $listId => $list) {
-            foreach($list['groupSets'] as $setId => $setName) {
+        foreach ($this->getManifest() as $listId => $list) {
+            foreach ($list['groupSets'] as $setId => $setName) {
                 $output[$listId.'/'.$setId] = $setName;
             }
         }
@@ -190,21 +224,22 @@ class Source implements ISource {
         return $output;
     }
 
-    public function getGroupOptions($nested=false, $showSets=true) {
+    public function getGroupOptions(bool $nested=false, bool $showSets=true): array
+    {
         $output = [];
         $manifest = $this->getManifest();
         $count = count($manifest);
 
-        foreach($manifest as $listId => $list) {
-            foreach($list['groups'] as $groupId => $group) {
+        foreach ($manifest as $listId => $list) {
+            foreach ($list['groups'] as $groupId => $group) {
                 $cat = $list['name'];
 
-                if($showSets) {
+                if ($showSets) {
                     $cat .= isset($list['groupSets'][$group['groupSet']]) ?
                         ' / '.$list['groupSets'][$group['groupSet']] : null;
                 }
 
-                if($nested) {
+                if ($nested) {
                     $output[$cat][$listId.'/'.$groupId] = $group['name'];
                 } else {
                     $output[$listId.'/'.$groupId] = $showSets ?
@@ -216,35 +251,38 @@ class Source implements ISource {
         return $output;
     }
 
-    public function getGroupSetOptionsFor($listId) {
-        $output = [];
+    public function getGroupSetOptionsFor(?string $listId): array
+    {
         $manifest = $this->getManifest();
 
-        if(!isset($manifest[$listId])) {
-            return $output;
+        if ($listId === null || !isset($manifest[$listId])) {
+            return [];
         }
 
-        foreach($manifest[$listId]['groupSets'] as $setId => $setName) {
+        $output = [];
+
+        foreach ($manifest[$listId]['groupSets'] as $setId => $setName) {
             $output[$setId] = $setName;
         }
 
         return $output;
     }
 
-    public function getGroupOptionsFor($listId, $nested=false, $showSets=true) {
-        $output = [];
+    public function getGroupOptionsFor(?string $listId, bool $nested=false, bool $showSets=true): array
+    {
         $manifest = $this->getManifest();
 
-        if(!isset($manifest[$listId])) {
-            return $output;
+        if ($listId === null || !isset($manifest[$listId])) {
+            return [];
         }
 
+        $output = [];
         $list = $manifest[$listId];
 
-        foreach($list['groups'] as $groupId => $group) {
+        foreach ($list['groups'] as $groupId => $group) {
             $groupSet = $list['groupSets'][$group['groupSet']] ?? 'Default';
 
-            if($nested) {
+            if ($nested) {
                 $output[$groupSet][$groupId] = $group['name'];
             } else {
                 $output[$groupId] = $showSets ?
@@ -255,12 +293,12 @@ class Source implements ISource {
         return $output;
     }
 
-    public function getGroupIdListFor($listId) {
-        $output = [];
+    public function getGroupIdListFor(?string $listId): array
+    {
         $manifest = $this->getManifest();
 
-        if(!isset($manifest[$listId])) {
-            return $output;
+        if ($listId === null || !isset($manifest[$listId])) {
+            return [];
         }
 
         return array_keys($manifest[$listId]['groups']);
@@ -268,10 +306,11 @@ class Source implements ISource {
 
 
 
-    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $groups=null, $replace=false): ISubscribeResult {
+    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $groups=null, bool $replace=false): ISubscribeResult
+    {
         $manifest = $this->getManifest();
 
-        if(!isset($manifest[$listId])) {
+        if (!isset($manifest[$listId])) {
             throw core\Error::{'EApi,ENotFound'}(
                 'List id '.$listId.' could not be found on source '.$this->_id
             );
@@ -279,7 +318,7 @@ class Source implements ISource {
 
         try {
             $result = $this->_adapter->subscribeUserToList($client, $listId, $manifest[$listId], $groups, $replace);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             throw core\Error::EApi([
                 'message' => 'Adapter failed to subscribe user to list',
                 'previous' => $e,
@@ -290,7 +329,7 @@ class Source implements ISource {
             ]);
         }
 
-        if($result->isSuccessful()) {
+        if ($result->isSuccessful()) {
             $cache = flow\mailingList\Cache::getInstance();
             $cache->removeSession('client:'.$this->_id);
         }
@@ -300,44 +339,51 @@ class Source implements ISource {
 
 
 
-    public function getClientManifest() {
+    public function getClientManifest(): array
+    {
         return $this->_getClientManifest();
     }
 
-    public function getClientSubscribedGroupsIn($listId) {
+    public function getClientSubscribedGroupsIn(?string $listId): array
+    {
+        if ($listId === null) {
+            return [];
+        }
+
         $clientManifest = $this->_getClientManifest([$listId]);
 
-        if(isset($clientManifest[$listId]) && !empty($clientManifest[$listId])) {
+        if (isset($clientManifest[$listId]) && !empty($clientManifest[$listId])) {
             return $clientManifest[$listId];
         } else {
             return [];
         }
     }
 
-    protected function _getClientManifest(array $listIds=null) {
+    protected function _getClientManifest(array $listIds=null): array
+    {
         $cache = Cache::getInstance();
         $manifest = $cache->getSession('client:'.$this->_id);
         $lists = null;
 
-        if(!$manifest) {
+        if (!$manifest) {
             $manifest = [];
         }
 
         $selectIds = [];
 
-        if($listIds === null) {
+        if ($listIds === null) {
             $lists = $this->getManifest();
             $listIds = array_keys($lists);
         }
 
-        foreach($listIds as $listId) {
-            if(!array_key_exists($listId, $manifest)) {
+        foreach ($listIds as $listId) {
+            if (!array_key_exists($listId, $manifest)) {
                 $selectIds[] = $listId;
             }
         }
 
-        if(!empty($selectIds)) {
-            if($lists === null) {
+        if (!empty($selectIds)) {
+            if ($lists === null) {
                 $lists = $this->getManifest();
             }
 
@@ -345,7 +391,7 @@ class Source implements ISource {
 
             try {
                 $manifest = array_merge($manifest, $this->_adapter->fetchClientManifest($lists));
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 throw core\Error::EApi([
                     'message' => 'Failed to fetch client manifest',
                     'previous' => $e
@@ -359,10 +405,11 @@ class Source implements ISource {
     }
 
 
-    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client) {
+    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client)
+    {
         try {
             $this->_adapter->updateListUserDetails($oldEmail, $client, $this->getManifest());
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             throw core\Error::EApi([
                 'message' => 'Unable to update list user details',
                 'previous' => $e
@@ -373,10 +420,11 @@ class Source implements ISource {
     }
 
 
-    public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId) {
+    public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId)
+    {
         try {
             $this->_adapter->unsubscribeUserFromList($client, $listId);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             throw core\Error::EApi([
                 'message' => 'Failed unsubscribing user from list',
                 'previous' => $e,

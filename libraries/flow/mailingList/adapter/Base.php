@@ -9,12 +9,13 @@ use df;
 use df\core;
 use df\flow;
 
-abstract class Base implements flow\mailingList\IAdapter {
-
+abstract class Base implements flow\mailingList\IAdapter
+{
     const SETTINGS_FIELDS = [];
 
-    public static function factory(core\collection\ITree $options) {
-        if(!$name = $options['adapter']) {
+    public static function factory(core\collection\ITree $options): flow\mailingList\IAdapter
+    {
+        if (!$name = $options['adapter']) {
             throw core\Error::{'flow/mailingList/ESetup'}(
                 'Mailing list adapter name has not been set in config'
             );
@@ -22,7 +23,7 @@ abstract class Base implements flow\mailingList\IAdapter {
 
         $class = 'df\\flow\\mailingList\\adapter\\'.ucfirst($name);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw core\Error::{'flow/mailingList/ESetup,ENotFound'}(
                 'Mailing list adapter '.$name.' could not be found'
             );
@@ -31,10 +32,11 @@ abstract class Base implements flow\mailingList\IAdapter {
         return new $class($options);
     }
 
-    public static function getSettingsFieldsFor($name) {
+    public static function getSettingsFieldsFor(string $name): array
+    {
         $class = 'df\\flow\\mailingList\\adapter\\'.ucfirst($name);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw core\Error::{'flow/mailingList/ESetup,ENotFound'}(
                 'Mailing list adapter '.$name.' could not be found'
             );
@@ -43,18 +45,23 @@ abstract class Base implements flow\mailingList\IAdapter {
         return $class::getSettingsFields();
     }
 
-    public static function getSettingsFields() {
+    public static function getSettingsFields(): array
+    {
         return static::SETTINGS_FIELDS;
     }
 
-    protected function __construct(core\collection\ITree $options) {}
+    protected function __construct(core\collection\ITree $options)
+    {
+    }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public function canConnect(): bool {
+    public function canConnect(): bool
+    {
         return true;
     }
 }

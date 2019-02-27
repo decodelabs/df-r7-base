@@ -10,8 +10,8 @@ use df\core;
 use df\flow;
 use df\user;
 
-
-interface IManager extends core\IManager {
+interface IManager extends core\IManager
+{
 
 // Mail
     public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
@@ -21,35 +21,35 @@ interface IManager extends core\IManager {
     public function getMailModel();
 
 
-// Lists
-    public function getListSources();
-    public function getListSource($id);
-    public function hasListSource($id);
-    public function getListManifest();
-    public function getAvailableListAdapters();
-    public function getListAdapterSettingsFields($adapter);
-    public function getListOptions();
-    public function getListGroupOptions();
+    // Lists
+    public function getListSources(): array;
+    public function getListSource($id): ?flow\mailingList\ISource;
+    public function hasListSource(string $id): bool;
+    public function getListManifest(): array;
+    public function getAvailableListAdapters(): array;
+    public function getListAdapterSettingsFields(string $adapter): array;
+    public function getListOptions(): array;
+    public function getListGroupOptions(): array;
     public function clearListCache();
 
-    public function getListExternalLinkFor($sourceId);
+    public function getListExternalLinkFor($source, string $listId=null): ?string;
 
-    public function getPrimaryGroupSetOptionsFor($sourceId);
-    public function getPrimaryGroupOptionsFor($sourceId, $nested=false);
-    public function getPrimaryGroupIdListFor($sourceId);
+    public function getPrimaryGroupSetOptionsFor($source): array;
+    public function getPrimaryGroupOptionsFor($source, bool $nested=false, bool $showSets=true): array;
+    public function getPrimaryGroupIdListFor($source): array;
 
-    public function subscribeClientToPrimaryList($sourceId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult;
-    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult;
-    public function subscribeClientToGroups(array $compoundGroupIds, $replace=false): array;
-    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult;
-    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult;
-    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=false): array;
+    public function subscribeClientToPrimaryList($source, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult;
+    public function subscribeClientToList($source, $listId, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult;
+    public function subscribeClientToGroups(array $compoundGroupIds, bool $replace=false): array;
+    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $source, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult;
+    public function subscribeUserToList(user\IClientDataObject $client, $source, $listId, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult;
+    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, bool $replace=false): array;
 
-    public function getClientSubscribedGroups();
-    public function getClientSubscribedGroupsFor($sourceId);
-    public function getClientSubscribedGroupsIn($sourceId, $listId);
-    public function getClientSubscribedPrimaryGroupsFor($sourceId);
-    public function isClientSubscribed($sourceId, $listId=null, $groupId=null): bool;
+    public function getClientSubscribedGroups(): array;
+    public function getClientSubscribedGroupsFor($source): array;
+    public function getClientSubscribedGroupsIn($source, ?string $listId): array;
+    public function getClientSubscribedPrimaryGroupsFor($source): array;
+    public function isClientSubscribed($source, string $listId=null, string $groupId=null): bool;
 
     public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client);
 
@@ -58,7 +58,7 @@ interface IManager extends core\IManager {
     public function unsubscribeUserFromPrimaryList(user\IClientDataObject $client, $sourceId);
     public function unsubscribeUserFromList(user\IClientDataObject $client, $sourceId, string $listId);
 
-// Flash
+    // Flash
     public function setFlashLimit($limit);
     public function getFlashLimit();
 
@@ -82,8 +82,8 @@ interface IManager extends core\IManager {
 }
 
 
-interface IFlashMessage {
-
+interface IFlashMessage
+{
     const INFO = 'info';
     const SUCCESS = 'success';
     const ERROR = 'error';
@@ -111,50 +111,53 @@ interface IFlashMessage {
 
 
 
-class FlashQueue implements \Serializable {
-
+class FlashQueue implements \Serializable
+{
     public $limit = 15;
     public $constant = [];
     public $queued = [];
     public $instant = [];
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return empty($this->constant) &&
             empty($this->queued) &&
             empty($this->instant);
     }
 
-    public function serialize() {
+    public function serialize()
+    {
         $data = ['l' => $this->limit];
 
-        if(!empty($this->constant)) {
+        if (!empty($this->constant)) {
             $data['c'] = $this->constant;
         }
 
-        if(!empty($this->queued)) {
+        if (!empty($this->queued)) {
             $data['q'] = $this->queued;
         }
 
-        if(!empty($this->instant)) {
+        if (!empty($this->instant)) {
             $data['i'] = $this->instant;
         }
 
         return serialize($data);
     }
 
-    public function unserialize($data) {
+    public function unserialize($data)
+    {
         $data = unserialize($data);
         $this->limit = $data['l'];
 
-        if(isset($data['c'])) {
+        if (isset($data['c'])) {
             $this->constant = $data['c'];
         }
 
-        if(isset($data['q'])) {
+        if (isset($data['q'])) {
             $this->queued = $data['q'];
         }
 
-        if(isset($data['i'])) {
+        if (isset($data['i'])) {
             $this->instant = $data['i'];
         }
     }

@@ -12,14 +12,15 @@ use df\spur;
 use df\user;
 use df\link;
 
-class Mailchimp3 extends Base {
-
+class Mailchimp3 extends Base
+{
     const SETTINGS_FIELDS = ['*apiKey' => 'API key'];
 
     protected $_mediator;
 
-    protected function __construct(core\collection\ITree $options) {
-        if(!$apiKey = $options['apiKey']) {
+    protected function __construct(core\collection\ITree $options)
+    {
+        if (!$apiKey = $options['apiKey']) {
             throw core\Error::{'flow/mailingList/ESetup'}(
                 'Mailchimp apiKey has not been set'
             );
@@ -28,15 +29,18 @@ class Mailchimp3 extends Base {
         $this->_mediator = new spur\mail\mailchimp3\Mediator($apiKey);
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->_mediator->getApiKey();
     }
 
-    public function canConnect(): bool {
+    public function canConnect(): bool
+    {
         return $this->_mediator->canConnect();
     }
 
-    public function fetchManifest(): array {
+    public function fetchManifest(): array
+    {
         $output = [];
 
         $lists = $this->_mediator->fetchLists(
@@ -45,7 +49,7 @@ class Mailchimp3 extends Base {
                 ->setLimit(100)
         );
 
-        foreach($lists as $list) {
+        foreach ($lists as $list) {
             $row = [
                 'name' => $list['name'],
                 'url' => $list['subscribe_url_short'],
@@ -54,22 +58,25 @@ class Mailchimp3 extends Base {
                 'subscribers' => $list->stats['member_count']
             ];
 
-            $categories = $this->_mediator->fetchInterestCategories($list['id'],
+            $categories = $this->_mediator->fetchInterestCategories(
+                $list['id'],
                 $this->_mediator->newInterestCategoryFilter()
                     ->setFields('id', 'title')
                     ->setLimit(100)
             );
 
-            foreach($categories as $category) {
+            foreach ($categories as $category) {
                 $row['groupSets'][$category['id']] = $category['title'];
 
-                $interests = $this->_mediator->fetchInterests($list['id'], $category['id'],
+                $interests = $this->_mediator->fetchInterests(
+                    $list['id'],
+                    $category['id'],
                     $this->_mediator->newInterestFilter()
                         ->setFields('id', 'name', 'subscriber_count')
                         ->setLimit(100)
                 );
 
-                foreach($interests as $interest) {
+                foreach ($interests as $interest) {
                     $row['groups'][$interest['id']] = [
                         'name' => $interest['name'],
                         'groupSet' => $category['id'],
@@ -85,35 +92,36 @@ class Mailchimp3 extends Base {
     }
 
 
-    public function subscribeUserToList(user\IClientDataObject $client, $listId, array $manifest, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult {
+    public function subscribeUserToList(user\IClientDataObject $client, string $listId, array $manifest, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
+    {
         $email = $client->getEmail();
         $merges = [];
         $result = new flow\mailingList\SubscribeResult();
 
-        if(!$email) {
+        if (!$email) {
             return $result;
         }
 
         $result->setEmailAddress($email, $client->getFullName());
         $interests = [];
 
-        if($member = $this->_getMemberData($listId, $email)) {
+        if ($member = $this->_getMemberData($listId, $email)) {
             $merges = $member['mergeFields'];
 
-            if(!$replace) {
+            if (!$replace) {
                 $interests = $member['interests'];
             }
         }
 
-        if($replace) {
-            foreach($manifest['groups'] as $groupId => $group) {
+        if ($replace) {
+            foreach ($manifest['groups'] as $groupId => $group) {
                 $interests[$groupId] = false;
             }
         }
 
-        if(!empty($groups)) {
-            foreach($groups as $groupId) {
-                if(isset($manifest['groups'][$groupId])) {
+        if (!empty($groups)) {
+            foreach ($groups as $groupId) {
+                if (isset($manifest['groups'][$groupId])) {
                     $interests[$groupId] = true;
                 }
             }
@@ -129,19 +137,19 @@ class Mailchimp3 extends Base {
             $result
                 ->isSuccessful(true)
                 ->isSubscribed(true);
-        } catch(spur\mail\mailchimp3\EApi $e) {
+        } catch (spur\mail\mailchimp3\EApi $e) {
             $result->isSuccessful(false);
             $handled = false;
 
-            switch($e->getCode()) {
+            switch ($e->getCode()) {
                 case 400:
-                    if(preg_match('/fake or invalid/i', $e->getMessage())) {
+                    if (preg_match('/fake or invalid/i', $e->getMessage())) {
                         $result->isInvalid(true);
                         $handled = true;
-                    } else if(preg_match('/not allowing more signups for now/i', $e->getMessage())) {
+                    } elseif (preg_match('/not allowing more signups for now/i', $e->getMessage())) {
                         $result->isThrottled(true);
                         $handled = true;
-                    } else if(preg_match('/is in a compliance state/i', $e->getMessage())) {
+                    } elseif (preg_match('/is in a compliance state/i', $e->getMessage())) {
                         $result->requiresManualInput(true);
                         $handled = true;
                     }
@@ -149,12 +157,12 @@ class Mailchimp3 extends Base {
                     break;
             }
 
-            if(!$handled) {
+            if (!$handled) {
                 core\logException($e);
             }
         }
 
-        if($result->isSuccessful()) {
+        if ($result->isSuccessful()) {
             $cache = flow\mailingList\Cache::getInstance();
             $cache->removeSession('mailchimp3:'.$listId);
         }
@@ -162,19 +170,20 @@ class Mailchimp3 extends Base {
         return $result;
     }
 
-    public function fetchClientManifest(array $manifest): array {
+    public function fetchClientManifest(array $manifest): array
+    {
         $output = [];
 
-        foreach($manifest as $listId => $list) {
-            if(!$memberData = $this->_getClientMemberData($listId)) {
+        foreach ($manifest as $listId => $list) {
+            if (!$memberData = $this->_getClientMemberData($listId)) {
                 $output[$listId] = false;
                 continue;
             }
 
             $output[$listId] = [];
 
-            foreach($list['groups'] as $groupId => $group) {
-                if(!isset($memberData['interests'][$groupId]) ||
+            foreach ($list['groups'] as $groupId => $group) {
+                if (!isset($memberData['interests'][$groupId]) ||
                     !$memberData['interests'][$groupId]) {
                     continue;
                 }
@@ -186,16 +195,17 @@ class Mailchimp3 extends Base {
         return $output;
     }
 
-    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client, array $manifest) {
+    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client, array $manifest)
+    {
         $cache = flow\mailingList\Cache::getInstance();
 
-        foreach($manifest as $listId => $list) {
-            if(!$member = $this->_getMemberData($listId, $oldEmail)) {
+        foreach ($manifest as $listId => $list) {
+            if (!$member = $this->_getMemberData($listId, $oldEmail)) {
                 continue;
             }
 
-            if($oldEmail != $client->getEmail()) {
-                if($clashMember = $this->_getMemberData($listId, $client->getEmail())) {
+            if ($oldEmail != $client->getEmail()) {
+                if ($clashMember = $this->_getMemberData($listId, $client->getEmail())) {
                     $this->_mediator->deleteMember($listId, $client->getEmail());
                 }
             }
@@ -207,7 +217,8 @@ class Mailchimp3 extends Base {
         return $this;
     }
 
-    public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId) {
+    public function unsubscribeUserFromList(user\IClientDataObject $client, string $listId)
+    {
         $this->_mediator->unsubscribe($listId, $client->getEmail());
 
         $cache = flow\mailingList\Cache::getInstance();
@@ -217,11 +228,12 @@ class Mailchimp3 extends Base {
     }
 
 
-    protected function _getClientMemberData(string $listId): ?array {
+    protected function _getClientMemberData(string $listId): ?array
+    {
         $sessionKey = 'mailchimp3:'.$listId;
         $cache = flow\mailingList\Cache::getInstance();
 
-        if(null === ($member = $cache->getSession($sessionKey))) {
+        if (null === ($member = $cache->getSession($sessionKey))) {
             $member = $this->_getMemberData($listId);
             $cache->setSession($sessionKey, $member ?? false);
         }
@@ -229,24 +241,25 @@ class Mailchimp3 extends Base {
         return $member ? $member : null;
     }
 
-    protected function _getMemberData(string $listId, string $email=null): ?array {
+    protected function _getMemberData(string $listId, string $email=null): ?array
+    {
         $clientEmail = user\Manager::getInstance()->getClient()->getEmail();
 
-        if($email == $clientEmail) {
+        if ($email == $clientEmail) {
             return $this->_getClientMemberData($listId);
         }
 
-        if($email === null) {
+        if ($email === null) {
             $email = $clientEmail;
         }
 
         try {
             $member = $this->_mediator->fetchMember($listId, $email);
 
-            if($member['status'] == 'unsubscribed') {
+            if ($member['status'] == 'unsubscribed') {
                 return null;
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return null;
         }
 

@@ -12,8 +12,8 @@ use df\user;
 use df\flex;
 use df\axis;
 
-class Manager implements IManager, core\IShutdownAware {
-
+class Manager implements IManager, core\IShutdownAware
+{
     use core\TManager;
 
     const REGISTRY_PREFIX = 'manager://flow';
@@ -24,21 +24,25 @@ class Manager implements IManager, core\IShutdownAware {
     protected $_isFlashQueueProcessed = false;
     protected $_flashQueueChanged = false;
 
-    public function onAppShutdown(): void {
+    public function onAppShutdown(): void
+    {
         $this->_saveFlashQueue();
     }
 
 
-## Mail
-    public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null) {
+    ## Mail
+    public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null)
+    {
         return $this->_sendMail($message, $transport);
     }
 
-    public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null) {
+    public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null)
+    {
         return $this->_sendMail($message, $transport, true);
     }
 
-    protected function _sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null, $forceSend=false) {
+    protected function _sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null, $forceSend=false)
+    {
         $context = new core\SharedContext();
 
         try {
@@ -57,19 +61,19 @@ class Manager implements IManager, core\IShutdownAware {
             $config = flow\mail\Config::getInstance();
 
             // Admins
-            if($message->shouldSendToAdmin()) {
+            if ($message->shouldSendToAdmin()) {
                 $isJustToAdmins = $to->isEmpty();
 
-                foreach($config->getAdminAddresses() as $address) {
+                foreach ($config->getAdminAddresses() as $address) {
                     $to->add($address);
                 }
             }
 
             // Users
-            foreach($userList as $key => $user) {
+            foreach ($userList as $key => $user) {
                 $isJustToAdmins = false;
 
-                if($user === null) {
+                if ($user === null) {
                     $keys[] = $key;
                 } else {
                     $to->add($user['email'], $user['name']);
@@ -80,16 +84,16 @@ class Manager implements IManager, core\IShutdownAware {
             $clientList = $userModel->getClientDataList($keys, array_keys($to->toArray()));
             $client = $userManager->client;
 
-            foreach($clientList as $user) {
+            foreach ($clientList as $user) {
                 $to->add($user->getEmail(), $user->getFullName());
             }
 
-            if($message->shouldFilterClient()) {
+            if ($message->shouldFilterClient()) {
                 $to->remove($client->getEmail());
             }
 
 
-            if($to->isEmpty()) {
+            if ($to->isEmpty()) {
                 return $this;
             }
 
@@ -98,17 +102,17 @@ class Manager implements IManager, core\IShutdownAware {
             $isWin = (0 === strpos(PHP_OS, 'WIN'));
 
             // From
-            if(!$from = $message->getFromAddress()) {
+            if (!$from = $message->getFromAddress()) {
                 $from = flow\mail\Address::factory($config->getDefaultAddress());
 
-                if(!$from->getName()) {
+                if (!$from->getName()) {
                     $from->setName(df\Launchpad::$app->getName());
                 }
 
                 $message->setFromAddress($from);
             }
 
-            if(!$from->isValid()) {
+            if (!$from->isValid()) {
                 $context->logs->logException(core\Error::EValue(
                     'Invalid from address: '.$from
                 ));
@@ -127,15 +131,15 @@ class Manager implements IManager, core\IShutdownAware {
             $headers = $mime->getHeaders();
             $domain = null;
 
-            if(isset($_SERVER['SERVER_NAME'])) {
+            if (isset($_SERVER['SERVER_NAME'])) {
                 $domain = $_SERVER['SERVER_NAME'];
             } else {
-                if($url = core\app\runner\http\Config::getInstance()->getRootUrl()) {
+                if ($url = core\app\runner\http\Config::getInstance()->getRootUrl()) {
                     $domain = df\link\http\Url::factory($url)->getDomain();
                 }
             }
 
-            if($domain) {
+            if ($domain) {
                 $headers->set('Message-Id', sprintf(
                     "<%s.%s@%s>",
                     base_convert(microtime(), 10, 36),
@@ -144,33 +148,33 @@ class Manager implements IManager, core\IShutdownAware {
                 ));
             }
 
-            if(!$returnPath = $message->getReturnPath()) {
+            if (!$returnPath = $message->getReturnPath()) {
                 $message->setReturnPath($config->getDefaultReturnPath());
                 $returnPath = $message->getReturnPath();
             }
 
-            if($returnPath) {
+            if ($returnPath) {
                 $headers->set('Return-Path', $returnPath->getAddress());
             }
 
-            if($replyTo = $message->getReplyToAddress()) {
+            if ($replyTo = $message->getReplyToAddress()) {
                 $headers->set('Reply-To', $replyTo->getAddress());
             }
 
             // To
             $headers->set('to', (string)$to);
 
-            if($message->hasCcAddresses()) {
+            if ($message->hasCcAddresses()) {
                 $headers->set('cc', (string)$message->getCcAddresses());
             }
 
-            if($message->hasBccAddresses()) {
+            if ($message->hasBccAddresses()) {
                 $headers->set('bcc', (string)$message->getBccAddresses());
             }
 
             // Body
-            if($bodyText === null) {
-                if($bodyHtml === null) {
+            if ($bodyText === null) {
+                if ($bodyHtml === null) {
                     return $this;
                 }
 
@@ -183,13 +187,13 @@ class Manager implements IManager, core\IShutdownAware {
 
             $part = $mime->newMultiPart(flow\mime\IMultiPart::ALTERNATIVE);
 
-            if($bodyText !== null) {
+            if ($bodyText !== null) {
                 $part->newContentPart($bodyText)
                     ->setContentType('text/plain')
                     ->setEncoding(flex\IEncoding::QP);
             }
 
-            if($bodyHtml !== null) {
+            if ($bodyHtml !== null) {
                 $part->newContentPart($bodyHtml)
                     ->setContentType('text/html')
                     ->setEncoding(flex\IEncoding::QP);
@@ -197,7 +201,7 @@ class Manager implements IManager, core\IShutdownAware {
 
 
             // Attachments
-            foreach($message->getAttachments() as $attachment) {
+            foreach ($message->getAttachments() as $attachment) {
                 $mime->newContentPart($attachment->getFile())
                     ->setContentType($attachment->getContentType())
                     ->setDisposition('attachment')
@@ -210,14 +214,14 @@ class Manager implements IManager, core\IShutdownAware {
 
 
             // Send
-            if(!$forceSend && $message->shouldForceSend()) {
+            if (!$forceSend && $message->shouldForceSend()) {
                 $forceSend = true;
             }
 
             $isDefault = false;
             $transportName = null;
 
-            if($transport === null) {
+            if ($transport === null) {
                 $transportName = $this->getDefaultMailTransportName($forceSend);
                 $transport = flow\mail\transport\Base::factory($transportName);
                 $isDefault = true;
@@ -225,8 +229,8 @@ class Manager implements IManager, core\IShutdownAware {
 
             try {
                 $output = $transport->send($message, $mime);
-            } catch(\Throwable $e) {
-                if($isDefault && $transportName !== 'Mail' && $transportName !== 'Capture') {
+            } catch (\Throwable $e) {
+                if ($isDefault && $transportName !== 'Mail' && $transportName !== 'Capture') {
                     $context->logs->logException($e);
                     $transport = flow\mail\transport\Base::factory('Mail');
                     $output = $transport->send($message, $mime);
@@ -235,18 +239,18 @@ class Manager implements IManager, core\IShutdownAware {
                 }
             }
 
-            if($message->shouldJournal()) {
+            if ($message->shouldJournal()) {
                 try {
                     $model = $this->getMailModel();
                     $model->journalMail($message);
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     $context->logs->logException($e);
                 }
             }
 
             return $output;
-        } catch(\Throwable $e) {
-            if($context->app->isDevelopment()) {
+        } catch (\Throwable $e) {
+            if ($context->app->isDevelopment()) {
                 throw $e;
             } else {
                 $context->logs->logException($e);
@@ -259,30 +263,32 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 
-    public function getDefaultMailTransportName($forceSend=false) {
-        if(df\Launchpad::$app->isDevelopment() && !$forceSend) {
+    public function getDefaultMailTransportName($forceSend=false)
+    {
+        if (df\Launchpad::$app->isDevelopment() && !$forceSend) {
             return 'Capture';
         }
 
         $config = flow\mail\Config::getInstance();
 
-        if(df\Launchpad::$app->isTesting() && $config->shouldCaptureInTesting() && !$forceSend) {
+        if (df\Launchpad::$app->isTesting() && $config->shouldCaptureInTesting() && !$forceSend) {
             return 'Capture';
         }
 
         $name = $config->getDefaultTransport();
 
-        if(!flow\mail\transport\Base::getTransportClass($name)) {
+        if (!flow\mail\transport\Base::getTransportClass($name)) {
             $name = 'Mail';
         }
 
         return $name;
     }
 
-    public function getMailModel() {
+    public function getMailModel()
+    {
         $model = axis\Model::factory('mail');
 
-        if(!$model instanceof flow\mail\IMailModel) {
+        if (!$model instanceof flow\mail\IMailModel) {
             throw core\Error::{'flow/mail/EDefinition'}(
                 'Mail model does not implement flow\\mail\\IMailModel'
             );
@@ -292,15 +298,16 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
 
-## LISTS
-    public function getListSources() {
+    ## LISTS
+    public function getListSources(): array
+    {
         $config = flow\mail\Config::getInstance();
         $output = [];
 
-        foreach($config->getListSources() as $id => $options) {
+        foreach ($config->getListSources() as $id => $options) {
             try {
                 $source = new flow\mailingList\Source($id, $options);
-            } catch(flow\mailingList\IError $e) {
+            } catch (flow\mailingList\IError $e) {
                 core\logException($e);
                 continue;
             }
@@ -311,8 +318,9 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
-    public function getListSource($id) {
-        if($id instanceof flow\mailingList\ISource) {
+    public function getListSource($id): ?flow\mailingList\ISource
+    {
+        if ($id instanceof flow\mailingList\ISource) {
             return $id;
         }
 
@@ -321,23 +329,25 @@ class Manager implements IManager, core\IShutdownAware {
 
         try {
             return new flow\mailingList\Source($id, $options);
-        } catch(flow\mailingList\IError $e) {
+        } catch (flow\mailingList\IError $e) {
             return null;
         }
     }
 
-    public function hasListSource($id) {
+    public function hasListSource(string $id): bool
+    {
         $config = flow\mail\Config::getInstance();
         $options = $config->getListSource($id);
 
         return isset($options->adapter);
     }
 
-    public function getListManifest() {
+    public function getListManifest(): array
+    {
         $output = [];
 
-        foreach($this->getListSources() as $sourceId => $source) {
-            foreach($source->getManifest() as $listId => $list) {
+        foreach ($this->getListSources() as $sourceId => $source) {
+            foreach ($source->getManifest() as $listId => $list) {
                 $output[$sourceId.'/'.$listId] = array_merge([
                     'id' => $listId,
                     'source' => $sourceId
@@ -348,10 +358,11 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
-    public function getAvailableListAdapters() {
+    public function getAvailableListAdapters(): array
+    {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList('flow/mailingList/adapter') as $name => $class) {
+        foreach (df\Launchpad::$loader->lookupClassList('flow/mailingList/adapter') as $name => $class) {
             $output[$name] = $name;
         }
 
@@ -359,15 +370,17 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
-    public function getListAdapterSettingsFields($adapter) {
+    public function getListAdapterSettingsFields(string $adapter): array
+    {
         return flow\mailingList\adapter\Base::getSettingsFieldsFor($adapter);
     }
 
-    public function getListOptions() {
+    public function getListOptions(): array
+    {
         $output = [];
 
-        foreach($this->getListSources() as $sourceId => $source) {
-            foreach($source->getListOptions() as $listId => $name) {
+        foreach ($this->getListSources() as $sourceId => $source) {
+            foreach ($source->getListOptions() as $listId => $name) {
                 $output[$sourceId.'/'.$listId] = $name;
             }
         }
@@ -375,11 +388,12 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
-    public function getListGroupOptions() {
+    public function getListGroupOptions(): array
+    {
         $output = [];
 
-        foreach($this->getListSources() as $sourceId => $source) {
-            foreach($source->getGroupOptions() as $groupId => $name) {
+        foreach ($this->getListSources() as $sourceId => $source) {
+            foreach ($source->getGroupOptions() as $groupId => $name) {
                 $output[$sourceId.'/'.$groupId] = $name;
             }
         }
@@ -387,7 +401,8 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
-    public function clearListCache() {
+    public function clearListCache()
+    {
         flow\mailingList\Cache::getInstance()->clearGlobal();
         flow\mailingList\ApiStore::getInstance()->clear();
         return $this;
@@ -396,43 +411,53 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 
-    public function getListExternalLinkFor($sourceId) {
-        if($source = $this->getListSource($sourceId)) {
-            return $source->getListExternalLink();
+    public function getListExternalLinkFor($source, string $listId=null): ?string
+    {
+        if ($source = $this->getListSource($source)) {
+            if ($listId !== null) {
+                return $source->getListExternalLink($listId);
+            } else {
+                return $source->getPrimaryListExternalLink();
+            }
+        } else {
+            return null;
         }
     }
 
 
-    public function getPrimaryGroupSetOptionsFor($sourceId) {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function getPrimaryGroupSetOptionsFor($source): array
+    {
+        if (!$source = $this->getListSource($source)) {
             return [];
         }
 
-        if(!$listId = $source->getPrimaryListId()) {
+        if (!$listId = $source->getPrimaryListId()) {
             return [];
         }
 
         return $source->getGroupSetOptionsFor($listId);
     }
 
-    public function getPrimaryGroupOptionsFor($sourceId, $nested=false, $showSets=true) {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function getPrimaryGroupOptionsFor($source, bool $nested=false, bool $showSets=true): array
+    {
+        if (!$source = $this->getListSource($source)) {
             return [];
         }
 
-        if(!$listId = $source->getPrimaryListId()) {
+        if (!$listId = $source->getPrimaryListId()) {
             return [];
         }
 
         return $source->getGroupOptionsFor($listId, $nested, $showSets);
     }
 
-    public function getPrimaryGroupIdListFor($sourceId) {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function getPrimaryGroupIdListFor($source): array
+    {
+        if (!$source = $this->getListSource($source)) {
             return [];
         }
 
-        if(!$listId = $source->getPrimaryListId()) {
+        if (!$listId = $source->getPrimaryListId()) {
             return [];
         }
 
@@ -441,29 +466,33 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 
-    public function subscribeClientToPrimaryList($sourceId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult {
+    public function subscribeClientToPrimaryList($source, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
+    {
         $client = user\Manager::getInstance()->getClient();
-        return $this->subscribeUserToPrimaryList($client, $sourceId, $groups, $replace);
+        return $this->subscribeUserToPrimaryList($client, $source, $groups, $replace);
     }
 
-    public function subscribeClientToList($sourceId, $listId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult  {
+    public function subscribeClientToList($source, $listId, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
+    {
         $client = user\Manager::getInstance()->getClient();
-        return $this->subscribeUserToList($client, $sourceId, $listId, $groups, $replace);
+        return $this->subscribeUserToList($client, $source, $listId, $groups, $replace);
     }
 
-    public function subscribeClientToGroups(array $compoundGroupIds, $replace=false): array  {
+    public function subscribeClientToGroups(array $compoundGroupIds, bool $replace=false): array
+    {
         $client = user\Manager::getInstance()->getClient();
         return $this->subscribeUserToGroups($client, $compoundGroupIds, $replace);
     }
 
-    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $sourceId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult  {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function subscribeUserToPrimaryList(user\IClientDataObject $client, $source, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
+    {
+        if (!$source = $this->getListSource($sourceId = $source)) {
             throw core\Error::{'flow/mailingList/EApi,flow/mailingList/ENotFound'}(
                 'List source '.$sourceId.' does not exist'
             );
         }
 
-        if(!$listId = $source->getPrimaryListId()) {
+        if (!$listId = $source->getPrimaryListId()) {
             throw core\Error::{'flow/mailingList/EApi,flow/mailingList/ENotFound'}(
                 'No primary list has been set for mailing list source '.$source->getId()
             );
@@ -472,8 +501,9 @@ class Manager implements IManager, core\IShutdownAware {
         return $this->subscribeUserToList($client, $source, $listId, $groups, $replace);
     }
 
-    public function subscribeUserToList(user\IClientDataObject $client, $sourceId, $listId, array $groups=null, $replace=false): flow\mailingList\ISubscribeResult  {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function subscribeUserToList(user\IClientDataObject $client, $source, $listId, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
+    {
+        if (!$source = $this->getListSource($sourceId = $source)) {
             throw core\Error::{'flow/mailingList/EApi,flow/mailingList/ENotFound'}(
                 'List source '.$sourceId.' does not exist'
             );
@@ -482,16 +512,17 @@ class Manager implements IManager, core\IShutdownAware {
         return $source->subscribeUserToList($client, $listId, $groups, $replace);
     }
 
-    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, $replace=false): array  {
+    public function subscribeUserToGroups(user\IClientDataObject $client, array $compoundGroupIds, bool $replace=false): array
+    {
         $manifest = $output = [];
 
-        foreach($compoundGroupIds as $id) {
+        foreach ($compoundGroupIds as $id) {
             list($sourceId, $listId, $groupId) = explode('/', $id);
             $manifest[$sourceId][$listId][] = $groupId;
         }
 
-        foreach($manifest as $sourceId => $lists) {
-            foreach($lists as $listId => $groups) {
+        foreach ($manifest as $sourceId => $lists) {
+            foreach ($lists as $listId => $groups) {
                 $output[$sourceId][$listId] = $this->subscribeClientToList($client, $sourceId, $listId, $groups, $replace);
             }
         }
@@ -500,11 +531,12 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
 
-    public function getClientSubscribedGroups() {
+    public function getClientSubscribedGroups(): array
+    {
         $output = [];
 
-        foreach($this->getListSources() as $sourceId => $source) {
-            foreach($source->getClientManifest() as $listId => $groups) {
+        foreach ($this->getListSources() as $sourceId => $source) {
+            foreach ($source->getClientManifest() as $listId => $groups) {
                 $output[$sourceId.'/'.$listId] = $groups;
             }
         }
@@ -512,60 +544,64 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
-    public function getClientSubscribedGroupsFor($sourceId) {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function getClientSubscribedGroupsFor($source): array
+    {
+        if (!$source = $this->getListSource($source)) {
             return [];
         }
 
         return $source->getClientManifest();
     }
 
-    public function getClientSubscribedGroupsIn($sourceId, $listId) {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function getClientSubscribedGroupsIn($source, ?string $listId): array
+    {
+        if (!$source = $this->getListSource($source)) {
             return [];
         }
 
         return $source->getClientSubscribedGroupsIn($listId);
     }
 
-    public function getClientSubscribedPrimaryGroupsFor($sourceId) {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function getClientSubscribedPrimaryGroupsFor($source): array
+    {
+        if (!$source = $this->getListSource($source)) {
             return [];
         }
 
-        if(!$listId = $source->getPrimaryListId()) {
+        if (!$listId = $source->getPrimaryListId()) {
             return [];
         }
 
         return $source->getClientSubscribedGroupsIn($listId);
     }
 
-    public function isClientSubscribed($sourceId, $listId=null, $groupId=null): bool {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function isClientSubscribed($source, string $listId=null, string $groupId=null): bool
+    {
+        if (!$source = $this->getListSource($source)) {
             return false;
         }
 
-        if($listId === null) {
+        if ($listId === null) {
             $listId = $source->getPrimaryListId();
         }
 
-        if(!$listId) {
+        if (!$listId) {
             return false;
         }
 
         try {
             $manifest = $source->getClientManifest();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             core\logException($e);
             return false;
         }
 
-        if(!isset($manifest[$listId])) {
+        if (!isset($manifest[$listId])) {
             return false;
         }
 
-        if($groupId === null) {
-            if(($manifest[$listId] ?? false) === false) {
+        if ($groupId === null) {
+            if (($manifest[$listId] ?? false) === false) {
                 return false;
             }
 
@@ -576,8 +612,9 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
 
-    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client) {
-        foreach($this->getListSources() as $source) {
+    public function updateListUserDetails(string $oldEmail, user\IClientDataObject $client)
+    {
+        foreach ($this->getListSources() as $source) {
             $source->updateListUserDetails($oldEmail, $client);
         }
 
@@ -586,30 +623,34 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 
-    public function unsubscribeClientFromPrimaryList($sourceId) {
+    public function unsubscribeClientFromPrimaryList($source)
+    {
         $client = user\Manager::getInstance()->getClient();
-        return $this->unsubscribeUserFromPrimaryList($client, $sourceId);
+        return $this->unsubscribeUserFromPrimaryList($client, $source);
     }
 
-    public function unsubscribeClientFromList($sourceId, $listId) {
+    public function unsubscribeClientFromList($source, $listId)
+    {
         $client = user\Manager::getInstance()->getClient();
-        return $this->unsubscribeUserFromList($client, $sourceId, $listId);
+        return $this->unsubscribeUserFromList($client, $source, $listId);
     }
 
-    public function unsubscribeUserFromPrimaryList(user\IClientDataObject $client, $sourceId) {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function unsubscribeUserFromPrimaryList(user\IClientDataObject $client, $source)
+    {
+        if (!$source = $this->getListSource($source)) {
             return $this;
         }
 
-        if(!$listId = $source->getPrimaryListId()) {
+        if (!$listId = $source->getPrimaryListId()) {
             return $this;
         }
 
         return $this->unsubscribeUserFromList($client, $source, $listId);
     }
 
-    public function unsubscribeUserFromList(user\IClientDataObject $client, $sourceId, string $listId) {
-        if(!$source = $this->getListSource($sourceId)) {
+    public function unsubscribeUserFromList(user\IClientDataObject $client, $source, string $listId)
+    {
+        if (!$source = $this->getListSource($source)) {
             return $this;
         }
 
@@ -619,47 +660,51 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 
-## FLASH
+    ## FLASH
 
-// Limit
-    public function setFlashLimit($limit) {
+    // Limit
+    public function setFlashLimit($limit)
+    {
         $this->_loadFlashQueue();
         $this->_flashQueue->limit = (int)$limit;
 
-        if($this->_flashQueue->limit <= 0) {
+        if ($this->_flashQueue->limit <= 0) {
             $this->_flashQueue->limit = 1;
         }
 
         return $this;
     }
 
-    public function getFlashLimit() {
+    public function getFlashLimit()
+    {
         $this->_loadFlashQueue();
         return $this->_flashQueue->limit;
     }
 
 
-    public function newFlashMessage($id, $message=null, $type=null) {
+    public function newFlashMessage($id, $message=null, $type=null)
+    {
         return FlashMessage::factory($id, $message, $type);
     }
 
 
-// Queue
-    public function processFlashQueue() {
-        if($this->_flashDisabled) {
+    // Queue
+    public function processFlashQueue()
+    {
+        if ($this->_flashDisabled) {
             return $this;
         }
 
-        if(!$this->_isFlashQueueProcessed) {
+        if (!$this->_isFlashQueueProcessed) {
             $this->_loadFlashQueue();
 
-            if($this->_flashDisabled) {
+            if ($this->_flashDisabled) {
                 return $this;
             }
 
-            foreach($this->_flashQueue->instant as $id => $message) {
-                if($message->isDisplayed()) {
-                    if($message->canDisplayAgain()) {
+            foreach ($this->_flashQueue->instant as $id => $message) {
+                if ($message->isDisplayed()) {
+                    if ($message->canDisplayAgain()) {
                         $message->resetDisplayState();
                     } else {
                         unset($this->_flashQueue->instant[$id]);
@@ -671,8 +716,8 @@ class Manager implements IManager, core\IShutdownAware {
 
             $limit = $this->_flashQueue->limit - count($this->_flashQueue->instant);
 
-            for($i = 0; $i < $limit; $i++) {
-                if(!$message = array_shift($this->_flashQueue->queued)) {
+            for ($i = 0; $i < $limit; $i++) {
+                if (!$message = array_shift($this->_flashQueue->queued)) {
                     break;
                 }
 
@@ -688,16 +733,17 @@ class Manager implements IManager, core\IShutdownAware {
 
     private $_flashDisabled = null;
 
-    protected function _loadFlashQueue() {
-        if($this->_flashDisabled) {
+    protected function _loadFlashQueue()
+    {
+        if ($this->_flashDisabled) {
             return;
         }
 
-        if($this->_flashQueue === null) {
-            if($this->_flashDisabled === null) {
+        if ($this->_flashQueue === null) {
+            if ($this->_flashDisabled === null) {
                 $context = df\arch\Context::getCurrent();
 
-                if($context->getRunMode() == 'Http' && !$context->http->isAjaxRequest()) {
+                if ($context->getRunMode() == 'Http' && !$context->http->isAjaxRequest()) {
                     $this->_flashDisabled = false;
                 } else {
                     $this->_flashDisabled = true;
@@ -708,27 +754,28 @@ class Manager implements IManager, core\IShutdownAware {
             $session = user\Manager::getInstance()->session->getBucket(self::SESSION_NAMESPACE);
             $this->_flashQueue = $session->get(self::FLASH_SESSION_KEY);
 
-            if(!$this->_flashQueue instanceof FlashQueue) {
+            if (!$this->_flashQueue instanceof FlashQueue) {
                 $this->_flashQueue = new FlashQueue();
                 $this->_flashQueueChanged = true;
             }
         }
     }
 
-    protected function _saveFlashQueue() {
-        if($this->_flashDisabled) {
+    protected function _saveFlashQueue()
+    {
+        if ($this->_flashDisabled) {
             return false;
         }
 
-        if(!$this->_flashQueue instanceof FlashQueue
+        if (!$this->_flashQueue instanceof FlashQueue
         || !$this->_flashQueueChanged) {
             return false;
         }
 
         $session = user\Manager::getInstance()->session->getBucket(self::SESSION_NAMESPACE);
 
-        if($this->_flashQueue->isEmpty()) {
-            if($this->_flashQueueChanged) {
+        if ($this->_flashQueue->isEmpty()) {
+            if ($this->_flashQueueChanged) {
                 $session->remove(self::FLASH_SESSION_KEY);
             }
         } else {
@@ -739,37 +786,41 @@ class Manager implements IManager, core\IShutdownAware {
         return true;
     }
 
-    public function flashHasChanged(bool $flag) {
+    public function flashHasChanged(bool $flag)
+    {
         $this->_flashQueueChanged = $this->_flashQueueChanged || $flag;
         return $this;
     }
 
 
-// Shortcuts
-    public function flash($id, $message=null, $type=null) {
+    // Shortcuts
+    public function flash($id, $message=null, $type=null)
+    {
         $message = $this->newFlashMessage($id, $message, $type);
 
-        if(!$this->_flashDisabled) {
+        if (!$this->_flashDisabled) {
             $this->queueFlash($message);
         }
 
         return $message;
     }
 
-    public function flashNow($id, $message=null, $type=null) {
+    public function flashNow($id, $message=null, $type=null)
+    {
         $message = $this->newFlashMessage($id, $message, $type);
 
-        if(!$this->_flashDisabled) {
+        if (!$this->_flashDisabled) {
             $this->addInstantFlash($message);
         }
 
         return $message;
     }
 
-    public function flashAlways($id, $message=null, $type=null) {
+    public function flashAlways($id, $message=null, $type=null)
+    {
         $message = $this->newFlashMessage($id, $message, $type);
 
-        if(!$this->_flashDisabled) {
+        if (!$this->_flashDisabled) {
             $this->addConstantFlash($message);
         }
 
@@ -777,11 +828,12 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
 
-// Constant
-    public function addConstantFlash(IFlashMessage $message) {
+    // Constant
+    public function addConstantFlash(IFlashMessage $message)
+    {
         $this->_loadFlashQueue();
 
-        if(!$this->_flashDisabled) {
+        if (!$this->_flashDisabled) {
             $this->_flashQueue->constant[$message->getId()] = $message;
             $this->_flashQueueChanged = true;
         }
@@ -789,30 +841,33 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
-    public function getConstantFlash($id) {
+    public function getConstantFlash($id)
+    {
         $this->_loadFlashQueue();
 
-        if(isset($this->_flashQueue->constant[$id])) {
+        if (isset($this->_flashQueue->constant[$id])) {
             return $this->_flashQueue->constant[$id];
         }
 
         return null;
     }
 
-    public function getConstantFlashes() {
+    public function getConstantFlashes()
+    {
         $this->_loadFlashQueue();
 
-        if($this->_flashDisabled) {
+        if ($this->_flashDisabled) {
             return [];
         }
 
         return $this->_flashQueue->constant;
     }
 
-    public function removeConstantFlash($id) {
+    public function removeConstantFlash($id)
+    {
         $this->_loadFlashQueue();
 
-        if(!$this->_flashDisabled) {
+        if (!$this->_flashDisabled) {
             unset($this->_flashQueue->constant[$id]);
             $this->_flashQueueChanged = true;
         }
@@ -820,10 +875,11 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
-    public function clearConstantFlashes() {
+    public function clearConstantFlashes()
+    {
         $this->_loadFlashQueue();
 
-        if(!$this->_flashDisabled) {
+        if (!$this->_flashDisabled) {
             $this->_flashQueue->constant = [];
             $this->_flashQueueChanged = true;
         }
@@ -831,11 +887,12 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
-// Queued
-    public function queueFlash(IFlashMessage $message, $instantIfSpace=false) {
+    // Queued
+    public function queueFlash(IFlashMessage $message, $instantIfSpace=false)
+    {
         $this->_loadFlashQueue();
 
-        if($this->_flashDisabled) {
+        if ($this->_flashDisabled) {
             return $this;
         }
 
@@ -843,7 +900,7 @@ class Manager implements IManager, core\IShutdownAware {
 
         unset($this->_flashQueue->instant[$id], $this->_flashQueue->queued[$id]);
 
-        if($instantIfSpace && count($this->_flashQueue->instant) < $this->_flashQueue->limit) {
+        if ($instantIfSpace && count($this->_flashQueue->instant) < $this->_flashQueue->limit) {
             $this->_flashQueue->instant[$id] = $message;
         } else {
             $this->_flashQueue->queued[$id] = $message;
@@ -854,24 +911,27 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
-    public function addInstantFlash(IFlashMessage $message) {
+    public function addInstantFlash(IFlashMessage $message)
+    {
         return $this->queueFlash($message, true);
     }
 
-    public function getInstantFlashes() {
+    public function getInstantFlashes()
+    {
         $this->_loadFlashQueue();
 
-        if($this->_flashDisabled) {
+        if ($this->_flashDisabled) {
             return [];
         }
 
         return $this->_flashQueue->instant;
     }
 
-    public function removeQueuedFlash($id) {
+    public function removeQueuedFlash($id)
+    {
         $this->_loadFlashQueue();
 
-        if(!$this->_flashDisabled) {
+        if (!$this->_flashDisabled) {
             unset(
                 $this->_flashQueue->constant[$id],
                 $this->_flashQueue->instant[$id]
