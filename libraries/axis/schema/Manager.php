@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\axis;
 
-class Manager implements IManager {
-
+class Manager implements IManager
+{
     use core\TManager;
 
     const REGISTRY_PREFIX = 'manager://axis/schema';
@@ -18,20 +18,21 @@ class Manager implements IManager {
     protected $_transient = [];
     protected $_storeSchema;
 
-    public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false) {
+    public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false)
+    {
         $schema = null;
         $cache = Cache::getInstance();
         $globalUnitId = $unit->getUnitId();
         $isStoreUnit = $globalUnitId == 'axis/schema';
 
-        if($isStoreUnit && $this->_storeSchema) {
+        if ($isStoreUnit && $this->_storeSchema) {
             return $this->_storeSchema;
         }
 
-        if(!($transient && isset($this->_transient[$unit->getUnitId()]))) {
+        if (!($transient && isset($this->_transient[$unit->getUnitId()]))) {
             $schema = $cache->get($globalUnitId);
 
-            if($schema !== null && !$schema instanceof ISchema) {
+            if ($schema !== null && !$schema instanceof ISchema) {
                 $schema = null;
                 $cache->clear();
             }
@@ -39,40 +40,40 @@ class Manager implements IManager {
             $setCache = false;
             $schemaJson = null;
 
-            if(!$schema && !$isStoreUnit) {
+            if (!$schema && !$isStoreUnit) {
                 $schemaJson = $this->getSchemaUnit()->select('schema')
                     ->where('unitId', '=', $globalUnitId)
                     ->toValue('schema');
             }
 
-            if(!$schema && $schemaJson) {
+            if (!$schema && $schemaJson) {
                 $schema = Base::fromJson($unit, $schemaJson);
                 $setCache = true;
             }
         }
 
 
-        if(!$schema) {
+        if (!$schema) {
             $schema = $unit->buildInitialSchema();
             $unit->updateUnitSchema($schema);
             $setCache = false;
 
-            if(!$transient) {
+            if (!$transient) {
                 $unit->validateUnitSchema($schema);
 
-                if(!$unit->storageExists()) {
+                if (!$unit->storageExists()) {
                     $unit->createStorageFromSchema($schema);
                 }
 
                 $schema->acceptChanges();
 
-                if($isStoreUnit) {
+                if ($isStoreUnit) {
                     $this->_storeSchema = $schema;
                 }
 
                 $this->store($unit, $schema);
 
-                if($isStoreUnit) {
+                if ($isStoreUnit) {
                     $this->_storeSchema = null;
                 }
 
@@ -80,19 +81,20 @@ class Manager implements IManager {
             }
         }
 
-        if($setCache) {
+        if ($setCache) {
             $cache->set($globalUnitId, $schema);
         }
 
         return $schema;
     }
 
-    public function store(axis\ISchemaBasedStorageUnit $unit, ISchema $schema) {
+    public function store(axis\ISchemaBasedStorageUnit $unit, ISchema $schema)
+    {
         $currentTimestamp = $this->getTimestampFor($unit);
         $schema->acceptChanges();
         $jsonData = $schema->toJson();
 
-        if($currentTimestamp === null) {
+        if ($currentTimestamp === null) {
             $this->insert($unit, $jsonData, $schema->getVersion());
         } else {
             $this->update($unit, $jsonData, $schema->getVersion());
@@ -102,14 +104,16 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function getTimestampFor(axis\ISchemaBasedStorageUnit $unit) {
+    public function getTimestampFor(axis\ISchemaBasedStorageUnit $unit)
+    {
         return $this->getSchemaUnit()->select('timestamp')
             ->where('unitId', '=', $unit->getUnitId())
             ->toValue('timestamp');
     }
 
-    public function insert(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version) {
-        $this->getSchemaUnit()->insert([
+    public function insert(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version)
+    {
+        $this->getSchemaUnit()->replace([
                 'unitId' => $unit->getUnitId(),
                 'storeName' => $unit->getStorageBackendName(),
                 'version' => $version,
@@ -120,7 +124,8 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function update(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version) {
+    public function update(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version)
+    {
         $this->getSchemaUnit()->update([
                 'schema' => $jsonData,
                 'version' => $version,
@@ -133,11 +138,13 @@ class Manager implements IManager {
     }
 
 
-    public function remove(axis\ISchemaBasedStorageUnit $unit) {
+    public function remove(axis\ISchemaBasedStorageUnit $unit)
+    {
         return $this->removeId($unit->getUnitId());
     }
 
-    public function removeId($unitId) {
+    public function removeId($unitId)
+    {
         $this->getSchemaUnit()->delete()
             ->where('unitId', '=', $unitId)
             ->execute();
@@ -148,10 +155,11 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function clearCache(axis\ISchemaBasedStorageUnit $unit=null) {
+    public function clearCache(axis\ISchemaBasedStorageUnit $unit=null)
+    {
         $cache = Cache::getInstance();
 
-        if($unit) {
+        if ($unit) {
             $cache->remove($unit->getUnitId());
         } else {
             $cache->clear();
@@ -160,10 +168,11 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function fetchStoredUnitList() {
+    public function fetchStoredUnitList()
+    {
         $unit = $this->getSchemaUnit();
 
-        if(!$unit->storageExists()) {
+        if (!$unit->storageExists()) {
             return [];
         }
 
@@ -172,17 +181,20 @@ class Manager implements IManager {
             ->toList('unitId');
     }
 
-    public function markTransient(axis\ISchemaBasedStorageUnit $unit) {
+    public function markTransient(axis\ISchemaBasedStorageUnit $unit)
+    {
         $this->_transient[$unit->getUnitId()] = true;
         return $this;
     }
 
-    public function unmarkTransient(axis\ISchemaBasedStorageUnit $unit) {
+    public function unmarkTransient(axis\ISchemaBasedStorageUnit $unit)
+    {
         unset($this->_transient[$unit->getUnitId()]);
         return $this;
     }
 
-    public function getSchemaUnit() {
+    public function getSchemaUnit()
+    {
         return axis\Model::loadUnitFromId('axis/schema');
     }
 }
