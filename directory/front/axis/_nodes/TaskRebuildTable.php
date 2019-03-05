@@ -12,33 +12,40 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskRebuildTable extends arch\node\Task {
+class TaskRebuildTable extends arch\node\Task
+{
+    public function extractCliArguments(core\cli\ICommand $command)
+    {
+        foreach ($command->getArguments() as $arg) {
+            if (!$arg->isOption()) {
+                $this->request->query->unit = (string)$arg;
+                break;
+            }
+        }
+    }
 
-    protected $_deleteOld = false;
-
-    public function execute() {
+    public function execute()
+    {
         $this->task->shouldCaptureBackgroundTasks(true);
         $unitId = $this->request['unit'];
 
-        if(!$unit = axis\Model::loadUnitFromId($unitId)) {
+        if (!$unit = axis\Model::loadUnitFromId($unitId)) {
             throw core\Error::{'axis/unit/ENotFound'}(
                 'Unit '.$unitId.' not found'
             );
         }
 
-        if($unit->getUnitType() != 'table') {
+        if ($unit->getUnitType() != 'table') {
             throw core\Error::{'axis/unit/EDomain'}(
                 'Unit '.$unitId.' is not a table'
             );
         }
 
-        if(!$unit instanceof axis\IAdapterBasedStorageUnit) {
+        if (!$unit instanceof axis\IAdapterBasedStorageUnit) {
             throw core\Error::{'axis/unit/EDomain'}(
                 'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!'
             );
         }
-
-        $this->_deleteOld = isset($this->request['delete']);
 
         $this->io->writeLine('Rebuilding unit '.$unit->getUnitId());
         $adapter = $unit->getUnitAdapter();
@@ -48,7 +55,7 @@ class TaskRebuildTable extends arch\node\Task {
 
         $func = '_rebuild'.$adapterName.'Table';
 
-        if(!method_exists($this, $func)) {
+        if (!method_exists($this, $func)) {
             throw core\Error::{'axis/unit/EDomain'}(
                 'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding'
             );
@@ -70,7 +77,8 @@ class TaskRebuildTable extends arch\node\Task {
         $this->io->writeLine('Done');
     }
 
-    protected function _rebuildRdbmsTable(axis\IStorageUnit $unit, axis\schema\ISchema $axisSchema) {
+    protected function _rebuildRdbmsTable(axis\IStorageUnit $unit, axis\schema\ISchema $axisSchema)
+    {
         $this->io->writeLine('Switching to rdbms mode');
 
         $adapter = $unit->getUnitAdapter();
@@ -78,7 +86,7 @@ class TaskRebuildTable extends arch\node\Task {
         $newConnection = clone $connection;
         $currentTable = clone $adapter->getQuerySourceAdapter();
 
-        if(!$currentTable->exists()) {
+        if (!$currentTable->exists()) {
             $this->io->writeLine('Unit rdbms table '.$currentTable->getName().' not found - nothing to do');
             return;
         }
@@ -91,7 +99,7 @@ class TaskRebuildTable extends arch\node\Task {
         try {
             $this->io->writeLine('Building copy table');
             $newTable = $newConnection->createTable($dbSchema);
-        } catch(opal\rdbms\TableConflictException $e) {
+        } catch (opal\rdbms\TableConflictException $e) {
             throw core\Error::{'axis/unit/ERuntime'}(
                 'Table unit '.$unit->getUnitId().' is currently rebuilding in another process'
             );
@@ -107,18 +115,18 @@ class TaskRebuildTable extends arch\node\Task {
         $nonNullFields = [];
         $newFields = [];
 
-        foreach($fields as $fieldName => $field) {
-            if(isset($currentFields[$fieldName])) {
+        foreach ($fields as $fieldName => $field) {
+            if (isset($currentFields[$fieldName])) {
                 continue;
             }
 
             $axisField = $axisSchema->getField($fieldName);
 
-            if(!$field->isNullable()) {
+            if (!$field->isNullable()) {
                 $nonNullFields[$fieldName] = $field;
             }
 
-            if($axisField instanceof opal\schema\IAutoGeneratorField) {
+            if ($axisField instanceof opal\schema\IAutoGeneratorField) {
                 $generatorFields[$fieldName] = $axisField;
             } else {
                 $newFields[$fieldName] = $field;
@@ -128,27 +136,27 @@ class TaskRebuildTable extends arch\node\Task {
         $query = $currentTable->select()
             ->isUnbuffered(true);
 
-        if(isset($currentFields['creationDate'])) {
+        if (isset($currentFields['creationDate'])) {
             $query->orderBy('creationDate ASC');
         }
 
-        foreach($query as $row) {
-            foreach($row as $key => $value) {
-                if(!isset($fields[$key])) {
+        foreach ($query as $row) {
+            foreach ($row as $key => $value) {
+                if (!isset($fields[$key])) {
                     unset($row[$key]);
                 }
 
-                if($value === null && isset($nonNullFields[$key])) {
+                if ($value === null && isset($nonNullFields[$key])) {
                     $row[$key] = $value = $nonNullFields[$key]->getDefaultNonNullValue();
                 }
             }
 
-            foreach($generatorFields as $fieldName => $axisField) {
+            foreach ($generatorFields as $fieldName => $axisField) {
                 $row[$fieldName] = $axisField->generateInsertValue($row);
             }
 
-            foreach($newFields as $fieldName => $newField) {
-                if($newField->isNullable()) {
+            foreach ($newFields as $fieldName => $newField) {
+                if ($newField->isNullable()) {
                     $row[$fieldName] = null;
                 } else {
                     $row[$fieldName] = $newField->getDefaultNonNullValue();
@@ -157,18 +165,18 @@ class TaskRebuildTable extends arch\node\Task {
 
             $insert->addRow($row);
             $count++;
+
+            if (!($count % 1000)) {
+                $this->io->write('.');
+            }
         }
 
         $insert->execute();
+        $this->io->writeLine('.');
         $this->io->writeLine('Copied '.$count.' rows');
 
         $this->io->writeLine('Renaming tables');
-
-        if($this->_deleteOld) {
-            $currentTable->drop();
-        } else {
-            $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
-        }
+        $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
 
         $newTable->rename($currentTableName);
     }
