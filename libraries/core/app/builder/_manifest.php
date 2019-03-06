@@ -8,11 +8,17 @@ namespace df\core\app\builder;
 use df;
 use df\core;
 
-interface IController {
-
+interface IController
+{
     public function getBuildId(): string;
     public function shouldCompile(bool $flag=null);
 
     public function setMultiplexer(?core\io\IMultiplexer $multiplexer);
     public function getMultiplexer(): core\io\IMultiplexer;
+
+    public function getRunPath(): string;
+    public function getDestination(): core\fs\Dir;
+
+    public function createBuild(): \Generator;
+    public function activateBuild();
 }

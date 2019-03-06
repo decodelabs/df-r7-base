@@ -14,10 +14,6 @@ use df\flex;
 
 class TaskBuild extends arch\node\Task
 {
-    const APP_EXPORT = [
-        'libraries', 'assets', 'daemons', 'directory', 'helpers', 'hooks', 'models', 'themes', 'tests'
-    ];
-
     public function extractCliArguments(core\cli\ICommand $command)
     {
         $inspector = new core\cli\Inspector([
@@ -72,105 +68,23 @@ class TaskBuild extends arch\node\Task
 
 
         if ($controller->shouldCompile()) {
-            // Setup helper info
-            $appPath = df\Launchpad::$app->path;
-            $loader = df\Launchpad::$loader;
-
-            $localPath = $appPath.'/data/local';
-            $runPath = $localPath.'/run';
-
-
-            $destinationPath = $localPath.'/build/'.$buildId;
-            $destination = new core\fs\Dir($destinationPath);
-
-            if ($destination->exists()) {
-                throw core\Error::{'core/fs/EAlreadyExists'}(
-                    'Destination build directory already exists'
-                );
-            }
-
-            $umask = umask(0);
-            $destination->ensureExists(0777);
-
             $this->io->writeLine('Packaging files...');
             $this->io->indent();
 
 
-            // List packages
-            $packages = $loader->getPackages();
-            $appPackage = $packages['app'];
-            unset($packages['app']);
-
+            // Create build
             $this->io->write('Merging:');
 
-            // Copy packages
-            foreach (array_reverse($packages) as $package) {
-                $this->io->write(' '.$package->name);
-                $packageDir = new core\fs\Dir($package->path);
-
-                if ($libDir = $packageDir->getExistingDir('libraries')) {
-                    $libDir->mergeInto($destination);
-                }
-
-                if ($packageFile = $packageDir->getExistingFile('Package.php')) {
-                    $packageFile->copyTo($destinationPath.'/apex/packages/'.$package->name.'/Package.php');
-                }
-
-                foreach ($packageDir->scanDirs() as $name => $dir) {
-                    if ($name == '.git' || $name == 'libraries') {
-                        continue;
-                    }
-
-                    $dir->mergeInto($destinationPath.'/apex/'.$name);
-                }
+            foreach ($controller->createBuild() as $packageName) {
+                $this->io->write(' '.$packageName);
             }
-
-
-
-            // Copy app folder
-            $this->io->writeLine(' app');
-            $appDir = new core\fs\Dir($appPackage->path);
-
-            foreach ($appDir->scanDirs() as $name => $dir) {
-                if (!in_array($name, self::APP_EXPORT)) {
-                    continue;
-                }
-
-                if ($name == 'libraries') {
-                    $dir->mergeInto($destination);
-                    continue;
-                } else {
-                    $dir->mergeInto($destinationPath.'/apex/'.$name);
-                }
-            }
-
-            $appDir->getFile('App.php')->copyTo($destinationPath.'/apex/App.php');
-
-
-            // Generate run file
-            core\fs\File::create(
-                $destinationPath.'/Run.php',
-                '<?php'."\n".
-                'namespace df;'."\n".
-                'const COMPILE_TIMESTAMP = '.time().';'."\n".
-                'const COMPILE_BUILD_ID = \''.$buildId.'\';'."\n".
-                'const COMPILE_ROOT_PATH = \''.$runPath.'/active\';'."\n".
-                'const COMPILE_ENV_MODE = \''.df\Launchpad::$app->envMode.'\';'
-            );
 
 
             // Late build tasks
             $this->runChild('./build-custom?after='.$buildId, false);
 
             // Move to run path
-            core\fs\Dir::delete($runPath.'/backup');
-
-            if (is_dir($runPath.'/active')) {
-                core\fs\Dir::move($runPath.'/active', $runPath.'/backup');
-            }
-
-            $destination->moveTo($runPath, 'active');
-            core\fs\Dir::delete($runPath.'/backup');
+            $controller->activateBuild();
         } else {
             // Late build tasks
             $this->runChild('./build-custom?after', false);
