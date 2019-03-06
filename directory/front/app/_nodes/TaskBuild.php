@@ -159,6 +159,9 @@ class TaskBuild extends arch\node\Task
             );
 
 
+            // Late build tasks
+            $this->runChild('./build-custom?after='.$buildId, false);
+
             // Move to run path
             core\fs\Dir::delete($runPath.'/backup');
 
@@ -168,10 +171,6 @@ class TaskBuild extends arch\node\Task
 
             $destination->moveTo($runPath, 'active');
             core\fs\Dir::delete($runPath.'/backup');
-
-
-            // Late build tasks
-            $this->runChild('./build-custom?after='.$buildId, false);
         } else {
             // Late build tasks
             $this->runChild('./build-custom?after', false);

@@ -30,6 +30,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             return;
         }
 
+        $buildId = $this->request['buildId'];
         $this->io->indent();
         $done = [];
 
@@ -40,10 +41,16 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $json = $this->data->fromJsonFile($file);
             $sassPath = array_shift($json);
 
-            $sassFile = new core\fs\File($sassPath);
-            $shortPath = core\fs\Dir::stripPathLocation($sassFile);
+            $shortPath = core\fs\Dir::stripPathLocation($sassPath);
+            $activePath = null;
 
-            if (!$this->_checkFile($sassFile, $key)) {
+            if ($buildId && strpos($shortPath, 'app://data/local/run/active/') === 0) {
+                $activePath = $sassPath;
+                $sassPath = str_replace('/data/local/run/active/', '/data/local/build/'.$buildId.'/', $sassPath);
+            }
+
+
+            if (!$this->_checkFile($key, $sassPath, $activePath)) {
                 continue;
             }
 
@@ -54,19 +61,24 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $done[] = $sassPath;
 
             $this->io->writeLine($shortPath);
-            $bridge = new aura\css\SassBridge($this->context, $sassFile);
+            $bridge = new aura\css\SassBridge($this->context, $sassPath, $activePath);
             $bridge->compile();
         }
 
         $this->io->outdent();
     }
 
-    protected function _checkFile($file, $key)
+    protected function _checkFile(string $key, string $sassPath, ?string $activePath)
     {
-        $shortPath = core\fs\Dir::stripPathLocation($file);
         $hasBuild = file_exists($this->app->getLocalDataPath().'/run/active/Run.php');
-        $delete = !$file->exists();
+        $delete = !file_exists($sassPath);
         $why = 'file not found';
+
+        if (!$activePath) {
+            $activePath = $sassPath;
+        }
+
+        $shortPath = core\fs\Dir::stripPathLocation($activePath);
 
         if (!$delete && $hasBuild && strpos($shortPath, 'app://data/local/run/active/') !== 0) {
             $delete = true;

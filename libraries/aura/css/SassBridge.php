@@ -33,13 +33,14 @@ class SassBridge implements ISassBridge
     protected $_fileName;
     protected $_type;
     protected $_sourceDir;
+    protected $_activeDir;
     protected $_workDir;
     protected $_key;
     protected $_isDevelopment;
 
     protected $_manifest = [];
 
-    public function __construct(arch\IContext $context, string $path)
+    public function __construct(arch\IContext $context, string $path, string $activePath=null)
     {
         $this->context = $context;
         $path = realpath($path);
@@ -51,6 +52,10 @@ class SassBridge implements ISassBridge
             ]);
         }
 
+        if ($activePath) {
+            $this->_activeDir = dirname($activePath);
+        }
+
         $this->_sourceDir = dirname($path);
         $basename = basename($path);
 
@@ -60,7 +65,7 @@ class SassBridge implements ISassBridge
         $this->_workDir = $context->app->getLocalDataPath().'/sass/'.$context->app->envMode;
 
         $this->_isDevelopment = $this->context->app->isDevelopment();
-        $this->_key = md5($path);
+        $this->_key = md5($activePath ?? $path);
     }
 
 
@@ -190,9 +195,17 @@ class SassBridge implements ISassBridge
         $sourceFiles = [$this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type];
         $this->_manifest = [];
         $first = true;
+        $mainFileKey = $this->_key;
 
         while (!empty($sourceFiles)) {
             $filePath = array_shift($sourceFiles);
+
+            if ($this->_activeDir) {
+                $activePath = str_replace($this->_sourceDir, $this->_activeDir, $filePath);
+            } else {
+                $activePath = $filePath;
+            }
+
             $fileKey = md5($filePath);
 
             if (isset($this->_manifest[$fileKey])) {
@@ -200,7 +213,7 @@ class SassBridge implements ISassBridge
             }
 
             $fileType = substr($filePath, -4);
-            $this->_manifest[$fileKey] = $filePath;
+            $this->_manifest[$fileKey] = $activePath;
 
             $contents = file_get_contents($filePath);
             $contents = $this->_replaceLocalPaths($contents, $filePath, $sourceFiles);
@@ -208,6 +221,7 @@ class SassBridge implements ISassBridge
             $contents = $this->_setCharset($contents);
 
             if ($first) {
+                $mainFileKey = $fileKey;
                 $first = false;
                 $contents =
                     '$env-mode: \''.$envMode.'\';'."\n".
@@ -272,7 +286,7 @@ class SassBridge implements ISassBridge
             ];
         }
 
-        $args[] = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_fileName.'.'.$this->_type;
+        $args[] = $this->_workDir.'/'.$this->_key.'/'.$mainFileKey.'.'.$this->_fileName.'.'.$this->_type;
         $args[] = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css';
 
         $result = halo\process\launcher\Base::factory($path, $args)
