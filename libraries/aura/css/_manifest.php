@@ -10,15 +10,16 @@ use df\core;
 use df\aura;
 use df\link;
 
-
-interface IProcessor {
+interface IProcessor
+{
     public function process($cssPath);
 }
 
 
-interface ISassBridge {
+interface ISassBridge
+{
     public function getHttpResponse(): link\http\IResponse;
     public function getMapHttpResponse(): link\http\IResponse;
     public function getCompiledPath(): string;
-    public function compile(): void;
+    public function compile(bool $doNotWait=false): void;
 }

@@ -12,25 +12,28 @@ use df\arch;
 use df\flex;
 use df\aura;
 
-class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode {
-
+class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
+{
     const RUN_AFTER = true;
 
     protected $_dir;
 
-    public function execute() {
+    public function execute()
+    {
+        $this->ensureDfSource();
+
         $this->io->writeLine('Rebuilding sass...');
         $path = $this->app->getLocalDataPath().'/sass/'.$this->app->envMode;
         $this->_dir = new core\fs\Dir($path);
 
-        if(!$this->_dir->exists()) {
+        if (!$this->_dir->exists()) {
             return;
         }
 
         $this->io->indent();
         $done = [];
 
-        foreach($this->_dir->scanFiles(function($fileName) {
+        foreach ($this->_dir->scanFiles(function ($fileName) {
             return core\uri\Path::extractExtension($fileName) == 'json';
         }) as $fileName => $file) {
             $key = core\uri\Path::extractFileName($fileName);
@@ -40,11 +43,11 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $sassFile = new core\fs\File($sassPath);
             $shortPath = core\fs\Dir::stripPathLocation($sassFile);
 
-            if(!$this->_checkFile($sassFile, $key)) {
+            if (!$this->_checkFile($sassFile, $key)) {
                 continue;
             }
 
-            if(in_array($sassPath, $done)) {
+            if (in_array($sassPath, $done)) {
                 continue;
             }
 
@@ -58,14 +61,23 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         $this->io->outdent();
     }
 
-    protected function _checkFile($file, $key) {
+    protected function _checkFile($file, $key)
+    {
         $shortPath = core\fs\Dir::stripPathLocation($file);
+        $hasBuild = file_exists($this->app->getLocalDataPath().'/run/active/Run.php');
+        $delete = !$file->exists();
+        $why = 'file not found';
 
-        if(!$file->exists()) {
-            $this->io->writeLine('Skipping '.$shortPath.' - file not found');
+        if (!$delete && $hasBuild && strpos($shortPath, 'app://data/local/run/active/') !== 0) {
+            $delete = true;
+            $why = 'generics not required';
+        }
+
+        if ($delete) {
+            $this->io->writeLine('Skipping '.$shortPath.' - '.$why);
             $exts = ['json', 'css', 'css.map'];
 
-            foreach($exts as $ext) {
+            foreach ($exts as $ext) {
                 $this->_dir->deleteFile($key.'.'.$ext);
             }
 

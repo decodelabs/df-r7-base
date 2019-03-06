@@ -12,28 +12,30 @@ use df\arch;
 use df\halo;
 use df\flex;
 
-class TaskBuild extends arch\node\Task {
-
+class TaskBuild extends arch\node\Task
+{
     const APP_EXPORT = [
         'libraries', 'assets', 'daemons', 'directory', 'helpers', 'hooks', 'models', 'themes', 'tests'
     ];
 
-    public function extractCliArguments(core\cli\ICommand $command) {
+    public function extractCliArguments(core\cli\ICommand $command)
+    {
         $inspector = new core\cli\Inspector([
             'dev|development|d' => 'Do not compile',
             'force|f' => 'Force compilation'
         ], $command);
 
-        if($inspector['force']) {
+        if ($inspector['force']) {
             $this->request->query->force = true;
         }
 
-        if($inspector['dev']) {
+        if ($inspector['dev']) {
             $this->request->query->dev = true;
         }
     }
 
-    public function execute() {
+    public function execute()
+    {
         $this->ensureDfSource();
 
 
@@ -41,9 +43,9 @@ class TaskBuild extends arch\node\Task {
         $controller = new core\app\builder\Controller();
         $controller->setMultiplexer($this->io);
 
-        if(isset($this->request['force'])) {
+        if (isset($this->request['force'])) {
             $controller->shouldCompile(true);
-        } else if(isset($this->request['dev'])) {
+        } elseif (isset($this->request['dev'])) {
             $controller->shouldCompile(false);
         }
 
@@ -51,7 +53,7 @@ class TaskBuild extends arch\node\Task {
         // Prepare info
         $buildId = $controller->getBuildId();
 
-        if(!$controller->shouldCompile()) {
+        if (!$controller->shouldCompile()) {
             $this->io->writeLine('Builder is running in dev mode, no build folder will be created');
             $this->io->writeLine();
         }
@@ -69,19 +71,19 @@ class TaskBuild extends arch\node\Task {
         core\Config::clearLiveCache();
 
 
-        if($controller->shouldCompile()) {
+        if ($controller->shouldCompile()) {
             // Setup helper info
             $appPath = df\Launchpad::$app->path;
             $loader = df\Launchpad::$loader;
 
             $localPath = $appPath.'/data/local';
             $runPath = $localPath.'/run';
-            
+
 
             $destinationPath = $localPath.'/build/'.$buildId;
             $destination = new core\fs\Dir($destinationPath);
 
-            if($destination->exists()) {
+            if ($destination->exists()) {
                 throw core\Error::{'core/fs/EAlreadyExists'}(
                     'Destination build directory already exists'
                 );
@@ -102,20 +104,20 @@ class TaskBuild extends arch\node\Task {
             $this->io->write('Merging:');
 
             // Copy packages
-            foreach(array_reverse($packages) as $package) {
+            foreach (array_reverse($packages) as $package) {
                 $this->io->write(' '.$package->name);
                 $packageDir = new core\fs\Dir($package->path);
 
-                if($libDir = $packageDir->getExistingDir('libraries')) {
+                if ($libDir = $packageDir->getExistingDir('libraries')) {
                     $libDir->mergeInto($destination);
                 }
 
-                if($packageFile = $packageDir->getExistingFile('Package.php')) {
+                if ($packageFile = $packageDir->getExistingFile('Package.php')) {
                     $packageFile->copyTo($destinationPath.'/apex/packages/'.$package->name.'/Package.php');
                 }
 
-                foreach($packageDir->scanDirs() as $name => $dir) {
-                    if($name == '.git' || $name == 'libraries') {
+                foreach ($packageDir->scanDirs() as $name => $dir) {
+                    if ($name == '.git' || $name == 'libraries') {
                         continue;
                     }
 
@@ -129,12 +131,12 @@ class TaskBuild extends arch\node\Task {
             $this->io->writeLine(' app');
             $appDir = new core\fs\Dir($appPackage->path);
 
-            foreach($appDir->scanDirs() as $name => $dir) {
-                if(!in_array($name, self::APP_EXPORT)) {
+            foreach ($appDir->scanDirs() as $name => $dir) {
+                if (!in_array($name, self::APP_EXPORT)) {
                     continue;
                 }
 
-                if($name == 'libraries') {
+                if ($name == 'libraries') {
                     $dir->mergeInto($destination);
                     continue;
                 } else {
@@ -146,7 +148,8 @@ class TaskBuild extends arch\node\Task {
 
 
             // Generate run file
-            core\fs\File::create($destinationPath.'/Run.php',
+            core\fs\File::create(
+                $destinationPath.'/Run.php',
                 '<?php'."\n".
                 'namespace df;'."\n".
                 'const COMPILE_TIMESTAMP = '.time().';'."\n".
@@ -157,8 +160,14 @@ class TaskBuild extends arch\node\Task {
 
 
             // Move to run path
-            core\fs\Dir::delete($runPath.'/active');
+            core\fs\Dir::delete($runPath.'/backup');
+
+            if (is_dir($runPath.'/active')) {
+                core\fs\Dir::move($runPath.'/active', $runPath.'/backup');
+            }
+
             $destination->moveTo($runPath, 'active');
+            core\fs\Dir::delete($runPath.'/backup');
 
 
             // Late build tasks

@@ -13,8 +13,8 @@ use df\link;
 use df\halo;
 use df\flex;
 
-class SassBridge implements ISassBridge {
-
+class SassBridge implements ISassBridge
+{
     const DEFAULT_PROCESSOR_OPTIONS = [
         'autoprefixer' => [
             'browsers' => [
@@ -39,11 +39,12 @@ class SassBridge implements ISassBridge {
 
     protected $_manifest = [];
 
-    public function __construct(arch\IContext $context, $path) {
+    public function __construct(arch\IContext $context, string $path)
+    {
         $this->context = $context;
         $path = realpath($path);
 
-        if(!is_file($path)) {
+        if (!is_file($path)) {
             throw core\Error::ENotFound([
                 'message' => 'Sass file not found',
                 'data' => $path
@@ -63,14 +64,15 @@ class SassBridge implements ISassBridge {
     }
 
 
-    public function getHttpResponse(): link\http\IResponse {
+    public function getHttpResponse(): link\http\IResponse
+    {
         $path = $this->getCompiledPath();
 
         $output = $this->context->http->fileResponse($path);
         $output->setContentType('text/css');
         $headers = $output->getHeaders();
 
-        if($this->_isDevelopment) {
+        if ($this->_isDevelopment) {
             $headers->setCacheAccess('no-cache')
                 ->canStoreCache(false)
                 ->shouldRevalidateCache(true);
@@ -81,7 +83,8 @@ class SassBridge implements ISassBridge {
         return $output;
     }
 
-    public function getMapHttpResponse(): link\http\IResponse {
+    public function getMapHttpResponse(): link\http\IResponse
+    {
         $path = $this->getCompiledPath().'.map';
 
         $output = $this->context->http->fileResponse($path);
@@ -95,45 +98,47 @@ class SassBridge implements ISassBridge {
         return $output;
     }
 
-    public function getCompiledPath(): string {
+    public function getCompiledPath(): string
+    {
         $filePath = $this->_workDir.'/'.$this->_key.'.css';
 
-        if(!is_file($filePath)) {
+        if (!is_file($filePath)) {
             $this->compile();
             return $filePath;
         }
 
         $mtime = filemtime($filePath);
 
-        if($this->_isDevelopment) {
+        if ($this->_isDevelopment) {
             $manifestPath = $this->_workDir.'/'.$this->_key.'.json';
 
-            if(!is_file($manifestPath)) {
+            if (!is_file($manifestPath)) {
                 $this->compile();
             } else {
                 $files = json_decode(file_get_contents($manifestPath), true);
 
-                foreach($files as $file) {
-                    if(!is_file($file) || $mtime < filemtime($file)) {
+                foreach ($files as $file) {
+                    if (!is_file($file) || $mtime < filemtime($file)) {
                         $this->compile();
                         break;
                     }
                 }
             }
         } else {
-            if($mtime < df\Launchpad::$compileTimestamp - 30) {
-                $this->compile();
+            if (df\Launchpad::$compileTimestamp && $mtime < df\Launchpad::$compileTimestamp - 30) {
+                $this->compile(true);
             }
         }
 
         return $filePath;
     }
 
-    public function compile(): void {
+    public function compile(bool $doNotWait=false): void
+    {
         $lockFile = new core\fs\LockFile($this->_workDir, 60);
         $lockFile->setFileName($this->_key.'.lock');
 
-        if($this->_waitForLock($lockFile)) {
+        if ($this->_waitForLock($lockFile, $doNotWait)) {
             return;
         }
 
@@ -144,33 +149,41 @@ class SassBridge implements ISassBridge {
 
         try {
             $this->_compile();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $error = $e;
         }
 
         $lockFile->unlock();
         core\fs\Dir::delete($this->_workDir.'/'.$this->_key);
 
-        if($error) {
+        if ($error) {
             throw $error;
         }
 
         return;
     }
 
-    protected function _waitForLock($lockFile) {
-        if($lockFile->canLock()) {
+    protected function _waitForLock($lockFile, bool $doNotWait=false)
+    {
+        if ($lockFile->canLock()) {
             return false;
+        }
+
+        $filePath = $this->_workDir.'/'.$this->_key.'.css';
+
+        if ($doNotWait && is_file($filePath)) {
+            return true;
         }
 
         do {
             sleep(1);
-        } while(!$lockFile->canLock());
+        } while (!$lockFile->canLock());
 
-        return is_file($this->_workDir.'/'.$this->_key.'.css');
+        return is_file($filePath);
     }
 
-    protected function _compile() {
+    protected function _compile()
+    {
         $envMode = $this->context->app->envMode;
         $envId = $this->context->app->envId;
 
@@ -178,11 +191,11 @@ class SassBridge implements ISassBridge {
         $this->_manifest = [];
         $first = true;
 
-        while(!empty($sourceFiles)) {
+        while (!empty($sourceFiles)) {
             $filePath = array_shift($sourceFiles);
             $fileKey = md5($filePath);
 
-            if(isset($this->_manifest[$fileKey])) {
+            if (isset($this->_manifest[$fileKey])) {
                 continue;
             }
 
@@ -194,7 +207,7 @@ class SassBridge implements ISassBridge {
             $contents = $this->_replaceUrls($contents);
             $contents = $this->_setCharset($contents);
 
-            if($first) {
+            if ($first) {
                 $first = false;
                 $contents =
                     '$env-mode: \''.$envMode.'\';'."\n".
@@ -208,7 +221,7 @@ class SassBridge implements ISassBridge {
         $options = [];
         $jsonPath = $this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type.'.json';
 
-        if(is_file($jsonPath)) {
+        if (is_file($jsonPath)) {
             $this->_manifest[md5($jsonPath)] = $jsonPath;
             $options = flex\Json::fromFile($this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type.'.json');
         } else {
@@ -217,21 +230,21 @@ class SassBridge implements ISassBridge {
 
         $path = halo\system\Base::getInstance()->which('sassc');
 
-        if(!$path || $path == 'sassc') {
+        if (!$path || $path == 'sassc') {
             $path = halo\system\Base::getInstance()->which('sass');
 
-            if(!$path || $path == 'sass') {
+            if (!$path || $path == 'sass') {
                 $path = core\environment\Config::getInstance()->getBinaryPath('sass');
             }
 
-            if(!$path || $path == 'sass' && file_exists('/usr/local/bin/sass')) {
+            if (!$path || $path == 'sass' && file_exists('/usr/local/bin/sass')) {
                 $path = '/usr/local/bin/sass';
             }
         }
 
         $isC = basename($path) == 'sassc';
 
-        switch($envMode) {
+        switch ($envMode) {
             case 'development':
                 $outputType = 'expanded';
                 break;
@@ -245,7 +258,7 @@ class SassBridge implements ISassBridge {
                 break;
         }
 
-        if($isC) {
+        if ($isC) {
             $args = [
                 '--style='.$outputType,
                 '--sourcemap'
@@ -268,12 +281,12 @@ class SassBridge implements ISassBridge {
 
         $output = $result->getOutput();
 
-        if($result->hasError()) {
+        if ($result->hasError()) {
             $error = core\Error::{'ERuntime,halo/process/ERuntime'}(
                 $result->getError()
             );
 
-            if(!empty($output)) {
+            if (!empty($output)) {
                 core\logException($error);
             } else {
                 throw $error;
@@ -281,7 +294,7 @@ class SassBridge implements ISassBridge {
         }
 
 
-        if(false !== stripos($output, 'error')) {
+        if (false !== stripos($output, 'error')) {
             throw core\Error::{'ERuntime,halo/process/ERuntime'}(
                 $output
             );
@@ -289,8 +302,8 @@ class SassBridge implements ISassBridge {
 
 
         // Apply plugins
-        if(!empty($options)) {
-            foreach($options as $name => $settings) {
+        if (!empty($options)) {
+            foreach ($options as $name => $settings) {
                 $processor = aura\css\processor\Base::factory($name, $settings);
                 $processor->process($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css');
             }
@@ -315,7 +328,7 @@ class SassBridge implements ISassBridge {
 
 
         // Replace map file paths
-        if($mapExists && $envMode != 'production') {
+        if ($mapExists && $envMode != 'production') {
             $content = file_get_contents($mapPath);
 
             $content = str_replace(
@@ -324,7 +337,7 @@ class SassBridge implements ISassBridge {
                 $content
             );
 
-            foreach($this->_manifest as $fileKey => $filePath) {
+            foreach ($this->_manifest as $fileKey => $filePath) {
                 $content = str_replace(
                     [
                         'file://'.$this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.basename($filePath),
@@ -351,36 +364,37 @@ class SassBridge implements ISassBridge {
             $this->_key.'.json'
         ];
 
-        foreach($files as $fileName) {
+        foreach ($files as $fileName) {
             core\fs\File::copy($this->_workDir.'/'.$this->_key.'/'.$fileName, $this->_workDir.'/'.$fileName);
         }
 
         return;
     }
 
-    protected function _replaceLocalPaths($sass, $filePath, array &$sourceFiles) {
+    protected function _replaceLocalPaths($sass, $filePath, array &$sourceFiles)
+    {
         $sass = preg_replace('/\@import \'([^\']+)\'/', '@import "$1"', $sass);
         preg_match_all('/\@import \"([^"]+)\"/', $sass, $matches);
 
-        if(!empty($matches[1])) {
+        if (!empty($matches[1])) {
             $imports = [];
 
-            foreach($matches[1] as $path) {
+            foreach ($matches[1] as $path) {
                 $activePath = $path;
 
-                if(!preg_match('/\.s(a|c)ss$/i', $activePath)) {
+                if (!preg_match('/\.s(a|c)ss$/i', $activePath)) {
                     $activePath .= '.'.$this->_type;
                 }
 
-                if($path{0} == '/') {
+                if ($path{0} == '/') {
                     $importPath = $activePath;
-                } else if(false !== strpos($activePath, '://')) {
+                } elseif (false !== strpos($activePath, '://')) {
                     $importPath = $this->_uriToPath($activePath);
                 } else {
                     $importPath = realpath(dirname($filePath).'/'.$activePath);
                 }
 
-                if(empty($importPath)) {
+                if (empty($importPath)) {
                     continue;
                 }
 
@@ -388,12 +402,12 @@ class SassBridge implements ISassBridge {
                 $type = substr($importPath, -4);
                 $imports[$path] = $key.'.'.basename($path);
 
-                if(!isset($this->_manifest[$key])) {
+                if (!isset($this->_manifest[$key])) {
                     $sourceFiles[] = $importPath;
                 }
             }
 
-            foreach($imports as $import => $keyName) {
+            foreach ($imports as $import => $keyName) {
                 $sass = str_replace('@import "'.$import.'"', '@import "'.$keyName.'"', $sass);
             }
         }
@@ -401,8 +415,9 @@ class SassBridge implements ISassBridge {
         return $sass;
     }
 
-    protected function _replaceUrls($sass) {
-        if(df\Launchpad::$compileTimestamp) {
+    protected function _replaceUrls($sass)
+    {
+        if (df\Launchpad::$compileTimestamp) {
             $cts = df\Launchpad::$compileTimestamp;
         } else {
             $cts = time();
@@ -410,19 +425,19 @@ class SassBridge implements ISassBridge {
 
         preg_match_all('/url\([\'\"]?([^\'\"\)]+)[\'\"]?\)/i', $sass, $matches);
 
-        if(!empty($matches[1])) {
+        if (!empty($matches[1])) {
             $urls = [];
 
-            foreach($matches[1] as $i => $path) {
-                if($cts !== null && $path{0} == '.') {
+            foreach ($matches[1] as $i => $path) {
+                if ($cts !== null && $path{0} == '.') {
                     $separator = false !== strpos($path, '?') ? '&' : '?';
                     $urls[$matches[0][$i]] = $path.$separator.'cts='.$cts;
-                } else if(false !== strpos($path, '://')) {
+                } elseif (false !== strpos($path, '://')) {
                     $urls[$matches[0][$i]] = $this->context->uri($path);
                 }
             }
 
-            foreach($urls as $match => $url) {
+            foreach ($urls as $match => $url) {
                 $sass = str_replace($match, 'url(\''.$url.'\')', $sass);
             }
         }
@@ -432,29 +447,31 @@ class SassBridge implements ISassBridge {
         return $sass;
     }
 
-    protected function _setCharset($sass) {
-        if(!preg_match('/\@charset /', $sass)) {
+    protected function _setCharset($sass)
+    {
+        if (!preg_match('/\@charset /', $sass)) {
             $sass = '@charset "UTF-8";'."\n".$sass;
         }
 
         return $sass;
     }
 
-    protected function _uriToPath($uri) {
+    protected function _uriToPath($uri)
+    {
         $parts = explode('://', $uri);
         $schema = array_shift($parts);
         $path = array_shift($parts);
 
-        switch($schema) {
+        switch ($schema) {
             case 'apex':
-                if($output = df\Launchpad::$loader->findFile('apex/'.$path)) {
+                if ($output = df\Launchpad::$loader->findFile('apex/'.$path)) {
                     return $output;
                 }
 
                 break;
 
             case 'asset':
-                if($output = df\Launchpad::$loader->findFile('apex/assets/'.$path)) {
+                if ($output = df\Launchpad::$loader->findFile('apex/assets/'.$path)) {
                     return $output;
                 }
 
@@ -463,17 +480,17 @@ class SassBridge implements ISassBridge {
             case 'theme':
                 $theme = $this->context->extractThemeId($path);
 
-                if(!$theme) {
+                if (!$theme) {
                     $theme = $this->context->apex->getTheme()->getId();
                 }
 
                 $output = df\Launchpad::$loader->findFile('apex/themes/'.$theme.'/assets/'.$path);
 
-                if(!$output) {
+                if (!$output) {
                     $output = df\Launchpad::$loader->findFile('apex/themes/shared/assets/'.$path);
                 }
 
-                if($output) {
+                if ($output) {
                     return $output;
                 } else {
                     throw core\Error::ENotFound('Theme sass file not found: '.$path);
