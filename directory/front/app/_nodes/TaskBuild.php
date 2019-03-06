@@ -79,6 +79,7 @@ class TaskBuild extends arch\node\Task
                 $this->io->write(' '.$packageName);
             }
 
+            $this->io->writeLine();
 
             // Late build tasks
             $this->runChild('./build-custom?after='.$buildId, false);
