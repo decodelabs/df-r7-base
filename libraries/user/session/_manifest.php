@@ -12,21 +12,34 @@ use df\opal;
 use df\flex;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
 
 
 // Interfaces
-interface IController {
-
+interface IController
+{
     const TRANSITION_COOLOFF = 20;
 
     public function isOpen();
     public function getId(): string;
     public function transition();
+
     public function getBucket($namespace);
+    public function clearBuckets(string $bucket, string $operator=null);
+    public function clearBucketsForUser(string $userId, string $bucket, string $operator=null);
+    public function clearBucketsForAll(string $bucket, string $operator=null);
+
     public function destroy(bool $restart=false);
     public function getStartTime();
 
@@ -34,7 +47,8 @@ interface IController {
     public function perpetuateRecall(user\IClient $client, RecallKey $lastKey=null);
 }
 
-interface IBucket extends core\IValueMap, \ArrayAccess {
+interface IBucket extends core\IValueMap, \ArrayAccess
+{
     public function getName(): string;
 
     public function setLifeTime($lifeTime);
@@ -65,58 +79,63 @@ interface IBucket extends core\IValueMap, \ArrayAccess {
     public function getLastUpdated();
 }
 
-interface IBackend {
+interface IBackend
+{
     public function setLifeTime($lifeTime);
-    public function getLifeTime();
+    public function getLifeTime(): int;
 
     public function insertDescriptor(IDescriptor $descriptor);
-    public function fetchDescriptor($id, $transitionTime);
+    public function fetchDescriptor(string $id, ?int $transitionTime): IDescriptor;
     public function touchSession(IDescriptor $descriptor, int $lifeTime=30);
     public function applyTransition(IDescriptor $descriptor);
     public function killSession(IDescriptor $descriptor);
-    public function idExists($id);
+    public function idExists(string $id): bool;
 
-    public function getBucketKeys(IDescriptor $descriptor, $bucket);
-    public function pruneBucket(IDescriptor $descriptor, $bucket, $age);
-    public function clearBucket(IDescriptor $descriptor, $bucket);
-    public function clearBucketForUser($bucket, $userId);
-    public function clearBucketForAll($bucket);
+    public function getBucketKeys(IDescriptor $descriptor, string $bucket): array;
+    public function pruneBucket(IDescriptor $descriptor, string $bucket, int $age);
+    public function clearBucket(IDescriptor $descriptor, string $bucket, string $operator=null);
+    public function clearBucketForUser(string $userId, string $bucket, string $operator=null);
+    public function clearBucketForAll(string $bucket, string $operator=null);
 
-    public function fetchNode(IBucket $bucket, $key);
-    public function fetchLastUpdatedNode(IBucket $bucket);
+    public function fetchNode(IBucket $bucket, $key): INode;
+    public function fetchLastUpdatedNode(IBucket $bucket): ?INode;
     public function updateNode(IBucket $bucket, INode $node);
-    public function removeNode(IBucket $bucket, $key);
-    public function hasNode(IBucket $bucket, $key);
+    public function removeNode(IBucket $bucket, string $key);
+    public function hasNode(IBucket $bucket, string $key);
     public function collectGarbage();
 
     public function generateRecallKey(user\IClient $client);
-    public function hasRecallKey(RecallKey $key);
+    public function hasRecallKey(RecallKey $key): bool;
     public function destroyRecallKey(RecallKey $key);
     public function purgeRecallKeys();
 }
 
 
-class RecallKey {
-
+class RecallKey
+{
     public $userId;
     public $key;
 
-    public static function generate($userId) {
+    public static function generate($userId)
+    {
         return new self($userId, flex\Generator::sessionId());
     }
 
-    public function __construct($userId, $key) {
+    public function __construct($userId, $key)
+    {
         $this->userId = $userId;
         $this->key = $key;
     }
 
-    public function getInterlaceKey() {
+    public function getInterlaceKey()
+    {
         return substr($this->key, 0, 20).$this->userId.substr($this->key, 20);
     }
 }
 
 
-interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvider {
+interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvider
+{
     public function isNew();
     public function hasJustStarted(bool $flag=null);
 
@@ -151,7 +170,8 @@ interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvide
 }
 
 
-interface IPerpetuator {
+interface IPerpetuator
+{
     public function getInputId();
     public function canRecallIdentity();
 
@@ -164,15 +184,19 @@ interface IPerpetuator {
     public function destroyRecallKey(IController $controller);
 }
 
-interface INode {}
+interface INode
+{
+}
 
-class Node implements INode {
+class Node implements INode
+{
     public $key;
     public $value;
     public $creationTime;
     public $updateTime;
 
-    public static function create($key, $res, $locked=false) {
+    public static function create($key, $res, $locked=false)
+    {
         $output = new self();
         $output->key = $key;
         $output->value = null;
@@ -180,21 +204,21 @@ class Node implements INode {
         $output->updateTime = time();
 
 
-        if($res !== null) {
-            if($res['value'] !== null) {
+        if ($res !== null) {
+            if ($res['value'] !== null) {
                 $output->value = unserialize($res['value']);
             }
 
-            if(!empty($res['creationTime'])) {
-                if($res['creationTime'] instanceof core\time\IDate) {
+            if (!empty($res['creationTime'])) {
+                if ($res['creationTime'] instanceof core\time\IDate) {
                     $res['creationTime'] = $res['creationTime']->toTimestamp();
                 }
 
                 $output->creationTime = (int)$res['creationTime'];
             }
 
-            if(!empty($res['updateTime'])) {
-                if($res['updateTime'] instanceof core\time\IDate) {
+            if (!empty($res['updateTime'])) {
+                if ($res['updateTime'] instanceof core\time\IDate) {
                     $res['updateTime'] = $res['updateTime']->toTimestamp();
                 }
 
@@ -207,7 +231,8 @@ class Node implements INode {
 }
 
 
-interface ICache {
+interface ICache
+{
     public function insertDescriptor(IDescriptor $descriptor);
     public function fetchDescriptor($publicKey);
     public function removeDescriptor(IDescriptor $descriptor);

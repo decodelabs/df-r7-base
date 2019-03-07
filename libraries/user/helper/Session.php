@@ -11,8 +11,8 @@ use df\user;
 use df\axis;
 use df\flex;
 
-class Session extends Base implements user\session\IController {
-
+class Session extends Base implements user\session\IController
+{
     protected static $_gcProbability = 3;
     protected static $_transitionsEnabled = true;
     protected static $_transitionProbability = 10;
@@ -28,14 +28,16 @@ class Session extends Base implements user\session\IController {
     protected $_isOpen = false;
     protected $_buckets = [];
 
-    public function __construct(user\IManager $manager) {
+    public function __construct(user\IManager $manager)
+    {
         parent::__construct($manager);
         $this->_open();
     }
 
 
-    protected function _open() {
-        if(!self::$_configSet) {
+    protected function _open()
+    {
+        if (!self::$_configSet) {
             $config = user\session\Config::getInstance();
             self::$_gcProbability = $config->getGcProbability();
             self::$_transitionsEnabled = $config->transitionsEnabled();
@@ -51,13 +53,13 @@ class Session extends Base implements user\session\IController {
         $this->cache = user\session\Cache::getInstance();
         $this->backend = axis\Model::factory('session');
 
-        if(!$this->backend instanceof user\session\IBackend) {
+        if (!$this->backend instanceof user\session\IBackend) {
             throw new user\session\LogicException(
                 'Session model does not implement user\\session\\IBackend'
             );
         }
 
-        switch($runMode) {
+        switch ($runMode) {
             case 'Http':
                 $this->perpetuator = new user\session\perpetuator\Cookie($this);
                 break;
@@ -69,7 +71,7 @@ class Session extends Base implements user\session\IController {
 
         $publicKey = $this->perpetuator->getInputId();
 
-        if(empty($publicKey)) {
+        if (empty($publicKey)) {
             $this->descriptor = $this->_start();
         } else {
             $this->descriptor = $this->_resume($publicKey);
@@ -77,25 +79,26 @@ class Session extends Base implements user\session\IController {
 
         $this->perpetuator->perpetuate($this, $this->descriptor);
 
-        if((mt_rand() % 100) < self::$_gcProbability) {
+        if ((mt_rand() % 100) < self::$_gcProbability) {
             $this->backend->collectGarbage();
             $this->backend->purgeRecallKeys();
         }
 
-        if(self::$_transitionsEnabled &&
+        if (self::$_transitionsEnabled &&
             (!$this->descriptor->hasJustTransitioned(120) ||
             (mt_rand() % 100) < self::$_transitionProbability)) {
             $this->transition();
         }
 
-        if($this->descriptor->needsTouching(self::$_transitionLifeTime)) {
+        if ($this->descriptor->needsTouching(self::$_transitionLifeTime)) {
             $this->backend->touchSession($this->descriptor, self::$_transitionLifeTime);
             $this->cache->insertDescriptor($this->descriptor);
         }
     }
 
 
-    protected function _start() {
+    protected function _start()
+    {
         $time = time();
         $publicKey = $this->_generateId();
 
@@ -111,25 +114,27 @@ class Session extends Base implements user\session\IController {
         return $descriptor;
     }
 
-    protected function _resume($publicKey) {
+    protected function _resume($publicKey)
+    {
         $descriptor = $this->cache->fetchDescriptor($publicKey);
 
-        if(!$descriptor) {
+        if (!$descriptor) {
             $descriptor = $this->backend->fetchDescriptor(
-                $publicKey, time() - self::$_transitionLifeTime
+                $publicKey,
+                time() - self::$_transitionLifeTime
             );
 
-            if($descriptor) {
+            if ($descriptor) {
                 $this->cache->insertDescriptor($descriptor);
             }
         }
 
-        if($descriptor === null) {
+        if ($descriptor === null) {
             $this->perpetuator->handleDeadPublicKey($publicKey);
             return $this->_start();
         }
 
-        if(!$descriptor->hasJustTransitioned(self::$_transitionLifeTime)) {
+        if (!$descriptor->hasJustTransitioned(self::$_transitionLifeTime)) {
             $descriptor->transitionKey = null;
         }
 
@@ -140,16 +145,19 @@ class Session extends Base implements user\session\IController {
 
 
 
-    public function isOpen() {
+    public function isOpen()
+    {
         return $this->_isOpen;
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->descriptor->getPublicKey();
     }
 
-    public function transition() {
-        if(!self::$_transitionsEnabled ||
+    public function transition()
+    {
+        if (!self::$_transitionsEnabled ||
             $this->descriptor->hasJustStarted() ||
             $this->descriptor->hasJustTransitioned(self::$_transitionCooloff)) {
             return $this;
@@ -163,46 +171,90 @@ class Session extends Base implements user\session\IController {
         return $this;
     }
 
-    public function setUserId(?string $id) {
+    public function setUserId(?string $id)
+    {
         $this->descriptor->setUserId($id);
         $this->backend->applyTransition($this->descriptor);
         return $this;
     }
 
-    protected function _generateId() {
+    protected function _generateId()
+    {
         do {
             $output = flex\Generator::sessionId(true);
-        } while($this->backend->idExists($output));
+        } while ($this->backend->idExists($output));
 
         return $output;
     }
 
-    public function getStartTime() {
+    public function getStartTime()
+    {
         return $this->descriptor->startTime;
     }
 
 
-// Handlers
-    public function getBucket($name) {
-        if(!$this->_isOpen) {
+    // Handlers
+    public function getBucket($name)
+    {
+        if (!$this->_isOpen) {
             throw new user\session\LogicException(
                 'Cannot get a session bucket once the session has been destroyed'
             );
         }
 
-        if(!isset($this->_buckets[$name])) {
+        if (!isset($this->_buckets[$name])) {
             $this->_buckets[$name] = new user\session\Bucket($this, $name);
         }
 
         return $this->_buckets[$name];
     }
 
-    public function destroy(bool $restart=false) {
-        if($this->perpetuator) {
+
+    public function clearBuckets(string $bucket, string $operator=null)
+    {
+        if (!$this->_isOpen) {
+            throw new user\session\LogicException(
+                'Cannot get a session bucket once the session has been destroyed'
+            );
+        }
+
+        $this->backend->clearBucket($this->descriptor, $bucket, $operator);
+        return $this;
+    }
+
+    public function clearBucketsForUser(string $userId, string $bucket, string $operator=null)
+    {
+        if (!$this->_isOpen) {
+            throw new user\session\LogicException(
+                'Cannot get a session bucket once the session has been destroyed'
+            );
+        }
+
+        $this->backend->clearBucket($userId, $bucket, $operator);
+        return $this;
+    }
+
+    public function clearBucketsForAll(string $bucket, string $operator=null)
+    {
+        if (!$this->_isOpen) {
+            throw new user\session\LogicException(
+                'Cannot get a session bucket once the session has been destroyed'
+            );
+        }
+
+        $this->backend->clearBucketForAll($bucket, $operator);
+        return $this;
+    }
+
+
+
+    public function destroy(bool $restart=false)
+    {
+        if ($this->perpetuator) {
             $key = $this->perpetuator->getRecallKey($this);
             $this->perpetuator->destroy($this);
 
-            if($key) {
+            if ($key) {
                 $this->backend->destroyRecallKey($key);
             }
         }
@@ -215,24 +267,26 @@ class Session extends Base implements user\session\IController {
 
         $this->manager->clearClient();
 
-        if($restart) {
+        if ($restart) {
             $this->_open();
         }
 
         return $this;
     }
 
-// Recall
-    public function hasRecallKey(user\session\RecallKey $key) {
+    // Recall
+    public function hasRecallKey(user\session\RecallKey $key)
+    {
         return $this->backend->hasRecallKey($key);
     }
 
-    public function perpetuateRecall(user\IClient $client, user\session\RecallKey $lastKey=null) {
-        if($lastKey) {
+    public function perpetuateRecall(user\IClient $client, user\session\RecallKey $lastKey=null)
+    {
+        if ($lastKey) {
             $this->backend->destroyRecallKey($lastKey);
         }
 
-        if($this->perpetuator) {
+        if ($this->perpetuator) {
             $this->perpetuator->perpetuateRecallKey(
                 $this,
                 $this->backend->generateRecallKey($client)

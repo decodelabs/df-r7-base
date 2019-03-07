@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\user;
 
-class Bucket implements user\session\IBucket, core\IDumpable {
-
+class Bucket implements user\session\IBucket, core\IDumpable
+{
     use core\TValueMap;
 
     protected $_name;
@@ -18,76 +18,91 @@ class Bucket implements user\session\IBucket, core\IDumpable {
     protected $_controller;
     protected $_lifeTime = null;
 
-    public function __construct(user\session\IController $controller, string $name) {
+    public function __construct(user\session\IController $controller, string $name)
+    {
         $this->_controller = $controller;
         $this->_name = $name;
 
-        if(empty($name)) {
+        if (empty($name)) {
             throw new user\InvalidArgumentException(
                 'Invalid empty name bucket name'
             );
         }
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function setLifeTime($lifeTime) {
+    public function setLifeTime($lifeTime)
+    {
         $this->_lifeTime = (int)$lifeTime;
 
-        if($this->_lifeTime <= 0) {
+        if ($this->_lifeTime <= 0) {
             $this->_lifeTime = null;
         }
 
         return $this;
     }
 
-    public function getLifeTime() {
+    public function getLifeTime()
+    {
         return $this->_lifeTime;
     }
 
 
-    public function getDescriptor() {
+    public function getDescriptor()
+    {
         return $this->_controller->descriptor;
     }
 
-    public function getSessionId() {
+    public function getSessionId()
+    {
         return $this->_controller->getId();
     }
 
-    public function isSessionOpen() {
+    public function isSessionOpen()
+    {
         return $this->_controller->isOpen();
     }
 
-    public function refresh($key) {
+    public function refresh($key)
+    {
         unset($this->_nodes[$key]);
         return $this;
     }
 
-    public function refreshAll() {
+    public function refreshAll()
+    {
         $this->_nodes = [];
         return $this;
     }
 
-    public function getUpdateTime($key) {
+    public function getUpdateTime($key)
+    {
         return $this->_get($key)->updateTime;
     }
 
-    public function getTimeSinceLastUpdate($key) {
+    public function getTimeSinceLastUpdate($key)
+    {
         return time() - $this->getUpdateTime($key);
     }
 
 
-    public function getAllKeys() {
+    public function getAllKeys()
+    {
         return $this->_controller->backend->getBucketKeys(
-            $this->_controller->descriptor, $this->_name
+            $this->_controller->descriptor,
+            $this->_name
         );
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->_controller->backend->clearBucket(
-            $this->_controller->descriptor, $this->_name
+            $this->_controller->descriptor,
+            $this->_name
         );
 
         $this->_controller->cache->clear();
@@ -96,18 +111,20 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         return $this;
     }
 
-    public function clearForUser($userId) {
-        $this->_controller->backend->clearBucketForUser($this->_name, $userId);
+    public function clearForUser($userId)
+    {
+        $this->_controller->backend->clearBucketForUser($userId, $this->_name);
         $this->_controller->cache->clear();
         $this->_nodes = [];
 
         return $this;
     }
 
-    public function clearForClient() {
+    public function clearForClient()
+    {
         $manager = user\Manager::getInstance();
 
-        if($manager->isLoggedIn()) {
+        if ($manager->isLoggedIn()) {
             $this->clearForUser($manager->client->getId());
         } else {
             $this->clear();
@@ -116,7 +133,8 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         return $this;
     }
 
-    public function clearForAll() {
+    public function clearForAll()
+    {
         $this->_controller->backend->clearBucketForAll($this->_name);
         $this->_controller->cache->clear();
         $this->_nodes = [];
@@ -124,35 +142,39 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         return $this;
     }
 
-    public function prune($age=7200) {
+    public function prune($age=7200)
+    {
         $age = (int)$age;
 
-        if($age < 1) {
+        if ($age < 1) {
             return $this;
         }
 
         $this->_controller->backend->pruneBucket(
-            $this->_controller->descriptor, $this->_name, $age
+            $this->_controller->descriptor,
+            $this->_name,
+            $age
         );
 
         $this->_controller->cache->clear();
         return $this;
     }
 
-    public function getNode($key) {
+    public function getNode($key)
+    {
         $key = (string)$key;
 
-        if(!isset($this->_nodes[$key])) {
+        if (!isset($this->_nodes[$key])) {
             $descriptor = $this->_controller->descriptor;
             $cache = $this->_controller->cache;
 
-            if(!$node = $cache->fetchNode($this, $key)) {
+            if (!$node = $cache->fetchNode($this, $key)) {
                 $node = $this->_controller->backend->fetchNode($this, $key);
 
-                if($node->creationTime) {
+                if ($node->creationTime) {
                     $cache->insertNode($this, $node);
                 }
-            } else if(!$node->creationTime) {
+            } elseif (!$node->creationTime) {
                 // new node has been cached - make it not be new :)
 
                 $node->creationTime = time();
@@ -162,7 +184,7 @@ class Bucket implements user\session\IBucket, core\IDumpable {
             $this->_nodes[$key] = $node;
         }
 
-        if($this->_lifeTime !== null && time() - $this->_nodes[$key]->updateTime > $this->_lifeTime) {
+        if ($this->_lifeTime !== null && time() - $this->_nodes[$key]->updateTime > $this->_lifeTime) {
             $this->remove($key);
             $this->_nodes[$key] = Node::create($key, null);
         }
@@ -171,7 +193,8 @@ class Bucket implements user\session\IBucket, core\IDumpable {
     }
 
 
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
         $node = $this->getNode($key);
         $node->updateTime = time();
         $node->value = $value;
@@ -182,20 +205,22 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         return $this;
     }
 
-    public function get($key, $default=null) {
+    public function get($key, $default=null)
+    {
         $node = $this->getNode($key);
 
-        if($node->value !== null) {
+        if ($node->value !== null) {
             return $node->value;
         }
 
         return $default;
     }
 
-    public function getLastUpdated() {
+    public function getLastUpdated()
+    {
         $node = $this->_controller->backend->fetchLastUpdatedNode($this);
 
-        if($node) {
+        if ($node) {
             $this->_nodes[$node->key] = $node;
             return $node->value;
         }
@@ -203,15 +228,16 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         return null;
     }
 
-    public function has(...$keys) {
-        foreach($keys as $key) {
+    public function has(...$keys)
+    {
+        foreach ($keys as $key) {
             $key = (string)$key;
 
-            if(isset($this->_nodes[$key])) {
+            if (isset($this->_nodes[$key])) {
                 return true;
             }
 
-            if($this->_controller->backend->hasNode($this, $key)) {
+            if ($this->_controller->backend->hasNode($this, $key)) {
                 return true;
             }
         }
@@ -219,8 +245,9 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         return false;
     }
 
-    public function remove(...$keys) {
-        foreach($keys as $key) {
+    public function remove(...$keys)
+    {
+        foreach ($keys as $key) {
             $key = (string)$key;
             unset($this->_nodes[$key]);
             $this->_controller->backend->removeNode($this, $key);
@@ -230,46 +257,55 @@ class Bucket implements user\session\IBucket, core\IDumpable {
         return $this;
     }
 
-    public function __set($key, $value) {
+    public function __set($key, $value)
+    {
         return $this->set($key, $value);
     }
 
-    public function __get($key) {
+    public function __get($key)
+    {
         return $this->getNode($key);
     }
 
-    public function __isset($key) {
+    public function __isset($key)
+    {
         return $this->has($key);
     }
 
-    public function __unset($key) {
+    public function __unset($key)
+    {
         return $this->remove($key);
     }
 
 
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value)
+    {
         return $this->set($key, $value);
     }
 
-    public function offsetGet($key) {
+    public function offsetGet($key)
+    {
         return $this->get($key);
     }
 
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         return $this->has($key);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         return $this->remove($key);
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         $output = [];
 
-        if($this->_controller->isOpen()) {
-            foreach($this->_nodes as $key => $node) {
+        if ($this->_controller->isOpen()) {
+            foreach ($this->_nodes as $key => $node) {
                 $output[$key] = $node->value;
             }
         }

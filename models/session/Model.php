@@ -10,13 +10,14 @@ use df\core;
 use df\axis;
 use df\user;
 
-class Model extends axis\Model implements user\session\IBackend {
-
+class Model extends axis\Model implements user\session\IBackend
+{
     protected $_lifeTime = 86400; // 24 hours
 
-// Life time
-    public function setLifeTime($lifeTime) {
-        if($lifeTime instanceof core\time\IDuration) {
+    // Life time
+    public function setLifeTime($lifeTime)
+    {
+        if ($lifeTime instanceof core\time\IDuration) {
             $lifeTime = $lifeTime->getSeconds();
         }
 
@@ -24,18 +25,21 @@ class Model extends axis\Model implements user\session\IBackend {
         return $this;
     }
 
-    public function getLifeTime() {
+    public function getLifeTime(): int
+    {
         return $this->_lifeTime;
     }
 
 
-// Descriptor
-    public function insertDescriptor(user\session\IDescriptor $descriptor) {
+    // Descriptor
+    public function insertDescriptor(user\session\IDescriptor $descriptor)
+    {
         $this->descriptor->insert($descriptor)->execute();
         return $descriptor;
     }
 
-    public function fetchDescriptor($id, $transitionTime) {
+    public function fetchDescriptor(string $id, ?int $transitionTime): user\session\IDescriptor
+    {
         $output = $this->descriptor->select()
             ->where('publicKey', '=', $id)
             ->beginOrWhereClause()
@@ -44,14 +48,15 @@ class Model extends axis\Model implements user\session\IBackend {
                 ->endClause()
             ->toRow();
 
-        if(!empty($output)) {
+        if (!empty($output)) {
             $output = user\session\Descriptor::fromArray($output);
         }
 
         return $output;
     }
 
-    public function touchSession(user\session\IDescriptor $descriptor, int $lifeTime=30) {
+    public function touchSession(user\session\IDescriptor $descriptor, int $lifeTime=30)
+    {
         $values = $descriptor->touchInfo($lifeTime);
 
         $this->descriptor->update($values)
@@ -61,7 +66,8 @@ class Model extends axis\Model implements user\session\IBackend {
         return $descriptor;
     }
 
-    public function applyTransition(user\session\IDescriptor $descriptor) {
+    public function applyTransition(user\session\IDescriptor $descriptor)
+    {
         $fields = [
             'accessTime' => $descriptor->accessTime,
             'publicKey' => $descriptor->publicKey,
@@ -69,7 +75,7 @@ class Model extends axis\Model implements user\session\IBackend {
             'transitionTime' => $descriptor->transitionTime
         ];
 
-        if($descriptor->userId !== null) {
+        if ($descriptor->userId !== null) {
             $fields['user'] = $descriptor->userId;
         }
 
@@ -80,7 +86,8 @@ class Model extends axis\Model implements user\session\IBackend {
         return $descriptor;
     }
 
-    public function killSession(user\session\IDescriptor $descriptor) {
+    public function killSession(user\session\IDescriptor $descriptor)
+    {
         $id = $descriptor->id;
 
         $this->descriptor->delete()
@@ -94,7 +101,8 @@ class Model extends axis\Model implements user\session\IBackend {
         return $this;
     }
 
-    public function idExists($id) {
+    public function idExists(string $id): bool
+    {
         return (bool)$this->descriptor->select('COUNT(*) as count')
             ->where('id', '=', $id)
             ->orWhere('publicKey', '=', $id)
@@ -103,8 +111,9 @@ class Model extends axis\Model implements user\session\IBackend {
     }
 
 
-// Bucket
-    public function getBucketKeys(user\session\IDescriptor $descriptor, $bucket) {
+    // Bucket
+    public function getBucketKeys(user\session\IDescriptor $descriptor, string $bucket): array
+    {
         return $this->node->select('key')
             ->where('descriptor', '=', $descriptor->id)
             ->where('bucket', '=', $bucket)
@@ -112,7 +121,8 @@ class Model extends axis\Model implements user\session\IBackend {
             ->toList('key');
     }
 
-    public function pruneBucket(user\session\IDescriptor $descriptor, $bucket, $age) {
+    public function pruneBucket(user\session\IDescriptor $descriptor, string $bucket, int $age)
+    {
         $this->node->delete()
             ->where('descriptor', '=', $descriptor->id)
             ->where('bucket', '=', $bucket)
@@ -121,16 +131,18 @@ class Model extends axis\Model implements user\session\IBackend {
             ->execute();
     }
 
-    public function clearBucket(user\session\IDescriptor $descriptor, $bucket) {
+    public function clearBucket(user\session\IDescriptor $descriptor, string $bucket, string $operator=null)
+    {
         $this->node->delete()
             ->where('descriptor', '=', $descriptor->id)
-            ->where('bucket', '=', $bucket)
+            ->where('bucket', $operator ?? '=', $bucket)
             ->execute();
     }
 
-    public function clearBucketForUser($bucket, $userId) {
+    public function clearBucketForUser(string $userId, string $bucket, string $operator=null)
+    {
         $this->node->delete()
-            ->where('bucket', '=', $bucket)
+            ->where('bucket', $operator ?? '=', $bucket)
             ->whereCorrelation('descriptor', 'in', 'id')
                 ->from('axis://session/Descriptor')
                 ->where('user', '=', $userId)
@@ -138,16 +150,18 @@ class Model extends axis\Model implements user\session\IBackend {
             ->execute();
     }
 
-    public function clearBucketForAll($bucket) {
+    public function clearBucketForAll(string $bucket, string $operator=null)
+    {
         $this->node->delete()
-            ->where('bucket', '=', $bucket)
+            ->where('bucket', $operator ?? '=', $bucket)
             ->execute();
     }
 
 
 
-// Nodes
-    public function fetchNode(user\session\IBucket $bucket, $key) {
+    // Nodes
+    public function fetchNode(user\session\IBucket $bucket, $key): user\session\INode
+    {
         $res = $this->node->select()
             ->where('descriptor', '=', $bucket->getDescriptor()->id)
             ->where('bucket', '=', $bucket->getName())
@@ -157,17 +171,18 @@ class Model extends axis\Model implements user\session\IBackend {
         return user\session\Node::create($key, $res);
     }
 
-    public function fetchLastUpdatedNode(user\session\IBucket $bucket) {
+    public function fetchLastUpdatedNode(user\session\IBucket $bucket): ?user\session\INode
+    {
         $res = $this->node->select()
             ->where('descriptor', '=', $bucket->getDescriptor()->id)
             ->where('bucket', '=', $bucket->getName())
             ->orderBy('updateTime DESC')
             ->toRow();
 
-        if($res) {
+        if ($res) {
             try {
                 return user\session\Node::create($res['key'], $res);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $this->context->logs->logException($e);
                 return null;
             }
@@ -176,10 +191,11 @@ class Model extends axis\Model implements user\session\IBackend {
         }
     }
 
-    public function updateNode(user\session\IBucket $bucket, user\session\INode $node) {
+    public function updateNode(user\session\IBucket $bucket, user\session\INode $node)
+    {
         $descriptor = $bucket->getDescriptor();
 
-        if(empty($node->creationTime)) {
+        if (empty($node->creationTime)) {
             $node->creationTime = time();
 
             $this->node->replace([
@@ -205,7 +221,8 @@ class Model extends axis\Model implements user\session\IBackend {
         return $node;
     }
 
-    public function removeNode(user\session\IBucket $bucket, $key) {
+    public function removeNode(user\session\IBucket $bucket, string $key)
+    {
         $this->node->delete()
             ->where('descriptor', '=', $bucket->getDescriptor()->id)
             ->where('bucket', '=', $bucket->getName())
@@ -213,7 +230,8 @@ class Model extends axis\Model implements user\session\IBackend {
             ->execute();
     }
 
-    public function hasNode(user\session\IBucket $bucket, $key) {
+    public function hasNode(user\session\IBucket $bucket, string $key)
+    {
         return (bool)$this->node->select('count(*) as count')
             ->where('descriptor', '=', $bucket->getDescriptor()->id)
             ->where('bucket', '=', $bucket->getName())
@@ -221,7 +239,8 @@ class Model extends axis\Model implements user\session\IBackend {
             ->toValue('count');
     }
 
-    public function collectGarbage() {
+    public function collectGarbage()
+    {
         $time = time() - $this->_lifeTime;
 
         $this->node->delete()
@@ -247,21 +266,25 @@ class Model extends axis\Model implements user\session\IBackend {
     }
 
 
-// Recall
-    public function generateRecallKey(user\IClient $client) {
+    // Recall
+    public function generateRecallKey(user\IClient $client)
+    {
         return $this->recall->generateKey($client);
     }
 
-    public function hasRecallKey(user\session\RecallKey $key) {
+    public function hasRecallKey(user\session\RecallKey $key): bool
+    {
         return $this->recall->hasKey($key);
     }
 
-    public function destroyRecallKey(user\session\RecallKey $key) {
+    public function destroyRecallKey(user\session\RecallKey $key)
+    {
         $this->recall->destroyKey($key);
         return $this;
     }
 
-    public function purgeRecallKeys() {
+    public function purgeRecallKeys()
+    {
         $this->recall->purge();
         return $this;
     }
