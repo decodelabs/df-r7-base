@@ -210,6 +210,53 @@ class Session extends Base implements user\session\IController
     }
 
 
+
+    public function getBuckets(): array
+    {
+        if (!$this->_isOpen) {
+            throw new user\session\LogicException(
+                'Cannot get a session bucket once the session has been destroyed'
+            );
+        }
+
+        return $this->backend->getBuckets($this->descriptor);
+    }
+
+    public function getBucketsLike(string $bucket, string $operator=null): array
+    {
+        if (!$this->_isOpen) {
+            throw new user\session\LogicException(
+                'Cannot get a session bucket once the session has been destroyed'
+            );
+        }
+
+        return $this->backend->getBucketsLike($this->descriptor, $bucket, $operator);
+    }
+
+    public function getBucketsForUserLike(string $userId, string $bucket, string $operator=null): array
+    {
+        if (!$this->_isOpen) {
+            throw new user\session\LogicException(
+                'Cannot get a session bucket once the session has been destroyed'
+            );
+        }
+
+        return $this->backend->getBucketsForUserLike($userId, $bucket, $operator);
+    }
+
+    public function getBucketsForAllLike(string $bucket, string $operator=null): array
+    {
+        if (!$this->_isOpen) {
+            throw new user\session\LogicException(
+                'Cannot get a session bucket once the session has been destroyed'
+            );
+        }
+
+        return $this->backend->getBucketsForAllLike($bucket, $operator);
+    }
+
+
+
     public function clearBuckets(string $bucket, string $operator=null)
     {
         if (!$this->_isOpen) {

@@ -36,6 +36,12 @@ interface IController
     public function transition();
 
     public function getBucket($namespace);
+
+    public function getBuckets(): array;
+    public function getBucketsLike(string $bucket, string $operator=null): array;
+    public function getBucketsForUserLike(string $userId, string $bucket, string $operator=null): array;
+    public function getBucketsForAllLike(string $bucket, string $operator=null): array;
+
     public function clearBuckets(string $bucket, string $operator=null);
     public function clearBucketsForUser(string $userId, string $bucket, string $operator=null);
     public function clearBucketsForAll(string $bucket, string $operator=null);
@@ -93,6 +99,12 @@ interface IBackend
 
     public function getBucketKeys(IDescriptor $descriptor, string $bucket): array;
     public function pruneBucket(IDescriptor $descriptor, string $bucket, int $age);
+
+    public function getBuckets(IDescriptor $descriptor): array;
+    public function getBucketsLike(IDescriptor $descriptor, string $bucket, string $operator=null): array;
+    public function getBucketsForUserLike(string $userId, string $bucket, string $operator=null): array;
+    public function getBucketsForAllLike(string $bucket, string $operator=null): array;
+
     public function clearBucket(IDescriptor $descriptor, string $bucket, string $operator=null);
     public function clearBucketForUser(string $userId, string $bucket, string $operator=null);
     public function clearBucketForAll(string $bucket, string $operator=null);

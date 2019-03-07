@@ -131,6 +131,42 @@ class Model extends axis\Model implements user\session\IBackend
             ->execute();
     }
 
+
+    public function getBuckets(user\session\IDescriptor $descriptor): array
+    {
+        return $this->node->select('bucket')
+            ->where('descriptor', '=', $descriptor->id)
+            ->toList('bucket');
+    }
+
+    public function getBucketsLike(user\session\IDescriptor $descriptor, string $bucket, string $operator=null): array
+    {
+        return $this->node->select('bucket')
+            ->where('bucket', $operator ?? 'like', $bucket)
+            ->where('descriptor', '=', $descriptor->id)
+            ->toList('bucket');
+    }
+
+    public function getBucketsForUserLike(string $userId, string $bucket, string $operator=null): array
+    {
+        return $this->node->selectDistinct('bucket')
+            ->whereCorrelation('descriptor', 'in', 'id')
+                ->from('axis://session/Descriptor')
+                ->where('user', '=', $userId)
+                ->endCorrelation()
+            ->where('bucket', $operator ?? 'like', $bucket)
+            ->toList('bucket');
+    }
+
+    public function getBucketsForAllLike(string $bucket, string $operator=null): array
+    {
+        return $this->node->selectDistinct('bucket')
+            ->where('bucket', $operator ?? 'like', $bucket)
+            ->toList('bucket');
+    }
+
+
+
     public function clearBucket(user\session\IDescriptor $descriptor, string $bucket, string $operator=null)
     {
         $this->node->delete()
@@ -142,11 +178,11 @@ class Model extends axis\Model implements user\session\IBackend
     public function clearBucketForUser(string $userId, string $bucket, string $operator=null)
     {
         $this->node->delete()
-            ->where('bucket', $operator ?? '=', $bucket)
             ->whereCorrelation('descriptor', 'in', 'id')
                 ->from('axis://session/Descriptor')
                 ->where('user', '=', $userId)
                 ->endCorrelation()
+            ->where('bucket', $operator ?? '=', $bucket)
             ->execute();
     }
 
