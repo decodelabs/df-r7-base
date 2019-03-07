@@ -105,7 +105,8 @@ class TaskRebuildTable extends arch\node\Task
             );
         }
 
-        $this->io->writeLine('Copying data...');
+        $this->io->writeLine();
+        $this->io->writeLine('Copying data');
         $insert = $newTable->batchInsert();
         $count = 0;
 
