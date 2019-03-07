@@ -91,7 +91,7 @@ interface IBackend
     public function getLifeTime(): int;
 
     public function insertDescriptor(IDescriptor $descriptor);
-    public function fetchDescriptor(string $id, ?int $transitionTime): IDescriptor;
+    public function fetchDescriptor(string $id, ?int $transitionTime): ?IDescriptor;
     public function touchSession(IDescriptor $descriptor, int $lifeTime=30);
     public function applyTransition(IDescriptor $descriptor);
     public function killSession(IDescriptor $descriptor);

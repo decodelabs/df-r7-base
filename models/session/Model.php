@@ -38,7 +38,7 @@ class Model extends axis\Model implements user\session\IBackend
         return $descriptor;
     }
 
-    public function fetchDescriptor(string $id, ?int $transitionTime): user\session\IDescriptor
+    public function fetchDescriptor(string $id, ?int $transitionTime): ?user\session\IDescriptor
     {
         $output = $this->descriptor->select()
             ->where('publicKey', '=', $id)
