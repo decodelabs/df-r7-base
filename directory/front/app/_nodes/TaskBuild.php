@@ -68,13 +68,10 @@ class TaskBuild extends arch\node\Task
 
 
         if ($controller->shouldCompile()) {
-            $this->io->writeLine('Packaging files...');
-            $this->io->indent();
+            $this->io->write('Packaging files: ');
 
 
             // Create build
-            $this->io->write('Merging:');
-
             foreach ($controller->createBuild() as $packageName) {
                 $this->io->write(' '.$packageName);
             }
@@ -91,7 +88,6 @@ class TaskBuild extends arch\node\Task
             $this->runChild('./build-custom?after', false);
         }
 
-        $this->io->outdent();
 
         // Generate entries
         $this->runChild('./generate-entry', false);
