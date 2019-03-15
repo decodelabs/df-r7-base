@@ -28,6 +28,9 @@ abstract class SelectorDelegate extends Delegate implements
         'details' => 'createInlineDetailsUi'
     ];
 
+    const ONE_LIST_THRESHOLD = 70;
+    const MANY_LIST_THRESHOLD = 20;
+
     protected $_searchMessage = null;
     protected $_searchPlaceholder = null;
     protected $_defaultSearchString = null;
@@ -256,9 +259,11 @@ abstract class SelectorDelegate extends Delegate implements
         */
 
         $count = $this->_countTotalItems();
-        $threshold = $this->_isForMany ? 20 : 70;
+        $threshold = $this->_isForMany ?
+            static::MANY_LIST_THRESHOLD :
+            static::ONE_LIST_THRESHOLD;
 
-        if ($count > 0 && $count <= $threshold) {
+        if ($count > 0 && ($count <= $threshold || !$this->hasSelection())) {
             $this->_renderInlineListDetails($fa);
         } else {
             $this->_renderInlineTextDetails($fa);
@@ -270,6 +275,9 @@ abstract class SelectorDelegate extends Delegate implements
     {
         $options = $this->_getOptionsList();
         $selected = $this->_fetchSelectionList();
+        $threshold = $this->_isForMany ?
+            static::MANY_LIST_THRESHOLD :
+            static::ONE_LIST_THRESHOLD;
 
         if ($this->_isForMany) {
             $select = $this->html('div.w.list.checkbox', function () use ($options) {
@@ -283,6 +291,10 @@ abstract class SelectorDelegate extends Delegate implements
                 }
             });
         } else {
+            if (count($options) > $threshold) {
+                $options = array_slice($options, 0, $threshold, true);
+            }
+
             $select = $this->html->select(
                     $this->fieldName('selected'),
                     $this->values->selected,
