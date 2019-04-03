@@ -300,7 +300,8 @@ abstract class SelectorDelegate extends Delegate implements
                     $this->values->selected,
                     $options
                 )
-                ->isRequired($this->_isRequired);
+                //->isRequired($this->_isRequired)
+                ;
         }
 
         $fa->push(
