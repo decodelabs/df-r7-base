@@ -256,7 +256,7 @@ class Uri implements arch\IDirectoryHelper
 
     public function themeAssetRequest($path, $theme=null)
     {
-        $theme = $this->_normalizeTheme($theme);
+        $theme = $this->_normalizeTheme($theme, $path);
 
         $path = new core\uri\Url($path);
         $request = new arch\Request('theme/download?cts&theme='.$theme);
@@ -274,7 +274,7 @@ class Uri implements arch\IDirectoryHelper
     public function themeDependencyRequest($name, $themeId=null)
     {
         $name = rtrim($name, '/');
-        $themeId = $this->_normalizeTheme($themeId);
+        $themeId = $this->_normalizeTheme($themeId, $name);
         $theme = aura\theme\Base::factory($themeId);
         $manager = fuse\Manager::getInstance();
         $subPath = null;
@@ -305,22 +305,30 @@ class Uri implements arch\IDirectoryHelper
         return $this->assetRequest($path);
     }
 
-    protected function _normalizeTheme($theme)
+    protected function _normalizeTheme($theme, &$input=null)
     {
-        if ($theme === null) {
-            if ($this->view) {
-                $theme = $this->view->getTheme()->getId();
-            } else {
-                if (!$this->_defaultTheme) {
-                    $config = aura\theme\Config::getInstance();
-                    $this->_defaultTheme = $config->getThemeIdFor($this->context->location->getArea());
-                }
+        if ($theme !== null) {
+            return $theme;
+        }
 
-                $theme = $this->_defaultTheme;
+        if ($input !== null) {
+            $theme = $this->context->extractThemeId($input);
+
+            if ($theme !== null) {
+                return $theme;
             }
         }
 
-        return $theme;
+        if ($this->view) {
+            return $this->view->getTheme()->getId();
+        } else {
+            if (!$this->_defaultTheme) {
+                $config = aura\theme\Config::getInstance();
+                $this->_defaultTheme = $config->getThemeIdFor($this->context->location->getArea());
+            }
+
+            return $this->_defaultTheme;
+        }
     }
 
 
