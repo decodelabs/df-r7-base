@@ -389,4 +389,45 @@ class Uri implements arch\IDirectoryHelper
     {
         return link\ftp\Url::factory($url);
     }
+
+
+    // Data
+    public function data($url): string
+    {
+        $response = $this->_getDataResponse($url);
+        $data = $response->getContentFileStream();
+        $type = $response->getContentType();
+
+        return 'data:'.$type.';base64,'.base64_encode($data->getContents());
+    }
+
+    public function fetch($url): core\fs\IFile
+    {
+        return $this->_getDataResponse($url)->getContentFileStream();
+    }
+
+    protected function _getDataResponse($url): link\http\IResponse
+    {
+        $url = $this->__invoke($url, null, null, true);
+        $isLocal = $url instanceof arch\IRequest;
+        $url = $this->__invoke($url);
+
+        $client = new link\http\Client();
+
+        if ($isLocal) {
+            $client->getDefaultOptions()
+                ->shouldVerifySsl(false)
+                ->shouldAllowSelfSigned(true);
+        }
+
+        $response = $client->get($url);
+
+        if (!$response->isOk()) {
+            throw core\Error::ENotFound([
+                'message' => 'File not loadable: '.$url,
+            ]);
+        }
+
+        return $response;
+    }
 }
