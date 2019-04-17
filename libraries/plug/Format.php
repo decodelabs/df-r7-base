@@ -203,6 +203,70 @@ class Format implements core\ISharedHelper
     }
 
 
+
+    // List
+    public function commaList(?iterable $list, callable $renderer=null, int $limit=null, string $delimiter=', ', string $finalDelimiter=null): ?string
+    {
+        $renderer = $renderer ?? function ($value) {
+            return $value;
+        };
+
+        if (!$list) {
+            return null;
+        }
+
+        $output = [];
+        $first = true;
+        $i = $more = 0;
+
+        try {
+            $total = count($list);
+        } catch (\Throwable $e) {
+            $total = null;
+        }
+
+        if ($finalDelimiter === null) {
+            $finalDelimiter = $delimiter;
+        }
+
+
+        foreach ($list as $key => $item) {
+            if ($item === null) {
+                continue;
+            }
+
+            $i++;
+            $cell = $renderer($item, $key, $i);
+
+            if ($limit !== null && $i > $limit) {
+                $more++;
+                continue;
+            }
+
+            if (!$first) {
+                if ($i == $total) {
+                    $output[] = $finalDelimiter;
+                } else {
+                    $output[] = $delimiter;
+                }
+            }
+
+            $first = false;
+            $output[] = $cell;
+        }
+
+        if ($more) {
+            if (!$first) {
+                $output[] = $delimiter;
+            }
+
+            $output[] = $this->context->_('...and %c% more', ['%c%' => $more]);
+        }
+
+        return implode('', $output);
+    }
+
+
     // Date
     public function date($date, $size=core\time\Date::MEDIUM, $timezone=true, $locale=true)
     {
