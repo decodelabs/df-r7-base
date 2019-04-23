@@ -61,8 +61,11 @@ class Launchpad
         umask(0);
         error_reporting(E_ALL | E_STRICT);
         date_default_timezone_set('UTC');
-        mb_internal_encoding('UTF-8');
         chdir($appPath.'/entry');
+
+        if (function_exists('mb_internal_encoding')) {
+            mb_internal_encoding('UTF-8');
+        }
 
         // Check for compiled version
         $activePath = $appPath.'/data/local/run/active/Run.php';
