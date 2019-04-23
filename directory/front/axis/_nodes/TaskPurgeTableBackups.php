@@ -12,24 +12,35 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskPurgeTableBackups extends arch\node\Task {
-
-    public function execute() {
+class TaskPurgeTableBackups extends arch\node\Task
+{
+    public function extractCliArguments(core\cli\ICommand $command)
+    {
+        foreach ($command->getArguments() as $arg) {
+            if (!$arg->isOption()) {
+                $this->request->query->unit = (string)$arg;
+                break;
+            }
+        }
+    }
+    
+    public function execute()
+    {
         $unitId = $this->request['unit'];
 
-        if(!$unit = axis\Model::loadUnitFromId($unitId)) {
+        if (!$unit = axis\Model::loadUnitFromId($unitId)) {
             throw core\Error::{'axis/unit/ENotFound'}(
                 'Unit '.$unitId.' not found'
             );
         }
 
-        if($unit->getUnitType() != 'table') {
+        if ($unit->getUnitType() != 'table') {
             throw core\Error::{'axis/unit/EDomain'}(
                 'Unit '.$unitId.' is not a table'
             );
         }
 
-        if(!$unit instanceof axis\IAdapterBasedStorageUnit) {
+        if (!$unit instanceof axis\IAdapterBasedStorageUnit) {
             throw core\Error::{'axis/unit/EDomain'}(
                 'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!'
             );
@@ -44,7 +55,7 @@ class TaskPurgeTableBackups extends arch\node\Task {
 
         $func = '_purge'.$adapterName.'Table';
 
-        if(!method_exists($this, $func)) {
+        if (!method_exists($this, $func)) {
             throw core\Error::{'axis/unit/EDomain'}(
                 'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding'
             );
@@ -54,21 +65,22 @@ class TaskPurgeTableBackups extends arch\node\Task {
         $this->{$func}($unit, $inspector->getBackups());
     }
 
-    protected function _purgeRdbmsTable(axis\IStorageUnit $unit, array $backups) {
+    protected function _purgeRdbmsTable(axis\IStorageUnit $unit, array $backups)
+    {
         $this->io->writeLine('Switching to rdbms mode');
 
         $adapter = $unit->getUnitAdapter();
         $connection = $adapter->getConnection();
         $count = 0;
 
-        foreach($backups as $backup) {
+        foreach ($backups as $backup) {
             $table = $connection->getTable($backup->name);
             $this->io->writeLine('Dropping table '.$backup->name);
             $table->drop();
             $count++;
         }
 
-        if(!$count) {
+        if (!$count) {
             $this->io->writeLine('No backup tables to drop');
         }
     }
