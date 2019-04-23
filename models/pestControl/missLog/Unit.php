@@ -10,20 +10,21 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\Table {
-
+class Unit extends axis\unit\Table
+{
     const SEARCH_FIELDS = [
         'request' => 4,
         'message' => 1
     ];
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addIndexedField('date', 'Timestamp');
 
         $schema->addField('miss', 'ManyToOne', 'miss', 'missLogs');
 
-        $schema->addField('referrer', 'Text', 255)
+        $schema->addField('referrer', 'Text', 'medium')
             ->isNullable(true);
         $schema->addField('message', 'Text', 'medium')
             ->isNullable(true);
@@ -39,7 +40,8 @@ class Unit extends axis\unit\Table {
         $schema->addField('isArchived', 'Boolean');
     }
 
-    public function logMiss($request=null, $message=null) {
+    public function logMiss($request=null, $message=null)
+    {
         $agent = $this->context->data->user->agent->logCurrent();
 
         return $this->newRecord([

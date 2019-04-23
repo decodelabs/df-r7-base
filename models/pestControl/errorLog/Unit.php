@@ -11,14 +11,15 @@ use df\apex;
 use df\axis;
 use df\arch;
 
-class Unit extends axis\unit\Table {
-
+class Unit extends axis\unit\Table
+{
     const SEARCH_FIELDS = [
         'request' => 3,
         'message' => 2
     ];
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addIndexedField('date', 'Timestamp');
 
@@ -28,7 +29,7 @@ class Unit extends axis\unit\Table {
             ->isNullable(true);
         $schema->addField('request', 'Text', 'medium')
             ->isNullable(true);
-        $schema->addField('referrer', 'Text', 255)
+        $schema->addField('referrer', 'Text', 'medium')
             ->isNullable(true);
 
         $schema->addField('message', 'Text', 'medium')
@@ -47,9 +48,10 @@ class Unit extends axis\unit\Table {
         $schema->addField('isArchived', 'Boolean');
     }
 
-// IO
-    public function logException(\Throwable $e, $request=null) {
-        while($prev = $e->getPrevious()) {
+    // IO
+    public function logException(\Throwable $e, $request=null)
+    {
+        while ($prev = $e->getPrevious()) {
             $e = $prev;
         }
 
@@ -57,7 +59,7 @@ class Unit extends axis\unit\Table {
         $mode = $this->context->getRunMode();
         $message = $e->getMessage();
 
-        if($message == $error['message']) {
+        if ($message == $error['message']) {
             $message = null;
         }
 
@@ -75,14 +77,15 @@ class Unit extends axis\unit\Table {
             ->save();
     }
 
-    public function logDeprecated($message, $request=null) {
+    public function logDeprecated($message, $request=null)
+    {
         $e = new Deprecated($message);
         $message = $e->getMessage();
         $trace = $e->getTrace();
 
         do {
             $last = array_shift($trace);
-        } while(($last['function'] ?? null) == 'logDeprecated');
+        } while (($last['function'] ?? null) == 'logDeprecated');
 
         array_unshift($trace, $last);
 
@@ -97,7 +100,7 @@ class Unit extends axis\unit\Table {
 
         $mode = $this->context->getRunMode();
 
-        if($message == $error['message']) {
+        if ($message == $error['message']) {
             $message = null;
         }
 
