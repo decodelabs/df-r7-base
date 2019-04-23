@@ -1058,6 +1058,17 @@ trait TScaffold_SectionProvider
         unset($sections['details']);
         return $this->_countRecordRelations($record, array_keys($sections));
     }
+
+
+    public function renderSectionSelectorArea($bar)
+    {
+        $node = $this->context->request->getNode();
+        $method = 'render'.ucfirst($node).'SectionSelectorArea';
+
+        if (method_exists($this, $method)) {
+            return $this->{$method}($bar);
+        }
+    }
 }
 
 
