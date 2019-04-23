@@ -16,10 +16,16 @@ class TaskRebuildTable extends arch\node\Task
 {
     public function extractCliArguments(core\cli\ICommand $command)
     {
+        $hasUnit = false;
+
         foreach ($command->getArguments() as $arg) {
             if (!$arg->isOption()) {
-                $this->request->query->unit = (string)$arg;
-                break;
+                if (!$hasUnit) {
+                    $this->request->query->unit = (string)$arg;
+                    $hasUnit = true;
+                }
+            } elseif ($arg->getOption() === '-d') {
+                $this->request->query->delete = true;
             }
         }
     }
@@ -180,5 +186,11 @@ class TaskRebuildTable extends arch\node\Task
         $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
 
         $newTable->rename($currentTableName);
+
+
+        if ($this->request->query['delete'] === true) {
+            $this->io->writeLine('Deleting backup: '.$currentTable->getName());
+            $currentTable->drop();
+        }
     }
 }
