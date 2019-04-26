@@ -9,29 +9,31 @@ use df;
 use df\core;
 use df\opal;
 
-class Weight extends Base implements core\validate\IWeightField {
-
+class Weight extends Base implements core\validate\IWeightField
+{
     use core\validate\TStorageAwareField;
     use core\validate\TRecordManipulatorField;
     use opal\query\TFilterConsumer;
 
 
-// Validate
-    public function validate() {
+    // Validate
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if(!$value) {
+        if (!$value && $this->isRequired()) {
             $value = $this->_generateValue();
         }
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
 
+
         // Validate
-        if(false === filter_var($value, FILTER_VALIDATE_INT)) {
+        if (false === filter_var($value, FILTER_VALIDATE_INT)) {
             $this->addError('invalid', $this->validator->_(
                 'This is not a valid number'
             ));
@@ -47,8 +49,9 @@ class Weight extends Base implements core\validate\IWeightField {
         return $value;
     }
 
-    protected function _generateValue() {
-        if(!$this->_storageAdapter) {
+    protected function _generateValue()
+    {
+        if (!$this->_storageAdapter) {
             return null;
         }
 
@@ -58,7 +61,7 @@ class Weight extends Base implements core\validate\IWeightField {
             ->beginSelect(['MAX('.$fieldName.') as max'])
             ->from($this->_storageAdapter);
 
-        if($this->_recordId !== null) {
+        if ($this->_recordId !== null) {
             $query->where('@primary', '!=', $this->_recordId);
         }
 
