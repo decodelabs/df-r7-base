@@ -17,14 +17,15 @@ abstract class Table implements
     opal\query\IEntryPoint,
     opal\query\IIntegralAdapter,
     opal\query\IPaginatingAdapter,
-    core\IDumpable {
-
+    core\IDumpable
+{
     use axis\TUnit;
     use axis\TAdapterBasedStorageUnit;
     use axis\TSchemaBasedStorageUnit;
 
     const NAME_FIELD = null;
     const KEY_NAME = null;
+    const PRIORITY_FIELDS = null;
     const BROADCAST_HOOK_EVENTS = true;
     const DEFAULT_RECORD_CLASS = 'df\\opal\\record\\Base';
 
@@ -35,34 +36,39 @@ abstract class Table implements
     private $_recordClass;
     private $_schema;
 
-    public function __construct(axis\IModel $model, $unitName=null) {
+    public function __construct(axis\IModel $model, $unitName=null)
+    {
         $this->_model = $model;
         $this->_loadAdapter();
     }
 
-    public function getUnitType() {
+    public function getUnitType()
+    {
         return 'table';
     }
 
-    public function getStorageGroupName() {
+    public function getStorageGroupName()
+    {
         return $this->_adapter->getStorageGroupName();
     }
 
-    public function getStorageBackendName() {
+    public function getStorageBackendName()
+    {
         $output = $this->_model->getModelName().'_'.$this->getCanonicalUnitName();
 
-        if($this->_shouldPrefixNames()) {
+        if ($this->_shouldPrefixNames()) {
             $output = df\Launchpad::$app->getUniquePrefix().'_'.$output;
         }
 
         return $output;
     }
 
-    public function getRelationUnit($fieldName) {
+    public function getRelationUnit($fieldName)
+    {
         $schema = $this->getUnitSchema();
         $field = $schema->getField($fieldName);
 
-        if(!$field instanceof axis\schema\IRelationField) {
+        if (!$field instanceof axis\schema\IRelationField) {
             throw new axis\LogicException(
                 'Unit '.$this->getUnitId().' does not have a relation field named '.$fieldName
             );
@@ -71,11 +77,12 @@ abstract class Table implements
         return $field->getTargetUnit();
     }
 
-    public function getBridgeUnit($fieldName) {
+    public function getBridgeUnit($fieldName)
+    {
         $schema = $this->getUnitSchema();
         $field = $schema->getField($fieldName);
 
-        if(!$field instanceof axis\schema\IBridgedRelationField) {
+        if (!$field instanceof axis\schema\IBridgedRelationField) {
             throw new axis\LogicException(
                 'Unit '.$this->getUnitId().' does not have a bridge field named '.$fieldName
             );
@@ -84,34 +91,38 @@ abstract class Table implements
         return $field->getBridgeUnit();
     }
 
-// Schema
-    public function getUnitSchema() {
-        if($this->_schema === null) {
+    // Schema
+    public function getUnitSchema()
+    {
+        if ($this->_schema === null) {
             $this->_schema = $this->_model->getSchemaManager()->fetchFor($this);
         }
 
         return $this->_schema;
     }
 
-    public function getTransientUnitSchema($force=false) {
-        if($force) {
+    public function getTransientUnitSchema($force=false)
+    {
+        if ($force) {
             $schema = $this->buildInitialSchema();
             $this->updateUnitSchema($schema);
             return $schema;
         }
 
-        if($this->_schema !== null) {
+        if ($this->_schema !== null) {
             return $this->_schema;
         }
 
         return $this->_model->getSchemaManager()->fetchFor($this, true);
     }
 
-    public function buildInitialSchema() {
+    public function buildInitialSchema()
+    {
         return new axis\schema\Base($this, $this->getUnitName());
     }
 
-    public function clearUnitSchemaCache() {
+    public function clearUnitSchemaCache()
+    {
         $this->_schema = null;
 
         $cache = axis\schema\Cache::getInstance();
@@ -120,19 +131,20 @@ abstract class Table implements
         return $this;
     }
 
-    public function updateUnitSchema(axis\schema\ISchema $schema) {
+    public function updateUnitSchema(axis\schema\ISchema $schema)
+    {
         $version = $schema->getVersion();
 
-        if($version === 0) {
+        if ($version === 0) {
             $this->createSchema($schema);
             $schema->iterateVersion();
         }
 
-        while(true) {
+        while (true) {
             $version = $schema->getVersion();
             $func = 'updateSchema'.$version;
 
-            if(!method_exists($this, $func)) {
+            if (!method_exists($this, $func)) {
                 break;
             }
 
@@ -145,20 +157,22 @@ abstract class Table implements
         return $this;
     }
 
-    public function getDefinedUnitSchemaVersion() {
+    public function getDefinedUnitSchemaVersion()
+    {
         $schema = $this->getTransientUnitSchema();
         $version = $schema->getVersion();
 
         do {
             $func = 'updateSchema'.$version++;
-        } while(method_exists($this, $func));
+        } while (method_exists($this, $func));
 
         return $version -1;
     }
 
     abstract protected function createSchema($schema);
 
-    public function validateUnitSchema(axis\schema\ISchema $schema) {
+    public function validateUnitSchema(axis\schema\ISchema $schema)
+    {
         $manager = $this->_model->getSchemaManager();
         $manager->markTransient($this);
 
@@ -168,23 +182,27 @@ abstract class Table implements
         return $this;
     }
 
-    public function ensureStorage() {
+    public function ensureStorage()
+    {
         $this->_adapter->ensureStorage();
         return $this;
     }
 
-    public function createStorageFromSchema(axis\schema\ISchema $schema) {
+    public function createStorageFromSchema(axis\schema\ISchema $schema)
+    {
         $this->_adapter->createStorageFromSchema($schema);
         return $this;
     }
 
-    public function updateStorageFromSchema(axis\schema\ISchema $schema) {
+    public function updateStorageFromSchema(axis\schema\ISchema $schema)
+    {
         $this->_adapter->updateStorageFromSchema($schema);
         return $this;
     }
 
 
-    public function destroyStorage() {
+    public function destroyStorage()
+    {
         $manager = $this->_model->getSchemaManager();
         $this->_adapter->destroyStorage();
         $manager->remove($this);
@@ -192,39 +210,47 @@ abstract class Table implements
         return $this;
     }
 
-    public function storageExists() {
+    public function storageExists()
+    {
         return $this->_adapter->storageExists();
     }
 
 
 
-// Query source
-    public function getQuerySourceId() {
+    // Query source
+    public function getQuerySourceId()
+    {
         return 'axis://'.$this->getModel()->getModelName().'/'.ucfirst($this->getUnitName());
     }
 
-    public function getQuerySourceAdapterHash() {
+    public function getQuerySourceAdapterHash()
+    {
         return $this->_adapter->getQuerySourceAdapterHash();
     }
 
-    public function getQuerySourceAdapterServerHash() {
+    public function getQuerySourceAdapterServerHash()
+    {
         return $this->_adapter->getQuerySourceAdapterServerHash();
     }
 
-    public function getQuerySourceDisplayName() {
+    public function getQuerySourceDisplayName()
+    {
         return $this->_adapter->getQuerySourceDisplayName();
     }
 
-    public function getDelegateQueryAdapter() {
+    public function getDelegateQueryAdapter()
+    {
         return $this->_adapter->getDelegateQueryAdapter();
     }
 
-    public function supportsQueryType($type) {
+    public function supportsQueryType($type)
+    {
         return $this->_adapter->supportsQueryType($type);
     }
 
-    public function supportsQueryFeature($feature) {
-        switch($feature) {
+    public function supportsQueryFeature($feature)
+    {
+        switch ($feature) {
             case opal\query\IQueryFeatures::VALUE_PROCESSOR:
                 return true;
 
@@ -233,42 +259,45 @@ abstract class Table implements
         }
     }
 
-    public function ensureStorageConsistency() {
+    public function ensureStorageConsistency()
+    {
         $this->_adapter->ensureStorageConsistency();
         return $this;
     }
 
-    public function handleQueryException(opal\query\IQuery $query, \Throwable $e) {
+    public function handleQueryException(opal\query\IQuery $query, \Throwable $e)
+    {
         return $this->_adapter->handleQueryException($query, $e);
     }
 
-    public function applyPagination(opal\query\IPaginator $paginator) {
+    public function applyPagination(opal\query\IPaginator $paginator)
+    {
         $schema = $this->getUnitSchema();
         $default = static::DEFAULT_ORDER;
         $fields = [];
 
-        if(!empty(static::ORDERABLE_FIELDS)) {
+        if (!empty(static::ORDERABLE_FIELDS)) {
             $fields = static::ORDERABLE_FIELDS;
 
-            if(!is_array($fields)) {
+            if (!is_array($fields)) {
                 $fields = [(string)$fields];
             }
 
-            if($default === null) {
+            if ($default === null) {
                 $default = current($fields).' ASC';
             }
         } else {
-            foreach($schema->getFields() as $name => $field) {
-                if($field instanceof opal\schema\INullPrimitiveField
+            foreach ($schema->getFields() as $name => $field) {
+                if ($field instanceof opal\schema\INullPrimitiveField
                 || $field instanceof opal\schema\IManyRelationField) {
                     continue;
                 }
 
-                if($default === null
+                if ($default === null
                 || $default == 'id ASC') {
-                    if(in_array($name, ['id', 'name', 'title'])) {
+                    if (in_array($name, ['id', 'name', 'title'])) {
                         $default = $name.' ASC';
-                    } else if($name == 'date') {
+                    } elseif ($name == 'date') {
                         $default = 'date DESC';
                     }
                 }
@@ -277,11 +306,11 @@ abstract class Table implements
             }
         }
 
-        if(!empty($fields)) {
+        if (!empty($fields)) {
             $paginator->addOrderableFields(...$fields);
         }
 
-        if($default !== null) {
+        if ($default !== null) {
             $paginator->setDefaultOrder($default);
         }
 
@@ -289,82 +318,96 @@ abstract class Table implements
     }
 
 
-// Query proxy
-    public function executeSelectQuery(opal\query\ISelectQuery $query) {
+    // Query proxy
+    public function executeSelectQuery(opal\query\ISelectQuery $query)
+    {
         return $this->_adapter->executeSelectQuery($query);
     }
 
-    public function countSelectQuery(opal\query\ISelectQuery $query) {
+    public function countSelectQuery(opal\query\ISelectQuery $query)
+    {
         return $this->_adapter->countSelectQuery($query);
     }
 
-    public function executeUnionQuery(opal\query\IUnionQuery $query) {
+    public function executeUnionQuery(opal\query\IUnionQuery $query)
+    {
         return $this->_adapter->executeUnionQuery($query);
     }
 
-    public function countUnionQuery(opal\query\IUnionQuery $query) {
+    public function countUnionQuery(opal\query\IUnionQuery $query)
+    {
         return $this->_adapter->countUnionQuery($query);
     }
 
-    public function executeFetchQuery(opal\query\IFetchQuery $query) {
+    public function executeFetchQuery(opal\query\IFetchQuery $query)
+    {
         return $this->_adapter->executeFetchQuery($query);
     }
 
-    public function countFetchQuery(opal\query\IFetchQuery $query) {
+    public function countFetchQuery(opal\query\IFetchQuery $query)
+    {
         return $this->_adapter->countFetchQuery($query);
     }
 
-    public function executeInsertQuery(opal\query\IInsertQuery $query) {
+    public function executeInsertQuery(opal\query\IInsertQuery $query)
+    {
         return $this->_adapter->executeInsertQuery($query);
     }
 
-    public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query) {
+    public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query)
+    {
         return $this->_adapter->executeBatchInsertQuery($query);
     }
 
-    public function executeUpdateQuery(opal\query\IUpdateQuery $query) {
+    public function executeUpdateQuery(opal\query\IUpdateQuery $query)
+    {
         return $this->_adapter->executeUpdateQuery($query);
     }
 
-    public function executeDeleteQuery(opal\query\IDeleteQuery $query) {
+    public function executeDeleteQuery(opal\query\IDeleteQuery $query)
+    {
         return $this->_adapter->executeDeleteQuery($query);
     }
 
 
-    public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows) {
+    public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows)
+    {
         return $this->_adapter->fetchRemoteJoinData($join, $rows);
     }
 
-    public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows) {
+    public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows)
+    {
         return $this->_adapter->fetchAttachmentData($attachment, $rows);
     }
 
 
 
-// Integral adapter
-    public function getQueryAdapterSchema() {
+    // Integral adapter
+    public function getQueryAdapterSchema()
+    {
         return $this->getUnitSchema();
     }
 
-    public function prepareQueryClauseValue(opal\query\IField $field, $value) {
+    public function prepareQueryClauseValue(opal\query\IField $field, $value)
+    {
         $schema = $this->getUnitSchema();
         $name = $field->getName();
 
-        if($axisField = $schema->getField($name)) {
+        if ($axisField = $schema->getField($name)) {
             return $axisField->deflateValue($axisField->sanitizeClauseValue($value));
         }
 
 
         // THIS IS A HACK - YOU NEED TO FIX THIS WHOLE THING!
-        if(false !== strpos($name, '_')) {
+        if (false !== strpos($name, '_')) {
             list($testName,) = explode('_', $name, 2);
             $axisField = $schema->getField($testName);
 
-            if($axisField instanceof axis\schema\IRelationField) {
+            if ($axisField instanceof axis\schema\IRelationField) {
                 $prepared = $axisField->deflateValue($axisField->sanitizeClauseValue($value));
 
-                if(is_array($prepared)) {
-                    if(isset($prepared[$name])) {
+                if (is_array($prepared)) {
+                    if (isset($prepared[$name])) {
                         return $prepared[$name];
                     }
                 } else {
@@ -376,8 +419,9 @@ abstract class Table implements
         return $value;
     }
 
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
-        if((!$axisField = $this->getUnitSchema()->getField($field->getName()))
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    {
+        if ((!$axisField = $this->getUnitSchema()->getField($field->getName()))
          || !$axisField instanceof opal\schema\IQueryClauseRewriterField) {
             throw new axis\schema\RuntimeException(
                 'Query field '.$field->getName().' has no virtual field rewriter'
@@ -387,18 +431,19 @@ abstract class Table implements
         return $axisField->rewriteVirtualQueryClause($parent, $field, $operator, $value, $isOr);
     }
 
-    public function getDefaultSearchFields() {
+    public function getDefaultSearchFields()
+    {
         static $fields;
 
-        if(!isset($fields)) {
+        if (!isset($fields)) {
             $fields = static::SEARCH_FIELDS;
 
-            if(empty($fields)) {
+            if (empty($fields)) {
                 $schema = $this->getUnitSchema();
                 $nameField = $this->getRecordNameField();
                 $fields = [$nameField => 2];
 
-                if($nameField != 'id' && $schema->hasField('id')) {
+                if ($nameField != 'id' && $schema->hasField('id')) {
                     $fields['id'] = 10;
                 }
             }
@@ -407,17 +452,18 @@ abstract class Table implements
         return $fields;
     }
 
-    public function getQueryResultValueProcessors(array $fields=null) {
+    public function getQueryResultValueProcessors(array $fields=null)
+    {
         $schema = $this->getUnitSchema();
 
-        if($fields === null) {
+        if ($fields === null) {
             return $schema->getFields();
         }
 
         $output = [];
 
-        foreach($fields as $fieldName) {
-            if($field = $schema->getField($fieldName)) {
+        foreach ($fields as $fieldName) {
+            if ($field = $schema->getField($fieldName)) {
                 $output[$fieldName] = $field;
             }
         }
@@ -426,10 +472,11 @@ abstract class Table implements
     }
 
 
-    public function applyQueryBlock(opal\query\IQuery $query, $name, array $args) {
+    public function applyQueryBlock(opal\query\IQuery $query, $name, array $args)
+    {
         $method = 'apply'.ucfirst($name).'QueryBlock';
 
-        if(!method_exists($this, $method)) {
+        if (!method_exists($this, $method)) {
             throw new axis\LogicException(
                 'Query block '.$name.' does not exist on '.$this->getUnitId()
             );
@@ -440,10 +487,11 @@ abstract class Table implements
         return $this;
     }
 
-    public function applyRelationQueryBlock(opal\query\IQuery $query, opal\query\IField $relationField, $name, array $args) {
+    public function applyRelationQueryBlock(opal\query\IQuery $query, opal\query\IField $relationField, $name, array $args)
+    {
         $method = 'apply'.ucfirst($name).'RelationQueryBlock';
 
-        if(!method_exists($this, $method)) {
+        if (!method_exists($this, $method)) {
             throw new axis\LogicException(
                 'Relation query block '.$name.' does not exist on '.$this->getUnitId()
             );
@@ -454,24 +502,29 @@ abstract class Table implements
     }
 
 
-// Transactions
-    public function getTransactionId() {
+    // Transactions
+    public function getTransactionId()
+    {
         return $this->getQuerySourceAdapterHash();
     }
 
-    public function getJobAdapterId() {
+    public function getJobAdapterId()
+    {
         return $this->getQuerySourceId();
     }
 
-    public function begin() {
+    public function begin()
+    {
         return $this->_adapter->begin();
     }
 
-    public function commit() {
+    public function commit()
+    {
         return $this->_adapter->commit();
     }
 
-    public function rollback() {
+    public function rollback()
+    {
         return $this->_adapter->rollback();
     }
 
@@ -479,14 +532,15 @@ abstract class Table implements
 
 
 
-// Record
-    public function newRecord(array $values=null) {
-        if($this->_recordClass === null) {
+    // Record
+    public function newRecord(array $values=null)
+    {
+        if ($this->_recordClass === null) {
             $this->_recordClass = 'df\\apex\\models\\'.$this->_model->getModelName().'\\'.$this->getUnitName().'\\Record';
 
-            if(!class_exists($this->_recordClass)) {
+            if (!class_exists($this->_recordClass)) {
                 $this->_recordClass = static::DEFAULT_RECORD_CLASS;
-            } else if(!is_subclass_of($this->_recordClass, static::DEFAULT_RECORD_CLASS)) {
+            } elseif (!is_subclass_of($this->_recordClass, static::DEFAULT_RECORD_CLASS)) {
                 throw new axis\LogicException(
                     $this->_recordClass.' is not a valid record class for unit '.$this->getUnitId()
                 );
@@ -496,44 +550,56 @@ abstract class Table implements
         return new $this->_recordClass($this, $values, array_keys($this->getUnitSchema()->getFields()));
     }
 
-    public function newPartial(array $values=null) {
+    public function newPartial(array $values=null)
+    {
         return new opal\record\Partial($this, $values);
     }
 
-    public function shouldRecordsBroadcastHookEvents() {
+    public function shouldRecordsBroadcastHookEvents()
+    {
         return (bool)static::BROADCAST_HOOK_EVENTS;
     }
 
 
 
-// Query blocks
-    public function applyLinkRelationQueryBlock(opal\query\IReadQuery $query, opal\query\IField $relationField, array $extraFields=null) {
+    // Query blocks
+    public function applyLinkRelationQueryBlock(opal\query\IReadQuery $query, opal\query\IField $relationField, array $extraFields=null)
+    {
         $schema = $this->getUnitSchema();
         $primaries = $schema->getPrimaryFields();
         $name = $this->getRecordNameField();
+        $priority = $this->getRecordPriorityFields();
         $rName = $relationField->getName();
 
-        if(!$primaries) {
+        if (!$primaries) {
             throw new axis\LogicException(
                 'Unit '.$this->getUnitId().' does not have a primary index'
             );
         }
 
+
         $fields = [];
         $combine = [];
         $firstPrimary = null;
 
-        foreach($primaries as $qName => $field) {
+        foreach ($primaries as $qName => $field) {
             $firstPrimary = $qName;
             $fields[$qName] = $qName.' as '.$rName.'|'.$qName;
             $combine[$qName] = $rName.'|'.$qName.' as '.$qName;
         }
 
-        $fields[$name] = $name.' as '.$rName.'|'.$name;
-        $combine[$name] = $rName.'|'.$name.' as '.$name;
+        foreach ($priority as $pName) {
+            if (isset($primaries[$name])) {
+                continue;
+            }
 
-        if(!empty($extraFields)) {
-            foreach($extraFields as $extraField) {
+            $fields[$pName] = $pName.' as '.$rName.'|'.$pName;
+            $combine[$pName] = $rName.'|'.$pName.' as '.$pName;
+        }
+
+
+        if (!empty($extraFields)) {
+            foreach ($extraFields as $extraField) {
                 $parts = explode(' as ', $extraField);
                 $fieldName = array_shift($parts);
                 $alias = $parts[0] ?? $fieldName;
@@ -543,7 +609,7 @@ abstract class Table implements
             }
         }
 
-        if($query instanceof opal\query\ISelectQuery) {
+        if ($query instanceof opal\query\ISelectQuery) {
             $query->leftJoinRelation($relationField, $fields)
                 ->combine($combine)
                     ->nullOn($firstPrimary)
@@ -559,42 +625,49 @@ abstract class Table implements
     }
 
 
-// Entry point
-    public function select(...$fields) {
+    // Entry point
+    public function select(...$fields)
+    {
         return opal\query\Initiator::factory()
             ->beginSelect($fields)
             ->from($this, $this->getCanonicalUnitName());
     }
 
-    public function selectDistinct(...$fields) {
+    public function selectDistinct(...$fields)
+    {
         return opal\query\Initiator::factory()
             ->beginSelect($fields, true)
             ->from($this, $this->getCanonicalUnitName());
     }
 
-    public function countAll() {
+    public function countAll()
+    {
         return $this->select()->count();
     }
 
-    public function countAllDistinct() {
+    public function countAllDistinct()
+    {
         return $this->selectDistinct()->count();
     }
 
-    public function union(...$fields) {
+    public function union(...$fields)
+    {
         return opal\query\Initiator::factory()
             ->beginUnion()
             ->with($fields)
             ->from($this);
     }
 
-    public function fetch() {
+    public function fetch()
+    {
         return opal\query\Initiator::factory()
             ->beginFetch()
             ->from($this, $this->getCanonicalUnitName());
     }
 
-    public function fetchByPrimary($keys) {
-        if($keys instanceof opal\record\IRecord
+    public function fetchByPrimary($keys)
+    {
+        if ($keys instanceof opal\record\IRecord
         && $keys->getAdapter() === $this
         && !$keys->isNew()) {
             return $keys;
@@ -603,26 +676,26 @@ abstract class Table implements
         $query = $this->fetch();
         $primaryKeySet = null;
 
-        if(is_string($keys) && substr($keys, 0, 7) == 'keySet?') {
+        if (is_string($keys) && substr($keys, 0, 7) == 'keySet?') {
             $primaryKeySet = opal\record\PrimaryKeySet::fromEntityId($keys);
-        } else if($keys instanceof opal\record\IPrimaryKeySet) {
+        } elseif ($keys instanceof opal\record\IPrimaryKeySet) {
             $primaryKeySet = $keys;
         }
 
-        if($primaryKeySet) {
-            foreach($primaryKeySet->toArray() as $key => $value) {
+        if ($primaryKeySet) {
+            foreach ($primaryKeySet->toArray() as $key => $value) {
                 $query->where($key, '=', $value);
             }
         } else {
-            if(!is_array($keys)) {
+            if (!is_array($keys)) {
                 $keys = func_get_args();
             }
 
-            if(!$index = $this->getUnitSchema()->getPrimaryIndex()) {
+            if (!$index = $this->getUnitSchema()->getPrimaryIndex()) {
                 return null;
             }
 
-            foreach(array_keys($index->getFields()) as $i => $primaryField) {
+            foreach (array_keys($index->getFields()) as $i => $primaryField) {
                 $value = array_shift($keys);
                 $query->where($primaryField, '=', $value);
             }
@@ -631,53 +704,61 @@ abstract class Table implements
         return $query->toRow();
     }
 
-    public function insert($row) {
+    public function insert($row)
+    {
         return opal\query\Initiator::factory()
             ->beginInsert($row)
             ->into($this, $this->getCanonicalUnitName());
     }
 
-    public function batchInsert($rows=[]) {
+    public function batchInsert($rows=[])
+    {
         return opal\query\Initiator::factory()
             ->beginBatchInsert($rows)
             ->into($this, $this->getCanonicalUnitName());
     }
 
-    public function replace($row) {
+    public function replace($row)
+    {
         return opal\query\Initiator::factory()
             ->beginReplace($row)
             ->in($this, $this->getCanonicalUnitName());
     }
 
-    public function batchReplace($rows=[]) {
+    public function batchReplace($rows=[])
+    {
         return opal\query\Initiator::factory()
             ->beginBatchReplace($rows)
             ->in($this, $this->getCanonicalUnitName());
     }
 
-    public function update(array $valueMap=null) {
+    public function update(array $valueMap=null)
+    {
         return opal\query\Initiator::factory()
             ->beginUpdate($valueMap)
             ->in($this, $this->getCanonicalUnitName());
     }
 
-    public function delete() {
+    public function delete()
+    {
         return opal\query\Initiator::factory()
             ->beginDelete()
             ->from($this, $this->getCanonicalUnitName());
     }
 
-    public function newTransaction(): mesh\job\ITransaction {
+    public function newTransaction(): mesh\job\ITransaction
+    {
         return new opal\query\Transaction($this);
     }
 
 
 
-// Mesh
-    public function fetchSubEntity(mesh\IManager $manager, array $node) {
-        switch($node['type']) {
+    // Mesh
+    public function fetchSubEntity(mesh\IManager $manager, array $node)
+    {
+        switch ($node['type']) {
             case 'Record':
-                if($node['id'] == '*') {
+                if ($node['id'] == '*') {
                     return $this->newRecord();
                 }
 
@@ -688,15 +769,16 @@ abstract class Table implements
         }
     }
 
-    public function getSubEntityLocator(mesh\entity\IEntity $entity) {
-        if($entity instanceof opal\record\IPrimaryKeySetProvider) {
+    public function getSubEntityLocator(mesh\entity\IEntity $entity)
+    {
+        if ($entity instanceof opal\record\IPrimaryKeySetProvider) {
             $output = new mesh\entity\Locator(
                 'axis://'.$this->getModel()->getModelName().'/'.ucfirst($this->getUnitName())
             );
 
             $id = $entity->getPrimaryKeySet()->getEntityId();
 
-            if(empty($id)) {
+            if (empty($id)) {
                 $id = '*';
             }
 
@@ -711,8 +793,9 @@ abstract class Table implements
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         return [
             'type' => $this->getUnitType(),
             'unitId' => $this->getUnitId(),

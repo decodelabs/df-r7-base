@@ -12,17 +12,25 @@ use df\opal;
 use df\user;
 use df\mesh;
 
-
 // Exceptions
-interface IException {}
-class LogicException extends \LogicException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
+interface IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
 
 // Interfaces
-interface IAccess extends user\IState {}
+interface IAccess extends user\IState
+{
+}
 
 
-interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject {
+interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject
+{
     public function getModelName();
     public function getUnit($name);
     public static function getSchemaManager();
@@ -31,14 +39,15 @@ interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject {
 }
 
 
-interface IUnitOptions {
+interface IUnitOptions
+{
     const BACKUP_SUFFIX = '__bak_';
 }
 
 
 
-interface IUnit extends mesh\entity\IEntity, user\IAccessLock, \Serializable {
-
+interface IUnit extends mesh\entity\IEntity, user\IAccessLock, \Serializable
+{
     const DEFAULT_ACCESS = axis\IAccess::GUEST;
 
     public function _setUnitName($name);
@@ -54,8 +63,8 @@ interface IUnit extends mesh\entity\IEntity, user\IAccessLock, \Serializable {
     public function beginProcedure($name, $values);
 }
 
-trait TUnit {
-
+trait TUnit
+{
     use user\TAccessLock;
 
     public static $actionAccess = [];
@@ -65,25 +74,30 @@ trait TUnit {
 
     protected $_model;
 
-    public function __construct(axis\IModel $model) {
+    public function __construct(axis\IModel $model)
+    {
         $this->_model = $model;
     }
 
-    public function serialize() {
+    public function serialize()
+    {
         return $this->getUnitId();
     }
 
-    public function unserialize($data) {
+    public function unserialize($data)
+    {
         return axis\Model::loadUnitFromId($data);
     }
 
-    public function _setUnitName($name) {
+    public function _setUnitName($name)
+    {
         $this->_unitName = $name;
         return $this;
     }
 
-    public function getUnitName() {
-        if(!$this->_unitName) {
+    public function getUnitName()
+    {
+        if (!$this->_unitName) {
             $parts = explode('\\', get_class($this));
             array_pop($parts);
             $this->_unitName = array_pop($parts);
@@ -92,16 +106,19 @@ trait TUnit {
         return $this->_unitName;
     }
 
-    public function getCanonicalUnitName() {
+    public function getCanonicalUnitName()
+    {
         return preg_replace('/[^a-zA-Z0-9_]/', '_', $this->getUnitName());
     }
 
-    public function getUnitId() {
+    public function getUnitId()
+    {
         return $this->_model->getModelName().'/'.$this->getUnitName();
     }
 
-    public function getUnitSettings() {
-        if($this->_unitSettings === null) {
+    public function getUnitSettings()
+    {
+        if ($this->_unitSettings === null) {
             $config = axis\Config::getInstance();
             $this->_unitSettings = $config->getSettingsFor($this);
         }
@@ -109,25 +126,30 @@ trait TUnit {
         return $this->_unitSettings;
     }
 
-    protected function _shouldPrefixNames() {
+    protected function _shouldPrefixNames()
+    {
         $settings = $this->getUnitSettings();
         return (bool)$settings['prefixNames'];
     }
 
-    public function getModel() {
+    public function getModel()
+    {
         return $this->_model;
     }
 
-    public function getStorageBackendName() {
+    public function getStorageBackendName()
+    {
         return null;
     }
 
-    public function getContext() {
+    public function getContext()
+    {
         return $this->_model->getUnit('context');
     }
 
-    public function __get($member) {
-        switch($member) {
+    public function __get($member)
+    {
+        switch ($member) {
             case 'model':
                 return $this->_model;
 
@@ -139,137 +161,153 @@ trait TUnit {
         }
     }
 
-    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null) {
+    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null)
+    {
         return $validator;
     }
 
 
 
-    public function beginProcedure($name, $values) {
+    public function beginProcedure($name, $values)
+    {
         return axis\procedure\Base::factory($this, $name, $values);
     }
 
 
-// Mesh
-    public function getEntityLocator() {
+    // Mesh
+    public function getEntityLocator()
+    {
         return new mesh\entity\Locator(
             'axis://'.$this->_model->getModelName().'/'.ucfirst($this->getUnitName())
         );
     }
 
 
-// Access
-    public function getAccessLockDomain() {
+    // Access
+    public function getAccessLockDomain()
+    {
         return 'model';
     }
 
-    public function lookupAccessKey(array $keys, $action=null) {
+    public function lookupAccessKey(array $keys, $action=null)
+    {
         $id = $this->getUnitId();
 
         $parts = explode('/', $id);
         $test = $parts[0].'/';
 
-        if($action !== null) {
-            if(isset($keys[$id.'#'.$action])) {
+        if ($action !== null) {
+            if (isset($keys[$id.'#'.$action])) {
                 return $keys[$id.'#'.$action];
             }
 
-            if(isset($keys[$test.'*#'.$action])) {
+            if (isset($keys[$test.'*#'.$action])) {
                 return $keys[$test.'*#'.$action];
             }
 
-            if(isset($keys[$test.'%#'.$action])) {
+            if (isset($keys[$test.'%#'.$action])) {
                 return $keys[$test.'%#'.$action];
             }
 
-            if(isset($keys['*#'.$action])) {
+            if (isset($keys['*#'.$action])) {
                 return $keys['*#'.$action];
             }
         }
 
 
-        if(isset($keys[$id])) {
+        if (isset($keys[$id])) {
             return $keys[$id];
         }
 
-        if(isset($keys[$test.'*'])) {
+        if (isset($keys[$test.'*'])) {
             return $keys[$test.'*'];
         }
 
-        if(isset($keys[$test.'%'])) {
+        if (isset($keys[$test.'%'])) {
             return $keys[$test.'%'];
         }
 
         return null;
     }
 
-    public function getDefaultAccess($action=null) {
-        if($action === null) {
+    public function getDefaultAccess($action=null)
+    {
+        if ($action === null) {
             return static::DEFAULT_ACCESS;
         }
 
-        if(isset(static::$actionAccess[$action])) {
+        if (isset(static::$actionAccess[$action])) {
             return static::$actionAccess[$action];
         }
 
         return static::DEFAULT_ACCESS;
     }
 
-    public function getAccessLockId() {
+    public function getAccessLockId()
+    {
         return $this->getUnitId();
     }
 }
 
 
 
-interface IVirtualUnit extends IUnit {
+interface IVirtualUnit extends IUnit
+{
     public static function loadVirtual(IModel $model, array $args);
     public function isVirtualUnitShared();
 }
 
-interface IAdapterBasedUnit {
+interface IAdapterBasedUnit
+{
     public function getUnitAdapter();
     public function getUnitAdapterName();
     public function getUnitAdapterConnectionName();
 }
 
-interface IStorageUnit extends IUnit {
+interface IStorageUnit extends IUnit
+{
     public function fetchByPrimary($id);
     public function destroyStorage();
     public function storageExists();
     public function getStorageGroupName();
 }
 
-interface IAdapterBasedStorageUnit extends IStorageUnit, IAdapterBasedUnit {}
+interface IAdapterBasedStorageUnit extends IStorageUnit, IAdapterBasedUnit
+{
+}
 
-trait TAdapterBasedStorageUnit {
-
+trait TAdapterBasedStorageUnit
+{
     protected $_adapter;
 
-    public function getUnitAdapter() {
+    public function getUnitAdapter()
+    {
         return $this->_adapter;
     }
 
-    public function getUnitAdapterName() {
+    public function getUnitAdapterName()
+    {
         return $this->_adapter->getDisplayName();
     }
 
-    public function getUnitAdapterConnectionName() {
-        if($this->_adapter instanceof axis\IConnectionProxyAdapter) {
+    public function getUnitAdapterConnectionName()
+    {
+        if ($this->_adapter instanceof axis\IConnectionProxyAdapter) {
             return $this->_adapter->getConnectionDisplayName();
-        } else if($this->_adapter instanceof opal\query\IAdapter) {
+        } elseif ($this->_adapter instanceof opal\query\IAdapter) {
             return $this->_adapter->getQuerySourceDisplayName();
         } else {
             core\stub($this->_adapter);
         }
     }
 
-    protected function _loadAdapter() {
+    protected function _loadAdapter()
+    {
         $config = axis\Config::getInstance();
         $adapterId = $config->getAdapterIdFor($this);
         $unitType = $this->getUnitType();
 
-        if(empty($adapterId)) {
+        if (empty($adapterId)) {
             throw new axis\RuntimeException(
                 'No adapter has been configured for '.ucfirst($this->getUnitType()).' unit type'
             );
@@ -277,7 +315,7 @@ trait TAdapterBasedStorageUnit {
 
         $class = 'df\\axis\\unit\\'.lcfirst($unitType).'\\adapter\\'.$adapterId;
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new axis\RuntimeException(
                 ucfirst($this->getUnitType()).' unit adapter '.$adapterId.' could not be found'
             );
@@ -287,7 +325,8 @@ trait TAdapterBasedStorageUnit {
     }
 }
 
-interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\ISchemaContext {
+interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\ISchemaContext
+{
     public function getUnitSchema();
     public function getTransientUnitSchema($force=false);
     public function clearUnitSchemaCache();
@@ -303,35 +342,39 @@ interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\
     public function getDefinedUnitSchemaVersion();
 
     public function getRecordNameField();
+    public function getRecordPriorityFields(): array;
     public function getRecordKeyName();
 }
 
-trait TSchemaBasedStorageUnit {
+trait TSchemaBasedStorageUnit
+{
 
     //const NAME_FIELD = null;
     //const KEY_NAME = null;
+    //const PRIORITY_FIELDS = [];
 
     private $_recordNameField = null;
     private $_recordKeyName = null;
 
-    public function getRecordNameField() {
-        if($this->_recordNameField === null) {
-            if(static::NAME_FIELD) {
+    public function getRecordNameField()
+    {
+        if ($this->_recordNameField === null) {
+            if (static::NAME_FIELD) {
                 $this->_recordNameField = static::NAME_FIELD;
             } else {
                 $schema = $this->getUnitSchema();
                 $try = ['name', 'title', 'id'];
 
-                foreach($try as $field) {
-                    if($field = $schema->getField($field)) {
+                foreach ($try as $field) {
+                    if ($field = $schema->getField($field)) {
                         $this->_recordNameField = $field->getName();
                         break;
                     }
                 }
 
-                if(!$this->_recordNameField) {
-                    foreach($schema->getFields() as $field) {
-                        if($field instanceof opal\schema\IMultiPrimitiveField
+                if (!$this->_recordNameField) {
+                    foreach ($schema->getFields() as $field) {
+                        if ($field instanceof opal\schema\IMultiPrimitiveField
                         || $field instanceof opal\schema\INullPrimitiveField) {
                             continue;
                         }
@@ -341,7 +384,7 @@ trait TSchemaBasedStorageUnit {
                     }
                 }
 
-                if(!$this->_recordNameField) {
+                if (!$this->_recordNameField) {
                     throw new RuntimeException(
                         'Unable to work out a suitable name field for '.$this->getUnitId()
                     );
@@ -352,9 +395,10 @@ trait TSchemaBasedStorageUnit {
         return $this->_recordNameField;
     }
 
-    public function getRecordKeyName() {
-        if($this->_recordKeyName === null) {
-            if(static::KEY_NAME) {
+    public function getRecordKeyName()
+    {
+        if ($this->_recordKeyName === null) {
+            if (static::KEY_NAME) {
                 $this->_recordKeyName = static::KEY_NAME;
             } else {
                 $this->_recordKeyName = lcfirst($this->getUnitName());
@@ -364,34 +408,58 @@ trait TSchemaBasedStorageUnit {
         return $this->_recordKeyName;
     }
 
-    public function customizeTranslatedSchema(opal\schema\ISchema $schema) {
+    public function getRecordPriorityFields(): array
+    {
+        if (is_array(static::PRIORITY_FIELDS ?? null)) {
+            $output = static::PRIORITY_FIELDS;
+        } else {
+            $output = [];
+        }
+
+        $nameField = $this->getRecordNameField();
+
+        if (!in_array($nameField, $output)) {
+            $output[] = $nameField;
+        }
+
+        return $output;
+    }
+
+    public function customizeTranslatedSchema(opal\schema\ISchema $schema)
+    {
         return $schema;
     }
 }
 
 
-interface IContext extends IUnit, core\IContext {}
+interface IContext extends IUnit, core\IContext
+{
+}
 
 
 
-interface IAdapter {
+interface IAdapter
+{
     public function getDisplayName(): string;
     public function getUnit();
 }
 
-interface IConnectionProxyAdapter extends IAdapter {
+interface IConnectionProxyAdapter extends IAdapter
+{
     public function getConnection();
     public function getConnectionDisplayName();
 }
 
-interface IIntrospectableAdapter extends IAdapter {
+interface IIntrospectableAdapter extends IAdapter
+{
     public function getStorageList();
     public function describeStorage($name=null);
     public function destroyDescribedStorage($name);
     public function getStorageGroupName();
 }
 
-interface ISchemaProviderAdapter extends IAdapter {
+interface ISchemaProviderAdapter extends IAdapter
+{
     public function ensureStorage();
     public function createStorageFromSchema(axis\schema\ISchema $schema);
     public function updateStorageFromSchema(axis\schema\ISchema $schema);
@@ -399,7 +467,8 @@ interface ISchemaProviderAdapter extends IAdapter {
     public function storageExists();
 }
 
-interface INode {
+interface INode
+{
     public function validate();
     public function isValid(): bool;
 }
