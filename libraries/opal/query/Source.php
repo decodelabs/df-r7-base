@@ -10,8 +10,8 @@ use df\core;
 use df\opal;
 use df\axis;
 
-class Source implements ISource, core\IDumpable {
-
+class Source implements ISource, core\IDumpable
+{
     use TQuery_AdapterAware;
 
     protected $_outputFields = [];
@@ -23,41 +23,49 @@ class Source implements ISource, core\IDumpable {
     protected $_isPrimary = false;
     private $_id;
 
-    public function __construct(IAdapter $adapter, $alias) {
+    public function __construct(IAdapter $adapter, $alias)
+    {
         $this->_adapter = $adapter;
         $this->_alias = $alias;
     }
 
-    public function getAlias() {
+    public function getAlias()
+    {
         return $this->_alias;
     }
 
-    public function getId(): string {
-        if(!$this->_id) {
+    public function getId(): string
+    {
+        if (!$this->_id) {
             $this->_id = $this->_adapter->getQuerySourceId();
         }
 
         return $this->_id;
     }
 
-    public function getUniqueId() {
+    public function getUniqueId()
+    {
         return $this->getId().' as '.$this->getAlias();
     }
 
-    public function getHash() {
+    public function getHash()
+    {
         return $this->_adapter->getQuerySourceAdapterHash();
     }
 
-    public function getDisplayName(): string {
+    public function getDisplayName(): string
+    {
         return $this->_adapter->getQuerySourceDisplayName();
     }
 
-    public function isDerived() {
+    public function isDerived()
+    {
         return $this->_adapter instanceof IDerivedSourceAdapter;
     }
 
-    public function isPrimary(bool $flag=null) {
-        if($flag !== null) {
+    public function isPrimary(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isPrimary = $flag;
             return $this;
         }
@@ -65,8 +73,9 @@ class Source implements ISource, core\IDumpable {
         return $this->_isPrimary;
     }
 
-    public function handleQueryException(IQuery $query, \Throwable $e) {
-        if($this->_adapter->handleQueryException($query, $e)) {
+    public function handleQueryException(IQuery $query, \Throwable $e)
+    {
+        if ($this->_adapter->handleQueryException($query, $e)) {
             return true;
         }
 
@@ -75,21 +84,22 @@ class Source implements ISource, core\IDumpable {
 
 
 
-// Fields
-    public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null) {
-        if($this->isDerived()) {
+    // Fields
+    public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null)
+    {
+        if ($this->isDerived()) {
             return $this->getAdapter()
                 ->getDerivationSource()
                 ->extrapolateIntegralAdapterField($name, $alias, $field)
                 ->rewriteAsDerived($this);
         }
 
-        if($this->_adapter instanceof IIntegralAdapter) {
+        if ($this->_adapter instanceof IIntegralAdapter) {
             // Get primary
-            if($name == '@primary') {
+            if ($name == '@primary') {
                 $schema = $this->_adapter->getQueryAdapterSchema();
 
-                if(!$primaryIndex = $schema->getPrimaryIndex()) {
+                if (!$primaryIndex = $schema->getPrimaryIndex()) {
                     throw new opal\schema\RuntimeException(
                         'Unit '.$this->_adapter->getUnitId().' does not have a primary index'
                     );
@@ -97,10 +107,10 @@ class Source implements ISource, core\IDumpable {
 
                 $fields = [];
 
-                foreach($primaryIndex->getFields() as $fieldName => $indexField) {
+                foreach ($primaryIndex->getFields() as $fieldName => $indexField) {
                     $subField = $this->extrapolateIntegralAdapterFieldFromSchemaField($fieldName, $fieldName, $indexField);
 
-                    foreach($subField->dereference() as $innerField) {
+                    foreach ($subField->dereference() as $innerField) {
                         $fields[] = $innerField;
                     }
                 }
@@ -110,44 +120,44 @@ class Source implements ISource, core\IDumpable {
 
 
             // Raw sql field
-            if(substr($name, 0, 5) == '@raw ') {
+            if (substr($name, 0, 5) == '@raw ') {
                 $expression = trim(substr($name, 5));
                 return new opal\query\field\Raw($this, $expression, $alias);
             }
 
 
             // Get name
-            if($name == '@name') {
+            if ($name == '@name') {
                 $name = $this->_adapter->getRecordNameField();
                 return new opal\query\field\Intrinsic($this, $name, $alias);
             }
 
 
-            if(substr($name, 0, 1) == '@') {
+            if (substr($name, 0, 1) == '@') {
                 throw new axis\schema\RuntimeException(
                     'Unknown symbolic field: '.$name
                 );
             }
 
-            if($alias === null) {
+            if ($alias === null) {
                 $alias = $name;
             }
 
 
             // Dereference from source manager
-            if($field === null) {
+            if ($field === null) {
                 $schema = $this->_adapter->getQueryAdapterSchema();
 
-                if(!$field = $schema->getField($name)) {
+                if (!$field = $schema->getField($name)) {
                     return new opal\query\field\Intrinsic($this, $name, $alias);
                 }
             }
 
             // Generic
             return $this->extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, $field);
-        } else if($this->_adapter instanceof INaiveIntegralAdapter) {
-            if($name == '@primary') {
-                if(!$primaryIndex = $this->_adapter->getPrimaryIndex()) {
+        } elseif ($this->_adapter instanceof INaiveIntegralAdapter) {
+            if ($name == '@primary') {
+                if (!$primaryIndex = $this->_adapter->getPrimaryIndex()) {
                     throw new axis\schema\RuntimeException(
                         'Unit '.$this->getUnitId().' does not have a primary index'
                     );
@@ -155,20 +165,20 @@ class Source implements ISource, core\IDumpable {
 
                 $fields = [];
 
-                foreach($primaryIndex->getFields() as $fieldName => $indexField) {
+                foreach ($primaryIndex->getFields() as $fieldName => $indexField) {
                     $fields[] = new opal\query\field\Intrinsic($this, $fieldName, $fieldName);
                 }
 
                 return new opal\query\field\Virtual($this, $name, $alias, $fields);
             }
 
-            if(substr($name, 0, 1) == '@') {
+            if (substr($name, 0, 1) == '@') {
                 throw new axis\schema\RuntimeException(
                     'Unknown symbolic field: '.$name
                 );
             }
 
-            if($alias === null) {
+            if ($alias === null) {
                 $alias = $name;
             }
 
@@ -177,16 +187,17 @@ class Source implements ISource, core\IDumpable {
         }
     }
 
-    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field=null) {
-        if($field instanceof opal\schema\IMultiPrimitiveField) {
+    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field=null)
+    {
+        if ($field instanceof opal\schema\IMultiPrimitiveField) {
             $privateFields = [];
 
-            foreach($field->getPrimitiveFieldNames() as $fieldName) {
+            foreach ($field->getPrimitiveFieldNames() as $fieldName) {
                 $privateFields[] = new opal\query\field\Intrinsic($this, $fieldName, $alias);
             }
 
             $output = new opal\query\field\Virtual($this, $name, $alias, $privateFields);
-        } else if($field instanceof opal\schema\INullPrimitiveField) {
+        } elseif ($field instanceof opal\schema\INullPrimitiveField) {
             $output = new opal\query\field\Virtual($this, $name, $alias);
         } else {
             $output = new opal\query\field\Intrinsic($this, $name, $alias);
@@ -196,8 +207,9 @@ class Source implements ISource, core\IDumpable {
     }
 
 
-    public function getFieldProcessor(IIntrinsicField $field) {
-        if(!$this->_adapter instanceof IIntegralAdapter) {
+    public function getFieldProcessor(IIntrinsicField $field)
+    {
+        if (!$this->_adapter instanceof IIntegralAdapter) {
             return null;
         }
 
@@ -205,8 +217,9 @@ class Source implements ISource, core\IDumpable {
     }
 
 
-    public function addOutputField(opal\query\IField $field) {
-        foreach($this->_prepareField($field) as $field) {
+    public function addOutputField(opal\query\IField $field)
+    {
+        foreach ($this->_prepareField($field) as $field) {
             $alias = $field->getAlias();
             $this->_outputFields[$alias] = $field;
             unset($this->_privateFields[$field->getAlias()]);
@@ -215,9 +228,10 @@ class Source implements ISource, core\IDumpable {
         return $this;
     }
 
-    public function addPrivateField(opal\query\IField $field) {
-        foreach($this->_prepareField($field) as $field) {
-            if(!in_array($field, $this->_outputFields, true)) {
+    public function addPrivateField(opal\query\IField $field)
+    {
+        foreach ($this->_prepareField($field) as $field) {
+            if (!in_array($field, $this->_outputFields, true)) {
                 $this->_privateFields[$field->getAlias()] = $field;
             }
         }
@@ -225,26 +239,27 @@ class Source implements ISource, core\IDumpable {
         return $this;
     }
 
-    protected function _prepareField(opal\query\IField $field) {
+    protected function _prepareField(opal\query\IField $field)
+    {
         $fields = [];
 
-        if($field instanceof opal\query\IVirtualField) {
-            if(substr($field->getName(), 0, 1) == '@') {
+        if ($field instanceof opal\query\IVirtualField) {
+            if (substr($field->getName(), 0, 1) == '@') {
                 $fields = $field->getTargetFields();
             }
-        } else if($field instanceof opal\query\IWildcardField
+        } elseif ($field instanceof opal\query\IWildcardField
         && $this->_adapter instanceof IIntegralAdapter) {
             $muteFields = $field->getMuteFields();
 
-            foreach($this->_adapter->getQueryAdapterSchema()->getFields() as $name => $queryField) {
-                if($queryField instanceof opal\schema\INullPrimitiveField) {
+            foreach ($this->_adapter->getQueryAdapterSchema()->getFields() as $name => $queryField) {
+                if ($queryField instanceof opal\schema\INullPrimitiveField) {
                     continue;
                 }
 
                 $alias = null;
 
-                if(array_key_exists($name, $muteFields)) {
-                    if(null === ($alias = $muteFields[$name])) {
+                if (array_key_exists($name, $muteFields)) {
+                    if (null === ($alias = $muteFields[$name])) {
                         continue;
                     }
                 }
@@ -253,9 +268,9 @@ class Source implements ISource, core\IDumpable {
                 $field->isFromWildcard(true);
                 $qName = $field->getQualifiedName();
 
-                if($field) {
-                    foreach($this->_outputFields as $outField) {
-                        if($outField->getQualifiedName() == $qName) {
+                if ($field) {
+                    foreach ($this->_outputFields as $outField) {
+                        if ($outField->getQualifiedName() == $qName) {
                             continue 2;
                         }
                     }
@@ -265,23 +280,24 @@ class Source implements ISource, core\IDumpable {
             }
         }
 
-        if(empty($fields)) {
+        if (empty($fields)) {
             $fields[] = $field;
         }
 
         return $fields;
     }
 
-    public function removeWildcardOutputField($name, $alias=null) {
-        if(!isset($this->_outputFields[$name])) {
+    public function removeWildcardOutputField($name, $alias=null)
+    {
+        if (!isset($this->_outputFields[$name])) {
             return false;
         }
 
-        if(!$this->_outputFields[$name]->isFromWildcard()) {
+        if (!$this->_outputFields[$name]->isFromWildcard()) {
             return false;
         }
 
-        if($alias === null) {
+        if ($alias === null) {
             unset($this->_outputFields[$name]);
         } else {
             $this->_outputFields[$name]->setAlias($alias)->isFromWildcard(false);
@@ -290,25 +306,27 @@ class Source implements ISource, core\IDumpable {
         return true;
     }
 
-    public function getFieldByAlias($alias) {
-        if(isset($this->_outputFields[$alias])) {
+    public function getFieldByAlias($alias)
+    {
+        if (isset($this->_outputFields[$alias])) {
             return $this->_outputFields[$alias];
-        } else if(isset($this->_privateFields[$alias])) {
+        } elseif (isset($this->_privateFields[$alias])) {
             return $this->_privateFields[$alias];
         }
 
         return null;
     }
 
-    public function getFieldByQualifiedName($qName) {
-        foreach($this->_outputFields as $field) {
-            if($qName == $field->getQualifiedName()) {
+    public function getFieldByQualifiedName($qName)
+    {
+        foreach ($this->_outputFields as $field) {
+            if ($qName == $field->getQualifiedName()) {
                 return $field;
             }
         }
 
-        foreach($this->_privateFields as $field) {
-            if($qName == $field->getQualifiedName()) {
+        foreach ($this->_privateFields as $field) {
+            if ($qName == $field->getQualifiedName()) {
                 return $field;
             }
         }
@@ -316,9 +334,10 @@ class Source implements ISource, core\IDumpable {
         return null;
     }
 
-    public function getFirstOutputDataField() {
-        foreach($this->_outputFields as $alias => $field) {
-            if($field instanceof opal\query\IWildcardField) {
+    public function getFirstOutputDataField()
+    {
+        foreach ($this->_outputFields as $alias => $field) {
+            if ($field instanceof opal\query\IWildcardField) {
                 continue;
             }
 
@@ -326,63 +345,71 @@ class Source implements ISource, core\IDumpable {
         }
     }
 
-    public function getLastOutputDataField() {
+    public function getLastOutputDataField()
+    {
         $t = $this->_outputFields;
 
-        while(!empty($t)) {
+        while (!empty($t)) {
             $output = array_pop($t);
 
-            if(!$output instanceof opal\query\IWildcardField) {
+            if (!$output instanceof opal\query\IWildcardField) {
                 return $output;
             }
         }
     }
 
 
-    public function setKeyField(IField $field=null) {
+    public function setKeyField(IField $field=null)
+    {
         $this->_keyField = $field;
         return $this;
     }
 
-    public function getKeyField() {
+    public function getKeyField()
+    {
         return $this->_keyField;
     }
 
 
 
-    public function getOutputFields() {
+    public function getOutputFields()
+    {
         return $this->_outputFields;
     }
 
-    public function getDereferencedOutputFields() {
+    public function getDereferencedOutputFields()
+    {
         $output = [];
 
-        foreach($this->_outputFields as $mainField) {
-            foreach($mainField->dereference() as $field) {
+        foreach ($this->_outputFields as $mainField) {
+            foreach ($mainField->dereference() as $field) {
                 $output[$field->getQualifiedName()] = $field;
             }
         }
 
-        if($this->_keyField) {
+        if ($this->_keyField) {
             $output[$this->_keyField->getQualifiedName()] = $this->_keyField;
         }
 
         return $output;
     }
 
-    public function isOutputField(IField $field) {
+    public function isOutputField(IField $field)
+    {
         return isset($this->_outputFields[$field->getAlias()]);
     }
 
-    public function getPrivateFields() {
+    public function getPrivateFields()
+    {
         return $this->_privateFields;
     }
 
-    public function getDereferencedPrivateFields() {
+    public function getDereferencedPrivateFields()
+    {
         $output = [];
 
-        foreach($this->_privateFields as $mainField) {
-            foreach($mainField->dereference() as $field) {
+        foreach ($this->_privateFields as $mainField) {
+            foreach ($mainField->dereference() as $field) {
                 $output[$field->getQualifiedName()] = $field;
             }
         }
@@ -390,17 +417,20 @@ class Source implements ISource, core\IDumpable {
         return $output;
     }
 
-    public function getAllFields() {
+    public function getAllFields()
+    {
         return array_merge($this->_outputFields, $this->_privateFields);
     }
 
-    public function getAllDereferencedFields() {
+    public function getAllDereferencedFields()
+    {
         return array_merge($this->getDereferencedOutputFields(), $this->getDereferencedPrivateFields());
     }
 
-    public function hasWildcardField() {
-        foreach($this->_outputFields as $field) {
-            if($field instanceof opal\query\IWildcardField) {
+    public function hasWildcardField()
+    {
+        foreach ($this->_outputFields as $field) {
+            if ($field instanceof opal\query\IWildcardField) {
                 return true;
             }
         }
@@ -408,9 +438,10 @@ class Source implements ISource, core\IDumpable {
         return false;
     }
 
-    public function getWildcardField() {
-        foreach($this->_outputFields as $field) {
-            if($field instanceof opal\query\IWildcardField) {
+    public function getWildcardField()
+    {
+        foreach ($this->_outputFields as $field) {
+            if ($field instanceof opal\query\IWildcardField) {
                 return $field;
             }
         }
@@ -419,19 +450,40 @@ class Source implements ISource, core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    public function realiasField(string $oldAlias, string $newAlias)
+    {
+        if (isset($this->_outputFields[$oldAlias])) {
+            $keys = array_keys($this->_outputFields);
+            $keys[array_search($oldAlias, $keys)] = $newAlias;
+            $this->_outputFields = array_combine($keys, $this->_outputFields);
+            $this->_outputFields[$newAlias]->setAlias($newAlias);
+        }
+
+        if (isset($this->_privateFields[$oldAlias])) {
+            $keys = array_keys($this->_privateFields);
+            $keys[array_search($oldAlias, $keys)] = $newAlias;
+            $this->_privateFields = array_combine($keys, $this->_privateFields);
+            $this->_privateFields[$newAlias]->setAlias($newAlias);
+        }
+
+        return $this;
+    }
+
+
+    // Dump
+    public function getDumpProperties()
+    {
         $output = [
             '__id' => new core\debug\dumper\Property(
                 'sourceId', $this->getId(), 'protected'
             )
         ];
 
-        foreach($this->_outputFields as $alias => $field) {
+        foreach ($this->_outputFields as $alias => $field) {
             $output[$alias] = $field->getQualifiedName();
         }
 
-        foreach($this->_privateFields as $alias => $field) {
+        foreach ($this->_privateFields as $alias => $field) {
             $output[$alias] = new core\debug\dumper\Property(
                 $alias, $field->getQualifiedName(), 'private'
             );

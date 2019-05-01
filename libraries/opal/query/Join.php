@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-class Join implements IJoinQuery, core\IDumpable {
-
+class Join implements IJoinQuery, core\IDumpable
+{
     use TQuery;
     use TQuery_ParentAware;
     use TQuery_ParentAwareJoinClauseFactory;
@@ -22,8 +22,9 @@ class Join implements IJoinQuery, core\IDumpable {
     protected $_type;
     protected $_isConstraint = false;
 
-    public static function typeIdToName($id) {
-        switch($id) {
+    public static function typeIdToName($id)
+    {
+        switch ($id) {
             case IJoinQuery::INNER:
                 return 'INNER';
 
@@ -35,12 +36,13 @@ class Join implements IJoinQuery, core\IDumpable {
         }
     }
 
-    public function __construct(IQuery $parent, ISource $source, $type=self::INNER, $isConstraint=false) {
+    public function __construct(IQuery $parent, ISource $source, $type=self::INNER, $isConstraint=false)
+    {
         $this->_parent = $parent;
         $this->_source = $source;
         $this->_isConstraint = $isConstraint;
 
-        switch($type) {
+        switch ($type) {
             case IJoinQuery::INNER:
             case IJoinQuery::LEFT:
             case IJoinQuery::RIGHT:
@@ -56,8 +58,9 @@ class Join implements IJoinQuery, core\IDumpable {
         //$this->_joinClauseList = new opal\query\clause\JoinList($this);
     }
 
-    public function getQueryType() {
-        if($this->_isConstraint) {
+    public function getQueryType()
+    {
+        if ($this->_isConstraint) {
             return IQueryTypes::JOIN_CONSTRAINT;
         } else {
             return IQueryTypes::JOIN;
@@ -65,13 +68,15 @@ class Join implements IJoinQuery, core\IDumpable {
     }
 
 
-// Type
-    public function getType() {
+    // Type
+    public function getType()
+    {
         return $this->_type;
     }
 
-    public function isConstraint(bool $flag=null) {
-        if($flag !== null) {
+    public function isConstraint(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isConstraint = $flag;
             return $this;
         }
@@ -80,31 +85,36 @@ class Join implements IJoinQuery, core\IDumpable {
     }
 
 
-// Sources
-    public function getSourceManager() {
+    // Sources
+    public function getSourceManager()
+    {
         return $this->_parent->getSourceManager();
     }
 
-    public function getSource() {
+    public function getSource()
+    {
         return $this->_source;
     }
 
-    public function getSourceAlias() {
+    public function getSourceAlias()
+    {
         return $this->_source->getAlias();
     }
 
-    public function addOutputFields(string ...$fields) {
+    public function addOutputFields(string ...$fields)
+    {
         $sourceManager = $this->getSourceManager();
 
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             $sourceManager->extrapolateOutputField($this->_source, $field);
         }
 
         return $this;
     }
 
-    public function endJoin() {
-        if($this->_isConstraint) {
+    public function endJoin()
+    {
+        if ($this->_isConstraint) {
             $this->_parent->addJoinConstraint($this);
         } else {
             $this->_parent->addJoin($this);
@@ -114,15 +124,53 @@ class Join implements IJoinQuery, core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
+
+    // Combine
+    public function combineAll($nullField=null, string $alias=null)
+    {
+        if (!$this->_parent instanceof ICombinableQuery) {
+            throw core\Error::EDefinition(
+                'Parent query is not combinable'
+            );
+        }
+
+        if ($alias === null) {
+            $alias = $this->_source->getAlias();
+        }
+
+        $combines = [];
+
+        foreach ($this->_source->getOutputFields() as $fieldAlias => $field) {
+            $this->_source->realiasField($fieldAlias, $alias.'|'.$fieldAlias);
+            $combines[] = $alias.'|'.$fieldAlias.' as '.$fieldAlias;
+        }
+
+        $combine = $this->_parent->combine(...$combines);
+
+        if ($nullField !== null) {
+            if (!is_array($nullField)) {
+                $nullField = [(string)$nullField];
+            }
+
+            $combine->nullOn(...$nullField);
+        }
+
+        $combine->asOne($alias);
+
+        return $this;
+    }
+
+
+    // Dump
+    public function getDumpProperties()
+    {
         $output = [
             'type' => self::typeIdToName($this->_type).($this->_isConstraint ? ' constraint' : null),
             'fields' => $this->_source,
             'on' => $this->_joinClauseList
         ];
 
-        if($this->hasWhereClauses()) {
+        if ($this->hasWhereClauses()) {
             $output['where'] = $this->getWhereClauseList();
         }
 

@@ -9,13 +9,14 @@ use df;
 use df\core;
 use df\opal;
 
-class Combine implements ICombineQuery {
-
+class Combine implements ICombineQuery
+{
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Combine;
 
-    public function __construct(ICombinableQuery $parent, array $fields) {
+    public function __construct(ICombinableQuery $parent, array $fields)
+    {
         $this->_parent = $parent;
         $this->_sourceManager = $parent->getSourceManager();
 

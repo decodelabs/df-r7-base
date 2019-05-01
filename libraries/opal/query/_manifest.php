@@ -323,6 +323,7 @@ interface ICombinableQuery extends IQuery
 {
     public function combine(...$fields);
     public function addCombine($name, ICombineQuery $combine);
+    public function getCombine(string $name): ?ICombineQuery;
     public function getCombines();
     public function clearCombines();
 }
@@ -432,6 +433,7 @@ interface IJoinQuery extends
     public function addOutputFields(string ...$fields);
     public function getType();
     public function isConstraint(bool $flag=null);
+    public function combineAll($nullField=null, string $alias=null);
     public function endJoin();
     public function referencesSourceAliases(array $sourceAliases);
 }
@@ -851,6 +853,7 @@ interface ISource extends IAdapterAware
     public function getDereferencedPrivateFields();
     public function getAllFields();
     public function getAllDereferencedFields();
+    public function realiasField(string $oldAlias, string $newAlias);
 }
 
 

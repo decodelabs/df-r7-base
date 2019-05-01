@@ -1071,6 +1071,11 @@ trait TQuery_Combinable
         return $this;
     }
 
+    public function getCombine(string $name): ?ICombineQuery
+    {
+        return $this->_combines[$name] ?? null;
+    }
+
     public function getCombines()
     {
         return $this->_combines;
