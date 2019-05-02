@@ -149,6 +149,10 @@ class Source implements ISource, core\IDumpable
                 $schema = $this->_adapter->getQueryAdapterSchema();
 
                 if (!$field = $schema->getField($name)) {
+                    if (isset($this->_outputFields[$alias])) {
+                        return $this->_outputFields[$alias];
+                    }
+
                     return new opal\query\field\Intrinsic($this, $name, $alias);
                 }
             }

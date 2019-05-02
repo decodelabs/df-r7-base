@@ -10,18 +10,19 @@ use df\core;
 use df\opal;
 use df\flex;
 
-abstract class QueryExecutor implements IQueryExecutor {
-
+abstract class QueryExecutor implements IQueryExecutor
+{
     protected $_stmt;
     protected $_query;
     protected $_adapter;
     protected $_isMultiDb = false;
 
-    public static function factory(IAdapter $adapter, opal\query\IQuery $query=null, IStatement $stmt=null) {
+    public static function factory(IAdapter $adapter, opal\query\IQuery $query=null, IStatement $stmt=null)
+    {
         $type = $adapter->getServerType();
         $class = 'df\\opal\\rdbms\\variant\\'.$type.'\\QueryExecutor';
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new RuntimeException(
                 'There is no query executor available for '.$type
             );
@@ -30,36 +31,41 @@ abstract class QueryExecutor implements IQueryExecutor {
         return new $class($adapter, $query);
     }
 
-    protected function __construct(IAdapter $adapter, opal\query\IQuery $query=null, IStatement $stmt=null) {
+    protected function __construct(IAdapter $adapter, opal\query\IQuery $query=null, IStatement $stmt=null)
+    {
         $this->_adapter = $adapter;
         $this->_query = $query;
 
-        if(!$stmt) {
+        if (!$stmt) {
             $stmt = $adapter->prepare('');
         }
 
         $this->_stmt = $stmt;
 
-        if($this->_query instanceof opal\query\IReadQuery) {
+        if ($this->_query instanceof opal\query\IReadQuery) {
             $this->_stmt->isUnbuffered($this->_query->isUnbuffered());
         }
     }
 
-    public function getAdapter() {
+    public function getAdapter()
+    {
         return $this->_adapter;
     }
 
-    public function getQuery() {
+    public function getQuery()
+    {
         return $this->_query;
     }
 
-    public function getStatement() {
+    public function getStatement()
+    {
         return $this->_stmt;
     }
 
 
-// Count
-    public function countTable($tableName) {
+    // Count
+    public function countTable($tableName)
+    {
         $sql = 'SELECT COUNT(*) as total FROM '.$this->_adapter->quoteIdentifier($tableName);
         $res = $this->_adapter->prepare($sql)->executeRead();
         $row = $res->extract();
@@ -68,37 +74,40 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
 
-// Read
-    public function executeReadQuery($tableName, $forCount=false) {
-        if($this->_query->getSourceManager()->canQueryLocally()) {
+    // Read
+    public function executeReadQuery($tableName, $forCount=false)
+    {
+        if ($this->_query->getSourceManager()->canQueryLocally()) {
             return $this->executeLocalReadQuery($tableName, $forCount);
         } else {
             return $this->executeRemoteJoinedReadQuery($tableName, $forCount);
         }
     }
 
-    public function executeUnionQuery($tableName, $forCount=false) {
+    public function executeUnionQuery($tableName, $forCount=false)
+    {
         return $this->buildUnionQuery($tableName, $forCount)->executeRead();
     }
 
-    public function buildUnionQuery($tableName, $forCount=false) {
+    public function buildUnionQuery($tableName, $forCount=false)
+    {
         $queries = $this->_query->getQueries();
         $sourceHash = null;
         $first = true;
 
 
-        foreach($queries as $query) {
+        foreach ($queries as $query) {
             $source = $query->getSource();
 
-            if($sourceHash === null) {
+            if ($sourceHash === null) {
                 $sourceHash = $source->getHash();
-            } else if($source->getHash() != $sourceHash) {
+            } elseif ($source->getHash() != $sourceHash) {
                 throw new opal\query\LogicException(
                     'Union queries must all be on the same adapter'
                 );
             }
 
-            if($first) {
+            if ($first) {
                 $this->_stmt->appendSql('(');
             } else {
                 $this->_stmt->appendSql(')'."\n".'UNION'."\n".'(');
@@ -116,7 +125,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $this->_stmt->appendSql(')');
 
-        if($forCount) {
+        if ($forCount) {
             $this->_stmt->prependSql('SELECT COUNT(*) as count FROM (')->appendSql(') as baseQuery');
         } else {
             $this->writeOrderSection();
@@ -126,12 +135,14 @@ abstract class QueryExecutor implements IQueryExecutor {
         return $this->_stmt;
     }
 
-    public function executeLocalReadQuery($tableName, $forCount=false) {
+    public function executeLocalReadQuery($tableName, $forCount=false)
+    {
         $this->buildLocalReadQuery($tableName, $forCount);
         return $this->_stmt->executeRead();
     }
 
-    public function buildLocalReadQuery($tableName, $forCount=false) {
+    public function buildLocalReadQuery($tableName, $forCount=false)
+    {
         $sourceManager = $this->_query->getSourceManager();
         $source = $this->_query->getSource();
         $search = $this->_query->getSearch();
@@ -140,8 +151,13 @@ abstract class QueryExecutor implements IQueryExecutor {
         $this->_isMultiDb = $sourceManager->countSourceAdapters() > 1;
 
         // Fields
-        foreach($source->getDereferencedOutputFields() as $field) {
-            $fieldAlias = $field->getQualifiedName();
+        foreach ($source->getDereferencedOutputFields() as $field) {
+            if ($field instanceof opal\query\IAggregateField) {
+                $fieldAlias = $field->getSource()->getAlias().'.'.$field->getAlias();
+            } else {
+                $fieldAlias = $field->getQualifiedName();
+            }
+
             $field->setLogicalAlias($fieldAlias);
             $outFields[] = $this->defineField($field, $fieldAlias);
         }
@@ -150,16 +166,16 @@ abstract class QueryExecutor implements IQueryExecutor {
         // Joins
         $joinSql = null;
 
-        if($this->_query instanceof opal\query\IJoinProviderQuery) {
+        if ($this->_query instanceof opal\query\IJoinProviderQuery) {
             // Build join statements
-            foreach($this->_query->getJoins() as $join) {
+            foreach ($this->_query->getJoins() as $join) {
                 $joinSource = $join->getSource();
 
                 $jExec = QueryExecutor::factory($this->_adapter, $join);
                 $jExec->_isMultiDb = $this->_isMultiDb;
                 $joinSql .= "\n".$jExec->buildJoin($this->_stmt);
 
-                foreach($joinSource->getDereferencedOutputFields() as $field) {
+                foreach ($joinSource->getDereferencedOutputFields() as $field) {
                     $fieldAlias = $field->getQualifiedName();
                     $outFields[] = $this->defineField($field, $fieldAlias);
                 }
@@ -168,11 +184,11 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
         // Attachments
-        if(!$forCount && $this->_query instanceof opal\query\IAttachProviderQuery) {
+        if (!$forCount && $this->_query instanceof opal\query\IAttachProviderQuery) {
             // Get fields that need to be fetched from source for attachment clauses
-            foreach($this->_query->getAttachments() as $attachment) {
-                foreach($attachment->getNonLocalFieldReferences() as $field) {
-                    foreach($field->dereference() as $derefField) {
+            foreach ($this->_query->getAttachments() as $attachment) {
+                foreach ($attachment->getNonLocalFieldReferences() as $field) {
+                    foreach ($field->dereference() as $derefField) {
                         $qName = $derefField->getQualifiedName();
                         $outFields[] = $this->defineField($derefField, $qName);
                     }
@@ -180,7 +196,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             }
         }
 
-        if(!$forCount) {
+        if (!$forCount) {
             $outFields = array_unique($outFields);
         }
 
@@ -188,15 +204,15 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $this->_stmt->appendSql('SELECT'.$distinct."\n".'  '.implode(','."\n".'  ', $outFields)."\n");
 
-        if($source->isDerived()) {
+        if ($source->isDerived()) {
             $query = $source->getAdapter()->getDerivationQuery();
             $qExec = QueryExecutor::factory($this->_adapter, $query);
             $qExec->_isMultiDb = $this->_isMultiDb;
             $tableName = $query->getSource()->getAdapter()->getDelegateQueryAdapter()->getName();
 
-            if($query instanceof opal\query\ISelectQuery) {
+            if ($query instanceof opal\query\ISelectQuery) {
                 $qExec->buildLocalReadQuery($tableName, false);
-            } else if($query instanceof opal\query\IUnionQuery) {
+            } elseif ($query instanceof opal\query\IUnionQuery) {
                 $qExec->buildUnionQuery($tableName, false);
             } else {
                 throw new opal\query\LogicException(
@@ -220,7 +236,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         $this->writeGroupSection();
         $this->writeHavingClauseSection();
 
-        if($forCount) {
+        if ($forCount) {
             $this->_stmt->prependSql('SELECT COUNT(*) as count FROM (')->appendSql(') as baseQuery');
         } else {
             $this->writeOrderSection();
@@ -231,17 +247,19 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
 
-    public function executeRemoteJoinedReadQuery($tableName, $forCount=false) {
+    public function executeRemoteJoinedReadQuery($tableName, $forCount=false)
+    {
         $source = $this->_query->getSource();
         $primaryAdapterHash = $source->getAdapterHash();
 
         $outFields = [];
         $aggregateFields = [];
 
-        foreach($source->getAllDereferencedFields() as $field) {
+        foreach ($source->getAllDereferencedFields() as $field) {
             $qName = $field->getQualifiedName();
 
-            if($field instanceof opal\query\IAggregateField) {
+            if ($field instanceof opal\query\IAggregateField) {
+                $field->setLogicalAlias($field->getSource()->getAlias().'.'.$field->getAlias());
                 $aggregateFields[$qName] = $field;
             } else {
                 $field->setLogicalAlias($qName);
@@ -255,22 +273,22 @@ abstract class QueryExecutor implements IQueryExecutor {
         $localJoins = [];
         $joinSql = null;
 
-        foreach($this->_query->getJoins() as $joinSourceAlias => $join) {
+        foreach ($this->_query->getJoins() as $joinSourceAlias => $join) {
             $joinSource = $join->getSource();
             $hash = $joinSource->getAdapterHash();
 
             // Test to see if this is a remote join
-            if($hash != $primaryAdapterHash || $join->referencesSourceAliases(array_keys($remoteJoins))) {
+            if ($hash != $primaryAdapterHash || $join->referencesSourceAliases(array_keys($remoteJoins))) {
                 $remoteJoins[$joinSourceAlias] = $join;
                 continue;
             }
 
             $localJoins[$joinSourceAlias] = $join;
 
-            foreach($joinSource->getAllDereferencedFields() as $field) {
+            foreach ($joinSource->getAllDereferencedFields() as $field) {
                 $qName = $field->getQualifiedName();
 
-                if($field instanceof opal\query\IAggregateField) {
+                if ($field instanceof opal\query\IAggregateField) {
                     $aggregateFields[$qName] = $field;
                 } else {
                     $outFields[$qName] = $this->defineField($field, $qName);
@@ -293,7 +311,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
         // Filter results
-        if($this->_query instanceof opal\query\IWhereClauseQuery && $this->_query->hasWhereClauses()) {
+        if ($this->_query instanceof opal\query\IWhereClauseQuery && $this->_query->hasWhereClauses()) {
             $clauseList = $this->_query->getWhereClauseList();
 
             /*
@@ -301,7 +319,7 @@ abstract class QueryExecutor implements IQueryExecutor {
              * we just need to only add where clauses that are local to the primary source
              * The main algorithm for finding those clauses is in the clause list class
              */
-            if(null !== ($joinClauseList = $clauseList->getClausesFor($source))) {
+            if (null !== ($joinClauseList = $clauseList->getClausesFor($source))) {
                 $this->writeWhereClauseList($joinClauseList);
             }
         }
@@ -311,14 +329,14 @@ abstract class QueryExecutor implements IQueryExecutor {
          * The following is a means of tentatively ordering and limiting the result set
          * used to create the join. It probably needs a bit of TLC :)
          */
-        if(!$forCount) {
+        if (!$forCount) {
             $isPrimaryOrder = true;
 
-            if($this->_query instanceof opal\query\IOrderableQuery) {
+            if ($this->_query instanceof opal\query\IOrderableQuery) {
                 $isPrimaryOrder = $this->_query->isPrimaryOrderSource();
             }
 
-            if(empty($aggregateFields) && $isPrimaryOrder) {
+            if (empty($aggregateFields) && $isPrimaryOrder) {
                 $this->writeOrderSection(false, true);
                 $this->writeLimitSection();
             }
@@ -330,21 +348,22 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
 
-// Insert
-    public function executeInsertQuery($tableName) {
+    // Insert
+    public function executeInsertQuery($tableName)
+    {
         $this->_stmt->appendSql('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));
 
         $fields = [];
         $values = [];
         $duplicates = [];
 
-        foreach($this->_query->getPreparedRow() as $field => $value) {
+        foreach ($this->_query->getPreparedRow() as $field => $value) {
             $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
             $values[] = ':'.$field;
             $duplicates[] = $fieldString.'=VALUES('.$fieldString.')';
 
-            if(is_array($value)) {
-                if(count($value) == 1) {
+            if (is_array($value)) {
+                if (count($value) == 1) {
                     // This is a total hack - you need to trace the real problem with multi-value keys
                     $value = array_shift($value);
                 } else {
@@ -357,9 +376,9 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES ('.implode(',', $values).')');
 
-        if($this->_query->shouldReplace()) {
+        if ($this->_query->shouldReplace()) {
             $this->_stmt->appendSql("\n".'ON DUPLICATE KEY UPDATE '.implode(', ', $duplicates));
-        } else if($this->_query->ifNotExists()) {
+        } elseif ($this->_query->ifNotExists()) {
             $this->_stmt->appendSql(' ON DUPLICATE KEY UPDATE '.$fields[0].'='.$fields[0]);
         }
 
@@ -368,8 +387,9 @@ abstract class QueryExecutor implements IQueryExecutor {
         return $this->_adapter->getLastInsertId();
     }
 
-// Batch insert
-    public function executeBatchInsertQuery($tableName) {
+    // Batch insert
+    public function executeBatchInsertQuery($tableName)
+    {
         $this->_stmt->appendSql('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));
 
         $rows = [];
@@ -377,18 +397,18 @@ abstract class QueryExecutor implements IQueryExecutor {
         $fieldList = $this->_query->getDereferencedFields();
         $duplicates = [];
 
-        foreach($fieldList as $field) {
+        foreach ($fieldList as $field) {
             $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
             $duplicates[] = $fieldString.'=VALUES('.$fieldString.')';
         }
 
-        foreach($this->_query->getPreparedRows() as $row) {
+        foreach ($this->_query->getPreparedRows() as $row) {
             $current = [];
 
-            foreach($fieldList as $key) {
+            foreach ($fieldList as $key) {
                 $value = null;
 
-                if(isset($row[$key])) {
+                if (isset($row[$key])) {
                     $value = $row[$key];
                 }
 
@@ -400,9 +420,9 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES '.implode(', ', $rows));
 
-        if($this->_query->shouldReplace()) {
+        if ($this->_query->shouldReplace()) {
             $this->_stmt->appendSql("\n".'ON DUPLICATE KEY UPDATE '.implode(', ', $duplicates));
-        } else if($this->_query->ifNotExists()) {
+        } elseif ($this->_query->ifNotExists()) {
             $this->_stmt->appendSql(' ON DUPLICATE KEY UPDATE '.$fields[0].'='.$fields[0]);
         }
 
@@ -411,9 +431,10 @@ abstract class QueryExecutor implements IQueryExecutor {
         return count($rows);
     }
 
-// Update
-    public function executeUpdateQuery($tableName) {
-        if(!$this->_query instanceof opal\query\IUpdateQuery) {
+    // Update
+    public function executeUpdateQuery($tableName)
+    {
+        if (!$this->_query instanceof opal\query\IUpdateQuery) {
             throw new opal\rdbms\UnexpectedValueException(
                 'Executor query is not an update'
             );
@@ -427,8 +448,8 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $values = [];
 
-        foreach($this->_query->getPreparedValues() as $field => $value) {
-            if($value instanceof opal\query\IExpression) {
+        foreach ($this->_query->getPreparedValues() as $field => $value) {
+            if ($value instanceof opal\query\IExpression) {
                 $values[] = $this->_adapter->quoteIdentifier($field).' = '.$this->defineExpression($value);
             } else {
                 $values[] = $this->_adapter->quoteIdentifier($field).' = :'.$this->_stmt->autoBind($value);
@@ -438,7 +459,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         $this->_stmt->appendSql("\n  ".implode(','."\n".'  ', $values));
         $this->writeWhereClauseSection(null, true);
 
-        if($this->_adapter->supports(opal\rdbms\adapter\Base::UPDATE_LIMIT)) {
+        if ($this->_adapter->supports(opal\rdbms\adapter\Base::UPDATE_LIMIT)) {
             $this->writeOrderSection(true);
             $this->writeLimitSection(true);
         }
@@ -446,9 +467,10 @@ abstract class QueryExecutor implements IQueryExecutor {
         return $this->_stmt->executeWrite();
     }
 
-// Delete
-    public function executeDeleteQuery($tableName) {
-        if(!$this->_query instanceof opal\query\IDeleteQuery) {
+    // Delete
+    public function executeDeleteQuery($tableName)
+    {
+        if (!$this->_query instanceof opal\query\IDeleteQuery) {
             throw new opal\rdbms\UnexpectedValueException(
                 'Executor query is not a delete'
             );
@@ -457,7 +479,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         $this->_stmt->appendSql('DELETE FROM '.$this->_adapter->quoteIdentifier($tableName));
         $this->writeWhereClauseSection(null, true);
 
-        if($this->_adapter->supports(opal\rdbms\adapter\Base::DELETE_LIMIT)) {
+        if ($this->_adapter->supports(opal\rdbms\adapter\Base::DELETE_LIMIT)) {
             $this->writeOrderSection(true);
             $this->writeLimitSection(true);
         }
@@ -466,9 +488,10 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
 
-// Remote data
-    public function fetchRemoteJoinData($tableName, array $rows) {
-        if(!$this->_query instanceof opal\query\IJoinQuery) {
+    // Remote data
+    public function fetchRemoteJoinData($tableName, array $rows)
+    {
+        if (!$this->_query instanceof opal\query\IJoinQuery) {
             throw new opal\rdbms\UnexpectedValueException(
                 'Executor query is not a join'
             );
@@ -482,8 +505,8 @@ abstract class QueryExecutor implements IQueryExecutor {
         $parentSource = $this->_query->getParentSource();
         $sources[$parentSource->getUniqueId()] = $parentSource;
 
-        foreach($this->_query->getSource()->getAllDereferencedFields() as $field) {
-            if($field instanceof opal\query\IAggregateField) {
+        foreach ($this->_query->getSource()->getAllDereferencedFields() as $field) {
+            if ($field instanceof opal\query\IAggregateField) {
                 continue;
             }
 
@@ -500,15 +523,16 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $clauses = $this->_query->getJoinClauseList();
 
-        if(!$clauses->isEmpty() && $clauses->isLocalTo($sources)) {
+        if (!$clauses->isEmpty() && $clauses->isLocalTo($sources)) {
             $this->writeWhereClauseList($clauses, $rows);
         }
 
         return $this->_stmt->executeRead();
     }
 
-    public function fetchAttachmentData($tableName, array $rows) {
-        if(!$this->_query instanceof opal\query\IAttachQuery) {
+    public function fetchAttachmentData($tableName, array $rows)
+    {
+        if (!$this->_query instanceof opal\query\IAttachQuery) {
             throw new opal\rdbms\UnexpectedValueException(
                 'Executor query is not an attachment'
             );
@@ -521,8 +545,8 @@ abstract class QueryExecutor implements IQueryExecutor {
         $sources[$source->getUniqueId()] = $source;
         $sourceManager = $this->_query->getSourceManager();
 
-        foreach($source->getAllDereferencedFields() as $field) {
-            if($field instanceof opal\query\IAggregateField) {
+        foreach ($source->getAllDereferencedFields() as $field) {
+            if ($field instanceof opal\query\IAggregateField) {
                 continue;
             }
 
@@ -534,10 +558,10 @@ abstract class QueryExecutor implements IQueryExecutor {
         $joinSql = null;
         $joinsApplied = false;
 
-        if($sourceManager->canQueryLocally()) {
+        if ($sourceManager->canQueryLocally()) {
             $this->_isMultiDb = $sourceManager->countSourceAdapters() > 1;
 
-            foreach($this->_query->getJoins() as $joinSourceAlias => $join) {
+            foreach ($this->_query->getJoins() as $joinSourceAlias => $join) {
                 $joinSource = $join->getSource();
                 $sources[$joinSource->getUniqueId()] = $joinSource;
 
@@ -545,8 +569,8 @@ abstract class QueryExecutor implements IQueryExecutor {
                 $jExec->_isMultiDb = $this->_isMultiDb;
                 $joinSql .= "\n".$jExec->buildJoin($this->_stmt);
 
-                foreach($joinSource->getAllDereferencedFields() as $field) {
-                    if(!$field instanceof opal\query\IAggregateField) {
+                foreach ($joinSource->getAllDereferencedFields() as $field) {
+                    if (!$field instanceof opal\query\IAggregateField) {
                         $outFields[] = $this->defineField($field, $field->getQualifiedName());
                     }
                 }
@@ -570,15 +594,15 @@ abstract class QueryExecutor implements IQueryExecutor {
         $canUseJoinClauses = !$joinClauses->isEmpty() && $joinClauses->isLocalTo($sources);
         $canUseWhereClauses = $clausesApplied = !$whereClauses->isEmpty() && $whereClauses->isLocalTo($sources);
 
-        if($canUseJoinClauses) {
-            if($canUseWhereClauses) {
+        if ($canUseJoinClauses) {
+            if ($canUseWhereClauses) {
                 $clauses = new opal\query\clause\ListBase($this->_query->getParentQuery());
                 $clauses->_addClause($joinClauses);
                 $clauses->_addClause($whereClauses);
             } else {
                 $clauses = $joinClauses;
             }
-        } else if($canUseWhereClauses) {
+        } elseif ($canUseWhereClauses) {
             $clauses = $whereClauses;
         } else {
             $clauses = null;
@@ -586,13 +610,13 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
         // Filter clause for attachment clauses
-        if(!$canUseJoinClauses && !$joinClauses->isEmpty()) {
+        if (!$canUseJoinClauses && !$joinClauses->isEmpty()) {
             $useJoins = true;
             $manualJoins = clone $joinClauses;
             $manualJoins->clear();
 
-            foreach($joinClauses->toArray() as $clause) {
-                if(!$clause instanceof opal\query\IClause) {
+            foreach ($joinClauses->toArray() as $clause) {
+                if (!$clause instanceof opal\query\IClause) {
                     $useJoins = false;
                     break;
                 }
@@ -602,15 +626,15 @@ abstract class QueryExecutor implements IQueryExecutor {
                 $fieldName = $field->getQualifiedName();
                 $operator = $clause->getOperator();
 
-                if(opal\query\clause\Clause::normalizeOperator($operator) != '=') {
+                if (opal\query\clause\Clause::normalizeOperator($operator) != '=') {
                     $useJoins = false;
                     break;
                 }
 
                 $value = [];
 
-                foreach($rows as $row) {
-                    if(!array_key_exists($fieldName, $row)) {
+                foreach ($rows as $row) {
+                    if (!array_key_exists($fieldName, $row)) {
                         $useJoins = false;
                         break 2;
                     }
@@ -620,7 +644,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
                 $newOperator = 'in';
 
-                if(opal\query\clause\Clause::isNegatedOperator($operator)) {
+                if (opal\query\clause\Clause::isNegatedOperator($operator)) {
                     $newOperator = '!in';
                 }
 
@@ -629,8 +653,8 @@ abstract class QueryExecutor implements IQueryExecutor {
                 $manualJoins->_addClause($clause);
             }
 
-            if($useJoins) {
-                if($clauses) {
+            if ($useJoins) {
+                if ($clauses) {
                     $clauses->_addClause($manualJoins);
                 } else {
                     $clauses = $manualJoins;
@@ -639,7 +663,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
 
 
-        if($clauses) {
+        if ($clauses) {
             $this->writeWhereClauseList($clauses, $rows);
         }
 
@@ -653,9 +677,10 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
 
-// Correlations
-    public function buildCorrelation(IStatement $stmt) {
-        if(!$this->_query instanceof opal\query\ICorrelationQuery) {
+    // Correlations
+    public function buildCorrelation(IStatement $stmt)
+    {
+        if (!$this->_query instanceof opal\query\ICorrelationQuery) {
             throw new opal\rdbms\UnexpectedValueException(
                 'Executor query is not a correlation'
             );
@@ -675,7 +700,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         $fieldAlias = $this->_query->getFieldAlias();
         $field = $source->getFieldByAlias($fieldAlias);
 
-        if(!$field) {
+        if (!$field) {
             core\dump('Correlation field not found.. this shouldn\'t happen!', $fieldAlias, $source);
         }
 
@@ -685,7 +710,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         // Joins
         $joinSql = null;
 
-        foreach($this->_query->getJoins() as $joinSourceAlias => $join) {
+        foreach ($this->_query->getJoins() as $joinSourceAlias => $join) {
             $joinSource = $join->getSource();
             $hash = $joinSource->getAdapterHash();
 
@@ -698,7 +723,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         $tableAdapter = $source->getAdapter()->getDelegateQueryAdapter();
         $tableName = $this->_adapter->quoteIdentifier($tableAdapter->getName());
 
-        if($this->_isMultiDb) {
+        if ($this->_isMultiDb) {
             $tableName = $this->_adapter->quoteIdentifier($tableAdapter->getDatabaseName()).'.'.$tableName;
         }
 
@@ -715,8 +740,8 @@ abstract class QueryExecutor implements IQueryExecutor {
         $joinClauses = $this->_query->getJoinClauseList();
         $whereClauses = $this->_query->getWhereClauseList();
 
-        if(!$joinClauses->isEmpty()) {
-            if(!$whereClauses->isEmpty()) {
+        if (!$joinClauses->isEmpty()) {
+            if (!$whereClauses->isEmpty()) {
                 $clauses = new opal\query\clause\ListBase($this->_query);
                 $clauses->_addClause($joinClauses);
                 $clauses->_addClause($whereClauses);
@@ -740,9 +765,10 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
 
-// Join
-    public function buildJoin(IStatement $stmt) {
-        if(!$this->_query instanceof opal\query\IJoinQuery) {
+    // Join
+    public function buildJoin(IStatement $stmt)
+    {
+        if (!$this->_query instanceof opal\query\IJoinQuery) {
             throw new opal\rdbms\UnexpectedValueException(
                 'Executor query is not a join'
             );
@@ -750,7 +776,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $this->_stmt->setKeyIndex($stmt->getKeyIndex());
 
-        switch($this->_query->getType()) {
+        switch ($this->_query->getType()) {
             case opal\query\IJoinQuery::INNER:
                 $this->_stmt->appendSql('INNER');
                 break;
@@ -764,15 +790,43 @@ abstract class QueryExecutor implements IQueryExecutor {
                 break;
         }
 
-        $adapter = $this->_query->getSource()->getAdapter()->getDelegateQueryAdapter();
-        $tableName = $this->_adapter->quoteIdentifier($adapter->getName());
+        $source = $this->_query->getSource();
 
-        if($this->_isMultiDb) {
-            $tableName = $this->_adapter->quoteIdentifier($adapter->getDatabaseName()).'.'.$tableName;
+        if ($source->isDerived()) {
+            $query = $source->getAdapter()->getDerivationQuery();
+            $qExec = QueryExecutor::factory($this->_adapter, $query);
+            $qExec->_isMultiDb = $this->_isMultiDb;
+            $tableName = $query->getSource()->getAdapter()->getDelegateQueryAdapter()->getName();
+
+            if ($query instanceof opal\query\ISelectQuery) {
+                $qExec->buildLocalReadQuery($tableName, false);
+            } elseif ($query instanceof opal\query\IUnionQuery) {
+                $qExec->buildUnionQuery($tableName, false);
+            } else {
+                throw new opal\query\LogicException(
+                    'Don\'t know how to derive from query type: '.$query->getQueryType()
+                );
+            }
+
+            $statement = $qExec->getStatement();
+            $this->_stmt->importBindings($statement);
+            $this->_stmt->appendSql(' JOIN ('."\n".'    '.str_replace("\n", "\n    ", $statement->getSql())."\n".') ');
+        } else {
+            $adapter = $source->getAdapter()->getDelegateQueryAdapter();
+            $tableName = $this->_adapter->quoteIdentifier($adapter->getName());
+
+            if ($this->_isMultiDb) {
+                $tableName = $this->_adapter->quoteIdentifier($adapter->getDatabaseName()).'.'.$tableName;
+            }
+
+            $this->_stmt->appendSql(
+                ' JOIN '.$tableName
+            );
         }
 
+
+
         $this->_stmt->appendSql(
-            ' JOIN '.$tableName.
             ' AS '.$this->_adapter->quoteTableAliasDefinition($this->_query->getSourceAlias())
         );
 
@@ -782,17 +836,17 @@ abstract class QueryExecutor implements IQueryExecutor {
         $whereClausesEmpty = $whereClauses->isEmpty();
         $clauses = null;
 
-        if(!$onClausesEmpty && !$whereClausesEmpty) {
+        if (!$onClausesEmpty && !$whereClausesEmpty) {
             $clauses = new opal\query\clause\ListBase($this->_query);
             $clauses->_addClause($onClauses);
             $clauses->_addClause($whereClauses);
-        } else if(!$onClausesEmpty) {
+        } elseif (!$onClausesEmpty) {
             $clauses = $onClauses;
-        } else if(!$whereClausesEmpty) {
+        } elseif (!$whereClausesEmpty) {
             $clauses = $whereClauses;
         }
 
-        if($clauses) {
+        if ($clauses) {
             $this->writeJoinClauseList($clauses);
         }
 
@@ -804,8 +858,9 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
 
-// Fields
-    public function defineField(opal\query\IField $field, $alias=null) {
+    // Fields
+    public function defineField(opal\query\IField $field, $alias=null)
+    {
         /*
          * This method is used in many places to get a string representation of a
          * query field. If $defineAlias is true, it is suffixed with AS <alias> and
@@ -813,31 +868,31 @@ abstract class QueryExecutor implements IQueryExecutor {
          */
         $defineAlias = true;
 
-        if($alias === false) {
+        if ($alias === false) {
             $defineAlias = false;
         }
 
         // Wildcard
-        if($field instanceof opal\query\IWildcardField) {
+        if ($field instanceof opal\query\IWildcardField) {
             $output = $this->_adapter->quoteTableAliasReference($field->getSourceAlias()).'.*';
             $defineAlias = false;
 
 
         // Aggregate
-        } else if($field instanceof opal\query\IAggregateField) {
+        } elseif ($field instanceof opal\query\IAggregateField) {
             $targetField = $field->getTargetField();
 
-            if($targetField instanceof opal\query\IWildcardField) {
+            if ($targetField instanceof opal\query\IWildcardField) {
                 $targetFieldString = '*';
             } else {
                 $targetFieldString = $this->defineField($field->getTargetField(), false);
             }
 
-            if($field->isDistinct()) {
+            if ($field->isDistinct()) {
                 $targetFieldString = 'DISTINCT '.$targetFieldString;
             }
 
-            switch($field->getType()) {
+            switch ($field->getType()) {
                 case opal\query\field\Aggregate::TYPE_HAS:
                     $output = 'COUNT('.$targetFieldString.')';
                     break;
@@ -848,29 +903,29 @@ abstract class QueryExecutor implements IQueryExecutor {
             }
 
 
-        // Expression
-        } else if($field instanceof opal\query\IExpressionField) {
+            // Expression
+        } elseif ($field instanceof opal\query\IExpressionField) {
             $expression = $field->getExpression();
 
-            if($expression) {
+            if ($expression) {
                 core\stub($expression);
             } else {
                 $output = 'NULL';
             }
 
 
-        // Intrinsic
-        } else if($field instanceof opal\query\IIntrinsicField) {
+            // Intrinsic
+        } elseif ($field instanceof opal\query\IIntrinsicField) {
             // Intrinsic
             $output = $this->_adapter->quoteTableAliasReference($field->getSourceAlias()).'.'.
-                      $this->_adapter->quoteIdentifier($field->getName());
+                      $this->_adapter->quoteFieldAliasReference($field->getName());
 
 
         // Virtual
-        } else if($field instanceof opal\query\IVirtualField) {
+        } elseif ($field instanceof opal\query\IVirtualField) {
             $deref = $field->dereference();
 
-            if(count($deref) == 1) {
+            if (count($deref) == 1) {
                 return $this->defineField($deref[0], $alias);
             }
 
@@ -880,25 +935,25 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
         // Raw
-        } else if($field instanceof opal\query\IRawField) {
+        } elseif ($field instanceof opal\query\IRawField) {
             $output = $field->getExpression();
 
         // Correlation
-        } else if($field instanceof opal\query\ICorrelationField) {
+        } elseif ($field instanceof opal\query\ICorrelationField) {
             $exec = self::factory($this->_adapter, $field->getCorrelationQuery());
             $sql = $exec->buildCorrelation($this->_stmt);
             $output = '('."\n".'    '.str_replace("\n", "\n    ", $sql)."\n".'  )';
 
 
         // Search
-        } else if($field instanceof opal\query\ISearchController) {
+        } elseif ($field instanceof opal\query\ISearchController) {
             $output = [];
 
-            foreach($field->generateCaseList() as $case) {
+            foreach ($field->generateCaseList() as $case) {
                 $output[] = 'CASE WHEN '.$this->defineClause($case['clause']).' THEN '.$case['weight'].' ELSE 0 END';
             }
 
-            if(empty($output)) {
+            if (empty($output)) {
                 $output = '0';
             } else {
                 $max = $field->getMaxScore();
@@ -910,8 +965,8 @@ abstract class QueryExecutor implements IQueryExecutor {
             );
         }
 
-        if($defineAlias) {
-            if($alias === null) {
+        if ($defineAlias) {
+            if ($alias === null) {
                 $alias = $field->getAlias();
             }
 
@@ -921,51 +976,51 @@ abstract class QueryExecutor implements IQueryExecutor {
         return $output;
     }
 
-    public function defineFieldReference(opal\query\IField $field, $allowAlias=false, $forUpdateOrDelete=false) {
+    public function defineFieldReference(opal\query\IField $field, $allowAlias=false, $forUpdateOrDelete=false)
+    {
         $isDiscreetAggregate = $field instanceof opal\query\IAggregateField
                             && $field->hasDiscreetAlias();
 
         $deepNest = false;
 
-        if(!$isDiscreetAggregate
+        if (!$isDiscreetAggregate
         && $this->_query instanceof opal\query\IParentQueryAware
         && $this->_query->isSourceDeepNested($field->getSource())) {
             $deepNest = true;
 
-            if($allowAlias === IAlias::DEEP_DEFINITION) {
+            if ($allowAlias === IAlias::DEEP_DEFINITION) {
                 $allowAlias = IAlias::DEFINITION;
             }
         }
 
-        if(!$deepNest && $allowAlias === IAlias::DEEP_DEFINITION) {
+        if (!$deepNest && $allowAlias === IAlias::DEEP_DEFINITION) {
             $allowAlias = IAlias::NONE;
         }
 
-        if($isDiscreetAggregate || $field instanceof opal\query\IRawField) {
+        if ($isDiscreetAggregate || $field instanceof opal\query\IRawField) {
             // Reference an aggregate by alias
-            if($field->isOutputField()) {
+            if ($field->isOutputField()) {
                 return $this->_adapter->quoteFieldAliasReference($field->getQualifiedName());
-            } else if($field instanceof opal\query\IRawField) {
+            } elseif ($field instanceof opal\query\IRawField) {
                 return $field->getExpression();
             } else {
                 // TODO: Add getExpression() to aggregates
                 return $field->getQualifiedName();
             }
-
-        } else if($forUpdateOrDelete) {
+        } elseif ($forUpdateOrDelete) {
             /*
              * If used on an aggregate field or for update or delete, the name must
              * be used on some sql servers
              */
             return $this->_adapter->quoteIdentifier($field->getName());
-        } else if($allowAlias && ($alias = $field->getLogicalAlias())) {
+        } elseif ($allowAlias && ($alias = $field->getLogicalAlias())) {
             // Defined in a field list
-            if($allowAlias === IAlias::DEFINITION) {
+            if ($allowAlias === IAlias::DEFINITION) {
                 return $this->_adapter->quoteFieldAliasDefinition($alias);
             } else {
                 return $this->_adapter->quoteFieldAliasReference($alias);
             }
-        } else if($field instanceof opal\query\ICorrelationField) {
+        } elseif ($field instanceof opal\query\ICorrelationField) {
             return $this->_adapter->quoteFieldAliasReference($field->getLogicalAlias());
         } else {
             return $this->_adapter->quoteTableAliasReference($field->getSourceAlias()).'.'.
@@ -974,93 +1029,100 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
 
-// Clauses
-    public function writeJoinClauseSection() {
-        if(!$this->_query instanceof opal\query\IJoinClauseQuery || !$this->_query->hasJoinClauses()) {
+    // Clauses
+    public function writeJoinClauseSection()
+    {
+        if (!$this->_query instanceof opal\query\IJoinClauseQuery || !$this->_query->hasJoinClauses()) {
             return $this;
         }
 
         return $this->writeJoinClauseList($this->_query->getJoinClauseList());
     }
 
-    public function writeJoinClauseList(opal\query\IClauseList $clauses) {
-        if($clauses->isEmpty()) {
+    public function writeJoinClauseList(opal\query\IClauseList $clauses)
+    {
+        if ($clauses->isEmpty()) {
             return $this;
         }
 
         $clauseString = $this->defineClauseList($clauses, null, IAlias::DEEP_DEFINITION);
 
-        if(!empty($clauseString)) {
+        if (!empty($clauseString)) {
             $this->_stmt->appendSql("\n".'  ON '.$clauseString);
         }
 
         return $this;
     }
 
-    public function writeWhereClauseSection(array $remoteJoinData=null, $forUpdateOrDelete=false) {
-        if(!$this->_query instanceof opal\query\IWhereClauseQuery || !$this->_query->hasWhereClauses()) {
+    public function writeWhereClauseSection(array $remoteJoinData=null, $forUpdateOrDelete=false)
+    {
+        if (!$this->_query instanceof opal\query\IWhereClauseQuery || !$this->_query->hasWhereClauses()) {
             return $this;
         }
 
         return $this->writeWhereClauseList($this->_query->getWhereClauseList(), $remoteJoinData, $forUpdateOrDelete);
     }
 
-    public function writeWhereClauseList(opal\query\IClauseList $clauses, array $remoteJoinData=null, $forUpdateOrDelete=false) {
-        if($clauses->isEmpty()) {
+    public function writeWhereClauseList(opal\query\IClauseList $clauses, array $remoteJoinData=null, $forUpdateOrDelete=false)
+    {
+        if ($clauses->isEmpty()) {
             return $this;
         }
 
         $clauseString = $this->defineClauseList($clauses, $remoteJoinData, false, $forUpdateOrDelete);
 
-        if(!empty($clauseString)) {
+        if (!empty($clauseString)) {
             $this->_stmt->appendSql("\n".'WHERE '.$clauseString);
         }
 
         return $this;
     }
 
-    public function writeHavingClauseSection() {
-        if(!$this->_query instanceof opal\query\IHavingClauseQuery || !$this->_query->hasHavingClauses()) {
+    public function writeHavingClauseSection()
+    {
+        if (!$this->_query instanceof opal\query\IHavingClauseQuery || !$this->_query->hasHavingClauses()) {
             return $this;
         }
 
         return $this->writeHavingClauseList($this->_query->getHavingClauseList());
     }
 
-    public function writeHavingClauseList(opal\query\IClauseList $clauses) {
-        if($clauses->isEmpty()) {
+    public function writeHavingClauseList(opal\query\IClauseList $clauses)
+    {
+        if ($clauses->isEmpty()) {
             return $this;
         }
 
         $clauseString = $this->defineClauseList($clauses, null, true);
 
-        if(!empty($clauseString)) {
+        if (!empty($clauseString)) {
             $this->_stmt->appendSql("\n".'HAVING '.$clauseString);
         }
 
         return $this;
     }
 
-    public function defineClauseList(opal\query\IClauseList $list, array $remoteJoinData=null, $allowAlias=false, $forUpdateOrDelete=false) {
+    public function defineClauseList(opal\query\IClauseList $list, array $remoteJoinData=null, $allowAlias=false, $forUpdateOrDelete=false)
+    {
         $output = '';
 
-        foreach($list->toArray() as $clause) {
-            if($clause instanceof opal\query\IClause) {
+        foreach ($list->toArray() as $clause) {
+            if ($clause instanceof opal\query\IClause) {
                 $clauseString = $this->defineClause(
                     $clause, $remoteJoinData, $allowAlias, $forUpdateOrDelete
                 );
-            } else if($clause instanceof opal\query\IClauseList) {
+            } elseif ($clause instanceof opal\query\IClauseList) {
                 $clauseString = $this->defineClauseList(
                     $clause, $remoteJoinData, $allowAlias, $forUpdateOrDelete
                 );
             }
 
-            if(empty($clauseString)) {
+            if (empty($clauseString)) {
                 continue;
             }
 
-            if(!empty($output)) {
-                if($clause->isOr()) {
+            if (!empty($output)) {
+                if ($clause->isOr()) {
                     $separator = ' OR ';
                 } else {
                     $separator = ' AND ';
@@ -1072,41 +1134,42 @@ abstract class QueryExecutor implements IQueryExecutor {
             $output .= $clauseString;
         }
 
-        if(empty($output)) {
+        if (empty($output)) {
             return null;
         }
 
         return '('.$output.')';
     }
 
-    public function defineClause(opal\query\IClause $clause, array $remoteJoinData=null, $allowAlias=false, $forUpdateOrDelete=false) {
+    public function defineClause(opal\query\IClause $clause, array $remoteJoinData=null, $allowAlias=false, $forUpdateOrDelete=false)
+    {
         $field = $clause->getField();
         $operator = $clause->getOperator();
         $value = $clause->getPreparedValue();
         $fieldString = $this->defineFieldReference($field, false, $forUpdateOrDelete);
 
-        if($remoteJoinData !== null) {
+        if ($remoteJoinData !== null) {
             /*
              * If we're defining a clause for a remote join we will be comparing
              * a full dataset, but with an operator defined for a single value
              */
 
-            if($value instanceof opal\query\ICorrelationQuery) {
+            if ($value instanceof opal\query\ICorrelationQuery) {
                 $value = clone $value;
 
                 $correlationSource = $value->getCorrelationSource();
                 $correlationSourceAlias = $correlationSource->getAlias();
 
-                foreach($value->getCorrelatedClauses($correlationSource) as $correlationClause) {
+                foreach ($value->getCorrelatedClauses($correlationSource) as $correlationClause) {
                     $field = $correlationClause->getField();
 
-                    if($field->getSourceAlias() == $correlationSourceAlias) {
+                    if ($field->getSourceAlias() == $correlationSourceAlias) {
                         core\stub($field, 'What exactly are we supposed to do with left hand side clause correlations???!?!?!?!?');
                     }
 
                     $correlationValue = $correlationClause->getValue();
 
-                    if($correlationValue instanceof opal\query\IField
+                    if ($correlationValue instanceof opal\query\IField
                     && $correlationValue->getSourceAlias() == $correlationSourceAlias) {
                         $qName = $correlationValue->getQualifiedName();
                         $valueData = $this->_getClauseValueForRemoteJoinData($correlationClause, $remoteJoinData, $qName, $operator);
@@ -1115,13 +1178,13 @@ abstract class QueryExecutor implements IQueryExecutor {
                         $correlationClause->setValue($valueData);
                     }
                 }
-            } else if($value instanceof opal\query\IField) {
+            } elseif ($value instanceof opal\query\IField) {
                 $qName = $value->getQualifiedName();
                 $value = $this->_getClauseValueForRemoteJoinData($clause, $remoteJoinData, $qName, $operator);
             }
         }
 
-        if($value instanceof opal\query\ICorrelationQuery) {
+        if ($value instanceof opal\query\ICorrelationQuery) {
             // Subqueries need to be handled separately
             return $this->defineClauseCorrelation($field, $fieldString, $operator, $value, $allowAlias);
         } else {
@@ -1130,18 +1193,19 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
     }
 
-    protected function _getClauseValueForRemoteJoinData(opal\query\IClause $clause, array $remoteJoinData, $qName, &$operator) {
+    protected function _getClauseValueForRemoteJoinData(opal\query\IClause $clause, array $remoteJoinData, $qName, &$operator)
+    {
         $listData = [];
 
-        foreach($remoteJoinData as $row) {
-            if(isset($row[$qName])) {
+        foreach ($remoteJoinData as $row) {
+            if (isset($row[$qName])) {
                 $listData[] = $row[$qName];
             } else {
                 $listData[] = null;
             }
         }
 
-        switch($operator) {
+        switch ($operator) {
             case opal\query\clause\Clause::OP_EQ:
             case opal\query\clause\Clause::OP_IN:
             case opal\query\clause\Clause::OP_LIKE:
@@ -1181,13 +1245,14 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
     }
 
-    public function defineClauseCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $correlation, $allowAlias=false) {
+    public function defineClauseCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $correlation, $allowAlias=false)
+    {
         $source = $correlation->getSource();
         $isSourceLocal = $source->getAdapterHash() == $this->_adapter->getDsnHash();
         $hasRemoteSources = $correlation->getSourceManager()->countSourceAdapters() > 1;
         $isRegexp = false;
 
-        switch($operator) {
+        switch ($operator) {
             case opal\query\clause\Clause::OP_CONTAINS:
             case opal\query\clause\Clause::OP_NOT_CONTAINS:
             case opal\query\clause\Clause::OP_BEGINS:
@@ -1200,7 +1265,7 @@ abstract class QueryExecutor implements IQueryExecutor {
                 $isRegexp = true;
         }
 
-        if(!$isRegexp && $isSourceLocal && !$hasRemoteSources) {
+        if (!$isRegexp && $isSourceLocal && !$hasRemoteSources) {
             // The subquery can be put directly into the parent query
             return $this->defineClauseLocalCorrelation($field, $fieldString, $operator, $correlation);
         } else {
@@ -1209,10 +1274,11 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
     }
 
-    public function defineClauseLocalCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $correlation) {
+    public function defineClauseLocalCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $correlation)
+    {
         $limit = $correlation->getLimit();
 
-        switch($operator) {
+        switch ($operator) {
             case opal\query\clause\Clause::OP_EQ:
             case opal\query\clause\Clause::OP_NEQ:
             case opal\query\clause\Clause::OP_LIKE:
@@ -1237,14 +1303,15 @@ abstract class QueryExecutor implements IQueryExecutor {
         return $fieldString.' '.strtoupper($operator).' ('."\n  ".str_replace("\n", "\n  ", $sql)."\n".')';
     }
 
-    public function defineClauseRemoteCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $correlation, $allowAlias=false) {
+    public function defineClauseRemoteCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $correlation, $allowAlias=false)
+    {
         /*
          * Execute the subquery and get the result as a list.
          * Then depending on the operator, build the relevant clause
          */
         $source = $correlation->getSource();
 
-        if(null === ($targetField = $source->getFirstOutputDataField())) {
+        if (null === ($targetField = $source->getFirstOutputDataField())) {
             throw new opal\query\ValueException(
                 'Clause subquery does not have a distinct return field'
             );
@@ -1252,11 +1319,11 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $values = $correlation->toList($targetField->getName());
 
-        switch($operator) {
+        switch ($operator) {
             // = | IN()
             case opal\query\clause\Clause::OP_EQ:
             case opal\query\clause\Clause::OP_IN:
-                if(empty($values)) {
+                if (empty($values)) {
                     return $fieldString.' IS NULL';
                 }
 
@@ -1265,7 +1332,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             // != | NOT IN()
             case opal\query\clause\Clause::OP_NEQ:
             case opal\query\clause\Clause::OP_NOT_IN:
-                if(empty($values)) {
+                if (empty($values)) {
                     return $fieldString.' IS NOT NULL';
                 }
 
@@ -1303,7 +1370,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
             // LIKE LIST OF %<value>%
             case opal\query\clause\Clause::OP_CONTAINS:
-                foreach($values as &$value) {
+                foreach ($values as &$value) {
                     $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value).'%';
                 }
 
@@ -1313,7 +1380,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
             // NOT LIKE LIST OF %<value>%
             case opal\query\clause\Clause::OP_NOT_CONTAINS:
-                foreach($values as &$value) {
+                foreach ($values as &$value) {
                     $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value).'%';
                 }
 
@@ -1323,7 +1390,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
             // LIKE LIST OF <value>%
             case opal\query\clause\Clause::OP_BEGINS:
-                foreach($values as &$value) {
+                foreach ($values as &$value) {
                     $value = str_replace(['_', '%'], ['\_', '\%'], $value).'%';
                 }
 
@@ -1333,7 +1400,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
             // NOT LIKE LIST OF <value>%
             case opal\query\clause\Clause::OP_NOT_BEGINS:
-                foreach($values as &$value) {
+                foreach ($values as &$value) {
                     $value = str_replace(['_', '%'], ['\_', '\%'], $value).'%';
                 }
 
@@ -1343,7 +1410,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
             // LIKE LIST OF %<value>
             case opal\query\clause\Clause::OP_ENDS:
-                foreach($values as &$value) {
+                foreach ($values as &$value) {
                     $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value);
                 }
 
@@ -1353,7 +1420,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
             // NOT LIKE LIST OF %<value>
             case opal\query\clause\Clause::OP_NOT_ENDS:
-                foreach($values as &$value) {
+                foreach ($values as &$value) {
                     $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value);
                 }
 
@@ -1363,7 +1430,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
             // LIKE
             case opal\query\clause\Clause::OP_MATCHES:
-                foreach($values as &$value) {
+                foreach ($values as &$value) {
                     $value = '%'.$value.'%';
                 }
 
@@ -1373,7 +1440,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
             // NOT LIKE
             case opal\query\clause\Clause::OP_NOT_MATCHES:
-                foreach($values as &$value) {
+                foreach ($values as &$value) {
                     $value = '%'.$value.'%';
                 }
 
@@ -1389,13 +1456,14 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
     }
 
-    public function defineClauseExpression(opal\query\IField $field, $fieldString, $operator, $value, $allowAlias=false) {
-        switch($operator) {
+    public function defineClauseExpression(opal\query\IField $field, $fieldString, $operator, $value, $allowAlias=false)
+    {
+        switch ($operator) {
             // = | !=
             case opal\query\clause\Clause::OP_EQ:
             case opal\query\clause\Clause::OP_NEQ:
-                if($value === null) {
-                    if($operator == '=') {
+                if ($value === null) {
+                    if ($operator == '=') {
                         return $fieldString.' IS NULL';
                     } else {
                         return $fieldString.' IS NOT NULL';
@@ -1416,20 +1484,22 @@ abstract class QueryExecutor implements IQueryExecutor {
             case opal\query\clause\Clause::OP_NOT_IN:
                 $not = $operator == opal\query\clause\Clause::OP_NOT_IN;
 
-                if(empty($value)) {
+                if (empty($value)) {
                     return '1 '.($not ? null : '!').'= 1';
                 }
 
                 $hasNull = false;
 
-                if(in_array(null, $value)) {
-                    $value = array_filter($value, function($a) { return $a !== null; });
+                if (in_array(null, $value)) {
+                    $value = array_filter($value, function ($a) {
+                        return $a !== null;
+                    });
                     $hasNull = true;
                 }
 
                 $output = $fieldString.($not ? ' NOT' : null).' IN ('.implode(',', $this->normalizeArrayClauseValue($value, $allowAlias)).')';
 
-                if($hasNull) {
+                if ($hasNull) {
                     $output = '('.$output.' OR '.$fieldString.' IS'.($not ? ' NOT' : null).' NULL)';
                 }
 
@@ -1523,40 +1593,42 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
     }
 
-    public function normalizeArrayClauseValue($value, $allowAlias=false) {
+    public function normalizeArrayClauseValue($value, $allowAlias=false)
+    {
         /*
          * Deal with array values in clauses with IN or BETWEEN operators
          */
 
-        if(empty($value)) {
+        if (empty($value)) {
             throw new opal\query\ValueException(
                 'Array based clause values must have at least one entry'
             );
         }
 
-        if(!is_array($value)) {
+        if (!is_array($value)) {
             $value = [$value];
         }
 
         $values = [];
 
-        foreach($value as $val) {
+        foreach ($value as $val) {
             $values[] = $this->normalizeScalarClauseValue($val, $allowAlias);
         }
 
         return $values;
     }
 
-    public function normalizeScalarClauseValue($value, $allowAlias=false) {
+    public function normalizeScalarClauseValue($value, $allowAlias=false)
+    {
         /*
          * Convert a clause value into a string to be used in a query, mainly for clauses.
          * If it is an intrinsic value (ie not a field) it should be bound to the statement
          * and the binding key returned instead.
          */
 
-        if($value instanceof opal\query\IField) {
+        if ($value instanceof opal\query\IField) {
             $valString = $this->defineFieldReference($value, $allowAlias);
-        } else if(is_array($value)) {
+        } elseif (is_array($value)) {
             throw new opal\query\ValueException(
                 'Expected a scalar as query value, found an array'
             );
@@ -1569,25 +1641,26 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
 
-// Expression
-    public function defineExpression(opal\query\IExpression $expression) {
+    // Expression
+    public function defineExpression(opal\query\IExpression $expression)
+    {
         $elements = $expression->getElements();
         $output = [];
 
-        foreach($elements as $element) {
-            if($element instanceof opal\query\IField) {
+        foreach ($elements as $element) {
+            if ($element instanceof opal\query\IField) {
                 $output[] = $this->defineFieldReference(
                     $element, false,
                     $this->_query instanceof opal\query\IUpdateQuery ||
                     $this->_query instanceof opal\query\IDeleteQuery
                 );
-            } else if($element instanceof opal\query\IExpressionValue) {
+            } elseif ($element instanceof opal\query\IExpressionValue) {
                 $output[] = ':'.$this->_stmt->autoBind($element->getValue());
-            } else if($element instanceof opal\query\IExpressionOperator) {
+            } elseif ($element instanceof opal\query\IExpressionOperator) {
                 $output[] = $element->getOperator();
-            } else if($element instanceof opal\query\ICorrelationQuery) {
+            } elseif ($element instanceof opal\query\ICorrelationQuery) {
                 core\stub($element);
-            } else if($element instanceof opal\query\IExpression) {
+            } elseif ($element instanceof opal\query\IExpression) {
                 $output[] = '('.$this->defineExpression($element).')';
             }
         }
@@ -1596,22 +1669,23 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
 
-// Groups
-    public function writeGroupSection() {
-        if(!$this->_query instanceof opal\query\IGroupableQuery) {
+    // Groups
+    public function writeGroupSection()
+    {
+        if (!$this->_query instanceof opal\query\IGroupableQuery) {
             return $this;
         }
 
         $groups = $this->_query->getGroupFields();
 
-        if(empty($groups)) {
+        if (empty($groups)) {
             return $this;
         }
 
         $groupFields = [];
 
-        foreach($groups as $field) {
-            foreach($field->dereference() as $field) {
+        foreach ($groups as $field) {
+            foreach ($field->dereference() as $field) {
                 $directiveString = $this->defineFieldReference($field, true);
                 $groupFields[] = $directiveString;
             }
@@ -1621,33 +1695,34 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
 
-// Order
-    public function writeOrderSection($forUpdateOrDelete=false, $checkSourceAlias=false) {
-        if(!$this->_query instanceof opal\query\IOrderableQuery) {
+    // Order
+    public function writeOrderSection($forUpdateOrDelete=false, $checkSourceAlias=false)
+    {
+        if (!$this->_query instanceof opal\query\IOrderableQuery) {
             return $this;
         }
 
         $directives = $this->_query->getOrderDirectives();
 
-        if(empty($directives)) {
+        if (empty($directives)) {
             return $this;
         }
 
-        if($checkSourceAlias) {
+        if ($checkSourceAlias) {
             $sourceAlias = $this->_query->getSource()->getAlias();
         }
 
         $orderFields = [];
 
-        foreach($directives as $directive) {
+        foreach ($directives as $directive) {
             $field = $directive->getField();
 
-            if($checkSourceAlias && $field->getSourceAlias() != $sourceAlias) {
+            if ($checkSourceAlias && $field->getSourceAlias() != $sourceAlias) {
                 break;
             }
 
-            foreach($field->dereference() as $field) {
-                if($forUpdateOrDelete) {
+            foreach ($field->dereference() as $field) {
+                if ($forUpdateOrDelete) {
                     $directiveString = $this->_adapter->quoteIdentifier($field->getName());
                 } else {
                     $directiveString = $this->defineFieldReference($field, true, $forUpdateOrDelete);
@@ -1655,7 +1730,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
                 $isDescending = $directive->isDescending();
 
-                switch($directive->getNullOrder()) {
+                switch ($directive->getNullOrder()) {
                     case 'first':
                         $orderFields[] = 'ISNULL('.$directiveString.') DESC';
                         break;
@@ -1672,7 +1747,7 @@ abstract class QueryExecutor implements IQueryExecutor {
                         break;
                 }
 
-                if($isDescending) {
+                if ($isDescending) {
                     $directiveString .= ' DESC';
                 } else {
                     $directiveString .= ' ASC';
@@ -1682,7 +1757,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             }
         }
 
-        if(!empty($orderFields)) {
+        if (!empty($orderFields)) {
             $this->_stmt->appendSql("\n".'ORDER BY '.implode(', ', $orderFields));
         }
 
@@ -1690,11 +1765,12 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
 
-// Limit
-    public function writeLimitSection($forUpdateOrDelete=false) {
-        if($forUpdateOrDelete) {
+    // Limit
+    public function writeLimitSection($forUpdateOrDelete=false)
+    {
+        if ($forUpdateOrDelete) {
             // Some servers cannot deal with offsets in updates / deletes
-            if($this->_query instanceof opal\query\ILimitableQuery
+            if ($this->_query instanceof opal\query\ILimitableQuery
             && null !== ($limit = $this->_query->getLimit())) {
                 $this->_stmt->appendSql("\n".$this->defineLimit($limit));
             }
@@ -1706,15 +1782,15 @@ abstract class QueryExecutor implements IQueryExecutor {
         $limit = null;
         $offset = null;
 
-        if($this->_query instanceof opal\query\ILimitableQuery) {
+        if ($this->_query instanceof opal\query\ILimitableQuery) {
             $limit = $this->_query->getLimit();
         }
 
-        if($this->_query instanceof opal\query\IOffsettableQuery) {
+        if ($this->_query instanceof opal\query\IOffsettableQuery) {
             $offset = $this->_query->getOffset();
         }
 
-        if($limit !== null || $offset !== null) {
+        if ($limit !== null || $offset !== null) {
             $this->_stmt->appendSql("\n".$this->defineLimit($limit, $offset));
         }
 

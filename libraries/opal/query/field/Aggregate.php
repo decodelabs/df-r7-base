@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-class Aggregate implements opal\query\IAggregateField, core\IDumpable {
-
+class Aggregate implements opal\query\IAggregateField, core\IDumpable
+{
     use opal\query\TField;
 
     const TYPE_COUNT = 1;
@@ -26,8 +26,9 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
     protected $_isDistinct = false;
     protected $_source;
 
-    public static function typeIdToName($id) {
-        switch($id) {
+    public static function typeIdToName($id)
+    {
+        switch ($id) {
             case self::TYPE_COUNT:
                 return 'COUNT';
 
@@ -48,14 +49,15 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
         }
     }
 
-    public function __construct(opal\query\ISource $source, $type, opal\query\IField $targetField, $alias) {
+    public function __construct(opal\query\ISource $source, $type, opal\query\IField $targetField, $alias)
+    {
         $this->_source = $source;
 
-        if(is_string($type)) {
+        if (is_string($type)) {
             $type = strtoupper($type);
         }
 
-        switch($type) {
+        switch ($type) {
             case self::TYPE_COUNT:
             case 'COUNT':
                 $type = self::TYPE_COUNT;
@@ -91,63 +93,74 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
                 );
         }
 
-        if($targetField instanceof opal\query\IVirtualField) {
+        if ($targetField instanceof opal\query\IVirtualField) {
             $targetField = $targetField->getTargetFields()[0];
         }
 
         $this->_type = $type;
         $this->_targetField = $targetField;
 
-        if($alias === null) {
+        if ($alias === null) {
             $alias = $this->getName();
         }
 
         $this->_alias = $alias;
     }
 
-    public function getSource() {
+    public function getSource()
+    {
         return $this->_source;
     }
 
-    public function getSourceAlias() {
+    public function getSourceAlias()
+    {
         return $this->_source->getAlias();
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->_type;
     }
 
-    public function getTypeName() {
+    public function getTypeName()
+    {
         return self::typeIdToName($this->_type);
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->getTypeName().'('.($this->_isDistinct ? 'distinct ' : '').$this->_targetField->getName().')';
     }
 
-    public function getQualifiedName() {
+    public function getQualifiedName()
+    {
         return $this->getTypeName().'('.($this->_isDistinct ? 'distinct ' : '').$this->_targetField->getQualifiedName().')';
     }
 
-    public function setAlias($alias) {
+    public function setAlias($alias)
+    {
         $this->_alias = $alias;
         return $this;
     }
 
-    public function getAlias() {
+    public function getAlias()
+    {
         return $this->_alias;
     }
 
-    public function getTargetField() {
+    public function getTargetField()
+    {
         return $this->_targetField;
     }
 
-    public function hasDiscreetAlias() {
+    public function hasDiscreetAlias()
+    {
         return $this->_alias !== $this->getName();
     }
 
-    public function isDistinct(bool $flag=null) {
-        if($flag !== null) {
+    public function isDistinct(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isDistinct = $flag;
             return $this;
         }
@@ -155,16 +168,19 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
         return $this->_isDistinct;
     }
 
-    public function dereference() {
+    public function dereference()
+    {
         return [$this];
     }
 
-    public function isOutputField() {
+    public function isOutputField()
+    {
         return true;
     }
 
-    public function normalizeOutputValue($value) {
-        switch($this->_type) {
+    public function normalizeOutputValue($value)
+    {
+        switch ($this->_type) {
             case self::TYPE_COUNT:
                 return (int)$value;
 
@@ -174,25 +190,29 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
 
             case self::TYPE_MIN:
             case self::TYPE_MAX:
-                if(is_numeric($value)) {
+                if (is_numeric($value)) {
                     return (double)$value;
                 } else {
                     return $value;
                 }
 
+                // no break
             case self::TYPE_HAS:
                 return (bool)$value;
         }
     }
 
-    public function rewriteAsDerived(opal\query\ISource $source) {
-        core\stub($source);
+    public function rewriteAsDerived(opal\query\ISource $source)
+    {
+        return (new Intrinsic($source, $this->_alias, $this->_alias))
+            ->setLogicalAlias($source->getAlias().'.'.$this->_alias);
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         $output = $this->getQualifiedName();
 
-        if($this->hasDiscreetAlias()) {
+        if ($this->hasDiscreetAlias()) {
             $output .= ' as '.$this->getAlias();
         }
 

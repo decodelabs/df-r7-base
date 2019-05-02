@@ -237,6 +237,7 @@ interface IDerivableQuery extends IQuery
     public function setDerivationParentInitiator(IInitiator $initiator);
     public function getDerivationParentInitiator();
     public function getDerivationSourceAdapter();
+    public function endSource(string $alias=null): IQuery;
 }
 
 interface ICorrelatableQuery extends IQuery

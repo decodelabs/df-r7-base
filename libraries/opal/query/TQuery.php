@@ -357,7 +357,7 @@ trait TQuery_Derivable
         return $this->getSource()->getAdapter();
     }
 
-    public function endSource()
+    public function endSource(string $alias=null): IQuery
     {
         if (!$this->_derivationParentInitiator) {
             throw new LogicException(
@@ -373,7 +373,11 @@ trait TQuery_Derivable
             );
         }
 
-        $output = $this->_derivationParentInitiator->from($adapter, uniqid('drv_'));
+        if ($alias === null) {
+            $alias = $this->getSourceAlias();
+        }
+
+        $output = $this->_derivationParentInitiator->from($adapter, $alias);
         $this->_derivationParentInitiator = null;
         return $output;
     }

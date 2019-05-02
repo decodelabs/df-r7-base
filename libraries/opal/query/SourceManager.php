@@ -11,8 +11,8 @@ use df\opal;
 use df\mesh;
 use df\flex;
 
-class SourceManager implements ISourceManager, core\IDumpable {
-
+class SourceManager implements ISourceManager, core\IDumpable
+{
     protected $_parent;
     protected $_aliases = [];
     protected $_sources = [];
@@ -21,38 +21,44 @@ class SourceManager implements ISourceManager, core\IDumpable {
     protected $_genCounter = 0;
     protected $_transaction;
 
-    public function __construct(ITransaction $transaction=null) {
+    public function __construct(ITransaction $transaction=null)
+    {
         $this->_transaction = $transaction;
     }
 
-    public function getMeshManager() {
+    public function getMeshManager()
+    {
         return mesh\Manager::getInstance();
     }
 
-    public function setParentSourceManager(ISourceManager $parent) {
+    public function setParentSourceManager(ISourceManager $parent)
+    {
         $this->_parent = $parent;
         return $this;
     }
 
-    public function getParentSourceManager() {
+    public function getParentSourceManager()
+    {
         return $this->_parent;
     }
 
 
-// Transaction
-    public function setTransaction(mesh\job\ITransaction $transaction=null) {
+    // Transaction
+    public function setTransaction(mesh\job\ITransaction $transaction=null)
+    {
         $this->_transaction = $transaction;
 
-        if($this->_parent) {
+        if ($this->_parent) {
             $this->_parent->setTransaction($transaction);
         }
 
         return $this;
     }
 
-    public function getTransaction(): ?mesh\job\ITransaction {
-        if($this->_parent) {
-            if($output = $this->_parent->getTransaction()) {
+    public function getTransaction(): ?mesh\job\ITransaction
+    {
+        if ($this->_parent) {
+            if ($output = $this->_parent->getTransaction()) {
                 return $output;
             }
         }
@@ -61,21 +67,22 @@ class SourceManager implements ISourceManager, core\IDumpable {
     }
 
 
-// Sources
-    public function newSource($adapter, $alias, array $fields=null, $forWrite=false, $debug=false) {
+    // Sources
+    public function newSource($adapter, $alias, array $fields=null, $forWrite=false, $debug=false)
+    {
         $adapter = $this->extrapolateSourceAdapter($adapter);
         $sourceId = $adapter->getQuerySourceId();
 
-        if($alias === null) {
+        if ($alias === null) {
             $alias = $this->generateAlias();
         }
 
-        if(isset($this->_sources[$alias])) {
-            if($adapter->getQuerySourceId() == $this->_sources[$alias]->getAdapter()->getQuerySourceId()) {
+        if (isset($this->_sources[$alias])) {
+            if ($adapter->getQuerySourceId() == $this->_sources[$alias]->getAdapter()->getQuerySourceId()) {
                 $output = $this->_sources[$alias];
 
-                if($fields !== null) {
-                    foreach($fields as $field) {
+                if ($fields !== null) {
+                    foreach ($fields as $field) {
                         $this->extrapolateOutputField($output, $field);
                     }
                 }
@@ -90,13 +97,13 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
         $source = new Source($adapter, $alias);
 
-        if(!isset($this->_aliases[$sourceId])) {
+        if (!isset($this->_aliases[$sourceId])) {
             $this->_aliases[$sourceId] = $alias;
         }
 
         $hash = $source->getAdapterHash();
 
-        if(!isset($this->_adapterHashes[$hash])) {
+        if (!isset($this->_adapterHashes[$hash])) {
             $this->_adapterHashes[$hash] = $alias;
         }
 
@@ -104,12 +111,12 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
         $this->_sources[$alias] = $source;
 
-        if($this->_transaction) {
+        if ($this->_transaction) {
             $this->_transaction->registerAdapter($source->getAdapter());
         }
 
-        if($fields !== null) {
-            foreach($fields as $field) {
+        if ($fields !== null) {
+            foreach ($fields as $field) {
                 $this->extrapolateOutputField($source, $field);
             }
         }
@@ -117,13 +124,14 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return $source;
     }
 
-    public function removeSource($alias) {
-        if(!isset($this->_sources[$alias])) {
+    public function removeSource($alias)
+    {
+        if (!isset($this->_sources[$alias])) {
             return $this;
         }
 
-        foreach($this->_aliases as $sourceId => $sourceAlias) {
-            if($alias === $sourceAlias) {
+        foreach ($this->_aliases as $sourceId => $sourceAlias) {
+            if ($alias === $sourceAlias) {
                 unset($this->_aliases[$sourceAlias]);
                 break;
             }
@@ -133,41 +141,46 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return $this;
     }
 
-    public function getSources() {
+    public function getSources()
+    {
         return $this->_sources;
     }
 
-    public function getSourceByAlias($alias) {
-        if(isset($this->_sources[$alias])) {
+    public function getSourceByAlias($alias)
+    {
+        if (isset($this->_sources[$alias])) {
             return $this->_sources[$alias];
         }
 
-        if($this->_parent) {
+        if ($this->_parent) {
             return $this->_parent->getSourceByAlias($alias);
         }
     }
 
-    public function countSourceAdapters() {
+    public function countSourceAdapters()
+    {
         return count($this->_adapterHashes);
     }
 
-    public function canQueryLocally() {
+    public function canQueryLocally()
+    {
         return count($this->_serverHashes) == 1;
     }
 
 
 
-// Extrapolate
-    public function extrapolateSourceAdapter($adapter) {
-        if($adapter instanceof ISource) {
+    // Extrapolate
+    public function extrapolateSourceAdapter($adapter)
+    {
+        if ($adapter instanceof ISource) {
             $adapter = $adapter->getAdapter();
-        } else if(is_string($adapter)) {
-            if(isset($this->_aliases[$adapter])) {
+        } elseif (is_string($adapter)) {
+            if (isset($this->_aliases[$adapter])) {
                 $adapter = $this->_sources[$this->_aliases[$adapter]]->getAdapter();
             } else {
                 $entity = $this->getMeshManager()->fetchEntity($adapter);
 
-                if(!$entity instanceof IAdapter) {
+                if (!$entity instanceof IAdapter) {
                     throw new InvalidArgumentException(
                         'Entity url '.$adapter.' does not reference a valid data source adapter'
                     );
@@ -175,9 +188,9 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
                 $adapter = $entity;
             }
-        } else if(is_array($adapter)) {
+        } elseif (is_array($adapter)) {
             $adapter = new opal\native\QuerySourceAdapter(uniqid('source_'), $adapter);
-        } else if(!$adapter instanceof IAdapter) {
+        } elseif (!$adapter instanceof IAdapter) {
             throw new InvalidArgumentException(
                 'Source is not a valid adapter'
             );
@@ -187,10 +200,11 @@ class SourceManager implements ISourceManager, core\IDumpable {
     }
 
 
-    public function extrapolateOutputField(ISource $source, $name) {
+    public function extrapolateOutputField(ISource $source, $name)
+    {
         $fieldAlias = null;
 
-        if(preg_match('/(.+) as ([^ ]+)$/', $name, $matches)) {
+        if (preg_match('/(.+) as ([^ ]+)$/', $name, $matches)) {
             $name = $matches[1];
             $fieldAlias = $matches[2];
         }
@@ -198,27 +212,28 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return $this->_extrapolateField($source, $name, $fieldAlias, null, true, true, true, true);
     }
 
-    public function realiasOutputField(ISource $parentSource, ISource $source, $name) {
+    public function realiasOutputField(ISource $parentSource, ISource $source, $name)
+    {
         $alias = $name;
         $sourceAlias = null;
 
-        if(preg_match('/(.+) as ([^ ]+)$/', $name, $matches)) {
+        if (preg_match('/(.+) as ([^ ]+)$/', $name, $matches)) {
             $name = $matches[1];
             $alias = $matches[2];
         }
 
-        if(preg_match('/(.+)\.(.+)$/', $name, $matches)) {
+        if (preg_match('/(.+)\.(.+)$/', $name, $matches)) {
             $sourceAlias = $matches[1];
             $name = $matches[2];
         }
 
-        if($sourceAlias && !isset($this->_sources[$sourceAlias])) {
+        if ($sourceAlias && !isset($this->_sources[$sourceAlias])) {
             throw new InvalidArgumentException(
                 'No source has been defined with alias '.$sourceAlias
             );
         }
 
-        if(!$field = $this->_findFieldByAlias($name, $parentSource, null, $sourceAlias)) {
+        if (!$field = $this->_findFieldByAlias($name, $parentSource, null, $sourceAlias)) {
             $targetSource = $sourceAlias ? $this->_sources[$sourceAlias] : $parentSource;
             $field = $this->_extrapolateField($targetSource, $name, null, null, true, true, true, true);
         }
@@ -226,25 +241,30 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return new opal\query\field\Virtual($source, $name, $alias, [$field]);
     }
 
-    public function extrapolateField(ISource $source, $name) {
+    public function extrapolateField(ISource $source, $name)
+    {
         return $this->_extrapolateField($source, $name);
     }
 
-    public function extrapolateIntrinsicField(ISource $source, $name, $checkAlias=null) {
+    public function extrapolateIntrinsicField(ISource $source, $name, $checkAlias=null)
+    {
         return $this->_extrapolateField($source, $name, null, $checkAlias, true, false, false);
     }
 
-    public function extrapolateAggregateField(ISource $source, $name, $checkAlias=null) {
+    public function extrapolateAggregateField(ISource $source, $name, $checkAlias=null)
+    {
         return $this->_extrapolateField($source, $name, null, $checkAlias, false, false, true);
     }
 
-    public function extrapolateDataField(ISource $source, $name, $checkAlias=null) {
+    public function extrapolateDataField(ISource $source, $name, $checkAlias=null)
+    {
         return $this->_extrapolateField($source, $name, null, $checkAlias, true, false, true);
     }
 
-    protected function _extrapolateField(ISource $source, $name, $alias=null, $checkAlias=null, $allowIntrinsic=true, $allowWildcard=true, $allowAggregate=true, $isOutput=false) {
-        if($name instanceof opal\query\IQuery) {
-            if(!$allowIntrinsic) {
+    protected function _extrapolateField(ISource $source, $name, $alias=null, $checkAlias=null, $allowIntrinsic=true, $allowWildcard=true, $allowAggregate=true, $isOutput=false)
+    {
+        if ($name instanceof opal\query\IQuery) {
+            if (!$allowIntrinsic) {
                 throw new InvalidArgumentException(
                     'Unexpected intrinsic sub-select query field'
                 );
@@ -253,29 +273,29 @@ class SourceManager implements ISourceManager, core\IDumpable {
             return $name;
         }
 
-        if($name instanceof opal\query\IField) {
+        if ($name instanceof opal\query\IField) {
             $name = $name->getQualifiedName();
         }
 
-        if(!strlen($name)) {
+        if (!strlen($name)) {
             $name = null;
         }
 
-        if(!$isOutput && $name !== null && ($field = $this->_findFieldByAlias($name, $source, $checkAlias))) {
+        if (!$isOutput && $name !== null && ($field = $this->_findFieldByAlias($name, $source, $checkAlias))) {
             $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
             return $field;
         }
 
         $passedSourceAlias = $source->getAlias();
 
-        if(preg_match('/^([a-zA-Z_]+)\((distinct )?(.+)\)$/i', $name, $matches)) {
+        if (preg_match('/^([a-zA-Z_]+)\((distinct )?(.+)\)$/i', $name, $matches)) {
             // aggregate
-            if(!$allowAggregate) {
+            if (!$allowAggregate) {
                 throw new InvalidArgumentException(
                     'Aggregate field reference "'.$name.'" found when intrinsic field expected'
                 );
             } else {
-                if(!$source->getAdapter()->supportsQueryFeature(opal\query\IQueryFeatures::AGGREGATE)) {
+                if (!$source->getAdapter()->supportsQueryFeature(opal\query\IQueryFeatures::AGGREGATE)) {
                     throw new LogicException(
                         'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
                         'does not support aggregate fields'
@@ -287,11 +307,11 @@ class SourceManager implements ISourceManager, core\IDumpable {
             $distinct = !empty($matches[2]);
             $targetField = $this->extrapolateField($source, $matches[3]);
 
-            if($checkAlias === true && $passedSourceAlias !== $targetField->getSourceAlias()) {
+            if ($checkAlias === true && $passedSourceAlias !== $targetField->getSourceAlias()) {
                 throw new InvalidArgumentException(
                     'Source alias "'.$sourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
                 );
-            } else if(is_string($checkAlias) && $targetField->getSourceAlias() == $checkAlias) {
+            } elseif (is_string($checkAlias) && $targetField->getSourceAlias() == $checkAlias) {
                 throw new InvalidArgumentException(
                     'Local source reference "'.$checkAlias.'" found where a foreign source is expected'
                 );
@@ -300,7 +320,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
             $qName = $type.'('.$targetField->getQualifiedName().')';
 
-            if(!$isOutput && ($field = $source->getFieldByQualifiedName($qName))) {
+            if (!$isOutput && ($field = $source->getFieldByQualifiedName($qName))) {
                 $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
                 return $field;
             }
@@ -308,18 +328,18 @@ class SourceManager implements ISourceManager, core\IDumpable {
             $field = new opal\query\field\Aggregate($source, $type, $targetField, $alias);
             $field->isDistinct($distinct);
 
-            if($isOutput) {
+            if ($isOutput) {
                 $source->addOutputField($field);
             } else {
                 $source->addPrivateField($field);
             }
 
             return $field;
-        } else if($name === null || substr($name, 0, 1) == '#') {
+        } elseif ($name === null || substr($name, 0, 1) == '#') {
             // expression
             $field = new opal\query\field\Expression($source, $name, $alias);
 
-            if($isOutput) {
+            if ($isOutput) {
                 $source->addOutputField($field);
             } else {
                 $source->addPrivateField($field);
@@ -330,11 +350,11 @@ class SourceManager implements ISourceManager, core\IDumpable {
         } else {
             $shouldCheck = true;
 
-            if(substr($name, 0, 5) == '@raw ') {
+            if (substr($name, 0, 5) == '@raw ') {
                 // raw - fudge it!
                 $sourceAlias = $source->getAlias();
                 $qName = $sourceAlias.'.'.$name;
-            } else if(false !== strpos($name, '.')) {
+            } elseif (false !== strpos($name, '.')) {
                 // qualified
                 $qName = $name;
                 list($sourceAlias, $name) = explode('.', $name, 2);
@@ -347,35 +367,35 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
             $source = null;
 
-            if(isset($this->_sources[$sourceAlias])) {
+            if (isset($this->_sources[$sourceAlias])) {
                 $source = $this->_sources[$sourceAlias];
-            } else if($this->_parent) {
+            } elseif ($this->_parent) {
                 $source = $this->_parent->getSourceByAlias($sourceAlias);
             }
 
-            if(!$source) {
+            if (!$source) {
                 throw new InvalidArgumentException(
                     'Source alias "'.$sourceAlias.'" has not been defined'
                 );
             }
 
-            if($checkAlias === true && $shouldCheck && $passedSourceAlias !== $source->getAlias()) {
+            if ($checkAlias === true && $shouldCheck && $passedSourceAlias !== $source->getAlias()) {
                 throw new InvalidArgumentException(
                     'Source alias "'.$passedSourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
                 );
-            } else if(is_string($checkAlias) && $source->getAlias() == $checkAlias) {
+            } elseif (is_string($checkAlias) && $source->getAlias() == $checkAlias) {
                 throw new InvalidArgumentException(
                     'Local source reference "'.$checkAlias.'" found where a foreign source is expected'
                 );
             }
 
-            if(!$isOutput && ($field = $source->getFieldByQualifiedName($qName))) {
+            if (!$isOutput && ($field = $source->getFieldByQualifiedName($qName))) {
                 $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
                 return $field;
             }
 
-            if(substr($name, 0, 1) == '!') {
-                if(!$allowWildcard || $name == '!*') {
+            if (substr($name, 0, 1) == '!') {
+                if (!$allowWildcard || $name == '!*') {
                     throw new InvalidArgumentException(
                         'Unexpected wildcard field reference "'.$qName.'"'
                     );
@@ -383,9 +403,9 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
                 $name = substr($name, 1);
 
-                if($wildcard = $source->getWildcardField()) {
+                if ($wildcard = $source->getWildcardField()) {
                     $wildcard->addMuteField($name, $alias);
-                } else if(!$source->removeWildcardOutputField($name, $alias)) {
+                } elseif (!$source->removeWildcardOutputField($name, $alias)) {
                     $wildcard = new opal\query\field\Wildcard($source);
                     $wildcard->addMuteField($name, $alias);
                     $source->addOutputField($wildcard);
@@ -394,10 +414,10 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 return $wildcard;
             }
 
-            if($name == '@void') {
+            if ($name == '@void') {
                 $field = null;
-            } else if($name == '*') {
-                if(!$allowWildcard) {
+            } elseif ($name == '*') {
+                if (!$allowWildcard) {
                     throw new InvalidArgumentException(
                         'Unexpected wildcard field reference "'.$qName.'"'
                     );
@@ -405,7 +425,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
                 $field = new opal\query\field\Wildcard($source);
             } else {
-                if(!$allowIntrinsic) {
+                if (!$allowIntrinsic) {
                     throw new InvalidArgumentException(
                         'Unexpected intrinsic field reference "'.$qName.'"'
                     );
@@ -415,8 +435,8 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 // If adapter supports virtuals, give it a chance to dereference it from the alias
                 $field = $source->extrapolateIntegralAdapterField($name, $alias);
 
-                if(!$field) {
-                    if($alias === null) {
+                if (!$field) {
+                    if ($alias === null) {
                         $alias = $name;
                     }
 
@@ -424,8 +444,8 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 }
             }
 
-            if($field) {
-                if($isOutput) {
+            if ($field) {
+                if ($isOutput) {
                     $source->addOutputField($field);
                 } else {
                     $source->addPrivateField($field);
@@ -436,41 +456,42 @@ class SourceManager implements ISourceManager, core\IDumpable {
         }
     }
 
-    protected function _findFieldByAlias($alias, ISource $source, $checkAlias=null, $sourceAlias=null) {
-        if($sourceAlias !== null && isset($this->_sources[$sourceAlias])) {
-            if($field = $this->_sources[$sourceAlias]->getFieldByAlias($alias)) {
+    protected function _findFieldByAlias($alias, ISource $source, $checkAlias=null, $sourceAlias=null)
+    {
+        if ($sourceAlias !== null && isset($this->_sources[$sourceAlias])) {
+            if ($field = $this->_sources[$sourceAlias]->getFieldByAlias($alias)) {
                 return $field;
             }
         }
 
-        if($field = $source->getFieldByAlias($alias)) {
+        if ($field = $source->getFieldByAlias($alias)) {
             return $field;
         }
 
-        if($checkAlias) {
+        if ($checkAlias) {
             return null;
         }
 
         $sourceId = $source->getId();
         $keySources = [];
 
-        foreach($this->_sources as $testSource) {
-            if($testSource->getId() == $sourceId) {
-                if($testSource !== $source) {
+        foreach ($this->_sources as $testSource) {
+            if ($testSource->getId() == $sourceId) {
+                if ($testSource !== $source) {
                     $keySources[] = $testSource;
                 }
 
                 continue;
             }
 
-            if($field = $testSource->getFieldByAlias($alias)) {
+            if ($field = $testSource->getFieldByAlias($alias)) {
                 return $field;
             }
         }
 
-        if(!empty($keySources)) {
-            foreach($keySources as $testSource) {
-                if($field = $testSource->getFieldByAlias($alias)) {
+        if (!empty($keySources)) {
+            foreach ($keySources as $testSource) {
+                if ($field = $testSource->getFieldByAlias($alias)) {
                     return $field;
                 }
             }
@@ -479,16 +500,17 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return null;
     }
 
-    protected function _testField(opal\query\IField $field, $allowIntrinsic, $allowWildcard, $allowAggregate) {
-        if(!$allowIntrinsic && $field instanceof opal\query\IIntrinsicField) {
+    protected function _testField(opal\query\IField $field, $allowIntrinsic, $allowWildcard, $allowAggregate)
+    {
+        if (!$allowIntrinsic && $field instanceof opal\query\IIntrinsicField) {
             throw new InvalidArgumentException(
                 'Unexpected intrinsic field reference "'.$field->getQualifiedName().'"'
             );
-        } else if(!$allowWildcard && $field instanceof opal\query\IWildcardField) {
+        } elseif (!$allowWildcard && $field instanceof opal\query\IWildcardField) {
             throw new InvalidArgumentException(
                 'Unexpected wildcard field reference "'.$field->getQualifiedName().'"'
             );
-        } else if(!$allowAggregate && $field instanceof opal\query\IAggregateField) {
+        } elseif (!$allowAggregate && $field instanceof opal\query\IAggregateField) {
             throw new InvalidArgumentException(
                 'Aggregate field reference to "'.$field->getQualifiedName().'" found when intrinsic field expected'
             );
@@ -496,19 +518,21 @@ class SourceManager implements ISourceManager, core\IDumpable {
     }
 
 
-    public function generateAlias() {
+    public function generateAlias()
+    {
         do {
             $alias = flex\Text::numericToAlpha($this->_genCounter++);
-        } while(isset($this->_aliases[$alias]));
+        } while (isset($this->_aliases[$alias]));
 
         return $alias;
     }
 
 
-// Query executor
-    public function handleQueryException(IQuery $query, \Throwable $e) {
-        foreach($this->_sources as $source) {
-            if($source->handleQueryException($query, $e)) {
+    // Query executor
+    public function handleQueryException(IQuery $query, \Throwable $e)
+    {
+        foreach ($this->_sources as $source) {
+            if ($source->handleQueryException($query, $e)) {
                 return true;
             }
         }
@@ -516,34 +540,35 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return false;
     }
 
-    public function executeQuery(IQuery $query, callable $executor) {
+    public function executeQuery(IQuery $query, callable $executor)
+    {
         $adapter = $query->getSource()->getAdapter();
         $count = 0;
         $exceptions = [];
 
-        while(true) {
+        while (true) {
             try {
                 $output = $executor($adapter);
                 break;
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $exceptions[] = $e;
                 $handled = false;
 
-                foreach($this->_sources as $source) {
-                    if($source->handleQueryException($query, $e)) {
+                foreach ($this->_sources as $source) {
+                    if ($source->handleQueryException($query, $e)) {
                         $handled = true;
                         break;
                     }
                 }
 
-                if(!$handled) {
+                if (!$handled) {
                     throw $e;
                 }
             }
 
             $count++;
 
-            if($count > 20) {
+            if ($count > 20) {
                 core\dump($exceptions);
                 throw new RuntimeException(
                     'Stuck in query exception loop'
@@ -556,15 +581,16 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
 
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         $output = [];
 
-        foreach($this->_sources as $alias => $source) {
+        foreach ($this->_sources as $alias => $source) {
             $output[] = new core\debug\dumper\Property($alias, $source->getAdapter());
         }
 
-        if($this->_parent) {
+        if ($this->_parent) {
             $output[] = new core\debug\dumper\Property('parent', $this->_parent, 'private');
         }
 
