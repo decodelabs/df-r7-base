@@ -12,8 +12,8 @@ use df\opal;
 use df\user;
 use df\flex;
 
-class Unit extends axis\unit\Table {
-
+class Unit extends axis\unit\Table
+{
     const NAME_FIELD = 'fullName';
 
     const SEARCH_FIELDS = [
@@ -30,7 +30,8 @@ class Unit extends axis\unit\Table {
 
     const DEFAULT_ORDER = 'fullName';
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addField('id', 'AutoId', 8);
         $schema->addUniqueField('email', 'Text', 255);
         $schema->addField('fullName', 'Text', 255);
@@ -51,29 +52,32 @@ class Unit extends axis\unit\Table {
 
         $schema->addField('timezone', 'Text', 32)
             ->setDefaultValue('UTC');
-        $schema->addField('country', 'Text', 2, flex\ICase::UPPER)
+        $schema->addIndexedField('country', 'Text', 2, flex\ICase::UPPER)
             ->setDefaultValue('GB');
         $schema->addField('language', 'Text', 2, flex\ICase::LOWER)
             ->setDefaultValue('en');
     }
 
 
-    public function emailExists($email) {
+    public function emailExists($email)
+    {
         $output = $this->select('id')->where('email', '=', $email)->toValue('id');
 
-        if($output === null) {
+        if ($output === null) {
             $output = false;
         }
 
         return $output;
     }
 
-    public function fetchByEmail($email) {
+    public function fetchByEmail($email)
+    {
         return $this->fetch()->where('email', '=', $email)->toRow();
     }
 
-    public function fetchActive() {
-        if(!$this->context->user->isLoggedIn()) {
+    public function fetchActive()
+    {
+        if (!$this->context->user->isLoggedIn()) {
             return null;
         }
 
@@ -82,12 +86,13 @@ class Unit extends axis\unit\Table {
             ->toRow();
     }
 
-    public function fetchDetailsForMail($id) {
+    public function fetchDetailsForMail($id)
+    {
         $output = $this->select('id', 'fullName as name', 'email')
             ->where('id', '=', $id)
             ->toRow();
 
-        if($output) {
+        if ($output) {
             $parts = explode(' ', $output['name'], 2);
             $output['firstName'] = array_shift($parts);
             $output['surname'] = array_shift($parts);
@@ -98,8 +103,9 @@ class Unit extends axis\unit\Table {
 
 
 
-// Actions
-    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null) {
+    // Actions
+    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null)
+    {
         $isNew = !$record || $record->isNew();
 
         $validator
@@ -117,8 +123,8 @@ class Unit extends axis\unit\Table {
             // Nick name
             ->addRequiredField('nickName', 'text')
                 ->isOptional(true)
-                ->setSanitizer(function($value, $field) {
-                    if(empty($value)) {
+                ->setSanitizer(function ($value, $field) {
+                    if (empty($value)) {
                         $parts = explode(' ', $field->validator['fullName']);
                         $value = array_shift($parts);
                     }
@@ -129,8 +135,8 @@ class Unit extends axis\unit\Table {
             // Status
             ->addRequiredField('status', 'integer')
                 ->isOptional(true)
-                ->extend(function($value, $field) {
-                    if($value < -1 || $value > 3) {
+                ->extend(function ($value, $field) {
+                    if ($value < -1 || $value > 3) {
                         $field->addError('invalid', $this->context->_(
                             'Please enter a valid status id'
                         ));
@@ -140,11 +146,11 @@ class Unit extends axis\unit\Table {
             // Timezone
             ->addRequiredField('timezone', 'text')
                 ->isOptional(true)
-                ->setSanitizer(function($value) {
+                ->setSanitizer(function ($value) {
                     return str_replace(' ', '/', ucwords(str_replace('/', ' ', $value)));
                 })
-                ->extend(function($value, $field) {
-                    if(!$this->context->i18n->timezones->isValidId($value)) {
+                ->extend(function ($value, $field) {
+                    if (!$this->context->i18n->timezones->isValidId($value)) {
                         $field->addError('invalid', $this->context->_(
                             'Please enter a valid timezone id'
                         ));
@@ -154,11 +160,11 @@ class Unit extends axis\unit\Table {
             // Country
             ->addRequiredField('country', 'text')
                 ->isOptional(true)
-                ->setSanitizer(function($value) {
+                ->setSanitizer(function ($value) {
                     return strtoupper($value);
                 })
-                ->extend(function($value, $field) {
-                    if(!$this->context->i18n->countries->isValidId($value)) {
+                ->extend(function ($value, $field) {
+                    if (!$this->context->i18n->countries->isValidId($value)) {
                         $field->addError('invalid', $this->context->_(
                             'Please enter a valid country code'
                         ));
@@ -168,11 +174,11 @@ class Unit extends axis\unit\Table {
             // Language
             ->addRequiredField('language', 'text')
                 ->isOptional(true)
-                ->setSanitizer(function($value) {
+                ->setSanitizer(function ($value) {
                     return strtolower($value);
                 })
-                ->extend(function($value, $field) {
-                    if(!$this->context->i18n->languages->isValidId($value)) {
+                ->extend(function ($value, $field) {
+                    if (!$this->context->i18n->languages->isValidId($value)) {
                         $field->addError('invalid', $this->context->_(
                             'Please enter a valid language id'
                         ));
