@@ -62,8 +62,12 @@ class Clause implements opal\query\IClause, core\IDumpable
     private static function _virtualFactory(opal\query\IClauseFactory $parent, opal\query\IField $field, $operator, $value, $isOr=false)
     {
         $source = $field->getSource();
-        $adapter = $source->getAdapter();
         $name = $field->getName();
+        $adapter = $source->getAdapter();
+
+        if ($source->isDerived()) {
+            $adapter = $adapter->getDerivationQuery()->getDerivationSourceAdapter();
+        }
 
         if ($name{0} == '@') {
             switch (strtolower($name)) {
@@ -95,6 +99,10 @@ class Clause implements opal\query\IClause, core\IDumpable
             );
 
             if ($output instanceof opal\query\IClauseProvider) {
+                if ($source->isDerived()) {
+                    $output->rewriteAsDerived($source);
+                }
+
                 return $output;
             }
         }
@@ -147,6 +155,17 @@ class Clause implements opal\query\IClause, core\IDumpable
     public function getField()
     {
         return $this->_field;
+    }
+
+    public function rewriteAsDerived(opal\query\ISource $source)
+    {
+        $this->_field = $this->_field->rewriteAsDerived($source);
+
+        if ($this->_value instanceof opal\query\IField) {
+            //$this->_value = $this->_value->rewriteAsDerived($source);
+        }
+
+        return $this;
     }
 
     public static function isNegatedOperator($operator)

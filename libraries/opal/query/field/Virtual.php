@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-class Virtual implements opal\query\IVirtualField, core\IDumpable {
-
+class Virtual implements opal\query\IVirtualField, core\IDumpable
+{
     use opal\query\TField;
 
     protected $_name;
@@ -19,11 +19,12 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
     protected $_source;
     protected $_targetSourceAlias;
 
-    public function __construct(opal\query\ISource $source, string $name, $alias=null, array $targetFields=[]) {
+    public function __construct(opal\query\ISource $source, string $name, $alias=null, array $targetFields=[])
+    {
         $this->_source = $source;
         $this->_name = $name;
 
-        if($alias === null) {
+        if ($alias === null) {
             $alias = $name;
         }
 
@@ -32,54 +33,65 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
     }
 
 
-    public function getSource() {
+    public function getSource()
+    {
         return $this->_source;
     }
 
-    public function getSourceAlias() {
+    public function getSourceAlias()
+    {
         return $this->_source->getAlias();
     }
 
-    public function getQualifiedName() {
+    public function getQualifiedName()
+    {
         return $this->getSourceAlias().'.'.$this->getName();
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function setAlias($alias) {
+    public function setAlias($alias)
+    {
         $this->_alias = $alias;
         return $this;
     }
 
-    public function getAlias() {
+    public function getAlias()
+    {
         return $this->_alias;
     }
 
-    public function hasDiscreetAlias() {
+    public function hasDiscreetAlias()
+    {
         return $this->getAlias() !== $this->getName();
     }
 
-    public function setTargetSourceAlias($alias) {
+    public function setTargetSourceAlias($alias)
+    {
         $this->_targetSourceAlias = $alias;
         return $this;
     }
 
-    public function getTargetSourceAlias() {
+    public function getTargetSourceAlias()
+    {
         return $this->_targetSourceAlias;
     }
 
 
-    public function getTargetFields() {
+    public function getTargetFields()
+    {
         return $this->_targetFields;
     }
 
-    public function dereference() {
+    public function dereference()
+    {
         $output = [];
 
-        foreach($this->_targetFields as $key => $field) {
-            if($field instanceof opal\query\IVirtualField) {
+        foreach ($this->_targetFields as $key => $field) {
+            if ($field instanceof opal\query\IVirtualField) {
                 $output = array_merge($output, $field->dereference());
             } else {
                 $output[$key] = $field;
@@ -89,31 +101,36 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
         return $output;
     }
 
-    public function isOutputField() {
+    public function isOutputField()
+    {
         return $this->_source->isOutputField($this);
     }
 
-    public function rewriteAsDerived(opal\query\ISource $source) {
+    public function rewriteAsDerived(opal\query\ISource $source)
+    {
+        return new self($source, $this->_name, $this->_alias, $this->_targetFields);
+
         $targetFields = [];
 
-        foreach($this->_targetFields as $field) {
+        foreach ($this->_targetFields as $field) {
             $targetFields[] = $field->rewriteAsDerived($source);
         }
 
-        return new self($source, $this->_name, $this->_source->getAlias().'.'.$this->_alias, $targetFields);
+        return new self($source, $this->_source->getAlias().'.'.$this->_name, $this->_source->getAlias().'.'.$this->_alias, $targetFields);
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         $output = $this->getQualifiedName();
 
-        if($this->hasDiscreetAlias()) {
+        if ($this->hasDiscreetAlias()) {
             $output .= ' as '.$this->getAlias();
         }
 
-        if(!empty($this->_targetFields)) {
+        if (!empty($this->_targetFields)) {
             $targets = [];
 
-            foreach($this->_targetFields as $target) {
+            foreach ($this->_targetFields as $target) {
                 $targets[] = $target->getQualifiedName();
             }
 

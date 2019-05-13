@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-class ListBase implements opal\query\IClauseList, core\IDumpable {
-
+class ListBase implements opal\query\IClauseList, core\IDumpable
+{
     use opal\query\TQuery_NestedComponent;
     use core\lang\TChainable;
 
@@ -18,22 +18,25 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
     protected $_clauses = [];
     protected $_parent;
 
-    public function __construct(opal\query\IClauseFactory $parent, $isOr=false) {
+    public function __construct(opal\query\IClauseFactory $parent, $isOr=false)
+    {
         $this->_parent = $parent;
         $this->_isOr = (bool)$isOr;
     }
 
-    public function getParent() {
+    public function getParent()
+    {
         return $this->_parent;
     }
 
-    public function getQuery() {
+    public function getQuery()
+    {
         $target = $this;
 
-        while(!$target instanceof opal\query\IQuery && $target !== null) {
+        while (!$target instanceof opal\query\IQuery && $target !== null) {
             $test = $target->getParent();
 
-            if($test === $target) {
+            if ($test === $target) {
                 return null;
             }
 
@@ -43,18 +46,21 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         return $target;
     }
 
-    public function __clone() {
-        foreach($this->_clauses as $i => $clause) {
+    public function __clone()
+    {
+        foreach ($this->_clauses as $i => $clause) {
             $this->_clauses[$i] = clone $clause;
         }
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return $this->_clauses;
     }
 
-    public function isOr(bool $flag=null) {
-        if($flag !== null) {
+    public function isOr(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isOr = $flag;
             return $this;
         }
@@ -62,8 +68,9 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         return $this->_isOr;
     }
 
-    public function isAnd(bool $flag=null) {
-        if($flag !== null) {
+    public function isAnd(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isOr = !$flag;
             return $this;
         }
@@ -71,37 +78,44 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         return !$this->_isOr;
     }
 
-    public function _addClause(opal\query\IClauseProvider $clause=null) {
-        if($clause !== null) {
+    public function _addClause(opal\query\IClauseProvider $clause=null)
+    {
+        if ($clause !== null) {
             $this->_clauses[] = $clause;
         }
 
         return $this;
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return empty($this->_clauses);
     }
 
-    public function count() {
+    public function count()
+    {
         return count($this->_clauses);
     }
 
-    public function getSourceManager() {
+    public function getSourceManager()
+    {
         return $this->_parent->getSourceManager();
     }
 
-    public function getSource() {
+    public function getSource()
+    {
         return $this->_parent->getSource();
     }
 
-    public function getSourceAlias() {
+    public function getSourceAlias()
+    {
         return $this->_parent->getSourceAlias();
     }
 
-    public function referencesSourceAliases(array $sourceAliases) {
-        foreach($this->_clauses as $clause) {
-            if($clause->referencesSourceAliases($sourceAliases)) {
+    public function referencesSourceAliases(array $sourceAliases)
+    {
+        foreach ($this->_clauses as $clause) {
+            if ($clause->referencesSourceAliases($sourceAliases)) {
                 return true;
             }
         }
@@ -109,64 +123,76 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         return false;
     }
 
-    public function getNonLocalFieldReferences() {
+    public function getNonLocalFieldReferences()
+    {
         $output = [];
 
-        foreach($this->_clauses as $clause) {
+        foreach ($this->_clauses as $clause) {
             $output = array_merge($output, $clause->getNonLocalFieldReferences());
         }
 
         return $output;
     }
 
-    public function getClausesFor(opal\query\ISource $source, opal\query\IClauseFactory $parent=null) {
-        if($parent === null) {
+    public function rewriteAsDerived(opal\query\ISource $source)
+    {
+        foreach ($this->_clauses as $clause) {
+            $clause->rewriteAsDerived($source);
+        }
+
+        return $this;
+    }
+
+    public function getClausesFor(opal\query\ISource $source, opal\query\IClauseFactory $parent=null)
+    {
+        if ($parent === null) {
             $parent = $this->_parent;
         }
 
         $class = get_class($this);
         $output = new $class($parent);
 
-        foreach($this->_clauses as $clause) {
-            if($clause instanceof opal\query\IClauseList) {
-                if(null !== ($newClause = $clause->getClausesFor($source, $output))) {
+        foreach ($this->_clauses as $clause) {
+            if ($clause instanceof opal\query\IClauseList) {
+                if (null !== ($newClause = $clause->getClausesFor($source, $output))) {
                     $output->_clauses[] = $newClause;
                 }
             } else {
-                if($source->getAlias() == $clause->getField()->getSource()->getAlias()) {
+                if ($source->getAlias() == $clause->getField()->getSource()->getAlias()) {
                     $output->_clauses[] = $clause;
-                } else if($clause->isOr()) {
+                } elseif ($clause->isOr()) {
                     return null;
                 }
             }
         }
 
-        if(empty($output->_clauses)) {
+        if (empty($output->_clauses)) {
             return null;
         }
 
         return $output;
     }
 
-    public function extractClausesFor(opal\query\ISource $source, $checkValues=true) {
+    public function extractClausesFor(opal\query\ISource $source, $checkValues=true)
+    {
         $output = [];
         $sourceAlias = $source->getAlias();
 
-        foreach($this->_clauses as $clause) {
-            if($clause instanceof opal\query\IClauseList) {
+        foreach ($this->_clauses as $clause) {
+            if ($clause instanceof opal\query\IClauseList) {
                 $output = array_merge($output, $clause->extractClausesFor($source));
                 continue;
             }
 
-            if($clause->getField()->getSource()->getAlias() == $sourceAlias) {
+            if ($clause->getField()->getSource()->getAlias() == $sourceAlias) {
                 $output[] = $clause;
                 continue;
             }
 
-            if($checkValues) {
+            if ($checkValues) {
                 $value = $clause->getValue();
 
-                if($value instanceof opal\query\IField
+                if ($value instanceof opal\query\IField
                 && $value->getSource()->getAlias() == $sourceAlias) {
                     $output[] = $clause;
                 }
@@ -176,30 +202,31 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         return $output;
     }
 
-    public function isLocalTo(array $sources) {
+    public function isLocalTo(array $sources)
+    {
         $source = $this->getSource();
 
-        if(!isset($sources[$source->getUniqueId()])) {
+        if (!isset($sources[$source->getUniqueId()])) {
             return false;
         }
 
-        foreach($this->_clauses as $clause) {
-            if($clause instanceof opal\query\IClauseList) {
-                if(!$clause->isLocalTo($sources)) {
+        foreach ($this->_clauses as $clause) {
+            if ($clause instanceof opal\query\IClauseList) {
+                if (!$clause->isLocalTo($sources)) {
                     return false;
                 }
             } else {
                 $source = $clause->getField()->getSource();
 
-                if(!isset($sources[$source->getUniqueId()])) {
+                if (!isset($sources[$source->getUniqueId()])) {
                     return false;
                 }
                 $value = $clause->getValue();
 
-                if($value instanceof opal\query\IField) {
+                if ($value instanceof opal\query\IField) {
                     $source = $value->getSource();
 
-                    if(!isset($sources[$source->getUniqueId()])) {
+                    if (!isset($sources[$source->getUniqueId()])) {
                         return false;
                     }
                 }
@@ -209,21 +236,24 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         return true;
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->_clauses = [];
         return $this;
     }
 
-    public function endClause() {
+    public function endClause()
+    {
         return $this->getNestedParent();
     }
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         $output = [];
 
-        if($this->_parent instanceof opal\query\IClauseList) {
-            if($this->_isOr) {
+        if ($this->_parent instanceof opal\query\IClauseList) {
+            if ($this->_isOr) {
                 $type = 'OR';
             } else {
                 $type = 'AND';

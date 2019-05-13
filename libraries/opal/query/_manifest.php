@@ -1064,6 +1064,7 @@ interface IClauseProvider
     public function isAnd(bool $flag=null);
     public function referencesSourceAliases(array $sourceAliases);
     public function getNonLocalFieldReferences();
+    public function rewriteAsDerived(ISource $source);
 }
 
 interface IJoinClauseProvider extends IClauseProvider
