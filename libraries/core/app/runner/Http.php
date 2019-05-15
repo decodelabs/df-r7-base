@@ -47,6 +47,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_ORIGINAL_URL'];
             }
 
+
+            // Normalize Cloudflare proxy
+            if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+                $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+            }
+
             self::$_init = true;
         }
 
