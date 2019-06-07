@@ -10,29 +10,53 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPurgeMissLogs extends arch\node\Task {
+class TaskPurgeMissLogs extends arch\node\Task
+{
+    const MAX_LOOP = 250;
 
-    public function execute() {
+    public function execute()
+    {
         $threshold = '-'.$this->data->pestControl->getPurgeThreshold();
+        $loop = $total = 0;
 
-        $misses = $this->data->pestControl->missLog->delete()
-            ->where('isArchived', '=', false)
-            ->beginWhereClause()
-                ->where('date', '<', $threshold)
-                ->orWhereCorrelation('miss', 'in', 'id')
-                    ->from('axis://pestControl/Miss', 'miss')
-                    ->where('lastSeen', '<', $threshold)
+        while (++$loop < self::MAX_LOOP) {
+            $total += $count = $this->data->pestControl->missLog->delete()
+                ->where('isArchived', '=', false)
+                ->beginWhereClause()
+                    ->where('date', '<', $threshold)
+                    ->orWhereCorrelation('miss', 'in', 'id')
+                        ->from('axis://pestControl/Miss', 'miss')
+                        ->where('lastSeen', '<', $threshold)
+                        ->endCorrelation()
+                    ->endClause()
+                ->limit(100)
+                ->execute();
+
+            if (!$count) {
+                break;
+            }
+
+            usleep(50000);
+        }
+
+        $loop = 0;
+
+        while (++$loop < self::MAX_LOOP) {
+            $count = $this->data->pestControl->miss->delete()
+                ->where('lastSeen', '<', $threshold)
+                ->whereCorrelation('id', '!in', 'miss')
+                    ->from('axis://pestControl/MissLog', 'log')
                     ->endCorrelation()
-                ->endClause()
-            ->execute();
+                ->limit(100)
+                ->execute();
 
-        $this->data->pestControl->miss->delete()
-            ->where('lastSeen', '<', $threshold)
-            ->whereCorrelation('id', '!in', 'miss')
-                ->from('axis://pestControl/MissLog', 'log')
-                ->endCorrelation()
-            ->execute();
+            if (!$count) {
+                break;
+            }
 
-        $this->io->writeLine('Purged '.$misses.' miss logs');
+            usleep(50000);
+        }
+
+        $this->io->writeLine('Purged '.$total.' miss logs');
     }
 }

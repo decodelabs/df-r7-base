@@ -10,14 +10,29 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPurgeAccessLogs extends arch\node\Task {
+class TaskPurgeAccessLogs extends arch\node\Task
+{
+    const MAX_LOOP = 250;
+    
+    public function execute()
+    {
+        $threshold = '-'.$this->data->pestControl->getPurgeThreshold();
+        $loop = $total = 0;
 
-    public function execute() {
-        $accesses = $this->data->pestControl->accessLog->delete()
-            ->where('isArchived', '=', false)
-            ->where('date', '<', '-'.$this->data->pestControl->getPurgeThreshold())
-            ->execute();
+        while (++$loop < self::MAX_LOOP) {
+            $total += $count = $this->data->pestControl->accessLog->delete()
+                ->where('isArchived', '=', false)
+                ->where('date', '<', $threshold)
+                ->limit(100)
+                ->execute();
 
-        $this->io->writeLine('Purged '.$accesses.' access logs');
+            if (!$count) {
+                break;
+            }
+
+            usleep(50000);
+        }
+
+        $this->io->writeLine('Purged '.$total.' access logs');
     }
 }
