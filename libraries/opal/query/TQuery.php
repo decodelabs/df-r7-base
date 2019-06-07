@@ -1887,6 +1887,8 @@ trait TQuery_HavingClauseFactory
                 true
             )
         );
+
+        return $this;
     }
 
     public function beginHavingClause()
