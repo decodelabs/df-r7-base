@@ -11,28 +11,30 @@ use df\axis;
 use df\opal;
 use df\user;
 
-class Record extends opal\record\Base implements user\IActiveClientDataObject {
-
+class Record extends opal\record\Base implements user\IActiveClientDataObject
+{
     const BROADCAST_HOOK_EVENTS = true;
 
     use user\TNameExtractor;
 
     protected $_groupsChanged = false;
 
-    protected function onPreSave($queue, $job) {
-        if(!$this['nickName']) {
+    protected function onPreSave($queue, $job)
+    {
+        if (!$this['nickName']) {
             $this['nickName'] = $this->getFirstName();
         }
 
-        if($this['timezone'] == 'UTC') {
+        if ($this['timezone'] == 'UTC') {
             $this['timezone'] = $this->getAdapter()->context->i18n->timezones->suggestForCountry($this['country']);
         }
     }
 
-    protected function onPreUpdate($queue, $job) {
+    protected function onPreUpdate($queue, $job)
+    {
         $unit = $this->getAdapter();
 
-        if($this->hasChanged('email')) {
+        if ($this->hasChanged('email')) {
             $queue->after($job, 'updateLocalAdapter',
                 $unit->getModel()->auth->update([
                         'identity' => $this['email']
@@ -44,14 +46,15 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
 
         $this->_groupsChanged = $this->hasChanged('groups');
 
-        if($this->hasChanged('status') && $this['status'] == user\IState::DEACTIVATED) {
+        if ($this->hasChanged('status') && $this['status'] == user\IState::DEACTIVATED) {
             $queue->emitEventAfter($job, $this, 'deactivate');
         }
     }
 
-    protected function onUpdate($queue, $job) {
-        if($this->_groupsChanged) {
-            $regenJob = $queue->after($job, 'regenKeyring', function() {
+    protected function onUpdate($queue, $job)
+    {
+        if ($this->_groupsChanged) {
+            $regenJob = $queue->after($job, 'regenKeyring', function () {
                 $this->getAdapter()->context->user->refreshClientData();
                 $this->getAdapter()->context->user->instigateGlobalKeyringRegeneration();
             });
@@ -60,7 +63,8 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         }
     }
 
-    protected function onPreDelete($queue, $job) {
+    protected function onPreDelete($queue, $job)
+    {
         $id = $this['id'];
         $unit = $this->getAdapter();
 
@@ -70,52 +74,68 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         );
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this['id'];
     }
 
-    public function getEmail() {
+    public function getEmail()
+    {
         return $this['email'];
     }
 
-    public function getFullName() {
+    public function getFullName()
+    {
         return $this['fullName'];
     }
 
-    public function getNickName() {
+    public function getNickName()
+    {
         return $this['nickName'];
     }
 
-    public function getStatus() {
+    public function getStatus()
+    {
         return $this['status'];
     }
 
-    public function getJoinDate() {
+    public function getJoinDate()
+    {
         return $this['joinDate'];
     }
 
-    public function getLoginDate() {
+    public function getLoginDate()
+    {
         return $this['loginDate'];
     }
 
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this['language'];
     }
 
-    public function getCountry() {
+    public function getCountry()
+    {
         return $this['country'];
     }
 
-    public function getTimezone() {
+    public function getTimezone()
+    {
+        if ($this['timezone'] === 'Asia/Yangon') {
+            $this['timezone'] = 'Asia/Rangoon';
+        }
+
         return $this['timezone'];
     }
 
-    public function getGroupIds() {
+    public function getGroupIds()
+    {
         return $this['#groups'];
     }
 
-    public function getSignifiers() {
-        if(!$id = $this['id']) {
+    public function getSignifiers()
+    {
+        if (!$id = $this['id']) {
             return [];
         }
 
@@ -143,8 +163,9 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
     }
 
 
-    public function onAuthentication(user\IClient $client, bool $asAdmin=false) {
-        if($asAdmin) {
+    public function onAuthentication(user\IClient $client, bool $asAdmin=false)
+    {
+        if ($asAdmin) {
             return;
         }
 
@@ -154,24 +175,28 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
         $this->save();
     }
 
-    public function hasLocalAuth() {
+    public function hasLocalAuth()
+    {
         return (bool)$this->authDomains->select()
             ->where('adapter', '=', 'Local')
             ->count();
     }
 
 
-    public function setAsDeactivated() {
+    public function setAsDeactivated()
+    {
         $this['status'] = user\IState::DEACTIVATED;
         return $this;
     }
 
-    public function setAsPending() {
+    public function setAsPending()
+    {
         $this['status'] = user\IState::PENDING;
         return $this;
     }
 
-    public function setAsConfirmed() {
+    public function setAsConfirmed()
+    {
         $this['status'] = user\IState::CONFIRMED;
         return $this;
     }

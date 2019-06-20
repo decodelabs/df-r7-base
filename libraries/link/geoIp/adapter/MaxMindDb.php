@@ -118,6 +118,11 @@ class MaxMindDb implements link\geoIp\IAdapter
 
         if (isset($data['location']['time_zone'])) {
             $result->timezone = $data['location']['time_zone'];
+
+            // Fix Yangon transition
+            if ($result->timezone === 'Asia/Yangon') {
+                $result->timezone = 'Asia/Rangoon';
+            }
         }
 
         return $result;
