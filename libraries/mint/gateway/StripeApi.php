@@ -13,17 +13,17 @@ use df\spur;
 use Stripe;
 
 class StripeApi extends Base implements
-    //mint\ICaptureProviderGateway,
-    mint\IRefundProviderGateway //,
-    //mint\ICustomerTrackingGateway,
-    //mint\ICustomerTrackingCaptureProviderGateway,
+    mint\ICaptureProviderGateway,
+    mint\IRefundProviderGateway,
+    mint\ICustomerTrackingGateway,
+    mint\ICustomerTrackingCaptureProviderGateway //,
     //mint\ICardStoreGateway,
     //mint\ISubscriptionProviderGateway,
     //mint\ISubscriptionPlanControllerGateway
 {
-    //use mint\TCaptureProviderGateway;
+    use mint\TCaptureProviderGateway;
     use mint\TRefundProviderGateway;
-    //use mint\TCustomerTrackingGateway;
+    use mint\TCustomerTrackingGateway;
     //use mint\TSubscriptionProviderGateway;
     //use mint\TSubscriptionPlanControllerGateway;
 
@@ -117,6 +117,77 @@ class StripeApi extends Base implements
         }, 'ECharge');
     }
 
+    public function submitCustomerCharge(mint\ICustomerChargeRequest $charge): string
+    {
+        return $this->_execute(function () use ($charge) {
+            return Stripe\Charge::create([
+                'amount' => $charge->getAmount()->getIntegerAmount(),
+                'currency' => $charge->getAmount()->getCode(),
+                'description' => $charge->getDescription() ?? '',
+                'receipt_email' => $charge->getEmailAddress(),
+                'source' => $this->_prepareSource($charge->getCard()),
+                'customer' => $charge->getCustomerId(),
+                'metadata' => [
+                    'email' => $charge->getEmailAddress()
+                ]
+            ], [
+                'api_key' => $this->_apiKey
+            ])['id'];
+        }, 'ECharge');
+    }
+
+
+
+    // Authorize / capture
+    public function authorizeStandaloneCharge(mint\IStandaloneChargeRequest $charge): string
+    {
+        return $this->_execute(function () use ($charge) {
+            return Stripe\Charge::create([
+                'amount' => $charge->getAmount()->getIntegerAmount(),
+                'currency' => $charge->getAmount()->getCode(),
+                'description' => $charge->getDescription() ?? '',
+                'receipt_email' => $charge->getEmailAddress(),
+                'source' => $this->_prepareSource($charge->getCard()),
+                'capture' => false,
+                'metadata' => [
+                    'email' => $charge->getEmailAddress()
+                ]
+            ], [
+                'api_key' => $this->_apiKey
+            ])['id'];
+        }, 'ECharge');
+    }
+
+    public function authorizeCustomerCharge(mint\ICustomerChargeRequest $charge): string
+    {
+        return $this->_execute(function () use ($charge) {
+            return Stripe\Charge::create([
+                'amount' => $charge->getAmount()->getIntegerAmount(),
+                'currency' => $charge->getAmount()->getCode(),
+                'description' => $charge->getDescription() ?? '',
+                'receipt_email' => $charge->getEmailAddress(),
+                'source' => $this->_prepareSource($charge->getCard()),
+                'customer' => $charge->getCustomerId(),
+                'capture' => false,
+                'metadata' => [
+                    'email' => $charge->getEmailAddress()
+                ]
+            ], [
+                'api_key' => $this->_apiKey
+            ])['id'];
+        }, 'ECharge');
+    }
+
+    public function captureCharge(mint\IChargeCapture $charge): string
+    {
+        return $this->_execute(function () use ($charge) {
+            $charge = Stripe\Charge::retrieve($charge->getId(), ['api_key' => $this->_apiKey]);
+            $charge->capture();
+            return $charge['id'];
+        }, 'ECharge,ECapture');
+    }
+
+
 
     // Refund
     public function refundCharge(mint\IChargeRefund $refund): string
@@ -133,10 +204,127 @@ class StripeApi extends Base implements
 
 
 
-    // Helpers
-    protected function _prepareSource(mint\ICreditCardReference $card)
+    // Customers
+    public function fetchCustomer(string $customerId): mint\ICustomer
     {
-        if ($card instanceof mint\ICreditCard) {
+        return $this->_execute(function () use ($customerId) {
+            $customer = Stripe\Customer::retrieve($customerId, ['api_key' => $this->_apiKey]);
+
+            if ($customer['deleted']) {
+                throw core\Error::{'EApi,ECustomer,ENotFound'}([
+                    'message' => 'Customer has been deleted',
+                    'data' => $customer
+                ]);
+            }
+
+            return $this->_wrapCustomer($customer);
+        }, 'ECustomer');
+    }
+
+    public function addCustomer(mint\ICustomer $customer): mint\ICustomer
+    {
+        return $this->_execute(function () use ($customer) {
+            $customer = Stripe\Customer::create([
+                'email' => $customer->getEmailAddress(),
+                'description' => $customer->getDescription(),
+                'source' => $this->_prepareSource($customer->getCard()),
+                'metadata' => [
+                    'localId' => $customer->getLocalId(),
+                    'userId' => $customer->getUserId()
+                ]
+            ], [
+                'api_key' => $this->_apiKey
+            ]);
+
+            return $this->_wrapCustomer($customer);
+        }, 'ECustomer');
+    }
+
+    public function updateCustomer(mint\ICustomer $customer): mint\ICustomer
+    {
+        if ($customer->getId() === null) {
+            throw core\Error::EArgument([
+                'message' => 'Customer Id not set',
+                'data' => $customer
+            ]);
+        }
+
+        return $this->_execute(function () use ($customer) {
+            $customer = Stripe\Customer::update($customer->getId(), [
+                'email' => $customer->getEmailAddress(),
+                'description' => $customer->getDescription(),
+                'source' => $this->_prepareSource($customer->getCard()),
+                'metadata' => [
+                    'localId' => $customer->getLocalId(),
+                    'userId' => $customer->getUserId()
+                ]
+            ], [
+                'api_key' => $this->_apiKey
+            ]);
+
+            return $this->_wrapCustomer($customer);
+        }, 'ECustomer');
+    }
+
+    public function deleteCustomer(string $customerId)
+    {
+        $this->_execute(function () use ($customerId) {
+            $customer = Stripe\Customer::retrieve($customerId, ['api_key' => $this->_apiKey]);
+            $customer->delete();
+        }, 'ECustomer');
+
+        return $this;
+    }
+
+    protected function _wrapCustomer(Stripe\Customer $customer): mint\ICustomer
+    {
+        $output = (new mint\Customer(
+                $customer['id'],
+                $customer['email'],
+                $customer['description']
+            ))
+            ->isDelinquent((bool)$customer['delinquent'])
+            ->setLocalId($customer->metadata['localId'])
+            ->setUserId($customer->metadata['userId']);
+
+        $subs = [];
+
+        foreach ($customer->subscriptions as $subscription) {
+            $subs[] = $this->_wrapSubscription($subscription);
+        }
+
+        $output->setCachedSubscriptions($subs);
+        return $output;
+    }
+
+
+
+    // Subscriptions
+    protected function _wrapSubscription(Stripe\Subscription $subscription): mint\ISubscription
+    {
+        return (new mint\Subscription(
+                $subscription['id'],
+                $subscription['customer'],
+                $subscription->plan['id']
+            ))
+            ->setLocalId($subscription->metadata['localId'])
+            ->setTrialStart($subscription['trial_start'])
+            ->setTrialEnd($subscription['trial_end'])
+            ->setPeriodStart($subscription['current_period_start'])
+            ->setPeriodEnd($subscription['current_period_end'])
+            ->setStartDate($subscription['start'])
+            ->setEndDate($subscription['ended_at'])
+            ->setCancelDate($subscription['canceled_at'], $subscription['cancel_at_period_end']);
+    }
+
+
+
+    // Helpers
+    protected function _prepareSource(?mint\ICreditCardReference $card)
+    {
+        if (!$card) {
+            return null;
+        } elseif ($card instanceof mint\ICreditCard) {
             $source = $this->_cardToArray($card);
             $source['object'] = 'card';
         } else {
