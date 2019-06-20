@@ -18,8 +18,7 @@ class Stripe2 extends Base implements
     //mint\ICardStoreGateway,
     mint\ISubscriptionProviderGateway,
     mint\ISubscriptionPlanControllerGateway
-     {
-
+{
     use mint\TCaptureProviderGateway;
     use mint\TRefundProviderGateway;
     use mint\TCustomerTrackingGateway;
@@ -28,10 +27,11 @@ class Stripe2 extends Base implements
 
     protected $_mediator;
 
-    protected function __construct(core\collection\ITree $settings) {
+    protected function __construct(core\collection\ITree $settings)
+    {
         $key = null;
 
-        if($settings->has('apiKey')) {
+        if ($settings->has('apiKey')) {
             $key = $settings['apiKey'];
         } else {
             $key = $settings['testing'] ?
@@ -39,7 +39,7 @@ class Stripe2 extends Base implements
                 $settings['liveApiKey'];
         }
 
-        if(!$key) {
+        if (!$key) {
             throw core\Error::{'ESetup'}(
                 'Stripe API key not set in config'
             );
@@ -50,30 +50,34 @@ class Stripe2 extends Base implements
     }
 
 
-// Testing
-    public function isTesting(): bool {
+    // Testing
+    public function isTesting(): bool
+    {
         $key = $this->_mediator->getApiKey();
         return stristr($key, 'test');
     }
 
 
-// Ips
-    public function getApiIps(): ?array {
-        return $this->_getCachedValue('apiIps', function() {
+    // Ips
+    public function getApiIps(): ?array
+    {
+        return $this->_getCachedValue('apiIps', function () {
             return $this->_mediator->fetchApiIps();
         }, 'EIp');
     }
 
-    public function getWebhookIps(): ?array {
-        return $this->_getCachedValue('webhookIps', function() {
+    public function getWebhookIps(): ?array
+    {
+        return $this->_getCachedValue('webhookIps', function () {
             return $this->_mediator->fetchWebhookIps();
         }, 'EIp');
     }
 
 
-// Currency
-    public function getSupportedCurrencies(): array {
-        return $this->_getCachedValue('supportedCurrencies', function() {
+    // Currency
+    public function getSupportedCurrencies(): array
+    {
+        return $this->_getCachedValue('supportedCurrencies', function () {
             $account = $this->_mediator->fetchAccountDetails();
             $spec = $this->_mediator->fetchCountrySpec($account['country']);
             $output = $spec->supported_payment_currencies->toArray();
@@ -82,9 +86,10 @@ class Stripe2 extends Base implements
     }
 
 
-// Direct charge
-    public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): string {
-        return $this->_execute(function() use($charge) {
+    // Direct charge
+    public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): string
+    {
+        return $this->_execute(function () use ($charge) {
             return $this->_mediator->createCharge(
                 $this->_mediator->newChargeCreateRequest(
                         $charge->getAmount(),
@@ -96,8 +101,9 @@ class Stripe2 extends Base implements
         }, 'ECharge');
     }
 
-    public function submitCustomerCharge(mint\ICustomerChargeRequest $charge): string {
-        return $this->_execute(function() use($charge) {
+    public function submitCustomerCharge(mint\ICustomerChargeRequest $charge): string
+    {
+        return $this->_execute(function () use ($charge) {
             return $this->_mediator->createCharge(
                 $this->_mediator->newChargeCreateRequest(
                         $charge->getAmount(),
@@ -111,9 +117,10 @@ class Stripe2 extends Base implements
     }
 
 
-// Authorize / capture
-    public function authorizeStandaloneCharge(mint\IStandaloneChargeRequest $charge): string {
-        return $this->_execute(function() use($charge) {
+    // Authorize / capture
+    public function authorizeStandaloneCharge(mint\IStandaloneChargeRequest $charge): string
+    {
+        return $this->_execute(function () use ($charge) {
             return $this->_mediator->createCharge(
                 $this->_mediator->newChargeCreateRequest(
                         $charge->getAmount(),
@@ -126,8 +133,9 @@ class Stripe2 extends Base implements
         }, 'ECharge');
     }
 
-    public function authorizeCustomerCharge(mint\ICustomerChargeRequest $charge): string {
-        return $this->_execute(function() use($charge) {
+    public function authorizeCustomerCharge(mint\ICustomerChargeRequest $charge): string
+    {
+        return $this->_execute(function () use ($charge) {
             return $this->_mediator->createCharge(
                 $this->_mediator->newChargeCreateRequest(
                         $charge->getAmount(),
@@ -141,8 +149,9 @@ class Stripe2 extends Base implements
         }, 'ECharge');
     }
 
-    public function captureCharge(mint\IChargeCapture $charge): string {
-        return $this->_execute(function() use($charge) {
+    public function captureCharge(mint\IChargeCapture $charge): string
+    {
+        return $this->_execute(function () use ($charge) {
             return $this->_mediator->captureCharge(
                 $this->_mediator->newChargeCaptureRequest($charge->getId())
             )['id'];
@@ -151,9 +160,10 @@ class Stripe2 extends Base implements
 
 
 
-// Refund
-    public function refundCharge(mint\IChargeRefund $refund): string {
-        return $this->_execute(function() use($refund) {
+    // Refund
+    public function refundCharge(mint\IChargeRefund $refund): string
+    {
+        return $this->_execute(function () use ($refund) {
             return $this->_mediator->createRefund(
                 $this->_mediator->newRefundCreateRequest($refund->getId())
                     ->setAmount($refund->getAmount())
@@ -165,12 +175,13 @@ class Stripe2 extends Base implements
 
 
 
-// Customers
-    public function fetchCustomer(string $customerId): mint\ICustomer {
-        return $this->_execute(function() use($customerId) {
+    // Customers
+    public function fetchCustomer(string $customerId): mint\ICustomer
+    {
+        return $this->_execute(function () use ($customerId) {
             $data = $this->_mediator->fetchCustomer($customerId);
 
-            if($data['deleted']) {
+            if ($data['deleted']) {
                 throw core\Error::{'EApi,ECustomer,ENotFound'}([
                     'message' => 'Customer has been deleted',
                     'data' => $data
@@ -181,8 +192,9 @@ class Stripe2 extends Base implements
         }, 'ECustomer');
     }
 
-    public function addCustomer(mint\ICustomer $customer): mint\ICustomer {
-        return $this->_execute(function() use($customer) {
+    public function addCustomer(mint\ICustomer $customer): mint\ICustomer
+    {
+        return $this->_execute(function () use ($customer) {
             $data = $this->_mediator->createCustomer(
                 $this->_mediator->newCustomerCreateRequest(
                         $customer->getEmailAddress(),
@@ -198,15 +210,16 @@ class Stripe2 extends Base implements
         }, 'ECustomer');
     }
 
-    public function updateCustomer(mint\ICustomer $customer): mint\ICustomer {
-        if($customer->getId() === null) {
+    public function updateCustomer(mint\ICustomer $customer): mint\ICustomer
+    {
+        if ($customer->getId() === null) {
             throw core\Error::EArgument([
                 'message' => 'Customer Id not set',
                 'data' => $customer
             ]);
         }
 
-        return $this->_execute(function() use($customer) {
+        return $this->_execute(function () use ($customer) {
             $data = $this->_mediator->updateCustomer(
                 $this->_mediator->newCustomerUpdateRequest($customer->getId())
                     ->setEmailAddress($customer->getEmailAddress())
@@ -221,15 +234,17 @@ class Stripe2 extends Base implements
         }, 'ECustomer');
     }
 
-    public function deleteCustomer(string $customerId) {
-        $this->_execute(function() use($customerId) {
+    public function deleteCustomer(string $customerId)
+    {
+        $this->_execute(function () use ($customerId) {
             $this->_mediator->deleteCustomer($customerId);
         }, 'ECustomer');
 
         return $this;
     }
 
-    protected function _wrapCustomer(spur\payment\stripe2\IDataObject $customer): mint\ICustomer {
+    protected function _wrapCustomer(spur\payment\stripe2\IDataObject $customer): mint\ICustomer
+    {
         $output = (new mint\Customer(
                 $customer['id'],
                 $customer['email'],
@@ -241,7 +256,7 @@ class Stripe2 extends Base implements
 
         $subs = [];
 
-        foreach($customer->subscriptions as $subscription) {
+        foreach ($customer->subscriptions as $subscription) {
             $subs[] = $this->_wrapSubscription($subscription);
         }
 
@@ -250,18 +265,19 @@ class Stripe2 extends Base implements
     }
 
 
-// Cards
+    // Cards
 
 
 
-// Plans
-    public function getPlans(): array {
+    // Plans
+    public function getPlans(): array
+    {
         $cache = Stripe2_Cache::getInstance();
         $key = $this->_getCacheKeyPrefix().'plans';
         $output = $cache->get($key);
 
-        if($output === null) {
-            $data = $this->_execute(function() {
+        if ($output === null) {
+            $data = $this->_execute(function () {
                 return $this->_mediator->fetchPlans(
                     $this->_mediator->newPlanFilter()
                         ->setLimit(100)
@@ -270,7 +286,7 @@ class Stripe2 extends Base implements
 
             $output = [];
 
-            foreach($data as $plan) {
+            foreach ($data as $plan) {
                 $output[] = $this->_wrapPlan($plan);
             }
 
@@ -281,8 +297,9 @@ class Stripe2 extends Base implements
     }
 
 
-    public function addPlan(mint\IPlan $plan): mint\IPlan {
-        return $this->_execute(function() use($plan) {
+    public function addPlan(mint\IPlan $plan): mint\IPlan
+    {
+        return $this->_execute(function () use ($plan) {
             $data = $this->_mediator->createPlan(
                 $this->_mediator->newPlanCreateRequest(
                         $plan->getId(),
@@ -300,8 +317,9 @@ class Stripe2 extends Base implements
         }, 'EPlan');
     }
 
-    public function updatePlan(mint\IPlan $plan): mint\IPlan {
-        return $this->_execute(function() use($plan) {
+    public function updatePlan(mint\IPlan $plan): mint\IPlan
+    {
+        return $this->_execute(function () use ($plan) {
             $data = $this->_mediator->updatePlan(
                 $this->_mediator->newPlanUpdateRequest($plan->getId())
                     ->setName($plan->getName())
@@ -314,8 +332,9 @@ class Stripe2 extends Base implements
         }, 'EPlan');
     }
 
-    public function deletePlan(string $planId) {
-        $this->_execute(function() use($planId) {
+    public function deletePlan(string $planId)
+    {
+        $this->_execute(function () use ($planId) {
             $this->_mediator->deletePlan($planId);
             $this->clearPlanCache();
         }, 'EPlan');
@@ -323,7 +342,8 @@ class Stripe2 extends Base implements
         return $this;
     }
 
-    protected function _wrapPlan(spur\payment\stripe2\IDataObject $plan): mint\IPlan {
+    protected function _wrapPlan(spur\payment\stripe2\IDataObject $plan): mint\IPlan
+    {
         return (new mint\Plan(
                 $plan['id'],
                 $plan['name'],
@@ -335,7 +355,8 @@ class Stripe2 extends Base implements
             ->setTrialDays($plan['trial_period_days']);
     }
 
-    public function clearPlanCache() {
+    public function clearPlanCache()
+    {
         $cache = Stripe2_Cache::getInstance();
         $key = $this->_getCacheKeyPrefix().'plans';
         $cache->remove($key);
@@ -343,23 +364,25 @@ class Stripe2 extends Base implements
     }
 
 
-// Subscriptions
-    public function fetchSubscription(string $subscriptionId): mint\ISubscription {
-        return $this->_execute(function() use($subscriptionId) {
+    // Subscriptions
+    public function fetchSubscription(string $subscriptionId): mint\ISubscription
+    {
+        return $this->_execute(function () use ($subscriptionId) {
             $data = $this->_mediator->fetchSubscription($subscriptionId);
             return $this->_wrapSubscription($data);
         });
     }
 
-    public function getSubscriptionsFor(mint\ICustomer $customer): array {
-        if($customer->getId() === null) {
+    public function getSubscriptionsFor(mint\ICustomer $customer): array
+    {
+        if ($customer->getId() === null) {
             throw core\Error::EArgument([
                 'message' => 'Customer Id not set',
                 'data' => $customer
             ]);
         }
 
-        if(!$customer->hasSubscriptionCache()) {
+        if (!$customer->hasSubscriptionCache()) {
             $subscriptions = $this->_mediator->fetchSubscriptions(
                 $this->_mediator->newSubscriptionFilter($customer->getId())
                     ->setLimit(100)
@@ -367,7 +390,7 @@ class Stripe2 extends Base implements
 
             $subs = [];
 
-            foreach($subscriptions as $subscription) {
+            foreach ($subscriptions as $subscription) {
                 $subs[] = $this->_wrapSubscription($subscription);
             }
 
@@ -377,8 +400,9 @@ class Stripe2 extends Base implements
         return $customer->getCachedSubscriptions();
     }
 
-    public function subscribeCustomer(mint\ISubscription $subscription): mint\ISubscription {
-        return $this->_execute(function() use($subscription) {
+    public function subscribeCustomer(mint\ISubscription $subscription): mint\ISubscription
+    {
+        return $this->_execute(function () use ($subscription) {
             $data = $this->_mediator->createSubscription(
                 $this->_mediator->newSubscriptionCreateRequest(
                         $subscription->getCustomerId(),
@@ -393,8 +417,9 @@ class Stripe2 extends Base implements
         }, 'ESubscription');
     }
 
-    public function updateSubscription(mint\ISubscription $subscription): mint\ISubscription {
-        return $this->_execute(function() use($subscription) {
+    public function updateSubscription(mint\ISubscription $subscription): mint\ISubscription
+    {
+        return $this->_execute(function () use ($subscription) {
             $data = $this->_mediator->updateSubscription(
                 $this->_mediator->newSubscriptionUpdateRequest($subscription->getId())
                     ->setPlan($subscription->getPlanId())
@@ -407,9 +432,10 @@ class Stripe2 extends Base implements
         }, 'ESubscription');
     }
 
-    public function endSubscriptionTrial(string $subscriptionId, int $inDays=null): mint\ISubscription {
-        return $this->_execute(function() use($subscriptionId, $inDays) {
-            if($inDays === null || $inDays <= 0) {
+    public function endSubscriptionTrial(string $subscriptionId, int $inDays=null): mint\ISubscription
+    {
+        return $this->_execute(function () use ($subscriptionId, $inDays) {
+            if ($inDays === null || $inDays <= 0) {
                 $date = 'now';
             } else {
                 $date = '+'.$inDays.' days';
@@ -424,14 +450,16 @@ class Stripe2 extends Base implements
         });
     }
 
-    public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): mint\ISubscription {
-        return $this->_execute(function() use($subscriptionId, $atPeriodEnd) {
+    public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): mint\ISubscription
+    {
+        return $this->_execute(function () use ($subscriptionId, $atPeriodEnd) {
             $data = $this->_mediator->cancelSubscription($subscriptionId, $atPeriodEnd);
             return $this->_wrapSubscription($data);
         });
     }
 
-    protected function _wrapSubscription(spur\payment\stripe2\IDataObject $subscription): mint\ISubscription {
+    protected function _wrapSubscription(spur\payment\stripe2\IDataObject $subscription): mint\ISubscription
+    {
         return (new mint\Subscription(
                 $subscription['id'],
                 $subscription['customer'],
@@ -448,45 +476,49 @@ class Stripe2 extends Base implements
     }
 
 
-// Helpers
-    protected function _getCacheKeyPrefix() {
+    // Helpers
+    protected function _getCacheKeyPrefix()
+    {
         return $this->_mediator->getApiKey().'-';
     }
 
-    protected function _getCachedValue(string $key, callable $generator, string $eType=null) {
+    protected function _getCachedValue(string $key, callable $generator, string $eType=null)
+    {
         $cache = Stripe2_Cache::getInstance();
         $key = $this->_getCacheKeyPrefix().$key;
         $output = $cache->get($key);
 
-        if($output === null) {
+        if ($output === null) {
             $cache->set($key, $output = $this->_execute($generator, $eType));
         }
 
         return $output;
     }
 
-    protected function _execute(callable $func, string $eType=null) {
+    protected function _execute(callable $func, string $eType=null)
+    {
         try {
             return $func();
-        } catch(spur\payment\stripe2\EApi $e) {
+        } catch (spur\payment\stripe2\EApi $e) {
+            $data = $e->getData();
             $types = ['EApi'];
 
-            if(!empty($eType)) {
+            if (!empty($eType)) {
                 $types[] = $eType;
             }
 
-            if($e instanceof spur\payment\stripe2\ENotFound) {
+            if ($e instanceof spur\payment\stripe2\ENotFound) {
                 $types[] = 'ENotFound';
             }
 
-            if($e instanceof spur\payment\stripe2\ETransport) {
+            if ($e instanceof spur\payment\stripe2\ETransport) {
                 $types[] = 'ETransport';
             }
 
-            if($e instanceof spur\payment\stripe2\ECard) {
+            if ($e instanceof spur\payment\stripe2\ECard) {
                 $types[] = 'ECard';
 
-                switch($data['code'] ?? null) {
+                switch ($data['code'] ?? null) {
                     case 'invalid_number':
                     case 'incorrect_number':
                         $types[] = 'ECardNumber';
@@ -527,11 +559,14 @@ class Stripe2 extends Base implements
 
             throw core\Error::{implode(',', array_unique($types))}([
                 'message' => $e->getMessage(),
-                'previous' => $e
+                'previous' => $e,
+                'data' => $data
             ]);
         }
     }
 }
 
 
-class Stripe2_Cache extends core\cache\Base {}
+class Stripe2_Cache extends core\cache\Base
+{
+}
