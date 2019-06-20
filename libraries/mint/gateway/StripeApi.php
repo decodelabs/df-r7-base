@@ -16,16 +16,16 @@ class StripeApi extends Base implements
     mint\ICaptureProviderGateway,
     mint\IRefundProviderGateway,
     mint\ICustomerTrackingGateway,
-    mint\ICustomerTrackingCaptureProviderGateway //,
+    mint\ICustomerTrackingCaptureProviderGateway,
     //mint\ICardStoreGateway,
-    //mint\ISubscriptionProviderGateway,
-    //mint\ISubscriptionPlanControllerGateway
+    mint\ISubscriptionProviderGateway,
+    mint\ISubscriptionPlanControllerGateway
 {
     use mint\TCaptureProviderGateway;
     use mint\TRefundProviderGateway;
     use mint\TCustomerTrackingGateway;
-    //use mint\TSubscriptionProviderGateway;
-    //use mint\TSubscriptionPlanControllerGateway;
+    use mint\TSubscriptionProviderGateway;
+    use mint\TSubscriptionPlanControllerGateway;
 
     protected $_apiKey;
 
@@ -299,7 +299,216 @@ class StripeApi extends Base implements
 
 
 
+
+    // Cards
+
+
+
+    // Plans
+    public function getPlans(): array
+    {
+        return $this->_getCachedValue('plans', function () {
+            $plans = Stripe\Plan::all([
+                'limit' => 100
+            ], [
+                'api_key' => $this->_apiKey
+            ]);
+
+            $output = [];
+
+            foreach ($plans as $plan) {
+                $output[] = $this->_wrapPlan($plan);
+            }
+
+            return $output;
+        }, 'EPlan');
+
+        return $output;
+    }
+
+
+    public function addPlan(mint\IPlan $plan): mint\IPlan
+    {
+        return $this->_execute(function () use ($plan) {
+            $plan = Stripe\Plan::create([
+                'id' => $plan->getId(),
+                'nickname' => $plan->getName(),
+                'amount' => $plan->getAmount()->getIntegerAmount(),
+                'currency' => $plan->getAmount()->getCode(),
+                'interval' => $plan->getInterval(),
+                'interval_count' => $plan->getIntervalCount(),
+                'product' => [
+                    'name' => $plan->getName(),
+                    'type' => 'service',
+                    'statement_descriptor' => $plan->getStatementDescriptor()
+                ],
+                'trial_period_days' => $plan->getTrialDays()
+            ], [
+                'api_key' => $this->_apiKey
+            ]);
+
+            $this->clearPlanCache();
+            return $this->_wrapPlan($plan);
+        }, 'EPlan');
+    }
+
+    public function updatePlan(mint\IPlan $plan): mint\IPlan
+    {
+        return $this->_execute(function () use ($plan) {
+            $plan = Stripe\Plan::update($plan->getId(), [
+                'nickname' => $plan->getName(),
+                'trial_period_days' => $plan->getTrialDays()
+            ], [
+                'api_key' => $this->_apiKey
+            ]);
+
+            $this->clearPlanCache();
+            return $this->_wrapPlan($plan);
+        }, 'EPlan');
+    }
+
+    public function deletePlan(string $planId)
+    {
+        $this->_execute(function () use ($planId) {
+            $plan = Stripe\Plan::retrieve($planId, ['api_key' => $this->_apiKey]);
+            $productId = $plan['product'];
+            $plan->delete();
+            $product = Stripe\Product::retrieve($productId, ['api_key' => $this->_apiKey]);
+            $product->delete();
+            $this->clearPlanCache();
+        }, 'EPlan');
+
+        return $this;
+    }
+
+    protected function _wrapPlan(Stripe\Plan $plan): mint\IPlan
+    {
+        return (new mint\Plan(
+                $plan['id'],
+                $plan['nickname'],
+                new mint\Currency($plan['amount'], $plan['currency']),
+                $plan['interval']
+            ))
+            ->setIntervalCount($plan['interval_count'])
+            ->setTrialDays($plan['trial_period_days']);
+    }
+
+    public function clearPlanCache()
+    {
+        $cache = StripeApi_Cache::getInstance();
+        $key = $this->_getCacheKeyPrefix().'plans';
+        $cache->remove($key);
+        return $this;
+    }
+
+
+
     // Subscriptions
+    public function fetchSubscription(string $subscriptionId): mint\ISubscription
+    {
+        return $this->_execute(function () use ($subscriptionId) {
+            core\stub();
+
+            $data = $this->_mediator->fetchSubscription($subscriptionId);
+            return $this->_wrapSubscription($data);
+        });
+    }
+
+    public function getSubscriptionsFor(mint\ICustomer $customer): array
+    {
+        core\stub();
+
+        if ($customer->getId() === null) {
+            throw core\Error::EArgument([
+                'message' => 'Customer Id not set',
+                'data' => $customer
+            ]);
+        }
+
+        if (!$customer->hasSubscriptionCache()) {
+            $subscriptions = $this->_mediator->fetchSubscriptions(
+                $this->_mediator->newSubscriptionFilter($customer->getId())
+                    ->setLimit(100)
+            );
+
+            $subs = [];
+
+            foreach ($subscriptions as $subscription) {
+                $subs[] = $this->_wrapSubscription($subscription);
+            }
+
+            $customer->setCachedSubscriptions($subs);
+        }
+
+        return $customer->getCachedSubscriptions();
+    }
+
+    public function subscribeCustomer(mint\ISubscription $subscription): mint\ISubscription
+    {
+        return $this->_execute(function () use ($subscription) {
+            core\stub();
+
+            $data = $this->_mediator->createSubscription(
+                $this->_mediator->newSubscriptionCreateRequest(
+                        $subscription->getCustomerId(),
+                        $subscription->getPlanId()
+                    )
+                    ->setTrialEnd($subscription->getTrialEnd())
+                    ->setMetadataValue('localId', $subscription->getLocalId())
+                    // coupon
+            );
+
+            return $this->_wrapSubscription($data);
+        }, 'ESubscription');
+    }
+
+    public function updateSubscription(mint\ISubscription $subscription): mint\ISubscription
+    {
+        return $this->_execute(function () use ($subscription) {
+            core\stub();
+
+            $data = $this->_mediator->updateSubscription(
+                $this->_mediator->newSubscriptionUpdateRequest($subscription->getId())
+                    ->setPlan($subscription->getPlanId())
+                    ->setTrialEnd($subscription->getTrialEnd())
+                    ->setMetadataValue('localId', $subscription->getLocalId())
+                    // coupon
+            );
+
+            return $this->_wrapSubscription($data);
+        }, 'ESubscription');
+    }
+
+    public function endSubscriptionTrial(string $subscriptionId, int $inDays=null): mint\ISubscription
+    {
+        return $this->_execute(function () use ($subscriptionId, $inDays) {
+            core\stub();
+
+            if ($inDays === null || $inDays <= 0) {
+                $date = 'now';
+            } else {
+                $date = '+'.$inDays.' days';
+            }
+
+            $data = $this->_mediator->updateSubscription(
+                $this->_mediator->newSubscriptionUpdateRequest($subscriptionId)
+                    ->setTrialEnd($date)
+            );
+
+            return $this->_wrapSubscription($data);
+        });
+    }
+
+    public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): mint\ISubscription
+    {
+        return $this->_execute(function () use ($subscriptionId, $atPeriodEnd) {
+            core\stub();
+
+            $data = $this->_mediator->cancelSubscription($subscriptionId, $atPeriodEnd);
+            return $this->_wrapSubscription($data);
+        });
+    }
+
     protected function _wrapSubscription(Stripe\Subscription $subscription): mint\ISubscription
     {
         return (new mint\Subscription(
@@ -369,7 +578,7 @@ class StripeApi extends Base implements
 
     protected function _getCachedValue(string $key, callable $generator, string $eType=null)
     {
-        $cache = Stripe2_Cache::getInstance();
+        $cache = StripeApi_Cache::getInstance();
         $key = $this->_getCacheKeyPrefix().$key;
         $output = $cache->get($key);
 
