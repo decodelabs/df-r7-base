@@ -12,9 +12,9 @@ use df\spur;
 
 use Stripe;
 
-class StripeApi extends Base //implements
+class StripeApi extends Base implements
     //mint\ICaptureProviderGateway,
-    //mint\IRefundProviderGateway,
+    mint\IRefundProviderGateway //,
     //mint\ICustomerTrackingGateway,
     //mint\ICustomerTrackingCaptureProviderGateway,
     //mint\ICardStoreGateway,
@@ -22,7 +22,7 @@ class StripeApi extends Base //implements
     //mint\ISubscriptionPlanControllerGateway
 {
     //use mint\TCaptureProviderGateway;
-    //use mint\TRefundProviderGateway;
+    use mint\TRefundProviderGateway;
     //use mint\TCustomerTrackingGateway;
     //use mint\TSubscriptionProviderGateway;
     //use mint\TSubscriptionPlanControllerGateway;
@@ -115,6 +115,20 @@ class StripeApi extends Base //implements
                 'api_key' => $this->_apiKey
             ])['id'];
         }, 'ECharge');
+    }
+
+
+    // Refund
+    public function refundCharge(mint\IChargeRefund $refund): string
+    {
+        return $this->_execute(function () use ($refund) {
+            return Stripe\Refund::create([
+                'charge' => $refund->getId(),
+                'amount' => $refund->getAmount()->getIntegerAmount()
+            ], [
+                'api_key' => $this->_apiKey
+            ])['charge'];
+        }, 'ECharge,ERefund');
     }
 
 
