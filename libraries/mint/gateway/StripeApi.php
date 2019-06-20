@@ -90,8 +90,14 @@ class StripeApi extends Base implements
     public function getSupportedCurrencies(): array
     {
         return $this->_getCachedValue('supportedCurrencies', function () {
-            $account = Stripe\Account::retrieve(null, ['api_key' => $this->_apiKey]);
-            $spec = Stripe\CountrySpec::retrieve($account['country'], ['api_key' => $this->_apiKey]);
+            $account = Stripe\Account::retrieve(null, [
+                'api_key' => $this->_apiKey
+            ]);
+
+            $spec = Stripe\CountrySpec::retrieve($account['country'], [
+                'api_key' => $this->_apiKey
+            ]);
+
             return array_map('strtoupper', $spec['supported_payment_currencies']);
         }, 'ECurrency');
     }
@@ -181,7 +187,10 @@ class StripeApi extends Base implements
     public function captureCharge(mint\IChargeCapture $charge): string
     {
         return $this->_execute(function () use ($charge) {
-            $charge = Stripe\Charge::retrieve($charge->getId(), ['api_key' => $this->_apiKey]);
+            $charge = Stripe\Charge::retrieve($charge->getId(), [
+                'api_key' => $this->_apiKey
+            ]);
+
             $charge->capture();
             return $charge['id'];
         }, 'ECharge,ECapture');
@@ -208,7 +217,9 @@ class StripeApi extends Base implements
     public function fetchCustomer(string $customerId): mint\ICustomer
     {
         return $this->_execute(function () use ($customerId) {
-            $customer = Stripe\Customer::retrieve($customerId, ['api_key' => $this->_apiKey]);
+            $customer = Stripe\Customer::retrieve($customerId, [
+                'api_key' => $this->_apiKey
+            ]);
 
             if ($customer['deleted']) {
                 throw core\Error::{'EApi,ECustomer,ENotFound'}([
@@ -269,7 +280,9 @@ class StripeApi extends Base implements
     public function deleteCustomer(string $customerId)
     {
         $this->_execute(function () use ($customerId) {
-            $customer = Stripe\Customer::retrieve($customerId, ['api_key' => $this->_apiKey]);
+            $customer = Stripe\Customer::retrieve($customerId, [
+                'api_key' => $this->_apiKey
+            ]);
             $customer->delete();
         }, 'ECustomer');
 
@@ -407,17 +420,16 @@ class StripeApi extends Base implements
     public function fetchSubscription(string $subscriptionId): mint\ISubscription
     {
         return $this->_execute(function () use ($subscriptionId) {
-            core\stub();
+            $subscription = Stripe\Subscription::retrieve($subscriptionId, [
+                'api_key' => $this->_apiKey
+            ]);
 
-            $data = $this->_mediator->fetchSubscription($subscriptionId);
-            return $this->_wrapSubscription($data);
+            return $this->_wrapSubscription($subscription);
         });
     }
 
     public function getSubscriptionsFor(mint\ICustomer $customer): array
     {
-        core\stub();
-
         if ($customer->getId() === null) {
             throw core\Error::EArgument([
                 'message' => 'Customer Id not set',
@@ -426,10 +438,12 @@ class StripeApi extends Base implements
         }
 
         if (!$customer->hasSubscriptionCache()) {
-            $subscriptions = $this->_mediator->fetchSubscriptions(
-                $this->_mediator->newSubscriptionFilter($customer->getId())
-                    ->setLimit(100)
-            );
+            $subscriptions = Stripe\Subscription::all([
+                'limit' => 100,
+                'customer' => $customer->getId()
+            ], [
+                'api_key' => $this->_apiKey
+            ]);
 
             $subs = [];
 
@@ -446,66 +460,73 @@ class StripeApi extends Base implements
     public function subscribeCustomer(mint\ISubscription $subscription): mint\ISubscription
     {
         return $this->_execute(function () use ($subscription) {
-            core\stub();
+            $subscription = Stripe\Subscription::create([
+                'customer' => $subscription->getCustomerId(),
+                'items' => [[
+                    'plan' => $subscription->getPlanId()
+                ]],
+                'trial_end' => $this->_normalizeDate($subscription->getTrialEnd()),
+                'metadata' => [
+                    'localId' => $subscription->getLocalId()
+                ]
+            ], [
+                'api_key' => $this->_apiKey
+            ]);
 
-            $data = $this->_mediator->createSubscription(
-                $this->_mediator->newSubscriptionCreateRequest(
-                        $subscription->getCustomerId(),
-                        $subscription->getPlanId()
-                    )
-                    ->setTrialEnd($subscription->getTrialEnd())
-                    ->setMetadataValue('localId', $subscription->getLocalId())
-                    // coupon
-            );
-
-            return $this->_wrapSubscription($data);
+            return $this->_wrapSubscription($subscription);
         }, 'ESubscription');
     }
 
     public function updateSubscription(mint\ISubscription $subscription): mint\ISubscription
     {
         return $this->_execute(function () use ($subscription) {
-            core\stub();
+            $subscription = Stripe\Subscription::update($subscription->getId(), [
+                'items' => [[
+                    'plan' => $subscription->getPlanId()
+                ]],
+                'trial_end' => $this->_normalizeDate($subscription->getTrialEnd()),
+                'metadata' => [
+                    'localId' => $subscription->getLocalId()
+                ]
+            ], [
+                'api_key' => $this->_apiKey
+            ]);
 
-            $data = $this->_mediator->updateSubscription(
-                $this->_mediator->newSubscriptionUpdateRequest($subscription->getId())
-                    ->setPlan($subscription->getPlanId())
-                    ->setTrialEnd($subscription->getTrialEnd())
-                    ->setMetadataValue('localId', $subscription->getLocalId())
-                    // coupon
-            );
-
-            return $this->_wrapSubscription($data);
+            return $this->_wrapSubscription($subscription);
         }, 'ESubscription');
     }
 
     public function endSubscriptionTrial(string $subscriptionId, int $inDays=null): mint\ISubscription
     {
         return $this->_execute(function () use ($subscriptionId, $inDays) {
-            core\stub();
-
             if ($inDays === null || $inDays <= 0) {
                 $date = 'now';
             } else {
-                $date = '+'.$inDays.' days';
+                $date = $this->_normalizeDate(core\time\Date::factory('+'.$inDays.' days'));
             }
 
-            $data = $this->_mediator->updateSubscription(
-                $this->_mediator->newSubscriptionUpdateRequest($subscriptionId)
-                    ->setTrialEnd($date)
-            );
+            $subscription = Stripe\Subscription::update($subscriptionId, [
+                'trial_end' => $date,
+            ], [
+                'api_key' => $this->_apiKey
+            ]);
 
-            return $this->_wrapSubscription($data);
+            return $this->_wrapSubscription($subscription);
         });
     }
 
     public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): mint\ISubscription
     {
         return $this->_execute(function () use ($subscriptionId, $atPeriodEnd) {
-            core\stub();
+            $subscription = Stripe\Subscription::retrieve($subscriptionId, [
+                'api_key' => $this->_apiKey
+            ]);
 
-            $data = $this->_mediator->cancelSubscription($subscriptionId, $atPeriodEnd);
-            return $this->_wrapSubscription($data);
+            $subscription->cancel([
+                'at_period_end' => $atPeriodEnd ? 'true' : 'false'
+            ]);
+
+            return $this->_wrapSubscription($subscription);
         });
     }
 
@@ -569,6 +590,15 @@ class StripeApi extends Base implements
         }
 
         return $output;
+    }
+
+    protected function _normalizeDate(?core\time\IDate $date): ?int
+    {
+        if (!$date) {
+            return null;
+        }
+
+        return $date->toTimestamp();
     }
 
     protected function _getCacheKeyPrefix()
