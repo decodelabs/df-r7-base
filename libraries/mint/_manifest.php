@@ -12,9 +12,9 @@ use df\user;
 use df\arch;
 use df\mesh;
 
-
 // Gateway
-interface IGateway {
+interface IGateway
+{
     public function isTesting(): bool;
 
     public function getSupportedCurrencies(): array;
@@ -28,20 +28,22 @@ interface IGateway {
     public function newStandaloneCharge(ICurrency $amount, ICreditCardReference $card, string $description=null, string $email=null): IStandaloneChargeRequest;
 }
 
-interface ICaptureProviderGateway extends IGateway {
+interface ICaptureProviderGateway extends IGateway
+{
     public function authorizeCharge(IChargeRequest $charge): string;
     public function authorizeStandaloneCharge(IStandaloneChargeRequest $charge): string;
     public function captureCharge(IChargeCapture $charge): string;
     public function newChargeCapture(string $id): IChargeCapture;
 }
 
-trait TCaptureProviderGateway {
-
-    public function authorizeCharge(IChargeRequest $charge): string {
-        if($charge instanceof ICustomerChargeRequest
+trait TCaptureProviderGateway
+{
+    public function authorizeCharge(IChargeRequest $charge): string
+    {
+        if ($charge instanceof ICustomerChargeRequest
         && $this instanceof ICustomerTrackingCaptureProviderGateway) {
             return $this->authorizeCustomerCharge($charge);
-        } else if($charge instanceof IStandaloneChargeRequest
+        } elseif ($charge instanceof IStandaloneChargeRequest
         && $this instanceof ICaptureProviderGateway) {
             return $this->authorizeStandaloneCharge($charge);
         } else {
@@ -52,23 +54,28 @@ trait TCaptureProviderGateway {
         }
     }
 
-    public function newChargeCapture(string $id): IChargeCapture {
+    public function newChargeCapture(string $id): IChargeCapture
+    {
         return new mint\charge\Capture($id);
     }
 }
 
-interface IRefundProviderGateway extends IGateway {
+interface IRefundProviderGateway extends IGateway
+{
     public function refundCharge(IChargeRefund $refund): string;
     public function newChargeRefund(string $id, ICurrency $amount=null): IChargeRefund;
 }
 
-trait TRefundProviderGateway {
-    public function newChargeRefund(string $id, ICurrency $amount=null): IChargeRefund {
+trait TRefundProviderGateway
+{
+    public function newChargeRefund(string $id, ICurrency $amount=null): IChargeRefund
+    {
         return new mint\charge\Refund($id, $amount);
     }
 }
 
-interface ICustomerTrackingGateway extends IGateway {
+interface ICustomerTrackingGateway extends IGateway
+{
     public function submitCustomerCharge(ICustomerChargeRequest $charge): string;
     public function newCustomerCharge(ICurrency $amount, ICreditCardReference $card, string $customerId, string $description=null): ICustomerChargeRequest;
 
@@ -80,22 +87,26 @@ interface ICustomerTrackingGateway extends IGateway {
     public function deleteCustomer(string $customerId);
 }
 
-trait TCustomerTrackingGateway {
-
-    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null): ICustomerChargeRequest {
+trait TCustomerTrackingGateway
+{
+    public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null): ICustomerChargeRequest
+    {
         return new mint\charge\Customer($amount, $card, $customerId, $description);
     }
 
-    public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null): ICustomer {
+    public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null): ICustomer
+    {
         return new mint\Customer(null, $email, $description, $card);
     }
 }
 
-interface ICustomerTrackingCaptureProviderGateway extends ICaptureProviderGateway, ICustomerTrackingGateway {
+interface ICustomerTrackingCaptureProviderGateway extends ICaptureProviderGateway, ICustomerTrackingGateway
+{
     public function authorizeCustomerCharge(ICustomerChargeRequest $charge): string;
 }
 
-interface ICardStoreGateway extends ICustomerTrackingGateway {
+interface ICardStoreGateway extends ICustomerTrackingGateway
+{
     /*
     public function addCard(string $customerId, ICreditCard $card);
     public function updateCard(string $customerId, string $cardId, ICreditCard $card);
@@ -103,7 +114,8 @@ interface ICardStoreGateway extends ICustomerTrackingGateway {
     */
 }
 
-interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
+interface ISubscriptionProviderGateway extends ICustomerTrackingGateway
+{
     public function getPlans(): array;
     public function newSubscription(string $customerId, string $planId): ISubscription;
     public function fetchSubscription(string $subscriptionId): ISubscription;
@@ -115,14 +127,16 @@ interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
     public function cancelSubscription(string $subscriptionId, bool $atPeriodEnd=false): ISubscription;
 }
 
-trait TSubscriptionProviderGateway {
-
-    public function newSubscription(string $customerId, string $planId): ISubscription {
+trait TSubscriptionProviderGateway
+{
+    public function newSubscription(string $customerId, string $planId): ISubscription
+    {
         return new mint\Subscription(null, $customerId, $planId);
     }
 }
 
-interface ISubscriptionPlanControllerGateway extends ISubscriptionProviderGateway {
+interface ISubscriptionPlanControllerGateway extends ISubscriptionProviderGateway
+{
     public function syncPlans(iterable $local=[]): \Generator;
     public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval='month');
 
@@ -132,21 +146,22 @@ interface ISubscriptionPlanControllerGateway extends ISubscriptionProviderGatewa
     public function clearPlanCache();
 }
 
-trait TSubscriptionPlanControllerGateway {
-
-    public function syncPlans(iterable $local=[]): \Generator {
+trait TSubscriptionPlanControllerGateway
+{
+    public function syncPlans(iterable $local=[]): \Generator
+    {
         $planList = [];
         $this->clearPlanCache();
 
-        foreach($this->getPlans() as $plan) {
+        foreach ($this->getPlans() as $plan) {
             $planList[$plan->getId()] = $plan;
         }
 
-        foreach($local as $plan) {
-            if(isset($planList[$plan->getId()])) {
+        foreach ($local as $plan) {
+            if (isset($planList[$plan->getId()])) {
                 $remote = $planList[$plan->getId()];
 
-                if($plan->shouldUpdate($remote)) {
+                if ($plan->shouldUpdate($remote)) {
                     $plan = $this->updatePlan($plan);
                     $action = 'update';
                 } else {
@@ -160,12 +175,13 @@ trait TSubscriptionPlanControllerGateway {
             }
         }
 
-        foreach($planList as $plan) {
+        foreach ($planList as $plan) {
             yield 'import' => $plan;
         }
     }
 
-    public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval='month') {
+    public function newPlan(string $id, string $name, mint\ICurrency $amount, string $interval='month')
+    {
         return new mint\Plan($id, $name, $amount, $interval);
     }
 }
@@ -174,9 +190,12 @@ trait TSubscriptionPlanControllerGateway {
 
 
 // Credit card
-interface ICreditCardReference {}
+interface ICreditCardReference
+{
+}
 
-interface ICreditCard extends ICreditCardReference, core\IArrayProvider {
+interface ICreditCard extends ICreditCardReference, core\IArrayProvider
+{
     public function setName(string $name);
     public function getName(): ?string;
 
@@ -217,14 +236,16 @@ interface ICreditCard extends ICreditCardReference, core\IArrayProvider {
     public function isValid(): bool;
 }
 
-interface ICreditCardToken extends ICreditCardReference {
-
+interface ICreditCardToken extends ICreditCardReference
+{
+    public function getToken(): string;
 }
 
 
 
 // Charge
-interface IChargeRequest {
+interface IChargeRequest
+{
     public function setAmount(ICurrency $amount);
     public function getAmount(): ICurrency;
     public function setCard(ICreditCardReference $card);
@@ -233,24 +254,28 @@ interface IChargeRequest {
     public function getDescription(): ?string;
 }
 
-interface IStandaloneChargeRequest extends IChargeRequest {
+interface IStandaloneChargeRequest extends IChargeRequest
+{
     public function setEmailAddress(?string $email);
     public function getEmailAddress(): ?string;
 }
 
-interface ICustomerChargeRequest extends IChargeRequest {
+interface ICustomerChargeRequest extends IChargeRequest
+{
     public function setCustomerId(string $id);
     public function getCustomerId(): string;
 }
 
 
-interface IChargeCapture {
+interface IChargeCapture
+{
     public function setId(string $id);
     public function getId(): string;
 }
 
 
-interface IChargeRefund {
+interface IChargeRefund
+{
     public function setId(string $id);
     public function getId(): string;
     public function setAmount(?ICurrency $amount);
@@ -260,7 +285,8 @@ interface IChargeRefund {
 
 
 // Customer
-interface ICustomer {
+interface ICustomer
+{
     public function setId(?string $id);
     public function getId(): ?string;
     public function setLocalId(?string $id);
@@ -289,7 +315,8 @@ interface ICustomer {
 
 
 // Plan
-interface IPlan {
+interface IPlan
+{
     public function setId(string $id);
     public function getId(): string;
     public function setAmount(ICurrency $amount);
@@ -310,7 +337,8 @@ interface IPlan {
 
 
 // Subscriptions
-interface ISubscription {
+interface ISubscription
+{
     public function setId(?string $id);
     public function getId(): ?string;
     public function setLocalId(?string $id);
@@ -347,7 +375,8 @@ interface ISubscription {
 
 
 // Currency
-interface ICurrency extends core\IStringProvider {
+interface ICurrency extends core\IStringProvider
+{
     public function setAmount(float $amount);
     public function getAmount(): float;
     public function getIntegerAmount(): int;
@@ -375,14 +404,16 @@ interface ICurrency extends core\IStringProvider {
 
 
 // Events
-interface IEvent extends mesh\entity\IEntity, core\collection\ITree {
+interface IEvent extends mesh\entity\IEntity, core\collection\ITree
+{
     public function getSource(): string;
     public function getAction(): string;
 }
 
 
 // Model
-interface IModelConfig extends core\IConfig {
+interface IModelConfig extends core\IConfig
+{
     public function isEnabled(bool $flag=null);
     public function getPrimaryAccount(): ?string;
     public function getPrimarySettings(): ?core\collection\ITree;
