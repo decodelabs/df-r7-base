@@ -11,8 +11,8 @@ use df\spur;
 use df\link;
 use df\arch;
 
-class Handler implements IHandler {
-
+class Handler implements IHandler
+{
     protected $_key;
     protected $_url;
     protected $_router;
@@ -22,7 +22,8 @@ class Handler implements IHandler {
     protected $_asyncBatchSize = 0;
     protected $_asyncBatchLimit = 10;
 
-    public function __construct($url) {
+    public function __construct($url)
+    {
         $this->_context = new core\SharedContext();
 
         $this->_key = $this->_context->data->hexHash(
@@ -33,27 +34,34 @@ class Handler implements IHandler {
         $this->_sayHello($url);
     }
 
-    public function getKey() {
+    public function getKey()
+    {
         return $this->_key;
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
         return $this->_url;
     }
 
-    public function getRouter() {
+    public function getRouter()
+    {
         return $this->_router;
     }
 
-    protected function _sayHello($url) {
+    protected function _sayHello($url)
+    {
         $url = link\http\Url::factory($url);
         $url->path->push('~devtools/migrate/hello')->shouldAddTrailingSlash(false);
         $url->query->key = $this->_key;
 
-        $response = $this->_httpPool->getClient()->get($url);
+        $response = $this->_httpPool->getClient()->get($url, function ($request) {
+            $request->headers->set('x-df-self', md5(df\Launchpad::$app->getPassKey()));
+        });
+
         $content = $response->getJsonContent();
 
-        if(!$content->data->nodes->contains('media')) {
+        if (!$content->data->nodes->contains('media')) {
             throw core\Error::{'EApi,EForbidden'}([
                 'message' => 'Target app does not support media migration',
                 'data' => $content->data->nodes->toArray(),
@@ -63,10 +71,10 @@ class Handler implements IHandler {
 
         $this->_url = new link\http\Url($content->data['baseUrl']);
 
-        if($url->hasUsername()) {
+        if ($url->hasUsername()) {
             $this->_url->setUsername($url->getUsername());
         }
-        if($url->hasPassword()) {
+        if ($url->hasPassword()) {
             $this->_url->setPassword($url->getPassword());
         }
 
@@ -74,10 +82,11 @@ class Handler implements IHandler {
     }
 
 
-    public function setAsyncBatchLimit($limit) {
+    public function setAsyncBatchLimit($limit)
+    {
         $limit = (int)$limit;
 
-        if($limit < 1) {
+        if ($limit < 1) {
             $limit = 1;
         }
 
@@ -85,31 +94,35 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function getAsyncBatchLimit() {
+    public function getAsyncBatchLimit()
+    {
         return $this->_asyncBatchLimit;
     }
 
 
-    public function createRequest($method, $request, array $data=null, $responseFilePath=null) {
-        if(is_string($request)) {
+    public function createRequest($method, $request, array $data=null, $responseFilePath=null)
+    {
+        if (is_string($request)) {
             $request = new arch\Request($request);
         }
 
-        if(($request instanceof arch\IRequest
+        $request->headers->set('x-df-self', md5(df\Launchpad::$app->getPassKey()));
+
+        if (($request instanceof arch\IRequest
         || $request instanceof link\http\IUrl)) {
-            if($data !== null) {
+            if ($data !== null) {
                 $request->getQuery()->import($data);
             }
 
             $request->getQuery()->key = $this->_key;
         }
 
-        if($request instanceof arch\IRequest) {
+        if ($request instanceof arch\IRequest) {
             $request = $this->_router->requestToUrl($request);
         }
 
-        if(!$request instanceof link\http\IRequest) {
-            if(!$request instanceof link\http\IUrl) {
+        if (!$request instanceof link\http\IRequest) {
+            if (!$request instanceof link\http\IUrl) {
                 throw core\Error::EBadRequest([
                     'message' => 'Invalid request'
                 ]);
@@ -118,15 +131,15 @@ class Handler implements IHandler {
             $request = new link\http\request\Base($request);
         }
 
-        if($this->_url->hasUsername()) {
+        if ($this->_url->hasUsername()) {
             $request->url->setUsername($this->_url->getUsername());
         }
 
-        if($this->_url->hasPassword()) {
+        if ($this->_url->hasPassword()) {
             $request->url->setPassword($this->_url->getPassword());
         }
 
-        if($responseFilePath !== null) {
+        if ($responseFilePath !== null) {
             $request->options->setDownloadFilePath($responseFilePath);
         }
 
@@ -134,10 +147,11 @@ class Handler implements IHandler {
         return $request;
     }
 
-    public function call(link\http\IRequest $request) {
+    public function call(link\http\IRequest $request)
+    {
         $response = $this->_httpPool->getClient()->sendRequest($request);
 
-        if($response->isError()) {
+        if ($response->isError()) {
             $content = $response->getJsonContent();
             throw core\Error::EApi('Migration failed: '.$content['error']);
         }
@@ -145,12 +159,14 @@ class Handler implements IHandler {
         return $response;
     }
 
-    public function callAsync(link\http\IRequest $request, $callback) {
+    public function callAsync(link\http\IRequest $request, $callback)
+    {
         $this->_httpPool->promiseResponse($request)->then($callback);
         return $this;
     }
 
-    public function sync() {
+    public function sync()
+    {
         $this->_httpPool->sync();
         return $this;
     }

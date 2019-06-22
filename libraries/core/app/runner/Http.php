@@ -161,10 +161,20 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
     // Credentials
-    protected function _enforceCredentials(link\IIp $ip)
+    protected function _enforceCredentials(link\IIp $ip): bool
     {
+        // Check for credentials or loopback
         if (!$this->_credentials || $ip->isLoopback()) {
             return true;
+        }
+
+        // Check for passthrough header
+        if ($this->_httpRequest->headers->has('x-df-self')) {
+            $key = $this->_httpRequest->headers->get('x-df-self');
+
+            if ($key === md5(df\Launchpad::$app->getPassKey())) {
+                return true;
+            }
         }
 
         if (!isset($_SERVER['PHP_AUTH_USER'])
@@ -183,6 +193,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     // IP check
     protected function _checkIpRanges(link\IIp $ip, arch\IRequest $request=null)
     {
+        // Get ranges from config
         $config = namespace\http\Config::getInstance();
 
         if ($request) {
@@ -195,6 +206,19 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             return;
         }
 
+
+        // Check for passthrough header
+        if ($this->_httpRequest->headers->has('x-df-self')) {
+            $key = $this->_httpRequest->headers->get('x-df-self');
+
+            if ($key === md5(df\Launchpad::$app->getPassKey())) {
+                return;
+            }
+        }
+
+
+
+        // Apply
         $augmentor = $this->getResponseAugmentor();
         $augmentor->setHeaderForAnyRequest('x-allow-ip', (string)$ip);
 
