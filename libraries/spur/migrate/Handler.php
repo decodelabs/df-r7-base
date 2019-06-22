@@ -106,8 +106,6 @@ class Handler implements IHandler
             $request = new arch\Request($request);
         }
 
-        $request->headers->set('x-df-self', md5(df\Launchpad::$app->getPassKey()));
-
         if (($request instanceof arch\IRequest
         || $request instanceof link\http\IUrl)) {
             if ($data !== null) {
@@ -144,6 +142,8 @@ class Handler implements IHandler
         }
 
         $request->setMethod($method);
+        $request->headers->set('x-df-self', md5(df\Launchpad::$app->getPassKey()));
+        
         return $request;
     }
 
