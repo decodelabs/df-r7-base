@@ -8,19 +8,30 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-
 // Exceptions
-interface IException {}
-class LogicException extends \LogicException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class BadMethodCallException extends \BadMethodCallException {}
+interface IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
+class UnexpectedValueException extends \UnexpectedValueException implements IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class BadMethodCallException extends \BadMethodCallException
+{
+}
 
 
 // Interfaces
-interface ICallback {
-
+interface ICallback
+{
     const DIRECT = 1;
     const REFLECTION = 2;
 
@@ -34,18 +45,30 @@ interface ICallback {
     public function getParameters();
 }
 
-function Callback($callback, ...$args) {
+function Callback($callback, ...$args)
+{
     return Callback::call($callback, ...$args);
 }
 
-interface IEnumFactory {
+interface IEnumFactory
+{
     public function factory($value);
 }
 
-interface IEnum extends core\IStringProvider, core\IStringValueProvider {
+interface IEnum extends core\IStringProvider, core\IStringValueProvider
+{
     //public static function factory($value);
     public static function normalize($value);
 
+    public function getIndex();
+    public function getOption();
+    public function getLabel();
+
+    public function is($value);
+}
+
+interface IStaticEnum extends IEnum
+{
     public static function getOptions();
     public static function isOption($option);
     public static function getLabels();
@@ -55,19 +78,34 @@ interface IEnum extends core\IStringProvider, core\IStringValueProvider {
     public static function getGt($option): array;
     public static function getGte($option): array;
 
-    public function getIndex();
-    public function getOption();
-    public function getLabel();
     public static function label($option);
-    public function is($value);
 }
 
-interface IStruct {
+interface IInstanceEnum extends IEnum
+{
+    public function getOptions();
+    public function isOption($option);
+    public function getLabels();
+
+    public function getLt($option): array;
+    public function getLte($option): array;
+    public function getGt($option): array;
+    public function getGte($option): array;
+
+    public function label($option);
+}
+
+
+
+
+interface IStruct
+{
     public function import(array $data);
 }
 
 
-interface ITypeRef {
+interface ITypeRef
+{
     public function newInstance(...$args);
     public function checkType($extends);
     public function getClass();
@@ -76,35 +114,39 @@ interface ITypeRef {
 
 
 // Chaining
-interface IChainable {
+interface IChainable
+{
     public function chain($callback, ...$args);
     public function chainIf($test, $trueCallback, $falseCallback=null);
     public function chainEach(array $list, $callback, ...$args);
 }
 
-trait TChainable {
-
-    public function chain($callback, ...$args) {
+trait TChainable
+{
+    public function chain($callback, ...$args)
+    {
         Callback::call($callback, $this, ...$args);
         return $this;
     }
 
-    public function chainIf($test, $trueCallback, $falseCallback=null) {
-        if($test) {
+    public function chainIf($test, $trueCallback, $falseCallback=null)
+    {
+        if ($test) {
             Callback::call($trueCallback, $this);
-        } else if($falseCallback) {
+        } elseif ($falseCallback) {
             Callback::call($falseCallback, $this);
         }
 
         return $this;
     }
 
-    public function chainEach(array $list, $callback, ...$args) {
-        if(!$callback = Callback::factory($callback)) {
+    public function chainEach(array $list, $callback, ...$args)
+    {
+        if (!$callback = Callback::factory($callback)) {
             return $this;
         }
 
-        foreach($list as $key => $value) {
+        foreach ($list as $key => $value) {
             $callback->invoke($this, $value, $key, ...$args);
         }
 
@@ -115,13 +157,15 @@ trait TChainable {
 
 
 // Future
-interface IFuture extends core\IValueContainer {
+interface IFuture extends core\IValueContainer
+{
     public function __invoke();
 }
 
 
 // Promise
-interface IPromise {
+interface IPromise
+{
 
 // Factories
     public static function call($action, $canceller=null);
@@ -129,7 +173,7 @@ interface IPromise {
     public static function fulfilled($value);
     public static function rejected($value);
 
-// Aggregate factories
+    // Aggregate factories
     public static function all($promises);
     public static function deferAll($promises);
     public static function some($count, $promises);
@@ -139,7 +183,7 @@ interface IPromise {
     public static function each($promises, $onFulfill=null, $onReject=null);
     public static function deferEach($promises, $onFulfill=null, $onReject=null);
 
-// Action
+    // Action
     public function setAction($action);
     public function getAction();
     public function hasAction();
@@ -150,7 +194,7 @@ interface IPromise {
     public function hasBegunThis();
     public function isPending();
 
-// Canceller
+    // Canceller
     public function setCanceller($canceller);
     public function getCanceller();
     public function hasCanceller();
@@ -160,21 +204,21 @@ interface IPromise {
     public function forceCancelThis();
     public function isCancelled();
 
-// Error handlers
+    // Error handlers
     public function onError(...$callbacks);
     public function addErrorHandlers(array $handlers);
     public function addErrorHandler($callback);
     public function getErrorHandlers();
     public function clearErrorHandlers();
 
-// Parent
+    // Parent
     public function setParent(IPromise $promise=null);
     public function getParent();
     public function hasParent();
     public function getDependants();
     public function getRoot();
 
-// Events
+    // Events
     public function on($event, $callback);
     public function hasEventHandler($name);
     public function getEventHandler($name);
@@ -182,19 +226,19 @@ interface IPromise {
     public function emit($event, array $values=null);
     public function emitThis($event, array $values=null);
 
-// Progress
+    // Progress
     public function setProgress($progress, $total=null);
     public function setProgressThis($progress, $total=null);
     public function onProgress($progress);
     public function getProgressCallback();
 
-// Chaining
+    // Chaining
     public function then($action, ...$errorHandlers);
     public function also($action, ...$errorHandlers);
     public function otherwise(...$errorHandlers);
     public function always($action);
 
-// Completion
+    // Completion
     public function deliver($value);
     public function deliverError(\Throwable $error);
     public function hasDelivered();
@@ -202,6 +246,6 @@ interface IPromise {
     public function isFulfilled();
     public function isRejected();
 
-// Sync
+    // Sync
     public function sync();
 }
