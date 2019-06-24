@@ -108,7 +108,7 @@ class Mediator implements IMediator
 
     public function newListFilter(): IListFilter
     {
-        return new namespace\filter\MailingList();
+        return new spur\mail\mailchimp3\filter\MailingList();
     }
 
     public function fetchLists(IListFilter $filter=null): IDataList
@@ -116,7 +116,7 @@ class Mediator implements IMediator
         $data = $this->requestJson(
             'get',
             'lists',
-            namespace\filter\MailingList::normalize($filter)
+            spur\mail\mailchimp3\filter\MailingList::normalize($filter)
         );
 
         return new DataList('list', $filter, $data, [$this, '_processList']);
@@ -146,7 +146,7 @@ class Mediator implements IMediator
 
     public function newInterestCategoryFilter(): IInterestCategoryFilter
     {
-        return new namespace\filter\InterestCategory();
+        return new spur\mail\mailchimp3\filter\InterestCategory();
     }
 
     public function fetchInterestCategories(string $listId, IInterestCategoryFilter $filter=null): IDataList
@@ -154,7 +154,7 @@ class Mediator implements IMediator
         $data = $this->requestJson(
             'get',
             'lists/'.$listId.'/interest-categories',
-            namespace\filter\InterestCategory::normalize($filter)
+            spur\mail\mailchimp3\filter\InterestCategory::normalize($filter)
         );
 
         return new DataList('interest-category', $filter, $data);
@@ -172,7 +172,7 @@ class Mediator implements IMediator
 
     public function newInterestFilter(): IInterestFilter
     {
-        return new namespace\filter\Interest();
+        return new spur\mail\mailchimp3\filter\Interest();
     }
 
     public function fetchInterests(string $listId, string $categoryId, IInterestFilter $filter=null): IDataList
@@ -180,7 +180,7 @@ class Mediator implements IMediator
         $data = $this->requestJson(
             'get',
             'lists/'.$listId.'/interest-categories/'.$categoryId.'/interests',
-            namespace\filter\Interest::normalize($filter)
+            spur\mail\mailchimp3\filter\Interest::normalize($filter)
         );
 
         return new DataList('interest', $filter, $data);
@@ -203,7 +203,7 @@ class Mediator implements IMediator
 
     public function newMemberFilter(): IMemberFilter
     {
-        return new namespace\filter\Member();
+        return new spur\mail\mailchimp3\filter\Member();
     }
 
     public function fetchMembers(string $listId, IMemberFilter $filter=null): IDataList
@@ -211,7 +211,7 @@ class Mediator implements IMediator
         $data = $this->requestJson(
             'get',
             'lists/'.$listId.'/members',
-            namespace\filter\Member::normalize($filter)
+            spur\mail\mailchimp3\filter\Member::normalize($filter)
         );
 
         return new DataList('member', $filter, $data, [$this, '_processMember']);
