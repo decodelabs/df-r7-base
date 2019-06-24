@@ -107,13 +107,25 @@ class Launchpad
 
         // Composer
         if (method_exists(self::$app, 'shouldUseComposer') && self::$app->shouldUseComposer()) {
+            $path = null;
+
             if (self::$isCompiled) {
                 $path = self::$rootPath.'/apex/vendor/autoload.php';
-            } else {
-                $path = self::$app->getPath().'/vendor/autoload.php';
+
+                if (!file_exists($path)) {
+                    $path = null;
+                }
             }
 
-            if (file_exists($path)) {
+            if ($path === null) {
+                $path = self::$app->getPath().'/vendor/autoload.php';
+
+                if (!file_exists($path)) {
+                    $path = null;
+                }
+            }
+
+            if ($path !== null) {
                 require $path;
             }
         }
