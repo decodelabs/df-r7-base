@@ -13,7 +13,11 @@ class Controller implements IController
 {
     const APP_EXPORT = [
         'libraries', 'assets', 'daemons', 'directory', 'helpers',
-        'hooks', 'models', 'themes', 'tests'
+        'hooks', 'models', 'themes', 'tests', 'vendor'
+    ];
+
+    const APP_FILES = [
+        'composer.json', 'composer.lock'
     ];
 
     public $io;
@@ -131,6 +135,14 @@ class Controller implements IController
             } else {
                 $dir->mergeInto($destinationPath.'/apex/'.$name);
             }
+        }
+
+        foreach ($appDir->scanFiles() as $name => $file) {
+            if (!in_array($name, self::APP_FILES)) {
+                continue;
+            }
+
+            $file->copyTo($destinationPath.'/apex/'.$name);
         }
 
         $appDir->getFile('App.php')->copyTo($destinationPath.'/apex/App.php');
