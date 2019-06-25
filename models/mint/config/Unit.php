@@ -25,7 +25,7 @@ class Unit extends axis\unit\Config implements mint\IModelConfig
             'subscriptionAccount' => null,
             'accounts' => [
                 '!stripe' => [
-                    'gateway' => 'StripeApi',
+                    'gateway' => 'Stripe',
                     'enabled' => false,
                     'testing' => true,
                     'liveApiKey' => null,
