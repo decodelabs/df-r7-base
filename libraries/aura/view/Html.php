@@ -586,6 +586,11 @@ class Html extends Base implements IHtmlView, core\IDumpable
         ];
 
         if ($attributes !== null) {
+            if (isset($attributes['__invoke'])) {
+                $entry['invoke'] = $attributes['__invoke'];
+                unset($attributes['__invoke']);
+            }
+
             $entry['attributes'] = $attributes;
         }
 
@@ -952,6 +957,10 @@ class Html extends Base implements IHtmlView, core\IDumpable
             }
 
             $output .= $line;
+
+            if (isset($entry['invoke'])) {
+                $output .= '    <script>'.$entry['invoke'].'</script>'."\n";
+            }
         }
 
         return $output;
