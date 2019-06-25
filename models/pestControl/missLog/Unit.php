@@ -44,8 +44,12 @@ class Unit extends axis\unit\Table
     {
         $agent = $this->context->data->user->agent->logCurrent();
 
+        if (!$miss = $this->_model->miss->logMiss($request, $agent['isBot'])) {
+            return null;
+        }
+
         return $this->newRecord([
-                'miss' => $this->_model->miss->logMiss($request, $agent['isBot']),
+                'miss' => $miss,
                 'referrer' => $this->_model->getLogReferrer(),
                 'message' => $message,
                 'userAgent' => $agent,

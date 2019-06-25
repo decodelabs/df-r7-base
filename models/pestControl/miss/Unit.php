@@ -11,8 +11,8 @@ use df\apex;
 use df\axis;
 use df\opal;
 
-class Unit extends axis\unit\Table {
-
+class Unit extends axis\unit\Table
+{
     const SEARCH_FIELDS = [
         'mode' => 1,
         'request' => 4
@@ -24,7 +24,8 @@ class Unit extends axis\unit\Table {
 
     const DEFAULT_ORDER = ['lastSeen DESC', 'seen DESC'];
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
 
         $schema->addField('mode', 'Text', 16)
@@ -42,23 +43,29 @@ class Unit extends axis\unit\Table {
         $schema->addField('missLogs', 'OneToMany', 'missLog', 'miss');
     }
 
-// Block
-    public function applyListRelationQueryBlock(opal\query\IReadQuery $query, opal\query\IField $relationField) {
+    // Block
+    public function applyListRelationQueryBlock(opal\query\IReadQuery $query, opal\query\IField $relationField)
+    {
         $query->leftJoinRelation($relationField, 'mode', 'request');
     }
 
 
-// IO
-    public function logMiss($request, $isBot=false, $mode=null) {
+    // IO
+    public function logMiss($request, $isBot=false, $mode=null)
+    {
         $mode = $mode ?? $this->context->getRunMode();
         $request = $this->_model->normalizeLogRequest($request, $mode);
+
+        if (!$this->_checkRequest($request)) {
+            return null;
+        }
 
         $this->update([
                 'lastSeen' => 'now',
                 'archiveDate' => null
             ])
             ->express('seen', 'seen', '+', 1)
-            ->chainIf($isBot, function($query) {
+            ->chainIf($isBot, function ($query) {
                 $query->express('botsSeen', 'botsSeen', '+', 1);
             })
             ->where('request', '=', $request)
@@ -68,7 +75,7 @@ class Unit extends axis\unit\Table {
             ->where('request', '=', $request)
             ->toRow();
 
-        if(!$miss) {
+        if (!$miss) {
             $miss = $this->newRecord([
                     'mode' => $mode,
                     'request' => $request,
@@ -81,5 +88,20 @@ class Unit extends axis\unit\Table {
         }
 
         return $miss;
+    }
+
+    protected function _checkRequest(string $request): bool
+    {
+        switch ($request) {
+            case 'wp-login.php':
+            case 'xmlrpc.php':
+            case 'ads.txt':
+            case 'sitemap.xml':
+            case 'config/AspCms_Config.asp':
+                return false;
+
+            default:
+                return true;
+        }
     }
 }
