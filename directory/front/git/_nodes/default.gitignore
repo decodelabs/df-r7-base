@@ -36,7 +36,7 @@ Thumbs.db
 ######################
 .project
 .buildpath
-.settings/*
+.settings
 
 *.sublime-project
 *.sublime-workspace
@@ -44,11 +44,11 @@ Thumbs.db
 
 # App data
 ######################
-data/*
-dev/*
-assets/vendor/*
-assets/lib/vendor/*
-vendor/
+data
+dev
+assets/vendor
+assets/lib/vendor
+vendor
 
 .htaccess
 .sass-cache
