@@ -24,6 +24,8 @@ class Unit extends axis\unit\Table
 
         $schema->addField('miss', 'ManyToOne', 'miss', 'missLogs');
 
+        $schema->addField('url', 'text', 'medium')
+            ->isNullable(true);
         $schema->addField('referrer', 'Text', 'medium')
             ->isNullable(true);
         $schema->addField('message', 'Text', 'medium')
@@ -38,24 +40,5 @@ class Unit extends axis\unit\Table
         $schema->addField('isProduction', 'Boolean')
             ->setDefaultValue(true);
         $schema->addField('isArchived', 'Boolean');
-    }
-
-    public function logMiss($request=null, $message=null)
-    {
-        $agent = $this->context->data->user->agent->logCurrent();
-
-        if (!$miss = $this->_model->miss->logMiss($request, $agent['isBot'])) {
-            return null;
-        }
-
-        return $this->newRecord([
-                'miss' => $miss,
-                'referrer' => $this->_model->getLogReferrer(),
-                'message' => $message,
-                'userAgent' => $agent,
-                'user' => $this->_model->getLogUserId(),
-                'isProduction' => $this->context->app->isProduction()
-            ])
-            ->save();
     }
 }

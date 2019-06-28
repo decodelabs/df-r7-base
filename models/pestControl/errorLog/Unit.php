@@ -69,7 +69,7 @@ class Unit extends axis\unit\Table
                 'request' => $this->_model->normalizeLogRequest($request, $mode),
                 'referrer' => $this->_model->getLogReferrer(),
                 'message' => $message,
-                'userAgent' => $this->context->data->user->agent->logCurrent(),
+                'userAgent' => $this->_model->logCurrentAgent()['id'],
                 'stackTrace' => $this->_model->stackTrace->logException($e),
                 'user' => $this->_model->getLogUserId(),
                 'isProduction' => $this->context->app->isProduction()
@@ -110,7 +110,7 @@ class Unit extends axis\unit\Table
                 'request' => $this->_model->normalizeLogRequest($request, $mode),
                 'referrer' => $this->_model->getLogReferrer(),
                 'message' => $message,
-                'userAgent' => $this->context->data->user->agent->logCurrent(),
+                'userAgent' => $this->_model->logCurrentAgent()['id'],
                 'stackTrace' => $this->_model->stackTrace->logArray($trace),
                 'user' => $this->_model->getLogUserId(),
                 'isProduction' => $this->context->app->isProduction()

@@ -30,7 +30,7 @@ class Unit extends axis\unit\Table
 
         $schema->addField('mode', 'Text', 16)
             ->setDefaultValue('http');
-        $schema->addField('request', 'Text', 255);
+        $schema->addField('request', 'Text', 1024);
 
         $schema->addField('seen', 'Number', 4);
         $schema->addField('botsSeen', 'Number', 4);
@@ -49,48 +49,7 @@ class Unit extends axis\unit\Table
         $query->leftJoinRelation($relationField, 'mode', 'request');
     }
 
-
-    // IO
-    public function logMiss($request, $isBot=false, $mode=null)
-    {
-        $mode = $mode ?? $this->context->getRunMode();
-        $request = $this->_model->normalizeLogRequest($request, $mode);
-
-        if (!$this->_checkRequest($request)) {
-            return null;
-        }
-
-        $this->update([
-                'lastSeen' => 'now',
-                'archiveDate' => null
-            ])
-            ->express('seen', 'seen', '+', 1)
-            ->chainIf($isBot, function ($query) {
-                $query->express('botsSeen', 'botsSeen', '+', 1);
-            })
-            ->where('request', '=', $request)
-            ->execute();
-
-        $miss = $this->fetch()
-            ->where('request', '=', $request)
-            ->toRow();
-
-        if (!$miss) {
-            $miss = $this->newRecord([
-                    'mode' => $mode,
-                    'request' => $request,
-                    'seen' => 1,
-                    'botsSeen' => $isBot ? 1:0,
-                    'firstSeen' => 'now',
-                    'lastSeen' => 'now'
-                ])
-                ->save();
-        }
-
-        return $miss;
-    }
-
-    protected function _checkRequest(string $request): bool
+    public function checkRequest(string $request): bool
     {
         switch ($request) {
             case 'wp-login.php':

@@ -21,30 +21,42 @@ class Unit extends axis\unit\Table
         $schema->addField('isBot', 'Boolean');
     }
 
-
-    public function logAgent($agent)
+    public function logAgent(?string $agent, bool $logBots=true): array
     {
-        if (empty($agent)) {
-            return null;
+        $isBot = $this->isBot($agent);
+        $shouldLog = !$isBot || $logBots;
+        $output = null;
+
+        if ($shouldLog) {
+            $output = $this->select()
+                ->where('body', '=', $agent)
+                ->toRow();
         }
 
-        $output = $this->fetch()
-            ->where('body', '=', $agent)
-            ->toRow();
-
         if (!$output) {
-            $output = $this->newRecord([
+            if ($shouldLog) {
+                $id = $this->insert([
+                        'body' => $agent,
+                        'isBot' => $isBot
+                    ])
+                    ->execute()['id'];
+            } else {
+                $id = null;
+            }
+
+            $output = [
+                'id' => $id,
                 'body' => $agent,
-                'isBot' => $this->isBot($agent)
-            ])->save();
+                'isBot' => $isBot
+            ];
         }
 
         return $output;
     }
 
-    public function logCurrent()
+    public function logCurrent(bool $logBots=true): array
     {
-        return $this->logAgent($this->getCurrentString());
+        return $this->logAgent($this->getCurrentString(), $logBots);
     }
 
 
@@ -128,8 +140,12 @@ class Unit extends axis\unit\Table
         'YisouSpider'
     ];
 
-    public function isBot($agent)
+    public function isBot(?string $agent): bool
     {
+        if (empty($agent)) {
+            return true;
+        }
+
         foreach ($this->_botMatch as $match) {
             if (stristr($agent, $match)) {
                 return true;

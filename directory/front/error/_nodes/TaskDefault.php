@@ -11,13 +11,14 @@ use df\apex;
 use df\arch;
 use df\link;
 
-class TaskDefault extends arch\node\Base {
-
+class TaskDefault extends arch\node\Base
+{
     const CHECK_ACCESS = false;
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 
-    public function execute() {
-        if(!$exception = $this->runner->getDispatchException()) {
+    public function execute()
+    {
+        if (!$exception = $this->runner->getDispatchException()) {
             throw core\Error::{'EForbidden'}([
                 'message' => 'You shouldn\'t be here',
                 'http' => 403
@@ -27,29 +28,15 @@ class TaskDefault extends arch\node\Base {
         $code = $exception->getCode();
         $lastRequest = $this->runner->getDispatchRequest();
 
-        if(!link\http\response\HeaderCollection::isValidStatusCode($code)
+        if (!link\http\response\HeaderCollection::isValidStatusCode($code)
         || !link\http\response\HeaderCollection::isErrorStatusCode($code)) {
             $code = 500;
         }
 
         try {
             $command = implode(' ', array_slice($_SERVER['argv'], 1));
-
-            switch($code) {
-                case 401:
-                case 403:
-                    $this->logs->logAccessError($code, $command, $exception->getMessage());
-                    break;
-
-                case 404:
-                    $this->logs->logNotFound($command, $exception->getMessage());
-                    break;
-
-                case 500:
-                    $this->logs->logException($exception, $command);
-                    break;
-            }
-        } catch(\Throwable $e) {
+            $this->logs->logException($exception, $command);
+        } catch (\Throwable $e) {
             core\debug()->exception($e);
         }
 

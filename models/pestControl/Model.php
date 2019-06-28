@@ -14,16 +14,75 @@ use df\link;
 
 class Model extends axis\Model
 {
-    const PURGE_THRESHOLD = '2 months';
+    const PURGE_THRESHOLD = '1 month';
 
-    public function logAccessError($code=403, $request=null, $message=null)
+    public function logCurrentAgent(bool $logBots=false): array
+    {
+        return $this->context->data->user->agent->logCurrent($logBots);
+    }
+
+    public function logAccessError($code=403, $request=null, string $message=null)
     {
         return $this->accessLog->logAccess($code, $request, $message);
     }
 
-    public function logNotFound($request=null, $message=null)
+    public function logNotFound($request=null, string $message=null): void
     {
-        return $this->missLog->logMiss($request, $message);
+        // Prepare
+        $agent = $this->logCurrentAgent();
+        $isBot = $agent['isBot'];
+        $mode = $this->context->getRunMode();
+        $request = $this->normalizeLogRequest($request, $mode);
+
+        if (!$this->miss->checkRequest($request)) {
+            return;
+        }
+
+
+        // Update counts
+        $count = $this->miss->update([
+                'lastSeen' => 'now',
+                'archiveDate' => null
+            ])
+            ->express('seen', 'seen', '+', 1)
+            ->chainIf($isBot, function ($query) {
+                $query->express('botsSeen', 'botsSeen', '+', 1);
+            })
+            ->where('request', '=', $request)
+            ->execute();
+
+
+        // Insert or fetch id
+        if (!$count) {
+            $missId = (string)$this->miss->insert([
+                'mode' => $mode,
+                'request' => $request,
+                'seen' => 1,
+                'botsSeen' => $isBot ? 1:0,
+                'firstSeen' => 'now',
+                'lastSeen' => 'now'
+            ])->execute()['id'];
+        } elseif (!$isBot) {
+            $missId = (string)$this->miss->select('id')
+                ->where('request', '=', $request)
+                ->toValue('id');
+        } else {
+            $missId = null;
+        }
+
+
+        // Insert log
+        if (!$isBot) {
+            $this->missLog->insert([
+                    'miss' => $missId,
+                    'referrer' => $this->getLogReferrer(),
+                    'message' => $message,
+                    'userAgent' => $agent['id'],
+                    'user' => $this->getLogUserId(),
+                    'isProduction' => $this->context->app->isProduction()
+                ])
+                ->execute();
+        }
     }
 
     public function logException(\Throwable $exception, $request=null)

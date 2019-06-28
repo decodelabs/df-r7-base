@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Unit extends axis\unit\Table {
-
+class Unit extends axis\unit\Table
+{
     const SEARCH_FIELDS = [
         'code' => [
             'operator' => '=',
@@ -27,7 +27,8 @@ class Unit extends axis\unit\Table {
 
     const DEFAULT_ORDER = 'date DESC';
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addIndexedField('date', 'Timestamp');
 
@@ -49,7 +50,8 @@ class Unit extends axis\unit\Table {
         $schema->addField('isArchived', 'Boolean');
     }
 
-    public function logAccess($code=403, $request=null, $message=null) {
+    public function logAccess($code=403, $request=null, $message=null)
+    {
         $mode = $this->context->getRunMode();
         $request = $this->_model->normalizeLogRequest($request, $mode);
 
@@ -58,7 +60,7 @@ class Unit extends axis\unit\Table {
                 'code' => $code,
                 'request' => $request,
                 'message' => $message,
-                'userAgent' => $this->context->data->user->agent->logCurrent(),
+                'userAgent' => $this->_model->logCurrentAgent()['id'],
                 'user' => $this->_model->getLogUserId(),
                 'isProduction' => $this->context->app->isProduction()
             ])
