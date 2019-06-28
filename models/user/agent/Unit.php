@@ -91,7 +91,9 @@ class Unit extends axis\unit\Table
         'AdsBot-Google',
         'AhrefsBot',
         'Apache-HttpClient',
+        'Applebot',
         'Baiduspider',
+        'Barkrowler',
         'bingbot',
         'bitlybot',
         'Chilkat',
@@ -104,6 +106,7 @@ class Unit extends axis\unit\Table
         'Domain Re-Animator',
         'DomainCrawler',
         'DotBot',
+        'exabot',
         'facebookexternalhit',
         'Feedly',
         'git',
@@ -136,6 +139,7 @@ class Unit extends axis\unit\Table
         'XoviBot',
         'VeriCiteCrawler',
         'woobot',
+        'yacybot',
         'Yandex',
         'YisouSpider'
     ];
