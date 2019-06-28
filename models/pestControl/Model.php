@@ -32,7 +32,7 @@ class Model extends axis\Model
         $agent = $this->logCurrentAgent();
         $isBot = $agent['isBot'];
         $mode = $this->context->getRunMode();
-        $request = $this->normalizeLogRequest($request, $mode);
+        $request = $this->normalizeLogRequest($request, $mode, $url);
 
         if (!$this->miss->checkRequest($request)) {
             return;
@@ -71,10 +71,12 @@ class Model extends axis\Model
         }
 
 
+
         // Insert log
         if (!$isBot) {
             $this->missLog->insert([
                     'miss' => $missId,
+                    'url' => $url,
                     'referrer' => $this->getLogReferrer(),
                     'message' => $message,
                     'userAgent' => $agent['id'],
@@ -103,7 +105,7 @@ class Model extends axis\Model
 
 
 
-    public function normalizeLogRequest($request, $mode=null)
+    public function normalizeLogRequest($request, string $mode=null, string &$url=null): string
     {
         if ($request === null) {
             $request = '/';
@@ -125,6 +127,7 @@ class Model extends axis\Model
             }
 
             if ($request instanceof link\http\IUrl) {
+                $url = (string)$request;
                 $router = core\app\runner\http\Router::getInstance();
                 $request = new core\uri\Url($request->getLocalString());
                 unset($request->query->cts);
