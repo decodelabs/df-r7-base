@@ -127,6 +127,7 @@ class Unit extends axis\unit\Table
         'nutch',
         'Protocol Discovery',
         'python-requests',
+        'Qwantify',
         'RU_Bot',
         'SafeDNS',
         'SemrushBot',
