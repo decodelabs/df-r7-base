@@ -49,18 +49,45 @@ class Unit extends axis\unit\Table
         $query->leftJoinRelation($relationField, 'mode', 'request');
     }
 
+
+
+    protected $_requestMatch = [
+        // Hack attempts
+        '111.tar.gz',
+        'adminer.php',
+        'backup',
+        'blogs.php?action=new_post',
+        'cgi-bin',
+        'config/AspCms_Config.asp',
+        'conn.asp',
+        'data/cache_template/',
+        'httpdoc',
+        'kindeditor/',
+        'member/OrderInfo.asp',
+        'phpmyadmin',
+        'plus/',
+        'public.zip',
+        'public.rar',
+        'uploadfile/',
+        'wallet.dat',
+        'wp-admin',
+        'wp-login',
+        'x.php',
+        'xmlrpc.php',
+
+        // Meta
+        'ads.txt',
+        'sitemap.xml',
+    ];
+
     public function checkRequest(string $request): bool
     {
-        switch ($request) {
-            case 'wp-login.php':
-            case 'xmlrpc.php':
-            case 'ads.txt':
-            case 'sitemap.xml':
-            case 'config/AspCms_Config.asp':
+        foreach ($this->_requestMatch as $match) {
+            if (stristr($request, $match)) {
                 return false;
-
-            default:
-                return true;
+            }
         }
+
+        return true;
     }
 }

@@ -87,6 +87,7 @@ class Unit extends axis\unit\Table
     }
 
     protected $_botMatch = [
+        '2345Explorer',
         'AddThis.com',
         'AdsBot-Google',
         'AhrefsBot',
