@@ -12,8 +12,8 @@ use df\link;
 use df\mesh;
 use df\flex;
 
-class Client implements IClient, \Serializable, mesh\entity\IEntity {
-
+class Client implements IClient, \Serializable, mesh\entity\IEntity
+{
     use TNameExtractor;
 
     protected $_id;
@@ -35,12 +35,16 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
     private $_accessCache = [];
 
-    public static function stateIdToName($state) {
-        if($state === null) {
+    public static function stateIdToName($state)
+    {
+        if ($state === null) {
             return 'None';
         }
 
-        switch((int)$state) {
+        switch ((int)$state) {
+            case IState::SPAM:
+                return 'Spam';
+
             case IState::DEACTIVATED:
                 return 'Deactivated';
 
@@ -61,17 +65,20 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         }
     }
 
-    public static function factory(IClientDataObject $data) {
+    public static function factory(IClientDataObject $data)
+    {
         $output = new self();
         $output->import($data);
         return $output;
     }
 
-    public function getEntityLocator() {
+    public function getEntityLocator()
+    {
         return new mesh\entity\Locator('user://Client');
     }
 
-    public static function generateGuest(user\IManager $manager) {
+    public static function generateGuest(user\IManager $manager)
+    {
         $output = new self();
         $output->_id = null;
         $output->_email = null;
@@ -85,30 +92,30 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
         $output->_language = $locale->getLanguage();
 
-        if(df\Launchpad::$runner instanceof core\app\runner\Http) {
+        if (df\Launchpad::$runner instanceof core\app\runner\Http) {
             $ip = df\Launchpad::$runner->getHttpRequest()->getIp();
             $geoIp = link\geoIp\Handler::factory()->lookup($ip);
 
-            if($geoIp->country) {
+            if ($geoIp->country) {
                 $output->_country = $geoIp->country;
             } else {
                 $output->_country = $locale->getRegion();
             }
 
-            if($geoIp->timezone) {
+            if ($geoIp->timezone) {
                 $output->_timezone = $geoIp->timezone;
             }
         }
 
-        if($output->_country === null) {
+        if ($output->_country === null) {
             $output->_country = $locale->getRegion();
         }
 
-        if($output->_country === null) {
+        if ($output->_country === null) {
             $output->_country = $i18nManager->countries->suggestCountryForLanguage($output->_language);
         }
 
-        if($output->_timezone === null) {
+        if ($output->_timezone === null) {
             $output->_timezone = $i18nManager->timezones->suggestForCountry($output->_country);
         }
 
@@ -119,7 +126,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         return $output;
     }
 
-    public function serialize() {
+    public function serialize()
+    {
         return json_encode([
             'id' => $this->_id,
             'em' => $this->_email,
@@ -138,18 +146,19 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         ]);
     }
 
-    public function unserialize($data) {
+    public function unserialize($data)
+    {
         $data = json_decode($data, true);
         $this->_id = $data['id'];
         $this->_email = $data['em'];
         $this->_fullName = $data['fn'];
         $this->_nickName = $data['nn'];
 
-        if($data['jd']) {
+        if ($data['jd']) {
             $this->_joinDate = new core\time\Date($data['jd']);
         }
 
-        if($data['ld']) {
+        if ($data['ld']) {
             $this->_loginDate = new core\time\Date($data['ld']);
         }
 
@@ -157,11 +166,11 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         $this->_language = $data['ln'];
         $this->_timezone = $data['tz'];
 
-        if(isset($data['gr'])) {
+        if (isset($data['gr'])) {
             $this->_groupIds = (array)$data['gr'];
         }
 
-        if(isset($data['si'])) {
+        if (isset($data['si'])) {
             $this->_signifiers = (array)$data['si'];
         }
 
@@ -170,57 +179,70 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         $this->_keyringTimestamp = $data['kt'];
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->_id;
     }
 
-    public function getEmail() {
+    public function getEmail()
+    {
         return $this->_email;
     }
 
-    public function getFullName() {
+    public function getFullName()
+    {
         return $this->_fullName;
     }
 
-    public function getNickName() {
+    public function getNickName()
+    {
         return $this->_nickName;
     }
 
-    public function getStatus() {
+    public function getStatus()
+    {
         return $this->_authState;
     }
 
-    public function getJoinDate() {
+    public function getJoinDate()
+    {
         return $this->_joinDate;
     }
 
-    public function getLoginDate() {
+    public function getLoginDate()
+    {
         return $this->_loginDate;
     }
 
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this->_language;
     }
 
-    public function getCountry() {
+    public function getCountry()
+    {
         return $this->_country;
     }
 
-    public function getTimezone() {
+    public function getTimezone()
+    {
         return $this->_timezone;
     }
 
-    public function getGroupIds() {
+    public function getGroupIds()
+    {
         return $this->_groupIds;
     }
 
-    public function getSignifiers() {
+    public function getSignifiers()
+    {
         return $this->_signifiers;
     }
 
 
-    public function setAuthenticationState($state) {
-        switch($state) {
+    public function setAuthenticationState($state)
+    {
+        switch ($state) {
             case IState::GUEST:
             case IState::PENDING:
             case IState::BOUND:
@@ -238,37 +260,50 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         return $this;
     }
 
-    public function getAuthenticationState() {
+    public function getAuthenticationState()
+    {
         return $this->_authState;
     }
 
-    public function isDeactivated() {
-        return $this->_authState == IState::DEACTIVATED;
+    public function isDeactivated(): bool
+    {
+        return $this->_authState < 0;
     }
 
-    public function isGuest() {
+    public function isSpam(): bool
+    {
+        return $this->_authState === IState::SPAM;
+    }
+
+    public function isGuest(): bool
+    {
         return $this->_authState == IState::GUEST;
     }
 
-    public function isPending() {
+    public function isPending(): bool
+    {
         return $this->_authState == IState::PENDING;
     }
 
-    public function isLoggedIn() {
+    public function isLoggedIn(): bool
+    {
         return $this->_id !== null;
     }
 
-    public function isBound() {
+    public function isBound(): bool
+    {
         return $this->_authState == IState::BOUND;
     }
 
-    public function isConfirmed() {
+    public function isConfirmed(): bool
+    {
         return $this->_authState >= IState::CONFIRMED;
     }
 
-    public function isA(...$signifiers) {
-        foreach($signifiers as $signifier) {
-            if(in_array($signifier, $this->_signifiers)) {
+    public function isA(...$signifiers): bool
+    {
+        foreach ($signifiers as $signifier) {
+            if (in_array($signifier, $this->_signifiers)) {
                 return true;
             }
         }
@@ -278,7 +313,8 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
 
 
-    public function import(IClientDataObject $clientData) {
+    public function import(IClientDataObject $clientData)
+    {
         $this->_accessCache = [];
 
         $this->_id = $clientData->getId();
@@ -293,27 +329,28 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         $this->_timezone = $clientData->getTimezone();
         $this->_groupIds = [];
 
-        foreach($clientData->getGroupIds() as $groupId) {
+        foreach ($clientData->getGroupIds() as $groupId) {
             $this->_groupIds[] = (string)flex\Guid::factory($groupId);
         }
 
         $this->_signifiers = $clientData->getSignifiers();
 
-        if(df\Launchpad::$runner instanceof core\app\runner\Http) {
+        if (df\Launchpad::$runner instanceof core\app\runner\Http) {
             $ip = df\Launchpad::$runner->getHttpRequest()->getIp();
             $geoIp = link\geoIp\Handler::factory()->lookup($ip);
 
-            if($geoIp->country) {
+            if ($geoIp->country) {
                 $this->_country = $geoIp->country;
             }
 
-            if($geoIp->timezone) {
+            if ($geoIp->timezone) {
                 $this->_timezone = $geoIp->timezone;
             }
         }
     }
 
-    public function setKeyring(array $keyring) {
+    public function setKeyring(array $keyring)
+    {
         $this->_accessCache = [];
         $this->_keyring = $keyring;
         $this->_keyringTimestamp = time();
@@ -321,55 +358,59 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         return $this;
     }
 
-    public function getKeyring() {
+    public function getKeyring()
+    {
         return $this->_keyring;
     }
 
-    public function getKeyringTimestamp() {
+    public function getKeyringTimestamp()
+    {
         return $this->_keyringTimestamp;
     }
 
 
-    public function canAccess(IAccessLock $lock, $action=null, $linkTo=false) {
+    public function canAccess(IAccessLock $lock, $action=null, $linkTo=false)
+    {
         $domain = $lock->getAccessLockDomain();
 
-        if($domain == 'dynamic') {
+        if ($domain == 'dynamic') {
             return $lock->getDefaultAccess($action);
         }
 
         $lockId = $domain.'://'.$lock->getAccessLockId();
 
-        if($action !== null) {
+        if ($action !== null) {
             $lockId .= '#'.$action;
         }
 
-        if(array_key_exists($lockId, $this->_accessCache)) {
+        if (array_key_exists($lockId, $this->_accessCache)) {
             return $this->_accessCache[$lockId];
         }
 
         $output = null;
 
-        if(isset($this->_keyring[$domain])) {
+        if (isset($this->_keyring[$domain])) {
             $output = $lock->lookupAccessKey($this->_keyring[$domain], $action);
 
-            if(!$output && isset($this->_keyring[$domain]['*'])) {
+            if (!$output && isset($this->_keyring[$domain]['*'])) {
                 $output = $this->_keyring[$domain]['*'];
             }
-        } else if(isset($this->_keyring['*'])) {
+        } elseif (isset($this->_keyring['*'])) {
             $output = $lock->lookupAccessKey($this->_keyring['*'], $action);
         }
 
-        if(!$output && isset($this->_keyring['*']['*'])) {
+        if (!$output && isset($this->_keyring['*']['*'])) {
             $output = $this->_keyring['*']['*'];
         }
 
-        if($output === null) {
+        if ($output === null) {
             $default = $lock->getDefaultAccess($action);
 
-            if($default === true || $default === false) {
+            if ($default === true || $default === false) {
                 $output = $default;
             } else {
-                switch($default) {
+                switch ($default) {
+                    case IState::SPAM:
                     case IState::DEACTIVATED:
                         $output = $this->isDeactivated();
                         break;
@@ -387,7 +428,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
                         break;
 
                     case IState::CONFIRMED:
-                        if($linkTo) {
+                        if ($linkTo) {
                             $output = $this->isLoggedIn();
                         } else {
                             $output = $this->isConfirmed();
@@ -408,7 +449,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
             }
         }
 
-        if($output
+        if ($output
         && !isset($this->_keyring['*']['*'])
         && !isset($this->_keyring[$domain]['*'])
         && !empty($signifiers = $lock->getAccessSignifiers())
@@ -424,13 +465,15 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
 
 
-// Array access
-    public function offsetSet($key, $value) {
+    // Array access
+    public function offsetSet($key, $value)
+    {
         throw new RuntimeException('Client objects are read only');
     }
 
-    public function offsetGet($key) {
-        switch($key) {
+    public function offsetGet($key)
+    {
+        switch ($key) {
             case 'id': return $this->_id;
             case 'email': return $this->_email;
             case 'fullName': return $this->_fullName;
@@ -446,14 +489,16 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         }
     }
 
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         return in_array($key, [
             'id', 'email', 'fullName', 'nickName', 'firstName', 'surname',
             'state', 'joinDate', 'loginDate', 'language', 'country', 'timezone'
         ]);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         throw new RuntimeException('Client objects are read only');
     }
 }

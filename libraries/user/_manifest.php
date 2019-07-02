@@ -12,14 +12,24 @@ use df\opal;
 use df\mesh;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class AuthenticationException extends RuntimeException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class AuthenticationException extends RuntimeException
+{
+}
 
 
 // Constants
-interface IState {
+interface IState
+{
+    const SPAM = -2;
     const DEACTIVATED = -1;
     const GUEST = 0;
     const PENDING = 1;
@@ -34,7 +44,8 @@ interface IState {
 
 
 // Interfaces
-interface IManager extends core\IManager, mesh\event\IEmitter {
+interface IManager extends core\IManager, mesh\event\IEmitter
+{
     // Client
     public function getClient();
     public function clearClient();
@@ -54,7 +65,8 @@ interface IManager extends core\IManager, mesh\event\IEmitter {
     public function getHelper(string $name): IHelper;
 }
 
-interface IUserModel {
+interface IUserModel
+{
     public function getClientData($id);
     public function getClientDataList(array $ids, array $emails=null);
     public function getAuthenticationDomainInfo(user\authentication\IRequest $request);
@@ -65,7 +77,8 @@ interface IUserModel {
     public function removeClientOptions($id, $keys);
 }
 
-interface IClientDataObject extends \ArrayAccess {
+interface IClientDataObject extends \ArrayAccess
+{
     public function getId(): ?string;
     public function getEmail();
     public function getFullName();
@@ -82,40 +95,46 @@ interface IClientDataObject extends \ArrayAccess {
     public function getSignifiers();
 }
 
-trait TNameExtractor {
-
-    public function getFirstName() {
+trait TNameExtractor
+{
+    public function getFirstName()
+    {
         $parts = preg_split('/\s+|\./', trim($this->getFullName()));
         static $titles = ['mr', 'mrs', 'miss', 'ms', 'mx', 'master', 'maid', 'madam', 'dr'];
 
         do {
             $output = array_shift($parts);
             $test = strtolower(str_replace([',', '.', '-'], '', $output));
-        } while(count($parts) > 1 && in_array($test, $titles));
+        } while (count($parts) > 1 && in_array($test, $titles));
 
         return ucfirst($output);
     }
 
-    public function getSurname() {
+    public function getSurname()
+    {
         $parts = explode(' ', $this->getFullName());
         return array_pop($parts);
     }
 }
 
-interface IActiveClientDataObject extends IClientDataObject {
+interface IActiveClientDataObject extends IClientDataObject
+{
     public function onAuthentication(IClient $client, bool $asAdmin=false);
 }
 
-interface IClient extends IClientDataObject {
+interface IClient extends IClientDataObject
+{
     public function setAuthenticationState($state);
     public function getAuthenticationState();
-    public function isDeactivated();
-    public function isGuest();
-    public function isPending();
-    public function isLoggedIn();
-    public function isBound();
-    public function isConfirmed();
-    public function isA(...$signifiers);
+    
+    public function isDeactivated(): bool;
+    public function isSpam(): bool;
+    public function isGuest(): bool;
+    public function isPending(): bool;
+    public function isLoggedIn(): bool;
+    public function isBound(): bool;
+    public function isConfirmed(): bool;
+    public function isA(...$signifiers): bool;
 
     public function import(IClientDataObject $clientData);
     public function setKeyring(array $keyring);
@@ -127,42 +146,48 @@ interface IClient extends IClientDataObject {
 
 
 ## Helpers
-interface IHelper {
+interface IHelper
+{
     public function getManager();
     public function getHelperName();
 }
 
-interface ISessionBackedHelper extends IHelper, \ArrayAccess, core\IShutdownAware {
+interface ISessionBackedHelper extends IHelper, \ArrayAccess, core\IShutdownAware
+{
     public function storeSessionData();
 }
 
-trait TSessionBackedHelper {
-
+trait TSessionBackedHelper
+{
     protected $_sessionData = null;
     protected $_sessionDataNew = false;
     protected $_sessionDataChanged = false;
 
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value)
+    {
         $this->_ensureSessionData();
         $this->_sessionData[$key] = $value;
         $this->_sessionDataChanged = true;
         return $this;
     }
 
-    public function offsetGet($key) {
+    public function offsetGet($key)
+    {
         $this->_ensureSessionData();
 
-        if(isset($this->_sessionData[$key])) {
+        if (isset($this->_sessionData[$key])) {
             return $this->_sessionData[$key];
         }
     }
 
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         $this->_ensureSessionData();
         return isset($this->_sessionData[$key]);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         $this->_ensureSessionData();
         unset($this->_sessionData[$key]);
         $this->_sessionDataChanged = true;
@@ -170,8 +195,9 @@ trait TSessionBackedHelper {
     }
 
 
-    protected function _ensureSessionData() {
-        if(isset($this->_sessionData)) {
+    protected function _ensureSessionData()
+    {
+        if (isset($this->_sessionData)) {
             return;
         }
 
@@ -179,29 +205,33 @@ trait TSessionBackedHelper {
         $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
         $this->_sessionData = $bucket->get($this->getHelperName());
 
-        if($this->_sessionData === null) {
+        if ($this->_sessionData === null) {
             $this->_sessionData = $this->_generateDefaultSessionData();
             $this->_sessionDataNew = true;
         }
     }
 
-    protected function _generateDefaultSessionData() {
+    protected function _generateDefaultSessionData()
+    {
         return [];
     }
 
-    protected function _destroySessionData() {
+    protected function _destroySessionData()
+    {
         $manager = $this->manager;
         $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
         $bucket->remove($this->getHelperName());
         $this->_sessionData = null;
     }
 
-    public function onAppShutdown(): void {
+    public function onAppShutdown(): void
+    {
         $this->storeSessionData();
     }
 
-    public function storeSessionData() {
-        if($this->_sessionData === null
+    public function storeSessionData()
+    {
+        if ($this->_sessionData === null
         || !$this->_sessionDataChanged
         || (empty($this->_sessionData) && $this->_sessionDataNew)) {
             return;
@@ -210,7 +240,7 @@ trait TSessionBackedHelper {
         $manager = $this->manager;
         $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
 
-        if(empty($this->_sessionData)) {
+        if (empty($this->_sessionData)) {
             $bucket->remove($this->getHelperName());
         } else {
             $bucket->set($this->getHelperName(), $this->_sessionData);
@@ -219,7 +249,8 @@ trait TSessionBackedHelper {
         $this->_sessionDataChanged = false;
     }
 
-    public function getDumpProperties() {
+    public function getDumpProperties()
+    {
         $this->_ensureSessionData();
         return $this->_sessionData;
     }
@@ -228,7 +259,8 @@ trait TSessionBackedHelper {
 
 
 ## Access
-interface IAccessLock {
+interface IAccessLock
+{
     public function getAccessLockDomain();
     public function lookupAccessKey(array $keys, $action=null);
     public function getDefaultAccess($action=null);
@@ -237,19 +269,22 @@ interface IAccessLock {
     public function getAccessLockId();
 }
 
-trait TAccessLock {
-
-    public function getActionLock($node) {
+trait TAccessLock
+{
+    public function getActionLock($node)
+    {
         return new user\access\lock\Action($this, $node);
     }
 
-    public function getAccessSignifiers(): array {
+    public function getAccessSignifiers(): array
+    {
         return [];
     }
 }
 
 
-interface IAccessControlled {
+interface IAccessControlled
+{
     public function shouldCheckAccess(bool $flag=null);
     public function setAccessLocks(array $locks);
     public function addAccessLocks(array $locks);
@@ -259,13 +294,14 @@ interface IAccessControlled {
 }
 
 
-trait TAccessControlled {
-
+trait TAccessControlled
+{
     protected $_checkAccess = false;
     protected $_accessLocks = [];
 
-    public function shouldCheckAccess(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldCheckAccess(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_checkAccess = $flag;
             return $this;
         }
@@ -273,30 +309,35 @@ trait TAccessControlled {
         return (bool)$this->_checkAccess;
     }
 
-    public function setAccessLocks(array $locks) {
+    public function setAccessLocks(array $locks)
+    {
         $this->_accessLocks = [];
         return $this->addAccessLocks($locks);
     }
 
-    public function addAccessLocks(array $locks) {
-        foreach($locks as $lock) {
+    public function addAccessLocks(array $locks)
+    {
+        foreach ($locks as $lock) {
             $this->addAccessLock($lock);
         }
 
         return $this;
     }
 
-    public function addAccessLock($lock) {
+    public function addAccessLock($lock)
+    {
         $this->_accessLocks[] = $lock;
         $this->_checkAccess = true;
         return $this;
     }
 
-    public function getAccessLocks() {
+    public function getAccessLocks()
+    {
         return $this->_accessLocks;
     }
 
-    public function clearAccessLocks() {
+    public function clearAccessLocks()
+    {
         $this->_accessLocks = [];
         return $this;
     }
@@ -304,7 +345,8 @@ trait TAccessControlled {
 
 
 
-interface IPostalAddress extends core\IStringProvider, core\IArrayProvider {
+interface IPostalAddress extends core\IStringProvider, core\IArrayProvider
+{
     public function getPostOfficeBox();
     public function getStreetLine1();
     public function getStreetLine2();
@@ -320,47 +362,51 @@ interface IPostalAddress extends core\IStringProvider, core\IArrayProvider {
     public function toOneLineString();
 }
 
-trait TPostalAddress {
-
+trait TPostalAddress
+{
     protected $_countryName;
 
-    public function getMainStreetLine() {
+    public function getMainStreetLine()
+    {
         $output = $this->getStreetLine1();
 
-        if($this->getStreetLine3() && $t = $this->getStreetLine2()) {
+        if ($this->getStreetLine3() && $t = $this->getStreetLine2()) {
             $output .= ', '.$t;
         }
 
         return $output;
     }
 
-    public function getExtendedStreetLine() {
-        if($output = $this->getStreetLine3()) {
+    public function getExtendedStreetLine()
+    {
+        if ($output = $this->getStreetLine3()) {
             return $output;
         }
 
         return $this->getStreetLine2();
     }
 
-    public function getFullStreetAddress() {
+    public function getFullStreetAddress()
+    {
         $output = $this->getStreetLine1();
         $address2 = $this->getStreetLine2();
         $address3 = $this->getStreetLine3();
 
-        if(!empty($address2)) {
+        if (!empty($address2)) {
             $output .= ', '.$address2;
         }
 
-        if(!empty($address3)) {
+        if (!empty($address3)) {
             $output .= ', '.$address3;
         }
 
         return $output;
     }
 
-    public function getPostOfficeBox() {
-        foreach([$this->getStreetLine1(), $this->getStreetLine2(), $this->getStreetLine3()] as $line) {
-            if(substr(str_replace('.', ' ', strtolower($line)), 0, 6) == 'po box') {
+    public function getPostOfficeBox()
+    {
+        foreach ([$this->getStreetLine1(), $this->getStreetLine2(), $this->getStreetLine3()] as $line) {
+            if (substr(str_replace('.', ' ', strtolower($line)), 0, 6) == 'po box') {
                 return $line;
             }
         }
@@ -368,29 +414,33 @@ trait TPostalAddress {
         return null;
     }
 
-    public function getCountryName() {
-        if(!$this->_countryName) {
+    public function getCountryName()
+    {
+        if (!$this->_countryName) {
             $this->_countryName = core\i18n\Manager::getInstance()->countries->getName($this->getCountryCode());
         }
 
         return $this->_countryName;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         $data = $this->toArray();
         $data['country'] = $this->getCountryName();
         $data['countryCode'] = null;
 
-        return implode("\n", array_filter($data, function($line) {
+        return implode("\n", array_filter($data, function ($line) {
             return !empty($line);
         }));
     }
 
-    public function toOneLineString() {
+    public function toOneLineString()
+    {
         return $this->getFullStreetAddress().', '.$this->getLocality().', '.$this->getPostalCode().', '.$this->getCountryCode();
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'street1' => $this->getStreetLine1(),
             'street2' => $this->getStreetLine2(),
