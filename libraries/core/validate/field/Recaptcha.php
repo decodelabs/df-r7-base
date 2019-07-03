@@ -10,56 +10,70 @@ use df\core;
 use df\arch;
 use df\spur;
 
-class Recaptcha extends Base implements core\validate\IRecaptchaField {
+class Recaptcha extends Base implements core\validate\IRecaptchaField
+{
+    const KEY = 'g-recaptcha-response';
 
-    protected $_name = 'g-recaptcha-response';
+    protected $_name = 'recaptcha';
     protected $_secret = null;
 
 
-// Options
-    public function __construct(core\validate\IHandler $handler, $name) {
+    // Options
+    public function __construct(core\validate\IHandler $handler, string $name)
+    {
         $this->validator = $handler;
         $this->_recordName = null;
+        $this->_name = $name;
     }
 
-    public function setSecret($secret) {
+    public function setSecret($secret)
+    {
         $this->_secret = $secret;
         return $this;
     }
 
-    public function getSecret() {
+    public function getSecret()
+    {
         return $this->_secret;
     }
 
 
-// Validate
-    public function validate() {
+    // Validate
+    public function validate()
+    {
+        $context = arch\Context::getCurrent();
+        $value = $this->data->getValue();
+
+        if ($value === null && $context->runner instanceof core\app\runner\Http) {
+            $value = $context->http->post[self::KEY];
+        }
+
         // Sanitize
-        $value = $this->_sanitizeValue($this->data->getValue());
+        $value = $this->_sanitizeValue($value);
         $this->data->setValue($value);
 
-        if($this->_secret !== null) {
+        if ($this->_secret !== null) {
             $secret = $this->_secret;
         } else {
             $config = spur\auth\recaptcha\Config::getInstance();
 
-            if(!$config->isEnabled()) {
+            if (!$config->isEnabled()) {
                 return $value;
             }
 
             $secret = $config->getSecret();
         }
 
-        if(!$length = $this->_checkRequired($value)) {
-            return null;
+        if (empty($value)) {
+            $this->addError('invalid', $this->validator->_(
+                'Please confirm you are not a robot'
+            ));
         }
 
 
 
         // Validate
-        $context = arch\Context::getCurrent();
-
-        if($context->runner instanceof core\app\runner\Http) {
+        if ($context->runner instanceof core\app\runner\Http) {
             $ip = $context->http->getIp();
         } else {
             $ip = null;
@@ -69,14 +83,14 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField {
 
         try {
             $result = $m->verify($value, $ip);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             core\logException($e);
             return $value;
         }
 
-        if(!$result->isSuccess()) {
+        if (!$result->isSuccess()) {
             $this->addError('invalid', $this->validator->_(
-                'Sorry, you don\'t appear to be a human!'
+                'Please confirm you are not a robot'
             ));
         }
 
@@ -89,8 +103,9 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField {
         return $value;
     }
 
-    public function applyValueTo(&$record, $value) {
-        if($this->_recordName !== null) {
+    public function applyValueTo(&$record, $value)
+    {
+        if ($this->_recordName !== null) {
             parent::applyValueTo($record, $value);
         }
 

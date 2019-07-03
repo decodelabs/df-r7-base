@@ -11,33 +11,37 @@ use df\aura;
 use df\arch;
 use df\spur;
 
-class Recaptcha extends Base {
-
+class Recaptcha extends Base
+{
     const PRIMARY_TAG = 'div.recaptcha';
 
     protected $_siteKey = null;
 
-    public function __construct(arch\IContext $context, $siteKey=null) {
+    public function __construct(arch\IContext $context, $siteKey=null)
+    {
         parent::__construct($context);
         $this->setSiteKey($siteKey);
     }
 
-    public function setSiteKey($key) {
+    public function setSiteKey($key)
+    {
         $this->_siteKey = $key;
         return $this;
     }
 
-    public function getSiteKey() {
+    public function getSiteKey()
+    {
         return $this->_siteKey;
     }
 
-    protected function _render() {
-        if($this->_siteKey !== null) {
+    protected function _render()
+    {
+        if ($this->_siteKey !== null) {
             $key = $this->_siteKey;
         } else {
             $config = spur\auth\recaptcha\Config::getInstance();
 
-            if(!$config->isEnabled()) {
+            if (!$config->isEnabled()) {
                 return '';
             }
 
