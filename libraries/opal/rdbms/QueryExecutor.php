@@ -1146,7 +1146,7 @@ abstract class QueryExecutor implements IQueryExecutor
         $field = $clause->getField();
         $operator = $clause->getOperator();
         $value = $clause->getPreparedValue();
-        $fieldString = $this->defineFieldReference($field, false, $forUpdateOrDelete);
+        $fieldString = $this->defineFieldReference($field, $allowAlias, $forUpdateOrDelete);
 
         if ($remoteJoinData !== null) {
             /*
