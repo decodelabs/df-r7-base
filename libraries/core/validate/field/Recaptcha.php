@@ -68,32 +68,29 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField
             $this->addError('invalid', $this->validator->_(
                 'Please confirm you are not a robot'
             ));
-        }
-
-
-
-        // Validate
-        if ($context->runner instanceof core\app\runner\Http) {
-            $ip = $context->http->getIp();
         } else {
-            $ip = null;
+            // Validate
+            if ($context->runner instanceof core\app\runner\Http) {
+                $ip = $context->http->getIp();
+            } else {
+                $ip = null;
+            }
+
+            $m = new spur\auth\recaptcha\Mediator($secret);
+
+            try {
+                $result = $m->verify($value, $ip);
+            } catch (\Throwable $e) {
+                core\logException($e);
+                return $value;
+            }
+
+            if (!$result->isSuccess()) {
+                $this->addError('invalid', $this->validator->_(
+                    'Please confirm you are not a robot'
+                ));
+            }
         }
-
-        $m = new spur\auth\recaptcha\Mediator($secret);
-
-        try {
-            $result = $m->verify($value, $ip);
-        } catch (\Throwable $e) {
-            core\logException($e);
-            return $value;
-        }
-
-        if (!$result->isSuccess()) {
-            $this->addError('invalid', $this->validator->_(
-                'Please confirm you are not a robot'
-            ));
-        }
-
 
 
         // Finalize
