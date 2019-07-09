@@ -11,7 +11,8 @@ use df\arch;
 use df\aura;
 use df\opal;
 
-interface IScaffold extends core\IRegistryObject, arch\IOptionalDirectoryAccessLock {
+interface IScaffold extends core\IRegistryObject, arch\IOptionalDirectoryAccessLock
+{
     public function loadNode();
     public function onNodeDispatch(arch\node\INode $node);
     public function loadComponent($name, array $args=null);
@@ -25,11 +26,13 @@ interface IScaffold extends core\IRegistryObject, arch\IOptionalDirectoryAccessL
     public function getDirectoryKeyName();
 }
 
-interface IRecordLoaderScaffold extends IScaffold {
+interface IRecordLoaderScaffold extends IScaffold
+{
     public function getRecordAdapter();
 }
 
-interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
+interface IRecordDataProviderScaffold extends IRecordLoaderScaffold
+{
     public function newRecord(array $values=null);
     public function getRecord();
     public function getRecordKeyName();
@@ -55,15 +58,17 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
     public function getRecordBackLinkRequest();
 }
 
-interface IRecordListProviderScaffold extends IRecordLoaderScaffold {
+interface IRecordListProviderScaffold extends IRecordLoaderScaffold
+{
     public function queryRecordList($mode, array $fields=null);
     public function extendRecordList(opal\query\ISelectQuery $query, $mode);
     public function applyRecordListSearch(opal\query\ISelectQuery $query, $search);
 
-    public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null);
+    public function renderRecordList($query=null, array $fields=null, $callback=null, $queryMode=null);
 }
 
-interface ISectionProviderScaffold extends IScaffold {
+interface ISectionProviderScaffold extends IScaffold
+{
     public function loadSectionNode();
     public function buildSection($name, $builder, $linkBuilder=null);
     public function getSectionItemCounts();

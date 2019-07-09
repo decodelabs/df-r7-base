@@ -63,7 +63,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         return $this->view;
     }
 
-    public function buildListNode(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null)
+    public function buildListNode($query=null, array $fields=null, $callback=null, $queryMode=null)
     {
         if ($queryMode === null) {
             $queryMode = $this->request->getNode();
@@ -84,16 +84,21 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
 
     // Components
-    public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null)
+    public function renderRecordList($query=null, array $fields=null, $callback=null, $queryMode=null)
     {
         if ($queryMode === null) {
             $queryMode = $this->request->getNode();
         }
 
-        if ($query) {
+        if ($query instanceof opal\query\ISelectQuery) {
             $this->prepareRecordList($query, $queryMode);
         } else {
+            $extender = is_callable($query) ? $query : null;
             $query = $this->queryRecordList($queryMode);
+
+            if ($extender) {
+                $extender($query);
+            }
         }
 
         if (static::CAN_SEARCH) {
