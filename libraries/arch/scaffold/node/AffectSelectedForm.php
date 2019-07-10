@@ -19,6 +19,10 @@ abstract class AffectSelectedForm extends arch\node\Form
 
     protected function init()
     {
+        if (!$this->_scaffold) {
+            $this->_scaffold = $this->scaffold;
+        }
+
         if (isset($this->request['selected'])) {
             $this->_ids = explode(',', $this->request['selected']);
         }

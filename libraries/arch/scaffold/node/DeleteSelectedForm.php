@@ -13,7 +13,6 @@ use df\aura;
 class DeleteSelectedForm extends AffectSelectedForm
 {
     const IS_PERMANENT = true;
-
     const DEFAULT_EVENT = 'delete';
 
     public function __construct(arch\scaffold\IScaffold $scaffold)
