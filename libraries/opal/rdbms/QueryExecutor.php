@@ -1207,6 +1207,7 @@ abstract class QueryExecutor implements IQueryExecutor
 
         switch ($operator) {
             case opal\query\clause\Clause::OP_EQ:
+            case opal\query\clause\Clause::OP_EQ_NULL:
             case opal\query\clause\Clause::OP_IN:
             case opal\query\clause\Clause::OP_LIKE:
             case opal\query\clause\Clause::OP_CONTAINS:
@@ -1218,6 +1219,7 @@ abstract class QueryExecutor implements IQueryExecutor
                 return array_unique($listData);
 
             case opal\query\clause\Clause::OP_NEQ:
+            case opal\query\clause\Clause::OP_NEQ_NULL:
             case opal\query\clause\Clause::OP_NOT_IN:
             case opal\query\clause\Clause::OP_NOT_LIKE:
             case opal\query\clause\Clause::OP_NOT_CONTAINS:
@@ -1280,7 +1282,9 @@ abstract class QueryExecutor implements IQueryExecutor
 
         switch ($operator) {
             case opal\query\clause\Clause::OP_EQ:
+            case opal\query\clause\Clause::OP_EQ_NULL:
             case opal\query\clause\Clause::OP_NEQ:
+            case opal\query\clause\Clause::OP_NEQ_NULL:
             case opal\query\clause\Clause::OP_LIKE:
             case opal\query\clause\Clause::OP_NOT_LIKE:
                 // There can only be one value for this operator..
@@ -1322,6 +1326,7 @@ abstract class QueryExecutor implements IQueryExecutor
         switch ($operator) {
             // = | IN()
             case opal\query\clause\Clause::OP_EQ:
+            case opal\query\clause\Clause::OP_EQ_NULL:
             case opal\query\clause\Clause::OP_IN:
                 if (empty($values)) {
                     return $fieldString.' IS NULL';
@@ -1331,6 +1336,7 @@ abstract class QueryExecutor implements IQueryExecutor
 
             // != | NOT IN()
             case opal\query\clause\Clause::OP_NEQ:
+            case opal\query\clause\Clause::OP_NEQ_NULL:
             case opal\query\clause\Clause::OP_NOT_IN:
                 if (empty($values)) {
                     return $fieldString.' IS NOT NULL';
@@ -1459,9 +1465,11 @@ abstract class QueryExecutor implements IQueryExecutor
     public function defineClauseExpression(opal\query\IField $field, $fieldString, $operator, $value, $allowAlias=false)
     {
         switch ($operator) {
-            // = | !=
+            // = | <=> | != | <>
             case opal\query\clause\Clause::OP_EQ:
+            case opal\query\clause\Clause::OP_EQ_NULL:
             case opal\query\clause\Clause::OP_NEQ:
+            case opal\query\clause\Clause::OP_NEQ_NULL:
                 if ($value === null) {
                     if ($operator == '=') {
                         return $fieldString.' IS NULL';

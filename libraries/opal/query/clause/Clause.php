@@ -14,7 +14,9 @@ class Clause implements opal\query\IClause, core\IDumpable
     const BETWEEN_CONVERSION_THRESHOLD = 15;
 
     const OP_EQ = '=';
+    const OP_EQ_NULL = '<=>';
     const OP_NEQ = '!=';
+    const OP_NEQ_NULL = '<>';
     const OP_GT = '>';
     const OP_GTE = '>=';
     const OP_LT = '<';
@@ -193,7 +195,9 @@ class Clause implements opal\query\IClause, core\IDumpable
     {
         switch (self::normalizeOperator($operator)) {
             case self::OP_EQ: return self::OP_NEQ;
+            case self::OP_EQ_NULL: return self::OP_NEQ_NULL;
             case self::OP_NEQ: return self::OP_EQ;
+            case self::OP_NEQ_NULL: return self::OP_EQ_NULL;
             case self::OP_GT: return self::OP_LTE;
             case self::OP_GTE: return self::OP_LT;
             case self::OP_LT: return self::OP_GTE;
@@ -231,7 +235,9 @@ class Clause implements opal\query\IClause, core\IDumpable
         } else {
             switch ($operator) {
                 case self::OP_EQ:
+                case self::OP_EQ_NULL:
                 case self::OP_NEQ:
+                case self::OP_NEQ_NULL:
                 case self::OP_GT:
                 case self::OP_GTE:
                 case self::OP_LT:
@@ -296,10 +302,12 @@ class Clause implements opal\query\IClause, core\IDumpable
                     break;
 
                 case self::OP_EQ:
+                case self::OP_EQ_NULL:
                     $this->_operator = self::OP_IN;
                     break;
 
                 case self::OP_NEQ:
+                case self::OP_NEQ_NULL:
                     $this->_operator = self::OP_NOT_IN;
                     break;
             }
@@ -321,10 +329,12 @@ class Clause implements opal\query\IClause, core\IDumpable
         if ($value instanceof opal\query\ICorrelationQuery) {
             switch ($this->_operator) {
                 case self::OP_EQ:
+                case self::OP_EQ_NULL:
                     //$this->_operator = self::OP_IN;
                     break;
 
                 case self::OP_NEQ:
+                case self::OP_NEQ_NULL:
                     //$this->_operator = self::OP_NOT_IN;
                     break;
 

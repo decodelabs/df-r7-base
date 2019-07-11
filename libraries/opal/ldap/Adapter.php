@@ -11,8 +11,8 @@ use df\opal;
 use df\user;
 use df\flex;
 
-abstract class Adapter implements IAdapter {
-
+abstract class Adapter implements IAdapter
+{
     use opal\query\TQuery_EntryPoint;
     use user\TAccessLock;
 
@@ -53,19 +53,20 @@ abstract class Adapter implements IAdapter {
 
     protected $_querySourceId;
 
-    public static function factory($connection, $context, IIdentity $privilegedIdentity=null) {
+    public static function factory($connection, $context, IIdentity $privilegedIdentity=null)
+    {
         $connection = Connection::factory($connection);
         $context = Context::factory($context);
 
         $type = $connection->getType();
 
-        if(!$type) {
+        if (!$type) {
             $type = 'Generic';
         }
 
         $class = 'df\\opal\\ldap\\adapter\\'.$type;
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new RuntimeException(
                 'No adapter available for '.$type.' connection type'
             );
@@ -74,70 +75,84 @@ abstract class Adapter implements IAdapter {
         return new $class($connection, $context, $privilegedIdentity);
     }
 
-    public static function getArrayAttributes() {
+    public static function getArrayAttributes()
+    {
         return static::ARRAY_ATTRS;
     }
 
-    public static function getDateAttributes() {
+    public static function getDateAttributes()
+    {
         return static::DATE_ATTRS;
     }
 
-    public static function getBooleanAttributes() {
+    public static function getBooleanAttributes()
+    {
         return static::BOOLEAN_ATTRS;
     }
 
-    public static function getBinaryAttributes() {
+    public static function getBinaryAttributes()
+    {
         return static::BINARY_ATTRS;
     }
 
-    protected function __construct(IConnection $connection, IContext $context, IIdentity $privilegedIdentity=null) {
+    protected function __construct(IConnection $connection, IContext $context, IIdentity $privilegedIdentity=null)
+    {
         $this->_connection = $connection;
         $this->setContext($context);
         $this->setPrivilegedIdentity($privilegedIdentity);
     }
 
-// Connection
-    public function getConnection() {
+    // Connection
+    public function getConnection()
+    {
         return $this->_connection;
     }
 
-    public function setContext($context) {
+    public function setContext($context)
+    {
         $this->_context = Context::factory($context);
         return $this;
     }
 
-    public function getContext() {
+    public function getContext()
+    {
         return $this->_context;
     }
 
 
-// Identity
-    public function setPrivilegedIdentity(IIdentity $identity=null) {
+    // Identity
+    public function setPrivilegedIdentity(IIdentity $identity=null)
+    {
         $this->_privilegedIdentity = $identity;
         return $this;
     }
 
-    public function getPrivilegedIdentity() {
+    public function getPrivilegedIdentity()
+    {
         return $this->_privilegedIdentity;
     }
 
-    public function isBound() {
+    public function isBound()
+    {
         return $this->_boundIdentity !== null;
     }
 
-    public function getBoundIdentity() {
+    public function getBoundIdentity()
+    {
         return $this->_boundIdentity;
     }
 
-    public function bind(IIdentity $identity) {
+    public function bind(IIdentity $identity)
+    {
         $this->_connection->bindIdentity($identity, $this->_context);
         $this->_boundIdentity = $identity;
         return $this;
     }
 
-    public function ensureBind() {
-        if(!$this->isBound()) {
-            if($this->_privilegedIdentity) {
+    public function ensureBind()
+    {
+        if (!$this->isBound()) {
+            if ($this->_privilegedIdentity) {
                 $this->bind($this->_privilegedIdentity);
             } else {
                 throw new BindException(
@@ -150,9 +165,10 @@ abstract class Adapter implements IAdapter {
     }
 
 
-// Query source
-    public function getQuerySourceId() {
-        if(!$this->_querySourceId) {
+    // Query source
+    public function getQuerySourceId()
+    {
+        if (!$this->_querySourceId) {
             $connectionString = $this->_connection->getConnectionString();
             $parts = explode('://', $connectionString);
 
@@ -162,24 +178,29 @@ abstract class Adapter implements IAdapter {
         return $this->_querySourceId;
     }
 
-    public function getQuerySourceAdapterHash() {
+    public function getQuerySourceAdapterHash()
+    {
         return $this->_connection->getHash();
     }
 
-    public function getQuerySourceAdapterServerHash() {
+    public function getQuerySourceAdapterServerHash()
+    {
         return $this->_connection->getHash();
     }
 
-    public function getQuerySourceDisplayName() {
+    public function getQuerySourceDisplayName()
+    {
         return $this->getQuerySourceId();
     }
 
-    public function getDelegateQueryAdapter() {
+    public function getDelegateQueryAdapter()
+    {
         return $this;
     }
 
-    public function supportsQueryType($type) {
-        switch($type) {
+    public function supportsQueryType($type)
+    {
+        switch ($type) {
             case opal\query\IQueryTypes::SELECT:
             case opal\query\IQueryTypes::FETCH:
 
@@ -208,8 +229,9 @@ abstract class Adapter implements IAdapter {
         }
     }
 
-    public function supportsQueryFeature($feature) {
-        switch($feature) {
+    public function supportsQueryFeature($feature)
+    {
+        switch ($feature) {
             //case opal\query\IQueryFeatures::AGGREGATE:
             case opal\query\IQueryFeatures::WHERE_CLAUSE:
             //case opal\query\IQueryFeatures::GROUP_DIRECTIVE:
@@ -226,14 +248,18 @@ abstract class Adapter implements IAdapter {
         }
     }
 
-    public function handleQueryException(opal\query\IQuery $query, \Throwable $e) {
+    public function handleQueryException(opal\query\IQuery $query, \Throwable $e)
+    {
         return false;
     }
 
-    public function ensureStorageConsistency() {}
+    public function ensureStorageConsistency()
+    {
+    }
 
 
-    public function fetchRootDse() {
+    public function fetchRootDse()
+    {
         $data = $this->select('*', '+')
             ->inside('')
             ->toRow();
@@ -244,49 +270,56 @@ abstract class Adapter implements IAdapter {
     }
 
 
-// Queries
-    public function executeSelectQuery(opal\query\ISelectQuery $query) {
+    // Queries
+    public function executeSelectQuery(opal\query\ISelectQuery $query)
+    {
         $result = $this->_executeReadQueryRequest($query);
         return $this->_prepareReadQueryResponse($query, $result);
     }
 
-    public function countSelectQuery(opal\query\ISelectQuery $query) {
+    public function countSelectQuery(opal\query\ISelectQuery $query)
+    {
         $result = $this->_executeReadQueryRequest($query);
         return ldap_count_entries($this->_connection->getResource(), $result);
     }
 
-    public function executeUnionQuery(opal\query\IUnionQuery $query) {
+    public function executeUnionQuery(opal\query\IUnionQuery $query)
+    {
         throw new QueryException(
             'LDAP does not support union queries'
         );
     }
 
-    public function countUnionQuery(opal\query\IUnionQuery $query) {
+    public function countUnionQuery(opal\query\IUnionQuery $query)
+    {
         throw new QueryException(
             'LDAP does not support union queries'
         );
     }
 
-    public function executeFetchQuery(opal\query\IFetchQuery $query) {
+    public function executeFetchQuery(opal\query\IFetchQuery $query)
+    {
         $result = $this->_executeReadQueryRequest($query);
         return $this->_prepareReadQueryResponse($query, $result);
     }
 
-    public function countFetchQuery(opal\query\IFetchQuery $query) {
+    public function countFetchQuery(opal\query\IFetchQuery $query)
+    {
         $result = $this->_executeReadQueryRequest($query);
         return ldap_count_entries($this->_connection->getResource(), $result);
     }
 
 
 
-// Insert query
-    public function executeInsertQuery(opal\query\IInsertQuery $query) {
+    // Insert query
+    public function executeInsertQuery(opal\query\IInsertQuery $query)
+    {
         $this->ensureBind();
         $row = $query->getRow();
         $connection = $this->_connection->getResource();
         $location = $query->getLocation();
 
-        if($location === null) {
+        if ($location === null) {
             throw new QueryException(
                 'Base DN has not been set for insert query'
             );
@@ -296,7 +329,7 @@ abstract class Adapter implements IAdapter {
 
         try {
             ldap_add($connection, $baseDn, $row);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             throw new QueryException(
                 $e->getMessage(), $e->getCode()
             );
@@ -305,19 +338,21 @@ abstract class Adapter implements IAdapter {
         return true;
     }
 
-// Batch insert query
-    public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query) {
+    // Batch insert query
+    public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query)
+    {
         core\stub($query);
     }
 
-// Update query
-    public function executeUpdateQuery(opal\query\IUpdateQuery $query) {
+    // Update query
+    public function executeUpdateQuery(opal\query\IUpdateQuery $query)
+    {
         $this->ensureBind();
         $row = $query->getPreparedValues();
         $connection = $this->_connection->getResource();
         $location = $query->getLocation();
 
-        if($location === null) {
+        if ($location === null) {
             $dnList = $this->_fetchDnsForWriteQuery($query);
         } else {
             $dnList = [$this->_prepareDn(Dn::factory($location))];
@@ -325,7 +360,7 @@ abstract class Adapter implements IAdapter {
 
         $count = 0;
 
-        foreach($dnList as $dn) {
+        foreach ($dnList as $dn) {
             ldap_modify($connection, $dn, $row);
             $count++;
         }
@@ -333,13 +368,14 @@ abstract class Adapter implements IAdapter {
         return $count;
     }
 
-// Delete query
-    public function executeDeleteQuery(opal\query\IDeleteQuery $query) {
+    // Delete query
+    public function executeDeleteQuery(opal\query\IDeleteQuery $query)
+    {
         $this->ensureBind();
         $connection = $this->_connection->getResource();
         $location = $query->getLocation();
 
-        if($location === null) {
+        if ($location === null) {
             $dnList = $this->_fetchDnsForWriteQuery($query);
         } else {
             $dnList = [$this->_prepareDn(Dn::factory($location))];
@@ -347,24 +383,27 @@ abstract class Adapter implements IAdapter {
 
         $count = 0;
 
-        foreach($dnList as $dn) {
+        foreach ($dnList as $dn) {
             ldap_delete($connection, $dn);
         }
     }
 
-// Remote data
-    public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows) {
+    // Remote data
+    public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows)
+    {
         core\stub($query);
     }
 
-    public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows) {
+    public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows)
+    {
         core\stub($query);
     }
 
 
 
-// Query processors
-    protected function _executeReadQueryRequest(opal\query\IReadQuery $query) {
+    // Query processors
+    protected function _executeReadQueryRequest(opal\query\IReadQuery $query)
+    {
         $this->ensureBind();
         $filter = $this->_buildFilter($query);
 
@@ -372,38 +411,38 @@ abstract class Adapter implements IAdapter {
         $subNodeSearch = $query->shouldSearchChildLocations();
         $readEntry = $query->getLimit() == 1;
 
-        if($baseDn === null) {
+        if ($baseDn === null) {
             $baseDn = $this->_context->getBaseDn();
         }
 
         $baseDn = $this->_prepareDn(Dn::factory($baseDn));
         $attributes = [];
 
-        foreach($query->getSource()->getOutputFields() as $field) {
+        foreach ($query->getSource()->getOutputFields() as $field) {
             $name = $field->getName();
 
-            if(in_array(strtolower($name), ['uid', 'samaccountname'])) {
+            if (in_array(strtolower($name), ['uid', 'samaccountname'])) {
                 $name = static::UID_ATTRIBUTE;
             }
 
             $attributes[] = $name;
         }
 
-        if($query instanceof opal\query\IFetchQuery) {
+        if ($query instanceof opal\query\IFetchQuery) {
             $attributes[] = '+';
         }
 
         $connection = $this->_connection->getResource();
 
-        if($subNodeSearch) {
+        if ($subNodeSearch) {
             $result = @ldap_search($connection, $baseDn, $filter, $attributes);
-        } else if($readEntry) {
+        } elseif ($readEntry) {
             $result = @ldap_read($connection, $baseDn, $filter, $attributes);
         } else {
             $result = @ldap_list($connection, $baseDn, $filter, $attributes);
         }
 
-        if(!$result) {
+        if (!$result) {
             throw new QueryException(
                 'Search failed: '.@ldap_error($connection)
             );
@@ -412,8 +451,9 @@ abstract class Adapter implements IAdapter {
         return $result;
     }
 
-    protected function _prepareReadQueryResponse(opal\query\IReadQuery $query, $result) {
-        if(!$result) {
+    protected function _prepareReadQueryResponse(opal\query\IReadQuery $query, $result)
+    {
+        if (!$result) {
             return [];
         }
 
@@ -423,19 +463,19 @@ abstract class Adapter implements IAdapter {
 
         $orderDirectives = $query->getOrderDirectives();
 
-        if(!empty($orderDirectives)) {
-            for($i = count($orderDirectives) - 1; $i >= 0; $i--) {
+        if (!empty($orderDirectives)) {
+            for ($i = count($orderDirectives) - 1; $i >= 0; $i--) {
                 $directive = $orderDirectives[$i];
                 $field = $directive->getField()->getName();
                 @ldap_sort($connection, $result, $field);
 
-                if($i == 0 && $directive->isDescending()) {
+                if ($i == 0 && $directive->isDescending()) {
                     $reverse = true;
                 }
             }
         }
 
-        if($query->hasLimit()) {
+        if ($query->hasLimit()) {
             $limit = $query->getLimit();
         } else {
             $limit = $total;
@@ -446,10 +486,10 @@ abstract class Adapter implements IAdapter {
 
         $fields = [];
 
-        foreach($query->getSource()->getOutputFields() as $field) {
+        foreach ($query->getSource()->getOutputFields() as $field) {
             $name = $field->getName();
 
-            if($name == '*' || $name == '+') {
+            if ($name == '*' || $name == '+') {
                 continue;
             }
 
@@ -460,99 +500,101 @@ abstract class Adapter implements IAdapter {
         $metaFields = static::META_FIELDS;
         $output = [];
 
-        for(
+        for (
             $current = 0, $rowEntry = ldap_first_entry($connection, $result);
             $current <= $end && is_resource($rowEntry);
             $current++, $rowEntry = ldap_next_entry($connection, $rowEntry)
         ) {
-            if($current < $start) {
+            if ($current < $start) {
                 continue;
             }
 
             $row = [];
             $meta = [];
 
-            foreach(ldap_get_attributes($connection, $rowEntry) as $key => $value) {
-                if(!is_array($value)) {
+            foreach (ldap_get_attributes($connection, $rowEntry) as $key => $value) {
+                if (!is_array($value)) {
                     continue;
                 }
 
                 unset($value['count']);
 
-                if(in_array(strtolower($key), ['uid', 'samaccountname'])) {
+                if (in_array(strtolower($key), ['uid', 'samaccountname'])) {
                     $key = static::UID_ATTRIBUTE;
                 }
 
-                if(!in_array($key, static::ARRAY_ATTRS) && count($value) == 1) {
+                if (!in_array($key, static::ARRAY_ATTRS) && count($value) == 1) {
                     $value = array_shift($value);
                 }
 
-                if(in_array($key, static::DATE_ATTRS)) {
+                if (in_array($key, static::DATE_ATTRS)) {
                     try {
                         $value = $this->_inflateDate($key, $value);
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         $value = null;
                     }
-                } else if(in_array($key, static::BINARY_ATTRS)) {
+                } elseif (in_array($key, static::BINARY_ATTRS)) {
                     $value = $this->_inflateBinaryAttribute($key, $value);
-                } else if(in_array($key, static::BOOLEAN_ATTRS)) {
+                } elseif (in_array($key, static::BOOLEAN_ATTRS)) {
                     $value = $this->_inflateBooleanAttribute($key, $value);
                 }
 
-                if($isFetch && in_array($key, $metaFields)) {
+                if ($isFetch && in_array($key, $metaFields)) {
                     $meta[$key] = $value;
                 } else {
                     $row[$key] = $value;
                 }
             }
 
-            foreach($fields as $field) {
-                if(!isset($row[$field])) {
+            foreach ($fields as $field) {
+                if (!isset($row[$field])) {
                     $row[$field] = null;
                 }
             }
 
-            if($isFetch) {
+            if ($isFetch) {
                 $row[':meta'] = $meta;
             }
 
             $output[] = $row;
         }
 
-        if($reverse) {
+        if ($reverse) {
             $output = array_reverse($output);
         }
 
         return $output;
     }
 
-    protected function _buildFilter(opal\query\IQuery $query) {
+    protected function _buildFilter(opal\query\IQuery $query)
+    {
         $clauses = $query->getWhereClauseList();
 
-        if($clauses->isEmpty()) {
+        if ($clauses->isEmpty()) {
             return '(objectClass=*)';
         }
 
         return $this->_clauseListToString($clauses->toArray());
     }
 
-    protected function _clauseListToString(array $clauses) {
+    protected function _clauseListToString(array $clauses)
+    {
         $set = [];
         $stack = [];
 
-        foreach($clauses as $clause) {
-            if($clause instanceof opal\query\IClause) {
+        foreach ($clauses as $clause) {
+            if ($clause instanceof opal\query\IClause) {
                 $clauseString = $this->_clauseToString($clause);
-            } else if($clause instanceof opal\query\IClauseList) {
+            } elseif ($clause instanceof opal\query\IClauseList) {
                 $clauseString = $this->_clauseListToString($clause->toArray());
             }
 
-            if(!strlen($clauseString)) {
+            if (!strlen($clauseString)) {
                 continue;
             }
 
-            if($clause->isOr()) {
-                if(!empty($set)) {
+            if ($clause->isOr()) {
+                if (!empty($set)) {
                     $stack[] = $set;
                 }
 
@@ -562,12 +604,13 @@ abstract class Adapter implements IAdapter {
             }
         }
 
-        if(!empty($set)) {
+
+        if (!empty($set)) {
             $stack[] = $set;
         }
 
-        foreach($stack as $i => $set) {
-            if(count($set) == 1) {
+        foreach ($stack as $i => $set) {
+            if (count($set) == 1) {
                 $set = array_shift($set);
             } else {
                 $set = '(&'.implode('', $set).')';
@@ -578,31 +621,35 @@ abstract class Adapter implements IAdapter {
 
         $count = count($stack);
 
-        if(!$count) {
+        if (!$count) {
             return null;
-        } else if($count == 1) {
+        } elseif ($count == 1) {
             return array_shift($stack);
         } else {
             return '(|'.implode('', $stack).')';
         }
     }
 
-    protected function _clauseToString(opal\query\IClause $clause) {
+    protected function _clauseToString(opal\query\IClause $clause)
+    {
         $output = null;
         $field = $clause->getField()->getName();
         $value = $clause->getPreparedValue();
         $operator = $clause->getOperator();
         $negate = false;
 
-        if(strtolower($field) == 'uid' || strtolower($field) == 'samaccountname') {
+        if (strtolower($field) == 'uid' || strtolower($field) == 'samaccountname') {
             $field = static::UID_ATTRIBUTE;
         }
 
-        switch($operator) {
+        switch ($operator) {
             // = | !=
             case opal\query\clause\Clause::OP_NEQ:
+            case opal\query\clause\Clause::OP_NEQ_NULL:
                 $negate = true;
+                // no break
             case opal\query\clause\Clause::OP_EQ:
+            case opal\query\clause\Clause::OP_EQ_NULL:
                 $output = '('.$field.'='.$this->_normalizeScalarClauseValue($field, $value).')';
                 break;
 
@@ -617,10 +664,11 @@ abstract class Adapter implements IAdapter {
             // <NOT> IN()
             case opal\query\clause\Clause::OP_NOT_IN:
                 $negate = true;
+                // no break
             case opal\query\clause\Clause::OP_IN:
                 $tempList = [];
 
-                foreach($value as $innerVal) {
+                foreach ($value as $innerVal) {
                     $tempList[] = new opal\query\clause\Clause(
                         $clause->getField(),
                         '=',
@@ -635,6 +683,7 @@ abstract class Adapter implements IAdapter {
             // <NOT> BETWEEN()
             case opal\query\clause\Clause::OP_NOT_BETWEEN:
                 $negate = true;
+                // no break
             case opal\query\clause\Clause::OP_BETWEEN:
                 $tempList = [
                     new opal\query\clause\Clause(
@@ -656,6 +705,7 @@ abstract class Adapter implements IAdapter {
             // <NOT> LIKE
             case opal\query\clause\Clause::OP_NOT_LIKE:
                 $negate = true;
+                // no break
             case opal\query\clause\Clause::OP_LIKE:
                 $output = '('.$field.'~='.$this->_normalizeScalarClauseValue($field, $value).')';
                 break;
@@ -664,6 +714,7 @@ abstract class Adapter implements IAdapter {
             case opal\query\clause\Clause::OP_NOT_CONTAINS:
             case opal\query\clause\Clause::OP_NOT_MATCHES:
                 $negate = true;
+                // no break
             case opal\query\clause\Clause::OP_CONTAINS:
             case opal\query\clause\Clause::OP_MATCHES:
                 $output = '('.$field.'=*'.$this->_normalizeScalarClauseValue($field, $value).'*)';
@@ -672,6 +723,7 @@ abstract class Adapter implements IAdapter {
             // <NOT> BEGINS
             case opal\query\clause\Clause::OP_NOT_BEGINS:
                 $negate = true;
+                // no break
             case opal\query\clause\Clause::OP_BEGINS:
                 $output = '('.$field.'='.$this->_normalizeScalarClauseValue($field, $value).'*)';
                 break;
@@ -679,6 +731,7 @@ abstract class Adapter implements IAdapter {
             // <NOT> ENDS
             case opal\query\clause\Clause::OP_NOT_ENDS:
                 $negate = true;
+                // no break
             case opal\query\clause\Clause::OP_ENDS:
                 $output = '('.$field.'=*'.$this->_normalizeScalarClauseValue($field, $value).')';
                 break;
@@ -689,33 +742,35 @@ abstract class Adapter implements IAdapter {
                 );
         }
 
-        if($output === null) {
+        if ($output === null) {
             return null;
         }
 
-        if($negate) {
+        if ($negate) {
             $output = '(!'.$output.')';
         }
 
         return $output;
     }
 
-    protected function _normalizeScalarClauseValue($field, $value) {
-        if(in_array($field, self::DATE_ATTRS)) {
+    protected function _normalizeScalarClauseValue($field, $value)
+    {
+        if (in_array($field, self::DATE_ATTRS)) {
             $value = $this->_deflateDate($field, $value);
-        } else if(in_array($field, self::BINARY_ATTRS)) {
+        } elseif (in_array($field, self::BINARY_ATTRS)) {
             $value = $this->_deflateBinaryAttribute($field, $value);
-        } else if(in_array($field, self::BOOLEAN_ATTRS)) {
+        } elseif (in_array($field, self::BOOLEAN_ATTRS)) {
             $value = $this->_deflateBooleanAttribute($field, $value);
         }
 
         return $this->_escapeValue($value);
     }
 
-    protected function _fetchDnsForWriteQuery(opal\query\IWriteQuery $query) {
+    protected function _fetchDnsForWriteQuery(opal\query\IWriteQuery $query)
+    {
         $whereList = $query->getWhereClauseList();
 
-        if($whereList->isEmpty()) {
+        if ($whereList->isEmpty()) {
             throw new QueryException(
                 'Cannot lookup record DNs, no clauses have been passed'
             );
@@ -730,111 +785,131 @@ abstract class Adapter implements IAdapter {
     }
 
 
-// IO
-    protected function _inflateDate($name, $date) {
-        if($date === null || $date == 0) {
+    // IO
+    protected function _inflateDate($name, $date)
+    {
+        if ($date === null || $date == 0) {
             return null;
         }
 
         return core\time\Date::factory($date);
     }
 
-    protected function _deflateDate($name, $date) {
+    protected function _deflateDate($name, $date)
+    {
         $date = core\time\Date::factory($date);
         return $date->toTimestamp();
     }
 
-    protected function _inflateBinaryAttribute($name, $value) {
-        if(!strlen($value)) {
+    protected function _inflateBinaryAttribute($name, $value)
+    {
+        if (!strlen($value)) {
             return null;
         }
 
         return bin2hex($value);
     }
 
-    protected function _deflateBinaryAttribute($name, $value) {
-        if(!strlen($value)) {
+    protected function _deflateBinaryAttribute($name, $value)
+    {
+        if (!strlen($value)) {
             return null;
         }
 
         return pack("H*", $value);
     }
 
-    protected function _inflateBooleanAttribute($name, $value) {
+    protected function _inflateBooleanAttribute($name, $value)
+    {
         return flex\Text::stringToBoolean($value);
     }
 
-    protected function _deflateBooleanAttribute($name, $value) {
+    protected function _deflateBooleanAttribute($name, $value)
+    {
         return (bool)$value ? 'true' : 'false';
     }
 
 
 
-// Transaction
-    public function getTransactionId() {
+    // Transaction
+    public function getTransactionId()
+    {
         return $this->getQuerySourceAdapterHash();
     }
 
-    public function getJobAdapterId() {
+    public function getJobAdapterId()
+    {
         return $this->getQuerySourceId();
     }
 
-    public function begin() {
+    public function begin()
+    {
         return $this;
     }
 
-    public function commit() {
+    public function commit()
+    {
         return $this;
     }
 
-    public function rollback() {
+    public function rollback()
+    {
         return $this;
     }
 
 
-// Record
-    public function newRecord(array $values=null) {
+    // Record
+    public function newRecord(array $values=null)
+    {
         return new Record($this, $values);
     }
 
-    public function newPartial(array $values=null) {
+    public function newPartial(array $values=null)
+    {
         return new opal\record\Partial($this, $values);
     }
 
-    public function shouldRecordsBroadcastHookEvents() {
+    public function shouldRecordsBroadcastHookEvents()
+    {
         return true;
     }
 
 
-// Access
-    public function getAccessLockDomain() {
+    // Access
+    public function getAccessLockDomain()
+    {
         return 'ldap';
     }
 
-    public function lookupAccessKey(array $keys, $action=null) {
+    public function lookupAccessKey(array $keys, $action=null)
+    {
         core\stub($keys, $action);
     }
 
-    public function getDefaultAccess($action=null) {
+    public function getDefaultAccess($action=null)
+    {
         return true;
     }
 
-    public function getAccessLockId() {
+    public function getAccessLockId()
+    {
         return $this->_querySourceId;
     }
 
 
 
-// Helpers
-    protected function _escapeValues(array $values) {
-        foreach($values as $key => $value) {
+    // Helpers
+    protected function _escapeValues(array $values)
+    {
+        foreach ($values as $key => $value) {
             $values[$key] = $this->_escapeValue($value);
         }
 
         return $values;
     }
 
-    protected function _escapeValue($value) {
+    protected function _escapeValue($value)
+    {
         $value = str_replace(
             ['\\', '*', '(', ')'],
             ['\5c', '\2a', '\28', '\29'],
@@ -843,18 +918,19 @@ abstract class Adapter implements IAdapter {
 
         $value = flex\Text::ascii32ToHex32($value);
 
-        if($value === null) {
+        if ($value === null) {
             $value = '\0';
         }
 
         return $value;
     }
 
-    protected function _prepareDn(IDn $dn) {
+    protected function _prepareDn(IDn $dn)
+    {
         $baseDn = $this->_context->getBaseDn();
 
-        if(!$dn->isChildOf($baseDn)) {
-            foreach($baseDn->toArray() as $rdn) {
+        if (!$dn->isChildOf($baseDn)) {
+            foreach ($baseDn->toArray() as $rdn) {
                 $dn->push($rdn);
             }
         }
@@ -862,7 +938,8 @@ abstract class Adapter implements IAdapter {
         return $this->_flattenDn($dn);
     }
 
-    protected function _flattenDn(IDn $dn) {
+    protected function _flattenDn(IDn $dn)
+    {
         return (string)$dn;
     }
 }

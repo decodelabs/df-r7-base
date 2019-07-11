@@ -10,27 +10,28 @@ use df\core;
 use df\opal;
 use df\flex;
 
-class ClauseMatcher implements IClauseMatcher {
-
+class ClauseMatcher implements IClauseMatcher
+{
     protected $_index = [];
     protected $_isFieldComparison = false;
 
 
-    public function __construct(array $clauses, $isFieldComparison=false) {
+    public function __construct(array $clauses, $isFieldComparison=false)
+    {
         $this->_isFieldComparison = (bool)$isFieldComparison;
 
         $set = [];
 
-        foreach($clauses as $clause) {
-            if($clause->isOr() && !empty($set)) {
+        foreach ($clauses as $clause) {
+            if ($clause->isOr() && !empty($set)) {
                 $this->_index[] = $set;
                 $set = [];
             }
 
-            if($clause instanceof opal\query\IClauseList) {
+            if ($clause instanceof opal\query\IClauseList) {
                 $clause = new self($clause->toArray(), $this->_isFieldComparison);
 
-                if(empty($clause->_index)) {
+                if (empty($clause->_index)) {
                     continue;
                 }
             } else {
@@ -40,12 +41,13 @@ class ClauseMatcher implements IClauseMatcher {
             $set[] = $clause;
         }
 
-        if(!empty($set)) {
+        if (!empty($set)) {
             $this->_index[] = $set;
         }
     }
 
-    protected function _prepareClauseBundle(opal\query\IClause $clause) {
+    protected function _prepareClauseBundle(opal\query\IClause $clause)
+    {
         $output = new \stdClass();
         $output->clause = clone $clause;
         $output->operator = $clause->getOperator();
@@ -53,32 +55,34 @@ class ClauseMatcher implements IClauseMatcher {
         $output->fieldQualifiedName = $clause->getField()->getQualifiedName();
         $value = $clause->getValue();
 
-        if($value instanceof opal\query\IField) {
+        if ($value instanceof opal\query\IField) {
             $output->valueQualifiedName = $value->getQualifiedName();
         } else {
             $output->valueQualifiedName = null;
         }
 
-        if(!$this->_isFieldComparison) {
+        if (!$this->_isFieldComparison) {
             $output->compare = $clause->getPreparedValue();
 
-            if($output->compare instanceof opal\query\IField) {
+            if ($output->compare instanceof opal\query\IField) {
                 core\stub('Field comparison', $output);
             }
 
-            if($output->compare instanceof opal\query\ISelectQuery) {
+            if ($output->compare instanceof opal\query\ISelectQuery) {
                 $source = $output->compare->getSource();
 
-                if(null === ($targetField = $source->getFirstOutputDataField())) {
+                if (null === ($targetField = $source->getFirstOutputDataField())) {
                     throw new opal\query\ValueException(
                         'Clause subquery does not have a distinct return field'
                     );
                 }
 
 
-                switch($clause->getOperator()) {
+                switch ($clause->getOperator()) {
                     case opal\query\clause\Clause::OP_EQ:
+                    case opal\query\clause\Clause::OP_EQ_NULL:
                     case opal\query\clause\Clause::OP_NEQ:
+                    case opal\query\clause\Clause::OP_NEQ_NULL:
                     case opal\query\clause\Clause::OP_LIKE:
                     case opal\query\clause\Clause::OP_NOT_LIKE:
                     case opal\query\clause\Clause::OP_CONTAINS:
@@ -150,19 +154,20 @@ class ClauseMatcher implements IClauseMatcher {
     }
 
 
-    public function testRow(array $row, array &$matchedFields=[]) {
-        if(empty($this->_index)) {
+    public function testRow(array $row, array &$matchedFields=[])
+    {
+        if (empty($this->_index)) {
             return true;
         }
 
-        foreach($this->_index as $set) {
+        foreach ($this->_index as $set) {
             $test = true;
 
-            foreach($set as $bundle) {
-                if($bundle instanceof IClauseMatcher) {
+            foreach ($set as $bundle) {
+                if ($bundle instanceof IClauseMatcher) {
                     $test &= $bundle->testRow($row, $matchedFields);
                 } else {
-                    if(isset($row[$bundle->fieldQualifiedName])) {
+                    if (isset($row[$bundle->fieldQualifiedName])) {
                         $value = $row[$bundle->fieldQualifiedName];
                     } else {
                         $value = null;
@@ -175,7 +180,7 @@ class ClauseMatcher implements IClauseMatcher {
                 }
             }
 
-            if($test) {
+            if ($test) {
                 return true;
             }
         }
@@ -183,26 +188,27 @@ class ClauseMatcher implements IClauseMatcher {
         return false;
     }
 
-    public function testRowMatch(array $row, array $joinRow) {
-        if(empty($this->_index)) {
+    public function testRowMatch(array $row, array $joinRow)
+    {
+        if (empty($this->_index)) {
             return true;
         }
 
-        foreach($this->_index as $set) {
+        foreach ($this->_index as $set) {
             $test = true;
 
-            foreach($set as $bundle) {
-                if($bundle instanceof IClauseMatcher) {
+            foreach ($set as $bundle) {
+                if ($bundle instanceof IClauseMatcher) {
                     $test &= $bundle->testRowMatch($row, $joinRow);
                 } else {
                     $value = null;
                     $compare = null;
 
-                    if(isset($joinRow[$bundle->fieldQualifiedName])) {
+                    if (isset($joinRow[$bundle->fieldQualifiedName])) {
                         $value = $joinRow[$bundle->fieldQualifiedName];
                     }
 
-                    if(isset($row[$bundle->valueQualifiedName])) {
+                    if (isset($row[$bundle->valueQualifiedName])) {
                         $compare = $row[$bundle->valueQualifiedName];
                     }
 
@@ -210,7 +216,7 @@ class ClauseMatcher implements IClauseMatcher {
                 }
             }
 
-            if($test) {
+            if ($test) {
                 return true;
             }
         }
@@ -219,18 +225,27 @@ class ClauseMatcher implements IClauseMatcher {
     }
 
 
-    public static function compare($value, $operator, $compare) {
-        switch($operator) {
+    public static function compare($value, $operator, $compare)
+    {
+        switch ($operator) {
             case opal\query\clause\Clause::OP_EQ:
-                if(is_scalar($value)) {
+            case opal\query\clause\Clause::OP_EQ_NULL:
+                if (is_scalar($value)) {
                     return $value == $compare;
                 } else {
                     return $value === $compare;
                 }
 
+                // no break
             case opal\query\clause\Clause::OP_NEQ:
-                return $value != $compare;
+            case opal\query\clause\Clause::OP_NEQ_NULL:
+                if (is_scalar($value)) {
+                    return $value != $compare;
+                } else {
+                    return $value !== $compare;
+                }
 
+                // no break
             case opal\query\clause\Clause::OP_GT:
                 return $value > $compare;
 
