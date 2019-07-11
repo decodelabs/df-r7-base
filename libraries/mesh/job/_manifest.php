@@ -9,43 +9,55 @@ use df;
 use df\core;
 use df\mesh;
 
-
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
 
 
 // Interfaces
-interface ITransactionInitiator {
+interface ITransactionInitiator
+{
     public function newTransaction(): ITransaction;
 }
 
-interface ITransactionExecutor {
+interface ITransactionExecutor
+{
     public function begin();
     public function commit();
     public function rollback();
 }
 
-interface ITransaction extends ITransactionExecutor {
+interface ITransaction extends ITransactionExecutor
+{
     public function isOpen();
     public function registerAdapter(ITransactionAdapter $adapter);
 }
 
-interface ITransactionAdapter extends ITransactionExecutor {
+interface ITransactionAdapter extends ITransactionExecutor
+{
     public function getTransactionId();
 }
 
-interface ITransactionAware {
+interface ITransactionAware
+{
     public function setTransaction(ITransaction $transaction=null);
     public function getTransaction(): ?ITransaction;
 }
 
-interface ITransactionAdapterProvider {
+interface ITransactionAdapterProvider
+{
     public function getTransactionAdapter();
 }
 
-interface IQueue {
+interface IQueue
+{
     public function getTransaction(): ITransaction;
     public function registerAdapter(ITransactionAdapter $adapter);
 
@@ -75,15 +87,23 @@ interface IQueue {
 
     public static function getObjectId($object);
 
+    public function setStore(string $key, $value);
+    public function getStore(string $key);
+    public function hasStore(string $key): bool;
+    public function removeStore(string $key);
+    public function clearStore();
+
     public function execute();
 }
 
-interface IJobProvider {
+interface IJobProvider
+{
     public function prepareJob(string $name, ...$args): IJob;
 }
 
 
-interface IJob {
+interface IJob
+{
     public function getId(): string;
     public function getObjectId(): string;
     public function getAdapter(): ?ITransactionAdapter;
@@ -103,28 +123,32 @@ interface IJob {
     public function execute();
 }
 
-interface IEventBroadcastingJob extends mesh\job\IJob {
+interface IEventBroadcastingJob extends mesh\job\IJob
+{
     public function reportPreEvent(IQueue $queue);
     public function reportExecuteEvent(IQueue $queue);
     public function reportPostEvent(IQueue $queue);
 }
 
-interface IJobAdapter extends ITransactionAdapter {
+interface IJobAdapter extends ITransactionAdapter
+{
     public function getJobAdapterId();
 }
 
 
-trait TAdapterAwareJob {
-
+trait TAdapterAwareJob
+{
     protected $_adapter;
 
-    public function getAdapter(): ?ITransactionAdapter {
+    public function getAdapter(): ?ITransactionAdapter
+    {
         return $this->_adapter;
     }
 }
 
 
-interface IDependency {
+interface IDependency
+{
     public function getRequiredJob(): IJob;
     public function getRequiredJobId(): string;
 
@@ -135,7 +159,8 @@ interface IDependency {
     public function resolve(IJob $subordinate);
 }
 
-interface IResolution {
+interface IResolution
+{
     public function untangle(IQueue $queue, IJob $subordinate, IJob $dependency): bool;
     public function resolve(IJob $subordinate, IJob $dependency);
 }
