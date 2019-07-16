@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-class Union implements IUnionQuery {
-
+class Union implements IUnionQuery
+{
     use TQuery;
     use TQuery_Derivable;
     use TQuery_Attachable;
@@ -27,20 +27,24 @@ class Union implements IUnionQuery {
     protected $_primaryQuery;
     protected $_queries = [];
 
-    public function __construct(ISourceManager $sourceManager) {
+    public function __construct(ISourceManager $sourceManager)
+    {
         $this->_sourceManager = $sourceManager;
     }
 
-    public function getQueryType() {
+    public function getQueryType()
+    {
         return IQueryType::UNION;
     }
 
-    public function getSourceManager() {
+    public function getSourceManager()
+    {
         return $this->_sourceManager;
     }
 
-    public function getSource() {
-        if(empty($this->_queries)) {
+    public function getSource()
+    {
+        if (empty($this->_queries)) {
             throw new LogicException(
                 'Union has no child queries yet!'
             );
@@ -49,31 +53,37 @@ class Union implements IUnionQuery {
         return $this->_queries[0]->getSource();
     }
 
-    public function getSourceAlias() {
-        return $this->getSource()->getSourceAlias();
+    public function getSourceAlias()
+    {
+        return $this->getSource()->getAlias();
     }
 
 
 
-    public function with(...$fields) {
+    public function with(...$fields)
+    {
         return Initiator::factory()
-            ->beginUnionSelect($this, $fields, true);
+            ->beginUnionSelect($this, $fields, true)
+            ->setDerivationParentInitiator($this->getDerivationParentInitiator());
     }
 
-    public function withAll(...$fields) {
+    public function withAll(...$fields)
+    {
         return Initiator::factory()
-            ->beginUnionSelect($this, $fields, false);
+            ->beginUnionSelect($this, $fields, false)
+            ->setDerivationParentInitiator($this->getDerivationParentInitiator());
     }
 
-    public function addQuery(IUnionSelectQuery $query) {
-        if(!in_array($query, $this->_queries, true)) {
-            if(empty($this->_queries)) {
+    public function addQuery(IUnionSelectQuery $query)
+    {
+        if (!in_array($query, $this->_queries, true)) {
+            if (empty($this->_queries)) {
                 $this->_primaryQuery = $query;
             } else {
                 $primarySource = $this->_primaryQuery->getSource();
                 $newSource = $query->getSource();
 
-                if($newSource->getHash() != $primarySource->getHash()) {
+                if ($newSource->getHash() != $primarySource->getHash()) {
                     throw new LogicException(
                         'Union queries must all be on the same adapter'
                     );
@@ -82,11 +92,11 @@ class Union implements IUnionQuery {
                 $newFields = array_values($query->getOutputFields());
                 $i = 0;
 
-                foreach($this->_primaryQuery->getOutputFields() as $name => $field) {
-                    if($field instanceof IExpressionField && $field->isNull() && isset($newFields[$i])) {
+                foreach ($this->_primaryQuery->getOutputFields() as $name => $field) {
+                    if ($field instanceof IExpressionField && $field->isNull() && isset($newFields[$i])) {
                         $newField = $newFields[$i];
 
-                        if(!$newField instanceof IExpressionField || !$field->isNull()) {
+                        if (!$newField instanceof IExpressionField || !$field->isNull()) {
                             $field->setAlias($newField->getAlias())
                                 ->setAltSourceAlias($newField->getSourceAlias());
                         }
@@ -102,11 +112,12 @@ class Union implements IUnionQuery {
         return $this;
     }
 
-    public function getOutputManifest() {
+    public function getOutputManifest()
+    {
         $output = new OutputManifest($this->getSource());
 
-        if($this->_primaryQuery instanceof IJoinProviderQuery) {
-            foreach($this->_primaryQuery->getJoins() as $join) {
+        if ($this->_primaryQuery instanceof IJoinProviderQuery) {
+            foreach ($this->_primaryQuery->getJoins() as $join) {
                 $output->importSource($join->getSource());
             }
         }
@@ -114,12 +125,14 @@ class Union implements IUnionQuery {
         return $output;
     }
 
-    public function getQueries() {
+    public function getQueries()
+    {
         return $this->_queries;
     }
 
-    public function count() {
-        return $this->_sourceManager->executeQuery($this, function($adapter) {
+    public function count()
+    {
+        return $this->_sourceManager->executeQuery($this, function ($adapter) {
             return (int)$adapter->countUnionQuery($this);
         });
     }

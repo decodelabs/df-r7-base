@@ -497,9 +497,15 @@ class Initiator implements IInitiator
                     );
                 }
 
-                return (new Select_Union($this->_union, $source))
+                $output = (new Select_Union($this->_union, $source))
                     ->isDistinct((bool)$this->_distinct)
                     ->isUnionDistinct((bool)$this->_isUnionDistinct);
+
+                if ($this->_derivationParentInitiator) {
+                    $output->setDerivationParentInitiator($this->_derivationParentInitiator);
+                }
+
+                return $output;
 
             case IQueryTypes::FETCH:
                 $sourceManager = new opal\query\SourceManager($this->_transaction);
