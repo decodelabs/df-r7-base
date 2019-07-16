@@ -301,6 +301,10 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
             $name = $this->view->format->shorten($name, $this->_maxLength);
         }
 
+        if ($title !== null) {
+            $title = $this->html->toText($title);
+        }
+        
         $name = $this->_decorateBody($name);
 
         $output = $this->html->link($url, $name, $this->_matchRequest)
