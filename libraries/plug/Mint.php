@@ -8,18 +8,20 @@ namespace df\plug;
 use df;
 use df\core;
 use df\plug;
-use df\mint;
+use df\mint as mintLib;
 use df\spur;
 
-class Payment implements core\ISharedHelper {
-
+class Mint implements core\ISharedHelper
+{
     use core\TSharedHelper;
 
-    public function isValidCardNumber($number): bool {
-        return mint\CreditCard::isValidNumber($number);
+    public function isValidCardNumber($number): bool
+    {
+        return mintLib\CreditCard::isValidNumber($number);
     }
 
-    public function validateCard(core\collection\IInputTree $values, array $map=[])/*: mint\ICreditCard*/ {
+    public function validateCard(core\collection\IInputTree $values, array $map=[])/*: mintLib\ICreditCard*/
+    {
         $map = array_merge([
             'name' => 'name',
             'number' => 'number',
@@ -35,11 +37,11 @@ class Payment implements core\ISharedHelper {
 
             // Number
             ->addRequiredField('number', 'text')
-                ->setSanitizer(function($value) {
+                ->setSanitizer(function ($value) {
                     return preg_replace('/[^0-9]/', '', $value);
                 })
-                ->extend(function($value, $field) {
-                    if(!$this->isValidCardNumber($value)) {
+                ->extend(function ($value, $field) {
+                    if (!$this->isValidCardNumber($value)) {
                         $field->addError('invalid', $this->context->_(
                             'Please enter a valid credit card number'
                         ));
@@ -74,13 +76,13 @@ class Payment implements core\ISharedHelper {
         $values->{$map['number']}->setValue('');
         $values->{$map['cvc']}->setValue('');
 
-        if(!$validator->isValid()) {
+        if (!$validator->isValid()) {
             return null;
         }
 
         $creditCard = $this->newCard($validator->getValues());
 
-        if(!$creditCard->isValid()) {
+        if (!$creditCard->isValid()) {
             $values->number->addError('invalid', $this->context->_(
                 'Card details invalid, please check and try again'
             ));
@@ -91,34 +93,41 @@ class Payment implements core\ISharedHelper {
         return $creditCard;
     }
 
-    public function currency($amount, $code=null): mint\ICurrency {
-        return mint\Currency::factory($amount, $code);
+    public function currency($amount, $code=null): mintLib\ICurrency
+    {
+        return mintLib\Currency::factory($amount, $code);
     }
 
-    public function newCard(array $values): mint\ICreditCard {
-        return mint\CreditCard::fromArray($values);
+    public function newCard(array $values): mintLib\ICreditCard
+    {
+        return mintLib\CreditCard::fromArray($values);
     }
 
-    public function newGateway(string $name, $settings=null): mint\IGateway {
-        return mint\gateway\Base::factory($name, $settings);
+    public function newGateway(string $name, $settings=null): mintLib\IGateway
+    {
+        return mintLib\gateway\Base::factory($name, $settings);
     }
 
 
 
-// Model
-    public function isEnabled(): bool {
+    // Model
+    public function isEnabled(): bool
+    {
         return $this->context->data->mint->isEnabled();
     }
 
-    public function getPrimaryGateway(): ?mint\IGateway {
+    public function getPrimaryGateway(): ?mintLib\IGateway
+    {
         return $this->context->data->mint->getPrimaryGateway();
     }
 
-    public function getSubscriptionGateway(): ?mint\IGateway {
+    public function getSubscriptionGateway(): ?mintLib\IGateway
+    {
         return $this->context->data->mint->getSubscriptionGateway();
     }
 
-    public function getAccountGateway(string $account): ?mint\IGateway {
+    public function getAccountGateway(string $account): ?mintLib\IGateway
+    {
         return $this->context->data->mint->getGateway($account);
     }
 }
