@@ -28,6 +28,7 @@ class Stripe extends Base implements
     use mint\TSubscriptionPlanControllerGateway;
 
     protected $_apiKey;
+    protected $_publicKey;
 
     protected function __construct(core\collection\ITree $settings)
     {
@@ -48,6 +49,25 @@ class Stripe extends Base implements
         }
 
         $this->_apiKey = $key;
+
+
+        if ($settings->has('publicKey')) {
+            $key = $settings['publicKey'];
+        } else {
+            $key = $settings['testing'] ?
+                $settings['testPublicKey'] :
+                $settings['livePublicKey'];
+        }
+
+        if (!$key) {
+            throw core\Error::{'ESetup'}(
+                'Stripe API key not set in config'
+            );
+        }
+
+        $this->_publicKey = $key;
+
+
         parent::__construct($settings);
     }
 
@@ -57,6 +77,15 @@ class Stripe extends Base implements
         return stristr($this->_apiKey, '_test_');
     }
 
+    public function getApiKey(): ?string
+    {
+        return $this->_apiKey;
+    }
+
+    public function getPublicKey(): ?string
+    {
+        return $this->_publicKey;
+    }
 
 
     // Ips

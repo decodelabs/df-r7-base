@@ -16,6 +16,8 @@ use df\mesh;
 interface IGateway
 {
     public function isTesting(): bool;
+    public function getApiKey(): ?string;
+    public function getPublicKey(): ?string;
 
     public function getSupportedCurrencies(): array;
     public function isCurrencySupported($code): bool;
