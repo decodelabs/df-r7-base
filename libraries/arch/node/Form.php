@@ -25,7 +25,7 @@ abstract class Form extends Base implements IFormNode
     const DEFAULT_EVENT = 'save';
     const DEFAULT_REDIRECT = null;
 
-    const CAN_RESET = false;
+    const QUERY_RESET = false;
 
     private $_isNew = false;
     private $_isComplete = false;
