@@ -11,71 +11,119 @@ use df\apex;
 use df\axis;
 use df\mint;
 
-class Model extends axis\Model {
-
+class Model extends axis\Model
+{
     protected $_enabled;
     protected $_primaryAccount = false;
     protected $_subscriptionAccount = false;
     protected $_gateways = [];
 
-    public function isEnabled(): bool {
-        if($this->_enabled === null) {
+    public function isEnabled(): bool
+    {
+        if ($this->_enabled === null) {
             $this->_enabled = $this->config->isEnabled();
         }
 
         return $this->_enabled;
     }
 
-    public function getPrimaryGateway(): mint\IGateway {
-        if(!$this->isEnabled()) {
+    public function getPrimaryGateway(): mint\IGateway
+    {
+        return $this->_getPrimaryGateway(false);
+    }
+
+    public function getPrimaryTestingGateway(): mint\IGateway
+    {
+        return $this->_getPrimaryGateway(true);
+    }
+
+    private function _getPrimaryGateway(bool $testing): mint\IGateway
+    {
+        if (!$this->isEnabled()) {
             throw core\Error::{'mint\gateway\ESetup'}([
                 'message' => 'Payments are not enabled'
             ]);
         }
 
-        if($this->_primaryAccount === false) {
+        if ($this->_primaryAccount === false) {
             $this->_primaryAccount = $this->config->getPrimaryAccount();
         }
 
-        if($this->_primaryAccount === null) {
+        if ($this->_primaryAccount === null) {
             throw core\Error::{'mint\gateway\ESetup'}([
                 'message' => 'Primary account has not been defined'
             ]);
         }
 
-        return $this->getGateway($this->_primaryAccount);
+        if ($testing) {
+            return $this->getTestingGateway($this->_primaryAccount);
+        } else {
+            return $this->getGateway($this->_primaryAccount);
+        }
     }
 
-    public function getSubscriptionGateway(): mint\IGateway {
-        if(!$this->isEnabled()) {
+    public function getSubscriptionGateway(): mint\IGateway
+    {
+        return $this->_getSubscriptionGateway(false);
+    }
+
+    public function getSubscriptionTestingGateway(): mint\IGateway
+    {
+        return $this->_getSubscriptionGateway(true);
+    }
+
+    private function _getSubscriptionGateway(bool $testing): mint\IGateway
+    {
+        if (!$this->isEnabled()) {
             throw core\Error::{'mint\gateway\ESetup'}([
                 'message' => 'Payments are not enabled'
             ]);
         }
 
-        if($this->_subscriptionAccount === false) {
+        if ($this->_subscriptionAccount === false) {
             $this->_subscriptionAccount = $this->config->getSubscriptionAccount();
         }
 
-        if($this->_subscriptionAccount === null) {
+        if ($this->_subscriptionAccount === null) {
             throw core\Error::{'mint\gateway\ESetup'}([
                 'message' => 'Subscription account has not been defined'
             ]);
         }
 
-        return $this->getGateway($this->_subscriptionAccount);
+        if ($testing) {
+            return $this->getTestingGateway($this->_subscriptionAccount);
+        } else {
+            return $this->getGateway($this->_subscriptionAccount);
+        }
     }
 
-    public function getGateway(string $account): mint\IGateway {
-        if(!$this->isEnabled()) {
+    public function getGateway(string $account): mint\IGateway
+    {
+        return $this->_getGateway($account, false);
+    }
+
+    public function getTestingGateway(string $account): mint\IGateway
+    {
+        return $this->_getGateway($account, true);
+    }
+
+    private function _getGateway(string $account, bool $testing): mint\IGateway
+    {
+        if (!$this->isEnabled()) {
             return null;
         }
 
-        if(!array_key_exists($account, $this->_gateways)) {
+        $key = $account;
+
+        if ($testing) {
+            $key .= ':testing';
+        }
+
+        if (!array_key_exists($key, $this->_gateways)) {
             $settings = $this->config->getSettingsFor($account);
 
-            if($settings === null) {
-                $this->_gateways[$account] = null;
+            if ($settings === null) {
+                $this->_gateways[$key] = null;
 
                 throw core\Error::{'mint\gateway\ESetup'}([
                     'message' => 'Gateway is not available',
@@ -83,8 +131,8 @@ class Model extends axis\Model {
                 ]);
             }
 
-            if(!$name = $settings['gateway']) {
-                $this->_gateways[$account] = null;
+            if (!$name = $settings['gateway']) {
+                $this->_gateways[$key] = null;
 
                 throw core\Error::{'mint\gateway\ESetup'}([
                     'message' => 'Gateway not defined',
@@ -92,12 +140,16 @@ class Model extends axis\Model {
                 ]);
             }
 
-            $this->_gateways[$account] = mint\gateway\Base::factory($name, $settings);
+            if ($testing) {
+                $settings['testing'] = true;
+            }
+
+            $this->_gateways[$key] = mint\gateway\Base::factory($name, $settings);
         }
 
-        if(!$gateway = $this->_gateways[$account]) {
+        if (!$gateway = $this->_gateways[$key]) {
             throw core\Error::{'mint\gateway\ESetup'}([
-                'message' => 'Gateway is not available'
+                'message' => 'Gateway '.$account.' is not available'
             ]);
         }
 

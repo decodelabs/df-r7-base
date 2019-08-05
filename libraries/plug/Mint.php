@@ -121,13 +121,28 @@ class Mint implements core\ISharedHelper
         return $this->context->data->mint->getPrimaryGateway();
     }
 
+    public function getPrimaryTestingGateway(): ?mintLib\IGateway
+    {
+        return $this->context->data->mint->getPrimaryTestingGateway();
+    }
+
     public function getSubscriptionGateway(): ?mintLib\IGateway
     {
         return $this->context->data->mint->getSubscriptionGateway();
     }
 
+    public function getSubscriptionTestingGateway(): ?mintLib\IGateway
+    {
+        return $this->context->data->mint->getSubscriptionTestingGateway();
+    }
+
     public function getAccountGateway(string $account): ?mintLib\IGateway
     {
         return $this->context->data->mint->getGateway($account);
+    }
+
+    public function getAccountTestingGateway(string $account): ?mintLib\IGateway
+    {
+        return $this->context->data->mint->getTestingGateway($account);
     }
 }
