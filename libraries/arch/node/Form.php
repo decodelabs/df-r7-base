@@ -365,7 +365,7 @@ abstract class Form extends Base implements IFormNode
         $data = $this->_getJsonResponseData();
 
         if ($this->event->hasRedirect()) {
-            $data['redirect'] = $this->uri($result->getRedirect());
+            $data['redirect'] = $this->uri($this->event->getRedirect());
         }
 
         return $this->http->jsonResponse($data);
