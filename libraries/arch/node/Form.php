@@ -25,6 +25,8 @@ abstract class Form extends Base implements IFormNode
     const DEFAULT_EVENT = 'save';
     const DEFAULT_REDIRECT = null;
 
+    const CAN_RESET = false;
+
     private $_isNew = false;
     private $_isComplete = false;
     private $_sessionNamespace;
@@ -104,6 +106,15 @@ abstract class Form extends Base implements IFormNode
 
         $this->_isNew = $this->_state->isNew();
         $this->values = $this->_state->values;
+
+        if (static::QUERY_RESET && isset($this->request->query->reset)) {
+            $this->_state->reset();
+            $request = clone $this->request;
+            unset($request->query->reset);
+
+            return $this->http->redirect($request);
+        }
+
         $response = $this->initWithSession();
 
         if (!empty($response)) {
