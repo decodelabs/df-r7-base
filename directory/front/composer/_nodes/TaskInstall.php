@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\front\_nodes;
+namespace df\apex\directory\front\composer\_nodes;
 
 use df;
 use df\core;
@@ -11,12 +11,14 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class TaskComposer extends arch\node\Task implements arch\node\IBuildTaskNode
+class TaskInstall extends arch\node\Task implements arch\node\IBuildTaskNode
 {
     public function execute()
     {
-        if (!core\fs\File::iFileExists($this->app->path.'/composer.json')) {
-            return;
+        $file = new core\fs\File($this->app->path.'/composer.json');
+
+        if (!$file->exists()) {
+            $this->runChild('composer/init?no-update');
         }
 
         $args = [];
