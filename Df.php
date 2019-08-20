@@ -106,7 +106,7 @@ class Launchpad
         self::$app = core\app\Base::factory($envId, $appPath);
 
         // Composer
-        if (method_exists(self::$app, 'shouldUseComposer') && self::$app->shouldUseComposer()) {
+        if (self::$app->shouldUseComposer()) {
             $path = null;
 
             if (self::$isCompiled) {

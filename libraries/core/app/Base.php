@@ -14,7 +14,7 @@ abstract class Base implements core\IApp
     const NAME = 'My application';
     const UNIQUE_PREFIX = '123';
     const PASS_KEY = 'temp-pass-key';
-    const COMPOSER = false;
+    const COMPOSER = true;
 
     const PACKAGES = [
         'webCore' => true
