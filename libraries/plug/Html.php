@@ -290,6 +290,7 @@ class Html implements arch\IDirectoryHelper
                 $finalDelimiter = $delimiter;
             }
 
+            $items = [];
 
             foreach ($list as $key => $item) {
                 if ($item === null) {
@@ -312,16 +313,24 @@ class Html implements arch\IDirectoryHelper
                     continue;
                 }
 
+
+                $items[] = $this->string($cellTag);
+            }
+
+            $total = count($items);
+
+            foreach ($items as $i => $item) {
                 if (!$first) {
-                    if ($i == $total) {
+                    if ($i + 1 == $total) {
                         yield $finalDelimiter;
                     } else {
                         yield $delimiter;
                     }
                 }
 
+                yield $item;
+
                 $first = false;
-                yield $this->string($cellTag);
             }
 
             if ($more) {
