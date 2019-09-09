@@ -9,21 +9,26 @@ use df;
 use df\core;
 use df\flow;
 
-class Mail extends Base {
-
-    public static function getDescription() {
+class Mail extends Base
+{
+    public static function getDescription()
+    {
         return 'PHP native mail()';
     }
 
-    public function send(flow\mail\IMessage $message, flow\mime\IMultiPart $mime) {
+    public function send(flow\mail\IMessage $message, flow\mime\IMultiPart $mime)
+    {
         $headers = $mime->getHeaders();
         $headerString = $mime->getHeaderString(['to', 'subject']);
         $to = $headers->get('to');
+        $from = $headers->get('from');
         $body = $mime->getBodyString();
         $additional = null;
 
-        if($returnPath = $headers->get('return-path')) {
+        if ($returnPath = $headers->get('return-path')) {
             $additional = '-f'.$returnPath;
+        } else {
+            $additional = '-f'.$from;
         }
 
         return mail($to, $headers->get('subject'), $body, $headerString, $additional);
