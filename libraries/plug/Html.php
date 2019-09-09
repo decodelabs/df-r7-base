@@ -298,9 +298,14 @@ class Html implements arch\IDirectoryHelper
 
                 $i++;
 
-                $cellTag = new aura\html\Element('span', function ($el) use ($key, $item, $renderer, &$i) {
+                $cellTag = new aura\html\Element('?span', function ($el) use ($key, $item, $renderer, &$i) {
                     return $renderer($item, $el, $key, $i);
                 });
+
+                if (empty($tagString = (string)$cellTag)) {
+                    $i--;
+                    continue;
+                }
 
                 if ($limit !== null && $i > $limit) {
                     $more++;
@@ -316,7 +321,7 @@ class Html implements arch\IDirectoryHelper
                 }
 
                 $first = false;
-                yield $cellTag;
+                yield $this->string($cellTag);
             }
 
             if ($more) {
