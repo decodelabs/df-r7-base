@@ -21,14 +21,13 @@ class Mail extends Base
         $headers = $mime->getHeaders();
         $headerString = $mime->getHeaderString(['to', 'subject']);
         $to = $headers->get('to');
-        $from = $headers->get('from');
         $body = $mime->getBodyString();
         $additional = null;
 
         if ($returnPath = $headers->get('return-path')) {
             $additional = '-f'.$returnPath;
-        } else {
-            $additional = '-f'.$from;
+        } elseif ($from = $message->getFromAddress()) {
+            $additional = '-f'.$from->getAddress();
         }
 
         return mail($to, $headers->get('subject'), $body, $headerString, $additional);
