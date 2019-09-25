@@ -92,14 +92,13 @@ class Html implements arch\IDirectoryHelper
             return null;
         }
 
-        if (class_exists(\Parsedown::class)) {
-            //throw core\Error::EImplementation('Parsedown library is not available');
-            $parser = new \Parsedown();
-            //$parser->setSafeMode(true);
-            $output = $parser->text($text);
-        } else {
-            $output = (new flex\markdown\Parser($text))->toHtml();
+        if (!class_exists(\Parsedown::class)) {
+            throw core\Error::EImplementation('Parsedown library is not available');
         }
+
+        $parser = new \Parsedown();
+        //$parser->setSafeMode(true);
+        $output = $parser->text($text);
 
         if ($output !== null) {
             $output = $this->string($output);
