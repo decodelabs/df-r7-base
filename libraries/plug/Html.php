@@ -88,7 +88,18 @@ class Html implements arch\IDirectoryHelper
 
     public function markdown($text)
     {
-        $output = (new flex\markdown\Parser($text))->toHtml();
+        if (!strlen($text)) {
+            return null;
+        }
+
+        if (class_exists(\Parsedown::class)) {
+            //throw core\Error::EImplementation('Parsedown library is not available');
+            $parser = new \Parsedown();
+            $parser->setSafeMode(true);
+            $output = $parser->text($text);
+        } else {
+            $output = (new flex\markdown\Parser($text))->toHtml();
+        }
 
         if ($output !== null) {
             $output = $this->string($output);
