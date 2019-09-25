@@ -13,6 +13,8 @@ use df\flex;
 use df\spur;
 use df\flow;
 
+use DecodeLabs\Chirp\Parser as Chirp;
+
 class Html implements arch\IDirectoryHelper
 {
     use arch\TDirectoryHelper;
@@ -119,7 +121,11 @@ class Html implements arch\IDirectoryHelper
 
     public function tweet($text)
     {
-        $output = (new flex\tweet\Parser($text))->toHtml();
+        if (!class_exists(Chirp::class)) {
+            throw core\Error::EImplementation('Chirp library is not available');
+        }
+
+        $output = (new Chirp())->parse($text);
 
         if ($output !== null) {
             $output = $this->string($output);
