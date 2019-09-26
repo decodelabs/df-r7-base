@@ -11,8 +11,8 @@ use df\spur;
 use df\link;
 use df\aura;
 
-class Embed implements IAudioEmbed {
-
+class Embed implements IAudioEmbed
+{
     use core\TStringProvider;
 
     const URL_MAP = [
@@ -30,15 +30,16 @@ class Embed implements IAudioEmbed {
     protected $_provider;
     protected $_source;
 
-    public static function parse($embed) {
+    public static function parse($embed)
+    {
         $embed = trim($embed);
 
         $parts = explode('<', $embed, 2);
 
-        if(count($parts) == 2) {
+        if (count($parts) == 2) {
             $embed = '<'.array_pop($parts);
 
-            if(!preg_match('/^\<([a-zA-Z0-9\-]+) /i', $embed, $matches)) {
+            if (!preg_match('/^\<([a-zA-Z0-9\-]+) /i', $embed, $matches)) {
                 throw new UnexpectedValueException(
                     'Don\'t know how to parse this audio embed'
                 );
@@ -46,10 +47,10 @@ class Embed implements IAudioEmbed {
 
             $tag = strtolower($matches[1]);
 
-            switch($tag) {
+            switch ($tag) {
                 case 'iframe':
                 case 'object':
-                    if(!preg_match('/src\=(\"|\')([^\'"]+)(\"|\')/i', $embed, $matches)) {
+                    if (!preg_match('/src\=(\"|\')([^\'"]+)(\"|\')/i', $embed, $matches)) {
                         throw new UnexpectedValueException(
                             'Could not extract source from flash embed'
                         );
@@ -58,10 +59,10 @@ class Embed implements IAudioEmbed {
                     $url = trim($matches[2]);
                     $output = new self($url, null, null, $embed);
 
-                    if(preg_match('/width\=\"([^\"]+)\"/i', $embed, $matches)) {
+                    if (preg_match('/width\=\"([^\"]+)\"/i', $embed, $matches)) {
                         $width = $matches[1];
 
-                        if(preg_match('/height\=\"([^\"]+)\"/i', $embed, $matches)) {
+                        if (preg_match('/height\=\"([^\"]+)\"/i', $embed, $matches)) {
                             $height = $matches[1];
                         } else {
                             $height = round(($width / $output->_width) * $output->_height);
@@ -82,7 +83,7 @@ class Embed implements IAudioEmbed {
                         'Don\'t know how to parse this audio embed'
                     );
             }
-        } else if(preg_match('/^[0-9]+$/', $embed)) {
+        } elseif (preg_match('/^[0-9]+$/', $embed)) {
             // Assume audioboom
             $output = new self('//embeds.audioboom.com/boos/'.$embed.'/embed/v4');
         } else {
@@ -94,30 +95,32 @@ class Embed implements IAudioEmbed {
     }
 
 
-    public function __construct($url, $width=null, $height=null, $embedSource=null) {
+    public function __construct($url, $width=null, $height=null, $embedSource=null)
+    {
         $this->setUrl($url);
 
-        if($width !== null) {
+        if ($width !== null) {
             $this->setWidth($width);
         }
 
-        if($height !== null) {
+        if ($height !== null) {
             $this->setHeight($height);
         }
 
         $this->_source = $embedSource;
     }
 
-// Url
-    public function setUrl($url) {
-        if(empty($url)) {
+    // Url
+    public function setUrl($url)
+    {
+        if (empty($url)) {
             $this->_url = null;
             return $this;
         }
 
         $url = str_replace('&amp;', '&', $url);
 
-        if(false !== strpos($url, '&') && false === strpos($url, '?')) {
+        if (false !== strpos($url, '&') && false === strpos($url, '?')) {
             $parts = explode('&', $url, 2);
             $url = implode('?', $parts);
         }
@@ -125,8 +128,8 @@ class Embed implements IAudioEmbed {
         $this->_url = $url;
         $this->_provider = null;
 
-        foreach(self::URL_MAP as $search => $key) {
-            if(false !== stripos($this->_url, $search)) {
+        foreach (self::URL_MAP as $search => $key) {
+            if (false !== stripos($this->_url, $search)) {
                 $this->_provider = $key;
                 break;
             }
@@ -135,25 +138,30 @@ class Embed implements IAudioEmbed {
         return $this;
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
         return $this->_url;
     }
 
-    public function getPreparedUrl() {
+    public function getPreparedUrl()
+    {
         return $this->render()->getAttribute('src');
     }
 
-    public function getProvider() {
+    public function getProvider()
+    {
         return $this->_provider;
     }
 
- // Width
-    public function setWidth($width) {
+    // Width
+    public function setWidth($width)
+    {
         $this->_width = (int)$width;
         return $this;
     }
 
-    public function scaleWidth($width) {
+    public function scaleWidth($width)
+    {
         $width = (int)$width;
         $this->_height = round(($width / $this->_width) * $this->_height);
         $this->_width = $width;
@@ -161,33 +169,37 @@ class Embed implements IAudioEmbed {
         return $this;
     }
 
-    public function getWidth() {
+    public function getWidth()
+    {
         return $this->_width;
     }
 
-// Height
-    public function setHeight($height) {
+    // Height
+    public function setHeight($height)
+    {
         $this->_height = (int)$height;
         return $this;
     }
 
-    public function getHeight() {
+    public function getHeight()
+    {
         return $this->_height;
     }
 
-    public function setDimensions($width, $height=null) {
+    public function setDimensions($width, $height=null)
+    {
         $width = (int)$width;
         $height = (int)$height;
 
-        if(!$height) {
-            if($width) {
+        if (!$height) {
+            if ($width) {
                 return $this->scaleWidth($width);
             } else {
                 return $this;
             }
         }
 
-        if(!$width) {
+        if (!$width) {
             $width = round(($height / $this->_height) * $this->_width);
         }
 
@@ -199,25 +211,28 @@ class Embed implements IAudioEmbed {
 
 
 
-// Duration
-    public function setStartTime($seconds) {
+    // Duration
+    public function setStartTime($seconds)
+    {
         $this->_startTime = (int)$seconds;
 
-        if(!$this->_startTime) {
+        if (!$this->_startTime) {
             $this->_startTime = null;
         }
 
         return $this;
     }
 
-    public function getStartTime() {
+    public function getStartTime()
+    {
         return $this->_startTime;
     }
 
-    public function setEndTime($seconds) {
+    public function setEndTime($seconds)
+    {
         $this->_endTime = (int)$seconds;
 
-        if(!$this->_endTime) {
+        if (!$this->_endTime) {
             $this->_endTime = null;
         } else {
             $this->_duration = null;
@@ -226,14 +241,16 @@ class Embed implements IAudioEmbed {
         return $this;
     }
 
-    public function getEndTime() {
+    public function getEndTime()
+    {
         return $this->_endTime;
     }
 
-    public function setDuration($seconds) {
+    public function setDuration($seconds)
+    {
         $this->_duration = (int)$seconds;
 
-        if(!$this->_duration) {
+        if (!$this->_duration) {
             $this->_duration = null;
         } else {
             $this->_endTime = null;
@@ -242,14 +259,16 @@ class Embed implements IAudioEmbed {
         return $this;
     }
 
-    public function getDuration() {
+    public function getDuration()
+    {
         return $this->_duration;
     }
 
 
-// Auto play
-    public function shouldAutoPlay(bool $flag=null) {
-        if($flag !== null) {
+    // Auto play
+    public function shouldAutoPlay(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_autoPlay = $flag;
             return $this;
         }
@@ -258,13 +277,14 @@ class Embed implements IAudioEmbed {
     }
 
 
-// String
-    public function render() {
-        if(($this->_url === null || !$this->_provider) && $this->_source !== null) {
+    // String
+    public function render()
+    {
+        if (($this->_url === null || !$this->_provider) && $this->_source !== null) {
             return new aura\html\Element('div.w.embed.audio', new aura\html\ElementString($this->_source));
         }
 
-        if($this->_provider) {
+        if ($this->_provider) {
             $func = '_render'.ucfirst($this->_provider);
             $tag = $this->$func();
         } else {
@@ -281,22 +301,27 @@ class Embed implements IAudioEmbed {
         return $tag;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return (string)$this->render();
     }
 
 
 
-    protected function _renderAudioboom() {
+    protected function _renderAudioboom()
+    {
         $url = link\http\Url::factory($this->_url);
 
         $booId = $url->path->get(1);
-        $eid = $url->query['eid'];
 
-        $url = new link\http\Url('//embeds.audioboom.com/boos/'.$booId.'/embed/v4');
+        if ($booId === 'playlist') {
+        } else {
+            $eid = $url->query['eid'];
+            $url = new link\http\Url('//embeds.audioboom.com/boos/'.$booId.'/embed/v4');
 
-        if(!empty($eid)) {
-            $url->query->eid = $eid;
+            if (!empty($eid)) {
+                $url->query->eid = $eid;
+            }
         }
 
         $tag = new aura\html\Element('iframe', null, [
