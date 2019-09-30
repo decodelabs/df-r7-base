@@ -79,11 +79,16 @@ class TaskInit extends arch\node\Task
             'repositories' => [
                 [
                     'type' => 'vcs',
-                    'url' => 'git@github.com:decodelabs/df-r7-integrator.git'
+                    'url' => 'git@github.com:decodelabs/df-r7-base.git'
+                ],
+                [
+                    'type' => 'vcs',
+                    'url' => 'git@github.com:decodelabs/df-r7-webCore.git'
                 ]
             ],
             'require' => [
-                'decodelabs/df-r7-integrator' => 'dev-develop'
+                'df-r7/base' => 'dev-master',
+                'df-r7/webcore' => 'dev-master'
             ],
             'minimum-stability' => 'dev',
             'prefer-stable' => true
