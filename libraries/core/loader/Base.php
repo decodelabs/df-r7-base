@@ -8,8 +8,8 @@ namespace df\core\loader;
 use df;
 use df\core;
 
-class Base implements core\ILoader {
-
+class Base implements core\ILoader
+{
     private static $_includeAttempts = 0;
     private static $_includeMisses = 0;
 
@@ -19,25 +19,54 @@ class Base implements core\ILoader {
     private $_isInit = false;
 
 
-// Stats
-    public static function getTotalIncludeAttempts(): int {
+    // Stats
+    public static function getTotalIncludeAttempts(): int
+    {
         return self::$_includeAttempts;
     }
 
-    public static function getTotalIncludeMisses(): int {
+    public static function getTotalIncludeMisses(): int
+    {
         return self::$_includeMisses;
     }
 
 
-// Construct
-    public function __construct(array $locations=[]) {
+    // Construct
+    public function __construct(array $locations=[])
+    {
         $this->_locations = $locations;
         spl_autoload_register([$this, 'loadClass']);
     }
 
-// Class loader
-    public function loadClass(string $class): bool {
-        if(class_exists($class, false)
+    public function loadComposer(): void
+    {
+        $composerPath = null;
+
+        if (df\Launchpad::$isCompiled) {
+            $composerPath = df\Launchpad::$rootPath.'/apex/vendor/autoload.php';
+
+            if (!file_exists($composerPath)) {
+                $composerPath = null;
+            }
+        }
+
+        if ($composerPath === null) {
+            $composerPath = df\Launchpad::$app->getPath().'/vendor/autoload.php';
+
+            if (!file_exists($composerPath)) {
+                $composerPath = null;
+            }
+        }
+
+        if ($composerPath !== null) {
+            require_once $composerPath;
+        }
+    }
+
+    // Class loader
+    public function loadClass(string $class): bool
+    {
+        if (class_exists($class, false)
         || interface_exists($class, false)
         || trait_exists($class, false)) {
             return true;
@@ -45,16 +74,16 @@ class Base implements core\ILoader {
 
         $output = false;
 
-        if($paths = $this->getClassSearchPaths($class)) {
+        if ($paths = $this->getClassSearchPaths($class)) {
             $included = get_included_files();
 
-            foreach($paths as $path) {
+            foreach ($paths as $path) {
                 self::$_includeAttempts++;
 
-                if(file_exists($path) && !in_array($path, $included)) {
+                if (file_exists($path) && !in_array($path, $included)) {
                     include_once $path;
 
-                    if(class_exists($class, false)
+                    if (class_exists($class, false)
                     || interface_exists($class, false)
                     || trait_exists($class, false)) {
                         $output = true;
@@ -69,27 +98,28 @@ class Base implements core\ILoader {
         return $output;
     }
 
-    public function getClassSearchPaths(string $class): ?array {
+    public function getClassSearchPaths(string $class): ?array
+    {
         $parts = explode('\\', $class);
 
-        if(array_shift($parts) != 'df') {
+        if (array_shift($parts) != 'df') {
             return null;
         }
 
-        if(!$library = array_shift($parts)) {
+        if (!$library = array_shift($parts)) {
             return null;
         }
 
         $fileName = array_pop($parts);
         $basePath = df\Launchpad::$rootPath.'/'.$library;
 
-        if(!empty($parts)) {
+        if (!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
         }
 
         $output = [$basePath.'/'.$fileName.'.php'];
 
-        if(false !== ($pos = strpos($fileName, '_'))) {
+        if (false !== ($pos = strpos($fileName, '_'))) {
             $fileName = substr($fileName, 0, $pos);
             $output[] = $basePath.'/'.$fileName.'.php';
         }
@@ -99,11 +129,12 @@ class Base implements core\ILoader {
         return $output;
     }
 
-    public function lookupClass(string $path): ?string {
+    public function lookupClass(string $path): ?string
+    {
         $parts = explode('/', trim($path, '/'));
         $class = 'df\\'.implode('\\', $parts);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             return null;
         }
 
@@ -111,14 +142,15 @@ class Base implements core\ILoader {
     }
 
 
-// File finder
-    public function findFile(string $path): ?string {
-        if(null === ($paths = $this->getFileSearchPaths($path))) {
+    // File finder
+    public function findFile(string $path): ?string
+    {
+        if (null === ($paths = $this->getFileSearchPaths($path))) {
             return null;
         }
 
-        foreach($paths as $path) {
-            if(is_file($path)) {
+        foreach ($paths as $path) {
+            if (is_file($path)) {
                 return $path;
             }
         }
@@ -126,40 +158,42 @@ class Base implements core\ILoader {
         return null;
     }
 
-    public function getFileSearchPaths(string $path): array {
+    public function getFileSearchPaths(string $path): array
+    {
         $path = core\uri\Path::normalizeLocal($path);
         return [df\Launchpad::$rootPath.'/'.$path];
     }
 
-    public function lookupFileList(string $path, array $extensions=null): \Generator {
+    public function lookupFileList(string $path, array $extensions=null): \Generator
+    {
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
         $index = [];
 
-        foreach($paths as $path) {
-            if(!is_dir($path)) {
+        foreach ($paths as $path) {
+            if (!is_dir($path)) {
                 continue;
             }
 
             $dir = new \DirectoryIterator($path);
 
-            foreach($dir as $item) {
-                if(!$item->isFile()) {
+            foreach ($dir as $item) {
+                if (!$item->isFile()) {
                     continue;
                 }
 
                 $filePath = $item->getPathname();
                 $baseName = basename($filePath);
 
-                if($extensions !== null) {
+                if ($extensions !== null) {
                     $parts = explode('.', $baseName);
                     $ext = array_pop($parts);
 
-                    if(!in_array($ext, $extensions)) {
+                    if (!in_array($ext, $extensions)) {
                         continue;
                     }
                 }
 
-                if(isset($index[$baseName])) {
+                if (isset($index[$baseName])) {
                     continue;
                 }
 
@@ -169,20 +203,21 @@ class Base implements core\ILoader {
         }
     }
 
-    public function lookupFileListRecursive(string $path, array $extensions=null, callable $folderCheck=null): \Generator {
+    public function lookupFileListRecursive(string $path, array $extensions=null, callable $folderCheck=null): \Generator
+    {
         $path = core\uri\Path::normalizeLocal($path);
 
-        if(!($folderCheck && !core\lang\Callback($folderCheck, $path))) {
-            foreach($this->lookupFileList($path, $extensions) as $key => $val) {
+        if (!($folderCheck && !core\lang\Callback($folderCheck, $path))) {
+            foreach ($this->lookupFileList($path, $extensions) as $key => $val) {
                 yield $key => $val;
             }
         }
 
         $index = [];
 
-        foreach($this->lookupFolderList($path) as $dirName => $dirPath) {
-            foreach($this->lookupFileListRecursive($path.'/'.$dirName, $extensions, $folderCheck) as $name => $filePath) {
-                if(isset($index[$dirName.'/'.$name])) {
+        foreach ($this->lookupFolderList($path) as $dirName => $dirPath) {
+            foreach ($this->lookupFileListRecursive($path.'/'.$dirName, $extensions, $folderCheck) as $name => $filePath) {
+                if (isset($index[$dirName.'/'.$name])) {
                     continue;
                 }
 
@@ -192,26 +227,27 @@ class Base implements core\ILoader {
         }
     }
 
-    public function lookupClassList(string $path, bool $test=true): \Generator {
+    public function lookupClassList(string $path, bool $test=true): \Generator
+    {
         $path = trim($path, '/');
 
-        foreach($this->lookupFileList($path, ['php']) as $fileName => $filePath) {
+        foreach ($this->lookupFileList($path, ['php']) as $fileName => $filePath) {
             $name = substr($fileName, 0, -4);
 
-            if(substr($name, 0, 1) == '_') {
+            if (substr($name, 0, 1) == '_') {
                 continue;
             }
 
             $class = 'df\\'.str_replace('/', '\\', $path).'\\'.$name;
 
-            if($test) {
-                if(!class_exists($class)) {
+            if ($test) {
+                if (!class_exists($class)) {
                     continue;
                 }
 
                 $ref = new \ReflectionClass($class);
 
-                if($ref->isAbstract()) {
+                if ($ref->isAbstract()) {
                     continue;
                 }
             }
@@ -220,31 +256,32 @@ class Base implements core\ILoader {
         }
     }
 
-    public function lookupFolderList(string $path): \Generator {
+    public function lookupFolderList(string $path): \Generator
+    {
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
 
-        if(!$paths) {
+        if (!$paths) {
             return;
         }
 
         $index = [];
 
-        foreach($paths as $path) {
-            if(!is_dir($path)) {
+        foreach ($paths as $path) {
+            if (!is_dir($path)) {
                 continue;
             }
 
             $dir = new \DirectoryIterator($path);
 
-            foreach($dir as $item) {
-                if(!$item->isDir() || $item->isDot()) {
+            foreach ($dir as $item) {
+                if (!$item->isDir() || $item->isDot()) {
                     continue;
                 }
 
                 $filePath = $item->getPathname();
                 $baseName = basename($filePath);
 
-                if(isset($index[$baseName])) {
+                if (isset($index[$baseName])) {
                     continue;
                 }
 
@@ -254,10 +291,11 @@ class Base implements core\ILoader {
         }
     }
 
-    public function lookupLibraryList(): array {
+    public function lookupLibraryList(): array
+    {
         $libList = ['apex'];
 
-        foreach($this->lookupFolderList('/') as $folder) {
+        foreach ($this->lookupFolderList('/') as $folder) {
             $libList[] = basename($folder);
         }
 
@@ -267,35 +305,41 @@ class Base implements core\ILoader {
     }
 
 
-// Locations
-    public function registerLocations(array $locations) {
+    // Locations
+    public function registerLocations(array $locations)
+    {
         $this->_locations = $locations + $this->_locations;
         return $this;
     }
 
-    public function registerLocation(string $name, string $path) {
+    public function registerLocation(string $name, string $path)
+    {
         $this->_locations = [$name => $path] + $this->_locations;
         return $this;
     }
 
-    public function unregisterLocation(string $name) {
+    public function unregisterLocation(string $name)
+    {
         unset($this->_locations[$name]);
         return $this;
     }
 
-    public function getLocations(): array {
+    public function getLocations(): array
+    {
         return $this->_locations;
     }
 
 
-// Packages
-    public function initRootPackages(string $rootPath, string $appPath) {
+    // Packages
+    public function initRootPackages(string $rootPath, string $appPath)
+    {
         $this->_packages['base'] = new core\Package('base', 0, $rootPath);
         $this->_packages['app'] = new core\Package('app', PHP_INT_MAX, $appPath);
         return $this;
     }
 
-    public function loadPackages(array $packages) {
+    public function loadPackages(array $packages)
+    {
         /*
         if($this->_isInit) {
             throw core\Error::ELogic(
@@ -306,11 +350,11 @@ class Base implements core\ILoader {
 
         $this->_loadPackageList($packages);
 
-        uasort($this->_packages, function($a, $b) {
+        uasort($this->_packages, function ($a, $b) {
             return $a->priority < $b->priority;
         });
 
-        foreach($this->_packages as $package) {
+        foreach ($this->_packages as $package) {
             $package->init();
         }
 
@@ -318,9 +362,10 @@ class Base implements core\ILoader {
         return $this;
     }
 
-    private function _loadPackageList(array $packages) {
-        foreach($packages as $package) {
-            if(isset($this->_packages[$package])) {
+    private function _loadPackageList(array $packages)
+    {
+        foreach ($packages as $package) {
+            if (isset($this->_packages[$package])) {
                 continue;
             }
 
@@ -329,22 +374,25 @@ class Base implements core\ILoader {
 
             $deps = $package::DEPENDENCIES;
 
-            if(is_array($deps) && !empty($deps)) {
+            if (is_array($deps) && !empty($deps)) {
                 $this->_loadPackageList($deps);
             }
         }
     }
 
-    public function getPackages(): array {
+    public function getPackages(): array
+    {
         return $this->_packages;
     }
 
-    public function hasPackage(string $package): bool {
+    public function hasPackage(string $package): bool
+    {
         return isset($this->_packages[$package]);
     }
 
-    public function getPackage(string $package): ?core\IPackage {
-        if(isset($this->_packages[$package])) {
+    public function getPackage(string $package): ?core\IPackage
+    {
+        if (isset($this->_packages[$package])) {
             return $this->_packages[$package];
         }
 
@@ -353,8 +401,9 @@ class Base implements core\ILoader {
 
 
 
-// Shutdown
-    public function shutdown(): void {
+    // Shutdown
+    public function shutdown(): void
+    {
         // do nothing yet
     }
 }

@@ -106,29 +106,7 @@ class Launchpad
         self::$app = core\app\Base::factory($envId, $appPath);
 
         // Composer
-        if (self::$app->shouldIncludeComposer()) {
-            $path = null;
-
-            if (self::$isCompiled) {
-                $path = self::$rootPath.'/apex/vendor/autoload.php';
-
-                if (!file_exists($path)) {
-                    $path = null;
-                }
-            }
-
-            if ($path === null) {
-                $path = self::$app->getPath().'/vendor/autoload.php';
-
-                if (!file_exists($path)) {
-                    $path = null;
-                }
-            }
-
-            if ($path !== null) {
-                require_once $path;
-            }
-        }
+        self::$loader->loadComposer();
 
         // Run
         self::$app->startup($startTime);
