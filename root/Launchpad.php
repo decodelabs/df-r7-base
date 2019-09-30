@@ -15,12 +15,11 @@ class Launchpad
 {
     const CODENAME = 'hydrogen';
     const REV = 'r7';
-    const DF_PATH = __DIR__;
 
     public static $isCompiled = false;
     public static $compileTimestamp = null;
 
-    public static $rootPath = __DIR__;
+    public static $rootPath = null;
 
     public static $loader;
     public static $app;
@@ -59,6 +58,7 @@ class Launchpad
             return;
         }
 
+        self::$rootPath = dirname(__DIR__);
         $startTime = microtime(true);
 
         // Set a few system defaults
