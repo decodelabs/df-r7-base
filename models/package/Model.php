@@ -32,6 +32,10 @@ class Model extends axis\Model
                 $path = $item->getPathname();
                 $package = $repo = null;
 
+                if ($name === 'webcore') {
+                    $name = 'webCore';
+                }
+
                 if (isset($packages[$name]) && $packages[$name]->path == $path) {
                     $package = $packages[$name];
                 }
@@ -62,11 +66,15 @@ class Model extends axis\Model
         }
 
         foreach ($remainingPackages as $package) {
+            if (is_dir($package->path.'/.git') && basename(dirname(dirname($package->path))) !== 'vendor') {
+                $repo = new spur\vcs\git\Repository($package->path);
+            }
+
             $installed[] = [
                 'name' => $package->name,
                 'path' => $package->path,
                 'instance' => $package,
-                'repo' => $repo = is_dir($package->path.'/.git') ? new spur\vcs\git\Repository($package->path) : null
+                'repo' => $repo
             ];
 
             if ($repo) {
