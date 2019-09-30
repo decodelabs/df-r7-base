@@ -337,7 +337,7 @@ interface IApp
     public static function factory(string $envId, string $path): IApp;
 
     // Composer
-    public function shouldUseComposer(): bool;
+    public function shouldIncludeComposer(): bool;
 
     // Paths
     public function getPath(): string;

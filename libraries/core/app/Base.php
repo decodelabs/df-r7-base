@@ -14,7 +14,7 @@ abstract class Base implements core\IApp
     const NAME = 'My application';
     const UNIQUE_PREFIX = '123';
     const PASS_KEY = 'temp-pass-key';
-    const COMPOSER = true;
+    const COMPOSER = false;
 
     const PACKAGES = [
         'webCore' => true
@@ -122,9 +122,9 @@ PHP;
 
 
     // Composer
-    public function shouldUseComposer(): bool
+    public function shouldIncludeComposer(): bool
     {
-        return static::COMPOSER;
+        return !static::COMPOSER;
     }
 
 
