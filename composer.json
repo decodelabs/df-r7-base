@@ -24,9 +24,9 @@
         "erusev/parsedown": "^1.7"
     },
     "autoload": {
-        "files": [
-            "Df.php"
-        ]
+        "psr-4": {
+            "df\\": "root/",
+        }
     },
     "extra": {
         "branch-alias": {
