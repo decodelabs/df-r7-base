@@ -126,7 +126,7 @@ class Launchpad
             }
 
             if ($path !== null) {
-                require $path;
+                require_once $path;
             }
         }
 
