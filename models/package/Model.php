@@ -36,7 +36,7 @@ class Model extends axis\Model
                     $package = $packages[$name];
                 }
 
-                if (is_dir($path.'/.git') && basename(dirname($path)) !== 'vendor') {
+                if (is_dir($path.'/.git') && basename(dirname(dirname($path))) !== 'vendor') {
                     $repo = new spur\vcs\git\Repository($path);
                 }
 
