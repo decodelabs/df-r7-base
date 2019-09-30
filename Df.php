@@ -7,6 +7,10 @@ namespace df;
 
 use df;
 
+if (class_exists(Launchpad::class)) {
+    return;
+}
+
 class Launchpad
 {
     const CODENAME = 'hydrogen';
