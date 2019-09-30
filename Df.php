@@ -108,16 +108,8 @@ class Launchpad
         // Composer
         if (method_exists(self::$app, 'shouldIncludeComposer')) {
             $composer = self::$app->shouldIncludeComposer();
-
-            if (!$composer && !class_exists('\\Composer\\Autoload\\ClassLoader')) {
-                $composer = true;
-            }
         } else {
             $composer = true;
-        }
-
-        if ($composer && class_exists('\\Composer\\Autoload\\ClassLoader')) {
-            $composer = false;
         }
 
         if ($composer) {
