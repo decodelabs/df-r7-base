@@ -1,0 +1,36 @@
+{
+    "name": "df-r7/base",
+    "description": "DF r7 base",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tom Wright",
+            "email": "tom@inflatablecookie.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "symfony/polyfill-php72": "~1.7",
+        "symfony/polyfill-mbstring": "~1.7",
+
+        "decodelabs/glitch": "<2",
+        "decodelabs/veneer": "~0.4",
+        "decodelabs/systemic": "~0.5",
+        "decodelabs/tagged": "~0.6",
+        "decodelabs/collections": "~0.5",
+        "decodelabs/gadgets": "~0.5",
+
+        "erusev/parsedown": "^1.7"
+    },
+    "autoload": {
+        "files": [
+            "Df.php"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.x-dev"
+        }
+    }
+}
