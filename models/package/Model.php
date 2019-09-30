@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -10,44 +10,49 @@ use df\core;
 use df\apex;
 use df\axis;
 use df\spur;
-    
-class Model extends axis\Model {
 
+class Model extends axis\Model
+{
     protected $_gitPath = null;
     protected $_gitUser = null;
 
-    public function getInstalledPackageList() {
+    public function getInstalledPackageList()
+    {
         $repos = [];
         $packages = $remainingPackages = df\Launchpad::$loader->getPackages();
         $installed = [];
 
-        foreach(df\Launchpad::$loader->getLocations() as $location) {
-            foreach(new \DirectoryIterator($location) as $item) {
-                if(!$item->isDir() || !is_file($item->getPathname().'/Package.php')) {
+        foreach (df\Launchpad::$loader->getLocations() as $location) {
+            foreach (new \DirectoryIterator($location) as $item) {
+                if (!$item->isDir() || !is_file($item->getPathname().'/Package.php')) {
                     continue;
                 }
 
                 $name = $item->getFilename();
                 $path = $item->getPathname();
-                $package = null;
+                $package = $repo = null;
 
-                if(isset($packages[$name]) && $packages[$name]->path == $path) {
+                if (isset($packages[$name]) && $packages[$name]->path == $path) {
                     $package = $packages[$name];
+                }
+
+                if (is_dir($path.'/.git') && basename(dirname($path)) !== 'vendor') {
+                    $repo = new spur\vcs\git\Repository($path);
                 }
 
                 $installed[] = [
                     'name' => $name,
                     'path' => $path,
                     'instance' => $package,
-                    'repo' => $repo = is_dir($path.'/.git') ? new spur\vcs\git\Repository($path) : null
+                    'repo' => $repo
                 ];
 
-                if($repo) {
-                    if($this->_gitPath) {
+                if ($repo) {
+                    if ($this->_gitPath) {
                         $repo->setGitPath($this->_gitPath);
                     }
 
-                    if($this->_gitUser) {
+                    if ($this->_gitUser) {
                         $repo->setGitUser($this->_gitUser);
                     }
                 }
@@ -56,7 +61,7 @@ class Model extends axis\Model {
             }
         }
 
-        foreach($remainingPackages as $package) {
+        foreach ($remainingPackages as $package) {
             $installed[] = [
                 'name' => $package->name,
                 'path' => $package->path,
@@ -64,19 +69,19 @@ class Model extends axis\Model {
                 'repo' => $repo = is_dir($package->path.'/.git') ? new spur\vcs\git\Repository($package->path) : null
             ];
 
-            if($repo) {
-                if($this->_gitPath) {
+            if ($repo) {
+                if ($this->_gitPath) {
                     $repo->setGitPath($this->_gitPath);
                 }
 
-                if($this->_gitUser) {
+                if ($this->_gitUser) {
                     $repo->setGitUser($this->_gitUser);
                 }
             }
         }
 
-        uasort($installed, function($a, $b) {
-            if($a['name'] == 'app') {
+        uasort($installed, function ($a, $b) {
+            if ($a['name'] == 'app') {
                 return -1;
             }
 
@@ -86,10 +91,11 @@ class Model extends axis\Model {
         return $installed;
     }
 
-// Update remote
-    public function updateRemote($name) {
-        foreach($this->getInstalledPackageList() as $package) {
-            if($package['name'] == $name && $package['repo']) {
+    // Update remote
+    public function updateRemote($name)
+    {
+        foreach ($this->getInstalledPackageList() as $package) {
+            if ($package['name'] == $name && $package['repo']) {
                 return $package['repo']->updateRemote();
             }
         }
@@ -97,11 +103,12 @@ class Model extends axis\Model {
         return false;
     }
 
-    public function updateRemotes() {
+    public function updateRemotes()
+    {
         $output = [];
 
-        foreach($this->getInstalledPackageList() as $package) {
-            if(!$package['repo']) {
+        foreach ($this->getInstalledPackageList() as $package) {
+            if (!$package['repo']) {
                 continue;
             }
 
@@ -112,10 +119,11 @@ class Model extends axis\Model {
     }
 
 
-// Pull
-    public function pull($name) {
-        foreach($this->getInstalledPackageList() as $package) {
-            if($package['name'] == $name && $package['repo']) {
+    // Pull
+    public function pull($name)
+    {
+        foreach ($this->getInstalledPackageList() as $package) {
+            if ($package['name'] == $name && $package['repo']) {
                 return $package['repo']->pull();
             }
         }
@@ -123,11 +131,12 @@ class Model extends axis\Model {
         return false;
     }
 
-    public function pullAll() {
+    public function pullAll()
+    {
         $output = [];
 
-        foreach($this->getInstalledPackageList() as $package) {
-            if(!$package['repo']) {
+        foreach ($this->getInstalledPackageList() as $package) {
+            if (!$package['repo']) {
                 continue;
             }
 
