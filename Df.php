@@ -99,14 +99,22 @@ class Launchpad
             self::$loader = new core\loader\Development(['root' => dirname(self::$rootPath)]);
         }
 
-        self::$loader->initRootPackages(self::$rootPath, $appPath);
-
-
-        // App
-        self::$app = core\app\Base::factory($envId, $appPath);
-
         // Composer
         self::$loader->loadComposer();
+
+        // Glitch
+        Glitch::setStartTime($startTime)
+            ->registerPathAliases([
+                'vendor' => $appPath.'/vendor',
+                'app' => $appPath,
+                'df-base' => __DIR__
+            ]);
+
+        // Packages
+        self::$loader->initRootPackages(self::$rootPath, $appPath);
+        
+        // App
+        self::$app = core\app\Base::factory($envId, $appPath);
 
         // Run
         self::$app->startup($startTime);

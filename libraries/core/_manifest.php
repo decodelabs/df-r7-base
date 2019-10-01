@@ -316,6 +316,10 @@ class Package implements IPackage
             $this->path = $path;
         }
 
+        Glitch::registerPathAliases([
+            $name => $this->path
+        ]);
+
         $this->name = $name;
 
         if ($priority === null) {
