@@ -113,6 +113,7 @@ class Launchpad
 
         // App
         self::$app = core\app\Base::factory($envId, $appPath);
+        Glitch::setRunMode(self::$app->getRunMode());
 
         // Run
         self::$app->startup($startTime);
