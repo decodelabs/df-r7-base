@@ -38,7 +38,7 @@ class Base implements core\ILoader
         spl_autoload_register([$this, 'loadClass']);
     }
 
-    public function loadComposer(): void
+    public function loadComposer(string $appPath): void
     {
         $composerPath = null;
 
@@ -51,7 +51,7 @@ class Base implements core\ILoader
         }
 
         if ($composerPath === null) {
-            $composerPath = df\Launchpad::$app->getPath().'/vendor/autoload.php';
+            $composerPath = $appPath.'/vendor/autoload.php';
 
             if (!file_exists($composerPath)) {
                 $composerPath = null;

@@ -100,7 +100,7 @@ class Launchpad
         }
 
         // Composer
-        self::$loader->loadComposer();
+        self::$loader->loadComposer($appPath);
 
         // Glitch
         Glitch::setStartTime($startTime)
@@ -112,7 +112,7 @@ class Launchpad
 
         // Packages
         self::$loader->initRootPackages(self::$rootPath, $appPath);
-        
+
         // App
         self::$app = core\app\Base::factory($envId, $appPath);
 
