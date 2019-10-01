@@ -367,7 +367,7 @@ abstract class QueryExecutor implements IQueryExecutor
                     // This is a total hack - you need to trace the real problem with multi-value keys
                     $value = array_shift($value);
                 } else {
-                    core\dump($value, $field, 'You need to trace back multi key primary field retention');
+                    dd($value, $field, 'You need to trace back multi key primary field retention');
                 }
             }
 
@@ -701,7 +701,7 @@ abstract class QueryExecutor implements IQueryExecutor
         $field = $source->getFieldByAlias($fieldAlias);
 
         if (!$field) {
-            core\dump('Correlation field not found.. this shouldn\'t happen!', $fieldAlias, $source);
+            throw Glitch::ERuntime('Correlation field not found.. this shouldn\'t happen!', null, [$fieldAlias, $source]);
         }
 
         $outFields[/*$fieldAlias*/] = $this->defineField($field, $fieldAlias);

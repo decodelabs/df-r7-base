@@ -448,7 +448,7 @@ class Clause implements opal\query\IClause, core\IDumpable
                 case self::OP_NOT_IN:
                     //if(count($this->_value) > self::BETWEEN_CONVERSION_THRESHOLD) {
                         // TODO: convert to between set
-                        //core\dump($this->_value);
+                        //dd($this->_value);
                     //}
 
                 case self::OP_BETWEEN:
@@ -543,7 +543,7 @@ class Clause implements opal\query\IClause, core\IDumpable
             return opal\query\clause\Clause::factory($parent, $fieldList[0], $operator, $valueList[0], $isOr);
         }
 
-        core\dump($fieldList, $valueList, $value);
+        dd($fieldList, $valueList, $value);
     }
 
     public static function mapVirtualValueClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr)

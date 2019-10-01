@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\link;
 
-abstract class Client extends Base implements IClientSocket, core\IDumpable {
-
+abstract class Client extends Base implements IClientSocket, core\IDumpable
+{
     use TIoSocket;
 
     const DEFAULT_OPTIONS = [
@@ -19,14 +19,15 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
 
     protected $_isConnected = false;
 
-    public static function factory($address, $useStreams=false) {
+    public static function factory($address, $useStreams=false)
+    {
         $address = link\socket\address\Base::factory($address);
 
-        if($address instanceof IClientSocket) {
+        if ($address instanceof IClientSocket) {
             return $address;
         }
 
-        if(!$useStreams
+        if (!$useStreams
         && (!extension_loaded('sockets') || $address->getSecureTransport())) {
             $useStreams = true;
         }
@@ -35,27 +36,28 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
         return new $class($address);
     }
 
-    protected static function _getClass(link\socket\address\IAddress $address, $useStreams=false) {
+    protected static function _getClass(link\socket\address\IAddress $address, $useStreams=false)
+    {
         $class = null;
         $protocol = ucfirst($address->getScheme());
         $nativeClass = 'df\\link\\socket\\native\\'.$protocol.'_Client';
         $streamsClass = 'df\\link\\socket\\streams\\'.$protocol.'_Client';
 
-        if(!$useStreams) {
-            if(class_exists($nativeClass)) {
+        if (!$useStreams) {
+            if (class_exists($nativeClass)) {
                 $class = $nativeClass;
-            } else if(class_exists($streamsClass)) {
+            } elseif (class_exists($streamsClass)) {
                 $class = $streamsClass;
             }
         } else {
-            if(class_exists($streamsClass)) {
+            if (class_exists($streamsClass)) {
                 $class = $streamsClass;
-            } else if($protocol != 'Tcp' && class_exists($nativeClass)) {
+            } elseif ($protocol != 'Tcp' && class_exists($nativeClass)) {
                 $class = $nativeClass;
             }
         }
 
-        if(!$class) {
+        if (!$class) {
             throw new RuntimeException(
                 'Protocol '.$address->getScheme().', whilst valid, does not yet have a client handler class'
             );
@@ -64,33 +66,38 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
         return $class;
     }
 
-    protected static function _populateOptions() {
+    protected static function _populateOptions()
+    {
         $output = array_merge(parent::_populateOptions(), self::DEFAULT_OPTIONS);
 
-        if(!isset($output['connectionTimeout']) || $output['connectionTimeout'] === null) {
+        if (!isset($output['connectionTimeout']) || $output['connectionTimeout'] === null) {
             $output['connectionTimeout'] = ini_get('default_socket_timeout');
         }
 
         return $output;
     }
 
-// Options
-    public function setConnectionTimeout($timeout) {
+    // Options
+    public function setConnectionTimeout($timeout)
+    {
         return $this->_setOption('connectionTimeout', $timeout);
     }
 
-    public function getConnectionTimeout() {
+    public function getConnectionTimeout()
+    {
         return $this->_getOption('connectionTimeout');
     }
 
 
-// Operation
-    public function isConnected() {
+    // Operation
+    public function isConnected()
+    {
         return $this->_isConnected;
     }
 
-    public function connect() {
-        if($this->_isConnected) {
+    public function connect()
+    {
+        if ($this->_isConnected) {
             return $this;
         }
 
@@ -108,21 +115,23 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
     abstract protected function _connectPeer();
 
 
-    public function connectPair() {
-        if($this->_isConnected) {
+    public function connectPair()
+    {
+        if ($this->_isConnected) {
             throw new RuntimeException(
                 'Cannot connect pair, socket is already established'
             );
         }
 
         $resources = $this->_connectPair();
-        core\dump($resources);
+        dd($resources);
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        if($this->_isConnected) {
+    // Dump
+    public function getDumpProperties()
+    {
+        if ($this->_isConnected) {
             $output = $this->getId();
         } else {
             $output = $this->_address;
@@ -131,21 +140,21 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
         $output .= ' (';
         $args = [];
 
-        if($this->_isConnected) {
-            if($this->_readingEnabled) {
+        if ($this->_isConnected) {
+            if ($this->_readingEnabled) {
                 $args[] = 'r';
             }
 
-            if($this->_writingEnabled) {
+            if ($this->_writingEnabled) {
                 $args[] = 'w';
             }
         }
 
-        if(empty($args)) {
+        if (empty($args)) {
             $args[] = 'x';
         }
 
-        if($this->_isSecure) {
+        if ($this->_isSecure) {
             array_unshift($args, 's');
         }
 

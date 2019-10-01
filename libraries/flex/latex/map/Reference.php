@@ -10,23 +10,26 @@ use df\core;
 use df\flex;
 use df\iris;
 
-class Reference extends iris\map\Node implements flex\latex\IReference, core\IDumpable {
-
+class Reference extends iris\map\Node implements flex\latex\IReference, core\IDumpable
+{
     use flex\latex\TReferable;
 
     protected $_type;
 
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->_type = $type;
         return $this;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->_type;
     }
 
-    public function getTargetType() {
-        switch($this->_type) {
+    public function getTargetType()
+    {
+        switch ($this->_type) {
             case 'cite':
                 return 'bibitem';
 
@@ -36,16 +39,18 @@ class Reference extends iris\map\Node implements flex\latex\IReference, core\IDu
 
 
             default:
-                core\dump('ref target', $this->_type);
+                throw Glitch::EUnexpectedValue('Unsupported reference target type', null, $this->_type);
         }
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return false;
     }
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         return $this->_type.': '.$this->id;
     }
 }

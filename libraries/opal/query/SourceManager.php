@@ -569,7 +569,6 @@ class SourceManager implements ISourceManager, core\IDumpable
             $count++;
 
             if ($count > 20) {
-                core\dump($exceptions);
                 throw new RuntimeException(
                     'Stuck in query exception loop'
                 );

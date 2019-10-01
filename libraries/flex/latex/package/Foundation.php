@@ -10,8 +10,8 @@ use df\core;
 use df\flex;
 use df\iris;
 
-class Foundation extends Base {
-
+class Foundation extends Base
+{
     const ENVIRONMENTS = [
         'root', 'center', 'document', 'enumerate', 'equation', 'eqnarray', 'figure',
         'itemize', 'multline', 'table', 'tabular', 'thebibliography'
@@ -50,16 +50,17 @@ class Foundation extends Base {
 
 
 
-// Root
-    public function environment_root() {
-        while(true) {
+    // Root
+    public function environment_root()
+    {
+        while (true) {
             $token = $this->parser->extract();
 
-            if(!$token || $token->matches('eof')) {
+            if (!$token || $token->matches('eof')) {
                 break;
             }
 
-            if($token->matches('command')) {
+            if ($token->matches('command')) {
                 $this->parser->parseCommand($token->value);
             } else {
                 throw new iris\UnexpectedTokenException(
@@ -70,8 +71,9 @@ class Foundation extends Base {
     }
 
 
-// Center
-    public function environment_center() {
+    // Center
+    public function environment_center()
+    {
         $block = new flex\latex\map\Block($this->parser->token);
         $block->isInline(false);
         $block->setType('align');
@@ -80,19 +82,21 @@ class Foundation extends Base {
         return $this->parser->parseStandardContent($block);
     }
 
-// Document
-    public function environment_document() {
+    // Document
+    public function environment_document()
+    {
         return $this->parser->parseStandardContent($this->parser->document);
     }
 
 
-// Enumerate
-    public function environment_enumerate() {
+    // Enumerate
+    public function environment_enumerate()
+    {
         $list = new flex\latex\map\Structure($this->parser->token);
         $list->setType('orderedList');
         $this->parser->pushContainer($list);
 
-        while(!$this->parser->token->matches('command', null, 'end')) {
+        while (!$this->parser->token->matches('command', null, 'end')) {
             $item = new flex\latex\map\Block($this->parser->token);
             $item->setType('listItem');
 
@@ -109,8 +113,9 @@ class Foundation extends Base {
     }
 
 
-// Equation
-    public function environment_equation() {
+    // Equation
+    public function environment_equation()
+    {
         $output = $this->parser->parseBlockMathMode('equation');
 
         $this->parser->extractMatch('command', null, 'end');
@@ -119,7 +124,8 @@ class Foundation extends Base {
         return $output;
     }
 
-    public function environment_eqnarray() {
+    public function environment_eqnarray()
+    {
         $output = $this->parser->parseBlockMathMode('eqnarray');
 
         $this->parser->extractMatch('command', null, 'end');
@@ -128,7 +134,8 @@ class Foundation extends Base {
         return $output;
     }
 
-    public function environment_multline() {
+    public function environment_multline()
+    {
         $output = $this->parser->parseBlockMathMode('multline');
 
         $this->parser->extractMatch('command', null, 'end');
@@ -137,13 +144,14 @@ class Foundation extends Base {
         return $output;
     }
 
-// Figure
+    // Figure
     protected $_figureCounter = 0;
 
-    public function environment_figure() {
+    public function environment_figure()
+    {
         $figure = new flex\latex\map\Figure($this->parser->token);
 
-        if($this->parser->lastComment
+        if ($this->parser->lastComment
         && preg_match('/[fF]igure ([0-9]+)/', $this->parser->lastComment->value, $matches)) {
             $figure->setNumber($this->_figureCounter = (int)$matches[1]);
         } else {
@@ -159,9 +167,10 @@ class Foundation extends Base {
     }
 
 
-// Footnotesize
-    public function command_footnotesize() {
-        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
+    // Footnotesize
+    public function command_footnotesize()
+    {
+        if ($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
             $this->parser->writeToTextNode(' ');
         }
 
@@ -177,23 +186,24 @@ class Foundation extends Base {
     }
 
 
-// Itemize
-    public function environment_itemize() {
+    // Itemize
+    public function environment_itemize()
+    {
         $list = new flex\latex\map\Structure($this->parser->token);
         $list->setType('unorderedList');
         $this->parser->pushContainer($list);
 
-        while(!$this->parser->token->matches('command', null, 'end')) {
+        while (!$this->parser->token->matches('command', null, 'end')) {
             $item = new flex\latex\map\Block($this->parser->token);
             $item->setType('listItem');
 
             $this->parser->extractMatch('command', null, 'item');
 
-            if($this->parser->token->value == '[') {
+            if ($this->parser->token->value == '[') {
                 $this->parser->extractValue('[');
                 $marker = '';
 
-                while($this->parser->token->value != ']') {
+                while ($this->parser->token->value != ']') {
                     $marker .= $this->parser->token->getWhitespace().$this->parser->token->value;
                     $this->parser->extract();
                 }
@@ -213,10 +223,11 @@ class Foundation extends Base {
     }
 
 
-// Table
+    // Table
     protected $_tableCounter = 0;
 
-    public function environment_table() {
+    public function environment_table()
+    {
         $table = new flex\latex\map\Table($this->parser->token);
         $options = array_keys($this->parser->extractOptionList());
         $table->setPlacement(array_shift($options));
@@ -227,11 +238,12 @@ class Foundation extends Base {
         return $table;
     }
 
-// Tabular
-    public function environment_tabular() {
+    // Tabular
+    public function environment_tabular()
+    {
         $pop = false;
 
-        if(!$this->parser->container instanceof flex\latex\ITabular) {
+        if (!$this->parser->container instanceof flex\latex\ITabular) {
             $table = new flex\latex\map\Table($this->parser->token);
             $table->setNumber(++$this->_tableCounter);
             $this->parser->pushContainer($table);
@@ -241,36 +253,36 @@ class Foundation extends Base {
         // Parse tabbing declaration
         $this->parser->extractValue('{');
 
-        while(!$this->parser->token->isValue('}')) {
+        while (!$this->parser->token->isValue('}')) {
             $token = $this->parser->extract();
             $col = new flex\latex\map\Column($token);
 
-            if($token->isValue('|')) {
+            if ($token->isValue('|')) {
                 $col->hasLeftBorder(true);
 
                 $token = $this->parser->extract();
 
-                if($token->isValue('|')) {
+                if ($token->isValue('|')) {
                     $col->hasLeftBorder(2);
                     $token = $this->parser->extract();
                 }
             }
 
-            if($token->isValue('>', '<')) {
+            if ($token->isValue('>', '<')) {
                 throw new iris\UnexpectedTokenException(
                     'Need to implement column format parsing',
                     $token
                 );
             }
 
-            if(!$token->is('word')) {
+            if (!$token->is('word')) {
                 throw new iris\UnexpectedTokenException(
                     'Expected column definition',
                     $token
                 );
             }
 
-            switch($token->value) {
+            switch ($token->value) {
                 case 'l':
                 case 'c':
                 case 'r':
@@ -294,15 +306,15 @@ class Foundation extends Base {
                     );
             }
 
-            if($this->parser->token->isValue('|')) {
+            if ($this->parser->token->isValue('|')) {
                 $b = 1;
 
-                if($this->parser->peek(1)->value == '|') {
+                if ($this->parser->peek(1)->value == '|') {
                     $b++;
                     $this->parser->extract();
                 }
 
-                if($this->parser->peek(1)->value == '}') {
+                if ($this->parser->peek(1)->value == '}') {
                     $this->parser->extract();
                 }
 
@@ -324,47 +336,47 @@ class Foundation extends Base {
         $headerColumns = 0;
         $maxColumns = 0;
 
-        while(!$this->parser->token->is('command=end')) {
+        while (!$this->parser->token->is('command=end')) {
             $block = new flex\latex\map\Block($this->parser->token);
             $block->setType('cell');
             $add = true;
 
-            if($this->parser->token->is('keySymbol=~')) {
+            if ($this->parser->token->is('keySymbol=~')) {
                 $this->parser->extract();
-            } else if($this->parser->token->is('keySymbol=&')) {
+            } elseif ($this->parser->token->is('keySymbol=&')) {
                 $this->parser->extract();
-            } else if($this->parser->token->is('command=\\')) {
+            } elseif ($this->parser->token->is('command=\\')) {
                 $this->parser->extract();
 
-                if(!empty($row)) {
-                    foreach($row as $j => $block) {
-                        if($block) {
+                if (!empty($row)) {
+                    foreach ($row as $j => $block) {
+                        if ($block) {
                             $span = $block->getAttribute('rowspan', 0);
                         } else {
                             $span = 0;
                         }
 
-                        if(!isset($columns[$j])) {
+                        if (!isset($columns[$j])) {
                             $columns[$j] = 0;
                         }
 
                         $columns[$j] += $span;
 
-                        if($block === null) {
+                        if ($block === null) {
                             unset($row[$j]);
                         }
 
                         $lastBlock = $block;
                     }
 
-                    if($first) {
+                    if ($first) {
                         $lastHeaderBlock = $lastBlock;
                         $headerColumns = $maxColumns = count($row);
                         $first = false;
                     } else {
                         $count = count($row);
 
-                        if($count > $maxColumns) {
+                        if ($count > $maxColumns) {
                             $maxColumns = $count;
                         }
                     }
@@ -375,31 +387,31 @@ class Foundation extends Base {
                 $i = 0;
                 $row = [];
                 continue;
-            } else if($this->parser->token->is('command=hline')) {
+            } elseif ($this->parser->token->is('command=hline')) {
                 $this->parser->extract();
                 $this->parser->parseCommand('hline');
                 continue;
-            } else if($this->parser->token->is('command=cline')) {
+            } elseif ($this->parser->token->is('command=cline')) {
                 $this->parser->extract();
                 $this->parser->parseCommand('cline');
                 continue;
             } else {
                 $this->parser->parseStandardContent($block, ['&', '\\'], false);
 
-                if($this->parser->token->is('keySymbol=&')) {
+                if ($this->parser->token->is('keySymbol=&')) {
                     $this->parser->extract();
                 }
             }
 
-            if(isset($columns[$i]) && $columns[$i] > 0) {
+            if (isset($columns[$i]) && $columns[$i] > 0) {
                 $columns[$i]--;
             }
 
-            if($block->isEmpty() && isset($columns[$i]) && $columns[$i] > 0) {
+            if ($block->isEmpty() && isset($columns[$i]) && $columns[$i] > 0) {
                 $add = false;
             }
 
-            if($add) {
+            if ($add) {
                 $row[] = $block;
             } else {
                 $row[] = null;
@@ -409,15 +421,15 @@ class Foundation extends Base {
         }
 
 
-        if(!empty($row)) {
+        if (!empty($row)) {
             $this->parser->container->addRow($row);
         }
 
-        if($maxColumns > $headerColumns) {
+        if ($maxColumns > $headerColumns) {
             $lastHeaderBlock->setAttribute('colspan', 1 + ($maxColumns - $headerColumns));
         }
 
-        if($pop) {
+        if ($pop) {
             $this->parser->popContainer();
         }
 
@@ -426,8 +438,9 @@ class Foundation extends Base {
     }
 
 
-// Thebibiliography
-    public function environment_thebibliography() {
+    // Thebibiliography
+    public function environment_thebibliography()
+    {
         $bibliography = new flex\latex\map\Bibliography($this->parser->token);
         $this->parser->pushContainer($bibliography);
 
@@ -437,7 +450,7 @@ class Foundation extends Base {
 
         $bibliography->setDigitLength(strlen($digits->value));
 
-        while(!$this->parser->token->matches('command', null, 'end')) {
+        while (!$this->parser->token->matches('command', null, 'end')) {
             $item = new flex\latex\map\Block($this->parser->token);
             $item->setType('bibitem');
 
@@ -458,11 +471,12 @@ class Foundation extends Base {
     }
 
 
-// Symbol
-    public function command_callSymbol($symbol, $isStar) {
-        switch($symbol) {
+    // Symbol
+    public function command_callSymbol($symbol, $isStar)
+    {
+        switch ($symbol) {
             case '\\':
-                if($this->parser->container && !$this->parser->container->isEmpty()) {
+                if ($this->parser->container && !$this->parser->container->isEmpty()) {
                     $this->parser->writeToTextNode("\n");
                 }
 
@@ -481,17 +495,18 @@ class Foundation extends Base {
             */
 
             default:
-                core\dump($symbol, $isStar);
+                throw Glitch::EUnexpectedValue('Unexpected callSymbol', null, [$symbol, $isStar]);
         }
     }
 
 
-// Author
-    public function command_author() {
+    // Author
+    public function command_author()
+    {
         $this->parser->extractValue('{');
         $author = '';
 
-        while($token = $this->parser->extractIfMatch('word')) {
+        while ($token = $this->parser->extractIfMatch('word')) {
             $author .= ' '.$token->value;
         }
 
@@ -502,12 +517,13 @@ class Foundation extends Base {
 
 
 
-// Caption
-    public function command_caption() {
+    // Caption
+    public function command_caption()
+    {
         $caption = new flex\latex\map\Block($this->parser->token);
         $caption->setType('caption');
 
-        if(!$this->parser->container instanceof flex\latex\ICaptioned) {
+        if (!$this->parser->container instanceof flex\latex\ICaptioned) {
             $this->rewind();
 
             throw new iris\UnexpectedTokenException(
@@ -526,8 +542,9 @@ class Foundation extends Base {
     }
 
 
-// Cite
-    public function command_cite() {
+    // Cite
+    public function command_cite()
+    {
         $reference = new flex\latex\map\Reference($this->parser->token);
         $reference->setType('cite');
 
@@ -541,26 +558,28 @@ class Foundation extends Base {
         return $reference;
     }
 
-// Cline
-    public function command_cline() {
+    // Cline
+    public function command_cline()
+    {
         return $this->parser->skipCommand(false);
     }
 
 
-// Date
-    public function command_date() {
+    // Date
+    public function command_date()
+    {
         $this->parser->extractValue('{');
 
-        if($this->parser->token->is('command=today')) {
+        if ($this->parser->token->is('command=today')) {
             $this->parser->document->setDate('now');
             $this->parser->extract();
         } else {
             $date = '';
 
-            while(!$this->parser->token->isValue('}')) {
+            while (!$this->parser->token->isValue('}')) {
                 $token = $this->parser->extract();
 
-                if($token->isAfterWhitespace()) {
+                if ($token->isAfterWhitespace()) {
                     $date .= ' ';
                 }
 
@@ -573,15 +592,16 @@ class Foundation extends Base {
         $this->parser->extractValue('}');
     }
 
-// Document class
-    public function command_documentclass() {
+    // Document class
+    public function command_documentclass()
+    {
         // Options
-        if($this->parser->extractIfValue('[')) {
-            while(true) {
+        if ($this->parser->extractIfValue('[')) {
+            while (true) {
                 $word = $this->parser->extractWord();
                 $this->parser->document->addOption($word->value);
 
-                if($this->parser->extractIfValue(']')) {
+                if ($this->parser->extractIfValue(']')) {
                     break;
                 } else {
                     $this->parser->extractValue(',');
@@ -600,8 +620,9 @@ class Foundation extends Base {
     }
 
 
-// Hline
-    public function command_hline() {
+    // Hline
+    public function command_hline()
+    {
         $this->parser->container->push(
             $output = (new flex\latex\map\Block($this->parser->token))
                 ->setType('hline')
@@ -611,14 +632,16 @@ class Foundation extends Base {
     }
 
 
-// Hspace
-    public function command_hspace() {
+    // Hspace
+    public function command_hspace()
+    {
         return $this->parser->skipCommand(false);
     }
 
 
-// Label
-    public function command_label() {
+    // Label
+    public function command_label()
+    {
         $this->parser->extractValue('{');
         $token = $this->parser->token;
         $id = $this->parser->extractRefId();
@@ -626,10 +649,10 @@ class Foundation extends Base {
 
         $stack = $this->parser->getContainerStack();
 
-        foreach(array_reverse($stack) as $container) {
-            if($container instanceof flex\latex\IReferable
+        foreach (array_reverse($stack) as $container) {
+            if ($container instanceof flex\latex\IReferable
             && !$container instanceof flex\latex\map\Block) {
-                if($container->getId()) {
+                if ($container->getId()) {
                     throw new iris\UnexpectedTokenException(
                         'Trying to set id on container that already has an id',
                         $token
@@ -644,28 +667,32 @@ class Foundation extends Base {
         return $id;
     }
 
-// Makeatletter
-    public function command_makeatletter() {
-        while(!$this->parser->token->is('command=makeatother')) {
+    // Makeatletter
+    public function command_makeatletter()
+    {
+        while (!$this->parser->token->is('command=makeatother')) {
             $this->parser->extract();
         }
     }
 
-// Makeatother
-    public function command_makeatother() {
+    // Makeatother
+    public function command_makeatother()
+    {
         // do nothing
     }
 
 
-// Makebox
-    public function command_makebox() {
+    // Makebox
+    public function command_makebox()
+    {
         return $this->parser->skipCommand();
     }
 
 
-// Multicolumn
-    public function command_multicolumn() {
-        if(!$this->parser->container instanceof flex\latex\IGenericBlock
+    // Multicolumn
+    public function command_multicolumn()
+    {
+        if (!$this->parser->container instanceof flex\latex\IGenericBlock
         || $this->parser->container->getType() != 'cell') {
             throw new iris\UnexpectedTokenException(
                 'Not in a cell', $this->parser->token
@@ -680,7 +707,7 @@ class Foundation extends Base {
         $this->parser->extractValue('{');
         $align = $this->parser->extractWord();
 
-        switch($align->value) {
+        switch ($align->value) {
             case 'l':
                 $align = 'left';
                 break;
@@ -709,26 +736,30 @@ class Foundation extends Base {
     }
 
 
-// Noindent
-    public function command_noindent() {
+    // Noindent
+    public function command_noindent()
+    {
         return $this->parser->skipCommand(false);
     }
 
 
 
-// Ragged
-    public function command_raggedleft() {
+    // Ragged
+    public function command_raggedleft()
+    {
         return $this->parser->skipCommand(false);
     }
 
-    public function command_raggedright() {
+    public function command_raggedright()
+    {
         return $this->parser->skipCommand(false);
     }
 
 
 
-// Ref
-    public function command_ref() {
+    // Ref
+    public function command_ref()
+    {
         $reference = new flex\latex\map\Reference($this->parser->token);
         $reference->setType('ref');
 
@@ -743,10 +774,11 @@ class Foundation extends Base {
     }
 
 
-// Section
+    // Section
     protected $_sectionCounter = 0;
 
-    public function command_section($isStar) {
+    public function command_section($isStar)
+    {
         $this->parser->closeParagraph();
 
         $section = new flex\latex\map\Block($this->parser->token);
@@ -765,9 +797,10 @@ class Foundation extends Base {
     }
 
 
-// Small
-    public function command_small() {
-        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
+    // Small
+    public function command_small()
+    {
+        if ($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
             $this->parser->writeToTextNode(' ');
         }
 
@@ -783,10 +816,11 @@ class Foundation extends Base {
     }
 
 
-// Subsection
+    // Subsection
     protected $_subsectionCounter = 0;
 
-    public function command_subsection($isStar) {
+    public function command_subsection($isStar)
+    {
         $this->parser->closeParagraph();
 
         $section = new flex\latex\map\Block($this->parser->token);
@@ -805,13 +839,14 @@ class Foundation extends Base {
     }
 
 
-// Subsubsection
+    // Subsubsection
     protected $_subsubsectionCounter = 0;
 
-    public function command_subsubsection($isStar) {
+    public function command_subsubsection($isStar)
+    {
         $this->parser->closeParagraph();
 
-        if($this->parser->container instanceof flex\latex\IGenericBlock
+        if ($this->parser->container instanceof flex\latex\IGenericBlock
         && $this->parser->container->getType() == 'bibitem') {
             return $this->_bibitemSubsection();
         }
@@ -829,7 +864,8 @@ class Foundation extends Base {
         return $section;
     }
 
-    protected function _bibitemSubsection() {
+    protected function _bibitemSubsection()
+    {
         $this->parser->popContainer();
         $block = new flex\latex\map\Block($this->parser->token);
         $block->setType('subheading');
@@ -844,9 +880,10 @@ class Foundation extends Base {
     }
 
 
-// Textbf
-    public function command_textbf() {
-        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
+    // Textbf
+    public function command_textbf()
+    {
+        if ($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
             $this->parser->writeToTextNode(' ');
         }
 
@@ -862,9 +899,10 @@ class Foundation extends Base {
     }
 
 
-// Textit
-    public function command_textit() {
-        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
+    // Textit
+    public function command_textit()
+    {
+        if ($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
             $this->parser->writeToTextNode(' ');
         }
 
@@ -879,15 +917,17 @@ class Foundation extends Base {
         return $block;
     }
 
-// Textwidth
-    public function command_textwidth() {
+    // Textwidth
+    public function command_textwidth()
+    {
         return (new flex\latex\map\Macro($this->parser->token))->setName('textwidth');
     }
 
 
-// Tiny
-    public function command_tiny() {
-        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
+    // Tiny
+    public function command_tiny()
+    {
+        if ($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
             $this->parser->writeToTextNode(' ');
         }
 
@@ -903,8 +943,9 @@ class Foundation extends Base {
     }
 
 
-// Title
-    public function command_title() {
+    // Title
+    public function command_title()
+    {
         $this->parser->extractValue('{');
         $block = new flex\latex\map\Block($this->parser->token);
         $this->parser->parseStandardContent($block, true, false);
@@ -915,25 +956,26 @@ class Foundation extends Base {
     }
 
 
-// Use package
-    public function command_usepackage() {
+    // Use package
+    public function command_usepackage()
+    {
         // Options
         $options = $this->parser->extractOptionList();
 
         // Names
         $this->parser->extractValue('{');
 
-        while(true) {
+        while (true) {
             $word = $this->parser->extractWord();
             $this->parser->document->addPackage($word->value, $options);
 
             $class = 'df\\flex\\latex\\package\\'.ucfirst($word->value);
 
-            if(class_exists($class)) {
+            if (class_exists($class)) {
                 $this->parser->addProcessor(new $class());
             }
 
-            if($this->parser->extractIfValue('}')) {
+            if ($this->parser->extractIfValue('}')) {
                 break;
             } else {
                 $this->parser->extractValue(',');
@@ -942,8 +984,9 @@ class Foundation extends Base {
     }
 
 
-// Vspace
-    public function command_vspace() {
+    // Vspace
+    public function command_vspace()
+    {
         $this->parser->skipCommand();
     }
 }

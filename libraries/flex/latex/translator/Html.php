@@ -11,8 +11,8 @@ use df\flex;
 use df\iris;
 use df\aura;
 
-class Html extends iris\Translator {
-
+class Html extends iris\Translator
+{
     use flex\THtmlStringEscapeHandler;
 
     public $document;
@@ -27,18 +27,21 @@ class Html extends iris\Translator {
     protected $_imageDereferencer;
     protected $_translateUrls = true;
 
-    public static function createLexer(iris\ISource $source) {
+    public static function createLexer(iris\ISource $source)
+    {
         return new flex\latex\Lexer($source);
     }
 
-    public static function createParser(iris\ILexer $lexer) {
+    public static function createParser(iris\ILexer $lexer)
+    {
         return new flex\latex\Parser($lexer);
     }
 
-    public function translate() {
+    public function translate()
+    {
         $output = '';
 
-        foreach($this->unit->getEntities() as $document) {
+        foreach ($this->unit->getEntities() as $document) {
             $this->_beginDocument($document);
             $output .= $this->_translateContainerNode($document);
             $output .= $this->_finaliseDocument($document);
@@ -50,21 +53,25 @@ class Html extends iris\Translator {
         return $output;
     }
 
-    public function hasMath() {
+    public function hasMath()
+    {
         return $this->_hasMath;
     }
 
-    public function setImageDereferencer($callback) {
+    public function setImageDereferencer($callback)
+    {
         $this->_imageDereferencer = core\lang\Callback::factory($callback);
         return $this;
     }
 
-    public function getImageDereferencer() {
+    public function getImageDereferencer()
+    {
         return $this->_imageDereferencer;
     }
 
-    protected function _dereferenceImage($id, $number) {
-        if(!$this->_imageDereferencer) {
+    protected function _dereferenceImage($id, $number)
+    {
+        if (!$this->_imageDereferencer) {
             throw new flex\latex\RuntimeException(
                 'No image dereferencer has been defined'
             );
@@ -73,24 +80,25 @@ class Html extends iris\Translator {
         return $this->_imageDereferencer->invoke($id, $number);
     }
 
-    protected function _beginDocument(flex\latex\map\Document $document) {
+    protected function _beginDocument(flex\latex\map\Document $document)
+    {
         //$this->html .= $this->element('h1', $document->getTitle())."\n";
         $refCounts = [];
         $this->document = $document;
 
-        foreach($document->getReferenceMap() as $id => $item) {
-            if(isset($this->_references[$id])) {
+        foreach ($document->getReferenceMap() as $id => $item) {
+            if (isset($this->_references[$id])) {
                 continue;
             }
 
-            if($item instanceof flex\latex\map\Block) {
+            if ($item instanceof flex\latex\map\Block) {
                 $type = $item->getType();
             } else {
                 $parts = explode('\\', get_class($item));
                 $type = lcfirst(array_pop($parts));
             }
 
-            if(!isset($refCounts[$type])) {
+            if (!isset($refCounts[$type])) {
                 $refCounts[$type] = 0;
             }
 
@@ -101,21 +109,22 @@ class Html extends iris\Translator {
         }
     }
 
-    protected function _translateContainerNode(flex\latex\IContainerNode $node) {
+    protected function _translateContainerNode(flex\latex\IContainerNode $node)
+    {
         $lastBuffer = $this->buffer;
         $this->buffer = '';
         $this->lastNode = null;
 
-        foreach($node as $child) {
+        foreach ($node as $child) {
             $parts = explode('\\', get_class($child));
             $name = array_pop($parts);
             $func = '_translate'.ucfirst($name);
 
-            if(method_exists($this, $func)) {
+            if (method_exists($this, $func)) {
                 $this->buffer .= $this->{$func}($child);
                 $this->lastNode = $child;
             } else {
-                core\dump($child);
+                throw Glitch::EUnexpectedValue('Unsupported child node', null, $child);
             }
         }
 
@@ -125,16 +134,18 @@ class Html extends iris\Translator {
         return $output;
     }
 
-// Align
-    protected function _translateAlignBlock(flex\latex\map\Block $block) {
+    // Align
+    protected function _translateAlignBlock(flex\latex\map\Block $block)
+    {
         return $this->_translateContainerNode($block);
     }
 
-// Bibliography
-    protected function _translateBibliography(flex\latex\map\Bibliography $bib) {
+    // Bibliography
+    protected function _translateBibliography(flex\latex\map\Bibliography $bib)
+    {
         $output = '';
 
-        if($this->_inSection) {
+        if ($this->_inSection) {
             $output .= '</section>'."\n";
             $this->_inSection = false;
         }
@@ -152,8 +163,9 @@ class Html extends iris\Translator {
     }
 
 
-// Bibitem
-    protected function _translateBibitemBlock(flex\latex\map\Block $block) {
+    // Bibitem
+    protected function _translateBibitemBlock(flex\latex\map\Block $block)
+    {
         $output = '';
         $this->_bibCount++;
 
@@ -167,20 +179,22 @@ class Html extends iris\Translator {
     }
 
 
-// Block
-    protected function _translateBlock(flex\latex\map\Block $block) {
+    // Block
+    protected function _translateBlock(flex\latex\map\Block $block)
+    {
         $func = '_translate'.ucfirst($block->getType()).'Block';
 
-        if(method_exists($this, $func)) {
+        if (method_exists($this, $func)) {
             return $this->{$func}($block);
         } else {
-            core\dump('block', $block);
+            throw Glitch::EUnexpectedValue('Unsupported block type', null, $block);
         }
     }
 
 
-// Bold
-    protected function _translateBoldBlock(flex\latex\map\Block $block) {
+    // Bold
+    protected function _translateBoldBlock(flex\latex\map\Block $block)
+    {
         $output = '';
         $tag = $this->tag('strong', ['class' => $block->getClasses()]);
 
@@ -192,19 +206,20 @@ class Html extends iris\Translator {
     }
 
 
-// Figure
-    protected function _translateFigure(flex\latex\map\Figure $figure) {
+    // Figure
+    protected function _translateFigure(flex\latex\map\Figure $figure)
+    {
         $output = '';
         $alt = $captionTag = null;
 
-        if($caption = $figure->getCaption()) {
+        if ($caption = $figure->getCaption()) {
             $captionTag = $this->tag('figcaption');
         }
 
         $id = flex\Text::formatId($figure->getId());
         $src = $this->_dereferenceImage($id, $figure->getNumber());
 
-        if(!$alt) {
+        if (!$alt) {
             $alt = flex\Text::formatLabel(
                 core\uri\Path::extractRootFileName($src)
             );
@@ -216,7 +231,7 @@ class Html extends iris\Translator {
         $output .= "\n".$figTag->open()."\n";
         $output .= '    '.$imgTag."\n";
 
-        if($captionTag) {
+        if ($captionTag) {
             $output .= '    '.$this->element('h4', 'Figure '.$figure->getNumber())."\n";
             $output .= '    '.$captionTag->open();
             $output .= $this->_translateContainerNode($caption);
@@ -227,8 +242,9 @@ class Html extends iris\Translator {
         return $output;
     }
 
-// Href
-    protected function _translateHrefBlock(flex\latex\map\Block $block) {
+    // Href
+    protected function _translateHrefBlock(flex\latex\map\Block $block)
+    {
         $urls = $this->_translateUrls;
         $this->_translateUrls = false;
 
@@ -241,8 +257,9 @@ class Html extends iris\Translator {
         return $output;
     }
 
-// Italic
-    protected function _translateItalicBlock(flex\latex\map\Block $block) {
+    // Italic
+    protected function _translateItalicBlock(flex\latex\map\Block $block)
+    {
         $output = '';
         $tag = $this->tag('em', ['class' => $block->getClasses()]);
 
@@ -253,13 +270,14 @@ class Html extends iris\Translator {
         return $output;
     }
 
-// Math
-    protected function _translateMathNode(flex\latex\map\MathNode $math) {
+    // Math
+    protected function _translateMathNode(flex\latex\map\MathNode $math)
+    {
         $this->_hasMath = true;
         $output = '';
 
 
-        if($math->isInline()) {
+        if ($math->isInline()) {
             $tag = $this->tag('span.math.inline');
             $output .= $tag->open();
             $output .= '\\('.$math->symbols.'\\)';
@@ -267,7 +285,7 @@ class Html extends iris\Translator {
         } else {
             $tag = $this->tag('div.math.block');
 
-            if($id = $math->getId()) {
+            if ($id = $math->getId()) {
                 $tag->setId('mathNode-'.flex\Text::formatId($id));
             }
 
@@ -275,13 +293,13 @@ class Html extends iris\Translator {
             $output .= '    '.$this->element('h4', '('.$math->getNumber().')')."\n";
             $output .= '\\[';
 
-            if($type = $math->getBlockType()) {
+            if ($type = $math->getBlockType()) {
                 $output .= '\\begin{'.$type.'}'."\n";
             }
 
             $output .= $math->symbols;
 
-            if($type) {
+            if ($type) {
                 $output .= "\n".'\\end{'.$type.'}';
             }
 
@@ -293,18 +311,19 @@ class Html extends iris\Translator {
     }
 
 
-// Ordered list
-    protected function _translateOrderedListStructure(flex\latex\map\Structure $list) {
+    // Ordered list
+    protected function _translateOrderedListStructure(flex\latex\map\Structure $list)
+    {
         $output = '';
 
-        if($id = $list->getId()) {
+        if ($id = $list->getId()) {
             $id = flex\Text::formatId($id);
         }
 
         $tag = $this->tag('ol', ['id' => $id]);
         $output .= $tag->open()."\n";
 
-        foreach($list as $item) {
+        foreach ($list as $item) {
             $liTag = $this->tag('li');
 
             $output .= '    '.$liTag->open();
@@ -316,18 +335,19 @@ class Html extends iris\Translator {
         return $output;
     }
 
-// Unordered list
-    protected function _translateUnorderedListStructure(flex\latex\map\Structure $list) {
+    // Unordered list
+    protected function _translateUnorderedListStructure(flex\latex\map\Structure $list)
+    {
         $output = '';
 
-        if($id = $list->getId()) {
+        if ($id = $list->getId()) {
             $id = flex\Text::formatId($id);
         }
 
         $tag = $this->tag('ul', ['id' => $id]);
         $output .= $tag->open()."\n";
 
-        foreach($list as $item) {
+        foreach ($list as $item) {
             $liTag = $this->tag('li');
 
             $output .= '    '.$liTag->open();
@@ -340,8 +360,9 @@ class Html extends iris\Translator {
     }
 
 
-// Paragraph
-    protected function _translateParagraph(flex\latex\map\Paragraph $paragraph) {
+    // Paragraph
+    protected function _translateParagraph(flex\latex\map\Paragraph $paragraph)
+    {
         $output = '';
         $tag = $this->tag('p', ['class' => $paragraph->getClasses()]);
 
@@ -352,13 +373,14 @@ class Html extends iris\Translator {
         return $output;
     }
 
-// Reference
-    protected function _translateReference(flex\latex\map\Reference $ref) {
+    // Reference
+    protected function _translateReference(flex\latex\map\Reference $ref)
+    {
         $output = '';
         $id = $ref->getId();
         $htmlId = flex\Text::formatId($id);
 
-        if(isset($this->_references[$id])) {
+        if (isset($this->_references[$id])) {
             $type = $this->_references[$id]['type'];
             $body = $this->_references[$id]['body'];
         } else {
@@ -368,14 +390,14 @@ class Html extends iris\Translator {
 
         $stripBuffer = strtolower(rtrim($this->buffer));
 
-        switch($type) {
+        switch ($type) {
             case 'bibitem':
                 $this->_fixBufferLinkSpacing();
                 $body = '['.$body.']';
                 break;
 
             case 'figure':
-                if(substr($stripBuffer, -6) == 'figure') {
+                if (substr($stripBuffer, -6) == 'figure') {
                     $this->buffer = rtrim($this->buffer);
                     $prefix = substr($this->buffer, -6);
                     $this->buffer = substr($this->buffer, 0, -6);
@@ -384,7 +406,7 @@ class Html extends iris\Translator {
                     $prefix = 'Figure';
                 }
 
-                if($this->_isBufferInParagraph($stripBuffer)) {
+                if ($this->_isBufferInParagraph($stripBuffer)) {
                     $prefix = strtolower($prefix);
                 }
 
@@ -392,7 +414,7 @@ class Html extends iris\Translator {
                 break;
 
             case 'mathNode':
-                if(substr($stripBuffer, -8) == 'equation') {
+                if (substr($stripBuffer, -8) == 'equation') {
                     $this->buffer = rtrim($this->buffer);
                     $prefix = substr($this->buffer, -8);
                     $this->buffer = substr($this->buffer, 0, -8);
@@ -401,7 +423,7 @@ class Html extends iris\Translator {
                     $prefix = 'Equation';
                 }
 
-                if($this->_isBufferInParagraph($stripBuffer)) {
+                if ($this->_isBufferInParagraph($stripBuffer)) {
                     $prefix = strtolower($prefix);
                 }
 
@@ -409,7 +431,7 @@ class Html extends iris\Translator {
                 break;
 
             case 'table':
-                if(substr($stripBuffer, -5) == 'table') {
+                if (substr($stripBuffer, -5) == 'table') {
                     $this->buffer = rtrim($this->buffer);
                     $prefix = substr($this->buffer, -5);
                     $this->buffer = substr($this->buffer, 0, -5);
@@ -418,7 +440,7 @@ class Html extends iris\Translator {
                     $prefix = 'Table';
                 }
 
-                if($this->_isBufferInParagraph($stripBuffer)) {
+                if ($this->_isBufferInParagraph($stripBuffer)) {
                     $prefix = strtolower($prefix);
                 }
 
@@ -426,7 +448,7 @@ class Html extends iris\Translator {
                 break;
         }
 
-        if(substr($this->buffer, -1) == '>') {
+        if (substr($this->buffer, -1) == '>') {
             $this->buffer .= ' ';
         }
 
@@ -434,27 +456,30 @@ class Html extends iris\Translator {
         return $output;
     }
 
-    protected function _fixBufferLinkSpacing() {
-        if(!strpbrk(substr($this->buffer, -1), '({[=| ')) {
+    protected function _fixBufferLinkSpacing()
+    {
+        if (!strpbrk(substr($this->buffer, -1), '({[=| ')) {
             $this->buffer .= ' ';
         }
     }
 
-    protected function _isBufferInParagraph($buffer) {
-        if(substr(rtrim($this->buffer), -1) == '.') {
+    protected function _isBufferInParagraph($buffer)
+    {
+        if (substr(rtrim($this->buffer), -1) == '.') {
             return false;
         }
 
         return preg_match('/[a-zA-Z0-9\(\)\[\]\,\<\>_\-]$/i', $buffer);
     }
 
-// Section
-    protected function _translateSectionBlock(flex\latex\map\Block $block) {
+    // Section
+    protected function _translateSectionBlock(flex\latex\map\Block $block)
+    {
         $output = '';
 
-        switch($block->getAttribute('level')) {
+        switch ($block->getAttribute('level')) {
             case 1:
-                if($this->_inSection) {
+                if ($this->_inSection) {
                     $output .= '</section>'."\n";
                     $this->_inSection = false;
                 }
@@ -469,7 +494,7 @@ class Html extends iris\Translator {
                 break;
 
             case 2:
-                if(!$this->_inSection) {
+                if (!$this->_inSection) {
                     $output .= "\n".'<section>'."\n";
                     $this->_inSection = true;
                 } else {
@@ -483,7 +508,7 @@ class Html extends iris\Translator {
                 break;
 
             case 3:
-                if(!$this->_inSection) {
+                if (!$this->_inSection) {
                     $output .= "\n".'<section>'."\n";
                     $this->_inSection = true;
                 } else {
@@ -497,15 +522,16 @@ class Html extends iris\Translator {
                 break;
 
             default:
-                core\dump('section', $block);
+                throw Glitch::EUnexpectedValue('Unsupported section block level', null, $block);
         }
 
         return $output;
     }
 
 
-// Small
-    protected function _translateSmallBlock(flex\latex\map\Block $block) {
+    // Small
+    protected function _translateSmallBlock(flex\latex\map\Block $block)
+    {
         return (string)$this->element(
             'small',
             $this->string($this->_translateContainerNode($block)),
@@ -514,22 +540,24 @@ class Html extends iris\Translator {
     }
 
 
-// Structure
-    protected function _translateStructure(flex\latex\map\Structure $structure) {
+    // Structure
+    protected function _translateStructure(flex\latex\map\Structure $structure)
+    {
         $func = '_translate'.ucfirst($structure->getType()).'Structure';
 
-        if(method_exists($this, $func)) {
+        if (method_exists($this, $func)) {
             return $this->{$func}($structure);
         } else {
-            core\dump('structure', $structure);
+            throw Glitch::EUnexpectedValue('Unsupported structure', null, $structure);
         }
     }
 
 
-// Subheading
-    protected function _translateSubheadingBlock(flex\latex\map\Block $block) {
+    // Subheading
+    protected function _translateSubheadingBlock(flex\latex\map\Block $block)
+    {
         $output = '';
-        if($this->_inBibliography) {
+        if ($this->_inBibliography) {
             $output .= '</ol>'."\n";
         }
 
@@ -538,18 +566,19 @@ class Html extends iris\Translator {
         $output .= $this->_translateContainerNode($block);
         $output .= $tag->close()."\n";
 
-        if($this->_inBibliography) {
+        if ($this->_inBibliography) {
             $output .= '<ol start="'.($this->_bibCount+1).'">'."\n";
         }
 
         return $output;
     }
 
-// Table
-    protected function _translateTable(flex\latex\map\Table $table) {
+    // Table
+    protected function _translateTable(flex\latex\map\Table $table)
+    {
         $output = '';
 
-        if($rowHead = $table->isFirstRowHead()) {
+        if ($rowHead = $table->isFirstRowHead()) {
             $colHead = false;
         } else {
             $colHead = $table->isFirstColumnHead();
@@ -557,7 +586,7 @@ class Html extends iris\Translator {
 
         $tableTag = $this->tag('table');
 
-        if($id = $table->getId()) {
+        if ($id = $table->getId()) {
             $id = flex\Text::formatId($id);
             $tableTag->setId('table-'.$id);
         }
@@ -565,15 +594,15 @@ class Html extends iris\Translator {
         $output .= "\n".$tableTag->open()."\n";
         $captionContent = null;
 
-        if($caption = $table->getCaption()) {
+        if ($caption = $table->getCaption()) {
             $captionContent = $this->_translateContainerNode($caption);
         }
 
-        if($number = $table->getNumber()) {
+        if ($number = $table->getNumber()) {
             $captionContent = trim($this->element('h4', 'Table '.$number).' '.$captionContent);
         }
 
-        if($captionContent) {
+        if ($captionContent) {
             $captionTag = $this->tag('caption');
             $output .= $captionTag->open();
             $output .= $captionContent;
@@ -582,37 +611,37 @@ class Html extends iris\Translator {
 
         $firstRow = true;
 
-        foreach($table as $row) {
-            if(!is_array($row)) {
+        foreach ($table as $row) {
+            if (!is_array($row)) {
                 continue;
             }
 
             $rowTag = $this->tag('tr');
 
-            if($firstRow && $rowHead) {
+            if ($firstRow && $rowHead) {
                 $output .= '<thead>'."\n";
             }
 
             $output .= $rowTag->open()."\n";
             $firstCell = true;
 
-            foreach($row as $cell) {
+            foreach ($row as $cell) {
                 $isHead = ($firstCell && $colHead)
                        || ($firstRow && $rowHead);
 
                 $cellTag = $this->tag($isHead ? 'th' : 'td');
 
-                if($cell->hasAttribute('colspan')) {
+                if ($cell->hasAttribute('colspan')) {
                     $cellTag->setAttribute('colspan', $cell->getAttribute('colspan'));
                 }
 
-                if($cell->hasAttribute('rowspan')) {
+                if ($cell->hasAttribute('rowspan')) {
                     $cellTag->setAttribute('rowspan', $cell->getAttribute('rowspan'));
                 }
 
                 $output .= '    '.$cellTag->open();
 
-                if($isHead && !$cell->isEmpty()) {
+                if ($isHead && !$cell->isEmpty()) {
                     $bodyCell = $cell->toArray()[0];
                 } else {
                     $bodyCell = $cell;
@@ -620,7 +649,7 @@ class Html extends iris\Translator {
 
                 $cellContent = $this->_translateContainerNode($bodyCell);
 
-                if(!strlen($cellContent)) {
+                if (!strlen($cellContent)) {
                     $cellContent = '&nbsp;';
                 }
 
@@ -631,14 +660,14 @@ class Html extends iris\Translator {
 
             $output .= $rowTag->close()."\n";
 
-            if($firstRow && $rowHead) {
+            if ($firstRow && $rowHead) {
                 $output .= '</thead>'."\n".'<tbody>'."\n";
             }
 
             $firstRow = false;
         }
 
-        if($rowHead) {
+        if ($rowHead) {
             $output .= '<tbody>'."\n";
         }
 
@@ -646,17 +675,18 @@ class Html extends iris\Translator {
         return $output;
     }
 
-// Text node
-    protected function _translateTextNode(flex\latex\map\TextNode $node) {
+    // Text node
+    protected function _translateTextNode(flex\latex\map\TextNode $node)
+    {
         $classes = $node->getClasses();
         $text = $node->getText();
 
-        if(!empty($classes)) {
+        if (!empty($classes)) {
             $text = $this->element('span', $text, ['class' => $classes]);
 
-            if($text->hasClass('superscript')) {
+            if ($text->hasClass('superscript')) {
                 $text->setName('sup');
-            } else if($text->hasClass('subscript')) {
+            } elseif ($text->hasClass('subscript')) {
                 $text->setName('sub');
             }
         } else {
@@ -665,10 +695,10 @@ class Html extends iris\Translator {
 
         $text = str_replace("\n", '<br />'."\n", $text);
 
-        if($this->_translateUrls) {
+        if ($this->_translateUrls) {
             $text = preg_replace_callback(
                 '/(http(s)?\:\/\/[^\s\<\>]+)/',
-                function($matches) {
+                function ($matches) {
                     $url = htmlspecialchars(trim($matches[1], ';:. '));
                     return '<a href="'.$url.'" target="_blank">'.$url.'</a>';
                 },
@@ -677,7 +707,7 @@ class Html extends iris\Translator {
 
             $text = preg_replace_callback(
                 '/([^\s@\<\>\(\)\[\]\:\;]+@[^\s@\<\>\(\)\[\]\:\;\.]+\.[^\s@\<\>\(\)\[\]\:\;]+)/',
-                function($matches) {
+                function ($matches) {
                     $email = htmlspecialchars(trim($matches[1], '. '));
                     return '<a href="mailto:'.$email.'">'.$email.'</a>';
                 },
@@ -689,8 +719,9 @@ class Html extends iris\Translator {
     }
 
 
-// Tiny
-    protected function _translateTinyBlock(flex\latex\map\Block $block) {
+    // Tiny
+    protected function _translateTinyBlock(flex\latex\map\Block $block)
+    {
         return (string)$this->element(
                 'small',
                 $this->string($this->_translateContainerNode($block)),
@@ -699,10 +730,11 @@ class Html extends iris\Translator {
             ->addClass('tiny');
     }
 
-    protected function _finaliseDocument($document) {
+    protected function _finaliseDocument($document)
+    {
         $output = '';
 
-        if($this->_inSection) {
+        if ($this->_inSection) {
             $output .= '</section>'."\n";
             $this->_inSection = false;
         }
@@ -710,19 +742,23 @@ class Html extends iris\Translator {
         return $output;
     }
 
-    protected function tag($tag, array $attributes=[]) {
+    protected function tag($tag, array $attributes=[])
+    {
         return new aura\html\Tag($tag, $attributes);
     }
 
-    protected function element($tag, $content, array $attributes=[]) {
+    protected function element($tag, $content, array $attributes=[])
+    {
         return new aura\html\Element($tag, $content, $attributes);
     }
 
-    protected function string($html) {
+    protected function string($html)
+    {
         return new aura\html\ElementString($html);
     }
 
-    protected function containerElement($tag, flex\latex\IContainerNode $node, array $attributes=[]) {
+    protected function containerElement($tag, flex\latex\IContainerNode $node, array $attributes=[])
+    {
         $tag = $this->tag($tag, $attributes);
         return $tag->open().$this->_translateContainerNode($node).$tag->close();
     }

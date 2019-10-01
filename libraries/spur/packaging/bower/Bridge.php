@@ -11,34 +11,40 @@ use df\spur;
 use df\flex;
 use df\halo;
 
-class Bridge implements IBridge {
-
+class Bridge implements IBridge
+{
     protected $_installPath = 'assets/lib/vendor';
     protected $_execPath;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->_execPath = df\Launchpad::$app->getLocalDataPath().'/bower';
     }
 
-    public function setInstallPath($path) {
+    public function setInstallPath($path)
+    {
         $this->_installPath = $path;
         return $this;
     }
 
-    public function getInstallPath() {
+    public function getInstallPath()
+    {
         return $this->_installPath;
     }
 
-    public function setExecPath($path) {
+    public function setExecPath($path)
+    {
         $this->_execPath = $path;
         return $this;
     }
 
-    public function getExecPath() {
+    public function getExecPath()
+    {
         return $this->_execPath;
     }
 
-    public function generate(array $deps) {
+    public function generate(array $deps)
+    {
         $json1 = flex\Json::toString([
             'name' => df\Launchpad::$app->getName(),
             'ignore' => [],
@@ -55,14 +61,15 @@ class Bridge implements IBridge {
         return $this;
     }
 
-    public function install(array $deps) {
+    public function install(array $deps)
+    {
         $this->generate($deps);
 
         $result = halo\process\launcher\Base::factory('bower install')
             ->setWorkingDirectory($this->_execPath)
             ->launch();
 
-        core\dump($result);
+        Glitch::incomplete($result);
 
         return $this;
     }
