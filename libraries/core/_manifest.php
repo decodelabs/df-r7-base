@@ -820,15 +820,6 @@ function stub(...$args)
         ->render();
 }
 
-function stubQuiet(...$args)
-{
-    return df\Launchpad::getDebugContext()->addStub(
-            $args,
-            core\debug\StackCall::factory(1),
-            false
-        );
-}
-
 function dump(...$args)
 {
     return df\Launchpad::getDebugContext()->addDumpList(
@@ -836,38 +827,6 @@ function dump(...$args)
             core\debug\StackCall::factory(1),
             false,
             true
-        )
-        ->render();
-}
-
-function dumpQuiet(...$args)
-{
-    return df\Launchpad::getDebugContext()->addDumpList(
-            $args,
-            core\debug\StackCall::factory(1),
-            false,
-            false
-        );
-}
-
-function dumpDeep(...$args)
-{
-    return df\Launchpad::getDebugContext()->addDumpList(
-            $args,
-            core\debug\StackCall::factory(1),
-            true,
-            true
-        )
-        ->render();
-}
-
-function dumpDeepQuiet(...$args)
-{
-    return df\Launchpad::getDebugContext()->addDumpList(
-            $args,
-            core\debug\StackCall::factory(1),
-            true,
-            false
         )
         ->render();
 }
