@@ -9,15 +9,16 @@ use df;
 use df\core;
 use df\opal;
 
-abstract class SchemaExecutor implements ISchemaExecutor {
-
+abstract class SchemaExecutor implements ISchemaExecutor
+{
     protected $_adapter;
 
-    public static function factory(opal\rdbms\IAdapter $adapter) {
+    public static function factory(opal\rdbms\IAdapter $adapter)
+    {
         $type = $adapter->getServerType();
         $class = 'df\\opal\\rdbms\\variant\\'.$type.'\\SchemaExecutor';
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new RuntimeException(
                 'There is no schema executor available for '.$type
             );
@@ -26,17 +27,20 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         return new $class($adapter);
     }
 
-    protected function __construct(opal\rdbms\IAdapter $adapter) {
+    protected function __construct(opal\rdbms\IAdapter $adapter)
+    {
         $this->_adapter = $adapter;
     }
 
-    public function getAdapter() {
+    public function getAdapter()
+    {
         return $this->_adapter;
     }
 
 
-## Exists ##
-    public function exists($name) {
+    ## Exists ##
+    public function exists($name)
+    {
         $stmt = $this->_adapter->prepare('SHOW TABLES LIKE :name');
         $stmt->bind('name', $name);
         $res = $stmt->executeRead();
@@ -45,12 +49,13 @@ abstract class SchemaExecutor implements ISchemaExecutor {
     }
 
 
-## Create ##
-    public function create(opal\rdbms\schema\ISchema $schema) {
+    ## Create ##
+    public function create(opal\rdbms\schema\ISchema $schema)
+    {
         // Table definition
         $sql = 'CREATE';
 
-        if($schema->isTemporary()) {
+        if ($schema->isTemporary()) {
             $sql .= ' TEMPORARY';
         }
 
@@ -60,8 +65,8 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         $definitions = [];
 
         // Fields
-        foreach($schema->getFields() as $field) {
-            if(null !== ($def = $this->_generateFieldDefinition($field))) {
+        foreach ($schema->getFields() as $field) {
+            if (null !== ($def = $this->_generateFieldDefinition($field))) {
                 $definitions[] = $def;
             }
         }
@@ -70,28 +75,28 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         // Indexes
         $primaryIndex = $schema->getPrimaryIndex();
 
-        foreach($schema->getIndexes() as $index) {
-            if($index->isVoid()) {
+        foreach ($schema->getIndexes() as $index) {
+            if ($index->isVoid()) {
                 throw new opal\schema\RuntimeException(
                     'Index '.$index->getName().' is invalid'
                 );
             }
 
-            if(null !== ($def = $this->_generateInlineIndexDefinition($schemaName, $index, $primaryIndex))) {
+            if (null !== ($def = $this->_generateInlineIndexDefinition($schemaName, $index, $primaryIndex))) {
                 $definitions[] = $def;
             }
         }
 
 
         // Foreign keys
-        foreach($schema->getForeignKeys() as $key) {
-            if($key->isVoid()) {
+        foreach ($schema->getForeignKeys() as $key) {
+            if ($key->isVoid()) {
                 throw new opal\rdbms\schema\IInvalidForeignKey(
                     'Foreign key '.$key->getName().' is invalid'
                 );
             }
 
-            if(null !== ($def = $this->_generateInlineForeignKeyDefinition($key))) {
+            if (null !== ($def = $this->_generateInlineForeignKeyDefinition($key))) {
                 $definitions[] = $def;
             }
         }
@@ -105,7 +110,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         // Table options
         $tableOptions = $this->_defineTableOptions($schema);
 
-        if(!empty($tableOptions)) {
+        if (!empty($tableOptions)) {
             $sql .= implode(','."\n", $tableOptions);
         }
 
@@ -113,16 +118,16 @@ abstract class SchemaExecutor implements ISchemaExecutor {
 
 
         // Indexes
-        foreach($schema->getIndexes() as $index) {
-            if(null !== ($def = $this->_generateStandaloneIndexDefinition($schemaName, $index, $primaryIndex))) {
+        foreach ($schema->getIndexes() as $index) {
+            if (null !== ($def = $this->_generateStandaloneIndexDefinition($schemaName, $index, $primaryIndex))) {
                 $sql[] = $def;
             }
         }
 
 
         // Triggers
-        foreach($schema->getTriggers() as $trigger) {
-            if(null !== ($def = $this->_generateTriggerDefinition($schemaName, $trigger))) {
+        foreach ($schema->getTriggers() as $trigger) {
+            if (null !== ($def = $this->_generateTriggerDefinition($schemaName, $trigger))) {
                 $sql[] = $def;
             }
         }
@@ -131,10 +136,10 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         // TODO: stored procedures
 
         try {
-            foreach($sql as $query) {
+            foreach ($sql as $query) {
                 $this->_adapter->prepare($query)->executeRaw();
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->drop($schemaName);
 
             throw $e;
@@ -144,24 +149,25 @@ abstract class SchemaExecutor implements ISchemaExecutor {
     }
 
 
-// Tables
+    // Tables
     abstract protected function _generateTableOptions(opal\rdbms\schema\ISchema $schema);
 
-// Fields
+    // Fields
     abstract protected function _generateFieldDefinition(opal\rdbms\schema\IField $field);
 
-// Indexes
+    // Indexes
     abstract protected function _generateInlineIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null);
     abstract protected function _generateStandaloneIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null);
 
 
-// Foreign keys
-    protected function _generateInlineForeignKeyDefinition(opal\rdbms\schema\IForeignKey $key) {
+    // Foreign keys
+    protected function _generateInlineForeignKeyDefinition(opal\rdbms\schema\IForeignKey $key)
+    {
         $keySql = 'CONSTRAINT '.$this->_adapter->quoteIdentifier($key->getName()).' FOREIGN KEY';
         $fields = [];
         $references = [];
 
-        foreach($key->getReferences() as $reference) {
+        foreach ($key->getReferences() as $reference) {
             $fields[] = $this->_adapter->quoteIdentifier($reference->getField()->getName());
             $references[] = $this->_adapter->quoteIdentifier($reference->getTargetFieldName());
         }
@@ -170,12 +176,12 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         $keySql .= ' REFERENCES '.$this->_adapter->quoteIdentifier($key->getTargetSchema());
         $keySql .= ' ('.implode(',', $references).')';
 
-        if(null !== ($action = $key->getDeleteAction())) {
+        if (null !== ($action = $key->getDeleteAction())) {
             $action = $this->_normalizeForeignKeyAction($action);
             $keySql .= ' ON DELETE '.$action;
         }
 
-        if(null !== ($action = $key->getUpdateAction())) {
+        if (null !== ($action = $key->getUpdateAction())) {
             $action = $this->_normalizeForeignKeyAction($action);
             $keySql .= ' ON UPDATE '.$action;
         }
@@ -183,8 +189,9 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         return $keySql;
     }
 
-    protected function _normalizeForeignKeyAction($action) {
-        switch($action = strtoupper($action)) {
+    protected function _normalizeForeignKeyAction($action)
+    {
+        switch ($action = strtoupper($action)) {
             case 'RESTRICT':
             case 'CASCADE':
             case 'NO ACTION':
@@ -199,8 +206,9 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         return $action;
     }
 
-// Triggers
-    protected function _generateTriggerDefinition($tableName, opal\rdbms\schema\ITrigger $trigger) {
+    // Triggers
+    protected function _generateTriggerDefinition($tableName, opal\rdbms\schema\ITrigger $trigger)
+    {
         $triggerSql = 'CREATE TRIGGER '.$this->_adapter->quoteIdentifier($trigger->getName());
         $triggerSql .= $trigger->getTimingName();
         $triggerSql .= ' '.$trigger->getEventName();
@@ -210,14 +218,16 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         return $triggerSql;
     }
 
-// Table options
-    protected function _defineTableOptions(opal\rdbms\schema\ISchema $schema) {
+    // Table options
+    protected function _defineTableOptions(opal\rdbms\schema\ISchema $schema)
+    {
         return null;
     }
 
 
-## Rename ##
-    public function rename($oldName, $newName) {
+    ## Rename ##
+    public function rename($oldName, $newName)
+    {
         $sql = 'ALTER TABLE '.$this->_adapter->quoteIdentifier($oldName).' '.
                'RENAME TO '.$this->_adapter->quoteIdentifier($newName);
 
@@ -226,8 +236,9 @@ abstract class SchemaExecutor implements ISchemaExecutor {
     }
 
 
-## Drop ##
-    public function drop($name) {
+    ## Drop ##
+    public function drop($name)
+    {
         $sql = 'DROP TABLE IF EXISTS '.$this->_adapter->quoteIdentifier($name);
         $this->_adapter->prepare($sql)->executeRaw();
         return $this;
@@ -235,20 +246,24 @@ abstract class SchemaExecutor implements ISchemaExecutor {
 
 
 
-## Character sets
-    public function setCharacterSet($name, $set, $collation=null, $convert=false) {
-        core\stub($name);
+    ## Character sets
+    public function setCharacterSet($name, $set, $collation=null, $convert=false)
+    {
+        Glitch::incomplete($name);
     }
 
-    public function getCharacterSet($name) {
-        core\stub($name);
+    public function getCharacterSet($name)
+    {
+        Glitch::incomplete($name);
     }
 
-    public function setCollation($name, $collation, $convert=false) {
-        core\stub($name);
+    public function setCollation($name, $collation, $convert=false)
+    {
+        Glitch::incomplete($name);
     }
 
-    public function getCollation($name) {
-        core\stub($name);
+    public function getCollation($name)
+    {
+        Glitch::incomplete($name);
     }
 }

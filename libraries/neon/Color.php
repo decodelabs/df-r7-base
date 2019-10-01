@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
-class Color implements IColor, core\IDumpable {
-
+class Color implements IColor, core\IDumpable
+{
     protected $_a;
     protected $_b;
     protected $_c;
@@ -18,29 +18,31 @@ class Color implements IColor, core\IDumpable {
     protected $_mode = null;
 
 
-// Factories
-    public static function random(float $saturation=null, float $lightness=null): IColor {
-        if($saturation === null) {
+    // Factories
+    public static function random(float $saturation=null, float $lightness=null): IColor
+    {
+        if ($saturation === null) {
             $saturation = rand(1, 9) / 10;
         }
 
-        if($lightness === null) {
+        if ($lightness === null) {
             $lightness = rand(3, 8) / 10;
         }
 
         return new self(rand(0, 359), $saturation, $lightness, null, IColor::HSL);
     }
 
-    public static function factory($color): IColor {
-        if($color instanceof self) {
+    public static function factory($color): IColor
+    {
+        if ($color instanceof self) {
             return $color;
         }
 
-        if(is_string($color)) {
+        if (is_string($color)) {
             return self::fromString($color);
         }
 
-        if(is_array($color)) {
+        if (is_array($color)) {
             return new self(
                 array_shift($color),
                 array_shift($color),
@@ -53,16 +55,17 @@ class Color implements IColor, core\IDumpable {
         return new self(0, 0, 0);
     }
 
-    public static function fromString(string $str): IColor {
-        if(!strlen($str)) {
+    public static function fromString(string $str): IColor
+    {
+        if (!strlen($str)) {
             $str = 'black';
         }
 
-        if(isset(self::NAMES[strtolower($str)])) {
+        if (isset(self::NAMES[strtolower($str)])) {
             return self::fromName($str);
         }
 
-        if(preg_match('@^(rgb|hsl|hsv)(a?)\((.*)\)@i', $str, $matches)) {
+        if (preg_match('@^(rgb|hsl|hsv)(a?)\((.*)\)@i', $str, $matches)) {
             $mode = $matches[1];
             $hasAlpha = $matches[2] == 'a';
             $args = explode(',', trim($matches[3]));
@@ -72,21 +75,21 @@ class Color implements IColor, core\IDumpable {
             $c = trim(array_shift($args));
             $alpha = $hasAlpha ? trim(array_shift($args)) : 1;
 
-            switch($mode) {
+            switch ($mode) {
                 case IColor::RGB:
-                    if(substr($a, -1) == '%') {
+                    if (substr($a, -1) == '%') {
                         $a = trim($a, '%') / 100;
                     } else {
                         $a /= 255;
                     }
 
-                    if(substr($b, -1) == '%') {
+                    if (substr($b, -1) == '%') {
                         $b = trim($b, '%') / 100;
                     } else {
                         $b /= 255;
                     }
 
-                    if(substr($c, -1) == '%') {
+                    if (substr($c, -1) == '%') {
                         $c = trim($c, '%') / 100;
                     } else {
                         $c /= 255;
@@ -102,7 +105,7 @@ class Color implements IColor, core\IDumpable {
             }
 
 
-            if(substr($alpha, -1) == '%') {
+            if (substr($alpha, -1) == '%') {
                 $alpha = trim($alpha, '%') / 100;
             }
 
@@ -112,10 +115,11 @@ class Color implements IColor, core\IDumpable {
         return self::fromHex($str);
     }
 
-    public static function fromName(string $name): IColor {
+    public static function fromName(string $name): IColor
+    {
         $name = strtolower($name);
 
-        if(isset(self::NAMES[$name])) {
+        if (isset(self::NAMES[$name])) {
             return new self(
                 self::NAMES[$name][0] / 255,
                 self::NAMES[$name][1] / 255,
@@ -127,24 +131,26 @@ class Color implements IColor, core\IDumpable {
         throw core\Error::{'EArgument,EColor'}('Color name '.$name.' is not recognized');
     }
 
-    public static function isValidName(string $name): bool {
+    public static function isValidName(string $name): bool
+    {
         return isset(self::NAMES[strtolower($name)]);
     }
 
-    public static function fromHex(string $hex): IColor {
+    public static function fromHex(string $hex): IColor
+    {
         $hex = trim($hex);
 
-        if(substr($hex, 0, 2) == '0x') {
+        if (substr($hex, 0, 2) == '0x') {
             $hex = substr($hex, 2);
         } else {
             $hex = ltrim($hex, '#');
         }
 
-        if(strlen($hex) == 6) {
+        if (strlen($hex) == 6) {
             $r = hexdec(substr($hex, 0, 2));
             $g = hexdec(substr($hex, 2, 2));
             $b = hexdec(substr($hex, 4, 2));
-        } else if(strlen($hex) == 3) {
+        } elseif (strlen($hex) == 3) {
             $r = substr($hex, 0, 1);
             $r = hexdec($r.$r);
             $g = substr($hex, 1, 1);
@@ -160,9 +166,10 @@ class Color implements IColor, core\IDumpable {
 
 
 
-// Construct
-    public function __construct($a, $b, $c, $alpha=null, $mode=null) {
-        switch($mode) {
+    // Construct
+    public function __construct($a, $b, $c, $alpha=null, $mode=null)
+    {
+        switch ($mode) {
             case IColor::RGB:
                 $this->setRgba($a, $b, $c, $alpha);
                 break;
@@ -181,8 +188,9 @@ class Color implements IColor, core\IDumpable {
         }
     }
 
-    public function __get($member) {
-        switch(strtolower($member)) {
+    public function __get($member)
+    {
+        switch (strtolower($member)) {
             case 'red': return $this->getRed();
             case 'green': return $this->getGreen();
             case 'blue': return $this->getBlue();
@@ -204,13 +212,14 @@ class Color implements IColor, core\IDumpable {
 
 
 
-// Convert
-    public function setMode(string $mode) {
-        if($mode == $this->_mode) {
+    // Convert
+    public function setMode(string $mode)
+    {
+        if ($mode == $this->_mode) {
             return $this;
         }
 
-        switch($mode) {
+        switch ($mode) {
             case IColor::RGB:
                 $this->_toRgb();
                 break;
@@ -235,16 +244,18 @@ class Color implements IColor, core\IDumpable {
 
 
 
-// To RGB
-    protected function _toRgb() {
-        if($this->_mode == IColor::HSL) {
+    // To RGB
+    protected function _toRgb()
+    {
+        if ($this->_mode == IColor::HSL) {
             $this->_hslToRgb();
         } else {
             $this->_hsvToRgb();
         }
     }
 
-    protected function _hslToRgb() {
+    protected function _hslToRgb()
+    {
         $h = $this->_a / 360;
         $s = $this->_b;
         $l = $this->_c;
@@ -258,31 +269,34 @@ class Color implements IColor, core\IDumpable {
         $this->setBlue(self::_hslHueToRgb($m1, $m2, $h - 0.33333));
     }
 
-    protected static function _hslHueToRgb($m1, $m2, $h) {
+    protected static function _hslHueToRgb($m1, $m2, $h)
+    {
         $h = ($h < 0) ? $h + 1 : (($h > 1) ? $h - 1 : $h);
 
-        if($h * 6 < 1) {
+        if ($h * 6 < 1) {
             return $m1 + ($m2 - $m1) * $h * 6;
         }
 
-        if($h * 2 < 1) {
+        if ($h * 2 < 1) {
             return $m2;
         }
 
-        if($h * 3 < 2) {
+        if ($h * 3 < 2) {
             return $m1 + ($m2 - $m1) * (0.66666 - $h) * 6;
         }
 
         return $m1;
     }
 
-    protected function _hsvToRgb() {
-        core\stub('HSV to RGB is not yet supported');
+    protected function _hsvToRgb()
+    {
+        Glitch::incomplete('HSV to RGB is not yet supported');
     }
 
-// To HSL
-    protected function _toHsl() {
-        if($this->_mode == IColor::HSV) {
+    // To HSL
+    protected function _toHsl()
+    {
+        if ($this->_mode == IColor::HSV) {
             $this->_hsvToRgb();
         }
 
@@ -296,15 +310,21 @@ class Color implements IColor, core\IDumpable {
         $l = ($min + $max) / 2;
         $s = 0;
 
-        if($l > 0 && $l < 1) {
+        if ($l > 0 && $l < 1) {
             $s = $delta / ($l < 0.5 ? (2 * $l) : (2 - 2 * $l));
         }
 
         $h = 0;
-        if($delta > 0) {
-            if($max == $r && $max != $g) $h += ($g - $b) / $delta;
-            if($max == $g && $max != $b) $h += (2 + ($b - $r) / $delta);
-            if($max == $b && $max != $r) $h += (4 + ($r - $g) / $delta);
+        if ($delta > 0) {
+            if ($max == $r && $max != $g) {
+                $h += ($g - $b) / $delta;
+            }
+            if ($max == $g && $max != $b) {
+                $h += (2 + ($b - $r) / $delta);
+            }
+            if ($max == $b && $max != $r) {
+                $h += (4 + ($r - $g) / $delta);
+            }
             $h /= 6;
         }
 
@@ -314,9 +334,10 @@ class Color implements IColor, core\IDumpable {
         $this->setHslLightness($l);
     }
 
-// To HSV
-    protected function _toHsv() {
-        if($this->_mode == IColor::HSL) {
+    // To HSV
+    protected function _toHsv()
+    {
+        if ($this->_mode == IColor::HSL) {
             $this->_hslToRgb();
         }
 
@@ -339,15 +360,15 @@ class Color implements IColor, core\IDumpable {
             $del_G = ((($maxVal - $g) / 6) + ($delta / 2)) / $delta;
             $del_B = ((($maxVal - $b) / 6) + ($delta / 2)) / $delta;
 
-            if ($r == $maxVal){
+            if ($r == $maxVal) {
                 $h = $del_B - $del_G;
-            } else if ($g == $maxVal) {
+            } elseif ($g == $maxVal) {
                 $h = (1 / 3) + $del_R - $del_B;
-            } else if ($b == $maxVal) {
+            } elseif ($b == $maxVal) {
                 $h = (2 / 3) + $del_G - $del_R;
             }
 
-            if ($h < 0){
+            if ($h < 0) {
                 $h++;
             }
             if ($h > 1) {
@@ -364,9 +385,10 @@ class Color implements IColor, core\IDumpable {
 
 
 
-// Export
-    public function toHexString(bool $allowShort=false): string {
-        if($this->_mode != IColor::RGB) {
+    // Export
+    public function toHexString(bool $allowShort=false): string
+    {
+        if ($this->_mode != IColor::RGB) {
             $this->setMode(IColor::RGB);
         }
 
@@ -374,11 +396,17 @@ class Color implements IColor, core\IDumpable {
         $g = dechex($this->_b * 255);
         $b = dechex($this->_c * 255);
 
-        if(strlen($r) == 1) $r = '0'.$r;
-        if(strlen($g) == 1) $g = '0'.$g;
-        if(strlen($b) == 1) $b = '0'.$b;
+        if (strlen($r) == 1) {
+            $r = '0'.$r;
+        }
+        if (strlen($g) == 1) {
+            $g = '0'.$g;
+        }
+        if (strlen($b) == 1) {
+            $b = '0'.$b;
+        }
 
-        if($allowShort
+        if ($allowShort
         && $r{0} == $r{1}
         && $g{0} == $g{1}
         && $b{0} == $b{1}) {
@@ -390,10 +418,11 @@ class Color implements IColor, core\IDumpable {
         return '#'.$r.$g.$b;
     }
 
-    public function toCssString(): string {
+    public function toCssString(): string
+    {
         $this->setMode(IColor::RGB);
 
-        if($this->_alpha < 1) {
+        if ($this->_alpha < 1) {
             return 'rgba('.
                 round($this->_a * 255).', '.
                 round($this->_b * 255).', '.
@@ -405,10 +434,11 @@ class Color implements IColor, core\IDumpable {
         return $this->toHexString(false);
     }
 
-    public function __toString(): string {
+    public function __toString(): string
+    {
         try {
             return $this->toCssString();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return '';
         }
     }
@@ -416,8 +446,9 @@ class Color implements IColor, core\IDumpable {
 
 
 
-// RGB
-    public function setRgba(float $r, float $g, float $b, float $a=null) {
+    // RGB
+    public function setRgba(float $r, float $g, float $b, float $a=null)
+    {
         $this->_mode = IColor::RGB;
 
         $this->setRed($r);
@@ -428,13 +459,15 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function setRgb(float $r, float $g, float $b) {
+    public function setRgb(float $r, float $g, float $b)
+    {
         return $this->setRgba($r, $g, $b, 1.0);
     }
 
-// RGB Red
-    public function setRed(float $r) {
-        if($this->_mode != IColor::RGB) {
+    // RGB Red
+    public function setRed(float $r)
+    {
+        if ($this->_mode != IColor::RGB) {
             $this->setMode(IColor::RGB);
         }
 
@@ -442,17 +475,19 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function getRed(): float {
-        if($this->_mode != IColor::RGB) {
+    public function getRed(): float
+    {
+        if ($this->_mode != IColor::RGB) {
             $this->setMode(IColor::RGB);
         }
 
         return (float)$this->_a;
     }
 
-// RGB Green
-    public function setGreen(float $g) {
-        if($this->_mode != IColor::RGB) {
+    // RGB Green
+    public function setGreen(float $g)
+    {
+        if ($this->_mode != IColor::RGB) {
             $this->setMode(IColor::RGB);
         }
 
@@ -460,17 +495,19 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function getGreen(): float {
-        if($this->_mode != IColor::RGB) {
+    public function getGreen(): float
+    {
+        if ($this->_mode != IColor::RGB) {
             $this->setMode(IColor::RGB);
         }
 
         return (float)$this->_b;
     }
 
-// RGB Blue
-    public function setBlue(float $b) {
-        if($this->_mode != IColor::RGB) {
+    // RGB Blue
+    public function setBlue(float $b)
+    {
+        if ($this->_mode != IColor::RGB) {
             $this->setMode(IColor::RGB);
         }
 
@@ -478,8 +515,9 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function getBlue(): float {
-        if($this->_mode != IColor::RGB) {
+    public function getBlue(): float
+    {
+        if ($this->_mode != IColor::RGB) {
             $this->setMode(IColor::RGB);
         }
 
@@ -487,8 +525,9 @@ class Color implements IColor, core\IDumpable {
     }
 
 
-// HSL
-    public function setHsla(float $h, float $s, float $l, float $a=null) {
+    // HSL
+    public function setHsla(float $h, float $s, float $l, float $a=null)
+    {
         $this->_mode = IColor::HSL;
 
         $this->setHslHue($h);
@@ -499,13 +538,15 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function setHsl(float $h, float $s, float $l) {
+    public function setHsl(float $h, float $s, float $l)
+    {
         return $this->setHsla($h, $s, $l, 1.0);
     }
 
-// HSL Hue
-    public function setHslHue(float $h) {
-        if($this->_mode != IColor::HSL) {
+    // HSL Hue
+    public function setHslHue(float $h)
+    {
+        if ($this->_mode != IColor::HSL) {
             $this->setMode(IColor::HSL);
         }
 
@@ -513,17 +554,19 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function getHslHue(): float {
-        if($this->_mode != IColor::HSL) {
+    public function getHslHue(): float
+    {
+        if ($this->_mode != IColor::HSL) {
             $this->setMode(IColor::HSL);
         }
 
         return (float)$this->_a;
     }
 
-// HSL Saturation
-    public function setHslSaturation(float $s) {
-        if($this->_mode != IColor::HSL) {
+    // HSL Saturation
+    public function setHslSaturation(float $s)
+    {
+        if ($this->_mode != IColor::HSL) {
             $this->setMode(IColor::HSL);
         }
 
@@ -531,17 +574,19 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function getHslSaturation(): float {
-        if($this->_mode != IColor::HSL) {
+    public function getHslSaturation(): float
+    {
+        if ($this->_mode != IColor::HSL) {
             $this->setMode(IColor::HSL);
         }
 
         return (float)$this->_b;
     }
 
-// HSL Lightness
-    public function setHslLightness(float $l) {
-        if($this->_mode != IColor::HSL) {
+    // HSL Lightness
+    public function setHslLightness(float $l)
+    {
+        if ($this->_mode != IColor::HSL) {
             $this->setMode(IColor::HSL);
         }
 
@@ -549,8 +594,9 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function getHslLightness(): float {
-        if($this->_mode != IColor::HSL) {
+    public function getHslLightness(): float
+    {
+        if ($this->_mode != IColor::HSL) {
             $this->setMode(IColor::HSL);
         }
 
@@ -558,8 +604,9 @@ class Color implements IColor, core\IDumpable {
     }
 
 
-// HSV
-    public function setHsva(float $h, float $s, float $v, float $a=null) {
+    // HSV
+    public function setHsva(float $h, float $s, float $v, float $a=null)
+    {
         $this->_mode = IColor::HSV;
 
         $this->setHsvHue($h);
@@ -570,14 +617,16 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function setHsv(float $h, float $s, float $v) {
+    public function setHsv(float $h, float $s, float $v)
+    {
         return $this->setHsva($h, $s, $v, 1.0);
     }
 
 
-// HSV Hue
-    public function setHsvHue(float $h) {
-        if($this->_mode != IColor::HSV) {
+    // HSV Hue
+    public function setHsvHue(float $h)
+    {
+        if ($this->_mode != IColor::HSV) {
             $this->setMode(IColor::HSV);
         }
 
@@ -585,17 +634,19 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function getHsvHue(): float {
-        if($this->_mode != IColor::HSV) {
+    public function getHsvHue(): float
+    {
+        if ($this->_mode != IColor::HSV) {
             $this->setMode(IColor::HSV);
         }
 
         return (float)$this->_a;
     }
 
-// HSV Saturation
-    public function setHsvSaturation(float $s) {
-        if($this->_mode != IColor::HSV) {
+    // HSV Saturation
+    public function setHsvSaturation(float $s)
+    {
+        if ($this->_mode != IColor::HSV) {
             $this->setMode(IColor::HSV);
         }
 
@@ -603,17 +654,19 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function getHsvSaturation(): float {
-        if($this->_mode != IColor::HSV) {
+    public function getHsvSaturation(): float
+    {
+        if ($this->_mode != IColor::HSV) {
             $this->setMode(IColor::HSV);
         }
 
         return (float)$this->_b;
     }
 
-// HSV Value
-    public function setHsvValue(float $l) {
-        if($this->_mode != IColor::HSV) {
+    // HSV Value
+    public function setHsvValue(float $l)
+    {
+        if ($this->_mode != IColor::HSV) {
             $this->setMode(IColor::HSV);
         }
 
@@ -621,8 +674,9 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function getHsvValue(): float {
-        if($this->_mode != IColor::HSV) {
+    public function getHsvValue(): float
+    {
+        if ($this->_mode != IColor::HSV) {
             $this->setMode(IColor::HSV);
         }
 
@@ -631,9 +685,10 @@ class Color implements IColor, core\IDumpable {
 
 
 
-// Alpha
-    public function setAlpha(?float $alpha) {
-        if($alpha === null) {
+    // Alpha
+    public function setAlpha(?float $alpha)
+    {
+        if ($alpha === null) {
             $alpha = 1.0;
         }
 
@@ -641,13 +696,15 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function getAlpha(): float {
+    public function getAlpha(): float
+    {
         return $this->_alpha;
     }
 
 
-// Modification
-    public function add($color) {
+    // Modification
+    public function add($color)
+    {
         $this->setMode(IColor::RGB);
         $color = self::factory($color)
             ->setMode(IColor::RGB);
@@ -659,7 +716,8 @@ class Color implements IColor, core\IDumpable {
         return $this;
     }
 
-    public function subtract($color) {
+    public function subtract($color)
+    {
         $this->setMode(IColor::RGB);
         $color = self::factory($color)
             ->setMode(IColor::RGB);
@@ -672,72 +730,80 @@ class Color implements IColor, core\IDumpable {
     }
 
 
-// Affect HSL
-    public function affectHsl(float $h, float $s, float $l, float $a=null) {
+    // Affect HSL
+    public function affectHsl(float $h, float $s, float $l, float $a=null)
+    {
         $this->setMode(IColor::HSL);
 
         $this->setHslHue($this->_a + $h);
         $this->setHslSaturation($this->_b + $s);
         $this->setHslLightness($this->_c + $l);
 
-        if($a !== null) {
+        if ($a !== null) {
             $this->affectAlpha($a);
         }
 
         return $this;
     }
 
-    public function affectHslHue(float $h) {
+    public function affectHslHue(float $h)
+    {
         $this->setMode(IColor::HSL);
         $this->setHslHue($this->_a + $h);
 
         return $this;
     }
 
-    public function affectHslSaturation(float $s) {
+    public function affectHslSaturation(float $s)
+    {
         $this->setMode(IColor::HSL);
         $this->setHslSaturation($this->_b + $s);
 
         return $this;
     }
 
-    public function affectHslLightness(float $l) {
+    public function affectHslLightness(float $l)
+    {
         $this->setMode(IColor::HSL);
         $this->setHslLightness($this->_c + $l);
 
         return $this;
     }
 
-// Affect HSV
-    public function affectHsv(float $h, float $s, float $v, float $a=null) {
+    // Affect HSV
+    public function affectHsv(float $h, float $s, float $v, float $a=null)
+    {
         $this->setMode(IColor::HSV);
 
         $this->setHsvHue($this->_a + $h);
         $this->setHsvSaturation($this->_b + $s);
         $this->setHsvValue($this->_c + $v);
 
-        if($a !== null) {
+        if ($a !== null) {
             $this->affectAlpha($a);
         }
 
         return $this;
     }
 
-    public function affectHsvHue(float $h) {
+    public function affectHsvHue(float $h)
+    {
         $this->setMode(IColor::HSV);
         $this->setHsvHue($this->_a + $h);
 
         return $this;
     }
 
-    public function affectHsvSaturation(float $s) {
+    public function affectHsvSaturation(float $s)
+    {
         $this->setMode(IColor::HSV);
         $this->setHsvSaturation($this->_b + $s);
 
         return $this;
     }
 
-    public function affectHsvValue(float $v) {
+    public function affectHsvValue(float $v)
+    {
         $this->setMode(IColor::HSV);
         $this->setHsvValue($this->_c + $v);
 
@@ -745,14 +811,16 @@ class Color implements IColor, core\IDumpable {
     }
 
 
-    public function affectAlpha(float $a) {
+    public function affectAlpha(float $a)
+    {
         return $this->setAlpha($this->_alpha + $a);
     }
 
 
 
-// Tones
-    public function affectContrast(float $amount) {
+    // Tones
+    public function affectContrast(float $amount)
+    {
         $this->setMode(IColor::HSL);
         $amount = core\math\Util::clampFloat($amount, -1, 1);
         $ratio = $this->_c - 0.5;
@@ -760,7 +828,8 @@ class Color implements IColor, core\IDumpable {
         return $this->setHslLightness(($ratio * $amount) + 0.5);
     }
 
-    public function toMidtone(float $amount=1) {
+    public function toMidtone(float $amount=1)
+    {
         $this->setMode(IColor::HSL);
         $amount = core\math\Util::clampFloat($amount, 0, 1);
         $delta = $this->_c - 0.5;
@@ -768,7 +837,8 @@ class Color implements IColor, core\IDumpable {
         return $this->setHslLightness($this->_c - ($delta * $amount));
     }
 
-    public function contrastAgainst($color, float $amount=0.5) {
+    public function contrastAgainst($color, float $amount=0.5)
+    {
         $this->setMode(IColor::RGB);
         $color = self::factory($color)->setMode(IColor::RGB);
 
@@ -776,19 +846,20 @@ class Color implements IColor, core\IDumpable {
         $delta1 = $this->_c - 0.5;
         $delta2 = $color->_c - 0.5;
 
-        if($delta2 < 0 && $delta1 < $delta2 + $amount) {
+        if ($delta2 < 0 && $delta1 < $delta2 + $amount) {
             $delta1 = $delta2 + $amount;
-        } else if($delta2 > 0 && $delta1 > $delta2 - $amount) {
+        } elseif ($delta2 > 0 && $delta1 > $delta2 - $amount) {
             $delta1 = $delta2 - $amount;
         }
 
         return $this->setHslLightness($delta1 + 0.5);
     }
 
-    public function getTextContrastColor(): IColor {
+    public function getTextContrastColor(): IColor
+    {
         $this->setMode(IColor::HSL);
 
-        if($this->_c > 0.8) {
+        if ($this->_c > 0.8) {
             return self::factory('black');
         } else {
             return self::factory('white');
@@ -798,7 +869,7 @@ class Color implements IColor, core\IDumpable {
 
 
 
-// Preset colors
+    // Preset colors
     const NAMES = [
         'aliceblue'             => [240, 248, 255],
         'antiquewhite'          => [250, 235, 215],
@@ -944,8 +1015,9 @@ class Color implements IColor, core\IDumpable {
     ];
 
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         return $this->toCssString();
     }
 }

@@ -9,28 +9,30 @@ use df;
 use df\core;
 use df\neon;
 
-class Image implements IImage {
-
+class Image implements IImage
+{
     private static $_driverClass;
 
     protected $_savePath;
     protected $_driver;
 
-// Drivers
-    public static function getDriverList() {
+    // Drivers
+    public static function getDriverList()
+    {
         return ['ImageMagick', 'Gd'];
     }
 
-    public static function setDefaultDriver($driver) {
-        if($driver instanceof IDriver) {
+    public static function setDefaultDriver($driver)
+    {
+        if ($driver instanceof IDriver) {
             self::$_driverClass = get_class($driver);
             return true;
         }
 
         $class = 'df\\neon\\raster\\driver\\'.$driver;
 
-        if(class_exists($class)) {
-            if(!$class::isLoadable()) {
+        if (class_exists($class)) {
+            if (!$class::isLoadable()) {
                 throw core\Error::{'EUnsupported'}(
                     'Raster image driver '.$driver.' is not loadable'
                 );
@@ -45,19 +47,20 @@ class Image implements IImage {
         );
     }
 
-    public static function getDefaultDriverClass() {
-        if(!self::$_driverClass) {
-            foreach(self::getDriverList() as $driver) {
+    public static function getDefaultDriverClass()
+    {
+        if (!self::$_driverClass) {
+            foreach (self::getDriverList() as $driver) {
                 try {
                     self::setDefaultDriver($driver);
-                } catch(IError $e) {
+                } catch (IError $e) {
                     continue;
                 }
 
                 break;
             }
 
-            if(!self::$_driverClass) {
+            if (!self::$_driverClass) {
                 throw core\Error::ESetup(
                     'There are no available raster image drivers'
                 );
@@ -68,11 +71,12 @@ class Image implements IImage {
     }
 
 
-// Loading
-    public static function loadFile($file) {
+    // Loading
+    public static function loadFile($file)
+    {
         $class = self::getDefaultDriverClass();
 
-        if(!is_readable($file)) {
+        if (!is_readable($file)) {
             throw core\Error::{'EValue,EUnreadable'}(
                 'Raster image '.$file.' is not readable'
             );
@@ -81,17 +85,20 @@ class Image implements IImage {
         return new self((new $class())->loadFile($file));
     }
 
-    public static function loadBase64String($string) {
+    public static function loadBase64String($string)
+    {
         return self::loadString(base64_decode($string));
     }
 
-    public static function loadString($string) {
+    public static function loadString($string)
+    {
         $class = self::getDefaultDriverClass();
 
         return new self((new $class())->loadString($string));
     }
 
-    public static function newCanvas($width, $height, $color=null) {
+    public static function newCanvas($width, $height, $color=null)
+    {
         $class = self::getDefaultDriverClass();
         $output = new self(new $class());
 
@@ -105,44 +112,50 @@ class Image implements IImage {
     }
 
 
-    protected function __construct(IDriver $driver) {
+    protected function __construct(IDriver $driver)
+    {
         $this->_driver = $driver;
     }
 
 
-// Driver
-    public function getDriver() {
+    // Driver
+    public function getDriver()
+    {
         return $this->_driver;
     }
 
 
 
-// Dimensions
-    public function getWidth() {
+    // Dimensions
+    public function getWidth()
+    {
         return $this->_driver->getWidth();
     }
 
-    public function getHeight() {
+    public function getHeight()
+    {
         return $this->_driver->getHeight();
     }
 
 
-// Transformation
-    public function transform($string=null) {
+    // Transformation
+    public function transform($string=null)
+    {
         return Transformation::factory($string)
             ->setImage($this);
     }
 
 
-// Output format
-    public function setOutputFormat($format) {
-        if(!self::isFormatValid($format)) {
+    // Output format
+    public function setOutputFormat($format)
+    {
+        if (!self::isFormatValid($format)) {
             throw core\Error::{'EArgument,EFormat'}(
                 $format.' is not a valid output raster image format'
             );
         }
 
-        if(!$this->_driver->canWrite($format)) {
+        if (!$this->_driver->canWrite($format)) {
             throw core\Error::{'EFormat'}(
                 $this->_driver->getName().' image driver cannot write '.$format.' format files'
             );
@@ -152,13 +165,15 @@ class Image implements IImage {
         return $this;
     }
 
-    public function getOutputFormat() {
+    public function getOutputFormat()
+    {
         return $this->_driver->getOutputFormat();
     }
 
-// Save
-    public function setSavePath($savePath) {
-        if(!is_writable($savePath)) {
+    // Save
+    public function setSavePath($savePath)
+    {
+        if (!is_writable($savePath)) {
             throw core\Error::{'ERuntime,EUnwritable'}(
                 'Raster image save path is not writable'
             );
@@ -170,23 +185,26 @@ class Image implements IImage {
         return $this;
     }
 
-    public function getSavePath() {
+    public function getSavePath()
+    {
         return $this->_savePath;
     }
 
-    public function saveTo($savePath, $quality=100) {
+    public function saveTo($savePath, $quality=100)
+    {
         $this->setSavePath($savePath);
         return $this->save($quality);
     }
 
-    public function save($quality=100) {
-        if(!$this->_savePath) {
+    public function save($quality=100)
+    {
+        if (!$this->_savePath) {
             throw core\Error::ESetup(
                 'Raster image save path has not been set'
             );
         }
 
-        if(!$this->_driver->saveTo($this->_savePath, $this->_normalizePercentage($quality))) {
+        if (!$this->_driver->saveTo($this->_savePath, $this->_normalizePercentage($quality))) {
             throw core\Error::ERuntime(
                 'Raster image could not be saved'
             );
@@ -195,18 +213,20 @@ class Image implements IImage {
         return $this;
     }
 
-    public function toString($quality=100): string {
+    public function toString($quality=100): string
+    {
         return $this->_driver->toString($this->_normalizePercentage($quality));
     }
 
 
 
-// Manipulations
-    public function resize(?int $width, int $height=null, string $mode=null) {
+    // Manipulations
+    public function resize(?int $width, int $height=null, string $mode=null)
+    {
         $this->_checkDriverForManipulations();
         $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
 
-        if(!$width && !$height) {
+        if (!$width && !$height) {
             throw core\Error::EArgument(
                 'Invalid proportions specified for resize'
             );
@@ -214,22 +234,23 @@ class Image implements IImage {
 
         $mode = $this->_normalizeResizeMode($mode, IDimension::FIT);
 
-        switch($mode) {
+        switch ($mode) {
             case IDimension::STRETCH:
                 $newWidth = $width;
                 $newHeight = $height;
                 break;
 
             case IDimension::FIT:
-                if($currentHeight <= $height && $currentWidth <= $width) {
+                if ($currentHeight <= $height && $currentWidth <= $width) {
                     return $this;
                 }
 
+                // no break
             case IDimension::PROPORTIONAL:
                 $newWidth = $width;
                 $newHeight = round($currentHeight * $width / $currentWidth);
 
-                if($newHeight - $height > 1) {
+                if ($newHeight - $height > 1) {
                     $newHeight = $height;
                     $newWidth = round($currentWidth * $height / $currentHeight);
                 }
@@ -241,17 +262,18 @@ class Image implements IImage {
         return $this;
     }
 
-    public function crop(int $x, int $y, int $width, int $height) {
+    public function crop(int $x, int $y, int $width, int $height)
+    {
         $this->_checkDriverForManipulations();
 
         list($x, $y) = $this->_normalizePosition($x, $y);
         $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
 
-        if($width < 0) {
+        if ($width < 0) {
             $width = $currentWidth - ($x + abs($width));
         }
 
-        if($height < 0) {
+        if ($height < 0) {
             $height = $currentHeight - ($x + abs($height));
         }
 
@@ -259,7 +281,8 @@ class Image implements IImage {
         return $this;
     }
 
-    public function cropZoom(?int $width, int $height=null) {
+    public function cropZoom(?int $width, int $height=null)
+    {
         $this->_checkDriverForManipulations();
 
         $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight, false);
@@ -267,7 +290,7 @@ class Image implements IImage {
         $widthFactor = $width / $currentWidth;
         $heightFactor = $height / $currentHeight;
 
-        if($widthFactor >= $heightFactor) {
+        if ($widthFactor >= $heightFactor) {
             $this->resize($width, null, IDimension::PROPORTIONAL);
 
             $x = 0;
@@ -282,7 +305,8 @@ class Image implements IImage {
         return $this->crop($x, $y, $width, $height);
     }
 
-    public function frame(?int $width, int $height=null, $color=null) {
+    public function frame(?int $width, int $height=null, $color=null)
+    {
         $this->_checkDriverForManipulations();
 
         $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
@@ -302,27 +326,30 @@ class Image implements IImage {
         return $this;
     }
 
-    public function rotate($angle, $background=null) {
+    public function rotate($angle, $background=null)
+    {
         $this->_checkDriverForManipulations();
 
         $angle = $this->_normalizeAngle($angle);
         $background = $this->_normalizeColor($background);
 
-        if($angle) {
+        if ($angle) {
             $this->_driver->rotate($angle, $background);
         }
 
         return $this;
     }
 
-    public function mirror() {
+    public function mirror()
+    {
         $this->_checkDriverForManipulations();
         $this->_driver->mirror();
 
         return $this;
     }
 
-    public function flip() {
+    public function flip()
+    {
         $this->_checkDriverForManipulations();
         $this->_driver->flip();
 
@@ -331,8 +358,9 @@ class Image implements IImage {
 
 
 
-// Filters
-    public function brightness($brightness) {
+    // Filters
+    public function brightness($brightness)
+    {
         $this->_checkDriverForFilters();
 
         $brightness = $this->_normalizePercentage($brightness, true, true);
@@ -341,7 +369,8 @@ class Image implements IImage {
         return $this;
     }
 
-    public function contrast($contrast) {
+    public function contrast($contrast)
+    {
         $this->_checkDriverForFilters();
 
         $contrast = $this->_normalizePercentage($contrast, true, true);
@@ -350,14 +379,16 @@ class Image implements IImage {
         return $this;
     }
 
-    public function greyscale() {
+    public function greyscale()
+    {
         $this->_checkDriverForFilters();
         $this->_driver->greyscale();
 
         return $this;
     }
 
-    public function colorize($color, $alpha=null) {
+    public function colorize($color, $alpha=null)
+    {
         $this->_checkDriverForFilters();
 
         $color = $this->_normalizeColor($color);
@@ -367,49 +398,56 @@ class Image implements IImage {
         return $this;
     }
 
-    public function invert() {
+    public function invert()
+    {
         $this->_checkDriverForFilters();
         $this->_driver->invert();
 
         return $this;
     }
 
-    public function detectEdges() {
+    public function detectEdges()
+    {
         $this->_checkDriverForFilters();
         $this->_driver->detectEdges();
 
         return $this;
     }
 
-    public function emboss() {
+    public function emboss()
+    {
         $this->_checkDriverForFilters();
         $this->_driver->emboss();
 
         return $this;
     }
 
-    public function blur() {
+    public function blur()
+    {
         $this->_checkDriverForFilters();
         $this->_driver->blur();
 
         return $this;
     }
 
-    public function gaussianBlur() {
+    public function gaussianBlur()
+    {
         $this->_checkDriverForFilters();
         $this->_driver->gaussianBlur();
 
         return $this;
     }
 
-    public function removeMean() {
+    public function removeMean()
+    {
         $this->_checkDriverForFilters();
         $this->_driver->removeMean();
 
         return $this;
     }
 
-    public function smooth($amount=null) {
+    public function smooth($amount=null)
+    {
         $this->_checkDriverForFilters();
 
         $amount = $this->_normalizePercentage($amount ?? 50);
@@ -419,17 +457,19 @@ class Image implements IImage {
     }
 
 
-// Driver
-    protected function _checkDriverForManipulations() {
-        if(!$this->_driver instanceof IImageManipulationDriver) {
+    // Driver
+    protected function _checkDriverForManipulations()
+    {
+        if (!$this->_driver instanceof IImageManipulationDriver) {
             throw core\Error::EUnsupported(
                 'Raster image driver '.$this->_driver->getName().' does not support manipulations'
             );
         }
     }
 
-    protected function _checkDriverForFilters() {
-        if(!$this->_driver instanceof IImageFilterDriver) {
+    protected function _checkDriverForFilters()
+    {
+        if (!$this->_driver instanceof IImageFilterDriver) {
             throw core\Error::EUnsupported(
                 'Raster image driver '.$this->_driver->getName().' does not support filters'
             );
@@ -437,16 +477,17 @@ class Image implements IImage {
     }
 
 
-// Normalizers
-    protected function _normalizePixelSize($size, $dimension=null) {
+    // Normalizers
+    protected function _normalizePixelSize($size, $dimension=null)
+    {
         $size = core\unit\DisplaySize::factory($size);
 
-        if(!$size->isAbsolute()) {
+        if (!$size->isAbsolute()) {
             $vpWidth = $this->getWidth();
             $vpHeight = $this->getHeight();
             $length = null;
 
-            switch($dimension) {
+            switch ($dimension) {
                 case IDimension::WIDTH:
                     $length = $vpWidth;
                     break;
@@ -466,33 +507,34 @@ class Image implements IImage {
         return $size->getPixels();
     }
 
-    protected function _normalizeRelativeDimensions(&$width, &$height, &$currentWidth=null, &$currentHeight=null, bool $proportional=true) {
+    protected function _normalizeRelativeDimensions(&$width, &$height, &$currentWidth=null, &$currentHeight=null, bool $proportional=true)
+    {
         $width = $this->_normalizePixelSize($width, IDimension::WIDTH);
         $height = $this->_normalizePixelSize($height, IDimension::HEIGHT);
 
-        if($currentWidth === null) {
+        if ($currentWidth === null) {
             $currentWidth = $this->getWidth();
         }
 
-        if($currentHeight === null) {
+        if ($currentHeight === null) {
             $currentHeight = $this->getHeight();
         }
 
-        if(!$width && !$height) {
+        if (!$width && !$height) {
             $width = $currentWidth;
         }
 
-        if(!$width || !$height) {
-            if(!$width) {
-                if($proportional) {
+        if (!$width || !$height) {
+            if (!$width) {
+                if ($proportional) {
                     $width = floor($currentWidth * $height / $currentHeight);
                 } else {
                     $width = $height;
                 }
             }
 
-            if(!$height) {
-                if($proportional) {
+            if (!$height) {
+                if ($proportional) {
                     $height = floor($currentHeight * $width / $currentWidth);
                 } else {
                     $height = $width;
@@ -501,7 +543,8 @@ class Image implements IImage {
         }
     }
 
-    protected function _normalizePosition($x, $y, $compositeWidth=null, $compositeHeight=null) {
+    protected function _normalizePosition($x, $y, $compositeWidth=null, $compositeHeight=null)
+    {
         $position = core\unit\DisplayPosition::factory($x, $y)->extractAbsolute(
             $this->getWidth(), $this->getHeight(),
             $compositeWidth, $compositeHeight
@@ -510,30 +553,33 @@ class Image implements IImage {
         return [$position->getXOffset()->getPixels(), $position->getYOffset()->getPixels()];
     }
 
-    protected function _normalizePercentage($percent, $ignoreLowBound=false, $ignoreHighBound=false) {
-        if(empty($percent)) {
+    protected function _normalizePercentage($percent, $ignoreLowBound=false, $ignoreHighBound=false)
+    {
+        if (empty($percent)) {
             return null;
         }
 
         $percent = (float)trim($percent, '%');
 
-        if(!$ignoreLowBound && $percent < 0) {
+        if (!$ignoreLowBound && $percent < 0) {
             $percent = 0;
         }
 
-        if(!$ignoreHighBound && $percent > 100) {
+        if (!$ignoreHighBound && $percent > 100) {
             $percent = 100;
         }
 
         return $percent;
     }
 
-    protected function _normalizeAngle($angle) {
+    protected function _normalizeAngle($angle)
+    {
         return core\unit\Angle::factory($angle)->normalize();
     }
 
-    protected function _normalizeDimension($dimension) {
-        switch($dimension) {
+    protected function _normalizeDimension($dimension)
+    {
+        switch ($dimension) {
             case IDimension::HEIGHT:
                 return IDimension::HEIGHT;
 
@@ -543,15 +589,16 @@ class Image implements IImage {
         }
     }
 
-    protected function _normalizeResizeMode(?string $mode, string $default=null) {
-        switch($mode) {
+    protected function _normalizeResizeMode(?string $mode, string $default=null)
+    {
+        switch ($mode) {
             case IDimension::STRETCH:
             case IDimension::FIT:
             case IDimension::PROPORTIONAL:
                 return $mode;
 
             default:
-                if($default !== null) {
+                if ($default !== null) {
                     return $this->_normalizeResizeMode($default);
                 }
 
@@ -559,9 +606,10 @@ class Image implements IImage {
         }
     }
 
-    protected function _normalizeColor($color, $default=null) {
-        if(empty($color)) {
-            if($default === null) {
+    protected function _normalizeColor($color, $default=null)
+    {
+        if (empty($color)) {
+            if ($default === null) {
                 return null;
             }
 
@@ -574,7 +622,7 @@ class Image implements IImage {
 
 
 
-// Formats
+    // Formats
     const FORMATS = [
         'AAI' => 'AAI Dune image',
         'ART' => 'PFS: 1st Publisher Format originally used on the Macintosh (MacPaint?) and later used for PFS: 1st Publisher clip art.',
@@ -727,10 +775,11 @@ class Image implements IImage {
     ];
 
 
-    public static function getFormatFromPath($path) {
+    public static function getFormatFromPath($path)
+    {
         $p = pathinfo($path);
 
-        if(isset($p['extension'])) {
+        if (isset($p['extension'])) {
             return self::getFormatFromExtension($p['extension']);
         }
 
@@ -739,8 +788,9 @@ class Image implements IImage {
         );
     }
 
-    public static function getFormatFromExtension($extension) {
-        if(isset(self::FORMATS[strtoupper($extension)])) {
+    public static function getFormatFromExtension($extension)
+    {
+        if (isset(self::FORMATS[strtoupper($extension)])) {
             return self::FORMATS[strtoupper($extension)];
         }
 
@@ -751,16 +801,19 @@ class Image implements IImage {
         );
     }
 
-    public static function getFormatFromMime($mime) {
-        core\stub($path);
+    public static function getFormatFromMime($mime)
+    {
+        Glitch::incomplete($path);
     }
 
-    public static function isFormatValid($format) {
+    public static function isFormatValid($format)
+    {
         return isset(self::FORMATS[$format]);
     }
 
-    public static function getFormatDescriptionFor($format) {
-        if(isset(self::FORMATS[$format])) {
+    public static function getFormatDescriptionFor($format)
+    {
+        if (isset(self::FORMATS[$format])) {
             return self::FORMATS[$format];
         }
     }

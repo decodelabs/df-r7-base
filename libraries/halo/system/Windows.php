@@ -9,63 +9,72 @@ use df;
 use df\core;
 use df\halo;
 
-class Windows extends Base {
-    
+class Windows extends Base
+{
     protected static $_wmi;
-    
+
     protected $_platformType = 'Windows';
     protected $_osDistribution;
-    
-    protected function __construct($osName) {
+
+    protected function __construct($osName)
+    {
         parent::__construct($osName);
-        
-        self::$_wmi = new \COM("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2"); 
+
+        self::$_wmi = new \COM("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2");
     }
-    
-    public function getWMI() {
+
+    public function getWMI()
+    {
         return self::$_wmi;
     }
-    
-    public function getOSDistribution() {
-        if($this->_osDistribution === null) {
+
+    public function getOSDistribution()
+    {
+        if ($this->_osDistribution === null) {
             $this->_osDistribution = $this->_lookupOSDistribution();
         }
-        
+
         return $this->_osDistribution;
     }
-    
-    private function _lookupOSDistribution() {
+
+    private function _lookupOSDistribution()
+    {
         $timer = new core\time\Timer();
         $res = self::$_wmi->ExecQuery('SELECT * FROM Win32_OperatingSystem');
-        
-        foreach($res as $os) {
+
+        foreach ($res as $os) {
             return $os->Caption;
         }
-        
+
         return 'Windows NT';
     }
 
 
-// Users
-    public function userIdToUserName($id) {
+    // Users
+    public function userIdToUserName($id)
+    {
         return $id;
     }
 
-    public function userNameToUserId($name) {
+    public function userNameToUserId($name)
+    {
         return $name;
     }
 
-    public function groupIdToGroupName($id) {
+    public function groupIdToGroupName($id)
+    {
         return $id;
     }
 
-    public function groupNameToGroupId($name) {
+    public function groupNameToGroupId($name)
+    {
         return $name;
     }
 
 
-// Helpers
-    public function which($binaryName) {
-        core\stub($binaryName);
+    // Helpers
+    public function which($binaryName)
+    {
+        Glitch::incomplete($binaryName);
     }
 }

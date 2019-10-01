@@ -65,7 +65,7 @@ class ClauseMatcher implements IClauseMatcher
             $output->compare = $clause->getPreparedValue();
 
             if ($output->compare instanceof opal\query\IField) {
-                core\stub('Field comparison', $output);
+                Glitch::incomplete(['Field comparison', $output]);
             }
 
             if ($output->compare instanceof opal\query\ISelectQuery) {

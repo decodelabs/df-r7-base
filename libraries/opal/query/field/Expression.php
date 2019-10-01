@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-class Expression implements opal\query\IExpressionField, core\IDumpable {
-
+class Expression implements opal\query\IExpressionField, core\IDumpable
+{
     use opal\query\TField;
 
     protected $_expression;
@@ -18,8 +18,9 @@ class Expression implements opal\query\IExpressionField, core\IDumpable {
     protected $_source;
     protected $_altSourceAlias;
 
-    public function __construct(opal\query\ISource $source, $expression, $alias=null) {
-        if($alias === null) {
+    public function __construct(opal\query\ISource $source, $expression, $alias=null)
+    {
+        if ($alias === null) {
             $alias = uniqid('expr');
         }
 
@@ -28,73 +29,88 @@ class Expression implements opal\query\IExpressionField, core\IDumpable {
         $this->_source = $source;
     }
 
-    public function getSource() {
+    public function getSource()
+    {
         return $this->_source;
     }
 
-    public function getSourceAlias() {
+    public function getSourceAlias()
+    {
         return $this->_source->getAlias();
     }
 
-    public function setAltSourceAlias($alias) {
+    public function setAltSourceAlias($alias)
+    {
         $this->_altSourceAlias = $alias;
         return $this;
     }
 
-    public function getAltSourceAlias() {
+    public function getAltSourceAlias()
+    {
         return $this->_altSourceAlias;
     }
 
-    public function getExpression() {
+    public function getExpression()
+    {
         return $this->_expression;
     }
 
-    public function isNull(): bool {
+    public function isNull(): bool
+    {
         return $this->_expression === null;
     }
 
-    public function getName(): string {
-        if($this->_expression) {
+    public function getName(): string
+    {
+        if ($this->_expression) {
             return (string)$this->_expression;
         } else {
             return '#NULL';
         }
     }
 
-    public function setAlias($alias) {
+    public function setAlias($alias)
+    {
         $this->_alias = $alias;
         return $this;
     }
 
-    public function getAlias() {
+    public function getAlias()
+    {
         return $this->_alias;
     }
 
-    public function hasDiscreetAlias() {
+    public function hasDiscreetAlias()
+    {
         return $this->_alias !== $this->_name;
     }
 
-    public function getQualifiedName() {
-        if($this->_altSourceAlias) {
+    public function getQualifiedName()
+    {
+        if ($this->_altSourceAlias) {
             return $this->_altSourceAlias.'.'.$this->_alias;
         } else {
             return $this->getSourceAlias().'.'.$this->_alias;
         }
     }
 
-    public function dereference() {
+    public function dereference()
+    {
         return [$this];
     }
 
-    public function isOutputField() {
+    public function isOutputField()
+    {
         return $this->_source->isOutputField($this);
     }
 
-    public function rewriteAsDerived(opal\query\ISource $source) {
-        core\stub($source);
+    public function rewriteAsDerived(opal\query\ISource $source)
+    {
+        Glitch::incomplete($source);
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return 'expression('.$this->getName().')';
     }
 }

@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\halo;
 
-abstract class Base implements halo\process\ILauncher {
-
+abstract class Base implements halo\process\ILauncher
+{
     protected $_processName;
     protected $_args = [];
     protected $_path;
@@ -21,14 +21,15 @@ abstract class Base implements halo\process\ILauncher {
     protected $_multiplexer;
     protected $_generator;
 
-    public static function factory($processName, $args=null, $path=null) {
+    public static function factory($processName, $args=null, $path=null)
+    {
         $system = halo\system\Base::getInstance();
         $class = 'df\\halo\\process\\launcher\\'.$system->getOSName();
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             $class = 'df\\halo\\process\\launcher\\'.$system->getPlatformType();
 
-            if(!class_exists($class)) {
+            if (!class_exists($class)) {
                 throw new halo\process\RuntimeException(
                     'Sorry, I don\'t know how to launch processes on this platform!'
                 );
@@ -39,7 +40,8 @@ abstract class Base implements halo\process\ILauncher {
     }
 
 
-    protected function __construct($processName, $args=null, $path=null) {
+    protected function __construct($processName, $args=null, $path=null)
+    {
         $this->setProcessName($processName);
         $this->setArgs($args);
         $this->setPath($path);
@@ -47,85 +49,103 @@ abstract class Base implements halo\process\ILauncher {
     }
 
 
-    public function setProcessName($name) {
+    public function setProcessName($name)
+    {
         $this->_processName = $name;
         return $this;
     }
 
-    public function getProcessName() {
+    public function getProcessName()
+    {
         return $this->_processName;
     }
 
-    public function setArgs(...$args) {
+    public function setArgs(...$args)
+    {
         $this->_args = core\collection\Util::flatten($args);
         return $this;
     }
 
-    public function getArgs(): array {
+    public function getArgs(): array
+    {
         return $this->_args;
     }
 
-    public function setPath($path) {
+    public function setPath($path)
+    {
         $this->_path = $path;
         return $this;
     }
 
-    public function getPath() {
+    public function getPath()
+    {
         return $this->_path;
     }
 
-    public function setUser($user) {
+    public function setUser($user)
+    {
         $this->_user = $user;
         return $this;
     }
 
-    public function getUser() {
+    public function getUser()
+    {
         return $this->_user;
     }
 
 
-    public function isPrivileged() {
-        core\stub();
+    public function isPrivileged()
+    {
+        Glitch::incomplete();
     }
 
-    public function setTitle(?string $title) {
+    public function setTitle(?string $title)
+    {
         $this->_title = $title;
         return $this;
     }
 
-    public function getTitle(): ?string {
+    public function getTitle(): ?string
+    {
         return $this->_title;
     }
 
-    public function setPriority($priority) {
+    public function setPriority($priority)
+    {
         $this->_priority = (int)$priority;
         return $this;
     }
 
-    public function getPriority() {
+    public function getPriority()
+    {
         return $this->_priority;
     }
 
-    public function setWorkingDirectory($path) {
+    public function setWorkingDirectory($path)
+    {
         $this->_workingDirectory = $path;
         return $this;
     }
 
-    public function getWorkingDirectory() {
+    public function getWorkingDirectory()
+    {
         return $this->_workingDirectory;
     }
 
-    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null) {
+    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null)
+    {
         $this->_multiplexer = $multiplexer;
         return $this;
     }
 
-    public function getMultiplexer() {
+    public function getMultiplexer()
+    {
         return $this->_multiplexer;
     }
 
-    public function setGenerator($generator=null) {
-        if($generator !== null) {
+    public function setGenerator($generator=null)
+    {
+        if ($generator !== null) {
             $generator = core\lang\Callback::factory($generator);
         }
 
@@ -133,7 +153,8 @@ abstract class Base implements halo\process\ILauncher {
         return $this;
     }
 
-    public function getGenerator() {
+    public function getGenerator()
+    {
         return $this->_generator;
     }
 }

@@ -10,8 +10,8 @@ use df\core;
 use df\opal;
 use df\flex;
 
-abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\IDumpable {
-
+abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\IDumpable
+{
     use core\collection\TExtractList;
 
     protected static $_queryCount = 0;
@@ -28,20 +28,24 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
 
     private $_keyIndex = 0;
 
-    public static function getQueryCount() {
+    public static function getQueryCount()
+    {
         return self::$_queryCount;
     }
 
-    public function __construct(opal\rdbms\IAdapter $adapter, $sql=null) {
+    public function __construct(opal\rdbms\IAdapter $adapter, $sql=null)
+    {
         $this->_adapter = $adapter;
         $this->setSql($sql);
     }
 
-    public function getAdapter() {
+    public function getAdapter()
+    {
         return $this->_adapter;
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->_bindings = [];
         $this->_isExecuted = false;
         $this->_row = null;
@@ -50,8 +54,9 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this;
     }
 
-    public function isUnbuffered(bool $flag=null) {
-        if($flag !== null) {
+    public function isUnbuffered(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isUnbuffered = $flag;
             return $this;
         }
@@ -59,9 +64,10 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this->_isUnbuffered;
     }
 
-// Preparation
-    public function setSql($sql) {
-        if($this->_isExecuted) {
+    // Preparation
+    public function setSql($sql)
+    {
+        if ($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(
                 'Cannot change statement parameters, statement has already been executed'
             );
@@ -71,8 +77,9 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this;
     }
 
-    public function prependSql($sql) {
-        if($this->_isExecuted) {
+    public function prependSql($sql)
+    {
+        if ($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(
                 'Cannot change statement parameters, statement has already been executed'
             );
@@ -82,8 +89,9 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this;
     }
 
-    public function appendSql($sql) {
-        if($this->_isExecuted) {
+    public function appendSql($sql)
+    {
+        if ($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(
                 'Cannot change statement parameters, statement has already been executed'
             );
@@ -93,12 +101,14 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this;
     }
 
-    public function getSql() {
+    public function getSql()
+    {
         return $this->_sql;
     }
 
-    public function generateUniqueKey() {
-        if($this->_isExecuted) {
+    public function generateUniqueKey()
+    {
+        if ($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(
                 'Cannot change statement parameters, statement has already been executed'
             );
@@ -107,18 +117,21 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return flex\Text::numericToAlpha($this->_keyIndex++);
     }
 
-    public function setKeyIndex($index) {
+    public function setKeyIndex($index)
+    {
         $this->_keyIndex = (int)$index;
         return $this;
     }
 
-    public function getKeyIndex() {
+    public function getKeyIndex()
+    {
         return $this->_keyIndex;
     }
 
-    public function autoBind($value) {
-        foreach($this->_bindings as $key => $testValue) {
-            if($value === $testValue) {
+    public function autoBind($value)
+    {
+        foreach ($this->_bindings as $key => $testValue) {
+            if ($value === $testValue) {
                 return $key;
             }
         }
@@ -128,14 +141,15 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $key;
     }
 
-    public function bind($key, $value) {
-        if($this->_isExecuted) {
+    public function bind($key, $value)
+    {
+        if ($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(
                 'Cannot change statement parameters, statement has already been executed'
             );
         }
 
-        if(is_bool($value)) {
+        if (is_bool($value)) {
             $value = (int)$value;
         }
 
@@ -143,22 +157,25 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this;
     }
 
-    public function bindLob($key, $value) {
-        if($this->_isExecuted) {
+    public function bindLob($key, $value)
+    {
+        if ($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(
                 'Cannot change statement parameters, statement has already been executed'
             );
         }
 
-        core\stub($key, $value);
+        Glitch::incomplete([$key, $value]);
     }
 
-    public function getBindings() {
+    public function getBindings()
+    {
         return $this->_bindings;
     }
 
-    public function importBindings(opal\rdbms\IStatement $stmt) {
-        if($this->_isExecuted) {
+    public function importBindings(opal\rdbms\IStatement $stmt)
+    {
+        if ($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(
                 'Cannot change statement parameters, statement has already been executed'
             );
@@ -169,9 +186,10 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
     }
 
 
-// Execute
-    public function executeRaw() {
-        if($this->_isExecuted) {
+    // Execute
+    public function executeRaw()
+    {
+        if ($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(
                 'Statements cannot be executed more than once'
             );
@@ -185,9 +203,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
             //$timer = new core\time\Timer();
             $result = $this->_execute();
             self::$_queryCount++;
-
-            //core\debug()->dump($this->_sql, $timer);//, $this->_bindings);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // void profiler
             throw $e;
         }
@@ -196,8 +212,9 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $result;
     }
 
-    public function executeRead() {
-        if($this->_isExecuted) {
+    public function executeRead()
+    {
+        if ($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(
                 'Statements cannot be executed more than once'
             );
@@ -211,16 +228,14 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
             //$timer = new core\time\Timer();
             $this->_execute();
             self::$_queryCount++;
-
-            //core\debug()->dump($this);//, /*$timer);//,*/ $this->_bindings);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // void profiler
             throw $e;
         }
 
         // stop profiler
 
-        if(!$this->_row = $this->_fetchRow()) {
+        if (!$this->_row = $this->_fetchRow()) {
             $this->free();
             $this->_isEmpty = true;
             $this->_row = null;
@@ -231,8 +246,9 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this;
     }
 
-    public function executeWrite() {
-        if($this->_isExecuted) {
+    public function executeWrite()
+    {
+        if ($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(
                 'Statements cannot be executed more than once'
             );
@@ -246,9 +262,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
             //$timer = new core\time\Timer();
             $result = $this->_execute(true);
             self::$_queryCount++;
-
-            //core\debug()->dump($this);//, $this->_bindings);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // void profiler
             throw $e;
         }
@@ -261,32 +275,36 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
     abstract protected function _countAffectedRows();
 
 
-// Result
-    public function import(...$values) {
+    // Result
+    public function import(...$values)
+    {
         throw new core\collection\RuntimeException('This collection is read only');
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return $this->_isEmpty;
     }
 
-    public function clear() {
+    public function clear()
+    {
         throw new core\collection\RuntimeException('This collection is read only');
     }
 
-    public function extract() {
-        if(!$this->_isExecuted) {
+    public function extract()
+    {
+        if (!$this->_isExecuted) {
             $this->executeRead();
         }
 
-        if($this->_isEmpty) {
+        if ($this->_isEmpty) {
             return $this->_row = null;
         }
 
         $output = $this->_row;
         $this->_row = $this->_fetchRow();
 
-        if(!$this->_row) {
+        if (!$this->_row) {
             $this->free();
             $this->_isEmpty = true;
             $this->_row = null;
@@ -295,26 +313,30 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $output;
     }
 
-    public function getCurrent() {
+    public function getCurrent()
+    {
         return $this->_row;
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         $output = [];
 
-        foreach($this as $key => $value) {
+        foreach ($this as $key => $value) {
             $output[$key] = $value;
         }
 
         return $output;
     }
 
-    public function count() {
+    public function count()
+    {
         throw new core\collection\RuntimeException('This collection is streamed and cannot be counted');
     }
 
-    public function getIterator() {
-        if(!$this->_isExecuted) {
+    public function getIterator()
+    {
+        if (!$this->_isExecuted) {
             $this->executeRead();
         }
 
@@ -323,14 +345,15 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
 
     abstract protected function _fetchRow();
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         $output = [
             'sql' => $this->_sql,
             'bindings' => $this->_bindings
         ];
 
-        if($this->_isExecuted) {
+        if ($this->_isExecuted) {
             $output['current'] = $this->getCurrent();
         }
 

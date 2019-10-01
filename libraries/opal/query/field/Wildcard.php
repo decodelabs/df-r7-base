@@ -9,83 +9,98 @@ use df;
 use df\core;
 use df\opal;
 
-class Wildcard implements opal\query\IWildcardField, core\IDumpable {
-
+class Wildcard implements opal\query\IWildcardField, core\IDumpable
+{
     use opal\query\TField;
 
     protected $_source;
     protected $_muteFields = [];
 
-    public function __construct(opal\query\ISource $source) {
+    public function __construct(opal\query\ISource $source)
+    {
         $this->_source = $source;
     }
 
-    public function getSource() {
+    public function getSource()
+    {
         return $this->_source;
     }
 
-    public function getSourceAlias() {
+    public function getSourceAlias()
+    {
         return $this->_source->getAlias();
     }
 
-    public function getQualifiedName() {
+    public function getQualifiedName()
+    {
         return $this->getSourceAlias().'.*';
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return '*';
     }
 
-    public function setAlias($alias) {
-        core\stub($alias);
+    public function setAlias($alias)
+    {
+        Glitch::incomplete($alias);
         return $this;
     }
 
-    public function getAlias() {
+    public function getAlias()
+    {
         return '*';
     }
 
-    public function hasDiscreetAlias() {
+    public function hasDiscreetAlias()
+    {
         return false;
     }
 
-    public function dereference() {
+    public function dereference()
+    {
         return [$this];
     }
 
-    public function isOutputField() {
+    public function isOutputField()
+    {
         return true;
     }
 
-    public function rewriteAsDerived(opal\query\ISource $source) {
-        core\stub($source);
+    public function rewriteAsDerived(opal\query\ISource $source)
+    {
+        Glitch::incomplete($source);
     }
 
 
-    public function addMuteField($name, $alias=null) {
+    public function addMuteField($name, $alias=null)
+    {
         $this->_muteFields[$name] = $alias;
         return $this;
     }
 
-    public function removeMuteField($name) {
+    public function removeMuteField($name)
+    {
         unset($this->_muteFields[$name]);
         return $this;
     }
 
-    public function getMuteFields() {
+    public function getMuteFields()
+    {
         return $this->_muteFields;
     }
 
 
-    public function toString(): string {
+    public function toString(): string
+    {
         $output = $this->getQualifiedName();
         $mute = [];
 
-        foreach($this->_muteFields as $name => $alias) {
+        foreach ($this->_muteFields as $name => $alias) {
             $mute[] = '!'.$name.($alias ? ' as '.$alias : '');
         }
 
-        if(!empty($mute)) {
+        if (!empty($mute)) {
             $output .= ' ('.implode(', ', $mute).')';
         }
 

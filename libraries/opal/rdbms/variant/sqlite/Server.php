@@ -9,69 +9,79 @@ use df;
 use df\core;
 use df\opal;
 
-class Server implements opal\rdbms\IServer {
-    
+class Server implements opal\rdbms\IServer
+{
     protected $_adapter;
 
-    public function __construct(opal\rdbms\IAdapter $adapter) {
+    public function __construct(opal\rdbms\IAdapter $adapter)
+    {
         $this->_adapter = $adapter;
     }
 
-    public function getDatabase($name) {
-        core\stub($name);
+    public function getDatabase($name)
+    {
+        Glitch::incomplete($name);
     }
 
-    public function getDatabaseList() {
+    public function getDatabaseList()
+    {
         return [$this->_adapter->getDsn()->getDatabase()];
     }
 
-    public function databaseExists($name) {
+    public function databaseExists($name)
+    {
         return is_file($name);
     }
 
-    public function createDatabase($name, $checkExists=false) {
+    public function createDatabase($name, $checkExists=false)
+    {
         // stub
     }
 
-    public function renameDatabase($oldName, $newName) {
-        core\stub($oldName, $newName);
+    public function renameDatabase($oldName, $newName)
+    {
+        Glitch::incomplete($oldName, $newName);
     }
 
 
 
 
-// Exceptions
-    public static function getConnectionException(opal\rdbms\IAdapter $adapter, $number, $message) {
-        if($e = self::_getExceptionForError($adapter, $number, $message)) {
+    // Exceptions
+    public static function getConnectionException(opal\rdbms\IAdapter $adapter, $number, $message)
+    {
+        if ($e = self::_getExceptionForError($adapter, $number, $message)) {
             return $e;
         }
-        
+
         return new opal\rdbms\ConnectionException($message, $number);
     }
 
-    public static function getQueryException(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null) {
-        if($e = self::_getExceptionForError($adapter, $number, $message, $sql)) {
+    public static function getQueryException(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null)
+    {
+        if ($e = self::_getExceptionForError($adapter, $number, $message, $sql)) {
             return $e;
         }
-        
+
         return new opal\rdbms\QueryException($message, $number, $sql);
     }
-    
-    private static function _getExceptionForError(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null) {
-        switch($number) {
+
+    private static function _getExceptionForError(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null)
+    {
+        switch ($number) {
         // Query error
             case 1:
-                if(preg_match('/no such table\: ([a-zA-Z0-9_]+)/i', $message, $matches)) {
+                if (preg_match('/no such table\: ([a-zA-Z0-9_]+)/i', $message, $matches)) {
                     return new opal\rdbms\TableNotFoundException($message, $number, $sql, null, $matches[1]);
                 }
 
+                // no break
             case 13:
             case 18:
             case 20:
             case 25:
                 return new opal\rdbms\QueryException($message, $number, $sql);
-               
-        // Server error 
+
+        // Server error
             case 2:
             case 4:
             case 7:
@@ -84,27 +94,27 @@ class Server implements opal\rdbms\IServer {
             case 21:
             case 24:
             case 26:
-                
+
         // Server unavailable
             case 5:
             case 6:
                 return new opal\rdbms\ConnectionException($message, $number, $sql);
-                
+
         // Permissions
             case 3:
             case 8:
             case 23:
                 return new opal\rdbms\AccessException($message, $number, $sql);
-                
+
         // DB not found
             case 14:
             case 16:
                 return new opal\rdbms\DatabaseNotFoundException($message, $number, $sql);
-                
+
         // Constraint conflict
             case 19:
                 return new opal\rdbms\ConstraintException($message, $number, $sql);
-                
+
         // Feature support
             case 22:
                 return new opal\rdbms\FeatureSupportException($message, $number, $sql);

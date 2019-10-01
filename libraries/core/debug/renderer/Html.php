@@ -8,10 +8,11 @@ namespace df\core\debug\renderer;
 use df;
 use df\core;
 
-class Html extends Base {
-
-    public function render(): string {
-        while(ob_get_level()) {
+class Html extends Base
+{
+    public function render(): string
+    {
+        while (ob_get_level()) {
             ob_end_clean();
         }
 
@@ -21,36 +22,38 @@ class Html extends Base {
     }
 
 
-    protected function _getNodeDescription(core\log\INode $node) {
-        switch($node->getNodeType()) {
+    protected function _getNodeDescription(core\log\INode $node)
+    {
+        switch ($node->getNodeType()) {
             case 'dump':
                 $object = $node->getObject();
 
-                if(is_object($object)) {
+                if (is_object($object)) {
                     $output = 'instance of <strong>'.$this->_getObjectClass($object).'</strong>';
                     $inheritance = $this->_getObjectInheritance($object);
 
-                    if(!empty($inheritance)) {
+                    if (!empty($inheritance)) {
                         $output .= ' &gt; <span class="objectInheritance">'.
                             implode(' &gt; ', $inheritance).
                         '</span>';
                     }
 
                     return $output;
-                }  else if(is_array($object)) {
+                } elseif (is_array($object)) {
                     return 'Array ('.count($object).')';
-                } else if(is_string($object)) {
+                } elseif (is_string($object)) {
                     return 'String ('.strlen($object).')';
                 } else {
                     return ucfirst(strtolower(getType($object)));
                 }
 
+                // no break
             case 'exception':
                 $exception = $node->getException();
                 $inheritance = $this->_getObjectInheritance($exception);
                 $class = get_class($exception);
 
-                if(preg_match('/^class@anonymous/', $class) && !empty($inheritance)) {
+                if (preg_match('/^class@anonymous/', $class) && !empty($inheritance)) {
                     $class = array_shift($inheritance);
                 } else {
                     $class = $this->_normalizeObjectClass($class);
@@ -58,7 +61,7 @@ class Html extends Base {
 
                 $output = '<strong>'.$class.'</strong>';
 
-                if(!empty($inheritance)) {
+                if (!empty($inheritance)) {
                     $output .= ' &gt; <span class="objectInheritance">'.
                         implode(' &gt; ', $inheritance).
                     '</span>';
@@ -73,7 +76,6 @@ class Html extends Base {
             case 'todo':
             case 'warning':
             case 'error':
-            case 'deprecated':
             case 'stub':
                 return $this->esc($node->getMessage());
 
@@ -84,8 +86,9 @@ class Html extends Base {
 
 
 
-    protected function _getNodeBody(core\log\INode $node) {
-        switch($node->getNodeType()) {
+    protected function _getNodeBody(core\log\INode $node)
+    {
+        switch ($node->getNodeType()) {
             case 'dump':
                 return '<span class="dump-body">'.$this->_renderDumpData($node->inspect()).'</span>';
 
@@ -95,7 +98,7 @@ class Html extends Base {
 
                 $i = 0;
 
-                while($chainedException = $lastException->getPrevious()) {
+                while ($chainedException = $lastException->getPrevious()) {
                     $output .= '<div class="chainedException">'."\n";
 
                     $output .= $this->_renderExceptionMessage(
@@ -109,10 +112,10 @@ class Html extends Base {
                     $i++;
                 }
 
-                if($exception instanceof core\IError) {
+                if ($exception instanceof core\IError) {
                     $inspector = new core\debug\dumper\Inspector();
 
-                    if(null !== ($data = $exception->getData())) {
+                    if (null !== ($data = $exception->getData())) {
                         $data = $inspector->inspect($data);
 
                         $output .= '<div class="exception-data dump-body">'.
@@ -121,7 +124,7 @@ class Html extends Base {
                     }
                 }
 
-                if($exception instanceof core\IDumpable) {
+                if ($exception instanceof core\IDumpable) {
                     $inspector = new core\debug\dumper\Inspector();
                     $data = $inspector->inspectObjectProperties($exception);
 
@@ -138,36 +141,37 @@ class Html extends Base {
         }
     }
 
-    protected function _renderDumpData(core\debug\dumper\INode $data) {
+    protected function _renderDumpData(core\debug\dumper\INode $data)
+    {
         $inspector = $data->getInspector();
 
         // Immutable
-        if($data instanceof core\debug\dumper\Immutable) {
+        if ($data instanceof core\debug\dumper\Immutable) {
             return '<span class="dump-'.$data->getType().'">'.$data->toString().'</span>';
         }
 
         // String
-        if($data instanceof core\debug\dumper\Text) {
+        if ($data instanceof core\debug\dumper\Text) {
             return '<span class="dump-string">'.$this->esc($data->getValue()).'</span>';
         }
 
         // Number
-        if($data instanceof core\debug\dumper\Number) {
+        if ($data instanceof core\debug\dumper\Number) {
             return '<span class="dump-number">'.$data->getValue().'</span>';
         }
 
         // Resource
-        if($data instanceof core\debug\dumper\Resource) {
+        if ($data instanceof core\debug\dumper\Resource) {
             return '<span class="dump-resource">'.$data->toString().'</span>';
         }
 
         $insCount = $inspector->getInstanceCount();
 
         // Reference
-        if($data instanceof core\debug\dumper\Reference) {
+        if ($data instanceof core\debug\dumper\Reference) {
             $isArray = $data->isArray();
 
-            if($isArray) {
+            if ($isArray) {
                 $refType = 'array';
             } else {
                 $refType = 'object';
@@ -181,21 +185,21 @@ class Html extends Base {
         }
 
         // Structure
-        if($data instanceof core\debug\dumper\Structure) {
+        if ($data instanceof core\debug\dumper\Structure) {
             $dumpId = $data->getDumpId();
 
-            if($data->isArray()) {
+            if ($data->isArray()) {
                 $output = '<span class="dump-array open" id="dump-array-'.$insCount.'-'.$dumpId.'">';
                 $output .= 'array</span>';
 
-                if($inspector->countArrayHashHits($dumpId)) {
+                if ($inspector->countArrayHashHits($dumpId)) {
                     $output .= ':<span class="dump-arrayRef">'.$dumpId.'</span>';
                 }
             } else {
                 $output = '<span class="dump-object open" id="dump-object-'.$insCount.'-'.$dumpId.'">';
                 $output .= $data->getType().'</span>';
 
-                if($inspector->countObjectHashHits($dumpId)) {
+                if ($inspector->countObjectHashHits($dumpId)) {
                     $output .= ':<span class="dump-objectRef">'.$dumpId.'</span>';
                 }
             }
@@ -205,17 +209,17 @@ class Html extends Base {
             $properties = $data->getProperties();
             $propString = '';
 
-            if($propertyCount = count($properties)) {
+            if ($propertyCount = count($properties)) {
                 $singleEntry = false;
                 $maxPropertyLength = 100;
 
-                foreach($properties as $property) {
-                    if($propertyCount == 1
+                foreach ($properties as $property) {
+                    if ($propertyCount == 1
                     && $property->canInline()) {
                         $singleEntry = true;
                         $value = $property->getValue();
 
-                        if(mb_strlen($value) > $maxPropertyLength) {
+                        if (mb_strlen($value) > $maxPropertyLength) {
                             $singleEntry = false;
                             $propString .= '    ';
                         } else {
@@ -224,17 +228,17 @@ class Html extends Base {
                     } else {
                         $propString .= '    ';
 
-                        if($hasName = $property->hasName()) {
+                        if ($hasName = $property->hasName()) {
                             $propString .= '[';
                         }
 
-                        if($property->isProtected()) {
+                        if ($property->isProtected()) {
                             $propString .= '<span class="protected">±</span>';
-                        } else if($property->isPrivate()) {
+                        } elseif ($property->isPrivate()) {
                             $propString .= '<span class="private">§</span>';
                         }
 
-                        if($hasName) {
+                        if ($hasName) {
                             $propString .= $this->_renderDumpData(
                                 new core\debug\dumper\Text($inspector, $property->getName())
                             ).'] =&gt; ';
@@ -246,14 +250,14 @@ class Html extends Base {
                         $this->_renderDumpData($property->inspectValue($inspector, $property->isDeep()))
                     );
 
-                    if(!$singleEntry) {
+                    if (!$singleEntry) {
                         $propString .= "\n";
                     } else {
                         $propString .= ' ';
                     }
                 }
 
-                if(!$singleEntry) {
+                if (!$singleEntry) {
                     $propString = "\n".$propString;
                 }
 
@@ -265,17 +269,18 @@ class Html extends Base {
         }
     }
 
-    protected function _renderExceptionMessage(core\log\IExceptionNode $node, $messagePrefix=null) {
+    protected function _renderExceptionMessage(core\log\IExceptionNode $node, $messagePrefix=null)
+    {
         $e = $node->getException();
         $output = '';
 
-        if($e instanceof core\IError && (null !== ($http = $e->getHttpCode()))) {
+        if ($e instanceof core\IError && (null !== ($http = $e->getHttpCode()))) {
             $output .= '<p class="http">HTTP '.$http.'</p>';
         }
 
         $output .= '<p class="message">'.$messagePrefix.$this->esc($node->getMessage()).'</p>'."\n";
 
-        if(!empty($types = $this->_normalizeExceptionTypes($e))) {
+        if (!empty($types = $this->_normalizeExceptionTypes($e))) {
             $output .= '<p class="types">Types: <strong>'.implode(' : ', $types).'</strong></p>'."\n";
         }
 
@@ -285,7 +290,8 @@ class Html extends Base {
         return $output;
     }
 
-    protected function _renderStackTrace(core\debug\IStackTrace $stackTrace) {
+    protected function _renderStackTrace(core\debug\IStackTrace $stackTrace)
+    {
         $output =  '<table class="stack">'."\n";
         $output .= '    <tr>'."\n";
         $output .= '        <th>#</th>'."\n";
@@ -297,7 +303,7 @@ class Html extends Base {
         $calls = $stackTrace->getCalls();
         $i = count($calls);
 
-        foreach($calls as $i => $call) {
+        foreach ($calls as $i => $call) {
             $output .= '    <tr>'."\n";
             $output .= '        <td>'.$this->esc($i).'</td>'."\n";
             $output .= '        <td>'.$this->esc($this->_normalizeFilePath($call->getFile())).'</td>'."\n";
@@ -311,16 +317,17 @@ class Html extends Base {
         return $output;
     }
 
-    public function esc($string): string {
+    public function esc($string): string
+    {
         $conv = htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 
-        if(!empty($conv)) {
+        if (!empty($conv)) {
             return $conv;
         }
 
         $conv = htmlspecialchars($string, ENT_QUOTES);
 
-        if(!empty($conv)) {
+        if (!empty($conv)) {
             return $conv;
         }
 

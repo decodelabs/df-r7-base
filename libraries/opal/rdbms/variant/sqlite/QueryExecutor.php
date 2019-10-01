@@ -27,7 +27,7 @@ class QueryExecutor extends opal\rdbms\QueryExecutor
     public function executeInsertQuery($tableName)
     {
         if ($this->_query->shouldReplace()) {
-            core\stub($tableName);
+            Glitch::incomplete($tableName);
         }
 
         $this->_stmt->appendSql('INSERT');
@@ -69,7 +69,7 @@ class QueryExecutor extends opal\rdbms\QueryExecutor
     public function executeBatchInsertQuery($tableName)
     {
         if ($this->_query->shouldReplace()) {
-            core\stub($tableName);
+            Glitch::incomplete($tableName);
         }
 
         $this->_stmt->appendSql('INSERT');

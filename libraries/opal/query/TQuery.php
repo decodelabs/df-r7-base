@@ -641,7 +641,7 @@ trait TQuery_JoinProvider
 
         if ($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged
-            core\stub($field);
+            Glitch::incomplete($field);
         /*
         $bridgeAdapter = $field->getBridgeQueryAdapter();
         $bridgeAlias = $fieldName.'Bridge';

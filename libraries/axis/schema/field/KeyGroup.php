@@ -14,22 +14,24 @@ class KeyGroup extends Base implements
     axis\schema\IRelationField,
     opal\schema\IOneRelationField,
     opal\schema\IMultiPrimitiveField,
-    opal\schema\ITargetPrimaryFieldAwareRelationField {
-
+    opal\schema\ITargetPrimaryFieldAwareRelationField
+{
     use axis\schema\TRelationField;
     use axis\schema\TTargetPrimaryFieldAwareRelationField;
 
-    protected function _init($targetTableUnit) {
+    protected function _init($targetTableUnit)
+    {
         $this->setTargetUnitId($targetTableUnit);
     }
 
 
-// Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
+    // Values
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    {
         $value = $this->getTargetRelationManifest()->extractFromRow($key, $row);
 
-        if(!$forRecord) {
-            if(is_array($value)) {
+        if (!$forRecord) {
+            if (is_array($value)) {
                 return $this->getTargetRelationManifest()->toPrimaryKeySet($value);
             } else {
                 return $value;
@@ -42,8 +44,9 @@ class KeyGroup extends Base implements
         );
     }
 
-    public function deflateValue($value) {
-        if(!$value instanceof opal\record\IPrimaryKeySet) {
+    public function deflateValue($value)
+    {
+        if (!$value instanceof opal\record\IPrimaryKeySet) {
             $value = $this->getTargetRelationManifest()->toPrimaryKeySet($value);
         }
 
@@ -51,8 +54,8 @@ class KeyGroup extends Base implements
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
         $schema = $targetUnit->getUnitSchema();
 
-        foreach($value->toArray() as $key => $value) {
-            if($field = $schema->getField($key)) {
+        foreach ($value->toArray() as $key => $value) {
+            if ($field = $schema->getField($key)) {
                 $value = $field->deflateValue($value);
             }
 
@@ -62,8 +65,9 @@ class KeyGroup extends Base implements
         return $output;
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if(!$forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    {
+        if (!$forRecord) {
             return $value;
         }
 
@@ -73,21 +77,24 @@ class KeyGroup extends Base implements
     }
 
 
-    public function generateInsertValue(array $row) {
+    public function generateInsertValue(array $row)
+    {
         return null;
     }
 
 
-// Clause
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
+    // Clause
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    {
         return opal\query\clause\Clause::mapVirtualClause(
             $parent, $field, $operator, $value, $isOr
         );
     }
 
 
-// Populate
-    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
+    // Populate
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate)
+    {
         $output = opal\query\Initiator::beginAttachFromPopulate($populate);
 
         $parentSourceAlias = $populate->getParentSourceAlias();
@@ -100,36 +107,42 @@ class KeyGroup extends Base implements
     }
 
 
-// Validation
-    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+    // Validation
+    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema)
+    {
         $this->_sanitizeTargetUnitId($localUnit);
     }
 
-    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema)
+    {
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
     }
 
-    public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        core\stub('Seriously.. why are you using this type of field in a 3rd party relation!?!?!?');
+    public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
+        Glitch::incomplete('Seriously.. why are you using this type of field in a 3rd party relation!?!?!?');
     }
 
 
-// Primitive
-    public function getPrimitiveFieldNames() {
+    // Primitive
+    public function getPrimitiveFieldNames()
+    {
         return $this->getTargetRelationManifest()->getPrimitiveFieldNames($this->_name);
     }
 
 
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         $this->_setBaseStorageArray($data);
         $this->_targetUnitId = $data['tui'];
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return array_merge(
             $this->_getBaseStorageArray(),
             [

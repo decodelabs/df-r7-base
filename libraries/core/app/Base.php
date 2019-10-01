@@ -112,10 +112,6 @@ PHP;
         $this->envId = $envId;
         $this->envMode = defined('df\\COMPILE_ENV_MODE') ?
             df\COMPILE_ENV_MODE : 'testing';
-
-        // Set error handlers
-        set_error_handler([$this, 'handleError']);
-        set_exception_handler([$this, 'handleException']);
     }
 
 
@@ -335,53 +331,5 @@ PHP;
     public function getRegistryObjects(): array
     {
         return $this->_registry;
-    }
-
-
-
-
-    // Errors
-    public static function handleError(int $errorNumber, string $errorMessage, string $fileName, int $lineNumber): void
-    {
-        if (!$level = error_reporting()) {
-            return;
-        }
-
-        throw new \ErrorException($errorMessage, 0, $errorNumber, $fileName, $lineNumber);
-    }
-
-    public static function handleException(\Throwable $e): void
-    {
-        try {
-            if (df\Launchpad::$runner) {
-                try {
-                    core\debug()
-                        ->exception($e)
-                        ->render();
-
-                    df\Launchpad::shutdown();
-                } catch (\Throwable $g) {
-                    self::_fatalError($g->__toString()."\n\n\n".$e->__toString());
-                }
-            }
-
-            self::_fatalError($e->__toString());
-        } catch (\Throwable $f) {
-            self::_fatalError($e->__toString()."\n\n\n".$f->__toString());
-        }
-    }
-
-    private static function _fatalError($message): void
-    {
-        while (ob_get_level()) {
-            ob_end_clean();
-        }
-
-        if (isset($_SERVER['HTTP_HOST'])) {
-            $message = '<pre>'.$message.'</pre>';
-        }
-
-        echo $message;
-        df\Launchpad::shutdown();
     }
 }

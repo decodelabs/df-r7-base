@@ -529,7 +529,7 @@ class Embed implements IVideoEmbed
             $id = $inUrl->path->getLast();
 
             if ($id == 'watch') {
-                core\stub($inUrl);
+                Glitch::incomplete($inUrl);
             }
         }
 

@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-class Expression implements IExpression, core\IDumpable {
-
+class Expression implements IExpression, core\IDumpable
+{
     protected $_field;
     protected $_elements = [];
     protected $_parentExpression;
@@ -18,36 +18,41 @@ class Expression implements IExpression, core\IDumpable {
 
     private $_isExpectingValue = true;
 
-    public function __construct(IDataUpdateQuery $parentQuery, $field, array $elements, IExpression $parentExpression=null) {
+    public function __construct(IDataUpdateQuery $parentQuery, $field, array $elements, IExpression $parentExpression=null)
+    {
         $this->_parentQuery = $parentQuery;
         $this->_parentExpression = $parentExpression;
         $this->_field = $field;
 
-        if(!empty($elements)) {
+        if (!empty($elements)) {
             $this->express(...$elements);
         }
     }
 
-    public function getParentQuery() {
+    public function getParentQuery()
+    {
         return $this->_parent;
     }
 
-    public function getParentExpression() {
+    public function getParentExpression()
+    {
         return $this->_parentExpression;
     }
 
-    public function getElements() {
+    public function getElements()
+    {
         return $this->_elements;
     }
 
-    public function op($operator) {
-        if($this->_isExpectingValue) {
+    public function op($operator)
+    {
+        if ($this->_isExpectingValue) {
             throw new LogicException(
                 'Found operator when expecting reference or value'
             );
         }
 
-        switch($operator) {
+        switch ($operator) {
             case IExpressionOperator::ADD:
             case IExpressionOperator::SUBTRACT:
             case IExpressionOperator::MULTIPLY:
@@ -67,16 +72,18 @@ class Expression implements IExpression, core\IDumpable {
         return $this;
     }
 
-    public function group(...$elements) {
+    public function group(...$elements)
+    {
         return $this->beginExpression($elements)->endExpression();
     }
 
-    public function express(...$elements) {
+    public function express(...$elements)
+    {
         $source = $this->_parentQuery->getSource();
         $sourceManager = $this->_parentQuery->getSourceManager();
 
-        foreach($elements as $element) {
-            if($this->_isExpectingValue) {
+        foreach ($elements as $element) {
+            if ($this->_isExpectingValue) {
                 $this->_elements[] = $this->_processElement($sourceManager, $source, $element);
                 $this->_isExpectingValue = false;
             } else {
@@ -87,13 +94,14 @@ class Expression implements IExpression, core\IDumpable {
         return $this;
     }
 
-    protected function _processElement(ISourceManager $sourceManager, ISource $source, $element) {
-        if(is_string($element)) {
-            if(preg_match('/^[\"\']([^\"\'])+[\"\']$/', $element)) {
+    protected function _processElement(ISourceManager $sourceManager, ISource $source, $element)
+    {
+        if (is_string($element)) {
+            if (preg_match('/^[\"\']([^\"\'])+[\"\']$/', $element)) {
                 return new Expression_Value(substr($element, 1, -1));
             }
 
-            if(!$field = $sourceManager->extrapolateIntrinsicField($source, $element)) {
+            if (!$field = $sourceManager->extrapolateIntrinsicField($source, $element)) {
                 throw new InvalidArgumentException(
                     'Cound not extract reference or value from: '.$element
                 );
@@ -102,22 +110,22 @@ class Expression implements IExpression, core\IDumpable {
             $element = $field;
         }
 
-        if(is_scalar($element)) {
+        if (is_scalar($element)) {
             return new Expression_Value($element);
-        } else if($element instanceof opal\query\IIntrinsicField || $element instanceof IExpressionValue) {
+        } elseif ($element instanceof opal\query\IIntrinsicField || $element instanceof IExpressionValue) {
             return $element;
-        } else if($element instanceof opal\query\IVirtualField) {
+        } elseif ($element instanceof opal\query\IVirtualField) {
             $inner = $element->dereference();
 
-            if(count($inner) > 1) {
+            if (count($inner) > 1) {
                 throw new LogicException(
                     'Cannot use multi-primitive virtual fields in expressions... yet :)'
                 );
             }
 
             return array_shift($inner);
-        } else if($element instanceof IExpression) {
-            if($element->isExpectingValue()) {
+        } elseif ($element instanceof IExpression) {
+            if ($element->isExpectingValue()) {
                 throw new InvalidArgumentException(
                     'Cannot add sub expression - it is still expecting a reference or value'
                 );
@@ -131,26 +139,30 @@ class Expression implements IExpression, core\IDumpable {
         );
     }
 
-    public function beginExpression(...$elements) {
+    public function beginExpression(...$elements)
+    {
         return new self($this->_parentQuery, $this->_field, $elements, $this);
     }
 
-    public function correlate($targetField) {
-        core\stub($targetField);
+    public function correlate($targetField)
+    {
+        Glitch::incomplete($targetField);
     }
 
-    public function isExpectingValue() {
+    public function isExpectingValue()
+    {
         return $this->_isExpectingValue;
     }
 
-    public function addExpression(IExpression $expression) {
-        if(!$this->_isExpectingValue) {
+    public function addExpression(IExpression $expression)
+    {
+        if (!$this->_isExpectingValue) {
             throw new LogicException(
                 'Cannot add sub expression - expecting an operator'
             );
         }
 
-        if($expression->isExpectingValue()) {
+        if ($expression->isExpectingValue()) {
             throw new InvalidArgumentException(
                 'Cannot add sub expression - it is still expecting a reference or value'
             );
@@ -161,14 +173,15 @@ class Expression implements IExpression, core\IDumpable {
         return $this;
     }
 
-    public function endExpression() {
-        if($this->_isExpectingValue) {
+    public function endExpression()
+    {
+        if ($this->_isExpectingValue) {
             throw new LogicException(
                 'Cannot end expression - expecting reference or value'
             );
         }
 
-        if($this->_parentExpression) {
+        if ($this->_parentExpression) {
             return $this->_parentExpression->addExpression($this);
         } else {
             $this->_parentQuery->set($this->_field, $this);
@@ -176,41 +189,50 @@ class Expression implements IExpression, core\IDumpable {
         }
     }
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         return $this->_elements;
     }
 }
 
 
-class Expression_Operator implements IExpressionOperator, core\IDumpable {
+class Expression_Operator implements IExpressionOperator, core\IDumpable
+{
     public $operator;
 
-    public function __construct($operator) {
+    public function __construct($operator)
+    {
         $this->operator = $operator;
     }
 
-    public function getOperator() {
+    public function getOperator()
+    {
         return $this->operator;
     }
 
-    public function getDumpProperties() {
+    public function getDumpProperties()
+    {
         return $this->operator;
     }
 }
 
-class Expression_Value implements IExpressionValue, core\IDumpable {
+class Expression_Value implements IExpressionValue, core\IDumpable
+{
     public $value;
 
-    public function __construct($value) {
+    public function __construct($value)
+    {
         $this->value = $value;
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return $this->value;
     }
 
-    public function getDumpProperties() {
+    public function getDumpProperties()
+    {
         return $this->value;
     }
 }

@@ -11,8 +11,8 @@ use df\opal;
 use df\user;
 use df\mesh;
 
-class Base implements IRecord, \Serializable, core\IDumpable {
-
+class Base implements IRecord, \Serializable, core\IDumpable
+{
     const BROADCAST_HOOK_EVENTS = null;
 
     use TRecordAdapterProvider;
@@ -30,65 +30,69 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     protected $_isPopulated = false;
     protected $_bypassHooks = false;
 
-    public static function extractRecordId($record) {
+    public static function extractRecordId($record)
+    {
         $keySet = null;
         $isRecord = false;
 
-        if($record instanceof IPrimaryKeySetProvider) {
+        if ($record instanceof IPrimaryKeySetProvider) {
             $isRecord = true;
 
             try {
                 $keySet = $record->getPrimaryKeySet();
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $keySet = null;
             }
-        } else if($record instanceof IPrimaryKeySet) {
+        } elseif ($record instanceof IPrimaryKeySet) {
             $keySet = $record;
         }
 
-        if($keySet && !$keySet->isNull()) {
+        if ($keySet && !$keySet->isNull()) {
             return $keySet->getCombinedId();
         }
 
-        if($isRecord) {
+        if ($isRecord) {
             return '(#'.spl_object_hash($record).')';
         }
 
-        if(is_array($record)) {
+        if (is_array($record)) {
             return '{'.implode(PrimaryKeySet::COMBINE_SEPARATOR, $record).'}';
         }
 
         return (string)$record;
     }
 
-    public function __construct(opal\query\IAdapter $adapter, $row=null, array $fields=null) {
+    public function __construct(opal\query\IAdapter $adapter, $row=null, array $fields=null)
+    {
         $this->_adapter = $adapter;
         $fields = opal\schema\Introspector::getRecordFields($adapter, $fields);
 
-        if(!empty($fields)) {
+        if (!empty($fields)) {
             $this->_values = array_fill_keys($fields, null);
         }
 
 
         // Prepare value slots
-        foreach(opal\schema\Introspector::getFieldProcessors($adapter) as $name => $field) {
+        foreach (opal\schema\Introspector::getFieldProcessors($adapter) as $name => $field) {
             $this->_values[$name] = $field->inflateValueFromRow($name, [], $this);
         }
 
         // Import initial values
-        if($row !== null) {
+        if ($row !== null) {
             $this->import($row);
         }
     }
 
-    public function serialize() {
+    public function serialize()
+    {
         return serialize([
             'adapter' => $this->_adapter->getQuerySourceId(),
             'values' => $this->getValuesForStorage()
         ]);
     }
 
-    public function unserialize($data) {
+    public function unserialize($data)
+    {
         $values = unserialize($data);
         $adapter = mesh\Manager::getInstance()->fetchEntity($values['adapter']);
 
@@ -98,19 +102,21 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function isNew() {
+    public function isNew()
+    {
         return !$this->_isPopulated;
     }
 
-    public function makeNew(array $newValues=null) {
+    public function makeNew(array $newValues=null)
+    {
         $this->_isPopulated = false;
 
         // Clear primary values
-        if(null !== ($fields = opal\schema\Introspector::getPrimaryFields($this->_adapter))) {
-            foreach($fields as $field) {
+        if (null !== ($fields = opal\schema\Introspector::getPrimaryFields($this->_adapter))) {
+            foreach ($fields as $field) {
                 unset($this->_changes[$field]);
 
-                if($this->_values[$field] instanceof IValueContainer) {
+                if ($this->_values[$field] instanceof IValueContainer) {
                     $this->_values[$field]->setValue(null);
                 } else {
                     $this->_values[$field] = null;
@@ -118,32 +124,34 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             }
         }
 
-        if($newValues !== null) {
+        if ($newValues !== null) {
             $this->import($newValues);
         }
 
         return $this;
     }
 
-    public function spawnNew(array $newValues=null) {
+    public function spawnNew(array $newValues=null)
+    {
         $output = clone $this;
         return $output->makeNew($newValues);
     }
 
 
-    protected function _buildPrimaryKeySet(array $fields, $includeChanges=true) {
+    protected function _buildPrimaryKeySet(array $fields, $includeChanges=true)
+    {
         $values = [];
 
-        foreach($fields as $field) {
-            if($includeChanges && array_key_exists($field, $this->_changes)) {
+        foreach ($fields as $field) {
+            if ($includeChanges && array_key_exists($field, $this->_changes)) {
                 $values[$field] = $this->_changes[$field];
-            } else if(isset($this->_values[$field])) {
+            } elseif (isset($this->_values[$field])) {
                 $values[$field] = $this->_values[$field];
             } else {
                 $values[$field] = null;
             }
 
-            if($values[$field] instanceof IValueContainer) {
+            if ($values[$field] instanceof IValueContainer) {
                 $values[$field] = $values[$field]->getValueForStorage();
             }
         }
@@ -153,9 +161,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
 
-// Job
-    public function prepareJob(string $name, ...$args): mesh\job\IJob {
-        switch($name) {
+    // Job
+    public function prepareJob(string $name, ...$args): mesh\job\IJob
+    {
+        switch ($name) {
             case 'save':
                 return $this->isNew() ?
                     new opal\record\job\Insert($this) :
@@ -181,18 +190,19 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
 
-// Changes
-    public function hasChanged(...$fields) {
-        if(empty($fields)) {
+    // Changes
+    public function hasChanged(...$fields)
+    {
+        if (empty($fields)) {
             return !empty($this->_changes);
         }
 
-        foreach(core\collection\Util::leaves($fields) as $field) {
-            if(empty($field)) {
+        foreach (core\collection\Util::leaves($fields) as $field) {
+            if (empty($field)) {
                 continue;
             }
 
-            if(array_key_exists($field, $this->_changes)) {
+            if (array_key_exists($field, $this->_changes)) {
                 return true;
             }
         }
@@ -200,28 +210,32 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return false;
     }
 
-    public function clearChanges() {
+    public function clearChanges()
+    {
         $this->_changes = [];
         return $this;
     }
 
-    public function countChanges() {
+    public function countChanges()
+    {
         return count($this->_changes);
     }
 
-    public function getChanges() {
+    public function getChanges()
+    {
         return $this->_changes;
     }
 
-    public function getChangedValues() {
+    public function getChangedValues()
+    {
         $output = [];
 
-        foreach($this->_changes as $key => $value) {
-            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+        foreach ($this->_changes as $key => $value) {
+            if ($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
                 $value->prepareValue($this, $key);
             }
 
-            if($value instanceof IValueContainer) {
+            if ($value instanceof IValueContainer) {
                 $value = $value->getValue();
             }
 
@@ -231,13 +245,14 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function getChangesForStorage() {
+    public function getChangesForStorage()
+    {
         $output = [];
 
-        foreach($this->_changes as $key => $value) {
-            if($value instanceof IValueContainer) {
+        foreach ($this->_changes as $key => $value) {
+            if ($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
-            } else if($value instanceof IPrimaryKeySetProvider) {
+            } elseif ($value instanceof IPrimaryKeySetProvider) {
                 $value = $value->getPrimaryKeySet();
             }
 
@@ -247,13 +262,14 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function getValuesForStorage() {
+    public function getValuesForStorage()
+    {
         $output = array_merge($this->_values, $this->_changes);
 
-        foreach($output as $key => $value) {
-            if($value instanceof IValueContainer) {
+        foreach ($output as $key => $value) {
+            if ($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
-            } else if($value instanceof IPrimaryKeySetProvider) {
+            } elseif ($value instanceof IPrimaryKeySetProvider) {
                 $value = $value->getPrimaryKeySet();
             }
 
@@ -263,16 +279,17 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function getUpdatedValues() {
+    public function getUpdatedValues()
+    {
         $output = [];
 
-        foreach($this->_changes as $key => $value) {
-            if(array_key_exists($key, $this->_values) && $value !== null) {
-                if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+        foreach ($this->_changes as $key => $value) {
+            if (array_key_exists($key, $this->_values) && $value !== null) {
+                if ($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
                     $value->prepareValue($this, $key);
                 }
 
-                if($value instanceof IValueContainer) {
+                if ($value instanceof IValueContainer) {
                     $value = $value->getValue();
                 }
 
@@ -283,14 +300,15 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function getUpdatedValuesForStorage() {
+    public function getUpdatedValuesForStorage()
+    {
         $output = [];
 
-        foreach($this->_changes as $key => $value) {
-            if(array_key_exists($key, $this->_values) && $value !== null) {
-                if($value instanceof IValueContainer) {
+        foreach ($this->_changes as $key => $value) {
+            if (array_key_exists($key, $this->_values) && $value !== null) {
+                if ($value instanceof IValueContainer) {
                     $value = $value->getValueForStorage();
-                } else if($value instanceof IPrimaryKeySetProvider) {
+                } elseif ($value instanceof IPrimaryKeySetProvider) {
                     $value = $value->getPrimaryKeySet();
                 }
 
@@ -301,16 +319,17 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function getAddedValues() {
+    public function getAddedValues()
+    {
         $output = [];
 
-        foreach($this->_changes as $key => $value) {
-            if(!array_key_exists($key, $this->_values) && $this->_changes[$key] !== null) {
-                if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+        foreach ($this->_changes as $key => $value) {
+            if (!array_key_exists($key, $this->_values) && $this->_changes[$key] !== null) {
+                if ($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
                     $value->prepareValue($this, $key);
                 }
 
-                if($value instanceof IValueContainer) {
+                if ($value instanceof IValueContainer) {
                     $value = $value->getValue();
                 }
 
@@ -321,33 +340,36 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function getAddedValuesForStorage() {
+    public function getAddedValuesForStorage()
+    {
         $output = [];
 
-        foreach($this->_changes as $key => $value) {
-            if(!array_key_exists($key, $this->_values) && $this->_changes[$key] !== null) {
-                if($value instanceof IValueContainer) {
+        foreach ($this->_changes as $key => $value) {
+            if (!array_key_exists($key, $this->_values) && $this->_changes[$key] !== null) {
+                if ($value instanceof IValueContainer) {
                     $value = $value->getValueForStorage();
-                } else if($value instanceof IPrimaryKeySetProvider) {
+                } elseif ($value instanceof IPrimaryKeySetProvider) {
                     $value = $value->getPrimaryKeySet();
                 }
 
-                $output[$key] = $this->_deflateValue($key, $value);;
+                $output[$key] = $this->_deflateValue($key, $value);
+                ;
             }
         }
 
         return $output;
     }
 
-    public function getOriginalValues() {
+    public function getOriginalValues()
+    {
         $output = [];
 
-        foreach($this->_values as $key => $value) {
-            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+        foreach ($this->_values as $key => $value) {
+            if ($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
                 $value->prepareValue($this, $key);
             }
 
-            if($value instanceof IValueContainer) {
+            if ($value instanceof IValueContainer) {
                 $value = $value->getValue();
             }
 
@@ -357,13 +379,14 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function getOriginalValuesForStorage() {
+    public function getOriginalValuesForStorage()
+    {
         $output = [];
 
-        foreach($this->_values as $key => $value) {
-            if($value instanceof IValueContainer) {
+        foreach ($this->_values as $key => $value) {
+            if ($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
-            } else if($value instanceof IPrimaryKeySetProvider) {
+            } elseif ($value instanceof IPrimaryKeySetProvider) {
                 $value = $value->getPrimaryKeySet();
             }
 
@@ -373,13 +396,14 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function acceptChanges($insertId=null, array $insertData=null) {
+    public function acceptChanges($insertId=null, array $insertData=null)
+    {
         $oldValues = $this->_values;
         $this->_values = array_merge($this->_values, $this->_changes);
         $this->clearChanges();
 
         // Normalize values
-        foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter) as $name => $field) {
+        foreach (opal\schema\Introspector::getFieldProcessors($this->_adapter) as $name => $field) {
             $this->_values[$name] = $field->normalizeSavedValue(
                 $this->_values[$name],
                 $this
@@ -389,19 +413,19 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $this->_isPopulated = false;
 
         // Import primary key
-        if($insertId !== null && (null !== ($primaryFields = opal\schema\Introspector::getPrimaryFields($this->_adapter)))) {
-            if(!$insertId instanceof IPrimaryKeySet) {
-                if(count($primaryFields) > 1) {
+        if ($insertId !== null && (null !== ($primaryFields = opal\schema\Introspector::getPrimaryFields($this->_adapter)))) {
+            if (!$insertId instanceof IPrimaryKeySet) {
+                if (count($primaryFields) > 1) {
                     // Cant do anything here??
                 } else {
                     $insertId = new PrimaryKeySet($primaryFields, [$primaryFields[0] => $insertId]);
                 }
             }
 
-            foreach($insertId->getKeys() as $field => $value) {
+            foreach ($insertId->getKeys() as $field => $value) {
                 $value = $this->_inflateValue($field, $value);
 
-                if($this->_values[$field] instanceof IValueContainer) {
+                if ($this->_values[$field] instanceof IValueContainer) {
                     $this->_values[$field]->setValue($value);
                 } else {
                     $this->_values[$field] = $value;
@@ -411,12 +435,12 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
         // Merge insert data
-        foreach($this->_values as $key => $value) {
-            if($value === null && isset($insertData[$key])) {
+        foreach ($this->_values as $key => $value) {
+            if ($value === null && isset($insertData[$key])) {
                 $this->_values[$key] = $value = $insertData[$key];
             }
 
-            if($value instanceof IJobAwareValueContainer) {
+            if ($value instanceof IJobAwareValueContainer) {
                 $value->acceptSaveJobChanges($this);
             }
         }
@@ -427,14 +451,15 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
 
-    public function markAsChanged($field) {
-        if(!array_key_exists($field, $this->_changes)) {
+    public function markAsChanged($field)
+    {
+        if (!array_key_exists($field, $this->_changes)) {
             $oldVal = null;
 
-            if(isset($this->_values[$field])) {
+            if (isset($this->_values[$field])) {
                 $oldVal = $this->_values[$field];
 
-                if($oldVal instanceof IValueContainer) {
+                if ($oldVal instanceof IValueContainer) {
                     $oldVal = $oldVal->duplicateForChangeList();
                 }
             }
@@ -447,7 +472,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
 
-    public function populateWithPreparedData(array $row) {
+    public function populateWithPreparedData(array $row)
+    {
         /*
         if($this->_isPopulated) {
             throw new RuntimeException(
@@ -456,7 +482,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         }
         */
 
-        foreach($row as $key => $value) {
+        foreach ($row as $key => $value) {
             $this->_values[$key] = $this->_inflateValue($key, $value);
         }
 
@@ -464,20 +490,21 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function populateWithRawData($row) {
-        if($this->_isPopulated) {
+    public function populateWithRawData($row)
+    {
+        if ($this->_isPopulated) {
             throw new RuntimeException(
                 'Record has already been populated'
             );
         }
 
-        if($row instanceof opal\query\IDataRowProvider) {
+        if ($row instanceof opal\query\IDataRowProvider) {
             $row = $row->toDataRowArray();
-        } else if($row instanceof core\IArrayProvider) {
+        } elseif ($row instanceof core\IArrayProvider) {
             $row = $row->toArray();
         }
 
-        if(!is_array($row)) {
+        if (!is_array($row)) {
             throw new InvalidArgumentException(
                 'Could not populate record - input data cannot be converted to an array'
             );
@@ -487,13 +514,13 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         // Inflate values from adapter
         $temp = $row;
 
-        foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter) as $name => $field) {
+        foreach (opal\schema\Introspector::getFieldProcessors($this->_adapter) as $name => $field) {
             $row[$name] = $field->inflateValueFromRow($name, $temp, $this);
         }
 
 
         // Inflate values from extension
-        foreach($row as $key => $value) {
+        foreach ($row as $key => $value) {
             $this->_values[$key] = $this->_inflateValue($key, $value);
         }
 
@@ -504,8 +531,9 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
 
-    public function shouldBypassHooks(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldBypassHooks(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_bypassHooks = $flag;
             return $this;
         }
@@ -514,14 +542,15 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
 
-// Collection
-    public function import(...$input) {
-        foreach($input as $row) {
-            if($row instanceof opal\query\IDataRowProvider) {
+    // Collection
+    public function import(...$input)
+    {
+        foreach ($input as $row) {
+            if ($row instanceof opal\query\IDataRowProvider) {
                 $row = $row->toDataRowArray();
             }
 
-            if(!core\collection\Util::isIterable($row)) {
+            if (!core\collection\Util::isIterable($row)) {
                 continue;
             }
 
@@ -545,7 +574,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             }
             */
 
-            foreach($row as $key => $value) {
+            foreach ($row as $key => $value) {
                 $this->offsetSet($key, $value);
             }
         }
@@ -553,11 +582,13 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return empty($this->_values) && empty($this->_changes);
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->_values = [];
         $this->_changes = [];
         $this->_isPopulated = false;
@@ -565,25 +596,28 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function extract() {
-        core\stub();
+    public function extract()
+    {
+        Glitch::incomplete();
     }
 
-    public function count() {
+    public function count()
+    {
         return count(array_merge($this->_values, $this->_changes));
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         $output = [];
 
-        foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
+        foreach (array_merge($this->_values, $this->_changes) as $key => $value) {
             /*
             if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
                 $value->prepareValue($this, $key);
             }
             */
 
-            if($value instanceof IValueContainer) {
+            if ($value instanceof IValueContainer) {
                 $value = $value->getValue();
             }
 
@@ -593,10 +627,11 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function extricate(string ...$keys): array {
+    public function extricate(string ...$keys): array
+    {
         $output = [];
 
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $value = $this->_changes[$key] ?? $this->_values[$key] ?? null;
 
             /*
@@ -605,7 +640,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             }
             */
 
-            if($value instanceof IValueContainer) {
+            if ($value instanceof IValueContainer) {
                 $value = $value->getValue();
             }
 
@@ -615,53 +650,57 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return $this->getPrimaryKeySet()->__toString();
     }
 
-// Storage
-    public function save(mesh\job\IQueue $queue=null) {
+    // Storage
+    public function save(mesh\job\IQueue $queue=null)
+    {
         $execute = false;
 
-        if($queue === null) {
+        if ($queue === null) {
             $execute = true;
             $queue = new mesh\job\Queue();
         }
 
         $this->deploySaveJobs($queue);
 
-        if($execute) {
+        if ($execute) {
             $queue->execute();
         }
 
         return $this;
     }
 
-    public function delete(mesh\job\IQueue $queue=null) {
+    public function delete(mesh\job\IQueue $queue=null)
+    {
         $execute = false;
 
-        if($queue === null) {
+        if ($queue === null) {
             $execute = true;
             $queue = new mesh\job\Queue();
         }
 
         $this->deployDeleteJobs($queue);
 
-        if($execute) {
+        if ($execute) {
             $queue->execute();
         }
 
         return $this;
     }
 
-    public function deploySaveJobs(mesh\job\IQueue $queue) {
+    public function deploySaveJobs(mesh\job\IQueue $queue)
+    {
         $recordJob = null;
 
-        if($queue->isDeployed($this)) {
+        if ($queue->isDeployed($this)) {
             return $queue->getLastJobUsing($this);
         }
 
-        if($this->hasChanged() || $this->isNew()) {
+        if ($this->hasChanged() || $this->isNew()) {
             $recordJob = $queue->save($this);
             $ignored = false;
         } else {
@@ -669,31 +708,32 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             $ignored = true;
         }
 
-        foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
-            if($value instanceof IJobAwareValueContainer) {
+        foreach (array_merge($this->_values, $this->_changes) as $key => $value) {
+            if ($value instanceof IJobAwareValueContainer) {
                 $value->deploySaveJobs($queue, $this, $key, $recordJob);
             }
         }
 
-        if($ignored) {
+        if ($ignored) {
             $queue->unignore($this);
         }
 
         return $recordJob;
     }
 
-    public function deployDeleteJobs(mesh\job\IQueue $queue) {
+    public function deployDeleteJobs(mesh\job\IQueue $queue)
+    {
         $recordJob = null;
 
-        if(!$this->isNew()) {
-            if($queue->hasJobUsing($this)) {
+        if (!$this->isNew()) {
+            if ($queue->hasJobUsing($this)) {
                 return $recordJob;
             }
 
             $recordJob = $queue->delete($this);
 
-            foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
-                if($value instanceof IJobAwareValueContainer) {
+            foreach (array_merge($this->_values, $this->_changes) as $key => $value) {
+                if ($value instanceof IJobAwareValueContainer) {
                     $value->deployDeleteJobs($queue, $this, $key, $recordJob);
                 }
             }
@@ -702,27 +742,28 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $recordJob;
     }
 
-    public function triggerJobEvent(mesh\job\IQueue $queue, IJob $job, $when) {
+    public function triggerJobEvent(mesh\job\IQueue $queue, IJob $job, $when)
+    {
         $jobName = $job->getRecordJobName();
         $funcPrefix = null;
 
-        if($when != IJob::EVENT_POST) {
+        if ($when != IJob::EVENT_POST) {
             $funcPrefix = ucfirst($when);
         }
 
         $func = 'on'.$funcPrefix.$jobName;
 
-        if(method_exists($this, $func)) {
+        if (method_exists($this, $func)) {
             $this->{$func}($queue, $job);
         }
 
         $broadcast = static::BROADCAST_HOOK_EVENTS;
 
-        if($broadcast === null) {
+        if ($broadcast === null) {
             $broadcast = $this->_adapter->shouldRecordsBroadcastHookEvents();
         }
 
-        if($broadcast && !$this->_bypassHooks) {
+        if ($broadcast && !$this->_bypassHooks) {
             $event = new mesh\event\Event(
                 $this,
                 $funcPrefix.$jobName,
@@ -735,14 +776,14 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             $meshManager->emitEventObject($event);
         }
 
-        if(in_array($jobName, ['Insert', 'Update', 'Replace'])) {
+        if (in_array($jobName, ['Insert', 'Update', 'Replace'])) {
             $func = 'on'.$funcPrefix.'Save';
 
-            if(method_exists($this, $func)) {
+            if (method_exists($this, $func)) {
                 $this->{$func}($queue, $job);
             }
 
-            if($broadcast && !$this->_bypassHooks) {
+            if ($broadcast && !$this->_bypassHooks) {
                 $event->setAction($funcPrefix.'Save');
                 $meshManager->emitEventObject($event);
             }
@@ -752,59 +793,64 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
 
-// Access
-    public function __set($key, $value) {
+    // Access
+    public function __set($key, $value)
+    {
         return $this->offsetSet($key, $value);
     }
 
-    public function __get($key) {
+    public function __get($key)
+    {
         $output = null;
 
-        if(array_key_exists($key, $this->_changes)) {
+        if (array_key_exists($key, $this->_changes)) {
             $output = $this->_changes[$key];
-        } else if(array_key_exists($key, $this->_values)) {
+        } elseif (array_key_exists($key, $this->_values)) {
             $output = $this->_values[$key];
         }
 
-        if($output instanceof IPreparedValueContainer && !$output->isPrepared()) {
+        if ($output instanceof IPreparedValueContainer && !$output->isPrepared()) {
             $output->prepareValue($this, $key);
         }
 
         return $this->_prepareValueForUser($key, $output);
     }
 
-    public function getRaw($key) {
+    public function getRaw($key)
+    {
         $output = null;
 
-        if(array_key_exists($key, $this->_changes)) {
+        if (array_key_exists($key, $this->_changes)) {
             $output = $this->_changes[$key];
-        } else if(array_key_exists($key, $this->_values)) {
+        } elseif (array_key_exists($key, $this->_values)) {
             $output = $this->_values[$key];
         }
 
         return $output;
     }
 
-    public function getRawId($key) {
+    public function getRawId($key)
+    {
         $output = $this->getRaw($key);
 
-        if($output instanceof IIdProviderValueContainer) {
+        if ($output instanceof IIdProviderValueContainer) {
             $output = $output->getRawId();
-        } else if($output instanceof IValueContainer) {
+        } elseif ($output instanceof IValueContainer) {
             $output = $output->getValue();
         }
 
-        if($output instanceof IPrimaryKeySet) {
+        if ($output instanceof IPrimaryKeySet) {
             $output = $output->getRawValue();
         }
 
         return $output;
     }
 
-    public function getOriginal($key) {
+    public function getOriginal($key)
+    {
         $output = null;
 
-        if(array_key_exists($key, $this->_values)) {
+        if (array_key_exists($key, $this->_values)) {
             $output = $this->_values[$key];
         }
 
@@ -812,27 +858,29 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
 
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
         return $this->offsetSet($key, $value);
     }
 
-    public function forceSet($key, $value) {
+    public function forceSet($key, $value)
+    {
         // Sanitize value from record
         $value = $this->_sanitizeValue($key, $value);
 
         // Sanitize value from extension
-        if($fieldProcessor = opal\schema\Introspector::getFieldProcessor($this->_adapter, $key)) {
+        if ($fieldProcessor = opal\schema\Introspector::getFieldProcessor($this->_adapter, $key)) {
             $value = $fieldProcessor->sanitizeValue($value, $this);
         }
 
-        if(array_key_exists($key, $this->_changes)) {
-            if($this->_changes[$key] instanceof IValueContainer) {
+        if (array_key_exists($key, $this->_changes)) {
+            if ($this->_changes[$key] instanceof IValueContainer) {
                 $this->_changes[$key]->setValue($value);
             } else {
                 $this->_changes[$key] = $value;
             }
         } else {
-            if(isset($this->_values[$key])
+            if (isset($this->_values[$key])
             && $this->_values[$key] instanceof IValueContainer) {
                 $this->_values[$key]->setValue($value);
             } else {
@@ -843,53 +891,56 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function get($key, $default=null) {
+    public function get($key, $default=null)
+    {
         return $this->offsetGet($key, $default);
     }
 
-    public function export($key, $default=null) {
-        if($key == '@primary') {
+    public function export($key, $default=null)
+    {
+        if ($key == '@primary') {
             return $this->getPrimaryKeySet();
         } else {
             $first = substr($key, 0, 1);
 
-            if($first == '#') {
+            if ($first == '#') {
                 return $this->getRawId(substr($key, 1));
-            } else if($first == '!') {
+            } elseif ($first == '!') {
                 return $this->getOriginal(substr($key, 1));
-            } else if($first == '%') {
+            } elseif ($first == '%') {
                 return $this->getRaw(substr($key, 1));
             }
         }
 
         $output = null;
 
-        if(array_key_exists($key, $this->_changes)) {
+        if (array_key_exists($key, $this->_changes)) {
             $output = $this->_changes[$key];
-        } else if(array_key_exists($key, $this->_values)) {
+        } elseif (array_key_exists($key, $this->_values)) {
             $output = $this->_values[$key];
         }
 
-        if($output === null) {
+        if ($output === null) {
             $output = $default;
         }
 
-        if($output instanceof IValueContainer) {
+        if ($output instanceof IValueContainer) {
             $output = $output->getValueForStorage();
-        } else if($output instanceof IPrimaryKeySetProvider) {
+        } elseif ($output instanceof IPrimaryKeySetProvider) {
             $output = $output->getPrimaryKeySet();
         }
 
-        if($output instanceof IPrimaryKeySet && $output->isNull()) {
+        if ($output instanceof IPrimaryKeySet && $output->isNull()) {
             $output = null;
         }
 
         return $output;
     }
 
-    public function has(...$keys) {
-        foreach($keys as $key) {
-            if($this->offsetExists($key)) {
+    public function has(...$keys)
+    {
+        foreach ($keys as $key) {
+            if ($this->offsetExists($key)) {
                 return true;
             }
         }
@@ -897,59 +948,61 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return false;
     }
 
-    public function remove(...$keys) {
-        foreach($keys as $key) {
+    public function remove(...$keys)
+    {
+        foreach ($keys as $key) {
             $this->offsetUnset($key);
         }
 
         return $this;
     }
 
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value)
+    {
         // Sanitize value from record
         $value = $this->_sanitizeValue($key, $value);
 
         // Sanitize value from extension
-        if($fieldProcessor = opal\schema\Introspector::getFieldProcessor($this->_adapter, $key)) {
+        if ($fieldProcessor = opal\schema\Introspector::getFieldProcessor($this->_adapter, $key)) {
             $value = $fieldProcessor->sanitizeValue($value);
         }
 
 
-        if(array_key_exists($key, $this->_changes)) {
+        if (array_key_exists($key, $this->_changes)) {
             $oldVal = $this->_changes[$key];
         } else {
             $oldVal = null;
             $isEqual = null;
 
-            if(isset($this->_values[$key])) {
+            if (isset($this->_values[$key])) {
                 $oldVal = $this->_values[$key];
             }
 
-            if($oldVal instanceof IValueContainer) {
-                if($isEqual = $oldVal->eq($value)) {
+            if ($oldVal instanceof IValueContainer) {
+                if ($isEqual = $oldVal->eq($value)) {
                     return $this;
                 }
             }
 
 
-            if($isEqual === null && $fieldProcessor) {
-                if($isEqual = $fieldProcessor->compareValues($oldVal, $value)) {
+            if ($isEqual === null && $fieldProcessor) {
+                if ($isEqual = $fieldProcessor->compareValues($oldVal, $value)) {
                     return $this;
                 }
             }
 
-            if($isEqual === null && $oldVal === $value) {
+            if ($isEqual === null && $oldVal === $value) {
                 return $this;
             }
 
-            if($oldVal instanceof IValueContainer) {
+            if ($oldVal instanceof IValueContainer) {
                 $oldVal = $oldVal->duplicateForChangeList();
             }
 
             $this->_changes[$key] = $oldVal;
         }
 
-        if($this->_changes[$key] instanceof IValueContainer) {
+        if ($this->_changes[$key] instanceof IValueContainer) {
             $this->_changes[$key]->prepareToSetValue($this, $key);
             $this->_changes[$key]->setValue($value);
         } else {
@@ -961,35 +1014,37 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function offsetGet($key, $default=null) {
-        if($key == '@primary') {
+    public function offsetGet($key, $default=null)
+    {
+        if ($key == '@primary') {
             return $this->getPrimaryKeySet();
         } else {
             $first = substr($key, 0, 1);
 
-            if($first == '#') {
+            if ($first == '#') {
                 return $this->getRawId(substr($key, 1));
-            } else if($first == '!') {
+            } elseif ($first == '!') {
                 return $this->getOriginal(substr($key, 1));
-            } else if($first == '%') {
+            } elseif ($first == '%') {
                 return $this->getRaw(substr($key, 1));
             }
         }
 
         $output = null;
 
-        if(array_key_exists($key, $this->_changes)) {
+        if (array_key_exists($key, $this->_changes)) {
             $output = $this->_changes[$key];
-        } else if(array_key_exists($key, $this->_values)) {
+        } elseif (array_key_exists($key, $this->_values)) {
             $output = $this->_values[$key];
         }
 
         return $this->_prepareOutputValue($key, $output, $default);
     }
 
-    protected function _prepareOutputValue($key, $value, $default=null) {
-        if($value instanceof IValueContainer) {
-            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+    protected function _prepareOutputValue($key, $value, $default=null)
+    {
+        if ($value instanceof IValueContainer) {
+            if ($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
                 $value->prepareValue($this, $key);
             }
 
@@ -998,17 +1053,18 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
         $value = $this->_prepareValueForUser($key, $value);
 
-        if($value === null) {
+        if ($value === null) {
             $value = $default;
         }
 
         return $value;
     }
 
-    public function offsetExists($key) {
-        if(array_key_exists($key, $this->_changes) && $this->_changes[$key] !== null) {
-            if($this->_changes[$key] instanceof IValueContainer) {
-                if($this->_changes[$key] instanceof IPreparedValueContainer && !$this->_changes[$key]->isPrepared()) {
+    public function offsetExists($key)
+    {
+        if (array_key_exists($key, $this->_changes) && $this->_changes[$key] !== null) {
+            if ($this->_changes[$key] instanceof IValueContainer) {
+                if ($this->_changes[$key] instanceof IPreparedValueContainer && !$this->_changes[$key]->isPrepared()) {
                     $this->_changes[$key]->prepareValue($this, $key);
                 }
 
@@ -1018,9 +1074,9 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             }
         }
 
-        if(array_key_exists($key, $this->_values) && $this->_values[$key] !== null) {
-            if($this->_values[$key] instanceof IValueContainer) {
-                if($this->_values[$key] instanceof IPreparedValueContainer && !$this->_values[$key]->isPrepared()) {
+        if (array_key_exists($key, $this->_values) && $this->_values[$key] !== null) {
+            if ($this->_values[$key] instanceof IValueContainer) {
+                if ($this->_values[$key] instanceof IPreparedValueContainer && !$this->_values[$key]->isPrepared()) {
                     $this->_values[$key]->prepareValue($this, $key);
                 }
 
@@ -1033,12 +1089,13 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return false;
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         $output = null;
 
-        if(array_key_exists($key, $this->_changes)) {
+        if (array_key_exists($key, $this->_changes)) {
             $output = $this->_changes[$key];
-        } else if(array_key_exists($key, $this->_values)) {
+        } elseif (array_key_exists($key, $this->_values)) {
             $output = $this->_values[$key];
         }
 
@@ -1051,37 +1108,46 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
 
-    protected function _inflateValue($key, $value) {
+    protected function _inflateValue($key, $value)
+    {
         return $value;
     }
 
-    protected function _deflateValue($key, $value) {
+    protected function _deflateValue($key, $value)
+    {
         return $value;
     }
 
-    protected function _sanitizeValue($key, $value) {
+    protected function _sanitizeValue($key, $value)
+    {
         return $value;
     }
 
-    protected function _prepareValueForUser($key, $value) {
+    protected function _prepareValueForUser($key, $value)
+    {
         return $value;
     }
 
 
-    protected function onValueChange($key, $oldValue, $newValue) {}
-    protected function onValueRemove($key, $oldValue) {}
+    protected function onValueChange($key, $oldValue, $newValue)
+    {
+    }
+    protected function onValueRemove($key, $oldValue)
+    {
+    }
 
 
 
-// Mesh
-    public function getEntityLocator() {
-        if(!$this->_adapter instanceof mesh\entity\IParentEntity) {
+    // Mesh
+    public function getEntityLocator()
+    {
+        if (!$this->_adapter instanceof mesh\entity\IParentEntity) {
             throw new mesh\entity\EntityNotFoundException(
                 'Record adapter is not an entity handler'
             );
         }
 
-        if($this->_adapter instanceof mesh\entity\IActiveParentEntity) {
+        if ($this->_adapter instanceof mesh\entity\IActiveParentEntity) {
             return $this->_adapter->getSubEntityLocator($this);
         }
 
@@ -1095,24 +1161,25 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         $output = [];
 
-        foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
-            if($value instanceof IValueContainer) {
+        foreach (array_merge($this->_values, $this->_changes) as $key => $value) {
+            if ($value instanceof IValueContainer) {
                 $value = $value->getDumpValue();
             }
 
-            if(array_key_exists($key, $this->_changes)) {
-                if(!array_key_exists($key, $this->_values)) {
+            if (array_key_exists($key, $this->_changes)) {
+                if (!array_key_exists($key, $this->_values)) {
                     $key = '+ '.$key;
-                } else if($this->_changes[$key] === null) {
-                    if(isset($this->_values[$key])) {
+                } elseif ($this->_changes[$key] === null) {
+                    if (isset($this->_values[$key])) {
                         $value = $this->_values[$key];
                     }
 
-                    if($value !== null) {
+                    if ($value !== null) {
                         $key = '- '.$key;
                     }
                 } else {

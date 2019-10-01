@@ -8,18 +8,19 @@ namespace df\core\log\node;
 use df;
 use df\core;
 
-class Message implements core\log\IMessageNode {
-
+class Message implements core\log\IMessageNode
+{
     use core\debug\TLocationProvider;
 
     protected $_message;
     protected $_type;
 
-    public function __construct($message, $type=core\log\IMessageNode::INFO, $file=null, $line=null) {
+    public function __construct($message, $type=core\log\IMessageNode::INFO, $file=null, $line=null)
+    {
         $this->_message = $message;
 
-        if(is_string($type)) {
-            switch(strtolower($type)) {
+        if (is_string($type)) {
+            switch (strtolower($type)) {
                 case 'info':
                     $type = core\log\IMessageNode::INFO;
                     break;
@@ -36,22 +37,17 @@ class Message implements core\log\IMessageNode {
                     $type = core\log\IMessageNode::ERROR;
                     break;
 
-                case 'deprecated':
-                    $type = core\log\IMessageNode::DEPRECATED;
-                    break;
-
                 default:
                     $type = core\log\IMessageNode::INFO;
                     break;
             }
         }
 
-        switch($type) {
+        switch ($type) {
             case core\log\IMessageNode::INFO:
             case core\log\IMessageNode::TODO:
             case core\log\IMessageNode::WARNING:
             case core\log\IMessageNode::ERROR:
-            case core\log\IMessageNode::DEPRECATED:
                 break;
 
             default:
@@ -64,29 +60,33 @@ class Message implements core\log\IMessageNode {
         $this->_line = $line;
     }
 
-    public function getMessage(): ?string {
+    public function getMessage(): ?string
+    {
         return $this->_message;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->_type;
     }
 
-    public function getNodeTitle() {
-        switch($this->_type) {
+    public function getNodeTitle()
+    {
+        switch ($this->_type) {
             case core\log\IMessageNode::INFO: return 'Info';
             case core\log\IMessageNode::TODO: return 'Todo';
             case core\log\IMessageNode::WARNING: return 'Warning';
             case core\log\IMessageNode::ERROR: return 'Error';
-            case core\log\IMessageNode::DEPRECATED: return 'Deprecated';
         }
     }
 
-    public function isCritical() {
+    public function isCritical()
+    {
         return $this->_type === core\log\IMessageNode::ERROR;
     }
 
-    public function getNodeType(): string {
+    public function getNodeType(): string
+    {
         return lcfirst($this->getNodeTitle());
     }
 }

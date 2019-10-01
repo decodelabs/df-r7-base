@@ -9,15 +9,16 @@ use df;
 use df\core;
 use df\halo;
 
-class Unix extends Base {
-    
+class Unix extends Base
+{
     protected $_platformType = 'Unix';
 
 
-// Users
-    public function userIdToUserName($id) {
-        if(extension_loaded('posix')) {
-            if(!$output = posix_getpwuid($id)) {
+    // Users
+    public function userIdToUserName($id)
+    {
+        if (extension_loaded('posix')) {
+            if (!$output = posix_getpwuid($id)) {
                 throw new InvalidArgumentException(
                     $id.' is not a valid user id'
                 );
@@ -26,8 +27,8 @@ class Unix extends Base {
             return $output['name'];
         } else {
             exec('getent passwd '.escapeshellarg($id), $output);
-            
-            if(isset($output[0])) {
+
+            if (isset($output[0])) {
                 $parts = explode(':', $output[0]);
                 return array_shift($parts);
             } else {
@@ -38,9 +39,10 @@ class Unix extends Base {
         }
     }
 
-    public function userNameToUserId($name) {
-        if(extension_loaded('posix')) {
-            if(!$output = posix_getpwnam($name)) {
+    public function userNameToUserId($name)
+    {
+        if (extension_loaded('posix')) {
+            if (!$output = posix_getpwnam($name)) {
                 throw new InvalidArgumentException(
                     $name.' is not a valid user name'
                 );
@@ -48,13 +50,14 @@ class Unix extends Base {
 
             return $output['uid'];
         } else {
-            core\stub('no posix');
+            Glitch::incomplete('no posix');
         }
     }
 
-    public function groupIdToGroupName($id) {
-        if(extension_loaded('posix')) {
-            if(!$output = posix_getgrgid($id)) {
+    public function groupIdToGroupName($id)
+    {
+        if (extension_loaded('posix')) {
+            if (!$output = posix_getgrgid($id)) {
                 throw new InvalidArgumentException(
                     $id.' is not a valid group id'
                 );
@@ -63,8 +66,8 @@ class Unix extends Base {
             return $output['name'];
         } else {
             exec('getent group '.escapeshellarg($id), $output);
-            
-            if(isset($output[0])) {
+
+            if (isset($output[0])) {
                 $parts = explode(':', $output[0]);
                 return array_shift($parts);
             } else {
@@ -75,24 +78,26 @@ class Unix extends Base {
         }
     }
 
-    public function groupNameToGroupId($name) {
-        if(extension_loaded('posix')) {
-            if(!$output = posix_getgrnam($name)) {
+    public function groupNameToGroupId($name)
+    {
+        if (extension_loaded('posix')) {
+            if (!$output = posix_getgrnam($name)) {
                 throw new InvalidArgumentException(
                     $name.' is not a valid group name'
                 );
             }
             return $output['gid'];
         } else {
-            core\stub('no posix');
+            Glitch::incomplete('no posix');
         }
     }
 
-    public function which($binaryName) {
-        if($binaryName == 'php') {
+    public function which($binaryName)
+    {
+        if ($binaryName == 'php') {
             $output = dirname(PHP_BINARY).'/php';
 
-            if(false === strpos($output, '/Cellar/php')) {
+            if (false === strpos($output, '/Cellar/php')) {
                 return $output;
             }
         }
@@ -100,21 +105,21 @@ class Unix extends Base {
         $result = halo\process\Base::launch('which '.$binaryName)->getOutput();
         $result = trim($result);
 
-        if(empty($result)) {
+        if (empty($result)) {
             $result = halo\process\Base::launch('type '.$binaryName)->getOutput();
             $result = trim($result);
 
-            if(empty($result)) {
+            if (empty($result)) {
                 return $binaryName;
             }
 
-            if(!preg_match('/^[^ ]+ is (.*)$/', $result, $matches)) {
+            if (!preg_match('/^[^ ]+ is (.*)$/', $result, $matches)) {
                 return $binaryName;
             }
-            
+
             return $matches[1];
         }
-        
+
         return $result;
     }
 }

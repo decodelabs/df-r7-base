@@ -9,18 +9,20 @@ use df;
 use df\core;
 use df\halo;
 
-class Windows extends Base {
-    
-    public function launch() {
-        core\stub($this);
+class Windows extends Base
+{
+    public function launch()
+    {
+        Glitch::incomplete($this);
     }
 
-    public function launchBackground() {
-        core\stub($this);
+    public function launchBackground()
+    {
+        Glitch::incomplete($this);
     }
 
-    public function launchManaged() {
-        core\stub($this);
+    public function launchManaged()
+    {
+        Glitch::incomplete($this);
     }
-
 }

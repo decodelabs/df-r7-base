@@ -297,7 +297,7 @@ trait TAdapterBasedStorageUnit
         } elseif ($this->_adapter instanceof opal\query\IAdapter) {
             return $this->_adapter->getQuerySourceDisplayName();
         } else {
-            core\stub($this->_adapter);
+            Glitch::incomplete($this->_adapter);
         }
     }
 

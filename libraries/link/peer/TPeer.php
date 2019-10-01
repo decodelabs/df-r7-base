@@ -10,8 +10,8 @@ use df\core;
 use df\halo;
 use df\link;
 
-trait TPeer {
-
+trait TPeer
+{
     protected $_readChunkSize = 16384;
     protected $_writeChunkSize = 8192;
 
@@ -21,14 +21,16 @@ trait TPeer {
     protected $_maxWriteRetries = 10;
 
 
-// Protocol
-    public function getProtocolDisposition() {
+    // Protocol
+    public function getProtocolDisposition()
+    {
         return static::PROTOCOL_DISPOSITION;
     }
 
 
-// Registration
-    protected function _registerSession(ISession $session) {
+    // Registration
+    protected function _registerSession(ISession $session)
+    {
         $session->getSocket()->setSessionId(++$this->_sessionCount);
         $this->_sessions[$session->getId()] = $session;
         $this->_onSessionStart($session);
@@ -36,14 +38,16 @@ trait TPeer {
         return $session;
     }
 
-    protected function _unregisterSession(ISession $session) {
+    protected function _unregisterSession(ISession $session)
+    {
         return $this->_unregisterSessionBySocket($session->getSocket());
     }
 
-    protected function _unregisterSessionBySocket(link\socket\ISocket $socket) {
+    protected function _unregisterSessionBySocket(link\socket\ISocket $socket)
+    {
         $id = $socket->getId();
 
-        if(isset($this->_sessions[$id])) {
+        if (isset($this->_sessions[$id])) {
             $this->_onSessionEnd($this->_sessions[$id]);
         }
 
@@ -54,14 +58,15 @@ trait TPeer {
     }
 
 
-// Events
+    // Events
     protected $_reads = 0;
 
-    protected function _onSocketDataAvailable($socket, $binding, $session) {
+    protected function _onSocketDataAvailable($socket, $binding, $session)
+    {
         $result = null;
 
         // If in write / listen mode, peer is responding early, we don't need to write any more
-        if($session->getWriteState() == IIoState::WRITE_LISTEN) {
+        if ($session->getWriteState() == IIoState::WRITE_LISTEN) {
             $this->events->freezeSocketWrite($socket);
         }
 
@@ -73,39 +78,39 @@ trait TPeer {
 
         $chunk = $socket->readChunk($this->_readChunkSize);
 
-        if($chunk === false) {
+        if ($chunk === false) {
             $endRead = true;
         } else {
             $data = $chunk;
         }
 
-        if(strlen($data)) {
+        if (strlen($data)) {
             // Add data to session
             $session->readBuffer .= $data;
 
             // Allow implementation to do something with it
             $result = $this->_handleReadBuffer($session, $data);
-        } else if(!$socket->checkConnection()) {
+        } elseif (!$socket->checkConnection()) {
             $endRead = true;
         }
 
-        if($endRead) { // Peer has shutdown writing
+        if ($endRead) { // Peer has shutdown writing
             // Remove binding
             $binding->destroy();
             $this->_onPeerShutdownWriting($session);
 
-            if(!$this->events->countSocketBindings($socket)) {
+            if (!$this->events->countSocketBindings($socket)) {
                 $this->_unregisterSession($session);
                 return;
             }
 
-            if(!$result) {
+            if (!$result) {
                 $result = IIoState::WRITE;
             }
         }
 
 
-        switch($result) {
+        switch ($result) {
             case IIoState::END:
                 // Implementation has finished, end session
                 $session->readBuffer = false;
@@ -115,7 +120,7 @@ trait TPeer {
             case IIoState::OPEN_WRITE:
             case IIoState::WRITE:
 
-                if($result == IIoState::OPEN_WRITE) {
+                if ($result == IIoState::OPEN_WRITE) {
                     // Freeze reading, go to write mode
                     $binding->freeze();
                 } else {
@@ -128,7 +133,7 @@ trait TPeer {
 
                 try {
                     $this->events->unfreezeSocketWrite($socket);
-                } catch(halo\event\BindException $e) {
+                } catch (halo\event\BindException $e) {
                     $this->_unregisterSessionBySocket($socket);
                 }
 
@@ -144,9 +149,10 @@ trait TPeer {
         return;
     }
 
-    protected function _onSocketConnectionWaiting($socket, $binding, $session) {
-        if(!strlen($session->writeBuffer)) { // There's nothing to write
-            switch($state = $session->getWriteState()) {
+    protected function _onSocketConnectionWaiting($socket, $binding, $session)
+    {
+        if (!strlen($session->writeBuffer)) { // There's nothing to write
+            switch ($state = $session->getWriteState()) {
                 case IIoState::END:
                     // Session has ended
                     $this->_unregisterSessionBySocket($socket);
@@ -155,7 +161,7 @@ trait TPeer {
                 case IIoState::OPEN_READ:
                 case IIoState::READ:
 
-                    if($state == IIoState::OPEN_READ) {
+                    if ($state == IIoState::OPEN_READ) {
                         // Freeze writing, go to read mode
                         $binding->freeze();
                     } else {
@@ -166,7 +172,7 @@ trait TPeer {
 
                     try {
                         $this->events->unfreezeSocketRead($socket);
-                    } catch(halo\event\BindException $e) {
+                    } catch (halo\event\BindException $e) {
                         $this->_unregisterSessionBySocket($socket);
                     }
 
@@ -179,10 +185,10 @@ trait TPeer {
                     // Allow implementation to write to the buffer
                     $session->setWriteState($newState = $this->_handleWriteBuffer($session));
 
-                    if($state === IIoState::WRITE_LISTEN || $newState === IIoState::WRITE_LISTEN) {
+                    if ($state === IIoState::WRITE_LISTEN || $newState === IIoState::WRITE_LISTEN) {
                         try {
                             $this->events->unfreezeSocketRead($socket);
-                        } catch(halo\event\BindException $e) {
+                        } catch (halo\event\BindException $e) {
                             $this->_unregisterSessionBySocket($socket);
                         }
                     }
@@ -197,16 +203,15 @@ trait TPeer {
         // Write to socket
         $result = $socket->writeChunk($data);
 
-        if($result) {
+        if ($result) {
             // Remove chunk from buffer
             $session->writeBuffer = substr($session->writeBuffer, $result);
             $session->writeRetries = 0;
         } else {
             usleep(500000);
             $session->writeRetries++;
-            //core\debug()->warning('Retrying write: '.strlen($data));
 
-            if($session->writeRetries >= $this->_maxWriteRetries) {
+            if ($session->writeRetries >= $this->_maxWriteRetries) {
                 // Peer has stopped reading
                 $session->writeRetries = 0;
                 $binding->destroy();
@@ -214,7 +219,7 @@ trait TPeer {
 
                 try {
                     $this->events->unfreezeSocketRead($socket);
-                } catch(halo\event\BindException $e) {
+                } catch (halo\event\BindException $e) {
                     $this->_unregisterSessionBySocket($socket);
                 }
 
@@ -223,14 +228,24 @@ trait TPeer {
         }
     }
 
-// Event stubs
-    protected function _onSessionStart(ISession $session) {}
-    protected function _onSessionEnd(ISession $session) {}
+    // Event stubs
+    protected function _onSessionStart(ISession $session)
+    {
+    }
+    protected function _onSessionEnd(ISession $session)
+    {
+    }
 
-    protected function _handleReadBuffer(ISession $session, $data) {}
-    protected function _handleWriteBuffer(ISession $session) {}
+    protected function _handleReadBuffer(ISession $session, $data)
+    {
+    }
+    protected function _handleWriteBuffer(ISession $session)
+    {
+    }
 
-    protected function _onPeerShutdownWriting(ISession $session) {}
+    protected function _onPeerShutdownWriting(ISession $session)
+    {
+    }
 }
 
 
@@ -238,18 +253,19 @@ trait TPeer {
 
 
 // CLIENT
-trait TPeer_Client {
-
+trait TPeer_Client
+{
     use TPeer;
 
-    public function run() {
-        if($this->isRunning()) {
+    public function run()
+    {
+        if ($this->isRunning()) {
             return $this;
         }
 
         $this->_createInitialSessions();
 
-        if(empty($this->_sessions)) {
+        if (empty($this->_sessions)) {
             throw new RuntimeException(
                 'No client sessions have been opened'
             );
@@ -257,7 +273,7 @@ trait TPeer_Client {
 
         $this->getEventDispatcher();
 
-        foreach($this->_sessions as $session) {
+        foreach ($this->_sessions as $session) {
             $this->_dispatchSession($session);
         }
 
@@ -266,11 +282,12 @@ trait TPeer_Client {
 
     abstract protected function _createInitialSessions();
 
-    protected function _dispatchSession(ISession $session) {
+    protected function _dispatchSession(ISession $session)
+    {
         $socket = $session->getSocket();
         $socket->connect();
 
-        switch($this->getProtocolDisposition()) {
+        switch ($this->getProtocolDisposition()) {
             case IClient::PEER_FIRST:
                 $this->events
                     ->bindSocketRead(
@@ -308,19 +325,19 @@ trait TPeer_Client {
                 break;
 
             case IClient::PEER_STREAM:
-                core\stub('Unable to handle peer streams');
+                Glitch::incomplete('Unable to handle peer streams');
                 break;
 
             case IClient::CLIENT_STREAM:
-                core\stub('Unable to handle client streams');
+                Glitch::incomplete('Unable to handle client streams');
                 break;
 
             case IClient::DUPLEX_STREAM:
-                core\stub('Unable to handle duplex streams');
+                Glitch::incomplete('Unable to handle duplex streams');
                 break;
 
             default:
-                core\stub('Unknown protocol disposition');
+                Glitch::incomplete('Unknown protocol disposition');
         }
     }
 }
@@ -331,17 +348,19 @@ trait TPeer_Client {
 
 
 // SERVER
-trait TPeer_Server {
-
+trait TPeer_Server
+{
     use TPeer;
 
     protected $_masterSockets = [];
 
-    protected function _setup() {
+    protected function _setup()
+    {
         $this->_setupPeerServer();
     }
 
-    protected function _setupPeerServer() {
+    protected function _setupPeerServer()
+    {
         $this->getEventDispatcher();
 
         // Heartbeat
@@ -354,7 +373,7 @@ trait TPeer_Server {
         $this->_createMasterSockets();
 
         // Accept
-        foreach($this->_masterSockets as $socket) {
+        foreach ($this->_masterSockets as $socket) {
             $socket->listen();
 
             $this->events->bindSocketRead(
@@ -364,16 +383,18 @@ trait TPeer_Server {
         }
     }
 
-    protected function _teardown() {
+    protected function _teardown()
+    {
         $this->_teardownPeerServer();
     }
 
-    protected function _teardownPeerServer() {
-        foreach($this->_sessions as $session) {
+    protected function _teardownPeerServer()
+    {
+        foreach ($this->_sessions as $session) {
             $this->_unregisterSession($session);
         }
 
-        foreach($this->_masterSockets as $id => $socket) {
+        foreach ($this->_masterSockets as $id => $socket) {
             $this->events->removeSocket($socket);
             $socket->close();
             unset($this->_masterSockets[$id]);
@@ -385,18 +406,20 @@ trait TPeer_Server {
     abstract protected function _createMasterSockets();
     abstract protected function _createSessionFromSocket(link\socket\IServerPeerSocket $socket);
 
-    protected function _registerMasterSocket(link\socket\IServerSocket $socket) {
+    protected function _registerMasterSocket(link\socket\IServerSocket $socket)
+    {
         $this->_masterSockets[$socket->getId()] = $socket;
         return $this;
     }
 
 
 
-// Events
-    protected function _onSocketAcceptRequest($handler, $binding) {
+    // Events
+    protected function _onSocketAcceptRequest($handler, $binding)
+    {
         $masterSocket = $handler->getSocket();
 
-        if(!$this->_canAccept($masterSocket)) {
+        if (!$this->_canAccept($masterSocket)) {
             // TODO: Freeze event binding and reinstate on a timeout
             return;
         }
@@ -405,7 +428,7 @@ trait TPeer_Server {
         $session = $this->_createSessionFromSocket($peerSocket);
         $this->_registerSession($session);
 
-        switch($this->getProtocolDisposition()) {
+        switch ($this->getProtocolDisposition()) {
             case IServer::SERVER_FIRST:
                 $this->events
                     ->bindSocketWrite(
@@ -443,7 +466,7 @@ trait TPeer_Server {
                 break;
 
             case IServer::SERVER_STREAM:
-                core\stub('Unable to handle server streams');
+                Glitch::incomplete('Unable to handle server streams');
 
                 $this->events
                     ->bindSocketWrite(
@@ -455,7 +478,7 @@ trait TPeer_Server {
                 break;
 
             case IServer::PEER_STREAM:
-                core\stub('Unable to handle peer streams');
+                Glitch::incomplete('Unable to handle peer streams');
 
                 $this->events
                     ->bindSocketRead(
@@ -468,11 +491,11 @@ trait TPeer_Server {
                 break;
 
             case IServer::DUPLEX_STREAM:
-                core\stub('Unable to handle duplex streams');
+                Glitch::incomplete('Unable to handle duplex streams');
                 break;
 
             default:
-                core\stub('Unknown protocol disposition');
+                Glitch::incomplete('Unknown protocol disposition');
         }
 
         //echo 'Accept complete - '.$peerSocket->getSessionId()."\n";
@@ -480,16 +503,19 @@ trait TPeer_Server {
 
 
 
-// Event stubs
-    protected function _canAccept(link\socket\IServerSocket $socket) { return true; }
+    // Event stubs
+    protected function _canAccept(link\socket\IServerSocket $socket)
+    {
+        return true;
+    }
 }
 
 
 
 
 // SESSION
-trait TPeer_Session {
-
+trait TPeer_Session
+{
     public $readBuffer = '';
     public $writeBuffer = '';
     public $writeRetries = 0;
@@ -498,36 +524,43 @@ trait TPeer_Session {
     protected $_socket;
     protected $_store = [];
 
-    public function __construct(link\socket\ISocket $socket) {
+    public function __construct(link\socket\ISocket $socket)
+    {
         $this->_socket = $socket;
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->_socket->getId();
     }
 
-    public function getSocket() {
+    public function getSocket()
+    {
         return $this->_socket;
     }
 
-    public function setWriteState($state) {
+    public function setWriteState($state)
+    {
         $this->_writeState = $state;
         return $this;
     }
 
-    public function getWriteState() {
+    public function getWriteState()
+    {
         return $this->_writeState;
     }
 
-// Store
-    public function setStore($key, $value) {
+    // Store
+    public function setStore($key, $value)
+    {
         $this->_store[$key] = $value;
         return $this;
     }
 
-    public function hasStore(...$keys): bool {
-        foreach($keys as $key) {
-            if(isset($this->_store[$key])) {
+    public function hasStore(...$keys): bool
+    {
+        foreach ($keys as $key) {
+            if (isset($this->_store[$key])) {
                 return true;
             }
         }
@@ -535,117 +568,134 @@ trait TPeer_Session {
         return false;
     }
 
-    public function getStore($key, $default=null) {
-        if(isset($this->_store[$key])) {
+    public function getStore($key, $default=null)
+    {
+        if (isset($this->_store[$key])) {
             return $this->_store[$key];
         }
 
         return $default;
     }
 
-    public function removeStore(...$keys) {
-        foreach($keys as $key) {
+    public function removeStore(...$keys)
+    {
+        foreach ($keys as $key) {
             unset($this->_store[$key]);
         }
 
         return $this;
     }
 
-    public function clearStore() {
+    public function clearStore()
+    {
         $this->_store = [];
         return $this;
     }
 }
 
 
-trait TPeer_RequestResponseSession {
-
+trait TPeer_RequestResponseSession
+{
     protected $_request;
     protected $_response;
 
-    public function setRequest($request) {
+    public function setRequest($request)
+    {
         $this->_request = $request;
         return $this;
     }
 
-    public function getRequest() {
+    public function getRequest()
+    {
         return $this->_request;
     }
 
-    public function setResponse($response) {
+    public function setResponse($response)
+    {
         $this->_response = $response;
         return $this;
     }
 
-    public function getResponse() {
+    public function getResponse()
+    {
         return $this->_response;
     }
-
 }
 
 
-trait TPeer_FileStreamSession {
-
+trait TPeer_FileStreamSession
+{
     protected $_readFileStream;
     protected $_writeFileStream;
 
-    public function setReadFileStream(core\fs\IFile $file) {
+    public function setReadFileStream(core\fs\IFile $file)
+    {
         $this->_readFileStream = $file;
         return $this;
     }
 
-    public function getReadFileStream() {
+    public function getReadFileStream()
+    {
         return $this->_readFileStream;
     }
 
-    public function hasReadFileStream() {
+    public function hasReadFileStream()
+    {
         return $this->_readFileStream !== null;
     }
 
-    public function setWriteFileStream(core\fs\IFile $file) {
+    public function setWriteFileStream(core\fs\IFile $file)
+    {
         $this->_writeFileStream = $file;
         return $this;
     }
 
-    public function getWriteFileStream() {
+    public function getWriteFileStream()
+    {
         return $this->_writeFileStream;
     }
 
-    public function hasWriteFileStream() {
+    public function hasWriteFileStream()
+    {
         return $this->_writeFileStream !== null;
     }
 }
 
 
-trait TPeer_ErrorCodeSession {
-
+trait TPeer_ErrorCodeSession
+{
     protected $_errorCode;
 
-    public function setErrorCode($code) {
+    public function setErrorCode($code)
+    {
         $this->_errorCode = $code;
         return $this;
     }
 
-    public function getErrorCode() {
+    public function getErrorCode()
+    {
         return $this->_errorCode;
     }
 
-    public function hasErrorCode() {
+    public function hasErrorCode()
+    {
         return $this->_errorCode !== null;
     }
 }
 
 
-trait TPeer_CallbackSession {
-
+trait TPeer_CallbackSession
+{
     protected $_callback;
 
-    public function setCallback($callback) {
+    public function setCallback($callback)
+    {
         $this->_callback = core\lang\Callback::factory($callback);
         return $this;
     }
 
-    public function getCallback() {
+    public function getCallback()
+    {
         return $this->_callback;
     }
 }

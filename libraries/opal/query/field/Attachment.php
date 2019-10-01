@@ -9,72 +9,86 @@ use df;
 use df\core;
 use df\opal;
 
-class Attachment implements opal\query\IAttachmentField, core\IDumpable {
-
+class Attachment implements opal\query\IAttachmentField, core\IDumpable
+{
     use opal\query\TField;
 
     protected $_name;
     protected $_attachment;
 
-    public function __construct(string $name, opal\query\IAttachQuery $attachment) {
+    public function __construct(string $name, opal\query\IAttachQuery $attachment)
+    {
         $this->_name = $name;
         $this->_attachment = $attachment;
     }
 
-    public function getSource() {
+    public function getSource()
+    {
         return $this->_attachment->getSource();
     }
 
-    public function getSourceAlias() {
+    public function getSourceAlias()
+    {
         return $this->_attachment->getSourceAlias();
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function getQualifiedName() {
+    public function getQualifiedName()
+    {
         return $this->_attachment->getParentQuery()->getSourceAlias().'.'.$this->_name;
     }
 
-    public function setAlias($alias) {
+    public function setAlias($alias)
+    {
         $this->_name = $alias;
         return $this;
     }
 
-    public function getAlias() {
+    public function getAlias()
+    {
         return $this->_name;
     }
 
-    public function hasDiscreetAlias() {
+    public function hasDiscreetAlias()
+    {
         return false;
     }
 
-    public function dereference() {
+    public function dereference()
+    {
         return [$this];
     }
 
-    public function isOutputField() {
+    public function isOutputField()
+    {
         return true;
     }
 
-    public function getAttachment() {
+    public function getAttachment()
+    {
         return $this->_attachment;
     }
 
-    public function shouldBeProcessed() {
-        if($this->_attachment instanceof opal\query\ISelectQuery && !$this->_attachment->isPopulate()) {
+    public function shouldBeProcessed()
+    {
+        if ($this->_attachment instanceof opal\query\ISelectQuery && !$this->_attachment->isPopulate()) {
             return false;
         }
 
         return true;
     }
 
-    public function rewriteAsDerived(opal\query\ISource $source) {
-        core\stub($source);
+    public function rewriteAsDerived(opal\query\ISource $source)
+    {
+        Glitch::incomplete($source);
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return 'attach('.$this->getQualifiedName().')';
     }
 }

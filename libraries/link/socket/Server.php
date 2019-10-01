@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\link;
 
-abstract class Server extends Base implements IServerSocket {
-
+abstract class Server extends Base implements IServerSocket
+{
     const DEFAULT_OPTIONS = [
         'connectionQueueSize' => 128,
         'reuseAddress' => true
@@ -18,14 +18,15 @@ abstract class Server extends Base implements IServerSocket {
 
     protected $_isListening = false;
 
-    public static function factory($address, $useStreams=false) {
+    public static function factory($address, $useStreams=false)
+    {
         $address = link\socket\address\Base::factory($address);
 
-        if($address instanceof IServerSocket) {
+        if ($address instanceof IServerSocket) {
             return $address;
         }
 
-        if(!$useStreams
+        if (!$useStreams
         && (!extension_loaded('sockets') || $address->getSecureTransport())) {
             $useStreams = true;
         }
@@ -37,21 +38,21 @@ abstract class Server extends Base implements IServerSocket {
         $nativeClass = 'df\\link\\socket\\native\\'.$protocol.'_Server';
         $streamsClass = 'df\\link\\socket\\streams\\'.$protocol.'_Server';
 
-        if(!$useStreams) {
-            if(class_exists($nativeClass)) {
+        if (!$useStreams) {
+            if (class_exists($nativeClass)) {
                 $class = $nativeClass;
-            } else if(class_exists($streamsClass)) {
+            } elseif (class_exists($streamsClass)) {
                 $class = $streamsClass;
             }
         } else {
-            if(class_exists($streamsClass)) {
+            if (class_exists($streamsClass)) {
                 $class = $streamsClass;
-            } else if($protocol != 'Tcp' && class_exists($nativeClass)) {
+            } elseif ($protocol != 'Tcp' && class_exists($nativeClass)) {
                 $class = $nativeClass;
             }
         }
 
-        if(!$class) {
+        if (!$class) {
             throw new RuntimeException(
                 'Protocol '.$address->getScheme().', whilst valid, does not yet have a server handler class'
             );
@@ -60,26 +61,29 @@ abstract class Server extends Base implements IServerSocket {
         return new $class($address);
     }
 
-    protected static function _populateOptions() {
+    protected static function _populateOptions()
+    {
         return array_merge(parent::_populateOptions(), self::DEFAULT_OPTIONS);
     }
 
-    public function __construct($address) {
+    public function __construct($address)
+    {
         parent::__construct($address);
 
-        if(defined('SOMAXCONN')) {
+        if (defined('SOMAXCONN')) {
             $this->_options['connectionQueueSize'] = SOMAXCONN;
         }
     }
 
 
-// Options
-    public function shouldReuseAddress(bool $flag=null) {
-        if($flag === null) {
+    // Options
+    public function shouldReuseAddress(bool $flag=null)
+    {
+        if ($flag === null) {
             return $this->_getOption('reuseAddress', $flag);
         }
 
-        if($this->_isBound) {
+        if ($this->_isBound) {
             throw new RuntimeException(
                 'Can\'t set reuse address option once a server has been bound'
             );
@@ -89,13 +93,14 @@ abstract class Server extends Base implements IServerSocket {
     }
 
 
-// Operation
-    public function listen() {
-        if($this->_isListening) {
+    // Operation
+    public function listen()
+    {
+        if ($this->_isListening) {
             return $this;
         }
 
-        if($this->_socket === false) {
+        if ($this->_socket === false) {
             throw new RuntimeException(
                 'This socket has already been closed'
             );
@@ -104,7 +109,7 @@ abstract class Server extends Base implements IServerSocket {
         $this->_startListening();
         $this->_isListening = true;
 
-        if(!$this instanceof IConnectionOrientedSocket) {
+        if (!$this instanceof IConnectionOrientedSocket) {
             $this->_readingEnabled = true;
             $this->_writingEnabled = true;
         }
@@ -114,16 +119,19 @@ abstract class Server extends Base implements IServerSocket {
 
     abstract protected function _startListening();
 
-    public function isConnected() {
+    public function isConnected()
+    {
         return $this->_isListening;
     }
 
-    public function isListening() {
+    public function isListening()
+    {
         return $this->_isListening;
     }
 
-    public function shouldBlock(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldBlock(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_shouldBlock = $flag;
             return $this;
         }
@@ -131,15 +139,16 @@ abstract class Server extends Base implements IServerSocket {
         return $this->_shouldBlock;
     }
 
-    public function accept() {
-        if(!$this->_isListening) {
+    public function accept()
+    {
+        if (!$this->_isListening) {
             $this->listen();
         }
 
-        if($this instanceof ISequenceServerSocket) {
+        if ($this instanceof ISequenceServerSocket) {
             $socket = $this->_acceptSequencePeer();
 
-            if($socket === false) {
+            if ($socket === false) {
                 throw new ConnectionException(
                     'Could not accept connection on '.$this->_address.' - '.$this->_getLastErrorMessage()
                 );
@@ -148,7 +157,7 @@ abstract class Server extends Base implements IServerSocket {
             return ServerPeer::factory($this, $socket, $this->_getPeerAddress($socket))
                 ->shouldBlock($this->_shouldBlock);
         } else {
-            core\stub('datagram / raw server accept');
+            Glitch::incomplete('datagram / raw server accept');
         }
     }
 

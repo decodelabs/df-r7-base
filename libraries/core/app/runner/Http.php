@@ -74,6 +74,8 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         $this->_httpRequest = new link\http\request\Base(null, true);
         $this->_router = namespace\http\Router::getInstance();
+
+        Glitch::setHeaderBufferSender([$this, 'sendGlitchDebugHeaders']);
     }
 
 
@@ -150,10 +152,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $response = $this->_dispatchRequest($request);
         } catch (arch\IForcedResponse $e) {
             $response = $this->_normalizeResponse($e->getResponse());
-        }
-
-        if (df\Launchpad::$debug) {
-            df\Launchpad::$debug->execute();
         }
 
         $this->_sendResponse($response);
@@ -741,5 +739,23 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         echo $renderer->render();
+    }
+
+    public function sendGlitchDebugHeaders()
+    {
+        try {
+            if ($this->_responseAugmentor) {
+                $cookies = $this->_responseAugmentor->getCookieCollectionForCurrentRequest();
+
+                foreach ($cookies->toArray() as $cookie) {
+                    header('Set-Cookie: '.$cookie->toString());
+                }
+
+                foreach ($cookies->getRemoved() as $cookie) {
+                    header('Set-Cookie: '.$cookie->toInvalidateString());
+                }
+            }
+        } catch (\Throwable $e) {
+        }
     }
 }

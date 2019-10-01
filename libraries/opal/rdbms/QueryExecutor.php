@@ -908,7 +908,7 @@ abstract class QueryExecutor implements IQueryExecutor
             $expression = $field->getExpression();
 
             if ($expression) {
-                core\stub($expression);
+                Glitch::incomplete($expression);
             } else {
                 $output = 'NULL';
             }
@@ -1164,7 +1164,7 @@ abstract class QueryExecutor implements IQueryExecutor
                     $field = $correlationClause->getField();
 
                     if ($field->getSourceAlias() == $correlationSourceAlias) {
-                        core\stub($field, 'What exactly are we supposed to do with left hand side clause correlations???!?!?!?!?');
+                        Glitch::incomplete([$field, 'What exactly are we supposed to do with left hand side clause correlations???!?!?!?!?']);
                     }
 
                     $correlationValue = $correlationClause->getValue();
@@ -1667,7 +1667,7 @@ abstract class QueryExecutor implements IQueryExecutor
             } elseif ($element instanceof opal\query\IExpressionOperator) {
                 $output[] = $element->getOperator();
             } elseif ($element instanceof opal\query\ICorrelationQuery) {
-                core\stub($element);
+                Glitch::incomplete($element);
             } elseif ($element instanceof opal\query\IExpression) {
                 $output[] = '('.$this->defineExpression($element).')';
             }

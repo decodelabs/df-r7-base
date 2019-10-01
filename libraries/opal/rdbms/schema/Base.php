@@ -86,7 +86,7 @@ abstract class Base implements ISchema, core\IDumpable
 
     public function markAsChanged()
     {
-        core\stub();
+        Glitch::incomplete();
     }
 
     public function acceptChanges()
@@ -112,7 +112,7 @@ abstract class Base implements ISchema, core\IDumpable
 
     public function _createFieldFromStorageArray(array $data)
     {
-        core\stub($data);
+        Glitch::incomplete($data);
     }
 
     public function _createIndex($name, $fields=null)
@@ -122,7 +122,7 @@ abstract class Base implements ISchema, core\IDumpable
 
     public function _createIndexFromStorageArray(array $data)
     {
-        core\stub($data);
+        Glitch::incomplete($data);
     }
 
     public function _createForeignKey($name, $targetSchema)
@@ -132,7 +132,7 @@ abstract class Base implements ISchema, core\IDumpable
 
     public function _createForeignKeyFromStorageArray(array $data)
     {
-        core\stub($data);
+        Glitch::incomplete($data);
     }
 
     public function _createTrigger($name, $event, $timing, $statement)
@@ -142,7 +142,7 @@ abstract class Base implements ISchema, core\IDumpable
 
     public function _createTriggerFromStorageArray(array $data)
     {
-        core\stub($data);
+        Glitch::incomplete($data);
     }
 
 

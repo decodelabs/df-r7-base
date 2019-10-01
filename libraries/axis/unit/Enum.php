@@ -210,22 +210,22 @@ class Enum_Inst implements core\lang\IInstanceEnum
 
     public function getLt($option): array
     {
-        core\stub();
+        Glitch::incomplete();
     }
 
     public function getLte($option): array
     {
-        core\stub();
+        Glitch::incomplete();
     }
 
     public function getGt($option): array
     {
-        core\stub();
+        Glitch::incomplete();
     }
 
     public function getGte($option): array
     {
-        core\stub();
+        Glitch::incomplete();
     }
 
     public function getIndex()

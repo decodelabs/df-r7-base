@@ -10,22 +10,24 @@ use df\core;
 use df\arch;
 use df\halo;
 
-class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunner {
-
+class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunner
+{
     protected $_context;
     protected $_dispatchRequest;
     protected $_command;
     protected $_multiplexer;
 
-// Request
-    public function getDispatchRequest(): ?arch\IRequest {
+    // Request
+    public function getDispatchRequest(): ?arch\IRequest
+    {
         return $this->_dispatchRequest;
     }
 
 
-// Command
-    public function getCommand() {
-        if(!$this->_command) {
+    // Command
+    public function getCommand()
+    {
+        if (!$this->_command) {
             throw core\Error::ELogic(
                 'The task command is not available until the application has been dispatched'
             );
@@ -35,14 +37,16 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     }
 
 
-// Response
-    public function setMultiplexer(core\io\Multiplexer $multiplexer) {
+    // Response
+    public function setMultiplexer(core\io\Multiplexer $multiplexer)
+    {
         $this->_multiplexer = $multiplexer;
         return $this;
     }
 
-    public function getMultiplexer() {
-        if(!$this->_multiplexer) {
+    public function getMultiplexer()
+    {
+        if (!$this->_multiplexer) {
             $this->_multiplexer = core\io\Multiplexer::defaultFactory('task');
         }
 
@@ -50,9 +54,10 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     }
 
 
-// Context
-    public function getContext() {
-        if(!$this->_context) {
+    // Context
+    public function getContext()
+    {
+        if (!$this->_context) {
             throw core\Error::ELogic(
                 'A context is not available until the application has been dispatched'
             );
@@ -61,14 +66,16 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
         return $this->_context;
     }
 
-    public function hasContext() {
+    public function hasContext()
+    {
         return $this->_context !== null;
     }
 
 
 
-// Execute
-    public function dispatch(): void {
+    // Execute
+    public function dispatch(): void
+    {
         arch\DirectoryAccessController::$defaultAccess = arch\IAccess::ALL;
 
         $request = $this->_prepareRequest();
@@ -77,19 +84,20 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     }
 
 
-// Prepare command
-    protected function _prepareRequest() {
+    // Prepare command
+    protected function _prepareRequest()
+    {
         $args = null;
 
         $command = core\cli\Command::fromArgv();
         $args = array_slice($command->getArguments(), 1);
         $request = array_shift($args);
 
-        if(strtolower($request) == 'task') {
+        if (strtolower($request) == 'task') {
             $request = array_shift($args);
         }
 
-        if(!$request) {
+        if (!$request) {
             throw core\Error::EArgument(
                 'No task path has been specified'
             );
@@ -98,8 +106,8 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
         $request = arch\Request::factory($request);
         $this->_command = new core\cli\Command(df\Launchpad::$app->envId.'.php');
 
-        if($args) {
-            foreach($args as $arg) {
+        if ($args) {
+            foreach ($args as $arg) {
                 $this->_command->addArgument($arg);
             }
         }
@@ -108,15 +116,16 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     }
 
 
-// Dispatch request
-    protected function _dispatchRequest(arch\IRequest $request, core\cli\ICommand $command=null) {
+    // Dispatch request
+    protected function _dispatchRequest(arch\IRequest $request, core\cli\ICommand $command=null)
+    {
         set_time_limit(0);
         $this->_dispatchRequest = clone $request;
 
         try {
             $response = $this->_dispatchNode($request, $command);
-        } catch(\Throwable $e) {
-            while(ob_get_level()) {
+        } catch (\Throwable $e) {
+            while (ob_get_level()) {
                 ob_end_clean();
             }
 
@@ -124,7 +133,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
 
             try {
                 $response = $this->_dispatchNode(new arch\Request('error/'));
-            } catch(\Throwable $f) {
+            } catch (\Throwable $f) {
                 throw $e;
             }
         }
@@ -133,20 +142,21 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     }
 
 
-// Dispatch node
-    protected function _dispatchNode(arch\IRequest $request, core\cli\ICommand $command=null) {
+    // Dispatch node
+    protected function _dispatchNode(arch\IRequest $request, core\cli\ICommand $command=null)
+    {
         $this->_context = arch\Context::factory(clone $request);
         $this->_context->request = $request;
 
         $node = arch\node\Base::factory($this->_context);
 
-        if($command && ($node instanceof arch\node\ITaskNode)) {
+        if ($command && ($node instanceof arch\node\ITaskNode)) {
             $node->extractCliArguments($command);
         }
 
 
-        foreach(df\Launchpad::$app->getRegistryObjects() as $object) {
-            if($object instanceof core\IDispatchAware) {
+        foreach (df\Launchpad::$app->getRegistryObjects() as $object) {
+            if ($object instanceof core\IDispatchAware) {
                 $object->onAppDispatch($node);
             }
         }
@@ -155,41 +165,39 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     }
 
 
-// Handle response
-    protected function _handleResponse($response) {
+    // Handle response
+    protected function _handleResponse($response)
+    {
         // Callback
-        if($response instanceof \Closure
+        if ($response instanceof \Closure
         || $response instanceof core\lang\ICallback) {
             $response = $response();
         }
 
         // Forwarding
-        if($response instanceof arch\IRequest) {
+        if ($response instanceof arch\IRequest) {
             throw core\Error::EImplementation(
                 'Request forwarding is no longer supported'
             );
         }
 
-        if($response === null) {
+        if ($response === null) {
             $response = $this->_multiplexer;
         }
 
-        if(df\Launchpad::$debug) {
-            df\Launchpad::$debug->execute();
-        }
-
-        if(is_string($response)) {
+        if (is_string($response)) {
             echo $response."\r\n";
-        } else if($response instanceof core\io\IFlushable) {
+        } elseif ($response instanceof core\io\IFlushable) {
             $response->flush();
-        } else if(!empty($response)) {
-            core\stub($response);
+        } elseif (!empty($response)) {
+            Glitch::incomplete($response);
         }
     }
 
 
-// Debug
-    public function renderDebugContext(core\debug\IContext $context): void {
+    // Debug
+    public function renderDebugContext(core\debug\IContext $context): void
+    {
         df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
         $output = (new core\debug\renderer\PlainText($context))->render();
 

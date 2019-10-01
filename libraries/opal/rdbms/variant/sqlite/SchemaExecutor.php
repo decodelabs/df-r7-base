@@ -10,21 +10,24 @@ use df\core;
 use df\opal;
 use df\flex;
 
-class SchemaExecutor extends opal\rdbms\SchemaExecutor {
+class SchemaExecutor extends opal\rdbms\SchemaExecutor
+{
 
 ## Stats ##
-    public function getTableStats($name) {
-        core\stub($name);
+    public function getTableStats($name)
+    {
+        Glitch::incomplete($name);
     }
 
-## Introspect ##
-    public function introspect($tableName) {
+    ## Introspect ##
+    public function introspect($tableName)
+    {
         $stmt = $this->_adapter->prepare('SELECT * FROM sqlite_master WHERE tbl_name = :a');
         $stmt->bind('a', $tableName);
 
         $res = $stmt->executeRead();
 
-        if($res->isEmpty()) {
+        if ($res->isEmpty()) {
             throw new opal\rdbms\TableNotFoundException(
                 'Table '.$tableName.' could not be found', 1, $stmt->getSql()
             );
@@ -34,16 +37,16 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         $indexes = [];
         $tableData = null;
 
-        while(!$res->isEmpty()) {
+        while (!$res->isEmpty()) {
             $row = $res->extract();
 
-            switch($row['type']) {
+            switch ($row['type']) {
                 case 'table':
                     $tableData = $row;
                     break;
 
                 case 'index':
-                    if(!empty($row['sql'])) {
+                    if (!empty($row['sql'])) {
                         $indexes[$row['name']] = $row;
                     }
 
@@ -56,7 +59,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         }
 
 
-        if(empty($tableData) || empty($tableData['sql'])) {
+        if (empty($tableData) || empty($tableData['sql'])) {
             throw new opal\rdbms\TableNotFoundException(
                 'Table '.$tableName.' could not be found', 1, $sql
             );
@@ -69,14 +72,14 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         $createSql = trim(array_shift($parts));
         $defSql = trim(preg_replace("/\s+/", ' ', array_shift($parts)));
 
-        if(preg_match('/TEMPORARY/i', $createSql)) {
+        if (preg_match('/TEMPORARY/i', $createSql)) {
             $schema->isTemporary(true);
         }
 
         $defs = preg_split('/,[^0-9]/', $defSql);
 
-        foreach($defs as $def) {
-            if(preg_match('/^[`"]?([^"`]+)[`"]? ([a-zA-Z]+)( )?(\((.*)\))?/i', $def, $matches)) {
+        foreach ($defs as $def) {
+            if (preg_match('/^[`"]?([^"`]+)[`"]? ([a-zA-Z]+)( )?(\((.*)\))?/i', $def, $matches)) {
                 // Field
                 $args = isset($matches[5]) ?
                     flex\Delimited::parse($matches[5], ',', '\'')
@@ -84,22 +87,22 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
                 $field = $schema->addField($matches[1], $matches[2], ...$args);
 
-                if(preg_match('/ NOT NULL( ON CONFLICT (ROLLBACK|ABORT|FAIL|IGNORE|REPLACE))?/i', $def, $matches)) {
+                if (preg_match('/ NOT NULL( ON CONFLICT (ROLLBACK|ABORT|FAIL|IGNORE|REPLACE))?/i', $def, $matches)) {
                     $field->isNullable(false);
 
-                    if(!empty($matches[2])) {
+                    if (!empty($matches[2])) {
                         $field->setNullConflictClause($matches[2]);
                     }
                 } else {
                     $field->isNullable(true);
                 }
 
-                if(preg_match('/ UNSIGNED/i', $def)) {
+                if (preg_match('/ UNSIGNED/i', $def)) {
                     $field->isUnsigned(true);
                 }
 
-                if(preg_match('/ DEFAULT ([\'](.*)[\']|([\d]+))/i', $def, $matches)) {
-                    if(isset($matches[3])) {
+                if (preg_match('/ DEFAULT ([\'](.*)[\']|([\d]+))/i', $def, $matches)) {
+                    if (isset($matches[3])) {
                         $field->setDefaultValue($matches[3]);
                     } else {
                         $field->setDefaultValue($matches[2]);
@@ -107,20 +110,20 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
                 }
 
 
-                if(preg_match('/ (PRIMARY KEY|UNIQUE|REFERENCES) /i', $def, $matches)) {
+                if (preg_match('/ (PRIMARY KEY|UNIQUE|REFERENCES) /i', $def, $matches)) {
                     $type = strtoupper($matches[2]);
 
-                    switch($type) {
+                    switch ($type) {
                         // Column indexes
                         case 'PRIMARY KEY':
                         case 'UNIQUE':
                             $index = $schema->addUniqueIndex($field->getName(), $field);
 
-                            if($type === 'PRIMARY KEY') {
+                            if ($type === 'PRIMARY KEY') {
                                 $schema->setPrimaryIndex($index);
                             }
 
-                            if(preg_match('/ON CONFLICT (ROLLBACK|ABORT|FAIL|IGNORE|REPLACE)/i', $def, $matches)) {
+                            if (preg_match('/ON CONFLICT (ROLLBACK|ABORT|FAIL|IGNORE|REPLACE)/i', $def, $matches)) {
                                 $index->setConflictClause($matches[1]);
                             }
 
@@ -128,7 +131,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
                         // Foreign keys
                         case 'FOREIGN KEY':
-                            if(!preg_match('/REFERENCES ["`]?([^"`]+)["`]?( \((.*)\))?( ON DELETE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( ON UPDATE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( (NOT )? DEFERRABLE( INITIALLY (DEFERRED|IMMEDIATE)))?/i', $def, $matches)) {
+                            if (!preg_match('/REFERENCES ["`]?([^"`]+)["`]?( \((.*)\))?( ON DELETE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( ON UPDATE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( (NOT )? DEFERRABLE( INITIALLY (DEFERRED|IMMEDIATE)))?/i', $def, $matches)) {
                                 throw new opal\rdbms\ForeignKeyConflictException(
                                     'Unmatched foreign key: '.$def
                                 );
@@ -139,34 +142,33 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
                             $key->addReference($field, array_shift($references));
 
-                            if(isset($matches[4])) {
+                            if (isset($matches[4])) {
                                 $key->setDeleteAction($matches[5]);
                             }
 
-                            if(isset($matches[6])) {
+                            if (isset($matches[6])) {
                                 $key->setUpdateAction($matches[7]);
                             }
 
                             break;
                     }
                 }
-
-            } else if(preg_match('/^CONSTRAINT [`"]?([^"`]+)["`]? (PRIMARY KEY|FOREIGN KEY|UNIQUE)/i', $def, $matches)) {
+            } elseif (preg_match('/^CONSTRAINT [`"]?([^"`]+)["`]? (PRIMARY KEY|FOREIGN KEY|UNIQUE)/i', $def, $matches)) {
                 $type = strtoupper($matches[2]);
 
-                switch($type) {
+                switch ($type) {
                     // Inline indexes
                     case 'PRIMARY KEY':
                     case 'UNIQUE':
                         $index = $schema->addUniqueIndex($matches[1], []);
                         preg_match('/'.$type.' \((.*)\)/i', $def, $matches);
 
-                        foreach(flex\Delimited::parse($matches[1], ',', null) as $part) {
+                        foreach (flex\Delimited::parse($matches[1], ',', null) as $part) {
                             $temp = explode(' ', trim($part), 2);
                             $fieldName = trim(array_shift($temp), '`\' ');
                             $isDescending = strtoupper(trim(array_shift($temp))) == 'DESC';
 
-                            if(!$field = $schema->getField($fieldName)) {
+                            if (!$field = $schema->getField($fieldName)) {
                                 throw new opal\schema\IndexNotFoundException(
                                     'Index field '.$fieldName.' could not be found'
                                 );
@@ -175,11 +177,11 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
                             $index->addField($field, null, $isDescending);
                         }
 
-                        if($type === 'PRIMARY KEY') {
+                        if ($type === 'PRIMARY KEY') {
                             $schema->setPrimaryIndex($index);
                         }
 
-                        if(preg_match('/ON CONFLICT (ROLLBACK|ABORT|FAIL|IGNORE|REPLACE)/i', $def, $matches)) {
+                        if (preg_match('/ON CONFLICT (ROLLBACK|ABORT|FAIL|IGNORE|REPLACE)/i', $def, $matches)) {
                             $index->setConflictClause($matches[1]);
                         }
 
@@ -189,7 +191,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
                     case 'FOREIGN KEY':
                         $keyName = $matches[1];
 
-                        if(!preg_match('/FOREIGN KEY \((.*)\) REFERENCES ["`]?([^"`]+)["`]?( \((.*)\))?( ON DELETE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( ON UPDATE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( (NOT )? DEFERRABLE( INITIALLY (DEFERRED|IMMEDIATE)))?$/i', $def, $matches)) {
+                        if (!preg_match('/FOREIGN KEY \((.*)\) REFERENCES ["`]?([^"`]+)["`]?( \((.*)\))?( ON DELETE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( ON UPDATE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( (NOT )? DEFERRABLE( INITIALLY (DEFERRED|IMMEDIATE)))?$/i', $def, $matches)) {
                             throw new opal\rdbms\ForeignKeyConflictException(
                                 'Unmatched foreign key: '.$def
                             );
@@ -200,8 +202,8 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
                         $references = flex\Delimited::parse($matches[4], ',', '"`');
 
-                        foreach($fields as $fieldName) {
-                            if(!$field = $schema->getField($fieldName)) {
+                        foreach ($fields as $fieldName) {
+                            if (!$field = $schema->getField($fieldName)) {
                                 throw new opal\rdbms\ForeignKeyConflictException(
                                     'Foreign key field '.$fieldName.' could not be found'
                                 );
@@ -210,11 +212,11 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
                             $key->addReference($field, array_shift($references));
                         }
 
-                        if(isset($matches[5])) {
+                        if (isset($matches[5])) {
                             $key->setDeleteAction($matches[6]);
                         }
 
-                        if(isset($matches[7])) {
+                        if (isset($matches[7])) {
                             $key->setUpdateAction($matches[8]);
                         }
 
@@ -225,21 +227,21 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
 
         // Standalone indexes
-        foreach($indexes as $indexName => $indexData) {
+        foreach ($indexes as $indexName => $indexData) {
             $index = $schema->addIndex($indexName, []);
 
-            if(!preg_match('/INDEX ["`]?'.$indexData['name'].'["`]? ON ["`]?'.$indexData['tbl_name'].'["`]? \((.*)\)/i', $indexData['sql'], $matches)) {
+            if (!preg_match('/INDEX ["`]?'.$indexData['name'].'["`]? ON ["`]?'.$indexData['tbl_name'].'["`]? \((.*)\)/i', $indexData['sql'], $matches)) {
                 throw new opal\schema\UnexpectedValueException(
                     'Unmatched index: '.$indexData['sql']
                 );
             }
 
-            foreach(flex\Delimited::parse($matches[1], ',', null) as $part) {
+            foreach (flex\Delimited::parse($matches[1], ',', null) as $part) {
                 $temp = explode(' ', trim($part), 2);
                 $fieldName = trim(array_shift($temp), '`" ');
                 $isDescending = strtoupper(trim(array_shift($temp))) == 'DESC';
 
-                if(!$field = $schema->getField($fieldName)) {
+                if (!$field = $schema->getField($fieldName)) {
                     throw new opal\schema\IndexNotFoundException(
                         'Index field '.$fieldName.' could not be found'
                     );
@@ -251,8 +253,8 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
 
         // Triggers
-        foreach($triggers as $triggerName => $triggerData) {
-            if(!preg_match('/^CREATE (TEMP|TEMPORARY )?TRIGGER (IF NOT EXISTS )?["`]?'.$triggerName.'["`]?( (BEFORE|AFTER|INSTEAD OF))? (DELETE|INSERT|UPDATE)( OF (.*))? ON ["`]?'.$tableName.'["`]?( FOR EACH ROW)?( WHEN (.*))? BEGIN (.*) END$/i', $triggerData['sql'], $matches)) {
+        foreach ($triggers as $triggerName => $triggerData) {
+            if (!preg_match('/^CREATE (TEMP|TEMPORARY )?TRIGGER (IF NOT EXISTS )?["`]?'.$triggerName.'["`]?( (BEFORE|AFTER|INSTEAD OF))? (DELETE|INSERT|UPDATE)( OF (.*))? ON ["`]?'.$tableName.'["`]?( FOR EACH ROW)?( WHEN (.*))? BEGIN (.*) END$/i', $triggerData['sql'], $matches)) {
                 throw new opal\rdbms\UnexpectedValueException(
                     'Unmatched trigger', 0, $triggerData['sql']
                 );
@@ -266,14 +268,14 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
                 )
                 ->isTemporary(!empty($matches[1]));
 
-            if(!empty($matches[7])) {
+            if (!empty($matches[7])) {
                 $cols = flex\Delimited::parse($matches[7], ',', '`"');
                 array_map('trim', $cols);
 
                 $trigger->setUpdateFields($cols);
             }
 
-            if(!empty($matches[10])) {
+            if (!empty($matches[10])) {
                 $trigger->setWhenExpression($matches[10]);
             }
         }
@@ -286,18 +288,20 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
 
 
-// Table
-    protected function _generateTableOptions(opal\rdbms\schema\ISchema $schema) {
+    // Table
+    protected function _generateTableOptions(opal\rdbms\schema\ISchema $schema)
+    {
         return '';
     }
 
 
 
-// Fields
-    protected function _generateFieldDefinition(opal\rdbms\schema\IField $field) {
+    // Fields
+    protected function _generateFieldDefinition(opal\rdbms\schema\IField $field)
+    {
         $fieldSql = $this->_adapter->quoteIdentifier($field->getName()).' ';
 
-        if($field instanceof opal\rdbms\schema\field\Binary
+        if ($field instanceof opal\rdbms\schema\field\Binary
         || $field instanceof opal\rdbms\schema\field\Bit
         || $field instanceof opal\rdbms\schema\field\Char
         || $field instanceof opal\rdbms\schema\field\DateTime
@@ -305,58 +309,55 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         || $field instanceof opal\rdbms\schema\field\Set
         || $field instanceof opal\rdbms\schema\field\Text) {
             $fieldSql .= 'TEXT';
-        } else
-        if($field instanceof opal\rdbms\schema\field\Blob) {
+        } elseif ($field instanceof opal\rdbms\schema\field\Blob) {
             $fieldSql .= 'BLOB';
-        } else
-        if($field instanceof opal\rdbms\schema\field\Float) {
+        } elseif ($field instanceof opal\rdbms\schema\field\Float) {
             $fieldSql .= 'REAL';
-        } else
-        if($field instanceof opal\rdbms\schema\field\Int) {
+        } elseif ($field instanceof opal\rdbms\schema\field\Int) {
             $fieldSql .= 'INTEGER';
         } else {
             $fieldSql .= $field->getType();
         }
 
 
-        if($field instanceof opal\schema\IOptionProviderField) {
+        if ($field instanceof opal\schema\IOptionProviderField) {
             // do nothing :(
         } else {
             $options = [];
 
-            if($field instanceof opal\schema\ILengthRestrictedField
+            if ($field instanceof opal\schema\ILengthRestrictedField
             && null !== ($length = $field->getLength())) {
                 $options[] = $length;
             }
 
-            if($field instanceof opal\schema\IFloatingPointNumericField
+            if ($field instanceof opal\schema\IFloatingPointNumericField
             && null !== ($scale = $field->getScale())) {
                 $options[] = $scale;
             }
 
-            if(!empty($options)) {
+            if (!empty($options)) {
                 $fieldSql .= '('.implode(',', $options).')';
             }
         }
 
-        if(!$field->isNullable()) {
+        if (!$field->isNullable()) {
             $fieldSql .= ' NOT NULL';
 
-            if(null !== ($conflictClause = $field->getNullConflictClauseName())) {
+            if (null !== ($conflictClause = $field->getNullConflictClauseName())) {
                 $fieldSql .= ' ON CONFLICT '.$conflictClause;
             }
         }
 
-        if($field instanceof opal\schema\IAutoTimestampField
+        if ($field instanceof opal\schema\IAutoTimestampField
         && ($field->shouldTimestampAsDefault() || !$field->isNullable())) {
             $fieldSql .= ' DEFAULT (DATETIME(\'now\'))';
-        } else if(null !== ($defaultValue = $field->getDefaultValue())) {
+        } elseif (null !== ($defaultValue = $field->getDefaultValue())) {
             $fieldSql .= ' DEFAULT '.$this->_adapter->prepareValue($defaultValue, $field);
-        } else if(!$field->isNullable()) {
+        } elseif (!$field->isNullable()) {
             $fieldSql .= ' DEFAULT '.$this->_adapter->prepareValue('', $field);
         }
 
-        if(null !== ($collation = $field->getCollation())) {
+        if (null !== ($collation = $field->getCollation())) {
             $fieldSql .= ' COLLATE '.$this->_adapter->quoteValue($collation);
         }
 
@@ -364,8 +365,9 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
     }
 
 
-## Exists ##
-    public function exists($name) {
+    ## Exists ##
+    public function exists($name)
+    {
         $stmt = $this->_adapter->prepare('SELECT name FROM sqlite_master WHERE type = :a AND name = :b');
         $stmt->bind('a', 'table');
         $stmt->bind('b', $name);
@@ -376,17 +378,18 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
 
 
-## Create ##
+    ## Create ##
 
-// Indexes
-    protected function _generateInlineIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null) {
-        if(!$index->isUnique()) {
+    // Indexes
+    protected function _generateInlineIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null)
+    {
+        if (!$index->isUnique()) {
             return null;
         }
 
         $indexSql = 'CONSTRAINT '.$this->_adapter->quoteIdentifier($tableName.'_'.$index->getName());
 
-        if($index === $primaryIndex) {
+        if ($index === $primaryIndex) {
             $indexSql .= ' PRIMARY KEY';
         } else {
             $indexSql .= ' UNIQUE';
@@ -394,10 +397,10 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
         $indexFields = [];
 
-        foreach($index->getFieldReferences() as $reference) {
+        foreach ($index->getFieldReferences() as $reference) {
             $fieldDef = $this->_adapter->quoteIdentifier($reference->getField()->getName());
 
-            if($reference->isDescending()) {
+            if ($reference->isDescending()) {
                 $fieldDef .= ' DESC';
             } else {
                 $fieldDef .= ' ASC';
@@ -408,15 +411,16 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
         $indexSql .= ' ('.implode(',', $indexFields).')';
 
-        if(null !== ($conflictClause = $index->getConflictClauseName())) {
+        if (null !== ($conflictClause = $index->getConflictClauseName())) {
             $indexSql .= ' ON CONFLICT '.$conflictClause;
         }
 
         return $indexSql;
     }
 
-    protected function _generateStandaloneIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null) {
-        if($index->isUnique()) {
+    protected function _generateStandaloneIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null)
+    {
+        if ($index->isUnique()) {
             return null;
         }
 
@@ -425,10 +429,10 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
         $indexFields = [];
 
-        foreach($index->getFieldReferences() as $reference) {
+        foreach ($index->getFieldReferences() as $reference) {
             $fieldDef = $this->_adapter->quoteIdentifier($reference->getField()->getName());
 
-            if($reference->isDescending()) {
+            if ($reference->isDescending()) {
                 $fieldDef .= ' DESC';
             } else {
                 $fieldDef .= ' ASC';
@@ -443,8 +447,9 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
     }
 
 
-// Foreign keys
-    protected function _generateInlineForeignKeyDefinition(opal\rdbms\schema\IForeignKey $key) {
+    // Foreign keys
+    protected function _generateInlineForeignKeyDefinition(opal\rdbms\schema\IForeignKey $key)
+    {
         $keySql = parent::_generateInlineForeignKeyDefinition($key);
 
         // TODO: add MATCH clause
@@ -453,8 +458,9 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         return $keySql;
     }
 
-    protected function _normalizeForeignKeyAction($action) {
-        switch($action = strtoupper($action)) {
+    protected function _normalizeForeignKeyAction($action)
+    {
+        switch ($action = strtoupper($action)) {
             case 'RESTRICT':
             case 'CASCADE':
             case 'NO ACTION':
@@ -471,11 +477,12 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
     }
 
 
-// Triggers
-    protected function _generateTriggerDefinition($tableName, opal\rdbms\schema\ITrigger $trigger) {
+    // Triggers
+    protected function _generateTriggerDefinition($tableName, opal\rdbms\schema\ITrigger $trigger)
+    {
         $triggerSql = 'CREATE';
 
-        if($trigger->isTemporary()) {
+        if ($trigger->isTemporary()) {
             $triggerSql .= ' TEMPORARY';
         }
 
@@ -483,11 +490,11 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         $triggerSql .= ' '.$trigger->getTimingName();
         $triggerSql .= ' '.$trigger->getEventName();
 
-        if($trigger->getEvent() == opal\rdbms\schema\constraint\Trigger::UPDATE) {
+        if ($trigger->getEvent() == opal\rdbms\schema\constraint\Trigger::UPDATE) {
             $updateFields = $trigger->getUpdateFields();
 
-            if(!empty($updateFields)) {
-                foreach($updateFields as &$field) {
+            if (!empty($updateFields)) {
+                foreach ($updateFields as &$field) {
                     $field = $this->_adapter->quoteIdentifier($field);
                 }
 
@@ -498,7 +505,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         $triggerSql .= ' ON '.$this->_adapter->quoteIdentifier($tableName);
         $triggerSql .= ' FOR EACH ROW';
 
-        if(null !== ($trigger->getWhenExpression())) {
+        if (null !== ($trigger->getWhenExpression())) {
             $triggerSql .= ' WHEN '.$trigger->getWhenExpression();
         }
 
@@ -510,8 +517,9 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
 
 
-## Alter ##
-    public function alter($currentName, opal\rdbms\schema\ISchema $schema) {
+    ## Alter ##
+    public function alter($currentName, opal\rdbms\schema\ISchema $schema)
+    {
         $this->_adapter->executeSql('PRAGMA foreign_keys=OFF');
         $this->_adapter->begin();
 
@@ -525,14 +533,14 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             $sourceFields = [];
             $destinationFields = [];
 
-            foreach($fields as $fieldName => $field) {
-                if(isset($addFields[$fieldName])) {
+            foreach ($fields as $fieldName => $field) {
+                if (isset($addFields[$fieldName])) {
                     continue;
                 }
 
                 $destinationFields[] = $this->_adapter->quoteIdentifier($fieldName);
 
-                if(isset($renameFields[$fieldName])) {
+                if (isset($renameFields[$fieldName])) {
                     $fieldName = $renameFields[$fieldName];
                 }
 
@@ -543,7 +551,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             // Remove triggers
             $triggers = [];
 
-            foreach($schema->getTriggers() as $triggerName => $trigger) {
+            foreach ($schema->getTriggers() as $triggerName => $trigger) {
                 $triggers[$triggerName] = $trigger;
                 $schema->removeTrigger($triggerName);
                 $trigger->_setName($triggerName);
@@ -577,14 +585,14 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
 
             // Reinstate triggers
-            foreach($triggers as $trigger) {
+            foreach ($triggers as $trigger) {
                 $schema->populateTrigger($trigger);
                 $sql = $this->_generateTriggerDefinition($currentName, $trigger);
                 $this->_adapter->executeSql($sql);
             }
 
             $this->_adapter->commit();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->_adapter->rollback();
             $this->_adapter->executeSql('PRAGMA foreign_keys=ON');
             throw $e;

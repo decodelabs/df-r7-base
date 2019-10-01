@@ -11,8 +11,8 @@ use df\opal;
 use df\user;
 use df\mesh;
 
-class Table implements ITable, core\IDumpable {
-
+class Table implements ITable, core\IDumpable
+{
     use opal\query\TQuery_EntryPoint;
     use user\TAccessLock;
 
@@ -20,63 +20,76 @@ class Table implements ITable, core\IDumpable {
     protected $_name;
     protected $_querySourceId;
 
-    public function __construct(opal\rdbms\IAdapter $adapter, string $name) {
+    public function __construct(opal\rdbms\IAdapter $adapter, string $name)
+    {
         $this->_adapter = $adapter;
         $this->_setName($name);
     }
 
-    public function getAdapter() {
+    public function getAdapter()
+    {
         return $this->_adapter;
     }
 
-    protected function _setName($name) {
+    protected function _setName($name)
+    {
         $this->_name = $name;
         $this->_querySourceId = 'opal://rdbms/'.$this->_adapter->getServerType().':"'.addslashes($this->_adapter->getDsn()->getConnectionString()).'"/Table:'.$this->_name;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function getSchema() {
+    public function getSchema()
+    {
         $schema = SchemaExecutor::factory($this->_adapter)->introspect($this->_name);
         $schema->acceptChanges()->isAudited(true);
 
         return $schema;
     }
 
-    public function getStats() {
+    public function getStats()
+    {
         return SchemaExecutor::factory($this->_adapter)->getTableStats($this->_name);
     }
 
 
-// Query source
-    public function getQuerySourceId() {
+    // Query source
+    public function getQuerySourceId()
+    {
         return $this->_querySourceId;
     }
 
-    public function getQuerySourceAdapterHash() {
+    public function getQuerySourceAdapterHash()
+    {
         return $this->_adapter->getDsnHash();
     }
 
-    public function getQuerySourceAdapterServerHash() {
+    public function getQuerySourceAdapterServerHash()
+    {
         return $this->_adapter->getServerDsnHash();
     }
 
-    public function getQuerySourceDisplayName() {
+    public function getQuerySourceDisplayName()
+    {
         return $this->_adapter->getDsn()->getDisplayString().'/'.$this->_name;
     }
 
-    public function getDelegateQueryAdapter() {
+    public function getDelegateQueryAdapter()
+    {
         return $this;
     }
 
-    public function getDatabaseName() {
+    public function getDatabaseName()
+    {
         return $this->_adapter->getDsn()->getDatabase();
     }
 
-    public function supportsQueryType($type) {
-        switch($type) {
+    public function supportsQueryType($type)
+    {
+        switch ($type) {
             case opal\query\IQueryTypes::SELECT:
             case opal\query\IQueryTypes::UNION:
             case opal\query\IQueryTypes::FETCH:
@@ -103,8 +116,9 @@ class Table implements ITable, core\IDumpable {
         }
     }
 
-    public function supportsQueryFeature($feature) {
-        switch($feature) {
+    public function supportsQueryFeature($feature)
+    {
+        switch ($feature) {
             case opal\query\IQueryFeatures::AGGREGATE:
             case opal\query\IQueryFeatures::WHERE_CLAUSE:
             case opal\query\IQueryFeatures::GROUP_DIRECTIVE:
@@ -120,21 +134,26 @@ class Table implements ITable, core\IDumpable {
         }
     }
 
-    public function handleQueryException(opal\query\IQuery $query, \Throwable $e) {
+    public function handleQueryException(opal\query\IQuery $query, \Throwable $e)
+    {
         return false;
     }
 
-    public function ensureStorageConsistency() {}
+    public function ensureStorageConsistency()
+    {
+    }
 
 
-## SCHEMA ##
-    public function exists() {
+    ## SCHEMA ##
+    public function exists()
+    {
         return SchemaExecutor::factory($this->_adapter)->exists($this->_name);
     }
 
 
-    public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false) {
-        if($schema->getName() != $this->_name) {
+    public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false)
+    {
+        if ($schema->getName() != $this->_name) {
             throw new opal\rdbms\TableNotFoundException(
                 'Schema name '.$schema->getName().' does not match table name '.$this->_name, 0, null,
                 $this->_adapter->getDsn()->getDatabase(), $this->_name
@@ -143,8 +162,8 @@ class Table implements ITable, core\IDumpable {
 
         $exec = SchemaExecutor::factory($this->_adapter);
 
-        if($exec->exists($this->_name)) {
-            if($dropIfExists) {
+        if ($exec->exists($this->_name)) {
+            if ($dropIfExists) {
                 $exec->drop($this->_name);
             } else {
                 throw new opal\rdbms\TableConflictException(
@@ -158,27 +177,30 @@ class Table implements ITable, core\IDumpable {
         return $this;
     }
 
-    public function alter(opal\rdbms\schema\ISchema $schema) {
+    public function alter(opal\rdbms\schema\ISchema $schema)
+    {
         $schema->normalize();
         SchemaExecutor::factory($this->_adapter)->alter($this->_name, $schema);
         $this->_setName($schema->getName());
         return $this;
     }
 
-    public function rename($newName) {
+    public function rename($newName)
+    {
         SchemaExecutor::factory($this->_adapter)->rename($this->_name, $newName);
         $this->_setName($newName);
         return $this;
     }
 
-    public function copy($newName) {
+    public function copy($newName)
+    {
         $schema = clone $this->getSchema();
         $schema->setName($newName);
 
         $newTable = $this->_adapter->createTable($schema);
         $insert = $newTable->batchInsert();
 
-        foreach($this->select() as $row) {
+        foreach ($this->select() as $row) {
             $insert->addRow($row);
         }
 
@@ -186,32 +208,37 @@ class Table implements ITable, core\IDumpable {
         return $newTable;
     }
 
-    public function drop() {
+    public function drop()
+    {
         SchemaExecutor::factory($this->_adapter)->drop($this->_name);
         return $this;
     }
 
-    public function truncate() {
+    public function truncate()
+    {
         QueryExecutor::factory($this->_adapter)->truncate($this->_name);
         return $this;
     }
 
 
-// Lock
-    public function lock() {
+    // Lock
+    public function lock()
+    {
         return $this->_adapter->lockTable($this->_name);
     }
 
-    public function unlock() {
+    public function unlock()
+    {
         return $this->_adapter->unlockTable($this->_name);
     }
 
 
 
 
-// Character sets
-    public function setCharacterSet($set, $collation=null, $convert=false) {
-        if(is_bool($collation)) {
+    // Character sets
+    public function setCharacterSet($set, $collation=null, $convert=false)
+    {
+        if (is_bool($collation)) {
             $convert = $collation;
             $collation = null;
         }
@@ -220,75 +247,85 @@ class Table implements ITable, core\IDumpable {
         return $this;
     }
 
-    public function getCharacterSet() {
+    public function getCharacterSet()
+    {
         return SchemaExecutor::factory($this->_adapter)->getCharacterSet($this->_name);
     }
 
-    public function setCollation($collation, $convert=false) {
+    public function setCollation($collation, $convert=false)
+    {
         SchemaExecutor::factory($this->_adapter)->setCollation($this->_name, $collation, $convert);
         return $this;
     }
 
-    public function getCollation() {
+    public function getCollation()
+    {
         return SchemaExecutor::factory($this->_adapter)->getCollation($this->_name);
     }
 
 
 
 
-// Count
-    public function count() {
+    // Count
+    public function count()
+    {
         return QueryExecutor::factory($this->_adapter)->countTable($this->_name);
     }
 
 
 
-## Queries ##
-    public function executeSelectQuery(opal\query\ISelectQuery $query) {
+    ## Queries ##
+    public function executeSelectQuery(opal\query\ISelectQuery $query)
+    {
         return QueryExecutor::factory($this->_adapter, $query)
             ->executeReadQuery($this->_name);
     }
 
-    public function countSelectQuery(opal\query\ISelectQuery $query) {
+    public function countSelectQuery(opal\query\ISelectQuery $query)
+    {
         $row = QueryExecutor::factory($this->_adapter, $query)
             ->executeReadQuery($this->_name, true)
             ->getCurrent();
 
-        if(isset($row['count'])) {
+        if (isset($row['count'])) {
             return $row['count'];
         }
 
         return 0;
     }
 
-    public function executeUnionQuery(opal\query\IUnionQuery $query) {
+    public function executeUnionQuery(opal\query\IUnionQuery $query)
+    {
         return QueryExecutor::factory($this->_adapter, $query)
             ->executeUnionQuery($this->_name);
     }
 
-    public function countUnionQuery(opal\query\IUnionQuery $query) {
+    public function countUnionQuery(opal\query\IUnionQuery $query)
+    {
         $row = QueryExecutor::factory($this->_adapter, $query)
             ->executeUnionQuery($this->_name, true)
             ->getCurrent();
 
-        if(isset($row['count'])) {
+        if (isset($row['count'])) {
             return $row['count'];
         }
 
         return 0;
     }
 
-    public function executeFetchQuery(opal\query\IFetchQuery $query) {
+    public function executeFetchQuery(opal\query\IFetchQuery $query)
+    {
         return QueryExecutor::factory($this->_adapter, $query)
             ->executeReadQuery($this->_name);
     }
 
-    public function countFetchQuery(opal\query\IFetchQuery $query) {
+    public function countFetchQuery(opal\query\IFetchQuery $query)
+    {
         $row = QueryExecutor::factory($this->_adapter, $query)
             ->executeReadQuery($this->_name, true)
             ->getCurrent();
 
-        if(isset($row['count'])) {
+        if (isset($row['count'])) {
             return $row['count'];
         }
 
@@ -297,107 +334,127 @@ class Table implements ITable, core\IDumpable {
 
 
 
-// Insert query
-    public function executeInsertQuery(opal\query\IInsertQuery $query) {
+    // Insert query
+    public function executeInsertQuery(opal\query\IInsertQuery $query)
+    {
         return QueryExecutor::factory($this->_adapter, $query)
             ->executeInsertQuery($this->_name);
     }
 
-// Batch insert query
-    public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query) {
+    // Batch insert query
+    public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query)
+    {
         return QueryExecutor::factory($this->_adapter, $query)
             ->executeBatchInsertQuery($this->_name);
     }
 
-// Update query
-    public function executeUpdateQuery(opal\query\IUpdateQuery $query) {
+    // Update query
+    public function executeUpdateQuery(opal\query\IUpdateQuery $query)
+    {
         return QueryExecutor::factory($this->_adapter, $query)
             ->executeUpdateQuery($this->_name);
     }
 
-// Delete query
-    public function executeDeleteQuery(opal\query\IDeleteQuery $query) {
+    // Delete query
+    public function executeDeleteQuery(opal\query\IDeleteQuery $query)
+    {
         return QueryExecutor::factory($this->_adapter, $query)
             ->executeDeleteQuery($this->_name);
     }
 
-// Remote data
-    public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows) {
+    // Remote data
+    public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows)
+    {
         return QueryExecutor::factory($this->_adapter, $join)
             ->fetchRemoteJoinData($this->_name, $rows);
     }
 
-    public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows) {
+    public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows)
+    {
         return QueryExecutor::factory($this->_adapter, $attachment)
             ->fetchAttachmentData($this->_name, $rows);
     }
 
 
 
-// Transaction
-    public function getTransactionId() {
+    // Transaction
+    public function getTransactionId()
+    {
         return $this->getQuerySourceAdapterHash();
     }
 
-    public function getJobAdapterId() {
+    public function getJobAdapterId()
+    {
         return $this->getQuerySourceId();
     }
 
-    public function begin() {
+    public function begin()
+    {
         return $this->_adapter->begin();
     }
 
-    public function commit() {
+    public function commit()
+    {
         return $this->_adapter->commit();
     }
 
-    public function rollback() {
+    public function rollback()
+    {
         return $this->_adapter->rollback();
     }
 
 
-// Record
-    public function newRecord(array $values=null) {
+    // Record
+    public function newRecord(array $values=null)
+    {
         return new opal\record\Base($this, $values);
     }
 
-    public function newPartial(array $values=null) {
+    public function newPartial(array $values=null)
+    {
         return new opal\record\Partial($this, $values);
     }
 
-    public function shouldRecordsBroadcastHookEvents() {
+    public function shouldRecordsBroadcastHookEvents()
+    {
         return false;
     }
 
 
-// Access
-    public function getAccessLockDomain() {
+    // Access
+    public function getAccessLockDomain()
+    {
         return 'rdbms';
     }
 
-    public function lookupAccessKey(array $keys, $action=null) {
-        core\stub($keys, $action);
+    public function lookupAccessKey(array $keys, $action=null)
+    {
+        Glitch::incomplete([$keys, $action]);
     }
 
-    public function getDefaultAccess($action=null) {
+    public function getDefaultAccess($action=null)
+    {
         return true;
     }
 
-    public function getAccessLockId() {
+    public function getAccessLockId()
+    {
         return $this->_querySourceId;
     }
 
 
-// Mesh
-    public function getEntityLocator() {
+    // Mesh
+    public function getEntityLocator()
+    {
         $output = $this->_adapter->getEntityLocator();
         $output->addNode(null, 'Table', $this->getName());
         return $output;
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         return [
             'adapter' => $this->_adapter->getDsn()->getDisplayString(),
             'name' => $this->_name

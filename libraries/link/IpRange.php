@@ -10,8 +10,8 @@ use df\core;
 use df\link;
 use df\flex;
 
-class IpRange implements IIpRange, core\IDumpable {
-
+class IpRange implements IIpRange, core\IDumpable
+{
     use core\TStringProvider;
 
     protected $_isV4 = false;
@@ -20,44 +20,47 @@ class IpRange implements IIpRange, core\IDumpable {
     protected $_netmask = null;
     protected $_isValid = false;
 
-    public static function factory($range) {
-        if($range instanceof self) {
+    public static function factory($range)
+    {
+        if ($range instanceof self) {
             return $range;
         }
 
         return new self($range);
     }
 
-    public function __construct($range) {
-        if(false !== strpos($range, ':')) {
+    public function __construct($range)
+    {
+        if (false !== strpos($range, ':')) {
             $this->_parseV6($range);
         } else {
             $this->_parseV4($range);
         }
     }
 
-    protected function _parseV4($range) {
+    protected function _parseV4($range)
+    {
         $this->_isV4 = true;
 
-        if(false !== strpos($range, '/')) {
+        if (false !== strpos($range, '/')) {
             // CIDR
             list($range, $netmask) = explode('/', $range, 2);
             $parts = explode('.', $range);
 
-            while(count($parts) < 4) {
+            while (count($parts) < 4) {
                 $parts[] = '0';
             }
 
             list($a, $b, $c, $d) = $parts;
             $range = ip2long(sprintf('%u.%u.%u.%u', $a, $b, $c, $d));
 
-            if(!$range) {
+            if (!$range) {
                 return false;
             }
 
             $this->_start = $range;
 
-            if(false !== strpos($netmask, '.')) {
+            if (false !== strpos($netmask, '.')) {
                 // 255.255.0.0
                 $this->_netmask = ip2long(str_replace('*', '0', $netmask));
             } else {
@@ -65,12 +68,12 @@ class IpRange implements IIpRange, core\IDumpable {
                 $this->_netmask = -pow(2, (32 - $netmask));
             }
         } else {
-            if(false !== strpos($range, '*')) {
+            if (false !== strpos($range, '*')) {
                 // Wildcards
                 $range = str_replace('*', '0', $range).'-'.str_replace('*', '255', $range);
             }
 
-            if(false !== strpos($range, '-')) {
+            if (false !== strpos($range, '-')) {
                 // Simple range
                 $parts = explode('-', $range, 2);
                 $this->_start = ip2long(trim(array_shift($parts)));
@@ -84,17 +87,18 @@ class IpRange implements IIpRange, core\IDumpable {
         $this->_isValid = true;
     }
 
-    protected function _parseV6($range) {
+    protected function _parseV6($range)
+    {
         $this->_isV4 = false;
 
-        if(false !== strpos($range, '/')) {
+        if (false !== strpos($range, '/')) {
             // CIDR
             list($range, $netmask) = explode('/', $range, 2);
             $ip = new Ip($range);
             $range = $ip->getV6Decimal();
 
-            if(is_numeric($netmask) && $netmask >= 0 && $netmask <= 128) {
-                if($netmask == 0) {
+            if (is_numeric($netmask) && $netmask >= 0 && $netmask <= 128) {
+                if ($netmask == 0) {
                     $range = 0;
                 } else {
                     $range = flex\Text::baseConvert($range, 10, 2, 128);
@@ -108,22 +112,22 @@ class IpRange implements IIpRange, core\IDumpable {
             $this->_end = str_pad(substr($this->_end, 0, $netmask), 128, 1, STR_PAD_RIGHT);
             $this->_end = flex\Text::baseConvert($this->_end, 2, 16, 32);
         } else {
-            if(false !== strpos($range, '*')) {
+            if (false !== strpos($range, '*')) {
                 // Wildcards
                 $range = str_replace('*', '0', $range).'-'.str_replace('*', 'ffff', $range);
             }
 
-            if(false !== strpos($range, '-')) {
+            if (false !== strpos($range, '-')) {
                 // Simple range
                 $parts = explode('-', $range, 2);
                 $start = ip2long(trim(array_shift($parts)));
                 $end = ip2long(trim(array_shift($parts)));
 
-                if($start < 0) {
+                if ($start < 0) {
                     $start += pow(2, 32);
                 }
 
-                if($end < 0) {
+                if ($end < 0) {
                     $end += pow(2, 32);
                 }
 
@@ -138,21 +142,22 @@ class IpRange implements IIpRange, core\IDumpable {
         $this->_isValid = true;
     }
 
-    public function check($ip) {
-        if(!$this->_isValid) {
+    public function check($ip)
+    {
+        if (!$this->_isValid) {
             return false;
         }
 
         $ip = Ip::factory($ip);
 
-        if($this->_isV4) {
-            if(!$ip->isV4()) {
+        if ($this->_isV4) {
+            if (!$ip->isV4()) {
                 return false;
             }
 
             $value = (int)$ip->getV4Decimal();
 
-            if($this->_end !== null) {
+            if ($this->_end !== null) {
                 // range
                 return $this->_start <= $value && $value <= $this->_end;
             } else {
@@ -167,21 +172,23 @@ class IpRange implements IIpRange, core\IDumpable {
         }
     }
 
-    public function toString(): string {
-        if($this->_isV4) {
+    public function toString(): string
+    {
+        if ($this->_isV4) {
             return $this->_toV4String();
         } else {
             return $this->_toV6String();
         }
     }
 
-    protected function _toV4String() {
-        if($this->_end !== null) {
+    protected function _toV4String()
+    {
+        if ($this->_end !== null) {
             // Hex
             $start = long2ip($this->_start);
             $end = long2ip($this->_end);
 
-            if($start == $end) {
+            if ($start == $end) {
                 return $start;
             }
 
@@ -191,7 +198,7 @@ class IpRange implements IIpRange, core\IDumpable {
             $start = long2ip($this->_start);
             $netmask = 32 - (log($this->_netmask * -1) / log(2));
 
-            if(is_nan($netmask)) {
+            if (is_nan($netmask)) {
                 $netmask = long2ip($this->_netmask);
             }
 
@@ -199,13 +206,15 @@ class IpRange implements IIpRange, core\IDumpable {
         }
     }
 
-    protected function _toV6String() {
-        core\stub();
+    protected function _toV6String()
+    {
+        Glitch::incomplete();
     }
 
-// Dump
-    public function getDumpProperties() {
-        if($this->_isV4) {
+    // Dump
+    public function getDumpProperties()
+    {
+        if ($this->_isV4) {
             return $this->_toV4String();
         } else {
             return [

@@ -631,7 +631,7 @@ class ArrayManipulator implements IArrayManipulator
 
         $this->normalizeRows();
 
-        core\stub();
+        Glitch::incomplete();
     }
 
 
@@ -1112,7 +1112,7 @@ class ArrayManipulator implements IArrayManipulator
                         }
                     }
 
-                    //core\stub('multi primary deref', $outputFields);
+                    //Glitch::incomplete(['multi primary deref', $outputFields]);
                     $valQName = $valField->getQualifiedName();
                     $valName = $valField->getName();
                 } else {

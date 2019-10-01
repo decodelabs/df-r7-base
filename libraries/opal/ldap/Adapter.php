@@ -341,7 +341,7 @@ abstract class Adapter implements IAdapter
     // Batch insert query
     public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query)
     {
-        core\stub($query);
+        Glitch::incomplete($query);
     }
 
     // Update query
@@ -391,12 +391,12 @@ abstract class Adapter implements IAdapter
     // Remote data
     public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows)
     {
-        core\stub($query);
+        Glitch::incomplete($query);
     }
 
     public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows)
     {
-        core\stub($query);
+        Glitch::incomplete($query);
     }
 
 
@@ -883,7 +883,7 @@ abstract class Adapter implements IAdapter
 
     public function lookupAccessKey(array $keys, $action=null)
     {
-        core\stub($keys, $action);
+        Glitch::incomplete($keys, $action);
     }
 
     public function getDefaultAccess($action=null)

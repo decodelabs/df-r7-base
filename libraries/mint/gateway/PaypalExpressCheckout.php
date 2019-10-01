@@ -9,13 +9,15 @@ use df;
 use df\core;
 use df\mint;
 
-class PaypalExpressCheckout extends Base {
-
-    public function getSupportedCurrencies(): array {
+class PaypalExpressCheckout extends Base
+{
+    public function getSupportedCurrencies(): array
+    {
         return [];
     }
 
-    public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): string {
-        core\stub($charge);
+    public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): string
+    {
+        Glitch::incomplete($charge);
     }
 }

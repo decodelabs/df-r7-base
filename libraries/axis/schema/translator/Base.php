@@ -10,20 +10,21 @@ use df\core;
 use df\axis;
 use df\opal;
 
-abstract class Base implements axis\schema\ITranslator {
-
+abstract class Base implements axis\schema\ITranslator
+{
     protected $_unit;
     protected $_axisSchema;
     protected $_targetSchema;
     protected $_isNew = true;
 
-    public function __construct(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $axisSchema, opal\schema\ISchema $targetSchema=null) {
+    public function __construct(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $axisSchema, opal\schema\ISchema $targetSchema=null)
+    {
         $this->_unit = $unit;
         $this->_axisSchema = $axisSchema;
         $this->_isNew = true;
 
-        if(!$targetSchema) {
-            if($this->_storageExists()) {
+        if (!$targetSchema) {
+            if ($this->_storageExists()) {
                 $this->_isNew = false;
                 $targetSchema = $this->_getTargetSchema();
             } else {
@@ -40,21 +41,25 @@ abstract class Base implements axis\schema\ITranslator {
     abstract protected function _getTargetSchema();
     abstract protected function _createTargetSchema();
 
-    public function getUnit() {
+    public function getUnit()
+    {
         return $this->_unit;
     }
 
-    public function getAxisSchema() {
+    public function getAxisSchema()
+    {
         return $this->_axisSchema;
     }
 
-    public function getTargetSchema() {
+    public function getTargetSchema()
+    {
         return $this->_targetSchema;
     }
 
 
-    public function createFreshTargetSchema() {
-        if(!$this->_isNew) {
+    public function createFreshTargetSchema()
+    {
+        if (!$this->_isNew) {
             $this->_targetSchema = $this->_createTargetSchema();
             $this->_isNew = true;
         }
@@ -63,16 +68,16 @@ abstract class Base implements axis\schema\ITranslator {
         $supportsIndexes = $this->_targetSchema instanceof opal\schema\IIndexProvider;
 
         // Add fields
-        foreach($this->_axisSchema->getFields() as $name => $axisField) {
+        foreach ($this->_axisSchema->getFields() as $name => $axisField) {
             $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
 
-            if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
-                foreach($primitive->getPrimitives() as $name => $child) {
+            if ($primitive instanceof opal\schema\IMultiFieldPrimitive) {
+                foreach ($primitive->getPrimitives() as $name => $child) {
                     $this->_targetSchema->addPreparedField(
                         $this->_createField($child)
                     );
                 }
-            } else if($axisField instanceof opal\schema\INullPrimitiveField) {
+            } elseif ($axisField instanceof opal\schema\INullPrimitiveField) {
                 continue;
             } else {
                 $this->_targetSchema->addPreparedField(
@@ -82,20 +87,20 @@ abstract class Base implements axis\schema\ITranslator {
         }
 
         // Add indexes
-        if($supportsIndexes) {
-            foreach($this->_axisSchema->getIndexes() as $name => $axisIndex) {
+        if ($supportsIndexes) {
+            foreach ($this->_axisSchema->getIndexes() as $name => $axisIndex) {
                 $isPrimary = $axisIndex === $axisPrimaryIndex;
                 $targetIndex = null;
 
-                foreach($this->_createIndexes($axisIndex, $isPrimary) as $newIndex) {
+                foreach ($this->_createIndexes($axisIndex, $isPrimary) as $newIndex) {
                     $this->_targetSchema->addPreparedIndex($newIndex);
 
-                    if(!$targetIndex) {
+                    if (!$targetIndex) {
                         $targetIndex = $newIndex;
                     }
                 }
 
-                if($isPrimary) {
+                if ($isPrimary) {
                     $this->_targetSchema->setPrimaryIndex($targetIndex);
                 }
             }
@@ -105,8 +110,9 @@ abstract class Base implements axis\schema\ITranslator {
         return $this->_targetSchema;
     }
 
-    public function updateTargetSchema() {
-        if($this->_isNew) {
+    public function updateTargetSchema()
+    {
+        if ($this->_isNew) {
             return $this->createFreshTargetSchema();
         }
 
@@ -117,21 +123,21 @@ abstract class Base implements axis\schema\ITranslator {
         $supportsIndexes = $this->_targetSchema instanceof opal\schema\IIndexProvider;
 
 
-        if(!$primaryIndexHasChanged = $this->_axisSchema->hasPrimaryIndexChanged()) {
+        if (!$primaryIndexHasChanged = $this->_axisSchema->hasPrimaryIndexChanged()) {
             $lastAxisPrimaryIndex = $axisPrimaryIndex;
         }
 
 
         // Remove indexes
-        if($supportsIndexes) {
-            foreach($this->_axisSchema->getIndexesToRemove() as $name => $axisIndex) {
-                if($axisIndex->isSingleMultiPrimitiveField() && !$axisIndex->isUnique()) {
+        if ($supportsIndexes) {
+            foreach ($this->_axisSchema->getIndexesToRemove() as $name => $axisIndex) {
+                if ($axisIndex->isSingleMultiPrimitiveField() && !$axisIndex->isUnique()) {
                     $fieldReferences = $axisIndex->getFieldReferences();
                     $axisField = $fieldReferences[0]->getField();
                     $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
 
-                    if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
-                        foreach($primitive->getPrimitives() as $name => $child) {
+                    if ($primitive instanceof opal\schema\IMultiFieldPrimitive) {
+                        foreach ($primitive->getPrimitives() as $name => $child) {
                             $this->_targetSchema->removeIndex(
                                 $this->_getIndexName($axisIndex, false, $child)
                             );
@@ -149,12 +155,12 @@ abstract class Base implements axis\schema\ITranslator {
 
 
         // Remove fields
-        foreach($this->_axisSchema->getFieldsToRemove() as $name => $axisField) {
-            if($axisField instanceof opal\schema\IMultiPrimitiveField) {
-                foreach($axisField->getPrimitiveFieldNames() as $name) {
+        foreach ($this->_axisSchema->getFieldsToRemove() as $name => $axisField) {
+            if ($axisField instanceof opal\schema\IMultiPrimitiveField) {
+                foreach ($axisField->getPrimitiveFieldNames() as $name) {
                     $this->_targetSchema->removeField($name);
                 }
-            } else if($axisField instanceof opal\schema\INullPrimitiveField) {
+            } elseif ($axisField instanceof opal\schema\INullPrimitiveField) {
                 continue;
             } else {
                 $this->_targetSchema->removeField($name);
@@ -162,8 +168,8 @@ abstract class Base implements axis\schema\ITranslator {
         }
 
         // Update fields
-        foreach($this->_axisSchema->getFieldsToUpdate() as $oldName => $axisField) {
-            if($axisField instanceof opal\schema\INullPrimitiveField) {
+        foreach ($this->_axisSchema->getFieldsToUpdate() as $oldName => $axisField) {
+            if ($axisField instanceof opal\schema\INullPrimitiveField) {
                 continue;
             }
 
@@ -174,18 +180,18 @@ abstract class Base implements axis\schema\ITranslator {
                 $axisField->getReplacedPrimitive($this->_unit, $this->_axisSchema) :
                 null;
 
-            if($replacedField && $replacedPrimitive) {
-                if(get_class($replacedField) == get_class($axisField)
+            if ($replacedField && $replacedPrimitive) {
+                if (get_class($replacedField) == get_class($axisField)
                 && $replacedPrimitive instanceof opal\schema\IMultiFieldPrimitive
                 && $primitive instanceof opal\schema\IMultiFieldPrimitive
                 && count($replacedPrimitive->getPrimitives()) == count($primitive->getPrimitives())) {
                     $replacedInnerPrimitives = array_values($replacedPrimitive->getPrimitives());
 
-                    foreach(array_values($primitive->getPrimitives()) as $i => $innerPrimitive) {
+                    foreach (array_values($primitive->getPrimitives()) as $i => $innerPrimitive) {
                         $innerPrimitiveName = $innerPrimitive->getName();
                         $replacedInnerPrimitiveName = $replacedInnerPrimitives[$i]->getName();
 
-                        if($innerPrimitiveName != $replacedInnerPrimitiveName
+                        if ($innerPrimitiveName != $replacedInnerPrimitiveName
                         && $this->_targetSchema->hasField($replacedInnerPrimitiveName)) {
                             $this->_targetSchema->renameField(
                                 $replacedInnerPrimitiveName,
@@ -197,12 +203,12 @@ abstract class Base implements axis\schema\ITranslator {
                             $this->_createField($innerPrimitive)
                         );
                     }
-                } else if($replacedPrimitive instanceof opal\schema\IMultiFieldPrimitive) {
-                    core\stub($replacedPrimitive, $primitive);
-                } else if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
-                    core\stub($replacedPrimitive, $primitive);
+                } elseif ($replacedPrimitive instanceof opal\schema\IMultiFieldPrimitive) {
+                    Glitch::incomplete([$replacedPrimitive, $primitive]);
+                } elseif ($primitive instanceof opal\schema\IMultiFieldPrimitive) {
+                    Glitch::incomplete([$replacedPrimitive, $primitive]);
                 } else {
-                    if($oldName != $name && $this->_targetSchema->hasField($replacedPrimitive->getName())) {
+                    if ($oldName != $name && $this->_targetSchema->hasField($replacedPrimitive->getName())) {
                         $this->_targetSchema->renameField(
                             $replacedPrimitive->getName(),
                             $primitive->getName()
@@ -214,8 +220,8 @@ abstract class Base implements axis\schema\ITranslator {
                     );
                 }
             } else {
-                if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
-                    foreach($primitive->getPrimitives() as $innerPrimitive) {
+                if ($primitive instanceof opal\schema\IMultiFieldPrimitive) {
+                    foreach ($primitive->getPrimitives() as $innerPrimitive) {
                         $this->_targetSchema->replacePreparedField(
                             $this->_createField($innerPrimitive)
                         );
@@ -253,16 +259,16 @@ abstract class Base implements axis\schema\ITranslator {
         }
 
         // Add fields
-        foreach($this->_axisSchema->getFieldsToAdd() as $name => $axisField) {
+        foreach ($this->_axisSchema->getFieldsToAdd() as $name => $axisField) {
             $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
 
-            if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
-                foreach($primitive->getPrimitives() as $name => $child) {
+            if ($primitive instanceof opal\schema\IMultiFieldPrimitive) {
+                foreach ($primitive->getPrimitives() as $name => $child) {
                     $this->_targetSchema->addPreparedField(
                         $this->_createField($child)
                     );
                 }
-            } else if($axisField instanceof opal\schema\INullPrimitiveField) {
+            } elseif ($axisField instanceof opal\schema\INullPrimitiveField) {
                 continue;
             } else {
                 $this->_targetSchema->addPreparedField(
@@ -272,9 +278,9 @@ abstract class Base implements axis\schema\ITranslator {
         }
 
 
-        if($supportsIndexes) {
+        if ($supportsIndexes) {
             // Update indexes
-            foreach($this->_axisSchema->getIndexesToUpdate() as $name => $axisIndex) {
+            foreach ($this->_axisSchema->getIndexesToUpdate() as $name => $axisIndex) {
                 $isPrimary = $axisIndex === $axisPrimaryIndex;
                 $newSet = $this->_createIndexes($axisIndex, $isPrimary);
 
@@ -283,19 +289,19 @@ abstract class Base implements axis\schema\ITranslator {
 
                 $oldSet = $this->_createIndexes($oldIndex, $isPrimary, true);
 
-                foreach($oldSet as $i => $oldInnerIndex) {
+                foreach ($oldSet as $i => $oldInnerIndex) {
                     $oldName = $oldInnerIndex->getName();
                     $newName = $newSet[$i]->getName();
 
-                    if($oldName != $newName) {
+                    if ($oldName != $newName) {
                         $this->_targetSchema->renameIndex($oldName, $newName);
                     }
                 }
 
-                foreach($newSet as $newIndex) {
+                foreach ($newSet as $newIndex) {
                     $this->_targetSchema->replacePreparedIndex($newIndex);
 
-                    if($isPrimary) {
+                    if ($isPrimary) {
                         $this->_targetSchema->setPrimaryIndex($newIndex);
                     }
                 }
@@ -303,24 +309,24 @@ abstract class Base implements axis\schema\ITranslator {
 
 
             // Add indexes
-            foreach($this->_axisSchema->getIndexesToAdd() as $name => $axisIndex) {
+            foreach ($this->_axisSchema->getIndexesToAdd() as $name => $axisIndex) {
                 $isPrimary = $axisIndex === $axisPrimaryIndex;
                 $targetIndex = null;
 
-                foreach($this->_createIndexes($axisIndex, $isPrimary) as $newIndex) {
+                foreach ($this->_createIndexes($axisIndex, $isPrimary) as $newIndex) {
                     $this->_targetSchema->addPreparedIndex($newIndex);
 
-                    if(!$targetIndex) {
+                    if (!$targetIndex) {
                         $targetIndex = $newIndex;
                     }
                 }
 
-                if($isPrimary) {
-                    if($targetPrimaryIndex) {
+                if ($isPrimary) {
+                    if ($targetPrimaryIndex) {
                         $newName = $this->_getIndexName($axisIndex, false);
                         $oldName = $targetPrimaryIndex->getName();
 
-                        if($newName != $oldName) {
+                        if ($newName != $oldName) {
                             $this->_targetSchema->renameIndex($oldName, $newName);
                         }
                     }
@@ -333,12 +339,13 @@ abstract class Base implements axis\schema\ITranslator {
         return $this->_targetSchema;
     }
 
-// Primitives
-    protected function _createField(opal\schema\IPrimitive $primitive) {
+    // Primitives
+    protected function _createField(opal\schema\IPrimitive $primitive)
+    {
         $type = $primitive->getType();
         $func = '_create'.$type.'Field';
 
-        if(!method_exists($this, $func)) {
+        if (!method_exists($this, $func)) {
             throw new axis\schema\RuntimeException(
                 'Primitive '.$type.' is currently not supported by RDBMS based tables, for field '.$primitive->getName()
             );
@@ -370,35 +377,36 @@ abstract class Base implements axis\schema\ITranslator {
 
 
 
-// Indexes
-    protected function _createIndexes(opal\schema\IIndex $axisIndex, $isPrimary, $forChanges=false) {
+    // Indexes
+    protected function _createIndexes(opal\schema\IIndex $axisIndex, $isPrimary, $forChanges=false)
+    {
         $output = [];
         $fieldReferences = $axisIndex->getFieldReferences();
 
-        if($axisIndex->isSingleMultiPrimitiveField() && !$axisIndex->isUnique()) {
+        if ($axisIndex->isSingleMultiPrimitiveField() && !$axisIndex->isUnique()) {
             $axisField = $fieldReferences[0]->getField();
 
-            if($forChanges) {
+            if ($forChanges) {
                 $name = $axisField->getName();
                 $oldName = $this->_axisSchema->getOriginalFieldNameFor($name);
 
-                if($field = $this->_axisSchema->getReplacedField($oldName)) {
+                if ($field = $this->_axisSchema->getReplacedField($oldName)) {
                     $axisField = $field;
                 }
             }
 
             $primitive = null;
 
-            if($forChanges) {
+            if ($forChanges) {
                 $primitive = $axisField->getReplacedPrimitive($this->_unit, $this->_axisSchema);
             }
 
-            if(!$primitive) {
+            if (!$primitive) {
                 $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
             }
 
-            if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
-                foreach($primitive->getPrimitives() as $name => $child) {
+            if ($primitive instanceof opal\schema\IMultiFieldPrimitive) {
+                foreach ($primitive->getPrimitives() as $name => $child) {
                     $output[] = $this->_targetSchema->createIndex($this->_getIndexName($axisIndex, $isPrimary, $child), [])
                         ->addField(
                             $forChanges ?
@@ -416,24 +424,24 @@ abstract class Base implements axis\schema\ITranslator {
         $targetIndex = $this->_targetSchema->createIndex($this->_getIndexName($axisIndex, $isPrimary), [])
             ->isUnique($axisIndex->isUnique());
 
-        foreach($fieldReferences as $ref) {
+        foreach ($fieldReferences as $ref) {
             $axisField = $ref->getField();
             $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
 
-            if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
-                foreach($primitive->getPrimitives() as $name => $child) {
+            if ($primitive instanceof opal\schema\IMultiFieldPrimitive) {
+                foreach ($primitive->getPrimitives() as $name => $child) {
                     $targetIndex->addField(
                         $this->_targetSchema->getField($child->getName()),
                         $ref->getSize(),
                         $ref->isDescending()
                     );
                 }
-            } else if($axisField instanceof opal\schema\INullPrimitiveField) {
+            } elseif ($axisField instanceof opal\schema\INullPrimitiveField) {
                 throw new axis\LogicException(
                     'You cannot put indexes on NullPrimitive fields'
                 );
             } else {
-                if(!$indexField = $this->_targetSchema->getField($primitive->getName())) {
+                if (!$indexField = $this->_targetSchema->getField($primitive->getName())) {
                     throw new axis\LogicException(
                         'Unable to find index field '.$primitive->getName()
                     );
@@ -450,8 +458,9 @@ abstract class Base implements axis\schema\ITranslator {
         return [$targetIndex];
     }
 
-    protected function _getIndexName(opal\schema\IIndex $axisIndex, $isPrimary, opal\schema\IPrimitive $primitive=null) {
-        if($primitive) {
+    protected function _getIndexName(opal\schema\IIndex $axisIndex, $isPrimary, opal\schema\IPrimitive $primitive=null)
+    {
+        if ($primitive) {
             return 'idx_'.$primitive->getName();
         } else {
             return 'idx_'.$axisIndex->getName();

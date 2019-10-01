@@ -729,7 +729,7 @@ trait TForm_ValueListSelectorDelegate
             $selection = $selection->getPrimaryKeySet();
         } elseif ($selection instanceof opal\record\IPartial) {
             if ($selection->isBridge()) {
-                core\stub($selection);
+                Glitch::incomplete($selection);
             } else {
                 $selection = $selection->getPrimaryKeySet();
             }

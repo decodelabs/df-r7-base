@@ -117,7 +117,7 @@ class TaskBackup extends arch\node\Task
         if ($unit instanceof opal\query\IAdapter) {
             return $this->_getBackupAdapterFromQuerySourceUnit($unit);
         } else {
-            core\stub($unit);
+            Glitch::incomplete($unit);
         }
     }
 

@@ -1055,7 +1055,7 @@ class Tree implements ITree, core\IDumpable
     {
         if ($embedded) {
             // TODO: return embedded xml
-            core\stub('Strip header from output xml');
+            Glitch::incomplete('Strip header from output xml');
         }
 
         return $this->_element->ownerDocument->saveXML();

@@ -11,19 +11,22 @@ use df\spur;
 use df\flex;
 use df\halo;
 
-class Bridge implements IBridge {
-
+class Bridge implements IBridge
+{
     protected $_nodePath;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->_nodePath = df\Launchpad::$app->getLocalDataPath().'/node';
     }
 
-    public function find($name) {
+    public function find($name)
+    {
         return is_file($this->_nodePath.'/node_modules/'.$name.'/package.json');
     }
 
-    public function npmInstall($name) {
+    public function npmInstall($name)
+    {
         core\fs\Dir::create($this->_nodePath);
 
         $result = halo\process\Base::newLauncher('npm', [
@@ -34,19 +37,21 @@ class Bridge implements IBridge {
             ->setWorkingDirectory($this->_nodePath)
             ->launch();
 
-        if($result->hasError()) {
+        if ($result->hasError()) {
             throw new RuntimeException($result->getError());
         }
 
         return $this;
     }
 
-    public function execute($path, $data) {
+    public function execute($path, $data)
+    {
         core\fs\Dir::create($this->_nodePath);
-        core\stub($path);
+        Glitch::incomplete($path);
     }
 
-    public function evaluate($js, $data=null) {
+    public function evaluate($js, $data=null)
+    {
         core\fs\Dir::create($this->_nodePath);
 
         $payload = flex\Json::toString([
@@ -54,7 +59,7 @@ class Bridge implements IBridge {
             'data' => $data
         ]);
 
-        if(!is_file($this->_nodePath.'/evaluate.js')) {
+        if (!is_file($this->_nodePath.'/evaluate.js')) {
             core\fs\File::copy(__DIR__.'/evaluate.js', $this->_nodePath.'/evaluate.js');
         }
 
@@ -62,17 +67,17 @@ class Bridge implements IBridge {
                 $this->_nodePath.'/evaluate.js'
             ])
             ->setWorkingDirectory($this->_nodePath)
-            ->setGenerator(function() use($payload) {
+            ->setGenerator(function () use ($payload) {
                 return $payload;
             })
             ->launch();
 
         $output = $result->getOutput();
 
-        if($result->hasError() && empty($output)) {
+        if ($result->hasError() && empty($output)) {
             $error = $result->getError();
 
-            if(!preg_match('/deprecat/i', $error)) {
+            if (!preg_match('/deprecat/i', $error)) {
                 throw new RuntimeException($error);
             } else {
                 core\logException($e);

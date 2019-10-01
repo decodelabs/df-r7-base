@@ -10,8 +10,8 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class Base implements ISchema, core\IDumpable {
-
+class Base implements ISchema, core\IDumpable
+{
     use opal\schema\TSchema;
     use opal\schema\TSchema_FieldProvider;
     use opal\schema\TSchema_IndexProvider;
@@ -28,41 +28,49 @@ class Base implements ISchema, core\IDumpable {
     ];
 
 
-    public function __construct(axis\ISchemaBasedStorageUnit $unit, $name) {
+    public function __construct(axis\ISchemaBasedStorageUnit $unit, $name)
+    {
         $this->_unitType = $unit->getUnitType();
         $this->_unitId = $unit->getUnitId();
 
         $this->setName($name);
     }
 
-    public function getUnitType() {
+    public function getUnitType()
+    {
         return $this->_unitType;
     }
 
-    public function getUnitId() {
+    public function getUnitId()
+    {
         return $this->_unitId;
     }
 
-    public function iterateVersion() {
+    public function iterateVersion()
+    {
         $this->_version++;
         return $this;
     }
 
-    public function getVersion(): int {
+    public function getVersion(): int
+    {
         return $this->_version;
     }
 
-    public function hasChanged() {
+    public function hasChanged()
+    {
         return $this->_hasOptionChanges()
             || $this->_hasFieldChanges()
             || $this->_hasIndexChanges();
     }
 
-    public function markAsChanged() {
-        core\stub();
+    public function markAsChanged()
+    {
+        Glitch::incomplete();
     }
 
-    public function acceptChanges() {
+    public function acceptChanges()
+    {
         $this->_acceptOptionChanges();
         $this->_acceptFieldChanges();
         $this->_acceptIndexChanges();
@@ -70,24 +78,28 @@ class Base implements ISchema, core\IDumpable {
         return $this;
     }
 
-    public function _createField($name, $type, array $args) {
+    public function _createField($name, $type, array $args)
+    {
         return axis\schema\field\Base::factory($this, $name, $type, $args);
     }
 
-    public function _createFieldFromStorageArray(array $data) {
+    public function _createFieldFromStorageArray(array $data)
+    {
         return axis\schema\field\Base::fromStorageArray($this, $data);
     }
 
 
-    public function _createIndex($name, $fields=null) {
+    public function _createIndex($name, $fields=null)
+    {
         return new axis\schema\constraint\Index($this, $name, $fields);
     }
 
-    protected function _validateIndex(opal\schema\IIndex $index) {
+    protected function _validateIndex(opal\schema\IIndex $index)
+    {
         $fields = $index->getFields();
 
-        foreach($fields as $name => $field) {
-            if($field instanceof opal\schema\INullPrimitiveField) {
+        foreach ($fields as $name => $field) {
+            if ($field instanceof opal\schema\INullPrimitiveField) {
                 throw new opal\schema\RuntimeException(
                     'Indexes cannot be defined for NullPrimitive fields ('.$this->getName().'.'.$name.')'
                 );
@@ -98,14 +110,16 @@ class Base implements ISchema, core\IDumpable {
     }
 
 
-    public function _createIndexFromStorageArray(array $data) {
+    public function _createIndexFromStorageArray(array $data)
+    {
         return axis\schema\constraint\Index::fromStorageArray($this, $data);
     }
 
 
 
-    public function requiresTransactions(bool $flag=null) {
-        if($flag !== null) {
+    public function requiresTransactions(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_requiresTransactions = $flag;
             return $this;
         }
@@ -115,42 +129,43 @@ class Base implements ISchema, core\IDumpable {
 
 
 
-// Validation
-    public function sanitize(axis\ISchemaBasedStorageUnit $unit) {
-        foreach($this->_fields as $field) {
-            if($field instanceof axis\schema\IField) {
+    // Validation
+    public function sanitize(axis\ISchemaBasedStorageUnit $unit)
+    {
+        foreach ($this->_fields as $field) {
+            if ($field instanceof axis\schema\IField) {
                 $field->sanitize($unit, $this);
             }
 
-            if($field instanceof axis\schema\IAutoIndexField) {
+            if ($field instanceof axis\schema\IAutoIndexField) {
                 $newName = $field->getName();
                 $oldName = $this->getOriginalFieldNameFor($newName);
 
-                if($newName != $oldName) {
+                if ($newName != $oldName) {
                     $this->renameIndex($oldName, $newName);
                 }
 
-                if(!$field->shouldBeIndexed()) {
+                if (!$field->shouldBeIndexed()) {
                     $this->removeIndex($newName);
                     continue;
                 }
 
-                if(!$index = $this->getIndex($newName)) {
+                if (!$index = $this->getIndex($newName)) {
                     $index = $this->addIndex($newName, $field);
                 }
 
-                if($field instanceof axis\schema\IAutoUniqueField) {
+                if ($field instanceof axis\schema\IAutoUniqueField) {
                     $unique = $field->shouldBeUnique();
                     $index->isUnique($unique);
 
-                    if(!$unique) {
+                    if (!$unique) {
                         continue;
                     }
                 }
 
-                if($field instanceof axis\schema\IAutoPrimaryField) {
-                    if(!$field->shouldBePrimary()) {
-                        if($this->getPrimaryIndex() === $index) {
+                if ($field instanceof axis\schema\IAutoPrimaryField) {
+                    if (!$field->shouldBePrimary()) {
+                        if ($this->getPrimaryIndex() === $index) {
                             $this->setPrimaryIndex(null);
                         }
 
@@ -165,9 +180,10 @@ class Base implements ISchema, core\IDumpable {
         return $this;
     }
 
-    public function validate(axis\ISchemaBasedStorageUnit $unit) {
-        foreach($this->_fields as $field) {
-            if($field instanceof axis\schema\IField) {
+    public function validate(axis\ISchemaBasedStorageUnit $unit)
+    {
+        foreach ($this->_fields as $field) {
+            if ($field instanceof axis\schema\IField) {
                 $field->validate($unit, $this);
             }
         }
@@ -177,20 +193,21 @@ class Base implements ISchema, core\IDumpable {
 
 
 
-// Fields
-    public function getPrimitiveFieldNames() {
+    // Fields
+    public function getPrimitiveFieldNames()
+    {
         $output = [];
 
-        foreach($this->_fields as $field) {
-            if($field instanceof opal\schema\IMultiPrimitiveField) {
+        foreach ($this->_fields as $field) {
+            if ($field instanceof opal\schema\IMultiPrimitiveField) {
                 $names = $field->getPrimitiveFieldNames();
 
-                if(!empty($names)) {
-                    foreach($names as $name) {
+                if (!empty($names)) {
+                    foreach ($names as $name) {
                         $output[] = $name;
                     }
                 }
-            } else if($field instanceof opal\schema\INullPrimitiveField) {
+            } elseif ($field instanceof opal\schema\INullPrimitiveField) {
                 continue;
             } else {
                 $output[] = $field->getName();
@@ -201,9 +218,10 @@ class Base implements ISchema, core\IDumpable {
     }
 
 
-// Ext. Serialize
-    public static function fromJson(opal\schema\ISchemaContext $unit, $json) {
-        if(!$data = json_decode($json, true)) {
+    // Ext. Serialize
+    public static function fromJson(opal\schema\ISchemaContext $unit, $json)
+    {
+        if (!$data = json_decode($json, true)) {
             throw new RuntimeException(
                 'Invalid json schema representation'
             );
@@ -224,14 +242,15 @@ class Base implements ISchema, core\IDumpable {
         return $output;
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         $output = [
             'vsn' => $this->_version,
             'utp' => $this->_unitType,
             'uid' => $this->_unitId
         ];
 
-        if(!$this->_requiresTransactions) {
+        if (!$this->_requiresTransactions) {
             $output['rtr'] = false;
         }
 

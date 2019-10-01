@@ -10,8 +10,8 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class RadioGroup extends Base implements IUngroupedSelectionInputWidget, core\IDumpable {
-
+class RadioGroup extends Base implements IUngroupedSelectionInputWidget, core\IDumpable
+{
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_UngroupedSelectionInput;
@@ -27,18 +27,20 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, core\ID
     protected $_labelClass = null;
     protected $_emptyLabel = null;
 
-    public function __construct(arch\IContext $context, $name, $value=null, $options=null, $labelsAsValues=false) {
+    public function __construct(arch\IContext $context, $name, $value=null, $options=null, $labelsAsValues=false)
+    {
         parent::__construct($context);
 
         $this->setName($name);
         $this->setValue($value);
 
-        if($options !== null) {
+        if ($options !== null) {
             $this->addOptions($options, $labelsAsValues);
         }
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
         $optionList = new aura\html\ElementContent();
         $selectionFound = false;
@@ -47,23 +49,22 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, core\ID
         $id = $tag->getId();
         $options = $this->_options;
 
-        if($isRadio) {
-            if($this->_emptyLabel !== null && !$this->_isRequired) {
+        if ($isRadio) {
+            if ($this->_emptyLabel !== null && !$this->_isRequired) {
                 $options[static::EMPTY_PLACEHOLDER] = $this->_emptyLabel;
             }
 
             $currValue = $this->getValue()->getValue();
-            //core\debug()->dump($currValue);
 
-            if(!strlen($currValue) && $currValue !== false) {
+            if (!strlen($currValue) && $currValue !== false) {
                 $this->getValue()->setValue(null);
             }
         }
 
-        foreach($options as $value => $label) {
+        foreach ($options as $value => $label) {
             $labelTag = new aura\html\Element('label.'.static::WIDGET_CLASS);
 
-            if($this->_labelClass) {
+            if ($this->_labelClass) {
                 $labelTag->addClass($this->_labelClass);
             }
 
@@ -74,27 +75,27 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, core\ID
             $this->_applyFormDataAttributes($inputTag);
             $this->_applyInputAttributes($inputTag);
 
-            if($value === static::EMPTY_PLACEHOLDER || !strlen($value)) {
+            if ($value === static::EMPTY_PLACEHOLDER || !strlen($value)) {
                 $value = null;
             }
 
             $inputTag->setAttribute('value', $value ?? '');
             $inputId = null;
 
-            if($id !== null) {
+            if ($id !== null) {
                 $inputId = $id.'-'.$this->_inputIdCounter++;
                 $labelTag->setAttribute('for', $inputId);
                 $inputTag->setId($inputId);
             }
 
-            if(!$selectionFound && $this->_checkSelected($value, $selectionFound)) {
+            if (!$selectionFound && $this->_checkSelected($value, $selectionFound)) {
                 $inputTag->setAttribute('checked', 'checked');
             }
 
-            if($optionRenderer = $this->_optionRenderer) {
+            if ($optionRenderer = $this->_optionRenderer) {
                 $optionRenderer($labelTag, $value, $label);
             } else {
-                if($this->_shouldWrapBody) {
+                if ($this->_shouldWrapBody) {
                     $label = new aura\html\Element('span', $label);
                 }
 
@@ -108,18 +109,20 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, core\ID
         return $tag->renderWith($optionList, true);
     }
 
-    protected function _checkSelected($value, &$selectionFound) {
+    protected function _checkSelected($value, &$selectionFound)
+    {
         $currValue = $this->getValue()->getValue();
 
-        if($currValue === null) {
+        if ($currValue === null) {
             return $selectionFound = $value === null;
         }
 
         return $selectionFound = $value == $currValue;
     }
 
-    public function shouldWrapBody(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldWrapBody(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_shouldWrapBody = $flag;
             return $this;
         }
@@ -127,18 +130,21 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, core\ID
         return $this->_shouldWrapBody;
     }
 
-    public function setLabelClass($class) {
+    public function setLabelClass($class)
+    {
         $this->_labelClass = $class;
         return $this;
     }
 
-    public function getLabelClass() {
+    public function getLabelClass()
+    {
         return $this->_labelClass;
     }
 
-    public function isInline(bool $flag=null) {
-        if($flag !== null) {
-            if($flag) {
+    public function isInline(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if ($flag) {
                 $this->getTag()->addClass('inline');
             } else {
                 $this->getTag()->removeClass('inline');
@@ -150,17 +156,20 @@ class RadioGroup extends Base implements IUngroupedSelectionInputWidget, core\ID
         }
     }
 
-    public function setEmptyLabel($label) {
+    public function setEmptyLabel($label)
+    {
         $this->_emptyLabel = $label;
         return $this;
     }
 
-    public function getEmptyLabel() {
+    public function getEmptyLabel()
+    {
         return $this->_emptyLabel;
     }
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         return [
             'name' => $this->_name,
             'value' => $this->_value,

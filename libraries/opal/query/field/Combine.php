@@ -9,65 +9,78 @@ use df;
 use df\core;
 use df\opal;
 
-class Combine implements opal\query\ICombineField, core\IDumpable {
-
+class Combine implements opal\query\ICombineField, core\IDumpable
+{
     use opal\query\TField;
 
     protected $_name;
     protected $_combine;
 
-    public function __construct(string $name, opal\query\ICombineQuery $combine) {
+    public function __construct(string $name, opal\query\ICombineQuery $combine)
+    {
         $this->_name = $name;
         $this->_combine = $combine;
     }
 
-    public function getSource() {
+    public function getSource()
+    {
         return $this->_combine->getSource();
     }
 
-    public function getSourceAlias() {
+    public function getSourceAlias()
+    {
         return $this->_combine->getSourceAlias();
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function getQualifiedName() {
+    public function getQualifiedName()
+    {
         return $this->_combine->getParentQuery()->getSourceAlias().'.'.$this->_name;
     }
 
-    public function setAlias($alias) {
+    public function setAlias($alias)
+    {
         $this->_name = $alias;
         return $this;
     }
 
-    public function getAlias() {
+    public function getAlias()
+    {
         return $this->_name;
     }
 
-    public function hasDiscreetAlias() {
+    public function hasDiscreetAlias()
+    {
         return false;
     }
 
-    public function dereference() {
+    public function dereference()
+    {
         return [$this];
     }
 
-    public function isOutputField() {
+    public function isOutputField()
+    {
         return true;
     }
 
-    public function getCombine() {
+    public function getCombine()
+    {
         return $this->_combine;
     }
 
-    public function rewriteAsDerived(opal\query\ISource $source) {
-        core\stub($source);
+    public function rewriteAsDerived(opal\query\ISource $source)
+    {
+        Glitch::incomplete($source);
     }
 
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return 'combine('.$this->getQualifiedName().', ['.implode(', ', array_keys($this->_combine->getFields())).'])';
     }
 }

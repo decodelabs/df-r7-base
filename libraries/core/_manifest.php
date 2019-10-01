@@ -116,7 +116,6 @@ trait TStringProvider
             return $this->toString();
         } catch (\Throwable $e) {
             core\logException($e);
-            core\debug()->exception($e);
             return '';
         }
     }
@@ -189,7 +188,7 @@ trait TValueMap
             } elseif (is_array($source)) {
                 $value = $source[$fromField] ?? null;
             } else {
-                core\stub($source);
+                Glitch::incomplete($source);
             }
 
             if ($shouldImport) {
@@ -378,11 +377,6 @@ interface IApp
     public function removeRegistryObject(string $key);
     public function findRegistryObjects(string $beginningWith): array;
     public function getRegistryObjects(): array;
-
-
-    // Errors
-    public static function handleError(int $errorNumber, string $errorMessage, string $fileName, int $lineNumber): void;
-    public static function handleException(\Throwable $e): void;
 }
 
 
@@ -810,41 +804,8 @@ if (!df\Launchpad::$isCompiled) {
 
 
 // Debug
-function stub(...$args)
-{
-    return df\Launchpad::getDebugContext()->addStub(
-            $args,
-            core\debug\StackCall::factory(1),
-            true
-        )
-        ->render();
-}
-
-function dump(...$args)
-{
-    return df\Launchpad::getDebugContext()->addDumpList(
-            $args,
-            core\debug\StackCall::factory(1),
-            false,
-            true
-        )
-        ->render();
-}
-
-function debug()
-{
-    return df\Launchpad::getDebugContext();
-}
-
-
 function logException(\Throwable $exception, $request=null)
 {
     // Swallow?
     return core\log\Manager::getInstance()->logException($exception, $request);
-}
-
-function logDeprecated($message, $request=null)
-{
-    // Swallow?
-    return core\log\Manager::getInstance()->logDeprecated($message, $request);
 }

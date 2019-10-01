@@ -83,7 +83,7 @@ class Index implements opal\search\IIndex
             $id = $id->getId();
         }
 
-        core\stub($id);
+        Glitch::incomplete($id);
     }
 
     public function hasDocument($id)
@@ -92,12 +92,12 @@ class Index implements opal\search\IIndex
             $id = $id->getId();
         }
 
-        core\stub($id);
+        Glitch::incomplete($id);
     }
 
     public function count()
     {
-        core\stub();
+        Glitch::incomplete();
     }
 
 

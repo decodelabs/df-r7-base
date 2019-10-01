@@ -37,11 +37,9 @@ class TaskDefault extends arch\node\Base
             $command = implode(' ', array_slice($_SERVER['argv'], 1));
             $this->logs->logException($exception, $command);
         } catch (\Throwable $e) {
-            core\debug()->exception($e);
+            Glitch::dump($e);
         }
 
-        core\debug()
-            ->exception($exception)
-            ->render();
+        Glitch::dumpException($exception);
     }
 }

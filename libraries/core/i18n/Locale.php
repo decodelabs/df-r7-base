@@ -7,92 +7,98 @@ namespace df\core\i18n;
 
 use df\core;
 
-class Locale implements ILocale, \Serializable, core\IDumpable {
-
+class Locale implements ILocale, \Serializable, core\IDumpable
+{
     protected $_language;
     protected $_script;
     protected $_region;
     protected $_variants = [];
     protected $_keywords = [];
 
-    public static function factory($locale) {
-        if($locale instanceof ILocale) {
+    public static function factory($locale)
+    {
+        if ($locale instanceof ILocale) {
             return $locale;
         }
 
-        if($locale === null || $locale === true) {
+        if ($locale === null || $locale === true) {
             return Manager::getInstance()->getLocale();
         }
 
         return new self($locale);
     }
 
-    public static function setCurrent($locale) {
+    public static function setCurrent($locale)
+    {
         return Manager::getInstance()->setLocale($locale);
     }
 
-    public static function getCurrent() {
+    public static function getCurrent()
+    {
         return Manager::getInstance()->getLocale();
     }
 
-    public function __construct($locale) {
+    public function __construct($locale)
+    {
         $parts = \Locale::parseLocale((string)$locale);
 
-        foreach($parts as $key => $part) {
-            if($key == 'language') {
+        foreach ($parts as $key => $part) {
+            if ($key == 'language') {
                 $this->_language = $part;
-            } else if($key == 'script') {
+            } elseif ($key == 'script') {
                 $this->_script = $part;
-            } else if($key == 'region') {
+            } elseif ($key == 'region') {
                 $this->_region = $part;
-            } else if(substr($key, 0, 7) == 'variant') {
+            } elseif (substr($key, 0, 7) == 'variant') {
                 $this->_variants[] = $part;
             }
         }
 
-        if($keywords = \Locale::getKeywords((string)$locale)) {
+        if ($keywords = \Locale::getKeywords((string)$locale)) {
             $this->_keywords = $keywords;
         }
     }
 
 
-// Serialize
-    public function serialize() {
+    // Serialize
+    public function serialize()
+    {
         return $this->toString();
     }
 
-    public function unserialize($data) {
+    public function unserialize($data)
+    {
         $this->__construct($data);
     }
 
 
-// Accessors
-    public function toString(): string {
+    // Accessors
+    public function toString(): string
+    {
         try {
             $values = ['language' => $this->_language];
 
-            if($this->_region !== null) {
+            if ($this->_region !== null) {
                 $values['region'] = $this->_region;
             }
 
-            if($this->_script !== null) {
+            if ($this->_script !== null) {
                 $values['script'] = $this->_script;
             }
 
-            if(!empty($this->_variants)) {
+            if (!empty($this->_variants)) {
                 $values['variant'] = $this->_variants;
             }
 
             $output = \Locale::composeLocale($values);
-        } catch(\Throwable $e) {
-            core\debug()->exception($e);
+        } catch (\Throwable $e) {
             return $this->_language.'_'.$this->_region;
         }
 
-        if(!empty($this->_keywords)) {
+        if (!empty($this->_keywords)) {
             $keywords = [];
 
-            foreach($this->_keywords as $key => $value){
+            foreach ($this->_keywords as $key => $value) {
                 $keywords[] = $key.'='.$value;
             }
 
@@ -102,16 +108,18 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public function __toString(): string {
+    public function __toString(): string
+    {
         try {
             return (string)$this->toString();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return $this->_language.'_'.$this->_region;
         }
     }
 
-    public function getDisplayName($formatLocale=null) {
-        if($formatLocale === true) {
+    public function getDisplayName($formatLocale=null)
+    {
+        if ($formatLocale === true) {
             $formatLocale = $this;
         }
 
@@ -120,12 +128,14 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
     }
 
 
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this->_language;
     }
 
-    public function getDisplayLanguage($formatLocale=null) {
-        if($formatLocale === true) {
+    public function getDisplayLanguage($formatLocale=null)
+    {
+        if ($formatLocale === true) {
             $formatLocale = $this;
         }
 
@@ -133,12 +143,14 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
         return \Locale::getDisplayLanguage((string)$this, (string)$formatLocale);
     }
 
-    public function getScript() {
+    public function getScript()
+    {
         return $this->_script;
     }
 
-    public function getDisplayScript($formatLocale=null) {
-        if($formatLocale === true) {
+    public function getDisplayScript($formatLocale=null)
+    {
+        if ($formatLocale === true) {
             $formatLocale = $this;
         }
 
@@ -146,12 +158,14 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
         return \Locale::getDisplayScript((string)$this, (string)$formatLocale);
     }
 
-    public function getRegion() {
+    public function getRegion()
+    {
         return $this->_region;
     }
 
-    public function getDisplayRegion($formatLocale=null) {
-        if($formatLocale === true) {
+    public function getDisplayRegion($formatLocale=null)
+    {
+        if ($formatLocale === true) {
             $formatLocale = $this;
         }
 
@@ -159,12 +173,14 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
         return \Locale::getDisplayRegion((string)$this, (string)$formatLocale);
     }
 
-    public function getVariants() {
+    public function getVariants()
+    {
         return $this->_variants;
     }
 
-    public function getDisplayVariants($formatLocale=null) {
-        if($formatLocale === true) {
+    public function getDisplayVariants($formatLocale=null)
+    {
+        if ($formatLocale === true) {
             $formatLocale = $this;
         }
 
@@ -172,13 +188,15 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
         return \Locale::getDisplayVariant((string)$this, (string)$formatLocale);
     }
 
-    public function getKeywords() {
+    public function getKeywords()
+    {
         return $this->_keywords;
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    // Dump
+    public function getDumpProperties()
+    {
         return $this->__toString();
     }
 }

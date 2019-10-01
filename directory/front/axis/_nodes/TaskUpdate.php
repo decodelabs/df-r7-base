@@ -12,18 +12,19 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskUpdate extends arch\node\Task {
-
+class TaskUpdate extends arch\node\Task
+{
     protected $_schemaManager;
 
-    public function execute() {
+    public function execute()
+    {
         $this->io->write('Probing units...');
 
         $probe = new axis\introspector\Probe();
         $units = $probe->probeStorageUnits();
 
-        foreach($units as $key => $inspector) {
-            if(!$inspector->canUpdateSchema()) {
+        foreach ($units as $key => $inspector) {
+            if (!$inspector->canUpdateSchema()) {
                 unset($units[$key]);
             }
         }
@@ -32,11 +33,11 @@ class TaskUpdate extends arch\node\Task {
 
         $this->io->writeLine(' found '.$count.' to update');
 
-        if(!$count) {
+        if (!$count) {
             return;
         }
 
-        if(!isset($this->request['noBackup'])) {
+        if (!isset($this->request['noBackup'])) {
             $this->io->writeLine('Creating full backup...');
             $this->io->writeLine();
             $this->runChild('axis/backup');
@@ -45,7 +46,7 @@ class TaskUpdate extends arch\node\Task {
 
         $this->_schemaManager = axis\schema\Manager::getInstance();
 
-        foreach($units as $inspector) {
+        foreach ($units as $inspector) {
             $this->_update($inspector);
         }
 
@@ -54,7 +55,8 @@ class TaskUpdate extends arch\node\Task {
         axis\schema\Cache::getInstance()->clear();
     }
 
-    protected function _update($inspector) {
+    protected function _update($inspector)
+    {
         $this->io->writeLine('Updating '.$inspector->getId().' schema from v'.$inspector->getSchemaVersion().' to v'.$inspector->getDefinedSchemaVersion());
         $unit = $inspector->getUnit();
 
@@ -63,34 +65,34 @@ class TaskUpdate extends arch\node\Task {
         $unitId = $unit->getUnitId();
         $store = [];
 
-        if($schema->hasPrimaryIndexChanged()) {
-            foreach($this->_schemaManager->fetchStoredUnitList() as $relationUnitId) {
+        if ($schema->hasPrimaryIndexChanged()) {
+            foreach ($this->_schemaManager->fetchStoredUnitList() as $relationUnitId) {
                 $relationUnit = axis\Model::loadUnitFromId($relationUnitId);
                 $relationSchema = $relationUnit->getUnitSchema();
                 $update = false;
 
-                foreach($relationSchema->getFields() as $relationField) {
-                    if(!$relationField instanceof axis\schema\IRelationField
+                foreach ($relationSchema->getFields() as $relationField) {
+                    if (!$relationField instanceof axis\schema\IRelationField
                     || $relationField instanceof opal\schema\INullPrimitiveField
                     || $relationField->getTargetUnitId() != $unitId) {
                         continue;
                     }
 
-                    if($relationField instanceof opal\schema\IOneRelationField) {
+                    if ($relationField instanceof opal\schema\IOneRelationField) {
                         $relationField->markAsChanged();
                         $relationSchema->replacePreparedField($relationField);
                         $update = true;
                     } else {
-                        core\stub($relationField, $relationUnit);
+                        Glitch::incomplete([$relationField, $relationUnit]);
                     }
                 }
 
-                if($update) {
+                if ($update) {
                     $this->io->writeLine('Updating '.$inspector->getId().' relation field on '.$relationUnit->getUnitId());
 
                     $relationSchema->sanitize($relationUnit);
 
-                    if($relationUnit->storageExists()) {
+                    if ($relationUnit->storageExists()) {
                         $relationUnit->updateStorageFromSchema($relationSchema);
                     }
 
@@ -102,7 +104,7 @@ class TaskUpdate extends arch\node\Task {
             }
         }
 
-        if($unit->storageExists()) {
+        if ($unit->storageExists()) {
             $unit->updateStorageFromSchema($schema);
         }
 
@@ -111,7 +113,7 @@ class TaskUpdate extends arch\node\Task {
             'schema' => $schema
         ];
 
-        foreach($store as $unitId => $set) {
+        foreach ($store as $unitId => $set) {
             $this->_schemaManager->store($set['unit'], $set['schema']);
         }
     }

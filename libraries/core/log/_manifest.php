@@ -37,10 +37,6 @@ interface IEntryPoint
     public function addNode(INode $node);
     public function newGroup($title=null, $file=null, $line=null);
 
-    public function dump(...$args);
-    public function addDump($dumpObject, core\debug\IStackCall $stackCall, $deep=false, $critical=true);
-    public function addDumpList(array $dumpObjects, core\debug\IStackCAll $stackCall, $deep=false, $critical=true);
-
     public function exception(\Throwable $exception);
     public function addException(\Throwable $exception);
 
@@ -48,11 +44,7 @@ interface IEntryPoint
     public function todo($message);
     public function warning($message);
     public function error($message);
-    public function deprecated();
     public function addMessage($message, $type, core\debug\IStackCall $stackCall);
-
-    public function stub(...$args);
-    public function addStub(array $dumpObjects, core\debug\IStackCall $stackCall, $critical=true);
 
     public function stackTrace(string $message=null, int $rewind=0);
 }
@@ -64,41 +56,6 @@ trait TEntryPoint
     public function newGroup($title=null, $file=null, $line=null)
     {
         return new core\log\node\Group($title, $file, $line);
-    }
-
-
-    // Dump
-    public function dump(...$args)
-    {
-        return $this->addDumpList($args, core\debug\StackCall::factory(1), false, true);
-    }
-
-    public function addDump($dumpObject, core\debug\IStackCall $stackCall, $deep=false, $critical=true)
-    {
-        if ($dumpObject instanceof \Throwable) {
-            return $this->addException($dumpObject);
-        }
-
-        df\Launchpad::loadBaseClass('core/log/node/Dump');
-        return $this->addNode(new core\log\node\Dump($dumpObject, $deep, $critical, $stackCall->getFile(), $stackCall->getLine()));
-    }
-
-    public function addDumpList(array $dumpObjects, core\debug\IStackCAll $stackCall, $deep=false, $critical=true)
-    {
-        if (count($dumpObjects) == 1) {
-            $object = array_shift($dumpObjects);
-            return $this->addDump($object, $stackCall, $deep, $critical);
-        }
-
-        $group = $this->newGroup('Dump group', $stackCall->getFile(), $stackCall->getLine());
-
-        foreach (array_keys($dumpObjects) as $i) {
-            $group->addDump($dumpObjects[$i], $stackCall, $deep, $critical);
-        }
-
-        $this->addNode($group);
-
-        return $this;
     }
 
 
@@ -138,17 +95,6 @@ trait TEntryPoint
         return $this->addMessage($message, IMessageNode::ERROR, core\debug\StackCall::factory(1));
     }
 
-    public function deprecated()
-    {
-        $call = core\debug\StackCall::factory(1);
-
-        return $this->addMessage(
-            $call->getSignature().' is deprecated',
-            IMessageNode::DEPRECATED,
-            $call
-        );
-    }
-
     public function addMessage($message, $type, core\debug\IStackCall $stackCall)
     {
         df\Launchpad::loadBaseClass('core/log/node/Message');
@@ -157,27 +103,6 @@ trait TEntryPoint
         return $this;
     }
 
-
-    // Stub
-    public function stub(...$args)
-    {
-        return $this->addStub($args, core\debug\StackCall::factory(1), true);
-    }
-
-    public function addStub(array $dumpObjects, core\debug\IStackCall $stackCall, $critical=true)
-    {
-        df\Launchpad::loadBaseClass('core/log/node/Stub');
-
-        $message = $stackCall->getSignature().' is not yet implemented';
-        $stub = new core\log\node\Stub($message, $critical, $stackCall->getFile(), $stackCall->getLine());
-        $this->addNode($stub);
-
-        foreach ($dumpObjects as $dumpObject) {
-            $stub->addDump($dumpObject, $stackCall, false, false);
-        }
-
-        return $this;
-    }
 
     public function stackTrace(string $message=null, int $rewind=0)
     {
@@ -227,7 +152,6 @@ interface IMessageNode extends INode, IMessageProvider
     const TODO = 2;
     const WARNING = 3;
     const ERROR = 4;
-    const DEPRECATED = 5;
 
     public function getType();
 }
@@ -330,7 +254,6 @@ trait TWriter
             case 'todo':
             case 'warning':
             case 'error':
-            case 'deprecated':
                 return $this->writeMessageNode($handler, $node);
 
             case 'stackTrace':
