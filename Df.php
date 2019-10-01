@@ -105,9 +105,7 @@ class Launchpad
         // Glitch
         Glitch::setStartTime($startTime)
             ->registerPathAliases([
-                'vendor' => $appPath.'/vendor',
-                'app' => $appPath,
-                'df-base' => __DIR__
+                'vendor' => $appPath.'/vendor'
             ]);
 
         // Packages
