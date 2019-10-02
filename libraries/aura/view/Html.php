@@ -11,6 +11,8 @@ use df\aura;
 use df\arch;
 use df\flow;
 
+use DecodeLabs\Tagged\Builder\StyleBlock;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -499,7 +501,7 @@ class Html extends Base implements IHtmlView, Inspectable
     public function getStyles()
     {
         if (!$this->_styles) {
-            $this->_styles = new aura\html\StyleBlock();
+            $this->_styles = new StyleBlock();
         }
 
         return $this->_styles;
@@ -522,13 +524,13 @@ class Html extends Base implements IHtmlView, Inspectable
         return $this;
     }
 
-    public function getStyle($key, $default=null)
+    public function getStyle($key)
     {
         if (!$this->_styles) {
             return $default;
         }
 
-        return $this->_styles->get($key, $default);
+        return $this->_styles->get($key);
     }
 
     public function removeStyle(...$keys)
@@ -875,7 +877,7 @@ class Html extends Base implements IHtmlView, Inspectable
 
         // Style
         if ($this->_styles) {
-            $output .= '    '.str_replace("\n", "\n    ", $this->_styles->toString())."\n";
+            $output .= '    '.str_replace("\n", "\n    ", (string)$this->_styles)."\n";
         }
 
         // Js

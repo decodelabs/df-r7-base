@@ -417,8 +417,3 @@ interface IElement extends ITag, IElementContent, IWidgetFinder
 {
     public function setBody($body);
 }
-
-
-interface IStyleBlock extends core\IStringProvider
-{
-}
