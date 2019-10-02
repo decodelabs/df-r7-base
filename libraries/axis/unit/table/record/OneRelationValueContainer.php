@@ -286,9 +286,7 @@ class OneRelationValueContainer implements
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
         if ($this->_record) {
-            $entity
-                ->setValues([$inspector($this->_record)])
-                ->setShowKeys(false);
+            $entity->setSingleValue($inspector($this->_record));
             return;
         }
 

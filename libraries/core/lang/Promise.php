@@ -820,7 +820,7 @@ class Promise implements IPromise, Inspectable
             $entity->setText((string)$this->_error);
             return;
         } elseif ($this->_result) {
-            $entity->setValues([$inspector($this->_result)]);
+            $entity->setSingleValue($inspector($this->_result));
             return;
         }
 

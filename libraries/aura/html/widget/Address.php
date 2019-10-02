@@ -188,7 +188,6 @@ class Address extends Base implements Inspectable
                 '*mode' => $inspector($this->_mode),
                 '%tag' => $inspector($this->getTag())
             ])
-            ->setValues([$inspector($this->_address)])
-            ->setShowKeys(false);
+            ->setSingleValue($inspector($this->_address));
     }
 }

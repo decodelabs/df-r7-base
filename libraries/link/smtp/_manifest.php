@@ -43,9 +43,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity
-            ->setValues([$inspector($this->_value)])
-            ->setShowKeys(false);
+        $entity->setSingleValue($inspector($this->_value));
     }
 }
 

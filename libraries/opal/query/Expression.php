@@ -245,7 +245,6 @@ class Expression_Value implements IExpressionValue, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setValues([$inspector($this->value)])
-            ->setShowKeys(false);
+        $entity->setSingleValue($inspector($this->value));
     }
 }

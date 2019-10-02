@@ -55,8 +55,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setValues([$inspector($this->_location)])
-            ->setShowKeys(false);
+        $entity->setSingleValue($inspector($this->_location));
     }
 }
 
@@ -97,8 +96,7 @@ class UnexpectedTokenException extends \UnexpectedValueException implements
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setValues([$inspector($this->_token)])
-            ->setShowKeys(false);
+        $entity->setSingleValue($inspector($this->_token));
     }
 }
 

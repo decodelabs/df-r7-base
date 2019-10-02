@@ -305,9 +305,7 @@ class ContentPart implements IContentPart, Inspectable
                 $content = strlen($this->_content).' bytes';
             }
 
-            $entity
-                ->setValues([$content])
-                ->setShowKeys(false);
+            $entity->setSingleValue($content);
         }
     }
 }

@@ -697,8 +697,9 @@ class Clause implements opal\query\IClause, Inspectable
         if (is_string($value)) {
             $entity->setDefinition($type.' '.$field.' '.$this->_operator.' '.$value);
         } else {
-            $entity->setDefinition($type.' '.$field.' '.$this->_operator)
-                ->setValues([$inspector($value)]);
+            $entity
+                ->setDefinition($type.' '.$field.' '.$this->_operator)
+                ->setSingleValue($inspector($value));
         }
     }
 }

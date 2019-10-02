@@ -164,8 +164,6 @@ class Stream implements IStreamChannel, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity
-            ->setValues([$inspector($this->_resource)])
-            ->setShowKeys(false);
+        $entity->setSingleValue($inspector($this->_resource));
     }
 }

@@ -88,7 +88,6 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, Inspect
                 '%tag' => $inspector($this->getTag()),
                 '*disposition' => $inspector($this->getDisposition())
             ])
-            ->setValues([$inspector($this->_body)])
-            ->setShowKeys(false);
+            ->setSingleValue($inspector($this->_body));
     }
 }
