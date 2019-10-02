@@ -8,42 +8,49 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-class HeaderMap implements IHeaderMap, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class HeaderMap implements IHeaderMap, Inspectable
+{
     use core\TStringProvider;
     use core\TValueMap;
     use TArrayCollection;
     use TValueMapArrayAccess;
     use TExtricable;
 
-    public static function factory($input) {
-        if($input instanceof IHeaderMap) {
+    public static function factory($input)
+    {
+        if ($input instanceof IHeaderMap) {
             return $input;
         }
 
         return new self($input);
     }
 
-    public function __construct(...$input) {
-        if(!empty($input)) {
+    public function __construct(...$input)
+    {
+        if (!empty($input)) {
             $this->import(...$input);
         }
     }
 
-// Collection
-    public function import(...$input) {
-        foreach($input as $data) {
-            if($data instanceof core\IArrayProvider) {
+    // Collection
+    public function import(...$input)
+    {
+        foreach ($input as $data) {
+            if ($data instanceof core\IArrayProvider) {
                 $data = $data->toArray();
             }
 
-            if(is_string($data)) {
+            if (is_string($data)) {
                 $lines = explode("\n", str_replace("\r", '', $data));
                 $data = [];
                 $last = null;
 
-                foreach($lines as $line) {
-                    if(isset($line{0}) && $line{0} == ' ') {
+                foreach ($lines as $line) {
+                    if (isset($line{0}) && $line{0} == ' ') {
                         $last .= "\r\n".$line;
                         continue;
                     }
@@ -51,7 +58,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
                     $parts = explode(':', $line, 2);
                     $key = trim(array_shift($parts));
 
-                    if(empty($key)) {
+                    if (empty($key)) {
                         continue;
                     }
 
@@ -62,8 +69,8 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
                 unset($last);
             }
 
-            if(is_array($data)) {
-                foreach($data as $key => $value) {
+            if (is_array($data)) {
+                foreach ($data as $key => $value) {
                     $this->set($key, $value);
                 }
             }
@@ -73,25 +80,26 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
     }
 
 
-// Access
-    public function set($key, $value=null) {
-        if(empty($key)) {
+    // Access
+    public function set($key, $value=null)
+    {
+        if (empty($key)) {
             throw new InvalidArgumentException('Invalid header input');
         }
 
         $key = $this->normalizeKey($key);
 
-        if(is_array($value)) {
+        if (is_array($value)) {
             $this->_collection[$key] = [];
 
-            foreach($value as $k => $val) {
+            foreach ($value as $k => $val) {
                 $this->add($key, $val);
             }
 
             return $this;
         }
 
-        if(isset($value)) {
+        if (isset($value)) {
             $this->_collection[$key] = $value;
         } else {
             unset($this->_collection[$key]);
@@ -100,23 +108,24 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return $this;
     }
 
-    public function add($key, $value) {
-        if(empty($key) || (isset($value) && !is_scalar($value))) {
+    public function add($key, $value)
+    {
+        if (empty($key) || (isset($value) && !is_scalar($value))) {
             throw new InvalidArgumentException('Invalid header input');
         }
 
         $key = $this->normalizeKey($key);
 
-        if($value === null) {
+        if ($value === null) {
             return $this;
         }
 
-        if(!isset($this->_collection[$key])) {
+        if (!isset($this->_collection[$key])) {
             $this->_collection[$key] = $value;
             return $this;
         }
 
-        if(!is_array($this->_collection[$key])) {
+        if (!is_array($this->_collection[$key])) {
             $this->_collection[$key] = [$this->_collection[$key]];
         }
 
@@ -125,22 +134,23 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return $this;
     }
 
-    public function append($key, $value) {
-        if(empty($key) || (isset($value) && !is_scalar($value))) {
+    public function append($key, $value)
+    {
+        if (empty($key) || (isset($value) && !is_scalar($value))) {
             throw new InvalidArgumentException('Invalid header input');
         }
 
         $key = $this->normalizeKey($key);
 
-        if($value === null) {
+        if ($value === null) {
             return $this;
         }
 
-        if(!isset($this->_collection[$key])) {
+        if (!isset($this->_collection[$key])) {
             $this->_collection[$key] = '';
         }
 
-        if(is_array($this->_collection[$key])) {
+        if (is_array($this->_collection[$key])) {
             end($this->_collection[$key]);
             $lastKey = key($this->_collection[$key]);
             $this->_collection[$key][$lastKey] .= $value;
@@ -151,42 +161,48 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return $this;
     }
 
-    public function get($key, $default=null) {
+    public function get($key, $default=null)
+    {
         $key = $this->normalizeKey($key);
 
-        if(isset($this->_collection[$key])) {
+        if (isset($this->_collection[$key])) {
             return $this->_collection[$key];
         }
 
         return $default;
     }
 
-    public function setBase($key, $value) {
+    public function setBase($key, $value)
+    {
         $parts = explode(';', $this->get($key, $default), 2);
         $parts[0] = $value;
 
         return $this->set($key, implode(';', $parts));
     }
 
-    public function getBase($key, $default=null) {
+    public function getBase($key, $default=null)
+    {
         $parts = explode(';', $this->get($key, $default), 2);
         return array_shift($parts);
     }
 
-    public function setDelimited($key, $base, array $values) {
+    public function setDelimited($key, $base, array $values)
+    {
         $value = $base.'; '.core\collection\Tree::factory($values)->toArrayDelimitedString(';');
         return $this->set($key, $value);
     }
 
-    public function getDelimited($key): ITree {
+    public function getDelimited($key): ITree
+    {
         $value = $this->get($key);
         return core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
     }
 
-    public function setDelimitedValues($key, array $values) {
+    public function setDelimitedValues($key, array $values)
+    {
         $value = $this->get($key);
 
-        if($value === null) {
+        if ($value === null) {
             return $this;
         }
 
@@ -199,17 +215,19 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return $this->set($key, $value);
     }
 
-    public function getDelimitedValues($key): array {
+    public function getDelimitedValues($key): array
+    {
         $value = $this->get($key);
         $parts = core\collection\Tree::fromArrayDelimitedString('@value='.$value, ';');
         $parts->remove('@value');
         return $parts->toArray();
     }
 
-    public function setDelimitedValue($key, $name, $keyValue) {
+    public function setDelimitedValue($key, $name, $keyValue)
+    {
         $value = $this->get($key);
 
-        if($value === null) {
+        if ($value === null) {
             return $this;
         }
 
@@ -222,10 +240,11 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return $this->set($key, $value);
     }
 
-    public function getDelimitedValue($key, $name, $default=null) {
+    public function getDelimitedValue($key, $name, $default=null)
+    {
         $value = $this->get($key);
 
-        if($value === null) {
+        if ($value === null) {
             return $default;
         }
 
@@ -233,21 +252,23 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return trim($parts->get($name, $default), '"');
     }
 
-    public function hasDelimitedValue($key, $name) {
+    public function hasDelimitedValue($key, $name)
+    {
         $value = $this->get($key);
 
-        if($value === null) {
+        if ($value === null) {
             return false;
         }
 
         return (bool)preg_match('/\;\W*'.preg_quote($name).'=/i', $value);
     }
 
-    public function has(...$keys) {
-        foreach($keys as $key) {
+    public function has(...$keys)
+    {
+        foreach ($keys as $key) {
             $key = $this->normalizeKey($key);
 
-            if(isset($this->_collection[$key])) {
+            if (isset($this->_collection[$key])) {
                 return true;
             }
         }
@@ -255,25 +276,26 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return false;
     }
 
-    public function hasValue($key, $value): bool {
+    public function hasValue($key, $value): bool
+    {
         $key = $this->normalizeKey($key);
 
-        if(!isset($this->_collection[$key])) {
+        if (!isset($this->_collection[$key])) {
             return false;
         }
 
         $comp = $this->_collection[$key];
 
-        if(!is_array($comp)) {
+        if (!is_array($comp)) {
             $comp = [$comp];
         }
 
         $value = strtolower($value);
 
-        foreach($comp as $compVal) {
+        foreach ($comp as $compVal) {
             $compVal = strtolower($compVal);
 
-            if($compVal == $value) {
+            if ($compVal == $value) {
                 return true;
             }
         }
@@ -281,15 +303,17 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return false;
     }
 
-    public function remove(...$keys) {
-        foreach($keys as $key) {
+    public function remove(...$keys)
+    {
+        foreach ($keys as $key) {
             unset($this->_collection[$this->normalizeKey($key)]);
         }
 
         return $this;
     }
 
-    public static function normalizeKey($key) {
+    public static function normalizeKey($key)
+    {
         return str_replace(
             ' ', '-',
             ucwords(strtolower(
@@ -299,27 +323,29 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
     }
 
 
-// Strings
-    public function toString(array $skipKeys=null): string {
+    // Strings
+    public function toString(array $skipKeys=null): string
+    {
         return implode("\r\n", $this->getLines($skipKeys));
     }
 
-    public function getLines(array $skipKeys=null) {
+    public function getLines(array $skipKeys=null)
+    {
         $output = [];
 
-        if($skipKeys) {
-            foreach($skipKeys as $i => $key) {
+        if ($skipKeys) {
+            foreach ($skipKeys as $i => $key) {
                 $skipKeys[$i] = self::normalizeKey($key);
             }
         }
 
-        foreach($this->_collection as $key => $value) {
-            if($skipKeys && in_array($key, $skipKeys)) {
+        foreach ($this->_collection as $key => $value) {
+            if ($skipKeys && in_array($key, $skipKeys)) {
                 continue;
             }
 
-            if(is_array($value)) {
-                foreach($value as $v) {
+            if (is_array($value)) {
+                foreach ($value as $v) {
                     $output[] = $key.': '.$this->_formatValue($key, $v);
                 }
             } else {
@@ -330,8 +356,9 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return $output;
     }
 
-    protected function _formatValue($key, $value) {
-        if($value instanceof core\time\IDate) {
+    protected function _formatValue($key, $value)
+    {
+        if ($value instanceof core\time\IDate) {
             return $value->toTimeZone('GMT')->format('D, d M Y H:i:s \G\M\T');
         }
 
@@ -340,24 +367,26 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
 
 
 
-// Iterator
-    public function current() {
+    // Iterator
+    public function current()
+    {
         $output = current($this->_collection);
 
-        if(is_array($output)) {
+        if (is_array($output)) {
             $output = current($output);
         }
 
         return $output;
     }
 
-    public function next() {
+    public function next()
+    {
         $key = key($this->_collection);
 
-        if(is_array($this->_collection[$key])) {
+        if (is_array($this->_collection[$key])) {
             $output = next($this->_collection[$key]);
 
-            if(key($this->_collection[$key]) !== null) {
+            if (key($this->_collection[$key]) !== null) {
                 return $output;
             }
         }
@@ -365,13 +394,15 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return next($this->_collection);
     }
 
-    public function key() {
+    public function key()
+    {
         return key($this->_collection);
     }
 
-    public function rewind() {
-        foreach($this->_collection as $key => &$value) {
-            if(is_array($value)) {
+    public function rewind()
+    {
+        foreach ($this->_collection as $key => &$value) {
+            if (is_array($value)) {
                 reset($value);
             }
         }
@@ -379,25 +410,17 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return reset($this->_collection);
     }
 
-    public function valid() {
+    public function valid()
+    {
         return key($this->_collection) !== null;
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        $output = [];
-
-        foreach($this->_collection as $key => $value) {
-            if(is_array($value)) {
-                foreach($value as $val) {
-                    $output[] = new core\debug\dumper\Property($key, $val);
-                }
-            } else {
-                $output[] = new core\debug\dumper\Property($key, $value);
-            }
-        }
-
-        return $output;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setValues($inspector->inspectList($this->_collection));
     }
 }

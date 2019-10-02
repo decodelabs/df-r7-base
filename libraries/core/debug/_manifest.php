@@ -8,42 +8,9 @@ namespace df\core\debug;
 use df;
 use df\core;
 
-df\Launchpad::loadBaseClass('core/log/_manifest');
-
-
-
-// Location provider
-interface ILocationProvider {
-    public function getFile(): ?string;
-    public function getLine(): ?int;
-}
-
-trait TLocationProvider {
-
-    protected $_file;
-    protected $_line;
-
-    public function getFile(): ?string {
-        return $this->_file;
-    }
-
-    public function getLine(): ?int {
-        return $this->_line;
-    }
-}
-
-
-// Context
-interface IContext extends core\log\IGroupNode, core\log\IHandler {
-    public function render(): void;
-    public function flush();
-    public function execute();
-}
-
-
-
 // Stack trace
-interface IStackTrace extends core\log\INode, core\IArrayProvider {
+interface IStackTrace extends core\IArrayProvider
+{
     public function getCalls(): array;
     public function getFirstCall(): ?IStackCall;
     public function toJsonArray(): array;
@@ -55,8 +22,8 @@ interface IStackTrace extends core\log\INode, core\IArrayProvider {
 
 
 // Stack call
-interface IStackCall extends ILocationProvider, core\IArrayProvider {
-
+interface IStackCall extends core\IArrayProvider
+{
     const STATIC_METHOD = 1;
     const OBJECT_METHOD = 2;
     const NAMESPACE_FUNCTION = 3;
@@ -84,15 +51,11 @@ interface IStackCall extends ILocationProvider, core\IArrayProvider {
     public function getFunctionName(): ?string;
     public function getSignature(?bool $argString=false): string;
 
+    public function getFile(): ?string;
+    public function getLine(): ?int;
     public function getCallingFile(): ?string;
     public function getCallingLine(): ?int;
 
     public function toJsonArray(): array;
     public function toJson(): string;
-}
-
-
-// Renderer
-interface IRenderer {
-    public function render(): string;
 }

@@ -10,19 +10,21 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskLaunchQueued extends arch\node\Task {
-
+class TaskLaunchQueued extends arch\node\Task
+{
     protected $_log;
     protected $_channel;
     protected $_entry;
     protected $_timer;
 
-    protected function _beforeDispatch() {
+    protected function _beforeDispatch()
+    {
         $this->_channel = (new core\fs\MemoryFile('', 'text/plain'))->setId('buffer');
         $this->io->addChannel($this->_channel);
     }
 
-    public function execute() {
+    public function execute()
+    {
         $this->_entry = $this->data->fetchForAction(
             'axis://task/Queue',
             $this->request['id']
@@ -34,7 +36,7 @@ class TaskLaunchQueued extends arch\node\Task {
             ])
             ->save();
 
-        if(!$this->_entry['lockDate'] || !$this->_entry['lockId']) {
+        if (!$this->_entry['lockDate'] || !$this->_entry['lockId']) {
             $this->_entry->lockDate = 'now';
             $this->_entry->lockId = $this->_log['id'];
             $this->_entry->save();
@@ -44,34 +46,34 @@ class TaskLaunchQueued extends arch\node\Task {
         $this->task->launch($this->_entry['request'], $this->io);
     }
 
-    protected function _afterDispatch($output) {
+    protected function _afterDispatch($output)
+    {
         $this->_finalizeLog();
         $this->_entry->delete();
     }
 
-    public function handleException(\Throwable $e) {
-        $context = new core\debug\Context();
-        $context->exception($e);
-        $exception = (new core\debug\renderer\PlainText($context))->render();
-        $this->_channel->writeError($exception);
+    public function handleException(\Throwable $e)
+    {
+        $this->_channel->writeError((string)$e);
         $this->_finalizeLog();
 
         parent::handleException($e);
     }
 
-    protected function _finalizeLog() {
-        if(!$this->_log || $this->_log->isNew()) {
+    protected function _finalizeLog()
+    {
+        if (!$this->_log || $this->_log->isNew()) {
             return;
         }
 
         $output = $this->_channel->getContents();
         $error = $this->_channel->getErrorBuffer();
 
-        if(!strlen($output)) {
+        if (!strlen($output)) {
             $output = null;
         }
 
-        if(!strlen($error)) {
+        if (!strlen($error)) {
             $error = null;
         }
 

@@ -11,7 +11,11 @@ use df\opal;
 use df\mesh;
 use df\flex;
 
-class SourceManager implements ISourceManager, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class SourceManager implements ISourceManager, Inspectable
 {
     protected $_parent;
     protected $_aliases = [];
@@ -579,20 +583,21 @@ class SourceManager implements ISourceManager, core\IDumpable
     }
 
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $output = [];
+        if ($this->_parent) {
+            $entity->setProperty('*parent', $inspector($this->_parent));
+        }
+
+        $values = [];
 
         foreach ($this->_sources as $alias => $source) {
-            $output[] = new core\debug\dumper\Property($alias, $source->getAdapter());
+            $values[$alias] = $inspector($source->getAdapter());
         }
 
-        if ($this->_parent) {
-            $output[] = new core\debug\dumper\Property('parent', $this->_parent, 'private');
-        }
-
-        return $output;
+        $entity->setValues($values);
     }
 }

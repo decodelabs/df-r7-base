@@ -8,84 +8,83 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-class AttributeTree extends Tree implements IAttributeContainer {
-    
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class AttributeTree extends Tree implements IAttributeContainer
+{
     use core\collection\TAttributeContainer;
-    
-    protected function _getSerializeValues() {
+
+    protected function _getSerializeValues()
+    {
         $output = parent::_getSerializeValues();
-        
-        if(!empty($this->_attributes)) {
-            if($output === null) {
+
+        if (!empty($this->_attributes)) {
+            if ($output === null) {
                 $output = [];
             }
-            
+
             $output['at'] = $this->_attributes;
         }
-        
+
         return $output;
     }
-    
-    protected function _setUnserializedValues(array $values) {
+
+    protected function _setUnserializedValues(array $values)
+    {
         parent::_setUnserializedValues($values);
-        
-        if(isset($values['at'])) {
+
+        if (isset($values['at'])) {
             $this->_attributes = $values['at'];
         }
     }
-    
-    public function importTree(ITree $child) {
-        if($child instanceof IAttributeTree) {
+
+    public function importTree(ITree $child)
+    {
+        if ($child instanceof IAttributeTree) {
             $this->_attributes = $child->getAttributes();
         }
-        
+
         return parent::importTree($child);
     }
-    
-    public function merge(ITree $child) {
-        if($child instanceof IInputTree) {
+
+    public function merge(ITree $child)
+    {
+        if ($child instanceof IInputTree) {
             $this->_attributes = array_merge(
                 $this->_attributes,
                 $child->getAttributes()
             );
         }
-        
+
         return parent::importTree($child);
     }
-    
-    
-// Dump
-    public function getDumpProperties() {
+
+
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        if ($this->_value !== null) {
+            $entity->setProperty('*value', $inspector($this->_value));
+        }
+
+        if (!empty($this->_attributes)) {
+            $entity->setProperty('*attributes', $inspector($this->_attributes));
+        }
+
         $children = [];
-        
-        foreach($this->_collection as $key => $child) {
-            if($child instanceof self 
-            && empty($child->_collection)
-            && empty($child->_attributes)) {
+
+        foreach ($this->_collection as $key => $child) {
+            if ($child instanceof self && empty($child->_collection) && empty($child->_attributes)) {
                 $children[$key] = $child->_value;
             } else {
                 $children[$key] = $child;
             }
         }
-        
-        $hasAttributes = !empty($this->_attributes);
-        
-        if(empty($children) && !$hasAttributes) {
-            return $this->_value;
-        }
-        
-        if($hasAttributes) {
-            foreach(array_reverse($this->_attributes) as $key => $val) {
-                array_unshift($children, new core\debug\dumper\Property(
-                    $key, $val, 'private'
-                ));
-            }
-        }
-        
-        if(!empty($this->_value)) {
-            array_unshift($children, new core\debug\dumper\Property(null, $this->_value, 'protected'));
-        }
-        
-        return $children;
+
+        $entity->setValues($inspector->inspectList($children));
     }
 }

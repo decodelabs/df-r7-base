@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\axis;
 
-class Manager implements IManager
+class Manager implements core\IManager
 {
     use core\TManager;
 

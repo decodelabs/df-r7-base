@@ -10,7 +10,11 @@ use df\core;
 use df\opal;
 use df\axis;
 
-class Source implements ISource, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Source implements ISource, Inspectable
 {
     use TQuery_AdapterAware;
 
@@ -473,26 +477,24 @@ class Source implements ISource, core\IDumpable
         return $this;
     }
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $output = [
-            '__id' => new core\debug\dumper\Property(
-                'sourceId', $this->getId(), 'protected'
-            )
-        ];
+        $entity
+            ->setProperty('!__id', $inspector($this->getId()));
+
+        $values = [];
 
         foreach ($this->_outputFields as $alias => $field) {
-            $output[$alias] = $field->getQualifiedName();
+            $output[$alias] = $inspector($field->getQualifiedName());
         }
 
         foreach ($this->_privateFields as $alias => $field) {
-            $output[$alias] = new core\debug\dumper\Property(
-                $alias, $field->getQualifiedName(), 'private'
-            );
+            $output['*'.$alias] = $inspector($field->getQualifiedName());
         }
 
-        return $output;
+        $entity->setValues($output);
     }
 }

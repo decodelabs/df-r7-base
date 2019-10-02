@@ -10,13 +10,22 @@ use df\core;
 use df\spur;
 use df\link;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
 
 
 // Interfaces
-interface IHttpMediator {
+interface IHttpMediator
+{
     public function setHttpClient(link\http\IClient $client);
     public function getHttpClient(): link\http\IClient;
 
@@ -27,17 +36,19 @@ interface IHttpMediator {
     public function sendRequest(link\http\IRequest $request): link\http\IResponse;
 }
 
-trait THttpMediator {
-
+trait THttpMediator
+{
     protected $_httpClient;
 
-    public function setHttpClient(link\http\IClient $client) {
+    public function setHttpClient(link\http\IClient $client)
+    {
         $this->_httpClient = $client;
         return $this;
     }
 
-    public function getHttpClient(): link\http\IClient {
-        if(!$this->_httpClient) {
+    public function getHttpClient(): link\http\IClient
+    {
+        if (!$this->_httpClient) {
             $this->_httpClient = new link\http\Client();
         }
 
@@ -45,26 +56,29 @@ trait THttpMediator {
     }
 
 
-    public function requestRaw(string $method, string $path, array $data=[], array $headers=[]): link\http\IResponse {
+    public function requestRaw(string $method, string $path, array $data=[], array $headers=[]): link\http\IResponse
+    {
         return $this->sendRequest($this->createRequest(
             $method, $path, $data, $headers
         ));
     }
 
-    public function requestJson(string $method, string $path, array $data=[], array $headers=[]): core\collection\ITree {
+    public function requestJson(string $method, string $path, array $data=[], array $headers=[]): core\collection\ITree
+    {
         return $this->sendRequest($this->createRequest(
                 $method, $path, $data, $headers
             ))
             ->getJsonContent();
     }
 
-    public function createRequest(string $method, string $path, array $data=[], array $headers=[]): link\http\IRequest {
+    public function createRequest(string $method, string $path, array $data=[], array $headers=[]): link\http\IRequest
+    {
         $url = $this->createUrl($path);
         $request = link\http\request\Base::factory($url);
         $request->setMethod($method);
 
-        if(!empty($data)) {
-            if($method == 'post') {
+        if (!empty($data)) {
+            if ($method == 'post') {
                 $request->setPostData($data);
                 $request->headers->set('content-type', 'application/x-www-form-urlencoded');
             } else {
@@ -72,35 +86,36 @@ trait THttpMediator {
             }
         }
 
-        if(!empty($headers)) {
+        if (!empty($headers)) {
             $request->getHeaders()->import($headers);
         }
 
         return $request;
     }
 
-    public function sendRequest(link\http\IRequest $request): link\http\IResponse {
+    public function sendRequest(link\http\IRequest $request): link\http\IResponse
+    {
         $request = $this->_prepareRequest($request);
 
         try {
             $response = $this->getHttpClient()->sendRequest($request);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             throw core\Error::{'EImplementation,ETransport,EApi'}([
                 'message' => $e->getMessage(),
                 'previous' => $e
             ]);
         }
 
-        if(!$this->_isResponseOk($response)) {
+        if (!$this->_isResponseOk($response)) {
             $message = $this->_extractResponseError($response);
 
-            if($message instanceof \Throwable) {
+            if ($message instanceof \Throwable) {
                 throw $message;
             }
 
             $code = $response->getHeaders()->getStatusCode();
 
-            if($code >= 500) {
+            if ($code >= 500) {
                 throw core\Error::{'EImplementation,spur/EImplementation'}([
                     'message' => $message,
                     'data' => $response->getContent(),
@@ -118,27 +133,32 @@ trait THttpMediator {
         return $response;
     }
 
-    protected function _normalizeErrorData($data) {
+    protected function _normalizeErrorData($data)
+    {
         return $data;
     }
 
 
-    public function createUrl(string $path): link\http\IUrl {
+    public function createUrl(string $path): link\http\IUrl
+    {
         return link\http\Url::factory($path);
     }
 
-    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest {
+    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest
+    {
         return $request;
     }
 
-    protected function _isResponseOk(link\http\IResponse $response): bool {
+    protected function _isResponseOk(link\http\IResponse $response): bool
+    {
         return $response->isOk();
     }
 
-    protected function _extractResponseError(link\http\IResponse $response) {
+    protected function _extractResponseError(link\http\IResponse $response)
+    {
         try {
             $data = $response->getJsonContent();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $data = new core\collection\Tree();
         }
 
@@ -151,68 +171,73 @@ trait THttpMediator {
 
 
 // Data object
-interface IDataObject extends core\collection\ITree {
+interface IDataObject extends core\collection\ITree
+{
     public function setType(string $type);
     public function getType(): string;
 }
 
 
-class DataObject extends core\collection\Tree implements IDataObject {
-
+class DataObject extends core\collection\Tree implements IDataObject
+{
     protected const PROPAGATE_TYPE = false;
 
     protected $_type;
 
-    public function __construct(string $type, core\collection\ITree $data, $callback=null) {
+    public function __construct(string $type, core\collection\ITree $data, $callback=null)
+    {
         $this->setType($type);
 
-        if($callback) {
+        if ($callback) {
             core\lang\Callback::call($callback, $data);
         }
 
         $this->_collection = $data->_collection;
     }
 
-    public function setType(string $type) {
+    public function setType(string $type)
+    {
         $this->_type = $type;
         return $this;
     }
 
-    public function getType(): string {
+    public function getType(): string
+    {
         return $this->_type;
     }
 
 
-// Serialize
-    protected function _getSerializeValues() {
+    // Serialize
+    protected function _getSerializeValues()
+    {
         $output = parent::_getSerializeValues();
         $output['ty'] = $this->_type;
 
         return $output;
     }
 
-    protected function _setUnserializedValues(array $values) {
+    protected function _setUnserializedValues(array $values)
+    {
         parent::_setUnserializedValues($values);
         $this->_type = $values['ty'] ?? 'object';
     }
 
-// Dump
-    public function getDumpProperties() {
-        $output = parent::getDumpProperties();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        parent::glitchInspect($entity, $inspector);
 
-        array_unshift(
-            $output,
-            new core\debug\dumper\Property('type', $this->_type, 'private')
-        );
-
-        return $output;
+        $entity->setProperty('*type', $this->_type);
     }
 }
 
 
 
 // List
-interface IDataList extends core\IArrayProvider, \IteratorAggregate {
+interface IDataList extends core\IArrayProvider, \IteratorAggregate
+{
     public function getTotal(): int;
     public function hasMore(): bool;
 
@@ -223,41 +248,45 @@ interface IDataList extends core\IArrayProvider, \IteratorAggregate {
 
 
 // Filter
-interface IFilter extends core\IArrayProvider {
+interface IFilter extends core\IArrayProvider
+{
     public static function normalize(IFilter &$filter=null, callable $callback=null, array $extra=null): array;
 
     public function setLimit(?int $limit);
     public function getLimit(): ?int;
 }
 
-trait TFilter {
-
+trait TFilter
+{
     protected $_limit = null;
 
-    public static function normalize(IFilter &$filter=null, callable $callback=null, array $extra=null): array {
-        if(!$filter) {
+    public static function normalize(IFilter &$filter=null, callable $callback=null, array $extra=null): array
+    {
+        if (!$filter) {
             $filter = new static;
         }
 
-        if($callback) {
+        if ($callback) {
             core\lang\Callback::call($callback, $filter);
         }
 
         $output = $filter->toArray();
 
-        if($extra !== null) {
+        if ($extra !== null) {
             $output = array_merge($output, $extra);
         }
 
         return $output;
     }
 
-    public function setLimit(?int $limit) {
+    public function setLimit(?int $limit)
+    {
         $this->_limit = $limit;
         return $this;
     }
 
-    public function getLimit(): ?int {
+    public function getLimit(): ?int
+    {
         return $this->_limit;
     }
 }

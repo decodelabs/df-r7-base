@@ -9,22 +9,25 @@ use df;
 use df\core;
 use df\opal;
 
-class Record extends opal\record\Base implements IRecord {
-
+class Record extends opal\record\Base implements IRecord
+{
     use core\collection\TAttributeContainer;
 
-    public function getPrimaryKeySet() {
+    public function getPrimaryKeySet()
+    {
         return new opal\record\PrimaryKeySet([
             $this->_getEntryDnAttribute() => $this->getEntryDn()
         ]);
     }
 
-    public function getOriginalPrimaryKeySet() {
+    public function getOriginalPrimaryKeySet()
+    {
         return $this->getPrimaryKeySet();
     }
 
-    public function populateWithPreparedData(array $row) {
-        if(isset($row[':meta'])) {
+    public function populateWithPreparedData(array $row)
+    {
+        if (isset($row[':meta'])) {
             $this->_attributes = $row[':meta'];
             unset($row[':meta']);
         }
@@ -32,27 +35,31 @@ class Record extends opal\record\Base implements IRecord {
         return parent::populateWithPreparedData($row);
     }
 
-    public function makeNew(array $newValues=null) {
+    public function makeNew(array $newValues=null)
+    {
         $dn = $this->getEntryDn();
         $this->_attributes = [];
         $this->inside($dn);
         return parent::makeNew($newValues);
     }
 
-    public function getQueryLocation() {
+    public function getQueryLocation()
+    {
         return $this->getEntryDn();
     }
 
-    public function inside($location) {
+    public function inside($location)
+    {
         $dn = Dn::factory($location);
         $this->setAttribute($this->_getEntryDnAttribute(), (string)$dn);
         return $this;
     }
 
-    public function getEntryDn() {
+    public function getEntryDn()
+    {
         $output = $this->getAttribute($this->_getEntryDnAttribute());
 
-        if(!$output) {
+        if (!$output) {
             throw new UnexpectedValueException(
                 'Entry DN has not been stored in record'
             );
@@ -61,10 +68,11 @@ class Record extends opal\record\Base implements IRecord {
         return Dn::factory($output);
     }
 
-    public function getGlobalId() {
+    public function getGlobalId()
+    {
         $output = $this->getAttribute($this->_getGlobalIdAttribute());
 
-        if(!$output) {
+        if (!$output) {
             throw new UnexpectedValueException(
                 'Entry global id has not been stored in record'
             );
@@ -73,10 +81,11 @@ class Record extends opal\record\Base implements IRecord {
         return $output;
     }
 
-    public function getObjectClasses() {
+    public function getObjectClasses()
+    {
         $output = $this->getAttribute('objectClass');
 
-        if(!$output) {
+        if (!$output) {
             throw new UnexpectedValueException(
                 'Entry objectClass data has not been stored in record'
             );
@@ -85,20 +94,15 @@ class Record extends opal\record\Base implements IRecord {
         return $output;
     }
 
-    protected function _getEntryDnAttribute() {
+    protected function _getEntryDnAttribute()
+    {
         $adapter = $this->getAdapter();
         return $adapter::ENTRY_DN_ATTRIBUTE;
     }
 
-    protected function _getGlobalIdAttribute() {
+    protected function _getGlobalIdAttribute()
+    {
         $adapter = $this->getAdapter();
         return $adapter::GLOBAL_ID_ATTRIBUTE;
-    }
-
-
-    public function getDumpProperties() {
-        $output = parent::getDumpProperties();
-        array_unshift($output, new core\debug\dumper\Property('meta', $this->_attributes, 'private'));
-        return $output;
     }
 }

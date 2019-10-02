@@ -702,45 +702,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
     // Debug
-    public function renderDebugContext(core\debug\IContext $context): void
-    {
-        $renderer = new core\debug\renderer\Html($context);
-
-        if (!headers_sent()) {
-            if (strncasecmp(PHP_SAPI, 'cgi', 3)) {
-                header('HTTP/1.1 501');
-            } else {
-                header('Status: 501');
-            }
-
-            header('Content-Type: text/html; charset=UTF-8');
-            header('Cache-Control: no-cache, no-store, must-revalidate');
-            header('Pragma: no-cache');
-
-            if ($this->_httpRequest && $this->_httpRequest->method == 'head') {
-                header('X-Dump: '.json_encode($context->toString()));
-            }
-
-
-            try {
-                if ($this->_responseAugmentor) {
-                    $cookies = $this->_responseAugmentor->getCookieCollectionForCurrentRequest();
-
-                    foreach ($cookies->toArray() as $cookie) {
-                        header('Set-Cookie: '.$cookie->toString());
-                    }
-
-                    foreach ($cookies->getRemoved() as $cookie) {
-                        header('Set-Cookie: '.$cookie->toInvalidateString());
-                    }
-                }
-            } catch (\Throwable $e) {
-            }
-        }
-
-        echo $renderer->render();
-    }
-
     public function sendGlitchDebugHeaders()
     {
         try {

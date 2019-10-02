@@ -193,15 +193,4 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
             Glitch::incomplete($response);
         }
     }
-
-
-    // Debug
-    public function renderDebugContext(core\debug\IContext $context): void
-    {
-        df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
-        $output = (new core\debug\renderer\PlainText($context))->render();
-
-        $response = $this->getMultiplexer();
-        $response->writeError($output);
-    }
 }

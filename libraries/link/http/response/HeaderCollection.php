@@ -9,6 +9,10 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 class HeaderCollection extends core\collection\HeaderMap implements link\http\IResponseHeaderCollection
 {
     use link\http\THeaderCollection;
@@ -472,24 +476,15 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         return $this;
     }
 
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $output = parent::getDumpProperties();
+        parent::glitchInspect($entity, $inspector);
 
-        array_unshift(
-            $output,
-            new core\debug\dumper\Property(
-                'httpVersion',
-                $this->_httpVersion,
-                'private'
-            ),
-            new core\debug\dumper\Property(
-                'statusCode',
-                $this->_statusCode,
-                'private'
-            )
-        );
-
-        return $output;
+        $entity
+            ->setProperty('*httpVersion', $inspector($this->_httpVersion))
+            ->setProperty('*statusCode', $inspector($this->_statusCode));
     }
 }

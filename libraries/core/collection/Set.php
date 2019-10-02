@@ -8,13 +8,18 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-class Set implements ISet, IAggregateIteratorCollection, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Set implements ISet, IAggregateIteratorCollection, Inspectable
+{
     use TArrayCollection;
     use TArrayCollection_Constructor;
     use TArrayCollection_UniqueSet;
 
-    public function import(...$input) {
+    public function import(...$input)
+    {
         $this->_collection = array_unique(array_merge(
             $this->_collection,
             $input
@@ -23,18 +28,16 @@ class Set implements ISet, IAggregateIteratorCollection, core\IDumpable {
         return $this;
     }
 
-    public function getReductiveIterator(): \Iterator {
+    public function getReductiveIterator(): \Iterator
+    {
         return new ReductiveIndexIterator($this);
     }
 
-// Dump
-    public function getDumpProperties() {
-        $output = [];
-
-        foreach($this->_collection as $value) {
-            $output[] = new core\debug\dumper\Property(null, $value);
-        }
-
-        return $output;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setValues($inspector->inspectList($this->_collection));
     }
 }

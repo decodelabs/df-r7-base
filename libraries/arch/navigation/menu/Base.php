@@ -10,8 +10,8 @@ use df\core;
 use df\arch;
 use df\flex;
 
-class Base implements IMenu, \Serializable, core\IDumpable {
-
+class Base implements IMenu, \Serializable
+{
     use core\TContextAware;
 
     const DEFAULT_SOURCE = 'Directory';
@@ -20,19 +20,20 @@ class Base implements IMenu, \Serializable, core\IDumpable {
     protected $_subId;
     protected $_delegates = null;
 
-    public static function loadAll(arch\IContext $context, array $whiteList=null) {
+    public static function loadAll(arch\IContext $context, array $whiteList=null)
+    {
         $output = [];
         $sources = arch\navigation\menu\source\Base::loadAll($context);
 
-        if($whiteList !== null) {
+        if ($whiteList !== null) {
             $temp = $whiteList;
             $whiteList = [];
 
-            foreach($temp as $id) {
+            foreach ($temp as $id) {
                 $id = self::normalizeId($id);
                 $sourceName = $id->getScheme();
 
-                if(!isset($whiteList[$sourceName])) {
+                if (!isset($whiteList[$sourceName])) {
                     $whiteList[$sourceName] = [];
                 }
 
@@ -40,16 +41,16 @@ class Base implements IMenu, \Serializable, core\IDumpable {
             }
         }
 
-        foreach($sources as $source) {
-            if(!$source instanceof IListableSource) {
+        foreach ($sources as $source) {
+            if (!$source instanceof IListableSource) {
                 continue;
             }
 
             $sourceWhiteList = null;
             $sourceName = $source->getName();
 
-            if($whiteList !== null) {
-                if(isset($whiteList[$sourceName])) {
+            if ($whiteList !== null) {
+                if (isset($whiteList[$sourceName])) {
                     $sourceWhiteList = $whiteList[$sourceName];
                 } else {
                     $sourceWhiteList = [];
@@ -62,20 +63,23 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public static function loadList(arch\IContext $context, array $ids) {
+    public static function loadList(arch\IContext $context, array $ids)
+    {
         $output = [];
 
-        foreach($ids as $id) {
+        foreach ($ids as $id) {
             try {
                 $output[$id] = self::factory($context, $id);
-            } catch(\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
         }
 
         return $output;
     }
 
-    public static function factory(arch\IContext $context, $id): IMenu {
-        if($id instanceof IMenu) {
+    public static function factory(arch\IContext $context, $id): IMenu
+    {
+        if ($id instanceof IMenu) {
             return $id;
         }
 
@@ -88,7 +92,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
 
         //$cache->clear();
 
-        if(!$cache->has($cacheId)
+        if (!$cache->has($cacheId)
         || null === ($output = $cache->get($cacheId))) {
             $output = $source->loadMenu($id);
             $cache->set($cacheId, $output);
@@ -97,7 +101,8 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $output;
     }
 
-    public static function clearCacheFor(arch\IContext $context, $id) {
+    public static function clearCacheFor(arch\IContext $context, $id)
+    {
         $id = self::normalizeId($id);
         $cache = Cache::getInstance();
 
@@ -107,21 +112,23 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         $cache->remove($cacheId);
     }
 
-    public static function clearCache(arch\IContext $context) {
+    public static function clearCache(arch\IContext $context)
+    {
         $cache = Cache::getInstance();
         $cache->clear();
     }
 
-    public static function normalizeId($id): core\uri\IUrl {
-        if($id instanceof IMenu) {
+    public static function normalizeId($id): core\uri\IUrl
+    {
+        if ($id instanceof IMenu) {
             return $id->getId();
         }
 
-        if(!$id instanceof core\uri\IUrl) {
+        if (!$id instanceof core\uri\IUrl) {
             $id = core\uri\Url::factory($id);
         }
 
-        if(!$id->hasScheme()) {
+        if (!$id->hasScheme()) {
             $id->setScheme(self::DEFAULT_SOURCE);
         } else {
             $id->setScheme(ucfirst($id->getScheme()));
@@ -130,24 +137,28 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $id;
     }
 
-    public function __construct(arch\IContext $context, string $id) {
+    public function __construct(arch\IContext $context, string $id)
+    {
         $this->context = $context;
         $this->_id = self::normalizeId($id);
     }
 
-    public function serialize() {
+    public function serialize()
+    {
         return serialize($this->_getStorageArray());
     }
 
-    public function unserialize($data) {
-        if(is_array($data = unserialize($data))) {
+    public function unserialize($data)
+    {
+        if (is_array($data = unserialize($data))) {
             $this->_setStorageArray($data);
         }
 
         return $this;
     }
 
-    protected function _getStorageArray() {
+    protected function _getStorageArray()
+    {
         return [
             'id' => $this->_id,
             'subId' => $this->_subId,
@@ -156,54 +167,62 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         ];
     }
 
-    protected function _setStorageArray(array $data) {
+    protected function _setStorageArray(array $data)
+    {
         $this->_id = $data['id'];
         $this->_subId = $data['subId'];
         $this->_delegates = $data['delegates'];
 
-        if(isset($data['context'])) {
+        if (isset($data['context'])) {
             $this->context = $data['context'];
         } else {
             $this->context = arch\Context::getCurrent();
         }
     }
 
-    public function getId(): core\uri\IUrl {
+    public function getId(): core\uri\IUrl
+    {
         return $this->_id;
     }
 
-    public function setSubId($id) {
+    public function setSubId($id)
+    {
         $this->_subId = $id;
         return $this;
     }
 
-    public function getSubId() {
+    public function getSubId()
+    {
         return $this->_subId;
     }
 
-    public function getDisplayName(): string {
+    public function getDisplayName(): string
+    {
         $parts = explode('_', $this->_id->getPath()->getLast());
         $output = flex\Text::formatName(array_shift($parts));
 
-        if(!empty($parts)) {
+        if (!empty($parts)) {
             $output .= ' ('.flex\Text::formatName(array_shift($parts)).')';
         }
 
         return $output;
     }
 
-    public function getSource() {
+    public function getSource()
+    {
         return arch\navigation\menu\source\Base::factory($this->context, $this->getSourceId());
     }
 
-    public function getSourceId() {
+    public function getSourceId()
+    {
         return $this->_id->getScheme();
     }
 
 
-// Delegates
-    public function initDelegates() {
-        if(!is_array($this->_delegates)) {
+    // Delegates
+    public function initDelegates()
+    {
+        if (!is_array($this->_delegates)) {
             $this->_delegates = [];
             $this->loadDelegates();
         }
@@ -211,28 +230,33 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $this;
     }
 
-    protected function loadDelegates() {}
+    protected function loadDelegates()
+    {
+    }
 
-    public function addDelegate(IMenu $menu) {
+    public function addDelegate(IMenu $menu)
+    {
         $this->initDelegates();
         $this->_delegates[(string)$menu->getId()] = $menu;
         return $this;
     }
 
-    public function getDelegates() {
+    public function getDelegates()
+    {
         $this->initDelegates();
         return $this->_delegates;
     }
 
-// Entries
-    public function generateEntries(arch\navigation\IEntryList $entryList=null) {
+    // Entries
+    public function generateEntries(arch\navigation\IEntryList $entryList=null)
+    {
         $this->initDelegates();
 
-        if($isRoot = $entryList === null) {
+        if ($isRoot = $entryList === null) {
             $entryList = new EntryList();
         }
 
-        if($entryList->hasMenu($this)) {
+        if ($entryList->hasMenu($this)) {
             throw core\Error::ERecusion(
                 'You cannot nest menus within themselves'
             );
@@ -244,8 +268,8 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         $config = Config::getInstance();
         $config->createEntries($this, $entryList);
 
-        foreach($this->_delegates as $delegate) {
-            if(!$delegate instanceof IMenu) {
+        foreach ($this->_delegates as $delegate) {
+            if (!$delegate instanceof IMenu) {
                 $this->clearCache();
                 continue;
             }
@@ -256,14 +280,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $entryList;
     }
 
-    protected function createEntries(/*arch\navigation\IEntryList*/ $entryList) {}
-
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'id' => $this->_id,
-            'delegates' => $this->_delegates
-        ];
+    protected function createEntries(/*arch\navigation\IEntryList*/ $entryList)
+    {
     }
 }

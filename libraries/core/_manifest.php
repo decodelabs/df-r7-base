@@ -388,9 +388,6 @@ interface IRunner
     // Execute
     public function dispatch(): void;
     public function getDispatchException(): ?\Throwable;
-
-    // Debug
-    public function renderDebugContext(core\debug\IContext $context): void;
 }
 
 interface IRegistryObject

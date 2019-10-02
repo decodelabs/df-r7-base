@@ -8,8 +8,12 @@ namespace df\core\debug;
 use df;
 use df\core;
 
-class StackCall implements IStackCall, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class StackCall implements IStackCall, Inspectable
+{
     protected $_function;
     protected $_className;
     protected $_namespace;
@@ -22,10 +26,11 @@ class StackCall implements IStackCall, core\IDumpable {
     protected $_originLine;
     protected $_local = true;
 
-    public static function factory($rewind=0) {
+    public static function factory($rewind=0)
+    {
         $data = debug_backtrace();
 
-        while($rewind > 0) {
+        while ($rewind > 0) {
             $rewind--;
             array_shift($data);
         }
@@ -40,25 +45,26 @@ class StackCall implements IStackCall, core\IDumpable {
         return new self($output, true);
     }
 
-    public function __construct(array $callData, $local=true) {
+    public function __construct(array $callData, $local=true)
+    {
         $this->_local = $local;
 
-        if(isset($callData['fromFile']) && $callData['fromFile'] !== @$callData['file']) {
+        if (isset($callData['fromFile']) && $callData['fromFile'] !== @$callData['file']) {
             $this->_callingFile = $callData['fromFile'];
         }
 
-        if(isset($callData['fromLine'])) {
+        if (isset($callData['fromLine'])) {
             $this->_callingLine = $callData['fromLine'];
         }
 
         $this->_originFile = @$callData['file'];
         $this->_originLine = @$callData['line'];
 
-        if(isset($callData['function'])) {
+        if (isset($callData['function'])) {
             $this->_function = $callData['function'];
         }
 
-        if(isset($callData['class'])) {
+        if (isset($callData['class'])) {
             $this->_className = $callData['class'];
             $parts = explode('\\', $this->_className);
             $this->_className = array_pop($parts);
@@ -69,8 +75,8 @@ class StackCall implements IStackCall, core\IDumpable {
 
         $this->_namespace = implode('\\', $parts);
 
-        if(isset($callData['type'])) {
-            switch($callData['type']) {
+        if (isset($callData['type'])) {
+            switch ($callData['type']) {
                 case '::':
                     $this->_type = IStackCall::STATIC_METHOD;
                     break;
@@ -82,54 +88,58 @@ class StackCall implements IStackCall, core\IDumpable {
                 default:
                     throw core\Error::EValue('Unknown call type: '.$callData['type']);
             }
-        } else if($this->_namespace !== null) {
+        } elseif ($this->_namespace !== null) {
             $this->_type = 3;
         }
 
-        if(isset($callData['args'])) {
+        if (isset($callData['args'])) {
             $this->_args = (array)$callData['args'];
         }
     }
 
 
-// Args
-    public function getArgs(): array {
+    // Args
+    public function getArgs(): array
+    {
         return $this->_args;
     }
 
-    public function hasArgs(): bool {
+    public function hasArgs(): bool
+    {
         return !empty($this->_args);
     }
 
-    public function countArgs(): int {
+    public function countArgs(): int
+    {
         return count($this->_args);
     }
 
-    public function getArgString(): string {
+    public function getArgString(): string
+    {
         $output = [];
 
-        if(!is_array($this->_args)) {
+        if (!is_array($this->_args)) {
             $this->_args = [$this->_args];
         }
 
-        foreach($this->_args as $arg) {
-            if(is_string($arg)) {
-                if(strlen($arg) > 16) {
+        foreach ($this->_args as $arg) {
+            if (is_string($arg)) {
+                if (strlen($arg) > 16) {
                     $arg = substr($arg, 0, 16).'...';
                 }
 
                 $arg = '\''.$arg.'\'';
-            } else if(is_array($arg)) {
+            } elseif (is_array($arg)) {
                 $arg = 'Array('.count($arg).')';
-            } else if(is_object($arg)) {
+            } elseif (is_object($arg)) {
                 $arg = core\lang\Util::normalizeClassName(get_class($arg)).' Object';
-            } else if(is_bool($arg)) {
-                if($arg) {
+            } elseif (is_bool($arg)) {
+                if ($arg) {
                     $arg = 'true';
                 } else {
                     $arg = 'false';
                 }
-            } else if(is_null($arg)) {
+            } elseif (is_null($arg)) {
                 $arg = 'null';
             }
 
@@ -140,13 +150,15 @@ class StackCall implements IStackCall, core\IDumpable {
     }
 
 
-// Type
-    public function getType(): ?string {
+    // Type
+    public function getType(): ?string
+    {
         return $this->_type;
     }
 
-    public function getTypeString(): ?string {
-        switch($this->_type) {
+    public function getTypeString(): ?string
+    {
+        switch ($this->_type) {
             case IStackCall::STATIC_METHOD:
                 return '::';
 
@@ -157,42 +169,49 @@ class StackCall implements IStackCall, core\IDumpable {
         return null;
     }
 
-    public function isStatic(): bool {
+    public function isStatic(): bool
+    {
         return $this->_type === IStackCall::STATIC_METHOD;
     }
 
-    public function isObject(): bool {
+    public function isObject(): bool
+    {
         return $this->_type === IStackCall::OBJECT_METHOD;
     }
 
-    public function isNamespaceFunction(): bool {
+    public function isNamespaceFunction(): bool
+    {
         return $this->_type === IStackCall::NAMESPACE_FUNCTION;
     }
 
-    public function isGlobalFunction(): bool {
+    public function isGlobalFunction(): bool
+    {
         return $this->_type === IStackCall::GLOBAL_FUNCTION;
     }
 
 
-// Namespace
-    public function getNamespace(): ?string {
+    // Namespace
+    public function getNamespace(): ?string
+    {
         return $this->_namespace;
     }
 
-    public function hasNamespace(): bool {
+    public function hasNamespace(): bool
+    {
         return $this->_namespace !== null;
     }
 
 
-// Class
-    public function getClass(): ?string {
-        if($this->_className === null) {
+    // Class
+    public function getClass(): ?string
+    {
+        if ($this->_className === null) {
             return null;
         }
 
         $output = '';
 
-        if($this->_namespace !== null) {
+        if ($this->_namespace !== null) {
             $output = $this->_namespace.'\\';
         }
 
@@ -200,43 +219,47 @@ class StackCall implements IStackCall, core\IDumpable {
         return $output;
     }
 
-    public function hasClass(): bool {
+    public function hasClass(): bool
+    {
         return $this->_className !== null;
     }
 
-    public function getClassName(): ?string {
+    public function getClassName(): ?string
+    {
         return $this->_className;
     }
 
 
-// Function
-    public function getFunctionName(): ?string {
+    // Function
+    public function getFunctionName(): ?string
+    {
         return $this->_function;
     }
 
-    public function getSignature(?bool $argString=false): string {
+    public function getSignature(?bool $argString=false): string
+    {
         $output = '';
 
-        if($this->_namespace !== null) {
+        if ($this->_namespace !== null) {
             $output = $this->_namespace.'\\';
         }
 
-        if($this->_className !== null) {
+        if ($this->_className !== null) {
             $output .= core\lang\Util::normalizeClassName($this->_className);
         }
 
-        if($this->_type) {
+        if ($this->_type) {
             $output .= $this->getTypeString();
         }
 
         $output .= $this->_function;
 
-        if($argString) {
+        if ($argString) {
             $output .= $this->getArgString();
-        } else if($argString !== null) {
+        } elseif ($argString !== null) {
             $output .= '(';
 
-            if(!empty($this->_args)) {
+            if (!empty($this->_args)) {
                 $output .= count($this->_args);
             }
 
@@ -246,7 +269,8 @@ class StackCall implements IStackCall, core\IDumpable {
         return $output;
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'file' => $this->getFile(),
             'line' => $this->getLine(),
@@ -257,7 +281,8 @@ class StackCall implements IStackCall, core\IDumpable {
         ];
     }
 
-    public function toJsonArray(): array {
+    public function toJsonArray(): array
+    {
         return [
             'file' => $this->_local ?
                 core\fs\Dir::stripPathLocation($this->getFile()) :
@@ -273,43 +298,50 @@ class StackCall implements IStackCall, core\IDumpable {
         ];
     }
 
-    public function toJson(): string {
+    public function toJson(): string
+    {
         return json_encode($this->toJsonArray());
     }
 
 
 
-// Location
-    public function getFile(): ?string {
+    // Location
+    public function getFile(): ?string
+    {
         return $this->_originFile;
     }
 
-    public function getLine(): ?int {
+    public function getLine(): ?int
+    {
         return $this->_originLine;
     }
 
-    public function getCallingFile(): ?string {
-        if($this->_callingFile !== null) {
+    public function getCallingFile(): ?string
+    {
+        if ($this->_callingFile !== null) {
             return $this->_callingFile;
         }
 
         return $this->_originFile;
     }
 
-    public function getCallingLine(): ?int {
-        if($this->_callingLine !== null) {
+    public function getCallingLine(): ?int
+    {
+        if ($this->_callingLine !== null) {
             return $this->_callingLine;
         }
 
         return $this->_originLine;
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            new core\debug\dumper\Property(null, $this->getSignature(true)),
-            new core\debug\dumper\Property(null, $this->getFile().' : '.$this->getLine())
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setDefinition($this->getSignature(true))
+            ->setProperty('*file', $this->getFile())
+            ->setProperty('*line', $this->getLine());
     }
 }

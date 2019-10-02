@@ -10,8 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskSpool extends arch\node\Task {
-
+class TaskSpool extends arch\node\Task
+{
     const SELF_REQUEST = 'tasks/spool';
     const COOLOFF = 20;
     const QUEUE_LIMIT = 10;
@@ -20,7 +20,8 @@ class TaskSpool extends arch\node\Task {
     protected $_channel;
     protected $_timer;
 
-    protected function _beforeDispatch() {
+    protected function _beforeDispatch()
+    {
         $this->_channel = (new core\fs\MemoryFile('', 'text/plain'))->setId('buffer');
         $this->io->addChannel($this->_channel);
 
@@ -31,7 +32,8 @@ class TaskSpool extends arch\node\Task {
             ->save();
     }
 
-    public function execute() {
+    public function execute()
+    {
         $this->_timer = new core\time\Timer();
 
 
@@ -48,7 +50,7 @@ class TaskSpool extends arch\node\Task {
             ->endClause()
             ->count();
 
-        if($justRun) {
+        if ($justRun) {
             $this->io->writeErrorLine('The spool task has already run within the previous cooloff period - please wait a little while before trying again');
             $this->_log->delete();
             return;
@@ -102,7 +104,7 @@ class TaskSpool extends arch\node\Task {
             ->limit(self::QUEUE_LIMIT)
             ->execute();
 
-        if(!$count) {
+        if (!$count) {
             $this->io->writeLine(' no tasks to launch right now!');
             return;
         }
@@ -119,7 +121,7 @@ class TaskSpool extends arch\node\Task {
         $lineLevel = $this->io->getLineLevel();
         $this->io->outdent();
 
-        foreach($taskIds as $taskId => $request) {
+        foreach ($taskIds as $taskId => $request) {
             $this->io->writeLine();
             $this->io->writeLine('Launching task '.$request.' id: '.$taskId);
 
@@ -135,16 +137,15 @@ class TaskSpool extends arch\node\Task {
             ->execute();
     }
 
-    protected function _afterDispatch($output) {
+    protected function _afterDispatch($output)
+    {
         $this->_finalizeLog();
         return $output;
     }
 
-    public function handleException(\Throwable $e) {
-        $context = new core\debug\Context();
-        $context->exception($e);
-        $exception = (new core\debug\renderer\PlainText($context))->render();
-        $this->_channel->writeError($exception);
+    public function handleException(\Throwable $e)
+    {
+        $this->_channel->writeError((string)$e);
         $this->_finalizeLog();
 
         $this->logs->logException($e);
@@ -163,19 +164,20 @@ class TaskSpool extends arch\node\Task {
         parent::handleException($e);
     }
 
-    protected function _finalizeLog() {
-        if(!$this->_log || $this->_log->isNew()) {
+    protected function _finalizeLog()
+    {
+        if (!$this->_log || $this->_log->isNew()) {
             return;
         }
 
         $output = $this->_channel->getContents();
         $error = $this->_channel->getErrorBuffer();
 
-        if(!strlen($output)) {
+        if (!strlen($output)) {
             $output = null;
         }
 
-        if(!strlen($error)) {
+        if (!strlen($error)) {
             $error = null;
         }
 

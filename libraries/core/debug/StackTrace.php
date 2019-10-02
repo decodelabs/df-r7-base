@@ -8,12 +8,16 @@ namespace df\core\debug;
 use df;
 use df\core;
 
-class StackTrace implements IStackTrace, core\IDumpable
-{
-    use TLocationProvider;
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class StackTrace implements IStackTrace, Inspectable
+{
     protected $_message;
     protected $_calls = [];
+    protected $_file;
+    protected $_line;
 
     public static function fromException(\Throwable $e)
     {
@@ -119,50 +123,23 @@ class StackTrace implements IStackTrace, core\IDumpable
         return $this->_calls[0] ?? null;
     }
 
-    // Debug node
-    public function getNodeTitle()
+
+    public function getFile(): ?string
     {
-        return 'Stack Trace';
+        return $this->_file;
     }
 
-    public function getNodeType(): string
+    public function getLine(): ?int
     {
-        return 'stackTrace';
-    }
-
-    public function isCritical()
-    {
-        return false;
+        return $this->_line;
     }
 
 
-    // Helpers
-    public function stripDebugEntries()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        foreach ($this->_calls as $call) {
-            switch ($call->getFunctionName()) {
-                case 'dump':
-                case 'stub':
-                    array_shift($this->_calls);
-                    continue 2;
-            }
-
-            break;
-        }
-
-        return $this;
-    }
-
-
-    // Dumpable
-    public function getDumpProperties()
-    {
-        $output = [];
-
-        foreach ($this->_calls as $call) {
-            $output[] = new core\debug\dumper\Property(null, $call);
-        }
-
-        return $output;
+        $entity->setValues($inspector->inspectList($this->_calls));
     }
 }

@@ -8,8 +8,12 @@ namespace df\core;
 use df;
 use df\core;
 
-abstract class Config implements IConfig, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+abstract class Config implements IConfig, Inspectable
+{
     use core\TValueMap;
 
     const REGISTRY_PREFIX = 'config://';
@@ -23,24 +27,26 @@ abstract class Config implements IConfig, core\IDumpable {
     protected $_id;
     private $_filePath = null;
 
-// Loading
-    public static function getInstance(): IConfig {
-        if(!static::ID) {
+    // Loading
+    public static function getInstance(): IConfig
+    {
+        if (!static::ID) {
             throw core\Error::EDefinition('Invalid config id set for '.get_called_class());
         }
 
         return static::_factory(static::ID);
     }
 
-    final protected static function _factory(?string $id) {
+    final protected static function _factory(?string $id)
+    {
         $handlerClass = get_called_class();
 
-        if(empty($id)) {
+        if (empty($id)) {
             throw core\Error::EImplementation('Invalid config id passed for '.$handlerClass);
         }
 
-        if($handlerClass::STORE_IN_MEMORY) {
-            if(!$config = df\Launchpad::$app->getRegistryObject(self::REGISTRY_PREFIX.$id)) {
+        if ($handlerClass::STORE_IN_MEMORY) {
+            if (!$config = df\Launchpad::$app->getRegistryObject(self::REGISTRY_PREFIX.$id)) {
                 df\Launchpad::$app->setRegistryObject(
                     $config = new $handlerClass($id)
                 );
@@ -52,21 +58,23 @@ abstract class Config implements IConfig, core\IDumpable {
         return $config;
     }
 
-    public static function clearLiveCache() {
-        foreach(df\Launchpad::$app->findRegistryObjects('config://') as $config) {
+    public static function clearLiveCache()
+    {
+        foreach (df\Launchpad::$app->findRegistryObjects('config://') as $config) {
             df\Launchpad::$app->removeRegistryObject($config->getRegistryObjectKey());
         }
     }
 
 
-// Construct
-    public function __construct($id) {
+    // Construct
+    public function __construct($id)
+    {
         $parts = explode('/', $id);
         $parts[] = ucfirst(array_pop($parts));
 
         $this->_id = implode('/', $parts);
 
-        if(null === ($values = $this->_loadValues())) {
+        if (null === ($values = $this->_loadValues())) {
             $this->reset();
             $this->save();
         } else {
@@ -77,20 +85,24 @@ abstract class Config implements IConfig, core\IDumpable {
     }
 
 
-// Values
-    final public function getConfigId(): string {
+    // Values
+    final public function getConfigId(): string
+    {
         return $this->_id;
     }
 
-    final public function getRegistryObjectKey(): string {
+    final public function getRegistryObjectKey(): string
+    {
         return self::REGISTRY_PREFIX.$this->_id;
     }
 
-    final public function getConfigValues(): array {
+    final public function getConfigValues(): array
+    {
         return $this->values->toArray();
     }
 
-    final public function save() {
+    final public function save()
+    {
         $this->_sanitizeValuesOnSave();
         $this->_saveValues();
         $this->onSave();
@@ -98,29 +110,33 @@ abstract class Config implements IConfig, core\IDumpable {
         return $this;
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->values = new core\collection\Tree($this->getDefaultValues());
         $this->_sanitizeValuesOnCreate();
 
         return $this;
     }
 
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
         $this->values[$key] = $value;
         return $this;
     }
 
-    public function get($key, $default=null) {
-        if(isset($this->values[$key])) {
+    public function get($key, $default=null)
+    {
+        if (isset($this->values[$key])) {
             return $this->values[$key];
         }
 
         return $default;
     }
 
-    public function has(...$keys) {
-        foreach($keys as $key) {
-            if(isset($this->values[$key])) {
+    public function has(...$keys)
+    {
+        foreach ($keys as $key) {
+            if (isset($this->values[$key])) {
                 return true;
             }
         }
@@ -128,53 +144,64 @@ abstract class Config implements IConfig, core\IDumpable {
         return false;
     }
 
-    public function remove(...$keys) {
-        foreach($keys as $key) {
+    public function remove(...$keys)
+    {
+        foreach ($keys as $key) {
             unset($this->values[$key]);
         }
 
         return $this;
     }
 
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value)
+    {
         return $this->set($key, $value);
     }
 
-    public function offsetGet($key) {
+    public function offsetGet($key)
+    {
         return $this->get($key);
     }
 
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         return $this->has($key);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         return $this->remove($key);
     }
 
 
-    protected function _sanitizeValuesOnCreate() {
+    protected function _sanitizeValuesOnCreate()
+    {
         return null;
     }
 
-    protected function _sanitizeValuesOnLoad() {
+    protected function _sanitizeValuesOnLoad()
+    {
         return null;
     }
 
-    protected function _sanitizeValuesOnSave() {
+    protected function _sanitizeValuesOnSave()
+    {
         return null;
     }
 
-    protected function onSave() {}
+    protected function onSave()
+    {
+    }
 
-// IO
-    private function _loadValues() {
+    // IO
+    private function _loadValues()
+    {
         $parts = explode('/', $this->_id);
         $name = array_pop($parts);
         $envId = df\Launchpad::$app->envId;
         $basePath = $this->_getBasePath();
 
-        if(!empty($parts)) {
+        if (!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
         }
 
@@ -186,23 +213,24 @@ abstract class Config implements IConfig, core\IDumpable {
         $output = null;
 
 
-        foreach($paths as $path) {
-            if(is_file($path)) {
+        foreach ($paths as $path) {
+            if (is_file($path)) {
                 $this->_filePath = $path;
                 $output = require $path;
                 break;
             }
         }
 
-        if($output !== null && !is_array($output)) {
+        if ($output !== null && !is_array($output)) {
             $output = [];
         }
 
         return $output;
     }
 
-    private function _saveValues() {
-        if($this->_filePath) {
+    private function _saveValues()
+    {
+        if ($this->_filePath) {
             $savePath = $this->_filePath;
         } else {
             $envId = df\Launchpad::$app->envId;
@@ -210,7 +238,7 @@ abstract class Config implements IConfig, core\IDumpable {
             $name = array_pop($parts);
             $basePath = $this->_getBasePath();
 
-            if(!empty($parts)) {
+            if (!empty($parts)) {
                 $basePath .= '/'.implode('/', $parts);
             }
 
@@ -218,7 +246,7 @@ abstract class Config implements IConfig, core\IDumpable {
             $environmentPath = $basePath.'/'.$name.'#'.$envId.'.php';
             $isEnvironment = static::USE_ENVIRONMENT_ID_BY_DEFAULT || is_file($environmentPath);
 
-            if($isEnvironment) {
+            if ($isEnvironment) {
                 $savePath = $environmentPath;
             } else {
                 $savePath = $corePath;
@@ -230,19 +258,21 @@ abstract class Config implements IConfig, core\IDumpable {
         core\fs\File::create($savePath, $content);
     }
 
-    private function _getBasePath() {
+    private function _getBasePath()
+    {
         return df\Launchpad::$app->path.'/config';
     }
 
 
-    public function tidyConfigValues(): void {
+    public function tidyConfigValues(): void
+    {
         $defaults = new core\collection\Tree($this->getDefaultValues());
         $current = new core\collection\Tree($this->getConfigValues());
 
         $current = $this->_tidyNode($defaults, $current);
 
-        foreach($current as $key => $node) {
-            if(!$node->isEmpty() || $defaults->hasKey($key) || substr($key, 0, 1) == '!') {
+        foreach ($current as $key => $node) {
+            if (!$node->isEmpty() || $defaults->hasKey($key) || substr($key, 0, 1) == '!') {
                 continue;
             }
 
@@ -253,26 +283,27 @@ abstract class Config implements IConfig, core\IDumpable {
         $this->save();
     }
 
-    private function _tidyNode(core\collection\ITree $defaults, core\collection\ITree $current) {
+    private function _tidyNode(core\collection\ITree $defaults, core\collection\ITree $current)
+    {
         $output = [];
         $value = $current->getValue();
 
-        foreach($defaults as $key => $node) {
+        foreach ($defaults as $key => $node) {
             $output[$key] = null;
 
-            if(substr($key, 0, 1) == '!') {
+            if (substr($key, 0, 1) == '!') {
                 continue;
             }
 
-            if(!$current->hasKey($key)) {
+            if (!$current->hasKey($key)) {
                 $output[$key] = $node;
             } else {
                 $output[$key] = $this->_tidyNode($node, $current->{$key});
             }
         }
 
-        foreach($current as $key => $node) {
-            if(!array_key_exists($key, $output)) {
+        foreach ($current as $key => $node) {
+            if (!array_key_exists($key, $output)) {
                 $output[$key] = $node;
             }
         }
@@ -280,12 +311,13 @@ abstract class Config implements IConfig, core\IDumpable {
         return new core\collection\Tree($output, $value);
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return array_merge(
-            ['configId' => new core\debug\dumper\Property('configId', $this->_id, 'protected')],
-            $this->getConfigValues()
-        );
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperty('*id', $this->_id)
+            ->setValues($inspector->inspectList($this->getConfigValues()));
     }
 }

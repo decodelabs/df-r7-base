@@ -21,7 +21,6 @@ class Launchpad
     public static $loader;
     public static $app;
     public static $runner;
-    public static $debug;
 
     private static $_isShutdown = false;
 
@@ -157,25 +156,5 @@ class Launchpad
         }
 
         require_once $path;
-    }
-
-
-    // Debug
-    public static function setDebugContext(core\debug\IContext $context=null): ?core\debug\IContext
-    {
-        $output = self::$debug;
-        self::$debug = $context;
-
-        return $output;
-    }
-
-    public static function getDebugContext(): core\debug\IContext
-    {
-        if (!self::$debug) {
-            self::loadBaseClass('core/debug/Context');
-            self::$debug = new core\debug\Context();
-        }
-
-        return self::$debug;
     }
 }

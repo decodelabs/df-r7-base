@@ -12,24 +12,29 @@ use df\flex;
 use df\mesh;
 use df\opal;
 
-abstract class Model implements IModel, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+abstract class Model implements IModel, Inspectable
+{
     const REGISTRY_PREFIX = 'model://';
 
     private $_modelName;
     private $_units = [];
 
-    public static function factory(string $name): IModel {
+    public static function factory(string $name): IModel
+    {
         $name = lcfirst($name);
         $key = self::REGISTRY_PREFIX.$name;
 
-        if($model = df\Launchpad::$app->getRegistryObject($key)) {
+        if ($model = df\Launchpad::$app->getRegistryObject($key)) {
             return $model;
         }
 
         $class = 'df\\apex\\models\\'.$name.'\\Model';
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new RuntimeException(
                 'Model '.$name.' could not be found'
             );
@@ -41,10 +46,13 @@ abstract class Model implements IModel, core\IDumpable {
         return $model;
     }
 
-    protected function __construct() {}
+    protected function __construct()
+    {
+    }
 
-    public function getModelName() {
-        if(!$this->_modelName) {
+    public function getModelName()
+    {
+        if (!$this->_modelName) {
             $parts = explode('\\', get_class($this));
             array_pop($parts);
             $this->_modelName = array_pop($parts);
@@ -53,32 +61,34 @@ abstract class Model implements IModel, core\IDumpable {
         return $this->_modelName;
     }
 
-    final public function getRegistryObjectKey(): string {
+    final public function getRegistryObjectKey(): string
+    {
         return self::REGISTRY_PREFIX.$this->getModelName();
     }
 
 
-// Units
-    public function getUnit($name) {
+    // Units
+    public function getUnit($name)
+    {
         $lookupName = lcfirst($name);
 
-        if(isset($this->_units[$lookupName])) {
+        if (isset($this->_units[$lookupName])) {
             return $this->_units[$lookupName];
         }
 
-        if($lookupName == 'context') {
+        if ($lookupName == 'context') {
             return $this->_units[$lookupName] = new Context($this);
         }
 
 
         $class = 'df\\apex\\models\\'.$this->getModelName().'\\'.$lookupName.'\\Unit';
 
-        if(!class_exists($class)) {
-            if(preg_match('/^([a-z0-9_.]+)\(([a-zA-Z0-9_.\, \/]*)\)$/i', $name, $matches)) {
+        if (!class_exists($class)) {
+            if (preg_match('/^([a-z0-9_.]+)\(([a-zA-Z0-9_.\, \/]*)\)$/i', $name, $matches)) {
                 $className = $matches[1];
 
                 // Fix legacy
-                if($className === 'table.Bridge') {
+                if ($className === 'table.Bridge') {
                     $className = 'BridgeTable';
                 } else {
                     $className = ucfirst($className);
@@ -86,7 +96,7 @@ abstract class Model implements IModel, core\IDumpable {
 
                 $class = 'df\\axis\\unit\\'.$className;
 
-                if(!class_exists($class)) {
+                if (!class_exists($class)) {
                     throw new axis\RuntimeException(
                         'Virtual model unit type '.$this->getModelName().'/'.$className.' could not be found'
                     );
@@ -94,7 +104,7 @@ abstract class Model implements IModel, core\IDumpable {
 
                 $ref = new \ReflectionClass($class);
 
-                if(!$ref->implementsInterface('df\\axis\\IVirtualUnit')) {
+                if (!$ref->implementsInterface('df\\axis\\IVirtualUnit')) {
                     throw new axis\RuntimeException(
                         'Unit type '.$this->getModelName().'/'.$className.' cannot load virtual units'
                     );
@@ -119,43 +129,50 @@ abstract class Model implements IModel, core\IDumpable {
         return $unit;
     }
 
-    public static function getSchemaManager() {
+    public static function getSchemaManager()
+    {
         return axis\schema\Manager::getInstance();
     }
 
-    public function unloadUnit(IUnit $unit) {
+    public function unloadUnit(IUnit $unit)
+    {
         unset($this->_units[$unit->getUnitName()]);
         return $this;
     }
 
-    public static function purgeLiveCache() {
-        foreach(df\Launchpad::$app->findRegistryObjects(self::REGISTRY_PREFIX) as $key => $model) {
+    public static function purgeLiveCache()
+    {
+        foreach (df\Launchpad::$app->findRegistryObjects(self::REGISTRY_PREFIX) as $key => $model) {
             $model->_purgeLiveCache();
         }
     }
 
-    protected function _purgeLiveCache() {
-        foreach($this->_units as $unit) {
+    protected function _purgeLiveCache()
+    {
+        foreach ($this->_units as $unit) {
             $this->unloadUnit($unit);
         }
     }
 
-    public function __get($member) {
+    public function __get($member)
+    {
         return $this->getUnit($member);
     }
 
-    public static function loadUnitFromId($id) {
+    public static function loadUnitFromId($id)
+    {
         $parts = explode('/', $id, 2);
 
         return self::factory(array_shift($parts))
             ->getUnit(array_shift($parts));
     }
 
-    public static function getUnitMetaData(array $unitIds) {
+    public static function getUnitMetaData(array $unitIds)
+    {
         $output = [];
 
-        foreach($unitIds as $unitId) {
-            if(isset($output[$unitId])) {
+        foreach ($unitIds as $unitId) {
+            if (isset($output[$unitId])) {
                 continue;
             }
 
@@ -174,7 +191,8 @@ abstract class Model implements IModel, core\IDumpable {
                 $data['name'] = $unit->getUnitName();
                 $data['canonicalName'] = $unit->getCanonicalUnitName();
                 $data['type'] = $unit->getUnitType();
-            } catch(axis\RuntimeException $e) {}
+            } catch (axis\RuntimeException $e) {
+            }
 
             $output[$unitId] = $data;
         }
@@ -185,20 +203,22 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
 
-// Mesh
-    public function getEntityLocator() {
+    // Mesh
+    public function getEntityLocator()
+    {
         return new mesh\entity\Locator('axis://'.$this->getModelName());
     }
 
-    public function fetchSubEntity(mesh\IManager $manager, array $node) {
-        switch($node['type']) {
+    public function fetchSubEntity(mesh\IManager $manager, array $node)
+    {
+        switch ($node['type']) {
             case 'Unit':
                 return $this->getUnit($node['id']);
 
             case 'Schema':
                 $unit = $this->getUnit($node['id']);
 
-                if(!$unit instanceof ISchemaBasedStorageUnit) {
+                if (!$unit instanceof ISchemaBasedStorageUnit) {
                     throw new LogicException(
                         'Model unit '.$unit->getUnitName().' does not provide a schema'
                     );
@@ -209,11 +229,13 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            new core\debug\dumper\Property('name', $this->_modelName),
-            new core\debug\dumper\Property('units', $this->_units, 'private')
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setDefinition($inspector($this->_modelName))
+            ->setValues($inspector->inspectList($this->_units));
     }
 }
