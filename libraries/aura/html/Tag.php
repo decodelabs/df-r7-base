@@ -10,6 +10,8 @@ use df\core;
 use df\aura;
 use df\flex;
 
+use DecodeLabs\Tagged\Builder\StyleList;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -175,8 +177,8 @@ class Tag implements ITag, Inspectable
     {
         $key = strtolower($key);
 
-        if ($key == 'style' && !$value instanceof IStyleCollection) {
-            $value = new StyleCollection($value);
+        if ($key == 'style' && !$value instanceof StyleList) {
+            $value = new StyleList($value);
         } elseif ($key == 'class') {
             return $this->setClasses($value);
         }
@@ -199,8 +201,8 @@ class Tag implements ITag, Inspectable
         }
 
         if ($key == 'style') {
-            if (!$default instanceof IStyleCollection) {
-                $default = new StyleCollection($default);
+            if (!$default instanceof StyleList) {
+                $default = new StyleList($default);
             }
 
             $this->_attributes[$key] = $default;

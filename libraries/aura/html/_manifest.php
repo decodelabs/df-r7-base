@@ -422,6 +422,3 @@ interface IElement extends ITag, IElementContent, IWidgetFinder
 interface IStyleBlock extends core\IStringProvider
 {
 }
-interface IStyleCollection extends core\collection\IMap, core\collection\IAggregateIteratorCollection, core\IStringProvider
-{
-}

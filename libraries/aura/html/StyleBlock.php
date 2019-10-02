@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\aura;
 
+use DecodeLabs\Tagged\Builder\StyleList;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -38,7 +40,7 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, Insp
                         array_unshift($parts, $nextSelector);
                     }
 
-                    $data[$selector] = new StyleCollection($body);
+                    $data[$selector] = new StyleList($body);
                 }
             }
 
@@ -58,8 +60,8 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, Insp
 
     public function set($key, $value)
     {
-        if (!$value instanceof IStyleCollection) {
-            $value = new StyleCollection($value);
+        if (!$value instanceof StyleList) {
+            $value = new StyleList($value);
         }
 
         $this->_collection[(string)$key] = $value;
@@ -76,8 +78,8 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, Insp
             $output = $default;
         }
 
-        if ($output !== null && !$output instanceof IStyleCollection) {
-            $output = new StyleCollection($default);
+        if ($output !== null && !$output instanceof StyleList) {
+            $output = new StyleList($default);
         }
 
         return $output;
