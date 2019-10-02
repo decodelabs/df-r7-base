@@ -11,6 +11,10 @@ use df\user;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 // Exceptions
 interface IException
 {
@@ -126,7 +130,7 @@ interface IClient extends IClientDataObject
 {
     public function setAuthenticationState($state);
     public function getAuthenticationState();
-    
+
     public function isDeactivated(): bool;
     public function isSpam(): bool;
     public function isGuest(): bool;
@@ -249,10 +253,13 @@ trait TSessionBackedHelper
         $this->_sessionDataChanged = false;
     }
 
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
         $this->_ensureSessionData();
-        return $this->_sessionData;
+        $entity->setValues($inspector->inspectList($this->_sessionData));
     }
 }
 

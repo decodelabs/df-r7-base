@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Button extends Base implements IButtonWidget, IIconProviderWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Button extends Base implements IButtonWidget, IIconProviderWidget, Inspectable
+{
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_FocusableInput;
@@ -26,7 +30,8 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, core\ID
 
     protected $_shouldValidate = true;
 
-    public function __construct(arch\IContext $context, $name, $body=null, $value=null) {
+    public function __construct(arch\IContext $context, $name, $body=null, $value=null)
+    {
         parent::__construct($context);
 
         $this->setName($name);
@@ -34,18 +39,19 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, core\ID
         $this->setBody($body);
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
         $tag->setAttribute('type', static::BUTTON_TYPE);
 
         $this->_applyFormDataAttributes($tag, static::HAS_VALUE);
         $this->_applyInputAttributes($tag);
 
-        if(!$this->_shouldValidate) {
+        if (!$this->_shouldValidate) {
             $tag->setAttribute('formnovalidate', true);
         }
 
-        if($this->_disposition !== null) {
+        if ($this->_disposition !== null) {
             $tag->addClass($this->getDisposition());
         }
 
@@ -57,9 +63,10 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, core\ID
     }
 
 
-// Validate
-    public function shouldValidate(bool $flag=null) {
-        if($flag !== null) {
+    // Validate
+    public function shouldValidate(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_shouldValidate = $flag;
             return $this;
         }
@@ -68,15 +75,20 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, core\ID
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'name' => $this->_name,
-            'value' => $this->_value,
-            'body' => $this->_body,
-            'icon' => $this->_icon,
-            'tag' => $this->getTag(),
-            'disposition' => $this->getDisposition()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*name' => $inspector($this->_name),
+                '*value' => $inspector($this->_value),
+                '*icon' => $inspector($this->_icon),
+                '%tag' => $inspector($this->getTag()),
+                '*disposition' => $inspector($this->getDisposition())
+            ])
+            ->setValues([$inspector($this->_body)])
+            ->setShowKeys(false);
     }
 }

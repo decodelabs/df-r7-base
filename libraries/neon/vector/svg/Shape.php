@@ -9,26 +9,29 @@ use df;
 use df\core;
 use df\neon;
 
-
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
 // Base
-class Shape implements core\IDumpable {
-
+class Shape implements Inspectable
+{
     use TCustomContainerElement;
     use TStructure_Description;
     use TAttributeModule;
     use TAttributeModule_Shape;
 
-    public static function factory($name, ...$args) {
+    public static function factory($name, ...$args)
+    {
         $name = ucfirst($name);
 
-        if($name == 'Rect') {
+        if ($name == 'Rect') {
             $name = 'Rectangle';
         }
 
         $class = 'df\\neon\\svg\\Shape_'.$name;
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new RuntimeException(
                 'Shape type '.$name.' could not be found'
             );
@@ -38,8 +41,9 @@ class Shape implements core\IDumpable {
         return $ref->newInstanceArgs($args);
     }
 
-    public static function fromAttributes($name, array $attributes) {
-        switch($name) {
+    public static function fromAttributes($name, array $attributes)
+    {
+        switch ($name) {
             case 'circle':
                 $output = new Shape_Circle(
                     self::_extractInputAttribute($attributes, 'r', 0),
@@ -118,15 +122,17 @@ class Shape implements core\IDumpable {
         return $output;
     }
 
-    public function getElementName() {
+    public function getElementName()
+    {
         return substr(strtolower($this->getName()), 6);
     }
 
-    protected function _createPath(array $commands, array $exAttributes=[]) {
+    protected function _createPath(array $commands, array $exAttributes=[])
+    {
         $output = new Shape_Path($commands);
         $attributes = $this->_attributes;
 
-        foreach($exAttributes as $ex) {
+        foreach ($exAttributes as $ex) {
             unset($attributes[$ex]);
         }
 
@@ -134,44 +140,54 @@ class Shape implements core\IDumpable {
         return $output;
     }
 
-    public function getDumpProperties() {
-        $output = [];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setSectionVisible('meta', true);
 
-        if($this->_title) {
-            $output['title'] = $this->_title;
+        foreach ($this->_attributes as $key => $value) {
+            $entity->setMeta($key, $inspector($value));
         }
 
-        if($this->_description) {
-            $output['description'] = $this->_description;
+        if ($this->_title) {
+            $entity->setProperty('*title', $inspector($this->_title));
         }
 
-        return array_merge($output, $this->_attributes);
+        if ($this->_description) {
+            $entity->setProperty('*description', $inspector($this->_description));
+        }
     }
 }
 
 
 
 // Circle
-class Shape_Circle extends Shape implements ICircle, IPathProvider {
-
+class Shape_Circle extends Shape implements ICircle, IPathProvider
+{
     use TAttributeModule_Position;
     use TAttributeModule_Radius;
 
-    public function __construct($radius, $x, $y=null) {
+    public function __construct($radius, $x, $y=null)
+    {
         $this->setRadius($radius);
         $this->setPosition($x, $y);
     }
 
-    protected function _getXPositionAttributeName() {
+    protected function _getXPositionAttributeName()
+    {
         return 'cx';
     }
 
-    protected function _getYPositionAttributeName() {
+    protected function _getYPositionAttributeName()
+    {
         return 'cy';
     }
 
 
-    public function toPath() {
+    public function toPath()
+    {
         $this->_position->convertRelativeAnchors();
         $r = clone $this->getRadius();
 
@@ -190,26 +206,30 @@ class Shape_Circle extends Shape implements ICircle, IPathProvider {
 
 
 // Ellipse
-class Shape_Ellipse extends Shape implements IEllipse, IPathProvider {
-
+class Shape_Ellipse extends Shape implements IEllipse, IPathProvider
+{
     use TAttributeModule_Position;
     use TAttributeModule_2DRadius;
 
-    public function __construct($xRadius, $yRadius, $position=null, $yPosition=null) {
+    public function __construct($xRadius, $yRadius, $position=null, $yPosition=null)
+    {
         $this->setXRadius($xRadius);
         $this->setYRadius($yRadius);
         $this->setPosition($position, $yPosition);
     }
 
-    protected function _getXPositionAttributeName() {
+    protected function _getXPositionAttributeName()
+    {
         return 'cx';
     }
 
-    protected function _getYPositionAttributeName() {
+    protected function _getYPositionAttributeName()
+    {
         return 'cy';
     }
 
-    public function toPath() {
+    public function toPath()
+    {
         $this->_position->convertRelativeAnchors();
         $r1 = clone $this->getXRadius();
         $r2 = clone $this->getYRadius();
@@ -229,14 +249,15 @@ class Shape_Ellipse extends Shape implements IEllipse, IPathProvider {
 
 
 // Image
-class Shape_Image extends Shape implements IImage {
-
+class Shape_Image extends Shape implements IImage
+{
     use TAttributeModule_AspectRatio;
     use TAttributeModule_Dimension;
     use TAttributeModule_Position;
     use TAttributeModule_XLink;
 
-    public function __construct($href, $width, $height, $position=null, $yPosition=null) {
+    public function __construct($href, $width, $height, $position=null, $yPosition=null)
+    {
         $this->setLinkHref($href);
         $this->setDimensions($width, $height);
         $this->setPosition($position, $yPosition);
@@ -247,34 +268,37 @@ class Shape_Image extends Shape implements IImage {
 
 
 // Line
-class Shape_Line extends Shape implements ILine, IPathProvider {
-
+class Shape_Line extends Shape implements ILine, IPathProvider
+{
     use TAttributeModule_PointData;
 
     const MIN_POINTS = 2;
     const MAX_POINTS = 2;
 
-    public function __construct($points, $point2=null, $point3=null, $point4=null) {
-        if($point3 !== null) {
+    public function __construct($points, $point2=null, $point3=null, $point4=null)
+    {
+        if ($point3 !== null) {
             $points = [$points, $point2];
             $point2 = [$point3, $point4];
         }
 
-        if($point2 !== null) {
+        if ($point2 !== null) {
             $points = [$points, $point2];
         }
 
         $this->setPoints($points);
     }
 
-    protected function _onSetPoints() {
+    protected function _onSetPoints()
+    {
         $this->_setAttribute('x1', $this->_points[0]->getX());
         $this->_setAttribute('y1', $this->_points[0]->getY());
         $this->_setAttribute('x2', $this->_points[1]->getX());
         $this->_setAttribute('y2', $this->_points[1]->getY());
     }
 
-    public function toPath() {
+    public function toPath()
+    {
         $commands = [
             (new neon\vector\svg\command\Move($this->_getAttribute('x1'), $this->_getAttribute('y1'))),
             (new neon\vector\svg\command\Line($this->_getAttribute('x2'), $this->_getAttribute('y2'))),
@@ -286,17 +310,19 @@ class Shape_Line extends Shape implements ILine, IPathProvider {
 
 
 // Path
-class Shape_Path extends Shape implements IPath, IPathProvider {
-
+class Shape_Path extends Shape implements IPath, IPathProvider
+{
     use TAttributeModule_PathData;
 
-    public function __construct($commands=null) {
-        if($commands !== null) {
+    public function __construct($commands=null)
+    {
+        if ($commands !== null) {
             $this->setCommands($commands);
         }
     }
 
-    public function toPath() {
+    public function toPath()
+    {
         return clone $this;
     }
 }
@@ -304,25 +330,27 @@ class Shape_Path extends Shape implements IPath, IPathProvider {
 
 
 // Polygon
-class Shape_Polygon extends Shape implements IPolygon, IPathProvider {
-
+class Shape_Polygon extends Shape implements IPolygon, IPathProvider
+{
     use TAttributeModule_PointData;
 
     const MIN_POINTS = 3;
     const MAX_POINTS = null;
 
-    public function __construct($points) {
+    public function __construct($points)
+    {
         $this->setPoints($points);
     }
 
-    public function toPath() {
+    public function toPath()
+    {
         $commands = [];
         $move = false;
 
-        foreach($this->_points as $point) {
+        foreach ($this->_points as $point) {
             $point->convertRelativeAnchors();
 
-            if(!$move) {
+            if (!$move) {
                 $commands[] = new neon\vector\svg\command\Move($point->getXOffset(), $point->getYOffset());
                 $move = true;
             } else {
@@ -339,25 +367,27 @@ class Shape_Polygon extends Shape implements IPolygon, IPathProvider {
 
 
 // Polyline
-class Shape_Polyline extends Shape implements IPolyline, IPathProvider {
-
+class Shape_Polyline extends Shape implements IPolyline, IPathProvider
+{
     use TAttributeModule_PointData;
 
     const MIN_POINTS = 3;
     const MAX_POINTS = null;
 
-    public function __construct($points) {
+    public function __construct($points)
+    {
         $this->setPoints($points);
     }
 
-    public function toPath() {
+    public function toPath()
+    {
         $commands = [];
         $move = false;
 
-        foreach($this->_points as $point) {
+        foreach ($this->_points as $point) {
             $point->convertRelativeAnchors();
 
-            if(!$move) {
+            if (!$move) {
                 $commands[] = new neon\vector\svg\command\Move($point->getXOffset(), $point->getYOffset());
                 $move = true;
             } else {
@@ -372,21 +402,24 @@ class Shape_Polyline extends Shape implements IPolyline, IPathProvider {
 
 
 // Rectangle
-class Shape_Rectangle extends Shape implements IRectangle, IPathProvider {
-
+class Shape_Rectangle extends Shape implements IRectangle, IPathProvider
+{
     use TAttributeModule_Dimension;
     use TAttributeModule_Position;
 
-    public function __construct($width, $height, $position=null, $yPosition=null) {
+    public function __construct($width, $height, $position=null, $yPosition=null)
+    {
         $this->setDimensions($width, $height);
         $this->setPosition($position, $yPosition);
     }
 
-    public function getElementName() {
+    public function getElementName()
+    {
         return 'rect';
     }
 
-    public function toPath() {
+    public function toPath()
+    {
         $this->_position->convertRelativeAnchors();
         $width = clone $this->getWidth();
         $height = clone $this->getHeight();

@@ -706,21 +706,4 @@ class Parser extends iris\Parser
     {
         return $this->_containerStack;
     }
-
-    // Dump
-    public function getDumpProperties()
-    {
-        return array_merge(
-            [
-                'commands' => count($this->_commands),
-                'environments' => count($this->_environments),
-                'token' => $this->token,
-                'document' => $this->document
-            ],
-            parent::getDumpProperties(),
-            [
-                'container' => $this->container
-            ]
-        );
-    }
 }

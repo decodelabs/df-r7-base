@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\flex;
 
-class Tree implements ITree, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Tree implements ITree, Inspectable
 {
     use core\TStringProvider;
     use core\collection\TAttributeContainerArrayAccessProxy;
@@ -1066,9 +1070,11 @@ class Tree implements ITree, core\IDumpable
         return $this->_element->ownerDocument->saveXML($this->_element);
     }
 
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return $this->toNodeXmlString();
+        $entity->setDefinition($this->toNodeXmlString());
     }
 }

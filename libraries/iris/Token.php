@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\iris;
 
-class Token implements IToken, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Token implements IToken, Inspectable
+{
     public $type;
     public $subType;
     public $value;
@@ -19,7 +23,8 @@ class Token implements IToken, core\IDumpable {
     public $column;
     public $sourceUri;
 
-    public function __construct($type, $value, $whitespace, $line, $column, ISourceUri $sourceUri) {
+    public function __construct($type, $value, $whitespace, $line, $column, ISourceUri $sourceUri)
+    {
         $parts = explode('/', $type, 2);
         $this->type = array_shift($parts);
         $this->subType = array_shift($parts);
@@ -31,76 +36,90 @@ class Token implements IToken, core\IDumpable {
     }
 
 
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
-    public function getSubType() {
+    public function getSubType()
+    {
         return $this->subType;
     }
 
-    public function getTypeString() {
+    public function getTypeString()
+    {
         $output = $this->type;
 
-        if($this->subType) {
+        if ($this->subType) {
             $output .= '/'.$this->subType;
         }
 
         return $output;
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return $this->value;
     }
 
-    public function getWhitespace() {
+    public function getWhitespace()
+    {
         return $this->whitespace;
     }
 
-    public function getWhitespaceBeforeNewLine() {
+    public function getWhitespaceBeforeNewLine()
+    {
         $parts = explode("\n", str_replace("\r", '', $this->whitespace));
         return array_shift($parts);
     }
 
-    public function getWhitespaceAfterLastNewLine() {
+    public function getWhitespaceAfterLastNewLine()
+    {
         $parts = explode("\n", str_replace("\r", '', $this->whitespace));
         return array_pop($parts);
     }
 
-    public function isWhitespaceSingleNewLine() {
+    public function isWhitespaceSingleNewLine()
+    {
         return str_replace("\r", '', $this->whitespace) == "\n";
     }
 
-    public function isAfterWhitespace() {
+    public function isAfterWhitespace()
+    {
         return strlen($this->whitespace) > 0;
     }
 
-    public function isAfterNewline() {
+    public function isAfterNewline()
+    {
         return false !== strpos($this->whitespace, "\n");
     }
 
-    public function isOnNextLine() {
+    public function isOnNextLine()
+    {
         return mb_substr_count($this->whitespace, "\n") == 1;
     }
 
-    public function countNewLines() {
+    public function countNewLines()
+    {
         return mb_substr_count($this->whitespace, "\n");
     }
 
 
-    public function eq(IToken $token) {
+    public function eq(IToken $token)
+    {
         return $this->type == $token->type
             && $this->subType == $token->subType
             && $this->value = $token->value;
     }
 
-    public function is(...$ids) {
-        foreach(core\collection\Util::flatten($ids) as $id) {
+    public function is(...$ids)
+    {
+        foreach (core\collection\Util::flatten($ids) as $id) {
             $type = $subType = $value = null;
             @list($type, $value) = explode('=', $id, 2);
             @list($type, $subType) = explode('/', $type, 2);
 
-            if($this->matches($type, $subType, $value)) {
+            if ($this->matches($type, $subType, $value)) {
                 return true;
             }
         }
@@ -108,9 +127,10 @@ class Token implements IToken, core\IDumpable {
         return false;
     }
 
-    public function isValue(...$values) {
-        foreach(core\collection\Util::flatten($values) as $value) {
-            if($value == $this->value) {
+    public function isValue(...$values)
+    {
+        foreach (core\collection\Util::flatten($values) as $value) {
+            if ($value == $this->value) {
                 return true;
             }
         }
@@ -118,28 +138,29 @@ class Token implements IToken, core\IDumpable {
         return false;
     }
 
-    public function matches($type, $subType=null, $value=null) {
-        if(empty($type)) {
+    public function matches($type, $subType=null, $value=null)
+    {
+        if (empty($type)) {
             $type = null;
         }
 
-        if(empty($subType)) {
+        if (empty($subType)) {
             $subType = null;
         }
 
-        if(empty($value)) {
+        if (empty($value)) {
             $value = null;
         }
 
-        if($type != $this->type) {
+        if ($type != $this->type) {
             return false;
         }
 
-        if($subType !== null && $subType != $this->subType) {
+        if ($subType !== null && $subType != $this->subType) {
             return false;
         }
 
-        if($value !== null && $value != $this->value) {
+        if ($value !== null && $value != $this->value) {
             return false;
         }
 
@@ -147,33 +168,40 @@ class Token implements IToken, core\IDumpable {
     }
 
 
-// Location
-    public function getLine(): ?int {
+    // Location
+    public function getLine(): ?int
+    {
         return $this->line;
     }
 
-    public function getColumn() {
+    public function getColumn()
+    {
         return $this->column;
     }
 
-    public function getSourceUri() {
+    public function getSourceUri()
+    {
         return $this->sourceUri;
     }
 
-    public function getLocation() {
+    public function getLocation()
+    {
         return new Location($this->sourceUri, $this->line, $this->column);
     }
 
-// Dump
-    public function getDumpProperties() {
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
         $output = $this->getTypeString();
 
-        if($this->value !== null) {
+        if ($this->value !== null) {
             $value = $this->value;
 
-            if($value === true) {
+            if ($value === true) {
                 $value = 'true';
-            } else if($value === false) {
+            } elseif ($value === false) {
                 $value = 'false';
             }
 
@@ -181,7 +209,6 @@ class Token implements IToken, core\IDumpable {
         }
 
         $output .= ' ['.$this->line.':'.$this->column.']';
-
-        return $output;
+        $entity->setText($output);
     }
 }

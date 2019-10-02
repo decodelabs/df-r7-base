@@ -11,15 +11,20 @@ use df\aura;
 use df\arch;
 use df\flex;
 
-class Label extends Base implements ILabelWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Label extends Base implements ILabelWidget, Inspectable
+{
     use TWidget_BodyContentAware;
 
     const PRIMARY_TAG = 'label';
 
     protected $_inputId;
 
-    public function __construct(arch\IContext $context, $body, $inputId=null) {
+    public function __construct(arch\IContext $context, $body, $inputId=null)
+    {
         parent::__construct($context);
 
         $this->setInputId($inputId);
@@ -27,26 +32,28 @@ class Label extends Base implements ILabelWidget, core\IDumpable {
     }
 
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
 
-        if(!$this->hasBody()) {
+        if (!$this->hasBody()) {
             $tag->addClass('empty');
         }
 
-        if($this->_inputId !== null) {
+        if ($this->_inputId !== null) {
             $tag->setAttribute('for', $this->_inputId);
         }
 
         return $tag->renderWith($this->_body);
     }
 
-    public function setInputId($inputId) {
-        if($inputId instanceof IWidget) {
+    public function setInputId($inputId)
+    {
+        if ($inputId instanceof IWidget) {
             $widget = $inputId;
             $inputId = $widget->getId();
 
-            if(!$inputId) {
+            if (!$inputId) {
                 $widget->setId($inputId = 'input-'.flex\Generator::random());
             }
         }
@@ -55,17 +62,22 @@ class Label extends Base implements ILabelWidget, core\IDumpable {
         return $this;
     }
 
-    public function getInputId() {
+    public function getInputId()
+    {
         return $this->_inputId;
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'for' => $this->_inputId,
-            'body' => $this->_body,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*for' => $inspector($this->_inputId),
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues($inspector->inspectList($this->_body->toArray()));
     }
 }

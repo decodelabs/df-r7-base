@@ -9,39 +9,49 @@ use df;
 use df\core;
 use df\spur;
 
-class Branch implements IBranch, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Branch implements IBranch, Inspectable
+{
     use TApiObject;
 
     protected $_commit;
 
-    protected function _importData(core\collection\ITree $data) {
+    protected function _importData(core\collection\ITree $data)
+    {
         $this->_id = $data['name'];
         $this->_urls = $data->_links->toArray();
         $this->_commit = new Commit($this->_mediator, $data->commit);
 
-        if($self = $this->getUrl('self')) {
+        if ($self = $this->getUrl('self')) {
             $self = dirname(dirname($self));
             $this->_urls['zipball'] = $self.'/zipball/'.$this->_id;
             $this->_urls['tarball'] = $self.'/tarball/'.$this->_id;
         }
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_id;
     }
 
-    public function getCommit() {
+    public function getCommit()
+    {
         return $this->_commit;
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'name' => $this->_id,
-            'commit' => $this->_commit,
-            'urls' => $this->_urls
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*name' => $inspector($this->_id),
+                '*commit' => $inspector($this->_commit),
+                '*urls' => $inspector($this->_urls)
+            ]);
     }
 }

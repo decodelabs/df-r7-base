@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Template implements aura\view\ITemplate, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Template implements aura\view\ITemplate, Inspectable
+{
     use core\TContextAware;
     use core\TStringProvider;
     use aura\view\TView_DeferredRenderable;
@@ -25,13 +29,14 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     private $_isLayout = false;
     private $_innerContent = null;
 
-    public static function loadDirectoryTemplate(arch\IContext $context, $path) {
+    public static function loadDirectoryTemplate(arch\IContext $context, $path)
+    {
         $request = $context->location;
         $contextPath = $request->getDirectoryLocation();
         $lookupPath = 'apex/directory/'.$contextPath.'/_templates/'.ltrim($path, '/').'.php';
 
-        if(!$absolutePath = $context->findFile($lookupPath)) {
-            if(!$request->isArea('shared')) {
+        if (!$absolutePath = $context->findFile($lookupPath)) {
+            if (!$request->isArea('shared')) {
                 $parts = explode('/', $contextPath);
                 array_shift($parts);
                 array_unshift($parts, 'shared');
@@ -41,8 +46,8 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             }
         }
 
-        if(!$absolutePath) {
-            if(false !== strpos($path, '/')) {
+        if (!$absolutePath) {
+            if (false !== strpos($path, '/')) {
                 $path = '#/'.$path;
             }
 
@@ -54,8 +59,9 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return new self($context, $absolutePath);
     }
 
-    public static function loadThemeTemplate(arch\IContext $context, $path, $themeId=null) {
-        if($themeId === null) {
+    public static function loadThemeTemplate(arch\IContext $context, $path, $themeId=null)
+    {
+        if ($themeId === null) {
             $themeId = $context->apex->getTheme()->getId();
         }
 
@@ -69,18 +75,18 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/'.$pathName.'#'.$area.'.'.$type.'.php';
         $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/'.$pathName.'.'.$type.'.php';
 
-        if($themeId !== 'shared') {
+        if ($themeId !== 'shared') {
             $lookupPaths[] = 'apex/themes/shared/templates/'.$pathName.'#'.$area.'.'.$type.'.php';
             $lookupPaths[] = 'apex/themes/shared/templates/'.$pathName.'.'.$type.'.php';
         }
 
-        foreach($lookupPaths as $testPath) {
-            if($templatePath = $context->findFile($testPath)) {
+        foreach ($lookupPaths as $testPath) {
+            if ($templatePath = $context->findFile($testPath)) {
                 break;
             }
         }
 
-        if(!$templatePath) {
+        if (!$templatePath) {
             throw core\Error::{'aura/view/ENotFound'}(
                 'Theme template '.$path.' could not be found'
             );
@@ -89,12 +95,13 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return new self($context, $templatePath);
     }
 
-    public static function loadLayout(aura\view\ILayoutView $view, $innerContent=null, $pathName=null, $type=null) {
-        if($pathName === null) {
+    public static function loadLayout(aura\view\ILayoutView $view, $innerContent=null, $pathName=null, $type=null)
+    {
+        if ($pathName === null) {
             $pathName = $view->getLayout();
         }
 
-        if($type === null) {
+        if ($type === null) {
             $type = lcfirst($view->getType());
         }
 
@@ -108,18 +115,18 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $lookupPaths[] = 'apex/themes/'.$themeId.'/layouts/'.$pathName.'#'.$area.'.'.$type.'.php';
         $lookupPaths[] = 'apex/themes/'.$themeId.'/layouts/'.$pathName.'.'.$type.'.php';
 
-        if($themeId !== 'shared') {
+        if ($themeId !== 'shared') {
             $lookupPaths[] = 'apex/themes/shared/layouts/'.$pathName.'#'.$area.'.'.$type.'.php';
             $lookupPaths[] = 'apex/themes/shared/layouts/'.$pathName.'.'.$type.'.php';
         }
 
-        foreach($lookupPaths as $testPath) {
-            if($layoutPath = $context->findFile($testPath)) {
+        foreach ($lookupPaths as $testPath) {
+            if ($layoutPath = $context->findFile($testPath)) {
                 break;
             }
         }
 
-        if(!$layoutPath) {
+        if (!$layoutPath) {
             throw core\Error::{'aura/view/ENotFound'}(
                 'Layout '.$pathName.'.'.$type.' could not be found'
             );
@@ -131,8 +138,9 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $output;
     }
 
-    public function __construct(arch\IContext $context, $absolutePath, $isLayout=false) {
-        if(!is_file($absolutePath)) {
+    public function __construct(arch\IContext $context, $absolutePath, $isLayout=false)
+    {
+        if (!is_file($absolutePath)) {
             throw core\Error::{'aura/view/ENotFound'}(
                 'Template '.$absolutePath.' could not be found'
             );
@@ -144,9 +152,10 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     }
 
 
-// Renderable
-    public function getView() {
-        if(!$this->view) {
+    // Renderable
+    public function getView()
+    {
+        if (!$this->view) {
             throw core\Error::{'aura/view/ENoView,ENoContext'}(
                 'This template is not currently rendering'
             );
@@ -155,8 +164,9 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this->view;
     }
 
-    public function render() {
-        if($this->_isRendering) {
+    public function render()
+    {
+        if ($this->_isRendering) {
             throw core\Error::ELogic('Rendering is already in progress');
         }
 
@@ -165,7 +175,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $this->view = $____target->getView();
 
 
-        if($this->_isLayout && $this->_innerContent === null) {
+        if ($this->_isLayout && $this->_innerContent === null) {
             // Prepare inner template content before rendering to ensure
             // sub templates can affect layout properties
             $this->renderInnerContent();
@@ -180,8 +190,8 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
             $this->_isRendering = false;
             $this->view = null;
-        } catch(\Throwable $e) {
-            if(ob_get_level()) {
+        } catch (\Throwable $e) {
+            if (ob_get_level()) {
                 ob_end_clean();
             }
 
@@ -194,37 +204,42 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $output;
     }
 
-    public function toResponse() {
+    public function toResponse()
+    {
         return $this->view;
     }
 
-    protected function renderInnerContent() {
-        if(!$this->_isLayout || $this->_innerContent === false) {
+    protected function renderInnerContent()
+    {
+        if (!$this->_isLayout || $this->_innerContent === false) {
             return null;
         }
 
-        if($this->_innerContent !== null) {
+        if ($this->_innerContent !== null) {
             return $this->_innerContent;
         }
 
         $this->_innerContent = false;
         $provider = $this->getView()->getContentProvider();
 
-        if($provider && $provider !== $this) {
+        if ($provider && $provider !== $this) {
             return $this->_innerContent = $provider->renderTo($this);
         }
     }
 
-    public function isRendering() {
+    public function isRendering()
+    {
         return $this->_isRendering;
     }
 
-    public function isLayout() {
+    public function isLayout()
+    {
         return $this->_isLayout;
     }
 
-    public function toString(): string {
-        if(!$this->_renderTarget) {
+    public function toString(): string
+    {
+        if (!$this->_renderTarget) {
             throw core\Error::{'aura/view/ENoView,ENoContext'}(
                 'No render target has been set'
             );
@@ -234,19 +249,21 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     }
 
 
-// Slots
-    public function getSlots() {
+    // Slots
+    public function getSlots()
+    {
         $output = [];
 
-        if($this->view) {
+        if ($this->view) {
             $output = $this->view->getSlots();
         }
 
         return array_merge($output, $this->slots);
     }
 
-    public function clearSlots() {
-        if($this->view) {
+    public function clearSlots()
+    {
+        if ($this->view) {
             $this->view->clearSlots();
         }
 
@@ -254,8 +271,9 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this;
     }
 
-    public function setSlot(string $key, $value) {
-        if($this->view) {
+    public function setSlot(string $key, $value)
+    {
+        if ($this->view) {
             $this->view->setSlot($key, $value);
         } else {
             $this->slots[$key] = $value;
@@ -264,13 +282,14 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this;
     }
 
-    public function hasSlot(string ...$keys): bool {
-        if($this->view && $this->view->hasSlot(...$keys)) {
+    public function hasSlot(string ...$keys): bool
+    {
+        if ($this->view && $this->view->hasSlot(...$keys)) {
             return true;
         }
 
-        foreach($keys as $key) {
-            if(isset($this->slots[$key])) {
+        foreach ($keys as $key) {
+            if (isset($this->slots[$key])) {
                 return true;
             }
         }
@@ -278,34 +297,37 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return false;
     }
 
-    public function slotExists(string $key) {
-        if($this->view && $this->view->slotExists($key)) {
+    public function slotExists(string $key)
+    {
+        if ($this->view && $this->view->slotExists($key)) {
             return true;
         }
 
-        if(!empty($this->slots)) {
+        if (!empty($this->slots)) {
             return array_key_exists($key, $this->slots);
         }
 
         return false;
     }
 
-    public function getSlot(string $key, $default=null) {
-        if(isset($this->slots[$key])) {
+    public function getSlot(string $key, $default=null)
+    {
+        if (isset($this->slots[$key])) {
             return $this->slots[$key];
         }
 
-        if($this->view) {
+        if ($this->view) {
             return $this->view->getSlot($key, $default);
         }
 
         return $default;
     }
 
-    public function removeSlot(string $key) {
+    public function removeSlot(string $key)
+    {
         unset($this->slots[$key]);
 
-        if($this->view) {
+        if ($this->view) {
             $this->view->removeSlot($key);
         }
 
@@ -313,57 +335,67 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     }
 
 
-    public function startSlotCapture($key) {
+    public function startSlotCapture($key)
+    {
         $this->_checkView();
         $this->view->startSlotCapture($key);
         return $this;
     }
 
-    public function endSlotCapture() {
+    public function endSlotCapture()
+    {
         $this->_checkView();
         $this->view->endSlotCapture();
         return $this;
     }
 
-    public function isCapturingSlot() {
-        if($this->view) {
+    public function isCapturingSlot()
+    {
+        if ($this->view) {
             return $this->view->isCapturingSlot();
         } else {
             return false;
         }
     }
 
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value)
+    {
         return $this->setSlot($key, $value);
     }
 
-    public function offsetGet($key) {
+    public function offsetGet($key)
+    {
         return $this->getSlot($key);
     }
 
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         return $this->hasSlot($key);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         return $this->removeSlot($key);
     }
 
 
-// Escaping
-    public function esc($value): string {
+    // Escaping
+    public function esc($value): string
+    {
         $this->_checkView();
         return $this->view->esc($value);
     }
 
 
-// Helpers
-    public function translate(array $args): string {
+    // Helpers
+    public function translate(array $args): string
+    {
         return $this->context->i18n->translate($args);
     }
 
-    protected function _checkView() {
-        if(!$this->view) {
+    protected function _checkView()
+    {
+        if (!$this->view) {
             throw core\Error::{'aura/view/ENoView,ENoContext'}(
                 'No view available for content provider to interact with'
             );
@@ -371,13 +403,17 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'path' => $this->_path,
-            'slots' => $this->slots,
-            'context' => $this->context,
-            'view' => $this->view
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*path' => $inspector($this->_path),
+                'context' => $inspector($this->context),
+                'view' => $inspector($this->view)
+            ])
+            ->setValues($inspector->inspectList($this->slots));
     }
 }

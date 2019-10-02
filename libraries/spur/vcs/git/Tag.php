@@ -10,34 +10,41 @@ use df\core;
 use df\flex;
 use df\spur;
 
-class Tag implements ITag, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Tag implements ITag, Inspectable
+{
     protected $_name;
     protected $_version;
     protected $_commitId;
     protected $_repository;
 
-    public function __construct(IRepository $repository, string $name, $commit) {
+    public function __construct(IRepository $repository, string $name, $commit)
+    {
         $this->_name = $name;
         $this->_commitId = $commit;
         $this->_repository = $repository;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function getVersion() {
-        if($this->_version === null) {
+    public function getVersion()
+    {
+        if ($this->_version === null) {
             $name = $this->_name;
 
-            if(preg_match('/^[a-zA-Z][0-9]/', $name)) {
+            if (preg_match('/^[a-zA-Z][0-9]/', $name)) {
                 $name = substr($name, 1);
             }
 
             try {
                 $this->_version = flex\Version::factory($name);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $this->_version = false;
             }
         }
@@ -45,23 +52,29 @@ class Tag implements ITag, core\IDumpable {
         return $this->_version;
     }
 
-    public function getCommit() {
+    public function getCommit()
+    {
         return Commit::factory($this->_repository, $this->_commitId);
     }
 
-    public function getCommitId() {
+    public function getCommitId()
+    {
         return $this->_commitId;
     }
 
-    public function getRepository() {
+    public function getRepository()
+    {
         return $this->_repository;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'name' => $this->_name,
-            'commit' => $this->_commitId
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setProperties([
+            '*name' => $inspector($this->_name),
+            '*commit' => $inspector($this->_commitId)
+        ]);
     }
 }

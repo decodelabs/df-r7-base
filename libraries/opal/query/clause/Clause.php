@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Clause implements opal\query\IClause, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Clause implements opal\query\IClause, Inspectable
 {
     const BETWEEN_CONVERSION_THRESHOLD = 15;
 
@@ -661,8 +665,10 @@ class Clause implements opal\query\IClause, core\IDumpable
         return $clauseList;
     }
 
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
         if ($this->_isOr) {
             $type = 'OR';
@@ -689,12 +695,10 @@ class Clause implements opal\query\IClause, core\IDumpable
         }
 
         if (is_string($value)) {
-            return $type.' '.$field.' '.$this->_operator.' '.$value;
+            $entity->setDefinition($type.' '.$field.' '.$this->_operator.' '.$value);
         } else {
-            return [
-                'clause' => $type.' '.$field.' '.$this->_operator,
-                'value' => $value
-            ];
+            $entity->setDefinition($type.' '.$field.' '.$this->_operator)
+                ->setValues([$inspector($value)]);
         }
     }
 }

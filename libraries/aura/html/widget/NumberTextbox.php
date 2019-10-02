@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class NumberTextbox extends Base implements IRangeEntryWidget, Inspectable
+{
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_VisualInput;
@@ -25,14 +29,16 @@ class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
     const INPUT_TYPE = 'number';
     const DEFAULT_PLACEHOLDER = null;
 
-    public function __construct(arch\IContext $context, $name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null)
+    {
         parent::__construct($context);
 
         $this->setName($name);
         $this->setValue($value);
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
         $tag->setAttribute('type', $this->_getInputType());
 
@@ -47,20 +53,24 @@ class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
         return $tag;
     }
 
-    protected function _getInputType() {
+    protected function _getInputType()
+    {
         return static::INPUT_TYPE;
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'name' => $this->_name,
-            'value' => $this->_value,
-            'min' => $this->_min,
-            'max' => $this->_max,
-            'step' => $this->_step,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*name' => $inspector($this->_name),
+                '*value' => $inspector($this->_value),
+                '*min' => $inspector($this->_min),
+                '*max' => $inspector($this->_max),
+                '*step' => $inspector($this->_step),
+                '%tag' => $inspector($this->getTag())
+            ]);
     }
 }

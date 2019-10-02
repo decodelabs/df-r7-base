@@ -8,7 +8,11 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-class Promise implements IPromise, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Promise implements IPromise, Inspectable
 {
     protected $_action;
     protected $_errorHandlers = [];
@@ -807,18 +811,22 @@ class Promise implements IPromise, core\IDumpable
         return true;
     }
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
         if ($this->_error) {
-            return $this->_error;
+            $entity->setText((string)$this->_error);
+            return;
         } elseif ($this->_result) {
-            return $this->_result;
+            $entity->setValues([$inspector($this->_result)]);
+            return;
         }
 
         if ($this->_isCancelled) {
-            return '** CANCELLED **';
+            $entity->setText('** CANCELLED **');
+            return;
         }
 
         $output = [];
@@ -832,6 +840,7 @@ class Promise implements IPromise, core\IDumpable
             }
         }
 
-        return implode(', ', $output);
+        $output = implode(', ', $output);
+        $entity->setDefinition($output);
     }
 }

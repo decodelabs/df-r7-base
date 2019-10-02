@@ -10,20 +10,25 @@ use df\core;
 use df\opal;
 use df\flex;
 
-class Rdn implements IRdn, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Rdn implements IRdn, Inspectable
+{
     use core\collection\TAttributeContainer;
     use core\TStringProvider;
 
-    public static function factory($rdn) {
-        if($rdn instanceof IRdn) {
+    public static function factory($rdn)
+    {
+        if ($rdn instanceof IRdn) {
             return $rdn;
         }
 
         $parts = explode('+', (string)$rdn);
         $output = new self();
 
-        foreach($parts as $part) {
+        foreach ($parts as $part) {
             $values = explode('=', $part, 2);
             $output->setAttribute(array_shift($values), array_shift($values));
         }
@@ -31,21 +36,23 @@ class Rdn implements IRdn, core\IDumpable {
         return $output;
     }
 
-    public function __construct(array $attributes=[]) {
+    public function __construct(array $attributes=[])
+    {
         $this->setAttributes($attributes);
     }
 
-    public function setAttribute($key, $value) {
+    public function setAttribute($key, $value)
+    {
         $key = trim($key);
         $value = trim($value);
 
-        if(is_numeric($key)) {
+        if (is_numeric($key)) {
             throw new InvalidDnException(
                 'Malformed rdn key: '.$key
             );
         }
 
-        if(isset($this->_attributes[$key])) {
+        if (isset($this->_attributes[$key])) {
             throw new InvalidDnException(
                 'Duplicate multi key '.$key.' in dn'
             );
@@ -55,27 +62,30 @@ class Rdn implements IRdn, core\IDumpable {
         return $this;
     }
 
-    public function getAttribute($key, $default=null) {
+    public function getAttribute($key, $default=null)
+    {
         $key = strtolower(trim($key));
         $attributes = $this->_attributes;
         array_change_key_case($attributes, \CASE_LOWER);
 
-        if(isset($attributes[$key])) {
+        if (isset($attributes[$key])) {
             return $attributes[$key];
         }
 
         return $default;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return $this->implode();
     }
 
-    public function implode($case=flex\ICase::NONE) {
+    public function implode($case=flex\ICase::NONE)
+    {
         $output = [];
 
-        foreach($this->_attributes as $key => $value) {
-            switch($case) {
+        foreach ($this->_attributes as $key => $value) {
+            switch ($case) {
                 case flex\ICase::UPPER:
                     $key = strtoupper($key);
                     break;
@@ -93,16 +103,22 @@ class Rdn implements IRdn, core\IDumpable {
         return implode('+', $output);
     }
 
-    public function eq($rdn) {
+    public function eq($rdn)
+    {
         return $this->implode(flex\ICase::LOWER) == self::factory($rdn)->implode(flex\ICase::LOWER);
     }
 
-    public function count() {
+    public function count()
+    {
         return count($this->_attributes);
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->_attributes;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setValues($inspector->inspectList($this->_attributes));
     }
 }

@@ -10,8 +10,8 @@ use df\core;
 use df\flex;
 use df\iris;
 
-class Document extends iris\map\Node implements flex\latex\IDocument, core\IDumpable {
-
+class Document extends iris\map\Node implements flex\latex\IDocument
+{
     use flex\latex\TContainerNode;
 
     protected $_documentClass;
@@ -23,118 +23,112 @@ class Document extends iris\map\Node implements flex\latex\IDocument, core\IDump
     protected $_date;
 
 
-// Class
-    public function setDocumentClass($class) {
+    // Class
+    public function setDocumentClass($class)
+    {
         $this->_documentClass = $class;
         return $this;
     }
 
-    public function getDocumentClass() {
+    public function getDocumentClass()
+    {
         return $this->_documentClass;
     }
 
 
-// Options
-    public function setOptions(array $options) {
+    // Options
+    public function setOptions(array $options)
+    {
         $this->_options = [];
         return $this->addOptions($options);
     }
 
-    public function addOptions(array $options) {
+    public function addOptions(array $options)
+    {
         $this->_options = array_unique(array_merge($this->_options, $options));
         return $this;
     }
 
-    public function addOption($option) {
-        if(!in_array($option, $this->_options)) {
+    public function addOption($option)
+    {
+        if (!in_array($option, $this->_options)) {
             $this->_options[] = $option;
         }
 
         return $this;
     }
 
-    public function getOptions() {
+    public function getOptions()
+    {
         return $this->_options;
     }
 
-    public function clearOptions() {
+    public function clearOptions()
+    {
         $this->_options = [];
         return $this;
     }
 
-// Packages
-    public function addPackage($name, array $options=[]) {
+    // Packages
+    public function addPackage($name, array $options=[])
+    {
         $this->_packages[$name] = $options;
         return $this;
     }
 
-    public function hasPackage($name) {
+    public function hasPackage($name)
+    {
         return isset($this->_packages[$name]);
     }
 
-    public function getPackages() {
+    public function getPackages()
+    {
         return $this->_packages;
     }
 
 
-// Top matter
-    public function setTitle(?string $title) {
+    // Top matter
+    public function setTitle(?string $title)
+    {
         $this->_title = $title;
         return $this;
     }
 
-    public function getTitle(): ?string {
+    public function getTitle(): ?string
+    {
         return $this->_title;
     }
 
-    public function setAuthor($author) {
+    public function setAuthor($author)
+    {
         $this->_author = $author;
         return $this;
     }
 
-    public function getAuthor() {
+    public function getAuthor()
+    {
         return $this->_author;
     }
 
-    public function setDate($date) {
+    public function setDate($date)
+    {
         $this->_date = core\time\Date::normalize($date);
         return $this;
     }
 
-    public function getDate() {
+    public function getDate()
+    {
         return $this->_date;
     }
 
 
-// References
-    public function getBibliography() {
-        foreach($this->_collection as $child) {
-            if($child instanceof flex\latex\map\Bibliography) {
+    // References
+    public function getBibliography()
+    {
+        foreach ($this->_collection as $child) {
+            if ($child instanceof flex\latex\map\Bibliography) {
                 return $child;
             }
         }
-    }
-
-// Dump
-    public function getDumpProperties() {
-        $output = [];
-
-        if($this->_title) {
-            $output['title'] = $this->_title;
-        }
-
-        if($this->_author) {
-            $output['author'] = $this->_author;
-        }
-
-        if($this->_date) {
-            $output['date'] = $this->_date;
-        }
-
-        $output['documentClass'] = '['.implode(',', $this->_options).']{'.$this->_documentClass.'}';
-        $output['packages'] = implode(',', array_keys($this->_packages));
-        $output['children'] = $this->_collection;
-
-        return $output;
     }
 }

@@ -238,14 +238,6 @@ trait TUserValueContainer
 }
 
 
-// Dumpable
-interface IDumpable
-{
-    public function getDumpProperties();
-}
-
-
-
 // Loader
 interface ILoader
 {

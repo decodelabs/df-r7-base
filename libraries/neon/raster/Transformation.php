@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\neon;
 
-class Transformation implements ITransformation, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Transformation implements ITransformation, Inspectable
+{
     use core\TStringProvider;
 
     const KEYS = [
@@ -42,46 +46,49 @@ class Transformation implements ITransformation, core\IDumpable {
     protected $_image;
     protected $_transformations = [];
 
-    public static function factory($transformation) {
-        if($transformation instanceof ITransformation) {
+    public static function factory($transformation)
+    {
+        if ($transformation instanceof ITransformation) {
             return $transformation;
         }
 
         return new self($transformation);
     }
 
-    public function __construct(...$args) {
-        foreach($args as $arg) {
-            if($arg instanceof IImage) {
+    public function __construct(...$args)
+    {
+        foreach ($args as $arg) {
+            if ($arg instanceof IImage) {
                 $this->setImage($arg);
-            } else if(is_string($arg)) {
+            } elseif (is_string($arg)) {
                 $this->_parseString($arg);
             }
         }
     }
 
-    protected function _parseString($string) {
+    protected function _parseString($string)
+    {
         preg_match_all('/\[([^]]+)\]/', $string, $matches);
 
-        if(!isset($matches[1])) {
+        if (!isset($matches[1])) {
             return false;
         }
 
         $keys = array_flip(self::KEYS);
 
-        foreach($matches[1] as $match) {
+        foreach ($matches[1] as $match) {
             $parts = explode(':', $match, 2);
             $key = strtolower(array_shift($parts));
             $argString = array_shift($parts);
 
-            if(!isset($keys[$key])) {
+            if (!isset($keys[$key])) {
                 continue;
             }
 
             $method = $keys[$key];
             $args = [];
 
-            if(strlen($argString)) {
+            if (strlen($argString)) {
                 $args = explode('|', $argString);
             }
 
@@ -89,13 +96,14 @@ class Transformation implements ITransformation, core\IDumpable {
         }
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         $output = '';
 
-        foreach($this->_transformations as $callback) {
+        foreach ($this->_transformations as $callback) {
             $output .= '['.self::KEYS[$callback[0]];
 
-            if(count($args = $callback[1])) {
+            if (count($args = $callback[1])) {
                 $output .= ':'.implode('|', $args);
             }
 
@@ -105,26 +113,29 @@ class Transformation implements ITransformation, core\IDumpable {
         return $output;
     }
 
-    public function setImage(?IImage $image) {
+    public function setImage(?IImage $image)
+    {
         $this->_image = $image;
         return $this;
     }
 
-    public function getImage(): ?IImage {
+    public function getImage(): ?IImage
+    {
         return $this->_image;
     }
 
-    public function isAlphaRequired(): bool {
-        foreach($this->_transformations as $node) {
-            switch($node[0]) {
+    public function isAlphaRequired(): bool
+    {
+        foreach ($this->_transformations as $node) {
+            switch ($node[0]) {
                 case 'frame':
-                    if(!isset($node[1][2])) {
+                    if (!isset($node[1][2])) {
                         return true;
                     }
                     break;
 
                 case 'rotate':
-                    if(!isset($node[1][1])) {
+                    if (!isset($node[1][1])) {
                         return true;
                     }
                     break;
@@ -134,14 +145,15 @@ class Transformation implements ITransformation, core\IDumpable {
         return false;
     }
 
-    public function rescale(float $scale) {
-        foreach($this->_transformations as $key => $set) {
-            if(in_array($set[0], self::RESCALABLE)) {
-                if(isset($set[1][0])) {
+    public function rescale(float $scale)
+    {
+        foreach ($this->_transformations as $key => $set) {
+            if (in_array($set[0], self::RESCALABLE)) {
+                if (isset($set[1][0])) {
                     $set[1][0] *= $scale;
                 }
 
-                if(isset($set[1][1])) {
+                if (isset($set[1][1])) {
                     $set[1][1] *= $scale;
                 }
 
@@ -152,15 +164,16 @@ class Transformation implements ITransformation, core\IDumpable {
         return $this;
     }
 
-    public function apply(): IImage {
-        if(!$this->_image) {
+    public function apply(): IImage
+    {
+        if (!$this->_image) {
             throw core\Error::ESetup(
                 'No image has been set for transformation'
             );
         }
 
-        foreach($this->_transformations as $callback) {
-            if(method_exists($this->_image, $callback[0])) {
+        foreach ($this->_transformations as $callback) {
+            if (method_exists($this->_image, $callback[0])) {
                 $this->_image->{$callback[0]}(...$callback[1]);
             }
         }
@@ -169,86 +182,105 @@ class Transformation implements ITransformation, core\IDumpable {
     }
 
 
-// Manipulations
-    public function resize(?int $width, int $height=null, string $mode=null) {
+    // Manipulations
+    public function resize(?int $width, int $height=null, string $mode=null)
+    {
         return $this->_addTransformation('resize', [$width, $height, $mode]);
     }
 
-    public function crop(int $x, int $y, int $width, int $height) {
+    public function crop(int $x, int $y, int $width, int $height)
+    {
         return $this->_addTransformation('crop', [$x, $y, $width, $height]);
     }
 
-    public function cropZoom(?int $width, int $height=null) {
+    public function cropZoom(?int $width, int $height=null)
+    {
         return $this->_addTransformation('cropZoom', [$width, $height]);
     }
 
-    public function frame(?int $width, int $height=null, $color=null) {
+    public function frame(?int $width, int $height=null, $color=null)
+    {
         return $this->_addTransformation('frame', [$width, $height, $color]);
     }
 
-    public function rotate($angle, $background=null) {
+    public function rotate($angle, $background=null)
+    {
         return $this->_addTransformation('rotate', [$angle, $background]);
     }
 
-    public function mirror() {
+    public function mirror()
+    {
         return $this->_addTransformation('mirror');
     }
 
-    public function flip() {
+    public function flip()
+    {
         return $this->_addTransformation('flip');
     }
 
 
-// Filters
-    public function brightness($brightness) {
+    // Filters
+    public function brightness($brightness)
+    {
         return $this->_addTransformation('brightness', [$brightness]);
     }
 
-    public function contrast($contrast) {
+    public function contrast($contrast)
+    {
         return $this->_addTransformation('contrast', [$contrast]);
     }
 
-    public function greyscale() {
+    public function greyscale()
+    {
         return $this->_addTransformation('greyscale');
     }
 
-    public function colorize($color, $alpha=null) {
+    public function colorize($color, $alpha=null)
+    {
         return $this->_addTransformation('colorize', [$color, $alpha]);
     }
 
-    public function invert() {
+    public function invert()
+    {
         return $this->_addTransformation('invert');
     }
 
-    public function detectEdges() {
+    public function detectEdges()
+    {
         return $this->_addTransformation('detectEdges');
     }
 
-    public function emboss() {
+    public function emboss()
+    {
         return $this->_addTransformation('emboss');
     }
 
-    public function blur() {
+    public function blur()
+    {
         return $this->_addTransformation('blur');
     }
 
-    public function gaussianBlur() {
+    public function gaussianBlur()
+    {
         return $this->_addTransformation('gaussianBlur');
     }
 
-    public function removeMean() {
+    public function removeMean()
+    {
         return $this->_addTransformation('removeMean');
     }
 
-    public function smooth($amount=null) {
+    public function smooth($amount=null)
+    {
         return $this->_addTransformation('smooth', [$smooth]);
     }
 
 
-// Helpers
-    protected function _addTransformation($method, array $args=[]) {
-        foreach($args as $i => $arg) {
-            if(!strlen($arg)) {
+    // Helpers
+    protected function _addTransformation($method, array $args=[])
+    {
+        foreach ($args as $i => $arg) {
+            if (!strlen($arg)) {
                 $args[$i] = null;
             }
         }
@@ -257,9 +289,11 @@ class Transformation implements ITransformation, core\IDumpable {
         return $this;
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toString());
     }
 }

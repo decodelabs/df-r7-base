@@ -9,10 +9,13 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
 // Font
-class Font implements IFont, core\IDumpable {
-
+class Font implements IFont, Inspectable
+{
     use TCustomContainerElement;
     use TFontFaceContainer;
     use TStructure_Description;
@@ -24,8 +27,9 @@ class Font implements IFont, core\IDumpable {
     protected $_missingGlyph;
     protected $_glyphs = [];
 
-    public function setMissingGlyph(IFontGlyph $glyph=null) {
-        if($glyph) {
+    public function setMissingGlyph(IFontGlyph $glyph=null)
+    {
+        if ($glyph) {
             $glyph->isMissing(true);
         }
 
@@ -33,18 +37,21 @@ class Font implements IFont, core\IDumpable {
         return $this;
     }
 
-    public function getMissingGlyph() {
+    public function getMissingGlyph()
+    {
         return $this->_missingGlyph;
     }
 
-    public function setGlyphs(array $glyphs) {
+    public function setGlyphs(array $glyphs)
+    {
         $this->_glyphs = [];
         return $this->addGlyphs($glyphs);
     }
 
-    public function addGlyphs(array $glyphs) {
-        foreach($glyphs as $glyph) {
-            if(!$glyph instanceof IFontGlyph) {
+    public function addGlyphs(array $glyphs)
+    {
+        foreach ($glyphs as $glyph) {
+            if (!$glyph instanceof IFontGlyph) {
                 throw new InvalidArgumentException(
                     'Invalid glyph detected'
                 );
@@ -56,18 +63,21 @@ class Font implements IFont, core\IDumpable {
         return $this;
     }
 
-    public function addGlyph(IFontGlyph $glyph) {
+    public function addGlyph(IFontGlyph $glyph)
+    {
         $this->_glyphs[] = $glyph;
         return $this;
     }
 
-    public function getGlyphs() {
+    public function getGlyphs()
+    {
         return $this->_glyphs;
     }
 
-    public function removeGlyph(IFontGlyph $glyph) {
-        foreach($this->_glyphs as $i => $test) {
-            if($test === $glyph) {
+    public function removeGlyph(IFontGlyph $glyph)
+    {
+        foreach ($this->_glyphs as $i => $test) {
+            if ($test === $glyph) {
                 unset($this->_glyphs[$i]);
                 break;
             }
@@ -76,42 +86,49 @@ class Font implements IFont, core\IDumpable {
         return $this;
     }
 
-    public function clearGlyphs() {
+    public function clearGlyphs()
+    {
         $this->_glyphs = [];
         return $this;
     }
 
-    protected function _getCustomContainerChildren() {
+    protected function _getCustomContainerChildren()
+    {
         $output = [];
 
-        if($this->_fontFace) {
+        if ($this->_fontFace) {
             $output[] = $this->_fontFace;
         }
 
-        if($this->_missingGlyph) {
+        if ($this->_missingGlyph) {
             $output[] = $this->_missingGlyph;
         }
 
         return array_merge($output, $this->_glyphs);
     }
 
-// Dump
-    public function getDumpProperties() {
-        $output = $this->_attributes;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setSectionVisible('meta', true);
 
-        if($this->_fontFace) {
-            $output['font-face'] = $this->_fontFace;
+        foreach ($this->_attributes as $key => $value) {
+            $entity->setMeta($key, $inspector($value));
         }
 
-        if($this->_missingGlyph) {
-            $output['missing-glyph'] = $this->_missingGlyph;
+        if ($this->_fontFace) {
+            $entity->setProperty('*font-face', $inspector($this->_fontFace));
         }
 
-        if(!empty($this->_glyphs)) {
-            $output['glyphs'] = $this->_glyphs;
+        if ($this->_missingGlyph) {
+            $entity->setProperty('*missing-glyph', $inspector($this->_missingGlyph));
         }
 
-        return $output;
+        if (!empty($this->_glyphs)) {
+            $entity->setProperty('*glyphs', $inspector($this->_glyphs));
+        }
     }
 }
 
@@ -119,8 +136,8 @@ class Font implements IFont, core\IDumpable {
 
 
 // Font face
-class Font_Face implements IFontFace, core\IDumpable {
-
+class Font_Face implements IFontFace, Inspectable
+{
     use TCustomContainerElement;
     use TAttributeModule;
     use TAttributeModule_Core;
@@ -128,315 +145,372 @@ class Font_Face implements IFontFace, core\IDumpable {
 
     protected $_sources = [];
 
-    public function getElementName() {
+    public function getElementName()
+    {
         return 'font-face';
     }
 
-    public function setAccentHeight($height) {
+    public function setAccentHeight($height)
+    {
         return $this->_setAttribute(
             'accent-height',
             $this->_normalizeLength($height)
         );
     }
 
-    public function getAccentHeight() {
+    public function getAccentHeight()
+    {
         return $this->_getAttribute('accent-height');
     }
 
-    public function setAlphabetic($abc) {
+    public function setAlphabetic($abc)
+    {
         return $this->_setAttribute(
             'alphabetic',
             $this->_normalizeLength($abc)
         );
     }
 
-    public function getAlphabetic() {
+    public function getAlphabetic()
+    {
         return $this->_getAttribute('alphabetic');
     }
 
-    public function setAscent($ascent) {
+    public function setAscent($ascent)
+    {
         return $this->_setAttribute(
             'ascent',
             $this->_normalizeLength($ascent)
         );
     }
 
-    public function getAscent() {
+    public function getAscent()
+    {
         return $this->_getAttribute('ascent');
     }
 
-    public function setBBox($bbox) {
+    public function setBBox($bbox)
+    {
         return $this->_setAttribute(
             'bbox',
             $this->_normalizeIdentifier($bbox)
         );
     }
 
-    public function getBBox() {
+    public function getBBox()
+    {
         return $this->_getAttribute('bbox');
     }
 
-    public function setCapHeight($height) {
+    public function setCapHeight($height)
+    {
         return $this->_setAttribute(
             'cap-height',
             $this->_normalizeLength($height)
         );
     }
 
-    public function getCapHeight() {
+    public function getCapHeight()
+    {
         return $this->_getAttribute('cap-height');
     }
 
-    public function setDescent($descent) {
+    public function setDescent($descent)
+    {
         return $this->_setAttribute(
             'descent',
             $this->_normalizeLength($descent)
         );
     }
 
-    public function getDescent() {
+    public function getDescent()
+    {
         return $this->_getAttribute('descent');
     }
 
-    public function setHanging($hanging) {
+    public function setHanging($hanging)
+    {
         return $this->_setAttribute(
             'hanging',
             $this->_normalizeLength($hanging)
         );
     }
 
-    public function getHanging() {
+    public function getHanging()
+    {
         return $this->_getAttribute('hanging');
     }
 
-    public function setIdeographic($ideographic) {
+    public function setIdeographic($ideographic)
+    {
         return $this->_setAttribute(
             'ideographic',
             $this->_normalizeLength($ideographic)
         );
     }
 
-    public function getIdeographic() {
+    public function getIdeographic()
+    {
         return $this->_getAttribute('ideographic');
     }
 
-    public function setMathematical($math) {
+    public function setMathematical($math)
+    {
         return $this->_setAttribute(
             'mathematical',
             $this->_normalizeLength($math)
         );
     }
 
-    public function getMathematical() {
+    public function getMathematical()
+    {
         return $this->_getAttribute('mathematical');
     }
 
-    public function setOverlinePosition($position) {
+    public function setOverlinePosition($position)
+    {
         return $this->_setAttribute(
             'overline-position',
             $this->_normalizeLength($position)
         );
     }
 
-    public function getOverlinePosition() {
+    public function getOverlinePosition()
+    {
         return $this->_getAttribute('overline-position');
     }
 
-    public function setOverlineThickness($thickness) {
+    public function setOverlineThickness($thickness)
+    {
         return $this->_setAttribute(
             'overline-thickness',
             $this->_normalizeLength($thickness)
         );
     }
 
-    public function getOverlineThickness() {
+    public function getOverlineThickness()
+    {
         return $this->_getAttribute('overline-thickness');
     }
 
-    public function setPanose1($panose) {
+    public function setPanose1($panose)
+    {
         return $this->_setAttribute(
             'panose-1',
             $this->_normalizeIdentifier($panose)
         );
     }
 
-    public function getPanose1() {
+    public function getPanose1()
+    {
         return $this->_getAttribute('panose-1');
     }
 
-    public function setSlope($slope) {
+    public function setSlope($slope)
+    {
         return $this->_setAttribute(
             'slope',
             $this->_normalizeAngle()
         );
     }
 
-    public function getSlope() {
+    public function getSlope()
+    {
         return $this->_getAttribute('slope');
     }
 
-    public function setHorizontalStem($stem) {
+    public function setHorizontalStem($stem)
+    {
         return $this->_setAttribute(
             'stemh',
             $this->_normalizeLength($stem)
         );
     }
 
-    public function getHorizontalStem() {
+    public function getHorizontalStem()
+    {
         return $this->_getAttribute('stemh');
     }
 
-    public function setVerticalStem($stem) {
+    public function setVerticalStem($stem)
+    {
         return $this->_setAttribute(
             'stemv',
             $this->_normalizeLength($stem)
         );
     }
 
-    public function getVerticalStem() {
+    public function getVerticalStem()
+    {
         return $this->_getAttribute('stemv');
     }
 
-    public function setStrikethroughPosition($position) {
+    public function setStrikethroughPosition($position)
+    {
         return $this->_setAttribute(
             'strikethrough-position',
             $this->_normalizeLength($position)
         );
     }
 
-    public function getStrikethroughPosition() {
+    public function getStrikethroughPosition()
+    {
         return $this->_getAttribute('strikethrough-position');
     }
 
-    public function setStrikethroughThickness($thickness) {
+    public function setStrikethroughThickness($thickness)
+    {
         return $this->_setAttribute(
             'strikethrough-thickness',
             $this->_normalizeLength($thickness)
         );
     }
 
-    public function getStrikethroughThickness() {
+    public function getStrikethroughThickness()
+    {
         return $this->_getAttribute('strikethrough-thickness');
     }
 
-    public function setUnderlinePosition($position) {
+    public function setUnderlinePosition($position)
+    {
         return $this->_setAttribute(
             'underline-position',
             $this->_normalizeLength($position)
         );
     }
 
-    public function getUnderlinePosition() {
+    public function getUnderlinePosition()
+    {
         return $this->_getAttribute('underline-position');
     }
 
-    public function setUnderlineThickness($thickness) {
+    public function setUnderlineThickness($thickness)
+    {
         return $this->_setAttribute(
             'underline-thickness',
             $this->_normalizeLength($thickness)
         );
     }
 
-    public function getUnderlineThickness() {
+    public function getUnderlineThickness()
+    {
         return $this->_getAttribute('underline-thickness');
     }
 
-    public function setUnicodeRange($range) {
+    public function setUnicodeRange($range)
+    {
         return $this->_setAttribute(
             'unicode-range',
             $this->_normalizeIdentifier($range)
         );
     }
 
-    public function getUnicodeRange() {
+    public function getUnicodeRange()
+    {
         return $this->_getAttribute('unicode-range');
     }
 
-    public function setUnitsPerEm($units) {
+    public function setUnitsPerEm($units)
+    {
         return $this->_setAttribute(
             'units-per-em',
             $this->_normalizeLength($units)
         );
     }
 
-    public function getUnitsPerEm() {
+    public function getUnitsPerEm()
+    {
         return $this->_getAttribute('units-per-em');
     }
 
-    public function setVerticalAlphabetic($abc) {
+    public function setVerticalAlphabetic($abc)
+    {
         return $this->_setAttribute(
             'v-alphabetic',
             $this->_normalizeLength($abc)
         );
     }
 
-    public function getVerticalAlphabetic() {
+    public function getVerticalAlphabetic()
+    {
         return $this->_getAttribute('v-alphabetic');
     }
 
-    public function setVerticalHanging($hanging) {
+    public function setVerticalHanging($hanging)
+    {
         return $this->_setAttribute(
             'v-hanging',
             $this->_normalizeLength($hanging)
         );
     }
 
-    public function getVerticalHanging() {
+    public function getVerticalHanging()
+    {
         return $this->_getAttribute('v-hanging');
     }
 
-    public function setVerticalIdeographic($ideographic) {
+    public function setVerticalIdeographic($ideographic)
+    {
         return $this->_setAttribute(
             'v-ideographic',
             $this->_normalizeLength($ideographic)
         );
     }
 
-    public function getVerticalIdeographic() {
+    public function getVerticalIdeographic()
+    {
         return $this->_getAttribute('v-ideographic');
     }
 
-    public function setVerticalMathematical($math) {
+    public function setVerticalMathematical($math)
+    {
         return $this->_setAttribute(
             'v-mathematical',
             $this->_normalizeLength($math)
         );
     }
 
-    public function getVerticalMathematical() {
+    public function getVerticalMathematical()
+    {
         return $this->_getAttribute('v-mathematical');
     }
 
-    public function setWidths($widths) {
+    public function setWidths($widths)
+    {
         return $this->_setAttribute(
             'widths',
             $this->_normalizeIdentifier($widths)
         );
     }
 
-    public function getWidths() {
+    public function getWidths()
+    {
         return $this->_getAttribute('widths');
     }
 
-    public function setXHeight($height) {
+    public function setXHeight($height)
+    {
         return $this->_setAttribute(
             'x-height',
             $this->_normalizeLength($height)
         );
     }
 
-    public function getXHeight() {
+    public function getXHeight()
+    {
         return $this->_getAttribute('x-height');
     }
 
-    public function setSources(array $sources) {
+    public function setSources(array $sources)
+    {
         $this->_sources = [];
         return $this->addSources($sources);
     }
 
-    public function addSources(array $sources) {
-        foreach($sources as $source) {
-            if(!$source instanceof IFontFaceSource) {
+    public function addSources(array $sources)
+    {
+        foreach ($sources as $source) {
+            if (!$source instanceof IFontFaceSource) {
                 throw new InvalidArgumentException(
                     'Invalid font face source detected'
                 );
@@ -448,18 +522,21 @@ class Font_Face implements IFontFace, core\IDumpable {
         return $this;
     }
 
-    public function addSource(IFontFaceSource $source) {
+    public function addSource(IFontFaceSource $source)
+    {
         $this->_sources[] = $source;
         return $this;
     }
 
-    public function getSources() {
+    public function getSources()
+    {
         return $this->_sources;
     }
 
-    public function removeSource(IFontFaceSource $source) {
-        foreach($this->_sources as $i => $test) {
-            if($test === $source) {
+    public function removeSource(IFontFaceSource $source)
+    {
+        foreach ($this->_sources as $i => $test) {
+            if ($test === $source) {
                 unset($this->_sources[$i]);
                 break;
             }
@@ -468,31 +545,38 @@ class Font_Face implements IFontFace, core\IDumpable {
         return $this;
     }
 
-    public function clearSources() {
+    public function clearSources()
+    {
         unset($this->_sources[$i]);
         return $this;
     }
 
-    protected function _getCustomContainerChildren() {
+    protected function _getCustomContainerChildren()
+    {
         return $this->_sources;
     }
 
-// Dump
-    public function getDumpProperties() {
-        $output = $this->_attributes;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setSectionVisible('meta', true);
 
-        if(!empty($this->_sources)) {
-            $output['sources'] = $this->_sources;
+        foreach ($this->_attributes as $key => $value) {
+            $entity->setMeta($key, $inspector($value));
         }
 
-        return $output;
+        if (!empty($this->_sources)) {
+            $entity->setProperty('*sources', $inspector($this->_sources));
+        }
     }
 }
 
 
 // Face source
-class Font_FaceSource implements IFontFaceSource, core\IDumpable {
-
+class Font_FaceSource implements IFontFaceSource, Inspectable
+{
     use TCustomContainerElement;
     use TAttributeModule;
     use TAttributeModule_Core;
@@ -500,93 +584,107 @@ class Font_FaceSource implements IFontFaceSource, core\IDumpable {
     protected $_uri;
     protected $_name;
 
-    public function __construct($uri=null, $name=null) {
-        if($uri instanceof IFontFaceUri) {
+    public function __construct($uri=null, $name=null)
+    {
+        if ($uri instanceof IFontFaceUri) {
             $this->setUriElement($uri);
-        } else if($uri !== null) {
+        } elseif ($uri !== null) {
             $this->setUri($uri);
         }
 
-        if($name instanceof IFontName) {
+        if ($name instanceof IFontName) {
             $this->setNameElement($name);
-        } else if($name !== null) {
+        } elseif ($name !== null) {
             $this->setName($name);
         }
     }
 
-    public function getElementName() {
+    public function getElementName()
+    {
         return 'font-face-src';
     }
 
-    public function setUri($uri) {
-        if($uri !== null) {
+    public function setUri($uri)
+    {
+        if ($uri !== null) {
             $uri = (new Font_FaceUri())->setLinkHref($uri);
         }
 
         return $this->uriElement($uri);
     }
 
-    public function setUriElement(IFontFaceUri $uri) {
+    public function setUriElement(IFontFaceUri $uri)
+    {
         $this->_uri = $uri;
         return $this;
     }
 
-    public function getUri() {
+    public function getUri()
+    {
         return $this->_uri;
     }
 
-    public function setName($name) {
-        if($name !== null) {
+    public function setName($name)
+    {
+        if ($name !== null) {
             $name = (new Font_FaceName())->setName($name);
         }
 
         return $this->nameElement($name);
     }
 
-    public function setNameElement(IFontFaceName $name) {
+    public function setNameElement(IFontFaceName $name)
+    {
         $this->_name = $name;
         return $this;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->_name;
     }
 
-    protected function _getCustomContainerChildren() {
+    protected function _getCustomContainerChildren()
+    {
         $output = [];
 
-        if($this->_uri) {
+        if ($this->_uri) {
             $output[] = $this->_uri;
         }
 
-        if($this->_name) {
+        if ($this->_name) {
             $output[] = $this->_name;
         }
 
         return $output;
     }
 
-// Dump
-    public function getDumpProperties() {
-        $output = $this->_attributes;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setSectionVisible('meta', true);
 
-        if($this->_uri) {
-            $output['uri'] = $this->_uri;
+        foreach ($this->_attributes as $key => $value) {
+            $entity->setMeta($key, $inspector($value));
         }
 
-        if($this->_name) {
-            $output['name'] = $this->_name;
+        if ($this->_uri) {
+            $entity->setProperty('*uri', $inspector($this->_uri));
         }
 
-        return $output;
+        if ($this->_name) {
+            $entity->setProperty('*name', $inspector($this->_name));
+        }
     }
 }
 
 
 
 // Uri
-class Font_FaceUri implements IFontFaceUri, core\IDumpable {
-
+class Font_FaceUri implements IFontFaceUri, Inspectable
+{
     use TCustomContainerElement;
     use TAttributeModule;
     use TAttributeModule_Core;
@@ -594,54 +692,65 @@ class Font_FaceUri implements IFontFaceUri, core\IDumpable {
 
     protected $_format;
 
-    public function __construct($format=null) {
-        if($format instanceof IFontFaceFormat) {
+    public function __construct($format=null)
+    {
+        if ($format instanceof IFontFaceFormat) {
             $this->setFormatElement($format);
-        } else if($format !== null) {
+        } elseif ($format !== null) {
             $this->setFormat($format);
         }
     }
 
-    public function getElementName() {
+    public function getElementName()
+    {
         return 'font-face-uri';
     }
 
-    public function setFormat($string) {
-        if($string !== null) {
+    public function setFormat($string)
+    {
+        if ($string !== null) {
             $string = (new Font_FaceFormat())->setString($string);
         }
 
         return $this->setFormatElement($string);
     }
 
-    public function setFormatElement(IFontFaceFormat $format=null) {
+    public function setFormatElement(IFontFaceFormat $format=null)
+    {
         $this->_format = $format;
         return $this;
     }
 
-    public function getFormat() {
+    public function getFormat()
+    {
         return $this->_format;
     }
 
-    protected function _getCustomContainerChildren() {
+    protected function _getCustomContainerChildren()
+    {
         $output = [];
 
-        if($this->_format) {
+        if ($this->_format) {
             $output[] = $this->_format;
         }
 
         return $output;
     }
 
-// Dump
-    public function getDumpProperties() {
-        $output = $this->_attributes;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setSectionVisible('meta', true);
 
-        if($this->_format) {
-            $output['format'] = $this->_format;
+        foreach ($this->_attributes as $key => $value) {
+            $entity->setMeta($key, $inspector($value));
         }
 
-        return $output;
+        if ($this->_format) {
+            $entity->setProperty('*format', $inspector($this->_format));
+        }
     }
 }
 
@@ -649,70 +758,92 @@ class Font_FaceUri implements IFontFaceUri, core\IDumpable {
 
 
 // Format
-class Font_FaceFormat implements IFontFaceFormat, core\IDumpable {
-
+class Font_FaceFormat implements IFontFaceFormat, Inspectable
+{
     use TCustomContainerElement;
     use TAttributeModule;
     use TAttributeModule_Core;
 
-    public function __construct($string=null) {
-        if($string !== null) {
+    public function __construct($string=null)
+    {
+        if ($string !== null) {
             $this->setString($string);
         }
     }
 
-    public function getElementName() {
+    public function getElementName()
+    {
         return 'font-face-format';
     }
 
-    public function setString($string) {
+    public function setString($string)
+    {
         return $this->_setAttribute(
             'string',
             $this->_normalizeText($string)
         );
     }
 
-    public function getString() {
+    public function getString()
+    {
         return $this->_getAttribute('string');
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->_attributes;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setSectionVisible('meta', true);
+
+        foreach ($this->_attributes as $key => $value) {
+            $entity->setMeta($key, $inspector($value));
+        }
     }
 }
 
 
 
 // Name
-class Font_FaceName implements IFontFaceName, core\IDumpable {
-
+class Font_FaceName implements IFontFaceName, Inspectable
+{
     use TCustomContainerElement;
     use TAttributeModule;
     use TAttributeModule_Core;
 
-    public function __construct($name=null) {
+    public function __construct($name=null)
+    {
         $this->setName($name);
     }
 
-    public function getElementName() {
+    public function getElementName()
+    {
         return 'font-face-name';
     }
 
-    public function setName($name) {
+    public function setName($name)
+    {
         return $this->_setAttribute(
             'name',
             $this->_normalizeIdentifier($name)
         );
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->_getAttribute('name');
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->_attributes;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setSectionVisible('meta', true);
+
+        foreach ($this->_attributes as $key => $value) {
+            $entity->setMeta($key, $inspector($value));
+        }
     }
 }
 
@@ -720,8 +851,8 @@ class Font_FaceName implements IFontFaceName, core\IDumpable {
 
 
 // Glyph
-class Font_Glyph implements IFontGlyph, core\IDumpable {
-
+class Font_Glyph implements IFontGlyph, Inspectable
+{
     use TCustomContainerElement;
     use TAttributeModule;
     use TAttributeModule_Clip;
@@ -748,11 +879,13 @@ class Font_Glyph implements IFontGlyph, core\IDumpable {
 
     protected $_isMissing = false;
 
-    public function getElementName() {
+    public function getElementName()
+    {
         return $this->_isMissing ? 'missing-glyph' : 'glyph';
     }
 
-    public function setArabicForm($form) {
+    public function setArabicForm($form)
+    {
         return $this->_setAttribute(
             'arabic-form',
             $this->_normalizeKeyword(
@@ -763,33 +896,39 @@ class Font_Glyph implements IFontGlyph, core\IDumpable {
         );
     }
 
-    public function getArabicForm() {
+    public function getArabicForm()
+    {
         return $this->_getAttribute('arabic-form');
     }
 
-    public function setGlyphName($name) {
+    public function setGlyphName($name)
+    {
         return $this->_setAttribute(
             'glyph-name',
             $this->_normalizeIdentifier($name)
         );
     }
 
-    public function getGlyphName() {
+    public function getGlyphName()
+    {
         return $this->_getAttribute('glyph-name');
     }
 
-    public function setLanguage($language) {
+    public function setLanguage($language)
+    {
         return $this->_setAttribute(
             'lang',
             $this->_normalizeIdentifier($language)
         );
     }
 
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this->_getAttribute('lang');
     }
 
-    public function setOrientation($orientation) {
+    public function setOrientation($orientation)
+    {
         return $this->_setAttribute(
             'orientation',
             $this->_normalizeKeyword(
@@ -800,23 +939,27 @@ class Font_Glyph implements IFontGlyph, core\IDumpable {
         );
     }
 
-    public function getOrientation() {
+    public function getOrientation()
+    {
         return $this->_getAttribute('orientation');
     }
 
-    public function setUnicode($unicode) {
+    public function setUnicode($unicode)
+    {
         return $this->_setAttribute(
             'unicode',
             $this->_normalizeUnicode($unicode)
         );
     }
 
-    public function getUnicode() {
+    public function getUnicode()
+    {
         return $this->_getAttribute('unicode');
     }
 
-    public function isMissing(bool $flag=null) {
-        if($flag !== null) {
+    public function isMissing(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isMissing = $flag;
             return $this;
         }
@@ -824,8 +967,15 @@ class Font_Glyph implements IFontGlyph, core\IDumpable {
         return $this->_isMissing;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->_attributes;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setSectionVisible('meta', true);
+
+        foreach ($this->_attributes as $key => $value) {
+            $entity->setMeta($key, $inspector($value));
+        }
     }
 }

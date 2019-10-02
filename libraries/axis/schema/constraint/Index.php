@@ -9,17 +9,23 @@ use df\core;
 use df\opal;
 use df\axis;
 
-class Index implements opal\schema\IIndex, core\IDumpable {
-    
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Index implements opal\schema\IIndex, Inspectable
+{
     use opal\schema\TConstraint_Index;
-    
-    public static function fromStorageArray(opal\schema\ISchema $schema, array $data) {
+
+    public static function fromStorageArray(opal\schema\ISchema $schema, array $data)
+    {
         $output = new self($schema, $data['nam']);
         $output->_setGenericStorageArray($schema, $data);
         return $output;
     }
-    
-    public function __construct(axis\schema\ISchema $schema, $name, $fields=null) {
+
+    public function __construct(axis\schema\ISchema $schema, $name, $fields=null)
+    {
         $this->_setName($name);
         $this->setFields($fields);
     }

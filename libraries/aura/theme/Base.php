@@ -13,8 +13,12 @@ use df\spur;
 use df\neon;
 use df\fuse;
 
-class Base implements ITheme, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Base implements ITheme, Inspectable
+{
     const APPLICATION_IMAGE = null;//'app.png';
     const APPLICATION_COLOR = 'white';
 
@@ -28,13 +32,14 @@ class Base implements ITheme, core\IDumpable {
     protected $_facets = null;
 
 
-    public static function factory($id): ITheme {
-        if($id instanceof ITheme) {
+    public static function factory($id): ITheme
+    {
+        if ($id instanceof ITheme) {
             return $id;
-        } else if(is_string($id) && substr($id, 0, 1) == '~') {
+        } elseif (is_string($id) && substr($id, 0, 1) == '~') {
             $config = Config::getInstance();
             $id = $config->getThemeIdFor($id);
-        } else if($id instanceof arch\IContext) {
+        } elseif ($id instanceof arch\IContext) {
             $context = $id;
             $config = Config::getInstance();
             $id = $config->getThemeIdFor($context->location->getArea());
@@ -43,43 +48,47 @@ class Base implements ITheme, core\IDumpable {
         $id = lcfirst($id);
         $class = 'df\\apex\\themes\\'.$id.'\\Theme';
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             $class = __CLASS__;
         }
 
         return new $class($id);
     }
 
-    protected function __construct(string $id) {
-        if(preg_match('/[^a-zA-Z0-9_]/', $id)) {
+    protected function __construct(string $id)
+    {
+        if (preg_match('/[^a-zA-Z0-9_]/', $id)) {
             throw core\Error::EArgument('Invalid theme id');
         }
 
         $this->_id = $id;
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->_id;
     }
 
 
-# Before render
-    public function beforeViewRender(aura\view\IView $view) {
+    # Before render
+    public function beforeViewRender(aura\view\IView $view)
+    {
         $func = 'before'.$view->getType().'ViewRender';
 
-        if(method_exists($this, $func)) {
+        if (method_exists($this, $func)) {
             $this->$func($view);
         }
 
-        foreach($this->getFacets() as $facet) {
+        foreach ($this->getFacets() as $facet) {
             $facet->beforeViewRender($view);
         }
 
         return $this;
     }
 
-    public function beforeHtmlViewRender(aura\view\IView $view) {
-        if(df\Launchpad::$app->isDevelopment()) {
+    public function beforeHtmlViewRender(aura\view\IView $view)
+    {
+        if (df\Launchpad::$app->isDevelopment()) {
             fuse\Manager::getInstance()->ensureDependenciesFor($this);
         }
 
@@ -87,17 +96,19 @@ class Base implements ITheme, core\IDumpable {
         $this->applyDefaultBodyTagData($view);
     }
 
-    public function applyDefaultIncludes(aura\view\IView $view) {
+    public function applyDefaultIncludes(aura\view\IView $view)
+    {
         // stub
     }
 
-    public function applyDefaultBodyTagData(aura\view\IView $view) {
+    public function applyDefaultBodyTagData(aura\view\IView $view)
+    {
         $request = $view->context->request;
         $router = core\app\runner\http\Router::getInstance();
         //$view->setData('base', '/'.ltrim($router->getBaseUrl()->getPathString(), './'));
         $view->setData('base', $router->getBaseUrl());
 
-        if(!$router->isBaseRoot()) {
+        if (!$router->isBaseRoot()) {
             $view->setData('root', $router->getRootUrl());
         }
 
@@ -105,26 +116,27 @@ class Base implements ITheme, core\IDumpable {
             ->setDataAttribute('location', $request->getLiteralPathString())
             ->setDataAttribute('layout', $view->getLayout());
 
-        if(df\Launchpad::$compileTimestamp) {
+        if (df\Launchpad::$compileTimestamp) {
             $view->setData('cts', df\Launchpad::$compileTimestamp);
-        } else if($view->context->app->isDevelopment()) {
+        } elseif ($view->context->app->isDevelopment()) {
             $view->setData('cts', time());
         }
     }
 
 
-# On content render
-    public function onViewContentRender(aura\view\IView $view, $content) {
+    # On content render
+    public function onViewContentRender(aura\view\IView $view, $content)
+    {
         $func = 'on'.$view->getType().'ViewContentRender';
 
-        if(method_exists($this, $func)) {
-            if(null !== ($newContent = $this->$func($view, $content))) {
+        if (method_exists($this, $func)) {
+            if (null !== ($newContent = $this->$func($view, $content))) {
                 $content = $newContent;
             }
         }
 
-        foreach($this->getFacets() as $facet) {
-            if(null !== ($newContent = $facet->onViewContentRender($view, $content))) {
+        foreach ($this->getFacets() as $facet) {
+            if (null !== ($newContent = $facet->onViewContentRender($view, $content))) {
                 $content = $newContent;
             }
         }
@@ -133,18 +145,19 @@ class Base implements ITheme, core\IDumpable {
     }
 
 
-# On layout render
-    public function onViewLayoutRender(aura\view\IView $view, $content) {
+    # On layout render
+    public function onViewLayoutRender(aura\view\IView $view, $content)
+    {
         $func = 'on'.$view->getType().'ViewLayoutRender';
 
-        if(method_exists($this, $func)) {
-            if(null !== ($newContent = $this->$func($view, $content))) {
+        if (method_exists($this, $func)) {
+            if (null !== ($newContent = $this->$func($view, $content))) {
                 $content = $newContent;
             }
         }
 
-        foreach($this->getFacets() as $facet) {
-            if(null !== ($newContent = $facet->onViewLayoutRender($view, $content))) {
+        foreach ($this->getFacets() as $facet) {
+            if (null !== ($newContent = $facet->onViewLayoutRender($view, $content))) {
                 $content = $newContent;
             }
         }
@@ -154,18 +167,19 @@ class Base implements ITheme, core\IDumpable {
 
 
 
-# After render
-    public function afterViewRender(aura\view\IView $view, $content) {
+    # After render
+    public function afterViewRender(aura\view\IView $view, $content)
+    {
         $func = 'after'.$view->getType().'ViewRender';
 
-        if(method_exists($this, $func)) {
-            if(null !== ($newContent = $this->$func($view, $content))) {
+        if (method_exists($this, $func)) {
+            if (null !== ($newContent = $this->$func($view, $content))) {
                 $content = $newContent;
             }
         }
 
-        foreach($this->getFacets() as $facet) {
-            if(null !== ($newContent = $facet->afterViewRender($view, $content))) {
+        foreach ($this->getFacets() as $facet) {
+            if (null !== ($newContent = $facet->afterViewRender($view, $content))) {
                 $content = $newContent;
             }
         }
@@ -173,30 +187,32 @@ class Base implements ITheme, core\IDumpable {
         return $content;
     }
 
-    public function afterHtmlViewRender(aura\view\IHtmlView $view, $content) {
+    public function afterHtmlViewRender(aura\view\IHtmlView $view, $content)
+    {
         $this->applyDefaultViewTitle($view);
         $this->applyDefaultMetaData($view);
         return $content;
     }
 
-    public function applyDefaultViewTitle(aura\view\IView $view) {
-        if(!$view->hasTitle()) {
+    public function applyDefaultViewTitle(aura\view\IView $view)
+    {
+        if (!$view->hasTitle()) {
             $breadcrumbs = $view->getContext()->apex->breadcrumbs();
             $parts = [];
 
-            foreach($breadcrumbs->getEntries() as $entry) {
+            foreach ($breadcrumbs->getEntries() as $entry) {
                 array_unshift($parts, $entry->getBody());
             }
 
-            if(!empty($parts)) {
+            if (!empty($parts)) {
                 $view->setTitle(implode(' < ', $parts));
             }
         }
 
-        if(!$view->hasTitleSuffix()) {
+        if (!$view->hasTitleSuffix()) {
             $suffix = df\Launchpad::$app->getName();
 
-            if($view->hasTitle()) {
+            if ($view->hasTitle()) {
                 $suffix = ' : '.$suffix;
             }
 
@@ -204,38 +220,40 @@ class Base implements ITheme, core\IDumpable {
         }
     }
 
-    public function applyDefaultMetaData(aura\view\IView $view) {
-        if(!$view->hasMeta('msapplication-config')) {
+    public function applyDefaultMetaData(aura\view\IView $view)
+    {
+        if (!$view->hasMeta('msapplication-config')) {
             $view->setMeta('msapplication-config', 'none');
         }
 
-        if(!$view->hasMeta('msapplication-TileColor')) {
+        if (!$view->hasMeta('msapplication-TileColor')) {
             $view->setMeta('msapplication-TileColor', $this->getApplicationColor());
         }
 
-        if(!$view->hasMeta('application-name')) {
+        if (!$view->hasMeta('application-name')) {
             $view->setMeta('application-name', df\Launchpad::$app->getName());
         }
 
-        if(!$view->hasMeta('og:title')) {
+        if (!$view->hasMeta('og:title')) {
             $view->setMeta('og:title', $view->getFullTitle());
         }
 
-        if(!$view->hasMeta('og:description') && $view->hasMeta('description')) {
+        if (!$view->hasMeta('og:description') && $view->hasMeta('description')) {
             $view->setMeta('og:description', $view->getMeta('description'));
         }
     }
 
 
-// Assets
-    public function findAsset($path) {
+    // Assets
+    public function findAsset($path)
+    {
         $path = core\uri\Path::normalizeLocal($path);
 
         $output = df\Launchpad::$loader->findFile(
             $lookupPath = 'apex/themes/'.$this->getId().'/assets/'.$path
         );
 
-        if(!$output) {
+        if (!$output) {
             $output = df\Launchpad::$loader->findFile(
                 $lookupPath = 'apex/themes/shared/assets/'.$path
             );
@@ -244,108 +262,120 @@ class Base implements ITheme, core\IDumpable {
         return $output;
     }
 
-    public function getApplicationImagePath() {
+    public function getApplicationImagePath()
+    {
         return static::APPLICATION_IMAGE;
     }
 
-    public function getApplicationColor() {
+    public function getApplicationColor()
+    {
         return neon\Color::factory(static::APPLICATION_COLOR);
     }
 
-    public function mapIcon($name) {
-        if($this->_iconMap === null) {
-            if(!$path = df\Launchpad::$loader->findFile('apex/themes/'.$this->getId().'/IconMap.php')) {
+    public function mapIcon($name)
+    {
+        if ($this->_iconMap === null) {
+            if (!$path = df\Launchpad::$loader->findFile('apex/themes/'.$this->getId().'/IconMap.php')) {
                 $path = df\Launchpad::$loader->findFile('apex/themes/shared/IconMap.php');
             }
 
-            if($path) {
+            if ($path) {
                 $this->_iconMap = require $path;
             }
 
-            if(!is_array($this->_iconMap)) {
+            if (!is_array($this->_iconMap)) {
                 $this->_iconMap = [];
             }
         }
 
-        if(isset($this->_iconMap[$name])) {
+        if (isset($this->_iconMap[$name])) {
             return $this->_iconMap[$name];
         } else {
             return null;
         }
     }
 
-    public function mapLayout(aura\view\ILayoutView $view) {
+    public function mapLayout(aura\view\ILayoutView $view)
+    {
         return null;
     }
 
-    public function getDependencies() {
+    public function getDependencies()
+    {
         return static::DEPENDENCIES;
     }
 
 
-// Facets
-    public function loadFacet($name, $config=null) {
+    // Facets
+    public function loadFacet($name, $config=null)
+    {
         $name = lcfirst($name);
 
-        if(!is_array($config)) {
+        if (!is_array($config)) {
             $config = [];
         }
 
-        if(!isset($this->_facets[$name])) {
+        if (!isset($this->_facets[$name])) {
             $this->_facets[$name] = aura\theme\facet\Base::factory($name, $config);
         }
 
         return $this->_facets[$name];
     }
 
-    public function hasFacet($name) {
+    public function hasFacet($name)
+    {
         $this->_loadFacets();
         return isset($this->_facets[lcfirst($name)]);
     }
 
-    public function getFacet($name) {
+    public function getFacet($name)
+    {
         $this->_loadFacets();
         $name = lcfirst($name);
 
-        if(isset($this->_facets[$name])) {
+        if (isset($this->_facets[$name])) {
             return $this->_facets[$name];
         }
 
         return null;
     }
 
-    public function removeFacet($name) {
+    public function removeFacet($name)
+    {
         $this->_loadFacets();
         unset($this->_facets[lcfirst($name)]);
         return $this;
     }
 
-    public function getFacets() {
+    public function getFacets()
+    {
         $this->_loadFacets();
         return $this->_facets;
     }
 
-    protected function _loadFacets() {
-        if($this->_facets !== null) {
+    protected function _loadFacets()
+    {
+        if ($this->_facets !== null) {
             return;
         }
 
         $facets = $this->_normalizeFacetList(static::DEFAULT_FACETS);
 
-        if(is_array(static::FACETS)) {
+        if (is_array(static::FACETS)) {
             $facets = $this->_normalizeFacetList(static::FACETS, $facets);
         }
 
         $this->_facets = [];
 
-        foreach($facets as $name => $config) {
+        foreach ($facets as $name => $config) {
             $this->loadFacet($name, $config);
         }
     }
 
-    protected function _normalizeFacetList(array $list, array $current=[]) {
-        foreach($list as $name => $config) {
-            if(is_string($config)) {
+    protected function _normalizeFacetList(array $list, array $current=[])
+    {
+        foreach ($list as $name => $config) {
+            if (is_string($config)) {
                 $name = $config;
                 $config = null;
             }
@@ -356,11 +386,15 @@ class Base implements ITheme, core\IDumpable {
         return $current;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'id' => $this->_id,
-            'facets' => $this->_facets
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*id' => $inspector($this->_id),
+                '*facets' => $inspector($this->_facets)
+            ]);
     }
 }

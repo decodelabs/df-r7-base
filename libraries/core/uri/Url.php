@@ -8,8 +8,12 @@ namespace df\core\uri;
 use df;
 use df\core;
 
-class Url implements IGenericUrl, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Url implements IGenericUrl, Inspectable
+{
     use core\TStringProvider;
     use TUrl_TransientScheme;
     use TUrl_PathContainer;
@@ -17,8 +21,9 @@ class Url implements IGenericUrl, core\IDumpable {
     use TUrl_FragmentContainer;
 
 
-    public static function factory($url) {
-        if($url instanceof IUrl) {
+    public static function factory($url)
+    {
+        if ($url instanceof IUrl) {
             return $url;
         }
 
@@ -26,27 +31,29 @@ class Url implements IGenericUrl, core\IDumpable {
         return new $class($url);
     }
 
-    public function __construct($url=null) {
+    public function __construct($url=null)
+    {
         $this->import($url);
     }
 
-    public function import($url='') {
-        if($url !== null) {
+    public function import($url='')
+    {
+        if ($url !== null) {
             $this->reset();
         }
 
-        if($url == '' || $url === null) {
+        if ($url == '' || $url === null) {
             return $this;
         }
 
-        if($url instanceof self) {
+        if ($url instanceof self) {
             $this->_scheme = $url->_scheme;
 
-            if($url->_path !== null) {
+            if ($url->_path !== null) {
                 $this->_path = clone $url->_path;
             }
 
-            if($url->_query !== null) {
+            if ($url->_query !== null) {
                 $this->_query = clone $url->_query;
             }
 
@@ -71,14 +78,15 @@ class Url implements IGenericUrl, core\IDumpable {
         $url = array_pop($parts);
         $this->setScheme(array_shift($parts));
 
-        if(!empty($url)) {
+        if (!empty($url)) {
             $this->setPath($url);
         }
 
         return $this;
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->_resetScheme();
         $this->_resetPath();
         $this->_resetQuery();
@@ -87,13 +95,15 @@ class Url implements IGenericUrl, core\IDumpable {
         return $this;
     }
 
-    public function __clone() {
+    public function __clone()
+    {
         $this->_clonePath();
         $this->_cloneQuery();
     }
 
-    public function __get($member) {
-        switch($member) {
+    public function __get($member)
+    {
+        switch ($member) {
             case 'scheme':
                 return $this->getScheme();
 
@@ -108,8 +118,9 @@ class Url implements IGenericUrl, core\IDumpable {
         }
     }
 
-    public function __set($member, $value) {
-        switch($member) {
+    public function __set($member, $value)
+    {
+        switch ($member) {
             case 'scheme':
                 return $this->setScheme($value);
 
@@ -127,9 +138,10 @@ class Url implements IGenericUrl, core\IDumpable {
 
 
 
-// Strings
-    public function toString(): string {
-        if($this->isJustFragment()) {
+    // Strings
+    public function toString(): string
+    {
+        if ($this->isJustFragment()) {
             return $this->_getFragmentString();
         }
 
@@ -142,13 +154,16 @@ class Url implements IGenericUrl, core\IDumpable {
         return $output;
     }
 
-    public function toReadableString() {
+    public function toReadableString()
+    {
         return $this->toString();
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toString());
     }
 }

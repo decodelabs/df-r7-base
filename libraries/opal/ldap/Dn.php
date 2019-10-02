@@ -10,8 +10,12 @@ use df\core;
 use df\opal;
 use df\flex;
 
-class Dn implements IDn, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Dn implements IDn, Inspectable
+{
     use core\TStringProvider;
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_ProcessedIndexedValueMap;
@@ -21,31 +25,33 @@ class Dn implements IDn, core\IDumpable {
     use core\collection\TArrayCollection_IndexedMovable;
     use core\collection\TArrayCollection_Constructor;
 
-    public static function factory() {
-        if(func_num_args()) {
+    public static function factory()
+    {
+        if (func_num_args()) {
             $dn = func_get_arg(0);
         } else {
             $dn = null;
         }
 
-        if($dn instanceof IDn) {
+        if ($dn instanceof IDn) {
             return $dn;
         }
 
-        if($dn === null || !strlen($dn)) {
+        if ($dn === null || !strlen($dn)) {
             $dn = [];
         }
 
-        if(is_string($dn)) {
+        if (is_string($dn)) {
             return self::fromString($dn);
-        } else if(is_array($dn)) {
+        } elseif (is_array($dn)) {
             return new self($dn);
         }
 
         throw new InvalidDnException('Invalid DN input');
     }
 
-    public static function fromString(string $dn) {
+    public static function fromString(string $dn)
+    {
         $key = null;
         $value = null;
         $length = strlen($dn);
@@ -57,11 +63,11 @@ class Dn implements IDn, core\IDumpable {
         $rdn = new Rdn();
         $currentSetKeys = [];
 
-        if($length && false === strpos($dn, '=')) {
+        if ($length && false === strpos($dn, '=')) {
             $parts = explode('.', $dn);
             $dn = [];
 
-            foreach($parts as $part) {
+            foreach ($parts as $part) {
                 $dn[] = 'dc='.$part;
             }
 
@@ -69,15 +75,15 @@ class Dn implements IDn, core\IDumpable {
             $length = strlen($dn);
         }
 
-        for($pos = 0; $pos <= $length; $pos++) {
+        for ($pos = 0; $pos <= $length; $pos++) {
             $char = $pos == $length ? null : $dn[$pos];
 
-            switch($state) {
+            switch ($state) {
                 case 1:
-                    if($char === '=') {
+                    if ($char === '=') {
                         $key = trim(substr($dn, $keyIndex, $pos - $keyIndex));
 
-                        if(in_array(strtolower($key), $currentSetKeys)) {
+                        if (in_array(strtolower($key), $currentSetKeys)) {
                             throw new InvalidDnException(
                                 'Duplicate multi key '.$key.' in DN'
                             );
@@ -87,7 +93,7 @@ class Dn implements IDn, core\IDumpable {
 
                         $valueIndex = $pos + 1;
                         $state = 2;
-                    } else if($char === ',' || $char === ';' || $char === '+') {
+                    } elseif ($char === ',' || $char === ';' || $char === '+') {
                         throw new InvalidDnException(
                             'Unexpected '.$char.' character in DN'
                         );
@@ -96,21 +102,21 @@ class Dn implements IDn, core\IDumpable {
                     break;
 
                 case 2:
-                    if($char === '\\') {
+                    if ($char === '\\') {
                         $state = 3;
-                    } else if($char === ',' || $char === ';' || $char === '+' || $char === null) {
+                    } elseif ($char === ',' || $char === ';' || $char === '+' || $char === null) {
                         $value = self::unescapeValue(trim(substr($dn, $valueIndex, $pos - $valueIndex)));
                         $rdn->setAttribute($key, $value);
 
                         $state = 1;
                         $keyIndex = $pos + 1;
 
-                        if($char !== '+') {
+                        if ($char !== '+') {
                             $output[] = $rdn;
                             $rdn = new Rdn();
                             $currentSetKeys = [];
                         }
-                    } else if($char === '=') {
+                    } elseif ($char === '=') {
                         throw new InvalidDnException(
                             'Unexpected '.$char.' character in DN'
                         );
@@ -127,15 +133,17 @@ class Dn implements IDn, core\IDumpable {
         return new self($output);
     }
 
-    public static function escapeValues(...$values) {
-        foreach($values as $i => $value) {
+    public static function escapeValues(...$values)
+    {
+        foreach ($values as $i => $value) {
             $values[$i] = self::escapeValue($value);
         }
 
         return $values;
     }
 
-    public static function escapeValue($value) {
+    public static function escapeValue($value)
+    {
         $value = flex\Text::ascii32ToHex32(
             str_replace(
                 ['\\', ',', '+', '"', '<', '>', ';', '#', '='],
@@ -144,34 +152,36 @@ class Dn implements IDn, core\IDumpable {
             )
         );
 
-        if(preg_match('/^(\s*)(.+?)(\s*)$/', $value, $matches)) {
+        if (preg_match('/^(\s*)(.+?)(\s*)$/', $value, $matches)) {
             $value = $matches[2];
 
-            for($i = 0; $i < strlen($matches[1]); $i++) {
+            for ($i = 0; $i < strlen($matches[1]); $i++) {
                 $value = '\20'.$value;
             }
 
-            for($i = 0; $i < strlen($matches[3]); $i++) {
+            for ($i = 0; $i < strlen($matches[3]); $i++) {
                 $value .= '\20';
             }
         }
 
-        if($value === null) {
+        if ($value === null) {
             $value = '\0';
         }
 
         return $value;
     }
 
-    public static function unescapeValues(...$values) {
-        foreach($values as $i => $value) {
+    public static function unescapeValues(...$values)
+    {
+        foreach ($values as $i => $value) {
             $values[$i] = self::unescapeValue($value);
         }
 
         return $values;
     }
 
-    public static function unescapeValue($value) {
+    public static function unescapeValue($value)
+    {
         return flex\Text::hex32ToAscii32(
             str_replace(
                 ['\\\\', '\,', '\+', '\"', '\<', '\>', '\;', '\#', '\='],
@@ -182,35 +192,38 @@ class Dn implements IDn, core\IDumpable {
     }
 
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return $this->implode(',');
     }
 
-    public function implode($separator=',', $case=flex\ICase::NONE) {
+    public function implode($separator=',', $case=flex\ICase::NONE)
+    {
         $output = [];
 
-        foreach($this->_collection as $rdn) {
+        foreach ($this->_collection as $rdn) {
             $output[] = $rdn->implode($case);
         }
 
         return implode($separator, $output);
     }
 
-    public function isChildOf($dn) {
+    public function isChildOf($dn)
+    {
         try {
             $dn = self::factory($dn);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return false;
         }
 
         $startIndex = count($this->_collection) - ($targetCount = count($dn->_collection));
 
-        if($startIndex < 0) {
+        if ($startIndex < 0) {
             return false;
         }
 
-        for($i = 0; $i < $targetCount; $i++) {
-            if(!$this->_collection[$i + $startIndex]->eq($dn->_collection[$i])) {
+        for ($i = 0; $i < $targetCount; $i++) {
+            if (!$this->_collection[$i + $startIndex]->eq($dn->_collection[$i])) {
                 return false;
             }
         }
@@ -218,9 +231,10 @@ class Dn implements IDn, core\IDumpable {
         return true;
     }
 
-    public function getFirstEntry($key) {
-        foreach($this->_collection as $rdn) {
-            if(null !== ($val = $rdn->getAttribute($key))) {
+    public function getFirstEntry($key)
+    {
+        foreach ($this->_collection as $rdn) {
+            if (null !== ($val = $rdn->getAttribute($key))) {
                 return $val;
             }
         }
@@ -228,11 +242,12 @@ class Dn implements IDn, core\IDumpable {
         return null;
     }
 
-    public function getAllEntries($key) {
+    public function getAllEntries($key)
+    {
         $output = [];
 
-        foreach($this->_collection as $rdn) {
-            if(null !== ($val = $rdn->getAttribute($key))) {
+        foreach ($this->_collection as $rdn) {
+            if (null !== ($val = $rdn->getAttribute($key))) {
                 $output[] = $val;
             }
         }
@@ -240,24 +255,32 @@ class Dn implements IDn, core\IDumpable {
         return $output;
     }
 
-    public function buildDomain() {
+    public function buildDomain()
+    {
         return implode('.', $this->getAllEntries('dc'));
     }
 
 
-    public function getReductiveIterator(): \Iterator {
+    public function getReductiveIterator(): \Iterator
+    {
         return new core\collection\ReductiveIndexIterator($this);
     }
 
-    protected function _expandInput($value): array {
+    protected function _expandInput($value): array
+    {
         return [Rdn::factory($value)];
     }
 
-    protected function _onInsert() {}
+    protected function _onInsert()
+    {
+    }
 
 
-// Dump
-    public function getDumpProperties() {
-        return $this->implode();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->implode());
     }
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,36 +8,45 @@ namespace df\neon\vector\svg;
 use df;
 use df\core;
 use df\neon;
-    
-class Definitions implements IDefinitionsContainer, core\IDumpable {
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Definitions implements IDefinitionsContainer, Inspectable
+{
     use TStructure_Container;
     use TStructure_MetaData;
     use TAttributeModule;
     use TAttributeModule_Structure;
 
-    public function __construct(array $defs=null) {
-        if($defs) {
+    public function __construct(array $defs=null)
+    {
+        if ($defs) {
             $this->setDefinitions($defs);
         }
     }
 
-    public function getElementName() {
+    public function getElementName()
+    {
         return 'defs';
     }
 
-    public function getDefinitionsElement() {
+    public function getDefinitionsElement()
+    {
         return $this;
     }
 
-    public function setDefinitions(array $defs) {
+    public function setDefinitions(array $defs)
+    {
         $this->_children = [];
         return $this->addDefinitions($defs);
     }
 
-    public function addDefinitions(array $defs) {
-        foreach($defs as $def) {
-            if(!$def instanceof IElement) {
+    public function addDefinitions(array $defs)
+    {
+        foreach ($defs as $def) {
+            if (!$def instanceof IElement) {
                 throw new InvalidArgumentException(
                     'Invalid definition element detected'
                 );
@@ -49,18 +58,21 @@ class Definitions implements IDefinitionsContainer, core\IDumpable {
         return $this;
     }
 
-    public function addDefinition(IElement $element) {
+    public function addDefinition(IElement $element)
+    {
         $this->_children[] = $element;
         return $this;
     }
 
-    public function getDefinitions() {
+    public function getDefinitions()
+    {
         return $this->_children;
     }
 
-    public function removeDefinition(IElement $element) {
-        foreach($this->_children as $i => $def) {
-            if($def === $element) {
+    public function removeDefinition(IElement $element)
+    {
+        foreach ($this->_children as $i => $def) {
+            if ($def === $element) {
                 unset($this->_children[$id]);
                 break;
             }
@@ -69,7 +81,8 @@ class Definitions implements IDefinitionsContainer, core\IDumpable {
         return $this;
     }
 
-    public function clearDefinitions() {
+    public function clearDefinitions()
+    {
         $this->_children = [];
         return $this;
     }

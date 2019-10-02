@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\opal;
 
-class Dsn implements IDsn, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Dsn implements IDsn, Inspectable
+{
     use core\TStringProvider;
 
     protected $_adapter;
@@ -27,23 +31,26 @@ class Dsn implements IDsn, core\IDumpable {
     protected $_hash;
     protected $_serverHash;
 
-    public static function factory($dsn) {
-        if($dsn instanceof IDsn) {
+    public static function factory($dsn)
+    {
+        if ($dsn instanceof IDsn) {
             return $dsn;
         }
 
         return new self($dsn);
     }
 
-    public function __construct($dsn=null) {
-        if($dsn !== null) {
+    public function __construct($dsn=null)
+    {
+        if ($dsn !== null) {
             $this->_parse($dsn);
         }
     }
 
-    protected function _parse($dsn) {
-        if(!is_string($dsn)) {
-            if($dsn instanceof core\IStringProvider) {
+    protected function _parse($dsn)
+    {
+        if (!is_string($dsn)) {
+            if ($dsn instanceof core\IStringProvider) {
                 $dsn = $dsn->toString();
             } else {
                 throw new InvalidArgumentException('Invalid dsn string!');
@@ -53,68 +60,67 @@ class Dsn implements IDsn, core\IDumpable {
         $regex = "!^(([a-z0-9-_]+)(\(([^()]+)\))?)(://((((([^@/:]+)(:([^@/]+))?)@)?((([a-z]+)\((([^?():]+)(:([^()?]+))?)\))|((([^/?:]+)(:([^/?]+))?))))/?)?([^?]+)?(\?(.+))?)?$!i";
         $matches = [];
 
-        if(!preg_match($regex, $dsn, $matches)) {
+        if (!preg_match($regex, $dsn, $matches)) {
             throw new InvalidArgumentException('Invalid dsn string: '.$dsn);
         }
 
         $this->_adapter = ucfirst(@$matches[2]);
 
 
-        if(isset($matches[5])) {
+        if (isset($matches[5])) {
 
             // Username
-            if(!empty($matches[10])) {
+            if (!empty($matches[10])) {
                 $this->_username = $matches[10];
             }
 
             // Password
-            if(!empty($matches[12])) {
+            if (!empty($matches[12])) {
                 $this->_password = $matches[12];
             }
 
             // Protocol / hostname etc
-            if(!empty($matches[15])) {
+            if (!empty($matches[15])) {
                 $this->_protocol = @$matches[15];
 
-                if($this->_protocol === 'unix') {
+                if ($this->_protocol === 'unix') {
                     $this->_socket = @$matches[16];
                 } else {
                     $this->_hostname = @$matches[17];
-                    if(strlen($matches[19]) > 0) {
+                    if (strlen($matches[19]) > 0) {
                         $this->_port = @$matches[19];
                     }
                 }
-
-            } else if(!empty($matches[20])) {
+            } elseif (!empty($matches[20])) {
                 $this->_hostname = @$matches[22];
 
-                if((isset($matches[24]) && (strlen($matches[24]) > 0))) {
+                if ((isset($matches[24]) && (strlen($matches[24]) > 0))) {
                     $this->_port = @$matches[24];
                 }
             }
 
             // Database
-            if(isset($matches[25]) && (strlen($matches[25]) > 0)) {
+            if (isset($matches[25]) && (strlen($matches[25]) > 0)) {
                 $this->_database = @$matches[25];
             }
 
             // Query
-            if(isset($matches[27]) && (strlen($matches[27]) > 0)) {
+            if (isset($matches[27]) && (strlen($matches[27]) > 0)) {
                 $options = explode('&', $matches[27]);
 
-                foreach($options as $option) {
+                foreach ($options as $option) {
                     list($key, $value) = explode('=', $option);
                     $key = strtolower($key);
 
-                    if(!isset($this->{'_'.$key})) {
+                    if (!isset($this->{'_'.$key})) {
                         $this->_options[$key] = urldecode($value);
                     }
                 }
             }
         }
 
-        if(!$this->_database) {
-            if($this->_hostname) {
+        if (!$this->_database) {
+            if ($this->_hostname) {
                 $this->_database = $this->_hostname;
                 $this->_hostname = null;
             } else {
@@ -124,8 +130,9 @@ class Dsn implements IDsn, core\IDumpable {
     }
 
 
-// Adapter
-    public function setAdapter($adapter) {
+    // Adapter
+    public function setAdapter($adapter)
+    {
         $this->_hash = null;
         $this->_serverHash = null;
         $this->_adapter = $adapter;
@@ -133,14 +140,16 @@ class Dsn implements IDsn, core\IDumpable {
         return $this;
     }
 
-    public function getAdapter() {
+    public function getAdapter()
+    {
         return $this->_adapter;
     }
 
 
 
-// Username
-    public function setUsername($username) {
+    // Username
+    public function setUsername($username)
+    {
         $this->_hash = null;
         $this->_serverHash = null;
         $this->_username = $username;
@@ -148,13 +157,15 @@ class Dsn implements IDsn, core\IDumpable {
         return $this;
     }
 
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->_username;
     }
 
 
-// Password
-    public function setPassword($password) {
+    // Password
+    public function setPassword($password)
+    {
         $this->_hash = null;
         $this->_serverHash = null;
         $this->_password = $password;
@@ -162,13 +173,15 @@ class Dsn implements IDsn, core\IDumpable {
         return $this;
     }
 
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->_password;
     }
 
 
-// Protocol
-    public function setProtocol($protocol) {
+    // Protocol
+    public function setProtocol($protocol)
+    {
         $this->_hash = null;
         $this->_serverHash = null;
         $this->_protocol = $protocol;
@@ -176,13 +189,15 @@ class Dsn implements IDsn, core\IDumpable {
         return $this;
     }
 
-    public function getProtocol() {
+    public function getProtocol()
+    {
         return $this->_protocol;
     }
 
 
-// Hostname
-    public function setHostname($hostname) {
+    // Hostname
+    public function setHostname($hostname)
+    {
         $this->_hash = null;
         $this->_serverHash = null;
         $this->_hostname = $hostname;
@@ -190,8 +205,9 @@ class Dsn implements IDsn, core\IDumpable {
         return $this;
     }
 
-    public function getHostname($default='localhost') {
-        if(!$this->_hostname) {
+    public function getHostname($default='localhost')
+    {
+        if (!$this->_hostname) {
             return $default;
         }
 
@@ -199,9 +215,10 @@ class Dsn implements IDsn, core\IDumpable {
     }
 
 
-// Port
-    public function setPort($port) {
-        if($port !== null) {
+    // Port
+    public function setPort($port)
+    {
+        if ($port !== null) {
             $port = (int)$port;
         }
 
@@ -212,13 +229,15 @@ class Dsn implements IDsn, core\IDumpable {
         return $this;
     }
 
-    public function getPort() {
+    public function getPort()
+    {
         return $this->_port;
     }
 
 
-// Socket
-    public function setSocket($socket) {
+    // Socket
+    public function setSocket($socket)
+    {
         $this->_hash = null;
         $this->_serverHash = null;
         $this->_socket = $socket;
@@ -226,13 +245,15 @@ class Dsn implements IDsn, core\IDumpable {
         return $this;
     }
 
-    public function getSocket() {
+    public function getSocket()
+    {
         return $this->_socket;
     }
 
 
-// Database
-    public function setDatabase($database) {
+    // Database
+    public function setDatabase($database)
+    {
         $this->_hash = null;
         $this->_serverHash = null;
         $this->_database = $database;
@@ -241,11 +262,13 @@ class Dsn implements IDsn, core\IDumpable {
         return $this;
     }
 
-    public function getDatabase() {
+    public function getDatabase()
+    {
         return $this->_database.$this->_databaseSuffix;
     }
 
-    public function setDatabaseKeyName($name) {
+    public function setDatabaseKeyName($name)
+    {
         $this->_hash = null;
         $this->_serverHash = null;
         $this->_database = $database;
@@ -253,24 +276,28 @@ class Dsn implements IDsn, core\IDumpable {
         return $this;
     }
 
-    public function getDatabaseKeyName() {
+    public function getDatabaseKeyName()
+    {
         return $this->_database;
     }
 
-    public function setDatabaseSuffix($suffix) {
+    public function setDatabaseSuffix($suffix)
+    {
         $this->_hash = null;
         $this->_serverHash = null;
         $this->_databaseSuffix = $suffix;
         return $this;
     }
 
-    public function getDatabaseSuffix() {
+    public function getDatabaseSuffix()
+    {
         return $this->_databaseSuffix;
     }
 
 
-// Options
-    public function setOption($key, $value) {
+    // Options
+    public function setOption($key, $value)
+    {
         $this->_hash = null;
         $this->_serverHash = null;
         $this->_options[$key] = $value;
@@ -278,8 +305,9 @@ class Dsn implements IDsn, core\IDumpable {
         return $this;
     }
 
-    public function getOption($key, $default=null) {
-        if(isset($this->_options[$key])) {
+    public function getOption($key, $default=null)
+    {
+        if (isset($this->_options[$key])) {
             return $this->_options[$key];
         } else {
             return $default;
@@ -287,9 +315,10 @@ class Dsn implements IDsn, core\IDumpable {
     }
 
 
-// Hash
-    public function getHash() {
-        if($this->_hash === null) {
+    // Hash
+    public function getHash()
+    {
+        if ($this->_hash === null) {
             ksort($this->_options);
             $this->_hash = md5($this->toString());
         }
@@ -297,8 +326,9 @@ class Dsn implements IDsn, core\IDumpable {
         return $this->_hash;
     }
 
-    public function getServerHash() {
-        if($this->_serverHash === null) {
+    public function getServerHash()
+    {
+        if ($this->_serverHash === null) {
             ksort($this->_options);
             $this->_serverHash = md5($this->getServerString());
         }
@@ -307,16 +337,18 @@ class Dsn implements IDsn, core\IDumpable {
     }
 
 
-// String
-    public function toString(): string {
-        if($this->_adapter === null) {
+    // String
+    public function toString(): string
+    {
+        if ($this->_adapter === null) {
             throw new InvalidArgumentException('Dsn must contain adapter value!');
         }
 
         return $this->_adapter.'://'.$this->getConnectionString();
     }
 
-    public function getConnectionString() {
+    public function getConnectionString()
+    {
         $output = $this->_getBaseServerString();
         $output .= $this->_getDatabaseString();
         $output .= $this->_getOptionString();
@@ -324,15 +356,16 @@ class Dsn implements IDsn, core\IDumpable {
         return $output;
     }
 
-    public function getServerString() {
-        if($this->_adapter === null) {
+    public function getServerString()
+    {
+        if ($this->_adapter === null) {
             throw new InvalidArgumentException('Dsn must contain adapter value!');
         }
 
         $output = $this->_adapter.'://';
         $base = $this->_getBaseServerString();
 
-        if(empty($base)) {
+        if (empty($base)) {
             $base = $this->_getDatabaseString();
         }
 
@@ -342,27 +375,28 @@ class Dsn implements IDsn, core\IDumpable {
         return $output;
     }
 
-    protected function _getBaseServerString() {
+    protected function _getBaseServerString()
+    {
         $output = '';
 
-        if($this->_username !== null || $this->_password !== null) {
+        if ($this->_username !== null || $this->_password !== null) {
             $output .= $this->_username.':'.$this->_password.'@';
         }
 
-        if($this->_protocol !== null) {
+        if ($this->_protocol !== null) {
             $output .= $this->_protocol.'(';
 
-            if(strlen($this->_socket)) {
+            if (strlen($this->_socket)) {
                 $output .= $this->_socket;
             } else {
                 $output .= $this->_hostname;
             }
 
             $output .= ')';
-        } else if($this->_hostname !== null) {
+        } elseif ($this->_hostname !== null) {
             $output .= $this->_hostname;
 
-            if($this->_port !== null) {
+            if ($this->_port !== null) {
                 $output .= ':'.$this->_port;
             }
 
@@ -372,72 +406,78 @@ class Dsn implements IDsn, core\IDumpable {
         return $output;
     }
 
-    protected function _getDatabaseString() {
-        if($this->_database === null) {
+    protected function _getDatabaseString()
+    {
+        if ($this->_database === null) {
             throw new InvalidArgumentException('Dsn must contain database value!');
         }
 
         $output = $this->_database;
 
-        if($this->_databaseSuffix) {
+        if ($this->_databaseSuffix) {
             $output .= $this->_databaseSuffix;
         }
 
         return $output;
     }
 
-    protected function _getOptionString() {
+    protected function _getOptionString()
+    {
         $output = '';
 
-        if(!empty($this->_options)) {
+        if (!empty($this->_options)) {
             $output .= '?'.http_build_query($this->_options);
         }
 
         return $output;
     }
 
-    public function getDisplayString($credentials=false) {
+    public function getDisplayString($credentials=false)
+    {
         $output = lcfirst($this->_adapter).'://';
 
-        if($credentials && ($this->_username !== null || $this->_password !== null)) {
+        if ($credentials && ($this->_username !== null || $this->_password !== null)) {
             $output .= $this->_username.':****@';
         }
 
-        if($this->_protocol !== null) {
+        if ($this->_protocol !== null) {
             $output .= $this->_protocol.'(';
 
-            if(strlen($this->_socket)) {
+            if (strlen($this->_socket)) {
                 $output .= $this->_socket;
             } else {
                 $output .= $this->_hostname;
             }
 
             $output .= ')';
-        } else if($this->_hostname !== null) {
+        } elseif ($this->_hostname !== null) {
             $output .= $this->_hostname;
 
-            if($this->_port !== null) {
+            if ($this->_port !== null) {
                 $output .= ':'.$this->_port;
             }
 
             $output .= '/';
         }
 
-        if($this->_database === null) {
+        if ($this->_database === null) {
             throw new InvalidArgumentException('Dsn must contain database value!');
         }
 
         $output .= $this->_database;
 
-        if($this->_databaseSuffix) {
+        if ($this->_databaseSuffix) {
             $output .= $this->_databaseSuffix;
         }
 
         return $output;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setDefinition($this->toString());
     }
 }

@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\spur;
 
-class Commit implements ICommit, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Commit implements ICommit, Inspectable
+{
     protected $_id;
     protected $_treeId;
     protected $_parentIds = [];
@@ -22,16 +26,18 @@ class Commit implements ICommit, core\IDumpable {
     protected $_isFetched = false;
     protected $_repository;
 
-    public static function factory(ILocalRepository $repo, $id) {
+    public static function factory(ILocalRepository $repo, $id)
+    {
         $output = new self($repo, $id);
         $output->_fetchData();
         return $output;
     }
 
-    public static function extractFromRevList(ILocalRepository $repo, array &$result) {
+    public static function extractFromRevList(ILocalRepository $repo, array &$result)
+    {
         $commitId = self::_extractLineValue('commit', array_shift($result));
 
-        if(!$commitId) {
+        if (!$commitId) {
             return null;
         }
 
@@ -42,10 +48,11 @@ class Commit implements ICommit, core\IDumpable {
         return $output;
     }
 
-    protected static function _extractLineValue($key, $line) {
+    protected static function _extractLineValue($key, $line)
+    {
         $parts = explode(' ', $line, 2);
 
-        if($key != array_shift($parts)) {
+        if ($key != array_shift($parts)) {
             throw new UnexpectedValueException(
                 'Commit description key \''.$key.'\' was not found on line: '.$line
             );
@@ -54,8 +61,9 @@ class Commit implements ICommit, core\IDumpable {
         return array_shift($parts);
     }
 
-    protected static function _parseUser($value) {
-        if(preg_match('/^(.+) (\d+) .*$/', $value, $matches)) {
+    protected static function _parseUser($value)
+    {
+        if (preg_match('/^(.+) (\d+) .*$/', $value, $matches)) {
             return [$matches[1], $matches[2]];
         }
 
@@ -63,114 +71,129 @@ class Commit implements ICommit, core\IDumpable {
     }
 
 
-    public function __construct(ILocalRepository $repo, string $commitId) {
+    public function __construct(ILocalRepository $repo, string $commitId)
+    {
         $this->_repository = $repo;
         $this->_id = $commitId;
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->_id;
     }
 
-    public function getTreeId() {
-        if(!$this->_isFetched) {
+    public function getTreeId()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         return $this->_treeId;
     }
 
-    public function getTree() {
-        if(!$this->_isFetched) {
+    public function getTree()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         return $this->_repository->getTree($this->_treeId);
     }
 
-    public function getParentIds() {
-        if(!$this->_isFetched) {
+    public function getParentIds()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         return $this->_parentIds;
     }
 
-    public function getParents() {
-        if(!$this->_isFetched) {
+    public function getParents()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         $output = [];
 
-        foreach($this->_parentIds as $id) {
+        foreach ($this->_parentIds as $id) {
             $output[$id] = $this->_repository->getCommit($id);
         }
 
         return $output;
     }
 
-    public function getAuthor() {
-        if(!$this->_isFetched) {
+    public function getAuthor()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         return $this->_author;
     }
 
-    public function getCreationTimestamp() {
-        if(!$this->_isFetched) {
+    public function getCreationTimestamp()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         return $this->_creationTimestamp;
     }
 
-    public function getCreationDate() {
-        if(!$this->_isFetched) {
+    public function getCreationDate()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         return new core\time\Date($this->_creationTimestamp);
     }
 
-    public function getCommitter() {
-        if(!$this->_isFetched) {
+    public function getCommitter()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         return $this->_committer;
     }
 
-    public function getCommitTimestamp() {
-        if(!$this->_isFetched) {
+    public function getCommitTimestamp()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         return $this->_commitTimestamp;
     }
 
-    public function getCommitDate() {
-        if(!$this->_isFetched) {
+    public function getCommitDate()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         return new core\time\Date($this->_commitTimestamp);
     }
 
-    public function getMessage() {
-        if(!$this->_isFetched) {
+    public function getMessage()
+    {
+        if (!$this->_isFetched) {
             $this->_fetchData();
         }
 
         return $this->_message;
     }
 
-    public function getRepository() {
+    public function getRepository()
+    {
         return $this->_repository;
     }
 
-    protected function _fetchData() {
+    protected function _fetchData()
+    {
         $result = $this->_repository->_runCommand('rev-list', [
             '--max-count' => 1,
             '--pretty' => 'raw',
@@ -181,7 +204,7 @@ class Commit implements ICommit, core\IDumpable {
         $result = explode("\n", $result);
         $commitId = self::_extractLineValue('commit', array_shift($result));
 
-        if(!$commitId) {
+        if (!$commitId) {
             throw new RuntimeException(
                 'Could not find commit '.$this->_id.' in repository'
             );
@@ -190,10 +213,11 @@ class Commit implements ICommit, core\IDumpable {
         $this->_importRevListData($result);
     }
 
-    protected function _importRevListData(array &$result) {
+    protected function _importRevListData(array &$result)
+    {
         $this->_treeId = self::_extractLineValue('tree', array_shift($result));
 
-        while(!empty($result) && 0 === strpos($result[0], 'parent')) {
+        while (!empty($result) && 0 === strpos($result[0], 'parent')) {
             $this->_parentIds[] = self::_extractLineValue('parent', array_shift($result));
         }
 
@@ -205,7 +229,7 @@ class Commit implements ICommit, core\IDumpable {
 
         array_shift($result);
 
-        while(!empty($result) && 0 === strpos($result[0], '   ')) {
+        while (!empty($result) && 0 === strpos($result[0], '   ')) {
             $this->_message .= trim(array_shift($result))."\n";
         }
 
@@ -213,21 +237,26 @@ class Commit implements ICommit, core\IDumpable {
         $this->_isFetched = true;
     }
 
-// Dump
-    public function getDumpProperties() {
-        if(!$this->_isFetched) {
-            return $this->_id;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        if (!$this->_isFetched) {
+            $entity->setDefinition($this->_id);
+            return;
         }
 
-        return [
-            'message' => $this->_message,
-            'id' => $this->_id,
-            'tree' => $this->_treeId,
-            'parents' => $this->_parentIds,
-            'author' => $this->_author,
-            'created' => $this->getCreationDate(),
-            'committer' => $this->_committer,
-            'committed' => $this->getCommitDate()
-        ];
+        $entity
+            ->setText($this->_message)
+            ->setDefinition($this->_id)
+            ->setProperties([
+                '*tree' => $inspector($this->_treeId),
+                '*parents' => $inspector($this->_parentIds),
+                '*author' => $inspector($this->_author),
+                '*created' => $inspector($this->getCreationDate()),
+                '*committer' => $inspector($this->_committer),
+                '*committed' => $inspector($this->getCommitDate())
+            ]);
     }
 }

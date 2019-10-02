@@ -8,27 +8,32 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-class Callback implements ICallback, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Callback implements ICallback, Inspectable
+{
     protected $_callback;
     protected $_reflectionInstance;
     protected $_mode;
     protected $_extraArgs = [];
 
-    public static function getCallableId(callable $callable) {
+    public static function getCallableId(callable $callable)
+    {
         $output = '';
 
-        if(is_array($callable)) {
+        if (is_array($callable)) {
             @list($target, $name) = $callable;
 
-            if(is_object($target)) {
+            if (is_object($target)) {
                 $target = get_class($target);
             }
 
             $output = $target.'::'.$name;
-        } else if($callable instanceof \Closure) {
+        } elseif ($callable instanceof \Closure) {
             $output = 'closure-'.spl_object_hash($callable);
-        } else if(is_object($callable)) {
+        } elseif (is_object($callable)) {
             $output = get_class($callable);
         }
 
@@ -36,55 +41,59 @@ class Callback implements ICallback, core\IDumpable {
     }
 
 
-    public static function factory($callback, array $extraArgs=[]) {
-        if($callback instanceof ICallback) {
-            if(!empty($extraArgs)) {
+    public static function factory($callback, array $extraArgs=[])
+    {
+        if ($callback instanceof ICallback) {
+            if (!empty($extraArgs)) {
                 $callback->setExtraArgs($extraArgs);
             }
 
             return $callback;
         }
 
-        if($callback === null) {
+        if ($callback === null) {
             return null;
         }
 
         return new self($callback, $extraArgs);
     }
 
-    public static function normalize($callback): ?ICallback {
-        if($callback instanceof ICallback || $callback === null) {
+    public static function normalize($callback): ?ICallback
+    {
+        if ($callback instanceof ICallback || $callback === null) {
             return $callback;
         }
 
         return self::factory($callback);
     }
 
-    public static function call($callback, ...$args) {
-        if($callback = self::factory($callback)) {
+    public static function call($callback, ...$args)
+    {
+        if ($callback = self::factory($callback)) {
             return $callback->invoke(...$args);
         }
 
         return null;
     }
 
-    protected function __construct($callback, array $extraArgs) {
+    protected function __construct($callback, array $extraArgs)
+    {
         $this->setExtraArgs($extraArgs);
 
-        if(is_callable($callback)) {
+        if (is_callable($callback)) {
             $this->_mode = ICallback::DIRECT;
             $this->_callback = $callback;
             return;
         }
 
-        if(is_array($callback) && count($callback) == 2) {
+        if (is_array($callback) && count($callback) == 2) {
             $class = array_shift($callback);
             $method = array_shift($callback);
 
-            if(method_exists($class, $method)) {
+            if (method_exists($class, $method)) {
                 try {
                     $reflection = new \ReflectionMethod($class, $method);
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     throw new InvalidArgumentException(
                         'Callback is not callable'
                     );
@@ -92,10 +101,10 @@ class Callback implements ICallback, core\IDumpable {
 
                 $reflection->setAccessible(true);
 
-                if($reflection->isStatic()) {
+                if ($reflection->isStatic()) {
                     $this->_reflectionInstance = null;
                 } else {
-                    if(!is_object($class)) {
+                    if (!is_object($class)) {
                         throw new InvalidArgumentException(
                             'Callback is not callable'
                         );
@@ -115,25 +124,29 @@ class Callback implements ICallback, core\IDumpable {
         );
     }
 
-    public function setExtraArgs(array $args) {
+    public function setExtraArgs(array $args)
+    {
         $this->_extraArgs = $args;
         return $this;
     }
 
-    public function getExtraArgs() {
+    public function getExtraArgs()
+    {
         return $this->_extraArgs;
     }
 
-    public function __invoke(...$args) {
+    public function __invoke(...$args)
+    {
         return $this->invoke(...$args);
     }
 
-    public function invoke(...$args) {
-        if(!empty($this->_extraArgs)) {
+    public function invoke(...$args)
+    {
+        if (!empty($this->_extraArgs)) {
             $args = array_merge($args, $this->_extraArgs);
         }
 
-        switch($this->_mode) {
+        switch ($this->_mode) {
             case ICallback::DIRECT:
                 return call_user_func_array($this->_callback, $args);
 
@@ -142,12 +155,13 @@ class Callback implements ICallback, core\IDumpable {
         }
     }
 
-    public function getParameters() {
-        if($this->_mode === ICallback::REFLECTION) {
+    public function getParameters()
+    {
+        if ($this->_mode === ICallback::REFLECTION) {
             $reflection = $this->_callback;
-        } else if(is_array($this->_callback)) {
+        } elseif (is_array($this->_callback)) {
             $reflection = new \ReflectionMethod($this->_callback[0], $this->_callback[1]);
-        } else if(is_object($this->_callback) && !$this->_callback instanceof \Closure) {
+        } elseif (is_object($this->_callback) && !$this->_callback instanceof \Closure) {
             $reflection = new \ReflectionMethod($this->_callback, '__invoke');
         } else {
             $reflection = new \ReflectionFunction($this->_callback);
@@ -156,12 +170,18 @@ class Callback implements ICallback, core\IDumpable {
         return $reflection->getParameters();
     }
 
-// Dump
-    public function getDumpProperties() {
-        if(is_array($this->_callback) && is_object($this->_callback[0])) {
-            return get_class($this->_callback[0]).'->'.$this->_callback[1].'()';
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        if (is_array($this->_callback) && is_object($this->_callback[0])) {
+            $entity->setDefinition(get_class($this->_callback[0]).'->'.$this->_callback[1].'()');
+            return;
         }
 
-        return $this->_callback;
+        if ($inner = $inspector($this->_callback)) {
+            $entity->setDefinition($inner->getDefinition());
+        }
     }
 }

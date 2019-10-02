@@ -10,45 +10,51 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Menu extends Base implements core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Menu extends Base implements Inspectable
+{
     use TWidget_NavigationEntryController;
 
     const PRIMARY_TAG = 'nav.menu.list';
     const DEFAULT_LINK_WIDGET = 'Link';
     const ENFORCE_DEFAULT_LINK_WIDGET = false;
 
-    public function __construct(arch\IContext $context, ...$entries) {
+    public function __construct(arch\IContext $context, ...$entries)
+    {
         parent::__construct($context);
 
         $this->_entries = new aura\html\ElementContent();
         $this->_context = $context;
 
-        if(!empty($entries)) {
+        if (!empty($entries)) {
             $this->addEntries($entries);
         }
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag()->shouldRenderIfEmpty($this->_renderIfEmpty);
         $content = new aura\html\ElementContent();
 
-        foreach($this->_entries as $entry) {
-            if($entry instanceof IDescriptionAwareLinkWidget) {
+        foreach ($this->_entries as $entry) {
+            if ($entry instanceof IDescriptionAwareLinkWidget) {
                 $entry->shouldShowDescription($this->_showDescriptions);
             }
 
             $args = [];
 
-            if(($entry instanceof aura\html\ITagDataContainer) && ($id = $entry->getDataAttribute('menuid'))) {
+            if (($entry instanceof aura\html\ITagDataContainer) && ($id = $entry->getDataAttribute('menuid'))) {
                 $args['class'] = 'item-'.$id;
             }
 
-            if($entry instanceof aura\html\widget\Link) {
+            if ($entry instanceof aura\html\widget\Link) {
                 $entry->ensureMatchRequest();
 
-                if($entry->isComputedActive()) {
-                    if(!isset($args['class'])) {
+                if ($entry->isComputedActive()) {
+                    if (!isset($args['class'])) {
                         $args['class'] = '';
                     } else {
                         $args['class'] .= ' ';
@@ -70,11 +76,15 @@ class Menu extends Base implements core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'entries' => $this->_entries,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues($inspector->inspectList($this->_entries->toArray()));
     }
 }

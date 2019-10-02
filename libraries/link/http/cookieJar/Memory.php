@@ -9,16 +9,21 @@ use df;
 use df\core;
 use df\link;
 
-class Memory implements link\http\ICookieJar, core\IDumpable {
-    
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Memory implements link\http\ICookieJar, Inspectable
+{
     protected $_cookies = [];
 
-    public function __construct(array $cookies=null) {
-        if($cookies) {
-            foreach($cookies as $cookie) {
-                if(is_string($cookie)) {
+    public function __construct(array $cookies=null)
+    {
+        if ($cookies) {
+            foreach ($cookies as $cookie) {
+                if (is_string($cookie)) {
                     $cookie = link\http\Cookie::fromString($cookie);
-                } else if(!$cookie instanceof link\http\ICookie) {
+                } elseif (!$cookie instanceof link\http\ICookie) {
                     throw new link\http\InvalidArgumentException(
                         'Invalid cookie'
                     );
@@ -29,8 +34,9 @@ class Memory implements link\http\ICookieJar, core\IDumpable {
         }
     }
 
-    public function applyTo(link\http\IRequest $request) {
-        if(empty($this->_cookies)) {
+    public function applyTo(link\http\IRequest $request)
+    {
+        if (empty($this->_cookies)) {
             return $this;
         }
 
@@ -38,8 +44,8 @@ class Memory implements link\http\ICookieJar, core\IDumpable {
         $domain = (string)$request->url->getDomain();
         $isSecure = $request->url->isSecure();
 
-        foreach($this->_cookies as $cookie) {
-            if($cookie->matchesPath($path)
+        foreach ($this->_cookies as $cookie) {
+            if ($cookie->matchesPath($path)
             && $cookie->matchesDomain($domain)
             && !$cookie->isExpired()
             && $cookie->isSecure() == $isSecure) {
@@ -50,24 +56,26 @@ class Memory implements link\http\ICookieJar, core\IDumpable {
         return $this;
     }
 
-    public function import(link\http\IResponse $response) {
+    public function import(link\http\IResponse $response)
+    {
         $cookies = $response->getCookies();
 
-        foreach($cookies->toArray() as $cookie) {
+        foreach ($cookies->toArray() as $cookie) {
             $this->set($cookie);
         }
 
-        foreach($cookies->getRemoved() as $cookie) {
+        foreach ($cookies->getRemoved() as $cookie) {
             $this->set($cookie);
         }
 
         return $this;
     }
 
-    public function set(link\http\ICookie $cookie) {
+    public function set(link\http\ICookie $cookie)
+    {
         $value = $cookie->getValue();
 
-        if($value === '' || $value === null) {
+        if ($value === '' || $value === null) {
             $this->clear(
                 $cookie->getDomain(),
                 $cookie->getPath(),
@@ -77,8 +85,8 @@ class Memory implements link\http\ICookieJar, core\IDumpable {
             return $this;
         }
 
-        foreach($this->_cookies as $i => $test) {
-            if($cookie->getName() != $test->getName()
+        foreach ($this->_cookies as $i => $test) {
+            if ($cookie->getName() != $test->getName()
             || $cookie->getDomain() != $test->getDomain()
             || $cookie->getPath() != $test->getPath()) {
                 continue;
@@ -87,17 +95,17 @@ class Memory implements link\http\ICookieJar, core\IDumpable {
             $newExpiry = $cookie->getExpiryDate();
             $oldExpiry = $test->getExpiryDate();
 
-            if($newExpiry && !$oldExpiry) {
+            if ($newExpiry && !$oldExpiry) {
                 unset($this->_cookies[$i]);
                 continue;
             }
 
-            if($newExpiry && $oldExpiry && $newExpiry->gt($oldExpiry)) {
+            if ($newExpiry && $oldExpiry && $newExpiry->gt($oldExpiry)) {
                 unset($this->_cookies[$i]);
                 continue;
             }
 
-            if($cookie->getValue() != $test->getValue()) {
+            if ($cookie->getValue() != $test->getValue()) {
                 unset($this->_cookies[$i]);
                 continue;
             }
@@ -109,15 +117,16 @@ class Memory implements link\http\ICookieJar, core\IDumpable {
         return $this;
     }
 
-    public function clear($domain=null, $path=null, $name=null) {
-        if(!$domain) {
+    public function clear($domain=null, $path=null, $name=null)
+    {
+        if (!$domain) {
             $this->_cookies = [];
             return $this;
         }
 
         $this->_cookies = array_filter(
             $this->_cookies,
-            function($cookie) use($domain, $path, $name) {
+            function ($cookie) use ($domain, $path, $name) {
                 return !($cookie->matchesDomain($domain)
                       && $cookie->matchesPath($path)
                       && $cookie->matchesName($name));
@@ -127,10 +136,11 @@ class Memory implements link\http\ICookieJar, core\IDumpable {
         return $this;
     }
 
-    public function clearSession() {
+    public function clearSession()
+    {
         $this->_cookies = array_filter(
             $this->_cookies,
-            function($cookie) {
+            function ($cookie) {
                 return (bool)$cookie->getExpiryDate();
             }
         );
@@ -138,14 +148,18 @@ class Memory implements link\http\ICookieJar, core\IDumpable {
         return $this;
     }
 
-// Dump
-    public function getDumpProperties() {
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
         $output = [];
-        
-        foreach($this->_cookies as $cookie) {
+
+        foreach ($this->_cookies as $cookie) {
             $output[$cookie->getName()] = $cookie->toString();
         }
-        
-        return $output;
+
+        $entity
+            ->setValues($inspector->inspectList($output));
     }
 }

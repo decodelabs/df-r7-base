@@ -8,8 +8,12 @@ namespace df\core\time;
 use df;
 use df\core;
 
-class Duration implements IDuration, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Duration implements IDuration, Inspectable
+{
     const MICROSECONDS = -2;
     const MILLISECONDS = -1;
     const SECONDS = 1;
@@ -35,22 +39,24 @@ class Duration implements IDuration, core\IDumpable {
     protected $_seconds = 0;
     protected $_locale = null;
 
-    public static function factory($time) {
-        if($time instanceof IDuration) {
+    public static function factory($time)
+    {
+        if ($time instanceof IDuration) {
             return $time;
         }
 
         return new self($time);
     }
 
-    public static function fromUnit($value, $unit) {
-        if($value instanceof IDuration) {
+    public static function fromUnit($value, $unit)
+    {
+        if ($value instanceof IDuration) {
             return $value;
         }
 
         $unit = self::normalizeUnitId($unit);
 
-        switch($unit) {
+        switch ($unit) {
             case self::MICROSECONDS:
                 return self::fromMicroseconds($value);
 
@@ -80,43 +86,53 @@ class Duration implements IDuration, core\IDumpable {
         }
     }
 
-    public static function fromMicroseconds($microseconds) {
+    public static function fromMicroseconds($microseconds)
+    {
         return (new self(0))->setMicroseconds($microseconds);
     }
 
-    public static function fromMilliseconds($milliseconds) {
+    public static function fromMilliseconds($milliseconds)
+    {
         return (new self(0))->setMilliseconds($milliseconds);
     }
 
-    public static function fromSeconds($seconds) {
+    public static function fromSeconds($seconds)
+    {
         return new self($seconds);
     }
 
-    public static function fromMinutes($minutes) {
+    public static function fromMinutes($minutes)
+    {
         return (new self(0))->setMinutes($minutes);
     }
 
-    public static function fromHours($hours) {
+    public static function fromHours($hours)
+    {
         return (new self(0))->setHours($hours);
     }
 
-    public static function fromDays($days) {
+    public static function fromDays($days)
+    {
         return (new self(0))->setDays($days);
     }
 
-    public static function fromWeeks($weeks) {
+    public static function fromWeeks($weeks)
+    {
         return (new self(0))->setWeeks($weeks);
     }
 
-    public static function fromMonths($months) {
+    public static function fromMonths($months)
+    {
         return (new self(0))->setMonths($months);
     }
 
-    public static function fromYears($years) {
+    public static function fromYears($years)
+    {
         return (new self(0))->setYears($years);
     }
 
-    public static function getUnitList($locale=null) {
+    public static function getUnitList($locale=null)
+    {
         return [
             self::MICROSECONDS => self::getUnitString(self::MICROSECONDS, 1, $locale),
             self::MILLISECONDS => self::getUnitString(self::MILLISECONDS, 1, $locale),
@@ -130,39 +146,41 @@ class Duration implements IDuration, core\IDumpable {
         ];
     }
 
-    public function __construct($time=0) {
-        if($time instanceof IDuration) {
+    public function __construct($time=0)
+    {
+        if ($time instanceof IDuration) {
             $time = $time->getSeconds();
-        } else if($time instanceof \DateInterval) {
+        } elseif ($time instanceof \DateInterval) {
             $time = $this->_extractInterval($time);
         }
 
-        if(is_string($time)) {
+        if (is_string($time)) {
             $time = $this->_parseTime($time);
         }
 
         $this->setSeconds($time);
     }
 
-    protected function _parseTime($time) {
-        if(is_numeric($time)) {
-            if((float)$time == $time) {
+    protected function _parseTime($time)
+    {
+        if (is_numeric($time)) {
+            if ((float)$time == $time) {
                 return (float)$time;
             }
 
-            if((int)$time == $time) {
+            if ((int)$time == $time) {
                 return (int)$time;
             }
         }
 
         $time = trim($time);
 
-        if(preg_match('/^(([0-9]+)\:)?([0-9]{1,2})\:([0-9.]+)$/', $time)) {
+        if (preg_match('/^(([0-9]+)\:)?([0-9]{1,2})\:([0-9.]+)$/', $time)) {
             $parts = explode(':', $time);
             $i = 1;
             $seconds = 0;
 
-            while(!empty($parts)) {
+            while (!empty($parts)) {
                 $value = array_pop($parts);
                 $value = $i == 1 ? (float)$value : (int)$value;
                 $seconds += $value * self::MULTIPLIERS[$i++];
@@ -171,12 +189,12 @@ class Duration implements IDuration, core\IDumpable {
             return $seconds;
         }
 
-        if(substr($time, 0, 1) == 'P') {
+        if (substr($time, 0, 1) == 'P') {
             $interval = new \DateInterval($time);
         } else {
             $interval = \DateInterval::createFromDateString($time);
 
-            if($interval->y == 0
+            if ($interval->y == 0
             && $interval->m == 0
             && $interval->d == 0
             && $interval->h == 0
@@ -192,8 +210,9 @@ class Duration implements IDuration, core\IDumpable {
         return $this->_extractInterval($interval);
     }
 
-    protected function _extractInterval(\DateInterval $interval) {
-        if($interval->days !== false && $interval->days !== -9999) {
+    protected function _extractInterval(\DateInterval $interval)
+    {
+        if ($interval->days !== false && $interval->days !== -9999) {
             return $interval->days * self::MULTIPLIERS[self::DAYS];
         }
 
@@ -209,7 +228,7 @@ class Duration implements IDuration, core\IDumpable {
 
         $output = 0;
 
-        for($i = self::YEARS; $i > 0; $i--) {
+        for ($i = self::YEARS; $i > 0; $i--) {
             $value = (int)array_shift($parts);
             $output += $value * self::MULTIPLIERS[$i];
         }
@@ -218,234 +237,279 @@ class Duration implements IDuration, core\IDumpable {
     }
 
 
-    public function toDate() {
+    public function toDate()
+    {
         return new Date(time() + (int)$this->_seconds);
     }
 
-    public function invert() {
+    public function invert()
+    {
         $this->_seconds *= -1;
         return $this;
     }
 
 
-// Util
-    public function isEmpty(): bool {
+    // Util
+    public function isEmpty(): bool
+    {
         return $this->_seconds == 0;
     }
 
-    public function eq($duration) {
+    public function eq($duration)
+    {
         return $this->_seconds == self::factory($duration)->_seconds;
     }
 
-    public function gt($duration) {
+    public function gt($duration)
+    {
         return $this->_seconds > self::factory($duration)->_seconds;
     }
 
-    public function gte($duration) {
+    public function gte($duration)
+    {
         return $this->_seconds >= self::factory($duration)->_seconds;
     }
 
-    public function lt($duration) {
+    public function lt($duration)
+    {
         return $this->_seconds < self::factory($duration)->_seconds;
     }
 
-    public function lte($duration) {
+    public function lte($duration)
+    {
         return $this->_seconds <= self::factory($duration)->_seconds;
     }
 
 
-// Microseconds
-    public function setMicroseconds($us) {
+    // Microseconds
+    public function setMicroseconds($us)
+    {
         $this->_seconds = $us * self::MULTIPLIERS[self::MICROSECONDS];
         return $this;
     }
 
-    public function getMicroseconds() {
+    public function getMicroseconds()
+    {
         return $this->_seconds / self::MULTIPLIERS[self::MICROSECONDS];
     }
 
-    public function addMicroseconds($us) {
+    public function addMicroseconds($us)
+    {
         $this->_seconds += $us * self::MULTIPLIERS[self::MICROSECONDS];
         return $this;
     }
 
-    public function subtractMicroseconds($us) {
+    public function subtractMicroseconds($us)
+    {
         $this->_seconds -= $us * self::MULTIPLIERS[self::MICROSECONDS];
         return $this;
     }
 
 
-// Milliseconds
-    public function setMilliseconds($ms) {
+    // Milliseconds
+    public function setMilliseconds($ms)
+    {
         $this->_seconds = $ms * self::MULTIPLIERS[self::MILLISECONDS];
         return $this;
     }
 
-    public function getMilliseconds() {
+    public function getMilliseconds()
+    {
         return $this->_seconds / self::MULTIPLIERS[self::MILLISECONDS];
     }
 
-    public function addMilliseconds($ms) {
+    public function addMilliseconds($ms)
+    {
         $this->_seconds += $ms * self::MULTIPLIERS[self::MILLISECONDS];
         return $this;
     }
 
-    public function subtractMilliseconds($ms) {
+    public function subtractMilliseconds($ms)
+    {
         $this->_seconds -= $ms * self::MULTIPLIERS[self::MILLISECONDS];
         return $this;
     }
 
 
-// Seconds
-    public function setSeconds($seconds) {
+    // Seconds
+    public function setSeconds($seconds)
+    {
         $this->_seconds = $seconds;
         return $this;
     }
 
-    public function getSeconds() {
+    public function getSeconds()
+    {
         return $this->_seconds;
     }
 
-    public function addSeconds($seconds) {
+    public function addSeconds($seconds)
+    {
         $this->_seconds += $seconds;
         return $this;
     }
 
-    public function subtractSeconds($seconds) {
+    public function subtractSeconds($seconds)
+    {
         $this->_seconds -= $seconds;
         return $this;
     }
 
 
-// Minutes
-    public function setMinutes($minutes) {
+    // Minutes
+    public function setMinutes($minutes)
+    {
         $this->_seconds = $minutes * self::MULTIPLIERS[self::MINUTES];
         return $this;
     }
 
-    public function getMinutes() {
+    public function getMinutes()
+    {
         return $this->_seconds / self::MULTIPLIERS[self::MINUTES];
     }
 
-    public function addMinutes($minutes) {
+    public function addMinutes($minutes)
+    {
         $this->_seconds += $minutes * self::MULTIPLIERS[self::MINUTES];
         return $this;
     }
 
-    public function subtractMinutes($minutes) {
+    public function subtractMinutes($minutes)
+    {
         $this->_seconds -= $minutes * self::MULTIPLIERS[self::MINUTES];
         return $this;
     }
 
 
-// Hours
-    public function setHours($hours) {
+    // Hours
+    public function setHours($hours)
+    {
         $this->_seconds = $hours * self::MULTIPLIERS[self::HOURS];
         return $this;
     }
 
-    public function getHours() {
+    public function getHours()
+    {
         return $this->_seconds / self::MULTIPLIERS[self::HOURS];
     }
 
-    public function addHours($hours) {
+    public function addHours($hours)
+    {
         $this->_seconds += $hours * self::MULTIPLIERS[self::HOURS];
         return $this;
     }
 
-    public function subtractHours($hours) {
+    public function subtractHours($hours)
+    {
         $this->_seconds -= $hours * self::MULTIPLIERS[self::HOURS];
         return $this;
     }
 
 
-// Days
-    public function setDays($days) {
+    // Days
+    public function setDays($days)
+    {
         $this->_seconds = $days * self::MULTIPLIERS[self::DAYS];
         return $this;
     }
 
-    public function getDays() {
+    public function getDays()
+    {
         return $this->_seconds / self::MULTIPLIERS[self::DAYS];
     }
 
-    public function addDays($days) {
+    public function addDays($days)
+    {
         $this->_seconds += $days * self::MULTIPLIERS[self::DAYS];
         return $this;
     }
 
-    public function subtractDays($days) {
+    public function subtractDays($days)
+    {
         $this->_seconds -= $days * self::MULTIPLIERS[self::DAYS];
         return $this;
     }
 
 
-// Weeks
-    public function setWeeks($weeks) {
+    // Weeks
+    public function setWeeks($weeks)
+    {
         $this->_seconds = $weeks * self::MULTIPLIERS[self::WEEKS];
         return $this;
     }
 
-    public function getWeeks() {
+    public function getWeeks()
+    {
         return $this->_seconds / self::MULTIPLIERS[self::WEEKS];
     }
 
-    public function addWeeks($weeks) {
+    public function addWeeks($weeks)
+    {
         $this->_seconds += $weeks * self::MULTIPLIERS[self::WEEKS];
         return $this;
     }
 
-    public function subtractWeeks($weeks) {
+    public function subtractWeeks($weeks)
+    {
         $this->_seconds -= $weeks * self::MULTIPLIERS[self::WEEKS];
         return $this;
     }
 
 
-// Months
-    public function setMonths($months) {
+    // Months
+    public function setMonths($months)
+    {
         $this->_seconds = $months * self::MULTIPLIERS[self::MONTHS];
         return $this;
     }
 
-    public function getMonths() {
+    public function getMonths()
+    {
         return $this->_seconds / self::MULTIPLIERS[self::MONTHS];
     }
 
-    public function addMonths($months) {
+    public function addMonths($months)
+    {
         $this->_seconds += $months * self::MULTIPLIERS[self::MONTHS];
         return $this;
     }
 
-    public function subtractMonths($months) {
+    public function subtractMonths($months)
+    {
         $this->_seconds -= $months * self::MULTIPLIERS[self::MONTHS];
         return $this;
     }
 
 
-// Years
-    public function setYears($years) {
+    // Years
+    public function setYears($years)
+    {
         $this->_seconds = $years * self::MULTIPLIERS[self::YEARS];
         return $this;
     }
 
-    public function getYears() {
+    public function getYears()
+    {
         return $this->_seconds / self::MULTIPLIERS[self::YEARS];
     }
 
-    public function addYears($years) {
+    public function addYears($years)
+    {
         $this->_seconds += $years * self::MULTIPLIERS[self::YEARS];
         return $this;
     }
 
-    public function subtractYears($years) {
+    public function subtractYears($years)
+    {
         $this->_seconds -= $years * self::MULTIPLIERS[self::YEARS];
         return $this;
     }
 
 
-// Locale
-    public function setLocale($locale) {
-        if($locale === null) {
+    // Locale
+    public function setLocale($locale)
+    {
+        if ($locale === null) {
             $this->_locale = null;
         } else {
             $this->_locale = core\i18n\Locale::factory($locale);
@@ -454,14 +518,16 @@ class Duration implements IDuration, core\IDumpable {
         return $this;
     }
 
-    public function getLocale() {
+    public function getLocale()
+    {
         return $this->_locale;
     }
 
-// Format
-    public static function normalizeUnitId($id) {
-        if(is_string($id)) {
-            switch(strtolower($id)) {
+    // Format
+    public static function normalizeUnitId($id)
+    {
+        if (is_string($id)) {
+            switch (strtolower($id)) {
                 case 'us':
                 case 'microsecond':
                 case 'microseconds':
@@ -513,7 +579,7 @@ class Duration implements IDuration, core\IDumpable {
 
         $id = (int)$id;
 
-        switch($id) {
+        switch ($id) {
             case self::MICROSECONDS:
             case self::MILLISECONDS:
             case self::SECONDS:
@@ -534,11 +600,12 @@ class Duration implements IDuration, core\IDumpable {
         return $id;
     }
 
-    public static function getUnitString($unit, $plural=true, $locale=null) {
+    public static function getUnitString($unit, $plural=true, $locale=null)
+    {
         $unit = self::normalizeUnitId($unit);
         $i18n = core\i18n\Manager::getInstance();
 
-        switch($unit) {
+        switch ($unit) {
             case self::MICROSECONDS:
                 return $i18n->_([0 => 'microsecond', 1 => 'microseconds'], null, (int)$plural);
 
@@ -568,88 +635,92 @@ class Duration implements IDuration, core\IDumpable {
         }
     }
 
-    public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true): string {
+    public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true): string
+    {
         return implode(', ', $this->_buildStringComponents($maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $this->_locale));
     }
 
-    public function getUserString() {
-        if((int)$this->_seconds != $this->_seconds && abs($this->_seconds) <= self::MULTIPLIERS[self::WEEKS]) {
+    public function getUserString()
+    {
+        if ((int)$this->_seconds != $this->_seconds && abs($this->_seconds) <= self::MULTIPLIERS[self::WEEKS]) {
             return $this->getTimeFormatString();
         }
 
         return implode(' ', $this->_buildStringComponents(self::YEARS, false, self::YEARS, true, null));
     }
 
-    public function getTimeFormatString() {
+    public function getTimeFormatString()
+    {
         $components = $this->_buildStringComponents(3, null, self::HOURS, null, null);
 
-        if(count($components) == 1) {
+        if (count($components) == 1) {
             array_unshift($components, '00');
         }
 
         return implode(':', $components);
     }
 
-    protected function _buildStringComponents($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true, $locale=null) {
+    protected function _buildStringComponents($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true, $locale=null)
+    {
         $i18n = core\i18n\Manager::getInstance();
         $seconds = $this->_seconds;
 
         $isNegative = false;
 
-        if($seconds < 0) {
+        if ($seconds < 0) {
             $seconds *= -1;
             $isNegative = true;
         }
 
         $minUnit = null;
 
-        if(is_array($maxUnit)) {
+        if (is_array($maxUnit)) {
             $temp = $maxUnit;
             $maxUnit = array_pop($temp);
 
-            if(!$minUnit = array_shift($temp)) {
+            if (!$minUnit = array_shift($temp)) {
                 $minUnit = $maxUnit;
             }
         }
 
         $maxUnit = self::normalizeUnitId($maxUnit);
 
-        if($minUnit !== null) {
+        if ($minUnit !== null) {
             $minUnit = self::normalizeUnitId($minUnit);
         }
 
-        if($maxUnit == self::MICROSECONDS) {
+        if ($maxUnit == self::MICROSECONDS) {
             return [$this->_addUnitString($i18n, round($this->_seconds * 1000000), self::MICROSECONDS, $shortUnits)];
-        } else if($maxUnit == self::MILLISECONDS || (($seconds != 0 && $seconds < 1) || ($seconds < 5 && (int)$seconds != $seconds))) {
+        } elseif ($maxUnit == self::MILLISECONDS || (($seconds != 0 && $seconds < 1) || ($seconds < 5 && (int)$seconds != $seconds))) {
             return [$this->_addUnitString($i18n, round($this->_seconds * 1000), self::MILLISECONDS, $shortUnits)];
         }
 
         $output = $this->_createOutputArray($seconds, $maxUnits, $minUnit, $maxUnit, $shortUnits === null);
 
-        foreach($output as $unit => $value) {
-            if($isNegative) {
+        foreach ($output as $unit => $value) {
+            if ($isNegative) {
                 $value *= -1;
             }
 
             $round = false;
 
-            if($roundLastUnit === false) {
+            if ($roundLastUnit === false) {
                 $round = 1;
 
-                if($unit == self::SECONDS && $maxUnit == self::SECONDS) {
+                if ($unit == self::SECONDS && $maxUnit == self::SECONDS) {
                     $round = 3;
                 }
-            } else if($roundLastUnit === true) {
+            } elseif ($roundLastUnit === true) {
                 $round = 0;
-            } else if($roundLastUnit !== null) {
+            } elseif ($roundLastUnit !== null) {
                 $round = abs((int)$roundLastUnit);
             }
 
-            if($round !== false) {
+            if ($round !== false) {
                 $value = round($value, $round);
             }
 
-            if($shortUnits === null) {
+            if ($shortUnits === null) {
                 $parts = explode('.', $value, 2);
                 $parts[0] = str_pad($parts[0], 2, '0', \STR_PAD_LEFT);
                 $value = implode('.', $parts);
@@ -663,18 +734,20 @@ class Duration implements IDuration, core\IDumpable {
         return $output;
     }
 
-    public function __toString(): string {
+    public function __toString(): string
+    {
         try {
             return (string)$this->toString();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return '';
         }
     }
 
-    public function toUnit($unit) {
+    public function toUnit($unit)
+    {
         $unit = self::normalizeUnitId($unit);
 
-        switch($unit) {
+        switch ($unit) {
             case self::MICROSECONDS:
                 return $this->getMicroseconds();
 
@@ -704,8 +777,9 @@ class Duration implements IDuration, core\IDumpable {
         }
     }
 
-    private function _createOutputArray($seconds, $maxUnits, $minUnit, $maxUnit, $all=false) {
-        if($maxUnits <= 0) {
+    private function _createOutputArray($seconds, $maxUnits, $minUnit, $maxUnit, $all=false)
+    {
+        if ($maxUnits <= 0) {
             $maxUnits = 1;
         }
 
@@ -713,15 +787,15 @@ class Duration implements IDuration, core\IDumpable {
         $units = 0;
         $fraction = $seconds - (int)$seconds;
 
-        for($i = $maxUnit; $i > 0; $i--) {
-            if($i == 1) {
+        for ($i = $maxUnit; $i > 0; $i--) {
+            if ($i == 1) {
                 $output[1] = $seconds + $fraction;
                 break;
             }
 
             $multiplier = self::MULTIPLIERS[$i];
 
-            if($seconds < $multiplier) {
+            if ($seconds < $multiplier) {
                 continue;
             }
 
@@ -729,8 +803,8 @@ class Duration implements IDuration, core\IDumpable {
             $seconds %= $multiplier;
             $units++;
 
-            if($units >= $maxUnits || (!$all && !$seconds)) {
-                if($seconds) {
+            if ($units >= $maxUnits || (!$all && !$seconds)) {
+                if ($seconds) {
                     $output[$i] += $seconds / $multiplier;
                 }
 
@@ -738,9 +812,9 @@ class Duration implements IDuration, core\IDumpable {
             }
         }
 
-        for($i = 1; $i < $minUnit; $i++) {
-            if(isset($output[$i])) {
-                if(!isset($output[$i + 1])) {
+        for ($i = 1; $i < $minUnit; $i++) {
+            if (isset($output[$i])) {
+                if (!isset($output[$i + 1])) {
                     $output[$i + 1] = 0;
                 }
 
@@ -752,8 +826,9 @@ class Duration implements IDuration, core\IDumpable {
         return $output;
     }
 
-    protected function _addUnitString(core\i18n\IManager $i18n, $number, $unit, $shortUnits=false) {
-        switch($unit) {
+    protected function _addUnitString(core\i18n\IManager $i18n, $number, $unit, $shortUnits=false)
+    {
+        switch ($unit) {
             case self::MICROSECONDS:
                 return $i18n->_(
                     '%n% μs',
@@ -767,7 +842,7 @@ class Duration implements IDuration, core\IDumpable {
                 );
 
             case self::SECONDS:
-                if($shortUnits) {
+                if ($shortUnits) {
                     return $i18n->_(
                         '%n% sc',
                         ['%n%' => $number]
@@ -783,8 +858,9 @@ class Duration implements IDuration, core\IDumpable {
                     );
                 }
 
+                // no break
             case self::MINUTES:
-                if($shortUnits) {
+                if ($shortUnits) {
                     return $i18n->_(
                         '%n% mn',
                         ['%n%' => $number]
@@ -800,8 +876,9 @@ class Duration implements IDuration, core\IDumpable {
                     );
                 }
 
+                // no break
             case self::HOURS:
-                if($shortUnits) {
+                if ($shortUnits) {
                     return $i18n->_(
                         '%n% hr',
                         ['%n%' => $number]
@@ -817,8 +894,9 @@ class Duration implements IDuration, core\IDumpable {
                     );
                 }
 
+                // no break
             case self::DAYS:
-                if($shortUnits) {
+                if ($shortUnits) {
                     return $i18n->_(
                         '%n% dy',
                         ['%n%' => $number]
@@ -834,8 +912,9 @@ class Duration implements IDuration, core\IDumpable {
                     );
                 }
 
+                // no break
             case self::WEEKS:
-                if($shortUnits) {
+                if ($shortUnits) {
                     return $i18n->_(
                         '%n% wk',
                         ['%n%' => $number]
@@ -851,8 +930,9 @@ class Duration implements IDuration, core\IDumpable {
                     );
                 }
 
+                // no break
             case self::MONTHS:
-                if($shortUnits) {
+                if ($shortUnits) {
                     return $i18n->_(
                         '%n% mo',
                         ['%n%' => $number]
@@ -868,8 +948,9 @@ class Duration implements IDuration, core\IDumpable {
                     );
                 }
 
+                // no break
             case self::YEARS:
-                if($shortUnits) {
+                if ($shortUnits) {
                     return $i18n->_(
                         '%n% yr',
                         ['%n%' => $number]
@@ -885,14 +966,18 @@ class Duration implements IDuration, core\IDumpable {
                     );
                 }
 
+                // no break
             default:
                 return $number;
         }
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString(7, true);
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setDefinition($this->toString(7, true));
     }
 }

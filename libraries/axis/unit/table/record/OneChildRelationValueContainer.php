@@ -11,42 +11,53 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 class OneChildRelationValueContainer implements
     opal\record\IJobAwareValueContainer,
     opal\record\IPreparedValueContainer,
-    opal\record\IIdProviderValueContainer {
-
+    opal\record\IIdProviderValueContainer,
+    Inspectable
+{
     protected $_insertPrimaryKeySet;
     protected $_record = false;
     protected $_field;
 
-    public function __construct(axis\schema\IOneChildField $field) {
+    public function __construct(axis\schema\IOneChildField $field)
+    {
         $this->_field = $field;
     }
 
-    public function getTargetUnitId() {
+    public function getTargetUnitId()
+    {
         return $this->_field->getTargetUnitId();
     }
 
-    public function getTargetUnit() {
+    public function getTargetUnit()
+    {
         return axis\Model::loadUnitFromId($this->_field->getTargetUnitId());
     }
 
-    public function newRecord(array $values=null) {
+    public function newRecord(array $values=null)
+    {
         return $this->getTargetUnit()->newRecord($values);
     }
 
-    public function isPrepared() {
+    public function isPrepared()
+    {
         return $this->_record !== false;
     }
 
-    public function prepareValue(opal\record\IRecord $record, $fieldName) {
+    public function prepareValue(opal\record\IRecord $record, $fieldName)
+    {
         $localUnit = $record->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $query = $targetUnit->fetch();
 
-        if($this->_insertPrimaryKeySet) {
-            foreach($this->_insertPrimaryKeySet->toArray() as $field => $value) {
+        if ($this->_insertPrimaryKeySet) {
+            foreach ($this->_insertPrimaryKeySet->toArray() as $field => $value) {
                 $query->where($field, '=', $value);
             }
         } else {
@@ -55,7 +66,7 @@ class OneChildRelationValueContainer implements
 
         $this->_record = $query->toRow();
 
-        if($this->_record) {
+        if ($this->_record) {
             $inverseValue = $this->_record->getRaw($this->_field->getTargetField());
             $inverseValue->populateInverse($record);
             $this->_record->markAsChanged($this->_field->getTargetField());
@@ -64,35 +75,38 @@ class OneChildRelationValueContainer implements
         return $this;
     }
 
-    public function prepareToSetValue(opal\record\IRecord $record, $fieldName) {
+    public function prepareToSetValue(opal\record\IRecord $record, $fieldName)
+    {
         return $this;
     }
 
-    public function eq($value) {
-        if(!$this->_record) {
+    public function eq($value)
+    {
+        if (!$this->_record) {
             return false;
         }
 
-        if($value instanceof self
+        if ($value instanceof self
         || $value instanceof opal\record\IRecord) {
             $value = $value->getPrimaryKeySet();
-        } else if(!$value instanceof opal\record\IPrimaryKeySet) {
+        } elseif (!$value instanceof opal\record\IPrimaryKeySet) {
             return false;
         }
 
         return $this->_record->getPrimaryKeySet()->eq($value);
     }
 
-    public function setValue($value) {
+    public function setValue($value)
+    {
         $record = false;
 
-        if($value instanceof self) {
+        if ($value instanceof self) {
             $record = $value->_record;
             $value = $value->getPrimaryKeySet();
-        } else if($value instanceof opal\record\IPrimaryKeySetProvider) {
+        } elseif ($value instanceof opal\record\IPrimaryKeySetProvider) {
             $record = $value;
             $value = $value->getPrimaryKeySet();
-        } else if(!$value instanceof opal\record\IPrimaryKeySet) {
+        } elseif (!$value instanceof opal\record\IPrimaryKeySet) {
             // TODO: swap array('id') for target primary fields
             $value = new opal\record\PrimaryKeySet(['id'], ['id' => $value]);
         }
@@ -103,42 +117,49 @@ class OneChildRelationValueContainer implements
         return $this;
     }
 
-    public function getValue($default=null) {
-        if($this->_record !== false) {
+    public function getValue($default=null)
+    {
+        if ($this->_record !== false) {
             return $this->_record;
         }
 
         return $default;
     }
 
-    public function hasValue(): bool {
+    public function hasValue(): bool
+    {
         return $this->_record !== false && $this->_record !== null;
     }
 
-    public function getStringValue($default=''): string {
+    public function getStringValue($default=''): string
+    {
         return $this->__toString();
     }
 
-    public function getValueForStorage() {
+    public function getValueForStorage()
+    {
         return null;
     }
 
-    public function getRawId() {
-        if($this->_record) {
+    public function getRawId()
+    {
+        if ($this->_record) {
             return $this->_record->getPrimaryKeySet()->getValue();
         }
 
         return null;
     }
 
-    public function duplicateForChangeList() {
+    public function duplicateForChangeList()
+    {
         $output = new self($this->_field);
         $output->_insertPrimaryKeySet = $this->_insertPrimaryKeySet;
         return $output;
     }
 
-    public function populateInverse(opal\record\IRecord $record=null) {
-        if(!$this->_insertPrimaryKeySet) {
+    public function populateInverse(opal\record\IRecord $record=null)
+    {
+        if (!$this->_insertPrimaryKeySet) {
             $this->_record = $record;
         }
 
@@ -146,45 +167,46 @@ class OneChildRelationValueContainer implements
     }
 
 
-// Tasks
-    public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob=null) {
-        if($this->_insertPrimaryKeySet) {
-            if(!$this->_record instanceof opal\record\IRecord) {
+    // Tasks
+    public function deploySaveJobs(mesh\job\IQueue $queue, opal\record\IRecord $record, $fieldName, mesh\job\IJob $recordJob=null)
+    {
+        if ($this->_insertPrimaryKeySet) {
+            if (!$this->_record instanceof opal\record\IRecord) {
                 $this->prepareValue($record, $fieldName);
             }
 
             $originalRecord = null;
             $targetField = $this->_field->getTargetField();
 
-            if(!$record->isNew()) {
+            if (!$record->isNew()) {
                 $localUnit = $record->getAdapter();
                 $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId());
 
                 $query = $targetUnit->fetch();
 
-                foreach($record->getPrimaryKeySet()->toArray() as $field => $value) {
+                foreach ($record->getPrimaryKeySet()->toArray() as $field => $value) {
                     $query->where($targetField.'_'.$field, '=', $value);
                 }
 
                 $originalRecord = $query->toRow();
             }
 
-            if(!$this->_record) {
+            if (!$this->_record) {
                 $this->_insertPrimaryKeySet->updateWith(null);
             } else {
                 $targetRecordJob = $this->_record->deploySaveJobs($queue);
 
-                if($recordJob && $targetRecordJob) {
+                if ($recordJob && $targetRecordJob) {
                     $recordJob->addDependency(
                         $targetRecordJob,
                         new opal\record\job\InsertResolution($targetField, true)
                     );
-                } else if(!$this->_insertPrimaryKeySet->isNull()) {
+                } elseif (!$this->_insertPrimaryKeySet->isNull()) {
                     $this->_record->set($targetField, $this->_insertPrimaryKeySet);
                 }
             }
 
-            if($originalRecord) {
+            if ($originalRecord) {
                 $originalRecord->set($targetField, null);
                 $queue->save($originalRecord);
             }
@@ -193,11 +215,13 @@ class OneChildRelationValueContainer implements
         return $this;
     }
 
-    public function acceptSaveJobChanges(opal\record\IRecord $record) {
+    public function acceptSaveJobChanges(opal\record\IRecord $record)
+    {
         return $this;
     }
 
-    public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordJob=null) {
+    public function deployDeleteJobs(mesh\job\IQueue $queue, opal\record\IRecord $parentRecord, $fieldName, mesh\job\IJob $recordJob=null)
+    {
         $localUnit = $parentRecord->getAdapter();
         $targetUnit = $this->getTargetUnit();
         $targetField = $this->_field->getTargetField();
@@ -205,14 +229,14 @@ class OneChildRelationValueContainer implements
         $parentKeySet = $parentRecord->getPrimaryKeySet();
         $values = [];
 
-        foreach($parentKeySet->toArray() as $key => $value) {
+        foreach ($parentKeySet->toArray() as $key => $value) {
             $values[$targetField.'_'.$key] = $value;
         }
 
         $inverseKeySet = new opal\record\PrimaryKeySet(array_keys($values), $values);
         $primaryIndex = $targetSchema->getPrimaryIndex();
 
-        if($primaryIndex->hasField($targetSchema->getField($targetField))) {
+        if ($primaryIndex->hasField($targetSchema->getField($targetField))) {
             $targetRecordJob = new opal\query\job\DeleteKey(
                 $targetUnit, $values
             );
@@ -222,10 +246,10 @@ class OneChildRelationValueContainer implements
             );
         }
 
-        if(!$queue->hasJob($targetRecordJob)) {
+        if (!$queue->hasJob($targetRecordJob)) {
             $queue->addJob($targetRecordJob);
 
-            if($recordJob) {
+            if ($recordJob) {
                 //$recordJob->addDependency($targetRecordJob);
                 $targetRecordJob->addDependency($recordJob);
             }
@@ -234,19 +258,21 @@ class OneChildRelationValueContainer implements
         return $this;
     }
 
-    public function acceptDeleteJobChanges(opal\record\IRecord $record) {
+    public function acceptDeleteJobChanges(opal\record\IRecord $record)
+    {
         return $this;
     }
 
 
-// Dump
-    public function getDumpValue() {
-        if($this->_record) {
+    // Dump
+    public function getDumpValue()
+    {
+        if ($this->_record) {
             return $this->_record;
         }
 
-        if($this->_insertPrimaryKeySet) {
-            if($this->_insertPrimaryKeySet->countFields() == 1) {
+        if ($this->_insertPrimaryKeySet) {
+            if ($this->_insertPrimaryKeySet->countFields() == 1) {
                 return $this->_insertPrimaryKeySet->getFirstKeyValue();
             }
 
@@ -256,20 +282,28 @@ class OneChildRelationValueContainer implements
         return '['.$this->_field->getTargetUnitId().']';
     }
 
-    public function getDumpProperties() {
-        if($this->_record) {
-            return $this->_record;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        if ($this->_record) {
+            $entity
+                ->setValues([$inspector($this->_record)])
+                ->setShowKeys(false);
+            return;
         }
+
 
         $output = $this->_field->getTargetUnitId();
 
-        if($this->_insertPrimaryKeySet) {
+        if ($this->_insertPrimaryKeySet) {
             $output .= ' : ';
 
-            if($this->_insertPrimaryKeySet->countFields() == 1) {
+            if ($this->_insertPrimaryKeySet->countFields() == 1) {
                 $value = $this->_insertPrimaryKeySet->getFirstKeyValue();
 
-                if($value === null) {
+                if ($value === null) {
                     $output .= 'null';
                 } else {
                     $output .= $value;
@@ -277,10 +311,10 @@ class OneChildRelationValueContainer implements
             } else {
                 $t = [];
 
-                foreach($this->_insertPrimaryKeySet->toArray() as $key => $value) {
+                foreach ($this->_insertPrimaryKeySet->toArray() as $key => $value) {
                     $valString = $key.'=';
 
-                    if($value === null) {
+                    if ($value === null) {
                         $valString .= 'null';
                     } else {
                         $valString .= $value;
@@ -295,6 +329,6 @@ class OneChildRelationValueContainer implements
             $output = '['.$output.']';
         }
 
-        return $output;
+        $entity->setDefinition($output);
     }
 }

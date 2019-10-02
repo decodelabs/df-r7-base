@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\user;
 
-class Date implements IDate, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Date implements IDate, Inspectable
+{
     const MONTHS = [
         'jan' => 1, 'january' => 1,
         'feb' => 2, 'february' => 2,
@@ -39,8 +43,9 @@ class Date implements IDate, core\IDumpable {
     public $_date;
     protected $_timeEnabled = true;
 
-    public static function fromCompressedString($string, $timezone=true): IDate {
-        if($string instanceof IDate) {
+    public static function fromCompressedString($string, $timezone=true): IDate
+    {
+        if ($string instanceof IDate) {
             return $string;
         }
 
@@ -48,7 +53,7 @@ class Date implements IDate, core\IDumpable {
         $date = substr($date, 0, 4).'-'.substr($date, 4, 2).'-'.substr($date, 6, 2);
         $timeEnabled = false;
 
-        if(strlen($string) == 14) {
+        if (strlen($string) == 14) {
             $time = substr($string, 8);
             $time = substr($time, 0, 2).':'.substr($time, 2, 2).':'.substr($time, 4, 2);
             $date .= ' '.$time;
@@ -58,8 +63,9 @@ class Date implements IDate, core\IDumpable {
         return new self($date, $timezone, $timeEnabled);
     }
 
-    public static function fromLocaleString($string, $timezone=true, $size=self::SHORT, $locale=null): IDate {
-        if($string instanceof IDate) {
+    public static function fromLocaleString($string, $timezone=true, $size=self::SHORT, $locale=null): IDate
+    {
+        if ($string instanceof IDate) {
             return $string;
         }
 
@@ -76,8 +82,9 @@ class Date implements IDate, core\IDumpable {
         return new self($formatter->parse($string), $timezone);
     }
 
-    public static function fromFormatString($date, $format, $timezone=true, $locale=null): IDate {
-        if($date instanceof IDate) {
+    public static function fromFormatString($date, $format, $timezone=true, $locale=null): IDate
+    {
+        if ($date instanceof IDate) {
             return $date;
         }
 
@@ -88,44 +95,47 @@ class Date implements IDate, core\IDumpable {
         return new self($date);
     }
 
-    public static function normalize($date, $timezone=null, ?bool $timeEnabled=null): ?IDate {
-        if(empty($date)) {
+    public static function normalize($date, $timezone=null, ?bool $timeEnabled=null): ?IDate
+    {
+        if (empty($date)) {
             return null;
-        } else if($date instanceof IDate) {
+        } elseif ($date instanceof IDate) {
             return $date;
         }
 
         return self::factory($date, $timezone, $timeEnabled);
     }
 
-    public static function factory($date, $timezone=null, $timeEnabled=null): IDate {
-        if($date instanceof IDuration) {
+    public static function factory($date, $timezone=null, $timeEnabled=null): IDate
+    {
+        if ($date instanceof IDuration) {
             $date = '+'.$date->getSeconds().' seconds';
         }
 
-        if($date instanceof IDate) {
+        if ($date instanceof IDate) {
             return clone $date;
         }
 
         return new self($date, $timezone, $timeEnabled);
     }
 
-    private static function _normalizeTimezone($timezone) {
-        if($timezone === false) {
+    private static function _normalizeTimezone($timezone)
+    {
+        if ($timezone === false) {
             $timezone = null;
-        } else if($timezone === true) {
+        } elseif ($timezone === true) {
             $userManager = user\Manager::getInstance();
             $timezone = $userManager->getClient()->getTimezone();
         }
 
-        if($timezone === null) {
+        if ($timezone === null) {
             $timezone = 'UTC';
         }
 
-        if(!$timezone instanceof \DateTimeZone) {
+        if (!$timezone instanceof \DateTimeZone) {
             try {
                 $timezone = new \DateTimeZone((string)$timezone);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 throw new InvalidArgumentException($e->getMessage());
             }
         }
@@ -133,50 +143,52 @@ class Date implements IDate, core\IDumpable {
         return $timezone;
     }
 
-    public function __construct($date=null, $timezone=null, $timeEnabled=null) {
-        if($date instanceof self) {
-            if($timeEnabled === null) {
+    public function __construct($date=null, $timezone=null, $timeEnabled=null)
+    {
+        if ($date instanceof self) {
+            if ($timeEnabled === null) {
                 $timeEnabled = $date->_timeEnabled;
             }
 
             $this->_setDate(clone $date->_date, $timeEnabled);
             return;
-        } else if($date instanceof \DateTime) {
+        } elseif ($date instanceof \DateTime) {
             $this->_setDate($date, $timeEnabled);
             return;
         }
 
         $timestamp = null;
 
-        if(is_numeric($date)) {
+        if (is_numeric($date)) {
             $timestamp = $date;
             $date = 'now';
         }
 
         $timezone = self::_normalizeTimezone($timezone);
 
-        if($date === null) {
+        if ($date === null) {
             $date = 'now';
         }
 
         try {
             $this->_setDate(new \DateTime($date, $timezone), $timeEnabled);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             throw new InvalidArgumentException($e->getMessage());
         }
 
-        if($timestamp !== null) {
+        if ($timestamp !== null) {
             $this->_date->setTimestamp($timestamp);
         }
     }
 
-    protected function _setDate(\DateTime $date, $timeEnabled) {
+    protected function _setDate(\DateTime $date, $timeEnabled)
+    {
         $this->_date = $date;
 
-        if($timeEnabled !== null) {
+        if ($timeEnabled !== null) {
             $this->_timeEnabled = null;
 
-            if(!$timeEnabled) {
+            if (!$timeEnabled) {
                 $this->disableTime();
             } else {
                 $this->enableTime();
@@ -185,36 +197,41 @@ class Date implements IDate, core\IDumpable {
     }
 
 
-// Serialize
-    public function serialize() {
+    // Serialize
+    public function serialize()
+    {
         return $this->__toString();
     }
 
-    public function unserialize($string) {
+    public function unserialize($string)
+    {
         $this->_date = new \DateTime($string);
         return $this;
     }
 
 
-// Duplicate
-    public function __clone() {
-         $this->_date = clone $this->_date;
-         return $this;
+    // Duplicate
+    public function __clone()
+    {
+        $this->_date = clone $this->_date;
+        return $this;
     }
 
 
-// Time
-    public function enableTime() {
+    // Time
+    public function enableTime()
+    {
         $this->_timeEnabled = true;
         return $this;
     }
 
-    public function disableTime() {
-        if($this->_timeEnabled === false) {
+    public function disableTime()
+    {
+        if ($this->_timeEnabled === false) {
             return $this;
         }
 
-        if($this->getTimezone() != 'UTC') {
+        if ($this->getTimezone() != 'UTC') {
             $this->_date = new \DateTime($this->_date->format('Y-m-d'), new \DateTimeZone('UTC'));
         } else {
             $this->_date->modify('midnight');
@@ -224,24 +241,26 @@ class Date implements IDate, core\IDumpable {
         return $this;
     }
 
-    public function hasTime() {
+    public function hasTime()
+    {
         return $this->_timeEnabled;
     }
 
 
-// Time zone
+    // Time zone
     private static $_userTimezone;
 
-    public function toUserTimezone() {
-        if(!$this->_timeEnabled) {
+    public function toUserTimezone()
+    {
+        if (!$this->_timeEnabled) {
             return $this;
         }
 
-        if(self::$_userTimezone === null) {
+        if (self::$_userTimezone === null) {
             try {
                 $client = $userManager = user\Manager::getInstance()->getClient();
                 self::$_userTimezone = new \DateTimeZone($client->getTimezone());
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 self::$_userTimezone = new \DateTimeZone('UTC');
             }
         }
@@ -250,8 +269,9 @@ class Date implements IDate, core\IDumpable {
         return $this;
     }
 
-    public function toUtc() {
-        if(!$this->_timeEnabled) {
+    public function toUtc()
+    {
+        if (!$this->_timeEnabled) {
             return $this;
         }
 
@@ -259,15 +279,16 @@ class Date implements IDate, core\IDumpable {
         return $this;
     }
 
-    public function toTimezone($timezone) {
-        if(!$this->_timeEnabled) {
+    public function toTimezone($timezone)
+    {
+        if (!$this->_timeEnabled) {
             return $this;
         }
 
-        if(!$timezone instanceof \DateTimeZone) {
+        if (!$timezone instanceof \DateTimeZone) {
             try {
                 $timezone = new \DateTimeZone((string)$timezone);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 throw new InvalidArgumentException($e->getMessage());
             }
         }
@@ -277,38 +298,44 @@ class Date implements IDate, core\IDumpable {
         return $this;
     }
 
-    public function getTimezone() {
+    public function getTimezone()
+    {
         return $this->_date->getTimezone()->getName();
     }
 
-    public function getTimezoneAbbreviation() {
+    public function getTimezoneAbbreviation()
+    {
         return $this->_date->format('T');
     }
 
 
-// Formatting
-    public function toString(): string {
-        if($this->_timeEnabled) {
+    // Formatting
+    public function toString(): string
+    {
+        if ($this->_timeEnabled) {
             return $this->format('c');
         } else {
             return $this->format('Y-m-d');
         }
     }
 
-    public function __toString(): string {
+    public function __toString(): string
+    {
         try {
             return $this->toString();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return '0000-00-00';
         }
     }
 
-    public function toTimestamp() {
+    public function toTimestamp()
+    {
         return $this->_date->getTimestamp();
     }
 
-    public function localeFormat($size=self::LONG, $locale=null) {
-        if(!$this->_timeEnabled) {
+    public function localeFormat($size=self::LONG, $locale=null)
+    {
+        if (!$this->_timeEnabled) {
             return $this->localeDateFormat($size, $locale);
         }
 
@@ -317,14 +344,15 @@ class Date implements IDate, core\IDumpable {
 
         $output = \IntlDateFormatter::create($locale, $size, $size, $this->_date->getTimezone());
 
-        if($output) {
+        if ($output) {
             return $output->format($this->toTimestamp());
         } else {
             return $this->format('Y-m-d H:i:s');
         }
     }
 
-    public function localeDateFormat($size='long', $locale=true) {
+    public function localeDateFormat($size='long', $locale=true)
+    {
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
 
@@ -332,7 +360,8 @@ class Date implements IDate, core\IDumpable {
             ->format($this->toTimestamp());
     }
 
-    public function localeTimeFormat($size='long', $locale=true) {
+    public function localeTimeFormat($size='long', $locale=true)
+    {
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
 
@@ -340,11 +369,12 @@ class Date implements IDate, core\IDumpable {
             ->format($this->toTimestamp());
     }
 
-    protected function _normalizeFormatterSize($size) {
-        if(is_string($size)) {
+    protected function _normalizeFormatterSize($size)
+    {
+        if (is_string($size)) {
             $size = strtolower($size);
 
-            switch($size) {
+            switch ($size) {
                 case 'full':
                     return self::FULL;
 
@@ -359,7 +389,7 @@ class Date implements IDate, core\IDumpable {
             }
         }
 
-        switch($size) {
+        switch ($size) {
             case self::FULL:
             case self::LONG:
             case self::MEDIUM:
@@ -371,14 +401,16 @@ class Date implements IDate, core\IDumpable {
         }
     }
 
-    public function format($format='Y-m-d H:i:s T') {
+    public function format($format='Y-m-d H:i:s T')
+    {
         return $this->_date->format($format);
     }
 
 
-// Comparison
-    public function eq($date) {
-        if($date === null) {
+    // Comparison
+    public function eq($date)
+    {
+        if ($date === null) {
             return false;
         }
 
@@ -386,68 +418,76 @@ class Date implements IDate, core\IDumpable {
         return $this->toTimestamp() == $date->toTimestamp();
     }
 
-    public function is($date) {
-        if($date === null) {
+    public function is($date)
+    {
+        if ($date === null) {
             return false;
         }
 
         return $this->format('Y-m-d') == self::factory($date)->format('Y-m-d');
     }
 
-    public function isBetween($start, $end) {
-        if($start === null && $end === null) {
+    public function isBetween($start, $end)
+    {
+        if ($start === null && $end === null) {
             return false;
         }
 
-        if($start !== null && !$this->gte($start)) {
+        if ($start !== null && !$this->gte($start)) {
             return false;
         }
 
-        if($end !== null && !$this->lt($end)) {
+        if ($end !== null && !$this->lt($end)) {
             return false;
         }
 
         return true;
     }
 
-    public function gt($date) {
-        if($date === null) {
+    public function gt($date)
+    {
+        if ($date === null) {
             return true;
         }
 
         return $this->toTimestamp() > self::factory($date)->toTimestamp();
     }
 
-    public function gte($date) {
-        if($date === null) {
+    public function gte($date)
+    {
+        if ($date === null) {
             return true;
         }
 
         return $this->toTimestamp() >= self::factory($date)->toTimestamp();
     }
 
-    public function lt($date) {
-        if($date === null) {
+    public function lt($date)
+    {
+        if ($date === null) {
             return false;
         }
 
         return $this->toTimestamp() < self::factory($date)->toTimestamp();
     }
 
-    public function lte($date) {
-        if($date === null) {
+    public function lte($date)
+    {
+        if ($date === null) {
             return false;
         }
 
         return $this->toTimestamp() <= self::factory($date)->toTimestamp();
     }
 
-    public function isPast() {
+    public function isPast()
+    {
         return $this->toTimestamp() <= time();
     }
 
-    public function isNearPast($hours=null) {
-        if(empty($hours)) {
+    public function isNearPast($hours=null)
+    {
+        if (empty($hours)) {
             $hours = 24;
         }
 
@@ -457,12 +497,14 @@ class Date implements IDate, core\IDumpable {
         return $ts <= $time && $ts > $time - ($hours * 60);
     }
 
-    public function isFuture() {
+    public function isFuture()
+    {
         return $this->toTimestamp() > time();
     }
 
-    public function isNearFuture($hours=null) {
-        if(empty($hours)) {
+    public function isNearFuture($hours=null)
+    {
+        if (empty($hours)) {
             $hours = 24;
         }
 
@@ -472,37 +514,42 @@ class Date implements IDate, core\IDumpable {
         return $ts > $time && $ts < $time + ($hours * 60);
     }
 
-    public function isToday($date=null) {
+    public function isToday($date=null)
+    {
         return $this->format('Y-m-d') == self::factory($date ?? 'today')->format('Y-m-d');
     }
 
 
 
-    public function isYear($year) {
-        if($this->format('Y') == $year) {
+    public function isYear($year)
+    {
+        if ($this->format('Y') == $year) {
             return true;
         }
 
-        if($year < 100 && strlen($year) == 2 && $this->format('y') == $year) {
+        if ($year < 100 && strlen($year) == 2 && $this->format('y') == $year) {
             return true;
         }
 
         return false;
     }
 
-    public function getYear() {
+    public function getYear()
+    {
         return (int)$this->format('Y');
     }
 
-    public function getShortYear() {
+    public function getShortYear()
+    {
         return $this->format('y');
     }
 
-    public function isMonth($month) {
-        if(!is_numeric($month)) {
+    public function isMonth($month)
+    {
+        if (!is_numeric($month)) {
             $month = strtolower($month);
 
-            if(!isset(self::MONTHS[$month])) {
+            if (!isset(self::MONTHS[$month])) {
                 throw new InvalidArgumentException(
                     $month.' is not a valid month string'
                 );
@@ -514,52 +561,62 @@ class Date implements IDate, core\IDumpable {
         return $this->format('n') == $month;
     }
 
-    public function getMonth() {
+    public function getMonth()
+    {
         return (int)$this->format('n');
     }
 
-    public function getMonthName() {
+    public function getMonthName()
+    {
         return $this->format('F');
     }
 
-    public function getShortMonthName() {
+    public function getShortMonthName()
+    {
         return $this->format('M');
     }
 
 
-    public function isWeek($week) {
+    public function isWeek($week)
+    {
         return $this->format('W') == $week;
     }
 
-    public function getWeek() {
+    public function getWeek()
+    {
         return (int)$this->format('W');
     }
 
-    public function isDay($day) {
-        if(!is_numeric($day)) {
+    public function isDay($day)
+    {
+        if (!is_numeric($day)) {
             return $this->isDayOfWeek($day);
         }
 
         return $this->format('j') == $day;
     }
 
-    public function getDay() {
+    public function getDay()
+    {
         return (int)$this->format('j');
     }
 
-    public function getDayName() {
+    public function getDayName()
+    {
         return $this->format('l');
     }
 
-    public function getShortDayName() {
+    public function getShortDayName()
+    {
         return $this->format('D');
     }
 
-    public function isDayOfWeek($day) {
-        if(!is_numeric($day)) {
+    public function isDayOfWeek($day)
+    {
+        if (!is_numeric($day)) {
             $day = strtolower($day);
 
-            if(!isset(self::DAYS[$day])) {
+            if (!isset(self::DAYS[$day])) {
                 throw new InvalidArgumentException(
                     $day.' is not a valid day string'
                 );
@@ -568,122 +625,136 @@ class Date implements IDate, core\IDumpable {
             $day = self::DAYS[$day];
         }
 
-        if($day == 0) {
+        if ($day == 0) {
             $day = 7;
         }
 
         return $this->format('N') == $day;
     }
 
-    public function getDayOfWeek() {
+    public function getDayOfWeek()
+    {
         return (int)$this->format('N');
     }
 
-    public function isHour($hour) {
+    public function isHour($hour)
+    {
         return $this->format('G') == $hour;
     }
 
-    public function getHour() {
+    public function getHour()
+    {
         return (int)$this->format('G');
     }
 
-    public function isMinute($minute) {
+    public function isMinute($minute)
+    {
         return $this->format('i') == $minute;
     }
 
-    public function getMinute() {
+    public function getMinute()
+    {
         return (int)$this->format('i');
     }
 
-    public function isSecond($second) {
+    public function isSecond($second)
+    {
         return $this->format('s') == $second;
     }
 
-    public function getSecond() {
+    public function getSecond()
+    {
         return (int)$this->format('s');
     }
 
 
 
-// Modification
-    public function modify($string) {
+    // Modification
+    public function modify($string)
+    {
         $this->_date->modify($string);
 
-        if(!$this->_timeEnabled) {
+        if (!$this->_timeEnabled) {
             $this->_date->modify('midnight');
         }
 
         return $this;
     }
 
-    public function modifyNew($string) {
+    public function modifyNew($string)
+    {
         $output = clone $this;
         return $output->modify($string);
     }
 
-    public function add($interval) {
+    public function add($interval)
+    {
         $interval = $this->_normalizeInterval($interval);
         $this->_date->add($interval);
 
-        if(!$this->_timeEnabled) {
+        if (!$this->_timeEnabled) {
             $this->_date->modify('midnight');
         }
 
         return $this;
     }
 
-    public function addNew($interval) {
+    public function addNew($interval)
+    {
         $output = clone $this;
         return $output->add($interval);
     }
 
-    public function subtract($interval) {
+    public function subtract($interval)
+    {
         $interval = $this->_normalizeInterval($interval);
         $this->_date->sub($interval);
 
-        if(!$this->_timeEnabled) {
+        if (!$this->_timeEnabled) {
             $this->_date->modify('midnight');
         }
 
         return $this;
     }
 
-    public function subtractNew($interval) {
+    public function subtractNew($interval)
+    {
         $output = clone $this;
         return $output->subtract($interval);
     }
 
-    protected function _normalizeInterval($interval) {
+    protected function _normalizeInterval($interval)
+    {
         $seconds = null;
 
-        if($interval instanceof IDuration) {
+        if ($interval instanceof IDuration) {
             $seconds = $interval->getSeconds();
-        } else if(is_numeric($interval)) {
-            if((float)$interval == $interval) {
+        } elseif (is_numeric($interval)) {
+            if ((float)$interval == $interval) {
                 $seconds = (float)$interval;
-            } else if((int)$interval == $interval) {
+            } elseif ((int)$interval == $interval) {
                 $seconds = (int)$interval;
             }
-        } else if(is_int($interval) || is_float($interval)) {
+        } elseif (is_int($interval) || is_float($interval)) {
             $seconds = $interval;
-        } else if(preg_match('/^(([0-9]+)\:)?([0-9]{1,2})\:([0-9.]+)$/', $interval)) {
+        } elseif (preg_match('/^(([0-9]+)\:)?([0-9]{1,2})\:([0-9.]+)$/', $interval)) {
             $parts = explode(':', $interval);
             $i = 1;
             $seconds = 0;
 
-            while(!empty($parts)) {
+            while (!empty($parts)) {
                 $value = (int)array_pop($parts);
                 $seconds += $value * self::$_multipliers[$i++];
             }
         }
 
-        if($seconds !== null) {
+        if ($seconds !== null) {
             return \DateInterval::createFromDateString((int)$seconds.' seconds');
         }
 
         $interval = (string)$interval;
 
-        if(substr($interval, 0, 1) == 'P') {
+        if (substr($interval, 0, 1) == 'P') {
             return new \DateInterval($interval);
         } else {
             return \DateInterval::createFromDateString($interval);
@@ -691,9 +762,10 @@ class Date implements IDate, core\IDumpable {
     }
 
 
-// Duration
-    public function timeSince($date=null) {
-        if($date !== null) {
+    // Duration
+    public function timeSince($date=null)
+    {
+        if ($date !== null) {
             $time = self::factory($date)->toTimestamp();
             return new Duration($this->toTimestamp() - $time);
         } else {
@@ -701,8 +773,9 @@ class Date implements IDate, core\IDumpable {
         }
     }
 
-    public function timeUntil($date=null) {
-        if($date !== null) {
+    public function timeUntil($date=null)
+    {
+        if ($date !== null) {
             $time = self::factory($date)->toTimestamp();
             return new Duration($time - $this->toTimestamp());
         } else {
@@ -710,13 +783,15 @@ class Date implements IDate, core\IDumpable {
         }
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        if($this->_timeEnabled) {
-            return $this->format('Y-m-d H:i:s T');
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        if ($this->_timeEnabled) {
+            $entity->setDefinition($this->format('Y-m-d H:i:s T'));
         } else {
-            return $this->format('Y-m-d');
+            $entity->setDefinition($this->format('Y-m-d'));
         }
     }
 }

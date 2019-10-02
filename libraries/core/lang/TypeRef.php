@@ -8,14 +8,18 @@ namespace df\core\lang;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
-class TypeRef implements ITypeRef, \Serializable, core\IDumpable {
-
+class TypeRef implements ITypeRef, \Serializable, Inspectable
+{
     protected $_class;
     protected $_reflection;
 
-    public static function __callStatic($method, array $args) {
-        if(method_exists(__CLASS__, '__'.$method)) {
+    public static function __callStatic($method, array $args)
+    {
+        if (method_exists(__CLASS__, '__'.$method)) {
             return call_user_func_array([__CLASS__, '__'.$method], $args);
         }
 
@@ -24,29 +28,33 @@ class TypeRef implements ITypeRef, \Serializable, core\IDumpable {
         );
     }
 
-    public static function __factory($type, $extends=null) {
-        if(!$type instanceof self) {
+    public static function __factory($type, $extends=null)
+    {
+        if (!$type instanceof self) {
             $type = new self($type);
         }
 
-        if($extends !== null) {
+        if ($extends !== null) {
             $type->checkType($extends);
         }
 
         return $type;
     }
 
-    public function serialize() {
+    public function serialize()
+    {
         return $this->_class;
     }
 
-    public function unserialize($data) {
+    public function unserialize($data)
+    {
         $this->_class = $data;
         $this->_reflection = new \ReflectionClass($this->_class);
     }
 
-    protected static function _normalizeClassName($type) {
-        if(false !== strpos($type, '/')) {
+    protected static function _normalizeClassName($type)
+    {
+        if (false !== strpos($type, '/')) {
             $parts = explode('/', trim($type, '/'));
             $type = 'df\\'.implode('\\', $parts);
         }
@@ -54,14 +62,15 @@ class TypeRef implements ITypeRef, \Serializable, core\IDumpable {
         return $type;
     }
 
-    public function __construct($type) {
-        if(is_object($type)) {
+    public function __construct($type)
+    {
+        if (is_object($type)) {
             $type = get_class($type);
         }
 
         $class = self::_normalizeClassName($type);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new InvalidArgumentException(
                 'Class '.$class.' could not be found'
             );
@@ -71,26 +80,28 @@ class TypeRef implements ITypeRef, \Serializable, core\IDumpable {
         $this->_reflection = new \ReflectionClass($this->_class);
     }
 
-    public function newInstance(...$args) {
+    public function newInstance(...$args)
+    {
         return $this->_reflection->newInstanceArgs($args);
     }
 
-    public function checkType($extends) {
-        if(!is_array($extends)) {
+    public function checkType($extends)
+    {
+        if (!is_array($extends)) {
             $extends = [$extends];
         }
 
-        foreach($extends as $checkType) {
+        foreach ($extends as $checkType) {
             $checkType = self::_normalizeClassName($checkType);
 
-            if(class_exists($checkType)) {
-                if(!$this->_reflection->isSubclassOf($checkType)) {
+            if (class_exists($checkType)) {
+                if (!$this->_reflection->isSubclassOf($checkType)) {
                     throw new RuntimeException(
                         $type->_class.' does not extend '.$checkType
                     );
                 }
-            } else if(interface_exists($checkType)) {
-                if(!$this->_reflection->implementsInterface($checkType)) {
+            } elseif (interface_exists($checkType)) {
+                if (!$this->_reflection->implementsInterface($checkType)) {
                     throw new RuntimeException(
                         $this->_class.' does not implement '.$checkType
                     );
@@ -101,16 +112,19 @@ class TypeRef implements ITypeRef, \Serializable, core\IDumpable {
         return $this;
     }
 
-    public function getClass() {
+    public function getClass()
+    {
         return $this->_class;
     }
 
-    public function getClassPath() {
+    public function getClassPath()
+    {
         return implode('/', array_slice(explode('\\', $this->_class), 1));
     }
 
-    public function __call($method, array $args) {
-        if(!$this->_reflection->hasMethod($method)) {
+    public function __call($method, array $args)
+    {
+        if (!$this->_reflection->hasMethod($method)) {
             throw new BadMethodCallException(
                 'Method '.$method.' is not available on class '.$this->_class
             );
@@ -118,7 +132,7 @@ class TypeRef implements ITypeRef, \Serializable, core\IDumpable {
 
         $method = $this->_reflection->getMethod($method);
 
-        if(!$method->isStatic() || !$method->isPublic()) {
+        if (!$method->isStatic() || !$method->isPublic()) {
             throw new BadMethodCallException(
                 'Method '.$method.' is not accessible on class '.$this->_class
             );
@@ -128,8 +142,11 @@ class TypeRef implements ITypeRef, \Serializable, core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return $this->getClassPath();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->getClassPath());
     }
 }

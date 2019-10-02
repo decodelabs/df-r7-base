@@ -11,7 +11,11 @@ use df\aura;
 use df\arch;
 use df\neon;
 
-class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class ColorPicker extends Base implements IDataEntryWidget, Inspectable
 {
     use TWidget_FormData;
     use TWidget_Input;

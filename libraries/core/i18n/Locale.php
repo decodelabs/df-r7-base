@@ -7,7 +7,11 @@ namespace df\core\i18n;
 
 use df\core;
 
-class Locale implements ILocale, \Serializable, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Locale implements ILocale, \Serializable, Inspectable
 {
     protected $_language;
     protected $_script;
@@ -194,9 +198,11 @@ class Locale implements ILocale, \Serializable, core\IDumpable
     }
 
 
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return $this->__toString();
+        $entity->setDefinition($this->__toString());
     }
 }

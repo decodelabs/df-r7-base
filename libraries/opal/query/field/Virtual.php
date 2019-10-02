@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Virtual implements opal\query\IVirtualField, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Virtual implements opal\query\IVirtualField, Inspectable
 {
     use opal\query\TField;
 

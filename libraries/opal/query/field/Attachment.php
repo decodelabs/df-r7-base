@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Attachment implements opal\query\IAttachmentField, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Attachment implements opal\query\IAttachmentField, Inspectable
 {
     use opal\query\TField;
 

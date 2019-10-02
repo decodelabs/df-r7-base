@@ -9,33 +9,44 @@ use df;
 use df\core;
 use df\iris;
 
-class Location implements ILocation, core\IStringProvider, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Location implements ILocation, core\IStringProvider, Inspectable
+{
     use TSourceUriProvider;
     use TLocation;
     use core\TStringProvider;
 
-    public function __construct($uri, $line=1, $column=1) {
+    public function __construct($uri, $line=1, $column=1)
+    {
         $this->setSourceUri($uri);
         $this->setLine($line);
         $this->setColumn($column);
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         $output = $this->getSourceUri();
 
-        if(empty($output)) {
+        if (empty($output)) {
             $output = '?';
         }
 
         return $output.' ['.$this->getLine().':'.$this->getColumn().']';
     }
 
-    public function getLocation() {
+    public function getLocation()
+    {
         return $this;
     }
 
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toString());
     }
 }

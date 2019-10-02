@@ -8,8 +8,12 @@ namespace df\core\unit;
 use df;
 use df\core;
 
-class Frequency implements IFrequency, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Frequency implements IFrequency, Inspectable
+{
     use TSingleValueUnit;
 
     const DEFAULT_UNIT = 'khz';
@@ -18,78 +22,91 @@ class Frequency implements IFrequency, core\IDumpable {
     protected $_value;
     protected $_unit;
 
-    public static function factory($value, $unit=null, $allowPlainNumbers=false) {
-        if($value instanceof IFrequency) {
+    public static function factory($value, $unit=null, $allowPlainNumbers=false)
+    {
+        if ($value instanceof IFrequency) {
             return $value;
         }
 
         return new self($value, $unit, $allowPlainNumbers);
     }
 
-    public function toCssString(): string {
+    public function toCssString(): string
+    {
         return $this->getKhz().'kHz';
     }
 
-    public function setHz($hz) {
+    public function setHz($hz)
+    {
         return $this->_parseUnit($hz, 'hz');
     }
 
-    public function getHz() {
+    public function getHz()
+    {
         return $this->_convert($this->_value, $this->_unit, 'hz');
     }
 
-    public function setKhz($khz) {
+    public function setKhz($khz)
+    {
         return $this->_parseUnit($khz, 'khz');
     }
 
-    public function getKhz() {
+    public function getKhz()
+    {
         return $this->_convert($this->_value, $this->_unit, 'khz');
     }
 
-    public function setMhz($mhz) {
+    public function setMhz($mhz)
+    {
         return $this->_parseUnit($mhz, 'mhz');
     }
 
-    public function getMhz() {
+    public function getMhz()
+    {
         return $this->_convert($this->_value, $this->_unit, 'mhz');
     }
 
-    public function setGhz($ghz) {
+    public function setGhz($ghz)
+    {
         return $this->_parseUnit($ghz, 'ghz');
     }
 
-    public function getGhz() {
+    public function getGhz()
+    {
         return $this->_convert($this->_value, $this->_unit, 'ghz');
     }
 
-    public function setBpm($bpm) {
+    public function setBpm($bpm)
+    {
         return $this->_parseUnit($bpm, 'bpm');
     }
 
-    public function getBpm() {
+    public function getBpm()
+    {
         return $this->_convert($this->_value, $this->_unit, 'bpm');
     }
 
-    protected function _convert($value, $inUnit, $outUnit) {
-        if($inUnit === null) {
+    protected function _convert($value, $inUnit, $outUnit)
+    {
+        if ($inUnit === null) {
             $inUnit = self::DEFAULT_UNIT;
         }
 
-        if($outUnit === null) {
+        if ($outUnit === null) {
             $outUnit = self::DEFAULT_UNIT;
         }
 
-        if($inUnit == $outUnit) {
+        if ($inUnit == $outUnit) {
             return $value;
         }
 
-        if($inUnit == 'bpm') {
+        if ($inUnit == 'bpm') {
             $value /= 60;
             $inUnit = 'hz';
         }
 
 
-        switch($inUnit) {
+        switch ($inUnit) {
             case 'hz':
                 $factor = 0;
                 break;
@@ -109,7 +126,7 @@ class Frequency implements IFrequency, core\IDumpable {
 
         $bpm = false;
 
-        switch($outUnit) {
+        switch ($outUnit) {
             case 'bpm':
                 $factor -= 0;
                 $bpm = true;
@@ -134,15 +151,18 @@ class Frequency implements IFrequency, core\IDumpable {
 
         $output = $value *= pow(1000, $factor);
 
-        if($bpm) {
+        if ($bpm) {
             $output *= 60;
         }
 
         return $output;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toString());
     }
 }

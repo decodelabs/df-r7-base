@@ -9,31 +9,50 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
 
-class UnexpectedValueException extends \UnexpectedValueException implements IException, core\IDumpable {
-
+class UnexpectedValueException extends \UnexpectedValueException implements IException, Inspectable
+{
     protected $_value;
 
-    public function __construct($message, $value=null) {
+    public function __construct($message, $value=null)
+    {
         parent::__construct($message);
 
         $this->_value = $value;
     }
 
-    public function getDumpProperties() {
-        return $this->_value;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setValues([$inspector($this->_value)])
+            ->setShowKeys(false);
     }
 }
 
 
 // Interfaces
-interface IMediator {
-
+interface IMediator
+{
     const CRAMMD5 = 'crammd5';
     const LOGIN = 'login';
     const PLAIN = 'plain';
@@ -55,13 +74,14 @@ interface IMediator {
 
 
 
-class Response {
-
+class Response
+{
     public $info = [];
     public $code;
     public $message;
 
-    public function isValid(): bool {
+    public function isValid(): bool
+    {
         return empty($this->error);
     }
 }

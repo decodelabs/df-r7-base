@@ -9,61 +9,72 @@ use df;
 use df\core;
 use df\spur;
 
-class Tree implements ITree, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Tree implements ITree, Inspectable
+{
     protected $_id;
     protected $_name = null;
     protected $_mode = null;
     protected $_repository;
 
-    public function __construct(ILocalRepository $repo, string $id, $name=null) {
+    public function __construct(ILocalRepository $repo, string $id, $name=null)
+    {
         $this->_id = $id;
         $this->_name = $name;
         $this->_repository = $repo;
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->_id;
     }
 
-    public function _setName($name) {
+    public function _setName($name)
+    {
         $this->_name = $name;
         return $this;
     }
 
-    public function getName(): string {
-        if($this->_name === null) {
+    public function getName(): string
+    {
+        if ($this->_name === null) {
             $this->_fetchData();
         }
 
         return $this->_name;
     }
 
-    public function _setMode($mode) {
+    public function _setMode($mode)
+    {
         $this->_mode = $mode;
         return $this;
     }
 
-    public function getMode() {
-        if($this->_mode === null) {
+    public function getMode()
+    {
+        if ($this->_mode === null) {
             $this->_fetchData();
         }
 
         return $this->_mode;
     }
 
-    public function getObjects() {
+    public function getObjects()
+    {
         $result = $this->_repository->_runCommand('ls-tree', [
             $this->_id
         ]);
 
         $output = [];
 
-        if(!empty($result)) {
-            foreach(explode("\n", $result) as $line) {
+        if (!empty($result)) {
+            foreach (explode("\n", $result) as $line) {
                 list($mode, $type, $id, $name) = explode(' ', str_replace("\t", ' ', $line), 4);
 
-                switch($type) {
+                switch ($type) {
                     case 'blob':
                         $object = new File($this->_repository, $id, $name);
                         break;
@@ -80,18 +91,19 @@ class Tree implements ITree, core\IDumpable {
         return $output;
     }
 
-    public function getFiles() {
+    public function getFiles()
+    {
         $result = $this->_repository->_runCommand('ls-tree', [
             $this->_id
         ]);
 
         $output = [];
 
-        if(!empty($result)) {
-            foreach(explode("\n", $result) as $line) {
+        if (!empty($result)) {
+            foreach (explode("\n", $result) as $line) {
                 list($mode, $type, $id, $name) = explode(' ', str_replace("\t", ' ', $line), 4);
 
-                if($type == 'blob') {
+                if ($type == 'blob') {
                     $output[] = (new File($this->_repository, $id, $name))
                         ->_setMode($mode);
                 }
@@ -101,18 +113,19 @@ class Tree implements ITree, core\IDumpable {
         return $output;
     }
 
-    public function getTrees() {
+    public function getTrees()
+    {
         $result = $this->_repository->_runCommand('ls-tree', [
             $this->_id
         ]);
 
         $output = [];
 
-        if(!empty($result)) {
-            foreach(explode("\n", $result) as $line) {
+        if (!empty($result)) {
+            foreach (explode("\n", $result) as $line) {
                 list($mode, $type, $id, $name) = explode(' ', str_replace("\t", ' ', $line), 4);
 
-                if($type == 'tree') {
+                if ($type == 'tree') {
                     $output[] = (new Tree($this->_repository, $id, $name))
                         ->_setMode($mode);
                 }
@@ -122,7 +135,8 @@ class Tree implements ITree, core\IDumpable {
         return $output;
     }
 
-    protected function _fetchData() {
+    protected function _fetchData()
+    {
         $result = $this->_repository->_runCommand('ls-tree -r HEAD | grep ', [$this->_id]);
 
         list(
@@ -133,23 +147,24 @@ class Tree implements ITree, core\IDumpable {
         ) = explode(' ', str_replace("\t", ' ', $result), 4);
     }
 
-    public function getRepository() {
+    public function getRepository()
+    {
         return $this->_repository;
     }
 
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setProperty('*id', $inspector($this->_id));
 
-// Dump
-    public function getDumpProperties() {
-        $output = ['id' => $this->_id];
-
-        if($this->_name !== null) {
-            $output['name'] = $this->_name;
+        if ($this->_name !== null) {
+            $entity->setProperty('*name', $inspector($this->_name));
         }
 
-        if($this->_mode !== null) {
-            $output['mode'] = $this->_mode;
+        if ($this->_mode !== null) {
+            $entity->setProperty('*mode', $inspector($this->_mode));
         }
-
-        return $output;
     }
 }

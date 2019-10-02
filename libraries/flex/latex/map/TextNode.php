@@ -10,33 +10,31 @@ use df\core;
 use df\flex;
 use df\iris;
 
-class TextNode extends iris\map\Node implements flex\latex\ITextNode, core\IDumpable {
-
+class TextNode extends iris\map\Node implements flex\latex\ITextNode
+{
     use flex\latex\TNodeClassProvider;
 
     public $text;
 
-    public function setText($text) {
+    public function setText($text)
+    {
         $this->text = $text;
         return $this;
     }
 
-    public function appendText($text) {
+    public function appendText($text)
+    {
         $this->text .= $text;
         return $this;
     }
 
-    public function getText() {
+    public function getText()
+    {
         return $this->text;
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return !strlen($this->text);
-    }
-
-
-// Dump
-    public function getDumpProperties() {
-        return $this->text;
     }
 }

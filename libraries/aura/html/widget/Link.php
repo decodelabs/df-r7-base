@@ -12,8 +12,12 @@ use df\aura;
 use df\link as linkLib;
 use df\user;
 
-class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIconProviderWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIconProviderWidget, Inspectable
+{
     use TWidget_BodyContentAware;
     use core\constraint\TDisableable;
     use TWidget_TargetAware;
@@ -33,36 +37,37 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     protected $_contentType;
     protected $_activeClass;
 
-    public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null) {
+    public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null)
+    {
         parent::__construct($context);
 
         $checkUriMatch = false;
         $this->_checkAccess = null;
 
-        if(is_bool($matchRequest)) {
+        if (is_bool($matchRequest)) {
             $checkUriMatch = true;
             $this->_matchExact = $matchRequest;
             $matchRequest = null;
         }
 
-        if($uri instanceof arch\navigation\entry\Link) {
+        if ($uri instanceof arch\navigation\entry\Link) {
             $link = $uri;
             $uri = $link->getUri();
             $body = $link->getBody();
 
-            if($icon = $link->getIcon()) {
+            if ($icon = $link->getIcon()) {
                 $this->_icon = $icon;
             }
 
-            if($description = $link->getDescription()) {
+            if ($description = $link->getDescription()) {
                 $this->setDescription($description);
             }
 
-            if(null !== ($note = $link->getNote())) {
+            if (null !== ($note = $link->getNote())) {
                 $this->setNote($note);
             }
 
-            if($disposition = $link->getDisposition()) {
+            if ($disposition = $link->getDisposition()) {
                 $this->setDisposition($disposition);
             }
 
@@ -72,7 +77,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
             $this->addAltMatches(...$link->getAltMatches());
 
-            if($link->shouldOpenInNewWindow()) {
+            if ($link->shouldOpenInNewWindow()) {
                 $this->getTag()->setAttribute('target', '_blank');
             }
 
@@ -82,22 +87,23 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         $this->setUri($uri, $checkUriMatch);
 
-        if($matchRequest !== null) {
+        if ($matchRequest !== null) {
             $this->setMatchRequest($matchRequest);
         }
 
         $this->setBody($body);
     }
 
-    protected function _render() {
-        if($this->_uri === null && $this->_body->isEmpty()) {
+    protected function _render()
+    {
+        if ($this->_uri === null && $this->_body->isEmpty()) {
             return;
         }
 
         $tag = $this->getTag();
         $url = $this->_context->uri->__invoke($this->_uri);
 
-        if($url instanceof linkLib\http\IUrl) {
+        if ($url instanceof linkLib\http\IUrl) {
             $request = $url->getDirectoryRequest();
         } else {
             $request = null;
@@ -108,32 +114,32 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         $active = $this->_isActive || $this->_isComputedActive;
         $disabled = $this->_isDisabled;
 
-        if($this->_uri === null) {
+        if ($this->_uri === null) {
             $disabled = true;
         }
 
-        if($this->_checkAccess === null) {
+        if ($this->_checkAccess === null) {
             $this->_checkAccess = (bool)$request;
 
             // Tidy this up :)
-            if($this->_checkAccess && $this->_context->location->isArea('mail')) {
+            if ($this->_checkAccess && $this->_context->location->isArea('mail')) {
                 $this->_checkAccess = false;
             }
         }
 
-        if($this->_checkAccess && !$disabled) {
+        if ($this->_checkAccess && !$disabled) {
             $userManager = $this->_context->user;
             $isLoggedIn = $userManager->isLoggedIn();
 
-            if($request
+            if ($request
             && ($isLoggedIn || $this->_hideIfInaccessible)
             && !$userManager->canAccess($request, null, true)) {
                 $disabled = true;
             }
 
-            if(!$disabled) {
-                foreach($this->_accessLocks as $lock) {
-                    if(!$userManager->canAccess($lock, null, true)) {
+            if (!$disabled) {
+                foreach ($this->_accessLocks as $lock) {
+                    if (!$userManager->canAccess($lock, null, true)) {
                         $disabled = true;
                         break;
                     }
@@ -141,33 +147,33 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             }
         }
 
-        if($disabled && $this->_hideIfInaccessible) {
+        if ($disabled && $this->_hideIfInaccessible) {
             return null;
         }
 
-        if(!$disabled) {
+        if (!$disabled) {
             $tag->setAttribute('href', $url);
         }
 
-        if(!empty($this->_rel)) {
+        if (!empty($this->_rel)) {
             $tag->setAttribute('rel', implode(' ', array_keys($this->_rel)));
         }
 
-        if(!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
+        if (!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
 
-            if($this->_matchExact || $matchRequest->path->isEmpty()) {
+            if ($this->_matchExact || $matchRequest->path->isEmpty()) {
                 $active = $matchRequest->eq($this->_context->request);
             } else {
                 $active = $this->_context->request->matches($matchRequest);
             }
         }
 
-        if(!$active && !empty($this->_altMatches)) {
-            foreach($this->_altMatches as $match) {
+        if (!$active && !empty($this->_altMatches)) {
+            foreach ($this->_altMatches as $match) {
                 $matchRequest = arch\Request::factory($match);
 
-                if($this->_context->request->matches($matchRequest)) {
+                if ($this->_context->request->matches($matchRequest)) {
                     $active = true;
                     break;
                 }
@@ -176,11 +182,11 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         $this->_isComputedActive = $active;
 
-        if($disabled) {
+        if ($disabled) {
             $tag->addClass('disabled');
         }
 
-        if($active) {
+        if ($active) {
             $tag->addClass($this->getActiveClass());
         }
 
@@ -188,32 +194,32 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         $this->_applyTargetAwareAttributes($tag);
 
 
-        if($this->_description) {
+        if ($this->_description) {
             $tag->setTitle($this->_description);
         }
 
 
         $icon = $this->_generateIcon();
 
-        if($this->_hrefLang !== null) {
+        if ($this->_hrefLang !== null) {
             $tag->setAttribute('hreflang', $this->_hrefLang);
         }
 
-        if($this->_media !== null) {
+        if ($this->_media !== null) {
             $tag->setAttribute('media', $this->_media);
         }
 
-        if($this->_contentType !== null) {
+        if ($this->_contentType !== null) {
             $tag->setAttribute('type', $this->_contentType);
         }
 
-        if($this->_disposition !== null) {
+        if ($this->_disposition !== null) {
             $tag->addClass($this->getDisposition());
         }
 
 
-        if(!$this->hasBody()) {
-            if($url !== null) {
+        if (!$this->hasBody()) {
+            if ($url !== null) {
                 $body = clone $url;
             } else {
                 $body = $this->_context->uri->__invoke($this->_uri);
@@ -222,14 +228,14 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             $body = $body->toReadableString();
         }
 
-        if($this->_note !== null) {
+        if ($this->_note !== null) {
             $body = [
                 $body, ' ',
                 new aura\html\Element('sup', $this->_note)
             ];
         }
 
-        if($icon) {
+        if ($icon) {
             $tag->addClass('hasIcon');
         }
 
@@ -239,9 +245,10 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
 
 
-// Match
-    public function shouldMatchExact(bool $flag=null) {
-        if($flag !== null) {
+    // Match
+    public function shouldMatchExact(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_matchExact = (bool)$flag;
             return $this;
         }
@@ -250,19 +257,21 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     }
 
 
-// Relationship
-    public function setRelationship(...$rel) {
+    // Relationship
+    public function setRelationship(...$rel)
+    {
         $this->_rel = [];
         return $this->addRelationship(...$rel);
     }
 
-    public function addRelationship(...$rel) {
-        foreach($rel as $val) {
+    public function addRelationship(...$rel)
+    {
+        foreach ($rel as $val) {
             $val = strtolower($val);
             $parts = explode(' ', $val);
 
-            foreach($parts as $part) {
-                switch($part) {
+            foreach ($parts as $part) {
+                switch ($part) {
                     case 'alternate':
                     case 'author':
                     case 'bookmark':
@@ -286,16 +295,18 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         return $this;
     }
 
-    public function getRelationship() {
+    public function getRelationship()
+    {
         return array_keys($this->_rel);
     }
 
-    public function removeRelationship(...$rel) {
-        foreach($rel as $val) {
+    public function removeRelationship(...$rel)
+    {
+        foreach ($rel as $val) {
             $val = strtolower($val);
             $parts = explode(' ', $val);
 
-            foreach($parts as $part) {
+            foreach ($parts as $part) {
                 unset($this->_rel[$part]);
             }
         }
@@ -305,9 +316,10 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
 
 
-// Active
-    public function isActive(bool $flag=null) {
-        if($flag !== null) {
+    // Active
+    public function isActive(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isActive = $flag;
             $this->_isComputedActive = null;
 
@@ -317,37 +329,39 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         return $this->_isActive;
     }
 
-    public function setActiveIf($active) {
-        if($active !== null) {
+    public function setActiveIf($active)
+    {
+        if ($active !== null) {
             $this->_isActive = (bool)$active;
         }
 
         return $this;
     }
 
-    public function isComputedActive() {
-        if($this->_isComputedActive !== null) {
+    public function isComputedActive()
+    {
+        if ($this->_isComputedActive !== null) {
             return $this->_isComputedActive;
         }
 
         $active = $this->_isActive;
         $request = $this->_context->request;
 
-        if(!$active && $this->_matchRequest) {
+        if (!$active && $this->_matchRequest) {
             $matchRequest = $this->_context->uri->directoryRequest($this->_matchRequest);
 
-            if($this->_matchExact) {
+            if ($this->_matchExact) {
                 $active = $matchRequest->eq($request);
             } else {
                 $active = $request->matches($matchRequest);
             }
         }
 
-        if(!$active && !empty($this->_altMatches)) {
-            foreach($this->_altMatches as $match) {
+        if (!$active && !empty($this->_altMatches)) {
+            foreach ($this->_altMatches as $match) {
                 $matchRequest = $this->_context->uri->directoryRequest($match);
 
-                if($request->matches($matchRequest)) {
+                if ($request->matches($matchRequest)) {
                     $active = true;
                     break;
                 }
@@ -359,18 +373,20 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     }
 
 
-    public function setActiveClass($class) {
+    public function setActiveClass($class)
+    {
         $this->_activeClass = $class;
 
-        if(empty($this->_activeClass)) {
+        if (empty($this->_activeClass)) {
             $this->_activeClass = null;
         }
 
         return $this;
     }
 
-    public function getActiveClass() {
-        if(!empty($this->_activeClass)) {
+    public function getActiveClass()
+    {
+        if (!empty($this->_activeClass)) {
             return $this->_activeClass;
         }
 
@@ -378,9 +394,10 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     }
 
 
-// Hiding
-    public function shouldHideIfInaccessible(bool $flag=null) {
-        if($flag !== null) {
+    // Hiding
+    public function shouldHideIfInaccessible(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_hideIfInaccessible = $flag;
             return $this;
         }
@@ -388,58 +405,68 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         return $this->_hideIfInaccessible;
     }
 
-// Language
-    public function setHrefLanguage($language) {
+    // Language
+    public function setHrefLanguage($language)
+    {
         $this->_hrefLang = $language;
         return $this;
     }
 
-    public function getHrefLanguage() {
+    public function getHrefLanguage()
+    {
         return $this->_hrefLang;
     }
 
 
-// Media
-    public function setMedia($media) {
+    // Media
+    public function setMedia($media)
+    {
         $this->_media = $media;
         return $this;
     }
 
-    public function getMedia() {
+    public function getMedia()
+    {
         return $this->_media;
     }
 
 
-// Mime type
-    public function setContentType($type) {
+    // Mime type
+    public function setContentType($type)
+    {
         $this->_contentType = $type;
         return $this;
     }
 
-    public function getContentType() {
+    public function getContentType()
+    {
         return $this->_contentType;
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
         $lockCount = count($this->_accessLocks).' (';
 
-        if(!$this->_checkAccess) {
+        if (!$this->_checkAccess) {
             $lockCount .= 'not ';
         }
 
         $lockCount .= 'checked)';
 
-        return [
-            'uri' => $this->_uri,
-            'matchRequest' => $this->_matchRequest,
-            'rel' => $this->getRelationship(),
-            'isActive' => $this->_isActive,
-            'tag' => $this->getTag(),
-            'body' => $this->_body,
-            'description' => $this->_description,
-            'accessLocks' => $lockCount
-        ];
+        $entity
+            ->setProperties([
+                '*uri' => $inspector($this->_uri),
+                '*matchRequest' => $inspector($this->_matchRequest),
+                '*rel' => $inspector($this->getRelationship()),
+                '*isActive' => $inspector($this->_isActive),
+                '*description' => $inspector($this->_description),
+                '%accessLocks' => $inspector($lockCount),
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues($inspector->inspectList($this->_body->toArray()));
     }
 }

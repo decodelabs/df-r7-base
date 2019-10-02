@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\opal;
 
-class Populate implements IPopulateQuery, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Populate implements IPopulateQuery, Inspectable
+{
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Populate;
@@ -21,8 +25,9 @@ class Populate implements IPopulateQuery, core\IDumpable {
     use TQuery_Offsettable;
 
 
-    public static function typeIdToName($id) {
-        switch($id) {
+    public static function typeIdToName($id)
+    {
+        switch ($id) {
             case IPopulateQuery::TYPE_SOME:
                 return 'SOME';
 
@@ -32,7 +37,8 @@ class Populate implements IPopulateQuery, core\IDumpable {
         }
     }
 
-    public function __construct(IPopulatableQuery $parent, $fieldName, $type, array $selectFields=null) {
+    public function __construct(IPopulatableQuery $parent, $fieldName, $type, array $selectFields=null)
+    {
         $this->_parent = $parent;
         $this->_type = $type;
 
@@ -43,7 +49,7 @@ class Populate implements IPopulateQuery, core\IDumpable {
 
         $adapter = $this->_field->getSource()->getAdapter();
 
-        if(!$adapter instanceof opal\query\IIntegralAdapter) {
+        if (!$adapter instanceof opal\query\IIntegralAdapter) {
             throw new LogicException(
                 'Cannot populate field '.$fieldName.' - adapter is not integral'
             );
@@ -55,7 +61,7 @@ class Populate implements IPopulateQuery, core\IDumpable {
         $schema = $adapter->getQueryAdapterSchema();
         $field = $schema->getField($intrinsicFieldName);
 
-        if(!$field instanceof opal\schema\IRelationField) {
+        if (!$field instanceof opal\schema\IRelationField) {
             throw new RuntimeException(
                 'Cannot populate '.$intrinsicFieldName.' - field is not a relation'
             );
@@ -64,7 +70,7 @@ class Populate implements IPopulateQuery, core\IDumpable {
         $adapter = $field->getTargetQueryAdapter();
         $alias = uniqid('ppl_'.$intrinsicFieldName);
 
-        if(empty($selectFields)) {
+        if (empty($selectFields)) {
             $selectFields = ['*'];
         }
 
@@ -72,53 +78,57 @@ class Populate implements IPopulateQuery, core\IDumpable {
         $this->_source = $this->_sourceManager->newSource($adapter, $alias, $selectFields);
     }
 
-    public function getParentQuery() {
+    public function getParentQuery()
+    {
         return $this->_parent;
     }
 
-    public function getParentSource() {
+    public function getParentSource()
+    {
         return $this->_field->getSource();
     }
 
-    public function getParentSourceAlias() {
+    public function getParentSourceAlias()
+    {
         return $this->_field->getSource()->getAlias();
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        $output = [
-            'parent' => $this->_parent->getSource()->getId(),
-            'field' => $this->_field,
-            'type' => self::typeIdToName($this->_type)
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setProperties([
+            '*parent' => $inspector($this->_parent->getSource()->getId()),
+            '*field' => $inspector($this->_field),
+            '*type' => $inspector(self::typeIdToName($this->_type))
+        ]);
 
-        if(!empty($this->_populates)) {
-            $output['populates'] = $this->_populates;
+        if (!empty($this->_populates)) {
+            $entity->setProperty('*populates', $inspector($this->_populates));
         }
 
-        if($this->_whereClauseList && !$this->_whereClauseList->isEmpty()) {
-            $output['where'] = $this->_whereClauseList;
+        if ($this->_whereClauseList && !$this->_whereClauseList->isEmpty()) {
+            $entity->setProperty('*where', $inspector($this->_whereClauseList));
         }
 
-        if(!empty($this->_order)) {
+        if (!empty($this->_order)) {
             $order = [];
 
-            foreach($this->_order as $directive) {
+            foreach ($this->_order as $directive) {
                 $order[] = $directive->toString();
             }
 
-            $output['order'] = implode(', ', $order);
+            $entity->setProperty('*order', $inspector(implode(', ', $order)));
         }
 
-        if($this->_limit) {
-            $output['limit'] = $this->_limit;
+        if ($this->_limit) {
+            $entity->setProperty('*limit', $inspector($this->_limit));
         }
 
-        if($this->_offset) {
-            $output['offset'] = $this->_offset;
+        if ($this->_offset) {
+            $entity->setProperty('*offset', $inspector($this->_offset));
         }
-
-        return $output;
     }
 }

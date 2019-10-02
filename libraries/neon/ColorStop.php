@@ -10,15 +10,20 @@ use df\core;
 use df\neon;
 use df\aura;
 
-class ColorStop implements IColorStop, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class ColorStop implements IColorStop, Inspectable
+{
     use core\TStringProvider;
 
     protected $_color;
     protected $_size;
 
-    public static function factory($colorStop): IColorStop {
-        if($colorStop instanceof IColorStop) {
+    public static function factory($colorStop): IColorStop
+    {
+        if ($colorStop instanceof IColorStop) {
             return $colorStop;
         }
 
@@ -28,7 +33,7 @@ class ColorStop implements IColorStop, core\IDumpable {
         try {
             $size = core\unit\DisplaySize::factory($size);
             $color = implode(' ', $parts);
-        } catch(aura\style\InvalidArgumentException $e) {
+        } catch (aura\style\InvalidArgumentException $e) {
             $color = $colorStop;
             $size = null;
         }
@@ -36,22 +41,26 @@ class ColorStop implements IColorStop, core\IDumpable {
         return new self($color, $size);
     }
 
-    public function __construct($color, $size) {
+    public function __construct($color, $size)
+    {
         $this->setColor($color);
         $this->setSize($size);
     }
 
-    public function setColor($color) {
+    public function setColor($color)
+    {
         $this->_color = Color::factory($color);
         return $this;
     }
 
-    public function getColor(): IColor {
+    public function getColor(): IColor
+    {
         return $this->_color;
     }
 
-    public function setSize($size) {
-        if($size !== null) {
+    public function setSize($size)
+    {
+        if ($size !== null) {
             $size = core\unit\DisplaySize::factory($size);
         }
 
@@ -59,22 +68,27 @@ class ColorStop implements IColorStop, core\IDumpable {
         return $this;
     }
 
-    public function getSize(): ?core\unit\IDisplaySize {
+    public function getSize(): ?core\unit\IDisplaySize
+    {
         return $this->_size;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         $output = $this->_color->toCssString();
 
-        if($this->_size !== null) {
+        if ($this->_size !== null) {
             $output .= ' '.$this->_size->toString();
         }
 
         return $output;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setDefinition($this->toString());
     }
 }

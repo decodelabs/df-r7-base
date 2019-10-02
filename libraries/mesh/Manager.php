@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\mesh;
 
-class Manager implements IManager, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Manager implements IManager, Inspectable
+{
     use core\TManager;
     use mesh\event\TEmitter;
 
@@ -18,50 +22,54 @@ class Manager implements IManager, core\IDumpable {
 
     protected $_handlers = [];
 
-// Jobs
-    public function newJobQueue() {
+    // Jobs
+    public function newJobQueue()
+    {
         return new mesh\job\Queue();
     }
 
-// Entities
-    public function registerHandler($scheme, IHandler $handler) {
+    // Entities
+    public function registerHandler($scheme, IHandler $handler)
+    {
         $this->_handlers[(string)$scheme] = $handler;
 
         return $this;
     }
 
-    public function unregisterHandler($scheme) {
+    public function unregisterHandler($scheme)
+    {
         unset($this->_handlers[(string)$scheme]);
         return $this;
     }
 
-    public function getHandler($scheme) {
-        if($scheme instanceof mesh\entity\ILocator) {
+    public function getHandler($scheme)
+    {
+        if ($scheme instanceof mesh\entity\ILocator) {
             $scheme = $scheme->getScheme();
         } else {
             $scheme = (string)$scheme;
 
-            if(false !== strpos($scheme, ':')) {
+            if (false !== strpos($scheme, ':')) {
                 $scheme = mesh\entity\Locator::factory($scheme);
                 $scheme = $scheme->getScheme();
             }
         }
 
-        if(!isset($this->_handlers[$scheme])) {
+        if (!isset($this->_handlers[$scheme])) {
             $classes = [
                 'df\\'.lcfirst($scheme).'\\MeshHandler',
                 'df\\mesh\\handler\\'.ucfirst($scheme)
             ];
 
-            foreach($classes as $class) {
-                if(class_exists($class)) {
+            foreach ($classes as $class) {
+                if (class_exists($class)) {
                     $handler = new $class();
                     $this->registerHandler($scheme, $handler);
                     return $handler;
                 }
             }
 
-            if(!isset($this->_handlers[$scheme])) {
+            if (!isset($this->_handlers[$scheme])) {
                 return null;
             }
         }
@@ -69,14 +77,16 @@ class Manager implements IManager, core\IDumpable {
         return $this->_handlers[$scheme];
     }
 
-    public function getHandlers() {
+    public function getHandlers()
+    {
         return $this->_handlers;
     }
 
-    public function fetchEntity($locator) {
+    public function fetchEntity($locator)
+    {
         $locator = mesh\entity\Locator::factory($locator);
 
-        if((!$handler = $this->getHandler($locator))
+        if ((!$handler = $this->getHandler($locator))
         || (!$handler instanceof IEntityHandler)) {
             throw new mesh\entity\RuntimeException(
                 'There is no entity handler for scheme: '.$locator->getScheme()
@@ -89,17 +99,17 @@ class Manager implements IManager, core\IDumpable {
 
         $entity = $handler->fetchEntity($this, $node);
 
-        if($entity === null) {
+        if ($entity === null) {
             throw new mesh\entity\EntityNotFoundException(
                 'Entity type '.$locator->toStringUpTo($node).' could not be found'
             );
         }
 
-        if(!empty($nodes)) {
+        if (!empty($nodes)) {
             $lastNode = $node;
 
-            foreach($nodes as $node) {
-                if(!$entity instanceof mesh\entity\IParentEntity) {
+            foreach ($nodes as $node) {
+                if (!$entity instanceof mesh\entity\IParentEntity) {
                     throw new mesh\entity\EntityNotFoundException(
                         'Could not load entity '.$locator->toString().' - '.
                         'parent entity '.$locator->toStringUpTo($lastNode).' does not provide sub entities'
@@ -108,7 +118,7 @@ class Manager implements IManager, core\IDumpable {
 
                 $entity = $entity->fetchSubEntity($this, $node);
 
-                if($entity === null) {
+                if ($entity === null) {
                     throw new mesh\entity\EntityNotFoundException(
                         'Entity type '.$locator->toStringUpTo($node).' could not be found'
                     );
@@ -123,18 +133,22 @@ class Manager implements IManager, core\IDumpable {
 
 
 
-// Events
-    public function emitEventObject(mesh\event\IEvent $event) {
+    // Events
+    public function emitEventObject(mesh\event\IEvent $event)
+    {
         mesh\event\Hook::triggerEvent($event);
         return $this;
     }
 
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'handlers' => implode(', ', array_keys($this->_handlers))
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '%handlers' => $inspector(implode(', ', array_keys($this->_handlers)))
+            ]);
     }
 }

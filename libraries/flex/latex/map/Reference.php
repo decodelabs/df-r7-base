@@ -10,7 +10,7 @@ use df\core;
 use df\flex;
 use df\iris;
 
-class Reference extends iris\map\Node implements flex\latex\IReference, core\IDumpable
+class Reference extends iris\map\Node implements flex\latex\IReference
 {
     use flex\latex\TReferable;
 
@@ -46,11 +46,5 @@ class Reference extends iris\map\Node implements flex\latex\IReference, core\IDu
     public function isEmpty(): bool
     {
         return false;
-    }
-
-    // Dump
-    public function getDumpProperties()
-    {
-        return $this->_type.': '.$this->id;
     }
 }

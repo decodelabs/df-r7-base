@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Intrinsic implements opal\query\IIntrinsicField, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Intrinsic implements opal\query\IIntrinsicField, Inspectable
 {
     use opal\query\TField;
 

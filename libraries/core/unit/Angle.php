@@ -8,8 +8,12 @@ namespace df\core\unit;
 use df;
 use df\core;
 
-class Angle implements IAngle, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Angle implements IAngle, Inspectable
+{
     use TSingleValueUnit;
 
     const DEFAULT_UNIT = 'deg';
@@ -18,22 +22,25 @@ class Angle implements IAngle, core\IDumpable {
     protected $_value;
     protected $_unit;
 
-    public static function factory($value, $unit=null, $allowPlainNumbers=false) {
-        if($value instanceof IAngle) {
+    public static function factory($value, $unit=null, $allowPlainNumbers=false)
+    {
+        if ($value instanceof IAngle) {
             return $value;
         }
 
         return new self($value, $unit, $allowPlainNumbers);
     }
 
-    public function toCssString(): string {
+    public function toCssString(): string
+    {
         return $this->getDegrees().'deg';
     }
 
-    public function normalize() {
+    public function normalize()
+    {
         $useMargin = false;
 
-        switch($this->_unit) {
+        switch ($this->_unit) {
             case null:
             case 'deg':
                 $limit = 360;
@@ -56,68 +63,77 @@ class Angle implements IAngle, core\IDumpable {
         $upper = $limit;
         $lower = -$limit;
 
-        if($useMargin) {
+        if ($useMargin) {
             $upper = $limit + 0.000005;
             $lower = -$limit - 0.000005;
         }
 
-        while($this->_value > $upper) {
+        while ($this->_value > $upper) {
             $this->_value -= $limit;
         }
 
-        while($this->_value < $lower) {
+        while ($this->_value < $lower) {
             $this->_value += $limit;
         }
 
         return $this;
     }
 
-    public function setDegrees($degrees) {
+    public function setDegrees($degrees)
+    {
         return $this->_parseUnit($degrees, 'deg');
     }
 
-    public function getDegrees() {
+    public function getDegrees()
+    {
         return $this->_convert($this->_value, $this->_unit, 'deg');
     }
 
-    public function setRadians($radians) {
+    public function setRadians($radians)
+    {
         return $this->_parseUnit($radians, 'rad');
     }
 
-    public function getRadians() {
+    public function getRadians()
+    {
         return $this->_convert($this->_value, $this->_unit, 'rad');
     }
 
-    public function setGradians($gradians) {
+    public function setGradians($gradians)
+    {
         return $this->_parseUnit($gradians, 'grad');
     }
 
-    public function getGradians() {
+    public function getGradians()
+    {
         return $this->_convert($this->_value, $this->_unit, 'grad');
     }
 
-    public function setTurns($turns) {
+    public function setTurns($turns)
+    {
         return $this->_parseUnit($turns, 'turn');
     }
 
-    public function getTurns() {
+    public function getTurns()
+    {
         return $this->_convert($this->_value, $this->_unit, 'turn');
     }
 
-    protected function _convert($value, $inUnit, $outUnit) {
-        if($inUnit === null) {
+    protected function _convert($value, $inUnit, $outUnit)
+    {
+        if ($inUnit === null) {
             $inUnit = self::DEFAULT_UNIT;
         }
 
-        if($outUnit === null) {
+        if ($outUnit === null) {
             $outUnit = self::DEFAULT_UNIT;
         }
 
-        if($inUnit == $outUnit) {
+        if ($inUnit == $outUnit) {
             return $value;
         }
 
-        switch($inUnit) {
+        switch ($inUnit) {
             case 'deg':
                 $degrees = $value;
                 break;
@@ -135,7 +151,7 @@ class Angle implements IAngle, core\IDumpable {
                 break;
         }
 
-        switch($outUnit) {
+        switch ($outUnit) {
             case 'deg':
                 $value = $degrees;
                 break;
@@ -156,8 +172,11 @@ class Angle implements IAngle, core\IDumpable {
         return $value;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toString());
     }
 }

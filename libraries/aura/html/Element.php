@@ -10,35 +10,46 @@ use df\core;
 use df\aura;
 use df\flex;
 
-class Element extends Tag implements IElement, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Element extends Tag implements IElement, Inspectable
+{
     use TElementContent;
     use flex\THtmlStringEscapeHandler;
 
-    public function __construct($name, $content=null, array $attributes=null) {
+    public function __construct($name, $content=null, array $attributes=null)
+    {
         parent::__construct($name, $attributes);
 
-        if($content !== null) {
+        if ($content !== null) {
             $this->import($content);
         }
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return (string)$this->renderWith($this);
     }
 
-    public function render() {
+    public function render()
+    {
         return $this->renderWith($this);
     }
 
-    public function setBody($body) {
+    public function setBody($body)
+    {
         $this->clear()->push($body);
         return $this;
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setDefinition($this->toString());
     }
 }

@@ -10,21 +10,18 @@ use df\core;
 use df\flex;
 use df\iris;
 
-class Macro extends iris\map\Node implements flex\latex\IMacro, core\IDumpable {
-
+class Macro extends iris\map\Node implements flex\latex\IMacro
+{
     public $name;
 
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
         return $this;
     }
 
-    public function getName(): ?string {
-        return $this->name;
-    }
-
-// Dump
-    public function getDumpProperties() {
+    public function getName(): ?string
+    {
         return $this->name;
     }
 }

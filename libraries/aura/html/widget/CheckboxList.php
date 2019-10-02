@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class CheckboxList extends Base implements core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class CheckboxList extends Base implements Inspectable
+{
     const PRIMARY_TAG = 'div.list.check.checkbox';
 
     protected $_labelClass = null;
@@ -20,7 +24,8 @@ class CheckboxList extends Base implements core\IDumpable {
     protected $_options = [];
     protected $_context;
 
-    public function __construct(arch\IContext $context, core\collection\IInputTree $values, array $options) {
+    public function __construct(arch\IContext $context, core\collection\IInputTree $values, array $options)
+    {
         parent::__construct($context);
 
         $this->setValues($values);
@@ -28,26 +33,31 @@ class CheckboxList extends Base implements core\IDumpable {
         $this->_context = $context;
     }
 
-    public function setValues(core\collection\IInputTree $values) {
+    public function setValues(core\collection\IInputTree $values)
+    {
         $this->_values = $values;
         return $this;
     }
 
-    public function getValues() {
+    public function getValues()
+    {
         return $this->_values;
     }
 
-    public function setOptions(array $options) {
+    public function setOptions(array $options)
+    {
         $this->_options = $options;
         return $this;
     }
 
-    public function getOptions() {
+    public function getOptions()
+    {
         return $this->_options;
     }
 
-    public function shouldWrapBody(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldWrapBody(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_shouldWrapBody = $flag;
             return $this;
         }
@@ -55,18 +65,21 @@ class CheckboxList extends Base implements core\IDumpable {
         return $this->_shouldWrapBody;
     }
 
-    public function setLabelClass($class) {
+    public function setLabelClass($class)
+    {
         $this->_labelClass = $class;
         return $this;
     }
 
-    public function getLabelClass() {
+    public function getLabelClass()
+    {
         return $this->_labelClass;
     }
 
-    public function isInline(bool $flag=null) {
-        if($flag !== null) {
-            if($flag) {
+    public function isInline(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if ($flag) {
                 $this->getTag()->addClass('inline');
             } else {
                 $this->getTag()->removeClass('inline');
@@ -78,11 +91,12 @@ class CheckboxList extends Base implements core\IDumpable {
         }
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
         $checkboxList = [];
 
-        foreach($this->_options as $key => $label) {
+        foreach ($this->_options as $key => $label) {
             $checkboxList[] = self::factory($this->_context, 'Checkbox', [
                     $key, $this->_values->{$key}, $label
                 ])
@@ -93,13 +107,16 @@ class CheckboxList extends Base implements core\IDumpable {
         return $tag->renderWith($checkboxList);
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'values' => $this->_values,
-            'options' => $this->_options,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*values' => $inspector($this->_values),
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues($inspector->inspectList($this->_options));
     }
 }

@@ -10,34 +10,41 @@ use df\core;
 use df\neon;
 use df\flex;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
-trait TStructure {
-
+trait TStructure
+{
 }
 
 
 
 // Description
-trait TStructure_Description {
-
+trait TStructure_Description
+{
     protected $_title;
     protected $_description;
 
-    public function setTitle(?string $title) {
+    public function setTitle(?string $title)
+    {
         $this->_title = $this->_normalizeText($title);
         return $this;
     }
 
-    public function getTitle(): ?string {
+    public function getTitle(): ?string
+    {
         return $this->_title;
     }
 
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->_description = $this->_normalizeText($description);
         return $this;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->_description;
     }
 }
@@ -45,16 +52,18 @@ trait TStructure_Description {
 
 
 // MetaData
-trait TStructure_MetaData {
-
+trait TStructure_MetaData
+{
     protected $_metaData;
 
-    public function setMetaData($metaData) {
+    public function setMetaData($metaData)
+    {
         $this->_metaData = $this->_normalizeText($metaData);
         return $this;
     }
 
-    public function getMetaData() {
+    public function getMetaData()
+    {
         return $this->_metaData;
     }
 }
@@ -62,15 +71,16 @@ trait TStructure_MetaData {
 
 
 // Container
-trait TStructure_Container {
-
+trait TStructure_Container
+{
     use TStructure_Description;
 
     protected $_children = [];
 
-    public function readXml(flex\xml\IReadable $reader) {
-        foreach($reader->getChildren() as $child) {
-            if($childObject = $this->_xmlToObject($child, $this)) {
+    public function readXml(flex\xml\IReadable $reader)
+    {
+        foreach ($reader->getChildren() as $child) {
+            if ($childObject = $this->_xmlToObject($child, $this)) {
                 $this->addChild($childObject);
             }
         }
@@ -78,33 +88,34 @@ trait TStructure_Container {
         return $this;
     }
 
-    public function writeXml(flex\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer)
+    {
         $document = $writer->getRootInterchange();
 
         $writer->startElement($this->getElementName());
         $writer->setAttributes($this->prepareAttributes($document));
 
         // Description
-        if($this instanceof IDescriptionProvider) {
-            if($this->_title) {
+        if ($this instanceof IDescriptionProvider) {
+            if ($this->_title) {
                 $writer->writeElement('title', $this->_title);
             }
 
-            if($this->_description) {
+            if ($this->_description) {
                 $writer->writeElement('desc', $this->_description);
             }
         }
 
         // MetaData
-        if($this instanceof IMetaDataProvider) {
-            if($this->_metaData) {
+        if ($this instanceof IMetaDataProvider) {
+            if ($this->_metaData) {
                 $writer->startElement('metadata');
                 $writer->writeRaw(rtrim($this->_metaData)."\n    ");
                 $writer->endElement();
             }
         }
 
-        foreach($this->_children as $child) {
+        foreach ($this->_children as $child) {
             $child->writeXml($writer);
         }
 
@@ -112,14 +123,16 @@ trait TStructure_Container {
         return $this;
     }
 
-    public function setChildren(array $children) {
+    public function setChildren(array $children)
+    {
         $this->_chilren = [];
         return $this->addChildren($children);
     }
 
-    public function addChildren(array $children) {
-        foreach($children as $child) {
-            if(!$child instanceof IElement) {
+    public function addChildren(array $children)
+    {
+        foreach ($children as $child) {
+            if (!$child instanceof IElement) {
                 throw new InvalidArgumentException(
                     'Invalid child element detected'
                 );
@@ -131,21 +144,24 @@ trait TStructure_Container {
         return $this;
     }
 
-    public function addChild(IElement $element) {
-        if(!in_array($element, $this->_children, true)) {
+    public function addChild(IElement $element)
+    {
+        if (!in_array($element, $this->_children, true)) {
             $this->_children[] = $element;
         }
 
         return $this;
     }
 
-    public function getChildren() {
+    public function getChildren()
+    {
         return $this->_children;
     }
 
-    public function removeChild(IElement $element) {
-        foreach($this->_children as $i => $child) {
-            if($element === $child) {
+    public function removeChild(IElement $element)
+    {
+        foreach ($this->_children as $i => $child) {
+            if ($element === $child) {
                 unset($this->_children[$i]);
                 break;
             }
@@ -154,18 +170,20 @@ trait TStructure_Container {
         return $this;
     }
 
-    public function clearChildren() {
+    public function clearChildren()
+    {
         $this->_children = [];
         return $this;
     }
 
 
-    public function toPath() {
+    public function toPath()
+    {
         $output = null;
         $attributes = $this->getGraphicalAttributes();
 
-        foreach($this->_children as $child) {
-            if(!$child instanceof IPathProvider) {
+        foreach ($this->_children as $child) {
+            if (!$child instanceof IPathProvider) {
                 throw new RuntimeException(
                     'Cannot create compound path from '.$child->getName().' elements'
                 );
@@ -174,7 +192,7 @@ trait TStructure_Container {
             $path = $child->toPath();
             $attributes = array_merge($attributes, $child->getGraphicalAttributes());
 
-            if($child instanceof ITransformAttributeModule
+            if ($child instanceof ITransformAttributeModule
             && null !== ($transform = $child->getTransform())) {
                 // TODO: apply transforms
 
@@ -183,7 +201,7 @@ trait TStructure_Container {
                 );
             }
 
-            if($output === null) {
+            if ($output === null) {
                 $output = $path;
             } else {
                 $output->importPathData($path);
@@ -192,7 +210,7 @@ trait TStructure_Container {
 
         $output->applyInputAttributes($attributes);
 
-        if($this instanceof ITransformAttributeModule
+        if ($this instanceof ITransformAttributeModule
         && null !== ($transform = $this->getTransform())) {
             // TODO: apply parent transforms
 
@@ -205,30 +223,32 @@ trait TStructure_Container {
     }
 
 
-    public function getDumpProperties() {
-        $output = $this->_attributes;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setSectionVisible('meta', true);
 
-        if($this->_title) {
-            $output['title'] = $this->_title;
+        foreach ($this->_attributes as $key => $value) {
+            $entity->setMeta($key, $inspector($value));
         }
 
-        if($this->_description) {
-            $output['description'] = $this->_description;
+        if ($this->_title) {
+            $entity->setProperty('*title', $inspector($this->_title));
         }
 
-        if($this instanceof IMetaDataProvider && $this->_metaData) {
-            $output['metadata'] = $this->_metaData;
+        if ($this->_description) {
+            $entity->setProperty('*description', $inspector($this->_description));
         }
 
-        if(!empty($this->_children)) {
-            $output['children'] = $this->_children;
-
-            if(count($output) == 1) {
-                $output = $this->_children;
-            }
+        if ($this instanceof IMetaDataProvider && $this->_metaData) {
+            $entity->setProperty('*metadata', $inspector($this->_metaData));
         }
 
-        return $output;
+        if (!empty($this->_children)) {
+            $entity->setValues($inspector->inspectList($this->_children));
+        }
     }
 }
 
@@ -236,29 +256,30 @@ trait TStructure_Container {
 
 
 // Definitions
-trait TStructure_Definitions {
-
+trait TStructure_Definitions
+{
     protected $_definitionsElement;
 
-    public function getDefinitionsElement() {
+    public function getDefinitionsElement()
+    {
         $output = null;
 
-        if($this instanceof IContainer) {
-            foreach($this->_children as $child) {
-                if($child instanceof IDefinitionContainer) {
+        if ($this instanceof IContainer) {
+            foreach ($this->_children as $child) {
+                if ($child instanceof IDefinitionContainer) {
                     $output = $child;
                     break;
                 }
             }
 
-            if($output === null) {
+            if ($output === null) {
                 $output = new Definitions();
                 array_unshift($this->_children, $output);
             }
         }
 
 
-        if($output === null) {
+        if ($output === null) {
             $output = new Definitions();
         }
 
@@ -266,31 +287,37 @@ trait TStructure_Definitions {
         return $output;
     }
 
-    public function setDefinitions(array $defs) {
+    public function setDefinitions(array $defs)
+    {
         $this->getDefinitionsElement()->setDefinitions($defs);
         return $this;
     }
 
-    public function addDefinitions(array $defs) {
+    public function addDefinitions(array $defs)
+    {
         $this->getDefinitionsElement()->addDefinitions($defs);
         return $this;
     }
 
-    public function addDefinition(IElement $element) {
+    public function addDefinition(IElement $element)
+    {
         $this->getDefinitionsElement()->addDefinition($element);
         return $this;
     }
 
-    public function getDefinitions() {
+    public function getDefinitions()
+    {
         return $this->getDefinitionsElement()->getDefinitions();
     }
 
-    public function removeDefinition(IElement $element) {
+    public function removeDefinition(IElement $element)
+    {
         $this->getDefinitionsElement()->removeDefinition($element);
         return $this;
     }
 
-    public function clearDefinitions() {
+    public function clearDefinitions()
+    {
         $this->getDefinitionsElement()->clearDefinitions();
         return $this;
     }

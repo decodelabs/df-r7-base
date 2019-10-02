@@ -10,27 +10,34 @@ use df\core;
 use df\iris;
 use df\flex;
 
-class Number implements iris\IScanner, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Number implements iris\IScanner, Inspectable
+{
     protected $_allowHex = true;
     protected $_allowOctal = true;
     protected $_allowENotation = true;
     protected $_allowSuffixes = true;
 
-    public function __construct() {
-
+    public function __construct()
+    {
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return 'Number';
     }
 
-    public function getWeight() {
+    public function getWeight()
+    {
         return 50;
     }
 
-    public function shouldAllowHex(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldAllowHex(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_allowHex = $flag;
             return $this;
         }
@@ -38,8 +45,9 @@ class Number implements iris\IScanner, core\IDumpable {
         return $this->_allowHex;
     }
 
-    public function shouldAllowOctal(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldAllowOctal(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_allowOctal = $flag;
             return $this;
         }
@@ -47,8 +55,9 @@ class Number implements iris\IScanner, core\IDumpable {
         return $this->_allowOctal;
     }
 
-    public function shouldAllowENotation(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldAllowENotation(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_allowENotation = $flag;
             return $this;
         }
@@ -56,8 +65,9 @@ class Number implements iris\IScanner, core\IDumpable {
         return $this->_allowENotation;
     }
 
-    public function shouldAllowSuffixes(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldAllowSuffixes(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_allowSuffixes = $flag;
             return $this;
         }
@@ -66,22 +76,24 @@ class Number implements iris\IScanner, core\IDumpable {
     }
 
 
-    public function initialize(iris\ILexer $lexer) {
-
+    public function initialize(iris\ILexer $lexer)
+    {
     }
 
-    public function check(iris\ILexer $lexer) {
+    public function check(iris\ILexer $lexer)
+    {
         return flex\Text::isDigit($lexer->char)
             || ($lexer->char == '.' && flex\Text::isDigit($lexer->peek(1, 1)));
     }
 
-    public function run(iris\ILexer $lexer) {
-        if($lexer->char == '0') {
+    public function run(iris\ILexer $lexer)
+    {
+        if ($lexer->char == '0') {
             $peek = $lexer->peek(1, 1);
 
-            if(strtolower($peek) == 'x') {
+            if (strtolower($peek) == 'x') {
                 // Hex
-                if(!$this->_allowHex) {
+                if (!$this->_allowHex) {
                     throw new iris\UnexpectedCharacterException(
                         'Hex numbers are not allowed',
                         $lexer->getLocation()
@@ -92,9 +104,9 @@ class Number implements iris\IScanner, core\IDumpable {
                 $string = $lexer->extractRegexRange('a-fA-F0-9');
 
                 return $lexer->newToken('literal/integer', flex\Text::baseConvert($string, 16, 10));
-            } else if(flex\Text::isDigit($peek)) {
+            } elseif (flex\Text::isDigit($peek)) {
                 // Octal
-                if(!$this->_allowOctal) {
+                if (!$this->_allowOctal) {
                     throw new iris\UnexpectedCharacterException(
                         'Octal numbers are not allowed',
                         $lexer->getLocation()
@@ -113,11 +125,11 @@ class Number implements iris\IScanner, core\IDumpable {
 
         $whole = '0';
 
-        if($lexer->char != '.') {
+        if ($lexer->char != '.') {
             $whole = $lexer->extractNumeric();
         }
 
-        if($lexer->char == '.' && flex\Text::isDigit($lexer->peek(1, 1))) {
+        if ($lexer->char == '.' && flex\Text::isDigit($lexer->peek(1, 1))) {
             $lexer->extract();
             $fraction = $lexer->extractNumeric();
         }
@@ -125,14 +137,14 @@ class Number implements iris\IScanner, core\IDumpable {
         $number = $whole;
         $scale = 0;
 
-        if($fraction) {
+        if ($fraction) {
             $scale = strlen($fraction);
             $number .= '.'.$fraction;
         }
 
-        if(strtolower($lexer->char) == 'e') {
+        if (strtolower($lexer->char) == 'e') {
             // E notation
-            if(!$this->_allowENotation) {
+            if (!$this->_allowENotation) {
                 throw new iris\UnexpectedCharacterException(
                     'E notation numbers are not allowed'
                 );
@@ -143,12 +155,12 @@ class Number implements iris\IScanner, core\IDumpable {
 
             $powScale = 0;
 
-            if($exponent < 0) {
+            if ($exponent < 0) {
                 $scale -= $exponent;
                 $powScale = -1 * $exponent;
             }
 
-            if($scale < 0 || $exponent >= 0) {
+            if ($scale < 0 || $exponent >= 0) {
                 $scale = 0;
             }
 
@@ -159,8 +171,8 @@ class Number implements iris\IScanner, core\IDumpable {
         $decimalSuffix = false;
         $next = strtolower($lexer->char);
 
-        if($next == 'f') {
-            if(!$this->_allowSuffixes) {
+        if ($next == 'f') {
+            if (!$this->_allowSuffixes) {
                 throw new iris\UnexpectedCharacterException(
                     'Float suffixes are not allowed',
                     $lexer->getLocation()
@@ -169,8 +181,8 @@ class Number implements iris\IScanner, core\IDumpable {
 
             $lexer->extract();
             $floatSuffix = true;
-        } else if($next == 'd') {
-            if(!$this->_allowSuffixes) {
+        } elseif ($next == 'd') {
+            if (!$this->_allowSuffixes) {
                 throw new iris\UnexpectedCharacterException(
                     'Decimal suffixes are not allowed',
                     $lexer->getLocation()
@@ -181,28 +193,32 @@ class Number implements iris\IScanner, core\IDumpable {
             $decimalSuffix = true;
         }
 
-        if($fraction !== null && !$decimalSuffix) {
+        if ($fraction !== null && !$decimalSuffix) {
             $floatSuffix = true;
         }
 
-        if($floatSuffix) {
+        if ($floatSuffix) {
             return $lexer->newToken('literal/float', $number);
         }
 
-        if($decimalSuffix) {
+        if ($decimalSuffix) {
             return $lexer->newToken('literal/decimal', $number);
         }
 
         return $lexer->newToken('literal/integer', $whole);
     }
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'hex' => $this->_allowHex,
-            'octal' => $this->_allowOctal,
-            'e-notation' => $this->_allowENotation,
-            'suffixes' => $this->_allowSuffixes
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*hex' => $inspector($this->_allowHex),
+                '*octal' => $inspector($this->_allowOctal),
+                '*e-notation' => $inspector($this->_allowENotation),
+                '*suffixes' => $inspector($this->_allowSuffixes)
+            ]);
     }
 }

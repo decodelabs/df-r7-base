@@ -10,8 +10,8 @@ use df\core;
 use df\flex;
 use df\iris;
 
-class MathNode extends iris\map\Node implements flex\latex\IMathNode, core\IDumpable {
-
+class MathNode extends iris\map\Node implements flex\latex\IMathNode
+{
     use flex\latex\TNodeClassProvider;
     use flex\latex\TReferable;
     use flex\latex\TListedNode;
@@ -21,8 +21,9 @@ class MathNode extends iris\map\Node implements flex\latex\IMathNode, core\IDump
     protected $_isInline = false;
     protected $_blockType;
 
-    public function isInline(bool $flag=null) {
-        if($flag !== null) {
+    public function isInline(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isInline = $flag;
             return $this;
         }
@@ -30,45 +31,38 @@ class MathNode extends iris\map\Node implements flex\latex\IMathNode, core\IDump
         return $this->_isInline;
     }
 
-    public function setBlockType($type) {
+    public function setBlockType($type)
+    {
         $this->_blockType = $type;
         return $this;
     }
 
-    public function getBlockType() {
+    public function getBlockType()
+    {
         return $this->_blockType;
     }
 
 
 
-    public function setSymbols($symbols) {
+    public function setSymbols($symbols)
+    {
         $this->symbols = $symbols;
         return $this;
     }
 
-    public function appendSymbols($symbols) {
+    public function appendSymbols($symbols)
+    {
         $this->symbols .= $symbols;
         return $this;
     }
 
-    public function getSymbols() {
+    public function getSymbols()
+    {
         return $this->symbols;
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return !strlen($this->symbols);
-    }
-
-
-// Dump
-    public function getDumpProperties() {
-        if($this->_isInline || !$this->id) {
-            return $this->symbols;
-        }
-
-        return [
-            'id' => $this->id,
-            'math' => $this->symbols
-        ];
     }
 }

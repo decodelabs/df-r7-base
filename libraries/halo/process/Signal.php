@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\halo;
 
-class Signal implements ISignal, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Signal implements ISignal, Inspectable
+{
     protected static $_signalMap = [
         'SIGHUP' => null,
         'SIGINT' => null,
@@ -52,14 +56,15 @@ class Signal implements ISignal, core\IDumpable {
     protected $_name;
     protected $_number;
 
-    public static function factory($signal) {
-        if($signal instanceof ISignal) {
+    public static function factory($signal)
+    {
+        if ($signal instanceof ISignal) {
             return $signal;
         }
 
         $signal = self::normalizeSignalName($signal);
 
-        if(!$signal) {
+        if (!$signal) {
             throw new InvalidArgumentException(
                 'Signal is not defined'
             );
@@ -69,39 +74,40 @@ class Signal implements ISignal, core\IDumpable {
     }
 
 
-    public static function normalizeSignalName($signal) {
-        if(!self::$_isInit) {
+    public static function normalizeSignalName($signal)
+    {
+        if (!self::$_isInit) {
             self::$_isInit = true;
 
-            if(extension_loaded('pcntl')) {
-                foreach(self::$_signalMap as $signalName => $number) {
-                    if(defined($signalName)) {
+            if (extension_loaded('pcntl')) {
+                foreach (self::$_signalMap as $signalName => $number) {
+                    if (defined($signalName)) {
                         self::$_signalMap[$signalName] = constant($signalName);
                     }
                 }
             } else {
                 $list = explode(' ', trim(shell_exec("kill -l")));
 
-                foreach($list as $i => $name) {
+                foreach ($list as $i => $name) {
                     $name = 'SIG'.$name;
 
-                    if(array_key_exists($name, self::$_signalMap)) {
+                    if (array_key_exists($name, self::$_signalMap)) {
                         self::$_signalMap[$name] = $i + 1;
                     }
                 }
             }
         }
 
-        if(is_string($signal)) {
+        if (is_string($signal)) {
             $signal = strtoupper($signal);
 
-            if(!array_key_exists($signal, self::$_signalMap)) {
+            if (!array_key_exists($signal, self::$_signalMap)) {
                 throw new InvalidArgumentException(
                     $signal.' is not a valid signal identifier'
                 );
             }
-        } else if(is_numeric($signal)) {
-            if(false !== ($t = array_search($signal, self::$_signalMap))) {
+        } elseif (is_numeric($signal)) {
+            if (false !== ($t = array_search($signal, self::$_signalMap))) {
                 $signal = $t;
             } else {
                 throw new InvalidArgumentException(
@@ -117,21 +123,27 @@ class Signal implements ISignal, core\IDumpable {
         return $signal;
     }
 
-    protected function __construct($name) {
+    protected function __construct($name)
+    {
         $this->_name = $name;
         $this->_number = self::$_signalMap[$name];
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function getNumber() {
+    public function getNumber()
+    {
         return $this->_number;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->_name.' '.$this->_number;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->_name.' '.$this->_number);
     }
 }

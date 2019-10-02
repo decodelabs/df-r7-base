@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\iris;
 
-abstract class Parser implements IParser, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+abstract class Parser implements IParser, Inspectable
+{
     public $position = 0;
     public $token;
     public $currentNamespace;
@@ -26,47 +30,55 @@ abstract class Parser implements IParser, core\IDumpable {
     protected $_processors = [];
     protected $_lexer;
 
-    public function __construct(ILexer $lexer, array $processors=null) {
+    public function __construct(ILexer $lexer, array $processors=null)
+    {
         $this->_lexer = $lexer;
 
-        if(!empty($processors)) {
+        if (!empty($processors)) {
             $this->setProcessors($processors);
         }
     }
 
-// Lexer
-    public function getLexer() {
+    // Lexer
+    public function getLexer()
+    {
         return $this->_lexer;
     }
 
-    public function getSourceUri() {
+    public function getSourceUri()
+    {
         return $this->_lexer->getSourceUri();
     }
 
-// Unit
-    public function getUnit() {
+    // Unit
+    public function getUnit()
+    {
         return $this->unit;
     }
 
-// Buffer
-    public function setExtractBufferSize($size) {
+    // Buffer
+    public function setExtractBufferSize($size)
+    {
         $this->_extractBufferSize = (int)$size;
         return $this;
     }
 
-    public function getExtractBufferSize() {
+    public function getExtractBufferSize()
+    {
         return $this->_extractBufferSize;
     }
 
-// Processors
-    public function setProcessors(array $processors) {
+    // Processors
+    public function setProcessors(array $processors)
+    {
         return $this->clearProcessors()
             ->addProcessors($processors);
     }
 
-    public function addProcessors(array $processors) {
-        foreach($processors as $processor) {
-            if(!$processor instanceof IProcessor) {
+    public function addProcessors(array $processors)
+    {
+        foreach ($processors as $processor) {
+            if (!$processor instanceof IProcessor) {
                 throw new InvalidArgumentException(
                     'Invalid processor detected'
                 );
@@ -78,8 +90,9 @@ abstract class Parser implements IParser, core\IDumpable {
         return $this;
     }
 
-    public function addProcessor(IProcessor $processor) {
-        if($this->hasProcessor($processor)) {
+    public function addProcessor(IProcessor $processor)
+    {
+        if ($this->hasProcessor($processor)) {
             throw new LogicException(
                 'Processor '.$processor->getName().' has already been added to the lexer'
             );
@@ -87,15 +100,16 @@ abstract class Parser implements IParser, core\IDumpable {
 
         $this->_processors[$processor->getName()] = $processor;
 
-        if($this->_isStarted) {
+        if ($this->_isStarted) {
             $processor->initialize($this);
         }
 
         return $this;
     }
 
-    public function hasProcessor($name) {
-        if($name instanceof IProcessor) {
+    public function hasProcessor($name)
+    {
+        if ($name instanceof IProcessor) {
             $name = $name->getName();
         }
 
@@ -104,16 +118,18 @@ abstract class Parser implements IParser, core\IDumpable {
         return isset($this->_processors[$name]);
     }
 
-    public function getProcessor($name) {
+    public function getProcessor($name)
+    {
         $name = ucfirst($name);
 
-        if(isset($this->_processors[$name])) {
+        if (isset($this->_processors[$name])) {
             return $this->_processors[$name];
         }
     }
 
-    public function removeProcessor($name) {
-        if($name instanceof IProcessor) {
+    public function removeProcessor($name)
+    {
+        if ($name instanceof IProcessor) {
             $name = $name->getName();
         }
 
@@ -123,19 +139,22 @@ abstract class Parser implements IParser, core\IDumpable {
         return $this;
     }
 
-    public function clearProcessors() {
+    public function clearProcessors()
+    {
         $this->_processors = [];
         return $this;
     }
 
-    public function __get($member) {
+    public function __get($member)
+    {
         return $this->getProcessor($member);
     }
 
 
-// Parse
-    public function parse() {
-        if($this->_isStarted) {
+    // Parse
+    public function parse()
+    {
+        if ($this->_isStarted) {
             throw new LogicException(
                 'Parser has already been started'
             );
@@ -143,7 +162,7 @@ abstract class Parser implements IParser, core\IDumpable {
 
         $this->_isStarted = true;
 
-        foreach($this->_processors as $processor) {
+        foreach ($this->_processors as $processor) {
             $processor->initialize($this);
         }
 
@@ -158,29 +177,33 @@ abstract class Parser implements IParser, core\IDumpable {
         return $this->unit;
     }
 
-    public function getLastCommentBody() {
-        if($this->lastComment) {
+    public function getLastCommentBody()
+    {
+        if ($this->lastComment) {
             return $this->lastComment->value;
         }
     }
 
-    public function isStarted() {
+    public function isStarted()
+    {
         return $this->_isStarted;
     }
 
-    public function hasRun() {
+    public function hasRun()
+    {
         return $this->_hasRun;
     }
 
 
-    public function extract($count=1) {
+    public function extract($count=1)
+    {
         $count = (int)$count;
 
-        if($count < 1) {
+        if ($count < 1) {
             $count = 1;
         }
 
-        if($count == 1) {
+        if ($count == 1) {
             $this->position++;
             $output = array_shift($this->_tokens);
             $this->_bufferTokens($output);
@@ -196,17 +219,18 @@ abstract class Parser implements IParser, core\IDumpable {
         return $output;
     }
 
-    public function extractMatch($type, $subType=null, $value=null) {
-        if($this->token->matches($type, $subType, $value)) {
+    public function extractMatch($type, $subType=null, $value=null)
+    {
+        if ($this->token->matches($type, $subType, $value)) {
             return $this->extract(1);
         } else {
             $id = ucfirst($type);
 
-            if($subType !== null) {
+            if ($subType !== null) {
                 $id .= '/'.$subType;
             }
 
-            if($value !== null) {
+            if ($value !== null) {
                 $id .= ' '.trim($value);
             }
 
@@ -217,8 +241,9 @@ abstract class Parser implements IParser, core\IDumpable {
         }
     }
 
-    public function extractValue($value) {
-        if($this->token->isValue($value)) {
+    public function extractValue($value)
+    {
+        if ($this->token->isValue($value)) {
             return $this->extract(1);
         } else {
             throw new UnexpectedTokenException(
@@ -228,15 +253,16 @@ abstract class Parser implements IParser, core\IDumpable {
         }
     }
 
-    public function extractIf($ids, $limit=1) {
+    public function extractIf($ids, $limit=1)
+    {
         $limit = (int)$limit;
 
-        if($limit < 1) {
+        if ($limit < 1) {
             $limit = 1;
         }
 
-        if($limit === 1) {
-            if($this->token->is($ids)) {
+        if ($limit === 1) {
+            if ($this->token->is($ids)) {
                 $output = $this->extract();
             } else {
                 $output = null;
@@ -244,8 +270,8 @@ abstract class Parser implements IParser, core\IDumpable {
         } else {
             $output = [];
 
-            for($i = 0; $i < $limit; $i++) {
-                if(!$this->token->is($ids)) {
+            for ($i = 0; $i < $limit; $i++) {
+                if (!$this->token->is($ids)) {
                     break;
                 }
 
@@ -256,15 +282,16 @@ abstract class Parser implements IParser, core\IDumpable {
         return $output;
     }
 
-    public function extractIfValue($values, $limit=1) {
+    public function extractIfValue($values, $limit=1)
+    {
         $limit = (int)$limit;
 
-        if($limit < 1) {
+        if ($limit < 1) {
             $limit = 1;
         }
 
-        if($limit === 1) {
-            if($this->token->isValue($values)) {
+        if ($limit === 1) {
+            if ($this->token->isValue($values)) {
                 $output = $this->extract();
             } else {
                 $output = null;
@@ -272,8 +299,8 @@ abstract class Parser implements IParser, core\IDumpable {
         } else {
             $output = [];
 
-            for($i = 0; $i < $limit; $i++) {
-                if(!$this->token->isValue($values)) {
+            for ($i = 0; $i < $limit; $i++) {
+                if (!$this->token->isValue($values)) {
                     break;
                 }
 
@@ -284,15 +311,16 @@ abstract class Parser implements IParser, core\IDumpable {
         return $output;
     }
 
-    public function extractSequence(...$sequence) {
+    public function extractSequence(...$sequence)
+    {
         $length = count($sequence);
         $test = array_slice($this->_tokens, 0, $length);
         $output = [];
 
         $this->_importTokens($length);
 
-        foreach($sequence as $i => $ids) {
-            if(!isset($test[$i])) {
+        foreach ($sequence as $i => $ids) {
+            if (!isset($test[$i])) {
                 throw new UnexpectedTokenException(
                     'Sequence could not be extracted, reached end of token stream',
                     array_pop($test)
@@ -301,7 +329,7 @@ abstract class Parser implements IParser, core\IDumpable {
 
             $token = $test[$i];
 
-            if(!$token->is($ids)) {
+            if (!$token->is($ids)) {
                 throw new UnexpectedTokenException(
                     'Sequence could not be extracted',
                     $token
@@ -318,18 +346,21 @@ abstract class Parser implements IParser, core\IDumpable {
 
 
 
-    public function extractIfMatch($type, $subType=null, $value=null) {
-        if($this->token->matches($type, $subType, $value)) {
+    public function extractIfMatch($type, $subType=null, $value=null)
+    {
+        if ($this->token->matches($type, $subType, $value)) {
             return $this->extract(1);
         }
     }
 
-    public function extractStatementEnd() {
+    public function extractStatementEnd()
+    {
         return $this->extractMatch('symbol', null, ';');
     }
 
-    public function extractWord() {
-        if(!$output = $this->extractIf(['word', 'keyword'])) {
+    public function extractWord()
+    {
+        if (!$output = $this->extractIf(['word', 'keyword'])) {
             throw new UnexpectedTokenException(
                 'Word could not be extracted',
                 $this->token
@@ -339,20 +370,21 @@ abstract class Parser implements IParser, core\IDumpable {
         return $output;
     }
 
-    public function rewind($count=1) {
+    public function rewind($count=1)
+    {
         $count = (int)$count;
 
-        if($count < 1) {
+        if ($count < 1) {
             $count = 1;
         }
 
-        if($count > $this->_extractBufferSize) {
+        if ($count > $this->_extractBufferSize) {
             throw new RuntimeException(
                 'Cannot rewind further than extractBufferSize ('.$this->_extractBufferSize.')'
             );
         }
 
-        if($count > count($this->_extractBuffer)) {
+        if ($count > count($this->_extractBuffer)) {
             throw new RuntimeException(
                 'Cannot rewind '.$count.' places, buffer does not contain that many entries'
             );
@@ -360,16 +392,16 @@ abstract class Parser implements IParser, core\IDumpable {
 
         $test = $this->_extractBuffer;
 
-        for($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             $testToken = array_pop($test);
 
-            if(!$testToken) {
+            if (!$testToken) {
                 throw new RuntimeException(
                     'Cannot rewind '.$count.' places, buffer does not contain that many entries'
                 );
             }
 
-            if($testToken->matches('comment')) {
+            if ($testToken->matches('comment')) {
                 $count++;
             }
         }
@@ -383,35 +415,38 @@ abstract class Parser implements IParser, core\IDumpable {
         return $this;
     }
 
-    public function getLastToken() {
+    public function getLastToken()
+    {
         return @array_slice($this->_extractBuffer, -1)[0];
     }
 
-    protected function _setCurrentToken() {
-        if(empty($this->_tokens) && !$this->_hasLastToken) {
+    protected function _setCurrentToken()
+    {
+        if (empty($this->_tokens) && !$this->_hasLastToken) {
             $this->_importTokens();
         }
 
         $this->token = $this->_tokens[0] ?? null;
 
-        if($this->token && $this->token->matches('comment')) {
+        if ($this->token && $this->token->matches('comment')) {
             $comment = $this->token;
             $this->extract();
             $this->lastComment = $comment;
-        } else if(@$this->_extractBuffer[count($this->_extractBufferSize) - 1] !== $this->lastComment) {
+        } elseif (@$this->_extractBuffer[count($this->_extractBufferSize) - 1] !== $this->lastComment) {
             $this->lastComment = null;
         }
     }
 
-    protected function _importTokens($count=10) {
-        if($this->_hasLastToken) {
+    protected function _importTokens($count=10)
+    {
+        if ($this->_hasLastToken) {
             return;
         }
 
-        while($count > 0) {
+        while ($count > 0) {
             $token = $this->_lexer->extractToken();
 
-            if(!$token instanceof IToken) {
+            if (!$token instanceof IToken) {
                 $this->_hasLastToken = true;
                 return;
             }
@@ -419,39 +454,41 @@ abstract class Parser implements IParser, core\IDumpable {
             $this->_tokens[] = $token;
             $count--;
 
-            if($token->is('eof')) {
+            if ($token->is('eof')) {
                 $this->_hasLastToken = true;
                 return;
             }
         }
     }
 
-    protected function _bufferTokens(...$tokens) {
-        foreach($tokens as $token) {
-            if($token instanceof IToken) {
+    protected function _bufferTokens(...$tokens)
+    {
+        foreach ($tokens as $token) {
+            if ($token instanceof IToken) {
                 $this->_extractBuffer[] = $token;
             }
         }
 
-        while(count($this->_extractBuffer) > $this->_extractBufferSize) {
+        while (count($this->_extractBuffer) > $this->_extractBufferSize) {
             array_shift($this->_extractBuffer);
         }
     }
 
-    public function peek($offset=1, $length=1) {
+    public function peek($offset=1, $length=1)
+    {
         $length = (int)$length;
         $offset = (int)$offset;
 
-        if(count($this->_tokens) < $length + $offset) {
+        if (count($this->_tokens) < $length + $offset) {
             $this->_importTokens($length + $offset);
         }
 
-        if($length < 1) {
+        if ($length < 1) {
             $length = 1;
         }
 
-        if($length == 1) {
-            if(isset($this->_tokens[$offset])) {
+        if ($length == 1) {
+            if (isset($this->_tokens[$offset])) {
                 $output = $this->_tokens[$offset];
             } else {
                 $output = null;
@@ -463,21 +500,22 @@ abstract class Parser implements IParser, core\IDumpable {
         return $output;
     }
 
-    public function peekSequence(...$sequence) {
+    public function peekSequence(...$sequence)
+    {
         $length = count($sequence);
         $test = array_slice($this->_tokens, 0, $length);
         $output = [];
 
         $this->_importTokens($length);
 
-        foreach($sequence as $i => $ids) {
-            if(!isset($test[$i])) {
+        foreach ($sequence as $i => $ids) {
+            if (!isset($test[$i])) {
                 return false;
             }
 
             $token = $test[$i];
 
-            if(!$token->is($ids)) {
+            if (!$token->is($ids)) {
                 return false;
             }
 
@@ -487,16 +525,20 @@ abstract class Parser implements IParser, core\IDumpable {
         return $output;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'token' => $this->token,
-            'position' => $this->position,
-            'unit' => $this->unit,
-            'tokens' => $this->_tokens,
-            'extractBuffer' => count($this->_extractBuffer),
-            'processors' => $this->_processors,
-            'lexer' => $this->_lexer
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                'token' => $inspector($this->token),
+                'position' => $inspector($this->position),
+                'unit' => $inspector($this->unit),
+                '*tokens' => $inspector($this->_tokens),
+                '*extractBuffer' => $inspector(count($this->_extractBuffer)),
+                '*processors' => $inspector($this->_processors),
+                '*lexer' => $inspector($this->_lexer)
+            ]);
     }
 }

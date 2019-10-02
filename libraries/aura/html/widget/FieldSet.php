@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProvider {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProvider
+{
     use core\constraint\TDisableable;
 
     const PRIMARY_TAG = 'fieldset';
@@ -21,39 +25,41 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
     protected $_name;
     protected $_targetFormId;
 
-    public function __construct(arch\IContext $context, $legend=null) {
+    public function __construct(arch\IContext $context, $legend=null)
+    {
         parent::__construct($context);
 
-        if($legend instanceof aura\html\IElementContent) {
+        if ($legend instanceof aura\html\IElementContent) {
             $this->setLegendBody($legend);
         } else {
             $this->_legendBody = new aura\html\ElementContent($legend, $this->getTag());
         }
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
 
         $children = $this->_prepareChildren();
 
-        if($this->_name !== null) {
+        if ($this->_name !== null) {
             $tag->setAttribute('name', $this->_name);
         }
 
-        if($this->_targetFormId !== null) {
+        if ($this->_targetFormId !== null) {
             $tag->setAttribute('form', $this->_targetFormId);
         }
 
-        if($this->_isDisabled) {
+        if ($this->_isDisabled) {
             $tag->setAttribute('disabled', 'disabled');
         }
 
         $legend = null;
 
-        if(!$this->_legendBody->isEmpty()) {
+        if (!$this->_legendBody->isEmpty()) {
             $legendBody = $this->_legendBody;
 
-            if($this->_legendTagName == 'legend') {
+            if ($this->_legendTagName == 'legend') {
                 $legendBody = new aura\html\Element('span', $legendBody);
             }
 
@@ -69,13 +75,15 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
     }
 
 
-// Legend
-    public function withLegendBody() {
+    // Legend
+    public function withLegendBody()
+    {
         return new aura\html\widget\util\ElementContentWrapper($this, $this->_legendBody);
     }
 
-    public function setLegendBody(aura\html\IElementContent $body) {
-        if(!$body->getParentRenderContext()) {
+    public function setLegendBody(aura\html\IElementContent $body)
+    {
+        if (!$body->getParentRenderContext()) {
             $body->setParentRenderContext($this->getTag());
         }
 
@@ -83,50 +91,60 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
         return $this;
     }
 
-    public function getLegendBody() {
+    public function getLegendBody()
+    {
         return $this->_legendBody;
     }
 
-    public function setLegendTagName($tagName) {
+    public function setLegendTagName($tagName)
+    {
         $this->_legendTagName = $tagName;
         return $this;
     }
 
-    public function getLegendTagName() {
+    public function getLegendTagName()
+    {
         return $this->_legendTagName;
     }
 
 
-// Name
-    public function setName(?string $name) {
+    // Name
+    public function setName(?string $name)
+    {
         $this->_name = $name;
         return $this;
     }
 
-    public function getName(): ?string {
+    public function getName(): ?string
+    {
         return $this->_name;
     }
 
 
-// Target form
-    public function setTargetFormId($id) {
+    // Target form
+    public function setTargetFormId($id)
+    {
         $this->_targetFormId = $id;
         return $this;
     }
 
-    public function getTargetFormId() {
+    public function getTargetFormId()
+    {
         return $this->_targetFormId;
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'name' => $this->_name,
-            'form' => $this->_targetFormId,
-            'legend' => $this->_legendBody,
-            'children' => $this->_children,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*name' => $inspector($this->_name),
+                '*form' => $inspector($this->_targetFormId),
+                '*legend' => $inspector($this->_legendBody),
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues($inspector->inspectList($this->_children->toArray()));
     }
 }

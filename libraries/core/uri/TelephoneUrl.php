@@ -8,14 +8,19 @@ namespace df\core\uri;
 use df;
 use df\core;
 
-class TelephoneUrl implements ITelephoneUrl, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class TelephoneUrl implements ITelephoneUrl, Inspectable
+{
     use core\TStringProvider;
 
     protected $_number;
 
-    public static function factory($url) {
-        if($url instanceof ITelephoneUrl) {
+    public static function factory($url)
+    {
+        if ($url instanceof ITelephoneUrl) {
             return $url;
         }
 
@@ -23,27 +28,29 @@ class TelephoneUrl implements ITelephoneUrl, core\IDumpable {
         return new $class($url);
     }
 
-    public function __construct($url=null) {
-        if($url !== null) {
+    public function __construct($url=null)
+    {
+        if ($url !== null) {
             $this->import($url);
         }
     }
 
-    public function import($url='') {
-        if($url !== null) {
+    public function import($url='')
+    {
+        if ($url !== null) {
             $this->reset();
         }
 
-        if($url == '' || $url === null) {
+        if ($url == '' || $url === null) {
             return $this;
         }
 
-        if($url instanceof self) {
+        if ($url instanceof self) {
             $this->_number = $url->_number;
             return $this;
         }
 
-        if(strtolower(substr($url, 0, 4)) == 'tel:') {
+        if (strtolower(substr($url, 0, 4)) == 'tel:') {
             $url = ltrim(substr($url, 4), '/');
         }
 
@@ -51,43 +58,53 @@ class TelephoneUrl implements ITelephoneUrl, core\IDumpable {
         return $this;
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->_number = null;
         return $this;
     }
 
 
-// Scheme
-    public function getScheme() {
+    // Scheme
+    public function getScheme()
+    {
         return 'tel';
     }
 
 
-// Number
-    public function setNumber($number) {
+    // Number
+    public function setNumber($number)
+    {
         $this->_number = (string)$number;
         return $this;
     }
 
-    public function getNumber() {
+    public function getNumber()
+    {
         return $this->_number;
     }
 
-    public function getCanonicalNumber() {
+    public function getCanonicalNumber()
+    {
         return preg_replace('/[^0-9\#\+]/', '', $this->_number);
     }
 
-// String
-    public function toString(): string {
+    // String
+    public function toString(): string
+    {
         return 'tel:'.$this->getCanonicalNumber();
     }
 
-    public function toReadableString() {
+    public function toReadableString()
+    {
         return 'tel:'.$this->_number;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toReadableString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toReadableString());
     }
 }

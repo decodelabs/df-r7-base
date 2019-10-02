@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Document implements opal\search\IDocument, core\IDumpable {
-    
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Document implements opal\search\IDocument, Inspectable
+{
     use opal\search\TDocument;
 }

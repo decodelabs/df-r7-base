@@ -9,21 +9,26 @@ use df;
 use df\core;
 use df\spur;
 
-class Commit extends CommitReference implements ICommit {
-    
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Commit extends CommitReference implements ICommit
+{
     protected $_message;
     protected $_tree;
     protected $_parents = [];
     protected $_author;
     protected $_committer;
 
-    protected function _importData(core\collection\ITree $data) {
+    protected function _importData(core\collection\ITree $data)
+    {
         parent::_importData($data);
 
         $this->_message = $data->commit['message'];
         $this->_tree = new CommitReference($this->_mediator, $data->commit->tree);
 
-        foreach($data->parents as $parent) {
+        foreach ($data->parents as $parent) {
             $this->_parents[] = new CommitReference($this->_mediator, $parent);
         }
 
@@ -31,35 +36,44 @@ class Commit extends CommitReference implements ICommit {
         $this->_committer = new User($this->_mediator, $data->committer);
     }
 
-    public function getMessage() {
+    public function getMessage()
+    {
         return $this->_message;
     }
 
-    public function getTree() {
+    public function getTree()
+    {
         return $this->_tree;
     }
 
-    public function getParents() {
+    public function getParents()
+    {
         return $this->_parents;
     }
 
-    public function getAuthor() {
+    public function getAuthor()
+    {
         return $this->_author;
     }
 
-    public function getCommitter() {
+    public function getCommitter()
+    {
         return $this->_committer;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'sha' => $this->_id,
-            'tree' => $this->_tree,
-            'parents' => $this->_parents,
-            'author' => $this->_author,
-            'committer' => $this->_committer,
-            'urls' => $this->_urls
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*sha' => $inspector($this->_id),
+                '*tree' => $inspector($this->_tree),
+                '*parents' => $inspector($this->_parents),
+                '*author' => $inspector($this->_author),
+                '*committer' => $inspector($this->_committer),
+                '*urls' => $inspector($this->_urls)
+            ]);
     }
 }

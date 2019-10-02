@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\mesh;
 
-class Locator implements ILocator, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Locator implements ILocator, Inspectable
+{
     use core\TStringProvider;
 
     protected $_scheme;
@@ -19,32 +23,35 @@ class Locator implements ILocator, core\IDumpable {
     protected $_string;
     protected $_domainString;
 
-    public static function factory($locator) {
-        if($locator instanceof ILocator) {
+    public static function factory($locator)
+    {
+        if ($locator instanceof ILocator) {
             return $locator;
         }
 
-        if($locator instanceof ILocatorProvider) {
+        if ($locator instanceof ILocatorProvider) {
             return $locator->getEntityLocator();
         }
 
         return new self($locator);
     }
 
-    public static function domainFactory($domain, $id=null) {
+    public static function domainFactory($domain, $id=null)
+    {
         $output = self::factory($domain);
 
-        if($id !== null) {
+        if ($id !== null) {
             $output->setId($id);
         }
 
         return $output;
     }
 
-    public function __construct($locator) {
+    public function __construct($locator)
+    {
         $this->_clearCache();
 
-        if($locator instanceof core\uri\IGenericUrl) {
+        if ($locator instanceof core\uri\IGenericUrl) {
             $this->_scheme = $locator->getScheme();
             $path = $locator->getPath()->toString();
         } else {
@@ -58,7 +65,8 @@ class Locator implements ILocator, core\IDumpable {
 
     // Format:
     // handler://[path/to/]Entity[:id][/[path/to/]SubEntity[:id]]]
-    private function _parseString($path) {
+    private function _parseString($path)
+    {
         $path = trim($path, '/').'/';
         $length = strlen($path);
         $mode = 0;
@@ -71,19 +79,19 @@ class Locator implements ILocator, core\IDumpable {
             'id' => null
         ];
 
-        for($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             $char = $path{$i};
 
-            switch($mode) {
+            switch ($mode) {
                 // Location
                 case 0:
-                    if(!isset($part{0}) && ctype_upper($char)) {
+                    if (!isset($part{0}) && ctype_upper($char)) {
                         $part .= $char;
                         $mode = 1; // Type
-                    } else if($char == '/') {
+                    } elseif ($char == '/') {
                         $node['location'][] = $part;
                         $part = '';
-                    } else if(ctype_alnum($char)) {
+                    } elseif (ctype_alnum($char)) {
                         $part .= $char;
                     } else {
                         throw new InvalidArgumentException(
@@ -95,12 +103,12 @@ class Locator implements ILocator, core\IDumpable {
 
                 // Entity type name
                 case 1:
-                    if($char == ':') {
+                    if ($char == ':') {
                         $node['type'] = ucfirst($part);
                         $part = '';
 
                         $mode = 2; // Id
-                    } else if($char == '/') {
+                    } elseif ($char == '/') {
                         $node['type'] = ucfirst($part);
                         $part = '';
 
@@ -112,7 +120,7 @@ class Locator implements ILocator, core\IDumpable {
                         ];
 
                         $mode = 0; // Location
-                    } else if(preg_match('/[a-zA-Z0-9-_]/', $char)) {
+                    } elseif (preg_match('/[a-zA-Z0-9-_]/', $char)) {
                         $part .= $char;
                     } else {
                         throw new InvalidArgumentException(
@@ -124,9 +132,9 @@ class Locator implements ILocator, core\IDumpable {
 
                 // Entity id
                 case 2:
-                    if($char == '"') {
+                    if ($char == '"') {
                         $mode = 3;
-                    } else if($char == '/') {
+                    } elseif ($char == '/') {
                         $mode = 0; // Location
                         $node['id'] = $part;
                         $part = '';
@@ -137,7 +145,7 @@ class Locator implements ILocator, core\IDumpable {
                             'type' => null,
                             'id' => null
                         ];
-                    } else if(ctype_alnum($char) || $char == '-') {
+                    } elseif (ctype_alnum($char) || $char == '-') {
                         $part .= $char;
                     } else {
                         throw new InvalidArgumentException(
@@ -149,9 +157,9 @@ class Locator implements ILocator, core\IDumpable {
 
                 // Entity id quote
                 case 3:
-                    if($char == '\\') {
+                    if ($char == '\\') {
                         $mode = 4; // Escape
-                    } else if($char == '"') {
+                    } elseif ($char == '"') {
                         $mode = 5; // End quote
                     } else {
                         $part .= $char;
@@ -167,7 +175,7 @@ class Locator implements ILocator, core\IDumpable {
 
                 // Entity id end quote
                 case 5:
-                    if($char != '/') {
+                    if ($char != '/') {
                         throw new InvalidArgumentException(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
@@ -186,14 +194,13 @@ class Locator implements ILocator, core\IDumpable {
 
                     break;
             }
-
         }
 
-        if(empty($output)) {
+        if (empty($output)) {
             throw new InvalidArgumentException(
                 'No entity type definition detected in: '.$path
             );
-        } else if($mode != 0) {
+        } elseif ($mode != 0) {
             throw new InvalidArgumentException(
                 'Unexpected end of locator: '.$path
             );
@@ -202,30 +209,35 @@ class Locator implements ILocator, core\IDumpable {
         return $output;
     }
 
-    public function getEntityLocator() {
+    public function getEntityLocator()
+    {
         return $this;
     }
 
-// Scheme
-    public function setScheme($scheme) {
+    // Scheme
+    public function setScheme($scheme)
+    {
         $this->_clearCache();
         $this->_scheme = $scheme;
         return $this;
     }
 
-    public function getScheme() {
+    public function getScheme()
+    {
         return $this->_scheme;
     }
 
-// Nodes
-    public function setNodes(array $nodes) {
+    // Nodes
+    public function setNodes(array $nodes)
+    {
         $this->_nodes = [];
         return $this->addNodes($nodes);
     }
 
-    public function addNodes(array $nodes) {
-        foreach($nodes as $node) {
-            if(!is_array($node)) {
+    public function addNodes(array $nodes)
+    {
+        foreach ($nodes as $node) {
+            if (!is_array($node)) {
                 $this->addNodes($this->_parseString((string)$node));
                 continue;
             }
@@ -236,7 +248,8 @@ class Locator implements ILocator, core\IDumpable {
         return $this;
     }
 
-    public function addNode($location, $type, $id=null) {
+    public function addNode($location, $type, $id=null)
+    {
         return $this->importNode([
             'location' => $location,
             'type' => $type,
@@ -244,14 +257,16 @@ class Locator implements ILocator, core\IDumpable {
         ]);
     }
 
-    public function importNode(array $node) {
+    public function importNode(array $node)
+    {
         $this->_nodes[] = $this->_prepareNode($node);
         $this->_clearCache();
 
         return $this;
     }
 
-    public function setNode($index, $location, $type, $id=null) {
+    public function setNode($index, $location, $type, $id=null)
+    {
         return $this->setNodeArray($index, [
             'location' => $location,
             'type' => $type,
@@ -259,13 +274,14 @@ class Locator implements ILocator, core\IDumpable {
         ]);
     }
 
-    public function setNodeArray($index, array $node) {
+    public function setNodeArray($index, array $node)
+    {
         $index = (int)$index;
 
-        if($index < 0) {
+        if ($index < 0) {
             $index += count($this->_nodes);
 
-            if($index < 0) {
+            if ($index < 0) {
                 throw new InvalidArgumentException(
                     'Index is out of bounds'
                 );
@@ -279,33 +295,37 @@ class Locator implements ILocator, core\IDumpable {
         return $this;
     }
 
-    public function hasNode($index) {
+    public function hasNode($index)
+    {
         return null !== $this->_normalizeNodeIndex($index);
     }
 
-    public function getNode($index) {
-        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+    public function getNode($index)
+    {
+        if (null === ($index = $this->_normalizeNodeIndex($index))) {
             return null;
         }
 
         return $this->_nodes[$index];
     }
 
-    public function getNodeString($index) {
-        if(!$node = $this->getNode($index)) {
+    public function getNodeString($index)
+    {
+        if (!$node = $this->getNode($index)) {
             return null;
         }
 
         return $this->_nodeToString($node);
     }
 
-    public function setNodeLocation($index, $location) {
-        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+    public function setNodeLocation($index, $location)
+    {
+        if (null === ($index = $this->_normalizeNodeIndex($index))) {
             return null;
         }
 
-        if(!is_array($location)) {
-            if(empty($location)) {
+        if (!is_array($location)) {
+            if (empty($location)) {
                 $location = [];
             } else {
                 $location = explode('/', trim($location, '/'));
@@ -318,20 +338,21 @@ class Locator implements ILocator, core\IDumpable {
         return $this;
     }
 
-    public function appendNodeLocation($index, $location) {
-        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+    public function appendNodeLocation($index, $location)
+    {
+        if (null === ($index = $this->_normalizeNodeIndex($index))) {
             return null;
         }
 
-        if(!is_array($location)) {
-            if(empty($location)) {
+        if (!is_array($location)) {
+            if (empty($location)) {
                 return $this;
             } else {
                 $location = explode('/', trim($location, '/'));
             }
         }
 
-        foreach($location as $part) {
+        foreach ($location as $part) {
             $this->_nodes[$index]['location'][] = $part;
         }
 
@@ -340,16 +361,18 @@ class Locator implements ILocator, core\IDumpable {
         return $this;
     }
 
-    public function getNodeLocation($index) {
-        if(!$node = $this->getNode($index)) {
+    public function getNodeLocation($index)
+    {
+        if (!$node = $this->getNode($index)) {
             return null;
         }
 
         return implode('/', $node['location']);
     }
 
-    public function setNodeType($index, $type) {
-        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+    public function setNodeType($index, $type)
+    {
+        if (null === ($index = $this->_normalizeNodeIndex($index))) {
             return null;
         }
 
@@ -359,20 +382,22 @@ class Locator implements ILocator, core\IDumpable {
         return $this;
     }
 
-    public function getNodeType($index) {
-        if(!$node = $this->getNode($index)) {
+    public function getNodeType($index)
+    {
+        if (!$node = $this->getNode($index)) {
             return null;
         }
 
         return $node['type'];
     }
 
-    public function setNodeId($index, $id) {
-        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+    public function setNodeId($index, $id)
+    {
+        if (null === ($index = $this->_normalizeNodeIndex($index))) {
             return null;
         }
 
-        if(!strlen($id)) {
+        if (!strlen($id)) {
             $id = null;
         } else {
             $id = (string)$id;
@@ -384,16 +409,18 @@ class Locator implements ILocator, core\IDumpable {
         return $this;
     }
 
-    public function getNodeId($index) {
-        if(!$node = $this->getNode($index)) {
+    public function getNodeId($index)
+    {
+        if (!$node = $this->getNode($index)) {
             return null;
         }
 
         return $node['id'];
     }
 
-    public function removeNode($index) {
-        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+    public function removeNode($index)
+    {
+        if (null === ($index = $this->_normalizeNodeIndex($index))) {
             return null;
         }
 
@@ -404,134 +431,153 @@ class Locator implements ILocator, core\IDumpable {
         return $this;
     }
 
-    public function getNodes() {
+    public function getNodes()
+    {
         return $this->_nodes;
     }
 
-    public function setFirstNode($location, $type, $id=null) {
+    public function setFirstNode($location, $type, $id=null)
+    {
         return $this->setNode(0, $location, $type, $id);
     }
 
-    public function getFirstNode() {
-        if(!isset($this->_nodes[0])) {
+    public function getFirstNode()
+    {
+        if (!isset($this->_nodes[0])) {
             return null;
         }
 
         return $this->_nodes[0];
     }
 
-    public function setFirstNodeLocation($location) {
+    public function setFirstNodeLocation($location)
+    {
         return $this->setNodeLocation(0, $location);
     }
 
-    public function getFirstNodeLocation() {
-        if(!isset($this->_nodes[0])) {
+    public function getFirstNodeLocation()
+    {
+        if (!isset($this->_nodes[0])) {
             return null;
         }
 
         return implode('/', $this->_nodes[0]['location']);
     }
 
-    public function setFirstNodeType($type) {
+    public function setFirstNodeType($type)
+    {
         return $this->setNodeType(0, $type);
     }
 
-    public function getFirstNodeType() {
-        if(!isset($this->_nodes[0])) {
+    public function getFirstNodeType()
+    {
+        if (!isset($this->_nodes[0])) {
             return null;
         }
 
         return $this->_nodes[0]['type'];
     }
 
-    public function setFirstNodeId($id) {
+    public function setFirstNodeId($id)
+    {
         return $this->setNodeId(0, $id);
     }
 
-    public function getFirstNodeId() {
-        if(!isset($this->_nodes[0])) {
+    public function getFirstNodeId()
+    {
+        if (!isset($this->_nodes[0])) {
             return null;
         }
 
         return $this->_nodes[0]['id'];
     }
 
-    public function setLastNode($location, $type, $id=null) {
+    public function setLastNode($location, $type, $id=null)
+    {
         return $this->setNode(-1, $location, $type, $id);
     }
 
-    public function getLastNode() {
+    public function getLastNode()
+    {
         $i = count($this->_nodes) - 1;
 
-        if(!isset($this->_nodes[$i])) {
+        if (!isset($this->_nodes[$i])) {
             return null;
         }
 
         return $this->_nodes[$i];
     }
 
-    public function setLastNodeLocation($location) {
+    public function setLastNodeLocation($location)
+    {
         return $this->setNodeLocation(-1, $location);
     }
 
-    public function getLastNodeLocation() {
-        if(!$node = $this->getLastNode()) {
+    public function getLastNodeLocation()
+    {
+        if (!$node = $this->getLastNode()) {
             return null;
         }
 
         return implode('/', $node['location']);
     }
 
-    public function setLastNodeType($type) {
+    public function setLastNodeType($type)
+    {
         return $this->setNodeType(-1, $type);
     }
 
-    public function getLastNodeType() {
-        if(!$node = $this->getLastNode()) {
+    public function getLastNodeType()
+    {
+        if (!$node = $this->getLastNode()) {
             return null;
         }
 
         return $node['type'];
     }
 
-    public function setLastNodeId($id) {
+    public function setLastNodeId($id)
+    {
         return $this->setNodeId(-1, $id);
     }
 
-    public function getLastNodeId() {
-        if(!$node = $this->getLastNode()) {
+    public function getLastNodeId()
+    {
+        if (!$node = $this->getLastNode()) {
             return null;
         }
 
         return $node['id'];
     }
 
-    protected function _normalizeNodeIndex($index) {
+    protected function _normalizeNodeIndex($index)
+    {
         $index = (int)$index;
 
-        if($index < 0) {
+        if ($index < 0) {
             $index += count($this->_nodes);
 
-            if($index < 0) {
+            if ($index < 0) {
                 return null;
             }
         }
 
-        if(!isset($this->_nodes[$index])) {
+        if (!isset($this->_nodes[$index])) {
             return null;
         }
 
         return $index;
     }
 
-    protected function _prepareNode(array $node) {
+    protected function _prepareNode(array $node)
+    {
         // Location
-        if(!isset($node['location'])) {
+        if (!isset($node['location'])) {
             $node['location'] = null;
         }
 
-        if(!is_array($node['location'])) {
-            if(empty($node['location'])) {
+        if (!is_array($node['location'])) {
+            if (empty($node['location'])) {
                 $node['location'] = [];
             } else {
                 $node['location'] = explode('/', trim($node['location'], '/'));
@@ -539,7 +585,7 @@ class Locator implements ILocator, core\IDumpable {
         }
 
         // Type
-        if(!isset($node['type'])) {
+        if (!isset($node['type'])) {
             throw new InvalidArgumentException(
                 'Node has no type definition'
             );
@@ -548,19 +594,20 @@ class Locator implements ILocator, core\IDumpable {
         $node['type'] = ucfirst($node['type']);
 
         // Id
-        if(!isset($node['id'])) {
+        if (!isset($node['id'])) {
             $node['id'] = null;
         }
 
         return $node;
     }
 
-    protected function _nodeToString(array $node) {
+    protected function _nodeToString(array $node)
+    {
         $output = $node['location'];
         $type = $node['type'];
 
-        if($node['id'] !== null) {
-            if(strpbrk($node['id'], '" :/\'\\')) {
+        if ($node['id'] !== null) {
+            if (strpbrk($node['id'], '" :/\'\\')) {
                 $type .= ':"'.addslashes($node['id']).'"';
             } else {
                 $type .= ':'.$node['id'];
@@ -572,13 +619,14 @@ class Locator implements ILocator, core\IDumpable {
     }
 
 
-// Strings
-    public function getDomain() {
-        if($this->_domainString === null) {
+    // Strings
+    public function getDomain()
+    {
+        if ($this->_domainString === null) {
             $nodes = $this->_nodes;
             $last = array_pop($nodes);
 
-            foreach($nodes as $i => $node) {
+            foreach ($nodes as $i => $node) {
                 $nodes[$i] = $this->_nodeToString($node);
             }
 
@@ -591,19 +639,22 @@ class Locator implements ILocator, core\IDumpable {
         return $this->_domainString;
     }
 
-    public function setId(?string $id) {
+    public function setId(?string $id)
+    {
         return $this->setNodeId(-1, $id);
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->getLastNodeId();
     }
 
-    public function toString(): string {
-        if($this->_string === null) {
+    public function toString(): string
+    {
+        if ($this->_string === null) {
             $nodes = [];
 
-            foreach($this->_nodes as $node) {
+            foreach ($this->_nodes as $node) {
                 $nodes[] = $this->_nodeToString($node);
             }
 
@@ -613,9 +664,10 @@ class Locator implements ILocator, core\IDumpable {
         return $this->_string;
     }
 
-    public function toStringUpTo($type) {
-        if(is_array($type)) {
-            if(isset($type['type'])) {
+    public function toStringUpTo($type)
+    {
+        if (is_array($type)) {
+            if (isset($type['type'])) {
                 $type = $type['type'];
             } else {
                 $type = null;
@@ -624,10 +676,10 @@ class Locator implements ILocator, core\IDumpable {
 
         $nodes = [];
 
-        foreach($this->_nodes as $node) {
+        foreach ($this->_nodes as $node) {
             $nodes[] = $this->_nodeToString($node);
 
-            if($node['type'] == $type) {
+            if ($node['type'] == $type) {
                 break;
             }
         }
@@ -635,12 +687,16 @@ class Locator implements ILocator, core\IDumpable {
         return $this->_scheme.'://'.implode('/', $nodes);
     }
 
-    protected function _clearCache() {
+    protected function _clearCache()
+    {
         $this->_string = $this->_domainString = null;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toString());
     }
 }

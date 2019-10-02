@@ -8,8 +8,12 @@ namespace df\opal\rdbms\schema\field;
 use df\core;
 use df\opal;
 
-abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+abstract class Base implements opal\rdbms\schema\IField, Inspectable
+{
     const DEFAULT_VALUE = '';
 
     use opal\schema\TField;
@@ -20,10 +24,11 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
     protected $_collation;
 
 
-    public static function factory(opal\rdbms\schema\ISchema $schema, $type, $name, array $args) {
+    public static function factory(opal\rdbms\schema\ISchema $schema, $type, $name, array $args)
+    {
         $type = strtolower($type);
 
-        switch($type) {
+        switch ($type) {
             case 'bool':
             case 'boolean':
             case 'tinyint':
@@ -91,7 +96,7 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
 
         $class = 'df\\opal\\rdbms\\schema\\field\\'.$classType;
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new opal\rdbms\UnexpectedValueException(
                 'Field type '.$type.' is not currently supported'
             );
@@ -100,28 +105,32 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
         return new $class($schema, $type, $name, $args);
     }
 
-    public function __construct(opal\rdbms\schema\ISchema $schema, $type, $name, array $args) {
+    public function __construct(opal\rdbms\schema\ISchema $schema, $type, $name, array $args)
+    {
         $this->_setName($name);
         $this->_sqlVariant = $schema->getSqlVariant();
         $this->_type = $type;
 
-        if(method_exists($this, '_init')) {
+        if (method_exists($this, '_init')) {
             $this->_init(...$args);
         }
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->_type;
     }
 
-    public function getSqlVariant() {
+    public function getSqlVariant()
+    {
         return $this->_sqlVariant;
     }
 
 
-    public function setNullConflictClause($clause) {
-        if(is_string($clause) && !is_numeric($clause)) {
-            switch(strtoupper($clause)) {
+    public function setNullConflictClause($clause)
+    {
+        if (is_string($clause) && !is_numeric($clause)) {
+            switch (strtoupper($clause)) {
                 case 'ROLLBACK':
                     $clause = opal\schema\IConflictClause::ROLLBACK;
                     break;
@@ -147,7 +156,7 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
             }
         }
 
-        switch((int)$clause) {
+        switch ((int)$clause) {
             case opal\schema\IConflictClause::ROLLBACK:
             case opal\schema\IConflictClause::ABORT:
             case opal\schema\IConflictClause::FAIL:
@@ -163,12 +172,14 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
         return $this;
     }
 
-    public function getNullConflictClauseId() {
+    public function getNullConflictClauseId()
+    {
         return $this->_nullConflictClause;
     }
 
-    public function getNullConflictClauseName() {
-        switch($this->_nullConflictClause) {
+    public function getNullConflictClauseName()
+    {
+        switch ($this->_nullConflictClause) {
             case opal\schema\IConflictClause::ROLLBACK:
                 return 'ROLLBACK';
 
@@ -187,17 +198,19 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
     }
 
 
-    public function getDefaultNonNullValue() {
-        if(null !== ($value = $this->getDefaultValue())) {
+    public function getDefaultNonNullValue()
+    {
+        if (null !== ($value = $this->getDefaultValue())) {
             return $this->getDefaultValue();
         }
-        
+
         return static::DEFAULT_VALUE;
     }
 
 
-    public function setCollation($collation) {
-        if($collation != $this->_collation) {
+    public function setCollation($collation)
+    {
+        if ($collation != $this->_collation) {
             $this->_hasChanged = true;
         }
 
@@ -205,24 +218,28 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
         return $this;
     }
 
-    public function getCollation() {
+    public function getCollation()
+    {
         return $this->_collation;
     }
 
-    public function __toString(): string {
+    public function __toString(): string
+    {
         try {
             return $this->toString();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return $this->_name.' '.strtoupper($this->_type);
         }
     }
 
-// Ext. serialize
-    public function toStorageArray() {
+    // Ext. serialize
+    public function toStorageArray()
+    {
         return $this->_getBaseStorageArray();
     }
 
-    protected function _getBaseStorageArray() {
+    protected function _getBaseStorageArray()
+    {
         return array_merge(
             [
                 'typ' => $this->_type,
@@ -235,8 +252,11 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setDefinition($this->toString());
     }
 }

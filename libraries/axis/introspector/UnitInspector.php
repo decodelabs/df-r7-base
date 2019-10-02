@@ -10,111 +10,134 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class UnitInspector implements IUnitInspector, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class UnitInspector implements IUnitInspector, Inspectable
+{
     protected $_unit;
 
-    public function __construct(axis\IUnit $unit) {
+    public function __construct(axis\IUnit $unit)
+    {
         $this->_unit = $unit;
     }
 
-    public function getUnit() {
+    public function getUnit()
+    {
         return $this->_unit;
     }
 
-    public function getModel() {
+    public function getModel()
+    {
         return $this->_unit->getModel();
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->_unit->getUnitId();
     }
 
-    public function getCanonicalId() {
+    public function getCanonicalId()
+    {
         return $this->_unit->getStorageBackendName();
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->_unit->getUnitType();
     }
 
-    public function isVirtual() {
+    public function isVirtual()
+    {
         return $this->_unit instanceof axis\IVirtualUnit;
     }
 
-    public function isSharedVirtual() {
+    public function isSharedVirtual()
+    {
         return $this->isVirtual() && $this->_unit->isVirtualUnitShared();
     }
 
-// Adapter
-    public function hasAdapter() {
+    // Adapter
+    public function hasAdapter()
+    {
         return $this->_unit instanceof axis\IAdapterBasedUnit;
     }
 
-    public function hasQueryAdapter() {
+    public function hasQueryAdapter()
+    {
         return $this->_unit instanceof axis\IAdapterBasedStorageUnit;
     }
 
-    public function getAdapter() {
-        if($this->hasAdapter()) {
+    public function getAdapter()
+    {
+        if ($this->hasAdapter()) {
             return $this->_unit->getUnitAdapter();
         }
     }
 
-    public function getQueryAdapter() {
-        if($this->hasQueryAdapter()) {
+    public function getQueryAdapter()
+    {
+        if ($this->hasQueryAdapter()) {
             return $this->_unit->getUnitAdapter();
         }
     }
 
-    public function getAdapterName() {
-        if($this->hasAdapter()) {
+    public function getAdapterName()
+    {
+        if ($this->hasAdapter()) {
             return $this->_unit->getUnitAdapterName();
         }
     }
 
-    public function getAdapterConnectionName() {
-        if($this->hasAdapter()) {
+    public function getAdapterConnectionName()
+    {
+        if ($this->hasAdapter()) {
             return $this->_unit->getUnitAdapterConnectionName();
         }
     }
 
 
-// Schema
-    public function getSchema() {
-        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+    // Schema
+    public function getSchema()
+    {
+        if (!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
             return null;
         }
 
         return $this->_unit->getUnitSchema();
     }
 
-    public function getTransientSchema($force=false) {
-        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+    public function getTransientSchema($force=false)
+    {
+        if (!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
             return null;
         }
 
         return $this->_unit->getTransientUnitSchema($force);
     }
 
-    public function getSchemaVersion() {
-        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+    public function getSchemaVersion()
+    {
+        if (!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
             return null;
         }
 
         return $this->getTransientSchema()->getVersion();
     }
 
-    public function getDefinedSchemaVersion() {
-        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+    public function getDefinedSchemaVersion()
+    {
+        if (!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
             return null;
         }
 
         return $this->_unit->getDefinedUnitSchemaVersion();
     }
 
-    public function canUpdateSchema() {
-        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+    public function canUpdateSchema()
+    {
+        if (!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
             return false;
         }
 
@@ -122,39 +145,44 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
     }
 
 
-// Storage
-    public function isStorageUnit() {
+    // Storage
+    public function isStorageUnit()
+    {
         return $this->_unit instanceof axis\IStorageUnit;
     }
 
-    public function isSchemaBasedStorageUnit() {
+    public function isSchemaBasedStorageUnit()
+    {
         return $this->_unit instanceof axis\ISchemaBasedStorageUnit;
     }
 
-    public function describeStorage($name) {
+    public function describeStorage($name)
+    {
         $adapter = $this->getAdapter();
         $output = [];
 
-        if(!$adapter instanceof axis\IIntrospectableAdapter) {
+        if (!$adapter instanceof axis\IIntrospectableAdapter) {
             return $output;
         }
 
         return $adapter->describeStorage($name);
     }
 
-    public function storageExists() {
-        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+    public function storageExists()
+    {
+        if (!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
             return false;
         }
 
         return $this->_unit->storageExists();
     }
 
-    public function getBackups() {
+    public function getBackups()
+    {
         $adapter = $this->getAdapter();
         $output = [];
 
-        if(!$adapter instanceof axis\IIntrospectableAdapter) {
+        if (!$adapter instanceof axis\IIntrospectableAdapter) {
             return $output;
         }
 
@@ -162,8 +190,8 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         $check = $this->_unit->getStorageBackendName().axis\IUnitOptions::BACKUP_SUFFIX;
         $length = strlen($check);
 
-        foreach($storageList as $name) {
-            if(substr($name, 0, $length) != $check) {
+        foreach ($storageList as $name) {
+            if (substr($name, 0, $length) != $check) {
                 continue;
             }
 
@@ -174,12 +202,16 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'id' => $this->getId(),
-            'canonicalId' => $this->getCanonicalId(),
-            'type' => $this->getType()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*id' => $inspector($this->getId()),
+                '*canonicalId' => $inspector($this->getCanonicalId()),
+                '*type' => $inspector($this->getType())
+            ]);
     }
 }

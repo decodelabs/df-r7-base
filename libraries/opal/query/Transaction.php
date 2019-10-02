@@ -10,14 +10,19 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class Transaction extends mesh\job\Transaction implements ITransaction, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Transaction extends mesh\job\Transaction implements ITransaction, Inspectable
+{
     protected $_source;
 
-    public function __construct($source=false) {
-        if($source === false) {
+    public function __construct($source=false)
+    {
+        if ($source === false) {
             $source = null;
-        } else if(!$source) {
+        } elseif (!$source) {
             throw new InvalidArgumentException(
                 'Implicit source transaction has no source'
             );
@@ -26,32 +31,35 @@ class Transaction extends mesh\job\Transaction implements ITransaction, core\IDu
         $this->_source = $source;
     }
 
-    public function select(...$fields) {
+    public function select(...$fields)
+    {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginSelect($fields);
 
-        if($this->_source !== null) {
+        if ($this->_source !== null) {
             $output = $output->from($this->_source);
         }
 
         return $output;
     }
 
-    public function selectDistinct(...$fields) {
+    public function selectDistinct(...$fields)
+    {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginSelect($fields, true);
 
-        if($this->_source !== null) {
+        if ($this->_source !== null) {
             $output = $output->from($this->_source);
         }
 
         return $output;
     }
 
-    public function countAll() {
-        if($this->_source === null) {
+    public function countAll()
+    {
+        if ($this->_source === null) {
             throw new RuntimeException(
                 'Cannot countAll without implicit source'
             );
@@ -60,8 +68,9 @@ class Transaction extends mesh\job\Transaction implements ITransaction, core\IDu
         return $this->select()->count();
     }
 
-    public function countAllDistinct() {
-        if($this->_source === null) {
+    public function countAllDistinct()
+    {
+        if ($this->_source === null) {
             throw new RuntimeException(
                 'Cannot countAll without implicit source'
             );
@@ -70,105 +79,114 @@ class Transaction extends mesh\job\Transaction implements ITransaction, core\IDu
         return $this->selectDistinct()->count();
     }
 
-    public function union(...$fields) {
+    public function union(...$fields)
+    {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginUnion()
             ->with($fields);
 
-        if($this->_source !== null) {
+        if ($this->_source !== null) {
             $output = $output->from($this->_source);
         }
 
         return $output;
     }
 
-    public function fetch() {
+    public function fetch()
+    {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginFetch();
 
-        if($this->_source !== null) {
+        if ($this->_source !== null) {
             $output = $output->from($this->_source);
         }
 
         return $output;
     }
 
-    public function insert($row) {
+    public function insert($row)
+    {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginInsert($row);
 
-        if($this->_source !== null) {
+        if ($this->_source !== null) {
             $output = $output->into($this->_source);
         }
 
         return $output;
     }
 
-    public function batchInsert($rows=[]) {
+    public function batchInsert($rows=[])
+    {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginBatchInsert($rows);
 
-        if($this->_source !== null) {
+        if ($this->_source !== null) {
             $output = $output->into($this->_source);
         }
 
         return $output;
     }
 
-    public function replace($row) {
+    public function replace($row)
+    {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginReplace($row);
 
-        if($this->_source !== null) {
+        if ($this->_source !== null) {
             $output = $output->in($this->_source);
         }
 
         return $output;
     }
 
-    public function batchReplace($rows=[]) {
+    public function batchReplace($rows=[])
+    {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginBatchReplace($rows);
 
-        if($this->_source !== null) {
+        if ($this->_source !== null) {
             $output = $output->in($this->_source);
         }
 
         return $output;
     }
 
-    public function update(array $valueMap=null) {
+    public function update(array $valueMap=null)
+    {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginUpdate($valueMap);
 
-        if($this->_source !== null) {
+        if ($this->_source !== null) {
             $output = $output->in($this->_source);
         }
 
         return $output;
     }
 
-    public function delete() {
+    public function delete()
+    {
         $output = Initiator::factory()
             ->setTransaction($this)
             ->beginDelete();
 
-        if($this->_source !== null) {
+        if ($this->_source !== null) {
             $output = $output->from($this->_source);
         }
 
         return $output;
     }
 
-    public function newTransaction(): mesh\job\ITransaction {
-        if($this->_source !== null) {
+    public function newTransaction(): mesh\job\ITransaction
+    {
+        if ($this->_source !== null) {
             return new self($this->_source);
         } else {
             return new self();
@@ -176,14 +194,17 @@ class Transaction extends mesh\job\Transaction implements ITransaction, core\IDu
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
         $adapters = [];
 
-        foreach($this->_adapters as $adapter) {
+        foreach ($this->_adapters as $adapter) {
             $adapters[] = $adapter->getQuerySourceDisplayName();
         }
 
-        return $adapters;
+        $entity->setValues($inspector->inspectList($adapters));
     }
 }

@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\neon;
 
-class Color implements IColor, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Color implements IColor, Inspectable
 {
     protected $_a;
     protected $_b;
@@ -1014,10 +1018,11 @@ class Color implements IColor, core\IDumpable
         'transparent'           => [0,   0,   0,   0]
     ];
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return $this->toCssString();
+        $entity->setDefinition($this->toCssString());
     }
 }

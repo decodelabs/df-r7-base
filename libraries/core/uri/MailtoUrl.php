@@ -9,15 +9,20 @@ use df;
 use df\core;
 use df\flow;
 
-class MailtoUrl implements IMailtoUrl, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class MailtoUrl implements IMailtoUrl, Inspectable
+{
     use core\TStringProvider;
     use TUrl_UsernameContainer;
     use TUrl_DomainContainer;
     use TUrl_QueryContainer;
 
-    public static function factory($url) {
-        if($url instanceof IMailtoUrl) {
+    public static function factory($url)
+    {
+        if ($url instanceof IMailtoUrl) {
             return $url;
         }
 
@@ -25,30 +30,32 @@ class MailtoUrl implements IMailtoUrl, core\IDumpable {
         return new $class($url);
     }
 
-    public function __construct($url=null) {
-        if($url !== null) {
+    public function __construct($url=null)
+    {
+        if ($url !== null) {
             $this->import($url);
         }
     }
 
-    public function import($url='') {
-        if($url !== null) {
+    public function import($url='')
+    {
+        if ($url !== null) {
             $this->reset();
         }
 
-        if($url == '' || $url === null) {
+        if ($url == '' || $url === null) {
             return $this;
         }
 
-        if($url instanceof flow\mail\IAddress) {
+        if ($url instanceof flow\mail\IAddress) {
             $url = $url->getAddress();
         }
 
-        if($url instanceof self) {
+        if ($url instanceof self) {
             $this->_username = $url->_username;
             $this->_domain = $url->_domain;
 
-            if($url->_query !== null) {
+            if ($url->_query !== null) {
                 $this->_query = clone $url->_query;
             }
 
@@ -56,7 +63,7 @@ class MailtoUrl implements IMailtoUrl, core\IDumpable {
         }
 
 
-        if(strtolower(substr($url, 0, 7)) == 'mailto:') {
+        if (strtolower(substr($url, 0, 7)) == 'mailto:') {
             $url = ltrim(substr($url, 7), '/');
         }
 
@@ -70,7 +77,8 @@ class MailtoUrl implements IMailtoUrl, core\IDumpable {
         return $this;
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->_resetUsername();
         $this->_resetDomain();
 
@@ -79,16 +87,18 @@ class MailtoUrl implements IMailtoUrl, core\IDumpable {
         return $this;
     }
 
-// Scheme
-    public function getScheme() {
+    // Scheme
+    public function getScheme()
+    {
         return 'mailto';
     }
 
 
 
-// Email
-    public function setEmail($email) {
-        if(strlen($email)) {
+    // Email
+    public function setEmail($email)
+    {
+        if (strlen($email)) {
             $parts = explode('@', $email);
             $this->setUsername(array_shift($parts));
             $this->setDomain(array_shift($parts));
@@ -100,16 +110,18 @@ class MailtoUrl implements IMailtoUrl, core\IDumpable {
         return $this;
     }
 
-    public function getEmail() {
-        if($this->_username === null || $this->_domain === null) {
+    public function getEmail()
+    {
+        if ($this->_username === null || $this->_domain === null) {
             return null;
         }
 
         return $this->_username.'@'.$this->_domain;
     }
 
-    public function hasEmail(...$emails) {
-        if(empty($emails)) {
+    public function hasEmail(...$emails)
+    {
+        if (empty($emails)) {
             return $this->_username !== null && $this->_domain !== null;
         }
 
@@ -118,45 +130,52 @@ class MailtoUrl implements IMailtoUrl, core\IDumpable {
 
 
 
-// Subject
-    public function setSubject($subject) {
-        if(strlen($subject)) {
+    // Subject
+    public function setSubject($subject)
+    {
+        if (strlen($subject)) {
             $this->getQuery()->subject = (string)$subject;
-        } else if($this->_query) {
+        } elseif ($this->_query) {
             unset($this->_query->subject);
         }
 
         return $this;
     }
 
-    public function getSubject() {
-        if($this->_query) {
+    public function getSubject()
+    {
+        if ($this->_query) {
             return $this->_query['subject'];
         }
 
         return null;
     }
 
-    public function hasSubject() {
+    public function hasSubject()
+    {
         return $this->_query !== null && isset($this->_query->subject);
     }
 
 
-// Strings
-    public function toString(): string {
+    // Strings
+    public function toString(): string
+    {
         $output = 'mailto:'.$this->getEmail();
         $output .= $this->_getQueryString();
 
         return $output;
     }
 
-    public function toReadableString() {
+    public function toReadableString()
+    {
         return $this->toString();
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toString());
     }
 }

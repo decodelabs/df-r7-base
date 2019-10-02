@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Expression implements opal\query\IExpressionField, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Expression implements opal\query\IExpressionField, Inspectable
 {
     use opal\query\TField;
 

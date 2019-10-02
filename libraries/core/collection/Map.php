@@ -8,8 +8,12 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-class Map implements IMap, IAggregateIteratorCollection, core\IDumpable {
-    
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Map implements IMap, IAggregateIteratorCollection, Inspectable
+{
     use TArrayCollection_Map;
     use TArrayCollection_Constructor;
 }

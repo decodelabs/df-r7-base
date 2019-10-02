@@ -11,8 +11,12 @@ use df\opal;
 use df\user;
 use df\mesh;
 
-class Partial implements IPartial, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Partial implements IPartial, Inspectable
+{
     use TRecordAdapterProvider;
     use TPrimaryKeySetProvider;
     use core\collection\TArrayCollection;
@@ -24,25 +28,28 @@ class Partial implements IPartial, core\IDumpable {
 
     protected $_isBridge = false;
 
-    public function __construct(opal\query\IAdapter $adapter=null, $row=null, array $fields=null) {
+    public function __construct(opal\query\IAdapter $adapter=null, $row=null, array $fields=null)
+    {
         $this->_adapter = $adapter;
 
-        if(!empty($fields)) {
+        if (!empty($fields)) {
             $this->_collection = array_fill_keys($fields, null);
         }
 
-        if($row !== null) {
+        if ($row !== null) {
             $this->import($row);
         }
     }
 
-    public function setRecordAdapter(opal\query\IAdapter $adapter) {
+    public function setRecordAdapter(opal\query\IAdapter $adapter)
+    {
         $this->_adapter = $adapter;
         return $this;
     }
 
-    public function isBridge(bool $flag=null) {
-        if($flag !== null) {
+    public function isBridge(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isBridge = $flag;
             return $this;
         }
@@ -51,22 +58,24 @@ class Partial implements IPartial, core\IDumpable {
     }
 
 
-    public function getReductiveIterator(): \Iterator {
+    public function getReductiveIterator(): \Iterator
+    {
         return new ReductiveMapIterator($this);
     }
 
 
-    protected function _buildPrimaryKeySet(array $fields, $includeChanges=true) {
+    protected function _buildPrimaryKeySet(array $fields, $includeChanges=true)
+    {
         $values = [];
 
-        foreach($fields as $field) {
-            if(isset($this->_collection[$field])) {
+        foreach ($fields as $field) {
+            if (isset($this->_collection[$field])) {
                 $values[$field] = $this->_collection[$field];
             } else {
                 $values[$field] = null;
             }
 
-            if($values[$field] instanceof IValueContainer) {
+            if ($values[$field] instanceof IValueContainer) {
                 $values[$field] = $values[$field]->getValueForStorage();
             }
         }
@@ -74,45 +83,49 @@ class Partial implements IPartial, core\IDumpable {
         return new PrimaryKeySet($fields, $values);
     }
 
-    public function getValuesForStorage() {
+    public function getValuesForStorage()
+    {
         $output = $this->_collection;
 
-        foreach(opal\schema\Introspector::getPrimaryFields($this->_adapter) as $field) {
+        foreach (opal\schema\Introspector::getPrimaryFields($this->_adapter) as $field) {
             unset($output[$field]);
         }
 
         return $output;
     }
 
-    public function populateWithPreparedData(array $row) {
-        foreach($row as $key => $value) {
+    public function populateWithPreparedData(array $row)
+    {
+        foreach ($row as $key => $value) {
             $this->_collection[$key] = $value;
         }
 
         return $this;
     }
 
-    public function populateWithRawData($row) {
+    public function populateWithRawData($row)
+    {
         return $this->import($row);
     }
 
 
-// Collection
-    public function import(...$input) {
-        foreach($input as $row) {
-            if($row instanceof opal\query\IDataRowProvider) {
+    // Collection
+    public function import(...$input)
+    {
+        foreach ($input as $row) {
+            if ($row instanceof opal\query\IDataRowProvider) {
                 $row = $row->toDataRowArray();
             }
 
-            if(!core\collection\Util::isIterable($row)) {
+            if (!core\collection\Util::isIterable($row)) {
                 continue;
             }
 
             // Sanitize values from adapter
             $temp = $row;
 
-            foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter, array_keys($row)) as $name => $field) {
-                if(isset($temp[$name])) {
+            foreach (opal\schema\Introspector::getFieldProcessors($this->_adapter, array_keys($row)) as $name => $field) {
+                if (isset($temp[$name])) {
                     $value = $temp[$name];
                 } else {
                     $value = null;
@@ -122,7 +135,7 @@ class Partial implements IPartial, core\IDumpable {
             }
 
             // Sanitize values from extension
-            foreach($row as $key => $value) {
+            foreach ($row as $key => $value) {
                 $this->_collection[$key] = $value;
             }
         }
@@ -130,20 +143,22 @@ class Partial implements IPartial, core\IDumpable {
         return $this;
     }
 
-    public function getRaw($key) {
+    public function getRaw($key)
+    {
         return $this->get($key);
     }
 
 
-// Mesh
-    public function getEntityLocator() {
-        if(!$this->_adapter instanceof mesh\entity\IParentEntity) {
+    // Mesh
+    public function getEntityLocator()
+    {
+        if (!$this->_adapter instanceof mesh\entity\IParentEntity) {
             throw new mesh\entity\EntityNotFoundException(
                 'Partial adapter is not an entity handler'
             );
         }
 
-        if($this->_adapter instanceof mesh\entity\IActiveParentEntity) {
+        if ($this->_adapter instanceof mesh\entity\IActiveParentEntity) {
             return $this->_adapter->getSubEntityLocator($this);
         }
 
@@ -156,9 +171,11 @@ class Partial implements IPartial, core\IDumpable {
         return $output;
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return $this->_collection;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setValues($inspector->inspectList($this->_collection));
     }
 }

@@ -9,22 +9,27 @@ use df;
 use df\core;
 use df\flow;
 
-class Address implements IAddress, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Address implements IAddress, Inspectable
+{
     use core\TStringProvider;
 
     protected $_name;
     protected $_address;
     protected $_isValid = null;
 
-    public static function factory($address, $name=null): ?IAddress {
-        if($address === null) {
+    public static function factory($address, $name=null): ?IAddress
+    {
+        if ($address === null) {
             return null;
-        } else if($address instanceof IAddress) {
+        } elseif ($address instanceof IAddress) {
             return $address;
-        } else if($name !== null) {
+        } elseif ($name !== null) {
             return new self($address, $name);
-        } else if(is_string($address)) {
+        } elseif (is_string($address)) {
             return self::fromString($address);
         } else {
             throw new InvalidArgumentException(
@@ -33,26 +38,29 @@ class Address implements IAddress, core\IDumpable {
         }
     }
 
-    public static function fromString(string $string): IAddress {
+    public static function fromString(string $string): IAddress
+    {
         $parts = explode('<', $string, 2);
 
         $address = rtrim(trim(array_pop($parts)), '>');
         $name = trim(array_shift($parts), ' "\'');
 
-        if(empty($name)) {
+        if (empty($name)) {
             $name = null;
         }
 
         return new self($address, $name);
     }
 
-    public function __construct($address, $name=null) {
+    public function __construct($address, $name=null)
+    {
         $this->setAddress($address);
         $this->setName($name);
     }
 
 
-    public function setAddress($address) {
+    public function setAddress($address)
+    {
         $address = strtolower($address);
         $address = str_replace([' at ', ' dot '], ['@', '.'], $address);
         $address = filter_var($address, \FILTER_SANITIZE_EMAIL);
@@ -61,46 +69,55 @@ class Address implements IAddress, core\IDumpable {
         return $this;
     }
 
-    public function getAddress() {
+    public function getAddress()
+    {
         return $this->_address;
     }
 
-    public function getDomain() {
+    public function getDomain()
+    {
         $parts = explode('@', $this->_address, 2);
         $parts = explode('?', array_pop($parts), 2);
         return array_shift($parts);
     }
 
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->_name = $name;
         return $this;
     }
 
-    public function getName(): ?string {
+    public function getName(): ?string
+    {
         return $this->_name;
     }
 
 
-    public function isValid(): bool {
-        if($this->_isValid === null) {
+    public function isValid(): bool
+    {
+        if ($this->_isValid === null) {
             $this->_isValid = (bool)filter_var($this->_address, \FILTER_VALIDATE_EMAIL);
         }
 
         return (bool)$this->_isValid;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         $output = $this->_address;
 
-        if(!empty($this->_name)) {
+        if (!empty($this->_name)) {
             $output = '"'.$this->_name.'" <'.$output.'>';
         }
 
         return $output;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toString());
     }
 }

@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Radio extends Base implements ICheckInputWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Radio extends Base implements ICheckInputWidget, Inspectable
+{
     use TWidget_BodyContentAware;
     use TWidget_FormData;
     use TWidget_Input;
@@ -25,7 +29,8 @@ class Radio extends Base implements ICheckInputWidget, core\IDumpable {
     protected $_shouldWrapBody = true;
     protected $_labelClass = null;
 
-    public function __construct(arch\IContext $context, $name, $isChecked=false, $body=null, $value='1') {
+    public function __construct(arch\IContext $context, $name, $isChecked=false, $body=null, $value='1')
+    {
         parent::__construct($context);
 
         $this->setName($name);
@@ -34,7 +39,8 @@ class Radio extends Base implements ICheckInputWidget, core\IDumpable {
         $this->setBody($body);
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
 
         $tag->setAttribute('type', static::INPUT_TYPE);
@@ -47,20 +53,20 @@ class Radio extends Base implements ICheckInputWidget, core\IDumpable {
         $output = $tag;
         $widgetClass = 'w.'.static::INPUT_TYPE;
 
-        if(!$this->_body->isEmpty()) {
+        if (!$this->_body->isEmpty()) {
             $label = $this->_body;
 
-            if($this->_shouldWrapBody) {
+            if ($this->_shouldWrapBody) {
                 $label = new aura\html\Element('span', $label);
             }
 
             $output = new aura\html\Element('label.'.$widgetClass, $label);
 
-            if($this->_isDisabled) {
+            if ($this->_isDisabled) {
                 $output->addClass('disabled');
             }
 
-            if($this->_labelClass) {
+            if ($this->_labelClass) {
                 $output->addClass($this->_labelClass);
             }
 
@@ -70,8 +76,9 @@ class Radio extends Base implements ICheckInputWidget, core\IDumpable {
         return $output;
     }
 
-    public function shouldWrapBody(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldWrapBody(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_shouldWrapBody = $flag;
             return $this;
         }
@@ -79,12 +86,14 @@ class Radio extends Base implements ICheckInputWidget, core\IDumpable {
         return $this->_shouldWrapBody;
     }
 
-    public function setLabelClass($class) {
+    public function setLabelClass($class)
+    {
         $this->_labelClass = $class;
         return $this;
     }
 
-    public function getLabelClass() {
+    public function getLabelClass()
+    {
         return $this->_labelClass;
     }
 }

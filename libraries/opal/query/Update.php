@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Update implements IUpdateQuery, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Update implements IUpdateQuery, Inspectable
 {
     use TQuery;
     use TQuery_LocalSource;
@@ -148,17 +152,18 @@ class Update implements IUpdateQuery, core\IDumpable
     }
 
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $output = [
-            'source' => $this->_source->getAdapter(),
-            'values' => $this->_values
-        ];
+        $entity->setProperties([
+            '*source' => $inspector($this->_source->getAdapter()),
+            '*values' => $inspector($this->_values)
+        ]);
 
         if ($this->hasWhereClauses()) {
-            $output['where'] = $this->getWhereClauseList();
+            $entity->setProperty('*where', $inspector($this->getWhereClauseList()));
         }
 
         if (!empty($this->_order)) {
@@ -168,13 +173,11 @@ class Update implements IUpdateQuery, core\IDumpable
                 $order[] = $directive->toString();
             }
 
-            $output['order'] = implode(', ', $order);
+            $entity->setProperty('*order', $inspector(implode(', ', $order)));
         }
 
         if ($this->_limit !== null) {
-            $output['limit'] = $this->_limit;
+            $entity->setProperty('*limit', $inspector($this->_limit));
         }
-
-        return $output;
     }
 }

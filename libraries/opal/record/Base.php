@@ -11,7 +11,11 @@ use df\opal;
 use df\user;
 use df\mesh;
 
-class Base implements IRecord, \Serializable, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Base implements IRecord, \Serializable, Inspectable
 {
     const BROADCAST_HOOK_EVENTS = null;
 
@@ -1161,8 +1165,10 @@ class Base implements IRecord, \Serializable, core\IDumpable
     }
 
 
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
         $output = [];
 
@@ -1190,6 +1196,6 @@ class Base implements IRecord, \Serializable, core\IDumpable
             $output[$key] = $value;
         }
 
-        return $output;
+        $entity->setValues($inspector->inspectList($output));
     }
 }

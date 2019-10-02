@@ -8,8 +8,12 @@ namespace df\core\fs;
 use df\core;
 use df\halo;
 
-class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
+{
     use core\io\TReader;
     use core\io\TWriter;
     use TFile;
@@ -29,44 +33,52 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     private $_group = null;
 
 
-    public function __construct($data='', $contentType=null, $mode=Mode::READ_WRITE) {
+    public function __construct($data='', $contentType=null, $mode=Mode::READ_WRITE)
+    {
         try {
             $process = halo\process\Base::getCurrent();
 
             try {
                 $this->_owner = $process->getOwnerName();
-            } catch(\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
 
             try {
                 $this->_group = $process->getGroupName();
-            } catch(\Throwable $e) {}
-        } catch(\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
+        } catch (\Throwable $e) {
+        }
 
         $this->putContents($data);
         $this->setContentType($contentType);
 
-        if($mode !== null) {
+        if ($mode !== null) {
             $this->open($mode);
         }
     }
 
-    public function setId(?string $id) {
+    public function setId(?string $id)
+    {
         $this->_id = $id;
         return $this;
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->_id;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->getChannelId();
     }
 
-    public function getChannelId() {
+    public function getChannelId()
+    {
         $output = 'Memory';
 
-        if($this->_id) {
+        if ($this->_id) {
             $output .= ':'.$this->_id;
         }
 
@@ -75,35 +87,42 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
 
 
 
-    public function getPath() {
+    public function getPath()
+    {
         return null;
     }
 
-    public function isOnDisk() {
+    public function isOnDisk()
+    {
         return false;
     }
 
-    public function exists() {
+    public function exists()
+    {
         return true;
     }
 
-    public function getLastModified() {
+    public function getLastModified()
+    {
         return time();
     }
 
-    public function getSize() {
+    public function getSize()
+    {
         return strlen($this->_data);
     }
 
 
-// Content type
-    public function setContentType($type) {
+    // Content type
+    public function setContentType($type)
+    {
         $this->_contentType = $type;
         return $this;
     }
 
-    public function getContentType() {
-        if(!$this->_contentType) {
+    public function getContentType()
+    {
+        if (!$this->_contentType) {
             $this->_contentType = 'application\octet-stream';
         }
 
@@ -111,12 +130,14 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     }
 
 
-// Hash
-    public function getHash($type) {
+    // Hash
+    public function getHash($type)
+    {
         return hash($type, $this->_data);
     }
 
-    public function getRawHash($type) {
+    public function getRawHash($type)
+    {
         return hash($type, $this->_data, true);
     }
 
@@ -124,52 +145,63 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
 
 
 
-// Contents
-    public function putContents($data) {
+    // Contents
+    public function putContents($data)
+    {
         $this->_data = $data;
         return $this;
     }
 
-    public function getContents() {
+    public function getContents()
+    {
         return $this->_data;
     }
 
-    public function setPermissions($mode) {
+    public function setPermissions($mode)
+    {
         $this->_permissions = $mode;
         return $this;
     }
 
-    public function getPermissions() {
+    public function getPermissions()
+    {
         return $this->_permissions;
     }
 
-    public function setOwner($owner) {
+    public function setOwner($owner)
+    {
         return $this;
     }
 
-    public function getOwner() {
+    public function getOwner()
+    {
         return $this->_owner;
     }
 
-    public function setGroup($group) {
+    public function setGroup($group)
+    {
         return $this;
     }
 
-    public function getGroup() {
+    public function getGroup()
+    {
         return $this->_group;
     }
 
 
 
-    public function renameTo($newName) {
+    public function renameTo($newName)
+    {
         return $this;
     }
 
-    public function moveTo($destination, $newName=null) {
+    public function moveTo($destination, $newName=null)
+    {
         return $this;
     }
 
-    public function unlink() {
+    public function unlink()
+    {
         $this->_data = '';
         $this->_pos = 0;
         $this->_isLocked = false;
@@ -182,10 +214,11 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
 
 
 
-// Open
-    public function open($mode=Mode::READ_WRITE) {
-        if($this->_isOpen) {
-            switch($this->_mode->getLabel()) {
+    // Open
+    public function open($mode=Mode::READ_WRITE)
+    {
+        if ($this->_isOpen) {
+            switch ($this->_mode->getLabel()) {
                 case Mode::READ_ONLY:
                 case Mode::READ_WRITE:
                     $this->_pos = 0;
@@ -204,7 +237,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
 
                 case Mode::WRITE_NEW:
                 case Mode::READ_WRITE_NEW:
-                    if(!empty($this->_data)) {
+                    if (!empty($this->_data)) {
                         throw new RuntimeException('Memory file is not empty');
                     }
 
@@ -219,26 +252,31 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         return $this;
     }
 
-    public function isOpen() {
+    public function isOpen()
+    {
         return $this->_isOpen;
     }
 
-    public function isTemp() {
+    public function isTemp()
+    {
         return true;
     }
 
-    public function eof() {
+    public function eof()
+    {
         return $this->_pos >= strlen($this->_data);
     }
 
-    public function close() {
+    public function close()
+    {
         return true;
     }
 
 
-// Lock
-    public function lock($type, $nonBlocking=false) {
-        if(!$this->_isOpen) {
+    // Lock
+    public function lock($type, $nonBlocking=false)
+    {
+        if (!$this->_isOpen) {
             throw new RuntimeException(
                 'Memory file is not open'
             );
@@ -248,8 +286,9 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         return true;
     }
 
-    public function unlock() {
-        if(!$this->_isOpen) {
+    public function unlock()
+    {
+        if (!$this->_isOpen) {
             throw new RuntimeException(
                 'Memory file is not open'
             );
@@ -260,15 +299,16 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     }
 
 
-// IO
-    public function seek($offset, $whence=\SEEK_SET) {
-        if(!$this->_isOpen) {
+    // IO
+    public function seek($offset, $whence=\SEEK_SET)
+    {
+        if (!$this->_isOpen) {
             throw new RuntimeException(
                 'Memory file is not open'
             );
         }
 
-        switch($whence) {
+        switch ($whence) {
             case \SEEK_SET:
                 $this->_pos = $offset;
                 break;
@@ -289,30 +329,35 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         return $this;
     }
 
-    public function readFrom($offset, $length) {
+    public function readFrom($offset, $length)
+    {
         $this->_pos = $offset;
         return $this->_readChunk($length);
     }
 
-    public function tell() {
+    public function tell()
+    {
         return $this->_pos;
     }
 
-    public function flush() {
+    public function flush()
+    {
         $this->_data = '';
 
         return $this;
     }
 
-    public function truncate($size=0) {
+    public function truncate($size=0)
+    {
         $this->_data = substr($this->_data, 0, $size);
         return $this;
     }
 
 
-// Read
-    protected function _readChunk($length) {
-        if(!$this->_isOpen) {
+    // Read
+    protected function _readChunk($length)
+    {
+        if (!$this->_isOpen) {
             throw new RuntimeException(
                 'Memory file is not open'
             );
@@ -324,8 +369,9 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         return $output;
     }
 
-    protected function _readLine() {
-        if(!$this->_isOpen) {
+    protected function _readLine()
+    {
+        if (!$this->_isOpen) {
             throw new RuntimeException(
                 'Memory file is not open'
             );
@@ -334,8 +380,8 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
         $output = '';
         $length = strlen($this->_data);
 
-        while($this->_pos < $length) {
-            if($this->_data{$this->_pos} == "\n") {
+        while ($this->_pos < $length) {
+            if ($this->_data{$this->_pos} == "\n") {
                 $this->_pos++;
                 return $output;
             }
@@ -348,9 +394,10 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     }
 
 
-// Write
-    protected function _writeChunk($data, $length) {
-        if(!$this->_isOpen) {
+    // Write
+    protected function _writeChunk($data, $length)
+    {
+        if (!$this->_isOpen) {
             throw new RuntimeException(
                 'Memory file is not open'
             );
@@ -364,41 +411,46 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, core\IDumpabl
     }
 
 
-// Error
-    public function getErrorBuffer() {
+    // Error
+    public function getErrorBuffer()
+    {
         return $this->_error;
     }
 
-    public function flushErrorBuffer() {
+    public function flushErrorBuffer()
+    {
         $output = $this->_error;
         $this->_error = null;
 
         return $output;
     }
 
-    public function writeError($error) {
+    public function writeError($error)
+    {
         $this->_error .= $error;
         return $this;
     }
 
-    public function writeErrorLine($line) {
+    public function writeErrorLine($line)
+    {
         return $this->writeError($line."\r\n");
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        $output = [];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setText($this->_data);
 
-        if($this->_contentType) {
-            $output['contentType'] = $this->_contentType;
+        if ($this->_contentType) {
+            $entity->setProperty('*contentType', $this->_contentType);
         }
 
-        if($this->_error) {
-            $output['error'] = $this->_error;
+        if ($this->_error) {
+            $entity->setProperty('*error', $this->_error);
         }
-
-        $output['data'] = $this->_data;
-        return $output;
     }
 }

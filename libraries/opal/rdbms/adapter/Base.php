@@ -11,8 +11,12 @@ use df\opal;
 use df\mesh;
 use df\flex;
 
-abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+abstract class Base implements opal\rdbms\IAdapter, Inspectable
+{
     const AUTO_INCREMENT = 1;
     const SEQUENCES = 2;
     const STORED_PROCEDURES = 3;
@@ -31,12 +35,13 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     protected $_isClone = false;
     protected $_support = [];
 
-    public static function factory($dsn, $autoCreate=false) {
+    public static function factory($dsn, $autoCreate=false)
+    {
         $dsn = opal\rdbms\Dsn::factory($dsn);
         $hash = $dsn->getHash();
 
-        if(isset(self::$_connections[$hash])) {
-            if(self::$_connections[$hash]->isConnected()) {
+        if (isset(self::$_connections[$hash])) {
+            if (self::$_connections[$hash]->isConnected()) {
                 return self::$_connections[$hash];
             }
 
@@ -46,7 +51,7 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         $adapterName = ucfirst($dsn->getAdapter());
         $class = 'df\\opal\\rdbms\\adapter\\'.$adapterName;
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new opal\rdbms\AdapterNotFoundException(
                 'RDBMS adapter '.$adapterName.' could not be found'
             );
@@ -56,24 +61,26 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         return self::$_connections[$hash];
     }
 
-    public static function destroyConnection($hash) {
-        if($hash instanceof opal\rdbms\IDsn) {
+    public static function destroyConnection($hash)
+    {
+        if ($hash instanceof opal\rdbms\IDsn) {
             $hash = $dsn->getHash();
         }
 
-        if(isset(self::$_connections[$hash])) {
+        if (isset(self::$_connections[$hash])) {
             unset(self::$_connections[$hash]);
         }
     }
 
 
-    protected function __construct(opal\rdbms\IDsn $dsn, $autoCreate=false) {
+    protected function __construct(opal\rdbms\IDsn $dsn, $autoCreate=false)
+    {
         $this->_dsn = $dsn;
 
-        if($autoCreate) {
+        if ($autoCreate) {
             try {
                 $this->_connect();
-            } catch(opal\rdbms\DatabaseNotFoundException $e) {
+            } catch (opal\rdbms\DatabaseNotFoundException $e) {
                 $this->_connect(true);
                 $this->_createDb();
                 $this->_closeConnection();
@@ -84,11 +91,13 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         }
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->_closeConnection();
     }
 
-    public function __clone() {
+    public function __clone()
+    {
         $this->_dsn = clone $this->_dsn;
         $this->_isClone = true;
         $this->_transactionLevel = 0;
@@ -96,48 +105,57 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         $this->_connect();
     }
 
-    public function getAdapterName() {
+    public function getAdapterName()
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
 
-// Connection
-    public function isConnected() {
+    // Connection
+    public function isConnected()
+    {
         return $this->_connection !== null;
     }
 
-    public function isClone() {
+    public function isClone()
+    {
         return $this->_isClone;
     }
 
-    public function closeConnection() {
+    public function closeConnection()
+    {
         $this->_closeConnection();
 
-        if(!$this->_isClone) {
+        if (!$this->_isClone) {
             self::destroyConnection($this->_dsn->getHash());
         }
 
         return $this;
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->_connection;
     }
 
-    public function getDsn() {
+    public function getDsn()
+    {
         return $this->_dsn;
     }
 
-    public function getDsnHash() {
+    public function getDsnHash()
+    {
         return $this->_dsn->getHash();
     }
 
-    public function getServerDsnHash() {
+    public function getServerDsnHash()
+    {
         return $this->_dsn->getServerHash();
     }
 
-    public function switchDatabase($newName) {
+    public function switchDatabase($newName)
+    {
         $this->closeConnection();
         $this->_dsn->setDatabase($newName);
         $this->_connect();
@@ -145,16 +163,18 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         return $this;
     }
 
-    public function supports($feature) {
-        if(!isset($this->_support[$feature])) {
+    public function supports($feature)
+    {
+        if (!isset($this->_support[$feature])) {
             $this->_support[$feature] = (bool)$this->_supports($feature);
         }
 
         return $this->_support[$feature];
     }
 
-    public function getEncoding() {
-        if(!$encoding = $this->_dsn->getOption('encoding')) {
+    public function getEncoding()
+    {
+        if (!$encoding = $this->_dsn->getOption('encoding')) {
             $encoding = 'utf8';
         }
 
@@ -162,9 +182,10 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     }
 
 
-// Transaction
-    public function begin() {
-        if($this->_transactionLevel === 0 || $this->supports(self::NESTED_TRANSACTIONS)) {
+    // Transaction
+    public function begin()
+    {
+        if ($this->_transactionLevel === 0 || $this->supports(self::NESTED_TRANSACTIONS)) {
             $this->_beginTransaction();
         }
 
@@ -172,9 +193,10 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         return $this;
     }
 
-    public function commit() {
-        if($this->_transactionLevel > 0) {
-            if($this->_transactionLevel === 1 || $this->supports(self::NESTED_TRANSACTIONS)) {
+    public function commit()
+    {
+        if ($this->_transactionLevel > 0) {
+            if ($this->_transactionLevel === 1 || $this->supports(self::NESTED_TRANSACTIONS)) {
                 $this->_commitTransaction();
             }
 
@@ -184,9 +206,10 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         return $this;
     }
 
-    public function rollback() {
-        if($this->_transactionLevel > 0) {
-            if($this->_transactionLevel === 1 || $this->supports(self::NESTED_TRANSACTIONS)) {
+    public function rollback()
+    {
+        if ($this->_transactionLevel > 0) {
+            if ($this->_transactionLevel === 1 || $this->supports(self::NESTED_TRANSACTIONS)) {
                 $this->_rollbackTransaction();
             }
 
@@ -196,45 +219,51 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         return $this;
     }
 
-    public function isTransactionOpen() {
+    public function isTransactionOpen()
+    {
         return $this->_transactionLevel > 0;
     }
 
-// Sanitize
-    public function quoteTableAliasDefinition($alias) {
+    // Sanitize
+    public function quoteTableAliasDefinition($alias)
+    {
         return $this->quoteIdentifier($alias);
     }
 
-    public function quoteTableAliasReference($alias) {
+    public function quoteTableAliasReference($alias)
+    {
         return $this->quoteIdentifier($alias);
     }
 
-    public function quoteFieldAliasDefinition($alias) {
+    public function quoteFieldAliasDefinition($alias)
+    {
         return $this->quoteValue($alias);
     }
 
-    public function quoteFieldAliasReference($alias) {
+    public function quoteFieldAliasReference($alias)
+    {
         return $this->quoteIdentifier($alias);
     }
 
-    public function prepareValue($value, opal\rdbms\schema\IField $field=null) {
-        if(is_bool($value)) {
+    public function prepareValue($value, opal\rdbms\schema\IField $field=null)
+    {
+        if (is_bool($value)) {
             $value = (int)$value;
         }
 
-        if($field !== null) {
-            if(false !== ($preppedValue = $this->_prepareKnownValue($value, $field))) {
+        if ($field !== null) {
+            if (false !== ($preppedValue = $this->_prepareKnownValue($value, $field))) {
                 return $preppedValue;
             }
 
-            if($field instanceof opal\rdbms\schema\field\Int) {
+            if ($field instanceof opal\rdbms\schema\field\Int) {
                 return (int)$value;
             }
         }
 
-        if(is_numeric($value)) {
+        if (is_numeric($value)) {
             return $value;
-        } else if($value === null) {
+        } elseif ($value === null) {
             return 'NULL';
         }
 
@@ -242,75 +271,87 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         return $this->quoteValue($value);
     }
 
-    public function normalizeValue($value) {
-        if($value instanceof core\time\IDate) {
+    public function normalizeValue($value)
+    {
+        if ($value instanceof core\time\IDate) {
             $value = $this->_prepareDateValue($value);
-        } else if($value instanceof flex\IGuid) {
+        } elseif ($value instanceof flex\IGuid) {
             return $value->getBytes();
         }
 
         return $value;
     }
 
-    protected function _prepareKnownValue($value, opal\rdbms\schema\IField $field) {
+    protected function _prepareKnownValue($value, opal\rdbms\schema\IField $field)
+    {
         return false;
     }
 
-    protected function _prepareDateValue(core\time\IDate $value) {
+    protected function _prepareDateValue(core\time\IDate $value)
+    {
         return $value->toUtc()->format('Y-m-d H:i:s');
     }
 
 
-// Introspection
-    public function getDatabaseList() {
+    // Introspection
+    public function getDatabaseList()
+    {
         return $this->getDatabase()->getList();
     }
 
-    public function databaseExists($name) {
+    public function databaseExists($name)
+    {
         return $this->getDatabase()->exists($name);
     }
 
 
 
-    public function getDatabase() {
+    public function getDatabase()
+    {
         return opal\rdbms\Database::factory($this);
     }
 
-    public function tableExists($name) {
+    public function tableExists($name)
+    {
         return $this->getTable($name)->exists();
     }
 
 
 
-    public function getTable($name) {
+    public function getTable($name)
+    {
         return new opal\rdbms\Table($this, $name);
     }
 
-    public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false) {
+    public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false)
+    {
         $table = $this->getTable($schema->getName());
         $table->create($schema, $dropIfExists);
 
         return $table;
     }
 
-    public function getSchema($name) {
+    public function getSchema($name)
+    {
         return $this->getTable($name)->getSchema();
     }
 
 
-// Mesh
-    public function getEntityLocator() {
+    // Mesh
+    public function getEntityLocator()
+    {
         return new mesh\entity\Locator('opal://rdbms/'.$this->getAdapterName().':"'.$this->getDsn()->getConnectionString().'"');
     }
 
-    public function fetchSubEntity(mesh\IManager $manager, array $node) {
-        if($node['id'] === null) {
+    public function fetchSubEntity(mesh\IManager $manager, array $node)
+    {
+        if ($node['id'] === null) {
             throw new mesh\entity\EntityNotFoundException(
                 'Opal entities must be referenced with an id in it\'s locator'
             );
         }
 
-        switch($node['type']) {
+        switch ($node['type']) {
             case 'Table':
                 return $this->getTable($node['id']);
 
@@ -320,7 +361,7 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     }
 
 
-// Stubs
+    // Stubs
     abstract protected function _connect($global=false);
     abstract protected function _createDb();
     abstract protected function _closeConnection();
@@ -330,10 +371,12 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     abstract protected function _rollbackTransaction();
 
 
-
-// Dump
-    public function getDumpProperties() {
-        return $this->_dsn->getDisplayString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->_dsn->getDisplayString());
     }
 }
 
@@ -344,17 +387,18 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
 /**
  * PDO
  */
-abstract class Base_Pdo extends opal\rdbms\adapter\Base {
-
+abstract class Base_Pdo extends opal\rdbms\adapter\Base
+{
     protected $_affectedRows = 0;
 
-// Connection
-    protected function _connect($global=false) {
-        if($this->_connection) {
+    // Connection
+    protected function _connect($global=false)
+    {
+        if ($this->_connection) {
             return;
         }
 
-        if(!extension_loaded('pdo')) {
+        if (!extension_loaded('pdo')) {
             throw new opal\rdbms\AdapterNotFoundException(
                 'PDO is not currently available'
             );
@@ -362,7 +406,7 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base {
 
         $pdoType = strtolower($this->getServerType());
 
-        if(!in_array($pdoType, \PDO::getAvailableDrivers())) {
+        if (!in_array($pdoType, \PDO::getAvailableDrivers())) {
             throw new opal\rdbms\AdapterNotFoundException(
                 'PDO adapter '.$pdoType.' is not currently available'
             );
@@ -377,7 +421,7 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base {
             );
 
             $connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch(\PDOException $e) {
+        } catch (\PDOException $e) {
             throw $this->_getConnectionException($e->getCode(), $e->getMessage());
         }
 
@@ -390,38 +434,44 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base {
     abstract public function _getConnectionException($code, $message);
     abstract public function _getQueryException($code, $message, $sql=null);
 
-    protected function _closeConnection() {
+    protected function _closeConnection()
+    {
         $this->_connection = null;
         return true;
     }
 
 
-// Transactions
-    protected function _beginTransaction() {
+    // Transactions
+    protected function _beginTransaction()
+    {
         $this->_connection->beginTransaction();
     }
 
-    protected function _commitTransaction() {
+    protected function _commitTransaction()
+    {
         $this->_connection->commit();
     }
 
-    protected function _rollbackTransaction() {
+    protected function _rollbackTransaction()
+    {
         $this->_connection->rollBack();
     }
 
 
 
-// Query
-    public function prepare($sql) {
+    // Query
+    public function prepare($sql)
+    {
         return new opal\rdbms\adapter\statement\Pdo($this, $sql);
     }
 
-    public function executeSql($sql, $forWrite=false) {
+    public function executeSql($sql, $forWrite=false)
+    {
         try {
-            if($forWrite) {
+            if ($forWrite) {
                 $this->_affectedRows = $this->_connection->exec($sql);
 
-                if($this->_affectedRows === false) {
+                if ($this->_affectedRows === false) {
                     $this->_affectedRows = 0;
                     $info = $this->_connection->errorInfo();
                     throw $this->_getQueryException($info[1], $info[2], $sql);
@@ -431,17 +481,19 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base {
             } else {
                 return $this->_connection->query($sql);
             }
-        } catch(\PDOException $e) {
+        } catch (\PDOException $e) {
             $info = $this->_connection->errorInfo();
             throw $this->_getQueryException($info[1], $info[2], $sql);
         }
     }
 
-    public function getLastInsertId() {
+    public function getLastInsertId()
+    {
         return $this->_connection->lastInsertId();
     }
 
-    public function countAffectedRows() {
+    public function countAffectedRows()
+    {
         return $this->_affectedRows;
     }
 }

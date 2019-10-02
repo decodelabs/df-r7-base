@@ -10,8 +10,12 @@ use df\core;
 use df\mint;
 use df\user;
 
-class CreditCard implements ICreditCard, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class CreditCard implements ICreditCard, Inspectable
+{
     const BRANDS = [
         'visa' => '/^4\d{12}(\d{3})?$/',
         'mastercard' => '/^(5[1-5]\d{4}|677189)\d{10}$/',
@@ -39,11 +43,12 @@ class CreditCard implements ICreditCard, core\IDumpable {
     protected $_issueNumber;
     protected $_billingAddress;
 
-    public static function fromArray(array $data) {
+    public static function fromArray(array $data)
+    {
         $output = new self();
 
-        foreach($data as $key => $value) {
-            switch($key) {
+        foreach ($data as $key => $value) {
+            switch ($key) {
                 case 'name':
                     $output->setName($value);
                     break;
@@ -89,11 +94,11 @@ class CreditCard implements ICreditCard, core\IDumpable {
                     break;
 
                 case 'billingAddress':
-                    if(is_array($value)) {
+                    if (is_array($value)) {
                         $value = user\PostalAddress::fromArray($value);
                     }
 
-                    if($value instanceof user\IPostalAddress) {
+                    if ($value instanceof user\IPostalAddress) {
                         $output->setBillingAddress($value);
                     }
 
@@ -104,33 +109,39 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $output;
     }
 
-    protected function __construct() {}
+    protected function __construct()
+    {
+    }
 
-// Name
-    public function setName(string $name) {
+    // Name
+    public function setName(string $name)
+    {
         $this->_name = $name;
         return $this;
     }
 
-    public function getName(): ?string {
+    public function getName(): ?string
+    {
         return $this->_name;
     }
 
-// Number
-    public static function isValidNumber(string $number): bool {
+    // Number
+    public static function isValidNumber(string $number): bool
+    {
         $str = '';
 
-        foreach(array_reverse(str_split($number)) as $i => $c) {
+        foreach (array_reverse(str_split($number)) as $i => $c) {
             $str .= $i % 2 ? $c * 2 : $c;
         }
 
         return array_sum(str_split($str)) % 10 === 0;
     }
 
-    public function setNumber(string $number) {
+    public function setNumber(string $number)
+    {
         $this->_number = $number;
 
-        if($number !== null) {
+        if ($number !== null) {
             $this->_last4 = null;
         }
 
@@ -139,14 +150,16 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getNumber(): ?string {
+    public function getNumber(): ?string
+    {
         return $this->_number;
     }
 
-    public function setLast4Digits(string $digits) {
+    public function setLast4Digits(string $digits)
+    {
         $this->_last4 = $digits;
 
-        if($digits !== null) {
+        if ($digits !== null) {
             $this->_number = null;
         }
 
@@ -155,8 +168,9 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getLast4Digits(): ?string {
-        if($this->_last4) {
+    public function getLast4Digits(): ?string
+    {
+        if ($this->_last4) {
             return $this->_last4;
         }
 
@@ -164,21 +178,23 @@ class CreditCard implements ICreditCard, core\IDumpable {
     }
 
 
-// Brand
-    public static function getSupportedBrands(): array {
+    // Brand
+    public static function getSupportedBrands(): array
+    {
         return array_keys(self::BRANDS);
     }
 
-    public function getBrand(): ?string {
-        if($this->_brand === false) {
-            foreach(self::BRANDS as $brand => $regex) {
-                if(preg_match($regex, $this->_number)) {
+    public function getBrand(): ?string
+    {
+        if ($this->_brand === false) {
+            foreach (self::BRANDS as $brand => $regex) {
+                if (preg_match($regex, $this->_number)) {
                     $this->_brand = $brand;
                     break;
                 }
             }
 
-            if($this->_brand === false) {
+            if ($this->_brand === false) {
                 $this->_brand = null;
             }
         }
@@ -187,40 +203,45 @@ class CreditCard implements ICreditCard, core\IDumpable {
     }
 
 
-// Start
-    public function setStartMonth(?int $month) {
+    // Start
+    public function setStartMonth(?int $month)
+    {
         $this->_startMonth = $month;
 
-        if($month === null) {
+        if ($month === null) {
             $this->_startYear = null;
         }
 
         return $this;
     }
 
-    public function getStartMonth(): ?int {
+    public function getStartMonth(): ?int
+    {
         return $this->_startMonth;
     }
 
-    public function setStartYear(?int $year) {
-        if(strlen($year) == 2) {
+    public function setStartYear(?int $year)
+    {
+        if (strlen($year) == 2) {
             $year = '20'.$year;
         }
 
         $this->_startYear = $year;
 
-        if($year === null) {
+        if ($year === null) {
             $this->_startMonth = null;
         }
 
         return $this;
     }
 
-    public function getStartYear(): ?int {
+    public function getStartYear(): ?int
+    {
         return $this->_startYear;
     }
 
-    public function setStartString(string $start) {
+    public function setStartString(string $start)
+    {
         $parts = explode('/', $start);
 
         return $this
@@ -228,27 +249,32 @@ class CreditCard implements ICreditCard, core\IDumpable {
             ->setStartYear(array_shift($parts));
     }
 
-    public function getStartString(): ?string {
+    public function getStartString(): ?string
+    {
         return $this->_startMonth.'/'.$this->_startYear;
     }
 
-    public function getStartDate(): ?core\time\IDate {
+    public function getStartDate(): ?core\time\IDate
+    {
         return new core\time\Date($this->_startYear.'-'.$this->_startMonth.'-1');
     }
 
 
-// Expiry
-    public function setExpiryMonth(int $month) {
+    // Expiry
+    public function setExpiryMonth(int $month)
+    {
         $this->_expiryMonth = $month;
         return $this;
     }
 
-    public function getExpiryMonth(): ?int {
+    public function getExpiryMonth(): ?int
+    {
         return $this->_expiryMonth;
     }
 
-    public function setExpiryYear(int $year) {
-        if($year < 100) {
+    public function setExpiryYear(int $year)
+    {
+        if ($year < 100) {
             $year += 2000;
         }
 
@@ -256,11 +282,13 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return $this;
     }
 
-    public function getExpiryYear(): ?int {
+    public function getExpiryYear(): ?int
+    {
         return $this->_expiryYear;
     }
 
-    public function setExpiryString(string $expiry) {
+    public function setExpiryString(string $expiry)
+    {
         $parts = explode('/', $expiry);
 
         return $this
@@ -268,61 +296,70 @@ class CreditCard implements ICreditCard, core\IDumpable {
             ->setExpiryYear(array_shift($parts));
     }
 
-    public function getExpiryString(): ?string {
+    public function getExpiryString(): ?string
+    {
         return $this->_expiryMonth.'/'.$this->_expiryYear;
     }
 
-    public function getExpiryDate(): ?core\time\IDate {
+    public function getExpiryDate(): ?core\time\IDate
+    {
         return new core\time\Date($this->_expiryYear.'-'.$this->_expiryMonth.'-1');
     }
 
 
-// Cvc
-    public function setCvc(string $cvc) {
+    // Cvc
+    public function setCvc(string $cvc)
+    {
         $this->_cvc = $cvc;
         return $this;
     }
 
-    public function getCvc(): ?string {
+    public function getCvc(): ?string
+    {
         return $this->_cvc;
     }
 
 
-// Issue number
-    public function setIssueNumber(?string $number) {
+    // Issue number
+    public function setIssueNumber(?string $number)
+    {
         $this->_issueNumber = $number;
         return $this;
     }
 
-    public function getIssueNumber(): ?string {
+    public function getIssueNumber(): ?string
+    {
         return $this->_issueNumber;
     }
 
 
-// Billing address
-    public function setBillingAddress(user\IPostalAddress $address=null) {
+    // Billing address
+    public function setBillingAddress(user\IPostalAddress $address=null)
+    {
         $this->_billingAddress = $address;
         return $this;
     }
 
-    public function getBillingAddress(): ?user\IPostalAddress {
+    public function getBillingAddress(): ?user\IPostalAddress
+    {
         return $this->_billingAddress;
     }
 
 
-// Valid
-    public function isValid(): bool {
-        if(!$this->_number || !$this->_expiryMonth || !$this->_expiryYear || !$this->_cvc) {
+    // Valid
+    public function isValid(): bool
+    {
+        if (!$this->_number || !$this->_expiryMonth || !$this->_expiryYear || !$this->_cvc) {
             return false;
         }
 
         $date = clone $this->getExpiryDate();
 
-        if($date->modify('+1 month')->modify('-1 day')->isPast()) {
+        if ($date->modify('+1 month')->modify('-1 day')->isPast()) {
             return false;
         }
 
-        if(!$this->isValidNumber($this->_number)) {
+        if (!$this->isValidNumber($this->_number)) {
             return false;
         }
 
@@ -330,8 +367,9 @@ class CreditCard implements ICreditCard, core\IDumpable {
     }
 
 
-// Array
-    public function toArray(): array {
+    // Array
+    public function toArray(): array
+    {
         return [
             'name' => $this->_name,
             'number' => $this->_number,
@@ -347,45 +385,45 @@ class CreditCard implements ICreditCard, core\IDumpable {
     }
 
 
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setProperty('*name', $inspector($this->_name));
 
-// Dump
-    public function getDumpProperties() {
-        $output = ['name' => $this->_name];
-
-        if($this->_last4) {
-            $output['number'] = str_pad($this->_last4, 16, 'x', STR_PAD_LEFT);
+        if ($this->_last4) {
+            $entity->setProperty('*number', $inspector(str_pad($this->_last4, 16, 'x', STR_PAD_LEFT)));
         } else {
-            $output['number'] = $this->_number;
+            $entity->setProperty('*number', $inspector($this->_number));
         }
 
-        if($this->_number) {
-            $output['brand'] = $this->getBrand();
+        if ($this->_number) {
+            $entity->setProperty('*brand', $inspector($this->getBrand()));
         }
 
-        if($this->_startMonth && $this->_startYear) {
-            $output['start'] = $this->getStartString();
+        if ($this->_startMonth && $this->_startYear) {
+            $entity->setProperty('*start', $inspector($this->getStartString()));
         } else {
-            $output['start'] = null;
+            $entity->setProperty('*start', $inspector(null));
         }
 
-        if($this->_expiryMonth && $this->_expiryYear) {
-            $output['expiry'] = $this->getExpiryString();
+        if ($this->_expiryMonth && $this->_expiryYear) {
+            $entity->setProperty('*expiry', $inspector($this->getExpiryString()));
         } else {
-            $output['expiry'] = null;
+            $entity->setProperty('*expiry', $inspector(null));
         }
 
-        $output['cvc'] = $this->_cvc;
+        $entity->setProperty('*cvc', $inspector($this->_cvc));
 
-        if($this->_issueNumber) {
-            $output['issueNumber'] = $this->_issueNumber;
+        if ($this->_issueNumber) {
+            $entity->setProperty('*issueNumber', $inspector($this->_issueNumber));
         }
 
-        if($this->_billingAddress) {
-            $output['billingAddress'] = $this->_billingAddress;
+        if ($this->_billingAddress) {
+            $entity->setProperty('*billingAddress', $inspector($this->_billingAddress));
         }
 
-        $output['valid'] = $this->isValid();
-
-        return $output;
+        $entity->setProperty('*valid', $inspector($this->isValid()));
     }
 }

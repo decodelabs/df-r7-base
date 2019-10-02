@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\opal;
 
-class Insert implements IInsertQuery, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Insert implements IInsertQuery, Inspectable
+{
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Locational;
@@ -20,7 +24,8 @@ class Insert implements IInsertQuery, core\IDumpable {
     protected $_row;
     protected $_preparedRow;
 
-    public function __construct(ISourceManager $sourceManager, ISource $source, $row, $shouldReplace=false) {
+    public function __construct(ISourceManager $sourceManager, ISource $source, $row, $shouldReplace=false)
+    {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
         $this->_shouldReplace = (bool)$shouldReplace;
@@ -28,30 +33,32 @@ class Insert implements IInsertQuery, core\IDumpable {
         $this->setRow($row);
     }
 
-    public function getQueryType() {
-        if($this->_shouldReplace) {
+    public function getQueryType()
+    {
+        if ($this->_shouldReplace) {
             return IQueryTypes::REPLACE;
         } else {
             return IQueryTypes::INSERT;
         }
     }
 
-    public function setRow($row) {
-        if($this instanceof ILocationalQuery && $row instanceof opal\record\ILocationalRecord) {
+    public function setRow($row)
+    {
+        if ($this instanceof ILocationalQuery && $row instanceof opal\record\ILocationalRecord) {
             $this->inside($row->getQueryLocation());
         }
 
-        if($row instanceof IDataRowProvider) {
+        if ($row instanceof IDataRowProvider) {
             $row = $row->toDataRowArray();
-        } else if($row instanceof core\IArrayProvider) {
+        } elseif ($row instanceof core\IArrayProvider) {
             $row = $row->toArray();
-        } else if(!is_array($row)) {
+        } elseif (!is_array($row)) {
             throw new InvalidArgumentException(
                 'Insert data must be convertible to an array'
             );
         }
 
-        if(empty($row)) {
+        if (empty($row)) {
             throw new InvalidArgumentException(
                 'Insert data must contain at least one field'
             );
@@ -62,12 +69,14 @@ class Insert implements IInsertQuery, core\IDumpable {
         return $this;
     }
 
-    public function getRow() {
+    public function getRow()
+    {
         return $this->_row;
     }
 
-    public function getPreparedRow() {
-        if(!$this->_preparedRow) {
+    public function getPreparedRow()
+    {
+        if (!$this->_preparedRow) {
             $this->_preparedRow = $this->_deflateInsertValues($this->_row);
         }
 
@@ -75,8 +84,9 @@ class Insert implements IInsertQuery, core\IDumpable {
     }
 
 
-    public function execute() {
-        $output = $this->_sourceManager->executeQuery($this, function($adapter) {
+    public function execute()
+    {
+        $output = $this->_sourceManager->executeQuery($this, function ($adapter) {
             return $adapter->executeInsertQuery($this);
         });
 
@@ -86,16 +96,17 @@ class Insert implements IInsertQuery, core\IDumpable {
         return $output;
     }
 
-    protected function _normalizeInsertId($originalId, array $row) {
+    protected function _normalizeInsertId($originalId, array $row)
+    {
         $adapter = $this->_source->getAdapter();
 
-        if(!$adapter instanceof IIntegralAdapter) {
+        if (!$adapter instanceof IIntegralAdapter) {
             return $originalId;
         }
 
         $index = $adapter->getQueryAdapterSchema()->getPrimaryIndex();
 
-        if(!$index) {
+        if (!$index) {
             return $originalId;
         }
 
@@ -103,21 +114,21 @@ class Insert implements IInsertQuery, core\IDumpable {
         $values = [];
         $autoInc = false;
 
-        foreach($fields as $name => $field) {
-            if($originalId
+        foreach ($fields as $name => $field) {
+            if ($originalId
             && $field instanceof opal\schema\IAutoIncrementableField
             && $field->shouldAutoIncrement()
             && !$autoInc) {
                 $values[$name] = $originalId;
 
-                if($field instanceof IFieldValueProcessor) {
+                if ($field instanceof IFieldValueProcessor) {
                     $values[$name] = $field->inflateValueFromRow($name, $values, null);
                 }
 
                 $autoInc = false;
-            } else if($field instanceof IFieldValueProcessor) {
+            } elseif ($field instanceof IFieldValueProcessor) {
                 $values[$name] = $field->inflateValueFromRow($name, $row, null);
-            } else if(isset($row[$name])) {
+            } elseif (isset($row[$name])) {
                 $values[$name] = $row[$name];
             } else {
                 $values[$name] = null;
@@ -127,28 +138,29 @@ class Insert implements IInsertQuery, core\IDumpable {
         return new opal\record\PrimaryKeySet(array_keys($fields), $values);
     }
 
-    protected function _deflateInsertValues(array $row) {
+    protected function _deflateInsertValues(array $row)
+    {
         $adapter = $this->_source->getAdapter();
 
-        if(!$adapter instanceof IIntegralAdapter) {
+        if (!$adapter instanceof IIntegralAdapter) {
             return $row;
         }
 
         $schema = $adapter->getQueryAdapterSchema();
         $values = [];
 
-        foreach($schema->getFields() as $name => $field) {
-            if($field instanceof opal\schema\INullPrimitiveField) {
+        foreach ($schema->getFields() as $name => $field) {
+            if ($field instanceof opal\schema\INullPrimitiveField) {
                 continue;
             }
 
-            if(!isset($row[$name])) {
+            if (!isset($row[$name])) {
                 $this->_row[$name] = $value = $field->generateInsertValue($row);
             } else {
                 $value = $field->sanitizeValue($row[$name]);
             }
 
-            if($field instanceof opal\schema\IAutoTimestampField
+            if ($field instanceof opal\schema\IAutoTimestampField
             && ($value === null || $value === '')
             && $field->shouldTimestampAsDefault()) {
                 continue;
@@ -156,8 +168,8 @@ class Insert implements IInsertQuery, core\IDumpable {
 
             $value = $field->deflateValue($value);
 
-            if(is_array($value)) {
-                foreach($value as $key => $val) {
+            if (is_array($value)) {
+                foreach ($value as $key => $val) {
                     $values[$key] = $val;
                 }
             } else {
@@ -168,11 +180,15 @@ class Insert implements IInsertQuery, core\IDumpable {
         return $values;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'source' => $this->_source->getAdapter(),
-            'row' => $this->_row
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*source' => $inspector($this->_source->getAdapter()),
+                '*row' => $inspector($this->_row)
+            ]);
     }
 }

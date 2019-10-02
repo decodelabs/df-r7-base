@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Select extends Base implements IUngroupedSelectionInputWidget, IFocusableInputWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Select extends Base implements IUngroupedSelectionInputWidget, IFocusableInputWidget, Inspectable
+{
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_VisualInput;
@@ -24,19 +28,21 @@ class Select extends Base implements IUngroupedSelectionInputWidget, IFocusableI
     protected $_markSelected = true;
     protected $_noSelectionLabel = '--';
 
-    public function __construct(arch\IContext $context, $name, $value=null, $options=null, $labelsAsValues=false) {
+    public function __construct(arch\IContext $context, $name, $value=null, $options=null, $labelsAsValues=false)
+    {
         parent::__construct($context);
 
         $this->setName($name);
         $this->setValue($value);
 
-        if($options !== null) {
+        if ($options !== null) {
             $this->addOptions($options, $labelsAsValues);
         }
     }
 
-    public function shouldMarkSelected(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldMarkSelected(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_markSelected = $flag;
             return $this;
         }
@@ -44,16 +50,19 @@ class Select extends Base implements IUngroupedSelectionInputWidget, IFocusableI
         return $this->_markSelected;
     }
 
-    public function setNoSelectionLabel($label) {
+    public function setNoSelectionLabel($label)
+    {
         $this->_noSelectionLabel = $label;
         return $this;
     }
 
-    public function getNoSelectionLabel() {
+    public function getNoSelectionLabel()
+    {
         return $this->_noSelectionLabel;
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
 
         $this->_applyFormDataAttributes($tag, false);
@@ -64,47 +73,52 @@ class Select extends Base implements IUngroupedSelectionInputWidget, IFocusableI
         $optionList = new aura\html\ElementContent();
         $selectionFound = false;
 
-        foreach($this->_options as $value => $label) {
+        foreach ($this->_options as $value => $label) {
             $isSelected = !$selectionFound && $this->_checkSelected($value, $selectionFound);
             $option = new aura\html\Element('option', null, ['value' => $value]);
 
-            if($isSelected) {
+            if ($isSelected) {
                 $option->setAttribute('selected', 'selected');
             }
 
-            if($optionRenderer = $this->_optionRenderer) {
+            if ($optionRenderer = $this->_optionRenderer) {
                 $optionRenderer($option, $value, $label);
             } else {
                 $option->push($label);
             }
 
-            if($isSelected && $this->_markSelected) {
+            if ($isSelected && $this->_markSelected) {
                 $option->unshift('» ');
             }
 
             $optionList->push($option->render());
         }
 
-        if(!$this->isRequired() && !$tag->hasAttribute('multiple')) {
+        if (!$this->isRequired() && !$tag->hasAttribute('multiple')) {
             $optionList->unshift(new aura\html\Element('option', $this->_noSelectionLabel !== '--' ? $this->_noSelectionLabel : '', ['value' => '']));
-        } else if(!$selectionFound && $this->_noSelectionLabel !== null) {
+        } elseif (!$selectionFound && $this->_noSelectionLabel !== null) {
             $optionList->unshift(new aura\html\Element('option', $this->_noSelectionLabel, ['value' => '', 'disabled' => true, 'selected' => true]));
         }
 
         return $tag->renderWith($optionList, true);
     }
 
-    protected function _checkSelected($value, &$selectionFound) {
+    protected function _checkSelected($value, &$selectionFound)
+    {
         return $selectionFound = (string)$value === $this->getValueString();
     }
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'name' => $this->_name,
-            'value' => $this->_value,
-            'options' => $this->_options,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*name' => $inspector($this->_name),
+                '*value' => $inspector($this->_value),
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues($inspector->inspectList($this->_options));
     }
 }

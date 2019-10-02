@@ -10,18 +10,23 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Overlay extends Container implements IWidgetShortcutProvider {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Overlay extends Container implements IWidgetShortcutProvider
+{
     const PRIMARY_TAG = 'div.overlay';
 
     protected $_titleBody;
     protected $_titleTagName = 'h3';
     protected $_url;
 
-    public function __construct(arch\IContext $context, $title=null, $url=null) {
+    public function __construct(arch\IContext $context, $title=null, $url=null)
+    {
         parent::__construct($context);
 
-        if($title instanceof aura\html\IElementContent) {
+        if ($title instanceof aura\html\IElementContent) {
             $this->setTitleBody($title);
         } else {
             $this->_titleBody = new aura\html\ElementContent($title, $this->getTag());
@@ -30,17 +35,18 @@ class Overlay extends Container implements IWidgetShortcutProvider {
         $this->setUrl($url);
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
         $title = null;
 
-        if(!$this->_titleBody->isEmpty()) {
+        if (!$this->_titleBody->isEmpty()) {
             $title = (new aura\html\Element($this->_titleTagName, $this->_titleBody))->render();
         }
 
         $children = $this->_prepareChildren();
 
-        if($this->_url !== null) {
+        if ($this->_url !== null) {
             $children->prepend((new aura\html\Tag('iframe', [
                 'src' => $this->_context->uri($this->_url),
                 'width' => '100%',
@@ -58,24 +64,28 @@ class Overlay extends Container implements IWidgetShortcutProvider {
     }
 
 
-// Url
-    public function setUrl($url) {
+    // Url
+    public function setUrl($url)
+    {
         $this->_url = $url;
         return $this;
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
         return $this->_url;
     }
 
 
-// Title
-    public function withTitleBody() {
+    // Title
+    public function withTitleBody()
+    {
         return new aura\html\widget\util\ElementContentWrapper($this, $this->_titleBody);
     }
 
-    public function setTitleBody(aura\html\IElementContent $body) {
-        if(!$body->getParentRenderContext()) {
+    public function setTitleBody(aura\html\IElementContent $body)
+    {
+        if (!$body->getParentRenderContext()) {
             $body->setParentRenderContext($this->getTag());
         }
 
@@ -83,27 +93,33 @@ class Overlay extends Container implements IWidgetShortcutProvider {
         return $this;
     }
 
-    public function getTitleBody() {
+    public function getTitleBody()
+    {
         return $this->_titleBody;
     }
 
 
-    public function setTitleTagName($name) {
+    public function setTitleTagName($name)
+    {
         $this->_titleTagName = $name;
         return $this;
     }
 
-    public function getTitleTagName() {
+    public function getTitleTagName()
+    {
         return $this->_titleTagName;
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'title' => $this->_titleBody,
-            'children' => $this->_children,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*title' => $inspector($this->_titleBody),
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues($inspector->inspectList($this->_children->toArray()));
     }
 }

@@ -11,33 +11,41 @@ use df\axis;
 use df\opal;
 use df\user;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 class Rdbms implements
     axis\ISchemaProviderAdapter,
     axis\IConnectionProxyAdapter,
     axis\IIntrospectableAdapter,
     opal\query\IAdapter,
-    core\IDumpable {
-
+    Inspectable
+{
     use user\TAccessLock;
 
     protected $_connection;
     protected $_querySourceAdapter;
     protected $_unit;
 
-    public function __construct(axis\IAdapterBasedStorageUnit $unit) {
+    public function __construct(axis\IAdapterBasedStorageUnit $unit)
+    {
         $this->_unit = $unit;
     }
 
-    public function getDisplayName(): string {
+    public function getDisplayName(): string
+    {
         return 'Rdbms';
     }
 
-    public function getUnit() {
+    public function getUnit()
+    {
         return $this->_unit;
     }
 
-    public function getConnection() {
-        if(!$this->_connection) {
+    public function getConnection()
+    {
+        if (!$this->_connection) {
             $settings = $this->_unit->getUnitSettings();
             $dsn = opal\rdbms\Dsn::factory($settings['dsn']);
             $this->_connection = opal\rdbms\adapter\Base::factory($dsn, true);
@@ -46,151 +54,182 @@ class Rdbms implements
         return $this->_connection;
     }
 
-    public function getConnectionDisplayName() {
+    public function getConnectionDisplayName()
+    {
         return $this->getConnection()->getDsn()->getDisplayString();
     }
 
-    public function getStorageGroupName() {
+    public function getStorageGroupName()
+    {
         $output = $this->getConnection()->getDsn()->getDatabase();
 
-        if(substr($output, -3) == '.db') {
+        if (substr($output, -3) == '.db') {
             $output = substr($output, 0, -3);
         }
 
         return $output;
     }
 
-// Query source
-    public function getQuerySourceId() {
+    // Query source
+    public function getQuerySourceId()
+    {
         return 'axis://'.$this->_unit->getModel()->getModelName().'/'.ucfirst($this->_unit->getUnitName());
     }
 
-    public function getQuerySourceDisplayName() {
+    public function getQuerySourceDisplayName()
+    {
         return $this->_unit->getUnitId();
     }
 
-    public function getQuerySourceAdapterHash() {
+    public function getQuerySourceAdapterHash()
+    {
         return $this->getConnection()->getDsnHash();
     }
 
-    public function getQuerySourceAdapterServerHash() {
+    public function getQuerySourceAdapterServerHash()
+    {
         return $this->getConnection()->getServerDsnHash();
     }
 
-    public function getQuerySourceAdapter() {
-        if(!$this->_querySourceAdapter) {
+    public function getQuerySourceAdapter()
+    {
+        if (!$this->_querySourceAdapter) {
             $this->_querySourceAdapter = $this->getConnection()->getTable($this->_unit->getStorageBackendName());
         }
 
         return $this->_querySourceAdapter;
     }
 
-    public function getDelegateQueryAdapter() {
+    public function getDelegateQueryAdapter()
+    {
         return $this->getQuerySourceAdapter()->getDelegateQueryAdapter();
     }
 
-    public function supportsQueryType($type) {
+    public function supportsQueryType($type)
+    {
         return $this->getQuerySourceAdapter()->supportsQueryType($type);
     }
 
-    public function supportsQueryFeature($feature) {
+    public function supportsQueryFeature($feature)
+    {
         return $this->getQuerySourceAdapter()->supportsQueryFeature($feature);
     }
 
 
 
-// Query proxy
-    public function executeSelectQuery(opal\query\ISelectQuery $query) {
+    // Query proxy
+    public function executeSelectQuery(opal\query\ISelectQuery $query)
+    {
         return $this->getQuerySourceAdapter()->executeSelectQuery($query);
     }
 
-    public function countSelectQuery(opal\query\ISelectQuery $query) {
+    public function countSelectQuery(opal\query\ISelectQuery $query)
+    {
         return $this->getQuerySourceAdapter()->countSelectQuery($query);
     }
 
-    public function executeUnionQuery(opal\query\IUnionQuery $query) {
+    public function executeUnionQuery(opal\query\IUnionQuery $query)
+    {
         return $this->getQuerySourceAdapter()->executeUnionQuery($query);
     }
 
-    public function countUnionQuery(opal\query\IUnionQuery $query) {
+    public function countUnionQuery(opal\query\IUnionQuery $query)
+    {
         return $this->getQuerySourceAdapter()->countUnionQuery($query);
     }
 
-    public function executeFetchQuery(opal\query\IFetchQuery $query) {
+    public function executeFetchQuery(opal\query\IFetchQuery $query)
+    {
         return $this->getQuerySourceAdapter()->executeFetchQuery($query);
     }
 
-    public function countFetchQuery(opal\query\IFetchQuery $query) {
+    public function countFetchQuery(opal\query\IFetchQuery $query)
+    {
         return $this->getQuerySourceAdapter()->countFetchQuery($query);
     }
 
-    public function executeInsertQuery(opal\query\IInsertQuery $query) {
+    public function executeInsertQuery(opal\query\IInsertQuery $query)
+    {
         return $this->getQuerySourceAdapter()->executeInsertQuery($query);
     }
 
-    public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query) {
+    public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query)
+    {
         return $this->getQuerySourceAdapter()->executeBatchInsertQuery($query);
     }
 
-    public function executeUpdateQuery(opal\query\IUpdateQuery $query) {
+    public function executeUpdateQuery(opal\query\IUpdateQuery $query)
+    {
         return $this->getQuerySourceAdapter()->executeUpdateQuery($query);
     }
 
-    public function executeDeleteQuery(opal\query\IDeleteQuery $query) {
+    public function executeDeleteQuery(opal\query\IDeleteQuery $query)
+    {
         return $this->getQuerySourceAdapter()->executeDeleteQuery($query);
     }
 
 
-    public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows) {
+    public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows)
+    {
         return $this->getQuerySourceAdapter()->fetchRemoteJoinData($join, $rows);
     }
 
-    public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows) {
+    public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows)
+    {
         return $this->getQuerySourceAdapter()->fetchAttachmentData($attachment, $rows);
     }
 
 
 
 
-// Transactions
-    public function getTransactionId() {
+    // Transactions
+    public function getTransactionId()
+    {
         return $this->getQuerySourceAdapterHash();
     }
 
-    public function getJobAdapterId() {
+    public function getJobAdapterId()
+    {
         return $this->getQuerySourceId();
     }
 
-    public function begin() {
+    public function begin()
+    {
         return $this->getQuerySourceAdapter()->begin();
     }
 
-    public function commit() {
+    public function commit()
+    {
         return $this->getQuerySourceAdapter()->commit();
     }
 
-    public function rollback() {
+    public function rollback()
+    {
         return $this->getQuerySourceAdapter()->rollback();
     }
 
 
-// Record
-    public function newRecord(array $values=null) {
+    // Record
+    public function newRecord(array $values=null)
+    {
         return $this->_unit->newRecord($values);
     }
 
-    public function newPartial(array $values=null) {
+    public function newPartial(array $values=null)
+    {
         return $this->_unit->newPartial($values);
     }
 
-    public function shouldRecordsBroadcastHookEvents() {
+    public function shouldRecordsBroadcastHookEvents()
+    {
         return $this->_unit->shouldRecordsBroadcastHookEvents();
     }
 
 
-// Create
-    public function ensureStorage() {
-        if($this->storageExists()) {
+    // Create
+    public function ensureStorage()
+    {
+        if ($this->storageExists()) {
             return false;
         }
 
@@ -200,7 +239,8 @@ class Rdbms implements
         return $this;
     }
 
-    public function createStorageFromSchema(axis\schema\ISchema $axisSchema) {
+    public function createStorageFromSchema(axis\schema\ISchema $axisSchema)
+    {
         $adapter = $this->getConnection();
         $table = $adapter->getTable($this->_unit->getStorageBackendName());
 
@@ -210,35 +250,39 @@ class Rdbms implements
         return $table->create($dbSchema);
     }
 
-    public function updateStorageFromSchema(axis\schema\ISchema $axisSchema) {
+    public function updateStorageFromSchema(axis\schema\ISchema $axisSchema)
+    {
         $adapter = $this->getConnection();
         $table = $adapter->getTable($this->_unit->getStorageBackendName());
 
         $translator = new axis\schema\translator\Rdbms($this->_unit, $adapter, $axisSchema, $table->getSchema());
         $dbSchema = $translator->updateTargetSchema();
 
-        if($dbSchema->hasChanged()) {
+        if ($dbSchema->hasChanged()) {
             return $table->alter($dbSchema);
         }
 
         return $table;
     }
 
-    public function destroyStorage() {
+    public function destroyStorage()
+    {
         $this->getQuerySourceAdapter()->drop();
         return $this;
     }
 
-    public function storageExists() {
+    public function storageExists()
+    {
         return $this->getQuerySourceAdapter()->exists();
     }
 
 
-// Query exceptions
-    public function handleQueryException(opal\query\IQuery $query, \Throwable $e) {
+    // Query exceptions
+    public function handleQueryException(opal\query\IQuery $query, \Throwable $e)
+    {
         // Table not found
-        if($e instanceof opal\rdbms\TableNotFoundException) {
-            if(strtolower($e->table) == strtolower($this->_unit->getStorageBackendName())) {
+        if ($e instanceof opal\rdbms\TableNotFoundException) {
+            if (strtolower($e->table) == strtolower($this->_unit->getStorageBackendName())) {
                 $this->ensureStorageConsistency();
                 return true;
             }
@@ -247,7 +291,8 @@ class Rdbms implements
         return false;
     }
 
-    public function ensureStorageConsistency() {
+    public function ensureStorageConsistency()
+    {
         $model = $this->_unit->getModel();
         $manager = $model->getSchemaManager();
 
@@ -258,37 +303,37 @@ class Rdbms implements
 
         $unitId = $this->_unit->getUnitId();
 
-        if(!in_array($unitId, $idList)) {
+        if (!in_array($unitId, $idList)) {
             $idList[] = $unitId;
         }
 
-        foreach($idList as $unitId) {
+        foreach ($idList as $unitId) {
             try {
                 $unit = $model->loadUnitFromId($unitId);
-            } catch(axis\RuntimeException $e) {
+            } catch (axis\RuntimeException $e) {
                 $remove[] = $unitId;
                 continue;
             }
 
             $backendName = $unit->getStorageBackendName();
 
-            if(!in_array($backendName, $tableList)) {
+            if (!in_array($backendName, $tableList)) {
                 $update[$backendName] = $unit;
             }
         }
 
-        if(!empty($remove)) {
+        if (!empty($remove)) {
             $manager->clearCache();
 
-            foreach($remove as $unitId) {
+            foreach ($remove as $unitId) {
                 $manager->removeId($unitId);
             }
         }
 
-        if(!empty($update)) {
+        if (!empty($update)) {
             $manager->clearCache();
 
-            foreach($update as $name => $unit) {
+            foreach ($update as $name => $unit) {
                 $manager->remove($unit);
                 $manager->fetchFor($unit);
             }
@@ -299,13 +344,15 @@ class Rdbms implements
 
 
 
-// Introspection
-    public function getStorageList() {
+    // Introspection
+    public function getStorageList()
+    {
         return $this->getConnection()->getDatabase()->getTableList();
     }
 
-    public function describeStorage($name=null) {
-        if($name === null) {
+    public function describeStorage($name=null)
+    {
+        if ($name === null) {
             $name = $this->_unit->getStorageBackendName();
         }
 
@@ -322,8 +369,9 @@ class Rdbms implements
         );
     }
 
-    public function destroyDescribedStorage($name) {
-        if($name instanceof axis\introspector\IStorageDescriber) {
+    public function destroyDescribedStorage($name)
+    {
+        if ($name instanceof axis\introspector\IStorageDescriber) {
             $name = $name->getName();
         }
 
@@ -332,29 +380,36 @@ class Rdbms implements
     }
 
 
-// Access
-    public function getAccessLockDomain() {
+    // Access
+    public function getAccessLockDomain()
+    {
         return $this->_unit->getAccessLockDomain();
     }
 
-    public function lookupAccessKey(array $keys, $action=null) {
+    public function lookupAccessKey(array $keys, $action=null)
+    {
         return $this->_unit->lookupAccessKey($keys, $action);
     }
 
-    public function getDefaultAccess($action=null) {
+    public function getDefaultAccess($action=null)
+    {
         return $this->_unit->getDefaultAccess($action);
     }
 
-    public function getAccessLockId() {
+    public function getAccessLockId()
+    {
         return $this->_unit->getAccessLockId();
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'name' => $this->getDisplayName(),
-            'unit' => $this->_unit->getUnitId()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '%name' => $inspector($this->getDisplayName()),
+                '*unit' => $inspector($this->_unit->getUnitId())
+            ]);
     }
 }

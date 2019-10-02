@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Correlation implements opal\query\ICorrelationField, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Correlation implements opal\query\ICorrelationField, Inspectable
 {
     use opal\query\TField;
 
@@ -91,8 +95,14 @@ class Correlation implements opal\query\ICorrelationField, core\IDumpable
         return $this->getAlias().'()';
     }
 
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return [$this->getAlias() => $this->_query];
+        $entity
+            ->setProperties([
+                $this->getAlias() => $inspector($this->_query)
+            ]);
     }
 }

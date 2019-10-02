@@ -9,32 +9,38 @@ use df;
 use df\core;
 use df\link;
 
-abstract class ServerPeer extends Base implements IServerPeerSocket, core\IDumpable {
-    
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+abstract class ServerPeer extends Base implements IServerPeerSocket, Inspectable
+{
     use TIoSocket;
 
     protected $_isConnected = true;
-    
-    public static function factory(IServerSocket $parent, $socket, $address) {
+
+    public static function factory(IServerSocket $parent, $socket, $address)
+    {
         $class = get_class($parent).'Peer';
-        
-        if(!class_exists($class)) {
+
+        if (!class_exists($class)) {
             throw new RuntimeException(
                 'Protocol '.$parent->getAddress()->getScheme().', does not have a server peer handler class'
             );
         }
-        
+
         return new $class($parent, $socket, $address);
     }
-    
-    public function __construct(IServerSocket $parent, $socket, $address) {
+
+    public function __construct(IServerSocket $parent, $socket, $address)
+    {
         parent::__construct($address);
-        
-        if(!is_resource($socket)) {
+
+        if (!is_resource($socket)) {
             $this->_isConnected = false;
             $socket = false;
         }
-        
+
         $this->_id = $parent->getAddress().'|'.$this->_address;
         $this->_socket = $socket;
         $this->_options = $parent->getOptions();
@@ -42,36 +48,40 @@ abstract class ServerPeer extends Base implements IServerPeerSocket, core\IDumpa
         $this->_writingEnabled = true;
         $this->shouldBlock($parent->shouldBlock());
     }
-    
-    
-    public function isConnected() {
+
+
+    public function isConnected()
+    {
         return $this->_isConnected;
     }
 
-    
-// Dump
-    public function getDumpProperties() {
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
         $output = $this->getId().' (';
         $args = [];
-        
-        if($this->_isConnected) {
-            if($this->_readingEnabled) {
+
+        if ($this->_isConnected) {
+            if ($this->_readingEnabled) {
                 $args[] = 'r';
             }
-            
-            if($this->_writingEnabled) {
+
+            if ($this->_writingEnabled) {
                 $args[] = 'w';
             }
         }
 
-        if(empty($args)) {
+        if (empty($args)) {
             $args[] = 'x';
         }
-        
-        if($this->_isSecure) {
+
+        if ($this->_isSecure) {
             array_unshift($args, 's');
         }
-        
-        return $output.implode('/', $args).')';
+
+        $output .= implode('/', $args).')';
+        $entity->setText($output);
     }
 }

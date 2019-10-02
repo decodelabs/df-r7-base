@@ -482,19 +482,14 @@ class Source implements ISource, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity
-            ->setProperty('!__id', $inspector($this->getId()));
-
-        $values = [];
+        $entity->setDefinition($this->getId());
 
         foreach ($this->_outputFields as $alias => $field) {
-            $output[$alias] = $inspector($field->getQualifiedName());
+            $entity->setProperty($alias, $inspector($field->getQualifiedName()));
         }
 
         foreach ($this->_privateFields as $alias => $field) {
-            $output['*'.$alias] = $inspector($field->getQualifiedName());
+            $entity->setProperty('!'.$alias, $inspector($field->getQualifiedName()));
         }
-
-        $entity->setValues($output);
     }
 }

@@ -11,7 +11,11 @@ use df\opal;
 use df\user;
 use df\mesh;
 
-class Table implements ITable, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Table implements ITable, Inspectable
 {
     use opal\query\TQuery_EntryPoint;
     use user\TAccessLock;
@@ -451,13 +455,15 @@ class Table implements ITable, core\IDumpable
         return $output;
     }
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return [
-            'adapter' => $this->_adapter->getDsn()->getDisplayString(),
-            'name' => $this->_name
-        ];
+        $entity
+            ->setProperties([
+                '*adapter' => $inspector($this->_adapter->getDsn()->getDisplayString()),
+                '*name' => $inspector($this->_name)
+            ]);
     }
 }

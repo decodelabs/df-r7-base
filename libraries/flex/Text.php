@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\flex;
 
-class Text implements IText, \IteratorAggregate, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Text implements IText, \IteratorAggregate, Inspectable
 {
     use core\TValueMap;
     use core\collection\TExtractList;
@@ -1131,10 +1135,11 @@ class Text implements IText, \IteratorAggregate, core\IDumpable
     }
 
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return $this->_value;
+        $entity->setText($this->_value);
     }
 }

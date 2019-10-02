@@ -9,28 +9,32 @@ use df;
 use df\core;
 use df\aura;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
-class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, core\IDumpable {
-
+class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, Inspectable
+{
     use core\TStringProvider;
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_Constructor;
     use core\collection\TArrayCollection_AssociativeValueMap;
 
-    public function import(...$input) {
-        foreach($input as $data) {
-            if(is_string($data)) {
+    public function import(...$input)
+    {
+        foreach ($input as $data) {
+            if (is_string($data)) {
                 $parts = explode('{', $data);
                 $data = [];
                 $count = count($parts);
 
-                while(count($parts)) {
+                while (count($parts)) {
                     $selector = trim(array_shift($parts));
                     $body = explode('}', array_shift($parts), 2);
                     $nextSelector = trim(array_pop($body));
                     $body = trim(array_shift($body));
 
-                    if(!empty($nextSelector)) {
+                    if (!empty($nextSelector)) {
                         array_unshift($parts, $nextSelector);
                     }
 
@@ -38,12 +42,12 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, core
                 }
             }
 
-            if($data instanceof core\IArrayProvider) {
+            if ($data instanceof core\IArrayProvider) {
                 $data = $data->toArray();
             }
 
-            if(is_array($data)) {
-                foreach($data as $key => $value) {
+            if (is_array($data)) {
+                foreach ($data as $key => $value) {
                     $this->set($key, $value);
                 }
             }
@@ -52,8 +56,9 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, core
         return $this;
     }
 
-    public function set($key, $value) {
-        if(!$value instanceof IStyleCollection) {
+    public function set($key, $value)
+    {
+        if (!$value instanceof IStyleCollection) {
             $value = new StyleCollection($value);
         }
 
@@ -61,30 +66,32 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, core
         return $this;
     }
 
-    public function get($key, $default=null) {
+    public function get($key, $default=null)
+    {
         $key = (string)$key;
 
-        if(array_key_exists($key, $this->_collection)) {
+        if (array_key_exists($key, $this->_collection)) {
             $output = $this->_collection[$key];
         } else {
             $output = $default;
         }
 
-        if($output !== null && !$output instanceof IStyleCollection) {
+        if ($output !== null && !$output instanceof IStyleCollection) {
             $output = new StyleCollection($default);
         }
 
         return $output;
     }
 
-    public function toString(): string {
-        if(empty($this->_collection)) {
+    public function toString(): string
+    {
+        if (empty($this->_collection)) {
             return '';
         }
 
         $output = [];
 
-        foreach($this->_collection as $selector => $styles) {
+        foreach ($this->_collection as $selector => $styles) {
             $output[] = $selector.' { '.$styles.' }';
         }
 
@@ -92,8 +99,12 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, core
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return $this->_collection;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setValues($inspector->inspectList($this->_collection));
     }
 }

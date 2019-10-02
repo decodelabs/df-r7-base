@@ -10,21 +10,27 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Hidden extends Base implements IFormDataWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Hidden extends Base implements IFormDataWidget, Inspectable
+{
     use TWidget_FormData;
 
     const PRIMARY_TAG = 'input.hidden';
     const ARRAY_INPUT = false;
 
-    public function __construct(arch\IContext $context, $name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null)
+    {
         parent::__construct($context);
 
         $this->setName($name);
         $this->setValue($value);
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
 
         $tag->setAttribute('type', 'hidden');

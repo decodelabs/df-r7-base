@@ -8,8 +8,12 @@ namespace df\core\io;
 use df;
 use df\core;
 
-class Stream implements IStreamChannel, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Stream implements IStreamChannel, Inspectable
+{
     use TReader;
     use TWriter;
 
@@ -17,66 +21,74 @@ class Stream implements IStreamChannel, core\IDumpable {
     protected $_error = '';
     protected $_id;
 
-    public function __construct($resource, $id=null) {
+    public function __construct($resource, $id=null)
+    {
         $blocking = false;
 
-        if(is_string($resource)) {
+        if (is_string($resource)) {
             $resource = fopen($resource, 'a+');
             $blocking = true;
         }
 
         $this->_resource = $resource;
 
-        if($blocking) {
+        if ($blocking) {
             $this->setBlocking(true);
         }
 
-        if($id === null) {
+        if ($id === null) {
             $id = 'Stream:'.$this->_resource;
         }
 
         $this->_id = $id;
     }
 
-    public function getChannelId() {
+    public function getChannelId()
+    {
         return $this->_id;
     }
 
-    public function flush() {
+    public function flush()
+    {
         return $this;
     }
 
 
-// Error
-    public function getErrorBuffer() {
+    // Error
+    public function getErrorBuffer()
+    {
         return $this->_error;
     }
 
-    public function flushErrorBuffer() {
+    public function flushErrorBuffer()
+    {
         $output = $this->_error;
         $this->_error = null;
 
         return $output;
     }
 
-    public function writeError($error) {
+    public function writeError($error)
+    {
         $this->_error .= $error;
         return $this;
     }
 
-    public function writeErrorLine($line) {
+    public function writeErrorLine($line)
+    {
         return $this->writeError($line."\r\n");
     }
 
 
-    protected function _readChunk($length) {
+    protected function _readChunk($length)
+    {
         try {
             $output = fread($this->_resource, $length);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return false;
         }
 
-        if($output === ''
+        if ($output === ''
         || $output === null
         || $output === false) {
             return false;
@@ -85,14 +97,15 @@ class Stream implements IStreamChannel, core\IDumpable {
         return $output;
     }
 
-    protected function _readLine() {
+    protected function _readLine()
+    {
         try {
             $output = fgets($this->_resource);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return false;
         }
 
-        if($output === ''
+        if ($output === ''
         || $output === null
         || $output === false) {
             return false;
@@ -101,18 +114,21 @@ class Stream implements IStreamChannel, core\IDumpable {
         return $output;
     }
 
-    protected function _writeChunk($data, $length) {
+    protected function _writeChunk($data, $length)
+    {
         return fwrite($this->_resource, $data, $length);
     }
 
 
-// Stream
-    public function getStreamDescriptor() {
+    // Stream
+    public function getStreamDescriptor()
+    {
         return $this->_resource;
     }
 
-    public function getMetadata() {
-        if(!$this->_resource) {
+    public function getMetadata()
+    {
+        if (!$this->_resource) {
             throw new RuntimeException(
                 'Stream is not live'
             );
@@ -121,13 +137,15 @@ class Stream implements IStreamChannel, core\IDumpable {
         return stream_get_meta_data($this->_resource);
     }
 
-    public function setBlocking($flag) {
+    public function setBlocking($flag)
+    {
         stream_set_blocking($this->_resource, (int)($flag));
         return $this;
     }
 
-    public function getBlocking() {
-        if(!$this->_resource) {
+    public function getBlocking()
+    {
+        if (!$this->_resource) {
             return false;
         }
 
@@ -135,13 +153,19 @@ class Stream implements IStreamChannel, core\IDumpable {
         return (bool)$meta['blocked'];
     }
 
-    public function close() {
+    public function close()
+    {
         @fclose($this->_resource);
         return $this;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->_resource;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setValues([$inspector($this->_resource)])
+            ->setShowKeys(false);
     }
 }

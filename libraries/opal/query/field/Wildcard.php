@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Wildcard implements opal\query\IWildcardField, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Wildcard implements opal\query\IWildcardField, Inspectable
 {
     use opal\query\TField;
 

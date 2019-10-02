@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWidget, Inspectable
+{
     const PRIMARY_TAG = 'div.list.attributes';
 
     use TWidget_DataDrivenList;
@@ -21,14 +25,16 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
 
     protected $_skipEmptyRows = false;
 
-    public function __construct(arch\IContext $context, $data=null, $renderer=null) {
+    public function __construct(arch\IContext $context, $data=null, $renderer=null)
+    {
         parent::__construct($context);
         $this->setData($data);
         $this->setRenderer($renderer);
     }
 
-    public function shouldSkipEmptyRows(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldSkipEmptyRows(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_skipEmptyRows = $flag;
             return $this;
         }
@@ -36,7 +42,8 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         return $this->_skipEmptyRows;
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
         $tableTag = new aura\html\Tag('table');
         $rows = new aura\html\ElementContent();
@@ -45,8 +52,8 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         $renderContext->reset();
         $even = true;
 
-        if($this->_renderer) {
-            foreach($this->_data as $key => $row) {
+        if ($this->_renderer) {
+            foreach ($this->_data as $key => $row) {
                 $row = $renderContext->prepareRow($row);
                 $field = new aura\html\widget\util\Field($key, $key, $this->_renderer);
 
@@ -56,8 +63,8 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
             $data = $renderContext->prepareRow($this->_data);
             $fields = $this->_fields;
 
-            if(empty($fields)) {
-                if(!$this->_isDataIterable()) {
+            if (empty($fields)) {
+                if (!$this->_isDataIterable()) {
                     return '';
                 }
 
@@ -66,7 +73,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
 
             $renderContext->iterate(null);
 
-            foreach($fields as $key => $field) {
+            foreach ($fields as $key => $field) {
                 $this->_renderRow($rows, $renderContext, $field, $key, $data, $even);
             }
         }
@@ -74,7 +81,8 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         return $tag->renderWith($tableTag->renderWith($rows, true));
     }
 
-    protected function _renderRow($rows, $renderContext, $field, $key, $data, &$even) {
+    protected function _renderRow($rows, $renderContext, $field, $key, $data, &$even)
+    {
         $row = new aura\html\ElementContent();
         $trTag = new aura\html\Tag('tr', ['class' => 'field-'.$key]);
         $trTag->addClass(($even = !$even) ? 'even' : 'odd');
@@ -86,8 +94,8 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         $renderContext->shouldConvertNullToNa(!$this->_skipEmptyRows);
         $value = $renderContext->renderCell($data, $field->renderer);
 
-        if($renderContext->divider !== null) {
-            if(!$rows->isEmpty()) {
+        if ($renderContext->divider !== null) {
+            if (!$rows->isEmpty()) {
                 $rows->push((new aura\html\Element('tr.spacer', [
                     new aura\html\Element(
                         'td', null,
@@ -96,7 +104,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
                 ]))->render());
             }
 
-            if(!empty($renderContext->divider)) {
+            if (!empty($renderContext->divider)) {
                 $rows->push((new aura\html\Element('tr.divider', [
                     new aura\html\Element(
                         'td',
@@ -110,12 +118,12 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         }
 
 
-        if($renderContext->shouldSkipRow()
+        if ($renderContext->shouldSkipRow()
         || ($this->_skipEmptyRows && empty($value) && $value != '0')) {
             return;
         }
 
-        if($thTag->isEmpty()) {
+        if ($thTag->isEmpty()) {
             $thTag->push($field->getName());
         }
 
@@ -123,12 +131,16 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         $rows->push($trTag->renderWith($row, true));
     }
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'data' => count($this->_data).' rows',
-            'fields' => $this->_fields,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '%data' => $inspector(count($this->_data).' rows'),
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues($inspector->inspectList($this->_fields));
     }
 }

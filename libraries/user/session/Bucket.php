@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\user;
 
-class Bucket implements user\session\IBucket, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Bucket implements user\session\IBucket, Inspectable
 {
     use core\TValueMap;
 
@@ -298,9 +302,10 @@ class Bucket implements user\session\IBucket, core\IDumpable
         return $this->remove($key);
     }
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
         $output = [];
 
@@ -310,6 +315,6 @@ class Bucket implements user\session\IBucket, core\IDumpable
             }
         }
 
-        return $output;
+        $entity->setValues($inspector->inspectList($output));
     }
 }

@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\opal;
 
-class Paginator implements IPaginator, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Paginator implements IPaginator, Inspectable
+{
     use core\collection\TPaginator;
 
     protected $_orderableFields = [];
@@ -18,34 +22,37 @@ class Paginator implements IPaginator, core\IDumpable {
     protected $_isApplied = false;
     protected $_query;
 
-    public function __construct(IReadQuery $query) {
+    public function __construct(IReadQuery $query)
+    {
         $this->_query = $query;
 
         $adapter = $query->getSource()->getAdapter();
 
-        if($adapter instanceof IPaginatingAdapter) {
+        if ($adapter instanceof IPaginatingAdapter) {
             $adapter->applyPagination($this);
         }
 
-        if($query instanceof ICorrelatableQuery) {
-            foreach($query->getCorrelations() as $name => $correlation) {
+        if ($query instanceof ICorrelatableQuery) {
+            foreach ($query->getCorrelations() as $name => $correlation) {
                 $this->_orderableFields[$correlation->getAlias()] = new OrderDirective($correlation, 'ASC');
             }
         }
     }
 
 
-// Orderable fields
-    public function setOrderableFields(...$fields) {
+    // Orderable fields
+    public function setOrderableFields(...$fields)
+    {
         $this->_orderableFields = [];
         return $this->addOrderableFields(...$fields);
     }
 
-    public function addOrderableFields(...$fields) {
+    public function addOrderableFields(...$fields)
+    {
         $source = $this->_query->getSource();
         $sourceManager = $this->_query->getSourceManager();
 
-        foreach($fields as $key => $field) {
+        foreach ($fields as $key => $field) {
             $parts = explode(' as ', $field);
             $field = array_shift($parts);
             $key = trim(array_shift($parts));
@@ -56,7 +63,7 @@ class Paginator implements IPaginator, core\IDumpable {
 
             $field = $sourceManager->extrapolateField($source, $field);
 
-            if(empty($key)) {
+            if (empty($key)) {
                 $key = $field->getAlias();
             }
 
@@ -68,36 +75,40 @@ class Paginator implements IPaginator, core\IDumpable {
         return $this;
     }
 
-    public function getOrderableFieldDirectives() {
+    public function getOrderableFieldDirectives()
+    {
         return $this->_orderableFields;
     }
 
-    public function getOrderableFields() {
+    public function getOrderableFields()
+    {
         $output = [];
 
-        foreach($this->_orderableFields as $key => $directive) {
+        foreach ($this->_orderableFields as $key => $directive) {
             $output[$key] = $directive->getField();
         }
 
         return $output;
     }
 
-    public function getOrderableFieldNames() {
+    public function getOrderableFieldNames()
+    {
         return array_keys($this->_orderableFields);
     }
 
 
-// Default order
-    public function setDefaultOrder(...$fields) {
+    // Default order
+    public function setDefaultOrder(...$fields)
+    {
         $source = $this->_query->getSource();
         $sourceManager = $this->_query->getSourceManager();
         $this->_order = [];
 
-        foreach(core\collection\Util::leaves($fields) as $field) {
+        foreach (core\collection\Util::leaves($fields) as $field) {
             $parts = explode(' ', $field);
             $key = array_shift($parts);
 
-            if(isset($this->_orderableFields[$key])) {
+            if (isset($this->_orderableFields[$key])) {
                 $field = $this->_orderableFields[$key]->getField();
             } else {
                 $field = $sourceManager->extrapolateField($source, $key);
@@ -114,32 +125,36 @@ class Paginator implements IPaginator, core\IDumpable {
         return $this;
     }
 
-    public function getOrderDirectives() {
+    public function getOrderDirectives()
+    {
         return $this->_order;
     }
 
-    public function getFirstOrderDirective() {
+    public function getFirstOrderDirective()
+    {
         $temp = $this->_order;
         return array_shift($temp);
     }
 
-    public function getOrderString() {
-        if(empty($this->_order)) {
+    public function getOrderString()
+    {
+        if (empty($this->_order)) {
             $fields = $this->getOrderableFieldNames();
             return array_shift($fields).' ASC';
         }
 
         $output = [];
 
-        foreach($this->_order as $directive) {
+        foreach ($this->_order as $directive) {
             $output[] = $directive->getField()->getAlias().' '.$directive->getDirection();
         }
 
         return implode(',', $output);
     }
 
-    public function getFirstOrderString() {
-        if(!$directive = $this->getFirstOrderDirective()) {
+    public function getFirstOrderString()
+    {
+        if (!$directive = $this->getFirstOrderDirective()) {
             $fields = $this->getOrderableFieldNames();
             return array_shift($fields).' ASC';
         }
@@ -148,11 +163,12 @@ class Paginator implements IPaginator, core\IDumpable {
     }
 
 
-// Limit
-    public function setDefaultLimit($limit) {
+    // Limit
+    public function setDefaultLimit($limit)
+    {
         $this->_limit = (int)$limit;
 
-        if($this->_limit < 1) {
+        if ($this->_limit < 1) {
             $this->_limit = null;
         }
 
@@ -160,17 +176,19 @@ class Paginator implements IPaginator, core\IDumpable {
     }
 
 
-// Offset
-    public function setDefaultOffset($offset) {
+    // Offset
+    public function setDefaultOffset($offset)
+    {
         $this->_offset = (int)$offset;
         return $this;
     }
 
 
-// Key map
-    public function setKeyMap(array $map) {
-        foreach($this->_keyMap as $key => $val) {
-            if(isset($map[$key])) {
+    // Key map
+    public function setKeyMap(array $map)
+    {
+        foreach ($this->_keyMap as $key => $val) {
+            if (isset($map[$key])) {
                 $this->_keyMap[$key] = $map[$key];
             }
         }
@@ -179,17 +197,19 @@ class Paginator implements IPaginator, core\IDumpable {
     }
 
 
-// IO
-    public function end() {
+    // IO
+    public function end()
+    {
         $this->_query->setPaginator($this);
         return $this->_query;
     }
 
-    public function applyWith($data) {
-        if(empty($this->_order) && !empty($this->_orderableFields)) {
+    public function applyWith($data)
+    {
+        if (empty($this->_order) && !empty($this->_orderableFields)) {
             // Set first orderable field as default
 
-            foreach($this->_orderableFields as $key => $directive) {
+            foreach ($this->_orderableFields as $key => $directive) {
                 $this->setDefaultOrder($key.' ASC');
                 break;
             }
@@ -198,7 +218,7 @@ class Paginator implements IPaginator, core\IDumpable {
         $source = $this->_query->getSource();
         $sourceManager = $this->_query->getSourceManager();
 
-        if($this->_query instanceof ISearchableQuery
+        if ($this->_query instanceof ISearchableQuery
         && $this->_query->hasSearch()) {
             $search = $this->_query->getSearch();
 
@@ -210,51 +230,51 @@ class Paginator implements IPaginator, core\IDumpable {
             $this->addOrderableFields($search->getAlias().' DESC');
         }
 
-        if(!$data instanceof core\collection\ITree) {
+        if (!$data instanceof core\collection\ITree) {
             $data = new core\collection\Tree($data);
         }
 
-        if($data->has($this->_keyMap['limit'])) {
+        if ($data->has($this->_keyMap['limit'])) {
             $this->setDefaultLimit($data[$this->_keyMap['limit']]);
             $this->_query->limit($this->_limit);
-        } else if($this->_limit && !$this->_query->hasLimit()) {
+        } elseif ($this->_limit && !$this->_query->hasLimit()) {
             $this->_query->limit($this->_limit);
         }
 
-        if($data->has($this->_keyMap['offset'])) {
+        if ($data->has($this->_keyMap['offset'])) {
             $this->setDefaultOffset($data[$this->_keyMap['offset']]);
             $this->_query->offset($this->_offset);
-        } else if($data->has($this->_keyMap['page'])) {
+        } elseif ($data->has($this->_keyMap['page'])) {
             $page = (int)$data[$this->_keyMap['page']];
 
-            if($page < 1) {
+            if ($page < 1) {
                 $page = 1;
             }
 
             $this->setDefaultOffset($this->_limit * ($page - 1));
             $this->_query->offset($this->_offset);
-        } else if($this->_offset && !$this->_query->hasOffset()) {
+        } elseif ($this->_offset && !$this->_query->hasOffset()) {
             $this->_query->offset($this->_offset);
         }
 
-        if($data->has($this->_keyMap['order']) && !empty($this->_orderableFields)) {
+        if ($data->has($this->_keyMap['order']) && !empty($this->_orderableFields)) {
             $orderNode = $data->{$this->_keyMap['order']};
             $orderList = [];
 
-            if(count($orderNode)) {
+            if (count($orderNode)) {
                 $order = $orderNode->toArray();
             } else {
                 $order = explode(',', $orderNode->getValue());
             }
 
-            foreach($order as $part) {
+            foreach ($order as $part) {
                 $t = explode(' ', trim($part), 2);
                 $key = trim($t[0]);
 
-                if(isset($this->_orderableFields[$key])) {
+                if (isset($this->_orderableFields[$key])) {
                     $dir = 'ASC';
 
-                    if(isset($t[1])) {
+                    if (isset($t[1])) {
                         $dir = trim(strtoupper($t[1]));
                     }
 
@@ -262,12 +282,12 @@ class Paginator implements IPaginator, core\IDumpable {
                 }
             }
 
-            if(!empty($orderList)) {
+            if (!empty($orderList)) {
                 $this->_order = $orderList;
             }
 
             $this->_query->setOrderDirectives($this->_order);
-        } else if(!empty($this->_order) && !$this->_query->hasOrderDirectives()) {
+        } elseif (!empty($this->_order) && !$this->_query->hasOrderDirectives()) {
             $this->_query->setOrderDirectives($this->_order);
         }
 
@@ -276,17 +296,20 @@ class Paginator implements IPaginator, core\IDumpable {
         return $this->_query->setPaginator($this);
     }
 
-    public function isApplied() {
+    public function isApplied()
+    {
         return $this->_isApplied;
     }
 
-    public function setTotal(?int $total) {
+    public function setTotal(?int $total)
+    {
         $this->_total = $total;
         return $this;
     }
 
-    public function countTotal(): ?int {
-        if($this->_total === null) {
+    public function countTotal(): ?int
+    {
+        if ($this->_total === null) {
             $this->_total = $this->_query->count();
         }
 
@@ -294,27 +317,25 @@ class Paginator implements IPaginator, core\IDumpable {
     }
 
 
-
-// Dump
-    public function getDumpProperties() {
-        $output = [];
-
-        if(!empty($this->_orderableFields)) {
-            $output['orderableFields'] = implode(', ', $this->_orderableFields);
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        if (!empty($this->_orderableFields)) {
+            $entity->setProperty('*orderableFields', $inspector(implode(', ', $this->_orderableFields)));
         }
 
-        if(!empty($this->_order)) {
-            $output['defaultOrder'] = implode(', ', $this->_order);
+        if (!empty($this->_order)) {
+            $entity->setProperty('*defaultOrder', $inspector(implode(', ', $this->_order)));
         }
 
-        if($this->_limit) {
-            $output['defaultLimit'] = $this->_limit;
+        if ($this->_limit) {
+            $entity->setProperty('*defaultLimit', $inspector($this->_limit));
         }
 
-        if($this->_offset) {
-            $output['defaultOffset'] = $this->_offset;
+        if ($this->_offset) {
+            $entity->setProperty('*defaultOffset', $inspector($this->_offset));
         }
-
-        return $output;
     }
 }

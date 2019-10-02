@@ -10,13 +10,18 @@ use df\core;
 use df\user;
 use df\mesh;
 
-class Options extends Base implements user\ISessionBackedHelper, core\IValueMap, mesh\event\IListener, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Options extends Base implements user\ISessionBackedHelper, core\IValueMap, mesh\event\IListener, Inspectable
+{
     use core\TValueMap;
     use user\TSessionBackedHelper;
 
-    protected function _generateDefaultSessionData() {
-        if($this->manager->isLoggedIn()) {
+    protected function _generateDefaultSessionData()
+    {
+        if ($this->manager->isLoggedIn()) {
             return $this->manager->getUserModel()->fetchClientOptions(
                 $this->manager->client->getId()
             );
@@ -25,17 +30,18 @@ class Options extends Base implements user\ISessionBackedHelper, core\IValueMap,
         return [];
     }
 
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
         $this->_ensureSessionData();
 
-        if(is_bool($value)) {
+        if (is_bool($value)) {
             $value = (int)$value;
         }
 
         $this->_sessionData[$key] = $value;
         $this->_sessionDataChanged = true;
 
-        if($this->manager->isLoggedIn()) {
+        if ($this->manager->isLoggedIn()) {
             $this->manager->getUserModel()->updateClientOptions(
                 $this->manager->client->getId(),
                 [$key => $value]
@@ -45,21 +51,23 @@ class Options extends Base implements user\ISessionBackedHelper, core\IValueMap,
         return $this;
     }
 
-    public function get($key, $default=null) {
+    public function get($key, $default=null)
+    {
         $this->_ensureSessionData();
 
-        if(isset($this->_sessionData[$key])) {
+        if (isset($this->_sessionData[$key])) {
             return $this->_sessionData[$key];
         } else {
             return $default;
         }
     }
 
-    public function has(...$keys) {
+    public function has(...$keys)
+    {
         $this->_ensureSessionData();
 
-        foreach($keys as $key) {
-            if(isset($this->_sessionData[$key])) {
+        foreach ($keys as $key) {
+            if (isset($this->_sessionData[$key])) {
                 return true;
             }
         }
@@ -67,15 +75,16 @@ class Options extends Base implements user\ISessionBackedHelper, core\IValueMap,
         return false;
     }
 
-    public function remove(...$keys) {
+    public function remove(...$keys)
+    {
         $this->_ensureSessionData();
 
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             unset($this->_sessionData[$key]);
             $this->_sessionDataChanged = true;
         }
 
-        if($this->manager->isLoggedIn()) {
+        if ($this->manager->isLoggedIn()) {
             $this->manager->getUserModel()->removeClientOptions(
                 $this->manager->client->getId(),
                 $keys
@@ -85,12 +94,13 @@ class Options extends Base implements user\ISessionBackedHelper, core\IValueMap,
         return $this;
     }
 
-    public function import(array $options) {
+    public function import(array $options)
+    {
         $this->_ensureSessionData();
         $this->_sessionData = array_merge($this->_sessionData, $options);
         $this->_sessionDataChanged = true;
 
-        if($this->manager->isLoggedIn()) {
+        if ($this->manager->isLoggedIn()) {
             $this->manager->getUserModel()->updateClientOptions(
                 $this->manager->client->getId(),
                 $options
@@ -100,31 +110,37 @@ class Options extends Base implements user\ISessionBackedHelper, core\IValueMap,
         return $this;
     }
 
-    public function refresh() {
+    public function refresh()
+    {
         $this->_destroySessionData();
         return $this;
     }
 
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value)
+    {
         return $this->set($key, $value);
     }
 
-    public function offsetGet($key) {
+    public function offsetGet($key)
+    {
         return $this->get($key);
     }
 
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         return $this->has($key);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         return $this->remove($key);
     }
 
 
-// Events
-    public function handleEvent(mesh\event\IEvent $event) {
-        switch($event->getAction()) {
+    // Events
+    public function handleEvent(mesh\event\IEvent $event)
+    {
+        switch ($event->getAction()) {
             case 'authenticate':
             case 'recall':
             case 'logout':

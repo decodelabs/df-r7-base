@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\flow;
 
-class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class AddressList implements IAddressList, \IteratorAggregate, Inspectable
+{
     use core\TValueMap;
     use core\collection\TExtractList;
     use core\collection\TExtricable;
@@ -18,31 +22,35 @@ class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
 
     protected $_addresses = [];
 
-    public static function factory($list) {
-        if($list instanceof IAddressList) {
+    public static function factory($list)
+    {
+        if ($list instanceof IAddressList) {
             return $list;
         }
 
         return new self($list);
     }
 
-    public function __construct(...$input) {
+    public function __construct(...$input)
+    {
         $this->import(...$input);
     }
 
-    public function getIterator() {
+    public function getIterator()
+    {
         return new \ArrayIterator($this->_addresses);
     }
 
-    public function import(...$args) {
-        foreach(core\collection\Util::leaves($args) as $input) {
-            if(is_string($input)) {
+    public function import(...$args)
+    {
+        foreach (core\collection\Util::leaves($args) as $input) {
+            if (is_string($input)) {
                 $parts = explode(',', $input);
                 $prefix = null;
 
-                foreach($parts as $part) {
-                    if(false === strpos($part, '@')) {
-                        if($prefix) {
+                foreach ($parts as $part) {
+                    if (false === strpos($part, '@')) {
+                        if ($prefix) {
                             $prefix .= ',';
                         }
 
@@ -50,7 +58,7 @@ class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
                         continue;
                     }
 
-                    if($prefix) {
+                    if ($prefix) {
                         $part = $prefix.','.$part;
                     }
 
@@ -65,47 +73,55 @@ class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
         return $this;
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return empty($this->_addresses);
     }
 
-    public function extract() {
+    public function extract()
+    {
         return array_shift($this->_addresses);
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->_addresses = [];
         return $this;
     }
 
-    public function count() {
+    public function count()
+    {
         return count($this->_addresses);
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return $this->_addresses;
     }
 
-    public function toNameMap() {
+    public function toNameMap()
+    {
         $output = [];
 
-        foreach($this->_addresses as $address) {
+        foreach ($this->_addresses as $address) {
             $output[$address->getAddress()] = $address->getName();
         }
 
         return $output;
     }
 
-    public function add($address, $name=null) {
+    public function add($address, $name=null)
+    {
         return $this->set($address, $name);
     }
 
-    public function set($address, $name=null) {
-        if(!$address = Address::factory($address, $name)) {
+    public function set($address, $name=null)
+    {
+        if (!$address = Address::factory($address, $name)) {
             return $this;
         }
 
-        if(!$address->getName() && isset($this->_addresses[$address->getAddress()])) {
+        if (!$address->getName() && isset($this->_addresses[$address->getAddress()])) {
             $address->setName($this->_addresses[$address->getAddress()]->getName());
         }
 
@@ -113,29 +129,31 @@ class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
         return $this;
     }
 
-    public function get($address, $default=null) {
-        if($address instanceof IAddress) {
+    public function get($address, $default=null)
+    {
+        if ($address instanceof IAddress) {
             $address = $address->getAddress();
         }
 
         $address = strtolower($address);
 
-        if(isset($this->_addresses[$address])) {
+        if (isset($this->_addresses[$address])) {
             return $this->_addresses[$address];
-        } else if($default !== null) {
+        } elseif ($default !== null) {
             return Address::factory($default);
         }
     }
 
-    public function has(...$addresses) {
-        foreach($addresses as $address) {
-            if($address instanceof IAddress) {
+    public function has(...$addresses)
+    {
+        foreach ($addresses as $address) {
+            if ($address instanceof IAddress) {
                 $address = $address->getAddress();
             }
 
             $address = strtolower($address);
 
-            if(isset($this->_addresses[$address])) {
+            if (isset($this->_addresses[$address])) {
                 return true;
             }
         }
@@ -143,9 +161,10 @@ class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
         return false;
     }
 
-    public function remove(...$addresses) {
-        foreach($addresses as $address) {
-            if($address instanceof IAddress) {
+    public function remove(...$addresses)
+    {
+        foreach ($addresses as $address) {
+            if ($address instanceof IAddress) {
                 $address = $address->getAddress();
             }
 
@@ -158,30 +177,44 @@ class AddressList implements IAddressList, \IteratorAggregate, core\IDumpable {
 
 
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return implode(', ', $this->_addresses);
     }
 
 
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value)
+    {
         return $this->set($key, $value);
     }
 
-    public function offsetGet($key) {
+    public function offsetGet($key)
+    {
         return $this->get($key);
     }
 
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         return $this->has($key);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         return $this->remove($key);
     }
 
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $values = [];
 
-// Dump
-    public function getDumpProperties() {
-        return array_values($this->_addresses);
+        foreach ($this->_addresses as $address) {
+            $values[] = (string)$address;
+        }
+
+        $entity->setValues($inspector->inspectList($values))
+            ->setShowKeys(false);
     }
 }

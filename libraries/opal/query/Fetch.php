@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\opal;
 
-class Fetch implements IFetchQuery, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Fetch implements IFetchQuery, Inspectable
+{
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Locational;
@@ -28,46 +32,50 @@ class Fetch implements IFetchQuery, core\IDumpable {
     use TQuery_Pageable;
     use TQuery_Read;
 
-    public function __construct(ISourceManager $sourceManager, ISource $source) {
+    public function __construct(ISourceManager $sourceManager, ISource $source)
+    {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
     }
 
-    public function getQueryType() {
+    public function getQueryType()
+    {
         return IQueryTypes::FETCH;
     }
 
 
 
-// Output
-    public function count() {
-        return $this->_sourceManager->executeQuery($this, function($adapter) {
+    // Output
+    public function count()
+    {
+        return $this->_sourceManager->executeQuery($this, function ($adapter) {
             return (int)$adapter->countFetchQuery($this);
         });
     }
 
-    protected function _fetchSourceData($keyField=null, $valField=null) {
-        if($keyField !== null) {
+    protected function _fetchSourceData($keyField=null, $valField=null)
+    {
+        if ($keyField !== null) {
             $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);
         }
 
         $formatter = null;
 
-        if(is_callable($valField)) {
+        if (is_callable($valField)) {
             $formatter = $valField;
             $valField = null;
         }
 
-        $output = $this->_sourceManager->executeQuery($this, function($adapter) {
+        $output = $this->_sourceManager->executeQuery($this, function ($adapter) {
             return $adapter->executeFetchQuery($this);
         });
 
         $output = $this->_createBatchIterator($output, $keyField, null, true, $formatter);
 
-        if($this->_paginator && $this->_offset == 0 && $this->_limit) {
+        if ($this->_paginator && $this->_offset == 0 && $this->_limit) {
             $count = count($output);
 
-            if($count < $this->_limit) {
+            if ($count < $this->_limit) {
                 $this->_paginator->setTotal($count);
             }
         }
@@ -75,84 +83,90 @@ class Fetch implements IFetchQuery, core\IDumpable {
         return $output;
     }
 
-// Dump
-    public function getDumpProperties() {
-        $output = [
-            'sources' => $this->_sourceManager,
-            'fields' => $this->_source
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setProperties([
+            '*sources' => $inspector($this->_sourceManager),
+            '*fields' => $inspector($this->_source)
+        ]);
 
-        if(!empty($this->_populates)) {
-            $output['populates'] = $this->_populates;
+        if (!empty($this->_populates)) {
+            $entity->setProperty('*populates', $inspector($this->_populates));
         }
 
-        if(!empty($this->_joins)) {
-            $output['joins'] = $this->_joins;
+        if (!empty($this->_joins)) {
+            $entity->setProperty('*joins', $inspector($this->_joins));
         }
 
-        if($this->hasWhereClauses()) {
-            $output['where'] = $this->getWhereClauseList();
+        if ($this->hasWhereClauses()) {
+            $entity->setProperty('*where', $inspector($this->getWhereClauseList()));
         }
 
-        if($this->_searchController) {
-            $output['search'] = $this->_searchController;
+        if ($this->_searchController) {
+            $entity->setProperty('*search', $inspector($this->_searchController));
         }
 
-        if(!empty($this->_order)) {
+        if (!empty($this->_order)) {
             $order = [];
 
-            foreach($this->_order as $directive) {
+            foreach ($this->_order as $directive) {
                 $order[] = $directive->toString();
             }
 
-            $output['order'] = implode(', ', $order);
+            $entity->setProperty('*order', $inspector(implode(', ', $order)));
         }
 
-        if(!empty($this->_nest)) {
-            $output['nest'] = $this->_nest;
+        if (!empty($this->_nest)) {
+            $entity->setProperty('*nest', $inspector($this->_nest));
         }
 
-        if($this->_limit) {
-            $output['limit'] = $this->_limit;
+        if ($this->_limit) {
+            $entity->setProperty('*limit', $inspector($this->_limit));
         }
 
-        if($this->_offset) {
-            $output['offset'] = $this->_offset;
+        if ($this->_offset) {
+            $entity->setProperty('*offset', $inspector($this->_offset));
         }
 
-        if($this->_paginator) {
-            $output['paginator'] = $this->_paginator;
+        if ($this->_paginator) {
+            $entity->setProperty('*paginator', $inspector($this->_paginator));
         }
-
-        return $output;
     }
 }
 
 
-class Fetch_Attach extends Fetch implements IFetchAttachQuery {
-
+class Fetch_Attach extends Fetch implements IFetchAttachQuery
+{
     use TQuery_Attachment;
     use TQuery_ParentAwareJoinClauseFactory;
 
-    public function __construct(IQuery $parent, ISourceManager $sourceManager, ISource $source) {
+    public function __construct(IQuery $parent, ISourceManager $sourceManager, ISource $source)
+    {
         $this->_parent = $parent;
         parent::__construct($sourceManager, $source);
 
         $this->_joinClauseList = new opal\query\clause\JoinList($this);
     }
 
-    public function getQueryType() {
+    public function getQueryType()
+    {
         return IQueryTypes::FETCH_ATTACH;
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return array_merge([
-            'sources' => $this->_sourceManager,
-            'type' => self::typeIdToName($this->_type),
-            'fields' => $this->_source,
-            'on' => $this->_joinClauseList,
-        ], parent::getDumpProperties());
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setProperties([
+            '*type' => $inspector(self::typeIdToName($this->_type)),
+            '*on' => $inspector($this->_joinClauseList),
+        ]);
+
+        parent::glitchInspect($entity, $inspector);
     }
 }

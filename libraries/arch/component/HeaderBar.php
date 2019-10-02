@@ -10,35 +10,43 @@ use df\core;
 use df\arch;
 use df\aura;
 
-abstract class HeaderBar extends Base implements core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+abstract class HeaderBar extends Base implements Inspectable
+{
     protected $_record;
     protected $_title;
     protected $_subTitle;
     protected $_backLinkRequest;
     protected $_icon;
 
-    protected function init($record=null, $title=null, $subTitle=null) {
+    protected function init($record=null, $title=null, $subTitle=null)
+    {
         $this->setRecord($record);
         $this->setTitle($title);
         $this->setSubTitle($subTitle);
     }
 
 
-// Record
-    public function setRecord($record) {
+    // Record
+    public function setRecord($record)
+    {
         $this->_record = $record;
         return $this;
     }
 
-    public function getRecord() {
+    public function getRecord()
+    {
         return $this->_record;
     }
 
 
-// Title
-    public function setTitle($title) {
-        if(empty($title)) {
+    // Title
+    public function setTitle($title)
+    {
+        if (empty($title)) {
             $title = null;
         }
 
@@ -46,14 +54,16 @@ abstract class HeaderBar extends Base implements core\IDumpable {
         return $this;
     }
 
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->_title;
     }
 
 
-// Sub title
-    public function setSubTitle(string $subTitle=null) {
-        if(empty($subTitle)) {
+    // Sub title
+    public function setSubTitle(string $subTitle=null)
+    {
+        if (empty($subTitle)) {
             $subTitle = null;
         }
 
@@ -61,49 +71,55 @@ abstract class HeaderBar extends Base implements core\IDumpable {
         return $this;
     }
 
-    public function getSubTitle() {
+    public function getSubTitle()
+    {
         return $this->_subTitle;
     }
 
 
-// Back link
-    public function setBackLinkRequest($request) {
+    // Back link
+    public function setBackLinkRequest($request)
+    {
         $this->_backLinkRequest = $request;
         return $this;
     }
 
-    public function getBackLinkRequest() {
+    public function getBackLinkRequest()
+    {
         return $this->_backLinkRequest;
     }
 
 
-// Icon
-    public function setIcon(string $icon=null) {
+    // Icon
+    public function setIcon(string $icon=null)
+    {
         $this->_icon = $icon;
         return $this;
     }
 
-    public function getIcon() {
+    public function getIcon()
+    {
         return $this->_icon;
     }
 
 
 
-// Render
-    protected function _execute() {
+    // Render
+    protected function _execute()
+    {
         $output = [];
 
         // Title
-        if(empty($this->_title)) {
+        if (empty($this->_title)) {
             $title = $this->_getDefaultTitle();
         } else {
             $title = $this->_title;
         }
 
-        if($title !== null) {
+        if ($title !== null) {
             $output[] = $title = $this->html('h2', $title);
 
-            if($this->_icon) {
+            if ($this->_icon) {
                 $title->unshift($this->html->icon($this->_icon));
             }
         }
@@ -111,18 +127,18 @@ abstract class HeaderBar extends Base implements core\IDumpable {
 
         // SubTitle
 
-        if(empty($this->_subTitle)) {
+        if (empty($this->_subTitle)) {
             $subTitle = $this->_getDefaultSubTitle();
         } else {
             $subTitle = $this->_subTitle;
         }
 
-        if($subTitle !== null) {
+        if ($subTitle !== null) {
             $output[] = $this->html('h3', $subTitle);
         }
 
         // Selector area
-        if($selectorArea = $this->_renderSelectorArea()) {
+        if ($selectorArea = $this->_renderSelectorArea()) {
             $output[] = $this->html('div.w.selectorArea.floated', [$selectorArea]);
         }
 
@@ -145,18 +161,34 @@ abstract class HeaderBar extends Base implements core\IDumpable {
     }
 
 
-    protected function _getDefaultTitle() {}
-    protected function _getDefaultSubTitle() {}
+    protected function _getDefaultTitle()
+    {
+    }
+    protected function _getDefaultSubTitle()
+    {
+    }
 
-    protected function _addOperativeLinks($primaryMenu) {}
-    protected function _addSubOperativeLinks($primaryMenu) {}
-    protected function _addTransitiveLinks($primaryMenu) {}
-    protected function _addSectionLinks($secondaryMenu) {}
-    protected function _renderSelectorArea() {}
+    protected function _addOperativeLinks($primaryMenu)
+    {
+    }
+    protected function _addSubOperativeLinks($primaryMenu)
+    {
+    }
+    protected function _addTransitiveLinks($primaryMenu)
+    {
+    }
+    protected function _addSectionLinks($secondaryMenu)
+    {
+    }
+    protected function _renderSelectorArea()
+    {
+    }
 
-
-// Dump
-    public function getDumpProperties() {
-        return $this->render();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->render());
     }
 }

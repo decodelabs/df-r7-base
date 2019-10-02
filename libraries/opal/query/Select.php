@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\opal;
 
-class Select implements ISelectQuery, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Select implements ISelectQuery, Inspectable
+{
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Derivable;
@@ -34,19 +38,22 @@ class Select implements ISelectQuery, core\IDumpable {
     use TQuery_Read;
     use TQuery_SelectSourceDataFetcher;
 
-    public function __construct(ISourceManager $sourceManager, ISource $source) {
+    public function __construct(ISourceManager $sourceManager, ISource $source)
+    {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
     }
 
-    public function getQueryType() {
+    public function getQueryType()
+    {
         return IQueryTypes::SELECT;
     }
 
 
-// Sources
-    public function addOutputFields(string ...$fields) {
-        foreach($fields as $field) {
+    // Sources
+    public function addOutputFields(string ...$fields)
+    {
+        foreach ($fields as $field) {
             $this->_sourceManager->extrapolateOutputField($this->_source, $field);
         }
 
@@ -56,15 +63,17 @@ class Select implements ISelectQuery, core\IDumpable {
 
 
 
-// Output
-    public function count() {
-        return $this->_sourceManager->executeQuery($this, function($adapter) {
+    // Output
+    public function count()
+    {
+        return $this->_sourceManager->executeQuery($this, function ($adapter) {
             return (int)$adapter->countSelectQuery($this);
         });
     }
 
-    public function toList($valField1, $valField2=null) {
-        if($valField2 !== null) {
+    public function toList($valField1, $valField2=null)
+    {
+        if ($valField2 !== null) {
             $keyField = $valField1;
             $valField = $valField2;
         } else {
@@ -74,11 +83,11 @@ class Select implements ISelectQuery, core\IDumpable {
 
         $data = $this->_fetchSourceData($keyField, $valField);
 
-        if($data instanceof core\IArrayProvider) {
+        if ($data instanceof core\IArrayProvider) {
             $data = $data->toArray();
         }
 
-        if(!is_array($data)) {
+        if (!is_array($data)) {
             throw new UnexpectedValueException(
                 'Source did not return a result that could be converted to an array'
             );
@@ -87,20 +96,21 @@ class Select implements ISelectQuery, core\IDumpable {
         return $data;
     }
 
-    public function toValue($valField=null) {
-        if($valField !== null) {
+    public function toValue($valField=null)
+    {
+        if ($valField !== null) {
             $valField = $this->_sourceManager->extrapolateDataField($this->_source, $valField);
             $data = $this->toRow();
 
             $key = $valField->getAlias();
 
-            if(isset($data[$key])) {
+            if (isset($data[$key])) {
                 return $data[$key];
             } else {
                 return null;
             }
         } else {
-            if(null !== ($data = $this->toRow())) {
+            if (null !== ($data = $this->toRow())) {
                 return array_shift($data);
             }
 
@@ -109,119 +119,126 @@ class Select implements ISelectQuery, core\IDumpable {
     }
 
 
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setProperties([
+            '*sources' => $inspector($this->_sourceManager),
+            '*fields' => $inspector($this->_source)
+        ]);
 
-// Dump
-    public function getDumpProperties() {
-        $output = [
-            'sources' => $this->_sourceManager,
-            'fields' => $this->_source
-        ];
-
-        if(!empty($this->_populates)) {
-            $output['populates'] = $this->_populates;
+        if (!empty($this->_populates)) {
+            $entity->setProperty('*populates', $inspector($this->_populates));
         }
 
-        if(!empty($this->_combines)) {
-            $output['combines'] = $this->_combines;
+        if (!empty($this->_combines)) {
+            $entity->setProperty('*combines', $inspector($this->_combines));
         }
 
-        if(!empty($this->_joins)) {
-            $output['join'] = $this->_joins;
+        if (!empty($this->_joins)) {
+            $entity->setProperty('*join', $inspector($this->_joins));
         }
 
-        if(!empty($this->_attachments)) {
-            $output['attach'] = $this->_attachments;
+        if (!empty($this->_attachments)) {
+            $entity->setProperty('*attach', $inspector($this->_attachments));
         }
 
-        if($this->hasWhereClauses()) {
-            $output['where'] = $this->getWhereClauseList();
+        if ($this->hasWhereClauses()) {
+            $entity->setProperty('*where', $inspector($this->getWhereClauseList()));
         }
 
-        if($this->_searchController) {
-            $output['search'] = $this->_searchController;
+        if ($this->_searchController) {
+            $entity->setProperty('*search', $inspector($this->_searchController));
         }
 
-        if(!empty($this->_group)) {
-            $output['group'] = $this->_groups;
+        if (!empty($this->_group)) {
+            $entity->setProperty('*group', $inspector($this->_groups));
         }
 
-        if($this->hasHavingClauses()) {
-            $output['having'] = $this->_havingClauseList;
+        if ($this->hasHavingClauses()) {
+            $entity->setProperty('*having', $inspector($this->_havingClauseList));
         }
 
-        if(!empty($this->_order)) {
+        if (!empty($this->_order)) {
             $order = [];
 
-            foreach($this->_order as $directive) {
+            foreach ($this->_order as $directive) {
                 $order[] = $directive->toString();
             }
 
-            $output['order'] = implode(', ', $order);
+            $entity->setProperty('*order', $inspector(implode(', ', $order)));
         }
 
-        if(!empty($this->_nest)) {
-            $output['nest'] = $this->_nest;
+        if (!empty($this->_nest)) {
+            $entity->setProperty('*nest', $inspector($this->_nest));
         }
 
-        if($this->_limit) {
-            $output['limit'] = $this->_limit;
+        if ($this->_limit) {
+            $entity->setProperty('*limit', $inspector($this->_limit));
         }
 
-        if($this->_offset) {
-            $output['offset'] = $this->_offset;
+        if ($this->_offset) {
+            $entity->setProperty('*offset', $inspector($this->_offset));
         }
 
-        if($this->_paginator) {
-            $output['paginator'] = $this->_paginator;
+        if ($this->_paginator) {
+            $entity->setProperty('*paginator', $inspector($this->_paginator));
         }
-
-        return $output;
     }
 }
 
 
 ## ATTACH
-class Select_Attach extends Select implements ISelectAttachQuery {
-
+class Select_Attach extends Select implements ISelectAttachQuery
+{
     use TQuery_Attachment;
     use TQuery_AttachmentListExtension;
     use TQuery_AttachmentValueExtension;
     use TQuery_ParentAwareJoinClauseFactory;
 
-    public function __construct(IQuery $parent, ISourceManager $sourceManager, ISource $source) {
+    public function __construct(IQuery $parent, ISourceManager $sourceManager, ISource $source)
+    {
         $this->_parent = $parent;
         parent::__construct($sourceManager, $source);
     }
 
-    public function getQueryType() {
+    public function getQueryType()
+    {
         return IQueryTypes::SELECT_ATTACH;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return array_merge([
-            'sources' => $this->_sourceManager,
-            'type' => self::typeIdToName($this->_type),
-            'fields' => $this->_source,
-            'on' => $this->_joinClauseList,
-        ], parent::getDumpProperties());
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setProperties([
+            '*type' => $inspector(self::typeIdToName($this->_type)),
+            '*on' => $inspector($this->_joinClauseList),
+        ]);
+
+        parent::glitchInspect($entity, $inspector);
     }
 }
 
 
 ## UNION
-class Select_Union extends Select implements IUnionSelectQuery {
-
+class Select_Union extends Select implements IUnionSelectQuery
+{
     protected $_union;
     protected $_isUnionDistinct = true;
 
-    public function __construct(IUnionQuery $union, ISource $source) {
+    public function __construct(IUnionQuery $union, ISource $source)
+    {
         $this->_union = $union;
         parent::__construct($union->getSourceManager(), $source);
     }
 
-    public function isUnionDistinct(bool $flag=null) {
-        if($flag !== null) {
+    public function isUnionDistinct(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isUnionDistinct = $flag;
             return $this;
         }
@@ -229,19 +246,22 @@ class Select_Union extends Select implements IUnionSelectQuery {
         return $this->_isUnionDistinct;
     }
 
-    public function endSelect() {
+    public function endSelect()
+    {
         $this->_union->addQuery($this);
         return $this->_union;
     }
 
-    public function with(...$fields) {
+    public function with(...$fields)
+    {
         $this->endSelect();
 
         return Initiator::factory()
             ->beginUnionSelect($this->_union, $fields, true);
     }
 
-    public function withAll(...$fields) {
+    public function withAll(...$fields)
+    {
         $this->endSelect();
 
         return Initiator::factory()

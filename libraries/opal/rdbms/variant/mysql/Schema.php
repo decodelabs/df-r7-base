@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\opal;
 
-class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
+{
     protected $_options = [
         'name' => null,
         'comment' => null,
@@ -38,152 +42,177 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
     ];
 
 
-// Engine
-    public function setEngine($engine) {
+    // Engine
+    public function setEngine($engine)
+    {
         return $this->setOption('engine', $engine);
     }
 
-    public function getEngine() {
+    public function getEngine()
+    {
         return $this->getOption('engine');
     }
 
-// Auto increment
-    public function setAutoIncrementPosition($position) {
+    // Auto increment
+    public function setAutoIncrementPosition($position)
+    {
         return $this->setOption('autoIncrementPosition', $position);
     }
 
-    public function getAutoIncrementPosition() {
+    public function getAutoIncrementPosition()
+    {
         return $this->getOption('autoIncrementPosition');
     }
 
-// Character set
-    public function setCharacterSet($charset) {
+    // Character set
+    public function setCharacterSet($charset)
+    {
         return $this->setOption('characterSet', $charset);
     }
 
-    public function getCharacterSet() {
+    public function getCharacterSet()
+    {
         return $this->getOption('characterSet');
     }
 
-// Collation
-    public function setCollation($collation) {
+    // Collation
+    public function setCollation($collation)
+    {
         return $this->setOption('collation', $collation);
     }
 
-    public function getCollation() {
+    public function getCollation()
+    {
         return $this->getOption('collation');
     }
 
-// Key block size
-    public function setKeyBlockSize($size) {
-        if($size !== null) {
+    // Key block size
+    public function setKeyBlockSize($size)
+    {
+        if ($size !== null) {
             $size = (int)$size;
         }
 
-        if($size <= 0) {
+        if ($size <= 0) {
             $size = null;
         }
 
         return $this->setOption('keyBlockSize', $size);
     }
 
-    public function getKeyBlockSize() {
+    public function getKeyBlockSize()
+    {
         return $this->getOption('keyBlockSize');
     }
 
 
-// Options
-    public function setAvgRowLength($length) {
-        if($length !== null) {
+    // Options
+    public function setAvgRowLength($length)
+    {
+        if ($length !== null) {
             $length = (int)$length;
         }
 
-        if($length <= 0) {
+        if ($length <= 0) {
             $length = null;
         }
 
         return $this->setOption('avgRowLength', $length);
     }
 
-    public function getAvgRowLength() {
+    public function getAvgRowLength()
+    {
         return $this->getOption('avgRowLength');
     }
 
-    public function shouldGenerateChecksum(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldGenerateChecksum(bool $flag=null)
+    {
+        if ($flag !== null) {
             return $this->getOption('checksum', $flag);
         }
 
         return (bool)$this->getOption('checksum');
     }
 
-    public function setFederatedConnection($connection) {
+    public function setFederatedConnection($connection)
+    {
         return $this->setOption('federatedConnection', $connection);
     }
 
-    public function getFederatedConnection() {
+    public function getFederatedConnection()
+    {
         return $this->getOption('federatedConnection');
     }
 
-    public function setDataDirectory($dir) {
+    public function setDataDirectory($dir)
+    {
         return $this->setOption('dataDirectory', $dir);
     }
 
-    public function getDataDirectory() {
+    public function getDataDirectory()
+    {
         return $this->getOption('dataDirectory');
     }
 
-    public function setIndexDirectory($dir) {
+    public function setIndexDirectory($dir)
+    {
         return $this->setOption('indexDirectory', $dir);
     }
 
-    public function getIndexDirectory() {
+    public function getIndexDirectory()
+    {
         return $this->getOption('indexDirectory');
     }
 
-    public function shouldDelayKeyWrite(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldDelayKeyWrite(bool $flag=null)
+    {
+        if ($flag !== null) {
             return $this->setOption('delayKeyWrite', $flag);
         }
 
         return (bool)$this->getOption('delayKeyWrite');
     }
 
-    public function setMaxRowHint($maxRows) {
-        if($maxRows !== null) {
+    public function setMaxRowHint($maxRows)
+    {
+        if ($maxRows !== null) {
             $maxRows = (int)$maxRows;
         }
 
-        if($maxRows <= 0) {
+        if ($maxRows <= 0) {
             $maxRows = null;
         }
 
         return $this->setOption('maxRows', $maxRows);
     }
 
-    public function getMaxRowHint() {
+    public function getMaxRowHint()
+    {
         return $this->getOption('maxRows');
     }
 
-    public function setMinRowHint($minRows) {
-        if($minRows !== null) {
+    public function setMinRowHint($minRows)
+    {
+        if ($minRows !== null) {
             $minRows = (int)$minRows;
         }
 
-        if($minRows <= 0) {
+        if ($minRows <= 0) {
             $minRows = null;
         }
 
         return $this->setOption('minRows', $minRows);
     }
 
-    public function getMinRowHint() {
+    public function getMinRowHint()
+    {
         return $this->getOption('minRows');
     }
 
-    public function shouldPackKeys(bool $flag=null) {
-        if($flag !== null) {
-            if(strtolower($flag) == 'default') {
+    public function shouldPackKeys(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if (strtolower($flag) == 'default') {
                 $flag = null;
             } else {
                 $flag = $flag;
@@ -195,18 +224,21 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
         return $this->getOption('packKeys');
     }
 
-    public function setRowFormat($format) {
+    public function setRowFormat($format)
+    {
         return $this->setOption('rowFormat', $format);
     }
 
-    public function getRowFormat() {
+    public function getRowFormat()
+    {
         return $this->getOption('rowFormat');
     }
 
 
-// Merge options
-    public function setMergeInsertMethod($insert) {
-        switch($insert = strtoupper($insert)) {
+    // Merge options
+    public function setMergeInsertMethod($insert)
+    {
+        switch ($insert = strtoupper($insert)) {
             case 'NO':
             case 'FIRST':
             case 'LAST':
@@ -220,28 +252,33 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
         return $this->setOption('insertMethod', $insert);
     }
 
-    public function getMergeInsertMethod() {
+    public function getMergeInsertMethod()
+    {
         return $this->getOption('insertMethod');
     }
 
-    public function setMergeTables(array $tables) {
+    public function setMergeTables(array $tables)
+    {
         return $this->setOption('mergeTables', $tables);
     }
 
-    public function getMergeTables() {
+    public function getMergeTables()
+    {
         return $this->getOption('mergeTables');
     }
 
 
 
-// Constraints
-    public function _createTrigger($name, $event, $timing, $statement) {
+    // Constraints
+    public function _createTrigger($name, $event, $timing, $statement)
+    {
         return new Trigger($this, $name, $event, $timing, $statement);
     }
 
 
-// Normalize
-    public function normalize() {
+    // Normalize
+    public function normalize()
+    {
         parent::normalize();
 
 
@@ -250,8 +287,8 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
         $availableEngines = [];
         $defaultEngine = null;
 
-        foreach($res as $row) {
-            if($row['Support'] == 'DEFAULT') {
+        foreach ($res as $row) {
+            if ($row['Support'] == 'DEFAULT') {
                 $defaultEngine = $row['Engine'];
             }
 
@@ -259,13 +296,13 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
         }
 
 
-        if($this->_options['engine'] !== null) {
+        if ($this->_options['engine'] !== null) {
             $compEngine = strtolower($this->_options['engine']);
 
-            if(isset($availableEngines[$compEngine])) {
+            if (isset($availableEngines[$compEngine])) {
                 $this->_options['engine'] = $availableEngines[$compEngine]['Engine'];
             } else {
-                switch($compEngine) {
+                switch ($compEngine) {
                     case 'archive':
                     case 'bdb':
                     case 'csv':
@@ -292,7 +329,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
             }
 
 
-            if(!isset($availableEngines[$compEngine])
+            if (!isset($availableEngines[$compEngine])
             || $availableEngines[$compEngine]['Engine'] != $this->_options['engine']) {
                 throw new opal\rdbms\EngineSupportException(
                     'Mysql storage engine '.$this->_options['engine'].' does not appear to be available'
@@ -304,14 +341,14 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
         }
 
 
-        if($this->_options['engine'] !== 'MERGE') {
-            if($this->_options['insertMethod']) {
+        if ($this->_options['engine'] !== 'MERGE') {
+            if ($this->_options['insertMethod']) {
                 throw new opal\rdbms\FeatureSupportException(
                     'Mysql engine '.$this->_options['engine'].' does not support INSERT_METHOD table option'
                 );
             }
 
-            if(!empty($this->_options['mergeTables'])) {
+            if (!empty($this->_options['mergeTables'])) {
                 throw new opal\rdbms\FeatureSupportException(
                     'Mysql engine '.$this->_options['engine'].' does not support UNION table option'
                 );
@@ -322,8 +359,8 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
 
 
         // Primary key
-        if($index = $this->getIndex('PRIMARY')) {
-            if($this->_primaryIndex && $index !== $this->_primaryIndex) {
+        if ($index = $this->getIndex('PRIMARY')) {
+            if ($this->_primaryIndex && $index !== $this->_primaryIndex) {
                 throw new opal\rdbms\IndexConflictException(
                     'A primary index has been set, but another index has been defined with the name PRIMARY.'."\n".
                     'Mysql requires the primary index to be named PRIMARY'
@@ -333,8 +370,8 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
             $this->setPrimaryIndex($index);
         }
 
-        if($this->_primaryIndex) {
-            if($this->_primaryIndex->getName() != 'PRIMARY') {
+        if ($this->_primaryIndex) {
+            if ($this->_primaryIndex->getName() != 'PRIMARY') {
                 throw new opal\rdbms\IndexConflictException(
                     'Mysql primary index must be named PRIMARY'
                 );
@@ -343,8 +380,8 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
 
 
         // Foreign keys
-        if(!empty($this->_foreignKeys)) {
-            switch($compEngine) {
+        if (!empty($this->_foreignKeys)) {
+            switch ($compEngine) {
                 case 'archive':
                 case 'bdb':
                 case 'csv':
@@ -364,8 +401,8 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
 
 
         // Triggers
-        if(!empty($this->_triggers)) {
-            if(!$this->_adapter->supports(opal\rdbms\adapter\Base::TRIGGERS)) {
+        if (!empty($this->_triggers)) {
+            if (!$this->_adapter->supports(opal\rdbms\adapter\Base::TRIGGERS)) {
                 throw new opal\rdbms\TriggerSupportException(
                     'This version of Mysql does not support triggers'
                 );
@@ -374,10 +411,10 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
 
 
         // Row format
-        if($this->_options['rowFormat'] != null) {
-            switch($compEngine) {
+        if ($this->_options['rowFormat'] != null) {
+            switch ($compEngine) {
                 case 'innodb':
-                    switch($this->_options['rowFormat'] = strtoupper($this->_options['rowFormat'])) {
+                    switch ($this->_options['rowFormat'] = strtoupper($this->_options['rowFormat'])) {
                         case 'REDUNDANT':
                         case 'COMPACT':
                         case 'DEFAULT':
@@ -392,7 +429,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
                     break;
 
                 case 'myisam':
-                    switch($this->_options['rowFormat'] = strtoupper($this->_options['rowFormat'])) {
+                    switch ($this->_options['rowFormat'] = strtoupper($this->_options['rowFormat'])) {
                         case 'FIXED':
                         case 'DYNAMIC':
                         case 'DEFAULT':

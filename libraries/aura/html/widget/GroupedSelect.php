@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocusableInputWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocusableInputWidget, Inspectable
+{
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_VisualInput;
@@ -25,7 +29,8 @@ class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocus
     protected $_markSelected = true;
     protected $_noSelectionLabel = '--';
 
-    public function __construct(arch\IContext $context, $name, $value=null, $options=null, $labelsAsValues=false) {
+    public function __construct(arch\IContext $context, $name, $value=null, $options=null, $labelsAsValues=false)
+    {
         parent::__construct($context);
 
         $this->setName($name);
@@ -33,8 +38,9 @@ class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocus
         $this->setOptions($options, $labelsAsValues);
     }
 
-    public function shouldMarkSelected(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldMarkSelected(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_markSelected = $flag;
             return $this;
         }
@@ -42,16 +48,19 @@ class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocus
         return $this->_markSelected;
     }
 
-    public function setNoSelectionLabel($label) {
+    public function setNoSelectionLabel($label)
+    {
         $this->_noSelectionLabel = $label;
         return $this;
     }
 
-    public function getNoSelectionLabel() {
+    public function getNoSelectionLabel()
+    {
         return $this->_noSelectionLabel;
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
 
         $this->_applyFormDataAttributes($tag, false);
@@ -62,24 +71,24 @@ class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocus
         $groupList = new aura\html\ElementContent();
         $selectionFound = false;
 
-        foreach($this->_groupOptions as $groupId => $group) {
+        foreach ($this->_groupOptions as $groupId => $group) {
             $optGroup = new aura\html\Element('optgroup', null, ['label' => $this->getGroupName($groupId)]);
 
-            foreach($group as $value => $label) {
+            foreach ($group as $value => $label) {
                 $isSelected = !$selectionFound && $this->_checkSelected($value, $selectionFound);
                 $option = new aura\html\Element('option', null, ['value' => $value]);
 
-                if($isSelected) {
+                if ($isSelected) {
                     $option->setAttribute('selected', 'selected');
                 }
 
-                if($optionRenderer = $this->_optionRenderer) {
+                if ($optionRenderer = $this->_optionRenderer) {
                     $optionRenderer($option, $value, $label);
                 } else {
                     $option->push($label);
                 }
 
-                if($isSelected && $this->_markSelected) {
+                if ($isSelected && $this->_markSelected) {
                     $option->unshift('» ');
                 }
 
@@ -89,28 +98,33 @@ class GroupedSelect extends Base implements IGroupedSelectionInputWidget, IFocus
             $groupList->push($optGroup->render());
         }
 
-        if(!$this->isRequired() && !$tag->hasAttribute('multiple')) {
+        if (!$this->isRequired() && !$tag->hasAttribute('multiple')) {
             $groupList->unshift(new aura\html\Element('option', $this->_noSelectionLabel !== '--' ? $this->_noSelectionLabel : '', ['value' => '']));
-        } else if(!$selectionFound && $this->_noSelectionLabel !== null) {
+        } elseif (!$selectionFound && $this->_noSelectionLabel !== null) {
             $groupList->unshift(new aura\html\Element('option', $this->_noSelectionLabel, ['value' => '', 'disabled' => true, 'selected' => true]));
         }
 
         return $tag->renderWith($groupList, true);
     }
 
-    protected function _checkSelected($value, &$selectionFound) {
+    protected function _checkSelected($value, &$selectionFound)
+    {
         return $selectionFound = $value == $this->getValueString();
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'name' => $this->_name,
-            'value' => $this->_value,
-            'options' => $this->_groupOptions,
-            'groupNames' => $this->_groupNames,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*name' => $inspector($this->_name),
+                '*value' => $inspector($this->_value),
+                '*groupNames' => $inspector($this->_groupNames),
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues($inspector->inspectList($this->_groupOptions));
     }
 }

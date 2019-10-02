@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class RelationManifest implements IRelationManifest, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class RelationManifest implements IRelationManifest, Inspectable
 {
     protected $_fields = [];
     protected $_primitives = [];
@@ -166,10 +170,11 @@ class RelationManifest implements IRelationManifest, core\IDumpable
         return $output;
     }
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return $this->_fields;
+        $entity->setValues($inspector->inspectList($this->_fields));
     }
 }

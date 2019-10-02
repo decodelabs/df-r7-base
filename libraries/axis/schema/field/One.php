@@ -10,32 +10,37 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
 /*
  * This type does not care about inverse at all.
  * Just return primary primitive
  */
-class One extends Base implements axis\schema\IOneField {
-
+class One extends Base implements axis\schema\IOneField
+{
     use axis\schema\TRelationField;
     use axis\schema\TTargetPrimaryFieldAwareRelationField;
 
 
-    protected function _init($targetTableUnit) {
+    protected function _init($targetTableUnit)
+    {
         $this->setTargetUnitId($targetTableUnit);
     }
 
 
-// Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
+    // Values
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    {
         $value = $this->getTargetRelationManifest()->extractFromRow($key, $row);
 
-        if(!$forRecord) {
+        if (!$forRecord) {
             // Only need a simple value
-            if(array_key_exists($key, $row)) {
+            if (array_key_exists($key, $row)) {
                 return $row[$key];
             } else {
-                if($value === null) {
+                if ($value === null) {
                     return null;
                 }
 
@@ -49,12 +54,13 @@ class One extends Base implements axis\schema\IOneField {
         );
     }
 
-    public function deflateValue($value) {
-        if($value instanceof opal\record\IRecord) {
+    public function deflateValue($value)
+    {
+        if ($value instanceof opal\record\IRecord) {
             $value = $value->getPrimaryKeySet();
         }
 
-        if(!$value instanceof opal\record\IPrimaryKeySet) {
+        if (!$value instanceof opal\record\IPrimaryKeySet) {
             $value = new opal\record\PrimaryKeySet($this->getTargetRelationManifest()->getPrimitiveFieldNames(), $value);
         }
 
@@ -62,8 +68,8 @@ class One extends Base implements axis\schema\IOneField {
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
         $schema = $targetUnit->getUnitSchema();
 
-        foreach($value->toArray() as $key => $value) {
-            if($field = $schema->getField($key)) {
+        foreach ($value->toArray() as $key => $value) {
+            if ($field = $schema->getField($key)) {
                 $value = $field->deflateValue($value);
             }
 
@@ -73,8 +79,9 @@ class One extends Base implements axis\schema\IOneField {
         return $output;
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if(!$forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    {
+        if (!$forRecord) {
             return $value;
         }
 
@@ -83,21 +90,24 @@ class One extends Base implements axis\schema\IOneField {
         );
     }
 
-    public function generateInsertValue(array $row) {
+    public function generateInsertValue(array $row)
+    {
         return null;
     }
 
 
-// Clause
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
+    // Clause
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    {
         return opal\query\clause\Clause::mapVirtualClause(
             $parent, $field, $operator, $value, $isOr
         );
     }
 
 
-// Populate
-    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
+    // Populate
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate)
+    {
         $output = opal\query\Initiator::beginAttachFromPopulate($populate);
 
         $parentSourceAlias = $populate->getParentSourceAlias();
@@ -110,20 +120,21 @@ class One extends Base implements axis\schema\IOneField {
     }
 
 
-// Validation
-    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+    // Validation
+    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema)
+    {
         $this->_sanitizeTargetUnitId($localUnit);
 
         $oldName = $schema->getOriginalFieldNameFor($this->_name);
 
-        if($oldName != $this->_name && $schema->hasIndex($oldName)) {
+        if ($oldName != $this->_name && $schema->hasIndex($oldName)) {
             $schema->renameIndex($oldName, $this->_name);
         }
 
-        if(!$schema->hasIndex($this->_name)) {
+        if (!$schema->hasIndex($this->_name)) {
             $schema->addIndex($this->_name);
-        } else if($schema->getReplacedField($oldName)) {
-            if($index = $schema->getIndex($oldName)) {
+        } elseif ($schema->getReplacedField($oldName)) {
+            if ($index = $schema->getIndex($oldName)) {
                 $index->markAsChanged();
             }
         }
@@ -131,7 +142,8 @@ class One extends Base implements axis\schema\IOneField {
         return $this;
     }
 
-    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema)
+    {
         // Target
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
@@ -141,13 +153,14 @@ class One extends Base implements axis\schema\IOneField {
         return $this;
     }
 
-    public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+    public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetRelationManifest = $this->getTargetRelationManifest();
         $output = [];
 
-        foreach($targetRelationManifest as $fieldName => $primitive) {
+        foreach ($targetRelationManifest as $fieldName => $primitive) {
             $field = $targetSchema->getField($fieldName);
 
             $dupField = $field->duplicateForRelation($targetUnit, $targetSchema);
@@ -160,29 +173,39 @@ class One extends Base implements axis\schema\IOneField {
     }
 
 
-// Primitive
-    public function getPrimitiveFieldNames() {
+    // Primitive
+    public function getPrimitiveFieldNames()
+    {
         return $this->getTargetRelationManifest()->getPrimitiveFieldNames($this->_name);
     }
 
 
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         $this->_setBaseStorageArray($data);
         $this->_setRelationStorageArray($data);
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return array_merge(
             $this->_getBaseStorageArray(),
             $this->_getRelationStorageArray()
         );
     }
 
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        parent::glitchInspect($entity, $inspector);
 
-// Dump
-    public function getDumpProperties() {
-        return parent::getDumpProperties().'('.$this->_targetUnitId.')';
+        $def = $entity->getDefinition();
+        $def .= '('.$this->_targetUnitId.')';
+
+        $entity->setDefinition($def);
     }
 }

@@ -10,7 +10,11 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-abstract class Base implements ISchema, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+abstract class Base implements ISchema, Inspectable
 {
     use opal\schema\TSchema;
     use opal\schema\TSchema_FieldProvider;

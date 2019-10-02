@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,19 +8,25 @@ namespace df\spur\vcs\git;
 use df;
 use df\core;
 use df\spur;
-    
-class Status implements IStatus, core\IDumpable {
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Status implements IStatus, Inspectable
+{
     protected $_tracked = [];
     protected $_untracked = [];
     protected $_repository;
 
-    public function __construct(ILocalRepository $repository) {
+    public function __construct(ILocalRepository $repository)
+    {
         $this->_repository = $repository;
         $this->refresh();
     }
 
-    public function refresh() {
+    public function refresh()
+    {
         $this->_tracked = [];
         $this->_untracked = [];
 
@@ -29,12 +35,12 @@ class Status implements IStatus, core\IDumpable {
             '-uall'
         ]);
 
-        if(!empty($result)) {
-            foreach(explode("\n", $result) as $line) {
+        if (!empty($result)) {
+            foreach (explode("\n", $result) as $line) {
                 $state = substr($line, 0, 2);
                 $path = trim(substr($line, 2));
 
-                if($state == '??') {
+                if ($state == '??') {
                     $this->_untracked[$path] = $state;
                 } else {
                     $this->_tracked[$path] = $state;
@@ -43,84 +49,104 @@ class Status implements IStatus, core\IDumpable {
         }
     }
 
-    public function count() {
+    public function count()
+    {
         return count($this->_tracked) + count($this->_untracked);
     }
 
-    public function getTracked() {
+    public function getTracked()
+    {
         return $this->_tracked;
     }
 
-    public function hasTracked() {
+    public function hasTracked()
+    {
         return !empty($this->_tracked);
     }
 
-    public function countTracked() {
+    public function countTracked()
+    {
         return count($this->_tracked);
     }
 
-    public function getUntracked() {
+    public function getUntracked()
+    {
         return $this->_untracked;
     }
 
-    public function hasUntracked() {
+    public function hasUntracked()
+    {
         return !empty($this->_untracked);
     }
 
-    public function countUntracked() {
+    public function countUntracked()
+    {
         return count($this->_untracked);
     }
 
-    public function hasFile($path) {
+    public function hasFile($path)
+    {
         return isset($this->_tracked[$path])
             || isset($this->_untracked[$path]);
     }
 
-    public function getFileState($path) {
-        if(isset($this->_tracked[$path])) {
+    public function getFileState($path)
+    {
+        if (isset($this->_tracked[$path])) {
             return $this->_tracked[$path];
-        } else if(isset($this->_untracked[$path])) {
+        } elseif (isset($this->_untracked[$path])) {
             return '??';
         }
     }
 
-    public function isTracked($path) {
+    public function isTracked($path)
+    {
         return isset($this->_tracked[$path]);
     }
 
-    public function isUntracked($path) {
+    public function isUntracked($path)
+    {
         return isset($this->_untracked[$path]);
     }
 
 
-    public function countUnpushedCommits($remoteBranch=null) {
+    public function countUnpushedCommits($remoteBranch=null)
+    {
         return $this->_repository->countUnpushedCommits($remoteBranch);
     }
 
-    public function getUnpushedCommitIds($remoteBranch=null) {
+    public function getUnpushedCommitIds($remoteBranch=null)
+    {
         return $this->_repository->getUnpushedCommitIds($remoteBranch);
     }
 
-    public function getUnpushedCommits($remoteBranch=null) {
+    public function getUnpushedCommits($remoteBranch=null)
+    {
         return $this->_repository->getUnpushedCommits($remoteBranch);
     }
 
 
-    public function countUnpulledCommits($remoteBranch=null) {
+    public function countUnpulledCommits($remoteBranch=null)
+    {
         return $this->_repository->countUnpulledCommits($remoteBranch);
     }
 
-    public function getUnpulledCommitIds($remoteBranch=null) {
+    public function getUnpulledCommitIds($remoteBranch=null)
+    {
         return $this->_repository->getUnpulledCommitIds($remoteBranch);
     }
 
-    public function getUnpulledCommits($remoteBranch=null) {
+    public function getUnpulledCommits($remoteBranch=null)
+    {
         return $this->_repository->getUnpulledCommits($remoteBranch);
     }
-    
 
-// Dump
-    public function getDumpProperties() {
-        return array_merge($this->_tracked, $this->_untracked);
+
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setValues($inspector->inspectList(array_merge($this->_tracked, $this->_untracked)));
     }
 }

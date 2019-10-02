@@ -9,58 +9,67 @@ use df;
 use df\core;
 use df\opal;
 
-class OrderDirective implements IOrderDirective, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class OrderDirective implements IOrderDirective, Inspectable
+{
     use core\TStringProvider;
 
     protected $_isDescending = false;
     protected $_nullOrder = 'ascending';
     protected $_field;
 
-    public function __construct(opal\query\IField $field, $direction=null) {
+    public function __construct(opal\query\IField $field, $direction=null)
+    {
         $this->setField($field);
         $this->setDirection($direction);
     }
 
-    public function setField(opal\query\IField $field) {
+    public function setField(opal\query\IField $field)
+    {
         $this->_field = $field;
         return $this;
     }
 
-    public function getField() {
+    public function getField()
+    {
         return $this->_field;
     }
 
-    public function isFieldNullable() {
-        if($this->_field instanceof opal\query\IIntrinsicField) {
+    public function isFieldNullable()
+    {
+        if ($this->_field instanceof opal\query\IIntrinsicField) {
             $source = $this->_field->getSource();
 
-            if(!$source->isPrimary()) {
+            if (!$source->isPrimary()) {
                 return true;
             }
 
-            if($processor = $source->getFieldProcessor($this->_field)) {
+            if ($processor = $source->getFieldProcessor($this->_field)) {
                 return $processor->canReturnNull();
             }
 
             return null;
-        } else if($this->_field instanceof opal\query\ISearchController) {
+        } elseif ($this->_field instanceof opal\query\ISearchController) {
             return false;
         } else {
             return null;
         }
     }
 
-    public function setDirection($direction) {
-        if(is_string($direction)) {
-            if(!ctype_alpha(substr($direction, -1))) {
+    public function setDirection($direction)
+    {
+        if (is_string($direction)) {
+            if (!ctype_alpha(substr($direction, -1))) {
                 $modifier = substr($direction, -1);
                 $direction = substr($direction, 0, -1);
             } else {
                 $modifier = null;
             }
 
-            switch(strtolower($direction)) {
+            switch (strtolower($direction)) {
                 case 'desc':
                 case 'd':
                     $direction = true;
@@ -70,7 +79,7 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
                     $direction = false;
             }
 
-            switch($modifier) {
+            switch ($modifier) {
                 case '!':
                     $this->setNullOrder('last');
                     break;
@@ -89,14 +98,15 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
         return $this;
     }
 
-    public function getDirection() {
-        if($this->_isDescending) {
+    public function getDirection()
+    {
+        if ($this->_isDescending) {
             $output = 'DESC';
         } else {
             $output = 'ASC';
         }
 
-        switch($this->_nullOrder) {
+        switch ($this->_nullOrder) {
             case 'last':
                 $output .= '!';
                 break;
@@ -113,14 +123,15 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
         return $output;
     }
 
-    public function getReversedDirection() {
-        if($this->_isDescending) {
+    public function getReversedDirection()
+    {
+        if ($this->_isDescending) {
             $output = 'ASC';
         } else {
             $output = 'DESC';
         }
 
-        switch($this->_nullOrder) {
+        switch ($this->_nullOrder) {
             case 'last':
                 $output .= '!';
                 break;
@@ -137,8 +148,9 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
         return $output;
     }
 
-    public function isDescending(bool $flag=null) {
-        if($flag !== null) {
+    public function isDescending(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isDescending = $flag;
             return $this;
         }
@@ -146,8 +158,9 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
         return $this->_isDescending;
     }
 
-    public function isAscending(bool $flag=null) {
-        if($flag !== null) {
+    public function isAscending(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isDescending = !$flag;
             return $this;
         }
@@ -155,21 +168,27 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
         return !$this->_isDescending;
     }
 
-    public function setNullOrder($order) {
+    public function setNullOrder($order)
+    {
         $this->_nullOrder = NullOrder::normalize($order);
         return $this;
     }
 
-    public function getNullOrder() {
+    public function getNullOrder()
+    {
         return $this->_nullOrder;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return $this->_field->getQualifiedName().' '.$this->getDirection();
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setDefinition($this->toString());
     }
 }

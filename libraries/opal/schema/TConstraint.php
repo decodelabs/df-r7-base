@@ -9,56 +9,67 @@ use df;
 use df\core;
 use df\opal;
 
-trait TConstraint_CharacterSetAware {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+trait TConstraint_CharacterSetAware
+{
     protected $_characterSet;
 
-    public function setCharacterSet($charset) {
+    public function setCharacterSet($charset)
+    {
         $this->_hasChanged = true;
         $this->_characterSet = $charset;
         return $this;
     }
 
-    public function getCharacterSet() {
+    public function getCharacterSet()
+    {
         return $this->_characterSet;
     }
 
-// Ext. serialize
-    protected function _getCharacterSetStorageArray() {
+    // Ext. serialize
+    protected function _getCharacterSetStorageArray()
+    {
         return ['chr' => $this->_characterSet];
     }
 }
 
 
-trait TConstraint_CollationAware {
-
+trait TConstraint_CollationAware
+{
     protected $_collation;
 
-    public function setCollation($collation) {
+    public function setCollation($collation)
+    {
         $this->_hasChanged = true;
         $this->_collation = $collation;
         return $this;
     }
 
-    public function getCollation() {
+    public function getCollation()
+    {
         return $this->_collation;
     }
 
-// Ext. serialize
-    protected function _getCollationStorageArray() {
+    // Ext. serialize
+    protected function _getCollationStorageArray()
+    {
         return ['col' => $this->_collation];
     }
 }
 
 
 
-trait TConstraint_Base {
-
+trait TConstraint_Base
+{
     protected $_name;
     protected $_hasChanged = false;
 
-    public function _setName($name) {
-        if($name != $this->_name) {
+    public function _setName($name)
+    {
+        if ($name != $this->_name) {
             $this->_hasChanged = true;
         }
 
@@ -66,20 +77,24 @@ trait TConstraint_Base {
         return $this;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function hasChanged() {
+    public function hasChanged()
+    {
         return $this->_hasChanged;
     }
 
-    public function markAsChanged() {
+    public function markAsChanged()
+    {
         $this->_hasChanged = true;
         return $this;
     }
 
-    public function acceptChanges() {
+    public function acceptChanges()
+    {
         $this->_hasChanged = false;
         return $this;
     }
@@ -90,8 +105,8 @@ trait TConstraint_Base {
 /***********************
  * Index
  */
-trait TConstraint_Index {
-
+trait TConstraint_Index
+{
     use TConstraint_Base;
 
     protected $_isUnique = false;
@@ -99,14 +114,16 @@ trait TConstraint_Index {
     protected $_comment;
 
 
-    public function __construct($name, $fields=null) {
+    public function __construct($name, $fields=null)
+    {
         $this->_setName($name);
         $this->setFields($fields);
     }
 
-    public function isUnique(bool $flag=null) {
-        if($flag !== null) {
-            if($flag != $this->_isUnique) {
+    public function isUnique(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if ($flag != $this->_isUnique) {
                 $this->_hasChanged = true;
             }
 
@@ -117,28 +134,31 @@ trait TConstraint_Index {
         return $this->_isUnique;
     }
 
-    public function setComment($comment) {
+    public function setComment($comment)
+    {
         $this->_comment = $comment;
         return $this;
     }
 
-    public function getComment() {
+    public function getComment()
+    {
         return $this->_comment;
     }
 
-    public function setFields($fields) {
-        if($fields === null) {
+    public function setFields($fields)
+    {
+        if ($fields === null) {
             return $this;
         }
 
-        if(!is_array($fields)) {
+        if (!is_array($fields)) {
             $fields = [$fields];
         }
 
-        foreach($fields as $field) {
-            if($field instanceof IField) {
+        foreach ($fields as $field) {
+            if ($field instanceof IField) {
                 $this->addField($field);
-            } else if($field instanceof IIndexFieldReference) {
+            } elseif ($field instanceof IIndexFieldReference) {
                 $this->addFieldReference($field);
             } else {
                 throw new InvalidArgumentException(
@@ -150,12 +170,14 @@ trait TConstraint_Index {
         return $this;
     }
 
-    public function addField(IField $field, $size=null, $isDescending=false) {
+    public function addField(IField $field, $size=null, $isDescending=false)
+    {
         return $this->addFieldReference(new IndexFieldReference($field, $size, $isDescending));
     }
 
-    public function addFieldReference(IIndexFieldReference $reference) {
-        if(!$this->hasField($reference->getField())) {
+    public function addFieldReference(IIndexFieldReference $reference)
+    {
+        if (!$this->hasField($reference->getField())) {
             $this->_fieldReferences[] = $reference;
             $this->hasChanged = true;
         }
@@ -163,9 +185,10 @@ trait TConstraint_Index {
         return $this;
     }
 
-    public function replaceField(IField $oldField, IField $newField, $size=null, $isDescending=false) {
-        foreach($this->_fieldReferences as $i => $reference) {
-            if($reference->getField() === $oldField) {
+    public function replaceField(IField $oldField, IField $newField, $size=null, $isDescending=false)
+    {
+        foreach ($this->_fieldReferences as $i => $reference) {
+            if ($reference->getField() === $oldField) {
                 $this->_fieldReference[$i] = new IndexFieldReference($field, $size, $isDescending);
                 $this->_hasChanged = true;
                 break;
@@ -175,9 +198,10 @@ trait TConstraint_Index {
         return $this;
     }
 
-    public function removeField(IField $field) {
-        foreach($this->_fieldReferences as $i => $reference) {
-            if($field === $reference->getField()) {
+    public function removeField(IField $field)
+    {
+        foreach ($this->_fieldReferences as $i => $reference) {
+            if ($field === $reference->getField()) {
                 unset($this->_fieldReferences[$i]);
                 $this->_fieldReferences = array_value($this->_fieldReferences);
                 $this->_hasChanged = true;
@@ -188,9 +212,10 @@ trait TConstraint_Index {
         return $this;
     }
 
-    public function _updateFieldReference(IField $oldField, IField $newField) {
-        foreach($this->_fieldReferences as $i => $reference) {
-            if($oldField === $reference->getField()) {
+    public function _updateFieldReference(IField $oldField, IField $newField)
+    {
+        foreach ($this->_fieldReferences as $i => $reference) {
+            if ($oldField === $reference->getField()) {
                 $reference->_setField($newField);
                 break;
             }
@@ -199,13 +224,15 @@ trait TConstraint_Index {
         return $this;
     }
 
-    public function firstFieldIs(IField $field) {
+    public function firstFieldIs(IField $field)
+    {
         return isset($this->_fieldReferences[0]) && $this->_fieldReferences[0]->getField() === $field;
     }
 
-    public function hasField(IField $field) {
-        foreach($this->_fieldReferences as $reference) {
-            if($field === $reference->getField()) {
+    public function hasField(IField $field)
+    {
+        foreach ($this->_fieldReferences as $reference) {
+            if ($field === $reference->getField()) {
                 return true;
             }
         }
@@ -213,14 +240,16 @@ trait TConstraint_Index {
         return false;
     }
 
-    public function getFieldReferences() {
+    public function getFieldReferences()
+    {
         return $this->_fieldReferences;
     }
 
-    public function getFields() {
+    public function getFields()
+    {
         $output = [];
 
-        foreach($this->_fieldReferences as $ref) {
+        foreach ($this->_fieldReferences as $ref) {
             $field = $ref->getField();
             $output[$field->getName()] = $field;
         }
@@ -228,63 +257,69 @@ trait TConstraint_Index {
         return $output;
     }
 
-    public function isSingleMultiPrimitiveField() {
-        if(count($this->_fieldReferences) != 1) {
+    public function isSingleMultiPrimitiveField()
+    {
+        if (count($this->_fieldReferences) != 1) {
             return false;
         }
 
         return $this->_fieldReferences[0]->isMultiField();
     }
 
-    public function isVoid() {
+    public function isVoid()
+    {
         return empty($this->_fieldReferences);
     }
 
 
-// Ext. serialize
-    public static function fromStorageArray(opal\schema\ISchema $schema, array $data) {
+    // Ext. serialize
+    public static function fromStorageArray(opal\schema\ISchema $schema, array $data)
+    {
         $output = new self($data['nam']);
         $output->_setGenericStorageArray($schema, $data);
         return $output;
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return $this->_getGenericStorageArray();
     }
 
-    protected function _setGenericStorageArray(opal\schema\ISchema $schema, array $data) {
+    protected function _setGenericStorageArray(opal\schema\ISchema $schema, array $data)
+    {
         $this->_name = $data['nam'];
 
-        if(isset($data['uni'])) {
+        if (isset($data['uni'])) {
             $this->_isUnique = $data['uni'];
         } else {
             $this->_isUnique = false;
         }
 
-        foreach($data['fld'] as $field) {
+        foreach ($data['fld'] as $field) {
             $this->_fieldReferences[] = IndexFieldReference::fromStorageArray($schema, $field);
         }
 
-        if(isset($data['com'])) {
+        if (isset($data['com'])) {
             $this->_comment = $data['com'];
         }
     }
 
-    protected function _getGenericStorageArray() {
+    protected function _getGenericStorageArray()
+    {
         $output = [
             'nam' => $this->_name,
             'fld' => []
         ];
 
-        if($this->_isUnique) {
+        if ($this->_isUnique) {
             $output['uni'] = true;
         }
 
-        if($this->_comment !== null) {
+        if ($this->_comment !== null) {
             $output['com'] = $this->_comment;
         }
 
-        foreach($this->_fieldReferences as $ref) {
+        foreach ($this->_fieldReferences as $ref) {
             $output['fld'][] = $ref->toStorageArray();
         }
 
@@ -292,24 +327,27 @@ trait TConstraint_Index {
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
         $output = $this->_name;
 
-        if($this->_isUnique) {
+        if ($this->_isUnique) {
             $output .= ' UNIQUE';
         }
 
         $fields = [];
 
-        foreach($this->_fieldReferences as $reference) {
+        foreach ($this->_fieldReferences as $reference) {
             $fieldDef = $reference->getField()->getName();
 
-            if(null !== ($size = $reference->getSize())) {
+            if (null !== ($size = $reference->getSize())) {
                 $fieldDef .= '('.$size.')';
             }
 
-            if($reference->isDescending()) {
+            if ($reference->isDescending()) {
                 $fieldDef .= ' DESC';
             } else {
                 $fieldDef .= ' ASC';
@@ -320,11 +358,11 @@ trait TConstraint_Index {
 
         $output .= ' ('.implode(',', $fields).')';
 
-        if($this->isVoid()) {
+        if ($this->isVoid()) {
             $output .= ' **VOID**';
         }
 
-        return $output;
+        $entity->setDefinition($output);
     }
 }
 
@@ -333,8 +371,8 @@ trait TConstraint_Index {
 /*****************************
  * Foreign Key
  */
-trait TConstraint_ForeignKey {
-
+trait TConstraint_ForeignKey
+{
     use TConstraint_Base;
 
     protected $_targetSchema;
@@ -342,13 +380,15 @@ trait TConstraint_ForeignKey {
     protected $_updateAction;
     protected $_deleteAction;
 
-    public function __construct($name, $targetSchema) {
+    public function __construct($name, $targetSchema)
+    {
         $this->_setName($name);
         $this->setTargetSchema($targetSchema);
     }
 
-    public function setTargetSchema($schema) {
-        if($schema instanceof ISchema) {
+    public function setTargetSchema($schema)
+    {
+        if ($schema instanceof ISchema) {
             $schema = $schema->getName();
         }
 
@@ -356,15 +396,17 @@ trait TConstraint_ForeignKey {
         return $this;
     }
 
-    public function getTargetSchema() {
+    public function getTargetSchema()
+    {
         return $this->_targetSchema;
     }
 
-    public function addReference(IField $field, $targetFieldName) {
+    public function addReference(IField $field, $targetFieldName)
+    {
         $reference = new ForeignKeyFieldReference($field, $targetFieldName);
 
-        foreach($this->_fieldReferences as $compReference) {
-            if($compReference->eq($reference)) {
+        foreach ($this->_fieldReferences as $compReference) {
+            if ($compReference->eq($reference)) {
                 throw new RuntimeException(
                     'A field reference between '.$reference->getField()->getName().' and '.
                     $this->_targetSchema.'.'.$reference->getTargetFieldName().' has already been defined'
@@ -378,9 +420,10 @@ trait TConstraint_ForeignKey {
         return $this;
     }
 
-    public function removeReference(IField $field, $targetFieldName) {
-        foreach($this->_fieldReferences as $i => $compReference) {
-            if($compReference->eq($reference)) {
+    public function removeReference(IField $field, $targetFieldName)
+    {
+        foreach ($this->_fieldReferences as $i => $compReference) {
+            if ($compReference->eq($reference)) {
                 unset($this->_fieldReferences[$i]);
                 $this->_fieldReferences = array_values($this->_fieldReferences);
                 $this->_hasChanged = true;
@@ -391,12 +434,13 @@ trait TConstraint_ForeignKey {
         return $this;
     }
 
-    public function replaceField(IField $oldField, IField $newField, $markChange=true) {
-        foreach($this->_fieldReferences as $i => $reference) {
-            if($reference->getField() === $oldField) {
+    public function replaceField(IField $oldField, IField $newField, $markChange=true)
+    {
+        foreach ($this->_fieldReferences as $i => $reference) {
+            if ($reference->getField() === $oldField) {
                 $reference->_setField($newField);
 
-                if($markChange) {
+                if ($markChange) {
                     $this->_hasChanged = true;
                 }
 
@@ -407,9 +451,10 @@ trait TConstraint_ForeignKey {
         return $this;
     }
 
-    public function hasField(IField $field) {
-        foreach($this->_fieldReferences as $reference) {
-            if($field === $reference->getField()) {
+    public function hasField(IField $field)
+    {
+        foreach ($this->_fieldReferences as $reference) {
+            if ($field === $reference->getField()) {
                 return true;
             }
         }
@@ -417,14 +462,16 @@ trait TConstraint_ForeignKey {
         return false;
     }
 
-    public function getReferences() {
+    public function getReferences()
+    {
         return $this->_fieldReferences;
     }
 
-    public function setUpdateAction($action) {
+    public function setUpdateAction($action)
+    {
         $action = $this->_normalizeAction($action);
 
-        if($this->_updateAction != $action) {
+        if ($this->_updateAction != $action) {
             $this->_hasChanged = true;
         }
 
@@ -432,14 +479,16 @@ trait TConstraint_ForeignKey {
         return $this;
     }
 
-    public function getUpdateAction() {
+    public function getUpdateAction()
+    {
         return $this->_updateAction;
     }
 
-    public function setDeleteAction($action) {
+    public function setDeleteAction($action)
+    {
         $action = $this->_normalizeAction($action);
 
-        if($this->_deleteAction != $action) {
+        if ($this->_deleteAction != $action) {
             $this->_hasChanged = true;
         }
 
@@ -447,25 +496,30 @@ trait TConstraint_ForeignKey {
         return $this;
     }
 
-    public function getDeleteAction() {
+    public function getDeleteAction()
+    {
         return $this->_deleteAction;
     }
 
-    protected function _normalizeAction($action) {
+    protected function _normalizeAction($action)
+    {
         return $action;
     }
 
-    public function isVoid() {
+    public function isVoid()
+    {
         return empty($this->_fieldReferences);
     }
 
 
-// Ext. serialize
-    public function toStorageArray() {
+    // Ext. serialize
+    public function toStorageArray()
+    {
         return $this->_getGenericStorageArray();
     }
 
-    protected function _getGenericStorageArray() {
+    protected function _getGenericStorageArray()
+    {
         $output = [
             'nam' => $this->_name,
             'tsc' => $this->_targetSchema,
@@ -474,38 +528,40 @@ trait TConstraint_ForeignKey {
             'del' => $this->_deleteAction
         ];
 
-        foreach($this->_fieldReferences as $ref) {
+        foreach ($this->_fieldReferences as $ref) {
             $output['fld'][] = $ref->toStorageArray();
         }
 
         return $output;
     }
 
-
-// Dump
-    public function getDumpProperties() {
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
         $output = $this->_name;
         $refs = [];
 
-        foreach($this->_fieldReferences as $reference) {
+        foreach ($this->_fieldReferences as $reference) {
             $refs[] = $reference->getField()->getName().' TO '.$this->_targetSchema.'.'.$reference->getTargetFieldName();
         }
 
         $output .= ' '.implode(', ' , $refs);
 
-        if($this->_deleteAction !== null) {
+        if ($this->_deleteAction !== null) {
             $output .= ' ON DELETE '.$this->_deleteAction;
         }
 
-        if($this->_updateAction !== null) {
+        if ($this->_updateAction !== null) {
             $output .= ' ON UPDATE '.$this->_updateAction;
         }
 
-        if($this->isVoid()) {
+        if ($this->isVoid()) {
             $output .= ' **VOID**';
         }
 
-        return $output;
+        $entity->setDefinition($output);
     }
 }
 
@@ -515,24 +571,26 @@ trait TConstraint_ForeignKey {
 /***************************
  * Trigger
  */
-trait TConstraint_Trigger {
-
+trait TConstraint_Trigger
+{
     use TConstraint_Base;
 
     protected $_event;
     protected $_timing = opal\schema\ITriggerTiming::BEFORE;
     protected $_statements = [];
 
-    public function __construct($name, $event, $timing, $statements) {
+    public function __construct($name, $event, $timing, $statements)
+    {
         $this->_setName($name);
         $this->setEvent($event);
         $this->setTiming($timing);
         $this->setStatements($statements);
     }
 
-    public function setEvent($event) {
-        if(is_string($event)) {
-            switch(strtoupper($event)) {
+    public function setEvent($event)
+    {
+        if (is_string($event)) {
+            switch (strtoupper($event)) {
                 case 'INSERT':
                     $event = opal\schema\ITriggerEvent::INSERT;
                     break;
@@ -552,7 +610,7 @@ trait TConstraint_Trigger {
             }
         }
 
-        switch($event) {
+        switch ($event) {
             case opal\schema\ITriggerEvent::INSERT:
             case opal\schema\ITriggerEvent::UPDATE:
             case opal\schema\ITriggerEvent::DELETE:
@@ -564,7 +622,7 @@ trait TConstraint_Trigger {
                 );
         }
 
-        if($event != $this->_event) {
+        if ($event != $this->_event) {
             $this->_hasChanged = true;
         }
 
@@ -572,12 +630,14 @@ trait TConstraint_Trigger {
         return $this;
     }
 
-    public function getEvent() {
+    public function getEvent()
+    {
         return $this->_event;
     }
 
-    public function getEventName() {
-        switch($this->_event) {
+    public function getEventName()
+    {
+        switch ($this->_event) {
             case opal\schema\ITriggerEvent::INSERT:
                 return 'INSERT';
 
@@ -589,10 +649,11 @@ trait TConstraint_Trigger {
         }
     }
 
-    public function setTiming($timing) {
-        if($timing == opal\schema\ITriggerTiming::INSTEAD_OF || strtoupper($timing) == 'INSTEAD OF') {
+    public function setTiming($timing)
+    {
+        if ($timing == opal\schema\ITriggerTiming::INSTEAD_OF || strtoupper($timing) == 'INSTEAD OF') {
             $timing = opal\schema\ITriggerTiming::INSTEAD_OF;
-        } else if($timing == opal\schema\ITriggerTiming::AFTER || strtoupper($timing) == 'AFTER') {
+        } elseif ($timing == opal\schema\ITriggerTiming::AFTER || strtoupper($timing) == 'AFTER') {
             $timing = opal\schema\ITriggerTiming::AFTER;
         } else {
             $timing = opal\schema\ITriggerTiming::BEFORE;
@@ -602,12 +663,14 @@ trait TConstraint_Trigger {
         return $this;
     }
 
-    public function getTiming() {
+    public function getTiming()
+    {
         return $this->_timing;
     }
 
-    public function getTimingName() {
-        switch($this->_timing) {
+    public function getTimingName()
+    {
+        switch ($this->_timing) {
             case opal\schema\ITriggerTiming::BEFORE:
                 return 'BEFORE';
 
@@ -619,24 +682,26 @@ trait TConstraint_Trigger {
         }
     }
 
-    public function setStatements($statements) {
+    public function setStatements($statements)
+    {
         $this->_statements = [];
 
-        if(!is_array($statements)) {
+        if (!is_array($statements)) {
             $statements = [$statements];
         }
 
-        foreach($statements as $statement) {
+        foreach ($statements as $statement) {
             $this->addStatement($statement);
         }
 
         return $this;
     }
 
-    public function addStatement($statement) {
+    public function addStatement($statement)
+    {
         $statement = trim($statement, ' ;');
 
-        if(!empty($statement)) {
+        if (!empty($statement)) {
             $this->_hasChanged = true;
             $this->_statements[] = $statement;
         }
@@ -644,17 +709,19 @@ trait TConstraint_Trigger {
         return $this;
     }
 
-    public function getStatements() {
+    public function getStatements()
+    {
         return $this->_statements;
     }
 
-    public function hasFieldReference($fields) {
-        if(!is_array($fields)) {
+    public function hasFieldReference($fields)
+    {
+        if (!is_array($fields)) {
             $fields = [$fields];
         }
 
-        foreach($fields as $i => $field) {
-            if($field instanceof opal\schema\IField) {
+        foreach ($fields as $i => $field) {
+            if ($field instanceof opal\schema\IField) {
                 $field = $field->getName();
             }
 
@@ -667,12 +734,14 @@ trait TConstraint_Trigger {
     abstract protected function _hasFieldReference(array $fields);
 
 
-// Ext. serialize
-    public function toStorageArray() {
+    // Ext. serialize
+    public function toStorageArray()
+    {
         return $this->_getGenericStorageArray();
     }
 
-    protected function _getGenericStorageArray() {
+    protected function _getGenericStorageArray()
+    {
         return [
             'nam' => $this->_name,
             'evt' => $this->_event,
@@ -682,12 +751,15 @@ trait TConstraint_Trigger {
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
         $output = $this->_name;
         $output .= ' '.$this->getTimingName();
         $output .= ' '.$this->getEventName().' '.implode('; ', $this->_statements);
 
-        return $output;
+        $entity->setDefinition($output);
     }
 }

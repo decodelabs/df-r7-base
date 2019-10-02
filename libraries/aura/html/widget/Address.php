@@ -11,8 +11,12 @@ use df\aura;
 use df\user;
 use df\arch;
 
-class Address extends Base implements core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Address extends Base implements Inspectable
+{
     const PRIMARY_TAG = 'div.address';
 
     const SHORT = 'short';
@@ -23,15 +27,17 @@ class Address extends Base implements core\IDumpable {
     protected $_mode = self::FULL;
     protected $_shouldShowCountry = true;
 
-    public function __construct(arch\IContext $context, $address=null) {
+    public function __construct(arch\IContext $context, $address=null)
+    {
         parent::__construct($context);
         $this->setAddress($address);
     }
 
-    public function setAddress($address=null) {
-        if(is_array($address)) {
+    public function setAddress($address=null)
+    {
+        if (is_array($address)) {
             $address = user\PostalAddress::fromArray($address);
-        } else if(!$address instanceof user\IPostalAddress) {
+        } elseif (!$address instanceof user\IPostalAddress) {
             $address = null;
         }
 
@@ -39,12 +45,14 @@ class Address extends Base implements core\IDumpable {
         return $this;
     }
 
-    public function getAddress(): ?user\IPostalAddress {
+    public function getAddress(): ?user\IPostalAddress
+    {
         return $this->_address;
     }
 
-    public function shouldShowCountry(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldShowCountry(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_shouldShowCountry = $flag;
             return $this;
         }
@@ -52,8 +60,9 @@ class Address extends Base implements core\IDumpable {
         return $this->_shouldShowCountry;
     }
 
-    protected function _render() {
-        if($this->_address === null) {
+    protected function _render()
+    {
+        if ($this->_address === null) {
             return null;
         }
 
@@ -71,7 +80,7 @@ class Address extends Base implements core\IDumpable {
         $isFull = $this->_mode == self::FULL;
         $isShort = $this->_mode == self::SHORT;
 
-        if($isFull) {
+        if ($isFull) {
             $blockTag = 'div';
         } else {
             $blockTag = 'span';
@@ -79,47 +88,47 @@ class Address extends Base implements core\IDumpable {
 
         $tag->setName($blockTag);
 
-        if(!empty($poBox)) {
+        if (!empty($poBox)) {
             $content->push(new aura\html\Element($blockTag, $poBox, ['class' => 'po-box']));
         }
 
-        if(!empty($streetAddress)) {
-            if(!$isFull && !$content->isEmpty()) {
+        if (!empty($streetAddress)) {
+            if (!$isFull && !$content->isEmpty()) {
                 $content->push(', ');
             }
 
             $content->push(new aura\html\Element($blockTag, $streetAddress, ['class' => 'street']));
         }
 
-        if(!empty($extendedAddress)) {
-            if(!$isFull && !$content->isEmpty()) {
+        if (!empty($extendedAddress)) {
+            if (!$isFull && !$content->isEmpty()) {
                 $content->push(', ');
             }
 
             $content->push(new aura\html\Element($blockTag, $extendedAddress, ['class' => 'extended']));
         }
 
-        if(!$isShort && !empty($locality)) {
-            if(!$isFull && !$content->isEmpty()) {
+        if (!$isShort && !empty($locality)) {
+            if (!$isFull && !$content->isEmpty()) {
                 $content->push(', ');
             }
 
             $content->push(new aura\html\Element($blockTag, $locality, ['class' => 'locality']));
         }
 
-        if(!$isShort && !empty($region)) {
-            if(!$isFull && !$content->isEmpty()) {
+        if (!$isShort && !empty($region)) {
+            if (!$isFull && !$content->isEmpty()) {
                 $content->push(', ');
             }
 
             $content->push(new aura\html\Element($blockTag, $region, ['class' => 'region']));
         }
 
-        if(!empty($postcode)) {
-            if(strlen($region) == 2) {
+        if (!empty($postcode)) {
+            if (strlen($region) == 2) {
                 $content->push(' ', new aura\html\Element('span', $postcode, ['class' => 'postcode']));
             } else {
-                if(!$isFull && !$content->isEmpty()) {
+                if (!$isFull && !$content->isEmpty()) {
                     $content->push(', ');
                 }
 
@@ -127,12 +136,12 @@ class Address extends Base implements core\IDumpable {
             }
         }
 
-        if($this->_shouldShowCountry && !empty($countryCode)) {
-            if(!$isFull && !$content->isEmpty()) {
+        if ($this->_shouldShowCountry && !empty($countryCode)) {
+            if (!$isFull && !$content->isEmpty()) {
                 $content->push(', ');
             }
 
-            if($isShort) {
+            if ($isShort) {
                 $country = $countryCode;
             } else {
                 $country = $this->_context->i18n->countries->getName($countryCode);
@@ -146,8 +155,9 @@ class Address extends Base implements core\IDumpable {
         return $tag->renderWith($content);
     }
 
-    public function setMode(?string $mode) {
-        switch($mode = strtolower($mode)) {
+    public function setMode(?string $mode)
+    {
+        switch ($mode = strtolower($mode)) {
             case self::SHORT:
             case self::LONG:
             case self::FULL:
@@ -162,17 +172,23 @@ class Address extends Base implements core\IDumpable {
         return $this;
     }
 
-    public function getMode(): string {
+    public function getMode(): string
+    {
         return $this->_mode;
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'mode' => $this->_mode,
-            'address' => $this->_address,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*mode' => $inspector($this->_mode),
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues([$inspector($this->_address)])
+            ->setShowKeys(false);
     }
 }

@@ -8,8 +8,12 @@ namespace df\core\unit;
 use df;
 use df\core;
 
-class FileSize implements IFileSize, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class FileSize implements IFileSize, Inspectable
+{
     use TSingleValueUnit;
 
     const DEFAULT_UNIT = 'b';
@@ -18,16 +22,18 @@ class FileSize implements IFileSize, core\IDumpable {
     protected $_value;
     protected $_unit;
 
-    public static function factory($value, $unit=null, $allowPlainNumbers=false): IFileSize {
-        if($value instanceof IFileSize) {
+    public static function factory($value, $unit=null, $allowPlainNumbers=false): IFileSize
+    {
+        if ($value instanceof IFileSize) {
             return $value;
         }
 
         return new self($value, $unit, $allowPlainNumbers);
     }
 
-    public static function normalize($value): ?IFileSize {
-        if($value === null) {
+    public static function normalize($value): ?IFileSize
+    {
+        if ($value === null) {
             return null;
         } else {
             return self::factory($value);
@@ -35,82 +41,97 @@ class FileSize implements IFileSize, core\IDumpable {
     }
 
 
-    public function setBits($bits) {
+    public function setBits($bits)
+    {
         return $this->_parseUnit($bits, 'bit');
     }
 
-    public function getBits() {
+    public function getBits()
+    {
         return $this->_convert($this->_value, $this->_unit, 'bit');
     }
 
-    public function setBytes($bytes) {
+    public function setBytes($bytes)
+    {
         return $this->_parseUnit($bytes, 'b');
     }
 
-    public function getBytes() {
+    public function getBytes()
+    {
         return $this->_convert($this->_value, $this->_unit, 'b');
     }
 
-    public function setKilobytes($kb) {
+    public function setKilobytes($kb)
+    {
         return $this->_parseUnit($kb, 'kb');
     }
 
-    public function getKilobytes() {
+    public function getKilobytes()
+    {
         return $this->_convert($this->_value, $this->_unit, 'kb');
     }
 
-    public function setMegabytes($mb) {
+    public function setMegabytes($mb)
+    {
         return $this->_parseUnit($mb, 'mb');
     }
 
-    public function getMegabytes() {
+    public function getMegabytes()
+    {
         return $this->_convert($this->_value, $this->_unit, 'mb');
     }
 
-    public function setGigabytes($gb) {
+    public function setGigabytes($gb)
+    {
         return $this->_parseUnit($gb, 'gb');
     }
 
-    public function getGigabytes() {
+    public function getGigabytes()
+    {
         return $this->_convert($this->_value, $this->_unit, 'gb');
     }
 
-    public function setTerabytes($tb) {
+    public function setTerabytes($tb)
+    {
         return $this->_parseUnit($tb, 'tb');
     }
 
-    public function getTerabytes() {
+    public function getTerabytes()
+    {
         return $this->_convert($this->_value, $this->_unit, 'tb');
     }
 
-    public function setPetabytes($pb) {
+    public function setPetabytes($pb)
+    {
         return $this->_parseUnit($pb, 'pb');
     }
 
-    public function getPetabytes() {
+    public function getPetabytes()
+    {
         return $this->_convert($this->_value, $this->_unit, 'pb');
     }
 
 
-    protected function _convert($value, $inUnit, $outUnit) {
-        if($inUnit === null) {
+    protected function _convert($value, $inUnit, $outUnit)
+    {
+        if ($inUnit === null) {
             $inUnit = self::DEFAULT_UNIT;
         }
 
-        if($outUnit === null) {
+        if ($outUnit === null) {
             $outUnit = self::DEFAULT_UNIT;
         }
 
-        if($inUnit == $outUnit) {
+        if ($inUnit == $outUnit) {
             return $value;
         }
 
-        if($inUnit == 'bit') {
+        if ($inUnit == 'bit') {
             $value /= 8;
             $inUnit = 'b';
         }
 
-        switch($inUnit) {
+        switch ($inUnit) {
             case 'b':
                 $factor = 0;
                 break;
@@ -138,7 +159,7 @@ class FileSize implements IFileSize, core\IDumpable {
 
         $bit = false;
 
-        switch($outUnit) {
+        switch ($outUnit) {
             case 'bit':
                 $factor -= 0;
                 $bit = true;
@@ -171,19 +192,20 @@ class FileSize implements IFileSize, core\IDumpable {
 
         $output = $value *= pow(1024, $factor);
 
-        if($bit) {
+        if ($bit) {
             $output *= 8;
         }
 
         return $output;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         $unit = $this->_unit;
         $value = $this->_value;
 
-        if($unit == 'bit') {
-            if($value <= 128) {
+        if ($unit == 'bit') {
+            if ($value <= 128) {
                 return $value.'bit';
             }
 
@@ -193,7 +215,7 @@ class FileSize implements IFileSize, core\IDumpable {
 
         $key = array_search($unit, self::UNITS);
 
-        while($value > 1024 && isset(self::UNITS[$key + 1])) {
+        while ($value > 1024 && isset(self::UNITS[$key + 1])) {
             $unit = self::UNITS[++$key];
             $value /= 1024;
         }
@@ -201,8 +223,11 @@ class FileSize implements IFileSize, core\IDumpable {
         return $value.$unit;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toString());
     }
 }

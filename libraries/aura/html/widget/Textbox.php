@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Textbox extends Base implements ITextboxWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Textbox extends Base implements ITextboxWidget, Inspectable
+{
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_VisualInput;
@@ -29,18 +33,20 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     protected $_pattern;
     protected $_formEvent;
 
-    public function __construct(arch\IContext $context, $name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null)
+    {
         parent::__construct($context);
 
         $this->setName($name);
         $this->setValue($value);
 
-        if(static::DEFAULT_PLACEHOLDER !== null) {
+        if (static::DEFAULT_PLACEHOLDER !== null) {
             $this->setPlaceholder(static::DEFAULT_PLACEHOLDER);
         }
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
         $tag->setAttribute('type', $this->_getInputType());
 
@@ -53,40 +59,45 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
         $this->_applyDataListEntryAttributes($tag);
 
 
-        if($this->_pattern !== null) {
+        if ($this->_pattern !== null) {
             $tag->setAttribute('pattern', $this->_pattern);
         }
 
-        if($this->_formEvent !== null) {
+        if ($this->_formEvent !== null) {
             $tag->setDataAttribute('formevent', $this->_formEvent);
         }
 
         return $tag;
     }
 
-    protected function _getInputType() {
+    protected function _getInputType()
+    {
         return static::INPUT_TYPE;
     }
 
 
-// Pattern
-    public function setPattern($pattern) {
+    // Pattern
+    public function setPattern($pattern)
+    {
         $this->_pattern = $pattern;
         return $this;
     }
 
-    public function getPattern() {
+    public function getPattern()
+    {
         return $this->_pattern;
     }
 
 
-// Form event
-    public function setFormEvent($event) {
+    // Form event
+    public function setFormEvent($event)
+    {
         $this->_formEvent = $event;
         return $this;
     }
 
-    public function getFormEvent() {
+    public function getFormEvent()
+    {
         return $this->_formEvent;
     }
 }

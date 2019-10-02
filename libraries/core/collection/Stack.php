@@ -8,8 +8,12 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-class Stack implements IStack, IAggregateIteratorCollection, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Stack implements IStack, IAggregateIteratorCollection, Inspectable
+{
     use TArrayCollection_Stack;
     use TArrayCollection_Constructor;
 }

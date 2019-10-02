@@ -10,7 +10,11 @@ use df\core;
 use df\opal;
 use df\flex;
 
-abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, Inspectable
 {
     use core\collection\TExtractList;
 
@@ -345,18 +349,17 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
 
     abstract protected function _fetchRow();
 
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $output = [
-            'sql' => $this->_sql,
-            'bindings' => $this->_bindings
-        ];
+        $entity
+            ->setText($this->_sql)
+            ->setValues($inspector->inspectList($this->_bindings));
 
         if ($this->_isExecuted) {
-            $output['current'] = $this->getCurrent();
+            $entity->setProperty('%current', $inspector($this->getCurrent()));
         }
-
-        return $output;
     }
 }

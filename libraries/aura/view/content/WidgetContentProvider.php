@@ -10,22 +10,28 @@ use df\core;
 use df\aura;
 use df\arch;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 class WidgetContentProvider extends aura\html\Element implements
     aura\view\ICollapsibleContentProvider,
     aura\html\widget\IWidgetShortcutProvider,
-    core\IDumpable {
-
+    Inspectable
+{
     use core\TContextAware;
     use aura\view\TView_DeferredRenderable;
 
     protected $_name = 'section';
     protected $_wrap = true;
 
-    public function __construct(arch\IContext $context) {
+    public function __construct(arch\IContext $context)
+    {
         $this->context = $context;
     }
 
-    public function collapse() {
+    public function collapse()
+    {
         $output = aura\html\ElementContent::normalize($this->_collection);
         $this->clear();
         $this->push($output);
@@ -33,8 +39,9 @@ class WidgetContentProvider extends aura\html\Element implements
         return $this;
     }
 
-    public function shouldWrap(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldWrap(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_wrap = $flag;
             return $this;
         }
@@ -43,17 +50,20 @@ class WidgetContentProvider extends aura\html\Element implements
     }
 
 
-// Renderable
-    public function getView() {
+    // Renderable
+    public function getView()
+    {
         return $this->getRenderTarget()->getView();
     }
 
-    public function toResponse() {
+    public function toResponse()
+    {
         return $this->getView();
     }
 
-    public function render() {
-        if($this->_wrap) {
+    public function render()
+    {
+        if ($this->_wrap) {
             return parent::render();
         } else {
             return aura\html\ElementContent::normalize($this->_collection);
@@ -61,18 +71,19 @@ class WidgetContentProvider extends aura\html\Element implements
     }
 
 
-// Widget shortcuts
-    public function __call($method, array $args) {
-        if(substr($method, 0, 3) == 'add') {
+    // Widget shortcuts
+    public function __call($method, array $args)
+    {
+        if (substr($method, 0, 3) == 'add') {
             $method = lcfirst(substr($method, 3));
 
-            if(empty($method)) {
+            if (empty($method)) {
                 $method = '__invoke';
             }
 
             $widget = $this->context->html->{$method}(...$args);
 
-            if($widget instanceof aura\view\IDeferredRenderable) {
+            if ($widget instanceof aura\view\IDeferredRenderable) {
                 $widget->setRenderTarget($this->_renderTarget);
             }
 
@@ -82,8 +93,12 @@ class WidgetContentProvider extends aura\html\Element implements
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return $this->_collection;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setValues($inspector->inspectList($this->_collection));
     }
 }

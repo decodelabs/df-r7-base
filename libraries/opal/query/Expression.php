@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Expression implements IExpression, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Expression implements IExpression, Inspectable
 {
     protected $_field;
     protected $_elements = [];
@@ -189,15 +193,17 @@ class Expression implements IExpression, core\IDumpable
         }
     }
 
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return $this->_elements;
+        $entity->setValues($inspector->inspectList($this->_elements));
     }
 }
 
 
-class Expression_Operator implements IExpressionOperator, core\IDumpable
+class Expression_Operator implements IExpressionOperator, Inspectable
 {
     public $operator;
 
@@ -211,13 +217,16 @@ class Expression_Operator implements IExpressionOperator, core\IDumpable
         return $this->operator;
     }
 
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return $this->operator;
+        $entity->setText($this->operator);
     }
 }
 
-class Expression_Value implements IExpressionValue, core\IDumpable
+class Expression_Value implements IExpressionValue, Inspectable
 {
     public $value;
 
@@ -231,8 +240,12 @@ class Expression_Value implements IExpressionValue, core\IDumpable
         return $this->value;
     }
 
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return $this->value;
+        $entity->setValues([$inspector($this->value)])
+            ->setShowKeys(false);
     }
 }

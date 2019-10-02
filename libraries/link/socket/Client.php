@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\link;
 
-abstract class Client extends Base implements IClientSocket, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+abstract class Client extends Base implements IClientSocket, Inspectable
 {
     use TIoSocket;
 
@@ -127,9 +131,10 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable
         dd($resources);
     }
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
         if ($this->_isConnected) {
             $output = $this->getId();
@@ -158,6 +163,7 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable
             array_unshift($args, 's');
         }
 
-        return $output.implode('/', $args).')';
+        $output .= implode('/', $args).')';
+        $entity->setText($output);
     }
 }

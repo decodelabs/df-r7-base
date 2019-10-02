@@ -12,6 +12,10 @@ use df\arch;
 use df\user;
 use df\flex;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 trait TWidget
 {
     use core\lang\TChainable;
@@ -263,14 +267,17 @@ trait TWidget_FormData
     }
 
 
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return [
-            'name' => $this->_name,
-            'value' => $this->_value,
-            'tag' => $this->getTag()
-        ];
+        $entity
+            ->setProperties([
+                '*name' => $inspector($this->_name),
+                '*value' => $inspector($this->_value),
+                '%tag' => $inspector($this->getTag())
+            ]);
     }
 }
 

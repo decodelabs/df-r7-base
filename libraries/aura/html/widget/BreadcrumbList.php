@@ -10,8 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class BreadcrumbList extends Base implements IListWidget, Inspectable
+{
     use TWidget_NavigationEntryController;
 
     const PRIMARY_TAG = 'nav.breadcrumbs';
@@ -20,17 +24,19 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
 
     protected $_separator = '>';
 
-    public function __construct(arch\IContext $context, ...$entries) {
+    public function __construct(arch\IContext $context, ...$entries)
+    {
         parent::__construct($context);
         $this->_entries = new aura\html\ElementContent();
 
-        if(!empty($entries)) {
+        if (!empty($entries)) {
             $this->addEntries(...$entries);
         }
     }
 
-    protected function _render() {
-        if(!$this->_renderIfEmpty && $this->_entries->isEmpty()) {
+    protected function _render()
+    {
+        if (!$this->_renderIfEmpty && $this->_entries->isEmpty()) {
             return null;
         }
 
@@ -46,14 +52,14 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
 
         $count = count($this->_entries);
 
-        foreach($this->_entries as $i => $entry) {
-            if($entry instanceof ILinkWidget) {
+        foreach ($this->_entries as $i => $entry) {
+            if ($entry instanceof ILinkWidget) {
                 //$entry->getBodyWrapperTag()->setAttribute('itemprop', 'title');
 
                 $entry->setAttribute('itemprop', 'url');
                 $containerTag->push($entry->render());
 
-                if($i < $count - 1) {
+                if ($i < $count - 1) {
                     $oldContainerTag = $containerTag;
                     $oldContainerTag->push(
                         ' ', $this->_separator, ' ',
@@ -74,18 +80,21 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
     }
 
 
-    public function setSeparator($separator) {
+    public function setSeparator($separator)
+    {
         $this->_separator = $separator;
         return $this;
     }
 
-    public function getSeparator() {
+    public function getSeparator()
+    {
         return $this->_separator;
     }
 
 
-    public function generateFromRequest(arch\IRequest $request=null) {
-        if($request === null) {
+    public function generateFromRequest(arch\IRequest $request=null)
+    {
+        if ($request === null) {
             $request = $this->_context->request;
         }
 
@@ -95,7 +104,8 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
         return $this;
     }
 
-    public function addSitemapEntries() {
+    public function addSitemapEntries()
+    {
         $this->setEntries(
             $this->_context->apex->breadcrumbs()
         );
@@ -104,12 +114,15 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
     }
 
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'entries' => $this->_entries,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '%tag' => $this->getTag()
+            ])
+            ->setValues($inspector->inspectList($this->_entries));
     }
 }

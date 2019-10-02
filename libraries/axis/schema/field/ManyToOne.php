@@ -10,62 +10,74 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
 /*
  * This type requires an inverse field and must lookup and match target table.
  * Key resides here - inverse primary primitive
  */
-class ManyToOne extends One implements axis\schema\IManyToOneField, opal\schema\IQueryClauseRewriterField {
-    
+class ManyToOne extends One implements axis\schema\IManyToOneField, opal\schema\IQueryClauseRewriterField
+{
     use axis\schema\TInverseRelationField;
 
-    protected function _init($targetUnit, $targetField=null) {
+    protected function _init($targetUnit, $targetField=null)
+    {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
     }
-    
 
-// Clause
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
+
+    // Clause
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    {
         return opal\query\clause\Clause::mapVirtualClause(
             $parent, $field, $operator, $value, $isOr
         );
     }
-    
-    
-// Validate
-    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+
+
+    // Validate
+    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema)
+    {
         // Target
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
         $targetField = $this->_validateInverseRelationField($targetUnit, $targetSchema);
         $this->_validateDefaultValue($localUnit);
-        
+
         return $this;
     }
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         parent::_importStorageArray($data);
         $this->_setInverseRelationStorageArray($data);
     }
-    
-    public function toStorageArray() {
+
+    public function toStorageArray()
+    {
         return array_merge(
             parent::toStorageArray(),
             $this->_getInverseRelationStorageArray()
         );
     }
 
-// Dump
-    public function getDumpProperties() {
-        $output = parent::getDumpProperties();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        parent::glitchInspect($entity, $inspector);
+        $def = $entity->getDefinition();
 
-        if($this->_targetField) {
-           $output = substr($output, 0, -1).' -> '.$this->_targetField.')';
+        if ($this->_targetField) {
+            $def = substr($def, 0, -1).' -> '.$this->_targetField.')';
         }
 
-        return $output;
+        $entity->setDefinition($def);
     }
 }

@@ -8,27 +8,34 @@ namespace df\core\time;
 use df;
 use df\core;
 
-class AnnualRange implements IAnnualRange, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class AnnualRange implements IAnnualRange, Inspectable
+{
     protected $_start = null;
     protected $_end = null;
     protected $_isOpen = null;
     protected $_year = null;
 
-    public function __construct($start, $end, $timezone=null) {
+    public function __construct($start, $end, $timezone=null)
+    {
         $this->update($start, $end, $timezone);
     }
 
-    public function __clone() {
+    public function __clone()
+    {
         $this->_start = clone $this->_start;
         $this->_end = clone $this->_end;
     }
 
-    public function update($start, $end, $timezone=null) {
+    public function update($start, $end, $timezone=null)
+    {
         $this->_start = $this->_end = $this->_isOpen = $this->_year = null;
         $time = true;
 
-        if($timezone === false) {
+        if ($timezone === false) {
             $timezone = null;
             $time = false;
         }
@@ -36,8 +43,8 @@ class AnnualRange implements IAnnualRange, core\IDumpable {
         $this->_start = Date::factory($start, $timezone, $time);
         $this->_end = Date::factory($end, $timezone, $time);
 
-        if($time && $timezone !== null && $timezone !== false) {
-            if($timezone === true) {
+        if ($time && $timezone !== null && $timezone !== false) {
+            if ($timezone === true) {
                 $this->_start->toUserTimezone();
                 $this->_end->toUserTimezone();
             } else {
@@ -46,16 +53,16 @@ class AnnualRange implements IAnnualRange, core\IDumpable {
             }
         }
 
-        if($this->_start->gt($this->_end)) {
+        if ($this->_start->gt($this->_end)) {
             $this->_start->modify('-1 year');
         }
 
-        if($this->_start->isFuture()) {
+        if ($this->_start->isFuture()) {
             $this->_start->modify('-1 year');
             $this->_end->modify('-1 year');
         }
 
-        if($this->_start->lt('-1 year')) {
+        if ($this->_start->lt('-1 year')) {
             $this->_start->modify('+1 year');
             $this->_end->modify('+1 year');
         }
@@ -64,35 +71,41 @@ class AnnualRange implements IAnnualRange, core\IDumpable {
     }
 
 
-// Dates
-    public function getStartDate(): IDate {
+    // Dates
+    public function getStartDate(): IDate
+    {
         return $this->_start;
     }
 
-    public function getNextStartDate(): IDate {
+    public function getNextStartDate(): IDate
+    {
         return $this->_start->modifyNew('+1 year');
     }
 
-    public function getEndDate(): IDate {
+    public function getEndDate(): IDate
+    {
         return $this->_end;
     }
 
 
-// Years
-    public function getStartYear(): int {
+    // Years
+    public function getStartYear(): int
+    {
         return (int)$this->_start->format('Y');
     }
 
-    public function getEndYear(): int {
+    public function getEndYear(): int
+    {
         return (int)$this->_end->format('Y');
     }
 
-    public function getActiveYear(): int {
-        if($this->_year === null) {
+    public function getActiveYear(): int
+    {
+        if ($this->_year === null) {
             $this->_year = (int)$this->_start->format('Y');
             $test = $this->_start->modifyNew('1 january +1 year');
 
-            if($test->timeSince($this->_start)->lt('6 months')) {
+            if ($test->timeSince($this->_start)->lt('6 months')) {
                 $this->_year++;
             }
         }
@@ -102,25 +115,28 @@ class AnnualRange implements IAnnualRange, core\IDumpable {
 
 
 
-// Open
-    public function isOpen(): bool {
-        if($this->_isOpen === null) {
+    // Open
+    public function isOpen(): bool
+    {
+        if ($this->_isOpen === null) {
             $this->_isOpen = $this->_start->lte('now') && $this->_end->gte('now');
         }
 
         return $this->_isOpen;
     }
 
-    public function getTimeUntilStart(): ?IDuration {
-        if($this->isOpen()) {
+    public function getTimeUntilStart(): ?IDuration
+    {
+        if ($this->isOpen()) {
             return null;
         }
 
         return $this->_start->timeSince('now');
     }
 
-    public function getTimeUntilEnd(): ?IDuration {
-        if(!$this->isOpen()) {
+    public function getTimeUntilEnd(): ?IDuration
+    {
+        if (!$this->isOpen()) {
             return null;
         }
 
@@ -129,8 +145,9 @@ class AnnualRange implements IAnnualRange, core\IDumpable {
 
 
 
-// Prev / next
-    public function getPrevious(): IAnnualRange {
+    // Prev / next
+    public function getPrevious(): IAnnualRange
+    {
         $output = clone $this;
 
         $output->_start->modify('-1 year');
@@ -140,7 +157,8 @@ class AnnualRange implements IAnnualRange, core\IDumpable {
         return $output;
     }
 
-    public function getNext(): IAnnualRange {
+    public function getNext(): IAnnualRange
+    {
         $output = clone $this;
 
         $output->_start->modify('+1 year');
@@ -152,23 +170,24 @@ class AnnualRange implements IAnnualRange, core\IDumpable {
 
 
 
-// Events
-    public function getEventDate($date, $timezone=null): IDate {
-        if($timezone === false) {
+    // Events
+    public function getEventDate($date, $timezone=null): IDate
+    {
+        if ($timezone === false) {
             $timezone = null;
         }
 
         $date = Date::factory($date, $timezone, $hasTime = $this->_start->hasTime());
 
-        if($hasTime) {
+        if ($hasTime) {
             $date->toTimezone($this->_start->getTimezone());
         }
 
-        if($date->lt('-2 weeks')) {
+        if ($date->lt('-2 weeks')) {
             $date->modify('+1 year');
         }
 
-        if($date->gt($this->_end->modifyNew('+1 year'))) {
+        if ($date->gt($this->_end->modifyNew('+1 year'))) {
             $date->modify('-1 year');
         }
 
@@ -176,14 +195,18 @@ class AnnualRange implements IAnnualRange, core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'start' => $this->_start,
-            'end' => $this->_end,
-            'next' => $this->getNextStartDate(),
-            'year' => $this->getActiveYear(),
-            'open' => $this->isOpen()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*start' => $inspector($this->_start),
+                '*end' => $inspector($this->_end),
+                '*next' => $inspector($this->getNextStartDate()),
+                '*year' => $inspector($this->getActiveYear()),
+                '*open' => $inspector($this->isOpen())
+            ]);
     }
 }

@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\math;
 
-class Tuple implements ITuple, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Tuple implements ITuple, Inspectable
+{
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_IndexedValueMap;
     use core\collection\TArrayCollection_Seekable;
@@ -18,12 +22,14 @@ class Tuple implements ITuple, core\IDumpable {
     use core\collection\TArrayCollection_Shiftable;
     use core\collection\TArrayCollection_IndexedMovable;
 
-    public function __construct(...$data) {
+    public function __construct(...$data)
+    {
         $this->import(...$data);
     }
 
-    protected function _normalizeValue($value): float {
-        if(!is_numeric($value)) {
+    protected function _normalizeValue($value): float
+    {
+        if (!is_numeric($value)) {
             throw core\Error::EArgument(
                 'Invalid tuple value: '.$value
             );
@@ -32,35 +38,39 @@ class Tuple implements ITuple, core\IDumpable {
         return (float)$value;
     }
 
-    public function getReductiveIterator(): \Iterator {
+    public function getReductiveIterator(): \Iterator
+    {
         return new ReductiveIndexIterator($this);
     }
 
 
-    public function setSize(int $size) {
+    public function setSize(int $size)
+    {
         $size = abs($size);
         $count = count($this->_collection);
 
-        while($count < $size) {
+        while ($count < $size) {
             $this->_collection[] = 0;
             $count++;
         }
 
-        if($count > $size) {
+        if ($count > $size) {
             $this->_collection = array_slice($this->_collection, 0, $size);
         }
 
         return $this;
     }
 
-    public function getSize(): int {
+    public function getSize(): int
+    {
         return count($this->_collection);
     }
 
 
-    public function isZero(): bool {
-        foreach($this->_collection as $i => $value) {
-            if($value !== 0) {
+    public function isZero(): bool
+    {
+        foreach ($this->_collection as $i => $value) {
+            if ($value !== 0) {
                 return false;
             }
         }
@@ -69,14 +79,16 @@ class Tuple implements ITuple, core\IDumpable {
     }
 
 
-    public function getSum(): float {
+    public function getSum(): float
+    {
         return array_sum($this->_collection);
     }
 
-    public function getProduct(): float {
+    public function getProduct(): float
+    {
         $output = 1;
 
-        foreach($this->_collection as $value) {
+        foreach ($this->_collection as $value) {
             $output *= $value;
         }
 
@@ -84,33 +96,43 @@ class Tuple implements ITuple, core\IDumpable {
     }
 
 
-    public function getMin(): float {
+    public function getMin(): float
+    {
         return min($this->_collection);
     }
 
-    public function getMinIndex(): int {
+    public function getMinIndex(): int
+    {
         return $this->getIndex($this->getMin());
     }
 
-    public function getMax(): float {
+    public function getMax(): float
+    {
         return max($this->_collection);
     }
 
-    public function getMaxIndex(): int {
+    public function getMaxIndex(): int
+    {
         return $this->getIndex($this->getMax());
     }
 
-    public function getMinMax(): array {
+    public function getMinMax(): array
+    {
         return [$this->getMin(), $this->getMax()];
     }
 
-    public function getMinMaxIndex(): array {
+    public function getMinMaxIndex(): array
+    {
         return [$this->getMinIndex(), $this->getMaxIndex()];
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return $this->_collection;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setValues($inspector->inspectList($this->_collection));
     }
 }

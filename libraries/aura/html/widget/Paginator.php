@@ -11,8 +11,12 @@ use df\aura;
 use df\opal;
 use df\arch;
 
-class Paginator extends Base implements core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Paginator extends Base implements Inspectable
+{
     const PRIMARY_TAG = 'div.paginator';
 
     protected $_prevText = null;
@@ -22,22 +26,24 @@ class Paginator extends Base implements core\IDumpable {
     protected $_postEvent = 'paginate';
     protected $_pageData;
 
-    public function __construct(arch\IContext $context, $data) {
+    public function __construct(arch\IContext $context, $data)
+    {
         parent::__construct($context);
 
-        if($data instanceof core\collection\IPageable) {
+        if ($data instanceof core\collection\IPageable) {
             $data = $data->getPaginator();
         }
 
-        if(!$data instanceof core\collection\IPaginator) {
+        if (!$data instanceof core\collection\IPaginator) {
             $data = null;
         }
 
         $this->_pageData = $data;
     }
 
-    public function setMode(string $mode) {
-        switch($mode) {
+    public function setMode(string $mode)
+    {
+        switch ($mode) {
             case 'post':
             case 'get':
                 $this->_mode = $mode;
@@ -50,27 +56,31 @@ class Paginator extends Base implements core\IDumpable {
         return $this;
     }
 
-    public function getMode(): string {
+    public function getMode(): string
+    {
         return $this->_mode;
     }
 
-    public function setPostEvent(string $event) {
+    public function setPostEvent(string $event)
+    {
         $this->_postEvent = $event;
         return $this;
     }
 
-    public function getPostEvent() {
+    public function getPostEvent()
+    {
         return $this->_postEvent;
     }
 
-    protected function _render() {
-        if(!$this->_pageData) {
+    protected function _render()
+    {
+        if (!$this->_pageData) {
             return '';
         }
 
         $enabled = true;
 
-        if(!$limit = $this->_pageData->getLimit()) {
+        if (!$limit = $this->_pageData->getLimit()) {
             return '';
         }
 
@@ -79,18 +89,18 @@ class Paginator extends Base implements core\IDumpable {
         $total = $this->_pageData->countTotal();
         $totalPages = ceil($total / $limit);
 
-        if($totalPages <= 1) {
+        if ($totalPages <= 1) {
             return '';
         }
 
-        if($currentPage > $totalPages) {
+        if ($currentPage > $totalPages) {
             $currentPage = $totalPages;
         }
 
         $map = $this->_pageData->getKeyMap();
         $linkList = [];
 
-        if($this->_mode == 'get') {
+        if ($this->_mode == 'get') {
             $request = clone $this->_context->request;
             $query = $request->getQuery();
         } else {
@@ -98,7 +108,7 @@ class Paginator extends Base implements core\IDumpable {
 
             $order = [];
 
-            foreach($this->_pageData->getOrderDirectives() as $dirName => $directive) {
+            foreach ($this->_pageData->getOrderDirectives() as $dirName => $directive) {
                 $order[] = $dirName.' '.$directive->getDirection();
             }
 
@@ -114,16 +124,16 @@ class Paginator extends Base implements core\IDumpable {
 
 
         // Prev
-        if($currentPage != 1) {
+        if ($currentPage != 1) {
             $query->__set($map['page'], $currentPage - 1);
 
-            if($this->_prevText === null) {
+            if ($this->_prevText === null) {
                 $prevText = '←';
             } else {
                 $prevText = $this->_prevText;
             }
 
-            if($this->_mode == 'get') {
+            if ($this->_mode == 'get') {
                 $element = new aura\html\Element('a', $prevText, [
                     'href' => $this->_context->uri->__invoke($request),
                     'class' => 'prev',
@@ -145,16 +155,16 @@ class Paginator extends Base implements core\IDumpable {
         // Inner
         $skip = false;
 
-        for($i = 1; $i <= $totalPages; $i++) {
+        for ($i = 1; $i <= $totalPages; $i++) {
             $query->__set($map['page'], $i);
             $isCurrent = $i == $currentPage;
 
-            if($isCurrent
+            if ($isCurrent
             || $totalPages <= 10
             || $i < 3
             || $i > $totalPages - 2
             || ($i > $currentPage - 3 && $i < $currentPage + 3)) {
-                if($this->_mode == 'get') {
+                if ($this->_mode == 'get') {
                     $element = new aura\html\Element('a', $i, [
                         'href' => $this->_context->uri->__invoke($request),
                         'class' => 'page'
@@ -169,19 +179,19 @@ class Paginator extends Base implements core\IDumpable {
                     ]);
                 }
 
-                if($isCurrent) {
+                if ($isCurrent) {
                     $element->addClass('active');
                 }
 
-                if($i == 1) {
+                if ($i == 1) {
                     $element->setAttribute('rel', 'first');
-                } else if($i == $totalPages) {
+                } elseif ($i == $totalPages) {
                     $element->setAttribute('rel', 'last');
                 }
 
                 $linkList[] = $element->render();
                 $skip = false;
-            } else if(!$skip) {
+            } elseif (!$skip) {
                 $linkList[] = new aura\html\Element('span', '..');
                 $skip = true;
             }
@@ -189,16 +199,16 @@ class Paginator extends Base implements core\IDumpable {
 
 
         // Next
-        if($currentPage != $totalPages) {
+        if ($currentPage != $totalPages) {
             $query->__set($map['page'], $currentPage + 1);
 
-            if($this->_nextText === null) {
+            if ($this->_nextText === null) {
                 $nextText = '→';
             } else {
                 $nextText = $this->_nextText;
             }
 
-            if($this->_mode == 'get') {
+            if ($this->_mode == 'get') {
                 $element = new aura\html\Element('a', $nextText, [
                     'href' => $this->_context->uri->__invoke($request),
                     'class' => 'next',
@@ -217,20 +227,20 @@ class Paginator extends Base implements core\IDumpable {
             $linkList[] = $element->render();
         }
 
-        if(empty($linkList)) {
+        if (empty($linkList)) {
             return '';
         }
 
         $content = [];
 
-        if($this->_renderDetails) {
+        if ($this->_renderDetails) {
             $mLimit = $offset + $limit;
 
-            if($mLimit > $total) {
+            if ($mLimit > $total) {
                 $mLimit = $total;
             }
 
-            if($offset >= $mLimit) {
+            if ($offset >= $mLimit) {
                 $offset = $mLimit - 1;
             }
 
@@ -240,7 +250,7 @@ class Paginator extends Base implements core\IDumpable {
                 '%total%' => $total
             ];
 
-            if($messageData['%offset%'] == $messageData['%limit%']) {
+            if ($messageData['%offset%'] == $messageData['%limit%']) {
                 $message = $this->_context->_(
                     'Showing %offset% of %total%',
                     $messageData
@@ -262,31 +272,37 @@ class Paginator extends Base implements core\IDumpable {
     }
 
 
-    public function getPageData() {
+    public function getPageData()
+    {
         return $this->_pageData;
     }
 
-// Text
-    public function setPrevText($text) {
+    // Text
+    public function setPrevText($text)
+    {
         $this->_prevText = $text;
         return $this;
     }
 
-    public function getPrevText() {
+    public function getPrevText()
+    {
         return $this->_prevText;
     }
 
-    public function setNextText($text) {
+    public function setNextText($text)
+    {
         $this->_nextText = $text;
         return $this;
     }
 
-    public function getNextText() {
+    public function getNextText()
+    {
         return $this->_nextText;
     }
 
-    public function shouldRenderDetails(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldRenderDetails(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_renderDetails = $flag;
             return $this;
         }
@@ -294,15 +310,18 @@ class Paginator extends Base implements core\IDumpable {
         return $this->_renderDetails;
     }
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'prevText' => $this->_prevText,
-            'nextText' => $this->_nextText,
-            'renderDetails' => $this->_renderDetails,
-            'pageData' => $this->_pageData,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*prevText' => $inspector($this->_prevText),
+                '*nextText' => $inspector($this->_nextText),
+                '*renderDetails' => $inspector($this->_renderDetails),
+                '*pageData' => $inspector($this->_pageData),
+                '%tag' => $inspector($this->getTag())
+            ]);
     }
 }

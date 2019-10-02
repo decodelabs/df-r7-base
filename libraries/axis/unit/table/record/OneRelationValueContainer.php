@@ -11,10 +11,15 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 class OneRelationValueContainer implements
     opal\record\IJobAwareValueContainer,
     opal\record\IPreparedValueContainer,
-    opal\record\IIdProviderValueContainer
+    opal\record\IIdProviderValueContainer,
+    Inspectable
 {
     protected $_value;
     protected $_record = false;
@@ -275,11 +280,18 @@ class OneRelationValueContainer implements
         return $this->_value;
     }
 
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
         if ($this->_record) {
-            return $this->_record;
+            $entity
+                ->setValues([$inspector($this->_record)])
+                ->setShowKeys(false);
+            return;
         }
+
 
         $output = $this->_field->getTargetUnitId().' : ';
 
@@ -309,6 +321,6 @@ class OneRelationValueContainer implements
             $output .= implode(', ', $t);
         }
 
-        return $output;
+        $entity->setDefinition($output);
     }
 }

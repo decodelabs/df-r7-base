@@ -12,7 +12,11 @@ use df\aura;
 use df\user;
 use df\opal;
 
-abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy, Inspectable
 {
     use user\TAccessControlled;
     use core\constraint\TDisableable;
@@ -304,7 +308,7 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
         if ($title !== null) {
             $title = $this->html->toText($title);
         }
-        
+
         $name = $this->_decorateBody($name);
 
         $output = $this->html->link($url, $name, $this->_matchRequest)
@@ -359,10 +363,11 @@ abstract class RecordLink extends Base implements aura\html\widget\IWidgetProxy,
     abstract protected function _getRecordUrl($id);
 
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return $this->render();
+        $entity->setText($this->render());
     }
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,9 +9,9 @@ use df;
 use df\core;
 use df\flex;
 use df\iris;
-    
-class Table extends iris\map\Node implements flex\latex\ITable, core\IDumpable {
 
+class Table extends iris\map\Node implements flex\latex\ITable
+{
     use flex\latex\TContainerNode;
     use flex\latex\TReferable;
     use flex\latex\TCaptioned;
@@ -20,28 +20,32 @@ class Table extends iris\map\Node implements flex\latex\ITable, core\IDumpable {
 
     protected $_columns = [];
 
-    public function addColumn(flex\latex\IColumn $column) {
+    public function addColumn(flex\latex\IColumn $column)
+    {
         $this->_columns[] = $column;
         return $this;
     }
 
-    public function getColumns() {
+    public function getColumns()
+    {
         return $this->_columns;
     }
 
-    public function addRow(array $row) {
+    public function addRow(array $row)
+    {
         return $this->push($row);
     }
 
-    public function isFirstRowHead() {
-        foreach($this->_collection as $child) {
-            if(is_array($child)) {
-                foreach($child as $cell) {
-                    if($cell->getType() != 'cell') {
+    public function isFirstRowHead()
+    {
+        foreach ($this->_collection as $child) {
+            if (is_array($child)) {
+                foreach ($child as $cell) {
+                    if ($cell->getType() != 'cell') {
                         continue;
                     }
 
-                    if(!$cell->containsOnlySpan() && !$cell->isEmpty()) {
+                    if (!$cell->containsOnlySpan() && !$cell->isEmpty()) {
                         return false;
                     }
                 }
@@ -51,29 +55,18 @@ class Table extends iris\map\Node implements flex\latex\ITable, core\IDumpable {
         }
     }
 
-    public function isFirstColumnHead() {
-        foreach($this->_collection as $child) {
-            if(!is_array($child) || !isset($child[0])) {
+    public function isFirstColumnHead()
+    {
+        foreach ($this->_collection as $child) {
+            if (!is_array($child) || !isset($child[0])) {
                 continue;
             }
 
-            if(!$child[0]->containsOnlySpan() && !$child[0]->isEmpty()) {
+            if (!$child[0]->containsOnlySpan() && !$child[0]->isEmpty()) {
                 return false;
             }
         }
 
         return true;
-    }
-
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'id' => $this->id,
-            'placement' => $this->_placement,
-            'caption' => $this->_caption,
-            'columns' => $this->_columns,
-            'children' => $this->_collection
-        ];
     }
 }

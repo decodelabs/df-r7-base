@@ -11,8 +11,12 @@ use df\arch;
 use df\aura;
 use df\link;
 
-class Base implements INode, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Base implements INode, Inspectable
+{
     use core\TContextProxy;
     use arch\TDirectoryAccessLock;
     use arch\TResponseForcer;
@@ -31,22 +35,24 @@ class Base implements INode, core\IDumpable {
     private $_accessSignifiers = null;
     private $_callback;
 
-    public static function factory(arch\IContext $context): INode {
+    public static function factory(arch\IContext $context): INode
+    {
         $class = self::getClassFor(
             $context->location,
             $context->getRunMode(),
             $isDefault
         );
 
-        if(!$class || $isDefault) {
+        if (!$class || $isDefault) {
             try {
                 $scaffold = arch\scaffold\Base::factory($context);
                 return $scaffold->loadNode();
-            } catch(arch\scaffold\IError $e) {}
+            } catch (arch\scaffold\IError $e) {
+            }
         }
 
-        if(!$class) {
-            if($node = arch\Transformer::loadNode($context)) {
+        if (!$class) {
+            if ($node = arch\Transformer::loadNode($context)) {
                 return $node;
             }
 
@@ -59,7 +65,8 @@ class Base implements INode, core\IDumpable {
         return new $class($context);
     }
 
-    public static function getClassFor(arch\IRequest $request, $runMode='Http', &$isDefault=null) {
+    public static function getClassFor(arch\IRequest $request, $runMode='Http', &$isDefault=null)
+    {
         $runMode = ucfirst($runMode);
         $parts = $request->getControllerParts();
         $parts[] = '_nodes';
@@ -69,10 +76,10 @@ class Base implements INode, core\IDumpable {
         $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
         $isDefault = false;
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             $class = 'df\\apex\\directory\\shared\\'.$end;
 
-            if(!class_exists($class)) {
+            if (!class_exists($class)) {
                 array_pop($parts);
                 $parts[] = $runMode.'Default';
                 $end = implode('\\', $parts);
@@ -80,10 +87,10 @@ class Base implements INode, core\IDumpable {
 
                 $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
 
-                if(!class_exists($class)) {
+                if (!class_exists($class)) {
                     $class = 'df\\apex\\directory\\shared\\'.$end;
 
-                    if(!class_exists($class)) {
+                    if (!class_exists($class)) {
                         $class = null;
                     }
                 }
@@ -93,69 +100,77 @@ class Base implements INode, core\IDumpable {
         return $class;
     }
 
-    public function __construct(arch\IContext $context, $callback=null) {
+    public function __construct(arch\IContext $context, $callback=null)
+    {
         $this->context = $context;
         $this->setCallback($callback);
     }
 
-    public function setCallback($callback) {
+    public function setCallback($callback)
+    {
         $this->_callback = core\lang\Callback::factory($callback);
         return $this;
     }
 
-    public function getCallback(): ?callable {
+    public function getCallback(): ?callable
+    {
         return $this->_callback;
     }
 
-    public function shouldOptimize(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldOptimize(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_shouldOptimize = $flag;
             return $this;
         }
 
-        if($this->_shouldOptimize !== null) {
+        if ($this->_shouldOptimize !== null) {
             return (bool)$this->_shouldOptimize;
         }
 
         return (bool)static::OPTIMIZE;
     }
 
-    public function shouldCheckAccess(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldCheckAccess(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_shouldCheckAccess = $flag;
             return $this;
         }
 
-        if($this->_shouldCheckAccess !== null) {
+        if ($this->_shouldCheckAccess !== null) {
             return (bool)$this->_shouldCheckAccess;
         }
 
-        if(is_bool(static::CHECK_ACCESS)) {
+        if (is_bool(static::CHECK_ACCESS)) {
             return static::CHECK_ACCESS;
         }
 
-        if($this->_defaultAccess === arch\IAccess::ALL) {
+        if ($this->_defaultAccess === arch\IAccess::ALL) {
             return false;
         }
 
         return !$this->shouldOptimize();
     }
 
-    public function setDefaultAccess($access) {
+    public function setDefaultAccess($access)
+    {
         $this->_defaultAccess = $access;
         return $this;
     }
 
-    public function getDefaultAccess($action=null) {
-        if($this->_defaultAccess !== null) {
+    public function getDefaultAccess($action=null)
+    {
+        if ($this->_defaultAccess !== null) {
             return $this->_defaultAccess;
         }
 
         return $this->_getClassDefaultAccess();
     }
 
-    public function setAccessSignifiers(string ...$signifiers) {
-        if(empty($signifiers)) {
+    public function setAccessSignifiers(string ...$signifiers)
+    {
+        if (empty($signifiers)) {
             $signifiers = null;
         }
 
@@ -163,10 +178,11 @@ class Base implements INode, core\IDumpable {
         return $this;
     }
 
-    public function getAccessSignifiers(): array {
-        if($this->_accessSignifiers !== null) {
+    public function getAccessSignifiers(): array
+    {
+        if ($this->_accessSignifiers !== null) {
             return $this->_accessSignifiers;
-        } else if(is_array(static::ACCESS_SIGNIFIERS)) {
+        } elseif (is_array(static::ACCESS_SIGNIFIERS)) {
             return static::ACCESS_SIGNIFIERS;
         } else {
             return [];
@@ -174,22 +190,23 @@ class Base implements INode, core\IDumpable {
     }
 
 
-// Dispatch
-    public function dispatch() {
+    // Dispatch
+    public function dispatch()
+    {
         $output = null;
         $func = null;
 
-        if($this->shouldCheckAccess()) {
+        if ($this->shouldCheckAccess()) {
             $client = $this->context->user->getClient();
 
-            if($client->isDeactivated()) {
+            if ($client->isDeactivated()) {
                 throw core\Error::{'EForbidden'}([
                     'message' => 'Client deactivated',
                     'http' => 403
                 ]);
             }
 
-            if(!$client->canAccess($this)) {
+            if (!$client->canAccess($this)) {
                 throw core\Error::{'EUnauthorized'}([
                     'message' => 'Insufficient permissions',
                     'http' => 401
@@ -197,27 +214,27 @@ class Base implements INode, core\IDumpable {
             }
         }
 
-        if(method_exists($this, '_beforeDispatch')) {
+        if (method_exists($this, '_beforeDispatch')) {
             try {
                 $output = $this->_beforeDispatch();
-            } catch(arch\IForcedResponse $e) {
+            } catch (arch\IForcedResponse $e) {
                 $output = $e->getResponse();
             }
         }
 
 
-        if($output === null) {
-            if($this->_callback) {
+        if ($output === null) {
+            if ($this->_callback) {
                 $output = $this->_callback->invoke($this);
             } else {
                 $func = $this->getDispatchMethodName();
 
-                if($func !== null) {
+                if ($func !== null) {
                     try {
                         $output = $this->$func();
-                    } catch(arch\IForcedResponse $e) {
+                    } catch (arch\IForcedResponse $e) {
                         $output = $e->getResponse();
-                    } catch(\Throwable $e) {
+                    } catch (\Throwable $e) {
                         $output = $this->handleException($e);
                     }
                 } else {
@@ -226,10 +243,10 @@ class Base implements INode, core\IDumpable {
             }
         }
 
-        if(method_exists($this, '_afterDispatch')) {
+        if (method_exists($this, '_afterDispatch')) {
             try {
                 $output = $this->_afterDispatch($output);
-            } catch(arch\IForcedResponse $e) {
+            } catch (arch\IForcedResponse $e) {
                 $output = $e->getResponse();
             }
         }
@@ -237,13 +254,14 @@ class Base implements INode, core\IDumpable {
         return $output;
     }
 
-    public function getDispatchMethodName(): ?string {
+    public function getDispatchMethodName(): ?string
+    {
         $type = $this->context->location->getType();
 
-        if($this->context->getRunMode() == 'Http') {
+        if ($this->context->getRunMode() == 'Http') {
             $mode = ucfirst(strtolower($this->context->runner->getHttpRequest()->getMethod()));
 
-            if($mode == 'Head') {
+            if ($mode == 'Head') {
                 $mode = 'Get';
             }
         } else {
@@ -251,37 +269,38 @@ class Base implements INode, core\IDumpable {
         }
 
 
-        if($mode) {
+        if ($mode) {
             $func = 'execute'.$mode.'As'.$type;
 
-            if(method_exists($this, $func)) {
+            if (method_exists($this, $func)) {
                 return $func;
             }
 
             $func = 'execute'.$mode;
 
-            if(method_exists($this, $func)) {
+            if (method_exists($this, $func)) {
                 return $func;
             }
         }
 
         $func = 'executeAs'.$type;
 
-        if(method_exists($this, $func)) {
+        if (method_exists($this, $func)) {
             return $func;
         }
 
         $func = 'execute';
 
-        if(method_exists($this, $func)) {
+        if (method_exists($this, $func)) {
             return $func;
         }
 
         return null;
     }
 
-    protected function _handleNoDispatchMethod() {
-        if($this->context->request->getType() == 'Htm') {
+    protected function _handleNoDispatchMethod()
+    {
+        if ($this->context->request->getType() == 'Htm') {
             $request = clone $this->context->request->setType('Html');
             return $this->context->http->redirect($request);
         }
@@ -293,28 +312,30 @@ class Base implements INode, core\IDumpable {
         ]);
     }
 
-    public function handleException(\Throwable $e) {
+    public function handleException(\Throwable $e)
+    {
         throw $e;
     }
 
 
-    public function executeAsAjax() {
-        switch($this->context->getRunMode()) {
+    public function executeAsAjax()
+    {
+        switch ($this->context->getRunMode()) {
             case 'Http':
-                if(method_exists($this, 'executeAsHtml')) {
+                if (method_exists($this, 'executeAsHtml')) {
                     $this->request->setType(null);
                     $output = $this->executeAsHtml();
-                } else if(method_exists($this, 'execute')) {
+                } elseif (method_exists($this, 'execute')) {
                     $output = $this->execute();
                 } else {
                     $output = null;
                 }
 
-                if($output instanceof aura\view\IView) {
+                if ($output instanceof aura\view\IView) {
                     return $this->http->ajaxResponse($output);
-                } else if($output instanceof link\http\IResponse) {
+                } elseif ($output instanceof link\http\IResponse) {
                     return $output;
-                } else if($output !== null) {
+                } elseif ($output !== null) {
                     return $this->http->stringResponse(
                         $this->data->toJson([
                             'node' => $this->request->getLiteralPathString(),
@@ -333,9 +354,10 @@ class Base implements INode, core\IDumpable {
 
 
 
-// Sitemap
-    public function getSitemapEntries(): iterable {
-        if(!static::SITEMAP) {
+    // Sitemap
+    public function getSitemapEntries(): iterable
+    {
+        if (!static::SITEMAP) {
             return;
         }
 
@@ -353,11 +375,13 @@ class Base implements INode, core\IDumpable {
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'type' => $this->context->getRunMode(),
-            'context' => $this->context
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperty('*type', $inspector($this->context->getRunMode()))
+            ->setProperty('*context', $inspector($this->context));
     }
 }

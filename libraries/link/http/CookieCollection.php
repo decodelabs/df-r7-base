@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\link;
 
-class CookieCollection implements ICookieCollection, core\collection\IMappedCollection, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class CookieCollection implements ICookieCollection, core\collection\IMappedCollection, Inspectable
+{
     use core\TStringProvider;
     use core\TValueMap;
     use core\collection\TValueMapArrayAccess;
@@ -20,45 +24,48 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
     protected $_set = [];
     protected $_remove = [];
 
-    public function __construct(...$input) {
-        if(!empty($input)) {
+    public function __construct(...$input)
+    {
+        if (!empty($input)) {
             $this->import(...$input);
         }
     }
 
-    public function __clone() {
-        foreach($this->_set as $key => $cookie) {
+    public function __clone()
+    {
+        foreach ($this->_set as $key => $cookie) {
             $this->_set[$key] = clone $cookie;
         }
 
-        foreach($this->_remove as $key => $cookie) {
+        foreach ($this->_remove as $key => $cookie) {
             $this->_remove[$key] = clone $cookie;
         }
 
         return $this;
     }
 
-    public function import(...$input) {
-        foreach($input as $data) {
-            if($data instanceof core\collection\IHeaderMap) {
+    public function import(...$input)
+    {
+        foreach ($input as $data) {
+            if ($data instanceof core\collection\IHeaderMap) {
                 $data = $data->get('Set-Cookie');
 
-                if($data !== null && !is_array($data)) {
+                if ($data !== null && !is_array($data)) {
                     $data = [$data];
                 }
             }
 
-            if($data instanceof ICookieCollection) {
-                foreach($data->_set as $key => $cookie) {
+            if ($data instanceof ICookieCollection) {
+                foreach ($data->_set as $key => $cookie) {
                     $this->_set[$key] = clone $cookie;
                 }
 
-                foreach($data->_remove as $key => $cookie) {
+                foreach ($data->_remove as $key => $cookie) {
                     $this->_remove[$key] = clone $cookie;
                 }
-            } else if(core\collection\Util::isIterable($data)) {
-                foreach($data as $key => $value) {
-                    if(is_numeric($key)) {
+            } elseif (core\collection\Util::isIterable($data)) {
+                foreach ($data as $key => $value) {
+                    if (is_numeric($key)) {
                         $key = Cookie::fromString($value);
                         $value = null;
                     }
@@ -71,45 +78,52 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
         return $this;
     }
 
-    public function isEmpty($includeRemoved=true): bool {
+    public function isEmpty($includeRemoved=true): bool
+    {
         $output = empty($this->_set);
 
-        if($includeRemoved) {
+        if ($includeRemoved) {
             $output = $output && empty($this->_remove);
         }
 
         return $output;
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->_set = [];
         $this->_remove = [];
     }
 
-    public function extract() {
+    public function extract()
+    {
         return array_shift($this->_set);
     }
 
-    public function count() {
+    public function count()
+    {
         return count($this->_set);
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return $this->_set;
     }
 
-    public function getRemoved() {
+    public function getRemoved()
+    {
         return $this->_remove;
     }
 
 
-    public function set($name, $cookie=null) {
-        if($name instanceof ICookie) {
+    public function set($name, $cookie=null)
+    {
+        if ($name instanceof ICookie) {
             $cookie = $name;
             $name = $cookie->getName();
         }
 
-        if(!$cookie instanceof ICookie) {
+        if (!$cookie instanceof ICookie) {
             $cookie = new Cookie($name, $cookie);
         }
 
@@ -120,25 +134,27 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
         return $this;
     }
 
-    public function get($name, $default=null) {
-        if(isset($this->_set[$name])) {
+    public function get($name, $default=null)
+    {
+        if (isset($this->_set[$name])) {
             return $this->_set[$name];
         }
 
-        if(!$default instanceof ICookie) {
+        if (!$default instanceof ICookie) {
             $default = new Cookie($name, $default);
         }
 
         return $default;
     }
 
-    public function has(...$names) {
-        foreach($names as $name) {
-            if($name instanceof ICookie) {
+    public function has(...$names)
+    {
+        foreach ($names as $name) {
+            if ($name instanceof ICookie) {
                 $name = $name->getName();
             }
 
-            if(isset($this->_set[$name])) {
+            if (isset($this->_set[$name])) {
                 return true;
             }
         }
@@ -146,18 +162,19 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
         return false;
     }
 
-    public function remove(...$names) {
-        foreach($names as $name) {
+    public function remove(...$names)
+    {
+        foreach ($names as $name) {
             $cookie = null;
 
-            if($name instanceof ICookie) {
+            if ($name instanceof ICookie) {
                 $cookie = $name;
                 $name = $cookie->getName();
             }
 
-            if(isset($this->_set[$name])) {
+            if (isset($this->_set[$name])) {
                 $cookie = $this->_set[$name];
-            } else if($cookie === null) {
+            } elseif ($cookie === null) {
                 $cookie = new Cookie($name, 'deleted');
             }
 
@@ -169,20 +186,21 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
     }
 
 
-    public function applyTo(IResponseHeaderCollection $headers) {
+    public function applyTo(IResponseHeaderCollection $headers)
+    {
         $cookies = $headers->get('Set-Cookie');
 
-        if($cookies === null) {
+        if ($cookies === null) {
             $cookies = [];
-        } else if(!is_array($cookies)) {
+        } elseif (!is_array($cookies)) {
             $cookies = [$cookies];
         }
 
-        foreach($this->_set as $cookie) {
+        foreach ($this->_set as $cookie) {
             $cookies[] = $cookie->toString();
         }
 
-        foreach($this->_remove as $cookie) {
+        foreach ($this->_remove as $cookie) {
             $cookies[] = $cookie->toInvalidateString();
         }
 
@@ -190,15 +208,16 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
         return $this;
     }
 
-    public function sanitize(IRequest $request) {
-        foreach($this->_set as $cookie) {
-            if(!$cookie->getDomain()) {
+    public function sanitize(IRequest $request)
+    {
+        foreach ($this->_set as $cookie) {
+            if (!$cookie->getDomain()) {
                 $cookie->setDomain($request->url->getDomain());
             }
         }
 
-        foreach($this->_remove as $cookie) {
-            if(!$cookie->getDomain()) {
+        foreach ($this->_remove as $cookie) {
+            if (!$cookie->getDomain()) {
                 $cookie->setDomain($request->url->getDomain());
             }
         }
@@ -206,15 +225,16 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
         return $this;
     }
 
-// Strings
-    public function toString(): string {
+    // Strings
+    public function toString(): string
+    {
         $output = [];
 
-        foreach($this->_set as $cookie) {
+        foreach ($this->_set as $cookie) {
             $output[] = 'Set-Cookie: '.$cookie->toString();
         }
 
-        foreach($this->_remove as $cookie) {
+        foreach ($this->_remove as $cookie) {
             $output[] = 'Set-Cookie: '.$cookie->toInvalidateString();
         }
 
@@ -222,18 +242,22 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
     }
 
 
-// Dump
-    public function getDumpProperties() {
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
         $output = [];
 
-        foreach($this->_set as $cookie) {
+        foreach ($this->_set as $cookie) {
             $output['+ '.$cookie->getName()] = $cookie->toString();
         }
 
-        foreach($this->_remove as $cookie) {
+        foreach ($this->_remove as $cookie) {
             $output['- '.$cookie->getName()] = $cookie->toInvalidateString();
         }
 
-        return $output;
+        $entity
+            ->setValues($inspector->inspectList($output));
     }
 }

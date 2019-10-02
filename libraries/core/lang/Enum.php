@@ -8,7 +8,11 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-abstract class Enum implements IStaticEnum, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+abstract class Enum implements IStaticEnum, Inspectable
 {
     use core\TStringProvider;
     use core\TStringValueProvider;
@@ -212,10 +216,11 @@ abstract class Enum implements IStaticEnum, core\IDumpable
         );
     }
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return self::$_options[get_class($this)][$this->_index].' ('.$this->_index.')';
+        $entity->setDefinition(self::$_options[get_class($this)][$this->_index].' ('.$this->_index.')');
     }
 }

@@ -11,13 +11,17 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 abstract class Table implements
     axis\ISchemaBasedStorageUnit,
     mesh\entity\IActiveParentEntity,
     opal\query\IEntryPoint,
     opal\query\IIntegralAdapter,
     opal\query\IPaginatingAdapter,
-    core\IDumpable
+    Inspectable
 {
     use axis\TUnit;
     use axis\TAdapterBasedStorageUnit;
@@ -792,14 +796,16 @@ abstract class Table implements
         );
     }
 
-
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return [
-            'type' => $this->getUnitType(),
-            'unitId' => $this->getUnitId(),
-            'adapter' => $this->_adapter
-        ];
+        $entity
+            ->setProperties([
+                '*type' => $inspector($this->getUnitType()),
+                '*unitId' => $inspector($this->getUnitId()),
+                '*adapter' => $inspector($this->_adapter)
+            ]);
     }
 }

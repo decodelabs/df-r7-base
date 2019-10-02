@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\flex;
 
-class Version implements IVersion, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Version implements IVersion, Inspectable
+{
     use core\TStringProvider;
 
     const REGEX = '/^(?<version>[0-9.x]+)(?<prerelease>-?[0-9a-zA-Z.]+)?(?<build>\+[0-9a-zA-Z.]+)?$/';
@@ -22,80 +26,96 @@ class Version implements IVersion, core\IDumpable {
     public $preRelease = null;
     public $build = null;
 
-    public static function factory($version) {
-        if($version instanceof IVersion) {
+    public static function factory($version)
+    {
+        if ($version instanceof IVersion) {
             return $version;
         }
 
         return new self($version);
     }
 
-    public static function matchString($version) {
-        if(!preg_match(self::REGEX, $version, $matches)) {
+    public static function matchString($version)
+    {
+        if (!preg_match(self::REGEX, $version, $matches)) {
             throw new RuntimeException('Invalid version: '.$version);
         }
 
         return $matches;
     }
 
-    public function __construct($version) {
+    public function __construct($version)
+    {
         $matches = self::matchString($version);
         $parts = explode('.', $matches[1]);
         $this->major = array_shift($parts);
         $this->minor = array_shift($parts);
         $this->patch = array_shift($parts);
 
-        if($this->major != 'x') $this->major = (int)$this->major;
-        if($this->minor != 'x') $this->minor = (int)$this->minor;
-        if($this->patch != 'x') $this->patch = (int)$this->patch;
+        if ($this->major != 'x') {
+            $this->major = (int)$this->major;
+        }
+        if ($this->minor != 'x') {
+            $this->minor = (int)$this->minor;
+        }
+        if ($this->patch != 'x') {
+            $this->patch = (int)$this->patch;
+        }
 
-        if(isset($matches[2])) {
+        if (isset($matches[2])) {
             $this->preRelease = explode('.', ltrim($matches[2], '-'));
         }
 
-        if(isset($matches[3])) {
+        if (isset($matches[3])) {
             $this->build = explode('.', ltrim($matches[3], '+'));
         }
     }
 
-// Members
-    public function setMajor($major) {
+    // Members
+    public function setMajor($major)
+    {
         $this->major = $major;
         return $this;
     }
 
-    public function getMajor() {
+    public function getMajor()
+    {
         return $this->major;
     }
 
-    public function setMinor($minor) {
+    public function setMinor($minor)
+    {
         $this->minor = $minor;
         return $this;
     }
 
-    public function getMinor() {
+    public function getMinor()
+    {
         return $this->minor;
     }
 
-    public function setPatch($patch) {
+    public function setPatch($patch)
+    {
         $this->patch = $patch;
         return $this;
     }
 
-    public function getPatch() {
+    public function getPatch()
+    {
         return $this->patch;
     }
 
-    public function setPreRelease($preRelease) {
-        if(!is_array($preRelease)) {
-            if(strlen($preRelease)) {
+    public function setPreRelease($preRelease)
+    {
+        if (!is_array($preRelease)) {
+            if (strlen($preRelease)) {
                 $preRelease = explode('.', $preRelease);
             } else {
                 $preRelease = null;
             }
         }
 
-        if(empty($preRelease)) {
+        if (empty($preRelease)) {
             $preRelease = null;
         }
 
@@ -103,26 +123,29 @@ class Version implements IVersion, core\IDumpable {
         return $this;
     }
 
-    public function getPreRelease() {
+    public function getPreRelease()
+    {
         return $this->preRelease;
     }
 
-    public function getPreReleaseString() {
-        if(is_array($this->preRelease)) {
+    public function getPreReleaseString()
+    {
+        if (is_array($this->preRelease)) {
             return implode('.', $this->preRelease);
         }
     }
 
-    public function setBuild($build) {
-        if(!is_array($build)) {
-            if(strlen($build)) {
+    public function setBuild($build)
+    {
+        if (!is_array($build)) {
+            if (strlen($build)) {
                 $build = explode('.', $build);
             } else {
                 $build = null;
             }
         }
 
-        if(empty($build)) {
+        if (empty($build)) {
             $build = null;
         }
 
@@ -130,97 +153,105 @@ class Version implements IVersion, core\IDumpable {
         return $this;
     }
 
-    public function getBuild() {
+    public function getBuild()
+    {
         return $this->build;
     }
 
-    public function getBuildString() {
-        if(is_array($this->build)) {
+    public function getBuildString()
+    {
+        if (is_array($this->build)) {
             return implode('.', $this->build);
         }
     }
 
 
-// Comparison
-    public function eq($version) {
+    // Comparison
+    public function eq($version)
+    {
         $version = self::factory($version);
 
-        if($this->major != $version->major
+        if ($this->major != $version->major
         || $this->minor != $version->minor
         || $this->patch != $version->patch) {
             return false;
         }
 
-        if(!$this->_matchPreRelease($version)) {
+        if (!$this->_matchPreRelease($version)) {
             return false;
         }
 
-        if(!$this->_matchBuild($version)) {
+        if (!$this->_matchBuild($version)) {
             return false;
         }
 
         return true;
     }
 
-    public function matches($version) {
+    public function matches($version)
+    {
         $version = self::factory($version);
 
-        if(!$this->_matchMain($version)) {
+        if (!$this->_matchMain($version)) {
             return false;
         }
 
-        if($version->preRelease && !$this->_matchPreRelease($version)) {
+        if ($version->preRelease && !$this->_matchPreRelease($version)) {
             return false;
         }
 
-        if($version->build && !$this->_matchBuild($version)) {
+        if ($version->build && !$this->_matchBuild($version)) {
             return false;
         }
 
         return true;
     }
 
-    public function gt($version) {
+    public function gt($version)
+    {
         return !$this->lte($version);
     }
 
-    public function gte($version) {
+    public function gte($version)
+    {
         return !$this->lt($version);
     }
 
-    public function lt($version) {
+    public function lt($version)
+    {
         $version = self::factory($version);
 
-        if($this->eq($version)) {
+        if ($this->eq($version)) {
             return false;
         }
 
         return $this->lte($version);
     }
 
-    public function lte($version) {
+    public function lte($version)
+    {
         $version = self::factory($version);
 
-        if(!$this->_matchMain($version)) {
+        if (!$this->_matchMain($version)) {
             return $this->_mainLt($version);
         }
 
-        if(!$this->preRelease && $version->preRelease) {
+        if (!$this->preRelease && $version->preRelease) {
             return false;
-        } else if($this->preRelease && !$version->preRelease) {
+        } elseif ($this->preRelease && !$version->preRelease) {
             return true;
-        } else if($this->preRelease && $version->preRelease) {
-            if(!$this->_matchPreRelease($version)) {
+        } elseif ($this->preRelease && $version->preRelease) {
+            if (!$this->_matchPreRelease($version)) {
                 return $this->_preReleaseLt($version);
             }
         }
 
-        if(!$this->build && $version->build) {
+        if (!$this->build && $version->build) {
             return true;
-        } else if($this->build && !$version->build) {
+        } elseif ($this->build && !$version->build) {
             return false;
-        } else if($this->build && $version->build) {
-            if(!$this->_matchBuild($version)) {
+        } elseif ($this->build && $version->build) {
+            if (!$this->_matchBuild($version)) {
                 return $this->_buildLt($version);
             }
         }
@@ -228,8 +259,9 @@ class Version implements IVersion, core\IDumpable {
         return true;
     }
 
-    protected function _matchMain(IVersion $version) {
-        if($this->major != $version->major
+    protected function _matchMain(IVersion $version)
+    {
+        if ($this->major != $version->major
         || $this->minor != $version->minor
         || $this->patch != $version->patch) {
             return false;
@@ -238,28 +270,48 @@ class Version implements IVersion, core\IDumpable {
         return true;
     }
 
-    protected function _mainLt(IVersion $version) {
-        if($this->major > $version->major) return false;
-        if($this->major < $version->major) return true;
-        if($this->minor > $version->minor) return false;
-        if($this->minor < $version->minor) return true;
-        if($this->patch > $version->patch) return false;
-        if($this->patch < $version->patch) return true;
+    protected function _mainLt(IVersion $version)
+    {
+        if ($this->major > $version->major) {
+            return false;
+        }
+        if ($this->major < $version->major) {
+            return true;
+        }
+        if ($this->minor > $version->minor) {
+            return false;
+        }
+        if ($this->minor < $version->minor) {
+            return true;
+        }
+        if ($this->patch > $version->patch) {
+            return false;
+        }
+        if ($this->patch < $version->patch) {
+            return true;
+        }
     }
 
-    protected function _matchPreRelease(IVersion $version) {
-        if($this->preRelease) $leftPreCount = count($this->preRelease);
-        else $leftPreCount = 0;
-        if($version->preRelease) $rightPreCount = count($version->preRelease);
-        else $rightPreCount = 0;
+    protected function _matchPreRelease(IVersion $version)
+    {
+        if ($this->preRelease) {
+            $leftPreCount = count($this->preRelease);
+        } else {
+            $leftPreCount = 0;
+        }
+        if ($version->preRelease) {
+            $rightPreCount = count($version->preRelease);
+        } else {
+            $rightPreCount = 0;
+        }
 
-        if($leftPreCount != $rightPreCount) {
+        if ($leftPreCount != $rightPreCount) {
             return false;
         }
 
-        if($leftPreCount) {
-            foreach($this->preRelease as $i => $value) {
-                if(!isset($version->preRelease[$i]) || $version->preRelease[$i] != $value) {
+        if ($leftPreCount) {
+            foreach ($this->preRelease as $i => $value) {
+                if (!isset($version->preRelease[$i]) || $version->preRelease[$i] != $value) {
                     return false;
                 }
             }
@@ -268,40 +320,41 @@ class Version implements IVersion, core\IDumpable {
         return true;
     }
 
-    protected function _preReleaseLt(IVersion $version) {
-        foreach($this->preRelease as $i => $left) {
-            if(!isset($version->preRelease[$i])) {
+    protected function _preReleaseLt(IVersion $version)
+    {
+        foreach ($this->preRelease as $i => $left) {
+            if (!isset($version->preRelease[$i])) {
                 return false;
             }
 
             $right = $version->preRelease[$i];
 
-            if($left != $right) {
-                if($leftGreek = in_array(strtolower($left), self::GREEK)) {
+            if ($left != $right) {
+                if ($leftGreek = in_array(strtolower($left), self::GREEK)) {
                     $left = strtolower($left);
                 }
 
-                if($rightGreek = in_array(strtolower($right), self::GREEK)) {
+                if ($rightGreek = in_array(strtolower($right), self::GREEK)) {
                     $right = strtolower($right);
                 }
 
-                if($leftGreek && !$rightGreek) {
+                if ($leftGreek && !$rightGreek) {
                     return false;
-                } else if($rightGreek && !$leftGreek) {
+                } elseif ($rightGreek && !$leftGreek) {
                     return true;
-                } else if($leftGreek && $rightGreek) {
+                } elseif ($leftGreek && $rightGreek) {
                     $leftScore = array_search($left, self::GREEK);
                     $rightScore = array_search($right, self::GREEK);
 
-                    if($leftScore > $rightScore) {
+                    if ($leftScore > $rightScore) {
                         return false;
-                    } else if($leftScore < $rightScore) {
+                    } elseif ($leftScore < $rightScore) {
                         return true;
                     }
                 } else {
-                    if($left > $right) {
+                    if ($left > $right) {
                         return false;
-                    } else if($left < $right) {
+                    } elseif ($left < $right) {
                         return true;
                     }
                 }
@@ -311,19 +364,26 @@ class Version implements IVersion, core\IDumpable {
         return false;
     }
 
-    protected function _matchBuild(IVersion $version) {
-        if($this->build) $leftBuildCount = count($this->build);
-        else $leftBuildCount = 0;
-        if($version->build) $rightBuildCount = count($version->build);
-        else $rightBuildCount = 0;
+    protected function _matchBuild(IVersion $version)
+    {
+        if ($this->build) {
+            $leftBuildCount = count($this->build);
+        } else {
+            $leftBuildCount = 0;
+        }
+        if ($version->build) {
+            $rightBuildCount = count($version->build);
+        } else {
+            $rightBuildCount = 0;
+        }
 
-        if($leftBuildCount != $rightBuildCount) {
+        if ($leftBuildCount != $rightBuildCount) {
             return false;
         }
 
-        if($leftBuildCount) {
-            foreach($this->build as $i => $value) {
-                if(!isset($version->build[$i]) || $version->build[$i] != $value) {
+        if ($leftBuildCount) {
+            foreach ($this->build as $i => $value) {
+                if (!isset($version->build[$i]) || $version->build[$i] != $value) {
                     return false;
                 }
             }
@@ -332,18 +392,19 @@ class Version implements IVersion, core\IDumpable {
         return true;
     }
 
-    protected function _buildLt(IVersion $version) {
-        foreach($this->build as $i => $left) {
-            if(!isset($version->build[$i])) {
+    protected function _buildLt(IVersion $version)
+    {
+        foreach ($this->build as $i => $left) {
+            if (!isset($version->build[$i])) {
                 return false;
             }
 
             $right = $version->build[$i];
 
-            if($left != $right) {
-                if($left > $right) {
+            if ($left != $right) {
+                if ($left > $right) {
                     return false;
-                } else if($left < $right) {
+                } elseif ($left < $right) {
                     return true;
                 }
             }
@@ -353,15 +414,17 @@ class Version implements IVersion, core\IDumpable {
     }
 
 
-// Range
-    public function isInRange($range) {
+    // Range
+    public function isInRange($range)
+    {
         return VersionRange::factory($range)->contains($this);
     }
 
 
 
-// String
-    public function toString(): string {
+    // String
+    public function toString(): string
+    {
         $output = sprintf(
             '%d.%d.%d',
             $this->major,
@@ -369,37 +432,42 @@ class Version implements IVersion, core\IDumpable {
             $this->patch
         );
 
-        if($this->preRelease) {
+        if ($this->preRelease) {
             $output .= '-'.$this->getPreReleaseString();
         }
 
-        if($this->build) {
+        if ($this->build) {
             $output .= '+'.$this->getBuildString();
         }
 
         return $output;
     }
 
-// Dump
-    public function getDumpProperties() {
-        return $this->toString();
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setText($this->toString());
     }
 }
 
 
-class Version_Comparator extends Version {
-
+class Version_Comparator extends Version
+{
     const OPERATORS = ['<', '>', '<=', '>=', '<>', '='];
 
     public $operator;
 
-    public function __construct($operator, $version) {
+    public function __construct($operator, $version)
+    {
         $this->operator = $operator;
         parent::__construct($version);
     }
 
-    public function isSatisfied(IVersion $version) {
-        switch($this->operator) {
+    public function isSatisfied(IVersion $version)
+    {
+        switch ($this->operator) {
             case '<':
                 return $version->lt($this);
 
@@ -422,7 +490,8 @@ class Version_Comparator extends Version {
         }
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return $this->operator.' '.parent::toString();
     }
 }

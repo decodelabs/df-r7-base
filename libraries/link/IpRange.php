@@ -10,7 +10,11 @@ use df\core;
 use df\link;
 use df\flex;
 
-class IpRange implements IIpRange, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class IpRange implements IIpRange, Inspectable
 {
     use core\TStringProvider;
 
@@ -211,18 +215,20 @@ class IpRange implements IIpRange, core\IDumpable
         Glitch::incomplete();
     }
 
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
         if ($this->_isV4) {
-            return $this->_toV4String();
+            $entity->setText($this->_toV4String());
         } else {
-            return [
-                'v6' => true,
-                'start' => $this->_start,
-                'end' => $this->_end,
-                'netmask' => $this->_netmask
-            ];
+            $entity->setProperties([
+                '*v6' => $inspector(true),
+                '*start' => $inspector($this->_start),
+                '*end' => $inspector($this->_end),
+                '*netmask' => $inspector($this->_netmask),
+            ]);
         }
     }
 }

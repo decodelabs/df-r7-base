@@ -9,7 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Aggregate implements opal\query\IAggregateField, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Aggregate implements opal\query\IAggregateField, Inspectable
 {
     use opal\query\TField;
 

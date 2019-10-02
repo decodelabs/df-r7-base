@@ -10,7 +10,11 @@ use df\core;
 use df\link;
 use df\flex;
 
-class Base implements link\http\IRequest, core\IDumpable
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Base implements link\http\IRequest, Inspectable
 {
     use core\TStringProvider;
     use core\lang\TChainable;
@@ -681,34 +685,34 @@ class Base implements link\http\IRequest, core\IDumpable
     }
 
 
-    // Dump
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $output = [
-            'method' => $this->method,
-            'url' => $this->url
-        ];
+        $entity->setProperties([
+            'method' => $inspector($this->method),
+            'url' => $inspector($this->url)
+        ]);
 
         if ($ip = $this->getIp()) {
-            $output['ip'] = $ip;
+            $entity->setProperty('ip', $inspector($ip));
         }
 
-        $output['headers'] = $this->getHeaders();
+        $entity->setProperty('headers', $inspector($this->getHeaders()));
 
         if ($this->method === 'post') {
-            $output['post'] = $this->getPostData();
+            $entity->setProperty('post', $inspector($this->getPostData()));
         }
 
         if ($this->_bodyData !== null) {
-            $output['body'] = $this->_bodyData;
+            $entity->setProperty('body', $inspector($this->_bodyData));
         }
 
         if (!$this->cookies->isEmpty()) {
-            $output['cookies'] = $this->cookies;
+            $entity->setProperty('cookies', $inspector($this->cookies));
         }
 
-        $output['options'] = $this->options;
-
-        return $output;
+        $entity->setProperty('options', $inspector($this->options));
     }
 }

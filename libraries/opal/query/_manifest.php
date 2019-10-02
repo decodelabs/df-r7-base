@@ -11,6 +11,10 @@ use df\opal;
 use df\user;
 use df\mesh;
 
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
 // Exceptions
 interface IException
 {
@@ -970,9 +974,12 @@ trait TField
         return $this->_isFromWildcard;
     }
 
-    public function getDumpProperties()
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        return $this->toString();
+        $entity->setText($this->toString());
     }
 }
 

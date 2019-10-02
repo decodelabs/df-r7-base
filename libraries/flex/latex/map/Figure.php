@@ -10,8 +10,8 @@ use df\core;
 use df\flex;
 use df\iris;
 
-class Figure extends iris\map\Node implements flex\latex\IFigure, core\IDumpable {
-
+class Figure extends iris\map\Node implements flex\latex\IFigure
+{
     use flex\latex\TContainerNode;
     use flex\latex\TReferable;
     use flex\latex\TCaptioned;
@@ -20,28 +20,19 @@ class Figure extends iris\map\Node implements flex\latex\IFigure, core\IDumpable
 
     public $number;
 
-    public function setNumber($number) {
+    public function setNumber($number)
+    {
         $this->number = $number;
         return $this;
     }
 
-    public function getNumber() {
+    public function getNumber()
+    {
         return $this->number;
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return false;
-    }
-
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'id' => $this->id,
-            'number' => $this->number,
-            'placement' => $this->_placement,
-            'caption' => $this->_caption,
-            'children' => $this->_collection
-        ];
     }
 }

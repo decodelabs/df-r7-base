@@ -12,36 +12,43 @@ use df\user;
 use df\link;
 use df\aura;
 
-class Context implements IContext, \Serializable, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Context implements IContext, \Serializable, Inspectable
+{
     use core\TContext;
     use TResponseForcer;
 
     public $request;
     public $location;
 
-    public static function getCurrent($onlyActive=false) {
+    public static function getCurrent($onlyActive=false)
+    {
         $runner = df\Launchpad::$runner;
 
-        if($runner instanceof core\IContextAware) {
+        if ($runner instanceof core\IContextAware) {
             try {
                 return $runner->getContext();
-            } catch(core\ENoContext $e) {}
+            } catch (core\ENoContext $e) {
+            }
         }
 
-        if($onlyActive) {
+        if ($onlyActive) {
             return null;
         }
 
         return self::factory();
     }
 
-    public static function factory($location=null, $runMode=null, $request=null): IContext {
+    public static function factory($location=null, $runMode=null, $request=null): IContext
+    {
         $runner = df\Launchpad::$runner;
 
-        if(!empty($location)) {
+        if (!empty($location)) {
             $location = arch\Request::factory($location);
-        } else if($runner instanceof core\IContextAware && $runner->hasContext()) {
+        } elseif ($runner instanceof core\IContextAware && $runner->hasContext()) {
             $location = $runner->getContext()->location;
         } else {
             $location = new arch\Request('/');
@@ -50,15 +57,16 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return new self($location, $runMode, $request);
     }
 
-    public function __construct(arch\IRequest $location, $runMode=null, $request=null) {
+    public function __construct(arch\IRequest $location, $runMode=null, $request=null)
+    {
         $this->runner = df\Launchpad::$runner;
         $this->location = $location;
 
-        if($request === true) {
+        if ($request === true) {
             $this->request = clone $location;
-        } else if($request !== null) {
+        } elseif ($request !== null) {
             $this->request = arch\Request::factory($request);
-        } else if($this->runner instanceof core\IContextAware
+        } elseif ($this->runner instanceof core\IContextAware
                && $this->runner->hasContext()) {
             $this->request = $this->runner->getContext()->location;
         } else {
@@ -66,26 +74,28 @@ class Context implements IContext, \Serializable, core\IDumpable {
         }
     }
 
-    public function __clone() {
+    public function __clone()
+    {
         $this->request = clone $this->request;
         $this->location = clone $this->location;
         return $this;
     }
 
-    public function spawnInstance($request=null, bool $copyRequest=false): IContext {
-        if($request === null) {
+    public function spawnInstance($request=null, bool $copyRequest=false): IContext
+    {
+        if ($request === null) {
             return clone $this;
         }
 
         $request = arch\Request::factory($request);
 
-        if($request->eq($this->location)) {
+        if ($request->eq($this->location)) {
             return $this;
         }
 
         $output = new self($request);
 
-        if($copyRequest) {
+        if ($copyRequest) {
             $output->request = $output->location;
         }
 
@@ -93,15 +103,17 @@ class Context implements IContext, \Serializable, core\IDumpable {
     }
 
 
-    public function serialize() {
+    public function serialize()
+    {
         return (string)$this->location;
     }
 
-    public function unserialize($data) {
+    public function unserialize($data)
+    {
         $this->location = Request::factory($data);
         $this->runner = df\Launchpad::$runner;
 
-        if($this->runner instanceof core\IContextAware
+        if ($this->runner instanceof core\IContextAware
         && $this->runner->hasContext()) {
             $this->request = $this->runner->getContext()->location;
         } else {
@@ -113,9 +125,10 @@ class Context implements IContext, \Serializable, core\IDumpable {
 
 
 
-// Application
-    public function getDispatchContext(): core\IContext {
-        if(!$this->runner instanceof core\IContextAware) {
+    // Application
+    public function getDispatchContext(): core\IContext
+    {
+        if (!$this->runner instanceof core\IContextAware) {
             throw core\Error::ENoContext(
                 'Current runner is not context aware'
             );
@@ -124,31 +137,35 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return $this->runner->getContext();
     }
 
-    public function isDispatchContext(): bool {
+    public function isDispatchContext(): bool
+    {
         return $this->getDispatchContext() === $this;
     }
 
 
-// Requests
-    public function getRequest(): IRequest {
+    // Requests
+    public function getRequest(): IRequest
+    {
         return $this->request;
     }
 
-    public function getLocation(): IRequest {
+    public function getLocation(): IRequest
+    {
         return $this->location;
     }
 
-    protected function _applyRequestRedirect(arch\IRequest $request, $from, $to) {
-        if($from !== null) {
-            if($from === true) {
+    protected function _applyRequestRedirect(arch\IRequest $request, $from, $to)
+    {
+        if ($from !== null) {
+            if ($from === true) {
                 $from = $this->request;
             }
 
             $request->setRedirectFrom($from);
         }
 
-        if($to !== null) {
-            if($to === true) {
+        if ($to !== null) {
+            if ($to === true) {
                 $to = $this->request;
             }
 
@@ -159,13 +176,14 @@ class Context implements IContext, \Serializable, core\IDumpable {
     }
 
 
-    public function extractDirectoryLocation(string &$path): IRequest {
-        if(false !== strpos($path, '#')) {
+    public function extractDirectoryLocation(string &$path): IRequest
+    {
+        if (false !== strpos($path, '#')) {
             $parts = explode('#', $path, 2);
             $name = array_pop($parts);
             $rem = array_shift($parts);
 
-            if(empty($rem)) {
+            if (empty($rem)) {
                 $parts = [];
             } else {
                 $parts = explode('/', rtrim($rem, '/'));
@@ -175,9 +193,9 @@ class Context implements IContext, \Serializable, core\IDumpable {
             $name = array_pop($parts);
         }
 
-        if(empty($parts)) {
+        if (empty($parts)) {
             $location = clone $this->location;
-        } else if($parts[0] == '.' || $parts[0] == '..') {
+        } elseif ($parts[0] == '.' || $parts[0] == '..') {
             $parts[] = '';
             $location = $this->location->extractRelative($parts);
         } else {
@@ -188,20 +206,21 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return $location;
     }
 
-    public function extractThemeId(string &$path, bool $findDefault=false): ?string {
+    public function extractThemeId(string &$path, bool $findDefault=false): ?string
+    {
         $themeId = null;
 
-        if(false !== strpos($path, '#')) {
+        if (false !== strpos($path, '#')) {
             $parts = explode('#', $path, 2);
             $path = array_pop($parts);
             $themeId = trim(array_shift($parts), '/');
 
-            if(empty($themeId)) {
+            if (empty($themeId)) {
                 $themeId = null;
             }
         }
 
-        if($themeId === null && $findDefault) {
+        if ($themeId === null && $findDefault) {
             $themeId = aura\theme\Config::getInstance()->getThemeIdFor($this->location->getArea());
         }
 
@@ -210,9 +229,10 @@ class Context implements IContext, \Serializable, core\IDumpable {
 
 
 
-// Helpers
-    protected function _loadHelper(string $name) {
-        switch($name) {
+    // Helpers
+    protected function _loadHelper(string $name)
+    {
+        switch ($name) {
             case 'dispatchContext':
                 return $this->getDispatchContext();
 
@@ -230,16 +250,19 @@ class Context implements IContext, \Serializable, core\IDumpable {
         }
     }
 
-    public function getScaffold(): arch\scaffold\IScaffold {
+    public function getScaffold(): arch\scaffold\IScaffold
+    {
         return arch\scaffold\Base::factory($this);
     }
 
 
-// Dump
-    public function getDumpProperties() {
-        return [
-            'request' => $this->request,
-            'location' => $this->location
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperty('request', $inspector($this->request))
+            ->setProperty('location', $inspector($this->location));
     }
 }

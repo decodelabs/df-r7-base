@@ -11,8 +11,12 @@ use df\aura;
 use df\halo;
 use df\arch;
 
-class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Form extends Container implements IFormWidget, IWidgetShortcutProvider
+{
     use TWidget_VisualInput;
     use TWidget_TargetAware;
 
@@ -28,18 +32,20 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
     protected $_name;
     protected $_acceptCharset = 'utf-8';
 
-    public function __construct(arch\IContext $context, $action=null, $method=null, $encoding=null) {
+    public function __construct(arch\IContext $context, $action=null, $method=null, $encoding=null)
+    {
         parent::__construct($context);
 
         $this->setAction($action);
         $this->setMethod($method);
 
-        if($encoding !== null) {
+        if ($encoding !== null) {
             $this->setEncoding($encoding);
         }
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $children = $this->_prepareChildren();
         $tag = $this->getTag();
 
@@ -48,18 +54,18 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
             'method' => $this->_method
         ]);
 
-        if($this->_encoding !== null) {
+        if ($this->_encoding !== null) {
             $tag->setAttribute('enctype', $this->_encoding);
         }
 
-        if($this->_name !== null) {
+        if ($this->_name !== null) {
             $tag->setAttribute('name', $this->_name);
         }
 
         $this->_applyTargetAwareAttributes($tag);
         $this->_applyVisualInputAttributes($tag);
 
-        if($this->_acceptCharset !== null) {
+        if ($this->_acceptCharset !== null) {
             $tag->setAttribute('accept-charset', $this->_acceptCharset);
         }
 
@@ -67,26 +73,29 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
     }
 
 
-// Action
-    public function setAction($action) {
+    // Action
+    public function setAction($action)
+    {
         $this->_action = $action;
         return $this;
     }
 
-    public function getAction() {
+    public function getAction()
+    {
         return $this->_action;
     }
 
 
-// Method
-    public function setMethod($method) {
-        if($method === null) {
+    // Method
+    public function setMethod($method)
+    {
+        if ($method === null) {
             $method = 'post';
         }
 
         $method = strtolower($method);
 
-        if(!in_array($method, ['get', 'post', 'put', 'delete'])) {
+        if (!in_array($method, ['get', 'post', 'put', 'delete'])) {
             throw core\Error::EArgument(
                 'Invalid form method: '.$method
             );
@@ -96,54 +105,64 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
         return $this;
     }
 
-    public function getMethod() {
+    public function getMethod()
+    {
         return $this->_method;
     }
 
 
-// Encoding
-    public function setEncoding($encoding) {
+    // Encoding
+    public function setEncoding($encoding)
+    {
         $this->_encoding = $encoding;
         return $this;
     }
 
-    public function getEncoding() {
+    public function getEncoding()
+    {
         return $this->_encoding;
     }
 
 
-// Name
-    public function setName(?string $name) {
+    // Name
+    public function setName(?string $name)
+    {
         $this->_name = $name;
         return $this;
     }
 
-    public function getName(): ?string {
+    public function getName(): ?string
+    {
         return $this->_name;
     }
 
 
-// Accept charset
-    public function setAcceptCharset($charset) {
+    // Accept charset
+    public function setAcceptCharset($charset)
+    {
         $this->_acceptCharset = $charset;
         return $this;
     }
 
-    public function getAcceptCharset() {
+    public function getAcceptCharset()
+    {
         return $this->_acceptCharset;
     }
 
 
-
-// Dump
-    public function getDumpProperties() {
-        return [
-            'action' => $this->_action,
-            'method' => $this->_method,
-            'encoding' => $this->_encoding,
-            'name' => $this->_name,
-            'children' => $this->_children,
-            'tag' => $this->getTag()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity
+            ->setProperties([
+                '*action' => $inspector($this->_action),
+                '*method' => $inspector($this->_method),
+                '*encoding' => $inspector($this->_encoding),
+                '*name' => $inspector($this->_name),
+                '%tag' => $inspector($this->getTag())
+            ])
+            ->setValues($inspector->inspectList($this->_children->toArray()));
     }
 }

@@ -9,8 +9,12 @@ use df;
 use df\core;
 use df\opal;
 
-class Delete implements IDeleteQuery, core\IDumpable {
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
+class Delete implements IDeleteQuery, Inspectable
+{
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_Locational;
@@ -20,49 +24,53 @@ class Delete implements IDeleteQuery, core\IDumpable {
     use TQuery_Limitable;
     use TQuery_Write;
 
-    public function __construct(ISourceManager $sourceManager, ISource $source) {
+    public function __construct(ISourceManager $sourceManager, ISource $source)
+    {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
     }
 
-    public function getQueryType() {
+    public function getQueryType()
+    {
         return IQueryTypes::DELETE;
     }
 
 
-// Execute
-    public function execute() {
-        return $this->_sourceManager->executeQuery($this, function($adapter) {
+    // Execute
+    public function execute()
+    {
+        return $this->_sourceManager->executeQuery($this, function ($adapter) {
             return $adapter->executeDeleteQuery($this);
         });
     }
 
 
 
-// Dump
-    public function getDumpProperties() {
-        $output = [
-            'source' => $this->_source->getAdapter()
-        ];
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setProperties([
+            '*source' => $inspector($this->_source->getAdapter())
+        ]);
 
-        if($this->hasWhereClauses()) {
-            $output['where'] = $this->getWhereClauseList();
+        if ($this->hasWhereClauses()) {
+            $entity->setProperty('*where', $inspector($this->getWhereClauseList()));
         }
 
-        if(!empty($this->_order)) {
+        if (!empty($this->_order)) {
             $order = [];
 
-            foreach($this->_order as $directive) {
+            foreach ($this->_order as $directive) {
                 $order[] = $directive->toString();
             }
 
-            $output['order'] = implode(', ', $order);
+            $entity->setProperty('*order', $inspector(implode(', ', $order)));
         }
 
-        if($this->_limit !== null) {
-            $output['limit'] = $this->_limit;
+        if ($this->_limit !== null) {
+            $entity->setProperty('*limit', $inspector($this->_limit));
         }
-
-        return $output;
     }
 }

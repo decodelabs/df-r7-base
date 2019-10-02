@@ -10,118 +10,160 @@ use df\core;
 use df\iris;
 use df\flex;
 
-// Exceptions
-interface IException {}
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
 
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+// Exceptions
+interface IException
+{
+}
+
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
 
 class UnexpectedValueException extends \UnexpectedValueException implements
     ILocationProvider,
     IException,
-    core\IDumpable {
-
+    Inspectable
+{
     protected $_location;
 
-    public function __construct($message, ILocation $location=null) {
+    public function __construct($message, ILocation $location=null)
+    {
         parent::__construct($message);
 
-        if($location) {
+        if ($location) {
             $this->_location = clone $location;
         }
     }
 
-    public function getLocation() {
+    public function getLocation()
+    {
         return $this->_location;
     }
 
-    public function getDumpProperties() {
-        return $this->_location;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setValues([$inspector($this->_location)])
+            ->setShowKeys(false);
     }
 }
 
-class UnexpectedCharacterException extends UnexpectedValueException {}
+class UnexpectedCharacterException extends UnexpectedValueException
+{
+}
 
 class UnexpectedTokenException extends \UnexpectedValueException implements
     ILocationProvider,
     IException,
-    core\IDumpable {
-
+    Inspectable
+{
     protected $_token;
 
-    public function __construct($message, IToken $token=null) {
+    public function __construct($message, IToken $token=null)
+    {
         parent::__construct($message);
 
-        if($token) {
+        if ($token) {
             $this->_token = clone $token;
         }
     }
 
-    public function getToken() {
+    public function getToken()
+    {
         return $this->_token;
     }
 
-    public function getLocation() {
-        if($this->_token) {
+    public function getLocation()
+    {
+        if ($this->_token) {
             return $this->_token->getLocation();
         }
     }
 
-    public function getDumpProperties() {
-        return $this->_token;
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setValues([$inspector($this->_token)])
+            ->setShowKeys(false);
     }
 }
 
 
 // Interfaces
-interface ISourceUri extends core\uri\IUrl {}
+interface ISourceUri extends core\uri\IUrl
+{
+}
 
-interface ISourceUriAware {
+interface ISourceUriAware
+{
     public function getSourceUri();
 }
 
-interface ISourceUriProvider {
+interface ISourceUriProvider
+{
     public function setSourceUri($uri);
 }
 
-trait TSourceUriProvider {
-
+trait TSourceUriProvider
+{
     protected $_sourceUri;
 
-    public function setSourceUri($uri) {
+    public function setSourceUri($uri)
+    {
         $this->_sourceUri = SourceUri::factory($uri);
         return $this;
     }
 
-    public function getSourceUri() {
+    public function getSourceUri()
+    {
         return $this->_sourceUri;
     }
 }
 
-interface ISource extends ISourceUriAware, flex\IEncodingAware {
+interface ISource extends ISourceUriAware, flex\IEncodingAware
+{
     public function substring($start, $length=1);
 }
 
-interface ILocationProxy {
+interface ILocationProxy
+{
     public function getLine(): ?int;
     public function getColumn();
 }
 
-interface ILocationProvider {
+interface ILocationProvider
+{
     public function getLocation();
 }
 
-interface ILocationProxyProvider extends ILocationProxy, ILocationProvider, ISourceUriAware {}
+interface ILocationProxyProvider extends ILocationProxy, ILocationProvider, ISourceUriAware
+{
+}
 
-trait TLocationProvider {
-
-    public function getLocation() {
+trait TLocationProvider
+{
+    public function getLocation()
+    {
         return new Location($this->getSourceUri(), $this->getLine(), $this->getColumn());
     }
 }
 
-interface ILocation extends ILocationProxy, ILocationProvider, ISourceUriProvider {
+interface ILocation extends ILocationProxy, ILocationProvider, ISourceUriProvider
+{
     public function setLine($line);
     public function advanceLine($count=1);
     public function setColumn($column);
@@ -129,41 +171,48 @@ interface ILocation extends ILocationProxy, ILocationProvider, ISourceUriProvide
 }
 
 
-trait TLocation {
-
+trait TLocation
+{
     protected $_line = 1;
     protected $_column = 1;
 
-    public function setLine($line) {
+    public function setLine($line)
+    {
         $this->_line = (int)$line;
         return $this;
     }
 
-    public function getLine(): ?int {
+    public function getLine(): ?int
+    {
         return $this->_line;
     }
 
-    public function advanceLine($count=1) {
+    public function advanceLine($count=1)
+    {
         $this->_line += (int)$count;
         return $this;
     }
 
-    public function setColumn($column) {
+    public function setColumn($column)
+    {
         $this->_column = (int)$column;
         return $this;
     }
 
-    public function getColumn() {
+    public function getColumn()
+    {
         return $this->_column;
     }
 
-    public function advanceColumn($count=1) {
+    public function advanceColumn($count=1)
+    {
         $this->_column += (int)$count;
         return $this;
     }
 }
 
-interface IScanner {
+interface IScanner
+{
     public function getName(): string;
     public function getWeight();
     public function initialize(ILexer $lexer);
@@ -171,7 +220,8 @@ interface IScanner {
     public function run(ILexer $lexer);
 }
 
-interface ILexer extends ILocationProxyProvider {
+interface ILexer extends ILocationProxyProvider
+{
     public function getSource();
 
     public function setScanners(array $scanners);
@@ -203,7 +253,8 @@ interface ILexer extends ILocationProxyProvider {
 }
 
 
-interface IToken extends ILocationProxyProvider {
+interface IToken extends ILocationProxyProvider
+{
     public function getType();
     public function getSubType();
     public function getTypeString();
@@ -226,7 +277,8 @@ interface IToken extends ILocationProxyProvider {
 
 
 
-interface IParser {
+interface IParser
+{
     public function getSourceUri();
     public function getLexer();
     public function getUnit();
@@ -265,12 +317,14 @@ interface IParser {
 }
 
 
-interface IProcessor {
+interface IProcessor
+{
     public function getName(): string;
     public function initialize(IParser $parser);
 }
 
 
-interface ITranslator {
+interface ITranslator
+{
     public function translate();
 }
