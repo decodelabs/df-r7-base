@@ -228,11 +228,9 @@ trait TStructure_Container
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setSectionVisible('meta', true);
-
-        foreach ($this->_attributes as $key => $value) {
-            $entity->setMeta($key, $inspector($value));
-        }
+        $entity
+            ->setSectionVisible('meta', true)
+            ->setMetaList($inspector->inspectList($this->_attributes));
 
         if ($this->_title) {
             $entity->setProperty('*title', $inspector($this->_title));

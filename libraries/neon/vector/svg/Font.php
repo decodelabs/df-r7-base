@@ -112,11 +112,9 @@ class Font implements IFont, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setSectionVisible('meta', true);
-
-        foreach ($this->_attributes as $key => $value) {
-            $entity->setMeta($key, $inspector($value));
-        }
+        $entity
+            ->setSectionVisible('meta', true)
+            ->setMetaList($inspector->inspectList($this->_attributes));
 
         if ($this->_fontFace) {
             $entity->setProperty('*font-face', $inspector($this->_fontFace));
@@ -561,11 +559,9 @@ class Font_Face implements IFontFace, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setSectionVisible('meta', true);
-
-        foreach ($this->_attributes as $key => $value) {
-            $entity->setMeta($key, $inspector($value));
-        }
+        $entity
+            ->setSectionVisible('meta', true)
+            ->setMetaList($inspector->inspectList($this->_attributes));
 
         if (!empty($this->_sources)) {
             $entity->setProperty('*sources', $inspector($this->_sources));
@@ -664,11 +660,9 @@ class Font_FaceSource implements IFontFaceSource, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setSectionVisible('meta', true);
-
-        foreach ($this->_attributes as $key => $value) {
-            $entity->setMeta($key, $inspector($value));
-        }
+        $entity
+            ->setSectionVisible('meta', true)
+            ->setMetaList($inspector->inspectList($this->_attributes));
 
         if ($this->_uri) {
             $entity->setProperty('*uri', $inspector($this->_uri));
@@ -742,11 +736,9 @@ class Font_FaceUri implements IFontFaceUri, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setSectionVisible('meta', true);
-
-        foreach ($this->_attributes as $key => $value) {
-            $entity->setMeta($key, $inspector($value));
-        }
+        $entity
+            ->setSectionVisible('meta', true)
+            ->setMetaList($inspector->inspectList($this->_attributes));
 
         if ($this->_format) {
             $entity->setProperty('*format', $inspector($this->_format));
@@ -794,11 +786,9 @@ class Font_FaceFormat implements IFontFaceFormat, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setSectionVisible('meta', true);
-
-        foreach ($this->_attributes as $key => $value) {
-            $entity->setMeta($key, $inspector($value));
-        }
+        $entity
+            ->setSectionVisible('meta', true)
+            ->setMetaList($inspector->inspectList($this->_attributes));
     }
 }
 
@@ -839,11 +829,9 @@ class Font_FaceName implements IFontFaceName, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setSectionVisible('meta', true);
-
-        foreach ($this->_attributes as $key => $value) {
-            $entity->setMeta($key, $inspector($value));
-        }
+        $entity
+            ->setSectionVisible('meta', true)
+            ->setMetaList($inspector->inspectList($this->_attributes));
     }
 }
 
@@ -972,10 +960,8 @@ class Font_Glyph implements IFontGlyph, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setSectionVisible('meta', true);
-
-        foreach ($this->_attributes as $key => $value) {
-            $entity->setMeta($key, $inspector($value));
-        }
+        $entity
+            ->setSectionVisible('meta', true)
+            ->setMetaList($inspector->inspectList($this->_attributes));
     }
 }

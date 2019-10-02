@@ -290,11 +290,9 @@ class ContentPart implements IContentPart, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setSectionVisible('meta', true);
-
-        foreach ($this->_headers as $key => $header) {
-            $entity->setMeta($key, $inspector($header));
-        }
+        $entity
+            ->setSectionVisible('meta', true)
+            ->setMetaList($inspector->inspectList($this->_headers));
 
         if ($type = $this->_headers->getBase('content-type')) {
             $parts = explode('/', $type);

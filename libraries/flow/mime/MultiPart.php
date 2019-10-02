@@ -298,12 +298,9 @@ class MultiPart implements IMultiPart, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setSectionVisible('meta', true);
-
-        foreach ($this->_headers as $key => $header) {
-            $entity->setMeta($key, $inspector($header));
-        }
-
-        $entity->setValues($inspector->inspectList($this->_parts));
+        $entity
+            ->setSectionVisible('meta', true)
+            ->setMetaList($inspector->inspectList($this->_headers))
+            ->setValues($inspector->inspectList($this->_parts));
     }
 }
