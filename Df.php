@@ -104,7 +104,8 @@ class Launchpad
         // Glitch
         Glitch::setStartTime($startTime)
             ->registerPathAliases([
-                'vendor' => $appPath.'/vendor'
+                'vendor' => $appPath.'/vendor',
+                'root' => dirname(self::$rootPath)
             ])
             ->registerAsErrorHandler();
 
