@@ -15,11 +15,11 @@
         "symfony/polyfill-mbstring": "~1.7",
 
         "decodelabs/glitch": "<2",
-        "decodelabs/veneer": "~0.4",
-        "decodelabs/systemic": "~0.5",
-        "decodelabs/tagged": "~0.6",
-        "decodelabs/collections": "~0.5",
-        "decodelabs/gadgets": "~0.5",
+        "decodelabs/veneer": "dev-develop",
+        "decodelabs/systemic": "dev-develop",
+        "decodelabs/tagged": "dev-develop",
+        "decodelabs/collections": "dev-develop",
+        "decodelabs/gadgets": "dev-develop",
 
         "erusev/parsedown": "^1.7"
     },
