@@ -246,7 +246,6 @@ trait TElementContent
             $output = (string)$value;
         }
 
-
         if (!$value instanceof IElementRepresentation &&
             !$value instanceof Markup) {
             $output = $this->esc($output);
