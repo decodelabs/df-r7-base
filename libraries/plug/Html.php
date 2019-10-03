@@ -13,6 +13,7 @@ use df\flex;
 use df\spur;
 use df\flow;
 
+use DecodeLabs\Tagged\Html as Tagged;
 use DecodeLabs\Chirp\Parser as Chirp;
 
 class Html implements arch\IDirectoryHelper
@@ -979,25 +980,11 @@ class Html implements arch\IDirectoryHelper
     // Media
     public function videoEmbed($embed, $width=null, $height=null)
     {
-        $embed = trim($embed);
-
-        if (!empty($embed)) {
-            return spur\video\Embed::parse($embed)
-                ->setDimensions($width, $height);
-        } else {
-            return '';
-        }
+        return Tagged::$embed->video($embed, $width, $height);
     }
 
     public function audioEmbed($embed, $width=null, $height=null)
     {
-        $embed = trim($embed);
-
-        if (!empty($embed)) {
-            return spur\audio\Embed::parse($embed)
-                ->setDimensions($width, $height);
-        } else {
-            return '';
-        }
+        return Tagged::$embed->audio($embed, $width, $height);
     }
 }
