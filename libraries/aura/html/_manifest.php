@@ -10,6 +10,10 @@ use df\core;
 use df\aura;
 use df\flex;
 
+use DecodeLabs\Tagged\Markup;
+use DecodeLabs\Tagged\Builder\Tag as TagInterface;
+use DecodeLabs\Tagged\Builder\Html\Tag;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -166,7 +170,7 @@ trait TElementContent
             || $value instanceof aura\html\widget\IWidgetProxy) {
                 $isBlock = $value->isTagBlock();
                 $stringValue = trim($stringValue);
-            } elseif ($value instanceof ITag) {
+            } elseif ($value instanceof ITag || $value instanceof TagInterface) {
                 $isBlock = $value->isBlock();
             } elseif (preg_match('/\<\/?([a-zA-Z0-9]+)( |\>)/i', $stringValue, $matches)) {
                 $isBlock = !Tag::isInlineTagName($matches[1]);
@@ -243,7 +247,8 @@ trait TElementContent
         }
 
 
-        if (!$value instanceof IElementRepresentation) {
+        if (!$value instanceof IElementRepresentation &&
+            !$value instanceof Markup) {
             $output = $this->esc($output);
         }
 
