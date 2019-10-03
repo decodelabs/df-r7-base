@@ -74,7 +74,11 @@ class SQLError extends RuntimeException implements Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity->setText($this->_sql);
+        if (is_string($this->_sql)) {
+            $entity->setText($this->_sql);
+        } else {
+            $entity->setSingleValue($inspector($this->_sql));
+        }
     }
 }
 
@@ -117,12 +121,16 @@ class TableQueryException extends QueryException
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        $entity
-            ->setText($this->_sql)
-            ->setProperties([
-                '*database' => $inspector($this->database),
-                '*table' => $inspector($this->table)
-            ]);
+        if (is_string($this->_sql)) {
+            $entity->setText($this->_sql);
+        } else {
+            $entity->setSingleValue($inspector($this->_sql));
+        }
+
+        $entity->setProperties([
+            '*database' => $inspector($this->database),
+            '*table' => $inspector($this->table)
+        ]);
     }
 }
 
