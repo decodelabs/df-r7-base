@@ -11,11 +11,12 @@ use df\flow;
 use df\halo;
 use df\link;
 
-class Config extends core\Config {
-
+class Config extends core\Config
+{
     const ID = 'mail';
 
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         return [
             'defaultTransport' => 'Mail',
             'defaultAddress' => $this->_getDefaultAdminAddress(),
@@ -34,9 +35,10 @@ class Config extends core\Config {
     }
 
 
-// Transport
-    public function setDefaultTransport($name) {
-        if(!flow\mail\transport\Base::isValidTransport($name)) {
+    // Transport
+    public function setDefaultTransport($name)
+    {
+        if (!flow\mail\transport\Base::isValidTransport($name)) {
             throw new InvalidArgumentException(
                 'Transport '.$name.' is not available'
             );
@@ -46,24 +48,28 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getDefaultTransport() {
+    public function getDefaultTransport()
+    {
         return $this->values->get('defaultTransport', 'Mail');
     }
 
-    public function getDefaultTransportSettings($checkName=null) {
+    public function getDefaultTransportSettings($checkName=null)
+    {
         return $this->values->transports->{$this->getDefaultTransport()};
     }
 
-    public function getTransportSettings($name) {
+    public function getTransportSettings($name)
+    {
         return $this->values->transports->{$name};
     }
 
 
-// Default addresses
-    public function setDefaultAddress($address, $name=null) {
+    // Default addresses
+    public function setDefaultAddress($address, $name=null)
+    {
         $address = Address::factory($address, $name);
 
-        if(!$address->isValid()) {
+        if (!$address->isValid()) {
             throw new InvalidArgumentException(
                 'Email address '.(string)$address.' is invalid'
             );
@@ -73,20 +79,22 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getDefaultAddress() {
+    public function getDefaultAddress()
+    {
         $output = $this->values->get('defaultAddress');
 
-        if($output === null) {
+        if ($output === null) {
             $output = $this->_getDefaultAdminAddress();
         }
 
         return $output;
     }
 
-    public function setDefaultReturnPath($address) {
+    public function setDefaultReturnPath($address)
+    {
         $address = Address::factory($address);
 
-        if(!$address->isValid()) {
+        if (!$address->isValid()) {
             throw new InvalidArgumentException(
                 'Return path '.(string)$address.' is invalid'
             );
@@ -96,19 +104,21 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getDefaultReturnPath() {
+    public function getDefaultReturnPath()
+    {
         return $this->values['defaultReturnPath'];
     }
 
 
-// Admin addresses
-    public function setAdminAddresses(array $addresses) {
+    // Admin addresses
+    public function setAdminAddresses(array $addresses)
+    {
         $values = [];
 
-        foreach($addresses as $i => $address) {
+        foreach ($addresses as $i => $address) {
             $address = Address::factory($address);
 
-            if($address->isValid()) {
+            if ($address->isValid()) {
                 $values[] = (string)$address;
             }
         }
@@ -117,25 +127,27 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getAdminAddresses() {
+    public function getAdminAddresses()
+    {
         $output = [];
 
-        foreach($this->values->adminAddresses as $address) {
+        foreach ($this->values->adminAddresses as $address) {
             $output[] = Address::factory($address->getValue());
         }
 
-        if(empty($output)) {
+        if (empty($output)) {
             $output[] = Address::factory($this->getDefaultAddress());
         }
 
         return $output;
     }
 
-    protected function _getDefaultAdminAddress() {
-        $name = halo\system\Base::getInstance()->getProcess()->getOwnerName();
+    protected function _getDefaultAdminAddress()
+    {
+        $name = Systemic::$process->getCurrent()->getOwnerName();
         $rootUrl = core\app\runner\http\Config::getInstance()->getRootUrl();
 
-        if($rootUrl) {
+        if ($rootUrl) {
             $domain = (new link\http\Url($rootUrl))->getDomain();
         } else {
             $domain = gethostname();
@@ -145,14 +157,15 @@ class Config extends core\Config {
     }
 
 
-// Dev addresses
-    public function setDevAddresses(array $addresses) {
+    // Dev addresses
+    public function setDevAddresses(array $addresses)
+    {
         $values = [];
 
-        foreach($addresses as $i => $address) {
+        foreach ($addresses as $i => $address) {
             $address = Address::factory($address);
 
-            if($address->isValid()) {
+            if ($address->isValid()) {
                 $values[] = (string)$address;
             }
         }
@@ -161,14 +174,15 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getDevAddresses() {
+    public function getDevAddresses()
+    {
         $output = [];
 
-        foreach($this->values->devAddresses as $address) {
+        foreach ($this->values->devAddresses as $address) {
             $output[] = Address::factory($address->getValue());
         }
 
-        if(empty($output)) {
+        if (empty($output)) {
             $output[] = Address::factory($this->getDefaultAddress());
         }
 
@@ -176,14 +190,15 @@ class Config extends core\Config {
     }
 
 
-// Capture
-    public function shouldCaptureInTesting(bool $flag=null) {
-        if($flag !== null) {
+    // Capture
+    public function shouldCaptureInTesting(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->values->captureInTesting = $flag;
             return $this;
         }
 
-        if(!isset($this->values['captureInTesting'])) {
+        if (!isset($this->values['captureInTesting'])) {
             $this->values->captureInTesting = true;
             $this->save();
         }
@@ -192,12 +207,13 @@ class Config extends core\Config {
     }
 
 
-// Lists
-    public function getListSources() {
+    // Lists
+    public function getListSources()
+    {
         $output = [];
 
-        foreach($this->values->listSources as $key => $node) {
-            if(substr($key, 0, 1) == '!') {
+        foreach ($this->values->listSources as $key => $node) {
+            if (substr($key, 0, 1) == '!') {
                 continue;
             }
 
@@ -207,7 +223,8 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function getListSource($id) {
+    public function getListSource($id)
+    {
         return clone $this->values->listSources->{$id};
     }
 }

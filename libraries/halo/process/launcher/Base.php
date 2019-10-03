@@ -23,11 +23,10 @@ abstract class Base implements halo\process\ILauncher
 
     public static function factory($processName, $args=null, $path=null)
     {
-        $system = halo\system\Base::getInstance();
-        $class = 'df\\halo\\process\\launcher\\'.$system->getOSName();
+        $class = 'df\\halo\\process\\launcher\\'.Systemic::$os->getName();
 
         if (!class_exists($class)) {
-            $class = 'df\\halo\\process\\launcher\\'.$system->getPlatformType();
+            $class = 'df\\halo\\process\\launcher\\'.Systemic::$os->getPlatformType();
 
             if (!class_exists($class)) {
                 throw new halo\process\RuntimeException(

@@ -23,7 +23,7 @@ class TaskGenerateEntry extends arch\node\Task
         $envId = df\Launchpad::$app->envId;
 
         if ($phpPath == 'php') {
-            $phpPath = halo\system\Base::getInstance()->which('php');
+            $phpPath = Systemic::$os->which('php');
         }
 
 

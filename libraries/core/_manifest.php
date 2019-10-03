@@ -565,7 +565,6 @@ interface IContext extends core\IHelperProvider, core\ITranslator
     public function getLogManager();
     public function getI18nManager();
     public function getMeshManager();
-    public function getSystemInfo();
     public function getUserManager();
     public function getTaskManager();
 }
@@ -628,11 +627,6 @@ trait TContext
         return df\mesh\Manager::getInstance();
     }
 
-    public function getSystemInfo()
-    {
-        return df\halo\system\Base::getInstance();
-    }
-
     public function getUserManager()
     {
         return df\user\Manager::getInstance();
@@ -667,9 +661,6 @@ trait TContext
 
             case 'mesh':
                 return df\mesh\Manager::getInstance();
-
-            case 'system':
-                return df\halo\system\Base::getInstance();
 
             case 'user':
                 return df\user\Manager::getInstance();

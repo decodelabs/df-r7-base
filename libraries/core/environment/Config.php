@@ -10,13 +10,14 @@ use df\core;
 use df\arch;
 use df\halo;
 
-class Config extends core\Config {
-
+class Config extends core\Config
+{
     const ID = 'environment';
     const STORE_IN_MEMORY = true;
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
 
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         return [
             'mode' => 'development',
             'binaryPaths' => [],
@@ -29,38 +30,45 @@ class Config extends core\Config {
         ];
     }
 
-    protected function _sanitizeValuesOnCreate() {
+    protected function _sanitizeValuesOnCreate()
+    {
         try {
             arch\node\task\Manager::getInstance()->invoke('git/init-gitignore');
-        } catch(\Throwable $e) {}
+        } catch (\Throwable $e) {
+        }
     }
 
 
-// Mode
-    public function setMode($mode) {
+    // Mode
+    public function setMode($mode)
+    {
         $this->values->mode = Mode::normalize($mode);
         return $this;
     }
 
-    public function getMode() {
+    public function getMode()
+    {
         return $this->values->get('mode', 'testing');
     }
 
 
 
-// Vendor binary paths
-    public function setBinaryPath($id, $path) {
+    // Vendor binary paths
+    public function setBinaryPath($id, $path)
+    {
         $this->values->binaryPaths->{$id} = $path;
         return $this;
     }
 
-    public function getBinaryPath($id) {
+    public function getBinaryPath($id)
+    {
         return $this->values->binaryPaths->get($id, $id);
     }
 
-// Load balancing
-    public function isDistributed(bool $flag=null) {
-        if($flag !== null) {
+    // Load balancing
+    public function isDistributed(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->values->distributed = $flag;
             return $this;
         }
@@ -68,9 +76,10 @@ class Config extends core\Config {
         return (bool)$this->values['distributed'];
     }
 
-// Locations
-    public function getActiveLocations() {
-        if(!isset($this->values->activeLocations)) {
+    // Locations
+    public function getActiveLocations()
+    {
+        if (!isset($this->values->activeLocations)) {
             return [];
         }
 
@@ -78,9 +87,10 @@ class Config extends core\Config {
     }
 
 
-// Maintenance
-    public function isMaintenanceMode(bool $flag=null) {
-        if($flag !== null) {
+    // Maintenance
+    public function isMaintenanceMode(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->values->maintenanceMode = $flag;
             return $this;
         }
@@ -90,9 +100,10 @@ class Config extends core\Config {
 
 
 
-// Daemons
-    public function canUseDaemons(bool $flag=null) {
-        if($flag !== null) {
+    // Daemons
+    public function canUseDaemons(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->values->daemonsEnabled = $flag;
             return $this;
         }
@@ -100,13 +111,13 @@ class Config extends core\Config {
         return (bool)$this->values['daemonsEnabled'];
     }
 
-    public function setDaemonUser($user) {
-        if(is_numeric($user)) {
-            $system = halo\system\Base::getInstance();
-            $user = $system->userIdToUserName($user);
+    public function setDaemonUser($user)
+    {
+        if (is_numeric($user)) {
+            $user = Systemic::$os->userIdToUserName($user);
         }
 
-        if(empty($user)) {
+        if (empty($user)) {
             throw core\Error::EArgument(
                 'Invalid username detected'
             );
@@ -116,23 +127,24 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getDaemonUser() {
+    public function getDaemonUser()
+    {
         $output = null;
         $save = false;
 
-        if(!isset($this->values['daemonUser'])) {
+        if (!isset($this->values['daemonUser'])) {
             $output = $this->_extrapolateDaemonUser();
             $save = true;
         } else {
             $output = $this->values['daemonUser'];
         }
 
-        if(empty($output)) {
+        if (empty($output)) {
             $output = $this->_extrapolateDaemonUser();
             $save = true;
         }
 
-        if($save && !empty($output)) {
+        if ($save && !empty($output)) {
             $this->setDaemonUser($output);
             $this->save();
         }
@@ -140,18 +152,19 @@ class Config extends core\Config {
         return $output;
     }
 
-    protected function _extrapolateDaemonUser() {
+    protected function _extrapolateDaemonUser()
+    {
         $process = halo\process\Base::getCurrent();
         return $process->getOwnerName();
     }
 
-    public function setDaemonGroup($group) {
-        if(is_numeric($group)) {
-            $system = halo\system\Base::getInstance();
-            $group = $system->groupIdToGroupName($group);
+    public function setDaemonGroup($group)
+    {
+        if (is_numeric($group)) {
+            $group = Systemic::$os->groupIdToGroupName($group);
         }
 
-        if(empty($group)) {
+        if (empty($group)) {
             throw core\Error::EArgument(
                 'Invalid group name detected'
             );
@@ -161,23 +174,24 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getDaemonGroup() {
+    public function getDaemonGroup()
+    {
         $output = null;
         $save = false;
 
-        if(!isset($this->values['daemonGroup'])) {
+        if (!isset($this->values['daemonGroup'])) {
             $output = $this->_extrapolateDaemonGroup();
             $save = true;
         } else {
             $output = $this->values['daemonGroup'];
         }
 
-        if(empty($output)) {
+        if (empty($output)) {
             $output = $this->_extrapolateDaemonGroup();
             $save = true;
         }
 
-        if($save && !empty($output)) {
+        if ($save && !empty($output)) {
             $this->setDaemonGroup($output);
             $this->save();
         }
@@ -185,7 +199,8 @@ class Config extends core\Config {
         return $output;
     }
 
-    protected function _extrapolateDaemonGroup() {
+    protected function _extrapolateDaemonGroup()
+    {
         $process = halo\process\Base::getCurrent();
         return $process->getGroupName();
     }

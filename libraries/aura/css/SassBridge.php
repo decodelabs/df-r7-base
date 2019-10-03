@@ -242,10 +242,10 @@ class SassBridge implements ISassBridge
             $options = self::DEFAULT_PROCESSOR_OPTIONS;
         }
 
-        $path = halo\system\Base::getInstance()->which('sassc');
+        $path = Systemic::$os->which('sassc');
 
         if (!$path || $path == 'sassc') {
-            $path = halo\system\Base::getInstance()->which('sass');
+            $path = Systemic::$os->which('sass');
 
             if (!$path || $path == 'sass') {
                 $path = core\environment\Config::getInstance()->getBinaryPath('sass');

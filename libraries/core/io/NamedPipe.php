@@ -42,7 +42,7 @@ class NamedPipe extends Stream
         }
 
         if (self::$_isWin === null) {
-            self::$_isWin = halo\system\Base::getInstance()->getPlatformType() == 'Windows';
+            self::$_isWin = Systemic::$os->getPlatformType() == 'Windows';
         }
 
         if (self::$_isWin) {

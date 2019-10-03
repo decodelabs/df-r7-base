@@ -79,11 +79,11 @@ class UnixManaged extends Unix implements IManagedProcess
     public function setIdentity($uid, $gid)
     {
         if (!is_numeric($uid)) {
-            $uid = halo\system\Base::getInstance()->userNameToUserId($uid);
+            $uid = Systemic::$os->userNameToUserId($uid);
         }
 
         if (!is_numeric($gid)) {
-            $gid = halo\system\Base::getInstance()->groupNameToGroupId($gid);
+            $gid = Systemic::$os->groupNameToGroupId($gid);
         }
 
         if (!extension_loaded('posix')) {
@@ -166,7 +166,7 @@ class UnixManaged extends Unix implements IManagedProcess
 
     public function setOwnerName($name)
     {
-        return $this->setOwnerId(halo\system\Base::getInstance()->userNameToUserId($name));
+        return $this->setOwnerId(Systemic::$os->userNameToUserId($name));
     }
 
     public function getOwnerName()
@@ -236,7 +236,7 @@ class UnixManaged extends Unix implements IManagedProcess
 
     public function setGroupName($name)
     {
-        return $this->setGroupId(halo\system\Base::getInstance()->groupNameToGroupId($name));
+        return $this->setGroupId(Systemic::$os->groupNameToGroupId($name));
     }
 
     public function getGroupName()

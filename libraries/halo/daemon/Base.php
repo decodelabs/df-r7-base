@@ -10,8 +10,8 @@ use df\core;
 use df\halo;
 use df\flex;
 
-abstract class Base implements IDaemon {
-
+abstract class Base implements IDaemon
+{
     use halo\event\TDispatcherProvider;
     use core\TContextProxy;
 
@@ -38,8 +38,9 @@ abstract class Base implements IDaemon {
     protected $_user;
     protected $_group;
 
-    public static function launch($name, $user=null) {
-        if($user === null) {
+    public static function launch($name, $user=null)
+    {
+        if ($user === null) {
             $user = core\environment\Config::getInstance()->getDaemonUser();
         }
 
@@ -49,11 +50,12 @@ abstract class Base implements IDaemon {
         return halo\process\Base::launchScript($path, ['daemon', $name], $user);
     }
 
-    public static function loadAll() {
-        foreach(df\Launchpad::$loader->lookupClassList('apex/daemons') as $name => $class) {
+    public static function loadAll()
+    {
+        foreach (df\Launchpad::$loader->lookupClassList('apex/daemons') as $name => $class) {
             try {
                 $daemon = self::factory($name);
-            } catch(InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 continue;
             }
 
@@ -64,13 +66,14 @@ abstract class Base implements IDaemon {
         return $output;
     }
 
-    public static function factory($name) {
+    public static function factory($name)
+    {
         $parts = explode('/', $name);
         $top = ucfirst(array_pop($parts));
         $parts[] = $top;
         $class = 'df\\apex\\daemons\\'.implode('\\', $parts);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new RuntimeException(
                 'Daemon '.$name.' could not be found'
             );
@@ -79,33 +82,40 @@ abstract class Base implements IDaemon {
         return new $class();
     }
 
-    protected function __construct() {}
+    protected function __construct()
+    {
+    }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         $parts = array_slice(explode('\\', get_class($this)), 3);
         return implode('/', $parts);
     }
 
-    public function setUser($user) {
+    public function setUser($user)
+    {
         $this->_user = $user;
         return $this;
     }
 
-    public function getUser() {
-        if(!$this->_user) {
+    public function getUser()
+    {
+        if (!$this->_user) {
             $this->_user = core\environment\Config::getInstance()->getDaemonUser();
         }
 
         return $this->_user;
     }
 
-    public function setGroup($group) {
+    public function setGroup($group)
+    {
         $this->_group = $group;
         return $this;
     }
 
-    public function getGroup() {
-        if(!$this->_group) {
+    public function getGroup()
+    {
+        if (!$this->_group) {
             $this->_group = core\environment\Config::getInstance()->getDaemonGroup();
         }
 
@@ -113,9 +123,10 @@ abstract class Base implements IDaemon {
     }
 
 
-// Runtime
-    final public function run() {
-        if($this->_isRunning || $this->_isStopping || $this->_isStopped) {
+    // Runtime
+    final public function run()
+    {
+        if ($this->_isRunning || $this->_isStopping || $this->_isStopped) {
             throw new LogicException(
                 'Daemon '.$this->getName().' has already been run'
             );
@@ -131,30 +142,29 @@ abstract class Base implements IDaemon {
         $this->_startTime = time();
         $this->_statusPath = $basePath.'.status';
 
-        if(!df\Launchpad::$app->isProduction()) {
+        if (!df\Launchpad::$app->isProduction()) {
             $this->_endTime = core\time\Date::factory('+'.self::DEV_RUN_TIME)->toTimestamp();
         }
 
 
         $this->io = new core\io\Multiplexer(null, $this->getName());
 
-        if(static::TEST_MODE) {
+        if (static::TEST_MODE) {
             $this->io->addChannel(new core\io\Std());
         }
 
         $this->io->addChannel(new core\io\Stream(fopen($basePath.'.log', 'w')));
 
-        $system = halo\system\Base::getInstance();
         $isPrivileged = $this->process->isPrivileged();
 
-        if(!$isPrivileged && static::REQUIRES_PRIVILEGED_PROCESS) {
+        if (!$isPrivileged && static::REQUIRES_PRIVILEGED_PROCESS) {
             throw new RuntimeException(
                 'Daemon '.$this->getName().' must be running from a privileged process'
             );
         }
 
-        if(!static::TEST_MODE && $this->process->canFork()) {
-            if($this->process->fork()) {
+        if (!static::TEST_MODE && $this->process->canFork()) {
+            if ($this->process->fork()) {
                 return true;
             } else {
                 $this->_isForked = true;
@@ -166,10 +176,10 @@ abstract class Base implements IDaemon {
 
         $pidPath = $this->getPidFilePath();
 
-        if($pidPath) {
+        if ($pidPath) {
             try {
                 $this->process->setPidFilePath($pidPath);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $this->io->writeErrorLine($e->getMessage());
                 return;
             }
@@ -178,11 +188,11 @@ abstract class Base implements IDaemon {
         $user = $this->getUser();
         $group = $this->getGroup();
 
-        if($isPrivileged) {
+        if ($isPrivileged) {
             $this->_preparePrivilegedResources();
             $this->process->setIdentity($user, $group);
         } else {
-            if($user != $this->process->getOwnerName()) {
+            if ($user != $this->process->getOwnerName()) {
                 $this->io->writeErrorLine('You are trying to run this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
                 return;
             }
@@ -196,21 +206,21 @@ abstract class Base implements IDaemon {
         $this->_setupDefaultEvents($this->events);
         $pauseEvents = $this->_setupDefaultEvents(new halo\event\Select(), true);
 
-        while(true) {
-            if($this->_isStopping) {
+        while (true) {
+            if ($this->_isStopping) {
                 break;
             }
 
-            if(static::REPORT_STATUS) {
+            if (static::REPORT_STATUS) {
                 $this->_reportStatus();
             }
 
-            if($this->_isPaused) {
+            if ($this->_isPaused) {
                 $pauseEvents->listen();
             } else {
                 $this->events->listen();
 
-                if(!$this->_isPaused) {
+                if (!$this->_isPaused) {
                     break;
                 }
             }
@@ -219,23 +229,24 @@ abstract class Base implements IDaemon {
         $this->_isStopped = true;
         $this->_teardown();
 
-        if($pidPath) {
+        if ($pidPath) {
             core\fs\File::delete($pidPath);
         }
 
-        if(static::REPORT_STATUS) {
+        if (static::REPORT_STATUS) {
             core\fs\File::delete($this->_statusPath);
         }
 
-        if($this->_isRestarting) {
+        if ($this->_isRestarting) {
             self::launch($this->getName());
         }
     }
 
-    protected function _setupDefaultEvents(halo\event\IDispatcher $dispatcher, $pauseEvents=false) {
+    protected function _setupDefaultEvents(halo\event\IDispatcher $dispatcher, $pauseEvents=false)
+    {
         $dispatcher
-            ->setCycleHandler(function() use($pauseEvents) {
-                if(!$this->_isRunning
+            ->setCycleHandler(function () use ($pauseEvents) {
+                if (!$this->_isRunning
                 || ($pauseEvents && !$this->_isPaused)
                 || (!$pauseEvents && $this->_isPaused)
                 || $this->_isStopping
@@ -243,18 +254,19 @@ abstract class Base implements IDaemon {
                     return false;
                 }
 
-                if(($this->_endTime !== null) && (time() > $this->_endTime)) {
+                if (($this->_endTime !== null) && (time() > $this->_endTime)) {
                     $this->stop();
                 }
 
                 $this->onCycle();
             })
-            ->bindTimer('__housekeeping', 30, function() {
+            ->bindTimer('__housekeeping', 30, function () {
                 //clearstatcache();
                 gc_collect_cycles();
                 $this->_reportStatus();
             })
-            ->bindSignal('hangup', ['SIGHUP'], function() {})
+            ->bindSignal('hangup', ['SIGHUP'], function () {
+            })
             ->bindSignal('stop', ['SIGTERM', 'SIGINT'], [$this, 'stop'])
             ->bindSignal('pause', ['SIGTSTP'], [$this, 'pause'])
             ->bindSignal('resume', ['SIGCONT'], [$this, 'resume'])
@@ -264,19 +276,29 @@ abstract class Base implements IDaemon {
         return $dispatcher;
     }
 
-    public function getPidFilePath() {
+    public function getPidFilePath()
+    {
         return df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($this->getName()).'.pid';
     }
 
-    protected function _setup() {}
-    protected function _teardown() {}
+    protected function _setup()
+    {
+    }
+    protected function _teardown()
+    {
+    }
 
-    public function onCycle() {}
-    public function onTerminalInput($line) {}
+    public function onCycle()
+    {
+    }
+    public function onTerminalInput($line)
+    {
+    }
 
 
-    protected function _reportStatus() {
-        if(!static::REPORT_STATUS) {
+    protected function _reportStatus()
+    {
+        if (!static::REPORT_STATUS) {
             return;
         }
 
@@ -284,9 +306,9 @@ abstract class Base implements IDaemon {
 
         $state = 'running';
 
-        if($this->_isPaused) {
+        if ($this->_isPaused) {
             $state = 'paused';
-        } else if($this->_isStopping) {
+        } elseif ($this->_isStopping) {
             $state = 'stopping';
         }
 
@@ -300,21 +322,25 @@ abstract class Base implements IDaemon {
 
         $data = $this->_getStatusData();
 
-        if(is_array($data) && !empty($data)) {
+        if (is_array($data) && !empty($data)) {
             $status = array_merge($data, $status);
         }
 
         file_put_contents($this->_statusPath, flex\Json::toString($status));
     }
 
-    protected function _getStatusData() {}
+    protected function _getStatusData()
+    {
+    }
 
-    public function isRunning() {
+    public function isRunning()
+    {
         return $this->_isRunning;
     }
 
-    public function stop() {
-        if(!$this->_isRunning || $this->_isStopping || $this->_isStopped) {
+    public function stop()
+    {
+        if (!$this->_isRunning || $this->_isStopping || $this->_isStopped) {
             return $this;
         }
 
@@ -323,12 +349,14 @@ abstract class Base implements IDaemon {
         return $this;
     }
 
-    public function isStopped() {
+    public function isStopped()
+    {
         return $this->_isStopped;
     }
 
-    public function pause() {
-        if(!$this->_isRunning || $this->_isPaused || $this->_isStopping || $this->_isStopped) {
+    public function pause()
+    {
+        if (!$this->_isRunning || $this->_isPaused || $this->_isStopping || $this->_isStopped) {
             return $this;
         }
 
@@ -337,8 +365,9 @@ abstract class Base implements IDaemon {
         return $this;
     }
 
-    public function resume() {
-        if(!$this->_isRunning || !$this->_isPaused || $this->_isStopping || $this->_isStopped) {
+    public function resume()
+    {
+        if (!$this->_isRunning || !$this->_isPaused || $this->_isStopping || $this->_isStopped) {
             return $this;
         }
 
@@ -347,17 +376,21 @@ abstract class Base implements IDaemon {
         return $this;
     }
 
-    public function isPaused() {
+    public function isPaused()
+    {
         return $this->_isPaused;
     }
 
-    public function restart() {
+    public function restart()
+    {
         $this->stop();
         $this->_isRestarting = true;
         return $this;
     }
 
 
-// Stubs
-    protected function _preparePrivilegedResources() {}
+    // Stubs
+    protected function _preparePrivilegedResources()
+    {
+    }
 }
