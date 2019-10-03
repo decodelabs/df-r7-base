@@ -105,9 +105,10 @@ class Launchpad
         Glitch::setStartTime($startTime)
             ->registerPathAliases([
                 'vendor' => $appPath.'/vendor',
-                'root' => dirname(self::$rootPath)
+                'root' => self::$isCompiled ? self::$rootPath : dirname(self::$rootPath)
             ])
             ->registerAsErrorHandler();
+
 
         // Packages
         self::$loader->initRootPackages(self::$rootPath, $appPath);
