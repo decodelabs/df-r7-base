@@ -12,7 +12,6 @@ use df\flex;
 
 use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Tagged\Builder\Tag as TagInterface;
-use DecodeLabs\Tagged\Builder\Html\Tag;
 
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
