@@ -23,11 +23,6 @@
 
         "erusev/parsedown": "^1.7"
     },
-    "autoload": {
-        "psr-4": {
-            "df\\": "root/"
-        }
-    },
     "extra": {
         "branch-alias": {
             "dev-develop": "0.x-dev"
