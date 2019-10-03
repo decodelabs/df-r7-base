@@ -976,15 +976,4 @@ class Html implements arch\IDirectoryHelper
     {
         return $this->image($this->context->uri->themeAsset($path), $alt, $width, $height);
     }
-
-    // Media
-    public function videoEmbed($embed, $width=null, $height=null)
-    {
-        return Tagged::$embed->video($embed, $width, $height);
-    }
-
-    public function audioEmbed($embed, $width=null, $height=null)
-    {
-        return Tagged::$embed->audio($embed, $width, $height);
-    }
 }
