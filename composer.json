@@ -19,6 +19,7 @@
         "decodelabs/tagged": "dev-develop",
         "decodelabs/collections": "dev-develop",
         "decodelabs/gadgets": "dev-develop",
+        "decodelabs/atlas": "dev-develop",
 
         "erusev/parsedown": "^1.7"
     },
