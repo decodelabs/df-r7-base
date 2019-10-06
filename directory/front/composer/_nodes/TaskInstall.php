@@ -28,13 +28,10 @@ class TaskInstall extends arch\node\Task implements arch\node\IBuildTaskNode
         }
 
         $this->io->writeLine('Calling: composer install '.implode(' ', $args));
-        $this->io->indent();
 
-        halo\process\launcher\Base::factory('composer install', $args)
+        Systemic::$process->newLauncher('composer install', $args)
             ->setWorkingDirectory($this->app->path)
-            ->setMultiplexer($this->io)
+            ->setR7Multiplexer($this->io)
             ->launch();
-
-        $this->io->outdent();
     }
 }
