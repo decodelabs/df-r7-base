@@ -70,7 +70,7 @@ abstract class Task extends Base implements ITaskNode
         return parent::dispatch();
     }
 
-    public function runChild($request, bool $incLevel=true)
+    public function runChild($request, bool $incLevel=false)
     {
         $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request, true);
