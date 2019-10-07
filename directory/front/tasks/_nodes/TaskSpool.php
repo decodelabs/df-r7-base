@@ -123,7 +123,9 @@ class TaskSpool extends arch\node\Task
 
         foreach ($taskIds as $taskId => $request) {
             $this->io->writeLine();
-            $this->io->writeLine('Launching task '.$request.' id: '.$taskId);
+
+            $reqString = ltrim(substr((string)$request, strlen('directory://')), '/');
+            $this->io->writeLine('# '.$reqString.' : '.$taskId);
 
             $this->io->removeChannel($this->_channel);
             $this->runChild('tasks/launch-queued?id='.$taskId);
