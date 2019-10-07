@@ -13,7 +13,7 @@
         "php": "^7.2",
         "symfony/polyfill-mbstring": "~1.7",
 
-        "decodelabs/glitch": "<2",
+        "decodelabs/glitch": "dev-develop",
         "decodelabs/veneer": "dev-develop",
         "decodelabs/systemic": "dev-develop",
         "decodelabs/tagged": "dev-develop",
