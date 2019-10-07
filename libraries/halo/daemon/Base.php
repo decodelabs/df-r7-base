@@ -128,6 +128,16 @@ abstract class Base implements IDaemon
     // Runtime
     final public function run()
     {
+        try {
+            $this->_run();
+        } catch (\Throwable $e) {
+            core\logException($e);
+            throw $e;
+        }
+    }
+
+    private function _run()
+    {
         if ($this->_isRunning || $this->_isStopping || $this->_isStopped) {
             throw new LogicException(
                 'Daemon '.$this->getName().' has already been run'
