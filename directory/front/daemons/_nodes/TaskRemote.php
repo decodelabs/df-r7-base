@@ -28,7 +28,7 @@ class TaskRemote extends arch\node\Task
         if (isset($args[0])) {
             $this->request->query->daemon = $args[0];
         }
-        
+
         if (isset($args[1])) {
             $this->request->query->command = $args[1];
         }
