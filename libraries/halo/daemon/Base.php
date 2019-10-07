@@ -18,7 +18,7 @@ abstract class Base implements IDaemon
     use core\TContextProxy;
 
     const REQUIRES_PRIVILEGED_PROCESS = false;
-    const TEST_MODE = false;
+    const TEST_MODE = true;
     const REPORT_STATUS = true;
     const DEV_RUN_TIME = '3 minutes';
     const AUTOMATIC = false;
@@ -165,6 +165,7 @@ abstract class Base implements IDaemon
             );
         }
 
+
         if (!static::TEST_MODE && $this->process->canFork()) {
             if ($this->process->fork()) {
                 return true;
@@ -187,6 +188,8 @@ abstract class Base implements IDaemon
             }
         }
 
+
+
         $user = $this->getUser();
         $group = $this->getGroup();
 
@@ -199,6 +202,7 @@ abstract class Base implements IDaemon
                 return;
             }
         }
+
 
         declare(ticks = 20);
         $this->_isRunning = true;

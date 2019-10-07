@@ -182,11 +182,14 @@ class Remote implements IRemote
                     'daemon', $this->_daemon->getName(), $command
                 ])
                 ->setR7Multiplexer($this->_multiplexer)
+                ->setDecoratable(false)
                 ->launch();
         } else {
-            return Systemic::$process->launchBackgroundScript($path, [
-                'daemon', $this->_daemon->getName(), $command
-            ]);
+            return Systemic::$process->newScriptLauncher($path, [
+                    'daemon', $this->_daemon->getName(), $command
+                ])
+                ->setDecoratable(false)
+                ->launch();
         }
     }
 }

@@ -10,16 +10,18 @@ use df\core;
 use df\apex;
 use df\halo;
 
-class TaskSpool extends halo\daemon\Base {
-    
+class TaskSpool extends halo\daemon\Base
+{
     const AUTOMATIC = true;
-    
-    protected function _setup() {
+
+    protected function _setup()
+    {
         $this->events->bindTimerOnce('spoolNow', 1, [$this, 'spool']);
         $this->events->bindTimer('spool', 60, [$this, 'spool']);
     }
 
-    public function spool() {
-        $this->task->launch('tasks/spool', $this->io);        
+    public function spool()
+    {
+        $this->task->launch('tasks/spool', $this->io);
     }
 }
