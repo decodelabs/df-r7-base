@@ -32,7 +32,7 @@ class TaskGenerateEntry extends arch\node\Task
         if (!$mainFile->exists()) {
             $mainFile->putContents(
                 '<?php'."\n".
-                'require_once \'../vendor/autoload.php\';'."\n".
+                'require_once dirname(__DIR__).\'/vendor/autoload.php\';'."\n".
                 'df\Launchpad::run();'."\n"
             );
         }
