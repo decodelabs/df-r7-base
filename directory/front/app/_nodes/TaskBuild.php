@@ -77,6 +77,7 @@ class TaskBuild extends arch\node\Task
             }
 
             $this->io->writeLine();
+            $this->io->writeLine();
 
             // Late build tasks
             $this->runChild('./build-custom?after='.$buildId, false);
@@ -90,26 +91,27 @@ class TaskBuild extends arch\node\Task
 
 
         // Generate entries
+        $this->io->writeLine('# app/generate-entry');
         $this->runChild('./generate-entry', false);
 
         // Clear cache
         $this->io->writeLine();
-        $this->io->writeLine('Purging cache backends...');
+        $this->io->writeLine('# cache/purge');
         $this->runChild('cache/purge');
 
         // Restart daemons
         $this->io->writeLine();
+        $this->io->writeLine('# daemons/restart-all');
         $this->runChild('daemons/restart-all', false);
 
         // Purge
         $this->io->writeLine();
-        $this->io->outdent();
+        $this->io->writeLine('# app/purge-builds?active='.$buildId);
         $this->runChild('./purge-builds?active='.$buildId);
-        $this->io->indent();
 
         // Task spool
         $this->io->writeLine();
-        $this->io->writeLine('Running task spool...');
+        $this->io->writeLine('# tasks/spool');
         $this->runChild('tasks/spool');
     }
 }
