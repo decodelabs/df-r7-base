@@ -39,7 +39,7 @@ class TaskUpdate extends arch\node\Task
         }
 
         foreach ($names as $name) {
-            $this->io->writeLine('Pulling updates for package "'.$name.'"');
+            $this->io->writeLine('git pull "'.$name.'"');
             $model = $this->data->getModel('package');
 
             try {

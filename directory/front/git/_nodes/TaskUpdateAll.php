@@ -18,7 +18,6 @@ class TaskUpdateAll extends arch\node\Task
     {
         $this->ensureDfSource();
 
-        $this->io->writeLine('Finding all package repositories...');
         $model = $this->data->getModel('package');
 
         foreach ($model->getInstalledPackageList() as $package) {
@@ -26,7 +25,7 @@ class TaskUpdateAll extends arch\node\Task
                 continue;
             }
 
-            $this->io->writeLine('Pulling updates for package "'.$package['name'].'"');
+            $this->io->writeLine('# git pull "'.$package['name'].'"');
             $package['repo']->setMultiplexer($this->io);
 
             try {
