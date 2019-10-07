@@ -38,7 +38,9 @@ class TaskBuildCustom extends arch\node\Task
                 $request->query->buildId = $this->_buildId;
             }
 
-            $this->io->writeLine('# '.$request);
+            $reqString = ltrim(substr((string)$request, strlen('directory://')), '/');
+            $this->io->writeLine('# '.$reqString);
+            
             $this->runChild($request);
             $this->io->writeLine();
         }

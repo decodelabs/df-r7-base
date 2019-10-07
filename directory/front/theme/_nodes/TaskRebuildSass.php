@@ -22,7 +22,6 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
     {
         $this->ensureDfSource();
 
-        $this->io->writeLine('Rebuilding sass...');
         $path = $this->app->getLocalDataPath().'/sass/'.$this->app->envMode;
         $this->_dir = new core\fs\Dir($path);
 
@@ -31,7 +30,6 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         }
 
         $buildId = $this->request['buildId'];
-        $this->io->indent();
         $done = [];
 
         foreach ($this->_dir->scanFiles(function ($fileName) {
@@ -65,7 +63,9 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $bridge->compile();
         }
 
-        $this->io->outdent();
+        if (empty($done)) {
+            $this->io->writeLine('None found');
+        }
     }
 
     protected function _checkFile(string $key, string $sassPath, ?string $activePath)
