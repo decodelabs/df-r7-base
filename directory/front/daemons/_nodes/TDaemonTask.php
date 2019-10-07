@@ -10,20 +10,23 @@ use df\core;
 use df\apex;
 use df\halo;
 
-trait TDaemonTask {
+use DecodeLabs\Systemic;
 
-    protected function _ensurePrivileges() {
+trait TDaemonTask
+{
+    protected function _ensurePrivileges()
+    {
         $env = core\environment\Config::getInstance();
 
-        if(!$env->canUseDaemons()) {
+        if (!$env->canUseDaemons()) {
             $this->io->writeLine('Daemons are currently disabled in config');
             $this->forceResponse('');
         }
 
-        $process = halo\process\Base::getCurrent();
+        $process = Systemic::$process->getCurrent();
         $user = $env->getDaemonUser();
 
-        if($user != $process->getOwnerName() && !$process->isPrivileged()) {
+        if ($user != $process->getOwnerName() && !$process->isPrivileged()) {
             $this->io->writeLine('Restarting task '.$this->request->getPathString().' as root');
             $request = clone $this->request;
             $request->query->_privileged = true;
@@ -32,7 +35,8 @@ trait TDaemonTask {
         }
     }
 
-    protected function _hasRestarted() {
+    protected function _hasRestarted()
+    {
         return isset($this->request['_privileged']);
     }
 }

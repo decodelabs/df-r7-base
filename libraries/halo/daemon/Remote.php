@@ -10,66 +10,77 @@ use df\core;
 use df\halo;
 use df\flex;
 
-class Remote implements IRemote {
+use DecodeLabs\Systemic;
 
+class Remote implements IRemote
+{
     protected $_daemon;
     protected $_process;
     protected $_statusData;
     protected $_isChecked = false;
     protected $_multiplexer;
 
-    public static function factory($daemon) {
-        if(!$daemon instanceof IDaemon) {
+    public static function factory($daemon)
+    {
+        if (!$daemon instanceof IDaemon) {
             $daemon = Base::factory($daemon);
         }
 
         return new self($daemon);
     }
 
-    protected function __construct(IDaemon $daemon) {
+    protected function __construct(IDaemon $daemon)
+    {
         $this->_daemon = $daemon;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_daemon->getName();
     }
 
 
-    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null) {
+    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null)
+    {
         $this->_multiplexer = $multiplexer;
         return $this;
     }
 
-    public function getMultiplexer() {
+    public function getMultiplexer()
+    {
         return $this->_multiplexer;
     }
 
 
-    public function isRunning() {
-        if(!$this->_isChecked) {
+    public function isRunning()
+    {
+        if (!$this->_isChecked) {
             $this->refresh();
         }
 
         return $this->_process !== null;
     }
 
-    public function getStatusData() {
-        if(!$this->_isChecked) {
+    public function getStatusData()
+    {
+        if (!$this->_isChecked) {
             $this->refresh();
         }
 
         return $this->_statusData;
     }
 
-    public function getProcess() {
-        if(!$this->_isChecked) {
+    public function getProcess()
+    {
+        if (!$this->_isChecked) {
             $this->refresh();
         }
 
         return $this->_process;
     }
 
-    public function refresh() {
+    public function refresh()
+    {
         $this->_isChecked = true;
         clearstatcache();
         $this->_statusData = null;
@@ -79,33 +90,33 @@ class Remote implements IRemote {
         $name = $daemon->getName();
         $pid = null;
 
-        if($daemon::REPORT_STATUS) {
+        if ($daemon::REPORT_STATUS) {
             $path = df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($name).'.status';
 
-            if(!is_file($path)) {
+            if (!is_file($path)) {
                 return $this;
             }
 
             $this->_statusData = flex\Json::fromFile($path);
 
-            if(isset($this->_statusData['pid'])) {
+            if (isset($this->_statusData['pid'])) {
                 $pid = $this->_statusData['pid'];
             }
         }
 
-        if(!$pid) {
+        if (!$pid) {
             $pidPath = $daemon->getPidFilePath();
 
-            if(is_file($pidPath)) {
+            if (is_file($pidPath)) {
                 $pid = file_get_contents($pidPath);
             } else {
                 return $this;
             }
         }
 
-        $this->_process = halo\process\Base::fromPid($pid);
+        $this->_process = Systemic::$process->fromPid($pid);
 
-        if(!$this->_process->isAlive()) {
+        if (!$this->_process->isAlive()) {
             $this->_process = null;
         }
 
@@ -115,32 +126,39 @@ class Remote implements IRemote {
 
 
 
-    public function start() {
+    public function start()
+    {
         return $this->sendCommand('start');
     }
 
-    public function stop() {
+    public function stop()
+    {
         return $this->sendCommand('stop');
     }
 
-    public function restart() {
+    public function restart()
+    {
         return $this->sendCommand('restart');
     }
 
-    public function pause() {
+    public function pause()
+    {
         return $this->sendCommand('pause');
     }
 
-    public function resume() {
+    public function resume()
+    {
         return $this->sendCommand('resume');
     }
 
-    public function nudge() {
+    public function nudge()
+    {
         return $this->sendCommand('nudge');
     }
 
-    public function sendCommand($command) {
-        switch($command) {
+    public function sendCommand($command)
+    {
+        switch ($command) {
             case '__spawn':
             case 'start':
             case 'stop':
@@ -159,10 +177,16 @@ class Remote implements IRemote {
 
         $path = df\Launchpad::$app->path.'/entry/'.df\Launchpad::$app->envId.'.php';
 
-        if($this->_multiplexer) {
-            return halo\process\Base::launchScript($path, ['daemon', $this->_daemon->getName(), $command], $this->_multiplexer);
+        if ($this->_multiplexer) {
+            return Systemic::$process->newScriptLauncher($path, [
+                    'daemon', $this->_daemon->getName(), $command
+                ])
+                ->setR7Multiplexer($this->_multiplexer)
+                ->launch();
         } else {
-            return halo\process\Base::launchBackgroundScript($path, ['daemon', $this->_daemon->getName(), $command]);
+            return Systemic::$process->launchBackgroundScript($path, [
+                'daemon', $this->_daemon->getName(), $command
+            ]);
         }
     }
 }

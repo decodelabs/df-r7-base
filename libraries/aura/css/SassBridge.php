@@ -13,6 +13,8 @@ use df\link;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Systemic;
+
 class SassBridge implements ISassBridge
 {
     const DEFAULT_PROCESSOR_OPTIONS = [

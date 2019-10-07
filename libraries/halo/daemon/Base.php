@@ -10,6 +10,8 @@ use df\core;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Systemic;
+
 abstract class Base implements IDaemon
 {
     use halo\event\TDispatcherProvider;
@@ -47,7 +49,7 @@ abstract class Base implements IDaemon
         $path = df\Launchpad::$app->path.'/entry/';
         $path .= df\Launchpad::$app->envId.'.php';
 
-        return halo\process\Base::launchScript($path, ['daemon', $name], $user);
+        return Systemic::$process->launchScript($path, ['daemon', $name], null, $user);
     }
 
     public static function loadAll()
@@ -134,7 +136,7 @@ abstract class Base implements IDaemon
 
         gc_enable();
         $this->context = new core\SharedContext();
-        $this->process = halo\process\Base::getCurrent();
+        $this->process = Systemic::$process->getCurrent();
 
         $basePath = df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($this->getName());
         core\fs\Dir::create(dirname($basePath));

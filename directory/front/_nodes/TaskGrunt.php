@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Systemic;
+
 class TaskGrunt extends arch\node\Task implements arch\node\IBuildTaskNode
 {
     public function execute()
@@ -22,9 +24,9 @@ class TaskGrunt extends arch\node\Task implements arch\node\IBuildTaskNode
 
         $this->io->writeLine('Calling grunt');
 
-        halo\process\launcher\Base::factory('grunt')
+        Systemic::$process->newLauncher('grunt')
             ->setWorkingDirectory($this->app->path)
-            ->setMultiplexer($this->io)
+            ->setR7Multiplexer($this->io)
             ->launch();
     }
 }

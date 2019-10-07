@@ -10,14 +10,18 @@ use df\core;
 use df\halo;
 use df\flex;
 
-class Daemon extends Base {
+use DecodeLabs\Systemic;
+use DecodeLabs\Systemic\Process\Managed as ManagedProcess;
 
+class Daemon extends Base
+{
     public $io;
     protected $_statusData;
 
-// Execute
-    public function dispatch(): void {
-        if(php_sapi_name() != 'cli') {
+    // Execute
+    public function dispatch(): void
+    {
+        if (php_sapi_name() != 'cli') {
             throw core\Error::EDomain(
                 'Daemon processes must only be started from the CLI SAPI'
             );
@@ -26,14 +30,14 @@ class Daemon extends Base {
         $this->io = new core\io\Std();
         $env = core\environment\Config::getInstance();
 
-        if(!$env->canUseDaemons() || !extension_loaded('pcntl')) {
+        if (!$env->canUseDaemons() || !extension_loaded('pcntl')) {
             $this->io->writeErrorLine('Daemons are not enabled in config');
             return;
         }
 
         $args = core\cli\Command::fromArgv();
 
-        if(!$arg = $args[2]) {
+        if (!$arg = $args[2]) {
             throw core\Error::EArgument(
                 'No daemon path has been specified'
             );
@@ -41,7 +45,7 @@ class Daemon extends Base {
 
         try {
             $daemon = halo\daemon\Base::factory($arg->toString());
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->io->writeErrorLine($e->getMessage());
             return;
         }
@@ -51,25 +55,25 @@ class Daemon extends Base {
             ->where('name', '=', $daemon->getName())
             ->toRow();
 
-        if($settings) {
-            if(!$settings['isEnabled']) {
+        if ($settings) {
+            if (!$settings['isEnabled']) {
                 $this->io->writeErrorLine('Daemon '.$daemon->getName().' is not currently enabled');
                 return;
             }
 
-            if(isset($settings['user'])) {
+            if (isset($settings['user'])) {
                 $daemon->setUser($settings['user']);
             }
 
-            if(isset($settings['group'])) {
+            if (isset($settings['group'])) {
                 $daemon->setGroup($settings['group']);
             }
         }
 
-        $currentProcess = halo\process\Base::getCurrent();
+        $currentProcess = Systemic::$process->getCurrent();
         $user = $daemon->getUser();
 
-        if(!$currentProcess->isPrivileged() && $user != $currentProcess->getOwnerName()) {
+        if (!$currentProcess->isPrivileged() && $user != $currentProcess->getOwnerName()) {
             $this->io->writeErrorLine('You are trying to control this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
             return;
         }
@@ -80,7 +84,7 @@ class Daemon extends Base {
         $name = $daemon->getName();
         $command = (string)$args[3];
 
-        switch($command) {
+        switch ($command) {
             case '__spawn':
                 $this->spawn($daemon, $process);
                 return;
@@ -124,8 +128,9 @@ class Daemon extends Base {
         }
     }
 
-    public function spawn(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
-        if($process) {
+    public function spawn(halo\daemon\IDaemon $daemon, ManagedProcess $process=null)
+    {
+        if ($process) {
             return;
         }
 
@@ -133,17 +138,18 @@ class Daemon extends Base {
         return;
     }
 
-    public function start(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
+    public function start(halo\daemon\IDaemon $daemon, ManagedProcess $process=null)
+    {
         $name = $daemon->getName();
 
-        if($process) {
+        if ($process) {
             $this->io->writeErrorLine('Daemon '.$name.' is already running');
             return;
         }
 
         $this->io->write('Starting daemon '.$name);
 
-        if($daemon::TEST_MODE) {
+        if ($daemon::TEST_MODE) {
             $this->io->writeLine();
 
             $daemon->run();
@@ -154,17 +160,17 @@ class Daemon extends Base {
 
         $entryPath = df\Launchpad::$app->path.'/entry/'.df\Launchpad::$app->envId.'.php';
 
-        halo\process\Base::launchScript(
-            $entryPath,
-            ['daemon', $name, '__spawn'],
-            new core\io\Multiplexer([$this->io])
-        );
+        $res = Systemic::$process->newScriptLauncher($entryPath, [
+                'daemon', $name, '__spawn'
+            ])
+            ->setR7Multiplexer(new core\io\Multiplexer([$this->io]))
+            ->launch();
 
         $remote = halo\daemon\Remote::factory($daemon);
         $count = 0;
 
-        while(!$process = $remote->getProcess()) {
-            if(++$count > 10) {
+        while (!$process = $remote->getProcess()) {
+            if (++$count > 10) {
                 break;
             }
 
@@ -172,7 +178,7 @@ class Daemon extends Base {
             $remote->refresh();
         }
 
-        if($process) {
+        if ($process) {
             $this->io->writeLine(' running with PID: '.$process->getProcessId());
         } else {
             $this->io->writeLine(' done, but PID could not be found!');
@@ -181,10 +187,11 @@ class Daemon extends Base {
         return;
     }
 
-    public function stop(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
+    public function stop(halo\daemon\IDaemon $daemon, ManagedProcess $process=null)
+    {
         $name = $daemon->getName();
 
-        if(!$process) {
+        if (!$process) {
             $this->io->writeLine('Daemon '.$name.' is not running');
             return;
         }
@@ -193,8 +200,8 @@ class Daemon extends Base {
         $process->sendSignal('SIGTERM');
         $count = 0;
 
-        while($process->isAlive()) {
-            if($count++ > 10) {
+        while ($process->isAlive()) {
+            if ($count++ > 10) {
                 $this->io->writeLine(' TERM failed, trying KILL...');
                 $process->sendSignal('SIGKILL');
                 sleep(5);
@@ -204,36 +211,37 @@ class Daemon extends Base {
             sleep(1);
         }
 
-        if($process->isAlive()) {
+        if ($process->isAlive()) {
             $this->io->writeLine(' still running, not sure what to do now!');
         } else {
             $this->io->writeLine(' done');
         }
     }
 
-    public function status(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
+    public function status(halo\daemon\IDaemon $daemon, ManagedProcess $process=null)
+    {
         $name = $daemon->getName();
 
-        if(!$process) {
+        if (!$process) {
             $this->io->writeLine('Daemon '.$name.' is not currently running');
             return;
         }
 
 
-        if(!$this->_statusData) {
+        if (!$this->_statusData) {
             $this->io->writeLine('Daemon '.$name.' is currently running with PID '.$process->getProcessId());
             return;
         }
 
-        if(isset($this->_statusData['state'])) {
+        if (isset($this->_statusData['state'])) {
             $state = $this->_statusData['state'];
             unset($this->_statusData['state']);
         }
 
         $this->io->writeLine('Daemon '.$name.' is currently '.$state);
 
-        foreach($this->_statusData as $key => $value) {
-            if(substr($key, -4) == 'Time') {
+        foreach ($this->_statusData as $key => $value) {
+            if (substr($key, -4) == 'Time') {
                 $value = (new core\time\Date($value))->localeFormat();
             }
 
@@ -241,17 +249,18 @@ class Daemon extends Base {
         }
     }
 
-    public function nudge(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
+    public function nudge(halo\daemon\IDaemon $daemon, ManagedProcess $process=null)
+    {
         $name = $daemon->getName();
         $this->io->write('Checking daemon '.$name.'...');
 
-        if(!$process) {
+        if (!$process) {
             $this->io->writeLine(' not running');
             return $this->start($daemon, $process);
         }
 
-        if(isset($this->_statusData['statusTime'])) {
-            if(time() - $this->_statusData['statusTime'] > self::THRESHOLD) {
+        if (isset($this->_statusData['statusTime'])) {
+            if (time() - $this->_statusData['statusTime'] > self::THRESHOLD) {
                 // Has it got stuck?
                 $this->io->writeLine();
                 $this->io->write('Status is stale, restarting...');

@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Systemic;
+
 class TaskBower extends arch\node\Task implements arch\node\IBuildTaskNode
 {
     public function execute()
@@ -22,9 +24,9 @@ class TaskBower extends arch\node\Task implements arch\node\IBuildTaskNode
 
         $this->io->writeLine('Calling bower');
 
-        halo\process\launcher\Base::factory('bower install')
+        Systemic::$process->newLauncher('bower install')
             ->setWorkingDirectory($this->app->path)
-            ->setMultiplexer($this->io)
+            ->setR7Multiplexer($this->io)
             ->launch();
     }
 }

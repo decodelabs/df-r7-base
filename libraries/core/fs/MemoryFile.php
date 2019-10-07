@@ -8,6 +8,8 @@ namespace df\core\fs;
 use df\core;
 use df\halo;
 
+use DecodeLabs\Systemic;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -36,7 +38,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
     public function __construct($data='', $contentType=null, $mode=Mode::READ_WRITE)
     {
         try {
-            $process = halo\process\Base::getCurrent();
+            $process = Systemic::$process->getCurrent();
 
             try {
                 $this->_owner = $process->getOwnerName();
