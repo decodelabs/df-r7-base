@@ -10,14 +10,19 @@ use df\core;
 use df\spur;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
 
 
 // Interfaces
-interface IBridge {
+interface IBridge
+{
     public function find($name);
-    public function npmInstall($name);
+    public function npmInstall(string $name, core\io\IMultiplexer $multiplexer=null);
     public function execute($path, $data);
     public function evaluate($js, $data=null);
 }

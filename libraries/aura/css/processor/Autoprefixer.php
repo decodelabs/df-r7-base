@@ -11,36 +11,37 @@ use df\aura;
 use df\spur;
 use df\flex;
 
-class Autoprefixer extends Base {
-
-    public function process($cssPath) {
+class Autoprefixer extends Base
+{
+    public function process($cssPath, core\io\IMultiplexer $multiplexer=null)
+    {
         $bridge = new spur\node\Bridge();
 
-        if(!$bridge->find('autoprefixer')) {
+        if (!$bridge->find('autoprefixer')) {
             try {
-                $bridge->npmInstall('autoprefixer');
-            } catch(\Throwable $e) {
+                $bridge->npmInstall('autoprefixer', $multiplexer);
+            } catch (\Throwable $e) {
                 core\log\Manager::getInstance()->logException($e);
                 return;
             }
         }
 
-        if(!$bridge->find('postcss')) {
+        if (!$bridge->find('postcss')) {
             $bridge->npmInstall('postcss');
         }
 
-        if(!isset($this->settings->cascade)) {
+        if (!isset($this->settings->cascade)) {
             $this->settings->cascade = true;
         }
 
-        if(!isset($this->settings->remove)) {
+        if (!isset($this->settings->remove)) {
             $this->settings->remove = true;
         }
 
         $content = file_get_contents($cssPath);
         $map = null;
 
-        if(preg_match('/sourceMappingURL\=([^ ]+) \*/i', $content, $matches)) {
+        if (preg_match('/sourceMappingURL\=([^ ]+) \*/i', $content, $matches)) {
             $map = file_get_contents($cssPath.'.map');
         }
 
@@ -73,7 +74,7 @@ js;
 
         core\fs\File::create($cssPath, $output['css']);
 
-        if(isset($output['map'])) {
+        if (isset($output['map'])) {
             core\fs\File::create(
                 $cssPath.'.map',
                 flex\Json::toString($output['map'], \JSON_UNESCAPED_SLASHES)

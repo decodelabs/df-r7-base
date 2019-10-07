@@ -18,12 +18,7 @@ class SassBridge implements ISassBridge
     const DEFAULT_PROCESSOR_OPTIONS = [
         'autoprefixer' => [
             'browsers' => [
-                'last 2 versions',
-                'safari 7',
-                'ie 10',
-                'opera 12.1',
-                'last 3 ios versions',
-                'android 4'
+                'defaults'
             ]
         ]
     ];
@@ -39,6 +34,7 @@ class SassBridge implements ISassBridge
     protected $_isDevelopment;
 
     protected $_manifest = [];
+    protected $_multiplexer;
 
     public function __construct(arch\IContext $context, string $path, string $activePath=null)
     {
@@ -68,6 +64,16 @@ class SassBridge implements ISassBridge
         $this->_key = md5($activePath ?? $path);
     }
 
+    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null)
+    {
+        $this->_multiplexer = $multiplexer;
+        return $this;
+    }
+
+    public function getMultiplexer()
+    {
+        return $this->_multiplexer;
+    }
 
     public function getHttpResponse(): link\http\IResponse
     {
@@ -289,14 +295,15 @@ class SassBridge implements ISassBridge
         $args[] = $this->_workDir.'/'.$this->_key.'/'.$mainFileKey.'.'.$this->_fileName.'.'.$this->_type;
         $args[] = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css';
 
-        $result = halo\process\launcher\Base::factory($path, $args)
+        $result = Systemic::$process->newLauncher($path, $args)
+            ->setR7Multiplexer($this->_multiplexer)
             ->setWorkingDirectory($this->_workDir)
             ->launch();
 
         $output = $result->getOutput();
 
         if ($result->hasError()) {
-            $error = core\Error::{'ERuntime,halo/process/ERuntime'}(
+            $error = core\Error::{'ERuntime'}(
                 $result->getError()
             );
 
@@ -309,7 +316,7 @@ class SassBridge implements ISassBridge
 
 
         if (false !== stripos($output, 'error')) {
-            throw core\Error::{'ERuntime,halo/process/ERuntime'}(
+            throw core\Error::{'ERuntime'}(
                 $output
             );
         }
@@ -319,7 +326,7 @@ class SassBridge implements ISassBridge
         if (!empty($options)) {
             foreach ($options as $name => $settings) {
                 $processor = aura\css\processor\Base::factory($name, $settings);
-                $processor->process($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css');
+                $processor->process($this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css', $this->_multiplexer);
             }
         }
 

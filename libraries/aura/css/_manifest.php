@@ -12,12 +12,15 @@ use df\link;
 
 interface IProcessor
 {
-    public function process($cssPath);
+    public function process($cssPath, core\io\IMultiplexer $multiplexer=null);
 }
 
 
 interface ISassBridge
 {
+    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null);
+    public function getMultiplexer();
+
     public function getHttpResponse(): link\http\IResponse;
     public function getMapHttpResponse(): link\http\IResponse;
     public function getCompiledPath(): string;

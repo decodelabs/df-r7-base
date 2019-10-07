@@ -11,6 +11,8 @@ use df\spur;
 use df\flex;
 use df\halo;
 
+use DecodeLabs\Systemic;
+
 class Bridge implements IBridge
 {
     protected $_nodePath;
@@ -25,16 +27,18 @@ class Bridge implements IBridge
         return is_file($this->_nodePath.'/node_modules/'.$name.'/package.json');
     }
 
-    public function npmInstall($name)
+    public function npmInstall(string $name, core\io\IMultiplexer $multiplexer=null)
     {
         core\fs\Dir::create($this->_nodePath);
 
-        $result = halo\process\Base::newLauncher('npm', [
+        $result = Systemic::$process->newLauncher('npm', [
                 '--loglevel=error',
                 'install',
                 $name
             ])
             ->setWorkingDirectory($this->_nodePath)
+            //->setDecoratable(false)
+            ->setR7Multiplexer($multiplexer)
             ->launch();
 
         if ($result->hasError()) {
@@ -63,11 +67,14 @@ class Bridge implements IBridge
             core\fs\File::copy(__DIR__.'/evaluate.js', $this->_nodePath.'/evaluate.js');
         }
 
-        $result = halo\process\Base::newLauncher('node', [
+        $bin = Systemic::$os->which('node');
+
+        $result = Systemic::$process->newLauncher($bin, [
                 $this->_nodePath.'/evaluate.js'
             ])
             ->setWorkingDirectory($this->_nodePath)
-            ->setGenerator(function () use ($payload) {
+            ->setDecoratable(false)
+            ->setInputGenerator(function () use ($payload) {
                 return $payload;
             })
             ->launch();
