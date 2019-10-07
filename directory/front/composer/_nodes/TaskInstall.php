@@ -23,11 +23,9 @@ class TaskInstall extends arch\node\Task implements arch\node\IBuildTaskNode
 
         $args = [];
 
-        if ($this->app->isProduction()) {
+        if (!$this->app->isDevelopment()) {
             $args[] = '--no-dev';
         }
-
-        $this->io->writeLine('Calling: composer install '.implode(' ', $args));
 
         Systemic::$process->newLauncher('composer install', $args)
             ->setWorkingDirectory($this->app->path)
