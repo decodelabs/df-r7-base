@@ -11,10 +11,12 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class TaskGrunt extends arch\node\Task implements arch\node\IBuildTaskNode {
-
-    public function execute() {
-        if(!core\fs\File::iFileExists($this->app->path.'/gruntfile.js')) {
+class TaskGrunt extends arch\node\Task implements arch\node\IBuildTaskNode
+{
+    public function execute()
+    {
+        if (!core\fs\File::iFileExists($this->app->path.'/gruntfile.js')) {
+            $this->io->writeLine('No gruntfile.js found');
             return;
         }
 

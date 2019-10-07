@@ -11,8 +11,8 @@ use df\aura;
 use df\fuse;
 use df\spur;
 
-class Manager implements IManager {
-
+class Manager implements IManager
+{
     use core\TManager;
 
     const REGISTRY_PREFIX = 'manager://fuse';
@@ -20,19 +20,22 @@ class Manager implements IManager {
     protected static $_depCache = [];
 
 
-    public static function getManifestCachePath(): string {
+    public static function getManifestCachePath(): string
+    {
         return df\Launchpad::$app->getLocalDataPath().'/theme/dependencies';
     }
 
-    public static function getAssetPath(): string {
+    public static function getAssetPath(): string
+    {
         return df\Launchpad::$app->path.'/assets/vendor';
     }
 
 
-    public function getInstalledDependencyFor(aura\theme\ITheme $theme, $name) {
+    public function getInstalledDependencyFor(aura\theme\ITheme $theme, $name)
+    {
         $deps = $this->getInstalledDependenciesFor($theme);
 
-        if(!isset($deps[$name])) {
+        if (!isset($deps[$name])) {
             throw new RuntimeException(
                 'Dependency '.$name.' is not in the dependency list'
             );
@@ -41,10 +44,11 @@ class Manager implements IManager {
         return $deps[$name];
     }
 
-    public function getInstalledDependenciesFor(aura\theme\ITheme $theme) {
+    public function getInstalledDependenciesFor(aura\theme\ITheme $theme)
+    {
         $id = $theme->getId();
 
-        if(!isset(self::$_depCache[$id])) {
+        if (!isset(self::$_depCache[$id])) {
             $this->ensureDependenciesFor($theme);
             $path = self::getManifestCachePath().'/'.$id;
             self::$_depCache[$id] = unserialize(core\fs\File::getContentsOf($path));
@@ -53,13 +57,14 @@ class Manager implements IManager {
         return self::$_depCache[$id];
     }
 
-    protected function _storeManifest(aura\theme\ITheme $theme, array $dependencies) {
+    protected function _storeManifest(aura\theme\ITheme $theme, array $dependencies)
+    {
         $id = $theme->getId();
         unset(self::$_depCache[$id]);
 
         $output = [];
 
-        foreach($dependencies as $dependency) {
+        foreach ($dependencies as $dependency) {
             $output[$dependency->id] = $dependency;
         }
 
@@ -71,10 +76,11 @@ class Manager implements IManager {
 
 
 
-    public function ensureDependenciesFor(aura\theme\ITheme $theme, core\io\IMultiplexer $io=null) {
+    public function ensureDependenciesFor(aura\theme\ITheme $theme, core\io\IMultiplexer $io=null)
+    {
         $id = $theme->getId();
 
-        if(isset(self::$_depCache[$id])) {
+        if (isset(self::$_depCache[$id])) {
             return $this;
         }
 
@@ -83,18 +89,18 @@ class Manager implements IManager {
         $swallow = true;
         $depContent = null;
 
-        if(df\Launchpad::$app->isDevelopment()) {
+        if (df\Launchpad::$app->isDevelopment()) {
             $swallow = false;
 
-            if(!is_dir($vendorPath)) {
+            if (!is_dir($vendorPath)) {
                 core\fs\Dir::delete(dirname($path));
                 $swallow = true;
             }
 
-            if(file_exists($path)) {
+            if (file_exists($path)) {
                 $time = filemtime($path);
 
-                if($time < time() - (30 * 60 * 60)) {
+                if ($time < time() - (30 * 60 * 60)) {
                     $depContent = core\fs\File::getContentsOf($path);
                     core\fs\File::delete($path);
                     unset(self::$_depCache[$id]);
@@ -104,18 +110,18 @@ class Manager implements IManager {
             }
         }
 
-        if($depContent === null) {
+        if ($depContent === null) {
             $swallow = false;
         }
 
-        if(file_exists($path) && is_dir($vendorPath)) {
+        if (file_exists($path) && is_dir($vendorPath)) {
             return $this;
         }
 
         try {
             $this->installDependenciesFor($theme, $io);
-        } catch(\Throwable $e) {
-            if($swallow) {
+        } catch (\Throwable $e) {
+            if ($swallow) {
                 core\log\Manager::getInstance()->logException($e);
             } else {
                 throw $e;
@@ -125,23 +131,25 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function installDependenciesFor(aura\theme\ITheme $theme, core\io\IMultiplexer $io=null) {
+    public function installDependenciesFor(aura\theme\ITheme $theme, core\io\IMultiplexer $io=null)
+    {
         $deps = $this->prepareDependenciesFor($theme);
         $this->installDependencies($deps, $io);
         $this->_storeManifest($theme, $deps);
         return $this;
     }
 
-    public function installAllDependencies(core\io\IMultiplexer $io=null) {
+    public function installAllDependencies(core\io\IMultiplexer $io=null)
+    {
         $config = aura\theme\Config::getInstance();
         $themes = array_unique($config->getThemeMap());
         $dependencies = [];
         $themeDeps = [];
 
-        foreach($themes as $themeId) {
+        foreach ($themes as $themeId) {
             $theme = aura\theme\Base::factory($themeId);
 
-            foreach($this->prepareDependenciesFor($theme) as $dependency) {
+            foreach ($this->prepareDependenciesFor($theme) as $dependency) {
                 $key = $dependency->getKey();
                 $dependencies[$key] = $dependency;
                 $themeDeps[$theme->getId()][$key] = true;
@@ -150,12 +158,12 @@ class Manager implements IManager {
 
         $this->installDependencies($dependencies, $io);
 
-        foreach($themes as $themeId) {
+        foreach ($themes as $themeId) {
             $theme = aura\theme\Base::factory($themeId);
             $deps = [];
 
-            if(isset($themeDeps[$theme->getId()])) {
-                foreach($themeDeps[$theme->getId()] as $key => $blah) {
+            if (isset($themeDeps[$theme->getId()])) {
+                foreach ($themeDeps[$theme->getId()] as $key => $blah) {
                     $deps[$key] = $dependencies[$key];
                 }
             }
@@ -166,25 +174,16 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function installDependencies(array $dependencies, core\io\IMultiplexer $io=null) {
+    public function installDependencies(array $dependencies, core\io\IMultiplexer $io=null)
+    {
         $packages = [];
 
-        if($io) {
-            $io->write('Installing theme dependencies...');
-            $io->indent();
-        }
-
-        if(empty($dependencies)) {
-            if($io) {
-                $io->writeLine(' none found');
-                $io->outdent();
-            }
-
+        if (empty($dependencies)) {
             return;
         }
 
-        foreach($dependencies as $i => $dependency) {
-            if(!$dependency instanceof fuse\IDependency) {
+        foreach ($dependencies as $i => $dependency) {
+            if (!$dependency instanceof fuse\IDependency) {
                 unset($dependencies[$i]);
                 continue;
             }
@@ -192,30 +191,22 @@ class Manager implements IManager {
             $packages[$dependency->getKey()] = $dependency->getPackage();
         }
 
-        if($io) {
-            $io->writeLine();
-        }
-
         $installer = new spur\packaging\bower\Installer($io);
         $installer->installPackages($packages);
 
-        if($io) {
-            $io->outdent();
-        }
-
-        foreach($dependencies as $dependency) {
+        foreach ($dependencies as $dependency) {
             $key = $dependency->getKey();
             $package = $packages[$key];
             $installPath = $installer->getInstallPath().'/'.$package->installName;
 
             $dependency->installName = $package->installName;
 
-            if(empty($dependency->js)) {
+            if (empty($dependency->js)) {
                 $data = $installer->getPackageBowerData($package);
                 $main = null;
 
-                if(isset($data->main)) {
-                    if(count($data->main)) {
+                if (isset($data->main)) {
+                    if (count($data->main)) {
                         $main = $data->main->toArray();
                     } else {
                         $main = $data['main'];
@@ -223,28 +214,28 @@ class Manager implements IManager {
                 } else {
                     $data = $installer->getPackageJsonData($package);
 
-                    if(isset($data['main'])) {
+                    if (isset($data['main'])) {
                         $main = $data['main'];
-                    } else if(is_file($installPath.'/'.$dependency->id.'.js')) {
+                    } elseif (is_file($installPath.'/'.$dependency->id.'.js')) {
                         $main = $dependency->id.'.js';
                     }
                 }
 
-                if($main === null) {
+                if ($main === null) {
                     $main = [];
                 }
 
-                if(!is_array($main)) {
+                if (!is_array($main)) {
                     $main = [$main];
                 }
 
-                foreach(array_reverse($main) as $mainEntry) {
-                    if(substr($mainEntry, -6) != 'min.js') {
+                foreach (array_reverse($main) as $mainEntry) {
+                    if (substr($mainEntry, -6) != 'min.js') {
                         $fileName = substr($mainEntry, 0, -3);
 
-                        if(is_file($installPath.'/'.$fileName.'.min.js')) {
+                        if (is_file($installPath.'/'.$fileName.'.min.js')) {
                             $mainEntry = $fileName.'.min.js';
-                        } else if(is_file($installPath.'/'.$fileName.'-min.js')) {
+                        } elseif (is_file($installPath.'/'.$fileName.'-min.js')) {
                             $mainEntry = $fileName.'-min.js';
                         }
                     }
@@ -259,28 +250,29 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function prepareDependenciesFor(aura\theme\ITheme $theme): array {
+    public function prepareDependenciesFor(aura\theme\ITheme $theme): array
+    {
         $output = [];
 
-        foreach($this->_normalizeDependencies(Config::getInstance()->getDependencies()) as $id => $dependency) {
+        foreach ($this->_normalizeDependencies(Config::getInstance()->getDependencies()) as $id => $dependency) {
             $output[$dependency->id] = $dependency;
         }
 
-        foreach($this->_normalizeDependencies($theme->getDependencies()) as $id => $dependency) {
+        foreach ($this->_normalizeDependencies($theme->getDependencies()) as $id => $dependency) {
             $output[$dependency->id] = $dependency;
         }
 
 
         // Default defs - need a better way to handle this!
-        if(!isset($output['requirejs'])) {
+        if (!isset($output['requirejs'])) {
             $output['requirejs'] = new Dependency('requirejs#~2.3');
         }
 
-        if(!isset($output['jquery'])) {
+        if (!isset($output['jquery'])) {
             $output['jquery'] = new Dependency('jquery#~3.1');
         }
 
-        if(!isset($output['underscore'])) {
+        if (!isset($output['underscore'])) {
             $output['underscore'] = new Dependency('underscore#~1.8', [
                 'shim' => '_'
             ]);
@@ -289,12 +281,13 @@ class Manager implements IManager {
         return $output;
     }
 
-    protected function _normalizeDependencies(array $dependencies) {
-        foreach($dependencies as $id => $data) {
-            if(!is_string($id)) {
-                if(isset($data['id'])) {
+    protected function _normalizeDependencies(array $dependencies)
+    {
+        foreach ($dependencies as $id => $data) {
+            if (!is_string($id)) {
+                if (isset($data['id'])) {
                     $id = $data['id'];
-                } else if(is_string($data)) {
+                } elseif (is_string($data)) {
                     $id = $data;
                     $data = [];
                 }

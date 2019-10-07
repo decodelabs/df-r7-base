@@ -11,10 +11,12 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class TaskBower extends arch\node\Task implements arch\node\IBuildTaskNode {
-
-    public function execute() {
-        if(!core\fs\File::iFileExists($this->app->path.'/bower.json')) {
+class TaskBower extends arch\node\Task implements arch\node\IBuildTaskNode
+{
+    public function execute()
+    {
+        if (!core\fs\File::iFileExists($this->app->path.'/bower.json')) {
+            $this->io->writeLine('No bower.json found');
             return;
         }
 
