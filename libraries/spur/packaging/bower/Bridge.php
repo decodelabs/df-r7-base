@@ -11,6 +11,8 @@ use df\spur;
 use df\flex;
 use df\halo;
 
+use DecodeLabs\Systemic;
+
 class Bridge implements IBridge
 {
     protected $_installPath = 'assets/lib/vendor';
@@ -65,7 +67,7 @@ class Bridge implements IBridge
     {
         $this->generate($deps);
 
-        $result = halo\process\launcher\Base::factory('bower install')
+        $result = Systemic::$process->newLauncher('bower install')
             ->setWorkingDirectory($this->_execPath)
             ->launch();
 

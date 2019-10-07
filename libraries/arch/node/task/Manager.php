@@ -12,78 +12,90 @@ use df\halo;
 use df\link;
 use df\flex;
 
-class Manager implements arch\node\ITaskManager {
+use DecodeLabs\Systemic;
+use DecodeLabs\Systemic\Process\Result as ProcessResult;
 
+class Manager implements arch\node\ITaskManager
+{
     use core\TManager;
 
     const REGISTRY_PREFIX = 'manager://task';
 
     protected $_captureBackground = false;
 
-    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): halo\process\IResult {
+    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): ProcessResult
+    {
         $request = arch\Request::factory($request);
         $path = df\Launchpad::$app->path.'/entry/';
         $path .= df\Launchpad::$app->envId.'.php';
         $args = ['task', $request];
 
-        if($dfSource) {
+        if ($dfSource) {
             $args[] = '--df-source';
         }
 
-        if($this->_captureBackground && !$multiplexer) {
+        if ($this->_captureBackground && !$multiplexer) {
             $runner = df\Launchpad::$runner;
 
-            if($runner instanceof core\app\runner\Task) {
-                $multiplexer = $runner->getMultiplexer();
-                return halo\process\Base::launchScript($path, $args, $multiplexer, $user);
+            if ($runner instanceof core\app\runner\Task) {
+                return Systemic::$process->newScriptLauncher($path, $args, null, $user)
+                    ->setR7Multiplexer($runner->getMultiplexer())
+                    ->launch();
             }
         }
 
-        return halo\process\Base::launchScript($path, $args, $multiplexer, $user);
+        return Systemic::$process->newScriptLauncher($path, $args, null, $user)
+            ->setR7Multiplexer($multiplexer)
+            ->launch();
     }
 
-    public function launchBackground($request, $user=null, bool $dfSource=false) {
+    public function launchBackground($request, $user=null, bool $dfSource=false)
+    {
         $request = arch\Request::factory($request);
         $path = df\Launchpad::$app->path.'/entry/';
         $path .= df\Launchpad::$app->envId.'.php';
         $args = ['task', $request];
 
-        if($dfSource) {
+        if ($dfSource) {
             $args[] = '--df-source';
         }
 
-        if($this->_captureBackground) {
+        if ($this->_captureBackground) {
             $runner = df\Launchpad::$runner;
 
-            if($runner instanceof core\app\runner\Task) {
-                $multiplexer = $runner->getMultiplexer();
-                return halo\process\Base::launchScript($path, $args, $multiplexer, $user);
+            if ($runner instanceof core\app\runner\Task) {
+                return Systemic::$process->newScriptLauncher($path, $args, null, $user)
+                    ->setR7Multiplexer($runner->getMultiplexer())
+                    ->launch();
             }
         }
 
-        return halo\process\Base::launchBackgroundScript($path, $args, $user);
+        return Systemic::$process->launchBackgroundScript($path, $args, null, $user)
+            ->launchBackground();
     }
 
-    public function launchQuietly($request) {
-        if(df\Launchpad::$runner instanceof core\app\runner\Task) {
+    public function launchQuietly($request)
+    {
+        if (df\Launchpad::$runner instanceof core\app\runner\Task) {
             return $this->invoke($request, core\io\Multiplexer::defaultFactory('memory'));
         } else {
             return $this->launchBackground($request);
         }
     }
 
-    public function invoke($request, core\io\IMultiplexer $io=null): core\io\IMultiplexer {
+    public function invoke($request, core\io\IMultiplexer $io=null): core\io\IMultiplexer
+    {
         $request = arch\Request::factory($request);
         $context = arch\Context::factory($request, 'Task', true);
         $node = arch\node\Base::factory($context);
 
-        if(!$node instanceof arch\node\ITaskNode) {
+        if (!$node instanceof arch\node\ITaskNode) {
             throw core\Error::{'arch/node/EDefinition'}(
                 'Child node '.$request.' does not extend arch\\node\\Task'
             );
         }
 
-        if($io) {
+        if ($io) {
             $node->io = $io;
         }
 
@@ -91,7 +103,8 @@ class Manager implements arch\node\ITaskManager {
         return $node->io;
     }
 
-    public function initiateStream($request): link\http\IResponse {
+    public function initiateStream($request): link\http\IResponse
+    {
         $context = $this->_getActiveContext();
         $token = $context->data->task->invoke->prepareTask($request);
 
@@ -103,7 +116,8 @@ class Manager implements arch\node\ITaskManager {
         );
     }
 
-    public function queue($request, string $priority='medium'): flex\IGuid {
+    public function queue($request, string $priority='medium'): flex\IGuid
+    {
         $context = $this->_getActiveContext();
 
         $queue = $context->data->task->queue->newRecord([
@@ -115,26 +129,29 @@ class Manager implements arch\node\ITaskManager {
         return $queue['id'];
     }
 
-    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): halo\process\IResult {
+    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): ProcessResult
+    {
         $id = $this->queue($request, 'medium');
         return self::launch('tasks/launch-queued?id='.$id, $multiplexer);
     }
 
-    public function queueAndLaunchBackground($request) {
+    public function queueAndLaunchBackground($request)
+    {
         $id = $this->queue($request, 'medium');
         return self::launchBackground('tasks/launch-queued?id='.$id);
     }
 
-    public function getSharedIo(): core\io\IMultiplexer {
+    public function getSharedIo(): core\io\IMultiplexer
+    {
         $runner = df\Launchpad::$runner;
 
-        if($runner instanceof core\app\runner\Task) {
+        if ($runner instanceof core\app\runner\Task) {
             return $runner->getMultiplexer();
         }
 
         $key = core\io\Multiplexer::REGISTRY_KEY.':task';
 
-        if(!$output = df\Launchpad::$app->getRegistryObject($key)) {
+        if (!$output = df\Launchpad::$app->getRegistryObject($key)) {
             $output = core\io\Multiplexer::defaultFactory('task');
             df\Launchpad::$app->setRegistryObject($output);
         }
@@ -142,15 +159,16 @@ class Manager implements arch\node\ITaskManager {
         return $output;
     }
 
-    protected function _getActiveContext() {
+    protected function _getActiveContext()
+    {
         $runner = df\Launchpad::$runner;
         $context = null;
 
-        if($runner instanceof core\IContextAware) {
+        if ($runner instanceof core\IContextAware) {
             $context = $runner->getContext();
         }
 
-        if(!$context) {
+        if (!$context) {
             $context = arch\Context::factory();
         }
 
@@ -158,8 +176,9 @@ class Manager implements arch\node\ITaskManager {
     }
 
 
-    public function shouldCaptureBackgroundTasks(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldCaptureBackgroundTasks(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_captureBackground = $flag;
             return $this;
         }

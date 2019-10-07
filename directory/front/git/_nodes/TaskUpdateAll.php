@@ -12,30 +12,30 @@ use df\halo;
 use df\arch;
 use df\spur;
 
-class TaskUpdateAll extends arch\node\Task {
-
-    public function execute() {
+class TaskUpdateAll extends arch\node\Task
+{
+    public function execute()
+    {
         $this->ensureDfSource();
 
         $this->io->writeLine('Finding all package repositories...');
         $model = $this->data->getModel('package');
 
-        foreach($model->getInstalledPackageList() as $package) {
-            if(!$package['repo']) {
+        foreach ($model->getInstalledPackageList() as $package) {
+            if (!$package['repo']) {
                 continue;
             }
 
             $this->io->writeLine('Pulling updates for package "'.$package['name'].'"');
+            $package['repo']->setMultiplexer($this->io);
 
             try {
-                if(!$result = $package['repo']->pull()) {
+                if (!$result = $package['repo']->pull()) {
                     $this->io->writeLine('!! Package "'.$package['name'].'" repo could not be found !!');
-                } else {
-                    $this->io->writeLine($result);
                 }
 
                 $this->io->writeLine();
-            } catch(spur\vcs\git\IException $e) {
+            } catch (spur\vcs\git\IException $e) {
                 $this->io->writeErrorLine($e->getMessage());
                 return;
             }
@@ -44,9 +44,9 @@ class TaskUpdateAll extends arch\node\Task {
         $this->io->writeLine('Done');
         $noBuild = isset($this->request['no-build']);
 
-        if($this->app->isDevelopment() && !$noBuild) {
+        if ($this->app->isDevelopment() && !$noBuild) {
             $this->runChild('app/build?dev', false);
-        } else if($this->app->isTesting() && !$noBuild) {
+        } elseif ($this->app->isTesting() && !$noBuild) {
             $this->runChild('app/build', false);
         }
     }

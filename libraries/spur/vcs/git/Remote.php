@@ -9,23 +9,26 @@ use df;
 use df\core;
 use df\spur;
 
-class Remote implements IRemote {
-    
+class Remote implements IRemote
+{
     use TRepository;
 
     protected $_url;
 
-    public function __construct($url) {
+    public function __construct($url)
+    {
         $this->_url = $url;
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
         return $this->_url;
     }
 
 
 
-    public function getRefs() {
+    public function getRefs()
+    {
         $result = $this->_runCommand('ls-remote', [
             '--tags', '--heads', $this->_url
         ]);
@@ -33,58 +36,63 @@ class Remote implements IRemote {
         return $this->_splitRefList($result);
     }
 
-    public function getTags() {
+    public function getTags()
+    {
         $result = $this->_runCommand('ls-remote', [
             '--tags', $this->_url
         ]);
 
-        return $this->_splitRefList($result, function($name, $commit) {
+        return $this->_splitRefList($result, function ($name, $commit) {
             return new Tag($this, substr($name, 10), $commit);
         });
     }
 
-    public function getHeads() {
+    public function getHeads()
+    {
         $result = $this->_runCommand('ls-remote', [
             '--heads', $this->_url
         ]);
 
-        return $this->_splitRefList($result, function($name) {
+        return $this->_splitRefList($result, function ($name) {
             return substr($name, 11);
         });
     }
 
 
-    public function cloneTo($path) {
+    public function cloneTo($path)
+    {
         return Repository::createClone($this->_url, $path);
     }
 
-    protected function _splitRefList($result, $callback=null) {
+    protected function _splitRefList($result, $callback=null)
+    {
         $result = str_replace(["\t", "\r\n"], [' ', "\n"], trim($result));
         $lines = explode("\n", $result);
         $output = [];
 
-        foreach($lines as $line) {
+        foreach ($lines as $line) {
             $parts = explode(' ', $line, 2);
             $commit = array_shift($parts);
             $name = array_shift($parts);
 
-            if($callback) {
+            if ($callback) {
                 $name = $callback($name, $commit);
             }
 
-            if(is_object($name)) {
+            if (is_object($name)) {
                 $output[] = $name;
             } else {
                 $output[$name] = $commit;
             }
         }
-        
+
         return $output;
     }
 
 
-// Commands
-    public function _runCommand($command, array $arguments=null) {
-        return self::_runCommandIn(null, $command, $arguments, $this->_gitUser);
+    // Commands
+    public function _runCommand($command, array $arguments=null)
+    {
+        return self::_runCommandIn(null, $command, $arguments, $this->_multiplexer, $this->_gitUser);
     }
 }

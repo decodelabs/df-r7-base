@@ -10,13 +10,16 @@ use df\core;
 use df\user;
 use df\halo;
 
-class Shell implements user\session\IPerpetuator {
+use DecodeLabs\Systemic;
 
+class Shell implements user\session\IPerpetuator
+{
     protected $_userKey;
     protected $_inputId;
 
-    public function __construct(user\session\IController $controller) {
-        $process = halo\process\Base::getCurrent();
+    public function __construct(user\session\IController $controller)
+    {
+        $process = Systemic::$process->getCurrent();
 
         $uid = $process->getOwnerId();
         $name = $process->getOwnerName();
@@ -27,22 +30,26 @@ class Shell implements user\session\IPerpetuator {
         $this->_inputId = $cache->get($this->_userKey);
     }
 
-    public function getInputId() {
+    public function getInputId()
+    {
         return $this->_inputId;
     }
 
-    public function canRecallIdentity() {
+    public function canRecallIdentity()
+    {
         return true;
     }
 
-    public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor) {
+    public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor)
+    {
         $cache = Shell_Cache::getInstance();
         $cache->set($this->_userKey, $descriptor->getPublicKey());
 
         return $this;
     }
 
-    public function destroy(user\session\IController $controller) {
+    public function destroy(user\session\IController $controller)
+    {
         $cache = Shell_Cache::getInstance();
         $cache->remove($this->_userKey);
 
@@ -51,18 +58,23 @@ class Shell implements user\session\IPerpetuator {
         return $this;
     }
 
-    public function handleDeadPublicKey($publicKey) {}
+    public function handleDeadPublicKey($publicKey)
+    {
+    }
 
-    public function perpetuateRecallKey(user\session\IController $controller, user\session\RecallKey $key) {
+    public function perpetuateRecallKey(user\session\IController $controller, user\session\RecallKey $key)
+    {
         // How's this going to work?
         return $this;
     }
 
-    public function getRecallKey(user\session\IController $controller) {
+    public function getRecallKey(user\session\IController $controller)
+    {
         return null;
     }
 
-    public function destroyRecallKey(user\session\IController $controller) {
+    public function destroyRecallKey(user\session\IController $controller)
+    {
         // Derp
         return $this;
     }
@@ -70,4 +82,6 @@ class Shell implements user\session\IPerpetuator {
 
 
 
-class Shell_Cache extends core\cache\Base {}
+class Shell_Cache extends core\cache\Base
+{
+}

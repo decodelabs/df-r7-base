@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Systemic;
+
 class Config extends core\Config
 {
     const ID = 'environment';
@@ -154,8 +156,7 @@ class Config extends core\Config
 
     protected function _extrapolateDaemonUser()
     {
-        $process = halo\process\Base::getCurrent();
-        return $process->getOwnerName();
+        return Systemic::$process->getCurrentOwner();
     }
 
     public function setDaemonGroup($group)
@@ -201,7 +202,6 @@ class Config extends core\Config
 
     protected function _extrapolateDaemonGroup()
     {
-        $process = halo\process\Base::getCurrent();
-        return $process->getGroupName();
+        return Systemic::$process->getCurrentGroup();
     }
 }

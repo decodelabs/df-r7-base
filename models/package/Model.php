@@ -100,10 +100,11 @@ class Model extends axis\Model
     }
 
     // Update remote
-    public function updateRemote($name)
+    public function updateRemote($name, core\io\IMultiplexer $multiplexer=null)
     {
         foreach ($this->getInstalledPackageList() as $package) {
             if ($package['name'] == $name && $package['repo']) {
+                $package['repo']->setMultiplexer($multiplexer);
                 return $package['repo']->updateRemote();
             }
         }
@@ -111,7 +112,7 @@ class Model extends axis\Model
         return false;
     }
 
-    public function updateRemotes()
+    public function updateRemotes(core\io\IMultiplexer $multiplexer=null)
     {
         $output = [];
 
@@ -120,6 +121,7 @@ class Model extends axis\Model
                 continue;
             }
 
+            $package['repo']->setMultiplexer($multiplexer);
             $output[$package['name']] = $package['repo']->updateRemote();
         }
 
@@ -128,10 +130,11 @@ class Model extends axis\Model
 
 
     // Pull
-    public function pull($name)
+    public function pull($name, core\io\IMultiplexer $multiplexer=null)
     {
         foreach ($this->getInstalledPackageList() as $package) {
             if ($package['name'] == $name && $package['repo']) {
+                $package['repo']->setMultiplexer($multiplexer);
                 return $package['repo']->pull();
             }
         }
@@ -139,7 +142,7 @@ class Model extends axis\Model
         return false;
     }
 
-    public function pullAll()
+    public function pullAll(core\io\IMultiplexer $multiplexer=null)
     {
         $output = [];
 
@@ -148,6 +151,7 @@ class Model extends axis\Model
                 continue;
             }
 
+            $package['repo']->setMultiplexer($multiplexer);
             $output[$package['name']] = $package['repo']->pull();
         }
 

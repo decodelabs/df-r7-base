@@ -17,6 +17,8 @@ use df\mesh;
 use df\opal;
 use df\user;
 
+use DecodeLabs\Systemic\Process\Result as ProcessResult;
+
 ##############################
 ## MAIN
 ##############################
@@ -58,13 +60,13 @@ interface IBuildTaskNode extends ITaskNode
 
 interface ITaskManager extends core\IManager
 {
-    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): halo\process\IResult;
+    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): ProcessResult;
     public function launchBackground($request, $user=null, bool $dfSource=false);
     public function launchQuietly($request);
     public function invoke($request, core\io\IMultiplexer $io=null): core\io\IMultiplexer;
     public function initiateStream($request): link\http\IResponse;
     public function queue($request, string $priority='medium'): flex\IGuid;
-    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): halo\process\IResult;
+    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): ProcessResult;
     public function queueAndLaunchBackground($request);
     public function getSharedIo(): core\io\IMultiplexer;
     public function shouldCaptureBackgroundTasks(bool $flag=null);

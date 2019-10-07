@@ -10,16 +10,24 @@ use df\core;
 use df\spur;
 use df\halo;
 
+use DecodeLabs\Systemic;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class UnexpectedValueException extends \UnexpectedValueException implements IException
+{
+}
 
 
 
 // Interfaces
-interface IRepository {
+interface IRepository
+{
     public function setGitUser($user);
     public function getGitUser();
 
@@ -33,7 +41,8 @@ interface IRepository {
     public function cloneTo($path);
 }
 
-interface ILocalRepository extends IRepository {
+interface ILocalRepository extends IRepository
+{
     public static function createNew($path, $isBare=false);
     public static function createClone($repoUrl, $path, $isBare=false);
     public static function getGitVersion();
@@ -86,17 +95,20 @@ interface ILocalRepository extends IRepository {
     public function checkoutCommit($commitId);
 }
 
-interface IRemote extends IRepository {
+interface IRemote extends IRepository
+{
     public function getUrl();
 }
 
-trait TRepository {
-
+trait TRepository
+{
     protected static $_gitPath = '/usr/bin/git';
     protected $_gitUser;
+    protected $_multiplexer;
 
-    public function setGitUser($user) {
-        if(empty($user)) {
+    public function setGitUser($user)
+    {
+        if (empty($user)) {
             $user = null;
         }
 
@@ -104,44 +116,59 @@ trait TRepository {
         return $this;
     }
 
-    public function getGitUser() {
+    public function getGitUser()
+    {
         return $this->_user;
     }
 
-    public static function setGitPath($path) {
+    public static function setGitPath($path)
+    {
         self::$_gitPath = $path;
     }
 
-    public static function getGitPath() {
+    public static function getGitPath()
+    {
         return self::$_gitPath;
     }
 
-    protected static function _runCommandIn($path, $command, array $arguments=null, $user=null) {
+    public function setMultiplexer(?core\io\IMultiplexer $multiplexer)
+    {
+        $this->_multiplexer = $multiplexer;
+        return $this;
+    }
+
+    public function getMultiplexer(): ?core\io\IMultiplexer
+    {
+        return $this->_multiplexer;
+    }
+
+    protected static function _runCommandIn($path, $command, array $arguments=null, ?core\io\IMultiplexer $multiplexer=null, string $user=null)
+    {
         $args = [$command];
 
-        if(!empty($arguments)) {
-            foreach($arguments as $key => $value) {
-                if($value === null || $value === false) {
+        if (!empty($arguments)) {
+            foreach ($arguments as $key => $value) {
+                if ($value === null || $value === false) {
                     continue;
                 }
 
-                if(is_int($key) && is_string($value)) {
+                if (is_int($key) && is_string($value)) {
                     $key = $value;
                     $value = true;
                 }
 
-                if(!is_bool($value) && substr($key, 0, 1) != '-') {
+                if (!is_bool($value) && substr($key, 0, 1) != '-') {
                     $key = '-'.$key;
 
-                    if(strlen($key) > 2) {
+                    if (strlen($key) > 2) {
                         $key = '-'.$key;
                     }
                 }
 
                 $arg = $key;
 
-                if(!is_bool($value)) {
-                    if(substr($key, 0, 2) == '--') {
+                if (!is_bool($value)) {
+                    if (substr($key, 0, 2) == '--') {
                         $arg .= '=';
                     }
 
@@ -152,10 +179,11 @@ trait TRepository {
             }
         }
 
-        $launcher = halo\process\launcher\Base::factory(basename(self::$_gitPath), $args, dirname(self::$_gitPath))
-            ->setUser($user);
+        $launcher = Systemic::$process->newLauncher(basename(self::$_gitPath), $args, dirname(self::$_gitPath))
+            ->setUser($user)
+            ->setR7Multiplexer($multiplexer);
 
-        if($path !== null) {
+        if ($path !== null) {
             $launcher->setWorkingDirectory($path);
         }
 
@@ -164,14 +192,14 @@ trait TRepository {
         $output = ltrim($result->getOutput(), "\r\n");
         $output = rtrim($output);
 
-        if($result->hasError()) {
+        if ($result->hasError()) {
             $error = trim($result->getError());
 
-            if(empty($output)) {
+            if (empty($output)) {
                 throw new RuntimeException($error);
             }
 
-            if(strtolower(substr($error, 0, 5)) == 'error:'
+            if (strtolower(substr($error, 0, 5)) == 'error:'
             || stristr($error, 'aborting')) {
                 throw new RuntimeException($error);
             }
@@ -183,7 +211,8 @@ trait TRepository {
     }
 }
 
-interface IBranch {
+interface IBranch
+{
     public function getName(): string;
     public function exists();
     public function isActive();
@@ -198,7 +227,8 @@ interface IBranch {
 }
 
 
-interface ICommit {
+interface ICommit
+{
     public function getId(): string;
     public function getTreeId();
     public function getTree();
@@ -214,7 +244,8 @@ interface ICommit {
     public function getRepository();
 }
 
-interface IFile {
+interface IFile
+{
     public function getId(): string;
     public function _setName($name);
     public function getName(): string;
@@ -226,7 +257,8 @@ interface IFile {
     public function getRepository();
 }
 
-interface ITree {
+interface ITree
+{
     public function getId(): string;
     public function _setName($name);
     public function getName(): string;
@@ -241,7 +273,8 @@ interface ITree {
 }
 
 
-interface IStatus extends \Countable {
+interface IStatus extends \Countable
+{
     public function refresh();
     public function getTracked();
     public function hasTracked();
@@ -264,7 +297,8 @@ interface IStatus extends \Countable {
     public function getUnpulledCommits($remoteBranch=null);
 }
 
-interface ITag {
+interface ITag
+{
     public function getName(): string;
     public function getVersion();
     public function getCommit();
