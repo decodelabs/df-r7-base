@@ -10,6 +10,7 @@ use df\core;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Managed as ManagedProcess;
 
@@ -163,7 +164,9 @@ class Daemon extends Base
         $res = Systemic::$process->newScriptLauncher($entryPath, [
                 'daemon', $name, '__spawn'
             ])
-            ->setR7Multiplexer(new core\io\Multiplexer([$this->io]))
+            //->setR7Multiplexer(new core\io\Multiplexer([$this->io]))
+            ->setDecoratable(false)
+            ->setIoBroker(Atlas::newCliBroker())
             ->launch();
 
         $remote = halo\daemon\Remote::factory($daemon);
