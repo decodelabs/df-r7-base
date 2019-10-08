@@ -128,6 +128,16 @@ abstract class Base implements IDaemon
     // Runtime
     final public function run()
     {
+        try {
+            $this->_runForked();
+        } catch (\Throwable $e) {
+            file_put_contents(df\Launchpad::$app->path.'/daemon-error', (string)$e);
+            throw $e;
+        }
+    }
+
+    private function _runForked()
+    {
         if ($this->_isRunning || $this->_isStopping || $this->_isStopped) {
             throw new LogicException(
                 'Daemon '.$this->getName().' has already been run'
@@ -173,16 +183,6 @@ abstract class Base implements IDaemon
             }
         }
 
-        try {
-            $this->_runForked();
-        } catch (\Throwable $e) {
-            file_put_contents(df\Launchpad::$app->path.'/daemon-error', (string)$e);
-            throw $e;
-        }
-    }
-
-    private function _runForked()
-    {
         $this->getEventDispatcher();
         $this->process->setTitle(df\Launchpad::$app->getName().' - '.$this->getName());
 
