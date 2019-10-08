@@ -20,6 +20,7 @@
         "decodelabs/collections": "dev-develop",
         "decodelabs/gadgets": "dev-develop",
         "decodelabs/atlas": "dev-develop",
+        "decodelabs/enlighten": "dev-develop",
 
         "erusev/parsedown": "^1.7"
     },
