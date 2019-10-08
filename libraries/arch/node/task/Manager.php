@@ -40,12 +40,14 @@ class Manager implements arch\node\ITaskManager
             if ($runner instanceof core\app\runner\Task) {
                 return Systemic::$process->newScriptLauncher($path, $args, null, $user)
                     ->setR7Multiplexer($runner->getMultiplexer())
+                    ->setDecoratable(!(bool)$user)
                     ->launch();
             }
         }
 
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
             ->setR7Multiplexer($multiplexer)
+            ->setDecoratable(!(bool)$user)
             ->launch();
     }
 
@@ -66,11 +68,13 @@ class Manager implements arch\node\ITaskManager
             if ($runner instanceof core\app\runner\Task) {
                 return Systemic::$process->newScriptLauncher($path, $args, null, $user)
                     ->setR7Multiplexer($runner->getMultiplexer())
+                    ->setDecoratable(!(bool)$user)
                     ->launch();
             }
         }
 
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
+            ->setDecoratable(!(bool)$user)
             ->launchBackground();
     }
 
