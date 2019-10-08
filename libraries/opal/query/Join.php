@@ -177,7 +177,7 @@ class Join implements IJoinQuery, Inspectable
         ]);
 
         if ($this->hasWhereClauses()) {
-            $entity->setProperty('*where', $insector($this->getWhereClauseList()));
+            $entity->setProperty('*where', $inspector($this->getWhereClauseList()));
         }
     }
 }
