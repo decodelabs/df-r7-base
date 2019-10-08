@@ -70,7 +70,7 @@ class Manager implements arch\node\ITaskManager
             }
         }
 
-        return Systemic::$process->launchBackgroundScript($path, $args, null, $user)
+        return Systemic::$process->newScriptLauncher($path, $args, null, $user)
             ->launchBackground();
     }
 

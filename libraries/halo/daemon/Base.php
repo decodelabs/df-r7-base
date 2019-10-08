@@ -165,7 +165,6 @@ abstract class Base implements IDaemon
             );
         }
 
-
         if (!static::TEST_MODE && $this->process->canFork()) {
             if ($this->process->fork()) {
                 return true;
@@ -177,7 +176,7 @@ abstract class Base implements IDaemon
         try {
             $this->_runForked();
         } catch (\Throwable $e) {
-            core\logException($e);
+            file_put_contents(df\Launchpad::$app->path.'/daemon-error', (string)$e);
             throw $e;
         }
     }
