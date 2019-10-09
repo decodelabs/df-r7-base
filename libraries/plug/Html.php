@@ -105,7 +105,7 @@ class Html implements arch\IDirectoryHelper
             return null;
         }
 
-        $output = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function ($matches) use ($view) {
+        $output = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function ($matches) {
             return ' '.$matches[1].'="'.$this->context->uri->__invoke($matches[2]).'"';
         }, $output);
 
