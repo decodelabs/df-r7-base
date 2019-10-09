@@ -33,7 +33,7 @@ class TaskRefresh extends arch\node\Task
         }
 
         if (empty($names)) {
-            $this->runChild('git/refresh-all', false);
+            $this->runChild('git/refresh-all');
             return;
         }
 

@@ -10,11 +10,12 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPrepare extends arch\node\Task {
-
-    public function execute() {
-        $this->runChild('theme/install-dependencies', false);
-        $this->runChild('theme/rebuild-sass', false);
+class TaskPrepare extends arch\node\Task
+{
+    public function execute()
+    {
+        $this->runChild('theme/install-dependencies');
+        $this->runChild('theme/rebuild-sass');
 
         $this->io->writeLine(' done');
     }

@@ -8,25 +8,36 @@ namespace df\core\io;
 use df;
 use df\core;
 
-
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class OverflowException extends \OverflowException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
+class OverflowException extends \OverflowException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
 
 
 
 // Reader
-interface IChunkSender {
+interface IChunkSender
+{
     public function setChunkReceiver(IChunkReceiver $reader);
     public function getChunkReceiver();
     public function sendChunks();
 }
 
 
-interface IReader {
+interface IReader
+{
     public function read();
     public function readChunk($length);
     public function readLine();
@@ -37,10 +48,11 @@ interface IReader {
 }
 
 
-trait TReader {
-
-    public function read() {
-        if(!$this->isReadingEnabled()) {
+trait TReader
+{
+    public function read()
+    {
+        if (!$this->isReadingEnabled()) {
             throw new LogicException(
                 'Reading has been shut down'
             );
@@ -48,15 +60,16 @@ trait TReader {
 
         $data = false;
 
-        while(false !== ($read = $this->_readChunk(1024))) {
+        while (false !== ($read = $this->_readChunk(1024))) {
             $data .= $read;
         }
 
         return $data;
     }
 
-    public function readChunk($length) {
-        if(!$this->isReadingEnabled()) {
+    public function readChunk($length)
+    {
+        if (!$this->isReadingEnabled()) {
             throw new LogicException(
                 'Reading has been shut down'
             );
@@ -65,8 +78,9 @@ trait TReader {
         return $this->_readChunk($length);
     }
 
-    public function readLine() {
-        if(!$this->isReadingEnabled()) {
+    public function readLine()
+    {
+        if (!$this->isReadingEnabled()) {
             throw new LogicException(
                 'Reading has been shut down'
             );
@@ -75,25 +89,28 @@ trait TReader {
         return rtrim($this->_readLine(), "\r\n");
     }
 
-    public function readChar() {
+    public function readChar()
+    {
         return $this->readChunk(1);
     }
 
-    public function writeTo(IWriter $writer) {
-        if(!$this->isReadingEnabled()) {
+    public function writeTo(IWriter $writer)
+    {
+        if (!$this->isReadingEnabled()) {
             throw new LogicException(
                 'Reading has been shut down'
             );
         }
 
-        while(false !== ($chunk = $this->_readChunk(1024))) {
+        while (false !== ($chunk = $this->_readChunk(1024))) {
             $writer->write($chunk);
         }
 
         return $this;
     }
 
-    public function isReadingEnabled() {
+    public function isReadingEnabled()
+    {
         return true;
     }
 
@@ -105,15 +122,17 @@ trait TReader {
 
 
 // Peek reader
-interface IPeekReader extends IReader {
+interface IPeekReader extends IReader
+{
     public function peek($length);
 }
 
 
-trait TPeekReader {
-
-    public function peek($length) {
-        if(!$this->isReadingEnabled()) {
+trait TPeekReader
+{
+    public function peek($length)
+    {
+        if (!$this->isReadingEnabled()) {
             throw new LogicException(
                 'Reading has been shut down'
             );
@@ -128,11 +147,13 @@ trait TPeekReader {
 
 
 // Writer
-interface IChunkReceiver {
+interface IChunkReceiver
+{
     public function writeChunk($chunk, $length=null);
 }
 
-interface IWriter extends IChunkReceiver {
+interface IWriter extends IChunkReceiver
+{
     public function setWriteCallback($callback);
     public function getWriteCallback();
 
@@ -145,12 +166,13 @@ interface IWriter extends IChunkReceiver {
 }
 
 
-trait TWriter {
-
+trait TWriter
+{
     private $_writeCallback;
 
-    public function setWriteCallback($callback) {
-        if($callback !== null) {
+    public function setWriteCallback($callback)
+    {
+        if ($callback !== null) {
             $callback = core\lang\Callback::factory($callback);
         }
 
@@ -158,37 +180,40 @@ trait TWriter {
         return $this;
     }
 
-    public function getWriteCallback() {
+    public function getWriteCallback()
+    {
         return $this->_writeCallback;
     }
 
-    protected function _triggerWriteCallback() {
-        if($this->_writeCallback) {
-            if(true !== $this->_writeCallback->invoke($this)) {
+    protected function _triggerWriteCallback()
+    {
+        if ($this->_writeCallback) {
+            if (true !== $this->_writeCallback->invoke($this)) {
                 $this->_writeCallback = null;
             }
         }
     }
 
-    public function write($data) {
-        if(!$this->isWritingEnabled()) {
+    public function write($data)
+    {
+        if (!$this->isWritingEnabled()) {
             throw new LogicException(
                 'Writing has already been shut down'
             );
         }
 
-        if(!$length = strlen($data)) {
+        if (!$length = strlen($data)) {
             return $this;
         }
 
-        for($written = 0; $written < $length; $written += $result) {
-            if($this->_writeCallback) {
+        for ($written = 0; $written < $length; $written += $result) {
+            if ($this->_writeCallback) {
                 $this->_triggerWriteCallback();
             }
 
             $result = $this->_writeChunk(substr($data, $written), $length - $written);
 
-            if($result === false) {
+            if ($result === false) {
                 throw new OverflowException(
                     'Unable to write to channel'
                 );
@@ -198,12 +223,14 @@ trait TWriter {
         return $this;
     }
 
-    public function writeLine($line='') {
+    public function writeLine($line='')
+    {
         return $this->write($line."\n");
     }
 
-    public function writeChunk($data, $length=null) {
-        if(!$this->isWritingEnabled()) {
+    public function writeChunk($data, $length=null)
+    {
+        if (!$this->isWritingEnabled()) {
             throw new LogicException(
                 'Writing has already been shut down'
             );
@@ -211,38 +238,41 @@ trait TWriter {
 
         $length = (int)$length;
 
-        if($length <= 0) {
+        if ($length <= 0) {
             $length = strlen($data);
         }
 
-        if($this->_writeCallback) {
+        if ($this->_writeCallback) {
             $this->_triggerWriteCallback();
         }
 
         return $this->_writeChunk($data, $length);
     }
 
-    public function writeBuffer(&$buffer, $length) {
+    public function writeBuffer(&$buffer, $length)
+    {
         $result = $this->writeChunk($buffer, $length);
         $buffer = substr($buffer, $result);
         return $result;
     }
 
-    public function writeFrom(IReader $reader) {
-        if(!$this->isWritingEnabled()) {
+    public function writeFrom(IReader $reader)
+    {
+        if (!$this->isWritingEnabled()) {
             throw new LogicException(
                 'Writing has already been shut down'
             );
         }
 
-        while(false !== ($chunk = $reader->readChunk(1024))) {
+        while (false !== ($chunk = $reader->readChunk(1024))) {
             $this->write($chunk);
         }
 
         return $this;
     }
 
-    public function isWritingEnabled() {
+    public function isWritingEnabled()
+    {
         return true;
     }
 
@@ -251,7 +281,8 @@ trait TWriter {
 }
 
 
-interface IFlushable {
+interface IFlushable
+{
     public function flush();
 }
 
@@ -260,23 +291,27 @@ interface IFlushable {
 
 
 // Channel
-interface IChannel extends IReader, IWriter, IFlushable {
+interface IChannel extends IReader, IWriter, IFlushable
+{
     public function getChannelId();
     public function writeError($error);
     public function writeErrorLine($line);
 }
 
-interface IMultiplexReaderChannel extends IChannel {
+interface IMultiplexReaderChannel extends IChannel
+{
     public function setReadBlocking($flag);
     public function getReadBlocking();
 }
 
-interface IContainedStateChannel extends IChannel {
+interface IContainedStateChannel extends IChannel
+{
     public function getErrorBuffer();
     public function flushErrorBuffer();
 }
 
-interface IStreamChannel extends IContainedStateChannel {
+interface IStreamChannel extends IContainedStateChannel
+{
     public function getStreamDescriptor();
     public function getMetadata();
     public function setBlocking($flag);
@@ -285,14 +320,10 @@ interface IStreamChannel extends IContainedStateChannel {
 }
 
 // File
-interface IMultiplexer extends IFlushable, core\IRegistryObject {
+interface IMultiplexer extends IFlushable, core\IRegistryObject
+{
     public function setId(?string $id);
     public function getId(): ?string;
-
-    public function setLineLevel($level);
-    public function getLineLevel();
-    public function indent();
-    public function outdent();
 
     public function setChannels(array $channels);
     public function addChannels(array $channels);
@@ -328,39 +359,42 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
 
 
 // Accept type
-interface IAcceptTypeProcessor {
+interface IAcceptTypeProcessor
+{
     public function setAcceptTypes(...$types);
     public function addAcceptTypes(...$types);
     public function getAcceptTypes();
     public function isTypeAccepted(...$types);
 }
 
-trait TAcceptTypeProcessor {
-
+trait TAcceptTypeProcessor
+{
     protected $_acceptTypes = [];
 
-    public function setAcceptTypes(...$types) {
+    public function setAcceptTypes(...$types)
+    {
         $this->_acceptTypes = [];
         return $this->addAcceptTypes(...$types);
     }
 
-    public function addAcceptTypes(...$types) {
-        foreach($types as $type) {
+    public function addAcceptTypes(...$types)
+    {
+        foreach ($types as $type) {
             $type = trim(strtolower($type));
 
-            if(!strlen($type)) {
+            if (!strlen($type)) {
                 continue;
             }
 
-            if($type{0} == '.') {
+            if ($type{0} == '.') {
                 $type = core\fs\Type::extToMime(substr($type, 1));
             }
 
-            if(false === strpos($type, '/')) {
+            if (false === strpos($type, '/')) {
                 $type .= '/*';
             }
 
-            if(!in_array($type, $this->_acceptTypes)) {
+            if (!in_array($type, $this->_acceptTypes)) {
                 $this->_acceptTypes[] = $type;
             }
         }
@@ -368,46 +402,48 @@ trait TAcceptTypeProcessor {
         return $this;
     }
 
-    public function getAcceptTypes() {
+    public function getAcceptTypes()
+    {
         return $this->_acceptTypes;
     }
 
-    public function isTypeAccepted(...$types) {
-        if(empty($this->_acceptTypes)) {
+    public function isTypeAccepted(...$types)
+    {
+        if (empty($this->_acceptTypes)) {
             return true;
         }
 
-        foreach($types as $type) {
-            if(!strlen($type)) {
+        foreach ($types as $type) {
+            if (!strlen($type)) {
                 continue;
             }
 
-            if($type{0} == '.') {
+            if ($type{0} == '.') {
                 $type = core\fs\Type::extToMime(substr($type, 1));
             }
 
             @list($category, $name) = explode('/', $type, 2);
 
-            foreach($this->_acceptTypes as $accept) {
-                if($accept == '*') {
+            foreach ($this->_acceptTypes as $accept) {
+                if ($accept == '*') {
                     return true;
                 }
 
                 @list($acceptCategory, $acceptName) = explode('/', $accept, 2);
 
-                if($acceptCategory == '*') {
+                if ($acceptCategory == '*') {
                     return true;
                 }
 
-                if($acceptCategory != $category) {
+                if ($acceptCategory != $category) {
                     continue;
                 }
 
-                if($acceptName == '*') {
+                if ($acceptName == '*') {
                     return true;
                 }
 
-                if($acceptName != $name) {
+                if ($acceptName != $name) {
                     continue;
                 }
 

@@ -17,8 +17,8 @@ class TaskPurgeLogs extends arch\node\Task
 
     public function execute()
     {
-        $this->runChild('pest-control/purge-error-logs', false);
-        $this->runChild('pest-control/purge-miss-logs', false);
-        $this->runChild('pest-control/purge-access-logs', false);
+        $this->runChild('pest-control/purge-error-logs');
+        $this->runChild('pest-control/purge-miss-logs');
+        $this->runChild('pest-control/purge-access-logs');
     }
 }

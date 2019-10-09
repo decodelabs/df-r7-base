@@ -19,7 +19,6 @@ class Multiplexer implements IMultiplexer, Inspectable
     protected $_id;
     protected $_channels = [];
     protected $_chunkReceivers = [];
-    protected $_lineLevel = 0;
     protected $_newLine = true;
 
     public static function defaultFactory($id=null)
@@ -59,40 +58,6 @@ class Multiplexer implements IMultiplexer, Inspectable
         return $this->_id;
     }
 
-
-    // Lines
-    public function setLineLevel($level)
-    {
-        $this->_lineLevel = (int)$level;
-
-        if ($this->_lineLevel < 0) {
-            $this->_lineLevel = 0;
-        }
-
-        return $this;
-    }
-
-    public function getLineLevel()
-    {
-        return $this->_lineLevel;
-    }
-
-    public function indent()
-    {
-        $this->_lineLevel++;
-        return $this;
-    }
-
-    public function outdent()
-    {
-        $this->_lineLevel--;
-
-        if ($this->_lineLevel < 0) {
-            $this->_lineLevel = 0;
-        }
-
-        return $this;
-    }
 
 
     // Registry
@@ -253,8 +218,6 @@ class Multiplexer implements IMultiplexer, Inspectable
             }
         }
 
-        $this->_writeLinePrefix($data);
-
         if (strlen($data)) {
             $this->_newLine = false;
         }
@@ -272,8 +235,6 @@ class Multiplexer implements IMultiplexer, Inspectable
 
     public function writeLine($line='')
     {
-        $this->_writeLinePrefix($line);
-
         foreach ($this->_channels as $channel) {
             $channel->writeLine($line);
         }
@@ -284,15 +245,6 @@ class Multiplexer implements IMultiplexer, Inspectable
 
         $this->_newLine = true;
         return $this;
-    }
-
-    protected function _writeLinePrefix($line)
-    {
-        if ($this->_newLine && $this->_lineLevel && strlen($line)) {
-            foreach ($this->_channels as $channel) {
-                $channel->write(str_repeat('  ', $this->_lineLevel - 1).'• ');
-            }
-        }
     }
 
     public function writeError($error)
@@ -309,8 +261,6 @@ class Multiplexer implements IMultiplexer, Inspectable
                 return;
             }
         }
-
-        $this->_writeErrorLinePrefix($error);
 
         if (strlen($error)) {
             $this->_newLine = false;
@@ -329,8 +279,6 @@ class Multiplexer implements IMultiplexer, Inspectable
 
     public function writeErrorLine($line)
     {
-        $this->_writeErrorLinePrefix($line);
-
         foreach ($this->_channels as $channel) {
             $channel->writeErrorLine($line);
         }
@@ -342,17 +290,6 @@ class Multiplexer implements IMultiplexer, Inspectable
         $this->_newLine = true;
         return $this;
     }
-
-    protected function _writeErrorLinePrefix($line)
-    {
-        if ($this->_newLine && $this->_lineLevel && strlen($line)) {
-            foreach ($this->_channels as $channel) {
-                $channel->writeError(str_repeat('  ', $this->_lineLevel - 1).'! ');
-            }
-        }
-    }
-
-
 
 
     public function readLine()

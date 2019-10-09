@@ -12,10 +12,11 @@ use df\arch;
 use df\spur;
 use df\fuse;
 
-class TaskReinstallDependencies extends arch\node\Task {
-
-    public function execute() {
-        $this->runChild('./purge-dependencies', false);
+class TaskReinstallDependencies extends arch\node\Task
+{
+    public function execute()
+    {
+        $this->runChild('./purge-dependencies');
         fuse\Manager::getInstance()->installAllDependencies($this->io);
     }
 }

@@ -17,16 +17,12 @@ class TaskInit extends arch\node\Task
     {
         $this->ensureDfSource();
 
-        $this->io->writeLine('Initialising app...');
         $this->runChild('app/generate-entry');
 
         $this->io->writeLine();
         $this->runChild('config/init');
 
         $this->io->writeLine();
-        $this->io->indent();
-        $this->io->writeLine('Set master database connection...');
-        $this->io->outdent();
         $this->runChild('axis/set-master?check=false');
 
         if (!$this->data->user->client->countAll()) {

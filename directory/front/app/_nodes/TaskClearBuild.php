@@ -10,9 +10,10 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskClearBuild extends arch\node\Task {
-
-    public function execute() {
+class TaskClearBuild extends arch\node\Task
+{
+    public function execute()
+    {
         $this->ensureDfSource();
 
         $appPath = $this->app->path;
@@ -20,7 +21,7 @@ class TaskClearBuild extends arch\node\Task {
 
         core\fs\File::delete($appPath.'/data/local/run/active/Run.php');
 
-        $this->runChild('app/purge-builds?all', false);
+        $this->runChild('app/purge-builds?all');
         core\fs\Dir::delete($appPath.'/data/local/run/');
 
         core\fs\File::delete($appPath.'/entry/'.$envId.'.testing.php');

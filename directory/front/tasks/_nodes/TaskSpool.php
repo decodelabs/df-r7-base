@@ -88,7 +88,7 @@ class TaskSpool extends arch\node\Task
 
 
         // Queue scheduled tasks
-        $this->runChild('tasks/queue-scheduled', false);
+        $this->runChild('tasks/queue-scheduled');
 
 
         // Select and lock queued tasks
@@ -118,9 +118,6 @@ class TaskSpool extends arch\node\Task
             ->orderBy('priority DESC', 'queueDate ASC')
             ->toList('id', 'request');
 
-        $lineLevel = $this->io->getLineLevel();
-        $this->io->outdent();
-
         foreach ($taskIds as $taskId => $request) {
             $this->io->writeLine();
             $this->io->writeLine('# '.$request.' : '.$taskId);
@@ -129,8 +126,6 @@ class TaskSpool extends arch\node\Task
             $this->runChild('tasks/launch-queued?id='.$taskId);
             $this->io->addChannel($this->_channel);
         }
-
-        $this->io->setLineLevel($lineLevel);
 
         $this->data->task->queue->delete()
             ->where('id', 'in', array_keys($taskIds))

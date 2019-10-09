@@ -60,7 +60,7 @@ class TaskBuild extends arch\node\Task
 
 
         // Run custom tasks
-        $this->runChild('./build-custom', false);
+        $this->runChild('./build-custom');
 
 
         // Clear config cache
@@ -80,19 +80,19 @@ class TaskBuild extends arch\node\Task
             $this->io->writeLine();
 
             // Late build tasks
-            $this->runChild('./build-custom?after='.$buildId, false);
+            $this->runChild('./build-custom?after='.$buildId);
 
             // Move to run path
             $controller->activateBuild();
         } else {
             // Late build tasks
-            $this->runChild('./build-custom?after', false);
+            $this->runChild('./build-custom?after');
         }
 
 
         // Generate entries
         $this->io->writeLine('# app/generate-entry');
-        $this->runChild('./generate-entry', false);
+        $this->runChild('./generate-entry');
 
         // Clear cache
         $this->io->writeLine();
@@ -102,7 +102,7 @@ class TaskBuild extends arch\node\Task
         // Restart daemons
         $this->io->writeLine();
         $this->io->writeLine('# daemons/restart-all');
-        $this->runChild('daemons/restart-all', false);
+        $this->runChild('daemons/restart-all');
 
         // Purge
         $this->io->writeLine();

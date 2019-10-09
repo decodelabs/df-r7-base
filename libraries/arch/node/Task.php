@@ -70,7 +70,7 @@ abstract class Task extends Base implements ITaskNode
         return parent::dispatch();
     }
 
-    public function runChild($request, bool $incLevel=false)
+    public function runChild($request)
     {
         $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request, true);
@@ -83,16 +83,7 @@ abstract class Task extends Base implements ITaskNode
         }
 
         $node->io = $this->io;
-
-        if ($incLevel) {
-            $this->io->indent();
-        }
-
         $output = $node->dispatch();
-
-        if ($incLevel) {
-            $this->io->outdent();
-        }
 
         return $output;
     }
