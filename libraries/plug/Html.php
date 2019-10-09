@@ -101,10 +101,15 @@ class Html implements arch\IDirectoryHelper
         //$parser->setSafeMode(true);
         $output = $parser->text($text);
 
-        if ($output !== null) {
-            $output = $this->string($output);
+        if ($output === null) {
+            return null;
         }
 
+        $output = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function ($matches) use ($view) {
+            return ' '.$matches[1].'="'.$this->context->uri->__invoke($matches[2]).'"';
+        }, $output);
+
+        $output = $this->string($output);
         return $output;
     }
 
