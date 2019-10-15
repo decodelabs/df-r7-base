@@ -39,14 +39,18 @@ class Manager implements arch\node\ITaskManager
 
             if ($runner instanceof core\app\runner\Task) {
                 return Systemic::$process->newScriptLauncher($path, $args, null, $user)
-                    ->setR7Multiplexer($runner->getMultiplexer())
+                    ->thenIf($io = $runner->getMultiplexer(), function ($launcher) use ($io) {
+                        $io->exportToAtlasLauncher($launcher);
+                    })
                     ->setDecoratable(!(bool)$user)
                     ->launch();
             }
         }
 
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
-            ->setR7Multiplexer($multiplexer)
+            ->thenIf($multiplexer, function ($launcher) use ($multiplexer) {
+                $multiplexer->exportToAtlasLauncher($launcher);
+            })
             ->setDecoratable(!(bool)$user)
             ->launch();
     }
@@ -67,7 +71,9 @@ class Manager implements arch\node\ITaskManager
 
             if ($runner instanceof core\app\runner\Task) {
                 return Systemic::$process->newScriptLauncher($path, $args, null, $user)
-                    ->setR7Multiplexer($runner->getMultiplexer())
+                    ->thenIf($io = $runner->getMultiplexer(), function ($launcher) use ($io) {
+                        $io->exportToAtlasLauncher($launcher);
+                    })
                     ->setDecoratable(!(bool)$user)
                     ->launch();
             }

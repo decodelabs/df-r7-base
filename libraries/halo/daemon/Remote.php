@@ -181,7 +181,7 @@ class Remote implements IRemote
             return Systemic::$process->newScriptLauncher($path, [
                     'daemon', $this->_daemon->getName(), $command
                 ])
-                ->setR7Multiplexer($this->_multiplexer)
+                ->then([$this->_multiplexer, 'exportToAtlasLauncher'])
                 ->setDecoratable(false)
                 ->launch();
         } else {

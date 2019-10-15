@@ -26,7 +26,7 @@ class TaskGrunt extends arch\node\Task implements arch\node\IBuildTaskNode
 
         Systemic::$process->newLauncher('grunt')
             ->setWorkingDirectory($this->app->path)
-            ->setR7Multiplexer($this->io)
+            ->then([$this->io, 'exportToAtlasLauncher'])
             ->launch();
     }
 }

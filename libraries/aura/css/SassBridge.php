@@ -298,7 +298,9 @@ class SassBridge implements ISassBridge
         $args[] = $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.css';
 
         $result = Systemic::$process->newLauncher($path, $args)
-            ->setR7Multiplexer($this->_multiplexer)
+            ->thenIf($this->_multiplexer, function ($launcher) {
+                $this->_multiplexer->exportToAtlasLauncher($launcher);
+            })
             ->setWorkingDirectory($this->_workDir)
             ->launch();
 

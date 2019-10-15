@@ -31,7 +31,7 @@ class TaskInstall extends arch\node\Task implements arch\node\IBuildTaskNode
 
         Systemic::$process->newLauncher('composer install', $args)
             ->setWorkingDirectory($this->app->path)
-            ->setR7Multiplexer($this->io)
+            ->then([$this->io, 'exportToAtlasLauncher'])
             ->launch();
     }
 }

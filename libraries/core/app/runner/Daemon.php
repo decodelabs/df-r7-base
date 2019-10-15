@@ -164,7 +164,7 @@ class Daemon extends Base
         $res = Systemic::$process->newScriptLauncher($entryPath, [
                 'daemon', $name, '__spawn'
             ])
-            //->setR7Multiplexer(new core\io\Multiplexer([$this->io]))
+            ->then([new core\io\Multiplexer([$this->io]), 'exportToAtlasLauncher'])
             ->setDecoratable(false)
             ->setIoBroker(Atlas::newCliBroker())
             ->launch();

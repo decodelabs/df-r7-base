@@ -181,7 +181,9 @@ trait TRepository
 
         $launcher = Systemic::$process->newLauncher(basename(self::$_gitPath), $args, dirname(self::$_gitPath))
             ->setUser($user)
-            ->setR7Multiplexer($multiplexer);
+            ->thenIf($multiplexer, function ($launcher) use ($multiplexer) {
+                $multiplexer->exportToAtlasLauncher($launcher);
+            });
 
         if ($path !== null) {
             $launcher->setWorkingDirectory($path);

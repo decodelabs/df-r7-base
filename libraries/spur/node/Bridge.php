@@ -38,7 +38,9 @@ class Bridge implements IBridge
             ])
             ->setWorkingDirectory($this->_nodePath)
             //->setDecoratable(false)
-            ->setR7Multiplexer($multiplexer)
+            ->thenIf($multiplexer, function ($launcher) use ($multiplexer) {
+                $multiplexer->exportToAtlasLauncher($launcher);
+            })
             ->launch();
 
         if ($result->hasError()) {

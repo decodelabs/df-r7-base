@@ -8,6 +8,13 @@ namespace df\core\io;
 use df;
 use df\core;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Broker;
+use DecodeLabs\Atlas\Channel\Stream;
+use DecodeLabs\Atlas\Channel\ReceiverProxy;
+use DecodeLabs\Systemic\Process\Launcher;
+
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -326,6 +333,38 @@ class Multiplexer implements IMultiplexer, Inspectable
             }
         }
 
+        return $this;
+    }
+
+
+    public function exportToAtlasLauncher(Launcher $launcher): self
+    {
+        $broker = Atlas::newBroker();
+
+        foreach ($this->getChannels() as $channel) {
+            if ($channel instanceof IMultiplexReaderChannel) {
+                $broker
+                    ->addInputChannel(Atlas::openCliInputStream())
+                    ->addOutputChannel(Atlas::openCliOutputStream())
+                    ->addErrorChannel(Atlas::openCliErrorStream());
+            } elseif ($channel instanceof IStreamChannel) {
+                $stream = new Stream($channel->getStreamDescriptor());
+                $broker->addOutputChannel($stream);
+                $broker->addErrorChannel($stream);
+            }
+        }
+
+        foreach ($this->getChunkReceivers() as $receiver) {
+            $channel = new ReceiverProxy($receiver, function ($receiver, $data) {
+                $receiver->writeChunk($data);
+            });
+
+            $broker
+                ->addOutputChannel($channel)
+                ->addErrorChannel($channel);
+        }
+
+        $launcher->setIoBroker($broker);
         return $this;
     }
 
