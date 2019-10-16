@@ -351,6 +351,14 @@ class Multiplexer implements IMultiplexer, Inspectable
                 $stream = new Stream($channel->getStreamDescriptor());
                 $broker->addOutputChannel($stream);
                 $broker->addErrorChannel($stream);
+            } else {
+                $receiver = new ReceiverProxy($channel, function ($channel, $data) {
+                    $channel->writeChunk($data);
+                });
+
+                $broker
+                    ->addOutputChannel($receiver)
+                    ->addErrorChannel($receiver);
             }
         }
 
