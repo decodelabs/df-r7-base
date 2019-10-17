@@ -11,36 +11,36 @@ use df\apex;
 use df\arch;
 use df\halo;
 
-class TaskEnsureActivity extends arch\node\Task {
-
+class TaskEnsureActivity extends arch\node\Task
+{
     use TDaemonTask;
 
-    public function execute() {
-        if(!$hasRestarted = $this->_hasRestarted()) {
+    public function execute()
+    {
+        if (!$hasRestarted = $this->_hasRestarted()) {
             $this->io->write('Looking up daemon list...');
         }
 
         $daemons = halo\daemon\Base::loadAll();
 
-        foreach($daemons as $name => $daemon) {
-            if(!$daemon::AUTOMATIC || $daemon::TEST_MODE) {
+        foreach ($daemons as $name => $daemon) {
+            if (!$daemon::AUTOMATIC || $daemon::TEST_MODE) {
                 unset($daemons[$name]);
                 continue;
             }
         }
 
-        if(!$hasRestarted) {
+        if (!$hasRestarted) {
             $this->io->writeLine(' found '.count($daemons).' to keep running');
         }
 
-        if(empty($daemons)) {
+        if (empty($daemons)) {
             return;
         }
 
         $this->_ensurePrivileges();
-        $this->task->shouldCaptureBackgroundTasks(true);
 
-        foreach($daemons as $name => $daemon) {
+        foreach ($daemons as $name => $daemon) {
             $remote = halo\daemon\Remote::factory($daemon);
             $remote->setMultiplexer($this->io);
             $remote->nudge();

@@ -21,8 +21,6 @@ class Manager implements arch\node\ITaskManager
 
     const REGISTRY_PREFIX = 'manager://task';
 
-    protected $_captureBackground = false;
-
     public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): ProcessResult
     {
         $request = arch\Request::factory($request);
@@ -32,19 +30,6 @@ class Manager implements arch\node\ITaskManager
 
         if ($dfSource) {
             $args[] = '--df-source';
-        }
-
-        if ($this->_captureBackground && !$multiplexer) {
-            $runner = df\Launchpad::$runner;
-
-            if ($runner instanceof core\app\runner\Task) {
-                return Systemic::$process->newScriptLauncher($path, $args, null, $user)
-                    ->thenIf($io = $runner->getMultiplexer(), function ($launcher) use ($io) {
-                        $io->exportToAtlasLauncher($launcher);
-                    })
-                    ->setDecoratable(!(bool)$user)
-                    ->launch();
-            }
         }
 
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
@@ -64,19 +49,6 @@ class Manager implements arch\node\ITaskManager
 
         if ($dfSource) {
             $args[] = '--df-source';
-        }
-
-        if ($this->_captureBackground) {
-            $runner = df\Launchpad::$runner;
-
-            if ($runner instanceof core\app\runner\Task) {
-                return Systemic::$process->newScriptLauncher($path, $args, null, $user)
-                    ->thenIf($io = $runner->getMultiplexer(), function ($launcher) use ($io) {
-                        $io->exportToAtlasLauncher($launcher);
-                    })
-                    ->setDecoratable(!(bool)$user)
-                    ->launch();
-            }
         }
 
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
@@ -142,13 +114,13 @@ class Manager implements arch\node\ITaskManager
     public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): ProcessResult
     {
         $id = $this->queue($request, 'medium');
-        return self::launch('tasks/launch-queued?id='.$id, $multiplexer);
+        return $this->launch('tasks/launch-queued?id='.$id, $multiplexer);
     }
 
     public function queueAndLaunchBackground($request)
     {
         $id = $this->queue($request, 'medium');
-        return self::launchBackground('tasks/launch-queued?id='.$id);
+        return $this->launchBackground('tasks/launch-queued?id='.$id);
     }
 
     public function getSharedIo(): core\io\IMultiplexer
@@ -183,16 +155,5 @@ class Manager implements arch\node\ITaskManager
         }
 
         return $context;
-    }
-
-
-    public function shouldCaptureBackgroundTasks(bool $flag=null)
-    {
-        if ($flag !== null) {
-            $this->_captureBackground = $flag;
-            return $this;
-        }
-
-        return $this->_captureBackground;
     }
 }

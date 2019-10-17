@@ -88,32 +88,6 @@ abstract class Task extends Base implements ITaskNode
         return $output;
     }
 
-    public function runChildQuietly($request)
-    {
-        $request = $this->context->uri->directoryRequest($request);
-        $context = $this->context->spawnInstance($request, true);
-        $node = Base::factory($context);
-
-        if (!$node instanceof self) {
-            throw core\Error::{'EDefinition'}(
-                'Child node '.$request.' does not extend arch\\node\\Task'
-            );
-        }
-
-        $capture = $this->task->shouldCaptureBackgroundTasks();
-        $this->task->shouldCaptureBackgroundTasks(false);
-
-        $node->io = new core\io\Multiplexer([
-            $output = new core\fs\MemoryFile()
-        ]);
-
-        $node->dispatch();
-        $this->task->shouldCaptureBackgroundTasks($capture);
-
-        return $output;
-    }
-
-
 
     public function ensureDfSource()
     {
@@ -128,7 +102,6 @@ abstract class Task extends Base implements ITaskNode
         $request = clone $this->request;
 
         throw new arch\ForcedResponse(function () use ($user, $request) {
-            $this->task->shouldCaptureBackgroundTasks(true);
             $this->task->launch($request, $this->io, $user, true);
         });
     }

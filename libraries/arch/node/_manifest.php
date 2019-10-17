@@ -48,7 +48,6 @@ interface ITaskNode extends INode
 
     public function extractCliArguments(core\cli\ICommand $command);
     public function runChild($request);
-    public function runChildQuietly($request);
 
     public function ensureDfSource();
 }
@@ -69,7 +68,6 @@ interface ITaskManager extends core\IManager
     public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): ProcessResult;
     public function queueAndLaunchBackground($request);
     public function getSharedIo(): core\io\IMultiplexer;
-    public function shouldCaptureBackgroundTasks(bool $flag=null);
 }
 
 

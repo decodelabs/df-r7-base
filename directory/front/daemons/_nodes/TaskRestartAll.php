@@ -36,8 +36,6 @@ class TaskRestartAll extends arch\node\Task
             return;
         }
 
-        $this->task->shouldCaptureBackgroundTasks(true);
-
         foreach ($daemons as $name => $daemon) {
             $remote = halo\daemon\Remote::factory($daemon);
 

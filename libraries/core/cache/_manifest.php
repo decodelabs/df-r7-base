@@ -8,7 +8,8 @@ namespace df\core\cache;
 use df;
 use df\core;
 
-interface IStore extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Countable {
+interface IStore extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Countable
+{
     public static function getInstance(): IStore;
     public static function getCacheId(): string;
     public static function createCacheId(): string;
@@ -24,20 +25,23 @@ interface IStore extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Co
     public function getKeys(): array;
 }
 
-interface ICache extends IStore {
+interface ICache extends IStore
+{
     public function getCacheBackend(): IBackend;
     public function getLifeTime(): int;
     public function getDefaultLifeTime(): int;
     public function clearAll();
 }
 
-interface IFileStore extends IStore {
+interface IFileStore extends IStore
+{
     public function clearOlderThan($lifeTime);
     public function getFileList(): array;
 }
 
 
-interface ISessionExtendedCache extends ICache {
+interface ISessionExtendedCache extends ICache
+{
     public function clearGlobal();
     public function setSession(string $key, $value);
     public function getSession(string $key, $default=null);
@@ -51,9 +55,10 @@ interface ISessionExtendedCache extends ICache {
 
 
 
-interface IBackend extends core\IValueMap, \Countable {
-    public static function purgeApp(core\collection\ITree $options);
-    public static function purgeAll(core\collection\ITree $options);
+interface IBackend extends core\IValueMap, \Countable
+{
+    public static function purgeApp(core\collection\ITree $options, core\io\IMultiplexer $io=null);
+    public static function purgeAll(core\collection\ITree $options, core\io\IMultiplexer $io=null);
     public static function prune(core\collection\ITree $options);
     public static function clearFor(core\collection\ITree $options, ICache $cache);
     public static function isLoadable(): bool;

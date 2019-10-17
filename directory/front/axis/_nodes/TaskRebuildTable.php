@@ -32,7 +32,6 @@ class TaskRebuildTable extends arch\node\Task
 
     public function execute()
     {
-        $this->task->shouldCaptureBackgroundTasks(true);
         $unitId = $this->request['unit'];
 
         if (!$unit = axis\Model::loadUnitFromId($unitId)) {

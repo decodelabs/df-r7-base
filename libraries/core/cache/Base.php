@@ -8,8 +8,8 @@ namespace df\core\cache;
 use df;
 use df\core;
 
-abstract class Base implements ICache {
-
+abstract class Base implements ICache
+{
     use TCache;
 
     const REGISTRY_PREFIX = 'cache://';
@@ -19,49 +19,53 @@ abstract class Base implements ICache {
 
     private $_backend;
 
-    public static function purgeApp(): void {
-        if(function_exists('opcache_reset')) {
+    public static function purgeApp(core\io\IMultiplexer $io=null): void
+    {
+        if (function_exists('opcache_reset')) {
             opcache_reset();
         }
 
         $config = Config::getInstance();
 
-        foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
+        foreach (df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
-            $class::purgeApp($options);
+            $class::purgeApp($options, $io);
         }
     }
 
-    public static function purgeAll(): void {
-        if(function_exists('opcache_reset')) {
+    public static function purgeAll(core\io\IMultiplexer $io=null): void
+    {
+        if (function_exists('opcache_reset')) {
             opcache_reset();
         }
 
         $config = Config::getInstance();
 
-        foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
+        foreach (df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
-            $class::purgeAll($options);
+            $class::purgeAll($options, $io);
         }
     }
 
 
-// Construct
-    protected function __construct() {
+    // Construct
+    protected function __construct()
+    {
         $this->_backend = $this->_loadBackend();
     }
 
-    protected function _loadBackend(): IBackend {
+    protected function _loadBackend(): IBackend
+    {
         $config = Config::getInstance();
 
         $options = $config->getOptionsFor($this);
         $backendName = null;
 
-        if($options->has('backend')) {
+        if ($options->has('backend')) {
             $backendName = $options->get('backend');
         }
 
-        if(!$backendName) {
+        if (!$backendName) {
             throw core\Error::{'ESetup'}(
                 'There are no available backends for cache '.$this->getCacheId()
             );
@@ -72,14 +76,15 @@ abstract class Base implements ICache {
         return $output;
     }
 
-    public static function backendFactory(ICache $cache, $name, core\collection\ITree $options, $lifeTime=0): IBackend {
+    public static function backendFactory(ICache $cache, $name, core\collection\ITree $options, $lifeTime=0): IBackend
+    {
         $class = 'df\\core\\cache\\backend\\'.$name;
 
-        if(isset($options->lifeTime)) {
+        if (isset($options->lifeTime)) {
             $lifeTime = (int)$options['lifeTime'];
         }
 
-        if($lifeTime < 1) {
+        if ($lifeTime < 1) {
             $lifeTime = $cache->getDefaultLifeTime();
         }
 
@@ -88,30 +93,35 @@ abstract class Base implements ICache {
 
 
 
-// Properties
-    public function getCacheBackend(): IBackend {
+    // Properties
+    public function getCacheBackend(): IBackend
+    {
         return $this->_backend;
     }
 
-    public function getCacheStats(): array {
+    public function getCacheStats(): array
+    {
         return $this->_backend->getStats();
     }
 
-    public function getLifeTime(): int {
+    public function getLifeTime(): int
+    {
         return $this->_backend->getLifeTime();
     }
 
-    public function getDefaultLifeTime(): int {
+    public function getDefaultLifeTime(): int
+    {
         return static::DEFAULT_LIFETIME;
     }
 
 
-// Access
-    public function set($key, $value, $lifeTime=null) {
-        if($lifeTime !== null) {
+    // Access
+    public function set($key, $value, $lifeTime=null)
+    {
+        if ($lifeTime !== null) {
             $lifeTime = (int)$lifeTime;
 
-            if($lifeTime <= 0) {
+            if ($lifeTime <= 0) {
                 $lifeTime = null;
             }
         }
@@ -120,28 +130,33 @@ abstract class Base implements ICache {
         return $this;
     }
 
-    public function get($key, $default=null) {
+    public function get($key, $default=null)
+    {
         return $this->_backend->get($key, $default);
     }
 
-    public function has(...$keys) {
+    public function has(...$keys)
+    {
         return $this->_backend->has(...$keys);
     }
 
-    public function remove(...$keys) {
+    public function remove(...$keys)
+    {
         $this->_backend->remove(...$keys);
         return $this;
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->_backend->clear();
         return $this;
     }
 
-    public function clearAll() {
+    public function clearAll()
+    {
         $config = Config::getInstance();
 
-        foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
+        foreach (df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
             $class::clearFor($options, $this);
         }
@@ -149,26 +164,31 @@ abstract class Base implements ICache {
         return $this;
     }
 
-    public function clearBegins(string $key) {
+    public function clearBegins(string $key)
+    {
         $this->_backend->clearBegins($key);
         return $this;
     }
 
-    public function clearMatches(string $regex) {
+    public function clearMatches(string $regex)
+    {
         $this->_backend->clearMatches($regex);
         return $this;
     }
 
-    public function count() {
+    public function count()
+    {
         return $this->_backend->count();
     }
 
-    public function getKeys(): array {
+    public function getKeys(): array
+    {
         return $this->_backend->getKeys();
     }
 
 
-    public function getCreationTime(string $key): ?int {
+    public function getCreationTime(string $key): ?int
+    {
         return $this->_backend->getCreationTime($key);
     }
 }
