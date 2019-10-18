@@ -12,21 +12,22 @@ use df\arch;
 use df\neon;
 use df\link;
 
-class TaskTransfer extends arch\node\Task {
-
-    public function execute() {
+class TaskTransfer extends arch\node\Task
+{
+    public function execute()
+    {
         $handlerList = neon\mediaHandler\Base::getEnabledHandlerList();
         $from = neon\mediaHandler\Base::getInstance();
         unset($handlerList[$from->getName()]);
 
         $to = ucfirst($this->request['to']);
 
-        if($to == $from->getName()) {
+        if ($to == $from->getName()) {
             $this->io->writeErrorLine('Target media handler \''.$to.'\' is already the default');
             return;
         }
 
-        if(!isset($handlerList[$to])) {
+        if (!isset($handlerList[$to])) {
             $this->io->writeErrorLine('Target media handler \''.$to.'\' is not enabled');
             return;
         }
@@ -34,7 +35,7 @@ class TaskTransfer extends arch\node\Task {
         $to = neon\mediaHandler\Base::factory($to);
         $this->io->writeLine('Transferring media library from \''.$from->getDisplayName().'\' to \''.$to->getDisplayName().'\'');
 
-        $tempDir = core\fs\Dir::createUploadTemp();
+        $tempDir = link\http\upload\Handler::createUploadTemp();
         $this->io->writeLine('Using temp dir: '.core\fs\Dir::stripPathLocation($tempDir));
 
         $httpClient = new link\http\Client();
@@ -45,19 +46,19 @@ class TaskTransfer extends arch\node\Task {
 
         $this->io->writeLine();
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $fileId = $file['id'];
 
             $this->io->writeLine('Processing file entry: #'.$fileId);
 
-            foreach($file['versions'] as $version) {
-                if($version['purgeDate']) {
+            foreach ($file['versions'] as $version) {
+                if ($version['purgeDate']) {
                     continue;
                 }
 
                 $versionId = $version['id'];
 
-                if($from instanceof neon\mediaHandler\ILocalDataHandler) {
+                if ($from instanceof neon\mediaHandler\ILocalDataHandler) {
                     $filePath = $from->getFilePath($fileId, $versionId);
                     $deleteFile = false;
                 } else {
@@ -69,7 +70,7 @@ class TaskTransfer extends arch\node\Task {
 
                     $response = $httpClient->getFile($url, $tempDir.'/'.$fileId, $versionId);
 
-                    if(!$response->isOk()) {
+                    if (!$response->isOk()) {
                         $this->io->writeErrorLine('!! HTTP file transfer failed !!');
                         continue;
                     }
@@ -81,7 +82,7 @@ class TaskTransfer extends arch\node\Task {
                 $this->io->writeLine('Publishing version: #'.$versionId.' - '.$version['fileName']);
                 $to->transferFile($fileId, $versionId, $version['isActive'], $filePath, $version['fileName']);
 
-                if($deleteFile) {
+                if ($deleteFile) {
                     core\fs\File::delete($filePath);
                 }
             }
@@ -99,14 +100,14 @@ class TaskTransfer extends arch\node\Task {
             ->save();
 
 
-        if(isset($this->request['delete'])) {
+        if (isset($this->request['delete'])) {
             $this->io->writeLine();
             $this->io->writeLine('Deleting files from source storage \''.$from->getDisplayName().'\'');
 
             $files = $this->data->media->file->select('id')
                 ->orderBy('creationDate');
 
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 $this->io->writeLine('Deleting file entry: #'.$file['id']);
                 $from->deleteFile($file['id']);
             }

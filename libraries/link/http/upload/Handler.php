@@ -8,39 +8,90 @@ namespace df\link\http\upload;
 use df;
 use df\core;
 use df\link;
+use df\flex;
 
-class Handler implements link\http\IUploadHandler {
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Dir;
 
+class Handler implements link\http\IUploadHandler
+{
     use core\io\TAcceptTypeProcessor;
 
     protected $_files = [];
     protected $_extensions = [];
     protected $_maxSize;
 
-    public function __construct() {
-        if(empty($_FILES)) {
+
+    public static function createUploadTemp(?string $path=null): Dir
+    {
+        if ($path === null) {
+            $path = df\Launchpad::$app->isDistributed ?
+                df\Launchpad::$app->getSharedDataPath() :
+                df\Launchpad::$app->getLocalDataPath();
+
+            $path .= '/upload/'.flex\Guid::uuid1();
+        }
+
+        return Atlas::$fs->createDir($path);
+    }
+
+    public static function purgeUploadTemp(): void
+    {
+        $path = df\Launchpad::$app->isDistributed ?
+            df\Launchpad::$app->getSharedDataPath() :
+            df\Launchpad::$app->getLocalDataPath();
+
+        $path .= '/upload/';
+
+
+        foreach (Atlas::$fs->scanDirs($path) as $name => $dir) {
+            try {
+                $guid = flex\Guid::factory($name);
+            } catch (\Throwable $e) {
+                continue;
+            }
+
+            $time = $guid->getTime();
+
+            if (!$time) {
+                continue;
+            }
+
+            $date = core\time\Date::factory((int)$time);
+
+            if ($date->lt('-2 days')) {
+                $dir->delete();
+            }
+        }
+    }
+
+
+
+    public function __construct()
+    {
+        if (empty($_FILES)) {
             return;
         }
 
-        foreach($_FILES as $key => $set) {
-            if(is_array($set['name'])) {
+        foreach ($_FILES as $key => $set) {
+            if (is_array($set['name'])) {
                 $sets = [];
 
-                foreach($set as $fileVar => $array) {
+                foreach ($set as $fileVar => $array) {
                     $array = $this->_flattenArray($array, $key);
 
-                    foreach($array as $field => $value) {
+                    foreach ($array as $field => $value) {
                         $sets[$field][$fileVar] = $value;
                     }
                 }
 
-                foreach($sets as $key => $set) {
-                    if(!empty($set['name'])) {
+                foreach ($sets as $key => $set) {
+                    if (!empty($set['name'])) {
                         $this->_files[$key] = $set;
                     }
                 }
             } else {
-                if(!empty($set['name'])) {
+                if (!empty($set['name'])) {
                     $this->_files[$key] = $set;
                 }
             }
@@ -49,15 +100,16 @@ class Handler implements link\http\IUploadHandler {
         $this->setMaxFileSize('256mb');
     }
 
-    protected function _flattenArray(array $array, $currentKey='') {
+    protected function _flattenArray(array $array, $currentKey='')
+    {
         $output = [];
 
-        foreach($array as $key => $var) {
+        foreach ($array as $key => $var) {
             $thisKey = $currentKey.'['.$key.']';
             //$thisKey = $currentKey.'.'.$key;
 
-            if(is_array($var)) {
-                foreach($this->_flattenArray($var, $thisKey) as $childKey => $value) {
+            if (is_array($var)) {
+                foreach ($this->_flattenArray($var, $thisKey) as $childKey => $value) {
                     $output[$childKey] = $value;
                 }
             } else {
@@ -68,48 +120,54 @@ class Handler implements link\http\IUploadHandler {
         return $output;
     }
 
-    public function setAllowedExtensions(array $extensions) {
+    public function setAllowedExtensions(array $extensions)
+    {
         $this->_extensions = [];
         return $this->addAllowedExtensions($extensions);
     }
 
-    public function addAllowedExtensions(array $extensions) {
-        foreach($extensions as $ext) {
+    public function addAllowedExtensions(array $extensions)
+    {
+        foreach ($extensions as $ext) {
             $this->_extensions[] = $this->_normalizeExtension($ext);
         }
 
         return $this;
     }
 
-    public function getAllowedExtensions() {
+    public function getAllowedExtensions()
+    {
         return $this->_extensions;
     }
 
-    public function isExtensionAllowed($extension) {
-        if(empty($this->_extensions)) {
+    public function isExtensionAllowed($extension)
+    {
+        if (empty($this->_extensions)) {
             return true;
         }
 
         return in_array($this->_normalizeExtension($extension), $this->_extensions);
     }
 
-    protected function _normalizeExtension($ext) {
+    protected function _normalizeExtension($ext)
+    {
         return ltrim(trim(strtolower($ext)), '.');
     }
 
 
 
-    public function setMaxFileSize($size) {
+    public function setMaxFileSize($size)
+    {
         $size = core\unit\FileSize::factory($size);
         $postMaxSize = core\unit\FileSize::factory(ini_get('post_max_size'));
 
-        if($postMaxSize->getValue() > -1 && $postMaxSize->getMegabytes() < $size->getMegabytes()) {
+        if ($postMaxSize->getValue() > -1 && $postMaxSize->getMegabytes() < $size->getMegabytes()) {
             $size = $postMaxSize;
         }
 
         $uploadMaxSize = core\unit\FileSize::factory(ini_get('upload_max_filesize'));
 
-        if($uploadMaxSize->getValue() > -1 && $uploadMaxSize->getMegabytes() < $size->getMegabytes()) {
+        if ($uploadMaxSize->getValue() > -1 && $uploadMaxSize->getMegabytes() < $size->getMegabytes()) {
             $size = $uploadMaxSize;
         }
 
@@ -117,20 +175,23 @@ class Handler implements link\http\IUploadHandler {
         return $this;
     }
 
-    public function getMaxFileSize() {
+    public function getMaxFileSize()
+    {
         return $this->_maxSize;
     }
 
-    public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction=IUploadFile::RENAME) {
-        foreach($this as $file) {
+    public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction=IUploadFile::RENAME)
+    {
+        foreach ($this as $file) {
             $file->upload($destination, $inputCollection->{$file->getFieldName()}, $conflictAction);
         }
 
         return $this;
     }
 
-    public function tempUploadAll(core\collection\IInputTree $inputCollection) {
-        foreach($this as $file) {
+    public function tempUploadAll(core\collection\IInputTree $inputCollection)
+    {
+        foreach ($this as $file) {
             $file->tempUpload($inputCollection);
         }
 
@@ -138,36 +199,43 @@ class Handler implements link\http\IUploadHandler {
     }
 
 
-// Countable
-    public function count() {
+    // Countable
+    public function count()
+    {
         return count($this->_files);
     }
 
-// Iterator
-    public function getIterator() {
+    // Iterator
+    public function getIterator()
+    {
         $output = [];
 
-        foreach($this->_files as $key => $set) {
+        foreach ($this->_files as $key => $set) {
             $output[$key] = new File($this, $key, $set);
         }
 
         return new \ArrayIterator($output);
     }
 
-// Array access
-    public function offsetSet($offset, $value) {}
+    // Array access
+    public function offsetSet($offset, $value)
+    {
+    }
 
-    public function offsetGet($offset) {
-        if(isset($this->_files[$offset])) {
+    public function offsetGet($offset)
+    {
+        if (isset($this->_files[$offset])) {
             return new File($this, $offset, $this->_files[$offset]);
         }
     }
 
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
         return isset($this->_files[$offset]);
     }
 
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
         unset($this->_files[$offset]);
     }
 }

@@ -67,50 +67,6 @@ class Dir implements IDirectory, Inspectable
         );
     }
 
-    public static function createUploadTemp($path=null)
-    {
-        if ($path === null) {
-            $path = df\Launchpad::$app->isDistributed ?
-                df\Launchpad::$app->getSharedDataPath() :
-                df\Launchpad::$app->getLocalDataPath();
-
-            $path .= '/upload/'.flex\Guid::uuid1();
-        }
-
-        return self::create($path);
-    }
-
-    public static function purgeUploadTemp()
-    {
-        $path = df\Launchpad::$app->isDistributed ?
-            df\Launchpad::$app->getSharedDataPath() :
-            df\Launchpad::$app->getLocalDataPath();
-
-        $path .= '/upload/';
-
-
-        foreach ((new self($path))->scanDirs() as $name => $dir) {
-            try {
-                $guid = flex\Guid::factory($name);
-            } catch (\Throwable $e) {
-                continue;
-            }
-
-            $time = $guid->getTime();
-
-            if (!$time) {
-                continue;
-            }
-
-            $date = core\time\Date::factory((int)$time);
-
-            if ($date->lt('-2 days')) {
-                $dir->unlink();
-            }
-        }
-    }
-
-
     public static function isDirRecent($path, $timeout)
     {
         return self::factory($path)->isRecent($timeout);
