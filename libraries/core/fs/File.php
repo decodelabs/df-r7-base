@@ -116,24 +116,6 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
         return self::factory($path)->unlink();
     }
 
-    public static function iFileExists($path)
-    {
-        if (file_exists($path)) {
-            return $path;
-        }
-
-        $files = glob(dirname($path).'/*', GLOB_NOSORT);
-        $lower = strtolower($path);
-
-        foreach ($files as $file) {
-            if (strtolower($file) == $lower) {
-                return $file;
-            }
-        }
-
-        return false;
-    }
-
 
     // Init
     public static function factory($file, $mode=null)
