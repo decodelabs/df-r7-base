@@ -9,6 +9,9 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Dir;
+
 class Controller implements IController
 {
     const APP_EXPORT = [
@@ -33,7 +36,7 @@ class Controller implements IController
         $this->_shouldCompile = !df\Launchpad::$app->isDevelopment();
 
         $this->_runPath = df\Launchpad::$app->getLocalDataPath().'/run';
-        $this->_destination = new core\fs\Dir(df\Launchpad::$app->getLocalDataPath().'/build/'.$this->_id);
+        $this->_destination = Atlas::$fs->dir(df\Launchpad::$app->getLocalDataPath().'/build/'.$this->_id);
     }
 
     public function getBuildId(): string
@@ -73,7 +76,7 @@ class Controller implements IController
         return $this->_runPath;
     }
 
-    public function getDestination(): core\fs\Dir
+    public function getDestination(): Dir
     {
         return $this->_destination;
     }
@@ -100,14 +103,14 @@ class Controller implements IController
         // Copy packages
         foreach (array_reverse($packages) as $package) {
             yield $package->name;
-            $packageDir = new core\fs\Dir($package->path);
+            $packageDir = Atlas::$fs->dir($package->path);
 
             if ($libDir = $packageDir->getExistingDir('libraries')) {
-                $libDir->mergeInto($this->_destination);
+                $libDir->mergeInto($destinationPath);
             }
 
             if ($packageFile = $packageDir->getExistingFile('Package.php')) {
-                $packageFile->copyTo($destinationPath.'/apex/packages/'.$package->name.'/Package.php');
+                $packageFile->copy($destinationPath.'/apex/packages/'.$package->name.'/Package.php');
             }
 
             foreach ($packageDir->scanDirs() as $name => $dir) {
@@ -122,7 +125,7 @@ class Controller implements IController
 
         // Copy app folder
         yield 'app';
-        $appDir = new core\fs\Dir($appPackage->path);
+        $appDir = Atlas::$fs->dir($appPackage->path);
 
         foreach ($appDir->scanDirs() as $name => $dir) {
             if (!in_array($name, self::APP_EXPORT)) {
@@ -130,7 +133,7 @@ class Controller implements IController
             }
 
             if ($name == 'libraries') {
-                $dir->mergeInto($this->_destination);
+                $dir->mergeInto($destinationPath);
                 continue;
             } else {
                 $dir->mergeInto($destinationPath.'/apex/'.$name);
@@ -142,14 +145,14 @@ class Controller implements IController
                 continue;
             }
 
-            $file->copyTo($destinationPath.'/apex/'.$name);
+            $file->copy($destinationPath.'/apex/'.$name);
         }
 
-        $appDir->getFile('App.php')->copyTo($destinationPath.'/apex/App.php');
+        $appDir->getFile('App.php')->copy($destinationPath.'/apex/App.php');
 
 
         // Generate run file
-        core\fs\File::create(
+        Atlas::$fs->createFile(
             $destinationPath.'/Run.php',
             '<?php'."\n".
             'namespace df;'."\n".
@@ -162,13 +165,13 @@ class Controller implements IController
 
     public function activateBuild()
     {
-        core\fs\Dir::delete($this->_runPath.'/backup');
+        Atlas::$fs->deleteDir($this->_runPath.'/backup');
 
         if (is_dir($this->_runPath.'/active')) {
-            core\fs\Dir::move($this->_runPath.'/active', $this->_runPath.'/backup');
+            Atlas::$fs->renameDir($this->_runPath.'/active', 'backup');
         }
 
         $this->_destination->moveTo($this->_runPath, 'active');
-        core\fs\Dir::delete($this->_runPath.'/backup');
+        Atlas::$fs->deleteDir($this->_runPath.'/backup');
     }
 }

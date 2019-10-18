@@ -10,6 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Atlas;
+
 class TaskClearBuild extends arch\node\Task
 {
     public function execute()
@@ -19,12 +21,12 @@ class TaskClearBuild extends arch\node\Task
         $appPath = $this->app->path;
         $envId = $this->app->envId;
 
-        core\fs\File::delete($appPath.'/data/local/run/active/Run.php');
+        Atlas::$fs->deleteFile($appPath.'/data/local/run/active/Run.php');
 
         $this->runChild('app/purge-builds?all');
-        core\fs\Dir::delete($appPath.'/data/local/run/');
+        Atlas::$fs->deleteDir($appPath.'/data/local/run/');
 
-        core\fs\File::delete($appPath.'/entry/'.$envId.'.testing.php');
-        core\fs\File::delete($appPath.'/entry/'.$envId.'.production.php');
+        Atlas::$fs->deleteFile($appPath.'/entry/'.$envId.'.testing.php');
+        Atlas::$fs->deleteFile($appPath.'/entry/'.$envId.'.production.php');
     }
 }

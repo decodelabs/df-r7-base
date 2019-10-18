@@ -8,6 +8,9 @@ namespace df\core\app\builder;
 use df;
 use df\core;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Dir;
+
 interface IController
 {
     public function getBuildId(): string;
@@ -17,7 +20,7 @@ interface IController
     public function getMultiplexer(): core\io\IMultiplexer;
 
     public function getRunPath(): string;
-    public function getDestination(): core\fs\Dir;
+    public function getDestination(): Dir;
 
     public function createBuild(): \Generator;
     public function activateBuild();
