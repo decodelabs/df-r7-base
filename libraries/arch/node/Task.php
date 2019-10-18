@@ -64,7 +64,7 @@ abstract class Task extends Base implements ITaskNode
     public function dispatch()
     {
         if (!$this->io) {
-            $this->io = $this->task->getSharedIo();
+            $this->io = df\Launchpad::$runner->getMultiplexer();
         }
 
         return parent::dispatch();

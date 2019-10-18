@@ -67,7 +67,6 @@ interface ITaskManager extends core\IManager
     public function queue($request, string $priority='medium'): flex\IGuid;
     public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): ProcessResult;
     public function queueAndLaunchBackground($request);
-    public function getSharedIo(): core\io\IMultiplexer;
 }
 
 

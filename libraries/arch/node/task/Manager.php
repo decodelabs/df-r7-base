@@ -123,24 +123,6 @@ class Manager implements arch\node\ITaskManager
         return $this->launchBackground('tasks/launch-queued?id='.$id);
     }
 
-    public function getSharedIo(): core\io\IMultiplexer
-    {
-        $runner = df\Launchpad::$runner;
-
-        if ($runner instanceof core\app\runner\Task) {
-            return $runner->getMultiplexer();
-        }
-
-        $key = core\io\Multiplexer::REGISTRY_KEY.':task';
-
-        if (!$output = df\Launchpad::$app->getRegistryObject($key)) {
-            $output = core\io\Multiplexer::defaultFactory('task');
-            df\Launchpad::$app->setRegistryObject($output);
-        }
-
-        return $output;
-    }
-
     protected function _getActiveContext()
     {
         $runner = df\Launchpad::$runner;
