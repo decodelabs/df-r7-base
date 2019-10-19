@@ -174,7 +174,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             }
 
             if (!$field = $schema->getField($row['Column_name'])) {
-                throw new opal\schema\IndexNotFoundException(
+                throw new opal\rdbms\IndexNotFoundException(
                     'Index field '.$row['Column_name'].' could not be found'
                 );
             }
@@ -393,7 +393,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             if ($index->isUnique()) {
                 $indexSql .= 'UNIQUE ';
             } elseif ($type == 'FULLTEXT' || $type == 'SPACIAL') {
-                $indexSQL .= $type.' ';
+                $indexSql .= $type.' ';
                 $type = null;
             }
 

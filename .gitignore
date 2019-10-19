@@ -49,3 +49,7 @@ Thumbs.db
 # Port reference #
 ######################
 setup/*
+
+
+vendor/
+composer.lock

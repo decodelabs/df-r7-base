@@ -9,6 +9,9 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Mode;
+
 class Stream implements link\http\ITransport
 {
     private $_headerStack = null;
@@ -127,7 +130,7 @@ class Stream implements link\http\ITransport
             }
         ]);
 
-        $pointer = fopen($request->url, core\fs\Mode::READ_ONLY, null, $context);
+        $pointer = fopen($request->url, Mode::READ_ONLY, null, $context);
         $this->_headers = link\http\response\HeaderCollection::fromResponseArray($this->_headerStack);
 
         if ($this->_headers->get('transfer-encoding') == 'chunked') {

@@ -9,9 +9,12 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
 
 // Interfaces
-interface IDimension {
+interface IDimension
+{
     const WIDTH = 'w';
     const HEIGHT = 'h';
 
@@ -20,7 +23,8 @@ interface IDimension {
     const FIT = 'f';
 }
 
-interface IPosition {
+interface IPosition
+{
     const TILE = 'tile';
 
     const TOP = 't';
@@ -30,7 +34,8 @@ interface IPosition {
     const CENTER = 'c';
 }
 
-interface IImageManipulationController {
+interface IImageManipulationController
+{
     public function resize(?int $width, int $height=null, string $mode=null);
     public function crop(int $x, int $y, int $width, int $height);
     public function cropZoom(?int $width, int $height=null);
@@ -40,13 +45,15 @@ interface IImageManipulationController {
     public function flip();
 }
 
-interface IImageCompositeController {
+interface IImageCompositeController
+{
     public function composite(IImage $image, $x=IPosition::CENTER, $y=IPosition::CENTER);
     public function watermark(IImage $image, $x=IPosition::RIGHT, $y=IPosition::BOTTOM, $scaleFactor=1.0);
     public function textWatermark(string $text, int $fontSize, $color, $x=IPosition::RIGHT, $y=IPosition::BOTTOM);
 }
 
-interface IImageFilterController {
+interface IImageFilterController
+{
     public function brightness($brightness);
     public function contrast($contrast);
     public function greyscale();
@@ -60,13 +67,14 @@ interface IImageFilterController {
     public function smooth($amount=null);
 }
 
-interface IImageDrawingController {
+interface IImageDrawingController
+{
     public function rectangleFill($x, $y, $width, $height, $color);
     public function gradientFill($orientation, $x, $y, $width, $height, array $colors);
 }
 
-interface IImage extends IImageManipulationController, IImageFilterController {
-
+interface IImage extends IImageManipulationController, IImageFilterController
+{
     public function getDriver();
 
     public function getWidth();
@@ -86,8 +94,8 @@ interface IImage extends IImageManipulationController, IImageFilterController {
 }
 
 
-interface IDriver {
-
+interface IDriver
+{
     public static function isLoadable(): bool;
     public static function canRead($format);
     public static function canWrite($format);
@@ -109,14 +117,16 @@ interface IDriver {
     public function toString($quality): string;
 }
 
-interface IImageManipulationDriver extends IDriver {
+interface IImageManipulationDriver extends IDriver
+{
     public function resize(int $width, int $height);
     public function crop(int $x, int $y, int $width, int $height);
     public function composite(IDriver $image, $x, $y);
     public function rotate(core\unit\IAngle $angle, neon\IColor $background=null);
 }
 
-interface IImageFilterDriver extends IDriver {
+interface IImageFilterDriver extends IDriver
+{
     public function brightness(float $brightness);
     public function contrast(float $contrast);
     public function greyscale();
@@ -132,7 +142,8 @@ interface IImageFilterDriver extends IDriver {
 
 
 
-interface ITransformation extends IImageManipulationController, IImageFilterController, core\IStringProvider {
+interface ITransformation extends IImageManipulationController, IImageFilterController, core\IStringProvider
+{
     public function setImage(?IImage $image);
     public function getImage(): ?IImage;
     public function isAlphaRequired(): bool;
@@ -144,15 +155,17 @@ interface ITransformation extends IImageManipulationController, IImageFilterCont
 
 
 
-interface IIcoGenerator {
+interface IIcoGenerator
+{
     public function addImage($file, int ...$sizes);
-    public function save($file): core\fs\IFile;
+    public function save($file): File;
     public function generate(): string;
 }
 
 
 
-interface IDescriptor {
+interface IDescriptor
+{
     public function getSourceLocation(): string;
     public function isSourceLocal(): bool;
 
@@ -171,4 +184,6 @@ interface IDescriptor {
     public function getContentType(): string;
 }
 
-class FileStore extends core\cache\FileStore {}
+class FileStore extends core\cache\FileStore
+{
+}

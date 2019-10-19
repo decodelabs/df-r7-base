@@ -12,17 +12,19 @@ use df\axis;
 use df\user;
 use df\opal;
 
-class RegisterLocal extends axis\procedure\Record {
-
+class RegisterLocal extends axis\procedure\Record
+{
     const CAN_CREATE = true;
 
-    protected function _prepare() {
-        if($this->context->user->isLoggedIn()) {
+    protected function _prepare()
+    {
+        if ($this->context->user->isLoggedIn()) {
             throw core\Error::EUnauthorized('Already logged in');
         }
     }
 
-    protected function _execute($invite=null) {
+    protected function _execute($invite=null)
+    {
         $userConfig = $this->_model->config;
 
         $this->validator
@@ -36,7 +38,7 @@ class RegisterLocal extends axis\procedure\Record {
 
         $this->validate();
 
-        if($this->isValid()) {
+        if ($this->isValid()) {
             $this->record->joinDate = 'now';
 
             $this->validator->applyTo($this->record, [
@@ -52,30 +54,30 @@ class RegisterLocal extends axis\procedure\Record {
                 'bindDate' => 'now'
             ]);
 
-            if(is_int($invite)) {
+            if (is_int($invite)) {
                 $invite = $this->_model->invite->fetch()
                     ->where('id', '=', $invite)
                     ->toRow();
-            } else if(is_string($invite)) {
+            } elseif (is_string($invite)) {
                 $invite = $this->_model->invite->fetch()
                     ->where('key', '=', $invite)
                     ->toRow();
-            } else if(!$invite instanceof opal\record\IRecord) {
+            } elseif (!$invite instanceof opal\record\IRecord) {
                 $invite = null;
             }
 
-            if($invite) {
-                $client->groups->addList($invite['#groups']);
+            if ($invite) {
+                $this->record->groups->addList($invite['#groups']);
             }
 
             $this->record->save();
             $auth->save();
 
-            if($invite) {
+            if ($invite) {
                 $this->_model->invite->claim($invite, $this->record);
             }
 
-            if($userConfig->shouldLoginOnRegistration()) {
+            if ($userConfig->shouldLoginOnRegistration()) {
                 $this->user->auth->bind(
                     $this->user->auth->newRequest('Local')
                         ->setIdentity($auth['identity'])

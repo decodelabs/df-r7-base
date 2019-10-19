@@ -8,13 +8,16 @@ namespace df\core\archive;
 use df;
 use df\core;
 
-class Tar extends Base {
+use DecodeLabs\Atlas;
 
-    public function extractFile(string $file, string $destination=null, bool $flattenRoot=false): string {
+class Tar extends Base
+{
+    public function extractFile(string $file, string $destination=null, bool $flattenRoot=false): string
+    {
         $destination = $this->_normalizeExtractDestination($file, $destination);
         $archive = new \PharData($file);
 
-        if($isGz = preg_match('/\.(gz|bz2)$/i', $file)) {
+        if ($isGz = preg_match('/\.(gz|bz2)$/i', $file)) {
             $parts = explode('.', basename($file));
             array_pop($parts); // gz
             array_shift($parts); // name
@@ -25,11 +28,11 @@ class Tar extends Base {
 
         $archive->extractTo($destination);
 
-        if($isGz) {
-            core\fs\File::delete($tarFile);
+        if ($isGz) {
+            Atlas::$fs->deleteFile($tarFile);
         }
 
-        if($flattenRoot) {
+        if ($flattenRoot) {
             $this->_flattenRoot($destination);
         }
 

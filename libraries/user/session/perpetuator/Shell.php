@@ -17,7 +17,7 @@ class Shell implements user\session\IPerpetuator
     protected $_userKey;
     protected $_inputId;
 
-    public function __construct(user\session\IController $controller)
+    public function __construct()
     {
         $process = Systemic::$process->getCurrent();
 

@@ -186,6 +186,7 @@ class DataObject extends core\collection\Tree implements IDataObject
 
     public function __construct(string $type, core\collection\ITree $data, $callback=null)
     {
+        parent::__construct();
         $this->setType($type);
 
         if ($callback) {

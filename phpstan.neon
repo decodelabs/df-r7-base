@@ -1,0 +1,20 @@
+parameters:
+    paths:
+        - daemons
+        - directory
+        - libraries
+        - models
+    excludes_analyse:
+        - %rootDir%/../../../libraries/plug/Html.php
+    bootstrap: %rootDir%/../../../PHPStanBootstrap.php
+    level: 1
+    inferPrivatePropertyTypeFromConstructor: true
+    universalObjectCratesClasses:
+        - df\axis\IModel
+        - df\core\collection\ITree
+        - df\opal\record\IRecord
+        - df\user\Manager
+    ignoreErrors:
+        - '#Call to an undefined static method df\\core\\Error#'
+        - '#Access to an undefined property (.+)\:\:\$(context|data|format|user)#'
+        - '#^Caught class [a-zA-Z0-9\\]+\E[A-Z][a-zA-Z0-9]+ not found\.$#'

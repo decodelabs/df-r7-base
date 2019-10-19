@@ -9,8 +9,11 @@ use df;
 use df\core;
 use df\opal;
 
-class Decoder implements IDecoder {
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
 
+class Decoder implements IDecoder
+{
     const POINTER_VALUE_OFFSET = [
         1 => 0,
         2 => 2048,
@@ -22,14 +25,16 @@ class Decoder implements IDecoder {
     protected $_pointerBase = 0;
     protected $_isLittleEndian = false;
 
-    public function __construct(core\fs\IFile $file, $pointerBase=0) {
+    public function __construct(File $file, $pointerBase=0)
+    {
         $this->_file = $file;
         $this->_pointerBase = (int)$pointerBase;
         $this->_isLittleEndian = $this->_isPlatformLittleEndian();
     }
 
-    public function decode($offset=null) {
-        if($offset === null) {
+    public function decode($offset=null)
+    {
+        if ($offset === null) {
             $offset = $this->_pointerBase;
         }
 
@@ -41,13 +46,13 @@ class Decoder implements IDecoder {
         $offset++;
         $type = $ctrlByte >> 5;
 
-        if($type === IDataTypes::T_POINTER) {
+        if ($type === IDataTypes::T_POINTER) {
             list($pointer, $offset) = $this->_decodePointer($ctrlByte, $offset);
             list($result) = $this->decode($pointer);
             return [$result, $offset];
         }
 
-        if($type === IDataTypes::T_EXTENDED) {
+        if ($type === IDataTypes::T_EXTENDED) {
             list(, $nextByte) = unpack(
                 'C',
                 $this->_file->readFrom($offset, 1)
@@ -56,7 +61,7 @@ class Decoder implements IDecoder {
             $type = $nextByte + 7;
             $offset++;
 
-            if($type < 8) {
+            if ($type < 8) {
                 throw new UnexpectedValueException(
                     'Decoder error - extended type resolved to type < 8'
                 );
@@ -65,7 +70,7 @@ class Decoder implements IDecoder {
 
         list($size, $offset) = $this->_getSizeFromCtrlByte($ctrlByte, $offset);
 
-        switch($type) {
+        switch ($type) {
             case IDataTypes::T_MAP:
                 return $this->_decodeMap($size, $offset);
 
@@ -79,7 +84,7 @@ class Decoder implements IDecoder {
         $newOffset = $offset + $size;
         $bytes = $this->_file->readFrom($offset, $size);
 
-        switch($type) {
+        switch ($type) {
             case IDataTypes::T_UTF8_STRING:
                 return [$this->_decodeString($bytes), $newOffset];
 
@@ -117,11 +122,12 @@ class Decoder implements IDecoder {
     }
 
 
-// Array
-    protected function _decodeArray($size, $offset) {
+    // Array
+    protected function _decodeArray($size, $offset)
+    {
         $output = [];
 
-        for($i = 0; $i < $size; $i++) {
+        for ($i = 0; $i < $size; $i++) {
             list($value, $offset) = $this->decode($offset);
             $output[] = $value;
         }
@@ -129,35 +135,40 @@ class Decoder implements IDecoder {
         return [$output, $offset];
     }
 
-// Boolean
-    protected function _decodeBoolean($size) {
+    // Boolean
+    protected function _decodeBoolean($size)
+    {
         return $size == 0 ? false : true;
     }
 
-// Double
-    protected function _decodeDouble($bits) {
+    // Double
+    protected function _decodeDouble($bits)
+    {
         list(, $output) = unpack('d', $this->_switchByteOrder($bits));
         return $output;
     }
 
-// Float
-    protected function _decodeFloat($bits) {
+    // Float
+    protected function _decodeFloat($bits)
+    {
         list(, $output) = unpack('f', $this->_switchByteOrder($bits));
         return $output;
     }
 
-// Int32
-    protected function _decodeInt32($bytes) {
+    // Int32
+    protected function _decodeInt32($bytes)
+    {
         $bytes = $this->_zeroPadLeft($bytes, 4);
         list(, $output) = unpack('l', $this->_switchByteOrder($bytes));
         return $output;
     }
 
-// Map
-    protected function _decodeMap($size, $offset) {
+    // Map
+    protected function _decodeMap($size, $offset)
+    {
         $output = [];
 
-        for($i = 0; $i < $size; $i++) {
+        for ($i = 0; $i < $size; $i++) {
             list($key, $offset) = $this->decode($offset);
             list($value, $offset) = $this->decode($offset);
             $output[$key] = $value;
@@ -166,8 +177,9 @@ class Decoder implements IDecoder {
         return [$output, $offset];
     }
 
-// Pointer
-    protected function _decodePointer($ctrlByte, $offset) {
+    // Pointer
+    protected function _decodePointer($ctrlByte, $offset)
+    {
         $pointerSize = (($ctrlByte >> 3) & 0x3) + 1;
         $buffer = $this->_file->readFrom($offset, $pointerSize);
         $offset += $pointerSize;
@@ -182,81 +194,92 @@ class Decoder implements IDecoder {
         return [$pointer, $offset];
     }
 
-// Uint16
-    protected function _decodeUint16($bytes) {
+    // Uint16
+    protected function _decodeUint16($bytes)
+    {
         return $this->_decodeUint32($bytes);
     }
 
-// Uint32
-    protected function _decodeUint32($bytes) {
+    // Uint32
+    protected function _decodeUint32($bytes)
+    {
         list(, $int) = unpack('N', $this->_zeroPadLeft($bytes, 4));
         return $int;
     }
 
-// Uint64
-    protected function _decodeUint64($bytes) {
+    // Uint64
+    protected function _decodeUint64($bytes)
+    {
         return $this->_decodeBigUint($bytes, 8);
     }
 
-// Uint128
-    protected function _decodeUint128($bytes) {
+    // Uint128
+    protected function _decodeUint128($bytes)
+    {
         return $this->_decodeBigUint($bytes, 16);
     }
 
-// Big Uint
-    protected function _decodeBigUint($bytes, $size) {
+    // Big Uint
+    protected function _decodeBigUint($bytes, $size)
+    {
         $longs = $size / 4;
         $output = 0;
         $bytes = $this->_zeroPadLeft($bytes, $size);
         $unpacked = array_merge(unpack('N'.$longs, $bytes));
 
-        foreach($unpacked as $part) {
+        foreach ($unpacked as $part) {
             $output = bcadd(bcmul($output, bcpow(2, 32)), $part);
         }
 
         return $output;
     }
 
-// String
-    protected function _decodeString($bytes) {
+    // String
+    protected function _decodeString($bytes)
+    {
         return $bytes;
     }
 
 
-// Helpers
-    protected function _getSizeFromCtrlByte($ctrlByte, $offset) {
+    // Helpers
+    protected function _getSizeFromCtrlByte($ctrlByte, $offset)
+    {
         $size = $ctrlByte & 0x1f;
         $bytesToRead = $size < 29 ? 0 : $size - 28;
         $bytes = $this->_file->readFrom($offset, $bytesToRead);
         $decoded = $this->_decodeUint32($bytes);
 
-        if($size == 29) {
+        if ($size == 29) {
             $size = 29 + $decoded;
-        } else if($size == 30) {
+        } elseif ($size == 30) {
             $size = 285 + $decoded;
-        } else if($size > 30) {
+        } elseif ($size > 30) {
             $size = ($decoded & (0x0FFFFFFF >> (32 - (8 * $bytesToRead)))) + 65821;
         }
 
         return [$size, $offset + $bytesToRead];
     }
 
-    protected function _zeroPadLeft($content, $length) {
+    protected function _zeroPadLeft($content, $length)
+    {
         return str_pad($content, $length, "\x00", \STR_PAD_LEFT);
     }
 
-    protected function _switchByteOrder($bytes) {
+    protected function _switchByteOrder($bytes)
+    {
         return $this->_isLittleEndian ? strrev($bytes) : $bytes;
     }
 
-    protected function _isPlatformLittleEndian() {
+    protected function _isPlatformLittleEndian()
+    {
         $testInt = 0x00FF;
         $packed = pack('S', $testInt);
         return $testInt === current(unpack('v', $packed));
     }
 
-    protected function _verifySize($expected, $actual) {
-        if($expected != $actual) {
+    protected function _verifySize($expected, $actual)
+    {
+        if ($expected != $actual) {
             throw new UnexpectedValueException(
                 'Data size incorrect - read '.$actual.', expected '.$expected
             );

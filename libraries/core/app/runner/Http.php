@@ -12,6 +12,8 @@ use df\flow;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Atlas;
+
 class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedRunner
 {
     private static $_init = false;
@@ -570,7 +572,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         if (!$response instanceof link\http\IResponse) {
             $response = new link\http\response\Stream(
                 (string)$response,
-                core\fs\Type::extToMime(strtolower($this->_context->request->getType()))
+                Atlas::$mime->detect(strtolower($this->_context->request->getType()))
             );
 
             //$response->getHeaders()->setCacheExpiration(60);
@@ -684,8 +686,8 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             if ($isFile) {
                 $file = $response->getContentFileStream();
 
-                while (!$file->eof()) {
-                    $channel->write($file->readChunk(8192));
+                while (!$file->isAtEnd()) {
+                    $channel->write($file->read(8192));
                 }
 
                 $file->close();

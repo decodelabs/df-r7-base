@@ -8,6 +8,8 @@ namespace df\core\io;
 use df;
 use df\core;
 
+use DecodeLabs\Atlas;
+
 // Exceptions
 interface IException
 {
@@ -387,7 +389,7 @@ trait TAcceptTypeProcessor
             }
 
             if ($type{0} == '.') {
-                $type = core\fs\Type::extToMime(substr($type, 1));
+                $type = Atlas::$mime->detect($type);
             }
 
             if (false === strpos($type, '/')) {
@@ -419,7 +421,7 @@ trait TAcceptTypeProcessor
             }
 
             if ($type{0} == '.') {
-                $type = core\fs\Type::extToMime(substr($type, 1));
+                $type = Atlas::$mime->detect($type);
             }
 
             @list($category, $name) = explode('/', $type, 2);

@@ -10,12 +10,15 @@ use df\core;
 use df\spur;
 use df\link;
 
-class FeedReader implements spur\feed\IFeedReaderPlugin {
-
+class FeedReader implements spur\feed\IFeedReaderPlugin
+{
     use spur\feed\TFeedReader;
 
-    protected function _getXPathNamespaces() {
-        if($this->_type == spur\feed\ITypes::ATOM_10
+    const XPATH_NAMESPACES = [];
+    
+    protected function _getXPathNamespaces()
+    {
+        if ($this->_type == spur\feed\ITypes::ATOM_10
         || $this->_type == spur\feed\ITypes::ATOM_03) {
             return [];
         }
@@ -23,31 +26,32 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         $prefix03 = $this->_domDocument->lookupPrefix(spur\feed\INamespaces::ATOM_03);
         $prefix10 = $this->_domDocument->lookupPrefix(spur\feed\INamespaces::ATOM_10);
 
-        if($this->_domDocument->isDefaultNamespace(spur\feed\INamespaces::ATOM_10) || $prefix10) {
+        if ($this->_domDocument->isDefaultNamespace(spur\feed\INamespaces::ATOM_10) || $prefix10) {
             return ['atom' => spur\feed\INamespaces::ATOM_10];
         }
 
-        if($this->_domDocument->isDefaultNamespace(spur\feed\INamespaces::ATOM_03) || $prefix03) {
+        if ($this->_domDocument->isDefaultNamespace(spur\feed\INamespaces::ATOM_03) || $prefix03) {
             return ['atom' => spur\feed\INamespaces::ATOM_03];
         }
 
         return ['atom' => spur\feed\INamespaces::ATOM_10];
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         $id = null;
 
-        if($this->_type != spur\feed\ITypes::RSS_10
+        if ($this->_type != spur\feed\ITypes::RSS_10
         && $this->_type != spur\feed\ITypes::RSS_09) {
             $id = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/atom:id)'
             );
         }
 
-        if(!$id) {
-            if($link = $this->getSourceLink()) {
+        if (!$id) {
+            if ($link = $this->getSourceLink()) {
                 $id = $link;
-            } else if($title = $this->getTitle()) {
+            } elseif ($title = $this->getTitle()) {
                 $id = $title;
             } else {
                 $id = null;
@@ -57,19 +61,20 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $id;
     }
 
-    public function getAuthors() {
+    public function getAuthors()
+    {
         $list = $this->_xPath->query('//atom:author');
         $authors = [];
 
-        if($list->length) {
-            foreach($list as $authorNode) {
+        if ($list->length) {
+            foreach ($list as $authorNode) {
                 $author = new spur\feed\Author(
                     $authorNode->getElementsByTagName('email')->item(0)->nodeValue,
                     $authorNode->getElementsByTagName('name')->item(0)->nodeValue,
                     $authorNode->getElementsByTagName('uri')->item(0)->nodeValue
                 );
 
-                if($author->isValid()) {
+                if ($author->isValid()) {
                     $authors[] = $author;
                 }
             }
@@ -78,12 +83,14 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $authors;
     }
 
-    public function getTitle(): ?string {
+    public function getTitle(): ?string
+    {
         return $this->_xPath->evaluate('string('.$this->_xPathPrefix.'/atom:title)');
     }
 
-    public function getDescription() {
-        if($this->_type == spur\feed\ITypes::ATOM_03) {
+    public function getDescription()
+    {
+        if ($this->_type == spur\feed\ITypes::ATOM_03) {
             $description = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/atom:tagline)'
             );
@@ -96,20 +103,22 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $description;
     }
 
-    public function getImage() {
+    public function getImage()
+    {
         $image = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/atom:logo)'
         );
 
-        if($image) {
+        if ($image) {
             $image = new spur\feed\Image($image);
         }
 
         return $image;
     }
 
-    public function getCategories() {
-        if($this->_type == spur\feed\ITypes::ATOM_10) {
+    public function getCategories()
+    {
+        if ($this->_type == spur\feed\ITypes::ATOM_10) {
             $list = $this->_xPath->query(
                 $this->_xPathPrefix.'/atom:category'
             );
@@ -122,8 +131,8 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
 
         $categories = [];
 
-        if($list->length) {
-            foreach($list as $category) {
+        if ($list->length) {
+            foreach ($list as $category) {
                 $categories[] = new spur\feed\Category(
                     $category->nodeValue,
                     $category->getAttribute('domain'),
@@ -135,7 +144,8 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $categories;
     }
 
-    public function getSourceLink() {
+    public function getSourceLink()
+    {
         $link = null;
 
         $list = $this->_xPath->query(
@@ -143,7 +153,7 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
             $this->_xPathPrefix.'/atom:link[not(@rel)]/@href'
         );
 
-        if($list->length) {
+        if ($list->length) {
             $link = $this->_relativeToAbsoluteUrl(
                 $list->item(0)->nodeValue
             );
@@ -152,36 +162,40 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $link;
     }
 
-    public function getFeedLink() {
+    public function getFeedLink()
+    {
         $link = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/atom:link[@rel="self"]/@href)'
         );
 
-        if(strlen($link)) {
+        if (strlen($link)) {
             $link = $this->_relativeToAbsoluteUrl($link);
         }
 
         return $link;
     }
 
-    public function getBaseUrl() {
+    public function getBaseUrl()
+    {
         return $this->_xPath->evaluate('string(//@xml:base[1])');
     }
 
-    public function getLanguage() {
+    public function getLanguage()
+    {
         $language = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/atom:lang)'
         );
 
-        if(!$language) {
+        if (!$language) {
             $language = $this->_xPath->evaluate('string(//@xml:lang[1])');
         }
 
         return $language;
     }
 
-    public function getCopyright() {
-        if($this->_type == spur\feed\ITypes::ATOM_03) {
+    public function getCopyright()
+    {
+        if ($this->_type == spur\feed\ITypes::ATOM_03) {
             $copyright = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/atom:copyright)'
             );
@@ -194,10 +208,11 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $copyright;
     }
 
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         $date = null;
 
-        if($this->_type == spur\feed\ITypes::ATOM_03) {
+        if ($this->_type == spur\feed\ITypes::ATOM_03) {
             $created = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/atom:created)'
             );
@@ -207,18 +222,19 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
             );
         }
 
-        if($created) {
+        if ($created) {
             $date = core\time\Date::factory($created);
         }
 
         return $date;
     }
 
-    public function getLastModifiedDate() {
-        $date = null;
+    public function getLastModifiedDate()
+    {
+        $date = $created = null;
 
-        if($this->_type == spur\feed\ITypes::ATOM_03) {
-            $modified = $this->_xPath->evaluate(
+        if ($this->_type == spur\feed\ITypes::ATOM_03) {
+            $created = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/atom:modified)'
             );
         } else {
@@ -227,27 +243,29 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
             );
         }
 
-        if($created) {
+        if ($created) {
             $date = core\time\Date::factory($created);
         }
 
         return $date;
     }
 
-    public function getGenerator() {
+    public function getGenerator()
+    {
         return $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/atom:generator)'
         );
     }
 
-    public function getHubs() {
+    public function getHubs()
+    {
         $hubs = [];
         $list = $this->_xPath->query(
             $this->_xPathPrefix.'//atom:link[@rel="hub"]/@href'
         );
 
-        if($list->length) {
-            foreach($list as $url) {
+        if ($list->length) {
+            foreach ($list as $url) {
                 $hubs[] = $this->_relativeToAbsoluteUrl($url);
             }
         }
@@ -255,14 +273,15 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $hubs;
     }
 
-    protected function _relativeToAbsoluteUrl($urlString) {
+    protected function _relativeToAbsoluteUrl($urlString)
+    {
         $url = link\http\Url::factory($urlString);
 
-        if(!$url->hasDomain()) {
-            if($baseUrl = $this->getBaseUrl()) {
+        if (!$url->hasDomain()) {
+            if ($baseUrl = $this->getBaseUrl()) {
                 $url = core\uri\Url::factory($baseUrl.$urlString);
 
-                if(!$url->hasDomain()) {
+                if (!$url->hasDomain()) {
                     return null;
                 }
             }

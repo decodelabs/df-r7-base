@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\neon;
 
+use DecodeLabs\Atlas;
+
 class TaskPurgeLargeFiles extends arch\node\Task
 {
     const THRESHOLD = '2mb';
@@ -43,7 +45,7 @@ class TaskPurgeLargeFiles extends arch\node\Task
             }
 
             $this->io->writeLine($version['fileName'].' - '.$this->format->fileSize($version['fileSize']));
-            core\fs\File::delete($path);
+            Atlas::$fs->deleteFile($path);
 
             $total += $version['fileSize'];
         }

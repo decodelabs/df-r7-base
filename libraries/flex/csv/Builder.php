@@ -9,8 +9,11 @@ use df;
 use df\core;
 use df\flex;
 
-class Builder implements IBuilder {
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Mode;
 
+class Builder implements IBuilder
+{
     protected $_fields = null;
     protected $_rows = null;
     protected $_writeFields = true;
@@ -19,63 +22,72 @@ class Builder implements IBuilder {
     protected $_receiver;
     protected $_generator;
 
-    public static function openFile($path, $generator=null) {
+    public static function openFile($path, $generator=null)
+    {
         return (new self($generator))
             ->setChunkReceiver(
-                (new core\fs\File($path, core\fs\Mode::READ_WRITE_TRUNCATE))
+                (new core\fs\File($path, Mode::READ_WRITE_TRUNCATE))
                     ->setContentType('text/csv')
             );
     }
 
-    public static function openString($generator=null) {
+    public static function openString($generator=null)
+    {
         return (new self($generator))
             ->setChunkReceiver(
-                new core\fs\MemoryFile(null, 'text/csv', core\fs\Mode::READ_WRITE_TRUNCATE)
+                new core\fs\MemoryFile(null, 'text/csv', Mode::READ_WRITE_TRUNCATE)
             );
     }
 
-    public function __construct($generator=null) {
+    public function __construct($generator=null)
+    {
         $this->setGenerator($generator);
     }
 
-    public function setChunkReceiver(core\io\IChunkReceiver $receiver) {
+    public function setChunkReceiver(core\io\IChunkReceiver $receiver)
+    {
         $this->_receiver = $receiver;
         return $this;
     }
 
-    public function getChunkReceiver() {
+    public function getChunkReceiver()
+    {
         return $this->_receiver;
     }
 
-    public function setGenerator($generator=null) {
+    public function setGenerator($generator=null)
+    {
         $this->_generator = core\lang\Callback::factory($generator);
         return $this;
     }
 
-    public function getGenerator() {
+    public function getGenerator()
+    {
         return $this->_generator;
     }
 
-    public function build() {
+    public function build()
+    {
         return $this->sendChunks();
     }
 
-    public function sendChunks() {
-        if($this->_generator) {
+    public function sendChunks()
+    {
+        if ($this->_generator) {
             $this->_generator->invoke($this);
 
-            if($this->_writeFields && !$this->_fieldsWritten) {
+            if ($this->_writeFields && !$this->_fieldsWritten) {
                 $this->_writeRow($this->_fields);
                 $this->_fieldsWritten = true;
             }
-        } else if(!empty($this->_fields)) {
-            if($this->_writeFields && !$this->_fieldsWritten) {
+        } elseif (!empty($this->_fields)) {
+            if ($this->_writeFields && !$this->_fieldsWritten) {
                 $this->_writeRow($this->_fields);
                 $this->_fieldsWritten = true;
             }
 
-            if(!empty($this->_rows)) {
-                foreach($this->_rows as $row) {
+            if (!empty($this->_rows)) {
+                foreach ($this->_rows as $row) {
                     $this->_writeRow($row);
                 }
             }
@@ -89,8 +101,9 @@ class Builder implements IBuilder {
     }
 
 
-    public function setFields(array $fields) {
-        if(empty($fields)) {
+    public function setFields(array $fields)
+    {
+        if (empty($fields)) {
             throw new RuntimeException('CSV file must have at least one field');
         }
 
@@ -98,12 +111,14 @@ class Builder implements IBuilder {
         return $this;
     }
 
-    public function getFields() {
+    public function getFields()
+    {
         return $this->_fields;
     }
 
-    public function shouldWriteFields(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldWriteFields(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_writeFields = $flag;
             return $this;
         }
@@ -111,19 +126,20 @@ class Builder implements IBuilder {
         return $this->_writeFields;
     }
 
-    public function addRow(array $row) {
-        if(empty($this->_fields)) {
+    public function addRow(array $row)
+    {
+        if (empty($this->_fields)) {
             $fields = [];
 
-            foreach($row as $key => $value) {
+            foreach ($row as $key => $value) {
                 $fields[$key] = $key;
             }
 
             $this->setFields($fields);
         }
 
-        if($this->_writeFields && !$this->_fieldsWritten) {
-            if($this->_generator) {
+        if ($this->_writeFields && !$this->_fieldsWritten) {
+            if ($this->_generator) {
                 $this->_writeRow($this->_fields);
             } else {
                 $this->_rows[] = $this->_fields;
@@ -134,33 +150,35 @@ class Builder implements IBuilder {
 
         $outRow = [];
 
-        foreach($this->_fields as $key => $label) {
-            if(isset($row[$key])) {
+        foreach ($this->_fields as $key => $label) {
+            if (isset($row[$key])) {
                 $value = $row[$key];
             } else {
                 $value = null;
             }
 
-            if(is_bool($value)) {
+            if (is_bool($value)) {
                 $value = $value ? 'Yes' : 'No';
             }
 
             $outRow[$key] = $value;
         }
 
-        if($this->_generator) {
+        if ($this->_generator) {
             $this->_writeRow($outRow);
         } else {
             $this->_rows[] = $outRow;
         }
     }
 
-    public function getRows() {
+    public function getRows()
+    {
         return $this->_rows;
     }
 
-    protected function _writeRow(array $row) {
-        if(!$this->_receiver) {
+    protected function _writeRow(array $row)
+    {
+        if (!$this->_receiver) {
             throw new RuntimeException(
                 'No data receiver has been set for CSV builder'
             );
@@ -169,18 +187,19 @@ class Builder implements IBuilder {
         $this->_receiver->writeChunk($this->_writeCsv($row));
     }
 
-    protected function _writeCsv($data=[], $delimiter=',', $enclosure='"') {
+    protected function _writeCsv($data=[], $delimiter=',', $enclosure='"')
+    {
         $str = '';
         $escape_char = '\\';
 
-        foreach($data as $value) {
-            if(is_array($value)) {
+        foreach ($data as $value) {
+            if (is_array($value)) {
                 $value = implode(',', $value);
-            } else if(!is_scalar($value)) {
+            } elseif (!is_scalar($value)) {
                 $value = (string)$value;
             }
 
-            if(strpos($value, $delimiter) !== false ||
+            if (strpos($value, $delimiter) !== false ||
                strpos($value, $enclosure) !== false ||
                strpos($value, "\n") !== false ||
                strpos($value, "\r") !== false ||
@@ -190,10 +209,10 @@ class Builder implements IBuilder {
                 $escaped = 0;
                 $len = strlen($value);
 
-                for($i = 0; $i < $len; $i++) {
-                    if($value[$i] == $escape_char) {
+                for ($i = 0; $i < $len; $i++) {
+                    if ($value[$i] == $escape_char) {
                         $escaped = 1;
-                    } else if (!$escaped && $value[$i] == $enclosure) {
+                    } elseif (!$escaped && $value[$i] == $enclosure) {
                         $str2 .= $enclosure;
                     } else {
                         $escaped = 0;

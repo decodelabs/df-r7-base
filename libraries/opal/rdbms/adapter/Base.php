@@ -64,7 +64,7 @@ abstract class Base implements opal\rdbms\IAdapter, Inspectable
     public static function destroyConnection($hash)
     {
         if ($hash instanceof opal\rdbms\IDsn) {
-            $hash = $dsn->getHash();
+            $hash = $hash->getHash();
         }
 
         if (isset(self::$_connections[$hash])) {
@@ -256,7 +256,7 @@ abstract class Base implements opal\rdbms\IAdapter, Inspectable
                 return $preppedValue;
             }
 
-            if ($field instanceof opal\rdbms\schema\field\Int) {
+            if ($field instanceof opal\rdbms\schema\field\Integer) {
                 return (int)$value;
             }
         }

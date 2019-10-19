@@ -22,7 +22,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
     ## Introspect ##
     public function introspect($tableName)
     {
-        $stmt = $this->_adapter->prepare('SELECT * FROM sqlite_master WHERE tbl_name = :a');
+        $stmt = $this->_adapter->prepare($sql = 'SELECT * FROM sqlite_master WHERE tbl_name = :a');
         $stmt->bind('a', $tableName);
 
         $res = $stmt->executeRead();
@@ -169,7 +169,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                             $isDescending = strtoupper(trim(array_shift($temp))) == 'DESC';
 
                             if (!$field = $schema->getField($fieldName)) {
-                                throw new opal\schema\IndexNotFoundException(
+                                throw new opal\rdbms\IndexNotFoundException(
                                     'Index field '.$fieldName.' could not be found'
                                 );
                             }
@@ -242,7 +242,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                 $isDescending = strtoupper(trim(array_shift($temp))) == 'DESC';
 
                 if (!$field = $schema->getField($fieldName)) {
-                    throw new opal\schema\IndexNotFoundException(
+                    throw new opal\rdbms\IndexNotFoundException(
                         'Index field '.$fieldName.' could not be found'
                     );
                 }
@@ -305,15 +305,15 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         || $field instanceof opal\rdbms\schema\field\Bit
         || $field instanceof opal\rdbms\schema\field\Char
         || $field instanceof opal\rdbms\schema\field\DateTime
-        || $field instanceof opal\rdbms\schema\field\Enum
+        //|| $field instanceof opal\rdbms\schema\field\Enum
         || $field instanceof opal\rdbms\schema\field\Set
         || $field instanceof opal\rdbms\schema\field\Text) {
             $fieldSql .= 'TEXT';
         } elseif ($field instanceof opal\rdbms\schema\field\Blob) {
             $fieldSql .= 'BLOB';
-        } elseif ($field instanceof opal\rdbms\schema\field\Float) {
+        } elseif ($field instanceof opal\rdbms\schema\field\FloatingPoint) {
             $fieldSql .= 'REAL';
-        } elseif ($field instanceof opal\rdbms\schema\field\Int) {
+        } elseif ($field instanceof opal\rdbms\schema\field\Integer) {
             $fieldSql .= 'INTEGER';
         } else {
             $fieldSql .= $field->getType();
@@ -490,7 +490,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $triggerSql .= ' '.$trigger->getTimingName();
         $triggerSql .= ' '.$trigger->getEventName();
 
-        if ($trigger->getEvent() == opal\rdbms\schema\constraint\Trigger::UPDATE) {
+        if ($trigger->getEvent() == opal\schema\ITriggerEvent::UPDATE) {
             $updateFields = $trigger->getUpdateFields();
 
             if (!empty($updateFields)) {

@@ -11,8 +11,10 @@ use df\neon;
 use df\link;
 use df\flex;
 
-class Descriptor implements IDescriptor {
+use DecodeLabs\Atlas;
 
+class Descriptor implements IDescriptor
+{
     const DEFAULT_LIFETIME = '3 days';
     const URL_LIFETIME = '1 month';
 
@@ -37,51 +39,55 @@ class Descriptor implements IDescriptor {
     protected $_transformationInFileName = true;
     protected $_contentType = null;
 
-    public function __construct(string $source, string $contentType=null) {
+    public function __construct(string $source, string $contentType=null)
+    {
         $this->_sourceLocation = $source;
         $this->_location = $source;
         $this->_contentType = $contentType;
 
-        if(false !== strpos($source, '://')) {
+        if (false !== strpos($source, '://')) {
             $parts = explode('://', $source, 2);
 
-            if($parts[0] != 'file') {
+            if ($parts[0] != 'file') {
                 $this->_isSourceLocal = false;
                 $this->_isLocal = false;
             }
-        } else if(substr($source, 0, 2) == '//') {
+        } elseif (substr($source, 0, 2) == '//') {
             $this->_isSourceLocal = false;
             $this->_isLocal = false;
         }
     }
 
-    public function getSourceLocation(): string {
+    public function getSourceLocation(): string
+    {
         return $this->_sourceLocation;
     }
 
-    public function isSourceLocal(): bool {
+    public function isSourceLocal(): bool
+    {
         return $this->_isSourceLocal;
     }
 
 
-    public function applyTransformation($transformation, core\time\IDate $modificationDate=null) {
+    public function applyTransformation($transformation, core\time\IDate $modificationDate=null)
+    {
         $mTime = null;
         $fileStore = FileStore::getInstance();
 
-        if($transformation !== null) {
+        if ($transformation !== null) {
             $transformation = Transformation::factory($transformation);
         }
 
         $this->_transformation = $transformation;
 
-        if($this->_isSourceLocal) {
+        if ($this->_isSourceLocal) {
             // Local
             $lifetime = static::DEFAULT_LIFETIME;
-            $keyPath = core\fs\Dir::stripPathLocation($this->_sourceLocation);
+            $keyPath = $this->normalizePath($this->_sourceLocation);
             $key = basename(dirname($keyPath)).'_'.basename($keyPath).'-'.md5($keyPath.':'.$transformation);
             $mTime = filemtime($this->_sourceLocation);
 
-            if($this->_fileName === null) {
+            if ($this->_fileName === null) {
                 $this->_fileName = basename($this->_sourceLocation);
             }
         } else {
@@ -91,18 +97,18 @@ class Descriptor implements IDescriptor {
             $path = (string)$url->getPath();
             $key = basename(dirname($path)).'_'.basename($path).'-'.md5($this->_sourceLocation.':'.$transformation);
 
-            if($modificationDate !== null) {
+            if ($modificationDate !== null) {
                 $mTime = $modificationDate->toTimestamp();
             }
 
-            if($this->_fileName === null) {
+            if ($this->_fileName === null) {
                 $this->_fileName = $url->getFileName();
             }
         }
 
 
         // Prune store
-        if($mTime !== null && $mTime > $fileStore->getCreationTime($key)) {
+        if ($mTime !== null && $mTime > $fileStore->getCreationTime($key)) {
             $fileStore->remove($key);
         }
 
@@ -111,16 +117,16 @@ class Descriptor implements IDescriptor {
         $type = $this->getContentType();
         $isTransformable = !in_array($type, ['image/svg+xml', 'image/gif']);
 
-        if($this->_isSourceLocal && !$isTransformable) {
-            $file = new core\fs\File($this->_sourceLocation);
-        } else if(!$file = $fileStore->get($key, $lifetime)) {
-            if(!$this->_isSourceLocal) {
+        if ($this->_isSourceLocal && !$isTransformable) {
+            $file = Atlas::$fs->file($this->_sourceLocation);
+        } elseif (!$file = $fileStore->get($key, $lifetime)) {
+            if (!$this->_isSourceLocal) {
                 // Download file
                 $http = new link\http\Client();
-                $download = core\fs\File::createTemp();
+                $download = Atlas::$fs->newTempFile();
                 $response = $http->getFile($this->_sourceLocation, $download);
 
-                if(!$response->isOk()) {
+                if (!$response->isOk()) {
                     throw core\Error::{'EValue,ENotFound'}(
                         'Unable to fetch remote image for transformation'
                     );
@@ -129,73 +135,78 @@ class Descriptor implements IDescriptor {
                 $this->_location = $download->getPath();
                 $this->_isLocal = true;
 
-                if($this->_fileName === null) {
+                if ($this->_fileName === null) {
                     $this->_fileName = basename($this->_location);
                 }
 
                 try {
                     $info = getImageSize($this->_location);
                     $this->_contentType = $info['mime'];
-                } catch(\Throwable $e) {}
+                } catch (\Throwable $e) {
+                }
             }
 
 
-            if($transformation !== null && $isTransformable) {
+            if ($transformation !== null && $isTransformable) {
                 $isAlphaType = in_array($type, self::ALPHA_TYPES);
 
                 try {
                     $image = Image::loadFile($this->_location);
-                } catch(EFormat $e) {
+                } catch (EFormat $e) {
                     $image = Image::newCanvas(100, 100, neon\Color::factory('black'));
                 }
 
-                if(!$isAlphaType && $transformation->isAlphaRequired()) {
+                if (!$isAlphaType && $transformation->isAlphaRequired()) {
                     $image->setOutputFormat('PNG32');
-                } else if($this->_optimizeTransformation && !$isAlphaType) {
+                } elseif ($this->_optimizeTransformation && !$isAlphaType) {
                     $image->setOutputFormat('JPEG');
                 }
 
                 $image->transform($transformation)->apply();
                 $fileStore->set($key, $image->toString(90));
             } else {
-                $fileStore->set($key, new core\fs\File($this->_location));
+                $fileStore->set($key, Atlas::$fs->file($this->_location));
             }
 
             $file = $fileStore->get($key);
 
-            if(!$this->_isSourceLocal) {
+            if (!$this->_isSourceLocal) {
                 $download->unlink();
             }
         }
 
 
         // Update meta
-        if($type != 'image/svg+xml') {
+        if ($type != 'image/svg+xml') {
             $this->_contentType = null;
         }
 
         $this->_location = $file->getPath();
 
-        if($this->_fileName !== null) {
+        if ($this->_fileName !== null) {
             $this->getContentType();
-            $ext = core\fs\Type::mimeToExt($this->_contentType);
+            $ext = Atlas::$mime->suggestExtension($this->_contentType);
+
+            if ($ext === 'jpeg') {
+                $ext = 'jpg';
+            }
 
             $path = new core\uri\Path($this->_fileName);
             $origExt = strtolower($path->getExtension());
 
-            if($origExt === 'jpeg') {
+            if ($origExt === 'jpeg') {
                 $origExt = 'jpg';
             }
 
-            if($origExt !== $ext) {
-                if(strlen($origExt)) {
+            if ($origExt !== $ext) {
+                if (strlen($origExt)) {
                     $path->setFileName($path->getFileName().'.'.$origExt);
                 }
 
                 $path->setExtension($ext);
             }
 
-            if($this->_transformationInFileName && $transformation !== null) {
+            if ($this->_transformationInFileName && $transformation !== null) {
                 $path->setFileName($path->getFileName().'.'.str_replace([':', '|'], '_', $transformation));
             }
 
@@ -205,8 +216,37 @@ class Descriptor implements IDescriptor {
         return $this;
     }
 
-    public function shouldOptimizeTransformation(bool $flag=null) {
-        if($flag !== null) {
+    protected function normalizePath(?string $path)
+    {
+        if (!df\Launchpad::$loader || $path === null) {
+            return $path;
+        }
+
+        $locations = df\Launchpad::$loader->getLocations();
+        $locations['app'] = df\Launchpad::$app->path;
+        $path = preg_replace('/[[:^print:]]/', '', $path);
+
+        foreach ($locations as $key => $match) {
+            if (substr($path, 0, $len = strlen($match)) == $match) {
+                $innerPath = substr(str_replace('\\', '/', $path), $len + 1);
+
+                if (df\Launchpad::$isCompiled && $key == 'root') {
+                    $parts = explode('/', $innerPath);
+                    array_shift($parts);
+                    $innerPath = implode('/', $parts);
+                }
+
+                $path = $key.'://'.$innerPath;
+                break;
+            }
+        }
+
+        return $path;
+    }
+
+    public function shouldOptimizeTransformation(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_optimizeTransformation = $flag;
             return $this;
         }
@@ -214,22 +254,24 @@ class Descriptor implements IDescriptor {
         return $this->_optimizeTransformation;
     }
 
-    public function getTransformation(): ?ITransformation {
+    public function getTransformation(): ?ITransformation
+    {
         return $this->_transformation;
     }
 
-    public function toIcon(int ...$sizes) {
-        if(!$this->_isLocal) {
+    public function toIcon(int ...$sizes)
+    {
+        if (!$this->_isLocal) {
             $this->applyTransformation(null);
         }
 
-        if($this->getContentType() == 'image/x-icon') {
+        if ($this->getContentType() == 'image/x-icon') {
             return $this;
         }
 
-        if($this->_isSourceLocal) {
+        if ($this->_isSourceLocal) {
             // Local
-            $keyPath = core\fs\Dir::stripPathLocation($this->_sourceLocation);
+            $keyPath = $this->normalizePath($this->_sourceLocation);
             $key = basename(dirname($keyPath)).'_'.basename($keyPath).'-'.md5($keyPath.':').'-ico';
         } else {
             // Url
@@ -240,7 +282,7 @@ class Descriptor implements IDescriptor {
 
         $fileStore = FileStore::getInstance();
 
-        if(!$file = $fileStore->get($key, self::DEFAULT_LIFETIME)) {
+        if (!$file = $fileStore->get($key, self::DEFAULT_LIFETIME)) {
             $ico = new Ico($this->_location, 16, 32);
             $fileStore->set($key, $ico->generate());
             $file = $fileStore->get($key);
@@ -249,7 +291,7 @@ class Descriptor implements IDescriptor {
         $this->_location = $file->getPath();
         $this->_contentType = 'image/x-icon';
 
-        if($this->_fileName === null) {
+        if ($this->_fileName === null) {
             $this->_fileName = basename($this->_sourceLocation);
         }
 
@@ -261,30 +303,35 @@ class Descriptor implements IDescriptor {
         return $this;
     }
 
-    public function getLocation(): string {
+    public function getLocation(): string
+    {
         return $this->_location;
     }
 
-    public function isLocal(): bool {
+    public function isLocal(): bool
+    {
         return $this->_isLocal;
     }
 
 
-    public function setFileName(?string $fileName) {
+    public function setFileName(?string $fileName)
+    {
         $this->_fileName = $fileName;
         return $this;
     }
 
-    public function getFileName(): string {
-        if($this->_fileName === null) {
+    public function getFileName(): string
+    {
+        if ($this->_fileName === null) {
             $this->_fileName = basename($this->_sourceLocation);
         }
 
         return $this->_fileName;
     }
 
-    public function shouldIncludeTransformationInFileName(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldIncludeTransformationInFileName(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_transformationInFileName = $flag;
             return $this;
         }
@@ -292,25 +339,26 @@ class Descriptor implements IDescriptor {
         return $this->_transformationInFileName;
     }
 
-    public function getContentType(): string {
-        if($this->_contentType === null) {
-            if($this->_isLocal) {
+    public function getContentType(): string
+    {
+        if ($this->_contentType === null) {
+            if ($this->_isLocal) {
                 try {
                     $info = getImageSize($this->_location);
                     $this->_contentType = $info['mime'];
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     $this->_contentType = 'image/png';
                 }
             } else {
                 $url = new link\http\Url($this->_location);
-                $this->_contentType = core\fs\Type::extToMime($url->path->getExtension());
+                $this->_contentType = Atlas::$mime->detect($url->path->getExtension());
             }
 
-            if($this->_contentType === null && $this->_fileName) {
-                $this->_contentType = core\fs\Type::fileToMime($this->_fileName);
+            if ($this->_contentType === null && $this->_fileName) {
+                $this->_contentType = Atlas::$mime->detect($this->_fileName);
             }
 
-            if(substr($this->_contentType, 0, 6) !== 'image/') {
+            if (substr($this->_contentType, 0, 6) !== 'image/') {
                 $this->_contentType = 'image/png';
             }
         }

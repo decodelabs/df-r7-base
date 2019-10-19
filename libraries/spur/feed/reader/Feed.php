@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\spur;
 
-abstract class Feed implements spur\feed\IFeedReader {
-
+abstract class Feed implements spur\feed\IFeedReader
+{
     use spur\feed\TFeedReader;
     use spur\feed\TAuthorProvider;
     use spur\feed\TStoreProvider;
@@ -24,8 +24,9 @@ abstract class Feed implements spur\feed\IFeedReader {
     protected $_entryPlugins = [];
     protected $_entries = [];
 
-    public static function fromFile($path) {
-        if(!is_file($path)) {
+    public static function fromFile($path)
+    {
+        if (!is_file($path)) {
             throw new spur\feed\RuntimeException(
                 'Feed file could not be found'
             );
@@ -34,18 +35,19 @@ abstract class Feed implements spur\feed\IFeedReader {
         return self::fromString(file_get_contents($path));
     }
 
-    public static function fromString(?string $string) {
+    public static function fromString(?string $string)
+    {
         $domDocument = self::_loadDomDocument($string);
         $type = self::detectFeedType($domDocument);
 
-        if(substr($type, 0, 3) == 'rss') {
+        if (substr($type, 0, 3) == 'rss') {
             $output = new namespace\rss\Feed($domDocument, null, $type);
-        } else if(substr($type, -5) == 'entry') {
+        } elseif (substr($type, -5) == 'entry') {
             $output = new namespace\atom\Entry($domDocument->documentElement, 0, spur\feed\ITypes::ATOM_10);
-        } else if(substr($type, 0, 4) == 'atom') {
+        } elseif (substr($type, 0, 4) == 'atom') {
             $output = new namespace\atom\Feed($domDocument, null, $type);
         } else {
-            throw new UnexpectedValueException(
+            throw new spur\feed\UnexpectedValueException(
                 'The feed is not a recognised type'
             );
         }
@@ -53,11 +55,12 @@ abstract class Feed implements spur\feed\IFeedReader {
         return $output;
     }
 
-    protected static function _loadDomDocument($string) {
+    protected static function _loadDomDocument($string)
+    {
         try {
-            $domDocument = new \DomDocument();
+            $domDocument = new \DOMDocument();
             $domDocument->loadXml($string);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             throw new spur\feed\UnexpectedValueException(
                 'Could not load feed xml document', 0, $e
             );
@@ -66,23 +69,24 @@ abstract class Feed implements spur\feed\IFeedReader {
         return $domDocument;
     }
 
-    public static function detectFeedType($domDocument, $specOnly=false) {
-        if($domDocument instanceof spur\feed\IReader) {
+    public static function detectFeedType($domDocument, $specOnly=false)
+    {
+        if ($domDocument instanceof spur\feed\IReader) {
             $domDocument = $domDocument->getDomDocument();
-        } else if(is_string($domDocument)) {
+        } elseif (is_string($domDocument)) {
             $domDocument = self::_loadDomDocument($domDocument);
         }
 
-        if(!$domDocument instanceof \DomDocument) {
-            throw new UnexpectedValueException(
+        if (!$domDocument instanceof \DOMDocument) {
+            throw new spur\feed\UnexpectedValueException(
                 'Cannot detect feed type - invalid xml document'
             );
         }
 
-        $xPath = new \DomXPath($domDocument);
+        $xPath = new \DOMXPath($domDocument);
 
-        if($xPath->query('/rss')->length) {
-            switch($xPath->evaluate('string(/rss/@version)')) {
+        if ($xPath->query('/rss')->length) {
+            switch ($xPath->evaluate('string(/rss/@version)')) {
                 case '2.0':  return spur\feed\ITypes::RSS_20;
                 case '0.94': return spur\feed\ITypes::RSS_094;
                 case '0.93': return spur\feed\ITypes::RSS_093;
@@ -94,10 +98,10 @@ abstract class Feed implements spur\feed\IFeedReader {
 
         $xPath->registerNamespace('rdf', spur\feed\INamespaces::RDF);
 
-        if($xPath->query('/rdf:RDF')->length) {
+        if ($xPath->query('/rdf:RDF')->length) {
             $xPath->registerNamespace('rss', spur\feed\INamespaces::RSS_10);
 
-            if($xPath->query('/rdf:RDF/rss:channel')->length
+            if ($xPath->query('/rdf:RDF/rss:channel')->length
             || $xPath->query('/rdf:RDF/rss:image')->length
             || $xPath->query('/rdf:RDF/rss:item')->length
             || $xPath->query('/rdf:RDF/rss:textinput')->length) {
@@ -107,7 +111,7 @@ abstract class Feed implements spur\feed\IFeedReader {
 
             $xPath->registerNamespace('rss', spur\feed\INamespaces::RSS_09);
 
-            if($xPath->query('/rdf:RDF/rss:channel')->length
+            if ($xPath->query('/rdf:RDF/rss:channel')->length
             || $xPath->query('/rdf:RDF/rss:image')->length
             || $xPath->query('/rdf:RDF/rss:item')->length
             || $xPath->query('/rdf:RDF/rss:textinput')->length) {
@@ -118,12 +122,12 @@ abstract class Feed implements spur\feed\IFeedReader {
         $type = spur\feed\ITypes::ATOM;
         $xPath->registerNamespace('atom', spur\feed\INamespaces::ATOM_10);
 
-        if($xPath->query('//atom:feed')->length) {
+        if ($xPath->query('//atom:feed')->length) {
             return spur\feed\ITypes::ATOM_10;
         }
 
-        if($xPath->query('//atom:entry')->length) {
-            if($specOnly) {
+        if ($xPath->query('//atom:entry')->length) {
+            if ($specOnly) {
                 return spur\feed\ITypes::ATOM_10;
             }
 
@@ -133,7 +137,7 @@ abstract class Feed implements spur\feed\IFeedReader {
 
         $xPath->registerNamespace('atom', spur\feed\INamespaces::ATOM_03);
 
-        if($xPath->query('//atom:feed')->length) {
+        if ($xPath->query('//atom:feed')->length) {
             return spur\feed\ITypes::ATOM_03;
         }
 
@@ -141,103 +145,123 @@ abstract class Feed implements spur\feed\IFeedReader {
     }
 
 
-    protected function _init() {
+    protected function _init()
+    {
         $this->_xPathPrefix = $this->_getXPathPrefix();
 
-        foreach($this->_getEntryNodeList() as $i => $entry) {
+        foreach ($this->_getEntryNodeList() as $i => $entry) {
             $this->_entries[$i] = $entry;
         }
 
-        foreach(static::DEFAULT_EXTENSIONS as $ext) {
+        foreach (static::DEFAULT_EXTENSIONS as $ext) {
             $this->loadExtension($ext);
         }
     }
 
+    abstract protected function _getXPathPrefix();
 
-// Feed
-    public function getId(): ?string {
+
+    // Feed
+    public function getId(): ?string
+    {
         return $this->_getDefaultValue('id');
     }
 
-    public function getAuthor($index=0) {
+    public function getAuthor($index=0)
+    {
         $authors = $this->getAuthors();
 
-        if(isset($authors[$index])) {
+        if (isset($authors[$index])) {
             return $authors[$index];
         }
 
         return null;
     }
 
-    public function getAuthors() {
+    public function getAuthors()
+    {
         return $this->_getDefaultValue('authors');
     }
 
-    public function getTitle(): ?string {
+    public function getTitle(): ?string
+    {
         return $this->_getDefaultValue('title');
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->_getDefaultValue('description');
     }
 
-    public function getImage() {
+    public function getImage()
+    {
         return $this->_getDefaultValue('image');
     }
 
-    public function getCategories() {
+    public function getCategories()
+    {
         return $this->_getDefaultValue('categories');
     }
 
-    public function getSourceLink() {
+    public function getSourceLink()
+    {
         return $this->_getDefaultValue('sourceLink');
     }
 
-    public function setFeedLink($link) {
+    public function setFeedLink($link)
+    {
         $this->_feedLink = (string)$link;
         return $this;
     }
 
-    public function getFeedLink() {
-        if($link = $this->_getDefaultValue('feedLink')) {
+    public function getFeedLink()
+    {
+        if ($link = $this->_getDefaultValue('feedLink')) {
             return $link;
         }
 
         return $this->_feedLink;
     }
 
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this->_getDefaultValue('language');
     }
 
-    public function getCopyright() {
+    public function getCopyright()
+    {
         return $this->_getDefaultValue('copyright');
     }
 
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         return $this->_getDefaultValue('creationDate');
     }
 
-    public function getLastModifiedDate() {
+    public function getLastModifiedDate()
+    {
         return $this->_getDefaultValue('lastModifiedDate');
     }
 
-    public function getGenerator() {
+    public function getGenerator()
+    {
         return $this->_getDefaultValue('generator');
     }
 
-    public function getHubs() {
+    public function getHubs()
+    {
         return $this->_getDefaultValue('hubs');
     }
 
-    public function getEncoding() {
-        if($encoding = $this->_getDefaultValue('encoding')) {
+    public function getEncoding()
+    {
+        if ($encoding = $this->_getDefaultValue('encoding')) {
             return $encoding;
         }
 
         $output = $this->getDomDocument()->encoding;
 
-        if(empty($output)) {
+        if (empty($output)) {
             $output = 'UTF-8';
         }
 
@@ -245,11 +269,12 @@ abstract class Feed implements spur\feed\IFeedReader {
     }
 
 
-// Entries
-    public function getEntry($index=0) {
+    // Entries
+    public function getEntry($index=0)
+    {
         $entry = $this->_createEntry($this->_entries[$index], $index);
 
-        foreach($this->_entryPlugins as $name => $class) {
+        foreach ($this->_entryPlugins as $name => $class) {
             $plugin = new $class(
                 $entry->getDomElement(),
                 $entry->getXPath(),
@@ -257,7 +282,7 @@ abstract class Feed implements spur\feed\IFeedReader {
                 $entry->getType()
             );
 
-            if($plugin instanceof spur\feed\IEntryReaderPlugin) {
+            if ($plugin instanceof spur\feed\IEntryReaderPlugin) {
                 $plugin->setXPathPrefix($this->_getEntryXPathPrefix($entry->getEntryKey()));
                 $entry->addPlugin($name, $plugin);
             }
@@ -266,10 +291,13 @@ abstract class Feed implements spur\feed\IFeedReader {
         return $entry;
     }
 
-    public function getEntries() {
+    abstract protected function _getEntryXPathPrefix($entryKey);
+
+    public function getEntries()
+    {
         $output = [];
 
-        foreach($this as $entry) {
+        foreach ($this as $entry) {
             $output[] = $entry;
         }
 
@@ -279,19 +307,20 @@ abstract class Feed implements spur\feed\IFeedReader {
     abstract protected function _createEntry(\DomElement $domElement, $key);
     abstract protected function _getEntryNodeList();
 
-// Extensions
-    public function loadExtension($name) {
+    // Extensions
+    public function loadExtension($name)
+    {
         $name = lcfirst($name);
         $this->_extensions[$name] = true;
         $class = 'df\\spur\\feed\\extension\\'.$name.'\\EntryReader';
 
-        if(class_exists($class)) {
+        if (class_exists($class)) {
             $this->_entryPlugins[$name] = $class;
         }
 
         $class = 'df\\spur\\feed\\extension\\'.$name.'\\FeedReader';
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             return $this;
         }
 
@@ -301,7 +330,7 @@ abstract class Feed implements spur\feed\IFeedReader {
             $this->_type
         );
 
-        if($plugin instanceof spur\feed\IFeedReaderPlugin) {
+        if ($plugin instanceof spur\feed\IFeedReaderPlugin) {
             $plugin->setXPathPrefix($this->getXPathPrefix());
             $this->_plugins[$name] = $plugin;
         }
@@ -309,36 +338,43 @@ abstract class Feed implements spur\feed\IFeedReader {
         return $this;
     }
 
-    public function hasExtension($name) {
+    public function hasExtension($name)
+    {
         $name = lcfirst($name);
         return isset($this->_extensions[$name]);
     }
 
 
 
-// Iterator / countable
-    public function count() {
+    // Iterator / countable
+    public function count()
+    {
         return count($this->_entries);
     }
 
 
-    public function key() {
+    public function key()
+    {
         return key($this->_entries);
     }
 
-    public function next() {
+    public function next()
+    {
         return next($this->_entries);
     }
 
-    public function rewind() {
+    public function rewind()
+    {
         return reset($this->_entries);
     }
 
-    public function current() {
+    public function current()
+    {
         return $this->getEntry($this->key());
     }
 
-    public function valid() {
+    public function valid()
+    {
         $key = $this->key();
         return $key !== null && $key < $this->count();
     }

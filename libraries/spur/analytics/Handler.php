@@ -38,7 +38,9 @@ class Handler implements IHandler
 
     public function __construct($addConfigAdapters=false)
     {
-        $this->addConfigAdapters();
+        if ($addConfigAdapters) {
+            $this->addConfigAdapters();
+        }
     }
 
     public function apply(aura\view\IHtmlView $view)

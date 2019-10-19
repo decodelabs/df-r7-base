@@ -68,6 +68,8 @@ class Model extends axis\Model
         foreach ($remainingPackages as $package) {
             if (is_dir($package->path.'/.git') && basename(dirname(dirname($package->path))) !== 'vendor') {
                 $repo = new spur\vcs\git\Repository($package->path);
+            } else {
+                $repo = null;
             }
 
             $installed[] = [

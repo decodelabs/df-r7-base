@@ -9,36 +9,41 @@ use df;
 use df\core;
 use df\axis;
 use df\user;
+use df\apex;
 
-class Model extends axis\Model implements user\IUserModel {
-
-    public function getClientData($id) {
+class Model extends axis\Model implements user\IUserModel
+{
+    public function getClientData($id)
+    {
         return $this->client->fetchByPrimary($id);
     }
 
-    public function getClientDataList(array $ids, array $emails=null) {
-        if(empty($ids) && empty($emails)) {
+    public function getClientDataList(array $ids, array $emails=null)
+    {
+        if (empty($ids) && empty($emails)) {
             return [];
         }
 
         $query = $this->client->fetch()->where('id', 'in', $ids);
 
-        if($emails !== null) {
+        if ($emails !== null) {
             $query->orWhere('email', 'in', $emails);
         }
 
         return $query->toArray();
     }
 
-    public function getAuthenticationDomainInfo(user\authentication\IRequest $request) {
+    public function getAuthenticationDomainInfo(user\authentication\IRequest $request)
+    {
         return $this->getUnit('auth')->fetch()
             ->where('identity', '=', $request->getIdentity())
             ->where('adapter', '=', $request->getAdapterName())
             ->toRow();
     }
 
-    public function generateKeyring(user\IClient $client) {
-        if(!$id = $client->getId()) {
+    public function generateKeyring(user\IClient $client)
+    {
+        if (!$id = $client->getId()) {
             return [];
         }
 
@@ -62,9 +67,9 @@ class Model extends axis\Model implements user\IUserModel {
 
         $output = [];
 
-        foreach($query as $role) {
-            foreach($role['keys'] as $key) {
-                if(!isset($output[$key['domain']])) {
+        foreach ($query as $role) {
+            foreach ($role['keys'] as $key) {
+                if (!isset($output[$key['domain']])) {
                     $output[$key['domain']] = [];
                 }
 
@@ -75,16 +80,18 @@ class Model extends axis\Model implements user\IUserModel {
         return $output;
     }
 
-    public function fetchClientOptions($id) {
+    public function fetchClientOptions($id)
+    {
         return $this->option->select('key', 'data')
             ->where('user', '=', $id)
             ->toList('key', 'data');
     }
 
-    public function updateClientOptions($id, array $options) {
+    public function updateClientOptions($id, array $options)
+    {
         $q = $this->option->batchReplace();
 
-        foreach($options as $key => $value) {
+        foreach ($options as $key => $value) {
             $q->addRow([
                 'user' => $id,
                 'key' => $key,
@@ -96,7 +103,8 @@ class Model extends axis\Model implements user\IUserModel {
         return $this;
     }
 
-    public function removeClientOptions($id, $keys) {
+    public function removeClientOptions($id, $keys)
+    {
         $this->option->delete()
             ->where('user', '=', $id)
             ->where('key', 'in', $keys)
@@ -106,12 +114,13 @@ class Model extends axis\Model implements user\IUserModel {
     }
 
 
-    public function canUserAccess($user, $lock) {
-        if(!$user instanceof user\IClient) {
-            if(!$user instanceof apex\models\user\client\Record) {
+    public function canUserAccess($user, $lock)
+    {
+        if (!$user instanceof user\IClient) {
+            if (!$user instanceof apex\models\user\client\Record) {
                 $user = $this->getClientData($user);
 
-                if(!$user) {
+                if (!$user) {
                     return false;
                 }
             }
@@ -119,18 +128,19 @@ class Model extends axis\Model implements user\IUserModel {
             $user = user\Client::factory($user);
         }
 
-        if(!$user->getKeyringTimestamp()) {
+        if (!$user->getKeyringTimestamp()) {
             $user->setKeyring($this->generateKeyring($user));
         }
 
-        if(!$lock instanceof user\IAccessLock) {
+        if (!$lock instanceof user\IAccessLock) {
             $lock = $this->context->user->getAccessLock($lock);
         }
 
         return $user->canAccess($lock);
     }
 
-    public function isUserA($user, string ...$signifiers): bool {
+    public function isUserA($user, string ...$signifiers): bool
+    {
         return (bool)$this->group->select()
             ->where('users', '=', $user)
             ->beginWhereClause()
@@ -147,12 +157,13 @@ class Model extends axis\Model implements user\IUserModel {
     }
 
 
-    public function installDefaultManifest() {
+    public function installDefaultManifest()
+    {
         $roleIds = $this->role->select('id', 'name')->toList('id', 'name');
         $groupIds = $this->group->select('id', 'name')->toList('id', 'name');
 
-        foreach($this->role->getDefaultManifest() as $id => $row) {
-            if(isset($roleIds[$id])) {
+        foreach ($this->role->getDefaultManifest() as $id => $row) {
+            if (isset($roleIds[$id])) {
                 continue;
             }
 
@@ -162,15 +173,15 @@ class Model extends axis\Model implements user\IUserModel {
 
             $role = $this->role->newRecord($row);
 
-            foreach($keys as $key) {
+            foreach ($keys as $key) {
                 $role->keys->add($this->key->newRecord($key));
             }
 
             $role->save();
         }
 
-        foreach($this->group->getDefaultManifest() as $id => $row) {
-            if(isset($groupIds[$id])) {
+        foreach ($this->group->getDefaultManifest() as $id => $row) {
+            if (isset($groupIds[$id])) {
                 continue;
             }
 

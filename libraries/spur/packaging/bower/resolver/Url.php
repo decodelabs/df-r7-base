@@ -10,15 +10,17 @@ use df\core;
 use df\spur;
 use df\link;
 
-class Url implements spur\packaging\bower\IResolver {
-
+class Url implements spur\packaging\bower\IResolver
+{
     protected $_httpClient;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->_httpClient = new link\http\Client();
     }
 
-    public function resolvePackageName(spur\packaging\bower\IPackage $package) {
+    public function resolvePackageName(spur\packaging\bower\IPackage $package)
+    {
         return $package->name;
 
         /*
@@ -27,8 +29,9 @@ class Url implements spur\packaging\bower\IResolver {
         */
     }
 
-    public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null) {
-        if($currentVersion) {
+    public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null)
+    {
+        if ($currentVersion) {
             return false;
         }
 
@@ -41,16 +44,17 @@ class Url implements spur\packaging\bower\IResolver {
             $package->cacheFileName
         );
 
-        if(!$response->isOk()) {
+        if (!$response->isOk()) {
             throw new spur\packaging\bower\RuntimeException(
-                'Unable to fetch file: '.$url
+                'Unable to fetch file: '.$package->url
             );
         }
 
         return true;
     }
 
-    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath) {
+    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath)
+    {
         return 'latest';
     }
 }

@@ -6,6 +6,7 @@
 namespace df;
 
 use df;
+use df\core;
 
 class Launchpad
 {

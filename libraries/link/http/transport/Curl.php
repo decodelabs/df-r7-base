@@ -9,18 +9,22 @@ use df;
 use df\core;
 use df\link;
 
-class Curl implements link\http\IAsyncTransport {
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Mode;
 
+class Curl implements link\http\IAsyncTransport
+{
     protected $_batch = [];
     protected $_multiHandle;
     protected $_multiActive = false;
 
-    public function promiseResponse(link\http\IRequest $request, link\http\IClient $client) {
-        return core\lang\Promise::defer(function($input, $promise) use($request, $client) {
+    public function promiseResponse(link\http\IRequest $request, link\http\IClient $client)
+    {
+        return core\lang\Promise::defer(function ($input, $promise) use ($request, $client) {
             $this->_prepareRequest($request, $client);
             $handle = new Curl_Handle($request, $client, $promise);
 
-            if(!curl_exec($handle->resource)) {
+            if (!curl_exec($handle->resource)) {
                 throw new link\http\RuntimeException(
                     curl_error($handle->resource),
                     curl_errno($handle->resource)
@@ -36,13 +40,14 @@ class Curl implements link\http\IAsyncTransport {
 
 
 
-    public function addBatchRequest(link\http\IRequest $request, link\http\IClient $client, core\lang\IPromise $promise) {
+    public function addBatchRequest(link\http\IRequest $request, link\http\IClient $client, core\lang\IPromise $promise)
+    {
         $this->_prepareRequest($request, $client);
         $handle = new Curl_Handle($request, $client, $promise);
 
         $this->_batch[$handle->getId()] = $handle;
 
-        if(!$this->_multiHandle) {
+        if (!$this->_multiHandle) {
             $this->_multiHandle = curl_multi_init();
         }
 
@@ -51,32 +56,33 @@ class Curl implements link\http\IAsyncTransport {
         return $this;
     }
 
-    public function syncBatch(link\http\IClient $client) {
-        while(!empty($this->_batch)) {
-            if($this->_multiActive) {
+    public function syncBatch(link\http\IClient $client)
+    {
+        while (!empty($this->_batch)) {
+            if ($this->_multiActive) {
                 $res = curl_multi_select($this->_multiHandle, 1);
 
-                if($res === -1) {
+                if ($res === -1) {
                     usleep(100);
                 }
             }
 
             do {
                 $res = curl_multi_exec($this->_multiHandle, $this->_multiActive);
-            } while($res === \CURLM_CALL_MULTI_PERFORM);
+            } while ($res === \CURLM_CALL_MULTI_PERFORM);
 
-            while($info = curl_multi_info_read($this->_multiHandle)) {
+            while ($info = curl_multi_info_read($this->_multiHandle)) {
                 $id = (int)$info['handle'];
                 curl_multi_remove_handle($this->_multiHandle, $info['handle']);
 
-                if(!isset($this->_batch[$id])) {
+                if (!isset($this->_batch[$id])) {
                     continue;
                 }
 
                 $handle = $this->_batch[$id];
                 unset($this->_batch[$id]);
 
-                if($info['result']) {
+                if ($info['result']) {
                     $handle->promise->deliverError(
                         new link\http\RuntimeException(
                             curl_error($handle->resource),
@@ -91,7 +97,7 @@ class Curl implements link\http\IAsyncTransport {
                 unset($handle->resource);
             }
 
-            if($res != \CURLM_OK) {
+            if ($res != \CURLM_OK) {
                 break;
             }
         }
@@ -102,28 +108,31 @@ class Curl implements link\http\IAsyncTransport {
         return $this;
     }
 
-    public function __destruct() {
-        if($this->_multiHandle) {
+    public function __destruct()
+    {
+        if ($this->_multiHandle) {
             curl_multi_close($this->_multiHandle);
             $this->_multiHandle = null;
         }
     }
 
 
-    protected function _prepareRequest(link\http\IRequest $request, link\http\IClient $client) {
+    protected function _prepareRequest(link\http\IRequest $request, link\http\IClient $client)
+    {
         $client->prepareRequest($request);
     }
 }
 
-class Curl_Handle {
-
+class Curl_Handle
+{
     public $resource;
     public $request;
     public $headers = [];
     public $response;
     public $promise;
 
-    public function __construct(link\http\IRequest $request, link\http\IClient $client, core\lang\IPromise $promise) {
+    public function __construct(link\http\IRequest $request, link\http\IClient $client, core\lang\IPromise $promise)
+    {
         $this->request = $request;
         $this->promise = $promise;
         $conf = $this->_createConf($client, $promise);
@@ -132,11 +141,13 @@ class Curl_Handle {
         curl_setopt_array($this->resource, $conf);
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return (string)((int)$this->resource);
     }
 
-    protected function _createConf(link\http\IClient $client, core\lang\IPromise $promise) {
+    protected function _createConf(link\http\IClient $client, core\lang\IPromise $promise)
+    {
         // Basic details
         $options = $this->request->options;
 
@@ -149,11 +160,11 @@ class Curl_Handle {
             \CURLOPT_CONNECTTIMEOUT_MS => $options->connectTimeout !== null ? (int)($options->connectTimeout * 1000) : 60000
         ];
 
-        if(defined('CURLOPT_PROTOCOLS')) {
+        if (defined('CURLOPT_PROTOCOLS')) {
             $output[\CURLOPT_PROTOCOLS] = \CURLPROTO_HTTP | \CURLPROTO_HTTPS;
         }
 
-        switch($this->request->headers->getHttpVersion()) {
+        switch ($this->request->headers->getHttpVersion()) {
             case 2.0:
                 $output[\CURLOPT_HTTP_VERSION] = \CURL_HTTP_VERSION_2_0;
                 break;
@@ -168,20 +179,20 @@ class Curl_Handle {
 
 
         // Method specific
-        if($this->request->isMethod('head')) {
+        if ($this->request->isMethod('head')) {
             $output[\CURLOPT_NOBODY] = true;
         }
 
 
         // Redirects
-        if($options->maxRedirects) {
+        if ($options->maxRedirects) {
             $output[\CURLOPT_FOLLOWLOCATION] = true;
             $output[\CURLOPT_MAXREDIRS] = $options->maxRedirects;
         }
 
         // Auth
-        if($options->username) {
-            switch($options->authType) {
+        if ($options->username) {
+            switch ($options->authType) {
                 case 'basic':
                     $output[\CURLOPT_HTTPAUTH] = \CURLAUTH_BASIC;
                     break;
@@ -204,7 +215,7 @@ class Curl_Handle {
 
 
         // SSL
-        if($options->verifySsl) {
+        if ($options->verifySsl) {
             $output[\CURLOPT_SSL_VERIFYHOST] = 2;
             $output[\CURLOPT_SSL_VERIFYPEER] = true;
         } else {
@@ -212,26 +223,27 @@ class Curl_Handle {
             $output[\CURLOPT_SSL_VERIFYPEER] = false;
         }
 
-        if($options->caBundlePath) {
+        if ($options->caBundlePath) {
             $output[\CURLOPT_CAINFO] = $options->caBundlePath;
         } else {
             try {
                 $output[\CURLOPT_CAINFO] = link\http\Client::getDefaultCaBundlePath();
-            } catch(\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
         }
 
-        if($options->certPath) {
+        if ($options->certPath) {
             $output[\CURLOPT_SSLCERT] = $options->certPath;
 
-            if($options->certPassword) {
+            if ($options->certPassword) {
                 $output[\CURLOPT_SSLCERTPASSWD] = $options->certPassword;
             }
         }
 
-        if($options->sslKeyPath) {
+        if ($options->sslKeyPath) {
             $output[\CURLOPT_SSLKEY] = $options->sslKeyPath;
 
-            if($options->sslKeyPassword) {
+            if ($options->sslKeyPassword) {
                 $output[\CURLOPT_SSLKEYPASSWD] = $options->sslKeyPassword;
             }
         }
@@ -240,50 +252,50 @@ class Curl_Handle {
         // Body data
         $size = null;
 
-        if($this->request->hasBodyData()) {
+        if ($this->request->hasBodyData()) {
             $size = $this->request->headers->get('content-length');
             $body = $this->request->getBodyDataFile();
 
-            if(!$body->isOpen()) {
-                $body->open(core\fs\Mode::READ_ONLY);
+            if (!$body->isOpen()) {
+                $body->open(Mode::READ_ONLY);
             }
 
             $output[\CURLOPT_UPLOAD] = true;
 
-            if($size !== null) {
+            if ($size !== null) {
                 $output[\CURLOPT_INFILESIZE] = $size;
                 // remove size from headers?
             }
 
-            $output[\CURLOPT_READFUNCTION] = function($resource, $inFile, $length) use($body) {
-                return $body->readChunk($length);
+            $output[\CURLOPT_READFUNCTION] = function ($resource, $inFile, $length) use ($body) {
+                return $body->read($length);
             };
         }
 
 
         // Headers
-        foreach($this->request->headers as $key => $value) {
+        foreach ($this->request->headers as $key => $value) {
             $output[\CURLOPT_HTTPHEADER][] = $key.': '.$value;
         }
 
-        if($this->request->isMethod('put', 'post')
+        if ($this->request->isMethod('put', 'post')
         && !$this->request->headers->has('content-length')) {
             $output[\CURLOPT_HTTPHEADER][] = 'Content-Length: 0';
         }
 
-        if(!$this->request->headers->has('accept')) {
+        if (!$this->request->headers->has('accept')) {
             $output[\CURLOPT_HTTPHEADER][] = 'Accept:';
         }
 
-        if(!$this->request->headers->has('expect')) {
+        if (!$this->request->headers->has('expect')) {
             $output[\CURLOPT_HTTPHEADER][] = 'Expect:';
         }
 
-        $output[\CURLOPT_HEADERFUNCTION] = function($resource, $header) use($client) {
+        $output[\CURLOPT_HEADERFUNCTION] = function ($resource, $header) use ($client) {
             $length = strlen($header);
             $header = trim($header);
 
-            if(!empty($header)) {
+            if (!empty($header)) {
                 $this->headers[] = $header;
             } else {
                 $this->response = new link\http\response\Stream(
@@ -293,7 +305,7 @@ class Curl_Handle {
 
                 $client->prepareResponse($this->response, $this->request);
 
-                if($this->response->isRedirect()) {
+                if ($this->response->isRedirect()) {
                     $this->promise->emit('redirect', [
                         'url' => $this->response->headers->get('location'),
                         'header' => $this->response->headers
@@ -307,11 +319,11 @@ class Curl_Handle {
         };
 
 
-        if(!$this->request->isMethod('head')) {
+        if (!$this->request->isMethod('head')) {
             // Progress
             $output[\CURLOPT_NOPROGRESS] = false;
-            $output[\CURLOPT_PROGRESSFUNCTION] = function(...$args) use($promise) {
-                if(is_resource($args[0])) {
+            $output[\CURLOPT_PROGRESSFUNCTION] = function (...$args) use ($promise) {
+                if (is_resource($args[0])) {
                     array_shift($args);
                 }
 
@@ -320,7 +332,7 @@ class Curl_Handle {
             };
 
             // Response data
-            $output[\CURLOPT_WRITEFUNCTION] = function($resource, $data) {
+            $output[\CURLOPT_WRITEFUNCTION] = function ($resource, $data) {
                 $this->response->getContentFileStream()->write($data);
                 return strlen($data);
             };

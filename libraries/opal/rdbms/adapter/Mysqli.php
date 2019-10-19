@@ -9,15 +9,17 @@ use df;
 use df\core;
 use df\opal;
 
-class Mysqli extends opal\rdbms\adapter\Base {
+class Mysqli extends opal\rdbms\adapter\Base
+{
 
 // Connection
-    protected function _connect($global=false) {
-        if($this->_connection) {
+    protected function _connect($global=false)
+    {
+        if ($this->_connection) {
             return;
         }
 
-        if(!extension_loaded('mysqli')) {
+        if (!extension_loaded('mysqli')) {
             throw new opal\rdbms\AdapterNotFoundException(
                 'Mysqli extension is not available'
             );
@@ -34,16 +36,18 @@ class Mysqli extends opal\rdbms\adapter\Base {
                 $this->_dsn->getPort(),
                 $this->_dsn->getSocket()
             );
-        } catch(\Throwable $e) {}
+        } catch (\Throwable $e) {
+            $connection = null;
+        }
 
-        if($num = mysqli_connect_errno()) {
+        if ($num = mysqli_connect_errno()) {
             $this->_closeConnection();
             throw opal\rdbms\variant\mysql\Server::getConnectionException($this, $num, mysqli_connect_error());
         }
 
         $this->_connection = $connection;
 
-        if(version_compare($this->getServerVersion(), '5.0.0', '<')) {
+        if (version_compare($this->getServerVersion(), '5.0.0', '<')) {
             $this->_closeConnection();
 
             throw new opal\rdbms\AdapterNotFoundException(
@@ -51,7 +55,7 @@ class Mysqli extends opal\rdbms\adapter\Base {
             );
         }
 
-        if(!$encoding = $this->_dsn->getOption('encoding')) {
+        if (!$encoding = $this->_dsn->getOption('encoding')) {
             $encoding = 'utf8';
         }
 
@@ -60,13 +64,15 @@ class Mysqli extends opal\rdbms\adapter\Base {
         $this->executeSql('SET time_zone = \'+00:00\'');
     }
 
-    protected function _createDb() {
+    protected function _createDb()
+    {
         $encoding = $this->getEncoding();
         $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'` CHARACTER SET '.$encoding.' COLLATE '.$encoding.'_general_ci');
     }
 
-    protected function _closeConnection() {
-        if($this->_connection) {
+    protected function _closeConnection()
+    {
+        if ($this->_connection) {
             $output = mysqli_close($this->_connection);
         } else {
             $output = true;
@@ -76,20 +82,23 @@ class Mysqli extends opal\rdbms\adapter\Base {
         return $output;
     }
 
-    public function getServerType() {
+    public function getServerType()
+    {
         return 'mysql';
     }
 
-    public function getServerVersion() {
-        if($this->_connection) {
+    public function getServerVersion()
+    {
+        if ($this->_connection) {
             return $this->_connection->server_info;
         }
 
         return null;
     }
 
-    protected function _supports($feature) {
-        switch($feature) {
+    protected function _supports($feature)
+    {
+        switch ($feature) {
             case self::AUTO_INCREMENT:
                 return true;
 
@@ -121,17 +130,19 @@ class Mysqli extends opal\rdbms\adapter\Base {
     }
 
 
-// Transactions
-    protected function _beginTransaction() {
-        if(!mysqli_autocommit($this->_connection, false)) {
+    // Transactions
+    protected function _beginTransaction()
+    {
+        if (!mysqli_autocommit($this->_connection, false)) {
             throw new opal\rdbms\TransactionException(
                 'Unable to begin transaction - '.mysqli_error($this->_connection)
             );
         }
     }
 
-    protected function _commitTransaction() {
-        if(!mysqli_commit($this->_connection)) {
+    protected function _commitTransaction()
+    {
+        if (!mysqli_commit($this->_connection)) {
             throw new opal\rdbms\TransactionException(
                 'Unable to commit transaction - '.mysqli_error($this->_connection)
             );
@@ -140,8 +151,9 @@ class Mysqli extends opal\rdbms\adapter\Base {
         mysqli_autocommit($this->_connection, true);
     }
 
-    protected function _rollbackTransaction() {
-        if(!mysqli_rollback($this->_connection)) {
+    protected function _rollbackTransaction()
+    {
+        if (!mysqli_rollback($this->_connection)) {
             throw new opal\rdbms\TransactionException(
                 'Unable to roll back transaction - '.mysqli_error($this->_connection)
             );
@@ -150,21 +162,23 @@ class Mysqli extends opal\rdbms\adapter\Base {
         mysqli_autocommit($this->_connection, true);
     }
 
-// Locks
-    public function lockTable($table) {
+    // Locks
+    public function lockTable($table)
+    {
         try {
             $this->executeSql('LOCK TABLE '.$table.' WRITE');
-        } catch(opal\rdbms\IException $e) {
+        } catch (opal\rdbms\IException $e) {
             return false;
         }
 
         return true;
     }
 
-    public function unlockTable($table) {
+    public function unlockTable($table)
+    {
         try {
             $this->executeSql('UNLOCK TABLES');
-        } catch(opal\rdbms\IException $e) {
+        } catch (opal\rdbms\IException $e) {
             return false;
         }
 
@@ -172,32 +186,35 @@ class Mysqli extends opal\rdbms\adapter\Base {
     }
 
 
-// Query
-    public function prepare($sql) {
+    // Query
+    public function prepare($sql)
+    {
         return new opal\rdbms\adapter\statement\Mysqli($this, $sql);
     }
 
-    public function executeSql($sql, $forWrite=false) {
+    public function executeSql($sql, $forWrite=false)
+    {
         $output = mysqli_query($this->_connection, $sql);
 
-        if($num = mysqli_errno($this->_connection)) {
+        if ($num = mysqli_errno($this->_connection)) {
             throw opal\rdbms\variant\mysql\Server::getQueryException($this, $num, mysqli_error($this->_connection), $sql);
         }
 
         return $output;
     }
 
-    public function getLastInsertId() {
+    public function getLastInsertId()
+    {
         $id = mysqli_insert_id($this->_connection);
 
-        if($id < 0) {
+        if ($id < 0) {
             $id = null;
             $result = mysqli_query($this->_connection, 'SELECT LAST_INSERT_ID()');
 
-            if($result) {
+            if ($result) {
                 $row = mysqli_fetch_row($result);
 
-                if(isset($row[0])) {
+                if (isset($row[0])) {
                     $id = $row[0];
                 }
             }
@@ -206,41 +223,48 @@ class Mysqli extends opal\rdbms\adapter\Base {
         return $id;
     }
 
-    public function countAffectedRows() {
+    public function countAffectedRows()
+    {
         return mysqli_affected_rows($this->_connection);
     }
 
 
-// Sanitize
-    public function quoteIdentifier($identifier) {
+    // Sanitize
+    public function quoteIdentifier($identifier)
+    {
         $parts = explode('.', $identifier);
 
-        foreach($parts as $key => $part) {
+        foreach ($parts as $key => $part) {
             $parts[$key] = '`'.trim($part, '`\'').'`';
         }
 
         return implode('.', $parts);
     }
 
-    public function quoteFieldAliasDefinition($alias) {
+    public function quoteFieldAliasDefinition($alias)
+    {
         return '"'.trim($alias, '`\'').'"';
     }
 
-    public function quoteFieldAliasReference($alias) {
+    public function quoteFieldAliasReference($alias)
+    {
         return '`'.trim($alias, '`\'').'`';
     }
 
-    public function quoteValue($value) {
+    public function quoteValue($value)
+    {
         return '\''.mysqli_real_escape_string($this->_connection, $value).'\'';
     }
 
 
-// Introspection
-    public function newSchema($name) {
+    // Introspection
+    public function newSchema($name)
+    {
         return new opal\rdbms\variant\mysql\Schema($this, $name);
     }
 
-    public function getServer() {
+    public function getServer()
+    {
         return new opal\rdbms\variant\mysql\Server($this);
     }
 }

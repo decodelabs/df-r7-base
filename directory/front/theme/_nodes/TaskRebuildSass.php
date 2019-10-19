@@ -12,6 +12,8 @@ use df\arch;
 use df\flex;
 use df\aura;
 
+use DecodeLabs\Atlas;
+
 class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 {
     const RUN_AFTER = true;
@@ -23,7 +25,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         $this->ensureDfSource();
 
         $path = $this->app->getLocalDataPath().'/sass/'.$this->app->envMode;
-        $this->_dir = new core\fs\Dir($path);
+        $this->_dir = Atlas::$fs->dir($path);
 
         if (!$this->_dir->exists()) {
             return;
@@ -36,10 +38,10 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             return core\uri\Path::extractExtension($fileName) == 'json';
         }) as $fileName => $file) {
             $key = core\uri\Path::extractFileName($fileName);
-            $json = $this->data->fromJsonFile($file);
+            $json = $this->data->fromJsonFile((string)$file);
             $sassPath = array_shift($json);
 
-            $shortPath = core\fs\Dir::stripPathLocation($sassPath);
+            $shortPath = $this->normalizeSassPath($sassPath);
             $activePath = null;
 
             if ($buildId && strpos($shortPath, 'app://data/local/run/active/') === 0) {
@@ -61,7 +63,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $bridge = new aura\css\SassBridge($this->context, $sassPath, $activePath);
             $bridge->setMultiplexer($this->io);
             $bridge->compile();
-            
+
             $this->io->writeLine($shortPath);
         }
 
@@ -80,7 +82,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             $activePath = $sassPath;
         }
 
-        $shortPath = core\fs\Dir::stripPathLocation($activePath);
+        $shortPath = $this->normalizeSassPath($activePath);
 
         if (!$delete && $hasBuild && strpos($shortPath, 'app://data/local/run/active/') !== 0) {
             $delete = true;
@@ -99,5 +101,33 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         }
 
         return true;
+    }
+
+    protected function normalizeSassPath(?string $path)
+    {
+        if (!df\Launchpad::$loader || $path === null) {
+            return $path;
+        }
+
+        $locations = df\Launchpad::$loader->getLocations();
+        $locations['app'] = df\Launchpad::$app->path;
+        $path = preg_replace('/[[:^print:]]/', '', $path);
+
+        foreach ($locations as $key => $match) {
+            if (substr($path, 0, $len = strlen($match)) == $match) {
+                $innerPath = substr(str_replace('\\', '/', $path), $len + 1);
+
+                if (df\Launchpad::$isCompiled && $key == 'root') {
+                    $parts = explode('/', $innerPath);
+                    array_shift($parts);
+                    $innerPath = implode('/', $parts);
+                }
+
+                $path = $key.'://'.$innerPath;
+                break;
+            }
+        }
+
+        return $path;
     }
 }

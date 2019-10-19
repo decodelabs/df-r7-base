@@ -167,7 +167,7 @@ class Html implements arch\IDirectoryHelper
 
             case 'rawhtml':
             case 'html':
-                return $this->string($value);
+                return $this->string($body);
         }
     }
 
@@ -537,7 +537,7 @@ class Html implements arch\IDirectoryHelper
     public function queryToggleLink($request, $queryVar, $onString, $offString, $onIcon=null, $offIcon=null)
     {
         return $this->link(
-                $this->context->uri->queryToggle($request, $queryVar, $result),
+                $this->context->uri->queryToggle($request, $queryVar, $result = false),
                 $result ? $onString : $offString
             )
             ->setIcon($result ? $onIcon : $offIcon);

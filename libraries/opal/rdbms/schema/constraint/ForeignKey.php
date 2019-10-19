@@ -16,7 +16,8 @@ class ForeignKey implements opal\rdbms\schema\IForeignKey
 
     public function __construct(opal\rdbms\schema\ISchema $schema, $name, $targetSchema)
     {
-        parent::__construct($name, $targetSchema);
+        $this->_setName($name);
+        $this->setTargetSchema($targetSchema);
         $this->_sqlVariant = $schema->getSqlVariant();
     }
 

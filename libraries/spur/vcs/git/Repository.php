@@ -10,6 +10,8 @@ use df\core;
 use df\spur;
 use df\halo;
 
+use DecodeLabs\Atlas;
+
 class Repository implements ILocalRepository
 {
     use TRepository;
@@ -48,7 +50,7 @@ class Repository implements ILocalRepository
 
     public static function createClone($repoUrl, $path, $isBare=false)
     {
-        core\fs\Dir::create(dirname($path));
+        Atlas::$fs->createDir(dirname($path));
 
         if (!is_writable(dirname($path))) {
             throw new RuntimeException(
@@ -583,11 +585,6 @@ class Repository implements ILocalRepository
     public function getTree($id)
     {
         return new Tree($this, $id);
-    }
-
-    public function getBlob($id)
-    {
-        return new Blob($this, $id);
     }
 
 

@@ -14,6 +14,7 @@ use df\halo;
 use df\flex;
 
 use DecodeLabs\Systemic;
+use DecodeLabs\Atlas;
 
 class SassBridge implements ISassBridge
 {
@@ -148,7 +149,7 @@ class SassBridge implements ISassBridge
 
     public function compile(bool $doNotWait=false): void
     {
-        $lockFile = new core\fs\LockFile($this->_workDir, 60);
+        $lockFile = new LockFile($this->_workDir, 60);
         $lockFile->setFileName($this->_key.'.lock');
 
         if ($this->_waitForLock($lockFile, $doNotWait)) {
@@ -156,7 +157,7 @@ class SassBridge implements ISassBridge
         }
 
         $lockFile->lock();
-        core\fs\Dir::create($this->_workDir.'/'.$this->_key);
+        Atlas::$fs->createDir($this->_workDir.'/'.$this->_key);
 
         $error = null;
 
@@ -167,7 +168,7 @@ class SassBridge implements ISassBridge
         }
 
         $lockFile->unlock();
-        core\fs\Dir::delete($this->_workDir.'/'.$this->_key);
+        Atlas::$fs->deleteDir($this->_workDir.'/'.$this->_key);
 
         if ($error) {
             throw $error;
@@ -390,7 +391,7 @@ class SassBridge implements ISassBridge
         ];
 
         foreach ($files as $fileName) {
-            core\fs\File::copy($this->_workDir.'/'.$this->_key.'/'.$fileName, $this->_workDir.'/'.$fileName);
+            Atlas::$fs->copyFile($this->_workDir.'/'.$this->_key.'/'.$fileName, $this->_workDir.'/'.$fileName);
         }
 
         return;

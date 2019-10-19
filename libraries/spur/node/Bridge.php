@@ -11,6 +11,7 @@ use df\spur;
 use df\flex;
 use df\halo;
 
+use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
 
 class Bridge implements IBridge
@@ -29,7 +30,7 @@ class Bridge implements IBridge
 
     public function npmInstall(string $name, core\io\IMultiplexer $multiplexer=null)
     {
-        core\fs\Dir::create($this->_nodePath);
+        Atlas::$fs->createDir($this->_nodePath);
 
         $result = Systemic::$process->newLauncher('npm', [
                 '--loglevel=error',
@@ -52,13 +53,13 @@ class Bridge implements IBridge
 
     public function execute($path, $data)
     {
-        core\fs\Dir::create($this->_nodePath);
+        Atlas::$fs->createDir($this->_nodePath);
         Glitch::incomplete($path);
     }
 
     public function evaluate($js, $data=null)
     {
-        core\fs\Dir::create($this->_nodePath);
+        Atlas::$fs->createDir($this->_nodePath);
 
         $payload = flex\Json::toString([
             'js' => $js,
@@ -66,7 +67,7 @@ class Bridge implements IBridge
         ]);
 
         if (!is_file($this->_nodePath.'/evaluate.js')) {
-            core\fs\File::copy(__DIR__.'/evaluate.js', $this->_nodePath.'/evaluate.js');
+            Atlas::$fs->copyFile(__DIR__.'/evaluate.js', $this->_nodePath.'/evaluate.js');
         }
 
         $bin = Systemic::$os->which('node');
@@ -85,9 +86,10 @@ class Bridge implements IBridge
 
         if ($result->hasError() && empty($output)) {
             $error = $result->getError();
+            $e = new RuntimeException($error);
 
             if (!preg_match('/deprecat/i', $error)) {
-                throw new RuntimeException($error);
+                throw $e;
             } else {
                 core\logException($e);
             }

@@ -114,10 +114,14 @@ trait TConstraint_Index
     protected $_comment;
 
 
-    public function __construct($name, $fields=null)
+    public function __construct(?opal\schema\ISchema $schema, $name, $fields=null)
     {
         $this->_setName($name);
         $this->setFields($fields);
+
+        if ($schema) {
+            $schema->getName();
+        }
     }
 
     public function isUnique(bool $flag=null)
@@ -179,7 +183,7 @@ trait TConstraint_Index
     {
         if (!$this->hasField($reference->getField())) {
             $this->_fieldReferences[] = $reference;
-            $this->hasChanged = true;
+            $this->_hasChanged = true;
         }
 
         return $this;
@@ -189,7 +193,7 @@ trait TConstraint_Index
     {
         foreach ($this->_fieldReferences as $i => $reference) {
             if ($reference->getField() === $oldField) {
-                $this->_fieldReference[$i] = new IndexFieldReference($field, $size, $isDescending);
+                $this->_fieldReferences[$i] = new IndexFieldReference($newField, $size, $isDescending);
                 $this->_hasChanged = true;
                 break;
             }
@@ -203,7 +207,7 @@ trait TConstraint_Index
         foreach ($this->_fieldReferences as $i => $reference) {
             if ($field === $reference->getField()) {
                 unset($this->_fieldReferences[$i]);
-                $this->_fieldReferences = array_value($this->_fieldReferences);
+                $this->_fieldReferences = array_values($this->_fieldReferences);
                 $this->_hasChanged = true;
                 break;
             }
@@ -275,7 +279,7 @@ trait TConstraint_Index
     // Ext. serialize
     public static function fromStorageArray(opal\schema\ISchema $schema, array $data)
     {
-        $output = new self($data['nam']);
+        $output = new self($schema, $data['nam']);
         $output->_setGenericStorageArray($schema, $data);
         return $output;
     }
@@ -423,7 +427,7 @@ trait TConstraint_ForeignKey
     public function removeReference(IField $field, $targetFieldName)
     {
         foreach ($this->_fieldReferences as $i => $compReference) {
-            if ($compReference->eq($reference)) {
+            if ($compReference->eq($targetFieldName)) {
                 unset($this->_fieldReferences[$i]);
                 $this->_fieldReferences = array_values($this->_fieldReferences);
                 $this->_hasChanged = true;

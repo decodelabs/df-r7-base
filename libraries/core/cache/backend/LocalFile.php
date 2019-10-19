@@ -9,6 +9,9 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Glitch;
+
 class LocalFile implements core\cache\IBackend
 {
     use core\TValueMap;
@@ -33,8 +36,8 @@ class LocalFile implements core\cache\IBackend
         $path1 = df\Launchpad::$app->getSharedDataPath().'/cache/';
         $path2 = df\Launchpad::$app->getLocalDataPath().'/cache/';
 
-        core\fs\Dir::deleteContents($path1);
-        core\fs\Dir::deleteContents($path2);
+        Atlas::$fs->emptyOut($path1);
+        Atlas::$fs->emptyOut($path2);
     }
 
     public static function prune(core\collection\ITree $options)
@@ -49,12 +52,12 @@ class LocalFile implements core\cache\IBackend
         $output = 0;
 
         foreach ($paths as $basePath) {
-            $baseDir = core\fs\Dir::factory($basePath);
+            $baseDir = Atlas::$fs->dir($basePath);
 
             foreach ($baseDir->scanDirs() as $dirName => $dir) {
                 foreach ($dir->scanFiles() as $fileName => $file) {
                     if ($file->getLastModified() < $stamp) {
-                        $file->unlink();
+                        $file->delete();
                         $output++;
                     }
                 }
@@ -86,12 +89,12 @@ class LocalFile implements core\cache\IBackend
         }
 
         $path .= '/cache/'.flex\Text::formatFileName($cache->getCacheId());
-        $this->_dir = core\fs\Dir::create($path);
+        $this->_dir = Atlas::$fs->createDir($path);
     }
 
     public function getConnectionDescription(): string
     {
-        return $this->_dir->getLocationPath();
+        return Glitch::normalizePath($this->_dir->getPath());
     }
 
     public function getStats(): array
@@ -140,8 +143,8 @@ class LocalFile implements core\cache\IBackend
             return $default;
         }
 
-        if (!$file->isRecent($this->_lifeTime)) {
-            $file->unlink();
+        if (!$file->hasChanged($this->_lifeTime)) {
+            $file->delete();
             return $default;
         }
 
@@ -151,7 +154,7 @@ class LocalFile implements core\cache\IBackend
             $output = unserialize($output);
         } catch (\Throwable $e) {
             core\logException($e);
-            $file->unlink();
+            $file->delete();
             return $default;
         }
 
@@ -169,8 +172,8 @@ class LocalFile implements core\cache\IBackend
                 continue;
             }
 
-            if (!$file->isRecent($this->_lifeTime)) {
-                $file->unlink();
+            if (!$file->hasChanged($this->_lifeTime)) {
+                $file->delete();
                 continue;
             }
 
@@ -184,7 +187,7 @@ class LocalFile implements core\cache\IBackend
     {
         foreach ($keys as $key) {
             $key = $this->_normalizeKey($key);
-            $this->_dir->getFile('cache-'.$key)->unlink();
+            $this->_dir->getFile('cache-'.$key)->delete();
         }
 
         return true;
@@ -203,7 +206,7 @@ class LocalFile implements core\cache\IBackend
 
         foreach ($this->_dir->scanFiles() as $name => $file) {
             if (substr($name, 6, $length) == $key) {
-                $file->unlink();
+                $file->delete();
             }
         }
 
@@ -214,7 +217,7 @@ class LocalFile implements core\cache\IBackend
     {
         foreach ($this->_dir->scanFiles() as $name => $file) {
             if (preg_match($regex, substr($name, 6))) {
-                $file->unlink();
+                $file->delete();
             }
         }
 

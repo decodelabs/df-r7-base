@@ -11,17 +11,20 @@ use df\apex;
 use df\halo;
 use df\arch;
 
-class TaskInitGitignore extends arch\node\Task {
+use DecodeLabs\Atlas;
 
-    public function execute() {
+class TaskInitGitignore extends arch\node\Task
+{
+    public function execute()
+    {
         $this->ensureDfSource();
 
         $path = df\Launchpad::$app->path;
 
-        if(!is_file($path.'/.gitignore')) {
+        if (!is_file($path.'/.gitignore')) {
             $this->io->writeLine('Copying default .gitignore file');
 
-            core\fs\File::copy(__DIR__.'/default.gitignore', $path.'/.gitignore')
+            Atlas::$fs->copyFile(__DIR__.'/default.gitignore', $path.'/.gitignore')
                 ->setPermissions(0777);
         }
     }

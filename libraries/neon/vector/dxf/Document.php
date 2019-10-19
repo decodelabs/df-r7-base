@@ -9,8 +9,10 @@ use df;
 use df\core;
 use df\neon;
 
-class Document implements IDocument {
+use DecodeLabs\Atlas;
 
+class Document implements IDocument
+{
     use TEntityCollection;
     use core\TStringProvider;
 
@@ -27,69 +29,74 @@ class Document implements IDocument {
     protected $_views = [];
     */
 
-    public function __construct() {
-
+    public function __construct()
+    {
     }
 
 
-// Comments
-    public function addComment($comment) {
+    // Comments
+    public function addComment($comment)
+    {
         $this->_comments[] = (string)$comment;
         return $this;
     }
 
-    public function getComments() {
+    public function getComments()
+    {
         return $this->_comments;
     }
 
-    public function clearComments() {
+    public function clearComments()
+    {
         $this->_comments = [];
         return $this;
     }
 
 
-// Headers
-    public function setHeaders(array $headers) {
+    // Headers
+    public function setHeaders(array $headers)
+    {
         return $this->clearHeaders()->addHeaders($headers);
     }
 
-    public function addHeaders(array $headers) {
-        foreach($headers as $key => $value) {
+    public function addHeaders(array $headers)
+    {
+        foreach ($headers as $key => $value) {
             $this->setHeader($key, $value);
         }
 
         return $this;
     }
 
-    public function setHeader($key, $value) {
+    public function setHeader($key, $value)
+    {
         $key = strtoupper(ltrim($key, '$'));
 
-        if(!isset(self::HEADER_TYPES[$key])) {
+        if (!isset(self::HEADER_TYPES[$key])) {
             throw new InvalidArgumentException(
                 'Header not recognised: '.$key
             );
         }
 
-        if($value === null) {
+        if ($value === null) {
             unset($this->_headers[$key]);
             return $this;
         }
 
         $type = self::HEADER_TYPES[$key];
 
-        if(in_array($key, ['TDCREATE', 'TDUCREATE', 'TDUPDATE', 'TDUUPDATE'])) {
+        if (in_array($key, ['TDCREATE', 'TDUCREATE', 'TDUPDATE', 'TDUUPDATE'])) {
             $value = core\time\Date::factory($value);
-        } else if(in_array($key, ['TDINDWG', 'TDUSRTIMER'])) {
+        } elseif (in_array($key, ['TDINDWG', 'TDUSRTIMER'])) {
             $value = core\time\Duration::factory($value);
-        } else if(is_array($type)) {
+        } elseif (is_array($type)) {
             $value = core\math\Vector::factory($value, count($type));
         } else {
-            if((0 <= $type && $type <= 9)
+            if ((0 <= $type && $type <= 9)
             || (300 <= $type && $type <= 309)
             || (1000 <= $type && $type <= 1009)) {
                 $value = (string)$value;
-            } else
-            if((60 <= $type && $type <= 79)
+            } elseif ((60 <= $type && $type <= 79)
             || (90 <= $type && $type <= 99)
             || (170 <= $type && $type <= 175)
             || (280 <= $type && $type <= 289)
@@ -98,20 +105,17 @@ class Document implements IDocument {
             || (400 <= $type && $type <= 409)
             || (1060 <= $type && $type <= 1071)) {
                 $value = (int)$value;
-            } else
-            if((40 <= $type && $type <= 58)
+            } elseif ((40 <= $type && $type <= 58)
             || (140 <= $type && $type <= 147)
             || (1010 <= $type && $type <= 1059)) {
                 $value = (float)$value;
-            } else
-            if($type == 100 || $type == 102) {
+            } elseif ($type == 100 || $type == 102) {
                 $value = substr($value, 0, 255);
-            } else
-            if($type == 105
+            } elseif ($type == 105
             || (310 <= $type && $type <= 319)
             || (320 <= $type && $type <= 329)
             || (330 <= $type && $type <= 369)) {
-                if(is_numeric($value)) {
+                if (is_numeric($value)) {
                     $value = dechex($value);
                 } else {
                     $value = (string)$value;
@@ -123,44 +127,51 @@ class Document implements IDocument {
         return $this;
     }
 
-    public function getHeader($key) {
+    public function getHeader($key)
+    {
         $key = strtoupper(ltrim($key, '$'));
 
-        if(isset($this->_headers[$key])) {
+        if (isset($this->_headers[$key])) {
             return $this->_headers[$key];
         }
     }
 
-    public function hasHeader($key) {
+    public function hasHeader($key)
+    {
         $key = strtoupper(ltrim($key, '$'));
         return isset($this->_headers[$key]);
     }
 
-    public function removeHeader($key) {
+    public function removeHeader($key)
+    {
         $key = strtoupper(ltrim($key, '$'));
         unset($this->_headers[$key]);
         return $this;
     }
 
-    public function getHeaders() {
+    public function getHeaders()
+    {
         return $this->_headers;
     }
 
-    public function clearHeaders() {
+    public function clearHeaders()
+    {
         $this->_headers = [];
         return $this;
     }
 
 
 
-// Classes
-    public function setClasses(array $classes) {
+    // Classes
+    public function setClasses(array $classes)
+    {
         return $this->clearClasses()->addClasses($classes);
     }
 
-    public function addClasses(array $classes) {
-        foreach($classes as $class) {
-            if($class instanceof IAppClass) {
+    public function addClasses(array $classes)
+    {
+        foreach ($classes as $class) {
+            if ($class instanceof IAppClass) {
                 $this->addClass($class);
             }
         }
@@ -168,17 +179,20 @@ class Document implements IDocument {
         return $this;
     }
 
-    public function newClass($dxfName, $className, $appName) {
+    public function newClass($dxfName, $className, $appName)
+    {
         return new AppClass($dxfName, $className, $appName);
     }
 
-    public function addClass(IAppClass $class) {
+    public function addClass(IAppClass $class)
+    {
         $this->_classes[$class->getDxfName()] = $class;
         return $this;
     }
 
-    public function hasClass($dxfName) {
-        if($dxfName instanceof IAppClass) {
+    public function hasClass($dxfName)
+    {
+        if ($dxfName instanceof IAppClass) {
             $dxfName = $dxfName->getDxfName();
         }
 
@@ -186,8 +200,9 @@ class Document implements IDocument {
         return isset($this->_classes[$dxfName]);
     }
 
-    public function removeClass($dxfName) {
-        if($dxfName instanceof IAppClass) {
+    public function removeClass($dxfName)
+    {
+        if ($dxfName instanceof IAppClass) {
             $dxfName = $dxfName->getDxfName();
         }
 
@@ -196,37 +211,42 @@ class Document implements IDocument {
         return $this;
     }
 
-    public function getClass($dxfName) {
-        if($dxfName instanceof IAppClass) {
+    public function getClass($dxfName)
+    {
+        if ($dxfName instanceof IAppClass) {
             $dxfName = $dxfName->getDxfName();
         }
 
         $dxfName = strtoupper($dxfName);
 
-        if(isset($this->_classes[$dxfName])) {
+        if (isset($this->_classes[$dxfName])) {
             return $This->_classes[$dxfName];
         }
     }
 
-    public function getClasses() {
+    public function getClasses()
+    {
         return $this->_classes;
     }
 
-    public function clearClasses() {
+    public function clearClasses()
+    {
         $this->_classes = [];
         return $this;
     }
 
 
 
-// Tables
-    public function setTables(array $tables) {
+    // Tables
+    public function setTables(array $tables)
+    {
         return $this->clearTables()->addTables($tables);
     }
 
-    public function addTables(array $tables) {
-        foreach($tables as $table) {
-            if($table instanceof ITable) {
+    public function addTables(array $tables)
+    {
+        foreach ($tables as $table) {
+            if ($table instanceof ITable) {
                 $this->addTable($table);
             }
         }
@@ -234,93 +254,105 @@ class Document implements IDocument {
         return $this;
     }
 
-    public function addTable(ITable $table) {
+    public function addTable(ITable $table)
+    {
         $this->_tables[$table->getType().':'.$table->getName()] = $table;
         return $this;
     }
 
-    public function getTables() {
+    public function getTables()
+    {
         return $this->_tables;
     }
 
-    public function clearTables() {
+    public function clearTables()
+    {
         $this->_tables = [];
         return $this;
     }
 
 
 
-    public function newAppIdTable($name) {
+    public function newAppIdTable($name)
+    {
         $this->addTable($output = new neon\vector\dxf\table\AppId($name));
         return $output;
     }
 
-    public function newBlockRecordTable($name) {
+    public function newBlockRecordTable($name)
+    {
         $this->addTable($output = new neon\vector\dxf\table\BlockRecord($name));
         return $output;
     }
 
-    public function newLayer($name) {
+    public function newLayer($name)
+    {
         $this->addTable($output = new neon\vector\dxf\table\Layer($name));
         return $output;
     }
 
-    public function newLineType($name) {
+    public function newLineType($name)
+    {
         $this->addTable($output = new neon\vector\dxf\table\LineType($name));
         return $output;
     }
 
-    public function newStyle($name) {
+    public function newStyle($name)
+    {
         $this->addTable($output = new neon\vector\dxf\table\Style($name));
         return $output;
     }
 
-    public function newView($name) {
+    public function newView($name)
+    {
         $this->addTable($output = new neon\vector\dxf\table\View($name));
         return $output;
     }
 
-    public function newViewportTable($name) {
+    public function newViewportTable($name)
+    {
         $this->addTable($output = new neon\vector\dxf\table\Viewport($name));
         return $output;
     }
 
 
-// Save
-    public function saveTo($file) {
-        return core\fs\File::create($file, $this->toString());
+    // Save
+    public function saveTo($file)
+    {
+        return Atlas::$fs->createFile($file, $this->toString());
     }
 
-// String
-    public function toString(): string {
+    // String
+    public function toString(): string
+    {
         $output = '';
 
         // Comments
-        foreach($this->_comments as $comment) {
+        foreach ($this->_comments as $comment) {
             $output .= $this->_writeComment($comment);
         }
 
 
         // Headers
-        if(!$this->hasHeader('acadver')) {
+        if (!$this->hasHeader('acadver')) {
             $this->setHeader('acadver', 'AC1009');
         }
 
-        if(!$this->hasHeader('insbase')) {
+        if (!$this->hasHeader('insbase')) {
             $this->setHeader('insbase', [0, 0, 0]);
         }
 
-        if(!$this->hasHeader('extmin')) {
+        if (!$this->hasHeader('extmin')) {
             $this->setHeader('extmin', [0, 0]);
         }
 
-        if(!$this->hasHeader('extmax')) {
+        if (!$this->hasHeader('extmax')) {
             $this->setHeader('extmax', [0, 0]);
         }
 
         $headers = [];
 
-        foreach($this->_headers as $key => $value) {
+        foreach ($this->_headers as $key => $value) {
             $headers[] = $this->_writeHeader($key, $value);
         }
 
@@ -334,11 +366,11 @@ class Document implements IDocument {
         $tableGroups = ['VPORT' => [], 'LTYPE' => [], 'LAYER' => [], 'STYLE' => [], 'VIEW' => []];
         $tables = [];
 
-        foreach($this->_tables as $table) {
+        foreach ($this->_tables as $table) {
             $tableGroups[$table->getType()][] = (string)$table;
         }
 
-        foreach($tableGroups as $type => $set) {
+        foreach ($tableGroups as $type => $set) {
             $tables[] = sprintf(" 0\nTABLE\n 2\n%s\n 70\n%d\n%s 0\nENDTAB\n", $type, count($set), implode($set));
         }
 
@@ -355,21 +387,24 @@ class Document implements IDocument {
         return $output;
     }
 
-    public static function _writeComment($comment) {
-        if(!strlen($comment)) {
+    public static function _writeComment($comment)
+    {
+        if (!strlen($comment)) {
             return null;
         }
 
         return sprintf(" 999\n%s\n", $comment);
     }
 
-    public static function _writeName($name) {
+    public static function _writeName($name)
+    {
         return sprintf(" 9\n\$%s\n", strtoupper($name));
     }
 
-    public static function _writePoint(core\math\IVector $vector=null, $index=0, $default=null) {
-        if(!$vector) {
-            if($default === null) {
+    public static function _writePoint(core\math\IVector $vector=null, $index=0, $default=null)
+    {
+        if (!$vector) {
+            if ($default === null) {
                 return null;
             }
 
@@ -378,23 +413,25 @@ class Document implements IDocument {
 
         $output = [];
 
-        foreach($vector as $i => $value) {
+        foreach ($vector as $i => $value) {
             $output[] = sprintf(" %s\n%F\n", 10 * ($i + 1) + $index, $value);
         }
 
         return implode($output);
     }
 
-    public static function _writeSection($name, array $data) {
+    public static function _writeSection($name, array $data)
+    {
         return sprintf(" 0\nSECTION\n 2\n%s\n%s 0\nENDSEC\n", strtoupper($name), implode($data));
     }
 
-    public static function _writeHeader($key, $value) {
-        if($value instanceof core\math\IVector) {
+    public static function _writeHeader($key, $value)
+    {
+        if ($value instanceof core\math\IVector) {
             $value = self::_writePoint($value);
-        } else if($value instanceof core\time\IDate) {
+        } elseif ($value instanceof core\time\IDate) {
             $value = ($value->format('U') / 86400) + 2440587.5;
-        } else if($value instanceof core\time\IDuration) {
+        } elseif ($value instanceof core\time\IDuration) {
             $value = $value->getDays();
         } else {
             $value = sprintf(" %s\n%s\n", self::HEADER_TYPES[$key], $value);
@@ -407,7 +444,7 @@ class Document implements IDocument {
 
 
 
-// Data
+    // Data
     const HEADER_TYPES = [
         'ACADMAINTVER' => 70,
         'ACADVER' => 1,

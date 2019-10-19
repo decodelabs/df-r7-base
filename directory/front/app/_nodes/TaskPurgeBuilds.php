@@ -12,57 +12,60 @@ use df\arch;
 use df\halo;
 use df\flex;
 
-class TaskPurgeBuilds extends arch\node\Task {
+use DecodeLabs\Atlas;
 
+class TaskPurgeBuilds extends arch\node\Task
+{
     const BUILD_DURATION = '5 minutes';
 
-    public function execute() {
+    public function execute()
+    {
         $this->ensureDfSource();
 
         $this->io->write('Purging old build folders...');
 
         $appPath = df\Launchpad::$app->path;
-        $buildDir = new core\fs\Dir($appPath.'/data/local/build');
+        $buildDir = Atlas::$fs->dir($appPath.'/data/local/build');
         $all = isset($this->request['all']);
         $active = $this->filter['?active']->guid();
 
-        if(!$buildDir->exists()) {
+        if (!$buildDir->exists()) {
             $this->io->writeLine(' 0 found');
         } else {
             $checkTime = $this->date('-'.self::BUILD_DURATION)->toTimestamp();
             $del = 0;
             $keep = 0;
 
-            foreach($buildDir->scanDirs() as $name => $dir) {
-                if($name === $active) {
+            foreach ($buildDir->scanDirs() as $name => $dir) {
+                if ($name === $active) {
                     $keep++;
                     continue;
                 }
 
                 try {
                     $guid = flex\Guid::factory($name);
-                } catch(\Throwable $e) {
-                    $dir->unlink();
+                } catch (\Throwable $e) {
+                    $dir->delete();
                     $del++;
                     continue;
                 }
 
-                if($all || $guid->getTime() < $checkTime) {
-                    $dir->unlink();
+                if ($all || $guid->getTime() < $checkTime) {
+                    $dir->delete();
                     $del++;
                 } else {
                     $keep++;
                 }
             }
 
-            if($keep) {
+            if ($keep) {
                 $this->io->write(' kept '.$keep.',');
             }
 
             $this->io->writeLine(' deleted '.$del);
 
-            if($buildDir->isEmpty()) {
-                $buildDir->unlink();
+            if ($buildDir->isEmpty()) {
+                $buildDir->delete();
             }
         }
     }

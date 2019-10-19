@@ -11,8 +11,11 @@ use df\spur;
 use df\link;
 use df\flex;
 
-class Mediator implements IMediator {
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
 
+class Mediator implements IMediator
+{
     use spur\THttpMediator;
 
     const ENDPOINT = 's3.amazonaws.com';
@@ -21,34 +24,40 @@ class Mediator implements IMediator {
     protected $_secretKey;
     protected $_useSsl = false;
 
-    public function __construct($accessKey, $secretKey, $useSsl=false) {
+    public function __construct($accessKey, $secretKey, $useSsl=false)
+    {
         $this->setAccessKey($accessKey);
         $this->setSecretKey($secretKey);
         $this->shouldUseSsl((bool)$useSsl);
     }
 
 
-// Client
-    public function setAccessKey($key) {
+    // Client
+    public function setAccessKey($key)
+    {
         $this->_accessKey = $key;
         return $this;
     }
 
-    public function getAccessKey() {
+    public function getAccessKey()
+    {
         return $this->_accessKey;
     }
 
-    public function setSecretKey($key) {
+    public function setSecretKey($key)
+    {
         $this->_secretKey = $key;
         return $this;
     }
 
-    public function getSecretKey() {
+    public function getSecretKey()
+    {
         return  $this->_secretKey;
     }
 
-    public function shouldUseSsl(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldUseSsl(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_useSsl = $flag;
             return $this;
         }
@@ -56,12 +65,13 @@ class Mediator implements IMediator {
         return $this->_useSsl;
     }
 
-// Buckets
-    public function createBucket($name, $acl=IAcl::PRIVATE_READ_WRITE, $location=null) {
+    // Buckets
+    public function createBucket($name, $acl=IAcl::PRIVATE_READ_WRITE, $location=null)
+    {
         $request = $this->createRequest('put', $name);
         $request->getHeaders()->set('x-amz-acl', $acl);
 
-        if($location !== null) {
+        if ($location !== null) {
             $xml = new flex\xml\Writer();
             $xml->startElement('CreateBucketConfiguration');
             $xml->writeElement('LocationConstraint', $location);
@@ -74,25 +84,27 @@ class Mediator implements IMediator {
         return $this;
     }
 
-    public function deleteBucket($name) {
+    public function deleteBucket($name)
+    {
         $this->requestRaw('delete', ['path' => '/', 'bucket' => $name]);
         return $this;
     }
 
-    public function getBucketList() {
+    public function getBucketList()
+    {
         $response = $this->requestXml('get', '/');
         $output = [];
 
         $owner = $response['xml']->getFirstChildOfType('Owner');
 
-        if($owner) {
+        if ($owner) {
             $ownerId = $owner->getChildTextContent('ID');
             $ownerName = $owner->getChildTextContent('DisplayName');
         } else {
             $ownerId = $ownerName = null;
         }
 
-        foreach($response['xml']->Buckets[0]->Bucket as $bucketNode) {
+        foreach ($response['xml']->Buckets[0]->Bucket as $bucketNode) {
             $output[] = [
                 'name' => $bucketNode->getChildTextContent('Name'),
                 'created' => new core\time\Date($bucketNode->getChildTextContent('CreationDate')),
@@ -104,28 +116,30 @@ class Mediator implements IMediator {
         return $output;
     }
 
-    public function getBucketLocation($bucket) {
+    public function getBucketLocation($bucket)
+    {
         $response = $this->requestXml('get', ['path' => '/', 'bucket' => $bucket], ['location' => null]);
         return $response['xml']->getTextContent();
     }
 
-    public function getBucketObjectList($bucket, $prefix=null, $limit=null, $marker=null) {
+    public function getBucketObjectList($bucket, $prefix=null, $limit=null, $marker=null)
+    {
         $request = $this->createRequest('get', ['path' => '/', 'bucket' => $bucket]);
         $query = $request->getUrl()->getQuery();
         $fetchAll = true;
 
-        if($limit !== null) {
+        if ($limit !== null) {
             $fetchAll = false;
             $limit = (int)$limit;
 
-            if($limit > 0) {
+            if ($limit > 0) {
                 $query->{'max-keys'} = $limit;
             } else {
                 $limit = null;
             }
         }
 
-        if($prefix !== null) {
+        if ($prefix !== null) {
             $query->prefix = (string)$prefix;
         }
 
@@ -138,7 +152,7 @@ class Mediator implements IMediator {
         ];
 
         do {
-            if($marker !== null) {
+            if ($marker !== null) {
                 $query->marker = $marker;
             }
 
@@ -147,15 +161,15 @@ class Mediator implements IMediator {
             $isTruncated = $response['xml']->getChildTextContent('IsTruncated') == 'true';
             $output['isTruncated'] = $isTruncated;
 
-            if(!$output['bucket']) {
+            if (!$output['bucket']) {
                 $output['bucket'] = $response['xml']->getChildTextContent('Name');
             }
 
-            if(!$fetchAll) {
+            if (!$fetchAll) {
                 $output['limit'] = (int)$response['xml']->getChildTextContent('MaxKeys');
             }
 
-            foreach($response['xml']->getChildrenOfType('Contents') as $contentNode) {
+            foreach ($response['xml']->getChildrenOfType('Contents') as $contentNode) {
                 $marker = $key = $contentNode->getChildTextContent('Key');
 
                 $output['objects'][$key] = [
@@ -165,23 +179,24 @@ class Mediator implements IMediator {
                     'hash' => substr($contentNode->getChildTextContent('ETag'), 1, -1)
                 ];
             }
-        } while($fetchAll && $isTruncated);
+        } while ($fetchAll && $isTruncated);
 
         return $output;
     }
 
 
-// Objects
-    public function getObjectInfo($bucket, $path) {
+    // Objects
+    public function getObjectInfo($bucket, $path)
+    {
         $response = $this->requestRaw('head', ['path' => $path, 'bucket' => $bucket]);
 
         $headers = $response->getHeaders();
         $meta = [];
 
-        foreach($headers as $key => $value) {
+        foreach ($headers as $key => $value) {
             $key = strtolower($key);
 
-            if(substr($key, 0, 11) == 'x-amz-meta-') {
+            if (substr($key, 0, 11) == 'x-amz-meta-') {
                 $meta[substr($key, 11)] = $value;
             }
         }
@@ -196,15 +211,18 @@ class Mediator implements IMediator {
         ];
     }
 
-    public function newUpload($bucket, $path, core\fs\IFile $file) {
+    public function newUpload($bucket, $path, File $file)
+    {
         return new Upload($this, $bucket, $path, $file);
     }
 
-    public function newCopy($fromBucket, $fromPath, $toBucket, $toPath) {
+    public function newCopy($fromBucket, $fromPath, $toBucket, $toPath)
+    {
         return new Copy($this, $fromBucket, $fromPath, $toBucket, $toPath);
     }
 
-    public function renameFile($bucket, $path, $newName, $acl=IAcl::PRIVATE_READ_WRITE) {
+    public function renameFile($bucket, $path, $newName, $acl=IAcl::PRIVATE_READ_WRITE)
+    {
         $toPath = new core\uri\Path($path);
         $toPath->setBasename($newName);
         $toPath = $toPath->toString();
@@ -212,25 +230,28 @@ class Mediator implements IMediator {
         return $this->moveFile($bucket, $path, $toPath, $acl);
     }
 
-    public function moveFile($bucket, $fromPath, $toPath, $acl=IAcl::PRIVATE_READ_WRITE) {
+    public function moveFile($bucket, $fromPath, $toPath, $acl=IAcl::PRIVATE_READ_WRITE)
+    {
         $this->newCopy($bucket, $fromPath, $bucket, $toPath)
             ->setAcl($acl)
             ->send();
 
-        $this->deleteFile($bucket, $path);
+        $this->deleteFile($bucket, $fromPath);
         return $this;
     }
 
-    public function deleteFile($bucket, $path) {
+    public function deleteFile($bucket, $path)
+    {
         $this->requestRaw('delete', ['path' => $path, 'bucket' => $bucket]);
         return $this;
     }
 
-    public function deleteFolder($bucket, $path) {
+    public function deleteFolder($bucket, $path)
+    {
         // TODO: send requests concurrently
         $path = rtrim($path, '/').'/';
 
-        foreach($this->getBucketObjectList($bucket, $path)['objects'] as $name => $fileInfo) {
+        foreach ($this->getBucketObjectList($bucket, $path)['objects'] as $name => $fileInfo) {
             $this->deleteFile($bucket, $name);
         }
 
@@ -238,8 +259,9 @@ class Mediator implements IMediator {
     }
 
 
-// IO
-    public function requestXml($method, $path, array $data=[], array $headers=[]) {
+    // IO
+    public function requestXml($method, $path, array $data=[], array $headers=[])
+    {
         $response = $this->sendRequest($this->createRequest(
             $method, $path, $data, $headers
         ));
@@ -247,20 +269,22 @@ class Mediator implements IMediator {
         return $this->_extractXml($response);
     }
 
-    protected function _extractXml(link\http\IResponse $response) {
+    protected function _extractXml(link\http\IResponse $response)
+    {
         return [
             'xml' => flex\xml\Tree::fromXmlString($response->getContent()),
             'http' => $response
         ];
     }
 
-    public function getBucketUrl($bucket, $path) {
+    public function getBucketUrl($bucket, $path)
+    {
         $path = (string)$path;
         $url = self::ENDPOINT;
         $path = ltrim($path, '/');
 
-        if($bucket !== null) {
-            if($this->_isDnsBucketName($bucket)) {
+        if ($bucket !== null) {
+            if ($this->_isDnsBucketName($bucket)) {
                 $url = $bucket.'.'.$url.'/'.$path;
             } else {
                 $url = $url.'/'.$bucket.'/'.$path;
@@ -272,10 +296,11 @@ class Mediator implements IMediator {
         return link\http\Url::factory('//'.$url);
     }
 
-    public function createUrl(string $path): link\http\IUrl {
+    public function createUrl(string $path): link\http\IUrl
+    {
         $bucket = null;
 
-        if(isset($path['bucket'])) {
+        if (isset($path['bucket'])) {
             $bucket = $path['bucket'];
             unset($path['bucket']);
             $path = array_shift($path);
@@ -285,8 +310,8 @@ class Mediator implements IMediator {
         $url = self::ENDPOINT;
         $path = ltrim($path, '/');
 
-        if($bucket !== null) {
-            if($this->_isDnsBucketName($bucket)) {
+        if ($bucket !== null) {
+            if ($this->_isDnsBucketName($bucket)) {
                 $url = $bucket.'.'.$url.'/'.$path;
             } else {
                 $url = $url.'/'.$bucket.'/'.$path;
@@ -305,7 +330,8 @@ class Mediator implements IMediator {
         return $url;
     }
 
-    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest {
+    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest
+    {
         $request = clone $request;
 
         $headers = $request->getHeaders();
@@ -313,38 +339,38 @@ class Mediator implements IMediator {
         $resource = $url->query['_resource'];
         unset($url->query->_resource);
 
-        if($url->query->hasKey('acl', 'location', 'torrent', 'website', 'logging')) {
+        if ($url->query->hasKey('acl', 'location', 'torrent', 'website', 'logging')) {
             $qString = $url->getQueryString();
 
-            if(!empty($qString)) {
+            if (!empty($qString)) {
                 $resource .= '?'.$qString;
             }
         }
 
         $amz = [];
 
-        foreach($headers as $key => $value) {
+        foreach ($headers as $key => $value) {
             $key = strtolower($key);
 
-            if(substr($key, 0, 6) == 'x-amz-') {
+            if (substr($key, 0, 6) == 'x-amz-') {
                 $amz[] = $key.':'.$value;
             }
         }
 
-        if(empty($amz)) {
+        if (empty($amz)) {
             $amz = '';
         } else {
-            usort($amz, function($a, $b)  {
+            usort($amz, function ($a, $b) {
                 $lenA = strpos($a, ':');
                 $lenB = strpos($b, ':');
                 $minLength = min($lenA, $lenB);
                 $ncmp = strncmp($a, $b, $minLength);
 
-                if($lenA == $lenB) {
+                if ($lenA == $lenB) {
                     return $ncmp;
                 }
 
-                if(0 == $ncmp) {
+                if (0 == $ncmp) {
                     return $lenA < $lenB ? -1 : 1;
                 }
 
@@ -368,24 +394,25 @@ class Mediator implements IMediator {
         return $request;
     }
 
-    protected function _extractResponseError(link\http\IResponse $response) {
+    protected function _extractResponseError(link\http\IResponse $response)
+    {
         $content = $response->getContent();
         $xml = null;
 
-        if(strlen($content)
+        if (strlen($content)
         && substr($content, 0, 2) == '<?') {
             $xml = flex\xml\Tree::fromXmlString($content);
         }
 
-        if($xml) {
+        if ($xml) {
             return core\Error::{'EApi'}([
                 'message' => $xml->Message[0]->getTextContent(),
                 'code' => $xml->Code[0]->getTextContent(),
                 'data' => $xml
             ]);
-        } else if($response->getHeaders()->hasStatusCode(404)) {
+        } elseif ($response->getHeaders()->hasStatusCode(404)) {
             return core\Error::{'EApi,ENotFound'}(
-                'Resource not found - '.$request->getUrl()
+                'Resource not found'
             );
         } else {
             return core\Error::{'EApi'}(
@@ -394,23 +421,25 @@ class Mediator implements IMediator {
         }
     }
 
-    protected function _isDnsBucketName($bucket) {
-        if(strlen($bucket) > 63 || preg_match("/[^a-z0-9\.-]/", $bucket) > 0) {
+    protected function _isDnsBucketName($bucket)
+    {
+        if (strlen($bucket) > 63 || preg_match("/[^a-z0-9\.-]/", $bucket) > 0) {
             return false;
         }
 
-        if(strstr($bucket, '-.') !== false || strstr($bucket, '..') !== false) {
+        if (strstr($bucket, '-.') !== false || strstr($bucket, '..') !== false) {
             return false;
         }
 
-        if(!preg_match("/^[0-9a-z]/", $bucket) || !preg_match("/[0-9a-z]$/", $bucket)) {
+        if (!preg_match("/^[0-9a-z]/", $bucket) || !preg_match("/[0-9a-z]$/", $bucket)) {
             return false;
         }
 
         return true;
     }
 
-    protected function _createSignature($string) {
+    protected function _createSignature($string)
+    {
         return 'AWS '.$this->_accessKey.':'.base64_encode(hash_hmac('sha1', $string, $this->_secretKey, true));
     }
 }

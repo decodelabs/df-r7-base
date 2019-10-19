@@ -128,7 +128,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
     public function shouldGenerateChecksum(bool $flag=null)
     {
         if ($flag !== null) {
-            return $this->getOption('checksum', $flag);
+            return $this->setOption('checksum', $flag);
         }
 
         return (bool)$this->getOption('checksum');
@@ -313,7 +313,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
                     case 'memory':
                     case 'merge':
                     case 'ndbcluster':
-                        $this->_options['engine'] = strtoupper($engine);
+                        $this->_options['engine'] = strtoupper($compEngine);
                         break;
 
                     case 'innodb':

@@ -8,6 +8,8 @@ namespace df\core\fs;
 use df;
 use df\core;
 
+use DecodeLabs\Atlas;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -195,7 +197,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     public function getContentType()
     {
         if (!$this->_contentType) {
-            $this->_contentType = Type::fileToMime($this->_path);
+            $this->_contentType = Atlas::$mime->detect($this->_path);
         }
 
         return $this->_contentType;

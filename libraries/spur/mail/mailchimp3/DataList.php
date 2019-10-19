@@ -23,6 +23,7 @@ class DataList extends core\collection\Tree implements IDataList
 
     public function __construct(string $type, IFilter $filter, core\collection\ITree $data, $callback=null)
     {
+        parent::__construct();
         $this->_total = (int)$data['total_items'];
 
         if (!$keyName = $filter->getKeyName()) {

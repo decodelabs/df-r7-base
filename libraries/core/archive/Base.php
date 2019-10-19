@@ -8,6 +8,8 @@ namespace df\core\archive;
 use df;
 use df\core;
 
+use DecodeLabs\Atlas;
+
 abstract class Base implements IArchive
 {
     public static function extract($file, $destination=null, $flattenRoot=false)
@@ -79,11 +81,11 @@ abstract class Base implements IArchive
             );
         }
 
-        if ($destination === null) {
+        if (empty($destination)) {
             $destination = dirname($file);
         }
 
-        core\fs\Dir::create($destination);
+        Atlas::$fs->createDir($destination);
         return $destination;
     }
 
@@ -109,7 +111,7 @@ abstract class Base implements IArchive
             $destFile = dirname($file).'/'.$this->_getDecompressFileName($file, $extension);
         }
 
-        core\fs\Dir::create(dirname($destFile));
+        Atlas::$fs->createDir(dirname($destFile));
         return $destFile;
     }
 
@@ -129,11 +131,11 @@ abstract class Base implements IArchive
 
     protected function _flattenRoot(string $destination): void
     {
-        $dir = core\fs\Dir::factory($destination);
+        $dir = Atlas::$fs->dir($destination);
         $dirName = null;
 
         foreach ($dir->scan() as $item) {
-            if ($item instanceof core\fs\IFile) {
+            if ($item->isFile()) {
                 return;
             }
 
@@ -147,6 +149,6 @@ abstract class Base implements IArchive
         $name = $dir->getName();
         $dir->renameTo($name.'-'.time());
         $dir->getDir($dirName)->moveTo($dir->getParent(), $name);
-        $dir->unlink();
+        $dir->delete();
     }
 }

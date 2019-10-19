@@ -13,15 +13,19 @@ use df\neon;
 use df\flex;
 use df\opal;
 
-class Model extends axis\Model {
+use DecodeLabs\Atlas;
+
+class Model extends axis\Model
+{
 
 
 // IO
-    public function publishFile($filePath, $bucket, $fileData=null, $publishIfMissing=false) {
+    public function publishFile($filePath, $bucket, $fileData=null, $publishIfMissing=false)
+    {
         $isMissing = false;
 
-        if(!is_file($filePath)) {
-            if($publishIfMissing) {
+        if (!is_file($filePath)) {
+            if ($publishIfMissing) {
                 $isMissing = true;
             } else {
                 throw new \RuntimeException(
@@ -30,7 +34,7 @@ class Model extends axis\Model {
             }
         }
 
-        if(!$bucket instanceof apex\models\media\bucket\Record) {
+        if (!$bucket instanceof apex\models\media\bucket\Record) {
             $bucket = $this->bucket->ensureSlugExists((string)$bucket);
         }
 
@@ -45,7 +49,7 @@ class Model extends axis\Model {
         $hash = $isMissing ? $fileData->get('hash') : hash_file('crc32', $filePath, true);
         $fileSize = $isMissing ? $fileData->get('fileSize', 0) : filesize($filePath);
 
-        if($isMissing || $onePerUser) {
+        if ($isMissing || $onePerUser) {
             $file = null;
         } else {
             $file = $this->file->fetch()
@@ -55,18 +59,18 @@ class Model extends axis\Model {
                     ->where('version.hash', '=', $hash)
                     ->where('version.fileSize', '=', $fileSize)
                     ->where('version.purgeDate', '=', null)
-                    ->chainIf($isUserSpecific && $owner !== null, function($clause) use($owner) {
+                    ->chainIf($isUserSpecific && $owner !== null, function ($clause) use ($owner) {
                         $clause->where('version.owner', '=', $owner);
                     })
                     ->endCorrelation()
                 ->toRow();
         }
 
-        if($file) {
-            if($mediaHandler instanceof neon\mediaHandler\ILocalDataHandler) {
+        if ($file) {
+            if ($mediaHandler instanceof neon\mediaHandler\ILocalDataHandler) {
                 $storeFilePath = $mediaHandler->getFilePath($file['id'], $file['#activeVersion']);
 
-                if(!is_file($storeFilePath)) {
+                if (!is_file($storeFilePath)) {
                     $mediaHandler->publishFile(
                         $file['id'],
                         null,
@@ -82,10 +86,10 @@ class Model extends axis\Model {
 
         $file = null;
 
-        if($onePerUser) {
+        if ($onePerUser) {
             $owner = $fileData->get('owner', $this->context->user->client->getId());
 
-            if($owner !== null) {
+            if ($owner !== null) {
                 $file = $this->file->fetch()
                     ->where('owner', '=', $owner)
                     ->where('bucket', '=', $bucket['id'])
@@ -100,7 +104,7 @@ class Model extends axis\Model {
             $file ? $file['id'] : null
         );
 
-        if($file) {
+        if ($file) {
             $file->import([
                 'fileName' => $fileData['fileName']
             ]);
@@ -129,7 +133,7 @@ class Model extends axis\Model {
         $file->activeVersion = $version;
         $file->save();
 
-        if(!$isMissing) {
+        if (!$isMissing) {
             $mediaHandler->publishFile(
                 $file['id'],
                 $oldVersionId,
@@ -142,11 +146,12 @@ class Model extends axis\Model {
         return $file;
     }
 
-    public function publishVersion(apex\models\media\file\Record $file, $filePath, $fileData=null, $publishIfMissing=false) {
+    public function publishVersion(apex\models\media\file\Record $file, $filePath, $fileData=null, $publishIfMissing=false)
+    {
         $isMissing = false;
 
-        if(!is_file($filePath)) {
-            if($publishIfMissing) {
+        if (!is_file($filePath)) {
+            if ($publishIfMissing) {
                 $isMissing = true;
             } else {
                 throw new \RuntimeException(
@@ -165,7 +170,7 @@ class Model extends axis\Model {
         $hash = $isMissing ? $fileData->get('hash') : hash_file('crc32', $filePath, true);
         $fileSize = $isMissing ? $fileData->get('fileSize', 0) : filesize($filePath);
 
-        if($isMissing) {
+        if ($isMissing) {
             $version = null;
         } else {
             $version = $this->version->fetch()
@@ -176,13 +181,13 @@ class Model extends axis\Model {
                 ->toRow();
         }
 
-        if($version) {
+        if ($version) {
             $version->import([
                 'fileName' => $fileData['fileName'],
                 'contentType' => $fileData['contentType']
             ]);
 
-            if($fileData->has('notes')) {
+            if ($fileData->has('notes')) {
                 $version->notes = $fileData['notes'];
             }
         } else {
@@ -217,7 +222,7 @@ class Model extends axis\Model {
         $file->save();
         $version->save();
 
-        if(!$isMissing) {
+        if (!$isMissing) {
             $this->getMediaHandler()->publishFile(
                 $file['id'],
                 $oldVersionId,
@@ -230,8 +235,9 @@ class Model extends axis\Model {
         return $version;
     }
 
-    public function activateVersion(apex\models\media\file\Record $file, apex\models\media\version\Record $version, $fileData=null) {
-        if($version['#file'] != $file['id']) {
+    public function activateVersion(apex\models\media\file\Record $file, apex\models\media\version\Record $version, $fileData=null)
+    {
+        if ($version['#file'] != $file['id']) {
             throw new \RuntimeException(
                 'Version is not for selected file'
             );
@@ -271,14 +277,16 @@ class Model extends axis\Model {
         return $this;
     }
 
-    public function deleteFile(apex\models\media\file\Record $file) {
+    public function deleteFile(apex\models\media\file\Record $file)
+    {
         $this->getMediaHandler()->deleteFile($file['id']);
         $this->version->delete()->where('file', '=', $file['id'])->execute();
         $file->delete();
         return $this;
     }
 
-    public function purgeVersion(apex\models\media\version\Record $version) {
+    public function purgeVersion(apex\models\media\version\Record $version)
+    {
         $version->purgeDate = 'now';
         $version->save();
 
@@ -292,22 +300,23 @@ class Model extends axis\Model {
     }
 
 
-    protected function _normalizeFileData($filePath, $fileData, $bucketId, $fileId) {
+    protected function _normalizeFileData($filePath, $fileData, $bucketId, $fileId)
+    {
         $fileData = core\collection\Tree::factory($fileData);
 
-        if(!$fileData->has('owner') && $this->context->user->isLoggedIn()) {
+        if (!$fileData->has('owner') && $this->context->user->isLoggedIn()) {
             $fileData->owner = $this->context->user->client->getId();
         }
 
-        if(!$fileData->has('fileName')) {
+        if (!$fileData->has('fileName')) {
             $fileData->fileName = basename($filePath);
         }
 
-        if(!$fileData->has('contentType')) {
-            $fileData->contentType = core\fs\Type::fileToMime($filePath);
+        if (!$fileData->has('contentType')) {
+            $fileData->contentType = Atlas::$mime->detect($filePath);
         }
 
-        if(!$fileData->has('creationDate')) {
+        if (!$fileData->has('creationDate')) {
             $fileData->creationDate = 'now';
         }
 
@@ -316,54 +325,62 @@ class Model extends axis\Model {
 
 
 
-// Handler
-    public function getMediaHandler() {
+    // Handler
+    public function getMediaHandler()
+    {
         return neon\mediaHandler\Base::getInstance();
     }
 
-    public function isLocalDataMediaHandler() {
+    public function isLocalDataMediaHandler()
+    {
         $mediaHandler = $this->getMediaHandler();
         return $mediaHandler instanceof neon\mediaHandler\ILocalDataHandler;
     }
 
-    public function getDownloadUrl($fileId) {
+    public function getDownloadUrl($fileId)
+    {
         return $this->getMediaHandler()->getDownloadUrl($this->_normalizeId($fileId));
     }
 
-    public function getEmbedUrl($fileId) {
+    public function getEmbedUrl($fileId)
+    {
         return $this->getMediaHandler()->getEmbedUrl($this->_normalizeId($fileId));
     }
 
-    public function getVersionDownloadUrl($fileId, $versionId, $isActive) {
+    public function getVersionDownloadUrl($fileId, $versionId, $isActive)
+    {
         return $this->getMediaHandler()->getVersionDownloadUrl($this->_normalizeId($fileId), $this->_normalizeId($versionId), $isActive);
     }
 
-    public function getImageUrl($fileId, $transformation=null) {
+    public function getImageUrl($fileId, $transformation=null)
+    {
         return $this->getMediaHandler()->getImageUrl($this->_normalizeId($fileId), $transformation);
     }
 
-    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null) {
+    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null)
+    {
         return $this->getMediaHandler()->getVersionImageUrl($this->_normalizeId($fileId), $this->_normalizeId($versionId), $isActive, $transformation);
     }
 
-    protected function _normalizeId($id) {
-        if((is_array($id) || $id instanceof opal\record\IRecord) && isset($id['id'])) {
+    protected function _normalizeId($id)
+    {
+        if ((is_array($id) || $id instanceof opal\record\IRecord) && isset($id['id'])) {
             $id = $id['id'];
         }
 
-        if($id === null) {
+        if ($id === null) {
             return null;
         }
 
-        if($id instanceof flex\IGuid) {
+        if ($id instanceof flex\IGuid) {
             return (string)$id;
         }
 
-        if(!is_string($id)) {
+        if (!is_string($id)) {
             $id = (string)$id;
         }
 
-        if(strlen($id) != 36) {
+        if (strlen($id) != 36) {
             $id = (string)flex\Guid::factory($id);
         }
 
@@ -371,8 +388,9 @@ class Model extends axis\Model {
     }
 
 
-// Fetcher
-    public function fetchActiveVersionForDownload($fileId) {
+    // Fetcher
+    public function fetchActiveVersionForDownload($fileId)
+    {
         $fileId = $this->normalizeFileId($fileId, $transformation);
 
         $output = $this->file->select('id as fileId', 'fileName')
@@ -380,7 +398,7 @@ class Model extends axis\Model {
             ->where('fileId', '=', $fileId)
             ->toRow();
 
-        if(!$output) {
+        if (!$output) {
             throw new \RuntimeException(
                 'File version for '.$fileId.' could not be found',
                 404
@@ -392,20 +410,21 @@ class Model extends axis\Model {
         return $output;
     }
 
-    public function fetchVersionForDownload($versionId) {
+    public function fetchVersionForDownload($versionId)
+    {
         $output = $this->version->select('id', 'contentType', 'fileName', 'purgeDate', 'creationDate')
             ->leftJoinRelation('file', 'id as fileId', 'activeVersion')
             ->where('id', '=', $versionId)
             ->toRow();
 
-        if(!$output) {
+        if (!$output) {
             throw new \RuntimeException(
                 'File version '.$versionId.' could not be found',
                 404
             );
         }
 
-        if($output['purgeDate'] !== null) {
+        if ($output['purgeDate'] !== null) {
             throw new \RuntimeException(
                 'File version '.$versionId.' has been purged'
             );
@@ -419,7 +438,8 @@ class Model extends axis\Model {
 
 
 
-    public function fetchSingleUserFile($userId, $bucket) {
+    public function fetchSingleUserFile($userId, $bucket)
+    {
         return $this->file->fetch()
             ->where('owner', '=', $userId)
             ->whereCorrelation('bucket', 'in', 'id')
@@ -430,7 +450,8 @@ class Model extends axis\Model {
             ->toRow();
     }
 
-    public function fetchSingleUserVersionForDownload($userId, $bucket) {
+    public function fetchSingleUserVersionForDownload($userId, $bucket)
+    {
         $output = $this->version->select('id', 'contentType', 'fileName', 'purgeDate', 'creationDate')
             ->leftJoin('id as fileId')
                 ->from($this->file, 'file')
@@ -446,14 +467,14 @@ class Model extends axis\Model {
             ->orderBy('file.creationDate DESC')
             ->toRow();
 
-        if(!$output) {
+        if (!$output) {
             throw new \RuntimeException(
                 'File version for single context file could not be found',
                 404
             );
         }
 
-        if($output['purgeDate'] !== null) {
+        if ($output['purgeDate'] !== null) {
             throw new \RuntimeException(
                 'File version for single context file has been purged'
             );
@@ -463,15 +484,16 @@ class Model extends axis\Model {
         return $output;
     }
 
-    public function normalizeFileId($fileId, &$transformation=null) {
-        if(false === strpos($fileId, '[')) {
+    public function normalizeFileId($fileId, &$transformation=null)
+    {
+        if (false === strpos($fileId, '[')) {
             $fileId = str_replace('|', '-', $fileId);
         }
 
-        if(preg_match('/^([0-9]+)([-|](\[.*\]))?$/', $fileId, $matches)) {
+        if (preg_match('/^([0-9]+)([-|](\[.*\]))?$/', $fileId, $matches)) {
             $fileId = $matches[1];
 
-            if(isset($matches[3])) {
+            if (isset($matches[3])) {
                 $transformation = $matches[3].'|'.$transformation;
             }
 
@@ -479,7 +501,7 @@ class Model extends axis\Model {
                 ->where('old', '=', $fileId)
                 ->toValue('new');
 
-            if($test) {
+            if ($test) {
                 $fileId = $test;
             }
         }

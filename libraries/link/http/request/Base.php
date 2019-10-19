@@ -10,6 +10,10 @@ use df\core;
 use df\link;
 use df\flex;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
+use DecodeLabs\Atlas\Channel;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -167,7 +171,7 @@ class Base implements link\http\IRequest, Inspectable
 
 
         if ($this->method === 'post') {
-            $this->_bodyData = new core\fs\File('php://input');
+            $this->_bodyData = Atlas::$fs->newMemoryFile('input');
 
             $this->_postData = core\lang\Future::factory(function () {
                 $payload = $this->getBodyDataString();
@@ -473,14 +477,14 @@ class Base implements link\http\IRequest, Inspectable
     {
         if (is_array($body)) {
             $body = implode("\r\n", $body);
-        } elseif ($body instanceof core\fs\IFile) {
+        } elseif ($body instanceof File) {
             // do nothing?
         } elseif ($body !== null) {
             $body = (string)$body;
         }
 
         if (is_string($body)) {
-            $body = new core\fs\MemoryFile($body, $this->headers->get('content-type'));
+            $body = Atlas::createTempFile($body);
         }
 
         $this->_bodyData = $body;
@@ -494,22 +498,22 @@ class Base implements link\http\IRequest, Inspectable
 
     public function getBodyDataString(): string
     {
-        if ($this->_bodyData instanceof core\fs\IFile) {
+        if ($this->_bodyData instanceof File) {
             return $this->_bodyData->getContents();
-        } elseif ($this->_bodyData instanceof core\io\IReader) {
-            return $this->_bodyData->read();
+        } elseif ($this->_bodyData instanceof Channel) {
+            return $this->_bodyData->readAll();
         } else {
             return (string)$this->_bodyData;
         }
     }
 
-    public function getBodyDataFile(): core\fs\IFile
+    public function getBodyDataFile(): File
     {
-        if ($this->_bodyData instanceof core\fs\IFile) {
+        if ($this->_bodyData instanceof File) {
             return $this->_bodyData;
         }
 
-        return new core\fs\MemoryFile($this->getBodyDataString(), $this->headers->get('content-type'));
+        return Atlas::$fs->createTempFile($this->getBodyDataString());
     }
 
     public function hasBodyData()
@@ -644,11 +648,11 @@ class Base implements link\http\IRequest, Inspectable
         }
 
         if ($this->_bodyData !== null && $headers->get('Transfer-Encoding') != 'chunked') {
-            if ($this->_bodyData instanceof core\fs\IFile) {
+            if ($this->_bodyData instanceof File) {
                 $headers->set('Content-Length', $this->_bodyData->getSize());
 
                 if (!$headers->has('Content-Type')) {
-                    $headers->set('Content-Type', $this->_bodyData->getContentType());
+                    $headers->set('Content-Type', Atlas::$mime->detect($this->_bodyData->getPath()));
                 }
             } else {
                 $headers->set('Content-Length', strlen($this->_bodyData));

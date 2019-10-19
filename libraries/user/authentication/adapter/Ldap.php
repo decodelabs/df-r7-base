@@ -10,11 +10,12 @@ use df\core;
 use df\user;
 use df\opal;
 
-class Ldap implements user\authentication\IAdapter, user\authentication\IIdentityRecallAdapter {
-
+class Ldap implements user\authentication\IAdapter, user\authentication\IIdentityRecallAdapter
+{
     use user\authentication\TAdapter;
 
-    public static function getDefaultConfigValues() {
+    public static function getDefaultConfigValues()
+    {
         return [
             'enabled' => false,
             'domains' => [
@@ -40,19 +41,21 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
         ];
     }
 
-    public static function getDisplayName(): string {
+    public static function getDisplayName(): string
+    {
         return 'LDAP Network Domain';
     }
 
-    public function recallIdentity() {
-        if(!df\Launchpad::$runner instanceof core\app\runner\Http) {
+    public function recallIdentity()
+    {
+        if (!df\Launchpad::$runner instanceof core\app\runner\Http) {
             return null;
         }
 
         $config = user\authentication\Config::getInstance();
         $options = $config->getOptionsFor('Ldap');
 
-        if(!$options->ntlm['enabled'] || !count($options->ntlm->ranges)) {
+        if (!$options->ntlm['enabled'] || !count($options->ntlm->ranges)) {
             return null;
         }
 
@@ -60,20 +63,20 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
         $ip = $httpRequest->getIp();
         $inRange = false;
 
-        foreach($options->ntlm->ranges as $range) {
-            if($ip->isInRange($range->getValue())) {
+        foreach ($options->ntlm->ranges as $range) {
+            if ($ip->isInRange($range->getValue())) {
                 $inRange = true;
                 break;
             }
         }
 
-        if(!$inRange) {
+        if (!$inRange) {
             return null;
         }
 
         $headers = $httpRequest->getHeaders();
 
-        if(!$headers->has('authorization')) {
+        if (!$headers->has('authorization')) {
             // Is there a cleaner way of doing this?
             header('HTTP/1.1 401 Unauthorized');
             header('WWW-Authenticate: NTLM');
@@ -82,19 +85,19 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
 
         $auth = $headers->get('authorization');
 
-        if(substr($auth, 0, 5) != 'NTLM ') {
+        if (substr($auth, 0, 5) != 'NTLM ') {
             return null;
         }
 
         $c64 = base64_decode(substr($auth, 5));
         $state = ord($c64{8});
 
-        switch($state) {
+        switch ($state) {
             case 1:
                 $chars = [0,2,0,0,0,0,0,0,0,40,0,0,0,1,130,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0];
                 $ret = 'NTLMSSP';
 
-                foreach($chars as $char) {
+                foreach ($chars as $char) {
                     $ret .= chr($char);
                 }
 
@@ -111,7 +114,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
                 $o = ord($c64{41}) * 256 + ord($c64{40});
                 $user = str_replace("\0", '', substr($c64, $o, $l));
 
-                if(!strlen($user)) {
+                if (!strlen($user)) {
                     return null;
                 }
 
@@ -129,8 +132,9 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
         return null;
     }
 
-    public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result) {
-        if($request->getAttribute('ntlm')) {
+    public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result)
+    {
+        if ($request->getAttribute('ntlm')) {
             $isNtlm = true;
 
             $identity = opal\ldap\Identity::factory(
@@ -150,29 +154,29 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
 
         $config = user\authentication\Config::getInstance();
         $options = $config->getOptionsFor('Ldap');
-        $ldapDomain = $adapter = null;
+        $ldapDomain = $adapter = $ldapUser = null;
         $results = [];
-        $mainId = null;
+        $mainId = $domainOptions = null;
 
-        foreach($options->domains as $domainId => $domainOptions) {
-            if(substr($domainId, 0, 1) == '!' || $domainOptions['enabled'] === false) {
+        foreach ($options->domains as $domainId => $domainOptions) {
+            if (substr($domainId, 0, 1) == '!' || $domainOptions['enabled'] === false) {
                 continue;
             }
 
             $privilegedIdentity = null;
 
-            if(!$mainId) {
+            if (!$mainId) {
                 $mainId = $domainId;
             }
 
-            if($domainOptions->privilegedIdentity->username->hasValue()) {
+            if ($domainOptions->privilegedIdentity->username->hasValue()) {
                 $privilegedIdentity = opal\ldap\Identity::factory(
                     $domainOptions->privilegedIdentity['username'],
                     $domainOptions->privilegedIdentity['password']
                 );
             }
 
-            if(count($domainOptions->host)) {
+            if (count($domainOptions->host)) {
                 $hosts = $domainOptions->host->getChildren();
             } else {
                 $hosts = [$domainOptions];
@@ -180,7 +184,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
 
             shuffle($hosts);
 
-            foreach($hosts as $hostOptions) {
+            foreach ($hosts as $hostOptions) {
                 try {
                     $adapter = opal\ldap\Adapter::factory(
                         opal\ldap\Connection::factory(
@@ -196,17 +200,17 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
                         $privilegedIdentity
                     );
 
-                    if($isNtlm) {
+                    if ($isNtlm) {
                         $adapter->ensureBind();
                     } else {
                         $adapter->bind($identity);
                     }
 
                     break;
-                } catch(opal\ldap\ConnectionException $e) {
+                } catch (opal\ldap\ConnectionException $e) {
                     continue;
-                } catch(opal\ldap\BindException $e) {
-                    switch($e->getCode()) {
+                } catch (opal\ldap\BindException $e) {
+                    switch ($e->getCode()) {
                         case opal\ldap\IStatus::SERVER_DOWN:
                         case opal\ldap\IStatus::BUSY:
                         case opal\ldap\IStatus::UNAVAILABLE:
@@ -228,22 +232,22 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
                 }
             }
 
-            if(!$adapter->isBound()) {
+            if (!$adapter->isBound()) {
                 continue;
             }
 
             $query = $adapter->fetch()->inside(null, true);
             $username = $identity->getUsername();
 
-            if($username instanceof opal\ldap\IRdn) {
-                foreach($username->getAttributes() as $key => $value) {
+            if ($username instanceof opal\ldap\IRdn) {
+                foreach ($username->getAttributes() as $key => $value) {
                     $query->where($key, '=', $value);
                 }
             } else {
                 $query->where('uid', '=', $username);
             }
 
-            if(!$ldapUser = $query->toRow()) {
+            if (!$ldapUser = $query->toRow()) {
                 $results[$domainId] = $result::IDENTITY_NOT_FOUND;
                 continue;
             }
@@ -251,8 +255,8 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
             $ldapDomain = $domainId;
         }
 
-        if(!$ldapDomain || !$ldapUser || !$adapter || !$adapter->isbound()) {
-            if($mainId && isset($results[$mainId])) {
+        if (!$ldapDomain || !$ldapUser || !$adapter || !$adapter->isbound()) {
+            if ($mainId && isset($results[$mainId])) {
                 $code = $results[$mainId];
             } else {
                 $code = $result::FAILURE;
@@ -261,7 +265,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
             return $result->setCode($code);
         }
 
-        if(!$ldapUser['mail']) {
+        if (!$ldapUser['mail']) {
             return $result->setCode($result::FAILURE);
         }
 
@@ -274,23 +278,27 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
                 ->setIdentity($authIdentity)
         );
 
-        if(!$domainInfo) {
+        if (!$domainInfo) {
             $client = $model->client->fetch()
                 ->where('email', '=', $ldapUser['mail'])
                 ->toRow();
 
-            if(!$client) {
-                if(!$domainOptions['autoRegister']) {
+            if (!$client) {
+                if (!$domainOptions['autoRegister']) {
                     return $result->setCode($result::IDENTITY_NOT_FOUND);
                 }
 
                 $name = $ldapUser['displayName'];
-                if(empty($name)) $name = $ldapUser['name'];
-                if(empty($name)) $name = $ldapUser['cn'];
+                if (empty($name)) {
+                    $name = $ldapUser['name'];
+                }
+                if (empty($name)) {
+                    $name = $ldapUser['cn'];
+                }
 
                 $nickName = $ldapUser['givenName'];
 
-                if(empty($nickName)) {
+                if (empty($nickName)) {
                     $parts = explode(' ', $name);
                     $nickName = array_shift($parts);
                 }

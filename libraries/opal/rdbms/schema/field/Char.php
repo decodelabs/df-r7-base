@@ -11,18 +11,20 @@ use df\opal;
 class Char extends Base implements
     opal\schema\ILengthRestrictedField,
     opal\schema\IBinaryCollationField,
-    opal\schema\ICharacterSetAwareField {
-
+    opal\schema\ICharacterSetAwareField
+{
     use opal\schema\TField_CharacterSetAware;
     use opal\schema\TField_BinaryCollationProvider;
     use opal\schema\TField_LengthRestricted;
 
-    protected function _init($length=null) {
+    protected function _init($length=null)
+    {
         $this->setLength($length);
     }
 
-    protected function _getDefaultLength() {
-        switch($this->_type) {
+    protected function _getDefaultLength()
+    {
+        switch ($this->_type) {
             case 'char':
                 return 1;
 
@@ -32,31 +34,32 @@ class Char extends Base implements
     }
 
 
-// String
-    public function toString(): string {
+    // String
+    public function toString(): string
+    {
         $output = $this->_name.' '.strtoupper($this->_type);
 
-        if($this->_length !== null) {
+        if ($this->_length !== null) {
             $output .= '('.$this->_length.')';
         }
 
-        if($this->_binaryCollation) {
+        if ($this->_binaryCollation) {
             $output .= ' BINARY';
         }
 
-        if($this->_isNullable) {
+        if ($this->_isNullable) {
             $output .= ' NULL';
         }
 
-        if($this->_defaultValue !== null) {
+        if ($this->_defaultValue !== null) {
             $output .= ' DEFAULT \''.$this->_defaultValue.'\'';
         }
 
-        if($this->_characterSet !== null) {
+        if ($this->_characterSet !== null) {
             $output .= ' CHARSET '.$this->_characterSet;
         }
 
-        if($this->_collation) {
+        if ($this->_collation) {
             $output .= ' COLLATION '.$this->_collation;
         }
 
@@ -65,12 +68,13 @@ class Char extends Base implements
         return $output;
     }
 
-// Ext. serialize
-    public function toStorageArray() {
+    // Ext. serialize
+    public function toStorageArray()
+    {
         return array_merge(
             $this->_getBaseStorageArray(),
             $this->_getCharacterSetStorageArray(),
-            $this->_getBinaryCollectionStorageArray(),
+            $this->_getBinaryCollationStorageArray(),
             $this->_getLengthRestrictedStorageArray()
         );
     }

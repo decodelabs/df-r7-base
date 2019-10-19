@@ -8,6 +8,7 @@ namespace df\core\debug;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -285,7 +286,7 @@ class StackCall implements IStackCall, Inspectable
     {
         return [
             'file' => $this->_local ?
-                core\fs\Dir::stripPathLocation($this->getFile()) :
+                Glitch::normalizePath($this->getFile()) :
                 $this->getFile(),
             'line' => $this->getLine(),
             'signature' => $this->getSignature()

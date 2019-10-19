@@ -12,6 +12,9 @@ use df\arch;
 use df\neon;
 use df\link;
 
+use DecodeLabs\Glitch;
+use DecodeLabs\Atlas;
+
 class TaskTransfer extends arch\node\Task
 {
     public function execute()
@@ -36,7 +39,7 @@ class TaskTransfer extends arch\node\Task
         $this->io->writeLine('Transferring media library from \''.$from->getDisplayName().'\' to \''.$to->getDisplayName().'\'');
 
         $tempDir = link\http\upload\Handler::createUploadTemp();
-        $this->io->writeLine('Using temp dir: '.core\fs\Dir::stripPathLocation($tempDir));
+        $this->io->writeLine('Using temp dir: '.Glitch::normalizePath($tempDir));
 
         $httpClient = new link\http\Client();
 
@@ -83,16 +86,16 @@ class TaskTransfer extends arch\node\Task
                 $to->transferFile($fileId, $versionId, $version['isActive'], $filePath, $version['fileName']);
 
                 if ($deleteFile) {
-                    core\fs\File::delete($filePath);
+                    Atlas::$fs->deleteFile($filePath);
                 }
             }
 
-            core\fs\Dir::delete($tempDir.'/'.$fileId.'/');
+            Atlas::$fs->deleteDir($tempDir.'/'.$fileId.'/');
             $this->io->writeLine();
         }
 
         $this->io->writeLine('Deleting temporary directory');
-        core\fs\Dir::delete($tempDir);
+        Atlas::$fs->deleteDir($tempDir);
 
         $this->io->writeLine('Updating config');
         $config = neon\mediaHandler\Config::getInstance();

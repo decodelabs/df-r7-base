@@ -257,7 +257,7 @@ trait TSchema_FieldProvider
             );
         }
 
-        if (isset($this->_fields[$field->getName()])) {
+        if (isset($this->_fields[$name = $field->getName()])) {
             throw new RuntimeException(
                 'Field '.$name.' has already been defined, use replaceField() instead'
             );
@@ -1154,7 +1154,7 @@ trait TSchema_ForeignKeyProvider
     public function removeForeignKey($name)
     {
         if (isset($this->_foreignKeys[$name])) {
-            $origName = $this->getOriginalForeignKeyName($name);
+            $origName = $this->getOriginalForeignKeyNameFor($name);
             $this->_foreignKeys[$name]->_setName($origName);
 
             if ($this->_isAudited) {

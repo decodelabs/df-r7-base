@@ -10,17 +10,20 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskClearNodeCache extends arch\node\Task implements arch\node\IBuildTaskNode {
+use DecodeLabs\Atlas;
 
-    public function execute() {
+class TaskClearNodeCache extends arch\node\Task implements arch\node\IBuildTaskNode
+{
+    public function execute()
+    {
         $this->io->write('Clearing node cache...');
-        $dir = new core\fs\Dir($this->app->getLocalDataPath().'/node');
+        $dir = Atlas::$fs->dir($this->app->getLocalDataPath().'/node');
 
-        if($dir->exists()) {
+        if ($dir->exists()) {
             $dir->moveTo($this->app->getLocalDataPath().'/node-old', 'node-'.time());
         }
 
-        core\fs\Dir::delete($this->app->getLocalDataPath().'/node-old');
+        Atlas::$fs->deleteDir($this->app->getLocalDataPath().'/node-old');
         $this->io->writeLine(' done');
     }
 }

@@ -11,6 +11,8 @@ use df\aura;
 use df\fuse;
 use df\spur;
 
+use DecodeLabs\Atlas;
+
 class Manager implements IManager
 {
     use core\TManager;
@@ -51,7 +53,7 @@ class Manager implements IManager
         if (!isset(self::$_depCache[$id])) {
             $this->ensureDependenciesFor($theme);
             $path = self::getManifestCachePath().'/'.$id;
-            self::$_depCache[$id] = unserialize(core\fs\File::getContentsOf($path));
+            self::$_depCache[$id] = unserialize(Atlas::$fs->getContents($path));
         }
 
         return self::$_depCache[$id];
@@ -71,7 +73,7 @@ class Manager implements IManager
         self::$_depCache[$id] = $output;
 
         $path = self::getManifestCachePath().'/'.$id;
-        core\fs\File::create($path, serialize($output));
+        Atlas::$fs->createFile($path, serialize($output));
     }
 
 
@@ -93,7 +95,7 @@ class Manager implements IManager
             $swallow = false;
 
             if (!is_dir($vendorPath)) {
-                core\fs\Dir::delete(dirname($path));
+                Atlas::$fs->deleteDir(dirname($path));
                 $swallow = true;
             }
 
@@ -101,8 +103,8 @@ class Manager implements IManager
                 $time = filemtime($path);
 
                 if ($time < time() - (30 * 60 * 60)) {
-                    $depContent = core\fs\File::getContentsOf($path);
-                    core\fs\File::delete($path);
+                    $depContent = Atlas::$fs->getContents($path);
+                    Atlas::$fs->deleteFile($path);
                     unset(self::$_depCache[$id]);
                 }
             } else {

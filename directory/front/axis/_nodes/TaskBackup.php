@@ -12,6 +12,8 @@ use df\arch;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Atlas;
+
 class TaskBackup extends arch\node\Task
 {
     const SCHEDULE = '0 0 * * 1';
@@ -39,7 +41,7 @@ class TaskBackup extends arch\node\Task
         $this->_manifest['timestamp'] = time();
         $backupId = 'axis-'.date('YmdHis');
         $this->_path = $this->app->getSharedDataPath().'/backup/'.$backupId;
-        core\fs\Dir::create($this->_path);
+        Atlas::$fs->createDir($this->_path);
 
         $this->io->writeLine('Backing up units');
         $this->io->writeLine();
@@ -57,12 +59,12 @@ class TaskBackup extends arch\node\Task
         $phar = new \PharData(dirname($this->_path).'/'.$backupId.'.tar');
         $phar->buildFromDirectory($this->_path);
 
-        core\fs\Dir::delete($this->_path);
+        Atlas::$fs->deleteDir($this->_path);
     }
 
     public function handleException(\Throwable $e)
     {
-        core\fs\Dir::delete($this->_path);
+        Atlas::$fs->deleteDir($this->_path);
         parent::handleException($e);
     }
 

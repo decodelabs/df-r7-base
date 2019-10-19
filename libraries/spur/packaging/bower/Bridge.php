@@ -11,6 +11,7 @@ use df\spur;
 use df\flex;
 use df\halo;
 
+use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
 
 class Bridge implements IBridge
@@ -57,8 +58,8 @@ class Bridge implements IBridge
             'directory' => $this->_installPath
         ]);
 
-        core\fs\File::create($this->_execPath.'/bower.json', $json1);
-        core\fs\File::create($this->_execPath.'/.bowerrc', $json2);
+        Atlas::$fs->createFile($this->_execPath.'/bower.json', $json1);
+        Atlas::$fs->createFile($this->_execPath.'/.bowerrc', $json2);
 
         return $this;
     }

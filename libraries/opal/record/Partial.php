@@ -60,7 +60,7 @@ class Partial implements IPartial, Inspectable
 
     public function getReductiveIterator(): \Iterator
     {
-        return new ReductiveMapIterator($this);
+        return new core\collection\ReductiveMapIterator($this);
     }
 
 

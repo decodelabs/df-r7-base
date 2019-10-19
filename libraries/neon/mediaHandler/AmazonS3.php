@@ -11,20 +11,24 @@ use df\neon;
 use df\spur;
 use df\link;
 
-class AmazonS3 extends Base {
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Mode;
 
+class AmazonS3 extends Base
+{
     protected $_bucket;
     protected $_path;
     protected $_mediator;
 
-    protected function __construct() {
+    protected function __construct()
+    {
         parent::__construct();
 
         $settings = $this->_getSettings();
         $accessKey = $settings['accessKey'];
         $secretKey = $settings['secretKey'];
 
-        if(!$accessKey || !$secretKey) {
+        if (!$accessKey || !$secretKey) {
             throw new RuntimeException('S3 config does not contain valid access key and secret key');
         }
 
@@ -32,12 +36,13 @@ class AmazonS3 extends Base {
         $this->_bucket = $settings['bucket'];
         $this->_path = trim($settings['path'], '/');
 
-        if(empty($this->_path)) {
+        if (empty($this->_path)) {
             $this->_path = null;
         }
     }
 
-    public static function getDefaultConfig() {
+    public static function getDefaultConfig()
+    {
         return [
             'accessKey' => null,
             'secretKey' => null,
@@ -46,14 +51,16 @@ class AmazonS3 extends Base {
         ];
     }
 
-    public static function getDisplayName(): string {
+    public static function getDisplayName(): string
+    {
         return 'Amazon S3';
     }
 
-    public function publishFile($fileId, $oldVersionId, $newVersionId, $filePath, $fileName) {
+    public function publishFile($fileId, $oldVersionId, $newVersionId, $filePath, $fileName)
+    {
         $basePath = $this->_path.'/media/'.$fileId;
 
-        if($oldVersionId !== null) {
+        if ($oldVersionId !== null) {
             $this->_mediator->moveFile(
                 $this->_bucket,
                 $basePath,
@@ -62,7 +69,7 @@ class AmazonS3 extends Base {
             );
         }
 
-        $this->_mediator->newUpload($this->_bucket, $basePath, new core\fs\File($filePath, core\fs\Mode::READ_ONLY))
+        $this->_mediator->newUpload($this->_bucket, $basePath, Atlas::$fs->file($filePath, Mode::READ_ONLY))
             ->setAcl(spur\cdn\amazonS3\IAcl::PUBLIC_READ)
             ->setAttributes(['crc32' => base64_encode(hash_file('crc32', $filePath, true))])
             ->setHeaderOverride('content-disposition', 'attachment; filename='.$fileName)
@@ -71,8 +78,9 @@ class AmazonS3 extends Base {
         return $this;
     }
 
-    public function transferFile($fileId, $versionId, $isActive, $filePath, $fileName) {
-        $this->_mediator->newUpload($this->_bucket, $this->_getVersionPath($fileId, $versionId, $isActive), new core\fs\File($filePath, core\fs\Mode::READ_ONLY))
+    public function transferFile($fileId, $versionId, $isActive, $filePath, $fileName)
+    {
+        $this->_mediator->newUpload($this->_bucket, $this->_getVersionPath($fileId, $versionId, $isActive), Atlas::$fs->file($filePath, Mode::READ_ONLY))
             ->setAcl(spur\cdn\amazonS3\IAcl::PUBLIC_READ)
             ->setAttributes(['crc32' => base64_encode(hash_file('crc32', $filePath, true))])
             ->setHeaderOverride('content-disposition', 'attachment; filename='.$fileName)
@@ -81,7 +89,8 @@ class AmazonS3 extends Base {
         return $this;
     }
 
-    public function activateVersion($fileId, $oldVersionId, $newVersionId) {
+    public function activateVersion($fileId, $oldVersionId, $newVersionId)
+    {
         $basePath = $this->_path.'/media/'.$fileId;
 
         $this->_mediator->moveFile(
@@ -101,18 +110,21 @@ class AmazonS3 extends Base {
         return $this;
     }
 
-    public function getDownloadUrl($fileId) {
+    public function getDownloadUrl($fileId)
+    {
         return $this->_mediator->getBucketUrl($this->_bucket, $this->_path.'/media/'.$fileId);
     }
 
-    public function getVersionDownloadUrl($fileId, $versionId, $isActive) {
+    public function getVersionDownloadUrl($fileId, $versionId, $isActive)
+    {
         return $this->_mediator->getBucketUrl(
             $this->_bucket,
             $this->_getVersionPath($fileId, $versionId, $isActive)
         );
     }
 
-    public function purgeVersion($fileId, $versionId, $isActive) {
+    public function purgeVersion($fileId, $versionId, $isActive)
+    {
         $this->_mediator->deleteFile(
             $this->_bucket,
             $this->_getVersionPath($fileId, $versionId, $isActive)
@@ -121,8 +133,9 @@ class AmazonS3 extends Base {
         return $this;
     }
 
-    public function deleteFile($fileId) {
-        if(empty($fileId)) {
+    public function deleteFile($fileId)
+    {
+        if (empty($fileId)) {
             // deleting the root folder would be bad!
             return;
         }
@@ -132,7 +145,8 @@ class AmazonS3 extends Base {
         return $this;
     }
 
-    public function hashFile($fileId, $versionId, $isActive) {
+    public function hashFile($fileId, $versionId, $isActive)
+    {
         $info = $this->_mediator->getObjectInfo(
             $this->_bucket,
             $this->_getVersionPath($fileId, $versionId, $isActive)
@@ -141,10 +155,11 @@ class AmazonS3 extends Base {
         return @base64_decode($info['meta']['crc32']);
     }
 
-    protected function _getVersionPath($fileId, $versionId, $isActive) {
+    protected function _getVersionPath($fileId, $versionId, $isActive)
+    {
         $path = $this->_path.'/media/'.$fileId;
 
-        if(!$isActive) {
+        if (!$isActive) {
             $path .= '/'.$versionId;
         }
 

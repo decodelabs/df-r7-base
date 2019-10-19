@@ -13,8 +13,8 @@ use df\arch;
 use df\flex;
 use df\mesh;
 
-class Manager implements IManager, core\IShutdownAware {
-
+class Manager implements IManager, core\IShutdownAware
+{
     use core\TManager;
     use mesh\event\TEmitter;
 
@@ -24,22 +24,24 @@ class Manager implements IManager, core\IShutdownAware {
 
     private $_accessLockCache = [];
 
-// Client
-    public function getClient() {
-        if(!isset($this->client)) {
+    // Client
+    public function getClient()
+    {
+        if (!isset($this->client)) {
             $this->_loadClient();
         }
 
         return $this->client;
     }
 
-    protected function _loadClient() {
+    protected function _loadClient()
+    {
         $bucket = $this->getHelper('session')->getBucket(self::USER_SESSION_BUCKET);
         $this->client = $bucket->get(self::CLIENT_SESSION_KEY);
         $regenKeyring = false;
         $isNew = false;
 
-        if($this->client === null) {
+        if ($this->client === null) {
             $this->client = Client::generateGuest($this);
             $regenKeyring = true;
             $rethrowException = false;
@@ -51,14 +53,14 @@ class Manager implements IManager, core\IShutdownAware {
             core\i18n\Manager::getInstance()->setLocale($this->client->getLanguage().'_'.$this->client->getCountry());
         }
 
-        if(!$this->client->isLoggedIn() && $this->auth->recallIdentity($isNew)) {
+        if (!$this->client->isLoggedIn() && $this->auth->recallIdentity($isNew)) {
             $regenKeyring = false;
         }
 
 
-        if($regenKeyring) {
+        if ($regenKeyring) {
             try {
-                if($this->client->isLoggedIn()) {
+                if ($this->client->isLoggedIn()) {
                     $this->refreshClientData();
                 } else {
                     $this->client->setKeyring(
@@ -69,18 +71,18 @@ class Manager implements IManager, core\IShutdownAware {
 
                     $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
                 }
-            } catch(\Throwable $e) {
-                if($rethrowException) {
+            } catch (\Throwable $e) {
+                if ($rethrowException) {
                     throw $e;
                 }
             }
-
         }
     }
 
 
-    public function storeClient() {
-        if(isset($this->client)) {
+    public function storeClient()
+    {
+        if (isset($this->client)) {
             $bucket = $this->getHelper('session')->getBucket(self::USER_SESSION_BUCKET);
             $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
         }
@@ -88,26 +90,30 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
-    public function clearClient() {
+    public function clearClient()
+    {
         unset($this->client);
         $this->clearAccessLockCache();
         return $this;
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->client->getId();
     }
 
-    public function isLoggedIn() {
+    public function isLoggedIn()
+    {
         return $this->client->isLoggedIn();
     }
 
-    public function refreshClientData() {
-        if($this->isLoggedIn()) {
+    public function refreshClientData()
+    {
+        if ($this->isLoggedIn()) {
             $model = $this->getUserModel();
             $data = $model->getClientData($this->client->getId());
 
-            if(!$data) {
+            if (!$data) {
                 $this->auth->unbind(true);
                 $this->client = Client::generateGuest($this);
             } else {
@@ -120,15 +126,16 @@ class Manager implements IManager, core\IShutdownAware {
 
         $this->storeClient();
 
-        if(isset($this->options)) {
+        if (isset($this->options)) {
             $this->options->refresh();
         }
 
         return $this;
     }
 
-    public function importClientData(user\IClientDataObject $data) {
-        if($this->client->getId() != $data->getId()) {
+    public function importClientData(user\IClientDataObject $data)
+    {
+        if ($this->client->getId() != $data->getId()) {
             throw new AuthenticationException(
                 'Client data to import is not for the currently authenticated user'
             );
@@ -137,14 +144,15 @@ class Manager implements IManager, core\IShutdownAware {
         $this->client->import($data);
         $this->storeClient();
 
-        if(isset($manager->options)) {
-            $manager->options->refresh();
+        if (isset($this->options)) {
+            $this->options->refresh();
         }
 
         return $this;
     }
 
-    public function regenerateKeyring() {
+    public function regenerateKeyring()
+    {
         $this->client->setKeyring(
             $this->getUserModel()->generateKeyring($this->client)
         );
@@ -153,49 +161,55 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
 
-    public function instigateGlobalKeyringRegeneration() {
+    public function instigateGlobalKeyringRegeneration()
+    {
         $cache = user\session\Cache::getInstance();
         $cache->setGlobalKeyringTimestamp();
 
         return $this;
     }
 
-    public function isA(...$signifiers) {
+    public function isA(...$signifiers)
+    {
         return $this->client->isA(...$signifiers);
     }
 
-    public function canAccess($lock, $action=null, $linkTo=false) {
-        if(!$lock instanceof IAccessLock) {
+    public function canAccess($lock, $action=null, $linkTo=false)
+    {
+        if (!$lock instanceof IAccessLock) {
             $lock = $this->getAccessLock($lock);
         }
 
         return $this->client->canAccess($lock, $action, $linkTo);
     }
 
-    public function getAccessLock($lock) {
-        if($lock instanceof user\IAccessLock) {
+    public function getAccessLock($lock)
+    {
+        if ($lock instanceof user\IAccessLock) {
             return $lock;
         }
 
-        if(is_bool($lock)) {
+        if (is_bool($lock)) {
             return new user\access\lock\Boolean($lock);
         }
 
         $lock = $lockId = (string)$lock;
 
-        if(isset($this->_accessLockCache[$lockId])) {
+        if (isset($this->_accessLockCache[$lockId])) {
             return $this->_accessLockCache[$lockId];
         }
 
-        if($lock == '*') {
+        if ($lock == '*') {
             $lock = (new user\access\lock\Boolean(true))
                 ->setAccessLockDomain('*');
-        } else if(substr($lock, 0, 10) == 'virtual://') {
+        } elseif (substr($lock, 0, 10) == 'virtual://') {
             $lock = new user\access\lock\Virtual(substr($lock, 10));
-        } else if(substr($lock, 0, 12) == 'directory://'
+        } elseif (substr($lock, 0, 12) == 'directory://'
               || (is_string($lock) && false === strpos($lock, '://'))) {
             $lock = new arch\Request($lock);
         } else {
+            $action = null;
+            
             try {
                 $parts = explode('#', $lock);
                 $entityId = array_shift($parts);
@@ -203,11 +217,11 @@ class Manager implements IManager, core\IShutdownAware {
 
                 $meshManager = mesh\Manager::getInstance();
                 $lock = $meshManager->fetchEntity($entityId);
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $lock = new user\access\lock\Boolean(true);
             }
 
-            if($action !== null) {
+            if ($action !== null) {
                 $lock = $lock->getActionLock($action);
             }
         }
@@ -217,28 +231,31 @@ class Manager implements IManager, core\IShutdownAware {
         return $lock;
     }
 
-    public function clearAccessLockCache() {
+    public function clearAccessLockCache()
+    {
         $this->_accessLockCache = [];
         return $this;
     }
 
 
 
-// Helpers
-    public function getHelper(string $name): IHelper {
+    // Helpers
+    public function getHelper(string $name): IHelper
+    {
         $name = lcfirst($name);
 
-        if(!isset($this->{$name})) {
+        if (!isset($this->{$name})) {
             $this->{$name} = user\helper\Base::factory($this, $name);
         }
 
         return $this->{$name};
     }
 
-    public function getUserModel() {
+    public function getUserModel()
+    {
         $model = axis\Model::factory('user');
 
-        if(!$model instanceof IUserModel) {
+        if (!$model instanceof IUserModel) {
             throw new AuthenticationException(
                 'User model does not implement user\\IUserModel'
             );
@@ -248,8 +265,9 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
 
-    public function __get($member) {
-        switch($member) {
+    public function __get($member)
+    {
+        switch ($member) {
             case 'client':
                 return $this->getClient();
 
@@ -259,16 +277,17 @@ class Manager implements IManager, core\IShutdownAware {
     }
 
 
-// Events
-    public function emitEventObject(mesh\event\IEvent $event) {
+    // Events
+    public function emitEventObject(mesh\event\IEvent $event)
+    {
         $obj = new \ReflectionObject($this);
         $props = $obj->getProperties(\ReflectionProperty::IS_PUBLIC);
 
-        foreach($props as $prop) {
+        foreach ($props as $prop) {
             $name = $prop->getName();
             $value = $prop->getValue($this);
 
-            if(!$value instanceof mesh\event\IListener) {
+            if (!$value instanceof mesh\event\IListener) {
                 continue;
             }
 
@@ -279,15 +298,16 @@ class Manager implements IManager, core\IShutdownAware {
         return $this;
     }
 
-    public function onAppShutdown(): void {
+    public function onAppShutdown(): void
+    {
         $obj = new \ReflectionObject($this);
         $props = $obj->getProperties(\ReflectionProperty::IS_PUBLIC);
 
-        foreach($props as $prop) {
+        foreach ($props as $prop) {
             $name = $prop->getName();
             $value = $prop->getValue($this);
 
-            if(!$value instanceof core\IShutdownAware) {
+            if (!$value instanceof core\IShutdownAware) {
                 continue;
             }
 

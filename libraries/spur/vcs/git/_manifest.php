@@ -86,7 +86,6 @@ interface ILocalRepository extends IRepository
     public function commitAllChanges($message);
 
     public function getTree($id);
-    public function getBlob($id);
 
     public function updateRemote($remote=null);
     public function pull($remoteBranch=null);
@@ -118,7 +117,7 @@ trait TRepository
 
     public function getGitUser()
     {
-        return $this->_user;
+        return $this->_gitUser;
     }
 
     public static function setGitPath($path)

@@ -11,8 +11,10 @@ use df\apex;
 use df\axis;
 use df\opal;
 
-class Unit extends axis\unit\Table {
+use DecodeLabs\Glitch;
 
+class Unit extends axis\unit\Table
+{
     const SEARCH_FIELDS = [
         'type' => 1,
         'message' => 4
@@ -24,7 +26,8 @@ class Unit extends axis\unit\Table {
 
     const DEFAULT_ORDER = ['lastSeen DESC', 'seen DESC'];
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
 
         $schema->addField('type', 'Text', 255)
@@ -47,36 +50,38 @@ class Unit extends axis\unit\Table {
     }
 
 
-// Block
-    public function applyListRelationQueryBlock(opal\query\IReadQuery $query, opal\query\IField $relationField) {
+    // Block
+    public function applyListRelationQueryBlock(opal\query\IReadQuery $query, opal\query\IField $relationField)
+    {
         $query->leftJoinRelation($relationField, 'message as origMessage', 'file', 'line');
     }
 
 
-// IO
-    public function logException(\Throwable $e) {
-        while($prev = $e->getPrevious()) {
+    // IO
+    public function logException(\Throwable $e)
+    {
+        while ($prev = $e->getPrevious()) {
             $e = $prev;
         }
 
         $type = get_class($e);
         $normal = false;
 
-        if(preg_match('/^class@anonymous/', $type)) {
+        if (preg_match('/^class@anonymous/', $type)) {
             $reflection = new \ReflectionClass($e);
 
-            if($parent = $reflection->getParentClass()) {
+            if ($parent = $reflection->getParentClass()) {
                 $type = [];
 
-                foreach($reflection->getInterfaces() as $name => $interface) {
+                foreach ($reflection->getInterfaces() as $name => $interface) {
                     $parts = explode('\\', $name);
                     $topName = array_pop($parts);
 
-                    if(!preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName) && ($topName !== 'IError' || $name === 'df\\core\\IError')) {
+                    if (!preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName) && ($topName !== 'IError' || $name === 'df\\core\\IError')) {
                         continue;
                     }
 
-                    if(implode('\\', $parts) == 'df\\core') {
+                    if (implode('\\', $parts) == 'df\\core') {
                         array_unshift($type, $topName);
                     } else {
                         $type[] = $name;
@@ -89,20 +94,21 @@ class Unit extends axis\unit\Table {
             }
         }
 
-        if(!$normal) {
+        if (!$normal) {
             $type = core\lang\Util::normalizeClassName($type);
         }
 
         return $this->logError(
             $type,
             $e->getCode(),
-            core\fs\Dir::stripPathLocation($e->getFile()),
+            Glitch::normalizePath($e->getFile()),
             $e->getLine(),
             $e->getMessage()
         );
     }
 
-    public function logError($type, $code, $file, $line, $message) {
+    public function logError($type, $code, $file, $line, $message)
+    {
         $this->update([
                 'lastSeen' => 'now',
                 'archiveDate' => null
@@ -121,7 +127,7 @@ class Unit extends axis\unit\Table {
             ->where('line', '=', $line)
             ->toRow();
 
-        if(!$error) {
+        if (!$error) {
             $error = $this->newRecord([
                     'type' => $type,
                     'code' => $code,

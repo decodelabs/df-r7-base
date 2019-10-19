@@ -154,7 +154,7 @@ abstract class Base implements ISchema, Inspectable
     public static function fromJson(opal\schema\ISchemaContext $schemaContext, $json)
     {
         if (!$data = json_decode($json, true)) {
-            throw new RuntimeException(
+            throw new opal\rdbms\RuntimeException(
                 'Invalid json schema representation'
             );
         }

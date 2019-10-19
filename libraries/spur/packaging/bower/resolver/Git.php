@@ -11,48 +11,52 @@ use df\spur;
 use df\link;
 use df\flex;
 
-class Git implements spur\packaging\bower\IResolver {
+use DecodeLabs\Atlas;
 
+class Git implements spur\packaging\bower\IResolver
+{
     use spur\packaging\bower\TGitResolver;
 
     const TAG_TIMEOUT = '5 hours';
 
     protected $_remote;
 
-    public function __construct() {
-
+    public function __construct()
+    {
     }
 
-    public function resolvePackageName(spur\packaging\bower\IPackage $package) {
+    public function resolvePackageName(spur\packaging\bower\IPackage $package)
+    {
         $parts = explode('/', $package->url);
         $name = array_pop($parts);
         return substr($name, -4);
     }
 
-    public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null) {
+    public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null)
+    {
         $this->_getRemote($package);
 
-        if($tag = $this->_getRequiredTag($package, $cachePath)) {
+        if ($tag = $this->_getRequiredTag($package, $cachePath)) {
             $commitId = $tag->getCommitId();
             $version = $package->version = $tag->getVersion()->toString();
         } else {
             $heads = $this->_remote->getHeads();
 
-            if(isset($heads['master'])) {
+            if (isset($heads['master'])) {
                 $version = $commitId = $heads['master'];
             } else {
                 $version = $commitId = array_pop($heads);
             }
         }
 
-        if($currentVersion !== null && $currentVersion == $package->version) {
+        if ($currentVersion !== null && $currentVersion == $package->version) {
             $this->_remote = null;
             return false;
         }
 
         $package->cacheFileName = $package->name.'#'.$version;
 
-        if(!is_dir($cachePath.'/packages/'.$package->cacheFileName)) {
+        if (!is_dir($cachePath.'/packages/'.$package->cacheFileName)) {
             $repo = $this->_remote->cloneTo($cachePath.'/packages/'.$package->cacheFileName);
             $repo->checkoutCommit($commitId);
         }
@@ -61,42 +65,46 @@ class Git implements spur\packaging\bower\IResolver {
         return true;
     }
 
-    protected function _getRemote(spur\packaging\bower\IPackage $package) {
-        if(!$this->_remote) {
+    protected function _getRemote(spur\packaging\bower\IPackage $package)
+    {
+        if (!$this->_remote) {
             $this->_remote = new spur\vcs\git\Remote($package->url);
         }
 
         return $this->_remote;
     }
 
-    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath) {
-        if(!$tag = $this->_getRequiredTag($package, $cachePath)) {
+    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath)
+    {
+        if (!$tag = $this->_getRequiredTag($package, $cachePath)) {
             return 'latest';
         }
 
         return $tag->getVersion();
     }
 
-    protected function _getRequiredTag(spur\packaging\bower\IPackage $package, $cachePath) {
+    protected function _getRequiredTag(spur\packaging\bower\IPackage $package, $cachePath)
+    {
         try {
             $tags = $this->_fetchTags($package, $cachePath);
-        } catch(spur\vcs\git\IException $e) {
+        } catch (spur\vcs\git\IException $e) {
             return false;
         }
 
         return $this->_findRequiredTag($tags, $package);
     }
 
-    protected function _fetchTags(spur\packaging\bower\IPackage $package, $cachePath) {
+    protected function _fetchTags(spur\packaging\bower\IPackage $package, $cachePath)
+    {
         $path = $cachePath.'/tags/git-'.flex\Text::formatFileName($package->url).'.json';
 
-        if(!core\fs\File::isFileRecent($path, self::TAG_TIMEOUT)) {
+        if (!Atlas::$fs->hasFileChangedIn($path, self::TAG_TIMEOUT)) {
             $tags = $this->_remote->getTags();
             $tags = $this->_sortTags($tags);
 
             $data = [];
 
-            foreach($tags as $tag) {
+            foreach ($tags as $tag) {
                 $data[$tag->getName()] = $tag->getCommitId();
             }
 
@@ -107,7 +115,7 @@ class Git implements spur\packaging\bower\IResolver {
         $data = flex\Json::fileToTree($path);
         $tags = [];
 
-        foreach($data as $name => $commitId) {
+        foreach ($data as $name => $commitId) {
             $tags[] = new spur\vcs\git\Tag($this->_remote, $name, (string)$commitId);
         }
 

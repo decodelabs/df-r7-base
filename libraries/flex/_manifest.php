@@ -9,17 +9,30 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
 
 // Exceptions
-interface IException {}
-class OutOfBoundsException extends \OutOfBoundsException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
+interface IException
+{
+}
+class OutOfBoundsException extends \OutOfBoundsException implements IException
+{
+}
+class UnexpectedValueException extends \UnexpectedValueException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
 
 
 // Interfaces
-interface IEncoding {
+interface IEncoding
+{
     const UCS_4 = 'UCS-4';
     const UCS_4BE = 'UCS-4BE';
     const UCS_4LE = 'UCS-4LE';
@@ -83,36 +96,42 @@ interface IEncoding {
 }
 
 
-interface IEncodingAware {
+interface IEncodingAware
+{
     public function getEncoding();
 }
 
-interface IParser {
+interface IParser
+{
     public function setSource($source);
     public function getSource();
 }
 
 
-trait TParser {
-
+trait TParser
+{
     public $source;
 
-    public function __construct($source) {
+    public function __construct($source)
+    {
         $this->setSource($source);
     }
 
-    public function setSource($source) {
+    public function setSource($source)
+    {
         $this->source = (string)$source;
         return $this;
     }
 
-    public function getSource() {
+    public function getSource()
+    {
         return $this->source;
     }
 }
 
 
-interface ICase {
+interface ICase
+{
     const UPPER_WORDS = 3;
     const UPPER_FIRST = 2;
     const UPPER = 1;
@@ -122,47 +141,55 @@ interface ICase {
 }
 
 
-interface IHtmlProducer extends IParser {
+interface IHtmlProducer extends IParser
+{
     public function toHtml();
 }
 
-interface IInlineHtmlProducer extends IHtmlProducer {
+interface IInlineHtmlProducer extends IHtmlProducer
+{
     public function toInlineHtml();
 }
 
-interface ITextProducer extends IParser {
+interface ITextProducer extends IParser
+{
     public function toText();
 }
 
-interface IStringEscapeHandler {
+interface IStringEscapeHandler
+{
     public function esc($value): string;
 }
 
-trait THtmlStringEscapeHandler {
-
-    public function esc($value): string {
+trait THtmlStringEscapeHandler
+{
+    public function esc($value): string
+    {
         try {
             return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return (string)$value;
         }
     }
 }
 
 
-interface ICharacterSetAware {
+interface ICharacterSetAware
+{
     public function setCharacterSet($charset);
     public function getCharacterSet();
 }
 
-interface ICollationAware {
+interface ICollationAware
+{
     public function setCollation($collation);
     public function getCollation();
 }
 
 
 
-interface IDelimited {
+interface IDelimited
+{
     public static function splitLines($source, $trim=false);
     public static function split($delimiter, $source);
 
@@ -170,7 +197,8 @@ interface IDelimited {
     public static function implode(array $data, $delimiter=',', $quote='"', $terminator=null);
 }
 
-interface IGenerator {
+interface IGenerator
+{
     public static function random($minLength=6, $maxLength=14, $additionalChars=null);
     public static function passKey();
     public static function sessionId($raw=false);
@@ -184,7 +212,8 @@ interface IGenerator {
     public static function combGuid();
 }
 
-interface IGuid extends core\IStringProvider {
+interface IGuid extends core\IStringProvider
+{
     public static function uuid1($node=null, $time=null);
     public static function uuid3($name, $namespace=null);
     public static function uuid4();
@@ -201,9 +230,10 @@ interface IGuid extends core\IStringProvider {
 }
 
 
-interface IJson {
+interface IJson
+{
     public static function toString($data, int $flags=0): string;
-    public static function toFile($path, $data, int $flags=0): core\fs\IFile;
+    public static function toFile($path, $data, int $flags=0): File;
 
     public static function fromString(?string $data);
     public static function fromFile($path);
@@ -214,7 +244,8 @@ interface IJson {
 }
 
 
-interface IMatcher {
+interface IMatcher
+{
     public static function isLike($pattern, $string, $char='_', $wildcard='%');
     public static function generateLikeRegex($pattern, $char='_', $wildcard='%', $delimiter='/');
 
@@ -224,7 +255,8 @@ interface IMatcher {
 }
 
 
-interface IText extends core\collection\IIndexedCollection, core\IStringProvider {
+interface IText extends core\collection\IIndexedCollection, core\IStringProvider
+{
 
 // Macros
     public static function formatName($name);
@@ -263,7 +295,7 @@ interface IText extends core\collection\IIndexedCollection, core\IStringProvider
     public static function splitWords($value, $strip=true, $expand=true);
 
 
-// Encoding
+    // Encoding
     public static function isValidEncoding($encoding);
     public function getEncoding();
     public function hasValidEncoding();
@@ -271,7 +303,7 @@ interface IText extends core\collection\IIndexedCollection, core\IStringProvider
     public function toUtf8();
     public function translitToAscii();
 
-// Indexes
+    // Indexes
     public function indexOf($needle, $offset=0);
     public function iIndexOf($needle, $offset=0);
     public function lastIndexOf($needle, $offset=0);
@@ -282,19 +314,19 @@ interface IText extends core\collection\IIndexedCollection, core\IStringProvider
     public function iToIndexOf($needle, $offset=0);
     public function iFromIndexOf($needle, $offset=0);
 
-// Lenth
+    // Lenth
     public function getLength();
     public function prepend($string);
     public function append($string);
 
-// Case
+    // Case
     public function wordsToUpper();
     public function firstToUpper();
     public function toUpper();
     public function toLower();
     public function firstToLower();
 
-// Splitting
+    // Splitting
     public function substring($start, $length=null);
     public function getSubstring($start, $length=null);
     public function substringCount($needle);
@@ -305,24 +337,27 @@ interface IText extends core\collection\IIndexedCollection, core\IStringProvider
     public function split(string $delimiter): array;
     public function regexSplit(string $pattern, int $limit=-1, int $flag=0): array;
 
-// Replace
+    // Replace
     public function replace($in, $out);
     public function regexReplace($in, $out);
     public function stripTags(string $allowableTags=null);
 }
 
-interface ITermParser {
+interface ITermParser
+{
     public function parse($phrase, $natural=false);
 }
 
-interface IStemmer {
+interface IStemmer
+{
     public function stem($phrase, $natural=false);
     public function split($phrase, $natural=false);
     public function stemWord($word, $natural=false);
 }
 
 
-interface IVersion extends core\IStringProvider {
+interface IVersion extends core\IStringProvider
+{
     public function setMajor($major);
     public function getMajor();
     public function setMinor($minor);
@@ -346,7 +381,8 @@ interface IVersion extends core\IStringProvider {
     public function isInRange($range);
 }
 
-interface IVersionRange extends core\IStringProvider {
+interface IVersionRange extends core\IStringProvider
+{
     public function contains($version);
     public function maxContained(...$versions);
     public function isSingleVersion();
@@ -355,7 +391,8 @@ interface IVersionRange extends core\IStringProvider {
 }
 
 
-interface IPasswordAnalyzer {
+interface IPasswordAnalyzer
+{
     public function getHash();
     public function getPassKey();
     public function getLength();

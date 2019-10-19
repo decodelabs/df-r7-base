@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\spur;
 
-class Repository implements IRepository {
-
+class Repository implements IRepository
+{
     use TApiObject;
 
     protected $_name;
@@ -35,7 +35,8 @@ class Repository implements IRepository {
     protected $_hasPages;
 
 
-    protected function _importData(core\collection\ITree $data) {
+    protected function _importData(core\collection\ITree $data)
+    {
         $this->_name = $data['name'];
         $this->_fullName = $data['full_name'];
         $this->_owner = new User($this->_mediator, $data->owner);
@@ -63,120 +64,148 @@ class Repository implements IRepository {
         $this->_urls['homepage'] = $data['homepage'];
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function getFullName() {
+    public function getFullName()
+    {
         return $this->_fullName;
     }
 
-    public function getOwner() {
+    public function getOwner()
+    {
         return $this->_owner;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->_description;
     }
 
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this->_language;
     }
 
-    public function isPrivate(): bool {
+    public function isPrivate(): bool
+    {
         return $this->_isPrivate;
     }
 
-    public function isFork() {
+    public function isFork()
+    {
         return $this->_isFork;
     }
 
-    public function getDefaultBranch() {
+    public function getDefaultBranch()
+    {
         return $this->_defaultBranch;
     }
 
 
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         return $this->_creationDate;
     }
 
-    public function getUpdateDate() {
+    public function getUpdateDate()
+    {
         return $this->_updateDate;
     }
 
-    public function getPushDate() {
+    public function getPushDate()
+    {
         return $this->_pushDate;
     }
 
 
-    public function getSize() {
+    public function getSize()
+    {
         return $this->_size;
     }
 
-    public function countWatchers() {
+    public function countWatchers()
+    {
         return $this->_watchers;
     }
 
-    public function countStargazers() {
-        return $this->_stargazer;
+    public function countStargazers()
+    {
+        return $this->_stargazers;
     }
 
-    public function countForks() {
+    public function countForks()
+    {
         return $this->_forks;
     }
 
-    public function countOpenIssues() {
+    public function countOpenIssues()
+    {
         return $this->_openIssues;
     }
 
 
-    public function hasIssues() {
+    public function hasIssues()
+    {
         return $this->_hasIssues;
     }
 
-    public function hasDownloads() {
+    public function hasDownloads()
+    {
         return $this->_hasDownloads;
     }
 
-    public function hasWiki() {
+    public function hasWiki()
+    {
         return $this->_hasWiki;
     }
 
-    public function hasPages() {
+    public function hasPages()
+    {
         return $this->_hasPages;
     }
 
 
-// Ext
-    public function getBranches() {
+    // Ext
+    public function getBranches()
+    {
         return $this->_mediator->getRepositoryBranches($this->_fullName);
     }
 
-    public function getBranch($name) {
+    public function getBranch($name)
+    {
         return $this->_mediator->getRepositoryBranch($this->_fullName, $name);
     }
 
-    public function getTags() {
+    public function getTags()
+    {
         return $this->_mediator->getRepositoryTags($this->_fullName);
     }
 
-    public function getLabels() {
+    public function getLabels()
+    {
         return $this->_mediator->getRepositoryLabels($this->_fullName);
     }
 
-    public function getReleases() {
+    public function getReleases()
+    {
         return $this->_mediator->getRepositoryReleases($this->_fullName);
     }
 
-    public function getRelease($id) {
+    public function getRelease($id)
+    {
         return $this->_mediator->getRepositoryRelease($this->_fullName, $id);
     }
 
-    public function getWatchers($name, $page=null) {
+    public function getWatchers($name, $page=null)
+    {
         return $this->_mediator->getRepositoryWatchers($name, $page);
     }
 
-    public function getSubscribers($name, $page=null) {
+    public function getSubscribers($name, $page=null)
+    {
         return $this->_mediator->getRepositorySubscribers($name, $page);
     }
 }

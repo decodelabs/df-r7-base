@@ -59,7 +59,7 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
             return null;
         }
 
-        return (new opal\schema\GenericIndex('primary', [
+        return (new opal\schema\GenericIndex(null, 'primary', [
                 new opal\schema\GenericField($this->_primaryField)
             ]))
             ->isUnique(true);

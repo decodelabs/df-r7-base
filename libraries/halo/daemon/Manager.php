@@ -10,26 +10,30 @@ use df\core;
 use df\halo;
 use df\arch;
 
-class Manager implements IManager {
+use DecodeLabs\Atlas;
 
+class Manager implements IManager
+{
     use core\TManager;
 
     const REGISTRY_PREFIX = 'manager://daemon';
 
     protected $_isEnabled = null;
 
-    public function isEnabled() {
-        if($this->_isEnabled === null) {
+    public function isEnabled()
+    {
+        if ($this->_isEnabled === null) {
             $this->_isEnabled = core\environment\Config::getInstance()->canUseDaemons();
         }
 
         return $this->_isEnabled;
     }
 
-    public function ensureActivity() {
+    public function ensureActivity()
+    {
         $spoolOnly = false;
 
-        if(!$this->isEnabled() || !df\Launchpad::$app->isProduction()) {
+        if (!$this->isEnabled() || !df\Launchpad::$app->isProduction()) {
             $spoolOnly = true;
             //return $this;
         }
@@ -40,19 +44,19 @@ class Manager implements IManager {
         try {
             $mtime = filemtime($path);
 
-            if(df\Launchpad::$app->startTime - $mtime > 300) {
+            if (df\Launchpad::$app->startTime - $mtime > 300) {
                 $launch = true;
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $launch = true;
         }
 
-        if($launch) {
-            core\fs\Dir::create(dirname($path));
+        if ($launch) {
+            Atlas::$fs->createDir(dirname($path));
             touch($path);
             $taskManager = arch\node\task\Manager::getInstance();
 
-            if($spoolOnly) {
+            if ($spoolOnly) {
                 $taskManager->launchBackground('tasks/spool');
             } else {
                 $taskManager->launchBackground('daemons/ensure-activity');
@@ -62,8 +66,9 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function launch($name) {
-        if(!$this->isEnabled()) {
+    public function launch($name)
+    {
+        if (!$this->isEnabled()) {
             throw new RuntimeException(
                 'Daemons are currently disabled in config'
             );
@@ -74,8 +79,9 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function nudge($name) {
-        if(!$this->isEnabled()) {
+    public function nudge($name)
+    {
+        if (!$this->isEnabled()) {
             throw new RuntimeException(
                 'Daemons are currently disabled in config'
             );
@@ -86,8 +92,9 @@ class Manager implements IManager {
         return $this;
     }
 
-    public function getRemote($name) {
-        if(!$this->isEnabled()) {
+    public function getRemote($name)
+    {
+        if (!$this->isEnabled()) {
             throw new RuntimeException(
                 'Daemons are currently disabled in config'
             );
@@ -96,8 +103,9 @@ class Manager implements IManager {
         return Remote::factory($name);
     }
 
-    public function isRunning($name) {
-        if(!$this->isEnabled()) {
+    public function isRunning($name)
+    {
+        if (!$this->isEnabled()) {
             throw new RuntimeException(
                 'Daemons are currently disabled in config'
             );

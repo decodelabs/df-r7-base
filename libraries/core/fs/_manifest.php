@@ -9,15 +9,26 @@ use df;
 use df\core;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class OverflowException extends \OverflowException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
+class OverflowException extends \OverflowException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
 
 
 // Interfaces
-class Mode extends core\lang\Enum {
+class Mode extends core\lang\Enum
+{
     const READ_ONLY = 'rb';
     const READ_WRITE = 'r+b';
     const WRITE_TRUNCATE = 'wb';
@@ -27,8 +38,9 @@ class Mode extends core\lang\Enum {
     const WRITE_NEW = 'xb';
     const READ_WRITE_NEW = 'x+b';
 
-    public function canCreate() {
-        switch($this->getLabel()) {
+    public function canCreate()
+    {
+        switch ($this->getLabel()) {
             case self::WRITE_TRUNCATE:
             case self::READ_WRITE_TRUNCATE:
             case self::WRITE_APPEND:
@@ -46,9 +58,9 @@ class Mode extends core\lang\Enum {
 
 
 ## File
-interface INode extends core\IStringProvider {
+interface INode extends core\IStringProvider
+{
     public function getPath();
-    public function getLocationPath();
     public function getName(): string;
     public function exists();
     public function clearStatCache();
@@ -65,47 +77,43 @@ interface INode extends core\IStringProvider {
     public function unlink();
 }
 
-trait TNode {
-
+trait TNode
+{
     use core\TStringProvider;
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return basename($this->getPath());
     }
 
-    public function getLocationPath() {
-        if(!$path = $this->getPath()) {
-            return null;
-        }
-
-        return core\fs\Dir::stripPathLocation($path);
-    }
-
-    public function clearStatCache() {
+    public function clearStatCache()
+    {
         clearstatcache(true, $this->getPath());
         return $this;
     }
 
-    public function isRecent($timeout) {
-        if(!$this->exists()) {
+    public function isRecent($timeout)
+    {
+        if (!$this->exists()) {
             return false;
         }
 
-        if(!is_int($timeout)) {
+        if (!is_int($timeout)) {
             $timeout = core\time\Duration::factory($timeout)->getSeconds();
         }
 
-        if(time() - $this->getLastModified() > $timeout) {
+        if (time() - $this->getLastModified() > $timeout) {
             return false;
         }
 
         return true;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         $output = $this->getPath();
 
-        if($output === null) {
+        if ($output === null) {
             $output = $this->getName();
         }
 
@@ -113,8 +121,8 @@ trait TNode {
     }
 }
 
-interface IFile extends INode, core\io\IChannel {
-
+interface IFile extends INode, core\io\IChannel
+{
     public function isOnDisk();
     public function getSize();
 
@@ -148,25 +156,26 @@ interface IFile extends INode, core\io\IChannel {
 }
 
 
-trait TFile {
-
+trait TFile
+{
     use TNode;
 
-    public function copyTo($path) {
+    public function copyTo($path)
+    {
         $target = self::factory($path);
         $target->open(Mode::WRITE_TRUNCATE);
         $closeAfter = false;
 
-        if(!$this->_fp) {
+        if (!$this->_fp) {
             $closeAfter = true;
             $this->open(Mode::READ_ONLY);
         }
 
-        while(!$this->eof()) {
+        while (!$this->eof()) {
             $target->write($this->readChunk(8192));
         }
 
-        if($closeAfter) {
+        if ($closeAfter) {
             $this->close();
         }
 
@@ -176,24 +185,9 @@ trait TFile {
 }
 
 
-interface ILockFile {
-    public function setPath($path);
-    public function getPath();
-    public function setFileName($name);
-    public function getFileName();
-    public function setTimeout($timeout);
-    public function getTimeout();
-    public function getRemainingTime();
-    public function isLocked();
-    public function canLock();
-    public function lock();
-    public function unlock();
-}
 
-
-
-
-interface IDirectory extends INode {
+interface IDirectory extends INode
+{
     public function ensureExists($perms=null);
     public function isEmpty(): bool;
 
@@ -257,14 +251,4 @@ interface IDirectory extends INode {
 
     public function emptyOut();
     public function mergeInto($destination);
-}
-
-
-
-// Matches
-interface IMatcher {
-    public function setPath(string $path);
-    public function getPath(): string;
-
-    public function match(array $patterns, array $blacklist=[]): iterable;
 }

@@ -8,6 +8,8 @@ namespace df\core;
 use df;
 use df\core;
 
+use DecodeLabs\Atlas;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -255,7 +257,7 @@ abstract class Config implements IConfig, Inspectable
 
         $values = $this->values->toArray();
         $content = '<?php'."\n".'return '.core\collection\Util::exportArray($values).';';
-        core\fs\File::create($savePath, $content);
+        Atlas::$fs->createFile($savePath, $content);
     }
 
     private function _getBasePath()

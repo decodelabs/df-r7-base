@@ -11,51 +11,58 @@ use df\spur;
 use df\flex;
 use df\fuse;
 
-class Installer implements IInstaller {
+use DecodeLabs\Atlas;
 
+class Installer implements IInstaller
+{
     protected $_installDir;
     protected $_cachePath;
-    protected $_lockFile;
+    protected $_mutex;
     protected $_multiplexer;
     protected $_resolvers = [];
 
-    public function __construct(core\io\IMultiplexer $io=null) {
+    public function __construct(core\io\IMultiplexer $io=null)
+    {
         $installPath = fuse\Manager::getAssetPath();
-        $this->_installDir = new core\fs\Dir($installPath);
-        $this->_cachePath = core\fs\Dir::getGlobalCachePath().'/bower';
-        $this->_lockFile = new core\fs\LockFile($this->_cachePath);
+        $this->_installDir = Atlas::$fs->dir($installPath);
+        $this->_cachePath = '/tmp/decode-framework/bower';
+        $this->_mutex = Atlas::newMutex('bower', $this->_cachePath);
         $this->setMultiplexer($io);
     }
 
-    public function getInstallPath() {
+    public function getInstallPath()
+    {
         return $this->_installDir;
     }
 
-    public function setMultiplexer(core\io\IMultiplexer $io=null) {
+    public function setMultiplexer(core\io\IMultiplexer $io=null)
+    {
         $this->_multiplexer = $io;
         return $this;
     }
 
-    public function getMultiplexer() {
+    public function getMultiplexer()
+    {
         return $this->_multiplexer;
     }
 
-    public function installPackages(array $input) {
+    public function installPackages(array $input)
+    {
         $packages = [];
 
-        foreach($input as $name => $version) {
-            if($version instanceof IPackage) {
+        foreach ($input as $name => $version) {
+            if ($version instanceof IPackage) {
                 $package = $version;
             } else {
                 $package = new Package($name, $version);
             }
 
-            if($this->_installPackage($package)) {
+            if ($this->_installPackage($package)) {
                 $packages[$package->getKey()] = $package;
             }
         }
 
-        foreach($packages as $package) {
+        foreach ($packages as $package) {
             $this->_installDependencies($package);
         }
 
@@ -64,8 +71,9 @@ class Installer implements IInstaller {
         return $this;
     }
 
-    public function installPackage(IPackage $package) {
-        if($this->_installPackage($package)) {
+    public function installPackage(IPackage $package)
+    {
+        if ($this->_installPackage($package)) {
             $this->_installDependencies($package);
         }
 
@@ -74,17 +82,18 @@ class Installer implements IInstaller {
         return $this;
     }
 
-    protected function _installPackage(IPackage $package, $depLevel=0, $depParent=null) {
+    protected function _installPackage(IPackage $package, $depLevel=0, $depParent=null)
+    {
         $output = false;
         $this->_preparePackage($package);
         $resolver = $this->_getResolver($package->resolver);
-        $this->_lockFile->lock();
+        $this->_mutex->lock(60);
 
-        if($this->_multiplexer) {
-            if($depLevel) {
+        if ($this->_multiplexer) {
+            if ($depLevel) {
                 $this->_multiplexer->write('|'.str_repeat('--', $depLevel).' ');
 
-                if($depParent) {
+                if ($depParent) {
                     $this->_multiplexer->write('['.$depParent.'] ');
                 }
             }
@@ -94,103 +103,105 @@ class Installer implements IInstaller {
 
         $currentVersion = null;
 
-        if($this->_hasPackage($package)) {
+        if ($this->_hasPackage($package)) {
             $data = flex\Json::fromFile($this->_installDir.'/'.$package->installName.'/.bower.json');
             $currentVersion = $data['version'];
 
-            if($this->_multiplexer) {
+            if ($this->_multiplexer) {
                 $this->_multiplexer->write('#'.$currentVersion);
             }
         }
 
         try {
-            if($resolver->fetchPackage($package, $this->_cachePath, $currentVersion)) {
-                if($this->_multiplexer) {
+            if ($resolver->fetchPackage($package, $this->_cachePath, $currentVersion)) {
+                if ($this->_multiplexer) {
                     $this->_multiplexer->write(' => '.$package->version);
                 }
 
                 $this->_extractCache($package);
                 $output = true;
             } else {
-                if($this->_multiplexer) {
+                if ($this->_multiplexer) {
                     $this->_multiplexer->write(' - up to date');
                 }
             }
-        } catch(\Throwable $e) {
-            $this->_lockFile->unlock();
+        } catch (\Throwable $e) {
+            $this->_mutex->unlock();
             throw $e;
         }
 
-        if($this->_multiplexer) {
+        if ($this->_multiplexer) {
             $this->_multiplexer->writeLine();
         }
 
-        $this->_lockFile->unlock();
+        $this->_mutex->unlock();
         return $output;
     }
 
-    protected function _installDependencies(IPackage $package, $depLevel=0) {
-        if(!$data = $this->getPackageBowerData($package)) {
+    protected function _installDependencies(IPackage $package, $depLevel=0)
+    {
+        if (!$data = $this->getPackageBowerData($package)) {
             return;
         }
 
         $deps = $data->dependencies->toArray();
         $subDeps = [];
 
-        foreach($deps as $name => $version) {
+        foreach ($deps as $name => $version) {
             $depPackage = new Package($name, $version);
 
-            if($package->autoInstallName) {
+            if ($package->autoInstallName) {
                 $depPackage->installName = null;
             }
 
             $depPackage->isDependency = true;
             $this->_preparePackage($depPackage);
 
-            if($installed = $this->getPackageInfo($depPackage)) {
+            if ($installed = $this->getPackageInfo($depPackage)) {
                 try {
                     $range = flex\VersionRange::factory($depPackage->version);
 
-                    if(!$range->contains($installed->version) && $installed->installName == $depPackage->installName) {
+                    if (!$range->contains($installed->version) && $installed->installName == $depPackage->installName) {
                         throw new RuntimeException(
                             'Unable to satisfy '.$package->name.' dependencies - version conflict for '.$package->name
                         );
                     } else {
                         $depPackage = $installed;
                     }
-                } catch(flex\RuntimeException $e) {
+                } catch (flex\RuntimeException $e) {
                     // never mind
                 }
             }
 
-            if($this->_installPackage($depPackage, $depLevel + 1, $package->installName)) {
+            if ($this->_installPackage($depPackage, $depLevel + 1, $package->installName)) {
                 // only install sub dependencies if change is actually made
                 $subDeps[$depPackage->installName] = $depPackage;
             }
         }
 
-        foreach($subDeps as $depPackage) {
+        foreach ($subDeps as $depPackage) {
             $this->_installDependencies($depPackage, $depLevel + 1);
         }
     }
 
-    public function isPackageInstalled($name) {
-        if($name instanceof IPackage) {
+    public function isPackageInstalled($name)
+    {
+        if ($name instanceof IPackage) {
             $name = $name->installName;
         }
 
-        if($this->_installDir->hasFile($name.'/.bower.json')) {
+        if ($this->_installDir->hasFile($name.'/.bower.json')) {
             return true;
         }
 
-        foreach($this->_installDir->scanDirs() as $dirName => $dir) {
-            if(!$dir->hasFile('.bower.json')) {
+        foreach ($this->_installDir->scanDirs() as $dirName => $dir) {
+            if (!$dir->hasFile('.bower.json')) {
                 continue;
             }
 
             $data = flex\Json::fileToTree($dir.'/.bower.json');
 
-            if($name == $data['name']) {
+            if ($name == $data['name']) {
                 return true;
             }
         }
@@ -198,20 +209,22 @@ class Installer implements IInstaller {
         return false;
     }
 
-    public function _hasPackage($name) {
-        if($name instanceof IPackage) {
+    public function _hasPackage($name)
+    {
+        if ($name instanceof IPackage) {
             $name = $name->installName;
         }
 
         return $this->_installDir->hasFile($name.'/.bower.json');
     }
 
-    public function getInstalledPackages() {
+    public function getInstalledPackages()
+    {
         $output = [];
 
-        foreach($this->_installDir->scanDirs() as $dirName => $dir) {
-            foreach($dir->scanDirs() as $subDirName => $subDir) {
-                if($package = $this->_getPackageInfo($dirName.'/'.$subDirName)) {
+        foreach ($this->_installDir->scanDirs() as $dirName => $dir) {
+            foreach ($dir->scanDirs() as $subDirName => $subDir) {
+                if ($package = $this->_getPackageInfo($dirName.'/'.$subDirName)) {
                     $output[(string)$subDir] = $package;
                 }
             }
@@ -220,23 +233,24 @@ class Installer implements IInstaller {
         return $output;
     }
 
-    public function getPackageInfo($name) {
-        if($name instanceof IPackage) {
+    public function getPackageInfo($name)
+    {
+        if ($name instanceof IPackage) {
             $name = $name->installName;
         }
 
-        if($this->_installDir->hasFile($name.'/.bower.json')) {
+        if ($this->_installDir->hasFile($name.'/.bower.json')) {
             return $this->_getPackageInfo($name);
         }
 
-        foreach($this->_installDir->listDirs() as $dirName => $dir) {
-            if(!$dir->hasFile('.bower.json')) {
+        foreach ($this->_installDir->listDirs() as $dirName => $dir) {
+            if (!$dir->hasFile('.bower.json')) {
                 continue;
             }
 
             $data = flex\Json::fileToTree($dir.'/.bower.json');
 
-            if($name == $data['name']) {
+            if ($name == $data['name']) {
                 $package = new Package($dirName, $data['url']);
                 $package->url = $data['url'];
                 $package->name = $data['name'];
@@ -247,14 +261,15 @@ class Installer implements IInstaller {
         }
     }
 
-    protected function _getPackageInfo($name) {
-        if($name instanceof IPackage) {
+    protected function _getPackageInfo($name)
+    {
+        if ($name instanceof IPackage) {
             $name = $name->installName;
         }
 
         $file = $this->_installDir->getFile($name.'/.bower.json');
 
-        if($file->exists()) {
+        if ($file->exists()) {
             $data = flex\Json::fileToTree($file);
 
             $package = new Package($name, $data['url']);
@@ -266,58 +281,61 @@ class Installer implements IInstaller {
         }
     }
 
-    public function getPackageBowerData($name) {
-        if($name instanceof IPackage) {
+    public function getPackageBowerData($name)
+    {
+        if ($name instanceof IPackage) {
             $name = $name->installName;
         }
 
         $file = $this->_installDir->getFile($name.'/bower.json');
 
-        if($file->exists()) {
+        if ($file->exists()) {
             return flex\Json::fileToTree($file);
         }
     }
 
-    public function getPackageJsonData($name) {
-        if($name instanceof IPackage) {
+    public function getPackageJsonData($name)
+    {
+        if ($name instanceof IPackage) {
             $name = $name->installName;
         }
 
         $file = $this->_installDir->getFile($name.'/package.json');
 
-        if($file->exists()) {
+        if ($file->exists()) {
             return flex\Json::fileToTree($file);
         }
     }
 
 
 
-// Resolvers
-    protected function _preparePackage(IPackage $package, $useRegistry=true) {
-        if(!strlen($package->source)) {
+    // Resolvers
+    protected function _preparePackage(IPackage $package, $useRegistry=true)
+    {
+        if (!strlen($package->source)) {
             $package->source = 'latest';
         }
 
-        if(false !== strpos($package->source, '#')) {
+        if (false !== strpos($package->source, '#')) {
             list($package->source, $package->version) = explode('#', $package->source, 2);
         }
 
-        if(preg_match('/^([^\/\@#\:]+)\/([^\/\@#\:]+)$/', $package->source)) {
+        if (preg_match('/^([^\/\@#\:]+)\/([^\/\@#\:]+)$/', $package->source)) {
             $package->source = 'git://github.com/'.$package->source.'.git';
         }
 
 
         // Git
-        if(preg_match('/^git(\+(ssh|https?))?:\/\//i', $package->source)
+        if (preg_match('/^git(\+(ssh|https?))?:\/\//i', $package->source)
         || preg_match('/\.git\/?$/i', $package->source)
         || preg_match('/^git@/i', $package->source)) {
             $package->url = str_replace('/^git\+/', '', $package->source);
 
-            if(!$package->name) {
+            if (!$package->name) {
                 $package->name = basename($package->url, '.git');
             }
 
-            if(preg_match('/(?:@|:\/\/)github.com/', $package->url)) {
+            if (preg_match('/(?:@|:\/\/)github.com/', $package->url)) {
                 $package->resolver = 'Github';
             } else {
                 $package->resolver = 'Git';
@@ -325,10 +343,10 @@ class Installer implements IInstaller {
         }
 
         // SVN
-        else if(preg_match('/^svn(\+(ssh|https?|file))?:\/\//i', $package->source)) {
+        elseif (preg_match('/^svn(\+(ssh|https?|file))?:\/\//i', $package->source)) {
             $package->url = $package->source;
 
-            if(!$package->name) {
+            if (!$package->name) {
                 $package->name = basename($package->url);
             }
 
@@ -336,10 +354,10 @@ class Installer implements IInstaller {
         }
 
         // HTTP
-        else if(preg_match('/^https?:\/\//i', $package->source)) {
+        elseif (preg_match('/^https?:\/\//i', $package->source)) {
             $package->url = $package->source;
 
-            if(!$package->name) {
+            if (!$package->name) {
                 $package->name = basename($package->url);
             }
 
@@ -347,17 +365,17 @@ class Installer implements IInstaller {
         }
 
         // Local
-        else if(preg_match('/^\.\.?[\/\\\\]/', $package->source)
+        elseif (preg_match('/^\.\.?[\/\\\\]/', $package->source)
         || preg_match('/^~?\//', $package->source)) {
             $package->url = rtrim($package->source, '/');
 
-            if(!$package->name) {
+            if (!$package->name) {
                 $package->name = basename($package->url);
             }
 
-            if(is_dir($package->url.'/.git')) {
+            if (is_dir($package->url.'/.git')) {
                 $package->resolver = 'GitFileSystem';
-            } else if(is_dir($package->url.'/.svn')) {
+            } elseif (is_dir($package->url.'/.svn')) {
                 $package->resolver = 'SvnFileSystem';
             } else {
                 $package->resolver = 'FileSystem';
@@ -367,7 +385,7 @@ class Installer implements IInstaller {
 
         // Registry
         else {
-            if($package->source == 'latest') {
+            if ($package->source == 'latest') {
                 $package->version = '*';
                 $package->source = $package->name;
             }
@@ -375,11 +393,11 @@ class Installer implements IInstaller {
             try {
                 $package->version = flex\VersionRange::factory($package->source);
                 $package->source = $package->name;
-            } catch(flex\IException $e) {
+            } catch (flex\IException $e) {
                 $package->name = $package->source;
             }
 
-            if($useRegistry) {
+            if ($useRegistry) {
                 $registry = new spur\packaging\bower\Registry();
 
                 try {
@@ -387,54 +405,54 @@ class Installer implements IInstaller {
                     $package->url = $registry['url'];
                     $package->name = $registry['name'];
                     $package->isRegistry = true;
-                } catch(EApi $e) {
+                } catch (EApi $e) {
                     // never mind
                 }
 
-                if($package->url) {
+                if ($package->url) {
                     $package->source = $package->url;
                     return $this->_preparePackage($package, false);
                 }
             }
         }
 
-        if(!$package->resolver) {
+        if (!$package->resolver) {
             throw new RuntimeException('No valid resolver could be found for package: '.$package->name);
         }
 
-        if(!$package->installName) {
+        if (!$package->installName) {
             $package->autoInstallName = true;
             $resolver = $this->_getResolver($package->resolver);
 
-            if(!$package->isRegistry) {
+            if (!$package->isRegistry) {
                 $package->name = $resolver->resolvePackageName($package);
             }
 
             try {
                 $range = flex\VersionRange::factory($package->version);
-            } catch(flex\IException $e) {
+            } catch (flex\IException $e) {
                 $range = null;
             }
 
-            if($package->isDependency) {
+            if ($package->isDependency) {
                 $dir = $this->_installDir->getDir($package->name);
 
-                if($dir->exists()) {
+                if ($dir->exists()) {
                     $versions = $dir->listDirNames();
 
-                    if(in_array('latest', $versions)) {
+                    if (in_array('latest', $versions)) {
                         $package->installName = $package->name.'/latest';
                     } else {
                         rsort($versions);
 
-                        foreach($versions as $versionStr) {
+                        foreach ($versions as $versionStr) {
                             try {
                                 $version = flex\Version::factory($versionStr);
-                            } catch(flex\IException $e) {
+                            } catch (flex\IException $e) {
                                 continue;
                             }
 
-                            if(!$range || $range->contains($version)) {
+                            if (!$range || $range->contains($version)) {
                                 $package->installName = $package->name.'/'.$versionStr;
                                 break;
                             }
@@ -443,18 +461,18 @@ class Installer implements IInstaller {
                 }
             }
 
-            if(!$package->installName) {
-                if(!$package->isDependency && ($package->version == '*' || $package->version == 'latest' || !strlen($package->version))) {
+            if (!$package->installName) {
+                if (!$package->isDependency && ($package->version == '*' || $package->version == 'latest' || !strlen($package->version))) {
                     $package->installName = $package->name.'/latest';
                 } else {
-                    if($range) {
+                    if ($range) {
                         $version = $range->getMinorGroupVersion();
                     } else {
                         $version = null;
                     }
 
-                    if(!$version) {
-                        if(!strlen($package->version) || $package->version == 'latest') {
+                    if (!$version) {
+                        if (!strlen($package->version) || $package->version == 'latest') {
                             $package->version = '*';
                         }
 
@@ -463,7 +481,7 @@ class Installer implements IInstaller {
                         );
                     }
 
-                    if($version instanceof flex\IVersion) {
+                    if ($version instanceof flex\IVersion) {
                         $version = $version->major.'.'.$version->minor;
                     }
 
@@ -472,19 +490,20 @@ class Installer implements IInstaller {
             }
         }
 
-        if(!strlen($package->version) || $package->version == 'latest') {
+        if (!strlen($package->version) || $package->version == 'latest') {
             $package->version = '*';
         }
     }
 
-    protected function _getResolver($name) {
-        if(isset($this->_resolvers[$name])) {
+    protected function _getResolver($name)
+    {
+        if (isset($this->_resolvers[$name])) {
             return $this->_resolvers[$name];
         }
 
         $class = 'df\\spur\\packaging\\bower\\resolver\\'.$name;
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new LogicException($name.' resolver isn\'t done yet');
         }
 
@@ -492,45 +511,48 @@ class Installer implements IInstaller {
     }
 
 
-// Cache
-    public function tidyCache() {
+    // Cache
+    public function tidyCache()
+    {
         $path = $this->_cachePath.'/packages';
 
-        if(!is_dir($path)) {
+        if (!is_dir($path)) {
             return $this;
         }
 
         $dir = new \DirectoryIterator($path);
         $time = core\time\Date::factory('-3 days')->toTimestamp();
 
-        foreach($dir as $file) {
-            if(!$file->isFile()) {
+        foreach ($dir as $file) {
+            if (!$file->isFile()) {
                 continue;
             }
 
-            if($file->getMTime() < $time) {
-                core\fs\File::delete($file->getPathname());
+            if ($file->getMTime() < $time) {
+                Atlas::$fs->deleteFile($file->getPathname());
             }
         }
 
         return $this;
     }
 
-    protected function _extractCache(IPackage $package) {
+    protected function _extractCache(IPackage $package)
+    {
         $sourcePath = $this->_cachePath.'/packages/'.$package->cacheFileName;
-        $destination = $this->_installDir->getDir($package->installName)->unlink();
+        $destination = $this->_installDir->getDir($package->installName);
+        $destination->delete();
 
-        if(is_file($sourcePath)) {
+        if (is_file($sourcePath)) {
             try {
                 core\archive\Base::extract(
                     $sourcePath, (string)$destination, true
                 );
-            } catch(core\archive\IException $e) {
-                core\fs\File::delete($sourcePath);
+            } catch (core\archive\IException $e) {
+                Atlas::$fs->deleteFile($sourcePath);
                 throw $e;
             }
-        } else if(is_dir($sourcePath)) {
-            core\fs\Dir::copy($sourcePath, $destination);
+        } elseif (is_dir($sourcePath)) {
+            Atlas::$fs->copyDir($sourcePath, $destination);
         } else {
             throw new RuntimeException(
                 'Unable to locate fetched package source in cache: '.$package->cacheFileName
@@ -548,28 +570,29 @@ class Installer implements IInstaller {
             ]
         );
 
-        //core\fs\File::delete($sourcePath);
+        //Atlas::$fs->deleteFile($sourcePath);
     }
 
-    protected function _filterFiles($destination) {
+    protected function _filterFiles($destination)
+    {
         $force = [];
         $ignore = ['.bower.json', '.git', '.svn'];
 
-        if(is_file($destination.'/bower.json')) {
+        if (is_file($destination.'/bower.json')) {
             $bowerData = flex\Json::fileToTree($destination.'/bower.json');
             $ignore = array_merge($ignore, $bowerData->ignore->toArray());
 
-            if(count($bowerData->main)) {
+            if (count($bowerData->main)) {
                 $force = array_merge($force, $bowerData->main->toArray());
-            } else if(isset($bowerData['main'])) {
+            } elseif (isset($bowerData['main'])) {
                 $force[] = $bowerData['main'];
             }
         }
 
-        $matcher = new core\fs\matcher\Ignore($destination);
+        $matcher = new spur\packaging\bower\matcher\Ignore($destination);
 
-        foreach($matcher->match($ignore, $force) as $path => $entry) {
-            $entry->unlink();
+        foreach ($matcher->match($ignore, $force) as $path => $entry) {
+            $entry->delete();
         }
     }
 }

@@ -749,7 +749,7 @@ class Base implements IRecord, \Serializable, Inspectable
     public function triggerJobEvent(mesh\job\IQueue $queue, IJob $job, $when)
     {
         $jobName = $job->getRecordJobName();
-        $funcPrefix = null;
+        $funcPrefix = $event = $meshManager = null;
 
         if ($when != IJob::EVENT_POST) {
             $funcPrefix = ucfirst($when);
@@ -787,7 +787,7 @@ class Base implements IRecord, \Serializable, Inspectable
                 $this->{$func}($queue, $job);
             }
 
-            if ($broadcast && !$this->_bypassHooks) {
+            if ($broadcast && !$this->_bypassHooks && $event && $meshManager) {
                 $event->setAction($funcPrefix.'Save');
                 $meshManager->emitEventObject($event);
             }

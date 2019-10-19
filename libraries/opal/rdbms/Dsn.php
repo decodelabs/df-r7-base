@@ -271,7 +271,7 @@ class Dsn implements IDsn, Inspectable
     {
         $this->_hash = null;
         $this->_serverHash = null;
-        $this->_database = $database;
+        $this->_database = $name;
 
         return $this;
     }

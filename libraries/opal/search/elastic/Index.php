@@ -59,7 +59,7 @@ class Index implements opal\search\IIndex
 
         foreach ($documents as $document) {
             if (!$document instanceof opal\search\IDocument) {
-                throw new InvalidArgumentException(
+                throw new opal\search\InvalidArgumentException(
                     'Invalid document in document list'
                 );
             }

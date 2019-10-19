@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,30 +8,37 @@ namespace df\iris\source;
 use df;
 use df\core;
 use df\iris;
-    
-class File implements iris\ISource {
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Mode;
+
+class File implements iris\ISource
+{
     protected $_uri;
     protected $_file;
 
-    public function __construct($uri) {
+    public function __construct($uri)
+    {
         $this->_uri = iris\SourceUri::factory($uri);
     }
 
-    public function getSourceUri() {
+    public function getSourceUri()
+    {
         return $this->_uri;
     }
 
-    public function getEncoding() {
+    public function getEncoding()
+    {
         return 'utf-8';
     }
 
-    public function substring($start, $length=1) {
-        if(!$this->_file) {
-            $this->_file = new core\fs\File($this->_uri, core\fs\Mode::READ_ONLY);
+    public function substring($start, $length=1)
+    {
+        if (!$this->_file) {
+            $this->_file = Atlas::$fs->file($this->_uri, Mode::READ_ONLY);
         }
 
-        $this->_file->seek($start);
-        return $this->_file->readChunk($length);
+        $this->_file->setPosition($start);
+        return $this->_file->read($length);
     }
 }

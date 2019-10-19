@@ -11,6 +11,8 @@ use df\aura;
 use df\spur;
 use df\flex;
 
+use DecodeLabs\Atlas;
+
 class Autoprefixer extends Base
 {
     public function process($cssPath, core\io\IMultiplexer $multiplexer=null)
@@ -72,10 +74,10 @@ js;
             'settings' => $this->settings
         ]);
 
-        core\fs\File::create($cssPath, $output['css']);
+        Atlas::$fs->createFile($cssPath, $output['css']);
 
         if (isset($output['map'])) {
-            core\fs\File::create(
+            Atlas::$fs->createFile(
                 $cssPath.'.map',
                 flex\Json::toString($output['map'], \JSON_UNESCAPED_SLASHES)
             );

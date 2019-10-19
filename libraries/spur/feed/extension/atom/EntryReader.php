@@ -9,19 +9,22 @@ use df;
 use df\core;
 use df\spur;
 
-class EntryReader implements spur\feed\IEntryReaderPlugin {
-
+class EntryReader implements spur\feed\IEntryReaderPlugin
+{
     use spur\feed\TEntryReader;
 
-    public function getId(): ?string {
+    const XPATH_NAMESPACES = [];
+
+    public function getId(): ?string
+    {
         $id = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/atom:id)'
         );
 
-        if(!$id) {
-            if($link = $this->getPermalink()) {
+        if (!$id) {
+            if ($link = $this->getPermalink()) {
                 $id = $link;
-            } else if($title = $this->getTitle()) {
+            } elseif ($title = $this->getTitle()) {
                 $id = $title;
             }
         }
@@ -29,28 +32,29 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
         return $id;
     }
 
-    public function getAuthors() {
+    public function getAuthors()
+    {
         $authors = [];
 
         $list = $this->_xPath->query(
             $this->_xPathPrefix.'//atom:author'
         );
 
-        if(!$list->length) {
+        if (!$list->length) {
             $list = $this->_xPath->query(
                 '//atom:author'
             );
         }
 
-        if($list->length) {
-            foreach($list as $authorNode) {
+        if ($list->length) {
+            foreach ($list as $authorNode) {
                 $author = new spur\feed\Author(
                     @$authorNode->getElementsByTagName('email')->item(0)->nodeValue,
                     @$authorNode->getElementsByTagName('name')->item(0)->nodeValue,
                     @$authorNode->getElementsByTagName('uri')->item(0)->nodeValue
                 );
 
-                if($author->isValid()) {
+                if ($author->isValid()) {
                     $authors[] = $author;
                 }
             }
@@ -59,27 +63,30 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
         return $authors;
     }
 
-    public function getTitle(): ?string {
+    public function getTitle(): ?string
+    {
         return $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/atom:title)'
         );
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/atom:summary)'
         );
     }
 
-    public function getContent() {
+    public function getContent()
+    {
         $content = $this->_xPath->query(
             $this->_xPathPrefix.'/atom:content'
         );
 
-        if($content->length) {
+        if ($content->length) {
             $content = $content->item(0);
 
-            switch($content->getAttribute('type')) {
+            switch ($content->getAttribute('type')) {
                 case '':
                 case 'text':
                 case 'text/plain':
@@ -98,7 +105,7 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
                         )
                         ->item(0);
 
-                    $xDoc = new \DomDocument('1.0', $this->getEncoding());
+                    $xDoc = new \DOMDocument('1.0');
                     $xDoc->appendChild($xDoc->importNode($xhtml, true));
 
                     $content = $this->_normalizeXhtml(
@@ -115,8 +122,9 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
         return $content;
     }
 
-    protected function _normalizeXhtml($xhtml, $prefix) {
-        if($prefix) {
+    protected function _normalizeXhtml($xhtml, $prefix)
+    {
+        if ($prefix) {
             $prefix .= ':';
         }
 
@@ -127,7 +135,7 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
 
         $xhtml = preg_replace($regexes, '', $xhtml);
 
-        if($prefix) {
+        if ($prefix) {
             $xhtml = preg_replace(
                 '/(<[\/]?)'.$prefix.'([a-zA-Z]+)/', '$1$2', $xhtml
             );
@@ -136,7 +144,8 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
         return $xhtml;
     }
 
-    public function getLinks() {
+    public function getLinks()
+    {
         $links = [];
 
         $list = $this->_xPath->query(
@@ -144,8 +153,8 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
             $this->_xPathPrefix.'//atom:link[not(@rel)]/@href'
         );
 
-        if($list->length) {
-            foreach($list as $link) {
+        if ($list->length) {
+            foreach ($list as $link) {
                 $links[] = $this->_relativeToAbsoluteUrl($link->value);
             }
         }
@@ -153,12 +162,13 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
         return $links;
     }
 
-    public function getBaseUrl() {
+    public function getBaseUrl()
+    {
         $baseUrl = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/@xml:base[1])'
         );
 
-        if(!$baseUrl) {
+        if (!$baseUrl) {
             $baseUrl = $this->_xPath->evaluate(
                 'string(//@xml:base[1])'
             );
@@ -167,44 +177,47 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
         return $baseUrl;
     }
 
-    public function getCommentLink() {
+    public function getCommentLink()
+    {
         $link = null;
 
         $list = $this->_xPath->query(
             $this->_xPathPrefix.'//atom:link[@rel="replies" and @type="text/html"]/@href'
         );
 
-        if($list->length) {
+        if ($list->length) {
             $link = $this->_relativeToAbsoluteUrl($list->item(0)->value);
         }
 
         return $link;
     }
 
-    public function getCommentFeedLink() {
+    public function getCommentFeedLink()
+    {
         $link = null;
 
         $list = $this->_xPath->query(
             $this->_xPathPrefix.'//atom:link[@rel="replies" and @type="application/atom+xml"]/@href'
         );
 
-        if(!$list->length) {
+        if (!$list->length) {
             $list = $this->_xPath->query(
                 $this->_xPathPrefix.'//atom:link[@rel="replies" and @type="application/rss+xml"]/@href'
             );
         }
 
-        if($list->length) {
+        if ($list->length) {
             $link = $this->_relativeToAbsoluteUrl($list->item(0)->value);
         }
 
         return $link;
     }
 
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         $date = null;
 
-        if($this->_type == spur\feed\ITypes::ATOM_03) {
+        if ($this->_type == spur\feed\ITypes::ATOM_03) {
             $created = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/atom:created)'
             );
@@ -214,18 +227,19 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
             );
         }
 
-        if($created) {
+        if ($created) {
             $date = core\time\Date::factory($created);
         }
 
         return $date;
     }
 
-    public function getLastModifiedDate() {
-        $date = null;
+    public function getLastModifiedDate()
+    {
+        $date = $created = null;
 
-        if($this->_type == spur\feed\ITypes::ATOM_03) {
-            $modified = $this->_xPath->evaluate(
+        if ($this->_type == spur\feed\ITypes::ATOM_03) {
+            $created = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/atom:modified)'
             );
         } else {
@@ -234,24 +248,25 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
             );
         }
 
-        if($created) {
+        if ($created) {
             $date = core\time\Date::factory($created);
         }
 
         return $date;
     }
 
-    public function getEnclosure() {
+    public function getEnclosure()
+    {
         $enclosure = null;
 
         $list = $this->_xPath->query(
             $this->_xPathPrefix.'/atom:link[@rel="enclosure"]'
         );
 
-        if($list->length) {
+        if ($list->length) {
             $url = $list->item(0)->getAttribute('href');
 
-            if(!$url) {
+            if (!$url) {
                 $url = $list->item(0)->getAttribute('url');
             }
 
@@ -265,8 +280,9 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
         return $enclosure;
     }
 
-    public function getCategories() {
-        if($this->_type == spur\feed\ITypes::ATOM_10) {
+    public function getCategories()
+    {
+        if ($this->_type == spur\feed\ITypes::ATOM_10) {
             $list = $this->_xPath->query(
                 $this->_xPathPrefix.'//atom:category'
             );
@@ -282,8 +298,8 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
 
         $categories = [];
 
-        if($list->length) {
-            foreach($list as $category) {
+        if ($list->length) {
+            foreach ($list as $category) {
                 $categories[] = new spur\feed\Category(
                     $category->nodeValue,
                     $category->getAttribute('domain'),
@@ -298,29 +314,31 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
 
     // TODO: public function getSource() {}
 
-    protected function _getXPathNamespaces() {
+    protected function _getXPathNamespaces()
+    {
         $prefix03 = $this->_domDocument->lookupPrefix(spur\feed\INamespaces::ATOM_03);
         $prefix10 = $this->_domDocument->lookupPrefix(spur\feed\INamespaces::ATOM_10);
 
-        if($this->_domDocument->isDefaultNamespace(spur\feed\INamespaces::ATOM_10) || $prefix10) {
+        if ($this->_domDocument->isDefaultNamespace(spur\feed\INamespaces::ATOM_10) || $prefix10) {
             return ['atom' => spur\feed\INamespaces::ATOM_10];
         }
 
-        if($this->_domDocument->isDefaultNamespace(spur\feed\INamespaces::ATOM_03) || $prefix03) {
+        if ($this->_domDocument->isDefaultNamespace(spur\feed\INamespaces::ATOM_03) || $prefix03) {
             return ['atom' => spur\feed\INamespaces::ATOM_03];
         }
 
         return ['atom' => spur\feed\INamespaces::ATOM_10];
     }
 
-    protected function _relativeToAbsoluteUrl($urlString) {
+    protected function _relativeToAbsoluteUrl($urlString)
+    {
         $url = core\uri\Url::factory($urlString);
 
-        if(!$url->hasDomain()) {
-            if($baseUrl = $this->getBaseUrl()) {
+        if (!$url->hasDomain()) {
+            if ($baseUrl = $this->getBaseUrl()) {
                 $url = core\uri\Url::factory($baseUrl.$urlString);
 
-                if(!$url->hasDomain()) {
+                if (!$url->hasDomain()) {
                     return null;
                 }
             }

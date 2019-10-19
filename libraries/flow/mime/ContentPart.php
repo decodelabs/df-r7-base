@@ -10,6 +10,9 @@ use df\core;
 use df\flow;
 use df\flex;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
+
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -226,7 +229,7 @@ class ContentPart implements IContentPart, Inspectable
 
     public function getContentString()
     {
-        if ($this->_content instanceof core\fs\IFile) {
+        if ($this->_content instanceof File) {
             return $this->_content->getContents();
         }
 

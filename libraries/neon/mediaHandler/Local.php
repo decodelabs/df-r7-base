@@ -9,78 +9,90 @@ use df;
 use df\core;
 use df\neon;
 
-class Local extends Base implements ILocalDataHandler {
+use DecodeLabs\Atlas;
 
-    public static function getDisplayName(): string {
+class Local extends Base implements ILocalDataHandler
+{
+    public static function getDisplayName(): string
+    {
         return 'Local file system';
     }
 
-    public function publishFile($fileId, $oldVersionId, $newVersionId, $filePath, $fileName) {
+    public function publishFile($fileId, $oldVersionId, $newVersionId, $filePath, $fileName)
+    {
         $destination = $this->getFilePath($fileId, $newVersionId);
-        core\fs\File::copy($filePath, $destination);
+        Atlas::$fs->copyFile($filePath, $destination);
 
         return $this;
     }
 
-    public function activateVersion($fileId, $oldVersionId, $newVersionId) {
+    public function activateVersion($fileId, $oldVersionId, $newVersionId)
+    {
         // noop
         return $this;
     }
 
-    public function getDownloadUrl($fileId) {
+    public function getDownloadUrl($fileId)
+    {
         $output = '/media/download?file='.$fileId;
 
-        if(df\Launchpad::$compileTimestamp) {
+        if (df\Launchpad::$compileTimestamp) {
             $output .= '&cts='.df\Launchpad::$compileTimestamp;
         }
 
         return $output;
     }
 
-    public function getEmbedUrl($fileId) {
+    public function getEmbedUrl($fileId)
+    {
         return $this->getDownloadUrl($fileId).'&embed';
     }
 
-    public function getVersionDownloadUrl($fileId, $versionId, $isActive) {
+    public function getVersionDownloadUrl($fileId, $versionId, $isActive)
+    {
         $output = '/media/download?version='.$versionId;
 
-        if(df\Launchpad::$compileTimestamp) {
+        if (df\Launchpad::$compileTimestamp) {
             $output .= '&cts='.df\Launchpad::$compileTimestamp;
         }
 
         return $output;
     }
 
-    public function getFilePath($fileId, $versionId) {
+    public function getFilePath($fileId, $versionId)
+    {
         $storageKey = $this->_getStorageKey($fileId);
         return df\Launchpad::$app->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId.'/'.$versionId;
     }
 
-    public function purgeVersion($fileId, $versionId, $isActive) {
+    public function purgeVersion($fileId, $versionId, $isActive)
+    {
         $path = $this->getFilePath($fileId, $versionId);
-        core\fs\File::delete($path);
+        Atlas::$fs->deleteFile($path);
 
         return $this;
     }
 
-    public function deleteFile($fileId) {
+    public function deleteFile($fileId)
+    {
         $storageKey = $this->_getStorageKey($fileId);
         $path = df\Launchpad::$app->getSharedDataPath().'/media/'.$storageKey.'/'.$fileId;
-        $dir = (new core\fs\Dir($path))->unlink();
-
+        $dir = Atlas::$fs->dir($path);
         $parent = $dir->getParent();
+        $dir->delete();
 
-        if($parent->isEmpty()) {
-            $parent->unlink();
+        if ($parent->isEmpty()) {
+            $parent->delete();
         }
 
         return $this;
     }
 
-    public function hashFile($fileId, $versionId, $isActive) {
-        $file = new core\fs\File($this->getFilePath($fileId, $versionId));
+    public function hashFile($fileId, $versionId, $isActive)
+    {
+        $file = Atlas::$fs->file($this->getFilePath($fileId, $versionId));
 
-        if(!$file->exists()) {
+        if (!$file->exists()) {
             return null;
         }
 

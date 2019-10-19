@@ -10,8 +10,11 @@ use df\core;
 use df\spur;
 use df\link;
 
-class Upload implements IUpload {
-    
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
+
+class Upload implements IUpload
+{
     use core\collection\TAttributeContainer;
 
     protected $_file;
@@ -23,46 +26,58 @@ class Upload implements IUpload {
     protected $_headers = [];
     protected $_mediator;
 
-    public function __construct(IMediator $mediator, $bucket, $targetFilePath, core\fs\IFile $file) {
+    public function __construct(IMediator $mediator, $bucket, $targetFilePath, ?File $file)
+    {
         $this->_mediator = $mediator;
         $this->setBucket($bucket);
         $this->setTargetFilePath($targetFilePath);
-        $this->setFile($file);
+
+        if ($file !== null) {
+            $this->setFile($file);
+        }
     }
 
-    public function getMediator() {
+    public function getMediator()
+    {
         return $this->_mediator;
     }
 
-    public function setBucket($bucket) {
+    public function setBucket($bucket)
+    {
         $this->_bucket = $bucket;
         return $this;
     }
 
-    public function getBucket() {
+    public function getBucket()
+    {
         return $this->_bucket;
     }
 
-    public function setTargetFilePath($path) {
+    public function setTargetFilePath($path)
+    {
         $this->_path = $path;
         return $this;
     }
 
-    public function getTargetFilePath() {
+    public function getTargetFilePath()
+    {
         return $this->_path;
     }
 
-    public function setFile(core\fs\IFile $file) {
+    public function setFile(File $file)
+    {
         $this->_file = $file;
         return $this;
     }
 
-    public function getFile() {
+    public function getFile()
+    {
         return $this->_file;
     }
 
-    public function setAcl($acl) {
-        switch($acl) {
+    public function setAcl($acl)
+    {
+        switch ($acl) {
             case IAcl::PRIVATE_READ_WRITE:
             case IAcl::PUBLIC_READ:
             case IAcl::PUBLIC_READ_WRITE:
@@ -78,12 +93,14 @@ class Upload implements IUpload {
         return $this;
     }
 
-    public function getAcl() {
+    public function getAcl()
+    {
         return $this->_acl;
     }
 
-    public function setStorageClass($class) {
-        switch($class) {
+    public function setStorageClass($class)
+    {
+        switch ($class) {
             case IStorageClass::STANDARD:
             case IStorageClass::RRS:
                 break;
@@ -97,8 +114,9 @@ class Upload implements IUpload {
         return $this;
     }
 
-    public function setEncryption($encryption) {
-        switch($encryption) {
+    public function setEncryption($encryption)
+    {
+        switch ($encryption) {
             case IEncryption::NONE:
             case IEncryption::AES256:
                 break;
@@ -112,65 +130,72 @@ class Upload implements IUpload {
         return $this;
     }
 
-    public function getEncryption() {
+    public function getEncryption()
+    {
         return $this->_encryption;
     }
 
 
-// Headers
-    public function setHeaderOverrides(array $headers) {
+    // Headers
+    public function setHeaderOverrides(array $headers)
+    {
         $this->clearHeaderOverrides();
 
-        foreach($headers as $key => $value) {
+        foreach ($headers as $key => $value) {
             $this->setHeaderOverride($key, $value);
         }
 
         return $this;
     }
 
-    public function setHeaderOverride($key, $value) {
+    public function setHeaderOverride($key, $value)
+    {
         $this->_headers[strtolower($key)] = $value;
         return $this;
     }
 
-    public function removeHeaderOverride($key) {
+    public function removeHeaderOverride($key)
+    {
         $key = strtolower($key);
         unset($this->_headers[$key]);
         return $this;
     }
 
-    public function getHeaderOverrides() {
+    public function getHeaderOverrides()
+    {
         return $this->_headers;
     }
 
-    public function clearHeaderOverrides() {
+    public function clearHeaderOverrides()
+    {
         $this->_headers = [];
         return $this;
     }
 
 
-    public function send() {
+    public function send()
+    {
         $request = $this->_mediator->createRequest('put', ['path' => $this->_path, 'bucket' => $this->_bucket]);
         $request->setBodyData($this->_file);
 
         $headers = $request->getHeaders();
         $headers->set('x-amz-acl', $this->_acl);
 
-        if($this->_storageClass !== IStorageClass::STANDARD) {
+        if ($this->_storageClass !== IStorageClass::STANDARD) {
             $headers->set('x-amz-storage-class', $this->_storageClass);
         }
 
-        if($this->_encryption !== IEncryption::NONE) {
+        if ($this->_encryption !== IEncryption::NONE) {
             $headers->set('x-amz-server-side-encryption', $this->_encryption);
         }
 
         $headers->set('Content-MD5', base64_encode($this->_file->getRawHash('md5')));
 
-        foreach($this->_attributes as $key => $value) {
+        foreach ($this->_attributes as $key => $value) {
             $headers->set('x-amz-meta-'.$key, $value);
         }
 
-        foreach($this->_headers as $key => $value) {
+        foreach ($this->_headers as $key => $value) {
             $headers->set($key, $value);
         }
 

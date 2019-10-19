@@ -56,7 +56,7 @@ class Trigger extends opal\rdbms\schema\constraint\Trigger
         $regex = '/(OLD|NEW)[`]?\.[`]?('.implode('|', $fields).')[`]?/i';
 
         foreach ($this->_statements as $statement) {
-            if (preg_match($regex, $this->_statement)) {
+            if (preg_match($regex, $statement)) {
                 return true;
             }
         }

@@ -9,8 +9,11 @@ use df;
 use df\core;
 use df\flex;
 
-class Reader implements IReader {
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Mode;
 
+class Reader implements IReader
+{
     const BUFFER_READ_SIZE = 1024;
     const BUFFER_THRESHOLD = 256;
 
@@ -28,49 +31,58 @@ class Reader implements IReader {
     protected $_buffer;
     protected $_rewindSeek = 0;
 
-    public static function openFile($path) {
+    public static function openFile($path)
+    {
         ini_set('auto_detect_line_endings', true);
-        return new self((new core\fs\File($path, core\fs\Mode::READ_ONLY))->setContentType('text/csv'));
+        return new self((new core\fs\File($path, Mode::READ_ONLY))->setContentType('text/csv'));
     }
 
-    public static function openString($string) {
-        return new self(new core\fs\MemoryFile($string, 'text/csv', core\fs\Mode::READ_ONLY));
+    public static function openString($string)
+    {
+        return new self(new core\fs\MemoryFile($string, 'text/csv', Mode::READ_ONLY));
     }
 
-    public function __construct(core\io\IChannel $channel) {
+    public function __construct(core\io\IChannel $channel)
+    {
         $this->_channel = $channel;
         $this->_channel->seek(0);
     }
 
-    public function getChannel() {
+    public function getChannel()
+    {
         return $this->_channel;
     }
 
-// Chars
-    public function setDelimiter($delimiter) {
+    // Chars
+    public function setDelimiter($delimiter)
+    {
         $this->_delimiter = (string)$delimiter;
         return $this;
     }
 
-    public function getDelimiter() {
+    public function getDelimiter()
+    {
         return $this->_delimiter;
     }
 
-    public function setEnclosure($enclosure) {
+    public function setEnclosure($enclosure)
+    {
         $this->_enclosure = (string)$enclosure;
         return $this;
     }
 
-    public function getEnclosure() {
+    public function getEnclosure()
+    {
         return $this->_enclosure;
     }
 
 
-// Fields
-    public function setFields(...$fields) {
+    // Fields
+    public function setFields(...$fields)
+    {
         $fields = core\collection\Util::flatten($fields, true, true);
 
-        if(empty($fields)) {
+        if (empty($fields)) {
             $fields = null;
         }
 
@@ -78,8 +90,9 @@ class Reader implements IReader {
         return $this;
     }
 
-    public function extractFields() {
-        if($this->_fields !== null) {
+    public function extractFields()
+    {
+        if ($this->_fields !== null) {
             throw new RuntimeException(
                 'Fields have already been set'
             );
@@ -94,52 +107,56 @@ class Reader implements IReader {
         return $this;
     }
 
-    public function getFields() {
+    public function getFields()
+    {
         return $this->_fields;
     }
 
-// Access
-    public function getRow() {
-        if($this->_currentRow === null) {
+    // Access
+    public function getRow()
+    {
+        if ($this->_currentRow === null) {
             $this->_readRow();
         }
 
         return $this->_currentRow;
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         $output = [];
 
-        foreach($this as $row) {
+        foreach ($this as $row) {
             $output[] = $row;
         }
 
         return $output;
     }
 
-    protected function _readRow() {
+    protected function _readRow()
+    {
         $this->_currentRow = [];
         $mode = self::MODE_START;
         $cell = '';
 
-        while(true) {
+        while (true) {
             $isEof = !$this->_fillBuffer();
             $char = $this->_extract();
 
-            if($char === null || $char === false || $char === '') {
+            if ($char === null || $char === false || $char === '') {
                 break;
             }
 
-            switch($mode) {
+            switch ($mode) {
                 case self::MODE_START:
                     $cellHasEnclosure = false;
 
-                    if($char == $this->_delimiter) {
+                    if ($char == $this->_delimiter) {
                         $this->_writeCell($cell);
-                    } else if($char == $this->_enclosure) {
+                    } elseif ($char == $this->_enclosure) {
                         $mode = self::MODE_ENCLOSURE;
-                    } else if($char == "\r" || $char == "\n") {
-                        if($char == "\r" && $this->_peek() == "\n") {
+                    } elseif ($char == "\r" || $char == "\n") {
+                        if ($char == "\r" && $this->_peek() == "\n") {
                             $this->_extract();
                         }
 
@@ -153,15 +170,15 @@ class Reader implements IReader {
                     break;
 
                 case self::MODE_CELL:
-                    if($char == $this->_delimiter) {
+                    if ($char == $this->_delimiter) {
                         $this->_writeCell($cell);
                         $mode = self::MODE_START;
-                    } else if($char == $this->_enclosure && trim($cell) == '') {
+                    } elseif ($char == $this->_enclosure && trim($cell) == '') {
                         $mode = self::MODE_ENCLOSURE;
-                    } else if($cellHasEnclosure && $char == ' ') {
+                    } elseif ($cellHasEnclosure && $char == ' ') {
                         break;
-                    } else if($char == "\r" || $char == "\n") {
-                        if($char == "\r" && $this->_peek() == "\n") {
+                    } elseif ($char == "\r" || $char == "\n") {
+                        if ($char == "\r" && $this->_peek() == "\n") {
                             $this->_extract();
                         }
 
@@ -176,8 +193,8 @@ class Reader implements IReader {
                 case self::MODE_ENCLOSURE:
                     $cellHasEnclosure = true;
 
-                    if($char == $this->_enclosure) {
-                        if($this->_peek() == $this->_enclosure) {
+                    if ($char == $this->_enclosure) {
+                        if ($this->_peek() == $this->_enclosure) {
                             $cell .= $this->_extract();
                         } else {
                             $mode = self::MODE_CELL;
@@ -190,11 +207,11 @@ class Reader implements IReader {
             }
         }
 
-        if(empty($this->_currentRow)) {
+        if (empty($this->_currentRow)) {
             $this->_currentRow = null;
-        } else if(!empty($this->_fields)) {
-            foreach($this->_fields as $field) {
-                if(!array_key_exists($field, $this->_currentRow)) {
+        } elseif (!empty($this->_fields)) {
+            foreach ($this->_fields as $field) {
+                if (!array_key_exists($field, $this->_currentRow)) {
                     $this->_currentRow[$field] = null;
                 }
             }
@@ -203,23 +220,26 @@ class Reader implements IReader {
         return $this->_currentRow;
     }
 
-    protected function _peek($length=1) {
+    protected function _peek($length=1)
+    {
         return substr($this->_buffer, 0, $length);
     }
 
-    protected function _extract($length=1) {
+    protected function _extract($length=1)
+    {
         $output = substr($this->_buffer, 0, $length);
         $this->_buffer = substr($this->_buffer, $length);
         return $output;
     }
 
-    protected function _fillBuffer() {
-        if(strlen($this->_buffer) > self::BUFFER_THRESHOLD) {
+    protected function _fillBuffer()
+    {
+        if (strlen($this->_buffer) > self::BUFFER_THRESHOLD) {
             return true;
         }
 
-        if($this->_channel->eof()) {
-            if(strlen($this->_buffer) && substr($this->_buffer, -1) != "\n") {
+        if ($this->_channel->eof()) {
+            if (strlen($this->_buffer) && substr($this->_buffer, -1) != "\n") {
                 $this->_buffer .= "\n";
             }
 
@@ -230,10 +250,11 @@ class Reader implements IReader {
         return $this->_buffer;
     }
 
-    protected function _writeCell(&$cell) {
+    protected function _writeCell(&$cell)
+    {
         $key = count($this->_currentRow);
 
-        if($this->_fields !== null && isset($this->_fields[$key])) {
+        if ($this->_fields !== null && isset($this->_fields[$key])) {
             $key = $this->_fields[$key];
         }
 
@@ -241,26 +262,31 @@ class Reader implements IReader {
         $cell = '';
     }
 
-// Iterator
-    public function rewind() {
+    // Iterator
+    public function rewind()
+    {
         $this->_channel->seek($this->_rewindSeek);
         $this->_rowCount = 0;
         return $this;
     }
 
-    public function current() {
+    public function current()
+    {
         return $this->getRow();
     }
 
-    public function key() {
+    public function key()
+    {
         return $this->_rowCount;
     }
 
-    public function next() {
+    public function next()
+    {
         return $this->_readRow();
     }
 
-    public function valid() {
+    public function valid()
+    {
         return !$this->_channel->eof() || strlen($this->_buffer) || $this->_currentRow !== null;
     }
 }

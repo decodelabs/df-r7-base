@@ -12,6 +12,9 @@ use df\arch;
 use df\link;
 use df\fuse;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
+
 class Uri implements arch\IDirectoryHelper
 {
     use arch\TDirectoryHelper;
@@ -409,7 +412,7 @@ class Uri implements arch\IDirectoryHelper
         return 'data:'.$type.';base64,'.base64_encode($data->getContents());
     }
 
-    public function fetch($url): core\fs\IFile
+    public function fetch($url): File
     {
         return $this->_getDataResponse($url)->getContentFileStream();
     }

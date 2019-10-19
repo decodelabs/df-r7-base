@@ -10,6 +10,9 @@ use df\core;
 use df\halo;
 use df\link;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
+
 trait TPeer
 {
     protected $_readChunkSize = 16384;
@@ -628,7 +631,7 @@ trait TPeer_FileStreamSession
     protected $_readFileStream;
     protected $_writeFileStream;
 
-    public function setReadFileStream(core\fs\IFile $file)
+    public function setReadFileStream(File $file)
     {
         $this->_readFileStream = $file;
         return $this;
@@ -644,7 +647,7 @@ trait TPeer_FileStreamSession
         return $this->_readFileStream !== null;
     }
 
-    public function setWriteFileStream(core\fs\IFile $file)
+    public function setWriteFileStream(File $file)
     {
         $this->_writeFileStream = $file;
         return $this;

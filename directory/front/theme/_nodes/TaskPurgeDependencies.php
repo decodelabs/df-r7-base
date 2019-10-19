@@ -12,13 +12,16 @@ use df\arch;
 use df\aura;
 use df\fuse;
 
-class TaskPurgeDependencies extends arch\node\Task {
+use DecodeLabs\Atlas;
 
-    public function execute() {
+class TaskPurgeDependencies extends arch\node\Task
+{
+    public function execute()
+    {
         $this->io->write('Purging theme dependencies...');
 
-        core\fs\Dir::delete(fuse\Manager::getAssetPath());
-        core\fs\Dir::delete(fuse\Manager::getManifestCachePath());
+        Atlas::$fs->deleteDir(fuse\Manager::getAssetPath());
+        Atlas::$fs->deleteDir(fuse\Manager::getManifestCachePath());
 
         $this->io->writeLine(' done');
     }

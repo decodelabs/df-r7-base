@@ -9,24 +9,31 @@ use df;
 use df\core;
 use df\link;
 
-class Client implements IClient {
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Mode;
+use DecodeLabs\Atlas\Dir;
+use DecodeLabs\Atlas\Channel;
 
+class Client implements IClient
+{
     const VERSION = '0.5';
 
     protected $_defaultOptions;
     protected $_defaultCookieJar;
     protected $_transport;
 
-    public function getTransport() {
-        if(!$this->_transport) {
+    public function getTransport()
+    {
+        if (!$this->_transport) {
             $this->_transport = $this->_getDefaultTransport();
         }
 
         return $this->_transport;
     }
 
-    protected function _getDefaultTransport() {
-        if(extension_loaded('curl')) {
+    protected function _getDefaultTransport()
+    {
+        if (extension_loaded('curl')) {
             return new link\http\transport\Curl();
         }
 
@@ -35,81 +42,97 @@ class Client implements IClient {
 
 
 
-    public function get($url, $callback=null) {
+    public function get($url, $callback=null)
+    {
         return $this->promise($url, $callback)->sync();
     }
 
-    public function promise($url, $callback=null) {
+    public function promise($url, $callback=null)
+    {
         return $this->promiseResponse(
             $this->newGetRequest($url, $callback)
         );
     }
 
-    public function getFile($url, $destination, $fileName=null, $callback=null) {
+    public function getFile($url, $destination, $fileName=null, $callback=null)
+    {
         return $this->promiseFile($url, $destination, $fileName, $callback)->sync();
     }
 
-    public function promiseFile($url, $destination, $fileName=null, $callback=null) {
+    public function promiseFile($url, $destination, $fileName=null, $callback=null)
+    {
         return $this->promiseResponse(
             $this->newGetFileRequest($url, $destination, $fileName, $callback)
         );
     }
 
-    public function post($url, $data, $callback=null) {
+    public function post($url, $data, $callback=null)
+    {
         return $this->promisePost($url, $data, $callback)->sync();
     }
 
-    public function promisePost($url, $data, $callback=null) {
+    public function promisePost($url, $data, $callback=null)
+    {
         return $this->promiseResponse(
             $this->newPostRequest($url, $data, $callback)
         );
     }
 
-    public function put($url, $data, $callback=null) {
+    public function put($url, $data, $callback=null)
+    {
         return $this->promisePut($url, $data, $callback)->sync();
     }
 
-    public function promisePut($url, $data, $callback=null) {
+    public function promisePut($url, $data, $callback=null)
+    {
         return $this->promiseResponse(
             $this->newPutRequest($url, $data, $callback)
         );
     }
 
-    public function delete($url, $callback=null) {
+    public function delete($url, $callback=null)
+    {
         return $this->promiseDelete($url, $callback)->sync();
     }
 
-    public function promiseDelete($url, $callback=null) {
+    public function promiseDelete($url, $callback=null)
+    {
         return $this->promiseResponse(
             $this->newDeleteRequest($url, $callback)
         );
     }
 
-    public function head($url, $callback=null) {
+    public function head($url, $callback=null)
+    {
         return $this->promiseHead($url, $callback)->sync();
     }
 
-    public function promiseHead($url, $callback=null) {
+    public function promiseHead($url, $callback=null)
+    {
         return $this->promiseResponse(
             $this->newHeadRequest($url, $callback)
         );
     }
 
-    public function options($url, $callback=null) {
+    public function options($url, $callback=null)
+    {
         return $this->promiseOptions($url, $callback)->sync();
     }
 
-    public function promiseOptions($url, $callback=null) {
+    public function promiseOptions($url, $callback=null)
+    {
         return $this->promiseResponse(
             $this->newOptionsRequest($url, $callback)
         );
     }
 
-    public function patch($url, $data, $callback=null) {
+    public function patch($url, $data, $callback=null)
+    {
         return $this->promisePatch($url, $data, $callback)->sync();
     }
 
-    public function promisePatch($url, $data, $callback=null) {
+    public function promisePatch($url, $data, $callback=null)
+    {
         return $this->promiseResponse(
             $this->newPatchRequest($url, $data, $callback)
         );
@@ -118,14 +141,15 @@ class Client implements IClient {
 
 
 
-    public function newRequest($url, $method='get', $callback=null, $body=null) {
+    public function newRequest($url, $method='get', $callback=null, $body=null)
+    {
         $request = link\http\request\Base::factory($url);
         $request->setMethod($method);
 
         core\lang\Callback::call($callback, $request, $this);
 
-        if($body !== null) {
-            if($method == 'post' && !is_scalar($body)) {
+        if ($body !== null) {
+            if ($method == 'post' && !is_scalar($body)) {
                 $request->getPostData()->import($body);
             } else {
                 $request->setBodyData($body);
@@ -135,14 +159,16 @@ class Client implements IClient {
         return $request;
     }
 
-    public function newGetRequest($url, $callback=null) {
+    public function newGetRequest($url, $callback=null)
+    {
         return $this->newRequest($url, 'get', $callback);
     }
 
-    public function newGetFileRequest($url, $destination, $fileName=null, $callback=null) {
+    public function newGetFileRequest($url, $destination, $fileName=null, $callback=null)
+    {
         return $this->newRequest($url, 'get', $callback)
-            ->withOptions(function($options) use($destination, $fileName) {
-                if($destination instanceof core\io\IWriter) {
+            ->withOptions(function ($options) use ($destination, $fileName) {
+                if ($destination instanceof Channel) {
                     $options->setDownloadStream($destination);
                 } else {
                     $options->setDownloadFolder($destination);
@@ -152,53 +178,63 @@ class Client implements IClient {
             });
     }
 
-    public function newPostRequest($url, $data, $callback=null) {
+    public function newPostRequest($url, $data, $callback=null)
+    {
         return $this->newRequest($url, 'post', $callback, $data);
     }
 
-    public function newPutRequest($url, $data, $callback=null) {
+    public function newPutRequest($url, $data, $callback=null)
+    {
         return $this->newRequest($url, 'put', $callback, $data);
     }
 
-    public function newDeleteRequest($url, $callback=null) {
+    public function newDeleteRequest($url, $callback=null)
+    {
         return $this->newRequest($url, 'delete', $callback);
     }
 
-    public function newHeadRequest($url, $callback=null) {
+    public function newHeadRequest($url, $callback=null)
+    {
         return $this->newRequest($url, 'head', $callback);
     }
 
-    public function newOptionsRequest($url, $callback=null) {
+    public function newOptionsRequest($url, $callback=null)
+    {
         return $this->newRequest($url, 'options', $callback);
     }
 
-    public function newPatchRequest($url, $data, $callback=null) {
+    public function newPatchRequest($url, $data, $callback=null)
+    {
         return $this->newRequest($url, 'patch', $callback, $data);
     }
 
 
 
-    public function newPool() {
+    public function newPool()
+    {
         return new link\http\request\Pool($this);
     }
 
 
 
-    public function sendRequest(IRequest $request) {
+    public function sendRequest(IRequest $request)
+    {
         return $this->promiseResponse($request)->sync();
     }
 
-    public function promiseResponse(IRequest $request) {
+    public function promiseResponse(IRequest $request)
+    {
         return $this->getTransport()->promiseResponse($request, $this);
     }
 
 
-    public function prepareRequest(IRequest $request) {
-        if(!$request->url->hasScheme()) {
+    public function prepareRequest(IRequest $request)
+    {
+        if (!$request->url->hasScheme()) {
             $request->url->setScheme('http');
         }
 
-        if($this->_defaultOptions) {
+        if ($this->_defaultOptions) {
             $options = $request->options;
             $request->options = clone $this->getDefaultOptions();
             $request->options->import($options);
@@ -206,15 +242,15 @@ class Client implements IClient {
 
         $request->options->sanitize();
 
-        if(!$request->headers->has('user-agent')) {
+        if (!$request->headers->has('user-agent')) {
             $request->headers->set('user-agent', $this->getDefaultUserAgent());
         }
 
-        if($request->method == 'post' && !$request->headers->has('content-type')) {
+        if ($request->method == 'post' && !$request->headers->has('content-type')) {
             $request->headers->set('content-type', 'application/x-www-form-urlencoded');
         }
 
-        if(!$request->options->cookieJar) {
+        if (!$request->options->cookieJar) {
             $request->options->cookieJar = $this->getDefaultCookieJar();
         }
 
@@ -224,7 +260,8 @@ class Client implements IClient {
         return $request;
     }
 
-    public function prepareResponse(IResponse $response, IRequest $request) {
+    public function prepareResponse(IResponse $response, IRequest $request)
+    {
         $response->cookies->sanitize($request);
         $request->options->cookieJar->import($response);
 
@@ -232,22 +269,22 @@ class Client implements IClient {
         $stream = $response->getContentFileStream();
         $isOk = $response->isOk();
 
-        if($isOk && $request->options->downloadStream) {
+        if ($isOk && $request->options->downloadStream) {
             $target = $request->options->downloadStream;
-        } else if($isOk && $request->options->downloadFolder) {
+        } elseif ($isOk && $request->options->downloadFolder) {
             $folder = $request->options->downloadFolder;
 
-            if($folder instanceof core\fs\IFolder) {
+            if ($folder instanceof Dir) {
                 $folder = $folder->getPath();
             }
 
             $path = rtrim($folder, '/').'/';
 
-            if($request->options->downloadFileName) {
+            if ($request->options->downloadFileName) {
                 $path .= $request->options->downloadFileName;
             } else {
-                if(!$fileName = $response->headers->getAttachmentFileName()) {
-                    if(!$fileName = $request->url->path->getFileName()) {
+                if (!$fileName = $response->headers->getAttachmentFileName()) {
+                    if (!$fileName = $request->url->path->getFileName()) {
                         $fileName = 'index';
                     }
                 }
@@ -255,25 +292,21 @@ class Client implements IClient {
                 $path .= $fileName;
             }
 
-            $target = core\fs\File::factory($path, core\fs\Mode::READ_WRITE_TRUNCATE);
-        } else if($isOk
-            && $stream instanceof core\fs\MemoryFile
-            && ($response->headers->get('content-length') > 1024 * 512
-             || $response->headers->get('transfer-encoding') == 'chunked')) {
-            $target = core\fs\File::createTemp();
+            $target = Atlas::$fs->file($path, Mode::READ_WRITE_TRUNCATE);
         }
 
-        if($target) {
+        if ($target) {
             $response->setContentFileStream($target);
         }
 
         return $response;
     }
 
-    public function getDefaultUserAgent() {
+    public function getDefaultUserAgent()
+    {
         $output = 'df-link/'.self::VERSION;
 
-        if(extension_loaded('curl')) {
+        if (extension_loaded('curl')) {
             $output .= ' curl/'.\curl_version()['version'];
         }
 
@@ -281,31 +314,36 @@ class Client implements IClient {
         return $output;
     }
 
-    public function setDefaultOptions(IRequestOptions $options=null) {
+    public function setDefaultOptions(IRequestOptions $options=null)
+    {
         $this->_defaultOptions = $options;
         return $this;
     }
 
-    public function getDefaultOptions() {
-        if(!$this->_defaultOptions) {
+    public function getDefaultOptions()
+    {
+        if (!$this->_defaultOptions) {
             $this->_defaultOptions = new link\http\request\Options();
         }
 
         return $this->_defaultOptions;
     }
 
-    public function hasDefaultOptions() {
+    public function hasDefaultOptions()
+    {
         return $this->_defaultOptions !== null;
     }
 
 
-    public function setDefaultCookieJar(ICookieJar $cookieJar=null) {
+    public function setDefaultCookieJar(ICookieJar $cookieJar=null)
+    {
         $this->_defaultCookieJar = $cookieJar;
         return $this;
     }
 
-    public function getDefaultCookieJar() {
-        if(!$this->_defaultCookieJar) {
+    public function getDefaultCookieJar()
+    {
+        if (!$this->_defaultCookieJar) {
             $this->_defaultCookieJar = new link\http\cookieJar\Memory();
         }
 
@@ -313,18 +351,19 @@ class Client implements IClient {
     }
 
 
-    public static function getDefaultCaBundlePath() {
+    public static function getDefaultCaBundlePath()
+    {
         static $cache = null;
 
-        if($cache) {
+        if ($cache) {
             return $cache;
         }
 
-        if($output = ini_get('openssl.cafile')) {
+        if ($output = ini_get('openssl.cafile')) {
             return $cache = $output;
         }
 
-        if($output = ini_get('curl.cainfo')) {
+        if ($output = ini_get('curl.cainfo')) {
             return $cache = $output;
         }
 
@@ -337,8 +376,8 @@ class Client implements IClient {
             'C:\\windows\\curl-ca-bundle.crt'
         ];
 
-        foreach($files as $file) {
-            if(file_exists($file)) {
+        foreach ($files as $file) {
+            if (file_exists($file)) {
                 return $cache = $file;
             }
         }

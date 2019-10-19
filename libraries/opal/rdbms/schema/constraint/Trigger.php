@@ -33,7 +33,7 @@ class Trigger implements opal\rdbms\schema\ITrigger, Inspectable
         $regex = '/(OLD|NEW)?\.('.implode('|', $fields).')/i';
 
         foreach ($this->_statements as $statement) {
-            if (preg_match($regex, $this->_statement)) {
+            if (preg_match($regex, $statement)) {
                 return true;
             }
         }

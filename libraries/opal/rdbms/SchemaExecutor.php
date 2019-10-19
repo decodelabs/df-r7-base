@@ -91,7 +91,7 @@ abstract class SchemaExecutor implements ISchemaExecutor
         // Foreign keys
         foreach ($schema->getForeignKeys() as $key) {
             if ($key->isVoid()) {
-                throw new opal\rdbms\schema\IInvalidForeignKey(
+                throw new opal\rdbms\ForeignKeyConflictException(
                     'Foreign key '.$key->getName().' is invalid'
                 );
             }

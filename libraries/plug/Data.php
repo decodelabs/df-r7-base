@@ -13,6 +13,9 @@ use df\opal;
 use df\flex;
 use df\mesh;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
+
 class Data implements core\ISharedHelper, opal\query\IEntryPoint
 {
     use core\TSharedHelper;
@@ -371,7 +374,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         return flex\Json::toString($data, $flags);
     }
 
-    public function toJsonFile($path, $data, int $flags=0): core\fs\IFile
+    public function toJsonFile($path, $data, int $flags=0): File
     {
         return flex\Json::toFile($path, $data, $flags);
     }

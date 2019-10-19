@@ -10,56 +10,60 @@ use df\core;
 use df\spur;
 use df\link;
 
-class Copy extends Upload implements ICopy {
-    
+class Copy extends Upload implements ICopy
+{
     protected $_fromBucket;
     protected $_fromPath;
 
-    public function __construct(IMediator $mediator, $fromBucket, $fromPath, $toBucket, $toPath) {
-        $this->_mediator = $mediator;
-        $this->setBucket($toBucket);
-        $this->setTargetFilePath($toPath);
+    public function __construct(IMediator $mediator, $fromBucket, $fromPath, $toBucket, $toPath)
+    {
+        parent::__construct($mediator, $toBucket, $toPath, null);
         $this->setFromBucket($fromBucket);
         $this->setFromFilePath($fromPath);
     }
 
-    public function setFromBucket($bucket) {
+    public function setFromBucket($bucket)
+    {
         $this->_fromBucket = $bucket;
         return $this;
     }
 
-    public function getFromBucket() {
+    public function getFromBucket()
+    {
         return $this->_fromBucket;
     }
 
-    public function setFromFilePath($path) {
+    public function setFromFilePath($path)
+    {
         $this->_fromPath = $path;
         return $this;
     }
 
-    public function getFromFilePath() {
+    public function getFromFilePath()
+    {
         return $this->_fromPath;
     }
 
-    public function send() {
+    public function send()
+    {
         $request = $this->_mediator->createRequest('put', ['path' => $this->_path, 'bucket' => $this->_bucket]);
 
         $headers = $request->getHeaders();
         $headers->set('x-amz-acl', $this->_acl);
 
-        if($this->_storageClass !== IStorageClass::STANDARD) {
+        if ($this->_storageClass !== IStorageClass::STANDARD) {
             $headers->set('x-amz-storage-class', $this->_storageClass);
         }
 
-        if($this->_encryption !== IEncryption::NONE) {
+        if ($this->_encryption !== IEncryption::NONE) {
             $headers->set('x-amz-server-side-encryption', $this->_encryption);
         }
 
-        foreach($this->_attributes as $key => $value) {
+        foreach ($this->_attributes as $key => $value) {
             $headers->set('x-amz-meta-'.$key, $value);
         }
 
-        foreach($this->_headers as $key => $value) {
+        foreach ($this->_headers as $key => $value) {
             $headers->set($key, $value);
         }
 

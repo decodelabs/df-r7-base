@@ -12,12 +12,13 @@ use df\arch;
 use df\halo;
 
 use DecodeLabs\Systemic;
+use DecodeLabs\Atlas;
 
 class TaskInstall extends arch\node\Task implements arch\node\IBuildTaskNode
 {
     public function execute()
     {
-        $file = new core\fs\File($this->app->path.'/composer.json');
+        $file = Atlas::$fs->file($this->app->path.'/composer.json');
 
         if (!$file->exists()) {
             $this->runChild('composer/init?no-update');

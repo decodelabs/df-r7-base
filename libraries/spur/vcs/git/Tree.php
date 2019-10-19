@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\spur;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -73,6 +74,7 @@ class Tree implements ITree, Inspectable
         if (!empty($result)) {
             foreach (explode("\n", $result) as $line) {
                 list($mode, $type, $id, $name) = explode(' ', str_replace("\t", ' ', $line), 4);
+                $object = null;
 
                 switch ($type) {
                     case 'blob':
@@ -82,6 +84,9 @@ class Tree implements ITree, Inspectable
                     case 'tree':
                         $object = new Tree($this->_repository, $id, $name);
                         break;
+
+                    default:
+                        throw Glitch::EUnexpectedValue('Unknown object type: '.$type);
                 }
 
                 $output[] = $object->_setMode($mode);

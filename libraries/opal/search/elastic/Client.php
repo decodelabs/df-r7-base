@@ -11,8 +11,8 @@ use df\opal;
 use df\link;
 use df\flex;
 
-class Client implements opal\search\IClient {
-
+class Client implements opal\search\IClient
+{
     use opal\search\TClient;
 
     const DEFAULT_HOST = 'localhost';
@@ -22,7 +22,8 @@ class Client implements opal\search\IClient {
     protected $_servers = [];
     protected $_status = null;
 
-    public static function factory($settings) {
+    public static function factory($settings)
+    {
         $settings = self::_normalizeSettings($settings);
 
         // TODO: cache output?
@@ -30,44 +31,49 @@ class Client implements opal\search\IClient {
         return new self($settings);
     }
 
-    protected function __construct(core\collection\ITree $settings) {
-        if(isset($settings->servers)) {
-            foreach($settings->servers as $server) {
+    protected function __construct(core\collection\ITree $settings)
+    {
+        if (isset($settings->servers)) {
+            foreach ($settings->servers as $server) {
                 $this->_servers[] = $this->_extractNodeSettings($server);
             }
         } else {
             $this->_servers[] = $this->_extractNodeSettings($settings);
         }
 
-        if(empty($this->_servers)) {
+        if (empty($this->_servers)) {
             throw new opal\search\RuntimeException(
                 'No valid elastic search servers have been specified'
             );
         }
     }
 
-    private function _extractNodeSettings(core\collection\ITree $node) {
+    private function _extractNodeSettings(core\collection\ITree $node)
+    {
         return [
             'host' => $node->get('host', static::DEFAULT_HOST),
             'port' => $node->get('port', static::DEFAULT_PORT)
         ];
     }
 
-    public function getIndex($name) {
+    public function getIndex($name)
+    {
         return new Index($this, $name);
     }
 
-    public function getIndexList() {
+    public function getIndexList()
+    {
         return $this->getStatus()->indices->getKeys();
     }
 
 
-// Request
-    public function sendRequest($uri, $data=null) {
+    // Request
+    public function sendRequest($uri, $data=null)
+    {
         $uri = core\uri\Url::factory($uri);
         $method = strtoupper($uri->getScheme());
 
-        switch($method) {
+        switch ($method) {
             case 'DELETE':
             case 'PUT':
             case 'POST':
@@ -97,12 +103,14 @@ class Client implements opal\search\IClient {
 
         try {
             $json = $response->getJsonContent();
-        } catch(\Throwable $e) {
+            $message = null;
+        } catch (\Throwable $e) {
+            $json = null;
             $message = $response->getContent();
         }
 
-        if(!$response->isOk()) {
-            if($message === null) {
+        if (!$response->isOk()) {
+            if ($message === null) {
                 $message = $json->get('error', $response->getHeaders()->getStatusMessage());
             }
 
@@ -112,7 +120,7 @@ class Client implements opal\search\IClient {
         }
 
 
-        if(isset($json->error)) {
+        if (isset($json->error)) {
             throw new opal\search\RuntimeException(
                 'Elastic response error: '.$json['error']
             );
@@ -121,22 +129,24 @@ class Client implements opal\search\IClient {
         return $json;
     }
 
-    public function sendBulkRequest(array $data) {
-        if(empty($data)) {
+    public function sendBulkRequest(array $data)
+    {
+        if (empty($data)) {
             return null;
         }
 
         $dataString = '';
 
-        foreach($data as $actionSet) {
+        foreach ($data as $actionSet) {
             $dataString .= flex\Json::toString($actionSet)."\n";
         }
 
         return $this->sendRequest('put://_bulk', $dataString);
     }
 
-    public function getStatus() {
-        if($this->_status === null) {
+    public function getStatus()
+    {
+        if ($this->_status === null) {
             $this->_status = $this->sendRequest('get://_status');
         }
 

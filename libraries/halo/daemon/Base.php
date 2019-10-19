@@ -10,6 +10,7 @@ use df\core;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
 
 abstract class Base implements IDaemon
@@ -139,7 +140,7 @@ abstract class Base implements IDaemon
         $this->process = Systemic::$process->getCurrent();
 
         $basePath = df\Launchpad::$app->getLocalDataPath().'/daemons/'.flex\Text::formatFileName($this->getName());
-        core\fs\Dir::create(dirname($basePath));
+        Atlas::$fs->createDir(dirname($basePath));
 
         $this->_startTime = time();
         $this->_statusPath = $basePath.'.status';
@@ -246,11 +247,11 @@ abstract class Base implements IDaemon
         $this->_teardown();
 
         if ($pidPath) {
-            core\fs\File::delete($pidPath);
+            Atlas::$fs->deleteFile($pidPath);
         }
 
         if (static::REPORT_STATUS) {
-            core\fs\File::delete($this->_statusPath);
+            Atlas::$fs->deleteFile($this->_statusPath);
         }
 
         if ($this->_isRestarting) {
@@ -318,7 +319,7 @@ abstract class Base implements IDaemon
             return;
         }
 
-        core\fs\Dir::create(dirname($this->_statusPath));
+        Atlas::$fs->createDir(dirname($this->_statusPath));
 
         $state = 'running';
 

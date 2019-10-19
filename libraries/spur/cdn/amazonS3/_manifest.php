@@ -11,25 +11,32 @@ use df\spur;
 use df\link;
 use df\flex;
 
-interface IStorageClass {
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
+
+interface IStorageClass
+{
     const STANDARD = 'STANDARD';
     const RRS = 'REDUCED_REDUNDANCY';
 }
 
-interface IAcl {
+interface IAcl
+{
     const PRIVATE_READ_WRITE = 'private';
     const PUBLIC_READ = 'public-read';
     const PUBLIC_READ_WRITE = 'public-read-write';
     const AUTHENTICATED_READ = 'authenticated-read';
 }
 
-interface IEncryption {
+interface IEncryption
+{
     const NONE = null;
     const AES256 = 'AES256';
 }
 
 
-interface IMediator extends spur\IHttpMediator {
+interface IMediator extends spur\IHttpMediator
+{
     public function setAccessKey($key);
     public function getAccessKey();
     public function setSecretKey($key);
@@ -43,7 +50,7 @@ interface IMediator extends spur\IHttpMediator {
     public function getBucketObjectList($bucket, $prefix=null, $limit=null, $marker=null);
 
     public function getObjectInfo($bucket, $path);
-    public function newUpload($bucket, $path, core\fs\IFile $file);
+    public function newUpload($bucket, $path, File $file);
     public function newCopy($fromBucket, $fromPath, $toBucket, $toPath);
     public function renameFile($bucket, $path, $newName, $acl=IAcl::PRIVATE_READ_WRITE);
     public function moveFile($bucket, $fromPath, $toPath, $acl=IAcl::PRIVATE_READ_WRITE);
@@ -53,13 +60,14 @@ interface IMediator extends spur\IHttpMediator {
     public function getBucketUrl($bucket, $path);
 }
 
-interface IUpload extends core\collection\IAttributeContainer {
+interface IUpload extends core\collection\IAttributeContainer
+{
     public function getMediator();
     public function setBucket($bucket);
     public function getBucket();
     public function setTargetFilePath($path);
     public function getTargetFilePath();
-    public function setFile(core\fs\IFile $file);
+    public function setFile(File $file);
     public function getFile();
 
     public function setAcl($acl);
@@ -77,7 +85,8 @@ interface IUpload extends core\collection\IAttributeContainer {
     public function send();
 }
 
-interface ICopy extends IUpload {
+interface ICopy extends IUpload
+{
     public function setFromBucket($bucket);
     public function getFromBucket();
     public function setFromFilePath($path);

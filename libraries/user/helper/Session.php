@@ -61,11 +61,11 @@ class Session extends Base implements user\session\IController
 
         switch ($runMode) {
             case 'Http':
-                $this->perpetuator = new user\session\perpetuator\Cookie($this);
+                $this->perpetuator = new user\session\perpetuator\Cookie();
                 break;
 
             default:
-                $this->perpetuator = new user\session\perpetuator\Shell($this);
+                $this->perpetuator = new user\session\perpetuator\Shell();
                 break;
         }
 

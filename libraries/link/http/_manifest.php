@@ -10,15 +10,28 @@ use df\core;
 use df\link;
 use df\arch;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
+use DecodeLabs\Atlas\Channel;
+
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class UnexpectedValueException extends \UnexpectedValueException implements IException
+{
+}
 
 
 // Interfaces
-interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core\uri\ISecureSchemeContainer, core\uri\IDomainPortContainer {
+interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core\uri\ISecureSchemeContainer, core\uri\IDomainPortContainer
+{
     public function getLocalString();
     public function getOrigin(): string;
 
@@ -28,7 +41,8 @@ interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core
 
 
 
-interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvider, core\lang\IChainable {
+interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvider, core\lang\IChainable
+{
     // Method
     public function setMethod($method);
     public function getMethod();
@@ -66,7 +80,7 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     public function setBodyData($data);
     public function getRawBodyData();
     public function getBodyDataString(): string;
-    public function getBodyDataFile(): core\fs\IFile;
+    public function getBodyDataFile(): File;
     public function hasBodyData();
 
     // Cookies
@@ -85,7 +99,8 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
 }
 
 
-interface IRequestOptions {
+interface IRequestOptions
+{
     public function import(IRequestOptions $options);
     public function sanitize();
 
@@ -100,7 +115,7 @@ interface IRequestOptions {
     public function getDownloadFileName();
     public function setDownloadFilePath($path);
     public function getDownloadFilePath();
-    public function setDownloadStream(core\io\IWriter $stream=null);
+    public function setDownloadStream(Channel $stream=null);
     public function getDownloadStream();
 
     // Redirects
@@ -147,12 +162,13 @@ interface IRequestOptions {
 }
 
 
-trait THeaderCollection {
-
+trait THeaderCollection
+{
     protected $_httpVersion = '1.1';
 
-    public function setHttpVersion($version) {
-        if(!preg_match('|^\d\.\d$|', $version)) {
+    public function setHttpVersion($version)
+    {
+        if (!preg_match('|^\d\.\d$|', $version)) {
             throw new link\http\UnexpectedValueException(
                 $version.' is not a valid http version'
             );
@@ -162,12 +178,14 @@ trait THeaderCollection {
         return $this;
     }
 
-    public function getHttpVersion() {
+    public function getHttpVersion()
+    {
         return $this->_httpVersion;
     }
 }
 
-interface IRequestHeaderCollection {
+interface IRequestHeaderCollection
+{
     public function setHttpVersion($version);
     public function getHttpVersion();
 
@@ -179,7 +197,8 @@ interface IRequestHeaderCollection {
 
 
 
-interface IResponse extends core\collection\IHeaderMapProvider, core\lang\IChainable {
+interface IResponse extends core\collection\IHeaderMapProvider, core\lang\IChainable
+{
     // Headers
     public function withHeaders($callback);
     public function getCookies();
@@ -213,23 +232,27 @@ interface IResponse extends core\collection\IHeaderMapProvider, core\lang\IChain
     public function getResponseString();
 }
 
-interface IStreamResponse extends IResponse {
+interface IStreamResponse extends IResponse
+{
     public function setLastModified(core\time\IDate $date);
     public function getContentFileStream();
 }
 
-interface IAdaptiveStreamResponse extends IStreamResponse {
-    public function setContentFileStream(core\io\IChannel $content);
-    public function transferContentFileStream(core\io\IChannel $content);
+interface IAdaptiveStreamResponse extends IStreamResponse
+{
+    public function setContentFileStream(Channel $content);
+    public function transferContentFileStream(Channel $content);
 }
 
-interface IFileResponse extends IResponse {
+interface IFileResponse extends IResponse
+{
     public function setFile($file, $checkPath=true);
     public function isStaticFile();
     public function getStaticFilePath();
 }
 
-interface IRedirectResponse extends IResponse {
+interface IRedirectResponse extends IResponse
+{
     public function setUrl($url);
     public function getUrl();
     public function isPermanent(bool $flag=null);
@@ -237,41 +260,48 @@ interface IRedirectResponse extends IResponse {
     public function isAlternativeContent(bool $flag=null);
 }
 
-interface IGeneratorResponse extends IResponse, core\io\IChunkReceiver {
+interface IGeneratorResponse extends IResponse, core\io\IChunkReceiver
+{
     public function generate(core\io\IChannel $channel);
     public function writeBrowserKeepAlive();
     public function getChannel();
 }
 
 
-trait TStringResponse {
-
+trait TStringResponse
+{
     protected $_headers;
     protected $_cookies;
 
-    public function isOk() {
+    public function isOk()
+    {
         return true;
     }
 
-    public function isRedirect() {
+    public function isRedirect()
+    {
         return false;
     }
 
-    public function isForbidden()  {
+    public function isForbidden()
+    {
         return false;
     }
 
-    public function isMissing()  {
+    public function isMissing()
+    {
         return false;
     }
 
-    public function isError()  {
+    public function isError()
+    {
         return false;
     }
 
 
-    public function getHeaders() {
-        if(!$this->_headers) {
+    public function getHeaders()
+    {
+        if (!$this->_headers) {
             $this->_headers = new link\http\response\HeaderCollection();
             $this->_headers->setCacheAccess('no-cache')
                 ->canStoreCache(false)
@@ -281,13 +311,15 @@ trait TStringResponse {
         return $this->_headers;
     }
 
-    public function setHeaders(core\collection\IHeaderMap $headers) {
+    public function setHeaders(core\collection\IHeaderMap $headers)
+    {
         $this->_headers = $headers;
         return $this;
     }
 
-    public function prepareHeaders() {
-        if($this->hasCookies()) {
+    public function prepareHeaders()
+    {
+        if ($this->hasCookies()) {
             $this->_cookies->applyTo($this->getHeaders());
         }
 
@@ -295,38 +327,43 @@ trait TStringResponse {
         return $this;
     }
 
-    public function hasHeaders() {
+    public function hasHeaders()
+    {
         return $this->_headers && !$this->_headers->isEmpty();
     }
 
-    public function withHeaders($callback) {
+    public function withHeaders($callback)
+    {
         core\lang\Callback::call($callback, $this->headers, $this);
         return $this;
     }
 
-    public function getCookies() {
-        if(!$this->_cookies) {
+    public function getCookies()
+    {
+        if (!$this->_cookies) {
             $this->_cookies = new CookieCollection();
         }
 
         return $this->_cookies;
     }
 
-    public function hasCookies() {
+    public function hasCookies()
+    {
         return $this->_cookies && !$this->_cookies->isEmpty();
     }
 
-    public function getEncodedContent() {
+    public function getEncodedContent()
+    {
         $content = $this->getContent();
 
-        if(!$this->_headers || empty($content)) {
+        if (!$this->_headers || empty($content)) {
             return $content;
         }
 
         $contentEncoding = $this->_headers->get('content-encoding');
         $transferEncoding = $this->_headers->get('transfer-encoding');
 
-        if(!$contentEncoding && !$transferEncoding) {
+        if (!$contentEncoding && !$transferEncoding) {
             return $content;
         }
 
@@ -335,70 +372,82 @@ trait TStringResponse {
         );
     }
 
-    public function getContentFileStream() {
-        return new core\fs\MemoryFile($this->getContent(), $this->getContentType());
+    public function getContentFileStream()
+    {
+        return Atlas::$fs->createTempFile($this->getContent());
     }
 
-    public function getContentLength() {
+    public function getContentLength()
+    {
         return strlen($this->getContent());
     }
 
-    public function setLastModified(core\time\IDate $date) {
+    public function setLastModified(core\time\IDate $date)
+    {
         $this->getHeaders()->set('last-modified', $date);
         return $this;
     }
 
-    public function getLastModified() {
-        if($this->_headers && $this->_headers->has('last-modified')) {
+    public function getLastModified()
+    {
+        if ($this->_headers && $this->_headers->has('last-modified')) {
             return core\time\Date::factory($this->_headers->get('last-modified'));
         }
 
         return new core\time\Date();
     }
 
-    public function getHeaderString(array $skipKeys=null) {
+    public function getHeaderString(array $skipKeys=null)
+    {
         $this->prepareHeaders();
         return link\http\response\Base::buildHeaderString($this->_headers);
     }
 
-    public function getResponseString() {
+    public function getResponseString()
+    {
         $output = $this->getHeaderString()."\r\n\r\n";
         $output .= $this->getEncodedContent()."\r\n";
 
         return $output;
     }
 
-    public function setFileName($fileName, $isAttachment=null) {
+    public function setFileName($fileName, $isAttachment=null)
+    {
         $this->getHeaders()->setFileName($fileName, $isAttachment);
         return $this;
     }
 
-    public function getFileName() {
+    public function getFileName()
+    {
         return $this->getHeaders()->getFileName();
     }
 
-    public function isAttachment(bool $flag=null) {
+    public function isAttachment(bool $flag=null)
+    {
         $output = $this->getHeaders()->isAttachment($flag);
 
-        if($flag !== null) {
+        if ($flag !== null) {
             return $this;
         }
 
         return $output;
     }
 
-    public function setAttachmentFileName($fileName) {
+    public function setAttachmentFileName($fileName)
+    {
         $this->getHeaders()->setAttachmentFileName($fileName);
         return $this;
     }
 
-    public function getAttachmentFileName() {
+    public function getAttachmentFileName()
+    {
         return $this->getHeaders()->getAttachmentFileName();
     }
 }
 
 
-interface IResponseAugmentor {
+interface IResponseAugmentor
+{
     public function resetAll();
     public function resetCurrent();
     public function apply(IResponse $response);
@@ -429,14 +478,16 @@ interface IResponseAugmentor {
     public function getCookieCollectionForAnyRequest();
 }
 
-interface IResponseAugmentorProvider {
+interface IResponseAugmentorProvider
+{
     public function getResponseAugmentor();
 }
 
 
 
 // Headers
-interface IResponseHeaderCollection {
+interface IResponseHeaderCollection
+{
     // Version
     public function setHttpVersion($version);
     public function getHttpVersion();
@@ -476,7 +527,8 @@ interface IResponseHeaderCollection {
 }
 
 
-interface ICacheControl extends core\IStringProvider {
+interface ICacheControl extends core\IStringProvider
+{
     public function setAccess($access);
     public function getAccess();
     public function canStore(bool $flag=null);
@@ -493,7 +545,8 @@ interface ICacheControl extends core\IStringProvider {
 
 
 // Cookies
-interface ICookie extends core\IStringProvider {
+interface ICookie extends core\IStringProvider
+{
     public function setName($name);
     public function getName(): string;
     public function matchesName($name);
@@ -515,13 +568,15 @@ interface ICookie extends core\IStringProvider {
     public function toInvalidateString();
 }
 
-interface ICookieCollection extends core\IStringProvider {
+interface ICookieCollection extends core\IStringProvider
+{
     public function applyTo(IResponseHeaderCollection $headers);
     public function sanitize(IRequest $request);
     public function getRemoved();
 }
 
-interface ICookieJar {
+interface ICookieJar
+{
     public function applyTo(IRequest $request);
     public function import(IResponse $response);
     public function set(ICookie $cookie);
@@ -531,8 +586,8 @@ interface ICookieJar {
 
 
 // Upload
-interface IUploadHandler extends core\io\IAcceptTypeProcessor, \Countable, \IteratorAggregate, \ArrayAccess {
-
+interface IUploadHandler extends core\io\IAcceptTypeProcessor, \Countable, \IteratorAggregate, \ArrayAccess
+{
     public function setAllowedExtensions(array $extensions);
     public function addAllowedExtensions(array $extensions);
     public function getAllowedExtensions();
@@ -547,8 +602,8 @@ interface IUploadHandler extends core\io\IAcceptTypeProcessor, \Countable, \Iter
     public function tempUploadAll(core\collection\IInputTree $inputCollection);
 }
 
-interface IUploadFile {
-
+interface IUploadFile
+{
     const RENAME = 'rename';
     const OVERWRITE = 'overwrite';
     const HALT = 'halt';
@@ -579,7 +634,8 @@ interface IUploadFile {
 
 
 // Client
-interface IRequestHandler {
+interface IRequestHandler
+{
     public function getTransport();
 
     public function get($url, $callback=null);
@@ -605,7 +661,8 @@ interface IRequestHandler {
 }
 
 
-interface IClient extends IRequestHandler {
+interface IClient extends IRequestHandler
+{
     public function newPool();
 
     public function promise($url, $callback=null);
@@ -633,7 +690,8 @@ interface IClient extends IRequestHandler {
     public static function getDefaultCaBundlePath();
 }
 
-interface IRequestPool extends IRequestHandler {
+interface IRequestPool extends IRequestHandler
+{
     public function getClient();
 
     public function setBatchSize($size);
@@ -644,11 +702,13 @@ interface IRequestPool extends IRequestHandler {
     public function cancel();
 }
 
-interface ITransport {
+interface ITransport
+{
     public function promiseResponse(IRequest $request, IClient $client);
 }
 
-interface IAsyncTransport {
+interface IAsyncTransport
+{
     public function addBatchRequest(IRequest $request, IClient $client, core\lang\IPromise $promise);
     public function syncBatch(IClient $client);
 }

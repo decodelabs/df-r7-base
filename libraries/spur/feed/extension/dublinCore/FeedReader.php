@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\spur;
 
-class FeedReader implements spur\feed\IFeedReaderPlugin {
-
+class FeedReader implements spur\feed\IFeedReaderPlugin
+{
     use spur\feed\TFeedReader;
 
     const XPATH_NAMESPACES = [
@@ -18,12 +18,13 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         'dc11' => 'http://purl.org/dc/elements/1.1/'
     ];
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         $id = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/dc11:identifier)'
         );
 
-        if(!$id) {
+        if (!$id) {
             $id = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/dc10:identifier)'
             );
@@ -32,30 +33,31 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $id;
     }
 
-    public function getAuthors() {
+    public function getAuthors()
+    {
         $list = $this->_xPath->query('//dc11:creator');
 
-        if(!$list->length) {
+        if (!$list->length) {
             $list = $this->_xPath->query('//dc10:creator');
         }
 
-        if(!$list->length) {
+        if (!$list->length) {
             $list = $this->_xPath->query('//dc11:publisher');
         }
 
-        if(!$list->length) {
+        if (!$list->length) {
             $list = $this->_xPath->query('//dc10:publisher');
         }
 
         $authors = [];
 
-        if($list->length) {
-            foreach($list as $authorNode) {
+        if ($list->length) {
+            foreach ($list as $authorNode) {
                 $author = new spur\feed\Author(
                     $authorNode->nodeValue
                 );
 
-                if($author->isValid()) {
+                if ($author->isValid()) {
                     $authors[] = $author;
                 }
             }
@@ -64,12 +66,13 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $authors;
     }
 
-    public function getTitle(): ?string {
+    public function getTitle(): ?string
+    {
         $title = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/dc11:title)'
         );
 
-        if(!$title) {
+        if (!$title) {
             $title = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/dc10:title)'
             );
@@ -78,12 +81,13 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $title;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         $description = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/dc11:description)'
         );
 
-        if(!$description) {
+        if (!$description) {
             $description = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/dc10:description)'
             );
@@ -94,12 +98,13 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
 
 
 
-    public function getCategories() {
+    public function getCategories()
+    {
         $list = $this->_xPath->query(
             $this->_xPathPrefix.'/dc11:subject'
         );
 
-        if(!$list->length) {
+        if (!$list->length) {
             $list = $this->_xPath->query(
                 $this->_xPathPrefix.'/dc10:subject'
             );
@@ -107,8 +112,8 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
 
         $categories = [];
 
-        if($list->length) {
-            foreach($list as $category) {
+        if ($list->length) {
+            foreach ($list as $category) {
                 $categories[] = new spur\feed\Category(
                     $category->nodeValue,
                     $category->getAttribute('domain'),
@@ -121,12 +126,13 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
     }
 
 
-    public function getLanguage() {
+    public function getLanguage()
+    {
         $language = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/dc11:language)'
         );
 
-        if(!$langauge) {
+        if (!$language) {
             $language = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/dc10:language)'
             );
@@ -135,12 +141,13 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $language;
     }
 
-    public function getCopyright() {
+    public function getCopyright()
+    {
         $copyright = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/dc11:rights)'
         );
 
-        if(!$copyright) {
+        if (!$copyright) {
             $copright = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/dc10:rights)'
             );
@@ -149,20 +156,21 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
         return $copyright;
     }
 
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         $date = null;
 
         $created = $this->_xPath->evaluate(
             'string('.$this->_xPathPrefix.'/dc11:date)'
         );
 
-        if(!$created) {
+        if (!$created) {
             $created = $this->_xPath->evaluate(
                 'string('.$this->_xPathPrefix.'/dc10:date)'
             );
         }
 
-        if($created) {
+        if ($created) {
             $date = core\time\Date::factory($created);
         }
 

@@ -867,6 +867,7 @@ abstract class QueryExecutor implements IQueryExecutor
          * denotes a field in the initial SELECT statement.
          */
         $defineAlias = true;
+        $output = null;
 
         if ($alias === false) {
             $defineAlias = false;
@@ -1032,7 +1033,7 @@ abstract class QueryExecutor implements IQueryExecutor
     // Clauses
     public function writeJoinClauseSection()
     {
-        if (!$this->_query instanceof opal\query\IJoinClauseQuery || !$this->_query->hasJoinClauses()) {
+        if (!$this->_query instanceof opal\query\IJoinClauseFactory || !$this->_query->hasJoinClauses()) {
             return $this;
         }
 
@@ -1718,6 +1719,8 @@ abstract class QueryExecutor implements IQueryExecutor
 
         if ($checkSourceAlias) {
             $sourceAlias = $this->_query->getSource()->getAlias();
+        } else {
+            $sourceAlias = null;
         }
 
         $orderFields = [];

@@ -9,14 +9,24 @@ use df;
 use df\core;
 use df\flow;
 
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
+
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
 
 
 // Interfaces
-interface IAddress extends core\IStringProvider {
+interface IAddress extends core\IStringProvider
+{
     public function setAddress($address);
     public function getAddress();
     public function getDomain();
@@ -25,13 +35,15 @@ interface IAddress extends core\IStringProvider {
     public function isValid(): bool;
 }
 
-interface IAddressList extends core\collection\IMappedCollection, core\IStringProvider {
+interface IAddressList extends core\collection\IMappedCollection, core\IStringProvider
+{
     public function toNameMap();
     public function add($address, $name=null);
 }
 
 
-interface IJournalableMessage {
+interface IJournalableMessage
+{
     public function setJournalName(string $name=null);
     public function getJournalName();
     public function setJournalDuration(core\time\IDuration $duration=null);
@@ -45,7 +57,8 @@ interface IJournalableMessage {
 
 
 
-interface IMessage extends IJournalableMessage {
+interface IMessage extends IJournalableMessage
+{
     public function setSubject(string $subject);
     public function getSubject(): string;
 
@@ -116,8 +129,7 @@ interface IMessage extends IJournalableMessage {
     public function setBodyText(string $body=null);
     public function getBodyText();
 
-    public function attach(core\fs\IFile $file, string $contentId=null): IAttachment;
-    public function attachString($string, string $contentType=null, string $contentId=null);
+    public function attach(File $file, string $contentId=null): IAttachment;
     public function addAttachment(IAttachment $attachment);
     public function getAttachments(): array;
     public function getAttachment(string $id);
@@ -130,9 +142,10 @@ interface IMessage extends IJournalableMessage {
     public function forceSend();
 }
 
-interface IAttachment {
-    public function setFile(core\fs\IFile $file);
-    public function getFile(): core\fs\IFile;
+interface IAttachment
+{
+    public function setFile(File $file);
+    public function getFile(): File;
 
     public function setFileName(string $fileName=null);
     public function getFileName();
@@ -142,7 +155,8 @@ interface IAttachment {
 }
 
 
-interface ITransport {
+interface ITransport
+{
     public static function getName(): string;
     public static function getDescription();
 
@@ -151,12 +165,14 @@ interface ITransport {
 
 
 
-interface IMailModel {
+interface IMailModel
+{
     public function captureMail(flow\mime\IMultiPart $message);
     public function journalMail(IJournalableMessage $message);
 }
 
-interface IMailRecord {
+interface IMailRecord
+{
     public function getId(): ?string;
     public function getFromAddress();
     public function getToAddresses();

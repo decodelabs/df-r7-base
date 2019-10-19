@@ -10,8 +10,12 @@ use df\core;
 use df\opal;
 use df\link;
 
-class Reader implements IReader {
-    
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\Mode;
+use DecodeLabs\Atlas\File;
+
+class Reader implements IReader
+{
     const DATA_SECTION_SEPARATOR_SIZE = 16;
     const METADATA_START_MARKER = "\xAB\xCD\xEFMaxMind.com";
 
@@ -21,10 +25,11 @@ class Reader implements IReader {
     protected $_decoder;
     protected $_ipv4Start = 0;
 
-    public function __construct($file) {
-        if(is_string($file)) {
-            $file = new core\fs\File($file, core\fs\Mode::READ_ONLY);
-        } else if(!$file instanceof core\fs\IFile) {
+    public function __construct($file)
+    {
+        if (is_string($file)) {
+            $file = Atlas::$fs->file($file, Mode::READ_ONLY);
+        } elseif (!$file instanceof File) {
             throw new InvalidArgumentException(
                 'MMDB file could not be found'
             );
@@ -45,18 +50,19 @@ class Reader implements IReader {
         );
     }
 
-    private function _findMetadataStart() {
+    private function _findMetadataStart()
+    {
         $marker = self::METADATA_START_MARKER;
         $markerLength = strlen($marker);
         $read = '';
 
-        for($i = 0; $i < $this->_fileSize - $markerLength + 1; $i++) {
-            for($j = 0; $j < $markerLength; $j++) {
-                $this->_file->seek($this->_fileSize - $i - $j - 1);
+        for ($i = 0; $i < $this->_fileSize - $markerLength + 1; $i++) {
+            for ($j = 0; $j < $markerLength; $j++) {
+                $this->_file->setPosition($this->_fileSize - $i - $j - 1);
                 $matchBit = $this->_file->readChar();
                 $read = $matchBit.$read;
 
-                if($matchBit != $marker{$markerLength - $j - 1}) {
+                if ($matchBit != $marker{$markerLength - $j - 1}) {
                     continue 2;
                 }
             }
@@ -70,10 +76,11 @@ class Reader implements IReader {
     }
 
 
-    public function get($ip) {
+    public function get($ip)
+    {
         $ip = link\Ip::factory($ip);
 
-        if($this->_metaData['ip_version'] == 4 && !$ip->isV4()) {
+        if ($this->_metaData['ip_version'] == 4 && !$ip->isV4()) {
             throw new InvalidArgumentException(
                 'Attempting to lookup IPv6 address in IPv4-only database'
             );
@@ -81,21 +88,22 @@ class Reader implements IReader {
 
         $pointer = $this->_findAddressInTree($ip);
 
-        if($pointer === 0) {
+        if ($pointer === 0) {
             return null;
         }
 
         return $this->_resolveDataPointer($pointer);
     }
 
-    protected function _findAddressInTree(link\IIp $ip) {
+    protected function _findAddressInTree(link\IIp $ip)
+    {
         $rawAddress = array_merge(unpack('C*', inet_pton($ip->toString())));
         $bitCount = count($rawAddress) * 8;
 
         $node = $this->_startNode($bitCount);
 
-        for($i = 0; $i < $bitCount; $i++) {
-            if($node >= $this->_metaData['node_count']) {
+        for ($i = 0; $i < $bitCount; $i++) {
+            if ($node >= $this->_metaData['node_count']) {
                 break;
             }
 
@@ -104,9 +112,9 @@ class Reader implements IReader {
             $node = $this->_readNode($node, $bit);
         }
 
-        if($node == $this->_metaData['node_count']) {
+        if ($node == $this->_metaData['node_count']) {
             return 0;
-        } else if($node > $this->_metaData['node_count']) {
+        } elseif ($node > $this->_metaData['node_count']) {
             return $node;
         }
 
@@ -115,15 +123,16 @@ class Reader implements IReader {
         );
     }
 
-    protected function _startNode($length) {
-        if($this->_metaData['ip_version'] == 6 && $length == 32) {
-            if($this->_ipv4Start != 0) {
+    protected function _startNode($length)
+    {
+        if ($this->_metaData['ip_version'] == 6 && $length == 32) {
+            if ($this->_ipv4Start != 0) {
                 return $this->_ipv4Start;
             }
 
             $node = 0;
 
-            for($i = 0; $i < 96 && $node < $this->_metaData['node_count']; $i++) {
+            for ($i = 0; $i < 96 && $node < $this->_metaData['node_count']; $i++) {
                 $node = $this->_readNode($node, 0);
             }
 
@@ -134,10 +143,11 @@ class Reader implements IReader {
         return 0;
     }
 
-    protected function _readNode($nodeNumber, $index) {
+    protected function _readNode($nodeNumber, $index)
+    {
         $baseOffset = $nodeNumber * $this->_metaData['node_byte_size'];
 
-        switch($this->_metaData['record_size']) {
+        switch ($this->_metaData['record_size']) {
             case 24:
                 $bytes = $this->_file->readFrom($baseOffset + $index * 3, 3);
                 list(, $node) = unpack('N', "\x00".$bytes);
@@ -147,7 +157,7 @@ class Reader implements IReader {
                 $middleByte = $this->_file->readFrom($baseOffset + 3, 1);
                 list(, $middle) = unpack('C', $middleByte);
 
-                if($index == 0) {
+                if ($index == 0) {
                     $middle = (0xF0 & $middle) >> 4;
                 } else {
                     $middle = 0x0F & $middle;
@@ -169,10 +179,11 @@ class Reader implements IReader {
         }
     }
 
-    protected function _resolveDataPointer($pointer) {
+    protected function _resolveDataPointer($pointer)
+    {
         $resolved = $pointer - $this->_metaData['node_count'] + $this->_metaData['search_tree_size'];
 
-        if($resolved > $this->_fileSize) {
+        if ($resolved > $this->_fileSize) {
             throw new UnexpectedValueException(
                 'MMDB file search tree is corrupt'
             );

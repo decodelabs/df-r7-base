@@ -10,6 +10,8 @@ use df\core;
 use df\link;
 use df\flex;
 
+use DecodeLabs\Atlas;
+
 abstract class Base implements link\http\IResponse
 {
     use core\lang\TChainable;
@@ -332,7 +334,7 @@ abstract class Base implements link\http\IResponse
 
     public function getContentFileStream()
     {
-        return new core\fs\MemoryFile($this->getContent(), $this->getContentType());
+        return Atlas::$fs->createTempFile($this->getContent());
     }
 
     public function onDispatchComplete()

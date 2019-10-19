@@ -9,26 +9,31 @@ use df;
 use df\core;
 use df\neon;
 
-class Ico implements IIcoGenerator {
+use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\File;
 
+class Ico implements IIcoGenerator
+{
     protected $_images = [];
 
-    public function __construct($file=null, int ...$sizes) {
-        if($file !== null) {
+    public function __construct($file=null, int ...$sizes)
+    {
+        if ($file !== null) {
             $this->addImage($file, ...$sizes);
         }
     }
 
-    public function addImage($file, int ...$sizes) {
-        $file = core\fs\File::factory($file);
+    public function addImage($file, int ...$sizes)
+    {
+        $file = Atlas::$fs->file($file);
 
-        if(!$file->exists()) {
+        if (!$file->exists()) {
             throw core\Error::ENotFound(
                 'Source file '.$file->getPath().' does not exist'
             );
         }
 
-        if(!getImageSize($file->getPath())) {
+        if (!getImageSize($file->getPath())) {
             throw core\Error::{'EValue,EUnreadable'}(
                 'Unable to read image data from '.$file->getPath()
             );
@@ -38,17 +43,17 @@ class Ico implements IIcoGenerator {
         $sourceWidth = imagesx($image);
         $sourceHeight = imagesy($image);
 
-        if(empty($sizes)) {
+        if (empty($sizes)) {
             $sizes = [max($sourceWidth, $sourceHeight)];
         }
 
-        foreach($sizes as $size) {
+        foreach ($sizes as $size) {
             $newImage = imageCreateTrueColor($size, $size);
             imageColorTransparent($newImage, imageColorAllocateAlpha($newImage, 0, 0, 0, 127));
             imageAlphaBlending($newImage, false);
             imageSaveAlpha($newImage, true);
 
-            if(false === imageCopyResampled($newImage, $image, 0, 0, 0, 0, $size, $size, $sourceWidth, $sourceHeight)) {
+            if (false === imageCopyResampled($newImage, $image, 0, 0, 0, 0, $size, $size, $sourceWidth, $sourceHeight)) {
                 continue;
             }
 
@@ -58,12 +63,14 @@ class Ico implements IIcoGenerator {
         return $this;
     }
 
-    public function save($file): core\fs\IFile {
-        return core\fs\File::create($file, $this->generate());
+    public function save($file): File
+    {
+        return Atlas::$fs->createFile($file, $this->generate());
     }
 
-    public function generate(): string {
-        if(empty($this->_images)) {
+    public function generate(): string
+    {
+        if (empty($this->_images)) {
             throw core\Error::ERuntime(
                 'No images have been added to ICO generator'
             );
@@ -74,7 +81,7 @@ class Ico implements IIcoGenerator {
         $dirEntrySize = 16;
         $offset = 6 + ($dirEntrySize * count($this->_images));
 
-        foreach($this->_images as $image) {
+        foreach ($this->_images as $image) {
             $data .= $image->packData($offset);
             $pixels .= $image->data;
             $offset += $image->size;
@@ -85,8 +92,8 @@ class Ico implements IIcoGenerator {
 }
 
 
-class Ico_Image {
-
+class Ico_Image
+{
     public $width;
     public $height;
     public $colors = 0;
@@ -94,7 +101,8 @@ class Ico_Image {
     public $size = 0;
     public $data;
 
-    public function __construct($image) {
+    public function __construct($image)
+    {
         $this->width = imagesx($image);
         $this->height = imagesy($image);
 
@@ -102,8 +110,8 @@ class Ico_Image {
         $opacityData = [];
         $currentOpacity = 0;
 
-        for($y = $this->height - 1; $y >= 0; $y--) {
-            for($x = 0; $x < $this->width; $x++) {
+        for ($y = $this->height - 1; $y >= 0; $y--) {
+            for ($x = 0; $x < $this->width; $x++) {
                 $color = imageColorAt($image, $x, $y);
 
                 $alpha = ($color & 0x7F000000) >> 24;
@@ -117,14 +125,14 @@ class Ico_Image {
                 $opacity = ($alpha <= 127) ? 1 : 0;
                 $currentOpacity = ($currentOpacity << 1) | $opacity;
 
-                if((($x + 1) % 32) == 0) {
+                if ((($x + 1) % 32) == 0) {
                     $opacityData[] = $currentOpacity;
                     $currentOpacity = 0;
                 }
             }
 
-            if(($x % 32) > 0) {
-                while(($x++ % 32) > 0) {
+            if (($x % 32) > 0) {
+                while (($x++ % 32) > 0) {
                     $currentOpacity = $currentOpacity << 1;
                 }
 
@@ -139,18 +147,19 @@ class Ico_Image {
 
         $this->data = pack('VVVvvVVVVVV', 40, $this->width, ($this->height * 2), 1, 32, 0, 0, 0, 0, 0, 0);
 
-        foreach($pixels as $color) {
+        foreach ($pixels as $color) {
             $this->data .= pack('V', $color);
         }
 
-        foreach($opacityData as $opacity) {
+        foreach ($opacityData as $opacity) {
             $this->data .= pack('N', $opacity);
         }
 
         $this->size = $headerSize + $colorMaskSize + $opacityMaskSize;
     }
 
-    public function packData($offset) {
+    public function packData($offset)
+    {
         return pack('CCCCvvVV', $this->width, $this->height, $this->colors, 0, 1, $this->bpp, $this->size, $offset);
     }
 }

@@ -11,13 +11,15 @@ use df\apex;
 use df\halo;
 use df\arch;
 
+use DecodeLabs\Atlas;
+
 class TaskInit extends arch\node\Task
 {
     public function execute()
     {
         $this->ensureDfSource();
 
-        $file = new core\fs\File($this->app->path.'/composer.json');
+        $file = Atlas::$fs->file($this->app->path.'/composer.json');
 
         if ($file->exists()) {
             if (!isset($this->request['no-update'])) {

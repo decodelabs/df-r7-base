@@ -9,8 +9,10 @@ use df;
 use df\core;
 use df\link;
 
-class File implements link\http\IUploadFile {
+use DecodeLabs\Atlas;
 
+class File implements link\http\IUploadFile
+{
     protected $_fieldName;
     protected $_fileName;
     protected $_extension;
@@ -27,7 +29,8 @@ class File implements link\http\IUploadFile {
 
     protected $_handler;
 
-    public function __construct(link\http\IUploadHandler $handler, $fieldName, array $data) {
+    public function __construct(link\http\IUploadHandler $handler, $fieldName, array $data)
+    {
         $this->_handler = $handler;
         $this->_fieldName = $fieldName;
 
@@ -44,8 +47,8 @@ class File implements link\http\IUploadFile {
         $parts = explode('/', $this->_type, 2);
         $top = array_pop($parts);
 
-        if($top == 'octet-stream' || empty($top)) {
-            $this->_type = core\fs\Type::extToMime($this->_extension);
+        if ($top == 'octet-stream' || empty($top)) {
+            $this->_type = Atlas::$mime->detect($this->_extension);
         }
 
         $this->_tempPath = $data['tmp_name'];
@@ -55,38 +58,44 @@ class File implements link\http\IUploadFile {
         $this->_isValid = $this->_error == 0;
     }
 
-    public function setFileName($fileName) {
+    public function setFileName($fileName)
+    {
         $this->_fileName = $fileName;
         return $this;
     }
 
-    public function getFileName() {
+    public function getFileName()
+    {
         return $this->_fileName;
     }
 
-    public function setExtension($extension) {
+    public function setExtension($extension)
+    {
         $this->_extension = $extension;
         return $this;
     }
 
-    public function getExtension() {
+    public function getExtension()
+    {
         return $this->_extension;
     }
 
-    public function setBaseName($baseName) {
+    public function setBaseName($baseName)
+    {
         $parts = explode('.', $baseName);
 
-        if(count($parts) > 1) {
+        if (count($parts) > 1) {
             $this->setExtension(array_pop($parts));
         }
 
         return $this->setFileName(implode('.', $parts));
     }
 
-    public function getBaseName() {
+    public function getBaseName()
+    {
         $output = $this->_fileName;
 
-        if($this->_extension !== null) {
+        if ($this->_extension !== null) {
             $output .= '.'.$this->_extension;
         }
 
@@ -94,51 +103,61 @@ class File implements link\http\IUploadFile {
     }
 
 
-    public function getFieldName() {
+    public function getFieldName()
+    {
         return $this->_fieldName;
     }
 
-    public function getTempPath() {
+    public function getTempPath()
+    {
         return $this->_tempPath;
     }
 
-    public function getDestinationPath() {
+    public function getDestinationPath()
+    {
         return $this->_destinationPath;
     }
 
-    public function getSize() {
+    public function getSize()
+    {
         return $this->_size;
     }
 
-    public function getContentType() {
+    public function getContentType()
+    {
         return $this->_type;
     }
 
-    public function getPointer() {
-        if(!$this->_isSuccess) {
+    public function getPointer()
+    {
+        if (!$this->_isSuccess) {
             throw new link\http\RuntimeException(
                 'No valid file path has been determined yet'
             );
         }
 
-        return new core\fs\File($this->_destinationPath);
+        return Atlas::$fs->file($this->_destinationPath);
     }
 
 
-    public function isValid(): bool {
+    public function isValid(): bool
+    {
         return $this->_isValid;
     }
 
-    public function isSuccess() {
+    public function isSuccess()
+    {
         return $this->_isSuccess;
     }
 
-    public function getErrorCode() {
+    public function getErrorCode()
+    {
         return $this->_error;
     }
 
-    public function getErrorString() {
-        switch($this->getErrorCode()) {
+    public function getErrorString()
+    {
+        switch ($this->getErrorCode()) {
             case 0:
                 return 'Upload successful';
 
@@ -161,24 +180,25 @@ class File implements link\http\IUploadFile {
         }
     }
 
-    public function upload($destination, core\collection\IInputTree $inputNode, $conflictAction=link\http\IUploadFile::RENAME) {
-        if($this->_isProcessed) {
+    public function upload($destination, core\collection\IInputTree $inputNode, $conflictAction=link\http\IUploadFile::RENAME)
+    {
+        if ($this->_isProcessed) {
             return $this;
         }
 
         $this->_isProcessed = true;
         $this->_validateFile($inputNode);
 
-        if(!$inputNode->isValid()) {
+        if (!$inputNode->isValid()) {
             return $this;
         }
 
-        $destination = core\fs\Dir::create($destination)->getPath();
+        $destination = Atlas::$fs->createDir((string)$destination)->getPath();
         $fullPath = rtrim($destination, '/').'/'.$this->getBaseName();
         $i18n = core\i18n\Manager::getInstance();
 
-        if(file_exists($fullPath)) {
-            switch($conflictAction) {
+        if (file_exists($fullPath)) {
+            switch ($conflictAction) {
                 case link\http\IUploadFile::HALT:
                     $inputNode->addError('conflict', $i18n->_(
                         'A file the name %n% already exists',
@@ -191,7 +211,8 @@ class File implements link\http\IUploadFile {
                     try {
                         unlink($fullPath);
                         break;
-                    } catch(\Throwable $e) {}
+                    } catch (\Throwable $e) {
+                    }
 
                 case link\http\IUploadFile::RENAME:
                 default:
@@ -200,7 +221,7 @@ class File implements link\http\IUploadFile {
             }
         }
 
-        if(!move_uploaded_file($this->_tempPath, $fullPath)) {
+        if (!move_uploaded_file($this->_tempPath, $fullPath)) {
             $inputNode->addError('uploadTransfer', $i18n->_(
                 'There was a problem transferring the uploaded file - please try again'
             ));
@@ -214,15 +235,16 @@ class File implements link\http\IUploadFile {
         return $this;
     }
 
-    public function tempUpload(core\collection\IInputTree $inputNode) {
-        if($this->_isProcessed) {
+    public function tempUpload(core\collection\IInputTree $inputNode)
+    {
+        if ($this->_isProcessed) {
             return $this;
         }
 
         $this->_isProcessed = true;
         $this->_validateFile($inputNode);
 
-        if(!$inputNode->isValid()) {
+        if (!$inputNode->isValid()) {
             return $this;
         }
 
@@ -233,44 +255,46 @@ class File implements link\http\IUploadFile {
         return $this;
     }
 
-    protected function _validateFile(core\collection\IInputTree $inputNode) {
+    protected function _validateFile(core\collection\IInputTree $inputNode)
+    {
         $i18n = core\i18n\Manager::getInstance();
         $maxSize = $this->_handler->getMaxFileSize()->getMegabytes();
 
-        if($maxSize > 0 && $this->_size->getMegabytes() > $maxSize) {
+        if ($maxSize > 0 && $this->_size->getMegabytes() > $maxSize) {
             $inputNode->addError('tooBig', $i18n->_(
                 'The file exceeds the maximum upload file size of %m%',
                 ['%m%' => $maxSize.' mb']
             ));
         }
 
-        if($this->_extension && !$this->_handler->isExtensionAllowed($this->_extension)) {
+        if ($this->_extension && !$this->_handler->isExtensionAllowed($this->_extension)) {
             $inputNode->addError('extensionNotAllowed', $i18n->_(
                 'Files with the extension %e% are not allowed to be uploaded here',
                 ['%e%' => $this->_extension]
             ));
         }
 
-        if(!$this->_handler->isTypeAccepted($this->_type)) {
+        if (!$this->_handler->isTypeAccepted($this->_type)) {
             $inputNode->addError('tpyeNotAccepted', $i18n->_(
                 'Files of type %t% are not allowed to be uploaded here',
                 ['%t%' => $this->_type]
             ));
         }
 
-        if(!is_uploaded_file($this->_tempPath)) {
+        if (!is_uploaded_file($this->_tempPath)) {
             $inputNode->addError('uploadNotFound', $i18n->_(
                 'There was a problem finding the uploaded file in the temp location - please try again'
             ));
         }
     }
 
-    protected function _autoRename($fullPath) {
+    protected function _autoRename($fullPath)
+    {
         $this->_renameIndex = 1;
         $origName = $this->_fileName;
         $basePath = dirname($fullPath);
 
-        while(file_exists($fullPath)) {
+        while (file_exists($fullPath)) {
             $add = '('.$this->_renameIndex++.')';
             $this->_fileName = $origName.$add;
             $fullPath = $basePath.'/'.$this->getBaseName();

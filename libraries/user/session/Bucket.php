@@ -85,7 +85,7 @@ class Bucket implements user\session\IBucket, Inspectable
 
     public function getUpdateTime($key)
     {
-        return $this->_get($key)->updateTime;
+        return $this->__get($key)->updateTime;
     }
 
     public function getTimeSinceLastUpdate($key)

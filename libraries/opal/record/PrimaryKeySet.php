@@ -35,7 +35,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
             $value = substr($value->getValue(), 1, -1);
 
             if (substr($value, 0, 7) == 'keySet?') {
-                $value = self::fromEntityId();
+                $value = self::fromEntityId($value);
             }
 
             $values[$key] = $value;
