@@ -11,21 +11,25 @@ use df\apex;
 use df\arch;
 use df\axis;
 
-class TaskInit extends arch\node\Task {
-
-    public function extractCliArguments(core\cli\ICommand $command) {
-        foreach($command->getArguments() as $arg) {
-            if(!$arg->isOption()) {
+class TaskInit extends arch\node\Task
+{
+    public function extractCliArguments(core\cli\ICommand $command)
+    {
+        foreach ($command->getArguments() as $arg) {
+            if (!$arg->isOption()) {
                 $this->request->query->environments[] = (string)$arg;
             }
         }
     }
 
-    public function execute() {
+    public function execute()
+    {
         $this->ensureDfSource();
 
-        if(!empty($this->request->query->environments)) {
-            foreach($this->request->query->environments as $envNode) {
+        if (!empty($this->request->query->environments)) {
+            $currentEnv = null;
+            
+            foreach ($this->request->query->environments as $envNode) {
                 core\Config::clearLiveCache();
                 $currentEnv = df\Launchpad::$app->envId;
                 df\Launchpad::$app->envId = $envNode->getValue();
@@ -40,12 +44,13 @@ class TaskInit extends arch\node\Task {
         }
     }
 
-    protected function _apply() {
+    protected function _apply()
+    {
         $this->io->write('Looking up config classes in:');
         $libList = df\Launchpad::$loader->lookupLibraryList();
         $classes = [];
 
-        foreach($libList as $libName) {
+        foreach ($libList as $libName) {
             $this->io->write(' '.$libName);
             $classes = array_merge($classes, $this->data->config->findIn($libName));
         }
@@ -54,15 +59,15 @@ class TaskInit extends arch\node\Task {
         $this->io->writeLine();
         $this->io->write('Found '.$classCount);
 
-        if(!$classCount) {
+        if (!$classCount) {
             $this->io->writeLine();
             return;
         }
 
         $this->io->write(':');
 
-        foreach($classes as $class => $isUnit) {
-            if($isUnit) {
+        foreach ($classes as $class => $isUnit) {
+            if ($isUnit) {
                 $id = implode('/', array_slice(explode('\\', $class), -3, -1));
                 $config = axis\Model::loadUnitFromId($id);
             } else {

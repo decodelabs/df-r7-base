@@ -270,7 +270,7 @@ class Base implements IMenu, \Serializable
 
         foreach ($this->_delegates as $delegate) {
             if (!$delegate instanceof IMenu) {
-                $this->clearCache();
+                $this->clearCache($this->context);
                 continue;
             }
 

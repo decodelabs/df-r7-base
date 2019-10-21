@@ -20,6 +20,8 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Inspecta
 
     public function __construct($source=false)
     {
+        parent::__construct(true);
+
         if ($source === false) {
             $source = null;
         } elseif (!$source) {

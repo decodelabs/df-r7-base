@@ -756,7 +756,7 @@ class Message implements IMessage
 
     public function forceSend()
     {
-        flow\Manager::getInstance()->forceSendMail($this, $transport);
+        flow\Manager::getInstance()->forceSendMail($this);
         return $this;
     }
 }

@@ -24,6 +24,7 @@ class Manager implements IManager
         $cache = Cache::getInstance();
         $globalUnitId = $unit->getUnitId();
         $isStoreUnit = $globalUnitId == 'axis/schema';
+        $setCache = false;
 
         if ($isStoreUnit && $this->_storeSchema) {
             return $this->_storeSchema;

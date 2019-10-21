@@ -73,7 +73,7 @@ class Definitions implements IDefinitionsContainer, Inspectable
     {
         foreach ($this->_children as $i => $def) {
             if ($def === $element) {
-                unset($this->_children[$id]);
+                unset($this->_children[$i]);
                 break;
             }
         }

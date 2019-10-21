@@ -99,7 +99,7 @@ class Promise implements IPromise, Inspectable
             }
         }, function (\Throwable $error, $key) use (&$rejections) {
             $rejections[$key] = $error;
-        })->then(function () use (&$results, &$rejections, $count) {
+        })->then(function () use (&$results, $count) {
             if (count($results) < $count) {
                 throw new RuntimeException(
                     'Not enough promises delivered a result'

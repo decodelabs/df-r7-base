@@ -507,9 +507,10 @@ abstract class Form extends Base implements IFormNode
         if (!empty($targetId)) {
             while (!empty($targetId)) {
                 $target->handleDelegateEvent(implode('.', $targetId), $event, $args);
+                $currentId = array_shift($targetId);
 
                 try {
-                    $target = $target->getDelegate($currentId = array_shift($targetId));
+                    $target = $target->getDelegate($currentId);
                 } catch (EDelegate $e) {
                     if ($target->handleMissingDelegate($currentId, $event, $args)) {
                         $isTargetComplete = $target->isComplete();

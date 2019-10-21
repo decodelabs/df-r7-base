@@ -162,11 +162,11 @@ trait TFile
 
     public function copyTo($path)
     {
-        $target = self::factory($path);
+        $target = File::factory($path);
         $target->open(Mode::WRITE_TRUNCATE);
         $closeAfter = false;
 
-        if (!$this->_fp) {
+        if (!$this->isOpen()) {
             $closeAfter = true;
             $this->open(Mode::READ_ONLY);
         }

@@ -44,6 +44,7 @@ abstract class Table implements
     {
         $this->_model = $model;
         $this->_loadAdapter();
+        $unitName;
     }
 
     public function getUnitType()

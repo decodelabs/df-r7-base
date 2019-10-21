@@ -29,13 +29,17 @@ trait TApcuClear
             }
         }
 
-        if (!$isPurge && !($cacheId = $this->request['cacheId'])) {
-            throw core\Error::{'EValue'}(
-                'Cache id not specified'
-            );
-        }
+        $cacheId = $this->request['cacheId'];
 
-        if (!$isPurge) {
+        if ($isPurge) {
+            $prefix = null;
+        } else {
+            if (!$cacheId) {
+                throw core\Error::{'EValue'}(
+                    'Cache id not specified'
+                );
+            }
+            
             $prefix = $this->app->getUniquePrefix().'-'.$cacheId.':';
         }
 
@@ -43,7 +47,7 @@ trait TApcuClear
             if (isset($this->io)) {
                 $this->io->writeLine('APCU is not enabled');
             }
-            
+
             return false;
         }
 

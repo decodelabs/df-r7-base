@@ -744,7 +744,7 @@ class Date implements IDate, Inspectable
 
             while (!empty($parts)) {
                 $value = (int)array_pop($parts);
-                $seconds += $value * self::$_multipliers[$i++];
+                $seconds += $value * Duration::MULTIPLIERS[$i++];
             }
         }
 

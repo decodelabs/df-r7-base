@@ -8,45 +8,37 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-class ReductiveReverseIndexIterator implements \Iterator
+class SeekableIterator implements \Iterator
 {
     protected $_collection;
-    protected $_pos = 0;
-    protected $_row;
 
-    public function __construct(ICollection $collection)
+    public function __construct(ISeekable $collection)
     {
         $this->_collection = $collection;
     }
 
     public function current()
     {
-        if ($this->_row === null) {
-            $this->_row = $this->_collection->extract();
-        }
-
-        return $this->_row;
+        return $this->_collection->getCurrent();
     }
 
     public function next()
     {
-        $this->_pos--;
-        $this->_row = null;
+        $this->_collection->seekNext();
     }
 
     public function key()
     {
-        return $this->_pos;
+        return $this->_collection->getSeekPosition();
     }
 
     public function valid()
     {
-        return !$this->_collection->isEmpty();
+        return !$this->_collection->hasSeekEnded();
     }
 
     public function rewind()
     {
-        $this->_pos = count($this->_collection) - 1;
         $this->_collection->seekFirst();
     }
 }

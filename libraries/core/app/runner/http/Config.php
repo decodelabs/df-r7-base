@@ -9,13 +9,14 @@ use df;
 use df\core;
 use df\link;
 
-class Config extends core\Config {
-
+class Config extends core\Config
+{
     const ID = 'http';
     const STORE_IN_MEMORY = true;
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
 
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         return [
             'baseUrl' => $this->_generateRootUrlList(),
             'sendFileHeader' => 'X-Sendfile',
@@ -28,25 +29,26 @@ class Config extends core\Config {
     }
 
     // Base url
-    public function setRootUrl($url, $envMode=null) {
-        if($envMode === null) {
+    public function setRootUrl($url, $envMode=null)
+    {
+        if ($envMode === null) {
             $envMode = df\Launchpad::$app->envMode;
         }
 
-        if($url !== null) {
+        if ($url !== null) {
             $url = link\http\Url::factory($url);
             $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
             $domain = $url->getDomain();
             $port = $url->getPort();
 
-            if(!empty($port) && $port != '80') {
+            if (!empty($port) && $port != '80') {
                 $domain = $domain.':'.$port;
             }
 
             $url = $domain.$url->getPathString();
         }
 
-        if(!count($this->values->baseUrl->{$envMode})) {
+        if (!count($this->values->baseUrl->{$envMode})) {
             $this->values->baseUrl->{$envMode} = $url;
         } else {
             $this->values->baseUrl->{$envMode}->{'*'} = $url;
@@ -55,30 +57,31 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getRootUrl($envMode=null) {
-        if(!isset($this->values->baseUrl)) {
+    public function getRootUrl($envMode=null)
+    {
+        if (!isset($this->values->baseUrl)) {
             $this->values->baseUrl = $this->_generateRootUrlList();
             $this->save();
         }
 
-        if($envMode === null) {
+        if ($envMode === null) {
             $envMode = df\Launchpad::$app->envMode;
         }
 
         $output = null;
 
-        if(isset($this->values->baseUrl[$envMode])) {
+        if (isset($this->values->baseUrl[$envMode])) {
             $output = $this->values->baseUrl[$envMode];
-        } else if(isset($this->values->baseUrl->{$envMode}->{'*'})) {
+        } elseif (isset($this->values->baseUrl->{$envMode}->{'*'})) {
             $output = $this->values->baseUrl->{$envMode}['*'];
-        } else if(isset($this->values->baseUrl->{$envMode}->{0})) {
+        } elseif (isset($this->values->baseUrl->{$envMode}->{0})) {
             $output = $this->values->baseUrl->{$envMode}[0];
-        } else if(isset($this->values->baseUrl->{$envMode}->{'front'})) {
+        } elseif (isset($this->values->baseUrl->{$envMode}->{'front'})) {
             $output = $this->values->baseUrl->{$envMode}['front'];
         }
 
-        if($output === null && isset($_SERVER['HTTP_HOST'])) {
-            if(null !== ($rootUrl = $this->_generateRootUrl())) {
+        if ($output === null && isset($_SERVER['HTTP_HOST'])) {
+            if (null !== ($rootUrl = $this->_generateRootUrl())) {
                 $this->setRootUrl($rootUrl)->save();
             }
         }
@@ -86,12 +89,13 @@ class Config extends core\Config {
         return trim($output, '/');
     }
 
-    public function getBaseUrlMap($envMode=null) {
-        if($envMode === null) {
+    public function getBaseUrlMap($envMode=null)
+    {
+        if ($envMode === null) {
             $envMode = df\Launchpad::$app->envMode;
         }
 
-        if(!isset($this->values->baseUrl->{$envMode}) && isset($_SERVER['HTTP_HOST'])) {
+        if (!isset($this->values->baseUrl->{$envMode}) && isset($_SERVER['HTTP_HOST'])) {
             $this->values->baseUrl->{$envMode} = $this->_generateRootUrl();
             $this->save();
         }
@@ -99,19 +103,20 @@ class Config extends core\Config {
         $node = $this->values->baseUrl->{$envMode};
         $output = [];
 
-        if($node->hasValue()) {
+        if ($node->hasValue()) {
             $output['*'] = trim($node->getValue(), '/');
         }
 
-        foreach($node as $key => $value) {
+        foreach ($node as $key => $value) {
             $output[$key] = trim($value, '/');
         }
 
         return $output;
     }
 
-    protected function _generateRootUrlList() {
-        if(!isset($_SERVER['HTTP_HOST'])) {
+    protected function _generateRootUrlList()
+    {
+        if (!isset($_SERVER['HTTP_HOST'])) {
             return null;
         }
 
@@ -126,12 +131,12 @@ class Config extends core\Config {
 
         $output[$envMode] = $baseUrl;
 
-        if(substr($baseUrl, 0, strlen($envMode) + 1) == $envMode.'.') {
-            $baseUrl = substr($host, strlen($envMode) + 1);
+        if (substr($baseUrl, 0, strlen($envMode) + 1) == $envMode.'.') {
+            $baseUrl = substr($baseUrl, strlen($envMode) + 1);
         }
 
-        foreach($output as $key => $val) {
-            if($val === null) {
+        foreach ($output as $key => $val) {
+            if ($val === null) {
                 $output[$key] = ['*' => $key.'.'.$baseUrl];
             }
         }
@@ -139,7 +144,8 @@ class Config extends core\Config {
         return $output;
     }
 
-    protected function _generateRootUrl() {
+    protected function _generateRootUrl()
+    {
         $baseUrl = null;
         $request = new link\http\request\Base(true);
         $host = $request->getUrl()->getHost();
@@ -148,7 +154,7 @@ class Config extends core\Config {
         $baseUrl = $host.'/'.trim(dirname($_SERVER['SCRIPT_NAME']), '/').'/';
         $currentUrl = $host.'/'.$path;
 
-        if(substr($currentUrl, 0, strlen($baseUrl)) != $baseUrl) {
+        if (substr($currentUrl, 0, strlen($baseUrl)) != $baseUrl) {
             $parts = explode('/', $currentUrl);
             array_pop($parts);
             $baseUrl = implode('/', $parts).'/';
@@ -158,20 +164,22 @@ class Config extends core\Config {
     }
 
 
-// Send file header
-    public function setSendFileHeader($header) {
+    // Send file header
+    public function setSendFileHeader($header)
+    {
         $this->values->sendFileHeader = $header;
         return $this;
     }
 
-    public function getSendFileHeader() {
+    public function getSendFileHeader()
+    {
         $output = null;
 
-        if(isset($this->values['sendFileHeader'])) {
+        if (isset($this->values['sendFileHeader'])) {
             $output = $this->values['sendFileHeader'];
         }
 
-        if(empty($output)) {
+        if (empty($output)) {
             //$output = 'X-Sendfile';
             $output = null;
         }
@@ -180,9 +188,10 @@ class Config extends core\Config {
     }
 
 
-// Https
-    public function isSecure(bool $flag=null) {
-        if($flag !== null) {
+    // Https
+    public function isSecure(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->values->secure = $flag;
             return $this;
         }
@@ -190,9 +199,10 @@ class Config extends core\Config {
         return (bool)$this->values['secure'];
     }
 
-// Chunk
-    public function shouldChunkManually(bool $flag=null) {
-        if($flag !== null) {
+    // Chunk
+    public function shouldChunkManually(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->values->manualChunk = $flag;
             return $this;
         }
@@ -200,10 +210,11 @@ class Config extends core\Config {
         return (bool)$this->values['manualChunk'];
     }
 
-// IP Ranges
-    public function setIpRanges(array $ranges=null) {
-        if($ranges !== null) {
-            foreach($ranges as $i => $range) {
+    // IP Ranges
+    public function setIpRanges(array $ranges=null)
+    {
+        if ($ranges !== null) {
+            foreach ($ranges as $i => $range) {
                 $ranges = (string)link\IpRange::factory($range);
             }
         }
@@ -212,18 +223,20 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getIpRanges() {
+    public function getIpRanges()
+    {
         $output = [];
 
-        foreach($this->values->ipRanges as $range) {
+        foreach ($this->values->ipRanges as $range) {
             $output[] = link\IpRange::factory((string)$range);
         }
 
         return $output;
     }
 
-    public function getIpRangesForArea($area) {
-        if(isset($this->values->ipRangeAreas)
+    public function getIpRangesForArea($area)
+    {
+        if (isset($this->values->ipRangeAreas)
         && !$this->values->ipRangeAreas->isEmpty()
         && !$this->values->ipRangeAreas->contains($area)) {
             return [];
@@ -233,15 +246,16 @@ class Config extends core\Config {
     }
 
 
-// Credentials
-    public function getCredentials($mode=null) {
-        if($mode === null) {
+    // Credentials
+    public function getCredentials($mode=null)
+    {
+        if ($mode === null) {
             $mode = df\Launchpad::$app->envMode;
         }
 
-        if(isset($this->values->credentials->{$mode}['username'])) {
+        if (isset($this->values->credentials->{$mode}['username'])) {
             $set = $this->values->credentials->{$mode};
-        } else if(isset($this->values->credentials['username'])) {
+        } elseif (isset($this->values->credentials['username'])) {
             $set = $this->values->credentials;
         } else {
             return null;

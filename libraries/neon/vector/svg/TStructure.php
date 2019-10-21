@@ -125,7 +125,7 @@ trait TStructure_Container
 
     public function setChildren(array $children)
     {
-        $this->_chilren = [];
+        $this->_children = [];
         return $this->addChildren($children);
     }
 
@@ -263,17 +263,8 @@ trait TStructure_Definitions
         $output = null;
 
         if ($this instanceof IContainer) {
-            foreach ($this->_children as $child) {
-                if ($child instanceof IDefinitionContainer) {
-                    $output = $child;
-                    break;
-                }
-            }
-
-            if ($output === null) {
-                $output = new Definitions();
-                array_unshift($this->_children, $output);
-            }
+            $output = new Definitions();
+            array_unshift($this->_children, $output);
         }
 
 

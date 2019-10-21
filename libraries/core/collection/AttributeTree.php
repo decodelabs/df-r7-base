@@ -42,7 +42,7 @@ class AttributeTree extends Tree implements IAttributeContainer
 
     public function importTree(ITree $child)
     {
-        if ($child instanceof IAttributeTree) {
+        if ($child instanceof IAttributeContainer) {
             $this->_attributes = $child->getAttributes();
         }
 

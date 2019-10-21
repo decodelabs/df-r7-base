@@ -10,27 +10,29 @@ use df\core;
 use df\neon;
 use df\flex;
 
-
-trait TAttributeModule {
-
+trait TAttributeModule
+{
     protected $_attributes = [];
 
-    public function getName() {
+    public function getName()
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public function getElementName() {
+    public function getElementName()
+    {
         return strtolower($this->getName());
     }
 
-    public function prepareAttributes(IDocument $document) {
-        if(isset($this->_position)) {
+    public function prepareAttributes(IDocument $document)
+    {
+        if (isset($this->_position)) {
             $this->_position->convertRelativeAnchors($document->getWidth(), $document->getHeight());
         }
 
-        if(isset($this->_points)) {
-            foreach($this->_points as $point) {
+        if (isset($this->_points)) {
+            foreach ($this->_points as $point) {
                 $point->convertRelativeAnchors($document->getWidth(), $document->getHeight());
             }
 
@@ -39,23 +41,29 @@ trait TAttributeModule {
 
         $output = $this->_attributes;
 
-        if(null !== ($extra = $this->_getExtraAttributes())) {
+        if (null !== ($extra = $this->_getExtraAttributes())) {
             $output = array_merge($output, $extra);
         }
 
-        foreach($this->_attributes as $key => $value) {
+        foreach ($this->_attributes as $key => $value) {
             $output[$key] = (string)$value;
         }
 
         return $output;
     }
 
-    protected function _getExtraAttributes() {
+    protected function _onSetPoints()
+    {
+    }
+
+    protected function _getExtraAttributes()
+    {
         return null;
     }
 
-    protected static function _extractInputAttribute(array $attributes, $name, $default=null) {
-        if(isset($attributes[$name])) {
+    protected static function _extractInputAttribute(array $attributes, $name, $default=null)
+    {
+        if (isset($attributes[$name])) {
             $output = $attributes[$name];
             unset($attributes[$name]);
             return $output;
@@ -64,10 +72,11 @@ trait TAttributeModule {
         }
     }
 
-    public function applyInputAttributes(array $attributes) {
-        foreach($attributes as $key => $value) {
-            switch($key) {
-                case 'r' : $key = 'radius'; break;
+    public function applyInputAttributes(array $attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            switch ($key) {
+                case 'r': $key = 'radius'; break;
                 case 'rx': $key = 'xRadius'; break;
                 case 'ry': $key = 'yRadius'; break;
                 case 'cx': $key = 'xPosition'; break;
@@ -76,7 +85,7 @@ trait TAttributeModule {
 
             $func = 'set'.str_replace(' ', '', ucwords(str_replace('-', ' ', $key)));
 
-            if(method_exists($this, $func)) {
+            if (method_exists($this, $func)) {
                 $this->{$func}($value);
             } else {
                 $this->_attributes[$key] = $value;
@@ -86,13 +95,14 @@ trait TAttributeModule {
         return $this;
     }
 
-    protected static function _xmlToObject(flex\xml\IReadable $reader, IElement $parent=null) {
+    protected static function _xmlToObject(flex\xml\IReadable $reader, IElement $parent=null)
+    {
         $output = null;
         $return = true;
         $attributes = $reader->getAttributes();
         $tagName = $reader->getTagName();
 
-        switch($tagName) {
+        switch ($tagName) {
 
             // Structure
             case 'svg':
@@ -118,14 +128,14 @@ trait TAttributeModule {
 
             // Description
             case 'title':
-                if($parent instanceof IDescriptionProvider) {
+                if ($parent instanceof IDescriptionProvider) {
                     $parent->setTitle($reader->getComposedTextContent());
                 }
 
                 break;
 
             case 'desc':
-                if($parent instanceof IDescriptionProvider) {
+                if ($parent instanceof IDescriptionProvider) {
                     $parent->setDescription($reader->getComposedTextContent());
                 }
 
@@ -134,7 +144,7 @@ trait TAttributeModule {
 
             // MetaData
             case 'metadata':
-                if($parent instanceof IMetaDataProvider) {
+                if ($parent instanceof IMetaDataProvider) {
                     $parent->setMetaData($reader->getInnerXml());
                 }
 
@@ -155,7 +165,7 @@ trait TAttributeModule {
             case 'font-face':
                 $output = new Font_Face();
 
-                if($parent instanceof IFontFaceContainer) {
+                if ($parent instanceof IFontFaceContainer) {
                     $parent->setFontFace($output);
                     $return = false;
                 }
@@ -165,7 +175,7 @@ trait TAttributeModule {
             case 'font-face-format':
                 $output = new Font_FaceFormat();
 
-                if($parent instanceof IFontFaceUri) {
+                if ($parent instanceof IFontFaceUri) {
                     $parent->setFormatElement($output);
                     $return = false;
                 }
@@ -175,7 +185,7 @@ trait TAttributeModule {
             case 'font-face-name':
                 $output = new Font_FaceName();
 
-                if($parent instanceof IFontFaceSource) {
+                if ($parent instanceof IFontFaceSource) {
                     $parent->setNameElement($output);
                     $return = false;
                 }
@@ -185,7 +195,7 @@ trait TAttributeModule {
             case 'font-face-src':
                 $output = new Font_FaceSource();
 
-                if($parent instanceof IFontFace) {
+                if ($parent instanceof IFontFace) {
                     $parent->addSource($output);
                     $return = false;
                 }
@@ -195,7 +205,7 @@ trait TAttributeModule {
             case 'font-face-uri':
                 $output = new Font_FaceUri();
 
-                if($parent instanceof IFontFaceSource) {
+                if ($parent instanceof IFontFaceSource) {
                     $parent->setUriElement($output);
                     $return = false;
                 }
@@ -205,7 +215,7 @@ trait TAttributeModule {
             case 'glyph':
                 $output = new Font_Glyph();
 
-                if($parent instanceof IFont) {
+                if ($parent instanceof IFont) {
                     $parent->addGlyph($output);
                     $return = false;
                 }
@@ -215,7 +225,7 @@ trait TAttributeModule {
             case 'missing-glyph':
                 $output = new Font_Glyph();
 
-                if($parent instanceof IFont) {
+                if ($parent instanceof IFont) {
                     $parent->setMissingGlyph($output);
                     $return = false;
                 }
@@ -290,18 +300,19 @@ trait TAttributeModule {
                 );
         }
 
-        if($output) {
+        if ($output) {
             $output->applyInputAttributes($attributes);
             $output->readXml($reader);
         }
 
-        if($return) {
+        if ($return) {
             return $output;
         }
     }
 
 
-    public function getGraphicalAttributes() {
+    public function getGraphicalAttributes()
+    {
         $attr = [
             'alignment-baseline', 'baseline-shift', 'clip', 'clip-path', 'clip-rule', 'color', 'color-interpolation',
             'color-interpolation-filters', 'color-profile', 'color-rendering', 'cursor', 'direction', 'display',
@@ -319,9 +330,9 @@ trait TAttributeModule {
 
         $output = [];
 
-        foreach($this->_attributes as $key => $value) {
-            if(in_array($key, $attr)) {
-                if(is_object($value)) {
+        foreach ($this->_attributes as $key => $value) {
+            if (in_array($key, $attr)) {
+                if (is_object($value)) {
                     $value = clone $value;
                 }
 
@@ -332,8 +343,9 @@ trait TAttributeModule {
         return $output;
     }
 
-    protected function _setAttribute($name, $value) {
-        if($value === null) {
+    protected function _setAttribute($name, $value)
+    {
+        if ($value === null) {
             unset($this->_attributes[$name]);
         } else {
             $this->_attributes[$name] = $value;
@@ -342,31 +354,34 @@ trait TAttributeModule {
         return $this;
     }
 
-    protected function _getAttribute($name, $default=null) {
-        if(isset($this->_attributes[$name])) {
+    protected function _getAttribute($name, $default=null)
+    {
+        if (isset($this->_attributes[$name])) {
             return $this->_attributes[$name];
         }
 
         return $default;
     }
 
-    protected function _normalizeUnicode($value) {
-        if(empty($value)) {
+    protected function _normalizeUnicode($value)
+    {
+        if (empty($value)) {
             return null;
         }
 
         return str_replace('&amp;#', '&#', $value);
     }
 
-    protected function _normalizeKeyword($value, array $keywords, $attributeName) {
-        if(empty($value)) {
+    protected function _normalizeKeyword($value, array $keywords, $attributeName)
+    {
+        if (empty($value)) {
             return null;
         }
 
         $value = strtolower($value);
 
-        foreach($keywords as $keyword) {
-            if(strtolower($keyword) == $value) {
+        foreach ($keywords as $keyword) {
+            if (strtolower($keyword) == $value) {
                 return $keyword;
             }
         }
@@ -376,19 +391,20 @@ trait TAttributeModule {
         );
     }
 
-    protected function _normalizeKeywordOrLength($value, array $keywords) {
-        if(empty($value)) {
+    protected function _normalizeKeywordOrLength($value, array $keywords)
+    {
+        if (empty($value)) {
             return null;
         }
 
-        if($value instanceof core\unit\IDisplaySize) {
+        if ($value instanceof core\unit\IDisplaySize) {
             return $value;
         }
 
         $value = strtolower($value);
 
-        foreach($keywords as $keyword) {
-            if(strtolower($keyword) == $value) {
+        foreach ($keywords as $keyword) {
+            if (strtolower($keyword) == $value) {
                 return $keyword;
             }
         }
@@ -396,27 +412,29 @@ trait TAttributeModule {
         return core\unit\DisplaySize::factory($value, null, true);
     }
 
-    protected function _normalizeLength($value) {
-        if(empty($value)) {
+    protected function _normalizeLength($value)
+    {
+        if (empty($value)) {
             return null;
         }
 
         return core\unit\DisplaySize::factory($value, null, true);
     }
 
-    protected function _normalizeKeywordOrAngle($value, array $keywords) {
-        if(empty($value)) {
+    protected function _normalizeKeywordOrAngle($value, array $keywords)
+    {
+        if (empty($value)) {
             return null;
         }
 
-        if($value instanceof core\unit\IAngle) {
+        if ($value instanceof core\unit\IAngle) {
             return $value;
         }
 
         $value = strtolower($value);
 
-        foreach($keywords as $keyword) {
-            if(strtolower($keyword) == $value) {
+        foreach ($keywords as $keyword) {
+            if (strtolower($keyword) == $value) {
                 return $keyword;
             }
         }
@@ -424,24 +442,26 @@ trait TAttributeModule {
         return core\unit\Angle::factory($value);
     }
 
-    protected function _normalizeAngle($value) {
-        if(empty($value)) {
+    protected function _normalizeAngle($value)
+    {
+        if (empty($value)) {
             return null;
         }
 
         return core\unit\Angle::factory($value, null, true);
     }
 
-    protected function _normalizeKeywordOrIdentifier($value, array $keywords) {
-        if(empty($value)) {
+    protected function _normalizeKeywordOrIdentifier($value, array $keywords)
+    {
+        if (empty($value)) {
             return null;
         }
 
         $orig = $value;
         $value = strtolower($value);
 
-        foreach($keywords as $keyword) {
-            if(strtolower($keyword) == $value) {
+        foreach ($keywords as $keyword) {
+            if (strtolower($keyword) == $value) {
                 return $keyword;
             }
         }
@@ -449,19 +469,20 @@ trait TAttributeModule {
         return (string)$orig;
     }
 
-    protected function _normalizeKeywordOrNumber($value, array $keywords, $attributeName) {
-        if(empty($value)) {
+    protected function _normalizeKeywordOrNumber($value, array $keywords, $attributeName)
+    {
+        if (empty($value)) {
             return null;
         }
 
-        if(is_numeric($value)) {
+        if (is_numeric($value)) {
             return (float)$value;
         }
 
         $value = strtolower($value);
 
-        foreach($keywords as $keyword) {
-            if(strtolower($keyword) == $value) {
+        foreach ($keywords as $keyword) {
+            if (strtolower($keyword) == $value) {
                 return $keyword;
             }
         }
@@ -471,31 +492,34 @@ trait TAttributeModule {
         );
     }
 
-    protected function _normalizeInheritedColor($color) {
-        if(empty($color)) {
+    protected function _normalizeInheritedColor($color)
+    {
+        if (empty($color)) {
             return null;
         }
 
         $orig = $color;
         $color = strtolower($color);
 
-        if($color == 'none') {
+        if ($color == 'none') {
             return $color;
         }
 
-        if($color == 'currentcolor') {
+        if ($color == 'currentcolor') {
             return 'currentColor';
         }
 
         try {
             return neon\Color::factory($color);
-        } catch(neon\EColor $e) {}
+        } catch (neon\EColor $e) {
+        }
 
         return (string)$orig;
     }
 
-    protected function _normalizeIdentifier($iri) {
-        if(empty($iri)) {
+    protected function _normalizeIdentifier($iri)
+    {
+        if (empty($iri)) {
             $iri = null;
         } else {
             $iri = (string)$iri;
@@ -504,44 +528,48 @@ trait TAttributeModule {
         return $iri;
     }
 
-    protected function _normalizeScript($script) {
-        if(empty($script)) {
+    protected function _normalizeScript($script)
+    {
+        if (empty($script)) {
             return null;
         }
 
         return (string)$script;
     }
 
-    protected function _normalizeText($text) {
-        if(empty($text)) {
+    protected function _normalizeText($text)
+    {
+        if (empty($text)) {
             return null;
         }
 
         return (string)$text;
     }
 
-    protected function _normalizeBoolean($boolean) {
-        if(empty($boolean)) {
+    protected function _normalizeBoolean($boolean)
+    {
+        if (empty($boolean)) {
             return null;
         }
 
-        if(is_string($boolean)) {
+        if (is_string($boolean)) {
             $boolean = flex\Text::stringToBoolean($boolean);
         }
 
         return (bool)$boolean;
     }
 
-    protected function _normalizeOpacity($opacity) {
-        if(empty($opacity)) {
+    protected function _normalizeOpacity($opacity)
+    {
+        if (empty($opacity)) {
             return null;
         }
 
         $opacity = (float)$opacity;
 
-        if($opacity < 0) {
+        if ($opacity < 0) {
             $opacity = 0.0;
-        } else if($opacity > 1) {
+        } elseif ($opacity > 1) {
             $opacity = 1.0;
         }
 
@@ -551,49 +579,57 @@ trait TAttributeModule {
 
 
 // Animation events
-trait TAttributeModule_AnimationEvents {
-
-    public function setOnBeginScript($script) {
+trait TAttributeModule_AnimationEvents
+{
+    public function setOnBeginScript($script)
+    {
         return $this->_setAttribute(
             'onbegin',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnBeginScript() {
+    public function getOnBeginScript()
+    {
         return $this->_getAttribute('onbegin');
     }
 
-    public function setOnEndScript($script) {
+    public function setOnEndScript($script)
+    {
         return $this->_setAttribute(
             'onend',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnEndScript() {
+    public function getOnEndScript()
+    {
         return $this->_getAttribute('onend');
     }
 
-    public function setOnRepeatScript($script) {
+    public function setOnRepeatScript($script)
+    {
         return $this->_setAttribute(
             'onrepeat',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnRepeatScript() {
+    public function getOnRepeatScript()
+    {
         return $this->_getAttribute('onrepeat');
     }
 
-    public function setOnLoadScript($script) {
+    public function setOnLoadScript($script)
+    {
         return $this->_setAttribute(
             'onload',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnLoadScript() {
+    public function getOnLoadScript()
+    {
         return $this->_ongetAttribute('onload');
     }
 }
@@ -601,16 +637,18 @@ trait TAttributeModule_AnimationEvents {
 
 
 // Aspect ratio
-trait TAttributeModule_AspectRatio {
-
-    public function setPreserveAspectRatio($preserve) {
+trait TAttributeModule_AspectRatio
+{
+    public function setPreserveAspectRatio($preserve)
+    {
         return $this->_setAttribute(
             'preserveAspectRatio',
             $this->_normalizeBoolean($preserve)
         );
     }
 
-    public function getPreserveAspectRatio() {
+    public function getPreserveAspectRatio()
+    {
         return $this->_getAttribute('preserveAspectRatio');
     }
 }
@@ -618,16 +656,18 @@ trait TAttributeModule_AspectRatio {
 
 
 // Base profile
-trait TAttributeModule_BaseProfile {
-
-    public function setBaseProfile($profile) {
+trait TAttributeModule_BaseProfile
+{
+    public function setBaseProfile($profile)
+    {
         return $this->_setAttribute(
             'baseProfile',
             $this->_normalizeIdentifier($profile)
         );
     }
 
-    public function getBaseProfile() {
+    public function getBaseProfile()
+    {
         return $this->_getAttribute('baseProfile');
     }
 }
@@ -636,9 +676,10 @@ trait TAttributeModule_BaseProfile {
 
 
 // Basic graphics
-trait TAttributeModule_BasicGraphics {
-
-    public function setDisplay($display) {
+trait TAttributeModule_BasicGraphics
+{
+    public function setDisplay($display)
+    {
         return $this->_setAttribute(
             'display',
             $this->_normalizeKeyword(
@@ -654,11 +695,13 @@ trait TAttributeModule_BasicGraphics {
         );
     }
 
-    public function getDisplay() {
+    public function getDisplay()
+    {
         return $this->_getAttribute('display');
     }
 
-    public function setVisibility($visibility) {
+    public function setVisibility($visibility)
+    {
         return $this->_setAttribute(
             'visibility',
             $this->_normalizeKeyword(
@@ -669,16 +712,18 @@ trait TAttributeModule_BasicGraphics {
         );
     }
 
-    public function getVisibility() {
+    public function getVisibility()
+    {
         return $this->_getAttribute('visibility');
     }
 }
 
 
 // Basic paint
-trait TAttributeModule_BasicPaint {
-
-    public function setColor($color) {
+trait TAttributeModule_BasicPaint
+{
+    public function setColor($color)
+    {
         return $this->_setAttribute(
             'color',
             empty($color) ?
@@ -687,22 +732,26 @@ trait TAttributeModule_BasicPaint {
         );
     }
 
-    public function getColor() {
+    public function getColor()
+    {
         return $this->_getAttribute('color');
     }
 
-    public function setFill($fill) {
+    public function setFill($fill)
+    {
         return $this->_setAttribute(
             'fill',
             $this->_normalizeInheritedColor($fill)
         );
     }
 
-    public function getFill() {
+    public function getFill()
+    {
         return $this->_getAttribute('fill');
     }
 
-    public function setFillRule($rule) {
+    public function setFillRule($rule)
+    {
         return $this->_setAttribute(
             'full-rule',
             $this->_normalizeKeyword(
@@ -715,46 +764,52 @@ trait TAttributeModule_BasicPaint {
         return $this;
     }
 
-    public function getFillRule() {
+    public function getFillRule()
+    {
         return $this->_getAttribute('fill-rule');
     }
 
-    public function setStroke($stroke) {
+    public function setStroke($stroke)
+    {
         return $this->_setAttribute(
             'stroke',
             $this->_normalizeInheritedColor($stroke)
         );
     }
 
-    public function getStroke() {
+    public function getStroke()
+    {
         return $this->_getAttribute('stroke');
     }
 
-    public function setStrokeDashArray($dash) {
-        if(empty($dash)) {
+    public function setStrokeDashArray($dash)
+    {
+        if (empty($dash)) {
             return $this->_setAttribute('stroke-dasharray', null);
         }
 
-        if(is_string($dash)) {
+        if (is_string($dash)) {
             $dash = explode(',', $dash);
         }
 
-        if(!is_array($dash)) {
+        if (!is_array($dash)) {
             $dash = [$dash];
         }
 
-        foreach($dash as $i => $part) {
+        foreach ($dash as $i => $part) {
             $dash[$i] = core\unit\DisplaySize::factory(trim($part), null, true);
         }
 
         return $this->_setAttribute('strokeDashArray', $dash);
     }
 
-    public function getStrokeDashArray() {
+    public function getStrokeDashArray()
+    {
         return $this->_getAttribute('stroke-dasharray');
     }
 
-    public function setStrokeDashOffset($offset) {
+    public function setStrokeDashOffset($offset)
+    {
         return $this->_setAttribute(
             'stroke-dashoffset',
             $this->_normalizeKeywordOrLength(
@@ -764,11 +819,13 @@ trait TAttributeModule_BasicPaint {
         );
     }
 
-    public function getStrokeDashOffset() {
+    public function getStrokeDashOffset()
+    {
         return $this->_getAttribute('stroke-dashoffset');
     }
 
-    public function setStrokeLineCap($lineCap) {
+    public function setStrokeLineCap($lineCap)
+    {
         return $this->_setAttribute(
             'stroke-linecap',
             $this->_normalizeKeyword(
@@ -779,11 +836,13 @@ trait TAttributeModule_BasicPaint {
         );
     }
 
-    public function getStrokeLineCap() {
+    public function getStrokeLineCap()
+    {
         return $this->_getAttribute('stroke-linecap');
     }
 
-    public function setStrokeLineJoin($lineJoin) {
+    public function setStrokeLineJoin($lineJoin)
+    {
         return $this->_setAttribute(
             'stroke-linejoin',
             $this->_normalizeKeyword(
@@ -794,18 +853,20 @@ trait TAttributeModule_BasicPaint {
         );
     }
 
-    public function getStrokeLineJoin() {
+    public function getStrokeLineJoin()
+    {
         return $this->_getAttribute('stroke-linejoin');
     }
 
-    public function setStrokeMiterLimit($limit) {
-        if(empty($limit)) {
+    public function setStrokeMiterLimit($limit)
+    {
+        if (empty($limit)) {
             return $this->_setAttribute('stroke-miterlimit', null);
         }
 
         $limit = (int)$limit;
 
-        if($limit < 1) {
+        if ($limit < 1) {
             throw new InvalidArgumentException(
                 'Stroke miter limit must be 1 or higher'
             );
@@ -814,11 +875,13 @@ trait TAttributeModule_BasicPaint {
         return $this->_setAttribute('strokeMiterLimit', $limit);
     }
 
-    public function getStrokeMiterLimit() {
+    public function getStrokeMiterLimit()
+    {
         return $this->_getAttribute('stroke-miterlimit');
     }
 
-    public function setStrokeWidth($width) {
+    public function setStrokeWidth($width)
+    {
         return $this->_setAttribute(
             'stroke-width',
             $this->_normalizeKeywordOrLength(
@@ -828,11 +891,13 @@ trait TAttributeModule_BasicPaint {
         );
     }
 
-    public function getStrokeWidth() {
+    public function getStrokeWidth()
+    {
         return $this->_getAttribute('stroke-width');
     }
 
-    public function setColorRendering($rendering) {
+    public function setColorRendering($rendering)
+    {
         return $this->_setAttribute(
             'color-rendering',
             $this->_normalizeKeyword(
@@ -843,16 +908,18 @@ trait TAttributeModule_BasicPaint {
         );
     }
 
-    public function getColorRendering() {
+    public function getColorRendering()
+    {
         return $this->_getAttribute('color-rendering');
     }
 }
 
 
 // Clip
-trait TAttributeModule_Clip {
-
-    public function setClipPath($path) {
+trait TAttributeModule_Clip
+{
+    public function setClipPath($path)
+    {
         return $this->_setAttribute(
             'clip-path',
             $this->_normalizeKeywordOrIdentifier(
@@ -862,11 +929,13 @@ trait TAttributeModule_Clip {
         );
     }
 
-    public function getClipPath() {
+    public function getClipPath()
+    {
         return $this->_getAttribute('clip-path');
     }
 
-    public function setClipRule($rule) {
+    public function setClipRule($rule)
+    {
         return $this->_setAttribute(
             'clipRule',
             $this->_normalizeKeyword(
@@ -877,7 +946,8 @@ trait TAttributeModule_Clip {
         );
     }
 
-    public function getClipRule() {
+    public function getClipRule()
+    {
         return $this->_getAttribute('clip-rule');
     }
 }
@@ -886,38 +956,44 @@ trait TAttributeModule_Clip {
 
 
 // Conditional
-trait TAttributeModule_Conditional {
-
-    public function setRequiredFeatures($features) {
+trait TAttributeModule_Conditional
+{
+    public function setRequiredFeatures($features)
+    {
         return $this->_setAttribute(
             'requiredFeatures',
             $this->_normalizeIdentifier($features)
         );
     }
 
-    public function getRequiredFeatures() {
-        return $this->_setAttribute('requiredFeatures');
+    public function getRequiredFeatures()
+    {
+        return $this->_getAttribute('requiredFeatures');
     }
 
-    public function setRequiredExtensions($extensions) {
+    public function setRequiredExtensions($extensions)
+    {
         return $this->_setAttribute(
             'requiredExtensions',
             $this->_normalizeIdentifier($extensions)
         );
     }
 
-    public function getRequiredExtensions() {
+    public function getRequiredExtensions()
+    {
         return $this->_getAttribute('requiredExtensions');
     }
 
-    public function setSystemLanguage($lang) {
+    public function setSystemLanguage($lang)
+    {
         return $this->_setAttribute(
             'systemLanguage',
             $this->_normalizeIdentifier($lang)
         );
     }
 
-    public function getSystemLanguage() {
+    public function getSystemLanguage()
+    {
         return $this->_getAttribute('systemLanguage');
     }
 }
@@ -927,14 +1003,15 @@ trait TAttributeModule_Conditional {
 
 
 // Container
-trait TAttributeModule_Container {
-
-    public function setEnableBackground($background) {
-        if(empty($background)) {
+trait TAttributeModule_Container
+{
+    public function setEnableBackground($background)
+    {
+        if (empty($background)) {
             return $this->_setAttribute('enable-background', null);
         }
 
-        if($background == 'accumulate' || $background == 'inherit' || substr($background, 0, 4) == 'new ') {
+        if ($background == 'accumulate' || $background == 'inherit' || substr($background, 0, 4) == 'new ') {
             return $this->_setAttribute('enableBackground', $background);
         }
 
@@ -943,49 +1020,57 @@ trait TAttributeModule_Container {
         );
     }
 
-    public function getEnableBackground() {
+    public function getEnableBackground()
+    {
         return $this->_getAttribute('enable-background');
     }
 }
 
 
 // Core
-trait TAttributeModule_Core {
-
-    public function setId(?string $id) {
+trait TAttributeModule_Core
+{
+    public function setId(?string $id)
+    {
         return $this->_setAttribute(
             'id',
             $this->_normalizeIdentifier($id)
         );
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->_getAttribute('id');
     }
 
-    public function setXmlBase($baseIri) {
+    public function setXmlBase($baseIri)
+    {
         return $this->_setAttribute(
             'xml:base',
             $this->_normalizeIdentifier($baseIri)
         );
     }
 
-    public function getXmlBase() {
+    public function getXmlBase()
+    {
         return $this->_getAttribute('xml:base');
     }
 
-    public function setXmlLang($lang) {
+    public function setXmlLang($lang)
+    {
         return $this->_setAttribute(
             'xml:lang',
             $this->_normalizeIdentifier($lang)
         );
     }
 
-    public function getXmlLang() {
+    public function getXmlLang()
+    {
         return $this->_getAttribute('xml:lang');
     }
 
-    public function setXmlSpace($space) {
+    public function setXmlSpace($space)
+    {
         return $this->_setAttribute(
             'xml:space',
             $this->_normalizeKeyword(
@@ -996,7 +1081,8 @@ trait TAttributeModule_Core {
         );
     }
 
-    public function getXmlSpace() {
+    public function getXmlSpace()
+    {
         return $this->_getAttribute('xml:space');
     }
 }
@@ -1004,9 +1090,10 @@ trait TAttributeModule_Core {
 
 
 // Cursor
-trait TAttributeModule_Cursor {
-
-    public function setCursor($cursor) {
+trait TAttributeModule_Cursor
+{
+    public function setCursor($cursor)
+    {
         return $this->_setAttribute(
             'cursor',
             $this->_normalizeKeywordOrIdentifier(
@@ -1020,7 +1107,8 @@ trait TAttributeModule_Cursor {
         );
     }
 
-    public function getCursor() {
+    public function getCursor()
+    {
         return $this->_getAttribute('cursor');
     }
 }
@@ -1028,31 +1116,36 @@ trait TAttributeModule_Cursor {
 
 
 // Dimensions
-trait TAttributeModule_Dimension {
-
-    public function setDimensions($width, $height) {
+trait TAttributeModule_Dimension
+{
+    public function setDimensions($width, $height)
+    {
         return $this->setWidth($width)->setHeight($height);
     }
 
-    public function setWidth($width) {
+    public function setWidth($width)
+    {
         return $this->_setAttribute(
             'width',
             core\unit\DisplaySize::factory($width, null, true)
         );
     }
 
-    public function getWidth() {
+    public function getWidth()
+    {
         return $this->_getAttribute('width');
     }
 
-    public function setHeight($height) {
+    public function setHeight($height)
+    {
         return $this->_setAttribute(
             'height',
             core\unit\DisplaySize::factory($height, null, true)
         );
     }
 
-    public function getHeight() {
+    public function getHeight()
+    {
         return $this->_getAttribute('height');
     }
 }
@@ -1061,87 +1154,101 @@ trait TAttributeModule_Dimension {
 
 
 // Document events
-trait TAttributeModule_DocumentEvents {
-
-    public function setOnUnloadScript($script) {
+trait TAttributeModule_DocumentEvents
+{
+    public function setOnUnloadScript($script)
+    {
         return $this->_setAttribute(
             'onunload',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnUnloadScript() {
+    public function getOnUnloadScript()
+    {
         return $this->_getAttribute('onunload');
     }
 
-    public function setOnAbortScript($script) {
+    public function setOnAbortScript($script)
+    {
         return $this->_setAttribute(
             'onabort',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnAbortScript() {
+    public function getOnAbortScript()
+    {
         return $this->_getAttribute('onabort');
     }
 
-    public function setOnErrorScript($script) {
+    public function setOnErrorScript($script)
+    {
         return $this->_setAttribute(
             'onerror',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnErrorScript() {
+    public function getOnErrorScript()
+    {
         return $this->_getAttribute('onerror');
     }
 
-    public function setOnResizeScript($script) {
+    public function setOnResizeScript($script)
+    {
         return $this->_setAttribute(
             'onresize',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnResizeScript() {
+    public function getOnResizeScript()
+    {
         return $this->_getAttribute('onresize');
     }
 
-    public function setOnScrollScript($script) {
+    public function setOnScrollScript($script)
+    {
         return $this->_setAttribute(
             'onscroll',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnScrollScript() {
+    public function getOnScrollScript()
+    {
         return $this->_getAttribute('onscroll');
     }
 
-    public function setOnZoomScript($script) {
+    public function setOnZoomScript($script)
+    {
         return $this->_setAttribute(
             'onzoom',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnZoomScript() {
+    public function getOnZoomScript()
+    {
         return $this->_getAttribute('onzoom');
     }
 }
 
 
 // External resources
-trait TAttributeModule_ExternalResources {
-
-    public function setExternalResourcesRequired($required) {
+trait TAttributeModule_ExternalResources
+{
+    public function setExternalResourcesRequired($required)
+    {
         return $this->_setAttribute(
             'externalResourcesRequired',
             $this->_normalizeBoolean($required)
         );
     }
 
-    public function getExternalResourcesRequired() {
+    public function getExternalResourcesRequired()
+    {
         return $this->_getAttribute('externalResourcesRequired');
     }
 }
@@ -1149,9 +1256,10 @@ trait TAttributeModule_ExternalResources {
 
 
 // Filter
-trait TAttributeModule_Filter {
-
-    public function setFilter($filter) {
+trait TAttributeModule_Filter
+{
+    public function setFilter($filter)
+    {
         return $this->_setAttribute(
             'filter',
             $this->_normalizeKeywordOrIdentifier(
@@ -1161,16 +1269,18 @@ trait TAttributeModule_Filter {
         );
     }
 
-    public function getFilter() {
+    public function getFilter()
+    {
         return $this->_getAttribute('filter');
     }
 }
 
 
 // Filter color
-trait TAttributeModule_FilterColor {
-
-    public function setColorInterpolationFilters($interpolation) {
+trait TAttributeModule_FilterColor
+{
+    public function setColorInterpolationFilters($interpolation)
+    {
         return $this->_setAttribute(
             'color-interpolation-filters',
             $this->_normalizeKeyword(
@@ -1181,18 +1291,21 @@ trait TAttributeModule_FilterColor {
         );
     }
 
-    public function getColorInterpolationFilters() {
+    public function getColorInterpolationFilters()
+    {
         return $this->_getAttribute('color-interpolation-filters');
     }
 
-    public function setLightingColor($color) {
+    public function setLightingColor($color)
+    {
         return $this->_setAttribute(
             'lighting-color',
             $this->_normalizeInheritedColor($color)
         );
     }
 
-    public function getLightingColor() {
+    public function getLightingColor()
+    {
         return $this->_getAttribute('lighting-color');
     }
 }
@@ -1201,27 +1314,31 @@ trait TAttributeModule_FilterColor {
 
 
 // Flood
-trait TAttributeModule_Flood {
-
-    public function setFloodColor($color) {
+trait TAttributeModule_Flood
+{
+    public function setFloodColor($color)
+    {
         return $this->_setAttribute(
             'flood-color',
             $this->_normalizeInheritedColor($color)
         );
     }
 
-    public function getFloodColor() {
+    public function getFloodColor()
+    {
         return $this->_getAttribute('flood-color');
     }
 
-    public function setFloodOpacity($opacity) {
+    public function setFloodOpacity($opacity)
+    {
         return $this->_setAttribute(
             'flood-opacity',
             $this->_normalizeOpacity($opacity)
         );
     }
 
-    public function getFloodOpacity() {
+    public function getFloodOpacity()
+    {
         return $this->_getAttribute('flood-opacity');
     }
 }
@@ -1231,20 +1348,23 @@ trait TAttributeModule_Flood {
 
 
 // Font
-trait TAttributeModule_Font {
-
-    public function setFontFamily($family) {
+trait TAttributeModule_Font
+{
+    public function setFontFamily($family)
+    {
         return $this->_setAttribute(
             'font-family',
             $this->_normalizeIdentifier($family)
         );
     }
 
-    public function getFontFamily() {
+    public function getFontFamily()
+    {
         return $this->_getAttribute('font-family');
     }
 
-    public function setFontSize($size) {
+    public function setFontSize($size)
+    {
         return $this->_setAttribute(
             'font-size',
             $this->_normalizeKeywordOrLength(
@@ -1254,11 +1374,13 @@ trait TAttributeModule_Font {
         );
     }
 
-    public function getFontSize() {
+    public function getFontSize()
+    {
         return $this->_getAttribute('font-size');
     }
 
-    public function setFontSizeAdjust($adjust) {
+    public function setFontSizeAdjust($adjust)
+    {
         return $this->_setAttribute(
             'font-size-adjust',
             $this->_normalizeKeywordOrNumber(
@@ -1269,11 +1391,13 @@ trait TAttributeModule_Font {
         );
     }
 
-    public function getFontSizeAdjust() {
+    public function getFontSizeAdjust()
+    {
         return $this->_getAttribute('font-size-adjust');
     }
 
-    public function setFontStretch($stretch) {
+    public function setFontStretch($stretch)
+    {
         return $this->_setAttribute(
             'font-stretch',
             $this->_normalizeKeyword(
@@ -1287,11 +1411,13 @@ trait TAttributeModule_Font {
         );
     }
 
-    public function getFontStretch() {
+    public function getFontStretch()
+    {
         return $this->_getAttribute('font-stretch');
     }
 
-    public function setFontStyle($style) {
+    public function setFontStyle($style)
+    {
         return $this->_setAttribute(
             'font-style',
             $this->_normalizeKeyword(
@@ -1302,11 +1428,13 @@ trait TAttributeModule_Font {
         );
     }
 
-    public function getFontStyle() {
+    public function getFontStyle()
+    {
         return $this->_getAttribute('font-style');
     }
 
-    public function setFontVariant($variant) {
+    public function setFontVariant($variant)
+    {
         return $this->_setAttribute(
             'font-variant',
             $this->_normalizeKeyword(
@@ -1317,11 +1445,13 @@ trait TAttributeModule_Font {
         );
     }
 
-    public function getFontVariant() {
+    public function getFontVariant()
+    {
         return $this->_getAttribute('font-variant');
     }
 
-    public function setFontWeight($weight) {
+    public function setFontWeight($weight)
+    {
         return $this->_setAttribute(
             'font-weight',
             $this->_normalizeKeyword(
@@ -1332,90 +1462,104 @@ trait TAttributeModule_Font {
         );
     }
 
-    public function getFontWeight() {
+    public function getFontWeight()
+    {
         return $this->_getAttribute('font-weight');
     }
 }
 
 
 
-trait TAttributeModule_FontAdvance {
-
-    public function setHorizontalAdvance($advance) {
+trait TAttributeModule_FontAdvance
+{
+    public function setHorizontalAdvance($advance)
+    {
         return $this->_setAttribute(
             'horiz-adv-x',
             $this->_normalizeLength($advance)
         );
     }
 
-    public function getHorizontalAdvance() {
+    public function getHorizontalAdvance()
+    {
         return $this->_getAttribute('horiz-adv-x');
     }
 
-    public function getVerticalAdvance() {
+    public function getVerticalAdvance()
+    {
         return $this->_getAttribute('vert-adv-y');
     }
 
-    public function setVerticalOriginX($x) {
+    public function setVerticalOriginX($x)
+    {
         return $this->_setAttribute(
             'vert-origin-x',
-            $this->_normalizeLength($advance)
+            $this->_normalizeLength($x)
         );
     }
 }
 
-trait TAttributeModule_FontHorizontalOrigin {
-
-    public function setHorizontalOriginX($x) {
+trait TAttributeModule_FontHorizontalOrigin
+{
+    public function setHorizontalOriginX($x)
+    {
         return $this->_setAttribute(
             'horiz-origin-x',
             $this->_normalizeLength($x)
         );
     }
 
-    public function getHorizontalOriginX() {
+    public function getHorizontalOriginX()
+    {
         return $this->_getAttribute('horiz-origin-x');
     }
 
-    public function setHorizontalOriginY($y) {
+    public function setHorizontalOriginY($y)
+    {
         return $this->_setAttribute(
             'horiz-origin-y',
             $this->_normalizeLength($y)
         );
     }
 
-    public function getHorizontalOriginY() {
+    public function getHorizontalOriginY()
+    {
         return $this->_getAttribute('horiz-origin-y');
     }
 }
 
-trait TAttributeModule_FontVerticalOrigin {
-
-    public function setVerticalAdvance($advance) {
+trait TAttributeModule_FontVerticalOrigin
+{
+    public function setVerticalAdvance($advance)
+    {
         return $this->_setAttribute(
             'vert-adv-y',
             $this->_normalizeLength($advance)
         );
     }
 
-    public function getVerticalOriginX() {
+    public function getVerticalOriginX()
+    {
         return $this->_getAttribute('vert-origin-x');
     }
 
-    public function setVerticalOriginY($y) {
+    public function setVerticalOriginY($y)
+    {
         return $this->_setAttribute(
             'vert-origin-y',
-            $this->_normalizeLength($advance)
+            $this->_normalizeLength($y)
         );
     }
 
-    public function getVerticalOriginY() {
+    public function getVerticalOriginY()
+    {
         return $this->_getAttribute('vert-origin-y');
     }
 }
 
 
-trait TAttributeModule_FontDefinition {
+trait TAttributeModule_FontDefinition
+{
     use TAttributeModule_FontAdvance;
     use TAttributeModule_FontHorizontalOrigin;
     use TAttributeModule_FontVerticalOrigin;
@@ -1424,126 +1568,147 @@ trait TAttributeModule_FontDefinition {
 
 
 // Graphical element events
-trait TAttributeModule_GraphicalElementEvents {
-
-    public function setOnFocusInScript($script) {
+trait TAttributeModule_GraphicalElementEvents
+{
+    public function setOnFocusInScript($script)
+    {
         return $this->_setAttribute(
             'onfocusin',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnFocusInScript() {
+    public function getOnFocusInScript()
+    {
         return $this->_getAttribute('onfocusin');
     }
 
-    public function setOnFocusOutScript($script) {
+    public function setOnFocusOutScript($script)
+    {
         return $this->_setAttribute(
             'onfocusout',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnFocusOutScript() {
+    public function getOnFocusOutScript()
+    {
         return $this->_getAttribute('onfocusout');
     }
 
-    public function setOnActivateScript($script) {
+    public function setOnActivateScript($script)
+    {
         return $this->_setAttribute(
             'onactivate',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnActivateScript() {
+    public function getOnActivateScript()
+    {
         return $this->_getAttribute('onactivate');
     }
 
-    public function setOnClickScript($script) {
+    public function setOnClickScript($script)
+    {
         return $this->_setAttribute(
             'onclick',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnClickScript() {
+    public function getOnClickScript()
+    {
         return $this->_getAttribute('onclick');
     }
 
-    public function setOnMouseDownScript($script) {
+    public function setOnMouseDownScript($script)
+    {
         return $this->_setAttribute(
             'onmousedown',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnMouseDownScript() {
+    public function getOnMouseDownScript()
+    {
         return $this->_getAttribute('onmousedown');
     }
 
-    public function setOnMouseUpScript($script) {
+    public function setOnMouseUpScript($script)
+    {
         return $this->_setAttribute(
             'onmouseup',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnMouseUpScript() {
+    public function getOnMouseUpScript()
+    {
         return $this->_getAttribute('onmouseup');
     }
 
-    public function setOnMouseOverScript($script) {
+    public function setOnMouseOverScript($script)
+    {
         return $this->_setAttribute(
             'onmouseover',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnMouseOverScript() {
+    public function getOnMouseOverScript()
+    {
         return $this->_getAttribute('onmouseover');
     }
 
-    public function setOnMouseMoveScript($script) {
+    public function setOnMouseMoveScript($script)
+    {
         return $this->_setAttribute(
             'onmousemove',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnMouseMoveScript() {
+    public function getOnMouseMoveScript()
+    {
         return $this->_getAttribute('onmousemove');
     }
 
-    public function setOnMouseOutScript($script) {
+    public function setOnMouseOutScript($script)
+    {
         return $this->_setAttribute(
             'onmouseout',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnMouseOutScript() {
+    public function getOnMouseOutScript()
+    {
         return $this->_getAttribute('onmouseout');
     }
 
-    public function setOnLoadScript($script) {
+    public function setOnLoadScript($script)
+    {
         return $this->_setAttribute(
             'onload',
             $this->_normalizeScript($script)
         );
     }
 
-    public function getOnLoadScript() {
+    public function getOnLoadScript()
+    {
         return $this->_getAttribute('onload');
     }
 }
 
 
 // Graphics
-trait TAttributeModule_Graphics {
-
+trait TAttributeModule_Graphics
+{
     use TAttributeModule_BasicGraphics;
 
-    public function setImageRendering($rendering) {
+    public function setImageRendering($rendering)
+    {
         return $this->_setAttribute(
             'image-rendering',
             $this->_normalizeKeyword(
@@ -1554,11 +1719,13 @@ trait TAttributeModule_Graphics {
         );
     }
 
-    public function getImageRendering() {
+    public function getImageRendering()
+    {
         return $this->_getAttribute('image-rendering');
     }
 
-    public function setPointerEvents($events) {
+    public function setPointerEvents($events)
+    {
         return $this->_setAttribute(
             'pointer-events',
             $this->_normalizeKeyword(
@@ -1569,11 +1736,13 @@ trait TAttributeModule_Graphics {
         );
     }
 
-    public function getPointerEvents() {
+    public function getPointerEvents()
+    {
         return $this->_getAttribute('pointer-events');
     }
 
-    public function setShapeRendering($rendering) {
+    public function setShapeRendering($rendering)
+    {
         return $this->_setAttribute(
             'shape-rendering',
             $this->_normalizeKeyword(
@@ -1584,11 +1753,13 @@ trait TAttributeModule_Graphics {
         );
     }
 
-    public function getShapeRendering() {
+    public function getShapeRendering()
+    {
         return $this->_getAttribute('shape-rendering');
     }
 
-    public function setTextRendering($rendering) {
+    public function setTextRendering($rendering)
+    {
         return $this->_setAttribute(
             'text-rendering',
             $this->_normalizeKeyword(
@@ -1599,7 +1770,8 @@ trait TAttributeModule_Graphics {
         );
     }
 
-    public function getTextRendering() {
+    public function getTextRendering()
+    {
         return $this->_getAttribute('text-rendering');
     }
 }
@@ -1607,27 +1779,31 @@ trait TAttributeModule_Graphics {
 
 
 // Gradient
-trait TAttributeModule_Gradient {
-
-    public function setStopColor($color) {
+trait TAttributeModule_Gradient
+{
+    public function setStopColor($color)
+    {
         return $this->_setAttribute(
             'stop-color',
             $this->_normalizeInheritedColor($color)
         );
     }
 
-    public function getStopColor() {
+    public function getStopColor()
+    {
         return $this->_getAttribute('stop-color');
     }
 
-    public function setStopOpacity($opacity) {
+    public function setStopOpacity($opacity)
+    {
         return $this->_setAttribute(
             'stop-opacity',
             $this->_normalizeOpacity($opacity)
         );
     }
 
-    public function getStopOpacity() {
+    public function getStopOpacity()
+    {
         return $this->_getAttribute('stop-opacity');
     }
 }
@@ -1636,9 +1812,10 @@ trait TAttributeModule_Gradient {
 
 
 // Marker
-trait TAttributeModule_Marker {
-
-    public function setMarkerStart($start) {
+trait TAttributeModule_Marker
+{
+    public function setMarkerStart($start)
+    {
         return $this->_setAttribute(
             'marker-start',
             $this->_normalizeKeywordOrIdentifier(
@@ -1648,11 +1825,13 @@ trait TAttributeModule_Marker {
         );
     }
 
-    public function getMarkerStart() {
+    public function getMarkerStart()
+    {
         return $this->_getAttribute('marker-start');
     }
 
-    public function setMarkerMid($mid) {
+    public function setMarkerMid($mid)
+    {
         return $this->_setAttribute(
             'marker-mid',
             $this->_normalizeKeywordOrIdentifier(
@@ -1662,11 +1841,13 @@ trait TAttributeModule_Marker {
         );
     }
 
-    public function getMarkerMid() {
+    public function getMarkerMid()
+    {
         return $this->_getAttribute('marker-mid');
     }
 
-    public function setMarkerEnd($end) {
+    public function setMarkerEnd($end)
+    {
         return $this->_setAttribute(
             'marker-end',
             $this->_normalizeKeywordOrIdentifier(
@@ -1676,7 +1857,8 @@ trait TAttributeModule_Marker {
         );
     }
 
-    public function getMarkerEnd() {
+    public function getMarkerEnd()
+    {
         return $this->_getAttribute('marker-end');
     }
 }
@@ -1684,9 +1866,10 @@ trait TAttributeModule_Marker {
 
 
 // Mask
-trait TAttributeModule_Mask {
-
-    public function setMask($mask) {
+trait TAttributeModule_Mask
+{
+    public function setMask($mask)
+    {
         return $this->_setAttribute(
             'mask',
             $this->_normalizeKeywordOrIdentifier(
@@ -1696,7 +1879,8 @@ trait TAttributeModule_Mask {
         );
     }
 
-    public function getMask() {
+    public function getMask()
+    {
         return $this->_getAttribute('mask');
     }
 }
@@ -1705,11 +1889,12 @@ trait TAttributeModule_Mask {
 
 
 // Paint
-trait TAttributeModule_Paint {
-
+trait TAttributeModule_Paint
+{
     use TAttributeModule_BasicPaint;
 
-    public function setColorProfile($profile) {
+    public function setColorProfile($profile)
+    {
         return $this->_setAttribute(
             'color-profile',
             $this->_normalizeKeywordOrIdentifier(
@@ -1719,11 +1904,13 @@ trait TAttributeModule_Paint {
         );
     }
 
-    public function getColorProfile() {
+    public function getColorProfile()
+    {
         return $this->_getAttribute('color-profile');
     }
 
-    public function setColorInterpolation($interpolation) {
+    public function setColorInterpolation($interpolation)
+    {
         return $this->_setAttribute(
             'color-interpolation',
             $this->_normalizeKeyword(
@@ -1734,45 +1921,52 @@ trait TAttributeModule_Paint {
         );
     }
 
-    public function getColorInterpolation() {
+    public function getColorInterpolation()
+    {
         return $this->_getAttribute('color-interpolation');
     }
 }
 
 
 // Paint opacity
-trait TAttributeModule_PaintOpacity {
-
-    public function setOpacity($opacity) {
+trait TAttributeModule_PaintOpacity
+{
+    public function setOpacity($opacity)
+    {
         return $this->_setAttribute(
             'opacity',
             $this->_normalizeOpacity($opacity)
         );
     }
 
-    public function getOpacity() {
+    public function getOpacity()
+    {
         return $this->_getAttribute('opacity');
     }
 
-    public function setStrokeOpacity($opacity) {
+    public function setStrokeOpacity($opacity)
+    {
         return $this->_setAttribute(
             'stroke-opacity',
             $this->_normalizeOpacity($opacity)
         );
     }
 
-    public function getStrokeOpacity() {
+    public function getStrokeOpacity()
+    {
         return $this->_getAttribute('stroke-opacity');
     }
 
-    public function setFillOpacity($opacity) {
+    public function setFillOpacity($opacity)
+    {
         return $this->_setAttribute(
             'fill-opacity',
             $this->_normalizeOpacity($opacity)
         );
     }
 
-    public function getFillOpacity() {
+    public function getFillOpacity()
+    {
         return $this->_getAttribute('fill-opacity');
     }
 }
@@ -1781,13 +1975,14 @@ trait TAttributeModule_PaintOpacity {
 
 
 // Path data
-trait TAttributeModule_PathData {
-
-    public function setCommands($commands) {
+trait TAttributeModule_PathData
+{
+    public function setCommands($commands)
+    {
         $commands = neon\vector\svg\command\Base::listFactory($commands);
         $string = '';
 
-        foreach($commands as $command) {
+        foreach ($commands as $command) {
             $string .= $command->toString();
         }
 
@@ -1795,14 +1990,16 @@ trait TAttributeModule_PathData {
         return $this;
     }
 
-    public function getCommands() {
+    public function getCommands()
+    {
         return neon\vector\svg\command\Base::listFactory($this->_getAttribute('d'));
     }
 
-    public function importPathData(IPathDataAttributeModule $path) {
+    public function importPathData(IPathDataAttributeModule $path)
+    {
         $string = $this->_getAttribute('d');
 
-        foreach($path->getCommands() as $command) {
+        foreach ($path->getCommands() as $command) {
             $string .= $command->toString();
         }
 
@@ -1813,30 +2010,31 @@ trait TAttributeModule_PathData {
 
 
 // Point data
-trait TAttributeModule_PointData {
-
+trait TAttributeModule_PointData
+{
     protected $_points = [];
 
-    public function setPoints($points) {
-        if(is_string($points)) {
+    public function setPoints($points)
+    {
+        if (is_string($points)) {
             $points = str_replace(',', ' ', $points);
             $points = explode(' ', $points);
         }
 
-        if(!is_array($points)) {
+        if (!is_array($points)) {
             $points = [$points];
         }
 
         $this->_points = [];
 
-        while(!empty($points)) {
+        while (!empty($points)) {
             $point = array_shift($points);
 
-            if(is_scalar($point)) {
-                if(false !== strpos($point, ',')) {
+            if (is_scalar($point)) {
+                if (false !== strpos($point, ',')) {
                     $point = explode(',', trim($point));
                 } else {
-                    if(isset($points[0]) && false === strpos($points[0], ',')) {
+                    if (isset($points[0]) && false === strpos($points[0], ',')) {
                         $point = [$point, array_shift($points)];
                     } else {
                         $point = [$point, null];
@@ -1844,11 +2042,11 @@ trait TAttributeModule_PointData {
                 }
             }
 
-            if(is_array($point)) {
+            if (is_array($point)) {
                 $point = core\unit\DisplayPosition::factory(array_shift($point), array_shift($point), true);
             }
 
-            if(!$point instanceof core\unit\IDisplayPosition) {
+            if (!$point instanceof core\unit\IDisplayPosition) {
                 throw new InvalidArgumentException(
                     'Invalid point detected in '.$this->getName()
                 );
@@ -1857,13 +2055,13 @@ trait TAttributeModule_PointData {
             $this->_points[] = $point;
         }
 
-        if(count($this->_points) < self::MIN_POINTS) {
+        if (count($this->_points) < self::MIN_POINTS) {
             throw new InvalidArgumentException(
                 $this->getName().' shape elements require at least '.self::MIN_POINTS.' points'
             );
         }
 
-        if(self::MAX_POINTS !== null && count($this->_points) > self::MAX_POINTS) {
+        if (self::MAX_POINTS !== null && count($this->_points) > self::MAX_POINTS) {
             throw new InvalidArgumentException(
                 $this->getName().' shape elements require no more than '.self::MAX_POINTS.' points'
             );
@@ -1874,14 +2072,16 @@ trait TAttributeModule_PointData {
         return $this;
     }
 
-    public function getPoints() {
+    public function getPoints()
+    {
         return $this->_points;
     }
 
-    protected function _onSetPoints() {
+    protected function _onSetPoints()
+    {
         $output = [];
 
-        foreach($this->_points as $point) {
+        foreach ($this->_points as $point) {
             $output[] = $point->getX().','.$point->getY();
         }
 
@@ -1892,11 +2092,12 @@ trait TAttributeModule_PointData {
 
 
 // Position
-trait TAttributeModule_Position {
-
+trait TAttributeModule_Position
+{
     protected $_position;
 
-    public function setPosition($xPosition, $yPosition=null) {
+    public function setPosition($xPosition, $yPosition=null)
+    {
         $this->_position = core\unit\DisplayPosition::factory($xPosition, $yPosition, true);
         $this->_setAttribute($this->_getXPositionAttributeName(), $this->_position->getX());
         $this->_setAttribute($this->_getYPositionAttributeName(), $this->_position->getY());
@@ -1904,29 +2105,35 @@ trait TAttributeModule_Position {
         return $this;
     }
 
-    public function setXPosition($x) {
+    public function setXPosition($x)
+    {
         $this->_position->setX($x);
         return $this->_setAttribute($this->_getXPositionAttributeName(), $this->_position->getX());
     }
 
-    public function getXPosition() {
+    public function getXPosition()
+    {
         return $this->_getAttribute($this->_getXPositionAttributeName());
     }
 
-    public function setYPosition($y) {
+    public function setYPosition($y)
+    {
         $this->_position->setY($y);
         return $this->_setAttribute($this->_getYPositionAttributeName(), $this->_position->getY());
     }
 
-    public function getYPosition() {
+    public function getYPosition()
+    {
         return $this->_getAttribute($this->_getYPositionAttributeName());
     }
 
-    protected function _getXPositionAttributeName() {
+    protected function _getXPositionAttributeName()
+    {
         return 'x';
     }
 
-    protected function _getYPositionAttributeName() {
+    protected function _getYPositionAttributeName()
+    {
         return 'y';
     }
 }
@@ -1934,45 +2141,52 @@ trait TAttributeModule_Position {
 
 
 // Radius
-trait TAttributeModule_Radius {
-
-    public function setRadius($radius) {
+trait TAttributeModule_Radius
+{
+    public function setRadius($radius)
+    {
         return $this->_setAttribute(
             'r',
             core\unit\DisplaySize::factory($radius, null, true)
         );
     }
 
-    public function getRadius() {
+    public function getRadius()
+    {
         return $this->_getAttribute('r');
     }
 }
 
-trait TAttributeModule_2DRadius {
-
-    public function setRadius($radius) {
+trait TAttributeModule_2DRadius
+{
+    public function setRadius($radius)
+    {
         return $this->setXRadius($radius)->setYRadius($radius);
     }
 
-    public function setXRadius($radius) {
+    public function setXRadius($radius)
+    {
         return $this->_setAttribute(
             'rx',
             core\unit\DisplaySize::factory($radius, null, true)
         );
     }
 
-    public function getXRadius() {
+    public function getXRadius()
+    {
         return $this->_getAttribute('rx');
     }
 
-    public function setYRadius($radius) {
+    public function setYRadius($radius)
+    {
         return $this->_setAttribute(
             'ry',
             core\unit\DisplaySize::factory($radius, null, true)
         );
     }
 
-    public function getYRadius() {
+    public function getYRadius()
+    {
         return $this->_getAttribute('ry');
     }
 }
@@ -1982,7 +2196,8 @@ trait TAttributeModule_2DRadius {
 
 
 // Structure
-trait TAttributeModule_Structure {
+trait TAttributeModule_Structure
+{
     use TAttributeModule_Clip;
     use TAttributeModule_Conditional;
     use TAttributeModule_Container;
@@ -2009,34 +2224,39 @@ trait TAttributeModule_Structure {
 
 
 // Shape
-trait TAttributeModule_Shape {
+trait TAttributeModule_Shape
+{
     use TAttributeModule_Structure;
     use TAttributeModule_Transform;
 }
 
 
 // Style
-trait TAttributeModule_Style {
-
-    public function setClass($class) {
+trait TAttributeModule_Style
+{
+    public function setClass($class)
+    {
         return $this->_setAttribute(
             'class',
             $this->_normalizeIdentifier($class)
         );
     }
 
-    public function getClass() {
+    public function getClass()
+    {
         return $this->_getAttribute('class');
     }
 
-    public function setStyle($style) {
+    public function setStyle($style)
+    {
         return $this->_setAttribute(
             'style',
             $this->_normalizeIdentifier($style)
         );
     }
 
-    public function getStyle() {
+    public function getStyle()
+    {
         return $this->_getAttribute('style');
     }
 }
@@ -2044,9 +2264,10 @@ trait TAttributeModule_Style {
 
 
 // Text
-trait TAttributeModule_Text {
-
-    public function setWritingMode($mode) {
+trait TAttributeModule_Text
+{
+    public function setWritingMode($mode)
+    {
         return $this->_setAttribute(
             'writing-mode',
             $this->_normalizeKeyword(
@@ -2057,7 +2278,8 @@ trait TAttributeModule_Text {
         );
     }
 
-    public function getWritingMode() {
+    public function getWritingMode()
+    {
         return $this->_getAttribute('writing-mode');
     }
 }
@@ -2065,9 +2287,10 @@ trait TAttributeModule_Text {
 
 
 // Text content
-trait TAttributeModule_TextContent {
-
-    public function setAlignmentBaseline($baseline) {
+trait TAttributeModule_TextContent
+{
+    public function setAlignmentBaseline($baseline)
+    {
         return $this->_setAttribute(
             'alignment-baseline',
             $this->_normalizeKeyword(
@@ -2081,11 +2304,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getAlignmentBaseline() {
+    public function getAlignmentBaseline()
+    {
         return $this->_getAttribute('alignment-baseline');
     }
 
-    public function setBaselineShift($shift) {
+    public function setBaselineShift($shift)
+    {
         return $this->_setAttribute(
             'baseline-shift',
             $this->_normalizeKeywordOrLength(
@@ -2095,11 +2320,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getBaselineShift() {
+    public function getBaselineShift()
+    {
         return $this->_getAttribute('baseline-shift');
     }
 
-    public function setDirection($direction) {
+    public function setDirection($direction)
+    {
         return $this->_setAttribute(
             'direction',
             $this->_normalizeKeyword(
@@ -2110,11 +2337,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getDirection() {
+    public function getDirection()
+    {
         return $this->_getAttribute('direction');
     }
 
-    public function setDominantBaseline($baseline) {
+    public function setDominantBaseline($baseline)
+    {
         return $this->_setAttribute(
             'dominant-baseline',
             $this->_normalizeKeyword(
@@ -2128,11 +2357,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getDominantBaseline() {
+    public function getDominantBaseline()
+    {
         return $this->_getAttribute('dominant-baseline');
     }
 
-    public function setGlyphOrientationHorizontal($orientation) {
+    public function setGlyphOrientationHorizontal($orientation)
+    {
         return $this->_setAttribute(
             'glyph-orientation-horizontal',
             $this->_normalizeKeywordOrAngle(
@@ -2142,11 +2373,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getGlyphOrientationHorizontal() {
+    public function getGlyphOrientationHorizontal()
+    {
         return $this->_getAttribute('glyph-orientation-horizontal');
     }
 
-    public function setGlyphOrientationVertical($orientation) {
+    public function setGlyphOrientationVertical($orientation)
+    {
         return $this->_setAttribute(
             'glyph-orientation-vertical',
             $this->_normalizeKeywordOrAngle(
@@ -2156,11 +2389,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getGlyphOrientationVertical() {
+    public function getGlyphOrientationVertical()
+    {
         return $this->_getAttribute('glyph-orientation-vertical');
     }
 
-    public function setKerning($kerning) {
+    public function setKerning($kerning)
+    {
         return $this->_setAttribute(
             'kerning',
             $this->_normalizeKeywordOrLength(
@@ -2170,11 +2405,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getKerning() {
+    public function getKerning()
+    {
         return $this->_getAttribute('kerning');
     }
 
-    public function setLetterSpacing($spacing) {
+    public function setLetterSpacing($spacing)
+    {
         return $this->_setAttribute(
             'letter-spacing',
             $this->_normalizeKeywordOrLength(
@@ -2184,11 +2421,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getLetterSpacing() {
+    public function getLetterSpacing()
+    {
         return $this->_getAttribute('letter-spacing');
     }
 
-    public function setTextAnchor($anchor) {
+    public function setTextAnchor($anchor)
+    {
         return $this->_setAttribute(
             'text-anchor',
             $this->_normalizeKeyword(
@@ -2199,11 +2438,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getTextAnchor() {
+    public function getTextAnchor()
+    {
         return $this->_getAttribute('text-anchor');
     }
 
-    public function setTextDecoration($decoration) {
+    public function setTextDecoration($decoration)
+    {
         return $this->_setAttribute(
             'text-decoration',
             $this->_normalizeKeyword(
@@ -2214,11 +2455,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getTextDecoration() {
+    public function getTextDecoration()
+    {
         return $this->_getAttribute('text-decoration');
     }
 
-    public function setUnicodeBidi($bidi) {
+    public function setUnicodeBidi($bidi)
+    {
         return $this->_setAttribute(
             'unicode-bidi',
             $this->_normalizeKeyword(
@@ -2229,11 +2472,13 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getUnicodeBidi() {
+    public function getUnicodeBidi()
+    {
         return $this->_getAttribute('unicode-bidi');
     }
 
-    public function setWordSpacing($spacing) {
+    public function setWordSpacing($spacing)
+    {
         return $this->_setAttribute(
             'word-spacing',
             $this->_normalizeKeywordOrLength(
@@ -2243,7 +2488,8 @@ trait TAttributeModule_TextContent {
         );
     }
 
-    public function getWordSpacing() {
+    public function getWordSpacing()
+    {
         return $this->_getAttribute('word-spacing');
     }
 }
@@ -2251,16 +2497,18 @@ trait TAttributeModule_TextContent {
 
 
 // Transform
-trait TAttributeModule_Transform {
-
-    public function setTransform($transform) {
+trait TAttributeModule_Transform
+{
+    public function setTransform($transform)
+    {
         return $this->_setAttribute(
             'transform',
             $this->_normalizeIdentifier($transform)
         );
     }
 
-    public function getTransform() {
+    public function getTransform()
+    {
         return $this->_getAttribute('transform');
     }
 }
@@ -2268,9 +2516,10 @@ trait TAttributeModule_Transform {
 
 
 // Viewport
-trait TAttributeModule_Viewport {
-
-    public function setClip($clip) {
+trait TAttributeModule_Viewport
+{
+    public function setClip($clip)
+    {
         return $this->_setAttribute(
             'clip',
             $this->_normalizeKeywordOrIdentifier(
@@ -2280,11 +2529,13 @@ trait TAttributeModule_Viewport {
         );
     }
 
-    public function getClip() {
+    public function getClip()
+    {
         return $this->_getAttribute('clip');
     }
 
-    public function setOverflow($overflow) {
+    public function setOverflow($overflow)
+    {
         return $this->_setAttribute(
             'overflow',
             $this->_normalizeKeyword(
@@ -2295,7 +2546,8 @@ trait TAttributeModule_Viewport {
         );
     }
 
-    public function getOverflow() {
+    public function getOverflow()
+    {
         return $this->_getAttribute('overflow');
     }
 }
@@ -2303,16 +2555,18 @@ trait TAttributeModule_Viewport {
 
 
 // ViewBox
-trait TAttributeModule_ViewBox {
-
-    public function setViewBox($viewBox) {
+trait TAttributeModule_ViewBox
+{
+    public function setViewBox($viewBox)
+    {
         return $this->_setAttribute(
             'viewBox',
             $this->_normalizeIdentifier($viewBox)
         );
     }
 
-    public function getViewBox() {
+    public function getViewBox()
+    {
         return $this->_getAttribute('viewBox');
     }
 }
@@ -2320,9 +2574,10 @@ trait TAttributeModule_ViewBox {
 
 
 // XLink
-trait TAttributeModule_XLink {
-
-    public function setLinkType($type) {
+trait TAttributeModule_XLink
+{
+    public function setLinkType($type)
+    {
         return $this->_setAttribute(
             'xlink:type',
             $this->_normalizeKeyword(
@@ -2333,55 +2588,65 @@ trait TAttributeModule_XLink {
         );
     }
 
-    public function getLinkType() {
+    public function getLinkType()
+    {
         return $this->_getAttribute('xlink:type');
     }
 
-    public function setLinkHref($href) {
+    public function setLinkHref($href)
+    {
         return $this->_setAttribute(
             'xlink:href',
             $this->_normalizeIdentifier($href)
         );
     }
 
-    public function getLinkHref() {
+    public function getLinkHref()
+    {
         return $this->_getAttribute('xlink:href');
     }
 
-    public function setLinkRole($role) {
+    public function setLinkRole($role)
+    {
         return $this->_setAttribute(
             'xlink:role',
             $this->_normalizeIdentifier($role)
         );
     }
 
-    public function getLinkRole() {
+    public function getLinkRole()
+    {
         return $this->_getAttribute('xlink:role');
     }
 
-    public function setLinkArcRole($role) {
+    public function setLinkArcRole($role)
+    {
         return $this->_setAttribute(
             'xlink:arcrole',
             $this->_normalizeIdentifier($role)
         );
     }
 
-    public function getLinkArcRole() {
+    public function getLinkArcRole()
+    {
         return $this->_getAttribute('xlink:arcrole');
     }
 
-    public function setLinkTitle($title) {
+    public function setLinkTitle($title)
+    {
         return $this->_setAttribute(
             'xlink:title',
             $this->_normalizeText($title)
         );
     }
 
-    public function getLinkTitle() {
+    public function getLinkTitle()
+    {
         return $this->_getAttribute('xlink:title');
     }
 
-    public function setLinkShow($show) {
+    public function setLinkShow($show)
+    {
         return $this->_setAttribute(
             'xlink:show',
             $this->_normalizeKeyword(
@@ -2392,11 +2657,13 @@ trait TAttributeModule_XLink {
         );
     }
 
-    public function getLinkShow() {
+    public function getLinkShow()
+    {
         return $this->_getAttribute('xlink:show');
     }
 
-    public function setLinkActuate($actuate) {
+    public function setLinkActuate($actuate)
+    {
         return $this->_setAttribute(
             'xlink:actuate',
             $this->_normalizeKeyword(
@@ -2407,7 +2674,8 @@ trait TAttributeModule_XLink {
         );
     }
 
-    public function getLinkActuate() {
+    public function getLinkActuate()
+    {
         return $this->_getAttribute('xlink:actuate');
     }
 }
@@ -2415,9 +2683,10 @@ trait TAttributeModule_XLink {
 
 
 // Zoom and pan
-trait TAttributeModule_ZoomAndPan {
-
-    public function setZoomAndPan($zoomAndPan) {
+trait TAttributeModule_ZoomAndPan
+{
+    public function setZoomAndPan($zoomAndPan)
+    {
         return $this->_setAttribute(
             'zoomAndPan',
             $this->_normalizeKeyword(
@@ -2428,7 +2697,8 @@ trait TAttributeModule_ZoomAndPan {
         );
     }
 
-    public function getZoomAndPan() {
+    public function getZoomAndPan()
+    {
         return $this->_getAttribute('zoomAndPan');
     }
 }

@@ -7,9 +7,10 @@ namespace df\core\i18n\module;
 
 use df\core;
 
-class Dates extends Base implements core\i18n\module\generator\IModule {
-
-    public function getCalendarList() {
+class Dates extends Base implements core\i18n\module\generator\IModule
+{
+    public function getCalendarList()
+    {
         $this->_loadData();
 
         $output = $this->_data;
@@ -18,10 +19,11 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
         return array_keys($output);
     }
 
-    public function getDefaultCalendar() {
+    public function getDefaultCalendar()
+    {
         $this->_loadData();
 
-        if(isset($this->_data['@default'])
+        if (isset($this->_data['@default'])
         && isset($this->_data[$this->_data['@default']])) {
             return $this->_data['@default'];
         }
@@ -29,16 +31,17 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
         return 'gregorian';
     }
 
-    public function getDayName($day=null, $calendar=null) {
+    public function getDayName($day=null, $calendar=null)
+    {
         $this->_loadData();
 
         $list = $this->getDayList($calendar);
 
-        if($day === null) {
+        if ($day === null) {
             $day = core\time\Date::factory('now')->format('w');
         }
 
-        switch(strtolower($day)) {
+        switch (strtolower($day)) {
             case 0:
             case 7:
             case 'sun':
@@ -77,56 +80,59 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
         }
     }
 
-    public function getDayList($calendar=null) {
+    public function getDayList($calendar=null)
+    {
         $this->_loadData();
 
         $calendar = strtolower($calendar);
 
-        if(!isset($this->_data[$calendar])) {
+        if (!isset($this->_data[$calendar])) {
             $calendar = $this->getDefaultCalendar();
         }
 
         $c = $this->_data[$calendar];
 
-        if(is_string($c['days'])) {
+        if (is_string($c['days'])) {
             return $this->getDayList($c['days']);
         }
 
         return $c['days']['full'];
     }
 
-    public function getAbbreviatedDayList($calendar=null) {
+    public function getAbbreviatedDayList($calendar=null)
+    {
         $this->_loadData();
 
         $calendar = strtolower($calendar);
 
-        if(!isset($this->_data[$calendar])) {
+        if (!isset($this->_data[$calendar])) {
             $calendar = $this->getDefaultCalendar();
         }
 
         $c = $this->_data[$calendar];
 
-        if(is_string($c['days'])) {
+        if (is_string($c['days'])) {
             return $this->getDayList($c['days']);
         }
 
-        if(is_string($c['days']['abbreviated'])) {
+        if (is_string($c['days']['abbreviated'])) {
             return $this->getDayList($calendar);
         }
 
         return $c['days']['abbreviated'];
     }
 
-    public function getMonthName($month=null, $calendar=null) {
+    public function getMonthName($month=null, $calendar=null)
+    {
         $this->_loadData();
 
         $list = $this->getMonthList($calendar);
 
-        if($month === null) {
-            $month = core\time\Date::now()->format('n');
+        if ($month === null) {
+            $month = core\time\Date::factory('now')->format('n');
         }
 
-        switch(strtolower($month)) {
+        switch (strtolower($month)) {
             case 1:
             case 'jan':
             case 'january':
@@ -188,72 +194,75 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
         }
     }
 
-    public function getMonthList($calendar=null) {
+    public function getMonthList($calendar=null)
+    {
         $this->_loadData();
 
         $calendar = strtolower($calendar);
 
-        if(!isset($this->_data[$calendar])) {
+        if (!isset($this->_data[$calendar])) {
             $calendar = $this->getDefaultCalendar();
         }
 
         $c = $this->_data[$calendar];
 
-        if(is_string($c['months'])) {
+        if (is_string($c['months'])) {
             return $this->getMonthList($c['months']);
         }
 
         return $c['months']['full'];
     }
 
-    public function getAbbreviatedMonthList($calendar=null) {
+    public function getAbbreviatedMonthList($calendar=null)
+    {
         $this->_loadData();
 
         $calendar = strtolower($calendar);
 
-        if(!isset($this->_data[$calendar])) {
+        if (!isset($this->_data[$calendar])) {
             $calendar = $this->getDefaultCalendar();
         }
 
         $c = $this->_data[$calendar];
 
-        if(is_string($c['months'])) {
+        if (is_string($c['months'])) {
             return $this->getAbbreviatedMonthList($c['months']);
         }
 
-        if(is_string($c['months']['abbreviated'])) {
+        if (is_string($c['months']['abbreviated'])) {
             return $this->getMonthList($calendar);
         }
 
         return $c['months']['abbreviated'];
     }
 
-// Generator
-    public function _convertCldr(core\i18n\ILocale $locale, \SimpleXMLElement $doc) {
-        if(!isset($doc->dates->calendars)) {
+    // Generator
+    public function _convertCldr(core\i18n\ILocale $locale, \SimpleXMLElement $doc)
+    {
+        if (!isset($doc->dates->calendars)) {
             return null;
         }
 
         $output = [];
         $calendars = $doc->dates->calendars;
 
-        if(isset($calendars->{'default'})) {
+        if (isset($calendars->{'default'})) {
             $output['@default'] = (string)$calendars->{'default'}['choice'];
         } else {
             $output['@default'] = 'gregorian';
         }
 
 
-        foreach($calendars->calendar as $calendar) {
+        foreach ($calendars->calendar as $calendar) {
             $arr = [];
 
             $this->_calendarDays($calendar, $arr);
             $this->_calendarMonths($calendar, $arr);
 
-            if(isset($calendar->am)) {
+            if (isset($calendar->am)) {
                 $arr['meridian']['am'] = (string)$calendar->am;
             }
-            if(isset($calendar->pm)) {
+            if (isset($calendar->pm)) {
                 $arr['meridian']['pm'] = (string)$calendar->pm;
             }
 
@@ -267,14 +276,15 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
         return $output;
     }
 
-    protected function _calendarDays($calendar, &$arr) {
-        if(!isset($calendar->days)) {
+    protected function _calendarDays($calendar, &$arr)
+    {
+        if (!isset($calendar->days)) {
             return;
         }
 
-        if(isset($calendar->days->alias)) {
+        if (isset($calendar->days->alias)) {
             $path = (string)$calendar->days->alias['path'];
-            if(substr($path, 0, 14) == '../../calendar') {
+            if (substr($path, 0, 14) == '../../calendar') {
                 $arr['days'] = substr($path, 22, -7);
             }
 
@@ -282,27 +292,27 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
         }
 
         $context = null;
-        foreach($calendar->days->dayContext as $c) {
-            if((string)$c['type'] == 'format') {
+        foreach ($calendar->days->dayContext as $c) {
+            if ((string)$c['type'] == 'format') {
                 $context = $c;
                 break;
             }
         }
 
-        if(!$context) {
+        if (!$context) {
             return;
         }
 
         $arr['days'] = [];
 
-        if(isset($context->{'default'})) {
+        if (isset($context->{'default'})) {
             $default = (string)$context->{'default'}['choice'];
 
-            if($default != 'wide' && $default != 'abbreviated') {
+            if ($default != 'wide' && $default != 'abbreviated') {
                 return;
             }
 
-            if($default == 'wide') {
+            if ($default == 'wide') {
                 $default = 'full';
             }
 
@@ -311,22 +321,22 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
             $arr['days']['@default'] = 'wide';
         }
 
-        foreach($context->dayWidth as $set) {
+        foreach ($context->dayWidth as $set) {
             $type = (string)$set['type'];
-            if($type != 'wide' && $type != 'abbreviated') {
+            if ($type != 'wide' && $type != 'abbreviated') {
                 continue;
             }
 
-            if($type == 'wide') {
+            if ($type == 'wide') {
                 $type = 'full';
             }
 
-            if(isset($set->alias)) {
+            if (isset($set->alias)) {
                 $path = (string)$set->alias['path'];
-                if(substr($path, 0, 11) == '../dayWidth') {
+                if (substr($path, 0, 11) == '../dayWidth') {
                     $arr['days'][$type] = substr($path, 19, -2);
                     continue;
-                } else if(substr($path, 0, 16) == '../../dayContext') {
+                } elseif (substr($path, 0, 16) == '../../dayContext') {
                     $set = $set->xpath($path);
                     $set = $set[0];
                 }
@@ -334,20 +344,21 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
 
             $arr['days'][$type] = [];
 
-            foreach($set->day as $day) {
+            foreach ($set->day as $day) {
                 $arr['days'][$type][(string)$day['type']] = (string)$day;
             }
         }
     }
 
-    protected function _calendarMonths($calendar, &$arr) {
-        if(!isset($calendar->months)) {
+    protected function _calendarMonths($calendar, &$arr)
+    {
+        if (!isset($calendar->months)) {
             return;
         }
 
-        if(isset($calendar->months->alias)) {
+        if (isset($calendar->months->alias)) {
             $path = (string)$calendar->months->alias['path'];
-            if(substr($path, 0, 14) == '../../calendar') {
+            if (substr($path, 0, 14) == '../../calendar') {
                 $arr['months'] = substr($path, 22, -9);
             }
 
@@ -355,27 +366,27 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
         }
 
         $context = null;
-        foreach($calendar->months->monthContext as $c) {
-            if((string)$c['type'] == 'format') {
+        foreach ($calendar->months->monthContext as $c) {
+            if ((string)$c['type'] == 'format') {
                 $context = $c;
                 break;
             }
         }
 
-        if(!$context) {
+        if (!$context) {
             return;
         }
 
         $arr['months'] = [];
 
-        if(isset($context->{'default'})) {
+        if (isset($context->{'default'})) {
             $default = (string)$context->{'default'}['choice'];
 
-            if($default != 'wide' && $default != 'abbreviated') {
+            if ($default != 'wide' && $default != 'abbreviated') {
                 return;
             }
 
-            if($default == 'wide') {
+            if ($default == 'wide') {
                 $default = 'full';
             }
 
@@ -384,22 +395,22 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
             $arr['months']['@default'] = 'full';
         }
 
-        foreach($context->monthWidth as $set) {
+        foreach ($context->monthWidth as $set) {
             $type = (string)$set['type'];
-            if($type != 'wide' && $type != 'abbreviated') {
+            if ($type != 'wide' && $type != 'abbreviated') {
                 continue;
             }
 
-            if($type == 'wide') {
+            if ($type == 'wide') {
                 $type = 'full';
             }
 
-            if(isset($set->alias)) {
+            if (isset($set->alias)) {
                 $path = (string)$set->alias['path'];
-                if(substr($path, 0, 13) == '../monthWidth') {
+                if (substr($path, 0, 13) == '../monthWidth') {
                     $arr['months'][$type] = substr($path, 21, -2);
                     continue;
-                } else if(substr($path, 0, 18) == '../../monthContext') {
+                } elseif (substr($path, 0, 18) == '../../monthContext') {
                     $set = $set->xpath($path);
                     $set = $set[0];
                 }
@@ -407,20 +418,21 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
 
             $arr['months'][$type] = [];
 
-            foreach($set->month as $month) {
+            foreach ($set->month as $month) {
                 $arr['months'][$type][(string)$month['type']] = (string)$month;
             }
         }
     }
 
-    protected function _dateFormat($calendar, &$arr) {
-        if(!isset($calendar->dateFormats)) {
+    protected function _dateFormat($calendar, &$arr)
+    {
+        if (!isset($calendar->dateFormats)) {
             return;
         }
 
-        if(isset($calendar->dateFormats->alias)) {
+        if (isset($calendar->dateFormats->alias)) {
             $path = (string)$calendar->dateFormats->alias['path'];
-            if(substr($path, 0, 14) == '../../calendar') {
+            if (substr($path, 0, 14) == '../../calendar') {
                 $arr['dateFormat'] = substr($path, 22, -14);
             }
 
@@ -429,21 +441,22 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
 
         $arr['dateFormat'] = [];
 
-        foreach($calendar->dateFormats->dateFormatLength as $set) {
+        foreach ($calendar->dateFormats->dateFormatLength as $set) {
             $type = (string)$set['type'];
 
             $arr['dateFormat'][$type] = (string)$set->dateFormat->pattern[0];
         }
     }
 
-    protected function _timeFormat($calendar, &$arr) {
-        if(!isset($calendar->timeFormats)) {
+    protected function _timeFormat($calendar, &$arr)
+    {
+        if (!isset($calendar->timeFormats)) {
             return;
         }
 
-        if(isset($calendar->timeFormats->alias)) {
+        if (isset($calendar->timeFormats->alias)) {
             $path = (string)$calendar->timeFormats->alias['path'];
-            if(substr($path, 0, 14) == '../../calendar') {
+            if (substr($path, 0, 14) == '../../calendar') {
                 $arr['timeFormat'] = substr($path, 22, -14);
             }
 
@@ -452,7 +465,7 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
 
         $arr['timeFormat'] = [];
 
-        foreach($calendar->timeFormats->timeFormatLength as $set) {
+        foreach ($calendar->timeFormats->timeFormatLength as $set) {
             $type = (string)$set['type'];
 
             $arr['timeFormat'][$type] = (string)$set->timeFormat->pattern[0];

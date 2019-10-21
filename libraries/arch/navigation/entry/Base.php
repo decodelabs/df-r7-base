@@ -9,43 +9,46 @@ use df;
 use df\core;
 use df\arch;
 
-abstract class Base implements arch\navigation\IEntry {
-
+abstract class Base implements arch\navigation\IEntry
+{
     protected $_id;
     protected $_weight = 0;
 
-    public static function fromArray(array $entry): arch\navigation\IEntry {
+    public static function fromArray(array $entry): arch\navigation\IEntry
+    {
         $type = 'None';
 
-        if(isset($entry['type'])) {
+        if (isset($entry['type'])) {
             $type = $entry['type'];
         }
 
-        if(!$class = self::_getEntryClass($type)) {
+        if (!$class = self::_getEntryClass($type)) {
             throw core\Error::ENotFound(
                 'Entry type '.$type.' could not be found'
             );
         }
 
-        if(!isset($entry['id'])) {
+        if (!isset($entry['id'])) {
             $entry['id'] = null;
         }
 
-        if(!isset($entry['weight'])) {
+        if (!isset($entry['weight'])) {
             $entry['weight'] = 0;
         }
 
         return $class::_fromArray($entry);
     }
 
-    protected static function _fromArray(array $entry): arch\navigation\IEntry {
+    protected static function _fromArray(array $entry): arch\navigation\IEntry
+    {
         $class = get_called_class();
-        return (new $class())->setId($id)->setWeight($weight);
+        return (new $class())->setId($entry['id'])->setWeight($entry['weight']);
     }
 
 
-    public static function factory($type, ...$args): arch\navigation\IEntry {
-        if(!$class = self::_getEntryClass($type)) {
+    public static function factory($type, ...$args): arch\navigation\IEntry
+    {
+        if (!$class = self::_getEntryClass($type)) {
             throw core\Error::ENotFound(
                 'Entry type '.$type.' could not be found'
             );
@@ -55,10 +58,11 @@ abstract class Base implements arch\navigation\IEntry {
     }
 
 
-    protected static function _getEntryClass($type) {
+    protected static function _getEntryClass($type)
+    {
         $class = 'df\\arch\\navigation\\entry\\'.ucfirst($type);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             return null;
         }
 
@@ -66,15 +70,15 @@ abstract class Base implements arch\navigation\IEntry {
     }
 
 
-    public function __construct() {}
-
-    public function getType() {
+    public function getType()
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public function setId(?string $id) {
-        if(empty($id)) {
+    public function setId(?string $id)
+    {
+        if (empty($id)) {
             $id = null;
         }
 
@@ -82,16 +86,19 @@ abstract class Base implements arch\navigation\IEntry {
         return $this;
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->_id;
     }
 
-    public function setWeight($weight) {
+    public function setWeight($weight)
+    {
         $this->_weight = (float)$weight;
         return $this;
     }
 
-    public function getWeight() {
+    public function getWeight()
+    {
         return $this->_weight;
     }
 }

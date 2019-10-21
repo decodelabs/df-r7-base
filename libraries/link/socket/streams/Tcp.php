@@ -9,10 +9,11 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch;
 
 // Client
-class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClientSocket, link\socket\ISecureClientSocket {
-
+class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClientSocket, link\socket\ISecureClientSocket
+{
     use link\socket\TSequenceClientSocket;
     use link\socket\TSecureClientSocket;
     use TStreams;
@@ -22,13 +23,15 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
         'oobInline' => false
     ];
 
-    protected static function _populateOptions() {
+    protected static function _populateOptions()
+    {
         return array_merge(parent::_populateOptions(), self::DEFAULT_OPTIONS);
     }
 
-    public function getId(): string {
-        if(!$this->_id) {
-            if(!$this->_isConnected) {
+    public function getId(): string
+    {
+        if (!$this->_id) {
+            if (!$this->_isConnected) {
                 $this->connect();
 
                 /*
@@ -45,12 +48,13 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
     }
 
 
-// Operation
-    protected function _connectPeer() {
+    // Operation
+    protected function _connectPeer()
+    {
         $options = [];
 
-        if($this->_isSecure) {
-            if($this->_secureOnConnect) {
+        if ($this->_isSecure) {
+            if ($this->_secureOnConnect) {
                 $address = $this->_address->toString($this->getSecureTransport());
             } else {
                 $address = $this->_address->toString('tcp');
@@ -72,10 +76,10 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
                 $context
             );
 
-            if($rTimeout = $this->_getOption('receiveTimeout')) {
+            if ($rTimeout = $this->_getOption('receiveTimeout')) {
                 stream_set_timeout($socket, 0, $rTimeout * 1000);
             }
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->_lastError = $e->getMessage();
 
             throw new link\socket\ConnectionException(
@@ -86,8 +90,9 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
         return $socket;
     }
 
-    protected function _connectPair() {
-        switch($this->_address->getSocketDomain()) {
+    protected function _connectPair()
+    {
+        switch ($this->_address->getSocketDomain()) {
             case 'inet':
                 $domain = STREAM_PF_INET;
                 break;
@@ -99,6 +104,9 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
             case 'unix':
                 $domain = STREAM_PF_UNIX;
                 break;
+
+            default:
+                throw Glitch::EUnexpectedValue('Unsupported socket domain: '.$this->_address->getSocketDomain());
         }
 
         return stream_socket_pair(
@@ -108,17 +116,18 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
         );
     }
 
-    public function checkConnection() {
-        if(!is_resource($this->_socket)) {
+    public function checkConnection()
+    {
+        if (!is_resource($this->_socket)) {
             return false;
         }
 
         $info = stream_get_meta_data($this->_socket);
-        if($info['timed_out']) {
+        if ($info['timed_out']) {
             return false;
         }
 
-        if(stream_socket_get_name($this->_socket, true) === false) {
+        if (stream_socket_get_name($this->_socket, true) === false) {
             return false;
         }
 
@@ -129,8 +138,8 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
 
 
 // Server
-class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServerSocket, link\socket\ISecureServerSocket {
-
+class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServerSocket, link\socket\ISecureServerSocket
+{
     use link\socket\TSecureServerSocket;
     use link\socket\TSequenceServerSocket;
     use TStreams;
@@ -139,21 +148,23 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
         'oobInline' => false
     ];
 
-    protected static function _populateOptions() {
+    protected static function _populateOptions()
+    {
         return array_merge(parent::_populateOptions(), self::DEFAULT_OPTIONS);
     }
 
 
-// Operation
-    protected function _startListening() {
+    // Operation
+    protected function _startListening()
+    {
         $options = [
             'socket' => [
                 'backlog' => $this->getConnectionQueueSize()
             ]
         ];
 
-        if($this->_isSecure) {
-            if($this->_secureOnConnect) {
+        if ($this->_isSecure) {
+            if ($this->_secureOnConnect) {
                 $address = $this->_address->toString($this->getSecureTransport());
             } else {
                 $address = $this->_address->toString('tcp');
@@ -174,17 +185,18 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
                 STREAM_SERVER_BIND | STREAM_SERVER_LISTEN,
                 $context
             );
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             throw new link\socket\ConnectionException(
                 'Could not create socket on '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
         }
     }
 
-    protected function _acceptSequencePeer()  {
+    protected function _acceptSequencePeer()
+    {
         try {
             $output = stream_socket_accept($this->_socket);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
@@ -192,12 +204,14 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
         return $output;
     }
 
-    protected function _getPeerAddress($socket) {
+    protected function _getPeerAddress($socket)
+    {
         return $this->_address->getScheme().'://'.stream_socket_get_name($socket, true);
     }
 
 
-    public function checkConnection() {
+    public function checkConnection()
+    {
         return is_resource($this->_socket)
             && (stream_socket_get_name($this->_socket, false) !== false);
     }
@@ -206,18 +220,20 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
 
 
 // Server peer
-class Tcp_ServerPeer extends link\socket\ServerPeer implements link\socket\ISequenceServerPeerSocket, link\socket\ISecureServerPeerSocket {
-
+class Tcp_ServerPeer extends link\socket\ServerPeer implements link\socket\ISequenceServerPeerSocket, link\socket\ISecureServerPeerSocket
+{
     use link\socket\TSequenceServerPeerSocket;
     use link\socket\TSecureServerPeerSocket;
     use TStreams;
     use TStreams_IoSocket;
 
-    protected static function _populateOptions() {
+    protected static function _populateOptions()
+    {
         return [];
     }
 
-    public function __construct(link\socket\IServerSocket $parent, $socket, $address) {
+    public function __construct(link\socket\IServerSocket $parent, $socket, $address)
+    {
         parent::__construct($parent, $socket, $address);
 
         $this->_isSecure = $parent->isSecure();
@@ -225,9 +241,10 @@ class Tcp_ServerPeer extends link\socket\ServerPeer implements link\socket\ISequ
     }
 
 
-// Operation
-    public function checkConnection() {
-        if(!is_resource($this->_socket)) {
+    // Operation
+    public function checkConnection()
+    {
+        if (!is_resource($this->_socket)) {
             return false;
         }
 

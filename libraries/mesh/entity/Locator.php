@@ -425,7 +425,7 @@ class Locator implements ILocator, Inspectable
         }
 
         unset($this->_nodes[$index]);
-        $this->_nodes = array_values($nodes);
+        $this->_nodes = array_values($this->_nodes);
         $this->_clearCache();
 
         return $this;

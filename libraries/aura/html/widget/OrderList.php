@@ -10,46 +10,48 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class OrderList extends Base implements IMappedListWidget {
-
+class OrderList extends Base implements IMappedListWidget
+{
     use TWidget_MappedList;
 
     const PRIMARY_TAG = 'ul.order';
 
-    protected $_pageData;
+    protected $_data;
 
-    public function __construct(arch\IContext $context, $data) {
+    public function __construct(arch\IContext $context, $data)
+    {
         parent::__construct($context);
 
-        if($data instanceof core\collection\IPageable) {
+        if ($data instanceof core\collection\IPageable) {
             $data = $data->getPaginator();
         }
 
-        if(!$data instanceof core\collection\IOrderablePaginator) {
+        if (!$data instanceof core\collection\IOrderablePaginator) {
             $data = null;
         }
 
-        $this->_pageData = $data;
+        $this->_data = $data;
     }
 
-    protected function _render() {
-        if(!$this->_pageData) {
+    protected function _render()
+    {
+        if (!$this->_data) {
             return '';
         }
 
         $tag = $this->getTag();
-        $orderData = $this->_pageData->getOrderDirectives();
-        $orderFields = $this->_pageData->getOrderableFieldDirectives();
+        $orderData = $this->_data->getOrderDirectives();
+        $orderFields = $this->_data->getOrderableFieldDirectives();
 
-        if(empty($orderData) || empty($orderFields)) {
+        if (empty($orderData) || empty($orderFields)) {
             return '';
         } else {
-            $keyMap = $this->_pageData->getKeyMap();
+            $keyMap = $this->_data->getKeyMap();
             $request = clone $this->_context->request;
             $query = $request->getQuery();
         }
 
-        if(empty($this->_fields)) {
+        if (empty($this->_fields)) {
             $this->_importDefaultFields();
         }
 
@@ -57,9 +59,9 @@ class OrderList extends Base implements IMappedListWidget {
             new aura\html\Element('li.label', $this->_context->_('Order'))
         ];
 
-        foreach($this->_fields as $fieldKey => $field) {
-            foreach($field->getHeaderList() as $key => $label) {
-                if(!isset($orderFields[$key])) {
+        foreach ($this->_fields as $fieldKey => $field) {
+            foreach ($field->getHeaderList() as $key => $label) {
+                if (!isset($orderFields[$key])) {
                     continue;
                 }
 
@@ -68,13 +70,13 @@ class OrderList extends Base implements IMappedListWidget {
                 $nullOrder = 'ascending';
                 $isNullable = null;
 
-                if(isset($orderData[$key])) {
+                if (isset($orderData[$key])) {
                     $direction = $orderData[$key]->getReversedDirection();
                     $isNullable = $orderData[$key]->isFieldNullable();
                     $nullOrder = $orderData[$key]->getNullOrder();
                     $isActive = true;
                 } else {
-                    if(isset($orderFields[$key])) {
+                    if (isset($orderFields[$key])) {
                         $direction = $orderFields[$key]->getDirection();
                     } else {
                         $direction = 'ASC';
@@ -87,7 +89,7 @@ class OrderList extends Base implements IMappedListWidget {
 
                 $class = 'order '.strtolower(trim($direction, '!^*')).' null-'.$nullOrder;
 
-                if($isActive) {
+                if ($isActive) {
                     $class .= ' active';
                 }
 
@@ -98,10 +100,10 @@ class OrderList extends Base implements IMappedListWidget {
                     ]))
                     ->render();
 
-                if($isActive && $isNullable !== false) {
+                if ($isActive && $isNullable !== false) {
                     $direction = trim($direction, '!^*') == 'DESC' ? 'ASC' : 'DESC';
 
-                    switch($nullOrder) {
+                    switch ($nullOrder) {
                         case 'ascending':
                         case 'descending':
                             $direction .= '!';
@@ -130,10 +132,11 @@ class OrderList extends Base implements IMappedListWidget {
         return $tag->renderWith($content, true);
     }
 
-    protected function _importDefaultFields() {
-        $fields = $this->_pageData->getOrderableFields();
+    protected function _importDefaultFields()
+    {
+        $fields = $this->_data->getOrderableFields();
 
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             $this->addField($field->getName());
         }
     }

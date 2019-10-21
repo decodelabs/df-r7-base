@@ -272,7 +272,7 @@ class Transformation implements ITransformation, Inspectable
 
     public function smooth($amount=null)
     {
-        return $this->_addTransformation('smooth', [$smooth]);
+        return $this->_addTransformation('smooth', [$amount]);
     }
 
 

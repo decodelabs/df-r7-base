@@ -24,11 +24,13 @@ class Tar extends Base
 
             $archive->decompress(implode('.', $parts));
             $tarFile = substr($file, 0, -3);
+        } else {
+            $tarFile = null;
         }
 
         $archive->extractTo($destination);
 
-        if ($isGz) {
+        if ($isGz && $tarFile !== null) {
             Atlas::$fs->deleteFile($tarFile);
         }
 

@@ -21,9 +21,8 @@ class Recaptcha extends Base implements core\validate\IRecaptchaField
     // Options
     public function __construct(core\validate\IHandler $handler, string $name)
     {
-        $this->validator = $handler;
+        parent::__construct($handler, $name);
         $this->_recordName = null;
-        $this->_name = $name;
     }
 
     public function setSecret($secret)

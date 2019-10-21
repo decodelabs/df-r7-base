@@ -10,17 +10,28 @@ use df\core;
 use df\link;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class ConnectionException extends RuntimeException {}
-class IOException extends RuntimeException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class ConnectionException extends RuntimeException
+{
+}
+class IOException extends RuntimeException
+{
+}
 
 
 
 
 // Interfaces
-interface ISocket {
+interface ISocket
+{
     public function getId(): string;
     public function getImplementationName();
     public function getAddress();
@@ -59,13 +70,17 @@ interface ISocket {
     public function close();
 }
 
-interface IConnectionOrientedSocket extends ISocket {
+interface IConnectionOrientedSocket extends ISocket
+{
     public function checkConnection();
 }
 
-interface IIoSocket extends ISocket, core\io\IReader, core\io\IPeekReader, core\io\IWriter {}
+interface IIoSocket extends ISocket, core\io\IReader, core\io\IPeekReader, core\io\IWriter
+{
+}
 
-trait TIoSocket {
+trait TIoSocket
+{
     use core\io\TReader;
     use core\io\TPeekReader;
     use core\io\TWriter;
@@ -74,32 +89,37 @@ trait TIoSocket {
 
 
 // Secure
-interface ISecureSocket extends ISocket {
+interface ISecureSocket extends ISocket
+{
     public function isSecure();
     public function canSecure();
     public function getSecureTransport();
 }
 
-trait TSecureSocket {
-
+trait TSecureSocket
+{
     protected $_isSecure = false;
     protected $_secureTransport = 'ssl';
 
-    public function isSecure() {
+    public function isSecure()
+    {
         return $this->_isSecure;
     }
 
-    public function canSecure() {
+    public function canSecure()
+    {
         return extension_loaded('openssl');
     }
 
-    public function getSecureTransport() {
+    public function getSecureTransport()
+    {
         return $this->_secureTransport;
     }
 }
 
 
-interface ISecureConnectingSocket extends ISecureSocket {
+interface ISecureConnectingSocket extends ISecureSocket
+{
     public function setSecureTransport($transport);
     public function getSecureOptions();
     public function shouldSecureOnConnect(bool $flag=null);
@@ -112,8 +132,8 @@ interface ISecureConnectingSocket extends ISecureSocket {
     public function getCiphers();
 }
 
-trait TSecureConnectingSocket {
-
+trait TSecureConnectingSocket
+{
     use TSecureSocket;
 
     /*
@@ -127,10 +147,11 @@ trait TSecureConnectingSocket {
     protected $_secureOnConnect = true;
     protected $_secureTransportEnabled = false;
 
-    public function setSecureTransport($transport) {
+    public function setSecureTransport($transport)
+    {
         $transport = strtolower($transport);
 
-        switch($transport) {
+        switch ($transport) {
             case 'ssl':
             case 'sslv2':
             case 'sslv3':
@@ -154,12 +175,14 @@ trait TSecureConnectingSocket {
     }
 
 
-    public function getSecureOptions() {
+    public function getSecureOptions()
+    {
         return $this->_secureOptions;
     }
 
-    public function shouldSecureOnConnect(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldSecureOnConnect(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_secureOnConnect = $flag;
             return $this;
         }
@@ -167,8 +190,9 @@ trait TSecureConnectingSocket {
         return $this->_secureOnConnect;
     }
 
-    public function enableSecureTransport() {
-        if($this->_secureTransportEnabled) {
+    public function enableSecureTransport()
+    {
+        if ($this->_secureTransportEnabled) {
             return $this;
         }
 
@@ -178,8 +202,9 @@ trait TSecureConnectingSocket {
         return $this;
     }
 
-    public function disableSecureTransport() {
-        if(!$this->_secureTransportEnabled) {
+    public function disableSecureTransport()
+    {
+        if (!$this->_secureTransportEnabled) {
             return $this;
         }
 
@@ -192,32 +217,38 @@ trait TSecureConnectingSocket {
     abstract protected function _enableSecureTransport();
     abstract protected function _disableSecureTransport();
 
-    public function allowSelfSigned(bool $flag=null) {
-        if($flag !== null) {
+    public function allowSelfSigned(bool $flag=null)
+    {
+        if ($flag !== null) {
             return $this->_setSecureOption('allow_self_signed', $flag);
         }
 
         return $this->_getSecureOption('allow_self_signed');
     }
 
-    public function setCommonName($name) {
+    public function setCommonName($name)
+    {
         return $this->_setSecureOption('CN_match', $name);
     }
 
-    public function getCommonName() {
+    public function getCommonName()
+    {
         return $this->_getSecureOption('CN_match');
     }
 
-    public function setCiphers($ciphers) {
+    public function setCiphers($ciphers)
+    {
         return $this->_setSecureOption('ciphers', $ciphers);
     }
 
-    public function getCiphers() {
+    public function getCiphers()
+    {
         return $this->_getSecureOption('ciphers');
     }
 
-    protected function _setSecureOption($name, $value) {
-        if($this->isConnected()) {
+    protected function _setSecureOption($name, $value)
+    {
+        if ($this->isConnected()) {
             throw new link\socket\RuntimeException(
                 'You cannot change secure connection options once the socket has been created'
             );
@@ -227,8 +258,9 @@ trait TSecureConnectingSocket {
         return $this;
     }
 
-    protected function _getSecureOption($name) {
-        if(isset($this->_secureOptions[$name])) {
+    protected function _getSecureOption($name)
+    {
+        if (isset($this->_secureOptions[$name])) {
             return $this->_secureOptions[$name];
         }
 
@@ -241,21 +273,23 @@ trait TSecureConnectingSocket {
 
 
 // Sequence
-interface ISequenceSocket extends ISocket, IConnectionOrientedSocket {
+interface ISequenceSocket extends ISocket, IConnectionOrientedSocket
+{
     public function shouldUseSequencePackets(bool $flag=null);
     public function shouldSendOutOfBandDataInline(bool $flag=null);
 }
 
-trait TSequenceSocket {
-
+trait TSequenceSocket
+{
     protected $_useSeqPackets = false;
 
-    public function shouldUseSequencePackets(bool $flag=null) {
-        if($flag === null) {
+    public function shouldUseSequencePackets(bool $flag=null)
+    {
+        if ($flag === null) {
             return $this->_useSeqPackets;
         }
 
-        if($this->_socket) {
+        if ($this->_socket) {
             throw new link\socket\RuntimeException(
                 'You cannot set the socket type after it has been created'
             );
@@ -265,12 +299,13 @@ trait TSequenceSocket {
         return $this;
     }
 
-    public function shouldSendOutOfBandDataInline(bool $flag=null) {
-        if($flag === null) {
+    public function shouldSendOutOfBandDataInline(bool $flag=null)
+    {
+        if ($flag === null) {
             return $this->_getOption('oobInline');
         }
 
-        if($this->_isConnected) {
+        if ($this->isConnected()) {
             throw new link\socket\RuntimeException(
                 'You cannot change out of band options once the socket is connected'
             );
@@ -282,19 +317,20 @@ trait TSequenceSocket {
 
 
 // Datagram
-interface IDatagramSocket extends ISocket {
-
+interface IDatagramSocket extends ISocket
+{
 }
 
 // Raw
-interface IRawSocket extends ISocket {
-
+interface IRawSocket extends ISocket
+{
 }
 
 
 
 // Server
-interface IServerSocket extends ISocket {
+interface IServerSocket extends ISocket
+{
     // Options
     //public function setConnectionTimeout($timeout);
     //public function getConnectionTimeout();
@@ -306,7 +342,8 @@ interface IServerSocket extends ISocket {
     public function accept();
 }
 
-interface ISecureServerSocket extends IServerSocket, ISecureConnectingSocket {
+interface ISecureServerSocket extends IServerSocket, ISecureConnectingSocket
+{
     public function setLocalCertificate($file);
     public function getLocalCertificate();
 
@@ -318,8 +355,8 @@ interface ISecureServerSocket extends IServerSocket, ISecureConnectingSocket {
     public function getSNIServerName();
 }
 
-trait TSecureServerSocket {
-
+trait TSecureServerSocket
+{
     use TSecureConnectingSocket;
 
     protected $_secureOptions = [
@@ -332,49 +369,58 @@ trait TSecureServerSocket {
         'SNI_enabled' => false,
     ];
 
-    public function setLocalCertificate($file) {
+    public function setLocalCertificate($file)
+    {
         return $this->_setSecureOption('local_cert', $file);
     }
 
-    public function getLocalCertificate() {
+    public function getLocalCertificate()
+    {
         return $this->_getSecureOption('local_cert');
     }
 
 
-    public function setPassphrase($passphrase) {
+    public function setPassphrase($passphrase)
+    {
         return $this->_setSecureOption('passphrase', $passphrase);
     }
 
-    public function getPassphrase() {
+    public function getPassphrase()
+    {
         return $this->_getSecureOption('passphrase');
     }
 
 
-    public function shouldUseSNI(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldUseSNI(bool $flag=null)
+    {
+        if ($flag !== null) {
             return $this->_setSecureOption('SNI_enabled', $flag);
         }
 
         return $this->_getSecureOption('SNI_enabled');
     }
 
-    public function setSNIServerName($name) {
+    public function setSNIServerName($name)
+    {
         return $this->_setSecureOption('SNI_server_name', $name);
     }
 
-    public function getSNIServerName() {
+    public function getSNIServerName()
+    {
         return $this->_getSecureOption('SNI_server_name');
     }
 }
 
 
 
-interface IBroadcastableServerSocket extends IServerSocket  {
+interface IBroadcastableServerSocket extends IServerSocket
+{
     // Options
     public function isBroadcast(bool $flag=null);
 }
 
-interface ISequenceServerSocket extends IServerSocket, ISequenceSocket {
+interface ISequenceServerSocket extends IServerSocket, ISequenceSocket
+{
     // Options
     public function setConnectionQueueSize($size);
     public function getConnectionQueueSize();
@@ -384,12 +430,13 @@ interface ISequenceServerSocket extends IServerSocket, ISequenceSocket {
     public function getLingerTimeout();
 }
 
-trait TSequenceServerSocket {
-
+trait TSequenceServerSocket
+{
     use TSequenceSocket;
 
-    public function setConnectionQueueSize($size) {
-        if($this->isListening()) {
+    public function setConnectionQueueSize($size)
+    {
+        if ($this->isListening()) {
             throw new link\socket\RuntimeException(
                 'Can\'t set connection queue size once the server is listening'
             );
@@ -398,71 +445,86 @@ trait TSequenceServerSocket {
         return $this->_setOption('connectionQueueSize', (int)$size);
     }
 
-    public function getConnectionQueueSize() {
+    public function getConnectionQueueSize()
+    {
         return $this->_getOption('connectionQueueSize');
     }
 
 
-    public function shouldLingerOnClose(bool $flag=null, $timeout=null) {
-        if($flag === null) {
+    public function shouldLingerOnClose(bool $flag=null, $timeout=null)
+    {
+        if ($flag === null) {
             return $this->_getOption('lingerOnClose');
         }
 
         $this->_setOption('lingerOnClose', $flag);
 
-        if($timeout !== null) {
+        if ($timeout !== null) {
             $this->setLingerTimeout($timeout);
         }
 
         return $this;
     }
 
-    public function setLingerTimeout($timeout) {
+    public function setLingerTimeout($timeout)
+    {
         return $this->_setOption('lingerTimeout', $timeout);
     }
 
-    public function getLingerTimeout() {
+    public function getLingerTimeout()
+    {
         return $this->_getOption('lingerTimeout');
     }
 }
 
 
-interface IDatagramServerSocket extends IServerSocket, IDatagramSocket, IBroadcastableServerSocket {
-
+interface IDatagramServerSocket extends IServerSocket, IDatagramSocket, IBroadcastableServerSocket
+{
 }
 
-interface IRawServerSocket extends IServerSocket, IRawSocket {
-
+interface IRawServerSocket extends IServerSocket, IRawSocket
+{
 }
 
 
 
 // Server peer
-interface IServerPeerSocket extends ISocket, IIoSocket {}
+interface IServerPeerSocket extends ISocket, IIoSocket
+{
+}
 
-interface ISecureServerPeerSocket extends IServerPeerSocket, ISecureSocket {}
+interface ISecureServerPeerSocket extends IServerPeerSocket, ISecureSocket
+{
+}
 
-trait TSecureServerPeerSocket {
-
+trait TSecureServerPeerSocket
+{
     use TSecureSocket;
 }
 
-interface ISequenceServerPeerSocket extends IServerPeerSocket, ISequenceSocket {}
+interface ISequenceServerPeerSocket extends IServerPeerSocket, ISequenceSocket
+{
+}
 
-trait TSequenceServerPeerSocket {
-
+trait TSequenceServerPeerSocket
+{
     use TSequenceSocket;
 }
 
-interface IDatagramServerPeerSocket extends IServerPeerSocket, IDatagramSocket {}
+interface IDatagramServerPeerSocket extends IServerPeerSocket, IDatagramSocket
+{
+}
 
-interface IRawServerPeerSocket extends IServerPeerSocket, IRawSocket {}
+interface IRawServerPeerSocket extends IServerPeerSocket, IRawSocket
+{
+}
 
 
 
 
 // Client
-interface IClientSocket extends ISocket, IIoSocket {
+interface IClientSocket extends ISocket, IIoSocket
+{
     // Options
     public function setConnectionTimeout($timeout);
     public function getConnectionTimeout();
@@ -472,7 +534,8 @@ interface IClientSocket extends ISocket, IIoSocket {
     public function connectPair();
 }
 
-interface ISecureClientSocket extends IClientSocket, ISecureConnectingSocket {
+interface ISecureClientSocket extends IClientSocket, ISecureConnectingSocket
+{
     public function shouldVerifyPeer(bool $flag=null);
     public function setCAFile($file);
     public function getCAFile();
@@ -488,8 +551,8 @@ interface ISecureClientSocket extends IClientSocket, ISecureConnectingSocket {
     public function getPeerCertificateChain();
 }
 
-trait TSecureClientSocket {
-
+trait TSecureClientSocket
+{
     use TSecureConnectingSocket;
 
     protected $_secureOptions = [
@@ -503,72 +566,89 @@ trait TSecureClientSocket {
         'verify_depth' => null,
     ];
 
-    public function shouldVerifyPeer(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldVerifyPeer(bool $flag=null)
+    {
+        if ($flag !== null) {
             return $this->_setSecureOption('verify_peer', $flag);
         }
 
         return $this->_getSecureOption('verify_peer');
     }
 
-    public function setCAFile($file) {
+    public function setCAFile($file)
+    {
         return $this->_setSecureOption('cafile', $file);
     }
 
-    public function getCAFile() {
+    public function getCAFile()
+    {
         return $this->_getSecureOption('cafile');
     }
 
-    public function setCAPath($path) {
+    public function setCAPath($path)
+    {
         return $this->_setSecureOption('capath', $path);
     }
 
-    public function getCAPath() {
+    public function getCAPath()
+    {
         return $this->_getSecureOption('capath');
     }
 
 
-    public function setMaxChainDepth($depth) {
+    public function setMaxChainDepth($depth)
+    {
         return $this->_setSecureOption('verify_depth', (int)$depth);
     }
 
-    public function getMaxChainDepth() {
+    public function getMaxChainDepth()
+    {
         return $this->_getSecureOption('verify_depth');
     }
 
 
-    public function shouldCapturePeerCertificate(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldCapturePeerCertificate(bool $flag=null)
+    {
+        if ($flag !== null) {
             return $this->_setSecureOption('capture_peer_cert', $flag);
         }
 
         return $this->_getSecureOption('capture_peer_cert');
     }
 
-    public function getPeerCertificate() {
+    public function getPeerCertificate()
+    {
         return $this->_getSecureOption('peer_certificate');
     }
 
-    public function shouldCapturePeerCertificateChain(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldCapturePeerCertificateChain(bool $flag=null)
+    {
+        if ($flag !== null) {
             return $this->_setSecureOption('capture_peer_cert_chain', $flag);
         }
 
         return $this->_getSecureOption('capture_peer_cert_chain');
     }
 
-    public function getPeerCertificateChain() {
+    public function getPeerCertificateChain()
+    {
         return $this->_getSecureOption('peer_certificate_chain');
     }
 }
 
 
-interface ISequenceClientSocket extends IClientSocket, ISequenceSocket {}
+interface ISequenceClientSocket extends IClientSocket, ISequenceSocket
+{
+}
 
-trait TSequenceClientSocket {
-
+trait TSequenceClientSocket
+{
     use TSequenceSocket;
 }
 
-interface IDatagramClientSocket extends IClientSocket, IDatagramSocket {}
-interface IRawClientSocket extends IClientSocket, IRawSocket {}
+interface IDatagramClientSocket extends IClientSocket, IDatagramSocket
+{
+}
+interface IRawClientSocket extends IClientSocket, IRawSocket
+{
+}

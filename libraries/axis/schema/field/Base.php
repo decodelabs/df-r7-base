@@ -35,6 +35,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Inspectable
 
     public function __construct(axis\schema\ISchema $schema, $type, $name, $args=null)
     {
+        $schema;
         $this->_setName($name);
         $hasInit = false;
 
@@ -281,8 +282,8 @@ abstract class Base implements axis\schema\IField, \Serializable, Inspectable
             $output .= ' TIMESTAMP_ON_UPDATE';
         }
 
-        if ($this instanceof opal\schema\ICharacterSetAwareField &&$this->_characterSet !== null) {
-            $output .= ' CHARSET '.$this->_characterSet;
+        if ($this instanceof opal\schema\ICharacterSetAwareField && (null !== ($characterSet = $this->getCharacterSet()))) {
+            $output .= ' CHARSET '.$characterSet;
         }
 
         return $output;

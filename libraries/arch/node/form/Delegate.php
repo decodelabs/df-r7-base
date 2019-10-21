@@ -11,8 +11,8 @@ use df\arch;
 use df\aura;
 use df\flex;
 
-class Delegate implements arch\node\IDelegate {
-
+class Delegate implements arch\node\IDelegate
+{
     use core\TContextAware;
     use arch\node\TForm;
 
@@ -22,7 +22,8 @@ class Delegate implements arch\node\IDelegate {
     private $_isNew = false;
     private $_isComplete = false;
 
-    public function __construct(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id) {
+    public function __construct(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id)
+    {
         $this->context = $context;
         $this->_state = $state;
         $this->_delegateId = $id;
@@ -32,41 +33,47 @@ class Delegate implements arch\node\IDelegate {
         $this->afterConstruct();
     }
 
-    protected function afterConstruct() {}
+    protected function afterConstruct()
+    {
+    }
 
-    public function getDelegateId(): string {
+    public function getDelegateId(): string
+    {
         return $this->_delegateId;
     }
 
-    public function getDelegateKey(): string {
+    public function getDelegateKey(): string
+    {
         $parts = explode('.', $this->_delegateId);
         return array_pop($parts);
     }
 
-    final public function initialize() {
+    final public function initialize()
+    {
         $this->beginInitialize();
         $this->endInitialize();
         return $this;
     }
 
-    final public function beginInitialize() {
+    final public function beginInitialize()
+    {
         $response = $this->init();
 
-        if(!empty($response)) {
+        if (!empty($response)) {
             return $response;
         }
 
         $this->loadDelegates();
 
-        if($this->_state->isNew()) {
+        if ($this->_state->isNew()) {
             $this->_isNew = true;
             $this->setDefaultValues();
         }
 
-        foreach($this->_delegates as $delegate) {
+        foreach ($this->_delegates as $delegate) {
             $response = $delegate->beginInitialize();
 
-            if(!empty($response)) {
+            if (!empty($response)) {
                 return $response;
             }
         }
@@ -74,12 +81,13 @@ class Delegate implements arch\node\IDelegate {
         return null;
     }
 
-    final public function endInitialize() {
-        foreach($this->_delegates as $delegate) {
+    final public function endInitialize()
+    {
+        foreach ($this->_delegates as $delegate) {
             $delegate->endInitialize();
         }
 
-        if($this instanceof IDependentDelegate) {
+        if ($this instanceof arch\node\IDependentDelegate) {
             $this->normalizeDependencyValues();
         }
 
@@ -89,16 +97,18 @@ class Delegate implements arch\node\IDelegate {
         return $this;
     }
 
-    public function isNew(): bool {
+    public function isNew(): bool
+    {
         return $this->_isNew;
     }
 
-    public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false) {
+    public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false)
+    {
         $this->view = $view;
         $this->content = $content;
         $this->_isRenderingInline = $isRenderingInline;
 
-        foreach($this->_delegates as $delegate) {
+        foreach ($this->_delegates as $delegate) {
             $delegate->setRenderContext($view, $content);
         }
 
@@ -106,11 +116,12 @@ class Delegate implements arch\node\IDelegate {
     }
 
 
-    public function setComplete() {
+    public function setComplete()
+    {
         $this->_isComplete = true;
         $this->onComplete();
 
-        foreach($this->_delegates as $delegate) {
+        foreach ($this->_delegates as $delegate) {
             $delegate->setComplete();
         }
 
@@ -118,23 +129,28 @@ class Delegate implements arch\node\IDelegate {
         return $this;
     }
 
-    public function isComplete(): bool {
+    public function isComplete(): bool
+    {
         return $this->_isComplete;
     }
 
-    protected function onComplete() {}
+    protected function onComplete()
+    {
+    }
 
 
-    protected function getDefaultRedirect() {
+    protected function getDefaultRedirect()
+    {
         return static::DEFAULT_REDIRECT;
     }
 
 
-// State
-    public function reset() {
+    // State
+    public function reset()
+    {
         $this->_state->reset();
 
-        foreach($this->_delegates as $id => $delegate) {
+        foreach ($this->_delegates as $id => $delegate) {
             $this->unloadDelegate($id);
         }
 
@@ -143,7 +159,7 @@ class Delegate implements arch\node\IDelegate {
         $this->loadDelegates();
         $this->setDefaultValues();
 
-        foreach($this->_delegates as $id => $delegate) {
+        foreach ($this->_delegates as $id => $delegate) {
             $delegate->initialize();
         }
 
@@ -153,32 +169,38 @@ class Delegate implements arch\node\IDelegate {
         return $this;
     }
 
-    protected function afterReset() {}
+    protected function afterReset()
+    {
+    }
 
 
 
-// Events
-    protected function onCancelEvent() {
+    // Events
+    protected function onCancelEvent()
+    {
         $this->setComplete();
         return $this->_getCompleteRedirect();
     }
 
 
-// Names
-    public function fieldName(string $name): string {
+    // Names
+    public function fieldName(string $name): string
+    {
         $parts = explode('[', $name, 2);
         $parts[0] .= ']';
 
         return '_delegates['.$this->_delegateId.']['.implode('[', $parts);
     }
 
-    public function elementId(string $name): string {
+    public function elementId(string $name): string
+    {
         return flex\Text::formatSlug($this->getDelegateId().'-'.$name);
     }
 
 
 
-    public function getStateData(): array {
+    public function getStateData(): array
+    {
         $output = [
             'isValid' => $this->isValid(),
             'isNew' => $this->_isNew,
@@ -186,10 +208,10 @@ class Delegate implements arch\node\IDelegate {
             'errors' => []
         ];
 
-        foreach($this->_delegates as $delegate) {
+        foreach ($this->_delegates as $delegate) {
             $delegateState = $delegate->getStateData();
 
-            if(!$delegateState['isValid']) {
+            if (!$delegateState['isValid']) {
                 $output['isValid'] = false;
             }
 

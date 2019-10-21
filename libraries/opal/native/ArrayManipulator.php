@@ -266,10 +266,10 @@ class ArrayManipulator implements IArrayManipulator
         $primarySource = $this->_outputManifest->getPrimarySource();
         $primarySourceId = $primarySource->getAdapter()->getQuerySourceId();
         $primarySourceAlias = $primarySource->getAlias();
+        $primaryData = $this->_rows;
         $sourceData = [];
 
         if (!($isNormalized = $this->_isNormalized)) {
-            $primaryData = $this->_rows;
             $this->normalizeRows();
         }
 
@@ -419,6 +419,8 @@ class ArrayManipulator implements IArrayManipulator
         }
 
         $this->normalizeRows();
+        $maxScore = 1;
+        $searchAlias = null;
 
         if (!$clauseList->isEmpty()) {
             $clauseIndex = new ClauseMatcher($clauseList->toArray());
@@ -688,6 +690,9 @@ class ArrayManipulator implements IArrayManipulator
                             $nullOrderDirection = $directive->isDescending() ?
                                 SORT_DESC : SORT_ASC;
                             break;
+
+                        default:
+                            throw Glitch::EUnexpectedValue('Unsupported null order key: '.$nullOrder);
                     }
 
                     $sortNullFields[$sortFieldName] = $nullOrderDirection;
@@ -853,14 +858,13 @@ class ArrayManipulator implements IArrayManipulator
 
 
             // Prepare groups & having clauses
+            $groups = [];
+            $havingClauseList = null;
+
             if ($isReadQuery = $attachment instanceof opal\query\IReadQuery) {
                 if ($attachment instanceof opal\query\IGroupableQuery) {
                     $groups = $attachment->getGroupFields();
-                } else {
-                    $groups = [];
                 }
-
-                $havingClauseList = null;
 
                 if ($attachment instanceof opal\query\IHavingClauseQuery && $attachment->hasHavingClauses()) {
                     $havingClauseList = $attachment->getHavingClauseList();
@@ -1081,7 +1085,7 @@ class ArrayManipulator implements IArrayManipulator
         // Prepare key / val field
         $oldValField = $keyName = $valQName = null;
         $outputPrimaryKeySet = false;
-        $keyNameList = null;
+        $keyNameList = $valName = null;
 
         if ($keyField) {
             $keyName = $keyField->getQualifiedName();

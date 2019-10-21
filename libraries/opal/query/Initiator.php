@@ -224,6 +224,8 @@ class Initiator implements IInitiator
             );
         }
 
+        $populate = null;
+
         foreach ($fields as $field) {
             $children = [];
 
@@ -538,6 +540,7 @@ class Initiator implements IInitiator
             case IQueryTypes::CORRELATION:
                 $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $sourceManager->setParentSourceManager($this->_parentQuery->getSourceManager());
+                $fieldName = $fieldAlias = null;
 
                 foreach ($this->_fieldMap as $fieldName => $fieldAlias) {
                     break;

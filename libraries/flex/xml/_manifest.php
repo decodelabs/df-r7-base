@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 // Exceptions
 interface IException
 {
@@ -66,7 +68,14 @@ trait TReaderInterchange
 
     public static function fromXmlElement(ITree $element)
     {
-        $output = new self();
+        $class = get_called_class();
+        $ref = new \ReflectionClass($class);
+
+        if ($ref->isAbstract()) {
+            throw Glitch::ELogic('Xml reader interchange cannot be instantiated');
+        }
+
+        $output = new $class();
         $output->readXml($element);
 
         return $output;

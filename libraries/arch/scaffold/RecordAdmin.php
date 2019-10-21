@@ -48,6 +48,12 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const CAN_SEARCH = true;
     const CAN_SELECT = false;
 
+    const SECTIONS = null;
+
+    const DETAILS_FIELDS = null;
+    const LIST_FIELDS = null;
+    const SEARCH_FIELDS = null;
+
 
     // Nodes
     public function indexHtmlNode()

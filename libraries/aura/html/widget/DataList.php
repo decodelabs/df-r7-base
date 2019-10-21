@@ -53,7 +53,7 @@ class DataList extends Base implements IUngroupedOptionWidget, Inspectable
             $option = new aura\html\Element('option');
 
             if ($optionRenderer = $this->_optionRenderer) {
-                $optionRenderer($option, $value, $label);
+                $optionRenderer($option, $key, $label);
             } else {
                 $option->setAttribute('value', $label);
             }

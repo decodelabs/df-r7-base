@@ -70,6 +70,10 @@ interface ITimezonesModule extends IListModule
 
 interface INumbersModule extends IModule
 {
+    const INT32 = 'int32';
+    const INT64 = 'int64';
+    const DOUBLE = 'double';
+
     public function format($number, $format=null);
     public function parse($number, $type=self::DOUBLE, &$pos=0, $format=null);
     public function formatPercent($number, int $maxDigits=3);

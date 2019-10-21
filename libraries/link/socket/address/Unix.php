@@ -9,31 +9,33 @@ use df;
 use df\core;
 use df\link;
 
-class Unix extends Base implements IUnixAddress {
-
+class Unix extends Base implements IUnixAddress
+{
     use core\uri\TUrl_PathContainer;
 
-    public static function factory($address) {
-        if($address instanceof IUnixAddress) {
+    public static function factory($address)
+    {
+        if ($address instanceof IUnixAddress) {
             return $address;
         }
 
         return new self($address);
     }
 
-    public function import($address='') {
-        if($address !== null) {
+    public function import($address='')
+    {
+        if ($address !== null) {
             $this->reset();
         }
 
-        if($address == '' || $address === null) {
+        if ($address == '' || $address === null) {
             return $this;
         }
 
-        if($address instanceof IUnixAddress) {
+        if ($address instanceof IUnixAddress) {
             $this->_scheme = $address->_scheme;
 
-            if($address->_path) {
+            if ($address->_path) {
                 $this->_path = clone $address->_path;
             }
 
@@ -49,15 +51,17 @@ class Unix extends Base implements IUnixAddress {
         return $this;
     }
 
-    public function reset() {
+    public function reset()
+    {
         $this->_resetScheme();
         $this->_resetPath();
 
         return $this;
     }
 
-    public function __get($member) {
-        switch($member) {
+    public function __get($member)
+    {
+        switch ($member) {
             case 'scheme':
                 return $this->getScheme();
 
@@ -66,10 +70,11 @@ class Unix extends Base implements IUnixAddress {
         }
     }
 
-    public function __set($member, $value) {
-        switch($member) {
+    public function __set($member, $value)
+    {
+        switch ($member) {
             case 'scheme':
-                return $this->getScheme($value);
+                return $this->setScheme($value);
 
             case 'path':
                 return $this->setPath($value);
@@ -77,15 +82,16 @@ class Unix extends Base implements IUnixAddress {
     }
 
 
-// Scheme
-    public function setScheme($scheme) {
-        if(!strlen($scheme)) {
+    // Scheme
+    public function setScheme($scheme)
+    {
+        if (!strlen($scheme)) {
             $scheme = 'unix';
         }
 
         $scheme = strtolower($scheme);
 
-        switch($scheme) {
+        switch ($scheme) {
             case 'unix':
             case 'udg':
                 $this->_scheme = $scheme;
@@ -99,8 +105,9 @@ class Unix extends Base implements IUnixAddress {
         return $this;
     }
 
-    public function getScheme() {
-        if(!$this->_scheme) {
+    public function getScheme()
+    {
+        if (!$this->_scheme) {
             return 'unix';
         }
 
@@ -108,15 +115,17 @@ class Unix extends Base implements IUnixAddress {
     }
 
 
-// Type
-    public function getSocketDomain() {
+    // Type
+    public function getSocketDomain()
+    {
         return 'unix';
     }
 
-    public function getDefaultSocketType() {
-        if($this->_scheme == 'udg') {
+    public function getDefaultSocketType()
+    {
+        if ($this->_scheme == 'udg') {
             return 'datagram';
-        } else if($this->_scheme == 'unix') {
+        } elseif ($this->_scheme == 'unix') {
             return 'stream';
         }
 
@@ -126,9 +135,10 @@ class Unix extends Base implements IUnixAddress {
     }
 
 
-// Path
-    public function setPath($path) {
-        if(is_null($path) || is_string($path) && !strlen($path)) {
+    // Path
+    public function setPath($path)
+    {
+        if (is_null($path) || is_string($path) && !strlen($path)) {
             $this->_path = null;
         } else {
             $this->_path = core\uri\Path::factory($path);
@@ -137,21 +147,24 @@ class Unix extends Base implements IUnixAddress {
         return $this;
     }
 
-    public function getPath() {
-        if(!$this->_path) {
+    public function getPath()
+    {
+        if (!$this->_path) {
             $this->_path = new core\uri\Path();
         }
 
         return $this->_path;
     }
 
-    public function getPathString() {
+    public function getPathString()
+    {
         return $this->getPath()->toString();
     }
 
 
-// Strings
-    public function toString(): string {
+    // Strings
+    public function toString(): string
+    {
         return $this->getScheme().'://'.$this->getPath();
     }
 }

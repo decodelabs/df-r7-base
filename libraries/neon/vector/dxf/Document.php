@@ -73,7 +73,7 @@ class Document implements IDocument
         $key = strtoupper(ltrim($key, '$'));
 
         if (!isset(self::HEADER_TYPES[$key])) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 'Header not recognised: '.$key
             );
         }
@@ -220,7 +220,7 @@ class Document implements IDocument
         $dxfName = strtoupper($dxfName);
 
         if (isset($this->_classes[$dxfName])) {
-            return $This->_classes[$dxfName];
+            return $this->_classes[$dxfName];
         }
     }
 

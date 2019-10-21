@@ -22,6 +22,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
 
     protected $_contentType = null;
     protected $_id;
+    protected $_mode;
 
     private $_data;
     private $_error;

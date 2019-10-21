@@ -159,7 +159,7 @@ abstract class Base implements link\http\IResponse
             );
         }
 
-        return gzinflate(substr($body, 10));
+        return gzinflate(substr($content, 10));
     }
 
     public static function encodeGzip($content)

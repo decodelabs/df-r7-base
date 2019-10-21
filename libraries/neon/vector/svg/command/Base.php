@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
-abstract class Base implements neon\vector\svg\ICommand {
-
+abstract class Base implements neon\vector\svg\ICommand
+{
     use core\TStringProvider;
 
     const COMMAND_KEYS = [
@@ -28,49 +28,51 @@ abstract class Base implements neon\vector\svg\ICommand {
 
     protected $_isRelative = false;
 
-    public static function listFactory($commands) {
-        if(is_string($commands)) {
+    public static function listFactory($commands)
+    {
+        if (is_string($commands)) {
             $commands = str_replace('  ', ' ', $commands);
             $matches = preg_split('/([a-zA-Z])/', $commands, null, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
             $commands = [];
 
-            while(!empty($matches)) {
-
+            while (!empty($matches)) {
                 do {
                     $command = trim(array_shift($matches));
-                } while(empty($command) && !empty($matches));
+                } while (empty($command) && !empty($matches));
 
-                if(strtolower($command) != 'z') {
+                if (strtolower($command) != 'z') {
                     $command .= array_shift($matches);
                 }
 
                 $command = trim($command);
 
-                if(!empty($command)) {
+                if (!empty($command)) {
                     $commands[] = $command;
                 }
             }
         }
 
-        if(!is_array($commands)) {
+        if (!is_array($commands)) {
             $commands = [$commands];
         }
 
-        foreach($commands as $i => $command) {
+        foreach ($commands as $i => $command) {
             $commands[$i] = self::factory($command);
         }
 
         return $commands;
     }
 
-    public static function factory($command, ...$args) {
-        if($command instanceof ICommand) {
+    public static function factory($command, ...$args)
+    {
+        if ($command instanceof neon\vector\svg\ICommand) {
             return $command;
         }
 
         $command = trim(str_replace(['-', ',', '  '], [' -', ' ', ' '], $command));
+        $isRelative = false;
 
-        if(in_array(
+        if (in_array(
             strtolower($command),
             [
                 'arc', 'closepath', 'cubiccurve', 'horizontalline', 'line', 'move',
@@ -78,11 +80,11 @@ abstract class Base implements neon\vector\svg\ICommand {
             ]
         )) {
             $command = ucfirst($command);
-        } else if(preg_match('/^([a-zA-Z])([^a-zA-Z]+)?/', $command, $matches)) {
+        } elseif (preg_match('/^([a-zA-Z])([^a-zA-Z]+)?/', $command, $matches)) {
             $key = strtolower($matches[1]);
             $isRelative = $key == $matches[1];
 
-            if(!isset(self::COMMAND_KEYS[$key])) {
+            if (!isset(self::COMMAND_KEYS[$key])) {
                 throw new neon\vector\svg\InvalidArgumentException(
                     $matches[1].' is not a valid path command key'
                 );
@@ -98,13 +100,13 @@ abstract class Base implements neon\vector\svg\ICommand {
 
         $class = 'df\\neon\\svg\\command\\'.$command;
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new neon\vector\svg\InvalidArgumentException(
                 $command.' command does not appear to exist'
             );
         }
 
-        foreach($args as $i => $arg) {
+        foreach ($args as $i => $arg) {
             $args[$i] = trim($arg);
         }
 
@@ -116,8 +118,9 @@ abstract class Base implements neon\vector\svg\ICommand {
     }
 
 
-    public function isRelative(bool $flag=null) {
-        if($flag !== null) {
+    public function isRelative(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isRelative = $flag;
             return $this;
         }
@@ -125,8 +128,9 @@ abstract class Base implements neon\vector\svg\ICommand {
         return $this->_isRelative;
     }
 
-    public function isAbsolute(bool $flag=null) {
-        if($flag !== null) {
+    public function isAbsolute(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isRelative = !$flag;
             return $this;
         }

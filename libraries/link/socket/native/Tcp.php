@@ -9,10 +9,9 @@ use df;
 use df\core;
 use df\link;
 
-
 // Server
-class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServerSocket {
-
+class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServerSocket
+{
     use link\socket\TSequenceServerSocket;
     use TNative;
 
@@ -20,21 +19,23 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
         'oobInline' => false
     ];
 
-    protected static function _populateOptions() {
+    protected static function _populateOptions()
+    {
         return array_merge(parent::_populateOptions(), self::DEFAULT_OPTIONS);
     }
 
 
 
-// Operation
-    protected function _startListening() {
-        if($this->_address->getIp()->isV6()) {
+    // Operation
+    protected function _startListening()
+    {
+        if ($this->_address->getIp()->isV6()) {
             $domain = AF_INET6;
         } else {
             $domain = AF_INET;
         }
 
-        if($this->_useSeqPackets) {
+        if ($this->_useSeqPackets) {
             $type = SOCK_SEQPACKET;
         } else {
             $type = SOCK_STREAM;
@@ -44,7 +45,7 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
             $domain, $type, getprotobyname('tcp')
         );
 
-        if(!is_resource($this->_socket)) {
+        if (!is_resource($this->_socket)) {
             throw new link\socket\ConnectionException(
                 'Could not create socket on '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
@@ -54,26 +55,27 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
         $this->_applyOptions();
 
 
-        if(!@socket_bind($this->_socket, $this->_address->getIp()->toString(), $this->_address->getPort())) {
+        if (!@socket_bind($this->_socket, $this->_address->getIp()->toString(), $this->_address->getPort())) {
             throw new link\socket\ConnectionException(
                 'Could not bind server address '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
         }
 
-        if(!@socket_listen($this->_socket, $this->getConnectionQueueSize())) {
+        if (!@socket_listen($this->_socket, $this->getConnectionQueueSize())) {
             throw new link\socket\ConnectionException(
                 'Could not listen on '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
         }
     }
 
-    protected function _applyOptions() {
-        foreach($this->_options as $key => $value) {
-            if($value === null) {
+    protected function _applyOptions()
+    {
+        foreach ($this->_options as $key => $value) {
+            if ($value === null) {
                 continue;
             }
 
-            switch($key) {
+            switch ($key) {
                 case 'sendBufferSize':
                     $key = SO_SNDBUF;
                     $value = (int)$value;
@@ -122,25 +124,28 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
         }
     }
 
-    protected function _acceptSequencePeer() {
+    protected function _acceptSequencePeer()
+    {
         return @socket_accept($this->_socket);
     }
 
-    protected function _getPeerAddress($socket) {
-        if(!@socket_getpeername($socket, $address, $port)) {
-            throw new link\socket\CreationException(
+    protected function _getPeerAddress($socket)
+    {
+        if (!@socket_getpeername($socket, $address, $port)) {
+            throw new link\socket\ConnectionException(
                 'Could not get peer name - '.$this->_getLastErrorMessage()
             );
         }
 
-        if($this->_address->getIp()->isV6()) {
+        if ($this->_address->getIp()->isV6()) {
             $address = '['.$address.']';
         }
 
         return $this->_address->getScheme().'://'.$address.':'.$port;
     }
 
-    public function checkConnection() {
+    public function checkConnection()
+    {
         return is_resource($this->_socket)
             && (@socket_getsockname($this->_socket, $address) !== false);
     }
@@ -149,29 +154,32 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
 
 
 // Server peer
-class Tcp_ServerPeer extends link\socket\ServerPeer implements link\socket\ISequenceServerPeerSocket {
-
+class Tcp_ServerPeer extends link\socket\ServerPeer implements link\socket\ISequenceServerPeerSocket
+{
     use link\socket\TSequenceServerPeerSocket;
     use TNative;
     use TNative_IoSocket;
 
-    protected static function _populateOptions() {
+    protected static function _populateOptions()
+    {
         return [];
     }
 
-    public function __construct(link\socket\IServerSocket $parent, $socket, $address) {
+    public function __construct(link\socket\IServerSocket $parent, $socket, $address)
+    {
         parent::__construct($parent, $socket, $address);
         $this->_applyOptions();
     }
 
 
-    protected function _applyOptions() {
-        foreach($this->_options as $key => $value) {
-            if($value === null) {
+    protected function _applyOptions()
+    {
+        foreach ($this->_options as $key => $value) {
+            if ($value === null) {
                 continue;
             }
 
-            switch($key) {
+            switch ($key) {
                 case 'sendBufferSize':
                     $key = SO_SNDBUF;
                     $value = (int)$value;
@@ -222,9 +230,10 @@ class Tcp_ServerPeer extends link\socket\ServerPeer implements link\socket\ISequ
 
 
 
-// Operation
-    public function checkConnection() {
-        if(!is_resource($this->_socket)) {
+    // Operation
+    public function checkConnection()
+    {
+        if (!is_resource($this->_socket)) {
             return false;
         }
 

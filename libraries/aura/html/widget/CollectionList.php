@@ -127,7 +127,8 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
 
         $headRow = new aura\html\Element('tr');
-        $orderData = null;
+        $orderData = $query = $request = null;
+        $keyMap = [];
 
         if ($this->paginator) {
             $this->paginator->setMode($this->_mode);

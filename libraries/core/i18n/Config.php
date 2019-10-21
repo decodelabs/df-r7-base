@@ -7,11 +7,12 @@ namespace df\core\i18n;
 
 use df\core;
 
-class Config extends core\Config {
-
+class Config extends core\Config
+{
     const ID = 'I18n';
 
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         return [
             'locale' => [
                 'default' => 'en_GB',
@@ -26,11 +27,12 @@ class Config extends core\Config {
     }
 
 
-// Default locale
-    public function setDefaultLocale($locale) {
+    // Default locale
+    public function setDefaultLocale($locale)
+    {
         $locale = Locale::factory($locale);
 
-        if(!$this->isLocaleAllowed($locale)) {
+        if (!$this->isLocaleAllowed($locale)) {
             throw new RuntimeException('Default locale '.$locale.' is not allowed');
         }
 
@@ -38,15 +40,17 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getDefaultLocale() {
+    public function getDefaultLocale()
+    {
         return $this->values->locale->get('default', 'en_GB');
     }
 
-// Locale filter
-    public function setAllowedLocales(array $locales) {
+    // Locale filter
+    public function setAllowedLocales(array $locales)
+    {
         $allow = [];
 
-        foreach($locales as $locale) {
+        foreach ($locales as $locale) {
             $allow[] = (string)Locale::factory($locale);
         }
 
@@ -54,14 +58,16 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getAllowedLocales() {
+    public function getAllowedLocales()
+    {
         return $this->values->locale->allow->toArray();
     }
 
-    public function setDeniedLocales(array $locales) {
+    public function setDeniedLocales(array $locales)
+    {
         $deny = [];
 
-        foreach($locales as $locale) {
+        foreach ($locales as $locale) {
             $deny[] = (string)Locale::factory($locale);
         }
 
@@ -69,11 +75,13 @@ class Config extends core\Config {
         return $this;
     }
 
-    public function getDeniedLocales() {
+    public function getDeniedLocales()
+    {
         return $this->values->locale->deny->toArray();
     }
 
-    public function isLocaleAllowed($locale) {
+    public function isLocaleAllowed($locale)
+    {
         $locale = Locale::factory($locale);
 
         $test = array_unique([
@@ -82,11 +90,11 @@ class Config extends core\Config {
             $locale->getLanguage()
         ]);
 
-        if(!$this->values->locale->allow->isEmpty()) {
+        if (!$this->values->locale->allow->isEmpty()) {
             $allow = $this->values->locale->allow->toArray();
 
-            foreach($test as $testLocale) {
-                if(in_array($testLocale, $allow)) {
+            foreach ($test as $testLocale) {
+                if (in_array($testLocale, $allow)) {
                     return true;
                 }
             }
@@ -94,11 +102,11 @@ class Config extends core\Config {
             return false;
         }
 
-        if(!$this->values->locale->deny->isEmpty()) {
-            $allow = $this->values->locale->deny->toArray();
+        if (!$this->values->locale->deny->isEmpty()) {
+            $deny = $this->values->locale->deny->toArray();
 
-            foreach($test as $testLocale) {
-                if(in_array($testLocale, $deny)) {
+            foreach ($test as $testLocale) {
+                if (in_array($testLocale, $deny)) {
                     return false;
                 }
             }
@@ -109,9 +117,10 @@ class Config extends core\Config {
         return true;
     }
 
-// Detect
-    public function shouldDetectClientLocale(bool $flag=null) {
-        if($flag !== null) {
+    // Detect
+    public function shouldDetectClientLocale(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->values->locale->detectClient = $flag;
             return $this;
         }
@@ -119,9 +128,10 @@ class Config extends core\Config {
         return (bool)$this->values->locale['detectClient'];
     }
 
-// Translation
-    public function isTranslationEnabled(bool $flag=null) {
-        if($flag !== null) {
+    // Translation
+    public function isTranslationEnabled(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->values->translation->enabled = $flag;
             return $this;
         }

@@ -527,7 +527,7 @@ class Html extends Base implements IHtmlView, Inspectable
     public function getStyle($key)
     {
         if (!$this->_styles) {
-            return $default;
+            return null;
         }
 
         return $this->_styles->get($key);

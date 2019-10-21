@@ -11,16 +11,27 @@ use df\axis;
 use df\opal;
 
 // Exceptions
-interface IException extends axis\IException, opal\schema\IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class FieldTypeNotFoundException extends RuntimeException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
-class LogicException extends \LogicException implements IException {}
+interface IException extends axis\IException, opal\schema\IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class FieldTypeNotFoundException extends RuntimeException
+{
+}
+class UnexpectedValueException extends \UnexpectedValueException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
 
 
 
 // Interfaces
-interface IManager extends core\IManager {
+interface IManager extends core\IManager
+{
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false);
     public function store(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
     public function getTimestampFor(axis\ISchemaBasedStorageUnit $unit);
@@ -37,7 +48,8 @@ interface IManager extends core\IManager {
 
 
 
-interface ISchema extends opal\schema\ISchema, opal\schema\IFieldProvider, opal\schema\IIndexProvider, opal\schema\IIndexedFieldProvider {
+interface ISchema extends opal\schema\ISchema, opal\schema\IFieldProvider, opal\schema\IIndexProvider, opal\schema\IIndexedFieldProvider
+{
     public function getUnitType();
     public function getUnitId();
     public function iterateVersion();
@@ -51,7 +63,8 @@ interface ISchema extends opal\schema\ISchema, opal\schema\IFieldProvider, opal\
 
 
 
-interface IField extends opal\schema\IField, opal\query\IFieldValueProcessor {
+interface IField extends opal\schema\IField, opal\query\IFieldValueProcessor
+{
     public function getFieldTypeDisplayName();
     public function getFieldSchemaString();
 
@@ -65,19 +78,21 @@ interface IField extends opal\schema\IField, opal\query\IFieldValueProcessor {
 }
 
 
-interface IAutoIndexField extends IField {
+interface IAutoIndexField extends IField
+{
     public function shouldBeIndexed(bool $flag=null);
 }
 
-trait TAutoIndexField {
-
+trait TAutoIndexField
+{
     protected $_autoIndex = true;
 
-    public function shouldBeIndexed(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldBeIndexed(bool $flag=null)
+    {
+        if ($flag !== null) {
             $flag = $flag;
 
-            if($flag !== $this->_autoIndex) {
+            if ($flag !== $this->_autoIndex) {
                 $this->_hasChanged = true;
             }
 
@@ -88,33 +103,37 @@ trait TAutoIndexField {
         return $this->_autoIndex;
     }
 
-// Ext. serialize
-    protected function _setAutoIndexStorageArray(array $data) {
+    // Ext. serialize
+    protected function _setAutoIndexStorageArray(array $data)
+    {
         $this->_autoIndex = (bool)($data['aui'] ?? true);
     }
 
-    protected function _getAutoIndexStorageArray() {
+    protected function _getAutoIndexStorageArray()
+    {
         return [
             'aui' => $this->_autoIndex
         ];
     }
 }
 
-interface IAutoUniqueField extends IAutoIndexField {
+interface IAutoUniqueField extends IAutoIndexField
+{
     public function shouldBeUnique(bool $flag=null);
 }
 
-trait TAutoUniqueField {
-
+trait TAutoUniqueField
+{
     use TAutoIndexField;
 
     protected $_autoUnique = true;
 
-    public function shouldBeUnique(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldBeUnique(bool $flag=null)
+    {
+        if ($flag !== null) {
             $flag = $flag;
 
-            if($flag !== $this->_autoUnique) {
+            if ($flag !== $this->_autoUnique) {
                 $this->_hasChanged = true;
             }
 
@@ -125,13 +144,15 @@ trait TAutoUniqueField {
         return $this->_autoUnique;
     }
 
-// Ext. serialize
-    protected function _setAutoUniqueStorageArray(array $data) {
+    // Ext. serialize
+    protected function _setAutoUniqueStorageArray(array $data)
+    {
         $this->_autoUnique = (bool)($data['auu'] ?? true);
         $this->_setAutoIndexStorageArray($data);
     }
 
-    protected function _getAutoUniqueStorageArray() {
+    protected function _getAutoUniqueStorageArray()
+    {
         return array_merge(
             ['auu' => $this->_autoUnique],
             $this->_getAutoIndexStorageArray()
@@ -139,21 +160,23 @@ trait TAutoUniqueField {
     }
 }
 
-interface IAutoPrimaryField extends IAutoUniqueField {
+interface IAutoPrimaryField extends IAutoUniqueField
+{
     public function shouldBePrimary(bool $flag=null);
 }
 
-trait TAutoPrimaryField {
-
+trait TAutoPrimaryField
+{
     use TAutoUniqueField;
 
     protected $_autoPrimary = true;
 
-    public function shouldBePrimary(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldBePrimary(bool $flag=null)
+    {
+        if ($flag !== null) {
             $flag = $flag;
 
-            if($flag !== $this->_autoPrimary) {
+            if ($flag !== $this->_autoPrimary) {
                 $this->_hasChanged = true;
             }
 
@@ -164,13 +187,15 @@ trait TAutoPrimaryField {
         return $this->_autoPrimary;
     }
 
-// Ext. serialize
-    protected function _setAutoPrimaryStorageArray(array $data) {
+    // Ext. serialize
+    protected function _setAutoPrimaryStorageArray(array $data)
+    {
         $this->_autoPrimary = (bool)($data['aup'] ?? true);
         $this->_setAutoUniqueStorageArray($data);
     }
 
-    protected function _getAutoPrimaryStorageArray() {
+    protected function _getAutoPrimaryStorageArray()
+    {
         return array_merge(
             ['aup' => $this->_autoPrimary],
             $this->_getAutoUniqueStorageArray()
@@ -179,24 +204,28 @@ trait TAutoPrimaryField {
 }
 
 
-interface IDateField extends IField {}
+interface IDateField extends IField
+{
+}
 
-interface ILengthRestrictedField extends IField, opal\schema\ILengthRestrictedField {
+interface ILengthRestrictedField extends IField, opal\schema\ILengthRestrictedField
+{
     public function isConstantLength(bool $flag=null);
 }
 
 
-trait TLengthRestrictedField {
-
+trait TLengthRestrictedField
+{
     use opal\schema\TField_LengthRestricted;
 
     protected $_isConstantLength = false;
 
-    public function isConstantLength(bool $flag=null) {
-        if($flag !== null) {
+    public function isConstantLength(bool $flag=null)
+    {
+        if ($flag !== null) {
             $flag = $flag;
 
-            if($flag !== $this->_isConstantLength) {
+            if ($flag !== $this->_isConstantLength) {
                 $this->_hasChanged = true;
             }
 
@@ -207,27 +236,29 @@ trait TLengthRestrictedField {
         return $this->_isConstantLength;
     }
 
-// Ext. serialize
-    protected function _setLengthRestrictedStorageArray(array $data) {
-        if(isset($data['lnt'])) {
+    // Ext. serialize
+    protected function _setLengthRestrictedStorageArray(array $data)
+    {
+        if (isset($data['lnt'])) {
             $this->_length = $data['lnt'];
         }
 
-        if(isset($data['ctl'])) {
+        if (isset($data['ctl'])) {
             $this->_isConstantLength = $data['ctl'];
         } else {
             $this->_isConstantLength = false;
         }
     }
 
-    protected function _getLengthRestrictedStorageArray() {
+    protected function _getLengthRestrictedStorageArray()
+    {
         $output = [];
 
-        if($this->_length !== null) {
+        if ($this->_length !== null) {
             $output['lnt'] = $this->_length;
         }
 
-        if($this->_isConstantLength !== false) {
+        if ($this->_isConstantLength !== false) {
             $output['ctl'] = $this->_isConstantLength;
         }
 
@@ -237,7 +268,8 @@ trait TLengthRestrictedField {
 
 
 
-interface IRelationField extends IField, opal\schema\IRelationField, opal\schema\IQueryClauseRewriterField {
+interface IRelationField extends IField, opal\schema\IRelationField, opal\schema\IQueryClauseRewriterField
+{
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
     public function getTargetUnit();
@@ -246,19 +278,20 @@ interface IRelationField extends IField, opal\schema\IRelationField, opal\schema
 }
 
 
-trait TRelationField {
-
+trait TRelationField
+{
     protected $_targetUnitId;
     //protected $_deleteCascade = false;
 
-    public function setTargetUnitId($targetUnit) {
-        if($targetUnit instanceof axis\IUnit) {
+    public function setTargetUnitId($targetUnit)
+    {
+        if ($targetUnit instanceof axis\IUnit) {
             $targetUnit = $targetUnit->getUnitId();
         }
 
         $targetUnit = (string)$targetUnit;
 
-        if($targetUnit != $this->_targetUnitId) {
+        if ($targetUnit != $this->_targetUnitId) {
             $this->_hasChanged = true;
         }
 
@@ -266,59 +299,66 @@ trait TRelationField {
         return $this;
     }
 
-    public function getTargetUnitId() {
+    public function getTargetUnitId()
+    {
         return $this->_targetUnitId;
     }
 
-    public function getTargetUnit() {
+    public function getTargetUnit()
+    {
         return axis\Model::loadUnitFromId($this->_targetUnitId);
     }
 
-    public function getTargetQueryAdapter() {
+    public function getTargetQueryAdapter()
+    {
         return axis\Model::loadUnitFromId($this->_targetUnitId);
     }
 
 
-/*
-    public function shouldCascadeDelete(bool $flag=null) {
-        if($flag !== null) {
-            $t = $this->_deleteCascade;
-            $this->_deleteCascade = $flag;
+    /*
+        public function shouldCascadeDelete(bool $flag=null) {
+            if($flag !== null) {
+                $t = $this->_deleteCascade;
+                $this->_deleteCascade = $flag;
 
-            if($t != $this->_deleteCascade) {
-                $this->_hasChanged = true;
+                if($t != $this->_deleteCascade) {
+                    $this->_hasChanged = true;
+                }
+
+                return $this;
             }
 
-            return $this;
+            return $this->_deleteCascade;
         }
-
-        return $this->_deleteCascade;
-    }
-*/
+    */
 
 
-    public function canReturnNull() {
+    public function canReturnNull()
+    {
         return true;
     }
 
 
-    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate)
+    {
         return null;
     }
 
 
-    protected function _sanitizeTargetUnitId(axis\ISchemaBasedStorageUnit $unit) {
+    protected function _sanitizeTargetUnitId(axis\ISchemaBasedStorageUnit $unit)
+    {
         $model = $unit->getModel();
 
-        if(false === strpos($this->_targetUnitId, '/')) {
+        if (false === strpos($this->_targetUnitId, '/')) {
             $this->_targetUnitId = $model->getModelName().'/'.$this->_targetUnitId;
         }
     }
 
-    protected function _validateTargetUnit(axis\ISchemaBasedStorageUnit $localUnit) {
+    protected function _validateTargetUnit(axis\ISchemaBasedStorageUnit $localUnit)
+    {
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
 
-        if($targetUnit->getUnitType() != $localUnit->getUnitType()) {
+        if ($targetUnit->getUnitType() != $localUnit->getUnitType()) {
             throw new RuntimeException(
                 'Relation target unit '.$targetUnit->getUnitId().' does not match local unit '.$localUnit->getUnitId().' type ('.$localUnit->getUnitType().')'
             );
@@ -327,8 +367,9 @@ trait TRelationField {
         return $targetUnit;
     }
 
-    protected function _validateLocalPrimaryIndex(axis\ISchemaBasedStorageUnit $localUnit, ISchema $localSchema) {
-        if(!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
+    protected function _validateLocalPrimaryIndex(axis\ISchemaBasedStorageUnit $localUnit, ISchema $localSchema)
+    {
+        if (!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
             throw new RuntimeException(
                 'Relation table '.$localUnit->getUnitId().' does not have a primary index'
             );
@@ -337,51 +378,59 @@ trait TRelationField {
         return $localPrimaryIndex;
     }
 
-    protected function _validateTargetPrimaryIndex(axis\ISchemaBasedStorageUnit $targetUnit, ISchema $targetSchema=null) {
-        if($targetSchema === null) {
+    protected function _validateTargetPrimaryIndex(axis\ISchemaBasedStorageUnit $targetUnit, ISchema $targetSchema=null)
+    {
+        if ($targetSchema === null) {
             $targetSchema = $targetUnit->getTransientUnitSchema();
         }
 
-        if(!$targetPrimaryIndex = $targetSchema->getPrimaryIndex()) {
+        if (!$targetPrimaryIndex = $targetSchema->getPrimaryIndex()) {
             throw new RuntimeException(
                 'Relation unit '.$targetUnit->getUnitId().' does not have a primary index'
             );
         }
 
-        $this->_targetRelationManifest = new opal\schema\RelationManifest($targetPrimaryIndex);
+        if (!$this instanceof axis\schema\field\OneChild) {
+            $this->_targetRelationManifest = new opal\schema\RelationManifest($targetPrimaryIndex);
+        }
+
         return $targetPrimaryIndex;
     }
 
-    protected function _validateDefaultValue(axis\ISchemaBasedStorageUnit $localUnit) {
-        if($this->_defaultValue === null) {
+    protected function _validateDefaultValue(axis\ISchemaBasedStorageUnit $localUnit)
+    {
+        if ($this->_defaultValue === null) {
             return;
         }
 
-        if($this instanceof opal\schema\IOneRelationField) {
+        if ($this instanceof opal\schema\IOneRelationField && $this instanceof opal\schema\ITargetPrimaryFieldAwareRelationField) {
             $targetRelationManifest = $this->getTargetRelationManifest();
 
-            if(!$targetRelationManifest->validateValue($this->_defaultValue)) {
+            if (!$targetRelationManifest->validateValue($this->_defaultValue)) {
                 throw new axis\schema\RuntimeException(
                     'Default value for relation field does not fit relation manifest'
                 );
             }
-        } else if($this instanceof opal\schema\IManyRelationField) {
+        } elseif ($this instanceof opal\schema\IManyRelationField) {
             // TODO: validate default value
         }
     }
 
 
 
-    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
         return $this->_toPrimitive($unit, $schema, false);
     }
 
-    public function getReplacedPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+    public function getReplacedPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
         return $this->_toPrimitive($unit, $schema, true);
     }
 
-    private function _toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema, $replaced=false) {
-        if($this instanceof opal\schema\INullPrimitiveField) {
+    private function _toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema, $replaced=false)
+    {
+        if ($this instanceof opal\schema\INullPrimitiveField) {
             return new opal\schema\Primitive_Null($this);
         }
 
@@ -391,12 +440,12 @@ trait TRelationField {
 
         $primitives = [];
 
-        foreach($targetPrimaryIndex->getFields() as $name => $field) {
-            if($replaced) {
+        foreach ($targetPrimaryIndex->getFields() as $name => $field) {
+            if ($replaced) {
                 $oldName = $targetSchema->getOriginalFieldNameFor($name);
                 $replacedField = $targetSchema->getReplacedField($oldName);
 
-                if($replacedField) {
+                if ($replacedField) {
                     $field = $replacedField;
                     $name = $oldName;
                 }
@@ -405,36 +454,38 @@ trait TRelationField {
             $primitive = $field->toPrimitive($targetUnit, $targetSchema)
                 ->isNullable(true);
 
-            if($field instanceof opal\schema\IMultiPrimitiveField) {
+            if ($field instanceof opal\schema\IMultiPrimitiveField) {
                 $name = $primitive->getName();
             }
 
             $primitiveName = $this->_getSubPrimitiveName($name);
             $primitive->_setName($primitiveName);
 
-            if($this->_defaultValue !== null) {
+            if ($this->_defaultValue !== null) {
                 $primitive->setDefaultValue($this->_defaultValue[$name]);
             }
 
-            if($primitive instanceof opal\schema\IAutoIncrementableField) {
+            if ($primitive instanceof opal\schema\IAutoIncrementableField) {
                 $primitive->shouldAutoIncrement(false);
             }
 
             $primitives[$primitiveName] = $primitive;
         }
 
-        if(count($primitives) == 1) {
+        if (count($primitives) == 1) {
             return array_shift($primitives);
         }
 
         return new opal\schema\Primitive_MultiField($this, $primitives);
     }
 
-    protected function _getSubPrimitiveName($name) {
+    protected function _getSubPrimitiveName($name)
+    {
         return $this->_name.'_'.$name;
     }
 
-    protected function _setRelationStorageArray(array $data) {
+    protected function _setRelationStorageArray(array $data)
+    {
         $this->_targetUnitId = $data['tui'];
 
         /*
@@ -446,7 +497,8 @@ trait TRelationField {
         */
     }
 
-    protected function _getRelationStorageArray() {
+    protected function _getRelationStorageArray()
+    {
         return [
             'tui' => $this->_targetUnitId,
             //'odc' => $this->_deleteCascade
@@ -456,12 +508,13 @@ trait TRelationField {
 
 
 
-trait TInverseRelationField {
-
+trait TInverseRelationField
+{
     protected $_targetField;
 
-    public function setTargetField($field) {
-        if($field != $this->_targetField) {
+    public function setTargetField($field)
+    {
+        if ($field != $this->_targetField) {
             $this->_hasChanged = true;
         }
 
@@ -469,54 +522,56 @@ trait TInverseRelationField {
         return $this;
     }
 
-    public function getTargetField() {
+    public function getTargetField()
+    {
         return $this->_targetField;
     }
 
-    protected function _validateInverseRelationField(axis\ISchemaBasedStorageUnit $targetUnit, ISchema $targetSchema=null) {
-        if($targetSchema === null) {
+    protected function _validateInverseRelationField(axis\ISchemaBasedStorageUnit $targetUnit, ISchema $targetSchema=null)
+    {
+        if ($targetSchema === null) {
             $targetSchema = $targetUnit->getTransientUnitSchema();
         }
 
-        if(!$targetField = $targetSchema->getField($this->_targetField)) {
+        if (!$targetField = $targetSchema->getField($this->_targetField)) {
             throw new RuntimeException(
                 'Target field '.$this->_targetField.' could not be found in '.$targetUnit->getUnitId()
             );
         }
 
-        if($this instanceof IOneChildField) {
-            if(!$targetField instanceof IOneParentField) {
+        if ($this instanceof IOneChildField) {
+            if (!$targetField instanceof IOneParentField) {
                 throw new RuntimeException(
                     'Target field '.$this->_targetField.' is not a OneParent field'
                 );
             }
-        } else if($this instanceof IOneParentField) {
-            if(!$targetField instanceof IOneChildField) {
+        } elseif ($this instanceof IOneParentField) {
+            if (!$targetField instanceof IOneChildField) {
                 throw new RuntimeException(
                     'Target field '.$this->_targetField.' is not a OneChild field'
                 );
             }
-        } else if($this instanceof IOneToManyField) {
-            if(!$targetField instanceof IManyToOneField) {
+        } elseif ($this instanceof IOneToManyField) {
+            if (!$targetField instanceof IManyToOneField) {
                 throw new RuntimeException(
                     'Target field '.$this->_targetField.' is not a ManyToOne field'
                 );
             }
-        } else if($this instanceof IManyToOneField) {
-            if(!$targetField instanceof IOneToManyField) {
+        } elseif ($this instanceof IManyToOneField) {
+            if (!$targetField instanceof IOneToManyField) {
                 throw new RuntimeException(
                     'Target field '.$this->_targetField.' is not a OneToMany field'
                 );
             }
-        } else if($this instanceof IManyToManyField) {
-            if(!$targetField instanceof IManyToManyField) {
+        } elseif ($this instanceof IManyToManyField) {
+            if (!$targetField instanceof IManyToManyField) {
                 throw new RuntimeException(
                     'Target field '.$this->_targetField.' is not a ManyToMany field'
                 );
             }
         }
 
-        if($targetField->getTargetField() != $this->_name) {
+        if ($targetField->getTargetField() != $this->_name) {
             throw new RuntimeException(
                 'Inverse field '.$this->_targetField.' is pointing to '.$targetField->getTargetField().', not '.$this->_name.' field'
             );
@@ -525,28 +580,32 @@ trait TInverseRelationField {
         return $targetField;
     }
 
-    protected function _setInverseRelationStorageArray(array $data) {
+    protected function _setInverseRelationStorageArray(array $data)
+    {
         $this->_targetField = $data['tfl'];
     }
 
-    protected function _getInverseRelationStorageArray() {
+    protected function _getInverseRelationStorageArray()
+    {
         return [
             'tfl' => $this->_targetField
         ];
     }
 }
 
-trait TTargetPrimaryFieldAwareRelationField {
-
+trait TTargetPrimaryFieldAwareRelationField
+{
     use opal\schema\TField_TargetPrimaryFieldAwareRelation;
 
-    public function getTargetPrimaryIndex() {
+    public function getTargetPrimaryIndex()
+    {
         return $this->getTargetUnit()->getTransientUnitSchema()->getPrimaryIndex();
     }
 }
 
 
-interface IBridgedRelationField extends IRelationField, opal\schema\IBridgedRelationField {
+interface IBridgedRelationField extends IRelationField, opal\schema\IBridgedRelationField
+{
     public function setBridgeUnitId($id);
     public function getBridgeUnitId();
 
@@ -555,8 +614,8 @@ interface IBridgedRelationField extends IRelationField, opal\schema\IBridgedRela
 }
 
 
-trait TBridgedRelationField {
-
+trait TBridgedRelationField
+{
     use TTargetPrimaryFieldAwareRelationField;
     use opal\schema\TField_BridgedRelation;
 
@@ -565,12 +624,13 @@ trait TBridgedRelationField {
     protected $_bridgeTargetFieldName;
     protected $_localRelationManifest;
 
-    public function setBridgeUnitId($id) {
-        if($id instanceof axis\IUnit) {
+    public function setBridgeUnitId($id)
+    {
+        if ($id instanceof axis\IUnit) {
             $id = $id->getUnitId();
         }
 
-        if($id != $this->_bridgeUnitId) {
+        if ($id != $this->_bridgeUnitId) {
             $this->_hasChanged = true;
         }
 
@@ -578,37 +638,41 @@ trait TBridgedRelationField {
         return $this;
     }
 
-    public function getBridgeUnitId() {
+    public function getBridgeUnitId()
+    {
         return $this->_bridgeUnitId;
     }
 
-    public function getBridgeUnit() {
+    public function getBridgeUnit()
+    {
         return axis\Model::loadUnitFromId($this->_bridgeUnitId);
     }
 
-    public function getBridgeQueryAdapter() {
+    public function getBridgeQueryAdapter()
+    {
         return axis\Model::loadUnitFromId($this->_bridgeUnitId);
     }
 
-    public function getBridgeLocalFieldName() {
+    public function getBridgeLocalFieldName()
+    {
         return $this->_bridgeLocalFieldName;
     }
 
-    public function getBridgeTargetFieldName() {
+    public function getBridgeTargetFieldName()
+    {
         return $this->_bridgeTargetFieldName;
     }
 
-    protected function _sanitizeBridgeUnitId(axis\ISchemaBasedStorageUnit $localUnit) {
+    protected function _sanitizeBridgeUnitId(axis\ISchemaBasedStorageUnit $localUnit)
+    {
         $targetUnit = $this->getTargetUnit();
         $modelName = $localUnit->getModel()->getModelName();
 
         $this->_bridgeLocalFieldName = $localUnit->getUnitName();
         $this->_bridgeTargetFieldName = $targetUnit->getUnitName();
 
-        $isManyToMany = $this instanceof IManyToManyField;
-
-        if(empty($this->_bridgeUnitId)) {
-            if($isManyToMany && !$this->isDominant()) {
+        if (empty($this->_bridgeUnitId)) {
+            if ($this instanceof IManyToManyField && !$this->isDominant()) {
                 //$buiArgs = [$targetUnit->getUnitName().'.'.$this->getTargetField()];
                 $dominantField = $targetUnit->getTransientUnitSchema()->getField($this->getTargetField());
                 $this->_bridgeUnitId = $dominantField->getBridgeUnitId();
@@ -618,20 +682,20 @@ trait TBridgedRelationField {
             }
         }
 
-        if(!empty($this->_bridgeUnitId) && false === strpos($this->_bridgeUnitId, '(')) {
+        if (!empty($this->_bridgeUnitId) && false === strpos($this->_bridgeUnitId, '(')) {
             $parts = explode('/', $this->_bridgeUnitId, 2);
             $bridgeModelName = array_shift($parts);
             $bridgeId = array_shift($parts);
 
-            if(!$bridgeId) {
+            if (!$bridgeId) {
                 $bridgeId = $bridgeModelName;
                 $bridgeModelName = $modelName;
             }
 
             $bridgeClass = axis\unit\BridgeTable::getBridgeClass($bridgeModelName, $bridgeId);
 
-            if($bridgeClass::IS_SHARED) {
-                if($isManyToMany && !$this->isDominant()) {
+            if ($bridgeClass::IS_SHARED) {
+                if ($this instanceof IManyToManyField && !$this->isDominant()) {
                     //$buiArgs = [$targetUnit->getUnitName().'.'.$this->getTargetField()];
                     $dominantField = $targetUnit->getTransientUnitSchema()->getField($this->getTargetField());
                     $this->_bridgeUnitId = $dominantField->getBridgeUnitId();
@@ -643,12 +707,12 @@ trait TBridgedRelationField {
             }
         }
 
-        if(false === strpos($this->_bridgeUnitId, '/')) {
+        if (false === strpos($this->_bridgeUnitId, '/')) {
             $this->_bridgeUnitId = $modelName.'/'.$this->_bridgeUnitId;
         }
 
-        if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
-            if($isManyToMany && !$this->isDominant()) {
+        if ($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
+            if ($this instanceof IManyToManyField && !$this->isDominant()) {
                 $this->_bridgeLocalFieldName .= opal\schema\IBridgedRelationField::SELF_REFERENCE_SUFFIX;
             } else {
                 $this->_bridgeTargetFieldName .= opal\schema\IBridgedRelationField::SELF_REFERENCE_SUFFIX;
@@ -656,11 +720,12 @@ trait TBridgedRelationField {
         }
     }
 
-    protected function _validateBridgeUnit(axis\ISchemaBasedStorageUnit $localUnit) {
+    protected function _validateBridgeUnit(axis\ISchemaBasedStorageUnit $localUnit)
+    {
         $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId);
 
-        if($this instanceof IManyToManyField) {
-            if($bridgeUnit->getModel()->getModelName() != $localUnit->getModel()->getModelName()) {
+        if ($this instanceof IManyToManyField) {
+            if ($bridgeUnit->getModel()->getModelName() != $localUnit->getModel()->getModelName()) {
                 throw new RuntimeException(
                     'Bridge units must be local to the dominant participant - '.
                     $this->_bridgeUnitId.' should be on model '.$localUnit->getModel()->getModelName()
@@ -671,12 +736,14 @@ trait TBridgedRelationField {
         return $bridgeUnit;
     }
 
-    protected function _getBridgeUnitType() {
+    protected function _getBridgeUnitType()
+    {
         return 'BridgeTable';
     }
 
-    public function getLocalRelationManifest() {
-        if(!$this->_localRelationManifest) {
+    public function getLocalRelationManifest()
+    {
+        if (!$this->_localRelationManifest) {
             $schema = $this->getBridgeUnit()->getTransientUnitSchema();
             $this->_localRelationManifest = $schema->getField($this->_bridgeLocalFieldName)->getTargetRelationManifest();
         }
@@ -685,20 +752,22 @@ trait TBridgedRelationField {
     }
 
 
-// Ext. serialize
-    protected function _setBridgeRelationStorageArray(array $data) {
+    // Ext. serialize
+    protected function _setBridgeRelationStorageArray(array $data)
+    {
         $this->_bridgeUnitId = $data['bui'];
         $this->_bridgeLocalFieldName = $data['blf'];
         $this->_bridgeTargetFieldName = $data['btf'];
 
         // Fix legacy
-        if(preg_match('|^([a-zA-Z0-9_]+)/table.Bridge\(|i', $this->_bridgeUnitId)) {
+        if (preg_match('|^([a-zA-Z0-9_]+)/table.Bridge\(|i', $this->_bridgeUnitId)) {
             list($model, $unit) = explode('/', $this->_bridgeUnitId, 2);
             $this->_bridgeUnitId = $model.'/BridgeTable'.substr($unit, 12);
         }
     }
 
-    protected function _getBridgeRelationStorageArray() {
+    protected function _getBridgeRelationStorageArray()
+    {
         return [
             'bui' => $this->_bridgeUnitId,
             'blf' => $this->_bridgeLocalFieldName,
@@ -708,20 +777,35 @@ trait TBridgedRelationField {
 }
 
 
-interface IOneField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField, opal\schema\ITargetPrimaryFieldAwareRelationField {}
-interface IOneParentField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField {}
-interface IOneChildField extends IRelationField, opal\schema\IOneRelationField, opal\schema\INullPrimitiveField {}
-interface IManyToOneField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField, opal\schema\IInverseRelationField {}
+interface IOneField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField, opal\schema\ITargetPrimaryFieldAwareRelationField
+{
+}
+interface IOneParentField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField
+{
+}
+interface IOneChildField extends IRelationField, opal\schema\IOneRelationField, opal\schema\INullPrimitiveField
+{
+}
+interface IManyToOneField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField, opal\schema\IInverseRelationField
+{
+}
 
-interface IManyField extends IRelationField, opal\schema\IManyRelationField, IBridgedRelationField {}
-interface IManyToManyField extends IRelationField, opal\schema\IManyRelationField, IBridgedRelationField, opal\schema\IInverseRelationField {}
+interface IManyField extends IRelationField, opal\schema\IManyRelationField, IBridgedRelationField
+{
+}
+interface IManyToManyField extends IRelationField, opal\schema\IManyRelationField, IBridgedRelationField, opal\schema\IInverseRelationField
+{
+}
 
-interface IOneToManyField extends IRelationField, opal\schema\IManyRelationField, opal\schema\IInverseRelationField, opal\schema\ITargetPrimaryFieldAwareRelationField {}
+interface IOneToManyField extends IRelationField, opal\schema\IManyRelationField, opal\schema\IInverseRelationField, opal\schema\ITargetPrimaryFieldAwareRelationField
+{
+}
 
 
 
 // Bridge
-interface ITranslator {
+interface ITranslator
+{
     public function getUnit();
     public function getAxisSchema();
     public function getTargetSchema();
@@ -729,4 +813,6 @@ interface ITranslator {
     public function updateTargetSchema();
 }
 
-class Cache extends core\cache\Base {}
+class Cache extends core\cache\Base
+{
+}

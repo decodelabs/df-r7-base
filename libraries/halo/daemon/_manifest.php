@@ -10,14 +10,23 @@ use df\core;
 use df\halo;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class LogicException extends \LogicException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
 
 
 // Interfaces
-interface IDaemon extends halo\event\IDispatcherProvider {
+interface IDaemon extends halo\event\IDispatcherProvider, core\IContextAware
+{
     public function getName(): string;
     public function getPidFilePath();
     public function setUser($user);
@@ -37,7 +46,8 @@ interface IDaemon extends halo\event\IDispatcherProvider {
 }
 
 
-interface IRemote {
+interface IRemote
+{
     public function getName(): string;
     public function setMultiplexer(core\io\IMultiplexer $multiplexer=null);
     public function getMultiplexer();
@@ -55,7 +65,8 @@ interface IRemote {
 }
 
 
-interface IManager extends core\IManager {
+interface IManager extends core\IManager
+{
     public function isEnabled();
     public function ensureActivity();
 

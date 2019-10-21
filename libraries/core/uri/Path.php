@@ -311,9 +311,11 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Inspectable
 
     protected function _expandInput($input): array
     {
-        if ($input instanceof core\ICollection) {
+        /*
+        if ($input instanceof core\collection\ICollection) {
             $input = $input->toArray();
         }
+        */
 
         if (is_array($input)) {
             return $input;
@@ -450,16 +452,16 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Inspectable
     // Win
     public function hasWinDrive()
     {
-        return isset($this->_values[0]) && preg_match('/^[a-zA-Z]\:$/', $this->_values[0]);
+        return isset($this->_collection[0]) && preg_match('/^[a-zA-Z]\:$/', $this->_collection[0]);
     }
 
     public function getWinDriveLetter()
     {
-        if (!isset($this->_values[0])) {
+        if (!isset($this->_collection[0])) {
             return null;
         }
 
-        if (!preg_match('/^([a-zA-Z])\:$/', $this->_values[0], $matches)) {
+        if (!preg_match('/^([a-zA-Z])\:$/', $this->_collection[0], $matches)) {
             return null;
         }
 

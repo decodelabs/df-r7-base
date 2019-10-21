@@ -14,6 +14,7 @@ use df\link;
 use df\flow;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Glitch;
 
 trait TView_RenderTargetProvider
 {
@@ -51,6 +52,11 @@ trait TView_DeferredRenderable
     public function renderTo(IRenderTarget $target)
     {
         $this->setRenderTarget($target);
+
+        if (!$this instanceof IDeferredRenderable) {
+            throw Glitch::ELogic('Item is not renderable', null, $this);
+        }
+
         return $this->render();
     }
 }
@@ -292,14 +298,14 @@ trait TView
 
     protected function _beforeRender()
     {
-        if ($this->_canThemeProcess()) {
+        if ($this instanceof IThemedView && $this->_canThemeProcess()) {
             $this->getTheme()->beforeViewRender($this);
         }
     }
 
     protected function _onContentRender($content)
     {
-        if ($this->_canThemeProcess()) {
+        if ($this instanceof IThemedView && $this->_canThemeProcess()) {
             $content = $this->getTheme()->onViewContentRender($this, $content);
         }
 
@@ -308,7 +314,7 @@ trait TView
 
     protected function _onLayoutRender($content)
     {
-        if ($this->_canThemeProcess()) {
+        if ($this instanceof IThemedView && $this->_canThemeProcess()) {
             $content = $this->getTheme()->onViewLayoutRender($this, $content);
         }
 
@@ -317,7 +323,7 @@ trait TView
 
     protected function _afterRender($content)
     {
-        if ($this->_canThemeProcess()) {
+        if ($this instanceof IThemedView && $this->_canThemeProcess()) {
             $content = $this->getTheme()->afterViewRender($this, $content);
         }
 
@@ -326,12 +332,11 @@ trait TView
 
     protected function _canThemeProcess(): bool
     {
-        return $this instanceof IThemedView
-            && (!df\Launchpad::$app->isMaintenance
+        return !df\Launchpad::$app->isMaintenance
                 || $this->context->request->isArea('admin')
                 || $this->context->request->isArea('devtools')
                 || $this->context->request->isArea('mail')
-                || $this->context->request->matches('account/'));
+                || $this->context->request->matches('account/');
     }
 
     private function _checkContentProvider()

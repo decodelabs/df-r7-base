@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -339,8 +340,11 @@ class DisplaySize implements IDisplaySize, Inspectable
                 break;
 
             case 'pc':
-                $pc = ($value / 6) * $this->_dpi;
+                $px = ($value / 6) * $this->_dpi;
                 break;
+
+            default:
+                throw Glitch::EInvalidArgument('Unsupported display size unit: '.$inUnit);
         }
 
         switch ($outUnit) {

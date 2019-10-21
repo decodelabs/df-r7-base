@@ -136,6 +136,11 @@ class OneChildRelationValueContainer implements
         return $this->__toString();
     }
 
+    public function __toString(): string
+    {
+        return (string)$this->getRawId();
+    }
+
     public function getValueForStorage()
     {
         return null;

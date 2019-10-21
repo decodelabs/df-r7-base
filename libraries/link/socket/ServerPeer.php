@@ -77,7 +77,7 @@ abstract class ServerPeer extends Base implements IServerPeerSocket, Inspectable
             $args[] = 'x';
         }
 
-        if ($this->_isSecure) {
+        if ($this instanceof ISecureSocket && $this->isSecure()) {
             array_unshift($args, 's');
         }
 

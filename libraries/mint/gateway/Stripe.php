@@ -66,9 +66,6 @@ class Stripe extends Base implements
         }
 
         $this->_publicKey = $key;
-
-
-        parent::__construct($settings);
     }
 
     // Testing
@@ -364,8 +361,6 @@ class Stripe extends Base implements
 
             return $output;
         }, 'EPlan');
-
-        return $output;
     }
 
 

@@ -114,7 +114,7 @@ class Command implements ICommand
 
     protected function _expandInput($input): array
     {
-        if ($input instanceof core\ICollection) {
+        if ($input instanceof core\collection\ICollection) {
             $input = $input->toArray();
         }
 

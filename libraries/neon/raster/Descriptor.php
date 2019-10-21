@@ -120,6 +120,8 @@ class Descriptor implements IDescriptor
         if ($this->_isSourceLocal && !$isTransformable) {
             $file = Atlas::$fs->file($this->_sourceLocation);
         } elseif (!$file = $fileStore->get($key, $lifetime)) {
+            $download = null;
+
             if (!$this->_isSourceLocal) {
                 // Download file
                 $http = new link\http\Client();
@@ -170,8 +172,8 @@ class Descriptor implements IDescriptor
 
             $file = $fileStore->get($key);
 
-            if (!$this->_isSourceLocal) {
-                $download->unlink();
+            if (!$this->_isSourceLocal && $download) {
+                $download->delete();
             }
         }
 

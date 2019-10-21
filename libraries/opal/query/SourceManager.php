@@ -313,7 +313,7 @@ class SourceManager implements ISourceManager, Inspectable
 
             if ($checkAlias === true && $passedSourceAlias !== $targetField->getSourceAlias()) {
                 throw new InvalidArgumentException(
-                    'Source alias "'.$sourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
+                    'Source alias "'.$passedSourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
                 );
             } elseif (is_string($checkAlias) && $targetField->getSourceAlias() == $checkAlias) {
                 throw new InvalidArgumentException(
@@ -552,8 +552,7 @@ class SourceManager implements ISourceManager, Inspectable
 
         while (true) {
             try {
-                $output = $executor($adapter);
-                break;
+                return $executor($adapter);
             } catch (\Throwable $e) {
                 $exceptions[] = $e;
                 $handled = false;
@@ -578,8 +577,6 @@ class SourceManager implements ISourceManager, Inspectable
                 );
             }
         }
-
-        return $output;
     }
 
 

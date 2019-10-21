@@ -531,7 +531,7 @@ class Base implements link\http\IRequest, Inspectable
         } else {
             if (is_string($cookies)) {
                 $cookies = core\collection\Tree::fromArrayDelimitedString(trim($cookies, ';'), ';');
-            } elseif (!$query instanceof core\collection\ITree) {
+            } elseif (!$cookies instanceof core\collection\ITree) {
                 $cookies = new core\collection\Tree($cookies);
             }
 

@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\iris;
 
-class Comment implements iris\IScanner {
-
+class Comment implements iris\IScanner
+{
     protected $_markers = [
         '//' => "\n",
         '/*' => '*/'
@@ -18,60 +18,71 @@ class Comment implements iris\IScanner {
 
     protected $_allowNesting = true;
 
-    public function __construct(array $markers=null) {
-        if($markers !== null) {
+    public function __construct(array $markers=null)
+    {
+        if ($markers !== null) {
             $this->setMarkers($markers);
         }
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return 'Comment';
     }
 
-    public function getWeight() {
+    public function getWeight()
+    {
         return 500;
     }
 
-    public function setMarkers(array $markers) {
+    public function setMarkers(array $markers)
+    {
         return $this->clearMarkers()
             ->addMarkers($markers);
     }
 
-    public function addMarkers(array $markers) {
-        foreach($markers as $start => $end) {
+    public function addMarkers(array $markers)
+    {
+        foreach ($markers as $start => $end) {
             $this->addMarker($start, $end);
         }
 
         return $this;
     }
 
-    public function addMarker($start, $end) {
+    public function addMarker($start, $end)
+    {
         $this->_markers[$start] = $end;
         return $this;
     }
 
-    public function hasMarker($start) {
+    public function hasMarker($start)
+    {
         return isset($this->_markers[$start]);
     }
 
-    public function getMarker($start) {
-        if(isset($this->_markers[$start])) {
+    public function getMarker($start)
+    {
+        if (isset($this->_markers[$start])) {
             return $this->_markers[$start];
         }
     }
 
-    public function removeMarker($start) {
+    public function removeMarker($start)
+    {
         unset($this->_markers[$start]);
         return $this;
     }
 
-    public function clearMarkers() {
+    public function clearMarkers()
+    {
         $this->_markers = [];
         return $this;
     }
 
-    public function allowNesting($flag) {
-        if($flag !== null) {
+    public function allowNesting($flag)
+    {
+        if ($flag !== null) {
             $this->_allowNesting = $flag;
             return $this;
         }
@@ -79,17 +90,19 @@ class Comment implements iris\IScanner {
         return $this->_allowNesting;
     }
 
-    public function initialize(iris\ILexer $lexer) {
-        if(empty($this->_markers)) {
+    public function initialize(iris\ILexer $lexer)
+    {
+        if (empty($this->_markers)) {
             throw new iris\LogicException(
                 'Comment scanner does not have any markers to match'
             );
         }
     }
 
-    public function check(iris\ILexer $lexer) {
-        foreach($this->_markers as $start => $end) {
-            if($lexer->peek(0, mb_strlen($start)) == $start) {
+    public function check(iris\ILexer $lexer)
+    {
+        foreach ($this->_markers as $start => $end) {
+            if ($lexer->peek(0, mb_strlen($start)) == $start) {
                 return true;
             }
         }
@@ -97,11 +110,15 @@ class Comment implements iris\IScanner {
         return false;
     }
 
-    public function run(iris\ILexer $lexer) {
-        foreach($this->_markers as $start => $end) {
+    public function run(iris\ILexer $lexer)
+    {
+        $end = $start = null;
+        $startLength = 0;
+
+        foreach ($this->_markers as $start => $end) {
             $startLength = mb_strlen($start);
 
-            if($lexer->peek(0, $startLength) == $start) {
+            if ($lexer->peek(0, $startLength) == $start) {
                 break;
             }
         }
@@ -115,20 +132,20 @@ class Comment implements iris\IScanner {
         $endLength = mb_strlen($end);
         $level = 1;
 
-        while(true) {
-            if($lexer->char == "\n") {
-                if($isSingleLine) {
+        while (true) {
+            if ($lexer->char == "\n") {
+                if ($isSingleLine) {
                     break;
                 }
 
                 $comment .= $lexer->extract();
-            } else if($lexer->char == $firstStart && $lexer->peek(0, $startLength) == $start) {
+            } elseif ($lexer->char == $firstStart && $lexer->peek(0, $startLength) == $start) {
                 $level++;
                 $comment .= $lexer->extract($startLength);
-            } else if($lexer->char == $firstEnd && $lexer->peek(0, $endLength) == $end) {
+            } elseif ($lexer->char == $firstEnd && $lexer->peek(0, $endLength) == $end) {
                 $level--;
 
-                if($level == 0 || !$this->_allowNesting) {
+                if ($level == 0 || !$this->_allowNesting) {
                     $lexer->extract($endLength);
                     break;
                 } else {
@@ -138,7 +155,7 @@ class Comment implements iris\IScanner {
                 $comment .= $lexer->extract();
             }
 
-            if($lexer->char === false) {
+            if ($lexer->char === false) {
                 break;
             }
         }

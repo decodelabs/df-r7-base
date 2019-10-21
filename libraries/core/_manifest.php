@@ -176,7 +176,6 @@ trait TValueMap
     public function importFrom($source, array $fields)
     {
         $values = [];
-        $shouldImport = $this instanceof core\collection\ICollection;
 
         foreach ($fields as $toField => $fromField) {
             if (!is_string($toField)) {
@@ -190,17 +189,17 @@ trait TValueMap
             } elseif (is_array($source)) {
                 $value = $source[$fromField] ?? null;
             } else {
-                Glitch::incomplete($source);
+                throw Glitch::EUnexpectedValue('Unsupported data source', null, $source);
             }
 
-            if ($shouldImport) {
+            if ($this instanceof core\collection\ICollection) {
                 $values[$toField] = $value;
             } else {
                 $this->set($toField, $value);
             }
         }
 
-        if ($shouldImport) {
+        if ($this instanceof core\collection\ICollection) {
             $this->import($values);
         }
 
@@ -425,7 +424,14 @@ trait TManager
 
     protected static function _getDefaultInstance(): IManager
     {
-        return new self();
+        $class = get_called_class();
+        $ref = new \ReflectionClass($class);
+
+        if ($ref->isAbstract()) {
+            throw Glitch::ELogic('Unable to instantiate abstract Manager: '.__CLASS__);
+        }
+
+        return new $class();
     }
 
     protected function __construct()
@@ -761,6 +767,7 @@ trait TSharedHelper
     public function __construct(IContext $context, $target)
     {
         $this->context = $context;
+        $target;
     }
 }
 

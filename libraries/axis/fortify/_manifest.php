@@ -10,7 +10,8 @@ use df\core;
 use df\axis;
 use df\opal;
 
-interface IFortify {
+interface IFortify extends core\IContextAware
+{
     public function getUnit(): axis\IUnit;
     public function getModel(): axis\IModel;
     public function getName(): string;

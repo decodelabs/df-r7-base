@@ -10,24 +10,27 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class PrioritySlider extends Base implements IInputWidget {
-
+class PrioritySlider extends Base implements IInputWidget
+{
     use TWidget_FormData;
     use TWidget_Input;
 
     const PRIMARY_TAG = 'div.range';
+    const ARRAY_INPUT = false;
 
-    public function __construct(arch\IContext $context, $name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null)
+    {
         parent::__construct($context);
 
         $this->setName($name);
         $this->setValue($value);
     }
 
-    protected function _normalizeValue(core\collection\IInputTree $value) {
+    protected function _normalizeValue(core\collection\IInputTree $value)
+    {
         $inner = $value->getValue();
 
-        if($inner === null) {
+        if ($inner === null) {
             return;
         }
 
@@ -35,11 +38,12 @@ class PrioritySlider extends Base implements IInputWidget {
         $value->setValue($inner);
     }
 
-    protected function _render() {
+    protected function _render()
+    {
         $tag = $this->getTag();
         $value = $this->getValue()->getValue();
 
-        if($value !== null) {
+        if ($value !== null) {
             $value = $value->getIndex();
         }
 

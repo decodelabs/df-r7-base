@@ -241,6 +241,8 @@ trait TArrayCollection_MappedMovable
             return $this;
         }
 
+        $temp = [];
+
         if ($index < 0) {
             foreach ($this->_collection as $currentKey => $value) {
                 if ($currentKey == $key) {
@@ -259,7 +261,6 @@ trait TArrayCollection_MappedMovable
             }
         } else {
             $keyValue = null;
-            $temp = [];
             $i = 0;
             $found = $inserted = false;
 

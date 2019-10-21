@@ -29,10 +29,10 @@ class Base implements opal\ldap\IRootDse, Inspectable
             $class = __CLASS__;
         }
 
-        return new $class($adapter, $data);
+        return new $class($data);
     }
 
-    public function __construct(opal\ldap\IAdapter $adapter, array $data)
+    public function __construct(array $data)
     {
         $this->import($data);
     }

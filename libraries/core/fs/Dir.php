@@ -241,9 +241,9 @@ class Dir implements IDirectory, Inspectable
         if ($recursive) {
             foreach ($this->_scan(true, true) as $item) {
                 if ($item instanceof IDirectory) {
-                    $item->setOwner($mode, true);
+                    $item->setOwner($owner, true);
                 } else {
-                    $item->setOwner($mode);
+                    $item->setOwner($owner);
                 }
             }
         }
@@ -258,14 +258,14 @@ class Dir implements IDirectory, Inspectable
 
     public function setGroup($group, $recursive=false)
     {
-        chgrp($this->_path, $owner);
+        chgrp($this->_path, $group);
 
         if ($recursive) {
             foreach ($this->_scan(true, true) as $item) {
                 if ($item instanceof IDirectory) {
-                    $item->setGroup($mode, true);
+                    $item->setGroup($group, true);
                 } else {
-                    $item->setGroup($mode);
+                    $item->setGroup($group);
                 }
             }
         }
@@ -536,6 +536,8 @@ class Dir implements IDirectory, Inspectable
                 if ($wrap) {
                     $output = new File($output);
                 }
+            } else {
+                continue;
             }
 
             $key = $item->getSubPathname();
@@ -642,9 +644,9 @@ class Dir implements IDirectory, Inspectable
         return $this->getDir($name)->unlink();
     }
 
-    public function createFile($name, $content, $mode=null)
+    public function createFile($name, $content)
     {
-        return File::create($this->_path.'/'.ltrim($name, '/'), $content, $mode);
+        return File::create($this->_path.'/'.ltrim($name, '/'), $content);
     }
 
     public function newFile($name, $mode=Mode::READ_WRITE_NEW)

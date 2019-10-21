@@ -36,7 +36,7 @@ class Expression implements IExpression, Inspectable
 
     public function getParentQuery()
     {
-        return $this->_parent;
+        return $this->_parentQuery;
     }
 
     public function getParentExpression()

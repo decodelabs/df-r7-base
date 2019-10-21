@@ -33,7 +33,7 @@ class Timer implements core\IStringProvider, Inspectable
         if ($startTime === null || $startTime === true) {
             $startTime = microtime(true);
         } elseif (is_string($startTime)) {
-            $microTime = explode(' ', $microTime);
+            $microTime = explode(' ', $startTime);
             $microTime = (float)$microTime[1] + (float)$microTime[0];
         }
 

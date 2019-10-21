@@ -9,17 +9,20 @@ use df;
 use df\core;
 use df\arch;
 
-abstract class RootNodeRouter extends arch\router\Base {
+abstract class RootNodeRouter extends arch\router\Base
+{
+    protected $_matches = [];
 
-    public function routeIn(arch\IRequest $request) {
+    public function routeIn(arch\IRequest $request)
+    {
         $basename = $request->path->getBasename();
 
-        foreach($this->_matches as $match => $func) {
-            if(substr($match, 0, 1) == '/') {
-                if(preg_match($match, $basename, $matches)) {
+        foreach ($this->_matches as $match => $func) {
+            if (substr($match, 0, 1) == '/') {
+                if (preg_match($match, $basename, $matches)) {
                     return $this->{$func}($request, $matches);
                 }
-            } else if($match == $basename) {
+            } elseif ($match == $basename) {
                 return $this->{$func}($request, [$basename]);
             }
         }
@@ -27,7 +30,8 @@ abstract class RootNodeRouter extends arch\router\Base {
         return null;
     }
 
-    public function routeOut(arch\IRequest $request) {
+    public function routeOut(arch\IRequest $request)
+    {
         return $request;
     }
 }

@@ -138,6 +138,7 @@ class Reader implements IReader
         $this->_currentRow = [];
         $mode = self::MODE_START;
         $cell = '';
+        $cellHasEnclosure = false;
 
         while (true) {
             $isEof = !$this->_fillBuffer();

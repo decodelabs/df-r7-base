@@ -155,6 +155,7 @@ trait TScaffold_RecordDataProvider
     protected function nameRecord($record)
     {
         $key = $this->getRecordNameField();
+        $output = null;
 
         if (isset($record[$key])) {
             $output = $record[$key];
@@ -444,7 +445,7 @@ trait TScaffold_RecordDataProvider
         return $output;
     }
 
-    protected function _autoDefineNameKeyField($fieldName, $list, $mode, $label=null)
+    public function autoDefineNameKeyField($fieldName, $list, $mode, $label=null)
     {
         if ($label === null) {
             $label = $this->format->name($fieldName);

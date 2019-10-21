@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -127,8 +128,8 @@ abstract class Client extends Base implements IClientSocket, Inspectable
             );
         }
 
-        $resources = $this->_connectPair();
-        dd($resources);
+        //$resources = $this->_connectPair();
+        Glitch::incomplete($this);
     }
 
     /**
@@ -159,7 +160,7 @@ abstract class Client extends Base implements IClientSocket, Inspectable
             $args[] = 'x';
         }
 
-        if ($this->_isSecure) {
+        if ($this instanceof ISecureSocket && $this->isSecure()) {
             array_unshift($args, 's');
         }
 

@@ -46,6 +46,8 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold
     public function getRecordIcon($record=null);
     public function getRecordOperativeLinks($record, $mode);
 
+    public function autoDefineNameKeyField($fieldName, $list, $mode, $label=null);
+
     public function decorateRecordLink($link, $component);
 
     public function canAddRecord();

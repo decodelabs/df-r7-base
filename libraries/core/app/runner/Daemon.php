@@ -16,6 +16,8 @@ use DecodeLabs\Systemic\Process\Managed as ManagedProcess;
 
 class Daemon extends Base
 {
+    const THRESHOLD = 600;
+
     public $io;
     protected $_statusData;
 
@@ -239,6 +241,8 @@ class Daemon extends Base
         if (isset($this->_statusData['state'])) {
             $state = $this->_statusData['state'];
             unset($this->_statusData['state']);
+        } else {
+            $state = 'unknown';
         }
 
         $this->io->writeLine('Daemon '.$name.' is currently '.$state);

@@ -9,32 +9,33 @@ use df;
 use df\core;
 use df\link;
 
-class Url extends core\uri\Url implements IUrl {
-
+class Url extends core\uri\Url implements IUrl
+{
     use core\uri\TUrl_CredentialContainer;
     use core\uri\TUrl_DomainPortContainer;
 
-    public function import($url='') {
-        if($url !== null) {
+    public function import($url='')
+    {
+        if ($url !== null) {
             $this->reset();
         }
 
-        if($url == '' || $url === null) {
+        if ($url == '' || $url === null) {
             return $this;
         }
 
-        if($url instanceof self) {
+        if ($url instanceof self) {
             $this->_scheme = $url->_scheme;
             $this->_username = $url->_username;
             $this->_password = $url->_password;
             $this->_domain = $url->_domain;
             $this->_port = $url->_port;
 
-            if($url->_path !== null) {
+            if ($url->_path !== null) {
                 $this->_path = clone $url->_path;
             }
 
-            if($url->_query !== null) {
+            if ($url->_query !== null) {
                 $this->_query = clone $url->_query;
             }
 
@@ -66,7 +67,7 @@ class Url extends core\uri\Url implements IUrl {
         $domain = array_pop($credentials);
         $credentials = array_shift($credentials);
 
-        if(!empty($credentials)) {
+        if (!empty($credentials)) {
             $credentials = explode(':', $credentials, 2);
             $this->setUsername(array_shift($credentials));
             $this->setPassword(array_shift($credentials));
@@ -81,11 +82,12 @@ class Url extends core\uri\Url implements IUrl {
     }
 
 
-// Scheme
-    public function setScheme($scheme) {
+    // Scheme
+    public function setScheme($scheme)
+    {
         $scheme = strtolower($scheme);
 
-        if($scheme !== 'ftp' && $scheme !== 'ftps') {
+        if ($scheme !== 'ftp' && $scheme !== 'ftps') {
             $scheme = 'ftp';
         }
 
@@ -94,12 +96,13 @@ class Url extends core\uri\Url implements IUrl {
         return $this;
     }
 
-    public function isSecure(bool $flag=null) {
-        if($flag !== null) {
-            if($flag) {
+    public function isSecure(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if ($flag) {
                 $this->_scheme = 'ftps';
             } else {
-                $this->_schemea = 'ftp';
+                $this->_scheme = 'ftp';
             }
 
             return $this;
@@ -112,9 +115,10 @@ class Url extends core\uri\Url implements IUrl {
 
 
 
-// Strings
-    public function toString(): string {
-        if($this->isJustFragment()) {
+    // Strings
+    public function toString(): string
+    {
+        if ($this->isJustFragment()) {
             return $this->_getFragmentString();
         }
 

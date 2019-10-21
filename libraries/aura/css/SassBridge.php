@@ -277,8 +277,10 @@ class SassBridge implements ISassBridge
                 break;
 
             case 'production':
+            default:
                 $outputType = 'compressed';
                 break;
+
         }
 
         if ($isC) {

@@ -180,7 +180,7 @@ class Handler implements link\http\IUploadHandler
         return $this->_maxSize;
     }
 
-    public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction=IUploadFile::RENAME)
+    public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction=link\http\IUploadFile::RENAME)
     {
         foreach ($this as $file) {
             $file->upload($destination, $inputCollection->{$file->getFieldName()}, $conflictAction);

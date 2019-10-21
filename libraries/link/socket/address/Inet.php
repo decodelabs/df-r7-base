@@ -188,9 +188,9 @@ class Inet extends Base implements IInetAddress, Inspectable
 
     public function getDefaultSocketType()
     {
-        if ($this->_protocol == 'tcp') {
+        if ($this->_scheme == 'tcp') {
             return 'stream';
-        } elseif ($this->_protocol == 'udp') {
+        } elseif ($this->_scheme == 'udp') {
             return 'datagram';
         } else {
             return 'raw';

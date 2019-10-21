@@ -27,7 +27,7 @@ class Tuple implements ITuple, Inspectable
         $this->import(...$data);
     }
 
-    protected function _normalizeValue($value): float
+    protected function _normalizeValue($value, $key=null): float
     {
         if (!is_numeric($value)) {
             throw core\Error::EArgument(
@@ -40,7 +40,7 @@ class Tuple implements ITuple, Inspectable
 
     public function getReductiveIterator(): \Iterator
     {
-        return new ReductiveIndexIterator($this);
+        return new core\collection\ReductiveIndexIterator($this);
     }
 
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,61 +9,69 @@ use df;
 use df\core;
 use df\link;
 
-    
-trait TNative {
-
-    public function getImplementationName() {
+trait TNative
+{
+    public function getImplementationName()
+    {
         return 'native';
     }
 
-    protected function _shutdownReading() {
+    protected function _shutdownReading()
+    {
         return @socket_shutdown($this->_socket, 0);
     }
-    
-    protected function _shutdownWriting() {
+
+    protected function _shutdownWriting()
+    {
         return @socket_shutdown($this->_socket, 1);
     }
-    
-    protected function _closeSocket() {
-        return @socket_close($this->_socket);
+
+    protected function _closeSocket()
+    {
+        @socket_close($this->_socket);
     }
-    
-    protected function _getLastErrorMessage() {
+
+    protected function _getLastErrorMessage()
+    {
         return socket_strerror(socket_last_error());
     }
 
-    protected function _setBlocking($flag) {
+    protected function _setBlocking($flag)
+    {
         $flag ?
-            @socket_set_block($output) :
-            @socket_set_nonblock($output);
+            @socket_set_block($this->_socket) :
+            @socket_set_nonblock($this->_socket);
     }
 }
 
-trait TNative_IoSocket {
+trait TNative_IoSocket
+{
+    protected function _peekChunk($length)
+    {
+        if (!socket_recv($this->_socket, $output, $length, MSG_PEEK)) {
+            return false;
+        }
 
-    protected function _peekChunk($length) {
-        if(!socket_recv($this->_socket, $output, $length, MSG_PEEK)) {
-            return false;
-        }
-        
-        return $output;
-    }
-    
-    protected function _readChunk($length) {
-        if(!socket_recv($this->_socket, $output, $length, MSG_DONTWAIT)) {
-            return false;
-        }
-        
         return $output;
     }
 
-    protected function _readLine() {
+    protected function _readChunk($length)
+    {
+        if (!socket_recv($this->_socket, $output, $length, MSG_DONTWAIT)) {
+            return false;
+        }
+
+        return $output;
+    }
+
+    protected function _readLine()
+    {
         $string = '';
 
-        while(true) {
+        while (true) {
             $char = socket_read($this->_socket, 1);
 
-            if($char == "\n"
+            if ($char == "\n"
             || $char === null
             || $char === false
             || $char === '') {
@@ -73,21 +81,22 @@ trait TNative_IoSocket {
             $string .= $char;
         }
 
-        if(empty($string)) {
+        if (empty($string)) {
             return false;
         }
 
         return $string;
     }
-    
-    protected function _writeChunk($data, $length) {
+
+    protected function _writeChunk($data, $length)
+    {
         $output = socket_send($this->_socket, $data, $length, 0);
-        
-        if($output === false
+
+        if ($output === false
         || $output === 0) {
             return false;
         }
-        
+
         return $output;
     }
 }

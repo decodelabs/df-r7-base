@@ -8,6 +8,7 @@ namespace df\core\unit;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -58,6 +59,9 @@ class Angle implements IAngle, Inspectable
             case 'turn':
                 $limit = 1;
                 break;
+
+            default:
+                throw Glitch::EInvalidArgument('Unsupport angle unit: '.$this->_unit);
         }
 
         $upper = $limit;
@@ -149,6 +153,9 @@ class Angle implements IAngle, Inspectable
             case 'turn':
                 $degrees = $value * 360;
                 break;
+
+            default:
+                throw Glitch::EInvalidArgument('Unsupport angle unit: '.$inUnit);
         }
 
         switch ($outUnit) {

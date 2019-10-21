@@ -11,6 +11,7 @@ use df\arch;
 use df\aura;
 use df\opal;
 use df\mesh;
+use df\link;
 
 use DecodeLabs\Glitch;
 
@@ -512,9 +513,7 @@ trait TForm_ModalDelegate
 
     protected function _getModeRenderers()
     {
-        if (isset(static::$_modes) && !empty(static::$_modes)) {
-            return static::$_modes;
-        } elseif (defined('static::DEFAULT_MODES')) {
+        if (defined('static::DEFAULT_MODES')) {
             return static::DEFAULT_MODES;
         }
     }

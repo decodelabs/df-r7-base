@@ -10,15 +10,17 @@ use df\core;
 use df\flow;
 use df\link;
 
-class Smtp extends Base {
-
+class Smtp extends Base
+{
     protected $_mediator;
 
-    public static function getDescription() {
+    public static function getDescription()
+    {
         return 'External SMTP connection';
     }
 
-    public static function getDefaultConfigValues() {
+    public static function getDefaultConfigValues()
+    {
         return [
             'dsn' => null,
             'username' => null,
@@ -26,21 +28,22 @@ class Smtp extends Base {
         ];
     }
 
-    public function __construct(core\collection\ITree $settings=null) {
-        if($settings !== null) {
-            if(!isset($settings['dsn'])) {
+    public function __construct(core\collection\ITree $settings=null)
+    {
+        if ($settings !== null) {
+            if (!isset($settings['dsn'])) {
                 throw new flow\mail\InvalidArgumentException(
                     'SMTP settings does not include DSN'
                 );
             }
 
-            if(!isset($settings['username'])) {
+            if (!isset($settings['username'])) {
                 throw new flow\mail\InvalidArgumentException(
                     'SMTP settings does not include username'
                 );
             }
 
-            if(!isset($settings['password'])) {
+            if (!isset($settings['password'])) {
                 throw new flow\mail\InvalidArgumentException(
                     'SMTP settings does not include password'
                 );
@@ -50,8 +53,9 @@ class Smtp extends Base {
         }
     }
 
-    public function connect($dsn, $username, $password) {
-        if($this->_mediator) {
+    public function connect($dsn, $username, $password)
+    {
+        if ($this->_mediator) {
             $this->_mediator->quit();
         }
 
@@ -61,8 +65,9 @@ class Smtp extends Base {
         return $this;
     }
 
-    public function send(flow\mail\IMessage $message, flow\mime\IMultiPart $mime) {
-        if(!$this->_mediator) {
+    public function send(flow\mail\IMessage $message, flow\mime\IMultiPart $mime)
+    {
+        if (!$this->_mediator) {
             $config = flow\mail\Config::getInstance();
             $settings = $config->getTransportSettings('Smtp');
             $this->__construct($settings);
@@ -71,7 +76,7 @@ class Smtp extends Base {
         $this->_mediator->reset();
         $this->_mediator->setFromAddress($message->getFromAddress());
 
-        foreach($message->getToAddresses() as $address) {
+        foreach ($message->getToAddresses() as $address) {
             $this->_mediator->sendRecipientAddress($address);
         }
 

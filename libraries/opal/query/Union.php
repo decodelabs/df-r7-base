@@ -34,7 +34,7 @@ class Union implements IUnionQuery
 
     public function getQueryType()
     {
-        return IQueryType::UNION;
+        return IQueryTypes::UNION;
     }
 
     public function getSourceManager()

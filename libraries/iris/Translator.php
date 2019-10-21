@@ -57,6 +57,6 @@ abstract class Translator implements ITranslator
 
     public static function createParser(iris\ILexer $lexer)
     {
-        Glitch::incomplete($source);
+        Glitch::incomplete($lexer);
     }
 }

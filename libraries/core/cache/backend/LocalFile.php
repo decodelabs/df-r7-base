@@ -90,6 +90,7 @@ class LocalFile implements core\cache\IBackend
 
         $path .= '/cache/'.flex\Text::formatFileName($cache->getCacheId());
         $this->_dir = Atlas::$fs->createDir($path);
+        $options;
     }
 
     public function getConnectionDescription(): string

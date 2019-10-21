@@ -167,7 +167,7 @@ class Source implements ISource, Inspectable
             if ($name == '@primary') {
                 if (!$primaryIndex = $this->_adapter->getPrimaryIndex()) {
                     throw new axis\schema\RuntimeException(
-                        'Unit '.$this->getUnitId().' does not have a primary index'
+                        'Adapter does not have a primary index'
                     );
                 }
 

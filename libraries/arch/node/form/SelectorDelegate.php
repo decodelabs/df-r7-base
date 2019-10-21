@@ -647,7 +647,10 @@ abstract class SelectorDelegate extends Delegate implements
         $this->createInlineDetailsUi($fa);
 
         $ol = $fa->addOverlay($fa->getLabelBody());
-        $this->createOverlayCreateUiContent($ol);
+
+        if (method_exists($this, 'createOverlayCreateUiContent')) {
+            $this->createOverlayCreateUiContent($ol);
+        }
 
         // Buttons
         $ol->addButtonArea(

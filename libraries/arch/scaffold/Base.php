@@ -10,7 +10,10 @@ use df\core;
 use df\arch;
 use df\aura;
 
-abstract class Base implements IScaffold {
+use DecodeLabs\Glitch;
+
+abstract class Base implements IScaffold
+{
 
     //use core\TContextProxy;
     use core\TContextAware;
@@ -25,20 +28,22 @@ abstract class Base implements IScaffold {
     const DEFAULT_ACCESS = null;
 
     const PROPAGATE_IN_QUERY = [];
+    const ACCESS_SIGNIFIERS = null;
 
     private $_directoryKeyName;
 
-    public static function factory(arch\IContext $context): IScaffold {
+    public static function factory(arch\IContext $context): IScaffold
+    {
         $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
 
-        if($output = $context->app->getRegistryObject($registryKey)) {
+        if ($output = $context->app->getRegistryObject($registryKey)) {
             return $output;
         }
 
         $runMode = $context->getRunMode();
         $class = self::getClassFor($context->location, $runMode);
 
-        if(!$class) {
+        if (!$class) {
             throw core\Error::ENotFound('Scaffold could not be found for '.$context->location);
         }
 
@@ -48,37 +53,43 @@ abstract class Base implements IScaffold {
         return $output;
     }
 
-    public static function getClassFor(arch\IRequest $request, $runMode='Http') {
+    public static function getClassFor(arch\IRequest $request, $runMode='Http')
+    {
         $runMode = ucfirst($runMode);
         $parts = $request->getControllerParts();
         $parts[] = $runMode.'Scaffold';
         $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             $class = null;
         }
 
         return $class;
     }
 
-    protected function __construct(arch\IContext $context) {
+    protected function __construct(arch\IContext $context)
+    {
         $this->context = $context;
         $this->view = aura\view\Base::factory($context->request->getType(), $this->context);
     }
 
-    public function getRegistryObjectKey(): string {
+    public function getRegistryObjectKey(): string
+    {
         return 'scaffold('.$this->context->location->getPath()->getDirname().')';
     }
 
-    public function getView() {
+    public function getView()
+    {
         return $this->view;
     }
 
-    public function getPropagatingQueryVars() {
+    public function getPropagatingQueryVars()
+    {
         return (array)static::PROPAGATE_IN_QUERY;
     }
 
-    protected function _buildQueryPropagationInputs(array $filter=[]) {
+    protected function _buildQueryPropagationInputs(array $filter=[])
+    {
         $output = [];
         $vars = array_merge(
             $this->getPropagatingQueryVars(),
@@ -86,12 +97,12 @@ abstract class Base implements IScaffold {
         );
 
 
-        foreach($vars as $var) {
-            if(in_array($var, $filter)) {
+        foreach ($vars as $var) {
+            if (in_array($var, $filter)) {
                 continue;
             }
 
-            if(isset($this->request->query->{$var})) {
+            if (isset($this->request->query->{$var})) {
                 $output[] = $this->html->hidden($var, $this->request->query[$var]);
             }
         }
@@ -100,26 +111,27 @@ abstract class Base implements IScaffold {
     }
 
 
-// Loaders
-    public function loadNode() {
+    // Loaders
+    public function loadNode()
+    {
         $node = $this->context->request->getNode();
         $method = lcfirst($node).$this->context->request->getType().'Node';
 
-        if(!method_exists($this, $method)) {
+        if (!method_exists($this, $method)) {
             $method = lcfirst($node).'Node';
 
-            if(!method_exists($this, $method)) {
+            if (!method_exists($this, $method)) {
                 $method = 'build'.ucfirst($node).'DynamicNode';
 
-                if(method_exists($this, $method)) {
+                if (method_exists($this, $method)) {
                     $node = $this->{$method}();
 
-                    if($node instanceof arch\node\INode) {
+                    if ($node instanceof arch\node\INode) {
                         return $node;
                     }
                 }
 
-                if($this instanceof ISectionProviderScaffold && ($node = $this->loadSectionNode())) {
+                if ($this instanceof ISectionProviderScaffold && ($node = $this->loadSectionNode())) {
                     return $node;
                 }
 
@@ -132,39 +144,42 @@ abstract class Base implements IScaffold {
         return $this->_generateNode([$this, $method]);
     }
 
-    public function onNodeDispatch(arch\node\INode $node) {}
+    public function onNodeDispatch(arch\node\INode $node)
+    {
+    }
 
-    public function loadComponent($name, array $args=null) {
+    public function loadComponent($name, array $args=null)
+    {
         $keyName = $this->getDirectoryKeyName();
         $origName = $name;
 
-        if(substr($name, 0, strlen($keyName)) == ucfirst($keyName)) {
+        if (substr($name, 0, strlen($keyName)) == ucfirst($keyName)) {
             $name = substr($name, strlen($keyName));
         }
 
         $method = 'generate'.$name.'Component';
 
-        if(!method_exists($this, $method) && $origName !== $name) {
+        if (!method_exists($this, $method) && $origName !== $name) {
             $method = 'generate'.$origName.'Component';
             $activeName = $origName;
         } else {
             $activeName = $name;
         }
 
-        if(method_exists($this, $method)) {
+        if (method_exists($this, $method)) {
             return new arch\scaffold\component\Generic($this, $activeName, $args);
         }
 
         $method = 'build'.$name.'Component';
 
-        if(!method_exists($this, $method) && $origName !== $name) {
+        if (!method_exists($this, $method) && $origName !== $name) {
             $method = 'build'.$origName.'Component';
         }
 
-        if(method_exists($this, $method)) {
+        if (method_exists($this, $method)) {
             $output = $this->{$method}($args);
 
-            if(!$output instanceof arch\IComponent) {
+            if (!$output instanceof arch\IComponent) {
                 throw core\Error::{'arch/component/ENotFound,ENotFound'}(
                     'Scaffold at '.$this->context->location.' attempted but failed to provide component '.$origName
                 );
@@ -178,17 +193,18 @@ abstract class Base implements IScaffold {
         );
     }
 
-    public function loadFormDelegate($name, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id) {
+    public function loadFormDelegate($name, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, $id)
+    {
         $keyName = $this->getDirectoryKeyName();
         $origName = $name;
 
-        if(substr($name, 0, strlen($keyName)) == ucfirst($keyName)) {
+        if (substr($name, 0, strlen($keyName)) == ucfirst($keyName)) {
             $name = substr($name, strlen($keyName));
         }
 
         $method = 'build'.$name.'FormDelegate';
 
-        if(!method_exists($this, $method)) {
+        if (!method_exists($this, $method)) {
             throw core\Error::{'arch/node/ENotFound,ENotFound'}(
                 'Scaffold at '.$this->context->location.' cannot provide form delegate '.$origName
             );
@@ -196,7 +212,7 @@ abstract class Base implements IScaffold {
 
         $output = $this->{$method}($state, $event, $id);
 
-        if(!$output instanceof arch\node\IDelegate) {
+        if (!$output instanceof arch\node\IDelegate) {
             throw core\Error::{'arch/node/ENotFound,ENotFound'}(
                 'Scaffold at '.$this->context->location.' attempted but failed to provide form delegate '.$origName
             );
@@ -205,10 +221,11 @@ abstract class Base implements IScaffold {
         return $output;
     }
 
-    public function loadMenu($name, $id) {
+    public function loadMenu($name, $id)
+    {
         $method = 'generate'.ucfirst($name).'Menu';
 
-        if(!method_exists($this, $method)) {
+        if (!method_exists($this, $method)) {
             throw core\Error::{'arch/navigation/ENotFound,ENotFound'}(
                 'Scaffold at '.$this->context->location.' could not provider menu '.$name
             );
@@ -218,25 +235,28 @@ abstract class Base implements IScaffold {
     }
 
 
-// Directory
-    public function getDirectoryTitle() {
-        if(static::TITLE) {
+    // Directory
+    public function getDirectoryTitle()
+    {
+        if (static::TITLE) {
             return $this->_(static::TITLE);
         }
 
         return $this->format->name($this->getDirectoryKeyName());
     }
 
-    public function getDirectoryIcon() {
-        if(static::ICON) {
+    public function getDirectoryIcon()
+    {
+        if (static::ICON) {
             return static::ICON;
         }
 
         return $this->getDirectoryKeyName();
     }
 
-    public function getDirectoryKeyName() {
-        if($this->_directoryKeyName === null) {
+    public function getDirectoryKeyName()
+    {
+        if ($this->_directoryKeyName === null) {
             $parts = $this->context->location->getControllerParts();
             $this->_directoryKeyName = array_pop($parts);
         }
@@ -245,9 +265,14 @@ abstract class Base implements IScaffold {
     }
 
 
-// Generators
-    public function generateAttributeList(array $fields, $record=true) {
-        if($record === true) {
+    // Generators
+    public function generateAttributeList(array $fields, $record=true)
+    {
+        if (!$this instanceof IRecordDataProviderScaffold) {
+            throw Glitch::ELogic('Scaffold cannot generate attribute list');
+        }
+
+        if ($record === true) {
             $record = $this->getRecord();
         }
 
@@ -256,7 +281,7 @@ abstract class Base implements IScaffold {
         $output->setRenderTarget($this->view);
         $spacerIterator = 0;
 
-        foreach($output->getFields() as $field => $enabled) {
+        foreach ($output->getFields() as $field => $enabled) {
             /*
             if(substr($field, 0, 2) == '--') {
                 $output->setField('divider'.($spacerIterator++), function($list, $key) use($field) {
@@ -275,46 +300,46 @@ abstract class Base implements IScaffold {
             }
             */
 
-            if($enabled === true) {
+            if ($enabled === true) {
                 $method1 = 'define'.ucfirst($field).'Field';
                 $method2 = 'override'.ucfirst($field).'Field';
                 $method = null;
 
-                if(method_exists($this, $method2)) {
+                if (method_exists($this, $method2)) {
                     $method = $method2;
-                } else if(method_exists($this, $method1)) {
+                } elseif (method_exists($this, $method1)) {
                     $method = $method1;
                 }
 
-                $output->setField($field, function($list, $key) use($method, $field) {
-                    if($method) {
+                $output->setField($field, function ($list, $key) use ($method) {
+                    if ($method) {
                         $ops = $this->{$method}($list, 'details');
                     } else {
                         $ops = false;
                     }
 
-                    if($ops === false) {
-                        $list->addField($key, function($data, $renderContext) {
+                    if ($ops === false) {
+                        $list->addField($key, function ($data, $renderContext) {
                             $key = $renderContext->getField();
                             $value = null;
 
-                            if(is_array($data)) {
-                                if(isset($data[$key])) {
+                            if (is_array($data)) {
+                                if (isset($data[$key])) {
                                     $value = $data[$key];
                                 } else {
                                     $value = null;
                                 }
-                            } else if($data instanceof \ArrayAccess) {
+                            } elseif ($data instanceof \ArrayAccess) {
                                 $value = $data[$key];
-                            } else if(is_object($data)) {
-                                if(method_exists($data, '__get')) {
+                            } elseif (is_object($data)) {
+                                if (method_exists($data, '__get')) {
                                     $value = $data->__get($key);
-                                } else if(method_exists($data, 'get'.ucfirst($key))) {
+                                } elseif (method_exists($data, 'get'.ucfirst($key))) {
                                     $value = $data->{'get'.ucfirst($key)}();
                                 }
                             }
 
-                            if($value instanceof aura\view\IDeferredRenderable
+                            if ($value instanceof aura\view\IDeferredRenderable
                             && $this->view) {
                                 $value->setRenderTarget($this->view);
                             }
@@ -329,10 +354,15 @@ abstract class Base implements IScaffold {
         return $output;
     }
 
-    public function generateCollectionList(array $fields, $collection=null) {
+    public function generateCollectionList(array $fields, $collection=null)
+    {
+        if (!$this instanceof IRecordDataProviderScaffold) {
+            throw Glitch::ELogic('Scaffold cannot generate collection list');
+        }
+
         $nameKey = $this->getRecordNameField();
 
-        if(empty($fields) || (count($fields) == 1 && current($fields) == 'actions')) {
+        if (empty($fields) || (count($fields) == 1 && current($fields) == 'actions')) {
             array_unshift($fields, $nameKey);
         }
 
@@ -340,30 +370,30 @@ abstract class Base implements IScaffold {
         $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
         $output->setRenderTarget($this->view);
 
-        foreach($output->getFields() as $field => $enabled) {
-            if($enabled === true) {
+        foreach ($output->getFields() as $field => $enabled) {
+            if ($enabled === true) {
                 $method1 = 'define'.ucfirst($field).'Field';
                 $method2 = 'override'.ucfirst($field).'Field';
 
-                if(method_exists($this, $method2)) {
-                    $output->setField($field, function($list, $key) use($method2, $field, $nameKey) {
-                        if(false === $this->{$method2}($list, 'list')) {
+                if (method_exists($this, $method2)) {
+                    $output->setField($field, function ($list, $key) use ($method2) {
+                        if (false === $this->{$method2}($list, 'list')) {
                             $list->addField($key);
                         }
                     });
-                } else if(method_exists($this, $method1)) {
-                    $output->setField($field, function($list, $key) use($method1, $field, $nameKey) {
-                        if($field == $nameKey) {
-                            return $this->_autoDefineNameKeyField($field, $list, 'list');
+                } elseif (method_exists($this, $method1)) {
+                    $output->setField($field, function ($list, $key) use ($method1, $field, $nameKey) {
+                        if ($field == $nameKey) {
+                            return $this->autoDefineNameKeyField($field, $list, 'list');
                         } else {
-                            if(false === $this->{$method1}($list, 'list')) {
+                            if (false === $this->{$method1}($list, 'list')) {
                                 $list->addField($key);
                             }
                         }
                     });
-                } else if($field == $nameKey) {
-                    $output->setField($field, function($list, $key) use($field) {
-                        return $this->_autoDefineNameKeyField($field, $list, 'list');
+                } elseif ($field == $nameKey) {
+                    $output->setField($field, function ($list, $key) use ($field) {
+                        return $this->autoDefineNameKeyField($field, $list, 'list');
                     });
                 }
             }
@@ -372,38 +402,40 @@ abstract class Base implements IScaffold {
         return $output;
     }
 
-// Helpers
-    protected function _getNodeRequest($node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]) {
+    // Helpers
+    protected function _getNodeRequest($node, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[])
+    {
         $output = clone $this->context->location;
         $output->setNode($node);
         $outQuery = $output->query;
         $propagate = $this->getPropagatingQueryVars();
 
-        foreach($outQuery->getKeys() as $key) {
-            if(!in_array($key, $propagate)) {
+        foreach ($outQuery->getKeys() as $key) {
+            if (!in_array($key, $propagate)) {
                 unset($outQuery->{$key});
             }
         }
 
-        if($query !== null) {
+        if ($query !== null) {
             $outQuery->import($query);
         }
 
-        foreach($propagate as $var) {
-            if(!in_array($var, $propagationFilter) && isset($this->request->query->{$var})) {
+        foreach ($propagate as $var) {
+            if (!in_array($var, $propagationFilter) && isset($this->request->query->{$var})) {
                 $outQuery->{$var} = $this->request->query[$var];
             }
         }
 
-        foreach($propagationFilter as $var) {
+        foreach ($propagationFilter as $var) {
             unset($outQuery->{$var});
         }
 
         return $this->uri->directoryRequest($output, $redirFrom, $redirTo);
     }
 
-    protected function _normalizeFieldOutput($field, $value) {
-        if($value instanceof core\time\IDate) {
+    protected function _normalizeFieldOutput($field, $value)
+    {
+        if ($value instanceof core\time\IDate) {
             return $this->format->dateTime($value, $value->hasTime() ? 'short' : 'medium');
         }
 
@@ -411,14 +443,15 @@ abstract class Base implements IScaffold {
     }
 
 
-    protected function _generateNode($callback) {
-        return (new arch\node\Base($this->context, function($node) use($callback) {
-                if(null !== ($pre = $this->onNodeDispatch($node))) {
-                    return $pre;
-                }
+    protected function _generateNode($callback)
+    {
+        return (new arch\node\Base($this->context, function ($node) use ($callback) {
+            if (null !== ($pre = $this->onNodeDispatch($node))) {
+                return $pre;
+            }
 
-                return core\lang\Callback::factory($callback)->invoke();
-            }))
+            return core\lang\Callback::factory($callback)->invoke();
+        }))
             ->setDefaultAccess($this->getDefaultAccess())
             ->setAccessSignifiers(...$this->getAccessSignifiers());
     }

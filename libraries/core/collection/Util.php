@@ -29,6 +29,8 @@ class Util implements IUtil
 
             if ($isIterable = self::isIterable($value)) {
                 $outer = $value;
+            } else {
+                $outer = null;
             }
 
             if ($isContainer = $value instanceof core\IValueContainer) {
@@ -68,6 +70,8 @@ class Util implements IUtil
                 !$value instanceof Markup
             )) {
                 $outer = $value;
+            } else {
+                $outer = null;
             }
 
             if ($isContainer = $value instanceof core\IValueContainer) {

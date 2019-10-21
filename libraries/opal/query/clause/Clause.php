@@ -87,7 +87,7 @@ class Clause implements opal\query\IClause, Inspectable
                     );
 
                 default:
-                    throw new opal\InvalidArgumentException(
+                    throw new opal\query\InvalidArgumentException(
                         'Query field '.$field->getName().' has no virtual field rewriter'
                     );
             }

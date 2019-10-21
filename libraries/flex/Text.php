@@ -607,7 +607,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
 
     public function iIndexOf($needle, $offset=0)
     {
-        return mb_stripos($this->_value, $needle, $offset, $this->_endoding);
+        return mb_stripos($this->_value, $needle, $offset, $this->_encoding);
     }
 
     public function lastIndexOf($needle, $offset=0)
@@ -1077,7 +1077,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
 
     public function unshift(...$values)
     {
-        $this->_value = implode($value).$this->_value;
+        $this->_value = implode($values).$this->_value;
         return $this;
     }
 

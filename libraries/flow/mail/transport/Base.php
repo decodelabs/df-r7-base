@@ -9,24 +9,27 @@ use df;
 use df\core;
 use df\flow;
 
-abstract class Base implements flow\mail\ITransport {
-
-    public static function getAllDefaultConfigValues() {
+abstract class Base implements flow\mail\ITransport
+{
+    public static function getAllDefaultConfigValues()
+    {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList('flow/mail/transport') as $name => $class) {
+        foreach (df\Launchpad::$loader->lookupClassList('flow/mail/transport') as $name => $class) {
             $output[$name] = $class::getDefaultConfigValues();
         }
 
         return $output;
     }
 
-    public static function getDefaultConfigValues() {
+    public static function getDefaultConfigValues()
+    {
         return [];
     }
 
-    public static function factory($name) {
-        if(!$class = self::getTransportClass($name)) {
+    public static function factory($name)
+    {
+        if (!$class = self::getTransportClass($name)) {
             throw new flow\mail\RuntimeException(
                 'Mail transport '.$name.' could not be found'
             );
@@ -38,33 +41,35 @@ abstract class Base implements flow\mail\ITransport {
         return new $class($settings);
     }
 
-    public static function getTransportClass($name) {
+    public static function getTransportClass($name)
+    {
         $class = 'df\\flow\\mail\\transport\\'.$name;
 
-        if(class_exists($class)) {
+        if (class_exists($class)) {
             return $class;
         }
 
         return null;
     }
 
-    public static function isValidTransport($name) {
+    public static function isValidTransport($name)
+    {
         return (bool)self::getTransportClass($name);
     }
 
-    public static function getAvailableTransports() {
+    public static function getAvailableTransports()
+    {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList('flow/mail/transport') as $name => $class) {
+        foreach (df\Launchpad::$loader->lookupClassList('flow/mail/transport') as $name => $class) {
             $output[$name] = $class::getDescription();
         }
 
         return $output;
     }
 
-    public function __construct(core\collection\ITree $settings=null) {}
-
-    public static function getName(): string {
+    public static function getName(): string
+    {
         $parts = explode('\\', get_called_class());
         return array_pop($parts);
     }

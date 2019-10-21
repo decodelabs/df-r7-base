@@ -308,7 +308,7 @@ class Font_Face implements IFontFace, Inspectable
     {
         return $this->_setAttribute(
             'slope',
-            $this->_normalizeAngle()
+            $this->_normalizeAngle($slope)
         );
     }
 
@@ -545,7 +545,7 @@ class Font_Face implements IFontFace, Inspectable
 
     public function clearSources()
     {
-        unset($this->_sources[$i]);
+        $this->_sources = [];
         return $this;
     }
 
@@ -588,9 +588,7 @@ class Font_FaceSource implements IFontFaceSource, Inspectable
             $this->setUri($uri);
         }
 
-        if ($name instanceof IFontName) {
-            $this->setNameElement($name);
-        } elseif ($name !== null) {
+        if ($name !== null) {
             $this->setName($name);
         }
     }
@@ -606,7 +604,7 @@ class Font_FaceSource implements IFontFaceSource, Inspectable
             $uri = (new Font_FaceUri())->setLinkHref($uri);
         }
 
-        return $this->uriElement($uri);
+        return $this->setUriElement($uri);
     }
 
     public function setUriElement(IFontFaceUri $uri)
@@ -626,7 +624,7 @@ class Font_FaceSource implements IFontFaceSource, Inspectable
             $name = (new Font_FaceName())->setName($name);
         }
 
-        return $this->nameElement($name);
+        return $this->setNameElement($name);
     }
 
     public function setNameElement(IFontFaceName $name)

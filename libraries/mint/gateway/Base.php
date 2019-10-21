@@ -24,10 +24,6 @@ abstract class Base implements mint\IGateway
         return new $class(core\collection\Tree::factory($settings));
     }
 
-    protected function __construct(core\collection\ITree $settings)
-    {
-    }
-
     public function isTesting(): bool
     {
         return false;

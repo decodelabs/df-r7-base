@@ -323,6 +323,7 @@ class Parser extends iris\Parser
     {
         $doMath = true;
         $end = '$';
+        $object = null;
 
         $lastToken = $this->getLastToken();
 
@@ -419,7 +420,11 @@ class Parser extends iris\Parser
             $this->extractValue('$');
         }
 
-        $this->container->push($object);
+
+        if ($object) {
+            $this->container->push($object);
+        }
+        
         return $object;
     }
 

@@ -437,23 +437,23 @@ class Request extends core\uri\Url implements IRequest, Inspectable
     // Query
     public function offsetSet($key, $value)
     {
-        $this->query->{$key} = $value;
+        $this->getQuery()->{$key} = $value;
         return $this;
     }
 
     public function offsetGet($key)
     {
-        return $this->query->offsetGet($key);
+        return $this->getQuery()->offsetGet($key);
     }
 
     public function offsetExists($key)
     {
-        return $this->query->__isset($key);
+        return $this->getQuery()->__isset($key);
     }
 
     public function offsetUnset($key)
     {
-        unset($this->query->{$key});
+        unset($this->getQuery()->{$key});
         return $this;
     }
 

@@ -152,7 +152,7 @@ trait TWidget_FormData
     protected function _hasArrayInput()
     {
         if ($this instanceof IOptionalMultipleValueInputWidget) {
-            return $this->_allowMultiple;
+            return $this->allowMultiple();
         }
 
         return static::ARRAY_INPUT;
@@ -332,7 +332,7 @@ trait TWidget_Input
 
     public function getTabIndex()
     {
-        return $this->_index;
+        return $this->_tabIndex;
     }
 }
 
@@ -823,7 +823,7 @@ trait TWidget_GroupedSelectionInput
     // Groups
     public function addGroup($id, $name, $options=null, $labelsAsValues=false)
     {
-        $this->setOptions($id, $options, $labelsAsValues);
+        $this->setGroupOptions($id, $options, $labelsAsValues);
         $this->setGroupName($id, $name);
 
         return $this;
@@ -846,7 +846,7 @@ trait TWidget_GroupedSelectionInput
 
     public function getGroups()
     {
-        return $this->_groups;
+        return $this->_groupOptions;
     }
 
     public function setGroupName($id, $name)

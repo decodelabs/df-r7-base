@@ -42,10 +42,6 @@ abstract class Base implements IArchive
         return new $class();
     }
 
-    public function __construct()
-    {
-    }
-
     public function getType(): string
     {
         return (new \ReflectionObject($this))->getShortName($this);

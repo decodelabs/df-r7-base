@@ -61,6 +61,7 @@ class Context implements IContext, \Serializable, Inspectable
     {
         $this->runner = df\Launchpad::$runner;
         $this->location = $location;
+        $runMode;
 
         if ($request === true) {
             $this->request = clone $location;

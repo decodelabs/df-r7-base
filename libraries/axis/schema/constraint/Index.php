@@ -26,6 +26,7 @@ class Index implements opal\schema\IIndex, Inspectable
 
     public function __construct(axis\schema\ISchema $schema, $name, $fields=null)
     {
+        $schema;
         $this->_setName($name);
         $this->setFields($fields);
     }

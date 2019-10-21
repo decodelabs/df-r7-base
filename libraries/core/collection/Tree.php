@@ -82,7 +82,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
 
             if (is_array($data)) {
                 foreach ($data as $key => $value) {
-                    $this->__set($key, $value, $extractArray);
+                    $this->_set($key, $value, $extractArray);
                 }
             } else {
                 $this->setValue($data);

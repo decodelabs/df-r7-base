@@ -14,6 +14,7 @@ use DecodeLabs\Tagged\Markup;
 use DecodeLabs\Tagged\Builder\Tag as TagInterface;
 use DecodeLabs\Tagged\Builder\Html\Tag;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -235,7 +236,15 @@ trait TElementContent
 
             $output = $value = $this->_renderChild($value);
         } elseif ($value instanceof aura\view\IRenderable) {
-            $value = $value->renderTo($this->getRenderTarget());
+            if ($this instanceof aura\view\IRenderTargetProvider) {
+                $value = $value->renderTo($this->getRenderTarget());
+            } elseif ($this->_parent instanceof aura\view\IRenderTargetProvider) {
+                $value = $value->renderTo($this->_parent->getRenderTarget());
+            } elseif ($this->_parent instanceof aura\view\IRenderTarget) {
+                $value = $value->renderTo($this->_parent);
+            } else {
+                throw Glitch::ERuntime('Unable to get view target for rendering');
+            }
 
             if (is_string($value)) {
                 $value = new ElementString($value);

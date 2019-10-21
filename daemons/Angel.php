@@ -18,6 +18,7 @@ class Angel extends halo\daemon\Base implements link\peer\IServer
 
     const REQUIRES_PRIVILEGED_PROCESS = false;
     const TEST_MODE = true; // delete me
+    const PROTOCOL_DISPOSITION = self::PEER_FIRST;
 
     protected function _setup()
     {
@@ -43,7 +44,7 @@ class Angel extends halo\daemon\Base implements link\peer\IServer
         echo 'write'."\n";
     }
 
-    protected function _handleReadBuffer(link\peer\ISession $session)
+    protected function _handleReadBuffer(link\peer\ISession $session, $data)
     {
         echo 'read'."\n";
     }

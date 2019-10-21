@@ -8,6 +8,7 @@ namespace df\core\unit;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -155,6 +156,9 @@ class FileSize implements IFileSize, Inspectable
             case 'pb':
                 $factor = 5;
                 break;
+
+            default:
+                throw Glitch::EInvalidArgument('Unsupported file size unit: '.$inUnit);
         }
 
         $bit = false;

@@ -207,6 +207,8 @@ class MultiPart implements IMultiPart, Inspectable
             $headers = $this->_headers;
         } elseif (isset($this->_parts[0])) {
             $headers = new core\collection\HeaderMap($this->mergeSinglePartHeaders());
+        } else {
+            return '';
         }
 
         $output = $headers->toString($skipKeys);

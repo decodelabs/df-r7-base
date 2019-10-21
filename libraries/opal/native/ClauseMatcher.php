@@ -80,7 +80,7 @@ class ClauseMatcher implements IClauseMatcher
                 }
 
 
-                switch ($clause->getOperator()) {
+                switch ($operator = $clause->getOperator()) {
                     case opal\query\clause\Clause::OP_EQ:
                     case opal\query\clause\Clause::OP_EQ_NULL:
                     case opal\query\clause\Clause::OP_NEQ:
@@ -135,7 +135,7 @@ class ClauseMatcher implements IClauseMatcher
 
                     case opal\query\clause\Clause::OP_BETWEEN:
                     case opal\query\clause\Clause::OP_NOT_BETWEEN:
-                        throw new OperatorException(
+                        throw new opal\query\OperatorException(
                             'Operator '.$operator.' is not valid for clause subqueries'
                         );
 

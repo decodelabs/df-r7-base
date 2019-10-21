@@ -564,7 +564,7 @@ class Manager implements IManager, core\IShutdownAware
 
         foreach ($manifest as $sourceId => $lists) {
             foreach ($lists as $listId => $groups) {
-                $output[$sourceId][$listId] = $this->subscribeClientToList($client, $sourceId, $listId, $groups, $replace);
+                $output[$sourceId][$listId] = $this->subscribeUserToList($client, $sourceId, $listId, $groups, $replace);
             }
         }
 

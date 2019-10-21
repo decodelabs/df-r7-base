@@ -10,16 +10,17 @@ use df\core;
 use df\neon;
 use df\opal;
 
-abstract class Base implements IMediaHandler {
-
+abstract class Base implements IMediaHandler
+{
     const REGISTRY_PREFIX = 'manager://mediaHandler';
 
     use core\TManager;
 
-    public static function factory($name) {
+    public static function factory($name)
+    {
         $class = 'df\\neon\\mediaHandler\\'.ucfirst($name);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new RuntimeException(
                 'Media handler '.$name.' could not be found'
             );
@@ -27,7 +28,7 @@ abstract class Base implements IMediaHandler {
 
         $output = new $class();
 
-        if(!$output instanceof IMediaHandler) {
+        if (!$output instanceof IMediaHandler) {
             throw new RuntimeException(
                 'Media handler name '.$name.' did not produce a valid media handler object'
             );
@@ -36,19 +37,21 @@ abstract class Base implements IMediaHandler {
         return $output;
     }
 
-    protected static function _getDefaultInstance() {
+    protected static function _getDefaultInstance()
+    {
         $config = Config::getInstance();
         return self::factory($config->getDefaultHandler());
     }
 
-    public static function getEnabledHandlerList() {
+    public static function getEnabledHandlerList()
+    {
         $config = Config::getInstance();
         $output = [];
 
-        foreach($config->getEnabledHandlers() as $name) {
+        foreach ($config->getEnabledHandlers() as $name) {
             $class = 'df\\neon\\mediaHandler\\'.ucfirst($name);
 
-            if(!class_exists($class)) {
+            if (!class_exists($class)) {
                 continue;
             }
 
@@ -58,59 +61,67 @@ abstract class Base implements IMediaHandler {
         return $output;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public function transferFile($fileId, $versionId, $isActive, $filePath, $fileName) {
+    public function transferFile($fileId, $versionId, $isActive, $filePath, $fileName)
+    {
         return $this->publishFile($fileId, null, $versionId, $filePath, $fileName);
     }
 
-    public function getEmbedUrl($fileId) {
-        return $this->getDownloadUri($fileId);
+    public function getEmbedUrl($fileId)
+    {
+        return $this->getDownloadUrl($fileId);
     }
 
-    public function getImageUrl($fileId, $transformation=null) {
+    public function getImageUrl($fileId, $transformation=null)
+    {
         $output = '/media/image?file='.$this->_normalizeId($fileId);
 
-        if($transformation !== null) {
+        if ($transformation !== null) {
             $output .= '&transform='.$transformation;
         }
 
-        if(df\Launchpad::$compileTimestamp) {
+        if (df\Launchpad::$compileTimestamp) {
             $output .= '&cts='.df\Launchpad::$compileTimestamp;
         }
 
         return $output;
     }
 
-    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null) {
+    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null)
+    {
         $output = '/media/image?version='.$this->_normalizeId($versionId);
 
-        if($transformation !== null) {
+        if ($transformation !== null) {
             $output .= '&transform='.$transformation;
         }
 
         return $output;
     }
 
-    public static function getDefaultConfig() {
+    public static function getDefaultConfig()
+    {
         return [];
     }
 
-    protected function _getSettings() {
+    protected function _getSettings()
+    {
         return Config::getInstance()->getSettingsFor($this);
     }
 
-    protected function _normalizeId($id) {
-        if($id instanceof opal\record\IPrimaryKeySetProvider) {
+    protected function _normalizeId($id)
+    {
+        if ($id instanceof opal\record\IPrimaryKeySetProvider) {
             $id = $id->getPrimaryKeySet();
-        } else if(is_array($id)) {
-            if(isset($id['id'])) {
+        } elseif (is_array($id)) {
+            if (isset($id['id'])) {
                 $id = $id['id'];
             } else {
-                foreach($id as $value) {
+                foreach ($id as $value) {
                     $id = $value;
                     break;
                 }
@@ -120,8 +131,9 @@ abstract class Base implements IMediaHandler {
         return (string)$id;
     }
 
-    protected function _getStorageKey($fileId) {
-        if(empty($fileId)) {
+    protected function _getStorageKey($fileId)
+    {
+        if (empty($fileId)) {
             return null;
         }
 

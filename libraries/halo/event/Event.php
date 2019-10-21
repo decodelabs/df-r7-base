@@ -316,7 +316,7 @@ class Event extends Base implements Inspectable
 
             default:
                 throw new InvalidArgumentException(
-                    'Unknown event type: '.$type
+                    'Unknown event type: '.$binding->ioMode
                 );
         }
 

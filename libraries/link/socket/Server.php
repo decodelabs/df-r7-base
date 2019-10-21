@@ -82,16 +82,16 @@ abstract class Server extends Base implements IServerSocket
     public function shouldReuseAddress(bool $flag=null)
     {
         if ($flag === null) {
-            return $this->_getOption('reuseAddress', $flag);
+            return $this->_getOption('reuseAddress');
         }
 
-        if ($this->_isBound) {
+        if ($this->_isListening) {
             throw new RuntimeException(
                 'Can\'t set reuse address option once a server has been bound'
             );
         }
 
-        return $this->_setOption('reuseAddress');
+        return $this->_setOption('reuseAddress', $flag);
     }
 
 

@@ -7,12 +7,10 @@ namespace df\core\i18n\module;
 
 use df\core;
 
-class Numbers extends Base implements core\i18n\module\generator\IModule
+class Numbers extends Base implements
+    core\i18n\module\INumbersModule,
+    core\i18n\module\generator\IModule
 {
-    const INT32 = 'int32';
-    const INT64 = 'int64';
-    const DOUBLE = 'double';
-
     public function format($number, $format=null)
     {
         if ($format !== null) {
@@ -378,7 +376,7 @@ class Numbers extends Base implements core\i18n\module\generator\IModule
                 return \NumberFormatter::TYPE_INT64;
 
             case self::DOUBLE:
-            case \NumberFormatter::DOUBLE:
+            case \NumberFormatter::TYPE_DOUBLE:
             default:
                 return \NumberFormatter::TYPE_DOUBLE;
         }

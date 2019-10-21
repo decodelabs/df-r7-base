@@ -82,6 +82,7 @@ class Apcu implements core\cache\IBackend
         $this->_lifeTime = $lifeTime;
         $this->_prefix = df\Launchpad::$app->getUniquePrefix().'-'.$cache->getCacheId().':';
         $this->_isCli = php_sapi_name() == 'cli';
+        $options;
     }
 
     public function getConnectionDescription(): string

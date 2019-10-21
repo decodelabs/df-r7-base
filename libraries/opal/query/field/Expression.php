@@ -87,7 +87,7 @@ class Expression implements opal\query\IExpressionField, Inspectable
 
     public function hasDiscreetAlias()
     {
-        return $this->_alias !== $this->_name;
+        return $this->_alias !== null;
     }
 
     public function getQualifiedName()

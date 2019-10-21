@@ -8,8 +8,10 @@ namespace df\core\unit;
 use df;
 use df\core;
 
-class Resolution implements IResolution {
+use DecodeLabs\Glitch;
 
+class Resolution implements IResolution
+{
     use TSingleValueUnit;
 
     const DEFAULT_UNIT = 'dpi';
@@ -18,52 +20,60 @@ class Resolution implements IResolution {
     protected $_value;
     protected $_unit;
 
-    public static function factory($value, $unit=null, $allowPlainNumbers=false) {
-        if($value instanceof IResolution) {
+    public static function factory($value, $unit=null, $allowPlainNumbers=false)
+    {
+        if ($value instanceof IResolution) {
             return $value;
         }
 
         return new self($value, $unit, $allowPlainNumbers);
     }
 
-    public function setDpi($dpi) {
+    public function setDpi($dpi)
+    {
         return $this->_parseUnit($dpi, 'dpi');
     }
 
-    public function getDpi() {
+    public function getDpi()
+    {
         return $this->_convert($this->_value, $this->_unit, 'dpi');
     }
 
-    public function setDpcm($dpcm) {
+    public function setDpcm($dpcm)
+    {
         return $this->_parseUnit($dpcm, 'dpcm');
     }
 
-    public function getDpcm() {
+    public function getDpcm()
+    {
         return $this->_convert($this->_value, $this->_unit, 'dpcm');
     }
 
-    public function setDppx($dppx) {
+    public function setDppx($dppx)
+    {
         return $this->_parseUnit($dppx, 'dppx');
     }
 
-    public function getDppx() {
+    public function getDppx()
+    {
         return $this->_convert($this->_value, $this->_unit, 'dppx');
     }
 
-    protected function _convert($value, $inUnit, $outUnit) {
-        if($inUnit === null) {
+    protected function _convert($value, $inUnit, $outUnit)
+    {
+        if ($inUnit === null) {
             $inUnit = self::DEFAULT_UNIT;
         }
 
-        if($outUnit === null) {
+        if ($outUnit === null) {
             $outUnit = self::DEFAULT_UNIT;
         }
 
-        if($inUnit == $outUnit) {
+        if ($inUnit == $outUnit) {
             return $value;
         }
 
-        switch($inUnit) {
+        switch ($inUnit) {
             case 'dpi':
                 $dpi = $value;
                 break;
@@ -75,9 +85,12 @@ class Resolution implements IResolution {
             case 'dppx':
                 $dpi = $value * 96;
                 break;
+
+            default:
+                throw Glitch::EInvalidArgument('Unsupported dpi unit: '.$inUnit);
         }
 
-        switch($outUnit) {
+        switch ($outUnit) {
             case 'dpi':
                 $value = $dpi;
                 break;

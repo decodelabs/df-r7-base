@@ -9,33 +9,36 @@ use df;
 use df\core;
 use df\flex;
 
-abstract class Generator implements IGenerator {
-
-    public static function random($minLength=6, $maxLength=14, $additionalChars=null) {
+abstract class Generator implements IGenerator
+{
+    public static function random($minLength=6, $maxLength=14, $additionalChars=null)
+    {
         $characters = new Text('abcdefghijklmnopqrstuvwxyz');
 
-        if($additionalChars !== null) {
+        if ($additionalChars !== null) {
             $characters->push($additionalChars);
         }
 
         return self::_generateRandom($characters, $minLength, $maxLength);
     }
 
-    public static function randomNumber($minLength=6, $maxLength=14) {
+    public static function randomNumber($minLength=6, $maxLength=14)
+    {
         $characters = new Text('0123456789');
         return self::_generateRandom($characters, $minLength, $maxLength);
     }
 
-    private static function _generateRandom(IText $characters, $minLength, $maxLength) {
-        if(!is_int($minLength)) {
+    private static function _generateRandom(IText $characters, $minLength, $maxLength)
+    {
+        if (!is_int($minLength)) {
             $minLength = 4;
         }
 
-        if(!is_int($maxLength)) {
+        if (!is_int($maxLength)) {
             $maxLength = 32;
         }
 
-        if($maxLength < $minLength) {
+        if ($maxLength < $minLength) {
             $maxLength = $minLength;
         }
 
@@ -45,11 +48,11 @@ abstract class Generator implements IGenerator {
         $length = mt_rand($minLength, $maxLength);
         $count = count($characters);
 
-        for($i = 0; $i < $length; $i++) {
-            if($i == 0 || mt_rand(0, 3) < 2) {
+        for ($i = 0; $i < $length; $i++) {
+            if ($i == 0 || mt_rand(0, 3) < 2) {
                 $nextChar = $characters[mt_rand(0, $count - 1)];
 
-                if(mt_rand(0, 1)) {
+                if (mt_rand(0, 1)) {
                     $nextChar = mb_strtoupper($nextChar);
                 }
             } else {
@@ -62,14 +65,16 @@ abstract class Generator implements IGenerator {
         return (string)$output;
     }
 
-    public static function passKey() {
+    public static function passKey()
+    {
         return self::random(10, 20, '!£$%^&*()_-+=#');
     }
 
-    public static function sessionId($raw=false) {
+    public static function sessionId($raw=false)
+    {
         $output = self::passKey();
 
-        for($i = 0; $i < 32; $i++) {
+        for ($i = 0; $i < 32; $i++) {
             $output .= mt_rand();
         }
 
@@ -84,24 +89,26 @@ abstract class Generator implements IGenerator {
     private static $_randomSource;
     private static $_randomGen;
 
-    public static function randomBytes($bytes) {
-        if(self::$_randomSource === null) {
-            if(is_readable('/dev/urandom')) {
+    public static function randomBytes($bytes)
+    {
+        if (self::$_randomSource === null) {
+            if (is_readable('/dev/urandom')) {
                 self::$_randomGen = fopen('/dev/urandom', 'rb');
                 self::$_randomSource = self::RANDOM_URANDOM;
-            } else if(class_exists('COM', false)) {
+            } elseif (class_exists('COM', false)) {
                 try {
                     self::$_randomGen = new \COM('CAPICOM.Utilities.1');
                     self::$_randomSource = self::RANDOM_COM;
-                } catch(\Throwable $e) {}
+                } catch (\Throwable $e) {
+                }
             }
 
-            if(self::$_randomSource === null) {
+            if (self::$_randomSource === null) {
                 self::$_randomSource = self::RANDOM_MT;
             }
         }
 
-        switch(self::$_randomSource) {
+        switch (self::$_randomSource) {
             case self::RANDOM_URANDOM:
                 return fread(self::$_randomGen, $bytes);
 
@@ -112,7 +119,7 @@ abstract class Generator implements IGenerator {
                 $c = 0;
                 $output = '';
 
-                while($c++ * 16 < $bytes) {
+                while ($c++ * 16 < $bytes) {
                     $output .= md5(mt_rand(), true);
                 }
 
@@ -121,24 +128,29 @@ abstract class Generator implements IGenerator {
     }
 
 
-// UUID
-    public static function uuid1($node=null, $time=null) {
+    // UUID
+    public static function uuid1($node=null, $time=null)
+    {
         return Guid::uuid1($node, $time)->toString();
     }
 
-    public static function uuid3($name, $namespace=null) {
-        return Guid::uuid3($node, $time)->toString();
+    public static function uuid3($name, $namespace=null)
+    {
+        return Guid::uuid3($name, $namespace)->toString();
     }
 
-    public static function uuid4() {
-        return Guid::uuid4($node, $time)->toString();
+    public static function uuid4()
+    {
+        return Guid::uuid4()->toString();
     }
 
-    public static function uuid5($name, $namespace=null) {
-        return Guid::uuid5($node, $time)->toString();
+    public static function uuid5($name, $namespace=null)
+    {
+        return Guid::uuid5($name, $namespace)->toString();
     }
 
-    public static function combGuid() {
+    public static function combGuid()
+    {
         return Guid::comb()->toString();
     }
 }

@@ -26,6 +26,7 @@ abstract class Base implements IDaemon
 
     public $terminal;
     public $process;
+    public $io;
 
     protected $_isRunning = false;
     protected $_isPaused = false;
@@ -55,6 +56,8 @@ abstract class Base implements IDaemon
 
     public static function loadAll()
     {
+        $output = [];
+
         foreach (df\Launchpad::$loader->lookupClassList('apex/daemons') as $name => $class) {
             try {
                 $daemon = self::factory($name);

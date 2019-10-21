@@ -11,23 +11,31 @@ use df\neon;
 use df\flex;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
 
 // Interfaces
-interface IElement extends flex\xml\IInterchange {
+interface IElement extends flex\xml\IInterchange
+{
     public function getName();
     public function getElementName();
     public function prepareAttributes(IDocument $document);
 }
 
 
-trait TCustomContainerElement {
-
-    public function readXml(flex\xml\IReadable $reader) {
-        foreach($reader->getChildren() as $child) {
-            if($childObject = $this->_xmlToObject($child, $this)) {
+trait TCustomContainerElement
+{
+    public function readXml(flex\xml\IReadable $reader)
+    {
+        foreach ($reader->getChildren() as $child) {
+            if ($childObject = $this->_xmlToObject($child, $this)) {
                 throw new RuntimeException(
                     'Unexpected child element ('.$childObject->getElementName().') found in '.$this->getElementName().' element'
                 );
@@ -37,7 +45,8 @@ trait TCustomContainerElement {
         return $this;
     }
 
-    public function writeXml(flex\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWritable $writer)
+    {
         $document = $writer->getRootInterchange();
         $writer->startElement($this->getElementName());
 
@@ -46,26 +55,26 @@ trait TCustomContainerElement {
 
 
         // Description
-        if($this instanceof IDescriptionProvider) {
-            if($this->_title) {
-                $writer->writeElement('title', $this->_title);
+        if ($this instanceof IDescriptionProvider) {
+            if (null !== ($title = ($this->getTitle()))) {
+                $writer->writeElement('title', $title);
             }
 
-            if($this->_description) {
-                $writer->writeElement('desc', $this->_description);
+            if (null !== ($description = ($this->getDescription()))) {
+                $writer->writeElement('desc', $description);
             }
         }
 
         // MetaData
-        if($this instanceof IMetaDataProvider) {
-            if($this->_metaData) {
+        if ($this instanceof IMetaDataProvider) {
+            if (null !== ($metaData = $this->getMetaData())) {
                 $writer->startElement('metadata');
-                $writer->writeRaw(rtrim($this->_metaData)."\n    ");
+                $writer->writeRaw(rtrim($metaData)."\n    ");
                 $writer->endElement();
             }
         }
 
-        foreach($this->_getCustomContainerChildren() as $child) {
+        foreach ($this->_getCustomContainerChildren() as $child) {
             $child->writeXml($writer);
         }
 
@@ -73,14 +82,16 @@ trait TCustomContainerElement {
         return $this;
     }
 
-    protected function _getCustomContainerChildren() {
+    protected function _getCustomContainerChildren()
+    {
         return [];
     }
 }
 
 
 // Attribute modules
-interface IAnimationEventAttributeModule {
+interface IAnimationEventAttributeModule
+{
     public function setOnBeginScript($script);
     public function getOnBeginScript();
     public function setOnEndScript($script);
@@ -91,24 +102,28 @@ interface IAnimationEventAttributeModule {
     public function getOnLoadScript();
 }
 
-interface IAspectRatioAttributeModule {
+interface IAspectRatioAttributeModule
+{
     public function setPreserveAspectRatio($preserve);
     public function getPreserveAspectRatio();
 }
 
-interface IBaseProfileAttributeModule {
+interface IBaseProfileAttributeModule
+{
     public function setBaseProfile($profile);
     public function getBaseProfile();
 }
 
-interface IBasicGraphicsAttributeModule {
+interface IBasicGraphicsAttributeModule
+{
     public function setDisplay($display);
     public function getDisplay();
     public function setVisibility($visibility);
     public function getVisibility();
 }
 
-interface IBasicPaintAttributeModule {
+interface IBasicPaintAttributeModule
+{
     public function setColor($color);
     public function getColor();
     public function setFill($fill);
@@ -133,14 +148,16 @@ interface IBasicPaintAttributeModule {
     public function getColorRendering();
 }
 
-interface IClipAttributeModule {
+interface IClipAttributeModule
+{
     public function setClipPath($path);
     public function getClipPath();
     public function setClipRule($rule);
     public function getClipRule();
 }
 
-interface IConditionalAttributeModule {
+interface IConditionalAttributeModule
+{
     public function setRequiredFeatures($features);
     public function getRequiredFeatures();
     public function setRequiredExtensions($extensions);
@@ -149,12 +166,14 @@ interface IConditionalAttributeModule {
     public function getSystemLanguage();
 }
 
-interface IContainerAttributeModule {
+interface IContainerAttributeModule
+{
     public function setEnableBackground($background);
     public function getEnableBackground();
 }
 
-interface ICoreAttributeModule {
+interface ICoreAttributeModule
+{
     public function setId(?string $id);
     public function getId(): ?string;
     public function setXmlBase($baseIri);
@@ -165,12 +184,14 @@ interface ICoreAttributeModule {
     public function getXmlSpace();
 }
 
-interface ICursorAttributeModule {
+interface ICursorAttributeModule
+{
     public function setCursor($cursor);
     public function getCursor();
 }
 
-interface IDimensionAttributeModule {
+interface IDimensionAttributeModule
+{
     public function setDimensions($width, $height);
     public function setWidth($width);
     public function getWidth();
@@ -178,7 +199,8 @@ interface IDimensionAttributeModule {
     public function getHeight();
 }
 
-interface IDocumentEventsAttributeModule {
+interface IDocumentEventsAttributeModule
+{
     public function setOnUnloadScript($script);
     public function getOnUnloadScript();
     public function setOnAbortScript($script);
@@ -193,31 +215,36 @@ interface IDocumentEventsAttributeModule {
     public function getOnZoomScript();
 }
 
-interface IExternalResourcesAttributeModule {
+interface IExternalResourcesAttributeModule
+{
     public function setExternalResourcesRequired($required);
     public function getExternalResourcesRequired();
 }
 
-interface IFilterAttributeModule {
+interface IFilterAttributeModule
+{
     public function setFilter($filter);
     public function getFilter();
 }
 
-interface IFilterColorAttributeModule {
+interface IFilterColorAttributeModule
+{
     public function setColorInterpolationFilters($interpolation);
     public function getColorInterpolationFilters();
     public function setLightingColor($color);
     public function getLightingColor();
 }
 
-interface IFloodAttributeModule {
+interface IFloodAttributeModule
+{
     public function setFloodColor($color);
     public function getFloodColor();
     public function setFloodOpacity($opacity);
     public function getFloodOpacity();
 }
 
-interface IFontAttributeModule {
+interface IFontAttributeModule
+{
     public function setFontFamily($family);
     public function getFontFamily();
     public function setFontSize($size);
@@ -234,21 +261,24 @@ interface IFontAttributeModule {
     public function getFontWeight();
 }
 
-interface IFontAdvanceAttributeModule {
+interface IFontAdvanceAttributeModule
+{
     public function setHorizontalAdvance($advance);
     public function getHorizontalAdvance();
     public function setVerticalAdvance($advance);
     public function getVerticalAdvance();
 }
 
-interface IFontHorizontalOriginAttributeModule {
+interface IFontHorizontalOriginAttributeModule
+{
     public function setHorizontalOriginX($x);
     public function getHorizontalOriginX();
     public function setHorizontalOriginY($y);
     public function getHorizontalOriginY();
 }
 
-interface IFontVerticalOriginAttributeModule {
+interface IFontVerticalOriginAttributeModule
+{
     public function setVerticalOriginX($x);
     public function getVerticalOriginX();
     public function setVerticalOriginY($y);
@@ -259,16 +289,19 @@ interface IFontDefinitionAttributeModule extends
     IFontAdvanceAttributeModule,
     IFontHorizontalOriginAttributeModule,
     IFontVerticalOriginAttributeModule
-    {}
+{
+}
 
-interface IGradientAttributeModule {
+interface IGradientAttributeModule
+{
     public function setStopColor($color);
     public function getStopColor();
     public function setStopOpacity($opacity);
     public function getStopOpacity();
 }
 
-interface IGraphicalElementEventsAttributeModule {
+interface IGraphicalElementEventsAttributeModule
+{
     public function setOnFocusInScript($script);
     public function getOnFocusInScript();
     public function setOnFocusOutScript($script);
@@ -291,7 +324,8 @@ interface IGraphicalElementEventsAttributeModule {
     public function getOnLoadScript();
 }
 
-interface IGraphicsAttributeModule extends IBasicGraphicsAttributeModule {
+interface IGraphicsAttributeModule extends IBasicGraphicsAttributeModule
+{
     public function setImageRendering($rendering);
     public function getImageRendering();
     public function setPointerEvents($events);
@@ -302,7 +336,8 @@ interface IGraphicsAttributeModule extends IBasicGraphicsAttributeModule {
     public function getTextRendering();
 }
 
-interface IMarkerAttributeModule {
+interface IMarkerAttributeModule
+{
     public function setMarkerStart($start);
     public function getMarkerStart();
     public function setMarkerMid($mid);
@@ -311,19 +346,22 @@ interface IMarkerAttributeModule {
     public function getMarkerEnd();
 }
 
-interface IMaskAttributeModule {
+interface IMaskAttributeModule
+{
     public function setMask($mask);
     public function getMask();
 }
 
-interface IPaintAttributeModule extends IBasicPaintAttributeModule {
+interface IPaintAttributeModule extends IBasicPaintAttributeModule
+{
     public function setColorProfile($profile);
     public function getColorProfile();
     public function setColorInterpolation($interpolation);
     public function getColorInterpolation();
 }
 
-interface IPaintOpacityAttributeModule {
+interface IPaintOpacityAttributeModule
+{
     public function setOpacity($opacity);
     public function getOpacity();
     public function setStrokeOpacity($opacity);
@@ -332,18 +370,21 @@ interface IPaintOpacityAttributeModule {
     public function getFillOpacity();
 }
 
-interface IPathDataAttributeModule {
+interface IPathDataAttributeModule
+{
     public function setCommands($commands);
     public function getCommands();
     public function importPathData(IPathDataAttributeModule $path);
 }
 
-interface IPointDataAttributeModule {
+interface IPointDataAttributeModule
+{
     public function setPoints($points);
     public function getPoints();
 }
 
-interface IPositionAttributeModule {
+interface IPositionAttributeModule
+{
     public function setPosition($x, $y=null);
     public function setXPosition($x);
     public function getXPosition();
@@ -351,12 +392,14 @@ interface IPositionAttributeModule {
     public function getYPosition();
 }
 
-interface IRadiusAttributeModule {
+interface IRadiusAttributeModule
+{
     public function setRadius($radius);
     public function getRadius();
 }
 
-interface I2DRadiusAttributeModule {
+interface I2DRadiusAttributeModule
+{
     public function setRadius($radius);
     public function setXRadius($radius);
     public function getXRadius();
@@ -364,19 +407,22 @@ interface I2DRadiusAttributeModule {
     public function getYRadius();
 }
 
-interface IStyleAttributeModule {
+interface IStyleAttributeModule
+{
     public function setClass($class);
     public function getClass();
     public function setStyle($style);
     public function getStyle();
 }
 
-interface ITextAttributeModule {
+interface ITextAttributeModule
+{
     public function setWritingMode($mode);
     public function getWritingMode();
 }
 
-interface ITextContentAttributeModule {
+interface ITextContentAttributeModule
+{
     public function setAlignmentBaseline($baseline);
     public function getAlignmentBaseline();
     public function setBaselineShift($shift);
@@ -403,24 +449,28 @@ interface ITextContentAttributeModule {
     public function getWordSpacing();
 }
 
-interface ITransformAttributeModule {
+interface ITransformAttributeModule
+{
     public function setTransform($transform);
     public function getTransform();
 }
 
-interface IViewBoxAttributeModule {
+interface IViewBoxAttributeModule
+{
     public function setViewBox($viewBox);
     public function getViewBox();
 }
 
-interface IViewportAttributeModule {
+interface IViewportAttributeModule
+{
     public function setClip($clip);
     public function getClip();
     public function setOverflow($overflow);
     public function getOverflow();
 }
 
-interface IXLinkAttributeModule {
+interface IXLinkAttributeModule
+{
     public function setLinkType($type);
     public function getLinkType();
     public function setLinkHref($href);
@@ -437,7 +487,8 @@ interface IXLinkAttributeModule {
     public function getLinkActuate();
 }
 
-interface IZoomAndPanAttributeModule {
+interface IZoomAndPanAttributeModule
+{
     public function setZoomAndPan($zoomAndPan);
     public function getZoomAndPan();
 }
@@ -445,7 +496,8 @@ interface IZoomAndPanAttributeModule {
 
 
 // Description
-interface IDescriptionProvider {
+interface IDescriptionProvider
+{
     public function setTitle(?string $title);
     public function getTitle(): ?string;
     public function setDescription($description);
@@ -454,14 +506,16 @@ interface IDescriptionProvider {
 
 
 // MetaData
-interface IMetaDataProvider {
+interface IMetaDataProvider
+{
     public function setMetaData($metaData);
     public function getMetaData();
 }
 
 
 // Container
-interface IContainer extends IDescriptionProvider {
+interface IContainer extends IDescriptionProvider
+{
     public function setChildren(array $children);
     public function addChildren(array $children);
     public function addChild(IElement $element);
@@ -495,11 +549,13 @@ interface IStructure extends
     ITextAttributeModule,
     ITextContentAttributeModule,
     IViewportAttributeModule
-    {}
+{
+}
 
 
 // Definitions
-interface IDefinitionProvider {
+interface IDefinitionProvider
+{
     public function getDefinitionsElement();
     public function setDefinitions(array $defs);
     public function addDefinitions(array $defs);
@@ -514,7 +570,8 @@ interface IDefinitionsContainer extends
     IContainer,
     IStructure,
     IMetaDataProvider
-    {}
+{
+}
 
 
 // Document
@@ -533,8 +590,7 @@ interface IDocument extends
     IViewBoxAttributeModule,
     IZoomAndPanAttributeModule,
     IPathProvider
-    {
-
+{
     public function setContentScriptType($type);
     public function getContentScriptType();
     public function setContentStyleType($type);
@@ -554,7 +610,8 @@ interface IGroup extends
     IDefinitionProvider,
     IMetaDataProvider,
     IPathProvider
-    {}
+{
+}
 
 
 // Shapes
@@ -563,22 +620,40 @@ interface IShape extends
     IStructure,
     IDescriptionProvider,
     ITransformAttributeModule
-    {}
+{
+}
 
 
 
 
-interface ICircle extends IShape, IPositionAttributeModule, IRadiusAttributeModule {}
-interface IEllipse extends IShape, IPositionAttributeModule, I2DRadiusAttributeModule {}
-interface IImage extends IShape, IAspectRatioAttributeModule, IPositionAttributeModule, IDimensionAttributeModule, IXLinkAttributeModule {}
-interface ILine extends IShape, IPointDataAttributeModule {}
-interface IPath extends IShape, IPathDataAttributeModule {}
-interface IPolygon extends IShape, IPointDataAttributeModule {}
-interface IPolyline extends IShape, IPointDataAttributeModule {}
-interface IRectangle extends IShape, IPositionAttributeModule, IDimensionAttributeModule {}
+interface ICircle extends IShape, IPositionAttributeModule, IRadiusAttributeModule
+{
+}
+interface IEllipse extends IShape, IPositionAttributeModule, I2DRadiusAttributeModule
+{
+}
+interface IImage extends IShape, IAspectRatioAttributeModule, IPositionAttributeModule, IDimensionAttributeModule, IXLinkAttributeModule
+{
+}
+interface ILine extends IShape, IPointDataAttributeModule
+{
+}
+interface IPath extends IShape, IPathDataAttributeModule
+{
+}
+interface IPolygon extends IShape, IPointDataAttributeModule
+{
+}
+interface IPolyline extends IShape, IPointDataAttributeModule
+{
+}
+interface IRectangle extends IShape, IPositionAttributeModule, IDimensionAttributeModule
+{
+}
 
 
-interface IPathProvider {
+interface IPathProvider
+{
     public function toPath();
 }
 
@@ -586,22 +661,25 @@ interface IPathProvider {
 
 
 // Font
-interface IFontFaceContainer {
+interface IFontFaceContainer
+{
     public function setFontFace(IFontFace $fontFace=null);
     public function getFontFace();
 }
 
 
-trait TFontFaceContainer {
-
+trait TFontFaceContainer
+{
     protected $_fontFace;
 
-    public function setFontFace(IFontFace $fontFace=null) {
+    public function setFontFace(IFontFace $fontFace=null)
+    {
         $this->_fontFace = $fontFace;
         return $this;
     }
 
-    public function getFontFace() {
+    public function getFontFace()
+    {
         return $this->_fontFace;
     }
 }
@@ -614,7 +692,7 @@ interface IFont extends
     IMetaDataProvider,
     IFontDefinitionAttributeModule,
     IFontFaceContainer
-    {
+{
     public function setMissingGlyph(IFontGlyph $glyph=null);
     public function getMissingGlyph();
     public function setGlyphs(array $glyphs);
@@ -630,8 +708,7 @@ interface IFontFace extends
     IElement,
     ICoreAttributeModule,
     IFontAttributeModule
-    {
-
+{
     public function setAccentHeight($height);
     public function getAccentHeight();
     public function setAlphabetic($abc);
@@ -698,7 +775,7 @@ interface IFontFace extends
 interface IFontFaceSource extends
     IElement,
     ICoreAttributeModule
-    {
+{
     public function setUri($string);
     public function setUriElement(IFontFaceUri $uri);
     public function getUri();
@@ -711,7 +788,7 @@ interface IFontFaceUri extends
     IElement,
     ICoreAttributeModule,
     IXLinkAttributeModule
-    {
+{
     public function setFormat($string);
     public function setFormatElement(IFontFaceFormat $format=null);
     public function getFormat();
@@ -720,7 +797,7 @@ interface IFontFaceUri extends
 interface IFontFaceFormat extends
     IElement,
     ICoreAttributeModule
-    {
+{
     public function setString($string);
     public function getString();
 }
@@ -729,7 +806,7 @@ interface IFontFaceFormat extends
 interface IFontFaceName extends
     IElement,
     ICoreAttributeModule
-    {
+{
     public function setName($name);
     public function getName();
 }
@@ -757,7 +834,7 @@ interface IFontGlyph extends
     ITextAttributeModule,
     ITextContentAttributeModule,
     IViewportAttributeModule
-    {
+{
     public function setArabicForm($form);
     public function getArabicForm();
     public function setGlyphName($name);
@@ -774,32 +851,37 @@ interface IFontGlyph extends
 
 
 // Filters
-interface IFilter extends IElement {
-
+interface IFilter extends IElement
+{
 }
 
 
 // Commands
-interface ICommand extends core\IStringProvider {
+interface ICommand extends core\IStringProvider
+{
     public function isRelative(bool $flag=null);
     public function isAbsolute(bool $flag=null);
 }
 
-interface IXPositionAwareCommand extends ICommand {
+interface IXPositionAwareCommand extends ICommand
+{
     public function setX($x);
     public function getX();
 }
 
-interface IYPositionAwareCommand extends ICommand {
+interface IYPositionAwareCommand extends ICommand
+{
     public function setY($y);
     public function getY();
 }
 
-interface IPositionAwareCommand extends IXPositionAwareCommand, IYPositionAwareCommand {
+interface IPositionAwareCommand extends IXPositionAwareCommand, IYPositionAwareCommand
+{
     public function setPosition($x, $y);
 }
 
-interface IRadiusAwareCommand extends ICommand {
+interface IRadiusAwareCommand extends ICommand
+{
     public function setRadius($xRadius, $yRadius=null);
     public function setXRadius($radius);
     public function getXRadius();
@@ -807,7 +889,8 @@ interface IRadiusAwareCommand extends ICommand {
     public function getYRadius();
 }
 
-interface IControlPointCommand extends ICommand {
+interface IControlPointCommand extends ICommand
+{
     public function setControl($x, $y);
     public function setControlX($x);
     public function getControlX();
@@ -815,7 +898,8 @@ interface IControlPointCommand extends ICommand {
     public function getControlY();
 }
 
-interface I2ControlPointCommand extends ICommand {
+interface I2ControlPointCommand extends ICommand
+{
     public function setControl1($x, $y);
     public function setControl1X($x);
     public function getControl1X();
@@ -828,24 +912,44 @@ interface I2ControlPointCommand extends ICommand {
     public function getControl2Y();
 }
 
-interface IRotationAwareCommand extends ICommand {
+interface IRotationAwareCommand extends ICommand
+{
     public function setAngle($angle);
     public function getAngle();
 }
 
 
 
-interface IArcCommand extends ICommand, IRadiusAwareCommand, IRotationAwareCommand, IPositionAwareCommand {
+interface IArcCommand extends ICommand, IRadiusAwareCommand, IRotationAwareCommand, IPositionAwareCommand
+{
     public function isLargeArc(bool $flag=null);
     public function isSweep(bool $flag=null);
 }
 
-interface IClosePathCommand extends ICommand {}
-interface ICubicCurveCommand extends ICommand, IPositionAwareCommand {}
-interface IHorizontalLineCommand extends ICommand, IXPositionAwareCommand {}
-interface ILineCommand extends ICommand, IPositionAwareCommand {}
-interface IMoveCommand extends ICommand, IPositionAwareCommand {}
-interface IQuadraticCurveCommand extends ICommand {}
-interface ISmoothCubicCurveCommand extends ICommand {}
-interface ISmoothQuadraticCurveCommand extends ICommand {}
-interface IVerticalLineCommand extends ICommand, IYPositionAwareCommand {}
+interface IClosePathCommand extends ICommand
+{
+}
+interface ICubicCurveCommand extends ICommand, IPositionAwareCommand
+{
+}
+interface IHorizontalLineCommand extends ICommand, IXPositionAwareCommand
+{
+}
+interface ILineCommand extends ICommand, IPositionAwareCommand
+{
+}
+interface IMoveCommand extends ICommand, IPositionAwareCommand
+{
+}
+interface IQuadraticCurveCommand extends ICommand
+{
+}
+interface ISmoothCubicCurveCommand extends ICommand
+{
+}
+interface ISmoothQuadraticCurveCommand extends ICommand
+{
+}
+interface IVerticalLineCommand extends ICommand, IYPositionAwareCommand
+{
+}

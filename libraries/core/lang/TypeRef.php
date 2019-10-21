@@ -97,7 +97,7 @@ class TypeRef implements ITypeRef, \Serializable, Inspectable
             if (class_exists($checkType)) {
                 if (!$this->_reflection->isSubclassOf($checkType)) {
                     throw new RuntimeException(
-                        $type->_class.' does not extend '.$checkType
+                        $this->_class.' does not extend '.$checkType
                     );
                 }
             } elseif (interface_exists($checkType)) {

@@ -8,6 +8,7 @@ namespace df\core\unit;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -122,6 +123,9 @@ class Frequency implements IFrequency, Inspectable
             case 'ghz':
                 $factor = 3;
                 break;
+
+            default:
+                throw Glitch::EInvalidArgument('Unsupported frequency unit: '.$inUnit);
         }
 
         $bpm = false;

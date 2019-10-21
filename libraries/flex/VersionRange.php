@@ -21,7 +21,7 @@ class VersionRange implements IVersionRange, Inspectable
 
     public static function factory($range)
     {
-        if ($range instanceof IRange) {
+        if ($range instanceof IVersionRange) {
             return $range;
         }
 

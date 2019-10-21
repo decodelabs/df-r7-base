@@ -371,6 +371,8 @@ class Color implements IColor, Inspectable
                 $h = (1 / 3) + $del_R - $del_B;
             } elseif ($b == $maxVal) {
                 $h = (2 / 3) + $del_G - $del_R;
+            } else {
+                $h = 0;
             }
 
             if ($h < 0) {
@@ -617,7 +619,7 @@ class Color implements IColor, Inspectable
         $this->setHsvHue($h);
         $this->setHsvSaturation($s);
         $this->setHsvValue($v);
-        $this->setAlpha($alpha);
+        $this->setAlpha($a);
 
         return $this;
     }
@@ -655,7 +657,7 @@ class Color implements IColor, Inspectable
             $this->setMode(IColor::HSV);
         }
 
-        $this->_b = core\math\Util::clampFloat($g, 0, 1);
+        $this->_b = core\math\Util::clampFloat($s, 0, 1);
         return $this;
     }
 
@@ -675,7 +677,7 @@ class Color implements IColor, Inspectable
             $this->setMode(IColor::HSV);
         }
 
-        $this->_b = core\math\Util::clampFloat($g, 0, 1);
+        $this->_b = core\math\Util::clampFloat($l, 0, 1);
         return $this;
     }
 

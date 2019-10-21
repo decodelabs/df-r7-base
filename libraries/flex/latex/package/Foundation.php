@@ -526,7 +526,7 @@ class Foundation extends Base
         $caption->setType('caption');
 
         if (!$this->parser->container instanceof flex\latex\ICaptioned) {
-            $this->rewind();
+            $this->parser->rewind();
 
             throw new iris\UnexpectedTokenException(
                 'Container is not captioned',

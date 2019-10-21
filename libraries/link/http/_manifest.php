@@ -334,7 +334,7 @@ trait TStringResponse
 
     public function withHeaders($callback)
     {
-        core\lang\Callback::call($callback, $this->headers, $this);
+        core\lang\Callback::call($callback, $this->_headers, $this);
         return $this;
     }
 

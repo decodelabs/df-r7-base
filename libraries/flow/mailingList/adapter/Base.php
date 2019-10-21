@@ -50,10 +50,6 @@ abstract class Base implements flow\mailingList\IAdapter
         return static::SETTINGS_FIELDS;
     }
 
-    protected function __construct(core\collection\ITree $options)
-    {
-    }
-
     public function getName(): string
     {
         $parts = explode('\\', get_class($this));

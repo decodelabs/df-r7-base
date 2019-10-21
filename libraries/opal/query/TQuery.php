@@ -398,7 +398,9 @@ trait TQuery_Locational
 
     public function inside($location, $searchChildLocations=false)
     {
-        if (!$this->getSource()->getAdapter()->supportsQueryFeature(IQueryFeatures::LOCATION)) {
+        $source = $this->getSource();
+
+        if (!$source->getAdapter()->supportsQueryFeature(IQueryFeatures::LOCATION)) {
             throw new LogicException(
                 'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
                 ' does not support location base queries'
@@ -2323,8 +2325,10 @@ trait TQuery_SelectSourceDataFetcher
 {
     protected function _fetchSourceData($keyField=null, $valField=null)
     {
+        $source = $this->getSource();
+
         if ($keyField !== null) {
-            $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);
+            $keyField = $this->_sourceManager->extrapolateDataField($source, $keyField);
         }
 
         $formatter = null;
@@ -2333,16 +2337,16 @@ trait TQuery_SelectSourceDataFetcher
             if (isset($this->_attachments[$valField])) {
                 $valField = new opal\query\field\Attachment($valField, $this->_attachments[$valField]);
             } else {
-                $valField = $this->_sourceManager->extrapolateDataField($this->_source, $valField);
+                $valField = $this->_sourceManager->extrapolateDataField($source, $valField);
             }
 
-            $this->_source->addOutputField($valField);
+            $source->addOutputField($valField);
         } elseif (is_callable($valField)) {
             $formatter = $valField;
             $valField = null;
         }
 
-        $this->_source->setKeyField($keyField);
+        $source->setKeyField($keyField);
 
         $parts = explode('\\', get_class($this));
         $func = 'execute'.array_pop($parts).'Query';
@@ -2361,7 +2365,7 @@ trait TQuery_SelectSourceDataFetcher
             }
         }
 
-        //$this->_source->setKeyField(null);
+        //$source->setKeyField(null);
 
         return $output;
     }

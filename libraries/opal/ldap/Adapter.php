@@ -393,12 +393,12 @@ abstract class Adapter implements IAdapter
     // Remote data
     public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows)
     {
-        Glitch::incomplete($query);
+        Glitch::incomplete($join);
     }
 
     public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows)
     {
-        Glitch::incomplete($query);
+        Glitch::incomplete($attachment);
     }
 
 
@@ -589,6 +589,8 @@ abstract class Adapter implements IAdapter
                 $clauseString = $this->_clauseToString($clause);
             } elseif ($clause instanceof opal\query\IClauseList) {
                 $clauseString = $this->_clauseListToString($clause->toArray());
+            } else {
+                throw Glitch::EUnexpectedValue('Unknown clause type', null, $clause);
             }
 
             if (!strlen($clauseString)) {

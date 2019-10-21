@@ -258,7 +258,7 @@ class Enum_Inst implements core\lang\IInstanceEnum
 
     public function label($option)
     {
-        return $this->_unit->label($option);
+        Glitch::incomplete();
     }
 
     public function is($value)

@@ -174,7 +174,7 @@ class HeaderMap implements IHeaderMap, Inspectable
 
     public function setBase($key, $value)
     {
-        $parts = explode(';', $this->get($key, $default), 2);
+        $parts = explode(';', $this->get($key), 2);
         $parts[0] = $value;
 
         return $this->set($key, implode(';', $parts));

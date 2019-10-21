@@ -258,6 +258,9 @@ class Image implements IImage
                 }
 
                 break;
+
+            default:
+                throw Glitch::EInvalidArgument('Unsupported resize mode: '.$mode);
         }
 
         $this->_driver->resize($newWidth, $newHeight);
@@ -805,7 +808,7 @@ class Image implements IImage
 
     public static function getFormatFromMime($mime)
     {
-        Glitch::incomplete($path);
+        Glitch::incomplete($mime);
     }
 
     public static function isFormatValid($format)
