@@ -1,6 +1,8 @@
 parameters:
     excludes_analyse:
         - */_templates/*.html.php
+        - */_templates/*.xml.php
+        - */_templates/*.mail.php
 
     bootstrap: %rootDir%/../../../../base/PHPStanBootstrap.php
     level: 1
@@ -20,9 +22,8 @@ parameters:
 
     ignoreErrors:
         - '#Call to an undefined static method df\\core\\Error#'
-        - '#Call to an undefined method (.+)\:\:(date|html|uri)#'
+        - '#Call to an undefined method (.+)\:\:(date|html|uri|findFile|forceResponse)#'
         - '#^Caught class [a-zA-Z0-9\\]+\E[A-Z][a-zA-Z0-9]+ not found\.$#'
-        - '#^Call to an undefined method df\\plug\\Html\:\:[a-zA-Z0-9_]+\(\)\.$#'
         - '#^Instantiated class COM not found.$#'
         - '#Instantiated class Memcache not found\.#'
         - '#Function snappy_[a-zA-Z0-9_]+ not found\.#'
