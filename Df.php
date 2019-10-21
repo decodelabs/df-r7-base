@@ -8,6 +8,7 @@ namespace df;
 use df;
 use df\core;
 
+use DecodeLabs\Veneer;
 use DecodeLabs\Glitch;
 
 class Launchpad
@@ -58,7 +59,7 @@ class Launchpad
         }
 
         // Environment
-        $startTime = self::initEnvironment($appPath);
+        $startTime = self::initEnvironment();
 
         // Compilation
         self::initCompilation($appPath);
@@ -77,7 +78,7 @@ class Launchpad
         self::shutdown();
     }
 
-    public static function initEnvironment(string $appPath): float
+    public static function initEnvironment(): float
     {
         $startTime = microtime(true);
 
@@ -85,7 +86,6 @@ class Launchpad
         umask(0);
         error_reporting(E_ALL | E_STRICT);
         date_default_timezone_set('UTC');
-        chdir($appPath.'/entry');
 
         if (function_exists('mb_internal_encoding')) {
             mb_internal_encoding('UTF-8');
@@ -96,6 +96,8 @@ class Launchpad
 
     public static function initCompilation(string $appPath): void
     {
+        chdir($appPath.'/entry');
+
         // Check for compiled version
         $activePath = $appPath.'/data/local/run/active/Run.php';
         $sourceMode = isset($_SERVER['argv']) && in_array('--df-source', $_SERVER['argv']);
