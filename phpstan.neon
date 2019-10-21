@@ -1,34 +1,8 @@
+includes:
+    - ../base/phpstan.extension.neon
 parameters:
     paths:
         - daemons
         - directory
         - libraries
         - models
-
-    excludes_analyse:
-        - */_templates/*.html.php
-
-    bootstrap: %rootDir%/../../../PHPStanBootstrap.php
-    level: 1
-    inferPrivatePropertyTypeFromConstructor: true
-
-    universalObjectCratesClasses:
-        - df\arch\scaffold\IScaffold
-        - df\axis\IModel
-        - df\axis\IUnit
-        - df\core\IContext
-        - df\core\IContextAware
-        - df\core\IHelperProvider
-        - df\core\collection\ITree
-        - df\opal\record\IRecord
-        - df\user\Manager
-
-    ignoreErrors:
-        - '#Call to an undefined static method df\\core\\Error#'
-        - '#Call to an undefined method (.+)\:\:(date|html|uri)#'
-        - '#^Caught class [a-zA-Z0-9\\]+\E[A-Z][a-zA-Z0-9]+ not found\.$#'
-        - '#^Call to an undefined method df\\plug\\Html\:\:[a-zA-Z0-9_]+\(\)\.$#'
-        - '#^Instantiated class COM not found.$#'
-        - '#Instantiated class Memcache not found\.#'
-        - '#Function snappy_[a-zA-Z0-9_]+ not found\.#'
-        - '#Instantiated class (df\\apex\\App|df\\apex\\directory\\front\\HttpRootNodeRouter) not found\.#'
