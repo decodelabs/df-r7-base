@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\iris;
 
+use DecodeLabs\Glitch;
+
 abstract class Translator implements ITranslator
 {
     public $unit;

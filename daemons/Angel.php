@@ -10,6 +10,8 @@ use df\core;
 use df\halo;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 class Angel extends halo\daemon\Base implements link\peer\IServer
 {
     use link\peer\TPeer_Server;

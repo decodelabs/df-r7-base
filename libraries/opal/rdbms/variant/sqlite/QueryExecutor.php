@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 class QueryExecutor extends opal\rdbms\QueryExecutor
 {
 

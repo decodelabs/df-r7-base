@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 abstract class Server extends Base implements IServerSocket
 {
     const DEFAULT_OPTIONS = [

@@ -10,6 +10,8 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 class KeyGroup extends Base implements
     axis\schema\IRelationField,
     opal\schema\IOneRelationField,

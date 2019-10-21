@@ -10,6 +10,8 @@ use df\core;
 use df\flex;
 use df\iris;
 
+use DecodeLabs\Glitch;
+
 class Reference extends iris\map\Node implements flex\latex\IReference
 {
     use flex\latex\TReferable;

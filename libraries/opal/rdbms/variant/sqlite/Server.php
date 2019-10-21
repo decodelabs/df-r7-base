@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 class Server implements opal\rdbms\IServer
 {
     protected $_adapter;

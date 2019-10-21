@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Glitch;
+
 class Image implements IImage
 {
     private static $_driverClass;

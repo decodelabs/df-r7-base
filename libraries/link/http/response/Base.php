@@ -11,6 +11,7 @@ use df\link;
 use df\flex;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Glitch;
 
 abstract class Base implements link\http\IResponse
 {

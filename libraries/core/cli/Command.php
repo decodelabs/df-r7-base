@@ -8,6 +8,8 @@ namespace df\core\cli;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 class Command implements ICommand
 {
     use core\TStringProvider;

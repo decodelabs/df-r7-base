@@ -13,6 +13,8 @@ use df\link;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
+use DecodeLabs\Glitch;
+
 trait TPeer
 {
     protected $_readChunkSize = 16384;

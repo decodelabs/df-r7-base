@@ -8,6 +8,8 @@ namespace df\core;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 // Error
 interface IError
 {

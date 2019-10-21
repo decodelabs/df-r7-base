@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 abstract class SchemaExecutor implements ISchemaExecutor
 {
     protected $_adapter;

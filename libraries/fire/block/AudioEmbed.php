@@ -12,6 +12,8 @@ use df\arch;
 use df\flex;
 use df\aura;
 
+use DecodeLabs\Tagged\Html;
+
 class AudioEmbed extends Base
 {
     const DEFAULT_CATEGORIES = ['Article', 'Description'];

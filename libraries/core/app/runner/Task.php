@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Glitch;
+
 class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunner
 {
     protected $_context;

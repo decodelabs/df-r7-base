@@ -13,6 +13,7 @@ use df\arch;
 use df\halo;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Glitch;
 
 class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedRunner
 {

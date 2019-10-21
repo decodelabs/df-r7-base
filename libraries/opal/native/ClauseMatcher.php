@@ -10,6 +10,8 @@ use df\core;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 class ClauseMatcher implements IClauseMatcher
 {
     protected $_index = [];

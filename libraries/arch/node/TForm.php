@@ -12,6 +12,8 @@ use df\aura;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 // BASE
 trait TForm
 {

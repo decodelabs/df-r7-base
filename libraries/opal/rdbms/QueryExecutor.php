@@ -10,6 +10,8 @@ use df\core;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 abstract class QueryExecutor implements IQueryExecutor
 {
     protected $_stmt;

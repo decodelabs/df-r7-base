@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\axis;
 
+use DecodeLabs\Glitch;
+
 abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
 {
     use axis\TUnit;

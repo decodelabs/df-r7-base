@@ -10,6 +10,8 @@ use df\core;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 class SchemaExecutor extends opal\rdbms\SchemaExecutor
 {
 

@@ -11,6 +11,8 @@ use df\flex;
 use df\iris;
 use df\aura;
 
+use DecodeLabs\Glitch;
+
 class Html extends iris\Translator
 {
     use flex\THtmlStringEscapeHandler;

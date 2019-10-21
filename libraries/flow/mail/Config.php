@@ -11,6 +11,8 @@ use df\flow;
 use df\halo;
 use df\link;
 
+use DecodeLabs\Systemic;
+
 class Config extends core\Config
 {
     const ID = 'mail';

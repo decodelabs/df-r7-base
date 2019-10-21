@@ -13,6 +13,7 @@ use df\halo;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
+use DecodeLabs\Glitch;
 
 class Bridge implements IBridge
 {

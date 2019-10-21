@@ -11,6 +11,8 @@ use df\opal;
 use df\user;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 trait TQuery_AdapterAware
 {
     protected $_adapter;

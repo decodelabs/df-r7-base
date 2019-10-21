@@ -12,6 +12,8 @@ use df\arch;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 class TaskUpdate extends arch\node\Task
 {
     protected $_schemaManager;

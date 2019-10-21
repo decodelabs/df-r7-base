@@ -10,6 +10,8 @@ use df\core;
 use df\opal;
 use df\halo;
 
+use DecodeLabs\Glitch;
+
 class Index implements opal\search\IIndex
 {
     protected $_name;

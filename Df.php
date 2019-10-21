@@ -8,6 +8,8 @@ namespace df;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 class Launchpad
 {
     const CODENAME = 'hydrogen';
@@ -55,6 +57,28 @@ class Launchpad
             return;
         }
 
+        // Environment
+        $startTime = self::initEnvironment($appPath);
+
+        // Compilation
+        self::initCompilation($appPath);
+
+        // Loaders
+        self::initLoaders($appPath, $startTime, true);
+
+        // App
+        self::$app = core\app\Base::factory($envId, $appPath);
+        Glitch::setRunMode(self::$app->getEnvMode());
+
+        // Run
+        self::$app->startup($startTime);
+        self::$app->run();
+
+        self::shutdown();
+    }
+
+    public static function initEnvironment(string $appPath): float
+    {
         $startTime = microtime(true);
 
         // Set a few system defaults
@@ -67,6 +91,11 @@ class Launchpad
             mb_internal_encoding('UTF-8');
         }
 
+        return $startTime;
+    }
+
+    public static function initCompilation(string $appPath): void
+    {
         // Check for compiled version
         $activePath = $appPath.'/data/local/run/active/Run.php';
         $sourceMode = isset($_SERVER['argv']) && in_array('--df-source', $_SERVER['argv']);
@@ -87,8 +116,10 @@ class Launchpad
             self::$compileTimestamp = df\COMPILE_TIMESTAMP;
             self::$rootPath = df\COMPILE_ROOT_PATH;
         }
+    }
 
-
+    public static function initLoaders(string $appPath, float $startTime=null, bool $loadComposer=false): void
+    {
         // Load core library
         self::loadBaseClass('core/_manifest');
 
@@ -100,10 +131,16 @@ class Launchpad
         }
 
         // Composer
-        self::$loader->loadComposer($appPath);
+        if ($loadComposer) {
+            self::$loader->loadComposer($appPath);
+        }
+
+        // Veneer
+        Veneer::blacklistNamespaces('df')
+            ->whitelistNamespaces('df\\apex');
 
         // Glitch
-        Glitch::setStartTime($startTime)
+        Glitch::setStartTime($startTime ?? microtime(true))
             ->registerPathAliases([
                 'vendor' => $appPath.'/vendor',
                 'root' => self::$isCompiled ? self::$rootPath : dirname(self::$rootPath)
@@ -113,16 +150,6 @@ class Launchpad
 
         // Packages
         self::$loader->initRootPackages(self::$rootPath, $appPath);
-
-        // App
-        self::$app = core\app\Base::factory($envId, $appPath);
-        Glitch::setRunMode(self::$app->getEnvMode());
-
-        // Run
-        self::$app->startup($startTime);
-        self::$app->run();
-
-        self::shutdown();
     }
 
 

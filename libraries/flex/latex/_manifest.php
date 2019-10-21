@@ -10,6 +10,8 @@ use df\core;
 use df\flex;
 use df\iris;
 
+use DecodeLabs\Glitch;
+
 // Exceptions
 interface IException
 {

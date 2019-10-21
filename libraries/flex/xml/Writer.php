@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 class Writer implements IWriter
 {
     const ELEMENT = 1;

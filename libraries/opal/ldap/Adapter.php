@@ -11,6 +11,8 @@ use df\opal;
 use df\user;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 abstract class Adapter implements IAdapter
 {
     use opal\query\TQuery_EntryPoint;

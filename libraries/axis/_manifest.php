@@ -12,6 +12,8 @@ use df\opal;
 use df\user;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 // Exceptions
 interface IException
 {

@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 class LazyLoad implements opal\record\IPreparedValueContainer
 {
     use core\TUserValueContainer;

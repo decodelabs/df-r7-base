@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\mint;
 
+use DecodeLabs\Glitch;
+
 class PaypalExpressCheckout extends Base
 {
     public function getSupportedCurrencies(): array

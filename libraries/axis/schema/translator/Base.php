@@ -10,6 +10,8 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements axis\schema\ITranslator
 {
     protected $_unit;
