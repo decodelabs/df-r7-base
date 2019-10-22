@@ -145,10 +145,7 @@ trait TElementContent
         }
 
         foreach ($data as $key => $value) {
-            if ($isIterable = (
-                is_array($value) &&
-                !$value instanceof Markup
-            )) {
+            if ($isIterable = is_array($value)) {
                 $outer = $value;
             } else {
                 $outer = null;

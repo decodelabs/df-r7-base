@@ -262,11 +262,6 @@ class Html extends Base implements IHtmlView, Inspectable
     // Robots
     public function canIndex(bool $flag=null, $bot='robots')
     {
-        if (is_string($flag)) {
-            $bot = $flag;
-            $flag = null;
-        }
-
         if ($this->hasMeta($bot)) {
             $current = explode(',', $this->getMeta($bot));
         } else {
@@ -292,11 +287,6 @@ class Html extends Base implements IHtmlView, Inspectable
 
     public function canFollow(bool $flag=null, $bot='robots')
     {
-        if (is_string($flag)) {
-            $bot = $flag;
-            $flag = null;
-        }
-
         if ($this->hasMeta($bot)) {
             $current = explode(',', $this->getMeta($bot));
         } else {

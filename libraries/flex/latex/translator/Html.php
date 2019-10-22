@@ -212,7 +212,7 @@ class Html extends iris\Translator
     protected function _translateFigure(flex\latex\map\Figure $figure)
     {
         $output = '';
-        $alt = $captionTag = null;
+        $captionTag = null;
 
         if ($caption = $figure->getCaption()) {
             $captionTag = $this->tag('figcaption');
@@ -221,11 +221,9 @@ class Html extends iris\Translator
         $id = flex\Text::formatId($figure->getId());
         $src = $this->_dereferenceImage($id, $figure->getNumber());
 
-        if (!$alt) {
-            $alt = flex\Text::formatLabel(
-                core\uri\Path::extractRootFileName($src)
-            );
-        }
+        $alt = flex\Text::formatLabel(
+            core\uri\Path::extractRootFileName($src)
+        );
 
         $figTag = $this->tag('figure', ['id' => $id]);
         $imgTag = $this->element('img', null, ['src' => $src, 'alt' => $alt]);

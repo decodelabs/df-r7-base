@@ -63,7 +63,7 @@ abstract class FileStore implements IFileStore
 
     public function __construct()
     {
-        if (self::IS_DISTRIBUTED) {
+        if (static::IS_DISTRIBUTED) {
             $path = df\Launchpad::$app->getSharedDataPath();
         } else {
             $path = df\Launchpad::$app->getLocalDataPath();

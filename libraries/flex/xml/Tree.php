@@ -314,11 +314,7 @@ class Tree implements ITree, Inspectable
                     break;
 
                 case \XML_CDATA_SECTION_NODE:
-                    if ($value) {
-                        $value .= "\n";
-                    }
-
-                    $value .= trim($node->nodeValue)."\n";
+                    $value = trim($node->nodeValue)."\n";
                     break;
             }
 
@@ -735,11 +731,14 @@ class Tree implements ITree, Inspectable
 
         do {
             $origChild = $origChild->nextSibling;
-        } while ($origChild && $origChild->nodeType != \XML_ELEMENT_NODE);
+        } while (
+            $origChild !== null &&
+            $origChild->nodeType !== \XML_ELEMENT_NODE
+        );
 
         $node = $this->_normalizeInputChild($child, $value);
 
-        if (!$origChild) {
+        if ($origChild === null) {
             $this->_element->appendChild($node);
         } else {
             $this->_element->insertBefore($node, $origChild);

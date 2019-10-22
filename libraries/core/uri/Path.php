@@ -440,11 +440,13 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Inspectable
             return null;
         }
 
-        if (false === ($output = substr($baseName, $pos + 1))) {
+        $length = strlen($baseName);
+
+        if ($pos === $length) {
             return null;
         }
 
-        return $output;
+        return substr($baseName, $pos + 1);
     }
 
 

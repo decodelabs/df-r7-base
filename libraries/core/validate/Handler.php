@@ -8,8 +8,8 @@ namespace df\core\validate;
 use df;
 use df\core;
 
-class Handler implements IHandler {
-
+class Handler implements IHandler
+{
     use core\TTranslator;
     use core\lang\TChainable;
 
@@ -24,25 +24,29 @@ class Handler implements IHandler {
 
 
 
-// Fields
-    public function addField(string $name, string $type=null) {
+    // Fields
+    public function addField(string $name, string $type=null)
+    {
         $this->newField($name, $type);
         return $this;
     }
 
-    public function addRequiredField(string $name, string $type=null) {
+    public function addRequiredField(string $name, string $type=null)
+    {
         $this->newField($name, $type)->isRequired(true);
         return $this;
     }
 
-    public function addAutoField(string $key) {
+    public function addAutoField(string $key)
+    {
         $this->newAutoField($key);
         return $this;
     }
 
 
 
-    public function newField(string $name, string $type=null): IField {
+    public function newField(string $name, string $type=null): IField
+    {
         $this->endField();
         $field = core\validate\field\Base::factory($this, $type, $name);
 
@@ -52,22 +56,24 @@ class Handler implements IHandler {
         return $field;
     }
 
-    public function newRequiredField(string $name, string $type=null): IField {
+    public function newRequiredField(string $name, string $type=null): IField
+    {
         return $this->newField($name, $type)->isRequired(true);
     }
 
-    public function newAutoField(string $key): IField {
+    public function newAutoField(string $key): IField
+    {
         $isRequired = $isBoolean = false;
 
-        if(substr($key, 0, 1) == '*') {
+        if (substr($key, 0, 1) == '*') {
             $key = substr($key, 1);
             $isRequired = true;
-        } else if(substr($key, 0, 1) == '?') {
+        } elseif (substr($key, 0, 1) == '?') {
             $key = substr($key, 1);
             $isBoolean = true;
         }
 
-        if($isBoolean) {
+        if ($isBoolean) {
             $field = $this->newField($key, 'boolean');
         } else {
             $field = $this->newField($key, 'text');
@@ -79,23 +85,26 @@ class Handler implements IHandler {
 
 
 
-    public function getTargetField(): ?IField {
+    public function getTargetField(): ?IField
+    {
         return $this->_targetField;
     }
 
-    public function endField() {
+    public function endField()
+    {
         $this->_targetField = null;
         return $this;
     }
 
-    public function __call($method, array $args) {
-        if(!$this->_targetField) {
+    public function __call($method, array $args)
+    {
+        if (!$this->_targetField) {
             throw core\Error::ERuntime(
                 'There is no active target field to apply method '.$method.' to'
             );
         }
 
-        if(!method_exists($this->_targetField, $method)) {
+        if (!method_exists($this->_targetField, $method)) {
             throw core\Error::ECall(
                 'Target field '.$this->_targetField->getName().' does not have method '.$method
             );
@@ -103,7 +112,7 @@ class Handler implements IHandler {
 
         $output = $this->_targetField->{$method}(...$args);
 
-        if($output === $this->_targetField) {
+        if ($output === $this->_targetField) {
             return $this;
         }
 
@@ -112,32 +121,37 @@ class Handler implements IHandler {
 
 
 
-    public function hasField(string $name): bool {
+    public function hasField(string $name): bool
+    {
         return isset($this->_fields[$name]);
     }
 
-    public function getField(string $name): ?IField {
-        if(!isset($this->_fields[$name])) {
+    public function getField(string $name): ?IField
+    {
+        if (!isset($this->_fields[$name])) {
             return null;
         }
 
         return $this->_fields[$name];
     }
 
-    public function getFields(): array {
+    public function getFields(): array
+    {
         return $this->_fields;
     }
 
-    public function removeField(string $name) {
+    public function removeField(string $name)
+    {
         unset($this->_fields[$name]);
         return $this;
     }
 
 
 
-// Values
-    public function getValues() {
-        if($this->_isValid === null) {
+    // Values
+    public function getValues()
+    {
+        if ($this->_isValid === null) {
             throw core\Error::ESetup(
                 'This validator has not been run yet'
             );
@@ -146,20 +160,22 @@ class Handler implements IHandler {
         return $this->_values;
     }
 
-    public function getValue(string $name) {
-        if($this->_isValid === null) {
+    public function getValue(string $name)
+    {
+        if ($this->_isValid === null) {
             throw core\Error::ESetup(
                 'This validator has not been run yet'
             );
         }
 
-        if(isset($this->_values[$name])) {
+        if (isset($this->_values[$name])) {
             return $this->_values[$name];
         }
     }
 
-    public function setValue(string $name, $value) {
-        if($this->_isValid === null) {
+    public function setValue(string $name, $value)
+    {
+        if ($this->_isValid === null) {
             throw core\Error::ESetup(
                 'This validator has not been run yet'
             );
@@ -169,9 +185,10 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function isEmpty(): bool {
-        foreach($this->_values as $value) {
-            if($value !== null) {
+    public function isEmpty(): bool
+    {
+        foreach ($this->_values as $value) {
+            if ($value !== null) {
                 return false;
             }
         }
@@ -179,19 +196,23 @@ class Handler implements IHandler {
         return true;
     }
 
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
         return $this->setValue($offset, $value);
     }
 
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
         return $this->getValue($offset);
     }
 
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
         return array_key_exists($offset, $this->_values);
     }
 
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
         throw core\Error::ECall(
             'Validator values cannot be set via array access'
         );
@@ -201,14 +222,16 @@ class Handler implements IHandler {
 
 
 
-// Require group
-    public function setRequireGroupFulfilled(string $name) {
+    // Require group
+    public function setRequireGroupFulfilled(string $name)
+    {
         $this->_requireGroups[$name] = true;
         return $this;
     }
 
-    public function setRequireGroupUnfulfilled(string $name, string $field) {
-        if(isset($this->_requireGroups[$name]) && $this->_requireGroups[$name] === true) {
+    public function setRequireGroupUnfulfilled(string $name, string $field)
+    {
+        if (isset($this->_requireGroups[$name]) && $this->_requireGroups[$name] === true) {
             return $this;
         }
 
@@ -216,8 +239,9 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function checkRequireGroup(string $name) {
-        if(isset($this->_requireGroups[$name])) {
+    public function checkRequireGroup(string $name)
+    {
+        if (isset($this->_requireGroups[$name])) {
             return $this->_requireGroups[$name] === true;
         }
 
@@ -225,15 +249,16 @@ class Handler implements IHandler {
     }
 
 
-// Map
-    public function setDataMap(array $map=null) {
-        if($map === null) {
+    // Map
+    public function setDataMap(array $map=null)
+    {
+        if ($map === null) {
             $this->_dataMap = null;
         } else {
             $this->_dataMap = [];
 
-            foreach($map as $key => $value) {
-                if(is_int($key)) {
+            foreach ($map as $key => $value) {
+                if (is_int($key)) {
                     $key = $value;
                 }
 
@@ -244,15 +269,17 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function getDataMap(): ?array {
+    public function getDataMap(): ?array
+    {
         return $this->_dataMap;
     }
 
-    protected function _getActiveDataMap() {
+    protected function _getActiveDataMap()
+    {
         $map = $this->_dataMap;
 
-        foreach($this->_fields as $name => $field) {
-            if(!isset($map[$name])) {
+        foreach ($this->_fields as $name => $field) {
+            if (!isset($map[$name])) {
                 $map[$name] = $name;
             }
         }
@@ -260,19 +287,21 @@ class Handler implements IHandler {
         return $map;
     }
 
-    public function hasMappedField(string $name) {
-        if($this->_dataMap) {
+    public function hasMappedField(string $name)
+    {
+        if ($this->_dataMap) {
             return in_array($name, $this->_dataMap);
         } else {
             return isset($this->_fields[$name]);
         }
     }
 
-    public function getMappedName($name) {
-        if($this->_dataMap) {
+    public function getMappedName($name)
+    {
+        if ($this->_dataMap) {
             $map = array_flip($this->_dataMap);
 
-            if(isset($map[$name])) {
+            if (isset($map[$name])) {
                 return $map[$name];
             }
         }
@@ -285,33 +314,32 @@ class Handler implements IHandler {
 
 
 
-// Validate
-    public function validate($data, array $allowFields=null) {
+    // Validate
+    public function validate($data, array $allowFields=null)
+    {
         $this->endField();
 
-        if(!$data instanceof core\collection\IInputTree) {
+        if (!$data instanceof core\collection\IInputTree) {
             $data = core\collection\InputTree::factory($data);
         }
 
-        $this->_isValid = true;
-        $this->_values = [];
-        $this->_requireGroups = [];
+        $this->_reset();
         $this->data = $data;
 
         $map = $this->_getActiveDataMap();
 
-        foreach($map as $fieldName => $dataName) {
-            if($allowFields !== null && !in_array($fieldName, $allowFields)) {
+        foreach ($map as $fieldName => $dataName) {
+            if ($allowFields !== null && !in_array($fieldName, $allowFields)) {
                 continue;
             }
 
-            if(!isset($this->_fields[$fieldName])) {
+            if (!isset($this->_fields[$fieldName])) {
                 continue;
             }
 
             $field = $this->_fields[$fieldName];
 
-            if($field->isOptional() && !isset($data->{$dataName})) {
+            if ($field->isOptional() && !isset($data->{$dataName})) {
                 continue;
             }
 
@@ -320,18 +348,18 @@ class Handler implements IHandler {
 
             $this->_values[$fieldName] = $field->validate($node);
 
-            if(!$node->isValid()) {
+            if (!$node->isValid()) {
                 $this->_isValid = false;
             }
         }
 
-        foreach($this->_requireGroups as $name => $fields) {
-            if($fields === true) {
+        foreach ($this->_requireGroups as $name => $fields) {
+            if ($fields === true) {
                 continue;
             }
 
-            foreach($fields as $field) {
-                if(isset($map[$field])) {
+            foreach ($fields as $field) {
+                if (isset($map[$field])) {
                     $dataName = $map[$field];
                 } else {
                     $dataName = $field;
@@ -345,45 +373,55 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function isValid(): bool {
-        if($this->_isValid === null) {
+    protected function _reset()
+    {
+        $this->_isValid = true;
+        $this->_values = [];
+        $this->_requireGroups = [];
+    }
+
+    public function isValid(): bool
+    {
+        if ($this->_isValid === null) {
             return true;
         }
 
-        if(!$this->_isValid) {
+        if (!$this->_isValid) {
             return false;
         }
 
         return $this->data->isValid();
     }
 
-    public function getCurrentData(): ?core\collection\IInputTree {
+    public function getCurrentData(): ?core\collection\IInputTree
+    {
         return $this->data;
     }
 
-    public function applyTo(&$record, array $fields=null) {
-        if(!is_array($record) && !$record instanceof \ArrayAccess) {
+    public function applyTo(&$record, array $fields=null)
+    {
+        if (!is_array($record) && !$record instanceof \ArrayAccess) {
             throw core\Error::EArgument(
                 'Target record does not implement ArrayAccess'
             );
         }
 
-        if(empty($fields)) {
+        if (empty($fields)) {
             $fields = array_keys($this->_values);
         }
 
         $map = $this->_getActiveDataMap();
 
-        foreach($fields as $key) {
-            if(!isset($map[$key])) {
+        foreach ($fields as $key) {
+            if (!isset($map[$key])) {
                 continue;
             }
 
-            if(!$this->data->{$key}->isValid()) {
+            if (!$this->data->{$key}->isValid()) {
                 continue;
             }
 
-            if(array_key_exists($key, $this->_values)) {
+            if (array_key_exists($key, $this->_values)) {
                 $this->_fields[$key]->applyValueTo($record, $this->_values[$key]);
             }
         }
@@ -391,7 +429,8 @@ class Handler implements IHandler {
         return $this;
     }
 
-    public function translate(array $args): string {
+    public function translate(array $args): string
+    {
         return core\i18n\Manager::getInstance()->translate($args);
     }
 }

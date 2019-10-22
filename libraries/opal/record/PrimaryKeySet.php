@@ -323,8 +323,10 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
                 continue;
             }
 
-            if (($value instanceof core\IStringProvider || is_string($value)
-            && ($testKeys instanceof core\IStringProvider || is_string($testKeys[$key])))) {
+            if (
+                ($value instanceof core\IStringProvider || is_string($value)) &&
+                ($testKeys[$key] instanceof core\IStringProvider || is_string($testKeys[$key]))
+            ) {
                 if ((string)$value === (string)$testKeys[$key]) {
                     continue;
                 }

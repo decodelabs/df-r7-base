@@ -584,9 +584,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
             return false;
         }
 
-        if ($output === ''
-        || $output === null
-        || $output === false) {
+        if ($output === '' || $output === false) {
             return false;
         }
 

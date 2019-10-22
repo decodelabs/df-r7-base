@@ -145,7 +145,9 @@ class Base implements core\ILoader
     // File finder
     public function findFile(string $path): ?string
     {
-        if (null === ($paths = $this->getFileSearchPaths($path))) {
+        $paths = $this->getFileSearchPaths($path);
+
+        if (empty($paths)) {
             return null;
         }
 

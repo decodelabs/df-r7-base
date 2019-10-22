@@ -5,7 +5,7 @@ parameters:
         - */_templates/*.mail.php
 
     bootstrap: %rootDir%/../../../../base/PHPStanBootstrap.php
-    level: 3
+    level: 4
     inferPrivatePropertyTypeFromConstructor: true
     reportUnmatchedIgnoredErrors: false
 
@@ -29,6 +29,8 @@ parameters:
         - '#^Call to an undefined method df\\(aura\\view\\content\\WidgetContentProvider|arch\\node\\IDelegate|mesh\\job\\IQueue|plug\\Html)\:\:#'
         - '#^Instantiated class (df\\apex\\App|df\\apex\\directory\\front\\HttpRootNodeRouter) not found\.$#'
         - '#^Cannot access offset .+ on object\.$#'
+        - '#^Strict comparison using === between false and (resource|RarArchive) will always evaluate to false\.#'
+        - '#^Strict comparison using === between DOMNode and null will always evaluate to false\.#'
 
         # Extensions
         - '#^Function snappy_[a-zA-Z0-9_]+ not found\.$#'

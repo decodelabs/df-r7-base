@@ -52,6 +52,11 @@ class Select extends Base
         $this->_startSignalHandlers();
 
         while (!$this->_breakLoop) {
+            $socketCount = count($this->_socketBindings);
+            $streamCount = count($this->_streamBindings);
+            $signalCount = count($this->_signalBindings);
+            $timerCount = count($this->_timerBindings);
+
             if ($this->_generateMaps) {
                 $this->_generateMaps();
             }
@@ -163,6 +168,17 @@ class Select extends Base
                         $this->stop();
                     }
                 }
+            }
+
+            if (!$hasHandler) {
+                $this->_breakLoop = true;
+            } elseif (
+                $socketCount !== count($this->_socketBindings) ||
+                $streamCount !== count($this->_streamBindings) ||
+                $signalCount !== count($this->_signalBindings) ||
+                $timerCount !== count($this->_timerBindings)
+            ) {
+                $this->_generateMaps = true;
             }
 
             if (!$hasHandler) {

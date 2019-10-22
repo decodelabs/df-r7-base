@@ -71,10 +71,11 @@ trait TNative_IoSocket
         while (true) {
             $char = socket_read($this->_socket, 1);
 
-            if ($char == "\n"
-            || $char === null
-            || $char === false
-            || $char === '') {
+            if (
+                $char === "\n" ||
+                $char === false ||
+                $char === ''
+            ) {
                 return $string;
             }
 
@@ -92,8 +93,7 @@ trait TNative_IoSocket
     {
         $output = socket_send($this->_socket, $data, $length, 0);
 
-        if ($output === false
-        || $output === 0) {
+        if ($output === false || $output === 0) {
             return false;
         }
 

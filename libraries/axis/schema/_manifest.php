@@ -411,8 +411,6 @@ trait TRelationField
                     'Default value for relation field does not fit relation manifest'
                 );
             }
-        } elseif ($this instanceof opal\schema\IManyRelationField) {
-            // TODO: validate default value
         }
     }
 
@@ -545,25 +543,29 @@ trait TInverseRelationField
                     'Target field '.$this->_targetField.' is not a OneParent field'
                 );
             }
-        } elseif ($this instanceof IOneParentField) {
+        }
+        if ($this instanceof IOneParentField) {
             if (!$targetField instanceof IOneChildField) {
                 throw new RuntimeException(
                     'Target field '.$this->_targetField.' is not a OneChild field'
                 );
             }
-        } elseif ($this instanceof IOneToManyField) {
+        }
+        if ($this instanceof IOneToManyField) {
             if (!$targetField instanceof IManyToOneField) {
                 throw new RuntimeException(
                     'Target field '.$this->_targetField.' is not a ManyToOne field'
                 );
             }
-        } elseif ($this instanceof IManyToOneField) {
+        }
+        if ($this instanceof IManyToOneField) {
             if (!$targetField instanceof IOneToManyField) {
                 throw new RuntimeException(
                     'Target field '.$this->_targetField.' is not a OneToMany field'
                 );
             }
-        } elseif ($this instanceof IManyToManyField) {
+        }
+        if ($this instanceof IManyToManyField) {
             if (!$targetField instanceof IManyToManyField) {
                 throw new RuntimeException(
                     'Target field '.$this->_targetField.' is not a ManyToMany field'

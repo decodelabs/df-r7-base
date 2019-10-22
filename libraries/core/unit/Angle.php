@@ -39,8 +39,6 @@ class Angle implements IAngle, Inspectable
 
     public function normalize()
     {
-        $useMargin = false;
-
         switch ($this->_unit) {
             case null:
             case 'deg':
@@ -66,11 +64,6 @@ class Angle implements IAngle, Inspectable
 
         $upper = $limit;
         $lower = -$limit;
-
-        if ($useMargin) {
-            $upper = $limit + 0.000005;
-            $lower = -$limit - 0.000005;
-        }
 
         while ($this->_value > $upper) {
             $this->_value -= $limit;

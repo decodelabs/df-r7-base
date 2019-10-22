@@ -44,12 +44,10 @@ class Manager implements IManager, core\IShutdownAware
         if ($this->client === null) {
             $this->client = Client::generateGuest($this);
             $regenKeyring = true;
-            $rethrowException = false;
             $isNew = true;
         } else {
             $cache = user\session\Cache::getInstance();
             $regenKeyring = $cache->shouldRegenerateKeyring($this->client->getKeyringTimestamp());
-            $rethrowException = false;
             core\i18n\Manager::getInstance()->setLocale($this->client->getLanguage().'_'.$this->client->getCountry());
         }
 
@@ -68,13 +66,10 @@ class Manager implements IManager, core\IShutdownAware
                     );
 
                     mesh\Manager::getInstance()->emitEvent($this->client, 'initiate');
-
                     $bucket->set(self::CLIENT_SESSION_KEY, $this->client);
                 }
             } catch (\Throwable $e) {
-                if ($rethrowException) {
-                    throw $e;
-                }
+                core\logException($e);
             }
         }
     }

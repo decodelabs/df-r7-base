@@ -16,6 +16,8 @@ use df\flow;
 use DecodeLabs\Tagged\Html as Tagged;
 use DecodeLabs\Chirp\Parser as Chirp;
 
+use DecodeLabs\Glitch;
+
 class Html implements arch\IDirectoryHelper
 {
     use arch\TDirectoryHelper;
@@ -536,8 +538,15 @@ class Html implements arch\IDirectoryHelper
 
     public function queryToggleLink($request, $queryVar, $onString, $offString, $onIcon=null, $offIcon=null)
     {
+        $result = false;
+        $uriHelper = $this->context->uri;
+
+        if (!$uriHelper instanceof Uri) {
+            throw Glitch::ERuntime('Bad helper!');
+        }
+
         return $this->link(
-                $this->context->uri->queryToggle($request, $queryVar, $result = false),
+                $uriHelper->queryToggle($request, $queryVar, $result),
                 $result ? $onString : $offString
             )
             ->setIcon($result ? $onIcon : $offIcon);

@@ -372,16 +372,7 @@ class Uri implements arch\IDirectoryHelper
             return $this->directoryRequest($fallback);
         }
 
-
-        if ($default === null) {
-            $default = $request->getParent();
-        } elseif (!$default instanceof arch\IRequest) {
-            $default = $this->directoryRequest($default);
-        } else {
-            $default = clone $default;
-        }
-
-        return $default;
+        return $request->getParent();
     }
 
 

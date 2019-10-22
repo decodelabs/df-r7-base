@@ -9,49 +9,55 @@ use df;
 use df\core;
 use df\link;
 
-
-trait TStreams {
-
+trait TStreams
+{
     private $_lastError = '';
 
-    public function getImplementationName() {
+    public function getImplementationName()
+    {
         return 'streams';
     }
 
-    protected function _shutdownReading() {
+    protected function _shutdownReading()
+    {
         try {
             $this->_lastError = '';
             return stream_socket_shutdown($this->_socket, STREAM_SHUT_RD);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
     }
 
-    protected function _shutdownWriting() {
+    protected function _shutdownWriting()
+    {
         try {
             $this->_lastError = '';
             return stream_socket_shutdown($this->_socket, STREAM_SHUT_WR);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
     }
 
-    protected function _closeSocket() {
+    protected function _closeSocket()
+    {
         return @fclose($this->_socket);
     }
 
-    protected function _getLastErrorMessage() {
+    protected function _getLastErrorMessage()
+    {
         return $this->_lastError;
     }
 
-    protected function _setBlocking($flag) {
+    protected function _setBlocking($flag)
+    {
         @stream_set_blocking($this->_socket, $flag);
     }
 
-    protected function _enableSecureTransport() {
-        if(null === ($id = $this->_getSecureTransportId($this->_secureTransport))) {
+    protected function _enableSecureTransport()
+    {
+        if (null === ($id = $this->_getSecureTransportId($this->_secureTransport))) {
             return;
         }
 
@@ -60,8 +66,9 @@ trait TStreams {
         stream_set_blocking($this->_socket, $this->_shouldBlock);
     }
 
-    protected function _disableSecureTransport() {
-        if(null === ($id = $this->_getSecureTransportId($this->_secureTransport))) {
+    protected function _disableSecureTransport()
+    {
+        if (null === ($id = $this->_getSecureTransportId($this->_secureTransport))) {
             return;
         }
 
@@ -70,8 +77,9 @@ trait TStreams {
         stream_set_blocking($this->_socket, $this->_shouldBlock);
     }
 
-    protected function _getSecureTransportId($name) {
-        switch($name) {
+    protected function _getSecureTransportId($name)
+    {
+        switch ($name) {
             case 'ssl':
                 return STREAM_CRYPTO_METHOD_SSLv23_CLIENT;
 
@@ -90,65 +98,48 @@ trait TStreams {
     }
 }
 
-trait TStreams_IoSocket {
-
-    protected function _peekChunk($length) {
+trait TStreams_IoSocket
+{
+    protected function _peekChunk($length)
+    {
         try {
-            $output = stream_socket_recvfrom($this->_socket, $length, STREAM_PEEK);
-        } catch(\Throwable $e) {
+            return stream_socket_recvfrom($this->_socket, $length, STREAM_PEEK);
+        } catch (\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
-
-        if($output === null
-        || $output === false) {
-            return false;
-        }
-
-        return $output;
     }
 
-    protected function _readChunk($length) {
+    protected function _readChunk($length)
+    {
         try {
-            $output = fread($this->_socket, $length);
-        } catch(\Throwable $e) {
+            return fread($this->_socket, $length);
+        } catch (\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
-
-        if($output === null
-        || $output === false) {
-            return false;
-        }
-
-        return $output;
     }
 
-    protected function _readLine() {
+    protected function _readLine()
+    {
         try {
-            $output = fgets($this->_socket);
-        } catch(\Throwable $e) {
+            return fgets($this->_socket);
+        } catch (\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
-
-        if($output === null
-        || $output === false) {
-            return false;
-        }
-
-        return $output;
     }
 
-    protected function _writeChunk($data, $length) {
+    protected function _writeChunk($data, $length)
+    {
         try {
             $output = @fwrite($this->_socket, $data, $length);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->_lastError = $e->getMessage();
             return false;
         }
 
-        if($output === false
+        if ($output === false
         || $output === 0) {
             return false;
         }

@@ -112,20 +112,16 @@ class Insert implements IInsertQuery, Inspectable
 
         $fields = $index->getFields();
         $values = [];
-        $autoInc = false;
 
         foreach ($fields as $name => $field) {
             if ($originalId
             && $field instanceof opal\schema\IAutoIncrementableField
-            && $field->shouldAutoIncrement()
-            && !$autoInc) {
+            && $field->shouldAutoIncrement()) {
                 $values[$name] = $originalId;
 
                 if ($field instanceof IFieldValueProcessor) {
                     $values[$name] = $field->inflateValueFromRow($name, $values, null);
                 }
-
-                $autoInc = false;
             } elseif ($field instanceof IFieldValueProcessor) {
                 $values[$name] = $field->inflateValueFromRow($name, $row, null);
             } elseif (isset($row[$name])) {

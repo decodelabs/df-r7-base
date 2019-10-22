@@ -127,10 +127,6 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
             return false;
         }
 
-        if (stream_socket_get_name($this->_socket, true) === false) {
-            return false;
-        }
-
         //stream_socket_recvfrom($this->_socket, 1, STREAM_PEEK);
         return !feof($this->_socket);
     }

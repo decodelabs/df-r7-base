@@ -141,18 +141,8 @@ class Content implements fire\ISlotContent
 
     public function removeBlock(int $index)
     {
-        if ($index instanceof fire\IBlock) {
-            foreach ($this->blocks as $i => $block) {
-                if ($index === $block) {
-                    $this->_hasChanged = true;
-                    $this->blocks->remove($i);
-                    break;
-                }
-            }
-        } else {
-            $this->_hasChanged = true;
-            $this->blocks->remove($index);
-        }
+        $this->_hasChanged = true;
+        $this->blocks->remove($index);
 
         return $this;
     }

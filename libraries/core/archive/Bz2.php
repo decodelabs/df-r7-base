@@ -49,27 +49,11 @@ class Bz2 extends Base
 
     public function compressString(string $string): string
     {
-        $output = bzcompress($string, 4);
-
-        if (is_int($output)) {
-            throw core\Error::ERuntime(
-                'Unable to compress bz string'
-            );
-        }
-
-        return $output;
+        return bzcompress($string, 4);
     }
 
     public function decompressString(string $string): string
     {
-        $output = bzdecompress($string);
-
-        if (is_int($output)) {
-            throw core\Error::ERuntime(
-                'Unable to decompress bz string, appears invalid'
-            );
-        }
-
-        return $output;
+        return bzdecompress($string);
     }
 }

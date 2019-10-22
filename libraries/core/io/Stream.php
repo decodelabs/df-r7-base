@@ -88,9 +88,7 @@ class Stream implements IStreamChannel, Inspectable
             return false;
         }
 
-        if ($output === ''
-        || $output === null
-        || $output === false) {
+        if ($output === '' || $output === false) {
             return false;
         }
 
@@ -105,9 +103,7 @@ class Stream implements IStreamChannel, Inspectable
             return false;
         }
 
-        if ($output === ''
-        || $output === null
-        || $output === false) {
+        if ($output === '' || $output === false) {
             return false;
         }
 
