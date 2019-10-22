@@ -12,7 +12,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Set implements ISet, IAggregateIteratorCollection, Inspectable
+class Set implements ISet, \IteratorAggregate, Inspectable
 {
     use TArrayCollection;
     use TArrayCollection_Constructor;
@@ -26,11 +26,6 @@ class Set implements ISet, IAggregateIteratorCollection, Inspectable
         ));
 
         return $this;
-    }
-
-    public function getReductiveIterator(): \Iterator
-    {
-        return new ReductiveIndexIterator($this);
     }
 
     /**

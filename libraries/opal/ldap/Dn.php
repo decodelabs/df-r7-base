@@ -261,11 +261,6 @@ class Dn implements IDn, Inspectable
     }
 
 
-    public function getReductiveIterator(): \Iterator
-    {
-        return new core\collection\ReductiveIndexIterator($this);
-    }
-
     protected function _expandInput($value): array
     {
         return [Rdn::factory($value)];

@@ -154,7 +154,7 @@ class Index implements opal\rdbms\schema\IIndex, Inspectable
 
 
     // Ext. serialize
-    public static function fromStorageArray(opal\schema\ISchema $schema, array $data)
+    public static function fromStorageArray(opal\rdbms\schema\ISchema $schema, array $data)
     {
         $output = new self($schema, $data['nam']);
         $output->_setGenericStorageArray($schema, $data);

@@ -186,7 +186,7 @@ class Inspector implements IInspector
                     );
                 }
 
-                $argument->setValue((int)$value);
+                $argument->setValue((string)(int)$value);
                 break;
 
             case ValueType::STRING:

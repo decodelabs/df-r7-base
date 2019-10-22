@@ -222,8 +222,8 @@ class CreditCard implements ICreditCard, Inspectable
 
     public function setStartYear(?int $year)
     {
-        if (strlen($year) == 2) {
-            $year = '20'.$year;
+        if ($year !== null && $year <= 999) {
+            $year += 2000;
         }
 
         $this->_startYear = $year;
@@ -243,10 +243,20 @@ class CreditCard implements ICreditCard, Inspectable
     public function setStartString(string $start)
     {
         $parts = explode('/', $start);
+        $month = array_shift($parts);
+        $year = array_shift($parts);
+
+        if ($month !== null) {
+            $month = (int)$month;
+        }
+
+        if ($year !== null) {
+            $year = (int)$year;
+        }
 
         return $this
-            ->setStartMonth(array_shift($parts))
-            ->setStartYear(array_shift($parts));
+            ->setStartMonth($month)
+            ->setStartYear($year);
     }
 
     public function getStartString(): ?string
@@ -290,10 +300,20 @@ class CreditCard implements ICreditCard, Inspectable
     public function setExpiryString(string $expiry)
     {
         $parts = explode('/', $expiry);
+        $month = array_shift($parts);
+        $year = array_shift($parts);
+
+        if ($month !== null) {
+            $month = (int)$month;
+        }
+
+        if ($year !== null) {
+            $year = (int)$year;
+        }
 
         return $this
-            ->setExpiryMonth(array_shift($parts))
-            ->setExpiryYear(array_shift($parts));
+            ->setExpiryMonth($month)
+            ->setExpiryYear($year);
     }
 
     public function getExpiryString(): ?string

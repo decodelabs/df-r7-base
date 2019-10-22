@@ -12,7 +12,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Stack implements IStack, IAggregateIteratorCollection, Inspectable
+class Stack implements IStack, \IteratorAggregate, Inspectable
 {
     use TArrayCollection_Stack;
     use TArrayCollection_Constructor;

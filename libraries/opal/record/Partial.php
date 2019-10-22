@@ -58,11 +58,6 @@ class Partial implements IPartial, Inspectable
     }
 
 
-    public function getReductiveIterator(): \Iterator
-    {
-        return new core\collection\ReductiveMapIterator($this);
-    }
-
 
     protected function _buildPrimaryKeySet(array $fields, $includeChanges=true)
     {

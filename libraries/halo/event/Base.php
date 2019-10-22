@@ -469,7 +469,7 @@ abstract class Base implements IDispatcher
         $id = $binding->getId();
 
         if (isset($this->_streamBindings[$id])) {
-            $this->removeStream($binding);
+            $this->removeStreamBinding($binding);
         }
 
         $this->_streamBindings[$id] = $binding;

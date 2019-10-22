@@ -260,7 +260,7 @@ class Foundation extends Base
             $col = new flex\latex\map\Column($token);
 
             if ($token->isValue('|')) {
-                $col->hasLeftBorder(true);
+                $col->hasLeftBorder(1);
 
                 $token = $this->parser->extract();
 

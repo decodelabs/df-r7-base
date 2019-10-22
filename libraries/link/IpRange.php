@@ -102,19 +102,23 @@ class IpRange implements IIpRange, Inspectable
             $ip = new Ip($range);
             $range = $ip->getV6Decimal();
 
-            if (is_numeric($netmask) && $netmask >= 0 && $netmask <= 128) {
-                if ($netmask == 0) {
-                    $range = 0;
-                } else {
-                    $range = flex\Text::baseConvert($range, 10, 2, 128);
-                    $range = str_pad(substr($range, 0, $netmask), 128, 0, STR_PAD_RIGHT);
-                    $range = flex\Text::baseConvert($range, 2, 10);
+            if (is_numeric($netmask)) {
+                $netmask = (int)$netmask;
+
+                if ($netmask >= 0 && $netmask <= 128) {
+                    if ($netmask == 0) {
+                        $range = 0;
+                    } else {
+                        $range = flex\Text::baseConvert($range, 10, 2, 128);
+                        $range = str_pad(substr($range, 0, $netmask), 128, '0', STR_PAD_RIGHT);
+                        $range = flex\Text::baseConvert($range, 2, 10);
+                    }
                 }
             }
 
             $this->_start = flex\Text::baseConvert($range, 10, 16, 32);
             $this->_end = flex\Text::baseConvert($range, 10, 2, 128);
-            $this->_end = str_pad(substr($this->_end, 0, $netmask), 128, 1, STR_PAD_RIGHT);
+            $this->_end = str_pad(substr($this->_end, 0, $netmask), 128, '1', STR_PAD_RIGHT);
             $this->_end = flex\Text::baseConvert($this->_end, 2, 16, 32);
         } else {
             if (false !== strpos($range, '*')) {

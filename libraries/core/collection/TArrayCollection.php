@@ -947,11 +947,6 @@ trait TArrayCollection_Queue
     use TArrayCollection_Sliceable;
     use TArrayCollection_Shiftable;
     use TArrayCollection_IndexedMovable;
-
-    public function getReductiveIterator(): \Iterator
-    {
-        return new ReductiveIndexIterator($this);
-    }
 }
 
 trait TArrayCollection_Stack
@@ -968,11 +963,6 @@ trait TArrayCollection_Stack
         return new \ArrayIterator(array_reverse($this->_collection, true));
     }
 
-    public function getReductiveIterator(): \Iterator
-    {
-        return new ReductiveReverseIndexIterator($this);
-    }
-
     public function extract()
     {
         return $this->pop();
@@ -986,9 +976,4 @@ trait TArrayCollection_Map
     use TArrayCollection_AssociativeValueMap;
     use TArrayCollection_Seekable;
     use TArrayCollection_MappedMovable;
-
-    public function getReductiveIterator(): \Iterator
-    {
-        return new ReductiveMapIterator($this);
-    }
 }

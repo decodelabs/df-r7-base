@@ -37,7 +37,7 @@ interface ISource
 {
     public function getName(): string;
     public function getDisplayName(): string;
-    public function loadMenu(core\uri\Url $id);
+    public function loadMenu(core\uri\IUrl $id);
 }
 
 interface IListableSource extends ISource
@@ -47,12 +47,12 @@ interface IListableSource extends ISource
 
 interface ISourceAdapter
 {
-    public function loadMenu(ISource $source, core\uri\Url $id);
+    public function loadMenu(ISource $source, core\uri\IUrl $id);
 }
 
 trait TResponsiveSourceAdapter
 {
-    public function loadMenu(ISource $source, core\uri\Url $id)
+    public function loadMenu(ISource $source, core\uri\IUrl $id)
     {
         $func = '_load'.$id->path->getBaseName().'Menu';
 

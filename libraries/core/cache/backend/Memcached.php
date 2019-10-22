@@ -56,7 +56,7 @@ class Memcached implements core\cache\IBackend
             $output->addServer(
                 $serverOptions->get('host', '127.0.0.1'),
                 $serverOptions->get('port', 11211),
-                (bool)$serverOptions->get('persistent', true)
+                (int)$serverOptions->get('weight', 999)
             );
         }
 

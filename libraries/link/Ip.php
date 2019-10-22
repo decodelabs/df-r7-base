@@ -71,8 +71,8 @@ class Ip implements IIp, Inspectable
                 }
             }
 
-            $part7 = base_convert(($ip[0] * 256) + $ip[1], 10, 16);
-            $part8 = base_convert(($ip[2] * 256) + $ip[3], 10, 16);
+            $part7 = base_convert((string)(($ip[0] * 256) + $ip[1]), 10, 16);
+            $part8 = base_convert((string)(($ip[2] * 256) + $ip[3]), 10, 16);
 
             $ip = '::ffff:'.$part7.':'.$part8;
         }

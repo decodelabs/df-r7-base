@@ -65,7 +65,7 @@ class Clause implements opal\query\IClause, Inspectable
         return new self($field, $operator, $value, $isOr);
     }
 
-    private static function _virtualFactory(opal\query\IClauseFactory $parent, opal\query\IField $field, $operator, $value, $isOr=false)
+    private static function _virtualFactory(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
     {
         $source = $field->getSource();
         $name = $field->getName();

@@ -352,8 +352,8 @@ interface IColumn extends iris\map\IAspect
     public function getAlignment();
     public function setParagraphSizing($size);
     public function getParagraphSizing();
-    public function hasLeftBorder(bool $flag=null);
-    public function hasRightBorder(bool $flag=null);
+    public function hasLeftBorder(int $size=null);
+    public function hasRightBorder(int $size=null);
 }
 
 interface IStructure extends IEnvironmentNode, IContainerNode, IReferable, IListedNode

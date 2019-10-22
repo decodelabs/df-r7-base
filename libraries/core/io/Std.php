@@ -62,7 +62,7 @@ class Std implements IMultiplexReaderChannel
 
     public function setReadBlocking($flag)
     {
-        stream_set_blocking(STDIN, (int)($flag));
+        stream_set_blocking(STDIN, (bool)$flag);
         $this->_readBlocking = $flag;
         return $this;
     }

@@ -974,7 +974,7 @@ class Tree implements ITree, Inspectable
         $xpath = new \DOMXPath($this->_element->ownerDocument);
         $output = $xpath->query($path, $this->_element)->item(0);
 
-        if ($output) {
+        if ($output instanceof \DOMElement) {
             return new self($output);
         }
     }

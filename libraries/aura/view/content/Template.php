@@ -182,7 +182,8 @@ class Template implements aura\view\ITemplate, Inspectable
         }
 
         try {
-            extract($this->getSlots(), \EXTR_OVERWRITE | \EXTR_PREFIX_SAME, 'slot');
+            $slots = $this->getSlots();
+            extract($slots, \EXTR_OVERWRITE | \EXTR_PREFIX_SAME, 'slot');
 
             ob_start();
             require $this->_path;

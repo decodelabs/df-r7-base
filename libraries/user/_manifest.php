@@ -11,6 +11,7 @@ use df\user;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -280,6 +281,10 @@ trait TAccessLock
 {
     public function getActionLock($node)
     {
+        if (!$this instanceof IAccessLock) {
+            throw Glitch::ELogic('Lock requester is not an instance of user\\IAccessLock');
+        }
+
         return new user\access\lock\Action($this, $node);
     }
 

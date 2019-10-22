@@ -131,7 +131,7 @@ class Stream implements link\http\ITransport
             }
         ]);
 
-        $pointer = fopen((string)$request->getUrl(), Mode::READ_ONLY, null, $context);
+        $pointer = fopen((string)$request->getUrl(), Mode::READ_ONLY, false, $context);
         $this->_headers = link\http\response\HeaderCollection::fromResponseArray($this->_headerStack);
 
         if ($this->_headers->get('transfer-encoding') == 'chunked') {

@@ -37,11 +37,6 @@ class Base implements opal\ldap\IRootDse, Inspectable
         $this->import($data);
     }
 
-    public function getReductiveIterator(): \Iterator
-    {
-        return new core\collection\ReductiveMapIterator($this);
-    }
-
 
     public function getNamingContexts()
     {

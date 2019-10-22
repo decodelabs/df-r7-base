@@ -135,7 +135,7 @@ class Stream implements IStreamChannel, Inspectable
 
     public function setBlocking($flag)
     {
-        stream_set_blocking($this->_resource, (int)($flag));
+        stream_set_blocking($this->_resource, (bool)$flag);
         return $this;
     }
 

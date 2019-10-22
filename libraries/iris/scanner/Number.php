@@ -164,7 +164,7 @@ class Number implements iris\IScanner, Inspectable
                 $scale = 0;
             }
 
-            $number = bcmul($number, bcpow(10, $exponent, $powScale), $scale);
+            $number = bcmul($number, bcpow('10', (string)$exponent, $powScale), $scale);
         }
 
         $floatSuffix = false;

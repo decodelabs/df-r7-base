@@ -125,10 +125,10 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
             $this->_pointer, 1, 1,
             imageColorAllocateAlpha(
                 $this->_pointer,
-                $color->getRed() * 255,
-                $color->getGreen() * 255,
-                $color->getBlue() * 255,
-                127 - ($color->getAlpha() * 127)
+                (int)($color->getRed() * 255),
+                (int)($color->getGreen() * 255),
+                (int)($color->getBlue() * 255),
+                (int)(127 - ($color->getAlpha() * 127))
             )
         );
 
@@ -245,9 +245,9 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         } else {
             $background = imageColorAllocate(
                 $this->_pointer,
-                $background->getRed() * 255,
-                $background->getGreen() * 255,
-                $background->getBlue() * 255
+                (int)($background->getRed() * 255),
+                (int)($background->getGreen() * 255),
+                (int)($background->getBlue() * 255)
             );
         }
 
@@ -311,7 +311,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         imageSaveAlpha($this->_pointer, true);
 
         if (function_exists('imagefilter')) {
-            imagefilter($this->_pointer, \IMG_FILTER_BRIGHTNESS, $brightness);
+            imagefilter($this->_pointer, \IMG_FILTER_BRIGHTNESS, (int)$brightness);
         }
 
         return $this;
@@ -323,7 +323,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         imageSaveAlpha($this->_pointer, true);
 
         if (function_exists('imagefilter')) {
-            imagefilter($this->_pointer, \IMG_FILTER_CONTRAST, $contrast * -1);
+            imagefilter($this->_pointer, \IMG_FILTER_CONTRAST, (int)$contrast * -1);
         }
 
         return $this;
@@ -356,10 +356,10 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
             imagefilter(
                 $this->_pointer,
                 \IMG_FILTER_COLORIZE,
-                $color->getRed() * 255,
-                $color->getGreen() * 255,
-                $color->getBlue() * 255,
-                $alpha / 100 * -127
+                (int)($color->getRed() * 255),
+                (int)($color->getGreen() * 255),
+                (int)($color->getBlue() * 255),
+                (int)($alpha / 100 * -127)
             );
         }
 
@@ -444,7 +444,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         imageSaveAlpha($this->_pointer, true);
 
         if (function_exists('imagefilter')) {
-            imagefilter($this->_pointer, \IMG_FILTER_SMOOTH, $amount);
+            imagefilter($this->_pointer, \IMG_FILTER_SMOOTH, (int)$amount);
         }
 
         return $this;
@@ -464,10 +464,10 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
             (int)($x + $width), (int)($y + $height),
             imageColorAllocateAlpha(
                 $this->_pointer,
-                $color->red,
-                $color->green,
-                $color->blue,
-                127 - ($alpha * 127)
+                (int)$color->getRed(),
+                (int)$color->getGreen(),
+                (int)$color->getBlue(),
+                (int)(127 - ($alpha * 127))
             )
         );
 
@@ -553,10 +553,10 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 
                 $colorAllocate = imageColorAllocateAlpha(
                     $this->_pointer,
-                    round($activeColor->getRed() * 255),
-                    round($activeColor->getGreen() * 255),
-                    round($activeColor->getBlue() * 255),
-                    127 - $activeAlpha
+                    (int)round($activeColor->getRed() * 255),
+                    (int)round($activeColor->getGreen() * 255),
+                    (int)round($activeColor->getBlue() * 255),
+                    (int)(127 - $activeAlpha)
                 );
 
                 for($k = 0; $k < $cols; $k++) {

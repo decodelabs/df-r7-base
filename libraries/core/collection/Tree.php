@@ -194,11 +194,6 @@ class Tree implements ITree, ISeekable, ISortable, \Serializable, Inspectable
         return $this;
     }
 
-    public function getReductiveIterator(): \Iterator
-    {
-        return new ReductiveMapIterator($this);
-    }
-
 
     // Clone
     public function __clone()

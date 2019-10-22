@@ -115,7 +115,12 @@ trait TAccessLockProvider
 }
 
 
-interface IDataProvider extends core\collection\IMappedCollection, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider
+interface IDataProvider extends
+    core\collection\IMappedCollection,
+    user\IAccessLock,
+    mesh\entity\IEntity,
+    IRecordAdapterProvider,
+    IPrimaryKeySetProvider
 {
     public function getRaw($key);
 

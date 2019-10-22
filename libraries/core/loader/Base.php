@@ -35,7 +35,10 @@ class Base implements core\ILoader
     public function __construct(array $locations=[])
     {
         $this->_locations = $locations;
-        spl_autoload_register([$this, 'loadClass']);
+        
+        spl_autoload_register(function (string $class): void {
+            $this->loadClass($class);
+        });
     }
 
     public function loadComposer(string $appPath): void

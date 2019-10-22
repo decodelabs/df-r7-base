@@ -12,7 +12,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Queue implements IIndexedQueue, IAggregateIteratorCollection, Inspectable
+class Queue implements IIndexedQueue, \IteratorAggregate, Inspectable
 {
     use TArrayCollection_Queue;
     use TArrayCollection_Constructor;

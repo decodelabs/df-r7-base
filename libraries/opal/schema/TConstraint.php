@@ -276,14 +276,6 @@ trait TConstraint_Index
     }
 
 
-    // Ext. serialize
-    public static function fromStorageArray(opal\schema\ISchema $schema, array $data)
-    {
-        $output = new self($schema, $data['nam']);
-        $output->_setGenericStorageArray($schema, $data);
-        return $output;
-    }
-
     public function toStorageArray()
     {
         return $this->_getGenericStorageArray();

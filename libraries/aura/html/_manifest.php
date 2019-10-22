@@ -111,7 +111,7 @@ interface IElementContentCollection extends
     IElementContent,
     IWidgetFinder,
     core\collection\IIndexedQueue,
-    core\collection\IAggregateIteratorCollection
+    \IteratorAggregate
 {
 }
 
@@ -371,11 +371,6 @@ trait TElementContent
         }
 
         return $output;
-    }
-
-    public function getReductiveIterator(): \Iterator
-    {
-        return new core\collection\ReductiveIndexIterator($this);
     }
 }
 

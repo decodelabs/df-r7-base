@@ -5,7 +5,7 @@ parameters:
         - */_templates/*.mail.php
 
     bootstrap: %rootDir%/../../../../base/PHPStanBootstrap.php
-    level: 4
+    level: 5
     inferPrivatePropertyTypeFromConstructor: true
     reportUnmatchedIgnoredErrors: false
 
@@ -37,6 +37,7 @@ parameters:
         - '#Iterating over an object of an unknown class RarArchive\.#'
         - '#^Call to method [a-zA-Z0-9_]+\(\) on an unknown class (Memcache|COM)\.$#'
         - '#^Instantiated class (COM|Memcache) not found.$#'
+        - '#expects rararchive, RarArchive given#'
 
         # Exceptions
         - '#^Call to an undefined static method df\\core\\Error#'

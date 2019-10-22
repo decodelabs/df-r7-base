@@ -243,7 +243,7 @@ class ContentPart implements IContentPart, Inspectable
         switch (strtolower($this->getEncoding())) {
             case strtolower(flex\IEncoding::A8BIT):
             case strtolower(flex\IEncoding::A7BIT):
-                return wordwrap($content, IPart::LINE_LENGTH, IPart::LINE_END, 1);
+                return wordwrap($content, IPart::LINE_LENGTH, IPart::LINE_END, true);
 
             case strtolower(flex\IEncoding::QP):
                 return quoted_printable_encode($content);

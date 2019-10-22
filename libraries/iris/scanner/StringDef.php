@@ -10,6 +10,8 @@ use df\core;
 use df\iris;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 class StringDef implements iris\IScanner
 {
     protected $_containers = [
@@ -188,8 +190,8 @@ class StringDef implements iris\IScanner
             }
 
             if ($lexer->char != $this->_charContainer) {
-                throw new iris\UnexpectedCharacterException(
-                    'Expected close of char literal, instead got '.$lexer->char,
+                throw Glitch::EUnexpectedValue(
+                    'Expected close of char literal, instead got '.$lexer->char, null,
                     $lexer->getLocation()
                 );
             }
@@ -206,8 +208,8 @@ class StringDef implements iris\IScanner
         while (true) {
             if ($lexer->char === false) {
                 // EOF
-                throw new iris\UnexpectedCharacterException(
-                    'Unexpected string termination',
+                throw Glitch::EUnexpectedValue(
+                    'Unexpected string termination', null,
                     $lexer->getPosition()
                 );
             }
@@ -240,8 +242,8 @@ class StringDef implements iris\IScanner
     protected function _processEscape($lexer)
     {
         if ($lexer->char != $this->_escapeSymbol) {
-            throw new iris\UnexpectedCharacterException(
-                'Expected escape symbol',
+            throw Glitch::EUnexpectedValue(
+                'Expected escape symbol', null,
                 $lexer->getLocation()
             );
         }
@@ -312,13 +314,15 @@ class StringDef implements iris\IScanner
                 }
 
                 if ($numTabs == 0) {
-                    throw new iris\UnexpectedCharacterException(
+                    throw Glitch::EUnexpectedValue(
                         'Leading space in multi-line string must be '.$numSpaces.' spaces, ',
+                        null,
                         $lexer->getLocation()
                     );
                 } else {
-                    throw new iris\UnexpectedCharacterException(
+                    throw Glitch::EUnexpectedValue(
                         'Leading space in multi-line string must be '.$numTabs.' tabs and '.$numSpaces.' spaces, ',
+                        null,
                         $lexer->getLocation()
                     );
                 }

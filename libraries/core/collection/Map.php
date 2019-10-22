@@ -12,7 +12,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Map implements IMap, IAggregateIteratorCollection, Inspectable
+class Map implements IMap, \IteratorAggregate, Inspectable
 {
     use TArrayCollection_Map;
     use TArrayCollection_Constructor;

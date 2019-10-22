@@ -228,7 +228,7 @@ class Decoder implements IDecoder
         $unpacked = array_merge(unpack('N'.$longs, $bytes));
 
         foreach ($unpacked as $part) {
-            $output = bcadd(bcmul($output, bcpow(2, 32)), $part);
+            $output = bcadd(bcmul($output, bcpow('2', '32')), $part);
         }
 
         return $output;

@@ -212,12 +212,6 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
     public function shouldPackKeys(bool $flag=null)
     {
         if ($flag !== null) {
-            if (strtolower($flag) == 'default') {
-                $flag = null;
-            } else {
-                $flag = $flag;
-            }
-
             return $this->setOption('packKeys', $flag);
         }
 
@@ -335,9 +329,12 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
                     'Mysql storage engine '.$this->_options['engine'].' does not appear to be available'
                 );
             }
-        } else {
+        } elseif ($defaultEngine !== null) {
             $this->_options['engine'] = $defaultEngine;
-            $compEngine = strtolower($this->_options['engine']);
+            $compEngine = strtolower($defaultEngine);
+        } else {
+            $this->_options['engine'] = 'InnoDB';
+            $compEngine = 'innodb';
         }
 
 

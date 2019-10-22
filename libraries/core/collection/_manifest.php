@@ -48,12 +48,6 @@ trait TExtractList
     }
 }
 
-
-interface IAggregateIteratorCollection extends \IteratorAggregate
-{
-    public function getReductiveIterator(): \Iterator;
-}
-
 trait TValueMapArrayAccess
 {
     public function offsetSet($index, $value)
@@ -366,7 +360,7 @@ interface ISet extends ICollection
 interface ITree extends
     IRandomAccessCollection,
     IMappedContainerCollection,
-    IAggregateIteratorCollection,
+    \IteratorAggregate,
     core\IUserValueContainer,
     core\IStringProvider
 {

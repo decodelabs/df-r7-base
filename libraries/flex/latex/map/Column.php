@@ -39,11 +39,11 @@ class Column extends iris\map\Node implements flex\latex\IColumn
         return $this->_paragraphSizing;
     }
 
-    public function hasLeftBorder(bool $flag=null)
+    public function hasLeftBorder(int $size=null)
     {
-        if ($flag !== null) {
-            if ($flag) {
-                $this->_leftBorder = (int)$flag;
+        if ($size !== null) {
+            if ($size > 0) {
+                $this->_leftBorder = $size;
             } else {
                 $this->_leftBorder = false;
             }
@@ -54,11 +54,11 @@ class Column extends iris\map\Node implements flex\latex\IColumn
         return $this->_leftBorder;
     }
 
-    public function hasRightBorder(bool $flag=null)
+    public function hasRightBorder(int $size=null)
     {
-        if ($flag !== null) {
-            if ($flag) {
-                $this->_rightBorder = (int)$flag;
+        if ($size !== null) {
+            if ($size > 0) {
+                $this->_rightBorder = $size;
             } else {
                 $this->_rightBorder = false;
             }

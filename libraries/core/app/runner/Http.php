@@ -243,7 +243,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         if ($request && isset($request['authenticate']) && !isset($_COOKIE['ipbypass'])) {
-            setcookie('ipbypass', 1);
+            setcookie('ipbypass', '1');
         }
 
         if ($request && (isset($request['authenticate']) || isset($_SERVER['PHP_AUTH_USER']) || isset($_COOKIE['ipbypass']))) {
@@ -679,7 +679,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 }
 
                 flush();
-                ob_implicit_flush(true);
+                ob_implicit_flush(1);
 
                 if ($response->hasHeaders()) {
                     $response->getHeaders()->send();

@@ -12,7 +12,7 @@ use df\axis;
 
 class Model extends Base
 {
-    public function loadMenu(core\uri\Url $id)
+    public function loadMenu(core\uri\IUrl $id)
     {
         $modelName = $id->path->getFirst();
         $model = axis\Model::factory($modelName);

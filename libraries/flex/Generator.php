@@ -42,7 +42,7 @@ abstract class Generator implements IGenerator
             $maxLength = $minLength;
         }
 
-        mt_srand(microtime(true) * 1000000);
+        mt_srand((int)(microtime(true) * 1000000));
 
         $output = new Text('', flex\IEncoding::UTF_8);
         $length = mt_rand($minLength, $maxLength);
@@ -120,7 +120,7 @@ abstract class Generator implements IGenerator
                 $output = '';
 
                 while ($c++ * 16 < $bytes) {
-                    $output .= md5(mt_rand(), true);
+                    $output .= md5((string)mt_rand(), true);
                 }
 
                 return substr($output, 0, $bytes);

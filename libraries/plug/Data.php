@@ -16,6 +16,8 @@ use df\mesh;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
+use DecodeLabs\Glitch;
+
 class Data implements core\ISharedHelper, opal\query\IEntryPoint
 {
     use core\TSharedHelper;
@@ -79,6 +81,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
         if ($chain) {
             $query->chain($chain);
+        }
+
+        if (!$query instanceof opal\query\IWhereClauseQuery) {
+            throw Glitch::ELogic('Query is not a where clause factory', null, $query);
         }
 
         $this->applyQueryPrimaryClause($query, $primary);
@@ -369,7 +375,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         if ($query instanceof core\collection\IPageable) {
             $extraData['paginator'] = $query->getPaginator();
         }
-        
+
         return flex\Json::toString($extraData, $flags);
     }
 

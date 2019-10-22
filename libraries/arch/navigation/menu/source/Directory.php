@@ -12,7 +12,7 @@ use df\flex;
 
 class Directory extends Base implements arch\navigation\menu\IListableSource
 {
-    public function loadMenu(core\uri\Url $id)
+    public function loadMenu(core\uri\IUrl $id)
     {
         $parts = $id->path->getRawCollection();
         $name = ucfirst(array_pop($parts));

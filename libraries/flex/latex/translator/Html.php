@@ -36,6 +36,10 @@ class Html extends iris\Translator
 
     public static function createParser(iris\Lexer $lexer)
     {
+        if (!$lexer instanceof flex\latex\Lexer) {
+            throw Glitch::ELogic('Lexer is not a latex lexer', null, $lexer);
+        }
+
         return new flex\latex\Parser($lexer);
     }
 

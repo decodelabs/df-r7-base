@@ -12,7 +12,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class PageableQueue implements IIndexedQueue, IAggregateIteratorCollection, IPaginator, Inspectable
+class PageableQueue implements IIndexedQueue, \IteratorAggregate, IPaginator, Inspectable
 {
     use TArrayCollection_Queue;
     use TPaginator;
