@@ -80,9 +80,6 @@ class Uri implements arch\IDirectoryHelper
                 case 'https':
                     return new link\http\Url($uri);
 
-                case 'ftp':
-                    return new link\ftp\Url($uri);
-
                 case 'mailto':
                     return new core\uri\MailtoUrl($uri);
 
@@ -385,11 +382,6 @@ class Uri implements arch\IDirectoryHelper
     public function http($url)
     {
         return link\http\Url::factory($url);
-    }
-
-    public function ftp($url)
-    {
-        return link\ftp\Url::factory($url);
     }
 
 
