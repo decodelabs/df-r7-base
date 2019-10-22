@@ -356,26 +356,26 @@ abstract class Base implements axis\schema\ITranslator
         return $this->{$func}($primitive);
     }
 
-    abstract protected function _createBinaryField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createBitField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createBlobField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createBooleanField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createCharField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createDataObjectField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createDateField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createDateTimeField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createDecimalField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createEnumField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createFloatField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createGuidField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createIntegerField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createSetField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createTextField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createTimeField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createTimestampField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createVarbinaryField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createVarcharField(opal\schema\IPrimitive $primitive);
-    abstract protected function _createYearField(opal\schema\IPrimitive $primitive);
+    abstract protected function _createBinaryField(opal\schema\Primitive_Binary $primitive);
+    abstract protected function _createBitField(opal\schema\Primitive_Bit $primitive);
+    abstract protected function _createBlobField(opal\schema\Primitive_Blob $primitive);
+    abstract protected function _createBooleanField(opal\schema\Primitive_Boolean $primitive);
+    abstract protected function _createCharField(opal\schema\Primitive_Char $primitive);
+    abstract protected function _createDataObjectField(opal\schema\Primitive_DataObject $primitive);
+    abstract protected function _createDateField(opal\schema\Primitive_Date $primitive);
+    abstract protected function _createDateTimeField(opal\schema\Primitive_DateTime $primitive);
+    abstract protected function _createDecimalField(opal\schema\Primitive_Decimal $primitive);
+    abstract protected function _createEnumField(opal\schema\Primitive_Enum $primitive);
+    abstract protected function _createFloatField(opal\schema\Primitive_Float $primitive);
+    abstract protected function _createGuidField(opal\schema\Primitive_Guid $primitive);
+    abstract protected function _createIntegerField(opal\schema\Primitive_Integer $primitive);
+    abstract protected function _createSetField(opal\schema\Primitive_Set $primitive);
+    abstract protected function _createTextField(opal\schema\Primitive_Text $primitive);
+    abstract protected function _createTimeField(opal\schema\Primitive_Time $primitive);
+    abstract protected function _createTimestampField(opal\schema\Primitive_Timestamp $primitive);
+    abstract protected function _createVarbinaryField(opal\schema\Primitive_Varbinary $primitive);
+    abstract protected function _createVarcharField(opal\schema\Primitive_Varchar $primitive);
+    abstract protected function _createYearField(opal\schema\Primitive_Year $primitive);
 
 
 

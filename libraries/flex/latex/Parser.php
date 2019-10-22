@@ -294,7 +294,7 @@ class Parser extends iris\Parser
 
 
     // Symbols
-    public function parseKeySymbol(iris\IToken $token)
+    public function parseKeySymbol(iris\Token $token)
     {
         switch ($token->value) {
             case '$':
@@ -319,7 +319,7 @@ class Parser extends iris\Parser
 
 
     // Math mode
-    public function parseInlineMathMode(iris\IToken $token)
+    public function parseInlineMathMode(iris\Token $token)
     {
         $doMath = true;
         $end = '$';
@@ -424,7 +424,7 @@ class Parser extends iris\Parser
         if ($object) {
             $this->container->push($object);
         }
-        
+
         return $object;
     }
 

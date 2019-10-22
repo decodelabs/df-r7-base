@@ -125,7 +125,7 @@ class LocalFile implements core\cache\IBackend
         return $this->_lifeTime;
     }
 
-    public function set($key, $value)
+    public function set($key, $value, $lifeTime=null)
     {
         $value = serialize($value);
         $key = $this->_normalizeKey($key);

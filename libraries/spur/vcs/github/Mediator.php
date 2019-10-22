@@ -280,7 +280,7 @@ class Mediator implements IMediator, Inspectable
 
     protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest
     {
-        $request->headers->set('accept', 'application/vnd.github.'.self::API_VERSION.'+json');
+        $request->getHeaders()->set('accept', 'application/vnd.github.'.self::API_VERSION.'+json');
         return $request;
     }
 

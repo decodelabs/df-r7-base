@@ -209,6 +209,7 @@ interface IDsn extends core\IStringProvider
 
 interface IAdapter extends mesh\entity\IParentEntity
 {
+    public static function factory($dsn, $autoCreate=false);
     public function getAdapterName();
 
     // Connection
@@ -428,7 +429,6 @@ interface IQueryExecutor
     public function defineClause(opal\query\IClause $clause, array $remoteJoinData=null, $allowAlias=false, $forUpdateOrDelete=false);
     public function defineClauseCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query, $allowAlias=false);
     public function defineClauseLocalCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query);
-    public function defineClauseRemoteCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query, $allowAlias=false);
     public function defineClauseExpression(opal\query\IField $field, $fieldString, $operator, $value, $allowAlias=false);
     public function normalizeArrayClauseValue($value, $allowAlias=false);
     public function normalizeScalarClauseValue($value, $allowAlias=false);

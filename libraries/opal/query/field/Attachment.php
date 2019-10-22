@@ -80,7 +80,11 @@ class Attachment implements opal\query\IAttachmentField, Inspectable
 
     public function shouldBeProcessed()
     {
-        if ($this->_attachment instanceof opal\query\ISelectQuery && !$this->_attachment->isPopulate()) {
+        if (
+            $this->_attachment instanceof opal\query\ISelectQuery &&
+            $this->_attachment instanceof opal\query\IAttachQuery &&
+            !$this->_attachment->isPopulate()
+        ) {
             return false;
         }
 

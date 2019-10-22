@@ -533,7 +533,7 @@ trait TQuery_Correlatable
             $correlation = $this->correlate($aggregate, $alias)
                 ->from($bridgeAdapter, $bridgeAlias)
                 ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
-        } else {
+        } elseif ($field instanceof opal\schema\IInverseRelationField) {
             // Field is OneToMany (hopefully!)
             $targetAdapter = $field->getTargetQueryAdapter();
             $targetAlias = $fieldAlias;
@@ -547,6 +547,8 @@ trait TQuery_Correlatable
             $correlation = $this->correlate($aggregate, $alias)
                 ->from($targetAdapter, $targetAlias)
                 ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
+        } else {
+            throw Glitch::ERuntime('Unsupport ManyRelation field type', null, $field);
         }
 
         $correlation->endCorrelation();
@@ -566,8 +568,9 @@ trait TQuery_Correlatable
 
         $field = new opal\query\field\Correlation($correlation);
         $source->addOutputField($field);
+        $paginator = $this->getPaginator();
 
-        if ($paginator = $this->getPaginator()) {
+        if ($paginator instanceof opal\query\IPaginator) {
             $paginator->addOrderableFields($field->getAlias());
         }
 
@@ -657,8 +660,16 @@ trait TQuery_JoinProvider
             ->from($bridgeAdapter, $bridgeAlias)
             ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
         */
-        } elseif ($field instanceof opal\schema\IManyRelationField
-        || ($field instanceof opal\schema\IOneRelationField && $field instanceof opal\schema\INullPrimitiveField)) {
+        } elseif (
+            $field instanceof opal\schema\IInverseRelationField &&
+            (
+                $field instanceof opal\schema\IManyRelationField ||
+                (
+                    $field instanceof opal\schema\IOneRelationField &&
+                    $field instanceof opal\schema\INullPrimitiveField
+                )
+            )
+        ) {
             // Field is OneToMany || inverse One
             $targetAdapter = $field->getTargetQueryAdapter();
             $targetFieldName = $field->getTargetField();

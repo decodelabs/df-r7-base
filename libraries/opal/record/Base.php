@@ -1008,7 +1008,10 @@ class Base implements IRecord, \Serializable, Inspectable
         }
 
         if ($this->_changes[$key] instanceof IValueContainer) {
-            $this->_changes[$key]->prepareToSetValue($this, $key);
+            if ($this->_changes[$key] instanceof IPreparedValueContainer) {
+                $this->_changes[$key]->prepareToSetValue($this, $key);
+            }
+
             $this->_changes[$key]->setValue($value);
         } else {
             $this->_changes[$key] = $value;

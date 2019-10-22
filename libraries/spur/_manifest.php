@@ -10,6 +10,7 @@ use df\core;
 use df\spur;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -100,7 +101,7 @@ trait THttpMediator
         try {
             $response = $this->getHttpClient()->sendRequest($request);
         } catch (\Throwable $e) {
-            throw core\Error::{'EImplementation,ETransport,EApi'}([
+            throw Glitch::{'EImplementation,ETransport,EApi'}([
                 'message' => $e->getMessage(),
                 'previous' => $e
             ]);
@@ -116,13 +117,13 @@ trait THttpMediator
             $code = $response->getHeaders()->getStatusCode();
 
             if ($code >= 500) {
-                throw core\Error::{'EImplementation,spur/EImplementation'}([
+                throw Glitch::{'EImplementation'}([
                     'message' => $message,
                     'data' => $response->getContent(),
                     'code' => $code
                 ]);
             } else {
-                throw core\Error::{'EApi,spur\EApi'}([
+                throw Glitch::{'EApi'}([
                     'message' => $message,
                     'data' => $this->_normalizeErrorData($response->getContent()),
                     'code' => $code

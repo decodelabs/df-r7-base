@@ -199,6 +199,7 @@ interface IActiveForm extends IForm
 
 interface IFormNode extends INode, IActiveForm
 {
+    public function dispatchToRenderInline(aura\view\IView $view);
     public function setComplete();
 }
 

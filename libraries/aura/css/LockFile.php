@@ -118,7 +118,7 @@ class LockFile
             $timeout = $this->_timeout;
         }
 
-        $output = $timeout - (time() - $time);
+        $output = $timeout - (time() - (int)$time);
 
         if ($output < 0) {
             $output = 0;

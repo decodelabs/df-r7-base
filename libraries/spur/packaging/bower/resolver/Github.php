@@ -26,14 +26,14 @@ class Github implements spur\packaging\bower\IResolver
         $this->_mediator = new spur\vcs\github\Mediator();
     }
 
-    public function resolvePackageName(spur\packaging\bower\IPackage $package)
+    public function resolvePackageName(spur\packaging\bower\Package $package)
     {
         $repoName = $this->_extractRepoName($package);
         $parts = explode('/', $repoName);
         return array_pop($parts);
     }
 
-    public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null)
+    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion=null)
     {
         $repoName = $this->_extractRepoName($package);
 
@@ -69,7 +69,7 @@ class Github implements spur\packaging\bower\IResolver
         return true;
     }
 
-    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath)
+    public function getTargetVersion(spur\packaging\bower\Package $package, $cachePath)
     {
         $repoName = $this->_extractRepoName($package);
 
@@ -80,7 +80,7 @@ class Github implements spur\packaging\bower\IResolver
         return $tag->getVersion();
     }
 
-    protected function _extractRepoName(spur\packaging\bower\IPackage $package)
+    protected function _extractRepoName(spur\packaging\bower\Package $package)
     {
         if (!preg_match('/(?:@|:\/\/)github.com[:\/]([^\/\s]+?)\/([^\/\s]+?)(?:\.git)?\/?$/i', $package->url, $matches)) {
             throw new spur\packaging\bower\RuntimeException('Unable to extract repo name from url: '.$package->url);
@@ -89,7 +89,7 @@ class Github implements spur\packaging\bower\IResolver
         return $matches[1].'/'.$matches[2];
     }
 
-    protected function _getRequiredTag(spur\packaging\bower\IPackage $package, $repoName, $cachePath)
+    protected function _getRequiredTag(spur\packaging\bower\Package $package, $repoName, $cachePath)
     {
         try {
             $tags = $this->_fetchTags($package, $repoName, $cachePath);
@@ -100,7 +100,7 @@ class Github implements spur\packaging\bower\IResolver
         return $this->_findRequiredTag($tags, $package);
     }
 
-    protected function _fetchTags(spur\packaging\bower\IPackage $package, $repoName, $cachePath)
+    protected function _fetchTags(spur\packaging\bower\Package $package, $repoName, $cachePath)
     {
         $path = $cachePath.'/tags/github-'.str_replace('/', '-', $repoName).'.json';
 

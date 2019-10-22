@@ -9,6 +9,7 @@ use df;
 use df\core;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Systemic\Process\Launcher;
 
 // Exceptions
 interface IException
@@ -353,6 +354,8 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject
     public function readLine();
     public function readChunk($size);
     public function setReadBlocking($flag);
+
+    public function exportToAtlasLauncher(Launcher $launcher): IMultiplexer;
 }
 
 

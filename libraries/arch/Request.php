@@ -20,14 +20,6 @@ class Request extends core\uri\Url implements IRequest, Inspectable
 {
     use user\TAccessLock;
 
-    const AREA_MARKER = '~';
-    const DEFAULT_AREA = 'front';
-    const DEFAULT_NODE = 'index';
-    const DEFAULT_TYPE = 'html';
-
-    const REDIRECT_FROM = 'rf';
-    const REDIRECT_TO = 'rt';
-
     protected $_scheme = 'directory';
     protected $_defaultAccess = null;
     protected $_accessSignifiers = null;
@@ -478,8 +470,8 @@ class Request extends core\uri\Url implements IRequest, Inspectable
             return false;
         }
 
-        $tpString = implode('/', $this->_getLiteralPathArray(false, false));
-        $rpString = implode('/', $request->_getLiteralPathArray(false, false));
+        $tpString = implode('/', $this->getLiteralPathArray(false, false));
+        $rpString = implode('/', $request->getLiteralPathArray(false, false));
 
         if ($tpString != $rpString) {
             return false;
@@ -521,8 +513,8 @@ class Request extends core\uri\Url implements IRequest, Inspectable
             return false;
         }
 
-        $tpString = implode('/', $this->_getLiteralPathArray(false, false));
-        $rpString = implode('/', $request->_getLiteralPathArray(false, false));
+        $tpString = implode('/', $this->getLiteralPathArray(false, false));
+        $rpString = implode('/', $request->getLiteralPathArray(false, false));
 
         if (!$full && $tpString == $rpString) {
             return true;
@@ -614,12 +606,7 @@ class Request extends core\uri\Url implements IRequest, Inspectable
         return new core\uri\Path($this->getLiteralPathArray(), false);
     }
 
-    public function getLiteralPathArray()
-    {
-        return $this->_getLiteralPathArray();
-    }
-
-    protected function _getLiteralPathArray(bool $incType=true, bool $incNode=true)
+    public function getLiteralPathArray(bool $incType=true, bool $incNode=true)
     {
         if ($this->_path) {
             $parts = $this->_path->getRawCollection();
@@ -1006,7 +993,7 @@ class Request extends core\uri\Url implements IRequest, Inspectable
 
     public function lookupAccessKey(array $keys, $lockAction=null)
     {
-        $parts = $this->_getLiteralPathArray(false, true);
+        $parts = $this->getLiteralPathArray(false, true);
         $node = array_pop($parts);
         $basePath = implode('/', $parts);
 
@@ -1077,7 +1064,7 @@ class Request extends core\uri\Url implements IRequest, Inspectable
 
     public function getAccessLockId()
     {
-        return implode('/', $this->_getLiteralPathArray(false, true));
+        return implode('/', $this->getLiteralPathArray(false, true));
     }
 
     /*

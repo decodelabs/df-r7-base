@@ -12,29 +12,30 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskBackupTable extends arch\node\Task {
-
+class TaskBackupTable extends arch\node\Task
+{
     protected $_unit;
     protected $_adapter;
 
-    public function execute() {
+    public function execute()
+    {
         $unitId = $this->request['unit'];
 
-        if(!$this->_unit = axis\Model::loadUnitFromId($unitId)) {
+        if (!$this->_unit = axis\Model::loadUnitFromId($unitId)) {
             throw core\Error::{'axis/unit/ENotFound'}(
                 'Unit '.$unitId.' not found'
             );
         }
 
-        if($this->_unit->getUnitType() != 'table') {
+        if ($this->_unit->getUnitType() != 'table') {
             throw core\Error::{'axis/unit/EDomain'}(
                 'Unit '.$unitId.' is not a table'
             );
         }
 
-        if(!$this->_unit instanceof axis\IAdapterBasedStorageUnit) {
-            throw core\Error::{'axis/unit/EDomain'}(
-                'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!'
+        if (!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+            throw Glitch::{'df/axis/unit/EDomain'}(
+                'Unit '.$unitId.' is not schema based'
             );
         }
 
@@ -46,7 +47,7 @@ class TaskBackupTable extends arch\node\Task {
 
         $func = '_backup'.$adapterName.'Table';
 
-        if(!method_exists($this, $func)) {
+        if (!method_exists($this, $func)) {
             throw core\Error::{'axis/unit/EDomain'}(
                 'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding'
             );
@@ -59,7 +60,8 @@ class TaskBackupTable extends arch\node\Task {
         $this->{$func}($schema);
     }
 
-    protected function _backupRdbmsTable(axis\schema\ISchema $axisSchema) {
+    protected function _backupRdbmsTable(axis\schema\ISchema $axisSchema)
+    {
         $this->io->writeLine('Switching to rdbms mode');
 
         $connection = $this->_adapter->getConnection();
@@ -72,7 +74,7 @@ class TaskBackupTable extends arch\node\Task {
         try {
             $this->io->writeLine('Building copy table');
             $newTable = $connection->createTable($dbSchema);
-        } catch(opal\rdbms\TableConflictException $e) {
+        } catch (opal\rdbms\TableConflictException $e) {
             throw core\Error::{'axis/unit/ERuntime'}(
                 'Table unit '.$this->_unit->getUnitId().' is currently rebuilding in another process'
             );
@@ -82,7 +84,7 @@ class TaskBackupTable extends arch\node\Task {
         $insert = $newTable->batchInsert();
         $count = 0;
 
-        foreach($currentTable->select() as $row) {
+        foreach ($currentTable->select() as $row) {
             $insert->addRow($row);
             $count++;
         }

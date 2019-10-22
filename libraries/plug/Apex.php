@@ -160,7 +160,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper
             $scaffold = $this->scaffold($context);
             $scaffold->loadNode();
             return true;
-        } catch (arch\scaffold\IError $e) {
+        } catch (\Throwable $e) {
         }
 
         return arch\Transformer::isNodeDeliverable($context);

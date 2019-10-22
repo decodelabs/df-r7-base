@@ -12,8 +12,8 @@ use df\axis;
 use df\opal;
 use df\flow;
 
-class Unit extends axis\unit\Table {
-
+class Unit extends axis\unit\Table
+{
     const BROADCAST_HOOK_EVENTS = false;
 
     const SEARCH_FIELDS = [
@@ -21,7 +21,8 @@ class Unit extends axis\unit\Table {
         'email' => 1
     ];
 
-    protected function createSchema($schema) {
+    protected function createSchema($schema)
+    {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('date', 'Timestamp');
 
@@ -41,8 +42,9 @@ class Unit extends axis\unit\Table {
             ->setDefaultValue('production');
     }
 
-    public function store(flow\mail\IJournalableMessage $message) {
-        if(!$message->shouldJournal()) {
+    public function store(flow\mail\IMessage $message)
+    {
+        if (!$message->shouldJournal()) {
             return;
         }
 
@@ -59,7 +61,7 @@ class Unit extends axis\unit\Table {
 
         $emails = [];
 
-        foreach($message->getToAddresses() as $address) {
+        foreach ($message->getToAddresses() as $address) {
             $emails[$address->getAddress()] = null;
         }
 
@@ -67,17 +69,17 @@ class Unit extends axis\unit\Table {
             ->where('email', 'in', array_keys($emails))
             ->toArray();
 
-        foreach($idList as $row) {
+        foreach ($idList as $row) {
             $emails[$row['email']] = $row['id'];
         }
 
         $queue = $this->context->data->newJobQueue();
 
-        foreach($emails as $address => $id) {
+        foreach ($emails as $address => $id) {
             $journal = $this->newRecord($baseData);
             $journal->email = $address;
 
-            if($id) {
+            if ($id) {
                 $journal->user = $id;
             }
 

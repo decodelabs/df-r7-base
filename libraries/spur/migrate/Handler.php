@@ -130,20 +130,20 @@ class Handler implements IHandler
         }
 
         if ($this->_url->hasUsername()) {
-            $request->url->setUsername($this->_url->getUsername());
+            $request->getUrl()->setUsername($this->_url->getUsername());
         }
 
         if ($this->_url->hasPassword()) {
-            $request->url->setPassword($this->_url->getPassword());
+            $request->getUrl()->setPassword($this->_url->getPassword());
         }
 
         if ($responseFilePath !== null) {
-            $request->options->setDownloadFilePath($responseFilePath);
+            $request->getOptions()->setDownloadFilePath($responseFilePath);
         }
 
         $request->setMethod($method);
-        $request->headers->set('x-df-self', md5(df\Launchpad::$app->getPassKey()));
-        
+        $request->getHeaders()->set('x-df-self', md5(df\Launchpad::$app->getPassKey()));
+
         return $request;
     }
 

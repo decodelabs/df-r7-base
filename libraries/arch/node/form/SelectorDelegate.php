@@ -107,7 +107,9 @@ abstract class SelectorDelegate extends Delegate implements
 
     protected function _applyQuerySearch(opal\query\IQuery $query, $search)
     {
-        $query->searchFor($search);
+        if ($query instanceof opal\query\ISearchableQuery) {
+            $query->searchFor($search);
+        }
     }
 
     protected function _fetchSelectionList($cache=true)

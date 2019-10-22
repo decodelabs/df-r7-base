@@ -128,7 +128,7 @@ class Html extends Base implements IHtmlView, Inspectable
         return $this->_title;
     }
 
-    public function hasTitle()
+    public function hasTitle(): bool
     {
         return $this->_title !== null;
     }
@@ -144,7 +144,7 @@ class Html extends Base implements IHtmlView, Inspectable
         return $this->_titlePrefix;
     }
 
-    public function hasTitlePrefix()
+    public function hasTitlePrefix(): bool
     {
         return $this->_titlePrefix !== null;
     }
@@ -160,7 +160,7 @@ class Html extends Base implements IHtmlView, Inspectable
         return $this->_titleSuffix;
     }
 
-    public function hasTitleSuffix()
+    public function hasTitleSuffix(): bool
     {
         return $this->_titleSuffix !== null;
     }

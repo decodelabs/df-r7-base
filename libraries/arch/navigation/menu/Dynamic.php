@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\arch;
 
+use DecodeLabs\Glitch;
+
 class Dynamic extends Base
 {
     use arch\navigation\TEntryGenerator;
@@ -86,7 +88,7 @@ class Dynamic extends Base
             if (is_array($entry)) {
                 $entry = arch\navigation\entry\Base::fromArray($entry);
             } else {
-                throw core\Error::EArgument([
+                throw Glitch::EInvalidArgument([
                     'message' => 'Invalid entry definition',
                     'data' => $entry
                 ]);

@@ -47,7 +47,7 @@ class Base implements INode, Inspectable
             try {
                 $scaffold = arch\scaffold\Base::factory($context);
                 return $scaffold->loadNode();
-            } catch (arch\scaffold\IError $e) {
+            } catch (arch\scaffold\ENotFound $e) {
             }
         }
 

@@ -44,7 +44,7 @@ abstract class Base implements IArchive
 
     public function getType(): string
     {
-        return (new \ReflectionObject($this))->getShortName($this);
+        return (new \ReflectionObject($this))->getShortName();
     }
 
     public function extractFile(string $file, string $destDir=null, bool $flattenRoot=false): string

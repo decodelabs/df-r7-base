@@ -12,8 +12,8 @@ use df\flex;
 use df\arch;
 use df\aura;
 
-class Heading extends Base {
-
+class Heading extends Base
+{
     const DEFAULT_CATEGORIES = ['Description'];
 
     const OPTIONS = [
@@ -30,74 +30,88 @@ class Heading extends Base {
     protected $_class;
     protected $_classOptions;
 
-    public function getDisplayName(): string {
+    public function getDisplayName(): string
+    {
         return 'Heading';
     }
 
-    public function getFormat(): string {
+    public function getFormat(): string
+    {
         return 'structure';
     }
 
-// Heading
-    public function setHeading($heading) {
+    // Heading
+    public function setHeading($heading)
+    {
         $this->_heading = $heading;
         return $this;
     }
 
-    public function getHeading() {
+    public function getHeading()
+    {
         return $this->_heading;
     }
 
-    public function setHeadingLevel($level) {
+    public function setHeadingLevel($level)
+    {
         $this->_level = (int)$level;
 
-        if($this->_level < 1) {
+        if ($this->_level < 1) {
             $this->_level = 1;
-        } else if($this->_level > 6) {
+        } elseif ($this->_level > 6) {
             $this->_level = 6;
         }
 
         return $this;
     }
 
-    public function getHeadingLevel() {
+    public function getHeadingLevel()
+    {
         return $this->_level;
     }
 
-    public function setHeadingClass(?string $class) {
+    public function setHeadingClass(?string $class)
+    {
         $this->_class = $class;
         return $this;
     }
 
-    public function getHeadingClass(): ?string {
+    public function getHeadingClass(): ?string
+    {
         return $this->_class;
     }
 
-    public function setClassOptions(?array $options) {
+    public function setClassOptions(?array $options)
+    {
         $this->_classOptions = $options;
         return $this;
     }
 
-    public function getClassOptions(): ?array {
+    public function getClassOptions(): ?array
+    {
         return $this->_classOptions;
     }
 
 
-// IO
-    public function isEmpty(): bool {
+    // IO
+    public function isEmpty(): bool
+    {
         return !strlen(trim($this->_heading));
     }
 
-    public function getTransitionValue() {
+    public function getTransitionValue()
+    {
         return $this->_heading;
     }
 
-    public function setTransitionValue($value) {
+    public function setTransitionValue($value)
+    {
         $this->_heading = str_replace("\n", ' ', $value);
         return $this;
     }
 
-    public function readXml(flex\xml\IReadable $reader) {
+    public function readXml(flex\xml\ITree $reader)
+    {
         $this->_validateXmlReader($reader);
         $this->_heading = $reader->getFirstCDataSection();
         $this->_level = $reader->getAttribute('level');
@@ -106,12 +120,13 @@ class Heading extends Base {
         return $this;
     }
 
-    public function writeXml(flex\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWriter $writer)
+    {
         $this->_startWriterBlockElement($writer);
 
         $writer->setAttribute('level', $this->_level);
 
-        if($this->_class !== null) {
+        if ($this->_class !== null) {
             $writer->setAttribute('class', $this->_class);
         }
 
@@ -121,8 +136,9 @@ class Heading extends Base {
         return $this;
     }
 
-// Render
-    public function render() {
+    // Render
+    public function render()
+    {
         return $this->getView()->html('h'.$this->_level.'.block', $this->_heading)
             ->addClass($this->_class)
             ->setDataAttribute('type', $this->getName());
@@ -130,17 +146,19 @@ class Heading extends Base {
 
 
 
-// Form
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
+    // Form
+    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
+    {
         return new class($this, ...func_get_args()) extends Base_Delegate {
-
-            protected function setDefaultValues() {
+            protected function setDefaultValues()
+            {
                 $this->values->heading = $this->_block->getHeading();
                 $this->values->level = $this->_block->getHeadingLevel();
                 $this->values->class = $this->_block->getHeadingClass();
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field) {
+            public function renderFieldContent(aura\html\widget\Field $field)
+            {
                 // Main
                 $field->push(
                     $inner = $this->html->field()->push(
@@ -155,10 +173,10 @@ class Heading extends Base {
                 // Class
                 $classes = $this->_block->getClassOptions();
 
-                if(!empty($classes)) {
+                if (!empty($classes)) {
                     $current = $this->values['class'];
 
-                    if(!empty($current) && !isset($classes[$current])) {
+                    if (!empty($current) && !isset($classes[$current])) {
                         $classes[$current] = ucfirst($current);
                     }
 
@@ -178,7 +196,8 @@ class Heading extends Base {
                 return $this;
             }
 
-            public function apply() {
+            public function apply()
+            {
                 $this->data->newValidator()
                     ->addRequiredField('heading', 'text')
                     ->addRequiredField('level', 'integer')

@@ -131,7 +131,7 @@ class Stripe extends Base implements
 
 
     // Direct charge
-    public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): string
+    public function submitStandaloneCharge(mint\IChargeRequest $charge): string
     {
         return $this->_execute(function () use ($charge) {
             return StripePHP\Charge::create([
@@ -171,7 +171,7 @@ class Stripe extends Base implements
 
 
     // Authorize / capture
-    public function authorizeStandaloneCharge(mint\IStandaloneChargeRequest $charge): string
+    public function authorizeStandaloneCharge(mint\IChargeRequest $charge): string
     {
         return $this->_execute(function () use ($charge) {
             return StripePHP\Charge::create([
@@ -576,16 +576,15 @@ class Stripe extends Base implements
     // Helpers
     protected function _prepareSource(?mint\ICreditCardReference $card)
     {
-        if (!$card) {
-            return null;
-        } elseif ($card instanceof mint\ICreditCard) {
+        if ($card instanceof mint\ICreditCard) {
             $source = $this->_cardToArray($card);
             $source['object'] = 'card';
+            return $source;
+        } elseif ($card instanceof mint\ICreditCardToken) {
+            return $card->getToken();
         } else {
-            $source = $card->getToken();
+            return null;
         }
-
-        return $source;
     }
 
     protected function _cardToArray(mint\ICreditCard $card): array

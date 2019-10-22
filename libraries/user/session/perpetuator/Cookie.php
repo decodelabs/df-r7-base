@@ -70,7 +70,7 @@ class Cookie implements user\session\IPerpetuator
         return $this->_canRecall;
     }
 
-    public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor)
+    public function perpetuate(user\session\IController $controller, user\session\Descriptor $descriptor)
     {
         $outputId = $descriptor->getPublicKeyHex();
 

@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
-abstract class Base implements neon\raster\IDriver {
-
+abstract class Base implements neon\raster\IDriver
+{
     const READ_FORMATS = [];
     const WRITE_FORMATS = [];
 
@@ -20,46 +20,60 @@ abstract class Base implements neon\raster\IDriver {
     protected $_outputFormat = 'PNG32';
     protected $_pointer;
 
-    public static function canRead($format) {
+    public static function canRead($format)
+    {
         return in_array($format, static::READ_FORMATS);
     }
 
-    public static function canWrite($format) {
+    public static function canWrite($format)
+    {
         return in_array($format, static::WRITE_FORMATS);
     }
 
 
-    public function __construct($outputFormat=null) {
-        if($outputFormat !== null) {
+    public function __construct($outputFormat=null)
+    {
+        if ($outputFormat !== null) {
             $this->setOutputFormat($outputFormat);
         }
     }
 
-    public function spawnInstance() {
+    public function spawnInstance()
+    {
         $class = get_class($this);
         return new $class($this->_outputFormat);
     }
 
-    public function getName(): string {
+    public function getPointer()
+    {
+        return $this->_pointer;
+    }
+
+    public function getName(): string
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public function getWidth() {
+    public function getWidth()
+    {
         return $this->_width;
     }
 
-    public function getHeight() {
+    public function getHeight()
+    {
         return $this->_height;
     }
 
 
-    public function setOutputFormat($format) {
+    public function setOutputFormat($format)
+    {
         $this->_outputFormat = $format;
         return $this;
     }
 
-    public function getOutputFormat() {
+    public function getOutputFormat()
+    {
         return $this->_outputFormat;
     }
 }

@@ -14,7 +14,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Lexer implements ILexer, Inspectable
+class Lexer implements ILocationProxyProvider, Inspectable
 {
     use TLocationProvider;
 
@@ -229,6 +229,11 @@ class Lexer implements ILexer, Inspectable
 
 
     // Extract
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
     public function extract($length=1)
     {
         $length = (int)$length;

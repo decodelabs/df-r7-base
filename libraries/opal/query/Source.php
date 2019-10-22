@@ -10,6 +10,7 @@ use df\core;
 use df\opal;
 use df\axis;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -105,7 +106,7 @@ class Source implements ISource, Inspectable
 
                 if (!$primaryIndex = $schema->getPrimaryIndex()) {
                     throw new opal\schema\RuntimeException(
-                        'Unit '.$this->_adapter->getUnitId().' does not have a primary index'
+                        'Unit does not have a primary index'
                     );
                 }
 
@@ -132,6 +133,10 @@ class Source implements ISource, Inspectable
 
             // Get name
             if ($name == '@name') {
+                if (!$this->_adapter instanceof axis\ISchemaBasedStorageUnit) {
+                    throw Glitch::ERuntime('Adapter cannot provide record name field', null, $this->_adapter);
+                }
+
                 $name = $this->_adapter->getRecordNameField();
                 return new opal\query\field\Intrinsic($this, $name, $alias);
             }

@@ -71,7 +71,7 @@ class Auth0 implements user\authentication\IAdapter
         }
     }
 
-    public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result)
+    public function authenticate(user\authentication\IRequest $request, user\authentication\Result $result)
     {
         $connection = $this->newConnection(
             $request->getAttribute('redirect')

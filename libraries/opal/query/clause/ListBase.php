@@ -251,6 +251,22 @@ class ListBase implements opal\query\IClauseList, Inspectable
         return $this->getNestedParent();
     }
 
+    public function getLocalFieldList(): array
+    {
+        $output = [];
+
+        foreach ($this->_clauses as $clause) {
+            if ($clause instanceof opal\query\IClauseList) {
+                $output = array_merge($output, $clause->getLocalFieldList());
+            } else {
+                $field = $clause->getField();
+                $output[$field->getQualifiedName()] = $field;
+            }
+        }
+
+        return $output;
+    }
+
     /**
      * Inspect for Glitch
      */

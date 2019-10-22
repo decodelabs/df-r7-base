@@ -70,7 +70,7 @@ class UnexpectedTokenException extends \UnexpectedValueException implements
 {
     protected $_token;
 
-    public function __construct($message, IToken $token=null)
+    public function __construct($message, Token $token=null)
     {
         parent::__construct($message);
 
@@ -213,64 +213,9 @@ interface IScanner
 {
     public function getName(): string;
     public function getWeight();
-    public function initialize(ILexer $lexer);
-    public function check(ILexer $lexer);
-    public function run(ILexer $lexer);
-}
-
-interface ILexer extends ILocationProxyProvider
-{
-    public function getSource();
-
-    public function setScanners(array $scanners);
-    public function addScanners(array $scanners);
-    public function addScanner(IScanner $scanner);
-    public function hasScanner($name);
-    public function getScanner($name);
-    public function removeScanner($name);
-    public function clearScanners();
-
-    public function tokenize();
-    public function extractToken();
-    public function newToken($type, $value=null);
-
-    public function extract($length=1);
-    public function peek($offset=0, $length=1);
-    public function substring($position, $length);
-
-    public function extractAlpha();
-    public function extractAlphanumeric();
-    public function extractNumeric();
-    public function extractWhitespace();
-    public function extractRegexRange($regex);
-
-    public function peekAlpha($offset=0, $length=1);
-    public function peekAlphanumeric($offset=0, $length=1);
-    public function peekNumeric($offset=0, $length=1);
-    public function peekWhitespace($offset=0, $length=1);
-}
-
-
-interface IToken extends ILocationProxyProvider
-{
-    public function getType();
-    public function getSubType();
-    public function getTypeString();
-    public function getValue();
-    public function getWhitespace();
-    public function getWhitespaceBeforeNewLine();
-    public function getWhitespaceAfterLastNewLine();
-
-    public function isWhitespaceSingleNewLine();
-    public function isAfterWhitespace();
-    public function isAfterNewline();
-    public function isOnNextLine();
-    public function countNewLines();
-
-    public function eq(IToken $token);
-    public function is(...$ids);
-    public function isValue(...$values);
-    public function matches($type, $subType=null, $value=null);
+    public function initialize(Lexer $lexer);
+    public function check(Lexer $lexer);
+    public function run(Lexer $lexer);
 }
 
 

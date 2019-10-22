@@ -11,32 +11,53 @@ use df\opal;
 use df\flex;
 
 // Exceptions
-interface IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
+interface IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class UnexpectedValueException extends \UnexpectedValueException implements IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
 
-class InvalidDnException extends UnexpectedValueException {}
-class ConnectionException extends RuntimeException {}
-class BindException extends RuntimeException {}
-class DomainException extends RuntimeException {}
-class QueryException extends RuntimeException {}
+class InvalidDnException extends UnexpectedValueException
+{
+}
+class ConnectionException extends RuntimeException
+{
+}
+class BindException extends RuntimeException
+{
+}
+class DomainException extends RuntimeException
+{
+}
+class QueryException extends RuntimeException
+{
+}
 
 
 // Interfaces
-interface ISecurity {
+interface ISecurity
+{
     const NONE = null;
     const SSL = 'ssl';
     const TLS = 'tls';
 }
 
-interface ITarget {
+interface ITarget
+{
     const ENTRY = false;
     const NODE = null;
     const TREE = true;
 }
 
-interface IStatus {
+interface IStatus
+{
     const SUCCESS                        = 0x00;
     const OPERATIONS_ERROR               = 0x01;
     const PROTOCOL_ERROR                 = 0x02;
@@ -115,7 +136,8 @@ interface IStatus {
     const X_CANNOT_CHAIN                 = 0x4111;
 }
 
-interface IDn extends core\collection\IIndexedQueue, core\IStringProvider {
+interface IDn extends core\collection\IIndexedQueue, core\IStringProvider
+{
     public function implode($separator=',', $case=flex\ICase::NONE);
     public function isChildOf($dn);
     public function getFirstEntry($key);
@@ -124,13 +146,14 @@ interface IDn extends core\collection\IIndexedQueue, core\IStringProvider {
 }
 
 
-interface IRdn extends \Countable, core\collection\IAttributeContainer, core\IStringProvider {
+interface IRdn extends \Countable, core\collection\IAttributeContainer, core\IStringProvider
+{
     public function implode($case=flex\ICase::NONE);
     public function eq($rdn);
 }
 
-interface IConnection {
-
+interface IConnection
+{
     const ACTIVE_DIRECTORY = 'ActiveDirectory';
     const OPEN_LDAP = 'OpenLdap';
     const EDIRECTORY = 'EDirectory';
@@ -138,6 +161,7 @@ interface IConnection {
 
     public function getHost();
     public function getPort();
+    public function getType();
     public function getConnectionString();
     public function getEncryption();
     public function hasEncryption();
@@ -153,7 +177,8 @@ interface IConnection {
 }
 
 
-interface IContext {
+interface IContext
+{
     public function setBaseDn($baseDn);
     public function getBaseDn();
     public function getDomain();
@@ -161,7 +186,8 @@ interface IContext {
     public function getUpnDomain();
 }
 
-interface IIdentity {
+interface IIdentity
+{
     public function setUsername($username);
     public function getUsername();
     public function getPreparedUsername(IConnection $connection, IContext $context);
@@ -175,7 +201,8 @@ interface IIdentity {
     public function hasDnDomain();
 }
 
-interface IAdapter extends opal\query\IAdapter, opal\query\IEntryPoint {
+interface IAdapter extends opal\query\IAdapter, opal\query\IEntryPoint
+{
     public static function getArrayAttributes();
     public static function getDateAttributes();
     public static function getBooleanAttributes();
@@ -196,7 +223,8 @@ interface IAdapter extends opal\query\IAdapter, opal\query\IEntryPoint {
     public function fetchRootDse();
 }
 
-interface IRootDse extends core\collection\IMappedCollection {
+interface IRootDse extends core\collection\IMappedCollection
+{
     public function getNamingContexts();
     public function getSubschemaSubentry();
     public function supportsVersion($version);
@@ -204,7 +232,8 @@ interface IRootDse extends core\collection\IMappedCollection {
     public function getSchemaDn();
 }
 
-interface IRecord extends opal\record\ILocationalRecord, core\collection\IAttributeContainer {
+interface IRecord extends opal\record\ILocationalRecord, core\collection\IAttributeContainer
+{
     public function getEntryDn();
     public function getGlobalId();
     public function getObjectClasses();

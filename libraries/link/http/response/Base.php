@@ -20,11 +20,11 @@ abstract class Base implements link\http\IResponse
     public $headers;
     public $cookies;
 
-    public static function fromString(string $string): link\http\IResponse
+    public static function fromString(string $string): link\http\response\Stream
     {
         $content = null;
         $output = self::fromHeaderString($string, $content);
-        $headers = $output->headers;
+        $headers = $output->getHeaders();
 
         if ($headers->has('transfer-encoding')) {
             switch (strtolower($headers->get('transfer-encoding'))) {
@@ -74,11 +74,11 @@ abstract class Base implements link\http\IResponse
             }
         }
 
-        $output->_content = $content;
+        $output->setContent($content);
         return $output;
     }
 
-    public static function fromHeaderString(string $string, &$content=null): link\http\IResponse
+    public static function fromHeaderString(string $string, &$content=null): link\http\response\Stream
     {
         $output = new Stream();
         $output->headers = HeaderCollection::fromResponseString($string, $content);

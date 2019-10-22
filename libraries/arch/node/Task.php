@@ -128,14 +128,14 @@ abstract class Task extends Base implements ITaskNode
             $valid = $validator($answer);
 
             if ($valid instanceof core\validate\IField) {
-                $valid = $valid->validator;
+                $valid = $valid->getValidator();
             }
 
             if ($valid instanceof core\validate\IHandler) {
                 $key = current(array_keys($valid->getFields()));
                 $valid->validate([$key => $answer]);
 
-                foreach ($valid->data->{$key}->getErrors() as $error) {
+                foreach ($valid->getCurrentData()->{$key}->getErrors() as $error) {
                     $this->io->writeLine('!! '.$error);
                 }
 

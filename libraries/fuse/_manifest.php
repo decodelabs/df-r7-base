@@ -11,12 +11,17 @@ use df\fuse;
 use df\aura;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
 
 
 // Interfaces
-interface IManager extends core\IManager {
+interface IManager extends core\IManager
+{
     public function getInstalledDependencyFor(aura\theme\ITheme $theme, $name);
     public function getInstalledDependenciesFor(aura\theme\ITheme $theme);
 
@@ -26,18 +31,4 @@ interface IManager extends core\IManager {
     public function installDependencies(array $dependencies, core\io\IMultiplexer $io=null);
 
     public function prepareDependenciesFor(aura\theme\ITheme $theme);
-}
-
-
-interface IDependency {
-    public function getId(): string;
-    public function getVersion();
-    public function getSource();
-    public function getJs();
-    public function getCss();
-    public function getShim();
-    public function getMap();
-    public function getKey();
-    public function getPackage();
-    public function getInstallName();
 }

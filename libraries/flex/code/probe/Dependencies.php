@@ -10,29 +10,30 @@ use df\core;
 use df\flex;
 use df\halo;
 
-class Dependencies implements flex\code\IProbe {
-
+class Dependencies implements flex\code\IProbe
+{
     use flex\code\TProbe;
 
     protected $_errors = [];
     protected static $_paths = [];
 
-    public function probe(flex\code\ILocation $location, $localPath) {
-        if(substr($localPath, -4) != '.php' || isset(self::$_paths[$localPath])) {
+    public function probe(flex\code\Location $location, $localPath)
+    {
+        if (substr($localPath, -4) != '.php' || isset(self::$_paths[$localPath])) {
             return;
         }
 
         $pathTest = ['_nodes', '_templates', '.html', '.mail'];
 
-        foreach($pathTest as $test) {
-            if(false !== strpos($localPath, $test)) {
+        foreach ($pathTest as $test) {
+            if (false !== strpos($localPath, $test)) {
                 return;
             }
         }
 
         $dirName = basename(dirname($localPath));
 
-        if($dirName == 'entry') {
+        if ($dirName == 'entry') {
             return;
         }
 
@@ -40,11 +41,26 @@ class Dependencies implements flex\code\IProbe {
         require_once $location->path.'/'.$localPath;
     }
 
-    public function getErrors() {
+    public function setErrors(array $errors)
+    {
+        $this->_errors = $errors;
+        return $this;
+    }
+
+    public function getErrors(): array
+    {
         return $this->_errors;
     }
 
-    public function exportTo(flex\code\IProbe $probe) {
-        $probe->_errors = array_merge($probe->_errors, $this->_errors);
+    public function exportTo(flex\code\IProbe $probe)
+    {
+        if (!$probe instanceof self) {
+            return;
+        }
+
+        $probe->setErrors(array_merge(
+            $probe->getErrors(),
+            $this->_errors
+        ));
     }
 }

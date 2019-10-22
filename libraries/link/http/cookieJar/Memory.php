@@ -40,16 +40,17 @@ class Memory implements link\http\ICookieJar, Inspectable
             return $this;
         }
 
-        $path = (string)$request->url->path;
-        $domain = (string)$request->url->getDomain();
-        $isSecure = $request->url->isSecure();
+        $url = $request->getUrl();
+        $path = (string)$url->getPath();
+        $domain = (string)$url->getDomain();
+        $isSecure = $url->isSecure();
 
         foreach ($this->_cookies as $cookie) {
             if ($cookie->matchesPath($path)
             && $cookie->matchesDomain($domain)
             && !$cookie->isExpired()
             && $cookie->isSecure() == $isSecure) {
-                $request->cookies->set($cookie->getName(), $cookie->getValue());
+                $request->getCookies()->set($cookie->getName(), $cookie->getValue());
             }
         }
 

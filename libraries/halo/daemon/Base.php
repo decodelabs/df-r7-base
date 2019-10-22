@@ -129,6 +129,12 @@ abstract class Base implements IDaemon
     }
 
 
+    public function isTesting(): bool
+    {
+        return static::TEST_MODE;
+    }
+
+
     // Runtime
     final public function run()
     {

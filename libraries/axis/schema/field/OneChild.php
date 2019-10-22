@@ -10,31 +10,37 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class OneChild extends Base implements axis\schema\IOneChildField {
+use DecodeLabs\Glitch;
 
+class OneChild extends Base implements axis\schema\IOneChildField
+{
     use axis\schema\TRelationField;
     use axis\schema\TInverseRelationField;
 
-    protected function _init($targetUnit, $targetField=null) {
+    protected function _init($targetUnit, $targetField=null)
+    {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
     }
 
 
-// Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
+    // Values
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    {
         return $this->sanitizeValue(null, $forRecord);
     }
 
-    public function deflateValue($value) {
+    public function deflateValue($value)
+    {
         return null;
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if($forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    {
+        if ($forRecord) {
             $output = new axis\unit\table\record\OneChildRelationValueContainer($this);
 
-            if($value !== null) {
+            if ($value !== null) {
                 $output->setValue($value);
             }
 
@@ -44,20 +50,26 @@ class OneChild extends Base implements axis\schema\IOneChildField {
         }
     }
 
-    public function generateInsertValue(array $row) {
+    public function generateInsertValue(array $row)
+    {
         return null;
     }
 
 
-// Clause
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
+    // Clause
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    {
         $localRelationManifest = $this->getLocalRelationManifest();
 
-        if(!$localRelationManifest->isSingleField()) {
+        if (!$localRelationManifest->isSingleField()) {
             throw new axis\schema\RuntimeException(
                 'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
                 'You should probably use a fieldless join constraint instead'
             );
+        }
+
+        if (!$parent instanceof opal\query\ISourceProvider) {
+            throw Glitch::ELogic('Clause factory is not a source provider', null, $parent);
         }
 
         $sourceManager = $parent->getSourceManager();
@@ -68,7 +80,7 @@ class OneChild extends Base implements axis\schema\IOneChildField {
 
         $mainOperator = 'in';
 
-        if(opal\query\clause\Clause::isNegatedOperator($operator)) {
+        if (opal\query\clause\Clause::isNegatedOperator($operator)) {
             $mainOperator = '!in';
             $operator = opal\query\clause\Clause::negateOperator($operator);
         } else {
@@ -79,7 +91,7 @@ class OneChild extends Base implements axis\schema\IOneChildField {
             ->beginCorrelation($parent, $this->_targetField, 'id')
             ->from($targetUnit, $this->_name);
 
-        if($value === null) {
+        if ($value === null) {
             $mainOperator = opal\query\clause\Clause::negateOperator($mainOperator);
         } else {
             $query->where('@primary', $operator, $value);
@@ -96,8 +108,9 @@ class OneChild extends Base implements axis\schema\IOneChildField {
 
     protected $_localRelationManifest;
 
-    public function getLocalRelationManifest() {
-        if(!$this->_localRelationManifest) {
+    public function getLocalRelationManifest()
+    {
+        if (!$this->_localRelationManifest) {
             $schema = $this->getTargetUnit()->getTransientUnitSchema();
             $this->_localRelationManifest = $schema->getField($this->_targetField)->getTargetRelationManifest();
         }
@@ -106,14 +119,16 @@ class OneChild extends Base implements axis\schema\IOneChildField {
     }
 
 
-// Validation
-    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+    // Validation
+    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema)
+    {
         $this->_sanitizeTargetUnitId($localUnit);
 
         return $this;
     }
 
-    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema)
+    {
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
@@ -121,14 +136,16 @@ class OneChild extends Base implements axis\schema\IOneChildField {
     }
 
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         $this->_setBaseStorageArray($data);
         $this->_setRelationStorageArray($data);
         $this->_setInverseRelationStorageArray($data);
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return array_merge(
             $this->_getBaseStorageArray(),
             $this->_getRelationStorageArray(),

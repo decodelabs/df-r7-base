@@ -101,6 +101,7 @@ interface IDriver
     public static function canWrite($format);
 
     public function spawnInstance();
+    public function getPointer();
     public function getName(): string;
 
     public function loadFile($file);

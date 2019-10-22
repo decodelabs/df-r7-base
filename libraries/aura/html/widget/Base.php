@@ -192,7 +192,7 @@ abstract class Base implements IWidget
 
     public function hasDataAttribute($key)
     {
-        return $this->getTag()->hasDataAttribute();
+        return $this->getTag()->hasDataAttribute($key);
     }
 
     public function removeDataAttribute($key)

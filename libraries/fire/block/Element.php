@@ -12,41 +12,47 @@ use df\arch;
 use df\flex;
 use df\aura;
 
-class Element extends Base {
-
+class Element extends Base
+{
     const DEFAULT_CATEGORIES = [];
 
     protected $_slug;
 
-    public function getFormat(): string {
+    public function getFormat(): string
+    {
         return 'structure';
     }
 
-    public function setSlug($slug) {
+    public function setSlug($slug)
+    {
         $this->_slug = $slug;
         return $this;
     }
 
-    public function getSlug() {
+    public function getSlug()
+    {
         return $this->_slug;
     }
 
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return !strlen($this->_slug);
     }
 
 
 
-// Io
-    public function readXml(flex\xml\IReadable $reader) {
+    // Io
+    public function readXml(flex\xml\ITree $reader)
+    {
         $this->_validateXmlReader($reader);
         $this->_slug = $reader->getAttribute('slug');
 
         return $this;
     }
 
-    public function writeXml(flex\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWriter $writer)
+    {
         $this->_startWriterBlockElement($writer);
         $writer->setAttribute('slug', $this->_slug);
         $this->_endWriterBlockElement($writer);
@@ -55,24 +61,27 @@ class Element extends Base {
     }
 
 
-// Render
-    public function render() {
+    // Render
+    public function render()
+    {
         $view = $this->getView();
         return $view->nightfire->renderElement($this->_slug);
     }
 
 
-// Form
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
+    // Form
+    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
+    {
         return new class($this, ...func_get_args()) extends Base_Delegate {
-
-            protected function loadDelegates() {
+            protected function loadDelegates()
+            {
                 $this->loadDelegate('element', '~/content/elements/ElementSelector')
                     ->isForOne(true)
                     ->isRequired($this->_isRequired);
             }
 
-            protected function setDefaultValues() {
+            protected function setDefaultValues()
+            {
                 $id = $this->data->content->element->select('id')
                     ->where('slug', '=', $this->_block->getSlug())
                     ->toValue('id');
@@ -80,13 +89,15 @@ class Element extends Base {
                 $this['element']->setSelected($id);
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field) {
+            public function renderFieldContent(aura\html\widget\Field $field)
+            {
                 $this['element']->renderFieldContent($field);
 
                 return $this;
             }
 
-            public function apply() {
+            public function apply()
+            {
                 $slug = $this->data->content->element->select('slug')
                     ->where('id', '=', $this['element']->apply())
                     ->toValue('slug');

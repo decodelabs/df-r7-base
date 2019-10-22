@@ -7,9 +7,7 @@ namespace df\core\i18n\module;
 
 use df\core;
 
-class Numbers extends Base implements
-    core\i18n\module\INumbersModule,
-    core\i18n\module\generator\IModule
+class Numbers extends Base implements core\i18n\module\INumbersModule
 {
     public function format($number, $format=null)
     {
@@ -380,82 +378,5 @@ class Numbers extends Base implements
             default:
                 return \NumberFormatter::TYPE_DOUBLE;
         }
-    }
-
-
-    // Generator
-    public function _convertCldr(core\i18n\ILocale $locale, \SimpleXMLElement $doc)
-    {
-        $output = null;
-
-        if (!isset($doc->numbers)) {
-            return $output;
-        }
-
-        $output = [
-            'symbols' => [],
-            'formats' => [],
-            'currencies' => []
-        ];
-
-        // Symbols
-        if (isset($doc->numbers->symbols)) {
-            foreach ($doc->numbers->symbols->children() as $tag => $symbol) {
-                $output['symbols'][$tag] = (string)$symbol;
-            }
-        }
-
-        // Decimal
-        if (isset($doc->numbers->decimalFormats->decimalFormatLength->decimalFormat->pattern)) {
-            $output['formats']['decimal'] = (string)$doc->numbers->decimalFormats->decimalFormatLength->decimalFormat->pattern;
-        }
-
-        // Scientific
-        if (isset($doc->numbers->scientificFormats->scientificFormatLength->scientificFormat->pattern)) {
-            $output['formats']['scientific'] = (string)$doc->numbers->scientificFormats->scientificFormatLength->scientificFormat->pattern;
-        }
-
-        // Percent
-        if (isset($doc->numbers->percentFormats->percentFormatLength->percentFormat->pattern)) {
-            $output['formats']['percent'] = (string)$doc->numbers->percentFormats->percentFormatLength->percentFormat->pattern;
-        }
-
-        // Currency Format
-        if (isset($doc->numbers->currencyFormats->currencyFormatLength->currencyFormat->pattern)) {
-            $output['formats']['currency'] = (string)$doc->numbers->currencyFormats->currencyFormatLength->currencyFormat->pattern;
-        }
-
-
-        // Currencies
-        if (isset($doc->numbers->currencies)) {
-            foreach ($doc->numbers->currencies->currency as $currency) {
-                $symbol = (string)$currency->symbol;
-
-                if (!strlen($symbol)) {
-                    $symbol = (string)$currency['type'];
-                }
-
-                if ($currency->symbol['choice'] == 'true') {
-                    $symbol = explode('|', $symbol);
-                }
-
-                $name = (string)$currency->displayName;
-
-                if (!strlen($name)) {
-                    $output['currencies'][(string)$currency['type']] = [
-                        'symbol' => $symbol
-                    ];
-                } else {
-                    $output['currencies'][(string)$currency['type']] = [
-                        'name' => $name,
-                        'symbol' => $symbol
-                    ];
-                }
-            }
-
-            ksort($output['currencies']);
-        }
-
-        return $output;
     }
 }

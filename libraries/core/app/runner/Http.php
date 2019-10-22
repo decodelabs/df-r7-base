@@ -634,7 +634,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         // Only send data if needed
-        $isFile = $response instanceof link\http\IFileResponse;
         $sendData = true;
 
         if ($this->_httpRequest->isCachedByClient()) {
@@ -647,7 +646,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
 
         // Redirect to x-sendfile header
-        if ($this->_sendFileHeader && $isFile && $sendData && $response->isStaticFile()) {
+        if (
+            $this->_sendFileHeader &&
+            $response instanceof link\http\IFileResponse &&
+            $sendData &&
+            $response->isStaticFile()
+        ) {
             $response->getHeaders()->set($this->_sendFileHeader, $response->getStaticFilePath());
             $sendData = false;
         }
@@ -684,7 +688,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
             // TODO: Seek to resume header location if requested
 
-            if ($isFile) {
+            if ($response instanceof link\http\IFileResponse) {
                 $file = $response->getContentFileStream();
 
                 while (!$file->isAtEnd()) {

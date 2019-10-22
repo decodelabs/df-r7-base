@@ -115,7 +115,7 @@ class GoogleGtag extends Base
                 $tracking[$key] = [];
             } elseif (is_string($key)) {
                 $tracking[$key] = $node->toArray();
-            } elseif (isset($node->id)) {
+            } elseif (isset($node->id) && $node instanceof core\collection\Tree) {
                 $key = $node['id'];
                 unset($node->id);
                 $tracking[$key] = $node->toArray();

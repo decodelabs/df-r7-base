@@ -190,11 +190,13 @@ interface IHtmlView extends IResponseView, ILayoutView
     // Title
     public function setTitle(?string $title);
     public function getTitle(): ?string;
-    public function hasTitle();
+    public function hasTitle(): bool;
     public function setTitlePrefix($prefix);
     public function getTitlePrefix();
+    public function hasTitlePrefix(): bool;
     public function setTitleSuffix($suffix);
     public function getTitleSuffix();
+    public function hasTitleSuffix(): bool;
     public function setFullTitle($title);
     public function getFullTitle();
 

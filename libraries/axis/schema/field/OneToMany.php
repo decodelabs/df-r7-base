@@ -10,6 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -92,6 +93,10 @@ class OneToMany extends Base implements axis\schema\IOneToManyField
                 'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
                 'You should probably use a fieldless join constraint instead'
             );
+        }
+
+        if (!$parent instanceof opal\query\ISourceProvider) {
+            throw Glitch::ELogic('Clause factory is not a source provider', null, $parent);
         }
 
         $sourceManager = $parent->getSourceManager();

@@ -10,8 +10,8 @@ use df\core;
 use df\spur;
 use df\fuse;
 
-class Package implements IPackage {
-
+class Package
+{
     public $name;
     public $source;
     public $version;
@@ -23,7 +23,8 @@ class Package implements IPackage {
     public $cacheFileName;
     public $resolver;
 
-    public static function fromThemeDependency(fuse\IDependency $dependency) {
+    public static function fromThemeDependency(fuse\Dependency $dependency)
+    {
         $output = new self($dependency->id, $dependency->source);
         $output->version = $dependency->version;
         $output->installName = null;
@@ -31,10 +32,11 @@ class Package implements IPackage {
         return $output;
     }
 
-    public function __construct(string $name, $source) {
+    public function __construct(string $name, $source)
+    {
         $installName = $name;
 
-        if(false !== strpos($source, '#')) {
+        if (false !== strpos($source, '#')) {
             list($source, $version) = explode('#', $source);
             $this->setVersion($version);
         }
@@ -44,52 +46,63 @@ class Package implements IPackage {
         $this->source = $source;
     }
 
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
         return $this;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->name;
     }
 
-    public function getKey() {
+    public function getKey()
+    {
         return $this->name.'#'.$this->version;
     }
 
-    public function setVersion($version) {
+    public function setVersion($version)
+    {
         $this->version = $version;
         return $this;
     }
 
-    public function getVersion() {
+    public function getVersion()
+    {
         return $this->version;
     }
 
-    public function setInstallName($name) {
+    public function setInstallName($name)
+    {
         $this->installName = $name;
         return $this;
     }
 
-    public function getInstallName() {
+    public function getInstallName()
+    {
         return $this->installName;
     }
 
-    public function setUrl($url) {
+    public function setUrl($url)
+    {
         $this->url = $url;
         return $this;
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
         return $this->url;
     }
 
-    public function setCacheFileName($fileName) {
+    public function setCacheFileName($fileName)
+    {
         $this->cacheFileName = $fileName;
         return $this;
     }
 
-    public function getCacheFileName() {
+    public function getCacheFileName()
+    {
         return $this->cacheFileName;
     }
 }

@@ -28,6 +28,7 @@ class TaskPurgeLargeFiles extends arch\node\Task
 
         if (!$handler instanceof neon\mediaHandler\ILocalDataHandler) {
             $this->io->writeErrorLine('Media handler is not local');
+            return;
         }
 
         $limit = $this->_getLimit();

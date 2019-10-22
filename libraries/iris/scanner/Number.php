@@ -76,17 +76,17 @@ class Number implements iris\IScanner, Inspectable
     }
 
 
-    public function initialize(iris\ILexer $lexer)
+    public function initialize(iris\Lexer $lexer)
     {
     }
 
-    public function check(iris\ILexer $lexer)
+    public function check(iris\Lexer $lexer)
     {
         return flex\Text::isDigit($lexer->char)
             || ($lexer->char == '.' && flex\Text::isDigit($lexer->peek(1, 1)));
     }
 
-    public function run(iris\ILexer $lexer)
+    public function run(iris\Lexer $lexer)
     {
         if ($lexer->char == '0') {
             $peek = $lexer->peek(1, 1);

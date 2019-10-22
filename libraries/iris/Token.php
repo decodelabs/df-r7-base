@@ -13,7 +13,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Token implements IToken, Inspectable
+class Token implements ILocationProxyProvider, Inspectable
 {
     public $type;
     public $subType;
@@ -105,7 +105,7 @@ class Token implements IToken, Inspectable
     }
 
 
-    public function eq(IToken $token)
+    public function eq(Token $token)
     {
         return $this->type == $token->type
             && $this->subType == $token->subType

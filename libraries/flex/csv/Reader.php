@@ -45,7 +45,10 @@ class Reader implements IReader
     public function __construct(core\io\IChannel $channel)
     {
         $this->_channel = $channel;
-        $this->_channel->seek(0);
+
+        if ($this->_channel instanceof core\fs\IFile) {
+            $this->_channel->seek(0);
+        }
     }
 
     public function getChannel()

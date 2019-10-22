@@ -10,8 +10,8 @@ use df\core;
 use df\iris;
 use df\flex;
 
-class StringDef implements iris\IScanner {
-
+class StringDef implements iris\IScanner
+{
     protected $_containers = [
         '"' => 'derefString',
         "'" => 'string'
@@ -23,63 +23,74 @@ class StringDef implements iris\IScanner {
     protected $_escapeSymbol = '\\';
     protected $_alignMultiLine = true;
 
-    public function __construct(array $containers=null) {
-        if($containers !== null) {
+    public function __construct(array $containers=null)
+    {
+        if ($containers !== null) {
             $this->setContainers($containers);
         }
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return 'String';
     }
 
-    public function getWeight() {
+    public function getWeight()
+    {
         return 60;
     }
 
-    public function setContainers(array $containers) {
+    public function setContainers(array $containers)
+    {
         return $this->clearContainers()
             ->addContainers($containers);
     }
 
-    public function addContainers(array $containers) {
-        foreach($containers as $container => $type) {
+    public function addContainers(array $containers)
+    {
+        foreach ($containers as $container => $type) {
             $this->addContainer($container, $type);
         }
 
         return $this;
     }
 
-    public function addContainer($container, $type) {
+    public function addContainer($container, $type)
+    {
         $this->_containers[$container] = $type;
         return $this;
     }
 
-    public function hasContainer($container) {
+    public function hasContainer($container)
+    {
         return isset($this->_containers[$container]);
     }
 
-    public function getContainerType($container) {
-        if(isset($this->_containers[$container])) {
+    public function getContainerType($container)
+    {
+        if (isset($this->_containers[$container])) {
             return $this->_containers[$container];
         }
     }
 
-    public function removeContainer($container) {
+    public function removeContainer($container)
+    {
         unset($this->_containers[$container]);
         return $this;
     }
 
-    public function clearContainers() {
+    public function clearContainers()
+    {
         $this->_containers = [];
         return $this;
     }
 
-    public function allowChars(bool $flag=null) {
-        if($flag !== null) {
+    public function allowChars(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_allowChars = $flag;
 
-            if($this->_allowChars && $this->_charSymbol === null) {
+            if ($this->_allowChars && $this->_charSymbol === null) {
                 $this->_charSymbol = '@';
             }
 
@@ -89,42 +100,49 @@ class StringDef implements iris\IScanner {
         return $this->_allowChars;
     }
 
-    public function setCharSymbol($symbol) {
+    public function setCharSymbol($symbol)
+    {
         $this->allowChars((bool)$symbol);
         $this->_charSymbol = (string)$symbol;
 
         return $this;
     }
 
-    public function getCharSymbol() {
+    public function getCharSymbol()
+    {
         return $this->_charSymbol;
     }
 
-    public function setCharContainer($container) {
+    public function setCharContainer($container)
+    {
         $this->_charContainer = (string)$container;
 
-        if(empty($this->_charContainer)) {
+        if (empty($this->_charContainer)) {
             $this->_charContainer = "'";
         }
 
         return $this;
     }
 
-    public function getCharContainer() {
+    public function getCharContainer()
+    {
         return $this->_charContainer;
     }
 
-    public function setEscapeSymbol($symbol) {
+    public function setEscapeSymbol($symbol)
+    {
         $this->_escapeSymbol = $symbol;
         return $this;
     }
 
-    public function getEscapeSymbol() {
+    public function getEscapeSymbol()
+    {
         return $this->_escapeSymbol;
     }
 
-    public function shouldAlignMultiLine(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldAlignMultiLine(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_alignMultiLine = $flag;
             return $this;
         }
@@ -132,31 +150,33 @@ class StringDef implements iris\IScanner {
         return $this->_alignMultiLine;
     }
 
-    public function initialize(iris\ILexer $lexer) {
-
+    public function initialize(iris\Lexer $lexer)
+    {
     }
 
-    public function check(iris\ILexer $lexer) {
-        if(isset($this->_containers[$lexer->char])) {
+    public function check(iris\Lexer $lexer)
+    {
+        if (isset($this->_containers[$lexer->char])) {
             return true;
         }
 
-        if($this->_allowChars && $lexer->char == $this->_charSymbol && $lexer->peek(1, 1) == $this->_charContainer) {
+        if ($this->_allowChars && $lexer->char == $this->_charSymbol && $lexer->peek(1, 1) == $this->_charContainer) {
             return true;
         }
 
         return false;
     }
 
-    public function run(iris\ILexer $lexer) {
-        if($this->_allowChars && $lexer->char == $this->_charSymbol) {
+    public function run(iris\Lexer $lexer)
+    {
+        if ($this->_allowChars && $lexer->char == $this->_charSymbol) {
             // Char
             $lexer->extract(2);
 
-            if($lexer->char == $this->_escapeSymbol) {
+            if ($lexer->char == $this->_escapeSymbol) {
                 // Escape
                 $c = flex\Text::mbOrd($this->_processEscape($lexer));
-            } else if($lexer->char == '0' && strtolower($lexer->peek(1, 1)) == 'x') {
+            } elseif ($lexer->char == '0' && strtolower($lexer->peek(1, 1)) == 'x') {
                 // Hex
                 $lexer->extract(2);
                 $string = $lexer->extractRegexRange('a-fA-F0-9');
@@ -167,7 +187,7 @@ class StringDef implements iris\IScanner {
                 $c = flex\Text::mbOrd($lexer->extractRegexRange('^'.$this->_charContainer));
             }
 
-            if($lexer->char != $this->_charContainer) {
+            if ($lexer->char != $this->_charContainer) {
                 throw new iris\UnexpectedCharacterException(
                     'Expected close of char literal, instead got '.$lexer->char,
                     $lexer->getLocation()
@@ -183,8 +203,8 @@ class StringDef implements iris\IScanner {
         $openPosition = $lexer->position;
         $string = '';
 
-        while(true) {
-            if($lexer->char === false) {
+        while (true) {
+            if ($lexer->char === false) {
                 // EOF
                 throw new iris\UnexpectedCharacterException(
                     'Unexpected string termination',
@@ -192,20 +212,20 @@ class StringDef implements iris\IScanner {
                 );
             }
 
-            if($lexer->char == $container) {
+            if ($lexer->char == $container) {
                 // End of string
                 $lexer->extract();
                 break;
             }
 
-            if($lexer->char === "\n") {
+            if ($lexer->char === "\n") {
                 // Multiline
                 $string .= $lexer->extract();
 
-                if($this->_alignMultiLine) {
+                if ($this->_alignMultiLine) {
                     $this->_skipStringWhitespace($lexer, $openLine, $openPosition);
                 }
-            } else if($lexer->char == $this->_escapeSymbol) {
+            } elseif ($lexer->char == $this->_escapeSymbol) {
                 // Escape
                 $this->_processEscape($lexer);
             } else {
@@ -217,8 +237,9 @@ class StringDef implements iris\IScanner {
         return $lexer->newToken('literal/'.$this->_containers[$container], $string);
     }
 
-    protected function _processEscape($lexer) {
-        if($lexer->char != $this->_escapeSymbol) {
+    protected function _processEscape($lexer)
+    {
+        if ($lexer->char != $this->_escapeSymbol) {
             throw new iris\UnexpectedCharacterException(
                 'Expected escape symbol',
                 $lexer->getLocation()
@@ -227,7 +248,7 @@ class StringDef implements iris\IScanner {
 
         $lexer->extract();
 
-        switch($lexer->char) {
+        switch ($lexer->char) {
             case 'b':
                 $lexer->extract();
                 return "\b";
@@ -252,7 +273,7 @@ class StringDef implements iris\IScanner {
                 $unicode = $lexer->peek(1, 4);
                 $lexer->extract();
 
-                if(!preg_match('/^[a-fA-F0-9]{4}$/', $unicode)) {
+                if (!preg_match('/^[a-fA-F0-9]{4}$/', $unicode)) {
                     return 'u';
                 }
 
@@ -268,28 +289,29 @@ class StringDef implements iris\IScanner {
         }
     }
 
-    protected function _skipStringWhitespace($lexer, $openLine, $openPosition) {
-        for($i = $openLine; $i < $openPosition; $i++) {
+    protected function _skipStringWhitespace($lexer, $openLine, $openPosition)
+    {
+        for ($i = $openLine; $i < $openPosition; $i++) {
             $a = $lexer->substring($i, 1);
 
-            if(($a == "\t" && $lexer->char != "\t")
+            if (($a == "\t" && $lexer->char != "\t")
             || ($a != "\t" && $lexer->char != ' ')) {
-                if($lexer->char == "\n") {
+                if ($lexer->char == "\n") {
                     return true;
                 }
 
                 $numTabs = 0;
                 $numSpaces = 0;
 
-                for($j = $openLine; $j < $openPosition; ++$j) {
-                    if($lexer->substring($j, 1) == "\t") {
+                for ($j = $openLine; $j < $openPosition; ++$j) {
+                    if ($lexer->substring($j, 1) == "\t") {
                         ++$numTabs;
                     } else {
                         ++$numSpaces;
                     }
                 }
 
-                if($numTabs == 0) {
+                if ($numTabs == 0) {
                     throw new iris\UnexpectedCharacterException(
                         'Leading space in multi-line string must be '.$numSpaces.' spaces, ',
                         $lexer->getLocation()

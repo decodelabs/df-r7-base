@@ -391,6 +391,11 @@ trait TView_Response
         return $this->_renderedContent;
     }
 
+    public function getJsonContent()
+    {
+        throw Glitch::ELogic('Views do not provide JsonContent');
+    }
+
     public function setContentType($type)
     {
         throw core\Error::ELogic(

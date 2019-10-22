@@ -18,7 +18,7 @@ class Syntax implements flex\code\IProbe
 
     protected $_errors = [];
 
-    public function probe(flex\code\ILocation $location, $localPath)
+    public function probe(flex\code\Location $location, $localPath)
     {
         if (substr($localPath, -4) != '.php') {
             return;
@@ -34,13 +34,26 @@ class Syntax implements flex\code\IProbe
         }
     }
 
-    public function getErrors()
+    public function setErrors(array $errors)
+    {
+        $this->_errors = $errors;
+        return $this;
+    }
+
+    public function getErrors(): array
     {
         return $this->_errors;
     }
 
     public function exportTo(flex\code\IProbe $probe)
     {
-        $probe->_errors = array_merge($probe->_errors, $this->_errors);
+        if (!$probe instanceof self) {
+            return;
+        }
+
+        $probe->setErrors(array_merge(
+            $probe->getErrors(),
+            $this->_errors
+        ));
     }
 }

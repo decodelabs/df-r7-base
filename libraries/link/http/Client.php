@@ -230,31 +230,36 @@ class Client implements IClient
 
     public function prepareRequest(IRequest $request)
     {
-        if (!$request->url->hasScheme()) {
-            $request->url->setScheme('http');
+        $url = $request->getUrl();
+
+        if (!$url->hasScheme()) {
+            $url->setScheme('http');
         }
 
         if ($this->_defaultOptions) {
-            $options = $request->options;
-            $request->options = clone $this->getDefaultOptions();
-            $request->options->import($options);
+            $oldOptions = $request->getOptions();
+            $options = clone $this->getDefaultOptions();
+            $options->import($oldOptions);
+            $request->setOptions($options);
         }
 
-        $request->options->sanitize();
+        $options = $request->getOptions();
+        $options->sanitize();
+        $headers = $request->getHeaders();
 
-        if (!$request->headers->has('user-agent')) {
-            $request->headers->set('user-agent', $this->getDefaultUserAgent());
+        if (!$headers->has('user-agent')) {
+            $headers->set('user-agent', $this->getDefaultUserAgent());
         }
 
-        if ($request->method == 'post' && !$request->headers->has('content-type')) {
-            $request->headers->set('content-type', 'application/x-www-form-urlencoded');
+        if ($request->getMethod() == 'post' && !$headers->has('content-type')) {
+            $headers->set('content-type', 'application/x-www-form-urlencoded');
         }
 
-        if (!$request->options->cookieJar) {
-            $request->options->cookieJar = $this->getDefaultCookieJar();
+        if (!$options->cookieJar) {
+            $options->cookieJar = $this->getDefaultCookieJar();
         }
 
-        $request->options->cookieJar->applyTo($request);
+        $options->cookieJar->applyTo($request);
         $request->prepareHeaders();
 
         return $request;
@@ -262,17 +267,18 @@ class Client implements IClient
 
     public function prepareResponse(IResponse $response, IRequest $request)
     {
-        $response->cookies->sanitize($request);
-        $request->options->cookieJar->import($response);
+        $options = $request->getOptions();
+        $response->getCookies()->sanitize($request);
+        $options->cookieJar->import($response);
 
         $target = null;
         $stream = $response->getContentFileStream();
         $isOk = $response->isOk();
 
-        if ($isOk && $request->options->downloadStream) {
-            $target = $request->options->downloadStream;
-        } elseif ($isOk && $request->options->downloadFolder) {
-            $folder = $request->options->downloadFolder;
+        if ($isOk && $options->downloadStream) {
+            $target = $options->downloadStream;
+        } elseif ($isOk && $options->downloadFolder) {
+            $folder = $options->downloadFolder;
 
             if ($folder instanceof Dir) {
                 $folder = $folder->getPath();
@@ -280,11 +286,11 @@ class Client implements IClient
 
             $path = rtrim($folder, '/').'/';
 
-            if ($request->options->downloadFileName) {
-                $path .= $request->options->downloadFileName;
+            if ($options->downloadFileName) {
+                $path .= $options->downloadFileName;
             } else {
-                if (!$fileName = $response->headers->getAttachmentFileName()) {
-                    if (!$fileName = $request->url->path->getFileName()) {
+                if (!$fileName = $response->getHeaders()->getAttachmentFileName()) {
+                    if (!$fileName = $request->getUrl()->getPath()->getFileName()) {
                         $fileName = 'index';
                     }
                 }
@@ -295,7 +301,7 @@ class Client implements IClient
             $target = Atlas::$fs->file($path, Mode::READ_WRITE_TRUNCATE);
         }
 
-        if ($target) {
+        if ($target && $response instanceof IAdaptiveStreamResponse) {
             $response->setContentFileStream($target);
         }
 

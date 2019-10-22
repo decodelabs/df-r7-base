@@ -236,8 +236,13 @@ class Tcp_ServerPeer extends link\socket\ServerPeer implements link\socket\ISequ
     {
         parent::__construct($parent, $socket, $address);
 
-        $this->_isSecure = $parent->isSecure();
-        $this->_secureTransport = $parent->getSecureTransport();
+        if ($parent instanceof link\socket\ISecureSocket) {
+            $this->_isSecure = $parent->isSecure();
+            $this->_secureTransport = $parent->getSecureTransport();
+        } else {
+            $this->_isSecure = false;
+            $this->_secureTransport = null;
+        }
     }
 
 

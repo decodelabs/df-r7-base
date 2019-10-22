@@ -128,7 +128,7 @@ trait TWidget_BodyContentAware
             return true;
         }
 
-        if ($this->_body instanceof aura\html\IElementContent) {
+        if ($this->_body instanceof aura\html\IElementContentCollection) {
             return !$this->_body->isEmpty();
         }
 

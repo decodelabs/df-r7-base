@@ -25,14 +25,14 @@ class Git implements spur\packaging\bower\IResolver
     {
     }
 
-    public function resolvePackageName(spur\packaging\bower\IPackage $package)
+    public function resolvePackageName(spur\packaging\bower\Package $package)
     {
         $parts = explode('/', $package->url);
         $name = array_pop($parts);
         return substr($name, -4);
     }
 
-    public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null)
+    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion=null)
     {
         $this->_getRemote($package);
 
@@ -65,7 +65,7 @@ class Git implements spur\packaging\bower\IResolver
         return true;
     }
 
-    protected function _getRemote(spur\packaging\bower\IPackage $package)
+    protected function _getRemote(spur\packaging\bower\Package $package)
     {
         if (!$this->_remote) {
             $this->_remote = new spur\vcs\git\Remote($package->url);
@@ -74,7 +74,7 @@ class Git implements spur\packaging\bower\IResolver
         return $this->_remote;
     }
 
-    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath)
+    public function getTargetVersion(spur\packaging\bower\Package $package, $cachePath)
     {
         if (!$tag = $this->_getRequiredTag($package, $cachePath)) {
             return 'latest';
@@ -83,7 +83,7 @@ class Git implements spur\packaging\bower\IResolver
         return $tag->getVersion();
     }
 
-    protected function _getRequiredTag(spur\packaging\bower\IPackage $package, $cachePath)
+    protected function _getRequiredTag(spur\packaging\bower\Package $package, $cachePath)
     {
         try {
             $tags = $this->_fetchTags($package, $cachePath);
@@ -94,7 +94,7 @@ class Git implements spur\packaging\bower\IResolver
         return $this->_findRequiredTag($tags, $package);
     }
 
-    protected function _fetchTags(spur\packaging\bower\IPackage $package, $cachePath)
+    protected function _fetchTags(spur\packaging\bower\Package $package, $cachePath)
     {
         $path = $cachePath.'/tags/git-'.flex\Text::formatFileName($package->url).'.json';
 

@@ -269,7 +269,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
         $output = -1;
 
         for ($i = 0; $i < $length = strlen($alpha); $i++) {
-            $output = (($output + 1) * 26) + (base_convert($alpha{$i}, 36, 10) - 10);
+            $output = (($output + 1) * 26) + ((int)base_convert($alpha{$i}, 36, 10) - 10);
         }
 
         return $output;

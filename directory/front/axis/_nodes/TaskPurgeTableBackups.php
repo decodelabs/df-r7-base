@@ -23,7 +23,7 @@ class TaskPurgeTableBackups extends arch\node\Task
             }
         }
     }
-    
+
     public function execute()
     {
         $unitId = $this->request['unit'];
@@ -65,7 +65,7 @@ class TaskPurgeTableBackups extends arch\node\Task
         $this->{$func}($unit, $inspector->getBackups());
     }
 
-    protected function _purgeRdbmsTable(axis\IStorageUnit $unit, array $backups)
+    protected function _purgeRdbmsTable(axis\IAdapterBasedStorageUnit $unit, array $backups)
     {
         $this->io->writeLine('Switching to rdbms mode');
 

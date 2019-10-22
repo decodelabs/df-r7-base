@@ -121,7 +121,7 @@ trait TContainerNode
             if ($child instanceof IContainerNode) {
                 $output .= $child->reduceContents();
             } elseif ($child instanceof ITextNode) {
-                $output .= $child->text;
+                $output .= $child->getText();
             } else {
                 throw Glitch::EUnexpectedValue('Unexpected child node', null, $child);
             }

@@ -10,19 +10,21 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class InsertResolution implements mesh\job\IResolution {
-
+class InsertResolution implements mesh\job\IResolution
+{
     protected $_targetField;
     protected $_isForeign = false;
     protected $_isUntangled = false;
 
-    public function __construct(string $targetField, bool $isForeign=false) {
+    public function __construct(string $targetField, bool $isForeign=false)
+    {
         $this->_targetField = $targetField;
         $this->_isForeign = $isForeign;
     }
 
-    public function untangle(mesh\job\IQueue $queue, mesh\job\IJob $subordinate, mesh\job\IJob $dependency): bool {
-        if($this->_isUntangled) {
+    public function untangle(mesh\job\IQueue $queue, mesh\job\IJob $subordinate, mesh\job\IJob $dependency): bool
+    {
+        if ($this->_isUntangled || !$subordinate instanceof  opal\record\IJob) {
             return false;
         }
 
@@ -41,21 +43,27 @@ class InsertResolution implements mesh\job\IResolution {
         return $this->_isUntangled = true;
     }
 
-    public function resolve(mesh\job\IJob $subordinate, mesh\job\IJob $dependency) {
-        if($subordinate instanceof opal\record\IJob) {
-            if($this->_isForeign) {
-                $record = $dependency->getRecord();
-                $keySet = $subordinate->getRecord()->getPrimaryKeySet();
-            } else {
-                $record = $subordinate->getRecord();
-                $keySet = $dependency->getRecord()->getPrimaryKeySet();
-            }
+    public function resolve(mesh\job\IJob $subordinate, mesh\job\IJob $dependency)
+    {
+        if (
+            !$subordinate instanceof opal\record\IJob ||
+            !$dependency instanceof  opal\record\IJob
+        ) {
+            return $this;
+        }
 
-            if((string)$keySet != (string)$record->getRawId($this->_targetField)) {
-                $record->set($this->_targetField, $keySet);
-            } else {
-                $record->markAsChanged($this->_targetField);
-            }
+        if ($this->_isForeign) {
+            $record = $dependency->getRecord();
+            $keySet = $subordinate->getRecord()->getPrimaryKeySet();
+        } else {
+            $record = $subordinate->getRecord();
+            $keySet = $dependency->getRecord()->getPrimaryKeySet();
+        }
+
+        if ((string)$keySet != (string)$record->getRawId($this->_targetField)) {
+            $record->set($this->_targetField, $keySet);
+        } else {
+            $record->markAsChanged($this->_targetField);
         }
 
         return $this;

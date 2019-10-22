@@ -622,7 +622,7 @@ abstract class Table implements
                 ->paginate()
                     ->addOrderableFields($rName.'|'.$name.' as '.$rName)
                     ->end();
-        } else {
+        } elseif ($query instanceof opal\query\IFetchQuery) {
             $query->populateSelect($relationField, array_keys($fields));
         }
 

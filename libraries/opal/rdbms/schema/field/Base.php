@@ -116,7 +116,7 @@ abstract class Base implements opal\rdbms\schema\IField, Inspectable
         }
     }
 
-    public function getType()
+    public function getType(): string
     {
         return $this->_type;
     }

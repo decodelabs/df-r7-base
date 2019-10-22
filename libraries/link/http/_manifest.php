@@ -211,6 +211,7 @@ interface IResponse extends core\collection\IHeaderMapProvider, core\lang\IChain
 
     // Content
     public function getContent();
+    public function getJsonContent();
     public function getEncodedContent();
     public function getContentFileStream();
     public function onDispatchComplete();
@@ -263,6 +264,7 @@ interface IRedirectResponse extends IResponse
 interface IGeneratorResponse extends IResponse, core\io\IChunkReceiver
 {
     public function generate(core\io\IChannel $channel);
+    public function shouldChunkManually(bool $flag=null);
     public function writeBrowserKeepAlive();
     public function getChannel();
 }
@@ -486,7 +488,7 @@ interface IResponseAugmentorProvider
 
 
 // Headers
-interface IResponseHeaderCollection
+interface IResponseHeaderCollection extends core\collection\IHeaderMap
 {
     // Version
     public function setHttpVersion($version);
@@ -568,7 +570,7 @@ interface ICookie extends core\IStringProvider
     public function toInvalidateString();
 }
 
-interface ICookieCollection extends core\IStringProvider
+interface ICookieCollection extends core\IStringProvider, core\collection\IMappedCollection
 {
     public function applyTo(IResponseHeaderCollection $headers);
     public function sanitize(IRequest $request);

@@ -30,7 +30,7 @@ abstract class Config implements IConfig, Inspectable
     private $_filePath = null;
 
     // Loading
-    public static function getInstance(): IConfig
+    public static function getInstance()
     {
         if (!static::ID) {
             throw core\Error::EDefinition('Invalid config id set for '.get_called_class());

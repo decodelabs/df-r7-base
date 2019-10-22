@@ -406,12 +406,21 @@ abstract class Adapter implements IAdapter
     // Query processors
     protected function _executeReadQueryRequest(opal\query\IReadQuery $query)
     {
+        if (!$query instanceof opal\query\ILocationalQuery) {
+            throw Glitch::ERuntime('Unable to handle non-locational query', null, $query);
+        }
+
         $this->ensureBind();
         $filter = $this->_buildFilter($query);
 
         $baseDn = $query->getLocation();
         $subNodeSearch = $query->shouldSearchChildLocations();
-        $readEntry = $query->getLimit() == 1;
+
+        if ($query instanceof opal\query\ILimitableQuery) {
+            $readEntry = $query->getLimit() == 1;
+        } else {
+            $readEntry = false;
+        }
 
         if ($baseDn === null) {
             $baseDn = $this->_context->getBaseDn();
@@ -455,6 +464,12 @@ abstract class Adapter implements IAdapter
 
     protected function _prepareReadQueryResponse(opal\query\IReadQuery $query, $result)
     {
+        if (
+            !$query instanceof opal\query\ILocationalQuery
+        ) {
+            throw Glitch::ERuntime('Unable to handle non-locational query', null, $query);
+        }
+
         if (!$result) {
             return [];
         }
@@ -463,29 +478,42 @@ abstract class Adapter implements IAdapter
         $connection = $this->_connection->getResource();
         $total = ldap_count_entries($connection, $result);
 
-        $orderDirectives = $query->getOrderDirectives();
+        // Order
+        if ($query instanceof opal\query\IOrderableQuery) {
+            $orderDirectives = $query->getOrderDirectives();
 
-        if (!empty($orderDirectives)) {
-            for ($i = count($orderDirectives) - 1; $i >= 0; $i--) {
-                $directive = $orderDirectives[$i];
-                $field = $directive->getField()->getName();
-                @ldap_sort($connection, $result, $field);
+            if (!empty($orderDirectives)) {
+                for ($i = count($orderDirectives) - 1; $i >= 0; $i--) {
+                    $directive = $orderDirectives[$i];
+                    $field = $directive->getField()->getName();
+                    @ldap_sort($connection, $result, $field);
 
-                if ($i == 0 && $directive->isDescending()) {
-                    $reverse = true;
+                    if ($i == 0 && $directive->isDescending()) {
+                        $reverse = true;
+                    }
                 }
             }
         }
 
-        if ($query->hasLimit()) {
-            $limit = $query->getLimit();
+        // Limit
+        if ($query instanceof opal\query\ILimitableQuery) {
+            if ($query->hasLimit()) {
+                $limit = $query->getLimit();
+            } else {
+                $limit = $total;
+            }
         } else {
-            $limit = $total;
+            $limit = 100;
         }
 
-        $start = (int)$query->getOffset();
-        $end = $start + $limit - 1;
+        // Offset
+        if ($query instanceof opal\query\IOffsettableQuery) {
+            $start = (int)$query->getOffset();
+        } else {
+            $start = 0;
+        }
 
+        $end = $start + $limit - 1;
         $fields = [];
 
         foreach ($query->getSource()->getOutputFields() as $field) {
@@ -570,6 +598,10 @@ abstract class Adapter implements IAdapter
 
     protected function _buildFilter(opal\query\IQuery $query)
     {
+        if (!$query instanceof opal\query\IWhereClauseQuery) {
+            return '(objectClass=*)';
+        }
+
         $clauses = $query->getWhereClauseList();
 
         if ($clauses->isEmpty()) {
@@ -772,6 +804,10 @@ abstract class Adapter implements IAdapter
 
     protected function _fetchDnsForWriteQuery(opal\query\IWriteQuery $query)
     {
+        if (!$query instanceof opal\query\IWhereClauseQuery) {
+            throw Glitch::ERuntime('Cannot lookup record DNs, query does not support where clauses');
+        }
+
         $whereList = $query->getWhereClauseList();
 
         if ($whereList->isEmpty()) {

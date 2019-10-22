@@ -165,7 +165,7 @@ class Http implements arch\IDirectoryHelper
         return new link\http\response\Stream($content, $contentType);
     }
 
-    public function ajaxElementResponse(aura\view\IView $view)
+    public function ajaxElementResponse(aura\view\IResponseView $view)
     {
         return $this->stringResponse(
             (string)$view->getContentProvider()->setRenderTarget($view),

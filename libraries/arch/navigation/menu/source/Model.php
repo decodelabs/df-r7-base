@@ -10,15 +10,16 @@ use df\core;
 use df\arch;
 use df\axis;
 
-class Model extends Base {
-
-    public function loadMenu(core\uri\Url $id) {
+class Model extends Base
+{
+    public function loadMenu(core\uri\Url $id)
+    {
         $modelName = $id->path->getFirst();
         $model = axis\Model::factory($modelName);
         $menuId = $id->path->getLast();
 
-        if(!$model instanceof arch\navigation\menu\ISourceAdapter) {
-            throw core\Error::{'arch/navigation/ESourceNotFound,ENotFound'}(
+        if (!$model instanceof arch\navigation\menu\ISourceAdapter) {
+            throw Glitch::{'ENotFound'}(
                 'Model '.$modelName.' is not a menu source adapter'
             );
         }

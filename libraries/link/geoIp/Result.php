@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\link;
 
-class Result implements IResult {
-    
+class Result
+{
     public $ip;
     public $continent;
     public $continentName;
@@ -29,75 +29,93 @@ class Result implements IResult {
     public $timezone;
 
 
-    public function __construct($ip) {
+    public function __construct($ip)
+    {
         $this->ip = $ip;
     }
 
-    public function getIp() {
+    public function getIp()
+    {
         return $this->ip;
     }
 
-    public function getContinent() {
+    public function getContinent()
+    {
         return $this->continent;
     }
 
-    public function getContinentName() {
+    public function getContinentName()
+    {
         return $this->continentName;
     }
 
-    public function getContinentGeonameId() {
+    public function getContinentGeonameId()
+    {
         return $this->continentGeonameId;
     }
 
-    public function getCountry() {
+    public function getCountry()
+    {
         return $this->country;
     }
 
-    public function getCountryName() {
+    public function getCountryName()
+    {
         return $this->countryName;
     }
 
-    public function getCountryGeonameId() {
+    public function getCountryGeonameId()
+    {
         return $this->countryGeonameId;
     }
 
-    public function getRegion() {
+    public function getRegion()
+    {
         return $this->region;
     }
 
-    public function getRegionName() {
+    public function getRegionName()
+    {
         return $this->regionName;
     }
 
-    public function getRegionGeonameId() {
+    public function getRegionGeonameId()
+    {
         return $this->regionGeonameId;
     }
 
-    public function getCityName() {
+    public function getCityName()
+    {
         return $this->cityName;
     }
-    
-    public function getCityGeonameId() {
+
+    public function getCityGeonameId()
+    {
         return $this->cityGeonameId;
     }
 
-    public function getPostcode() {
+    public function getPostcode()
+    {
         return $this->postcode;
     }
 
-    public function getLongitude() {
+    public function getLongitude()
+    {
         return $this->longitude;
     }
 
-    public function getLatitude() {
+    public function getLatitude()
+    {
         return $this->latitude;
     }
 
-    public function hasLatLong() {
+    public function hasLatLong()
+    {
         return $this->longitude !== null && $this->latitude !== null;
     }
 
-    public function getTimezone() {
+    public function getTimezone()
+    {
         return $this->timezone;
     }
 }

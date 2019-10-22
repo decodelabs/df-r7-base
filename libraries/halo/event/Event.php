@@ -54,26 +54,26 @@ class Event extends Base implements Inspectable
     // Bindings
     public function freezeBinding(IBinding $binding)
     {
-        if ($binding->isFrozen) {
+        if ($binding->isFrozen()) {
             return $this;
         }
 
         $func = '_unregister'.$binding->getType().'Binding';
         $this->{$func}($binding);
-        $binding->isFrozen = true;
+        $binding->markFrozen(true);
 
         return $this;
     }
 
     public function unfreezeBinding(IBinding $binding)
     {
-        if (!$binding->isFrozen) {
+        if (!$binding->isFrozen()) {
             return $this;
         }
 
         $func = '_register'.$binding->getType().'Binding';
         $this->{$func}($binding);
-        $binding->isFrozen = false;
+        $binding->markFrozen(false);
 
         return $this;
     }
@@ -121,20 +121,20 @@ class Event extends Base implements Inspectable
     // Sockets
     protected function _registerSocketBinding(ISocketBinding $binding)
     {
-        $binding->eventResource = $this->_registerEvent(
-            $binding->socket->getSocketDescriptor(),
+        $binding->setEventResource($this->_registerEvent(
+            $binding->getSocket()->getSocketDescriptor(),
             $this->_getIoEventFlags($binding),
             $this->_getTimeoutDuration($binding),
             [$this, '_handleSocketBinding'],
             $binding
-        );
+        ));
     }
 
     protected function _unregisterSocketBinding(ISocketBinding $binding)
     {
-        if ($binding->eventResource) {
-            $binding->eventResource->free();
-            $binding->eventResource = null;
+        if ($res = $binding->getEventResource()) {
+            $res->free();
+            $binding->setEventResource(null);
         }
     }
 
@@ -146,7 +146,7 @@ class Event extends Base implements Inspectable
             $binding->trigger($target);
         }
 
-        if (!$binding->isPersistent) {
+        if (!$binding->isPersistent()) {
             $this->_unregisterSocketBinding($binding);
         }
     }
@@ -156,20 +156,20 @@ class Event extends Base implements Inspectable
     // Streams
     protected function _registerStreamBinding(IStreamBinding $binding)
     {
-        $binding->eventResource = $this->_registerEvent(
-            $binding->stream->getStreamDescriptor(),
+        $binding->setEventResource($this->_registerEvent(
+            $binding->getStream()->getStreamDescriptor(),
             $this->_getIoEventFlags($binding),
             $this->_getTimeoutDuration($binding),
             [$this, '_handleStreamBinding'],
             $binding
-        );
+        ));
     }
 
     protected function _unregisterStreamBinding(IStreamBinding $binding)
     {
-        if ($binding->eventResource) {
-            $binding->eventResource->free();
-            $binding->eventResource = null;
+        if ($res = $binding->getEventResource()) {
+            $res->free();
+            $binding->setEventResource(null);
         }
     }
 
@@ -181,7 +181,7 @@ class Event extends Base implements Inspectable
             $binding->trigger($target);
         }
 
-        if (!$binding->isPersistent) {
+        if (!$binding->isPersistent()) {
             $this->_unregisterStreamBinding($binding);
         }
     }
@@ -192,12 +192,14 @@ class Event extends Base implements Inspectable
     {
         $flags = \Event::SIGNAL;
 
-        if ($binding->isPersistent) {
+        if ($binding->isPersistent()) {
             $flags |= \Event::PERSIST;
         }
 
-        foreach ($binding->signals as $number => $signal) {
-            $binding->eventResource[$number] = $this->_registerEvent(
+        $resources = [];
+
+        foreach ($binding->getSignals() as $number => $signal) {
+            $resources[$number] = $this->_registerEvent(
                 $number,
                 $flags,
                 null,
@@ -205,18 +207,21 @@ class Event extends Base implements Inspectable
                 $binding
             );
         }
+
+        $binding->setEventResource($resources);
     }
 
     protected function _unregisterSignalBinding(ISignalBinding $binding)
     {
-        foreach ($binding->eventResource as $number => $resource) {
+        foreach ($binding->getEventResource() as $number => $resource) {
             if (!$resource) {
                 continue;
             }
 
             $resource->free();
-            $binding->eventResource[$number] = null;
         }
+
+        $binding->setEventResource([]);
     }
 
     public function _handleSignalBinding($number, ISignalBinding $binding)
@@ -224,7 +229,7 @@ class Event extends Base implements Inspectable
         $binding->trigger($number);
         $this->_unregisterSignalBinding($binding);
 
-        if ($binding->isPersistent) {
+        if ($binding->isPersistent()) {
             $this->_registerSignalBinding($binding);
         }
     }
@@ -237,24 +242,24 @@ class Event extends Base implements Inspectable
     {
         $flags = \Event::TIMEOUT;
 
-        if ($binding->isPersistent) {
+        if ($binding->isPersistent()) {
             $flags |= \Event::PERSIST;
         }
 
-        $binding->eventResource = $this->_registerEvent(
+        $binding->setEventResource($this->_registerEvent(
             null,
             $flags,
-            $binding->duration->getMilliseconds(),
+            $binding->getDuration()->getMilliseconds(),
             [$this, '_handleTimerBinding'],
             $binding
-        );
+        ));
     }
 
     protected function _unregisterTimerBinding(ITimerBinding $binding)
     {
-        if ($binding->eventResource) {
-            $binding->eventResource->free();
-            $binding->eventResource = null;
+        if ($res = $binding->getEventResource()) {
+            $res->free();
+            $binding->setEventResource(null);
         }
     }
 
@@ -263,7 +268,7 @@ class Event extends Base implements Inspectable
         $binding->trigger(null);
         $this->_unregisterTimerBinding($binding);
 
-        if ($binding->isPersistent) {
+        if ($binding->isPersistent()) {
             $this->_registerTimerBinding($binding);
         }
     }
@@ -305,7 +310,7 @@ class Event extends Base implements Inspectable
 
     protected function _getIoEventFlags(IIoBinding $binding)
     {
-        switch ($binding->ioMode) {
+        switch ($binding->getIoMode()) {
             case IIoState::READ:
                 $flags = \Event::READ;
                 break;
@@ -316,11 +321,11 @@ class Event extends Base implements Inspectable
 
             default:
                 throw new InvalidArgumentException(
-                    'Unknown event type: '.$binding->ioMode
+                    'Unknown event type: '.$binding->getIoMode()
                 );
         }
 
-        if ($binding->isPersistent) {
+        if ($binding->isPersistent()) {
             $flags |= \Event::PERSIST;
         }
 
@@ -329,10 +334,8 @@ class Event extends Base implements Inspectable
 
     protected function _getTimeoutDuration(IBinding $binding)
     {
-        if ($binding instanceof IIoBinding) {
-            return $binding->timeoutDuration ?
-                $binding->timeoutDuration->getMilliseconds() :
-                null;
+        if ($binding instanceof IIoBinding && ($timeout = $binding->getTimeoutDuration())) {
+            return $timeout->getMilliseconds();
         } else {
             return null;
         }

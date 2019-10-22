@@ -12,8 +12,8 @@ use df\user;
 use df\aura;
 use df\link;
 
-abstract class Base implements arch\IComponent {
-
+abstract class Base implements arch\IComponent
+{
     use core\TContextAware;
     use core\lang\TChainable;
     use user\TAccessLock;
@@ -27,11 +27,12 @@ abstract class Base implements arch\IComponent {
     public $slots = [];
     protected $_componentArgs = [];
 
-    public static function factory(arch\IContext $context, $name, array $args=null): arch\IComponent {
+    public static function factory(arch\IContext $context, $name, array $args=null): arch\IComponent
+    {
         $path = $context->location->getController();
         $area = $context->location->getArea();
 
-        if(!empty($path)) {
+        if (!empty($path)) {
             $parts = explode('/', $path);
         } else {
             $parts = [];
@@ -43,22 +44,23 @@ abstract class Base implements arch\IComponent {
         $nameParts = explode('/', $name);
         $topName = array_pop($nameParts);
 
-        if(!empty($nameParts)) {
+        if (!empty($nameParts)) {
             $parts = array_merge($parts, $nameParts);
         }
 
         $parts[] = ucfirst($topName);
         $class = 'df\\apex\\directory\\'.$area.'\\'.implode('\\', $parts);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             try {
                 $scaffold = arch\scaffold\Base::factory($context);
                 return $scaffold->loadComponent($name, $args);
-            } catch(arch\scaffold\IError $e) {}
+            } catch (arch\scaffold\EGlitch $e) {
+            }
 
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
-            if(!class_exists($class)) {
+            if (!class_exists($class)) {
                 throw core\Error::ENotFound(
                     'Component ~'.$area.'/'.$path.'/#/'.$name.' could not be found'
                 );
@@ -68,13 +70,14 @@ abstract class Base implements arch\IComponent {
         return new $class($context, $args);
     }
 
-    public static function themeFactory(arch\IContext $context, $themeName, $name, array $args=null) {
+    public static function themeFactory(arch\IContext $context, $themeName, $name, array $args=null)
+    {
         $class = 'df\\apex\\themes\\'.$themeName.'\\components\\'.ucfirst($name);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             $class = 'df\\apex\\themes\\shared\\components\\'.ucfirst($name);
 
-            if(!class_exists($class)) {
+            if (!class_exists($class)) {
                 throw core\Error::ENotFound(
                     'Theme component '.ucfirst($name).' could not be found'
                 );
@@ -84,36 +87,40 @@ abstract class Base implements arch\IComponent {
         return new $class($context, $args);
     }
 
-    public function __construct(arch\IContext $context, array $args=null) {
+    public function __construct(arch\IContext $context, array $args=null)
+    {
         $this->context = $context;
 
-        if(empty($args)) {
+        if (empty($args)) {
             $args = [];
         }
 
         $this->_componentArgs = $args;
 
-        if(method_exists($this, 'init')) {
+        if (method_exists($this, 'init')) {
             $this->init(...$args);
         }
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         $path = str_replace('\\', '/', get_class($this));
         $parts = explode('_components/', $path, 2);
         return array_pop($parts);
     }
 
 
-// Renderable
-    public function toString(): string {
+    // Renderable
+    public function toString(): string
+    {
         return (string)$this->render();
     }
 
-    public function render() {
+    public function render()
+    {
         $this->view = $this->getRenderTarget()->getView();
 
-        if(!method_exists($this, '_execute')) {
+        if (!method_exists($this, '_execute')) {
             throw core\Error::EDefinition([
                 'message' => 'Component requires an _execute method',
                 'dataType' => $this
@@ -122,21 +129,22 @@ abstract class Base implements arch\IComponent {
 
         $output = $this->_execute(...$this->_componentArgs);
 
-        if($output instanceof aura\view\IDeferredRenderable) {
+        if ($output instanceof aura\view\IDeferredRenderable) {
             $output->setRenderTarget($this->_renderTarget);
         }
 
         return $output;
     }
 
-    public function toResponse() {
+    public function toResponse()
+    {
         try {
             $this->view = $this->getRenderTarget()->getView();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->view = $this->context->apex->newWidgetView();
         }
 
-        if(!method_exists($this, '_execute')) {
+        if (!method_exists($this, '_execute')) {
             throw core\Error::EDefinition([
                 'message' => 'Component requires an _execute method',
                 'dataType' => $this
@@ -145,11 +153,11 @@ abstract class Base implements arch\IComponent {
 
         $output = $this->_execute(...$this->_componentArgs);
 
-        if($this->view && $output instanceof aura\view\IDeferredRenderable) {
+        if ($this->view && $output instanceof aura\view\IDeferredRenderable) {
             $output->setRenderTarget($this->getRenderTarget());
         }
 
-        if($output instanceof link\http\IResponse) {
+        if ($output instanceof link\http\IResponse) {
             return $output;
         }
 
@@ -157,24 +165,28 @@ abstract class Base implements arch\IComponent {
     }
 
 
-// Slots
-    public function getSlots() {
+    // Slots
+    public function getSlots()
+    {
         return $this->slots;
     }
 
-    public function clearSlots() {
+    public function clearSlots()
+    {
         $this->slots = [];
         return $this;
     }
 
-    public function setSlot(string $key, $value) {
+    public function setSlot(string $key, $value)
+    {
         $this->slots[$key] = $value;
         return $this;
     }
 
-    public function hasSlot(string ...$keys): bool {
-        foreach($keys as $key) {
-            if(isset($this->slots[$key])) {
+    public function hasSlot(string ...$keys): bool
+    {
+        foreach ($keys as $key) {
+            if (isset($this->slots[$key])) {
                 return true;
             }
         }
@@ -182,59 +194,71 @@ abstract class Base implements arch\IComponent {
         return false;
     }
 
-    public function slotExists(string $key) {
+    public function slotExists(string $key)
+    {
         return array_key_exists($key, $this->slots);
     }
 
-    public function getSlot(string $key, $default=null) {
-        if(isset($this->slots[$key])) {
+    public function getSlot(string $key, $default=null)
+    {
+        if (isset($this->slots[$key])) {
             return $this->slots[$key];
         } else {
             return $default;
         }
     }
 
-    public function removeSlot(string $key) {
+    public function removeSlot(string $key)
+    {
         unset($this->slots[$key]);
         return $this;
     }
 
-    public function esc($value): string {
+    public function esc($value): string
+    {
         return $this->html->esc($value);
     }
 
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value)
+    {
         return $this->setSlot($key, $value);
     }
 
-    public function offsetGet($key) {
+    public function offsetGet($key)
+    {
         return $this->getSlot($key);
     }
 
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         return $this->hasSlot($key);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         return $this->removeSlot($key);
     }
 
 
 
-// Access
-    public function getAccessLockDomain() {
+    // Access
+    public function getAccessLockDomain()
+    {
         return 'directory';
     }
 
-    public function lookupAccessKey(array $keys, $action=null) {
+    public function lookupAccessKey(array $keys, $action=null)
+    {
         return $this->context->location->lookupAccessKey($keys, $action);
     }
 
-    public function getDefaultAccess($action=null) {
+    public function getDefaultAccess($action=null)
+    {
         return static::DEFAULT_ACCESS;
     }
 
-    public function getAccessLockId() {
+    public function getAccessLockId()
+    {
         return $this->context->location->getAccessLockId();
     }
 }

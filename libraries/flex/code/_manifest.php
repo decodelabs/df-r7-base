@@ -8,32 +8,25 @@ namespace df\flex\code;
 use df;
 use df\core;
 
-
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-
-
-// Interfaces
-interface ILocation {
-    public function setId(string $id);
-    public function getId(): string;
-    public function setPath($path);
-    public function getPath();
-    public function setBlackList(array $blackList);
-    public function getBlackList();
-
-    public function scan(IScanner $scanner);
-    public function getProbes();
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
 }
 
 
-interface IScanner {
+// Interfaces
+interface IScanner
+{
     public function setLocations(array $locations);
     public function addLocations(array $locations);
     public function addFrameworkPackageLocations(bool $allRoot=false, array $blackList=null);
-    public function addLocation(ILocation $location);
+    public function addLocation(Location $location);
     public function getLocation($id);
     public function hasLocation($id);
     public function removeLocation($id);
@@ -52,19 +45,23 @@ interface IScanner {
     public function scan();
 }
 
-interface IProbe {
+interface IProbe
+{
     public function getId(): string;
-    public function probe(ILocation $location, $localPath);
+    public function probe(Location $location, $localPath);
     public function exportTo(self $probe);
 }
 
-trait TProbe {
-    public function getId(): string {
+trait TProbe
+{
+    public function getId(): string
+    {
         $parts = explode('\\', get_class($this));
         return lcfirst(array_pop($parts));
     }
 }
 
-interface IProbeGroup extends core\collection\IMap {
+interface IProbeGroup extends core\collection\IMap
+{
     public function getAll();
 }

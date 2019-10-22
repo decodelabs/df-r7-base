@@ -18,7 +18,7 @@ class PaypalExpressCheckout extends Base
         return [];
     }
 
-    public function submitStandaloneCharge(mint\IStandaloneChargeRequest $charge): string
+    public function submitStandaloneCharge(mint\IChargeRequest $charge): string
     {
         Glitch::incomplete($charge);
     }

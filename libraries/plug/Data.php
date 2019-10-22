@@ -104,7 +104,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
     }
 
 
-    public function applyQueryPrimaryClause(opal\query\IQuery $query, $primary)
+    public function applyQueryPrimaryClause(opal\query\IWhereClauseQuery $query, $primary)
     {
         if (is_array($primary) && is_string(key($primary))) {
             foreach ($primary as $key => $value) {
@@ -365,7 +365,11 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         }
 
         $extraData['data'] = $data;
-        $extraData['paginator'] = $query->getPaginator();
+
+        if ($query instanceof core\collection\IPageable) {
+            $extraData['paginator'] = $query->getPaginator();
+        }
+        
         return flex\Json::toString($extraData, $flags);
     }
 

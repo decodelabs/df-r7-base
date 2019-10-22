@@ -9,7 +9,8 @@ use df;
 use df\core;
 use df\arch;
 
-interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator {
+interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator
+{
     public function getId(): core\uri\IUrl;
     public function setSubId($id);
     public function getSubId();
@@ -23,7 +24,8 @@ interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator 
 }
 
 
-interface IConfig extends core\IConfig {
+interface IConfig extends core\IConfig
+{
     public function createEntries(IMenu $menu, IEntryList $entryList);
     public function setDelegatesFor($id, array $delegates);
     public function setEntriesFor($id, array $entries);
@@ -31,27 +33,31 @@ interface IConfig extends core\IConfig {
 }
 
 
-interface ISource {
+interface ISource
+{
     public function getName(): string;
     public function getDisplayName(): string;
     public function loadMenu(core\uri\Url $id);
 }
 
-interface IListableSource extends ISource {
+interface IListableSource extends ISource
+{
     public function loadAllMenus(array $whiteList=null);
 }
 
-interface ISourceAdapter {
+interface ISourceAdapter
+{
     public function loadMenu(ISource $source, core\uri\Url $id);
 }
 
-trait TResponsiveSourceAdapter {
-
-    public function loadMenu(ISource $source, core\uri\Url $id) {
+trait TResponsiveSourceAdapter
+{
+    public function loadMenu(ISource $source, core\uri\Url $id)
+    {
         $func = '_load'.$id->path->getBaseName().'Menu';
 
-        if(!method_exists($this, $func)) {
-            throw core\Error::{'ESourceNotFound,ENotFound'}(
+        if (!method_exists($this, $func)) {
+            throw Glitch::{'ENotFound'}(
                 'Menu '.$id->path->getBaseName().' could not be loaded'
             );
         }
@@ -64,9 +70,12 @@ trait TResponsiveSourceAdapter {
 }
 
 
-interface IEntryList extends arch\navigation\IEntryList {
+interface IEntryList extends arch\navigation\IEntryList
+{
     public function registerMenu(IMenu $menu);
     public function hasMenu($id);
 }
 
-class Cache extends core\cache\Base {}
+class Cache extends core\cache\Base
+{
+}

@@ -79,7 +79,7 @@ class Variable implements iris\IScanner, Inspectable
     }
 
 
-    public function initialize(iris\ILexer $lexer)
+    public function initialize(iris\Lexer $lexer)
     {
         if (empty($this->_markers)) {
             throw new iris\LogicException(
@@ -88,7 +88,7 @@ class Variable implements iris\IScanner, Inspectable
         }
     }
 
-    public function check(iris\ILexer $lexer)
+    public function check(iris\Lexer $lexer)
     {
         if (!isset($this->_markers[$lexer->char])) {
             return false;
@@ -98,7 +98,7 @@ class Variable implements iris\IScanner, Inspectable
         return flex\Text::isAlpha($peek) || $peek == '_';
     }
 
-    public function run(iris\ILexer $lexer)
+    public function run(iris\Lexer $lexer)
     {
         $type = $this->_markers[$lexer->char];
         $lexer->extract();

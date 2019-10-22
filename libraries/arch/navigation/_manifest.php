@@ -10,9 +10,9 @@ use df\core;
 use df\arch;
 use df\user;
 
-
 // Interfaces
-interface IEntry extends core\IArrayInterchange {
+interface IEntry extends core\IArrayInterchange
+{
     public function getType();
 
     public function setId(?string $id);
@@ -23,7 +23,8 @@ interface IEntry extends core\IArrayInterchange {
 }
 
 
-interface IEntryList extends core\IArrayInterchange, \Countable {
+interface IEntryList extends core\IArrayInterchange, \Countable
+{
     public function setEntries(...$entries);
     public function addEntries(...$entries);
     public function addEntry($entry);
@@ -38,20 +39,22 @@ interface IEntryList extends core\IArrayInterchange, \Countable {
     public function clearEntries();
 }
 
-interface IEntryListGenerator {
-    public function generateEntries(IEntryList $entryList);
+interface IEntryListGenerator
+{
+    public function generateEntries(IEntryList $entryList=null): arch\navigation\IEntryList;
 }
 
 
-trait TEntryGenerator {
-
-    public function __call($method, $args) {
+trait TEntryGenerator
+{
+    public function __call($method, $args)
+    {
         $prefix = substr($method, 0, 3);
 
-        if($prefix == 'new' || $prefix == 'add') {
+        if ($prefix == 'new' || $prefix == 'add') {
             $output = arch\navigation\entry\Base::factory(substr($method, 3), ...$args);
 
-            if($prefix == 'add') {
+            if ($prefix == 'add') {
                 $this->addEntry($output);
             }
 
@@ -62,32 +65,36 @@ trait TEntryGenerator {
     }
 }
 
-trait TEntryList {
-
+trait TEntryList
+{
     use TEntryGenerator;
 
     protected $_entries = [];
     protected $_isSorted = false;
 
-    public static function fromArray(array $entries) {
+    public static function fromArray(array $entries)
+    {
         return (new self())->addEntries(...$entries);
     }
 
-    public function setEntries(...$entries) {
+    public function setEntries(...$entries)
+    {
         return $this->clearEntries()->addEntries(...$entries);
     }
 
-    public function addEntries(...$entries) {
-        foreach($entries as $entry) {
+    public function addEntries(...$entries)
+    {
+        foreach ($entries as $entry) {
             $this->addEntry($entry);
         }
 
         return $this;
     }
 
-    public function addEntry($entry) {
-        if(!$entry instanceof IEntry) {
-            if(is_array($entry)) {
+    public function addEntry($entry)
+    {
+        if (!$entry instanceof IEntry) {
+            if (is_array($entry)) {
                 $entry = arch\navigation\entry\Base::fromArray($entry);
             } else {
                 throw core\Error::EArgument([
@@ -97,7 +104,7 @@ trait TEntryList {
             }
         }
 
-        if($entry->getWeight() == 0) {
+        if ($entry->getWeight() == 0) {
             $entry->setWeight(count($this->_entries) + 1);
         }
 
@@ -107,51 +114,56 @@ trait TEntryList {
         return $this;
     }
 
-    public function addLink($uri, $body, $icon=null) {
+    public function addLink($uri, $body, $icon=null)
+    {
         $entry = new arch\navigation\entry\Link($uri, $body, $icon);
         $this->addEntry($entry);
         return $entry;
     }
 
-    public function addSpacer() {
+    public function addSpacer()
+    {
         $entry = new arch\navigation\entry\Spacer();
         $this->addEntry($entry);
         return $entry;
     }
 
-    public function addMenu($delegate, $text, $icon=null) {
+    public function addMenu($delegate, $text, $icon=null)
+    {
         $entry = new arch\navigation\entry\Menu($delegate, $text, $icon);
         $this->addEntry($entry);
         return $entry;
     }
 
-    public function getEntry($id) {
-        if(isset($this->_entries[$id])) {
+    public function getEntry($id)
+    {
+        if (isset($this->_entries[$id])) {
             return $this->_entries[$id];
         }
 
         return null;
     }
 
-    public function getEntryByIndex($index) {
+    public function getEntryByIndex($index)
+    {
         $index = (int)$index;
         $count = count($this->_entries);
 
-        if($index < 0) {
+        if ($index < 0) {
             $index += $count;
 
-            if($index < 0) {
+            if ($index < 0) {
                 return null;
             }
         }
 
-        if($index > $count) {
+        if ($index > $count) {
             return null;
         }
 
         $t = $this->_entries;
 
-        for($i = 0; $i < $index; $i++) {
+        for ($i = 0; $i < $index; $i++) {
             array_shift($t);
         }
 
@@ -159,13 +171,15 @@ trait TEntryList {
         return $output;
     }
 
-    public function getLastEntry() {
+    public function getLastEntry()
+    {
         $t = $this->_entries;
         return array_pop($t);
     }
 
-    public function getEntries() {
-        if(!$this->_isSorted) {
+    public function getEntries()
+    {
+        if (!$this->_isSorted) {
             $this->_sortEntries();
             $this->_isSorted = true;
         }
@@ -173,76 +187,82 @@ trait TEntryList {
         return $this->_entries;
     }
 
-    protected function _sortEntries() {
-        usort($this->_entries, function($a, $b) {
+    protected function _sortEntries()
+    {
+        usort($this->_entries, function ($a, $b) {
             return $a->getWeight() > $b->getWeight();
         });
     }
 
-    public function removeEntry($id) {
+    public function removeEntry($id)
+    {
         unset($this->_entries[$id]);
         return $this;
     }
 
-    public function clearEntries() {
+    public function clearEntries()
+    {
         $this->_entries = [];
         return $this;
     }
 
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return $this->getEntries();
     }
 
-    public function count() {
+    public function count()
+    {
         return count($this->_entries);
     }
 }
 
 
-interface ILink extends user\IAccessControlled {
+interface ILink extends user\IAccessControlled
+{
 
 // Uri
     public function setUri($uri, $setAsMatchRequest=false);
     public function getUri();
 
-// Body
+    // Body
     public function setBody($body);
     public function getBody();
 
-// Match request
+    // Match request
     public function setMatchRequest($request);
     public function getMatchRequest();
 
-// Icon
+    // Icon
     public function setIcon(string $icon=null);
     public function getIcon();
 
-// Note
+    // Note
     public function setNote($note);
     public function getNote();
 
-// Description
+    // Description
     public function setDescription($description);
     public function getDescription();
     public function shouldShowDescription(bool $flag=null);
 
-// Visibility
+    // Visibility
     public function shouldHideIfInaccessible(bool $flag=null);
 
-// Disposition
+    // Disposition
     public function setDisposition($disposition);
     public function getDisposition();
 
-// Alt matches
+    // Alt matches
     public function addAltMatches(...$matches);
     public function addAltMatch($match);
     public function getAltMatches();
     public function clearAltMatches();
 }
 
-trait TSharedLinkComponents {
-
+trait TSharedLinkComponents
+{
     use user\TAccessControlled;
 
     protected $_uri;
@@ -253,43 +273,48 @@ trait TSharedLinkComponents {
     protected $_hideIfInaccessible = false;
     protected $_altMatches = [];
 
-// Uri
-    public function setUri($uri, $setAsMatchRequest=false) {
+    // Uri
+    public function setUri($uri, $setAsMatchRequest=false)
+    {
         $this->_uri = $uri;
 
-        if($setAsMatchRequest) {
+        if ($setAsMatchRequest) {
             $this->setMatchRequest($uri);
         }
 
         return $this;
     }
 
-    public function getUri() {
+    public function getUri()
+    {
         return $this->_uri;
     }
 
 
-// Match request
-    public function setMatchRequest($request) {
+    // Match request
+    public function setMatchRequest($request)
+    {
         $this->_matchRequest = $request;
         return $this;
     }
 
-    public function getMatchRequest() {
+    public function getMatchRequest()
+    {
         return $this->_matchRequest;
     }
 
 
-    public function ensureMatchRequest() {
-        if($this->_matchRequest) {
+    public function ensureMatchRequest()
+    {
+        if ($this->_matchRequest) {
             return $this;
         }
 
-        if($this->_uri instanceof arch\IRequest) {
+        if ($this->_uri instanceof arch\IRequest) {
             $this->_matchRequest = $this->_uri;
         }
 
-        if(is_string($this->_uri) && substr($this->_uri, 0, 4) != 'http') {
+        if (is_string($this->_uri) && substr($this->_uri, 0, 4) != 'http') {
             $this->_matchRequest = $this->_uri;
         }
 
@@ -297,28 +322,33 @@ trait TSharedLinkComponents {
     }
 
 
-// Note
-    public function setNote($note) {
+    // Note
+    public function setNote($note)
+    {
         $this->_note = $note;
         return $this;
     }
 
-    public function getNote() {
+    public function getNote()
+    {
         return $this->_note;
     }
 
-// Description
-    public function setDescription($description) {
+    // Description
+    public function setDescription($description)
+    {
         $this->_description = $description;
         return $this;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->_description;
     }
 
-    public function shouldShowDescription(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldShowDescription(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_showDescription = $flag;
             return $this;
         }
@@ -327,9 +357,10 @@ trait TSharedLinkComponents {
     }
 
 
-// Visibility
-    public function shouldHideIfInaccessible(bool $flag=null) {
-        if($flag !== null) {
+    // Visibility
+    public function shouldHideIfInaccessible(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_hideIfInaccessible = $flag;
             return $this;
         }
@@ -338,36 +369,41 @@ trait TSharedLinkComponents {
     }
 
 
-// Alt matches
-    public function addAltMatches(...$matches) {
-        foreach($matches as $match) {
+    // Alt matches
+    public function addAltMatches(...$matches)
+    {
+        foreach ($matches as $match) {
             $this->addAltMatch($match);
         }
 
         return $this;
     }
 
-    public function addAltMatch($match) {
+    public function addAltMatch($match)
+    {
         $match = trim($match);
 
-        if(strlen($match)) {
+        if (strlen($match)) {
             $this->_altMatches[] = $match;
         }
 
         return $this;
     }
 
-    public function getAltMatches() {
+    public function getAltMatches()
+    {
         return $this->_altMatches;
     }
 
-    public function clearAltMatches() {
+    public function clearAltMatches()
+    {
         $this->_altMatches = [];
         return $this;
     }
 
-// IO
-    protected function _setSharedLinkComponentData(core\collection\ITree $data) {
+    // IO
+    protected function _setSharedLinkComponentData(core\collection\ITree $data)
+    {
         return $this
             ->setUri($data['uri'])
             ->setMatchRequest($data['matchRequest'])
@@ -380,7 +416,8 @@ trait TSharedLinkComponents {
             ->shouldCheckAccess((bool)$data->get('checkAccess', true));
     }
 
-    protected function _getSharedLinkComponentData() {
+    protected function _getSharedLinkComponentData()
+    {
         return [
             'uri' => $this->_uri,
             'matchRequest' => $this->_matchRequest,
@@ -400,7 +437,8 @@ trait TSharedLinkComponents {
 
 ############
 ## Sitemap
-interface ISitemapEntry {
+interface ISitemapEntry
+{
     public function setUrl(string $url);
     public function getUrl();
     public function setLastModifiedDate($date);

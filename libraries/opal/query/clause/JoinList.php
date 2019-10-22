@@ -9,10 +9,10 @@ use df;
 use df\core;
 use df\opal;
 
-class JoinList extends ListBase implements opal\query\IJoinClauseList {
-
-
-    public function on($localField, $operator, $foreignField) {
+class JoinList extends ListBase implements opal\query\IJoinClauseList
+{
+    public function on($localField, $operator, $foreignField)
+    {
         $source = $this->getSource();
 
         $this->addJoinClause(
@@ -32,7 +32,8 @@ class JoinList extends ListBase implements opal\query\IJoinClauseList {
         return $this;
     }
 
-    public function orOn($localField, $operator, $foreignField) {
+    public function orOn($localField, $operator, $foreignField)
+    {
         $manager = $this->getSourceManager();
         $source = $this->getSource();
 
@@ -53,33 +54,40 @@ class JoinList extends ListBase implements opal\query\IJoinClauseList {
         return $this;
     }
 
-    public function beginOnClause() {
+    public function beginOnClause()
+    {
         return new JoinList($this);
     }
 
-    public function beginOrOnClause() {
+    public function beginOrOnClause()
+    {
         return new JoinList($this, true);
     }
 
 
-    public function addJoinClause(opal\query\IJoinClauseProvider $clause=null) {
+    public function addJoinClause(opal\query\IJoinClauseProvider $clause=null)
+    {
         return $this->_addClause($clause);
     }
 
-    public function getJoinClauseList() {
+    public function getJoinClauseList()
+    {
         return $this;
     }
 
-    public function hasJoinClauses() {
+    public function hasJoinClauses()
+    {
         return !$this->isEmpty();
     }
 
-    public function clearJoinClauses() {
+    public function clearJoinClauses()
+    {
         return $this->clear();
     }
 
-    public function getParentSourceManager() {
-        if($this->_parent instanceof opal\query\IAttachQuery
+    public function getParentSourceManager()
+    {
+        if ($this->_parent instanceof opal\query\IAttachQuery
         || !$this->_parent instanceof opal\query\IParentSourceProvider) {
             return $this->_parent->getSourceManager();
         } else {
@@ -87,8 +95,9 @@ class JoinList extends ListBase implements opal\query\IJoinClauseList {
         }
     }
 
-    public function getParentSource() {
-        if($this->_parent instanceof opal\query\IJoinProviderQuery
+    public function getParentSource()
+    {
+        if ($this->_parent instanceof opal\query\IJoinProviderQuery
         || $this->_parent instanceof opal\query\IAttachProviderQuery
         || !$this->_parent instanceof opal\query\IParentSourceProvider) {
             return $this->_parent->getSource();
@@ -97,31 +106,17 @@ class JoinList extends ListBase implements opal\query\IJoinClauseList {
         }
     }
 
-    public function getParentSourceAlias() {
+    public function getParentSourceAlias()
+    {
         return $this->getParentSource()->getAlias();
     }
 
-    public function endClause() {
-        if(!empty($this->_clauses)) {
+    public function endClause()
+    {
+        if (!empty($this->_clauses)) {
             $this->_parent->addJoinClause($this);
         }
 
         return $this->_parent;
-    }
-
-
-    public function getLocalFieldList() {
-        $output = [];
-
-        foreach($this->_clauses as $clause) {
-            if($clause instanceof opal\query\IClauseList) {
-                $output = array_merge($output, $clause->getLocalFieldList());
-            } else {
-                $field = $clause->getField();
-                $output[$field->getQualifiedName()] = $field;
-            }
-        }
-
-        return $output;
     }
 }

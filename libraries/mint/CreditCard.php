@@ -131,7 +131,7 @@ class CreditCard implements ICreditCard, Inspectable
         $str = '';
 
         foreach (array_reverse(str_split($number)) as $i => $c) {
-            $str .= $i % 2 ? $c * 2 : $c;
+            $str .= $i % 2 ? (int)$c * 2 : $c;
         }
 
         return array_sum(str_split($str)) % 10 === 0;

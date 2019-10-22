@@ -225,7 +225,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Inspectable
             return $this;
         }
 
-        if ($input instanceof IPath) {
+        if ($input instanceof self) {
             $this->_collection = $input->_collection;
             $this->_isAbsolute = $input->_isAbsolute;
             $this->_autoCanonicalize = $input->_autoCanonicalize;

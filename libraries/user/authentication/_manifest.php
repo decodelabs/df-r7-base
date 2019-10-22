@@ -9,37 +9,39 @@ use df;
 use df\core;
 use df\user;
 
-
-
-
 // Interfaces
-interface IAdapter {
+interface IAdapter
+{
     public static function getDefaultConfigValues();
     public static function getDisplayName(): string;
     public function getName(): string;
-    public function authenticate(IRequest $request, IResult $result);
+    public function authenticate(IRequest $request, Result $result);
 }
 
-trait TAdapter {
-
+trait TAdapter
+{
     protected $_manager;
 
-    public function __construct(user\IManager $manager) {
+    public function __construct(user\IManager $manager)
+    {
         $this->_manager = $manager;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 }
 
-interface IIdentityRecallAdapter extends IAdapter {
+interface IIdentityRecallAdapter extends IAdapter
+{
     public function recallIdentity();
 }
 
 
-interface IRequest extends core\collection\IAttributeContainer {
+interface IRequest extends core\collection\IAttributeContainer
+{
     public function setAdapterName($adapter);
     public function getAdapterName();
 
@@ -50,22 +52,8 @@ interface IRequest extends core\collection\IAttributeContainer {
     public function getCredential($name);
 }
 
-interface IResult {
-    public function setAdapterName($adapter);
-    public function getAdapterName();
-
-    public function setIdentity($identity);
-    public function getIdentity();
-
-    public function setCode($code);
-    public function getCode();
-    public function isValid(): bool;
-
-    public function setDomainInfo(IDomainInfo $domainInfo);
-    public function getDomainInfo();
-}
-
-interface IDomainInfo {
+interface IDomainInfo
+{
     public function getIdentity();
     public function getPassword();
     public function getBindDate();

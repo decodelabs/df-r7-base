@@ -63,7 +63,7 @@ interface IInitiator extends mesh\job\ITransactionAware
     public function beginDelete();
 
     public function beginCorrelation(ISourceProvider $parent, $field, $alias=null);
-    public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null);
+    public function beginPopulate(IPopulatableQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null);
     public function beginCombine(ICombinableQuery $parent, array $fields);
 
     public function beginJoin(IQuery $parent, array $fields=[], $type=IJoinQuery::INNER);
@@ -1115,6 +1115,8 @@ interface IClauseList extends
     public function getParent();
     public function getQuery();
 
+    public function isEmpty(): bool;
+
     public function _addClause(IClauseProvider $clause=null);
     public function clear();
     public function endClause();
@@ -1124,6 +1126,7 @@ interface IClauseList extends
     public function getClausesFor(opal\query\ISource $source, opal\query\IClauseFactory $parent=null);
     public function extractClausesFor(opal\query\ISource $source, $checkValues=true);
     public function isLocalTo(array $sources);
+    public function getLocalFieldList(): array;
 }
 
 interface IJoinClauseList extends IClauseList, IJoinClauseFactory, IParentSourceProvider
@@ -1334,16 +1337,17 @@ trait TFilterConsumer
 
     public function applyFilters(IQuery $query)
     {
-        if (!empty($this->_filters)) {
-            $clause = $query->beginWhereClause();
-
-            foreach ($this->_filters as $filter) {
-                $filter->invoke($clause, $this);
-            }
-
-            $clause->endClause();
+        if (empty($this->_filters) || !$query instanceof IWhereClauseQuery) {
+            return $this;
         }
 
+        $clause = $query->beginWhereClause();
+
+        foreach ($this->_filters as $filter) {
+            $filter->invoke($clause, $this);
+        }
+
+        $clause->endClause();
         return $this;
     }
 }

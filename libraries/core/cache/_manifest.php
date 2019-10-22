@@ -10,7 +10,7 @@ use df\core;
 
 interface IStore extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Countable
 {
-    public static function getInstance(): IStore;
+    public static function getInstance();
     public static function getCacheId(): string;
     public static function createCacheId(): string;
 
@@ -55,7 +55,7 @@ interface ISessionExtendedCache extends ICache
 
 
 
-interface IBackend extends core\IValueMap, \Countable
+interface IBackend extends \Countable
 {
     public static function purgeApp(core\collection\ITree $options, core\io\IMultiplexer $io=null);
     public static function purgeAll(core\collection\ITree $options, core\io\IMultiplexer $io=null);
@@ -66,6 +66,10 @@ interface IBackend extends core\IValueMap, \Countable
     public function getStats(): array;
     public function setLifeTime(int $lifeTime);
     public function getLifeTime(): int;
+    public function set($key, $value, $lifeTime=null);
+    public function get($key, $default=null);
+    public function has(...$keys);
+    public function remove(...$keys);
     public function clear();
     public function clearBegins(string $key);
     public function clearMatches(string $regex);

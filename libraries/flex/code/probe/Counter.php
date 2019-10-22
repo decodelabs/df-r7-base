@@ -10,8 +10,8 @@ use df\core;
 use df\flex;
 use df\halo;
 
-class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayAccess {
-
+class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayAccess
+{
     use flex\code\TProbe;
     use core\io\TAcceptTypeProcessor;
 
@@ -26,20 +26,23 @@ class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayA
     protected $_types = [];
     protected $_totals;
 
-    public function __construct(array $acceptTypes=null) {
-        if($acceptTypes !== null) {
+    public function __construct(array $acceptTypes=null)
+    {
+        if ($acceptTypes !== null) {
             $this->setAcceptTypes(...$acceptTypes);
         }
     }
 
-    public function __clone() {
-        foreach($this->_types as $ext => $type) {
+    public function __clone()
+    {
+        foreach ($this->_types as $ext => $type) {
             $this->_types[$ext] = clone $type;
         }
     }
 
-    public function probe(flex\code\ILocation $location, $localPath) {
-        if(substr($localPath, -1) == '~') {
+    public function probe(flex\code\Location $location, $localPath)
+    {
+        if (substr($localPath, -1) == '~') {
             return;
         }
 
@@ -47,7 +50,7 @@ class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayA
         $basename = $path->getBasename();
         $ext = $path->getExtension();
 
-        if($ext === null
+        if ($ext === null
         || in_array($ext, self::BLACKLIST)
         || (!empty($this->_acceptTypes) && !$this->isTypeAccepted($ext))) {
             return;
@@ -55,10 +58,10 @@ class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayA
 
         $lines = 0;
 
-        if(in_array($ext, self::TEXT_TYPES)) {
+        if (in_array($ext, self::TEXT_TYPES)) {
             $fp = fopen($path, 'r');
 
-            while(fgets($fp)) {
+            while (fgets($fp)) {
                 $lines++;
             }
 
@@ -67,7 +70,7 @@ class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayA
 
         $bytes = filesize($path);
 
-        if(!isset($this->_types[$ext])) {
+        if (!isset($this->_types[$ext])) {
             $this->_types[$ext] = $type = new Counter_Type($ext);
         } else {
             $type = $this->_types[$ext];
@@ -76,39 +79,59 @@ class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayA
         $type->addFile($lines, $bytes);
     }
 
-    public function exportTo(flex\code\IProbe $probe) {
-        foreach($this->_types as $type) {
-            if(!isset($probe->_types[$type->extension])) {
-                $probe->_types[$type->extension] = $type;
+    public function exportTo(flex\code\IProbe $probe)
+    {
+        if (!$probe instanceof self) {
+            return;
+        }
+
+        $probeTypes = $probe->getTypes();
+
+        foreach ($this->_types as $type) {
+            if (!isset($probeTypes[$type->extension])) {
+                $probeTypes[$type->extension] = $type;
             } else {
-                $probe->_types[$type->extension]->import($type);
+                $probeTypes[$type->extension]->import($type);
             }
         }
+
+        $probe->setTypes($probeTypes);
     }
 
-    public function getTypes() {
+    public function setTypes(array $types)
+    {
+        $this->_types = $types;
+        return $this;
+    }
+
+    public function getTypes()
+    {
         return $this->_types;
     }
 
-    public function getType($type) {
-        if(isset($this->_types[$type])) {
+    public function getType($type)
+    {
+        if (isset($this->_types[$type])) {
             return $this->_types[$type];
         }
     }
 
-    public function hasType($type) {
+    public function hasType($type)
+    {
         return isset($this->_types[$type]);
     }
 
-    public function countTypes() {
+    public function countTypes()
+    {
         return count($this->_types);
     }
 
-    public function getTotals() {
-        if(!$this->_totals) {
+    public function getTotals()
+    {
+        if (!$this->_totals) {
             $this->_totals = new Counter_Type('TOTAL');
 
-            foreach($this->_types as $type) {
+            foreach ($this->_types as $type) {
                 $this->_totals->import($type);
             }
         }
@@ -116,47 +139,55 @@ class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayA
         return $this->_totals;
     }
 
-    public function sortByLines() {
-        uasort($this->_types, function($a, $b) {
+    public function sortByLines()
+    {
+        uasort($this->_types, function ($a, $b) {
             return $a->lines < $b->lines;
         });
 
         return $this;
     }
 
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value)
+    {
         throw new flex\code\LogicException('Counter probe is read only');
     }
 
-    public function offsetGet($key) {
+    public function offsetGet($key)
+    {
         return $this->getType($key);
     }
 
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         return $this->hasType($key);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         throw new flex\code\LogicException('Counter probe is read only');
     }
 }
 
-class Counter_Type {
-
+class Counter_Type
+{
     public $extension;
     public $files = 0;
     public $lines = 0;
     public $bytes = 0;
 
-    public function __construct($extension) {
+    public function __construct($extension)
+    {
         $this->extension = $extension;
     }
 
-    public function getExtension() {
+    public function getExtension()
+    {
         return $this->extension;
     }
 
-    public function addFile($lines, $bytes) {
+    public function addFile($lines, $bytes)
+    {
         $this->files++;
         $this->lines += $lines;
         $this->bytes += $bytes;
@@ -164,7 +195,8 @@ class Counter_Type {
         return $this;
     }
 
-    public function import(self $type) {
+    public function import(self $type)
+    {
         $this->files += $type->files;
         $this->lines += $type->lines;
         $this->bytes += $type->bytes;
@@ -172,15 +204,18 @@ class Counter_Type {
         return $this;
     }
 
-    public function countFiles() {
+    public function countFiles()
+    {
         return $this->files;
     }
 
-    public function countLines() {
+    public function countLines()
+    {
         return $this->lines;
     }
 
-    public function countBytes() {
+    public function countBytes()
+    {
         return $this->bytes;
     }
 }

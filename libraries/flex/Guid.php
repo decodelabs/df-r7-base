@@ -134,7 +134,7 @@ class Guid implements IGuid, Inspectable
         }
 
         if ($string instanceof IGuid) {
-            return $string->_bytes;
+            return $string->getBytes();
         }
 
         if (strlen($string) == $length) {

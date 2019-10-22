@@ -10,23 +10,33 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class Replace extends mesh\job\Base implements opal\record\IJob {
+use DecodeLabs\Glitch;
 
+class Replace extends mesh\job\Base implements opal\record\IJob
+{
     use opal\record\TJob;
 
-    public function __construct(opal\record\IRecord $record) {
+    public function __construct(opal\record\IRecord $record)
+    {
         $this->_record = $record;
         $this->_setId(opal\record\Base::extractRecordId($record));
     }
 
-    public function getRecordJobName() {
+    public function getRecordJobName()
+    {
         return 'Replace';
     }
 
-    public function execute() {
+    public function execute()
+    {
         $data = $this->_record->getValuesForStorage();
+        $adapter = $this->getAdapter();
 
-        $id = $this->getAdapter()->replace($data)->execute();
+        if (!$adapter instanceof opal\query\IEntryPoint) {
+            throw Glitch::ELogic('Adapter is not capable of creating queries', null, $adapter);
+        }
+
+        $id = $adapter->replace($data)->execute();
         $this->_record->acceptChanges($id);
 
         return $this;

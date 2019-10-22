@@ -10,15 +10,16 @@ use df\core;
 use df\link;
 use df\arch;
 
-class Url extends core\uri\Url implements IUrl {
-
+class Url extends core\uri\Url implements IUrl
+{
     use core\uri\TUrl_CredentialContainer;
     use core\uri\TUrl_DomainPortContainer;
 
     protected $_directoryRequest;
 
-    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, core\app\runner\http\Router_Map $map=null, arch\IRequest $routedRequest=null) {
-        if($request->isJustFragment()) {
+    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, core\app\runner\http\Router_Map $map=null, arch\IRequest $routedRequest=null)
+    {
+        if ($request->isJustFragment()) {
             $output = new self('#'.$request->getFragment());
         } else {
             $path = null;
@@ -27,52 +28,52 @@ class Url extends core\uri\Url implements IUrl {
             $output = new static();
             $output->_scheme = $scheme;
 
-            if($request->_path) {
+            if ($request->_path) {
                 $path = clone $request->_path;
                 $area = $path->get(0);
                 $mappedArea = null;
 
-                if($map && $map->area != '*') {
-                    if($routedRequest) {
+                if ($map && $map->area != '*') {
+                    if ($routedRequest) {
                         $mappedArea = $routedRequest->getArea();
                     } else {
                         $mappedArea = $area;
                     }
                 }
 
-                if($area == $request::AREA_MARKER.$request::DEFAULT_AREA
+                if ($area == $request::AREA_MARKER.$request::DEFAULT_AREA
                 || ($mappedArea && $area == $request::AREA_MARKER.$mappedArea)) {
                     $path->shift();
                 }
 
-                if($path->getBasename() == 'index') {
+                if ($path->getBasename() == 'index') {
                     $path->shouldAddTrailingSlash(true)->pop();
                 }
 
-                if($map && !empty($map->path)) {
+                if ($map && !empty($map->path)) {
                     $path->unshift($map->path);
                 }
-            } else if($map && !empty($map->path)) {
+            } elseif ($map && !empty($map->path)) {
                 $path = new core\uri\Path($map->path);
                 $path->shouldAddTrailingSlash(true);
             }
 
-            if($map) {
+            if ($map) {
                 $domain = $map->domain;
 
-                if($map->area != '*') {
+                if ($map->area != '*') {
                     $wildArea = $map->area;
 
-                    if($wildArea == '*') {
+                    if ($wildArea == '*') {
                         $wildArea = $area;
                     }
 
                     $sub = $request->query[$wildArea];
                     unset($request->query->{$wildArea});
 
-                    if(strlen($sub)) {
+                    if (strlen($sub)) {
                         $domain = $sub.'.'.$domain;
-                    } else if(isset($_SERVER['HTTP_HOST']) && stristr($_SERVER['HTTP_HOST'], '.'.$domain)) {
+                    } elseif (isset($_SERVER['HTTP_HOST']) && stristr($_SERVER['HTTP_HOST'], '.'.$domain)) {
                         $domain = $_SERVER['HTTP_HOST'];
                     }
 
@@ -85,23 +86,23 @@ class Url extends core\uri\Url implements IUrl {
             }
 
 
-            if(!empty($path)) {
+            if (!empty($path)) {
                 $output->_path = $path;
             }
 
-            if(!empty($request->_query)) {
+            if (!empty($request->_query)) {
                 $output->_query = $request->_query;
 
-                if(isset($output->_query->cts) && $output->_query->cts->getValue() == null) {
-                    if(df\Launchpad::$compileTimestamp) {
+                if (isset($output->_query->cts) && $output->_query->cts->getValue() == null) {
+                    if (df\Launchpad::$compileTimestamp) {
                         $output->query->cts = df\Launchpad::$compileTimestamp;
-                    } else if(df\Launchpad::$app && df\Launchpad::$app->isDevelopment()) {
+                    } elseif (df\Launchpad::$app && df\Launchpad::$app->isDevelopment()) {
                         $output->query->cts = time();
                     }
                 }
             }
 
-            if(!empty($request->_fragment)) {
+            if (!empty($request->_fragment)) {
                 $output->_fragment = $request->_fragment;
             }
         }
@@ -110,24 +111,25 @@ class Url extends core\uri\Url implements IUrl {
         return $output;
     }
 
-    public static function fromEnvironment() {
-        if(isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) {
+    public static function fromEnvironment()
+    {
+        if (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) {
             $url = 'https';
         } else {
             $url = 'http';
         }
 
-        if(isset($_SERVER['HTTP_X_ORIGINAL_HOST'])) {
+        if (isset($_SERVER['HTTP_X_ORIGINAL_HOST'])) {
             $url .= '://'.$_SERVER['HTTP_X_ORIGINAL_HOST'].':'.$_SERVER['SERVER_PORT'];
-        } else if(isset($_SERVER['HTTP_HOST'])) {
+        } elseif (isset($_SERVER['HTTP_HOST'])) {
             $url .= '://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'];
         } else {
             $url .= '://'.gethostname();
         }
 
-        if(isset($_SERVER['REQUEST_URI'])) {
+        if (isset($_SERVER['REQUEST_URI'])) {
             $req = ltrim($_SERVER['REQUEST_URI'], '/');
-        } else if(isset($_SERVER['argv'][2])) {
+        } elseif (isset($_SERVER['argv'][2])) {
             $req = $_SERVER['argv'][2];
         } else {
             $req = '';
@@ -140,33 +142,35 @@ class Url extends core\uri\Url implements IUrl {
         return new static($url);
     }
 
-    public static function factory($url) {
-        if($url instanceof IUrl) {
+    public static function factory($url)
+    {
+        if ($url instanceof IUrl) {
             return $url;
         }
 
         return new static($url);
     }
 
-    public function import($url='') {
-        if(empty($url)) {
+    public function import($url='')
+    {
+        if (empty($url)) {
             return $this;
         }
 
         $this->reset();
 
-        if($url instanceof self) {
+        if ($url instanceof self) {
             $this->_scheme = $url->_scheme;
             $this->_username = $url->_username;
             $this->_password = $url->_password;
             $this->_domain = $url->_domain;
             $this->_port = $url->_port;
 
-            if($url->_path !== null) {
+            if ($url->_path !== null) {
                 $this->_path = clone $url->_path;
             }
 
-            if($url->_query !== null) {
+            if ($url->_query !== null) {
                 $this->_query = clone $url->_query;
             }
 
@@ -187,7 +191,7 @@ class Url extends core\uri\Url implements IUrl {
         $this->setQuery(array_shift($parts));
 
         // Scheme
-        if(substr($url, 0, 2) == '//') {
+        if (substr($url, 0, 2) == '//') {
             $url = ltrim($url, '/');
             $this->_scheme = null;
         } else {
@@ -199,18 +203,18 @@ class Url extends core\uri\Url implements IUrl {
         $url = urldecode($url);
         $path = explode('/', $url);
 
-        if(substr($url, 0, 1) == '/') {
+        if (substr($url, 0, 1) == '/') {
             unset($path[0]);
             $runner = df\Launchpad::$runner;
 
-            if($runner instanceof core\app\runner\Http) {
+            if ($runner instanceof core\app\runner\Http) {
                 $requestUrl = $runner->getHttpRequest()->getUrl();
 
                 $this->_username = $requestUrl->getUsername();
                 $this->_password = $requestUrl->getPassword();
                 $this->_domain = $requestUrl->getDomain();
                 $this->_port = $requestUrl->getPort();
-            } else if(isset($_SERVER['HTTP_HOST'])) {
+            } elseif (isset($_SERVER['HTTP_HOST'])) {
                 $this->_domain = $_SERVER['HTTP_HOST'];
                 $this->_port = $_SERVER['SERVER_PORT'];
             }
@@ -222,7 +226,7 @@ class Url extends core\uri\Url implements IUrl {
             $domain = array_pop($credentials);
             $credentials = array_shift($credentials);
 
-            if(!empty($credentials)) {
+            if (!empty($credentials)) {
                 $credentials = explode(':', $credentials, 2);
                 $this->setUsername(array_shift($credentials));
                 $this->setPassword(array_shift($credentials));
@@ -233,12 +237,12 @@ class Url extends core\uri\Url implements IUrl {
             $this->setDomain(array_shift($port));
             $this->setPort(array_shift($port));
 
-            if(!empty($path) && empty($path[0])) {
+            if (!empty($path) && empty($path[0])) {
                 array_shift($path);
             }
         }
 
-        if(!empty($path)) {
+        if (!empty($path)) {
             $this->setPath($path);
         }
 
@@ -246,8 +250,9 @@ class Url extends core\uri\Url implements IUrl {
     }
 
 
-    public function __get($member) {
-        switch($member) {
+    public function __get($member)
+    {
+        switch ($member) {
             case 'username':
                 return $this->getUsername();
 
@@ -268,8 +273,9 @@ class Url extends core\uri\Url implements IUrl {
         }
     }
 
-    public function __set($member, $value) {
-        switch($member) {
+    public function __set($member, $value)
+    {
+        switch ($member) {
             case 'username':
                 return $this->setUsername($value);
 
@@ -290,11 +296,12 @@ class Url extends core\uri\Url implements IUrl {
         }
     }
 
-// Scheme
-    public function setScheme($scheme) {
+    // Scheme
+    public function setScheme($scheme)
+    {
         $scheme = strtolower($scheme);
 
-        if($scheme !== 'http' && $scheme !== 'https') {
+        if ($scheme !== 'http' && $scheme !== 'https') {
             $scheme = 'http';
         }
 
@@ -303,9 +310,10 @@ class Url extends core\uri\Url implements IUrl {
         return $this;
     }
 
-    public function isSecure(bool $flag=null) {
-        if($flag !== null) {
-            if($flag) {
+    public function isSecure(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if ($flag) {
                 $this->_scheme = 'https';
             } else {
                 $this->_scheme = 'http';
@@ -318,10 +326,11 @@ class Url extends core\uri\Url implements IUrl {
     }
 
 
-// Port
-    public function getPort() {
-        if($this->_port === null) {
-            if($this->_scheme == 'https') {
+    // Port
+    public function getPort()
+    {
+        if ($this->_port === null) {
+            if ($this->_scheme == 'https') {
                 return 443;
             }
 
@@ -332,24 +341,27 @@ class Url extends core\uri\Url implements IUrl {
     }
 
 
-// Arch request
-    public function setDirectoryRequest(arch\IRequest $request=null) {
+    // Arch request
+    public function setDirectoryRequest(arch\IRequest $request=null)
+    {
         $this->_directoryRequest = $request;
         return $this;
     }
 
-    public function getDirectoryRequest() {
+    public function getDirectoryRequest()
+    {
         return $this->_directoryRequest;
     }
 
 
-// Strings
-    public function toString(): string {
-        if($this->isJustFragment()) {
+    // Strings
+    public function toString(): string
+    {
+        if ($this->isJustFragment()) {
             return $this->_getFragmentString();
         }
 
-        if($this->_scheme === null) {
+        if ($this->_scheme === null) {
             $output = '//';
         } else {
             $output = $this->getScheme().'://';
@@ -360,7 +372,7 @@ class Url extends core\uri\Url implements IUrl {
 
         $defaultPort = 80;
 
-        if($this->_scheme == 'https') {
+        if ($this->_scheme == 'https') {
             $defaultPort = 443;
         }
 
@@ -370,8 +382,9 @@ class Url extends core\uri\Url implements IUrl {
         return $output;
     }
 
-    public function getLocalString() {
-        if($this->isJustFragment()) {
+    public function getLocalString()
+    {
+        if ($this->isJustFragment()) {
             return $this->_getFragmentString();
         }
 
@@ -382,8 +395,9 @@ class Url extends core\uri\Url implements IUrl {
         return $output;
     }
 
-    public function getOrigin(): string {
-        if($this->_scheme === null) {
+    public function getOrigin(): string
+    {
+        if ($this->_scheme === null) {
             $output = 'http://';
         } else {
             $output = $this->getScheme().'://';
@@ -392,7 +406,7 @@ class Url extends core\uri\Url implements IUrl {
         $output .= $this->_domain;
         $defaultPort = 80;
 
-        if($this->_scheme == 'https') {
+        if ($this->_scheme == 'https') {
             $defaultPort = 443;
         }
 
@@ -400,14 +414,15 @@ class Url extends core\uri\Url implements IUrl {
         return $output;
     }
 
-    public function toReadableString() {
-        if($this->isJustFragment()) {
+    public function toReadableString()
+    {
+        if ($this->isJustFragment()) {
             return $this->_getFragmentString();
         }
 
         $local = $this->getLocalString();
 
-        if($local == '/') {
+        if ($local == '/') {
             $local = '';
         }
 

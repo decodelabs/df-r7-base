@@ -12,42 +12,47 @@ use df\flex;
 use df\arch;
 use df\aura;
 
-class Content implements fire\ILayoutContent {
-
+class Content implements fire\ILayoutContent
+{
     use core\collection\TAttributeContainer;
     use flex\xml\TReaderInterchange;
     use flex\xml\TWriterInterchange;
 
     protected $_slots = [];
 
-    public function __construct(string $id=null) {
-        if($id !== null) {
+    public function __construct(string $id=null)
+    {
+        if ($id !== null) {
             $this->setId($id);
         }
     }
 
-// Id
-    public function setId(?string $id) {
+    // Id
+    public function setId(?string $id)
+    {
         return $this->setAttribute('id', $id);
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->getAttribute('id');
     }
 
-// Slots
-    public function setSlots(array $slots) {
+    // Slots
+    public function setSlots(array $slots)
+    {
         $this->_slots = [];
         return $this->addSlots($slots);
     }
 
-    public function addSlots(array $slots) {
-        foreach($slots as $slot) {
-            if(empty($slot)) {
+    public function addSlots(array $slots)
+    {
+        foreach ($slots as $slot) {
+            if (empty($slot)) {
                 continue;
             }
 
-            if(!$slot instanceof fire\ISlotContent) {
+            if (!$slot instanceof fire\ISlotContent) {
                 throw core\Error::EArgument(
                     'Invalid slot content detected'
                 );
@@ -59,26 +64,30 @@ class Content implements fire\ILayoutContent {
         return $this;
     }
 
-    public function setSlot(fire\ISlotContent $slot) {
+    public function setSlot(fire\ISlotContent $slot)
+    {
         $this->_slots[$slot->getId()] = $slot;
         return $this;
     }
 
-    public function getSlot(string $id): ?fire\ISlotContent {
-        if(!isset($this->_slots[$id])) {
+    public function getSlot(string $id): ?fire\ISlotContent
+    {
+        if (!isset($this->_slots[$id])) {
             return null;
         }
 
         return $this->_slots[$id];
     }
 
-    public function getSlots(): array {
+    public function getSlots(): array
+    {
         return $this->_slots;
     }
 
-    public function hasSlot(string ...$ids): bool {
-        foreach($ids as $id) {
-            if(isset($this->_slots[$id])) {
+    public function hasSlot(string ...$ids): bool
+    {
+        foreach ($ids as $id) {
+            if (isset($this->_slots[$id])) {
                 return true;
             }
         }
@@ -86,23 +95,27 @@ class Content implements fire\ILayoutContent {
         return false;
     }
 
-    public function removeSlot(string $id) {
+    public function removeSlot(string $id)
+    {
         unset($this->_slots[$id]);
         return $this;
     }
 
-    public function clearSlots() {
+    public function clearSlots()
+    {
         $this->_slots = [];
         return $this;
     }
 
-    public function countSlots(): int {
+    public function countSlots(): int
+    {
         return count($this->_slots);
     }
 
-// XML interchange
-    public function readXml(flex\xml\IReadable $reader) {
-        if($reader->getTagName() != 'layout') {
+    // XML interchange
+    public function readXml(flex\xml\ITree $reader)
+    {
+        if ($reader->getTagName() != 'layout') {
             throw core\Error::EValue(
                 'Layout content object expected layout xml element'
             );
@@ -110,7 +123,7 @@ class Content implements fire\ILayoutContent {
 
         $this->setId($reader->getAttribute('id'));
 
-        foreach($reader->slot as $slotNode) {
+        foreach ($reader->slot as $slotNode) {
             $slot = new fire\slot\Content();
             $slot->readXml($slotNode);
             $this->setSlot($slot);
@@ -119,11 +132,12 @@ class Content implements fire\ILayoutContent {
         return $this;
     }
 
-    public function writeXml(flex\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWriter $writer)
+    {
         $writer->startElement('layout');
         $writer->setAttributes($this->_attributes);
 
-        foreach($this->_slots as $slot) {
+        foreach ($this->_slots as $slot) {
             $slot->writeXml($writer);
         }
 

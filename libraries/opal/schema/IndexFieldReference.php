@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -81,6 +82,10 @@ class IndexFieldReference implements IIndexFieldReference, Inspectable
 
     public static function fromStorageArray(opal\schema\ISchema $schema, array $data)
     {
+        if (!$schema instanceof opal\schema\IFieldProvider) {
+            throw Glitch::ERuntime('Schem does not provider fields', null, $schema);
+        }
+
         return new self($schema->getField($data['fld']), $data['siz'], $data['des']);
     }
 

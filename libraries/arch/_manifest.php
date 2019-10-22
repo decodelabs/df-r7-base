@@ -12,50 +12,57 @@ use df\user;
 use df\aura;
 use df\flow;
 
-
 // Exceptions
-interface IForcedResponse {
+interface IForcedResponse
+{
     public function setResponse($response);
     public function getResponse();
 }
 
-class ForcedResponse extends \Exception implements IForcedResponse {
-
+class ForcedResponse extends \Exception implements IForcedResponse
+{
     protected $_response;
 
-    public function __construct($response) {
+    public function __construct($response)
+    {
         $this->setResponse($response);
         parent::__construct('forced response');
     }
 
-    public function setResponse($response) {
+    public function setResponse($response)
+    {
         $this->_response = $response;
         return $this;
     }
 
-    public function getResponse() {
+    public function getResponse()
+    {
         return $this->_response;
     }
 }
 
 
-interface IResponseForcer {
+interface IResponseForcer
+{
     public function forceResponse($response);
 }
 
-trait TResponseForcer {
-
-    public function forceResponse($response) {
+trait TResponseForcer
+{
+    public function forceResponse($response)
+    {
         throw new ForcedResponse($response);
     }
 }
 
 
 // Interfaces
-interface IAccess extends user\IState {}
+interface IAccess extends user\IState
+{
+}
 
-interface IContext extends core\IContext, IResponseForcer {
-
+interface IContext extends core\IContext, IResponseForcer
+{
     public static function factory($location=null, $runMode=null, $request=null): IContext;
 
     // Application
@@ -73,26 +80,30 @@ interface IContext extends core\IContext, IResponseForcer {
     public function getScaffold(): arch\scaffold\IScaffold;
 }
 
-interface IRequestOrientedRunner extends core\IRunner {
+interface IRequestOrientedRunner extends core\IRunner
+{
     public function getDispatchRequest(): ?arch\IRequest;
 }
 
 
-interface IDirectoryHelper extends core\IContextAware, core\IHelper {}
+interface IDirectoryHelper extends core\IContextAware, core\IHelper
+{
+}
 
-trait TDirectoryHelper {
-
+trait TDirectoryHelper
+{
     use core\TContextAware;
 
-    public function __construct(core\IContext $context, $target) {
-        if(!$context instanceof arch\IContext) {
-            if($target instanceof arch\IContext) {
+    public function __construct(core\IContext $context, $target)
+    {
+        if (!$context instanceof arch\IContext) {
+            if ($target instanceof arch\IContext) {
                 $context = $target;
                 $target = null;
             } else {
                 $context = Context::getCurrent();
 
-                if(!$context) {
+                if (!$context) {
                     throw core\Error::{'arch/ENoContext'}(
                         'No arch context is available for '.__CLASS__.' helper'
                     );
@@ -102,19 +113,21 @@ trait TDirectoryHelper {
 
         $this->context = $context;
 
-        if($target !== null && method_exists($this, '_handleHelperTarget')) {
+        if ($target !== null && method_exists($this, '_handleHelperTarget')) {
             $this->_handleHelperTarget($target);
         }
 
         $this->_init();
     }
 
-    protected function _init() {}
+    protected function _init()
+    {
+    }
 }
 
 
-class Helper implements IDirectoryHelper, aura\view\IContextSensitiveHelper {
-
+class Helper implements IDirectoryHelper, aura\view\IContextSensitiveHelper
+{
     use arch\TDirectoryHelper, core\TContextProxy {
         core\TContextProxy::getContext insteadof arch\TDirectoryHelper;
         core\TContextProxy::hasContext insteadof arch\TDirectoryHelper;
@@ -122,14 +135,30 @@ class Helper implements IDirectoryHelper, aura\view\IContextSensitiveHelper {
 }
 
 
-interface IRouter {
+interface IRouter
+{
     public function routeIn(arch\IRequest $request);
     public function routeOut(arch\IRequest $request);
 }
 
 
 
-interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
+interface IRequest extends
+    core\uri\IUrl,
+    core\uri\IPathContainer,
+    core\uri\IQueryContainer,
+    core\uri\IFragmentContainer,
+    user\IAccessLock,
+    \ArrayAccess
+{
+    const AREA_MARKER = '~';
+    const DEFAULT_AREA = 'front';
+    const DEFAULT_NODE = 'index';
+    const DEFAULT_TYPE = 'html';
+
+    const REDIRECT_FROM = 'rf';
+    const REDIRECT_TO = 'rt';
+
     // Area
     public function setArea(string $area);
     public function getArea();
@@ -182,7 +211,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
     public function isPathWithin($request): bool;
 
     public function getLiteralPath();
-    public function getLiteralPathArray();
+    public function getLiteralPathArray(bool $incType=true, bool $incNode=true);
     public function getLiteralPathString();
     public function getDirectoryLocation();
     public function getLibraryPath();
@@ -212,34 +241,37 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock, \ArrayAccess {
 }
 
 
-interface IProxyResponse {
+interface IProxyResponse
+{
     public function toResponse();
 }
 
 
-interface IOptionalDirectoryAccessLock {
+interface IOptionalDirectoryAccessLock
+{
     public function shouldCheckAccess(bool $flag=null);
 }
 
-trait TOptionalDirectoryAccessLock {
-
+trait TOptionalDirectoryAccessLock
+{
     private $_shouldCheckAccess = null;
 
-    public function shouldCheckAccess(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldCheckAccess(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_shouldCheckAccess = $flag;
             return $this;
         }
 
-        if($this->_shouldCheckAccess !== null) {
+        if ($this->_shouldCheckAccess !== null) {
             return (bool)$this->_shouldCheckAccess;
         }
 
-        if(is_bool(static::CHECK_ACCESS)) {
+        if (is_bool(static::CHECK_ACCESS)) {
             return static::CHECK_ACCESS;
         }
 
-        if(static::DEFAULT_ACCESS === IAccess::ALL) {
+        if (static::DEFAULT_ACCESS === IAccess::ALL) {
             return false;
         }
 
@@ -248,7 +280,8 @@ trait TOptionalDirectoryAccessLock {
 }
 
 
-interface ITransformer extends core\IContextAware {
+interface ITransformer extends core\IContextAware
+{
     public function canDeliver();
     public function execute();
 
@@ -263,46 +296,52 @@ interface IComponent extends
     aura\view\ICascadingHelperProvider,
     arch\IProxyResponse,
     aura\view\ISlotContainer,
-    \ArrayAccess {
+    \ArrayAccess
+{
     public static function factory(arch\IContext $context, $name, array $args=null): arch\IComponent;
     public function getName(): string;
 }
 
 
-trait TDirectoryAccessLock {
-
+trait TDirectoryAccessLock
+{
     use user\TAccessLock;
 
     //const DEFAULT_ACCESS = null;
     //const ACCESS_SIGNIFIERS = null;
 
-    public function getAccessLockDomain() {
+    public function getAccessLockDomain()
+    {
         return 'directory';
     }
 
-    public function lookupAccessKey(array $keys, $action=null) {
+    public function lookupAccessKey(array $keys, $action=null)
+    {
         return $this->context->location->lookupAccessKey($keys, $action);
     }
 
-    public function getDefaultAccess($action=null) {
+    public function getDefaultAccess($action=null)
+    {
         return $this->_getClassDefaultAccess();
     }
 
-    protected function _getClassDefaultAccess() {
-        if($this instanceof IOptionalDirectoryAccessLock
+    protected function _getClassDefaultAccess()
+    {
+        if ($this instanceof IOptionalDirectoryAccessLock
         && !$this->shouldCheckAccess()) {
             return arch\IAccess::ALL;
         }
 
-        if(defined('static::DEFAULT_ACCESS') && static::DEFAULT_ACCESS !== null) {
+        if (defined('static::DEFAULT_ACCESS') && static::DEFAULT_ACCESS !== null) {
             return static::DEFAULT_ACCESS;
         }
 
         return DirectoryAccessController::$defaultAccess;
     }
 
-    public function getAccessSignifiers(): array {
-        if(defined('static::ACCESS_SIGNIFIERS')
+    public function getAccessSignifiers(): array
+    {
+        if (defined('static::ACCESS_SIGNIFIERS')
         && is_array(static::ACCESS_SIGNIFIERS)) {
             return static::ACCESS_SIGNIFIERS;
         }
@@ -310,19 +349,22 @@ trait TDirectoryAccessLock {
         return [];
     }
 
-    public function getAccessLockId() {
+    public function getAccessLockId()
+    {
         return $this->context->location->getAccessLockId();
     }
 }
 
-class DirectoryAccessController {
+class DirectoryAccessController
+{
     public static $defaultAccess = arch\IAccess::NONE;
 }
 
 
 
 // Ajax
-interface IAjaxDataProvider {
+interface IAjaxDataProvider
+{
     public function setAjaxData(array $data);
     public function addAjaxData(array $data);
     public function getAjaxData(): array;
@@ -333,53 +375,62 @@ interface IAjaxDataProvider {
     public function clearAjax();
 }
 
-trait TAjaxDataProvider {
-
+trait TAjaxDataProvider
+{
     protected $_ajax = [];
 
-    public function setAjaxData(array $data) {
+    public function setAjaxData(array $data)
+    {
         $this->_ajax = $data;
         return $this;
     }
 
-    public function addAjaxData(array $data) {
-        foreach($data as $key => $value) {
+    public function addAjaxData(array $data)
+    {
+        foreach ($data as $key => $value) {
             $this->setAjax($key, $value);
         }
 
         return $this;
     }
 
-    public function getAjaxData(): array {
+    public function getAjaxData(): array
+    {
         return $this->_ajax;
     }
 
-    public function setAjax(string $key, $value) {
+    public function setAjax(string $key, $value)
+    {
         $this->_ajax[$key] = $value;
         return $this;
     }
 
-    public function getAjax(string $key) {
+    public function getAjax(string $key)
+    {
         return $this->_ajax[$key] ?? null;
     }
 
-    public function hasAjax(string $key): bool {
+    public function hasAjax(string $key): bool
+    {
         return isset($this->_ajax[$key]);
     }
 
-    public function removeAjax(string $key) {
+    public function removeAjax(string $key)
+    {
         unset($this->_ajax[$key]);
         return $this;
     }
 
-    public function clearAjax() {
+    public function clearAjax()
+    {
         $this->_ajax = [];
         return $this;
     }
 }
 
 
-interface IMail extends aura\view\IView, flow\mail\IMessage {
+interface IMail extends aura\view\IView, flow\mail\IMessage
+{
     public static function factory(arch\IContext $context, $path): arch\IMail;
 
     public function getName(): string;

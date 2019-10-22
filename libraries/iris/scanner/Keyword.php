@@ -101,7 +101,7 @@ class Keyword implements iris\IScanner, Inspectable
         return 1;
     }
 
-    public function initialize(iris\ILexer $lexer)
+    public function initialize(iris\Lexer $lexer)
     {
         if (empty($this->_words)) {
             throw new iris\LogicException(
@@ -110,12 +110,12 @@ class Keyword implements iris\IScanner, Inspectable
         }
     }
 
-    public function check(iris\ILexer $lexer)
+    public function check(iris\Lexer $lexer)
     {
         return flex\Text::isAlpha($lexer->char) || $lexer->char == '_';
     }
 
-    public function run(iris\ILexer $lexer)
+    public function run(iris\Lexer $lexer)
     {
         $word = $lexer->extractRegexRange('a-zA-Z0-9_');
 

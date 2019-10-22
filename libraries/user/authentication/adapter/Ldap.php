@@ -132,7 +132,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
         return null;
     }
 
-    public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result)
+    public function authenticate(user\authentication\IRequest $request, user\authentication\Result $result)
     {
         if ($request->getAttribute('ntlm')) {
             $isNtlm = true;

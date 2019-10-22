@@ -23,7 +23,7 @@ abstract class Model implements IModel, Inspectable
     private $_modelName;
     private $_units = [];
 
-    public static function factory(string $name): IModel
+    public static function factory(string $name)
     {
         $name = lcfirst($name);
         $key = self::REGISTRY_PREFIX.$name;

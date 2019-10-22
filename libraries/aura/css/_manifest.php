@@ -12,6 +12,7 @@ use df\link;
 
 interface IProcessor
 {
+    public function getSettings(): core\collection\ITree;
     public function process($cssPath, core\io\IMultiplexer $multiplexer=null);
 }
 

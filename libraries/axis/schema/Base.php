@@ -232,6 +232,10 @@ class Base implements ISchema, Inspectable
             );
         }
 
+        if (!$unit instanceof axis\IUnit) {
+            throw Glitch::ELogic('Schema context is not a unit', null, $unit);
+        }
+
         $output = new self($unit, $unit->getUnitName());
         $output->_version = $data['vsn'];
         $output->_unitType = $data['utp'];

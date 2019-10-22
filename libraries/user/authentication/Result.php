@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\user;
 
-class Result implements IResult {
-
+class Result
+{
     const SUCCESS = 1;
     const FAILURE = 0;
     const IDENTITY_NOT_FOUND = -1;
@@ -24,31 +24,37 @@ class Result implements IResult {
     protected $_domainInfo;
 
 
-    public function __construct($adapterName=null) {
+    public function __construct($adapterName=null)
+    {
         $this->setAdapterName($adapterName);
     }
 
-    public function setAdapterName($adapter) {
+    public function setAdapterName($adapter)
+    {
         $this->_adapterName = $adapter;
         return $this;
     }
 
-    public function getAdapterName() {
+    public function getAdapterName()
+    {
         return $this->_adapterName;
     }
 
 
-    public function setIdentity($identity) {
+    public function setIdentity($identity)
+    {
         $this->_identity = $identity;
         return $this;
     }
 
-    public function getIdentity() {
+    public function getIdentity()
+    {
         return $this->_identity;
     }
 
-    public function setCode($code) {
-        switch((int)$code) {
+    public function setCode($code)
+    {
+        switch ((int)$code) {
             case self::SUCCESS:
             case self::FAILURE:
             case self::IDENTITY_NOT_FOUND:
@@ -66,20 +72,24 @@ class Result implements IResult {
         return $this;
     }
 
-    public function getCode() {
+    public function getCode()
+    {
         return $this->_code;
     }
 
-    public function isValid(): bool {
+    public function isValid(): bool
+    {
         return $this->_code > 0;
     }
 
-    public function setDomainInfo(IDomainInfo $domainInfo) {
+    public function setDomainInfo(IDomainInfo $domainInfo)
+    {
         $this->_domainInfo = $domainInfo;
         return $this;
     }
 
-    public function getDomainInfo() {
+    public function getDomainInfo()
+    {
         return $this->_domainInfo;
     }
 }

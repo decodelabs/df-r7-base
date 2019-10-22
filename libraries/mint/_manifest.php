@@ -26,14 +26,14 @@ interface IGateway
     public function getWebhookIps(): ?array;
 
     public function submitCharge(IChargeRequest $charge): string;
-    public function submitStandaloneCharge(IStandaloneChargeRequest $charge): string;
-    public function newStandaloneCharge(ICurrency $amount, ICreditCardReference $card, string $description=null, string $email=null): IStandaloneChargeRequest;
+    public function submitStandaloneCharge(IChargeRequest $charge): string;
+    public function newStandaloneCharge(ICurrency $amount, ICreditCardReference $card, string $description=null, string $email=null): IChargeRequest;
 }
 
 interface ICaptureProviderGateway extends IGateway
 {
     public function authorizeCharge(IChargeRequest $charge): string;
-    public function authorizeStandaloneCharge(IStandaloneChargeRequest $charge): string;
+    public function authorizeStandaloneCharge(IChargeRequest $charge): string;
     public function captureCharge(IChargeCapture $charge): string;
     public function newChargeCapture(string $id): IChargeCapture;
 }
@@ -45,7 +45,7 @@ trait TCaptureProviderGateway
         if ($charge instanceof ICustomerChargeRequest
         && $this instanceof ICustomerTrackingCaptureProviderGateway) {
             return $this->authorizeCustomerCharge($charge);
-        } elseif ($charge instanceof IStandaloneChargeRequest
+        } elseif ($charge instanceof IChargeRequest
         && $this instanceof ICaptureProviderGateway) {
             return $this->authorizeStandaloneCharge($charge);
         } else {
@@ -93,7 +93,7 @@ trait TCustomerTrackingGateway
 {
     public function newCustomerCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $customerId, string $description=null): ICustomerChargeRequest
     {
-        return new mint\charge\Customer($amount, $card, $customerId, $description);
+        return new mint\charge\CustomerRequest($amount, $card, $customerId, $description);
     }
 
     public function newCustomer(string $email=null, string $description=null, ICreditCard $card=null): ICustomer
@@ -254,10 +254,6 @@ interface IChargeRequest
     public function getCard(): ICreditCardReference;
     public function setDescription(?string $description);
     public function getDescription(): ?string;
-}
-
-interface IStandaloneChargeRequest extends IChargeRequest
-{
     public function setEmailAddress(?string $email);
     public function getEmailAddress(): ?string;
 }

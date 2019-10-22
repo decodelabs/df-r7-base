@@ -9,48 +9,50 @@ use df;
 use df\core;
 use df\arch;
 
-
-class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, core\IDispatchAware {
-
+class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, core\IDispatchAware
+{
     use arch\navigation\TEntryList;
 
     const REGISTRY_KEY = 'breadcrumbs';
 
-    public function getRegistryObjectKey(): string {
+    public function getRegistryObjectKey(): string
+    {
         return self::REGISTRY_KEY;
     }
 
-    public function onAppDispatch(arch\node\INode $node): void {
+    public function onAppDispatch(arch\node\INode $node): void
+    {
         df\Launchpad::$app->removeRegistryObject(self::REGISTRY_KEY);
     }
 
-    public static function generateFromRequest(arch\IRequest $request) {
+    public static function generateFromRequest(arch\IRequest $request)
+    {
         $output = new self();
         $parts = $request->getLiteralPathArray();
         $path = '';
 
-        if(false !== strpos($last = array_pop($parts), '.')) {
+        if (false !== strpos($last = array_pop($parts), '.')) {
             $lastParts = explode('.', $last);
             $last = array_shift($lastParts);
         }
 
         $parts[] = $last;
 
-        if($request->isDefaultArea()) {
+        if ($request->isDefaultArea()) {
             array_shift($parts);
         }
 
         $isDefaultNode = false;
 
-        if($request->isDefaultNode()) {
+        if ($request->isDefaultNode()) {
             array_pop($parts);
             $isDefaultNode = true;
         }
 
         $count = count($parts);
 
-        foreach($parts as $i => $part) {
-            if(!$isDefaultNode && $i == $count - 1) {
+        foreach ($parts as $i => $part) {
+            if (!$isDefaultNode && $i == $count - 1) {
                 $path .= $part;
             } else {
                 $path .= $part.'/';
@@ -58,7 +60,7 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
 
             $title = $part;
 
-            if($i == 0) {
+            if ($i == 0) {
                 $title = ltrim($title, $request::AREA_MARKER);
             }
 
@@ -68,10 +70,10 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, cor
                 ))
             );
 
-            if($i == $count - 1) {
+            if ($i == $count - 1) {
                 $linkRequest = $request;
             } else {
-                $linkRequest = $request::factory($path);
+                $linkRequest = arch\Request::factory($path);
             }
 
             $output->addEntry(

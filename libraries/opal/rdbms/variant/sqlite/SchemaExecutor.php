@@ -484,7 +484,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
     {
         $triggerSql = 'CREATE';
 
-        if ($trigger->isTemporary()) {
+        if ($trigger instanceof Trigger && $trigger->isTemporary()) {
             $triggerSql .= ' TEMPORARY';
         }
 
@@ -492,7 +492,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $triggerSql .= ' '.$trigger->getTimingName();
         $triggerSql .= ' '.$trigger->getEventName();
 
-        if ($trigger->getEvent() == opal\schema\ITriggerEvent::UPDATE) {
+        if ($trigger instanceof Trigger && $trigger->getEvent() == opal\schema\ITriggerEvent::UPDATE) {
             $updateFields = $trigger->getUpdateFields();
 
             if (!empty($updateFields)) {
@@ -507,7 +507,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $triggerSql .= ' ON '.$this->_adapter->quoteIdentifier($tableName);
         $triggerSql .= ' FOR EACH ROW';
 
-        if (null !== ($trigger->getWhenExpression())) {
+        if ($trigger instanceof Trigger && null !== ($trigger->getWhenExpression())) {
             $triggerSql .= ' WHEN '.$trigger->getWhenExpression();
         }
 
@@ -556,15 +556,15 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             foreach ($schema->getTriggers() as $triggerName => $trigger) {
                 $triggers[$triggerName] = $trigger;
                 $schema->removeTrigger($triggerName);
-                $trigger->_setName($triggerName);
+                $trigger->setName($triggerName);
             }
 
 
             // Create target table
             $schema->acceptChanges()->isAudited(false);
-            $schema->_setName($backupName);
+            $schema->setName($backupName);
             $this->create($schema);
-            $schema->_setName($currentName);
+            $schema->setName($currentName);
 
 
             // Copy data

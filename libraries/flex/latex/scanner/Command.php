@@ -10,40 +10,44 @@ use df\core;
 use df\flex;
 use df\iris;
 
-class Command implements iris\IScanner {
-
+class Command implements iris\IScanner
+{
     const SYMBOL_COMMANDS = [
         '\\', '`', '\'', '^', '"', '~', '=', '.'
     ];
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return 'Command';
     }
 
-    public function getWeight() {
+    public function getWeight()
+    {
         return 10;
     }
 
-    public function initialize(iris\ILexer $lexer) {
-
+    public function initialize(iris\Lexer $lexer)
+    {
     }
 
-    public function check(iris\ILexer $lexer) {
+    public function check(iris\Lexer $lexer)
+    {
         return $lexer->peek() == '\\';
     }
 
-    public function run(iris\ILexer $lexer) {
+    public function run(iris\Lexer $lexer)
+    {
         $lexer->extract();
 
-        if(in_array($lexer->char, self::SYMBOL_COMMANDS)) {
+        if (in_array($lexer->char, self::SYMBOL_COMMANDS)) {
             $command = $lexer->extract();
-        } else if($lexer->char == '@' || $lexer->peekAlpha()) {
+        } elseif ($lexer->char == '@' || $lexer->peekAlpha()) {
             $command = $lexer->extractRegexRange('a-zA-Z@');
         } else {
             return $lexer->newToken('symbol/esc', $lexer->extract());
         }
 
-        if($lexer->char == '*') {
+        if ($lexer->char == '*') {
             $command .= $lexer->extract();
         }
 

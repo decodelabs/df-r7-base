@@ -50,7 +50,7 @@ class Rdbms extends Base
 
 
     // Binary
-    protected function _createBinaryField(opal\schema\IPrimitive $primitive)
+    protected function _createBinaryField(opal\schema\Primitive_Binary $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'binary', $primitive->getLength());
         $this->_importBasePrimitiveOptions($field, $primitive);
@@ -58,7 +58,7 @@ class Rdbms extends Base
     }
 
     // Bit
-    protected function _createBitField(opal\schema\IPrimitive $primitive)
+    protected function _createBitField(opal\schema\Primitive_Bit $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'bit', $primitive->getBitSize());
         $this->_importBasePrimitiveOptions($field, $primitive);
@@ -66,7 +66,7 @@ class Rdbms extends Base
     }
 
     // Blob
-    protected function _createBlobField(opal\schema\IPrimitive $primitive)
+    protected function _createBlobField(opal\schema\Primitive_Blob $primitive)
     {
         switch ($size = $primitive->getExponentSize()) {
             case 8: $type = 'tinyblob'; break;
@@ -83,7 +83,7 @@ class Rdbms extends Base
     }
 
     // Boolean
-    protected function _createBooleanField(opal\schema\IPrimitive $primitive)
+    protected function _createBooleanField(opal\schema\Primitive_Boolean $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'bool');
         $this->_importBasePrimitiveOptions($field, $primitive);
@@ -91,7 +91,7 @@ class Rdbms extends Base
     }
 
     // Char
-    protected function _createCharField(opal\schema\IPrimitive $primitive)
+    protected function _createCharField(opal\schema\Primitive_Char $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'char', $primitive->getLength())
             ->setCharacterSet($primitive->getCharacterSet());
@@ -101,7 +101,7 @@ class Rdbms extends Base
     }
 
     // Dataobject
-    protected function _createDataObjectField(opal\schema\IPrimitive $primitive)
+    protected function _createDataObjectField(opal\schema\Primitive_DataObject $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'blob');
         $this->_importBasePrimitiveOptions($field, $primitive);
@@ -109,7 +109,7 @@ class Rdbms extends Base
     }
 
     // Date
-    protected function _createDateField(opal\schema\IPrimitive $primitive)
+    protected function _createDateField(opal\schema\Primitive_Date $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'date');
         $this->_importBasePrimitiveOptions($field, $primitive);
@@ -117,7 +117,7 @@ class Rdbms extends Base
     }
 
     // Datetime
-    protected function _createDateTimeField(opal\schema\IPrimitive $primitive)
+    protected function _createDateTimeField(opal\schema\Primitive_DateTime $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'datetime');
         $this->_importBasePrimitiveOptions($field, $primitive);
@@ -125,7 +125,7 @@ class Rdbms extends Base
     }
 
     // Decimal
-    protected function _createDecimalField(opal\schema\IPrimitive $primitive)
+    protected function _createDecimalField(opal\schema\Primitive_Decimal $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'decimal', $primitive->getPrecision(), $primitive->getScale())
             ->isUnsigned($primitive->isUnsigned())
@@ -136,7 +136,7 @@ class Rdbms extends Base
     }
 
     // Enum
-    protected function _createEnumField(opal\schema\IPrimitive $primitive)
+    protected function _createEnumField(opal\schema\Primitive_Enum $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'enum', $primitive->getOptions())
             ->setCharacterSet($primitive->getCharacterSet());
@@ -146,7 +146,7 @@ class Rdbms extends Base
     }
 
     // Float
-    protected function _createFloatField(opal\schema\IPrimitive $primitive)
+    protected function _createFloatField(opal\schema\Primitive_Float $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'double', $primitive->getPrecision(), $primitive->getScale())
             ->isUnsigned($primitive->isUnsigned())
@@ -157,7 +157,7 @@ class Rdbms extends Base
     }
 
     // Guid
-    protected function _createGuidField(opal\schema\IPrimitive $primitive)
+    protected function _createGuidField(opal\schema\Primitive_Guid $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'binary', 16);
         $this->_importBasePrimitiveOptions($field, $primitive);
@@ -165,7 +165,7 @@ class Rdbms extends Base
     }
 
     // Integer
-    protected function _createIntegerField(opal\schema\IPrimitive $primitive)
+    protected function _createIntegerField(opal\schema\Primitive_Integer $primitive)
     {
         switch ($size = $primitive->getByteSize()) {
             case 1: $type = 'tinyint'; break;
@@ -189,7 +189,7 @@ class Rdbms extends Base
 
 
     // Set
-    protected function _createSetField(opal\schema\IPrimitive $primitive)
+    protected function _createSetField(opal\schema\Primitive_Set $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'set', $primitive->getOptions())
             ->setCharacterSet($primitive->getCharacterSet());
@@ -199,7 +199,7 @@ class Rdbms extends Base
     }
 
     // Text
-    protected function _createTextField(opal\schema\IPrimitive $primitive)
+    protected function _createTextField(opal\schema\Primitive_Text $primitive)
     {
         switch ($size = $primitive->getExponentSize()) {
             case 8: $type = 'tinytext'; break;
@@ -218,7 +218,7 @@ class Rdbms extends Base
     }
 
     // Time
-    protected function _createTimeField(opal\schema\IPrimitive $primitive)
+    protected function _createTimeField(opal\schema\Primitive_Time $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'time');
         $this->_importBasePrimitiveOptions($field, $primitive);
@@ -226,7 +226,7 @@ class Rdbms extends Base
     }
 
     // Timestamp
-    protected function _createTimestampField(opal\schema\IPrimitive $primitive)
+    protected function _createTimestampField(opal\schema\Primitive_Timestamp $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'timestamp')
             ->shouldTimestampAsDefault($primitive->shouldTimestampAsDefault())
@@ -242,7 +242,7 @@ class Rdbms extends Base
     }
 
     // Varbinary
-    protected function _createVarbinaryField(opal\schema\IPrimitive $primitive)
+    protected function _createVarbinaryField(opal\schema\Primitive_Varbinary $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'varbinary', $primitive->getLength());
         $this->_importBasePrimitiveOptions($field, $primitive);
@@ -250,7 +250,7 @@ class Rdbms extends Base
     }
 
     // Varchar
-    protected function _createVarcharField(opal\schema\IPrimitive $primitive)
+    protected function _createVarcharField(opal\schema\Primitive_Varchar $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'varchar', $primitive->getLength())
             ->setCharacterSet($primitive->getCharacterSet());
@@ -260,7 +260,7 @@ class Rdbms extends Base
     }
 
     // Year
-    protected function _createYearField(opal\schema\IPrimitive $primitive)
+    protected function _createYearField(opal\schema\Primitive_Year $primitive)
     {
         $field = $this->_targetSchema->createField($primitive->getName(), 'smallint');
         $field->isUnsigned(true);

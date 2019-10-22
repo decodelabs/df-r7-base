@@ -29,7 +29,7 @@ abstract class Translator implements ITranslator
             $unit = $this::createLexer($unit);
         }
 
-        if ($unit instanceof iris\ILexer) {
+        if ($unit instanceof iris\Lexer) {
             $unit = $this::createParser($unit);
         }
 
@@ -55,7 +55,7 @@ abstract class Translator implements ITranslator
         Glitch::incomplete($source);
     }
 
-    public static function createParser(iris\ILexer $lexer)
+    public static function createParser(iris\Lexer $lexer)
     {
         Glitch::incomplete($lexer);
     }

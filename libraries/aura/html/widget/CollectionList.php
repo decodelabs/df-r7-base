@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
+use df\opal;
 
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
@@ -135,7 +136,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             $this->paginator->setPostEvent($this->_postEvent);
             $pageData = $this->paginator->getPageData();
 
-            if ($pageData instanceof core\collection\IOrderablePaginator) {
+            if ($pageData instanceof opal\query\IPaginator) {
                 $orderData = $pageData->getOrderDirectives();
                 $orderFields = $pageData->getOrderableFieldDirectives();
 

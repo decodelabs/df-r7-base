@@ -102,7 +102,7 @@ class OneChildRelationValueContainer implements
 
         if ($value instanceof self) {
             $record = $value->_record;
-            $value = $value->getPrimaryKeySet();
+            $value = $record->getPrimaryKeySet();
         } elseif ($value instanceof opal\record\IPrimaryKeySetProvider) {
             $record = $value;
             $value = $value->getPrimaryKeySet();

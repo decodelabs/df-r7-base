@@ -9,17 +9,18 @@ use df;
 use df\core;
 use df\arch;
 
-abstract class Base implements arch\navigation\menu\ISource, core\IContextAware {
-
+abstract class Base implements arch\navigation\menu\ISource, core\IContextAware
+{
     use core\TContextAware;
 
-    public static function loadAll(arch\IContext $context) {
+    public static function loadAll(arch\IContext $context)
+    {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList('arch/navigation/menu/source') as $name => $class) {
+        foreach (df\Launchpad::$loader->lookupClassList('arch/navigation/menu/source') as $name => $class) {
             try {
                 $source = self::factory($context, $name);
-            } catch(arch\navigation\ESourceNotFound $e) {
+            } catch (arch\navigation\ESourceNotFound $e) {
                 continue;
             }
 
@@ -30,11 +31,12 @@ abstract class Base implements arch\navigation\menu\ISource, core\IContextAware 
         return $output;
     }
 
-    public static function factory(arch\IContext $context, $type): arch\navigation\menu\ISource {
+    public static function factory(arch\IContext $context, $type): arch\navigation\menu\ISource
+    {
         $class = 'df\\arch\\navigation\\menu\\source\\'.ucfirst($type);
 
-        if(!class_exists($class)) {
-            throw core\Error::{'arch/navigation/ESourceNotFound,ENotFound'}(
+        if (!class_exists($class)) {
+            throw Glitch::{'ENotFound'}(
                 'Source type '.$type.' could not be found'
             );
         }
@@ -42,16 +44,19 @@ abstract class Base implements arch\navigation\menu\ISource, core\IContextAware 
         return new $class($context);
     }
 
-    public function __construct(arch\IContext $context) {
+    public function __construct(arch\IContext $context)
+    {
         $this->context = $context;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public function getDisplayName(): string {
+    public function getDisplayName(): string
+    {
         return $this->getName();
     }
 }

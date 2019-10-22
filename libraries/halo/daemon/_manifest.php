@@ -34,6 +34,7 @@ interface IDaemon extends halo\event\IDispatcherProvider, core\IContextAware
     public function setGroup($group);
     public function getGroup();
 
+    public function isTesting(): bool;
     public function run();
     public function isRunning();
     public function stop();

@@ -103,6 +103,10 @@ class Base implements ITheme, Inspectable
 
     public function applyDefaultBodyTagData(aura\view\IView $view)
     {
+        if (!$view instanceof aura\view\IHtmlView) {
+            return;
+        }
+
         $request = $view->context->request;
         $router = core\app\runner\http\Router::getInstance();
         //$view->setData('base', '/'.ltrim($router->getBaseUrl()->getPathString(), './'));
@@ -196,6 +200,10 @@ class Base implements ITheme, Inspectable
 
     public function applyDefaultViewTitle(aura\view\IView $view)
     {
+        if (!$view instanceof aura\view\IHtmlView) {
+            return;
+        }
+
         if (!$view->hasTitle()) {
             $breadcrumbs = $view->getContext()->apex->breadcrumbs();
             $parts = [];
@@ -222,6 +230,10 @@ class Base implements ITheme, Inspectable
 
     public function applyDefaultMetaData(aura\view\IView $view)
     {
+        if (!$view instanceof aura\view\IHtmlView) {
+            return;
+        }
+
         if (!$view->hasMeta('msapplication-config')) {
             $view->setMeta('msapplication-config', 'none');
         }

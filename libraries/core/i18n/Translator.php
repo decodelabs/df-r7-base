@@ -26,7 +26,7 @@ class Translator implements ITranslator
         return $this->_domainId;
     }
 
-    public function _($phrase=''): string
+    public function _($phrase='', $b=null, $c=null): string
     {
         return $this->translate(func_get_args());
     }

@@ -29,6 +29,10 @@ class OneRelationValueContainer implements
 
     public function __construct(axis\schema\IRelationField $field, opal\record\IRecord $parentRecord=null, $value=null)
     {
+        if (!$field instanceof opal\schema\ITargetPrimaryFieldAwareRelationField) {
+            throw Glitch::ELogic('Unsupport field type', null, $field);
+        }
+
         $this->_field = $field;
         $this->_value = $field->getTargetRelationManifest()->toPrimaryKeySet();
 

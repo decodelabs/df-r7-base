@@ -46,9 +46,9 @@ class TaskRebuildTable extends arch\node\Task
             );
         }
 
-        if (!$unit instanceof axis\IAdapterBasedStorageUnit) {
-            throw core\Error::{'axis/unit/EDomain'}(
-                'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!'
+        if (!$unit instanceof axis\ISchemaBasedStorageUnit) {
+            throw Glitch::{'df/axis/unit/EDomain'}(
+                'Unit '.$unitId.' is not schemas based'
             );
         }
 
@@ -61,7 +61,7 @@ class TaskRebuildTable extends arch\node\Task
         $func = '_rebuild'.$adapterName.'Table';
 
         if (!method_exists($this, $func)) {
-            throw core\Error::{'axis/unit/EDomain'}(
+            throw Glitch::{'df/axis/unit/EDomain'}(
                 'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding'
             );
         }
@@ -82,7 +82,7 @@ class TaskRebuildTable extends arch\node\Task
         $this->io->writeLine('Done');
     }
 
-    protected function _rebuildRdbmsTable(axis\IStorageUnit $unit, axis\schema\ISchema $axisSchema)
+    protected function _rebuildRdbmsTable(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $axisSchema)
     {
         $this->io->writeLine('Switching to rdbms mode');
 
@@ -158,7 +158,9 @@ class TaskRebuildTable extends arch\node\Task
             }
 
             foreach ($generatorFields as $fieldName => $axisField) {
-                $row[$fieldName] = $axisField->generateInsertValue($row);
+                if ($axisField instanceof opal\query\IFieldValueProcessor) {
+                    $row[$fieldName] = $axisField->generateInsertValue($row);
+                }
             }
 
             foreach ($newFields as $fieldName => $newField) {

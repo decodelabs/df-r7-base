@@ -560,7 +560,7 @@ abstract class QueryExecutor implements IQueryExecutor
         $joinSql = null;
         $joinsApplied = false;
 
-        if ($sourceManager->canQueryLocally()) {
+        if ($sourceManager->canQueryLocally() && $this->_query instanceof opal\query\IJoinProviderQuery) {
             $this->_isMultiDb = $sourceManager->countSourceAdapters() > 1;
 
             foreach ($this->_query->getJoins() as $joinSourceAlias => $join) {
@@ -591,10 +591,15 @@ abstract class QueryExecutor implements IQueryExecutor
 
 
         $joinClauses = $this->_query->getJoinClauseList();
-        $whereClauses = $this->_query->getWhereClauseList();
-
         $canUseJoinClauses = !$joinClauses->isEmpty() && $joinClauses->isLocalTo($sources);
-        $canUseWhereClauses = $clausesApplied = !$whereClauses->isEmpty() && $whereClauses->isLocalTo($sources);
+
+        if ($this->_query instanceof opal\query\IWhereClauseQuery) {
+            $whereClauses = $this->_query->getWhereClauseList();
+            $canUseWhereClauses = $clausesApplied = !$whereClauses->isEmpty() && $whereClauses->isLocalTo($sources);
+        } else {
+            $whereClauses = null;
+            $canUseWhereClauses = $clausesApplied = false;
+        }
 
         if ($canUseJoinClauses) {
             if ($canUseWhereClauses) {
@@ -1274,8 +1279,7 @@ abstract class QueryExecutor implements IQueryExecutor
             // The subquery can be put directly into the parent query
             return $this->defineClauseLocalCorrelation($field, $fieldString, $operator, $correlation);
         } else {
-            // We have to execute the subquery and pass the values in manually
-            return $this->defineClauseRemoteCorrelation($field, $fieldString, $operator, $correlation, $allowAlias);
+            throw Glitch::ERuntime('Unable to use remote correlations as clauses');
         }
     }
 
@@ -1308,161 +1312,6 @@ abstract class QueryExecutor implements IQueryExecutor
 
         // `myField` = (SELECT FROM ...)
         return $fieldString.' '.strtoupper($operator).' ('."\n  ".str_replace("\n", "\n  ", $sql)."\n".')';
-    }
-
-    public function defineClauseRemoteCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $correlation, $allowAlias=false)
-    {
-        /*
-         * Execute the subquery and get the result as a list.
-         * Then depending on the operator, build the relevant clause
-         */
-        $source = $correlation->getSource();
-
-        if (null === ($targetField = $source->getFirstOutputDataField())) {
-            throw new opal\query\ValueException(
-                'Clause subquery does not have a distinct return field'
-            );
-        }
-
-        $values = $correlation->toList($targetField->getName());
-
-        switch ($operator) {
-            // = | IN()
-            case opal\query\clause\Clause::OP_EQ:
-            case opal\query\clause\Clause::OP_EQ_NULL:
-            case opal\query\clause\Clause::OP_IN:
-                if (empty($values)) {
-                    return $fieldString.' IS NULL';
-                }
-
-                return $fieldString.' IN ('.implode(',', $this->normalizeArrayClauseValue($values, $allowAlias)).')';
-
-            // != | NOT IN()
-            case opal\query\clause\Clause::OP_NEQ:
-            case opal\query\clause\Clause::OP_NEQ_NULL:
-            case opal\query\clause\Clause::OP_NOT_IN:
-                if (empty($values)) {
-                    return $fieldString.' IS NOT NULL';
-                }
-
-                return $fieldString.' NOT IN '.$operator.' ('.implode(',', $this->normalizeArrayClauseValue($values, $allowAlias)).')';
-
-            // > | >=
-            case opal\query\clause\Clause::OP_GT:
-            case opal\query\clause\Clause::OP_GTE:
-                return $fieldString.' '.$operator.' '.$this->normalizeScalarClauseValue(max($values), $allowAlias);
-
-            // < | <=
-            case opal\query\clause\Clause::OP_LT:
-            case opal\query\clause\Clause::OP_LTE:
-                return $fieldString.' '.$operator.' '.$this->normalizeScalarClauseValue(min($values), $allowAlias);
-
-            // BETWEEN | NOT BETWEEN
-            case opal\query\clause\Clause::OP_BETWEEN:
-            case opal\query\clause\Clause::OP_NOT_BETWEEN:
-                throw new opal\query\OperatorException(
-                    'Operator '.$operator.' is not valid for clause subqueries'
-                );
-
-
-            // LIKE
-            case opal\query\clause\Clause::OP_LIKE:
-                return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
-                    flex\Matcher::generateLikeRegex($values), $allowAlias
-                );
-
-            // NOT LIKE
-            case opal\query\clause\Clause::OP_NOT_LIKE:
-                return $fieldString.' NOT REGEXP '.$this->normalizeScalarClauseValue(
-                    flex\Matcher::generateLikeRegex($values), $allowAlias
-                );
-
-            // LIKE LIST OF %<value>%
-            case opal\query\clause\Clause::OP_CONTAINS:
-                foreach ($values as &$value) {
-                    $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value).'%';
-                }
-
-                return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
-                    flex\Matcher::generateLikeRegex($values), $allowAlias
-                );
-
-            // NOT LIKE LIST OF %<value>%
-            case opal\query\clause\Clause::OP_NOT_CONTAINS:
-                foreach ($values as &$value) {
-                    $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value).'%';
-                }
-
-                return $fieldString.' NOT REGEXP '.$this->normalizeScalarClauseValue(
-                    flex\Matcher::generateLikeRegex($values), $allowAlias
-                );
-
-            // LIKE LIST OF <value>%
-            case opal\query\clause\Clause::OP_BEGINS:
-                foreach ($values as &$value) {
-                    $value = str_replace(['_', '%'], ['\_', '\%'], $value).'%';
-                }
-
-                return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
-                    flex\Matcher::generateLikeRegex($values), $allowAlias
-                );
-
-            // NOT LIKE LIST OF <value>%
-            case opal\query\clause\Clause::OP_NOT_BEGINS:
-                foreach ($values as &$value) {
-                    $value = str_replace(['_', '%'], ['\_', '\%'], $value).'%';
-                }
-
-                return $fieldString.' NOT REGEXP '.$this->normalizeScalarClauseValue(
-                    flex\Matcher::generateLikeRegex($values), $allowAlias
-                );
-
-            // LIKE LIST OF %<value>
-            case opal\query\clause\Clause::OP_ENDS:
-                foreach ($values as &$value) {
-                    $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value);
-                }
-
-                return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
-                    flex\Matcher::generateLikeRegex($values), $allowAlias
-                );
-
-            // NOT LIKE LIST OF %<value>
-            case opal\query\clause\Clause::OP_NOT_ENDS:
-                foreach ($values as &$value) {
-                    $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value);
-                }
-
-                return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
-                    flex\Matcher::generateLikeRegex($values), $allowAlias
-                );
-
-            // LIKE
-            case opal\query\clause\Clause::OP_MATCHES:
-                foreach ($values as &$value) {
-                    $value = '%'.$value.'%';
-                }
-
-                return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
-                    flex\Matcher::generateLikeRegex($values), $allowAlias
-                );
-
-            // NOT LIKE
-            case opal\query\clause\Clause::OP_NOT_MATCHES:
-                foreach ($values as &$value) {
-                    $value = '%'.$value.'%';
-                }
-
-                return $fieldString.' NOT REGEXP '.$this->normalizeScalarClauseValue(
-                    flex\Matcher::generateLikeRegex($values), $allowAlias
-                );
-
-
-            default:
-                throw new opal\query\OperatorException(
-                    'Operator '.$operator.' is not recognized'
-                );
-        }
     }
 
     public function defineClauseExpression(opal\query\IField $field, $fieldString, $operator, $value, $allowAlias=false)

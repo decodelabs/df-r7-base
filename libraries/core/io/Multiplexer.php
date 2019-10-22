@@ -8,11 +8,12 @@ namespace df\core\io;
 use df;
 use df\core;
 
+use DecodeLabs\Systemic\Process\Launcher;
+
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Broker;
 use DecodeLabs\Atlas\Channel\Stream;
 use DecodeLabs\Atlas\Channel\ReceiverProxy;
-use DecodeLabs\Systemic\Process\Launcher;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
@@ -337,7 +338,7 @@ class Multiplexer implements IMultiplexer, Inspectable
     }
 
 
-    public function exportToAtlasLauncher(Launcher $launcher): self
+    public function exportToAtlasLauncher(Launcher $launcher): IMultiplexer
     {
         $broker = Atlas::newBroker();
 

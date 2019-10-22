@@ -181,7 +181,7 @@ class Html implements arch\IDirectoryHelper
         return $this->element('abbr', $newString)->setTitle($string);
     }
 
-    public function _($phrase=''): aura\html\IElementRepresentation
+    public function _($phrase='', $b=null, $c=null): aura\html\IElementRepresentation
     {
         return $this->translate(func_get_args());
     }

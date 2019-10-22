@@ -28,7 +28,7 @@ class TaskInit extends arch\node\Task
 
         if (!empty($this->request->query->environments)) {
             $currentEnv = null;
-            
+
             foreach ($this->request->query->environments as $envNode) {
                 core\Config::clearLiveCache();
                 $currentEnv = df\Launchpad::$app->envId;
@@ -70,8 +70,10 @@ class TaskInit extends arch\node\Task
             if ($isUnit) {
                 $id = implode('/', array_slice(explode('\\', $class), -3, -1));
                 $config = axis\Model::loadUnitFromId($id);
-            } else {
+            } elseif (class_exists($class) && is_subclass_of($class, 'df\\core\\Config')) {
                 $config = $class::getInstance();
+            } else {
+                continue;
             }
 
             $this->io->write(' '.ucfirst($config->getConfigId()));

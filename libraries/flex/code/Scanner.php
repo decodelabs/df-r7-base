@@ -39,7 +39,7 @@ class Scanner implements IScanner
         foreach ($locations as $location) {
             if (empty($location)) {
                 continue;
-            } elseif (!$location instanceof ILocation) {
+            } elseif (!$location instanceof Location) {
                 throw new RuntimeException('Invalid location');
             }
 
@@ -98,7 +98,7 @@ class Scanner implements IScanner
         return $this;
     }
 
-    public function addLocation(ILocation $location)
+    public function addLocation(Location $location)
     {
         $this->locations[$location->getId()] = $location;
         return $this;
@@ -113,7 +113,7 @@ class Scanner implements IScanner
 
     public function hasLocation($id)
     {
-        if ($id instanceof ILocation) {
+        if ($id instanceof Location) {
             $id = $id->getId();
         }
 
@@ -122,7 +122,7 @@ class Scanner implements IScanner
 
     public function removeLocation($id)
     {
-        if ($id instanceof ILocation) {
+        if ($id instanceof Location) {
             $id = $id->getId();
         }
 

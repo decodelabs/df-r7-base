@@ -307,7 +307,7 @@ class Manager implements IManager, core\IShutdownAware
         foreach ($config->getListSources() as $id => $options) {
             try {
                 $source = new flow\mailingList\Source($id, $options);
-            } catch (flow\mailingList\IError $e) {
+            } catch (\Throwable $e) {
                 core\logException($e);
                 continue;
             }
@@ -329,7 +329,7 @@ class Manager implements IManager, core\IShutdownAware
 
         try {
             return new flow\mailingList\Source($id, $options);
-        } catch (flow\mailingList\IError $e) {
+        } catch (\Throwable $e) {
             return null;
         }
     }

@@ -61,18 +61,13 @@ abstract class Base implements mint\IGateway
         if ($charge instanceof mint\ICustomerChargeRequest
         && $this instanceof mint\ICustomerTrackingGateway) {
             return $this->submitCustomerCharge($charge);
-        } elseif ($charge instanceof mint\IStandaloneChargeRequest) {
-            return $this->submitStandaloneCharge($charge);
         } else {
-            throw core\Error::{'mint/ECharge,EArgument'}([
-                'message' => 'Gateway doesn\'t support this type of charge',
-                'data' => $charge
-            ]);
+            return $this->submitStandaloneCharge($charge);
         }
     }
 
-    public function newStandaloneCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description=null, string $email=null): mint\IStandaloneChargeRequest
+    public function newStandaloneCharge(mint\ICurrency $amount, mint\ICreditCardReference $card, string $description=null, string $email=null): mint\IChargeRequest
     {
-        return new mint\charge\Standalone($amount, $card, $description, $email);
+        return new mint\charge\Request($amount, $card, $description, $email);
     }
 }

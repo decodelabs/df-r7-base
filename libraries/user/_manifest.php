@@ -66,7 +66,7 @@ interface IManager extends core\IManager, mesh\event\IEmitter
     public function clearAccessLockCache();
 
     // Helpers
-    public function getHelper(string $name): IHelper;
+    public function getHelper(string $name);
 }
 
 interface IUserModel

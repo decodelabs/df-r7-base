@@ -13,14 +13,20 @@ use df\flex;
 use df\aura;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
 
 
 // Interfaces
-interface IBridge {
-
+interface IBridge
+{
     public function setInstallPath($path);
     public function getInstallPath();
     public function setExecPath($path);
@@ -31,12 +37,13 @@ interface IBridge {
 
 
 
-interface IInstaller {
+interface IInstaller
+{
     public function getInstallPath();
     public function setMultiplexer(core\io\IMultiplexer $io=null);
     public function getMultiplexer();
     public function installPackages(array $packages);
-    public function installPackage(IPackage $package);
+    public function installPackage(Package $package);
     public function isPackageInstalled($name);
     public function getInstalledPackages();
     public function getPackageInfo($name);
@@ -46,57 +53,44 @@ interface IInstaller {
     public function tidyCache();
 }
 
-interface IPackage {
-    public static function fromThemeDependency(fuse\IDependency $dependency);
-    public function setName($name);
-    public function getName(): string;
-    public function getKey();
-    public function setVersion($version);
-    public function getVersion();
-    public function setInstallName($name);
-    public function getInstallName();
-    public function setUrl($url);
-    public function getUrl();
-    public function setCacheFileName($fileName);
-    public function getCacheFileName();
+interface IResolver
+{
+    public function resolvePackageName(Package $package);
+    public function fetchPackage(Package $package, $cachePath, $currentVersion=null);
+    public function getTargetVersion(Package $package, $cachePath);
 }
 
-interface IResolver {
-    public function resolvePackageName(IPackage $package);
-    public function fetchPackage(IPackage $package, $cachePath, $currentVersion=null);
-    public function getTargetVersion(IPackage $package, $cachePath);
-}
-
-trait TGitResolver {
-
-    protected function _findRequiredTag(array $tags, IPackage $package) {
+trait TGitResolver
+{
+    protected function _findRequiredTag(array $tags, Package $package)
+    {
         $range = flex\VersionRange::factory($package->version);
         $singleVersion = $range->getSingleVersion();
 
-        if(!$singleVersion || !$singleVersion->preRelease) {
+        if (!$singleVersion || !$singleVersion->preRelease) {
             $temp = [];
 
-            foreach($tags as $i => $tag) {
+            foreach ($tags as $i => $tag) {
                 $version = $tag->getVersion();
 
-                if(!$version || $version->preRelease) {
+                if (!$version || $version->preRelease) {
                     continue;
                 } else {
                     $temp[] = $tag;
                 }
             }
 
-            if(!empty($temp)) {
+            if (!empty($temp)) {
                 $tags = $temp;
             }
         }
 
-        if(empty($tags)) {
+        if (empty($tags)) {
             return false;
         }
 
-        foreach($tags as $tag) {
-            if(($version = $tag->getVersion()) && $range->contains($version)) {
+        foreach ($tags as $tag) {
+            if (($version = $tag->getVersion()) && $range->contains($version)) {
                 return $tag;
             }
         }
@@ -104,22 +98,23 @@ trait TGitResolver {
         return false;
     }
 
-    protected function _sortTags(array $tags) {
-        @usort($tags, function($left, $right) {
+    protected function _sortTags(array $tags)
+    {
+        @usort($tags, function ($left, $right) {
             $leftVersion = $left->getVersion();
             $rightVersion = $right->getVersion();
 
-            if(!$leftVersion && !$rightVersion) {
+            if (!$leftVersion && !$rightVersion) {
                 return 0;
-            } else if(!$leftVersion && $rightVersion) {
+            } elseif (!$leftVersion && $rightVersion) {
                 return 1;
-            } else if($leftVersion && !$rightVersion) {
+            } elseif ($leftVersion && !$rightVersion) {
                 return -1;
             }
 
-            if($leftVersion->eq($rightVersion)) {
+            if ($leftVersion->eq($rightVersion)) {
                 return 0;
-            } else if($leftVersion->lt($rightVersion)) {
+            } elseif ($leftVersion->lt($rightVersion)) {
                 return 1;
             } else {
                 return -1;
@@ -130,7 +125,8 @@ trait TGitResolver {
     }
 }
 
-interface IRegistry extends spur\IHttpMediator {
+interface IRegistry extends spur\IHttpMediator
+{
     public function lookup($name);
     public function resolveUrl($name);
 }

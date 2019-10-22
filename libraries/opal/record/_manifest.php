@@ -12,48 +12,64 @@ use df\user;
 use df\mesh;
 
 // Exceptions
-interface IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class ValuePreparationException extends RuntimeException {}
+interface IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
+class ValuePreparationException extends RuntimeException
+{
+}
 
 
 // Interfaces
-interface IRecordAdapterProvider {
+interface IRecordAdapterProvider
+{
     public function getAdapter();
 }
 
-trait TRecordAdapterProvider {
-
+trait TRecordAdapterProvider
+{
     protected $_adapter;
 
-    public function getAdapter() {
+    public function getAdapter()
+    {
         return $this->_adapter;
     }
 }
 
 
-interface IPrimaryKeySetProvider extends IRecordAdapterProvider {
+interface IPrimaryKeySetProvider extends IRecordAdapterProvider
+{
     public function getPrimaryKeySet();
     public function getOriginalPrimaryKeySet();
 }
 
-trait TPrimaryKeySetProvider {
-
-    public function getPrimaryKeySet() {
+trait TPrimaryKeySetProvider
+{
+    public function getPrimaryKeySet()
+    {
         return $this->_getPrimaryKeySet(true);
     }
 
-    public function getOriginalPrimaryKeySet() {
+    public function getOriginalPrimaryKeySet()
+    {
         return $this->_getPrimaryKeySet(false);
     }
 
-    protected function _getPrimaryKeySet($includeChanges=true) {
+    protected function _getPrimaryKeySet($includeChanges=true)
+    {
         $fields = opal\schema\Introspector::getPrimaryFields($this->_adapter);
 
-        if($fields === null) {
-            if($this->_adapter) {
+        if ($fields === null) {
+            if ($this->_adapter) {
                 throw new LogicException(
                     'Record type '.$this->_adapter->getQuerySourceId().' has no primary fields'
                 );
@@ -70,31 +86,37 @@ trait TPrimaryKeySetProvider {
     abstract protected function _buildPrimaryKeySet(array $fields, $includeChanges=true);
 }
 
-trait TAccessLockProvider {
-
-    public function getAccessLockDomain() {
+trait TAccessLockProvider
+{
+    public function getAccessLockDomain()
+    {
         return $this->_adapter->getAccessLockDomain();
     }
 
-    public function lookupAccessKey(array $keys, $action=null) {
+    public function lookupAccessKey(array $keys, $action=null)
+    {
         return $this->_adapter->lookupAccessKey($keys, $action);
     }
 
-    public function getDefaultAccess($action=null) {
+    public function getDefaultAccess($action=null)
+    {
         return $this->_adapter->getDefaultAccess($action);
     }
 
-    public function getAccessSignifiers(): array {
+    public function getAccessSignifiers(): array
+    {
         return $this->_adapter->getAccessSignifiers();
     }
 
-    public function getAccessLockId() {
+    public function getAccessLockId()
+    {
         return $this->_adapter->getAccessLockId();
     }
 }
 
 
-interface IDataProvider extends core\collection\IMappedCollection, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
+interface IDataProvider extends core\collection\IMappedCollection, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider
+{
     public function getRaw($key);
 
     public function getValuesForStorage();
@@ -103,7 +125,8 @@ interface IDataProvider extends core\collection\IMappedCollection, user\IAccessL
     public function populateWithRawData($row);
 }
 
-interface IRecord extends IDataProvider, mesh\job\IJobProvider, core\IExporterValueMap {
+interface IRecord extends IDataProvider, mesh\job\IJobProvider, core\IExporterValueMap
+{
     public function isNew();
     public function makeNew(array $newValues=null);
     public function spawnNew(array $newValues=null);
@@ -134,37 +157,43 @@ interface IRecord extends IDataProvider, mesh\job\IJobProvider, core\IExporterVa
     public function triggerJobEvent(mesh\job\IQueue $queue, opal\record\IJob $job, $when);
 }
 
-interface ILocationalRecord extends IRecord {
+interface ILocationalRecord extends IRecord
+{
     public function getQueryLocation();
 }
 
 
 
-interface IPartial extends IDataProvider {
+interface IPartial extends IDataProvider
+{
     public function setRecordAdapter(opal\query\IAdapter $adapter);
     public function isBridge(bool $flag=null);
 }
 
 
 
-interface IValueContainer extends core\IUserValueContainer {
+interface IValueContainer extends core\IUserValueContainer
+{
     public function getValueForStorage();
     public function duplicateForChangeList();
     public function eq($value);
     public function getDumpValue();
 }
 
-interface IPreparedValueContainer extends IValueContainer {
+interface IPreparedValueContainer extends IValueContainer
+{
     public function isPrepared();
     public function prepareValue(opal\record\IRecord $record, $fieldName);
     public function prepareToSetValue(opal\record\IRecord $record, $fieldName);
 }
 
-interface IIdProviderValueContainer extends IValueContainer {
+interface IIdProviderValueContainer extends IValueContainer
+{
     public function getRawId();
 }
 
-interface IJobAwareValueContainer extends IValueContainer {
+interface IJobAwareValueContainer extends IValueContainer
+{
     public function deploySaveJobs(mesh\job\IQueue $queue, IRecord $record, $fieldName, mesh\job\IJob $job=null);
     public function acceptSaveJobChanges(opal\record\IRecord $record);
     public function deployDeleteJobs(mesh\job\IQueue $queue, IRecord $record, $fieldName, mesh\job\IJob $job=null);
@@ -172,7 +201,8 @@ interface IJobAwareValueContainer extends IValueContainer {
 }
 
 
-interface IManyRelationValueContainer extends IValueContainer {
+interface IManyRelationValueContainer extends IValueContainer
+{
     public function add(...$records);
     public function addList(array $records);
     public function remove(...$records);
@@ -186,15 +216,20 @@ interface IManyRelationValueContainer extends IValueContainer {
 }
 
 
-interface IPrimaryKeySet extends \ArrayAccess, core\IArrayProvider {
+interface IPrimaryKeySet extends \ArrayAccess, core\IArrayProvider
+{
+    public function getKeys(): array;
+    public function getKeyMap($fieldName): array;
+    public function getIntrinsicFieldMap($fieldName=null): array;
     public function updateWith($record);
-    public function countFields();
-    public function getFieldNames();
+    public function countFields(): int;
+    public function getFieldNames(): array;
     public function isNull(): bool;
-    public function getCombinedId();
-    public function getEntityId();
+    public function getCombinedId(): string;
+    public function getEntityId(): string;
     public function getValue();
     public function getFirstKeyValue();
+    public function getRawValue();
     public function duplicateWith($values);
     public function eq(IPrimaryKeySet $keySet);
 }
@@ -203,8 +238,8 @@ interface IPrimaryKeySet extends \ArrayAccess, core\IArrayProvider {
 
 ###############
 ## Jobs
-interface IJob extends mesh\job\IJob, mesh\job\IEventBroadcastingJob {
-
+interface IJob extends mesh\job\IJob, mesh\job\IEventBroadcastingJob
+{
     const EVENT_PRE = 'pre';
     const EVENT_EXECUTE = 'execute';
     const EVENT_POST = 'post';
@@ -215,25 +250,29 @@ interface IJob extends mesh\job\IJob, mesh\job\IEventBroadcastingJob {
 
 
 
-trait TJob {
-
+trait TJob
+{
     protected $_record;
     protected $_reportEvents = true;
 
-    public function getObjectId(): string {
+    public function getObjectId(): string
+    {
         return mesh\job\Queue::getObjectId($this->_record);
     }
 
-    public function getRecord() {
+    public function getRecord()
+    {
         return $this->_record;
     }
 
-    public function getAdapter(): ?mesh\job\ITransactionAdapter {
+    public function getAdapter(): ?mesh\job\ITransactionAdapter
+    {
         return $this->_record->getAdapter();
     }
 
-    public function shouldReportEvents(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldReportEvents(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_reportEvents = $flag;
             return $this;
         }
@@ -241,24 +280,27 @@ trait TJob {
         return $this->_reportEvents;
     }
 
-    public function reportPreEvent(mesh\job\IQueue $queue) {
-        if($this->_reportEvents) {
+    public function reportPreEvent(mesh\job\IQueue $queue)
+    {
+        if ($this->_reportEvents) {
             $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_PRE);
         }
 
         return $this;
     }
 
-    public function reportExecuteEvent(mesh\job\IQueue $queue) {
-        if($this->_reportEvents) {
+    public function reportExecuteEvent(mesh\job\IQueue $queue)
+    {
+        if ($this->_reportEvents) {
             $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_EXECUTE);
         }
 
         return $this;
     }
 
-    public function reportPostEvent(mesh\job\IQueue $queue) {
-        if($this->_reportEvents) {
+    public function reportPostEvent(mesh\job\IQueue $queue)
+    {
+        if ($this->_reportEvents) {
             $this->_record->triggerJobEvent($queue, $this, opal\record\IJob::EVENT_POST);
         }
 

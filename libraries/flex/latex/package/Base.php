@@ -10,32 +10,38 @@ use df\core;
 use df\flex;
 use df\iris;
 
-abstract class Base extends iris\processor\Base implements flex\latex\IPackage {
-
+abstract class Base extends iris\processor\Base implements flex\latex\IPackage
+{
     const COMMANDS = [];
     const ENVIRONMENTS = [];
 
-    public static function getCommandList() {
+    public static function getCommandList()
+    {
         return static::COMMANDS;
     }
 
-    public static function getEnvironmentList() {
+    public static function getEnvironmentList()
+    {
         return static::ENVIRONMENTS;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return parent::getName().'Package';
     }
 
-    public function initialize(iris\IParser $parser) {
+    public function initialize(iris\IParser $parser)
+    {
         parent::initialize($parser);
 
-        foreach(static::getCommandList() as $val) {
-            $parser->registerCommand($val, $this);
-        }
+        if ($parser instanceof flex\latex\Parser) {
+            foreach (static::getCommandList() as $val) {
+                $parser->registerCommand($val, $this);
+            }
 
-        foreach(static::getEnvironmentList() as $env) {
-            $parser->registerEnvironment($env, $this);
+            foreach (static::getEnvironmentList() as $env) {
+                $parser->registerEnvironment($env, $this);
+            }
         }
 
         return $this;

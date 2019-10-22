@@ -263,19 +263,12 @@ interface ILoader
     public function loadPackages(array $packages);
     public function getPackages(): array;
     public function hasPackage(string $package): bool;
-    public function getPackage(string $package): ?IPackage;
+    public function getPackage(string $package): ?Package;
 
     public function shutdown(): void;
 }
 
-
-// Package
-interface IPackage
-{
-    public function init();
-}
-
-class Package implements IPackage
+class Package
 {
     const PRIORITY = 20;
     const DEPENDENCIES = [];
@@ -284,7 +277,7 @@ class Package implements IPackage
     public $name;
     public $priority;
 
-    public static function factory($name): IPackage
+    public static function factory($name): Package
     {
         $class = 'df\\apex\\packages\\'.$name.'\\Package';
 
@@ -407,7 +400,7 @@ interface IManager extends IRegistryObject
 
 trait TManager
 {
-    public static function getInstance(): IManager
+    public static function getInstance(): self
     {
         if (!$output = df\Launchpad::$app->getRegistryObject(static::REGISTRY_PREFIX)) {
             $output = static::_getDefaultInstance();
@@ -539,13 +532,13 @@ interface IHelper
 // Translator
 interface ITranslator
 {
-    public function _($phrase=''): string;
+    public function _($phrase='', $b=null, $c=null): string;
     public function translate(array $args): string;
 }
 
 trait TTranslator
 {
-    public function _($phrase=''): string
+    public function _($phrase='', $b=null, $c=null): string
     {
         return $this->translate(func_get_args());
     }

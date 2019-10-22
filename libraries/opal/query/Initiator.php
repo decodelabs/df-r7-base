@@ -191,7 +191,7 @@ class Initiator implements IInitiator
 
 
     // Populate
-    public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null)
+    public function beginPopulate(IPopulatableQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null)
     {
         $this->_setMode(IQueryTypes::POPULATE);
         $this->_parentQuery = $parent;
@@ -256,7 +256,7 @@ class Initiator implements IInitiator
         return $populate;
     }
 
-    public function beginAttachRelation(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null)
+    public function beginAttachRelation(IPopulatableQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null)
     {
         $this->_setMode(IQueryTypes::POPULATE);
         $this->_parentQuery = $parent;

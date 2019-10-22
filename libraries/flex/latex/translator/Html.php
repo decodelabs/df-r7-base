@@ -34,7 +34,7 @@ class Html extends iris\Translator
         return new flex\latex\Lexer($source);
     }
 
-    public static function createParser(iris\ILexer $lexer)
+    public static function createParser(iris\Lexer $lexer)
     {
         return new flex\latex\Parser($lexer);
     }

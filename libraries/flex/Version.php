@@ -13,7 +13,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Version implements IVersion, Inspectable
+class Version implements core\IStringProvider, Inspectable
 {
     use core\TStringProvider;
 
@@ -28,7 +28,7 @@ class Version implements IVersion, Inspectable
 
     public static function factory($version)
     {
-        if ($version instanceof IVersion) {
+        if ($version instanceof Version) {
             return $version;
         }
 
@@ -259,7 +259,7 @@ class Version implements IVersion, Inspectable
         return true;
     }
 
-    protected function _matchMain(IVersion $version)
+    protected function _matchMain(Version $version)
     {
         if ($this->major != $version->major
         || $this->minor != $version->minor
@@ -270,7 +270,7 @@ class Version implements IVersion, Inspectable
         return true;
     }
 
-    protected function _mainLt(IVersion $version)
+    protected function _mainLt(Version $version)
     {
         if ($this->major > $version->major) {
             return false;
@@ -292,7 +292,7 @@ class Version implements IVersion, Inspectable
         }
     }
 
-    protected function _matchPreRelease(IVersion $version)
+    protected function _matchPreRelease(Version $version)
     {
         if ($this->preRelease) {
             $leftPreCount = count($this->preRelease);
@@ -320,7 +320,7 @@ class Version implements IVersion, Inspectable
         return true;
     }
 
-    protected function _preReleaseLt(IVersion $version)
+    protected function _preReleaseLt(Version $version)
     {
         foreach ($this->preRelease as $i => $left) {
             if (!isset($version->preRelease[$i])) {
@@ -364,7 +364,7 @@ class Version implements IVersion, Inspectable
         return false;
     }
 
-    protected function _matchBuild(IVersion $version)
+    protected function _matchBuild(Version $version)
     {
         if ($this->build) {
             $leftBuildCount = count($this->build);
@@ -392,7 +392,7 @@ class Version implements IVersion, Inspectable
         return true;
     }
 
-    protected function _buildLt(IVersion $version)
+    protected function _buildLt(Version $version)
     {
         foreach ($this->build as $i => $left) {
             if (!isset($version->build[$i])) {
@@ -465,7 +465,7 @@ class Version_Comparator extends Version
         parent::__construct($version);
     }
 
-    public function isSatisfied(IVersion $version)
+    public function isSatisfied(Version $version)
     {
         switch ($this->operator) {
             case '<':

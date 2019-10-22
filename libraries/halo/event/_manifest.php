@@ -10,29 +10,38 @@ use df\core;
 use df\halo;
 use df\link;
 
-
 // Exceptions
-interface IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class BindException extends RuntimeException {}
+interface IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class BindException extends RuntimeException
+{
+}
 
 
 // Constants
-interface IIoState {
+interface IIoState
+{
     const READ = 'r';
     const WRITE = 'w';
 }
 
 
 // Dispatcher
-interface IDispatcher {
+interface IDispatcher
+{
     public function listen();
     public function isListening();
     public function stop();
 
 
-// Global
+    // Global
     public function freezeBinding(IBinding $binding);
     public function unfreezeBinding(IBinding $binding);
 
@@ -43,12 +52,12 @@ interface IDispatcher {
     public function countAllBindings();
 
 
-// Cycle
+    // Cycle
     public function setCycleHandler($callback=null);
     public function getCycleHandler();
 
 
-// Socket
+    // Socket
     public function bindSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
     public function bindFrozenSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
     public function bindSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
@@ -82,7 +91,7 @@ interface IDispatcher {
     public function getSocketWriteBindings();
 
 
-// Stream
+    // Stream
     public function bindStreamRead(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
     public function bindFrozenStreamRead(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
     public function bindStreamReadOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
@@ -116,7 +125,7 @@ interface IDispatcher {
     public function getStreamWriteBindings();
 
 
-// Signal
+    // Signal
     public function bindSignal($id, $signals, $callback);
     public function bindFrozenSignal($id, $signals, $callback);
     public function bindSignalOnce($id, $signals, $callback);
@@ -139,7 +148,7 @@ interface IDispatcher {
     public function getSignalBindings();
 
 
-// Timer
+    // Timer
     public function bindTimer($id, $duration, $callback);
     public function bindFrozenTimer($id, $duration, $callback);
     public function bindTimerOnce($id, $duration, $callback);
@@ -160,19 +169,21 @@ interface IDispatcher {
 }
 
 
-interface IDispatcherProvider {
+interface IDispatcherProvider
+{
     public function setEventDispatcher(halo\event\IDispatcher $dispatcher);
     public function getEventDispatcher();
     public function isRunning();
 }
 
 
-trait TDispatcherProvider {
-
+trait TDispatcherProvider
+{
     protected $events;
 
-    public function setEventDispatcher(halo\event\IDispatcher $dispatcher) {
-        if($this->isRunning()) {
+    public function setEventDispatcher(halo\event\IDispatcher $dispatcher)
+    {
+        if ($this->isRunning()) {
             throw new RuntimeException(
                 'You cannot change the dispatcher once the peer has started'
             );
@@ -182,15 +193,17 @@ trait TDispatcherProvider {
         return $this;
     }
 
-    public function getEventDispatcher() {
-        if(!$this->events) {
+    public function getEventDispatcher()
+    {
+        if (!$this->events) {
             $this->events = halo\event\Base::factory();
         }
 
         return $this->events;
     }
 
-    public function isRunning() {
+    public function isRunning()
+    {
         return $this->events && $this->events->isListening();
     }
 }
@@ -200,7 +213,8 @@ trait TDispatcherProvider {
 
 
 // Binding
-interface IBinding {
+interface IBinding
+{
     public function getId(): string;
     public function getType();
     public function isPersistent();
@@ -213,52 +227,60 @@ interface IBinding {
     public function freeze();
     public function unfreeze();
     public function isFrozen();
+    public function markFrozen(bool $frozen): IBinding;
     public function destroy();
 
     public function trigger($targetResource);
 }
 
-interface ITimeoutBinding extends IBinding {
+interface ITimeoutBinding extends IBinding
+{
     public function getTimeoutDuration();
     public function getTimeoutHandler();
     public function triggerTimeout($targetResource);
 }
 
-interface IIoBinding extends ITimeoutBinding {
+interface IIoBinding extends ITimeoutBinding
+{
     public function getIoMode();
     public function getIoResource();
 }
 
-interface ISocketBinding extends IIoBinding {
+interface ISocketBinding extends IIoBinding
+{
     public function getSocket();
     public function isStreamBased();
 }
 
-interface IStreamBinding extends IIoBinding {
+interface IStreamBinding extends IIoBinding
+{
     public function getStream();
 }
 
-interface ISignalBinding extends IBinding {
+interface ISignalBinding extends IBinding
+{
     public function getSignals();
 }
 
-interface ITimerBinding extends IBinding {
+interface ITimerBinding extends IBinding
+{
     public function getDuration();
 }
 
 
 
-trait TTimeoutBinding {
-
+trait TTimeoutBinding
+{
     public $timeoutDuration;
     public $timeoutHandler;
 
-    protected function _setTimeout($duration, $callback) {
-        if($duration !== null) {
+    protected function _setTimeout($duration, $callback)
+    {
+        if ($duration !== null) {
             $duration = core\time\Duration::factory($duration);
         }
 
-        if($callback !== null) {
+        if ($callback !== null) {
             $callback = core\lang\Callback::factory($callback);
         }
 
@@ -266,20 +288,23 @@ trait TTimeoutBinding {
         $this->timeoutHandler = $callback;
     }
 
-    public function getTimeoutDuration() {
+    public function getTimeoutDuration()
+    {
         return $this->timeoutDuration;
     }
 
-    public function getTimeoutHandler() {
+    public function getTimeoutHandler()
+    {
         return $this->timeoutHandler;
     }
 }
 
-trait TIoBinding {
-
+trait TIoBinding
+{
     public $ioMode = IIoState::READ;
 
-    public function getIoMode() {
+    public function getIoMode()
+    {
         return $this->ioMode;
     }
 }

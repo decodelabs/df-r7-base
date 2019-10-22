@@ -12,64 +12,76 @@ use df\flex;
 use df\arch;
 use df\aura;
 
-class Error extends Base {
-
+class Error extends Base
+{
     const DEFAULT_CATEGORIES = [];
 
     protected $_error;
     protected $_type;
     protected $_data;
 
-    public function getFormat(): string {
+    public function getFormat(): string
+    {
         return 'structure';
     }
 
-    public function isHidden(): bool {
+    public function isHidden(): bool
+    {
         return true;
     }
 
-    public function setError(\Throwable $e=null) {
+    public function setError(\Throwable $e=null)
+    {
         $this->_error = $e;
         return $this;
     }
 
-    public function getError() {
+    public function getError()
+    {
         return $this->_error;
     }
 
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->_type = $type;
         return $this;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->_type;
     }
 
-    public function setData($data) {
+    public function setData($data)
+    {
         $this->_data = $data;
         return $this->_data;
     }
 
-    public function getData() {
+    public function getData()
+    {
         return $this->_data;
     }
 
-    public function getTransitionValue() {
+    public function getTransitionValue()
+    {
         return $this->_data;
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return false;
     }
 
 
-// Io
-    public function readXml(flex\xml\IReadable $reader) {
+    // Io
+    public function readXml(flex\xml\ITree $reader)
+    {
         return $this;
     }
 
-    public function writeXml(flex\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWriter $writer)
+    {
         throw core\Error::ERuntime(
             'Error block type cannot be saved to xml'
         );
@@ -77,11 +89,12 @@ class Error extends Base {
 
 
 
-// Render
-    public function render() {
+    // Render
+    public function render()
+    {
         $view = $this->getView();
 
-        if(df\Launchpad::$app->isProduction() && !$view->context->request->isArea('admin')) {
+        if (df\Launchpad::$app->isProduction() && !$view->context->request->isArea('admin')) {
             return null;
         }
 
@@ -89,7 +102,7 @@ class Error extends Base {
             'Error loading block type: '.$this->_type
         ), 'error');
 
-        if($this->_error) {
+        if ($this->_error) {
             $output->setDescription($this->_error->getMessage());
         }
 
@@ -98,25 +111,28 @@ class Error extends Base {
 
 
 
-// Form
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
+    // Form
+    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
+    {
         return new class($this, ...func_get_args()) extends Base_Delegate {
-
-            protected function setDefaultValues() {
+            protected function setDefaultValues()
+            {
                 $this->setStore('type', $this->_block->getType());
                 $this->setStore('data', $this->_block->getData());
 
-                if($error = $this->_block->getError()) {
+                if ($error = $this->_block->getError()) {
                     $this->setStore('message', $error->getMessage());
                 }
             }
 
-            protected function afterInit() {
+            protected function afterInit()
+            {
                 $this->_block->setType($this->getStore('type'));
                 $this->_block->setData($this->getStore('data'));
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field) {
+            public function renderFieldContent(aura\html\widget\Field $field)
+            {
                 $output = $this->html->flashMessage($this->_(
                     'Error loading block type: '.$this->getStore('type')
                 ), 'error');
@@ -129,7 +145,8 @@ class Error extends Base {
                 return $this;
             }
 
-            public function apply() {
+            public function apply()
+            {
                 $this->values->addError('noentry', 'Must update block!');
             }
         };

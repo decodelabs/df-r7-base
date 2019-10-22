@@ -90,7 +90,7 @@ class Comment implements iris\IScanner
         return $this->_allowNesting;
     }
 
-    public function initialize(iris\ILexer $lexer)
+    public function initialize(iris\Lexer $lexer)
     {
         if (empty($this->_markers)) {
             throw new iris\LogicException(
@@ -99,7 +99,7 @@ class Comment implements iris\IScanner
         }
     }
 
-    public function check(iris\ILexer $lexer)
+    public function check(iris\Lexer $lexer)
     {
         foreach ($this->_markers as $start => $end) {
             if ($lexer->peek(0, mb_strlen($start)) == $start) {
@@ -110,7 +110,7 @@ class Comment implements iris\IScanner
         return false;
     }
 
-    public function run(iris\ILexer $lexer)
+    public function run(iris\Lexer $lexer)
     {
         $end = $start = null;
         $startLength = 0;

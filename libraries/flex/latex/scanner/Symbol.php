@@ -10,30 +10,34 @@ use df\core;
 use df\flex;
 use df\iris;
 
-class Symbol implements iris\IScanner {
-
-    public function getName(): string {
+class Symbol implements iris\IScanner
+{
+    public function getName(): string
+    {
         return 'Symbol';
     }
 
-    public function getWeight() {
+    public function getWeight()
+    {
         return 1000;
     }
 
-    public function initialize(iris\ILexer $lexer) {
-
+    public function initialize(iris\Lexer $lexer)
+    {
     }
 
-    public function check(iris\ILexer $lexer) {
+    public function check(iris\Lexer $lexer)
+    {
         return $lexer->peekAlphanumeric() === null
             && !empty($lexer->char);
     }
 
-    public function run(iris\ILexer $lexer) {
+    public function run(iris\Lexer $lexer)
+    {
         $symbol = $lexer->extract();
         $type = 'symbol';
 
-        if(in_array($symbol, ['#', '$', '^', '&', '_', '{', '}', '~'])) {
+        if (in_array($symbol, ['#', '$', '^', '&', '_', '{', '}', '~'])) {
             $type = 'keySymbol';
         }
 

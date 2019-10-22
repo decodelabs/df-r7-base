@@ -209,7 +209,7 @@ class Manager implements IManager, core\IShutdownAware
             $lock = new arch\Request($lock);
         } else {
             $action = null;
-            
+
             try {
                 $parts = explode('#', $lock);
                 $entityId = array_shift($parts);
@@ -240,7 +240,7 @@ class Manager implements IManager, core\IShutdownAware
 
 
     // Helpers
-    public function getHelper(string $name): IHelper
+    public function getHelper(string $name)
     {
         $name = lcfirst($name);
 

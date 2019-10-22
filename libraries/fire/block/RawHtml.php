@@ -12,48 +12,56 @@ use df\flex;
 use df\arch;
 use df\aura;
 
-class RawHtml extends Base {
-
+class RawHtml extends Base
+{
     const DEFAULT_CATEGORIES = ['Description'];
 
     protected $_content;
 
-    public function getFormat(): string {
+    public function getFormat(): string
+    {
         return 'markup';
     }
 
-    public function setHtmlContent($content) {
+    public function setHtmlContent($content)
+    {
         $this->_content = trim($content);
         return $this;
     }
 
-    public function getHtmlContent() {
+    public function getHtmlContent()
+    {
         return $this->_content;
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return !strlen(trim($this->_content));
     }
 
-    public function getTransitionValue() {
+    public function getTransitionValue()
+    {
         return $this->_content;
     }
 
-    public function setTransitionValue($value) {
+    public function setTransitionValue($value)
+    {
         $this->_content = $value;
         return $this;
     }
 
 
-// Io
-    public function readXml(flex\xml\IReadable $reader) {
+    // Io
+    public function readXml(flex\xml\ITree $reader)
+    {
         $this->_validateXmlReader($reader);
 
         $this->_content = $reader->getFirstCDataSection();
         return $this;
     }
 
-    public function writeXml(flex\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWriter $writer)
+    {
         $this->_startWriterBlockElement($writer);
         $writer->writeCData($this->_content);
         $this->_endWriterBlockElement($writer);
@@ -63,11 +71,12 @@ class RawHtml extends Base {
 
 
 
-// Render
-    public function render() {
+    // Render
+    public function render()
+    {
         $view = $this->getView();
 
-        $content = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function($matches) use($view) {
+        $content = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function ($matches) use ($view) {
             return ' '.$matches[1].'="'.$view->uri->__invoke($matches[2]).'"';
         }, $this->_content);
 
@@ -76,15 +85,17 @@ class RawHtml extends Base {
     }
 
 
-// Form
-    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate {
+    // Form
+    public function loadFormDelegate(arch\IContext $context, arch\node\IFormState $state, arch\node\IFormEventDescriptor $event, string $id): arch\node\IDelegate
+    {
         return new class($this, ...func_get_args()) extends Base_Delegate {
-
-            protected function setDefaultValues() {
+            protected function setDefaultValues()
+            {
                 $this->values->content = $this->_block->getHtmlContent();
             }
 
-            public function renderFieldContent(aura\html\widget\Field $field) {
+            public function renderFieldContent(aura\html\widget\Field $field)
+            {
                 $field->push(
                     $this->html->textarea($this->fieldName('content'), $this->values->content)
                         ->isRequired($this->_isRequired)
@@ -94,7 +105,8 @@ class RawHtml extends Base {
                 return $this;
             }
 
-            public function apply() {
+            public function apply()
+            {
                 $validator = $this->data->newValidator()
                     ->addField('content', 'text')
                         ->isRequired($this->_isRequired)

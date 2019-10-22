@@ -191,8 +191,8 @@ class Ip implements IIp, Inspectable
         }
 
         $pos = strrpos($this->_ip, ':');
-        $part1 = base_convert(substr($this->_ip, 15, $pos - 15), 16, 10);
-        $part2 = base_convert(substr($this->_ip, $pos + 1), 16, 10);
+        $part1 = (int)base_convert(substr($this->_ip, 15, $pos - 15), 16, 10);
+        $part2 = (int)base_convert(substr($this->_ip, $pos + 1), 16, 10);
 
         $b = ($part1 % 256);
         $a = ($part1 - $b) / 256;

@@ -14,12 +14,12 @@ use DecodeLabs\Atlas;
 
 class FileSystem implements spur\packaging\bower\IResolver
 {
-    public function resolvePackageName(spur\packaging\bower\IPackage $package)
+    public function resolvePackageName(spur\packaging\bower\Package $package)
     {
         return $package->name;
     }
 
-    public function fetchPackage(spur\packaging\bower\IPackage $package, $cachePath, $currentVersion=null)
+    public function fetchPackage(spur\packaging\bower\Package $package, $cachePath, $currentVersion=null)
     {
         if ($currentVersion) {
             return false;
@@ -36,7 +36,7 @@ class FileSystem implements spur\packaging\bower\IResolver
         return true;
     }
 
-    public function getTargetVersion(spur\packaging\bower\IPackage $package, $cachePath)
+    public function getTargetVersion(spur\packaging\bower\Package $package, $cachePath)
     {
         return 'latest';
     }

@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
-class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver {
-
+class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver
+{
     const READ_FORMATS = [
         'AAI', 'ART', 'ARW', 'AVI', 'AVS', 'BMP', 'BMP2', 'BMP3', 'CALS', 'CGM', 'CIN', 'CMYK', 'CMYKA',
         'CR2', 'CRW', 'CUR', 'CUT', 'DCM', 'DCR', 'DCX', 'DIB', 'DJVU', 'DNG', 'DOT', 'DPX', 'EMF',
@@ -35,16 +35,18 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         'TXT', 'UYVY', 'VICAR', 'VIFF', 'WBMP', 'WEBP', 'X', 'XBM', 'XPM', 'XWD', 'YCbCr', 'YCbCrA', 'YUV'
     ];
 
-    public static function isLoadable(): bool {
+    public static function isLoadable(): bool
+    {
         return extension_loaded('imagick');
     }
 
-    public function loadFile($file) {
+    public function loadFile($file)
+    {
         try {
             $this->_pointer = new \Imagick();
             $this->_pointer->readImage($file);
-        } catch(\ImagickException $e) {
-            throw core\Error::{'neon/raster/EFormat'}($e->getMessage());
+        } catch (\ImagickException $e) {
+            throw Glitch::{'../EFormat'}($e->getMessage());
         }
 
         $this->_width = $this->_pointer->getImageWidth();
@@ -54,12 +56,13 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function loadString($string) {
+    public function loadString($string)
+    {
         try {
             $this->_pointer = new \Imagick();
             $this->_pointer->readImageBlob($string);
-        } catch(\ImagickException $e) {
-            throw core\Error::{'neon/raster/EFormat'}($e->getMessage());
+        } catch (\ImagickException $e) {
+            throw Glitch::{'../EFormat'}($e->getMessage());
         }
 
         $this->_width = $this->_pointer->getImageWidth();
@@ -69,8 +72,9 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function loadCanvas($width, $height, neon\IColor $color=null) {
-        if($color === null) {
+    public function loadCanvas($width, $height, neon\IColor $color=null)
+    {
+        if ($color === null) {
             $color = new neon\Color(0, 0, 0, 0);
         }
 
@@ -85,20 +89,22 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
     }
 
 
-    public function saveTo($savePath, $quality) {
+    public function saveTo($savePath, $quality)
+    {
         $this->_pointer->setImageFormat($this->_outputFormat);
         $this->_pointer->setCompressionQuality($quality);
 
         try {
             $this->_pointer->writeImage($savePath);
-        } catch(\Throwable $e) {
-            throw core\Error::{'neon/raster/EFormat,neon/raster/EUnwritable'}($e->getMessage());
+        } catch (\Throwable $e) {
+            throw Glitch::{'../EFormat,../EUnwritable'}($e->getMessage());
         }
 
         return $this;
     }
 
-    public function toString($quality): string {
+    public function toString($quality): string
+    {
         $this->_pointer->setImageFormat($this->_outputFormat);
         $this->_pointer->setCompressionQuality($quality);
 
@@ -106,8 +112,9 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
     }
 
 
-// Manipulations
-    public function resize(int $width, int $height) {
+    // Manipulations
+    public function resize(int $width, int $height)
+    {
         $this->_pointer->resizeImage($width, $height, \Imagick::FILTER_LANCZOS, 1);
         $this->_width = $this->_pointer->getImageWidth();
         $this->_height = $this->_pointer->getImageHeight();
@@ -115,16 +122,18 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function crop(int $x, int $y, int $width, int $height) {
+    public function crop(int $x, int $y, int $width, int $height)
+    {
         $this->_pointer->cropImage($width, $height, $x, $y);
         $this->_width = $width;
         $this->_height = $height;
         return $this;
     }
 
-    public function composite(neon\raster\IDriver $image, $x, $y) {
+    public function composite(neon\raster\IDriver $image, $x, $y)
+    {
         $this->_pointer->compositeImage(
-            $image->_pointer,
+            $image->getPointer(),
             \Imagick::COMPOSITE_DEFAULT,
             $x, $y
         );
@@ -132,8 +141,9 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function rotate(core\unit\IAngle $angle, neon\IColor $background=null) {
-        if($background === null) {
+    public function rotate(core\unit\IAngle $angle, neon\IColor $background=null)
+    {
+        if ($background === null) {
             $background = new \ImagickPixel('none');
         } else {
             $background = new \ImagickPixel($background->toCssString());
@@ -143,32 +153,36 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function mirror() {
+    public function mirror()
+    {
         $this->_pointer->flopImage();
         return $this;
     }
 
-    public function flip() {
+    public function flip()
+    {
         $this->_pointer->flipImage();
         return $this;
     }
 
 
-// Filters
-    public function brightness(float $brightness) {
+    // Filters
+    public function brightness(float $brightness)
+    {
         $this->_pointer->modulateImage($brightness + 100, 100, 100);
         return $this;
     }
 
-    public function contrast(float $contrast) {
+    public function contrast(float $contrast)
+    {
         $contrast /= 10;
 
-        while($contrast < 0) {
+        while ($contrast < 0) {
             $this->_pointer->contrastImage(0);
             $contrast++;
         }
 
-        while($contrast > 0) {
+        while ($contrast > 0) {
             $this->_pointer->contrastImage(1);
             $contrast--;
         }
@@ -176,47 +190,56 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function greyscale() {
+    public function greyscale()
+    {
         $this->_pointer->modulateImage(100, 0, 100);
         return $this;
     }
 
-    public function colorize(neon\IColor $color, float $alpha) {
+    public function colorize(neon\IColor $color, float $alpha)
+    {
         $this->_pointer->colorizeImage($color->toCssString(), $alpha / 100, true);
         return $this;
     }
 
-    public function invert() {
+    public function invert()
+    {
         $this->_pointer->negateImage(false);
         return $this;
     }
 
-    public function detectEdges() {
+    public function detectEdges()
+    {
         $this->_pointer->edgeImage(0);
         return $this;
     }
 
-    public function emboss() {
+    public function emboss()
+    {
         $this->_pointer->embossImage(0, 1);
         return $this;
     }
 
-    public function blur() {
+    public function blur()
+    {
         $this->_pointer->blurImage(0, 1);
         return $this;
     }
 
-    public function gaussianBlur() {
+    public function gaussianBlur()
+    {
         $this->_pointer->gaussianBlurImage(0, 1);
         return $this;
     }
 
-    public function removeMean() {
+    public function removeMean()
+    {
         $this->_pointer->unsharpMaskImage(0, 1, 8, 0.005);
         return $this;
     }
 
-    public function smooth(float $amount) {
+    public function smooth(float $amount)
+    {
         $this->_pointer->blurImage(0, $amount / 100);
         return $this;
     }

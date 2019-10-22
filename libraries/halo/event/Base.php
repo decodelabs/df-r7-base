@@ -164,7 +164,7 @@ abstract class Base implements IDispatcher
         $this->_socketBindings[$id] = $binding;
 
         if ($frozen) {
-            $binding->isFrozen = true;
+            $binding->markFrozen(true);
         } else {
             $this->_registerSocketBinding($binding);
         }
@@ -314,7 +314,7 @@ abstract class Base implements IDispatcher
     public function removeSocketBinding(ISocketBinding $binding)
     {
         $this->_unregisterSocketBinding($binding);
-        unset($this->_socketBindings[$binding->id]);
+        unset($this->_socketBindings[$binding->getId()]);
 
         return $this;
     }
@@ -475,7 +475,7 @@ abstract class Base implements IDispatcher
         $this->_streamBindings[$id] = $binding;
 
         if ($frozen) {
-            $binding->isFrozen = true;
+            $binding->markFrozen(true);
         } else {
             $this->_registerStreamBinding($binding);
         }
@@ -587,7 +587,7 @@ abstract class Base implements IDispatcher
 
     public function removeStream(core\io\IStreamChannel $stream)
     {
-        $id = $stream->getId();
+        $id = $stream->getChannelId();
 
         if (isset($this->_streamBindings['r:'.$id])) {
             $this->removeStreamBinding($this->_streamBindings['r:'.$id]);
@@ -602,7 +602,7 @@ abstract class Base implements IDispatcher
 
     public function removeStreamRead(core\io\IStreamChannel $stream)
     {
-        $id = $stream->getId();
+        $id = $stream->getChannelId();
 
         if (isset($this->_streamBindings['r:'.$id])) {
             $this->removeStreamBinding($this->_streamBindings['r:'.$id]);
@@ -613,7 +613,7 @@ abstract class Base implements IDispatcher
 
     public function removeStreamWrite(core\io\IStreamChannel $stream)
     {
-        $id = $stream->getId();
+        $id = $stream->getChannelId();
 
         if (isset($this->_streamBindings['w:'.$id])) {
             $this->removeStreamBinding($this->_streamBindings['w:'.$id]);
@@ -625,7 +625,7 @@ abstract class Base implements IDispatcher
     public function removeStreamBinding(IStreamBinding $binding)
     {
         $this->_unregisterStreamBinding($binding);
-        unset($this->_streamBindings[$binding->id]);
+        unset($this->_streamBindings[$binding->getId()]);
 
         return $this;
     }
@@ -650,7 +650,7 @@ abstract class Base implements IDispatcher
         }
 
         $count = 0;
-        $id = $stream->getId();
+        $id = $stream->getChannelId();
 
         if (isset($this->_streamBindings['r:'.$id])) {
             $count++;
@@ -670,7 +670,7 @@ abstract class Base implements IDispatcher
         }
 
         $output = [];
-        $id = $stream->getId();
+        $id = $stream->getChannelId();
 
         if (isset($this->_streamBindings['r:'.$id])) {
             $output['r:'.$id] = $this->_streamBindings['r:'.$id];
@@ -688,7 +688,7 @@ abstract class Base implements IDispatcher
         $count = 0;
 
         foreach ($this->_streamBindings as $binding) {
-            if ($binding->ioMode == IIoState::READ) {
+            if ($binding->getIoMode() == IIoState::READ) {
                 $count++;
             }
         }
@@ -701,7 +701,7 @@ abstract class Base implements IDispatcher
         $output = [];
 
         foreach ($this->_streamBindings as $id => $binding) {
-            if ($binding->ioMode == IIoState::READ) {
+            if ($binding->getIoMode() == IIoState::READ) {
                 $output[$id] = $binding;
             }
         }
@@ -769,7 +769,7 @@ abstract class Base implements IDispatcher
         $this->_signalBindings[$id] = $binding;
 
         if ($frozen) {
-            $binding->isFrozen = true;
+            $binding->markFrozen(true);
         } else {
             $this->_registerSignalBinding($binding);
         }
@@ -941,7 +941,7 @@ abstract class Base implements IDispatcher
         $this->_timerBindings[$id] = $binding;
 
         if ($frozen) {
-            $binding->isFrozen = true;
+            $binding->markFrozen(true);
         } else {
             $this->_registerTimerBinding($binding);
         }

@@ -8,8 +8,11 @@ namespace df\user\session;
 use df;
 use df\core;
 use df\user;
+use df\opal;
 
-class Descriptor implements user\session\IDescriptor
+class Descriptor implements
+    core\IArrayInterchange,
+    opal\query\IDataRowProvider
 {
     public $id;
     public $publicKey;

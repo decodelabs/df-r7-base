@@ -528,7 +528,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                     break;
 
                 case 'federatedConnection':
-                    if ($value !== null && $schema->getEngine() == 'FEDERATED') {
+                    if ($value !== null && $schema instanceof Schema && $schema->getEngine() == 'FEDERATED') {
                         $sql[] = 'CONNECTION '.$this->_adapter->prepareValue($value);
                     }
 

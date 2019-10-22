@@ -835,7 +835,7 @@ class Color implements IColor, Inspectable
         return $this->setHslLightness(($ratio * $amount) + 0.5);
     }
 
-    public function toMidtone(float $amount=1)
+    public function toMidtone(float $amount=1.0)
     {
         $this->setMode(IColor::HSL);
         $amount = core\math\Util::clampFloat($amount, 0, 1);

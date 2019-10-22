@@ -7,47 +7,52 @@ namespace df\core\i18n\module;
 
 use df\core;
 
-class Countries extends Base implements ICountriesModule, core\i18n\module\generator\IModule {
-
+class Countries extends Base implements ICountriesModule
+{
     const MODULE_NAME = 'countries';
 
-    public function getName($id) {
+    public function getName($id)
+    {
         $this->_loadData();
         $id = strtoupper($id);
 
-        if(isset($this->_data[$id])) {
+        if (isset($this->_data[$id])) {
             return $this->_data[$id];
         }
 
         return $id;
     }
 
-    public function getList(array $ids=null) {
+    public function getList(array $ids=null)
+    {
         $this->_loadData();
         $output = $this->_data;
 
-        if($ids !== null) {
+        if ($ids !== null) {
             $output = array_intersect_key($output, array_flip(array_values($ids)));
         }
 
         return $output;
     }
 
-    public function getCodeList() {
+    public function getCodeList()
+    {
         $this->_loadData();
         return array_keys($this->_data);
     }
 
-    public function isValidId($id) {
+    public function isValidId($id)
+    {
         $this->_loadData();
         return isset($this->_data[$id]);
     }
 
-    public function suggestCountryForLanguage($language) {
+    public function suggestCountryForLanguage($language)
+    {
         $match = [];
         $language = strtolower($language);
 
-        switch($language) {
+        switch ($language) {
             case 'en': return 'GB';
             case 'es': return 'ES';
             case 'fr': return 'FR';
@@ -55,14 +60,14 @@ class Countries extends Base implements ICountriesModule, core\i18n\module\gener
 
         $length = strlen($language);
 
-        foreach(self::SUGGESTED_LOCALES as $locale) {
-            if(substr($locale, 0, $length) == $language
+        foreach (self::SUGGESTED_LOCALES as $locale) {
+            if (substr($locale, 0, $length) == $language
             && strlen($locale) > $length) {
                 $match[] = $locale;
             }
         }
 
-        if(!empty($match)) {
+        if (!empty($match)) {
             $region = array_shift($match);
             return substr($region, 3);
         } else {
@@ -95,31 +100,4 @@ class Countries extends Base implements ICountriesModule, core\i18n\module\gener
         'ti_ER', 'ti_ET', 'ti', 'tig_ER', 'tig', 'tr_TR', 'tr', 'tt_RU', 'tt', 'uk_UA', 'uk', 'ur_PK', 'ur',
         'uz_AF', 'uz_UZ', 'uz', 'vi_VN', 'vi', 'wal_ET', 'wal', 'zh_CN', 'zh_HK', 'zh_MO', 'zh_SG', 'zh_TW', 'zh'
     ];
-
-
-// Generator
-    public function _convertCldr(core\i18n\ILocale $locale, \SimpleXMLElement $doc) {
-        $output = null;
-
-
-        if(isset($doc->localeDisplayNames->territories->territory)) {
-            $output = [];
-
-            foreach($doc->localeDisplayNames->territories->territory as $territory) {
-                $type = (string)$territory['type'];
-
-                if(is_numeric($type)) {
-                    continue;
-                }
-
-                $output[(string)$type] = (string)$territory;
-            }
-
-
-            $collator = new \Collator($locale->toString());
-            $collator->asort($output);
-        }
-
-        return $output;
-    }
 }

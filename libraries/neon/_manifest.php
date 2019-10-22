@@ -9,10 +9,9 @@ use df;
 use df\core;
 use df\neon;
 
-
 // Interfaces
-interface IColor extends core\unit\ICssCompatibleUnit {
-
+interface IColor extends core\unit\ICssCompatibleUnit
+{
     const RGB = 'rgb';
     const HSL = 'hsl';
     const HSV = 'hsv';
@@ -27,7 +26,7 @@ interface IColor extends core\unit\ICssCompatibleUnit {
     public function toHexString(bool $allowShort=false): string;
     public function setMode(string $mode);
 
-// RGB
+    // RGB
     public function setRgba(float $r, float $g, float $b, float $a=null);
     public function setRgb(float $r, float $g, float $b);
 
@@ -41,7 +40,7 @@ interface IColor extends core\unit\ICssCompatibleUnit {
     public function getBlue(): float;
 
 
-// HSL
+    // HSL
     public function setHsla(float $h, float $s, float $l, float $a=null);
     public function setHsl(float $h, float $s, float $l);
 
@@ -55,7 +54,7 @@ interface IColor extends core\unit\ICssCompatibleUnit {
     public function getHslLightness(): float;
 
 
-// HSV
+    // HSV
     public function setHsva(float $h, float $s, float $v, float $a=null);
     public function setHsv(float $h, float $s, float $v);
 
@@ -69,44 +68,46 @@ interface IColor extends core\unit\ICssCompatibleUnit {
     public function getHsvValue(): float;
 
 
-// Alpha
+    // Alpha
     public function setAlpha(?float $alpha);
     public function getAlpha(): float;
 
-// Modification
+    // Modification
     public function add($color);
     public function subtract($color);
 
-// Affect HSL
+    // Affect HSL
     public function affectHsl(float $h, float $s, float $l, float $a=null);
     public function affectHslHue(float $h);
     public function affectHslSaturation(float $s);
     public function affectHslLightness(float $l);
 
-// Affect HSV
+    // Affect HSV
     public function affectHsv(float $h, float $s, float $v, float $a=null);
     public function affectHsvHue(float $h);
     public function affectHsvSaturation(float $s);
     public function affectHsvValue(float $v);
     public function affectAlpha(float $a);
 
-// Tones
+    // Tones
     public function affectContrast(float $amount);
-    public function toMidtone(float $amount=1);
+    public function toMidtone(float $amount=1.0);
     public function contrastAgainst($color, float $amount=0.5);
     public function getTextContrastColor(): IColor;
+
+    public function __toString(): string;
 }
 
 
-interface IColorStop extends core\IStringProvider {
-
+interface IColorStop extends core\IStringProvider
+{
     public static function factory($colorStop): IColorStop;
 
-// Color
+    // Color
     public function setColor($color);
     public function getColor(): IColor;
 
-// Size
+    // Size
     public function setSize($size);
     public function getSize(): ?core\unit\IDisplaySize;
 }

@@ -8,8 +8,8 @@ namespace df\flex\code;
 use df;
 use df\core;
 
-class Location implements ILocation {
-
+class Location
+{
     const DEFAULT_BLACKLIST = ['.git'];
 
     public $id;
@@ -17,34 +17,40 @@ class Location implements ILocation {
     public $blackList = [];
     public $probes = [];
 
-    public function __construct(string $id, $path, array $blackList=[]) {
+    public function __construct(string $id, $path, array $blackList=[])
+    {
         $this->setId($id);
         $this->setPath($path);
         $this->setBlackList($blackList);
     }
 
 
-// Meta
-    public function setId(string $id) {
+    // Meta
+    public function setId(string $id)
+    {
         $this->id = $id;
         return $this;
     }
 
-    public function getId(): string {
+    public function getId(): string
+    {
         return $this->id;
     }
 
-    public function setPath($path) {
+    public function setPath($path)
+    {
         $this->path = (string)core\uri\Path::factory($path);
         return $this;
     }
 
-    public function getPath() {
+    public function getPath()
+    {
         return $this->path;
     }
 
-    public function setBlackList(array $blackList) {
-        foreach($blackList as $i => $path) {
+    public function setBlackList(array $blackList)
+    {
+        foreach ($blackList as $i => $path) {
             $blackList[$i] = trim($path, '/');
         }
 
@@ -52,46 +58,50 @@ class Location implements ILocation {
         return $this;
     }
 
-    public function getBlackList() {
+    public function getBlackList()
+    {
         return $this->blackList;
     }
 
 
-// Probes
-    public function getProbes() {
+    // Probes
+    public function getProbes()
+    {
         return $this->probes;
     }
 
-// Exec
-    public function scan(IScanner $scanner) {
+    // Exec
+    public function scan(IScanner $scanner)
+    {
         $this->probes = [];
         $this->_scanPath($scanner, $this->path);
         return $this->probes;
     }
 
-    protected function _scanPath(IScanner $scanner, $path) {
+    protected function _scanPath(IScanner $scanner, $path)
+    {
         try {
             $dir = new \DirectoryIterator($path);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return;
         }
 
-        foreach($dir as $item) {
-            if($item->isDot()) {
+        foreach ($dir as $item) {
+            if ($item->isDot()) {
                 continue;
             }
 
             $pathName = $item->getPathname();
             $localPath = ltrim(substr($pathName, strlen($this->path)), '/');
 
-            if(in_array($localPath, $this->blackList)
+            if (in_array($localPath, $this->blackList)
             || in_array($localPath, self::DEFAULT_BLACKLIST)) {
                 continue;
             }
 
-            if($item->isFile()) {
-                foreach($scanner->getProbes() as $id => $probe) {
-                    if(isset($this->probes[$id])) {
+            if ($item->isFile()) {
+                foreach ($scanner->getProbes() as $id => $probe) {
+                    if (isset($this->probes[$id])) {
                         $probe = $this->probes[$id];
                     } else {
                         $this->probes[$id] = $probe = clone $probe;
@@ -99,7 +109,7 @@ class Location implements ILocation {
 
                     $probe->probe($this, $localPath);
                 }
-            } else if($item->isDir()) {
+            } elseif ($item->isDir()) {
                 $this->_scanPath($scanner, $pathName);
             }
         }

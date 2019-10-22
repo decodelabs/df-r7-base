@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 class Base implements IMenu, \Serializable
 {
     use core\TContextAware;
@@ -57,7 +59,7 @@ class Base implements IMenu, \Serializable
                 }
             }
 
-            $output = array_merge($output, $source->loadAllMenues($context, $sourceWhiteList));
+            $output = array_merge($output, $source->loadAllMenus($sourceWhiteList));
         }
 
         return $output;
@@ -248,7 +250,7 @@ class Base implements IMenu, \Serializable
     }
 
     // Entries
-    public function generateEntries(arch\navigation\IEntryList $entryList=null)
+    public function generateEntries(arch\navigation\IEntryList $entryList=null): arch\navigation\IEntryList
     {
         $this->initDelegates();
 
@@ -256,13 +258,16 @@ class Base implements IMenu, \Serializable
             $entryList = new EntryList();
         }
 
-        if ($entryList->hasMenu($this)) {
-            throw core\Error::ERecusion(
-                'You cannot nest menus within themselves'
-            );
+        if ($entryList instanceof IEntryList) {
+            if ($entryList->hasMenu($this)) {
+                throw Glitch::ERecursion(
+                    'You cannot nest menus within themselves'
+                );
+            }
+
+            $entryList->registerMenu($this);
         }
 
-        $entryList->registerMenu($this);
         $this->createEntries($entryList);
 
         $config = Config::getInstance();

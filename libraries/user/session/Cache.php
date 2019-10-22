@@ -9,9 +9,10 @@ use df;
 use df\core;
 use df\user;
 
-class Cache extends core\cache\Base implements ICache {
-
-    public function insertDescriptor(IDescriptor $descriptor) {
+class Cache extends core\cache\Base implements ICache
+{
+    public function insertDescriptor(Descriptor $descriptor)
+    {
         $id = 'd:'.$descriptor->getPublicKeyHex();
 
         $justStarted = $descriptor->justStarted;
@@ -23,46 +24,53 @@ class Cache extends core\cache\Base implements ICache {
         return $descriptor;
     }
 
-    public function fetchDescriptor($publicKey) {
+    public function fetchDescriptor($publicKey)
+    {
         return $this->get('d:'.bin2hex($publicKey));
     }
 
-    public function removeDescriptor(IDescriptor $descriptor) {
+    public function removeDescriptor(Descriptor $descriptor)
+    {
         $id = 'd:'.$descriptor->getPublicKeyHex();
         $this->remove($id);
     }
 
 
-    public function fetchNode(IBucket $bucket, $key) {
+    public function fetchNode(IBucket $bucket, $key)
+    {
         $id = 'i:'.$bucket->getDescriptor()->getIdHex().'/'.$bucket->getName().'#'.$key;
         return $this->get($id);
     }
 
-    public function insertNode(IBucket $bucket, INode $node) {
+    public function insertNode(IBucket $bucket, Node $node)
+    {
         $id = 'i:'.$bucket->getDescriptor()->getIdHex().'/'.$bucket->getName().'#'.$node->key;
         $this->set($id, $node);
         return $node;
     }
 
-    public function removeNode(IBucket $bucket, $key) {
+    public function removeNode(IBucket $bucket, $key)
+    {
         $id = 'i:'.$bucket->getDescriptor()->getIdHex().'/'.$bucket->getName().'#'.$key;
         $this->remove($id);
     }
 
 
-    public function setGlobalKeyringTimestamp() {
+    public function setGlobalKeyringTimestamp()
+    {
         $this->set('m:globalKeyringTimestamp', time());
     }
 
-    public function shouldRegenerateKeyring($keyringTimestamp) {
-        if(!$keyringTimestamp) {
+    public function shouldRegenerateKeyring($keyringTimestamp)
+    {
+        if (!$keyringTimestamp) {
             return true;
         }
 
         $timestamp = $this->get('m:globalKeyringTimestamp');
         $output = false;
 
-        if($timestamp === null) {
+        if ($timestamp === null) {
             $this->setGlobalKeyringTimestamp();
             $output = true;
         } else {

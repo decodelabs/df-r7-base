@@ -11,7 +11,10 @@ use df\arch;
 use df\aura;
 use df\opal;
 
-interface IScaffold extends core\IRegistryObject, arch\IOptionalDirectoryAccessLock
+interface IScaffold extends
+    core\IRegistryObject,
+    core\IContextAware,
+    arch\IOptionalDirectoryAccessLock
 {
     public function loadNode();
     public function onNodeDispatch(arch\node\INode $node);

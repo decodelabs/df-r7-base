@@ -185,7 +185,7 @@ class Manager implements IManager
         }
 
         foreach ($dependencies as $i => $dependency) {
-            if (!$dependency instanceof fuse\IDependency) {
+            if (!$dependency instanceof fuse\Dependency) {
                 unset($dependencies[$i]);
                 continue;
             }

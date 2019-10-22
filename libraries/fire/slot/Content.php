@@ -12,8 +12,8 @@ use df\flex;
 use df\arch;
 use df\aura;
 
-class Content implements fire\ISlotContent {
-
+class Content implements fire\ISlotContent
+{
     use core\collection\TAttributeContainer;
     use flex\xml\TReaderInterchange;
     use flex\xml\TWriterInterchange;
@@ -24,37 +24,43 @@ class Content implements fire\ISlotContent {
     protected $_isNested = false;
     protected $_hasChanged = false;
 
-    public function __construct(string $id=null) {
+    public function __construct(string $id=null)
+    {
         $this->blocks = new core\collection\Queue();
 
-        if($id !== null) {
+        if ($id !== null) {
             $this->setId($id);
         }
     }
 
-    public function __clone() {
+    public function __clone()
+    {
         $this->blocks = clone $this->blocks;
     }
 
-// Id
-    public function setId(?string $id) {
+    // Id
+    public function setId(?string $id)
+    {
         return $this->setAttribute('id', $id);
     }
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->getAttribute('id');
     }
 
-    public function isPrimary(): bool {
+    public function isPrimary(): bool
+    {
         return $this->getAttribute('id') == 'primary';
     }
 
-// Nesting
-    public function isNested(bool $flag=null) {
-        if($flag !== null) {
+    // Nesting
+    public function isNested(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isNested = $flag;
 
-            foreach($this->blocks as $block) {
+            foreach ($this->blocks as $block) {
                 $block->isNested($this->_isNested);
             }
 
@@ -64,9 +70,10 @@ class Content implements fire\ISlotContent {
         return $this->_isNested;
     }
 
-// Changes
-    public function hasChanged(bool $flag=null) {
-        if($flag !== null) {
+    // Changes
+    public function hasChanged(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_hasChanged = $flag;
             return $this;
         }
@@ -74,14 +81,16 @@ class Content implements fire\ISlotContent {
         return $this->_hasChanged;
     }
 
-// Blocks
-    public function setBlocks(array $blocks) {
+    // Blocks
+    public function setBlocks(array $blocks)
+    {
         return $this->clearBlocks()->addBlocks($blocks);
     }
 
-    public function addBlocks(array $blocks) {
-        foreach($blocks as $block) {
-            if(!$block = fire\block\Base::normalize($block)) {
+    public function addBlocks(array $blocks)
+    {
+        foreach ($blocks as $block) {
+            if (!$block = fire\block\Base::normalize($block)) {
                 continue;
             }
 
@@ -91,8 +100,9 @@ class Content implements fire\ISlotContent {
         return $this;
     }
 
-    public function setBlock(int $index, fire\IBlock $block) {
-        if($block !== $this->blocks->get($index)) {
+    public function setBlock(int $index, fire\IBlock $block)
+    {
+        if ($block !== $this->blocks->get($index)) {
             $this->_hasChanged = true;
         }
 
@@ -100,34 +110,40 @@ class Content implements fire\ISlotContent {
         return $this;
     }
 
-    public function putBlock(int $index, fire\IBlock $block) {
+    public function putBlock(int $index, fire\IBlock $block)
+    {
         $this->_hasChanged = true;
         $this->blocks->put($index, $block);
         return $this;
     }
 
-    public function addBlock(fire\IBlock $block) {
+    public function addBlock(fire\IBlock $block)
+    {
         $this->_hasChanged = true;
         $this->blocks->push($block);
         return $this;
     }
 
-    public function getBlock(int $index): ?fire\IBlock {
+    public function getBlock(int $index): ?fire\IBlock
+    {
         return $this->blocks->get($index);
     }
 
-    public function getBlocks(): array {
+    public function getBlocks(): array
+    {
         return $this->blocks->toArray();
     }
 
-    public function hasBlock(int $index): bool {
+    public function hasBlock(int $index): bool
+    {
         return $this->blocks->has($index);
     }
 
-    public function removeBlock(int $index) {
-        if($index instanceof fire\IBlock) {
-            foreach($this->blocks as $i => $block) {
-                if($index === $block) {
+    public function removeBlock(int $index)
+    {
+        if ($index instanceof fire\IBlock) {
+            foreach ($this->blocks as $i => $block) {
+                if ($index === $block) {
                     $this->_hasChanged = true;
                     $this->blocks->remove($i);
                     break;
@@ -141,35 +157,40 @@ class Content implements fire\ISlotContent {
         return $this;
     }
 
-    public function clearBlocks() {
+    public function clearBlocks()
+    {
         $this->_hasChanged = true;
         $this->blocks->clear();
         return $this;
     }
 
-    public function countBlocks(): int {
+    public function countBlocks(): int
+    {
         return $this->blocks->count();
     }
 
-// Rendering
-    public function toString(): string {
+    // Rendering
+    public function toString(): string
+    {
         return (string)$this->render();
     }
 
-    public function render() {
+    public function render()
+    {
         $output = [];
         $renderTarget = $this->getRenderTarget();
 
-        foreach($this->blocks as $block) {
+        foreach ($this->blocks as $block) {
             $output[] = $block->renderTo($renderTarget);
         }
 
         return new aura\html\ElementContent($output, $this);
     }
 
-// XML interchange
-    public function readXml(flex\xml\IReadable $reader) {
-        if($reader->getTagName() != 'slot') {
+    // XML interchange
+    public function readXml(flex\xml\ITree $reader)
+    {
+        if ($reader->getTagName() != 'slot') {
             throw core\Error::EValue(
                 'Slot content object expected slot xml element - found '.$reader->getTagName()
             );
@@ -177,10 +198,10 @@ class Content implements fire\ISlotContent {
 
         $this->setAttributes($reader->getAttributes());
 
-        foreach($reader->block as $blockNode) {
+        foreach ($reader->block as $blockNode) {
             try {
                 $block = fire\block\Base::fromXmlElement($blockNode);
-            } catch(fire\block\ENotFound $e) {
+            } catch (fire\block\ENotFound $e) {
                 $block = new fire\block\Error();
                 $block->setError($e);
                 $block->setType($blockNode['type']);
@@ -193,11 +214,12 @@ class Content implements fire\ISlotContent {
         return $this;
     }
 
-    public function writeXml(flex\xml\IWritable $writer) {
+    public function writeXml(flex\xml\IWriter $writer)
+    {
         $writer->startElement('slot');
         $writer->setAttributes($this->_attributes);
 
-        foreach($this->blocks as $block) {
+        foreach ($this->blocks as $block) {
             $block->writeXml($writer);
         }
 

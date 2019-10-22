@@ -30,7 +30,7 @@ class Stream implements link\http\ITransport
                 }
 
                 if ($maxRedirects === null) {
-                    $maxRedirects = $request->options->maxRedirects;
+                    $maxRedirects = $request->getOptions()->maxRedirects;
                 }
 
                 if (!$maxRedirects) {
@@ -71,11 +71,12 @@ class Stream implements link\http\ITransport
     protected function _prepareRequest(link\http\IRequest $request, link\http\IClient $client)
     {
         $client->prepareRequest($request);
-        $request->headers->remove('expect');
+        $headers = $request->getHeaders();
+        $headers->remove('expect');
 
-        if ($request->headers->getHttpVersion() == '1.1'
-        && !$request->headers->has('connection')) {
-            $request->headers->set('connection', 'close');
+        if ($headers->getHttpVersion() == '1.1'
+        && !$headers->has('connection')) {
+            $headers->set('connection', 'close');
         }
     }
 
@@ -130,7 +131,7 @@ class Stream implements link\http\ITransport
             }
         ]);
 
-        $pointer = fopen($request->url, Mode::READ_ONLY, null, $context);
+        $pointer = fopen((string)$request->getUrl(), Mode::READ_ONLY, null, $context);
         $this->_headers = link\http\response\HeaderCollection::fromResponseArray($this->_headerStack);
 
         if ($this->_headers->get('transfer-encoding') == 'chunked') {
@@ -142,24 +143,27 @@ class Stream implements link\http\ITransport
 
     protected function _createContextOptions(link\http\IRequest $request)
     {
+        $options = $request->getOptions();
+        $headers = $request->getHeaders();
+
         $output = [
             'http' => [
                 'method' => strtoupper($request->getMethod()),
-                'header' => $request->headers->toString(),
-                'protocol_version' => $request->headers->getHttpVersion(),
+                'header' => $headers->toString(),
+                'protocol_version' => $headers->getHttpVersion(),
                 'ignore_errors' => true,
                 'follow_location' => 0,
                 'max_redirects' => 0
             ],
             'ssl' => [
-                'verify_peer' => $request->options->verifySsl,
-                'verify_peer_name' => $request->options->verifySsl,
-                'allow_self_signed' => $request->options->allowSelfSigned
+                'verify_peer' => $options->verifySsl,
+                'verify_peer_name' => $options->verifySsl,
+                'allow_self_signed' => $options->allowSelfSigned
             ]
         ];
 
-        if ($request->options->timeout) {
-            $output['http']['timeout'] = $request->options->timeout;
+        if ($options->timeout) {
+            $output['http']['timeout'] = $options->timeout;
         }
 
         $body = $request->getBodyDataString();
@@ -167,24 +171,24 @@ class Stream implements link\http\ITransport
         if (strlen($body)) {
             $output['http']['content'] = $body;
 
-            if (!$request->headers->has('content-type')) {
+            if (!$headers->has('content-type')) {
                 $output['http']['header'] .= 'Content-Type:';
             }
         }
 
-        if ($request->options->verifySsl) {
-            if ($request->options->caBundlePath) {
-                $output['ssl']['cafile'] = $request->options->caBundlePath;
+        if ($options->verifySsl) {
+            if ($options->caBundlePath) {
+                $output['ssl']['cafile'] = $options->caBundlePath;
             } elseif (PHP_VERSION_ID < 50600) {
                 $output['ssl']['cafile'] = link\http\Client::getDefaultCaBundlePath();
             }
         }
 
-        if ($request->options->certPath) {
-            $output['ssl']['local_cert'] = $request->options->certPath;
+        if ($options->certPath) {
+            $output['ssl']['local_cert'] = $options->certPath;
 
-            if ($request->options->certPassword !== null) {
-                $output['ssl']['passphrase'] = $request->options->certPassword;
+            if ($options->certPassword !== null) {
+                $output['ssl']['passphrase'] = $options->certPassword;
             }
         }
 

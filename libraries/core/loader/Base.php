@@ -390,7 +390,7 @@ class Base implements core\ILoader
         return isset($this->_packages[$package]);
     }
 
-    public function getPackage(string $package): ?core\IPackage
+    public function getPackage(string $package): ?core\Package
     {
         if (isset($this->_packages[$package])) {
             return $this->_packages[$package];

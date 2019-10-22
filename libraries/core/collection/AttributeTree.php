@@ -51,7 +51,7 @@ class AttributeTree extends Tree implements IAttributeContainer
 
     public function merge(ITree $child)
     {
-        if ($child instanceof IInputTree) {
+        if ($child instanceof IAttributeContainer) {
             $this->_attributes = array_merge(
                 $this->_attributes,
                 $child->getAttributes()

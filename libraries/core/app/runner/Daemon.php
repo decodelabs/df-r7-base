@@ -152,7 +152,7 @@ class Daemon extends Base
 
         $this->io->write('Starting daemon '.$name);
 
-        if ($daemon::TEST_MODE) {
+        if ($daemon->isTesting()) {
             $this->io->writeLine();
 
             $daemon->run();

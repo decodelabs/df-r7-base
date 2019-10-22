@@ -9,16 +9,18 @@ use df;
 use df\core;
 use df\user;
 
-class Auth extends Base {
-
-    public function isBound() {
+class Auth extends Base
+{
+    public function isBound()
+    {
         return $this->manager->client->isLoggedIn();
     }
 
-    public function loadAdapter($name) {
+    public function loadAdapter($name)
+    {
         $class = 'df\\user\\authentication\\adapter\\'.ucfirst($name);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new user\AuthenticationException(
                 'Authentication adapter '.$name.' could not be found'
             );
@@ -27,11 +29,13 @@ class Auth extends Base {
         return new $class($this->manager);
     }
 
-    public function newRequest($adapter) {
+    public function newRequest($adapter)
+    {
         return new user\authentication\Request($adapter);
     }
 
-    public function bind(user\authentication\IRequest $request) {
+    public function bind(user\authentication\IRequest $request)
+    {
         $timer = new core\time\Timer();
 
         // Get adapter
@@ -41,7 +45,7 @@ class Auth extends Base {
 
         $config = user\authentication\Config::getInstance();
 
-        if(!$config->isAdapterEnabled($name)) {
+        if (!$config->isAdapterEnabled($name)) {
             throw new user\AuthenticationException(
                 'Authentication adapter '.$name.' is not enabled'
             );
@@ -56,7 +60,7 @@ class Auth extends Base {
         // Authenticate
         $adapter->authenticate($request, $result);
 
-        if($result->isValid()) {
+        if ($result->isValid()) {
             $domainInfo = $result->getDomainInfo();
             $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
             $manager->clearAccessLockCache();
@@ -65,13 +69,13 @@ class Auth extends Base {
             $domainInfo->onAuthentication();
             $clientData = $domainInfo->getClientData();
 
-            if(!$clientData instanceof user\IClientDataObject) {
+            if (!$clientData instanceof user\IClientDataObject) {
                 throw new user\AuthenticationException(
                     'Domain info could not provide a valid client data object'
                 );
             }
 
-            if($clientData->getStatus() !== user\IState::CONFIRMED) {
+            if ($clientData->getStatus() !== user\IState::CONFIRMED) {
                 $result->setCode($result::NO_STATUS);
                 return $result;
             }
@@ -83,14 +87,16 @@ class Auth extends Base {
             $manager->client->setKeyring($model->generateKeyring($manager->client));
             $manager->session->setUserId($clientData->getId());
 
-            $clientData->onAuthentication($manager->client);
+            if ($clientData instanceof user\IActiveClientDataObject) {
+                $clientData->onAuthentication($manager->client);
+            }
 
             // Store session
             $bucket->set($manager::CLIENT_SESSION_KEY, $manager->client);
 
 
             // Remember me
-            if($request->getAttribute('rememberMe')) {
+            if ($request->getAttribute('rememberMe')) {
                 $manager->session->perpetuateRecall($manager->client);
             }
 
@@ -108,20 +114,21 @@ class Auth extends Base {
 
 
 
-// Access key
-    public function bindDirect($userId, bool $asAdmin=false) {
+    // Access key
+    public function bindDirect($userId, bool $asAdmin=false)
+    {
         $manager = $this->manager;
         $bucket = $manager->session->getBucket($manager::USER_SESSION_BUCKET);
         $manager->clearAccessLockCache();
         $model = $manager->getUserModel();
 
         // Get client data
-        if(!$clientData = $model->getClientData($userId)) {
+        if (!$clientData = $model->getClientData($userId)) {
             return false;
         }
 
         // Check status
-        if($clientData->getStatus() !== user\IState::CONFIRMED) {
+        if ($clientData->getStatus() !== user\IState::CONFIRMED) {
             return false;
         }
 
@@ -150,17 +157,18 @@ class Auth extends Base {
     }
 
 
-// Recall
-    public function bindRecallKey(user\session\RecallKey $key) {
+    // Recall
+    public function bindRecallKey(user\session\RecallKey $key)
+    {
         $manager = $this->manager;
 
         // Check key
-        if(!$manager->session->hasRecallKey($key)) {
+        if (!$manager->session->hasRecallKey($key)) {
             return false;
         }
 
         // Bind
-        if(!$this->bindDirect($key->userId)) {
+        if (!$this->bindDirect($key->userId)) {
             return false;
         }
 
@@ -177,14 +185,15 @@ class Auth extends Base {
 
 
 
-    public function recallIdentity($isNew) {
-        if($key = $this->manager->session->perpetuator->getRecallKey($this->manager->session)) {
-            if($this->bindRecallKey($key)) {
+    public function recallIdentity($isNew)
+    {
+        if ($key = $this->manager->session->perpetuator->getRecallKey($this->manager->session)) {
+            if ($this->bindRecallKey($key)) {
                 return true;
             } else {
                 try {
                     $this->manager->session->perpetuator->destroyRecallKey($this->manager->session);
-                } catch(\Throwable $e) {
+                } catch (\Throwable $e) {
                     core\logException($e);
                 }
             }
@@ -192,27 +201,27 @@ class Auth extends Base {
 
         $canRecall = $this->manager->session->perpetuator->canRecallIdentity();
 
-        if($canRecall) {
+        if ($canRecall) {
             $config = user\authentication\Config::getInstance();
 
-            foreach($config->getEnabledAdapters() as $name => $options) {
+            foreach ($config->getEnabledAdapters() as $name => $options) {
                 try {
                     $adapter = $this->loadAdapter($name);
-                } catch(user\AuthenticationException $e) {
+                } catch (user\AuthenticationException $e) {
                     continue;
                 }
 
-                if(!$adapter instanceof user\authentication\IIdentityRecallAdapter) {
+                if (!$adapter instanceof user\authentication\IIdentityRecallAdapter) {
                     continue;
                 }
 
                 $request = $adapter->recallIdentity();
 
-                if(!$request instanceof user\authentication\IRequest) {
+                if (!$request instanceof user\authentication\IRequest) {
                     continue;
                 }
 
-                if($this->bind($request)) {
+                if ($this->bind($request)) {
                     return true;
                 }
             }
@@ -223,8 +232,9 @@ class Auth extends Base {
 
 
 
-// Unbind
-    public function unbind(bool $restartSession=false) {
+    // Unbind
+    public function unbind(bool $restartSession=false)
+    {
         $this->manager->emitEvent($this->manager->client, 'logout');
         $this->manager->session->destroy($restartSession);
 

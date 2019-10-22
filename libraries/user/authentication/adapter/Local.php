@@ -11,25 +11,28 @@ use df\user;
 use df\axis;
 use df\opal;
 
-class Local implements user\authentication\IAdapter {
-
+class Local implements user\authentication\IAdapter
+{
     use user\authentication\TAdapter;
 
-    public static function getDefaultConfigValues() {
+    public static function getDefaultConfigValues()
+    {
         return [
             'enabled' => true
         ];
     }
 
-    public static function getDisplayName(): string {
+    public static function getDisplayName(): string
+    {
         return 'Email and password';
     }
 
-    public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result) {
+    public function authenticate(user\authentication\IRequest $request, user\authentication\Result $result)
+    {
         $model = $this->_manager->getUserModel();
         $domainInfo = $model->getAuthenticationDomainInfo($request);
 
-        if(!$domainInfo instanceof user\authentication\IDomainInfo) {
+        if (!$domainInfo instanceof user\authentication\IDomainInfo) {
             $result->setCode(user\authentication\Result::IDENTITY_NOT_FOUND);
             return $result;
         }
@@ -43,7 +46,7 @@ class Local implements user\authentication\IAdapter {
 
         $domainPassword = $domainInfo->getPassword();
 
-        if($domainPassword != $passwordHash) {
+        if ($domainPassword != $passwordHash) {
             $result->setCode(user\authentication\Result::INVALID_CREDENTIAL);
             return;
         }

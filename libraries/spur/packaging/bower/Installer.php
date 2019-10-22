@@ -51,7 +51,7 @@ class Installer implements IInstaller
         $packages = [];
 
         foreach ($input as $name => $version) {
-            if ($version instanceof IPackage) {
+            if ($version instanceof Package) {
                 $package = $version;
             } else {
                 $package = new Package($name, $version);
@@ -71,7 +71,7 @@ class Installer implements IInstaller
         return $this;
     }
 
-    public function installPackage(IPackage $package)
+    public function installPackage(Package $package)
     {
         if ($this->_installPackage($package)) {
             $this->_installDependencies($package);
@@ -82,7 +82,7 @@ class Installer implements IInstaller
         return $this;
     }
 
-    protected function _installPackage(IPackage $package, $depLevel=0, $depParent=null)
+    protected function _installPackage(Package $package, $depLevel=0, $depParent=null)
     {
         $output = false;
         $this->_preparePackage($package);
@@ -138,7 +138,7 @@ class Installer implements IInstaller
         return $output;
     }
 
-    protected function _installDependencies(IPackage $package, $depLevel=0)
+    protected function _installDependencies(Package $package, $depLevel=0)
     {
         if (!$data = $this->getPackageBowerData($package)) {
             return;
@@ -186,7 +186,7 @@ class Installer implements IInstaller
 
     public function isPackageInstalled($name)
     {
-        if ($name instanceof IPackage) {
+        if ($name instanceof Package) {
             $name = $name->installName;
         }
 
@@ -211,7 +211,7 @@ class Installer implements IInstaller
 
     public function _hasPackage($name)
     {
-        if ($name instanceof IPackage) {
+        if ($name instanceof Package) {
             $name = $name->installName;
         }
 
@@ -235,7 +235,7 @@ class Installer implements IInstaller
 
     public function getPackageInfo($name)
     {
-        if ($name instanceof IPackage) {
+        if ($name instanceof Package) {
             $name = $name->installName;
         }
 
@@ -263,7 +263,7 @@ class Installer implements IInstaller
 
     protected function _getPackageInfo($name)
     {
-        if ($name instanceof IPackage) {
+        if ($name instanceof Package) {
             $name = $name->installName;
         }
 
@@ -283,7 +283,7 @@ class Installer implements IInstaller
 
     public function getPackageBowerData($name)
     {
-        if ($name instanceof IPackage) {
+        if ($name instanceof Package) {
             $name = $name->installName;
         }
 
@@ -296,7 +296,7 @@ class Installer implements IInstaller
 
     public function getPackageJsonData($name)
     {
-        if ($name instanceof IPackage) {
+        if ($name instanceof Package) {
             $name = $name->installName;
         }
 
@@ -310,7 +310,7 @@ class Installer implements IInstaller
 
 
     // Resolvers
-    protected function _preparePackage(IPackage $package, $useRegistry=true)
+    protected function _preparePackage(Package $package, $useRegistry=true)
     {
         if (!strlen($package->source)) {
             $package->source = 'latest';
@@ -481,8 +481,8 @@ class Installer implements IInstaller
                         );
                     }
 
-                    if ($version instanceof flex\IVersion) {
-                        $version = $version->major.'.'.$version->minor;
+                    if ($version instanceof flex\Version) {
+                        $version = $version->getMajor().'.'.$version->getMinor();
                     }
 
                     $package->installName = $package->name.'/'.$version;
@@ -536,7 +536,7 @@ class Installer implements IInstaller
         return $this;
     }
 
-    protected function _extractCache(IPackage $package)
+    protected function _extractCache(Package $package)
     {
         $sourcePath = $this->_cachePath.'/packages/'.$package->cacheFileName;
         $destination = $this->_installDir->getDir($package->installName);
@@ -547,7 +547,7 @@ class Installer implements IInstaller
                 core\archive\Base::extract(
                     $sourcePath, (string)$destination, true
                 );
-            } catch (core\archive\IException $e) {
+            } catch (\Throwable $e) {
                 Atlas::$fs->deleteFile($sourcePath);
                 throw $e;
             }

@@ -44,7 +44,7 @@ abstract class Base implements IScaffold
         $class = self::getClassFor($context->location, $runMode);
 
         if (!$class) {
-            throw core\Error::ENotFound('Scaffold could not be found for '.$context->location);
+            throw Glitch::ENotFound('Scaffold could not be found for '.$context->location);
         }
 
         $output = new $class($context);
@@ -135,7 +135,7 @@ abstract class Base implements IScaffold
                     return $node;
                 }
 
-                throw core\Error::{'arch/scaffold/ENodeNotFound,ENotFound'}(
+                throw Glitch::{'df/arch/node/ENotFound,ENotFound'}(
                     'Scaffold at '.$this->context->location.' cannot provide node '.$node
                 );
             }
@@ -180,7 +180,7 @@ abstract class Base implements IScaffold
             $output = $this->{$method}($args);
 
             if (!$output instanceof arch\IComponent) {
-                throw core\Error::{'arch/component/ENotFound,ENotFound'}(
+                throw Glitch::{'df/arch/component/ENotFound,ENotFound'}(
                     'Scaffold at '.$this->context->location.' attempted but failed to provide component '.$origName
                 );
             }
@@ -188,7 +188,7 @@ abstract class Base implements IScaffold
             return $output;
         }
 
-        throw core\Error::{'arch/component/ENotFound,ENotFound'}(
+        throw Glitch::{'df/arch/component/ENotFound,ENotFound'}(
             'Scaffold at '.$this->context->location.' cannot provide component '.$origName
         );
     }
@@ -205,7 +205,7 @@ abstract class Base implements IScaffold
         $method = 'build'.$name.'FormDelegate';
 
         if (!method_exists($this, $method)) {
-            throw core\Error::{'arch/node/ENotFound,ENotFound'}(
+            throw Glitch::{'df/arch/node/ENotFound,ENotFound'}(
                 'Scaffold at '.$this->context->location.' cannot provide form delegate '.$origName
             );
         }
@@ -213,7 +213,7 @@ abstract class Base implements IScaffold
         $output = $this->{$method}($state, $event, $id);
 
         if (!$output instanceof arch\node\IDelegate) {
-            throw core\Error::{'arch/node/ENotFound,ENotFound'}(
+            throw Glitch::{'df/arch/node/ENotFound,ENotFound'}(
                 'Scaffold at '.$this->context->location.' attempted but failed to provide form delegate '.$origName
             );
         }
@@ -226,7 +226,7 @@ abstract class Base implements IScaffold
         $method = 'generate'.ucfirst($name).'Menu';
 
         if (!method_exists($this, $method)) {
-            throw core\Error::{'arch/navigation/ENotFound,ENotFound'}(
+            throw Glitch::{'df/arch/navigation/ENotFound,ENotFound'}(
                 'Scaffold at '.$this->context->location.' could not provider menu '.$name
             );
         }

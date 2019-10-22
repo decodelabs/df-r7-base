@@ -12,7 +12,7 @@ use df\aura;
 use df\flex;
 use df\spur;
 
-class Dependency implements IDependency
+class Dependency
 {
     public $id;
     public $version;

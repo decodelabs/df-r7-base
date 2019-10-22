@@ -796,8 +796,10 @@ class ArrayManipulator implements IArrayManipulator
                 );
             }
 
-            foreach ($populate->getPopulates() as $childPopulate) {
-                $attachment->addPopulate($childPopulate);
+            if ($attachment instanceof opal\query\IPopulatableQuery) {
+                foreach ($populate->getPopulates() as $childPopulate) {
+                    $attachment->addPopulate($childPopulate);
+                }
             }
 
             $attachments[$populate->getFieldName()] = $attachment;
@@ -1075,7 +1077,7 @@ class ArrayManipulator implements IArrayManipulator
 
             $lastField = $field;
 
-            while ($field = $field->getOverrideField() && $field !== $lastField) {
+            while (($field = $field->getOverrideField()) && ($field !== $lastField)) {
                 $overrides[$alias][] = $field->getQualifiedName();
                 $lastField = $field;
             }

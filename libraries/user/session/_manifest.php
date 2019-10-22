@@ -90,28 +90,28 @@ interface IBackend
     public function setLifeTime($lifeTime);
     public function getLifeTime(): int;
 
-    public function insertDescriptor(IDescriptor $descriptor);
-    public function fetchDescriptor(string $id, ?int $transitionTime): ?IDescriptor;
-    public function touchSession(IDescriptor $descriptor, int $lifeTime=30);
-    public function applyTransition(IDescriptor $descriptor);
-    public function killSession(IDescriptor $descriptor);
+    public function insertDescriptor(Descriptor $descriptor);
+    public function fetchDescriptor(string $id, ?int $transitionTime): ?Descriptor;
+    public function touchSession(Descriptor $descriptor, int $lifeTime=30);
+    public function applyTransition(Descriptor $descriptor);
+    public function killSession(Descriptor $descriptor);
     public function idExists(string $id): bool;
 
-    public function getBucketKeys(IDescriptor $descriptor, string $bucket): array;
-    public function pruneBucket(IDescriptor $descriptor, string $bucket, int $age);
+    public function getBucketKeys(Descriptor $descriptor, string $bucket): array;
+    public function pruneBucket(Descriptor $descriptor, string $bucket, int $age);
 
-    public function getBuckets(IDescriptor $descriptor): array;
-    public function getBucketsLike(IDescriptor $descriptor, string $bucket, string $operator=null): array;
+    public function getBuckets(Descriptor $descriptor): array;
+    public function getBucketsLike(Descriptor $descriptor, string $bucket, string $operator=null): array;
     public function getBucketsForUserLike(string $userId, string $bucket, string $operator=null): array;
     public function getBucketsForAllLike(string $bucket, string $operator=null): array;
 
-    public function clearBucket(IDescriptor $descriptor, string $bucket, string $operator=null);
+    public function clearBucket(Descriptor $descriptor, string $bucket, string $operator=null);
     public function clearBucketForUser(string $userId, string $bucket, string $operator=null);
     public function clearBucketForAll(string $bucket, string $operator=null);
 
-    public function fetchNode(IBucket $bucket, $key): INode;
-    public function fetchLastUpdatedNode(IBucket $bucket): ?INode;
-    public function updateNode(IBucket $bucket, INode $node);
+    public function fetchNode(IBucket $bucket, $key): Node;
+    public function fetchLastUpdatedNode(IBucket $bucket): ?Node;
+    public function updateNode(IBucket $bucket, Node $node);
     public function removeNode(IBucket $bucket, string $key);
     public function hasNode(IBucket $bucket, string $key);
     public function collectGarbage();
@@ -146,48 +146,12 @@ class RecallKey
 }
 
 
-interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvider
-{
-    public function isNew();
-    public function hasJustStarted(bool $flag=null);
-
-    public function setId(string $id);
-    public function getId(): string;
-    public function getIdHex();
-    public function setPublicKey($key);
-    public function getPublicKey();
-    public function getPublicKeyHex();
-
-    public function setTransitionKey($key);
-    public function getTransitionKey();
-    public function getTransitionKeyHex();
-    public function applyTransition($newPublicKey);
-
-    public function setUserId(?string $id);
-    public function getUserId(): ?string;
-
-    public function setStartTime($time);
-    public function getStartTime();
-
-    public function setAccessTime($time);
-    public function getAccessTime();
-    public function isAccessOlderThan($seconds);
-
-    public function setTransitionTime($time);
-    public function getTransitionTime();
-    public function hasJustTransitioned($transitionLifeTime=10);
-
-    public function needsTouching($transitionLifeTime=10);
-    public function touchInfo($transitionLifeTime=10);
-}
-
-
 interface IPerpetuator
 {
     public function getInputId();
     public function canRecallIdentity();
 
-    public function perpetuate(IController $controller, IDescriptor $descriptor);
+    public function perpetuate(IController $controller, Descriptor $descriptor);
     public function destroy(IController $controller);
     public function handleDeadPublicKey($publicKey);
 
@@ -196,11 +160,7 @@ interface IPerpetuator
     public function destroyRecallKey(IController $controller);
 }
 
-interface INode
-{
-}
-
-class Node implements INode
+class Node
 {
     public $key;
     public $value;
@@ -245,12 +205,12 @@ class Node implements INode
 
 interface ICache
 {
-    public function insertDescriptor(IDescriptor $descriptor);
+    public function insertDescriptor(Descriptor $descriptor);
     public function fetchDescriptor($publicKey);
-    public function removeDescriptor(IDescriptor $descriptor);
+    public function removeDescriptor(Descriptor $descriptor);
 
     public function fetchNode(IBucket $bucket, $key);
-    public function insertNode(IBucket $bucket, INode $node);
+    public function insertNode(IBucket $bucket, Node $node);
     public function removeNode(IBucket $bucket, $key);
 
     public function setGlobalKeyringTimestamp();

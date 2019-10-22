@@ -70,7 +70,7 @@ class IpRange implements IIpRange, Inspectable
                 $this->_netmask = ip2long(str_replace('*', '0', $netmask));
             } else {
                 // /24
-                $this->_netmask = -pow(2, (32 - $netmask));
+                $this->_netmask = -pow(2, (32 - (int)$netmask));
             }
         } else {
             if (false !== strpos($range, '*')) {

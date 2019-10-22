@@ -89,7 +89,7 @@ class Symbol implements iris\IScanner, Inspectable
     }
 
 
-    public function initialize(iris\ILexer $lexer)
+    public function initialize(iris\Lexer $lexer)
     {
         if (empty($this->_symbols)) {
             throw new iris\LogicException(
@@ -103,12 +103,12 @@ class Symbol implements iris\IScanner, Inspectable
     }
 
 
-    public function check(iris\ILexer $lexer)
+    public function check(iris\Lexer $lexer)
     {
         return true;
     }
 
-    public function run(iris\ILexer $lexer)
+    public function run(iris\Lexer $lexer)
     {
         $symbols = [];
 

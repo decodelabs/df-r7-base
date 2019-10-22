@@ -131,11 +131,42 @@ trait TElementContent
 
     public function import(...$input)
     {
-        foreach (core\collection\Util::leaves($input, true) as $value) {
+        foreach (self::flattenArray($input, true) as $value) {
             $this->_collection[] = $value;
         }
 
         return $this;
+    }
+
+    private static function flattenArray($data, bool $removeNull=false)
+    {
+        if (!is_array($data)) {
+            yield $data;
+        }
+
+        foreach ($data as $key => $value) {
+            if ($isIterable = (
+                is_array($value) &&
+                !$value instanceof Markup
+            )) {
+                $outer = $value;
+            } else {
+                $outer = null;
+            }
+
+            if ($isContainer = $value instanceof core\IValueContainer) {
+                $value = $value->getValue();
+            }
+
+            if ((!$isIterable || $isContainer)
+            && (!$removeNull || $value !== null)) {
+                yield $key => $value;
+            }
+
+            if ($isIterable) {
+                yield from self::flattenArray($outer, $removeNull);
+            }
+        }
     }
 
     public function setParentRenderContext($parent)
@@ -426,7 +457,7 @@ class ElementString implements IElementRepresentation, Inspectable
 }
 
 
-interface IElement extends ITag, IElementContent, IWidgetFinder
+interface IElement extends ITag, IElementContentCollection
 {
     public function setBody($body);
 }

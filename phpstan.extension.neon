@@ -5,7 +5,7 @@ parameters:
         - */_templates/*.mail.php
 
     bootstrap: %rootDir%/../../../../base/PHPStanBootstrap.php
-    level: 1
+    level: 2
     inferPrivatePropertyTypeFromConstructor: true
     reportUnmatchedIgnoredErrors: false
 
@@ -17,14 +17,20 @@ parameters:
         - df\core\IContextAware
         - df\core\IHelperProvider
         - df\core\collection\ITree
+        - df\core\i18n\Manager
+        - df\core\uri\IUrl
+        - df\flex\xml\ITree
         - df\opal\record\IRecord
         - df\user\Manager
 
     ignoreErrors:
-        - '#Call to an undefined static method df\\core\\Error#'
-        - '#Call to an undefined method (.+)\:\:(date|html|uri|findFile|forceResponse)#'
-        - '#^Caught class [a-zA-Z0-9\\]+\E[A-Z][a-zA-Z0-9]+ not found\.$#'
+        - '#^Call to an undefined static method df\\core\\Error#'
+        - '#^Call to an undefined method (.+)\:\:(date|html|uri|findFile|forceResponse)#'
+        - '#^Call to an undefined method df\\aura\\html\\widget\\[A-Z][a-zA-Z0-9_]+\:\:#'
+        - '#^Call to an undefined method df\\(aura\\view\\content\\WidgetContentProvider|arch\\node\\IDelegate|mesh\\job\\IQueue|plug\\Html)\:\:#'
+        - '#^Call to method [a-zA-Z0-9_]+\(\) on an unknown class (([a-zA-Z0-9_\\]+\\E[A-Z][a-zA-Z0-9_]*)|Memcache|COM)\.$#'
+        - '#^Caught class [a-zA-Z0-9_\\]+\\E[A-Z][a-zA-Z0-9]+ not found\.$#'
         - '#^Instantiated class COM not found.$#'
-        - '#Instantiated class Memcache not found\.#'
-        - '#Function snappy_[a-zA-Z0-9_]+ not found\.#'
-        - '#Instantiated class (df\\apex\\App|df\\apex\\directory\\front\\HttpRootNodeRouter) not found\.#'
+        - '#^Instantiated class Memcache not found\.$#'
+        - '#^Function snappy_[a-zA-Z0-9_]+ not found\.$#'
+        - '#^Instantiated class (df\\apex\\App|df\\apex\\directory\\front\\HttpRootNodeRouter) not found\.$#'

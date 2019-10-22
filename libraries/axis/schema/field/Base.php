@@ -199,7 +199,10 @@ abstract class Base implements axis\schema\IField, \Serializable, Inspectable
     public static function fromStorageArray(axis\schema\ISchema $schema, array $data)
     {
         $output = self::factory($schema, $data['nam'], $data['typ'], false);
-        $output->_importStorageArray($data);
+
+        if ($output instanceof self) {
+            $output->_importStorageArray($data);
+        }
 
         return $output;
     }

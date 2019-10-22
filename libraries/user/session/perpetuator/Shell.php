@@ -40,7 +40,7 @@ class Shell implements user\session\IPerpetuator
         return true;
     }
 
-    public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor)
+    public function perpetuate(user\session\IController $controller, user\session\Descriptor $descriptor)
     {
         $cache = Shell_Cache::getInstance();
         $cache->set($this->_userKey, $descriptor->getPublicKey());

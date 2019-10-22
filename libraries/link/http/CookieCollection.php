@@ -13,7 +13,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class CookieCollection implements ICookieCollection, core\collection\IMappedCollection, Inspectable
+class CookieCollection implements ICookieCollection, Inspectable
 {
     use core\TStringProvider;
     use core\TValueMap;
@@ -56,11 +56,11 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
             }
 
             if ($data instanceof ICookieCollection) {
-                foreach ($data->_set as $key => $cookie) {
+                foreach ($data->toArray() as $key => $cookie) {
                     $this->_set[$key] = clone $cookie;
                 }
 
-                foreach ($data->_remove as $key => $cookie) {
+                foreach ($data->getRemoved() as $key => $cookie) {
                     $this->_remove[$key] = clone $cookie;
                 }
             } elseif (core\collection\Util::isIterable($data)) {
@@ -210,15 +210,17 @@ class CookieCollection implements ICookieCollection, core\collection\IMappedColl
 
     public function sanitize(IRequest $request)
     {
+        $domain = $request->getUrl()->getDomain();
+
         foreach ($this->_set as $cookie) {
             if (!$cookie->getDomain()) {
-                $cookie->setDomain($request->url->getDomain());
+                $cookie->setDomain($domain);
             }
         }
 
         foreach ($this->_remove as $cookie) {
             if (!$cookie->getDomain()) {
-                $cookie->setDomain($request->url->getDomain());
+                $cookie->setDomain($domain);
             }
         }
 

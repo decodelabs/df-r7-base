@@ -9,33 +9,35 @@ use df;
 use df\core;
 use df\arch;
 
-class Config extends core\Config implements IConfig {
-
+class Config extends core\Config implements IConfig
+{
     const ID = 'menus';
     const STORE_IN_MEMORY = false;
 
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         return [];
     }
 
-    public function createEntries(IMenu $menu, IEntryList $entryList) {
+    public function createEntries(IMenu $menu, IEntryList $entryList)
+    {
         $id = (string)$menu->getId();
 
-        if($this->values->isEmpty()) {
+        if ($this->values->isEmpty()) {
             return $this;
         }
 
         $context = $menu->getContext();
 
-        foreach($this->values->{$id}->delegates as $delegate) {
+        foreach ($this->values->{$id}->delegates as $delegate) {
             try {
                 $menu->addDelegate(Base::factory($context, (string)$delegate));
-            } catch(IError $e) {
+            } catch (EGlitch $e) {
                 continue;
             }
         }
 
-        foreach($this->values->{$id}->entries as $entry) {
+        foreach ($this->values->{$id}->entries as $entry) {
             $entryList->addEntry(
                 arch\navigation\entry\Base::fromArray($entry->toArray())
             );
@@ -44,21 +46,23 @@ class Config extends core\Config implements IConfig {
         return $this;
     }
 
-    public function setDelegatesFor($id, array $delegates) {
+    public function setDelegatesFor($id, array $delegates)
+    {
         $id = (string)Base::normalizeId($id);
         $this->values->{$id}['delegates'] = $delegates;
 
         return $this;
     }
 
-    public function setEntriesFor($id, array $entries) {
+    public function setEntriesFor($id, array $entries)
+    {
         $id = (string)Base::normalizeId($id);
         $data = [];
 
-        foreach($entries as $entry) {
+        foreach ($entries as $entry) {
             try {
-                if(!$entry instanceof arch\navigation\IEntry) {
-                    if(is_array($entry)) {
+                if (!$entry instanceof arch\navigation\IEntry) {
+                    if (is_array($entry)) {
                         $entry = arch\navigation\entry\Base::fromArray($entry);
                     } else {
                         continue;
@@ -66,7 +70,7 @@ class Config extends core\Config implements IConfig {
                 }
 
                 $data[] = $entry->toArray();
-            } catch(IError $e) {
+            } catch (EGlitch $e) {
                 continue;
             }
         }
@@ -76,7 +80,8 @@ class Config extends core\Config implements IConfig {
         return $this;
     }
 
-    public function getSettingsFor($id) {
+    public function getSettingsFor($id)
+    {
         $id = (string)Base::normalizeId($id);
         return $this->values->{$id};
     }

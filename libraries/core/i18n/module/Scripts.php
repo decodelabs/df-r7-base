@@ -7,60 +7,43 @@ namespace df\core\i18n\module;
 
 use df\core;
 
-class Scripts extends Base implements IScriptsModule, core\i18n\module\generator\IModule {
-    
+class Scripts extends Base implements IScriptsModule
+{
     const MODULE_NAME = 'scripts';
-    
-    public function getName($id) {
+
+    public function getName($id)
+    {
         $this->_loadData();
         $id = ucfirst(strtolower($id));
-        
-        if(isset($this->_data[$id])) {
+
+        if (isset($this->_data[$id])) {
             return $this->_data[$id];
         }
-        
+
         return $id;
     }
-    
-    public function getList(array $ids=null) {
+
+    public function getList(array $ids=null)
+    {
         $this->_loadData();
         $output = $this->_data;
 
-        if($ids !== null) {
+        if ($ids !== null) {
             $output = array_intersect_key($output, array_flip(array_values($ids)));
         }
 
         return $output;
     }
-    
-    public function getCodeList() {
+
+    public function getCodeList()
+    {
         $this->_loadData();
         return array_keys($this->_data);
     }
 
-    public function isValidId($id) {
+    public function isValidId($id)
+    {
         $this->_loadData();
         return isset($this->_data[$id]);
-    }
-    
-    
-// Generator
-    public function _convertCldr(core\i18n\ILocale $locale, \SimpleXMLElement $doc) {
-        $output = [];
-        
-        if(isset($doc->localeDisplayNames->scripts->script)) {
-            foreach($doc->localeDisplayNames->scripts->script as $script) {
-                $type = (string)$script['type'];
-                
-                if(isset($output[$type])) {
-                    $output[$type] = (string)$script;
-                }    
-            }  
-            
-            $collator = new \Collator($locale->toString());
-            $collator->asort($output);
-        }
-        
-        return $output; 
     }
 }

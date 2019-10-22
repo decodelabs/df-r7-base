@@ -8,42 +8,45 @@ namespace df\core\math;
 use df;
 use df\core;
 
-class Util implements IUtil {
-
-    public static function clampFloat(?float $number, float $min, float $max): ?float {
-        if($number === null) {
+class Util
+{
+    public static function clampFloat(?float $number, float $min, float $max): ?float
+    {
+        if ($number === null) {
             return null;
         }
 
         return max($min, min($max, $number));
     }
 
-    public static function clampInt(?int $number, int $min, int $max): ?int {
-        if($number === null) {
+    public static function clampInt(?int $number, int $min, int $max): ?int
+    {
+        if ($number === null) {
             return null;
         }
 
         return max($min, min($max, $number));
     }
 
-    public static function clampDegrees(?float $degrees, float $min=null, float $max=null): ?float {
-        if($degrees === null) {
+    public static function clampDegrees(?float $degrees, float $min=null, float $max=null): ?float
+    {
+        if ($degrees === null) {
             return null;
         }
 
-        while($degrees < 0) {
+        while ($degrees < 0) {
             $degrees += 360;
         }
 
-        while($degrees > 359) {
+        while ($degrees > 359) {
             $degrees -= 360;
         }
 
-        if($min !== null) {
+        if ($min !== null) {
             $degrees = max($min, $degrees);
         }
 
-        if($max !== null) {
+        if ($max !== null) {
             $degrees = min($max, $degrees);
         }
 

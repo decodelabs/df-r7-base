@@ -30,7 +30,7 @@ abstract class Parser implements IParser, Inspectable
     protected $_processors = [];
     protected $_lexer;
 
-    public function __construct(ILexer $lexer, array $processors=null)
+    public function __construct(Lexer $lexer, array $processors=null)
     {
         $this->_lexer = $lexer;
 
@@ -446,7 +446,7 @@ abstract class Parser implements IParser, Inspectable
         while ($count > 0) {
             $token = $this->_lexer->extractToken();
 
-            if (!$token instanceof IToken) {
+            if (!$token instanceof Token) {
                 $this->_hasLastToken = true;
                 return;
             }
@@ -464,7 +464,7 @@ abstract class Parser implements IParser, Inspectable
     protected function _bufferTokens(...$tokens)
     {
         foreach ($tokens as $token) {
-            if ($token instanceof IToken) {
+            if ($token instanceof Token) {
                 $this->_extractBuffer[] = $token;
             }
         }

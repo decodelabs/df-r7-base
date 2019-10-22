@@ -102,7 +102,7 @@ class Descriptor implements IDescriptor
             }
 
             if ($this->_fileName === null) {
-                $this->_fileName = $url->getFileName();
+                $this->_fileName = $url->getPath()->getFileName();
             }
         }
 

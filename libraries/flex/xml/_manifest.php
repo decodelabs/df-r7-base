@@ -32,8 +32,8 @@ class OutOfBoundsException extends \OutOfBoundsException implements IException
 // Interfaces
 interface IInterchange
 {
-    public function readXml(IReadable $reader);
-    public function writeXml(IWritable $writer);
+    //public function readXml(ITree $reader);
+    //public function writeXml(IWriter $writer);
 }
 
 interface IReaderInterchange
@@ -99,7 +99,9 @@ trait TWriterInterchange
             $this->_writeXmlDtd($writer);
         }
 
-        $this->writeXml($writer);
+        if (method_exists($this, 'writeXml')) {
+            $this->writeXml($writer);
+        }
 
         $writer->finalize();
         return $writer->toXmlString();

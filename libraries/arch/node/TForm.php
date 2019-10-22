@@ -106,7 +106,8 @@ trait TForm
                 try {
                     $scaffold = arch\scaffold\Base::factory($context);
                     return $this->_delegates[$id] = $scaffold->loadFormDelegate($name, $state, $this->event, $mainId);
-                } catch (arch\scaffold\IError $e) {
+                } catch (\Throwable $e) {
+                    core\logException($e);
                 }
 
                 throw core\Error::{'arch/node/EDelegate,ENotFound'}(
@@ -910,6 +911,10 @@ trait TForm_DependentDelegate
 
     public function applyFilters(opal\query\IQuery $query)
     {
+        if (!$query instanceof opal\query\IWhereClauseQuery) {
+            throw Glitch::ELogic('Filter query is not a where clause factory', null, $query);
+        }
+
         if (!empty($this->_filters)) {
             $clause = $query->beginWhereClause();
 

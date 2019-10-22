@@ -13,7 +13,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class VersionRange implements IVersionRange, Inspectable
+class VersionRange implements core\IStringProvider, Inspectable
 {
     use core\TStringProvider;
 
@@ -21,7 +21,7 @@ class VersionRange implements IVersionRange, Inspectable
 
     public static function factory($range)
     {
-        if ($range instanceof IVersionRange) {
+        if ($range instanceof VersionRange) {
             return $range;
         }
 
@@ -84,15 +84,15 @@ class VersionRange implements IVersionRange, Inspectable
 
             if (!isset($parts[1])) {
                 $group[] = new Version_Comparator('>=', $parts[0]);
-                $group[] = new Version_Comparator('<', $parts[0] + 1);
+                $group[] = new Version_Comparator('<', (int)$parts[0] + 1);
                 return;
             } elseif (!isset($parts[2])) {
                 $group[] = new Version_Comparator('>=', $parts[0].'.'.$parts[1]);
-                $group[] = new Version_Comparator('<', $parts[0].'.'.($parts[1] + 1));
+                $group[] = new Version_Comparator('<', $parts[0].'.'.((int)$parts[1] + 1));
                 return;
             } else {
                 $group[] = new Version_Comparator('>=', $matches[0]);
-                $group[] = new Version_Comparator('<', $parts[0].'.'.($parts[1] + 1));
+                $group[] = new Version_Comparator('<', $parts[0].'.'.((int)$parts[1] + 1));
                 return;
             }
         }
@@ -109,10 +109,10 @@ class VersionRange implements IVersionRange, Inspectable
             $group[] = new Version_Comparator('>=', $matches[1]);
 
             if (!isset($parts[1])) {
-                $group[] = new Version_Comparator('<', $parts[0] + 1);
+                $group[] = new Version_Comparator('<', (int)$parts[0] + 1);
                 return;
             } else {
-                $group[] = new Version_Comparator('<', $parts[0].'.'.($parts[1] + 1));
+                $group[] = new Version_Comparator('<', $parts[0].'.'.((int)$parts[1] + 1));
                 return;
             }
         }

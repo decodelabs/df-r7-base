@@ -33,7 +33,7 @@ class ColorStop implements IColorStop, Inspectable
         try {
             $size = core\unit\DisplaySize::factory($size);
             $color = implode(' ', $parts);
-        } catch (aura\style\InvalidArgumentException $e) {
+        } catch (\Throwable $e) {
             $color = $colorStop;
             $size = null;
         }

@@ -62,7 +62,7 @@ class Mint implements core\ISharedHelper
 
             // Expiry year
             ->addRequiredField('expiryYear', 'integer')
-                ->setRange($min = date('Y'), $min + 10)
+                ->setRange($min = (int)date('Y'), $min + 10)
 
             // CVC
             ->addRequiredField('cvc', 'text')

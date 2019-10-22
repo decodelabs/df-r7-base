@@ -54,7 +54,7 @@ class Markdown extends Base
 
 
     // Io
-    public function readXml(flex\xml\IReadable $reader)
+    public function readXml(flex\xml\ITree $reader)
     {
         $this->_validateXmlReader($reader);
 
@@ -62,7 +62,7 @@ class Markdown extends Base
         return $this;
     }
 
-    public function writeXml(flex\xml\IWritable $writer)
+    public function writeXml(flex\xml\IWriter $writer)
     {
         $this->_startWriterBlockElement($writer);
         $writer->writeCData($this->_body);

@@ -10,7 +10,8 @@ use df\core;
 use df\opal;
 use df\flex;
 
-interface IFieldSize {
+interface IFieldSize
+{
     const TINY = 'tiny';
     const SMALL = 'small';
     const MEDIUM = 'medium';
@@ -19,7 +20,8 @@ interface IFieldSize {
 }
 
 
-interface IConflictClause {
+interface IConflictClause
+{
     const ROLLBACK = 1;
     const ABORT = 2;
     const FAIL = 3;
@@ -28,13 +30,15 @@ interface IConflictClause {
 }
 
 
-interface ITriggerEvent {
+interface ITriggerEvent
+{
     const INSERT = 1;
     const UPDATE = 2;
     const DELETE = 3;
 }
 
-interface ITriggerTiming {
+interface ITriggerTiming
+{
     const BEFORE = 0;
     const AFTER = 1;
     const INSTEAD_OF = 2;
@@ -42,15 +46,26 @@ interface ITriggerTiming {
 
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class LogicException extends \LogicException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
+class UnexpectedValueException extends \UnexpectedValueException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
 
 
 // Interfaces
-interface IChangeTracker {
+interface IChangeTracker
+{
     public function hasChanged();
     public function markAsChanged();
     public function acceptChanges();
@@ -58,7 +73,8 @@ interface IChangeTracker {
 
 
 
-interface ISchema extends IChangeTracker {
+interface ISchema extends IChangeTracker
+{
     public function setName($name);
     public function getName(): string;
     public function setComment($comment);
@@ -76,10 +92,13 @@ interface ISchema extends IChangeTracker {
     public function toStorageArray();
 }
 
-interface ISchemaContext {}
+interface ISchemaContext
+{
+}
 
 
-interface IFieldProvider extends ISchema {
+interface IFieldProvider extends ISchema
+{
     public function getField($name);
     public function createField($name, $type, ...$args);
     public function addField($name, $type, ...$args);
@@ -101,7 +120,8 @@ interface IFieldProvider extends ISchema {
 }
 
 
-interface IIndexProvider extends ISchema {
+interface IIndexProvider extends ISchema
+{
     public function getIndex($name);
     public function createIndex($name, $fields=null);
     public function createUniqueIndex($name, $fields=null);
@@ -130,7 +150,8 @@ interface IIndexProvider extends ISchema {
 }
 
 
-interface IIndexedFieldProvider extends IFieldProvider, IIndexProvider {
+interface IIndexedFieldProvider extends IFieldProvider, IIndexProvider
+{
     public function addPrimaryField($name, $type, ...$args);
     public function addPrimaryFieldAfter($key, $name, $type, ...$args);
     public function addIndexedField($name, $type, ...$args);
@@ -140,7 +161,8 @@ interface IIndexedFieldProvider extends IFieldProvider, IIndexProvider {
 }
 
 
-interface IForeignKeyProvider extends ISchema {
+interface IForeignKeyProvider extends ISchema
+{
     public function getForeignKey($name);
     public function addForeignKey($name, $targetSchema);
     public function addPreparedForeignKey(IForeignKey $key);
@@ -158,7 +180,8 @@ interface IForeignKeyProvider extends ISchema {
 }
 
 
-interface ITriggerProvider extends ISchema {
+interface ITriggerProvider extends ISchema
+{
     public function getTrigger($name);
     public function addTrigger($name, $event, $timing, $statement);
     public function addPreparedTrigger(ITrigger $trigger);
@@ -179,7 +202,8 @@ interface ITriggerProvider extends ISchema {
 
 
 
-interface IField extends IChangeTracker, core\constraint\INullable {
+interface IField extends IChangeTracker, core\constraint\INullable
+{
     public function getFieldType();
     public function _setName($name);
     public function getName(): string;
@@ -191,44 +215,56 @@ interface IField extends IChangeTracker, core\constraint\INullable {
 }
 
 
-interface ICharacterSetAwareField extends IField, flex\ICharacterSetAware {}
+interface ICharacterSetAwareField extends IField, flex\ICharacterSetAware
+{
+}
 
-interface IBinaryCollationField extends IField {
+interface IBinaryCollationField extends IField
+{
     public function hasBinaryCollation(bool $flag=null);
 }
 
-interface ILengthRestrictedField extends IField {
+interface ILengthRestrictedField extends IField
+{
     public function setLength($length);
     public function getLength();
 }
 
-interface IBitSizeRestrictedField extends IField {
+interface IBitSizeRestrictedField extends IField
+{
     public function setBitSize($size);
     public function getBitSize();
 }
 
-interface IByteSizeRestrictedField extends IField {
+interface IByteSizeRestrictedField extends IField
+{
     public function setByteSize($size);
     public function getByteSize();
 }
 
-interface ILargeByteSizeRestrictedField extends IField {
+interface ILargeByteSizeRestrictedField extends IField
+{
     public function setExponentSize($size);
     public function getExponentSize();
 }
 
-interface ISignedField extends IField {
+interface ISignedField extends IField
+{
     public function isSigned(bool $flag=null);
     public function isUnsigned(bool $flag=null);
 }
 
-interface IZerofillField extends IField {
+interface IZerofillField extends IField
+{
     public function shouldZerofill(bool $flag=null);
 }
 
-interface INumericField extends ISignedField, IZerofillField {}
+interface INumericField extends ISignedField, IZerofillField
+{
+}
 
-interface IFloatingPointNumericField extends INumericField {
+interface IFloatingPointNumericField extends INumericField
+{
     public function setPrecision($precision);
     public function getPrecision();
     public function setScale($scale);
@@ -236,16 +272,19 @@ interface IFloatingPointNumericField extends INumericField {
 }
 
 
-interface IAutoIncrementableField extends INumericField {
+interface IAutoIncrementableField extends INumericField
+{
     public function shouldAutoIncrement(bool $flag=null);
 }
 
-interface IAutoTimestampField extends IField {
+interface IAutoTimestampField extends IField
+{
     public function shouldTimestampOnUpdate(bool $flag=null);
     public function shouldTimestampAsDefault(bool $flag=null);
 }
 
-interface IOptionProviderField extends IField {
+interface IOptionProviderField extends IField
+{
     public function setOptions(array $otions);
     public function getOptions();
     public function setType($type);
@@ -254,43 +293,55 @@ interface IOptionProviderField extends IField {
 }
 
 
-interface IAutoGeneratorField extends IField {
+interface IAutoGeneratorField extends IField
+{
     public function shouldAutoGenerate(bool $flag=null);
 }
 
 
 
-interface IMultiPrimitiveField extends IField {
+interface IMultiPrimitiveField extends IField
+{
     public function getPrimitiveFieldNames();
 }
 
-interface INullPrimitiveField extends IField {}
+interface INullPrimitiveField extends IField
+{
+}
 
-interface IQueryClauseRewriterField extends IField {
+interface IQueryClauseRewriterField extends IField
+{
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false);
 }
 
 
-interface IRelationField extends IField {
+interface IRelationField extends IField
+{
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
     public function getTargetQueryAdapter();
 }
 
-interface IInverseRelationField extends IRelationField {
+interface IInverseRelationField extends IRelationField
+{
     public function setTargetField($field);
     public function getTargetField();
 }
 
-interface ITargetPrimaryFieldAwareRelationField extends IField {
+interface ITargetPrimaryFieldAwareRelationField extends IField
+{
     public function getTargetPrimaryIndex();
     public function getTargetRelationManifest();
 }
 
-interface IOneRelationField extends IRelationField {}
-interface IManyRelationField extends IRelationField, INullPrimitiveField {}
+interface IOneRelationField extends IRelationField
+{
+}
+interface IManyRelationField extends IRelationField, INullPrimitiveField
+{
+}
 
-interface IBridgedRelationField extends IRelationField, ITargetPrimaryFieldAwareRelationField {
-
+interface IBridgedRelationField extends IRelationField, ITargetPrimaryFieldAwareRelationField
+{
     const SELF_REFERENCE_SUFFIX = 'Ref';
 
     public function getBridgeLocalFieldName();
@@ -303,12 +354,14 @@ interface IBridgedRelationField extends IRelationField, ITargetPrimaryFieldAware
 
 
 
-interface IPrimitive extends IField {
+interface IPrimitive extends IField
+{
     public function getType();
     public function getDefaultNonNullValue();
 }
 
-interface IMultiFieldPrimitive extends IPrimitive {
+interface IMultiFieldPrimitive extends IPrimitive
+{
     public function getPrimitives();
 }
 
@@ -317,7 +370,8 @@ interface IMultiFieldPrimitive extends IPrimitive {
 
 
 
-interface IIndex extends IChangeTracker {
+interface IIndex extends IChangeTracker
+{
     public function _setName($name);
     public function getName(): string;
     public function isUnique(bool $flag=null);
@@ -338,7 +392,8 @@ interface IIndex extends IChangeTracker {
     public function isVoid();
 }
 
-interface IIndexFieldReference {
+interface IIndexFieldReference
+{
     public function _setField(IField $field);
     public function getField();
     public function isMultiField();
@@ -349,7 +404,8 @@ interface IIndexFieldReference {
 }
 
 
-interface IForeignKey extends IChangeTracker {
+interface IForeignKey extends IChangeTracker
+{
     public function _setName($name);
     public function getName(): string;
     public function setTargetSchema($table);
@@ -369,7 +425,8 @@ interface IForeignKey extends IChangeTracker {
 }
 
 
-interface IForeignKeyFieldReference {
+interface IForeignKeyFieldReference
+{
     public function _setField(IField $field);
     public function getField();
     public function _setTargetFieldName($targetField);
@@ -380,7 +437,8 @@ interface IForeignKeyFieldReference {
 
 
 
-interface ITrigger extends IChangeTracker {
+interface ITrigger extends IChangeTracker
+{
     public function _setName($name);
     public function getName(): string;
     public function setEvent($event);
@@ -396,11 +454,13 @@ interface ITrigger extends IChangeTracker {
 }
 
 
-interface IRelationManifest extends \IteratorAggregate, core\IArrayProvider {
+interface IRelationManifest extends \IteratorAggregate, core\IArrayProvider
+{
     public function getPrimitiveFieldNames($prefix=null);
     public function getPrimitives($prefix=null);
     public function isSingleField();
     public function getSingleFieldName();
     public function validateValue($value);
     public function extractFromRow($key, array $row);
+    public function toPrimaryKeySet($value=null);
 }

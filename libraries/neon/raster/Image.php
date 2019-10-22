@@ -35,7 +35,7 @@ class Image implements IImage
 
         if (class_exists($class)) {
             if (!$class::isLoadable()) {
-                throw core\Error::{'EUnsupported'}(
+                throw Glitch::EUnsupported(
                     'Raster image driver '.$driver.' is not loadable'
                 );
             }
@@ -55,7 +55,7 @@ class Image implements IImage
             foreach (self::getDriverList() as $driver) {
                 try {
                     self::setDefaultDriver($driver);
-                } catch (IError $e) {
+                } catch (EUnsupported $e) {
                     continue;
                 }
 
@@ -63,7 +63,7 @@ class Image implements IImage
             }
 
             if (!self::$_driverClass) {
-                throw core\Error::ESetup(
+                throw Glitch::EComponentUnavailable(
                     'There are no available raster image drivers'
                 );
             }
@@ -79,7 +79,7 @@ class Image implements IImage
         $class = self::getDefaultDriverClass();
 
         if (!is_readable($file)) {
-            throw core\Error::{'EValue,EUnreadable'}(
+            throw Glitch::{'EIo,EUnreadable'}(
                 'Raster image '.$file.' is not readable'
             );
         }

@@ -59,7 +59,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
         }
     }
 
-    public function getKeys()
+    public function getKeys(): array
     {
         return $this->_keys;
     }
@@ -90,7 +90,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
         return $output;
     }
 
-    public function getKeyMap($fieldName)
+    public function getKeyMap($fieldName): array
     {
         $output = [];
 
@@ -107,7 +107,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
         return $output;
     }
 
-    public function getIntrinsicFieldMap($fieldName=null)
+    public function getIntrinsicFieldMap($fieldName=null): array
     {
         if ($fieldName === null) {
             return $this->toArray();
@@ -193,12 +193,12 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
         return $this;
     }
 
-    public function countFields()
+    public function countFields(): int
     {
         return count($this->_keys);
     }
 
-    public function getFieldNames()
+    public function getFieldNames(): array
     {
         return array_keys($this->toArray());
     }
@@ -218,7 +218,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
         return false;
     }
 
-    public function getCombinedId()
+    public function getCombinedId(): string
     {
         $strings = [];
 
@@ -237,7 +237,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
         return implode(self::COMBINE_SEPARATOR, $strings);
     }
 
-    public function getEntityId()
+    public function getEntityId(): string
     {
         $returnFirst = false;
 
@@ -312,18 +312,20 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
 
     public function eq(IPrimaryKeySet $keySet)
     {
+        $testKeys = $keySet->getKeys();
+
         foreach ($this->_keys as $key => $value) {
-            if (!array_key_exists($key, $keySet->_keys)) {
+            if (!array_key_exists($key, $testKeys)) {
                 return false;
             }
 
-            if ($keySet->_keys[$key] === $value) {
+            if ($testKeys[$key] === $value) {
                 continue;
             }
 
             if (($value instanceof core\IStringProvider || is_string($value)
-            && ($keySet->_keys[$key] instanceof core\IStringProvider || is_string($keySet->_keys[$key])))) {
-                if ((string)$value === (string)$keySet->_keys[$key]) {
+            && ($testKeys instanceof core\IStringProvider || is_string($testKeys[$key])))) {
+                if ((string)$value === (string)$testKeys[$key]) {
                     continue;
                 }
             }

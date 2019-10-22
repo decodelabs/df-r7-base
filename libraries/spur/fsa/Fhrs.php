@@ -220,9 +220,10 @@ class Fhrs implements IFhrsMediator
 
     protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest
     {
-        $request->headers->set('X-Api-Version', self::VERSION);
-        $request->headers->set('Accept-Language', 'en-GB');
-        $request->headers->set('Accept', 'application/json');
+        $request->getHeaders()
+            ->set('X-Api-Version', self::VERSION)
+            ->set('Accept-Language', 'en-GB')
+            ->set('Accept', 'application/json');
 
         return $request;
     }
