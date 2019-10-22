@@ -139,7 +139,7 @@ class Launchpad
 
         // Veneer
         Veneer::blacklistNamespaces('df')
-            ->whitelistNamespaces('df\\apex');
+            ->whitelistNamespaces('df\\apex\\directory');
 
         // Glitch
         Glitch::setStartTime($startTime ?? microtime(true))
