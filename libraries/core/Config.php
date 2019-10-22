@@ -24,7 +24,10 @@ abstract class Config implements IConfig, Inspectable
     const USE_ENVIRONMENT_ID_BY_DEFAULT = false;
     const STORE_IN_MEMORY = true;
 
-    public $values = [];
+    /**
+     * @var df\core\collection\Tree
+     */
+    public $values;
 
     protected $_id;
     private $_filePath = null;

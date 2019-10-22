@@ -40,8 +40,6 @@ class CookieCollection implements ICookieCollection, Inspectable
         foreach ($this->_remove as $key => $cookie) {
             $this->_remove[$key] = clone $cookie;
         }
-
-        return $this;
     }
 
     public function import(...$input)

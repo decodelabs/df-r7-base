@@ -12,7 +12,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection, \Serializable, Inspectable
+class Tree implements ITree, ISeekable, ISortable, \Serializable, Inspectable
 {
     protected const PROPAGATE_TYPE = true;
 
@@ -206,8 +206,6 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         foreach ($this->_collection as $key => $child) {
             $this->_collection[$key] = clone $child;
         }
-
-        return $this;
     }
 
 
@@ -307,10 +305,9 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return array_key_exists($key, $this->_collection);
     }
 
-    public function __unset($key)
+    public function __unset($key): void
     {
         unset($this->_collection[$key]);
-        return $this;
     }
 
 

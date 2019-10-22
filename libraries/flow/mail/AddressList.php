@@ -13,7 +13,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class AddressList implements IAddressList, \IteratorAggregate, Inspectable
+class AddressList implements IAddressList, Inspectable
 {
     use core\TValueMap;
     use core\collection\TExtractList;

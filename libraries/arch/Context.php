@@ -79,7 +79,6 @@ class Context implements IContext, \Serializable, Inspectable
     {
         $this->request = clone $this->request;
         $this->location = clone $this->location;
-        return $this;
     }
 
     public function spawnInstance($request=null, bool $copyRequest=false): IContext

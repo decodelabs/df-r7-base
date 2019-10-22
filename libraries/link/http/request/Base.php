@@ -218,8 +218,6 @@ class Base implements link\http\IRequest, Inspectable
 
         $this->headers = clone $this->headers;
         $this->_ip = null;
-
-        return $this;
     }
 
     public function __get($member)

@@ -9,14 +9,23 @@ use df;
 use df\core;
 
 // Exceptions
-interface IException {}
-class OutOfBoundsException extends \OutOfBoundsException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+interface IException
+{
+}
+class OutOfBoundsException extends \OutOfBoundsException implements IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
 
 
 // Interfaces
-interface ICollection extends \Countable, core\IArrayProvider {
+interface ICollection extends \Countable, core\IArrayProvider
+{
     public function import(...$input);
     public function isEmpty(): bool;
     public function clear();
@@ -25,12 +34,13 @@ interface ICollection extends \Countable, core\IArrayProvider {
 }
 
 
-trait TExtractList {
-
-    public function extractList(int $count): array {
+trait TExtractList
+{
+    public function extractList(int $count): array
+    {
         $output = [];
 
-        for($i = 0; $i < (int)$count; $i++) {
+        for ($i = 0; $i < (int)$count; $i++) {
             $output[] = $this->extract();
         }
 
@@ -39,32 +49,38 @@ trait TExtractList {
 }
 
 
-interface IAggregateIteratorCollection extends \IteratorAggregate {
+interface IAggregateIteratorCollection extends \IteratorAggregate
+{
     public function getReductiveIterator(): \Iterator;
 }
 
-trait TValueMapArrayAccess {
-
-    public function offsetSet($index, $value) {
+trait TValueMapArrayAccess
+{
+    public function offsetSet($index, $value)
+    {
         return $this->set($index, $value);
     }
 
-    public function offsetGet($index) {
+    public function offsetGet($index)
+    {
         return $this->get($index);
     }
 
-    public function offsetExists($index) {
+    public function offsetExists($index)
+    {
         return $this->has($index);
     }
 
-    public function offsetUnset($index) {
+    public function offsetUnset($index)
+    {
         return $this->remove($index);
     }
 }
 
 
 // Sortable
-interface ISortable {
+interface ISortable
+{
     public function sortByValue($flags=\SORT_REGULAR);
     public function reverseSortByValue($flags=\SORT_REGULAR);
     public function sortByKey($flags=\SORT_REGULAR);
@@ -74,13 +90,15 @@ interface ISortable {
 }
 
 // Movable
-interface IMovable {
+interface IMovable
+{
     public function move($key, $index);
 }
 
-trait TNaiveIndexedMovable {
-
-    public function move($key, $index) {
+trait TNaiveIndexedMovable
+{
+    public function move($key, $index)
+    {
         $value = $this->get($key);
         return $this->remove($key)->put($key + $index, $value);
     }
@@ -89,7 +107,8 @@ trait TNaiveIndexedMovable {
 
 
 // Seekable
-interface ISeekable {
+interface ISeekable
+{
     public function getCurrent();
     public function getFirst();
     public function getNext();
@@ -107,7 +126,8 @@ interface ISeekable {
 
 
 // Sliceable
-interface ISliceable {
+interface ISliceable
+{
     public function slice(int $offset, int $length=null): array;
     public function getSlice(int $offset, int $length=null): array;
     public function removeSlice(int $offset, int $length=null);
@@ -116,15 +136,18 @@ interface ISliceable {
 
 
 // Extricate
-interface IExtricable {
+interface IExtricable
+{
     public function extricate(string ...$keys): array;
 }
 
-trait TExtricable {
-    public function extricate(string ...$keys): array {
+trait TExtricable
+{
+    public function extricate(string ...$keys): array
+    {
         $output = [];
 
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             $output[$key] = $this->get($key);
         }
 
@@ -134,12 +157,14 @@ trait TExtricable {
 
 
 // Paging
-interface IPageable {
+interface IPageable
+{
     public function setPaginator(?IPaginator $paginator);
     public function getPaginator(): ?IPaginator;
 }
 
-interface IPaginator extends core\IArrayProvider {
+interface IPaginator extends core\IArrayProvider
+{
     public function getLimit(): int;
     public function getOffset(): int;
     public function getPage(): int;
@@ -149,8 +174,8 @@ interface IPaginator extends core\IArrayProvider {
     public function getKeyMap(): array;
 }
 
-trait TPaginator {
-
+trait TPaginator
+{
     protected $_limit = 30;
     protected $_offset = 0;
     protected $_total = null;
@@ -162,16 +187,19 @@ trait TPaginator {
         'order' => 'od'
     ];
 
-    public function getLimit(): int {
+    public function getLimit(): int
+    {
         return $this->_limit;
     }
 
-    public function getOffset(): int {
+    public function getOffset(): int
+    {
         return $this->_offset;
     }
 
-    public function getPage(): int {
-        if(!$this->_limit) {
+    public function getPage(): int
+    {
+        if (!$this->_limit) {
             $output = 1;
         } else {
             $output = ($this->_offset / $this->_limit) + 1;
@@ -179,14 +207,14 @@ trait TPaginator {
 
         $total = $this->countTotal();
 
-        if($total !== null) {
-            if(!$this->_limit) {
+        if ($total !== null) {
+            if (!$this->_limit) {
                 $test = 1;
             } else {
                 $test = ceil($total / $this->_limit);
             }
 
-            if($test < $output) {
+            if ($test < $output) {
                 $output = $test;
             }
         }
@@ -194,27 +222,31 @@ trait TPaginator {
         return $output;
     }
 
-    public function getKeyMap(): array {
+    public function getKeyMap(): array
+    {
         return $this->_keyMap;
     }
 
-    public function countTotal(): ?int {
+    public function countTotal(): ?int
+    {
         return $this->_total;
     }
 
-    public function countTotalPages(): ?int {
-        if(null === ($total = $this->countTotal())) {
+    public function countTotalPages(): ?int
+    {
+        if (null === ($total = $this->countTotal())) {
             return null;
         }
 
-        if(!$this->_limit) {
+        if (!$this->_limit) {
             return 1;
         } else {
             return ceil($total / $this->getLimit());
         }
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'limit' => $this->_limit,
             'offset' => $this->_offset,
@@ -226,75 +258,103 @@ trait TPaginator {
     }
 }
 
-interface IOrderablePaginator extends IPaginator {
+interface IOrderablePaginator extends IPaginator
+{
     public function getOrderDirectives();
     public function getOrderableFieldNames();
 }
 
 
-interface IInsertableCollection extends ICollection {
+interface IInsertableCollection extends ICollection
+{
     public function insert(...$value);
 }
 
 // Access to values by iteration only
-interface IStreamCollection extends ICollection {
+interface IStreamCollection extends ICollection
+{
     public function getCurrent();
 }
 
-interface ISiftingCollection extends IStreamCollection {}
+interface ISiftingCollection extends IStreamCollection
+{
+}
 
-interface IShiftableCollection extends ICollection, IInsertableCollection {
+interface IShiftableCollection extends ICollection, IInsertableCollection
+{
     public function pop();
     public function push(...$values);
     public function shift();
     public function unshift(...$values);
 }
 
-interface IRandomAccessCollection extends IShiftableCollection, IMovable, core\IValueMap, \ArrayAccess {}
+interface IRandomAccessCollection extends IShiftableCollection, IMovable, core\IValueMap, \ArrayAccess
+{
+}
 
 
 
 // Integer indexes only
-interface IIndexedCollection extends IRandomAccessCollection, ISeekable, ISliceable {
+interface IIndexedCollection extends IRandomAccessCollection, ISeekable, ISliceable
+{
     public function put($index, $value);
     public function getIndex($value);
 }
 
-interface ISequentialCollection extends ICollection, IInsertableCollection {}
+interface ISequentialCollection extends ICollection, IInsertableCollection
+{
+}
 
 // Strict associative indexes
-interface IMappedCollection extends ICollection, core\IValueMap, IExtricable, \ArrayAccess {}
+interface IMappedCollection extends ICollection, core\IValueMap, IExtricable, \ArrayAccess
+{
+}
 
 // Object access returns container objects, otherwise, same behaviour as mapped
-interface IMappedContainerCollection extends IMappedCollection {
+interface IMappedContainerCollection extends IMappedCollection
+{
     public function __set($key, $value);
     public function __get($key);
     public function __isset($key);
-    public function __unset($key);
+    public function __unset($key): void;
 }
 
 
 
 
 
-interface IQueue extends ICollection {}
-interface IIndexedQueue extends IQueue, IIndexedCollection {}
-interface ISequentialQueue extends IQueue, ISequentialCollection {}
+interface IQueue extends ICollection
+{
+}
+interface IIndexedQueue extends IQueue, IIndexedCollection
+{
+}
+interface ISequentialQueue extends IQueue, ISequentialCollection
+{
+}
 
-interface IPriorityQueue extends IQueue, ISiftingCollection {
+interface IPriorityQueue extends IQueue, ISiftingCollection
+{
     public function insert($value, $priority);
     public function getCurrentPriority();
     public function getPriorityList();
 }
 
 
-interface IStack extends IIndexedCollection {}
+interface IStack extends IIndexedCollection
+{
+}
 
-interface IMap extends IMappedCollection, ISeekable, ISortable, IMovable {}
-interface IHeap extends ISiftingCollection, IInsertableCollection {}
+interface IMap extends IMappedCollection, ISeekable, ISortable, IMovable
+{
+}
+interface IHeap extends ISiftingCollection, IInsertableCollection
+{
+}
 
 
-interface ISet extends ICollection {
+interface ISet extends ICollection
+{
     public function add(...$values);
     public function has(...$values);
     public function remove(...$values);
@@ -303,7 +363,13 @@ interface ISet extends ICollection {
 
 
 
-interface ITree extends IRandomAccessCollection, IMappedContainerCollection, core\IUserValueContainer, core\IStringProvider {
+interface ITree extends
+    IRandomAccessCollection,
+    IMappedContainerCollection,
+    IAggregateIteratorCollection,
+    core\IUserValueContainer,
+    core\IStringProvider
+{
     public function importTree(ITree $child);
     public function merge(ITree $child);
     public function getNestedChild($parts, $separator='.');
@@ -320,13 +386,15 @@ interface ITree extends IRandomAccessCollection, IMappedContainerCollection, cor
     public function replace($key, ITree $node);
 }
 
-interface IInputTree extends ITree, IErrorContainer {
+interface IInputTree extends ITree, IErrorContainer
+{
     public function toArrayDelimitedErrorSet($prefix=null);
 }
 
 
 
-interface IHeaderMap extends IMappedCollection, core\IStringProvider, \Iterator {
+interface IHeaderMap extends IMappedCollection, core\IStringProvider, \Iterator
+{
     public function append($key, $value);
     public function hasValue($key, $value): bool;
 
@@ -343,7 +411,8 @@ interface IHeaderMap extends IMappedCollection, core\IStringProvider, \Iterator 
     public function getLines(array $skipKeys=null);
 }
 
-interface IHeaderMapProvider {
+interface IHeaderMapProvider
+{
     public function getHeaders();
     public function setHeaders(IHeaderMap $headers);
     public function hasHeaders();
@@ -352,35 +421,40 @@ interface IHeaderMapProvider {
 }
 
 
-trait THeaderMapProvider {
-
+trait THeaderMapProvider
+{
     protected $_headers;
 
-    public function getHeaders() {
-        if(!$this->_headers) {
+    public function getHeaders()
+    {
+        if (!$this->_headers) {
             $this->_headers = new core\collection\HeaderMap();
         }
 
         return $this->_headers;
     }
 
-    public function setHeaders(core\collection\IHeaderMap $headers) {
+    public function setHeaders(core\collection\IHeaderMap $headers)
+    {
         $this->_headers = $headers;
         return $this;
     }
 
-    public function prepareHeaders() {
+    public function prepareHeaders()
+    {
         return $this;
     }
 
-    public function hasHeaders() {
+    public function hasHeaders()
+    {
         return $this->_headers && !$this->_headers->isEmpty();
     }
 
-    public function getHeaderString(array $skipKeys=null) {
+    public function getHeaderString(array $skipKeys=null)
+    {
         $this->prepareHeaders();
 
-        if($this->_headers) {
+        if ($this->_headers) {
             return $this->_headers->toString($skipKeys);
         }
 
@@ -390,7 +464,8 @@ trait THeaderMapProvider {
 
 
 // Error Container
-interface IErrorContainer {
+interface IErrorContainer
+{
     public function isValid(): bool;
     public function countErrors(): int;
     public function setErrors(array $errors);
@@ -404,62 +479,73 @@ interface IErrorContainer {
     public function clearError($code);
 }
 
-trait TErrorContainer {
-
+trait TErrorContainer
+{
     protected $_errors = [];
 
-    public function isValid(): bool {
+    public function isValid(): bool
+    {
         return $this->hasErrors();
     }
 
-    public function countErrors(): int {
+    public function countErrors(): int
+    {
         return count($this->_errors);
     }
 
-    public function setErrors(array $errors) {
+    public function setErrors(array $errors)
+    {
         $this->_errors = [];
         return $this->addErrors($errors);
     }
 
-    public function addErrors(array $errors) {
-        foreach($errors as $code => $message) {
+    public function addErrors(array $errors)
+    {
+        foreach ($errors as $code => $message) {
             $this->addError($code, $message);
         }
 
         return $this;
     }
 
-    public function addError($code, $message) {
+    public function addError($code, $message)
+    {
         $this->_errors[$code] = $message;
         return $this;
     }
 
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->_errors;
     }
 
-    public function getError($code) {
-        if(isset($this->_errors[$code])) {
+    public function getError($code)
+    {
+        if (isset($this->_errors[$code])) {
             return $this->_errors[$code];
         }
 
         return null;
     }
 
-    public function hasErrors() {
+    public function hasErrors()
+    {
         return !empty($this->_errors);
     }
 
-    public function hasError($code) {
+    public function hasError($code)
+    {
         return isset($this->_errors[$code]);
     }
 
-    public function clearErrors() {
+    public function clearErrors()
+    {
         $this->_errors = [];
         return $this;
     }
 
-    public function clearError($code) {
+    public function clearError($code)
+    {
         unset($this->_errors[$code]);
         return $this;
     }
@@ -467,7 +553,8 @@ trait TErrorContainer {
 
 
 // Attribute container
-interface IAttributeContainer {
+interface IAttributeContainer
+{
     public function setAttributes(array $attributes);
     public function addAttributes(array $attributes);
     public function getAttributes();
@@ -478,74 +565,87 @@ interface IAttributeContainer {
     public function countAttributes();
 }
 
-trait TAttributeContainer {
-
+trait TAttributeContainer
+{
     protected $_attributes = [];
 
-    public function setAttributes(array $attributes) {
+    public function setAttributes(array $attributes)
+    {
         $this->_attributes = [];
         return $this->addAttributes($attributes);
     }
 
-    public function addAttributes(array $attributes) {
-        foreach($attributes as $key => $value){
+    public function addAttributes(array $attributes)
+    {
+        foreach ($attributes as $key => $value) {
             $this->setAttribute($key, $value);
         }
 
         return $this;
     }
 
-    public function getAttributes() {
+    public function getAttributes()
+    {
         return $this->_attributes;
     }
 
-    public function setAttribute($key, $value) {
+    public function setAttribute($key, $value)
+    {
         $this->_attributes[$key] = $value;
         return $this;
     }
 
-    public function getAttribute($key, $default=null) {
-        if(isset($this->_attributes[$key])) {
+    public function getAttribute($key, $default=null)
+    {
+        if (isset($this->_attributes[$key])) {
             return $this->_attributes[$key];
         }
 
         return $default;
     }
 
-    public function removeAttribute($key) {
+    public function removeAttribute($key)
+    {
         unset($this->_attributes[$key]);
         return $this;
     }
 
-    public function hasAttribute($key) {
+    public function hasAttribute($key)
+    {
         return isset($this->_attributes[$key]);
     }
 
-    public function countAttributes() {
+    public function countAttributes()
+    {
         return count($this->_attributes);
     }
 }
 
-trait TAttributeContainerArrayAccessProxy {
-
-    public function offsetSet($key, $value) {
+trait TAttributeContainerArrayAccessProxy
+{
+    public function offsetSet($key, $value)
+    {
         return $this->setAttribute($key, $value);
     }
 
-    public function offsetGet($key) {
+    public function offsetGet($key)
+    {
         return $this->getAttribute($key);
     }
 
-    public function offsetExists($key) {
+    public function offsetExists($key)
+    {
         return $this->hasAttribute($key);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset($key)
+    {
         return $this->removeAttribute($key);
     }
 }
 
-trait TArrayAccessedAttributeContainer {
+trait TArrayAccessedAttributeContainer
+{
     use TAttributeContainer;
     use TAttributeContainerArrayAccessProxy;
 }
@@ -553,7 +653,8 @@ trait TArrayAccessedAttributeContainer {
 
 
 // Util
-interface IUtil {
+interface IUtil
+{
     public static function flatten($array, bool $unique=true, bool $removeNull=false);
     public static function leaves($data, bool $removeNull=false);
     public static function isIterable($collection);

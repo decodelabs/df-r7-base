@@ -9,8 +9,8 @@ use df;
 use df\core;
 use df\fire;
 
-class Config extends core\Config implements ILayoutConfig {
-
+class Config extends core\Config implements ILayoutConfig
+{
     const ID = 'nightfire';
 
     const STATIC_LAYOUTS = [
@@ -28,7 +28,8 @@ class Config extends core\Config implements ILayoutConfig {
         ]
     ];
 
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         return [
             'categories' => [],
             'layouts' => []
@@ -37,12 +38,13 @@ class Config extends core\Config implements ILayoutConfig {
 
 
 
-// Categories
-    public function getCategoryAugmentations() {
+    // Categories
+    public function getCategoryAugmentations()
+    {
         $output = [];
 
-        foreach($this->values->categories as $name => $blocks) {
-            foreach($blocks as $blockName => $enabled) {
+        foreach ($this->values->categories as $name => $blocks) {
+            foreach ($blocks as $blockName => $enabled) {
                 $output[$name][$blockName] = (bool)$enabled->getValue();
             }
         }
@@ -52,24 +54,25 @@ class Config extends core\Config implements ILayoutConfig {
 
 
 
-// Layouts
-    public function getLayoutList(string $area=null): array {
+    // Layouts
+    public function getLayoutList(string $area=null): array
+    {
         $output = [];
 
-        foreach(self::STATIC_LAYOUTS as $id => $set) {
+        foreach (self::STATIC_LAYOUTS as $id => $set) {
             $output[$id] = $set['name'];
         }
 
-        foreach($this->values->layouts as $id => $set) {
-            if(isset(self::STATIC_LAYOUTS[$id])) {
+        foreach ($this->values->layouts as $id => $set) {
+            if (isset(self::STATIC_LAYOUTS[$id])) {
                 $output[$id] = isset(self::STATIC_LAYOUTS[$id]['name']) ?? $id;
                 continue;
             }
 
-            if($area !== null) {
+            if ($area !== null) {
                 $definition = $this->getLayoutDefinition($id);
 
-                if(!$definition->hasArea($area)) {
+                if (!$definition->hasArea($area)) {
                     continue;
                 }
             }
@@ -81,29 +84,26 @@ class Config extends core\Config implements ILayoutConfig {
         return $output;
     }
 
-    public function getLayoutDefinition(string $id): fire\ILayoutDefinition {
+    public function getLayoutDefinition(string $id): fire\ILayoutDefinition
+    {
         $data = $this->values->layouts->{$id};
 
-        if(isset(self::STATIC_LAYOUTS[$id])) {
+        if (isset(self::STATIC_LAYOUTS[$id])) {
             $output = $this->getStaticLayoutDefinition($id);
 
-            if(isset($data->name)) {
+            if (isset($data->name)) {
                 $output->setName($data['name']);
             }
         } else {
-            if($data->isEmpty()) {
-                return null;
-            }
-
             $output = new fire\layout\Definition($id, $data->get('name', $id));
             $output->setAreas($data->areas->toArray());
         }
 
-        if($data->slots->isEmpty()) {
+        if ($data->slots->isEmpty()) {
             $data->slots = self::STATIC_LAYOUTS['Default']['slots'];
         }
 
-        foreach($data->slots as $slotId => $slotData) {
+        foreach ($data->slots as $slotId => $slotData) {
             $output->addSlot(
                 (new fire\slot\Definition($slotId, $slotData->get('name', $slotId)))
                     ->setMinBlocks($slotData->get('minBlocks', 0))
@@ -115,19 +115,21 @@ class Config extends core\Config implements ILayoutConfig {
         return $output;
     }
 
-    public function isStaticLayout(string $id): bool {
+    public function isStaticLayout(string $id): bool
+    {
         return isset(self::STATIC_LAYOUTS[$id]);
     }
 
-    public function getStaticLayoutDefinition(string $id): fire\ILayoutDefinition {
-        if(!isset(self::STATIC_LAYOUTS[$id])) {
+    public function getStaticLayoutDefinition(string $id): fire\ILayoutDefinition
+    {
+        if (!isset(self::STATIC_LAYOUTS[$id])) {
             $id = 'Default';
         }
 
         $data = new core\collection\Tree(self::STATIC_LAYOUTS[$id]);
         $output = new fire\layout\Definition($id, $data->get('name', $id), true);
 
-        foreach($data->slots as $slotId => $slotData) {
+        foreach ($data->slots as $slotId => $slotData) {
             $output->addSlot(
                 (new fire\slot\Definition($slotId, $slotData->get('name', $slotId)))
                     ->setMinBlocks($slotData->get('minBlocks', 0))
@@ -139,7 +141,8 @@ class Config extends core\Config implements ILayoutConfig {
         return $output;
     }
 
-    public function getAllLayoutDefinitions(): array {
+    public function getAllLayoutDefinitions(): array
+    {
         $output = [];
 
         $ids = array_unique(
@@ -149,8 +152,8 @@ class Config extends core\Config implements ILayoutConfig {
             )
         );
 
-        foreach($ids as $id) {
-            if(isset($output[$id])) {
+        foreach ($ids as $id) {
+            if (isset($output[$id])) {
                 continue;
             }
 
@@ -161,17 +164,18 @@ class Config extends core\Config implements ILayoutConfig {
         return $output;
     }
 
-    public function setLayoutDefinition(fire\ILayoutDefinition $definition) {
+    public function setLayoutDefinition(fire\ILayoutDefinition $definition)
+    {
         $id = $definition->getId();
 
-        if(isset(self::STATIC_LAYOUTS[$id])) {
+        if (isset(self::STATIC_LAYOUTS[$id])) {
             return $this->_setStaticLayoutDefinition($definition);
         }
 
         $this->removeLayoutDefinition($id);
         $slots = [];
 
-        foreach($definition->getSlots() as $slotId => $slot) {
+        foreach ($definition->getSlots() as $slotId => $slot) {
             $slots[$slotId] = [
                 'name' => $slot->getName(),
                 'minBlocks' => $slot->getMinBlocks(),
@@ -189,13 +193,14 @@ class Config extends core\Config implements ILayoutConfig {
         return $this;
     }
 
-    protected function _setStaticLayoutDefinition(fire\ILayoutDefinition $definition) {
+    protected function _setStaticLayoutDefinition(fire\ILayoutDefinition $definition)
+    {
         $id = $definition->getId();
         $this->removeLayoutDefinition($id);
         $slots = [];
 
-        foreach($definition->getSlots() as $slotId => $slot) {
-            if(isset(self::STATIC_LAYOUTS[$id]['slots'][$slotId])) {
+        foreach ($definition->getSlots() as $slotId => $slot) {
+            if (isset(self::STATIC_LAYOUTS[$id]['slots'][$slotId])) {
                 //continue;
             }
 
@@ -215,7 +220,8 @@ class Config extends core\Config implements ILayoutConfig {
         return $this;
     }
 
-    public function removeLayoutDefinition(string $id) {
+    public function removeLayoutDefinition(string $id)
+    {
         unset($this->values->layouts->{$id});
         return $this;
     }

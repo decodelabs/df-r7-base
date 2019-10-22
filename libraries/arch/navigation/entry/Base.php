@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\arch;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements arch\navigation\IEntry
 {
     protected $_id;
@@ -54,7 +56,13 @@ abstract class Base implements arch\navigation\IEntry
             );
         }
 
-        return (new \ReflectionClass($class))->newInstanceArgs($args);
+        $output = (new \ReflectionClass($class))->newInstanceArgs($args);
+
+        if (!$output instanceof arch\navigation\IEntry) {
+            throw Glitch::ELogic('Entry class does not implement IEntry', null, $output);
+        }
+
+        return $output;
     }
 
 

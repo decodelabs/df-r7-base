@@ -11,6 +11,8 @@ use df\aura;
 use df\arch;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements IWidget
 {
     use flex\THtmlStringEscapeHandler;
@@ -34,8 +36,15 @@ abstract class Base implements IWidget
 
         $reflection = new \ReflectionClass($class);
         $output = $reflection->newInstanceArgs($args);
-        $output->_widgetName = $name;
 
+        if (!$output instanceof IWidget) {
+            throw Glitch::ELogic('Generated widget object does not implement IWidget', null, $output);
+        }
+
+        if ($output instanceof self) {
+            $output->_widgetName = $name;
+        }
+        
         return $output;
     }
 

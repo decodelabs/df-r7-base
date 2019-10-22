@@ -300,11 +300,13 @@ class Mediator implements IMediator
     {
         $bucket = null;
 
+        /*
         if (isset($path['bucket'])) {
             $bucket = $path['bucket'];
             unset($path['bucket']);
             $path = array_shift($path);
         }
+        */
 
         $path = (string)$path;
         $url = self::ENDPOINT;

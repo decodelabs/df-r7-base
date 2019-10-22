@@ -276,9 +276,9 @@ class Bucket implements user\session\IBucket, Inspectable
         return $this->has($key);
     }
 
-    public function __unset($key)
+    public function __unset($key): void
     {
-        return $this->remove($key);
+        $this->remove($key);
     }
 
 

@@ -97,11 +97,11 @@ class Queue implements IQueue
         mesh\Manager::getInstance()->emitEvent($entity, $action, $data, $this, $activeJob);
     }
 
-    public function emitEventAfter(IJob $job=null, $entity, $action, array $data=null): IJob
+    public function emitEventAfter(IJob $job=null, $entity, $action, array $data=null): ?IJob
     {
         if (!$job) {
             $this->emitEvent($entity, $action, $data);
-            return $this;
+            return null;
         }
 
         return $this->after($job, function () use ($entity, $action, $data, $job) {

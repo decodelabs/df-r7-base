@@ -660,10 +660,10 @@ trait TScaffold_RecordDataProvider
                 }
 
                 return $this->html(
-                        'span',
-                        $addr['city'].', '.$addr['country'],
-                        ['title' => str_replace("\n", ', ', $addr->toString())]
-                    );
+                    'span',
+                    $addr->getLocality().', '.$addr->getCountryName(),
+                    ['title' => str_replace("\n", ', ', $addr->toString())]
+                );
             });
         } else {
             $list->addField('address', function ($item) {

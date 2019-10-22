@@ -1088,12 +1088,12 @@ class Text implements IText, \IteratorAggregate, Inspectable
         $this->_value = mb_substr($this->_value, 0, $offset, $this->_encoding).
             ($length !== null ? mb_substr($this->_value, $length) : null);
 
-        return $output;
+        return preg_split('/(?<!^)(?!$)/u', $output);
     }
 
     public function getSlice(int $offset, int $length=null): array
     {
-        return mb_substr($this->_value, $offset, $length, $this->_encoding);
+        return preg_split('/(?<!^)(?!$)/u', mb_substr($this->_value, $offset, $length, $this->_encoding));
     }
 
     public function removeSlice(int $offset, int $length=null)

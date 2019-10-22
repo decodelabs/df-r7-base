@@ -65,7 +65,7 @@ interface IQueue
     public function after(IJob $job=null, ...$args): IJob;
 
     public function emitEvent($entity, $action, array $data=null);
-    public function emitEventAfter(IJob $job=null, $entity, $action, array $data=null): IJob;
+    public function emitEventAfter(IJob $job=null, $entity, $action, array $data=null): ?IJob;
 
     public function __call($method, $args);
     public function prepareAsap(IJobProvider $provider, string $name, ...$args);

@@ -214,7 +214,6 @@ class Date implements IDate, Inspectable
     public function __clone()
     {
         $this->_date = clone $this->_date;
-        return $this;
     }
 
 

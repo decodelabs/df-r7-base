@@ -27,17 +27,17 @@ class Model extends axis\Model
         return $this->_enabled;
     }
 
-    public function getPrimaryGateway(): mint\IGateway
+    public function getPrimaryGateway(): ?mint\IGateway
     {
         return $this->_getPrimaryGateway(false);
     }
 
-    public function getPrimaryTestingGateway(): mint\IGateway
+    public function getPrimaryTestingGateway(): ?mint\IGateway
     {
         return $this->_getPrimaryGateway(true);
     }
 
-    private function _getPrimaryGateway(bool $testing): mint\IGateway
+    private function _getPrimaryGateway(bool $testing): ?mint\IGateway
     {
         if (!$this->isEnabled()) {
             throw core\Error::{'mint\gateway\ESetup'}([
@@ -62,17 +62,17 @@ class Model extends axis\Model
         }
     }
 
-    public function getSubscriptionGateway(): mint\IGateway
+    public function getSubscriptionGateway(): ?mint\IGateway
     {
         return $this->_getSubscriptionGateway(false);
     }
 
-    public function getSubscriptionTestingGateway(): mint\IGateway
+    public function getSubscriptionTestingGateway(): ?mint\IGateway
     {
         return $this->_getSubscriptionGateway(true);
     }
 
-    private function _getSubscriptionGateway(bool $testing): mint\IGateway
+    private function _getSubscriptionGateway(bool $testing): ?mint\IGateway
     {
         if (!$this->isEnabled()) {
             throw core\Error::{'mint\gateway\ESetup'}([
@@ -97,17 +97,17 @@ class Model extends axis\Model
         }
     }
 
-    public function getGateway(string $account): mint\IGateway
+    public function getGateway(string $account): ?mint\IGateway
     {
         return $this->_getGateway($account, false);
     }
 
-    public function getTestingGateway(string $account): mint\IGateway
+    public function getTestingGateway(string $account): ?mint\IGateway
     {
         return $this->_getGateway($account, true);
     }
 
-    private function _getGateway(string $account, bool $testing): mint\IGateway
+    private function _getGateway(string $account, bool $testing): ?mint\IGateway
     {
         if (!$this->isEnabled()) {
             return null;

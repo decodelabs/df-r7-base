@@ -299,7 +299,7 @@ interface IDependentDelegate extends opal\query\IFilterConsumer
     public function addDependency($value, string $message=null, callable $filter=null, callable $callback=null);
     public function setDependency(string $name, $value, string $message=null, callable $filter=null, callable $callback=null);
     public function hasDependency(string $name): bool;
-    public function getDependency(string $name): array;
+    public function getDependency(string $name): ?array;
     public function removeDependency(string $name);
     public function getDependencies(): array;
     public function getDependencyMessages(): array;

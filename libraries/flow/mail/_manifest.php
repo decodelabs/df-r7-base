@@ -35,7 +35,7 @@ interface IAddress extends core\IStringProvider
     public function isValid(): bool;
 }
 
-interface IAddressList extends core\collection\IMappedCollection, core\IStringProvider
+interface IAddressList extends \IteratorAggregate, core\collection\IMappedCollection, core\IStringProvider
 {
     public function toNameMap();
     public function add($address, $name=null);

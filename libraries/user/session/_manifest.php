@@ -80,7 +80,7 @@ interface IBucket extends core\IValueMap, \ArrayAccess
     public function __set($key, $value);
     public function __get($key);
     public function __isset($key);
-    public function __unset($key);
+    public function __unset($key): void;
 
     public function getLastUpdated();
 }

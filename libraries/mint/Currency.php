@@ -246,7 +246,7 @@ class Currency implements ICurrency, Inspectable
 
     public function getIntegerAmount(): int
     {
-        return round($this->_amount * $this->getDecimalFactor());
+        return (int)round($this->_amount * $this->getDecimalFactor());
     }
 
     public function getFormattedAmount(): string

@@ -868,7 +868,7 @@ trait TForm_DependentDelegate
         return isset($this->_dependencies[$name]);
     }
 
-    public function getDependency(string $name): array
+    public function getDependency(string $name): ?array
     {
         if (isset($this->_dependencies[$name])) {
             return $this->_dependencies[$name];
