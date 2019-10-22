@@ -9,13 +9,22 @@ use df;
 use df\core;
 
 // Exceptions
-interface IException {}
-class OutOfBoundsException extends \OutOfBoundsException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
+interface IException
+{
+}
+class OutOfBoundsException extends \OutOfBoundsException implements IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class UnexpectedValueException extends \UnexpectedValueException implements IException
+{
+}
 
 // Interfaces
-interface IPath extends core\IStringProvider, core\collection\IIndexedQueue {
+interface IPath extends core\IStringProvider, core\collection\IIndexedQueue
+{
     public static function normalizeLocal($path): string;
     public static function extractFileName($path);
     public static function extractRootFileName($path);
@@ -46,17 +55,20 @@ interface IPath extends core\IStringProvider, core\collection\IIndexedQueue {
 }
 
 
-interface ISecureSchemeContainer {
+interface ISecureSchemeContainer
+{
     public function isSecure(bool $flag=null);
 }
 
-interface IUsernameContainer {
+interface IUsernameContainer
+{
     public function setUsername($username);
     public function getUsername();
     public function hasUsername(...$usernames);
 }
 
-interface ICredentialContainer extends IUsernameContainer {
+interface ICredentialContainer extends IUsernameContainer
+{
     public function setPassword($password);
     public function getPassword();
     public function hasPassword(...$passwords);
@@ -64,7 +76,8 @@ interface ICredentialContainer extends IUsernameContainer {
     public function hasCredentials();
 }
 
-interface IDomainContainer {
+interface IDomainContainer
+{
     public function setDomain($domain);
     public function getDomain();
     public function hasDomain();
@@ -72,50 +85,59 @@ interface IDomainContainer {
 }
 
 
-interface IIpContainer {
+interface IIpContainer
+{
     public function setIp($ip);
     public function getIp();
 }
 
-interface IPortContainer {
+interface IPortContainer
+{
     public function setPort($port);
     public function getPort();
     public function hasPort(...$ports);
 }
 
-interface IDomainPortContainer extends IDomainContainer, IPortContainer {
+interface IDomainPortContainer extends IDomainContainer, IPortContainer
+{
     public function getHost(): string;
 }
 
-interface IIpPortContainer extends IIpContainer, IPortContainer {}
+interface IIpPortContainer extends IIpContainer, IPortContainer
+{
+}
 
-interface IPathContainer {
+interface IPathContainer
+{
     public function setPath($path);
     public function getPath();
     public function getPathString();
     public function hasPath();
 }
 
-interface IFragmentContainer {
+interface IFragmentContainer
+{
     public function getFragment();
     public function setFragment($fragment);
     public function hasFragment(...$fragments);
     public function isJustFragment();
 }
 
-interface IQueryContainer {
+interface IQueryContainer
+{
     public function setQuery($query);
     public function importQuery($query, array $filter=null);
-    public function getQuery();
-    public function getQueryString();
+    public function getQuery(): core\collection\ITree;
+    public function getQueryString(): string;
     public function getQueryTerm($key, $default=null);
-    public function hasQuery();
+    public function hasQuery(): bool;
 }
 
 /*****************
  * URL
  */
-interface IUrl extends core\IStringProvider {
+interface IUrl extends core\IStringProvider
+{
     public function import($url='');
     public function reset();
 
@@ -123,16 +145,20 @@ interface IUrl extends core\IStringProvider {
     public function toReadableString();
 }
 
-interface ITransientSchemeUrl {
+interface ITransientSchemeUrl
+{
     public function setScheme($scheme);
     public function hasScheme();
 }
 
 
 
-interface IGenericUrl extends IUrl, ITransientSchemeUrl, IPathContainer, IQueryContainer, IFragmentContainer {}
+interface IGenericUrl extends IUrl, ITransientSchemeUrl, IPathContainer, IQueryContainer, IFragmentContainer
+{
+}
 
-interface IMailtoUrl extends IUrl, IUsernameContainer, IDomainContainer, IQueryContainer {
+interface IMailtoUrl extends IUrl, IUsernameContainer, IDomainContainer, IQueryContainer
+{
     public function setEmail($email);
     public function getEmail();
     public function hasEmail(...$emails);
@@ -142,7 +168,8 @@ interface IMailtoUrl extends IUrl, IUsernameContainer, IDomainContainer, IQueryC
     public function hasSubject();
 }
 
-interface ITelephoneUrl extends IUrl {
+interface ITelephoneUrl extends IUrl
+{
     public function setNumber($number);
     public function getNumber();
     public function getCanonicalNumber();
@@ -151,6 +178,7 @@ interface ITelephoneUrl extends IUrl {
 
 
 
-interface ITemplate {
+interface ITemplate
+{
     public function expand(array $variables);
 }

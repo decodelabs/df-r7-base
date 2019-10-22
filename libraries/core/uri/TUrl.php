@@ -420,7 +420,7 @@ trait TUrl_QueryContainer
         return $this;
     }
 
-    public function getQuery()
+    public function getQuery(): core\collection\ITree
     {
         if (!$this->_query) {
             $this->_query = new core\collection\Tree();
@@ -429,7 +429,7 @@ trait TUrl_QueryContainer
         return $this->_query;
     }
 
-    public function getQueryString()
+    public function getQueryString(): string
     {
         if ($this->_query) {
             return $this->_query->toArrayDelimitedString();
@@ -457,7 +457,7 @@ trait TUrl_QueryContainer
         return $output;
     }
 
-    public function hasQuery()
+    public function hasQuery(): bool
     {
         return $this->_query !== null;
     }
