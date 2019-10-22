@@ -162,7 +162,7 @@ class Base implements link\http\IRequest, Inspectable
 
                 try {
                     return new link\Ip($ip);
-                } catch (link\InvalidArgumentException $e) {
+                } catch (link\EInvalidArgument $e) {
                     if (empty($parts)) {
                         return new link\Ip('0.0.0.0');
                     }

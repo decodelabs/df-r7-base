@@ -162,7 +162,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
     // Credentials
-    protected function _enforceCredentials(link\IIp $ip): bool
+    protected function _enforceCredentials(link\Ip $ip): bool
     {
         // Check for credentials or loopback
         if (!$this->_credentials || $ip->isLoopback()) {
@@ -192,7 +192,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 
     // IP check
-    protected function _checkIpRanges(link\IIp $ip, arch\IRequest $request=null)
+    protected function _checkIpRanges(link\Ip $ip, arch\IRequest $request=null)
     {
         // Get ranges from config
         $config = namespace\http\Config::getInstance();

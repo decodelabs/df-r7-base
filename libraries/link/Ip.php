@@ -10,17 +10,18 @@ use df\core;
 use df\link;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Ip implements IIp, Inspectable
+class Ip implements core\IStringProvider, Inspectable
 {
     protected $_ip;
     protected $_isV4 = false;
     protected $_isV6 = false;
 
-    public static function factory($ip): IIp
+    public static function factory($ip): Ip
     {
         if ($ip instanceof self) {
             return $ip;
@@ -29,7 +30,7 @@ class Ip implements IIp, Inspectable
         return new self($ip);
     }
 
-    public static function normalize($ip): ?IIp
+    public static function normalize($ip): ?Ip
     {
         if (empty($ip)) {
             return null;
@@ -49,7 +50,7 @@ class Ip implements IIp, Inspectable
         $this->_isV6 = $hasV6 = strpos($ip, ':') !== false;
 
         if (!$hasV4 && !$hasV6) {
-            throw new InvalidArgumentException('Could not detect IPv4 or IPv6 signature - '.$ip);
+            throw Glitch::EInvalidArgument('Could not detect IPv4 or IPv6 signature - '.$ip);
         }
 
         if ($hasV4 && $hasV6) {
@@ -62,12 +63,12 @@ class Ip implements IIp, Inspectable
             $ip = array_pad(explode('.', $ip), 4, 0);
 
             if (count($ip) > 4) {
-                throw new InvalidArgumentException($in.' is not a valid IPv4 address');
+                throw Glitch::EInvalidArgument($in.' is not a valid IPv4 address');
             }
 
             for ($i = 0; $i < 4; $i++) {
                 if ($ip[$i] > 255) {
-                    throw new InvalidArgumentException($in.' is not a valid IPv4 address');
+                    throw Glitch::EInvalidArgument($in.' is not a valid IPv4 address');
                 }
             }
 
@@ -187,7 +188,7 @@ class Ip implements IIp, Inspectable
     public function getV4String()
     {
         if (!$this->_isV4) {
-            throw new RuntimeException('Ip is not in V4 range');
+            throw Glitch::ERuntime('Ip is not in V4 range');
         }
 
         $pos = strrpos($this->_ip, ':');
@@ -230,7 +231,7 @@ class Ip implements IIp, Inspectable
     public function getV4Hex()
     {
         if (!$this->isV4()) {
-            throw new RuntimeException('Ip is not in V4 range');
+            throw Glitch::ERuntime('Ip is not in V4 range');
         }
 
         $parts = array_slice(explode(':', $this->_ip), -2);

@@ -95,7 +95,7 @@ class Reader implements IReader
         return $this->_resolveDataPointer($pointer);
     }
 
-    protected function _findAddressInTree(link\IIp $ip)
+    protected function _findAddressInTree(link\Ip $ip)
     {
         $rawAddress = array_merge(unpack('C*', inet_pton($ip->toString())));
         $bitCount = count($rawAddress) * 8;

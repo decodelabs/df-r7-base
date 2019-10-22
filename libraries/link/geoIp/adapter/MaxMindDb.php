@@ -59,7 +59,7 @@ class MaxMindDb implements link\geoIp\IAdapter
         $this->_reader = $reader;
     }
 
-    public function lookup(link\IIp $ip, link\geoIp\Result $result)
+    public function lookup(link\Ip $ip, link\geoIp\Result $result)
     {
         $data = $this->_reader->get($ip);
 

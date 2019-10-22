@@ -15,7 +15,7 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class IpRange implements IIpRange, Inspectable
+class IpRange implements core\IStringProvider, Inspectable
 {
     use core\TStringProvider;
 

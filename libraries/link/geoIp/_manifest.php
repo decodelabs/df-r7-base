@@ -33,7 +33,7 @@ interface IAdapter
     public static function fromConfig();
     public static function isAvailable();
     public function getName(): string;
-    public function lookup(link\IIp $ip, Result $result);
+    public function lookup(link\Ip $ip, Result $result);
 }
 
 trait TAdapter
