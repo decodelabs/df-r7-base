@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace df\tests\link;
+namespace Tests\Link;
 
 use PHPUnit\Framework\TestCase;
 use df\link\Ip;
