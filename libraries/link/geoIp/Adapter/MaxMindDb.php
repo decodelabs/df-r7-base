@@ -3,65 +3,74 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\link\geoIp\adapter;
+namespace df\link\geoIp\Adapter;
 
-use df;
-use df\core;
-use df\link;
-use df\opal;
+use df\Launchpad;
+use df\opal\mmdb\Reader;
+use df\opal\mmdb\IReader;
+use df\link\Ip;
+use df\link\geoIp\Adapter;
+use df\link\geoIp\Result;
+use df\link\geoIp\Config;
 
-class MaxMindDb implements link\geoIp\IAdapter
+use DecodeLabs\Glitch;
+
+class MaxMindDb implements Adapter
 {
-    use link\geoIp\TAdapter;
+    protected $reader;
 
-    protected $_reader;
-
-    public static function fromConfig()
+    public static function fromConfig(): Adapter
     {
-        $file = self::_getFileFromConfig();
+        $file = self::getFileFromConfig();
 
         if (empty($file)) {
-            throw new link\geoIp\RuntimeException(
+            throw Glitch::ERuntime(
                 'MaxMind DB file has not been set in config'
             );
         }
 
         if (!is_file($file)) {
-            throw new link\geoIp\RuntimeException(
+            throw Glitch::ERuntime(
                 'MaxMind DB file could not be found'
             );
         }
 
-        return new self(new opal\mmdb\Reader($file));
+        return new self(new Reader($file));
     }
 
-    public static function isAvailable()
+    public static function isAvailable(): bool
     {
-        $file = self::_getFileFromConfig();
+        $file = self::getFileFromConfig();
         return !empty($file) && is_file($file);
     }
 
-    protected static function _getFileFromConfig()
+    protected static function getFileFromConfig(): ?string
     {
-        $config = link\geoIp\Config::getInstance();
+        $config = Config::getInstance();
         $settings = $config->getSettingsFor('MaxMindDb');
         $file = $settings['file'];
 
         if (dirname($file) == '.') {
-            $file = df\Launchpad::$app->getLocalDataPath().'/geoIp/'.$file;
+            $file = Launchpad::$app->getLocalDataPath().'/geoIp/'.$file;
         }
 
         return $file;
     }
 
-    public function __construct(opal\mmdb\IReader $reader)
+    public function __construct(IReader $reader)
     {
-        $this->_reader = $reader;
+        $this->reader = $reader;
     }
 
-    public function lookup(link\Ip $ip, link\geoIp\Result $result)
+    public function getName(): string
     {
-        $data = $this->_reader->get($ip);
+        $parts = explode('\\', get_class($this));
+        return array_pop($parts);
+    }
+
+    public function lookup(Ip $ip, Result $result): Result
+    {
+        $data = $this->reader->get($ip);
 
         if ($data === null) {
             return $result;

@@ -5,10 +5,6 @@
  */
 namespace df\link\geoIp;
 
-use df;
-use df\core;
-use df\link;
-
 class Result
 {
     public $ip;

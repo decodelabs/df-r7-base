@@ -3,14 +3,9 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\link\socket;
+namespace df\link;
 
-use df;
-use df\core;
-use df\link;
-
-// Interfaces
-interface ISocket
+interface Socket
 {
     public function getId(): string;
     public function getImplementationName();

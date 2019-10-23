@@ -5,37 +5,41 @@
  */
 namespace df\link\geoIp;
 
-use df;
-use df\core;
-use df\link;
+use df\Launchpad;
+use df\link\Ip;
+use df\link\geoIp\Adapter;
+use df\link\geoIp\Result;
 
-class Handler implements IHandler {
-    
+use DecodeLabs\Glitch;
+
+class Handler
+{
     protected $_adapter;
 
-    public static function factory($adapter=null) {
-        if(!$adapter instanceof IAdapter) {
+    public static function factory($adapter=null): Handler
+    {
+        if (!$adapter instanceof Adapter) {
             $config = Config::getInstance();
 
-            if(!$config->isEnabled()) {
+            if (!$config->isEnabled()) {
                 return new self();
             }
 
-            if($adapter === null) {
+            if ($adapter === null) {
                 $adapter = $config->getDefaultAdapter();
             }
 
-            $class = 'df\\link\\geoIp\\adapter\\'.ucfirst($adapter);
+            $class = 'df\\link\\geoIp\\Adapter\\'.ucfirst($adapter);
 
-            if(!class_exists($class)) {
-                throw new RuntimeException(
+            if (!class_exists($class)) {
+                throw Glitch::ERuntime(
                     'GeoIp adapter '.$adapter.' could not be found'
                 );
             }
 
             try {
                 $adapter = $class::fromConfig();
-            } catch(RuntimeException $e) {
+            } catch (ERuntime $e) {
                 $adapter = null;
             }
         }
@@ -43,32 +47,35 @@ class Handler implements IHandler {
         return new self($adapter);
     }
 
-    public static function isAdapterAvailable($name) {
-        $class = 'df\\link\\geoIp\\adapter\\'.ucfirst($name);
+    public static function isAdapterAvailable(string $name): bool
+    {
+        $class = 'df\\link\\geoIp\\Adapter\\'.ucfirst($name);
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             return false;
         }
 
         return $class::isAvailable();
     }
 
-    public static function getAdapterList() {
+    public static function getAdapterList(): array
+    {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupClassList('link/geoIp/adapter') as $name => $class) {
+        foreach (Launchpad::$loader->lookupClassList('link/geoIp/Adapter') as $name => $class) {
             $output[$name] = $class::isAvailable();
         }
-        
+
         ksort($output);
         return $output;
     }
 
-    public static function getAvailableAdapterList() {
+    public static function getAvailableAdapterList(): array
+    {
         $output = [];
 
-        foreach(self::getAdapterList() as $name => $available) {
-            if($available) {
+        foreach (self::getAdapterList() as $name => $available) {
+            if ($available) {
                 $output[$name] = true;
             }
         }
@@ -76,22 +83,25 @@ class Handler implements IHandler {
         return $output;
     }
 
-    public function __construct(IAdapter $adapter=null) {
+    public function __construct(Adapter $adapter=null)
+    {
         $this->_adapter = $adapter;
     }
 
-    public function getAdapter() {
+    public function getAdapter(): Adapter
+    {
         return $this->_adapter;
     }
 
-    public function lookup($ip) {
-        $ip = link\Ip::factory($ip);
+    public function lookup($ip): Result
+    {
+        $ip = Ip::factory($ip);
         $result = new Result($ip);
 
-        if($this->_adapter) {
+        if ($this->_adapter) {
             return $this->_adapter->lookup($ip, $result);
         }
-        
+
         return $result;
     }
 }

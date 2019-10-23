@@ -5,21 +5,20 @@
  */
 namespace df\link;
 
-use df;
-use df\core;
-use df\link;
-use df\flex;
+use df\core\IStringProvider;
+use df\link\IpRange;
+use df\flex\Text;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class Ip implements core\IStringProvider, Inspectable
+class Ip implements IStringProvider, Inspectable
 {
-    protected $_ip;
-    protected $_isV4 = false;
-    protected $_isV6 = false;
+    protected $ip;
+    protected $isV4 = false;
+    protected $isV6 = false;
 
     public static function factory($ip): Ip
     {
@@ -39,15 +38,15 @@ class Ip implements core\IStringProvider, Inspectable
         return self::factory($ip);
     }
 
-    public function __construct($ip)
+    public function __construct(string $ip)
     {
         if ($ip == 'localhost') {
             $ip = '127.0.0.1';
         }
 
-        $in = $ip = (string)$ip;
-        $this->_isV4 = $hasV4 = strpos($ip, '.') > 0;
-        $this->_isV6 = $hasV6 = strpos($ip, ':') !== false;
+        $in = $ip;
+        $this->isV4 = $hasV4 = strpos($ip, '.') > 0;
+        $this->isV6 = $hasV6 = strpos($ip, ':') !== false;
 
         if (!$hasV4 && !$hasV6) {
             throw Glitch::EInvalidArgument('Could not detect IPv4 or IPv6 signature - '.$ip);
@@ -88,44 +87,44 @@ class Ip implements core\IStringProvider, Inspectable
             $ip = '0'.$ip;
         }
 
-        $this->_ip = $ip;
+        $this->ip = $ip;
     }
 
 
     // Ranges
-    public function isInRange($range)
+    public function isInRange($range): bool
     {
         return IpRange::factory($range)->check($this);
     }
 
-    public function isV4()
+    public function isV4(): bool
     {
-        return $this->_isV4;
+        return $this->isV4;
     }
 
-    public function isStandardV4()
+    public function isStandardV4(): bool
     {
-        return $this->_isV4 && !$this->_isV6;
+        return $this->isV4 && !$this->isV6;
     }
 
-    public function isV6()
+    public function isV6(): bool
     {
-        return $this->_isV6;
+        return $this->isV6;
     }
 
-    public function isStandardV6()
+    public function isStandardV6(): bool
     {
-        return $this->_isV6 && !$this->_isV4;
+        return $this->isV6 && !$this->isV4;
     }
 
-    public function isHybrid()
+    public function isHybrid(): bool
     {
-        return $this->_isV4 && $this->_isV6;
+        return $this->isV4 && $this->isV6;
     }
 
-    public function convertToV6()
+    public function convertToV6(): Ip
     {
-        $this->_isV6 = true;
+        $this->isV6 = true;
         return $this;
     }
 
@@ -149,22 +148,22 @@ class Ip implements core\IStringProvider, Inspectable
         }
     }
 
-    public function getV6String()
+    public function getV6String(): string
     {
-        if ($this->_isV4) {
+        if ($this->isV4) {
             return '0:0:0:0:0:ffff:'.$this->getV4String();
         }
 
-        return $this->_ip;
+        return $this->ip;
     }
 
-    public function getCompressedV6String()
+    public function getCompressedV6String(): string
     {
-        if ($this->_isV4) {
+        if ($this->isV4) {
             return '::ffff:'.$this->getV4String();
         }
 
-        $ip = ':'.$this->_ip.':';
+        $ip = ':'.$this->ip.':';
         preg_match_all('/(:0)+/', $ip, $matches);
 
         if (isset($matches[0]) && !empty($matches[0])) {
@@ -185,15 +184,15 @@ class Ip implements core\IStringProvider, Inspectable
         return $ip;
     }
 
-    public function getV4String()
+    public function getV4String(): string
     {
-        if (!$this->_isV4) {
+        if (!$this->isV4) {
             throw Glitch::ERuntime('Ip is not in V4 range');
         }
 
-        $pos = strrpos($this->_ip, ':');
-        $part1 = (int)base_convert(substr($this->_ip, 15, $pos - 15), 16, 10);
-        $part2 = (int)base_convert(substr($this->_ip, $pos + 1), 16, 10);
+        $pos = strrpos($this->ip, ':');
+        $part1 = (int)base_convert(substr($this->ip, 15, $pos - 15), 16, 10);
+        $part2 = (int)base_convert(substr($this->ip, $pos + 1), 16, 10);
 
         $b = ($part1 % 256);
         $a = ($part1 - $b) / 256;
@@ -205,20 +204,20 @@ class Ip implements core\IStringProvider, Inspectable
 
 
     // Base conversion
-    public function getV6Decimal()
+    public function getV6Decimal(): string
     {
-        return flex\Text::baseConvert($this->getV6Hex(), 16, 10);
+        return Text::baseConvert($this->getV6Hex(), 16, 10);
     }
 
-    public function getV4Decimal()
+    public function getV4Decimal(): string
     {
-        return flex\Text::baseConvert($this->getV4Hex(), 16, 10);
+        return Text::baseConvert($this->getV4Hex(), 16, 10);
     }
 
 
-    public function getV6Hex()
+    public function getV6Hex(): string
     {
-        $parts = explode(':', $this->_ip);
+        $parts = explode(':', $this->ip);
         $output = '';
 
         foreach ($parts as $part) {
@@ -228,13 +227,13 @@ class Ip implements core\IStringProvider, Inspectable
         return $output;
     }
 
-    public function getV4Hex()
+    public function getV4Hex(): string
     {
         if (!$this->isV4()) {
             throw Glitch::ERuntime('Ip is not in V4 range');
         }
 
-        $parts = array_slice(explode(':', $this->_ip), -2);
+        $parts = array_slice(explode(':', $this->ip), -2);
         $output = '';
 
         foreach ($parts as $part) {
@@ -246,30 +245,30 @@ class Ip implements core\IStringProvider, Inspectable
 
 
     // Loopback
-    public static function getV4Loopback()
+    public static function getV4Loopback(): Ip
     {
         return new self('127.0.0.1');
     }
 
-    public static function getV6Loopback()
+    public static function getV6Loopback(): Ip
     {
         return new self('::1');
     }
 
-    public function isLoopback()
+    public function isLoopback(): bool
     {
         return $this->isV4Loopback()
             || $this->isV6Loopback();
     }
 
-    public function isV6Loopback()
+    public function isV6Loopback(): bool
     {
-        return $this->_ip == '0:0:0:0:0:0:0:1';
+        return $this->ip == '0:0:0:0:0:0:0:1';
     }
 
-    public function isV4Loopback()
+    public function isV4Loopback(): bool
     {
-        return $this->_ip == '0:0:0:0:0:ffff:7f00:1';
+        return $this->ip == '0:0:0:0:0:ffff:7f00:1';
     }
 
     /**

@@ -113,42 +113,42 @@ abstract class Base implements IDispatcher
 
 
     // Socket
-    public function bindSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
+    public function bindSocketRead(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
     {
         return $this->_addSocketBinding(new halo\event\binding\Socket($this, true, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
+    public function bindFrozenSocketRead(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
     {
         return $this->_addSocketBinding(new halo\event\binding\Socket($this, true, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
-    public function bindSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
+    public function bindSocketReadOnce(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
     {
         return $this->_addSocketBinding(new halo\event\binding\Socket($this, false, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
+    public function bindFrozenSocketReadOnce(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
     {
         return $this->_addSocketBinding(new halo\event\binding\Socket($this, false, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
-    public function bindSocketWrite(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
+    public function bindSocketWrite(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
     {
         return $this->_addSocketBinding(new halo\event\binding\Socket($this, true, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenSocketWrite(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
+    public function bindFrozenSocketWrite(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
     {
         return $this->_addSocketBinding(new halo\event\binding\Socket($this, true, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
-    public function bindSocketWriteOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
+    public function bindSocketWriteOnce(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
     {
         return $this->_addSocketBinding(new halo\event\binding\Socket($this, false, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenSocketWriteOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
+    public function bindFrozenSocketWriteOnce(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null)
     {
         return $this->_addSocketBinding(new halo\event\binding\Socket($this, false, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
     }
@@ -177,7 +177,7 @@ abstract class Base implements IDispatcher
 
 
 
-    public function freezeSocket(link\socket\ISocket $socket)
+    public function freezeSocket(link\Socket $socket)
     {
         $id = $socket->getId();
 
@@ -192,7 +192,7 @@ abstract class Base implements IDispatcher
         return $this;
     }
 
-    public function freezeSocketRead(link\socket\ISocket $socket)
+    public function freezeSocketRead(link\Socket $socket)
     {
         $id = $socket->getId();
 
@@ -203,7 +203,7 @@ abstract class Base implements IDispatcher
         return $this;
     }
 
-    public function freezeSocketWrite(link\socket\ISocket $socket)
+    public function freezeSocketWrite(link\Socket $socket)
     {
         $id = $socket->getId();
 
@@ -225,7 +225,7 @@ abstract class Base implements IDispatcher
 
 
 
-    public function unfreezeSocket(link\socket\ISocket $socket)
+    public function unfreezeSocket(link\Socket $socket)
     {
         $id = $socket->getId();
 
@@ -240,7 +240,7 @@ abstract class Base implements IDispatcher
         return $this;
     }
 
-    public function unfreezeSocketRead(link\socket\ISocket $socket)
+    public function unfreezeSocketRead(link\Socket $socket)
     {
         $id = $socket->getId();
 
@@ -251,7 +251,7 @@ abstract class Base implements IDispatcher
         return $this;
     }
 
-    public function unfreezeSocketWrite(link\socket\ISocket $socket)
+    public function unfreezeSocketWrite(link\Socket $socket)
     {
         $id = $socket->getId();
 
@@ -274,7 +274,7 @@ abstract class Base implements IDispatcher
 
 
 
-    public function removeSocket(link\socket\ISocket $socket)
+    public function removeSocket(link\Socket $socket)
     {
         $id = $socket->getId();
 
@@ -289,7 +289,7 @@ abstract class Base implements IDispatcher
         return $this;
     }
 
-    public function removeSocketRead(link\socket\ISocket $socket)
+    public function removeSocketRead(link\Socket $socket)
     {
         $id = $socket->getId();
 
@@ -300,7 +300,7 @@ abstract class Base implements IDispatcher
         return $this;
     }
 
-    public function removeSocketWrite(link\socket\ISocket $socket)
+    public function removeSocketWrite(link\Socket $socket)
     {
         $id = $socket->getId();
 
@@ -330,7 +330,7 @@ abstract class Base implements IDispatcher
     }
 
 
-    public function countSocketBindings(link\socket\ISocket $socket=null)
+    public function countSocketBindings(link\Socket $socket=null)
     {
         if (!$socket) {
             return count($this->_socketBindings);
@@ -350,7 +350,7 @@ abstract class Base implements IDispatcher
         return $count;
     }
 
-    public function getSocketBindings(link\socket\ISocket $socket=null)
+    public function getSocketBindings(link\Socket $socket=null)
     {
         if (!$socket) {
             return $this->_socketBindings;

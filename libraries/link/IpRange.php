@@ -5,27 +5,27 @@
  */
 namespace df\link;
 
-use df;
-use df\core;
-use df\link;
-use df\flex;
+use df\link\Ip;
+use df\core\IStringProvider;
+use df\core\TStringProvider;
+use df\flex\Text;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-class IpRange implements core\IStringProvider, Inspectable
+class IpRange implements IStringProvider, Inspectable
 {
-    use core\TStringProvider;
+    use TStringProvider;
 
-    protected $_isV4 = false;
-    protected $_start = null;
-    protected $_end = null;
-    protected $_netmask = null;
-    protected $_isValid = false;
+    protected $isV4 = false;
+    protected $start = null;
+    protected $end = null;
+    protected $netmask = null;
+    protected $isValid = false;
 
-    public static function factory($range)
+    public static function factory($range): IpRange
     {
         if ($range instanceof self) {
             return $range;
@@ -34,7 +34,7 @@ class IpRange implements core\IStringProvider, Inspectable
         return new self($range);
     }
 
-    public function __construct($range)
+    public function __construct(string $range)
     {
         if (false !== strpos($range, ':')) {
             $this->_parseV6($range);
@@ -43,9 +43,9 @@ class IpRange implements core\IStringProvider, Inspectable
         }
     }
 
-    protected function _parseV4($range)
+    protected function _parseV4(string $range): void
     {
-        $this->_isV4 = true;
+        $this->isV4 = true;
 
         if (false !== strpos($range, '/')) {
             // CIDR
@@ -60,17 +60,17 @@ class IpRange implements core\IStringProvider, Inspectable
             $range = ip2long(sprintf('%u.%u.%u.%u', $a, $b, $c, $d));
 
             if (!$range) {
-                return false;
+                return;
             }
 
-            $this->_start = $range;
+            $this->start = $range;
 
             if (false !== strpos($netmask, '.')) {
                 // 255.255.0.0
-                $this->_netmask = ip2long(str_replace('*', '0', $netmask));
+                $this->netmask = ip2long(str_replace('*', '0', $netmask));
             } else {
                 // /24
-                $this->_netmask = -pow(2, (32 - (int)$netmask));
+                $this->netmask = -pow(2, (32 - (int)$netmask));
             }
         } else {
             if (false !== strpos($range, '*')) {
@@ -81,20 +81,20 @@ class IpRange implements core\IStringProvider, Inspectable
             if (false !== strpos($range, '-')) {
                 // Simple range
                 $parts = explode('-', $range, 2);
-                $this->_start = ip2long(trim(array_shift($parts)));
-                $this->_end = ip2long(trim(array_shift($parts)));
+                $this->start = ip2long(trim(array_shift($parts)));
+                $this->end = ip2long(trim(array_shift($parts)));
             } else {
                 // Single ip match
-                $this->_start = $this->_end = (int)Ip::factory($range)->getV4Decimal();
+                $this->start = $this->end = (int)Ip::factory($range)->getV4Decimal();
             }
         }
 
-        $this->_isValid = true;
+        $this->isValid = true;
     }
 
-    protected function _parseV6($range)
+    protected function _parseV6(string $range): void
     {
-        $this->_isV4 = false;
+        $this->isV4 = false;
 
         if (false !== strpos($range, '/')) {
             // CIDR
@@ -109,17 +109,17 @@ class IpRange implements core\IStringProvider, Inspectable
                     if ($netmask == 0) {
                         $range = 0;
                     } else {
-                        $range = flex\Text::baseConvert($range, 10, 2, 128);
+                        $range = Text::baseConvert($range, 10, 2, 128);
                         $range = str_pad(substr($range, 0, $netmask), 128, '0', STR_PAD_RIGHT);
-                        $range = flex\Text::baseConvert($range, 2, 10);
+                        $range = Text::baseConvert($range, 2, 10);
                     }
                 }
             }
 
-            $this->_start = flex\Text::baseConvert($range, 10, 16, 32);
-            $this->_end = flex\Text::baseConvert($range, 10, 2, 128);
-            $this->_end = str_pad(substr($this->_end, 0, $netmask), 128, '1', STR_PAD_RIGHT);
-            $this->_end = flex\Text::baseConvert($this->_end, 2, 16, 32);
+            $this->start = Text::baseConvert($range, 10, 16, 32);
+            $this->end = Text::baseConvert($range, 10, 2, 128);
+            $this->end = str_pad(substr($this->end, 0, $netmask), 128, '1', STR_PAD_RIGHT);
+            $this->end = Text::baseConvert($this->end, 2, 16, 32);
         } else {
             if (false !== strpos($range, '*')) {
                 // Wildcards
@@ -140,62 +140,62 @@ class IpRange implements core\IStringProvider, Inspectable
                     $end += pow(2, 32);
                 }
 
-                $this->_start = sprintf('%08x', $start);
-                $this->_end = sprintf('%08x', $end);
+                $this->start = sprintf('%08x', $start);
+                $this->end = sprintf('%08x', $end);
             } else {
                 // Single ip match
-                $this->_start = $this->_end = Ip::factory($range)->getV4Hex();
+                $this->start = $this->end = Ip::factory($range)->getV4Hex();
             }
         }
 
-        $this->_isValid = true;
+        $this->isValid = true;
     }
 
-    public function check($ip)
+    public function check($ip): bool
     {
-        if (!$this->_isValid) {
+        if (!$this->isValid) {
             return false;
         }
 
         $ip = Ip::factory($ip);
 
-        if ($this->_isV4) {
+        if ($this->isV4) {
             if (!$ip->isV4()) {
                 return false;
             }
 
             $value = (int)$ip->getV4Decimal();
 
-            if ($this->_end !== null) {
+            if ($this->end !== null) {
                 // range
-                return $this->_start <= $value && $value <= $this->_end;
+                return $this->start <= $value && $value <= $this->end;
             } else {
                 // netmask
-                return ($value & $this->_netmask)
-                    == ($this->_start & $this->_netmask);
+                return ($value & $this->netmask)
+                    == ($this->start & $this->netmask);
             }
         } else {
             // range
             $hex = $ip->getV6Hex();
-            return $this->_start <= $hex && $hex <= $this->_end;
+            return $this->start <= $hex && $hex <= $this->end;
         }
     }
 
     public function toString(): string
     {
-        if ($this->_isV4) {
+        if ($this->isV4) {
             return $this->_toV4String();
         } else {
             return $this->_toV6String();
         }
     }
 
-    protected function _toV4String()
+    protected function _toV4String(): string
     {
-        if ($this->_end !== null) {
+        if ($this->end !== null) {
             // Hex
-            $start = long2ip($this->_start);
-            $end = long2ip($this->_end);
+            $start = long2ip($this->start);
+            $end = long2ip($this->end);
 
             if ($start == $end) {
                 return $start;
@@ -204,18 +204,18 @@ class IpRange implements core\IStringProvider, Inspectable
             return $start.'-'.$end;
         } else {
             // Mask
-            $start = long2ip($this->_start);
-            $netmask = 32 - (log($this->_netmask * -1) / log(2));
+            $start = long2ip($this->start);
+            $netmask = 32 - (log($this->netmask * -1) / log(2));
 
             if (is_nan($netmask)) {
-                $netmask = long2ip($this->_netmask);
+                $netmask = long2ip($this->netmask);
             }
 
             return $start.'/'.$netmask;
         }
     }
 
-    protected function _toV6String()
+    protected function _toV6String(): string
     {
         Glitch::incomplete();
     }
@@ -225,14 +225,14 @@ class IpRange implements core\IStringProvider, Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
-        if ($this->_isV4) {
+        if ($this->isV4) {
             $entity->setText($this->_toV4String());
         } else {
             $entity->setProperties([
                 '*v6' => $inspector(true),
-                '*start' => $inspector($this->_start),
-                '*end' => $inspector($this->_end),
-                '*netmask' => $inspector($this->_netmask),
+                '*start' => $inspector($this->start),
+                '*end' => $inspector($this->end),
+                '*netmask' => $inspector($this->netmask),
             ]);
         }
     }

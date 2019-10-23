@@ -5,31 +5,30 @@
  */
 namespace df\link\geoIp;
 
-use df;
-use df\core;
-use df\link;
+use df\core\Config as ConfigBase;
+use df\core\collection\ITree;
+use df\link\geoIp\Adapter;
 
-class Config extends core\Config {
-
+class Config extends ConfigBase
+{
     const ID = 'GeoIp';
 
-    public function getDefaultValues(): array {
+    public function getDefaultValues(): array
+    {
         return [
             'enabled' => false,
             'defaultAdapter' => 'MaxMindDb',
             'adapters' => [
                 'MaxMindDb' => [
                     'file' => null
-                ],
-                'MaxMindWeb' => [
-                    'key' => null
                 ]
             ]
         ];
     }
 
-    public function isEnabled(bool $flag=null) {
-        if($flag !== null) {
+    public function isEnabled(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->values->enabled = $flag;
             return $this;
         }
@@ -37,21 +36,20 @@ class Config extends core\Config {
         return (bool)$this->values['enabled'];
     }
 
-    public function getDefaultAdapter() {
+    public function getDefaultAdapter(): ?string
+    {
         return $this->values['defaultAdapter'];
     }
 
-    public function setDefaultAdapter($adapter) {
-        if($adapter instanceof IAdapter) {
-            $adapter = $adapter->getName();
-        }
-
+    public function setDefaultAdapter(string $adapter): Config
+    {
         $this->values->defaultAdapter = $adapter;
         return $this;
     }
 
-    public function getSettingsFor($adapter) {
-        if($adapter instanceof IAdapter) {
+    public function getSettingsFor($adapter): ITree
+    {
+        if ($adapter instanceof Adapter) {
             $adapter = $adapter->getName();
         }
 

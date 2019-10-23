@@ -58,33 +58,33 @@ interface IDispatcher
 
 
     // Socket
-    public function bindSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
-    public function bindFrozenSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
-    public function bindSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
-    public function bindFrozenSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
-    public function bindSocketWrite(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
-    public function bindFrozenSocketWrite(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
-    public function bindSocketWriteOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
-    public function bindFrozenSocketWriteOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindSocketRead(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenSocketRead(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindSocketReadOnce(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenSocketReadOnce(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindSocketWrite(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenSocketWrite(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindSocketWriteOnce(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenSocketWriteOnce(link\Socket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
 
-    public function freezeSocket(link\socket\ISocket $socket);
-    public function freezeSocketRead(link\socket\ISocket $socket);
-    public function freezeSocketWrite(link\socket\ISocket $socket);
+    public function freezeSocket(link\Socket $socket);
+    public function freezeSocketRead(link\Socket $socket);
+    public function freezeSocketWrite(link\Socket $socket);
     public function freezeAllSockets();
 
-    public function unfreezeSocket(link\socket\ISocket $socket);
-    public function unfreezeSocketRead(link\socket\ISocket $socket);
-    public function unfreezeSocketWrite(link\socket\ISocket $socket);
+    public function unfreezeSocket(link\Socket $socket);
+    public function unfreezeSocketRead(link\Socket $socket);
+    public function unfreezeSocketWrite(link\Socket $socket);
     public function unfreezeAllSockets();
 
-    public function removeSocket(link\socket\ISocket $socket);
-    public function removeSocketRead(link\socket\ISocket $socket);
-    public function removeSocketWrite(link\socket\ISocket $socket);
+    public function removeSocket(link\Socket $socket);
+    public function removeSocketRead(link\Socket $socket);
+    public function removeSocketWrite(link\Socket $socket);
     public function removeSocketBinding(ISocketBinding $binding);
     public function removeAllSockets();
 
-    public function countSocketBindings(link\socket\ISocket $socket=null);
-    public function getSocketBindings(link\socket\ISocket $socket=null);
+    public function countSocketBindings(link\Socket $socket=null);
+    public function getSocketBindings(link\Socket $socket=null);
     public function countSocketReadBindings();
     public function getSocketReadBindings();
     public function countSocketWriteBindings();
