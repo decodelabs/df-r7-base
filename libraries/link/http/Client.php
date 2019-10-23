@@ -290,7 +290,7 @@ class Client implements IClient
                 $path .= $options->downloadFileName;
             } else {
                 if (!$fileName = $response->getHeaders()->getAttachmentFileName()) {
-                    if (!$fileName = $request->getUrl()->getPath()->getFileName()) {
+                    if (!$fileName = $request->getUrl()->getPath()->getBaseName()) {
                         $fileName = 'index';
                     }
                 }

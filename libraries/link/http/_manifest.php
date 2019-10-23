@@ -30,7 +30,11 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 
 // Interfaces
-interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core\uri\ISecureSchemeContainer, core\uri\IDomainPortContainer
+interface IUrl extends
+    core\uri\IGenericUrl,
+    core\uri\ICredentialContainer,
+    core\uri\ISecureSchemeContainer,
+    core\uri\IDomainPortContainer
 {
     public function getLocalString();
     public function getOrigin(): string;
@@ -41,7 +45,10 @@ interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core
 
 
 
-interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvider, core\lang\IChainable
+interface IRequest extends
+    core\IStringProvider,
+    core\collection\IHeaderMapProvider,
+    core\lang\IChainable
 {
     // Method
     public function setMethod($method);
@@ -197,7 +204,9 @@ interface IRequestHeaderCollection
 
 
 
-interface IResponse extends core\collection\IHeaderMapProvider, core\lang\IChainable
+interface IResponse extends
+    core\collection\IHeaderMapProvider,
+    core\lang\IChainable
 {
     // Headers
     public function withHeaders($callback);

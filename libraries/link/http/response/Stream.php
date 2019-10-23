@@ -50,7 +50,7 @@ class Stream extends Base implements link\http\IAdaptiveStreamResponse
         if ($content instanceof Channel) {
             $this->setContentFileStream($content);
         } elseif (!$this->_content) {
-            $this->_content = Atlas::$fs->createTempFile($content);
+            $this->_content = Atlas::$fs->createMemoryFile($content);
         } else {
             $this->_content->write($content);
         }
@@ -84,7 +84,7 @@ class Stream extends Base implements link\http\IAdaptiveStreamResponse
 
     public function transferContentFileStream(Channel $content)
     {
-        $this->_content->seek(0);
+        $this->_content->setPosition(0);
 
         if ($this->headers->has('content-length')) {
             $length = $this->headers->get('content-length');

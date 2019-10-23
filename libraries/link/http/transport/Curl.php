@@ -34,6 +34,7 @@ class Curl implements link\http\IAsyncTransport
             curl_close($handle->resource);
             unset($handle->resource);
 
+            $handle->response->getContentFileStream()->setPosition(0);
             return $handle->response;
         });
     }
@@ -90,6 +91,7 @@ class Curl implements link\http\IAsyncTransport
                         )
                     );
                 } else {
+                    $handle->response->getContentFileStream()->setPosition(0);
                     $handle->promise->deliver($handle->response);
                 }
 
