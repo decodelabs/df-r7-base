@@ -8,7 +8,7 @@ namespace df;
 use df;
 use df\core;
 
-use DecodeLabs\Veneer;
+use DecodeLabs\Veneer\Register;
 use DecodeLabs\Glitch;
 
 class Launchpad
@@ -138,7 +138,8 @@ class Launchpad
         }
 
         // Veneer
-        Veneer::blacklistNamespaces('df')
+        Register::getGlobalListener()
+            ->blacklistNamespaces('df')
             ->whitelistNamespaces('df\\apex\\directory');
 
         // Glitch
