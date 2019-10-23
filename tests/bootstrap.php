@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/Df.php';
+require_once dirname(__DIR__).'/Df.php';
 
 use df\core;
 use DecodeLabs\Glitch;

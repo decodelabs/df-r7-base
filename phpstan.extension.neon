@@ -4,7 +4,7 @@ parameters:
         - */_templates/*.xml.php
         - */_templates/*.mail.php
 
-    bootstrap: %rootDir%/../../../../base/PHPStanBootstrap.php
+    bootstrap: %rootDir%/../../../../base/tests/bootstrap.php
     level: 5
     inferPrivatePropertyTypeFromConstructor: true
     reportUnmatchedIgnoredErrors: false

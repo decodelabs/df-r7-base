@@ -3,6 +3,7 @@ ehthumbs.db
 Thumbs.db
 *.sublime-project
 *.sublime-workspace
+*.phpunit.result.cache
 
 setup/*
 vendor/
