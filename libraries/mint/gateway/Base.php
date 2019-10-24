@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\mint;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements mint\IGateway
 {
     public static function factory(string $name, $settings=null): mint\IGateway
@@ -16,7 +18,7 @@ abstract class Base implements mint\IGateway
         $class = 'df\\mint\\gateway\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw core\Error::{'ENotFound'}(
+            throw Glitch::ENotFound(
                 'Payment gateway '.$name.' could not be found'
             );
         }

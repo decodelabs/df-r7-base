@@ -10,8 +10,8 @@ use df\core;
 use df\arch;
 use df\link;
 
-abstract class RestApi extends Base implements IRestApiNode {
-
+abstract class RestApi extends Base implements IRestApiNode
+{
     const DEFAULT_ACCESS = arch\IAccess::ALL;
     const OPTIMIZE = true;
     const CHECK_ACCESS = false;
@@ -19,25 +19,28 @@ abstract class RestApi extends Base implements IRestApiNode {
 
     protected $_httpRequest;
 
-    public function dispatch() {
+    public function dispatch()
+    {
         $this->_httpRequest = $this->runner->getHttpRequest();
         return parent::dispatch();
     }
 
-    public function getDispatchMethodName(): ?string {
+    public function getDispatchMethodName(): ?string
+    {
         return '_handleRequest';
     }
 
-    protected function _handleRequest() {
+    protected function _handleRequest()
+    {
         $this->authorizeRequest();
 
         $httpMethod = $this->_httpRequest->getMethod();
         $func = 'execute'.ucfirst(strtolower($httpMethod)).'As'.$this->request->getType();
 
-        if(!method_exists($this, $func)) {
+        if (!method_exists($this, $func)) {
             $func = 'execute'.ucfirst(strtolower($httpMethod));
 
-            if(!method_exists($this, $func)) {
+            if (!method_exists($this, $func)) {
                 throw core\Error::EApi([
                     'message' => 'Node does not support '.$httpMethod.' method',
                     'http' => 400
@@ -50,12 +53,13 @@ abstract class RestApi extends Base implements IRestApiNode {
         return $this->_handleResponse($response);
     }
 
-    protected function _handleResponse($response) {
-        if($response instanceof link\http\IResponse) {
+    protected function _handleResponse($response)
+    {
+        if ($response instanceof link\http\IResponse) {
             return $response;
         }
 
-        if(!$response instanceof IRestApiResult) {
+        if (!$response instanceof IRestApiResult) {
             $response = new arch\node\restApi\Result($response);
         }
 
@@ -63,12 +67,13 @@ abstract class RestApi extends Base implements IRestApiNode {
         return $response;
     }
 
-    public function handleException(\Throwable $e) {
+    public function handleException(\Throwable $e)
+    {
         core\log\Manager::getInstance()->logException($e);
 
         $data = null;
 
-        if($e instanceof core\IError) {
+        if ($e instanceof core\IError || $e instanceof \EGlitch) {
             $data = $e->getData();
         }
 
@@ -78,11 +83,13 @@ abstract class RestApi extends Base implements IRestApiNode {
         return $this->_handleResponse($result);
     }
 
-    public function newResult($value=null, core\validate\IHandler $validator=null) {
+    public function newResult($value=null, core\validate\IHandler $validator=null)
+    {
         return new arch\node\restApi\Result($value, $validator);
     }
 
-    public function authorizeRequest() {
+    public function authorizeRequest()
+    {
         return true;
     }
 }

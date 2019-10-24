@@ -73,7 +73,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
     {
         if ($primary === null) {
             $name = $query->getSource()->getDisplayName();
-            throw core\Error::{'opal/record/ENotFound'}([
+            throw Glitch::{'df/opal/record/ENotFound'}([
                 'message' => 'Item not found - '.$name.'#NULL',
                 'http' => 404
             ]);
@@ -100,7 +100,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
             }
 
             $name = $query->getSource()->getDisplayName();
-            throw core\Error::{'opal/record/ENotFound'}([
+            throw Glitch::{'df/opal/record/ENotFound'}([
                 'message' => 'Item not found - '.$name.'#'.$primary,
                 'http' => 404
             ]);
@@ -136,7 +136,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
 
         if ($output === null) {
             $name = $query->getSource()->getDisplayName();
-            throw core\Error::{'opal/record/ENotFound'}([
+            throw Glitch::{'df/opal/record/ENotFound'}([
                 'message' => 'Item not found - '.$name,
                 'http' => 404
             ]);
@@ -163,7 +163,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
             $unit = $this->fetchEntity($unit);
 
             if (!$unit instanceof axis\IUnit) {
-                throw new axis\RuntimeException('Invalid unit passed for procedure');
+                throw Glitch::{'df/axis/ERuntime'}('Invalid unit passed for procedure');
             }
         }
 
@@ -207,7 +207,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         $adapter = $source->getAdapter();
 
         if (!$this->context->getUserManager()->canAccess($adapter, $action)) {
-            throw core\Error::{'opal/record/EUnauthorized'}([
+            throw Glitch::{'df/opal/record/EUnauthorized'}([
                 'message' => 'Cannot '.$actionName.' '.$source->getDisplayName().' items',
                 'http' => 401
             ]);
@@ -335,14 +335,14 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint
         }
 
         if (!$output = $this->fetchEntity($id)) {
-            throw core\Error::{'opal/record/ENotFound'}([
+            throw Glitch::{'df/opal/record/ENotFound'}([
                 'message' => 'Entity not found - '.$id,
                 'http' => 404
             ]);
         }
 
         if (!$this->context->getUserManager()->canAccess($output, $action)) {
-            throw core\Error::{'opal/record/EUnauthorized'}([
+            throw Glitch::{'df/opal/record/EUnauthorized'}([
                 'message' => 'Cannot '.$actionName.' entity '.$id,
                 'http' => 401
             ]);

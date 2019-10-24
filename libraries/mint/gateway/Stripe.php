@@ -11,6 +11,7 @@ use df\mint;
 use df\spur;
 
 use Stripe as StripePHP;
+use DecodeLabs\Glitch;
 
 class Stripe extends Base implements
     mint\ICaptureProviderGateway,
@@ -43,7 +44,7 @@ class Stripe extends Base implements
         }
 
         if (!$key) {
-            throw core\Error::{'ESetup'}(
+            throw Glitch::ESetup(
                 'Stripe API key not set in config'
             );
         }
@@ -60,7 +61,7 @@ class Stripe extends Base implements
         }
 
         if (!$key) {
-            throw core\Error::{'ESetup'}(
+            throw Glitch::ESetup(
                 'Stripe API key not set in config'
             );
         }
@@ -248,7 +249,7 @@ class Stripe extends Base implements
             ]);
 
             if ($customer['deleted']) {
-                throw core\Error::{'EApi,ECustomer,ENotFound'}([
+                throw Glitch::{'EApi,ECustomer,ENotFound'}([
                     'message' => 'Customer has been deleted',
                     'data' => $customer
                 ]);
@@ -280,7 +281,7 @@ class Stripe extends Base implements
     public function updateCustomer(mint\ICustomer $customer): mint\ICustomer
     {
         if ($customer->getId() === null) {
-            throw core\Error::EArgument([
+            throw Glitch::EInvalidArgument([
                 'message' => 'Customer Id not set',
                 'data' => $customer
             ]);
@@ -455,7 +456,7 @@ class Stripe extends Base implements
     public function getSubscriptionsFor(mint\ICustomer $customer): array
     {
         if ($customer->getId() === null) {
-            throw core\Error::EArgument([
+            throw Glitch::EInvalidArgument([
                 'message' => 'Customer Id not set',
                 'data' => $customer
             ]);
@@ -707,7 +708,7 @@ class Stripe extends Base implements
                 $types[] = 'ERateLimit';
             }
 
-            throw core\Error::{implode(',', array_unique($types))}([
+            throw Glitch::{implode(',', array_unique($types))}([
                 'message' => $e->getMessage(),
                 'previous' => $e,
                 'data' => $data
