@@ -69,33 +69,38 @@ class Unit extends axis\unit\Table
 
         if (preg_match('/^class@anonymous/', $type)) {
             $reflection = new \ReflectionClass($e);
+            $type = $names = [];
 
-            if ($parent = $reflection->getParentClass()) {
-                $type = [];
+            foreach ($reflection->getInterfaces() as $name => $interface) {
+                $parts = explode('\\', $name);
+                $topName = array_pop($parts);
 
-                foreach ($reflection->getInterfaces() as $name => $interface) {
-                    $parts = explode('\\', $name);
-                    $topName = array_pop($parts);
-
-                    if (!preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName) && ($topName !== 'IError' || $name === 'df\\core\\IError')) {
-                        continue;
-                    }
-
-                    if (implode('\\', $parts) == 'df\\core') {
-                        array_unshift($type, $topName);
-                    } else {
-                        $type[] = $name;
-                    }
+                if (!preg_match('/^E[A-Z][a-zA-Z0-9_]+$/', $topName) && ($topName !== 'IError' || $name === 'df\\core\\IError')) {
+                    continue;
                 }
 
-                array_unshift($type, $parent->getName());
-                $type = implode(' + ', $type);
-                $normal = true;
+                $count = count($parts);
+
+                if (!isset($names[$topName]) || $count > $names[$topName]) {
+                    $type[$topName] = $name;
+                }
             }
+
+            if ($parent = $reflection->getParentClass()) {
+                array_unshift($type, $parent->getName());
+            }
+
+
+            $type = implode(' + ', $type);
+            $normal = true;
         }
 
         if (!$normal) {
             $type = core\lang\Util::normalizeClassName($type);
+        }
+
+        if (strlen($type) > 255) {
+            $type = substr($type, 0, 252).'...';
         }
 
         return $this->logError(
