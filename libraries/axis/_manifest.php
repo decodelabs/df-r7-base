@@ -310,7 +310,7 @@ trait TAdapterBasedStorageUnit
         $unitType = $this->getUnitType();
 
         if (empty($adapterId)) {
-            throw new axis\RuntimeException(
+            throw Glitch::ERuntime(
                 'No adapter has been configured for '.ucfirst($this->getUnitType()).' unit type'
             );
         }
@@ -318,7 +318,7 @@ trait TAdapterBasedStorageUnit
         $class = 'df\\axis\\unit\\'.lcfirst($unitType).'\\adapter\\'.$adapterId;
 
         if (!class_exists($class)) {
-            throw new axis\RuntimeException(
+            throw Glitch::ERuntime(
                 ucfirst($this->getUnitType()).' unit adapter '.$adapterId.' could not be found'
             );
         }
@@ -387,7 +387,7 @@ trait TSchemaBasedStorageUnit
                 }
 
                 if (!$this->_recordNameField) {
-                    throw new RuntimeException(
+                    throw Glitch::ERuntime(
                         'Unable to work out a suitable name field for '.$this->getUnitId()
                     );
                 }

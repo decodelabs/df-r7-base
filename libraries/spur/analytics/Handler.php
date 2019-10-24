@@ -12,6 +12,8 @@ use df\aura;
 use df\user;
 use df\mint;
 
+use DecodeLabs\Glitch;
+
 class Handler implements IHandler
 {
     const AVAILABLE_USER_ATTRIBUTES = [
@@ -265,7 +267,7 @@ class Handler implements IHandler
     {
         if (!$transaction instanceof IECommerceTransaction) {
             if (!$amount) {
-                throw new InvalidArgumentException('ECommerce transaction amount cannot be empty');
+                throw Glitch::EInvalidArgument('ECommerce transaction amount cannot be empty');
             }
 
             $transaction = new ECommerceTransaction(

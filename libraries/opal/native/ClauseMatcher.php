@@ -74,7 +74,7 @@ class ClauseMatcher implements IClauseMatcher
                 $source = $output->compare->getSource();
 
                 if (null === ($targetField = $source->getFirstOutputDataField())) {
-                    throw new opal\query\ValueException(
+                    throw Glitch::EUnexpectedValue(
                         'Clause subquery does not have a distinct return field'
                     );
                 }
@@ -135,13 +135,13 @@ class ClauseMatcher implements IClauseMatcher
 
                     case opal\query\clause\Clause::OP_BETWEEN:
                     case opal\query\clause\Clause::OP_NOT_BETWEEN:
-                        throw new opal\query\OperatorException(
+                        throw Glitch::{'df/opal/query/EOperator'}(
                             'Operator '.$operator.' is not valid for clause subqueries'
                         );
 
 
                     default:
-                        throw new opal\query\OperatorException(
+                        throw Glitch::{'df/opal/query/EOperator'}(
                             'Operator '.$operator.' is not recognized'
                         );
                 }
@@ -304,7 +304,7 @@ class ClauseMatcher implements IClauseMatcher
 
 
             default:
-                throw new opal\query\OperatorException(
+                throw Glitch::{'df/opal/query/EOperator'}(
                     'Operator '.$operator.' is not recognized'
                 );
         }

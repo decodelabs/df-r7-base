@@ -298,7 +298,7 @@ class ArrayManipulator implements IArrayManipulator
                 }
 
                 if (!is_array($sourceData)) {
-                    throw new UnexpectedValueException(
+                    throw Glitch::EUnexpectedValue(
                         'Invalid source data for remote join'
                     );
                 }
@@ -791,7 +791,7 @@ class ArrayManipulator implements IArrayManipulator
             $attachment = $field->rewritePopulateQueryToAttachment($populate);
 
             if (!$attachment instanceof opal\query\IAttachQuery) {
-                throw new opal\query\InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Cannot populate '.$populate->getFieldName().' - integral schema field cannot convert to attachment'
                 );
             }

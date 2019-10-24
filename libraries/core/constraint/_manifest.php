@@ -8,24 +8,19 @@ namespace df\core\constraint;
 use df;
 use df\core;
 
-// Exceptions
-interface IException {}
-
-
-// Interfaces
-
-
 ## Required
-interface IRequirable {
+interface IRequirable
+{
     public function isRequired(bool $flag=null);
 }
 
-trait TRequirable {
-
+trait TRequirable
+{
     protected $_isRequired = false;
 
-    public function isRequired(bool $flag=null) {
-        if($flag !== null) {
+    public function isRequired(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isRequired = $flag;
             return $this;
         }
@@ -37,16 +32,18 @@ trait TRequirable {
 
 
 ## Disabled
-interface IDisableable {
+interface IDisableable
+{
     public function isDisabled(bool $flag=null);
 }
 
-trait TDisableable {
-
+trait TDisableable
+{
     protected $_isDisabled = false;
 
-    public function isDisabled(bool $flag=null) {
-        if($flag !== null) {
+    public function isDisabled(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isDisabled = $flag;
             return $this;
         }
@@ -57,16 +54,18 @@ trait TDisableable {
 
 
 ## Optional
-interface IOptional {
+interface IOptional
+{
     public function isOptional(bool $flag=null);
 }
 
-trait TOptional {
-
+trait TOptional
+{
     protected $_isOptional = false;
 
-    public function isOptional(bool $flag=null) {
-        if($flag !== null) {
+    public function isOptional(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isOptional = $flag;
             return $this;
         }
@@ -78,16 +77,18 @@ trait TOptional {
 
 
 ## Nullable
-interface INullable {
+interface INullable
+{
     public function isNullable(bool $flag=null);
 }
 
-trait TNullable {
-
+trait TNullable
+{
     protected $_isNullable = false;
 
-    public function isNullable(bool $flag=null) {
-        if($flag !== null) {
+    public function isNullable(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isNullable = $flag;
             return $this;
         }
@@ -99,16 +100,18 @@ trait TNullable {
 
 
 ## Read only
-interface IReadOnly {
+interface IReadOnly
+{
     public function isReadOnly(bool $flag=null);
 }
 
-trait TReadOnly {
-
+trait TReadOnly
+{
     protected $_isReadOnly = false;
 
-    public function isReadOnly(bool $flag=null) {
-        if($flag !== null) {
+    public function isReadOnly(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isReadOnly = $flag;
             return $this;
         }

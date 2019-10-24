@@ -11,6 +11,7 @@ use df\flow;
 use df\halo;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
 
 class Config extends core\Config
@@ -41,7 +42,7 @@ class Config extends core\Config
     public function setDefaultTransport($name)
     {
         if (!flow\mail\transport\Base::isValidTransport($name)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Transport '.$name.' is not available'
             );
         }
@@ -72,7 +73,7 @@ class Config extends core\Config
         $address = Address::factory($address, $name);
 
         if (!$address->isValid()) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Email address '.(string)$address.' is invalid'
             );
         }
@@ -97,7 +98,7 @@ class Config extends core\Config
         $address = Address::factory($address);
 
         if (!$address->isValid()) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Return path '.(string)$address.' is invalid'
             );
         }

@@ -9,147 +9,163 @@ use df;
 use df\core;
 use df\opal;
 
-class WhereList extends ListBase implements opal\query\IWhereClauseList {
-    
+use DecodeLabs\Glitch;
+
+class WhereList extends ListBase implements opal\query\IWhereClauseList
+{
     protected $_isPrerequisite = false;
-    
-    public function __construct(opal\query\IClauseFactory $parent, $isOr=false, $isPrerequisite=false) {
-        if($isPrerequisite) {
+
+    public function __construct(opal\query\IClauseFactory $parent, $isOr=false, $isPrerequisite=false)
+    {
+        if ($isPrerequisite) {
             $isOr = false;
-            
-            if(!$parent instanceof opal\query\IPrerequisiteClauseFactory) {
-                throw new opal\query\InvalidArgumentException(
+
+            if (!$parent instanceof opal\query\IPrerequisiteClauseFactory) {
+                throw Glitch::EInvalidArgument(
                     'Parent query is not capable of handling prerequisites'
                 );
             }
         }
-        
-        
+
+
         parent::__construct($parent, $isOr);
         $this->_isPrerequisite = $isPrerequisite;
     }
-    
-    public function where($field, $operator, $value) {
+
+    public function where($field, $operator, $value)
+    {
         $this->addWhereClause(
             Clause::factory(
                 $this,
-                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $field), 
-                $operator, 
-                $value, 
+                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $field),
+                $operator,
+                $value,
                 false
             )
         );
-        
-        return $this;
-    }
-    
-    public function orWhere($field, $operator, $value) {
-        $this->addWhereClause(
-            Clause::factory(
-                $this,
-                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $field), 
-                $operator, 
-                $value, 
-                true
-            )
-        );
-        
+
         return $this;
     }
 
-    public function whereField($leftField, $operator, $rightField) {
+    public function orWhere($field, $operator, $value)
+    {
         $this->addWhereClause(
             Clause::factory(
                 $this,
-                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $leftField), 
-                $operator, 
-                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $rightField), 
+                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $field),
+                $operator,
+                $value,
+                true
+            )
+        );
+
+        return $this;
+    }
+
+    public function whereField($leftField, $operator, $rightField)
+    {
+        $this->addWhereClause(
+            Clause::factory(
+                $this,
+                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $leftField),
+                $operator,
+                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $rightField),
                 false
             )
         );
-        
+
         return $this;
     }
-    
-    public function orWhereField($leftField, $operator, $rightField) {
+
+    public function orWhereField($leftField, $operator, $rightField)
+    {
         $this->addWhereClause(
             Clause::factory(
                 $this,
-                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $leftField), 
-                $operator, 
-                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $rightField), 
+                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $leftField),
+                $operator,
+                $this->getSourceManager()->extrapolateIntrinsicField($this->getSource(), $rightField),
                 true
             )
         );
-        
+
         return $this;
     }
 
 
 
-    public function whereCorrelation($field, $operator, $keyField) {
+    public function whereCorrelation($field, $operator, $keyField)
+    {
         $sourceManager = $this->getSourceManager();
 
         $initiator = opal\query\Initiator::factory()
             ->setTransaction($sourceManager->getTransaction())
             ->beginCorrelation($this, $keyField);
 
-        $initiator->setApplicator(function($correlation) use ($field, $operator) {
+        $initiator->setApplicator(function ($correlation) use ($field, $operator) {
             $this->where($field, $operator, $correlation);
         });
 
         return $initiator;
     }
 
-    public function orWhereCorrelation($field, $operator, $keyField) {
+    public function orWhereCorrelation($field, $operator, $keyField)
+    {
         $sourceManager = $this->getSourceManager();
 
         $initiator = opal\query\Initiator::factory()
             ->setTransaction($sourceManager->getTransaction())
             ->beginCorrelation($this, $keyField);
 
-        $initiator->setApplicator(function($correlation) use ($field, $operator) {
+        $initiator->setApplicator(function ($correlation) use ($field, $operator) {
             $this->orWhere($field, $operator, $correlation);
         });
 
         return $initiator;
     }
 
-    public function beginWhereClause() {
+    public function beginWhereClause()
+    {
         return new WhereList($this);
     }
-    
-    public function beginOrWhereClause() {
+
+    public function beginOrWhereClause()
+    {
         return new WhereList($this, true);
     }
-    
-    
-    public function addWhereClause(opal\query\IWhereClauseProvider $clause=null) {
+
+
+    public function addWhereClause(opal\query\IWhereClauseProvider $clause=null)
+    {
         $this->_addClause($clause);
         return $this;
     }
-    
-    public function getWhereClauseList() {
+
+    public function getWhereClauseList()
+    {
         return $this;
     }
-    
-    public function hasWhereClauses() {
+
+    public function hasWhereClauses()
+    {
         return !$this->isEmpty();
     }
-    
-    public function clearWhereClauses() {
+
+    public function clearWhereClauses()
+    {
         return $this->clear();
     }
-    
-    public function endClause() {
-        if(!empty($this->_clauses)) {
-            if($this->_isPrerequisite) {
+
+    public function endClause()
+    {
+        if (!empty($this->_clauses)) {
+            if ($this->_isPrerequisite) {
                 $this->_parent->addPrerequisite($this);
             } else {
                 $this->_parent->addWhereClause($this);
             }
         }
-        
+
         return $this->_parent;
     }
 }

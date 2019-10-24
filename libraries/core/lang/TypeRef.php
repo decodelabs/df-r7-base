@@ -8,6 +8,7 @@ namespace df\core\lang;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -23,7 +24,7 @@ class TypeRef implements ITypeRef, \Serializable, Inspectable
             return call_user_func_array([__CLASS__, '__'.$method], $args);
         }
 
-        throw new BadMethodCallException(
+        throw Glitch::EBadMethodCall(
             'Method '.$method.' is not available on class '.__CLASS__
         );
     }
@@ -71,7 +72,7 @@ class TypeRef implements ITypeRef, \Serializable, Inspectable
         $class = self::_normalizeClassName($type);
 
         if (!class_exists($class)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Class '.$class.' could not be found'
             );
         }
@@ -96,13 +97,13 @@ class TypeRef implements ITypeRef, \Serializable, Inspectable
 
             if (class_exists($checkType)) {
                 if (!$this->_reflection->isSubclassOf($checkType)) {
-                    throw new RuntimeException(
+                    throw Glitch::ERuntime(
                         $this->_class.' does not extend '.$checkType
                     );
                 }
             } elseif (interface_exists($checkType)) {
                 if (!$this->_reflection->implementsInterface($checkType)) {
-                    throw new RuntimeException(
+                    throw Glitch::ERuntime(
                         $this->_class.' does not implement '.$checkType
                     );
                 }
@@ -125,7 +126,7 @@ class TypeRef implements ITypeRef, \Serializable, Inspectable
     public function __call($method, array $args)
     {
         if (!$this->_reflection->hasMethod($method)) {
-            throw new BadMethodCallException(
+            throw Glitch::EBadMethodCall(
                 'Method '.$method.' is not available on class '.$this->_class
             );
         }
@@ -133,7 +134,7 @@ class TypeRef implements ITypeRef, \Serializable, Inspectable
         $method = $this->_reflection->getMethod($method);
 
         if (!$method->isStatic() || !$method->isPublic()) {
-            throw new BadMethodCallException(
+            throw Glitch::EBadMethodCall(
                 'Method '.$method.' is not accessible on class '.$this->_class
             );
         }

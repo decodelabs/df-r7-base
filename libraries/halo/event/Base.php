@@ -10,6 +10,7 @@ use df\core;
 use df\halo;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
 
 abstract class Base implements IDispatcher
@@ -890,7 +891,7 @@ abstract class Base implements IDispatcher
         }
 
         if (!isset($this->_signalBindings[$id])) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Signal binding \''.$id.'\' could not be found'
             );
         }
@@ -1023,7 +1024,7 @@ abstract class Base implements IDispatcher
         }
 
         if (!isset($this->_timerBindings[$id])) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Timer binding \''.$id.'\' could not be found'
             );
         }

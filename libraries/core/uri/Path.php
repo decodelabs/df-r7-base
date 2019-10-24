@@ -8,6 +8,7 @@ namespace df\core\uri;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -36,7 +37,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, Inspectable
         foreach ($queue as $key => $part) {
             if ($part == '..') {
                 if (empty($path->_collection)) {
-                    throw new RuntimeException('Invalid local path');
+                    throw Glitch::ERuntime('Invalid local path');
                 }
 
                 array_pop($path->_collection);

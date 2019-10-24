@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -24,7 +25,7 @@ class Memory implements link\http\ICookieJar, Inspectable
                 if (is_string($cookie)) {
                     $cookie = link\http\Cookie::fromString($cookie);
                 } elseif (!$cookie instanceof link\http\ICookie) {
-                    throw new link\http\InvalidArgumentException(
+                    throw Glitch::EInvalidArgument(
                         'Invalid cookie'
                     );
                 }

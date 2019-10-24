@@ -10,6 +10,8 @@ use df\core;
 use df\halo;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 // Exceptions
 interface IException
 {
@@ -184,7 +186,7 @@ trait TDispatcherProvider
     public function setEventDispatcher(halo\event\IDispatcher $dispatcher)
     {
         if ($this->isRunning()) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'You cannot change the dispatcher once the peer has started'
             );
         }

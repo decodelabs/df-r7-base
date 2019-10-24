@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
 class File implements link\http\IUploadFile
@@ -131,7 +132,7 @@ class File implements link\http\IUploadFile
     public function getPointer()
     {
         if (!$this->_isSuccess) {
-            throw new link\http\RuntimeException(
+            throw Glitch::ERuntime(
                 'No valid file path has been determined yet'
             );
         }

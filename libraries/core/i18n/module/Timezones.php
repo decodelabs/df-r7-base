@@ -7,51 +7,58 @@ namespace df\core\i18n\module;
 
 use df\core;
 
-class Timezones extends Base implements ITimezonesModule {
+use DecodeLabs\Glitch;
 
-    public function getName($id) {
+class Timezones extends Base implements ITimezonesModule
+{
+    public function getName($id)
+    {
         return $id;
     }
 
-    public function forCountry($country=null) {
-        if($country === null) {
+    public function forCountry($country=null)
+    {
+        if ($country === null) {
             $country = $this->_manager->getLocale()->getCountry();
         }
 
         $country = strtoupper($country);
 
-        if(isset(self::COUNTRIES[$country])) {
+        if (isset(self::COUNTRIES[$country])) {
             return self::COUNTRIES[$country];
         } else {
             return [];
         }
     }
 
-    public function suggestForCountry($country=null) {
+    public function suggestForCountry($country=null)
+    {
         $list = $this->forCountry($country);
 
-        if(!empty($list)) {
+        if (!empty($list)) {
             return array_shift($list);
         }
 
         return 'UTC';
     }
 
-    public function forContinent($continent) {
+    public function forContinent($continent)
+    {
         self::_createContinentList();
         $continent = ucfirst(strtolower($continent));
 
-        if(isset(self::$_continents[$continent])) {
+        if (isset(self::$_continents[$continent])) {
             return self::$_continents[$continent];
         } else {
             return [];
         }
     }
 
-    private static function _createContinentList() {
-        if(!count(self::$_continents)) {
-            foreach(self::COUNTRIES as $country) {
-                foreach($country as $tz) {
+    private static function _createContinentList()
+    {
+        if (!count(self::$_continents)) {
+            foreach (self::COUNTRIES as $country) {
+                foreach ($country as $tz) {
                     $a = explode('/', $tz, 2);
                     $cn = current($a);
                     self::$_continents[$cn][] = $tz;
@@ -64,50 +71,56 @@ class Timezones extends Base implements ITimezonesModule {
         }
     }
 
-    public function getList(array $ids=null) {
+    public function getList(array $ids=null)
+    {
         $output = [];
 
-        foreach($this->getContinentList() as $key => $val) {
+        foreach ($this->getContinentList() as $key => $val) {
             $output = array_merge($output, $val);
         }
 
-        if($ids !== null) {
+        if ($ids !== null) {
             $output = array_intersect_key($output, array_flip(array_values($ids)));
         }
 
         return $output;
     }
 
-    public function getCodeList() {
+    public function getCodeList()
+    {
         return array_keys($this->getList());
     }
 
-    public function getContinentList() {
+    public function getContinentList()
+    {
         self::_createContinentList();
         return self::$_continents;
     }
 
-    public function getCountryList() {
+    public function getCountryList()
+    {
         return self::COUNTRIES;
     }
 
-    public function getOffset($timezone) {
-        if(is_string($timezone)) {
+    public function getOffset($timezone)
+    {
+        if (is_string($timezone)) {
             $timezone = new \DateTimeZone($timezone);
         }
 
-        if(!$timezone instanceof \DateTimeZone) {
-            throw new core\i18n\InvalidArgumentException('Invalid timezone specified!');
+        if (!$timezone instanceof \DateTimeZone) {
+            throw Glitch::EInvalidArgument('Invalid timezone specified!');
         }
 
         $date = new \DateTime('now', $timezone);
         return $timezone->getOffset($date);
     }
 
-    public function isValidId($id) {
+    public function isValidId($id)
+    {
         try {
             return (bool)\timezone_open($id);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return false;
         }
     }

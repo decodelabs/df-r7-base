@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -22,7 +23,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
     public static function fromEntityId($id)
     {
         if (substr($id, 0, 7) != 'keySet?') {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Invalid entity id: '.$id
             );
         }
@@ -142,7 +143,7 @@ class PrimaryKeySet implements IPrimaryKeySet, Inspectable
             if ($values === null || count($this->_keys) == 1) {
                 $values = array_fill_keys(array_keys($this->_keys), $values);
             } else {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Primary key set values do not map to keys'
                 );
             }

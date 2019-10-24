@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
 
@@ -25,7 +26,7 @@ class Curl implements link\http\IAsyncTransport
             $handle = new Curl_Handle($request, $client, $promise);
 
             if (!curl_exec($handle->resource)) {
-                throw new link\http\RuntimeException(
+                throw Glitch::ERuntime(
                     curl_error($handle->resource),
                     curl_errno($handle->resource)
                 );

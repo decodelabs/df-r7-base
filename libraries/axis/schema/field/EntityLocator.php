@@ -11,13 +11,17 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 class EntityLocator extends Base implements
     opal\schema\IMultiPrimitiveField,
-    opal\schema\IQueryClauseRewriterField {
+    opal\schema\IQueryClauseRewriterField
+{
 
 // Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
-        if(!isset($row[$key.'_domain'])) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    {
+        if (!isset($row[$key.'_domain'])) {
             return null;
         }
 
@@ -25,10 +29,11 @@ class EntityLocator extends Base implements
         return mesh\entity\Locator::domainFactory($row[$key.'_domain'], $id);
     }
 
-    public function deflateValue($value) {
+    public function deflateValue($value)
+    {
         $value = $this->sanitizeValue($value);
 
-        if(empty($value)) {
+        if (empty($value)) {
             return [
                 $this->_name.'_domain' => null,
                 $this->_name.'_id' => null
@@ -41,14 +46,15 @@ class EntityLocator extends Base implements
         ];
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if(empty($value)) {
-            if($this->isNullable()) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    {
+        if (empty($value)) {
+            if ($this->isNullable()) {
                 return null;
-            } else if(!empty($this->_defaultValue)) {
+            } elseif (!empty($this->_defaultValue)) {
                 $value = $this->_defaultValue;
             } else {
-                throw new axis\schema\UnexpectedValueException(
+                throw Glitch::EUnexpectedValue(
                     'This field cannot be null'
                 );
             }
@@ -57,22 +63,25 @@ class EntityLocator extends Base implements
         return mesh\entity\Locator::factory($value);
     }
 
-    public function compareValues($value1, $value2) {
+    public function compareValues($value1, $value2)
+    {
         return (string)$value1 === (string)$value2;
     }
 
-    public function getSearchFieldType() {
+    public function getSearchFieldType()
+    {
         return 'string';
     }
 
 
 
-// Rewriters
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
-        switch($operator) {
+    // Rewriters
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    {
+        switch ($operator) {
             case 'between':
             case 'not between':
-                throw new axis\LogicException(
+                throw Glitch::ELogic(
                     'EntityLocator fields cannot be filtered with "'.$operator.'" operators'
                 );
 
@@ -89,10 +98,10 @@ class EntityLocator extends Base implements
                 break;
         }
 
-        if(is_array($value)) {
+        if (is_array($value)) {
             $output = new opal\query\clause\WhereList($parent, $isOr);
 
-            foreach($value as $sub) {
+            foreach ($value as $sub) {
                 $output->_addClause($this->_createSubClause($output, $field, $sub, $subOperator, true));
             }
 
@@ -102,31 +111,32 @@ class EntityLocator extends Base implements
         }
     }
 
-    protected function _createSubClause(opal\query\IClauseFactory $parent, opal\query\IField $field, $value, $operator, $isOr=false) {
+    protected function _createSubClause(opal\query\IClauseFactory $parent, opal\query\IField $field, $value, $operator, $isOr=false)
+    {
         $output = new opal\query\clause\WhereList($parent, $isOr);
         $sourceAlias = $field->getSource()->getAlias();
 
-        if($value instanceof opal\query\IField) {
+        if ($value instanceof opal\query\IField) {
             $output->whereField($sourceAlias.'.'.$this->_name.'_id', '=', $value->getName());
             return $output;
         }
 
         $locator = $this->sanitizeValue($value);
 
-        if($locator === null) {
+        if ($locator === null) {
             return $output
                 ->where($sourceAlias.'.'.$this->_name.'_id', '=', $locator)
                 ->where($sourceAlias.'.'.$this->_name.'_domain', '=', $locator);
         }
 
-        switch($operator) {
+        switch ($operator) {
             case 'begins':
             case 'not begins':
                 return $output->where($sourceAlias.'.'.$this->_name.'_domain', $operator, $locator->getDomain());
 
 
             default:
-                if(opal\query\clause\Clause::isNegatedOperator($operator)) {
+                if (opal\query\clause\Clause::isNegatedOperator($operator)) {
                     $idOperator = '!=';
                 } else {
                     $idOperator = '=';
@@ -139,27 +149,31 @@ class EntityLocator extends Base implements
     }
 
 
-// Primitive
-    public function getPrimitiveFieldNames() {
+    // Primitive
+    public function getPrimitiveFieldNames()
+    {
         return [
             $this->_name.'_domain',
             $this->_name.'_id'
         ];
     }
 
-    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
         return new opal\schema\Primitive_MultiField($this, [
             $this->_name.'_domain' => (new opal\schema\Primitive_Varchar($this, 255)),
             $this->_name.'_id' => (new opal\schema\Primitive_Varchar($this, 64))
         ]);
     }
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         $this->_setBaseStorageArray($data);
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return $this->_getBaseStorageArray();
     }
 }

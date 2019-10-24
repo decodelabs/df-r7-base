@@ -10,44 +10,50 @@ use df\core;
 use df\spur;
 use df\link;
 
-class Mediator implements IMediator {
+use DecodeLabs\Glitch;
 
+class Mediator implements IMediator
+{
     use spur\THttpMediator;
 
     const ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify';
 
     protected $_secret;
 
-    public function __construct(string $secrect) {
+    public function __construct(string $secrect)
+    {
         $this->setSecret($secrect);
     }
 
-    public function setSecret(string $secret) {
+    public function setSecret(string $secret)
+    {
         $this->_secret = $secret;
         return $this;
     }
 
-    public function getSecret() {
+    public function getSecret()
+    {
         return $this->_secret;
     }
 
-    public function verify(string $key, $ip=null): IResult {
+    public function verify(string $key, $ip=null): IResult
+    {
         $response = $this->requestJson('post', self::ENDPOINT, [
             'secret' => $this->_secret,
             'response' => $key,
             'remoteIp' => $ip
         ]);
 
-        if(!$response['success']) {
-            foreach($response->{'error-codes'} as $node) {
-                switch((string)$node) {
+        if (!$response['success']) {
+            foreach ($response->{'error-codes'} as $node) {
+                switch ((string)$node) {
                     case 'invalid-input-response':
                     case 'missing-input-response':
-                        throw new RuntimeException('Invalid input response: '.$key);
+                        throw Glitch::ERuntime('Invalid input response: '.$key);
 
                     case 'invalid-input-secret':
                     case 'missing-input-secret':
-                        throw new RuntimeException('Invalid secret: '.$this->_secret);
+                        throw Glitch::ERuntime('Invalid secret: '.$this->_secret);
                 }
             }
         }

@@ -52,7 +52,7 @@ class Expression implements IExpression, Inspectable
     public function op($operator)
     {
         if ($this->_isExpectingValue) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Found operator when expecting reference or value'
             );
         }
@@ -69,7 +69,7 @@ class Expression implements IExpression, Inspectable
                 break;
 
             default:
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Unknown operator: '.$operator
                 );
         }
@@ -107,7 +107,7 @@ class Expression implements IExpression, Inspectable
             }
 
             if (!$field = $sourceManager->extrapolateIntrinsicField($source, $element)) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Cound not extract reference or value from: '.$element
                 );
             }
@@ -123,7 +123,7 @@ class Expression implements IExpression, Inspectable
             $inner = $element->dereference();
 
             if (count($inner) > 1) {
-                throw new LogicException(
+                throw Glitch::ELogic(
                     'Cannot use multi-primitive virtual fields in expressions... yet :)'
                 );
             }
@@ -131,7 +131,7 @@ class Expression implements IExpression, Inspectable
             return array_shift($inner);
         } elseif ($element instanceof IExpression) {
             if ($element->isExpectingValue()) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Cannot add sub expression - it is still expecting a reference or value'
                 );
             }
@@ -139,7 +139,7 @@ class Expression implements IExpression, Inspectable
             return $element;
         }
 
-        throw new InvalidArgumentException(
+        throw Glitch::EInvalidArgument(
             'Count not extract reference or value from element'
         );
     }
@@ -162,13 +162,13 @@ class Expression implements IExpression, Inspectable
     public function addExpression(IExpression $expression)
     {
         if (!$this->_isExpectingValue) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Cannot add sub expression - expecting an operator'
             );
         }
 
         if ($expression->isExpectingValue()) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Cannot add sub expression - it is still expecting a reference or value'
             );
         }
@@ -181,7 +181,7 @@ class Expression implements IExpression, Inspectable
     public function endExpression()
     {
         if ($this->_isExpectingValue) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Cannot end expression - expecting reference or value'
             );
         }

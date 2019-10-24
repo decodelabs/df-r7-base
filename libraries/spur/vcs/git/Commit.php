@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\spur;
 
+use DecodeLabs\Glitch\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -53,7 +54,7 @@ class Commit implements ICommit, Inspectable
         $parts = explode(' ', $line, 2);
 
         if ($key != array_shift($parts)) {
-            throw new UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Commit description key \''.$key.'\' was not found on line: '.$line
             );
         }
@@ -205,7 +206,7 @@ class Commit implements ICommit, Inspectable
         $commitId = self::_extractLineValue('commit', array_shift($result));
 
         if (!$commitId) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Could not find commit '.$this->_id.' in repository'
             );
         }

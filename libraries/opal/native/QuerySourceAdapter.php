@@ -10,6 +10,8 @@ use df\core;
 use df\opal;
 use df\user;
 
+use DecodeLabs\Glitch;
+
 class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query\IEntryPoint
 {
     use user\TAccessLock;
@@ -147,14 +149,14 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
 
     public function executeUnionQuery(opal\query\IUnionQuery $query)
     {
-        throw new opal\query\LogicException(
+        throw Glitch::ELogic(
             'Native data adapter does not support union queries'
         );
     }
 
     public function countUnionQuery(opal\query\IUnionQuery $query)
     {
-        throw new opal\query\LogicException(
+        throw Glitch::ELogic(
             'Native data adapter does not support union queries'
         );
     }
@@ -211,7 +213,7 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
             }
 
             if (!is_array($temp)) {
-                throw new opal\query\UnexpectedValueException(
+                throw Glitch::EUnexpectedValue(
                     'Data source rows must be convertible to an array'
                 );
             }

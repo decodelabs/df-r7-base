@@ -65,7 +65,7 @@ class Base implements link\http\IRequest, Inspectable
         $protocol = strtok('/');
 
         if ($protocol !== 'HTTP') {
-            throw new link\http\UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Protocol '.$protocol.' is not valid HTTP'
             );
         }
@@ -263,7 +263,7 @@ class Base implements link\http\IRequest, Inspectable
                 break;
 
             default:
-                throw new link\http\UnexpectedValueException(
+                throw Glitch::EUnexpectedValue(
                     $method.' is not a valid request method'
                 );
         }
@@ -389,7 +389,7 @@ class Base implements link\http\IRequest, Inspectable
     public function setHeaders(core\collection\IHeaderMap $headers)
     {
         if (!$headers instanceof link\http\IRequestHeaderCollection) {
-            throw new link\http\InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Request headers must implement IRequestHeaderCollection'
             );
         }
@@ -435,7 +435,7 @@ class Base implements link\http\IRequest, Inspectable
     {
         if ($this->method !== 'post') {
             if ($post !== null) {
-                throw new link\http\UnexpectedValueException(
+                throw Glitch::EUnexpectedValue(
                     'Post data can only be set when request method is POST'
                 );
             }

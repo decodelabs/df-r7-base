@@ -140,7 +140,7 @@ abstract class Base implements IDaemon
     final public function run()
     {
         if ($this->_isRunning || $this->_isStopping || $this->_isStopped) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Daemon '.$this->getName().' has already been run'
             );
         }
@@ -171,7 +171,7 @@ abstract class Base implements IDaemon
         $isPrivileged = $this->process->isPrivileged();
 
         if (!$isPrivileged && static::REQUIRES_PRIVILEGED_PROCESS) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Daemon '.$this->getName().' must be running from a privileged process'
             );
         }

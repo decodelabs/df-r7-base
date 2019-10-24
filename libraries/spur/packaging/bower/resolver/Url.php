@@ -10,6 +10,8 @@ use df\core;
 use df\spur;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 class Url implements spur\packaging\bower\IResolver
 {
     protected $_httpClient;
@@ -45,7 +47,7 @@ class Url implements spur\packaging\bower\IResolver
         );
 
         if (!$response->isOk()) {
-            throw new spur\packaging\bower\RuntimeException(
+            throw Glitch::ERuntime(
                 'Unable to fetch file: '.$package->url
             );
         }

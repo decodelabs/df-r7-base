@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
 
@@ -92,7 +93,7 @@ class Builder implements IBuilder
                 }
             }
         } else {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'No data has been generated for CSV builder'
             );
         }
@@ -104,7 +105,7 @@ class Builder implements IBuilder
     public function setFields(array $fields)
     {
         if (empty($fields)) {
-            throw new RuntimeException('CSV file must have at least one field');
+            throw Glitch::ERuntime('CSV file must have at least one field');
         }
 
         $this->_fields = $fields;
@@ -179,7 +180,7 @@ class Builder implements IBuilder
     protected function _writeRow(array $row)
     {
         if (!$this->_receiver) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'No data receiver has been set for CSV builder'
             );
         }

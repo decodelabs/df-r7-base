@@ -9,26 +9,31 @@ use df;
 use df\core;
 use df\flex;
 
-class Delimited implements IDelimited {
+use DecodeLabs\Glitch;
+
+class Delimited implements IDelimited
+{
 
 // Explode generator
-    public static function splitLines($source, $trim=false) {
+    public static function splitLines($source, $trim=false)
+    {
         $source = str_replace(["\r\n", "\r"], "\n", $source);
 
-        if($trim) {
+        if ($trim) {
             $source = trim($source, "\n");
         }
 
         return self::split("\n", $source);
     }
 
-    public static function split($delimiter, $source) {
+    public static function split($delimiter, $source)
+    {
         $length = strlen($source);
 
-        while($length) {
+        while ($length) {
             $pos = strpos($source, $delimiter);
 
-            if($pos === false) {
+            if ($pos === false) {
                 yield $source;
                 return;
             }
@@ -40,25 +45,27 @@ class Delimited implements IDelimited {
     }
 
 
-// Parser
-    public static function parse($input, $delimiter=',', $quoteMap='"\'', $terminator=null) {
+    // Parser
+    public static function parse($input, $delimiter=',', $quoteMap='"\'', $terminator=null)
+    {
         $output = [];
 
-        foreach(self::iterate($input, $delimiter, $quoteMap, $terminator) as $row) {
+        foreach (self::iterate($input, $delimiter, $quoteMap, $terminator) as $row) {
             $output[] = $row;
         }
 
         return $output;
     }
 
-    public static function iterate($input, $delimiter=',', $quoteMap='"\'', $terminator=null) {
+    public static function iterate($input, $delimiter=',', $quoteMap='"\'', $terminator=null)
+    {
         $input = trim($input);
 
-        if(!strlen($input)) {
+        if (!strlen($input)) {
             return;
         }
 
-        if($terminator !== null) {
+        if ($terminator !== null) {
             $row = [];
             $input .= $terminator;
         } else {
@@ -70,23 +77,23 @@ class Delimited implements IDelimited {
         $cell = '';
         $quote = null;
 
-        for($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             $char = $input{$i};
 
-            switch($mode) {
+            switch ($mode) {
                 // post delimiter or start
                 case 0:
-                    if(ctype_space($char)) {
+                    if (ctype_space($char)) {
                         break;
-                    } else if($char == $delimiter) {
-                        if($terminator !== null) {
+                    } elseif ($char == $delimiter) {
+                        if ($terminator !== null) {
                             $row[] = $cell;
                         } else {
                             yield $cell;
                         }
 
                         $cell = '';
-                    } else if(strstr($quoteMap, $char)) {
+                    } elseif (strstr($quoteMap, $char)) {
                         $quote = $char;
                         $mode = 2;
                     } else {
@@ -98,15 +105,15 @@ class Delimited implements IDelimited {
 
                 // in cell
                 case 1:
-                    if($terminator !== null && $char == $terminator) {
+                    if ($terminator !== null && $char == $terminator) {
                         $row[] = $cell;
                         $cell = '';
                         yield $row;
                         $row = [];
                         $mode = 0;
                         break;
-                    } else if($char == $delimiter) {
-                        if($terminator !== null) {
+                    } elseif ($char == $delimiter) {
+                        if ($terminator !== null) {
                             $row[] = $cell;
                         } else {
                             yield $cell;
@@ -121,9 +128,9 @@ class Delimited implements IDelimited {
 
                 // in quote
                 case 2:
-                    if($char == '\\') {
+                    if ($char == '\\') {
                         $mode = 3;
-                    } else if($char == $quote) {
+                    } elseif ($char == $quote) {
                         $mode = 4;
                     } else {
                         $cell .= $char;
@@ -140,19 +147,19 @@ class Delimited implements IDelimited {
                 case 4:
                     $quote = null;
 
-                    if(ctype_space($char) && $char != $terminator) {
+                    if (ctype_space($char) && $char != $terminator) {
                         break;
                     }
 
-                    if($terminator !== null && $char == $terminator) {
+                    if ($terminator !== null && $char == $terminator) {
                         $row[] = $cell;
                         $cell = '';
                         yield $row;
                         $row = [];
                         $mode = 0;
                         break;
-                    } else if($char == $delimiter) {
-                        if($terminator !== null) {
+                    } elseif ($char == $delimiter) {
+                        if ($terminator !== null) {
                             $row[] = $cell;
                         } else {
                             yield $cell;
@@ -163,19 +170,20 @@ class Delimited implements IDelimited {
                         break;
                     }
 
-                    throw new UnexpectedValueException(
+                    throw Glitch::EUnexpectedValue(
                         'Unexpected character: '.$char.' at position '.$i.' in '.$input
                     );
             }
         }
     }
 
-    public static function implode(array $data, $delimiter=',', $quote='"', $terminator=null) {
+    public static function implode(array $data, $delimiter=',', $quote='"', $terminator=null)
+    {
         $output = [];
 
-        if($terminator !== null) {
-            foreach($data as $row) {
-                foreach($row as $key => $value) {
+        if ($terminator !== null) {
+            foreach ($data as $row) {
+                foreach ($row as $key => $value) {
                     $row[$key] = $quote.str_replace($quote, '\\'.$quote, $value).$quote;
                 }
 
@@ -184,7 +192,7 @@ class Delimited implements IDelimited {
 
             return implode($terminator, $output);
         } else {
-            foreach($data as $value) {
+            foreach ($data as $value) {
                 $output[] = $quote.str_replace($quote, '\\'.$quote, $value).$quote;
             }
 

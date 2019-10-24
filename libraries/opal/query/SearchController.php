@@ -10,6 +10,7 @@ use df\core;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -127,7 +128,7 @@ class SearchController implements ISearchController, Inspectable
                     break;
 
                 default:
-                    throw new RuntimeException(
+                    throw Glitch::ERuntime(
                         'Field '.$key.' does not support search queries'
                     );
             }
@@ -248,7 +249,7 @@ class SearchController implements ISearchController, Inspectable
         }
 
         if ($this->_phrase === null) {
-            throw new RuntimeException('No search phrase has been set');
+            throw Glitch::ERuntime('No search phrase has been set');
         }
 
         if (empty($this->_fields)) {
@@ -270,7 +271,7 @@ class SearchController implements ISearchController, Inspectable
             }
 
             if (empty($this->_fields)) {
-                throw new RuntimeException('No search fields have been set');
+                throw Glitch::ERuntime('No search fields have been set');
             }
         }
 

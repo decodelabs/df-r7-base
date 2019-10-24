@@ -12,6 +12,8 @@ use df\aura;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 abstract class SelectorDelegate extends Delegate implements
     arch\node\IInlineFieldRenderableModalSelectorDelegate,
     arch\node\IDependentDelegate
@@ -190,7 +192,7 @@ abstract class SelectorDelegate extends Delegate implements
         $adapter = $this->_getBaseQuery()->getSource()->getAdapter();
 
         if (!$adapter instanceof mesh\entity\ILocatorProvider) {
-            throw new mesh\entity\RuntimeException(
+            throw Glitch::{'df/mesh/entity/ERuntime'}(
                 'Selector source is not an entity locator provider'
             );
         }

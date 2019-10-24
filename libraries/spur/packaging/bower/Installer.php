@@ -418,7 +418,7 @@ class Installer implements IInstaller
         }
 
         if (!$package->resolver) {
-            throw new RuntimeException('No valid resolver could be found for package: '.$package->name);
+            throw Glitch::ERuntime('No valid resolver could be found for package: '.$package->name);
         }
 
         if (!$package->installName) {
@@ -505,7 +505,7 @@ class Installer implements IInstaller
         $class = 'df\\spur\\packaging\\bower\\resolver\\'.$name;
 
         if (!class_exists($class)) {
-            throw new LogicException($name.' resolver isn\'t done yet');
+            throw Glitch::ELogic($name.' resolver isn\'t done yet');
         }
 
         return $this->_resolvers[$name] = new $class();
@@ -555,7 +555,7 @@ class Installer implements IInstaller
         } elseif (is_dir($sourcePath)) {
             Atlas::$fs->copyDir($sourcePath, $destination);
         } else {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Unable to locate fetched package source in cache: '.$package->cacheFileName
             );
         }

@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
 
@@ -96,7 +97,7 @@ class Reader implements IReader
     public function extractFields()
     {
         if ($this->_fields !== null) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Fields have already been set'
             );
         }

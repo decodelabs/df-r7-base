@@ -10,6 +10,7 @@ use df\core;
 use df\opal;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
 use DecodeLabs\Atlas\File;
@@ -30,7 +31,7 @@ class Reader implements IReader
         if (is_string($file)) {
             $file = Atlas::$fs->file($file, Mode::READ_ONLY);
         } elseif (!$file instanceof File) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'MMDB file could not be found'
             );
         }
@@ -70,7 +71,7 @@ class Reader implements IReader
             return $this->_fileSize - $i;
         }
 
-        throw new UnexpectedValueException(
+        throw Glitch::EUnexpectedValue(
             'Unable to read metadata start index'
         );
     }
@@ -81,7 +82,7 @@ class Reader implements IReader
         $ip = link\Ip::factory($ip);
 
         if ($this->_metaData['ip_version'] == 4 && !$ip->isV4()) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Attempting to lookup IPv6 address in IPv4-only database'
             );
         }
@@ -118,7 +119,7 @@ class Reader implements IReader
             return $node;
         }
 
-        throw new UnexpectedValueException(
+        throw Glitch::EUnexpectedValue(
             'Something bad happened looking up MMDB node'
         );
     }
@@ -173,7 +174,7 @@ class Reader implements IReader
                 return $node;
 
             default:
-                throw new UnexpectedValueException(
+                throw Glitch::EUnexpectedValue(
                     'Unknown record size: '.$this->_metaData['record_size']
                 );
         }
@@ -184,7 +185,7 @@ class Reader implements IReader
         $resolved = $pointer - $this->_metaData['node_count'] + $this->_metaData['search_tree_size'];
 
         if ($resolved > $this->_fileSize) {
-            throw new UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'MMDB file search tree is corrupt'
             );
         }

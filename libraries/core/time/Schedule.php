@@ -8,6 +8,7 @@ namespace df\core\time;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -66,7 +67,7 @@ class Schedule implements ISchedule, Inspectable
         }
 
         if (!is_array($schedule)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Invalid schedule'
             );
         }
@@ -170,7 +171,7 @@ class Schedule implements ISchedule, Inspectable
                 $string, $min, $max, $options
             );
         } else {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Invalid schedule value'
             );
         }

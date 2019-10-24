@@ -7,6 +7,8 @@ namespace df\core\i18n;
 
 use df\core;
 
+use DecodeLabs\Glitch;
+
 class Translator implements ITranslator
 {
     protected $_domainId;
@@ -40,7 +42,7 @@ class Translator implements ITranslator
             $plural = array_pop($args);
 
             if (!is_numeric($plural)) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'The last parameter to a plural translation must be the number of items'
                 );
             }
@@ -119,7 +121,7 @@ class Translator implements ITranslator
 
                 foreach ($clauses as $clause) {
                     if (!preg_match('/n(([\/\*\+\-\%])([-0-9])+)?([<>=]+)([-0-9]+)/', $clause, $matches)) {
-                        throw new InvalidArgumentException(
+                        throw Glitch::EInvalidArgument(
                             $clause.' is not a valid plural clause'
                         );
                     }

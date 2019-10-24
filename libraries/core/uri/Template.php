@@ -8,8 +8,10 @@ namespace df\core\uri;
 use df;
 use df\core;
 
-class Template implements ITemplate {
+use DecodeLabs\Glitch;
 
+class Template implements ITemplate
+{
     const OPERATORS = [
         ''  => ['',  ',', false],
         '+' => ['',  ',', false],
@@ -37,12 +39,14 @@ class Template implements ITemplate {
     protected $_template;
     protected $_values = [];
 
-    public function __construct($template) {
+    public function __construct($template)
+    {
         $this->_template = (string)$template;
     }
 
-    public function expand(array $values) {
-        if(false === strpos($this->_template, '{')) {
+    public function expand(array $values)
+    {
+        if (false === strpos($this->_template, '{')) {
             return $this->_template;
         }
 
@@ -55,13 +59,14 @@ class Template implements ITemplate {
         );
     }
 
-    protected function _handleMatch(array $matches) {
+    protected function _handleMatch(array $matches)
+    {
         $expression = $this->_parseExpression($matches[1]);
         list($prefix, $delimiter, $inQuery) = self::OPERATORS[$expression->operator];
         $output = [];
 
-        foreach($expression->specs as $spec) {
-            if(!isset($this->_values[$spec->key])) {
+        foreach ($expression->specs as $spec) {
+            if (!isset($this->_values[$spec->key])) {
                 continue;
             }
 
@@ -69,30 +74,30 @@ class Template implements ITemplate {
             $useQuery = $inQuery;
             $expanded = '';
 
-            if(is_array($value)) {
+            if (is_array($value)) {
                 $isAssoc = core\collection\Util::isArrayAssoc($value);
                 $values = [];
 
-                foreach($value as $key => $subValue) {
-                    if($isAssoc) {
+                foreach ($value as $key => $subValue) {
+                    if ($isAssoc) {
                         $key = rawurlencode($key);
                         $isNested = is_array($subValue);
                     } else {
                         $isNested = false;
                     }
 
-                    if(!$isNested) {
+                    if (!$isNested) {
                         $subValue = rawurlencode($subValue);
 
-                        if($expression->operator == '+'
+                        if ($expression->operator == '+'
                         || $expression->operator == '#') {
                             $subValue = $this->_decodeReserved($subValue);
                         }
                     }
 
-                    if($spec->modifier == '*') {
-                        if($isAssoc) {
-                            if($isNested) {
+                    if ($spec->modifier == '*') {
+                        if ($isAssoc) {
+                            if ($isNested) {
                                 $subValue = strtr(
                                     http_build_query([$key => $subValue]),
                                     self::RFC_1738_TO_3986
@@ -100,42 +105,42 @@ class Template implements ITemplate {
                             } else {
                                 $subValue = $key.'='.$subValue;
                             }
-                        } else if($key > 0 && $useQuery) {
+                        } elseif ($key > 0 && $useQuery) {
                             $subValue = $spec->key.'='.$subValue;
                         }
-                    } else if($isAssoc) {
+                    } elseif ($isAssoc) {
                         $subValue = $key.','.$subValue;
                     }
 
                     $values[$key] = $subValue;
                 }
 
-                if(empty($value)) {
+                if (empty($value)) {
                     $useQuery = false;
-                } else if($spec->modifier == '*') {
+                } elseif ($spec->modifier == '*') {
                     $expanded = implode($delimiter, $values);
 
-                    if($isAssoc) {
+                    if ($isAssoc) {
                         $useQuery = false;
                     }
                 } else {
                     $expanded = implode(',', $values);
                 }
             } else {
-                if($spec->modifier == ':') {
+                if ($spec->modifier == ':') {
                     $value = substr($value, 0, $spec->position);
                 }
 
                 $expanded = rawurlencode($value);
 
-                if($expression->operator == '+'
+                if ($expression->operator == '+'
                 || $expression->operator == '#') {
                     $expanded = $this->_decodeReserved($expanded);
                 }
             }
 
-            if($useQuery) {
-                if(!$expanded && $delimiter != '&') {
+            if ($useQuery) {
+                if (!$expanded && $delimiter != '&') {
                     $expanded = $spec->value;
                 } else {
                     $expanded = $spec->value.'='.$expanded;
@@ -147,33 +152,34 @@ class Template implements ITemplate {
 
         $output = implode($delimiter, $output);
 
-        if($output && $prefix) {
+        if ($output && $prefix) {
             $output = $prefix.$output;
         }
 
         return $output;
     }
 
-    protected function _parseExpression($expression) {
-        if(!strlen($expression)) {
-            throw new UnexpectedValueException('Empty template expression');
+    protected function _parseExpression($expression)
+    {
+        if (!strlen($expression)) {
+            throw Glitch::EUnexpectedValue('Empty template expression');
         }
 
         $output = new Template_Expression();
 
-        if(isset(self::OPERATORS[$expression{0}])) {
+        if (isset(self::OPERATORS[$expression{0}])) {
             $output->operator = $expression{0};
             $expression = substr($expression, 1);
         }
 
-        foreach(explode(',', $expression) as $value) {
+        foreach (explode(',', $expression) as $value) {
             $value = trim($value);
             $spec = new Template_ExpressionVarSpec();
 
-            if(strpos($value, ':')) {
+            if (strpos($value, ':')) {
                 $spec->modifier = ':';
                 list($spec->key, $spec->position) = explode(':', $value, 2);
-            } else if(substr($value, -1) == '*') {
+            } elseif (substr($value, -1) == '*') {
                 $spec->modifier = '*';
                 $spec->key = substr($value, 0, -1);
             } else {
@@ -186,17 +192,20 @@ class Template implements ITemplate {
         return $output;
     }
 
-    protected function _decodeReserved($value)  {
+    protected function _decodeReserved($value)
+    {
         return str_replace(self::ENCODED_DELIMITERS, self::DELIMITERS, $value);
     }
 }
 
-class Template_Expression {
+class Template_Expression
+{
     public $operator = '';
     public $specs = [];
 }
 
-class Template_ExpressionVarSpec {
+class Template_ExpressionVarSpec
+{
     public $key;
     public $modifier;
     public $position;

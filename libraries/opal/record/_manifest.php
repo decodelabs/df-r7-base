@@ -11,6 +11,8 @@ use df\opal;
 use df\user;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 // Exceptions
 interface IException
 {
@@ -22,9 +24,6 @@ class RuntimeException extends \RuntimeException implements IException
 {
 }
 class LogicException extends \LogicException implements IException
-{
-}
-class ValuePreparationException extends RuntimeException
 {
 }
 
@@ -70,11 +69,11 @@ trait TPrimaryKeySetProvider
 
         if ($fields === null) {
             if ($this->_adapter) {
-                throw new LogicException(
+                throw Glitch::ELogic(
                     'Record type '.$this->_adapter->getQuerySourceId().' has no primary fields'
                 );
             } else {
-                throw new LogicException(
+                throw Glitch::ELogic(
                     'Anonymous record has no primary fields'
                 );
             }

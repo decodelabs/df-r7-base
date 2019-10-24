@@ -68,7 +68,7 @@ abstract class Base implements link\http\IResponse
                     break;
 
                 default:
-                    throw new link\http\RuntimeException(
+                    throw Glitch::ERuntime(
                         ucfirst($headers->get('content-encoding')).' response compression is not available'
                     );
             }
@@ -95,7 +95,7 @@ abstract class Base implements link\http\IResponse
             $content = ltrim($content);
 
             if (!isset($content{0}) || !preg_match("/^([\da-fA-F]+)[^\r\n]*\r\n/sm", $content, $matches)) {
-                throw new link\http\UnexpectedValueException('The body does not appear to be chunked properly');
+                throw Glitch::EUnexpectedValue('The body does not appear to be chunked properly');
             }
 
             $length = hexdec(trim($matches[1]));
@@ -132,7 +132,7 @@ abstract class Base implements link\http\IResponse
     public static function decodeDeflate($content)
     {
         if (!function_exists('gzuncompress')) {
-            throw new link\http\RuntimeException(
+            throw Glitch::ERuntime(
                 'Gzip response compression is not available'
             );
         }
@@ -154,7 +154,7 @@ abstract class Base implements link\http\IResponse
     public static function decodeGzip($content)
     {
         if (!function_exists('gzinflate')) {
-            throw new link\http\RuntimeException(
+            throw Glitch::ERuntime(
                 'Gzip inflate response compression is not available'
             );
         }
@@ -180,7 +180,7 @@ abstract class Base implements link\http\IResponse
     public function setHeaders(core\collection\IHeaderMap $headers)
     {
         if (!$headers instanceof link\http\IResponseHeaderCollection) {
-            throw new link\http\InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Request headers must implement IResponseHeaderCollection'
             );
         }
@@ -245,7 +245,7 @@ abstract class Base implements link\http\IResponse
         $content = $this->getContent();
 
         if (!strlen($content)) {
-            throw new link\http\RuntimeException(
+            throw Glitch::ERuntime(
                 'Empty json response'
             );
         }
@@ -253,7 +253,7 @@ abstract class Base implements link\http\IResponse
         $data = flex\Json::fromString($content);
 
         if ($data === false || $data === null) {
-            throw new link\http\RuntimeException(
+            throw Glitch::ERuntime(
                 'Invalid json response: '.$content
             );
         }
@@ -301,7 +301,7 @@ abstract class Base implements link\http\IResponse
                     break;
 
                 default:
-                    throw new link\http\RuntimeException(
+                    throw Glitch::ERuntime(
                         ucfirst($contentEncoding).' response compression is not available'
                     );
             }

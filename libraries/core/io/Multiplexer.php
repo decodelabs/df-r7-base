@@ -308,7 +308,7 @@ class Multiplexer implements IMultiplexer, Inspectable
             }
         }
 
-        throw new RuntimeException(
+        throw Glitch::ERuntime(
             'There are no multiplex reader channels available'
         );
     }

@@ -8,24 +8,36 @@ namespace df\core\unit;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class LogicException extends \LogicException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class LogicException extends \LogicException implements IException
+{
+}
 
 
 // Interfaces
-interface IUnit {
-
+interface IUnit
+{
 }
 
-interface ICssCompatibleUnit {
+interface ICssCompatibleUnit
+{
     public function toCssString(): string;
 }
 
 
-interface ISingleValueUnit {
+interface ISingleValueUnit
+{
     public function parse($angle, $unit=null, $allowPlainNumbers=false);
     public function setValue($value);
     public function getValue();
@@ -33,61 +45,67 @@ interface ISingleValueUnit {
     public function getUnit();
 }
 
-trait TSingleValueUnit {
-
+trait TSingleValueUnit
+{
     use core\TStringProvider;
 
     //const UNITS = [];
 
-    public function __construct($value, $unit=null, $allowPlainNumbers=false) {
+    public function __construct($value, $unit=null, $allowPlainNumbers=false)
+    {
         $this->parse($value, $unit, $allowPlainNumbers);
     }
 
-    public function parse($value, $unit=null, $allowPlainNumbers=false) {
-        if(preg_match('/^([0-9.\-+e]+) *([^0-9.\-+]+)$/i', $value, $matches)) {
+    public function parse($value, $unit=null, $allowPlainNumbers=false)
+    {
+        if (preg_match('/^([0-9.\-+e]+) *([^0-9.\-+]+)$/i', $value, $matches)) {
             $value = $matches[1];
             $unit = $matches[2];
         }
 
         $this->setValue($value);
 
-        if($this->_unit === null && $unit === null && !$allowPlainNumbers) {
+        if ($this->_unit === null && $unit === null && !$allowPlainNumbers) {
             $unit = static::DEFAULT_UNIT;
         }
 
-        if($unit !== null) {
+        if ($unit !== null) {
             $this->setUnit($unit, false);
         }
 
         return $this;
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return $this->_value == 0;
     }
 
-    public function setValue($value) {
+    public function setValue($value)
+    {
         $this->_value = (float)$value;
         return $this;
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return $this->_value;
     }
 
-    public function setUnit($unit, $convertValue=true) {
+    public function setUnit($unit, $convertValue=true)
+    {
         $unit = strtolower($unit);
 
-        if(empty($unit)) {
+        if (empty($unit)) {
             $unit = static::DEFAULT_UNIT;
         }
 
-        if(!in_array($unit, self::UNITS)) {
+        if (!in_array($unit, self::UNITS)) {
             $found = false;
 
-            if(strlen($unit) == 1) {
-                foreach(self::UNITS as $test) {
-                    if($test{0} == $unit) {
+            if (strlen($unit) == 1) {
+                foreach (self::UNITS as $test) {
+                    if ($test{0} == $unit) {
                         $unit = $test;
                         $found = true;
                         break;
@@ -95,14 +113,14 @@ trait TSingleValueUnit {
                 }
             }
 
-            if(!$found) {
-                throw new InvalidArgumentException(
+            if (!$found) {
+                throw Glitch::EInvalidArgument(
                     $unit.' is not a valid unit option'
                 );
             }
         }
 
-        if($convertValue && $this->_unit !== null) {
+        if ($convertValue && $this->_unit !== null) {
             $this->_value = $this->_convert($this->_value, $this->_unit, $unit);
         }
 
@@ -110,21 +128,25 @@ trait TSingleValueUnit {
         return $this;
     }
 
-    public function getUnit() {
+    public function getUnit()
+    {
         return $this->_unit;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return $this->_value.$this->_unit;
     }
 
-    public function toCssString(): string {
+    public function toCssString(): string
+    {
         return $this->toString();
     }
 
     abstract protected function _convert($value, $inUnit, $outUnit);
 
-    protected function _parseUnit($value, $unit) {
+    protected function _parseUnit($value, $unit)
+    {
         $this->setValue($value);
         $this->setUnit($unit, false);
         return $this;
@@ -132,7 +154,8 @@ trait TSingleValueUnit {
 }
 
 
-interface IAngle extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
+interface IAngle extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider
+{
     public function normalize();
 
     public function setDegrees($degrees);
@@ -145,7 +168,8 @@ interface IAngle extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStri
     public function getTurns();
 }
 
-interface IDisplaySize extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
+interface IDisplaySize extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider
+{
     public function isRelative();
     public function isAbsolute();
     public function setDPI($dpi);
@@ -180,7 +204,8 @@ interface IDisplaySize extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core
     public function extractAbsoluteFromViewport($width, $height);
 }
 
-interface IDisplayPosition extends IUnit, ICssCompatibleUnit, core\IStringProvider {
+interface IDisplayPosition extends IUnit, ICssCompatibleUnit, core\IStringProvider
+{
     public function parse($position, $position2=null);
     public function setX($value);
     public function getX();
@@ -203,7 +228,8 @@ interface IDisplayPosition extends IUnit, ICssCompatibleUnit, core\IStringProvid
     public function extractAbsolute($width, $height, $compositeWidth=null, $compositeHeight=null);
 }
 
-interface IFileSize extends IUnit, ISingleValueUnit, core\IStringProvider {
+interface IFileSize extends IUnit, ISingleValueUnit, core\IStringProvider
+{
     public function setBits($bits);
     public function getBits();
     public function setBytes($bytes);
@@ -220,7 +246,8 @@ interface IFileSize extends IUnit, ISingleValueUnit, core\IStringProvider {
     public function getPetabytes();
 }
 
-interface IFrequency extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
+interface IFrequency extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider
+{
     public function setHz($hz);
     public function getHz();
     public function setKhz($khz);
@@ -233,7 +260,8 @@ interface IFrequency extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\I
     public function getBpm();
 }
 
-interface IRatio extends IUnit, ICssCompatibleUnit, core\IStringProvider {
+interface IRatio extends IUnit, ICssCompatibleUnit, core\IStringProvider
+{
     public function parse($value, $denominator=null);
     public function setFraction($numerator, $denominator);
     public function getNumerator();
@@ -242,7 +270,8 @@ interface IRatio extends IUnit, ICssCompatibleUnit, core\IStringProvider {
     public function getFactor();
 }
 
-interface IResolution extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
+interface IResolution extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider
+{
     public function setDpi($dpi);
     public function getDpi();
     public function setDpcm($dpcm);
@@ -254,8 +283,8 @@ interface IResolution extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\
 
 
 ## ENUMS
-class Priority extends core\lang\Enum {
-
+class Priority extends core\lang\Enum
+{
     const TRIVIAL = null;
     const LOW = null;
     const MEDIUM = null;
@@ -263,7 +292,8 @@ class Priority extends core\lang\Enum {
     const CRITICAL = null;
 }
 
-class Gender extends core\lang\Enum {
+class Gender extends core\lang\Enum
+{
     const MALE = 'Male';
     const FEMALE = 'Female';
 }

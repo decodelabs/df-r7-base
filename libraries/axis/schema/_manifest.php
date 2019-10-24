@@ -10,14 +10,13 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 // Exceptions
 interface IException extends axis\IException, opal\schema\IException
 {
 }
 class RuntimeException extends \RuntimeException implements IException
-{
-}
-class FieldTypeNotFoundException extends RuntimeException
 {
 }
 class UnexpectedValueException extends \UnexpectedValueException implements IException
@@ -359,7 +358,7 @@ trait TRelationField
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
 
         if ($targetUnit->getUnitType() != $localUnit->getUnitType()) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Relation target unit '.$targetUnit->getUnitId().' does not match local unit '.$localUnit->getUnitId().' type ('.$localUnit->getUnitType().')'
             );
         }
@@ -370,7 +369,7 @@ trait TRelationField
     protected function _validateLocalPrimaryIndex(axis\ISchemaBasedStorageUnit $localUnit, ISchema $localSchema)
     {
         if (!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Relation table '.$localUnit->getUnitId().' does not have a primary index'
             );
         }
@@ -385,7 +384,7 @@ trait TRelationField
         }
 
         if (!$targetPrimaryIndex = $targetSchema->getPrimaryIndex()) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Relation unit '.$targetUnit->getUnitId().' does not have a primary index'
             );
         }
@@ -407,7 +406,7 @@ trait TRelationField
             $targetRelationManifest = $this->getTargetRelationManifest();
 
             if (!$targetRelationManifest->validateValue($this->_defaultValue)) {
-                throw new axis\schema\RuntimeException(
+                throw Glitch::ERuntime(
                     'Default value for relation field does not fit relation manifest'
                 );
             }
@@ -532,49 +531,49 @@ trait TInverseRelationField
         }
 
         if (!$targetField = $targetSchema->getField($this->_targetField)) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Target field '.$this->_targetField.' could not be found in '.$targetUnit->getUnitId()
             );
         }
 
         if ($this instanceof IOneChildField) {
             if (!$targetField instanceof IOneParentField) {
-                throw new RuntimeException(
+                throw Glitch::ERuntime(
                     'Target field '.$this->_targetField.' is not a OneParent field'
                 );
             }
         }
         if ($this instanceof IOneParentField) {
             if (!$targetField instanceof IOneChildField) {
-                throw new RuntimeException(
+                throw Glitch::ERuntime(
                     'Target field '.$this->_targetField.' is not a OneChild field'
                 );
             }
         }
         if ($this instanceof IOneToManyField) {
             if (!$targetField instanceof IManyToOneField) {
-                throw new RuntimeException(
+                throw Glitch::ERuntime(
                     'Target field '.$this->_targetField.' is not a ManyToOne field'
                 );
             }
         }
         if ($this instanceof IManyToOneField) {
             if (!$targetField instanceof IOneToManyField) {
-                throw new RuntimeException(
+                throw Glitch::ERuntime(
                     'Target field '.$this->_targetField.' is not a OneToMany field'
                 );
             }
         }
         if ($this instanceof IManyToManyField) {
             if (!$targetField instanceof IManyToManyField) {
-                throw new RuntimeException(
+                throw Glitch::ERuntime(
                     'Target field '.$this->_targetField.' is not a ManyToMany field'
                 );
             }
         }
 
         if ($targetField->getTargetField() != $this->_name) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Inverse field '.$this->_targetField.' is pointing to '.$targetField->getTargetField().', not '.$this->_name.' field'
             );
         }
@@ -728,7 +727,7 @@ trait TBridgedRelationField
 
         if ($this instanceof IManyToManyField) {
             if ($bridgeUnit->getModel()->getModelName() != $localUnit->getModel()->getModelName()) {
-                throw new RuntimeException(
+                throw Glitch::ERuntime(
                     'Bridge units must be local to the dominant participant - '.
                     $this->_bridgeUnitId.' should be on model '.$localUnit->getModel()->getModelName()
                 );

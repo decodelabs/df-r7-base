@@ -10,6 +10,7 @@ use df\core;
 
 use DecodeLabs\Atlas;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -410,7 +411,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
 
         /*
         if($this->_mode->is(Mode::READ_ONLY) && !is_readable($this->_path)) {
-            throw new RuntimeException('File '.$this->_path.' is not readable!');
+            throw Glitch::ERuntime('File '.$this->_path.' is not readable!');
         }
         */
 
@@ -457,7 +458,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     public function lock($type, $nonBlocking=false)
     {
         if (!$this->_fp) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'File is not open: '.$this->_fp
             );
         }
@@ -486,7 +487,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     public function seek($offset, $whence=SEEK_SET)
     {
         if (!$this->_fp) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'File is not open: '.$this->_fp
             );
         }
@@ -498,7 +499,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     public function readFrom($offset, $length)
     {
         if (!$this->_fp) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'File is not open: '.$this->_fp
             );
         }
@@ -510,7 +511,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     public function tell()
     {
         if (!$this->_fp) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'File is not open: '.$this->_fp
             );
         }
@@ -521,7 +522,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     public function flush()
     {
         if (!$this->_fp) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'File is not open: '.$this->_fp
             );
         }
@@ -547,7 +548,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     public function readChar()
     {
         if (!$this->_fp) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'File is not open: '.$this->_fp
             );
         }
@@ -562,7 +563,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
         }
 
         if (!$this->_fp) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'File is not open: '.$this->_fp
             );
         }
@@ -573,7 +574,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     protected function _readLine()
     {
         if (!$this->_fp) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'File is not open: '.$this->_fp
             );
         }
@@ -595,7 +596,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     protected function _writeChunk($data, $length)
     {
         if (!$this->_fp) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'File is not open: '.$this->_fp
             );
         }

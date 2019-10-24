@@ -46,7 +46,7 @@ class Bridge implements IBridge
             ->launch();
 
         if ($result->hasError()) {
-            throw new RuntimeException($result->getError());
+            throw Glitch::ERuntime($result->getError());
         }
 
         return $this;

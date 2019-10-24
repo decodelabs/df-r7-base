@@ -35,7 +35,7 @@ class Writer implements IWriter
     public static function fileFactory($path, IRootInterchange $interchange=null)
     {
         if (empty($path)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Invalid XML writer path'
             );
         }
@@ -72,17 +72,17 @@ class Writer implements IWriter
     public function writeHeader($version='1.0', $encoding='UTF-8', $isStandalone=false)
     {
         if ($this->_headerWritten) {
-            throw new LogicException('XML header has already been written');
+            throw Glitch::ELogic('XML header has already been written');
         }
 
         if ($this->_dtdWritten || $this->_rootWritten) {
-            throw new LogicException('XML header cannot be written once the document is open');
+            throw Glitch::ELogic('XML header cannot be written once the document is open');
         }
 
         try {
             $this->_document->startDocument($version, $encoding, $isStandalone ? true : null);
         } catch (\ErrorException $e) {
-            throw new InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+            throw Glitch::EInvalidArgument($e->getMessage(), $e->getCode(), $e);
         }
 
         $this->_headerWritten = true;
@@ -93,7 +93,7 @@ class Writer implements IWriter
     public function writeDtd($name, $publicId=null, $systemId=null, $subset=null)
     {
         if ($this->_rootWritten) {
-            throw new LogicException('XML DTD cannot be written once the document is open');
+            throw Glitch::ELogic('XML DTD cannot be written once the document is open');
         }
 
         if (!$this->_headerWritten) {
@@ -103,7 +103,7 @@ class Writer implements IWriter
         try {
             $this->_document->writeDtd($name, $publicId, $systemId, $subset);
         } catch (\ErrorException $e) {
-            throw new InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+            throw Glitch::EInvalidArgument($e->getMessage(), $e->getCode(), $e);
         }
 
         $this->_dtdWritten = true;
@@ -114,7 +114,7 @@ class Writer implements IWriter
     public function writeDtdAttlist($name, $content)
     {
         if ($this->_rootWritten) {
-            throw new LogicException('XML DTD cannot be written once the document is open');
+            throw Glitch::ELogic('XML DTD cannot be written once the document is open');
         }
 
         if (!$this->_headerWritten) {
@@ -124,7 +124,7 @@ class Writer implements IWriter
         try {
             $this->_document->writeDtdAttlist($name, $content);
         } catch (\ErrorException $e) {
-            throw new InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+            throw Glitch::EInvalidArgument($e->getMessage(), $e->getCode(), $e);
         }
 
         $this->_dtdWritten = true;
@@ -135,7 +135,7 @@ class Writer implements IWriter
     public function writeDtdElement($name, $content)
     {
         if ($this->_rootWritten) {
-            throw new LogicException('XML DTD cannot be written once the document is open');
+            throw Glitch::ELogic('XML DTD cannot be written once the document is open');
         }
 
         if (!$this->_headerWritten) {
@@ -145,7 +145,7 @@ class Writer implements IWriter
         try {
             $this->_document->writeDtdElement($name, $content);
         } catch (\ErrorException $e) {
-            throw new InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+            throw Glitch::EInvalidArgument($e->getMessage(), $e->getCode(), $e);
         }
 
         $this->_dtdWritten = true;
@@ -156,7 +156,7 @@ class Writer implements IWriter
     public function writeDtdEntity($name, $content, $pe, $publicId, $systemId, $nDataId)
     {
         if ($this->_rootWritten) {
-            throw new LogicException('XML DTD cannot be written once the document is open');
+            throw Glitch::ELogic('XML DTD cannot be written once the document is open');
         }
 
         if (!$this->_headerWritten) {
@@ -166,7 +166,7 @@ class Writer implements IWriter
         try {
             $this->_document->writeDtdEntity($name, $content, $pe, $publicId, $systemId, $nDataId);
         } catch (\ErrorException $e) {
-            throw new InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+            throw Glitch::EInvalidArgument($e->getMessage(), $e->getCode(), $e);
         }
 
         $this->_dtdWritten = true;
@@ -204,7 +204,7 @@ class Writer implements IWriter
     public function endElement()
     {
         if ($this->_currentNode != self::ELEMENT) {
-            throw new LogicException('XML writer is not currently writing an element');
+            throw Glitch::ELogic('XML writer is not currently writing an element');
         }
 
         $this->_completeCurrentNode();
@@ -275,7 +275,7 @@ class Writer implements IWriter
     public function writeCDataContent($content)
     {
         if ($this->_currentNode != self::CDATA) {
-            throw new LogicException('XML writer is not currently writing CData');
+            throw Glitch::ELogic('XML writer is not currently writing CData');
         }
 
         $content = self::normalizeString($content);
@@ -286,7 +286,7 @@ class Writer implements IWriter
     public function endCData()
     {
         if ($this->_currentNode != self::CDATA) {
-            throw new LogicException('XML writer is not currently writing CData');
+            throw Glitch::ELogic('XML writer is not currently writing CData');
         }
 
         $this->_document->endCData();
@@ -318,7 +318,7 @@ class Writer implements IWriter
     public function writeCommentContent($content)
     {
         if ($this->_currentNode != self::COMMENT) {
-            throw new LogicException('XML writer is not currently writing a comment');
+            throw Glitch::ELogic('XML writer is not currently writing a comment');
         }
 
         $content = self::normalizeString($content);
@@ -329,7 +329,7 @@ class Writer implements IWriter
     public function endComment()
     {
         if ($this->_currentNode != self::COMMENT) {
-            throw new LogicException('XML writer is not currently writing a comment');
+            throw Glitch::ELogic('XML writer is not currently writing a comment');
         }
 
         $this->_document->endComment();
@@ -359,7 +359,7 @@ class Writer implements IWriter
     public function writeProcessingInstructionContent($content)
     {
         if ($this->_currentNode != self::PI) {
-            throw new LogicException('XML writer is not currently writing a processing instruction');
+            throw Glitch::ELogic('XML writer is not currently writing a processing instruction');
         }
 
         $this->_document->text($content);
@@ -369,7 +369,7 @@ class Writer implements IWriter
     public function endProcessingInstruction()
     {
         if ($this->_currentNode != self::PI) {
-            throw new LogicException('XML writer is not currently writing a processing instruction');
+            throw Glitch::ELogic('XML writer is not currently writing a processing instruction');
         }
 
         $this->_document->endPI();

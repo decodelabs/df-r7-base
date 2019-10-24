@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -54,7 +55,7 @@ class Join implements IJoinQuery, Inspectable
                 break;
 
             default:
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     $type.' is not a valid join type'
                 );
         }

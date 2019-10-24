@@ -182,7 +182,7 @@ trait TQuery
             $source = $this->getSourceManager()->getSourceByAlias($matches[1]);
 
             if (!$source) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Cannot import query block - adapter source '.$matches[1].' could not be found'
                 );
             }
@@ -195,7 +195,7 @@ trait TQuery
         $adapter = $source->getAdapter();
 
         if (!$adapter instanceof IIntegralAdapter) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Cannot import query block - adapter is not integral'
             );
         }
@@ -212,7 +212,7 @@ trait TQuery
             $source = $this->getSourceManager()->getSourceByAlias($matches[1]);
 
             if (!$source) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Cannot import query block - adapter source '.$matches[1].' could not be found'
                 );
             }
@@ -224,7 +224,7 @@ trait TQuery
         }
 
         if (!$adapter instanceof IIntegralAdapter) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Cannot import query block - adapter is not integral'
             );
         }
@@ -289,7 +289,7 @@ trait TQuery
             $sourceAdapter = $source->getAdapter();
 
             if (!$sourceAdapter instanceof IIntegralAdapter) {
-                throw new LogicException(
+                throw Glitch::ELogic(
                     'Source adapter is not integral and does not have relation meta data'
                 );
             }
@@ -298,7 +298,7 @@ trait TQuery
             $field = $schema->getField($queryField->getName());
 
             if (!$field instanceof opal\schema\IRelationField) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     $fieldName.' is not a relation field'
                 );
             }
@@ -362,7 +362,7 @@ trait TQuery_Derivable
     public function endSource(string $alias=null): IQuery
     {
         if (!$this->_derivationParentInitiator) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Cannot create derived source - no parent initiator has been created'
             );
         }
@@ -370,7 +370,7 @@ trait TQuery_Derivable
         $adapter = new DerivedSourceAdapter($this);
 
         if (!$adapter->supportsQueryType(IQueryTypes::DERIVATION)) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Query adapter '.$adapter->getQuerySourceDisplayName().' does not support derived tables'
             );
         }
@@ -401,7 +401,7 @@ trait TQuery_Locational
         $source = $this->getSource();
 
         if (!$source->getAdapter()->supportsQueryFeature(IQueryFeatures::LOCATION)) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
                 ' does not support location base queries'
             );
@@ -508,7 +508,7 @@ trait TQuery_Correlatable
         $field = $this->_lookupRelationField($fieldName, $queryField);
 
         if (!$field instanceof opal\schema\IManyRelationField) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Cannot begin relation correlation - '.$fieldName.' is not a many relation field'
             );
         }
@@ -561,7 +561,7 @@ trait TQuery_Correlatable
         $adapter = $source->getAdapter();
 
         if (!$adapter->supportsQueryType($correlation->getQueryType())) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Query adapter '.$adapter->getQuerySourceDisplayName().' does not support correlations'
             );
         }
@@ -751,7 +751,7 @@ trait TQuery_Joinable
         $source = $this->getSource();
 
         if (!$source->getAdapter()->supportsQueryType($join->getQueryType())) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' does not support joins'
             );
         }
@@ -818,7 +818,7 @@ trait TQuery_JoinConstrainable
         $source = $this->getSource();
 
         if (!$source->getAdapter()->supportsQueryType($join->getQueryType())) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' does not support joins'
             );
         }
@@ -1167,7 +1167,7 @@ trait TQuery_Combine
     {
         foreach (core\collection\Util::leaves($fields) as $field) {
             if (!isset($this->_fields[$field])) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Combine field '.$field.' has not been defined'
                 );
             }
@@ -1241,7 +1241,7 @@ trait TQuery_AttachBase
         $source = $this->getSource();
 
         if (!$source->getAdapter()->supportsQueryType($attachment->getQueryType())) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
                 ' does not support attachments'
             );
@@ -1250,7 +1250,7 @@ trait TQuery_AttachBase
         if (isset($this->_attachments[$name])
         && $this->_attachments[$name] !== $attachment
         && !($this->_attachments[$name]->isPopulate() && $attachment->isPopulate())) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'An attachment has already been created with the name "'.$name.'"'
             );
         }
@@ -1299,7 +1299,7 @@ trait TQuery_RelationAttachable
         $attachment = $field->rewritePopulateQueryToAttachment($populate);
 
         if (!$attachment instanceof IAttachQuery) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Cannot populate '.$populate->getFieldName().' - integral schema field cannot convert to attachment'
             );
         }
@@ -1398,7 +1398,7 @@ trait TQuery_Attachment
         }
 
         if (!$this->_joinClauseList || $this->_joinClauseList->isEmpty()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'No join clauses have been defined for attachment '.$name
             );
         }
@@ -1419,7 +1419,7 @@ trait TQuery_Attachment
         }
 
         if (!$this->_joinClauseList || $this->_joinClauseList->isEmpty()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'No join clauses have been defined for attachment '.$name
             );
         }
@@ -1454,7 +1454,7 @@ trait TQuery_AttachmentListExtension
     public function asList($name, $field1, $field2=null)
     {
         if ($this->_joinClauseList->isEmpty()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'No join clauses have been defined for attachment '.$name
             );
         }
@@ -1489,7 +1489,7 @@ trait TQuery_AttachmentValueExtension
         }
 
         if ($this->_joinClauseList->isEmpty()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'No join clauses have been defined for attachment '.$name
             );
         }
@@ -2245,7 +2245,7 @@ trait TQuery_Read
         }
 
         if (!is_array($data)) {
-            throw new UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Source did not return a result that could be converted to an array'
             );
         }
@@ -2462,7 +2462,7 @@ trait TQuery_EntryPoint
     public function countAll()
     {
         if (!$this instanceof IAdapter) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Cannot count all without implicit source'
             );
         }
@@ -2473,7 +2473,7 @@ trait TQuery_EntryPoint
     public function countAllDistinct()
     {
         if (!$this instanceof IAdapter) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Cannot count all without implicit source'
             );
         }

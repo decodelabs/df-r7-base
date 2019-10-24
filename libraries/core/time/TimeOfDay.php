@@ -8,6 +8,7 @@ namespace df\core\time;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -45,7 +46,7 @@ class TimeOfDay implements ITimeOfDay, Inspectable
         }
 
         if (!is_array($input)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Value does not appear to be a valid time of day'
             );
         }

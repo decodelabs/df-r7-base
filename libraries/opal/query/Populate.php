@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -50,7 +51,7 @@ class Populate implements IPopulateQuery, Inspectable
         $adapter = $this->_field->getSource()->getAdapter();
 
         if (!$adapter instanceof opal\query\IIntegralAdapter) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Cannot populate field '.$fieldName.' - adapter is not integral'
             );
         }
@@ -62,7 +63,7 @@ class Populate implements IPopulateQuery, Inspectable
         $field = $schema->getField($intrinsicFieldName);
 
         if (!$field instanceof opal\schema\IRelationField) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Cannot populate '.$intrinsicFieldName.' - field is not a relation'
             );
         }

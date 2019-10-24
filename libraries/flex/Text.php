@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -541,7 +542,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
         }
 
         if (!self::isValidEncoding($encoding)) {
-            throw new InvalidArgumentException($encoding.' is not a valid string encoding');
+            throw Glitch::EInvalidArgument($encoding.' is not a valid string encoding');
         }
 
         $this->_value = mb_convert_encoding($this->_value, $encoding, $this->_encoding);
@@ -894,7 +895,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
             $index += $length;
 
             if ($index < 0) {
-                throw new OutOfBoundsException(
+                throw Glitch::EOutOfBounds(
                     'Trying to set a negative index outside of current bounds'
                 );
 
@@ -933,7 +934,7 @@ class Text implements IText, \IteratorAggregate, Inspectable
             $index += $length;
 
             if ($index < 0) {
-                throw new OutOfBoundsException(
+                throw Glitch::EOutOfBounds(
                     'Trying to set a negative index outside of current bounds'
                 );
 

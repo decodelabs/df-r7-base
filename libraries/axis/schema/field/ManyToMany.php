@@ -10,23 +10,27 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class ManyToMany extends Many implements axis\schema\IManyToManyField {
+use DecodeLabs\Glitch;
 
+class ManyToMany extends Many implements axis\schema\IManyToManyField
+{
     use axis\schema\TInverseRelationField;
 
     protected $_isDominant = false;
 
-    protected function _init($targetUnit, $targetField=null) {
+    protected function _init($targetUnit, $targetField=null)
+    {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
     }
 
 
-    public function isDominant(bool $flag=null) {
-        if($flag !== null) {
+    public function isDominant(bool $flag=null)
+    {
+        if ($flag !== null) {
             $flag = $flag;
 
-            if($this->_isDominant != $flag) {
+            if ($this->_isDominant != $flag) {
                 $this->_hasChanged = true;
             }
 
@@ -38,15 +42,16 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
     }
 
 
-// Validation
-    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
+    // Validation
+    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema)
+    {
         $this->_sanitizeTargetUnitId($localUnit);
         $this->_sanitizeBridgeUnitId($localUnit);
 
 
         // Local ids
-        if(!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
-            throw new axis\schema\RuntimeException(
+        if (!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
+            throw Glitch::ERuntime(
                 'Relation table '.$localUnit->getUnitId().' does not have a primary index'
             );
         }
@@ -54,7 +59,8 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
         return $this;
     }
 
-    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
+    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema)
+    {
         // Target
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
@@ -63,13 +69,13 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
 
 
         // Dominance
-        if($this->_isDominant == $targetField->isDominant()) {
-            throw new axis\schema\RuntimeException(
+        if ($this->_isDominant == $targetField->isDominant()) {
+            throw Glitch::ERuntime(
                 'Paired ManyToManyFields must nominate one side to be dominant'
             );
         }
 
-        if($this->_isDominant) {
+        if ($this->_isDominant) {
             $bridgeUnit = $this->_validateBridgeUnit($localUnit);
         } else {
             $this->_bridgeUnitId = $targetField->getBridgeUnitId();
@@ -81,15 +87,17 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
     }
 
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         parent::_importStorageArray($data);
 
         $this->_setInverseRelationStorageArray($data);
         $this->_isDominant = $data['dom'];
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return array_merge(
             parent::toStorageArray(),
             $this->_getInverseRelationStorageArray(),

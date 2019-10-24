@@ -11,6 +11,7 @@ use df\halo;
 use df\link;
 use df\mesh;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -300,7 +301,7 @@ class Event extends Base implements Inspectable
         if (!$res) {
             $event->free();
 
-            throw new BindException(
+            throw Glitch::ERuntime(
                 'Could not add event'
             );
         }
@@ -320,7 +321,7 @@ class Event extends Base implements Inspectable
                 break;
 
             default:
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Unknown event type: '.$binding->getIoMode()
                 );
         }

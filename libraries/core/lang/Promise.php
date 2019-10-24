@@ -101,7 +101,7 @@ class Promise implements IPromise, Inspectable
             $rejections[$key] = $error;
         })->then(function () use (&$results, $count) {
             if (count($results) < $count) {
-                throw new RuntimeException(
+                throw Glitch::ERuntime(
                     'Not enough promises delivered a result'
                 );
             }
@@ -199,7 +199,7 @@ class Promise implements IPromise, Inspectable
     public function beginThis($value=null)
     {
         if ($this->_hasBegun) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Promise action has already begun'
             );
         }
@@ -209,7 +209,7 @@ class Promise implements IPromise, Inspectable
         }
 
         if ($this->_hasDelivered) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Promise has already delivered'
             );
         }
@@ -235,7 +235,7 @@ class Promise implements IPromise, Inspectable
     public function beginThisError(\Throwable $e)
     {
         if ($this->_hasBegun) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Promise action has already begun'
             );
         }
@@ -245,7 +245,7 @@ class Promise implements IPromise, Inspectable
         }
 
         if ($this->_hasDelivered) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Promise has already delivered'
             );
         }
@@ -405,7 +405,7 @@ class Promise implements IPromise, Inspectable
         }
 
         if ($type === null) {
-            throw new LogicException('Error handling must be able to accept an exception as its first argument');
+            throw Glitch::Elogic('Error handling must be able to accept an exception as its first argument');
         }
 
         $this->_errorHandlers[$type] = $callback;
@@ -497,7 +497,7 @@ class Promise implements IPromise, Inspectable
     public function __call($method, array $args)
     {
         if (substr($method, 0, 2) != 'on') {
-            throw new BadMethodCallException('Method '.$method.' does not exist');
+            throw Glitch::EBadMethodCall('Method '.$method.' does not exist');
         }
 
         return $this->on(substr($method, 2), array_shift($args));
@@ -653,7 +653,7 @@ class Promise implements IPromise, Inspectable
     public function deliver($value)
     {
         if ($this->_hasDelivered) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Promise has already delivered'
             );
         }
@@ -669,7 +669,7 @@ class Promise implements IPromise, Inspectable
     public function deliverError(\Throwable $error)
     {
         if ($this->_hasDelivered) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Promise has already delivered'
             );
         }

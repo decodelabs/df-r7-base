@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
 use DecodeLabs\Atlas\Dir;
@@ -388,7 +389,7 @@ class Client implements IClient
             }
         }
 
-        throw new RuntimeException(
+        throw Glitch::ERuntime(
             'Unable to find reasonable CA bundle file path'
         );
     }

@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -51,7 +52,7 @@ class BatchInsert implements IBatchInsertQuery, Inspectable
         if ($rows instanceof core\IArrayProvider) {
             $rows = $rows->toArray();
         } elseif (!is_array($rows)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Batch insert data must be convertible to an array'
             );
         }
@@ -89,13 +90,13 @@ class BatchInsert implements IBatchInsertQuery, Inspectable
         } elseif ($row instanceof core\IArrayProvider) {
             $row = $row->toArray();
         } elseif (!is_array($row)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Insert data must be convertible to an array'
             );
         }
 
         if (empty($row)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Insert data must contain at least one field'
             );
         }

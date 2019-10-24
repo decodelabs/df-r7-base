@@ -10,24 +10,27 @@ use df\core;
 use df\axis;
 use df\mesh;
 
-class MeshHandler implements mesh\IEntityHandler {
+use DecodeLabs\Glitch;
 
-    public function fetchEntity(mesh\IManager $manager, array $node) {
-        if($node['type'] == 'Model') {
+class MeshHandler implements mesh\IEntityHandler
+{
+    public function fetchEntity(mesh\IManager $manager, array $node)
+    {
+        if ($node['type'] == 'Model') {
             return axis\Model::factory($node['id']);
         }
 
 
-        if(empty($node['location'])) {
-            switch($node['type']) {
+        if (empty($node['location'])) {
+            switch ($node['type']) {
                 case 'Unit':
                     return axis\Model::loadUnitFromId($node['id']);
 
                 case 'Schema':
                     $unit = axis\Model::loadUnitFromId($node['id']);
 
-                    if(!$unit instanceof axis\ISchemaBasedStorageUnit) {
-                        throw new axis\LogicException(
+                    if (!$unit instanceof axis\ISchemaBasedStorageUnit) {
+                        throw Glitch::ELogic(
                             'Model unit '.$unit->getUnitName().' does not provide a schema'
                         );
                     }
@@ -40,7 +43,7 @@ class MeshHandler implements mesh\IEntityHandler {
         $model = axis\Model::factory(array_shift($location));
         $unit = $model->getUnit($node['type']);
 
-        if($node['id'] === null) {
+        if ($node['id'] === null) {
             return $unit;
         }
 

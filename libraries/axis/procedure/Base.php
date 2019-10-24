@@ -9,8 +9,10 @@ use df;
 use df\core;
 use df\axis;
 
-abstract class Base implements IProcedure {
+use DecodeLabs\Glitch;
 
+abstract class Base implements IProcedure
+{
     use core\TContextProxy;
 
     public $values;
@@ -20,14 +22,15 @@ abstract class Base implements IProcedure {
     protected $_model;
     protected $_isPrepared = false;
 
-    public static function factory(axis\IUnit $unit, string $name, $values, $item=null): IProcedure {
+    public static function factory(axis\IUnit $unit, string $name, $values, $item=null): IProcedure
+    {
         $modelName = $unit->getModel()->getModelName();
         $unitName = $unit->getUnitName();
 
         $class = 'df\\apex\\models\\'.$modelName.'\\'.$unitName.'\\procedures\\'.ucfirst($name);
 
-        if(!class_exists($class)) {
-            throw new RuntimeException(
+        if (!class_exists($class)) {
+            throw Glitch::ERuntime(
                 'Unit procedure '.$modelName.'/'.$unitName.'/'.ucfirst($name).' could not be found'
             );
         }
@@ -35,7 +38,8 @@ abstract class Base implements IProcedure {
         return new $class($unit, $values, $item);
     }
 
-    public function __construct(axis\IUnit $unit, $values) {
+    public function __construct(axis\IUnit $unit, $values)
+    {
         $this->_unit = $unit;
         $this->_model = $unit->getModel();
         $this->context = $unit->context;
@@ -43,21 +47,25 @@ abstract class Base implements IProcedure {
         $this->validator = new core\validate\Handler();
     }
 
-    public function getUnit() {
+    public function getUnit()
+    {
         return $this->_unit;
     }
 
-    public function getModel() {
+    public function getModel()
+    {
         return $this->_model;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public function setValues($values) {
-        if(!$values instanceof core\collection\IInputTree) {
+    public function setValues($values)
+    {
+        if (!$values instanceof core\collection\IInputTree) {
             $values = core\collection\InputTree::factory($values);
         }
 
@@ -65,26 +73,30 @@ abstract class Base implements IProcedure {
         return $this;
     }
 
-    public function getValues() {
+    public function getValues()
+    {
         return $this->values;
     }
 
-    public function setDataMap(array $map) {
+    public function setDataMap(array $map)
+    {
         $this->validator->setDataMap($map);
         return $this;
     }
 
-    public function getDataMap() {
+    public function getDataMap()
+    {
         return $this->validator->getDataMap();
     }
 
-    public function execute(...$args) {
-        if(!$this->_isPrepared) {
+    public function execute(...$args)
+    {
+        if (!$this->_isPrepared) {
             $this->prepare();
         }
 
-        if(!method_exists($this, '_execute')) {
-            throw new LogicException(
+        if (!method_exists($this, '_execute')) {
+            throw Glitch::ELogic(
                 'Unit procedure '.$this->_unit->getUnitId().'/'.$this->getName().' does not implement _execute method'
             );
         }
@@ -93,8 +105,9 @@ abstract class Base implements IProcedure {
         return $this->isValid();
     }
 
-    public function validate() {
-        if(!$this->_isPrepared) {
+    public function validate()
+    {
+        if (!$this->_isPrepared) {
             $this->prepare();
         }
 
@@ -102,20 +115,25 @@ abstract class Base implements IProcedure {
         return $this->isValid();
     }
 
-    public function prepare() {
+    public function prepare()
+    {
         $this->_prepareValidator();
         $this->_prepare();
         $this->_isPrepared = true;
         return $this;
     }
 
-    protected function _prepare() {}
+    protected function _prepare()
+    {
+    }
 
-    protected function _prepareValidator() {
+    protected function _prepareValidator()
+    {
         $this->_unit->prepareValidator($this->validator);
     }
 
-    public function isValid(): bool {
+    public function isValid(): bool
+    {
         return $this->values->isValid() && $this->validator->isValid();
     }
 }

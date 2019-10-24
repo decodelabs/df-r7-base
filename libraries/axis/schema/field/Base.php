@@ -10,6 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -25,7 +26,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Inspectable
         $class = 'df\\axis\\schema\\field\\'.ucfirst($superType);
 
         if (!class_exists($class)) {
-            throw new axis\schema\FieldTypeNotFoundException(
+            throw Glitch::ENotFound(
                 'Field type '.$superType.' could not be found'
             );
         }
@@ -57,7 +58,7 @@ abstract class Base implements axis\schema\IField, \Serializable, Inspectable
                 $hasInit = true;
                 $this->{$method}(...$args);
             } else {
-                throw new axis\schema\FieldTypeNotFoundException(
+                throw Glitch::ENotFound(
                     'Field type '.$superType.' does not support sub type '.$subType
                 );
             }

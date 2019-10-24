@@ -105,7 +105,7 @@ class Base implements ISchema, Inspectable
 
         foreach ($fields as $name => $field) {
             if ($field instanceof opal\schema\INullPrimitiveField) {
-                throw new opal\schema\RuntimeException(
+                throw Glitch::ERuntime(
                     'Indexes cannot be defined for NullPrimitive fields ('.$this->getName().'.'.$name.')'
                 );
             }
@@ -227,7 +227,7 @@ class Base implements ISchema, Inspectable
     public static function fromJson(opal\schema\ISchemaContext $unit, $json)
     {
         if (!$data = json_decode($json, true)) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Invalid json schema representation'
             );
         }

@@ -105,7 +105,7 @@ class Source implements ISource, Inspectable
                 $schema = $this->_adapter->getQueryAdapterSchema();
 
                 if (!$primaryIndex = $schema->getPrimaryIndex()) {
-                    throw new opal\schema\RuntimeException(
+                    throw Glitch::ERuntime(
                         'Unit does not have a primary index'
                     );
                 }
@@ -143,7 +143,7 @@ class Source implements ISource, Inspectable
 
 
             if (substr($name, 0, 1) == '@') {
-                throw new axis\schema\RuntimeException(
+                throw Glitch::ERuntime(
                     'Unknown symbolic field: '.$name
                 );
             }
@@ -171,7 +171,7 @@ class Source implements ISource, Inspectable
         } elseif ($this->_adapter instanceof INaiveIntegralAdapter) {
             if ($name == '@primary') {
                 if (!$primaryIndex = $this->_adapter->getPrimaryIndex()) {
-                    throw new axis\schema\RuntimeException(
+                    throw Glitch::ERuntime(
                         'Adapter does not have a primary index'
                     );
                 }
@@ -186,7 +186,7 @@ class Source implements ISource, Inspectable
             }
 
             if (substr($name, 0, 1) == '@') {
-                throw new axis\schema\RuntimeException(
+                throw Glitch::ERuntime(
                     'Unknown symbolic field: '.$name
                 );
             }

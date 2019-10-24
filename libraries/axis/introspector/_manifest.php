@@ -10,12 +10,9 @@ use df\core;
 use df\axis;
 use df\opal;
 
-// Exceptions
-interface IException {}
-
-
 // Interfaces
-interface IProbe {
+interface IProbe
+{
     public function getModelList();
     public function getDefinedUnitList();
     public function getDefinedUnitListForModel($modelName);
@@ -24,7 +21,8 @@ interface IProbe {
     public function inspectUnit($id);
 }
 
-interface IUnitInspector {
+interface IUnitInspector
+{
     public function getUnit();
     public function getModel();
     public function getId(): string;
@@ -52,7 +50,8 @@ interface IUnitInspector {
     public function storageExists();
 }
 
-interface IStorageDescriber {
+interface IStorageDescriber
+{
     public function getName(): string;
     public function getType();
     public function getItemCount();

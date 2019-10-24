@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -38,7 +39,7 @@ class Version implements core\IStringProvider, Inspectable
     public static function matchString($version)
     {
         if (!preg_match(self::REGEX, $version, $matches)) {
-            throw new RuntimeException('Invalid version: '.$version);
+            throw Glitch::ERuntime('Invalid version: '.$version);
         }
 
         return $matches;

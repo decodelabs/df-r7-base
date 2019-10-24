@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flow;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -94,7 +95,7 @@ class MultiPart implements IMultiPart, Inspectable
                 break;
 
             default:
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Invalid multi part type '.$type
                 );
         }

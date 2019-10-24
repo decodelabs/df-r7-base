@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -53,7 +54,7 @@ class Clause implements opal\query\IClause, Inspectable
     {
         if ($value instanceof opal\query\IQuery
         && !$value instanceof opal\query\ICorrelationQuery) {
-            throw new opal\query\ValueException(
+            throw Glitch::EUnexpectedValue(
                 'Only correlation queries are allowed as query clause values'
             );
         }
@@ -87,7 +88,7 @@ class Clause implements opal\query\IClause, Inspectable
                     );
 
                 default:
-                    throw new opal\query\InvalidArgumentException(
+                    throw Glitch::EInvalidArgument(
                         'Query field '.$field->getName().' has no virtual field rewriter'
                     );
             }
@@ -113,7 +114,7 @@ class Clause implements opal\query\IClause, Inspectable
             }
         }
 
-        throw new opal\query\InvalidArgumentException(
+        throw Glitch::EInvalidArgument(
             'Adapter could not rewrite virtual query clause'
         );
     }
@@ -149,7 +150,7 @@ class Clause implements opal\query\IClause, Inspectable
     public function setField(opal\query\IField $field)
     {
         if ($field instanceof opal\query\IVirtualField) {
-            throw new opal\query\InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Virtual fields cannot be used directly in clauses'
             );
         }
@@ -222,7 +223,7 @@ class Clause implements opal\query\IClause, Inspectable
             case self::OP_NOT_MATCHES: return self::OP_MATCHES;
 
             default:
-                throw new opal\query\OperatorException(
+                throw Glitch::{'df/opal/query/EOperator'}(
                     'Operator '.$operator.' is not recognized'
                 );
         }
@@ -263,7 +264,7 @@ class Clause implements opal\query\IClause, Inspectable
                     break;
 
                 default:
-                    throw new opal\query\OperatorException(
+                    throw Glitch::{'df/opal/query/EOperator'}(
                         'Operator '.$operator.' is not recognized'
                     );
             }
@@ -322,7 +323,7 @@ class Clause implements opal\query\IClause, Inspectable
             $deref = $value->dereference();
 
             if (count($deref) > 1) {
-                throw new opal\query\ValueException(
+                throw Glitch::EUnexpectedValue(
                     'Unable to dereference virtual field to single intrinsic for clause value'
                 );
             }
@@ -352,7 +353,7 @@ class Clause implements opal\query\IClause, Inspectable
                     break;
 
                 default:
-                    throw new opal\query\ValueException(
+                    throw Glitch::EUnexpectedValue(
                         'Correlation clauses cannot use operator '.$this->_operator
                     );
             }
@@ -361,7 +362,7 @@ class Clause implements opal\query\IClause, Inspectable
                 case self::OP_IN:
                 case self::OP_NOT_IN:
                     if ($value instanceof opal\query\IField) {
-                        throw new opal\query\ValueException(
+                        throw Glitch::EUnexpectedValue(
                             'Value for in operator cannot be a field reference'
                         );
                     }
@@ -380,7 +381,7 @@ class Clause implements opal\query\IClause, Inspectable
                 case self::OP_BETWEEN:
                 case self::OP_NOT_BETWEEN:
                     if ($value instanceof opal\query\IField) {
-                        throw new opal\query\ValueException(
+                        throw Glitch::EUnexpectedValue(
                             'Value for between operator cannot be a field reference'
                         );
                     }
@@ -390,7 +391,7 @@ class Clause implements opal\query\IClause, Inspectable
                     }
 
                     if (!is_array($value) || count($value) < 2) {
-                        throw new opal\query\ValueException(
+                        throw Glitch::EUnexpectedValue(
                             'Value for between operator must be an array with 2 numeric elements'
                         );
                     }
@@ -402,7 +403,7 @@ class Clause implements opal\query\IClause, Inspectable
                         $part = array_shift($temp);
 
                         if (!is_numeric($part)) {
-                            throw new opal\query\ValueException(
+                            throw Glitch::EUnexpectedValue(
                                 'Value for between operator must be an array with 2 numeric elements'
                             );
                         }
@@ -643,7 +644,7 @@ class Clause implements opal\query\IClause, Inspectable
             }
         }
 
-        throw new opal\query\InvalidArgumentException(
+        throw Glitch::EInvalidArgument(
             'Could not extract multi key field value for '.$name
         );
     }

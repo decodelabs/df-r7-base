@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 class Union implements IUnionQuery
 {
     use TQuery;
@@ -45,7 +47,7 @@ class Union implements IUnionQuery
     public function getSource()
     {
         if (empty($this->_queries)) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Union has no child queries yet!'
             );
         }
@@ -84,7 +86,7 @@ class Union implements IUnionQuery
                 $newSource = $query->getSource();
 
                 if ($newSource->getHash() != $primarySource->getHash()) {
-                    throw new LogicException(
+                    throw Glitch::ELogic(
                         'Union queries must all be on the same adapter'
                     );
                 }

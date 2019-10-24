@@ -12,6 +12,8 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 class Unit extends axis\unit\Table
 {
     const ORDERABLE_FIELDS = [
@@ -96,7 +98,7 @@ class Unit extends axis\unit\Table
         $locator = mesh\entity\Locator::factory($locator);
 
         if (!$locator->getId()) {
-            throw new mesh\entity\InvalidArgumentException(
+            throw Glitch::{'df/mesh/entity/EInvalidArgument'}(
                 'Locator does not have an id'
             );
         }

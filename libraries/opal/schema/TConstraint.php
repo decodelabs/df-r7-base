@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -165,7 +166,7 @@ trait TConstraint_Index
             } elseif ($field instanceof IIndexFieldReference) {
                 $this->addFieldReference($field);
             } else {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Invalid field ('.(@(string)$field).') passed to index '.$this->getName()
                 );
             }
@@ -403,7 +404,7 @@ trait TConstraint_ForeignKey
 
         foreach ($this->_fieldReferences as $compReference) {
             if ($compReference->eq($reference)) {
-                throw new RuntimeException(
+                throw Glitch::ERuntime(
                     'A field reference between '.$reference->getField()->getName().' and '.
                     $this->_targetSchema.'.'.$reference->getTargetFieldName().' has already been defined'
                 );
@@ -600,7 +601,7 @@ trait TConstraint_Trigger
                     break;
 
                 default:
-                    throw new InvalidArgumentException(
+                    throw Glitch::EInvalidArgument(
                         'Trigger event '.$event.' is not recognised'
                     );
             }
@@ -613,7 +614,7 @@ trait TConstraint_Trigger
                 break;
 
             default:
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgumentn(
                     'Trigger event '.$event.' is not recognised'
                 );
         }

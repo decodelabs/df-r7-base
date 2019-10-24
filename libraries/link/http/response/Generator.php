@@ -9,20 +9,23 @@ use df;
 use df\core;
 use df\link;
 
-class Generator extends Base implements link\http\IGeneratorResponse {
+use DecodeLabs\Glitch;
 
+class Generator extends Base implements link\http\IGeneratorResponse
+{
     protected $_sender;
     protected $_channel;
     protected $_manualChunk = false;
 
-    public function __construct($contentType, $sender, link\http\IResponseHeaderCollection $headers=null) {
+    public function __construct($contentType, $sender, link\http\IResponseHeaderCollection $headers=null)
+    {
         parent::__construct($headers);
         $this->_sender = $sender;
 
-        if($this->_sender instanceof core\io\IChunkSender) {
+        if ($this->_sender instanceof core\io\IChunkSender) {
             $sender->setChunkReceiver($this);
-        } else if(!is_callable($this->_sender)) {
-            throw new link\http\RuntimeException(
+        } elseif (!is_callable($this->_sender)) {
+            throw Glitch::ERuntime(
                 'Generator sender must either be a core\\io\\IChunkSender or callable'
             );
         }
@@ -36,8 +39,9 @@ class Generator extends Base implements link\http\IGeneratorResponse {
             ;
     }
 
-    public function shouldChunkManually(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldChunkManually(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_manualChunk = $flag;
             return $this;
         }
@@ -45,22 +49,23 @@ class Generator extends Base implements link\http\IGeneratorResponse {
         return $this->_manualChunk;
     }
 
-    public function generate(core\io\IChannel $channel) {
+    public function generate(core\io\IChannel $channel)
+    {
         $this->_channel = $channel;
 
-        if($this->_sender instanceof core\io\IChunkSender) {
+        if ($this->_sender instanceof core\io\IChunkSender) {
             $this->_sender->sendChunks();
         } else {
             $gen = $this->_sender->__invoke($this);
 
-            if($gen instanceof \Generator) {
-                foreach($gen as $chunk) {
+            if ($gen instanceof \Generator) {
+                foreach ($gen as $chunk) {
                     $this->writeChunk($chunk);
                 }
             }
         }
 
-        if($this->_manualChunk) {
+        if ($this->_manualChunk) {
             $this->_channel->write("0\r\n\r\n");
         }
 
@@ -69,13 +74,15 @@ class Generator extends Base implements link\http\IGeneratorResponse {
         return $this;
     }
 
-    public function getChannel() {
+    public function getChannel()
+    {
         return $this->_channel;
     }
 
-    public function writeChunk($chunk, $length=null) {
-        if($this->_channel) {
-            if($this->_manualChunk) {
+    public function writeChunk($chunk, $length=null)
+    {
+        if ($this->_channel) {
+            if ($this->_manualChunk) {
                 $this->_channel->write(dechex(strlen($chunk))."\r\n");
                 $this->_channel->write($chunk."\r\n");
             } else {
@@ -86,12 +93,14 @@ class Generator extends Base implements link\http\IGeneratorResponse {
         return $this;
     }
 
-    public function writeBrowserKeepAlive() {
+    public function writeBrowserKeepAlive()
+    {
         return $this->writeChunk(str_repeat(' ', 1024));
     }
 
-    public function getContent() {
-        throw new link\http\RuntimeException(
+    public function getContent()
+    {
+        throw Glitch::ERuntime(
             'Streamed generator responses can only generate their content via a channel'
         );
     }

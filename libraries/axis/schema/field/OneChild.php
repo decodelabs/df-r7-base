@@ -62,7 +62,7 @@ class OneChild extends Base implements axis\schema\IOneChildField
         $localRelationManifest = $this->getLocalRelationManifest();
 
         if (!$localRelationManifest->isSingleField()) {
-            throw new axis\schema\RuntimeException(
+            throw Glitch::ERuntime(
                 'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
                 'You should probably use a fieldless join constraint instead'
             );

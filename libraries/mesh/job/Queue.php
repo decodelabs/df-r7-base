@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 class Queue implements IQueue
 {
     protected $_jobs = [];
@@ -57,7 +59,7 @@ class Queue implements IQueue
 
         if (!$job) {
             if ($callback === null) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Generic jobs must have a callback'
                 );
             }
@@ -118,7 +120,7 @@ class Queue implements IQueue
 
             if (!$job instanceof IJob
             && $job !== null) {
-                throw new RuntimeException(
+                throw Glitch::ERuntime(
                     'Cannot prepare dependency, context is not an IJob'
                 );
             }
@@ -127,7 +129,7 @@ class Queue implements IQueue
                 $provider = array_shift($args);
 
                 if (!$provider instanceof IJobProvider) {
-                    throw new RuntimeException(
+                    throw Glitch::ERuntime(
                         'Cannot prepare job, context is not an IJobProvider'
                     );
                 }
@@ -143,7 +145,7 @@ class Queue implements IQueue
         $provider = array_shift($args);
 
         if (!$provider instanceof IJobProvider) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Cannot prepare job, context is not an IJobProvider'
             );
         }
@@ -407,7 +409,7 @@ class Queue implements IQueue
                 }
 
                 if ($job->hasDependencies()) {
-                    throw new RuntimeException(
+                    throw Glitch::ERuntime(
                         'Unable to untangle job dependencies'
                     );
                 }

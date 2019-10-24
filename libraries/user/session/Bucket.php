@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\user;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -28,7 +29,7 @@ class Bucket implements user\session\IBucket, Inspectable
         $this->_name = $name;
 
         if (empty($name)) {
-            throw new user\InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Invalid empty name bucket name'
             );
         }

@@ -9,8 +9,10 @@ use df;
 use df\core;
 use df\link;
 
-class Cookie implements ICookie {
+use DecodeLabs\Glitch;
 
+class Cookie implements ICookie
+{
     use core\TStringProvider;
 
     protected $_name;
@@ -21,25 +23,26 @@ class Cookie implements ICookie {
     protected $_isSecure = false;
     protected $_isHttpOnly = false;
 
-    public static function fromString(string $string) {
+    public static function fromString(string $string)
+    {
         $parts = explode(';', $string);
         $main = explode('=', trim(array_shift($parts)), 2);
         $output = new self(array_shift($main), array_shift($main));
         $hasMaxAge = false;
 
-        foreach($parts as $part) {
+        foreach ($parts as $part) {
             $set = explode('=', trim($part), 2);
             $key = strtolower(array_shift($set));
             $value = trim(array_shift($set));
 
-            switch($key) {
+            switch ($key) {
                 case 'max-age':
                     $output->setMaxAge($value);
                     $hasMaxAge = true;
                     break;
 
                 case 'expires':
-                    if(!$hasMaxAge) {
+                    if (!$hasMaxAge) {
                         $output->setExpiryDate($value);
                     }
                     break;
@@ -65,34 +68,36 @@ class Cookie implements ICookie {
         return $output;
     }
 
-    public function __construct($name, $value, $expiry=null, $httpOnly=null, $secure=null) {
+    public function __construct($name, $value, $expiry=null, $httpOnly=null, $secure=null)
+    {
         $this->setName($name);
         $this->setValue($value);
 
-        if($expiry !== null) {
+        if ($expiry !== null) {
             $this->setExpiryDate($expiry);
         }
 
-        if($httpOnly !== null) {
+        if ($httpOnly !== null) {
             $this->isHttpOnly((bool)$httpOnly);
         }
 
-        if($secure !== null) {
+        if ($secure !== null) {
             $this->isSecure((bool)$secure);
         }
     }
 
-    public function setName($name) {
+    public function setName($name)
+    {
         $name = (string)$name;
 
-        if(empty($name) && !is_numeric($name)) {
-            throw new InvalidArgumentException(
+        if (empty($name) && !is_numeric($name)) {
+            throw Glitch::EInvalidArgument(
                 'Empty cookie name'
             );
         }
 
-        if(preg_match('/[\x00-\x20\x22\x28-\x29\x2c\x2f\x3a-\x40\x5b-\x5d\x7b\x7d\x7f]/', $name)) {
-            throw new InvalidArgumentException(
+        if (preg_match('/[\x00-\x20\x22\x28-\x29\x2c\x2f\x3a-\x40\x5b-\x5d\x7b\x7d\x7f]/', $name)) {
+            throw Glitch::EInvalidArgument(
                 'Cookie name contains control character or space'
             );
         }
@@ -101,12 +106,14 @@ class Cookie implements ICookie {
         return $this;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->_name;
     }
 
-    public function matchesName($name) {
-        if($name === null) {
+    public function matchesName($name)
+    {
+        if ($name === null) {
             return true;
         }
 
@@ -114,18 +121,21 @@ class Cookie implements ICookie {
     }
 
 
-    public function setValue($value) {
+    public function setValue($value)
+    {
         $this->_value = (string)$value;
         return $this;
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return $this->_value;
     }
 
 
-    public function setMaxAge($age=null) {
-        if(!empty($age)) {
+    public function setMaxAge($age=null)
+    {
+        if (!empty($age)) {
             $this->setExpiryDate(core\time\Date::factory('now')->add($age));
         } else {
             $this->setExpiryDate(null);
@@ -134,8 +144,9 @@ class Cookie implements ICookie {
         return $this;
     }
 
-    public function getMaxAge() {
-        if(!$this->_expiryDate) {
+    public function getMaxAge()
+    {
+        if (!$this->_expiryDate) {
             return null;
         }
 
@@ -143,17 +154,20 @@ class Cookie implements ICookie {
     }
 
 
-    public function setExpiryDate($date=null) {
+    public function setExpiryDate($date=null)
+    {
         $this->_expiryDate = core\time\Date::normalize($date);
         return $this;
     }
 
-    public function getExpiryDate() {
+    public function getExpiryDate()
+    {
         return $this->_expiryDate;
     }
 
-    public function isExpired() {
-        if(!$this->_expiryDate) {
+    public function isExpired()
+    {
+        if (!$this->_expiryDate) {
             return false;
         }
 
@@ -161,27 +175,30 @@ class Cookie implements ICookie {
     }
 
 
-    public function setDomain($domain) {
+    public function setDomain($domain)
+    {
         $this->_domain = $domain;
         return $this;
     }
 
-    public function getDomain() {
+    public function getDomain()
+    {
         return $this->_domain;
     }
 
-    public function matchesDomain($domain) {
-        if($domain === null) {
+    public function matchesDomain($domain)
+    {
+        if ($domain === null) {
             return true;
         }
 
         $current = ltrim($this->_domain, '.');
 
-        if(!$current || !strcasecmp($domain, $current)) {
+        if (!$current || !strcasecmp($domain, $current)) {
             return true;
         }
 
-        if(filter_var($domain, \FILTER_VALIDATE_IP)) {
+        if (filter_var($domain, \FILTER_VALIDATE_IP)) {
             return false;
         }
 
@@ -191,21 +208,24 @@ class Cookie implements ICookie {
         );
     }
 
-    public function setPath($path) {
+    public function setPath($path)
+    {
         $this->_path = $path;
         return $this;
     }
 
-    public function getPath() {
+    public function getPath()
+    {
         return $this->_path;
     }
 
-    public function matchesPath($path) {
-        if($path === null) {
+    public function matchesPath($path)
+    {
+        if ($path === null) {
             return true;
         }
 
-        if(!strlen($this->_path)) {
+        if (!strlen($this->_path)) {
             return true;
         }
 
@@ -216,8 +236,9 @@ class Cookie implements ICookie {
     }
 
 
-    public function isSecure(bool $flag=null) {
-        if($flag !== null) {
+    public function isSecure(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isSecure = $flag;
             return $this;
         }
@@ -225,8 +246,9 @@ class Cookie implements ICookie {
         return $this->_isSecure;
     }
 
-    public function isHttpOnly(bool $flag=null) {
-        if($flag !== null) {
+    public function isHttpOnly(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isHttpOnly = $flag;
             return $this;
         }
@@ -234,50 +256,52 @@ class Cookie implements ICookie {
         return $this->_isHttpOnly;
     }
 
-// String
-    public function toString(): string {
+    // String
+    public function toString(): string
+    {
         $output = $this->_name.'='.urlencode($this->_value);
 
-        if($this->_expiryDate) {
+        if ($this->_expiryDate) {
             $output .= '; Expires='.$this->_expiryDate->toTimezone('GMT')->format(core\time\Date::COOKIE);
         }
 
-        if($this->_domain !== null) {
+        if ($this->_domain !== null) {
             $output .= '; Domain='.$this->_domain;
         }
 
-        if($this->_path !== null) {
+        if ($this->_path !== null) {
             $output .= '; Path='.$this->_path;
         }
 
-        if($this->_isSecure) {
+        if ($this->_isSecure) {
             $output .= '; Secure';
         }
 
-        if($this->_isHttpOnly) {
+        if ($this->_isHttpOnly) {
             $output .= '; HttpOnly';
         }
 
         return $output;
     }
 
-    public function toInvalidateString() {
+    public function toInvalidateString()
+    {
         $output = $this->_name.'=deleted';
         $output .= '; Expires='.core\time\Date::factory('-10 years', 'GMT')->format(core\time\Date::COOKIE);
 
-        if($this->_domain !== null) {
+        if ($this->_domain !== null) {
             $output .= '; Domain='.$this->_domain;
         }
 
-        if($this->_path !== null) {
+        if ($this->_path !== null) {
             $output .= '; Path='.$this->_path;
         }
 
-        if($this->_isSecure) {
+        if ($this->_isSecure) {
             $output .= '; Secure';
         }
 
-        if($this->_isHttpOnly) {
+        if ($this->_isHttpOnly) {
             $output .= '; HttpOnly';
         }
 

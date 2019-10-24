@@ -10,6 +10,7 @@ use df\halo;
 
 use DecodeLabs\Systemic;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -241,7 +242,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
                 case Mode::WRITE_NEW:
                 case Mode::READ_WRITE_NEW:
                     if (!empty($this->_data)) {
-                        throw new RuntimeException('Memory file is not empty');
+                        throw Glitch::ERuntime('Memory file is not empty');
                     }
 
                     $this->_pos = 0;
@@ -280,7 +281,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
     public function lock($type, $nonBlocking=false)
     {
         if (!$this->_isOpen) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Memory file is not open'
             );
         }
@@ -292,7 +293,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
     public function unlock()
     {
         if (!$this->_isOpen) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Memory file is not open'
             );
         }
@@ -306,7 +307,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
     public function seek($offset, $whence=\SEEK_SET)
     {
         if (!$this->_isOpen) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Memory file is not open'
             );
         }
@@ -361,7 +362,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
     protected function _readChunk($length)
     {
         if (!$this->_isOpen) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Memory file is not open'
             );
         }
@@ -375,7 +376,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
     protected function _readLine()
     {
         if (!$this->_isOpen) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Memory file is not open'
             );
         }
@@ -401,7 +402,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
     protected function _writeChunk($data, $length)
     {
         if (!$this->_isOpen) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Memory file is not open'
             );
         }

@@ -10,6 +10,8 @@ use df\core;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 trait TField
 {
     protected $_name;
@@ -773,11 +775,11 @@ trait TField_BitSizeRestricted
         $size = (int)$size;
 
         if ($size > 64) {
-            throw new opal\schema\InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Maximum bit size is 64'
             );
         } elseif ($size < 1) {
-            throw new opal\schema\InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Minimum bit size is 1'
             );
         }
@@ -875,7 +877,7 @@ trait TField_ByteSizeRestricted
                 if ($size < 8) {
                     $size = 8;
                 } else {
-                    throw new opal\schema\InvalidArgumentException(
+                    throw Glitch::EInvalidArgument(
                         'Maximum byte size is 8'
                     );
                 }
@@ -978,7 +980,7 @@ trait TField_LargeByteSizeRestricted
                 } elseif ($size < 32) {
                     $size = 32;
                 } else {
-                    throw new opal\schema\InvalidArgumentException(
+                    throw Glitch::EInvalidArgument(
                         'Maximum exponent byte size is 2 ^ 32'
                     );
                 }

@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -598,7 +599,7 @@ class Dir implements IDirectory, Inspectable
             return new File($path);
         }
 
-        throw new RuntimeException('Child '.$name.' does not exist');
+        throw Glitch::ERuntime('Child '.$name.' does not exist');
     }
 
     public function getExistingChild($name)

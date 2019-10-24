@@ -11,41 +11,44 @@ use df\axis;
 use df\opal;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 class PathSlug extends Base implements
     axis\schema\IAutoUniqueField,
     opal\schema\IMultiPrimitiveField,
-    opal\schema\IQueryClauseRewriterField {
-
-
+    opal\schema\IQueryClauseRewriterField
+{
     use axis\schema\TAutoUniqueField;
 
-// Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
-        if(!isset($row[$key.'_name'])) {
+    // Values
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    {
+        if (!isset($row[$key.'_name'])) {
             return null;
         }
 
         $output = $row[$key.'_name'];
 
-        if(isset($row[$key.'_location'])) {
+        if (isset($row[$key.'_location'])) {
             $location = trim($row[$key.'_location'], '/');
         } else {
             $location = null;
         }
 
-        if(!empty($location)) {
+        if (!empty($location)) {
             $output = $location.'/'.$output;
         }
 
         return $output;
     }
 
-    public function deflateValue($value) {
+    public function deflateValue($value)
+    {
         $parts = explode('/', $value);
         $name = array_pop($parts);
         $location = implode('/', $parts);
 
-        if($location == '/') {
+        if ($location == '/') {
             $location = '';
         }
 
@@ -55,31 +58,34 @@ class PathSlug extends Base implements
         ];
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if($value === null && $this->isNullable()) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    {
+        if ($value === null && $this->isNullable()) {
             return null;
         }
 
         $output = flex\Text::formatPathSlug($value);
 
-        if($output == '/') {
+        if ($output == '/') {
             $output = '';
         }
 
         return $output;
     }
 
-    public function compareValues($value1, $value2) {
+    public function compareValues($value1, $value2)
+    {
         return (string)$value1 === (string)$value2;
     }
 
 
-// Rewriters
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
-        switch($operator) {
+    // Rewriters
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false)
+    {
+        switch ($operator) {
             case 'between':
             case 'not between':
-                throw new axis\LogicException(
+                throw Glitch::ELogic(
                     'PathSlug fields cannot be filtered with "'.$operator.'" operators'
                 );
 
@@ -96,10 +102,10 @@ class PathSlug extends Base implements
                 break;
         }
 
-        if(is_array($value)) {
+        if (is_array($value)) {
             $output = new opal\query\clause\WhereList($parent, $isOr);
 
-            foreach($value as $sub) {
+            foreach ($value as $sub) {
                 $output->_addClause($this->_createSubClause($output, $field, $sub, $subOperator));
             }
 
@@ -109,18 +115,19 @@ class PathSlug extends Base implements
         }
     }
 
-    protected function _createSubClause(opal\query\IClauseFactory $parent, opal\query\IField $field, $value, $operator) {
+    protected function _createSubClause(opal\query\IClauseFactory $parent, opal\query\IField $field, $value, $operator)
+    {
         $output = new opal\query\clause\WhereList($parent, true);
         $slug = $this->sanitizeValue($value);
         $sourceAlias = $field->getSource()->getAlias();
 
-        if($slug === null) {
+        if ($slug === null) {
             return $output
                 ->where($sourceAlias.'.'.$this->_name.'_name', '=', $slug)
                 ->where($sourceAlias.'.'.$this->_name.'_location', '=', $slug);
         }
 
-        switch($operator) {
+        switch ($operator) {
             case 'begins':
             case 'not begins':
                 return $output->where($sourceAlias.'.'.$this->_name.'_location', $operator, $slug);
@@ -142,17 +149,17 @@ class PathSlug extends Base implements
                 $name = array_pop($parts);
                 $location = '';
 
-                if(opal\query\clause\Clause::isNegatedOperator($operator)) {
+                if (opal\query\clause\Clause::isNegatedOperator($operator)) {
                     $nameOperator = '!=';
                 } else {
                     $nameOperator = '=';
                 }
 
-                if(!empty($parts)) {
+                if (!empty($parts)) {
                     $location = implode('/', $parts);
                 }
 
-                if($location == '/') {
+                if ($location == '/') {
                     $location = '';
                 }
 
@@ -163,28 +170,32 @@ class PathSlug extends Base implements
     }
 
 
-// Primitive
-    public function getPrimitiveFieldNames() {
+    // Primitive
+    public function getPrimitiveFieldNames()
+    {
         return [
             $this->_name.'_location',
             $this->_name.'_name'
         ];
     }
 
-    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
         return new opal\schema\Primitive_MultiField($this, [
             $this->_name.'_location' => (new opal\schema\Primitive_Varchar($this, 255)),
             $this->_name.'_name' => (new opal\schema\Primitive_Varchar($this, 255))
         ]);
     }
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         $this->_setBaseStorageArray($data);
         $this->_setAutoUniqueStorageArray($data);
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return array_merge(
             $this->_getBaseStorageArray(),
             $this->_getAutoUniqueStorageArray()

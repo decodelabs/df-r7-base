@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flow;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -32,7 +33,7 @@ class Address implements IAddress, Inspectable
         } elseif (is_string($address)) {
             return self::fromString($address);
         } else {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Invalid email address'
             );
         }

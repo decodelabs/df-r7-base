@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\user;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -136,7 +137,7 @@ class Date implements IDate, Inspectable
             try {
                 $timezone = new \DateTimeZone((string)$timezone);
             } catch (\Throwable $e) {
-                throw new InvalidArgumentException($e->getMessage());
+                throw Glitch::EInvalidArgument($e->getMessage());
             }
         }
 
@@ -173,7 +174,7 @@ class Date implements IDate, Inspectable
         try {
             $this->_setDate(new \DateTime($date, $timezone), $timeEnabled);
         } catch (\Throwable $e) {
-            throw new InvalidArgumentException($e->getMessage());
+            throw Glitch::EInvalidArgument($e->getMessage());
         }
 
         if ($timestamp !== null) {
@@ -288,7 +289,7 @@ class Date implements IDate, Inspectable
             try {
                 $timezone = new \DateTimeZone((string)$timezone);
             } catch (\Throwable $e) {
-                throw new InvalidArgumentException($e->getMessage());
+                throw Glitch::EInvalidArgument($e->getMessage());
             }
         }
 
@@ -549,7 +550,7 @@ class Date implements IDate, Inspectable
             $month = strtolower($month);
 
             if (!isset(self::MONTHS[$month])) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     $month.' is not a valid month string'
                 );
             }
@@ -616,7 +617,7 @@ class Date implements IDate, Inspectable
             $day = strtolower($day);
 
             if (!isset(self::DAYS[$day])) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     $day.' is not a valid day string'
                 );
             }

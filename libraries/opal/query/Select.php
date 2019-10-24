@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -88,7 +89,7 @@ class Select implements ISelectQuery, Inspectable
         }
 
         if (!is_array($data)) {
-            throw new UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Source did not return a result that could be converted to an array'
             );
         }

@@ -8,6 +8,7 @@ namespace df\core\collection;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -84,7 +85,7 @@ class HeaderMap implements IHeaderMap, Inspectable
     public function set($key, $value=null)
     {
         if (empty($key)) {
-            throw new InvalidArgumentException('Invalid header input');
+            throw Glitch::EInvalidArgument('Invalid header input');
         }
 
         $key = $this->normalizeKey($key);
@@ -111,7 +112,7 @@ class HeaderMap implements IHeaderMap, Inspectable
     public function add($key, $value)
     {
         if (empty($key) || (isset($value) && !is_scalar($value))) {
-            throw new InvalidArgumentException('Invalid header input');
+            throw Glitch::EInvalidArgument('Invalid header input');
         }
 
         $key = $this->normalizeKey($key);
@@ -137,7 +138,7 @@ class HeaderMap implements IHeaderMap, Inspectable
     public function append($key, $value)
     {
         if (empty($key) || (isset($value) && !is_scalar($value))) {
-            throw new InvalidArgumentException('Invalid header input');
+            throw Glitch::EInvalidArgument('Invalid header input');
         }
 
         $key = $this->normalizeKey($key);

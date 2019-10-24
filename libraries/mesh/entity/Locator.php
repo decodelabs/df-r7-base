@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\mesh;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -94,7 +95,7 @@ class Locator implements ILocator, Inspectable
                     } elseif (ctype_alnum($char)) {
                         $part .= $char;
                     } else {
-                        throw new InvalidArgumentException(
+                        throw Glitch::EInvalidArgument(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -123,7 +124,7 @@ class Locator implements ILocator, Inspectable
                     } elseif (preg_match('/[a-zA-Z0-9-_]/', $char)) {
                         $part .= $char;
                     } else {
-                        throw new InvalidArgumentException(
+                        throw Glitch::EInvalidArgument(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -148,7 +149,7 @@ class Locator implements ILocator, Inspectable
                     } elseif (ctype_alnum($char) || $char == '-') {
                         $part .= $char;
                     } else {
-                        throw new InvalidArgumentException(
+                        throw Glitch::EInvalidArgument(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -176,7 +177,7 @@ class Locator implements ILocator, Inspectable
                 // Entity id end quote
                 case 5:
                     if ($char != '/') {
-                        throw new InvalidArgumentException(
+                        throw Glitch::EInvalidArgument(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -197,11 +198,11 @@ class Locator implements ILocator, Inspectable
         }
 
         if (empty($output)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'No entity type definition detected in: '.$path
             );
         } elseif ($mode != 0) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Unexpected end of locator: '.$path
             );
         }
@@ -282,7 +283,7 @@ class Locator implements ILocator, Inspectable
             $index += count($this->_nodes);
 
             if ($index < 0) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Index is out of bounds'
                 );
             }
@@ -586,7 +587,7 @@ class Locator implements ILocator, Inspectable
 
         // Type
         if (!isset($node['type'])) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Node has no type definition'
             );
         }

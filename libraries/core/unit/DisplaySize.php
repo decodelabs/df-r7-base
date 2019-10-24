@@ -179,7 +179,7 @@ class DisplaySize implements IDisplaySize, Inspectable
         switch ($this->_unit) {
             case '%':
                 if ($length === null) {
-                    throw new RuntimeException(
+                    throw Glitch::ERuntime(
                         'No absolute length data has been given to convert to an absolute value from percentage'
                     );
                 }
@@ -201,7 +201,7 @@ class DisplaySize implements IDisplaySize, Inspectable
             case 'vmin':
             case 'vmax':
                 if ($viewportWidth === null && $viewportHeight === null) {
-                    throw new RuntimeException(
+                    throw Glitch::ERuntime(
                         'No absolute viewport size data has been given to convert to an absolute value'
                     );
                 }
@@ -215,7 +215,7 @@ class DisplaySize implements IDisplaySize, Inspectable
         $length = clone self::factory($length);
 
         if (!$length->isAbsolute()) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Extraction length must be absolute'
             );
         }
@@ -229,7 +229,7 @@ class DisplaySize implements IDisplaySize, Inspectable
         $size = clone self::factory($size);
 
         if (!$size->isAbsolute()) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Extraction font size must be absolute'
             );
         }
@@ -265,7 +265,7 @@ class DisplaySize implements IDisplaySize, Inspectable
         $height = clone self::factory($height);
 
         if (!$width->isAbsolute() || !$height->isAbsolute()) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Extraction viewport size must be absolute'
             );
         }
@@ -295,13 +295,13 @@ class DisplaySize implements IDisplaySize, Inspectable
     protected function _convert($value, $inUnit, $outUnit)
     {
         if (!$this->_isAbsolute($inUnit)) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Only absolute size values can be converted'
             );
         }
 
         if (!$this->_isAbsolute($outUnit)) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Size values cannot be converted to relative units'
             );
         }

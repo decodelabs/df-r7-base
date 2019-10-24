@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
@@ -62,7 +63,7 @@ class Decoder implements IDecoder
             $offset++;
 
             if ($type < 8) {
-                throw new UnexpectedValueException(
+                throw Glitch::EUnexpectedValue(
                     'Decoder error - extended type resolved to type < 8'
                 );
             }
@@ -115,7 +116,7 @@ class Decoder implements IDecoder
                 return [$this->_decodeUint128($bytes), $newOffset];
 
             default:
-                throw new UnexpectedValueException(
+                throw Glitch::EUnexpectedValue(
                     'Unknown type: '.$type
                 );
         }
@@ -280,7 +281,7 @@ class Decoder implements IDecoder
     protected function _verifySize($expected, $actual)
     {
         if ($expected != $actual) {
-            throw new UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Data size incorrect - read '.$actual.', expected '.$expected
             );
         }

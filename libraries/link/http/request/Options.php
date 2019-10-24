@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Channel;
 
@@ -235,7 +236,7 @@ class Options implements link\http\IRequestOptions
                 break;
 
             default:
-                throw new link\http\InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Auth type '.$type.' is not supported'
                 );
         }

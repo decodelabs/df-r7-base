@@ -11,6 +11,7 @@ use df\spur;
 use df\link;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
 class Github implements spur\packaging\bower\IResolver
@@ -61,7 +62,7 @@ class Github implements spur\packaging\bower\IResolver
         $response = $http->getFile($url, $cachePath.'/packages/', $package->cacheFileName);
 
         if (!$response->isOk()) {
-            throw new spur\packaging\bower\RuntimeException(
+            throw Glitch::ERuntime(
                 'Unable to fetch file: '.$url
             );
         }
@@ -83,7 +84,7 @@ class Github implements spur\packaging\bower\IResolver
     protected function _extractRepoName(spur\packaging\bower\Package $package)
     {
         if (!preg_match('/(?:@|:\/\/)github.com[:\/]([^\/\s]+?)\/([^\/\s]+?)(?:\.git)?\/?$/i', $package->url, $matches)) {
-            throw new spur\packaging\bower\RuntimeException('Unable to extract repo name from url: '.$package->url);
+            throw Glitch::ERuntime('Unable to extract repo name from url: '.$package->url);
         }
 
         return $matches[1].'/'.$matches[2];

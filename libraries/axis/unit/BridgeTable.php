@@ -10,8 +10,10 @@ use df\axis;
 use df\mesh;
 use df\opal;
 
-class BridgeTable extends Table implements axis\IVirtualUnit {
+use DecodeLabs\Glitch;
 
+class BridgeTable extends Table implements axis\IVirtualUnit
+{
     const IS_SHARED = false;
     const DOMINANT_UNIT = null;
     const DOMINANT_FIELD = null;
@@ -20,17 +22,18 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
     private $_dominantFieldName;
     private $_isVirtual = false;
 
-    public static function getBridgeClass($modelName, $id) {
+    public static function getBridgeClass($modelName, $id)
+    {
         $class = 'df\\apex\\models\\'.$modelName.'\\'.$id.'\\Unit';
 
-        if(!class_exists($class)) {
-            throw new axis\RuntimeException(
+        if (!class_exists($class)) {
+            throw Glitch::ERuntime(
                 'Could not find bridge unit '.$id
             );
         }
 
-        if(!is_subclass_of($class, 'df\\axis\\unit\\BridgeTable')) {
-            throw new axis\RuntimeException(
+        if (!is_subclass_of($class, 'df\\axis\\unit\\BridgeTable')) {
+            throw Glitch::ERuntime(
                 'Unit '.$id.' is not a Bridge'
             );
         }
@@ -38,19 +41,20 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
         return $class;
     }
 
-    public static function loadVirtual(axis\IModel $model, array $args) {
+    public static function loadVirtual(axis\IModel $model, array $args)
+    {
         $fieldId = array_shift($args);
         $parts = explode('.', $fieldId);
         $unitName = array_shift($parts);
         $fieldName = array_shift($parts);
         $class = __CLASS__;
 
-        if($unitId = array_shift($args)) {
+        if ($unitId = array_shift($args)) {
             $parts = explode('/', $unitId, 2);
             $modelName = array_shift($parts);
             $id = array_shift($parts);
 
-            if(!$id) {
+            if (!$id) {
                 $id = $modelName;
                 $modelName = $model->getModelName();
             }
@@ -66,10 +70,11 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
         return $output;
     }
 
-    public function __construct(axis\IModel $model, $unitName=null) {
-        if(!static::IS_SHARED && get_class($this) !== __CLASS__) {
-            if(!static::DOMINANT_UNIT || !static::DOMINANT_FIELD) {
-                throw new axis\schema\LogicException(
+    public function __construct(axis\IModel $model, $unitName=null)
+    {
+        if (!static::IS_SHARED && get_class($this) !== __CLASS__) {
+            if (!static::DOMINANT_UNIT || !static::DOMINANT_FIELD) {
+                throw Glitch::{'df/axis/schema/ELogic'}(
                     'Dominant field info has not been defined in class '.get_class($this)
                 );
             }
@@ -81,12 +86,13 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
         parent::__construct($model, $unitName);
     }
 
-    public function getUnitName() {
-        if($this->_isVirtual) {
+    public function getUnitName()
+    {
+        if ($this->_isVirtual) {
             $class = get_class($this);
             $args = [$this->_dominantUnitName.'.'.$this->_dominantFieldName];
 
-            if($class != __CLASS__) {
+            if ($class != __CLASS__) {
                 $parts = explode('\\', $class);
                 array_pop($parts);
                 $unitId = array_pop($parts);
@@ -100,11 +106,12 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
         }
     }
 
-    public function getDirectUnitName() {
-        if($this->_isVirtual) {
+    public function getDirectUnitName()
+    {
+        if ($this->_isVirtual) {
             $class = get_class($this);
 
-            if($class != __CLASS__) {
+            if ($class != __CLASS__) {
                 $parts = explode('\\', $class);
                 array_pop($parts);
                 $unitId = array_pop($parts);
@@ -115,8 +122,9 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
         }
     }
 
-    public function getCanonicalUnitName() {
-        if($this->_isVirtual) {
+    public function getCanonicalUnitName()
+    {
+        if ($this->_isVirtual) {
             return $this->_dominantUnitName.'_'.$this->_dominantFieldName;
         } else {
             return parent::getCanonicalUnitName();
@@ -124,9 +132,10 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
     }
 
 
-    public function buildInitialSchema() {
-        if(!$this->_dominantUnitName) {
-            throw new axis\schema\LogicException(
+    public function buildInitialSchema()
+    {
+        if (!$this->_dominantUnitName) {
+            throw Glitch::{'df/axis/schema/ELogic'}(
                 'Bridge "'.$this->getUnitName().'" does not have a dominant unit defined - are you sure Bridge is the unit type you want to use?'
             );
         }
@@ -135,8 +144,8 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
         $dominantSchema = $dominantUnit->getTransientUnitSchema();
         $dominantField = $dominantSchema->getField($this->_dominantFieldName);
 
-        if(!$dominantField) {
-            throw new axis\schema\FieldTypeNotFoundException(
+        if (!$dominantField) {
+            throw Glitch::{'df/axis/schema/field/ENotFound'}(
                 'Target Many relation field '.$this->_dominantFieldName.' could not be found on unit '.$dominantUnit->getUnitId()
             );
         }
@@ -159,45 +168,55 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
         return $schema;
     }
 
-    public function getDominantUnit() {
+    public function getDominantUnit()
+    {
         return $this->_model->getUnit($this->_dominantUnitName);
     }
 
-    public function getDominantUnitName() {
+    public function getDominantUnitName()
+    {
         return $this->_dominantUnitName;
     }
 
-    public function getDominantFieldName() {
+    public function getDominantFieldName()
+    {
         return $this->_dominantFieldName;
     }
 
-    public function getSubmissiveUnitId() {
+    public function getSubmissiveUnitId()
+    {
         return $this->getSubmissiveUnit()->getUnitId();
     }
 
-    public function getSubmissiveUnit() {
+    public function getSubmissiveUnit()
+    {
         return axis\Model::loadUnitFromId($this->getDominantUnit()->getUnitSchema()->getField($this->_dominantFieldName)->getTargetUnitId());
     }
 
-    public function isVirtualUnitShared() {
+    public function isVirtualUnitShared()
+    {
         return static::IS_SHARED;
     }
 
-    protected function createSchema($schema) {}
+    protected function createSchema($schema)
+    {
+    }
 
-    public function newPartial(array $values=null) {
+    public function newPartial(array $values=null)
+    {
         return parent::newPartial($values)->isBridge(true);
     }
 
-    public function getBridgeFieldNames($aliasPrefix=null, array $filter=[]) {
+    public function getBridgeFieldNames($aliasPrefix=null, array $filter=[])
+    {
         $output = [];
 
-        foreach($this->getUnitSchema()->getFields() as $name => $field) {
-            if(in_array($name, $filter)) {
+        foreach ($this->getUnitSchema()->getFields() as $name => $field) {
+            if (in_array($name, $filter)) {
                 continue;
             }
 
-            if($aliasPrefix !== null) {
+            if ($aliasPrefix !== null) {
                 $name .= ' as '.$aliasPrefix.'.'.$name;
             }
 
@@ -207,19 +226,21 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
         return $output;
     }
 
-    public function shouldRecordsBroadcastHookEvents() {
-        if($this->_isVirtual) {
+    public function shouldRecordsBroadcastHookEvents()
+    {
+        if ($this->_isVirtual) {
             return false;
         } else {
             return (bool)static::BROADCAST_HOOK_EVENTS;
         }
     }
 
-    public function getSubEntityLocator(mesh\entity\IEntity $entity) {
-        if($entity instanceof opal\record\IPrimaryKeySetProvider) {
+    public function getSubEntityLocator(mesh\entity\IEntity $entity)
+    {
+        if ($entity instanceof opal\record\IPrimaryKeySetProvider) {
             $output = 'axis://';
 
-            if($this->_isVirtual) {
+            if ($this->_isVirtual) {
                 $output .= 'Model:"'.$this->getModel()->getModelName().'"/Unit:"'.$this->getUnitName().'"/Record';
             } else {
                 $output .= $this->getModel()->getModelName().'/'.ucfirst($this->getUnitName());
@@ -232,8 +253,8 @@ class BridgeTable extends Table implements axis\IVirtualUnit {
             return $output;
         }
 
-        throw new mesh\entity\UnexpectedValueException(
-            'Unknown entity type'
+        throw Glitch::{'df/mesh/entity/EUnexpectedValue'}(
+            'Unknown entity type', null, $entity
         );
     }
 }

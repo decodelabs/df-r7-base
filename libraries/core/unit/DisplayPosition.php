@@ -8,6 +8,7 @@ namespace df\core\unit;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -357,7 +358,7 @@ class DisplayPosition implements IDisplayPosition, Inspectable
             $parentDimension = DisplaySize::factory($parentDimension, null, $this->_allowPlainNumbers);
             $offset->setValue($offset->getValue() + $parentDimension->getValue());
         } else {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Unable to convert relative anchor with current data'
             );
         }

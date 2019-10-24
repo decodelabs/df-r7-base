@@ -10,6 +10,8 @@ use df\core;
 use df\flex;
 use df\axis;
 
+use DecodeLabs\Glitch;
+
 class Scanner implements IScanner
 {
     public $locations = [];
@@ -40,7 +42,7 @@ class Scanner implements IScanner
             if (empty($location)) {
                 continue;
             } elseif (!$location instanceof Location) {
-                throw new RuntimeException('Invalid location');
+                throw Glitch::ERuntime('Invalid location');
             }
 
             $this->addLocation($location);
@@ -154,7 +156,7 @@ class Scanner implements IScanner
             if (empty($probe)) {
                 continue;
             } elseif (!$probe instanceof IProbe) {
-                throw new RuntimeException('Invalid probe');
+                throw Glitch::ERuntime('Invalid probe');
             }
 
             $this->addProbe($probe);

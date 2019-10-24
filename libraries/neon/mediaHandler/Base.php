@@ -10,6 +10,8 @@ use df\core;
 use df\neon;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements IMediaHandler
 {
     const REGISTRY_PREFIX = 'manager://mediaHandler';
@@ -21,7 +23,7 @@ abstract class Base implements IMediaHandler
         $class = 'df\\neon\\mediaHandler\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Media handler '.$name.' could not be found'
             );
         }
@@ -29,7 +31,7 @@ abstract class Base implements IMediaHandler
         $output = new $class();
 
         if (!$output instanceof IMediaHandler) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Media handler name '.$name.' did not produce a valid media handler object'
             );
         }

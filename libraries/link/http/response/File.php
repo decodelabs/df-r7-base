@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
 
@@ -35,7 +36,7 @@ class File extends Base implements link\http\IFileResponse
         $file = Atlas::$fs->file($file);
 
         if ($checkPath && !$file->exists()) {
-            throw new link\http\RuntimeException('Static file could not be found', 404);
+            throw Glitch::ERuntime('Static file could not be found', 404);
         }
 
         $this->_file = $file;

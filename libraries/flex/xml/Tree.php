@@ -34,7 +34,7 @@ class Tree implements ITree, Inspectable
             $document = self::_newDOMDocument();
             $document->load($xmlFile);
         } catch (\Throwable $e) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'XML file '.$xmlFile.' could not be loaded: '.$e->getMessage()
             );
         }
@@ -56,7 +56,7 @@ class Tree implements ITree, Inspectable
             $document = self::_newDOMDocument();
             $document->loadXML($xmlString);
         } catch (\Throwable $e) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'XML string could not be loaded: '.$e->getMessage()
             );
         }
@@ -75,7 +75,7 @@ class Tree implements ITree, Inspectable
             $document = self::_newDOMDocument();
             $document->loadHtmlFile($file);
         } catch (\Throwable $e) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'HTML file '.$file.' could not be loaded: '.$e->getMessage()
             );
         }
@@ -89,7 +89,7 @@ class Tree implements ITree, Inspectable
             $document = self::_newDOMDocument();
             $document->loadHTML($htmlString);
         } catch (\Throwable $e) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'HTML string could not be loaded: '.$e->getMessage()
             );
         }
@@ -100,7 +100,7 @@ class Tree implements ITree, Inspectable
     public static function fromDOMDocument($document)
     {
         if (!$document instanceof \DOMDocument) {
-            throw new InvalidArgumentException(
+            throw Glitch::ERuntime(
                 'DOMDocument was not loaded'
             );
         }
@@ -554,7 +554,7 @@ class Tree implements ITree, Inspectable
         $index = (int)$index;
 
         if ($index < 1) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 $index.' is an invalid child index'
             );
         }
@@ -591,7 +591,7 @@ class Tree implements ITree, Inspectable
         }
 
         if (!preg_match('/^([\-]?)([0-9]*)[n]([+]([0-9]+))?$/i', str_replace(' ', '', $formula), $matches)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 $formula.' is not a valid nth-child formula'
             );
         }
@@ -649,7 +649,7 @@ class Tree implements ITree, Inspectable
         }
 
         if (!$origChild instanceof \DOMElement) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Original child is not a valid element'
             );
         }
@@ -672,7 +672,7 @@ class Tree implements ITree, Inspectable
         }
 
         if ($index < 0) {
-            throw new OutOfBoundsException(
+            throw Glitch::EOutOfBounds(
                 'Index '.$origIndex.' is out of bounds'
             );
         }
@@ -706,7 +706,7 @@ class Tree implements ITree, Inspectable
         }
 
         if (!$origChild instanceof \DOMElement) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Original child is not a valid element'
             );
         }
@@ -724,7 +724,7 @@ class Tree implements ITree, Inspectable
         }
 
         if (!$origChild instanceof \DOMElement) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Original child is not a valid element'
             );
         }
@@ -758,7 +758,7 @@ class Tree implements ITree, Inspectable
         }
 
         if (!$child instanceof \DOMElement) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Original child is not a valid element'
             );
         }

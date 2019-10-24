@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\flow;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements flow\mail\ITransport
 {
     public static function getAllDefaultConfigValues()
@@ -30,7 +32,7 @@ abstract class Base implements flow\mail\ITransport
     public static function factory($name)
     {
         if (!$class = self::getTransportClass($name)) {
-            throw new flow\mail\RuntimeException(
+            throw Glitch::ERuntime(
                 'Mail transport '.$name.' could not be found'
             );
         }

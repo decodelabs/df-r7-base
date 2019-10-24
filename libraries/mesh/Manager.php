@@ -89,7 +89,7 @@ class Manager implements IManager, Inspectable
 
         if ((!$handler = $this->getHandler($locator))
         || (!$handler instanceof IEntityHandler)) {
-            throw new mesh\entity\RuntimeException(
+            throw Glitch::ERuntime(
                 'There is no entity handler for scheme: '.$locator->getScheme()
             );
         }

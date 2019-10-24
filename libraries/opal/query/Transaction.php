@@ -10,6 +10,7 @@ use df\core;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -25,7 +26,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Inspecta
         if ($source === false) {
             $source = null;
         } elseif (!$source) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Implicit source transaction has no source'
             );
         }
@@ -62,7 +63,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Inspecta
     public function countAll()
     {
         if ($this->_source === null) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Cannot countAll without implicit source'
             );
         }
@@ -73,7 +74,7 @@ class Transaction extends mesh\job\Transaction implements ITransaction, Inspecta
     public function countAllDistinct()
     {
         if ($this->_source === null) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Cannot countAll without implicit source'
             );
         }

@@ -8,6 +8,7 @@ namespace df\core\io;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Systemic\Process\Launcher;
 
@@ -56,7 +57,7 @@ trait TReader
     public function read()
     {
         if (!$this->isReadingEnabled()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Reading has been shut down'
             );
         }
@@ -73,7 +74,7 @@ trait TReader
     public function readChunk($length)
     {
         if (!$this->isReadingEnabled()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Reading has been shut down'
             );
         }
@@ -84,7 +85,7 @@ trait TReader
     public function readLine()
     {
         if (!$this->isReadingEnabled()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Reading has been shut down'
             );
         }
@@ -100,7 +101,7 @@ trait TReader
     public function writeTo(IWriter $writer)
     {
         if (!$this->isReadingEnabled()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Reading has been shut down'
             );
         }
@@ -136,7 +137,7 @@ trait TPeekReader
     public function peek($length)
     {
         if (!$this->isReadingEnabled()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Reading has been shut down'
             );
         }
@@ -200,7 +201,7 @@ trait TWriter
     public function write($data)
     {
         if (!$this->isWritingEnabled()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Writing has already been shut down'
             );
         }
@@ -217,7 +218,7 @@ trait TWriter
             $result = $this->_writeChunk(substr($data, $written), $length - $written);
 
             if ($result === false) {
-                throw new OverflowException(
+                throw Glitch::EOverflow(
                     'Unable to write to channel'
                 );
             }
@@ -234,7 +235,7 @@ trait TWriter
     public function writeChunk($data, $length=null)
     {
         if (!$this->isWritingEnabled()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Writing has already been shut down'
             );
         }
@@ -262,7 +263,7 @@ trait TWriter
     public function writeFrom(IReader $reader)
     {
         if (!$this->isWritingEnabled()) {
-            throw new LogicException(
+            throw Glitch::ELogic(
                 'Writing has already been shut down'
             );
         }

@@ -11,6 +11,8 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 class BridgedManyRelationValueContainer implements
     opal\record\IJobAwareValueContainer,
     opal\record\IPreparedValueContainer,
@@ -358,7 +360,7 @@ class BridgedManyRelationValueContainer implements
     public function select(...$fields)
     {
         if (!$this->_record) {
-            throw new opal\record\ValuePreparationException(
+            throw Glitch::{'df/opal/record/EValuePreparation,ERuntime'}(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -402,7 +404,7 @@ class BridgedManyRelationValueContainer implements
     public function selectFromBridge(...$fields)
     {
         if (!$this->_record) {
-            throw new opal\record\ValuePreparationException(
+            throw Glitch::{'df/opal/record/EValuePreparation,ERuntime'}(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -431,7 +433,7 @@ class BridgedManyRelationValueContainer implements
     public function selectFromNew(...$fields)
     {
         if (!$this->_record) {
-            throw new opal\record\ValuePreparationException(
+            throw Glitch::{'df/opal/record/EValuePreparation,ERuntime'}(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -508,7 +510,7 @@ class BridgedManyRelationValueContainer implements
     public function fetch()
     {
         if (!$this->_record) {
-            throw new opal\record\ValuePreparationException(
+            throw Glitch::{'df/opal/record/EValuePreparation,ERuntime'}(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -547,7 +549,7 @@ class BridgedManyRelationValueContainer implements
     public function fetchFromBridge()
     {
         if (!$this->_record) {
-            throw new opal\record\ValuePreparationException(
+            throw Glitch::{'df/opal/record/EValuePreparation,ERuntime'}(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }

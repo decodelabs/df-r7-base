@@ -9,8 +9,10 @@ use df;
 use df\core;
 use df\opal;
 
-class BatchIterator implements IBatchIterator {
+use DecodeLabs\Glitch;
 
+class BatchIterator implements IBatchIterator
+{
     use core\collection\TExtractList;
 
     const DEFAULT_BATCH_SIZE = 50;
@@ -33,16 +35,17 @@ class BatchIterator implements IBatchIterator {
 
     protected $_currentKey = null;
 
-    public function __construct(ISource $source, $result, IOutputManifest $outputManifest=null) {
+    public function __construct(ISource $source, $result, IOutputManifest $outputManifest=null)
+    {
         $this->_batchSize = static::DEFAULT_BATCH_SIZE;
         $this->_arrayManipulator = new opal\native\ArrayManipulator($source, [], true, $outputManifest);
 
-        if(is_array($result)) {
+        if (is_array($result)) {
             $result = new core\collection\Queue(...$result);
         }
 
-        if(!$result instanceof core\collection\ICollection) {
-            throw new InvalidArgumentException(
+        if (!$result instanceof core\collection\ICollection) {
+            throw Glitch::EInvalidArgument(
                 'Query result is not an ICollection - maybe you need to use a custom batch iterator?'
             );
         }
@@ -51,12 +54,14 @@ class BatchIterator implements IBatchIterator {
     }
 
 
-    public function getResult() {
+    public function getResult()
+    {
         return $this->_result;
     }
 
-    public function isForFetch(bool $flag=null) {
-        if($flag !== null) {
+    public function isForFetch(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isForFetch = $flag;
             return $this;
         }
@@ -65,123 +70,147 @@ class BatchIterator implements IBatchIterator {
     }
 
 
-    public function getPrimarySource() {
+    public function getPrimarySource()
+    {
         return $this->_arrayManipulator->getSource();
     }
 
-    public function addSources(array $sources) {
+    public function addSources(array $sources)
+    {
         $manifest = $this->_arrayManipulator->getOutputManifest();
 
-        foreach($sources as $source) {
+        foreach ($sources as $source) {
             $manifest->importSource($source);
         }
 
         return $this;
     }
 
-    public function getSources() {
+    public function getSources()
+    {
         return $this->_arrayManipulator->getOutputManifest()->getSources();
     }
 
 
-    public function setPopulates(array $populates) {
+    public function setPopulates(array $populates)
+    {
         $this->_populates = $populates;
         return $this;
     }
 
-    public function getPopulates() {
+    public function getPopulates()
+    {
         return $this->_populates;
     }
 
 
-    public function setAttachments(array $attachments) {
+    public function setAttachments(array $attachments)
+    {
         $this->_attachments = $attachments;
         return $this;
     }
 
-    public function getAttachments() {
+    public function getAttachments()
+    {
         return $this->_attachments;
     }
 
-    public function setCombines(array $combines) {
+    public function setCombines(array $combines)
+    {
         $this->_combines = $combines;
         return $this;
     }
 
-    public function getCombines() {
+    public function getCombines()
+    {
         return $this->_combines;
     }
 
-    public function setListKeyField(IField $field=null) {
+    public function setListKeyField(IField $field=null)
+    {
         $this->_keyField = $field;
         return $this;
     }
 
-    public function getListKeyField() {
+    public function getListKeyField()
+    {
         return $this->_keyField;
     }
 
-    public function setListValueField(IField $field=null) {
+    public function setListValueField(IField $field=null)
+    {
         $this->_valField = $field;
         return $this;
     }
 
-    public function getListValueField() {
+    public function getListValueField()
+    {
         return $this->_valField;
     }
 
-    public function setFormatter(callable $formatter=null) {
+    public function setFormatter(callable $formatter=null)
+    {
         $this->_formatter = $formatter;
         return $this;
     }
 
-    public function getFormatter() {
+    public function getFormatter()
+    {
         return $this->_formatter;
     }
 
-    public function setNestFields(IField ...$fields) {
+    public function setNestFields(IField ...$fields)
+    {
         $this->_nestFields = $fields;
         return $this;
     }
 
-    public function getNestFields() {
+    public function getNestFields()
+    {
         return $this->_nestFields;
     }
 
 
 
 
-    public function setBatchSize($size) {
+    public function setBatchSize($size)
+    {
         $this->_batchSize = (int)$size;
         return $this;
     }
 
-    public function getBatchSize() {
+    public function getBatchSize()
+    {
         return $this->_batchSize;
     }
 
-    public function import(...$values) {
-        throw new RuntimeException('This collection is read only');
+    public function import(...$values)
+    {
+        throw Glitch::ERuntime('This collection is read only');
     }
 
-    public function isEmpty(): bool {
+    public function isEmpty(): bool
+    {
         return empty($this->_batchData) && $this->_isResultEmpty();
     }
 
-    protected function _isResultEmpty() {
+    protected function _isResultEmpty()
+    {
         return $this->_result->isEmpty();
     }
 
 
-    public function clear() {
-        throw new RuntimeException('This collection is read only');
+    public function clear()
+    {
+        throw Glitch::ERuntime('This collection is read only');
     }
 
-    public function extract() {
-        if(empty($this->_batchData)) {
+    public function extract()
+    {
+        if (empty($this->_batchData)) {
             $this->_fetchBatch();
 
-            if(empty($this->_batchData)) {
+            if (empty($this->_batchData)) {
                 return null;
             }
         }
@@ -190,27 +219,28 @@ class BatchIterator implements IBatchIterator {
         $output = $this->_batchData[$this->_currentKey];
         unset($this->_batchData[$this->_currentKey]);
 
-        if($this->_currentKey === '') {
+        if ($this->_currentKey === '') {
             $this->_currentKey = null;
         }
 
         return $output;
     }
 
-    protected function _fetchBatch() {
+    protected function _fetchBatch()
+    {
         $batchSize = $this->_batchSize;
 
-        if($batchSize <= 0) {
+        if ($batchSize <= 0) {
             $batchSize = self::DEFAULT_BATCH_SIZE;
         }
 
         $batch = [];
         $allInOne = !empty($this->_nestFields);
 
-        while(!$this->_isResultEmpty() && $batchSize > 0) {
+        while (!$this->_isResultEmpty() && $batchSize > 0) {
             $batch[] = $this->_extractResult();
 
-            if(!$allInOne) {
+            if (!$allInOne) {
                 $batchSize--;
             }
         }
@@ -220,26 +250,30 @@ class BatchIterator implements IBatchIterator {
         reset($this->_batchData);
     }
 
-    protected function _extractResult() {
+    protected function _extractResult()
+    {
         return $this->_result->extract();
     }
 
 
-    public function count() {
+    public function count()
+    {
         return count($this->_batchData) + $this->_countResult();
     }
 
-    protected function _countResult() {
+    protected function _countResult()
+    {
         return $this->_result->count();
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         $output = [];
         $useKey = $this->_keyField || !empty($this->_nestFields);
 
-        while(!$this->isEmpty()) {
-            if($useKey) {
-                if(empty($this->_batchData)) {
+        while (!$this->isEmpty()) {
+            if ($useKey) {
+                if (empty($this->_batchData)) {
                     $this->_fetchBatch();
                 }
 
@@ -253,24 +287,28 @@ class BatchIterator implements IBatchIterator {
         return $output;
     }
 
-// Iterator
-    public function current() {
+    // Iterator
+    public function current()
+    {
         return $this->extract();
     }
 
-    public function next() {
+    public function next()
+    {
         $this->_currentKey = null;
     }
 
-    public function key() {
+    public function key()
+    {
         return $this->_currentKey;
     }
 
-    public function valid() {
+    public function valid()
+    {
         return !$this->isEmpty();
     }
 
-    public function rewind() {
-
+    public function rewind()
+    {
     }
 }

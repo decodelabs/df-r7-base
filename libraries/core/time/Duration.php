@@ -8,6 +8,7 @@ namespace df\core\time;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -201,7 +202,7 @@ class Duration implements IDuration, Inspectable
             && $interval->i == 0
             && $interval->s == 0
             && false === strpos($time, '0')) {
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Invalid duration string: '.$time
                 );
             }
@@ -592,7 +593,7 @@ class Duration implements IDuration, Inspectable
                 break;
 
             default:
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Invalid duration unit: '.$id
                 );
         }

@@ -10,25 +10,29 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 class AutoId extends Base implements
     opal\schema\IByteSizeRestrictedField,
     opal\schema\IAutoGeneratorField,
     axis\schema\IAutoPrimaryField,
-    opal\schema\IAutoIncrementableField {
-
+    opal\schema\IAutoIncrementableField
+{
     use opal\schema\TField_ByteSizeRestricted;
     use axis\schema\TAutoPrimaryField;
 
-    protected function _init($size=null) {
+    protected function _init($size=null)
+    {
         $this->setByteSize($size);
     }
 
 
-// Auto inc
-    public function shouldAutoGenerate(bool $flag=null) {
-        if($flag !== null) {
-            if(!$flag) {
-                throw new opal\schema\LogicException(
+    // Auto inc
+    public function shouldAutoGenerate(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if (!$flag) {
+                throw Glitch::ELogic(
                     'AutoId field must auto increment'
                 );
             }
@@ -39,10 +43,11 @@ class AutoId extends Base implements
         return true;
     }
 
-    public function shouldAutoIncrement(bool $flag=null) {
-        if($flag !== null) {
-            if(!$flag) {
-                throw new opal\schema\LogicException(
+    public function shouldAutoIncrement(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if (!$flag) {
+                throw Glitch::ELogic(
                     'AutoId field must auto increment'
                 );
             }
@@ -53,10 +58,11 @@ class AutoId extends Base implements
         return true;
     }
 
-    public function isSigned(bool $flag=null) {
-        if($flag !== null) {
-            if($flag) {
-                throw new opal\schema\LogicException(
+    public function isSigned(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if ($flag) {
+                throw Glitch::ELogic(
                     'AutoId field must be unsigned'
                 );
             }
@@ -67,10 +73,11 @@ class AutoId extends Base implements
         return false;
     }
 
-    public function isUnsigned(bool $flag=null) {
-        if($flag !== null) {
-            if(!$flag) {
-                throw new opal\schema\LogicException(
+    public function isUnsigned(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if (!$flag) {
+                throw Glitch::ELogic(
                     'AutoId field must be unsigned'
                 );
             }
@@ -81,10 +88,11 @@ class AutoId extends Base implements
         return true;
     }
 
-    public function shouldZerofill(bool $flag=null) {
-        if($flag !== null) {
-            if($flag) {
-                throw new opal\schema\LogicException(
+    public function shouldZerofill(bool $flag=null)
+    {
+        if ($flag !== null) {
+            if ($flag) {
+                throw Glitch::ELogic(
                     'AutoId field must not zero-fill'
                 );
             }
@@ -97,28 +105,32 @@ class AutoId extends Base implements
 
 
 
-// Values
-    public function deflateValue($value) {
-        if(empty($value)) {
+    // Values
+    public function deflateValue($value)
+    {
+        if (empty($value)) {
             $value = null;
         }
 
         return $value;
     }
 
-    public function getSearchFieldType() {
+    public function getSearchFieldType()
+    {
         return 'integer';
     }
 
-// Primitive
-    public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+    // Primitive
+    public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
         $output = new Number($schema, 'Number:Integer', $this->_name, [$this->_byteSize]);
         $output->isUnsigned(true);
 
         return $output;
     }
 
-    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
         $output = new opal\schema\Primitive_Integer($this, $this->_byteSize);
         $output->isUnsigned(true);
         $output->shouldAutoIncrement(true);
@@ -127,14 +139,16 @@ class AutoId extends Base implements
     }
 
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         $this->_setBaseStorageArray($data);
         $this->_setByteSizeRestrictedStorageArray($data);
         $this->_setAutoPrimaryStorageArray($data);
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return array_merge(
             $this->_getBaseStorageArray(),
             $this->_getByteSizeRestrictedStorageArray(),

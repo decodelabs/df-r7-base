@@ -11,6 +11,7 @@ use df\aura;
 use df\fuse;
 use df\spur;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
 class Manager implements IManager
@@ -38,7 +39,7 @@ class Manager implements IManager
         $deps = $this->getInstalledDependenciesFor($theme);
 
         if (!isset($deps[$name])) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Dependency '.$name.' is not in the dependency list'
             );
         }

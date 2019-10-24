@@ -13,6 +13,7 @@ use df\flex;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -57,7 +58,7 @@ class ContentPart implements IContentPart, Inspectable
                     break;
 
                 default:
-                    throw new InvalidArgumentException(
+                    throw Glitch::EInvalidArgument(
                         'Invalid encoding type: '.$encoding
                     );
             }
@@ -90,13 +91,13 @@ class ContentPart implements IContentPart, Inspectable
     public function setContentType($type)
     {
         if (strtolower(substr($type, 0, 10)) == 'multipart/') {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Please use newMultiPart() for multipart types'
             );
         }
 
         if (preg_match('/boundary=".*"/i', $type)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Please use newMultiPart() for multipart types, invalid boundary definition detected'
             );
         }
@@ -130,7 +131,7 @@ class ContentPart implements IContentPart, Inspectable
                 break;
 
             default:
-                throw new InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Invalid encoding type: '.$encoding
                 );
         }
@@ -213,7 +214,7 @@ class ContentPart implements IContentPart, Inspectable
     public function setContent($content)
     {
         if (is_resource($content)) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Resource streams are not currently supported in mime messages'
             );
         }

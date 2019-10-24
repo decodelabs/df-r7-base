@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 trait TUrl_TransientScheme
 {
     protected $_scheme;
@@ -195,7 +197,7 @@ trait TUrl_DomainContainer
         if (empty($this->_domain)) {
             $ip = '127.0.0.1';
         } elseif (($ip = gethostbyname($this->_domain)) == $this->_domain) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Could not lookup IP for '.$this->_domain
             );
         }

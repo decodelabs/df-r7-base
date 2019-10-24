@@ -8,6 +8,7 @@ namespace df\core\io;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -125,7 +126,7 @@ class Stream implements IStreamChannel, Inspectable
     public function getMetadata()
     {
         if (!$this->_resource) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Stream is not live'
             );
         }

@@ -8,6 +8,7 @@ namespace df\core\collection;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -168,7 +169,7 @@ trait TArrayCollection_IndexedMovable
             $key += $count;
 
             if ($key < 0) {
-                throw new OutOfBoundsException(
+                throw Glitch::EOutOfBounds(
                     'Trying to move a negative index outside of current bounds'
                 );
             }
@@ -391,7 +392,7 @@ trait TArrayCollection_IndexedValueMap
             }
 
             if ($index < 0) {
-                throw new OutOfBoundsException(
+                throw Glitch::EOutOfBounds(
                     'Trying to set a negative index outside of current bounds'
                 );
             }
@@ -418,7 +419,7 @@ trait TArrayCollection_IndexedValueMap
             }
 
             if ($index < 0) {
-                throw new OutOfBoundsException(
+                throw Glitch::EOutOfBounds(
                     'Trying to set a negative index outside of current bounds'
                 );
             }
@@ -541,7 +542,7 @@ trait TArrayCollection_ProcessedIndexedValueMap
             }
 
             if ($index < 0) {
-                throw new OutOfBoundsException(
+                throw Glitch::EOutOfBounds(
                     'Trying to set a negative index outside of current bounds'
                 );
             }
@@ -580,7 +581,7 @@ trait TArrayCollection_ProcessedIndexedValueMap
             }
 
             if ($index < 0) {
-                throw new OutOfBoundsException(
+                throw Glitch::EOutOfBounds(
                     'Trying to set a negative index outside of current bounds'
                 );
             }

@@ -348,7 +348,7 @@ abstract class Base implements axis\schema\ITranslator
         $func = '_create'.$type.'Field';
 
         if (!method_exists($this, $func)) {
-            throw new axis\schema\RuntimeException(
+            throw Glitch::{'df/axis/schema/ERuntime'}(
                 'Primitive '.$type.' is currently not supported by RDBMS based tables, for field '.$primitive->getName()
             );
         }
@@ -439,12 +439,12 @@ abstract class Base implements axis\schema\ITranslator
                     );
                 }
             } elseif ($axisField instanceof opal\schema\INullPrimitiveField) {
-                throw new axis\LogicException(
+                throw Glitch::ELogic(
                     'You cannot put indexes on NullPrimitive fields'
                 );
             } else {
                 if (!$indexField = $this->_targetSchema->getField($primitive->getName())) {
-                    throw new axis\LogicException(
+                    throw Glitch::ELogic(
                         'Unable to find index field '.$primitive->getName()
                     );
                 }

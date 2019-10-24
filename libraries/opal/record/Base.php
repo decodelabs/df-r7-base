@@ -188,7 +188,7 @@ class Base implements IRecord, \Serializable, Inspectable
                 return new opal\record\job\Delete($this);
         }
 
-        throw new RuntimeException(
+        throw Glitch::ERuntime(
             'Records don\'t directly support "'.$name.'" jobs'
         );
     }
@@ -481,7 +481,7 @@ class Base implements IRecord, \Serializable, Inspectable
     {
         /*
         if($this->_isPopulated) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Record has already been populated'
             );
         }
@@ -498,7 +498,7 @@ class Base implements IRecord, \Serializable, Inspectable
     public function populateWithRawData($row)
     {
         if ($this->_isPopulated) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Record has already been populated'
             );
         }
@@ -510,7 +510,7 @@ class Base implements IRecord, \Serializable, Inspectable
         }
 
         if (!is_array($row)) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Could not populate record - input data cannot be converted to an array'
             );
         }

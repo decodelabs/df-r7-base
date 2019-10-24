@@ -8,6 +8,7 @@ namespace df\core\lang;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -94,7 +95,7 @@ class Callback implements ICallback, Inspectable
                 try {
                     $reflection = new \ReflectionMethod($class, $method);
                 } catch (\Throwable $e) {
-                    throw new InvalidArgumentException(
+                    throw Glitch::EInvalidArgument(
                         'Callback is not callable'
                     );
                 }
@@ -105,7 +106,7 @@ class Callback implements ICallback, Inspectable
                     $this->_reflectionInstance = null;
                 } else {
                     if (!is_object($class)) {
-                        throw new InvalidArgumentException(
+                        throw Glitch::EInvalidArgument(
                             'Callback is not callable'
                         );
                     }
@@ -119,7 +120,7 @@ class Callback implements ICallback, Inspectable
             }
         }
 
-        throw new InvalidArgumentException(
+        throw Glitch::EInvalidArgument(
             'Callback is not callable'
         );
     }

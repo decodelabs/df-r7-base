@@ -95,7 +95,7 @@ class Many extends Base implements axis\schema\IManyField
         $localRelationManifest = $this->getLocalRelationManifest();
 
         if (!$localRelationManifest->isSingleField()) {
-            throw new axis\schema\RuntimeException(
+            throw Glitch::ERuntime(
                 'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
                 'You should probably use a fieldless join constraint instead'
             );
@@ -206,7 +206,7 @@ class Many extends Base implements axis\schema\IManyField
 
         // Local ids
         if (!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
-            throw new axis\schema\RuntimeException(
+            throw Glitch::ERuntime(
                 'Relation table '.$localUnit->getUnitId().' does not have a primary index'
             );
         }

@@ -11,6 +11,7 @@ use df\axis;
 use df\opal;
 use df\mesh;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -74,7 +75,7 @@ abstract class Table implements
         $field = $schema->getField($fieldName);
 
         if (!$field instanceof axis\schema\IRelationField) {
-            throw new axis\LogicException(
+            throw Glitch::ELogic(
                 'Unit '.$this->getUnitId().' does not have a relation field named '.$fieldName
             );
         }
@@ -88,7 +89,7 @@ abstract class Table implements
         $field = $schema->getField($fieldName);
 
         if (!$field instanceof axis\schema\IBridgedRelationField) {
-            throw new axis\LogicException(
+            throw Glitch::ELogic(
                 'Unit '.$this->getUnitId().' does not have a bridge field named '.$fieldName
             );
         }
@@ -428,7 +429,7 @@ abstract class Table implements
     {
         if ((!$axisField = $this->getUnitSchema()->getField($field->getName()))
          || !$axisField instanceof opal\schema\IQueryClauseRewriterField) {
-            throw new axis\schema\RuntimeException(
+            throw Glitch::{'df/axis/schema/ERuntime'}(
                 'Query field '.$field->getName().' has no virtual field rewriter'
             );
         }
@@ -482,7 +483,7 @@ abstract class Table implements
         $method = 'apply'.ucfirst($name).'QueryBlock';
 
         if (!method_exists($this, $method)) {
-            throw new axis\LogicException(
+            throw Glitch::ELogic(
                 'Query block '.$name.' does not exist on '.$this->getUnitId()
             );
         }
@@ -497,7 +498,7 @@ abstract class Table implements
         $method = 'apply'.ucfirst($name).'RelationQueryBlock';
 
         if (!method_exists($this, $method)) {
-            throw new axis\LogicException(
+            throw Glitch::ELogic(
                 'Relation query block '.$name.' does not exist on '.$this->getUnitId()
             );
         }
@@ -546,7 +547,7 @@ abstract class Table implements
             if (!class_exists($this->_recordClass)) {
                 $this->_recordClass = static::DEFAULT_RECORD_CLASS;
             } elseif (!is_subclass_of($this->_recordClass, static::DEFAULT_RECORD_CLASS)) {
-                throw new axis\LogicException(
+                throw Glitch::ELogic(
                     $this->_recordClass.' is not a valid record class for unit '.$this->getUnitId()
                 );
             }
@@ -577,7 +578,7 @@ abstract class Table implements
         $rName = $relationField->getName();
 
         if (!$primaries) {
-            throw new axis\LogicException(
+            throw Glitch::ELogic(
                 'Unit '.$this->getUnitId().' does not have a primary index'
             );
         }
@@ -792,8 +793,8 @@ abstract class Table implements
             return $output;
         }
 
-        throw new mesh\entity\UnexpectedValueException(
-            'Unknown entity type'
+        throw Glitch::{'df/mesh/entity/EUnexpectedValue'}(
+            'Unknown entity type', null, $entity
         );
     }
 

@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -92,7 +93,7 @@ class Aggregate implements opal\query\IAggregateField, Inspectable
                 break;
 
             default:
-                throw new opal\query\InvalidArgumentException(
+                throw Glitch::EInvalidArgument(
                     'Aggregate function '.$type.' is not recognised'
                 );
         }

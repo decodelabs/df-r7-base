@@ -32,13 +32,6 @@ class LogicException extends \LogicException implements IException
 {
 }
 
-class OperatorException extends InvalidArgumentException
-{
-}
-class ValueException extends InvalidArgumentException
-{
-}
-
 
 // Interfaces
 interface IDataRowProvider
