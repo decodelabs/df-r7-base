@@ -483,7 +483,8 @@ class Base implements link\http\IRequest, Inspectable
         }
 
         if (is_string($body)) {
-            $body = Atlas::createTempFile($body);
+            $body = Atlas::$fs->createMemoryFile($body);
+            $body->setPosition(0);
         }
 
         $this->_bodyData = $body;
