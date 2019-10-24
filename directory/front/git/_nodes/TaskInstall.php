@@ -19,7 +19,6 @@ class TaskInstall extends arch\node\Task
         'base' => 'git@github.com:decodelabs/df-r7-base.git',
         'nightfire' => 'git@github.com:decodelabs/df-r7-nightfire.git',
         'postal' => 'git@github.com:decodelabs/df-r7-postal.git',
-        'spearmint' => 'git@github.com:decodelabs/df-r7-spearmint.git',
         'touchstone' => 'git@github.com:decodelabs/df-r7-touchstone.git',
         'webCore' => 'git@github.com:decodelabs/df-r7-webCore.git'
     ];

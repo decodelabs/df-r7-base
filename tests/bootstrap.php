@@ -10,6 +10,6 @@ df\Launchpad::initLoaders(__DIR__, $startTime);
 Glitch::setRunMode('development');
 
 df\Launchpad::$loader->loadPackages([
-    'nightfire', 'postal', 'spearmint',
+    'nightfire', 'postal',
     'touchstone', 'webCore'
 ]);
