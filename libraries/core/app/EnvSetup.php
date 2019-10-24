@@ -25,9 +25,12 @@ class EnvSetup
                 'vendor' => $appPath.'/vendor',
                 'root' => Launchpad::$isCompiled ? Launchpad::$rootPath : dirname(Launchpad::$rootPath)
             ])
-            ->registerAsErrorHandler()
-            ->setLogListener(function ($exception) {
+            ->registerAsErrorHandler();
+
+        if (method_exists($glitch, 'setLogListener')) {
+            $glitch->setLogListener(function ($exception) {
                 core\logException($exception);
             });
+        }
     }
 }
