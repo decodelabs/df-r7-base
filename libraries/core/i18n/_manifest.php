@@ -8,14 +8,8 @@ namespace df\core\i18n;
 use df;
 use df\core;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-// Interfaces
-interface ILocale extends core\IStringProvider {
+interface ILocale extends core\IStringProvider
+{
     public function getDisplayName($localeFormat=null);
     public function getLanguage();
     public function getDisplayLanguage($localeFormat=null);
@@ -29,12 +23,13 @@ interface ILocale extends core\IStringProvider {
 }
 
 
-interface IManager extends core\IManager, core\ITranslator {
+interface IManager extends core\IManager, core\ITranslator
+{
     public function getModule($name);
     public function setLocale($locale);
     public function getLocale();
 }
 
-interface ITranslator extends core\ITranslator {
-
+interface ITranslator extends core\ITranslator
+{
 }

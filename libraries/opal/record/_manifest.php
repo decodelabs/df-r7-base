@@ -13,22 +13,6 @@ use df\mesh;
 
 use DecodeLabs\Glitch;
 
-// Exceptions
-interface IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class LogicException extends \LogicException implements IException
-{
-}
-
-
-// Interfaces
 interface IRecordAdapterProvider
 {
     public function getAdapter();

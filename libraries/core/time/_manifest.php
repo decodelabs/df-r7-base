@@ -8,14 +8,8 @@ namespace df\core\time;
 use df;
 use df\core;
 
-// Exceptions
-interface IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-// Interfaces
-interface IDate extends \Serializable, core\IStringProvider {
-
+interface IDate extends \Serializable, core\IStringProvider
+{
     const SHORT = \IntlDateFormatter::SHORT;
     const MEDIUM = \IntlDateFormatter::MEDIUM;
     const LONG = \IntlDateFormatter::LONG;
@@ -113,17 +107,18 @@ interface IDate extends \Serializable, core\IStringProvider {
 }
 
 
-interface IDuration extends core\IStringProvider {
+interface IDuration extends core\IStringProvider
+{
 
 // Locale
     public function setLocale($locale);
     public function getLocale();
 
-// Reference date
+    // Reference date
     public function toDate();
     public function invert();
 
-// Util
+    // Util
     public function isEmpty(): bool;
     public function eq($duration);
     public function gt($duration);
@@ -131,67 +126,67 @@ interface IDuration extends core\IStringProvider {
     public function lt($duration);
     public function lte($duration);
 
-// Unit
+    // Unit
     public static function fromUnit($value, $unit);
     public function toUnit($unit);
     public static function normalizeUnitId($id);
     public static function getUnitString($unit, $plural=true, $locale=null);
 
-// Microseconds
+    // Microseconds
     public function setMicroseconds($us);
     public function getMicroseconds();
     public function addMicroseconds($us);
     public function subtractMicroseconds($us);
 
-// Milliseconds
+    // Milliseconds
     public function setMilliseconds($ms);
     public function getMilliseconds();
     public function addMilliseconds($ms);
     public function subtractMilliseconds($ms);
 
-// Seconds
+    // Seconds
     public function setSeconds($seconds);
     public function getSeconds();
     public function addSeconds($seconds);
     public function subtractSeconds($seconds);
 
 
-// Minutes
+    // Minutes
     public function setMinutes($minutes);
     public function getMinutes();
     public function addMinutes($minutes);
     public function subtractMinutes($minutes);
 
 
-// Hours
+    // Hours
     public function setHours($hours);
     public function getHours();
     public function addHours($hours);
     public function subtractHours($hours);
 
 
-// Days
+    // Days
     public function setDays($days);
     public function getDays();
     public function addDays($days);
     public function subtractDays($days);
 
 
-// Weeks
+    // Weeks
     public function setWeeks($weeks);
     public function getWeeks();
     public function addWeeks($weeks);
     public function subtractWeeks($weeks);
 
 
-// Months
+    // Months
     public function setMonths($months);
     public function getMonths();
     public function addMonths($months);
     public function subtractMonths($months);
 
 
-// Years
+    // Years
     public function setYears($years);
     public function getYears();
     public function addYears($years);
@@ -202,7 +197,8 @@ interface IDuration extends core\IStringProvider {
 }
 
 
-interface ITimeOfDay extends core\IStringProvider {
+interface ITimeOfDay extends core\IStringProvider
+{
     public function setSeconds($seconds);
     public function setAsSeconds($seconds);
     public function addSeconds($seconds);
@@ -226,7 +222,8 @@ interface ITimeOfDay extends core\IStringProvider {
 }
 
 
-interface ISchedule extends core\IStringProvider {
+interface ISchedule extends core\IStringProvider
+{
     public function setMinute($minute);
     public function getMinute();
     public function setHour($hour);
@@ -244,7 +241,8 @@ interface ISchedule extends core\IStringProvider {
 
 
 
-interface IAnnualRange {
+interface IAnnualRange
+{
     public function update($start, $end, $timezone=null);
 
     public function getStartDate(): IDate;

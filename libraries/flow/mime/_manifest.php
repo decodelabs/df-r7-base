@@ -9,16 +9,8 @@ use df;
 use df\core;
 use df\flow;
 
-
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-// Interfaces
-interface IPart extends core\IStringProvider, core\collection\IHeaderMapProvider {
-
+interface IPart extends core\IStringProvider, core\collection\IHeaderMapProvider
+{
     const LINE_LENGTH = 74;
     const LINE_END = "\r\n";
 
@@ -31,8 +23,8 @@ interface IPart extends core\IStringProvider, core\collection\IHeaderMapProvider
     public function getBodyString();
 }
 
-interface IContentPart extends IPart {
-
+interface IContentPart extends IPart
+{
     public function setEncoding($encoding);
     public function getEncoding();
     public function setCharacterSet($charset);
@@ -56,8 +48,8 @@ interface IContentPart extends IPart {
 }
 
 
-interface IMultiPart extends IPart, \Countable, \RecursiveIterator {
-
+interface IMultiPart extends IPart, \Countable, \RecursiveIterator
+{
     const ALTERNATIVE = 'multipart/alternative';
     const MIXED = 'multipart/mixed';
     const RELATED = 'multipart/related';

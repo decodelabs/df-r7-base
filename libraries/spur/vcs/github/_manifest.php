@@ -10,14 +10,9 @@ use df\core;
 use df\spur;
 use df\link;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-
-
-// Interfaces
-interface IMediator extends spur\IHttpMediator {
-// Users
+interface IMediator extends spur\IHttpMediator
+{
+    // Users
     public function getUser($username);
     public function getUserOrganizations($username);
     public function getFollowersOf($username);
@@ -28,11 +23,11 @@ interface IMediator extends spur\IHttpMediator {
     public function getUserGists($username);
     public function getUserKeys($username);
 
-// Organizations
+    // Organizations
     public function getOrganization($name);
     public function getOrganizationRepositories($name);
 
-// Repositories
+    // Repositories
     public function getRepository($name);
     public function getRepositoryBranches($name);
     public function getRepositoryBranch($name, $branchName);
@@ -45,32 +40,34 @@ interface IMediator extends spur\IHttpMediator {
 }
 
 
-interface IApiObject {
+interface IApiObject
+{
     public function getId(): ?string;
     public function getUrl($key=null);
 }
 
-trait TApiObject {
-
+trait TApiObject
+{
     protected $_id;
     protected $_urls = [];
     protected $_mediator;
 
-    public function __construct(IMediator $mediator, core\collection\ITree $data) {
+    public function __construct(IMediator $mediator, core\collection\ITree $data)
+    {
         $this->_mediator = $mediator;
         $this->_id = $data['id'];
 
-        if(isset($data['url'])) {
+        if (isset($data['url'])) {
             $this->_urls['api'] = $data['url'];
         }
 
-        foreach($data as $key => $node) {
-            if(substr($key, -4) == '_url') {
+        foreach ($data as $key => $node) {
+            if (substr($key, -4) == '_url') {
                 $this->_urls[substr($key, 0, -4)] = $node->getValue();
             }
         }
 
-        if(isset($data->urls)) {
+        if (isset($data->urls)) {
             $this->_urls = array_merge($this->_urls, $data->urls->toArray());
         }
 
@@ -79,22 +76,25 @@ trait TApiObject {
 
     abstract protected function _importData(core\collection\ITree $data);
 
-    public function getId(): ?string {
+    public function getId(): ?string
+    {
         return $this->_id;
     }
 
-    public function getUrl($key=null) {
-        if($key === null) {
+    public function getUrl($key=null)
+    {
+        if ($key === null) {
             $key = 'api';
         }
 
-        if(isset($this->_urls[$key])) {
+        if (isset($this->_urls[$key])) {
             return $this->_urls[$key];
         }
     }
 }
 
-interface IUser extends IApiObject {
+interface IUser extends IApiObject
+{
     public function getUsername();
     public function isSiteAdmin();
 
@@ -107,7 +107,8 @@ interface IUser extends IApiObject {
     public function getGists();
 }
 
-interface IProfile extends IUser {
+interface IProfile extends IUser
+{
     public function getName(): string;
     public function getEmail();
     public function getCompany();
@@ -122,14 +123,16 @@ interface IProfile extends IUser {
     public function getUpdateDate();
 }
 
-interface IOrganization extends IApiObject {
+interface IOrganization extends IApiObject
+{
     public function getName(): string;
     public function getDescription();
 
     public function getRepositories();
 }
 
-interface IRepository extends IApiObject {
+interface IRepository extends IApiObject
+{
     public function getName(): string;
     public function getFullName();
     public function getOwner();
@@ -164,12 +167,14 @@ interface IRepository extends IApiObject {
     public function getSubscribers($name, $page=null);
 }
 
-interface IBranch {
+interface IBranch
+{
     public function getName(): string;
     public function getCommit();
 }
 
-interface IGist extends IApiObject {
+interface IGist extends IApiObject
+{
     public function getName(): string;
     public function getOwner();
     public function isPublic(): bool;
@@ -179,7 +184,8 @@ interface IGist extends IApiObject {
     public function getFiles();
 }
 
-interface IFile {
+interface IFile
+{
     public function getFilename();
     public function getType();
     public function getLanguage();
@@ -187,22 +193,26 @@ interface IFile {
     public function getSize();
 }
 
-interface ITag extends IApiObject, core\IArrayProvider {
+interface ITag extends IApiObject, core\IArrayProvider
+{
     public function getName(): string;
     public function getVersion();
     public function getCommit();
 }
 
-interface ILabel extends IApiObject {
+interface ILabel extends IApiObject
+{
     public function getName(): string;
     public function getColor();
 }
 
-interface ICommitReference extends IApiObject, core\IArrayProvider {
+interface ICommitReference extends IApiObject, core\IArrayProvider
+{
     public function getSha();
 }
 
-interface ICommit extends ICommitReference {
+interface ICommit extends ICommitReference
+{
     public function getMessage();
     public function getTree();
     public function getParents();
@@ -211,7 +221,8 @@ interface ICommit extends ICommitReference {
     public function getCommitter();
 }
 
-interface IRelease extends IApiObject {
+interface IRelease extends IApiObject
+{
     public function getName(): string;
     public function getTagName();
     public function getCreationDate();

@@ -12,21 +12,6 @@ use df\link;
 
 use DecodeLabs\Glitch;
 
-// Exceptions
-interface IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class BindException extends RuntimeException
-{
-}
-
-
 // Constants
 interface IIoState
 {

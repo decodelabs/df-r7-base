@@ -10,14 +10,8 @@ use df\core;
 use df\axis;
 use df\opal;
 
-// Exceptions
-interface IException {}
-class LogicException extends \LogicException implements IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-
-
-// Interfaces
-interface IProcedure extends core\IContextAware {
+interface IProcedure extends core\IContextAware
+{
     public function getUnit();
     public function getModel();
     public function getName(): string;
@@ -30,7 +24,8 @@ interface IProcedure extends core\IContextAware {
     public function isValid(): bool;
 }
 
-interface IRecordProcedure extends IProcedure {
+interface IRecordProcedure extends IProcedure
+{
     public function setRecord(opal\record\IRecord $record=null);
     public function getRecord();
 }

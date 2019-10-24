@@ -8,21 +8,6 @@ namespace df\core\uri;
 use df;
 use df\core;
 
-// Exceptions
-interface IException
-{
-}
-class OutOfBoundsException extends \OutOfBoundsException implements IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class UnexpectedValueException extends \UnexpectedValueException implements IException
-{
-}
-
-// Interfaces
 interface IPath extends core\IStringProvider, core\collection\IIndexedQueue
 {
     public static function normalizeLocal($path): string;

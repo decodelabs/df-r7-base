@@ -11,22 +11,6 @@ use df\user;
 use df\opal;
 use df\flex;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class LogicException extends \LogicException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-
-
-// Interfaces
 interface IController
 {
     const TRANSITION_COOLOFF = 20;

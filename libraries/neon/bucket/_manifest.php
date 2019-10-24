@@ -9,14 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-// Interfaces
-interface IBucket extends core\io\IAcceptTypeProcessor {
+interface IBucket extends core\io\IAcceptTypeProcessor
+{
     public function getName(): string;
     public function getDisplayName(): string;
 

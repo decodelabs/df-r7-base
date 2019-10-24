@@ -16,18 +16,6 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-
-
 // Constants
 interface IState
 {

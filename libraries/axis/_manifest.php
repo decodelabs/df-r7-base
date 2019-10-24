@@ -14,18 +14,6 @@ use df\mesh;
 
 use DecodeLabs\Glitch;
 
-// Exceptions
-interface IException
-{
-}
-class LogicException extends \LogicException implements IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-
-// Interfaces
 interface IAccess extends user\IState
 {
 }

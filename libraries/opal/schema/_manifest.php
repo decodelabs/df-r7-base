@@ -45,25 +45,7 @@ interface ITriggerTiming
 }
 
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class LogicException extends \LogicException implements IException
-{
-}
-class UnexpectedValueException extends \UnexpectedValueException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
 
-
-// Interfaces
 interface IChangeTracker
 {
     public function hasChanged();

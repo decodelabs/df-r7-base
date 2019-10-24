@@ -86,7 +86,7 @@ class Curl implements link\http\IAsyncTransport
 
                 if ($info['result']) {
                     $handle->promise->deliverError(
-                        new link\http\RuntimeException(
+                        Glitch::ERuntime(
                             curl_error($handle->resource),
                             curl_errno($handle->resource)
                         )

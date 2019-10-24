@@ -13,22 +13,6 @@ use df\link;
 use df\flow;
 use df\flex;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-class BadMethodCallException extends \BadMethodCallException implements IException
-{
-}
-
-
-// Interfaces
 interface IRenderable
 {
     public function renderTo(IRenderTarget $target);

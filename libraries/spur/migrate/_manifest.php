@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,17 +9,9 @@ use df;
 use df\core;
 use df\spur;
 use df\link;
-    
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-
-// Interfaces
-interface IHandler {
+interface IHandler
+{
     public function getKey();
     public function getUrl();
     public function getRouter();

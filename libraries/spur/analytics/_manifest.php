@@ -11,16 +11,8 @@ use df\spur;
 use df\aura;
 use df\mint;
 
-
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-
-
-
-// Interfaces
-interface IHandler {
+interface IHandler
+{
     public function apply(aura\view\IHtmlView $view);
 
     public function addConfigAdapters();
@@ -56,7 +48,8 @@ interface IHandler {
 }
 
 
-interface IEvent extends core\collection\IAttributeContainer {
+interface IEvent extends core\collection\IAttributeContainer
+{
     public function getUniqueId();
 
     public function setCategory($category);
@@ -67,7 +60,8 @@ interface IEvent extends core\collection\IAttributeContainer {
     public function getLabel();
 }
 
-interface IECommerceTransaction extends core\collection\IAttributeContainer {
+interface IECommerceTransaction extends core\collection\IAttributeContainer
+{
     public function setId(string $id);
     public function getId(): string;
     public function setAffiliation($affiliation);
@@ -80,7 +74,8 @@ interface IECommerceTransaction extends core\collection\IAttributeContainer {
     public function getTaxAmount();
 }
 
-interface IAdapter {
+interface IAdapter
+{
     public function getName(): string;
     public function apply(IHandler $handler, aura\view\IHtmlView $view);
 
@@ -97,4 +92,6 @@ interface IAdapter {
     public function getDefaultUserAttributeMap();
 }
 
-interface ILegacyAdapter extends IAdapter {}
+interface ILegacyAdapter extends IAdapter
+{
+}

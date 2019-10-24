@@ -12,19 +12,6 @@ use df\fuse;
 use df\flex;
 use df\aura;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class LogicException extends \LogicException implements IException
-{
-}
-
-
-// Interfaces
 interface IBridge
 {
     public function setInstallPath($path);

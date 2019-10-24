@@ -9,14 +9,8 @@ use df;
 use df\core;
 use df\flex;
 
-
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-
-
-// Interfaces
-interface IReader extends core\IArrayProvider, \Iterator {
+interface IReader extends core\IArrayProvider, \Iterator
+{
     public function getChannel();
     public function setDelimiter($delimiter);
     public function getDelimiter();
@@ -30,7 +24,8 @@ interface IReader extends core\IArrayProvider, \Iterator {
     public function getRow();
 }
 
-interface IBuilder extends core\io\IChunkSender {
+interface IBuilder extends core\io\IChunkSender
+{
     public function setGenerator($generator=null);
     public function getGenerator();
 

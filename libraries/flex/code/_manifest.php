@@ -8,19 +8,6 @@ namespace df\flex\code;
 use df;
 use df\core;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class LogicException extends \LogicException implements IException
-{
-}
-
-
-// Interfaces
 interface IScanner
 {
     public function setLocations(array $locations);

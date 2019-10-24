@@ -15,22 +15,6 @@ use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 use DecodeLabs\Atlas\Channel;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-class UnexpectedValueException extends \UnexpectedValueException implements IException
-{
-}
-
-
-// Interfaces
 interface IUrl extends
     core\uri\IGenericUrl,
     core\uri\ICredentialContainer,

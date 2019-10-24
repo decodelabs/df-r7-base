@@ -8,25 +8,6 @@ namespace df\core\fs;
 use df;
 use df\core;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class LogicException extends \LogicException implements IException
-{
-}
-class OverflowException extends \OverflowException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-
-
-// Interfaces
 class Mode extends core\lang\Enum
 {
     const READ_ONLY = 'rb';

@@ -7,16 +7,6 @@ namespace df\core\i18n\module;
 
 use df\core;
 
-// Exceptions
-interface IException extends core\i18n\IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-
-
-// Interfaces
 interface IModule
 {
     public function getModuleName();

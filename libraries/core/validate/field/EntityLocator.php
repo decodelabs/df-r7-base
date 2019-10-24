@@ -10,15 +10,14 @@ use df\core;
 use df\opal;
 use df\mesh;
 
-class EntityLocator extends Base implements core\validate\IEntityLocatorField {
-
-
-// Validate
-    public function validate() {
+class EntityLocator extends Base implements core\validate\IEntityLocatorField
+{
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
@@ -27,7 +26,7 @@ class EntityLocator extends Base implements core\validate\IEntityLocatorField {
         try {
             $locator = mesh\entity\Locator::factory($value);
             $value = (string)$locator;
-        } catch(mesh\entity\InvalidArgumentException $e) {
+        } catch (mesh\entity\EGlitch $e) {
             $this->addError('invalid', $this->validator->_(
                 'Please enter a valid entity locator'
             ));

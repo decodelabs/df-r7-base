@@ -12,19 +12,6 @@ use df\flow;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-
-
-// Interfaces
 interface IAddress extends core\IStringProvider
 {
     public function setAddress($address);

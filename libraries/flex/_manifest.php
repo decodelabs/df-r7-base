@@ -12,25 +12,6 @@ use df\flex;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
-// Exceptions
-interface IException
-{
-}
-class OutOfBoundsException extends \OutOfBoundsException implements IException
-{
-}
-class UnexpectedValueException extends \UnexpectedValueException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-
-
-// Interfaces
 interface IEncoding
 {
     const UCS_4 = 'UCS-4';

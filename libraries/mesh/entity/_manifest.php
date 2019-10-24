@@ -9,22 +9,6 @@ use df;
 use df\core;
 use df\mesh;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-class UnexpectedValueException extends \UnexpectedValueException implements IException
-{
-}
-
-
-// Interfaces
 interface ILocatorProvider
 {
     public function getEntityLocator();

@@ -15,25 +15,6 @@ use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
 
-// Exceptions
-interface IException
-{
-}
-class UnexpectedValueException extends \UnexpectedValueException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class LogicException extends \LogicException implements IException
-{
-}
-
-
-// Interfaces
 interface IDataRowProvider
 {
     public function toDataRowArray();

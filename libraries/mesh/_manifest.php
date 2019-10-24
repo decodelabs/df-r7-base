@@ -9,15 +9,8 @@ use df;
 use df\core;
 use df\mesh;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
-
-
-// Interfaces
-interface IManager extends mesh\event\IEmitter, core\IManager {
+interface IManager extends mesh\event\IEmitter, core\IManager
+{
     // Jobs
     public function newJobQueue();
 
@@ -33,11 +26,15 @@ interface IManager extends mesh\event\IEmitter, core\IManager {
 
 
 
-// Entity
-interface IHandler {}
+interface IHandler
+{
+}
 
-interface IEntityHandler extends IHandler {
+interface IEntityHandler extends IHandler
+{
     public function fetchEntity(IManager $manager, array $node);
 }
 
-interface IEventHandler extends IHandler, mesh\event\IEmitter {}
+interface IEventHandler extends IHandler, mesh\event\IEmitter
+{
+}

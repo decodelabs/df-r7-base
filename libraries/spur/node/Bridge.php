@@ -87,7 +87,7 @@ class Bridge implements IBridge
 
         if ($result->hasError() && empty($output)) {
             $error = $result->getError();
-            $e = new RuntimeException($error);
+            $e = Glitch::ERuntime($error);
 
             if (!preg_match('/deprecat/i', $error)) {
                 throw $e;

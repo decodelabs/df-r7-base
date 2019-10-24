@@ -9,13 +9,8 @@ use df;
 use df\core;
 use df\neon;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-
-
-// Interfaces
-interface IMediaHandler extends core\IManager {
+interface IMediaHandler extends core\IManager
+{
     public function getName(): string;
     public static function getDisplayName(): string;
 
@@ -35,11 +30,13 @@ interface IMediaHandler extends core\IManager {
     public static function getDefaultConfig();
 }
 
-interface ILocalDataHandler extends IMediaHandler {
+interface ILocalDataHandler extends IMediaHandler
+{
     public function getFilePath($fileId, $versionId);
 }
 
-interface IConfig extends core\IConfig {
+interface IConfig extends core\IConfig
+{
     public function setDefaultHandler($handler);
     public function getDefaultHandler();
 

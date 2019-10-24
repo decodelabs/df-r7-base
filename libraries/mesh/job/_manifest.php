@@ -9,19 +9,6 @@ use df;
 use df\core;
 use df\mesh;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-
-
-// Interfaces
 interface ITransactionInitiator
 {
     public function newTransaction(): ITransaction;

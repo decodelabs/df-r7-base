@@ -13,20 +13,6 @@ use df\halo;
 use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class UnexpectedValueException extends \UnexpectedValueException implements IException
-{
-}
-
-
-
-// Interfaces
 interface IRepository
 {
     public function setGitUser($user);

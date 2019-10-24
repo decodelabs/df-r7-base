@@ -9,15 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
-
-
-// Interfaces
-interface IArrayManipulator {
+interface IArrayManipulator
+{
     public function setRows(array $rows, $isNormalized=true);
     public function getRows();
     public function getOutputManifest();
@@ -42,7 +35,8 @@ interface IArrayManipulator {
     public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, array $nestFields=null, $forFetch=false, callable $formatter=null);
 }
 
-interface IClauseMatcher {
+interface IClauseMatcher
+{
     public function testRow(array $row, array &$matchedFields);
     public function testRowMatch(array $row, array $joinRow);
 

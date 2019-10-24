@@ -11,25 +11,6 @@ use df\flex;
 
 use DecodeLabs\Glitch;
 
-// Exceptions
-interface IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class LogicException extends \LogicException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-class OutOfBoundsException extends \OutOfBoundsException implements IException
-{
-}
-
-
-// Interfaces
 interface IInterchange
 {
     //public function readXml(ITree $reader);

@@ -9,22 +9,17 @@ use df;
 use df\core;
 use df\mesh;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
-
-
-// Interfaces
-interface IEmitter {
+interface IEmitter
+{
     public function emitEvent($entity, $action, array $data=null, mesh\job\IQueue $jobQueue=null, mesh\job\IJob $job=null);
     public function emitEventObject(IEvent $event);
 }
 
-trait TEmitter {
-
-    public function emitEvent($entity, $action, array $data=null, mesh\job\IQueue $jobQueue=null, mesh\job\IJob $job=null) {
-        if($entity === null) {
+trait TEmitter
+{
+    public function emitEvent($entity, $action, array $data=null, mesh\job\IQueue $jobQueue=null, mesh\job\IJob $job=null)
+    {
+        if ($entity === null) {
             return $this;
         }
 
@@ -33,7 +28,8 @@ trait TEmitter {
 }
 
 
-interface IEvent extends core\collection\IMap {
+interface IEvent extends core\collection\IMap
+{
     // Entity
     public function setEntity(mesh\entity\ILocatorProvider $entity);
     public function hasEntity();
@@ -54,15 +50,19 @@ interface IEvent extends core\collection\IMap {
     public function getJob(): ?mesh\job\IJob;
 }
 
-interface IListener {
+interface IListener
+{
     public function handleEvent(IEvent $event);
 }
 
 
-interface IHook extends core\IContextAware {
+interface IHook extends core\IContextAware
+{
     public static function triggerEvent(IEvent $event);
     public function getName(): string;
     public function getEventMap();
 }
 
-class HookCache extends core\cache\Base {}
+class HookCache extends core\cache\Base
+{
+}

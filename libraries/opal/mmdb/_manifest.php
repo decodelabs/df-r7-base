@@ -9,24 +9,19 @@ use df;
 use df\core;
 use df\opal;
 
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
-
-
-// Interfaces
-interface IReader {
+interface IReader
+{
     public function get($ip);
 }
 
 
-interface IDecoder {
+interface IDecoder
+{
     public function decode($offset=null);
 }
 
-interface IDataTypes {
+interface IDataTypes
+{
     const T_EXTENDED = 0;
     const T_POINTER = 1;
     const T_UTF8_STRING = 2;

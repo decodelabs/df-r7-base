@@ -8,22 +8,6 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-// Exceptions
-interface IException
-{
-}
-class OutOfBoundsException extends \OutOfBoundsException implements IException
-{
-}
-class RuntimeException extends \RuntimeException implements IException
-{
-}
-class InvalidArgumentException extends \InvalidArgumentException implements IException
-{
-}
-
-
-// Interfaces
 interface ICollection extends \Countable, core\IArrayProvider
 {
     public function import(...$input);
