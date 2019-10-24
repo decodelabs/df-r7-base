@@ -8,6 +8,8 @@ namespace df\core\app\runner;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements core\IRunner
 {
     protected $_isRunning = false;
@@ -19,7 +21,7 @@ abstract class Base implements core\IRunner
         $class = 'df\\core\\app\\runner\\'.$name;
 
         if (!class_exists($class)) {
-            throw core\Error::ENotFound('Runner '.$name.' could not be found');
+            throw Glitch::ENotFound('Runner '.$name.' could not be found');
         }
 
         return new $class();

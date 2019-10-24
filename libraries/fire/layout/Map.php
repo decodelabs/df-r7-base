@@ -11,38 +11,46 @@ use df\fire;
 use df\arch;
 use df\aura;
 
-class Map implements fire\ILayoutMap {
+use DecodeLabs\Glitch;
 
+class Map implements fire\ILayoutMap
+{
     protected $_theme;
     protected $_entries = [];
     protected $_generator;
 
-    public function __construct(aura\theme\ITheme $theme) {
+    public function __construct(aura\theme\ITheme $theme)
+    {
         $this->_theme = $theme;
     }
 
-    public function getTheme(): aura\theme\ITheme {
+    public function getTheme(): aura\theme\ITheme
+    {
         return $this->_theme;
     }
 
-    public function setGenerator(callable $generator=null) {
+    public function setGenerator(callable $generator=null)
+    {
         $this->_generator = $generator;
         return $this;
     }
 
-    public function getGenerator(): ?callable {
+    public function getGenerator(): ?callable
+    {
         return $this->_generator;
     }
 
-    public function setEntries(array $entries) {
+    public function setEntries(array $entries)
+    {
         $this->_entries = [];
         return $this->addEntries($entries);
     }
 
-    public function addEntries(array $entries) {
-        foreach($entries as $entry) {
-            if(!$entry instanceof fire\ILayoutMapEntry) {
-                throw core\Error::EArgument(
+    public function addEntries(array $entries)
+    {
+        foreach ($entries as $entry) {
+            if (!$entry instanceof fire\ILayoutMapEntry) {
+                throw Glitch::EInvalidArgument(
                     'Invalid map entry detected'
                 );
             }
@@ -53,38 +61,43 @@ class Map implements fire\ILayoutMap {
         return $this;
     }
 
-    public function addEntry(fire\ILayoutMapEntry $entry) {
+    public function addEntry(fire\ILayoutMapEntry $entry)
+    {
         $this->_entries[$entry->getId()] = $entry;
         return $this;
     }
 
-    public function getEntries() {
+    public function getEntries()
+    {
         return $this->_entries;
     }
 
-    public function removeEntry(string $id) {
+    public function removeEntry(string $id)
+    {
         unset($this->_entries[$id]);
         return $this;
     }
 
-    public function clearEntries() {
+    public function clearEntries()
+    {
         $this->_entries = [];
         return $this;
     }
 
-    public function mapLayout(aura\view\ILayoutView $view) {
-        if(empty($this->_entries) && $this->_generator) {
+    public function mapLayout(aura\view\ILayoutView $view)
+    {
+        if (empty($this->_entries) && $this->_generator) {
             core\lang\Callback::call($this->_generator, $this);
         }
 
         $request = $view->getContext()->request;
 
-        foreach($this->_entries as $entry) {
-            if(!$entry->allowsTheme($this->_theme)) {
+        foreach ($this->_entries as $entry) {
+            if (!$entry->allowsTheme($this->_theme)) {
                 continue;
             }
 
-            if($entry->matches($request)) {
+            if ($entry->matches($request)) {
                 $entry->apply($view);
                 break;
             }

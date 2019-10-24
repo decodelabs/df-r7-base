@@ -656,7 +656,7 @@ trait TField_OptionProvider
                     $typeString = (new core\lang\TypeRef($type))->getClassPath();
                 }
             } else {
-                throw core\Error::EArgument(
+                throw Glitch::EInvalidArgument(
                     'Type cannot provide an enum'
                 );
             }

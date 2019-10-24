@@ -12,6 +12,8 @@ use df\spur;
 use df\user;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 class Mailchimp3 extends Base
 {
     const SETTINGS_FIELDS = ['*apiKey' => 'API key'];
@@ -21,7 +23,7 @@ class Mailchimp3 extends Base
     protected function __construct(core\collection\ITree $options)
     {
         if (!$apiKey = $options['apiKey']) {
-            throw core\Error::{'flow/mailingList/ESetup'}(
+            throw Glitch::{'df/flow/mailingList/ESetup'}(
                 'Mailchimp apiKey has not been set'
             );
         }

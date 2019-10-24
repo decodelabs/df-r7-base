@@ -61,7 +61,7 @@ class Result implements arch\node\IRestApiResult
             return $this->_statusCode;
         }
 
-        if ($this->_exception instanceof core\IError || $this->_exception instanceof \EGlitch) {
+        if ($this->_exception instanceof \EGlitch) {
             $code = $this->_exception->getHttpCode();
 
             if (!link\http\response\HeaderCollection::isValidStatusCode($code)) {
@@ -158,10 +158,6 @@ class Result implements arch\node\IRestApiResult
             if (!df\Launchpad::$app->isProduction()) {
                 $data['error']['file'] = Glitch::normalizePath($this->_exception->getFile());
                 $data['error']['line'] = $this->_exception->getLine();
-            }
-
-            if ($this->_exception instanceof core\IError) {
-                $data['error']['key'] = $this->_exception->getKey();
             }
         }
 

@@ -134,7 +134,7 @@ class Join implements IJoinQuery, Inspectable
     public function combineAll($nullField=null, string $alias=null)
     {
         if (!$this->_parent instanceof ICombinableQuery) {
-            throw core\Error::EDefinition(
+            throw Glitch::EDefinition(
                 'Parent query is not combinable'
             );
         }

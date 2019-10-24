@@ -96,7 +96,7 @@ class Html implements arch\IDirectoryHelper
         }
 
         if (!class_exists(\Parsedown::class)) {
-            throw core\Error::EImplementation('Parsedown library is not available');
+            throw Glitch::EImplementation('Parsedown library is not available');
         }
 
         $parser = new \Parsedown();
@@ -140,7 +140,7 @@ class Html implements arch\IDirectoryHelper
     public function tweet($text)
     {
         if (!class_exists(Chirp::class)) {
-            throw core\Error::EImplementation('Chirp library is not available');
+            throw Glitch::EImplementation('Chirp library is not available');
         }
 
         $output = (new Chirp())->parse($text);

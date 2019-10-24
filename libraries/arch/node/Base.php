@@ -11,6 +11,7 @@ use df\arch;
 use df\aura;
 use df\link;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -56,7 +57,7 @@ class Base implements INode, Inspectable
                 return $node;
             }
 
-            throw core\Error::ENotFound([
+            throw Glitch::ENotFound([
                 'message' => 'No node could be found for '.$context->location->toString(),
                 'http' => 404
             ]);
@@ -200,14 +201,14 @@ class Base implements INode, Inspectable
             $client = $this->context->user->getClient();
 
             if ($client->isDeactivated()) {
-                throw core\Error::{'EForbidden'}([
+                throw Glitch::EForbidden([
                     'message' => 'Client deactivated',
                     'http' => 403
                 ]);
             }
 
             if (!$client->canAccess($this)) {
-                throw core\Error::{'EUnauthorized'}([
+                throw Glitch::EUnauthorized([
                     'message' => 'Insufficient permissions',
                     'http' => 401
                 ]);
@@ -305,7 +306,7 @@ class Base implements INode, Inspectable
             return $this->context->http->redirect($request);
         }
 
-        throw core\Error::ENotFound([
+        throw Glitch::ENotFound([
             'message' => 'No handler could be found for node: '.
                 $this->context->location->toString(),
             'http' => 404
@@ -346,7 +347,7 @@ class Base implements INode, Inspectable
                 }
         }
 
-        throw core\Error::{'ENotFound'}([
+        throw Glitch::ENotFound([
             'message' => 'No ajax content found',
             'http' => 404
         ]);

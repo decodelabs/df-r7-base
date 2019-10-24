@@ -12,6 +12,8 @@ use df\user;
 use df\aura;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements arch\IComponent
 {
     use core\TContextAware;
@@ -61,7 +63,7 @@ abstract class Base implements arch\IComponent
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
             if (!class_exists($class)) {
-                throw core\Error::ENotFound(
+                throw Glitch::ENotFound(
                     'Component ~'.$area.'/'.$path.'/#/'.$name.' could not be found'
                 );
             }
@@ -78,7 +80,7 @@ abstract class Base implements arch\IComponent
             $class = 'df\\apex\\themes\\shared\\components\\'.ucfirst($name);
 
             if (!class_exists($class)) {
-                throw core\Error::ENotFound(
+                throw Glitch::ENotFound(
                     'Theme component '.ucfirst($name).' could not be found'
                 );
             }
@@ -121,7 +123,7 @@ abstract class Base implements arch\IComponent
         $this->view = $this->getRenderTarget()->getView();
 
         if (!method_exists($this, '_execute')) {
-            throw core\Error::EDefinition([
+            throw Glitch::EDefinition([
                 'message' => 'Component requires an _execute method',
                 'dataType' => $this
             ]);
@@ -145,7 +147,7 @@ abstract class Base implements arch\IComponent
         }
 
         if (!method_exists($this, '_execute')) {
-            throw core\Error::EDefinition([
+            throw Glitch::EDefinition([
                 'message' => 'Component requires an _execute method',
                 'dataType' => $this
             ]);

@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 abstract class RestApi extends Base implements IRestApiNode
 {
     const DEFAULT_ACCESS = arch\IAccess::ALL;
@@ -41,7 +43,7 @@ abstract class RestApi extends Base implements IRestApiNode
             $func = 'execute'.ucfirst(strtolower($httpMethod));
 
             if (!method_exists($this, $func)) {
-                throw core\Error::EApi([
+                throw Glitch::EApi([
                     'message' => 'Node does not support '.$httpMethod.' method',
                     'http' => 400
                 ]);
@@ -73,7 +75,7 @@ abstract class RestApi extends Base implements IRestApiNode
 
         $data = null;
 
-        if ($e instanceof core\IError || $e instanceof \EGlitch) {
+        if ($e instanceof \EGlitch) {
             $data = $e->getData();
         }
 

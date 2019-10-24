@@ -327,7 +327,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     public function renameTo($newName)
     {
         if ($this->exists()) {
-            throw core\Error::{'ENotFound'}(
+            throw Glitch::{'ENotFound'}(
                 'Source file does not exist'
             );
         }
@@ -335,7 +335,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
         $destination = dirname($this->_path).'/'.$newName;
 
         if (file_exists($destination)) {
-            throw core\Error::{'EAlreadyExists,ERuntime'}(
+            throw Glitch::{'EAlreadyExists,ERuntime'}(
                 'Destination file already exists'
             );
         }
@@ -350,7 +350,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
     public function moveTo($destination, $newName=null)
     {
         if (!$this->exists()) {
-            throw core\Error::{'ENotFound'}(
+            throw Glitch::{'ENotFound'}(
                 'Source file does not exist'
             );
         }
@@ -362,7 +362,7 @@ class File implements IFile, core\io\IContainedStateChannel, Inspectable
         $destination = rtrim($destination, '/').'/'.$newName;
 
         if (file_exists($destination)) {
-            throw core\Error::{'EAlreadyExists,ERuntime'}(
+            throw Glitch::{'EAlreadyExists,ERuntime'}(
                 'Destination directory already exists'
             );
         }

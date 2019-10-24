@@ -133,7 +133,7 @@ class Color implements IColor, Inspectable
             );
         }
 
-        throw core\Error::{'EArgument,EColor'}('Color name '.$name.' is not recognized');
+        throw Glitch::{'EInvalidArgument,EColor'}('Color name '.$name.' is not recognized');
     }
 
     public static function isValidName(string $name): bool
@@ -163,7 +163,7 @@ class Color implements IColor, Inspectable
             $b = substr($hex, 2, 1);
             $b = hexdec($b.$b);
         } else {
-            throw core\Error::{'EArgument,EColor'}('Invalid color '.$hex);
+            throw Glitch::{'EInvalidArgument,EColor'}('Invalid color '.$hex);
         }
 
         return new self($r / 255, $g / 255, $b / 255);
@@ -238,7 +238,7 @@ class Color implements IColor, Inspectable
                 break;
 
             default:
-                throw core\Error::EArgument([
+                throw Glitch::EInvalidArgument([
                     'message' => 'Invalid color mode',
                     'data' => $mode
                 ]);

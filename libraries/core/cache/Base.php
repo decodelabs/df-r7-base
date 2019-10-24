@@ -8,6 +8,8 @@ namespace df\core\cache;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements ICache
 {
     use TCache;
@@ -66,7 +68,7 @@ abstract class Base implements ICache
         }
 
         if (!$backendName) {
-            throw core\Error::{'ESetup'}(
+            throw Glitch::ESetup(
                 'There are no available backends for cache '.$this->getCacheId()
             );
         }

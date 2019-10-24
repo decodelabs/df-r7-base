@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -68,7 +69,7 @@ class CollectionList extends Base implements aura\html\widget\IWidgetProxy, Insp
                 break;
 
             default:
-                throw core\Error::EArgument([
+                throw Glitch::EInvalidArgument([
                     'message' => 'Invalid paginator mode',
                     'data' => $mode
                 ]);

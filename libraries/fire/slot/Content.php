@@ -12,6 +12,8 @@ use df\flex;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Glitch;
+
 class Content implements fire\ISlotContent
 {
     use core\collection\TAttributeContainer;
@@ -181,7 +183,7 @@ class Content implements fire\ISlotContent
     public function readXml(flex\xml\ITree $reader)
     {
         if ($reader->getTagName() != 'slot') {
-            throw core\Error::EValue(
+            throw Glitch::EUnexpectedValue(
                 'Slot content object expected slot xml element - found '.$reader->getTagName()
             );
         }

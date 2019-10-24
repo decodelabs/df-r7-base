@@ -11,6 +11,7 @@ use df\neon;
 use df\link;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
 class Descriptor implements IDescriptor
@@ -129,7 +130,7 @@ class Descriptor implements IDescriptor
                 $response = $http->getFile($this->_sourceLocation, $download);
 
                 if (!$response->isOk()) {
-                    throw core\Error::{'EValue,ENotFound'}(
+                    throw Glitch::{'EUnexpectedValue,ENotFound'}(
                         'Unable to fetch remote image for transformation'
                     );
                 }

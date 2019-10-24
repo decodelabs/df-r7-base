@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements core\IApp
 {
     const NAME = 'My application';
@@ -39,7 +41,7 @@ abstract class Base implements core\IApp
 
         if (df\Launchpad::$isCompiled) {
             if (!class_exists($class)) {
-                throw core\Error::EImplementation('App class not found');
+                throw Glitch::EImplementation('App class not found');
             }
         } else {
             $filePath = $path.'/App.php';

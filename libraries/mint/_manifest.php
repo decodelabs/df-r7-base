@@ -12,6 +12,8 @@ use df\user;
 use df\arch;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 // Gateway
 interface IGateway
 {
@@ -49,7 +51,7 @@ trait TCaptureProviderGateway
         && $this instanceof ICaptureProviderGateway) {
             return $this->authorizeStandaloneCharge($charge);
         } else {
-            throw core\Error::{'ECharge,EArgument'}([
+            throw Glitch::{'ECharge,EInvalidArgument'}([
                 'message' => 'Gateway doesn\'t support authorizing this type of charge',
                 'data' => $charge
             ]);

@@ -9,18 +9,21 @@ use df;
 use df\core;
 use df\arch;
 
-abstract class Transformer implements ITransformer {
+use DecodeLabs\Glitch;
 
+abstract class Transformer implements ITransformer
+{
     use core\TContextProxy;
 
-    public static function loadNode(IContext $context) {
+    public static function loadNode(IContext $context)
+    {
         $transformer = self::factory($context);
 
-        if($transformer) {
+        if ($transformer) {
             $output = $transformer->execute();
 
-            if($output && !$output instanceof arch\node\INode) {
-                throw core\Error::{'arch/EInvalidNode,EValue'}(
+            if ($output && !$output instanceof arch\node\INode) {
+                throw Glitch::{'df/arch/EInvalidNode,EUnexpectedValue'}(
                     'Transformer '.get_class($transformer).' returned an invalid node', [
                         'data' => $output
                     ]
@@ -33,36 +36,39 @@ abstract class Transformer implements ITransformer {
         }
     }
 
-    public static function isNodeDeliverable(IContext $context): bool {
+    public static function isNodeDeliverable(IContext $context): bool
+    {
         $transformer = self::factory($context);
 
-        if(!$transformer) {
+        if (!$transformer) {
             return false;
         }
 
         return $transformer->canDeliver();
     }
 
-    public static function factory(IContext $context): ?ITransformer {
+    public static function factory(IContext $context): ?ITransformer
+    {
         $runMode = $context->getRunMode();
         $class = self::getClassFor($context->location, $runMode);
 
-        if(!$class) {
+        if (!$class) {
             return null;
         }
 
         return new $class($context);
     }
 
-    public static function getClassFor(IRequest $request, $runMode='Http') {
+    public static function getClassFor(IRequest $request, $runMode='Http')
+    {
         $runMode = ucfirst($runMode);
         $mainParts = $sharedParts = explode('/', $request->getDirectoryLocation());
         $class = null;
 
-        while(!empty($mainParts)) {
+        while (!empty($mainParts)) {
             $class = 'df\\apex\\directory\\'.implode('\\', $mainParts).'\\'.$runMode.'Transformer';
 
-            if(class_exists($class)) {
+            if (class_exists($class)) {
                 break;
             } else {
                 $class = null;
@@ -71,13 +77,13 @@ abstract class Transformer implements ITransformer {
             array_pop($mainParts);
         }
 
-        if(!$class) {
+        if (!$class) {
             $sharedParts[0] = 'shared';
 
-            while(!empty($sharedParts)) {
+            while (!empty($sharedParts)) {
                 $class = 'df\\apex\\directory\\'.implode('\\', $sharedParts).'\\'.$runMode.'Transformer';
 
-                if(class_exists($class)) {
+                if (class_exists($class)) {
                     break;
                 } else {
                     $class = null;
@@ -90,15 +96,18 @@ abstract class Transformer implements ITransformer {
         return $class;
     }
 
-    protected function __construct(arch\IContext $context) {
+    protected function __construct(arch\IContext $context)
+    {
         $this->context = $context;
     }
 
-    public function canDeliver() {
+    public function canDeliver()
+    {
         return false;
     }
 
-    public function getSitemapEntries(): iterable {
+    public function getSitemapEntries(): iterable
+    {
         return [];
     }
 }

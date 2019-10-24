@@ -8,6 +8,8 @@ namespace df\core\validate;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 class Handler implements IHandler
 {
     use core\TTranslator;
@@ -99,13 +101,13 @@ class Handler implements IHandler
     public function __call($method, array $args)
     {
         if (!$this->_targetField) {
-            throw core\Error::ERuntime(
+            throw Glitch::ERuntime(
                 'There is no active target field to apply method '.$method.' to'
             );
         }
 
         if (!method_exists($this->_targetField, $method)) {
-            throw core\Error::ECall(
+            throw Glitch::EBadMethodCall(
                 'Target field '.$this->_targetField->getName().' does not have method '.$method
             );
         }
@@ -152,7 +154,7 @@ class Handler implements IHandler
     public function getValues()
     {
         if ($this->_isValid === null) {
-            throw core\Error::ESetup(
+            throw Glitch::ESetup(
                 'This validator has not been run yet'
             );
         }
@@ -163,7 +165,7 @@ class Handler implements IHandler
     public function getValue(string $name)
     {
         if ($this->_isValid === null) {
-            throw core\Error::ESetup(
+            throw Glitch::ESetup(
                 'This validator has not been run yet'
             );
         }
@@ -176,7 +178,7 @@ class Handler implements IHandler
     public function setValue(string $name, $value)
     {
         if ($this->_isValid === null) {
-            throw core\Error::ESetup(
+            throw Glitch::ESetup(
                 'This validator has not been run yet'
             );
         }
@@ -213,7 +215,7 @@ class Handler implements IHandler
 
     public function offsetUnset($offset)
     {
-        throw core\Error::ECall(
+        throw Glitch::EBadMethodCall(
             'Validator values cannot be set via array access'
         );
     }
@@ -401,7 +403,7 @@ class Handler implements IHandler
     public function applyTo(&$record, array $fields=null)
     {
         if (!is_array($record) && !$record instanceof \ArrayAccess) {
-            throw core\Error::EArgument(
+            throw Glitch::EInvalidArgument(
                 'Target record does not implement ArrayAccess'
             );
         }

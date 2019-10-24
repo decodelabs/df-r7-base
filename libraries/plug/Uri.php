@@ -12,6 +12,7 @@ use df\arch;
 use df\link;
 use df\fuse;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
@@ -65,7 +66,7 @@ class Uri implements arch\IDirectoryHelper
         }
 
         if (!is_string($uri)) {
-            throw core\Error::EArgument(
+            throw Glitch::EInvalidArgument(
                 'Uri cannot be converted to a valid URL'
             );
         }
@@ -292,7 +293,7 @@ class Uri implements arch\IDirectoryHelper
                 $subPath = $dep->js[0];
             } else {
                 if (!df\Launchpad::$app->isProduction()) {
-                    throw core\Error::{'fuse/ERuntime'}(
+                    throw Glitch::{'df/fuse/ERuntime'}(
                         'Dependency '.$name.' does not have a main file'
                     );
                 }
@@ -417,7 +418,7 @@ class Uri implements arch\IDirectoryHelper
         $response = $client->get($url);
 
         if (!$response->isOk()) {
-            throw core\Error::ENotFound([
+            throw Glitch::ENotFound([
                 'message' => 'File not loadable: '.$url,
             ]);
         }

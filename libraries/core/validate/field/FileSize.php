@@ -9,34 +9,39 @@ use df;
 use df\core;
 use df\neon;
 
-class FileSize extends Base implements core\validate\IFileSizeField {
+use DecodeLabs\Glitch;
 
+class FileSize extends Base implements core\validate\IFileSizeField
+{
     use core\validate\TRangeField;
 
     protected $_allowZero = false;
 
-    public function setMin($date) {
+    public function setMin($date)
+    {
         $this->_min = core\unit\FileSize::normalize($date);
 
-        if($this->_min && !$this->_min->getBytes() && !$this->_allowZero) {
-            throw core\Error::EArgument('Byte value must be greater than one');
+        if ($this->_min && !$this->_min->getBytes() && !$this->_allowZero) {
+            throw Glitch::EInvalidArgument('Byte value must be greater than one');
         }
 
         return $this;
     }
 
-    public function setMax($date) {
+    public function setMax($date)
+    {
         $this->_max = core\unit\FileSize::normalize($date);
 
-        if($this->_max && !$this->_max->getBytes() && !$this->_allowZero) {
-            throw core\Error::EArgument('Byte value must be greater than one');
+        if ($this->_max && !$this->_max->getBytes() && !$this->_allowZero) {
+            throw Glitch::EInvalidArgument('Byte value must be greater than one');
         }
 
         return $this;
     }
 
-    public function shouldAllowZero(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldAllowZero(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_allowZero = $flag;
             return $this;
         }
@@ -45,12 +50,13 @@ class FileSize extends Base implements core\validate\IFileSizeField {
     }
 
 
-// Validate
-    public function validate() {
+    // Validate
+    public function validate()
+    {
         // Sanitize
         $value = $this->_sanitizeValue($this->data->getValue());
 
-        if(!$length = $this->_checkRequired($value)) {
+        if (!$length = $this->_checkRequired($value)) {
             return null;
         }
 
@@ -61,7 +67,7 @@ class FileSize extends Base implements core\validate\IFileSizeField {
         try {
             $value = core\unit\FileSize::factory($value);
             $bytes = $value->getBytes();
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->addError('invalid', $this->validator->_(
                 'Please enter a valid file size'
             ));
@@ -70,7 +76,7 @@ class FileSize extends Base implements core\validate\IFileSizeField {
         }
 
 
-        if(!$bytes && !$this->_allowZero) {
+        if (!$bytes && !$this->_allowZero) {
             $this->addError('invalid', $this->validator->_(
                 'Please enter a valid file size'
             ));
@@ -87,15 +93,16 @@ class FileSize extends Base implements core\validate\IFileSizeField {
         return $value;
     }
 
-    protected function _validateRange($value) {
-        if($this->_min !== null && $value->getBytes() < $this->_min->getBytes()) {
+    protected function _validateRange($value)
+    {
+        if ($this->_min !== null && $value->getBytes() < $this->_min->getBytes()) {
             $this->addError('min', $this->validator->_(
                 'This field must be greater than %min%',
                 ['%min%' => $this->_min]
             ));
         }
 
-        if($this->_max !== null && $value->getBytes() > $this->_max->getBytes()) {
+        if ($this->_max !== null && $value->getBytes() > $this->_max->getBytes()) {
             $this->addError('max', $this->validator->_(
                 'This field must be less than %max%',
                 ['%max%' => $this->_max]

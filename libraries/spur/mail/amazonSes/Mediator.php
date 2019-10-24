@@ -11,76 +11,87 @@ use df\spur;
 use df\flow;
 use df\link;
 
-class Mediator implements IMediator {
+use DecodeLabs\Glitch;
 
+class Mediator implements IMediator
+{
     use spur\THttpMediator;
 
     protected $_accessKey;
     protected $_secretKey;
     protected $_activeUrl;
 
-    public function __construct($url=null, $accessKey=null, $secretKey=null) {
-        if($url !== null) {
+    public function __construct($url=null, $accessKey=null, $secretKey=null)
+    {
+        if ($url !== null) {
             $this->setUrl($url);
         }
 
-        if($accessKey !== null) {
+        if ($accessKey !== null) {
             $this->setAccessKey($accessKey);
         }
 
-        if($secretKey !== null) {
+        if ($secretKey !== null) {
             $this->setSecretKey($secretKey);
         }
     }
 
 
-// Url
-    public function setUrl($url) {
+    // Url
+    public function setUrl($url)
+    {
         $this->_activeUrl = link\http\Url::factory($url);
         $this->_activeUrl->isSecure(true);
         return $this;
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
         return $this->_activeUrl;
     }
 
-// Keys
-    public function setAccessKey($key) {
+    // Keys
+    public function setAccessKey($key)
+    {
         $this->_accessKey = $key;
         return $this;
     }
 
-    public function getAccessKey() {
+    public function getAccessKey()
+    {
         return $this->_accessKey;
     }
 
-    public function setSecretKey($key) {
+    public function setSecretKey($key)
+    {
         $this->_secretKey = $key;
         return $this;
     }
 
-    public function getSecretKey() {
+    public function getSecretKey()
+    {
         return $this->_secretKey;
     }
 
 
-// API
-    public function getVerifiedAddresses() {
+    // API
+    public function getVerifiedAddresses()
+    {
         $xml = $this->requestXml('get', [
             'Action' => 'ListVerifiedEmailAddresses'
         ]);
 
         $output = [];
 
-        foreach($xml->ListVerifiedEmailAddressesResult->VerifiedEmailAddresses->member as $address) {
+        foreach ($xml->ListVerifiedEmailAddressesResult->VerifiedEmailAddresses->member as $address) {
             $output[] = flow\mail\Address::factory((string)$address);
         }
 
         return $output;
     }
 
-    public function deleteVerifiedAddress($address) {
+    public function deleteVerifiedAddress($address)
+    {
         $address = flow\mail\Address::factory($address);
 
         $xml = $this->requestXml('delete', [
@@ -91,7 +102,8 @@ class Mediator implements IMediator {
         return $this;
     }
 
-    public function getSendQuota() {
+    public function getSendQuota()
+    {
         $xml = $this->requestXml('get', [
             'Action' => 'GetSendQuota'
         ]);
@@ -103,14 +115,15 @@ class Mediator implements IMediator {
         ];
     }
 
-    public function getSendStatistics() {
+    public function getSendStatistics()
+    {
         $xml = $this->requestXml('get', [
             'Action' => 'GetSendStatistics'
         ]);
 
         $dataPoints = [];
 
-        foreach($xml->GetSendStatisticsResult->SendDataPoints->member as $dataPoint) {
+        foreach ($xml->GetSendStatisticsResult->SendDataPoints->member as $dataPoint) {
             $dataPoints[] = [
                 'bounces' => (string)$dataPoint->Bounces,
                 'complaints' => (string)$dataPoint->Complaints,
@@ -125,40 +138,41 @@ class Mediator implements IMediator {
 
 
 
-    public function sendMessage(flow\mail\IMessage $message, flow\mime\IMultiPart $mime) {
+    public function sendMessage(flow\mail\IMessage $message, flow\mime\IMultiPart $mime)
+    {
         $params = ['Action' => 'SendEmail'];
 
         $i = 1;
-        foreach($message->getToAddresses() as $address) {
+        foreach ($message->getToAddresses() as $address) {
             $params['Destination.ToAddresses.member.'.$i] = (string)$address;
             $i++;
         }
 
         $i = 1;
-        foreach($message->getCcAddresses() as $address) {
+        foreach ($message->getCcAddresses() as $address) {
             $params['Destination.CcAddresses.member.'.$i] = (string)$address;
         }
 
         $i = 1;
-        foreach($message->getBccAddresses() as $address) {
+        foreach ($message->getBccAddresses() as $address) {
             $params['Destination.BccAddresses.member.'.$i] = (string)$address;
         }
 
-        if($address = $message->getReplyToAddress()) {
+        if ($address = $message->getReplyToAddress()) {
             $params['ReplyToAddresses.member.1'] = (string)$address;
         }
 
         $params['Source'] = (string)$message->getFromAddress();
 
-        if(null !== ($subject = $message->getSubject())) {
+        if (null !== ($subject = $message->getSubject())) {
             $params['Message.Subject.Data'] = $subject;
         }
 
-        if($bodyText = $message->getBodyText()) {
+        if ($bodyText = $message->getBodyText()) {
             $params['Message.Body.Text.Data'] = $bodyText;
         }
 
-        if($bodyHtml = $message->getBodyHtml()) {
+        if ($bodyHtml = $message->getBodyHtml()) {
             $params['Message.Body.Html.Data'] = $bodyHtml;
         }
 
@@ -166,7 +180,8 @@ class Mediator implements IMediator {
         return (string)$xml->SendEmailResult->MessageId;
     }
 
-    public function sendRawMessage(flow\mail\IMessage $message, flow\mime\IMultiPart $mime) {
+    public function sendRawMessage(flow\mail\IMessage $message, flow\mime\IMultiPart $mime)
+    {
         $xml = $this->requestXml('post', [
             'Action' => 'SendRawEmail',
             'RawMessage.Data' => base64_encode((string)$mime),
@@ -177,7 +192,8 @@ class Mediator implements IMediator {
     }
 
 
-    public function sendRawString($from, $string) {
+    public function sendRawString($from, $string)
+    {
         $from = flow\mail\Address::factory($from);
 
         $xml = $this->requestXml('post', [
@@ -191,8 +207,9 @@ class Mediator implements IMediator {
 
 
 
-// IO
-    public function requestXml($method, array $data=[], array $headers=[]) {
+    // IO
+    public function requestXml($method, array $data=[], array $headers=[])
+    {
         $response = $this->sendRequest($this->createRequest(
             $method, '', $data, $headers
         ));
@@ -200,9 +217,10 @@ class Mediator implements IMediator {
         return simplexml_load_string($response->getContent());
     }
 
-    public function createUrl(string $path): link\http\IUrl {
-        if(!$this->_activeUrl) {
-            throw core\Error::ESetup(
+    public function createUrl(string $path): link\http\IUrl
+    {
+        if (!$this->_activeUrl) {
+            throw Glitch::ESetup(
                 'Amazon SES API url has not been set'
             );
         }
@@ -210,15 +228,16 @@ class Mediator implements IMediator {
         return clone $this->_activeUrl;
     }
 
-    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest {
-        if(!$this->_accessKey) {
-            throw core\Error::ESetup(
+    protected function _prepareRequest(link\http\IRequest $request): link\http\IRequest
+    {
+        if (!$this->_accessKey) {
+            throw Glitch::ESetup(
                 'Amazon SES access key has not been set'
             );
         }
 
-        if(!$this->_secretKey) {
-            throw core\Error::ESetup(
+        if (!$this->_secretKey) {
+            throw Glitch::ESetup(
                 'Amazon SES secret key has not been set'
             );
         }
@@ -236,8 +255,9 @@ class Mediator implements IMediator {
         return $request;
     }
 
-    protected function _extractResponseError(link\http\IResponse $response) {
-        return core\Error::EApi([
+    protected function _extractResponseError(link\http\IResponse $response)
+    {
+        return Glitch::EApi([
             'message' => 'SES api error',
             'data' => $response->getContent()
         ]);

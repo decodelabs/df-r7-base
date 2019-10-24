@@ -12,6 +12,7 @@ use df\flex;
 
 use DecodeLabs\Tagged\Builder\StyleList;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -397,7 +398,7 @@ class Tag implements ITag, Inspectable
         }
 
         if (preg_match('/[^a-zA-Z0-9\-_]/', $id)) {
-            throw core\Error::EArgument('Invalid tag id '.$id.'!');
+            throw Glitch::EInvalidArgument('Invalid tag id '.$id.'!');
         }
 
         $this->setAttribute('id', $id);

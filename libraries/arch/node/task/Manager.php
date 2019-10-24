@@ -72,7 +72,7 @@ class Manager implements arch\node\ITaskManager
         $node = arch\node\Base::factory($context);
 
         if (!$node instanceof arch\node\ITaskNode) {
-            throw core\Error::{'arch/node/EDefinition'}(
+            throw Glitch::{'df/arch/node/EDefinition'}(
                 'Child node '.$request.' does not extend arch\\node\\Task'
             );
         }

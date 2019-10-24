@@ -12,6 +12,8 @@ use df\flex;
 use df\aura;
 use df\arch;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements fire\IBlock
 {
     use flex\xml\TReaderInterchange;
@@ -40,7 +42,7 @@ abstract class Base implements fire\IBlock
         $class = 'df\\fire\\block\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw core\Error::ENotFound(
+            throw Glitch::ENotFound(
                 'Block type '.$name.' could not be found'
             );
         }
@@ -120,7 +122,7 @@ abstract class Base implements fire\IBlock
     protected function _validateXmlReader(flex\xml\ITree $reader)
     {
         if ($reader->getTagName() != 'block') {
-            throw core\Error::EValue(
+            throw Glitch::EUnexpectedValue(
                 'Block content object expected block xml element'
             );
         }
@@ -132,7 +134,7 @@ abstract class Base implements fire\IBlock
         }
 
         if (strtolower($type) != strtolower($this->getName())) {
-            throw core\Error::EValue(
+            throw Glitch::EUnexpectedValue(
                 'Block content is meant for a '.$reader->getAttribute('type').' block, not a '.$this->getName().' block'
             );
         }

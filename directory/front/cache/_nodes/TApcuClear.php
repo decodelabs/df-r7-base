@@ -10,6 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Glitch;
+
 trait TApcuClear
 {
     protected function _clearApcu()
@@ -35,11 +37,11 @@ trait TApcuClear
             $prefix = null;
         } else {
             if (!$cacheId) {
-                throw core\Error::{'EValue'}(
+                throw Glitch::EUnexpectedValue(
                     'Cache id not specified'
                 );
             }
-            
+
             $prefix = $this->app->getUniquePrefix().'-'.$cacheId.':';
         }
 

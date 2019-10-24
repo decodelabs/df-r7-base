@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\flow;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements flow\mailingList\IAdapter
 {
     const SETTINGS_FIELDS = [];
@@ -16,7 +18,7 @@ abstract class Base implements flow\mailingList\IAdapter
     public static function factory(core\collection\ITree $options): flow\mailingList\IAdapter
     {
         if (!$name = $options['adapter']) {
-            throw core\Error::{'flow/mailingList/ESetup'}(
+            throw Glitch::{'df/flow/mailingList/ESetup'}(
                 'Mailing list adapter name has not been set in config'
             );
         }
@@ -24,7 +26,7 @@ abstract class Base implements flow\mailingList\IAdapter
         $class = 'df\\flow\\mailingList\\adapter\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw core\Error::{'flow/mailingList/ESetup,ENotFound'}(
+            throw Glitch::{'df/flow/mailingList/ESetup,ENotFound'}(
                 'Mailing list adapter '.$name.' could not be found'
             );
         }
@@ -37,7 +39,7 @@ abstract class Base implements flow\mailingList\IAdapter
         $class = 'df\\flow\\mailingList\\adapter\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw core\Error::{'flow/mailingList/ESetup,ENotFound'}(
+            throw Glitch::{'df/flow/mailingList/ESetup,ENotFound'}(
                 'Mailing list adapter '.$name.' could not be found'
             );
         }

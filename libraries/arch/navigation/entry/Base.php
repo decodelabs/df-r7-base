@@ -25,7 +25,7 @@ abstract class Base implements arch\navigation\IEntry
         }
 
         if (!$class = self::_getEntryClass($type)) {
-            throw core\Error::ENotFound(
+            throw Glitch::ENotFound(
                 'Entry type '.$type.' could not be found'
             );
         }
@@ -51,7 +51,7 @@ abstract class Base implements arch\navigation\IEntry
     public static function factory($type, ...$args): arch\navigation\IEntry
     {
         if (!$class = self::_getEntryClass($type)) {
-            throw core\Error::ENotFound(
+            throw Glitch::ENotFound(
                 'Entry type '.$type.' could not be found'
             );
         }

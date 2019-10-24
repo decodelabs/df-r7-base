@@ -12,6 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
 class TaskRestoreBackup extends arch\node\Task
@@ -84,7 +85,7 @@ class TaskRestoreBackup extends arch\node\Task
                     break;
 
                 default:
-                    throw core\Error::{'axis/unit/EValue'}(
+                    throw Glitch::{'df/axis/unit/EUnexpectedValue'}(
                         'Not really sure what to do with '.$extension.' type backups'
                     );
             }
@@ -95,7 +96,7 @@ class TaskRestoreBackup extends arch\node\Task
             $func = '_finalize'.ucfirst($type);
 
             if (!method_exists($this, $func)) {
-                throw core\Error::{'axis/unit/ERuntime'}(
+                throw Glitch::{'df/axis/unit/ERuntime'}(
                     'Can\'t finalize '.$type.' adapters'
                 );
             }
@@ -131,7 +132,7 @@ class TaskRestoreBackup extends arch\node\Task
 
         foreach ($tableList as $tableName) {
             if (!isset($this->_schemas[$tableName])) {
-                throw core\Error::{'axis/schema/ENotFound'}(
+                throw Glitch::{'df/axis/schema/ENotFound'}(
                     'Schema not found for '.$tableName
                 );
             }

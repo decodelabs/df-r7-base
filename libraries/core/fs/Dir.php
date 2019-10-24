@@ -174,7 +174,7 @@ class Dir implements IDirectory, Inspectable
             umask($umask);
 
             if ($result) {
-                throw core\Error::{'EUnwritable,ERuntime'}(
+                throw Glitch::{'EUnwritable,ERuntime'}(
                     'Directory is not writable'
                 );
             }
@@ -685,7 +685,7 @@ class Dir implements IDirectory, Inspectable
         $destination = self::factory($destination);
 
         if ($destination->exists()) {
-            throw core\Error::{'EAlreadyExists,ERuntime'}(
+            throw Glitch::{'EAlreadyExists,ERuntime'}(
                 'Destination directory already exists '.$destination->getPath()
             );
         }
@@ -696,7 +696,7 @@ class Dir implements IDirectory, Inspectable
     public function mergeInto($destination)
     {
         if (!is_dir($this->_path)) {
-            throw core\Error::{'ENotFound'}(
+            throw Glitch::{'ENotFound'}(
                 'Source directory does not exist'
             );
         }
@@ -723,7 +723,7 @@ class Dir implements IDirectory, Inspectable
     public function moveTo($destination, $newName=null)
     {
         if (!is_dir($this->_path)) {
-            throw core\Error::{'ENotFound'}(
+            throw Glitch::{'ENotFound'}(
                 'Source directory does not exist'
             );
         }
@@ -736,7 +736,7 @@ class Dir implements IDirectory, Inspectable
         $target = $destination->getDir($newName);
 
         if ($target->exists()) {
-            throw core\Error::{'EAlreadyExists,ERuntime'}(
+            throw Glitch::{'EAlreadyExists,ERuntime'}(
                 'Destination directory already exists'
             );
         }

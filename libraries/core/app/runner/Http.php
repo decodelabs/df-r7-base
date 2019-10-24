@@ -92,7 +92,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     public function getHttpRequest()
     {
         if (!$this->_httpRequest) {
-            throw core\Error::ELogic(
+            throw Glitch::ELogic(
                 'The http request is not available until the application has been dispatched'
             );
         }
@@ -563,7 +563,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
         // Empty response
         if ($response === null && df\Launchpad::$app->isDevelopment()) {
-            throw core\Error::{'ENotImplemented'}([
+            throw Glitch::ENotImplemented([
                 'message' => 'No response was returned by node: '.$this->_context->request,
                 'http' => 501
             ]);

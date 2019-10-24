@@ -10,6 +10,7 @@ use df\core;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Managed as ManagedProcess;
@@ -25,7 +26,7 @@ class Daemon extends Base
     public function dispatch(): void
     {
         if (php_sapi_name() != 'cli') {
-            throw core\Error::EDomain(
+            throw Glitch::EDomain(
                 'Daemon processes must only be started from the CLI SAPI'
             );
         }
@@ -41,7 +42,7 @@ class Daemon extends Base
         $args = core\cli\Command::fromArgv();
 
         if (!$arg = $args[2]) {
-            throw core\Error::EArgument(
+            throw Glitch::EInvalidArgument(
                 'No daemon path has been specified'
             );
         }

@@ -8,12 +8,14 @@ namespace df\core\archive;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 class Bz2 extends Base
 {
     public function __construct()
     {
         if (!extension_loaded('bz2')) {
-            throw core\Error::EUnsupported(
+            throw Glitch::EUnsupported(
                 'The bz2 extension is not loaded'
             );
         }

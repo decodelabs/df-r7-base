@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\mint;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -313,7 +314,7 @@ class Currency implements ICurrency, Inspectable
     {
         if ($amount instanceof ICurrency) {
             if ($amount->getCode() != $this->_code) {
-                throw core\Error::{'ECurrency,EArgument'}(
+                throw Glitch::{'ECurrency,EInvalidArgument'}(
                     'Cannot combine different currency amounts'
                 );
             }
@@ -335,7 +336,7 @@ class Currency implements ICurrency, Inspectable
     {
         if ($amount instanceof ICurrency) {
             if ($amount->getCode() != $this->_code) {
-                throw core\Error::{'ECurrency,EArgument'}(
+                throw Glitch::{'ECurrency,EInvalidArgument'}(
                     'Cannot combine different currency amounts'
                 );
             }

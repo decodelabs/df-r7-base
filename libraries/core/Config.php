@@ -10,6 +10,7 @@ use df\core;
 
 use DecodeLabs\Atlas;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -36,7 +37,7 @@ abstract class Config implements IConfig, Inspectable
     public static function getInstance()
     {
         if (!static::ID) {
-            throw core\Error::EDefinition('Invalid config id set for '.get_called_class());
+            throw Glitch::EDefinition('Invalid config id set for '.get_called_class());
         }
 
         return static::_factory(static::ID);
@@ -47,7 +48,7 @@ abstract class Config implements IConfig, Inspectable
         $handlerClass = get_called_class();
 
         if (empty($id)) {
-            throw core\Error::EImplementation('Invalid config id passed for '.$handlerClass);
+            throw Glitch::EImplementation('Invalid config id passed for '.$handlerClass);
         }
 
         if ($handlerClass::STORE_IN_MEMORY) {

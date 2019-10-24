@@ -12,19 +12,22 @@ use df\arch;
 use df\link;
 use df\spur;
 
-class TaskMedia extends arch\node\Task {
+use DecodeLabs\Glitch;
 
+class TaskMedia extends arch\node\Task
+{
     protected $_migrator;
 
-    public function extractCliArguments(core\cli\ICommand $command) {
+    public function extractCliArguments(core\cli\ICommand $command)
+    {
         $i = 0;
 
-        foreach($command->getArguments() as $arg) {
-            if($arg->isOption()) {
+        foreach ($command->getArguments() as $arg) {
+            if ($arg->isOption()) {
                 continue;
             }
 
-            switch(++$i) {
+            switch (++$i) {
                 case 1:
                     $this->request->query->url = (string)$arg;
                     break;
@@ -36,8 +39,9 @@ class TaskMedia extends arch\node\Task {
         }
     }
 
-    public function execute() {
-        if(!$this->data->media->isLocalDataMediaHandler()) {
+    public function execute()
+    {
+        if (!$this->data->media->isLocalDataMediaHandler()) {
             $this->io->writeLine('You can currently only migrate to locally stored media libraries');
             return;
         }
@@ -51,7 +55,7 @@ class TaskMedia extends arch\node\Task {
         $query = $this->data->media->version->fetch()
             ->where('purgeDate', '=', null);
 
-        if($bucket) {
+        if ($bucket) {
             $query
                 ->whereCorrelation('file', 'in', 'id')
                     ->from('axis://media/File')
@@ -62,19 +66,19 @@ class TaskMedia extends arch\node\Task {
                     ->endCorrelation();
         }
 
-        if($limit) {
+        if ($limit) {
             $query
                 ->where('fileSize', '<', $limit);
         }
 
 
-        foreach($query as $version) {
+        foreach ($query as $version) {
             $fileId = (string)$version['#file'];
             $versionId = (string)$version['id'];
 
             $path = $handler->getFilePath($fileId, $versionId);
 
-            if(is_file($path)) {
+            if (is_file($path)) {
                 $this->io->writeLine('Skipping '.$versionId.' - '.$version['fileName']);
                 continue;
             }
@@ -85,23 +89,23 @@ class TaskMedia extends arch\node\Task {
                     'file' => $fileId,
                     'version' => $versionId
                 ], $path
-            ), function($response) use($versionId, $version, $path) {
-                if(!$response->isOk()) {
-                    if($response->isMissing()) {
+            ), function ($response) use ($versionId, $version, $path) {
+                if (!$response->isOk()) {
+                    if ($response->isMissing()) {
                         try {
                             $content = $response->getJsonContent();
                             $message = $content['message'];
-                        } catch(\Throwable $e) {
+                        } catch (\Throwable $e) {
                             $message = null;
                         }
 
                         $this->io->writeLine($versionId.' - '.$version['fileName'].' **NOT FOUND'.($message ? ': '.$message : null).'**');
-                    } else if($response->isForbidden()) {
-                        throw core\Error::{'EArgument,EApi'}(
+                    } elseif ($response->isForbidden()) {
+                        throw Glitch::{'EInvalidArgument,EApi'}(
                             'Migration key is invalid - check application pass keys match'
                         );
-                    } else if($response->isError()) {
-                        throw core\Error::EApi('Migration failed!!!');
+                    } elseif ($response->isError()) {
+                        throw Glitch::EApi('Migration failed!!!');
                     }
                 } else {
                     $this->io->writeLine('Fetched '.$versionId.' - '.$version['fileName'].' - '.$this->format->fileSize(filesize($path)));
@@ -112,8 +116,9 @@ class TaskMedia extends arch\node\Task {
         $this->_migrator->sync();
     }
 
-    protected function _getUrl() {
-        if(isset($this->request['url'])) {
+    protected function _getUrl()
+    {
+        if (isset($this->request['url'])) {
             $url = $this->request['url'];
         } else {
             $this->io->write('>> Please enter the source root URL: ');
@@ -124,8 +129,8 @@ class TaskMedia extends arch\node\Task {
             ->addRequiredField('url')
             ->validate(['url' => $url]);
 
-        if(!$validator->isValid()) {
-            throw core\Error::{'EArgument'}([
+        if (!$validator->isValid()) {
+            throw Glitch::EInvalidArgument([
                 'message' => 'Sorry, the URL you entered is invalid',
             ]);
         }
@@ -133,15 +138,16 @@ class TaskMedia extends arch\node\Task {
         return new link\http\Url($validator['url']);
     }
 
-    protected function _getBucket(): ?string {
-        if(isset($this->request['bucket'])) {
+    protected function _getBucket(): ?string
+    {
+        if (isset($this->request['bucket'])) {
             $bucket = $this->request['bucket'];
         } else {
-            $bucket = $this->_askFor('Bucket [default: all]', function($answer) {
+            $bucket = $this->_askFor('Bucket [default: all]', function ($answer) {
                 return $this->data->newValidator()
                     ->addField('bucket', 'slug')
-                        ->extend(function($value, $field) {
-                            if(empty($value)) {
+                        ->extend(function ($value, $field) {
+                            if (empty($value)) {
                                 return;
                             }
 
@@ -149,7 +155,7 @@ class TaskMedia extends arch\node\Task {
                                 ->where('slug', '=', $value)
                                 ->count();
 
-                            if(!$check) {
+                            if (!$check) {
                                 $field->addError('invalid', 'Bucket not found');
                             }
                         });
@@ -159,17 +165,18 @@ class TaskMedia extends arch\node\Task {
         return $bucket;
     }
 
-    protected function _getLimit(): ?int {
-        if(isset($this->request['limit'])) {
+    protected function _getLimit(): ?int
+    {
+        if (isset($this->request['limit'])) {
             $limit = $this->request['limit'];
         } else {
-            $limit = $this->_askFor('Size limit [default: none]', function($answer) {
+            $limit = $this->_askFor('Size limit [default: none]', function ($answer) {
                 return $this->data->newValidator()
                     ->addField('limit', 'fileSize');
             });
         }
 
-        if($limit) {
+        if ($limit) {
             return $limit->getBytes();
         } else {
             return null;

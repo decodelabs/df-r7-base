@@ -87,7 +87,7 @@ class StackCall implements IStackCall, Inspectable
                     break;
 
                 default:
-                    throw core\Error::EValue('Unknown call type: '.$callData['type']);
+                    throw Glitch::EUnexpectedValue('Unknown call type: '.$callData['type']);
             }
         } elseif ($this->_namespace !== null) {
             $this->_type = 3;

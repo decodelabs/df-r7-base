@@ -10,21 +10,24 @@ use df\core;
 use df\apex;
 use df\axis;
 
-class Update extends axis\procedure\Record {
+use DecodeLabs\Glitch;
 
-    protected function _getRecord() {
+class Update extends axis\procedure\Record
+{
+    protected function _getRecord()
+    {
         $userManager = $this->user;
 
-        if(!$userManager->isLoggedIn()) {
-            throw core\Error::EUnauthorized('Cannot edit guests');
+        if (!$userManager->isLoggedIn()) {
+            throw Glitch::EUnauthorized('Cannot edit guests');
         }
 
         $record = $this->_unit->fetch()
             ->where('id', '=', $userManager->client->getId())
             ->toRow();
 
-        if(!$record) {
-            throw core\Error::{'opal/record/ENotFound'}(
+        if (!$record) {
+            throw Glitch::{'df/opal/record/ENotFound'}(
                 'Client record not found'
             );
         }
@@ -32,15 +35,16 @@ class Update extends axis\procedure\Record {
         return $record;
     }
 
-    protected function _execute() {
+    protected function _execute()
+    {
         $auth = $this->record->authDomains->fetch()
             ->where('adapter', '=', 'Local')
             ->toRow();
 
         $applyPassword = false;
 
-        if(!empty($this->values[$this->validator->getMappedName('newPassword')])) {
-            if(!$auth) {
+        if (!empty($this->values[$this->validator->getMappedName('newPassword')])) {
+            if (!$auth) {
                 $auth = $this->_model->auth->newRecord([
                     'user' => $this->record,
                     'adapter' => 'Local',
@@ -54,13 +58,13 @@ class Update extends axis\procedure\Record {
             $this->validator
 
                 // Current
-                ->chainIf(!$auth->isNew() && isset($this->values->{$this->validator->getMappedName('currentPassword')}), function($validator) use($auth) {
+                ->chainIf(!$auth->isNew() && isset($this->values->{$this->validator->getMappedName('currentPassword')}), function ($validator) use ($auth) {
                     $validator->addField('currentPassword', 'text')
                         ->isRequired(true)
-                        ->extend(function($value, $field) use($auth) {
+                        ->extend(function ($value, $field) use ($auth) {
                             $hash = $this->context->user->password->hash($value);
 
-                            if($hash != $auth['password']) {
+                            if ($hash != $auth['password']) {
                                 $field->addError('incorrect', $this->context->_(
                                     'This password is incorrect'
                                 ));
@@ -76,7 +80,7 @@ class Update extends axis\procedure\Record {
                     ->setMinStrength($userConfig->getMinPasswordStrength());
         }
 
-        if($this->validate()) {
+        if ($this->validate()) {
             $this->validator->applyTo($this->record, [
                 'email', 'fullName', 'nickName',
                 'timezone', 'country', 'language'
@@ -84,8 +88,8 @@ class Update extends axis\procedure\Record {
 
             $this->record->save();
 
-            if($auth) {
-                if($applyPassword) {
+            if ($auth) {
+                if ($applyPassword) {
                     $auth->password = $this->validator['newPassword'];
                 }
 
@@ -93,7 +97,7 @@ class Update extends axis\procedure\Record {
                 $auth->save();
             }
 
-            if($this->record['id'] == $this->user->client->getId()) {
+            if ($this->record['id'] == $this->user->client->getId()) {
                 $this->user->importClientData($this->record);
             }
         }

@@ -9,31 +9,35 @@ use df;
 use df\core;
 use df\arch;
 
-class Delegate extends Base implements core\validate\IDelegateField {
+use DecodeLabs\Glitch;
 
+class Delegate extends Base implements core\validate\IDelegateField
+{
     protected $_delegate;
     protected $_isRequired = null;
 
 
-// Options
-    public function fromForm(arch\node\IForm $form, string $name=null) {
-        if($name === null) {
+    // Options
+    public function fromForm(arch\node\IForm $form, string $name=null)
+    {
+        if ($name === null) {
             $name = $this->_name;
         }
 
         return $this->setDelegate($form->getDelegate($name));
     }
 
-    public function setDelegate(arch\node\IDelegate $delegate) {
-        if(!$delegate instanceof arch\node\IResultProviderDelegate) {
-            throw core\Error::EArgument(
+    public function setDelegate(arch\node\IDelegate $delegate)
+    {
+        if (!$delegate instanceof arch\node\IResultProviderDelegate) {
+            throw Glitch::EInvalidArgument(
                 'Delegate '.$delegate->getDelegateId().' does not provide a result'
             );
         }
 
         $this->_delegate = $delegate;
 
-        if($this->_isRequired !== null) {
+        if ($this->_isRequired !== null) {
             $delegate->isRequired($this->_isRequired);
         } else {
             $this->_isRequired = $delegate->isRequired();
@@ -42,15 +46,17 @@ class Delegate extends Base implements core\validate\IDelegateField {
         return $this;
     }
 
-    public function getDelegate(): ?arch\node\IDelegate {
+    public function getDelegate(): ?arch\node\IDelegate
+    {
         return $this->_delegate;
     }
 
-    public function isRequired(bool $flag=null) {
-        if($flag !== null) {
+    public function isRequired(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_isRequired = $flag;
 
-            if($this->_delegate) {
+            if ($this->_delegate) {
                 $this->_delegate->isRequired($this->_isRequired);
             }
 
@@ -62,11 +68,12 @@ class Delegate extends Base implements core\validate\IDelegateField {
 
 
 
-// Validate
-    public function validate() {
+    // Validate
+    public function validate()
+    {
         // Prepare
-        if(!$this->_delegate) {
-            throw core\Error::ESetup('Delegate not set');
+        if (!$this->_delegate) {
+            throw Glitch::ESetup('Delegate not set');
         }
 
         $value = false;
@@ -80,7 +87,7 @@ class Delegate extends Base implements core\validate\IDelegateField {
 
 
         // Sanitize
-        if($clear) {
+        if ($clear) {
             $value = null;
         }
 
@@ -89,9 +96,9 @@ class Delegate extends Base implements core\validate\IDelegateField {
 
 
         // Finalize
-        if($this->_requireGroup !== null) {
-            if($value === null || !$this->_delegate->isValid()) {
-                if(!$this->validator->checkRequireGroup($this->_requireGroup)) {
+        if ($this->_requireGroup !== null) {
+            if ($value === null || !$this->_delegate->isValid()) {
+                if (!$this->validator->checkRequireGroup($this->_requireGroup)) {
                     $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
                 }
             } else {
@@ -106,9 +113,10 @@ class Delegate extends Base implements core\validate\IDelegateField {
     }
 
 
-// Apply
-    public function applyValueTo(&$record, $value) {
-        if($value === null && $this->isRequired()) {
+    // Apply
+    public function applyValueTo(&$record, $value)
+    {
+        if ($value === null && $this->isRequired()) {
             return $this;
         }
 

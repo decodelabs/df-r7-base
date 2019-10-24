@@ -10,19 +10,22 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class HttpApcuClear extends arch\node\Base {
+use DecodeLabs\Glitch;
 
+class HttpApcuClear extends arch\node\Base
+{
     use TApcuClear;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
     const OPTIMIZE = true;
 
-    public function executeAsJson() {
+    public function executeAsJson()
+    {
         //if($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {
-            $cleared = $this->_clearApcu();
+        $cleared = $this->_clearApcu();
         //} else {
-            //throw core\Error::{'ERuntime'}('This action can only be triggered from localhost');
-            //$cleared = null;
+        //throw Glitch::ERuntime('This action can only be triggered from localhost');
+        //$cleared = null;
         //}
 
         return $this->data->toJson([

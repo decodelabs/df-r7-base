@@ -99,7 +99,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         $options = $this->getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw core\Error::EArgument('Invalid option: '.$option);
+            throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
         return array_slice($options, 0, $key);
@@ -111,7 +111,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         $options = $this->getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw core\Error::EArgument('Invalid option: '.$option);
+            throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
         return array_slice($options, 0, $key + 1);
@@ -123,7 +123,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         $options = $this->getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw core\Error::EArgument('Invalid option: '.$option);
+            throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
         return array_slice($options, $key + 1);
@@ -135,7 +135,7 @@ abstract class Enum implements axis\IUnit, core\lang\IEnumFactory
         $options = $this->getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw core\Error::EArgument('Invalid option: '.$option);
+            throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
         return array_slice($options, $key);
@@ -152,14 +152,14 @@ class Enum_Inst implements core\lang\IInstanceEnum
 
     public static function factory($value)
     {
-        throw core\Error::EImplementation(
+        throw Glitch::EImplementation(
             'Unit enum factory is not accessible'
         );
     }
 
     public static function normalize($value)
     {
-        throw core\Error::EImplementation(
+        throw Glitch::EImplementation(
             'Unit enum normalize is not accessible'
         );
     }
@@ -185,7 +185,7 @@ class Enum_Inst implements core\lang\IInstanceEnum
             } elseif (in_array($value, $this->_labels)) {
                 $value = array_search($value, $this->_labels);
             } else {
-                throw core\Error::{'core/lang/EEnum,core/lang/EArgument'}(
+                throw Glitch::{'df/core/lang/EEnum,df/core/lang/EInvalidArgument'}(
                     $value.' is not a valid enum option'
                 );
             }

@@ -12,6 +12,8 @@ use df\user;
 use df\aura;
 use df\flow;
 
+use DecodeLabs\Glitch;
+
 // Exceptions
 interface IForcedResponse
 {
@@ -104,7 +106,7 @@ trait TDirectoryHelper
                 $context = Context::getCurrent();
 
                 if (!$context) {
-                    throw core\Error::{'arch/ENoContext'}(
+                    throw Glitch::{'df/arch/ENoContext'}(
                         'No arch context is available for '.__CLASS__.' helper'
                     );
                 }

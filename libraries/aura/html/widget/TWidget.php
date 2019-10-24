@@ -12,6 +12,7 @@ use df\arch;
 use df\user;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -48,7 +49,7 @@ trait TWidget
     protected function _getPrimaryTagType(): string
     {
         if (!static::PRIMARY_TAG) {
-            throw core\Error::EDefinition(
+            throw Glitch::EDefinition(
                 'Primary tag name has not been declared for '.$this->getWidgetName().' widget type'
             );
         }
@@ -961,7 +962,7 @@ trait TWidget_NavigationEntryController
             $class = 'df\\aura\\html\\widget\\'.static::DEFAULT_LINK_WIDGET;
 
             if (!$link instanceof $class) {
-                throw core\Error::EArgument(
+                throw Glitch::EInvalidArgument(
                     'Links in '.$this->getWidgetName().' widgets must be of type '.static::DEFAULT_LINK_WIDGET
                 );
             }
@@ -1391,7 +1392,7 @@ trait TWidget_MappedList
     public function addLabel($fieldKey, $labelKey, $label=null)
     {
         if (!isset($this->_fields[$fieldKey])) {
-            throw core\Error::EBounds(
+            throw Glitch::ENotFound(
                 'Field '.$fieldKey.' not found'
             );
         }

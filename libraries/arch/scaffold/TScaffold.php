@@ -15,6 +15,8 @@ use df\mesh;
 use df\flex;
 use df\user;
 
+use DecodeLabs\Glitch;
+
 // Record loader
 trait TScaffold_RecordLoader
 {
@@ -41,7 +43,7 @@ trait TScaffold_RecordLoader
             return $this->_recordAdapter;
         }
 
-        throw core\Error::EDefinition(
+        throw Glitch::EDefinition(
             'Unable to find a suitable adapter for record scaffold'
         );
     }
@@ -114,7 +116,9 @@ trait TScaffold_RecordDataProvider
         $this->_record = $this->loadRecord($key);
 
         if (!$this->_record) {
-            throw core\Error::{'arch/scaffold/EValue,arch/scaffold/ENotFound'}('Unable to load scaffold record');
+            throw Glitch::{
+                'arch/scaffold/EUnexpectedValue,arch/scaffold/ENotFound'
+            }('Unable to load scaffold record');
         }
 
         return $this->_record;
@@ -353,7 +357,7 @@ trait TScaffold_RecordDataProvider
     public function buildDeleteDynamicNode()
     {
         if (!$this->canDeleteRecord()) {
-            throw core\Error::{'arch/scaffold/ELogic,EUnauthorized'}(
+            throw Glitch::{'df/arch/scaffold/ELogic,EUnauthorized'}(
                 'Records cannot be deleted'
             );
         }

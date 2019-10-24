@@ -30,7 +30,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     public function getCommand()
     {
         if (!$this->_command) {
-            throw core\Error::ELogic(
+            throw Glitch::ELogic(
                 'The task command is not available until the application has been dispatched'
             );
         }
@@ -100,7 +100,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
         }
 
         if (!$request) {
-            throw core\Error::EArgument(
+            throw Glitch::EInvalidArgument(
                 'No task path has been specified'
             );
         }
@@ -178,7 +178,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
 
         // Forwarding
         if ($response instanceof arch\IRequest) {
-            throw core\Error::EImplementation(
+            throw Glitch::EImplementation(
                 'Request forwarding is no longer supported'
             );
         }

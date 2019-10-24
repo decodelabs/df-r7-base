@@ -29,7 +29,7 @@ trait TView_RenderTargetProvider
     public function getRenderTarget()
     {
         if (!$this->_renderTarget) {
-            throw Glitch::{'aura/view/ENoView,ENoContext'}(
+            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
                 'No render target has been set'
             );
         }
@@ -83,7 +83,7 @@ trait TView_SlotContainer
     {
         foreach ($keys as $key) {
             if (!$this->hasSlot($key)) {
-                throw Glitch::{'aura/view/ENoSlot,EDomain'}(
+                throw Glitch::{'df/aura/view/ENoSlot,EDomain'}(
                     'Slot '.$key.' has not been defined'
                 );
             }
@@ -538,7 +538,7 @@ trait TView_DirectoryHelper
         } elseif (isset($target->view)) {
             $this->view = $target->view;
         } elseif ($this instanceof IImplicitViewHelper) {
-            throw Glitch::{'aura/view/EContext'}(
+            throw Glitch::{'df/aura/view/EContext'}(
                 'Cannot use implicit view helper from objects that do not provide a view'
             );
         }
@@ -547,7 +547,7 @@ trait TView_DirectoryHelper
     public function getView()
     {
         if (!$this->view) {
-            throw Glitch::{'aura/view/ENoView,ENoContext'}(
+            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
                 'Cannot use implicit view helper from objects that do not provide a view'
             );
         }
@@ -569,7 +569,7 @@ trait TView_CascadingHelperProvider
         $output = $this->_getHelper($method, true);
 
         if (!is_callable($output)) {
-            throw Glitch::{'aura/view/ECall,aura/view/EDefinition'}(
+            throw Glitch::{'df/aura/view/EBadMethodCall,aura/view/EDefinition'}(
                 'Helper '.$method.' is not callable'
             );
         }

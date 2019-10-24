@@ -11,6 +11,8 @@ use df\opal;
 use df\arch;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 interface IHandler extends \ArrayAccess, core\lang\IChainable
 {
     public function addField(string $name, string $type=null);
@@ -317,7 +319,7 @@ trait TOptionProviderField
             if ($type instanceof core\lang\ITypeRef) {
                 $type->checkType('core/lang/IEnum');
             } elseif (!$type instanceof core\lang\IEnumFactory) {
-                throw core\Error::EArgument(
+                throw Glitch::EInvalidArgument(
                     'Type cannot provide an enum'
                 );
             }
@@ -356,7 +358,7 @@ trait TStorageAwareField
             $adapter = mesh\Manager::getInstance()->fetchEntity($adapter);
 
             if (!$adapter instanceof opal\query\IAdapter) {
-                throw core\Error::EArgument(
+                throw Glitch::EInvalidArgument(
                     'Invalid storage adapter for validator field '.$this->_name
                 );
             }

@@ -10,6 +10,7 @@ use df\core;
 use df\spur;
 use df\mint;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -27,7 +28,7 @@ class DataList extends core\collection\Tree implements IDataList
         $this->_total = (int)$data['total_items'];
 
         if (!$keyName = $filter->getKeyName()) {
-            throw core\Error::EDefinition('No filter key name set');
+            throw Glitch::EDefinition('No filter key name set');
         }
 
         $this->setFilter($filter);

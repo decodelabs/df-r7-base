@@ -52,7 +52,7 @@ class Template implements aura\view\ITemplate, Inspectable
                 $path = '#/'.$path;
             }
 
-            throw Glitch::{'aura/view/ENotFound'}(
+            throw Glitch::{'df/aura/view/ENotFound'}(
                 'Template ~'.rtrim($request->getDirectoryLocation(), '/').'/'.$path.' could not be found'
             );
         }
@@ -88,7 +88,7 @@ class Template implements aura\view\ITemplate, Inspectable
         }
 
         if (!$templatePath) {
-            throw Glitch::{'aura/view/ENotFound'}(
+            throw Glitch::{'df/aura/view/ENotFound'}(
                 'Theme template '.$path.' could not be found'
             );
         }
@@ -128,7 +128,7 @@ class Template implements aura\view\ITemplate, Inspectable
         }
 
         if (!$layoutPath) {
-            throw Glitch::{'aura/view/ENotFound'}(
+            throw Glitch::{'df/aura/view/ENotFound'}(
                 'Layout '.$pathName.'.'.$type.' could not be found'
             );
         }
@@ -142,7 +142,7 @@ class Template implements aura\view\ITemplate, Inspectable
     public function __construct(arch\IContext $context, $absolutePath, $isLayout=false)
     {
         if (!is_file($absolutePath)) {
-            throw Glitch::{'aura/view/ENotFound'}(
+            throw Glitch::{'df/aura/view/ENotFound'}(
                 'Template '.$absolutePath.' could not be found'
             );
         }
@@ -157,7 +157,7 @@ class Template implements aura\view\ITemplate, Inspectable
     public function getView()
     {
         if (!$this->view) {
-            throw Glitch::{'aura/view/ENoView,ENoContext'}(
+            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
                 'This template is not currently rendering'
             );
         }
@@ -242,7 +242,7 @@ class Template implements aura\view\ITemplate, Inspectable
     public function toString(): string
     {
         if (!$this->_renderTarget) {
-            throw Glitch::{'aura/view/ENoView,ENoContext'}(
+            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
                 'No render target has been set'
             );
         }
@@ -398,7 +398,7 @@ class Template implements aura\view\ITemplate, Inspectable
     protected function _checkView()
     {
         if (!$this->view) {
-            throw Glitch::{'aura/view/ENoView,ENoContext'}(
+            throw Glitch::{'df/aura/view/ENoView,ENoContext'}(
                 'No view available for content provider to interact with'
             );
         }

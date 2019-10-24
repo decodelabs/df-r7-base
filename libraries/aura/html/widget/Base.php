@@ -27,7 +27,7 @@ abstract class Base implements IWidget
         $class = 'df\\aura\\html\\widget\\'.$name;
 
         if (!class_exists($class)) {
-            throw core\Error::ENotFound(
+            throw Glitch::ENotFound(
                 'Widget '.$name.' could not be found'
             );
         }
@@ -44,7 +44,7 @@ abstract class Base implements IWidget
         if ($output instanceof self) {
             $output->_widgetName = $name;
         }
-        
+
         return $output;
     }
 

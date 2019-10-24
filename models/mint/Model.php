@@ -11,6 +11,8 @@ use df\apex;
 use df\axis;
 use df\mint;
 
+use DecodeLabs\Glitch;
+
 class Model extends axis\Model
 {
     protected $_enabled;
@@ -40,7 +42,7 @@ class Model extends axis\Model
     private function _getPrimaryGateway(bool $testing): ?mint\IGateway
     {
         if (!$this->isEnabled()) {
-            throw core\Error::{'mint\gateway\ESetup'}([
+            throw Glitch::{'df/mint/gateway/ESetup'}([
                 'message' => 'Payments are not enabled'
             ]);
         }
@@ -50,7 +52,7 @@ class Model extends axis\Model
         }
 
         if ($this->_primaryAccount === null) {
-            throw core\Error::{'mint\gateway\ESetup'}([
+            throw Glitch::{'df/mint/gateway/ESetup'}([
                 'message' => 'Primary account has not been defined'
             ]);
         }
@@ -75,7 +77,7 @@ class Model extends axis\Model
     private function _getSubscriptionGateway(bool $testing): ?mint\IGateway
     {
         if (!$this->isEnabled()) {
-            throw core\Error::{'mint\gateway\ESetup'}([
+            throw Glitch::{'df/mint/gateway/ESetup'}([
                 'message' => 'Payments are not enabled'
             ]);
         }
@@ -85,7 +87,7 @@ class Model extends axis\Model
         }
 
         if ($this->_subscriptionAccount === null) {
-            throw core\Error::{'mint\gateway\ESetup'}([
+            throw Glitch::{'df/mint/gateway/ESetup'}([
                 'message' => 'Subscription account has not been defined'
             ]);
         }
@@ -125,7 +127,7 @@ class Model extends axis\Model
             if ($settings === null) {
                 $this->_gateways[$key] = null;
 
-                throw core\Error::{'mint\gateway\ESetup'}([
+                throw Glitch::{'df/mint/gateway/ESetup'}([
                     'message' => 'Gateway is not available',
                     'data' => $account
                 ]);
@@ -134,7 +136,7 @@ class Model extends axis\Model
             if (!$name = $settings['gateway']) {
                 $this->_gateways[$key] = null;
 
-                throw core\Error::{'mint\gateway\ESetup'}([
+                throw Glitch::{'df/mint/gateway/ESetup'}([
                     'message' => 'Gateway not defined',
                     'data' => $settings
                 ]);
@@ -148,7 +150,7 @@ class Model extends axis\Model
         }
 
         if (!$gateway = $this->_gateways[$key]) {
-            throw core\Error::{'mint\gateway\ESetup'}([
+            throw Glitch::{'df/mint/gateway/ESetup'}([
                 'message' => 'Gateway '.$account.' is not available'
             ]);
         }

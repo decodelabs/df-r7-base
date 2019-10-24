@@ -10,8 +10,10 @@ use df\core;
 use df\fire;
 use df\aura;
 
-abstract class Base implements fire\ICategory {
+use DecodeLabs\Glitch;
 
+abstract class Base implements fire\ICategory
+{
     use core\TStringProvider;
 
     const DEFAULT_BLOCKS = ['RawHtml'];
@@ -28,12 +30,13 @@ abstract class Base implements fire\ICategory {
 
     protected $_blocks = [];
 
-    public static function factory(string $name): fire\ICategory {
+    public static function factory(string $name): fire\ICategory
+    {
         $name = ucfirst($name);
         $class = 'df\\fire\\category\\'.$name;
 
-        if(!class_exists($class)) {
-            throw core\Error::ENotFound(
+        if (!class_exists($class)) {
+            throw Glitch::ENotFound(
                 'Content category '.$name.' could not be found'
             );
         }
@@ -41,16 +44,18 @@ abstract class Base implements fire\ICategory {
         return new $class();
     }
 
-    public static function normalize($category): ?fire\ICategory {
-        if($category instanceof fire\ICategory || $category === null) {
+    public static function normalize($category): ?fire\ICategory
+    {
+        if ($category instanceof fire\ICategory || $category === null) {
             return $category;
         }
 
         return self::factory($category);
     }
 
-    public static function normalizeName($category): ?string {
-        if($category = self::normalize($category)) {
+    public static function normalizeName($category): ?string
+    {
+        if ($category = self::normalize($category)) {
             return $category->getName();
         } else {
             return null;
@@ -58,69 +63,80 @@ abstract class Base implements fire\ICategory {
     }
 
 
-    public function getName(): string {
+    public function getName(): string
+    {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return $this->getName();
     }
 
-    public static function getDefaultBlockTypes(): array {
+    public static function getDefaultBlockTypes(): array
+    {
         return (array)static::DEFAULT_BLOCKS;
     }
 
-    public function getDefaultEditorBlockType(): ?string {
-        if(!empty(static::DEFAULT_EDITOR_BLOCK)) {
+    public function getDefaultEditorBlockType(): ?string
+    {
+        if (!empty(static::DEFAULT_EDITOR_BLOCK)) {
             return static::DEFAULT_EDITOR_BLOCK;
         }
 
         $types = $this->getDefaultBlockTypes();
         $output = array_shift($types);
 
-        if(!empty($output)) {
+        if (!empty($output)) {
             return $output;
         }
 
         return null;
     }
 
-    public function setBlocks(array $blocks) {
+    public function setBlocks(array $blocks)
+    {
         $this->_blocks = [];
         return $this->addBlocks($blocks);
     }
 
-    public function addBlocks(array $blocks) {
-        foreach($blocks as $block) {
+    public function addBlocks(array $blocks)
+    {
+        foreach ($blocks as $block) {
             $this->addBlock($block);
         }
 
         return $this;
     }
 
-    public function addBlock($block) {
-        if($block = fire\block\Base::normalize($block)) {
+    public function addBlock($block)
+    {
+        if ($block = fire\block\Base::normalize($block)) {
             $this->_blocks[$block->getName()] = true;
         }
 
         return $this;
     }
 
-    public function hasBlock(string $block): bool {
+    public function hasBlock(string $block): bool
+    {
         return isset($this->_blocks[ucfirst($block)]);
     }
 
-    public function getBlocks(): array {
+    public function getBlocks(): array
+    {
         return array_keys($this->_blocks);
     }
 
-    public function removeBlock(string $block) {
+    public function removeBlock(string $block)
+    {
         unset($this->_blocks[ucfirst($block)]);
         return $this;
     }
 
-    public static function getFormatWeights(): array {
+    public static function getFormatWeights(): array
+    {
         return (array)static::FORMAT_WEIGHTS;
     }
 }

@@ -8,21 +8,25 @@ namespace df\core\archive;
 use df;
 use df\core;
 
-class Snappy extends Base {
+use DecodeLabs\Glitch;
 
-    public function __construct() {
-        if(!extension_loaded('snappy')) {
-            throw core\Error::EUnsupported(
+class Snappy extends Base
+{
+    public function __construct()
+    {
+        if (!extension_loaded('snappy')) {
+            throw Glitch::EUnsupported(
                 'The snappy extension is not loaded'
             );
         }
     }
 
-    public function compressString(string $string): string {
+    public function compressString(string $string): string
+    {
         $output = snappy_compress($string);
 
-        if($output === false) {
-            throw core\Error::ERuntime(
+        if ($output === false) {
+            throw Glitch::ERuntime(
                 'Unable to compress snappy string'
             );
         }
@@ -30,11 +34,12 @@ class Snappy extends Base {
         return $output;
     }
 
-    public function decompressString(string $string): string {
+    public function decompressString(string $string): string
+    {
         $output = snappy_uncompress($string);
 
-        if($output === false) {
-            throw core\Error::ERuntime(
+        if ($output === false) {
+            throw Glitch::ERuntime(
                 'Unable to decompress snappy string, appears invalid'
             );
         }

@@ -15,6 +15,7 @@ use df\flex;
 
 use DecodeLabs\Systemic;
 use DecodeLabs\Atlas;
+use DecodeLabs\Glitch;
 
 class SassBridge implements ISassBridge
 {
@@ -45,7 +46,7 @@ class SassBridge implements ISassBridge
         $path = realpath($path);
 
         if (!is_file($path)) {
-            throw core\Error::ENotFound([
+            throw Glitch::ENotFound([
                 'message' => 'Sass file not found',
                 'data' => $path
             ]);
@@ -310,7 +311,7 @@ class SassBridge implements ISassBridge
         $output = $result->getOutput();
 
         if ($result->hasError()) {
-            $error = core\Error::{'ERuntime'}(
+            $error = Glitch::ERuntime(
                 $result->getError()
             );
 
@@ -323,7 +324,7 @@ class SassBridge implements ISassBridge
 
 
         if (false !== stripos($output, 'error')) {
-            throw core\Error::{'ERuntime'}(
+            throw Glitch::ERuntime(
                 $output
             );
         }
@@ -521,7 +522,7 @@ class SassBridge implements ISassBridge
                 if ($output) {
                     return $output;
                 } else {
-                    throw core\Error::ENotFound('Theme sass file not found: '.$path);
+                    throw Glitch::ENotFound('Theme sass file not found: '.$path);
                 }
 
                 break;

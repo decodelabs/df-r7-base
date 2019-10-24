@@ -8,32 +8,36 @@ namespace df\core\archive;
 use df;
 use df\core;
 
-class Zip extends Base {
+use DecodeLabs\Glitch;
 
-    public function extractFile(string $file, string $destination=null, bool $flattenRoot=false): string {
+class Zip extends Base
+{
+    public function extractFile(string $file, string $destination=null, bool $flattenRoot=false): string
+    {
         $destination = $this->_normalizeExtractDestination($file, $destination);
 
         $zip = new \ZipArchive();
 
-        if(($res = $zip->open($file)) !== true) {
-            throw core\Error::ENotFound($this->_getErrorString($res));
+        if (($res = $zip->open($file)) !== true) {
+            throw Glitch::ENotFound($this->_getErrorString($res));
         }
 
-        if(($res = $zip->extractTo($destination)) !== true) {
-            throw core\Error::ERuntime($this->_getErrorString($res));
+        if (($res = $zip->extractTo($destination)) !== true) {
+            throw Glitch::ERuntime($this->_getErrorString($res));
         }
 
         $zip->close();
 
-        if($flattenRoot) {
+        if ($flattenRoot) {
             $this->_flattenRoot($destination);
         }
 
         return $destination;
     }
 
-    protected function _getErrorString($error): string {
-        switch($error) {
+    protected function _getErrorString($error): string
+    {
+        switch ($error) {
             case \ZipArchive::ER_MULTIDISK:
                 return 'Multidisk zip archives are not supported';
 

@@ -8,6 +8,8 @@ namespace df\core\loader;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 class Base implements core\ILoader
 {
     private static $_includeAttempts = 0;
@@ -35,7 +37,7 @@ class Base implements core\ILoader
     public function __construct(array $locations=[])
     {
         $this->_locations = $locations;
-        
+
         spl_autoload_register(function (string $class): void {
             $this->loadClass($class);
         });
@@ -347,7 +349,7 @@ class Base implements core\ILoader
     {
         /*
         if($this->_isInit) {
-            throw core\Error::ELogic(
+            throw Glitch::ELogic(
                 'Cannot load packages after init'
             );
         }

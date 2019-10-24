@@ -10,17 +10,20 @@ use df\core;
 use df\arch;
 use df\aura;
 
-abstract class Wizard extends Form {
+use DecodeLabs\Glitch;
 
+abstract class Wizard extends Form
+{
     const DEFAULT_EVENT = 'next';
     const SECTIONS = [];
 
-    protected function createUi() {
+    protected function createUi()
+    {
         $section = $this->getCurrentSection();
         $func = 'create'.ucfirst($section).'Ui';
 
-        if(!method_exists($this, $func)) {
-            throw core\Error::EDefinition(
+        if (!method_exists($this, $func)) {
+            throw Glitch::EDefinition(
                 'Wizard ui missing for '.$section.' section'
             );
         }
@@ -28,32 +31,34 @@ abstract class Wizard extends Form {
         $this->{$func}();
     }
 
-    public function getCurrentSection(): string {
-        if(empty(static::SECTIONS)) {
-            throw core\Error::EDefinition(
+    public function getCurrentSection(): string
+    {
+        if (empty(static::SECTIONS)) {
+            throw Glitch::EDefinition(
                 'No wizard sections have been defined'
             );
         }
 
         $section = $this->getStore('section');
 
-        if(!$section) {
+        if (!$section) {
             $this->setSection($section = array_values(static::SECTIONS)[0]);
         }
 
         return $section;
     }
 
-    public function setSection(string $section) {
+    public function setSection(string $section)
+    {
         $this->setStore('section', $section);
         $this->values->clear();
 
-        if($this->hasStore('data.'.$section)) {
+        if ($this->hasStore('data.'.$section)) {
             $this->values->import($this->getStore('data.'.$section));
         } else {
             $func = '_set'.ucfirst($section).'DefaultValues';
 
-            if(method_exists($this, $func)) {
+            if (method_exists($this, $func)) {
                 $this->{$func}();
             }
         }
@@ -63,12 +68,13 @@ abstract class Wizard extends Form {
 
 
 
-    public function getPrevSection(): ?string {
+    public function getPrevSection(): ?string
+    {
         $current = $this->getCurrentSection();
         $last = null;
 
-        foreach(static::SECTIONS as $section) {
-            if($current == $section) {
+        foreach (static::SECTIONS as $section) {
+            if ($current == $section) {
                 return $last;
             }
 
@@ -78,14 +84,15 @@ abstract class Wizard extends Form {
         return null;
     }
 
-    public function getNextSection(): ?string {
+    public function getNextSection(): ?string
+    {
         $current = $this->getCurrentSection();
         $found = false;
 
-        foreach(static::SECTIONS as $section) {
-            if($found) {
+        foreach (static::SECTIONS as $section) {
+            if ($found) {
                 return $section;
-            } else if($current == $section) {
+            } elseif ($current == $section) {
                 $found = true;
             }
         }
@@ -93,11 +100,12 @@ abstract class Wizard extends Form {
         return null;
     }
 
-    public function getSectionData(string $section=null): core\collection\ITree {
-        if($section === null) {
+    public function getSectionData(string $section=null): core\collection\ITree
+    {
+        if ($section === null) {
             $output = [];
 
-            foreach(static::SECTIONS as $section) {
+            foreach (static::SECTIONS as $section) {
                 $output[$section] = $this->getStore('data.'.$section);
             }
 
@@ -110,50 +118,54 @@ abstract class Wizard extends Form {
     }
 
 
-// Events
-    final protected function onPrevEvent() {
+    // Events
+    final protected function onPrevEvent()
+    {
         $this->onCurrentEvent();
         $this->setSection($this->getPrevSection());
     }
 
-    final protected function onCurrentEvent() {
+    final protected function onCurrentEvent()
+    {
         $current = $this->getCurrentSection();
         $func = 'on'.ucfirst($current).'Submit';
 
-        if(!method_exists($this, $func)) {
+        if (!method_exists($this, $func)) {
             $data = $this->values->toArray();
         } else {
             $data = $this->{$func}();
 
-            if($data === null) {
+            if ($data === null) {
                 $data = $this->values->toArray();
             }
         }
 
-        if($data instanceof core\validate\IHandler) {
+        if ($data instanceof core\validate\IHandler) {
             $data = $data->getValues();
-        } else if($data instanceof core\IArrayProvider) {
+        } elseif ($data instanceof core\IArrayProvider) {
             $data = $data->toArray();
         }
 
         $this->setStore('data.'.$current, $data);
     }
 
-    final protected function onNextEvent() {
+    final protected function onNextEvent()
+    {
         $this->onCurrentEvent();
 
-        if(!$this->isValid()) {
+        if (!$this->isValid()) {
             return;
         }
 
-        if(!$next = $this->getNextSection()) {
+        if (!$next = $this->getNextSection()) {
             return $this->finalize();
         }
 
         $this->setSection($next);
     }
 
-    protected function finalize() {
+    protected function finalize()
+    {
         return $this->complete();
     }
 }

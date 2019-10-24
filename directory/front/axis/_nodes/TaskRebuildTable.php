@@ -12,6 +12,8 @@ use df\arch;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 class TaskRebuildTable extends arch\node\Task
 {
     public function extractCliArguments(core\cli\ICommand $command)
@@ -35,13 +37,13 @@ class TaskRebuildTable extends arch\node\Task
         $unitId = $this->request['unit'];
 
         if (!$unit = axis\Model::loadUnitFromId($unitId)) {
-            throw core\Error::{'axis/unit/ENotFound'}(
+            throw Glitch::{'df/axis/unit/ENotFound'}(
                 'Unit '.$unitId.' not found'
             );
         }
 
         if ($unit->getUnitType() != 'table') {
-            throw core\Error::{'axis/unit/EDomain'}(
+            throw Glitch::{'df/axis/unit/EDomain'}(
                 'Unit '.$unitId.' is not a table'
             );
         }
@@ -105,7 +107,7 @@ class TaskRebuildTable extends arch\node\Task
             $this->io->writeLine('Building copy table');
             $newTable = $newConnection->createTable($dbSchema);
         } catch (opal\rdbms\ETableConflict $e) {
-            throw core\Error::{'axis/unit/ERuntime'}(
+            throw Glitch::{'df/axis/unit/ERuntime'}(
                 'Table unit '.$unit->getUnitId().' is currently rebuilding in another process'
             );
         }

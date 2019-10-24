@@ -8,6 +8,8 @@ namespace df\core\cli;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 class Inspector implements IInspector
 {
     protected $_rules = [];
@@ -23,7 +25,7 @@ class Inspector implements IInspector
         } elseif (is_array($rules)) {
             $this->_parse($rules);
         } else {
-            throw core\Error::EArgument('Invalid rules');
+            throw Glitch::EInvalidArgument('Invalid rules');
         }
 
         if ($command !== null) {
@@ -40,7 +42,7 @@ class Inspector implements IInspector
             $char = $string{$i};
 
             if (!preg_match('/^[a-zA-Z\:]$/', $char)) {
-                throw core\Error::EArgument(
+                throw Glitch::EInvalidArgument(
                     'Invalid option character: '.$char
                 );
             }
@@ -58,7 +60,7 @@ class Inspector implements IInspector
     {
         foreach ($options as $key => $description) {
             if (!preg_match('/^([a-zA-Z|]+)(([\-=])(s|i|w))?$/', $key, $matches)) {
-                throw core\Error::EArgument(
+                throw Glitch::EInvalidArgument(
                     'Invalid rule definition: '.$key
                 );
             }
@@ -94,7 +96,7 @@ class Inspector implements IInspector
         while ($argument = array_shift($arguments)) {
             if ($nextIsOptionValue) {
                 if ($argument->isOption()) {
-                    throw core\Error::EArgument(
+                    throw Glitch::EInvalidArgument(
                         'Expecting option value for '.$lastArgument->getOption().' flag, not '.$argument
                     );
                 }
@@ -131,7 +133,7 @@ class Inspector implements IInspector
                             $lastArgument->setValue($default);
                         } else {
                             if (!empty($optionStrings)) {
-                                throw core\Error::EArgument(
+                                throw Glitch::EInvalidArgument(
                                     'Option '.$optionString.' requires a value so cannot be clustered'
                                 );
                             }
@@ -150,7 +152,7 @@ class Inspector implements IInspector
 
         foreach ($this->_rules as $rule) {
             if ($rule->isRequired() && isset($this->_optionArguments[$rule->getName()])) {
-                throw core\Error::EArgument(
+                throw Glitch::EInvalidArgument(
                     'Option '.$rule->getName().' is required'
                 );
             }
@@ -181,7 +183,7 @@ class Inspector implements IInspector
         switch ($type->getLabel()) {
             case ValueType::INTEGER:
                 if (!is_numeric($value)) {
-                    throw core\Error::Evalue(
+                    throw Glitch::Evalue(
                         'Expected integer value for '.$rule->getName().' rule'
                     );
                 }
@@ -194,7 +196,7 @@ class Inspector implements IInspector
 
             case ValueType::WORD:
                 if (!preg_match('/^[a-zA-Z]+$/', $value)) {
-                    throw core\Error::Evalue(
+                    throw Glitch::Evalue(
                         'Expected word value for '.$rule->getName().' rule'
                     );
                 }

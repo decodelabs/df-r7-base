@@ -12,6 +12,7 @@ use df\user;
 use df\link;
 use df\aura;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -129,7 +130,7 @@ class Context implements IContext, \Serializable, Inspectable
     public function getDispatchContext(): core\IContext
     {
         if (!$this->runner instanceof core\IContextAware) {
-            throw core\Error::ENoContext(
+            throw Glitch::ENoContext(
                 'Current runner is not context aware'
             );
         }

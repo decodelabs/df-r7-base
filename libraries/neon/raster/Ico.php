@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\neon;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
@@ -28,13 +29,13 @@ class Ico implements IIcoGenerator
         $file = Atlas::$fs->file($file);
 
         if (!$file->exists()) {
-            throw core\Error::ENotFound(
+            throw Glitch::ENotFound(
                 'Source file '.$file->getPath().' does not exist'
             );
         }
 
         if (!getImageSize($file->getPath())) {
-            throw core\Error::{'EValue,EUnreadable'}(
+            throw Glitch::{'EUnexpectedValue,EUnreadable'}(
                 'Unable to read image data from '.$file->getPath()
             );
         }
@@ -71,7 +72,7 @@ class Ico implements IIcoGenerator
     public function generate(): string
     {
         if (empty($this->_images)) {
-            throw core\Error::ERuntime(
+            throw Glitch::ERuntime(
                 'No images have been added to ICO generator'
             );
         }

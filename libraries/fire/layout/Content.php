@@ -12,6 +12,8 @@ use df\flex;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Glitch;
+
 class Content implements fire\ILayoutContent
 {
     use core\collection\TAttributeContainer;
@@ -53,7 +55,7 @@ class Content implements fire\ILayoutContent
             }
 
             if (!$slot instanceof fire\ISlotContent) {
-                throw core\Error::EArgument(
+                throw Glitch::EInvalidArgument(
                     'Invalid slot content detected'
                 );
             }
@@ -116,7 +118,7 @@ class Content implements fire\ILayoutContent
     public function readXml(flex\xml\ITree $reader)
     {
         if ($reader->getTagName() != 'layout') {
-            throw core\Error::EValue(
+            throw Glitch::EUnexpectedValue(
                 'Layout content object expected layout xml element'
             );
         }

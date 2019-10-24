@@ -12,6 +12,8 @@ use df\axis;
 use df\user;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 class RegisterLocal extends axis\procedure\Record
 {
     const CAN_CREATE = true;
@@ -19,7 +21,7 @@ class RegisterLocal extends axis\procedure\Record
     protected function _prepare()
     {
         if ($this->context->user->isLoggedIn()) {
-            throw core\Error::EUnauthorized('Already logged in');
+            throw Glitch::EUnauthorized('Already logged in');
         }
     }
 

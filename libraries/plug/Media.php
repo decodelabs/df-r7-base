@@ -14,22 +14,27 @@ use df\axis;
 use df\neon;
 use df\link;
 
-class Media implements arch\IDirectoryHelper {
+use DecodeLabs\Glitch;
 
+class Media implements arch\IDirectoryHelper
+{
     use arch\TDirectoryHelper;
 
     protected $_model;
 
-    protected function _init() {
+    protected function _init()
+    {
         $this->_model = axis\Model::factory('media');
     }
 
-    public function getMediaHandler() {
+    public function getMediaHandler()
+    {
         return $this->_model->getMediaHandler();
     }
 
-    public function getDownloadUrl($fileId) {
-        if($fileId === null) {
+    public function getDownloadUrl($fileId)
+    {
+        if ($fileId === null) {
             return null;
         }
 
@@ -37,8 +42,9 @@ class Media implements arch\IDirectoryHelper {
             ->setDirectoryRequest(null);
     }
 
-    public function getEmbedUrl($fileId) {
-        if($fileId === null) {
+    public function getEmbedUrl($fileId)
+    {
+        if ($fileId === null) {
             return null;
         }
 
@@ -46,8 +52,9 @@ class Media implements arch\IDirectoryHelper {
             ->setDirectoryRequest(null);
     }
 
-    public function getVersionDownloadUrl($fileId, $versionId, $isActive) {
-        if($fileId === null) {
+    public function getVersionDownloadUrl($fileId, $versionId, $isActive)
+    {
+        if ($fileId === null) {
             return null;
         }
 
@@ -55,8 +62,9 @@ class Media implements arch\IDirectoryHelper {
             ->setDirectoryRequest(null);
     }
 
-    public function getImageUrl($fileId, $transformation=null) {
-        if($fileId === null) {
+    public function getImageUrl($fileId, $transformation=null)
+    {
+        if ($fileId === null) {
             return null;
         }
 
@@ -64,8 +72,9 @@ class Media implements arch\IDirectoryHelper {
             ->setDirectoryRequest(null);
     }
 
-    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null) {
-        if($fileId === null) {
+    public function getVersionImageUrl($fileId, $versionId, $isActive, $transformation=null)
+    {
+        if ($fileId === null) {
             return null;
         }
 
@@ -74,11 +83,12 @@ class Media implements arch\IDirectoryHelper {
     }
 
 
-    public function getUploadedUrl($uploadId, $fileName, $transformation=null) {
+    public function getUploadedUrl($uploadId, $fileName, $transformation=null)
+    {
         $output = $this->context->uri->directoryRequest('media/uploaded?id='.$uploadId);
         $output->query->file = $fileName;
 
-        if($transformation !== null) {
+        if ($transformation !== null) {
             $output->query->transform = $transformation;
         }
 
@@ -86,21 +96,24 @@ class Media implements arch\IDirectoryHelper {
     }
 
 
-    public function fetchAndServeDownload($fileId, $embed=false) {
+    public function fetchAndServeDownload($fileId, $embed=false)
+    {
         return $this->_serveVersionDownload(
             $this->_model->fetchActiveVersionForDownload($fileId),
             $embed
         );
     }
 
-    public function fetchAndServeVersionDownload($versionId, $embed=false) {
+    public function fetchAndServeVersionDownload($versionId, $embed=false)
+    {
         return $this->_serveVersionDownload(
             $this->_model->fetchVersionForDownload($versionId),
             $embed
         );
     }
 
-    protected function _serveVersionDownload(array $version, $embed=false) {
+    protected function _serveVersionDownload(array $version, $embed=false)
+    {
         return $this->serveDownload(
             $version['fileId'],
             $version['id'],
@@ -111,15 +124,16 @@ class Media implements arch\IDirectoryHelper {
         );
     }
 
-    public function serveDownload($fileId, $versionId, $isActive, $contentType, $fileName, $embed=false) {
+    public function serveDownload($fileId, $versionId, $isActive, $contentType, $fileName, $embed=false)
+    {
         $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
         $isUrl = $filePath instanceof link\http\IUrl;
 
-        if($isUrl) {
+        if ($isUrl) {
             $output = $this->context->http->redirect($filePath);
         } else {
-            if(!is_file($filePath)) {
-                throw core\Error::{'core/fs/ENotFound'}([
+            if (!is_file($filePath)) {
+                throw Glitch::{'df/core/fs/ENotFound'}([
                     'message' => 'Media file could not be found in storage - this is bad!',
                     'http' => 404
                 ]);
@@ -140,22 +154,25 @@ class Media implements arch\IDirectoryHelper {
         return $output;
     }
 
-    public function fetchAndServeImage($fileId, $transformation=null) {
+    public function fetchAndServeImage($fileId, $transformation=null)
+    {
         return $this->_serveVersionImage(
             $this->_model->fetchActiveVersionForDownload($fileId),
             $transformation
         );
     }
 
-    public function fetchAndServeVersionImage($versionId, $transformation=null) {
+    public function fetchAndServeVersionImage($versionId, $transformation=null)
+    {
         return $this->_serveVersionImage(
             $this->_model->fetchVersionForDownload($versionId),
             $transformation
         );
     }
 
-    protected function _serveVersionImage(array $version, $transformation=null) {
-        if($transformation === null && isset($version['transformation'])) {
+    protected function _serveVersionImage(array $version, $transformation=null)
+    {
+        if ($transformation === null && isset($version['transformation'])) {
             $transformation = $version['transformation'];
         }
 
@@ -170,21 +187,22 @@ class Media implements arch\IDirectoryHelper {
         );
     }
 
-    public function serveImage($fileId, $versionId, $isActive, $contentType, $fileName=null, $transformation=null, $modificationDate=null) {
+    public function serveImage($fileId, $versionId, $isActive, $contentType, $fileName=null, $transformation=null, $modificationDate=null)
+    {
         $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
         $descriptor = new neon\raster\Descriptor($filePath, $contentType);
         $descriptor->setFileName($fileName);
 
-        if($transformation !== null) {
+        if ($transformation !== null) {
             $descriptor->applyTransformation($transformation, core\time\Date::normalize($modificationDate));
         }
 
         $location = $descriptor->getLocation();
 
-        if(!$descriptor->isLocal()) {
+        if (!$descriptor->isLocal()) {
             $output = $this->context->http->redirect($location);
         } else {
-            if($transformation !== null) {
+            if ($transformation !== null) {
                 $namePath = core\uri\Path::factory($fileName);
 
                 $fileName = (string)$namePath->setFileName(
@@ -206,7 +224,8 @@ class Media implements arch\IDirectoryHelper {
         return $output;
     }
 
-    public function getImageFilePath($fileId, $versionId, $isActive, $contentType, $transformation=null, $modificationDate=null) {
+    public function getImageFilePath($fileId, $versionId, $isActive, $contentType, $transformation=null, $modificationDate=null)
+    {
         $filePath = $this->_getDownloadFileLocation($fileId, $versionId, $isActive);
 
         $descriptor = new neon\raster\Descriptor($filePath, $contentType);
@@ -215,18 +234,20 @@ class Media implements arch\IDirectoryHelper {
         return $descriptor->getLocation();
     }
 
-    public function image($fileId, $transformation=null, $alt=null, $width=null, $height=null) {
+    public function image($fileId, $transformation=null, $alt=null, $width=null, $height=null)
+    {
         return $this->context->html->image($this->getImageUrl($fileId, $transformation), $alt, $width, $height);
     }
 
-    protected function _getDownloadFileLocation($fileId, $versionId, $isActive) {
+    protected function _getDownloadFileLocation($fileId, $versionId, $isActive)
+    {
         $handler = $this->_model->getMediaHandler();
 
-        if($handler instanceof neon\mediaHandler\ILocalDataHandler) {
+        if ($handler instanceof neon\mediaHandler\ILocalDataHandler) {
             $filePath = $handler->getFilePath($fileId, $versionId);
 
-            if(!is_file($filePath)) {
-                throw core\Error::{'core/fs/ENotFound'}([
+            if (!is_file($filePath)) {
+                throw Glitch::{'df/core/fs/ENotFound'}([
                     'message' => 'Media file could not be found in storage - this is bad!',
                     'http' => 404
                 ]);
@@ -239,7 +260,8 @@ class Media implements arch\IDirectoryHelper {
     }
 
 
-    public function newImageTransformation($transformation=null) {
+    public function newImageTransformation($transformation=null)
+    {
         return neon\raster\Transformation::factory($transformation);
     }
 }

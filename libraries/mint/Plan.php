@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\mint;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -76,7 +77,7 @@ class Plan implements mint\IPlan, Inspectable
                 break;
 
             default:
-                throw core\Error::EArgument([
+                throw Glitch::EInvalidArgument([
                     'message' => 'Invalid interval',
                     $interval
                 ]);

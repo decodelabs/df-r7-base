@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Dir;
 
@@ -86,7 +87,7 @@ class Controller implements IController
     public function createBuild(): \Generator
     {
         if ($this->_destination->exists()) {
-            throw core\Error::{'core/fs/EAlreadyExists'}(
+            throw Glitch::{'df/core/fs/EAlreadyExists'}(
                 'Destination build directory already exists'
             );
         }

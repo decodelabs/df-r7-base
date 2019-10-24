@@ -10,6 +10,8 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements IFortify
 {
     use core\TContextProxy;
@@ -46,7 +48,7 @@ abstract class Base implements IFortify
         $class = 'df\\apex\\models\\'.$modelName.'\\'.$unitName.'\\fortify\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw core\Error::ENotFound(
+            throw Glitch::ENotFound(
                 'Unit fortify task '.$modelName.'/'.$unitName.'/'.ucfirst($name).' could not be found'
             );
         }

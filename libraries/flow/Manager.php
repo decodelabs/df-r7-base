@@ -12,6 +12,8 @@ use df\user;
 use df\flex;
 use df\axis;
 
+use DecodeLabs\Glitch;
+
 class Manager implements IManager, core\IShutdownAware
 {
     use core\TManager;
@@ -113,7 +115,7 @@ class Manager implements IManager, core\IShutdownAware
             }
 
             if (!$from->isValid()) {
-                $context->logs->logException(core\Error::EValue(
+                $context->logs->logException(Glitch::EUnexpectedValue(
                     'Invalid from address: '.$from
                 ));
 
@@ -289,7 +291,7 @@ class Manager implements IManager, core\IShutdownAware
         $model = axis\Model::factory('mail');
 
         if (!$model instanceof flow\mail\IMailModel) {
-            throw core\Error::{'flow/mail/EDefinition'}(
+            throw Glitch::{'df/flow/mail/EDefinition'}(
                 'Mail model does not implement flow\\mail\\IMailModel'
             );
         }
@@ -528,13 +530,13 @@ class Manager implements IManager, core\IShutdownAware
     public function subscribeUserToPrimaryList(user\IClientDataObject $client, $source, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
     {
         if (!$source = $this->getListSource($sourceId = $source)) {
-            throw core\Error::{'flow/mailingList/EApi,flow/mailingList/ENotFound'}(
+            throw Glitch::{'df/flow/mailingList/EApi,flow/mailingList/ENotFound'}(
                 'List source '.$sourceId.' does not exist'
             );
         }
 
         if (!$listId = $source->getPrimaryListId()) {
-            throw core\Error::{'flow/mailingList/EApi,flow/mailingList/ENotFound'}(
+            throw Glitch::{'df/flow/mailingList/EApi,flow/mailingList/ENotFound'}(
                 'No primary list has been set for mailing list source '.$source->getId()
             );
         }
@@ -545,7 +547,7 @@ class Manager implements IManager, core\IShutdownAware
     public function subscribeUserToList(user\IClientDataObject $client, $source, $listId, array $groups=null, bool $replace=false): flow\mailingList\ISubscribeResult
     {
         if (!$source = $this->getListSource($sourceId = $source)) {
-            throw core\Error::{'flow/mailingList/EApi,flow/mailingList/ENotFound'}(
+            throw Glitch::{'df/flow/mailingList/EApi,flow/mailingList/ENotFound'}(
                 'List source '.$sourceId.' does not exist'
             );
         }

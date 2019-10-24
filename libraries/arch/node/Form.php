@@ -12,6 +12,8 @@ use df\aura;
 use df\flex;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 abstract class Form extends Base implements IFormNode
 {
     use TForm;
@@ -37,7 +39,7 @@ abstract class Form extends Base implements IFormNode
         parent::__construct($context);
 
         if ($this->context->getRunMode() !== 'Http') {
-            throw core\Error::ELogic(
+            throw Glitch::ELogic(
                 'Form nodes can only be used in Http run mode'
             );
         }
@@ -218,7 +220,7 @@ abstract class Form extends Base implements IFormNode
     public function getState(): IFormState
     {
         if (!$this->_state) {
-            throw core\Error::{'ENoState,ENoContext'}(
+            throw Glitch::{'ENoState,ENoContext'}(
                 'State controller is not available until the form has been dispatched'
             );
         }
@@ -627,7 +629,7 @@ abstract class Form extends Base implements IFormNode
                 ->isPermanent(true);
         }
 
-        throw core\Error::EBadRequest([
+        throw Glitch::EBadRequest([
             'message' => 'Form node '.$this->context->location->getLiteralPath().' does not support '.
                 $this->context->runner->getHttpRequest()->getMethod().' http method',
             'http' => 405

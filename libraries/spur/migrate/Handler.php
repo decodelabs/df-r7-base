@@ -11,6 +11,8 @@ use df\spur;
 use df\link;
 use df\arch;
 
+use DecodeLabs\Glitch;
+
 class Handler implements IHandler
 {
     protected $_key;
@@ -62,7 +64,7 @@ class Handler implements IHandler
         $content = $response->getJsonContent();
 
         if (!$content->data->nodes->contains('media')) {
-            throw core\Error::{'EApi,EForbidden'}([
+            throw Glitch::{'EApi,EForbidden'}([
                 'message' => 'Target app does not support media migration',
                 'data' => $content->data->nodes->toArray(),
                 'http' => 403
@@ -121,7 +123,7 @@ class Handler implements IHandler
 
         if (!$request instanceof link\http\IRequest) {
             if (!$request instanceof link\http\IUrl) {
-                throw core\Error::EBadRequest([
+                throw Glitch::EBadRequest([
                     'message' => 'Invalid request'
                 ]);
             }
@@ -153,7 +155,7 @@ class Handler implements IHandler
 
         if ($response->isError()) {
             $content = $response->getJsonContent();
-            throw core\Error::EApi('Migration failed: '.$content['error']);
+            throw Glitch::EApi('Migration failed: '.$content['error']);
         }
 
         return $response;

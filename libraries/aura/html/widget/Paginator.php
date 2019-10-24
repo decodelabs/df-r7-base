@@ -11,6 +11,7 @@ use df\aura;
 use df\opal;
 use df\arch;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -50,7 +51,7 @@ class Paginator extends Base implements Inspectable
                 break;
 
             default:
-                throw core\Error::EArgument('Invalid paginator mode: '.$mode);
+                throw Glitch::EInvalidArgument('Invalid paginator mode: '.$mode);
         }
 
         return $this;

@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
 
@@ -95,7 +96,7 @@ abstract class FileStore implements IFileStore
             try {
                 $value = (string)$value;
             } catch (\Throwable $e) {
-                throw core\Error::EValue('FileStore value must be Atlas File or string');
+                throw Glitch::EUnexpectedValue('FileStore value must be Atlas File or string');
             }
         } else {
             $value = $value->getContents();

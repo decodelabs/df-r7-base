@@ -24,7 +24,7 @@ class Command implements ICommand
     public static function fromArgv(): ICommand
     {
         if (!isset($_SERVER['argv'])) {
-            throw core\Error::ERuntime(
+            throw Glitch::ERuntime(
                 'No argv information is available'
             );
         }

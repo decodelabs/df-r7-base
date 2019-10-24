@@ -152,7 +152,7 @@ class Image implements IImage
     public function setOutputFormat($format)
     {
         if (!self::isFormatValid($format)) {
-            throw Glitch::{'EArgument,EFormat'}(
+            throw Glitch::{'EInvalidArgument,EFormat'}(
                 $format.' is not a valid output raster image format'
             );
         }
@@ -788,7 +788,7 @@ class Image implements IImage
             return self::getFormatFromExtension($p['extension']);
         }
 
-        throw core\Error::EFormat(
+        throw Glitch::EFormat(
             'Format could not be extracted from path: '.$path
         );
     }
@@ -801,7 +801,7 @@ class Image implements IImage
 
         $extension = strtolower($extension);
 
-        throw core\Error::EFormat(
+        throw Glitch::EFormat(
             'Format could not be extracted from extension: '.$extension
         );
     }

@@ -12,6 +12,8 @@ use df\flex;
 use df\flow;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 class Filter implements arch\IDirectoryHelper, \ArrayAccess
 {
     use arch\TDirectoryHelper;
@@ -25,7 +27,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
         $output = $this->{$type}($value, ...$args);
 
         if (!$nullable && $output === null) {
-            throw core\Error::{'core/filter/EValue,EBadRequest'}([
+            throw Glitch::{'df/core/filter/EUnexpectedValue,EBadRequest'}([
                 'message' => 'Empty '.$type.' filter value',
                 'http' => 400
             ]);
@@ -68,7 +70,7 @@ class Filter implements arch\IDirectoryHelper, \ArrayAccess
                 $output = $this->_filter->{$type}($this->value, ...$args);
 
                 if (!$this->nullable && $output === null) {
-                    throw core\Error::{'core/filter/EValue,EBadRequest'}([
+                    throw Glitch::{'df/core/filter/EUnexpectedValue,EBadRequest'}([
                         'message' => 'Query var '.$this->_key.' did not contain a valid '.$type,
                         'namespace' => __NAMESPACE__,
                         'http' => 400

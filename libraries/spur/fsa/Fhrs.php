@@ -10,6 +10,8 @@ use df\core;
 use df\spur;
 use df\link;
 
+use DecodeLabs\Glitch;
+
 class Fhrs implements IFhrsMediator
 {
     use spur\THttpMediator;
@@ -194,7 +196,7 @@ class Fhrs implements IFhrsMediator
                     break;
 
                 default:
-                    throw core\Error::EArgument('Invalid establishment search key: '.$key);
+                    throw Glitch::EInvalidArgument('Invalid establishment search key: '.$key);
             }
         }
 
@@ -241,7 +243,7 @@ class Fhrs implements IFhrsMediator
                 break;
         }
 
-        return core\Error::{$errorType}([
+        return Glitch::{$errorType}([
             'message' => $message,
             'code' => $code
         ]);

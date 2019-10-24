@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
 
 abstract class Task extends Base implements ITaskNode
@@ -79,7 +80,7 @@ abstract class Task extends Base implements ITaskNode
         $node = Base::factory($context);
 
         if (!$node instanceof self) {
-            throw core\Error::{'EDefinition'}(
+            throw Glitch::EDefinition(
                 'Child node '.$request.' does not extend arch\\node\\Task'
             );
         }

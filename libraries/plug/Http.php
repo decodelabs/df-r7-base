@@ -12,6 +12,8 @@ use df\link;
 use df\aura;
 use df\flex;
 
+use DecodeLabs\Glitch;
+
 class Http implements arch\IDirectoryHelper
 {
     use arch\TDirectoryHelper;
@@ -21,7 +23,7 @@ class Http implements arch\IDirectoryHelper
     protected function _init()
     {
         if (!$this->context->runner instanceof core\app\runner\Http) {
-            throw core\Error::{'EDomain'}(
+            throw Glitch::EDomain(
                 'Http helper can only be used from http run mode'
             );
         }

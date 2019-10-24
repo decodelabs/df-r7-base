@@ -12,6 +12,8 @@ use df\flex;
 use df\arch;
 use df\aura;
 
+use DecodeLabs\Glitch;
+
 class Error extends Base
 {
     const DEFAULT_CATEGORIES = [];
@@ -82,7 +84,7 @@ class Error extends Base
 
     public function writeXml(flex\xml\IWriter $writer)
     {
-        throw core\Error::ERuntime(
+        throw Glitch::ERuntime(
             'Error block type cannot be saved to xml'
         );
     }

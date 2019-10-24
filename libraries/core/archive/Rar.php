@@ -8,12 +8,14 @@ namespace df\core\archive;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
+
 class Rar extends Base
 {
     public function __construct()
     {
         if (!extension_loaded('rar')) {
-            throw core\Error::EUnsupported(
+            throw Glitch::EUnsupported(
                 'The rar extension is not loaded'
             );
         }
@@ -26,13 +28,13 @@ class Rar extends Base
         // TODO: add password support
 
         if (false === ($archive = rar_open($file))) {
-            throw core\Error::ENotFound(
+            throw Glitch::ENotFound(
                 'Unable to open rar archive: '.$file
             );
         }
 
         if (false === ($files = rar_list($archive))) {
-            throw core\Error::ERuntime(
+            throw Glitch::ERuntime(
                 'Unable to read file list from rar archive: '.$file
             );
         }

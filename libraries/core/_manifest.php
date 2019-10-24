@@ -10,85 +10,6 @@ use df\core;
 
 use DecodeLabs\Glitch;
 
-// Error
-interface IError
-{
-    public function setKey(?string $key);
-    public function getKey(): ?string;
-
-    public function getStackCall(): core\debug\IStackCall;
-    public function getOldStackTrace(): core\debug\IStackTrace;
-}
-
-interface ELogic extends IError
-{
-}
-interface ERuntime extends IError
-{
-}
-interface EDefinition extends ELogic
-{
-}
-interface EImplementation extends ELogic
-{
-}
-interface EUnsupported extends ELogic
-{
-}
-interface EValue extends ERuntime
-{
-}
-interface ESetup extends EValue
-{
-}
-interface EArgument extends ELogic
-{
-}
-interface ECall extends ELogic
-{
-}
-interface ERecursion extends ELogic
-{
-}
-interface EApi extends ERuntime
-{
-}
-interface EDomain extends ELogic
-{
-}
-interface EBounds extends ERuntime
-{
-}
-
-interface EBadRequest extends ERuntime
-{
-} // 400
-interface EUnauthorized extends ERuntime
-{
-} // 401
-interface EForbidden extends EUnauthorized
-{
-} // 403
-interface ENotFound extends ERuntime
-{
-} // 404
-interface ENotImplemented extends EImplementation
-{
-} // 501
-interface EServiceUnavailable extends ERuntime
-{
-} // 503
-
-interface EApplicationNotFound extends ENotFound
-{
-}
-interface EHelperNotFound extends ENotFound
-{
-}
-
-
-### Generic interfaces
-
 // String provider
 interface IStringProvider
 {
@@ -273,7 +194,7 @@ class Package
         $class = 'df\\apex\\packages\\'.$name.'\\Package';
 
         if (!class_exists($class)) {
-            throw core\Error::ERuntime('Package '.$name.' could not be found');
+            throw Glitch::ERuntime('Package '.$name.' could not be found');
         }
 
         return new $class($name);
@@ -454,7 +375,7 @@ trait THelperProvider
         $helper = $this->getHelper($method);
 
         if (!is_callable($helper)) {
-            throw core\Error::{'ECall'}(
+            throw Glitch::EBadMethodCall(
                 'Helper '.$method.' is not callable'
             );
         }
@@ -473,7 +394,7 @@ trait THelperProvider
         $output = $this->_loadHelper($name);
 
         if (!$output && !$returnNull) {
-            throw core\Error::EHelperNotFound(
+            throw Glitch::{'EHelperNotFound,ENotFound'}(
                 'Helper '.$name.' could not be found'
             );
         }

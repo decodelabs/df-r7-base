@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\spur;
 
+use DecodeLabs\Glitch;
+
 class TaskInstall extends arch\node\Task
 {
     const PACKAGES = [
@@ -76,7 +78,7 @@ class TaskInstall extends arch\node\Task
                 if (isset(self::PACKAGES[$name])) {
                     $url = self::PACKAGES[$name];
                 } else {
-                    throw core\Error::EArgument(
+                    throw Glitch::EInvalidArgument(
                         'No valid repo URL specified'
                     );
                 }

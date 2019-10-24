@@ -21,7 +21,7 @@ class TaskDefault extends arch\node\Base
     public function execute()
     {
         if (!$exception = $this->runner->getDispatchException()) {
-            throw core\Error::{'EForbidden'}([
+            throw Glitch::EForbidden([
                 'message' => 'You shouldn\'t be here',
                 'http' => 403
             ]);

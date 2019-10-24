@@ -10,6 +10,8 @@ use df\core;
 use df\arch;
 use df\user;
 
+use DecodeLabs\Glitch;
+
 // Interfaces
 interface IEntry extends core\IArrayInterchange
 {
@@ -61,7 +63,7 @@ trait TEntryGenerator
             return $output;
         }
 
-        throw core\Error::ECall('Method '.$method.' does not exist');
+        throw Glitch::EBadMethodCall('Method '.$method.' does not exist');
     }
 }
 
@@ -97,7 +99,7 @@ trait TEntryList
             if (is_array($entry)) {
                 $entry = arch\navigation\entry\Base::fromArray($entry);
             } else {
-                throw core\Error::EArgument([
+                throw Glitch::EInvalidArgument([
                     'message' => 'Invalid entry definition detected',
                     'data' => $entry
                 ]);
