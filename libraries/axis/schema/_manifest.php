@@ -767,7 +767,7 @@ interface IOneField extends IRelationField, opal\schema\IOneRelationField, opal\
 interface IOneParentField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField
 {
 }
-interface IOneChildField extends IRelationField, opal\schema\IOneRelationField, opal\schema\INullPrimitiveField
+interface IOneChildField extends IRelationField, opal\schema\IOneRelationField, opal\schema\INullPrimitiveField, opal\schema\IInverseRelationField
 {
 }
 interface IManyToOneField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField, opal\schema\IInverseRelationField
