@@ -21,7 +21,7 @@ class Request implements mint\IChargeRequest
         $this->setAmount($amount)
             ->setCard($card)
             ->setDescription($description)
-            ->setEmail($email);
+            ->setEmailAddress($email);
     }
 
     public function setAmount(mint\ICurrency $amount)
