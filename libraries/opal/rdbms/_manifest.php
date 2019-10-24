@@ -74,8 +74,10 @@ class SQLError extends RuntimeException implements Inspectable
      */
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
+        \DecodeLabs\Glitch\Dumper\Inspect\Core::inspectException($this, $entity, $inspector);
+
         if (is_string($this->_sql)) {
-            $entity->setText($this->_sql);
+            $entity->setDefinition($this->_sql);
         } else {
             $entity->setSingleValue($inspector($this->_sql));
         }

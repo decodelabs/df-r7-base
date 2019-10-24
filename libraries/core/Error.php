@@ -8,6 +8,9 @@ namespace df\core;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch\Stack\Frame;
+use DecodeLabs\Glitch\Stack\Trace;
+
 class Error extends \Exception implements IError
 {
     private static $_instances = [];
@@ -17,6 +20,7 @@ class Error extends \Exception implements IError
     protected $_data;
     protected $_rewind = 0;
     protected $_stackTrace;
+    protected $_oldStackTrace;
 
     public static function __callStatic($method, array $args)
     {
@@ -266,13 +270,33 @@ class Error extends \Exception implements IError
 
     public function getStackCall(): core\debug\IStackCall
     {
-        return $this->getStackTrace()->getFirstCall();
+        return $this->getOldStackTrace()->getFirstCall();
     }
 
-    public function getStackTrace(): core\debug\IStackTrace
+    public function getOldStackTrace(): core\debug\IStackTrace
+    {
+        if (!$this->_oldStackTrace) {
+            $this->_oldStackTrace = core\debug\StackTrace::factory($this->_rewind + 1, $this->getTrace());
+        }
+
+        return $this->_oldStackTrace;
+    }
+
+    /**
+     * Get first call from trace
+     */
+    public function getStackFrame(): Frame
+    {
+        return $this->getStackTrace()->getFirstFrame();
+    }
+
+    /**
+     * Generate a StackTrace object from Exception trace
+     */
+    public function getStackTrace(): Trace
     {
         if (!$this->_stackTrace) {
-            $this->_stackTrace = core\debug\StackTrace::factory($this->_rewind + 1, $this->getTrace());
+            $this->_stackTrace = Trace::fromException($this, $this->_rewind + 1);
         }
 
         return $this->_stackTrace;
