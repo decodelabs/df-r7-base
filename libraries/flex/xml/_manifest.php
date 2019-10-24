@@ -13,8 +13,8 @@ use DecodeLabs\Glitch;
 
 interface IInterchange
 {
-    //public function readXml(ITree $reader);
-    //public function writeXml(IWriter $writer);
+    public function readXml(ITree $reader);
+    public function writeXml(IWriter $writer);
 }
 
 interface IReaderInterchange
