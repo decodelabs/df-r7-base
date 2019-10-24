@@ -8,6 +8,7 @@ namespace df\core\lang;
 use df;
 use df\core;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -57,7 +58,7 @@ abstract class Enum implements IStaticEnum, Inspectable
             } elseif (in_array($value, self::$_labels[$class])) {
                 $value = array_search($value, self::$_labels[$class]);
             } else {
-                throw core\Error::{'EEnum,EArgument'}(
+                throw Glitch::{'EEnum,EInvalidArgument'}(
                     $value.' is not a valid enum option'
                 );
             }
@@ -120,7 +121,7 @@ abstract class Enum implements IStaticEnum, Inspectable
         $options = self::getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw core\Error::EArgument('Invalid option: '.$option);
+            throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
         return array_slice($options, 0, $key);
@@ -132,7 +133,7 @@ abstract class Enum implements IStaticEnum, Inspectable
         $options = self::getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw core\Error::EArgument('Invalid option: '.$option);
+            throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
         return array_slice($options, 0, $key + 1);
@@ -144,7 +145,7 @@ abstract class Enum implements IStaticEnum, Inspectable
         $options = self::getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw core\Error::EArgument('Invalid option: '.$option);
+            throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
         return array_slice($options, $key + 1);
@@ -156,7 +157,7 @@ abstract class Enum implements IStaticEnum, Inspectable
         $options = self::getOptions();
 
         if (false === ($key = array_search($option, $options, true))) {
-            throw core\Error::EArgument('Invalid option: '.$option);
+            throw Glitch::EInvalidArgument('Invalid option: '.$option);
         }
 
         return array_slice($options, $key);
@@ -211,7 +212,7 @@ abstract class Enum implements IStaticEnum, Inspectable
             return new static(constant('static::'.$name));
         }
 
-        throw new LogicException(
+        throw Glitch::ELogic(
             'Enum value '.$name.' has not been defined'
         );
     }

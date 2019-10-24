@@ -13,6 +13,8 @@ use df\arch;
 use df\flex;
 use df\mesh;
 
+use DecodeLabs\Glitch;
+
 class Manager implements IManager, core\IShutdownAware
 {
     use core\TManager;
@@ -131,7 +133,7 @@ class Manager implements IManager, core\IShutdownAware
     public function importClientData(user\IClientDataObject $data)
     {
         if ($this->client->getId() != $data->getId()) {
-            throw new AuthenticationException(
+            throw Glitch::EAuthentication(
                 'Client data to import is not for the currently authenticated user'
             );
         }
@@ -251,7 +253,7 @@ class Manager implements IManager, core\IShutdownAware
         $model = axis\Model::factory('user');
 
         if (!$model instanceof IUserModel) {
-            throw new AuthenticationException(
+            throw Glitch::EAuthentication(
                 'User model does not implement user\\IUserModel'
             );
         }

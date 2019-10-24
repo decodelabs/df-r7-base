@@ -10,6 +10,7 @@ use df\core;
 use df\spur;
 use df\halo;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
 class Repository implements ILocalRepository
@@ -25,13 +26,13 @@ class Repository implements ILocalRepository
     public static function createNew($path, $isBare=false)
     {
         if (!is_dir($path)) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Prospective repository directory could not be found'
             );
         }
 
         if (!is_writable($path)) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Cannot write to repository destination'
             );
         }
@@ -53,7 +54,7 @@ class Repository implements ILocalRepository
         Atlas::$fs->createDir(dirname($path));
 
         if (!is_writable(dirname($path))) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Cannot write to repository clone destination'
             );
         }
@@ -76,7 +77,7 @@ class Repository implements ILocalRepository
     public function __construct($path)
     {
         if (!is_dir($path)) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'The git repository could not be found'
             );
         }
@@ -89,7 +90,7 @@ class Repository implements ILocalRepository
         } elseif (is_file($path.'/HEAD')) {
             $this->_isBare = true;
         } else {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Directory does not appear to be a git repository'
             );
         }
@@ -166,7 +167,7 @@ class Repository implements ILocalRepository
         $this->_fillBranchCache();
 
         if (!in_array($name, $this->_branches)) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'Branch '.$name.' could not be found'
             );
         }
@@ -401,7 +402,7 @@ class Repository implements ILocalRepository
                 '--count',
                 $target
             ]);
-        } catch (RuntimeException $e) {
+        } catch (EGlitch $e) {
             return 0;
         }
 

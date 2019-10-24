@@ -44,7 +44,7 @@ class Image implements IImage
             return true;
         }
 
-        throw core\Error::ENotFound(
+        throw Glitch::ENotFound(
             $driver.' is not a valid raster image driver'
         );
     }
@@ -152,13 +152,13 @@ class Image implements IImage
     public function setOutputFormat($format)
     {
         if (!self::isFormatValid($format)) {
-            throw core\Error::{'EArgument,EFormat'}(
+            throw Glitch::{'EArgument,EFormat'}(
                 $format.' is not a valid output raster image format'
             );
         }
 
         if (!$this->_driver->canWrite($format)) {
-            throw core\Error::{'EFormat'}(
+            throw Glitch::{'EFormat'}(
                 $this->_driver->getName().' image driver cannot write '.$format.' format files'
             );
         }
@@ -176,7 +176,7 @@ class Image implements IImage
     public function setSavePath($savePath)
     {
         if (!is_writable($savePath)) {
-            throw core\Error::{'ERuntime,EUnwritable'}(
+            throw Glitch::{'ERuntime,EUnwritable'}(
                 'Raster image save path is not writable'
             );
         }
@@ -201,13 +201,13 @@ class Image implements IImage
     public function save($quality=100)
     {
         if (!$this->_savePath) {
-            throw core\Error::ESetup(
+            throw Glitch::ESetup(
                 'Raster image save path has not been set'
             );
         }
 
         if (!$this->_driver->saveTo($this->_savePath, $this->_normalizePercentage($quality))) {
-            throw core\Error::ERuntime(
+            throw Glitch::ERuntime(
                 'Raster image could not be saved'
             );
         }
@@ -229,7 +229,7 @@ class Image implements IImage
         $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
 
         if (!$width && !$height) {
-            throw core\Error::EArgument(
+            throw Glitch::EInvalidArgument(
                 'Invalid proportions specified for resize'
             );
         }
@@ -466,7 +466,7 @@ class Image implements IImage
     protected function _checkDriverForManipulations()
     {
         if (!$this->_driver instanceof IImageManipulationDriver) {
-            throw core\Error::EUnsupported(
+            throw Glitch::EUnsupported(
                 'Raster image driver '.$this->_driver->getName().' does not support manipulations'
             );
         }
@@ -475,7 +475,7 @@ class Image implements IImage
     protected function _checkDriverForFilters()
     {
         if (!$this->_driver instanceof IImageFilterDriver) {
-            throw core\Error::EUnsupported(
+            throw Glitch::EUnsupported(
                 'Raster image driver '.$this->_driver->getName().' does not support filters'
             );
         }

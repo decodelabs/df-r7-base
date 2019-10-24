@@ -11,19 +11,20 @@ use df\apex;
 use df\arch;
 use df\axis;
 
-class TaskRebuildSchemas extends arch\node\Task {
-
-    public function execute() {
+class TaskRebuildSchemas extends arch\node\Task
+{
+    public function execute()
+    {
         $list = $this->data->axis->schema->select('unitId')
             ->toList('unitId');
 
         $this->data->axis->schema->delete()->execute();
         axis\schema\Cache::getInstance()->clearAll();
 
-        foreach($list as $unitId) {
+        foreach ($list as $unitId) {
             try {
                 $unit = axis\Model::loadUnitFromId($unitId);
-            } catch(axis\IException $e) {
+            } catch (axis\EGlitch $e) {
                 $this->io->writeLine('Skipped '.$unitId.', definition not found');
                 continue;
             }

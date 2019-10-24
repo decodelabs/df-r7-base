@@ -1150,7 +1150,7 @@ class Base implements IRecord, \Serializable, Inspectable
     public function getEntityLocator()
     {
         if (!$this->_adapter instanceof mesh\entity\IParentEntity) {
-            throw new mesh\entity\EntityNotFoundException(
+            throw Glitch::{'df/mesh/entity/ENotFound'}(
                 'Record adapter is not an entity handler'
             );
         }

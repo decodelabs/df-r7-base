@@ -79,9 +79,6 @@ interface EServiceUnavailable extends ERuntime
 {
 } // 503
 
-interface ENoContext extends ERuntime
-{
-}
 interface EApplicationNotFound extends ENotFound
 {
 }

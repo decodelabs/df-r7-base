@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\arch;
 
+use DecodeLabs\Glitch;
+
 abstract class Base implements arch\navigation\menu\ISource, core\IContextAware
 {
     use core\TContextAware;
@@ -20,7 +22,7 @@ abstract class Base implements arch\navigation\menu\ISource, core\IContextAware
         foreach (df\Launchpad::$loader->lookupClassList('arch/navigation/menu/source') as $name => $class) {
             try {
                 $source = self::factory($context, $name);
-            } catch (arch\navigation\ESourceNotFound $e) {
+            } catch (ENotFound $e) {
                 continue;
             }
 
@@ -36,7 +38,7 @@ abstract class Base implements arch\navigation\menu\ISource, core\IContextAware
         $class = 'df\\arch\\navigation\\menu\\source\\'.ucfirst($type);
 
         if (!class_exists($class)) {
-            throw Glitch::{'ENotFound'}(
+            throw Glitch::ENotFound(
                 'Source type '.$type.' could not be found'
             );
         }

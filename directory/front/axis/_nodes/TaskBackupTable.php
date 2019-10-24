@@ -74,7 +74,7 @@ class TaskBackupTable extends arch\node\Task
         try {
             $this->io->writeLine('Building copy table');
             $newTable = $connection->createTable($dbSchema);
-        } catch (opal\rdbms\TableConflictException $e) {
+        } catch (opal\rdbms\ETableConflict $e) {
             throw core\Error::{'axis/unit/ERuntime'}(
                 'Table unit '.$this->_unit->getUnitId().' is currently rebuilding in another process'
             );

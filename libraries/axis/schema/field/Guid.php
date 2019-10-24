@@ -11,8 +11,8 @@ use df\axis;
 use df\opal;
 use df\flex;
 
-class Guid extends Base implements opal\schema\IAutoGeneratorField {
-
+class Guid extends Base implements opal\schema\IAutoGeneratorField
+{
     use opal\schema\TAutoGeneratorField;
 
     const UUID1 = 1;
@@ -21,9 +21,10 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
 
     protected $_generator = self::COMB;
 
-    public function setGenerator($gen) {
-        if(is_string($gen)) {
-            switch(strtolower($gen)) {
+    public function setGenerator($gen)
+    {
+        if (is_string($gen)) {
+            switch (strtolower($gen)) {
                 case 'uuid':
                 case 'uuid4':
                     $gen = self::UUID4;
@@ -39,7 +40,7 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
             }
         }
 
-        switch($gen) {
+        switch ($gen) {
             case self::UUID1:
             case self::UUID4:
                 break;
@@ -50,7 +51,7 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
                 break;
         }
 
-        if($this->_generator !== $gen) {
+        if ($this->_generator !== $gen) {
             $this->_hasChanged = true;
         }
 
@@ -59,12 +60,14 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
         return $this;
     }
 
-    public function getGenerator() {
+    public function getGenerator()
+    {
         return $this->_generator;
     }
 
-    public function getGeneratorName() {
-        switch($this->_generator) {
+    public function getGeneratorName()
+    {
+        switch ($this->_generator) {
             case self::UUID1:
                 return 'UUID v1';
 
@@ -77,40 +80,43 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
     }
 
 
-// Values
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
-        if(isset($row[$key]) && !empty($row[$key])) {
+    // Values
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null)
+    {
+        if (isset($row[$key]) && !empty($row[$key])) {
             return flex\Guid::factory($row[$key]);
         } else {
             return null;
         }
     }
 
-    public function deflateValue($value) {
-        if($value === null) {
+    public function deflateValue($value)
+    {
+        if ($value === null) {
             return null;
         }
 
-        if(!$value instanceof flex\IGuid) {
+        if (!$value instanceof flex\IGuid) {
             $value = flex\Guid::factory($value);
         }
 
         return $value->getBytes();
     }
 
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if(!$value instanceof flex\IGuid) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null)
+    {
+        if (!$value instanceof flex\IGuid) {
             $value = (string)$value;
 
-            if(!strlen($value)) {
+            if (!strlen($value)) {
                 $value = null;
             }
         }
 
-        if($value !== null) {
+        if ($value !== null) {
             try {
                 $value = flex\Guid::factory($value);
-            } catch(flex\IException $e) {
+            } catch (flex\EGlitch $e) {
                 $value = flex\Guid::void();
             }
         }
@@ -118,28 +124,31 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
         return $value;
     }
 
-    public function compareValues($value1, $value2) {
+    public function compareValues($value1, $value2)
+    {
         return (string)$value1 === (string)$value2;
     }
 
-    public function generateInsertValue(array $row) {
-        if(!$this->_autoGenerate) {
+    public function generateInsertValue(array $row)
+    {
+        if (!$this->_autoGenerate) {
             return null;
         }
 
-        if(array_key_exists($this->_name, $row) && $this->isNullable()) {
+        if (array_key_exists($this->_name, $row) && $this->isNullable()) {
             return null;
         }
 
-        if($this->_defaultValue !== null) {
+        if ($this->_defaultValue !== null) {
             return $this->_defaultValue;
         }
 
         return $this->getNominalValue();
     }
 
-    public function getNominalValue() {
-        switch($this->_generator) {
+    public function getNominalValue()
+    {
+        switch ($this->_generator) {
             case self::UUID1:
                 return flex\Guid::uuid1();
 
@@ -151,32 +160,37 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
         }
     }
 
-    public function getSearchFieldType() {
+    public function getSearchFieldType()
+    {
         return 'guid';
     }
 
 
-// Primitive
-    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+    // Primitive
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema)
+    {
         return new opal\schema\Primitive_Guid($this, $this->_generator);
     }
 
 
-// Ext. serialize
-    protected function _importStorageArray(array $data) {
+    // Ext. serialize
+    protected function _importStorageArray(array $data)
+    {
         $this->_setBaseStorageArray($data);
         $this->_generator = $data['gen'];
     }
 
-    public function toStorageArray() {
+    public function toStorageArray()
+    {
         return array_merge(
             $this->_getBaseStorageArray(),
             ['gen' => $this->_generator]
         );
     }
 
-// Dump
-    public function getFieldTypeDisplayName() {
+    // Dump
+    public function getFieldTypeDisplayName()
+    {
         return 'Guid ['.$this->getGeneratorName().']';
     }
 }

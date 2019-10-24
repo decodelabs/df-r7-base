@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -53,7 +54,7 @@ class Dsn implements IDsn, Inspectable
             if ($dsn instanceof core\IStringProvider) {
                 $dsn = $dsn->toString();
             } else {
-                throw new InvalidArgumentException('Invalid dsn string!');
+                throw Glitch::EInvalidArgument('Invalid dsn string!');
             }
         }
 
@@ -61,7 +62,7 @@ class Dsn implements IDsn, Inspectable
         $matches = [];
 
         if (!preg_match($regex, $dsn, $matches)) {
-            throw new InvalidArgumentException('Invalid dsn string: '.$dsn);
+            throw Glitch::EInvalidArgument('Invalid dsn string: '.$dsn);
         }
 
         $this->_adapter = ucfirst(@$matches[2]);
@@ -341,7 +342,7 @@ class Dsn implements IDsn, Inspectable
     public function toString(): string
     {
         if ($this->_adapter === null) {
-            throw new InvalidArgumentException('Dsn must contain adapter value!');
+            throw Glitch::EInvalidArgument('Dsn must contain adapter value!');
         }
 
         return $this->_adapter.'://'.$this->getConnectionString();
@@ -359,7 +360,7 @@ class Dsn implements IDsn, Inspectable
     public function getServerString()
     {
         if ($this->_adapter === null) {
-            throw new InvalidArgumentException('Dsn must contain adapter value!');
+            throw Glitch::EInvalidArgument('Dsn must contain adapter value!');
         }
 
         $output = $this->_adapter.'://';
@@ -409,7 +410,7 @@ class Dsn implements IDsn, Inspectable
     protected function _getDatabaseString()
     {
         if ($this->_database === null) {
-            throw new InvalidArgumentException('Dsn must contain database value!');
+            throw Glitch::EInvalidArgument('Dsn must contain database value!');
         }
 
         $output = $this->_database;
@@ -461,7 +462,7 @@ class Dsn implements IDsn, Inspectable
         }
 
         if ($this->_database === null) {
-            throw new InvalidArgumentException('Dsn must contain database value!');
+            throw Glitch::EInvalidArgument('Dsn must contain database value!');
         }
 
         $output .= $this->_database;

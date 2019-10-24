@@ -11,6 +11,7 @@ use df\axis;
 use df\opal;
 use df\user;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -281,8 +282,10 @@ class Rdbms implements
     public function handleQueryException(opal\query\IQuery $query, \Throwable $e)
     {
         // Table not found
-        if ($e instanceof opal\rdbms\TableNotFoundException) {
-            if (strtolower($e->table) == strtolower($this->_unit->getStorageBackendName())) {
+        if ($e instanceof opal\rdbms\ETableNotFound) {
+            $table = $e->getData()['table'] ?? null;
+
+            if ($table !== null && strtolower($table) == strtolower($this->_unit->getStorageBackendName())) {
                 $this->ensureStorageConsistency();
                 return true;
             }
@@ -310,7 +313,7 @@ class Rdbms implements
         foreach ($idList as $unitId) {
             try {
                 $unit = $model->loadUnitFromId($unitId);
-            } catch (axis\RuntimeException $e) {
+            } catch (axis\EGlitch $e) {
                 $remove[] = $unitId;
                 continue;
             }

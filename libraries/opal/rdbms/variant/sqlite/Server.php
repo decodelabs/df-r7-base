@@ -55,7 +55,9 @@ class Server implements opal\rdbms\IServer
             return $e;
         }
 
-        return new opal\rdbms\ConnectionException($message, $number);
+        return Glitch::{'df/opal/rdbms/EConnection'}($message, [
+            'code' => $number
+        ]);
     }
 
     public static function getQueryException(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null)
@@ -64,7 +66,12 @@ class Server implements opal\rdbms\IServer
             return $e;
         }
 
-        return new opal\rdbms\QueryException($message, $number, $sql);
+        return Glitch::{'df/opal/rdbms/ETransaction'}($message, [
+            'code' => $number,
+            'data' => [
+                'sql' => $sql
+            ]
+        ]);
     }
 
     private static function _getExceptionForError(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null)
@@ -73,7 +80,14 @@ class Server implements opal\rdbms\IServer
         // Query error
             case 1:
                 if (preg_match('/no such table\: ([a-zA-Z0-9_]+)/i', $message, $matches)) {
-                    return new opal\rdbms\TableNotFoundException($message, $number, $sql, null, $matches[1]);
+                    return Glitch::{'df/opal/rdbms/ETableNotFound,ENotFound'}($message, [
+                        'code' => $number,
+                        'data' => [
+                            'sql' => $sql,
+                            'database' => null,
+                            'table' => $matches[1]
+                        ]
+                    ]);
                 }
 
                 // no break
@@ -81,7 +95,12 @@ class Server implements opal\rdbms\IServer
             case 18:
             case 20:
             case 25:
-                return new opal\rdbms\QueryException($message, $number, $sql);
+                return Glitch::{'df/opal/rdbms/ETransaction'}($message, [
+                    'code' => $number,
+                    'data' => [
+                        'sql' => $sql
+                    ]
+                ]);
 
         // Server error
             case 2:
@@ -100,26 +119,51 @@ class Server implements opal\rdbms\IServer
         // Server unavailable
             case 5:
             case 6:
-                return new opal\rdbms\ConnectionException($message, $number, $sql);
+                return Glitch::{'df/opal/rdbms/EConnection'}($message, [
+                    'code' => $number,
+                    'data' => [
+                        'sql' => $sql
+                    ]
+                ]);
 
         // Permissions
             case 3:
             case 8:
             case 23:
-                return new opal\rdbms\AccessException($message, $number, $sql);
+                return Glitch::{'df/opal/rdbms/EAccess,EForbidden'}($message, [
+                    'code' => $number,
+                    'data' => [
+                        'sql' => $sql
+                    ]
+                ]);
 
         // DB not found
             case 14:
             case 16:
-                return new opal\rdbms\DatabaseNotFoundException($message, $number, $sql);
+                return Glitch::{'df/opal/rdbms/EDatabaseNotFound,ENotFound'}($message, [
+                    'code' => $number,
+                    'data' => [
+                        'sql' => $sql
+                    ]
+                ]);
 
         // Constraint conflict
             case 19:
-                return new opal\rdbms\ConstraintException($message, $number, $sql);
+                return Glitch::{'df/opal/rdbms/EConstraint'}($message, [
+                    'code' => $number,
+                    'data' => [
+                        'sql' => $sql
+                    ]
+                ]);
 
         // Feature support
             case 22:
-                return new opal\rdbms\FeatureSupportException($message, $number, $sql);
+                return Glitch::{'df/opal/rdbms/EFeatureSupport'}($message, [
+                    'code' => $number,
+                    'data' => [
+                        'sql' => $sql
+                    ]
+                ]);
         }
     }
 }

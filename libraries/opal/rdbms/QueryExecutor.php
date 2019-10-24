@@ -25,7 +25,7 @@ abstract class QueryExecutor implements IQueryExecutor
         $class = 'df\\opal\\rdbms\\variant\\'.$type.'\\QueryExecutor';
 
         if (!class_exists($class)) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'There is no query executor available for '.$type
             );
         }
@@ -104,7 +104,7 @@ abstract class QueryExecutor implements IQueryExecutor
             if ($sourceHash === null) {
                 $sourceHash = $source->getHash();
             } elseif ($source->getHash() != $sourceHash) {
-                throw new opal\query\LogicException(
+                throw Glitch::{'df/opal/query/ELogic'}(
                     'Union queries must all be on the same adapter'
                 );
             }
@@ -217,7 +217,7 @@ abstract class QueryExecutor implements IQueryExecutor
             } elseif ($query instanceof opal\query\IUnionQuery) {
                 $qExec->buildUnionQuery($tableName, false);
             } else {
-                throw new opal\query\LogicException(
+                throw Glitch::{'df/opal/query/ELogic'}(
                     'Don\'t know how to derive from query type: '.$query->getQueryType()
                 );
             }
@@ -437,7 +437,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function executeUpdateQuery($tableName)
     {
         if (!$this->_query instanceof opal\query\IUpdateQuery) {
-            throw new opal\rdbms\UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Executor query is not an update'
             );
         }
@@ -473,7 +473,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function executeDeleteQuery($tableName)
     {
         if (!$this->_query instanceof opal\query\IDeleteQuery) {
-            throw new opal\rdbms\UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Executor query is not a delete'
             );
         }
@@ -494,7 +494,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function fetchRemoteJoinData($tableName, array $rows)
     {
         if (!$this->_query instanceof opal\query\IJoinQuery) {
-            throw new opal\rdbms\UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Executor query is not a join'
             );
         }
@@ -535,7 +535,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function fetchAttachmentData($tableName, array $rows)
     {
         if (!$this->_query instanceof opal\query\IAttachQuery) {
-            throw new opal\rdbms\UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Executor query is not an attachment'
             );
         }
@@ -688,7 +688,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function buildCorrelation(IStatement $stmt)
     {
         if (!$this->_query instanceof opal\query\ICorrelationQuery) {
-            throw new opal\rdbms\UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Executor query is not a correlation'
             );
         }
@@ -776,7 +776,7 @@ abstract class QueryExecutor implements IQueryExecutor
     public function buildJoin(IStatement $stmt)
     {
         if (!$this->_query instanceof opal\query\IJoinQuery) {
-            throw new opal\rdbms\UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Executor query is not a join'
             );
         }
@@ -810,7 +810,7 @@ abstract class QueryExecutor implements IQueryExecutor
             } elseif ($query instanceof opal\query\IUnionQuery) {
                 $qExec->buildUnionQuery($tableName, false);
             } else {
-                throw new opal\query\LogicException(
+                throw Glitch::{'df/opal/query/ELogic'}(
                     'Don\'t know how to derive from query type: '.$query->getQueryType()
                 );
             }
@@ -937,7 +937,7 @@ abstract class QueryExecutor implements IQueryExecutor
                 return $this->defineField($deref[0], $alias);
             }
 
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Virtual fields can not be used directly'
             );
 
@@ -968,7 +968,7 @@ abstract class QueryExecutor implements IQueryExecutor
                 $output = 'LEAST(('.implode(' + ', $output).') / '.$max.', 1)';
             }
         } else {
-            throw new opal\rdbms\UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Field type '.get_class($field).' is not currently supported'
             );
         }
@@ -1249,7 +1249,7 @@ abstract class QueryExecutor implements IQueryExecutor
                 return max($listData);
 
             default:
-                throw new opal\query\OperatorException(
+                throw Glitch::{'df/opal/query/EOperator'}(
                     'Operator '.$operator.' cannot be used for a remote join'
                 );
         }
@@ -1447,7 +1447,7 @@ abstract class QueryExecutor implements IQueryExecutor
 
 
             default:
-                throw new opal\query\OperatorException(
+                throw Glitch::{'df/opal/query/EOperator'}(
                     'Operator '.$operator.' is not recognized'
                 );
         }
@@ -1460,7 +1460,7 @@ abstract class QueryExecutor implements IQueryExecutor
          */
 
         if (empty($value)) {
-            throw new opal\query\ValueException(
+            throw Glitch::{'df/opal/query/EUnexpectedValue'}(
                 'Array based clause values must have at least one entry'
             );
         }
@@ -1489,7 +1489,7 @@ abstract class QueryExecutor implements IQueryExecutor
         if ($value instanceof opal\query\IField) {
             $valString = $this->defineFieldReference($value, $allowAlias);
         } elseif (is_array($value)) {
-            throw new opal\query\ValueException(
+            throw Glitch::{'df/opal/query/EUnexpectedValue'}(
                 'Expected a scalar as query value, found an array'
             );
         } else {

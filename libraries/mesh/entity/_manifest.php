@@ -10,29 +10,42 @@ use df\core;
 use df\mesh;
 
 // Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class EntityNotFoundException extends RuntimeException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
+interface IException
+{
+}
+class RuntimeException extends \RuntimeException implements IException
+{
+}
+class InvalidArgumentException extends \InvalidArgumentException implements IException
+{
+}
+class UnexpectedValueException extends \UnexpectedValueException implements IException
+{
+}
 
 
 // Interfaces
-interface ILocatorProvider {
+interface ILocatorProvider
+{
     public function getEntityLocator();
 }
 
-interface IEntity extends ILocatorProvider {}
+interface IEntity extends ILocatorProvider
+{
+}
 
-interface IParentEntity extends IEntity {
+interface IParentEntity extends IEntity
+{
     public function fetchSubEntity(mesh\IManager $manager, array $node);
 }
 
-interface IActiveParentEntity extends IParentEntity {
+interface IActiveParentEntity extends IParentEntity
+{
     public function getSubEntityLocator(IEntity $entity);
 }
 
-interface ILocator extends ILocatorProvider, core\IStringProvider  {
+interface ILocator extends ILocatorProvider, core\IStringProvider
+{
     public function setScheme($scheme);
     public function getScheme();
 

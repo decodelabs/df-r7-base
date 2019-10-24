@@ -11,6 +11,7 @@ use df\opal;
 use df\user;
 use df\mesh;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -148,7 +149,7 @@ class Partial implements IPartial, Inspectable
     public function getEntityLocator()
     {
         if (!$this->_adapter instanceof mesh\entity\IParentEntity) {
-            throw new mesh\entity\EntityNotFoundException(
+            throw Glitch::{'df/mesh/entity/ENotFound'}(
                 'Partial adapter is not an entity handler'
             );
         }

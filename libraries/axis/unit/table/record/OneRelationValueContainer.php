@@ -93,7 +93,7 @@ class OneRelationValueContainer implements
         } elseif (!$value instanceof opal\record\IPrimaryKeySet) {
             try {
                 $value = $this->_value->duplicateWith($value);
-            } catch (opal\record\IException $e) {
+            } catch (opal\record\EGlitch $e) {
                 return false;
             }
         }

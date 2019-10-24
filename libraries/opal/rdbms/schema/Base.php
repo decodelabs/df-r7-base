@@ -67,7 +67,7 @@ abstract class Base implements ISchema, Inspectable
         foreach ($this->getFieldsToRemove() as $field) {
             foreach ($this->_foreignKeys as $name => $key) {
                 if ($key->hasField($field)) {
-                    throw new opal\rdbms\ConstraintException(
+                    throw Glitch::{'df/opal/rdbms/EConstraint'}(
                         'Foreign key '.$key->getName().' requires to-be-dropped field '.$field->getName().'. '.
                         'You should either not drop this field, or drop this key first'
                     );
@@ -155,7 +155,7 @@ abstract class Base implements ISchema, Inspectable
     public static function fromJson(opal\schema\ISchemaContext $schemaContext, $json)
     {
         if (!$data = json_decode($json, true)) {
-            throw new opal\rdbms\RuntimeException(
+            throw Glitch::ERuntime(
                 'Invalid json schema representation'
             );
         }

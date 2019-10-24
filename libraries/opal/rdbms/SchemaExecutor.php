@@ -21,7 +21,7 @@ abstract class SchemaExecutor implements ISchemaExecutor
         $class = 'df\\opal\\rdbms\\variant\\'.$type.'\\SchemaExecutor';
 
         if (!class_exists($class)) {
-            throw new RuntimeException(
+            throw Glitch::ERuntime(
                 'There is no schema executor available for '.$type
             );
         }
@@ -79,7 +79,7 @@ abstract class SchemaExecutor implements ISchemaExecutor
 
         foreach ($schema->getIndexes() as $index) {
             if ($index->isVoid()) {
-                throw new opal\schema\RuntimeException(
+                throw Glitch::{'df/opal/schema/ERuntime'}(
                     'Index '.$index->getName().' is invalid'
                 );
             }
@@ -93,7 +93,7 @@ abstract class SchemaExecutor implements ISchemaExecutor
         // Foreign keys
         foreach ($schema->getForeignKeys() as $key) {
             if ($key->isVoid()) {
-                throw new opal\rdbms\ForeignKeyConflictException(
+                throw Glitch::{'df/opal/rdbms/EForeignKeyConflict'}(
                     'Foreign key '.$key->getName().' is invalid'
                 );
             }

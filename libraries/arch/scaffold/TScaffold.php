@@ -290,7 +290,7 @@ trait TScaffold_RecordDataProvider
         foreach ($fields as $field) {
             try {
                 $query->countRelation($field);
-            } catch (opal\query\InvalidArgumentException $e) {
+            } catch (opal\query\EGlitch $e) {
             }
         }
 

@@ -11,6 +11,7 @@ use df\opal;
 use df\mesh;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -52,7 +53,7 @@ abstract class Base implements opal\rdbms\IAdapter, Inspectable
         $class = 'df\\opal\\rdbms\\adapter\\'.$adapterName;
 
         if (!class_exists($class)) {
-            throw new opal\rdbms\AdapterNotFoundException(
+            throw Glitch::{'df/opal/rdbms/EAdapterNotFound,ENotFound'}(
                 'RDBMS adapter '.$adapterName.' could not be found'
             );
         }
@@ -80,7 +81,7 @@ abstract class Base implements opal\rdbms\IAdapter, Inspectable
         if ($autoCreate) {
             try {
                 $this->_connect();
-            } catch (opal\rdbms\DatabaseNotFoundException $e) {
+            } catch (opal\rdbms\EDatabaseNotFound $e) {
                 $this->_connect(true);
                 $this->_createDb();
                 $this->_closeConnection();
@@ -346,7 +347,7 @@ abstract class Base implements opal\rdbms\IAdapter, Inspectable
     public function fetchSubEntity(mesh\IManager $manager, array $node)
     {
         if ($node['id'] === null) {
-            throw new mesh\entity\EntityNotFoundException(
+            throw Glitch::{'df/mesh/entity/ENotFound'}(
                 'Opal entities must be referenced with an id in it\'s locator'
             );
         }
@@ -399,7 +400,7 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base
         }
 
         if (!extension_loaded('pdo')) {
-            throw new opal\rdbms\AdapterNotFoundException(
+            throw Glitch::{'df/opal/rdbms/EAdapterNotFound,ENotFound'}(
                 'PDO is not currently available'
             );
         }
@@ -407,7 +408,7 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base
         $pdoType = strtolower($this->getServerType());
 
         if (!in_array($pdoType, \PDO::getAvailableDrivers())) {
-            throw new opal\rdbms\AdapterNotFoundException(
+            throw Glitch::{'df/opal/rdbms/EAdapterNotFound,ENotFound'}(
                 'PDO adapter '.$pdoType.' is not currently available'
             );
         }

@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -325,7 +326,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
 
             if (!isset($availableEngines[$compEngine])
             || $availableEngines[$compEngine]['Engine'] != $this->_options['engine']) {
-                throw new opal\rdbms\EngineSupportException(
+                throw Glitch::{'df/opal/rdbms/EEngineSupport,df/opal/rdbms/EFeatureSupport'}(
                     'Mysql storage engine '.$this->_options['engine'].' does not appear to be available'
                 );
             }
@@ -340,13 +341,13 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
 
         if ($this->_options['engine'] !== 'MERGE') {
             if ($this->_options['insertMethod']) {
-                throw new opal\rdbms\FeatureSupportException(
+                throw Glitch::{'df/opal/rdbms/EFeatureSupport'}(
                     'Mysql engine '.$this->_options['engine'].' does not support INSERT_METHOD table option'
                 );
             }
 
             if (!empty($this->_options['mergeTables'])) {
-                throw new opal\rdbms\FeatureSupportException(
+                throw Glitch::{'df/opal/rdbms/EFeatureSupport'}(
                     'Mysql engine '.$this->_options['engine'].' does not support UNION table option'
                 );
             }
@@ -358,7 +359,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
         // Primary key
         if ($index = $this->getIndex('PRIMARY')) {
             if ($this->_primaryIndex && $index !== $this->_primaryIndex) {
-                throw new opal\rdbms\IndexConflictException(
+                throw Glitch::{'df/opal/rdbms/EIndexConflict'}(
                     'A primary index has been set, but another index has been defined with the name PRIMARY.'."\n".
                     'Mysql requires the primary index to be named PRIMARY'
                 );
@@ -369,7 +370,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
 
         if ($this->_primaryIndex) {
             if ($this->_primaryIndex->getName() != 'PRIMARY') {
-                throw new opal\rdbms\IndexConflictException(
+                throw Glitch::{'df/opal/rdbms/EIndexConflict'}(
                     'Mysql primary index must be named PRIMARY'
                 );
             }
@@ -390,7 +391,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
                 case 'merge':
                 case 'ndbcluster':
                 case 'myisam':
-                    throw new opal\rdbms\ForeignKeySupportException(
+                    throw Glitch::{'df/opal/rdbms/EForeignKeySupport,df/opal/rdbms/EFeatureSupport'}(
                         'Foreign keys are not supported by Mysql for this storage engine: '.$this->_options['engine']
                     );
             }
@@ -400,7 +401,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, Inspectable
         // Triggers
         if (!empty($this->_triggers)) {
             if (!$this->_adapter->supports(opal\rdbms\adapter\Base::TRIGGERS)) {
-                throw new opal\rdbms\TriggerSupportException(
+                throw Glitch::{'df/opal/rdbms/ETriggerSupport,df/opal/rdbms/EFeatureSupport'}(
                     'This version of Mysql does not support triggers'
                 );
             }

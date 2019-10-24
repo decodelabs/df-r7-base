@@ -26,9 +26,6 @@ class RuntimeException extends \RuntimeException implements IException
 class InvalidArgumentException extends \InvalidArgumentException implements IException
 {
 }
-class AuthenticationException extends RuntimeException
-{
-}
 
 
 // Constants

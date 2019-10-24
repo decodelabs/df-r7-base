@@ -10,6 +10,7 @@ use df\core;
 use df\spur;
 use df\halo;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
 
 // Exceptions
@@ -197,12 +198,12 @@ trait TRepository
             $error = trim($result->getError());
 
             if (empty($output)) {
-                throw new RuntimeException($error);
+                throw Glitch::ERuntime($error);
             }
 
             if (strtolower(substr($error, 0, 5)) == 'error:'
             || stristr($error, 'aborting')) {
-                throw new RuntimeException($error);
+                throw Glitch::ERuntimen($error);
             }
 
             $output .= "\n".$error;

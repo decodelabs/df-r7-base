@@ -10,6 +10,7 @@ use df\core;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
 
@@ -61,7 +62,7 @@ abstract class Base implements IDaemon
         foreach (df\Launchpad::$loader->lookupClassList('apex/daemons') as $name => $class) {
             try {
                 $daemon = self::factory($name);
-            } catch (InvalidArgumentException $e) {
+            } catch (ENotFound $e) {
                 continue;
             }
 
@@ -80,7 +81,7 @@ abstract class Base implements IDaemon
         $class = 'df\\apex\\daemons\\'.implode('\\', $parts);
 
         if (!class_exists($class)) {
-            throw new RuntimeException(
+            throw Glitch::ENotFound(
                 'Daemon '.$name.' could not be found'
             );
         }

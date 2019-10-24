@@ -30,8 +30,14 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         $res = $stmt->executeRead();
 
         if ($res->isEmpty()) {
-            throw new opal\rdbms\TableNotFoundException(
-                'Table '.$tableName.' could not be found', 1, $stmt->getSql()
+            throw Glitch::{'df/opal/rdbms/ETableNotFound,ENotFound'}(
+                'Table '.$tableName.' could not be found',
+                [
+                    'code' => 1,
+                    'data' => [
+                        'sql' => $stmt->getSql()
+                    ]
+                ]
             );
         }
 
@@ -62,8 +68,14 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
 
         if (empty($tableData) || empty($tableData['sql'])) {
-            throw new opal\rdbms\TableNotFoundException(
-                'Table '.$tableName.' could not be found', 1, $sql
+            throw Glitch::{'df/opal/rdbms/ETableNotFound,ENotFound'}(
+                'Table '.$tableName.' could not be found',
+                [
+                    'code' => 1,
+                    'data' => [
+                        'sql' => $sql
+                    ]
+                ]
             );
         }
 
@@ -134,7 +146,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                         // Foreign keys
                         case 'FOREIGN KEY':
                             if (!preg_match('/REFERENCES ["`]?([^"`]+)["`]?( \((.*)\))?( ON DELETE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( ON UPDATE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( (NOT )? DEFERRABLE( INITIALLY (DEFERRED|IMMEDIATE)))?/i', $def, $matches)) {
-                                throw new opal\rdbms\ForeignKeyConflictException(
+                                throw Glitch::{'df/opal/rdbms/EForeignKeyConflict'}(
                                     'Unmatched foreign key: '.$def
                                 );
                             }
@@ -171,7 +183,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                             $isDescending = strtoupper(trim(array_shift($temp))) == 'DESC';
 
                             if (!$field = $schema->getField($fieldName)) {
-                                throw new opal\rdbms\IndexNotFoundException(
+                                throw Glitch::{'df/opal/rdbms/EIndexNotFound,ENotFound'}(
                                     'Index field '.$fieldName.' could not be found'
                                 );
                             }
@@ -194,7 +206,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                         $keyName = $matches[1];
 
                         if (!preg_match('/FOREIGN KEY \((.*)\) REFERENCES ["`]?([^"`]+)["`]?( \((.*)\))?( ON DELETE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( ON UPDATE (SET NULL|SET DEFAULT|CASCADE|RESTRICT|NO ACTION))?( (NOT )? DEFERRABLE( INITIALLY (DEFERRED|IMMEDIATE)))?$/i', $def, $matches)) {
-                            throw new opal\rdbms\ForeignKeyConflictException(
+                            throw Glitch::{'df/opal/rdbms/EForeignKeyConflict'}(
                                 'Unmatched foreign key: '.$def
                             );
                         }
@@ -206,7 +218,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
 
                         foreach ($fields as $fieldName) {
                             if (!$field = $schema->getField($fieldName)) {
-                                throw new opal\rdbms\ForeignKeyConflictException(
+                                throw Glitch::{'df/opal/rdbms/EForeignKeyConflict'}(
                                     'Foreign key field '.$fieldName.' could not be found'
                                 );
                             }
@@ -233,7 +245,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
             $index = $schema->addIndex($indexName, []);
 
             if (!preg_match('/INDEX ["`]?'.$indexData['name'].'["`]? ON ["`]?'.$indexData['tbl_name'].'["`]? \((.*)\)/i', $indexData['sql'], $matches)) {
-                throw new opal\schema\UnexpectedValueException(
+                throw Glitch::EUnexpectedValue(
                     'Unmatched index: '.$indexData['sql']
                 );
             }
@@ -244,7 +256,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
                 $isDescending = strtoupper(trim(array_shift($temp))) == 'DESC';
 
                 if (!$field = $schema->getField($fieldName)) {
-                    throw new opal\rdbms\IndexNotFoundException(
+                    throw Glitch::{'df/opal/rdbms/EIndexNotFound,ENotFound'}(
                         'Index field '.$fieldName.' could not be found'
                     );
                 }
@@ -257,7 +269,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor
         // Triggers
         foreach ($triggers as $triggerName => $triggerData) {
             if (!preg_match('/^CREATE (TEMP|TEMPORARY )?TRIGGER (IF NOT EXISTS )?["`]?'.$triggerName.'["`]?( (BEFORE|AFTER|INSTEAD OF))? (DELETE|INSERT|UPDATE)( OF (.*))? ON ["`]?'.$tableName.'["`]?( FOR EACH ROW)?( WHEN (.*))? BEGIN (.*) END$/i', $triggerData['sql'], $matches)) {
-                throw new opal\rdbms\UnexpectedValueException(
+                throw Glitch::EUnexpectedValue(
                     'Unmatched trigger', 0, $triggerData['sql']
                 );
             }

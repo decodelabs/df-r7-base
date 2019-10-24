@@ -10,6 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -51,7 +52,7 @@ class Template implements aura\view\ITemplate, Inspectable
                 $path = '#/'.$path;
             }
 
-            throw core\Error::{'aura/view/ENotFound'}(
+            throw Glitch::{'aura/view/ENotFound'}(
                 'Template ~'.rtrim($request->getDirectoryLocation(), '/').'/'.$path.' could not be found'
             );
         }
@@ -87,7 +88,7 @@ class Template implements aura\view\ITemplate, Inspectable
         }
 
         if (!$templatePath) {
-            throw core\Error::{'aura/view/ENotFound'}(
+            throw Glitch::{'aura/view/ENotFound'}(
                 'Theme template '.$path.' could not be found'
             );
         }
@@ -127,7 +128,7 @@ class Template implements aura\view\ITemplate, Inspectable
         }
 
         if (!$layoutPath) {
-            throw core\Error::{'aura/view/ENotFound'}(
+            throw Glitch::{'aura/view/ENotFound'}(
                 'Layout '.$pathName.'.'.$type.' could not be found'
             );
         }
@@ -141,7 +142,7 @@ class Template implements aura\view\ITemplate, Inspectable
     public function __construct(arch\IContext $context, $absolutePath, $isLayout=false)
     {
         if (!is_file($absolutePath)) {
-            throw core\Error::{'aura/view/ENotFound'}(
+            throw Glitch::{'aura/view/ENotFound'}(
                 'Template '.$absolutePath.' could not be found'
             );
         }
@@ -156,7 +157,7 @@ class Template implements aura\view\ITemplate, Inspectable
     public function getView()
     {
         if (!$this->view) {
-            throw core\Error::{'aura/view/ENoView,ENoContext'}(
+            throw Glitch::{'aura/view/ENoView,ENoContext'}(
                 'This template is not currently rendering'
             );
         }
@@ -167,7 +168,7 @@ class Template implements aura\view\ITemplate, Inspectable
     public function render()
     {
         if ($this->_isRendering) {
-            throw core\Error::ELogic('Rendering is already in progress');
+            throw Glitch::ELogic('Rendering is already in progress');
         }
 
         $____target = $this->getRenderTarget();
@@ -241,7 +242,7 @@ class Template implements aura\view\ITemplate, Inspectable
     public function toString(): string
     {
         if (!$this->_renderTarget) {
-            throw core\Error::{'aura/view/ENoView,ENoContext'}(
+            throw Glitch::{'aura/view/ENoView,ENoContext'}(
                 'No render target has been set'
             );
         }
@@ -397,7 +398,7 @@ class Template implements aura\view\ITemplate, Inspectable
     protected function _checkView()
     {
         if (!$this->view) {
-            throw core\Error::{'aura/view/ENoView,ENoContext'}(
+            throw Glitch::{'aura/view/ENoView,ENoContext'}(
                 'No view available for content provider to interact with'
             );
         }

@@ -31,7 +31,7 @@ class Context implements IContext, \Serializable, Inspectable
         if ($runner instanceof core\IContextAware) {
             try {
                 return $runner->getContext();
-            } catch (core\ENoContext $e) {
+            } catch (\ENoContext $e) {
             }
         }
 

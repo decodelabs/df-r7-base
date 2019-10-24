@@ -87,7 +87,7 @@ class Git implements spur\packaging\bower\IResolver
     {
         try {
             $tags = $this->_fetchTags($package, $cachePath);
-        } catch (spur\vcs\git\IException $e) {
+        } catch (spur\vcs\git\EGlitch $e) {
             return false;
         }
 

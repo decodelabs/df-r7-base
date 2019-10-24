@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -178,7 +179,7 @@ class Guid implements IGuid, Inspectable
     public function __construct($bytes)
     {
         if (strlen($bytes) != 16) {
-            throw new InvalidArgumentException(
+            throw Glitch::EInvalidArgument(
                 'Guid must be a 128 bit integer'
             );
         }

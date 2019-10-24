@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\user;
 
+use DecodeLabs\Glitch;
+
 class Auth extends Base
 {
     public function isBound()
@@ -21,7 +23,7 @@ class Auth extends Base
         $class = 'df\\user\\authentication\\adapter\\'.ucfirst($name);
 
         if (!class_exists($class)) {
-            throw new user\AuthenticationException(
+            throw Glitch::{'df/user/EAuthentication'}(
                 'Authentication adapter '.$name.' could not be found'
             );
         }
@@ -46,7 +48,7 @@ class Auth extends Base
         $config = user\authentication\Config::getInstance();
 
         if (!$config->isAdapterEnabled($name)) {
-            throw new user\AuthenticationException(
+            throw Glitch::{'df/user/EAuthentication'}(
                 'Authentication adapter '.$name.' is not enabled'
             );
         }
@@ -70,7 +72,7 @@ class Auth extends Base
             $clientData = $domainInfo->getClientData();
 
             if (!$clientData instanceof user\IClientDataObject) {
-                throw new user\AuthenticationException(
+                throw Glitch::{'df/user/EAuthentication'}(
                     'Domain info could not provide a valid client data object'
                 );
             }
@@ -207,7 +209,7 @@ class Auth extends Base
             foreach ($config->getEnabledAdapters() as $name => $options) {
                 try {
                     $adapter = $this->loadAdapter($name);
-                } catch (user\AuthenticationException $e) {
+                } catch (user\EAuthentication $e) {
                     continue;
                 }
 

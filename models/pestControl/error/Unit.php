@@ -83,6 +83,7 @@ class Unit extends axis\unit\Table
 
                 if (!isset($names[$topName]) || $count > $names[$topName]) {
                     $type[$topName] = $name;
+                    $names[$topName] = $count;
                 }
             }
 

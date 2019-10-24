@@ -159,9 +159,12 @@ class Table implements ITable, Inspectable
     public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false)
     {
         if ($schema->getName() != $this->_name) {
-            throw new opal\rdbms\TableNotFoundException(
-                'Schema name '.$schema->getName().' does not match table name '.$this->_name, 0, null,
-                $this->_adapter->getDsn()->getDatabase(), $this->_name
+            throw Glitch::{'df/opal/rdbms/ETableNotFound,ENotFound'}(
+                'Schema name '.$schema->getName().' does not match table name '.$this->_name, null,
+                [
+                    'database' => $this->_adapter->getDsn()->getDatabase(),
+                    'table' => $this->_name
+                ]
             );
         }
 
@@ -171,9 +174,12 @@ class Table implements ITable, Inspectable
             if ($dropIfExists) {
                 $exec->drop($this->_name);
             } else {
-                throw new opal\rdbms\TableConflictException(
-                    'Table '.$schema->getName().' already exists', 0, null,
-                    $this->_adapter->getDsn()->getDatabase(), $this->_name
+                throw Glitch::{'df/opal/rdbms/ETableConflict'}(
+                    'Table '.$schema->getName().' already exists', null,
+                    [
+                        'database' => $this->_adapter->getDsn()->getDatabase(),
+                        'table' => $this->_name
+                    ]
                 );
             }
         }

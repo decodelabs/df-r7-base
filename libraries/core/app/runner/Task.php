@@ -60,7 +60,7 @@ class Task extends Base implements core\IContextAware, arch\IRequestOrientedRunn
     public function getContext()
     {
         if (!$this->_context) {
-            throw core\Error::ELogic(
+            throw Glitch::ENoContext(
                 'A context is not available until the application has been dispatched'
             );
         }

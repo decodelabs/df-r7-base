@@ -11,6 +11,7 @@ use df\spur;
 use df\flex;
 use df\fuse;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
 class Installer implements IInstaller
@@ -162,13 +163,13 @@ class Installer implements IInstaller
                     $range = flex\VersionRange::factory($depPackage->version);
 
                     if (!$range->contains($installed->version) && $installed->installName == $depPackage->installName) {
-                        throw new RuntimeException(
+                        throw Glitch::ERuntime(
                             'Unable to satisfy '.$package->name.' dependencies - version conflict for '.$package->name
                         );
                     } else {
                         $depPackage = $installed;
                     }
-                } catch (flex\RuntimeException $e) {
+                } catch (flex\EGlitch $e) {
                     // never mind
                 }
             }
@@ -393,7 +394,7 @@ class Installer implements IInstaller
             try {
                 $package->version = flex\VersionRange::factory($package->source);
                 $package->source = $package->name;
-            } catch (flex\IException $e) {
+            } catch (flex\EGlitch $e) {
                 $package->name = $package->source;
             }
 
@@ -430,7 +431,7 @@ class Installer implements IInstaller
 
             try {
                 $range = flex\VersionRange::factory($package->version);
-            } catch (flex\IException $e) {
+            } catch (flex\EGlitch $e) {
                 $range = null;
             }
 
@@ -448,7 +449,7 @@ class Installer implements IInstaller
                         foreach ($versions as $versionStr) {
                             try {
                                 $version = flex\Version::factory($versionStr);
-                            } catch (flex\IException $e) {
+                            } catch (flex\EGlitch $e) {
                                 continue;
                             }
 

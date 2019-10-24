@@ -20,14 +20,9 @@ class Base implements IBucket
     public static function loadAll()
     {
         $output = [];
-        
-        foreach (df\Launchpad::$loader->lookupClassList('neon/bucket') as $name => $class) {
-            try {
-                $context = self::factory($name);
-            } catch (InvalidArgumentException $e) {
-                continue;
-            }
 
+        foreach (df\Launchpad::$loader->lookupClassList('neon/bucket') as $name => $class) {
+            $context = self::factory($name);
             $output[$context->getName()] = $context;
         }
 

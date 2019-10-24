@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
+
 class Mysqli extends opal\rdbms\adapter\Base
 {
 
@@ -20,7 +22,7 @@ class Mysqli extends opal\rdbms\adapter\Base
         }
 
         if (!extension_loaded('mysqli')) {
-            throw new opal\rdbms\AdapterNotFoundException(
+            throw Glitch::{'df/opal/rdbms/EAdapterNotFound,ENotFound'}(
                 'Mysqli extension is not available'
             );
         }
@@ -50,7 +52,7 @@ class Mysqli extends opal\rdbms\adapter\Base
         if (version_compare($this->getServerVersion(), '5.0.0', '<')) {
             $this->_closeConnection();
 
-            throw new opal\rdbms\AdapterNotFoundException(
+            throw Glitch::{'df/opal/rdbms/EAdapterNotFound,ENotFound'}(
                 'Opal only supports Mysql version 5 and above'
             );
         }
@@ -134,7 +136,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     protected function _beginTransaction()
     {
         if (!mysqli_autocommit($this->_connection, false)) {
-            throw new opal\rdbms\TransactionException(
+            throw Glitch::{'df/opal/rdbms/ETransaction'}(
                 'Unable to begin transaction - '.mysqli_error($this->_connection)
             );
         }
@@ -143,7 +145,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     protected function _commitTransaction()
     {
         if (!mysqli_commit($this->_connection)) {
-            throw new opal\rdbms\TransactionException(
+            throw Glitch::{'df/opal/rdbms/ETransaction'}(
                 'Unable to commit transaction - '.mysqli_error($this->_connection)
             );
         }
@@ -154,7 +156,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     protected function _rollbackTransaction()
     {
         if (!mysqli_rollback($this->_connection)) {
-            throw new opal\rdbms\TransactionException(
+            throw Glitch::{'df/opal/rdbms/ETransaction'}(
                 'Unable to roll back transaction - '.mysqli_error($this->_connection)
             );
         }
@@ -167,7 +169,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     {
         try {
             $this->executeSql('LOCK TABLE '.$table.' WRITE');
-        } catch (opal\rdbms\IException $e) {
+        } catch (opal\rdbms\EGlitch $e) {
             return false;
         }
 
@@ -178,7 +180,7 @@ class Mysqli extends opal\rdbms\adapter\Base
     {
         try {
             $this->executeSql('UNLOCK TABLES');
-        } catch (opal\rdbms\IException $e) {
+        } catch (opal\rdbms\EGlitch $e) {
             return false;
         }
 

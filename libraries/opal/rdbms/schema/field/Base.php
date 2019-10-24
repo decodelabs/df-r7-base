@@ -8,6 +8,7 @@ namespace df\opal\rdbms\schema\field;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -97,7 +98,7 @@ abstract class Base implements opal\rdbms\schema\IField, Inspectable
         $class = 'df\\opal\\rdbms\\schema\\field\\'.$classType;
 
         if (!class_exists($class)) {
-            throw new opal\rdbms\UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Field type '.$type.' is not currently supported'
             );
         }

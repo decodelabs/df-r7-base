@@ -34,7 +34,7 @@ class TaskUpdateAll extends arch\node\Task
                 }
 
                 $this->io->writeLine();
-            } catch (spur\vcs\git\IException $e) {
+            } catch (spur\vcs\git\EGlitch $e) {
                 $this->io->writeErrorLine($e->getMessage());
                 return;
             }

@@ -11,8 +11,10 @@ use df\aura;
 use df\flow;
 use df\arch;
 
-class Mail extends flow\mail\Message implements ILayoutView {
+use DecodeLabs\Glitch;
 
+class Mail extends flow\mail\Message implements ILayoutView
+{
     use TView;
     use TView_Layout;
 
@@ -21,15 +23,17 @@ class Mail extends flow\mail\Message implements ILayoutView {
     protected $_textMode = false;
     protected $_hasRendered = false;
 
-    public function __construct($type, arch\IContext $context) {
+    public function __construct($type, arch\IContext $context)
+    {
         $this->_type = $type;
         $this->context = $context;
 
         parent::__construct('(no subject)', null);
     }
 
-    public function isPlainText(bool $flag=null) {
-        if($flag !== null) {
+    public function isPlainText(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_textMode = $flag;
             return $this;
         }
@@ -37,24 +41,27 @@ class Mail extends flow\mail\Message implements ILayoutView {
         return $this->_textMode;
     }
 
-    public function getBodyText() {
-        if(!$this->_hasRendered) {
+    public function getBodyText()
+    {
+        if (!$this->_hasRendered) {
             $this->render();
         }
 
         return parent::getBodyText();
     }
 
-    public function getBodyHtml() {
-        if(!$this->_hasRendered) {
+    public function getBodyHtml()
+    {
+        if (!$this->_hasRendered) {
             $this->render();
         }
 
         return parent::getBodyHtml();
     }
 
-    public function shouldUseLayout(bool $flag=null) {
-        if($flag !== null) {
+    public function shouldUseLayout(bool $flag=null)
+    {
+        if ($flag !== null) {
             $this->_useLayout = $flag;
             return $this;
         }
@@ -62,9 +69,10 @@ class Mail extends flow\mail\Message implements ILayoutView {
         return !$this->_textMode && $this->_useLayout;
     }
 
-    protected function _beforeRender() {
-        if($this->_hasRendered) {
-            throw core\Error::ERuntime(
+    protected function _beforeRender()
+    {
+        if ($this->_hasRendered) {
+            throw Glitch::ERuntime(
                 'Mail views can only render once'
             );
         }
@@ -72,7 +80,8 @@ class Mail extends flow\mail\Message implements ILayoutView {
         $this->getTheme()->beforeViewRender($this);
     }
 
-    protected function _onContentRender($content) {
+    protected function _onContentRender($content)
+    {
         $content = $this->getTheme()->onViewContentRender($this, $content);
 
         /*
@@ -85,10 +94,11 @@ class Mail extends flow\mail\Message implements ILayoutView {
         return $content;
     }
 
-    protected function _afterRender($content) {
+    protected function _afterRender($content)
+    {
         $content = $this->getTheme()->afterViewRender($this, $content);
 
-        if($this->_textMode) {
+        if ($this->_textMode) {
             $this->setBodyText($content);
         } else {
             $this->setBodyHtml($content);

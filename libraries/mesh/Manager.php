@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\mesh;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -100,7 +101,7 @@ class Manager implements IManager, Inspectable
         $entity = $handler->fetchEntity($this, $node);
 
         if ($entity === null) {
-            throw new mesh\entity\EntityNotFoundException(
+            throw Glitch::{'df/mesh/entity/ENotFound'}(
                 'Entity type '.$locator->toStringUpTo($node).' could not be found'
             );
         }
@@ -110,7 +111,7 @@ class Manager implements IManager, Inspectable
 
             foreach ($nodes as $node) {
                 if (!$entity instanceof mesh\entity\IParentEntity) {
-                    throw new mesh\entity\EntityNotFoundException(
+                    throw Glitch::{'df/mesh/entity/ENotFound'}(
                         'Could not load entity '.$locator->toString().' - '.
                         'parent entity '.$locator->toStringUpTo($lastNode).' does not provide sub entities'
                     );
@@ -119,7 +120,7 @@ class Manager implements IManager, Inspectable
                 $entity = $entity->fetchSubEntity($this, $node);
 
                 if ($entity === null) {
-                    throw new mesh\entity\EntityNotFoundException(
+                    throw Glitch::{'df/mesh/entity/ENotFound'}(
                         'Entity type '.$locator->toStringUpTo($node).' could not be found'
                     );
                 }

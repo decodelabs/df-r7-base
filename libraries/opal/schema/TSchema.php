@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -1385,7 +1386,7 @@ trait TSchema_TriggerProvider
         $name = $trigger->getName();
 
         if (isset($this->_triggers[$name])) {
-            throw new opal\rdbms\TriggerConflictException(
+            throw Glitch::{'df/opal/rdbms/ETriggerConflict'}(
                 'Trigger '.$name.' has already been defined'
             );
         }
@@ -1416,7 +1417,7 @@ trait TSchema_TriggerProvider
         $name = $trigger->getName();
 
         if (!isset($this->_triggers[$name])) {
-            throw new opal\rdbms\UnexpectedValueException(
+            throw Glitch::EUnexpectedValue(
                 'Trigger '.$name.' could not be found'
             );
         }
@@ -1465,7 +1466,7 @@ trait TSchema_TriggerProvider
         }
 
         if (isset($this->_triggers[$newName])) {
-            throw new opal\rdbms\TriggerConflictException(
+            throw Glitch::{'df/opal/rdbms/ETriggerConflict'}(
                 'Cannot rename trigger '.$oldName.' to '.$newName.', a field with that name has already been defined'
             );
         }

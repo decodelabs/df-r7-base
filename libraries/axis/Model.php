@@ -12,6 +12,7 @@ use df\flex;
 use df\mesh;
 use df\opal;
 
+use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
 use DecodeLabs\Glitch\Dumper\Entity;
 use DecodeLabs\Glitch\Dumper\Inspector;
@@ -35,7 +36,7 @@ abstract class Model implements IModel, Inspectable
         $class = 'df\\apex\\models\\'.$name.'\\Model';
 
         if (!class_exists($class)) {
-            throw new RuntimeException(
+            throw Glitch::ENotFound(
                 'Model '.$name.' could not be found'
             );
         }
@@ -97,7 +98,7 @@ abstract class Model implements IModel, Inspectable
                 $class = 'df\\axis\\unit\\'.$className;
 
                 if (!class_exists($class)) {
-                    throw new axis\RuntimeException(
+                    throw Glitch::ENotFound(
                         'Virtual model unit type '.$this->getModelName().'/'.$className.' could not be found'
                     );
                 }
@@ -105,7 +106,7 @@ abstract class Model implements IModel, Inspectable
                 $ref = new \ReflectionClass($class);
 
                 if (!$ref->implementsInterface('df\\axis\\IVirtualUnit')) {
-                    throw new axis\RuntimeException(
+                    throw Glitch::ERuntime(
                         'Unit type '.$this->getModelName().'/'.$className.' cannot load virtual units'
                     );
                 }
@@ -118,7 +119,7 @@ abstract class Model implements IModel, Inspectable
             }
 
 
-            throw new axis\RuntimeException(
+            throw Glitch::ENotFound(
                 'Model unit '.$this->getModelName().'/'.$name.' could not be found'
             );
         }
@@ -191,7 +192,7 @@ abstract class Model implements IModel, Inspectable
                 $data['name'] = $unit->getUnitName();
                 $data['canonicalName'] = $unit->getCanonicalUnitName();
                 $data['type'] = $unit->getUnitType();
-            } catch (axis\RuntimeException $e) {
+            } catch (axis\EGlitch $e) {
             }
 
             $output[$unitId] = $data;
@@ -219,7 +220,7 @@ abstract class Model implements IModel, Inspectable
                 $unit = $this->getUnit($node['id']);
 
                 if (!$unit instanceof ISchemaBasedStorageUnit) {
-                    throw new LogicException(
+                    throw Glitch::ELogic(
                         'Model unit '.$unit->getUnitName().' does not provide a schema'
                     );
                 }

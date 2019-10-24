@@ -67,7 +67,7 @@ trait TForm
     public function loadDelegate(string $id, string $name): IDelegate
     {
         if (false !== strpos($id, '.')) {
-            throw core\Error::EArgument(
+            throw Glitch::EInvalidArgument(
                 'Delegate IDs must not contain . character'
             );
         }
@@ -110,7 +110,7 @@ trait TForm
                     core\logException($e);
                 }
 
-                throw core\Error::{'arch/node/EDelegate,ENotFound'}(
+                throw Glitch::{'arch/node/EDelegate,ENotFound'}(
                     'Delegate '.$name.' could not be found at ~'.$area.'/'.$path
                 );
             }
@@ -122,7 +122,7 @@ trait TForm
     public function directLoadDelegate(string $id, string $class): IDelegate
     {
         if (!class_exists($class)) {
-            throw core\Error::{'arch/node/EDelegate,ENotFound'}(
+            throw Glitch::{'arch/node/EDelegate,ENotFound'}(
                 'Cannot direct load delegate '.$id.' - class not found'
             );
         }
@@ -150,7 +150,7 @@ trait TForm
         $id = explode('.', trim($id, ' .'));
 
         if (empty($id)) {
-            throw core\Error::{'arch/node/EDelegate,EArgument'}(
+            throw Glitch::{'arch/node/EDelegate,EArgument'}(
                 'Empty delegate id detected'
             );
         }
@@ -158,7 +158,7 @@ trait TForm
         $top = array_shift($id);
 
         if (!isset($this->_delegates[$top])) {
-            throw core\Error::{'arch/node/EDelegate,ENotFound'}(
+            throw Glitch::{'arch/node/EDelegate,ENotFound'}(
                 'Delegate '.$top.' could not be found'
             );
         }
@@ -200,7 +200,7 @@ trait TForm
         $id = explode('.', trim($id, ' .'));
 
         if (empty($id)) {
-            throw core\Error::{'arch/node/EDelegate,EArgument'}(
+            throw Glitch::{'arch/node/EDelegate,EArgument'}(
                 'Empty delegate id detected'
             );
         }
@@ -208,7 +208,7 @@ trait TForm
         $top = array_shift($id);
 
         if (!isset($this->_delegates[$top])) {
-            throw core\Error::{'arch/node/EDelegate,ENotFound'}(
+            throw Glitch::{'arch/node/EDelegate,ENotFound'}(
                 'Delegate '.$top.' could not be found'
             );
         }
@@ -409,7 +409,7 @@ trait TForm
             $func = 'onDefaultEvent';
 
             if (!method_exists($this, $func)) {
-                throw core\Error::{'arch/node/EEvent,EDefinition'}(
+                throw Glitch::{'arch/node/EEvent,EDefinition'}(
                     'Event '.$name.' does not have a handler'
                 );
             }
@@ -530,7 +530,7 @@ trait TForm_ModalDelegate
         $modes = $this->getAvailableModes();
 
         if (!in_array($mode, $modes)) {
-            throw core\Error::EArgument(
+            throw Glitch::EInvalidArgument(
                 'Mode '.$mode.' is not recognised in this form'
             );
         }
@@ -594,7 +594,7 @@ trait TForm_ModalDelegate
         }
 
         if (!$func || !method_exists($this, $func)) {
-            throw core\Error::{'arch/node/EDelegate,EDefinition'}(
+            throw Glitch::{'arch/node/EDelegate,EDefinition'}(
                 'Selector delegate has no render handler for '.$mode.' mode'
             );
         }

@@ -119,7 +119,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     public function getContext()
     {
         if (!$this->_context) {
-            throw core\Error::ENoContext(
+            throw Glitch::ENoContext(
                 'A context is not available until the application has been dispatched'
             );
         }

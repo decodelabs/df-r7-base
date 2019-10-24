@@ -10,13 +10,14 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class Probe implements IProbe {
-    
-    public function getModelList() {
+class Probe implements IProbe
+{
+    public function getModelList()
+    {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupFolderList('apex/models') as $name => $dir) {
-            if(class_exists('df\\apex\\models\\'.$name.'\\Model')) {
+        foreach (df\Launchpad::$loader->lookupFolderList('apex/models') as $name => $dir) {
+            if (class_exists('df\\apex\\models\\'.$name.'\\Model')) {
                 $output[] = $name;
             }
         }
@@ -24,11 +25,12 @@ class Probe implements IProbe {
         return $output;
     }
 
-    public function getDefinedUnitList() {
+    public function getDefinedUnitList()
+    {
         $output = [];
 
-        foreach($this->getModelList() as $modelName) {
-            foreach($this->getDefinedUnitListForModel($modelName) as $unitId) {
+        foreach ($this->getModelList() as $modelName) {
+            foreach ($this->getDefinedUnitListForModel($modelName) as $unitId) {
                 $output[] = $modelName.'/'.$unitId;
             }
         }
@@ -36,17 +38,19 @@ class Probe implements IProbe {
         return $output;
     }
 
-    public function getDefinedUnitListForModel($modelName) {
+    public function getDefinedUnitListForModel($modelName)
+    {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupFolderList('apex/models/'.$modelName) as $name => $dir) {
+        foreach (df\Launchpad::$loader->lookupFolderList('apex/models/'.$modelName) as $name => $dir) {
             $output[] = $name;
         }
 
         return $output;
     }
 
-    public function probeUnits() {
+    public function probeUnits()
+    {
         $config = axis\Config::getInstance();
 
         $unitList = array_merge(
@@ -57,36 +61,36 @@ class Probe implements IProbe {
         $output = [];
         $adapters = [];
 
-        foreach($unitList as $unitId) {
+        foreach ($unitList as $unitId) {
             $unit = axis\Model::loadUnitFromId($unitId);
             $inspector = new UnitInspector($unit);
 
-            if($inspector->isSharedVirtual()) {
+            if ($inspector->isSharedVirtual()) {
                 continue;
             }
 
             $output[$unitId] = $inspector;
 
-            if($adapter = $inspector->getQueryAdapter()) {
+            if ($adapter = $inspector->getQueryAdapter()) {
                 $adapters[$adapter->getQuerySourceAdapterHash()] = $adapter;
-            } else if($adapter = $inspector->getAdapter()) {
+            } elseif ($adapter = $inspector->getAdapter()) {
                 $adapters[$inspector->getAdapterName()] = $adapter;
             }
         }
 
         $schemaManager = axis\schema\Manager::getInstance();
 
-        foreach($schemaManager->fetchStoredUnitList() as $unitId) {
-            if(isset($output[$unitId])) {
+        foreach ($schemaManager->fetchStoredUnitList() as $unitId) {
+            if (isset($output[$unitId])) {
                 continue;
             }
 
             try {
                 $unit = axis\Model::loadUnitFromId($unitId);
-            } catch(axis\RuntimeException $e) {
+            } catch (axis\EGlitch $e) {
                 continue;
             }
-            
+
             $output[$unitId] = new UnitInspector($unit);
         }
 
@@ -94,20 +98,22 @@ class Probe implements IProbe {
         return $output;
     }
 
-    public function probeStorageUnits() {
+    public function probeStorageUnits()
+    {
         $output = $this->probeUnits();
 
-        foreach($output as $key => $unit) {
-            if(!$unit->isStorageUnit()) {
+        foreach ($output as $key => $unit) {
+            if (!$unit->isStorageUnit()) {
                 unset($output[$key]);
             }
         }
-        
+
         return $output;
     }
 
-    public function inspectUnit($id) {
-        if($id instanceof axis\IUnit) {
+    public function inspectUnit($id)
+    {
+        if ($id instanceof axis\IUnit) {
             $unit = $id;
         } else {
             $unit = axis\Model::loadUnitFromId($id);
