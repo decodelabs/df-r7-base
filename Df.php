@@ -137,23 +137,26 @@ class Launchpad
             self::$loader->loadComposer($appPath);
         }
 
-        // Veneer
-        if (class_exists(Veneer::class)) {
-            Veneer::blacklistNamespaces('df')
-                ->whitelistNamespaces('df\\apex\\directory');
-        }
-
-        // Glitch
-        Glitch::setStartTime($startTime ?? microtime(true))
-            ->registerPathAliases([
-                'vendor' => $appPath.'/vendor',
-                'root' => self::$isCompiled ? self::$rootPath : dirname(self::$rootPath)
-            ])
-            ->registerAsErrorHandler();
-
-
         // Packages
         self::$loader->initRootPackages(self::$rootPath, $appPath);
+
+        // Env setup
+        if (class_exists(core\app\EnvSetup::class)) {
+            core\app\EnvSetup::setup($appPath, $startTime);
+        } else {
+            // REMOVE THIS
+            if (class_exists(Veneer::class)) {
+                Veneer::blacklistNamespaces('df')
+                    ->whitelistNamespaces('df\\apex\\directory');
+            }
+
+            $glitch = Glitch::setStartTime($startTime ?? microtime(true))
+                ->registerPathAliases([
+                    'vendor' => $appPath.'/vendor',
+                    'root' => self::$isCompiled ? self::$rootPath : dirname(self::$rootPath)
+                ])
+                ->registerAsErrorHandler();
+        }
     }
 
 
