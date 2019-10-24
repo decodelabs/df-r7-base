@@ -1135,7 +1135,7 @@ class ArrayManipulator implements IArrayManipulator
                 }
             } else {
                 $valQName = $valField->getQualifiedName();
-                $valName = $valField->getName();
+                $valName = $valField->getLogicalAlias() ?? $valField->getName();
             }
 
             $nestFields = null;
