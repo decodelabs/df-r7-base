@@ -400,9 +400,9 @@ class Model extends axis\Model
             ->toRow();
 
         if (!$output) {
-            throw Glitch::ERuntime(
+            throw Glitch::ENotFound(
                 'File version for '.$fileId.' could not be found',
-                404
+                ['http' => 404]
             );
         }
 
@@ -419,9 +419,9 @@ class Model extends axis\Model
             ->toRow();
 
         if (!$output) {
-            throw Glitch::ERuntime(
+            throw Glitch::ENotFound(
                 'File version '.$versionId.' could not be found',
-                404
+                ['http' => 404]
             );
         }
 
@@ -469,9 +469,9 @@ class Model extends axis\Model
             ->toRow();
 
         if (!$output) {
-            throw Glitch::ERuntime(
+            throw Glitch::ENotFound(
                 'File version for single context file could not be found',
-                404
+                ['http' => 404]
             );
         }
 

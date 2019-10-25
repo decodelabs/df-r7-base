@@ -36,7 +36,7 @@ class File extends Base implements link\http\IFileResponse
         $file = Atlas::$fs->file($file);
 
         if ($checkPath && !$file->exists()) {
-            throw Glitch::ERuntime('Static file could not be found', 404);
+            throw Glitch::ENotFound('Static file could not be found');
         }
 
         $this->_file = $file;
