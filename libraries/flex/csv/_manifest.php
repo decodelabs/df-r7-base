@@ -9,19 +9,21 @@ use df;
 use df\core;
 use df\flex;
 
+use DecodeLabs\Atlas\File;
+
 interface IReader extends core\IArrayProvider, \Iterator
 {
-    public function getChannel();
-    public function setDelimiter($delimiter);
-    public function getDelimiter();
-    public function setEnclosure($enclosure);
-    public function getEnclosure();
+    public function getFile(): File;
+    public function setDelimiter(string $delimiter): IReader;
+    public function getDelimiter(): string;
+    public function setEnclosure(string $enclosure): IReader;
+    public function getEnclosure(): string;
 
-    public function setFields(...$fields);
-    public function extractFields();
-    public function getFields();
+    public function setFields(string ...$fields): IReader;
+    public function extractFields(): IReader;
+    public function getFields(): ?array;
 
-    public function getRow();
+    public function getRow(): ?array;
 }
 
 interface IBuilder extends core\io\IChunkSender

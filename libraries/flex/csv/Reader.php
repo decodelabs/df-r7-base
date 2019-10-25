@@ -10,8 +10,10 @@ use df\core;
 use df\flex;
 
 use DecodeLabs\Glitch;
+
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Mode;
+use DecodeLabs\Atlas\File;
 
 class Reader implements IReader
 {
@@ -23,7 +25,7 @@ class Reader implements IReader
     const MODE_ENCLOSURE = 2;
     const MODE_CELL_AFTER_ENCLOSURE = 3;
 
-    protected $_channel;
+    protected $_file;
     protected $_delimiter = ',';
     protected $_enclosure = '"';
     protected $_fields = null;
@@ -32,60 +34,55 @@ class Reader implements IReader
     protected $_buffer;
     protected $_rewindSeek = 0;
 
-    public static function openFile($path)
+    public static function openFile($path): IReader
     {
         ini_set('auto_detect_line_endings', true);
-        return new self((new core\fs\File($path, Mode::READ_ONLY))->setContentType('text/csv'));
+        return new self(Atlas::$fs->file($path, Mode::READ_ONLY));
     }
 
-    public static function openString($string)
+    public static function openString(string $string): IReader
     {
-        return new self(new core\fs\MemoryFile($string, 'text/csv', Mode::READ_ONLY));
+        return new self(Atlas::$fs->createMemoryFile($string));
     }
 
-    public function __construct(core\io\IChannel $channel)
+    public function __construct(File $channel)
     {
-        $this->_channel = $channel;
-
-        if ($this->_channel instanceof core\fs\IFile) {
-            $this->_channel->seek(0);
-        }
+        $this->_file = $channel;
+        $this->_file->setPosition(0);
     }
 
-    public function getChannel()
+    public function getFile(): File
     {
-        return $this->_channel;
+        return $this->_file;
     }
 
     // Chars
-    public function setDelimiter($delimiter)
+    public function setDelimiter(string $delimiter): IReader
     {
-        $this->_delimiter = (string)$delimiter;
+        $this->_delimiter = $delimiter;
         return $this;
     }
 
-    public function getDelimiter()
+    public function getDelimiter(): string
     {
         return $this->_delimiter;
     }
 
-    public function setEnclosure($enclosure)
+    public function setEnclosure(string $enclosure): IReader
     {
-        $this->_enclosure = (string)$enclosure;
+        $this->_enclosure = $enclosure;
         return $this;
     }
 
-    public function getEnclosure()
+    public function getEnclosure(): string
     {
         return $this->_enclosure;
     }
 
 
     // Fields
-    public function setFields(...$fields)
+    public function setFields(string ...$fields): IReader
     {
-        $fields = core\collection\Util::flatten($fields, true, true);
-
         if (empty($fields)) {
             $fields = null;
         }
@@ -94,7 +91,7 @@ class Reader implements IReader
         return $this;
     }
 
-    public function extractFields()
+    public function extractFields(): IReader
     {
         if ($this->_fields !== null) {
             throw Glitch::ERuntime(
@@ -102,22 +99,22 @@ class Reader implements IReader
             );
         }
 
-        $this->setFields(array_values($this->getRow()));
+        $this->setFields(...$this->getRow());
         $this->_currentRow = null;
         $this->_rowCount = 0;
-        $this->_rewindSeek = $this->_channel->tell() - strlen($this->_buffer);
+        $this->_rewindSeek = $this->_file->getPosition() - strlen($this->_buffer);
         $this->_buffer = null;
 
         return $this;
     }
 
-    public function getFields()
+    public function getFields(): ?array
     {
         return $this->_fields;
     }
 
     // Access
-    public function getRow()
+    public function getRow(): ?array
     {
         if ($this->_currentRow === null) {
             $this->_readRow();
@@ -148,7 +145,7 @@ class Reader implements IReader
             $isEof = !$this->_fillBuffer();
             $char = $this->_extract();
 
-            if ($char === null || $char === false || $char === '') {
+            if ($char === null || $char === '') {
                 break;
             }
 
@@ -225,25 +222,25 @@ class Reader implements IReader
         return $this->_currentRow;
     }
 
-    protected function _peek($length=1)
+    protected function _peek(int $length=1): ?string
     {
         return substr($this->_buffer, 0, $length);
     }
 
-    protected function _extract($length=1)
+    protected function _extract(int $length=1): ?string
     {
         $output = substr($this->_buffer, 0, $length);
         $this->_buffer = substr($this->_buffer, $length);
         return $output;
     }
 
-    protected function _fillBuffer()
+    protected function _fillBuffer(): bool
     {
         if (strlen($this->_buffer) > self::BUFFER_THRESHOLD) {
             return true;
         }
 
-        if ($this->_channel->eof()) {
+        if ($this->_file->isAtEnd()) {
             if (strlen($this->_buffer) && substr($this->_buffer, -1) != "\n") {
                 $this->_buffer .= "\n";
             }
@@ -251,11 +248,11 @@ class Reader implements IReader
             return false;
         }
 
-        $this->_buffer .= $this->_channel->readChunk(self::BUFFER_READ_SIZE);
-        return $this->_buffer;
+        $this->_buffer .= $this->_file->read(self::BUFFER_READ_SIZE);
+        return !empty($this->_buffer);
     }
 
-    protected function _writeCell(&$cell)
+    protected function _writeCell(?string &$cell): void
     {
         $key = count($this->_currentRow);
 
@@ -270,7 +267,7 @@ class Reader implements IReader
     // Iterator
     public function rewind()
     {
-        $this->_channel->seek($this->_rewindSeek);
+        $this->_file->setPosition($this->_rewindSeek);
         $this->_rowCount = 0;
         return $this;
     }
@@ -292,6 +289,6 @@ class Reader implements IReader
 
     public function valid()
     {
-        return !$this->_channel->eof() || strlen($this->_buffer) || $this->_currentRow !== null;
+        return !$this->_file->isAtEnd() || strlen($this->_buffer) || $this->_currentRow !== null;
     }
 }
