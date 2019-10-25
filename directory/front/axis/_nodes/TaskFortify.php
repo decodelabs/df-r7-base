@@ -11,38 +11,40 @@ use df\apex;
 use df\arch;
 use df\axis;
 
-class TaskFortify extends arch\node\Task {
-
+class TaskFortify extends arch\node\Task
+{
     const SCHEDULE = '0 2 * * *';
     const SCHEDULE_AUTOMATIC = true;
 
-    public function extractCliArguments(core\cli\ICommand $command) {
+    public function extractCliArguments(core\cli\ICommand $command)
+    {
         $args = [];
 
-        foreach($command->getArguments() as $arg) {
-            if(!$arg->isOption()) {
+        foreach ($command->getArguments() as $arg) {
+            if (!$arg->isOption()) {
                 $args[] = (string)$arg;
             }
         }
 
-        if(isset($args[0])) {
+        if (isset($args[0])) {
             $this->request->query->unit = $args[0];
 
-            if(isset($args[1])) {
+            if (isset($args[1])) {
                 $this->request->query->fortify = $args[1];
             }
         }
     }
 
-    public function execute() {
-        if(isset($this->request['unit'])) {
+    public function execute()
+    {
+        if (isset($this->request['unit'])) {
             $this->_runTasks($this->data->getUnit($this->request['unit']));
         } else {
             $probe = new axis\introspector\Probe();
             $units = $probe->probeStorageUnits();
 
-            foreach($units as $inspector) {
-                if($inspector->isVirtual()) {
+            foreach ($units as $inspector) {
+                if ($inspector->isVirtual()) {
                     continue;
                 }
 
@@ -53,8 +55,9 @@ class TaskFortify extends arch\node\Task {
     }
 
 
-    protected function _runTasks(axis\IUnit $unit) {
-        if(isset($this->request['fortify'])
+    protected function _runTasks(axis\IUnit $unit)
+    {
+        if (isset($this->request['fortify'])
         && $unit->getUnitId() == $this->request['unit']) {
             axis\fortify\Base::factory(
                 $unit, $this->request['fortify']
@@ -64,7 +67,7 @@ class TaskFortify extends arch\node\Task {
 
         $tasks = axis\fortify\Base::loadAll($unit);
 
-        foreach($tasks as $name => $task) {
+        foreach ($tasks as $name => $task) {
             $this->io->write($unit->getUnitId().'/'.$name.': ');
             $task->dispatch($this->io);
             $this->io->writeLine();
