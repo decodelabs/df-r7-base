@@ -25,7 +25,7 @@ echo $this->html->flashMessage($this->_(
 ), 'warning');
 ?>
 
-<code style="display: block; margin-bottom: 2em; border:2px solid #DDD; padding:10px; width:auto; height:400px; overflow:auto; background:#FAFAFA; border-radius: 0.7em;" id="divProgress"></code>
+<samp class="terminal-output" id="divProgress"></samp>
 
 <div style="display: block;">
 <?php
