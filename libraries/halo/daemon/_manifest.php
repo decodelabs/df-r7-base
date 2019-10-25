@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
 
-interface IDaemon extends halo\event\IDispatcherProvider, core\IContextAware
+interface IDaemon extends core\IContextAware
 {
     public function getName(): string;
     public function getPidFilePath();

@@ -12,11 +12,12 @@ use df\flex;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\EventLoop;
+use DecodeLabs\Atlas\EventLoop\Select as SelectLoop;
 use DecodeLabs\Systemic;
 
 abstract class Base implements IDaemon
 {
-    use halo\event\TDispatcherProvider;
     use core\TContextProxy;
 
     const REQUIRES_PRIVILEGED_PROCESS = false;
@@ -28,6 +29,7 @@ abstract class Base implements IDaemon
     public $terminal;
     public $process;
     public $io;
+    public $events;
 
     protected $_isRunning = false;
     protected $_isPaused = false;
@@ -194,7 +196,7 @@ abstract class Base implements IDaemon
 
     private function _runForked()
     {
-        $this->getEventDispatcher();
+        $this->events = Atlas::newEventLoop();
         $this->process->setTitle(df\Launchpad::$app->getName().' - '.$this->getName());
 
         $pidPath = $this->getPidFilePath();
@@ -231,7 +233,7 @@ abstract class Base implements IDaemon
         $this->_setup();
 
         $this->_setupDefaultEvents($this->events);
-        $pauseEvents = $this->_setupDefaultEvents(new halo\event\Select(), true);
+        $pauseEvents = $this->_setupDefaultEvents(Atlas::newEventLoop(), true);
 
         while (true) {
             if ($this->_isStopping) {
@@ -269,9 +271,9 @@ abstract class Base implements IDaemon
         }
     }
 
-    protected function _setupDefaultEvents(halo\event\IDispatcher $dispatcher, $pauseEvents=false)
+    protected function _setupDefaultEvents(EventLoop $events, $pauseEvents=false)
     {
-        $dispatcher
+        $events
             ->setCycleHandler(function () use ($pauseEvents) {
                 if (!$this->_isRunning
                 || ($pauseEvents && !$this->_isPaused)
@@ -300,7 +302,7 @@ abstract class Base implements IDaemon
             ->bindSignal('restart', ['SIGABRT'], [$this, 'restart'])
             ;
 
-        return $dispatcher;
+        return $events;
     }
 
     public function getPidFilePath()
