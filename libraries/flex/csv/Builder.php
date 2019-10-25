@@ -11,71 +11,73 @@ use df\flex;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\DataReceiver;
+use DecodeLabs\Atlas\DataSender;
 use DecodeLabs\Atlas\Mode;
 
 class Builder implements IBuilder
 {
     protected $_fields = null;
-    protected $_rows = null;
+    protected $_rows = [];
     protected $_writeFields = true;
     protected $_fieldsWritten = false;
 
     protected $_receiver;
     protected $_generator;
 
-    public static function openFile($path, $generator=null)
+    public static function openFile($path, ?callable $generator=null)
     {
         return (new self($generator))
-            ->setChunkReceiver(
-                (new core\fs\File($path, Mode::READ_WRITE_TRUNCATE))
-                    ->setContentType('text/csv')
+            ->setDataReceiver(
+                Atlas::$fs->file($path, Mode::READ_WRITE_TRUNCATE)
             );
     }
 
-    public static function openString($generator=null)
+    public static function openString(?callable $generator=null)
     {
         return (new self($generator))
-            ->setChunkReceiver(
-                new core\fs\MemoryFile(null, 'text/csv', Mode::READ_WRITE_TRUNCATE)
+            ->setDataReceiver(
+                Atlas::$fs->newMemoryFile()
             );
     }
 
-    public function __construct($generator=null)
+    public function __construct(?callable $generator=null)
     {
         $this->setGenerator($generator);
     }
 
-    public function setChunkReceiver(core\io\IChunkReceiver $receiver)
+    public function setDataReceiver(DataReceiver $receiver): DataSender
     {
         $this->_receiver = $receiver;
         return $this;
     }
 
-    public function getChunkReceiver()
+    public function getDataReceiver(): ?DataReceiver
     {
         return $this->_receiver;
     }
 
-    public function setGenerator($generator=null)
+    public function setGenerator(?callable $generator): IBuilder
     {
-        $this->_generator = core\lang\Callback::factory($generator);
+        $this->_generator = $generator;
         return $this;
     }
 
-    public function getGenerator()
+    public function getGenerator(): ?callable
     {
         return $this->_generator;
     }
 
-    public function build()
+    public function build(): DataReceiver
     {
-        return $this->sendChunks();
+        $this->sendData();
+        return $this->_receiver;
     }
 
-    public function sendChunks()
+    public function sendData(): void
     {
         if ($this->_generator) {
-            $this->_generator->invoke($this);
+            ($this->_generator)($this);
 
             if ($this->_writeFields && !$this->_fieldsWritten) {
                 $this->_writeRow($this->_fields);
@@ -97,12 +99,10 @@ class Builder implements IBuilder
                 'No data has been generated for CSV builder'
             );
         }
-
-        return $this->_receiver;
     }
 
 
-    public function setFields(array $fields)
+    public function setFields(array $fields): IBuilder
     {
         if (empty($fields)) {
             throw Glitch::ERuntime('CSV file must have at least one field');
@@ -112,7 +112,7 @@ class Builder implements IBuilder
         return $this;
     }
 
-    public function getFields()
+    public function getFields(): ?array
     {
         return $this->_fields;
     }
@@ -127,7 +127,7 @@ class Builder implements IBuilder
         return $this->_writeFields;
     }
 
-    public function addRow(array $row)
+    public function addRow(array $row): void
     {
         if (empty($this->_fields)) {
             $fields = [];
@@ -172,12 +172,12 @@ class Builder implements IBuilder
         }
     }
 
-    public function getRows()
+    public function getRows(): array
     {
         return $this->_rows;
     }
 
-    protected function _writeRow(array $row)
+    protected function _writeRow(array $row): void
     {
         if (!$this->_receiver) {
             throw Glitch::ERuntime(
@@ -185,10 +185,10 @@ class Builder implements IBuilder
             );
         }
 
-        $this->_receiver->writeChunk($this->_writeCsv($row));
+        $this->_receiver->write($this->_writeCsv($row));
     }
 
-    protected function _writeCsv($data=[], $delimiter=',', $enclosure='"')
+    protected function _writeCsv(array $data=[], string $delimiter=',', string $enclosure='"'): string
     {
         $str = '';
         $escape_char = '\\';

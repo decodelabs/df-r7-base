@@ -32,7 +32,7 @@ class HttpInvoke extends arch\node\Base
             $generator->writeBrowserKeepAlive();
 
             if (!$invoke) {
-                $generator->writeChunk('Task invoke token is no longer valid - please try again!');
+                $generator->write('Task invoke token is no longer valid - please try again!');
                 return;
             }
 

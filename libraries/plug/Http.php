@@ -309,7 +309,7 @@ class Http implements arch\IDirectoryHelper
 
 
     // Generator
-    public function generator($contentType, /*core\io\IChunkSender*/ $sender)
+    public function generator($contentType, $sender)
     {
         return new link\http\response\Generator($contentType, $sender);
     }

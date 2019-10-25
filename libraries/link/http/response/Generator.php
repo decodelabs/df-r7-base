@@ -10,9 +10,13 @@ use df\core;
 use df\link;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Atlas\DataReceiverTrait;
+use DecodeLabs\Atlas\DataSender;
 
 class Generator extends Base implements link\http\IGeneratorResponse
 {
+    use DataReceiverTrait;
+
     protected $_sender;
     protected $_channel;
     protected $_manualChunk = false;
@@ -22,11 +26,11 @@ class Generator extends Base implements link\http\IGeneratorResponse
         parent::__construct($headers);
         $this->_sender = $sender;
 
-        if ($this->_sender instanceof core\io\IChunkSender) {
-            $sender->setChunkReceiver($this);
+        if ($this->_sender instanceof DataSender) {
+            $this->_sender->setDataReceiver($this);
         } elseif (!is_callable($this->_sender)) {
             throw Glitch::ERuntime(
-                'Generator sender must either be a core\\io\\IChunkSender or callable'
+                'Generator sender must either be a Atlas\\DataSender or callable'
             );
         }
 
@@ -53,14 +57,14 @@ class Generator extends Base implements link\http\IGeneratorResponse
     {
         $this->_channel = $channel;
 
-        if ($this->_sender instanceof core\io\IChunkSender) {
-            $this->_sender->sendChunks();
+        if ($this->_sender instanceof DataSender) {
+            $this->_sender->sendData();
         } else {
             $gen = $this->_sender->__invoke($this);
 
             if ($gen instanceof \Generator) {
                 foreach ($gen as $chunk) {
-                    $this->writeChunk($chunk);
+                    $this->write($chunk);
                 }
             }
         }
@@ -79,23 +83,31 @@ class Generator extends Base implements link\http\IGeneratorResponse
         return $this->_channel;
     }
 
-    public function writeChunk($chunk, $length=null)
+    public function write(?string $data, int $length=null): int
     {
+        if ($data === null) {
+            return 0;
+        }
+
+        if ($length !== null) {
+            $data = substr($data, 0, $length);
+        }
+
         if ($this->_channel) {
             if ($this->_manualChunk) {
-                $this->_channel->write(dechex(strlen($chunk))."\r\n");
-                $this->_channel->write($chunk."\r\n");
+                $this->_channel->write(dechex(strlen($data))."\r\n");
+                $this->_channel->write($data."\r\n");
             } else {
-                $this->_channel->write($chunk);
+                $this->_channel->write($data);
             }
         }
 
-        return $this;
+        return strlen($data);
     }
 
     public function writeBrowserKeepAlive()
     {
-        return $this->writeChunk(str_repeat(' ', 1024));
+        return $this->write(str_repeat(' ', 1024));
     }
 
     public function getContent()

@@ -10,15 +10,8 @@ use df\core;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Systemic\Process\Launcher;
-
-interface IChunkSender
-{
-    public function setChunkReceiver(IChunkReceiver $reader);
-    public function getChunkReceiver();
-    public function sendChunks();
-}
-
 
 interface IReader
 {
@@ -326,6 +319,14 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject
     public function getChunkReceiver($id);
     public function getChunkReceivers();
     public function clearChunkReceivers();
+
+    public function setDataReceivers(array $receivers);
+    public function addDataReceivers(array $receivers);
+    public function addDataReceiver($id, DataReceiver $receiver);
+    public function hasDataReceiver($id);
+    public function getDataReceiver($id);
+    public function getDataReceivers();
+    public function clearDataReceivers();
 
     public function write($data);
     public function writeLine($line='');

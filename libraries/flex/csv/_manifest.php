@@ -10,6 +10,8 @@ use df\core;
 use df\flex;
 
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Atlas\DataReceiver;
+use DecodeLabs\Atlas\DataSender;
 
 interface IReader extends core\IArrayProvider, \Iterator
 {
@@ -26,17 +28,17 @@ interface IReader extends core\IArrayProvider, \Iterator
     public function getRow(): ?array;
 }
 
-interface IBuilder extends core\io\IChunkSender
+interface IBuilder extends DataSender
 {
-    public function setGenerator($generator=null);
-    public function getGenerator();
+    public function setGenerator(?callable $generator): IBuilder;
+    public function getGenerator(): ?callable;
 
     public function build();
 
-    public function setFields(array $fields);
-    public function getFields();
+    public function setFields(array $fields): IBuilder;
+    public function getFields(): ?array;
     public function shouldWriteFields(bool $flag=null);
 
-    public function addRow(array $row);
-    public function getRows();
+    public function addRow(array $row): void;
+    public function getRows(): array;
 }

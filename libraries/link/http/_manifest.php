@@ -13,6 +13,7 @@ use df\arch;
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\Channel;
 
 interface IUrl extends
@@ -255,7 +256,7 @@ interface IRedirectResponse extends IResponse
     public function isAlternativeContent(bool $flag=null);
 }
 
-interface IGeneratorResponse extends IResponse, core\io\IChunkReceiver
+interface IGeneratorResponse extends IResponse, DataReceiver
 {
     public function generate(core\io\IChannel $channel);
     public function shouldChunkManually(bool $flag=null);

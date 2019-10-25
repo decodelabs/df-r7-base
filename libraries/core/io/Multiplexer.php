@@ -12,8 +12,9 @@ use DecodeLabs\Systemic\Process\Launcher;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Broker;
+use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\Channel\Stream;
-use DecodeLabs\Atlas\Channel\ReceiverProxy;
+use DecodeLabs\Atlas\DataReceiver\Proxy;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Inspectable;
@@ -27,6 +28,7 @@ class Multiplexer implements IMultiplexer, Inspectable
     protected $_id;
     protected $_channels = [];
     protected $_chunkReceivers = [];
+    protected $_dataReceivers = [];
     protected $_newLine = true;
 
     public static function defaultFactory($id=null)
@@ -50,6 +52,8 @@ class Multiplexer implements IMultiplexer, Inspectable
                     $this->addChannel($ioNode);
                 } elseif ($ioNode instanceof IChunkReceiver) {
                     $this->addChunkReceiver($id, $ioNode);
+                } elseif ($ioNode instanceof DataReceiver) {
+                    $this->addDataReceiver($id, $ioNode);
                 }
             }
         }
@@ -201,6 +205,55 @@ class Multiplexer implements IMultiplexer, Inspectable
     }
 
 
+
+    // Data receivers
+    public function setDataReceivers(array $receivers)
+    {
+        $this->_dataReceivers = [];
+        return $this->addDataReceivers($receivers);
+    }
+
+    public function addDataReceivers(array $receivers)
+    {
+        foreach ($receivers as $id => $receiver) {
+            if ($receiver instanceof DataReceiver) {
+                $this->addDataReceiver($id, $receiver);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addDataReceiver($id, DataReceiver $receiver)
+    {
+        $this->_dataReceivers[$id] = $receiver;
+        return $this;
+    }
+
+    public function hasDataReceiver($id)
+    {
+        return isset($this->_dataReceivers[$id]);
+    }
+
+    public function getDataReceiver($id)
+    {
+        if (isset($this->_dataReceivers[$id])) {
+            return $this->_dataReceivers[$id];
+        }
+    }
+
+    public function getDataReceivers()
+    {
+        return $this->_dataReceivers;
+    }
+
+    public function clearDataReceivers()
+    {
+        $this->_dataReceivers = [];
+        return $this;
+    }
+
+
     // IO
     public function flush()
     {
@@ -238,6 +291,10 @@ class Multiplexer implements IMultiplexer, Inspectable
             $receiver->writeChunk($data);
         }
 
+        foreach ($this->_dataReceivers as $receiver) {
+            $receiver->write($data);
+        }
+
         return $this;
     }
 
@@ -249,6 +306,10 @@ class Multiplexer implements IMultiplexer, Inspectable
 
         foreach ($this->_chunkReceivers as $receiver) {
             $receiver->writeChunk($line."\r\n");
+        }
+
+        foreach ($this->_dataReceivers as $receiver) {
+            $receiver->writeLine($line);
         }
 
         $this->_newLine = true;
@@ -282,6 +343,10 @@ class Multiplexer implements IMultiplexer, Inspectable
             $receiver->writeChunk($error);
         }
 
+        foreach ($this->_dataReceivers as $receiver) {
+            $receiver->write($error);
+        }
+
         return $this;
     }
 
@@ -293,6 +358,10 @@ class Multiplexer implements IMultiplexer, Inspectable
 
         foreach ($this->_chunkReceivers as $receiver) {
             $receiver->writeChunk($line."\r\n");
+        }
+
+        foreach ($this->_dataReceivers as $receiver) {
+            $receiver->writeLine($line);
         }
 
         $this->_newLine = true;
@@ -345,32 +414,38 @@ class Multiplexer implements IMultiplexer, Inspectable
         foreach ($this->getChannels() as $channel) {
             if ($channel instanceof IMultiplexReaderChannel) {
                 $broker
-                    ->addInputChannel(Atlas::openCliInputStream())
-                    ->addOutputChannel(Atlas::openCliOutputStream())
-                    ->addErrorChannel(Atlas::openCliErrorStream());
+                    ->addInputProvider(Atlas::openCliInputStream())
+                    ->addOutputReceiver(Atlas::openCliOutputStream())
+                    ->addErrorReceiver(Atlas::openCliErrorStream());
             } elseif ($channel instanceof IStreamChannel) {
                 $stream = new Stream($channel->getStreamDescriptor());
-                $broker->addOutputChannel($stream);
-                $broker->addErrorChannel($stream);
+                $broker->addOutputReceiver($stream);
+                $broker->addErrorReceiver($stream);
             } else {
-                $receiver = new ReceiverProxy($channel, function ($channel, $data) {
+                $receiver = new Proxy($channel, function ($channel, $data) {
                     $channel->writeChunk($data);
                 });
 
                 $broker
-                    ->addOutputChannel($receiver)
-                    ->addErrorChannel($receiver);
+                    ->addOutputReceiver($receiver)
+                    ->addErrorReceiver($receiver);
             }
         }
 
         foreach ($this->getChunkReceivers() as $receiver) {
-            $channel = new ReceiverProxy($receiver, function ($receiver, $data) {
+            $channel = new Proxy($receiver, function ($receiver, $data) {
                 $receiver->writeChunk($data);
             });
 
             $broker
-                ->addOutputChannel($channel)
-                ->addErrorChannel($channel);
+                ->addOutputReceiver($channel)
+                ->addErrorReceiver($channel);
+        }
+
+        foreach ($this->getDataReceivers() as $receiver) {
+            $broker
+                ->addOutputReceiver($receiver)
+                ->addErrorReceiver($receiver);
         }
 
         $launcher->setIoBroker($broker);
