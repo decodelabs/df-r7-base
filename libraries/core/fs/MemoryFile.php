@@ -19,7 +19,7 @@ class MemoryFile implements IFile, core\io\IContainedStateChannel, Inspectable
 {
     use core\io\TReader;
     use core\io\TWriter;
-    use TFile;
+    use TNode;
 
     protected $_contentType = null;
     protected $_id;

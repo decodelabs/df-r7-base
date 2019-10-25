@@ -34,12 +34,12 @@ class Multiplexer implements IMultiplexer, Inspectable
     public static function defaultFactory($id=null)
     {
         if (isset($_SERVER['argv']) && $id != 'memory') {
-            $channel = new core\io\Std();
+            $channels = [new core\io\Std()];
         } else {
-            $channel = new core\fs\MemoryFile();
+            $channels = [];
         }
 
-        return new self([$channel], $id);
+        return new self($channels, $id);
     }
 
     public function __construct(array $ioSet=null, $id=null)

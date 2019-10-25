@@ -59,7 +59,7 @@ class Manager implements arch\node\ITaskManager
     public function launchQuietly($request)
     {
         if (df\Launchpad::$runner instanceof core\app\runner\Task) {
-            return $this->invoke($request, core\io\Multiplexer::defaultFactory('memory'));
+            return $this->invoke($request, new core\io\Multiplexer(null, 'memory'));
         } else {
             return $this->launchBackground($request);
         }

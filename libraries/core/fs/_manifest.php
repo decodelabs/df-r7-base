@@ -52,7 +52,6 @@ interface INode extends core\IStringProvider
     public function getOwner();
     public function getGroup();
 
-    public function copyTo($destination);
     public function renameTo($newName);
     public function moveTo($destination, $newName=null);
     public function unlink();
@@ -134,102 +133,4 @@ interface IFile extends INode, core\io\IChannel
     public function tell();
     public function flush();
     public function truncate($size=0);
-}
-
-
-trait TFile
-{
-    use TNode;
-
-    public function copyTo($path)
-    {
-        $target = File::factory($path);
-        $target->open(Mode::WRITE_TRUNCATE);
-        $closeAfter = false;
-
-        if (!$this->isOpen()) {
-            $closeAfter = true;
-            $this->open(Mode::READ_ONLY);
-        }
-
-        while (!$this->eof()) {
-            $target->write($this->readChunk(8192));
-        }
-
-        if ($closeAfter) {
-            $this->close();
-        }
-
-        $target->close();
-        return $target;
-    }
-}
-
-
-
-interface IDirectory extends INode
-{
-    public function ensureExists($perms=null);
-    public function isEmpty(): bool;
-
-    public function setPermissions($mode, $recursive=false);
-    public function setOwner($owner, $recursive=false);
-    public function setGroup($group, $recursive=false);
-
-
-    public function scan($filter=null);
-    public function scanNames($filter=null);
-    public function countContents($filter=null);
-    public function listContents($filter=null);
-    public function listNames($filter=null);
-
-    public function scanFiles($filter=null);
-    public function scanFileNames($filter=null);
-    public function countFiles($filter=null);
-    public function listFiles($filter=null);
-    public function listFileNames($filter=null);
-
-    public function scanDirs($filter=null);
-    public function scanDirNames($filter=null);
-    public function countDirs($filter=null);
-    public function listDirs($filter=null);
-    public function listDirNames($filter=null);
-
-    public function scanRecursive($filter=null);
-    public function scanNamesRecursive($filter=null);
-    public function countContentsRecursive($filter=null);
-    public function listContentsRecursive($filter=null);
-    public function listNamesRecursive($filter=null);
-
-    public function scanFilesRecursive($filter=null);
-    public function scanFileNamesRecursive($filter=null);
-    public function countFilesRecursive($filter=null);
-    public function listFilesRecursive($filter=null);
-    public function listFileNamesRecursive($filter=null);
-
-    public function scanDirsRecursive($filter=null);
-    public function scanDirNamesRecursive($filter=null);
-    public function countDirsRecursive($filter=null);
-    public function listDirsRecursive($filter=null);
-    public function listDirNamesRecursive($filter=null);
-
-
-    public function getParent();
-    public function getChild($name);
-    public function getExistingChild($name);
-    public function deleteChild($name);
-    public function createDir($path);
-    public function hasDir($name);
-    public function getDir($name);
-    public function getExistingDir($name);
-    public function deleteDir($name);
-    public function createFile($name, $content);
-    public function newFile($name, $mode=Mode::READ_WRITE_NEW);
-    public function hasFile($name);
-    public function getFile($name);
-    public function getExistingFile($name);
-    public function deleteFile($name);
-
-    public function emptyOut();
-    public function mergeInto($destination);
 }
