@@ -71,6 +71,10 @@ class Model extends axis\Model
         }
 
 
+        if ($message !== null) {
+            $message = utf8_encode($message);
+        }
+
 
         // Insert log
         if (!$isBot) {

@@ -58,7 +58,7 @@ class Base implements INode, Inspectable
             }
 
             throw Glitch::ENotFound([
-                'message' => 'No node could be found for '.$context->location->toString(),
+                'message' => 'No node could be found for '.utf8_encode($context->location->toString()),
                 'http' => 404
             ]);
         }
@@ -73,6 +73,10 @@ class Base implements INode, Inspectable
         $parts[] = '_nodes';
         $parts[] = $runMode.ucfirst($request->getNode());
         $end = implode('\\', $parts);
+
+        if (false !== strpos($end, '\\\\') || substr($end, 0, 1) == '\\') {
+            return null;
+        }
 
         $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
         $isDefault = false;
