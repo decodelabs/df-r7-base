@@ -165,5 +165,7 @@ class Url implements IGenericUrl, Inspectable
     public function glitchInspect(Entity $entity, Inspector $inspector): void
     {
         $entity->setText($this->toString());
+        $inspector->inspectClassMembers($this, new \ReflectionClass($this), $entity);
+        $entity->setSectionVisible('properties', false);
     }
 }
