@@ -20,6 +20,10 @@ class Controller implements IController
         'hooks', 'models', 'themes', 'tests', 'vendor'
     ];
 
+    const PACKAGE_IGNORE = [
+        'vendor'
+    ];
+
     const APP_FILES = [
         'composer.json', 'composer.lock'
     ];
@@ -116,6 +120,10 @@ class Controller implements IController
 
             foreach ($packageDir->scanDirs() as $name => $dir) {
                 if ($name == '.git' || $name == 'libraries') {
+                    continue;
+                }
+
+                if (in_array($name, self::PACKAGE_IGNORE)) {
                     continue;
                 }
 
