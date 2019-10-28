@@ -279,13 +279,15 @@ PHP;
             case 'Http':
             case 'Daemon':
             case 'Task':
-                break;
+                return $runMode;
 
             default:
-                $runMode = 'Task';
-        }
+                if (in_array(\PHP_SAPI, ['cli', 'phpdbg'])) {
+                    return 'Task';
+                }
 
-        return $runMode;
+                throw Glitch::EUnexpectedValue('Unexpected run mode: '.$runMode.' ('.\PHP_SAPI.')');
+        }
     }
 
 
