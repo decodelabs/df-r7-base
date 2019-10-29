@@ -52,7 +52,13 @@ class TaskLaunchQueued extends arch\node\Task
         }
 
         $this->_timer = new core\time\Timer();
-        $this->task->launch($this->_entry['request'], Cli::getSession());
+        $this->task->launch(
+            $this->_entry['request'],
+            Cli::getSession(),
+            null,
+            false,
+            false
+        );
     }
 
     protected function _afterDispatch($output)

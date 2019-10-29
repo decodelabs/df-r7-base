@@ -60,8 +60,8 @@ interface IBuildTaskNode extends ITaskNode
 
 interface ITaskManager extends core\IManager
 {
-    public function launch($request, ?Session $session=null, $user=null, bool $dfSource=false): ProcessResult;
-    public function launchBackground($request, $user=null, bool $dfSource=false);
+    public function launch($request, ?Session $session=null, $user=null, bool $dfSource=false, bool $decoratable=null): ProcessResult;
+    public function launchBackground($request, $user=null, bool $dfSource=false, bool $decoratable=null);
     public function launchQuietly($request): void;
     public function invoke($request): void;
     public function initiateStream($request): link\http\IResponse;

@@ -24,6 +24,12 @@ class TaskSpool extends halo\daemon\Base
 
     public function spool()
     {
-        $this->task->launch('tasks/spool', Cli::getSession());
+        $this->task->launch(
+            'tasks/spool',
+            Cli::getSession(),
+            null,
+            false,
+            false
+        );
     }
 }

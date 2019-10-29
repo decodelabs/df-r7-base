@@ -24,7 +24,7 @@ class Manager implements arch\node\ITaskManager
 
     const REGISTRY_PREFIX = 'manager://task';
 
-    public function launch($request, ?Session $session=null, $user=null, bool $dfSource=false): ProcessResult
+    public function launch($request, ?Session $session=null, $user=null, bool $dfSource=false, bool $decoratable=null): ProcessResult
     {
         $request = arch\Request::factory($request);
         $path = df\Launchpad::$app->path.'/entry/';
@@ -35,10 +35,12 @@ class Manager implements arch\node\ITaskManager
             $args[] = '--df-source';
         }
 
-        $decoratable = true;
+        if ($decoratable === null) {
+            $decoratable = true;
 
-        if ($user !== null && $user !== Systemic::$process->getCurrent()->getOwnerName()) {
-            $decoratable = false;
+            if ($user !== null && $user !== Systemic::$process->getCurrent()->getOwnerName()) {
+                $decoratable = false;
+            }
         }
 
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
@@ -49,7 +51,7 @@ class Manager implements arch\node\ITaskManager
             ->launch();
     }
 
-    public function launchBackground($request, $user=null, bool $dfSource=false)
+    public function launchBackground($request, $user=null, bool $dfSource=false, bool $decoratable=null)
     {
         $request = arch\Request::factory($request);
         $path = df\Launchpad::$app->path.'/entry/';
@@ -60,10 +62,12 @@ class Manager implements arch\node\ITaskManager
             $args[] = '--df-source';
         }
 
-        $decoratable = true;
+        if ($decoratable === null) {
+            $decoratable = true;
 
-        if ($user !== null && $user !== Systemic::$process->getCurrent()->getOwnerName()) {
-            $decoratable = false;
+            if ($user !== null && $user !== Systemic::$process->getCurrent()->getOwnerName()) {
+                $decoratable = false;
+            }
         }
 
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)

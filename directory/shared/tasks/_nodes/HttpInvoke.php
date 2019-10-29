@@ -44,7 +44,10 @@ class HttpInvoke extends arch\node\Base
                 Cli::newSession(
                     Cli::newRequest([]),
                     Atlas::newBroker()->addOutputReceiver($generator)
-                )
+                ),
+                null,
+                false,
+                false
             );
         });
     }

@@ -58,9 +58,13 @@ class Manager implements IManager
             $taskManager = arch\node\task\Manager::getInstance();
 
             if ($spoolOnly) {
-                $taskManager->launchBackground('tasks/spool');
+                $taskManager->launchBackground(
+                    'tasks/spool', null, false, false
+                );
             } else {
-                $taskManager->launchBackground('daemons/ensure-activity');
+                $taskManager->launchBackground(
+                    'daemons/ensure-activity', null, false, false
+                );
             }
         }
 
