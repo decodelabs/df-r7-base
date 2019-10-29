@@ -35,6 +35,7 @@ class TaskBuild extends arch\node\Task
     public function execute()
     {
         $this->ensureDfSource();
+        Cli::newLine();
 
 
         // Setup controller
@@ -56,7 +57,7 @@ class TaskBuild extends arch\node\Task
         }
 
         // Creating build
-        Cli::{'yellow'}('Using build id: ');
+        Cli::inlineInfo('Using build id: ');
         Cli::{'.brightMagenta'}($buildId);
         Cli::newLine();
 
@@ -110,5 +111,6 @@ class TaskBuild extends arch\node\Task
 
         // Task spool
         $this->runChild('tasks/spool');
+        Cli::newLine();
     }
 }

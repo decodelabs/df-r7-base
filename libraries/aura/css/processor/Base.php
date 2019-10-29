@@ -10,6 +10,7 @@ use df\core;
 use df\aura;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Terminus\Session;
 
 abstract class Base implements aura\css\IProcessor
 {
@@ -44,5 +45,9 @@ abstract class Base implements aura\css\IProcessor
     public function getSettings(): core\collection\ITree
     {
         return $this->settings;
+    }
+
+    public function setup(?Session $session=null)
+    {
     }
 }

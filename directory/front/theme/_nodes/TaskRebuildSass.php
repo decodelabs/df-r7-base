@@ -35,6 +35,14 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         $buildId = $this->request['buildId'];
         $done = [];
 
+        // Prepare processors
+        foreach (aura\css\SassBridge::DEFAULT_PROCESSOR_OPTIONS as $name => $settings) {
+            $processor = aura\css\processor\Base::factory($name, $settings);
+            $processor->setup(Cli::getSession());
+        }
+
+
+        // Build sass
         foreach ($this->_dir->scanFiles(function ($fileName) {
             return core\uri\Path::extractExtension($fileName) == 'json';
         }) as $fileName => $file) {
@@ -64,7 +72,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
             Cli::{'brightMagenta'}($shortPath.' ');
 
             $bridge = new aura\css\SassBridge($this->context, $sassPath, $activePath);
-            $bridge->setMultiplexer($this->io);
+            $bridge->setCliSession(Cli::getSession());
             $bridge->compile();
 
             Cli::success('done');

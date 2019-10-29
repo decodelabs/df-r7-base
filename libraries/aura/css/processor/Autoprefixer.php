@@ -12,16 +12,17 @@ use df\spur;
 use df\flex;
 
 use DecodeLabs\Atlas;
+use DecodeLabs\Terminus\Session;
 
 class Autoprefixer extends Base
 {
-    public function process($cssPath, core\io\IMultiplexer $multiplexer=null)
+    public function setup(?Session $session=null)
     {
         $bridge = new spur\node\Bridge();
 
         if (!$bridge->find('autoprefixer')) {
             try {
-                $bridge->npmInstall('autoprefixer', $multiplexer);
+                $bridge->npmInstall('autoprefixer', $session);
             } catch (\Throwable $e) {
                 core\log\Manager::getInstance()->logException($e);
                 return;
@@ -31,6 +32,11 @@ class Autoprefixer extends Base
         if (!$bridge->find('postcss')) {
             $bridge->npmInstall('postcss');
         }
+    }
+
+    public function process($cssPath, ?Session $session=null)
+    {
+        $bridge = new spur\node\Bridge();
 
         if (!isset($this->settings->cascade)) {
             $this->settings->cascade = true;

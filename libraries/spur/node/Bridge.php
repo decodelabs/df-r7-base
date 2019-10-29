@@ -14,6 +14,7 @@ use df\halo;
 use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
 use DecodeLabs\Glitch;
+use DecodeLabs\Terminus\Session;
 
 class Bridge implements IBridge
 {
@@ -29,7 +30,7 @@ class Bridge implements IBridge
         return is_file($this->_nodePath.'/node_modules/'.$name.'/package.json');
     }
 
-    public function npmInstall(string $name, core\io\IMultiplexer $multiplexer=null)
+    public function npmInstall(string $name, ?Session $session=null)
     {
         Atlas::$fs->createDir($this->_nodePath);
 
@@ -40,8 +41,8 @@ class Bridge implements IBridge
             ])
             ->setWorkingDirectory($this->_nodePath)
             //->setDecoratable(false)
-            ->thenIf($multiplexer, function ($launcher) use ($multiplexer) {
-                $multiplexer->exportToAtlasLauncher($launcher);
+            ->thenIf($session, function ($launcher) use ($session) {
+                $launcher->setIoBroker($session->getBroker());
             })
             ->launch();
 
