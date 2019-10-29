@@ -168,7 +168,6 @@ class Daemon extends Base
             ])
             ->setIoBroker(Cli::getSession()->getBroker())
             ->setDecoratable(false)
-            ->setIoBroker(Atlas::newCliBroker())
             ->launch();
 
         $remote = halo\daemon\Remote::factory($daemon);
