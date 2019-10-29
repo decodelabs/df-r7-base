@@ -116,7 +116,7 @@ class Remote implements IRemote
             }
         }
 
-        $this->_process = Systemic::$process->fromPid($pid);
+        $this->_process = Systemic::$process->fromPid((int)$pid);
 
         if (!$this->_process->isAlive()) {
             $this->_process = null;
