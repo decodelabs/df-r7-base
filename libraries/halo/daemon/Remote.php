@@ -185,7 +185,6 @@ class Remote implements IRemote
             ->thenIf($this->_session, function ($launcher) {
                 $launcher->setIoBroker($this->_session->getBroker());
             })
-            ->setDecoratable(false)
             ->launch();
     }
 }
