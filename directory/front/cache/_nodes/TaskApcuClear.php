@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\link;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskApcuClear extends arch\node\Task
 {
     use TApcuClear;
@@ -40,12 +42,12 @@ class TaskApcuClear extends arch\node\Task
 
         if ($isCli && extension_loaded('apcu') && ini_get('apc.enable_cli')) {
             $count = $this->_clearApcu();
-            $this->io->writeLine('Cleared '.$count.' CLI APCU entries');
+            Cli::info('Cleared '.$count.' CLI APCU entries');
         }
 
         if ($isHttp) {
             $router = core\app\runner\http\Router::getInstance();
-            $url = $router->getRootUrl();
+            $url = clone $router->getRootUrl();
             $url->path->push('/cache/apcu-clear.json');
             $url->query->import($this->request->query);
 
@@ -58,7 +60,7 @@ class TaskApcuClear extends arch\node\Task
                 );
             }
 
-            //$this->io->writeLine($url);
+            //Cli::info($url);
 
             $http = new link\http\Client();
 
@@ -72,13 +74,13 @@ class TaskApcuClear extends arch\node\Task
                 $type = $url->isSecure() ? 'HTTPS' : 'HTTP';
 
                 if ($cleared === null) {
-                    $this->io->writeLine('APCU unable to pass IP check via '.@$json['addr']);
+                    Cli::alert('APCU unable to pass IP check via '.@$json['addr']);
                 } else {
-                    $this->io->writeLine('Cleared '.$cleared.' '.$type.' APCU entries via '.@$json['addr']);
+                    Cli::notice('Cleared '.$cleared.' '.$type.' APCU entries via '.@$json['addr']);
                 }
             } else {
-                $this->io->writeErrorLine('Http call failed :(');
-                //$this->io->writeErrorLine($response->getContent());
+                Cli::error('Http call failed :(');
+                Cli::error($response->getContent());
             }
         }
     }

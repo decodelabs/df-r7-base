@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\axis;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskInit extends arch\node\Task
 {
     public function extractCliArguments(core\cli\ICommand $command)
@@ -46,25 +48,26 @@ class TaskInit extends arch\node\Task
 
     protected function _apply()
     {
-        $this->io->write('Looking up config classes in:');
+        Cli::{'yellow'}('Looking up configs:');
         $libList = df\Launchpad::$loader->lookupLibraryList();
         $classes = [];
 
         foreach ($libList as $libName) {
-            $this->io->write(' '.$libName);
+            Cli::{'brightMagenta'}(' '.$libName);
             $classes = array_merge($classes, $this->data->config->findIn($libName));
         }
 
         $classCount = count($classes);
-        $this->io->writeLine();
-        $this->io->write('Found '.$classCount);
+        Cli::newLine();
+
+        Cli::inlineSuccess('Found '.$classCount);
 
         if (!$classCount) {
-            $this->io->writeLine();
+            Cli::newLine();
             return;
         }
 
-        $this->io->write(':');
+        Cli::write(':');
 
         foreach ($classes as $class => $isUnit) {
             if ($isUnit) {
@@ -76,9 +79,9 @@ class TaskInit extends arch\node\Task
                 continue;
             }
 
-            $this->io->write(' '.ucfirst($config->getConfigId()));
+            Cli::{'green'}(' '.ucfirst($config->getConfigId()));
         }
 
-        $this->io->writeLine();
+        Cli::newLine();
     }
 }

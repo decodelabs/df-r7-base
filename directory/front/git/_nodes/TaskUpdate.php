@@ -12,6 +12,8 @@ use df\halo;
 use df\arch;
 use df\spur;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskUpdate extends arch\node\Task
 {
     public function extractCliArguments(core\cli\ICommand $command)
@@ -34,22 +36,24 @@ class TaskUpdate extends arch\node\Task
         }
 
         if (empty($names)) {
-            $this->runChild('git/update-all');
+            $this->runChild('git/update-all', false);
             return;
         }
 
         foreach ($names as $name) {
-            $this->io->writeLine('git pull "'.$name.'"');
+            Cli::{'yellow'}($name.': ');
             $model = $this->data->getModel('package');
 
             try {
                 if (!$result = $model->pull($name, $this->io)) {
-                    $this->io->writeLine('!! Package "'.$name.'" repo could not be found !!');
+                    Cli::error('repo could not be found');
                 }
 
-                $this->io->writeLine();
+                Cli::newLine();
             } catch (spur\vcs\git\EGlitch $e) {
-                $this->io->writeErrorLine($e->getMessage());
+                Cli::newErrorLine();
+                Cli::writeError($e->getMessage());
+                Cli::newErrorLine();
                 return;
             }
         }
@@ -57,9 +61,9 @@ class TaskUpdate extends arch\node\Task
         $noBuild = isset($this->request['no-build']);
 
         if ($this->app->isDevelopment() && !$noBuild) {
-            $this->runChild('app/build?dev');
+            $this->runChild('app/build?dev', false);
         } elseif ($this->app->isTesting() && !$noBuild) {
-            $this->runChild('app/build');
+            $this->runChild('app/build', false);
         }
     }
 }

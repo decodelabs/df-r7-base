@@ -10,10 +10,13 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskFixActiveVersions extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
-    public function execute() {
-        $this->io->write('Scanning files...');
+class TaskFixActiveVersions extends arch\node\Task
+{
+    public function execute()
+    {
+        Cli::{'yellow'}('Scanning files');
 
         $query = $this->data->media->file->select('id', 'fileName')
             ->where('activeVersion', '=', null)
@@ -23,17 +26,18 @@ class TaskFixActiveVersions extends arch\node\Task {
                 ->asList('versions', 'id');
 
 
-        if(!$query->count()) {
-            $this->io->writeLine(' none found');
+        if (!$query->count()) {
+            Cli::{'yellow'}(': ');
+            Cli::success('none found');
         } else {
-            $this->io->writeLine();
+            Cli::newLine();
         }
 
-        foreach($query as $file) {
-            $this->io->write($file['id'].' - '.$file['fileName']);
+        foreach ($query as $file) {
+            Cli::{'brightMagenta'}($file['id'].' - '.$file['fileName']);
 
-            if(!isset($file['versions'][0])) {
-                $this->io->writeLine(' : SKIPPED');
+            if (!isset($file['versions'][0])) {
+                Cli::{'.brightYellow'}(' : SKIPPED');
                 continue;
             }
 
@@ -43,7 +47,7 @@ class TaskFixActiveVersions extends arch\node\Task {
                 ->where('id', '=', $file['id'])
                 ->execute();
 
-            $this->io->writeLine();
+            Cli::newLine();
         }
     }
 }

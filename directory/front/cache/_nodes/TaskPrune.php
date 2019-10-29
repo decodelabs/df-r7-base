@@ -10,6 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskPrune extends arch\node\Task
 {
     const SCHEDULE = '0 23 */2 * *';
@@ -17,19 +19,17 @@ class TaskPrune extends arch\node\Task
 
     public function execute()
     {
-        $this->io->writeLine('Pruning cache backends...');
-
         $config = core\cache\Config::getInstance();
 
         foreach (df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
-            $this->io->write($name.'... ');
+            Cli::{'yellow'}($name.': ');
             $options = $config->getBackendOptions($name);
             $count = (int)$class::prune($options);
-            $this->io->writeLine($count.' stale items removed');
+            Cli::success($count.' removed');
         }
 
-        $this->io->write('FileStore... ');
+        Cli::{'yellow'}('FileStore: ');
         $count = core\cache\FileStore::prune('1 week');
-        $this->io->writeLine($count.' stale items removed');
+        Cli::success($count.' removed');
     }
 }

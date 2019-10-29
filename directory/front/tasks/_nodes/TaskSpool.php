@@ -10,6 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskSpool extends arch\node\Task
 {
     const SELF_REQUEST = 'tasks/spool';
@@ -51,14 +53,14 @@ class TaskSpool extends arch\node\Task
             ->count();
 
         if ($justRun) {
-            $this->io->writeErrorLine('The spool task has already run within the previous cooloff period - please wait a little while before trying again');
+            Cli::info('The spool task has already recently - please try again later');
             $this->_log->delete();
             return;
         }
 
 
         // Clear out old logs
-        $this->io->write('Clearing old logs...');
+        Cli::{'yellow'}('Clearing old logs: ');
 
         $count = $this->data->task->log->delete()
             ->beginWhereClause()
@@ -78,7 +80,7 @@ class TaskSpool extends arch\node\Task
                 ->endClause()
             ->execute();
 
-        $this->io->writeLine(' deleted '.$count.' entries');
+        Cli::success('deleted '.$count.' entries');
 
 
         // Clear broken queue items
@@ -88,11 +90,11 @@ class TaskSpool extends arch\node\Task
 
 
         // Queue scheduled tasks
-        $this->runChild('tasks/queue-scheduled');
+        $this->runChild('tasks/queue-scheduled', false);
 
 
         // Select and lock queued tasks
-        $this->io->write('Selecting queued tasks...');
+        Cli::{'yellow'}('Selecting queued tasks: ');
 
         $count = $this->data->task->queue->update([
                 'lockDate' => 'now',
@@ -105,11 +107,11 @@ class TaskSpool extends arch\node\Task
             ->execute();
 
         if (!$count) {
-            $this->io->writeLine(' no tasks to launch right now!');
+            Cli::success('no tasks to launch right now!');
             return;
         }
 
-        $this->io->writeLine(' locked '.$count.' entries');
+        Cli::success('locked '.$count.' entries');
 
 
         // Launch tasks
@@ -119,11 +121,11 @@ class TaskSpool extends arch\node\Task
             ->toList('id', 'request');
 
         foreach ($taskIds as $taskId => $request) {
-            $this->io->writeLine();
-            $this->io->writeLine('# '.$request.' : '.$taskId);
+            Cli::newLine();
+            Cli::comment($request.' : '.$taskId);
 
             $this->io->removeChannel($this->_channel);
-            $this->runChild('tasks/launch-queued?id='.$taskId);
+            $this->runChild('tasks/launch-queued?id='.$taskId, false);
             $this->io->addChannel($this->_channel);
         }
 

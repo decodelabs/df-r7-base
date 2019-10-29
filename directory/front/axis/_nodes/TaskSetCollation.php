@@ -11,83 +11,84 @@ use df\apex;
 use df\arch;
 use df\opal;
 
-class TaskSetCollation extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
+class TaskSetCollation extends arch\node\Task
+{
     const PREFIXES = ['legacy', 'r5', 'r7'];
     const BLACKLIST = ['legacy_duk_chrdata'];
 
-    public function extractCliArguments(core\cli\ICommand $command) {
+    public function extractCliArguments(core\cli\ICommand $command)
+    {
         $args = $command->getArguments();
         $collation = $charset = null;
 
-        if(isset($args[1])) {
+        if (isset($args[1])) {
             $collation = (string)$args[1];
             $charset = (string)$args[0];
-        } else if(isset($args[0])) {
+        } elseif (isset($args[0])) {
             $collation = (string)$args[0];
         }
 
-        if($collation) {
+        if ($collation) {
             $this->request->query->collation = $collation;
         }
 
-        if($charset) {
+        if ($charset) {
             $this->request->query->charset = $charset;
         }
     }
 
-    public function execute() {
+    public function execute()
+    {
         $unit = $this->data->user->client;
         $adapter = $unit->getUnitAdapter()->getQuerySourceAdapter()->getAdapter();
 
-        if($adapter->getServerType() != 'mysql') {
-            $this->io->writeErrorLine('Default connection is '.$adapter->getServerType().', not mysql');
+        if ($adapter->getServerType() != 'mysql') {
+            Cli::error('Default connection is '.$adapter->getServerType().', not mysql');
             return;
         }
 
 
         $server = $adapter->getServer();
-        $collation = $this->request->query->get('collation', 'utf8_general_ci');
+        $collation = $this->request->query->get('collation', 'utf8mb4_general_ci');
 
-        if(false === strpos($collation, '_')) {
+        if (false === strpos($collation, '_')) {
             $collation .= '_general_ci';
         }
 
         $charset = $this->request->query->get('charset', explode('_', $collation)[0]);
 
-        $this->io->writeLine('Are you sure you want to convert all databases to '.$charset.' / '.$collation.'?');
-        $this->io->write('Say yes to continue: ');
-        $response = $this->io->readLine();
-
-        if(strtolower($response) != 'yes') {
-            $this->io->writeLine('Never mind then :)');
+        if (!Cli::confirm('Are you sure you want to convert all databases to '.$charset.' / '.$collation.'?', true)->prompt()) {
             return;
         }
 
-        foreach($server->getDatabaseList() as $dbName) {
-            if(in_array($dbName, self::BLACKLIST)) {
+
+        foreach ($server->getDatabaseList() as $dbName) {
+            if (in_array($dbName, self::BLACKLIST)) {
                 continue;
             }
 
             $parts = explode('_', $dbName);
 
-            if(!in_array($parts[0], self::PREFIXES)) {
+            if (!in_array($parts[0], self::PREFIXES)) {
                 continue;
             }
 
-            $this->io->writeLine('Updating DB '.$dbName.' to '.$charset.' / '.$collation);
+            Cli::notice('Switching db: '.$dbName);
+            Cli::{'yellow'}($dbName.' : '.$charset.' / '.$collation.' ');
             $database = $server->getDatabase($dbName);
             $database->setCharacterSet($charset, $collation, true);
+            Cli::success('done');
 
-            foreach($database->getTableList() as $tableName) {
-                $this->io->writeLine('Converting table '.$tableName.' to '.$charset.' / '.$collation);
+            foreach ($database->getTableList() as $tableName) {
+                Cli::{'yellow'}($tableName.' : '.$charset.' / '.$collation.' ');
                 $table = $database->getTable($tableName);
                 $table->setCharacterSet($charset, $collation);
+                Cli::success('done');
             }
 
-            $this->io->writeLine();
+            Cli::newLine();
         }
-
-        $this->io->writeLine('Done');
     }
 }

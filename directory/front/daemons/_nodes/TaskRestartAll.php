@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskRestartAll extends arch\node\Task
 {
     use TDaemonTask;
@@ -38,12 +40,13 @@ class TaskRestartAll extends arch\node\Task
 
         foreach ($daemons as $name => $daemon) {
             $remote = halo\daemon\Remote::factory($daemon);
+            $remote->setMultiplexer($this->io);
 
             if ($remote->isRunning()) {
-                $remote->setMultiplexer($this->io);
                 $remote->restart();
             } else {
-                $this->io->writeLine('Daemon '.$name.' is not running');
+                Cli::warning('Daemon '.$name.' is not running');
+                $remote->start();
             }
         }
     }

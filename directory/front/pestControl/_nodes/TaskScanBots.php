@@ -10,37 +10,40 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskScanBots extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
+class TaskScanBots extends arch\node\Task
+{
     const SCHEDULE = '0 0 * * 1';
     const SCHEDULE_AUTOMATIC = true;
 
-    public function execute() {
-        $this->io->write('Updating user agents...');
+    public function execute()
+    {
+        Cli::{'yellow'}('Updating user agents: ');
         $count = 0;
         $missCounts = [];
         $botIds = [];
 
-        foreach($this->data->user->agent->fetch() as $agent) {
+        foreach ($this->data->user->agent->fetch() as $agent) {
             $agent['isBot'] = $this->data->user->agent->isBot($agent['body']);
 
-            if($agent->hasChanged('isBot')) {
+            if ($agent->hasChanged('isBot')) {
                 $agent->save();
                 $botIds[] = $agent['id'];
                 $count++;
             }
         }
 
-        $this->io->writeLine(' '.$count.' marked as bots');
-        $this->io->write('Updating seen counts...');
+        Cli::success($count.' marked as bots');
+        Cli::{'yellow'}('Updating seen counts: ');
 
         $list = $this->data->pestControl->missLog->select('id', 'miss')
             ->where('userAgent', 'in', $botIds);
 
-        foreach($list as $missLog) {
+        foreach ($list as $missLog) {
             $id = (string)$missLog['miss'];
 
-            if(!isset($missCounts[$id])) {
+            if (!isset($missCounts[$id])) {
                 $missCounts[$id] = 0;
             }
 
@@ -49,13 +52,13 @@ class TaskScanBots extends arch\node\Task {
 
         $count = 0;
 
-        foreach($missCounts as $id => $botCount) {
+        foreach ($missCounts as $id => $botCount) {
             $count += $this->data->pestControl->miss->update()
                 ->express('botsSeen', 'botsSeen', '+', $botCount)
                 ->where('id', '=', $id)
                 ->execute();
         }
 
-        $this->io->writeLine(' '.$count.' updated');
+        Cli::success($count.' updated');
     }
 }

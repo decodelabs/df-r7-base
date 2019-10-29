@@ -11,6 +11,7 @@ use df\apex;
 use df\arch;
 use df\neon;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Atlas;
 
 class TaskPurgeLargeFiles extends arch\node\Task
@@ -20,14 +21,14 @@ class TaskPurgeLargeFiles extends arch\node\Task
     public function execute()
     {
         if (!$this->app->isDevelopment()) {
-            $this->io->writeErrorLine('This task cannot be run on production systems');
+            Cli::error('This task cannot be run on production systems');
             return;
         }
 
         $handler = neon\mediaHandler\Base::getInstance();
 
         if (!$handler instanceof neon\mediaHandler\ILocalDataHandler) {
-            $this->io->writeErrorLine('Media handler is not local');
+            Cli::error('Media handler is not local');
             return;
         }
 
@@ -45,13 +46,13 @@ class TaskPurgeLargeFiles extends arch\node\Task
                 continue;
             }
 
-            $this->io->writeLine($version['fileName'].' - '.$this->format->fileSize($version['fileSize']));
+            Cli::{'.brightMagenta'}($version['fileName'].' - '.$this->format->fileSize($version['fileSize']));
             Atlas::$fs->deleteFile($path);
 
             $total += $version['fileSize'];
         }
 
-        $this->io->writeLine('Purged '.$this->format->fileSize($total).' in total');
+        Cli::success('Purged '.$this->format->fileSize($total).' in total');
     }
 
     protected function _getLimit(): ?int

@@ -12,6 +12,7 @@ use df\arch;
 use df\flex;
 use df\aura;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Atlas;
 
 class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
@@ -60,15 +61,17 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
 
             $done[] = $sassPath;
 
+            Cli::{'brightMagenta'}($shortPath.' ');
+
             $bridge = new aura\css\SassBridge($this->context, $sassPath, $activePath);
             $bridge->setMultiplexer($this->io);
             $bridge->compile();
 
-            $this->io->writeLine($shortPath);
+            Cli::success('done');
         }
 
         if (empty($done)) {
-            $this->io->writeLine('None found');
+            Cli::success('None found');
         }
     }
 
@@ -90,7 +93,7 @@ class TaskRebuildSass extends arch\node\Task implements arch\node\IBuildTaskNode
         }
 
         if ($delete) {
-            $this->io->writeLine('Skipping '.$shortPath.' - '.$why);
+            Cli::warning('Skipping '.$shortPath.' - '.$why);
             $exts = ['json', 'css', 'css.map'];
 
             foreach ($exts as $ext) {

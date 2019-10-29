@@ -10,11 +10,14 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPurgeFileStores extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
-    public function execute() {
-        $this->io->write('Purging file stores...');
+class TaskPurgeFileStores extends arch\node\Task
+{
+    public function execute()
+    {
+        Cli::{'yellow'}('Purging file stores: ');
         core\cache\FileStore::purgeAll();
-        $this->io->writeLine(' done');
+        Cli::success('done');
     }
 }

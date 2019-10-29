@@ -11,6 +11,7 @@ use df\apex;
 use df\halo;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Atlas;
 
 class TaskInitGitignore extends arch\node\Task
@@ -21,11 +22,16 @@ class TaskInitGitignore extends arch\node\Task
 
         $path = df\Launchpad::$app->path;
 
-        if (!is_file($path.'/.gitignore')) {
-            $this->io->writeLine('Copying default .gitignore file');
-
-            Atlas::$fs->copyFile(__DIR__.'/default.gitignore', $path.'/.gitignore')
-                ->setPermissions(0777);
+        if (is_file($path.'/.gitignore')) {
+            Cli::success('.gitignore file already in place');
+            return;
         }
+
+        Cli::{'yellow'}('Copying default .gitignore: ');
+
+        Atlas::$fs->copyFile(__DIR__.'/default.gitignore', $path.'/.gitignore')
+            ->setPermissions(0777);
+
+        Cli::success('done');
     }
 }

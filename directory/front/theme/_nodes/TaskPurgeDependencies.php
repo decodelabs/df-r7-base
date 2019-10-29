@@ -12,17 +12,18 @@ use df\arch;
 use df\aura;
 use df\fuse;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Atlas;
 
 class TaskPurgeDependencies extends arch\node\Task
 {
     public function execute()
     {
-        $this->io->write('Purging theme dependencies...');
+        Cli::{'yellow'}('Purging theme dependencies: ');
 
         Atlas::$fs->deleteDir(fuse\Manager::getAssetPath());
         Atlas::$fs->deleteDir(fuse\Manager::getManifestCachePath());
 
-        $this->io->writeLine(' done');
+        Cli::success('done');
     }
 }

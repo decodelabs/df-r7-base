@@ -47,7 +47,7 @@ interface ITaskNode extends INode
     public static function shouldScheduleAutomatically(): bool;
 
     public function extractCliArguments(core\cli\ICommand $command);
-    public function runChild($request);
+    public function runChild($request, bool $announce=true);
 
     public function ensureDfSource();
 }

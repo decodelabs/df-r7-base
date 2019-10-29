@@ -12,6 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
 
 class TaskRebuildTable extends arch\node\Task
@@ -54,7 +55,7 @@ class TaskRebuildTable extends arch\node\Task
             );
         }
 
-        $this->io->writeLine('Rebuilding unit '.$unit->getUnitId());
+        Cli::info('Rebuilding unit '.$unit->getUnitId());
         $adapter = $unit->getUnitAdapter();
 
         $parts = explode('\\', get_class($adapter));
@@ -74,19 +75,15 @@ class TaskRebuildTable extends arch\node\Task
 
         $this->{$func}($unit, $schema);
 
-        $this->io->writeLine();
-        $this->io->writeLine('Updating schema cache');
-
         axis\schema\Cache::getInstance()->clearAll();
         axis\schema\Manager::getInstance()->store($unit, $schema);
 
         gc_collect_cycles();
-        $this->io->writeLine('Done');
     }
 
     protected function _rebuildRdbmsTable(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $axisSchema)
     {
-        $this->io->writeLine('Switching to rdbms mode');
+        Cli::info('Switching to rdbms mode');
 
         $adapter = $unit->getUnitAdapter();
         $connection = $adapter->getConnection();
@@ -94,7 +91,7 @@ class TaskRebuildTable extends arch\node\Task
         $currentTable = clone $adapter->getQuerySourceAdapter();
 
         if (!$currentTable->exists()) {
-            $this->io->writeLine('Unit rdbms table '.$currentTable->getName().' not found - nothing to do');
+            Cli::info('Unit rdbms table '.$currentTable->getName().' not found - nothing to do');
             return;
         }
 
@@ -104,7 +101,6 @@ class TaskRebuildTable extends arch\node\Task
         $dbSchema->setName($currentTableName.'__rebuild__');
 
         try {
-            $this->io->writeLine('Building copy table');
             $newTable = $newConnection->createTable($dbSchema);
         } catch (opal\rdbms\ETableConflict $e) {
             throw Glitch::{'df/axis/unit/ERuntime'}(
@@ -112,88 +108,91 @@ class TaskRebuildTable extends arch\node\Task
             );
         }
 
-        $this->io->writeLine();
-        $this->io->writeLine('Copying data');
-        $insert = $newTable->batchInsert();
-        $count = 0;
+        $total = $currentTable->select()->count();
 
-        $fields = $dbSchema->getFields();
-        $currentFields = $currentTable->getSchema()->getFields();
-        $generatorFields = [];
-        $nonNullFields = [];
-        $newFields = [];
+        if ($total > 0) {
+            Cli::newLine();
+            $progressBar = Cli::newProgressBar(0, $total);
 
-        foreach ($fields as $fieldName => $field) {
-            if (isset($currentFields[$fieldName])) {
-                continue;
-            }
+            $insert = $newTable->batchInsert();
+            $count = 0;
 
-            $axisField = $axisSchema->getField($fieldName);
+            $fields = $dbSchema->getFields();
+            $currentFields = $currentTable->getSchema()->getFields();
+            $generatorFields = [];
+            $nonNullFields = [];
+            $newFields = [];
 
-            if (!$field->isNullable()) {
-                $nonNullFields[$fieldName] = $field;
-            }
-
-            if ($axisField instanceof opal\schema\IAutoGeneratorField) {
-                $generatorFields[$fieldName] = $axisField;
-            } else {
-                $newFields[$fieldName] = $field;
-            }
-        }
-
-        $query = $currentTable->select()
-            ->isUnbuffered(true);
-
-        if (isset($currentFields['creationDate'])) {
-            $query->orderBy('creationDate ASC');
-        }
-
-        foreach ($query as $row) {
-            foreach ($row as $key => $value) {
-                if (!isset($fields[$key])) {
-                    unset($row[$key]);
+            foreach ($fields as $fieldName => $field) {
+                if (isset($currentFields[$fieldName])) {
+                    continue;
                 }
 
-                if ($value === null && isset($nonNullFields[$key])) {
-                    $row[$key] = $value = $nonNullFields[$key]->getDefaultNonNullValue();
-                }
-            }
+                $axisField = $axisSchema->getField($fieldName);
 
-            foreach ($generatorFields as $fieldName => $axisField) {
-                if ($axisField instanceof opal\query\IFieldValueProcessor) {
-                    $row[$fieldName] = $axisField->generateInsertValue($row);
+                if (!$field->isNullable()) {
+                    $nonNullFields[$fieldName] = $field;
                 }
-            }
 
-            foreach ($newFields as $fieldName => $newField) {
-                if ($newField->isNullable()) {
-                    $row[$fieldName] = null;
+                if ($axisField instanceof opal\schema\IAutoGeneratorField) {
+                    $generatorFields[$fieldName] = $axisField;
                 } else {
-                    $row[$fieldName] = $newField->getDefaultNonNullValue();
+                    $newFields[$fieldName] = $field;
                 }
             }
 
-            $insert->addRow($row);
-            $count++;
+            $query = $currentTable->select()
+                ->isUnbuffered(true);
 
-            if (!($count % 1000)) {
-                $this->io->write('.');
+            if (isset($currentFields['creationDate'])) {
+                $query->orderBy('creationDate ASC');
             }
+
+            foreach ($query as $row) {
+                foreach ($row as $key => $value) {
+                    if (!isset($fields[$key])) {
+                        unset($row[$key]);
+                    }
+
+                    if ($value === null && isset($nonNullFields[$key])) {
+                        $row[$key] = $value = $nonNullFields[$key]->getDefaultNonNullValue();
+                    }
+                }
+
+                foreach ($generatorFields as $fieldName => $axisField) {
+                    if ($axisField instanceof opal\query\IFieldValueProcessor) {
+                        $row[$fieldName] = $axisField->generateInsertValue($row);
+                    }
+                }
+
+                foreach ($newFields as $fieldName => $newField) {
+                    if ($newField->isNullable()) {
+                        $row[$fieldName] = null;
+                    } else {
+                        $row[$fieldName] = $newField->getDefaultNonNullValue();
+                    }
+                }
+
+                $insert->addRow($row);
+                $count++;
+                $progressBar->advance($count);
+            }
+
+            $insert->execute();
+            $progressBar->complete();
         }
 
-        $insert->execute();
-        $this->io->writeLine('.');
-        $this->io->writeLine('Copied '.$count.' rows');
-
-        $this->io->writeLine('Renaming tables');
+        Cli::newLine();
+        Cli::{'yellow'}('Renaming tables: ');
         $currentTable->rename($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
-
         $newTable->rename($currentTableName);
+        Cli::success('done');
 
 
         if ($this->request->query['delete'] === true) {
-            $this->io->writeLine('Deleting backup: '.$currentTable->getName());
+            Cli::{'yellow'}('Deleting backup: '.$currentTable->getName().': ');
             $currentTable->drop();
+            Cli::success('done');
         }
     }
 }

@@ -10,12 +10,14 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskPurge extends arch\node\Task
 {
     public function execute()
     {
         if (function_exists('opcache_reset')) {
-            $this->io->writeLine('Opcache');
+            Cli::{'.green'}('Opcache');
             opcache_reset();
         }
 
@@ -23,7 +25,7 @@ class TaskPurge extends arch\node\Task
         $isAll = isset($this->request['all']);
 
         foreach (df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
-            $this->io->writeLine($name);
+            Cli::{'.green'}($name);
             $options = $config->getBackendOptions($name);
 
             $isAll ?

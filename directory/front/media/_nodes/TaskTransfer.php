@@ -12,6 +12,7 @@ use df\arch;
 use df\neon;
 use df\link;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 
@@ -26,20 +27,20 @@ class TaskTransfer extends arch\node\Task
         $to = ucfirst($this->request['to']);
 
         if ($to == $from->getName()) {
-            $this->io->writeErrorLine('Target media handler \''.$to.'\' is already the default');
+            Cli::info('Target media handler \''.$to.'\' is already the default');
             return;
         }
 
         if (!isset($handlerList[$to])) {
-            $this->io->writeErrorLine('Target media handler \''.$to.'\' is not enabled');
+            Cli::error('Target media handler \''.$to.'\' is not enabled');
             return;
         }
 
         $to = neon\mediaHandler\Base::factory($to);
-        $this->io->writeLine('Transferring media library from \''.$from->getDisplayName().'\' to \''.$to->getDisplayName().'\'');
+        Cli::info('Transferring media library from \''.$from->getDisplayName().'\' to \''.$to->getDisplayName().'\'');
 
         $tempDir = link\http\upload\Handler::createUploadTemp();
-        $this->io->writeLine('Using temp dir: '.Glitch::normalizePath($tempDir));
+        Cli::info('Using temp dir: '.Glitch::normalizePath($tempDir));
 
         $httpClient = new link\http\Client();
 
@@ -47,12 +48,12 @@ class TaskTransfer extends arch\node\Task
             ->populate('versions')
             ->orderBy('creationDate');
 
-        $this->io->writeLine();
+        Cli::newLine();
 
         foreach ($files as $file) {
             $fileId = $file['id'];
 
-            $this->io->writeLine('Processing file entry: #'.$fileId);
+            Cli::{'.yellow'}('Processing file entry: #'.$fileId);
 
             foreach ($file['versions'] as $version) {
                 if ($version['purgeDate']) {
@@ -69,12 +70,12 @@ class TaskTransfer extends arch\node\Task
                         $fileId, $versionId, $version['isActive']
                     ));
 
-                    $this->io->writeLine('Fetching file: '.$url);
+                    Cli::{'.yellow'}('Fetching file: '.$url);
 
                     $response = $httpClient->getFile($url, $tempDir.'/'.$fileId, $versionId);
 
                     if (!$response->isOk()) {
-                        $this->io->writeErrorLine('!! HTTP file transfer failed !!');
+                        Cli::error('!! HTTP file transfer failed !!');
                         continue;
                     }
 
@@ -82,43 +83,43 @@ class TaskTransfer extends arch\node\Task
                     $filePath = $tempDir.'/'.$fileId.'/'.$versionId;
                 }
 
-                $this->io->writeLine('Publishing version: #'.$versionId.' - '.$version['fileName']);
+                Cli::{'yellow'}('Publishing version: #'.$versionId.' - '.$version['fileName'].' ');
                 $to->transferFile($fileId, $versionId, $version['isActive'], $filePath, $version['fileName']);
 
                 if ($deleteFile) {
                     Atlas::$fs->deleteFile($filePath);
                 }
+
+                Cli::success('done');
             }
 
             Atlas::$fs->deleteDir($tempDir.'/'.$fileId.'/');
-            $this->io->writeLine();
+            Cli::newLine();
         }
 
-        $this->io->writeLine('Deleting temporary directory');
+        Cli::{'yellow'}('Deleting temporary directory: ');
         Atlas::$fs->deleteDir($tempDir);
+        Cli::success('done');
 
-        $this->io->writeLine('Updating config');
+
+        Cli::{'yellow'}('Updating config: ');
         $config = neon\mediaHandler\Config::getInstance();
         $config->setDefaultHandler($to->getName())
             ->save();
+        Cli::success('done');
 
 
         if (isset($this->request['delete'])) {
-            $this->io->writeLine();
-            $this->io->writeLine('Deleting files from source storage \''.$from->getDisplayName().'\'');
+            Cli::newLine();
 
             $files = $this->data->media->file->select('id')
                 ->orderBy('creationDate');
 
             foreach ($files as $file) {
-                $this->io->writeLine('Deleting file entry: #'.$file['id']);
+                Cli::{'yellow'}('Deleting file entry: #'.$file['id'].' ');
                 $from->deleteFile($file['id']);
+                Cli::success('done');
             }
-
-            $this->io->writeLine();
         }
-
-
-        $this->io->writeLine('All done!');
     }
 }

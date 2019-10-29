@@ -11,6 +11,7 @@ use df\apex;
 use df\halo;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Atlas;
 
 class TaskInit extends arch\node\Task
@@ -99,7 +100,7 @@ class TaskInit extends arch\node\Task
         $json = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 
         $file->putContents($json);
-        $this->io->writeLine('composer.json created');
+        Cli::info('composer.json created');
 
 
         if (!isset($this->request['no-update'])) {

@@ -11,47 +11,54 @@ use df\apex;
 use df\arch;
 use df\neon;
 
-class TaskUpdateHashes extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
-    public function execute() {
+class TaskUpdateHashes extends arch\node\Task
+{
+    public function execute()
+    {
         $handler = $this->data->media->getMediaHandler();
 
-        if(!$handler instanceof neon\mediaHandler\ILocalDataHandler) {
-            $this->io->writeErrorLine('Media handler does not serve local data');
+        if (!$handler instanceof neon\mediaHandler\ILocalDataHandler) {
+            Cli::error('Media handler does not serve local data');
             return;
         }
 
         $list = $this->data->media->version->fetch()
             ->populate('file');
 
-        if(!isset($this->request['all'])) {
+        if (!isset($this->request['all'])) {
             $list->where('hash', '=', null);
         }
 
+        Cli::{'yellow'}('Fetching objects: ');
         $count = $list->count();
-        $this->io->writeLine('Fetching '.$count.' objects...');
+        Cli::success($count.' found');
         $count = 0;
 
-        foreach($list as $version) {
+        foreach ($list as $version) {
             $timer = new core\time\Timer();
 
-            $this->io->write(str_pad($version['fileName'].'... ', 50));
+            Cli::{'brightMagenta'}(str_pad($version['fileName'].': ', 45));
+
             $version->hash = $hash = $handler->hashFile(
                 $version['file']['id'],
                 $version['id'],
                 (string)$version['id'] == (string)$version['file']['#activeVersion']
             );
 
-            if($hash === null) {
-                $this->io->writeLine('!! Skipped !!');
+            if ($hash === null) {
+                Cli::warning('SKIPPED');
                 continue;
             }
 
-            $this->io->writeLine(bin2hex($hash).' ('.$timer.')');
+            Cli::success(bin2hex($hash).' ('.$timer.')');
             $version->save();
             $count++;
         }
 
-        $this->io->writeLine('Finished hashing '.$count.' files');
+        if ($count) {
+            Cli::success('Finished hashing '.$count.' files');
+        }
     }
 }

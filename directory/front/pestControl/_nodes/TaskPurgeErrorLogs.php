@@ -10,6 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskPurgeErrorLogs extends arch\node\Task
 {
     const MAX_LOOP = 250;
@@ -58,6 +60,6 @@ class TaskPurgeErrorLogs extends arch\node\Task
             usleep(50000);
         }
 
-        $this->io->writeLine('Purged '.$total.' critical error logs');
+        Cli::success('Purged '.$total.' critical error logs');
     }
 }

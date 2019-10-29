@@ -23,7 +23,7 @@ class Dependencies implements flex\code\IProbe
             return;
         }
 
-        $pathTest = ['_nodes', '_templates', '.html', '.mail'];
+        $pathTest = ['_nodes', '_templates', '.html', '.mail', 'tests', 'vendor'];
 
         foreach ($pathTest as $test) {
             if (false !== strpos($localPath, $test)) {

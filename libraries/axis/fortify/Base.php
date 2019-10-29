@@ -10,6 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
 
 abstract class Base implements IFortify
@@ -86,9 +87,9 @@ abstract class Base implements IFortify
         if ($ret instanceof \Generator) {
             foreach ($ret as $key => $value) {
                 if ($key === true) {
-                    $this->io->writeLine($value);
+                    Cli::writeLine($value);
                 } else {
-                    $this->io->write($value);
+                    Cli::write($value);
                 }
             }
         }

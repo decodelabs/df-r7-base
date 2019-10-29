@@ -11,6 +11,8 @@ use df\apex;
 use df\halo;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskInit extends arch\node\Task
 {
     public function execute()
@@ -18,26 +20,25 @@ class TaskInit extends arch\node\Task
         $this->ensureDfSource();
 
         $this->runChild('app/generate-entry');
+        Cli::newLine();
 
-        $this->io->writeLine();
         $this->runChild('config/init');
+        Cli::newLine();
 
-        $this->io->writeLine();
         $this->runChild('axis/set-master?check=false');
+        Cli::newLine();
 
         if (!$this->data->user->client->countAll()) {
-            $this->io->writeLine();
-            $this->io->writeLine('Add root user');
             $this->runChild('users/add?groups[]=developer');
+            Cli::newLine();
         }
 
-        $this->io->writeLine();
         $this->runChild('composer/init');
+        Cli::newLine();
 
-        $this->io->writeLine();
         $this->runChild('git/init');
+        Cli::newLine();
 
-        $this->io->writeLine();
         $this->runChild('theme/install-dependencies');
     }
 }

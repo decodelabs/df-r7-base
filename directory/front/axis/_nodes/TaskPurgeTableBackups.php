@@ -12,6 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
 
 class TaskPurgeTableBackups extends arch\node\Task
@@ -48,7 +49,7 @@ class TaskPurgeTableBackups extends arch\node\Task
             );
         }
 
-        $this->io->writeLine('Purging backups for unit '.$unit->getUnitId());
+        Cli::info('Purging backups for unit '.$unit->getUnitId());
 
         $adapter = $unit->getUnitAdapter();
 
@@ -69,7 +70,7 @@ class TaskPurgeTableBackups extends arch\node\Task
 
     protected function _purgeRdbmsTable(axis\IAdapterBasedStorageUnit $unit, array $backups)
     {
-        $this->io->writeLine('Switching to rdbms mode');
+        Cli::info('Switching to rdbms mode');
 
         $adapter = $unit->getUnitAdapter();
         $connection = $adapter->getConnection();
@@ -77,13 +78,14 @@ class TaskPurgeTableBackups extends arch\node\Task
 
         foreach ($backups as $backup) {
             $table = $connection->getTable($backup->name);
-            $this->io->writeLine('Dropping table '.$backup->name);
+            Cli::{'yellow'}($backup->name.' ');
             $table->drop();
             $count++;
+            Cli::success('dropped');
         }
 
         if (!$count) {
-            $this->io->writeLine('No backup tables to drop');
+            Cli::notice('No backup tables to drop');
         }
     }
 }

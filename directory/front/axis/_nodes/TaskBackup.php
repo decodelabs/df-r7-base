@@ -12,6 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Atlas;
 use DecodeLabs\Glitch;
 
@@ -32,33 +33,38 @@ class TaskBackup extends arch\node\Task
     public function execute()
     {
         axis\schema\Cache::getInstance()->clear();
-        $this->io->write('Probing units...');
+        Cli::{'yellow'}('Probing units: ');
 
         $probe = new axis\introspector\Probe();
         $units = $probe->probeUnits();
 
-        $this->io->writeLine(' found '.count($units).' to backup');
+        Cli::success(' found '.count($units));
 
         $this->_manifest['timestamp'] = time();
         $backupId = 'axis-'.date('YmdHis');
         $this->_path = $this->app->getSharedDataPath().'/backup/'.$backupId;
         Atlas::$fs->createDir($this->_path);
 
-        $this->io->writeLine('Backing up units');
-        $this->io->writeLine();
+        $progressBar = Cli::newProgressBar(0, count($units), 0);
+        $count = 0;
 
         foreach ($units as $inspector) {
             $this->_backupUnit($inspector);
+            $progressBar->advance(++$count);
         }
 
-        $this->io->writeLine();
-        $this->io->writeLine('Writing manifest file');
+        $progressBar->complete();
+
+        Cli::newLine();
+        Cli::{'yellow'}('Writing manifest file: ');
         $content = '<?php'."\n".'return '.core\collection\Util::exportArray($this->_manifest).';';
         file_put_contents($this->_path.'/manifest.php', $content, LOCK_EX);
+        Cli::success('done');
 
-        $this->io->writeLine('Archiving backup');
+        Cli::{'yellow'}('Archiving backup: ');
         $phar = new \PharData(dirname($this->_path).'/'.$backupId.'.tar');
         $phar->buildFromDirectory($this->_path);
+        Cli::success('done');
 
         Atlas::$fs->deleteDir($this->_path);
     }
@@ -96,7 +102,7 @@ class TaskBackup extends arch\node\Task
         $translator = new axis\schema\translator\Rdbms($unit, $backupAdapter, $schema);
         $opalSchema = $translator->createFreshTargetSchema();
         $table = $backupAdapter->createTable($opalSchema);
-        $this->io->write('Copying table '.$inspector->getId().' to '.basename($backupAdapter->getDsn()->getDatabase()).' -');
+        //Cli::{'yellow'}('Copying table '.$inspector->getId().' to '.basename($backupAdapter->getDsn()->getDatabase()).': ');
 
         $insert = $table->batchInsert();
         $count = 0;
@@ -107,7 +113,7 @@ class TaskBackup extends arch\node\Task
         }
 
         $insert->execute();
-        $this->io->writeLine(' '.$count.' rows');
+        //Cli::success($count.' rows');
     }
 
 
@@ -142,7 +148,9 @@ class TaskBackup extends arch\node\Task
 
     protected function _loadBackupAdapter($hash, $dbName, $connection)
     {
-        $this->io->writeLine('Creating backup adapter '.$dbName);
+        Cli::inlineNotice('Creating backup adapter ');
+        Cli::{'.brightMagenta'}($dbName);
+
         $backupAdapter = opal\rdbms\adapter\Base::factory('sqlite://'.$this->_path.'/'.$dbName.'.sqlite');
         $this->_backupAdapters[$hash] = $backupAdapter;
         $this->_manifest['connections'][$dbName.'.sqlite'] = $connection;

@@ -10,15 +10,21 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskQueueScheduled extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
+class TaskQueueScheduled extends arch\node\Task
+{
     protected $_count = 0;
 
-    public function execute() {
-        $this->io->write('Queuing scheduled tasks...');
+    public function execute()
+    {
+        Cli::{'yellow'}('Queuing scheduled tasks');
 
-        if(!$this->data->task->schedule->countAll()) {
+        if (!$this->data->task->schedule->countAll()) {
+            Cli::newLine();
             $this->runChild('./scan');
+        } else {
+            Cli::{'yellow'}(': ');
         }
 
         $scheduleList = $this->data->task->schedule->fetch()
@@ -35,25 +41,26 @@ class TaskQueueScheduled extends arch\node\Task {
         $queue = [];
         $now = time();
 
-        foreach($scheduleList as $id => $task) {
+        foreach ($scheduleList as $id => $task) {
             $schedule = core\time\Schedule::factory($task->toArray());
             $lastTrigger = $schedule->getLast(null, 1);
 
-            if(!$task['lastRun']) {
+            if (!$task['lastRun']) {
                 $this->_trigger($task);
                 continue;
             }
 
-            if($task['lastRun']->lt($lastTrigger)) {
+            if ($task['lastRun']->lt($lastTrigger)) {
                 $this->_trigger($task);
                 continue;
             }
         }
 
-        $this->io->writeLine(' '.$this->_count.' entries prepared for launch');
+        Cli::success($this->_count.' entries queued');
     }
 
-    protected function _trigger($task) {
+    protected function _trigger($task)
+    {
         $this->_count++;
 
         $task->lastRun = 'now';

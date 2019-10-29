@@ -10,6 +10,8 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskPurgeMissLogs extends arch\node\Task
 {
     const MAX_LOOP = 250;
@@ -57,6 +59,6 @@ class TaskPurgeMissLogs extends arch\node\Task
             usleep(50000);
         }
 
-        $this->io->writeLine('Purged '.$total.' miss logs');
+        Cli::success('Purged '.$total.' miss logs');
     }
 }

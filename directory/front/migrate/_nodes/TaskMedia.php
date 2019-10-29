@@ -12,6 +12,7 @@ use df\arch;
 use df\link;
 use df\spur;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
 
 class TaskMedia extends arch\node\Task
@@ -42,7 +43,7 @@ class TaskMedia extends arch\node\Task
     public function execute()
     {
         if (!$this->data->media->isLocalDataMediaHandler()) {
-            $this->io->writeLine('You can currently only migrate to locally stored media libraries');
+            Cli::error('You can currently only migrate to locally stored media libraries');
             return;
         }
 
@@ -79,7 +80,7 @@ class TaskMedia extends arch\node\Task
             $path = $handler->getFilePath($fileId, $versionId);
 
             if (is_file($path)) {
-                $this->io->writeLine('Skipping '.$versionId.' - '.$version['fileName']);
+                Cli::warning('Skipping '.$versionId.' - '.$version['fileName']);
                 continue;
             }
 
@@ -99,7 +100,7 @@ class TaskMedia extends arch\node\Task
                             $message = null;
                         }
 
-                        $this->io->writeLine($versionId.' - '.$version['fileName'].' **NOT FOUND'.($message ? ': '.$message : null).'**');
+                        Cli::error($versionId.' - '.$version['fileName'].' **NOT FOUND'.($message ? ': '.$message : null).'**');
                     } elseif ($response->isForbidden()) {
                         throw Glitch::{'EInvalidArgument,EApi'}(
                             'Migration key is invalid - check application pass keys match'
@@ -108,7 +109,7 @@ class TaskMedia extends arch\node\Task
                         throw Glitch::EApi('Migration failed!!!');
                     }
                 } else {
-                    $this->io->writeLine('Fetched '.$versionId.' - '.$version['fileName'].' - '.$this->format->fileSize(filesize($path)));
+                    Cli::success('Fetched '.$versionId.' - '.$version['fileName'].' - '.$this->format->fileSize(filesize($path)));
                 }
             });
         }
@@ -121,8 +122,9 @@ class TaskMedia extends arch\node\Task
         if (isset($this->request['url'])) {
             $url = $this->request['url'];
         } else {
-            $this->io->write('>> Please enter the source root URL: ');
-            $url = $this->io->readLine();
+            Cli::{'.cyan'}('Please enter the source root URL:');
+            Cli::write('> ');
+            $url = Cli::readLine();
         }
 
         $validator = $this->data->newValidator()

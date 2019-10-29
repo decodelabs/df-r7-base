@@ -12,12 +12,15 @@ use df\arch;
 use df\axis;
 use df\opal;
 
-class TaskPurgeSchemas extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
-    public function execute() {
-        $this->io->write('Purging schemas...');
+class TaskPurgeSchemas extends arch\node\Task
+{
+    public function execute()
+    {
+        Cli::{'yellow'}('Purging schemas: ');
         $this->data->axis->schema->getUnitAdapter()->getQuerySourceAdapter()->drop();
         $this->data->axis->getSchemaManager()->clearCache();
-        $this->io->writeLine(' done');
+        Cli::success(' done');
     }
 }

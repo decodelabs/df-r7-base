@@ -12,6 +12,7 @@ use df\arch;
 use df\axis;
 use df\opal;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
 
 class TaskUpdate extends arch\node\Task
@@ -20,7 +21,7 @@ class TaskUpdate extends arch\node\Task
 
     public function execute()
     {
-        $this->io->write('Probing units...');
+        Cli::{'yellow'}('Probing units: ');
 
         $probe = new axis\introspector\Probe();
         $units = $probe->probeStorageUnits();
@@ -33,17 +34,16 @@ class TaskUpdate extends arch\node\Task
 
         $count = count($units);
 
-        $this->io->writeLine(' found '.$count.' to update');
+        Cli::success($count.' updates found');
 
         if (!$count) {
             return;
         }
 
+        /*
         if (!isset($this->request['noBackup'])) {
-            $this->io->writeLine('Creating full backup...');
-            $this->io->writeLine();
             $this->runChild('axis/backup');
-            $this->io->writeLine();
+            Cli::newLine();
         }
 
         $this->_schemaManager = axis\schema\Manager::getInstance();
@@ -52,14 +52,14 @@ class TaskUpdate extends arch\node\Task
             $this->_update($inspector);
         }
 
-        $this->io->writeLine();
-        $this->io->writeLine('Clearing schema chache');
+        Cli::newLine();
         axis\schema\Cache::getInstance()->clear();
+        */
     }
 
     protected function _update($inspector)
     {
-        $this->io->writeLine('Updating '.$inspector->getId().' schema from v'.$inspector->getSchemaVersion().' to v'.$inspector->getDefinedSchemaVersion());
+        Cli::{'.green'}('Updating '.$inspector->getId().' schema from v'.$inspector->getSchemaVersion().' to v'.$inspector->getDefinedSchemaVersion());
         $unit = $inspector->getUnit();
 
         $schema = $unit->getUnitSchema();
@@ -90,7 +90,7 @@ class TaskUpdate extends arch\node\Task
                 }
 
                 if ($update) {
-                    $this->io->writeLine('Updating '.$inspector->getId().' relation field on '.$relationUnit->getUnitId());
+                    Cli::{'.green'}('Updating '.$inspector->getId().' relation field on '.$relationUnit->getUnitId());
 
                     $relationSchema->sanitize($relationUnit);
 

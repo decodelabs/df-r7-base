@@ -10,17 +10,22 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskPurgeJournal extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
+class TaskPurgeJournal extends arch\node\Task
+{
     const SCHEDULE = '0 3 * * *';
     const SCHEDULE_AUTOMATIC = true;
 
-    public function execute() {
+    public function execute()
+    {
+        Cli::{'yellow'}('Purging mail journals: ');
+
         $deleted = $this->data->mail->journal->delete()
             ->where('expireDate', '!=', null)
             ->where('expireDate', '<', 'now')
             ->execute();
 
-        $this->io->writeLine('Purged '.$deleted.' mail journal records');
+        Cli::success($deleted.' deleted');
     }
 }

@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskBuildCustom extends arch\node\Task
 {
     protected $_after = false;
@@ -38,15 +40,12 @@ class TaskBuildCustom extends arch\node\Task
                 $request->query->buildId = $this->_buildId;
             }
 
-            $reqString = ltrim(substr((string)$request, strlen('directory://')), '/');
-            $this->io->writeLine('# '.$reqString);
-            
             $this->runChild($request);
-            $this->io->writeLine();
+            Cli::newLine();
         }
 
         if ($isRun) {
-            $this->io->writeLine();
+            Cli::newLine();
         }
     }
 

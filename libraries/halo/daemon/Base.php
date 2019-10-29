@@ -10,6 +10,7 @@ use df\core;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\EventLoop;
@@ -205,7 +206,7 @@ abstract class Base implements IDaemon
             try {
                 $this->process->setPidFilePath($pidPath);
             } catch (\Throwable $e) {
-                $this->io->writeErrorLine($e->getMessage());
+                Cli::error($e->getMessage());
                 return;
             }
         }
@@ -221,7 +222,7 @@ abstract class Base implements IDaemon
             $this->process->setIdentity($user, $group);
         } else {
             if ($user != $this->process->getOwnerName()) {
-                $this->io->writeErrorLine('You are trying to run this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
+                Cli::error('You are trying to run this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
                 return;
             }
         }
@@ -374,7 +375,7 @@ abstract class Base implements IDaemon
         }
 
         $this->_isStopping = true;
-        $this->io->writeLine('** STOPPING **');
+        Cli::info('STOPPING');
         return $this;
     }
 
@@ -390,7 +391,7 @@ abstract class Base implements IDaemon
         }
 
         $this->_isPaused = true;
-        $this->io->writeLine('** PAUSED **');
+        Cli::info('PAUSED');
         return $this;
     }
 
@@ -401,7 +402,7 @@ abstract class Base implements IDaemon
         }
 
         $this->_isPaused = false;
-        $this->io->writeLine('** RESUMING **');
+        Cli::info('RESUMING');
         return $this;
     }
 

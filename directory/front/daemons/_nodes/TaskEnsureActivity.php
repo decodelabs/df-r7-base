@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskEnsureActivity extends arch\node\Task
 {
     use TDaemonTask;
@@ -18,7 +20,7 @@ class TaskEnsureActivity extends arch\node\Task
     public function execute()
     {
         if (!$hasRestarted = $this->_hasRestarted()) {
-            $this->io->write('Looking up daemon list...');
+            Cli::{'yellow'}('Looking up daemon list: ');
         }
 
         $daemons = halo\daemon\Base::loadAll();
@@ -31,7 +33,7 @@ class TaskEnsureActivity extends arch\node\Task
         }
 
         if (!$hasRestarted) {
-            $this->io->writeLine(' found '.count($daemons).' to keep running');
+            Cli::success('found '.count($daemons));
         }
 
         if (empty($daemons)) {

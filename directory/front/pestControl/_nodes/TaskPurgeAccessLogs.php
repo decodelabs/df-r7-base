@@ -10,10 +10,12 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskPurgeAccessLogs extends arch\node\Task
 {
     const MAX_LOOP = 250;
-    
+
     public function execute()
     {
         $threshold = '-'.$this->data->pestControl->getPurgeThreshold();
@@ -33,6 +35,6 @@ class TaskPurgeAccessLogs extends arch\node\Task
             usleep(50000);
         }
 
-        $this->io->writeLine('Purged '.$total.' access logs');
+        Cli::success('Purged '.$total.' access logs');
     }
 }

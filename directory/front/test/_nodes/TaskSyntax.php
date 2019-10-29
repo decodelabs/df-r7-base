@@ -11,33 +11,36 @@ use df\apex;
 use df\arch;
 use df\flex;
 
-class TaskSyntax extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
-    public function execute() {
+class TaskSyntax extends arch\node\Task
+{
+    public function execute()
+    {
         $this->ensureDfSource();
-        
+
         $scanner = new flex\code\Scanner(null, [
             new flex\code\probe\Syntax()
         ]);
 
         $scanner->addFrameworkPackageLocations(true);
-        $this->io->write('Scanning packages:');
+        Cli::{'yellow'}('Scanning packages:');
         $errors = [];
 
-        foreach($scanner->locations as $location) {
-            $this->io->write(' '.$location->id);
+        foreach ($scanner->locations as $location) {
+            Cli::{'brightMagenta'}(' '.$location->id);
             $errors = array_merge($errors, $location->scan($scanner)['syntax']->getErrors());
         }
 
-        $this->io->writeLine();
+        Cli::newLine();
 
-        if(empty($errors)) {
-            $this->io->writeLine('Happy days, no errors detected!');
+        if (empty($errors)) {
+            Cli::success('Happy days, no errors detected!');
         } else {
-            $this->io->writeLine();
+            Cli::newLine();
 
-            foreach($errors as $path => $error) {
-                $this->io->writeLine($error);
+            foreach ($errors as $path => $error) {
+                Cli::error($error);
             }
         }
     }

@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\axis;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskFortify extends arch\node\Task
 {
     const SCHEDULE = '0 2 * * *';
@@ -68,9 +70,9 @@ class TaskFortify extends arch\node\Task
         $tasks = axis\fortify\Base::loadAll($unit);
 
         foreach ($tasks as $name => $task) {
-            $this->io->write($unit->getUnitId().'/'.$name.': ');
+            Cli::{'yellow'}($unit->getUnitId().'/'.$name.': ');
             $task->dispatch($this->io);
-            $this->io->writeLine();
+            Cli::newLine();
         }
     }
 }

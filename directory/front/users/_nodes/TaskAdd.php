@@ -11,13 +11,16 @@ use df\apex;
 use df\arch;
 use df\flow;
 
-class TaskAdd extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
+class TaskAdd extends arch\node\Task
+{
     protected $_client;
     protected $_auth;
 
-    public function execute() {
-        if(!$this->data->user->client->countAll()) {
+    public function execute()
+    {
+        if (!$this->data->user->client->countAll()) {
             $this->data->user->installDefaultManifest();
         }
 
@@ -33,7 +36,7 @@ class TaskAdd extends arch\node\Task {
 
         $locale = $this->i18n->getDefaultLocale();
 
-        $this->_client->email = $this->_askFor('Email address', function($answer) {
+        $this->_client->email = $this->_askFor('Email address', function ($answer) {
             return $this->data->newValidator()
                 ->addRequiredField('email')
                     ->setRecord($this->_client)
@@ -43,7 +46,7 @@ class TaskAdd extends arch\node\Task {
         $this->_auth->identity = $this->_client['email'];
         $this->_auth->password = $this->_askPassword('Password', true, true, true);
 
-        $this->_client->fullName = $this->_askFor('Full name', function($answer) {
+        $this->_client->fullName = $this->_askFor('Full name', function ($answer) {
             return $this->data->newValidator()
                 ->addRequiredField('fullName', 'text')
                     ->setMaxLength(255);
@@ -51,20 +54,20 @@ class TaskAdd extends arch\node\Task {
 
         $nickName = $this->format->firstName($this->_client['fullName']);
 
-        $this->_client->nickName = $this->_askFor('Nickname', function($answer) {
+        $this->_client->nickName = $this->_askFor('Nickname', function ($answer) {
             return $this->data->newValidator()
                 ->addField('nickName', 'text')
                     ->setMaxLength(128);
         }, $nickName);
 
-        $this->_client->country = $this->_askFor('Country code', function($answer) {
+        $this->_client->country = $this->_askFor('Country code', function ($answer) {
             return $this->data->newValidator()
                 ->addRequiredField('country', 'text')
-                    ->setSanitizer(function($value) {
+                    ->setSanitizer(function ($value) {
                         return strtoupper($value);
                     })
-                    ->extend(function($value, $field) {
-                        if(!$this->i18n->countries->isValidId($value)) {
+                    ->extend(function ($value, $field) {
+                        if (!$this->i18n->countries->isValidId($value)) {
                             $field->addError('invalid', $this->_(
                                 'Please enter a valid country code'
                             ));
@@ -72,14 +75,14 @@ class TaskAdd extends arch\node\Task {
                     });
         }, $locale->getRegion());
 
-        $this->_client->language = $this->_askFor('Language code', function($answer) {
+        $this->_client->language = $this->_askFor('Language code', function ($answer) {
             return $this->data->newValidator()
                 ->addRequiredField('language', 'text')
-                    ->setSanitizer(function($value) {
+                    ->setSanitizer(function ($value) {
                         return strtolower($value);
                     })
-                    ->extend(function($value, $field) {
-                        if(!$this->i18n->languages->isValidId($value)) {
+                    ->extend(function ($value, $field) {
+                        if (!$this->i18n->languages->isValidId($value)) {
                             $field->addError('invalid', $this->_(
                                 'Please enter a valid language id'
                             ));
@@ -87,14 +90,14 @@ class TaskAdd extends arch\node\Task {
                     });
         }, $locale->getLanguage());
 
-        $this->_client->timezone = $this->_askFor('Timezone', function($answer) {
+        $this->_client->timezone = $this->_askFor('Timezone', function ($answer) {
             return $this->data->newValidator()
                 ->addRequiredField('timezone', 'text')
-                    ->setSanitizer(function($value) {
+                    ->setSanitizer(function ($value) {
                         return str_replace(' ', '/', ucwords(str_replace('/', ' ', $value)));
                     })
-                    ->extend(function($value, $field) {
-                        if(!$this->i18n->timezones->isValidId($value)) {
+                    ->extend(function ($value, $field) {
+                        if (!$this->i18n->timezones->isValidId($value)) {
                             $field->addError('invalid', $this->_(
                                 'Please enter a valid timezone id'
                             ));
@@ -107,13 +110,13 @@ class TaskAdd extends arch\node\Task {
             $this->request->query->groups->toArray() : null;
 
 
-        if($selectedGroups) {
+        if ($selectedGroups) {
             $groups = $this->data->user->group->fetch()
                 ->where('id', 'in', $selectedGroups)
                 ->orWhere('signifier', 'in', $selectedGroups)
                 ->toArray();
 
-            foreach($groups as $group) {
+            foreach ($groups as $group) {
                 $this->_client->groups->add($group);
             }
         } else {
@@ -123,12 +126,12 @@ class TaskAdd extends arch\node\Task {
                 ->where('id', 'in', $groupIds)
                 ->toKeyArray('id');
 
-            foreach($groupIds as $id) {
-                if(!isset($groups[$id])) {
+            foreach ($groupIds as $id) {
+                if (!isset($groups[$id])) {
                     continue;
                 }
 
-                if($this->_askBoolean('Add to '.$groups[$id]['name'].' group?')) {
+                if (Cli::confirm('Add to '.$groups[$id]['name'].' group?')->prompt()) {
                     $this->_client->groups->add($groups[$id]);
                 }
             }
@@ -139,8 +142,6 @@ class TaskAdd extends arch\node\Task {
         $this->_auth->user = $this->_client;
         $this->_auth->save();
 
-        $this->io->writeLine('Done');
+        Cli::success('Done');
     }
-
-
 }

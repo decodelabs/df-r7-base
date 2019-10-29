@@ -10,16 +10,19 @@ use df\core;
 use df\apex;
 use df\arch;
 
-class TaskScan extends arch\node\Task {
+use DecodeLabs\Terminus\Cli;
 
+class TaskScan extends arch\node\Task
+{
     const SCHEDULE = '0 18 * * *';
     const SCHEDULE_AUTOMATIC = true;
 
-    public function execute() {
-        $this->io->write('Compiling task list...');
+    public function execute()
+    {
+        Cli::{'yellow'}('Compiling task list: ');
 
         // Fetch full file list
-        $fileList = df\Launchpad::$loader->lookupFileListRecursive('apex/directory', ['php'], function($path) {
+        $fileList = df\Launchpad::$loader->lookupFileListRecursive('apex/directory', ['php'], function ($path) {
             return basename($path) == '_nodes';
         });
 
@@ -28,10 +31,10 @@ class TaskScan extends arch\node\Task {
         $reset = isset($this->request['reset']);
 
         // Filter to task list
-        foreach($fileList as $key => $path) {
+        foreach ($fileList as $key => $path) {
             $basename = substr(basename($path), 0, -4);
 
-            if(substr($basename, 0, 4) != 'Task') {
+            if (substr($basename, 0, 4) != 'Task') {
                 continue;
             }
 
@@ -40,20 +43,20 @@ class TaskScan extends arch\node\Task {
             $class = 'df\\apex\\directory\\'.implode('\\', $keyParts).'\\'.$basename;
             $ref = new \ReflectionClass($class);
 
-            if(!$ref->implementsInterface('df\\arch\\node\\ITaskNode')) {
+            if (!$ref->implementsInterface('df\\arch\\node\\ITaskNode')) {
                 continue;
             }
 
             $schedule = $class::getSchedule();
 
-            if($schedule === null) {
+            if ($schedule === null) {
                 continue;
             }
 
             $scheduled++;
             array_pop($keyParts);
 
-            if($keyParts[0] == 'front') {
+            if ($keyParts[0] == 'front') {
                 array_shift($keyParts);
             } else {
                 $keyParts[0] = '~'.$keyParts[0];
@@ -69,12 +72,12 @@ class TaskScan extends arch\node\Task {
             ];
         }
 
-        $this->io->writeLine(' found '.$total.' tasks, '.$scheduled.' can be scheduled');
+        Cli::success('found '.$total.', '.$scheduled.' schedulable');
         $lastRuns = null;
 
-        if($reset) {
+        if ($reset) {
             // Reset
-            $this->io->write('Resetting auto scheduled tasks...');
+            Cli::{'yellow'}('Resetting auto scheduled tasks: ');
 
             $lastRuns = $this->data->task->schedule->select('request', 'lastRun')
                 ->toList('request', 'lastRun');
@@ -83,7 +86,7 @@ class TaskScan extends arch\node\Task {
                 ->where('request', 'in', array_keys($schedules))
                 ->execute();
 
-            $this->io->writeLine(' '.$deleted.' found');
+            Cli::success($deleted.' found');
         } else {
             // Filter skippable
             $skip = 0;
@@ -91,13 +94,13 @@ class TaskScan extends arch\node\Task {
                 ->where('request', 'in', array_keys($schedules))
                 ->where('isAuto', '=', false);
 
-            foreach($skipList as $task) {
+            foreach ($skipList as $task) {
                 unset($schedules[$task['request']]);
                 $skip++;
             }
 
-            if($skip) {
-                $this->io->writeLine('Skipping '.$skip.' as they are manually scheduled');
+            if ($skip) {
+                Cli::warning('Skipping '.$skip.' as they are manually scheduled');
             }
 
 
@@ -106,7 +109,7 @@ class TaskScan extends arch\node\Task {
                 ->where('request', 'in', array_keys($schedules))
                 ->where('isAuto', '=', true);
 
-            foreach($updateList as $task) {
+            foreach ($updateList as $task) {
                 $schedules[$task['request']]['record'] = $task;
             }
         }
@@ -115,10 +118,10 @@ class TaskScan extends arch\node\Task {
         $spaced = false;
 
         // Write
-        foreach($schedules as $request => $set) {
+        foreach ($schedules as $request => $set) {
             $scheduleParts = explode(' ', $set['schedule'], 5);
 
-            if(isset($set['record'])) {
+            if (isset($set['record'])) {
                 $schedule = $set['record'];
             } else {
                 $schedule = $this->data->task->schedule->newRecord([
@@ -127,7 +130,7 @@ class TaskScan extends arch\node\Task {
                 ]);
             }
 
-            if(isset($lastRuns[$request])) {
+            if (isset($lastRuns[$request])) {
                 $schedule->lastRun = $lastRuns[$request];
             }
 
@@ -140,18 +143,19 @@ class TaskScan extends arch\node\Task {
                 'isLive' => $set['automatic']
             ]);
 
-            if(!$schedule->hasChanged()) {
-                //$this->io->writeLine('Not updating '.$request.' because it hasn\'t changed');
+            if (!$schedule->hasChanged()) {
+                //Cli::info('Not updating '.$request.' because it hasn\'t changed');
                 continue;
             }
 
-            if(!$spaced) {
+            if (!$spaced) {
                 $spaced = true;
-                $this->io->writeLine();
+                Cli::newLine();
             }
 
-            $this->io->writeLine('Scheduling '.$request.' at '.$set['schedule'].', '.$set['priority'].' priority');
+            Cli::{'yellow'}($request.' : '.$set['schedule'].', '.$set['priority'].' priority');
             $schedule->save();
+            Cli::success('done');
         }
     }
 }

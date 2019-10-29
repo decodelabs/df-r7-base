@@ -10,6 +10,7 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
 
 trait TApcuClear
@@ -46,8 +47,8 @@ trait TApcuClear
         }
 
         if (!extension_loaded('apcu')) {
-            if (isset($this->io)) {
-                $this->io->writeLine('APCU is not enabled');
+            if (Cli::isActiveSapi()) {
+                Cli::warning('APCU is not enabled');
             }
 
             return false;

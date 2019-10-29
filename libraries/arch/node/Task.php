@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
 
@@ -73,7 +74,7 @@ abstract class Task extends Base implements ITaskNode
         return parent::dispatch();
     }
 
-    public function runChild($request)
+    public function runChild($request, bool $announce=true)
     {
         $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request, true);
@@ -83,6 +84,11 @@ abstract class Task extends Base implements ITaskNode
             throw Glitch::EDefinition(
                 'Child node '.$request.' does not extend arch\\node\\Task'
             );
+        }
+
+        if ($announce) {
+            $reqString = ltrim(substr((string)$request, strlen('directory://')), '/');
+            Cli::comment($reqString);
         }
 
         $node->io = $this->io;
@@ -98,8 +104,8 @@ abstract class Task extends Base implements ITaskNode
             return $this;
         }
 
-        $this->io->writeLine('Switching to source mode...');
-        $this->io->writeLine();
+        Cli::notice('Switching to source mode');
+        Cli::newLine();
 
         $user = Systemic::$process->getCurrent()->getOwnerName();
         $request = clone $this->request;
@@ -114,13 +120,13 @@ abstract class Task extends Base implements ITaskNode
     protected function _askFor($label, callable $validator, $default=null, $check=false)
     {
         do {
-            $this->io->write('>> '.$label.': ');
+            Cli::{'cyan'}($label.': ');
 
             if ($default !== null) {
-                $this->io->write('['.$default.'] ');
+                Cli::write('['.$default.'] ');
             }
 
-            $answer = trim($this->io->readLine());
+            $answer = trim(Cli::readLine());
 
             if (!strlen($answer) && $default !== null) {
                 $answer = $default;
@@ -137,7 +143,7 @@ abstract class Task extends Base implements ITaskNode
                 $valid->validate([$key => $answer]);
 
                 foreach ($valid->getCurrentData()->{$key}->getErrors() as $error) {
-                    $this->io->writeLine('!! '.$error);
+                    Cli::error($error);
                 }
 
                 $answer = $valid[$key];
@@ -153,9 +159,7 @@ abstract class Task extends Base implements ITaskNode
                     $answerString = (string)$answerString;
                 }
 
-                $this->io->write('>> Is this correct? '.$answerString.' [Y/n] ');
-                $checkAnswer = trim($this->io->readLine());
-                $valid = $this->format->stringToBoolean($checkAnswer, true);
+                $valid = Cli::confirm('Is this correct? '.$answerString, true)->prompt();
             }
         } while (!$valid);
 
@@ -165,11 +169,13 @@ abstract class Task extends Base implements ITaskNode
     protected function _askPassword($label, $repeat=false, $required=true, $hash=false)
     {
         do {
-            $this->io->write('>> '.$label.': ');
-            system('stty -echo');
-            $answer = trim($this->io->readLine());
-            system('stty echo');
-            $this->io->writeLine();
+            Cli::{'cyan'}($label.': ');
+            $snapshot = Cli::snapshotStty();
+            Cli::toggleInputEcho(false);
+
+            $answer = trim(Cli::readLine());
+            Cli::restoreStty($snapshot);
+            Cli::newLine();
 
             $validator = $this->data->newValidator()
                 ->addField('password')
@@ -178,11 +184,14 @@ abstract class Task extends Base implements ITaskNode
             $data = ['password' => $answer];
 
             if ($repeat) {
-                $this->io->write('>> Repeat '.lcfirst($label).': ');
-                system('stty -echo');
-                $repeatAnswer = trim($this->io->readLine());
-                system('stty echo');
-                $this->io->writeLine();
+                Cli::{'cyan'}('Repeat '.lcfirst($label).': ');
+                $snapshot = Cli::snapshotStty();
+                Cli::toggleInputEcho(false);
+
+                $repeatAnswer = trim(Cli::readLine());
+                Cli::restoreStty($snapshot);
+                Cli::newLine();
+
                 $validator->setMatchField('repeat');
                 $data['repeat'] = $repeatAnswer;
             }
@@ -195,10 +204,10 @@ abstract class Task extends Base implements ITaskNode
                 $validator->data['password'];
 
             foreach ($validator->data->password->getErrors() as $error) {
-                $this->io->writeLine('!! '.$error);
+                Cli::error($error);
             }
             foreach ($validator->data->repeat->getErrors() as $error) {
-                $this->io->writeLine('!! '.$error);
+                Cli::error($error);
             }
         } while (!$valid);
 
@@ -207,9 +216,6 @@ abstract class Task extends Base implements ITaskNode
 
     protected function _askBoolean($label, $default=false)
     {
-        $default = (bool)$default;
-        $this->io->write('>> '.$label.' '.($default ? '[Y/n]' : '[y/N]').' ');
-        $answer = trim($this->io->readLine());
-        return $this->format->stringToBoolean($answer, $default);
+        return Cli::confirm($label, $default)->prompt();
     }
 }

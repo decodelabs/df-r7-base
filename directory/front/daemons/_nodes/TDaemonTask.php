@@ -10,6 +10,7 @@ use df\core;
 use df\apex;
 use df\halo;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Systemic;
 
 trait TDaemonTask
@@ -19,7 +20,7 @@ trait TDaemonTask
         $env = core\environment\Config::getInstance();
 
         if (!$env->canUseDaemons()) {
-            $this->io->writeLine('Daemons are currently disabled in config');
+            Cli::alert('Daemons are currently disabled in config');
             $this->forceResponse('');
         }
 
@@ -27,7 +28,7 @@ trait TDaemonTask
         $user = $env->getDaemonUser();
 
         if ($user != $process->getOwnerName() && !$process->isPrivileged()) {
-            $this->io->writeLine('Restarting task '.$this->request->getPathString().' as root');
+            Cli::notice('Restarting task '.$this->request->getPathString().' as root');
             $request = clone $this->request;
             $request->query->_privileged = true;
             $this->task->launch($request, $this->io, 'root');

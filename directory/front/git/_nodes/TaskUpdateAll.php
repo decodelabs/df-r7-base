@@ -12,6 +12,8 @@ use df\halo;
 use df\arch;
 use df\spur;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskUpdateAll extends arch\node\Task
 {
     public function execute()
@@ -25,28 +27,26 @@ class TaskUpdateAll extends arch\node\Task
                 continue;
             }
 
-            $this->io->writeLine('# git pull "'.$package['name'].'"');
+            Cli::{'yellow'}($package['name'].': ');
             $package['repo']->setMultiplexer($this->io);
 
             try {
                 if (!$result = $package['repo']->pull()) {
-                    $this->io->writeLine('!! Package "'.$package['name'].'" repo could not be found !!');
+                    Cli::error('repo could not be found');
                 }
-
-                $this->io->writeLine();
             } catch (spur\vcs\git\EGlitch $e) {
-                $this->io->writeErrorLine($e->getMessage());
+                Cli::writeError($e->getMessage());
+                Cli::newErrorLine();
                 return;
             }
         }
 
-        $this->io->writeLine('Done');
         $noBuild = isset($this->request['no-build']);
 
         if ($this->app->isDevelopment() && !$noBuild) {
-            $this->runChild('app/build?dev');
+            $this->runChild('app/build?dev', false);
         } elseif ($this->app->isTesting() && !$noBuild) {
-            $this->runChild('app/build');
+            $this->runChild('app/build', false);
         }
     }
 }

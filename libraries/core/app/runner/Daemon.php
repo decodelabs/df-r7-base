@@ -10,6 +10,7 @@ use df\core;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Systemic;
@@ -35,7 +36,7 @@ class Daemon extends Base
         $env = core\environment\Config::getInstance();
 
         if (!$env->canUseDaemons() || !extension_loaded('pcntl')) {
-            $this->io->writeErrorLine('Daemons are not enabled in config');
+            Cli::error('Daemons are not enabled in config');
             return;
         }
 
@@ -50,7 +51,7 @@ class Daemon extends Base
         try {
             $daemon = halo\daemon\Base::factory($arg->toString());
         } catch (\Throwable $e) {
-            $this->io->writeErrorLine($e->getMessage());
+            Cli::error($e->getMessage());
             return;
         }
 
@@ -61,7 +62,7 @@ class Daemon extends Base
 
         if ($settings) {
             if (!$settings['isEnabled']) {
-                $this->io->writeErrorLine('Daemon '.$daemon->getName().' is not currently enabled');
+                Cli::error('Daemon '.$daemon->getName().' is not currently enabled');
                 return;
             }
 
@@ -78,7 +79,7 @@ class Daemon extends Base
         $user = $daemon->getUser();
 
         if (!$currentProcess->isPrivileged() && $user != $currentProcess->getOwnerName()) {
-            $this->io->writeErrorLine('You are trying to control this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
+            Cli::error('You are trying to control this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
             return;
         }
 
@@ -108,12 +109,12 @@ class Daemon extends Base
                 return;
 
             case 'pause':
-                $this->io->writeLine('Pausing daemon '.$name);
+                Cli::info('Pausing daemon '.$name);
                 $process->sendSignal('SIGTSTP');
                 return;
 
             case 'resume':
-                $this->io->writeLine('Resuming daemon '.$name);
+                Cli::info('Resuming daemon '.$name);
                 $process->sendSignal('SIGCONT');
                 return;
 
@@ -126,8 +127,8 @@ class Daemon extends Base
                 return;
 
             default:
-                $this->io->writeErrorLine('Unknown commend '.$command);
-                $this->io->writeErrorLine('Use: start, stop, pause, resume, status, nudge');
+                Cli::error('Unknown commend '.$command);
+                Cli::error('Use: start, stop, pause, resume, status, nudge');
                 return;
         }
     }
@@ -147,19 +148,18 @@ class Daemon extends Base
         $name = $daemon->getName();
 
         if ($process) {
-            $this->io->writeErrorLine('Daemon '.$name.' is already running');
+            Cli::info('Daemon '.$name.' is already running');
             return;
         }
 
-        $this->io->write('Starting daemon '.$name);
+        Cli::{'yellow'}('Starting daemon '.$name);
 
         if ($daemon->isTesting()) {
-            $this->io->writeLine();
-
+            Cli::newLine();
             $daemon->run();
             return;
         } else {
-            $this->io->write('...');
+            Cli::{'yellow'}(': ');
         }
 
         $entryPath = df\Launchpad::$app->path.'/entry/'.df\Launchpad::$app->envId.'.php';
@@ -185,9 +185,9 @@ class Daemon extends Base
         }
 
         if ($process) {
-            $this->io->writeLine(' running with PID: '.$process->getProcessId());
+            Cli::success('PID: '.$process->getProcessId());
         } else {
-            $this->io->writeLine(' done, but PID could not be found!');
+            Cli::warning('PID could not be found!');
         }
 
         return;
@@ -198,17 +198,18 @@ class Daemon extends Base
         $name = $daemon->getName();
 
         if (!$process) {
-            $this->io->writeLine('Daemon '.$name.' is not running');
+            Cli::info('Daemon '.$name.' is not running');
             return;
         }
 
-        $this->io->write('Stopping daemon '.$name.'...');
+        Cli::{'yellow'}('Stopping daemon '.$name.': ');
         $process->sendSignal('SIGTERM');
         $count = 0;
 
         while ($process->isAlive()) {
             if ($count++ > 10) {
-                $this->io->writeLine(' TERM failed, trying KILL...');
+                Cli::error('TERM failed');
+                Cli::{'yellow'}('Trying KILL: ');
                 $process->sendSignal('SIGKILL');
                 sleep(5);
                 break;
@@ -218,9 +219,9 @@ class Daemon extends Base
         }
 
         if ($process->isAlive()) {
-            $this->io->writeLine(' still running, not sure what to do now!');
+            Cli::error(' still running - fix manually!');
         } else {
-            $this->io->writeLine(' done');
+            Cli::success('done');
         }
     }
 
@@ -229,13 +230,13 @@ class Daemon extends Base
         $name = $daemon->getName();
 
         if (!$process) {
-            $this->io->writeLine('Daemon '.$name.' is not currently running');
+            Cli::info('Daemon '.$name.' is not currently running');
             return;
         }
 
 
         if (!$this->_statusData) {
-            $this->io->writeLine('Daemon '.$name.' is currently running with PID '.$process->getProcessId());
+            Cli::info('Daemon '.$name.' is currently running with PID '.$process->getProcessId());
             return;
         }
 
@@ -246,38 +247,38 @@ class Daemon extends Base
             $state = 'unknown';
         }
 
-        $this->io->writeLine('Daemon '.$name.' is currently '.$state);
+        Cli::info('Daemon '.$name.' is currently '.$state);
 
         foreach ($this->_statusData as $key => $value) {
             if (substr($key, -4) == 'Time') {
                 $value = (new core\time\Date($value))->localeFormat();
             }
 
-            $this->io->writeLine(flex\Text::formatName($key).': '.$value);
+            Cli::info(flex\Text::formatName($key).': '.$value);
         }
     }
 
     public function nudge(halo\daemon\IDaemon $daemon, ManagedProcess $process=null)
     {
         $name = $daemon->getName();
-        $this->io->write('Checking daemon '.$name.'...');
+        Cli::{'yellow'}('Checking daemon '.$name.': ');
 
         if (!$process) {
-            $this->io->writeLine(' not running');
+            Cli::warning('not running');
             return $this->start($daemon, $process);
         }
 
         if (isset($this->_statusData['statusTime'])) {
             if (time() - $this->_statusData['statusTime'] > self::THRESHOLD) {
                 // Has it got stuck?
-                $this->io->writeLine();
-                $this->io->write('Status is stale, restarting...');
+                Cli::alert('may have got stuck');
+                Cli::{'yellow'}('Status is stale, restarting: ');
 
                 $process->kill();
                 $process = halo\daemon\Base::launch('TaskSpool');
             }
         }
 
-        $this->io->writeLine(' running with PID: '.$process->getProcessId());
+        Cli::success('running with PID: '.$process->getProcessId());
     }
 }

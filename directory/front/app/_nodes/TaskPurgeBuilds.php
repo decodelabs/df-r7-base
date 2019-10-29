@@ -12,6 +12,7 @@ use df\arch;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Terminus\Cli;
 use DecodeLabs\Atlas;
 
 class TaskPurgeBuilds extends arch\node\Task
@@ -22,7 +23,7 @@ class TaskPurgeBuilds extends arch\node\Task
     {
         $this->ensureDfSource();
 
-        $this->io->write('Purging old build folders...');
+        Cli::{'yellow'}('Purging old build folders: ');
 
         $appPath = df\Launchpad::$app->path;
         $buildDir = Atlas::$fs->dir($appPath.'/data/local/build');
@@ -30,7 +31,7 @@ class TaskPurgeBuilds extends arch\node\Task
         $active = $this->filter['?active']->guid();
 
         if (!$buildDir->exists()) {
-            $this->io->writeLine(' 0 found');
+            Cli::success('0 found');
         } else {
             $checkTime = $this->date('-'.self::BUILD_DURATION)->toTimestamp();
             $del = 0;
@@ -59,10 +60,10 @@ class TaskPurgeBuilds extends arch\node\Task
             }
 
             if ($keep) {
-                $this->io->write(' kept '.$keep.',');
+                Cli::inlineNotice('kept '.$keep.', ');
             }
 
-            $this->io->writeLine(' deleted '.$del);
+            Cli::alert('deleted '.$del);
 
             if ($buildDir->isEmpty()) {
                 $buildDir->delete();

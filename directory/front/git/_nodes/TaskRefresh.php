@@ -11,6 +11,8 @@ use df\apex;
 use df\halo;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskRefresh extends arch\node\Task
 {
     public function extractCliArguments(core\cli\ICommand $command)
@@ -38,13 +40,15 @@ class TaskRefresh extends arch\node\Task
         }
 
         foreach ($names as $name) {
-            $this->io->writeLine('Pulling updates for package "'.$name.'"');
+            Cli::{'yellow'}('Pulling updates for '.$name.': ');
             $model = $this->data->getModel('package');
 
             if (!$result = $model->updateRemote($name, $this->io)) {
-                $this->io->writeLine('!! Package "'.$name.'" repo could not be found !!');
+                Cli::error('repo could not be found');
             } else {
-                $this->io->write($result."\n");
+                Cli::newLine();
+                Cli::write($result);
+                Cli::newLine();
             }
         }
     }

@@ -26,10 +26,9 @@ class Curl implements link\http\IAsyncTransport
             $handle = new Curl_Handle($request, $client, $promise);
 
             if (!curl_exec($handle->resource)) {
-                throw Glitch::ERuntime(
-                    curl_error($handle->resource),
-                    curl_errno($handle->resource)
-                );
+                throw Glitch::ERuntime(curl_error($handle->resource), [
+                    'code' => curl_errno($handle->resource)
+                ]);
             }
 
             curl_close($handle->resource);

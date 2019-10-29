@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\axis;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskRebuildSchemas extends arch\node\Task
 {
     public function execute()
@@ -25,16 +27,18 @@ class TaskRebuildSchemas extends arch\node\Task
             try {
                 $unit = axis\Model::loadUnitFromId($unitId);
             } catch (axis\EGlitch $e) {
-                $this->io->writeLine('Skipped '.$unitId.', definition not found');
+                Cli::alert('Skipped '.$unitId.', definition not found');
                 continue;
             }
+
+            Cli::{'yellow'}($unitId.': ');
 
             $schema = $unit->buildInitialSchema();
             $unit->updateUnitSchema($schema);
             $unit->validateUnitSchema($schema);
             axis\schema\Manager::getInstance()->store($unit, $schema);
 
-            $this->io->writeLine('Updated '.$unitId);
+            Cli::success('done');
         }
 
         axis\schema\Cache::getInstance()->clearAll();

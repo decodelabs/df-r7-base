@@ -12,6 +12,8 @@ use df\arch;
 use df\halo;
 use df\flex;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskBuild extends arch\node\Task
 {
     public function extractCliArguments(core\cli\ICommand $command)
@@ -50,17 +52,17 @@ class TaskBuild extends arch\node\Task
         $buildId = $controller->getBuildId();
 
         if (!$controller->shouldCompile()) {
-            $this->io->writeLine('Builder is running in dev mode, no build folder will be created');
-            $this->io->writeLine();
+            Cli::info('Builder is running in dev mode, no build folder will be created');
         }
 
         // Creating build
-        $this->io->writeLine('Using build id: '.$buildId);
-        $this->io->writeLine();
+        Cli::{'yellow'}('Using build id: ');
+        Cli::{'.brightMagenta'}($buildId);
+        Cli::newLine();
 
 
         // Run custom tasks
-        $this->runChild('./build-custom');
+        $this->runChild('./build-custom', false);
 
 
         // Clear config cache
@@ -68,50 +70,45 @@ class TaskBuild extends arch\node\Task
 
 
         if ($controller->shouldCompile()) {
-            $this->io->write('Packaging files: ');
+            Cli::{'yellow'}('Packaging files: ');
 
 
             // Create build
             foreach ($controller->createBuild() as $packageName) {
-                $this->io->write(' '.$packageName);
+                Cli::{'.brightMagenta'}(' '.$packageName);
             }
 
-            $this->io->writeLine();
-            $this->io->writeLine();
+            Cli::newLine();
+            Cli::newLine();
 
             // Late build tasks
-            $this->runChild('./build-custom?after='.$buildId);
+            $this->runChild('./build-custom?after='.$buildId, false);
 
             // Move to run path
             $controller->activateBuild();
         } else {
             // Late build tasks
-            $this->runChild('./build-custom?after');
+            $this->runChild('./build-custom?after', false);
         }
 
 
         // Generate entries
-        $this->io->writeLine('# app/generate-entry');
         $this->runChild('./generate-entry');
+        Cli::newLine();
 
         // Clear cache
-        $this->io->writeLine();
-        $this->io->writeLine('# cache/purge');
         $this->runChild('cache/purge');
+        Cli::newLine();
 
         // Restart daemons
-        $this->io->writeLine();
-        $this->io->writeLine('# daemons/restart-all');
         $this->runChild('daemons/restart-all');
+        Cli::newLine();
 
         // Purge
-        $this->io->writeLine();
-        $this->io->writeLine('# app/purge-builds?active='.$buildId);
         $this->runChild('./purge-builds?active='.$buildId);
+        Cli::newLine();
 
         // Task spool
-        $this->io->writeLine();
-        $this->io->writeLine('# tasks/spool');
         $this->runChild('tasks/spool');
     }
 }
