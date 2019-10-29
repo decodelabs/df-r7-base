@@ -35,7 +35,9 @@ class Manager implements arch\node\ITaskManager
             $args[] = '--df-source';
         }
 
-        if ($decoratable === null) {
+        if ($user === 'root') {
+            $decoratable = false;
+        } elseif ($decoratable === null) {
             $decoratable = true;
 
             if ($user !== null && $user !== Systemic::$process->getCurrent()->getOwnerName()) {
@@ -62,7 +64,9 @@ class Manager implements arch\node\ITaskManager
             $args[] = '--df-source';
         }
 
-        if ($decoratable === null) {
+        if ($user === 'root') {
+            $decoratable = false;
+        } elseif ($decoratable === null) {
             $decoratable = true;
 
             if ($user !== null && $user !== Systemic::$process->getCurrent()->getOwnerName()) {
