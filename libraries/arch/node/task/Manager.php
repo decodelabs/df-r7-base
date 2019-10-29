@@ -35,11 +35,17 @@ class Manager implements arch\node\ITaskManager
             $args[] = '--df-source';
         }
 
+        $decoratable = true;
+
+        if ($user !== null && $user !== Systemic::$process->getCurrent()->getOwnerName()) {
+            $decoratable = false;
+        }
+
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
             ->thenIf($session, function ($launcher) use ($session) {
                 $launcher->setIoBroker($session->getBroker());
             })
-            ->setDecoratable(!(bool)$user)
+            ->setDecoratable($decoratable)
             ->launch();
     }
 
@@ -54,8 +60,14 @@ class Manager implements arch\node\ITaskManager
             $args[] = '--df-source';
         }
 
+        $decoratable = true;
+
+        if ($user !== null && $user !== Systemic::$process->getCurrent()->getOwnerName()) {
+            $decoratable = false;
+        }
+
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
-            ->setDecoratable(!(bool)$user)
+            ->setDecoratable($decoratable)
             ->launchBackground();
     }
 
