@@ -11,6 +11,8 @@ use df\apex;
 use df\axis;
 use df\spur;
 
+use DecodeLabs\Terminus\Session;
+
 class Model extends axis\Model
 {
     protected $_gitPath = null;
@@ -102,11 +104,11 @@ class Model extends axis\Model
     }
 
     // Update remote
-    public function updateRemote($name, core\io\IMultiplexer $multiplexer=null)
+    public function updateRemote($name, ?Session $session=null)
     {
         foreach ($this->getInstalledPackageList() as $package) {
             if ($package['name'] == $name && $package['repo']) {
-                $package['repo']->setMultiplexer($multiplexer);
+                $package['repo']->setCliSession($session);
                 return $package['repo']->updateRemote();
             }
         }
@@ -114,7 +116,7 @@ class Model extends axis\Model
         return false;
     }
 
-    public function updateRemotes(core\io\IMultiplexer $multiplexer=null)
+    public function updateRemotes(?Session $session=null)
     {
         $output = [];
 
@@ -123,7 +125,7 @@ class Model extends axis\Model
                 continue;
             }
 
-            $package['repo']->setMultiplexer($multiplexer);
+            $package['repo']->setCliSession($session);
             $output[$package['name']] = $package['repo']->updateRemote();
         }
 
@@ -132,11 +134,11 @@ class Model extends axis\Model
 
 
     // Pull
-    public function pull($name, core\io\IMultiplexer $multiplexer=null)
+    public function pull($name, ?Session $session=null)
     {
         foreach ($this->getInstalledPackageList() as $package) {
             if ($package['name'] == $name && $package['repo']) {
-                $package['repo']->setMultiplexer($multiplexer);
+                $package['repo']->setCliSession($session);
                 return $package['repo']->pull();
             }
         }
@@ -144,7 +146,7 @@ class Model extends axis\Model
         return false;
     }
 
-    public function pullAll(core\io\IMultiplexer $multiplexer=null)
+    public function pullAll(?Session $session=null)
     {
         $output = [];
 
@@ -153,7 +155,7 @@ class Model extends axis\Model
                 continue;
             }
 
-            $package['repo']->setMultiplexer($multiplexer);
+            $package['repo']->setCliSession($session);
             $output[$package['name']] = $package['repo']->pull();
         }
 

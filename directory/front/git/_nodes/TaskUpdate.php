@@ -41,11 +41,11 @@ class TaskUpdate extends arch\node\Task
         }
 
         foreach ($names as $name) {
-            Cli::{'yellow'}($name.': ');
+            Cli::{'brightMagenta'}($name.': ');
             $model = $this->data->getModel('package');
 
             try {
-                if (!$result = $model->pull($name, $this->io)) {
+                if (!$result = $model->pull($name, Cli::getSession())) {
                     Cli::error('repo could not be found');
                 }
 

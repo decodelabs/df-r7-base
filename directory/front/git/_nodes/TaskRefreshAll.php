@@ -25,8 +25,8 @@ class TaskRefreshAll extends arch\node\Task
                 continue;
             }
 
-            Cli::{'yellow'}($package['name'].' ');
-            $package['repo']->setMultiplexer($this->io);
+            Cli::{'brightMagenta'}($package['name'].' ');
+            $package['repo']->setCliSession(Cli::getSession());
             $package['repo']->updateRemote();
             Cli::success('done');
         }

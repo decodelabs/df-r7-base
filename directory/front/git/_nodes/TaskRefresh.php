@@ -40,10 +40,10 @@ class TaskRefresh extends arch\node\Task
         }
 
         foreach ($names as $name) {
-            Cli::{'yellow'}('Pulling updates for '.$name.': ');
+            Cli::{'brightMagenta'}('Pulling updates for '.$name.': ');
             $model = $this->data->getModel('package');
 
-            if (!$result = $model->updateRemote($name, $this->io)) {
+            if (!$result = $model->updateRemote($name, Cli::getSession())) {
                 Cli::error('repo could not be found');
             } else {
                 Cli::newLine();

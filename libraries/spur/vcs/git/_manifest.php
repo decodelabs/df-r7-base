@@ -12,6 +12,7 @@ use df\halo;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
+use DecodeLabs\Terminus\Session;
 
 interface IRepository
 {
@@ -90,7 +91,7 @@ trait TRepository
 {
     protected static $_gitPath = '/usr/bin/git';
     protected $_gitUser;
-    protected $_multiplexer;
+    protected $_session;
 
     public function setGitUser($user)
     {
@@ -117,18 +118,18 @@ trait TRepository
         return self::$_gitPath;
     }
 
-    public function setMultiplexer(?core\io\IMultiplexer $multiplexer)
+    public function setCliSession(?Session $session)
     {
-        $this->_multiplexer = $multiplexer;
+        $this->_session = $session;
         return $this;
     }
 
-    public function getMultiplexer(): ?core\io\IMultiplexer
+    public function getCliSession(): ?Session
     {
-        return $this->_multiplexer;
+        return $this->_session;
     }
 
-    protected static function _runCommandIn($path, $command, array $arguments=null, ?core\io\IMultiplexer $multiplexer=null, string $user=null)
+    protected static function _runCommandIn($path, $command, array $arguments=null, ?Session $session=null, string $user=null)
     {
         $args = [$command];
 
@@ -167,8 +168,8 @@ trait TRepository
 
         $launcher = Systemic::$process->newLauncher(basename(self::$_gitPath), $args, dirname(self::$_gitPath))
             ->setUser($user)
-            ->thenIf($multiplexer, function ($launcher) use ($multiplexer) {
-                $multiplexer->exportToAtlasLauncher($launcher);
+            ->thenIf($session, function ($launcher) use ($session) {
+                $launcher->setIoBroker($session->getBroker());
             });
 
         if ($path !== null) {

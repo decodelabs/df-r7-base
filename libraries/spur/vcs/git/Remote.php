@@ -93,6 +93,6 @@ class Remote implements IRemote
     // Commands
     public function _runCommand($command, array $arguments=null)
     {
-        return self::_runCommandIn(null, $command, $arguments, $this->_multiplexer, $this->_gitUser);
+        return self::_runCommandIn(null, $command, $arguments, $this->_session, $this->_gitUser);
     }
 }

@@ -27,8 +27,8 @@ class TaskUpdateAll extends arch\node\Task
                 continue;
             }
 
-            Cli::{'yellow'}($package['name'].': ');
-            $package['repo']->setMultiplexer($this->io);
+            Cli::{'brightMagenta'}($package['name'].': ');
+            $package['repo']->setCliSession(Cli::getSession());
 
             try {
                 if (!$result = $package['repo']->pull()) {

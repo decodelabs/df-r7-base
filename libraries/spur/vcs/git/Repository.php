@@ -655,6 +655,6 @@ class Repository implements ILocalRepository
     // Commands
     public function _runCommand($command, array $arguments=null)
     {
-        return self::_runCommandIn($this->_path, $command, $arguments, $this->_multiplexer, $this->_gitUser);
+        return self::_runCommandIn($this->_path, $command, $arguments, $this->_session, $this->_gitUser);
     }
 }
