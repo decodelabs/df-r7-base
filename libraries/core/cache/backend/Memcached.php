@@ -8,6 +8,8 @@ namespace df\core\cache\backend;
 use df;
 use df\core;
 
+use DecodeLabs\Terminus\Session;
+
 class Memcached implements core\cache\IBackend
 {
     use core\TValueMap;
@@ -17,12 +19,12 @@ class Memcached implements core\cache\IBackend
     protected $_lifeTime;
     protected $_cache;
 
-    public static function purgeApp(core\collection\ITree $options, core\io\IMultiplexer $io=null)
+    public static function purgeApp(core\collection\ITree $options, ?Session $session=null)
     {
         self::purgeAll($options);
     }
 
-    public static function purgeAll(core\collection\ITree $options, core\io\IMultiplexer $io=null)
+    public static function purgeAll(core\collection\ITree $options, ?Session $session=null)
     {
         if (!self::isLoadable()) {
             return;

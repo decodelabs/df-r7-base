@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\arch;
 
+use DecodeLabs\Terminus\Session;
+
 class Apcu implements core\cache\IBackend
 {
     use core\TValueMap;
@@ -18,7 +20,7 @@ class Apcu implements core\cache\IBackend
     protected $_cache;
     protected $_isCli = false;
 
-    public static function purgeApp(core\collection\ITree $options, core\io\IMultiplexer $io=null)
+    public static function purgeApp(core\collection\ITree $options, ?Session $session=null)
     {
         if (extension_loaded('apcu') && !(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli'))) {
             $prefix = df\Launchpad::$app->getUniquePrefix().'-';
@@ -35,10 +37,10 @@ class Apcu implements core\cache\IBackend
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
         $taskMan = arch\node\task\Manager::getInstance();
-        $io ? $taskMan->launch($request, $io) : $taskMan->launchBackground($request);
+        $session ? $taskMan->launch($request, $session) : $taskMan->launchBackground($request);
     }
 
-    public static function purgeAll(core\collection\ITree $options, core\io\IMultiplexer $io=null)
+    public static function purgeAll(core\collection\ITree $options, ?Session $session=null)
     {
         if (extension_loaded('apcu')) {
             apcu_clear_cache();
@@ -48,7 +50,7 @@ class Apcu implements core\cache\IBackend
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
         $taskMan = arch\node\task\Manager::getInstance();
-        $io ? $taskMan->launch($request, $io) : $taskMan->launchBackground($request);
+        $session ? $taskMan->launch($request, $session) : $taskMan->launchBackground($request);
     }
 
     public static function prune(core\collection\ITree $options)

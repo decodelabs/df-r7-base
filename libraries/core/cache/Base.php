@@ -9,6 +9,7 @@ use df;
 use df\core;
 
 use DecodeLabs\Glitch;
+use DecodeLabs\Terminus\Session;
 
 abstract class Base implements ICache
 {
@@ -21,7 +22,7 @@ abstract class Base implements ICache
 
     private $_backend;
 
-    public static function purgeApp(core\io\IMultiplexer $io=null): void
+    public static function purgeApp(Session $session=null): void
     {
         if (function_exists('opcache_reset')) {
             opcache_reset();
@@ -31,11 +32,11 @@ abstract class Base implements ICache
 
         foreach (df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
-            $class::purgeApp($options, $io);
+            $class::purgeApp($options, $session);
         }
     }
 
-    public static function purgeAll(core\io\IMultiplexer $io=null): void
+    public static function purgeAll(?Session $session=null): void
     {
         if (function_exists('opcache_reset')) {
             opcache_reset();
@@ -45,7 +46,7 @@ abstract class Base implements ICache
 
         foreach (df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $options = $config->getBackendOptions($name);
-            $class::purgeAll($options, $io);
+            $class::purgeAll($options, $session);
         }
     }
 

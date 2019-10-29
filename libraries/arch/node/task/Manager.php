@@ -14,6 +14,9 @@ use df\flex;
 
 use DecodeLabs\Systemic;
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
+use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Terminus\Session;
+use DecodeLabs\Atlas;
 
 class Manager implements arch\node\ITaskManager
 {
@@ -21,7 +24,7 @@ class Manager implements arch\node\ITaskManager
 
     const REGISTRY_PREFIX = 'manager://task';
 
-    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): ProcessResult
+    public function launch($request, ?Session $session=null, $user=null, bool $dfSource=false): ProcessResult
     {
         $request = arch\Request::factory($request);
         $path = df\Launchpad::$app->path.'/entry/';
@@ -33,8 +36,8 @@ class Manager implements arch\node\ITaskManager
         }
 
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
-            ->thenIf($multiplexer, function ($launcher) use ($multiplexer) {
-                $multiplexer->exportToAtlasLauncher($launcher);
+            ->thenIf($session, function ($launcher) use ($session) {
+                $launcher->setIoBroker($session->getBroker());
             })
             ->setDecoratable(!(bool)$user)
             ->launch();
@@ -56,16 +59,21 @@ class Manager implements arch\node\ITaskManager
             ->launchBackground();
     }
 
-    public function launchQuietly($request)
+    public function launchQuietly($request): void
     {
         if (df\Launchpad::$runner instanceof core\app\runner\Task) {
-            return $this->invoke($request, new core\io\Multiplexer(null, 'memory'));
+            $session = Cli::getSession();
+            $oldBroker = $session->getBroker();
+            $session->setBroker(Atlas::newBroker());
+
+            $this->invoke($request);
+            $session->setBroker($oldBroker);
         } else {
-            return $this->launchBackground($request);
+            $this->launchBackground($request);
         }
     }
 
-    public function invoke($request, core\io\IMultiplexer $io=null): core\io\IMultiplexer
+    public function invoke($request): void
     {
         $request = arch\Request::factory($request);
         $context = arch\Context::factory($request, 'Task', true);
@@ -77,12 +85,7 @@ class Manager implements arch\node\ITaskManager
             );
         }
 
-        if ($io) {
-            $node->io = $io;
-        }
-
         $node->dispatch();
-        return $node->io;
     }
 
     public function initiateStream($request): link\http\IResponse

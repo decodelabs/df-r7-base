@@ -10,17 +10,26 @@ use df\core;
 use df\apex;
 use df\arch;
 
+use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Atlas;
+
 class TaskLaunchQueued extends arch\node\Task
 {
     protected $_log;
-    protected $_channel;
     protected $_entry;
     protected $_timer;
 
+    protected $_outputReceiver;
+    protected $_errorReceiver;
+
     protected function _beforeDispatch()
     {
-        $this->_channel = (new core\fs\MemoryFile('', 'text/plain'))->setId('buffer');
-        $this->io->addChannel($this->_channel);
+        $this->_outputReceiver = Atlas::$fs->newMemoryFile();
+        $this->_errorReceiver = Atlas::$fs->newMemoryFile();
+
+        Cli::getSession()->getBroker()
+            ->addOutputReceiver($this->_outputReceiver)
+            ->addErrorReceiver($this->_errorReceiver);
     }
 
     public function execute()
@@ -43,7 +52,7 @@ class TaskLaunchQueued extends arch\node\Task
         }
 
         $this->_timer = new core\time\Timer();
-        $this->task->launch($this->_entry['request'], $this->io);
+        $this->task->launch($this->_entry['request'], Cli::getSession());
     }
 
     protected function _afterDispatch($output)
@@ -54,7 +63,7 @@ class TaskLaunchQueued extends arch\node\Task
 
     public function handleException(\Throwable $e)
     {
-        $this->_channel->writeError((string)$e);
+        Cli::writeErrorLine((string)$e);
         $this->_finalizeLog();
 
         parent::handleException($e);
@@ -66,8 +75,8 @@ class TaskLaunchQueued extends arch\node\Task
             return;
         }
 
-        $output = $this->_channel->getContents();
-        $error = $this->_channel->getErrorBuffer();
+        $output = $this->_outputReceiver->getContents();
+        $error = $this->_errorReceiver->getContents();
 
         if (!strlen($output)) {
             $output = null;

@@ -19,13 +19,19 @@ class TaskSpool extends arch\node\Task
     const QUEUE_LIMIT = 10;
 
     protected $_log;
-    protected $_channel;
     protected $_timer;
+
+    protected $_outputReceiver;
+    protected $_errorReceiver;
 
     protected function _beforeDispatch()
     {
-        $this->_channel = (new core\fs\MemoryFile('', 'text/plain'))->setId('buffer');
-        $this->io->addChannel($this->_channel);
+        $this->_outputReceiver = Atlas::$fs->newMemoryFile();
+        $this->_errorReceiver = Atlas::$fs->newMemoryFile();
+
+        Cli::getSession()->getBroker()
+            ->addOutputReceiver($this->_outputReceiver)
+            ->addErrorReceiver($this->_errorReceiver);
 
         $this->_log = $this->data->task->log->newRecord([
                 'request' => self::SELF_REQUEST,
@@ -53,7 +59,7 @@ class TaskSpool extends arch\node\Task
             ->count();
 
         if ($justRun) {
-            Cli::info('The spool task has already recently - please try again later');
+            Cli::info('The spool task has run recently - please try again later');
             $this->_log->delete();
             return;
         }
@@ -124,9 +130,9 @@ class TaskSpool extends arch\node\Task
             Cli::newLine();
             Cli::comment($request.' : '.$taskId);
 
-            $this->io->removeChannel($this->_channel);
+            //$this->io->removeChannel($this->_channel);
             $this->runChild('tasks/launch-queued?id='.$taskId, false);
-            $this->io->addChannel($this->_channel);
+            //$this->io->addChannel($this->_channel);
         }
 
         $this->data->task->queue->delete()
@@ -142,7 +148,7 @@ class TaskSpool extends arch\node\Task
 
     public function handleException(\Throwable $e)
     {
-        $this->_channel->writeError((string)$e);
+        Cli::writeErrorLine((string)$e);
         $this->_finalizeLog();
 
         $this->logs->logException($e);
@@ -167,8 +173,8 @@ class TaskSpool extends arch\node\Task
             return;
         }
 
-        $output = $this->_channel->getContents();
-        $error = $this->_channel->getErrorBuffer();
+        $output = $this->_outputReceiver->getContents();
+        $error = $this->_errorReceiver->getContents();
 
         if (!strlen($output)) {
             $output = null;

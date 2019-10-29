@@ -11,6 +11,9 @@ use df\apex;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Terminus\Cli;
+use DecodeLabs\Atlas;
+
 class HttpInvoke extends arch\node\Base
 {
     const DEFAULT_ACCESS = arch\IAccess::ALL;
@@ -38,7 +41,10 @@ class HttpInvoke extends arch\node\Base
 
             $this->task->launch(
                 $invoke['request'],
-                new core\io\Multiplexer(['generator' => $generator], 'httpPassthrough')
+                Cli::newSession(
+                    Cli::newRequest([]),
+                    Atlas::newBroker()->addOutputReceiver($generator)
+                )
             );
         });
     }

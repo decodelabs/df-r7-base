@@ -111,7 +111,7 @@ abstract class Task extends Base implements ITaskNode
         $request = clone $this->request;
 
         throw new arch\ForcedResponse(function () use ($user, $request) {
-            $this->task->launch($request, $this->io, $user, true);
+            $this->task->launch($request, Cli::getSession(), $user, true);
         });
     }
 

@@ -18,6 +18,7 @@ use df\opal;
 use df\user;
 
 use DecodeLabs\Systemic\Process\Result as ProcessResult;
+use DecodeLabs\Terminus\Session;
 
 ##############################
 ## MAIN
@@ -59,10 +60,10 @@ interface IBuildTaskNode extends ITaskNode
 
 interface ITaskManager extends core\IManager
 {
-    public function launch($request, core\io\IMultiplexer $multiplexer=null, $user=null, bool $dfSource=false): ProcessResult;
+    public function launch($request, ?Session $session=null, $user=null, bool $dfSource=false): ProcessResult;
     public function launchBackground($request, $user=null, bool $dfSource=false);
-    public function launchQuietly($request);
-    public function invoke($request, core\io\IMultiplexer $io=null): core\io\IMultiplexer;
+    public function launchQuietly($request): void;
+    public function invoke($request): void;
     public function initiateStream($request): link\http\IResponse;
     public function queue($request, string $priority='medium'): flex\IGuid;
     public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): ProcessResult;

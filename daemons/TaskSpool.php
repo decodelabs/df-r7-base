@@ -10,6 +10,8 @@ use df\core;
 use df\apex;
 use df\halo;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskSpool extends halo\daemon\Base
 {
     const AUTOMATIC = true;
@@ -22,6 +24,6 @@ class TaskSpool extends halo\daemon\Base
 
     public function spool()
     {
-        $this->task->launch('tasks/spool', $this->io);
+        $this->task->launch('tasks/spool', Cli::getSession());
     }
 }

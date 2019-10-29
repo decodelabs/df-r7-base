@@ -29,8 +29,8 @@ class TaskPurge extends arch\node\Task
             $options = $config->getBackendOptions($name);
 
             $isAll ?
-                $class::purgeAll($options, $this->io) :
-                $class::purgeApp($options, $this->io);
+                $class::purgeAll($options, Cli::getSession()) :
+                $class::purgeApp($options, Cli::getSession());
         }
     }
 }

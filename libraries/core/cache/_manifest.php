@@ -8,6 +8,8 @@ namespace df\core\cache;
 use df;
 use df\core;
 
+use DecodeLabs\Terminus\Session;
+
 interface IStore extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Countable
 {
     public static function getInstance();
@@ -57,8 +59,8 @@ interface ISessionExtendedCache extends ICache
 
 interface IBackend extends \Countable
 {
-    public static function purgeApp(core\collection\ITree $options, core\io\IMultiplexer $io=null);
-    public static function purgeAll(core\collection\ITree $options, core\io\IMultiplexer $io=null);
+    public static function purgeApp(core\collection\ITree $options, ?Session $session=null);
+    public static function purgeAll(core\collection\ITree $options, ?Session $session=null);
     public static function prune(core\collection\ITree $options);
     public static function clearFor(core\collection\ITree $options, ICache $cache);
     public static function isLoadable(): bool;

@@ -11,6 +11,7 @@ use df\flex;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Glitch;
+use DecodeLabs\Terminus\Session;
 
 class LocalFile implements core\cache\IBackend
 {
@@ -22,12 +23,12 @@ class LocalFile implements core\cache\IBackend
     protected $_cache;
     protected $_dir;
 
-    public static function purgeApp(core\collection\ITree $options, core\io\IMultiplexer $io=null)
+    public static function purgeApp(core\collection\ITree $options, ?Session $session=null)
     {
         self::purgeAll($options);
     }
 
-    public static function purgeAll(core\collection\ITree $options, core\io\IMultiplexer $io=null)
+    public static function purgeAll(core\collection\ITree $options, ?Session $session=null)
     {
         if (!self::isLoadable()) {
             return;
