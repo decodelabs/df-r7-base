@@ -9,6 +9,8 @@ use df;
 use df\core;
 use df\halo;
 
+use DecodeLabs\Terminus\Session;
+
 interface IDaemon extends core\IContextAware
 {
     public function getName(): string;
@@ -34,8 +36,8 @@ interface IDaemon extends core\IContextAware
 interface IRemote
 {
     public function getName(): string;
-    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null);
-    public function getMultiplexer();
+    public function setCliSession(?Session $session);
+    public function getCliSession(): ?Session;
     public function isRunning();
     public function getStatusData();
     public function getProcess();

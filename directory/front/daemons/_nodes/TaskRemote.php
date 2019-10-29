@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\halo;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskRemote extends arch\node\Task
 {
     use TDaemonTask;
@@ -39,7 +41,7 @@ class TaskRemote extends arch\node\Task
         $this->_ensurePrivileges();
 
         $remote = halo\daemon\Remote::factory($this->request['daemon']);
-        $remote->setMultiplexer($this->io);
+        $remote->setCliSession(Cli::getSession());
         $remote->sendCommand($this->request['command']);
     }
 }

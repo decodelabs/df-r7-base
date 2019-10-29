@@ -163,13 +163,19 @@ abstract class Base implements IDaemon
         }
 
 
-        $this->io = new core\io\Multiplexer(null, $this->getName());
-
         if (static::TEST_MODE) {
-            $this->io->addChannel(new core\io\Std());
+            $broker = Atlas::newCliBroker();
+        } else {
+            $broker = Atlas::newBroker()
+                ->addOutputReceiver(Atlas::$fs->file($basePath.'.log', 'w'));
         }
 
-        $this->io->addChannel(new core\io\Stream(fopen($basePath.'.log', 'w')));
+        Cli::setSession(
+            Cli::newSession(
+                Cli::newRequest(),
+                $broker
+            )
+        );
 
         $isPrivileged = $this->process->isPrivileged();
 

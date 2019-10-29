@@ -44,7 +44,7 @@ class TaskEnsureActivity extends arch\node\Task
 
         foreach ($daemons as $name => $daemon) {
             $remote = halo\daemon\Remote::factory($daemon);
-            $remote->setMultiplexer($this->io);
+            $remote->setCliSession(Cli::getSession());
             $remote->nudge();
         }
     }

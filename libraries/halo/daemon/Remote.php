@@ -12,6 +12,7 @@ use df\flex;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Systemic;
+use DecodeLabs\Terminus\Session;
 
 class Remote implements IRemote
 {
@@ -19,7 +20,7 @@ class Remote implements IRemote
     protected $_process;
     protected $_statusData;
     protected $_isChecked = false;
-    protected $_multiplexer;
+    protected $_session;
 
     public static function factory($daemon)
     {
@@ -41,15 +42,15 @@ class Remote implements IRemote
     }
 
 
-    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null)
+    public function setCliSession(?Session $session)
     {
-        $this->_multiplexer = $multiplexer;
+        $this->_session = $session;
         return $this;
     }
 
-    public function getMultiplexer()
+    public function getCliSession(): ?Session
     {
-        return $this->_multiplexer;
+        return $this->_session;
     }
 
 
@@ -178,19 +179,12 @@ class Remote implements IRemote
 
         $path = df\Launchpad::$app->path.'/entry/'.df\Launchpad::$app->envId.'.php';
 
-        if ($this->_multiplexer) {
-            return Systemic::$process->newScriptLauncher($path, [
-                    'daemon', $this->_daemon->getName(), $command
-                ])
-                ->then([$this->_multiplexer, 'exportToAtlasLauncher'])
-                ->setDecoratable(false)
-                ->launch();
-        } else {
-            return Systemic::$process->newScriptLauncher($path, [
-                    'daemon', $this->_daemon->getName(), $command
-                ])
-                ->setDecoratable(false)
-                ->launch();
-        }
+        return Systemic::$process->newScriptLauncher($path, [
+                'daemon', $this->_daemon->getName(), $command
+            ])
+            ->thenIf($this->_session, function ($launcher) {
+                $launcher->setIoBroker($this->_session->getBroker());
+            })
+            ->launch();
     }
 }

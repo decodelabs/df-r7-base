@@ -152,7 +152,8 @@ class Daemon extends Base
             return;
         }
 
-        Cli::{'yellow'}('Starting daemon '.$name);
+        Cli::write('Starting ');
+        Cli::{'brightMagenta'}($name);
 
         if ($daemon->isTesting()) {
             Cli::newLine();
@@ -202,13 +203,14 @@ class Daemon extends Base
             return;
         }
 
-        Cli::{'yellow'}('Stopping daemon '.$name.': ');
+        Cli::write('Stopping ');
+        Cli::{'brightMagenta'}($name.': ');
         $process->sendSignal('SIGTERM');
         $count = 0;
 
         while ($process->isAlive()) {
             if ($count++ > 10) {
-                Cli::error('TERM failed');
+                Cli::inlineError('TERM failed ');
                 Cli::{'yellow'}('Trying KILL: ');
                 $process->sendSignal('SIGKILL');
                 sleep(5);
@@ -219,7 +221,7 @@ class Daemon extends Base
         }
 
         if ($process->isAlive()) {
-            Cli::error(' still running - fix manually!');
+            Cli::error('still running - fix manually!');
         } else {
             Cli::success('done');
         }
