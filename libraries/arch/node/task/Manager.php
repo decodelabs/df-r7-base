@@ -47,7 +47,7 @@ class Manager implements arch\node\ITaskManager
             ->thenIf($session, function ($launcher) use ($session) {
                 $launcher->setIoBroker($session->getBroker());
             })
-            ->setDecoratable($decoratable)
+            //->setDecoratable($decoratable)
             ->launch();
     }
 
@@ -71,7 +71,7 @@ class Manager implements arch\node\ITaskManager
         }
 
         return Systemic::$process->newScriptLauncher($path, $args, null, $user)
-            ->setDecoratable($decoratable)
+            //->setDecoratable($decoratable)
             ->launchBackground();
     }
 
