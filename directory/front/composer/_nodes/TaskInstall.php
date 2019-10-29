@@ -13,6 +13,7 @@ use df\halo;
 
 use DecodeLabs\Systemic;
 use DecodeLabs\Atlas;
+use DecodeLabs\Terminus\Cli;
 
 class TaskInstall extends arch\node\Task implements arch\node\IBuildTaskNode
 {
@@ -32,7 +33,7 @@ class TaskInstall extends arch\node\Task implements arch\node\IBuildTaskNode
 
         Systemic::$process->newLauncher('composer install', $args)
             ->setWorkingDirectory($this->app->path)
-            ->then([$this->io, 'exportToAtlasLauncher'])
+            ->setIoBroker(Cli::getSession()->getBroker())
             ->launch();
     }
 }

@@ -66,7 +66,7 @@ interface ITaskManager extends core\IManager
     public function invoke($request): void;
     public function initiateStream($request): link\http\IResponse;
     public function queue($request, string $priority='medium'): flex\IGuid;
-    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): ProcessResult;
+    public function queueAndLaunch($request, ?Session $session=null): ProcessResult;
     public function queueAndLaunchBackground($request);
 }
 

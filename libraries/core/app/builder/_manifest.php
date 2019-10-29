@@ -10,14 +10,12 @@ use df\core;
 
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Dir;
+use DecodeLabs\Terminus\Session;
 
 interface IController
 {
     public function getBuildId(): string;
     public function shouldCompile(bool $flag=null);
-
-    public function setMultiplexer(?core\io\IMultiplexer $multiplexer);
-    public function getMultiplexer(): core\io\IMultiplexer;
 
     public function getRunPath(): string;
     public function getDestination(): Dir;

@@ -63,7 +63,7 @@ class TaskFortify extends arch\node\Task
         && $unit->getUnitId() == $this->request['unit']) {
             axis\fortify\Base::factory(
                 $unit, $this->request['fortify']
-            )->dispatch($this->io);
+            )->dispatch();
             return;
         }
 
@@ -71,7 +71,7 @@ class TaskFortify extends arch\node\Task
 
         foreach ($tasks as $name => $task) {
             Cli::{'yellow'}($unit->getUnitId().'/'.$name.': ');
-            $task->dispatch($this->io);
+            $task->dispatch();
             Cli::newLine();
         }
     }

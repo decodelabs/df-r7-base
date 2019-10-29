@@ -16,5 +16,5 @@ interface IFortify extends core\IContextAware
     public function getModel(): axis\IModel;
     public function getName(): string;
 
-    public function dispatch(core\io\IMultiplexer $multiplexer);
+    public function dispatch();
 }

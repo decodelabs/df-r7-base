@@ -130,9 +130,7 @@ class TaskSpool extends arch\node\Task
             Cli::newLine();
             Cli::comment($request.' : '.$taskId);
 
-            //$this->io->removeChannel($this->_channel);
             $this->runChild('tasks/launch-queued?id='.$taskId, false);
-            //$this->io->addChannel($this->_channel);
         }
 
         $this->data->task->queue->delete()

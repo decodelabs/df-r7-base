@@ -28,8 +28,6 @@ class Controller implements IController
         'composer.json', 'composer.lock'
     ];
 
-    public $io;
-
     protected $_id;
     protected $_shouldCompile = true;
     protected $_runPath;
@@ -59,21 +57,6 @@ class Controller implements IController
         return $this->_shouldCompile;
     }
 
-
-    public function setMultiplexer(?core\io\IMultiplexer $multiplexer)
-    {
-        $this->io = $multiplexer;
-        return $this;
-    }
-
-    public function getMultiplexer(): core\io\IMultiplexer
-    {
-        if (!$this->io) {
-            $this->io = core\io\Multiplexer::defaultFactory('task');
-        }
-
-        return $this->io;
-    }
 
 
     public function getRunPath(): string

@@ -114,10 +114,10 @@ class Manager implements arch\node\ITaskManager
         return $queue['id'];
     }
 
-    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null): ProcessResult
+    public function queueAndLaunch($request, ?Session $session=null): ProcessResult
     {
         $id = $this->queue($request, 'medium');
-        return $this->launch('tasks/launch-queued?id='.$id, $multiplexer);
+        return $this->launch('tasks/launch-queued?id='.$id, $session);
     }
 
     public function queueAndLaunchBackground($request)

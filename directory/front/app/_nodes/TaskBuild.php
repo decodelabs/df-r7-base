@@ -40,7 +40,6 @@ class TaskBuild extends arch\node\Task
 
         // Setup controller
         $controller = new core\app\builder\Controller();
-        $controller->setMultiplexer($this->io);
 
         if (isset($this->request['force'])) {
             $controller->shouldCompile(true);

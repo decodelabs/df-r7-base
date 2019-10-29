@@ -20,7 +20,6 @@ class Daemon extends Base
 {
     const THRESHOLD = 600;
 
-    public $io;
     protected $_statusData;
 
     // Execute
@@ -32,7 +31,6 @@ class Daemon extends Base
             );
         }
 
-        $this->io = new core\io\Std();
         $env = core\environment\Config::getInstance();
 
         if (!$env->canUseDaemons() || !extension_loaded('pcntl')) {
@@ -168,7 +166,7 @@ class Daemon extends Base
         $res = Systemic::$process->newScriptLauncher($entryPath, [
                 'daemon', $name, '__spawn'
             ])
-            ->then([new core\io\Multiplexer([$this->io]), 'exportToAtlasLauncher'])
+            ->setIoBroker(Cli::getSession()->getBroker())
             ->setDecoratable(false)
             ->setIoBroker(Atlas::newCliBroker())
             ->launch();

@@ -17,8 +17,6 @@ abstract class Base implements IFortify
 {
     use core\TContextProxy;
 
-    public $io;
-
     protected $_unit;
     protected $_model;
 
@@ -79,9 +77,8 @@ abstract class Base implements IFortify
         return (new \ReflectionClass($this))->getShortName();
     }
 
-    final public function dispatch(core\io\IMultiplexer $multiplexer)
+    final public function dispatch()
     {
-        $this->io = $multiplexer;
         $ret = $this->execute();
 
         if ($ret instanceof \Generator) {
