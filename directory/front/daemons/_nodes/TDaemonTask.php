@@ -31,7 +31,15 @@ trait TDaemonTask
             Cli::notice('Restarting task '.$this->request->getPathString().' as root');
             $request = clone $this->request;
             $request->query->_privileged = true;
-            $this->task->launch($request, Cli::getSession(), 'root');
+
+            $this->task->launch(
+                $request,
+                Cli::getSession(),
+                'root',
+                false,
+                false
+            );
+
             $this->forceResponse('');
         }
     }
