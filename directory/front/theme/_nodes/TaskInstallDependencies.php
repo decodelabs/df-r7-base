@@ -11,6 +11,8 @@ use df\apex;
 use df\arch;
 use df\fuse;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskInstallDependencies extends arch\node\Task implements arch\node\IBuildTaskNode
 {
     public function execute()
@@ -21,6 +23,6 @@ class TaskInstallDependencies extends arch\node\Task implements arch\node\IBuild
             $this->runChild('./purge-dependencies', false);
         }
 
-        $manager->installAllDependencies($this->io);
+        $manager->installAllDependencies(Cli::getSession());
     }
 }

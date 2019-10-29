@@ -13,6 +13,7 @@ use df\spur;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+use DecodeLabs\Terminus\Session;
 
 class Manager implements IManager
 {
@@ -79,7 +80,7 @@ class Manager implements IManager
 
 
 
-    public function ensureDependenciesFor(aura\theme\ITheme $theme, core\io\IMultiplexer $io=null)
+    public function ensureDependenciesFor(aura\theme\ITheme $theme, Session $session=null)
     {
         $id = $theme->getId();
 
@@ -122,7 +123,7 @@ class Manager implements IManager
         }
 
         try {
-            $this->installDependenciesFor($theme, $io);
+            $this->installDependenciesFor($theme, $session);
         } catch (\Throwable $e) {
             if ($swallow) {
                 core\log\Manager::getInstance()->logException($e);
@@ -134,15 +135,15 @@ class Manager implements IManager
         return $this;
     }
 
-    public function installDependenciesFor(aura\theme\ITheme $theme, core\io\IMultiplexer $io=null)
+    public function installDependenciesFor(aura\theme\ITheme $theme, Session $session=null)
     {
         $deps = $this->prepareDependenciesFor($theme);
-        $this->installDependencies($deps, $io);
+        $this->installDependencies($deps, $session);
         $this->_storeManifest($theme, $deps);
         return $this;
     }
 
-    public function installAllDependencies(core\io\IMultiplexer $io=null)
+    public function installAllDependencies(Session $session=null)
     {
         $config = aura\theme\Config::getInstance();
         $themes = array_unique($config->getThemeMap());
@@ -159,7 +160,7 @@ class Manager implements IManager
             }
         }
 
-        $this->installDependencies($dependencies, $io);
+        $this->installDependencies($dependencies, $session);
 
         foreach ($themes as $themeId) {
             $theme = aura\theme\Base::factory($themeId);
@@ -177,7 +178,7 @@ class Manager implements IManager
         return $this;
     }
 
-    public function installDependencies(array $dependencies, core\io\IMultiplexer $io=null)
+    public function installDependencies(array $dependencies, Session $session=null)
     {
         $packages = [];
 
@@ -194,7 +195,7 @@ class Manager implements IManager
             $packages[$dependency->getKey()] = $dependency->getPackage();
         }
 
-        $installer = new spur\packaging\bower\Installer($io);
+        $installer = new spur\packaging\bower\Installer($session);
         $installer->installPackages($packages);
 
         foreach ($dependencies as $dependency) {

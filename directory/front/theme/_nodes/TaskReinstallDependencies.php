@@ -12,11 +12,13 @@ use df\arch;
 use df\spur;
 use df\fuse;
 
+use DecodeLabs\Terminus\Cli;
+
 class TaskReinstallDependencies extends arch\node\Task
 {
     public function execute()
     {
         $this->runChild('./purge-dependencies');
-        fuse\Manager::getInstance()->installAllDependencies($this->io);
+        fuse\Manager::getInstance()->installAllDependencies(Cli::getSession());
     }
 }

@@ -12,6 +12,8 @@ use df\fuse;
 use df\flex;
 use df\aura;
 
+use DecodeLabs\Terminus\Session;
+
 interface IBridge
 {
     public function setInstallPath($path);
@@ -27,8 +29,8 @@ interface IBridge
 interface IInstaller
 {
     public function getInstallPath();
-    public function setMultiplexer(core\io\IMultiplexer $io=null);
-    public function getMultiplexer();
+    public function setCliSession(Session $session=null);
+    public function getCliSession(): ?Session;
     public function installPackages(array $packages);
     public function installPackage(Package $package);
     public function isPackageInstalled($name);

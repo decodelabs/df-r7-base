@@ -13,22 +13,23 @@ use df\fuse;
 
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
+use DecodeLabs\Terminus\Session;
 
 class Installer implements IInstaller
 {
     protected $_installDir;
     protected $_cachePath;
     protected $_mutex;
-    protected $_multiplexer;
+    protected $_session;
     protected $_resolvers = [];
 
-    public function __construct(core\io\IMultiplexer $io=null)
+    public function __construct(Session $session=null)
     {
         $installPath = fuse\Manager::getAssetPath();
         $this->_installDir = Atlas::$fs->dir($installPath);
         $this->_cachePath = '/tmp/decode-framework/bower';
         $this->_mutex = Atlas::newMutex('bower', $this->_cachePath);
-        $this->setMultiplexer($io);
+        $this->setCliSession($session);
     }
 
     public function getInstallPath()
@@ -36,15 +37,15 @@ class Installer implements IInstaller
         return $this->_installDir;
     }
 
-    public function setMultiplexer(core\io\IMultiplexer $io=null)
+    public function setCliSession(?Session $session=null)
     {
-        $this->_multiplexer = $io;
+        $this->_session = $session;
         return $this;
     }
 
-    public function getMultiplexer()
+    public function getCliSession(): ?Session
     {
-        return $this->_multiplexer;
+        return $this->_session;
     }
 
     public function installPackages(array $input)
@@ -90,16 +91,18 @@ class Installer implements IInstaller
         $resolver = $this->_getResolver($package->resolver);
         $this->_mutex->lock(60);
 
-        if ($this->_multiplexer) {
+        if ($this->_session) {
             if ($depLevel) {
-                $this->_multiplexer->write('|'.str_repeat('--', $depLevel).' ');
+                $this->_session->write('|'.str_repeat('--', $depLevel).' ');
 
                 if ($depParent) {
-                    $this->_multiplexer->write('['.$depParent.'] ');
+                    $this->_session->write('[');
+                    $this->_session->{'magenta'}($depParent);
+                    $this->_session->write('] ');
                 }
             }
 
-            $this->_multiplexer->write($package->name);
+            $this->_session->{'brightMagenta'}($package->name);
         }
 
         $currentVersion = null;
@@ -108,22 +111,25 @@ class Installer implements IInstaller
             $data = flex\Json::fromFile($this->_installDir.'/'.$package->installName.'/.bower.json');
             $currentVersion = $data['version'];
 
-            if ($this->_multiplexer) {
-                $this->_multiplexer->write('#'.$currentVersion);
+            if ($this->_session) {
+                $this->_session->write('#');
+                $this->_session->{'brightCyan'}($currentVersion);
             }
         }
 
         try {
             if ($resolver->fetchPackage($package, $this->_cachePath, $currentVersion)) {
-                if ($this->_multiplexer) {
-                    $this->_multiplexer->write(' => '.$package->version);
+                if ($this->_session) {
+                    $this->_session->write(' => ');
+                    $this->_session->inlineSuccess($package->version);
                 }
 
                 $this->_extractCache($package);
                 $output = true;
             } else {
-                if ($this->_multiplexer) {
-                    $this->_multiplexer->write(' - up to date');
+                if ($this->_session) {
+                    $this->_session->write(' - ');
+                    $this->_session->inlineSuccess('up to date');
                 }
             }
         } catch (\Throwable $e) {
@@ -131,8 +137,8 @@ class Installer implements IInstaller
             throw $e;
         }
 
-        if ($this->_multiplexer) {
-            $this->_multiplexer->writeLine();
+        if ($this->_session) {
+            $this->_session->newLine();
         }
 
         $this->_mutex->unlock();
