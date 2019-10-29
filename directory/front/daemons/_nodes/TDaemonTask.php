@@ -27,7 +27,7 @@ trait TDaemonTask
         $process = Systemic::$process->getCurrent();
         $user = $env->getDaemonUser();
 
-        if ($user != $process->getOwnerName() && !$process->isPrivileged()) {
+        if ($user != $process->getOwnerName() && !$process->isPrivileged() && !isset($this->request['_privileged'])) {
             Cli::notice('Restarting task '.$this->request->getPathString().' as root');
             $request = clone $this->request;
             $request->query->_privileged = true;
@@ -35,9 +35,7 @@ trait TDaemonTask
             $this->task->launch(
                 $request,
                 Cli::getSession(),
-                'root',
-                false,
-                false
+                'root'
             );
 
             $this->forceResponse('');
