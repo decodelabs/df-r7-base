@@ -70,12 +70,12 @@ class TaskBuild extends arch\node\Task
 
 
         if ($controller->shouldCompile()) {
-            Cli::{'yellow'}('Packaging files: ');
+            Cli::{'yellow'}('Packaging files:');
 
 
             // Create build
             foreach ($controller->createBuild() as $packageName) {
-                Cli::{'.brightMagenta'}(' '.$packageName);
+                Cli::{'brightMagenta'}(' '.$packageName);
             }
 
             Cli::newLine();
