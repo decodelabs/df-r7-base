@@ -15,6 +15,10 @@ use df\fuse;
 use DecodeLabs\Glitch;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\File;
+use DecodeLabs\Atlas\File\Memory as MemoryFile;
+
+use GuzzleHttp\Client as HttpClient;
+use Psr\Http\Message\ResponseInterface;
 
 class Uri implements arch\IDirectoryHelper
 {
@@ -390,39 +394,49 @@ class Uri implements arch\IDirectoryHelper
     public function data($url): string
     {
         $response = $this->_getDataResponse($url);
-        $data = $response->getContentFileStream();
-        $type = $response->getContentType();
+        $type = $response->getHeaderLine('Content-Type');
 
-        return 'data:'.$type.';base64,'.base64_encode($data->getContents());
+        return 'data:'.$type.';base64,'.base64_encode((string)$response->getBody());
     }
 
     public function fetch($url): File
     {
-        return $this->_getDataResponse($url)->getContentFileStream();
-    }
+        $response = $this->_getDataResponse($url);
+        $output = Atlas::$fs->newMemoryFile();
+        $stream = $response->getBody();
 
-    protected function _getDataResponse($url): link\http\IResponse
-    {
-        $url = $this->__invoke($url, null, null, true);
-        $isLocal = $url instanceof arch\IRequest;
-        $url = $this->__invoke($url);
-
-        $client = new link\http\Client();
-
-        if ($isLocal) {
-            $client->getDefaultOptions()
-                ->shouldVerifySsl(false)
-                ->shouldAllowSelfSigned(true);
+        while (!$stream->eof()) {
+            $output->write($stream->read(8192));
         }
 
-        $response = $client->get($url);
+        $output->setPosition(0);
+        return $output;
+    }
 
-        if (!$response->isOk()) {
+    protected function _getDataResponse($url): ResponseInterface
+    {
+        $url = $this->__invoke($url, null, null, true);
+        $httpClient = new HttpClient();
+
+        if ($url instanceof arch\IRequest) {
+            $url = $this->__invoke($url);
+            $config = core\app\runner\http\Config::getInstance();
+            $credentials = $config->getCredentials($this->context->app->envMode);
+
+            $options = [
+                'verify' => false,
+                'auth' => $credentials
+            ];
+        } else {
+            $options = [];
+        }
+
+        try {
+            return $httpClient->get((string)$url, $options);
+        } catch (\Exception $e) {
             throw Glitch::ENotFound([
                 'message' => 'File not loadable: '.$url,
             ]);
         }
-
-        return $response;
     }
 }
