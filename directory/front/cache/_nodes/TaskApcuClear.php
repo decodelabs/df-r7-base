@@ -10,8 +10,10 @@ use df\core;
 use df\apex;
 use df\arch;
 use df\link;
+use df\flex;
 
 use DecodeLabs\Terminus\Cli;
+use GuzzleHttp\Client as HttpClient;
 
 class TaskApcuClear extends arch\node\Task
 {
@@ -52,35 +54,31 @@ class TaskApcuClear extends arch\node\Task
             $url->query->import($this->request->query);
 
             $config = core\app\runner\http\Config::getInstance();
-
-            if ($credentials = $config->getCredentials($this->app->envMode)) {
-                $url->setCredentials(
-                    $credentials['username'],
-                    $credentials['password']
-                );
-            }
+            $credentials = $config->getCredentials($this->app->envMode);
 
             //Cli::info($url);
 
-            $http = new link\http\Client();
+            $httpClient = new HttpClient();
 
-            $response = $http->get($url, function ($request) {
-                $request->options->verifySsl = false;
-            });
-
-            if ($response->isOk()) {
-                $json = $response->getJsonContent();
-                $cleared = @$json['cleared'];
-                $type = $url->isSecure() ? 'HTTPS' : 'HTTP';
-
-                if ($cleared === null) {
-                    Cli::warning('APCU unable to pass IP check via '.@$json['addr']);
-                } else {
-                    Cli::notice('Cleared '.$cleared.' '.$type.' APCU entries via '.@$json['addr']);
-                }
-            } else {
+            try {
+                $response = $httpClient->get((string)$url, [
+                    'verify' => false,
+                    'auth' => $credentials
+                ]);
+            } catch (\Exception $e) {
                 Cli::error('Http call failed :(');
-                //Cli::error($response->getContent());
+                return;
+            }
+
+            $json = flex\Json::stringToTree((string)$response->getBody());
+
+            $cleared = $json['cleared'];
+            $type = $url->isSecure() ? 'HTTPS' : 'HTTP';
+
+            if ($cleared === null) {
+                Cli::warning('APCU unable to pass IP check via '.$json['addr']);
+            } else {
+                Cli::notice('Cleared '.$cleared.' '.$type.' APCU entries via '.$json['addr']);
             }
         }
     }

@@ -23,6 +23,7 @@
         "decodelabs/atlas": "dev-develop",
         "decodelabs/enlighten": "dev-develop",
 
+        "guzzlehttp/guzzle": "^6.4",
         "erusev/parsedown": "^1.7"
     },
     "require-dev": {
