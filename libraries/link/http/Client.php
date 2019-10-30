@@ -26,21 +26,11 @@ class Client implements IClient
     public function getTransport()
     {
         if (!$this->_transport) {
-            $this->_transport = $this->_getDefaultTransport();
+            $this->_transport = new link\http\transport\Curl();
         }
 
         return $this->_transport;
     }
-
-    protected function _getDefaultTransport()
-    {
-        if (extension_loaded('curl')) {
-            return new link\http\transport\Curl();
-        }
-
-        return new link\http\transport\Stream();
-    }
-
 
 
     public function get($url, $callback=null)

@@ -140,13 +140,6 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
     }
 
 
-    public static function fromResponseString($string, &$content=null)
-    {
-        $parts = preg_split('|(?:\r?\n){2}|m', $string, 2);
-        $headers = array_shift($parts);
-        $content = array_shift($parts);
-        return self::fromResponseArray(explode("\n", $headers));
-    }
 
     public static function fromResponseArray(array $lines)
     {

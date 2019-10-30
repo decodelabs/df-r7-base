@@ -207,7 +207,6 @@ interface IResponse extends
     // Content
     public function getContent();
     public function getJsonContent();
-    public function getEncodedContent();
     public function getContentFileStream();
     public function onDispatchComplete();
 
@@ -223,9 +222,6 @@ interface IResponse extends
     public function isAttachment(bool $flag=null);
     public function setAttachmentFileName($fileName);
     public function getAttachmentFileName();
-
-    // Strings
-    public function getResponseString();
 }
 
 interface IStreamResponse extends IResponse
@@ -258,6 +254,7 @@ interface IRedirectResponse extends IResponse
 
 interface IGeneratorResponse extends IResponse, DataReceiver
 {
+    public function setWriteCallback(callable $callback);
     public function generate(DataReceiver $channel);
     public function writeBrowserKeepAlive();
     public function getChannel();
@@ -348,26 +345,6 @@ trait TStringResponse
         return $this->_cookies && !$this->_cookies->isEmpty();
     }
 
-    public function getEncodedContent()
-    {
-        $content = $this->getContent();
-
-        if (!$this->_headers || empty($content)) {
-            return $content;
-        }
-
-        $contentEncoding = $this->_headers->get('content-encoding');
-        $transferEncoding = $this->_headers->get('transfer-encoding');
-
-        if (!$contentEncoding && !$transferEncoding) {
-            return $content;
-        }
-
-        return link\http\response\Base::encodeContent(
-            $content, $contentEncoding, $transferEncoding
-        );
-    }
-
     public function getContentFileStream()
     {
         return Atlas::$fs->createTempFile($this->getContent());
@@ -397,14 +374,6 @@ trait TStringResponse
     {
         $this->prepareHeaders();
         return link\http\response\Base::buildHeaderString($this->_headers);
-    }
-
-    public function getResponseString()
-    {
-        $output = $this->getHeaderString()."\r\n\r\n";
-        $output .= $this->getEncodedContent()."\r\n";
-
-        return $output;
     }
 
     public function setFileName($fileName, $isAttachment=null)

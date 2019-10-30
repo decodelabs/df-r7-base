@@ -20,153 +20,6 @@ abstract class Base implements link\http\IResponse
     public $headers;
     public $cookies;
 
-    public static function fromString(string $string): link\http\response\Stream
-    {
-        $content = null;
-        $output = self::fromHeaderString($string, $content);
-        $headers = $output->getHeaders();
-
-        if ($headers->has('transfer-encoding')) {
-            switch (strtolower($headers->get('transfer-encoding'))) {
-                case 'chunked':
-                    $content = self::decodeChunked($content);
-                    break;
-
-                case 'x-compress':
-                case 'compress':
-                case 'x-deflate':
-                case 'deflate':
-                    $content = self::decodeDeflate($content);
-                    break;
-
-                case 'x-gzip':
-                case 'gzip':
-                    $content = self::decodeGzip($content);
-                    break;
-
-                case 'identity':
-                    break;
-            }
-        }
-
-
-        if ($headers->has('content-encoding')) {
-            switch (strtolower($headers->get('content-encoding'))) {
-                case 'x-compress':
-                case 'compress':
-                case 'x-deflate':
-                case 'deflate':
-                    $content = self::decodeDeflate($content);
-                    break;
-
-                case 'x-gzip':
-                case 'gzip':
-                    $content = self::decodeGzip($content);
-                    break;
-
-                case 'identity':
-                    break;
-
-                default:
-                    throw Glitch::ERuntime(
-                        ucfirst($headers->get('content-encoding')).' response compression is not available'
-                    );
-            }
-        }
-
-        $output->setContent($content);
-        return $output;
-    }
-
-    public static function fromHeaderString(string $string, &$content=null): link\http\response\Stream
-    {
-        $output = new Stream();
-        $output->headers = HeaderCollection::fromResponseString($string, $content);
-        $output->cookies->import($output->headers);
-
-        return $output;
-    }
-
-    public static function decodeChunked(&$content)
-    {
-        $output = '';
-
-        while (true) {
-            $content = ltrim($content);
-
-            if (!isset($content{0}) || !preg_match("/^([\da-fA-F]+)[^\r\n]*\r\n/sm", $content, $matches)) {
-                throw Glitch::EUnexpectedValue('The body does not appear to be chunked properly');
-            }
-
-            $length = hexdec(trim($matches[1]));
-            $cut = strlen($matches[0]);
-            $output .= substr($content, $cut, $length);
-            $content = substr($content, $cut + $length + 2);
-
-            if ($length == 0) {
-                break;
-            }
-        }
-
-        $content = trim($content);
-        return $output;
-    }
-
-    public static function encodeChunked($content)
-    {
-        $chunkSize = 32;
-        $output = '';
-
-        while (isset($content{0})) {
-            $current = substr($content, 0, $chunkSize);
-            $content = substr($content, $chunkSize);
-
-            $output .= dechex(strlen($current))."\r\n";
-            $output .= $current."\r\n";
-        }
-
-        $output .= '0'."\r\n";
-        return $output;
-    }
-
-    public static function decodeDeflate($content)
-    {
-        if (!function_exists('gzuncompress')) {
-            throw Glitch::ERuntime(
-                'Gzip response compression is not available'
-            );
-        }
-
-        $header = unpack('n', substr($content, 0, 2));
-
-        if ($header[1] % 31 == 0) {
-            return gzuncompress($content);
-        } else {
-            return gzinflate($content);
-        }
-    }
-
-    public static function encodeDeflate($content)
-    {
-        Glitch::incomplete();
-    }
-
-    public static function decodeGzip($content)
-    {
-        if (!function_exists('gzinflate')) {
-            throw Glitch::ERuntime(
-                'Gzip inflate response compression is not available'
-            );
-        }
-
-        return gzinflate(substr($content, 10));
-    }
-
-    public static function encodeGzip($content)
-    {
-        Glitch::incomplete();
-    }
-
     public function __construct(link\http\IResponseHeaderCollection $headers=null)
     {
         if (!$headers) {
@@ -261,78 +114,6 @@ abstract class Base implements link\http\IResponse
         return new core\collection\Tree($data);
     }
 
-    public function getEncodedContent()
-    {
-        $content = $this->getContent();
-
-        if (empty($content)) {
-            return $content;
-        }
-
-        $contentEncoding = $this->headers->get('content-encoding');
-        $transferEncoding = $this->headers->get('transfer-encoding');
-
-        if (!$contentEncoding && !$transferEncoding) {
-            return $content;
-        }
-
-        return self::encodeContent(
-            $content, $contentEncoding, $transferEncoding
-        );
-    }
-
-    public static function encodeContent($content, $contentEncoding, $transferEncoding)
-    {
-        if ($contentEncoding !== null) {
-            switch (strtolower($contentEncoding)) {
-                case 'x-compress':
-                case 'compress':
-                case 'x-deflate':
-                case 'deflate':
-                    $content = self::encodeDeflate($content);
-                    break;
-
-                case 'x-gzip':
-                case 'gzip':
-                    $content = self::encodeGzip($content);
-                    break;
-
-                case 'identity':
-                    break;
-
-                default:
-                    throw Glitch::ERuntime(
-                        ucfirst($contentEncoding).' response compression is not available'
-                    );
-            }
-        }
-
-        if ($transferEncoding !== null) {
-            switch (strtolower($transferEncoding)) {
-                case 'chunked':
-                    $content = self::encodeChunked($content);
-                    break;
-
-                case 'x-compress':
-                case 'compress':
-                case 'x-deflate':
-                case 'deflate':
-                    $content = self::encodeDeflate($content);
-                    break;
-
-                case 'x-gzip':
-                case 'gzip':
-                    $content = self::encodeGzip($content);
-                    break;
-
-                case 'identity':
-                    break;
-            }
-        }
-
-        return $content;
-    }
-
     public function getContentFileStream()
     {
         return Atlas::$fs->createTempFile($this->getContent());
@@ -360,13 +141,7 @@ abstract class Base implements link\http\IResponse
 
     public function getContentLength()
     {
-        $headers = $this->headers;
-
-        if (!$headers->has('content-length')) {
-            $headers->set('content-length', strlen($this->getEncodedContent()));
-        }
-
-        return $headers->get('content-length');
+        return $this->headers->get('content-length');
     }
 
     public function getLastModified()
@@ -413,14 +188,6 @@ abstract class Base implements link\http\IResponse
     }
 
     // Strings
-    public function getResponseString()
-    {
-        $output = $this->getHeaderString()."\r\n\r\n";
-        $output .= $this->getEncodedContent()."\r\n";
-
-        return $output;
-    }
-
     public function getHeaderString(array $skipKeys=null)
     {
         $this->prepareHeaders();
