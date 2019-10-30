@@ -80,7 +80,7 @@ class TaskApcuClear extends arch\node\Task
                 }
             } else {
                 Cli::error('Http call failed :(');
-                Cli::error($response->getContent());
+                //Cli::error($response->getContent());
             }
         }
     }
