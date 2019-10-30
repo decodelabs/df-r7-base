@@ -100,7 +100,7 @@ class Launchpad
 
         // Check for compiled version
         $activePath = $appPath.'/data/local/run/active/Run.php';
-        $sourceMode = isset($_SERVER['argv']) && in_array('--df-source', $_SERVER['argv']);
+        $sourceMode = isset($_SERVER['argv']) && (in_array('--df-source', $_SERVER['argv']) || in_array('app/build', $_SERVER['argv']));
 
         if (file_exists($activePath) && !$sourceMode) {
             require $activePath;
